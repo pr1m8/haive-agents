@@ -1,0 +1,10 @@
+
+from haive_core.graph.branches import Branch
+
+
+
+branch_logic = Branch(
+    key="documents",
+    comparison="exists",
+    destinations={True: "generate", False: "transform_query"},
+)

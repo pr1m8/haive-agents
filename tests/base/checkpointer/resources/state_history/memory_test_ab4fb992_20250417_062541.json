@@ -1,0 +1,55 @@
+[
+    {
+        "__shared_fields__": [],
+        "__reducer_fields__": {},
+        "messages": [
+            {
+                "content": "Hello, my name is TestUser.",
+                "additional_kwargs": {},
+                "response_metadata": {},
+                "type": "human",
+                "name": null,
+                "id": "f684f2a8-f8e3-4dca-b7ef-d488bcf74518",
+                "example": false
+            },
+            {
+                "content": "What's my name?",
+                "additional_kwargs": {},
+                "response_metadata": {},
+                "type": "human",
+                "name": null,
+                "id": "64b1b427-2533-4205-9179-d981f8c1d22a",
+                "example": false
+            }
+        ],
+        "context": {},
+        "runnable_config": {}
+    },
+    [],
+    {
+        "configurable": {
+            "thread_id": "memory_thread_4bfe2ec3",
+            "checkpoint_ns": "",
+            "checkpoint_id": "1f01b765-14d0-631b-8004-83927960137e"
+        }
+    },
+    {
+        "source": "loop",
+        "writes": {
+            "process_26c8a2": null
+        },
+        "thread_id": "memory_thread_4bfe2ec3",
+        "recursion_limit": 200,
+        "step": 4,
+        "parents": {}
+    },
+    "2025-04-17T10:25:43.257752+00:00",
+    {
+        "configurable": {
+            "thread_id": "memory_thread_4bfe2ec3",
+            "checkpoint_ns": "",
+            "checkpoint_id": "1f01b765-14ca-64ee-8003-474ba674e3ef"
+        }
+    },
+    []
+]
