@@ -1,9 +1,5 @@
 [tool.poetry]
-name = "haive-dataflow"
-version = "0.1.0"
-description = "haive-dataflow for Haive framework"
-authors = ["pr1m8 <william.astley@algebraicwealth.com>"]
-license = "MIT"
+name = "haive-agents"
 readme = "README.md"
 
 [tool.poetry.dependencies]
