@@ -1,0 +1,29 @@
+23:16:00 [DEBUG] root: 📄 Logging to: logs/tests/tests/base/checkpointer/test_postgres_persistent_agent.log
+23:16:00 [DEBUG] haive_agents.simple.config: ✅ Engine validated successfully: id='0fe095e629da4f288fac418196cec89e' name='engine_5d9d61ae' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful assistant that remembers information. Always refer to previous messages when responding.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+23:16:00 [INFO] haive_core.engine.agent.persistence.postgres_config: Creating new PostgreSQL connection pool
+23:16:00 [INFO] haive_core.engine.agent.persistence.postgres_config: Successfully set up PostgreSQL tables
+23:16:00 [INFO] haive_core.engine.agent.agent: Using PostgreSQL checkpointer for postgres-test-agent
+23:16:00 [DEBUG] haive_agents.simple.agent: Setting up workflow for SimpleAgent postgres-test-agent
+23:16:00 [DEBUG] haive_agents.simple.agent: State schema: <class 'haive_core.schema.state_schema.Postgres_Test_AgentState'>
+23:16:00 [INFO] haive_core.graph.dynamic_graph_builder: Added node 'process' to graph
+23:16:00 [INFO] haive_core.graph.dynamic_graph_builder: Added edge from '__start__' to 'process'
+23:16:00 [INFO] haive_core.graph.dynamic_graph_builder: Set entry point to 'process'
+23:16:00 [DEBUG] haive_agents.simple.agent: Graph structure: START -> process -> END
+23:16:00 [INFO] haive_agents.simple.agent: Set up simple workflow for postgres-test-agent with node process
+23:16:00 [INFO] haive_core.engine.agent.agent: Workflow compiled successfully for postgres-test-agent
+23:16:00 [DEBUG] urllib3.connectionpool: Starting new HTTPS connection (1): mermaid.ink:443
+23:16:00 [DEBUG] urllib3.connectionpool: https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+23:16:00 [INFO] haive_core.engine.agent.agent: Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/postgres-test-agent_20250418_231600.png
+23:16:00 [DEBUG] haive_core.engine.agent.agent: psycopg_pool not available
+23:16:00 [DEBUG] haive_core.engine.agent.agent: No pool found but checkpointer has setup method
+23:16:00 [DEBUG] haive_core.engine.agent.agent: Threads table columns: ['thread_id', 'created_at', 'metadata']
+23:16:00 [INFO] haive_core.engine.agent.agent: Thread postgres-test-38d59f9b-d483-49ed-ad43-84f6038fb1fc registered in PostgreSQL
+23:16:00 [DEBUG] haive_core.engine.agent.agent: psycopg_pool not available
+23:16:00 [DEBUG] haive_core.engine.agent.agent: No pool found but checkpointer has setup method
+23:16:00 [DEBUG] haive_core.engine.agent.agent: Threads table columns: ['thread_id', 'created_at', 'metadata']
+23:16:00 [INFO] haive_core.engine.agent.agent: Thread postgres-test-38d59f9b-d483-49ed-ad43-84f6038fb1fc registered in PostgreSQL
+23:16:00 [DEBUG] haive_core.engine.agent.agent: Checking for previous state with thread_id: postgres-test-38d59f9b-d483-49ed-ad43-84f6038fb1fc
+23:16:00 [INFO] haive_core.engine.agent.agent: Found previous state for thread postgres-test-38d59f9b-d483-49ed-ad43-84f6038fb1fc
+23:16:00 [INFO] haive_core.engine.agent.agent: Running agent postgres-test-agent with thread_id: postgres-test-38d59f9b-d483-49ed-ad43-84f6038fb1fc
+23:16:00 [ERROR] haive_core.graph.node.factory: Error in node function: 'Postgres_Test_AgentState' object has no attribute 'items'
+23:16:00 [ERROR] haive_core.engine.agent.agent: Error running agent: Type is not msgpack serializable: function

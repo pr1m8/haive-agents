@@ -1,0 +1,1204 @@
+2025-04-18 22:11:26,013 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:12:42,978 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:13:31,028 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:14:59,746 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:15:52,564 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:16:15,882 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:16:58,856 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:18:52,092 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:18:57,431 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:19:48,637 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:20:32,651 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:21:13,754 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:21:38,273 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:22:31,379 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:25:49,062 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:27:55,560 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:29:36,609 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:29:57,259 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:30:11,378 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:30:16,574 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:31:38,461 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:32:12,405 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:32:12,406 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:32:12,407 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:32:47,284 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:32:47,597 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:32:47,597 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:33:08,853 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:33:08,855 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:33:08,855 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:33:36,783 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:33:36,784 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:33:36,784 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:34:00,667 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:34:00,668 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:34:00,668 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:34:28,936 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:34:28,937 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:34:28,938 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:38:10,828 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:38:10,829 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:38:10,829 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:38:22,124 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:38:22,451 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'error_handling'
+2025-04-18 22:38:22,452 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'persistence'
+2025-04-18 22:38:22,452 - haive_core.graph.graph_pattern_registry - INFO - Registered branch 'intent_router'
+2025-04-18 22:38:22,495 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.piping.pipe(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:38:22,495 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.rendering.render(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:38:22,496 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.unflattening.unflatten(['stagger', 'fanout', 'chain', 'encoding'])
+2025-04-18 22:38:22,496 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.viewing.view(['quiet'])
+2025-04-18 22:38:22,498 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.quote(['is_html_string', 'is_valid_id', 'dot_keywords', 'endswith_odd_number_of_backslashes', 'escape_unescaped_quotes'])
+2025-04-18 22:38:22,498 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.a_list(['kwargs', 'attributes'])
+2025-04-18 22:38:22,498 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.attr_list(['kwargs', 'attributes'])
+2025-04-18 22:38:22,499 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.clear(['keep_attrs'])
+2025-04-18 22:38:22,499 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.__iter__(['subgraph'])
+2025-04-18 22:38:22,499 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.node(['_attributes'])
+2025-04-18 22:38:22,499 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.edge(['_attributes'])
+2025-04-18 22:38:22,499 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.attr(['_attributes'])
+2025-04-18 22:38:22,499 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.subgraph(['name', 'comment', 'graph_attr', 'node_attr', 'edge_attr', 'body'])
+2025-04-18 22:38:22,500 - graphviz._tools - DEBUG - deprecate positional args: graphviz.piping.Pipe._pipe_legacy(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:38:22,500 - graphviz._tools - DEBUG - deprecate positional args: graphviz.saving.Save.save(['directory'])
+2025-04-18 22:38:22,501 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.render(['directory', 'view', 'cleanup', 'format', 'renderer', 'formatter', 'neato_no_op', 'quiet', 'quiet_view'])
+2025-04-18 22:38:22,501 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.view(['directory', 'cleanup', 'quiet', 'quiet_view'])
+2025-04-18 22:38:22,501 - graphviz._tools - DEBUG - deprecate positional args: graphviz.unflattening.Unflatten.unflatten(['stagger', 'fanout', 'chain'])
+2025-04-18 22:38:22,501 - graphviz._tools - DEBUG - deprecate positional args: graphviz.graphs.BaseGraph.__init__(['comment', 'filename', 'directory', 'format', 'engine', 'encoding', 'graph_attr', 'node_attr', 'edge_attr', 'body', 'strict'])
+2025-04-18 22:38:22,502 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.from_file(['directory', 'format', 'engine', 'encoding', 'renderer', 'formatter'])
+2025-04-18 22:38:22,502 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.__init__(['filename', 'directory', 'format', 'engine', 'encoding'])
+2025-04-18 22:38:22,502 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.save(['directory'])
+2025-04-18 22:38:22,555 - matplotlib - DEBUG - matplotlib data path: /home/will/Projects/haive/backend/haive/.venv/lib/python3.12/site-packages/matplotlib/mpl-data
+2025-04-18 22:38:22,559 - matplotlib - DEBUG - CONFIGDIR=/home/will/.config/matplotlib
+2025-04-18 22:38:22,560 - matplotlib - DEBUG - interactive is False
+2025-04-18 22:38:22,560 - matplotlib - DEBUG - platform is linux
+2025-04-18 22:38:22,602 - matplotlib - DEBUG - CACHEDIR=/home/will/.cache/matplotlib
+2025-04-18 22:38:22,604 - matplotlib.font_manager - DEBUG - Using fontManager instance from /home/will/.cache/matplotlib/fontlist-v390.json
+2025-04-18 22:38:27,761 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:38:27,762 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:38:27,762 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:38:56,134 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:38:56,135 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:38:56,136 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:39:19,596 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:39:19,597 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:39:19,597 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:39:38,623 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:39:38,624 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:39:38,624 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:39:43,106 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:39:43,400 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'error_handling'
+2025-04-18 22:39:43,400 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'persistence'
+2025-04-18 22:39:43,401 - haive_core.graph.graph_pattern_registry - INFO - Registered branch 'intent_router'
+2025-04-18 22:39:43,441 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.piping.pipe(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:39:43,442 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.rendering.render(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:39:43,442 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.unflattening.unflatten(['stagger', 'fanout', 'chain', 'encoding'])
+2025-04-18 22:39:43,442 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.viewing.view(['quiet'])
+2025-04-18 22:39:43,444 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.quote(['is_html_string', 'is_valid_id', 'dot_keywords', 'endswith_odd_number_of_backslashes', 'escape_unescaped_quotes'])
+2025-04-18 22:39:43,444 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.a_list(['kwargs', 'attributes'])
+2025-04-18 22:39:43,444 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.attr_list(['kwargs', 'attributes'])
+2025-04-18 22:39:43,444 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.clear(['keep_attrs'])
+2025-04-18 22:39:43,445 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.__iter__(['subgraph'])
+2025-04-18 22:39:43,445 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.node(['_attributes'])
+2025-04-18 22:39:43,445 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.edge(['_attributes'])
+2025-04-18 22:39:43,445 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.attr(['_attributes'])
+2025-04-18 22:39:43,445 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.subgraph(['name', 'comment', 'graph_attr', 'node_attr', 'edge_attr', 'body'])
+2025-04-18 22:39:43,446 - graphviz._tools - DEBUG - deprecate positional args: graphviz.piping.Pipe._pipe_legacy(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:39:43,446 - graphviz._tools - DEBUG - deprecate positional args: graphviz.saving.Save.save(['directory'])
+2025-04-18 22:39:43,446 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.render(['directory', 'view', 'cleanup', 'format', 'renderer', 'formatter', 'neato_no_op', 'quiet', 'quiet_view'])
+2025-04-18 22:39:43,446 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.view(['directory', 'cleanup', 'quiet', 'quiet_view'])
+2025-04-18 22:39:43,447 - graphviz._tools - DEBUG - deprecate positional args: graphviz.unflattening.Unflatten.unflatten(['stagger', 'fanout', 'chain'])
+2025-04-18 22:39:43,447 - graphviz._tools - DEBUG - deprecate positional args: graphviz.graphs.BaseGraph.__init__(['comment', 'filename', 'directory', 'format', 'engine', 'encoding', 'graph_attr', 'node_attr', 'edge_attr', 'body', 'strict'])
+2025-04-18 22:39:43,447 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.from_file(['directory', 'format', 'engine', 'encoding', 'renderer', 'formatter'])
+2025-04-18 22:39:43,448 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.__init__(['filename', 'directory', 'format', 'engine', 'encoding'])
+2025-04-18 22:39:43,448 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.save(['directory'])
+2025-04-18 22:39:43,495 - matplotlib - DEBUG - matplotlib data path: /home/will/Projects/haive/backend/haive/.venv/lib/python3.12/site-packages/matplotlib/mpl-data
+2025-04-18 22:39:43,499 - matplotlib - DEBUG - CONFIGDIR=/home/will/.config/matplotlib
+2025-04-18 22:39:43,500 - matplotlib - DEBUG - interactive is False
+2025-04-18 22:39:43,500 - matplotlib - DEBUG - platform is linux
+2025-04-18 22:39:43,541 - matplotlib - DEBUG - CACHEDIR=/home/will/.cache/matplotlib
+2025-04-18 22:39:43,542 - matplotlib.font_manager - DEBUG - Using fontManager instance from /home/will/.cache/matplotlib/fontlist-v390.json
+2025-04-18 22:39:44,058 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='7d19449503ef44d8b26946c236e97ca2' name='engine_87bf148e' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a test assistant' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:39:44,060 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-postgres-agent
+2025-04-18 22:39:44,060 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:39:44,061 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:39:44,061 - haive_agents.simple.agent - INFO - Set up simple workflow for test-postgres-agent with node process
+2025-04-18 22:39:44,063 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-postgres-agent
+2025-04-18 22:39:44,072 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:39:44,169 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:39:44,170 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-postgres-agent_20250418_223944.png
+2025-04-18 22:39:44,170 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:39:44,170 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:39:44,170 - haive_core.engine.agent.agent - WARNING - Error registering thread: 'MockCursor' object has no attribute 'fetchall'
+2025-04-18 22:39:44,170 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:39:44,171 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:39:44,171 - haive_core.engine.agent.agent - WARNING - Error registering thread: 'MockCursor' object has no attribute 'fetchall'
+2025-04-18 22:39:44,171 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 8c46ba2a-1625-4417-9049-f89ba660ebcb
+2025-04-18 22:39:44,171 - haive_core.engine.agent.agent - DEBUG - No previous state found or error retrieving: 'MockPostgresSaver' object has no attribute 'get_tuple'
+2025-04-18 22:39:44,171 - haive_core.engine.agent.agent - INFO - Running agent test-postgres-agent with thread_id: 8c46ba2a-1625-4417-9049-f89ba660ebcb
+2025-04-18 22:39:44,172 - haive_core.engine.agent.agent - ERROR - Error running agent: 'MockPostgresSaver' object has no attribute 'get_next_version'
+2025-04-18 22:40:18,282 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:40:18,283 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:40:18,283 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:40:20,953 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:40:21,293 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'error_handling'
+2025-04-18 22:40:21,293 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'persistence'
+2025-04-18 22:40:21,293 - haive_core.graph.graph_pattern_registry - INFO - Registered branch 'intent_router'
+2025-04-18 22:40:21,338 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.piping.pipe(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:40:21,339 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.rendering.render(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:40:21,339 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.unflattening.unflatten(['stagger', 'fanout', 'chain', 'encoding'])
+2025-04-18 22:40:21,339 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.viewing.view(['quiet'])
+2025-04-18 22:40:21,341 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.quote(['is_html_string', 'is_valid_id', 'dot_keywords', 'endswith_odd_number_of_backslashes', 'escape_unescaped_quotes'])
+2025-04-18 22:40:21,342 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.a_list(['kwargs', 'attributes'])
+2025-04-18 22:40:21,342 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.attr_list(['kwargs', 'attributes'])
+2025-04-18 22:40:21,342 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.clear(['keep_attrs'])
+2025-04-18 22:40:21,342 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.__iter__(['subgraph'])
+2025-04-18 22:40:21,342 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.node(['_attributes'])
+2025-04-18 22:40:21,342 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.edge(['_attributes'])
+2025-04-18 22:40:21,342 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.attr(['_attributes'])
+2025-04-18 22:40:21,343 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.subgraph(['name', 'comment', 'graph_attr', 'node_attr', 'edge_attr', 'body'])
+2025-04-18 22:40:21,343 - graphviz._tools - DEBUG - deprecate positional args: graphviz.piping.Pipe._pipe_legacy(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:40:21,344 - graphviz._tools - DEBUG - deprecate positional args: graphviz.saving.Save.save(['directory'])
+2025-04-18 22:40:21,344 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.render(['directory', 'view', 'cleanup', 'format', 'renderer', 'formatter', 'neato_no_op', 'quiet', 'quiet_view'])
+2025-04-18 22:40:21,344 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.view(['directory', 'cleanup', 'quiet', 'quiet_view'])
+2025-04-18 22:40:21,345 - graphviz._tools - DEBUG - deprecate positional args: graphviz.unflattening.Unflatten.unflatten(['stagger', 'fanout', 'chain'])
+2025-04-18 22:40:21,345 - graphviz._tools - DEBUG - deprecate positional args: graphviz.graphs.BaseGraph.__init__(['comment', 'filename', 'directory', 'format', 'engine', 'encoding', 'graph_attr', 'node_attr', 'edge_attr', 'body', 'strict'])
+2025-04-18 22:40:21,345 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.from_file(['directory', 'format', 'engine', 'encoding', 'renderer', 'formatter'])
+2025-04-18 22:40:21,346 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.__init__(['filename', 'directory', 'format', 'engine', 'encoding'])
+2025-04-18 22:40:21,346 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.save(['directory'])
+2025-04-18 22:40:21,405 - matplotlib - DEBUG - matplotlib data path: /home/will/Projects/haive/backend/haive/.venv/lib/python3.12/site-packages/matplotlib/mpl-data
+2025-04-18 22:40:21,411 - matplotlib - DEBUG - CONFIGDIR=/home/will/.config/matplotlib
+2025-04-18 22:40:21,412 - matplotlib - DEBUG - interactive is False
+2025-04-18 22:40:21,412 - matplotlib - DEBUG - platform is linux
+2025-04-18 22:40:21,457 - matplotlib - DEBUG - CACHEDIR=/home/will/.cache/matplotlib
+2025-04-18 22:40:21,459 - matplotlib.font_manager - DEBUG - Using fontManager instance from /home/will/.cache/matplotlib/fontlist-v390.json
+2025-04-18 22:40:22,068 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='c9c82ddf8bf3426eaed328a3b83529ca' name='engine_c2291437' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a test assistant' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:40:22,071 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-postgres-agent
+2025-04-18 22:40:22,072 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:40:22,072 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:40:22,072 - haive_agents.simple.agent - INFO - Set up simple workflow for test-postgres-agent with node process
+2025-04-18 22:40:22,074 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-postgres-agent
+2025-04-18 22:40:22,083 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:40:22,193 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:40:22,194 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-postgres-agent_20250418_224022.png
+2025-04-18 22:40:22,195 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:40:22,195 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:40:22,195 - haive_core.engine.agent.agent - DEBUG - Threads table columns: []
+2025-04-18 22:40:22,195 - haive_core.engine.agent.agent - INFO - Thread 82b50e68-d4ac-404e-9035-dbd89c21907c registered in PostgreSQL
+2025-04-18 22:40:22,195 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:40:22,196 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:40:22,196 - haive_core.engine.agent.agent - DEBUG - Threads table columns: []
+2025-04-18 22:40:22,196 - haive_core.engine.agent.agent - INFO - Thread 82b50e68-d4ac-404e-9035-dbd89c21907c registered in PostgreSQL
+2025-04-18 22:40:22,196 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 82b50e68-d4ac-404e-9035-dbd89c21907c
+2025-04-18 22:40:22,196 - haive_core.engine.agent.agent - DEBUG - No previous state found or error retrieving: MockPostgresSaver.get_tuple() missing 1 required positional argument: 'config'
+2025-04-18 22:40:22,196 - haive_core.engine.agent.agent - INFO - Running agent test-postgres-agent with thread_id: 82b50e68-d4ac-404e-9035-dbd89c21907c
+2025-04-18 22:40:22,197 - haive_core.engine.agent.agent - ERROR - Error running agent: 'MockPostgresSaver' object has no attribute 'put_writes'
+2025-04-18 22:40:31,960 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:40:31,961 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:40:31,961 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:40:53,581 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:40:53,582 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:40:53,582 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:41:39,502 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:41:39,503 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:41:39,504 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:42:01,002 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:42:01,003 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:42:01,003 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:42:37,156 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:42:37,448 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'error_handling'
+2025-04-18 22:42:37,448 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'persistence'
+2025-04-18 22:42:37,448 - haive_core.graph.graph_pattern_registry - INFO - Registered branch 'intent_router'
+2025-04-18 22:42:37,490 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.piping.pipe(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:42:37,491 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.rendering.render(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:42:37,491 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.unflattening.unflatten(['stagger', 'fanout', 'chain', 'encoding'])
+2025-04-18 22:42:37,492 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.viewing.view(['quiet'])
+2025-04-18 22:42:37,493 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.quote(['is_html_string', 'is_valid_id', 'dot_keywords', 'endswith_odd_number_of_backslashes', 'escape_unescaped_quotes'])
+2025-04-18 22:42:37,493 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.a_list(['kwargs', 'attributes'])
+2025-04-18 22:42:37,494 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.attr_list(['kwargs', 'attributes'])
+2025-04-18 22:42:37,494 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.clear(['keep_attrs'])
+2025-04-18 22:42:37,494 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.__iter__(['subgraph'])
+2025-04-18 22:42:37,494 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.node(['_attributes'])
+2025-04-18 22:42:37,494 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.edge(['_attributes'])
+2025-04-18 22:42:37,494 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.attr(['_attributes'])
+2025-04-18 22:42:37,494 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.subgraph(['name', 'comment', 'graph_attr', 'node_attr', 'edge_attr', 'body'])
+2025-04-18 22:42:37,495 - graphviz._tools - DEBUG - deprecate positional args: graphviz.piping.Pipe._pipe_legacy(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:42:37,495 - graphviz._tools - DEBUG - deprecate positional args: graphviz.saving.Save.save(['directory'])
+2025-04-18 22:42:37,496 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.render(['directory', 'view', 'cleanup', 'format', 'renderer', 'formatter', 'neato_no_op', 'quiet', 'quiet_view'])
+2025-04-18 22:42:37,496 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.view(['directory', 'cleanup', 'quiet', 'quiet_view'])
+2025-04-18 22:42:37,496 - graphviz._tools - DEBUG - deprecate positional args: graphviz.unflattening.Unflatten.unflatten(['stagger', 'fanout', 'chain'])
+2025-04-18 22:42:37,496 - graphviz._tools - DEBUG - deprecate positional args: graphviz.graphs.BaseGraph.__init__(['comment', 'filename', 'directory', 'format', 'engine', 'encoding', 'graph_attr', 'node_attr', 'edge_attr', 'body', 'strict'])
+2025-04-18 22:42:37,497 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.from_file(['directory', 'format', 'engine', 'encoding', 'renderer', 'formatter'])
+2025-04-18 22:42:37,497 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.__init__(['filename', 'directory', 'format', 'engine', 'encoding'])
+2025-04-18 22:42:37,497 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.save(['directory'])
+2025-04-18 22:42:37,546 - matplotlib - DEBUG - matplotlib data path: /home/will/Projects/haive/backend/haive/.venv/lib/python3.12/site-packages/matplotlib/mpl-data
+2025-04-18 22:42:37,550 - matplotlib - DEBUG - CONFIGDIR=/home/will/.config/matplotlib
+2025-04-18 22:42:37,551 - matplotlib - DEBUG - interactive is False
+2025-04-18 22:42:37,551 - matplotlib - DEBUG - platform is linux
+2025-04-18 22:42:37,591 - matplotlib - DEBUG - CACHEDIR=/home/will/.cache/matplotlib
+2025-04-18 22:42:37,592 - matplotlib.font_manager - DEBUG - Using fontManager instance from /home/will/.cache/matplotlib/fontlist-v390.json
+2025-04-18 22:42:38,084 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='797be53369784102aee333bc460d03f6' name='engine_d29c0a5a' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a test assistant' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:42:38,084 - haive_core.engine.agent.agent - INFO - No persistence config for test-postgres-agent. Using memory checkpointer.
+2025-04-18 22:42:38,165 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-postgres-agent
+2025-04-18 22:42:38,166 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:42:38,166 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:42:38,166 - haive_agents.simple.agent - INFO - Set up simple workflow for test-postgres-agent with node process
+2025-04-18 22:42:38,168 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-postgres-agent
+2025-04-18 22:42:38,177 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:42:38,272 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:42:38,273 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-postgres-agent_20250418_224238.png
+2025-04-18 22:42:38,273 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: e61f6876-126a-49e0-a6f0-2a386f94e960
+2025-04-18 22:42:38,273 - haive_core.engine.agent.agent - INFO - Found previous state for thread e61f6876-126a-49e0-a6f0-2a386f94e960
+2025-04-18 22:42:38,273 - haive_core.engine.agent.agent - INFO - Running agent test-postgres-agent with thread_id: e61f6876-126a-49e0-a6f0-2a386f94e960
+2025-04-18 22:42:38,274 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-postgres-agent_20250418_224238.json
+2025-04-18 22:42:43,530 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:42:43,531 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:42:43,532 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:43:59,546 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:43:59,547 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:43:59,548 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:45:09,070 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:45:09,083 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'error_handling'
+2025-04-18 22:45:09,083 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'persistence'
+2025-04-18 22:45:09,083 - haive_core.graph.graph_pattern_registry - INFO - Registered branch 'intent_router'
+2025-04-18 22:45:09,132 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.piping.pipe(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:45:09,132 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.rendering.render(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:45:09,133 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.unflattening.unflatten(['stagger', 'fanout', 'chain', 'encoding'])
+2025-04-18 22:45:09,133 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.viewing.view(['quiet'])
+2025-04-18 22:45:09,135 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.quote(['is_html_string', 'is_valid_id', 'dot_keywords', 'endswith_odd_number_of_backslashes', 'escape_unescaped_quotes'])
+2025-04-18 22:45:09,135 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.a_list(['kwargs', 'attributes'])
+2025-04-18 22:45:09,135 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.attr_list(['kwargs', 'attributes'])
+2025-04-18 22:45:09,135 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.clear(['keep_attrs'])
+2025-04-18 22:45:09,135 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.__iter__(['subgraph'])
+2025-04-18 22:45:09,136 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.node(['_attributes'])
+2025-04-18 22:45:09,136 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.edge(['_attributes'])
+2025-04-18 22:45:09,136 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.attr(['_attributes'])
+2025-04-18 22:45:09,136 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.subgraph(['name', 'comment', 'graph_attr', 'node_attr', 'edge_attr', 'body'])
+2025-04-18 22:45:09,137 - graphviz._tools - DEBUG - deprecate positional args: graphviz.piping.Pipe._pipe_legacy(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:45:09,137 - graphviz._tools - DEBUG - deprecate positional args: graphviz.saving.Save.save(['directory'])
+2025-04-18 22:45:09,137 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.render(['directory', 'view', 'cleanup', 'format', 'renderer', 'formatter', 'neato_no_op', 'quiet', 'quiet_view'])
+2025-04-18 22:45:09,137 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.view(['directory', 'cleanup', 'quiet', 'quiet_view'])
+2025-04-18 22:45:09,138 - graphviz._tools - DEBUG - deprecate positional args: graphviz.unflattening.Unflatten.unflatten(['stagger', 'fanout', 'chain'])
+2025-04-18 22:45:09,138 - graphviz._tools - DEBUG - deprecate positional args: graphviz.graphs.BaseGraph.__init__(['comment', 'filename', 'directory', 'format', 'engine', 'encoding', 'graph_attr', 'node_attr', 'edge_attr', 'body', 'strict'])
+2025-04-18 22:45:09,139 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.from_file(['directory', 'format', 'engine', 'encoding', 'renderer', 'formatter'])
+2025-04-18 22:45:09,139 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.__init__(['filename', 'directory', 'format', 'engine', 'encoding'])
+2025-04-18 22:45:09,139 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.save(['directory'])
+2025-04-18 22:45:09,190 - matplotlib - DEBUG - matplotlib data path: /home/will/Projects/haive/backend/haive/.venv/lib/python3.12/site-packages/matplotlib/mpl-data
+2025-04-18 22:45:09,194 - matplotlib - DEBUG - CONFIGDIR=/home/will/.config/matplotlib
+2025-04-18 22:45:09,195 - matplotlib - DEBUG - interactive is False
+2025-04-18 22:45:09,195 - matplotlib - DEBUG - platform is linux
+2025-04-18 22:45:10,122 - matplotlib - DEBUG - CACHEDIR=/home/will/.cache/matplotlib
+2025-04-18 22:45:11,126 - matplotlib.font_manager - DEBUG - Using fontManager instance from /home/will/.cache/matplotlib/fontlist-v390.json
+2025-04-18 22:45:11,801 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='47039aaa62bb41e4807ad86286d844e5' name='engine_5e4c7c91' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:45:11,801 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:45:11,813 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:45:11,813 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:45:11,895 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:45:11,897 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:45:11,897 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:45:11,897 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:45:11,898 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:45:11,909 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:45:12,006 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:45:12,006 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_224511.png
+2025-04-18 22:45:12,007 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:45:12,007 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:45:12,014 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:45:12,016 - haive_core.engine.agent.agent - INFO - Thread b3f2a154-ac5c-4ef1-b621-2f70aa26e766 registered in PostgreSQL
+2025-04-18 22:45:12,016 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:45:12,017 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:45:12,018 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:45:12,018 - haive_core.engine.agent.agent - INFO - Thread b3f2a154-ac5c-4ef1-b621-2f70aa26e766 registered in PostgreSQL
+2025-04-18 22:45:12,018 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: b3f2a154-ac5c-4ef1-b621-2f70aa26e766
+2025-04-18 22:45:12,021 - haive_core.engine.agent.agent - INFO - Found previous state for thread b3f2a154-ac5c-4ef1-b621-2f70aa26e766
+2025-04-18 22:45:12,021 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: b3f2a154-ac5c-4ef1-b621-2f70aa26e766
+2025-04-18 22:45:12,024 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_224511.json
+2025-04-18 22:45:22,449 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:45:22,450 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='120802dcae5a4571b37f584ea2e0a6d8' name='engine_255ff1a5' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:45:22,450 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:45:22,463 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:45:22,464 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:45:22,543 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:45:22,544 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:45:22,544 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:45:22,544 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:45:22,545 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:45:22,555 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:45:22,648 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:45:22,649 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_224522.png
+2025-04-18 22:45:22,649 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:45:22,649 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:45:22,655 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:45:22,657 - haive_core.engine.agent.agent - INFO - Thread 9ebdeb21-3d29-4ea7-ba4b-b9c6c606f1e4 registered in PostgreSQL
+2025-04-18 22:45:22,658 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:45:22,658 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:45:22,659 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:45:22,659 - haive_core.engine.agent.agent - INFO - Thread 9ebdeb21-3d29-4ea7-ba4b-b9c6c606f1e4 registered in PostgreSQL
+2025-04-18 22:45:22,659 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 9ebdeb21-3d29-4ea7-ba4b-b9c6c606f1e4
+2025-04-18 22:45:22,662 - haive_core.engine.agent.agent - INFO - Found previous state for thread 9ebdeb21-3d29-4ea7-ba4b-b9c6c606f1e4
+2025-04-18 22:45:22,663 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 9ebdeb21-3d29-4ea7-ba4b-b9c6c606f1e4
+2025-04-18 22:45:22,664 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_224522.json
+2025-04-18 22:46:31,058 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:46:31,059 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='834df23b5b8f4cce9c042a63f30d6c68' name='engine_ffb7ed89' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:46:31,059 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:46:31,071 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:46:31,071 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:46:31,151 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:46:31,153 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:46:31,153 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:46:31,153 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:46:31,154 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:46:31,164 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:46:31,260 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:46:31,261 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_224631.png
+2025-04-18 22:46:31,262 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:46:31,262 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:46:31,268 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:46:31,270 - haive_core.engine.agent.agent - INFO - Thread 0bb1b584-3e33-43a1-aa26-8d53b8085f34 registered in PostgreSQL
+2025-04-18 22:46:31,271 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:46:31,271 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:46:31,272 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:46:31,272 - haive_core.engine.agent.agent - INFO - Thread 0bb1b584-3e33-43a1-aa26-8d53b8085f34 registered in PostgreSQL
+2025-04-18 22:46:31,273 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 0bb1b584-3e33-43a1-aa26-8d53b8085f34
+2025-04-18 22:46:31,275 - haive_core.engine.agent.agent - INFO - Found previous state for thread 0bb1b584-3e33-43a1-aa26-8d53b8085f34
+2025-04-18 22:46:31,275 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 0bb1b584-3e33-43a1-aa26-8d53b8085f34
+2025-04-18 22:46:31,278 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_224631.json
+2025-04-18 22:46:58,140 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:46:58,141 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='cd4717bf690041989a1625433c7bd748' name='engine_9078ca04' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:46:58,141 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:46:58,153 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:46:58,153 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:46:58,380 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:46:58,381 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:46:58,381 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:46:58,381 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:46:58,383 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:46:58,391 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:46:58,487 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:46:58,488 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_224658.png
+2025-04-18 22:46:58,489 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:46:58,489 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:46:58,496 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:46:58,499 - haive_core.engine.agent.agent - INFO - Thread c32691b3-208f-42e5-a940-ee7ce9a4d396 registered in PostgreSQL
+2025-04-18 22:46:58,500 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:46:58,500 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:46:58,501 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:46:58,502 - haive_core.engine.agent.agent - INFO - Thread c32691b3-208f-42e5-a940-ee7ce9a4d396 registered in PostgreSQL
+2025-04-18 22:46:58,502 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: c32691b3-208f-42e5-a940-ee7ce9a4d396
+2025-04-18 22:46:58,505 - haive_core.engine.agent.agent - INFO - Found previous state for thread c32691b3-208f-42e5-a940-ee7ce9a4d396
+2025-04-18 22:46:58,505 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: c32691b3-208f-42e5-a940-ee7ce9a4d396
+2025-04-18 22:46:58,508 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_224658.json
+2025-04-18 22:47:14,187 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:47:14,188 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='d27ed320a9f84395bcc7e1cf4a8f1b7c' name='engine_791ec4ad' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:47:14,188 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:47:14,199 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:47:14,199 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:47:14,280 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:47:14,282 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:47:14,282 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:47:14,282 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:47:14,283 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:47:14,292 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:47:14,386 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:47:14,386 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_224714.png
+2025-04-18 22:47:14,387 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:47:14,387 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:47:14,393 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:47:14,395 - haive_core.engine.agent.agent - INFO - Thread 10b53d40-df05-4312-aead-5eb18b843e37 registered in PostgreSQL
+2025-04-18 22:47:14,396 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:47:14,396 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:47:14,397 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:47:14,397 - haive_core.engine.agent.agent - INFO - Thread 10b53d40-df05-4312-aead-5eb18b843e37 registered in PostgreSQL
+2025-04-18 22:47:14,397 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 10b53d40-df05-4312-aead-5eb18b843e37
+2025-04-18 22:47:14,400 - haive_core.engine.agent.agent - INFO - Found previous state for thread 10b53d40-df05-4312-aead-5eb18b843e37
+2025-04-18 22:47:14,400 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 10b53d40-df05-4312-aead-5eb18b843e37
+2025-04-18 22:47:14,402 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_224714.json
+2025-04-18 22:47:22,380 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:47:22,393 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'error_handling'
+2025-04-18 22:47:22,394 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'persistence'
+2025-04-18 22:47:22,394 - haive_core.graph.graph_pattern_registry - INFO - Registered branch 'intent_router'
+2025-04-18 22:47:22,442 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.piping.pipe(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:47:22,442 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.rendering.render(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:47:22,443 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.unflattening.unflatten(['stagger', 'fanout', 'chain', 'encoding'])
+2025-04-18 22:47:22,443 - graphviz._tools - DEBUG - deprecate positional args: graphviz.backend.viewing.view(['quiet'])
+2025-04-18 22:47:22,445 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.quote(['is_html_string', 'is_valid_id', 'dot_keywords', 'endswith_odd_number_of_backslashes', 'escape_unescaped_quotes'])
+2025-04-18 22:47:22,445 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.a_list(['kwargs', 'attributes'])
+2025-04-18 22:47:22,445 - graphviz._tools - DEBUG - deprecate positional args: graphviz.quoting.attr_list(['kwargs', 'attributes'])
+2025-04-18 22:47:22,445 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.clear(['keep_attrs'])
+2025-04-18 22:47:22,446 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.__iter__(['subgraph'])
+2025-04-18 22:47:22,446 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.node(['_attributes'])
+2025-04-18 22:47:22,446 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.edge(['_attributes'])
+2025-04-18 22:47:22,446 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.attr(['_attributes'])
+2025-04-18 22:47:22,446 - graphviz._tools - DEBUG - deprecate positional args: graphviz.dot.Dot.subgraph(['name', 'comment', 'graph_attr', 'node_attr', 'edge_attr', 'body'])
+2025-04-18 22:47:22,447 - graphviz._tools - DEBUG - deprecate positional args: graphviz.piping.Pipe._pipe_legacy(['renderer', 'formatter', 'neato_no_op', 'quiet'])
+2025-04-18 22:47:22,447 - graphviz._tools - DEBUG - deprecate positional args: graphviz.saving.Save.save(['directory'])
+2025-04-18 22:47:22,447 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.render(['directory', 'view', 'cleanup', 'format', 'renderer', 'formatter', 'neato_no_op', 'quiet', 'quiet_view'])
+2025-04-18 22:47:22,447 - graphviz._tools - DEBUG - deprecate positional args: graphviz.rendering.Render.view(['directory', 'cleanup', 'quiet', 'quiet_view'])
+2025-04-18 22:47:22,448 - graphviz._tools - DEBUG - deprecate positional args: graphviz.unflattening.Unflatten.unflatten(['stagger', 'fanout', 'chain'])
+2025-04-18 22:47:22,448 - graphviz._tools - DEBUG - deprecate positional args: graphviz.graphs.BaseGraph.__init__(['comment', 'filename', 'directory', 'format', 'engine', 'encoding', 'graph_attr', 'node_attr', 'edge_attr', 'body', 'strict'])
+2025-04-18 22:47:22,448 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.from_file(['directory', 'format', 'engine', 'encoding', 'renderer', 'formatter'])
+2025-04-18 22:47:22,449 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.__init__(['filename', 'directory', 'format', 'engine', 'encoding'])
+2025-04-18 22:47:22,449 - graphviz._tools - DEBUG - deprecate positional args: graphviz.sources.Source.save(['directory'])
+2025-04-18 22:47:22,501 - matplotlib - DEBUG - matplotlib data path: /home/will/Projects/haive/backend/haive/.venv/lib/python3.12/site-packages/matplotlib/mpl-data
+2025-04-18 22:47:22,505 - matplotlib - DEBUG - CONFIGDIR=/home/will/.config/matplotlib
+2025-04-18 22:47:22,505 - matplotlib - DEBUG - interactive is False
+2025-04-18 22:47:22,506 - matplotlib - DEBUG - platform is linux
+2025-04-18 22:47:22,661 - matplotlib - DEBUG - CACHEDIR=/home/will/.cache/matplotlib
+2025-04-18 22:47:22,662 - matplotlib.font_manager - DEBUG - Using fontManager instance from /home/will/.cache/matplotlib/fontlist-v390.json
+2025-04-18 22:47:23,339 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='9a3c4d93381742b28f294af027f29b22' name='engine_84737eb4' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:47:23,340 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:47:23,351 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:47:23,351 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:47:23,431 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:47:23,432 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:47:23,432 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:47:23,432 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:47:23,434 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:47:23,443 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:47:23,538 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:47:23,538 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_224723.png
+2025-04-18 22:47:23,539 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:47:23,539 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:47:23,546 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:47:23,547 - haive_core.engine.agent.agent - INFO - Thread ee6e57da-f4f5-43c5-a1ba-79529f08a61d registered in PostgreSQL
+2025-04-18 22:47:23,548 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:47:23,548 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:47:23,549 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:47:23,549 - haive_core.engine.agent.agent - INFO - Thread ee6e57da-f4f5-43c5-a1ba-79529f08a61d registered in PostgreSQL
+2025-04-18 22:47:23,549 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: ee6e57da-f4f5-43c5-a1ba-79529f08a61d
+2025-04-18 22:47:23,552 - haive_core.engine.agent.agent - INFO - Found previous state for thread ee6e57da-f4f5-43c5-a1ba-79529f08a61d
+2025-04-18 22:47:23,552 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: ee6e57da-f4f5-43c5-a1ba-79529f08a61d
+2025-04-18 22:47:23,555 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_224723.json
+2025-04-18 22:48:23,900 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:48:23,901 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='590cffdd8b834f43b46a49f2862a1c2c' name='engine_ceea3021' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:48:23,901 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:48:23,912 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:48:23,912 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:48:24,125 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:48:24,126 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:48:24,126 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:48:24,126 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:48:24,127 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:48:24,135 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:48:24,245 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:48:24,245 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_224824.png
+2025-04-18 22:48:24,246 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:48:24,246 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:48:24,252 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:48:24,253 - haive_core.engine.agent.agent - INFO - Thread 324d3117-7450-4e70-bc76-4ef2bb25e947 registered in PostgreSQL
+2025-04-18 22:48:24,254 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:48:24,254 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:48:24,254 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:48:24,255 - haive_core.engine.agent.agent - INFO - Thread 324d3117-7450-4e70-bc76-4ef2bb25e947 registered in PostgreSQL
+2025-04-18 22:48:24,255 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 324d3117-7450-4e70-bc76-4ef2bb25e947
+2025-04-18 22:48:24,258 - haive_core.engine.agent.agent - INFO - Found previous state for thread 324d3117-7450-4e70-bc76-4ef2bb25e947
+2025-04-18 22:48:24,258 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 324d3117-7450-4e70-bc76-4ef2bb25e947
+2025-04-18 22:48:24,259 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_224824.json
+2025-04-18 22:49:26,718 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:49:26,718 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='2043b030da3344668ac074504ca64e76' name='engine_53d03bac' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:49:26,719 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:49:26,730 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:49:26,730 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:49:26,809 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:49:26,810 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:49:26,811 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:49:26,811 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:49:26,812 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:49:26,822 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:49:26,985 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:49:26,986 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_224926.png
+2025-04-18 22:49:26,986 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:49:26,987 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:49:26,993 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:49:26,994 - haive_core.engine.agent.agent - INFO - Thread db4837d1-245a-40d0-9154-4ffecf86304c registered in PostgreSQL
+2025-04-18 22:49:26,995 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:49:26,995 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:49:26,996 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:49:26,996 - haive_core.engine.agent.agent - INFO - Thread db4837d1-245a-40d0-9154-4ffecf86304c registered in PostgreSQL
+2025-04-18 22:49:26,996 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: db4837d1-245a-40d0-9154-4ffecf86304c
+2025-04-18 22:49:26,999 - haive_core.engine.agent.agent - INFO - Found previous state for thread db4837d1-245a-40d0-9154-4ffecf86304c
+2025-04-18 22:49:26,999 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: db4837d1-245a-40d0-9154-4ffecf86304c
+2025-04-18 22:49:27,001 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_224926.json
+2025-04-18 22:50:41,289 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:50:41,290 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='d0a9bb1c490d47f98a2b50f97ff739ad' name='engine_2a364c79' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:50:41,290 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:50:41,301 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:50:41,301 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:50:41,382 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:50:41,385 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:50:41,385 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:50:41,385 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:50:41,386 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:50:41,396 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:50:41,499 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:50:41,500 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225041.png
+2025-04-18 22:50:41,500 - root - INFO - Running agent with real API calls
+2025-04-18 22:50:41,500 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:50:41,500 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:50:41,506 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:50:41,508 - haive_core.engine.agent.agent - INFO - Thread test-thread-e255dc2f-00f9-44cf-b4fe-f74741c2ef72 registered in PostgreSQL
+2025-04-18 22:50:41,508 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:50:41,508 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:50:41,509 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:50:41,509 - haive_core.engine.agent.agent - INFO - Thread test-thread-e255dc2f-00f9-44cf-b4fe-f74741c2ef72 registered in PostgreSQL
+2025-04-18 22:50:41,509 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-e255dc2f-00f9-44cf-b4fe-f74741c2ef72
+2025-04-18 22:50:41,512 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-e255dc2f-00f9-44cf-b4fe-f74741c2ef72
+2025-04-18 22:50:41,512 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-e255dc2f-00f9-44cf-b4fe-f74741c2ef72
+2025-04-18 22:50:41,518 - haive_core.graph.node.factory - ERROR - Error in node function: 'Test_AgentState' object has no attribute 'items'
+2025-04-18 22:50:41,527 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:50:41,527 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 22:51:49,416 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:51:49,417 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='c73482c8225640948c645e940dd8f55d' name='engine_54149fff' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:51:49,417 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:51:49,429 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:51:49,430 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:51:49,512 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:51:49,513 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:51:49,513 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:51:49,513 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:51:49,514 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:51:49,524 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:51:49,623 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:51:49,624 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225149.png
+2025-04-18 22:51:49,624 - root - INFO - Running agent with real API calls
+2025-04-18 22:51:49,625 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:51:49,625 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:51:49,631 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:51:49,633 - haive_core.engine.agent.agent - INFO - Thread test-thread-95236cd9-4237-4f6f-b9ca-2caf8d00c140 registered in PostgreSQL
+2025-04-18 22:51:49,633 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:51:49,633 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:51:49,634 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:51:49,634 - haive_core.engine.agent.agent - INFO - Thread test-thread-95236cd9-4237-4f6f-b9ca-2caf8d00c140 registered in PostgreSQL
+2025-04-18 22:51:49,635 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-95236cd9-4237-4f6f-b9ca-2caf8d00c140
+2025-04-18 22:51:49,637 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-95236cd9-4237-4f6f-b9ca-2caf8d00c140
+2025-04-18 22:51:49,637 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-95236cd9-4237-4f6f-b9ca-2caf8d00c140
+2025-04-18 22:51:49,644 - haive_core.graph.node.factory - ERROR - Error in node function: 'Test_AgentState' object has no attribute 'items'
+2025-04-18 22:51:49,654 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:51:49,654 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 22:53:47,514 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:53:47,514 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='fd1745cb970b41d580a753b047f2fe12' name='engine_ae7ad363' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:53:47,515 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:53:47,526 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:53:47,527 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:53:47,606 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:53:47,607 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:53:47,607 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:53:47,607 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:53:47,608 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:53:47,617 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:53:47,711 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:53:47,712 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225347.png
+2025-04-18 22:53:47,712 - root - INFO - Running agent with real API calls
+2025-04-18 22:53:47,712 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:53:47,712 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:53:47,718 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:53:47,720 - haive_core.engine.agent.agent - INFO - Thread test-thread-5216ea48-a660-467f-883d-e636148c321f registered in PostgreSQL
+2025-04-18 22:53:47,720 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:53:47,720 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:53:47,721 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:53:47,721 - haive_core.engine.agent.agent - INFO - Thread test-thread-5216ea48-a660-467f-883d-e636148c321f registered in PostgreSQL
+2025-04-18 22:53:47,722 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-5216ea48-a660-467f-883d-e636148c321f
+2025-04-18 22:53:47,724 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-5216ea48-a660-467f-883d-e636148c321f
+2025-04-18 22:53:47,724 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-5216ea48-a660-467f-883d-e636148c321f
+2025-04-18 22:53:47,787 - openai._base_client - DEBUG - Request options: {'method': 'post', 'url': '/chat/completions', 'headers': {'api-key': '<redacted>'}, 'files': None, 'json_data': {'messages': [{'content': 'You are a helpful test assistant.', 'role': 'system'}], 'model': None, 'stream': False}}
+2025-04-18 22:53:47,788 - openai._base_client - DEBUG - Sending HTTP Request: POST https://awt-gpt.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview
+2025-04-18 22:53:47,789 - httpcore.connection - DEBUG - connect_tcp.started host='awt-gpt.openai.azure.com' port=443 local_address=None timeout=None socket_options=None
+2025-04-18 22:53:47,990 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f4765e825a0>
+2025-04-18 22:53:47,991 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x7f4765e1ead0> server_hostname='awt-gpt.openai.azure.com' timeout=None
+2025-04-18 22:53:48,060 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f4765f6b650>
+2025-04-18 22:53:48,061 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-04-18 22:53:48,061 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-04-18 22:53:48,061 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-04-18 22:53:48,061 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-04-18 22:53:48,061 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-04-18 22:53:48,359 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Length', b'900'), (b'Content-Type', b'application/json'), (b'apim-request-id', b'81bf271e-25dc-40a6-8091-5767f1fedfeb'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'x-content-type-options', b'nosniff'), (b'x-ms-region', b'East US'), (b'x-ratelimit-remaining-requests', b'149'), (b'x-ratelimit-limit-requests', b'150'), (b'x-ratelimit-remaining-tokens', b'149351'), (b'x-ratelimit-limit-tokens', b'150000'), (b'cmp-upstream-response-duration', b'220'), (b'x-accel-buffering', b'no'), (b'x-aml-cluster', b'hyena-eastus-02'), (b'x-envoy-upstream-service-time', b'263'), (b'x-ms-rai-invoked', b'true'), (b'x-request-id', b'da085414-435b-4c40-900e-2a3ca2f49938'), (b'ms-azureml-model-time', b'261'), (b'x-ms-client-request-id', b'81bf271e-25dc-40a6-8091-5767f1fedfeb'), (b'azureml-model-session', b'v20250415-5-168444713-5'), (b'x-ms-deployment-name', b'gpt-4o'), (b'Date', b'Sat, 19 Apr 2025 02:53:48 GMT')])
+2025-04-18 22:53:48,360 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-04-18 22:53:48,360 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-04-18 22:53:48,360 - httpcore.http11 - DEBUG - response_closed.started
+2025-04-18 22:53:48,360 - httpcore.http11 - DEBUG - response_closed.complete
+2025-04-18 22:53:48,361 - openai._base_client - DEBUG - HTTP Response: POST https://awt-gpt.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview "200 OK" Headers({'content-length': '900', 'content-type': 'application/json', 'apim-request-id': '81bf271e-25dc-40a6-8091-5767f1fedfeb', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'x-content-type-options': 'nosniff', 'x-ms-region': 'East US', 'x-ratelimit-remaining-requests': '149', 'x-ratelimit-limit-requests': '150', 'x-ratelimit-remaining-tokens': '149351', 'x-ratelimit-limit-tokens': '150000', 'cmp-upstream-response-duration': '220', 'x-accel-buffering': 'no', 'x-aml-cluster': 'hyena-eastus-02', 'x-envoy-upstream-service-time': '263', 'x-ms-rai-invoked': 'true', 'x-request-id': 'da085414-435b-4c40-900e-2a3ca2f49938', 'ms-azureml-model-time': '261', 'x-ms-client-request-id': '81bf271e-25dc-40a6-8091-5767f1fedfeb', 'azureml-model-session': 'v20250415-5-168444713-5', 'x-ms-deployment-name': 'gpt-4o', 'date': 'Sat, 19 Apr 2025 02:53:48 GMT'})
+2025-04-18 22:53:48,361 - openai._base_client - DEBUG - request_id: da085414-435b-4c40-900e-2a3ca2f49938
+2025-04-18 22:53:48,378 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:53:48,379 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 22:54:05,134 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:54:05,134 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='8452602254ce4ca0af70ad7080cfd78d' name='engine_df1edc49' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:54:05,134 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:54:05,146 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:54:05,146 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:54:05,226 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:54:05,227 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:54:05,227 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:54:05,227 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:54:05,228 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:54:05,237 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:54:05,331 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:54:05,331 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225405.png
+2025-04-18 22:54:05,332 - root - INFO - Running agent with real API calls
+2025-04-18 22:54:05,332 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:54:05,332 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:54:05,338 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:54:05,339 - haive_core.engine.agent.agent - INFO - Thread test-thread-6d5211f7-2368-4948-bbdc-5083c0d70367 registered in PostgreSQL
+2025-04-18 22:54:05,339 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:54:05,339 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:54:05,340 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:54:05,340 - haive_core.engine.agent.agent - INFO - Thread test-thread-6d5211f7-2368-4948-bbdc-5083c0d70367 registered in PostgreSQL
+2025-04-18 22:54:05,340 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-6d5211f7-2368-4948-bbdc-5083c0d70367
+2025-04-18 22:54:05,342 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-6d5211f7-2368-4948-bbdc-5083c0d70367
+2025-04-18 22:54:05,343 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-6d5211f7-2368-4948-bbdc-5083c0d70367
+2025-04-18 22:54:05,406 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:54:05,406 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 22:54:21,248 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:54:21,248 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='e6b3338d2ca2401fadfc6617ce85d704' name='engine_f14e2480' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:54:21,249 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:54:21,263 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:54:21,264 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:54:21,364 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:54:21,365 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:54:21,365 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:54:21,365 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:54:21,367 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:54:21,376 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:54:21,471 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:54:21,472 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225421.png
+2025-04-18 22:54:21,472 - root - INFO - Running agent with real API calls
+2025-04-18 22:54:21,472 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:54:21,472 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:54:21,479 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:54:21,481 - haive_core.engine.agent.agent - INFO - Thread test-thread-1e91b634-628d-4023-9b2a-ee845b35b02a registered in PostgreSQL
+2025-04-18 22:54:21,481 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:54:21,481 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:54:21,482 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:54:21,482 - haive_core.engine.agent.agent - INFO - Thread test-thread-1e91b634-628d-4023-9b2a-ee845b35b02a registered in PostgreSQL
+2025-04-18 22:54:21,482 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-1e91b634-628d-4023-9b2a-ee845b35b02a
+2025-04-18 22:54:21,485 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-1e91b634-628d-4023-9b2a-ee845b35b02a
+2025-04-18 22:54:21,485 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-1e91b634-628d-4023-9b2a-ee845b35b02a
+2025-04-18 22:54:21,553 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:54:21,554 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 22:54:53,687 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:54:53,687 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='dd4f08c1944a44a689b82712b42c7096' name='engine_bc2ab660' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:54:53,688 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:54:53,702 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:54:53,703 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:54:53,789 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:54:53,790 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:54:53,790 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:54:53,790 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:54:53,792 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:54:53,802 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:54:54,003 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:54:54,004 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225453.png
+2025-04-18 22:54:54,004 - root - INFO - Running agent with real API calls
+2025-04-18 22:54:54,004 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:54:54,004 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:54:54,010 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:54:54,011 - haive_core.engine.agent.agent - INFO - Thread test-thread-62280bd7-e3f9-4739-8f51-6fb7b7ffab70 registered in PostgreSQL
+2025-04-18 22:54:54,012 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:54:54,012 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:54:54,012 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:54:54,013 - haive_core.engine.agent.agent - INFO - Thread test-thread-62280bd7-e3f9-4739-8f51-6fb7b7ffab70 registered in PostgreSQL
+2025-04-18 22:54:54,013 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-62280bd7-e3f9-4739-8f51-6fb7b7ffab70
+2025-04-18 22:54:54,015 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-62280bd7-e3f9-4739-8f51-6fb7b7ffab70
+2025-04-18 22:54:54,015 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-62280bd7-e3f9-4739-8f51-6fb7b7ffab70
+2025-04-18 22:54:54,077 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:54:54,079 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 22:56:59,842 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:56:59,843 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='6ecd6d8e54c349a8a78c95378e9398d6' name='engine_8af3d881' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:56:59,843 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:56:59,854 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:56:59,855 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:57:00,066 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:57:00,067 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:57:00,067 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:57:00,067 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:57:00,068 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:57:00,077 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:57:00,167 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:57:00,168 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225700.png
+2025-04-18 22:57:00,168 - root - INFO - Running agent with real API calls
+2025-04-18 22:57:00,168 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:57:00,168 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:57:00,176 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:57:00,178 - haive_core.engine.agent.agent - INFO - Thread test-thread-420b6d35-b011-4d17-a5c1-3486107f6e38 registered in PostgreSQL
+2025-04-18 22:57:00,178 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:57:00,178 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:57:00,179 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:57:00,179 - haive_core.engine.agent.agent - INFO - Thread test-thread-420b6d35-b011-4d17-a5c1-3486107f6e38 registered in PostgreSQL
+2025-04-18 22:57:00,180 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-420b6d35-b011-4d17-a5c1-3486107f6e38
+2025-04-18 22:57:00,182 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-420b6d35-b011-4d17-a5c1-3486107f6e38
+2025-04-18 22:57:00,182 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-420b6d35-b011-4d17-a5c1-3486107f6e38
+2025-04-18 22:57:00,248 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:57:00,251 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 22:59:08,132 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:59:08,133 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='27825a0d68fd46caa59f8f14e8505a3e' name='engine_feab5aab' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:59:08,133 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:59:08,145 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:59:08,146 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:59:08,146 - haive_core.engine.agent.persistence.wrapper - INFO - SerializableSaverWrapper initialized with PostgresSaver
+2025-04-18 22:59:08,146 - haive_core.engine.agent.agent - INFO - Wrapped checkpointer with SerializableSaverWrapper for test-agent
+2025-04-18 22:59:08,227 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:59:08,228 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:59:08,228 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:59:08,228 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:59:08,230 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:59:08,239 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:59:08,337 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:59:08,337 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225908.png
+2025-04-18 22:59:08,337 - root - INFO - Running agent with real API calls
+2025-04-18 22:59:08,338 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:59:08,338 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:59:08,344 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:59:08,345 - haive_core.engine.agent.agent - INFO - Thread test-thread-93d25747-c288-4329-848f-43ce6e3d9542 registered in PostgreSQL
+2025-04-18 22:59:08,346 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:59:08,346 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:59:08,346 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:59:08,347 - haive_core.engine.agent.agent - INFO - Thread test-thread-93d25747-c288-4329-848f-43ce6e3d9542 registered in PostgreSQL
+2025-04-18 22:59:08,347 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-93d25747-c288-4329-848f-43ce6e3d9542
+2025-04-18 22:59:08,349 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-93d25747-c288-4329-848f-43ce6e3d9542
+2025-04-18 22:59:08,349 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-93d25747-c288-4329-848f-43ce6e3d9542
+2025-04-18 22:59:08,413 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:59:08,415 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 22:59:22,550 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:59:22,551 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='4da456071c914637a797634bbb42f258' name='engine_53602063' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:59:22,551 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:59:22,563 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:59:22,563 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:59:22,563 - haive_core.engine.agent.persistence.wrapper - INFO - SerializableSaverWrapper initialized with PostgresSaver
+2025-04-18 22:59:22,563 - haive_core.engine.agent.agent - INFO - Wrapped checkpointer with SerializableSaverWrapper for test-agent
+2025-04-18 22:59:22,785 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:59:22,786 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:59:22,786 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:59:22,786 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:59:22,787 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:59:22,796 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:59:22,996 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:59:22,997 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225922.png
+2025-04-18 22:59:22,997 - root - INFO - Running agent with real API calls
+2025-04-18 22:59:22,997 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:59:22,998 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:59:23,004 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:59:23,005 - haive_core.engine.agent.agent - INFO - Thread test-thread-46a3aafd-e303-49fe-95f0-d2b6bb882dfb registered in PostgreSQL
+2025-04-18 22:59:23,005 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:59:23,005 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:59:23,006 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:59:23,006 - haive_core.engine.agent.agent - INFO - Thread test-thread-46a3aafd-e303-49fe-95f0-d2b6bb882dfb registered in PostgreSQL
+2025-04-18 22:59:23,007 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-46a3aafd-e303-49fe-95f0-d2b6bb882dfb
+2025-04-18 22:59:23,010 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-46a3aafd-e303-49fe-95f0-d2b6bb882dfb
+2025-04-18 22:59:23,011 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-46a3aafd-e303-49fe-95f0-d2b6bb882dfb
+2025-04-18 22:59:23,076 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:59:23,078 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 22:59:56,250 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 22:59:56,250 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='fc8d153612fb4ae890ee6351934107ac' name='engine_1672cf2c' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 22:59:56,251 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 22:59:56,262 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 22:59:56,262 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 22:59:56,262 - haive_core.engine.agent.persistence.wrapper - INFO - SerializableSaverWrapper initialized with PostgresSaver
+2025-04-18 22:59:56,262 - haive_core.engine.agent.persistence.wrapper - WARNING - Could not patch msgpack: No module named 'msgpack'
+2025-04-18 22:59:56,262 - haive_core.engine.agent.agent - INFO - Wrapped checkpointer with SerializableSaverWrapper for test-agent
+2025-04-18 22:59:56,471 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 22:59:56,472 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 22:59:56,472 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 22:59:56,472 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 22:59:56,474 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 22:59:56,482 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 22:59:56,656 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 22:59:56,657 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_225956.png
+2025-04-18 22:59:56,657 - root - INFO - Running agent with real API calls
+2025-04-18 22:59:56,657 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:59:56,657 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:59:56,663 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:59:56,664 - haive_core.engine.agent.agent - INFO - Thread test-thread-fb7c91ca-f655-4d5a-b535-31be6d2eadf8 registered in PostgreSQL
+2025-04-18 22:59:56,665 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 22:59:56,665 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 22:59:56,666 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 22:59:56,666 - haive_core.engine.agent.agent - INFO - Thread test-thread-fb7c91ca-f655-4d5a-b535-31be6d2eadf8 registered in PostgreSQL
+2025-04-18 22:59:56,666 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: test-thread-fb7c91ca-f655-4d5a-b535-31be6d2eadf8
+2025-04-18 22:59:56,669 - haive_core.engine.agent.agent - INFO - Found previous state for thread test-thread-fb7c91ca-f655-4d5a-b535-31be6d2eadf8
+2025-04-18 22:59:56,669 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: test-thread-fb7c91ca-f655-4d5a-b535-31be6d2eadf8
+2025-04-18 22:59:56,731 - haive_core.engine.agent.agent - ERROR - Error running agent: Type is not msgpack serializable: function
+2025-04-18 22:59:56,733 - root - ERROR - Error during agent test: Type is not msgpack serializable: function
+2025-04-18 23:00:57,330 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:00:57,331 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='f9a59fd7f94e476eb447407f07a1a80d' name='engine_42f8f18b' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:00:57,331 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:00:57,343 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:00:57,343 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:00:57,421 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:05:25,495 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:05:25,496 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='ec1dfbe1938744b78ddf702f07ccfa38' name='engine_eee382ce' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:05:25,496 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:05:25,507 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:05:25,508 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:05:25,584 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:06:13,362 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:06:13,362 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='445f0847fb064cbb897916440aa10a05' name='engine_22bf8d9f' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:06:13,363 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:06:13,379 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:06:13,379 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:06:13,460 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:06:58,864 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:06:58,865 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='58c432339e944421baa744a71b71c54f' name='engine_41d86fe4' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:06:58,865 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:06:58,881 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:06:58,881 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:06:58,964 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:06:58,965 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:06:58,965 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:06:58,966 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:06:58,967 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:06:58,976 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:06:59,140 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:06:59,140 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_230658.png
+2025-04-18 23:06:59,141 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:06:59,141 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:06:59,148 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:06:59,150 - haive_core.engine.agent.agent - INFO - Thread 250bcebd-ed13-4a37-b4f7-d5a54b8dbcec registered in PostgreSQL
+2025-04-18 23:06:59,150 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:06:59,150 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:06:59,151 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:06:59,152 - haive_core.engine.agent.agent - INFO - Thread 250bcebd-ed13-4a37-b4f7-d5a54b8dbcec registered in PostgreSQL
+2025-04-18 23:06:59,152 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 250bcebd-ed13-4a37-b4f7-d5a54b8dbcec
+2025-04-18 23:06:59,154 - haive_core.engine.agent.agent - INFO - Found previous state for thread 250bcebd-ed13-4a37-b4f7-d5a54b8dbcec
+2025-04-18 23:06:59,154 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 250bcebd-ed13-4a37-b4f7-d5a54b8dbcec
+2025-04-18 23:06:59,157 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_230658.json
+2025-04-18 23:07:36,757 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:07:36,757 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='8197feb8c6a9465287bec8dd6696875d' name='engine_1fef8df2' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:07:36,757 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:07:36,769 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:07:36,769 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:07:36,848 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:07:36,850 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:07:36,850 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:07:36,850 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:07:36,852 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:07:36,860 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:07:36,961 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:07:36,962 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_230736.png
+2025-04-18 23:07:36,962 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:07:36,962 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:07:36,968 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:07:36,970 - haive_core.engine.agent.agent - INFO - Thread c80df22f-9b84-40df-b843-994380eda2f4 registered in PostgreSQL
+2025-04-18 23:07:36,970 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:07:36,970 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:07:36,971 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:07:36,971 - haive_core.engine.agent.agent - INFO - Thread c80df22f-9b84-40df-b843-994380eda2f4 registered in PostgreSQL
+2025-04-18 23:07:36,971 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: c80df22f-9b84-40df-b843-994380eda2f4
+2025-04-18 23:07:36,974 - haive_core.engine.agent.agent - INFO - Found previous state for thread c80df22f-9b84-40df-b843-994380eda2f4
+2025-04-18 23:07:36,974 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: c80df22f-9b84-40df-b843-994380eda2f4
+2025-04-18 23:07:36,977 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_230736.json
+2025-04-18 23:09:19,563 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:09:19,563 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='700f054ffabd4d279795766caa4f6bc6' name='engine_37d2f0bc' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:09:19,563 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:09:19,575 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:09:19,575 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:09:19,803 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:09:19,804 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:09:19,804 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:09:19,804 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:09:19,804 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:09:19,804 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:09:19,804 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:09:19,806 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:09:19,814 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:09:19,907 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:09:19,908 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_230919.png
+2025-04-18 23:09:19,908 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:09:19,909 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:09:19,915 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:09:19,917 - haive_core.engine.agent.agent - INFO - Thread 3589637c-600c-43be-a50b-2a1e43fce40e registered in PostgreSQL
+2025-04-18 23:09:19,918 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:09:19,918 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:09:19,919 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:09:19,919 - haive_core.engine.agent.agent - INFO - Thread 3589637c-600c-43be-a50b-2a1e43fce40e registered in PostgreSQL
+2025-04-18 23:09:19,919 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 3589637c-600c-43be-a50b-2a1e43fce40e
+2025-04-18 23:09:19,922 - haive_core.engine.agent.agent - INFO - Found previous state for thread 3589637c-600c-43be-a50b-2a1e43fce40e
+2025-04-18 23:09:19,922 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 3589637c-600c-43be-a50b-2a1e43fce40e
+2025-04-18 23:09:19,925 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_230919.json
+2025-04-18 23:10:00,278 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:10:00,279 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='6bf569c13596438f8a372d64c15d3ddf' name='engine_c3d750ba' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:10:00,279 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:10:00,291 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:10:00,291 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:10:00,372 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:10:00,372 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:10:00,373 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:10:00,373 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:10:00,373 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:10:00,373 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:10:00,373 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:10:00,374 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:10:00,385 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:10:00,480 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:10:00,481 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231000.png
+2025-04-18 23:10:00,481 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:10:00,482 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:10:00,488 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:10:00,490 - haive_core.engine.agent.agent - INFO - Thread 72bb9ac4-12f3-4880-aa2b-a1d9351a1b2e registered in PostgreSQL
+2025-04-18 23:10:00,491 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:10:00,491 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:10:00,492 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:10:00,492 - haive_core.engine.agent.agent - INFO - Thread 72bb9ac4-12f3-4880-aa2b-a1d9351a1b2e registered in PostgreSQL
+2025-04-18 23:10:00,493 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 72bb9ac4-12f3-4880-aa2b-a1d9351a1b2e
+2025-04-18 23:10:00,496 - haive_core.engine.agent.agent - INFO - Found previous state for thread 72bb9ac4-12f3-4880-aa2b-a1d9351a1b2e
+2025-04-18 23:10:00,496 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 72bb9ac4-12f3-4880-aa2b-a1d9351a1b2e
+2025-04-18 23:10:00,498 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231000.json
+2025-04-18 23:10:16,801 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:10:16,801 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='e34abb44d130420bb1962343004f5e29' name='engine_e886dda9' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:10:16,802 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:10:16,813 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:10:16,813 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:10:16,892 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:10:16,893 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:10:16,893 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:10:16,893 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:10:16,893 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:10:16,893 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:10:16,894 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:10:16,895 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:10:16,904 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:10:17,002 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:10:17,003 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231016.png
+2025-04-18 23:10:17,003 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:10:17,003 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:10:17,009 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:10:17,011 - haive_core.engine.agent.agent - INFO - Thread 83df3f55-aeb6-4ff7-8194-5df0c0c10653 registered in PostgreSQL
+2025-04-18 23:10:17,011 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:10:17,011 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:10:17,012 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:10:17,013 - haive_core.engine.agent.agent - INFO - Thread 83df3f55-aeb6-4ff7-8194-5df0c0c10653 registered in PostgreSQL
+2025-04-18 23:10:17,013 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 83df3f55-aeb6-4ff7-8194-5df0c0c10653
+2025-04-18 23:10:17,015 - haive_core.engine.agent.agent - INFO - Found previous state for thread 83df3f55-aeb6-4ff7-8194-5df0c0c10653
+2025-04-18 23:10:17,015 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 83df3f55-aeb6-4ff7-8194-5df0c0c10653
+2025-04-18 23:10:17,017 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231016.json
+2025-04-18 23:10:52,598 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:10:52,599 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='48c33a3feda744d0aca29fb6f60c3d73' name='engine_53bde798' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:10:52,599 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:10:52,613 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:10:52,613 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:10:52,695 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:10:52,697 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:10:52,697 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:10:52,698 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:10:52,698 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:10:52,698 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:10:52,698 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:10:52,699 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:10:52,708 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:10:52,804 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:10:52,805 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231052.png
+2025-04-18 23:10:52,805 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:10:52,805 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:10:52,811 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:10:52,813 - haive_core.engine.agent.agent - INFO - Thread a95b021b-0f0c-4862-af83-530e75d09def registered in PostgreSQL
+2025-04-18 23:10:52,813 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:10:52,813 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:10:52,814 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:10:52,814 - haive_core.engine.agent.agent - INFO - Thread a95b021b-0f0c-4862-af83-530e75d09def registered in PostgreSQL
+2025-04-18 23:10:52,815 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: a95b021b-0f0c-4862-af83-530e75d09def
+2025-04-18 23:10:52,817 - haive_core.engine.agent.agent - INFO - Found previous state for thread a95b021b-0f0c-4862-af83-530e75d09def
+2025-04-18 23:10:52,817 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: a95b021b-0f0c-4862-af83-530e75d09def
+2025-04-18 23:10:52,819 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231052.json
+2025-04-18 23:11:03,496 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:11:03,497 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='c23dc22374cb4ac7a32a1b890dec17eb' name='engine_6e4f5c56' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:11:03,497 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:11:03,510 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:11:03,511 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:11:03,732 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:11:03,733 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:11:03,733 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:11:03,733 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:11:03,733 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:11:03,733 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:11:03,733 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:11:03,735 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:11:03,743 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:11:03,839 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:11:03,839 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231103.png
+2025-04-18 23:11:03,840 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:11:03,840 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:11:03,848 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:11:03,851 - haive_core.engine.agent.agent - INFO - Thread 3f454956-7d1a-43c2-b7c7-557f9ecb8de8 registered in PostgreSQL
+2025-04-18 23:11:03,852 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:11:03,852 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:11:03,853 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:11:03,853 - haive_core.engine.agent.agent - INFO - Thread 3f454956-7d1a-43c2-b7c7-557f9ecb8de8 registered in PostgreSQL
+2025-04-18 23:11:03,853 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 3f454956-7d1a-43c2-b7c7-557f9ecb8de8
+2025-04-18 23:11:03,856 - haive_core.engine.agent.agent - INFO - Found previous state for thread 3f454956-7d1a-43c2-b7c7-557f9ecb8de8
+2025-04-18 23:11:03,856 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 3f454956-7d1a-43c2-b7c7-557f9ecb8de8
+2025-04-18 23:11:03,859 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231103.json
+2025-04-18 23:11:04,713 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:11:04,714 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='a4664ed4e84a4215bdf44f3bb10361c9' name='engine_ca1b35bc' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:11:04,714 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:11:04,726 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:11:04,727 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:11:04,968 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:11:04,969 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:11:04,969 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:11:04,969 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:11:04,969 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:11:04,970 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:11:04,970 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:11:04,971 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:11:04,981 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:11:05,083 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:11:05,084 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231104.png
+2025-04-18 23:11:05,085 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:11:05,085 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:11:05,092 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:11:05,095 - haive_core.engine.agent.agent - INFO - Thread 18001b94-2d53-461b-93d7-4628a3e341c6 registered in PostgreSQL
+2025-04-18 23:11:05,096 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:11:05,096 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:11:05,097 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:11:05,097 - haive_core.engine.agent.agent - INFO - Thread 18001b94-2d53-461b-93d7-4628a3e341c6 registered in PostgreSQL
+2025-04-18 23:11:05,097 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 18001b94-2d53-461b-93d7-4628a3e341c6
+2025-04-18 23:11:05,100 - haive_core.engine.agent.agent - INFO - Found previous state for thread 18001b94-2d53-461b-93d7-4628a3e341c6
+2025-04-18 23:11:05,101 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 18001b94-2d53-461b-93d7-4628a3e341c6
+2025-04-18 23:11:05,104 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231104.json
+2025-04-18 23:12:15,292 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:12:15,293 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='f8db46fa17e14a1b9b1a3b92b0de4420' name='engine_c57423db' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:12:15,293 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:12:15,308 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:12:15,308 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:12:15,392 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:12:15,393 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:12:15,393 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:12:15,393 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:12:15,393 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:12:15,393 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:12:15,394 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:12:15,395 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:12:15,404 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:12:15,566 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:12:15,567 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231215.png
+2025-04-18 23:12:15,568 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:12:15,568 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:12:15,575 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:12:15,577 - haive_core.engine.agent.agent - INFO - Thread 73141036-0203-4f51-9e31-3449d7330d88 registered in PostgreSQL
+2025-04-18 23:12:15,577 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:12:15,577 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:12:15,578 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:12:15,579 - haive_core.engine.agent.agent - INFO - Thread 73141036-0203-4f51-9e31-3449d7330d88 registered in PostgreSQL
+2025-04-18 23:12:15,579 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 73141036-0203-4f51-9e31-3449d7330d88
+2025-04-18 23:12:15,582 - haive_core.engine.agent.agent - INFO - Found previous state for thread 73141036-0203-4f51-9e31-3449d7330d88
+2025-04-18 23:12:15,582 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 73141036-0203-4f51-9e31-3449d7330d88
+2025-04-18 23:12:15,585 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231215.json
+2025-04-18 23:12:41,911 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:12:41,912 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='0098f7af74c04132a110f264ca002c7c' name='engine_649dd1c5' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:12:41,912 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:12:41,927 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:12:41,927 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:12:42,010 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:12:42,011 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:12:42,011 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:12:42,011 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:12:42,011 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:12:42,011 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:12:42,012 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:12:42,013 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:12:42,022 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:12:42,116 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:12:42,117 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231242.png
+2025-04-18 23:12:42,117 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:12:42,117 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:12:42,123 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:12:42,126 - haive_core.engine.agent.agent - INFO - Thread 03198129-a8a4-40d4-976b-65fde3efe318 registered in PostgreSQL
+2025-04-18 23:12:42,126 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:12:42,126 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:12:42,127 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:12:42,127 - haive_core.engine.agent.agent - INFO - Thread 03198129-a8a4-40d4-976b-65fde3efe318 registered in PostgreSQL
+2025-04-18 23:12:42,128 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 03198129-a8a4-40d4-976b-65fde3efe318
+2025-04-18 23:12:42,131 - haive_core.engine.agent.agent - INFO - Found previous state for thread 03198129-a8a4-40d4-976b-65fde3efe318
+2025-04-18 23:12:42,131 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 03198129-a8a4-40d4-976b-65fde3efe318
+2025-04-18 23:12:42,133 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231242.json
+2025-04-18 23:13:26,750 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:13:26,750 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='815dff3439274b6a83d90e590c1b8d6a' name='engine_915c10d8' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:13:26,751 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:13:26,762 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:13:26,763 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:13:26,844 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:13:26,845 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:13:26,845 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:13:26,845 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:13:26,845 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:13:26,845 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:13:26,845 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:13:26,847 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:13:26,855 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:13:26,955 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:13:26,956 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231326.png
+2025-04-18 23:13:26,956 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:13:26,956 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:13:26,962 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:13:26,964 - haive_core.engine.agent.agent - INFO - Thread d2d508df-fea3-4413-9e06-28f5bd304dae registered in PostgreSQL
+2025-04-18 23:13:26,964 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:13:26,965 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:13:26,965 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:13:26,966 - haive_core.engine.agent.agent - INFO - Thread d2d508df-fea3-4413-9e06-28f5bd304dae registered in PostgreSQL
+2025-04-18 23:13:26,966 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: d2d508df-fea3-4413-9e06-28f5bd304dae
+2025-04-18 23:13:26,968 - haive_core.engine.agent.agent - INFO - Found previous state for thread d2d508df-fea3-4413-9e06-28f5bd304dae
+2025-04-18 23:13:26,969 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: d2d508df-fea3-4413-9e06-28f5bd304dae
+2025-04-18 23:13:26,970 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231326.json
+2025-04-18 23:14:20,681 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:14:20,682 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='40b282b7b1bc4dbdb8c4b69ae9067d0a' name='engine_e7bed6b2' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:14:20,682 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:14:20,693 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:14:20,693 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:14:20,772 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:14:20,773 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:14:20,773 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:14:20,773 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:14:20,773 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:14:20,774 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:14:20,774 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:14:20,775 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:14:20,783 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:14:20,879 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:14:20,880 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231420.png
+2025-04-18 23:14:20,880 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:14:20,880 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:14:20,886 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:14:20,888 - haive_core.engine.agent.agent - INFO - Thread 7581a791-e49e-4cb0-b560-024088800df6 registered in PostgreSQL
+2025-04-18 23:14:20,888 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:14:20,888 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:14:20,889 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:14:20,890 - haive_core.engine.agent.agent - INFO - Thread 7581a791-e49e-4cb0-b560-024088800df6 registered in PostgreSQL
+2025-04-18 23:14:20,890 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 7581a791-e49e-4cb0-b560-024088800df6
+2025-04-18 23:14:20,893 - haive_core.engine.agent.agent - INFO - Found previous state for thread 7581a791-e49e-4cb0-b560-024088800df6
+2025-04-18 23:14:20,893 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 7581a791-e49e-4cb0-b560-024088800df6
+2025-04-18 23:14:20,895 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231420.json
+2025-04-18 23:15:59,603 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:15:59,604 - haive_agents.simple.config - DEBUG - ✅ Engine validated successfully: id='f458328db9ef4a11a57764eb4f4b8d94' name='engine_1963f2c8' engine_type=<EngineType.LLM: 'llm'> description=None input_schema=None output_schema=None version='1.0.0' metadata={} llm_config=AzureLLMConfig(provider=<LLMProvider.AZURE: 'azure'>, model='gpt-4o', api_key=SecretStr('**********'), cache_enabled=True, cache_ttl=300, extra_params={}, api_version='2024-08-01-preview', api_base='https://awt-gpt.openai.azure.com/', api_type='azure') prompt_template=None system_message='You are a helpful test assistant.' examples=None example_prompt=None tools=[] structured_output_model=None output_parser=None tool_kwargs={} bind_tools_kwargs={} bind_tools_config={} force_tool_choice=None preprocess=None postprocess=None temperature=None max_tokens=None runtime_options={} custom_runnables=None uses_messages_field=True partial_variables={}
+2025-04-18 23:15:59,604 - haive_core.engine.agent.persistence.postgres_config - INFO - Creating new PostgreSQL connection pool
+2025-04-18 23:15:59,617 - haive_core.engine.agent.persistence.postgres_config - INFO - Successfully set up PostgreSQL tables
+2025-04-18 23:15:59,617 - haive_core.engine.agent.agent - INFO - Using PostgreSQL checkpointer for test-agent
+2025-04-18 23:15:59,701 - haive_agents.simple.agent - DEBUG - Setting up workflow for SimpleAgent test-agent
+2025-04-18 23:15:59,702 - haive_agents.simple.agent - DEBUG - State schema: <class 'haive_core.schema.state_schema.Test_AgentState'>
+2025-04-18 23:15:59,702 - haive_core.graph.dynamic_graph_builder - INFO - Added node 'process' to graph
+2025-04-18 23:15:59,702 - haive_core.graph.dynamic_graph_builder - INFO - Added edge from '__start__' to 'process'
+2025-04-18 23:15:59,702 - haive_core.graph.dynamic_graph_builder - INFO - Set entry point to 'process'
+2025-04-18 23:15:59,703 - haive_agents.simple.agent - DEBUG - Graph structure: START -> process -> END
+2025-04-18 23:15:59,703 - haive_agents.simple.agent - INFO - Set up simple workflow for test-agent with node process
+2025-04-18 23:15:59,704 - haive_core.engine.agent.agent - INFO - Workflow compiled successfully for test-agent
+2025-04-18 23:15:59,713 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): mermaid.ink:443
+2025-04-18 23:15:59,806 - urllib3.connectionpool - DEBUG - https://mermaid.ink:443 "GET /img/LS0tCmNvbmZpZzoKICBmbG93Y2hhcnQ6CiAgICBjdXJ2ZTogbGluZWFyCi0tLQpncmFwaCBURDsKCV9fc3RhcnRfXyhbPHA+X19zdGFydF9fPC9wPl0pOjo6Zmlyc3QKCXByb2Nlc3MoW3Byb2Nlc3NdKTo6Omxhc3QKCV9fc3RhcnRfXyAtLT4gcHJvY2VzczsKCWNsYXNzRGVmIGRlZmF1bHQgZmlsbDojZjJmMGZmLGxpbmUtaGVpZ2h0OjEuMgoJY2xhc3NEZWYgZmlyc3QgZmlsbC1vcGFjaXR5OjAKCWNsYXNzRGVmIGxhc3QgZmlsbDojYmZiNmZjCg==?type=png&bgColor=!white HTTP/1.1" 200 4464
+2025-04-18 23:15:59,807 - haive_core.engine.agent.agent - INFO - Graph visualization saved to /home/will/Projects/haive/backend/haive/packages/resources/Graphs/test-agent_20250418_231559.png
+2025-04-18 23:15:59,807 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:15:59,808 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:15:59,813 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:15:59,815 - haive_core.engine.agent.agent - INFO - Thread 324019a7-79a3-462c-85b1-3c6853ae8454 registered in PostgreSQL
+2025-04-18 23:15:59,815 - haive_core.engine.agent.agent - DEBUG - psycopg_pool not available
+2025-04-18 23:15:59,816 - haive_core.engine.agent.agent - DEBUG - No pool found but checkpointer has setup method
+2025-04-18 23:15:59,817 - haive_core.engine.agent.agent - DEBUG - Threads table columns: ['thread_id', 'created_at', 'metadata']
+2025-04-18 23:15:59,817 - haive_core.engine.agent.agent - INFO - Thread 324019a7-79a3-462c-85b1-3c6853ae8454 registered in PostgreSQL
+2025-04-18 23:15:59,817 - haive_core.engine.agent.agent - DEBUG - Checking for previous state with thread_id: 324019a7-79a3-462c-85b1-3c6853ae8454
+2025-04-18 23:15:59,820 - haive_core.engine.agent.agent - INFO - Found previous state for thread 324019a7-79a3-462c-85b1-3c6853ae8454
+2025-04-18 23:15:59,820 - haive_core.engine.agent.agent - INFO - Running agent test-agent with thread_id: 324019a7-79a3-462c-85b1-3c6853ae8454
+2025-04-18 23:15:59,822 - haive_core.engine.agent.agent - INFO - State history saved to: /home/will/Projects/haive/backend/haive/packages/resources/State_History/test-agent_20250418_231559.json
+2025-04-18 23:34:45,788 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:34:45,810 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'error_handling'
+2025-04-18 23:34:45,810 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'persistence'
+2025-04-18 23:34:45,810 - haive_core.graph.graph_pattern_registry - INFO - Registered branch 'intent_router'
+2025-04-18 23:34:54,054 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:34:54,067 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'error_handling'
+2025-04-18 23:34:54,067 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'persistence'
+2025-04-18 23:34:54,067 - haive_core.graph.graph_pattern_registry - INFO - Registered branch 'intent_router'
+2025-04-18 23:35:11,667 - root - DEBUG - 📄 Logging to: logs/tests/core/engine/agent/test_postgres.log
+2025-04-18 23:35:11,680 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'error_handling'
+2025-04-18 23:35:11,680 - haive_core.graph.graph_pattern_registry - INFO - Registered pattern 'persistence'
+2025-04-18 23:35:11,680 - haive_core.graph.graph_pattern_registry - INFO - Registered branch 'intent_router'
