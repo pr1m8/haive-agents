@@ -1,15 +1,13 @@
 from langchain.prompts import (
     ChatPromptTemplate,
+    HumanMessagePromptTemplate,
     MessagesPlaceholder,
     SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate
 )
-from langchain_core.output_parsers import PydanticOutputParser
-from langchain_core.prompts.image import ImagePromptTemplate
-from haive_core.engine.aug_llm import AugLLMConfig
+
 from haive_agents.web_nav.models import Prediction
-from langchain_core.output_parsers import StrOutputParser
-from haive_agents.web_nav.utils.utils import parse
+from haive_core.engine.aug_llm.base import AugLLMConfig
+
 WEB_NAV_PROMPT = ChatPromptTemplate.from_messages([
     # ✅ System message with WebVoyager-style instructions
     SystemMessagePromptTemplate.from_template(
@@ -98,7 +96,6 @@ WEB_NAV_PROMPT = ChatPromptTemplate.from_messages([
         "{input}\n\nBounding Boxes:\n{bbox_descriptions}\n\nScreenshot: {img}"
     )
 ])
-from langchain import hub
 prompt = WEB_NAV_PROMPT
 # ✅ AugLLMConfig for Web Navigator (WebVoyager-Style)
 web_nav_aug_llm = AugLLMConfig(
