@@ -15,7 +15,6 @@ langchain-core = "^0.3.44"
 langgraph = "^0.3.5"
 
 [tool.poetry.group.dev.dependencies]
-haive-core = {path = "../haive-core", develop = true}
 pytest = "^8.3.5"
 black = "^25.1.0"
 isort = "^6.0.1"
