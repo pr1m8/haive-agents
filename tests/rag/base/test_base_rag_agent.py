@@ -1,16 +1,17 @@
-"""
-Example of using the RAG agent with the new architecture.
+"""Example of using the RAG agent with the new architecture.
 """
 
 import logging
+
 from langchain_community.document_loaders import WebBaseLoader
 
+from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.rag.base.config import BaseRAGConfig
+from haive.core.engine.retriever import VectorStoreRetrieverConfig
+from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
+
 # Import from our architecture
-from haive_core.models.embeddings.base import HuggingFaceEmbeddingConfig
-from haive_core.engine.vectorstore import VectorStoreConfig
-from haive_core.engine.retriever import VectorStoreRetrieverConfig
-from haive_agents.rag.base.config import BaseRAGConfig
-from haive_agents.rag.base.agent import BaseRAGAgent
+from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
 
 # Configure logging
 logger = logging.getLogger()
@@ -22,7 +23,7 @@ if logger.hasHandlers():
 
 # Add a basic stream handler with formatting
 handler = logging.StreamHandler()
-formatter = logging.Formatter('[%(levelname)s] %(name)s: %(message)s')
+formatter = logging.Formatter("[%(levelname)s] %(name)s: %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
@@ -78,13 +79,13 @@ def main():
     logger.info(f"Retrieved {len(result_1['retrieved_documents'])} documents (Agent 1)")
     logger.info(f"Retrieved {len(result_2['retrieved_documents'])} documents (Agent 2)")
 
-    if result_1['retrieved_documents']:
+    if result_1["retrieved_documents"]:
         logger.info("First document from agent 1:")
-        logger.info(str(result_1['retrieved_documents'][0])[:200] + "...")
+        logger.info(str(result_1["retrieved_documents"][0])[:200] + "...")
 
-    if result_2['retrieved_documents']:
+    if result_2["retrieved_documents"]:
         logger.info("First document from agent 2:")
-        logger.info(str(result_2['retrieved_documents'][0])[:200] + "...")
+        logger.info(str(result_2["retrieved_documents"][0])[:200] + "...")
 
     return result_1, result_2
 

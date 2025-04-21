@@ -1,24 +1,24 @@
 #!/usr/bin/env python
 
 import logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from haive_agents.simple.config import SimpleAgentConfig
-from haive_agents.simple.state import SimpleAgentState
-from haive_agents.simple.factory import create_simple_agent
-from haive_core.engine.aug_llm import AugLLMConfig
+from haive.agents.simple.factory import create_simple_agent
+from haive.agents.simple.state import SimpleAgentState
+from haive.core.engine.aug_llm.base import AugLLMConfig
+
 
 def test_simple_agent_schema():
     """Test a simple agent with the updated schema."""
-    
     print("Step 1: Creating AugLLM config")
     # Create a simple AugLLM engine
     aug_llm = AugLLMConfig(
         name="test_llm",
         system_prompt="You are a test assistant. Remember what the user tells you."
     )
-    
+
     print("Step 2: Creating agent")
     try:
         # Create the agent using the factory function
@@ -31,7 +31,7 @@ def test_simple_agent_schema():
     except Exception as e:
         print(f"Error creating agent: {e}")
         raise
-    
+
     print("Step 3: Checking state schema")
     try:
         # Test the agent's schema
@@ -43,9 +43,9 @@ def test_simple_agent_schema():
     except Exception as e:
         print(f"Error validating schema: {e}")
         raise
-    
+
     print("Test succeeded")
     return True
 
 if __name__ == "__main__":
-    test_simple_agent_schema() 
+    test_simple_agent_schema()

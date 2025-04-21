@@ -1,20 +1,19 @@
-"""
-Updated test for PostgreSQL persistence with correct StateSnapshot handling.
+"""Updated test for PostgreSQL persistence with correct StateSnapshot handling.
 
 Save as tests/agents/base/checkpointer/test_postgres_persistent_agent.py
 """
+import logging
 import os
 import sys
-import uuid
-import pytest
-import time
-import logging
 import traceback
-from typing import Dict, Any, List, Optional, Union
+import uuid
+from typing import Any
+
+import pytest
 
 # Set up logging
-logging.basicConfig(level=logging.DEBUG, 
-                   format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG,
+                   format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
 # Silence noisy loggers
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 logging.getLogger("matplotlib.font_manager").setLevel(logging.ERROR)
@@ -30,8 +29,8 @@ logging.getLogger("asyncio").setLevel(logging.WARNING)
 # Make matplotlib even quieter by setting the rcParams
 try:
     import matplotlib
-    matplotlib.use('Agg')  # Non-interactive backend
-    matplotlib.rcParams['figure.max_open_warning'] = 0  # Disable max figure warning
+    matplotlib.use("Agg")  # Non-interactive backend
+    matplotlib.rcParams["figure.max_open_warning"] = 0  # Disable max figure warning
 except ImportError:
     pass
 
@@ -52,9 +51,9 @@ if project_root not in sys.path:
 # Check for PostgreSQL dependencies
 try:
     import psycopg
-    from psycopg_pool import ConnectionPool
-    from langgraph.checkpoint.postgres import PostgresSaver
     from langgraph.checkpoint.memory import MemorySaver
+    from langgraph.checkpoint.postgres import PostgresSaver
+    from psycopg_pool import ConnectionPool
     POSTGRES_AVAILABLE = True
     print("✅ PostgreSQL dependencies available")
 except ImportError as e:
@@ -71,19 +70,19 @@ try:
     except ImportError as e:
         print(f"❌ Error importing ABC from abc: {e}")
         traceback.print_exc()
-    
+
     # Check Python version to help with debugging
     print(f"Python version: {sys.version}")
-    
+
     # Now try the actual imports
-    from haive_agents.simple.agent import SimpleAgentConfig
-    from haive_agents.simple.factory import create_simple_agent
-    from haive_core.engine.agent.persistence.types import CheckpointerType
-    from haive_core.engine.agent.persistence.postgres_config import PostgresCheckpointerConfig
-    from haive_core.engine.aug_llm import AugLLMConfig
-    
+    from haive.agents.simple.agent import SimpleAgentConfig
+    from haive.agents.simple.factory import create_simple_agent
+    from haive.core.engine.agent.persistence.postgres_config import PostgresCheckpointerConfig
+    from haive.core.engine.agent.persistence.types import CheckpointerType
+    from haive.core.engine.aug_llm.base import AugLLMConfig
+
     # Add more diagnostic info
-    print("AugLLMConfig Path:", AugLLMConfig.__path__ if hasattr(AugLLMConfig, '__path__') else None)
+    print("AugLLMConfig Path:", AugLLMConfig.__path__ if hasattr(AugLLMConfig, "__path__") else None)
     print("AugLLMConfig Class:", AugLLMConfig.__class__)
     print("AugLLMConfig File:", AugLLMConfig.__module__)
     print("✅ Required components available")
@@ -99,9 +98,8 @@ CONNECTION_KWARGS = {
     "prepare_threshold": 0,
 }
 
-def extract_messages_from_state(state: Any) -> List[Any]:
-    """
-    Extract messages from a state object, regardless of its type.
+def extract_messages_from_state(state: Any) -> list[Any]:
+    """Extract messages from a state object, regardless of its type.
     Handles various state object formats.
     
     Args:
@@ -112,33 +110,32 @@ def extract_messages_from_state(state: Any) -> List[Any]:
     """
     if state is None:
         return []
-        
+
     # Case 1: If it's a dictionary with messages
     if isinstance(state, dict) and "messages" in state:
         return state["messages"]
-        
+
     # Case 2: If it has a channel_values attribute (StateSnapshot)
     if hasattr(state, "channel_values"):
         channel_values = state.channel_values
         if channel_values and "messages" in channel_values:
             return channel_values["messages"]
-    
+
     # Case 3: If it has specific StateSnapshot attributes
     if hasattr(state, "values"):
         values = state.values
         if isinstance(values, dict) and "messages" in values:
             return values["messages"]
-    
+
     # Case 4: Direct attribute check
     if hasattr(state, "messages"):
         return state.messages
-        
+
     # Nothing found
     return []
 
 def extract_message_content(message: Any) -> str:
-    """
-    Extract content from a message object, regardless of its type.
+    """Extract content from a message object, regardless of its type.
     
     Args:
         message: A message object
@@ -148,26 +145,26 @@ def extract_message_content(message: Any) -> str:
     """
     if message is None:
         return ""
-        
+
     # Case 1: Message has content attribute (LangChain messages)
     if hasattr(message, "content"):
         return str(message.content)
-        
+
     # Case 2: Message is a tuple (type, content)
     if isinstance(message, tuple) and len(message) >= 2:
         return str(message[1])
-        
+
     # Case 3: Message is a dictionary with content
     if isinstance(message, dict) and "content" in message:
         return str(message["content"])
-        
+
     # Default: Convert to string
     return str(message)
 
 def test_postgres_connection():
     """Test direct PostgreSQL connection."""
     print_step("Testing direct PostgreSQL connection")
-    
+
     try:
         print(f"Using connection URI: {DB_URI}")
         with psycopg.connect(DB_URI) as conn:
@@ -183,10 +180,11 @@ def test_postgres_connection():
 def test_memory_persistence():
     """Test that agent can invoke LLM and remembers information across runs."""
     # Import the necessary components
-    from haive_core.engine.aug_llm import AugLLMConfig
-    from haive_agents.simple.config import SimpleAgentConfig
-    from haive_agents.simple.agent import SimpleAgent
     from langchain_core.messages import HumanMessage
+
+    from haive.agents.simple.agent import SimpleAgent
+    from haive.agents.simple.config import SimpleAgentConfig
+    from haive.core.engine.aug_llm.base import AugLLMConfig
 
     # Create unique thread ID for this test
     thread_id = "test-memory-123"
@@ -198,36 +196,36 @@ def test_memory_persistence():
             system_message="You are a helpful assistant that remembers information. Always refer to previous messages when responding."
         )
     )
-    
+
     # Create the agent - will use real LLM and MemorySaver
     agent = SimpleAgent(config=agent_config)
-    
+
     try:
         # FIRST INTERACTION - Introduce a name
         first_message = HumanMessage(content="Hello, my name is TestUser.")
         first_input = {"input": "Hello, my name is TestUser."}
-        
+
         response1 = agent.run(first_input, thread_id=thread_id)
-        
-        # Verify first response 
+
+        # Verify first response
         assert response1 is not None
-        
+
         # SECOND INTERACTION - Ask if it remembers
         second_input = {"input": "What's my name?"}
         response2 = agent.run(second_input, thread_id=thread_id)
-        
+
         # Verify we got a response
         assert response2 is not None
-        
+
         # Print the interaction for debugging
         print("\nFirst interaction (Memory):")
         print(f"Input: {first_input}")
         print(f"Output: {response1}")
-        
+
         print("\nSecond interaction (Memory):")
         print(f"Input: {second_input}")
         print(f"Output: {response2}")
-        
+
         print("\n✅ Memory persistence test complete")
     except Exception as e:
         print(f"Error in memory test: {e}")
@@ -239,19 +237,19 @@ def test_memory_persistence():
 def test_postgres_persistence():
     """Test PostgreSQL persistence if available."""
     # Import the necessary components
-    from haive_core.engine.aug_llm import AugLLMConfig
-    from haive_agents.simple.config import SimpleAgentConfig
-    from haive_agents.simple.agent import SimpleAgent
-    from haive_core.engine.agent.persistence.postgres_config import PostgresCheckpointerConfig
-    from langchain_core.messages import HumanMessage
+
+    from haive.agents.simple.agent import SimpleAgent
+    from haive.agents.simple.config import SimpleAgentConfig
+    from haive.core.engine.agent.persistence.postgres_config import PostgresCheckpointerConfig
+    from haive.core.engine.aug_llm.base import AugLLMConfig
 
     # Set up prerequisites for PostgreSQL
     if not POSTGRES_AVAILABLE:
         print("PostgreSQL dependencies not available, but continuing with test")
-    
+
     # Create unique thread ID for this test
     thread_id = f"postgres-test-{uuid.uuid4()}"
-    
+
     # Create PostgreSQL persistence config
     postgres_config = PostgresCheckpointerConfig(
         db_host="localhost",
@@ -271,34 +269,34 @@ def test_postgres_persistence():
             system_message="You are a helpful assistant that remembers information. Always refer to previous messages when responding."
         )
     )
-    
+
     # Create the agent - will use real LLM and PostgreSQL persistence
     agent = SimpleAgent(config=agent_config)
-    
+
     try:
         # FIRST INTERACTION - Introduce a name
         first_input = {"input": "Hello, my name is PostgresUser."}
         response1 = agent.run(first_input, thread_id=thread_id)
-        
-        # Verify first response 
+
+        # Verify first response
         assert response1 is not None
-        
+
         # SECOND INTERACTION - Ask if it remembers
         second_input = {"input": "What's my name?"}
         response2 = agent.run(second_input, thread_id=thread_id)
-        
+
         # Verify we got a response
         assert response2 is not None
-        
+
         # Print for debugging
         print("\nFirst interaction (PostgreSQL):")
         print(f"Input: {first_input}")
         print(f"Output: {response1}")
-        
+
         print("\nSecond interaction (PostgreSQL):")
         print(f"Input: {second_input}")
         print(f"Output: {response2}")
-        
+
         print("\n✅ PostgreSQL persistence test complete")
     except Exception as e:
         print(f"Error in PostgreSQL test: {e}")
