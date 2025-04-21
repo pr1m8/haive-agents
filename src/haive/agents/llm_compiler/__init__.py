@@ -10,7 +10,7 @@ The agent features:
 3. Joiner - Processes results and decides whether to provide final answer or replan
 
 Usage:
-    from haive_agents.llm_compiler import LLMCompilerAgent, LLMCompilerAgentConfig
+    from haive.agents.llm_compiler import LLMCompilerAgent, LLMCompilerAgentConfig
     
     # Create with default configuration
     agent = LLMCompilerAgent(LLMCompilerAgentConfig())

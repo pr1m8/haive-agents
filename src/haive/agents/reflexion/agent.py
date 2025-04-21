@@ -9,7 +9,7 @@ from langgraph.types import Command
 from haive.agents.reflexion.config import ReflexionConfig
 from haive.agents.reflexion.responder_with_retries import ResponderWithRetries
 
-#from haive_agents.reflexion.aug_llms import initial_answer_chain,revision_chain
+#from haive.agents.reflexion.aug_llms import initial_answer_chain,revision_chain
 from haive.agents.reflexion.utils import _get_num_iterations
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.aug_llm.base import AugLLMConfig

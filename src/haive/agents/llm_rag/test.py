@@ -7,8 +7,8 @@ from langchain_community.document_loaders import WebBaseLoader
 
 from haive.agents.rag.llm_rag.agent import LLMRAGAgent
 
-# from haive_agents.rag.base.config import BaseRAGConfig
-# from haive_agents.rag.base.agent import BaseRAGAgent
+# from haive.agents.rag.base.config import BaseRAGConfig
+# from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.llm_rag.config import LLMRAGConfig
 from haive.core.engine.retriever import VectorStoreRetrieverConfig
 from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig

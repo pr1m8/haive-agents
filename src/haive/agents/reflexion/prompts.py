@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from haive.agents.reflexion.models import AnswerQuestion, ReviseAnswer
 
-#from haive_agents.reflexion.responder_with_retries import ResponderWithRetries
+#from haive.agents.reflexion.responder_with_retries import ResponderWithRetries
 
 actor_prompt_template = ChatPromptTemplate.from_messages(
     [

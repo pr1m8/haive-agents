@@ -151,7 +151,7 @@ class RewooAgent(AgentArchitecture):
         """
         # Use default config if none provided
         if config is None:
-            #from haive_agents.rewoo.config import DEFAULT_CONFIG
+            #from haive.agents.rewoo.config import DEFAULT_CONFIG
             config = RewooAgentConfig()
             
         # Call parent constructor

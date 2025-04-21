@@ -32,7 +32,7 @@ from langchain_core.runnables import (
     RunnablePassthrough,
 )
 
-#from haive_agents.tnt.utils import invoke_taxonomy_chain
+#from haive.agents.tnt.utils import invoke_taxonomy_chain
 from langgraph.graph import END, START
 from langgraph.types import Command
 from pydantic import Field

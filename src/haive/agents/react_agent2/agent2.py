@@ -572,6 +572,6 @@ def create_react_agent(
 
     # Build and return agent
     return config.build_agent()
-#from haive_tools.tools.search_tools import tavily_search_tool
+#from haive.tools.tools.search_tools import tavily_search_tool
 #a = create_react_agent(tools=[tavily_search_tool],model="gpt-4o")
 #a.chat()

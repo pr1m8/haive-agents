@@ -16,7 +16,7 @@ from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
 from haive.core.engine.aug_llm.base import AugLLMConfig, AugLLMFactory
 from haive.core.models.llm.base import AzureLLMConfig
 from haive.core.utils.visualize_graph_utils import render_and_display_graph
-from haive_tools.tools.search_tools import tavily_search_tool
+from haive.tools.tools.search_tools import tavily_search_tool
 
 
 # Utility function to determine whether to continue execution

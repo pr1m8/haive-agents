@@ -1,7 +1,7 @@
-"""from haive_agents.memory_agent.agent import MemoryAgent
-from haive_agents.memory_agent.config import MemoryAgentConfig
-from haive_agents.memory_agent.state import MemoryAgentState, MemoryItem, KnowledgeTriple
-from haive_agents.memory_agent.memory_utils import (
+"""from haive.agents.memory_agent.agent import MemoryAgent
+from haive.agents.memory_agent.config import MemoryAgentConfig
+from haive.agents.memory_agent.state import MemoryAgentState, MemoryItem, KnowledgeTriple
+from haive.agents.memory_agent.memory_utils import (
     create_memory_vectorstore,
     save_unstructured_memories,
     save_structured_memories,
