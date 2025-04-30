@@ -14,4 +14,4 @@ class IterativeSummarizerConfig(AgentConfig):
         'initial_summary':initial_summary_aug_llm,
         'refine_summary':refine_summary_aug_llm
     },description="The configuration for the Augmented LLMs.")
-    
+    checkpoint_mode: str = Field(default="async",description="The checkpoint mode for the iterative summarizer.")
