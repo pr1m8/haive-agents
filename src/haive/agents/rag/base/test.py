@@ -71,6 +71,7 @@ def main():
 
     logger.info(f"Running query with agent 1: {query}")
     result_1 = rag_agent_1.run({"query": query})
+    logger.info(f"Result 1: {result_1}")
     state_1 = result_1.values  # ✅ FIXED
 
     logger.info(f"Running query with agent 2: {query}")
