@@ -2,7 +2,7 @@ from haive.core.engine.agent.agent import register_agent, Agent
 from agents.document_agents.kg.kg_map_merge.config import ParallelKGAgentConfig
 from agents.document_agents.kg.kg_map_merge.state import ParallelKGState
 from haive.core.engine.aug_llm import compose_runnable
-from src.haive.flstaesr_backup.transform.graph_transform.base import GraphTransformer
+from haive.haive.flstaesr_backup.transform.graph_transform.base import GraphTransformer
 from agents.document_agents.kg.kg_map_merge.engines import (
     schema_extraction_engine, 
     kg_extraction_engine, 
