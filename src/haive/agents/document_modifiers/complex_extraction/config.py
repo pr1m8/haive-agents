@@ -1,9 +1,11 @@
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.agents.document_modifiers.complex_extraction.state import ComplexExtractionState
+from haive.agents.document_modifiers.complex_extraction.state import ComplexExtractionInput,ComplexExtractionOutput,ComplexExtractionState
 from pydantic import BaseModel, Field
 from typing import Optional, Type
 from haive.core.models.llm.base import AzureLLMConfig   
+from haive.core.engine.agent.agent import RunnableConfig
+import uuid
 
 class ComplexExtractionAgentConfig(AgentConfig):
     """
@@ -40,4 +42,19 @@ class ComplexExtractionAgentConfig(AgentConfig):
         default=True,
         description="Whether to use JSONPatch retries for validation"
     )
+    runnable_config: RunnableConfig = Field(
+        default=RunnableConfig(
+            configurable={"thread_id": str(uuid.uuid4())},
+            debug=True
+        ),
+        description="The runnable configuration to use for the agent"
+    )
 
+    input_schema: Type[BaseModel] = Field(
+        default=ComplexExtractionInput,
+        description="The input schema for the agent"
+    )
+    output_schema: Type[BaseModel] = Field(
+        default=ComplexExtractionOutput,
+        description="The output schema for the agent"   
+    )

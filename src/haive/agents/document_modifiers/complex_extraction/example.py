@@ -2,7 +2,7 @@
 # Example usage
 from typing import Optional
 from langchain_core.messages import HumanMessage
-from haive.agents.document_modifiers.complex_extraction.agent import create_complex_extraction_agent
+from haive.agents.document_modifiers.complex_extraction.factory import create_complex_extraction_agent
 
 
 if __name__ == "__main__":
@@ -23,7 +23,9 @@ if __name__ == "__main__":
     )
     
     # Run extraction
-    result = agent.app.invoke({'messages':[HumanMessage(content="John Smith is a 42-year-old software developer living in New York.")]},debug=True,config={'configurable':{'thread_id':4}})
+    result = agent.run({'messages':[HumanMessage(content=\
+        "John Smith is a 42-year-old software developer living in New York.")]},
+            debug=True)
     print(result)
     # Print the extracted data
-    print(result["extracted_data"])
+    #print(result)
