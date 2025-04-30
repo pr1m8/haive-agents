@@ -1,6 +1,6 @@
 from agents.base import Agent,register_agent
 from agents.simple.agent import SimpleAgentConfig
-from haive.core.aug_llm.base import AugLLMConfig
+from haive.core.aug_llm import AugLLMConfig
 from pydantic import Field
 from haive.core.models.llm.base import AzureLLMConfig
 from pydantic import BaseModel

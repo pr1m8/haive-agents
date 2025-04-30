@@ -93,7 +93,7 @@ def example_with_custom_state_schema():
         name="custom_state_llm",
         llm_config=AzureLLMConfig(model="gpt-4o"),
         prompt_template=prompt,
-        #output_parser=StrOutputParser(),
+        output_parser=StrOutputParser(),
         system_prompt="You are a helpful assistant.",
     )
     

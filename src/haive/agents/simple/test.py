@@ -1,7 +1,7 @@
 from haive.agents.simple.config import SimpleAgentConfig
 from haive.agents.simple.agent import SimpleAgent
 from pydantic import BaseModel, Field
-from haive.core.engine.aug_llm.base import AugLLMConfig
+from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.schema_composer import SchemaComposer
 
 class Plan(BaseModel):

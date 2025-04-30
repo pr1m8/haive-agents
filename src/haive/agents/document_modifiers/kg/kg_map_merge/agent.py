@@ -6,7 +6,7 @@ from langgraph.graph import START, END
 from langgraph.types import Command, Send
 from langgraph.constants import Send
 from haive.core.engine.agent.agent import Agent, register_agent
-from haive.core.aug_llm.base import AugLLMConfig
+from haive.core.aug_llm import AugLLMConfig
 from haive.haive.flstaesr_backup.transform.graph_transform.base import GraphTransformer
 from haive.core.engine.agent.agent import AgentConfig
 import operator

@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
-from haive.core.aug_llm.base import AugLLMConfig
+from haive.core.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 
 # Import the models
