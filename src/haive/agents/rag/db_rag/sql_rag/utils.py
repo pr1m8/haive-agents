@@ -30,7 +30,7 @@ def create_sql_toolkit(
     
     # Initialize LLM
     if llm_config:
-        llm = llm_config.instantiate_llm()
+        llm = llm_config.instantiate()
     else:
         # Default to OpenAI
         llm = ChatOpenAI(model="gpt-4o", temperature=0)
