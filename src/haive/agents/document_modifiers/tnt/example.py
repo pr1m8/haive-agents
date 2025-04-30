@@ -1,7 +1,7 @@
 
 from IPython.display import Markdown    
-from agents.tnt.agent import TaxonomyAgent, TaxonomyAgentConfig
-from agents.tnt.state import TaxonomyGenerationState
+from haive.agents.document_modifiers.tnt.agent import TaxonomyAgent, TaxonomyAgentConfig
+from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 
 #Markdown(format_taxonomy_md(step["__end__"]["clusters"][-1]))
 
@@ -9,7 +9,7 @@ from agents.tnt.state import TaxonomyGenerationState
 agent = TaxonomyAgent(TaxonomyAgentConfig())
 agent.visualize_graph()
 from langchain_community.document_loaders import WebBaseLoader
-from agents.tnt.models import Doc
+from haive.agents.document_modifiers.tnt.models import Doc
 tutorial_doc = WebBaseLoader('https://langchain-ai.github.io/langgraph/tutorials/tnt-llm/tnt-llm/').load()
 tutorial_2_doc = WebBaseLoader('https://langchain-ai.github.io/langgraph/tutorials/reflection/reflection/').load()
 #print(tutorial_doc)

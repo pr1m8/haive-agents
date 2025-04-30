@@ -219,7 +219,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         )
         
         # 3. Create structured output node if needed
-        if self.config.structured_output_model:
+        has_structured_output = self.config.structured_output_model is not None
+        if has_structured_output:
             structured_node = self._create_structured_output_node()
             graph_builder.add_node(
                 name="structured_output_node", 
@@ -228,57 +229,47 @@ class ReactAgent(Agent[ReactAgentConfig]):
             )
         
         # 4. Define branch for conditional routing
-        def should_continue(state):
-            """Determine where to route based on the last message."""
+        def should_use_tools(state):
+            """Determine if we should route to tools based on the last message."""
             # Normalize state if needed
             if hasattr(state, "model_dump"):
                 state_dict = state.model_dump()
             else:
-                state_dict = state
+                state_dict = dict(state)
                 
-            # Get messages
-            messages = state_dict.get("messages", [])
-            if not messages:
-                return END if self.config.structured_output_model is None else "structured_output_node"
-                
-            # Get the last message
-            last_message = messages[-1]
-            
-            # Check for tool calls
-            if has_tool_calls({"messages": [last_message]}):
-                return self.config.tool_node_name
-            else:
-                return "structured_output_node" if self.config.structured_output_model else END
+            # Check if the last message has tool calls
+            return has_tool_calls(state_dict)
         
-        # 5. Add conditional edge from agent to tools or end
-        branch = Branch(
-            function=should_continue,
-            destinations={
-                self.config.tool_node_name: self.config.tool_node_name,
-                "structured_output_node": "structured_output_node" if self.config.structured_output_model else END,
-                END: END
-            },
-            default=END
-        )
+        # 5. Add conditional edges from agent node
+        if has_structured_output:
+            # With structured output: Agent → (Tools or StructuredOutput)
+            graph_builder.add_conditional_edges(
+                self.config.agent_node_name,
+                should_use_tools,
+                {
+                    True: self.config.tool_node_name,
+                    False: "structured_output_node"
+                }
+            )
+        else:
+            # Without structured output: Agent → (Tools or END)
+            graph_builder.add_conditional_edges(
+                self.config.agent_node_name,
+                should_use_tools,
+                {
+                    True: self.config.tool_node_name,
+                    False: END
+                }
+            )
         
-        graph_builder.add_conditional_edges(
-            self.config.agent_node_name,
-            should_continue,
-            {
-                'continue': self.config.agent_node_name,
-                '__end__': END
-            }
-        )
-        
-        # 6. Add edge from tools back to agent
+        # 6. Always route tools back to agent for the next reasoning step
         graph_builder.add_edge(self.config.tool_node_name, self.config.agent_node_name)
         
         # 7. Set entry point
         graph_builder.set_entry_point(self.config.agent_node_name)
         
-        # 8. Build and compile the graph
+        # 8. Build the graph
         self.graph = graph_builder.build()
-        
         
         logger.info(f"Workflow set up successfully for {self.config.name}")
     

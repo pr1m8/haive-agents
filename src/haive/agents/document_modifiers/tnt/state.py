@@ -17,7 +17,7 @@ Example:
 from typing import Annotated, List
 from pydantic import BaseModel, Field
 import operator
-from .models import Doc
+from haive.agents.document_modifiers.tnt.models import Doc
 from langchain_core.documents import Document
 class TaxonomyGenerationState(BaseModel):
     """Represents the state passed between graph nodes in the taxonomy generation process.

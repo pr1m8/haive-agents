@@ -11,7 +11,7 @@ Example:
         # Returns either 'update_taxonomy' or 'review_taxonomy'
 """
 
-from .state import TaxonomyGenerationState
+from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 #from langchain_core.runnables import RunnableConfig
 #from langchain_core.tools import Runnable
 def should_review(state: TaxonomyGenerationState) -> str:

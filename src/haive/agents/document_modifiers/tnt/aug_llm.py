@@ -23,7 +23,7 @@ from langchain_core.prompts import ChatPromptTemplate, SystemMessagePromptTempla
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from agents.tnt.utils import parse_taxonomy, parse_summary
+from haive.agents.document_modifiers.tnt.utils import parse_taxonomy, parse_summary
 # System Message: Provides instructions and context
 SUMMARY_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
     prompt=PromptTemplate(

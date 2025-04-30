@@ -24,11 +24,11 @@ Example:
 """
 
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
-from agents.tnt.state import TaxonomyGenerationState
+from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 from pydantic import Field
 from langchain_core.runnables import RunnableConfig
 import random
-from agents.tnt.aug_llm import (
+from haive.agents.document_modifiers.tnt.aug_llm import (
     taxonomy_review_aug_llm_config,
     summary_aug_llm_config,
     taxonomy_generation_aug_llm_config,
@@ -37,9 +37,9 @@ from agents.tnt.aug_llm import (
 
 #from haive_agents.tnt.utils import invoke_taxonomy_chain
 from langgraph.graph import END, START, StateGraph
-from agents.tnt.branches import should_review
+from haive.agents.document_modifiers.tnt.branches import should_review
 from langchain_core.runnables import RunnablePassthrough, RunnableLambda, RunnableMap
-from agents.tnt.utils import parse_summary, format_docs, format_taxonomy
+from haive.agents.document_modifiers.tnt.utils import parse_summary, format_docs, format_taxonomy
 from typing import Dict, Any, List
 from langgraph.types import Command
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -51,7 +51,7 @@ class TaxonomyAgentConfig(AgentConfig):
     )
     visualize: bool = Field(default=True, description="Whether to visualize the agent.")
     name: str = Field(default="TaxonomyAgent", description="The name of the agent.")
-    
+    # TODO: This should be a RunnableConfig
     runtime_config: Dict[str, Any] = Field(
         default_factory=lambda: {
             "configurable": {

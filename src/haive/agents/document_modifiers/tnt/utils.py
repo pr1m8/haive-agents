@@ -22,7 +22,7 @@ Example:
 import re
 from typing import Dict, List
 from IPython.display import Markdown
-from agents.tnt.state import TaxonomyGenerationState
+from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 from langchain_core.runnables import Runnable, RunnableConfig
 from langchain_core.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain_core.output_parsers import StrOutputParser

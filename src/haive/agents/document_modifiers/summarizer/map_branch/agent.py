@@ -170,12 +170,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         #print(documents)
         return sum(self.config.engines["reduce_chain"].llm_config.instantiate(model="gpt-4o").get_num_tokens(doc.page_content) for doc in documents)
 
-    async def arun(self, contents: List[str]) -> str:
-            """Run the summarization workflow and return the final summary."""
-            #app = self.graph.compile()
-            async for output in self.app.astream({"contents": contents},config=self.runnable_config,debug=True):
-                print(output)
-            return self.app
+
 
 def build_agent() -> SummarizerAgent:
     return SummarizerAgent(SummarizerAgentConfig())

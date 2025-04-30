@@ -1,6 +1,6 @@
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.agents.document_modifiers.summarizer.iterative_refinement.state import IterativeSummarizerState
+from haive.agents.document_modifiers.summarizer.iterative_refinement.state import IterativeSummarizerState,IterativeSummarizerInput,IterativeSummarizerOutput
 from haive.agents.document_modifiers.summarizer.iterative_refinement.engines import initial_summary_aug_llm,refine_summary_aug_llm
 from typing import Dict
 from pydantic import Field  
@@ -9,6 +9,8 @@ class IterativeSummarizerConfig(AgentConfig):
     """
     The configuration for the iterative summarizer.
     """
+    input_schema: IterativeSummarizerInput = Field(default=IterativeSummarizerInput,description="The input of the iterative summarizer.")
+    output_schema: IterativeSummarizerOutput = Field(default=IterativeSummarizerOutput,description="The output of the iterative summarizer.")
     state_schema: IterativeSummarizerState = Field(default=IterativeSummarizerState,description="The state of the iterative summarizer.")
     engines: Dict[str,AugLLMConfig] = Field(default={
         'initial_summary':initial_summary_aug_llm,

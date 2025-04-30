@@ -14,6 +14,7 @@ class SummarizerAgentConfig(AgentConfig):
     output_schema: OutputState = Field(default=OutputState)
     #should_visualize_graph: bool = True
     visualize: bool = True
+    checkpoint_mode: str = Field(default="async",description="The checkpoint mode for the summarizer.")
     #visualize_graph_output_name: str = "summarizer_agent_graph.png"
     def build_agent(self):
         from haive.agents.document_modifiers.summarizer.map_branch.agent import SummarizerAgent

@@ -1,10 +1,10 @@
-from agents.document_agents.kg.kg_iterative_refinement.config import IterativeGraphTransformerConfig      
-from agents.document_agents.kg.kg_iterative_refinement.state import IterativeGraphTransformerState
+from haive.agents.document_modifiers.kg.kg_iterative_refinement.config import IterativeGraphTransformerConfig      
+from haive.agents.document_modifiers.kg.kg_iterative_refinement.state import IterativeGraphTransformerState
 from langchain_core.runnables import RunnableConfig
 from langgraph.types import Command
 from langchain_community.graphs.graph_document import GraphDocument
 from haive.core.engine.agent.agent import Agent, register_agent
-from agents.document_agents.kg.kg_iterative_refinement.utils import replace_empty_placeholders
+from haive.agents.document_modifiers.kg.kg_iterative_refinement.utils import replace_empty_placeholders
 from haive.haive.flstaesr_backup.transform.graph_transform.base import GraphTransformer
 from langgraph.graph import START,END
 @register_agent(IterativeGraphTransformerConfig)

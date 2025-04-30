@@ -279,7 +279,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             from langchain_core.language_models import BaseChatModel
             
             # Convert to a chat model if needed
-            llm = llm_config.instantiate_llm()
+            llm = llm_config.instantiate()
             
             # Create structured output version
             llm_with_structured_output = llm.with_structured_output(model_class)

@@ -17,7 +17,7 @@ config = IterativeSummarizerConfig(
 
 agent = IterativeSummarizer(config)
 async def main():   
-    result = await agent.arun({"contents": test_docs},config=agent.config.runnable_config)
+    result = await agent.arun({"contents": test_docs},debug=True)
     print(result)
 if __name__ == "__main__":
     asyncio.run(main())

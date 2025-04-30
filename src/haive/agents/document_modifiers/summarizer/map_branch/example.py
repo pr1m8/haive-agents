@@ -11,7 +11,7 @@ async def main():
     
     print(summarizer.length_function(documents))
     documents = [Document(page_content=clean_and_format_text(d.page_content),metadata=d.metadata) for d in documents]
-    await summarizer.arun(documents)
+    await summarizer.arun({'contents':documents},debug=True)
     #print(documents)
     #from langchain_community.document_transformers import Html2TextTransformer,MarkdownifyTransformer,BeautifulSoupTransformer,\
         #DoctranQATransformer,DoctranPropertyExtractor,OpenAIMetadataTagger,LongContextReorder,NucliaTextTransformer

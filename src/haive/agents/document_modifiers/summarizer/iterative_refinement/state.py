@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage
 
 
-class InputState(BaseModel):
+class IterativeSummarizerInput(BaseModel):
     """
     Input for the summarizer – supports string, Document, message, or dict content.
     """
@@ -31,14 +31,14 @@ class InputState(BaseModel):
         return normalized
 
 
-class OutputState(BaseModel):
+class IterativeSummarizerOutput(BaseModel):
     """
     Output for the summarizer – stores the final summary result.
     """
     summary: str = Field(default="", description="The final summary of the input contents.")
 
 
-class IterativeSummarizerState(InputState, OutputState):
+class IterativeSummarizerState(IterativeSummarizerInput, IterativeSummarizerOutput):
     """
     Full state for the iterative summarizer agent – tracks progress and summary.
     """
