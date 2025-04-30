@@ -58,3 +58,4 @@ class ComplexExtractionAgentConfig(AgentConfig):
         default=ComplexExtractionOutput,
         description="The output schema for the agent"   
     )
+    
