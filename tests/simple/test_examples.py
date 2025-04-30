@@ -7,10 +7,10 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from pydantic import BaseModel, Field
 
-from haive_core.engine.aug_llm import AugLLMConfig
-from haive_core.models.llm.base import AzureLLMConfig
-from haive_agents.simple.factory import create_simple_agent
-from haive_agents.simple.config import SimpleAgentConfig
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
+from agents.simple.factory import create_simple_agent
+from agents.simple.config import SimpleAgentConfig
 
 def test_basic_agent():
     """Test a basic SimpleAgent with default settings."""

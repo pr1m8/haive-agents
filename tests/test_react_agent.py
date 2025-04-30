@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 print(f"sys.path: {sys.path}")
 # Import agent
-from haive_agents.react_agent2.agent2 import create_react_agent
-from haive_core.models.llm.base import AzureLLMConfig
+from agents.react_agent2.agent2 import create_react_agent
+from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.tools import tool
 
 # Simple tools for testing

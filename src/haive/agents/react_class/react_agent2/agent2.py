@@ -299,7 +299,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     state_dict = dict(state)
                 
                 # Get the LLM from engine
-                llm = self.config.engine.llm_config.instantiate_llm()
+                llm = self.config.engine.llm_config.instantiate()
                 
                 # Add structured output capability
                 llm_with_structured_output = llm.with_structured_output(

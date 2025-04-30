@@ -4,10 +4,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from haive_agents.simple.config import SimpleAgentConfig
-from haive_agents.simple.state import SimpleAgentState
-from haive_agents.simple.factory import create_simple_agent
-from haive_core.engine.aug_llm import AugLLMConfig
+from agents.simple.config import SimpleAgentConfig
+from agents.simple.state import SimpleAgentState
+from agents.simple.factory import create_simple_agent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 def test_simple_agent_schema():
     """Test a simple agent with the updated schema."""

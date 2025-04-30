@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 # Try to import SimpleAgentState
 try:
-    from haive_agents.simple.state import SimpleAgentState
+    from agents.simple.state import SimpleAgentState
     logger.info(f"Successfully imported SimpleAgentState: {SimpleAgentState}")
     
     # Create an instance
@@ -38,7 +38,7 @@ except ImportError as e:
     
     # Let's see what SchemaComposer can create
     try:
-        from haive_core.schema.schema_composer import SchemaComposer
+        from haive.core.schema.schema_composer import SchemaComposer
         
         # Create a simple state schema with messages
         SimpleAgentState = SchemaComposer.create_message_state(

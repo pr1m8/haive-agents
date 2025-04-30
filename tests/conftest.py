@@ -13,24 +13,17 @@ import uuid
 
 from pydantic import Field
 from langchain_core.runnables import RunnableConfig
-
-from haive_core.engine.base import Engine, InvokableEngine, NonInvokableEngine, EngineType
-from haive_core.engine.aug_llm import AugLLMConfig
-from haive_core.engine.retriever import RetrieverConfig, RetrieverType
-from haive_core.engine.vectorstore import VectorStoreConfig, VectorStoreProvider
-from haive_core.engine.embeddings import EmbeddingsEngineConfig
-from haive_core.models.embeddings.base import HuggingFaceEmbeddingConfig
-from haive_core.models.llm.base import AzureLLMConfig, OpenAILLMConfig
+from haive.core.engine.base import Engine, InvokableEngine, NonInvokableEngine, EngineType
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.retriever import BaseRetrieverConfig, RetrieverType
+from haive.core.engine.vectorstore import VectorStoreConfig, VectorStoreProvider
+from haive.core.engine.embeddings import EmbeddingsEngineConfig
+from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
+from haive.core.models.llm.base import AzureLLMConfig, OpenAILLMConfig
 
 # --------------------------------------------------------------------
 # ✅ Add the project root to sys.path so imports work across project
 # --------------------------------------------------------------------
-def pytest_configure(config):
-    """Ensure project root is in sys.path for proper imports."""
-    root_path = Path(__file__).resolve().parent.parent
-    if str(root_path) not in sys.path:
-        sys.path.insert(0, str(root_path))
-        print(f"✅ Added project root to sys.path: {root_path}")
 
 # Optional: global root logger setup (safe)
 logging.basicConfig(
@@ -50,8 +43,12 @@ def pytest_runtest_setup(item):
 
     # Clear existing handlers
     root_logger = logging.getLogger()
-    while root_logger.handlers:
-        root_logger.removeHandler(root_logger.handlers[0])
+    
+    # Properly close file handlers before removing them
+    for handler in list(root_logger.handlers):
+        if isinstance(handler, logging.FileHandler):
+            handler.close()  # Close file handlers properly
+        root_logger.removeHandler(handler)
 
     # Set up dual logging (file + console)
     file_handler = logging.FileHandler(log_file_path, mode="w")
@@ -198,9 +195,9 @@ def real_vectorstore_engine(real_embeddings_engine: EmbeddingsEngineConfig) -> V
     )
 
 @pytest.fixture
-def real_retriever_engine(real_vectorstore_engine: VectorStoreConfig) -> RetrieverConfig:
+def real_retriever_engine(real_vectorstore_engine: VectorStoreConfig) -> BaseRetrieverConfig:
     """Provides a real Retriever engine config instance."""
-    return RetrieverConfig(
+    return BaseRetrieverConfig(
         id=generate_test_id("real-retriever"),
         name=f"real_retriever_{uuid.uuid4().hex[:4]}",
         engine_type=EngineType.RETRIEVER,

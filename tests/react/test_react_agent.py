@@ -7,11 +7,11 @@ from typing import Dict, Any, List
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.tools import StructuredTool
 
-from haive_agents.react.agent import ReactAgent
-from haive_agents.react.config import ReactAgentConfig
-from haive_agents.react.state import ReactAgentState
-from haive_core.engine.aug_llm import AugLLMConfig
-from haive_core.config.runnable import RunnableConfigManager
+from agents.react.agent import ReactAgent
+from agents.react.config import ReactAgentConfig
+from agents.react.state import ReactAgentState
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.config.runnable import RunnableConfigManager
 
 # Define tool functions (outside of test class to avoid fixture errors)
 def calc_add(a: int, b: int) -> str:
@@ -45,7 +45,7 @@ class TestReactAgent(unittest.TestCase):
         self.mock_aug_llm.bind_tools_kwargs = {}
         
         # IMPORTANT: Add the missing engine_type attribute
-        from haive_core.engine.base import EngineType
+        from haive.core.engine.base import EngineType
         self.mock_aug_llm.engine_type = EngineType.LLM
         
         # Create ReactAgentConfig
@@ -62,7 +62,7 @@ class TestReactAgent(unittest.TestCase):
         self.original_setup_workflow = ReactAgent.setup_workflow
         
         # Store and patch the compile method
-        self.compile_patcher = patch('src.haive.agents.react.agent.ReactAgent.compile')
+        self.compile_patcher = patch('haive.agents.react.agent.ReactAgent.compile')
         self.mock_compile = self.compile_patcher.start()
         
         # Create mock graph
@@ -76,7 +76,7 @@ class TestReactAgent(unittest.TestCase):
     
     def test_initialization(self):
         """Test proper initialization of ReactAgent."""
-        with patch('src.haive.agents.react.agent.ReactAgent.setup_workflow'):
+        with patch('haive.agents.react.agent.ReactAgent.setup_workflow'):
             agent = ReactAgent(self.agent_config)
             
             # Verify tools were prepared
@@ -90,10 +90,10 @@ class TestReactAgent(unittest.TestCase):
             self.assertEqual(agent.version, "v1")
     def test_setup_workflow(self):
         """Test workflow setup."""
-        from haive_core.graph.dynamic_graph_builder import DynamicGraph
+        from haive.core.graph.dynamic_graph_builder import DynamicGraph
 
         # Create the agent with a patched compile method
-        with patch('src.haive.agents.react.agent.ReactAgent.compile'):
+        with patch('haive.agents.react.agent.ReactAgent.compile'):
             # Create agent with workflow setup
             agent = ReactAgent(self.agent_config)
 
@@ -168,7 +168,7 @@ class TestReactAgent(unittest.TestCase):
     def test_run_with_string_input(self):
         """Test running the agent with a string input."""
         # Patch ReactAgent.run to avoid actual execution
-        with patch('src.haive.agents.simple.agent.SimpleAgent.run') as mock_run:
+        with patch('haive.agents.simple.agent.SimpleAgent.run') as mock_run:
             # Set up the mock return
             mock_run.return_value = {
                 "messages": [
@@ -179,7 +179,7 @@ class TestReactAgent(unittest.TestCase):
             }
             
             # Create agent with init patched
-            with patch('src.haive.agents.react.agent.ReactAgent.setup_workflow'):
+            with patch('haive.agents.react.agent.ReactAgent.setup_workflow'):
                 agent = ReactAgent(self.agent_config)
                 
                 # Run with string input
@@ -198,7 +198,7 @@ class TestReactAgent(unittest.TestCase):
     def test_arun(self):
         """Test asynchronous running of the agent."""
         # Patch ReactAgent.arun to avoid actual execution
-        with patch('src.haive.agents.simple.agent.SimpleAgent.arun') as mock_arun:
+        with patch('haive.agents.simple.agent.SimpleAgent.arun') as mock_arun:
             # Set up the mock return
             mock_arun.return_value = {
                 "messages": [
@@ -209,7 +209,7 @@ class TestReactAgent(unittest.TestCase):
             }
             
             # Create agent with init patched
-            with patch('src.haive.agents.react.agent.ReactAgent.setup_workflow'):
+            with patch('haive.agents.react.agent.ReactAgent.setup_workflow'):
                 agent = ReactAgent(self.agent_config)
                 
                 # Run async with string input
@@ -238,7 +238,7 @@ class TestReactAgent(unittest.TestCase):
         )
         
         # Create agent with init patched
-        with patch('src.haive.agents.react.agent.ReactAgent.setup_workflow'):
+        with patch('haive.agents.react.agent.ReactAgent.setup_workflow'):
             agent = ReactAgent(self.agent_config)
             
             # Update agent's runnable config
@@ -251,7 +251,7 @@ class TestReactAgent(unittest.TestCase):
     
     def test_tool_execution(self):
         """Test tool execution logic."""
-        from haive_agents.react.tool_utils import create_tool_executor
+        from agents.react.tool_utils import create_tool_executor
         
         # Create a tool executor
         executor = create_tool_executor(self.tools)

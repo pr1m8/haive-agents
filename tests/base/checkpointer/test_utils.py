@@ -170,8 +170,8 @@ class MockEngineBuilder:
         Returns:
             A dict with the mock LLM configuration
         """
-        from haive_core.engine.aug_llm import AugLLMConfig
-        from haive_core.models.llm.base import AzureLLMConfig
+        from haive.core.engine.aug_llm import AugLLMConfig
+        from haive.core.models.llm.base import AzureLLMConfig
         
         # Create the mock LLM
         mock_llm = MockLLM(

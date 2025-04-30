@@ -6,11 +6,11 @@ import uuid
 from typing import Dict, Any, List
 from pydantic import BaseModel, Field
 
-from haive_core.engine.agent.config import AgentConfig
-from haive_core.engine.agent.agent import Agent, SimpleAgent, SimpleAgentConfig
-from haive_core.engine.aug_llm import AugLLMConfig
-from haive_core.engine.base import EngineRegistry
-from haive_core.config.runnable import RunnableConfigManager
+from haive.core.engine.agent.config import AgentConfig
+from haive.core.engine.agent.agent import Agent, SimpleAgent, SimpleAgentConfig
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.base import EngineRegistry
+from haive.core.config.runnable import RunnableConfigManager
 from langchain_core.messages import HumanMessage
 
 # Test creating simple agent
