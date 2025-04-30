@@ -6,7 +6,7 @@ import json
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from agents.self_discover.agent2 import create_self_discover_agent, SelfDiscoverAgent
+from haive.agents.reasoning_and_critique.self_discover.agent2 import create_self_discover_agent, SelfDiscoverAgent
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -25,7 +25,8 @@ def example_math_problem():
     
     print(f"Solving math problem: {problem}")
     result = agent.run(problem)
-    
+    print(result)
+    print(type(result))
     # Print full reasoning process
     print("\n=== SELECTED MODULES ===")
     print(result.get("selected_modules", ""))

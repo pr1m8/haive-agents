@@ -12,9 +12,9 @@ from langgraph.types import Command, Send
 from langchain_core.prompts import ChatPromptTemplate
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
-from agents.self_discover.config import SelfDiscoverAgentConfig
-from agents.self_discover.state import SelfDiscoverState
-from agents.self_discover.models import (
+from haive.agents.reasoning_and_critique.self_discover.config import SelfDiscoverAgentConfig
+from haive.agents.reasoning_and_critique.self_discover.state import SelfDiscoverState
+from haive.agents.reasoning_and_critique.self_discover.models import (
     ModuleSelectionResult, 
     ModuleAdaptationResult, 
     ReasoningStructure, 
@@ -41,7 +41,7 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
     def setup_workflow(self) -> None:
         """Set up the workflow graph for the SelfDiscover agent."""
         # Create a builder with our schema
-        gb = DynamicGraph(state_schema=self.state_schema)
+        gb = DynamicGraph(name=self.config.name,state_schema=self.state_schema)
         
         # Define node functions for each stage
         def select_modules(state: SelfDiscoverState) -> Command:
@@ -279,112 +279,11 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
         self.graph = gb.build()
         
         # Compile the graph
-        self.app = self.graph.compile(checkpointer=self.memory)
+        #self.app = self.graph.compile(checkpointer=self.memory)
         
         logger.info(f"Set up SelfDiscover workflow for {self.config.name}")
     
-    def _extract_string_result(self, result: Any) -> str:
-        """Extract a string result from the engine output regardless of type."""
-        if isinstance(result, str):
-            return result
-        elif hasattr(result, 'content'):
-            return result.content
-        elif hasattr(result, 'final_answer'):
-            return result.final_answer
-        elif isinstance(result, dict):
-            if 'text' in result:
-                return result['text']
-            elif 'output' in result:
-                return result['output']
-            elif 'content' in result:
-                return result['content']
-            elif 'final_answer' in result:
-                return result['final_answer']
-            else:
-                # Try to serialize the whole dict as a fallback
-                try:
-                    return json.dumps(result)
-                except:
-                    return str(result)
-        else:
-            return str(result)
-    
-    def _prepare_input(self, input_data: Union[str, List[str], Dict[str, Any], BaseModel]) -> Any:
-        """
-        Prepare input for the SelfDiscover agent.
-        Overrides the base method to handle SelfDiscover-specific input preparation.
-        """
-        # Store reasoning modules as a formatted string
-        reasoning_modules_str = "\n".join(self.config.reasoning_modules)
-        
-        if isinstance(input_data, str):
-            # Single string to task description
-            return self.state_schema(
-                messages=[HumanMessage(content=input_data)],
-                task_description=input_data,
-                reasoning_modules=reasoning_modules_str
-            )
-        elif isinstance(input_data, list) and all(isinstance(item, str) for item in input_data):
-            # List of strings - join for task description
-            combined_text = "\n".join(input_data)
-            return self.state_schema(
-                messages=[HumanMessage(content=item) for item in input_data],
-                task_description=combined_text,
-                reasoning_modules=reasoning_modules_str
-            )
-        elif isinstance(input_data, dict):
-            # Dictionary input - ensure required fields
-            input_dict = dict(input_data)
-            
-            # Set reasoning modules if not provided
-            if "reasoning_modules" not in input_dict:
-                input_dict["reasoning_modules"] = reasoning_modules_str
-                
-            # Convert input or text to task_description if needed
-            if "task_description" not in input_dict:
-                if "input" in input_dict:
-                    input_dict["task_description"] = input_dict["input"]
-                elif "text" in input_dict:
-                    input_dict["task_description"] = input_dict["text"]
-                elif "messages" in input_dict and input_dict["messages"]:
-                    # Extract text from messages
-                    messages = input_dict["messages"]
-                    input_dict["task_description"] = "\n".join([
-                        m.content if hasattr(m, "content") else str(m)
-                        for m in messages
-                    ])
-            
-            # Ensure messages exist
-            if "messages" not in input_dict:
-                input_dict["messages"] = [HumanMessage(content=input_dict.get("task_description", ""))]
-                
-            return self.state_schema(**input_dict)
-        elif isinstance(input_data, BaseModel):
-            # Convert BaseModel to dict and process
-            data = input_data.model_dump() if hasattr(input_data, "model_dump") else input_data.dict()
-            return self._prepare_input(data)
-        else:
-            raise ValueError(f"Invalid input type: {type(input_data)}")
-    
-    def run(self, input_data: Union[str, List[str], Dict[str, Any], BaseModel], **kwargs) -> Dict[str, Any]:
-        """Run the SelfDiscover agent with the given input."""
-        # Use parent implementation
-        result = super().run(input_data, **kwargs)
-        
-        # Log key outputs for debugging
-        if self.config.debug:
-            if "selected_modules" in result:
-                logger.debug(f"Selected modules: {result['selected_modules'][:200]}...")
-            if "adapted_modules" in result:
-                logger.debug(f"Adapted modules: {result['adapted_modules'][:200]}...")
-            if "reasoning_structure" in result:
-                logger.debug(f"Reasoning structure: {result['reasoning_structure'][:200]}...")
-            if "answer" in result:
-                logger.debug(f"Answer: {result['answer'][:200]}...")
-            if "metadata" in result:
-                logger.debug(f"Metadata keys: {list(result['metadata'].keys())}")
-        
-        return result
+
 
 
 # Helper Functions

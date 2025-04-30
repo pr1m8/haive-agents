@@ -1,5 +1,5 @@
 #from.core.prompts.base import PromptTemplateConfig
-from agents.self_discover.models import ReasoningModules, Plan, AdaptedModules
+from haive.agents.reasoning_and_critique.self_discover.models import , Plan, AdaptedModules
 from haive.core.utils.parser_utils import parse_reasoning_modules_to_string
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.output_parsers import StrOutputParser

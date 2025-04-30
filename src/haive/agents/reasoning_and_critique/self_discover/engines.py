@@ -6,7 +6,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from agents.self_discover.models import (
+from haive.agents.reasoning_and_critique.self_discover.models import (
     ModuleSelectionResult, 
     ModuleAdaptationResult, 
     ReasoningStructure, 

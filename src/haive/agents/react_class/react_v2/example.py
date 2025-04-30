@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage
 from haive.agents.react_class.react_v2.config import ReactAgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-
+import uuid
 # 1. Define our tools
 def get_weather(location: str) -> str:
     """Get the current weather for a location."""
@@ -91,7 +91,7 @@ def simulate_react_agent_with_human():
     print("\n--- Starting Agent ---\n")
     
     # Start a thread for persistence
-    thread_id = "user-456"
+    thread_id = uuid.uuid4()
     
     # First run - this will likely request human input
     for i, state in enumerate(travel_agent.stream(user_input, thread_id=thread_id)):

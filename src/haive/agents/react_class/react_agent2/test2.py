@@ -7,8 +7,8 @@ from datetime import datetime
 
 from langchain_core.tools import Tool
 
-from agents.react_agent2.agent2 import create_react_agent
-from haive.config.settings import RESOURCES_DIR
+from haive.agents.react_class.react_agent2.agent2 import create_react_agent
+from haive.core.config.constants import RESOURCES_DIR
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

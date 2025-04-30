@@ -1,10 +1,10 @@
 from haive.core.engine.agent.agent import AgentArchitectureConfig
-from agents.self_discover.models import Plan
+#from haive.agents.reasoning_and_critique.self_discover.models import #Plan
 from pydantic import Field
 from typing import Optional
 from haive.core.engine.agent.agent import AgentArchitecture,AgentArchitectureConfig
-from agents.self_discover.aug_llms import step_reasoning_chain,select_chain,adapt_chain,structured_chain
-from agents.self_discover.state import SelfDiscoverState
+from haive.agents.reasoning_and_critique.self_discover.aug_llms import step_reasoning_chain,select_chain,adapt_chain,structured_chain
+from haive.agents.reasoning_and_critique.self_discover.state import SelfDiscoverState
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import HumanMessage
@@ -13,7 +13,7 @@ from langchain_core.prompts import PromptTemplate
 from typing import Dict
 from haive.core.engine.aug_llm import AugLLMConfig
 from langgraph.types import Command
-from agents.self_discover.models import AdaptedModules,AdaptedModule
+from haive.agents.reasoning_and_critique.self_discover.models import AdaptedModules,AdaptedModule
 class SelfDiscoverAgentConfig(AgentArchitectureConfig):
     """Configuration for the Self Discover Agent"""
     #task_description: str = Field(description="Task description")
