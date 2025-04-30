@@ -1,29 +1,29 @@
 06:25:43 [DEBUG] root: 📄 Logging to: logs/tests/test_postgres_persistent_agent.log
-06:25:43 [DEBUG] src.haive.core.engine.agent.persistence.postgres_config: PostgreSQL not available or pool not initialized
-06:25:43 [INFO] src.haive.core.engine.agent.persistence.postgres_config: Creating new PostgreSQL connection pool
-06:25:43 [INFO] src.haive.core.engine.agent.persistence.postgres_config: Successfully set up PostgreSQL tables
-06:25:43 [INFO] src.haive.core.engine.agent.persistence.handlers: Using PostgreSQL checkpointer for postgres_test_e769b289
-06:25:43 [DEBUG] src.haive.agents.simple.agent: Setting up workflow for SimpleAgent postgres_test_e769b289
-06:25:43 [DEBUG] src.haive.agents.simple.agent: Using unique node name: process_e3becf
-06:25:43 [INFO] src.haive.agents.simple.agent: Set up simple workflow for postgres_test_e769b289 with node process_e3becf
-06:25:43 [INFO] src.haive.core.graph.GraphBuilder: Graph visualization saved to resources/graphs/postgres_test_e769b289.png
-06:25:43 [INFO] src.haive.core.graph.GraphBuilder: Graph visualization saved to resources/graphs/postgres_test_e769b289_20250417_062543.png
-06:25:43 [DEBUG] src.haive.core.engine.agent.persistence.handlers: psycopg_pool not available
-06:25:43 [DEBUG] src.haive.core.engine.agent.persistence.handlers: No pool found but checkpointer has setup method
-06:25:43 [INFO] src.haive.core.engine.agent.persistence.handlers: Thread postgres_thread_34653cf8 registered/updated in PostgreSQL
-06:25:43 [DEBUG] src.haive.core.engine.agent.persistence.handlers: psycopg_pool not available
-06:25:43 [DEBUG] src.haive.core.engine.agent.persistence.handlers: No pool found but checkpointer has setup method
-06:25:43 [INFO] src.haive.core.engine.agent.agent: Found previous state for thread postgres_thread_34653cf8
-06:25:43 [INFO] src.haive.core.engine.agent.agent: Running agent postgres_test_e769b289 with thread_id: postgres_thread_34653cf8
-06:25:43 [ERROR] src.haive.core.graph.GraphBuilder: Error invoking runnable: variable messages should be a list of base messages, got messages=[HumanMessage(content='Hello, my name is PostgresUser.', additional_kwargs={}, response_metadata={}, id='2d4df5fa-1702-4cf0-9833-404a94551705')] input=None output=None context={} runnable_config={} of type <class 'src.haive.agents.simple.state.SimpleAgentState'>
-06:25:43 [INFO] src.haive.core.engine.agent.agent: State history saved to: resources/state_history/postgres_test_e769b289_20250417_062543.json
-06:25:44 [DEBUG] src.haive.core.engine.agent.persistence.handlers: psycopg_pool not available
-06:25:44 [DEBUG] src.haive.core.engine.agent.persistence.handlers: No pool found but checkpointer has setup method
-06:25:44 [INFO] src.haive.core.engine.agent.persistence.handlers: Thread postgres_thread_34653cf8 registered/updated in PostgreSQL
-06:25:44 [DEBUG] src.haive.core.engine.agent.persistence.handlers: psycopg_pool not available
-06:25:44 [DEBUG] src.haive.core.engine.agent.persistence.handlers: No pool found but checkpointer has setup method
-06:25:44 [INFO] src.haive.core.engine.agent.agent: Found previous state for thread postgres_thread_34653cf8
-06:25:44 [DEBUG] src.haive.core.engine.agent.utils.state_handling: Merged messages: 2 total
-06:25:44 [INFO] src.haive.core.engine.agent.agent: Running agent postgres_test_e769b289 with thread_id: postgres_thread_34653cf8
-06:25:44 [ERROR] src.haive.core.graph.GraphBuilder: Error invoking runnable: variable messages should be a list of base messages, got messages=[HumanMessage(content='Hello, my name is PostgresUser.', additional_kwargs={}, response_metadata={}, id='2d4df5fa-1702-4cf0-9833-404a94551705'), HumanMessage(content="What's my name?", additional_kwargs={}, response_metadata={}, id='ae50d522-efea-4874-b9ed-0f50e851a349')] input=None output=None context={} runnable_config={} of type <class 'src.haive.agents.simple.state.SimpleAgentState'>
-06:25:44 [INFO] src.haive.core.engine.agent.agent: State history saved to: resources/state_history/postgres_test_e769b289_20250417_062543.json
+06:25:43 [DEBUG] haive.core.engine.agent.persistence.postgres_config: PostgreSQL not available or pool not initialized
+06:25:43 [INFO] haive.core.engine.agent.persistence.postgres_config: Creating new PostgreSQL connection pool
+06:25:43 [INFO] haive.core.engine.agent.persistence.postgres_config: Successfully set up PostgreSQL tables
+06:25:43 [INFO] haive.core.engine.agent.persistence.handlers: Using PostgreSQL checkpointer for postgres_test_e769b289
+06:25:43 [DEBUG] haive.agents.simple.agent: Setting up workflow for SimpleAgent postgres_test_e769b289
+06:25:43 [DEBUG] haive.agents.simple.agent: Using unique node name: process_e3becf
+06:25:43 [INFO] haive.agents.simple.agent: Set up simple workflow for postgres_test_e769b289 with node process_e3becf
+06:25:43 [INFO] haive.core.graph.GraphBuilder: Graph visualization saved to resources/graphs/postgres_test_e769b289.png
+06:25:43 [INFO] haive.core.graph.GraphBuilder: Graph visualization saved to resources/graphs/postgres_test_e769b289_20250417_062543.png
+06:25:43 [DEBUG] haive.core.engine.agent.persistence.handlers: psycopg_pool not available
+06:25:43 [DEBUG] haive.core.engine.agent.persistence.handlers: No pool found but checkpointer has setup method
+06:25:43 [INFO] haive.core.engine.agent.persistence.handlers: Thread postgres_thread_34653cf8 registered/updated in PostgreSQL
+06:25:43 [DEBUG] haive.core.engine.agent.persistence.handlers: psycopg_pool not available
+06:25:43 [DEBUG] haive.core.engine.agent.persistence.handlers: No pool found but checkpointer has setup method
+06:25:43 [INFO] haive.core.engine.agent.agent: Found previous state for thread postgres_thread_34653cf8
+06:25:43 [INFO] haive.core.engine.agent.agent: Running agent postgres_test_e769b289 with thread_id: postgres_thread_34653cf8
+06:25:43 [ERROR] haive.core.graph.GraphBuilder: Error invoking runnable: variable messages should be a list of base messages, got messages=[HumanMessage(content='Hello, my name is PostgresUser.', additional_kwargs={}, response_metadata={}, id='2d4df5fa-1702-4cf0-9833-404a94551705')] input=None output=None context={} runnable_config={} of type <class 'haive.agents.simple.state.SimpleAgentState'>
+06:25:43 [INFO] haive.core.engine.agent.agent: State history saved to: resources/state_history/postgres_test_e769b289_20250417_062543.json
+06:25:44 [DEBUG] haive.core.engine.agent.persistence.handlers: psycopg_pool not available
+06:25:44 [DEBUG] haive.core.engine.agent.persistence.handlers: No pool found but checkpointer has setup method
+06:25:44 [INFO] haive.core.engine.agent.persistence.handlers: Thread postgres_thread_34653cf8 registered/updated in PostgreSQL
+06:25:44 [DEBUG] haive.core.engine.agent.persistence.handlers: psycopg_pool not available
+06:25:44 [DEBUG] haive.core.engine.agent.persistence.handlers: No pool found but checkpointer has setup method
+06:25:44 [INFO] haive.core.engine.agent.agent: Found previous state for thread postgres_thread_34653cf8
+06:25:44 [DEBUG] haive.core.engine.agent.utils.state_handling: Merged messages: 2 total
+06:25:44 [INFO] haive.core.engine.agent.agent: Running agent postgres_test_e769b289 with thread_id: postgres_thread_34653cf8
+06:25:44 [ERROR] haive.core.graph.GraphBuilder: Error invoking runnable: variable messages should be a list of base messages, got messages=[HumanMessage(content='Hello, my name is PostgresUser.', additional_kwargs={}, response_metadata={}, id='2d4df5fa-1702-4cf0-9833-404a94551705'), HumanMessage(content="What's my name?", additional_kwargs={}, response_metadata={}, id='ae50d522-efea-4874-b9ed-0f50e851a349')] input=None output=None context={} runnable_config={} of type <class 'haive.agents.simple.state.SimpleAgentState'>
+06:25:44 [INFO] haive.core.engine.agent.agent: State history saved to: resources/state_history/postgres_test_e769b289_20250417_062543.json
