@@ -9,10 +9,8 @@ class BaseRAGInputState(BaseModel):
 
 class BaseRAGOutputState(BaseModel):
     """Output state for RAG agents."""
-    answer:str = Field(default="", description="The generation of the RAG search.")
-    
+    #answer:str = Field(default="", description="The generation of the RAG search.")
+    retrieved_documents: Optional[Union[List[Document], List[str]]] = Field(default=[], description="The results of the RAG search.")
 class BaseRAGState(BaseRAGInputState,BaseRAGOutputState):
     """State for RAG agents."""
-    retrieverd_documents: Optional[Union[List[Document], List[str]]] = Field(default=[], description="The results of the RAG search.")
-    #filtered_documents: Optional[Union[List[Document], List[str]]] = Field(default=[], description="The filtered documents from the RAG search.")
-
+    pass

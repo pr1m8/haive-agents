@@ -1,28 +1,18 @@
-from typing import Optional, Dict, Any, Union, Type, ClassVar
+from typing import Optional, Dict, Any, Union, Type
 import uuid
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing_extensions import Annotated
 
 from haive.core.engine.agent.agent import AgentConfig
-from haive.core.models.vectorstore.base import VectorStoreConfig
-from haive.core.models.retriever.base import RetrieverConfig
-from haive.core.graph.patterns.registry import register_graph_component
+from haive.core.engine.vectorstore import VectorStoreConfig
+from haive.core.engine.retriever import VectorStoreRetrieverConfig, BaseRetrieverConfig
 
 # Import state models
 from haive.agents.rag.base.state import (
     BaseRAGState, 
     BaseRAGInputState, 
     BaseRAGOutputState
-)
-
-@register_graph_component(
-    "agent_config", 
-    "BaseRAGConfig", 
-    tags=["rag", "retrieval", "agent"],
-    metadata={
-        "description": "Base configuration for Retrieval-Augmented Generation agents"
-    }
 )
 class BaseRAGConfig(AgentConfig):
     """Configuration for a basic RAG agent."""
@@ -36,28 +26,37 @@ class BaseRAGConfig(AgentConfig):
     description: str = Field(default="Basic Retrieval-Augmented Generation agent")
     
     # Allow either a VectorStoreConfig or RetrieverConfig to be provided
-    retriever_config: Union[RetrieverConfig, VectorStoreConfig] = Field(
+    retriever_config: Union[BaseRetrieverConfig, VectorStoreConfig] = Field(
         ...,  # Required
         description="Configuration for the retriever component"
     )
     
-    # Use ClassVar for type references to avoid Pydantic field detection
-    state_schema: ClassVar[Type[BaseModel]] = BaseRAGState
-    input_schema: ClassVar[Type[BaseModel]] = BaseRAGInputState
-    output_schema: ClassVar[Type[BaseModel]] = BaseRAGOutputState
+    # Use class attributes instead of ClassVar for schema references
+    state_schema:Type[BaseModel] = BaseRAGState
+    input_schema:Type[BaseModel] = BaseRAGInputState
+    output_schema:Type[BaseModel] = BaseRAGOutputState
     
-    def __init__(self, **data):
+    @model_validator(mode='before')
+    @classmethod
+    def convert_vector_store_to_retriever(cls, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Initialize the RAG config, converting configurations as needed.
+        Pre-validation converter from VectorStoreConfig to RetrieverConfig.
+        This runs before Pydantic validation, ensuring the type checking works.
         """
-        # If retriever_config is a VectorStoreConfig, convert it to a default RetrieverConfig
-        if "retriever_config" in data and isinstance(data["retriever_config"], VectorStoreConfig):
-            from haive.core.models.retriever.base import RetrieverConfig
-            
-            vs_config = data["retriever_config"]
-            data["retriever_config"] = RetrieverConfig(
-                name=f"retriever_for_{data.get('name', 'rag_agent')}",
-                vector_store_config=vs_config
-            )
+        if isinstance(data, dict) and "retriever_config" in data:
+            if isinstance(data["retriever_config"], VectorStoreConfig):
+                vs_config = data["retriever_config"]
+                data["retriever_config"] = VectorStoreRetrieverConfig(
+                    name=f"retriever_for_{data.get('name', 'rag_agent')}",
+                    vector_store_config=vs_config
+                )
+        return data
         
-        super().__init__(**data)
+    @model_validator(mode='after')
+    def setup_engine(self) -> 'BaseRAGConfig':
+        """
+        After validation, set the engine property to the retriever_config.
+        This ensures the agent can use the retriever directly.
+        """
+        self.engine = self.retriever_config
+        return self

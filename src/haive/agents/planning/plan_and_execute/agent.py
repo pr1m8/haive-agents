@@ -5,7 +5,7 @@ from haive.core.engine.aug_llm import *
 from haive.core.engine.agent.agent import AgentConfig,Agent,register_agent
 from langchain_core.tools import BaseTool,StructuredTool
 from langchain_core.tools import Tool
-from haive_tools.tools.search_tools import tavily_search_tool
+from haive.tools.search_tools import tavily_search_tool
 from typing import Optional,Dict,List,Union
 import uuid
 from pydantic import BaseModel,Field
@@ -16,18 +16,6 @@ from langgraph.graph import END
 
 import asyncio
 from typing import Type
-class PlanAndExecuteConfig(AgentConfig):
-    aug_llm_configs:Dict[str,AugLLMConfig] ={"planner":planner_aug_llm_config,
-                                             #"agent_executor":agent_executor_aug_llm_config,
-                                             "replanner":replanner_aug_llm_config}
-    agent_executor_config:ReactAgentConfig = ReactAgentConfig(
-        #llm_config=agent_executor_aug_llm_config,
-        #tools=[],
-        #state_schema=PlanAndExecuteState
-    )
-    #models:List[BaseModel] = [Plan,Act,Response,Step,Status]
-    state_schema:Union[Type[BaseModel],List[BaseModel]] = PlanAndExecuteState
-    default_input_schema:Dict[str,List] = {"input": [("user", "{}")]}
 
 
 @register_agent(PlanAndExecuteConfig)

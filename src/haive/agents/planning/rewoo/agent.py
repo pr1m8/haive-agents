@@ -162,7 +162,7 @@ class RewooAgent(AgentArchitecture):
         self.tools = config.tools
         
         # Create model instances
-        self.llm = config.planner.llm_config.instantiate_llm()
+        self.llm = config.planner.llm_config.instantiate()
         self.planner = compose_runnable(config.planner)
         self.solver = compose_runnable(config.solver)
         

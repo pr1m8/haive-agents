@@ -26,7 +26,7 @@ handler = logging.StreamHandler()
 formatter = logging.Formatter('[%(levelname)s] %(name)s: %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-
+from haive.core.utils.visualize_graph_utils import render_and_display_graph
 def main():
     # 1. Load documents
     logger.info("Loading documents...")
@@ -68,7 +68,8 @@ def main():
 
     # 4. Run queries
     query = "What is LangChain?"
-
+    render_and_display_graph(rag_agent_1.app)
+    render_and_display_graph(rag_agent_2.app)
     logger.info(f"Running query with agent 1: {query}")
     result_1 = rag_agent_1.run({"query": query})
     logger.info(f"Result 1: {result_1}")
