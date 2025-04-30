@@ -43,7 +43,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
         )
         
         # Configure LLM with tools
-        llm = self.config.llm_config.instantiate_llm()
+        llm = self.config.llm_config.instantiate()
         self.llm_with_tools = llm.bind_tools(tools=self.config.tools)
         
         # Create a tool node
@@ -85,7 +85,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
     
     def _setup_chains(self):
         """Set up the chains used by the agent."""
-        llm = self.config.llm_config.instantiate_llm()
+        llm = self.config.llm_config.instantiate()
         llm_with_tools = self.llm_with_tools
         
         # Initial response chain

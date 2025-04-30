@@ -40,51 +40,73 @@ class SimpleAgent(Agent[SimpleAgentConfig]):
         """Set up a simple single-node workflow with intelligent mapping derivation."""
         logger.info(f"Setting up workflow for {self.config.name}")
         
-        # Extract configuration for the node
-        input_mapping = self.config.input_mapping
-        output_mapping = self.config.output_mapping
-        
-        # Create NodeConfig with debug enabled to detect mappings
-        node_config = NodeConfig(
-            name=self.config.node_name,
-            engine=self.config.engine,
-            command_goto="END",
-            input_mapping=input_mapping,
-            output_mapping=output_mapping,
-            debug=True
-        )
-        
-        # Extract prompt variables if available
-        prompt_vars = []
-        if hasattr(self.config.engine, "prompt_template") and hasattr(self.config.engine.prompt_template, "input_variables"):
-            prompt_vars = self.config.engine.prompt_template.input_variables
-            logger.debug(f"Prompt variables: {prompt_vars}")
-        
-        # Auto-derive input mapping if none provided but prompt has variables
-        if not input_mapping and prompt_vars:
-            input_mapping = {var: var for var in prompt_vars}
-            logger.debug(f"Auto-derived input mapping: {input_mapping}")
-        
-        # Auto-derive output mapping based on structured output model if available
-        if not output_mapping and hasattr(self.config.engine, "structured_output_model"):
-            structured_model = self.config.engine.structured_output_model
-            if structured_model:
-                if isinstance(structured_model, type):
-                    model_name = structured_model.__name__.lower()
-                    output_mapping = {"result": model_name}
-                    logger.debug(f"Auto-derived output mapping for structured model: {output_mapping}")
-                else:
-                    output_mapping = {"result": "result"}
-        elif not output_mapping:
-            # Default output mapping
-            output_mapping = {"content": "output"}
-        
         # Create DynamicGraph with proper component registration
         gb = DynamicGraph(
             name=self.config.name,
             components=[self.config.engine],
             state_schema=self.config.state_schema
         )
+        
+        # Initialize mappings
+        input_mapping = self.config.input_mapping
+        output_mapping = self.config.output_mapping
+        
+        # Enhanced engine field detection
+        engine = self.config.engine
+        
+        # Intelligently detect structured output model
+        structured_model = None
+        structured_model_name = None
+        if hasattr(engine, "structured_output_model") and engine.structured_output_model:
+            structured_model = engine.structured_output_model
+            structured_model_name = structured_model.__name__.lower()
+            logger.debug(f"Detected structured output model: {structured_model_name}")
+        
+        # If no input mapping is provided, derive it from engine
+        if not input_mapping:
+            # Try to get input fields directly from engine
+            if hasattr(engine, "get_input_fields") and callable(engine.get_input_fields):
+                try:
+                    engine_input_fields = engine.get_input_fields()
+                    input_mapping = {k: k for k in engine_input_fields.keys()}
+                    logger.debug(f"Auto-derived input mapping from engine fields: {input_mapping}")
+                except Exception as e:
+                    logger.warning(f"Could not auto-derive input mapping from engine: {e}")
+                    
+            # Fall back to prompt variables if available
+            if not input_mapping and hasattr(engine, "prompt_template") and hasattr(engine.prompt_template, "input_variables"):
+                prompt_vars = engine.prompt_template.input_variables
+                input_mapping = {var: var for var in prompt_vars}
+                logger.debug(f"Auto-derived input mapping from prompt variables: {input_mapping}")
+        
+        # If no output mapping is provided, derive it intelligently
+        if not output_mapping:
+            # First try to get output fields directly from engine
+            if hasattr(engine, "get_output_fields") and callable(engine.get_output_fields):
+                try:
+                    engine_output_fields = engine.get_output_fields()
+                    
+                    # Handle structured output model specially
+                    if structured_model:
+                        # Map the model itself to the corresponding state field
+                        output_mapping = {structured_model_name: structured_model_name}
+                        logger.debug(f"Auto-derived output mapping for structured model: {output_mapping}")
+                    else:
+                        # Map all output fields 1:1
+                        output_mapping = {k: k for k in engine_output_fields.keys()}
+                        logger.debug(f"Auto-derived output mapping from engine fields: {output_mapping}")
+                except Exception as e:
+                    logger.warning(f"Could not auto-derive output mapping from engine: {e}")
+            
+            # Fall back to structured model-based mapping
+            if not output_mapping and structured_model:
+                output_mapping = {structured_model_name: structured_model_name}
+                logger.debug(f"Fall back to structured model mapping: {output_mapping}")
+            
+            # Final fallback to a reasonable default
+            if not output_mapping:
+                output_mapping = {"content": "output"}
+                logger.debug(f"Using default output mapping: {output_mapping}")
         
         # Log the node creation with mappings
         logger.debug(f"Adding processing node: {self.config.node_name}")
