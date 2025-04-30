@@ -2,8 +2,8 @@ from typing import Annotated, List, Literal, TypedDict,Dict
 from haive.core.engine.agent.agent import AgentConfig,Agent,register_agent
 from haive.core.engine.aug_llm import AugLLMConfig,compose_runnable
 from pydantic import BaseModel,Field
-from agents.document_agents.summarizer.map_branch.state import SummaryState
-from agents.document_agents.summarizer.map_branch.engines import map_aug_llm_config,reduce_augllm_config
+from haive.agents.document_modifiers.summarizer.map_branch.state import SummaryState
+from haive.agents.document_modifiers.summarizer.map_branch.engines import map_aug_llm_config,reduce_augllm_config
 from langchain_openai import AzureChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -16,7 +16,7 @@ from langgraph.constants import Send
 from langgraph.graph import END, START, StateGraph
 import operator
 import openai
-from agents.document_agents.summarizer.map_branch.config import SummarizerAgentConfig
+from haive.agents.document_modifiers.summarizer.map_branch.config import SummarizerAgentConfig
 from langgraph.types import Command,Send
 from haive.core.utils.doc_utils import clean_and_format_text 
 import asyncio
@@ -88,7 +88,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
                 text_splitter = RecursiveCharacterTextSplitter(
                     chunk_size=4000,  # Smaller chunks to ensure they fit within token limits
                     chunk_overlap=200,
-                    length_function=lambda text: self.config.aug_llm_configs["map_chain"].llm_config.instantiate_llm().get_num_tokens(text)
+                    length_function=lambda text: self.config.aug_llm_configs["map_chain"].llm_config.instantiate().get_num_tokens(text)
                 )
                 
                 # Split the content into manageable chunks
@@ -165,10 +165,10 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
 
     def length_function(self, documents: List[Document]) -> int:
         """Calculate the total token count for a set of documents."""
-        #llm = self.aug_llm_configs["reduce_chain"].llm_config.instantiate_llm()
+        #llm = self.aug_llm_configs["reduce_chain"].llm_config.instantiate()
         #print(llm)
         #print(documents)
-        return sum(self.config.engines["reduce_chain"].llm_config.instantiate_llm(model="gpt-4o").get_num_tokens(doc.page_content) for doc in documents)
+        return sum(self.config.engines["reduce_chain"].llm_config.instantiate(model="gpt-4o").get_num_tokens(doc.page_content) for doc in documents)
 
     async def arun(self, contents: List[str]) -> str:
             """Run the summarization workflow and return the final summary."""
@@ -182,21 +182,4 @@ def build_agent() -> SummarizerAgent:
 
 
 
-
-async def main():
-    summarizer = SummarizerAgent(SummarizerAgentConfig())
-    #summarizer.setup_workflow()
-    from langchain_community.document_loaders import WebBaseLoader
-    documents = WebBaseLoader("https://en.wikipedia.org/wiki/Differential_geometry").load()
-    
-    print(summarizer.length_function(documents))
-    documents = [Document(page_content=clean_and_format_text(d.page_content),metadata=d.metadata) for d in documents]
-    await summarizer.arun(documents)
-    #print(documents)
-    #from langchain_community.document_transformers import Html2TextTransformer,MarkdownifyTransformer,BeautifulSoupTransformer,\
-        #DoctranQATransformer,DoctranPropertyExtractor,OpenAIMetadataTagger,LongContextReorder,NucliaTextTransformer
-    
-
-if __name__ == "__main__":
-    asyncio.run(main()) 
 

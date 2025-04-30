@@ -3,7 +3,7 @@ from haive.core.engine.aug_llm import AugLLMConfig,compose_runnable
 #from haive.core.prompts.base import PromptTemplateFactory,PromptTemplateConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from agents.document_agents.summarizer.map_branch.prompts import MAP_PROMPT,REDUCE_PROMPT 
+from haive.agents.document_modifiers.summarizer.map_branch.prompts import MAP_PROMPT,REDUCE_PROMPT 
 #map_prompt_template_config = PromptTemplateConfig(chat_prompt_template=map_prompt)
 map_aug_llm_config = AugLLMConfig(
     name='summarizer_map',
