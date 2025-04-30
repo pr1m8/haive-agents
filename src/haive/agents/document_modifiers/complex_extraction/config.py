@@ -1,6 +1,6 @@
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from agents.complex_extraction.state import ComplexExtractionState
+from haive.agents.document_modifiers.complex_extraction.state import ComplexExtractionState
 from pydantic import BaseModel, Field
 from typing import Optional, Type
 from haive.core.models.llm.base import AzureLLMConfig   

@@ -4,7 +4,7 @@ from langchain_core.runnables import Runnable
 from langchain_core.messages import AIMessage, AnyMessage, BaseMessage
 from langchain_core.messages import ToolCall
 import jsonpatch
-from agents.complex_extraction.models import PatchFunctionParameters
+from haive.agents.document_modifiers.complex_extraction.models import PatchFunctionParameters
 from pydantic import BaseModel
 from typing import Type
 import uuid
