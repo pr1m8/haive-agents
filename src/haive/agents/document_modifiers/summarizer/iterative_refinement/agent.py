@@ -14,15 +14,15 @@ from haive.core.engine.agent.agent import Agent,AgentConfig
 from haive.core.engine.agent.agent import register_agent
 #from haive.core.engine.agent.agent import AgentConfig
 from typing import Dict
-from agents.document_agents.summarizer.iterative_refinement.engines import initial_summary_aug_llm,refine_summary_aug_llm
+from haive.agents.document_modifiers.summarizer.iterative_refinement.engines import initial_summary_aug_llm,refine_summary_aug_llm
 from langgraph.types import Command
 from langchain_core.messages import AnyMessage
 import asyncio
 
 from langchain_core.documents import Document
-from agents.document_agents.summarizer.iterative_refinement.state import IterativeSummarizerState
+from haive.agents.document_modifiers.summarizer.iterative_refinement.state import IterativeSummarizerState
 # Initial summary
-from agents.document_agents.summarizer.iterative_refinement.config import IterativeSummarizerConfig
+from haive.agents.document_modifiers.summarizer.iterative_refinement.config import IterativeSummarizerConfig
 
 
 @register_agent(IterativeSummarizerConfig)
@@ -62,23 +62,3 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
         self.graph.add_edge(START, "generate_initial_summary")
         self.graph.add_conditional_edges("generate_initial_summary", self.state_schema.should_refine)
         self.graph.add_conditional_edges("refine_summary", self.state_schema.should_refine)
-
-from langchain_core.documents import Document
-test_docs = [
-        Document(page_content="This is a test document about machine learning."),
-        Document(page_content="This document expands on deep learning architectures."),
-        Document(page_content="It also discusses how transformers are used in NLP."),
-        Document(page_content="Finally, it provides an overview of applications of AI.")
-    ]
-
-config = IterativeSummarizerConfig(
-    contents=test_docs,
-    #aug_llm_configs=aug_llm_configs
-)
-
-agent = IterativeSummarizer(config)
-async def main():   
-    result = await agent.app.ainvoke({"contents": test_docs},config=agent.config.runnable_config)
-    print(result)
-if __name__ == "__main__":
-    asyncio.run(main())

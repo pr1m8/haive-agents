@@ -44,7 +44,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         # Prepare graph transformer
         graph_transformer_config = config.engines.get('graph_transformer')
         self.llm_graph_transformer = GraphTransformer()
-            #engine=graph_transformer_config.llm_config.instantiate_llm() if graph_transformer_config else None
+            #engine=graph_transformer_config.llm_config.instantiate() if graph_transformer_config else None
         #)
         print(self.llm_graph_transformer)
         # Prepare extractors from engines

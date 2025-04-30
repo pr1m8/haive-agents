@@ -60,7 +60,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
         self.graph_transformer = GraphTransformer()
         
         # Also initialize LLMGraphTransformer if needed
-        llm = config.llm_config.instantiate_llm()
+        llm = config.llm_config.instantiate()
         self.llm_graph_transformer = LLMGraphTransformer(
             llm=llm,
             allowed_nodes=config.allowed_nodes,
