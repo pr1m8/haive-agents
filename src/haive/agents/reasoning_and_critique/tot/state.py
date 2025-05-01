@@ -4,9 +4,18 @@ from typing import List, Optional, Union, Annotated, Any, Dict
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 from langchain_core.messages import BaseMessage
 from langgraph.graph import add_messages
-from agents.tot.modular.models import Candidate
-
-class ToTState(BaseModel):
+from haive.agents.reasoning_and_critique.tot.models import Candidate
+class TOTInput(BaseModel):
+    problem: str = Field(
+        default="",
+        description="The problem to solve"
+    )
+class TOTOutput(BaseModel):
+    answer: str = Field(
+        default="",
+        description="The answer to the problem"
+    )
+class TOTState(TOTInput,TOTOutput):
     """
     The state schema for Tree of Thoughts agent.
     """
@@ -17,11 +26,7 @@ class ToTState(BaseModel):
     )
     
     # Problem definition
-    problem: str = Field(
-        default="",
-        description="The problem to solve"
-    )
-    
+   
     # ToT algorithm state
     candidates: List[Dict[str, Any]] = Field(
         default_factory=list,
@@ -54,12 +59,7 @@ class ToTState(BaseModel):
         default=None,
         description="Current seed candidate for expansion"
     )
-    
-    # Output field
-    answer: Optional[str] = Field(
-        default=None,
-        description="Final answer to the problem"
-    )
+   
     
     # Use Pydantic v2 configuration
     model_config = ConfigDict(
