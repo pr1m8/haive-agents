@@ -6,7 +6,7 @@ This file contains the implementation of the Reasoning Without Observation agent
 
 # Import directly from base, not from plan_and_execute to avoid circular imports
 from haive.core.engine.agent.agent import AgentArchitecture
-haive.core.engine.aug_llm import compose_runnable
+from haive.core.engine.aug_llm import compose_runnable
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command
 
@@ -30,13 +30,13 @@ from langchain_core.runnables import RunnableConfig
 from haive.core.engine.agent.agent import AgentArchitectureConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.utils.tool_utils import _format_tool_descriptions
-from haive.core.tools.search_tools import tavily_search_tool, tavily_search_context, tavily_qna, tavily_extract
+from haive.tools.tools.search_tools import tavily_search_tool, tavily_search_context, tavily_qna, tavily_extract
 
-from agents.rewoo.state import ReWOOState
-from agents.rewoo.models import ToolCall
-from agents.rewoo.aug_llms import rewoo_aug_llm_config, solve_aug_llm_config
+from haive.agents.planning.rewoo.state import ReWOOState
+from haive.agents.planning.rewoo.models import ToolCall
+from haive.agents.planning.rewoo.engines import rewoo_aug_llm_config, solve_aug_llm_config
 
-class RewooAgentConfig(AgentArchitectureConfig):
+class RewooAgentConfig(AgentConfig):
     """
     Configuration for the ReWOO Agent with automatic prompt formatting.
     
@@ -592,59 +592,6 @@ class RewooAgent(AgentArchitecture):
         self.graph.add_conditional_edges("execute_step", self._route)
         self.graph.add_edge(START, "planning_phase")
         
-        # Compile the graph if needed
-        if self.config.should_compile_workflow:
-            self.compile_graph(checkpointer=self.memory)
-            
-        # Visualize if needed
-        if self.config.should_visualize_graph:
-            self.visualize_graph(self.config.visualize_graph_output_name)
         
-        return self.graph
     
-    def run(self, task: str):
-        """
-        Run the agent on a task.
-        
-        Args:
-            task: The task to solve
-            
-        Returns:
-            The result of the execution
-        """
-        # Initialize if needed
-        if not self.app:
-            if not hasattr(self, "graph") or not self.graph:
-                self.setup_workflow()
-            self.compile_graph(checkpointer=self.memory)
-        
-        # Execute the workflow
-        print(f"Running task: {task}")
-        for step in self.app.stream({"task": task}, config=self.runnable_config, debug=True):
-            print(step)
-            print("---")
-        
-        # Return the final state
-        return self.app.get_state(self.runnable_config)
-
-
-# Example usage
-if __name__ == "__main__":
-    # Create the agent with default configuration
-    agent = RewooAgent()
-    
-    # Set up the agent
-    agent.setup_workflow()
-    
-    # Run the agent on a task
-    result = agent.run("Find the sitemap for langgraph")
-    
-    # Print the final solution
-    if "final_solution" in result:
-        print("\nFinal Solution:")
-        for step in result["final_solution"]:
-            print(f"Step {step['step_number']}: {step['description']}")
-            print(f"Result: {step['result']}")
-            print()
-    else:
-        print("Execution incomplete or failed.")
+   

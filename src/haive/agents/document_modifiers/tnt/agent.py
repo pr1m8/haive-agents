@@ -28,7 +28,7 @@ from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 from pydantic import Field
 from langchain_core.runnables import RunnableConfig
 import random
-from haive.agents.document_modifiers.tnt.aug_llm import (
+from haive.agents.document_modifiers.tnt.engines import (
     taxonomy_review_aug_llm_config,
     summary_aug_llm_config,
     taxonomy_generation_aug_llm_config,
