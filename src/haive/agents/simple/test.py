@@ -8,7 +8,10 @@ from haive.core.utils.pydantic_utils import display_model, display_code, pretty_
 class Plan(BaseModel):
     Steps: list[str] = Field(description="A list of steps to complete the task")
     
-aug_llm = AugLLMConfig(model="gpt-4o", temperature=0.0, system_prompt="You are a helpful assistant that can help me plan my day.", structured_output_model=Plan)
+aug_llm = AugLLMConfig(model="gpt-4o", temperature=0.0, system_prompt="You are a helpful assistant that can help me plan my day.",
+                       structured_output_model=Plan)
+
+
 config = SimpleAgentConfig(engine=aug_llm)
 agent = SimpleAgent(config)
 schema = SchemaComposer.from_components([aug_llm])
@@ -38,11 +41,12 @@ else:
     print(result)
 
 # Display the Plan model code
-display_code(Plan, "Plan Model Definition")
+#display_code(Plan, "Plan Model Definition")
 
 # Compare the Plan model with another model
-class EnhancedPlan(BaseModel):
-    Steps: list[str] = Field(description="A list of steps to complete the task")
-    Timeline: list[str] = Field(description="Estimated timeline for each step")
+#class EnhancedPlan(BaseModel):
+   # Steps: list[str] = Field(description="A list of steps to complete the task")
+    #Timeline: list[str] = Field(description="Estimated timeline for each step")
 
-compare_models(Plan, EnhancedPlan, "Basic Plan", "Enhanced Plan")
+#compare_models(Plan, EnhancedPlan, "Basic Plan", "Enhanced Plan")
+agent.run("Write a plan for building a website",debug=True)

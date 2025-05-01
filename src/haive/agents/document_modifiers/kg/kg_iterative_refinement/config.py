@@ -1,7 +1,7 @@
 # Initial summary
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from agents.document_agents.kg.kg_iterative_refinement.state import IterativeGraphTransformerState
+from haive.agents.document_modifiers.kg.kg_iterative_refinement.state import IterativeGraphTransformerState
 from typing import Dict
 from pydantic import Field  
 class IterativeGraphTransformerConfig(AgentConfig):

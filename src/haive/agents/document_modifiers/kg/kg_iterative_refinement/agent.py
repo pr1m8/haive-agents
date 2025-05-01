@@ -5,8 +5,10 @@ from langgraph.types import Command
 from langchain_community.graphs.graph_document import GraphDocument
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.agents.document_modifiers.kg.kg_iterative_refinement.utils import replace_empty_placeholders
-from haive.haive.flstaesr_backup.transform.graph_transform.base import GraphTransformer
+from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
+import logging
 from langgraph.graph import START,END
+logger = logging.getLogger(__name__)
 @register_agent(IterativeGraphTransformerConfig)
 class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
     """
@@ -22,6 +24,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
     # We define functions for each node, including a node that generates
     # the initial summary:
     def generate_initial_summary(self, state: IterativeGraphTransformerState, config: RunnableConfig):
+        logger.debug(f"State: {state}")
         doc = state.contents[0]
         if isinstance(doc, str):
             doc = Document(page_content=doc)
@@ -104,7 +107,7 @@ config = IterativeGraphTransformerConfig(
 
 agent = IterativeGraphTransformer(config)
 def main():   
-    result = agent.app.invoke({"contents": test_docs},config=agent.config.runnable_config)
+    result = agent.run({'contents':test_docs},debug=True)
     print(result)
 
 main()
