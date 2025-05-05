@@ -3,7 +3,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 #from haive.core.prompts.base import PromptTemplateConfig
 #from haive.core.runnables.runnable import LLMRunnableConfig
-from haive.agents.rag.graph_db.models import ValidateCypherOutput,CypherQueryOutput,GuardrailsOutput
+from haive.agents.rag.db_rag.graph_db.models import ValidateCypherOutput,CypherQueryOutput,GuardrailsOutput
 from haive.core.engine.aug_llm import AugLLMConfig
 # Update the example fewshot examples
 CORRECT_CYPHER_SYSTEM_PROMPT = """  
