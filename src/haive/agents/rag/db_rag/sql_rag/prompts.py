@@ -67,6 +67,8 @@ GENERATE_SQL_PROMPT = ChatPromptTemplate.from_messages([
     ("human", GENERATE_SQL_USER_PROMPT)
 ])
 # Prompt for validating SQL
+# In your prompts.py file, update the VALIDATE_SQL_PROMPT to:
+
 VALIDATE_SQL_SYSTEM_PROMPT = """
 You are a SQL expert who validates queries for correctness and best practices.
 
@@ -84,7 +86,7 @@ Review the provided SQL query and check for:
 
 If there are errors, explain each one clearly and provide suggestions for fixing them.
 """
-# Update the SQL validation prompt to use sql_query instead of sql
+
 VALIDATE_SQL_USER_PROMPT = """
 Database Schema:
 {schema}
@@ -103,7 +105,6 @@ VALIDATE_SQL_PROMPT = ChatPromptTemplate.from_messages([
     ("system", VALIDATE_SQL_SYSTEM_PROMPT),
     ("human", VALIDATE_SQL_USER_PROMPT)
 ])
-
 
 
 # Prompt for guardrails
