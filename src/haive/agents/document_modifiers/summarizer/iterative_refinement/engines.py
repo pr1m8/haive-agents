@@ -1,12 +1,12 @@
 import operator
 from typing import List, Literal, TypedDict
 
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import Send
 from langgraph.graph import END, START, StateGraph
-from haive.core.engine.aug_llm import AugLLMConfig
 
 # Initial summary
 summarize_prompt = ChatPromptTemplate(
@@ -15,7 +15,7 @@ summarize_prompt = ChatPromptTemplate(
     ]
 )
 initial_summary_aug_llm = AugLLMConfig(
-    #model="gpt-4o-mini",
+    # model="gpt-4o-mini",
     prompt_template=summarize_prompt,
     output_parser=StrOutputParser(),
 )
@@ -40,3 +40,5 @@ refine_summary_aug_llm = AugLLMConfig(
     prompt_template=refine_prompt,
     output_parser=StrOutputParser(),
 )
+
+print(initial_summary_aug_llm.prompt_template)

@@ -1,9 +1,10 @@
-from agents.base import Agent,register_agent
-from agents.simple.agent import SimpleAgentConfig
-from haive.core.aug_llm import AugLLMConfig
-from pydantic import Field
+from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from haive.agents.base import Agent, register_agent
+from haive.agents.simple.agent import SimpleAgentConfig
+
 qa_system_prompt = """
 You are a highly intelligent AI assistant specializing in **retrieval-augmented generation (RAG)**. Your task is to generate **structured, diverse, and contextually relevant** questions and answers from a given text.
 
@@ -33,60 +34,91 @@ You are a highly intelligent AI assistant specializing in **retrieval-augmented 
 ### 📝 **Expected Output:**
 ```json
 [
-  {
+  {{
     "question": "Who was Marie Curie?",
     "answer": "Marie Curie was a Polish-born physicist and chemist known for her research on radioactivity."
-  },
-  {
+  }},
+  {{
     "question": "What elements did Marie Curie discover?",
     "answer": "She discovered the elements polonium and radium."
-  },
-  {
+  }},
+  {{
     "question": "What was Marie Curie's major scientific contribution?",
     "answer": "She conducted pioneering research on radioactivity."
-  },
-  {
+  }},
+  {{
     "question": "Why is Marie Curie significant in scientific history?",
     "answer": "She was the first woman to win a Nobel Prize and made groundbreaking discoveries in radioactivity."
-  }
+  }}
 ]
 """
-from langchain_core.prompts import ChatPromptTemplate
-qa_prompt_template = ChatPromptTemplate.from_messages([
-    ("system", qa_system_prompt),
-    ("user", "{contents}")
-])
+from typing import Annotated, Any, Dict, List, Union
 
-from typing import List
+from langchain_core.documents import Document
+from langchain_core.messages import BaseMessage
+from langchain_core.prompts import ChatPromptTemplate
+from pydantic import Field
+
+# Define the union type for contents
+ContentType = Annotated[
+    Union[
+        str,  # Plain text string
+        List[str],  # List of strings
+        Document,  # Single Document object
+        List[Document],  # List of Document objects
+        BaseMessage,  # Single message
+        List[BaseMessage],  # List of messages
+        Dict[str, Any],  # Dictionary (could be any structured data)
+    ],
+    Field(
+        description="Content to extract QA pairs from. Can be text, documents, messages, or structured data."
+    ),
+]
+
+# Apply the type to your prompt template
+qa_prompt_template = ChatPromptTemplate.from_messages(
+    [("system", qa_system_prompt), ("human", "{contents}")]
+)
+
+# Set the input type
+qa_prompt_template.input_types = {"contents": ContentType}
+
+
 class QA(BaseModel):
     """
     A question and answer pair.
     """
+
     question: str = Field(description="The question that was asked.")
     answer: str = Field(description="The answer to the question.")
+
+
 class QAs(BaseModel):
     """
     A list of question and answer pairs.
     """
+
     qas: List[QA] = Field(description="A list of question and answer pairs.")
+
 
 qa_aug_llm_config = AugLLMConfig(
     llm=AzureLLMConfig(model="gpt-4o"),
-    structured_output_schema=QAs,
+    structured_output_model=QAs,
     prompt_template=qa_prompt_template,
-    #system_prompt=qa_system_prompt
+    # system_prompt=qa_system_prompt
 )
-from agents.simple.agent import SimpleAgent
+from haive.agents.simple.agent import SimpleAgent
+
 qa_agent_config = SimpleAgentConfig.from_aug_llm(aug_llm=qa_aug_llm_config)
 qa_agent = qa_agent_config.build_agent()
-#qa_agent.setup_workflow()
+# qa_agent.setup_workflow()
 
 # Example usage
 
 from langchain_community.document_loaders import WebBaseLoader
+
 document = WebBaseLoader("https://en.wikipedia.org/wiki/Differential_geometry").load()
 
-qas = qa_agent.run(document)
+qas = qa_agent.run(input_data={"contents": document})
 
 print(qas)
-
