@@ -1,3 +1,5 @@
+from agents.web_nav.models import Prediction
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
@@ -5,13 +7,11 @@ from langchain.prompts import (
     SystemMessagePromptTemplate,
 )
 
-from agents.web_nav.models import Prediction
-from haive.core.engine.aug_llm.base import AugLLMConfig
-
-WEB_NAV_PROMPT = ChatPromptTemplate.from_messages([
-    # ✅ System message with WebVoyager-style instructions
-    SystemMessagePromptTemplate.from_template(
-        """### 🤖 **Web Navigator Agent**  
+WEB_NAV_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        # ✅ System message with WebVoyager-style instructions
+        SystemMessagePromptTemplate.from_template(
+            """### 🤖 **Web Navigator Agent**  
 
         You are a **robot web browser assistant** that **navigates the web like a human**.  
         Your goal is to **complete a task step by step** by analyzing a webpage.  
@@ -86,25 +86,24 @@ WEB_NAV_PROMPT = ChatPromptTemplate.from_messages([
           - `"Click all images"`  
 
         """
-    ),
-
-    # ✅ Memory placeholder (for past steps)
-    MessagesPlaceholder(variable_name="scratchpad", optional=True),
-
-    # ✅ Human message with **image, bounding boxes, and query**
-    HumanMessagePromptTemplate.from_template(
-        "{input}\n\nBounding Boxes:\n{bbox_descriptions}\n\nScreenshot: {img}"
-    )
-])
+        ),
+        # ✅ Memory placeholder (for past steps)
+        MessagesPlaceholder(variable_name="scratchpad", optional=True),
+        # ✅ Human message with **image, bounding boxes, and query**
+        HumanMessagePromptTemplate.from_template(
+            "{input}\n\nBounding Boxes:\n{bbox_descriptions}\n\nScreenshot: {img}"
+        ),
+    ]
+)
 prompt = WEB_NAV_PROMPT
 # ✅ AugLLMConfig for Web Navigator (WebVoyager-Style)
 web_nav_aug_llm = AugLLMConfig(
     name="web_navigator",
     prompt_template=prompt,
-    #output_parser=PydanticOutputParser(pydantic_object=Prediction)  # ✅ Ensure Prediction schema
+    # output_parser=PydanticOutputParser(pydantic_object=Prediction)  # ✅ Ensure Prediction schema
     structured_output_model=Prediction,
-    #postprocess=parse
-    #output_parser=StrOutputParser()
+    # postprocess=parse
+    # output_parser=StrOutputParser()
 )
-#web_nav_aug_llm_config = web_nav_aug_llm.create_runnable()
-#web_nav_aug_llm_config.invoke()
+# web_nav_aug_llm_config = web_nav_aug_llm.create_runnable()
+# web_nav_aug_llm_config.invoke()
