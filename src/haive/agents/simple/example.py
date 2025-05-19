@@ -63,26 +63,15 @@ def example_with_custom_state_schema():
     """Create an agent with a custom state schema with enhanced debugging."""
     console.rule("[bold cyan]Creating agent with custom state schema")
 
-    # Define a custom state schema with additional fields
+    # Define a minimal custom state schema with just what we need
     class CustomAgentState(BaseModel):
         messages: List[BaseMessage] = Field(default_factory=list)
         input: str = Field(default="")
-        output: str = Field(default="")  # This field will receive the LLM output
-        result: str = Field(default="")  # Adding a result field as well for fallback
-        error: Optional[str] = Field(default=None)
-        context: List[str] = Field(
-            default_factory=list, description="Contextual information"
-        )
-        metadata: Dict[str, Any] = Field(
-            default_factory=dict, description="Additional metadata"
-        )
-        confidence: float = Field(default=1.0, description="Confidence level")
+        context: List[str] = Field(default_factory=list)
+        # The field that will receive the LLM output
+        answer: str = Field(default="")
 
-    console.print("[bold green]Defined CustomAgentState with fields:")
-    for field_name, field in CustomAgentState.model_fields.items():
-        console.print(f"  - [bold]{field_name}[/bold]: {field.annotation}")
-
-    # Create a prompt template that uses context and input
+    # Create prompt template
     prompt = PromptTemplate.from_template(
         """
         Context information: {context}
@@ -93,39 +82,60 @@ def example_with_custom_state_schema():
         """
     )
 
-    console.print("[bold green]Created prompt template:")
-    console.print(f"  - Template: {prompt.template}")
-    console.print(f"  - Variables: {prompt.input_variables}")
-
-    # Create AugLLMConfig with debugging output
-    console.print("[bold green]Creating AugLLMConfig")
+    # Create the LLM chain with output field explicitly set to answer
     aug_llm = AugLLMConfig(
         name="custom_state_llm",
         llm_config=AzureLLMConfig(model="gpt-4o"),
         prompt_template=prompt,
         output_parser=StrOutputParser(),
+        output_field_name="answer",  # Put output directly in answer field
         system_prompt="You are a helpful assistant.",
     )
 
+    # Debug info
     debug_print(
         "AugLLMConfig",
         {
             "name": aug_llm.name,
-            "id": getattr(aug_llm, "id", None),
-            "prompt_variables": getattr(aug_llm.prompt_template, "input_variables", []),
-            "system_prompt": aug_llm.system_message,
+            "output_field_name": "answer",
+            "prompt_variables": prompt.input_variables,
         },
     )
 
-    # Create the agent with custom state schema
-    # Input/output mappings should be auto-detected based on field names
+    # Create the agent
     console.print("[bold green]Creating SimpleAgent with custom schema")
-    agent = create_simple_agent(
+
+    # Define our processor directly as a factory function that will be called
+    async def custom_process(state, inputs):
+        """Custom process function that ensures the answer is stored"""
+        # Call the LLM directly
+        result = await aug_llm.ainvoke(inputs)
+        console.print(f"[bold blue]LLM Result:[/bold blue] {result}")
+
+        # Store the result
+        state.answer = result
+
+        # Debug what's in the state
+        console.print(
+            f"[bold green]State after process:[/bold green] answer={state.answer}"
+        )
+
+        return state
+
+    # Create the agent config with all necessary parameters
+    agent_config = SimpleAgentConfig(
         name="custom_state_agent",
         engine=aug_llm,
         state_schema=CustomAgentState,
         debug=True,
+        # Explicitly set additional fields for output mapping
+        output_mapping={"answer": "answer"},
+        # Set the process function directly in the config
+        process_func=custom_process,
     )
+
+    # Create the agent with our config
+    agent = SimpleAgent(config=agent_config)
 
     # Set a thread ID for consistent state tracking
     thread_id = str(uuid.uuid4())

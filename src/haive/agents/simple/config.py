@@ -23,6 +23,8 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 # Setup logging
 logger = logging.getLogger(__name__)
 
+from langgraph.prebuilt import create_react_agent
+
 
 class SimpleAgentConfig(AgentConfig):
     """
@@ -36,7 +38,10 @@ class SimpleAgentConfig(AgentConfig):
     """
 
     # Required engine (must be AugLLMConfig)
-    engine: AugLLMConfig = Field(description="The AugLLM engine to use for reasoning")
+    engine: AugLLMConfig = Field(
+        default_factory=AugLLMConfig,
+        description="The AugLLM engine to use for reasoning",
+    )
 
     # Schema definitions
     input_schema: Optional[Union[Type[BaseModel], Type[StateSchema]]] = Field(
