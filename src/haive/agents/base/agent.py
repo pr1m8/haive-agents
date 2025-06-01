@@ -13,6 +13,10 @@ from pydantic import BaseModel, Field, PrivateAttr, model_validator
 # ABSTRACT BASE AGENT
 # ============================================================================
 
+# ============================================================================
+# ABSTRACT BASE AGENT
+# ============================================================================
+
 
 class Agent(AgentConfig, ABC):
     """Abstract base agent class with automatic graph building and proper inheritance."""
@@ -143,7 +147,7 @@ class Agent(AgentConfig, ABC):
         if self.engine:
             engine_list.append(self.engine)
 
-        for _engine_name, engine in self.engines.items():
+        for engine_name, engine in self.engines.items():
             if isinstance(engine, str):
                 continue
             engine_list.append(engine)
@@ -168,7 +172,7 @@ class Agent(AgentConfig, ABC):
                 if output_composer:
                     self.output_schema = output_composer.build()
 
-        except Exception:
+        except Exception as e:
             self.state_schema = SchemaComposer.create_message_state().build()
 
     def _generate_state_schema_from_engines(self):
