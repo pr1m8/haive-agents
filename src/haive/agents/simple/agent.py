@@ -11,7 +11,7 @@ from haive.core.graph.node.tool_node_config import ToolNodeConfig
 from haive.core.graph.node.validation_node_config import ValidationNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
-from pydantic import BaseModel, Field, PrivateAttr, Type, Union
+from pydantic import BaseModel, Field, PrivateAttr
 
 from haive.agents.base.agent import Agent
 
