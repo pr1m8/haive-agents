@@ -1,179 +1,100 @@
-"""
-SequentialAgent implementation that connects components in a linear workflow.
+# SEQUENTIAL AGENT
+# ============================================================================
 
-This module defines the SequentialAgent class which constructs a linear
-workflow graph from a sequence of engine components.
-"""
+from typing import Any, Sequence, Union
 
-import logging
-from typing import Any, Dict, List, Optional
+from haive.core.graph.node.engine_node import EngineNodeConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from langgraph.graph import END, START
+from pydantic import Field, model_validator
 
-from langgraph.graph import END, StateGraph
+from haive.agents.base.agent import Agent
 
-from haive.core.engine.agent.agent import Agent, register_agent
-from haive.core.graph.dynamic_graph_builder import DynamicGraph
-from haive.agents.sequential.config import SequentialAgentConfig, StepConfig
 
-logger = logging.getLogger(__name__)
+class SequentialAgent(Agent):
+    """Sequential agent that executes multiple agents in sequence."""
 
-@register_agent(SequentialAgentConfig)
-class SequentialAgent(Agent[SequentialAgentConfig]):
-    """
-    A sequential agent that connects components in a linear workflow.
-    
-    This agent automatically builds a linear graph from a sequence of
-    components, handling the connections between them and managing state flow.
-    
-    Features:
-    - Automatic connection of components in sequence
-    - Auto-derived input/output mappings between steps
-    - Support for any engine components (AugLLMConfig, etc.)
-    - Schema derivation from all components
-    """
-    
-    def __init__(self, config: SequentialAgentConfig):
-        """
-        Initialize the SequentialAgent with configuration.
-        
-        Args:
-            config: SequentialAgentConfig instance
-        """
-        super().__init__(config)
-    
-    def setup_workflow(self) -> None:
-        """
-        Build a linear workflow from the sequence of components.
-        
-        This method:
-        1. Creates a DynamicGraph with all components
-        2. Adds each step as a node with appropriate mappings
-        3. Connects the nodes in sequential order
-        4. Sets the entry point
-        """
-        logger.info(f"Setting up sequential workflow for {self.config.name}")
-        
-        # Create DynamicGraph with all components
-        gb = DynamicGraph(
-            name=self.config.name,
-            components=self.config.components,
-            state_schema=self.config.state_schema,
-            visualize=self.config.visualize
-        )
-        
-        # Add each step as a node
-        for i, step in enumerate(self.config.steps):
-            # Get or derive input/output mappings
-            input_mapping = step.input_mapping
-            output_mapping = step.output_mapping
-            
-            # Add the node
-            logger.debug(f"Adding step node: {step.name}")
-            gb.add_node(
-                name=step.name,
-                config=step.component,
-                # Last step goes to END, others connect to next step
-                command_goto=END if i == len(self.config.steps) - 1 else None,
-                input_mapping=input_mapping,
-                output_mapping=output_mapping
-            )
-        
+    name: str = Field(default="Sequential Agent")
+
+    # Use Union[Agent, Any] to be more permissive, or use forward reference
+    agents: Sequence[Union[Agent, Any]] = Field(
+        ..., description="List of agents to execute sequentially"
+    )
+
+    smart_compose: bool = Field(
+        default=True, description="Whether to use smart composition"
+    )
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate_agents(cls, values):
+        """Validate that agents are Agent instances or convertible."""
+        if isinstance(values, dict) and "agents" in values:
+            agents = values["agents"]
+
+            # Validate each agent
+            validated_agents = []
+            for i, agent in enumerate(agents):
+                # Check if it's already an Agent instance
+                if hasattr(agent, "build_graph") and hasattr(agent, "invoke"):
+                    validated_agents.append(agent)
+                else:
+                    raise ValueError(
+                        f"Agent at index {i} is not a valid Agent instance"
+                    )
+
+            values["agents"] = validated_agents
+
+        return values
+
+    @model_validator(mode="after")
+    def validate_non_empty_agents(self):
+        """Ensure we have at least one agent."""
+        if not self.agents or len(self.agents) == 0:
+            raise ValueError("SequentialAgent requires at least one agent")
+        return self
+
+    def build_graph(self) -> BaseGraph:
+        """Build the sequential graph connecting agents in order."""
+        # Create the graph
+        graph = BaseGraph(name=getattr(self, "name", "sequential_agent"))
+
+        node_names = []
+
+        # Add each agent as a node
+        for i, agent in enumerate(self.agents):
+            # Generate node name
+            if hasattr(agent, "name") and agent.name:
+                node_name = agent.name
+            elif hasattr(agent, "id") and agent.id:
+                node_name = agent.id
+            else:
+                node_name = f"agent_{i}"
+
+            # Ensure unique node names
+            original_name = node_name
+            counter = 1
+            while node_name in node_names:
+                node_name = f"{original_name}_{counter}"
+                counter += 1
+
+            node_names.append(node_name)
+
+            # Create engine node config - the agent itself is the engine
+            engine_node = EngineNodeConfig(name=node_name, engine=agent)
+            graph.add_node(node_name, engine_node)
+
         # Connect the nodes in sequence
-        for i in range(len(self.config.steps) - 1):
-            current_step = self.config.steps[i]
-            next_step = self.config.steps[i + 1]
-            
-            logger.debug(f"Connecting: {current_step.name} -> {next_step.name}")
-            gb.add_edge(current_step.name, next_step.name)
-        
-        # Set entry point (first step by default)
-        entry_node = self.config.entry_point or self.config.steps[0].name
-        gb.set_entry_point(entry_node)
-        
-        # Get the built graph
-        self.graph = gb.build()
-        
-        logger.info(f"Sequential workflow setup complete for {self.config.name} with {len(self.config.steps)} steps")
-    
-    def get_step_outputs(self, step_name: str, state: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Extract outputs produced by a specific step from the state.
-        
-        Args:
-            step_name: Name of the step
-            state: Current state dictionary
-            
-        Returns:
-            Dictionary of outputs from the step
-        """
-        step = self.config.get_step_by_name(step_name)
-        if not step:
-            logger.warning(f"Step '{step_name}' not found")
-            return {}
-            
-        # If no explicit output mapping, try to derive
-        if not step.output_mapping:
-            # Try to get output fields from component
-            if hasattr(step.component, "get_output_fields"):
-                try:
-                    output_fields = step.component.get_output_fields()
-                    # Extract these fields from state
-                    return {k: state.get(k) for k in output_fields.keys() if k in state}
-                except Exception as e:
-                    logger.warning(f"Failed to get output fields: {e}")
-        else:
-            # Use explicit mapping to find outputs
-            # Output mapping is from component field -> state field
-            # We need to reverse it to extract from state
-            reverse_mapping = {v: k for k, v in step.output_mapping.items()}
-            return {comp_field: state.get(state_field) 
-                   for state_field, comp_field in reverse_mapping.items() 
-                   if state_field in state}
-                   
-        # Fallback to just returning structured outputs if present
-        if hasattr(step.component, "structured_output_model"):
-            model = step.component.structured_output_model
-            if model:
-                model_name = model.__name__.lower()
-                if model_name in state:
-                    return {model_name: state[model_name]}
-        
-        # Couldn't determine outputs
-        return {}
-    
-    def explain_workflow(self) -> str:
-        """
-        Generate a human-readable explanation of the workflow.
-        
-        Returns:
-            String explanation of the workflow steps
-        """
-        explanation = [f"Sequential Workflow: {self.config.name}"]
-        explanation.append("=" * len(explanation[0]))
-        explanation.append("")
-        
-        # Add information about each step
-        for i, step in enumerate(self.config.steps, 1):
-            # Get component info
-            component_type = step.component.__class__.__name__
-            component_name = getattr(step.component, "name", "unnamed")
-            
-            # Add step header
-            explanation.append(f"Step {i}: {step.name}")
-            explanation.append(f"Component: {component_type} ({component_name})")
-            
-            # Add description if available
-            if step.description:
-                explanation.append(f"Description: {step.description}")
-                
-            # Add model info if it's an AugLLMConfig
-            if hasattr(step.component, "model"):
-                explanation.append(f"Model: {step.component.model}")
-                
-            # Add structured output info if available
-            if hasattr(step.component, "structured_output_model") and step.component.structured_output_model:
-                model = step.component.structured_output_model
-                explanation.append(f"Structured Output: {model.__name__}")
-                
-            explanation.append("")  # Add blank line between steps
-        
-        return "\n".join(explanation)
+        for i in range(len(node_names)):
+            if i == 0:
+                # First node connects from START
+                graph.add_edge(START, node_names[i])
+
+            if i == len(node_names) - 1:
+                # Last node connects to END
+                graph.add_edge(node_names[i], END)
+            else:
+                # Connect to next node
+                graph.add_edge(node_names[i], node_names[i + 1])
+
+        return graph
