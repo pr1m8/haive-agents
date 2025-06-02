@@ -1,37 +1,47 @@
-from typing import List, Optional, Dict, Any, Literal, Annotated
-from pydantic import BaseModel, Field
-from langchain_core.documents import Document
-from langchain_community.graphs.graph_document import GraphDocument
-from langgraph.graph import START, END
-from langgraph.types import Command, Send
 import operator
+from typing import Annotated, List, Literal, Optional
+
+from langchain_community.graphs.graph_document import GraphDocument
+from langchain_core.documents import Document
+from langgraph.types import Command, Send
+from pydantic import BaseModel, Field
 
 # Import models
-from agents.document_agents.kg.kg_map_merge.models import (
-    KnowledgeGraph, 
-    EntityNode, 
-    EntityRelationship
+from haive.agents.document_modifiers.kg.kg_map_merge.models import (
+    EntityNode,
+    EntityRelationship,
+    KnowledgeGraph,
 )
+
 
 class KnowledgeGraphState(BaseModel):
     """
     State model for the parallel knowledge graph transformer.
     """
+
     contents: List[Document]
-    
+
     # Graph documents and knowledge graphs
-    graph_documents: Annotated[List[GraphDocument], operator.add] = Field(default_factory=list)
-    knowledge_graphs: Annotated[List[KnowledgeGraph], operator.add] = Field(default_factory=list)
+    graph_documents: Annotated[List[GraphDocument], operator.add] = Field(
+        default_factory=list
+    )
+    knowledge_graphs: Annotated[List[KnowledgeGraph], operator.add] = Field(
+        default_factory=list
+    )
     final_knowledge_graph: Optional[KnowledgeGraph] = Field(default=None)
-    
+
     # Extracted components
     nodes: List[EntityNode] = Field(default_factory=list)
     relationships: List[EntityRelationship] = Field(default_factory=list)
-    
+
     # Concurrent-safe index tracking
     index: int = Field(default=0)
-    
-    def should_continue(self) -> Literal["map_graph_documents", "map_nodes", "map_relationships", "merge_graphs", "end"]:
+
+    def should_continue(
+        self,
+    ) -> Literal[
+        "map_graph_documents", "map_nodes", "map_relationships", "merge_graphs", "end"
+    ]:
         """
         Determine the next step in the graph creation process.
         """

@@ -1,10 +1,13 @@
-from typing import List, Tuple, Union, Optional
-from langchain_core.documents import Document, BaseDocumentTransformer
+from typing import List, Optional, Tuple, Union
+
+from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from langchain_core.documents import BaseDocumentTransformer, Document
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_neo4j.graphs.graph_document import GraphDocument
 from langchain_experimental.graph_transformers import LLMGraphTransformer
-from haive.core.models.llm.base import LLMConfig, AzureLLMConfig
+from langchain_neo4j.graphs.graph_document import GraphDocument
+
 # ASYNC MODES.
+
 
 class GraphTransformer(BaseDocumentTransformer):
     """
@@ -26,7 +29,7 @@ class GraphTransformer(BaseDocumentTransformer):
     ) -> List[GraphDocument]:
         """
         Transform a document into a graph.
-        
+
         Args:
             documents: The documents to transform.
             llm_config: The LLM configuration.
@@ -39,11 +42,13 @@ class GraphTransformer(BaseDocumentTransformer):
             ignore_tool_usage: The ignore tool usage.
             additional_instructions: The additional instructions.
         """
-        
-        llm = llm_config.instantiate_llm()
 
-        print("DEBUG: Type of allowed_relationships ->", type(allowed_relationships))  # ✅ Debugging statement
-        
+        llm = llm_config.instantiate()
+
+        print(
+            "DEBUG: Type of allowed_relationships ->", type(allowed_relationships)
+        )  # ✅ Debugging statement
+
         if not isinstance(allowed_relationships, list):
             raise TypeError("allowed_relationships must be a list!")
 
@@ -58,14 +63,14 @@ class GraphTransformer(BaseDocumentTransformer):
             "additional_instructions": additional_instructions,
         }
 
-        if getattr(llm, "supports_function_calling", False):  # ✅ Only pass if supported
+        if getattr(
+            llm, "supports_function_calling", False
+        ):  # ✅ Only pass if supported
             graph_transformer_kwargs["node_properties"] = node_properties
-            graph_transformer_kwargs["relationship_properties"] = relationship_properties
+            graph_transformer_kwargs["relationship_properties"] = (
+                relationship_properties
+            )
 
         graph_transformer = LLMGraphTransformer(**graph_transformer_kwargs)
 
         return graph_transformer.convert_to_graph_documents(documents)
-    
-
-    
-
