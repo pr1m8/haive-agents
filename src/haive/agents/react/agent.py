@@ -28,12 +28,12 @@ class ReactAgent(SimpleAgent):
             return graph
 
         # Change end destinations to loop back to agent_node
-        if self._has_tool_node and "tool_node" in graph.nodes:
+        if self._needs_tool_node() and "tool_node" in graph.nodes:
             # Remove existing edge and add loop back
             graph.remove_edge("tool_node", END)
             graph.add_edge("tool_node", "agent_node")
 
-        if self._has_parser_node and "parse_output" in graph.nodes:
+        if self._needs_parser_node() and "parse_output" in graph.nodes:
             # Remove existing edge and add loop back
             graph.remove_edge("parse_output", END)
             graph.add_edge("parse_output", "agent_node")

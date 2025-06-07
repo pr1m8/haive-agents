@@ -1,4 +1,6 @@
 # from haive.core.engine.retriever import RetrieverConfig  # Correct import
+from typing import get_origin
+
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph

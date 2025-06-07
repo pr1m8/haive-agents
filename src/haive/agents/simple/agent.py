@@ -1,212 +1,406 @@
 # ============================================================================
-# SIMPLE AGENT
+# SIMPLE AGENT - ENGINE MODIFIER APPROACH
 # ============================================================================
 
-from typing import Any, Optional, Type, Union
+import logging
+from typing import Any, Dict, List, Optional, Sequence, Type, Union, get_origin
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.base import Engine
 from haive.core.graph.node.engine_node import EngineNodeConfig
+from haive.core.graph.node.parser_node_config import ParserNodeConfig
 from haive.core.graph.node.tool_node_config import ToolNodeConfig
 from haive.core.graph.node.validation_node_config import ValidationNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.models.llm.base import LLMConfig
+from haive.core.schema.schema_composer import SchemaComposer
+from langchain_core.messages import AIMessage
+from langchain_core.output_parsers.base import BaseOutputParser
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langgraph.graph import END, START
-from pydantic import BaseModel, Field, PrivateAttr
+from langgraph.types import Command
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from haive.agents.base.agent import Agent
 
+logger = logging.getLogger(__name__)
+
+
+def has_tool_calls(state) -> bool:
+    """Check if the last AI message has tool calls."""
+    if not hasattr(state, "messages") or not state.messages:
+        return False
+
+    last_msg = state.messages[-1]
+
+    if not isinstance(last_msg, AIMessage):
+        return False
+
+    tool_calls = getattr(last_msg, "tool_calls", None)
+    return bool(tool_calls)
+
+
+def placeholder_node(state):
+    """Placeholder node that does nothing."""
+    return Command(update={})
+
 
 class SimpleAgent(Agent):
-    """Simple agent with generalized tool and parser node handling."""
+    """
+    Simple agent that MODIFIES its engine to include structured output schema.
+
+    This agent takes structured_output_model and UPDATES the engine's schema
+    to include the structured output fields, then regenerates the agent schema.
+    """
+
+    # ========================================================================
+    # CORE ENGINE
+    # ========================================================================
 
     engine: AugLLMConfig = Field(
-        default_factory=AugLLMConfig, description="The main LLM engine"
+        default_factory=AugLLMConfig, description="The AugLLM engine for this agent"
     )
 
-    engine_node: Optional[EngineNodeConfig] = Field(default=None, exclude=True)
-    structured_output_model: Optional[Type[BaseModel]] = Field(default=None)
-    structured_output_version: Optional[Union[int, str]] = Field(default="v2")
+    # ========================================================================
+    # CONVENIENCE FIELDS
+    # ========================================================================
 
-    tool_node_config: Optional[ToolNodeConfig] = Field(default=None)
-    parser_node_config: Optional[Any] = Field(default=None)
-    validation_node_config: Optional[ValidationNodeConfig] = Field(default=None)
+    # LLM parameters
+    temperature: Optional[float] = Field(default=None, description="Temperature")
+    max_tokens: Optional[int] = Field(default=None, description="Max tokens")
+    model_name: Optional[str] = Field(default=None, description="Model name")
 
-    # Computed capabilities - these will be set during build_graph()
-    _has_tool_node: bool = PrivateAttr(default=False)
-    _has_parser_node: bool = PrivateAttr(default=False)
-    _has_structured_output_model: bool = PrivateAttr(default=False)
-    _capabilities_computed: bool = PrivateAttr(default=False)
+    # Tool configuration
+    tools: Optional[List[Any]] = Field(default=None, description="Tools")
+    force_tool_use: Optional[bool] = Field(default=None, description="Force tool use")
 
-    @property
-    def has_tool_node(self) -> bool:
-        """Get tool node flag."""
-        if not self._capabilities_computed:
-            self._compute_capabilities()
-        return self._has_tool_node
+    # Structured output - THIS IS THE KEY FIELD
+    structured_output_model: Optional[Type[BaseModel]] = Field(
+        default=None, description="Structured output model"
+    )
+    structured_output_version: Optional[Union[int, str]] = Field(
+        default=None, description="Structured output version"
+    )
 
-    @property
-    def has_parser_node(self) -> bool:
-        """Get parser node flag."""
-        if not self._capabilities_computed:
-            self._compute_capabilities()
-        return self._has_parser_node
+    # Prompting
+    prompt_template: Optional[Union[ChatPromptTemplate, PromptTemplate]] = Field(
+        default=None, description="Prompt template"
+    )
+    system_message: Optional[str] = Field(default=None, description="System message")
 
-    @property
-    def has_structured_output_model(self) -> bool:
-        """Get structured output model flag."""
-        if not self._capabilities_computed:
-            self._compute_capabilities()
-        return self._has_structured_output_model
+    # LLM config
+    llm_config: Optional[LLMConfig] = Field(default=None, description="LLM config")
 
-    def _compute_capabilities(self):
-        """Compute what nodes this agent needs."""
-        main_engine = self.main_engine
-        if not main_engine:
+    # ========================================================================
+    # NON-SYNCED FIELDS
+    # ========================================================================
+
+    output_parser: Optional[BaseOutputParser] = Field(
+        default=None, description="Output parser"
+    )
+    output_parser_field: Optional[str] = Field(
+        default=None, description="Output parser field name"
+    )
+
+    # ========================================================================
+    # VALIDATION AND SETUP
+    # ========================================================================
+
+    @field_validator("engine")
+    @classmethod
+    def validate_engine_type(cls, v):
+        """Ensure engine is AugLLMConfig."""
+        if v is not None and not isinstance(v, AugLLMConfig):
+            raise ValueError("SimpleAgent engine must be AugLLMConfig")
+        return v
+
+    def setup_agent(self):
+        """
+        Custom setup that modifies the engine and regenerates schemas.
+
+        This is where we MODIFY THE ENGINE to include structured output
+        and then force schema regeneration.
+        """
+        if self.engine:
+            # Add engine to engines dict
+            self.engines["main"] = self.engine
+
+            # Sync fields to engine FIRST
+            self._sync_fields_to_engine()
+
+            # MODIFY ENGINE SCHEMA if we have structured output
+            if self.structured_output_model:
+                self._modify_engine_schema()
+
+            # Force schema regeneration after engine modification
+            self.set_schema = True
+
+        # Don't call parent setup_agent() - we handle it ourselves
+
+    def _sync_fields_to_engine(self) -> None:
+        """Sync convenience fields to engine."""
+        if not self.engine:
             return
 
-        # Reset flags
-        self._has_tool_node = False
-        self._has_parser_node = False
-        self._has_structured_output_model = False
+        # Sync fields if they exist on engine
+        if self.temperature is not None and hasattr(self.engine, "temperature"):
+            self.engine.temperature = self.temperature
+        if self.max_tokens is not None and hasattr(self.engine, "max_tokens"):
+            self.engine.max_tokens = self.max_tokens
+        if self.model_name is not None and hasattr(self.engine, "model"):
+            self.engine.model = self.model_name
+        if self.tools is not None and hasattr(self.engine, "tools"):
+            self.engine.tools = self.tools
+        if self.force_tool_use is not None and hasattr(self.engine, "force_tool_use"):
+            self.engine.force_tool_use = self.force_tool_use
+        if self.structured_output_model is not None and hasattr(
+            self.engine, "structured_output_model"
+        ):
+            self.engine.structured_output_model = self.structured_output_model
+        if self.system_message is not None and hasattr(self.engine, "system_message"):
+            self.engine.system_message = self.system_message
+        if self.llm_config is not None and hasattr(self.engine, "llm_config"):
+            self.engine.llm_config = self.llm_config
 
-        # Check structured output model
-        if (
-            hasattr(main_engine, "structured_output_model")
-            and main_engine.structured_output_model
-        ) or self.structured_output_model:
-            self._has_structured_output_model = True
+    def _modify_engine_schema(self) -> None:
+        """
+        MODIFY the engine's output schema to include structured output fields.
 
-        # Check tool capabilities
-        if hasattr(main_engine, "tools") and main_engine.tools:
-            if (
-                self._has_structured_output_model
-                and str(self.structured_output_version) == "v2"
-            ):
-                # v2 structured output means parse_output only
-                self._has_parser_node = True
-            elif hasattr(main_engine, "tool_routes"):
-                for tool, tool_type in main_engine.tool_routes.items():
-                    if tool_type == "langchain_tool":
-                        self._has_tool_node = True
-                    elif tool_type == "pydantic_model":
-                        self._has_parser_node = True
-            else:
-                # Default to tool node
-                self._has_tool_node = True
+        This is the KEY METHOD that updates the engine schema.
+        """
+        if not self.structured_output_model or not self.engine:
+            return
 
-        # Check parser node via pydantic_tools
-        if hasattr(main_engine, "pydantic_tools") and main_engine.pydantic_tools:
-            self._has_parser_node = True
+        logger.info(
+            f"Modifying engine schema to include {self.structured_output_model.__name__}"
+        )
 
-        # Override with explicit configs
-        if self.tool_node_config is not None:
-            self._has_tool_node = True
-        if self.parser_node_config is not None:
-            self._has_parser_node = True
+        # Get the engine's current output schema
+        current_output_schema = self.engine.derive_output_schema()
 
-        self._capabilities_computed = True
+        # Create a new schema composer to build enhanced schema
+        composer = SchemaComposer(name=f"Enhanced{current_output_schema.__name__}")
+
+        # Add existing fields from current schema
+        composer.add_fields_from_model(current_output_schema)
+
+        # Add the structured output field
+        field_name = (
+            self.structured_output_model.__name__.lower()
+            .replace("response", "")
+            .replace("result", "")
+            .strip()
+        )
+        if not field_name:
+            field_name = "structured_result"
+
+        composer.add_field(
+            name=field_name,
+            field_type=Optional[self.structured_output_model],
+            default=None,
+            description=f"Structured output of type {self.structured_output_model.__name__}",
+        )
+
+        # Build the enhanced schema
+        enhanced_schema = composer.build()
+
+        # OVERRIDE the engine's output schema
+        self.engine.output_schema = enhanced_schema
+
+        # Clear any cached schemas in the engine
+        if hasattr(self.engine, "_output_schema_instance"):
+            self.engine._output_schema_instance = None
+        if hasattr(self.engine, "_schema_cache"):
+            self.engine._schema_cache.clear()
+
+        logger.info(f"Engine schema modified successfully - added field '{field_name}'")
+
+    # ========================================================================
+    # FORCE SCHEMA REGENERATION AFTER ENGINE MODIFICATION
+    # ========================================================================
+
+    def _setup_schemas(self):
+        """Override to always regenerate schemas after engine modification."""
+        # Clear any existing schemas to force regeneration
+        self.state_schema = None
+        self.input_schema = None
+        self.output_schema = None
+
+        # Call parent schema setup with modified engine
+        super()._setup_schemas()
+
+    # ========================================================================
+    # NODE DETECTION (unchanged)
+    # ========================================================================
+
+    def _needs_tool_node(self) -> bool:
+        """Check if we need a tool node for langchain tools."""
+        if not self.engine:
+            return False
+
+        tool_routes = self.get_tool_routes()
+        langchain_tools = [
+            tool
+            for tool, route in tool_routes.items()
+            if route in ["langchain_tool", "function"]
+        ]
+
+        return len(langchain_tools) > 0
+
+    def _needs_parser_node(self) -> bool:
+        """Check if we need a parser node for pydantic models."""
+        if not self.engine:
+            return False
+
+        # Check for structured output
+        has_structured_output = bool(
+            self.structured_output_model
+            or getattr(self.engine, "structured_output_model", None)
+        )
+
+        # Check for output parser
+        has_output_parser = self.output_parser is not None
+
+        # Check for pydantic tools
+        tool_routes = self.get_tool_routes()
+        pydantic_tools = [
+            tool for tool, route in tool_routes.items() if route == "pydantic_model"
+        ]
+
+        return has_structured_output or has_output_parser or len(pydantic_tools) > 0
+
+    def _has_force_tool_use(self) -> bool:
+        """Check if tool use is forced."""
+        return bool(
+            getattr(self.engine, "force_tool_use", False)
+            or getattr(self.engine, "force_tool_choice", False)
+            or (self.force_tool_use is not None and self.force_tool_use)
+            or (self.structured_output_model is not None)
+            or (getattr(self.engine, "structured_output_model", None) is not None)
+        )
+
+    def get_tool_routes(self) -> Dict[str, str]:
+        """Get tool routes from engine."""
+        if self.engine and hasattr(self.engine, "tool_routes"):
+            return getattr(self.engine, "tool_routes", {})
+        return {}
+
+    def get_tools_for_node(self, node_name: str) -> List[Any]:
+        """Get tools for a specific node."""
+        all_tools = []
+
+        # Get tools from engine and agent
+        if hasattr(self.engine, "tools"):
+            all_tools.extend(self.engine.tools)
+        if self.tools:
+            all_tools.extend(self.tools)
+
+        # Filter by route
+        tool_routes = self.get_tool_routes()
+        filtered_tools = []
+
+        for tool in all_tools:
+            tool_name = getattr(tool, "name", getattr(tool, "__name__", str(tool)))
+            route = tool_routes.get(tool_name, "tool_node")
+
+            if node_name == "tool_node" and route in [
+                "langchain_tool",
+                "function",
+                "tool_node",
+            ]:
+                filtered_tools.append(tool)
+            elif node_name == "parse_output" and route == "pydantic_model":
+                filtered_tools.append(tool)
+
+        return filtered_tools if filtered_tools else all_tools
+
+    # ========================================================================
+    # GRAPH BUILDING (unchanged)
+    # ========================================================================
 
     def build_graph(self) -> BaseGraph:
-        """Build the simple agent graph."""
-
-        # Get main engine
-        main_engine = self.main_engine
-        if not main_engine:
-            raise ValueError("No engine available for SimpleAgent")
-
-        # FIRST: Compute capabilities before building anything
-        self._compute_capabilities()
-
-        # Create base graph with agent name
+        """Build the agent graph."""
         graph = BaseGraph(name=self.name)
 
         # Add agent node
-        self.engine_node = EngineNodeConfig(name="agent_node", engine=main_engine)
-        graph.add_node("agent_node", self.engine_node)
+        engine_node = EngineNodeConfig(name="agent_node", engine=self.engine)
+        graph.add_node("agent_node", engine_node)
         graph.add_edge(START, "agent_node")
 
-        # Determine if we need processing
-        needs_processing = (
-            self._has_tool_node
-            or self._has_parser_node
-            or (hasattr(main_engine, "tools") and main_engine.tools)
-            or (hasattr(main_engine, "pydantic_tools") and main_engine.pydantic_tools)
-        )
+        # Check what nodes we need
+        needs_tool_node = self._needs_tool_node()
+        needs_parser_node = self._needs_parser_node()
+        has_force_tool_use = self._has_force_tool_use()
 
-        if not needs_processing:
-            # Simple case - no processing needed
+        # Simple case - no tools
+        if not needs_tool_node and not needs_parser_node:
             graph.add_edge("agent_node", END)
             return graph
 
-        # SECOND: Add all processing nodes that we determined we need
-        if self._has_tool_node:
-            tool_config = self._get_or_create_tool_node_config(main_engine)
+        # Add validation node
+        graph.add_node("validation", placeholder_node)
+
+        # Add tool node if needed
+        if needs_tool_node:
+            tools_for_node = self.get_tools_for_node("tool_node")
+            tool_config = ToolNodeConfig(name="tool_node", tools=tools_for_node)
             graph.add_node("tool_node", tool_config)
-            graph.add_edge("tool_node", END)  # Default end destination
+            graph.add_edge("tool_node", END)
 
-        if self._has_parser_node:
-            parser_config = self._get_or_create_parser_node_config(main_engine)
+        # Add parser node if needed
+        if needs_parser_node:
+            parser_config = ParserNodeConfig(
+                name="parse_output",
+                # output_parser=self.output_parser,
+                # output_parser_field=self.output_parser_field,
+                # structured_output_model=self.structured_output_model
+                # tool=self.structured_output_model
+            )
             graph.add_node("parse_output", parser_config)
-            graph.add_edge("parse_output", END)  # Default end destination
+            graph.add_edge("parse_output", END)
 
-        # THIRD: Add validation node and routing AFTER all target nodes exist
-        validation_config = self._get_or_create_validation_node_config(main_engine)
-        graph.add_node("validation", validation_config)
+        # Agent routing
+        if has_force_tool_use:
+            # Force tools - always go to validation
+            graph.add_edge("agent_node", "validation")
+        else:
+            # Check for tool calls
+            graph.add_conditional_edges(
+                "agent_node", has_tool_calls, {True: "validation", False: END}
+            )
 
-        # Connect agent to validation
-        graph.add_edge("agent_node", "validation")
+        # Validation routing
+        validation_config = ValidationNodeConfig(
+            name="validation",
+            schemas=self.tools or getattr(self.engine, "tools", []),
+            tool_routes=self.engine.tool_routes,
+            tool_node="tool_node",
+        )
 
-        # FOURTH: Set up routing map based on nodes that actually exist
         routing_map = {"has_errors": "agent_node"}
-
-        if self._has_tool_node and "tool_node" in graph.nodes:
+        if needs_tool_node:
             routing_map["tool_node"] = "tool_node"
-
-        if self._has_parser_node and "parse_output" in graph.nodes:
+        if needs_parser_node:
             routing_map["parse_output"] = "parse_output"
 
-        # If no processing nodes exist, route to END
-        if not (self._has_tool_node or self._has_parser_node):
-            routing_map["no_tools"] = END
-
-        # FINALLY: Add conditional edges with verified routing map
         graph.add_conditional_edges("validation", validation_config, routing_map)
 
         return graph
 
-    def _get_or_create_tool_node_config(self, main_engine: Engine) -> ToolNodeConfig:
-        """Get custom tool node config or create default one."""
-        if self.tool_node_config:
-            return self.tool_node_config
+    # ========================================================================
+    # CONVENIENCE CONSTRUCTORS
+    # ========================================================================
 
-        return ToolNodeConfig(name="tool_node", tools=getattr(main_engine, "tools", []))
+    @classmethod
+    def from_engine(cls, engine: AugLLMConfig, name: Optional[str] = None, **kwargs):
+        """Create SimpleAgent from engine."""
+        return cls(name=name or "Simple Agent", engine=engine, **kwargs)
 
-    def _get_or_create_parser_node_config(self, main_engine: Engine) -> Any:
-        """Get custom parser node config or create default one."""
-        if self.parser_node_config:
-            return self.parser_node_config
+    @classmethod
+    def create_with_tools(cls, tools: List[Any], name: Optional[str] = None, **kwargs):
+        """Create SimpleAgent with tools."""
+        return cls(name=name or "Tool Agent", tools=tools, **kwargs)
 
-        # TODO: Replace with actual ParseOutputNodeConfig creation
-        return "parse_output_placeholder"
-
-    def _get_or_create_validation_node_config(
-        self, main_engine: Engine
-    ) -> ValidationNodeConfig:
-        """Get custom validation node config or create default one."""
-        if self.validation_node_config:
-            return self.validation_node_config
-
-        schemas = []
-        if self.structured_output_model:
-            schemas = [self.structured_output_model]
-        elif hasattr(main_engine, "pydantic_tools") and main_engine.pydantic_tools:
-            schemas = main_engine.pydantic_tools
-        elif hasattr(main_engine, "tools") and main_engine.tools:
-            schemas = main_engine.tools
-
-        return ValidationNodeConfig(
-            name="validation_node",
-            schemas=schemas,
-            tools=getattr(main_engine, "tools", []),
-            tool_routes=getattr(main_engine, "tool_routes", {}),
-        )
+    def __repr__(self) -> str:
+        engine_info = f"model={getattr(self.engine, 'model', 'unknown')}"
+        schema_info = f"structured_output={self.structured_output_model.__name__ if self.structured_output_model else 'None'}"
+        return f"SimpleAgent(name='{self.name}', {engine_info}, {schema_info})"
