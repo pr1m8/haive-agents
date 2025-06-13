@@ -1,3 +1,31 @@
+"""Prompt templates for SQL RAG Agent.
+
+This module contains all the prompt templates used throughout the SQL RAG
+workflow. Each prompt is carefully crafted to guide the LLM through specific
+tasks while maintaining consistency and accuracy.
+
+The prompts follow a structured format with clear system instructions and
+user templates that include necessary context variables.
+
+Example:
+    Using prompts with LangChain::
+
+        >>> from langchain_core.prompts import ChatPromptTemplate
+        >>> from haive.agents.rag.db_rag.sql_rag.prompts import GENERATE_SQL_PROMPT
+        >>>
+        >>> # Format prompt with variables
+        >>> messages = GENERATE_SQL_PROMPT.format_messages(
+        ...     schema=db_schema,
+        ...     dialect="postgresql",
+        ...     question="Show top products",
+        ...     query_analysis=analysis_result
+        ... )
+        >>>
+        >>> # Use with LLM
+        >>> llm = ChatOpenAI()
+        >>> response = llm.invoke(messages)
+"""
+
 from langchain_core.prompts import ChatPromptTemplate
 
 # Prompt for analyzing a natural language query
@@ -26,10 +54,27 @@ Question: {question}
 Provide a detailed analysis of what's needed to answer this question with SQL.
 """
 
-ANALYZE_QUERY_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", ANALYZE_QUERY_SYSTEM_PROMPT),
-    ("human", ANALYZE_QUERY_USER_PROMPT)
-])
+ANALYZE_QUERY_PROMPT = ChatPromptTemplate.from_messages(
+    [("system", ANALYZE_QUERY_SYSTEM_PROMPT), ("human", ANALYZE_QUERY_USER_PROMPT)]
+)
+"""Prompt for analyzing natural language queries.
+
+This prompt guides the LLM to break down user questions into SQL components
+without generating the actual query. It helps identify:
+- Required tables and columns
+- JOIN operations needed
+- WHERE clause constraints
+- Aggregation functions
+- Query complexity
+
+Variables:
+    schema: Database schema information
+    dialect: SQL dialect (postgresql, mysql, etc.)
+    question: User's natural language question
+
+Returns:
+    SQLAnalysisOutput with structured analysis
+"""
 
 # Prompt for generating SQL
 GENERATE_SQL_SYSTEM_PROMPT = """
@@ -48,7 +93,6 @@ Follow these guidelines:
 - Do not include any DML statements (INSERT, UPDATE, DELETE, DROP etc.)
 """
 
-# Update the SQL generation prompt to use query_analysis instead of analysis
 GENERATE_SQL_USER_PROMPT = """
 Database Schema:
 {schema}
@@ -62,13 +106,30 @@ Query Analysis: {query_analysis}
 Please generate a SQL query to answer this question:
 """
 
-GENERATE_SQL_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", GENERATE_SQL_SYSTEM_PROMPT),
-    ("human", GENERATE_SQL_USER_PROMPT)
-])
-# Prompt for validating SQL
-# In your prompts.py file, update the VALIDATE_SQL_PROMPT to:
+GENERATE_SQL_PROMPT = ChatPromptTemplate.from_messages(
+    [("system", GENERATE_SQL_SYSTEM_PROMPT), ("human", GENERATE_SQL_USER_PROMPT)]
+)
+"""Prompt for generating SQL queries.
 
+This prompt converts natural language questions into executable SQL queries
+based on the analysis and schema information. It ensures:
+- Correct syntax for the specific dialect
+- Safe queries (SELECT only)
+- Proper use of JOINs and aggregations
+- Result limiting for safety
+- Meaningful result ordering
+
+Variables:
+    schema: Database schema information
+    dialect: SQL dialect
+    question: User's question
+    query_analysis: Analysis from previous step
+
+Returns:
+    SQLQueryOutput with generated query
+"""
+
+# Prompt for validating SQL
 VALIDATE_SQL_SYSTEM_PROMPT = """
 You are a SQL expert who validates queries for correctness and best practices.
 
@@ -101,11 +162,28 @@ SQL Query:
 Please validate this SQL query and identify any issues.
 """
 
-VALIDATE_SQL_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", VALIDATE_SQL_SYSTEM_PROMPT),
-    ("human", VALIDATE_SQL_USER_PROMPT)
-])
+VALIDATE_SQL_PROMPT = ChatPromptTemplate.from_messages(
+    [("system", VALIDATE_SQL_SYSTEM_PROMPT), ("human", VALIDATE_SQL_USER_PROMPT)]
+)
+"""Prompt for validating SQL queries.
 
+This prompt performs comprehensive validation including:
+- Syntax correctness
+- Schema compliance
+- JOIN validity
+- Aggregation rules
+- Performance considerations
+- Security checks
+
+Variables:
+    schema: Database schema
+    dialect: SQL dialect
+    question: Original question
+    sql_query: Query to validate
+
+Returns:
+    SQLValidationOutput with errors and suggestions
+"""
 
 # Prompt for guardrails
 GUARDRAILS_SYSTEM_PROMPT = """
@@ -130,10 +208,23 @@ Question: {question}
 Is this question about querying the database?
 """
 
-GUARDRAILS_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", GUARDRAILS_SYSTEM_PROMPT),
-    ("human", GUARDRAILS_USER_PROMPT)
-])
+GUARDRAILS_PROMPT = ChatPromptTemplate.from_messages(
+    [("system", GUARDRAILS_SYSTEM_PROMPT), ("human", GUARDRAILS_USER_PROMPT)]
+)
+"""Prompt for domain relevance checking (guardrails).
+
+This prompt filters out irrelevant questions that aren't about
+database queries, preventing the agent from attempting to answer
+questions outside its scope.
+
+Variables:
+    schema: Database schema
+    tables: List of table names
+    question: User's question
+
+Returns:
+    GuardrailsOutput with decision and reason
+"""
 
 # Prompt for generating the final answer
 GENERATE_FINAL_ANSWER_SYSTEM_PROMPT = """
@@ -160,10 +251,25 @@ Query Results: {query_result}
 Please provide a detailed answer based on these results:
 """
 
-GENERATE_FINAL_ANSWER_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", GENERATE_FINAL_ANSWER_SYSTEM_PROMPT),
-    ("human", GENERATE_FINAL_ANSWER_USER_PROMPT)
-])
+GENERATE_FINAL_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        ("system", GENERATE_FINAL_ANSWER_SYSTEM_PROMPT),
+        ("human", GENERATE_FINAL_ANSWER_USER_PROMPT),
+    ]
+)
+"""Prompt for generating natural language answers.
+
+This prompt converts raw SQL query results into user-friendly
+answers that directly address the original question.
+
+Variables:
+    question: Original user question
+    sql_query: Executed SQL query
+    query_result: Raw query results
+
+Returns:
+    String with natural language answer
+"""
 
 # Prompt for hallucination checking
 HALLUCINATION_CHECK_SYSTEM_PROMPT = """
@@ -186,10 +292,25 @@ Does this answer contain only information supported by the query results?
 Answer with 'yes' if there are no hallucinations, or 'no' if there are hallucinations.
 """
 
-HALLUCINATION_CHECK_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", HALLUCINATION_CHECK_SYSTEM_PROMPT),
-    ("human", HALLUCINATION_CHECK_USER_PROMPT)
-])
+HALLUCINATION_CHECK_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        ("system", HALLUCINATION_CHECK_SYSTEM_PROMPT),
+        ("human", HALLUCINATION_CHECK_USER_PROMPT),
+    ]
+)
+"""Prompt for detecting hallucinations in answers.
+
+This prompt ensures answers are grounded in actual query results
+and don't include fabricated information.
+
+Variables:
+    question: Original question
+    query_result: Actual data returned
+    answer: Generated answer to check
+
+Returns:
+    GradeHallucinations with binary score
+"""
 
 # Prompt for answer grading
 ANSWER_GRADING_SYSTEM_PROMPT = """
@@ -210,7 +331,18 @@ Does this answer properly address the question?
 Answer with 'yes' or 'no'.
 """
 
-ANSWER_GRADING_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", ANSWER_GRADING_SYSTEM_PROMPT),
-    ("human", ANSWER_GRADING_USER_PROMPT)
-])
+ANSWER_GRADING_PROMPT = ChatPromptTemplate.from_messages(
+    [("system", ANSWER_GRADING_SYSTEM_PROMPT), ("human", ANSWER_GRADING_USER_PROMPT)]
+)
+"""Prompt for grading answer relevance.
+
+This prompt evaluates whether the generated answer actually
+addresses what the user asked, ensuring quality responses.
+
+Variables:
+    question: Original question
+    answer: Generated answer
+
+Returns:
+    GradeAnswer with binary score
+"""
