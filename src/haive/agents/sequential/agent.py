@@ -1,12 +1,13 @@
 # SEQUENTIAL AGENT
 # ============================================================================
 
-from typing import Any, Sequence, Union
+from typing import Any, Optional, Sequence, Type, Union
 
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.schema.schema_composer import SchemaComposer
 from langgraph.graph import END, START
-from pydantic import Field, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 from haive.agents.base.agent import Agent
 
@@ -20,7 +21,7 @@ class SequentialAgent(Agent):
     agents: Sequence[Union[Agent, Any]] = Field(
         ..., description="List of agents to execute sequentially"
     )
-
+    state_schema: Optional[Type[BaseModel]] = Field(default=None)
     smart_compose: bool = Field(
         default=True, description="Whether to use smart composition"
     )
@@ -46,6 +47,16 @@ class SequentialAgent(Agent):
             values["agents"] = validated_agents
 
         return values
+
+    @model_validator(mode="after")
+    def set_state_schema(self):
+        self.input_schema = SchemaComposer.from_components(
+            [self.agents[0].engine]
+        ).derive_input_schema()
+        self.state_schema = SchemaComposer.from_components(
+            [agent.engine for agent in self.agents]
+        )
+        return self
 
     @model_validator(mode="after")
     def validate_non_empty_agents(self):

@@ -6,7 +6,6 @@ Examples for directed conversation patterns with mentions and targeted responses
 import logging
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 from haive.agents.conversation.directed.agent import DirectedConversation
@@ -20,17 +19,16 @@ def example_classroom_discussion():
     """Classroom-style directed conversation."""
     print("=== Classroom Discussion Example ===\n")
 
-    # Create classroom conversation
     classroom = DirectedConversation.create_classroom(
         teacher_name="Ms. Johnson",
         student_names=["Alex", "Sarah", "Mike", "Emma"],
         topic="The Water Cycle and Climate Change",
-        max_rounds=6,
+        max_rounds=3,
     )
 
-    # Run with higher recursion limit
-    config = {"recursion_limit": 50}
-    result = classroom.invoke({}, config)
+    result = classroom.run(
+        {}, debug=True, config={"configurable": {"recursion_limit": 50}}
+    )
 
     # Display conversation
     print(f"Topic: {classroom.topic}\n")
@@ -45,12 +43,10 @@ def example_team_meeting():
     """Team meeting with directed questions and responses."""
     print("\n\n=== Team Meeting Example ===\n")
 
-    # Create team meeting participants
     participants = {
         "Manager": SimpleAgent(
             name="Manager",
             engine=AugLLMConfig(
-                name="manager_engine",
                 system_message=(
                     "You are the team manager. Ask specific team members about their progress. "
                     "Use @mentions to direct questions. Keep it professional and brief."
@@ -61,7 +57,6 @@ def example_team_meeting():
         "Developer": SimpleAgent(
             name="Developer",
             engine=AugLLMConfig(
-                name="developer_engine",
                 system_message=(
                     "You are a software developer. Answer questions about technical progress. "
                     "You can ask the Designer about UI/UX needs."
@@ -72,7 +67,6 @@ def example_team_meeting():
         "Designer": SimpleAgent(
             name="Designer",
             engine=AugLLMConfig(
-                name="designer_engine",
                 system_message=(
                     "You are the UI/UX designer. Discuss design progress and needs. "
                     "You can ask the Developer about technical constraints."
@@ -83,7 +77,6 @@ def example_team_meeting():
         "QA": SimpleAgent(
             name="QA",
             engine=AugLLMConfig(
-                name="qa_engine",
                 system_message=(
                     "You are the QA engineer. Report on testing status and issues found. "
                     "Ask team members about specific features when needed."
@@ -94,22 +87,22 @@ def example_team_meeting():
     }
 
     meeting = DirectedConversation(
-        participant_agents=participants,  # type: ignore
+        participant_agents=participants,
         topic="Sprint Progress Update",
-        max_rounds=8,
+        max_rounds=3,
         fallback_to_round_robin=True,
         max_silence_turns=2,
     )
 
-    # Start with manager's opening
-    result = meeting.invoke(
+    result = meeting.run(
         {
             "messages": [
                 HumanMessage(
                     content="Let's start our sprint update meeting. Manager, please begin."
                 )
             ]
-        }
+        },
+        debug=True,
     )
 
     # Display key interactions
@@ -130,12 +123,10 @@ def example_customer_support():
     """Customer support scenario with directed escalation."""
     print("\n\n=== Customer Support Example ===\n")
 
-    # Support team setup
     support_team = {
         "Bot": SimpleAgent(
             name="SupportBot",
             engine=AugLLMConfig(
-                name="bot_engine",
                 system_message=(
                     "You are a customer support bot. Try to help with basic issues. "
                     "If the issue is complex, mention @Agent for human support."
@@ -146,7 +137,6 @@ def example_customer_support():
         "Agent": SimpleAgent(
             name="Agent",
             engine=AugLLMConfig(
-                name="agent_engine",
                 system_message=(
                     "You are a human support agent. Handle escalated issues. "
                     "If technical, mention @TechLead for expertise."
@@ -157,7 +147,6 @@ def example_customer_support():
         "TechLead": SimpleAgent(
             name="TechLead",
             engine=AugLLMConfig(
-                name="techlead_engine",
                 system_message=(
                     "You are the technical lead. Provide expert technical solutions. "
                     "Work with @Agent to resolve complex issues."
@@ -168,15 +157,14 @@ def example_customer_support():
     }
 
     support_conv = DirectedConversation(
-        participant_agents=support_team,  # type: ignore
+        participant_agents=support_team,
         topic="Customer Issue: Application Crashing",
-        max_rounds=6,
+        max_rounds=3,
         mention_patterns=["@{name}", "escalate to {name}", "transfer to {name}"],
         fallback_to_round_robin=False,
     )
 
-    # Simulate customer issue
-    result = support_conv.invoke(
+    result = support_conv.run(
         {
             "messages": [
                 HumanMessage(
@@ -187,7 +175,8 @@ def example_customer_support():
                     name="SupportBot",
                 ),
             ]
-        }
+        },
+        debug=True,
     )
 
     # Display support flow
@@ -202,12 +191,10 @@ def example_interactive_story():
     """Interactive storytelling with character interactions."""
     print("\n\n=== Interactive Story Example ===\n")
 
-    # Story characters
     characters = {
         "Narrator": SimpleAgent(
             name="Narrator",
             engine=AugLLMConfig(
-                name="narrator_engine",
                 system_message=(
                     "You are the story narrator. Set scenes and direct characters to interact. "
                     "Use @mentions to prompt specific characters to speak or act."
@@ -218,7 +205,6 @@ def example_interactive_story():
         "Hero": SimpleAgent(
             name="Hero",
             engine=AugLLMConfig(
-                name="hero_engine",
                 system_message=(
                     "You are the brave hero of the story. Respond when addressed or when "
                     "the situation calls for heroic action. You can interact with other characters."
@@ -229,7 +215,6 @@ def example_interactive_story():
         "Wizard": SimpleAgent(
             name="Wizard",
             engine=AugLLMConfig(
-                name="wizard_engine",
                 system_message=(
                     "You are a wise wizard. Offer magical solutions and ancient knowledge. "
                     "Respond to requests for help or when magic is needed."
@@ -240,7 +225,6 @@ def example_interactive_story():
         "Villain": SimpleAgent(
             name="Villain",
             engine=AugLLMConfig(
-                name="villain_engine",
                 system_message=(
                     "You are the cunning villain. Create conflict and challenge the heroes. "
                     "Respond to confrontations and taunt the @Hero."
@@ -251,14 +235,14 @@ def example_interactive_story():
     }
 
     story = DirectedConversation(
-        participant_agents=characters,  # type: ignore
+        participant_agents=characters,
         topic="The Quest for the Crystal of Power",
-        max_rounds=8,
+        max_rounds=3,
         mention_patterns=["@{name}", "{name} speaks:", "turning to {name}"],
         allow_self_selection=True,
     )
 
-    result = story.invoke({})
+    result = story.run({}, debug=True)
 
     # Display story
     print("\nThe Quest Begins...\n")
@@ -272,6 +256,6 @@ def example_interactive_story():
 
 if __name__ == "__main__":
     example_classroom_discussion()
-    example_team_meeting()
-    example_customer_support()
-    example_interactive_story()
+    # example_team_meeting()
+    # example_customer_support()
+    # example_interactive_story()

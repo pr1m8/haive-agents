@@ -1,6 +1,13 @@
+# src/haive/agents/conversation/collaborative/agent.py
+"""
+Collaborative conversation agent for building shared content.
+"""
+
 from typing import Any, Dict, List, Literal, Optional
 
 from haive.core.logging.rich_logger import LogLevel, get_logger
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
+from langgraph.types import Command
 from pydantic import Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
@@ -8,10 +15,6 @@ from haive.agents.conversation.collaberative.state import CollaborativeState
 
 logger = get_logger(__name__)
 logger.set_level(LogLevel.WARNING)
-
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
-
-from haive.agents.conversation.base.agent import BaseConversationAgent
 
 
 class CollaborativeConversation(BaseConversationAgent):
@@ -96,17 +99,25 @@ Min contributions per section: {self.min_contributions_per_section}
 Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
         )
 
-    def select_speaker(self, state: CollaborativeState) -> Dict[str, Any]:
+    def select_speaker(self, state: CollaborativeState) -> Command:
         """Select speaker based on contribution balance and current section."""
+        logger.debug(f"=== SELECT SPEAKER ===")
+        logger.debug(f"Current section: {state.current_section}")
+        logger.debug(f"Completed sections: {state.completed_sections}")
+        logger.debug(f"Total contributions: {len(state.contributions)}")
+        logger.debug(f"Conversation ended: {state.conversation_ended}")
+
         # Check if we need to move to next section
         section_update = self._check_section_completion(state)
         if section_update:
+            logger.debug(f"Section update triggered")
             return section_update
 
         # Get current section
         current_section = state.current_section
         if not current_section:
-            return {"conversation_ended": True}
+            logger.debug("No current section - ending conversation")
+            return Command(update={"conversation_ended": True})
 
         # Count contributions to current section
         section_contributors = {}
@@ -115,6 +126,8 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
                 section_contributors[contributor] = (
                     section_contributors.get(contributor, 0) + 1
                 )
+
+        logger.debug(f"Section contributors: {section_contributors}")
 
         # Find who hasn't contributed enough
         speakers = state.speakers
@@ -129,13 +142,15 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
         # If everyone has contributed minimum, pick least active overall
         if min_count >= self.min_contributions_per_section:
+            logger.debug(
+                f"Everyone has contributed minimum ({self.min_contributions_per_section})"
+            )
             return self._select_least_active_overall(state)
 
-        return {"current_speaker": min_contributor}
+        logger.debug(f"Selected speaker: {min_contributor} (count: {min_count})")
+        return Command(update={"current_speaker": min_contributor})
 
-    def _check_section_completion(
-        self, state: CollaborativeState
-    ) -> Optional[Dict[str, Any]]:
+    def _check_section_completion(self, state: CollaborativeState) -> Optional[Command]:
         """Check if current section is complete and move to next."""
         current_section = state.current_section
         if not current_section:
@@ -148,6 +163,10 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
         # Check if section has enough contributions
         min_total = self.min_contributions_per_section * len(state.speakers)
+        logger.debug(
+            f"Section {current_section}: {section_contribution_count}/{min_total} contributions"
+        )
+
         if section_contribution_count >= min_total:
             # Mark section complete
             completed = list(state.completed_sections)
@@ -165,19 +184,24 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
                     content=f"✅ Section '{current_section}' complete. "
                     f"Moving to '{next_section}'."
                 )
-                return {
-                    "completed_sections": completed,
-                    "current_section": next_section,
-                    "messages": [transition_msg],
-                    "current_speaker": state.speakers[0] if state.speakers else None,
-                }
+                return Command(
+                    update={
+                        "completed_sections": completed,
+                        "current_section": next_section,
+                        "messages": [transition_msg],
+                        "current_speaker": (
+                            state.speakers[0] if state.speakers else None
+                        ),
+                    }
+                )
             else:
                 # All sections complete
+                logger.debug("All sections complete - finalizing document")
                 return self._finalize_document(state)
 
         return None
 
-    def _select_least_active_overall(self, state: CollaborativeState) -> Dict[str, Any]:
+    def _select_least_active_overall(self, state: CollaborativeState) -> Command:
         """Select speaker who has contributed least overall."""
         contribution_count = dict(state.contribution_count)
 
@@ -190,7 +214,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
                 min_count = count
                 min_speaker = speaker
 
-        return {"current_speaker": min_speaker}
+        return Command(update={"current_speaker": min_speaker})
 
     def _prepare_agent_input(
         self, state: CollaborativeState, agent_name: str
@@ -231,54 +255,80 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
         return base_input
 
-    def process_response(self, state: CollaborativeState) -> Dict[str, Any]:
+    def process_response(self, state: CollaborativeState) -> Command:
         """Process contribution and update document."""
-        update = {}
-
         if not state.current_speaker or not state.messages:
-            return update
+            return Command(update={})
 
         last_msg = state.messages[-1]
         if not isinstance(last_msg, AIMessage) or not hasattr(last_msg, "name"):
-            return update
+            return Command(update={})
 
         contributor = last_msg.name
         content = last_msg.content
         current_section = state.current_section
 
-        # Add contribution
-        contribution = (contributor, current_section, content)
-        update["contributions"] = [contribution]
+        # Build complete updated values
+        # Add new contribution to existing list
+        new_contributions = state.contributions + [
+            (contributor, current_section, content)
+        ]
 
         # Update contribution count
-        count = dict(state.contribution_count)
-        count[str(contributor)] = count.get(str(contributor), 0) + 1
-        update["contribution_count"] = count
+        new_contribution_count = state.contribution_count.copy()
+        new_contribution_count[str(contributor)] = (
+            new_contribution_count.get(str(contributor), 0) + 1
+        )
 
         # Update section content
-        sections = dict(state.document_sections)
-        if current_section not in sections:
-            sections[str(current_section)] = ""
+        new_document_sections = state.document_sections.copy()
+        if current_section:
+            # Add content with attribution if enabled
+            if self.include_attribution:
+                new_content = f"[{contributor}]: {content}"
+            else:
+                new_content = str(content)
 
-        # Add content with attribution if enabled
-        if self.include_attribution:
-            attribution = f"\n[{contributor}]: "
-        else:
-            attribution = "\n"
+            # Append to existing section content
+            if (
+                current_section in new_document_sections
+                and new_document_sections[current_section]
+            ):
+                new_document_sections[current_section] = (
+                    new_document_sections[current_section].rstrip() + "\n" + new_content
+                )
+            else:
+                new_document_sections[current_section] = new_content
 
-        sections[str(current_section)] += attribution + str(content) + "\n"
-        update["document_sections"] = sections
+        # Compile updated document
+        new_shared_document = self._compile_document(state, new_document_sections)
 
-        # Update main document
-        update["shared_document"] = self._compile_document(state, sections)
-
-        return update
+        # Return Command with complete updated values
+        return Command(
+            update={
+                "contributions": new_contributions,
+                "contribution_count": new_contribution_count,
+                "document_sections": new_document_sections,
+                "shared_document": new_shared_document,
+            }
+        )
 
     def _compile_document(
         self, state: CollaborativeState, sections: Dict[str, str]
     ) -> str:
         """Compile sections into final document."""
-        doc_parts = [state.shared_document.split("\n\n")[0]]  # Keep title
+        # Get title from current document or use default
+        if state.shared_document:
+            doc_parts = [state.shared_document.split("\n\n")[0]]  # Keep title
+        else:
+            if self.output_format == "markdown":
+                doc_parts = [f"# {self.document_title}"]
+            elif self.output_format == "code":
+                doc_parts = [f"# {self.document_title}\n# Collaborative Code"]
+            elif self.output_format == "outline":
+                doc_parts = [f"{self.document_title}\n{'=' * len(self.document_title)}"]
+            else:  # report
+                doc_parts = [f"{self.document_title.upper()}"]
 
         for section in state.sections_order:
             if section in sections and sections[section]:
@@ -293,7 +343,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
         return "\n\n".join(doc_parts)
 
-    def _finalize_document(self, state: CollaborativeState) -> Dict[str, Any]:
+    def _finalize_document(self, state: CollaborativeState) -> Command:
         """Finalize the collaborative document."""
         # Create final summary
         total_contributions = len(state.contributions)
@@ -314,11 +364,11 @@ Contributors:
 The final document has been compiled."""
         )
 
-        return {"messages": [summary_msg], "conversation_ended": True}
+        return Command(update={"messages": [summary_msg], "conversation_ended": True})
 
     def _check_custom_end_conditions(
         self, state: CollaborativeState
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[Command]:
         """Check if all sections are complete."""
         if len(state.completed_sections) >= len(self.sections):
             return self._finalize_document(state)
@@ -361,6 +411,20 @@ The final document has been compiled."""
             )
             agents[name] = SimpleAgent(name=f"{name}_agent", engine=engine)
 
+        # Calculate appropriate max_rounds
+        # Each participant needs to contribute min_contributions_per_section times per section
+        min_contributions = kwargs.get("min_contributions_per_section", 1)
+        total_contributions_needed = (
+            len(participants) * len(sections) * min_contributions
+        )
+
+        # Add some buffer for conversation flow
+        suggested_max_rounds = total_contributions_needed + len(sections) + 5
+
+        # Use the suggested max_rounds if not explicitly provided
+        if "max_rounds" not in kwargs:
+            kwargs["max_rounds"] = suggested_max_rounds
+
         return cls(
             participant_agents=agents,
             topic=topic,
@@ -402,11 +466,20 @@ The final document has been compiled."""
             )
             agents[name] = SimpleAgent(name=f"{name}_agent", engine=engine)
 
+        # Calculate appropriate max_rounds
+        min_contributions = kwargs.get("min_contributions_per_section", 1)
+        sections = ["Overview", "Strengths", "Issues", "Suggestions", "Conclusion"]
+        total_contributions_needed = len(reviewers) * len(sections) * min_contributions
+        suggested_max_rounds = total_contributions_needed + len(sections) + 5
+
+        if "max_rounds" not in kwargs:
+            kwargs["max_rounds"] = suggested_max_rounds
+
         return cls(
             participant_agents=agents,
             topic=code_description,
             document_title="Code Review",
-            sections=["Overview", "Strengths", "Issues", "Suggestions", "Conclusion"],
+            sections=sections,
             output_format="markdown",
             **kwargs,
         )

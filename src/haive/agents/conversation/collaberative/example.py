@@ -32,11 +32,11 @@ def example_brainstorming_session():
             "Next Steps",
         ],
         min_contributions_per_section=1,
-        max_rounds=15,
+        max_rounds=2,
     )
 
     # Run session
-    result = session.invoke({})
+    result = session.run({},config={"configurable": {"recursion_limit": 100}},debug=True)
 
     # Display final document
     print("📄 Final Brainstorming Document:\n")
@@ -64,11 +64,11 @@ def example_code_review():
             "DevOpsEngineer": "deployment and infrastructure specialist",
         },
         min_contributions_per_section=1,
-        max_rounds=12,
+        max_rounds=3,
     )
 
     # Run review
-    result = review.invoke({})
+    result = review.run({},config={"configurable": {"recursion_limit": 100}},debug=True)
 
     # Display code review document
     print("🔍 Code Review Results:\n")
@@ -144,10 +144,10 @@ def example_project_planning():
         output_format="report",
         min_contributions_per_section=1,
         include_attribution=True,
-        max_rounds=18,
+        max_rounds=3,
     )
 
-    result = planning.invoke({})
+    result = planning.run({},config={"configurable": {"recursion_limit": 100}},debug=True)
 
     # Display project plan
     print("📋 Project Plan Document:\n")
@@ -218,10 +218,10 @@ def example_research_paper():
         min_contributions_per_section=1,
         allow_revisions=True,
         include_attribution=False,  # Clean output for paper
-        max_rounds=20,
+        max_rounds=3,
     )
 
-    result = paper.invoke({})
+    result = paper.invoke({},config={"configurable": {"recursion_limit": 50}})
 
     # Display research paper
     print("📚 Research Paper Draft:\n")
@@ -294,10 +294,10 @@ def example_creative_writing():
         output_format="markdown",
         min_contributions_per_section=1,
         include_attribution=True,  # See who wrote what
-        max_rounds=16,
+        max_rounds=3,
     )
 
-    result = story.invoke({})
+    result = story.invoke({},config={"configurable": {"recursion_limit": 50}})
 
     # Display story
     print("📖 Collaborative Story:\n")
@@ -314,8 +314,8 @@ def example_creative_writing():
 
 
 if __name__ == "__main__":
-    example_brainstorming_session()
-    example_code_review()
-    example_project_planning()
-    example_research_paper()
-    example_creative_writing()
+    #example_brainstorming_session()
+    #example_code_review()
+    #example_project_planning()
+    #example_research_paper()
+    #example_creative_writing()

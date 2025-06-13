@@ -1,5 +1,12 @@
 # haive/core/engine/agent/base.py
 
+"""
+Base Agent class for the Haive framework.
+
+This module provides the abstract base agent class that all agents inherit from,
+including execution, state management, and persistence functionality through mixins.
+"""
+
 import logging
 import re
 from abc import ABC, abstractmethod
@@ -8,31 +15,55 @@ from typing import Any, Dict, List, Literal, Optional, Tuple, Type, Union
 from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.base import Engine, EngineType, InvokableEngine
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.persistence.handlers import setup_checkpointer
 from haive.core.schema.schema_composer import SchemaComposer
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import BaseMessage
+from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
 from pydantic import BaseModel, Field, PrivateAttr, model_validator
+
+# Import mixins
+from haive.agents.base.mixins.execution_mixin import ExecutionMixin
+from haive.agents.base.mixins.state_mixin import StateMixin
 
 logger = logging.getLogger(__name__)
 
 
-class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
+class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, ABC):
     """
-    Abstract base agent class that extends InvokableEngine.
+    Abstract base agent class that extends InvokableEngine with execution and state management.
 
-    This class is now an Engine itself, providing consistent interface
-    with the rest of the Haive framework.
+    This class provides the foundation for all agent implementations in the Haive framework,
+    combining the Engine interface with execution and state management capabilities through mixins.
 
-    Initialization Order:
+    The agent lifecycle follows this initialization order:
     1. Normalize engines and setup name
     2. Subclass field syncing (hook: setup_agent())
     3. Schema generation from engines
-    4. Graph building
+    4. Persistence setup
+    5. Graph building and compilation
+
+    Attributes:
+        engine_type: Always EngineType.AGENT for agents
+        name: Agent name, auto-generated from class name if not provided
+        engines: Dictionary of named engines used by this agent
+        engine: Primary/main engine for the agent
+        graph: The workflow graph (excluded from serialization)
+        state_schema: Schema for agent state
+        input_schema: Schema for agent input
+        output_schema: Schema for agent output
+        config_schema: Schema for agent configuration
+        checkpointer: Persistence checkpointer (excluded from serialization)
+        store: Optional state store (excluded from serialization)
+        config: Reference to AgentConfig (excluded from serialization)
+        set_schema: Whether to auto-generate schemas from engines
     """
 
     # Engine type for this agent
-    engine_type: EngineType = Field(default=EngineType.AGENT)
+    engine_type: Literal[EngineType.AGENT] = Field(
+        default=EngineType.AGENT, description="Engine type, always AGENT for agents"
+    )
 
     # Core identification
     name: str = Field(
@@ -50,40 +81,84 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
     )
 
     # Graph state - will be built after setup
-    graph: Optional[BaseGraph] = Field(default=None, exclude=True)
+    graph: Optional[BaseGraph] = Field(
+        default=None,
+        exclude=True,
+        description="The workflow graph (excluded from serialization)",
+    )
 
     # Schema definitions
     state_schema: Optional[
         Union[Type[StateSchema], Type[BaseModel], Dict[str, Any]]
-    ] = Field(default=None)
-    input_schema: Optional[Union[Type[BaseModel], Dict[str, Any]]] = Field(default=None)
+    ] = Field(default=None, description="Schema for agent state")
+    input_schema: Optional[Union[Type[BaseModel], Dict[str, Any]]] = Field(
+        default=None, description="Schema for agent input"
+    )
     output_schema: Optional[Union[Type[BaseModel], Dict[str, Any]]] = Field(
-        default=None
+        default=None, description="Schema for agent output"
     )
     config_schema: Optional[Union[Type[BaseModel], Dict[str, Any]]] = Field(
-        default=None
+        default=None, description="Schema for agent configuration"
     )
+
+    # Persistence fields (non-serialized)
+    checkpointer: Any = Field(
+        default=None,
+        exclude=True,
+        description="Persistence checkpointer (excluded from serialization)",
+    )
+    store: Optional[Any] = Field(
+        default=None,
+        exclude=True,
+        description="Optional state store (excluded from serialization)",
+    )
+
+    # Configuration reference (non-serialized)
+    config: Optional[AgentConfig] = Field(
+        default=None,
+        exclude=True,
+        description="Reference to AgentConfig (excluded from serialization)",
+    )
+
+    # Runtime configuration
+    runnable_config: Optional[RunnableConfig] = Field(
+        default=None, description="Default runtime configuration"
+    )
+
+    # Verbosity for debugging
+    verbose: bool = Field(default=False, description="Enable verbose logging")
 
     # Private state tracking
     _graph_built: bool = PrivateAttr(default=False)
     _compiled_graph: Optional[CompiledGraph] = PrivateAttr(default=None)
     _is_compiled: bool = PrivateAttr(default=False)
     _setup_complete: bool = PrivateAttr(default=False)
+    _checkpoint_mode: str = PrivateAttr(default="sync")
+    _app: Optional[Any] = PrivateAttr(default=None)
 
     # Schema control flag
-    set_schema: Literal[True, False] = Field(default=False)
+    set_schema: Literal[True, False] = Field(
+        default=False, description="Whether to auto-generate schemas from engines"
+    )
 
     @model_validator(mode="before")
     @classmethod
-    def normalize_engines_and_name(cls, values):
-        """STEP 1: Normalize engines dict and auto-generate name."""
+    def normalize_engines_and_name(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        STEP 1: Normalize engines dict and auto-generate name.
+
+        This validator:
+        - Auto-generates agent name from class name if not provided
+        - Normalizes engines into a dictionary format
+        - Moves single engine to engines dict if needed
+        """
         if not isinstance(values, dict):
             return values
 
         # Auto-generate name from class name if default or empty
         if "name" not in values or not values["name"] or values["name"] == "Agent":
             class_name = cls.__name__
-            # Convert CamelCase to readable name
+            # Convert CamelCase to readable name (e.g., "SimpleAgent" -> "Simple Agent")
             name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", class_name)
             values["name"] = name
 
@@ -94,7 +169,6 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
         # Move single engine to engines dict
         if "engine" in values and values["engine"] is not None:
             engine = values["engine"]
-
             # Add to engines dict with appropriate key
             if hasattr(engine, "name") and engine.name:
                 values["engines"][engine.name] = engine
@@ -125,8 +199,16 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
         return values
 
     @model_validator(mode="after")
-    def complete_agent_setup(self):
-        """STEP 2-4: Complete agent setup in proper order."""
+    def complete_agent_setup(self) -> "Agent":
+        """
+        STEP 2-5: Complete agent setup in proper order.
+
+        This validator handles the main initialization sequence:
+        2. Call subclass setup hook for field syncing
+        3. Generate schemas from engines (if set_schema is True)
+        4. Setup persistence (checkpointer and store)
+        5. Build the initial graph
+        """
         try:
             # STEP 2: Call subclass setup hook for field syncing
             self.setup_agent()
@@ -135,30 +217,36 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
             if self.set_schema:
                 self._setup_schemas()
 
-            # STEP 4: Build the graph
+            # STEP 4: Setup persistence
+            self._setup_persistence()
+
+            # STEP 5: Build the initial graph
             self._build_initial_graph()
 
             self._setup_complete = True
 
         except Exception as e:
             logger.error(f"Failed to setup agent {self.__class__.__name__}: {e}")
-            # Don't raise - allow partial setup
+            # Don't raise - allow partial setup for better debugging
 
         return self
 
     @model_validator(mode="after")
-    def ensure_basic_schema(self):
-        """Ensure we always have at least a basic state schema."""
+    def ensure_basic_schema(self) -> "Agent":
+        """
+        Ensure we always have at least a basic state schema.
+
+        This provides a fallback schema with messages field if no schema is defined.
+        """
         if not self.state_schema:
             logger.debug(
                 f"No state schema found for {self.name}, creating basic fallback"
             )
             try:
+                # Try to import prebuilt MessagesState
                 from haive.core.schema.prebuilt.messages_state import MessagesState
 
-                self.state_schema = SchemaComposer.from_components(
-                    components=[self.engine], name=f"{self.__class__.__name__}State"
-                )
+                self.state_schema = MessagesState
             except ImportError:
                 # Create a very basic state schema as last resort
                 from typing import List
@@ -166,33 +254,209 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
                 from langchain_core.messages import BaseMessage
                 from pydantic import BaseModel
 
-                class InitialBasicMessagesState(BaseModel):
+                class BasicMessagesState(BaseModel):
+                    """Fallback state schema with messages field."""
+
                     messages: List[BaseMessage] = []
 
-                self.state_schema = InitialBasicMessagesState
-                logger.debug(
-                    f"Created InitialBasicMessagesState fallback for {self.name}"
-                )
+                self.state_schema = BasicMessagesState
+                logger.debug(f"Created BasicMessagesState fallback for {self.name}")
 
         return self
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """
         Hook for subclasses to perform field syncing and custom setup.
 
-        This is called BEFORE schema generation and graph building,
+        This method is called BEFORE schema generation and graph building,
         allowing subclasses to sync fields to engines properly.
 
         Override this method in subclasses for custom setup logic.
+
+        Example:
+            def setup_agent(self):
+                # Sync fields to engine
+                if self.temperature is not None:
+                    self.engine.temperature = self.temperature
+                # Add engines to registry
+                self.engines["main"] = self.engine
         """
         pass  # Default implementation does nothing
+
+    def _setup_persistence(self) -> None:
+        """
+        Set up persistence with checkpointer and store.
+
+        This method:
+        - Sets up the checkpointer based on config
+        - Configures checkpoint mode (sync/async)
+        - Optionally adds a state store
+        """
+        # Setup checkpointer based on config
+        if hasattr(self, "config") and self.config:
+            # Get checkpoint mode from config
+            self._checkpoint_mode = getattr(self.config, "checkpoint_mode", "sync")
+
+            # Setup checkpointer using the handler
+            self.checkpointer = setup_checkpointer(self.config)
+            logger.debug(
+                f"Checkpointer set up for {self.name}: {type(self.checkpointer).__name__}"
+            )
+
+            # Set default runnable config from config if not already set
+            if not self.runnable_config and hasattr(self.config, "runnable_config"):
+                self.runnable_config = self.config.runnable_config
+
+            # Add store if configured
+            self.store = None
+            if getattr(self.config, "add_store", False):
+                try:
+                    from langgraph.store.base import BaseStore
+
+                    self.store = BaseStore()
+                    logger.debug("BaseStore added to agent")
+                except ImportError:
+                    logger.warning(
+                        "Could not import BaseStore, store functionality disabled"
+                    )
+        else:
+            # No config - use memory checkpointer as fallback
+            try:
+                from langgraph.checkpoint.memory import MemorySaver
+
+                self.checkpointer = MemorySaver()
+                self.store = None
+                logger.debug(f"Using fallback MemorySaver for {self.name}")
+            except ImportError:
+                logger.error("Could not import MemorySaver, persistence disabled")
+                self.checkpointer = None
+                self.store = None
+
+    def _setup_schemas(self) -> None:
+        """
+        Generate schemas from available engines and sub-agents.
+
+        This method creates state, input, and output schemas by analyzing
+        the engines and sub-agents configured for this agent.
+        """
+        # Collect all engines and agents
+        engine_list = []
+        agent_list = []
+
+        if self.engine:
+            engine_list.append(self.engine)
+
+        for name, component in self.engines.items():
+            if isinstance(component, str):  # Skip string references
+                continue
+            elif isinstance(component, Agent):
+                # It's a sub-agent
+                agent_list.append(component)
+            else:
+                # It's an engine
+                engine_list.append(component)
+
+        logger.debug(
+            f"Setting up schemas for {self.name} with {len(engine_list)} engines "
+            f"and {len(agent_list)} sub-agents"
+        )
+
+        try:
+            # Generate state schema
+            if not self.state_schema:
+                if agent_list:
+                    # Use AgentSchemaComposer for agents
+                    logger.debug(f"Creating schema from {len(agent_list)} sub-agents")
+                    try:
+                        from haive.core.schema.agent_schema_composer import (
+                            AgentSchemaComposer,
+                        )
+
+                        self.state_schema = AgentSchemaComposer.from_agents(
+                            agents=agent_list,
+                            name=f"{self.__class__.__name__}State",
+                            include_meta=True,
+                            separation="smart",
+                        )
+                    except ImportError:
+                        logger.warning(
+                            "AgentSchemaComposer not available, using regular composer"
+                        )
+                        self.state_schema = SchemaComposer.from_components(
+                            components=engine_list,
+                            name=f"{self.__class__.__name__}State",
+                        )
+                elif engine_list:
+                    # Use regular SchemaComposer for engines
+                    logger.debug(f"Creating schema from {len(engine_list)} engines")
+                    self.state_schema = SchemaComposer.from_components(
+                        components=engine_list, name=f"{self.__class__.__name__}State"
+                    )
+                else:
+                    logger.debug(
+                        "No engines or agents found, creating basic message state"
+                    )
+                    # Create basic message state
+                    self._create_basic_message_state()
+
+            logger.debug(f"Schema setup complete. State schema: {self.state_schema}")
+
+        except Exception as e:
+            logger.warning(
+                f"Schema generation failed for {self.__class__.__name__}: {e}"
+            )
+            # Fallback to basic message state
+            if not self.state_schema:
+                self._create_basic_message_state()
+
+    def _create_basic_message_state(self) -> None:
+        """Create a basic message state schema as fallback."""
+        try:
+            from haive.core.schema.prebuilt.messages_state import MessagesState
+
+            self.state_schema = MessagesState
+            logger.debug("Using MessagesState fallback")
+        except ImportError:
+            # Create basic state schema
+            from typing import List
+
+            from langchain_core.messages import BaseMessage
+            from pydantic import BaseModel
+
+            class FallbackMessagesState(BaseModel):
+                """Fallback state schema with messages field."""
+
+                messages: List[BaseMessage] = []
+
+            self.state_schema = FallbackMessagesState
+            logger.debug("Using FallbackMessagesState")
+
+    def _build_initial_graph(self) -> None:
+        """
+        Build the initial graph.
+
+        This calls the abstract build_graph method that must be implemented by subclasses.
+        """
+        try:
+            self.graph = self.build_graph()
+            self._graph_built = True
+        except Exception as e:
+            logger.warning(
+                f"Initial graph build failed for {self.__class__.__name__}: {e}"
+            )
+            self.graph = None
+            self._graph_built = False
 
     # ============================================================================
     # ENGINE INTERFACE IMPLEMENTATION
     # ============================================================================
 
     def get_input_fields(self) -> Dict[str, Tuple[Type, Any]]:
-        """Return input field definitions as field_name -> (type, default) pairs."""
+        """
+        Return input field definitions as field_name -> (type, default) pairs.
+
+        This implements the abstract method from Engine base class.
+        """
         # Only return from input schema if explicitly defined and it's a BaseModel
         if (
             self.input_schema
@@ -214,7 +478,6 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
             first_engine = next(iter(self.engines.values()), None)
             if first_engine and hasattr(first_engine, "get_input_fields"):
                 try:
-                    self.input_schema = first_engine.get_input_fields()
                     return first_engine.get_input_fields()
                 except:
                     pass
@@ -223,7 +486,11 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
         return {}
 
     def get_output_fields(self) -> Dict[str, Tuple[Type, Any]]:
-        """Return output field definitions as field_name -> (type, default) pairs."""
+        """
+        Return output field definitions as field_name -> (type, default) pairs.
+
+        This implements the abstract method from Engine base class.
+        """
         # Only return from output schema if explicitly defined and it's a BaseModel
         if (
             self.output_schema
@@ -245,7 +512,6 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
             last_engine = list(self.engines.values())[-1] if self.engines else None
             if last_engine and hasattr(last_engine, "get_output_fields"):
                 try:
-                    self.output_schema = last_engine.get_output_fields()
                     return last_engine.get_output_fields()
                 except:
                     pass
@@ -253,8 +519,14 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
         # Fallback - return empty to avoid exposing internal state
         return {}
 
-    def create_runnable(self, runnable_config=None) -> CompiledGraph:
-        """Create and compile the runnable with proper schema kwargs."""
+    def create_runnable(
+        self, runnable_config: Optional[Dict[str, Any]] = None
+    ) -> CompiledGraph:
+        """
+        Create and compile the runnable with proper schema kwargs.
+
+        This implements the abstract method from Engine base class.
+        """
         if not self._setup_complete:
             raise RuntimeError("Agent setup not complete")
 
@@ -272,30 +544,19 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
         # If still no state schema, create a basic one
         if not self.state_schema:
             logger.warning(f"Creating fallback state schema for {self.name}")
-            try:
-                from haive.core.schema.prebuilt.messages_state import MessagesState
-
-                self.state_schema = MessagesState
-                logger.debug("Using MessagesState fallback")
-            except ImportError:
-                # Create basic state schema
-                from typing import List
-
-                from langchain_core.messages import BaseMessage
-                from pydantic import BaseModel
-
-                class BasicAgentState(BaseModel):
-                    messages: List[BaseMessage] = []
-
-                self.state_schema = BasicAgentState
-                logger.debug(f"Created BasicAgentState fallback for {self.name}")
+            self._create_basic_message_state()
 
         # Build schema kwargs - only pass what StateGraph expects
         schema_kwargs = {}
 
+        # CRITICAL FIX: Ensure state_schema is always passed
         if self.state_schema:
             schema_kwargs["state_schema"] = self.state_schema
+        else:
+            # This should never happen due to fallbacks above, but just in case
+            raise ValueError(f"No state schema available for {self.name}")
 
+        # Only add input/output if they exist (they're optional if state_schema is provided)
         if self.input_schema:
             schema_kwargs["input"] = self.input_schema
 
@@ -309,132 +570,39 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
         logger.debug(f"Schema kwargs for {self.name}: {list(schema_kwargs.keys())}")
         logger.debug(f"State schema: {self.state_schema}")
 
-        # Convert to LangGraph with only schema kwargs
-        langgraph = self.graph.to_langgraph(**schema_kwargs)
+        # Convert BaseGraph to LangGraph with schemas
+        try:
+            langgraph = self.graph.to_langgraph(**schema_kwargs)
+        except Exception as e:
+            logger.error(f"Failed to convert graph to langgraph: {e}")
+            logger.error(f"Schema kwargs were: {list(schema_kwargs.keys())}")
+            logger.error(f"State schema type: {type(self.state_schema)}")
+            raise
 
-        # Apply runnable_config during compilation if provided
+        # Now compile the LangGraph StateGraph with checkpointer and runtime config
         compile_kwargs = {}
+
+        # Always add our checkpointer
+        if self.checkpointer:
+            compile_kwargs["checkpointer"] = self.checkpointer
+
+        # Add store if available
+        if self.store:
+            compile_kwargs["store"] = self.store
+
+        # Extract compilation-relevant parameters from runnable_config if provided
         if runnable_config:
-            # Extract compilation-relevant parameters from runnable_config
-            if "checkpointer" in runnable_config:
-                compile_kwargs["checkpointer"] = runnable_config["checkpointer"]
             if "interrupt_before" in runnable_config:
                 compile_kwargs["interrupt_before"] = runnable_config["interrupt_before"]
             if "interrupt_after" in runnable_config:
                 compile_kwargs["interrupt_after"] = runnable_config["interrupt_after"]
 
+        # Compile the LangGraph StateGraph
         return langgraph.compile(**compile_kwargs)
 
     # ============================================================================
-    # FIXED AGENT SCHEMA SETUP
+    # GRAPH MANAGEMENT
     # ============================================================================
-    def _setup_schemas(self):
-        """Generate schemas from available engines and sub-agents."""
-
-        # Collect all engines and agents
-        engine_list = []
-        agent_list = []
-
-        if self.engine:
-            engine_list.append(self.engine)
-
-        for name, component in self.engines.items():
-            if isinstance(component, str):  # Skip string references
-                continue
-            elif isinstance(component, Agent):
-                # It's a sub-agent
-                agent_list.append(component)
-            else:
-                # It's an engine
-                engine_list.append(component)
-
-        logger.debug(
-            f"Setting up schemas for {self.name} with {len(engine_list)} engines and {len(agent_list)} sub-agents"
-        )
-
-        try:
-            # Generate state schema
-            if not self.state_schema:
-                if agent_list:
-                    # Use AgentSchemaComposer for agents
-                    logger.debug(f"Creating schema from {len(agent_list)} sub-agents")
-                    from haive.core.schema.agent_schema_composer import (
-                        AgentSchemaComposer,
-                    )
-
-                    self.state_schema = AgentSchemaComposer.from_agents(
-                        agents=agent_list,
-                        name=f"{self.__class__.__name__}State",
-                        include_meta=True,
-                        separation="smart",
-                    )
-                elif engine_list:
-                    # Use regular SchemaComposer for engines
-                    logger.debug(f"Creating schema from {len(engine_list)} engines")
-                    self.state_schema = SchemaComposer.from_components(
-                        components=engine_list, name=f"{self.__class__.__name__}State"
-                    )
-                else:
-                    logger.debug(
-                        "No engines or agents found, creating basic message state"
-                    )
-                    # Create basic message state
-                    try:
-                        from haive.core.schema.prebuilt.messages_state import (
-                            MessagesState,
-                        )
-
-                        self.state_schema = MessagesState
-                    except ImportError:
-                        # Create basic state schema
-                        from typing import List
-
-                        from langchain_core.messages import BaseMessage
-                        from pydantic import BaseModel
-
-                        class SchemaGenerationFallbackState(BaseModel):
-                            messages: List[BaseMessage] = []
-
-                        self.state_schema = SchemaGenerationFallbackState
-                        logger.debug("Using SchemaGenerationFallbackState fallback")
-
-            logger.debug(f"Schema setup complete. State schema: {self.state_schema}")
-
-        except Exception as e:
-            logger.warning(
-                f"Schema generation failed for {self.__class__.__name__}: {e}"
-            )
-            # Fallback to basic message state
-            if not self.state_schema:
-                try:
-                    from haive.core.schema.prebuilt.messages_state import MessagesState
-
-                    self.state_schema = MessagesState
-                    logger.debug("Using MessagesState fallback")
-                except ImportError:
-                    # Create basic state schema
-                    from typing import List
-
-                    from langchain_core.messages import BaseMessage
-                    from pydantic import BaseModel
-
-                    class SchemaGenerationFallbackState(BaseModel):
-                        messages: List[BaseMessage] = []
-
-                    self.state_schema = SchemaGenerationFallbackState
-                    logger.debug("Using SchemaGenerationFallbackState fallback")
-
-    def _build_initial_graph(self):
-        """Build the initial graph."""
-        try:
-            self.graph = self.build_graph()
-            self._graph_built = True
-        except Exception as e:
-            logger.warning(
-                f"Initial graph build failed for {self.__class__.__name__}: {e}"
-            )
-            self.graph = None
-            self._graph_built = False
 
     @property
     def main_engine(self) -> Optional[Engine]:
@@ -445,14 +613,14 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
             return next(iter(self.engines.values()), None)
         return None
 
-    def _invalidate_graph(self):
+    def _invalidate_graph(self) -> None:
         """Mark graph as needing rebuild."""
         self._graph_built = False
         self._is_compiled = False
         self.graph = None
         self._compiled_graph = None
 
-    def _ensure_graph_built(self):
+    def _ensure_graph_built(self) -> None:
         """Ensure the graph is built. Rebuild if needed."""
         if not self._graph_built or self.graph is None:
             self.graph = self.build_graph()
@@ -464,6 +632,10 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
         Abstract method to build the agent's graph.
 
         This is called after field syncing and schema generation.
+        Must be implemented by all concrete agent classes.
+
+        Returns:
+            The constructed BaseGraph for this agent
         """
         raise NotImplementedError(
             "build_graph method must be implemented by subclasses"
@@ -480,7 +652,7 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
             raise
         return self.graph
 
-    def regenerate_schemas(self):
+    def regenerate_schemas(self) -> None:
         """Regenerate schemas from current engines."""
         # Clear existing schemas
         self.state_schema = None
@@ -491,10 +663,93 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
         self._setup_schemas()
 
     def compile(self, **kwargs) -> CompiledGraph:
-        """Compile the graph and cache the result."""
+        """
+        Compile the graph and cache the result.
+
+        Args:
+            **kwargs: Additional compilation arguments
+
+        Returns:
+            The compiled graph
+        """
         if not self._is_compiled or kwargs:
-            compiled_graph = self.create_runnable(**kwargs)
-            self._compiled_graph = compiled_graph
+            # Build graph if not already built
+            if not hasattr(self, "graph") or self.graph is None:
+                logger.debug("Building graph before compilation")
+                self._ensure_graph_built()
+
+            if not self.graph:
+                raise RuntimeError("Graph not built")
+
+            # Make sure checkpointer tables are set up if needed
+            if self.checkpointer and hasattr(self.checkpointer, "setup"):
+                try:
+                    from haive.core.persistence.handlers import ensure_pool_open
+
+                    ensure_pool_open(self.checkpointer)
+                    self.checkpointer.setup()
+                    logger.debug("Checkpointer tables set up successfully")
+                except Exception as e:
+                    logger.error(f"Error setting up checkpointer tables: {e}")
+
+            # First, we need to convert BaseGraph to LangGraph StateGraph
+            # Build schema kwargs for conversion
+            schema_kwargs = {}
+
+            # Ensure we have a state schema
+            if not self.state_schema:
+                logger.warning(
+                    f"No state schema found for {self.name}, regenerating..."
+                )
+                self._setup_schemas()
+
+            if not self.state_schema:
+                logger.warning(f"Creating fallback state schema for {self.name}")
+                self._create_basic_message_state()
+
+            # Add schemas to kwargs
+            if self.state_schema:
+                schema_kwargs["state_schema"] = self.state_schema
+            else:
+                raise ValueError(f"No state schema available for {self.name}")
+
+            if self.input_schema:
+                schema_kwargs["input"] = self.input_schema
+
+            if self.output_schema:
+                schema_kwargs["output"] = self.output_schema
+
+            if self.config_schema:
+                schema_kwargs["config_schema"] = self.config_schema
+
+            # Convert BaseGraph to LangGraph StateGraph
+            try:
+                langgraph_graph = self.graph.to_langgraph(**schema_kwargs)
+                logger.debug(
+                    f"Successfully converted BaseGraph to LangGraph StateGraph"
+                )
+            except Exception as e:
+                logger.error(f"Failed to convert BaseGraph to LangGraph: {e}")
+                raise
+
+            # Now compile the LangGraph StateGraph with checkpointer and store
+            compile_kwargs = kwargs.copy()
+
+            # Add checkpointer if we have one and it's not already specified
+            if self.checkpointer and "checkpointer" not in compile_kwargs:
+                compile_kwargs["checkpointer"] = self.checkpointer
+
+            # Add store if available and not already specified
+            if self.store and "store" not in compile_kwargs:
+                compile_kwargs["store"] = self.store
+
+            logger.debug(
+                f"Compiling LangGraph with kwargs: {list(compile_kwargs.keys())}"
+            )
+
+            # The LangGraph StateGraph.compile() method accepts checkpointer and store
+            self._app = langgraph_graph.compile(**compile_kwargs)
+            self._compiled_graph = self._app
             self._is_compiled = True
 
         if self._compiled_graph is None:
@@ -502,27 +757,48 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
 
         return self._compiled_graph
 
-    def invoke(self, *args, **kwargs):
-        """Invoke the compiled graph."""
-        if not self._is_compiled:
-            self.compile()
+    # ============================================================================
+    # ENGINE INVOCATION INTERFACE
+    # ============================================================================
 
-        if self._compiled_graph is None:
-            raise RuntimeError("Graph not compiled")
+    def invoke(self, input_data: Any, config: Optional[RunnableConfig] = None) -> Any:
+        """
+        Invoke the agent using ExecutionMixin's run method.
 
-        return self._compiled_graph.invoke(*args, **kwargs)
+        This implements the Engine interface's invoke method.
 
-    async def ainvoke(self, *args, **kwargs):
-        """Asynchronously invoke the compiled graph."""
-        if not self._is_compiled:
-            self.compile()
+        Args:
+            input_data: Input data for the agent
+            runnable_config: Optional runtime configuration
 
-        if self._compiled_graph is None:
-            raise RuntimeError("Graph not compiled")
+        Returns:
+            Output from the agent
+        """
+        return self.run(input_data, config=config)
 
-        return await self._compiled_graph.ainvoke(*args, **kwargs)
+    async def ainvoke(
+        self, input_data: Any, config: Optional[Dict[str, Any]] = None
+    ) -> Any:
+        """
+        Async invoke the agent using ExecutionMixin's arun method.
+
+        This implements the Engine interface's ainvoke method.
+
+        Args:
+            input_data: Input data for the agent
+            runnable_config: Optional runtime configuration
+
+        Returns:
+            Output from the agent
+        """
+        return await self.arun(input_data, config=config)
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
 
     def __repr__(self) -> str:
+        """String representation of the agent."""
         engine_count = len(self.engines)
         main_engine = self.main_engine
         engine_type = type(main_engine).__name__ if main_engine else "None"
@@ -589,3 +865,37 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ABC):
 
         logger.debug(f"Agent {self.name} collected {len(schemas)} tool schemas")
         return schemas
+
+    def visualize_graph(self, output_path: Optional[str] = None) -> None:
+        """
+        Generate and save a visualization of the agent's graph.
+
+        Args:
+            output_path: Optional custom path for visualization output
+        """
+        if not self._app:
+            logger.warning("Cannot visualize graph: Not compiled yet")
+            return
+
+        try:
+            import os
+            from datetime import datetime
+
+            if not output_path:
+                # Use default path
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_dir = "resources/graph_images"
+                os.makedirs(output_dir, exist_ok=True)
+                output_path = os.path.join(output_dir, f"{self.name}_{timestamp}.png")
+
+            # Generate the visualization
+            png_data = self._app.get_graph(xray=True).draw_mermaid_png()
+
+            # Save the PNG data
+            with open(output_path, "wb") as f:
+                f.write(png_data)
+
+            logger.info(f"Graph visualization saved to: {output_path}")
+
+        except Exception as e:
+            logger.error(f"Error visualizing graph: {e}")
