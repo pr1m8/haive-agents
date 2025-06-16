@@ -1,3 +1,57 @@
+"""Graph Database RAG Agent implementation.
+
+This module implements the main Graph Database RAG Agent that provides natural
+language querying capabilities for Neo4j databases. The agent uses a multi-step
+workflow to convert questions to Cypher queries, validate them, execute them,
+and generate natural language responses.
+
+The agent workflow consists of the following steps:
+    1. **Domain Relevance Check**: Validates if the query is within the configured domain
+    2. **Query Generation**: Converts natural language to Cypher using few-shot learning
+    3. **Query Validation**: Checks the Cypher query against the database schema
+    4. **Query Correction**: Fixes any errors found during validation
+    5. **Query Execution**: Runs the validated query against Neo4j
+    6. **Answer Generation**: Converts database results to natural language
+
+Example:
+    Basic usage of the Graph DB RAG Agent::
+
+        >>> from haive.agents.rag.db_rag.graph_db import GraphDBRAGAgent, GraphDBRAGConfig
+        >>>
+        >>> # Configure the agent for a movie domain
+        >>> config = GraphDBRAGConfig(
+        ...     domain_name="movies",
+        ...     domain_categories=["movie", "actor", "director"],
+        ...     graph_db_config=GraphDBConfig(
+        ...         graph_db_uri="bolt://localhost:7687",
+        ...         graph_db_user="neo4j",
+        ...         graph_db_password="password"
+        ...     )
+        ... )
+        >>>
+        >>> # Create and use the agent
+        >>> agent = GraphDBRAGAgent(config)
+        >>> result = agent.invoke({"question": "Who directed The Matrix?"})
+        >>> print(result["answer"])
+        The Wachowskis directed The Matrix.
+
+    Using the agent with streaming::
+
+        >>> # Stream the workflow execution
+        >>> for chunk in agent.stream({"question": "What are the top 5 rated movies?"}):
+        ...     if "answer" in chunk:
+        ...         print(chunk["answer"])
+
+Note:
+    The agent requires a connection to a Neo4j database and uses environment
+    variables for configuration if not explicitly provided.
+
+See Also:
+    - :class:`GraphDBRAGConfig`: Configuration options for the agent
+    - :class:`OverallState`: State management during workflow execution
+    - :mod:`haive.agents.rag.db_rag.graph_db.engines`: LLM engines used by the agent
+"""
+
 import json
 import logging
 import os
@@ -33,23 +87,101 @@ logger = logging.getLogger(__name__)
 
 @register_agent(GraphDBRAGConfig)
 class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
-    """
-    Graph Database RAG Agent for querying Neo4j databases with natural language.
+    """Graph Database RAG Agent for natural language querying of Neo4j databases.
 
-    This agent implements a workflow that:
-    1. Validates if a query is within the configured domain
-    2. Generates a Cypher query from natural language
-    3. Validates and corrects the Cypher query
-    4. Executes the query and generates a final answer
+    This agent implements a sophisticated workflow for converting natural language
+    questions into Cypher queries, executing them against a Neo4j database, and
+    generating human-readable responses. It includes domain validation, query
+    validation, error correction, and result formatting.
+
+    The agent uses few-shot learning with domain-specific examples to improve
+    query generation accuracy and includes robust error handling for common
+    Cypher mistakes.
+
+    Attributes:
+        config (GraphDBRAGConfig): Configuration object containing all settings.
+        graph_db (Neo4jGraph): Connected Neo4j database instance.
+        graph_db_enhanced_schema: Enhanced schema information from the database.
+        graph_db_structured_schema: Structured schema for relationship validation.
+        corrector_schema: Schema used for correcting relationship directions.
+        cypher_query_corrector: Utility for fixing common Cypher errors.
+        example_selector: Semantic similarity selector for few-shot examples.
+        no_results (str): Default message when no results are found.
+
+    Example:
+        Creating and using the agent::
+
+            >>> # Create agent with minimal config
+            >>> agent = GraphDBRAGAgent()
+            >>>
+            >>> # Query the database
+            >>> result = agent.invoke({
+            ...     "question": "What movies has Tom Hanks acted in?"
+            ... })
+            >>> print(f"Answer: {result['answer']}")
+            >>> print(f"Cypher used: {result['cypher_statement']}")
+
+            >>> # Use with custom domain
+            >>> config = GraphDBRAGConfig(
+            ...     domain_name="healthcare",
+            ...     domain_categories=["patient", "doctor", "medication"]
+            ... )
+            >>> healthcare_agent = GraphDBRAGAgent(config)
+
+    Note:
+        The agent automatically sets up the workflow graph upon initialization.
+        All node functions return Command objects for state updates and routing.
     """
 
     def __init__(self, config: GraphDBRAGConfig = GraphDBRAGConfig()):
-        """Initialize the Graph DB RAG Agent with the given configuration."""
+        """Initialize the Graph DB RAG Agent.
+
+        Sets up the Neo4j connection, schema information, example selector,
+        and workflow graph. Handles initialization errors gracefully with
+        appropriate logging.
+
+        Args:
+            config: Configuration object. Defaults to GraphDBRAGConfig() which
+                uses environment variables for Neo4j connection.
+
+        Raises:
+            ValueError: If Neo4j connection cannot be established.
+            Exception: For other initialization errors.
+
+        Example:
+            >>> # Using default config (from environment)
+            >>> agent = GraphDBRAGAgent()
+
+            >>> # Using custom config
+            >>> custom_config = GraphDBRAGConfig(
+            ...     domain_name="movies",
+            ...     graph_db_config=GraphDBConfig(
+            ...         graph_db_uri="bolt://localhost:7687"
+            ...     )
+            ... )
+            >>> agent = GraphDBRAGAgent(custom_config)
+        """
         self._initialize_config(config)
         super().__init__(config)
 
-    def _initialize_config(self, config):
-        """Initialize the configuration and components."""
+    def _initialize_config(self, config: GraphDBRAGConfig) -> None:
+        """Initialize configuration and core components.
+
+        Sets up the Neo4j connection, retrieves schema information, configures
+        the Cypher query corrector, and initializes the example selector for
+        few-shot learning.
+
+        Args:
+            config: The configuration object containing all settings.
+
+        Raises:
+            ValueError: If Neo4j connection fails.
+            Exception: For other initialization errors.
+
+        Note:
+            This method is called automatically during __init__ and should not
+            be called directly.
+        """
         try:
             # Initialize graph database connection
             self.graph_db = config.graph_db_config.get_graph_db()
@@ -76,8 +208,23 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             logger.error(f"Error initializing GraphDBRAGAgent: {e}")
             raise
 
-    def _initialize_example_selector(self, config):
-        """Initialize the example selector with examples appropriate for the domain."""
+    def _initialize_example_selector(self, config: GraphDBRAGConfig) -> None:
+        """Initialize the semantic example selector for few-shot learning.
+
+        Creates an example selector that retrieves relevant query examples based
+        on semantic similarity. Falls back to simpler selection methods if
+        vector-based selection fails.
+
+        Args:
+            config: Configuration containing example settings and domain info.
+
+        Note:
+            The selector prioritizes examples in this order:
+            1. Domain-specific examples from config
+            2. Examples loaded from file (if specified)
+            3. Default examples for the domain
+            4. General fallback examples
+        """
         try:
             # Check if we have domain-specific examples
             domain_examples = []
@@ -142,8 +289,29 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 "DummySelector", (), {"select_examples": lambda self, query: []}
             )()
 
-    def _get_default_examples(self, domain_name):
-        """Get default examples for the specified domain."""
+    def _get_default_examples(self, domain_name: str) -> List[Dict[str, str]]:
+        """Get default examples for the specified domain.
+
+        Provides pre-defined examples for common domains to help with few-shot
+        learning when custom examples are not provided.
+
+        Args:
+            domain_name: The name of the domain (e.g., "movies", "healthcare").
+
+        Returns:
+            List of example dictionaries, each containing:
+                - question: Natural language question
+                - query: Corresponding Cypher query
+
+        Example:
+            >>> agent = GraphDBRAGAgent()
+            >>> examples = agent._get_default_examples("movies")
+            >>> print(examples[0])
+            {
+                "question": "Which movie has the highest rating?",
+                "query": "MATCH (m:Movie) RETURN m.title, m.rating ORDER BY m.rating DESC LIMIT 1"
+            }
+        """
         # Default examples by domain
         default_examples = {
             "movies": [
@@ -194,8 +362,30 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         return default_examples.get(domain_name, default_examples["general"])
 
     def check_domain_relevance(self, state: OverallState) -> Command:
-        """
-        Determines if the query is relevant to the configured domain.
+        """Check if the user's question is relevant to the configured domain.
+
+        This is the first step in the workflow. It uses the guardrails engine
+        to determine if the question should be processed or rejected as
+        out-of-domain.
+
+        Args:
+            state: Current workflow state containing the user's question.
+
+        Returns:
+            Command object with updates:
+                - next_action: "end" if out-of-domain, otherwise continue
+                - database_records: Error message if out-of-domain
+                - steps: Updated with "check_domain_relevance"
+
+        Example:
+            >>> state = OverallState(question="What's the weather like?")
+            >>> command = agent.check_domain_relevance(state)
+            >>> # For a movie domain agent, this would return:
+            >>> # Command(update={"next_action": "end", ...})
+
+        Note:
+            This node acts as a guardrail to prevent processing of irrelevant
+            queries, saving computational resources and improving accuracy.
         """
         try:
             # Get domain information
@@ -262,8 +452,28 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             )
 
     def generate_query(self, state: OverallState) -> Command:
-        """
-        Generates a Cypher query from the natural language question.
+        """Generate a Cypher query from the natural language question.
+
+        Uses the text2cypher engine with few-shot examples to convert the
+        user's question into a valid Cypher query for the database schema.
+
+        Args:
+            state: Current state containing the user's question.
+
+        Returns:
+            Command object with updates:
+                - cypher_statement: The generated Cypher query
+                - steps: Updated with "generate_query"
+
+        Example:
+            >>> state = OverallState(question="Who directed Inception?")
+            >>> command = agent.generate_query(state)
+            >>> print(command.update["cypher_statement"])
+            MATCH (p:Person)-[:DIRECTED]->(m:Movie {title: 'Inception'}) RETURN p.name
+
+        Note:
+            The quality of generation depends heavily on the provided examples
+            and their similarity to the user's question.
         """
         try:
             if "text2cypher" not in self.engines:
@@ -303,8 +513,30 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             )
 
     def validate_query(self, state: OverallState) -> Command:
-        """
-        Validates the Cypher query and checks for errors.
+        """Validate the generated Cypher query against the database schema.
+
+        Checks for syntax errors, schema mismatches, and logical issues in
+        the generated query. Routes to correction if errors are found.
+
+        Args:
+            state: Current state containing the Cypher statement to validate.
+
+        Returns:
+            Command object with updates:
+                - next_action: "correct_cypher" if errors, "execute_query" if valid
+                - cypher_errors: List of validation errors (if any)
+                - steps: Updated with "validate_query"
+
+        Example:
+            >>> state = OverallState(
+            ...     cypher_statement="MATCH (p:Actor)-[:DIRECTED]->(m:Film) RETURN p.name"
+            ... )
+            >>> command = agent.validate_query(state)
+            >>> # Would return errors about "Film" label and "Actor" directing
+
+        Note:
+            Validation checks include label existence, property names,
+            relationship types, and query completeness.
         """
         try:
             if "validate_cypher" not in self.engines:
@@ -343,8 +575,32 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             )
 
     def correct_query(self, state: OverallState) -> Command:
-        """
-        Corrects the Cypher query based on validation errors.
+        """Correct errors in the Cypher query based on validation feedback.
+
+        Uses the correct_cypher engine to fix identified errors and produce
+        a valid query that matches the database schema.
+
+        Args:
+            state: Current state containing the invalid query and errors.
+
+        Returns:
+            Command object with updates:
+                - next_action: "validate_query" (to re-validate)
+                - cypher_statement: The corrected Cypher query
+                - steps: Updated with "correct_query"
+
+        Example:
+            >>> state = OverallState(
+            ...     cypher_statement="MATCH (p:Actor)-[:DIRECTED]->(m:Film) RETURN p.name",
+            ...     cypher_errors=["Label 'Film' does not exist, use 'Movie'"]
+            ... )
+            >>> command = agent.correct_query(state)
+            >>> print(command.update["cypher_statement"])
+            MATCH (p:Person)-[:DIRECTED]->(m:Movie) RETURN p.name
+
+        Note:
+            The corrected query is sent back to validation to ensure
+            all errors are resolved.
         """
         try:
             if "correct_cypher" not in self.engines:
@@ -376,8 +632,31 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             )
 
     def execute_query(self, state: OverallState) -> Command:
-        """
-        Executes the Cypher query against the Neo4j database.
+        """Execute the validated Cypher query against the Neo4j database.
+
+        Runs the query and captures the results for answer generation.
+        Handles empty results gracefully.
+
+        Args:
+            state: Current state containing the validated Cypher statement.
+
+        Returns:
+            Command object with updates:
+                - database_records: Query results or "No results found"
+                - next_action: "generate_answer"
+                - steps: Updated with "execute_query"
+
+        Example:
+            >>> state = OverallState(
+            ...     cypher_statement="MATCH (m:Movie) RETURN m.title LIMIT 3"
+            ... )
+            >>> command = agent.execute_query(state)
+            >>> print(command.update["database_records"])
+            [{"m.title": "The Matrix"}, {"m.title": "Inception"}, ...]
+
+        Note:
+            The query is executed with proper sanitization and timeout
+            settings configured in the Neo4j connection.
         """
         try:
             records = self.graph_db.query(state.cypher_statement)
@@ -399,8 +678,32 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             )
 
     def generate_answer(self, state: OverallState) -> Command:
-        """
-        Generates the final answer based on the query results.
+        """Generate a natural language answer from the query results.
+
+        Uses the generate_final_answer engine to convert database records
+        into a human-friendly response that directly answers the question.
+
+        Args:
+            state: Current state containing question and database results.
+
+        Returns:
+            Command object with updates:
+                - answer: The natural language response
+                - next_action: "end"
+                - steps: Updated with "generate_answer"
+
+        Example:
+            >>> state = OverallState(
+            ...     question="Who directed The Matrix?",
+            ...     database_records=[{"p.name": "Lana Wachowski"}, {"p.name": "Lilly Wachowski"}]
+            ... )
+            >>> command = agent.generate_answer(state)
+            >>> print(command.update["answer"])
+            The Matrix was directed by Lana Wachowski and Lilly Wachowski.
+
+        Note:
+            The engine is prompted to provide direct, conversational answers
+            without mentioning the database or technical details.
         """
         try:
             if "generate_final_answer" not in self.engines:
@@ -433,13 +736,33 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             )
 
     def domain_router(self, state: OverallState) -> str:
-        """Route based on domain relevance check."""
+        """Route based on domain relevance check result.
+
+        Args:
+            state: Current state with next_action field.
+
+        Returns:
+            str: Next node name - END if out-of-domain, "generate_query" otherwise.
+
+        Note:
+            This is used as a conditional edge function in the workflow graph.
+        """
         if state.next_action == "end":
             return END
         return "generate_query"
 
     def validation_router(self, state: OverallState) -> str:
-        """Route based on query validation."""
+        """Route based on query validation result.
+
+        Args:
+            state: Current state with next_action field.
+
+        Returns:
+            str: Next node name - "correct_query", "execute_query", or END.
+
+        Note:
+            This is used as a conditional edge function in the workflow graph.
+        """
         if state.next_action == "end":
             return END
         elif state.next_action == "correct_cypher":
@@ -447,8 +770,33 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         return "execute_query"
 
     def setup_workflow(self) -> None:
-        """
-        Set up the Graph DB RAG workflow.
+        """Set up the complete Graph DB RAG workflow.
+
+        Configures the workflow graph with all nodes and edges, including
+        conditional routing based on validation results. This method is
+        called automatically during agent initialization.
+
+        The workflow structure::
+
+            START
+              ↓
+            check_domain_relevance
+              ↓ (conditional)
+            generate_query ← ─ ─ ─ ┐
+              ↓                    │
+            validate_query         │
+              ↓ (conditional)     │
+            correct_query ─ ─ ─ ─ ─┘
+              ↓
+            execute_query
+              ↓
+            generate_answer
+              ↓
+            END
+
+        Note:
+            The workflow includes loops for query correction and multiple
+            exit points for error handling.
         """
         # Add nodes for the workflow
         self.graph.add_node("check_domain_relevance", self.check_domain_relevance)

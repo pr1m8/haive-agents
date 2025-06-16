@@ -1,21 +1,53 @@
-import json
+"""SQL RAG Agent for natural language database querying.
+
+This module implements a sophisticated SQL Retrieval-Augmented Generation (RAG) agent
+that enables natural language querying of SQL databases. The agent uses a multi-step
+workflow to analyze queries, generate SQL, validate results, and produce accurate answers.
+
+Example:
+    Basic usage of the SQL RAG Agent::
+
+        >>> from haive.agents.rag.db_rag.sql_rag import SQLRAGAgent, SQLRAGConfig
+        >>>
+        >>> # Create configuration
+        >>> config = SQLRAGConfig(
+        ...     domain_name="sales",
+        ...     db_config=SQLDatabaseConfig(
+        ...         db_type="postgresql",
+        ...         db_name="sales_db"
+        ...     )
+        ... )
+        >>>
+        >>> # Initialize agent
+        >>> agent = SQLRAGAgent(config)
+        >>>
+        >>> # Query the database
+        >>> result = agent.invoke({
+        ...     "question": "What were the total sales last quarter?"
+        ... })
+        >>> print(result["answer"])
+        'Total sales last quarter were $1.2M across 450 transactions...'
+
+Attributes:
+    logger (logging.Logger): Module-level logger for debugging and monitoring.
+
+Note:
+    This agent requires proper database credentials and connection details
+    to be configured either through environment variables or explicit configuration.
+"""
+
 import logging
-import os
-from typing import Annotated, Any, Dict, List, Literal, Optional, Union
 
 import sqlparse
 from haive.core.engine.agent.agent import Agent, register_agent
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.branches import Branch
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
 from langgraph.types import Command
-from pydantic import BaseModel, Field
 
-from haive.agents.rag.db_rag.sql_rag.config import SQLDatabaseConfig, SQLRAGConfig
+from haive.agents.rag.db_rag.sql_rag.config import SQLRAGConfig
 from haive.agents.rag.db_rag.sql_rag.engines import default_sql_engines
-from haive.agents.rag.db_rag.sql_rag.models import GradeAnswer, GradeHallucinations
-from haive.agents.rag.db_rag.sql_rag.state import InputState, OutputState, OverallState
+from haive.agents.rag.db_rag.sql_rag.state import OverallState
 from haive.agents.rag.db_rag.sql_rag.utils import (
     create_sql_toolkit,
     create_tool_node_with_fallback,
@@ -28,25 +60,98 @@ logger = logging.getLogger(__name__)
 
 @register_agent(SQLRAGConfig)
 class SQLRAGAgent(Agent[SQLRAGConfig]):
-    """
-    SQL RAG Agent for querying SQL databases with natural language.
+    """SQL RAG Agent for querying SQL databases with natural language.
 
-    This agent implements a workflow that:
-    1. Validates if a query is relevant to databases
-    2. Gets database schema information
-    3. Analyzes the query to determine relevant tables
-    4. Generates SQL from natural language
-    5. Validates and corrects the SQL
-    6. Executes the query and generates a final answer
+    This agent implements a sophisticated workflow for converting natural language
+    questions into SQL queries, executing them safely, and generating accurate
+    natural language responses. The workflow includes:
+
+    1. **Domain Relevance Check**: Validates if the query is database-related
+    2. **Schema Retrieval**: Gets relevant database schema information
+    3. **Query Analysis**: Determines required tables, columns, and operations
+    4. **SQL Generation**: Creates syntactically correct SQL from natural language
+    5. **Validation & Correction**: Ensures SQL is safe and correct
+    6. **Execution**: Runs the query safely with proper error handling
+    7. **Answer Generation**: Produces natural language answers from results
+
+    Attributes:
+        sql_db (SQLDatabase): Connected database instance
+        db_schema (Dict[str, Any]): Complete database schema information
+        dialect (str): SQL dialect being used (postgresql, mysql, etc.)
+        toolkit (SQLDatabaseToolkit): LangChain SQL toolkit instance
+        tools (List[BaseTool]): Available database tools
+        tool_nodes (Dict[str, ToolNode]): Tool nodes for workflow
+        engines (Dict[str, AugLLMConfig]): LLM engines for each step
+
+    Example:
+        Creating and using a SQL RAG Agent::
+
+            >>> # Configure for a PostgreSQL database
+            >>> config = SQLRAGConfig(
+            ...     domain_name="e-commerce",
+            ...     db_config=SQLDatabaseConfig(
+            ...         db_type="postgresql",
+            ...         db_host="localhost",
+            ...         db_name="shop_db",
+            ...         include_tables=["orders", "products", "customers"]
+            ...     ),
+            ...     hallucination_check=True,
+            ...     max_iterations=3
+            ... )
+            >>>
+            >>> # Create agent
+            >>> agent = SQLRAGAgent(config)
+            >>>
+            >>> # Ask questions in natural language
+            >>> response = agent.invoke({
+            ...     "question": "Which products had the highest sales last month?"
+            ... })
+            >>>
+            >>> # Access results
+            >>> print(f"Answer: {response['answer']}")
+            >>> print(f"SQL Used: {response['sql_statement']}")
+
+    Note:
+        The agent includes safety features like SQL validation, hallucination
+        detection, and query result verification to ensure accurate responses.
     """
 
     def __init__(self, config: SQLRAGConfig):
-        """Initialize the SQL RAG Agent with the given configuration."""
+        """Initialize the SQL RAG Agent with the given configuration.
+
+        Args:
+            config (SQLRAGConfig): Configuration object containing database
+                connection details, LLM settings, and workflow parameters.
+
+        Raises:
+            ValueError: If database connection fails or required engines
+                are missing from the configuration.
+
+        Example:
+            >>> config = SQLRAGConfig(
+            ...     db_config=SQLDatabaseConfig(db_uri="sqlite:///sales.db")
+            ... )
+            >>> agent = SQLRAGAgent(config)
+        """
         self._initialize_config(config)
         super().__init__(config)
 
-    def _initialize_config(self, config):
-        """Initialize the configuration and components."""
+    def _initialize_config(self, config: SQLRAGConfig) -> None:
+        """Initialize the configuration and components.
+
+        This method sets up the database connection, explores the schema,
+        creates necessary tools, and configures all LLM engines.
+
+        Args:
+            config (SQLRAGConfig): The configuration object to initialize from.
+
+        Raises:
+            ValueError: If database connection fails or is invalid.
+
+        Note:
+            This method is called automatically during agent initialization
+            and should not be called directly.
+        """
         try:
             # Initialize database connection
             self.sql_db = config.db_config.get_sql_db()
@@ -61,7 +166,9 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             self.no_results = "No results found"
 
             # Create toolkit and get all tools
-            self.toolkit = create_sql_toolkit(config.db_config, config.llm_config)
+            self.toolkit = create_sql_toolkit(
+                config.db_config, config.llm_config if config.llm_config else None
+            )
             self.tools = get_all_toolkit_tools(self.toolkit)
 
             # Create tool nodes for each tool
@@ -91,8 +198,28 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             raise
 
     def check_domain_relevance(self, state: OverallState) -> Command:
-        """
-        Determines if the query is relevant to databases.
+        """Determine if the query is relevant to databases.
+
+        This method uses a guardrails LLM to check if the user's question
+        is about querying the database or if it's an unrelated question
+        that should be rejected.
+
+        Args:
+            state (OverallState): Current state containing the question.
+
+        Returns:
+            Command: Update command with next_action set to either
+                'end' (if irrelevant) or continue to schema retrieval.
+
+        Example:
+            >>> state = OverallState(question="What tables are in the database?")
+            >>> command = agent.check_domain_relevance(state)
+            >>> print(command.update["next_action"])
+            'retrieve_schema'
+
+        Note:
+            Questions like "What's the weather?" or "Tell me a joke" will
+            be rejected with an appropriate message.
         """
         try:
             # Get domain information
@@ -104,7 +231,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                 domain_categories = [domain_name]
 
             # Default category to use
-            category = domain_categories[0] if domain_categories else domain_name
+            domain_categories[0] if domain_categories else domain_name
 
             # Use the guardrails engine
             if "guardrails" not in self.engines:
@@ -164,8 +291,30 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             )
 
     def retrieve_schema(self, state: OverallState) -> Command:
-        """
-        Retrieves database schema information for context.
+        """Retrieve database schema information for context.
+
+        This method gathers detailed schema information about all relevant
+        tables in the database, including column names, types, and relationships.
+
+        Args:
+            state (OverallState): Current state of the workflow.
+
+        Returns:
+            Command: Update command with schema information and instruction
+                to proceed to query analysis.
+
+        Example:
+            Schema retrieval for a sales database::
+
+                >>> state = OverallState(question="Show me all orders")
+                >>> command = agent.retrieve_schema(state)
+                >>> schema_info = command.update["schema_info"]
+                >>> print(f"Found {len(schema_info)} tables")
+                Found 5 tables
+
+        Note:
+            For large databases, this method limits schema retrieval to the
+            first 10 tables to avoid overwhelming the LLM context.
         """
         try:
             # Find the get_schema tool
@@ -216,8 +365,40 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             )
 
     def analyze_query(self, state: OverallState) -> Command:
-        """
-        Analyzes the query to determine relevant tables and fields.
+        """Analyze the query to determine relevant tables and fields.
+
+        This method uses an LLM to understand the user's natural language
+        question and identify which database tables, columns, joins, and
+        aggregations will be needed to answer it.
+
+        Args:
+            state (OverallState): Current state containing the question
+                and schema information.
+
+        Returns:
+            Command: Update command with query analysis including:
+                - relevant_tables: Tables needed for the query
+                - needed_columns: Specific columns to select
+                - constraints: WHERE clause conditions
+                - aggregations: GROUP BY/aggregate functions needed
+                - joins_needed: Required table joins
+
+        Example:
+            Analyzing a complex query::
+
+                >>> state = OverallState(
+                ...     question="Show me top 5 customers by total order value"
+                ... )
+                >>> command = agent.analyze_query(state)
+                >>> analysis = command.update["query_analysis"]
+                >>> print(analysis.relevant_tables)
+                ['customers', 'orders', 'order_items']
+                >>> print(analysis.aggregations)
+                ['SUM(order_items.price * order_items.quantity)']
+
+        Note:
+            The analysis helps the SQL generation step create more accurate
+            queries by understanding the semantic intent.
         """
         try:
             if "analyze_query" not in self.engines:
@@ -259,8 +440,44 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             )
 
     def generate_query(self, state: OverallState) -> Command:
-        """
-        Generates an SQL query from the natural language question.
+        """Generate an SQL query from the natural language question.
+
+        This method converts the user's natural language question into
+        a syntactically correct SQL query, using the analysis results
+        and database schema information.
+
+        Args:
+            state (OverallState): Current state containing question,
+                schema, and query analysis.
+
+        Returns:
+            Command: Update command with the generated SQL query,
+                formatted for readability.
+
+        Example:
+            SQL generation from natural language::
+
+                >>> state = OverallState(
+                ...     question="What were the total sales by category last month?"
+                ... )
+                >>> command = agent.generate_query(state)
+                >>> print(command.update["sql_query"])
+                '''
+                SELECT
+                    c.category_name,
+                    SUM(oi.quantity * oi.price) as total_sales
+                FROM categories c
+                JOIN products p ON c.category_id = p.category_id
+                JOIN order_items oi ON p.product_id = oi.product_id
+                JOIN orders o ON oi.order_id = o.order_id
+                WHERE o.order_date >= DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
+                GROUP BY c.category_name
+                ORDER BY total_sales DESC
+                '''
+
+        Note:
+            The method includes special handling for metadata queries like
+            "what tables are in the database" that don't require complex SQL.
         """
         try:
             if "generate_sql" not in self.engines:
@@ -352,8 +569,37 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             )
 
     def validate_query(self, state: OverallState) -> Command:
-        """
-        Validates the SQL query for syntax and schema correctness.
+        """Validate the SQL query for syntax and schema correctness.
+
+        This method performs comprehensive validation of the generated SQL
+        including syntax checking, table/column name verification, join
+        validation, and security checks.
+
+        Args:
+            state (OverallState): Current state containing the SQL query
+                to validate.
+
+        Returns:
+            Command: Update command with either:
+                - next_action="execute_query" if valid
+                - next_action="correct_query" if errors found
+                - sql_errors list containing any validation errors
+
+        Example:
+            Validating a query with an error::
+
+                >>> state = OverallState(
+                ...     sql_query="SELECT * FROM non_existent_table"
+                ... )
+                >>> command = agent.validate_query(state)
+                >>> print(command.update["sql_errors"])
+                ["Table 'non_existent_table' does not exist in the schema"]
+                >>> print(command.update["next_action"])
+                'correct_query'
+
+        Note:
+            The validation prevents SQL injection and ensures only safe
+            SELECT queries are executed.
         """
         try:
             if "validate_sql" not in self.engines:
@@ -417,72 +663,34 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                 }
             )
 
-    def generate_answer(self, state: OverallState) -> Command:
-        """
-        Generates the final answer based on the query results.
-        """
-        try:
-            if "generate_final_answer" not in self.engines:
-                raise ValueError(
-                    "Missing 'generate_final_answer' engine in configuration"
-                )
-
-            # Check if we need to run hallucination detection
-            should_check_hallucination = self.config.hallucination_check
-
-            # Generate the final answer with variables matching the prompt template
-            answer = self.engines["generate_final_answer"].invoke(
-                {
-                    "question": state.question,
-                    "sql_query": state.sql_query,  # Match prompt variable name
-                    "query_result": state.query_result,  # Match prompt variable name
-                }
-            )
-
-            # Proceed with the usual workflow
-            result = {
-                "answer": answer,
-                "final_sql": state.sql_query,
-                "next_action": "end",
-                "steps": state.steps + ["generate_answer"],
-            }
-
-            # Run hallucination check if required
-            if should_check_hallucination and "hallucination_check" in self.engines:
-                try:
-                    hallucination_result = self.engines["hallucination_check"].invoke(
-                        {
-                            "question": state.question,
-                            "answer": answer,
-                            "query_result": state.query_result,  # Match prompt variable name
-                        }
-                    )
-
-                    result["hallucination_check"] = hallucination_result
-
-                    # If hallucinations detected, provide a warning
-                    if hallucination_result.hallucination_detected:
-                        warning = f"\n\nWarning: The answer may contain information not supported by the data. Areas of concern: {hallucination_result.problem_areas}"
-                        result["answer"] = answer + warning
-
-                except Exception as e:
-                    logger.warning(f"Error in hallucination check: {e}")
-                    # Continue with generated answer even if hallucination check fails
-
-            return Command(update=result)
-        except Exception as e:
-            logger.error(f"Error in generate_answer: {e}")
-            return Command(
-                update={
-                    "error": f"Error generating answer: {str(e)}",
-                    "answer": f"An error occurred while generating the answer: {str(e)}",
-                    "next_action": "end",
-                }
-            )
-
     def correct_query(self, state: OverallState) -> Command:
-        """
-        Corrects the SQL query based on validation errors.
+        """Correct the SQL query based on validation errors.
+
+        This method takes a query with validation errors and attempts to
+        fix them, learning from the specific issues identified.
+
+        Args:
+            state (OverallState): Current state containing the invalid query
+                and the list of errors.
+
+        Returns:
+            Command: Update command with corrected SQL query and instruction
+                to re-validate.
+
+        Example:
+            Correcting a query with a missing GROUP BY::
+
+                >>> state = OverallState(
+                ...     sql_query="SELECT category, SUM(amount) FROM sales",
+                ...     sql_errors=["Missing GROUP BY clause for 'category'"]
+                ... )
+                >>> command = agent.correct_query(state)
+                >>> print(command.update["sql_query"])
+                'SELECT category, SUM(amount) FROM sales GROUP BY category'
+
+        Note:
+            The correction process may iterate multiple times based on the
+            max_iterations configuration setting.
         """
         try:
             if "correct_sql" not in self.engines:
@@ -524,8 +732,31 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             )
 
     def execute_query(self, state: OverallState) -> Command:
-        """
-        Executes the SQL query against the database.
+        r"""Execute the SQL query against the database.
+
+        This method safely executes the validated SQL query and captures
+        the results. It includes error handling and timeout protection.
+
+        Args:
+            state (OverallState): Current state containing the validated
+                SQL query to execute.
+
+        Returns:
+            Command: Update command with query results or error message.
+
+        Example:
+            Executing a query and handling results::
+
+                >>> state = OverallState(
+                ...     sql_query="SELECT COUNT(*) as total FROM orders"
+                ... )
+                >>> command = agent.execute_query(state)
+                >>> print(command.update["query_result"])
+                'total\n-----\n1234'
+
+        Warning:
+            Only SELECT queries are executed. Any DML operations (INSERT,
+            UPDATE, DELETE) are rejected during validation.
         """
         try:
             # Find the run_query tool
@@ -546,7 +777,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             # Extract query string if it's an object
             sql_query_str = state.sql_query
             if hasattr(state.sql_query, "query"):
-                sql_query_str = state.sql_query.query
+                sql_query_str = state.sql_query
 
             if run_query_tool:
                 try:
@@ -585,8 +816,36 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             )
 
     def generate_answer(self, state: OverallState) -> Command:
-        """
-        Generates the final answer based on the query results.
+        r"""Generate the final answer based on the query results.
+
+        This method converts the raw SQL query results into a natural
+        language answer that directly addresses the user's question.
+        It includes optional hallucination checking to ensure accuracy.
+
+        Args:
+            state (OverallState): Current state containing the question,
+                SQL query, and query results.
+
+        Returns:
+            Command: Update command with the final answer and optional
+                hallucination check results.
+
+        Example:
+            Generating an answer with hallucination checking::
+
+                >>> state = OverallState(
+                ...     question="Who is our top customer?",
+                ...     query_result="customer_name | total_spent\\n-----------\\nAcme Corp | 50000"
+                ... )
+                >>> command = agent.generate_answer(state)
+                >>> print(command.update["answer"])
+                'Your top customer is Acme Corp with total spending of $50,000.'
+                >>> print(command.update["hallucination_check"])
+                'no'  # No hallucinations detected
+
+        Note:
+            If hallucination checking is enabled and detects issues, a
+            warning is appended to the answer.
         """
         try:
             if "generate_final_answer" not in self.engines:
@@ -671,13 +930,27 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             )
 
     def domain_router(self, state: OverallState) -> str:
-        """Route based on domain relevance check."""
+        """Route based on domain relevance check.
+
+        Args:
+            state (OverallState): Current state with next_action field.
+
+        Returns:
+            str: Next node name - either END or "retrieve_schema".
+        """
         if state.next_action == "end":
             return END
         return "retrieve_schema"
 
     def validation_router(self, state: OverallState) -> str:
-        """Route based on query validation."""
+        """Route based on query validation results.
+
+        Args:
+            state (OverallState): Current state with next_action field.
+
+        Returns:
+            str: Next node name - END, "correct_query", or "execute_query".
+        """
         if state.next_action == "end":
             return END
         elif state.next_action == "correct_query":
@@ -685,8 +958,21 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
         return "execute_query"
 
     def setup_workflow(self) -> None:
-        """
-        Set up the SQL RAG workflow.
+        """Set up the SQL RAG workflow graph.
+
+        This method constructs the workflow graph with all necessary nodes
+        and edges, including conditional routing based on validation results.
+
+        The workflow follows this path:
+        1. START -> check_domain_relevance
+        2. Domain routing (end if irrelevant)
+        3. retrieve_schema -> analyze_query -> generate_query
+        4. validate_query with correction loop if needed
+        5. execute_query -> generate_answer -> END
+
+        Note:
+            This method is called automatically during agent initialization
+            and should not be called directly.
         """
         # Add nodes for the workflow
         self.graph.add_node("check_domain_relevance", self.check_domain_relevance)
