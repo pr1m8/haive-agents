@@ -334,10 +334,12 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
 
     def _setup_schemas(self) -> None:
         """
-        Generate schemas from available engines and sub-agents.
+        Generate schemas from available engines and sub-agents with enhanced tool synchronization.
 
         This method creates state, input, and output schemas by analyzing
-        the engines and sub-agents configured for this agent.
+        the engines and sub-agents configured for this agent. It uses the enhanced
+        SchemaComposer functionality to ensure proper tool routing and engine
+        synchronization based on the tool route mixin system.
         """
         # Collect all engines and agents
         engine_list = []
@@ -362,7 +364,7 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
         )
 
         try:
-            # Generate state schema
+            # Generate state schema using enhanced SchemaComposer
             if not self.state_schema:
                 if agent_list:
                     # Use AgentSchemaComposer for agents
@@ -382,22 +384,42 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
                         logger.warning(
                             "AgentSchemaComposer not available, using regular composer"
                         )
+                        # Use the classmethod from_components for proper schema creation
                         self.state_schema = SchemaComposer.from_components(
                             components=engine_list,
                             name=f"{self.__class__.__name__}State",
                         )
                 elif engine_list:
-                    # Use regular SchemaComposer for engines
+                    # Use enhanced SchemaComposer for engines with tool routing
                     logger.debug(f"Creating schema from {len(engine_list)} engines")
+
+                    # Use the classmethod from_components for proper schema creation
                     self.state_schema = SchemaComposer.from_components(
                         components=engine_list, name=f"{self.__class__.__name__}State"
                     )
+
+                    logger.debug(
+                        f"Built schema with enhanced tool synchronization: "
+                        f"{getattr(self.state_schema, '__name__', 'Unknown')}"
+                    )
+
+                    # Log engines stored on schema class
+                    if hasattr(self.state_schema, "engines"):
+                        schema_engines = getattr(self.state_schema, "engines", {})
+                        logger.debug(
+                            f"Schema has {len(schema_engines)} class-level engines: "
+                            f"{list(schema_engines.keys())}"
+                        )
                 else:
                     logger.debug(
                         "No engines or agents found, creating basic message state"
                     )
                     # Create basic message state
                     self._create_basic_message_state()
+
+            # Optionally auto-derive input and output schemas
+            if self.set_schema:
+                self.auto_derive_schemas()
 
             logger.debug(f"Schema setup complete. State schema: {self.state_schema}")
 
@@ -806,10 +828,10 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
 
     def get_all_tools(self) -> List[Any]:
         """
-        Collect all tools from all engines.
+        Collect all tools from all engines and state schema.
 
         Returns:
-            List of all tools available across all engines
+            List of all tools available across all engines and state schema
         """
         tools = []
 
@@ -826,6 +848,19 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
                 if engine_tools:
                     tools.extend(engine_tools)
 
+        # Get tools from state schema if available
+        state_tools = self.get_state_tools()
+        if state_tools:
+            tools.extend(state_tools)
+
+        # Get tools from class-level engines in state schema
+        class_engines = self.get_all_class_engines()
+        for engine in class_engines.values():
+            if hasattr(engine, "tools"):
+                engine_tools = getattr(engine, "tools", None)
+                if engine_tools:
+                    tools.extend(engine_tools)
+
         # Remove duplicates while preserving order
         seen = set()
         unique_tools = []
@@ -836,7 +871,9 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
                 seen.add(tool_id)
                 unique_tools.append(tool)
 
-        logger.debug(f"Agent {self.name} collected {len(unique_tools)} unique tools")
+        logger.debug(
+            f"Agent {self.name} collected {len(unique_tools)} unique tools from all sources"
+        )
         return unique_tools
 
     def get_all_tool_schemas(self) -> List[Any]:
@@ -899,3 +936,398 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
 
         except Exception as e:
             logger.error(f"Error visualizing graph: {e}")
+
+    # ============================================================================
+    # ENGINE ACCESS METHODS (StateSchema-compatible interface)
+    # ============================================================================
+
+    def get_class_engine(self, name: str) -> Optional[Engine]:
+        """
+        Get a class-level engine by name from the state schema.
+
+        Args:
+            name: Name of the engine to retrieve
+
+        Returns:
+            Engine instance if found, None otherwise
+        """
+        if self.state_schema and hasattr(self.state_schema, "get_class_engine"):
+            return self.state_schema.get_class_engine(name)
+        return None
+
+    def get_all_class_engines(self) -> Dict[str, Engine]:
+        """
+        Get all class-level engines from the state schema.
+
+        Returns:
+            Dictionary of all engines
+        """
+        if self.state_schema and hasattr(self.state_schema, "get_all_class_engines"):
+            return self.state_schema.get_all_class_engines()
+        return {}
+
+    def get_instance_engine(self, name: str) -> Optional[Engine]:
+        """
+        Get an engine from instance or class level (via state schema).
+
+        Args:
+            name: Name of the engine to retrieve
+
+        Returns:
+            Engine instance if found, None otherwise
+        """
+        # First check agent's own engines
+        if name in self.engines:
+            return self.engines[name]
+
+        # Check main engine
+        if self.engine and getattr(self.engine, "name", None) == name:
+            return self.engine
+
+        # Then check state schema engines
+        if self.state_schema and hasattr(self.state_schema, "get_instance_engine"):
+            return self.state_schema.get_instance_engine(name)
+
+        return None
+
+    def get_all_instance_engines(self) -> Dict[str, Engine]:
+        """
+        Get all engines from both instance and class level.
+
+        Returns:
+            Dictionary mapping engine names to engine instances
+        """
+        engines = {}
+
+        # Get engines from state schema first
+        if self.state_schema and hasattr(self.state_schema, "get_all_instance_engines"):
+            engines.update(self.state_schema.get_all_instance_engines())
+
+        # Add agent's own engines (may override schema engines)
+        engines.update(self.engines)
+
+        # Add main engine if it has a name
+        if self.engine and hasattr(self.engine, "name") and self.engine.name:
+            engines[self.engine.name] = self.engine
+
+        return engines
+
+    def has_engine(self, name: str) -> bool:
+        """
+        Check if an engine exists in this agent.
+
+        Args:
+            name: Name of the engine to check
+
+        Returns:
+            True if engine exists, False otherwise
+        """
+        return self.get_instance_engine(name) is not None
+
+    def add_tool_to_state(
+        self,
+        tool: Any,
+        route: Optional[str] = None,
+        target_engine: Optional[str] = None,
+    ) -> None:
+        """
+        Add a tool to the agent's state schema if it supports tools.
+
+        Args:
+            tool: Tool to add
+            route: Optional explicit route/type
+            target_engine: Optional specific engine name to add tool to
+        """
+        # Create a state instance to add the tool
+        if self.state_schema:
+            try:
+                # Create a temporary state instance
+                state_instance = self.state_schema()
+
+                # Check if state supports tools
+                if hasattr(state_instance, "add_tool"):
+                    if target_engine:
+                        state_instance.add_tool_to_engine(tool, target_engine, route)
+                    else:
+                        state_instance.add_tool(tool, route, target_engine)
+                    logger.debug(
+                        f"Added tool to state schema: {getattr(tool, 'name', str(tool))}"
+                    )
+                else:
+                    logger.warning(
+                        f"State schema {self.state_schema.__name__} does not support tools"
+                    )
+            except Exception as e:
+                logger.error(f"Failed to add tool to state: {e}")
+
+    def configure_engine_routes(self, engine_type: str, routes: List[str]) -> None:
+        """
+        Configure which tool routes an engine type should accept in the state schema.
+
+        Args:
+            engine_type: The engine type (e.g., 'llm', 'retriever', etc.)
+            routes: List of tool routes this engine type should accept
+        """
+        if self.state_schema:
+            try:
+                # Create a temporary state instance
+                state_instance = self.state_schema()
+
+                # Check if state supports route configuration
+                if hasattr(state_instance, "configure_engine_routes"):
+                    state_instance.configure_engine_routes(engine_type, routes)
+                    logger.debug(
+                        f"Configured routes for engine type '{engine_type}': {routes}"
+                    )
+                else:
+                    logger.warning(
+                        f"State schema {self.state_schema.__name__} does not support route configuration"
+                    )
+            except Exception as e:
+                logger.error(f"Failed to configure engine routes: {e}")
+
+    def get_state_tools(self) -> List[Any]:
+        """
+        Get all tools from the state schema if it supports tools.
+
+        Returns:
+            List of tools from the state schema, empty list if not supported
+        """
+        if self.state_schema:
+            try:
+                # Create a temporary state instance
+                state_instance = self.state_schema()
+
+                # Check if state has tools
+                if hasattr(state_instance, "tools"):
+                    return getattr(state_instance, "tools", [])
+            except Exception as e:
+                logger.error(f"Failed to get state tools: {e}")
+
+        return []
+
+    def sync_tools_to_engines(self) -> None:
+        """
+        Manually trigger tool synchronization to engines in the state schema.
+        """
+        if self.state_schema:
+            try:
+                # Create a temporary state instance
+                state_instance = self.state_schema()
+
+                # Check if state supports tool syncing
+                if hasattr(state_instance, "_sync_tools_to_engines_by_route"):
+                    state_instance._sync_tools_to_engines_by_route()
+                    logger.debug("Manually triggered tool synchronization to engines")
+                else:
+                    logger.warning(
+                        f"State schema {self.state_schema.__name__} does not support tool syncing"
+                    )
+            except Exception as e:
+                logger.error(f"Failed to sync tools to engines: {e}")
+
+    def get_schema_info(self) -> Dict[str, Any]:
+        """
+        Get comprehensive information about the agent's schema system.
+
+        Returns:
+            Dictionary containing schema information including engines, tools, and capabilities
+        """
+        info = {
+            "agent_name": self.name,
+            "agent_engines": list(self.engines.keys()),
+            "main_engine": getattr(self.engine, "name", None) if self.engine else None,
+            "state_schema": {
+                "name": (
+                    getattr(self.state_schema, "__name__", None)
+                    if self.state_schema
+                    else None
+                ),
+                "class_engines": [],
+                "supports_tools": False,
+                "supports_routing": False,
+                "tools_count": 0,
+            },
+            "total_engines": 0,
+            "total_tools": 0,
+        }
+
+        # Get class-level engines from state schema
+        class_engines = self.get_all_class_engines()
+        info["state_schema"]["class_engines"] = list(class_engines.keys())
+
+        # Check if state schema supports tools and routing
+        if self.state_schema:
+            try:
+                state_instance = self.state_schema()
+                info["state_schema"]["supports_tools"] = hasattr(
+                    state_instance, "tools"
+                )
+                info["state_schema"]["supports_routing"] = hasattr(
+                    state_instance, "tool_routes"
+                )
+
+                if hasattr(state_instance, "tools"):
+                    info["state_schema"]["tools_count"] = len(
+                        getattr(state_instance, "tools", [])
+                    )
+            except Exception as e:
+                logger.debug(f"Could not analyze state schema: {e}")
+
+        # Count total engines and tools
+        all_engines = self.get_all_instance_engines()
+        info["total_engines"] = len(all_engines)
+        info["total_tools"] = len(self.get_all_tools())
+
+        return info
+
+    def display_schema_info(self) -> None:
+        """
+        Display comprehensive information about the agent's schema system.
+        """
+        info = self.get_schema_info()
+
+        print(f"\n=== Agent Schema Information: {info['agent_name']} ===")
+        print(f"Agent Engines: {info['agent_engines']}")
+        print(f"Main Engine: {info['main_engine']}")
+
+        print(f"\nState Schema: {info['state_schema']['name']}")
+        print(f"  Class-level Engines: {info['state_schema']['class_engines']}")
+        print(f"  Supports Tools: {info['state_schema']['supports_tools']}")
+        print(f"  Supports Routing: {info['state_schema']['supports_routing']}")
+        print(f"  Tools Count: {info['state_schema']['tools_count']}")
+
+        print(f"\nTotals:")
+        print(f"  Total Engines: {info['total_engines']}")
+        print(f"  Total Tools: {info['total_tools']}")
+
+        # Show schema information
+        print(f"\nSchema Information:")
+        print(
+            f"  Input Schema: {getattr(self.input_schema, '__name__', 'None') if self.input_schema else 'None'}"
+        )
+        print(
+            f"  Output Schema: {getattr(self.output_schema, '__name__', 'None') if self.output_schema else 'None'}"
+        )
+        print(
+            f"  Config Schema: {getattr(self.config_schema, '__name__', 'None') if self.config_schema else 'None'}"
+        )
+
+        # Show derived schema capabilities
+        if self.state_schema and hasattr(self.state_schema, "derive_input_schema"):
+            print(f"  Can derive input schema: ✅")
+        else:
+            print(f"  Can derive input schema: ❌")
+
+        if self.state_schema and hasattr(self.state_schema, "derive_output_schema"):
+            print(f"  Can derive output schema: ✅")
+        else:
+            print(f"  Can derive output schema: ❌")
+
+        # Show engine details
+        all_engines = self.get_all_instance_engines()
+        if all_engines:
+            print(f"\nAll Available Engines:")
+            for name, engine in all_engines.items():
+                engine_type = getattr(engine, "engine_type", "unknown")
+                tool_count = len(getattr(engine, "tools", []))
+                print(f"  - {name}: {engine_type} ({tool_count} tools)")
+
+    def derive_input_schema(
+        self, engine_name: Optional[str] = None, name: Optional[str] = None
+    ) -> Optional[Type[BaseModel]]:
+        """
+        Derive input schema from the agent's state schema.
+
+        Args:
+            engine_name: Optional name of the engine to target (default: all inputs)
+            name: Optional name for the schema class
+
+        Returns:
+            A BaseModel subclass for input validation, or None if state schema doesn't support it
+        """
+        if not self.state_schema:
+            logger.warning("No state schema available to derive input schema from")
+            return None
+
+        # Check if state schema has derive_input_schema method
+        if hasattr(self.state_schema, "derive_input_schema"):
+            try:
+                schema_name = name or f"{self.name}InputSchema"
+                return self.state_schema.derive_input_schema(
+                    engine_name=engine_name, name=schema_name
+                )
+            except Exception as e:
+                logger.error(f"Failed to derive input schema: {e}")
+                return None
+        else:
+            logger.warning(
+                f"State schema {getattr(self.state_schema, '__name__', 'Unknown')} does not support input schema derivation"
+            )
+            return None
+
+    def derive_output_schema(
+        self, engine_name: Optional[str] = None, name: Optional[str] = None
+    ) -> Optional[Type[BaseModel]]:
+        """
+        Derive output schema from the agent's state schema.
+
+        Args:
+            engine_name: Optional name of the engine to target (default: all outputs)
+            name: Optional name for the schema class
+
+        Returns:
+            A BaseModel subclass for output validation, or None if state schema doesn't support it
+        """
+        if not self.state_schema:
+            logger.warning("No state schema available to derive output schema from")
+            return None
+
+        # Check if state schema has derive_output_schema method
+        if hasattr(self.state_schema, "derive_output_schema"):
+            try:
+                schema_name = name or f"{self.name}OutputSchema"
+                return self.state_schema.derive_output_schema(
+                    engine_name=engine_name, name=schema_name
+                )
+            except Exception as e:
+                logger.error(f"Failed to derive output schema: {e}")
+                return None
+        else:
+            logger.warning(
+                f"State schema {getattr(self.state_schema, '__name__', 'Unknown')} does not support output schema derivation"
+            )
+            return None
+
+    def auto_derive_schemas(self) -> None:
+        """
+        Automatically derive and set input and output schemas from the state schema.
+
+        This convenience method will derive input and output schemas from the state schema
+        and set them on the agent if they haven't been explicitly set.
+        """
+        # Only derive if not already set
+        if not self.input_schema:
+            derived_input = self.derive_input_schema()
+            if derived_input:
+                self.input_schema = derived_input
+                logger.debug(f"Auto-derived input schema: {derived_input.__name__}")
+
+        if not self.output_schema:
+            derived_output = self.derive_output_schema()
+            if derived_output:
+                self.output_schema = derived_output
+                logger.debug(f"Auto-derived output schema: {derived_output.__name__}")
+
+    def get_derived_schemas(self) -> Dict[str, Optional[Type[BaseModel]]]:
+        """
+        Get all derived schemas (input and output) from the state schema.
+
+        Returns:
+            Dictionary containing derived input and output schemas
+        """
+        return {
+            "input_schema": self.derive_input_schema(),
+            "output_schema": self.derive_output_schema(),
+            "state_schema": self.state_schema,
+        }
