@@ -1,7 +1,9 @@
 # from haive.core.engine.retriever import RetrieverConfig  # Correct import
-from typing import get_origin
+from typing import Union
 
 from haive.core.engine.retriever import BaseRetrieverConfig
+from haive.core.engine.retriever.mixins import RetrieverMixin
+from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
@@ -10,11 +12,38 @@ from pydantic import Field
 from haive.agents.base.agent import Agent
 
 
-class SimpleRAGAgent(Agent):
-    """Simple RAG agent that performs retrieval."""
+class SimpleRAGAgent(RetrieverMixin, Agent):
+    """Simple RAG agent that performs retrieval.
+
+    This agent inherits from RetrieverMixin which provides:
+    - Automatic conversion of VectorStoreConfig to VectorStoreRetrieverConfig
+    - Class methods for creating agents from various sources
+
+    Examples:
+        ```python
+        # Create from vector store config directly
+        agent = SimpleRAGAgent(engine=vector_store_config)
+
+        # Create from documents
+        agent = SimpleRAGAgent.from_documents(
+            documents=[Document(page_content="...")],
+            embedding_model=embedding_config,
+            name="my_rag_agent"
+        )
+
+        # Create from existing vector store
+        agent = SimpleRAGAgent.from_vectorstore(
+            vector_store_config=vs_config,
+            name="my_rag_agent"
+        )
+        ```
+    """
 
     name: str = "Simple RAG Agent"
-    engine: BaseRetrieverConfig = Field(..., description="Retriever Engine")
+    engine: Union[BaseRetrieverConfig, VectorStoreConfig] = Field(
+        ...,
+        description="Retriever Engine (accepts BaseRetrieverConfig or VectorStoreConfig)",
+    )
 
     def build_graph(self) -> BaseGraph:
         """Build the RAG agent graph."""

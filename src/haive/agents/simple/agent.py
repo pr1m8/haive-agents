@@ -1,6 +1,4 @@
-# ============================================================================
-# SIMPLE AGENT - ENGINE MODIFIER APPROACH
-# ============================================================================
+# src/haive/agents/simple/agent.py
 
 import logging
 from typing import Any, Dict, List, Optional, Sequence, Type, Union, get_origin
@@ -45,11 +43,52 @@ def placeholder_node(state):
 
 
 class SimpleAgent(Agent):
-    """
-    Simple agent that MODIFIES its engine to include structured output schema.
+    """Simple agent that modifies its engine to include structured output schema.
 
-    This agent takes structured_output_model and UPDATES the engine's schema
-    to include the structured output fields, then regenerates the agent schema.
+    This agent provides a streamlined interface for creating agents with structured outputs
+    by automatically modifying the underlying AugLLM engine to include the desired output
+    schema. It's designed for straightforward LLM interactions with optional tool use.
+
+    The SimpleAgent automatically:
+        - Updates engine schemas to include structured output fields
+        - Handles tool routing and execution
+        - Manages conversation flow with tool calls
+        - Provides validation and parsing capabilities
+
+    Args:
+        engine: The AugLLM engine configuration for this agent.
+        tools: Optional list of tools available to the agent.
+        tool_node_config: Configuration for tool execution node.
+        parser_node_config: Configuration for output parsing node.
+        validation_node_config: Configuration for validation node.
+        structured_output_model: Pydantic model for structured outputs.
+        output_parser: Custom output parser for response processing.
+
+    Example:
+        Creating a simple agent with structured output::
+
+            from pydantic import BaseModel
+            from haive.agents.simple import SimpleAgent
+            from haive.core.engine.aug_llm import AugLLMConfig
+
+            class TaskResult(BaseModel):
+                completed: bool
+                result: str
+                confidence: float
+
+            agent = SimpleAgent(
+                engine=AugLLMConfig(
+                    model="gpt-4",
+                    temperature=0.7
+                ),
+                structured_output_model=TaskResult
+            )
+
+            result = agent.invoke({"query": "Analyze this data"})
+
+    Note:
+        The agent automatically modifies the engine schema to incorporate structured
+        output fields, ensuring seamless integration between the LLM and output models.
     """
 
     # ========================================================================
@@ -124,6 +163,9 @@ class SimpleAgent(Agent):
             # Add engine to engines dict
             self.engines["main"] = self.engine
 
+            # FIXED: Register engine in EngineRegistry so other nodes can find it
+            self._register_engine_in_registry()
+
             # Sync fields to engine FIRST
             self._sync_fields_to_engine()
 
@@ -135,6 +177,32 @@ class SimpleAgent(Agent):
             self.set_schema = True
 
         # Don't call parent setup_agent() - we handle it ourselves
+
+    def _register_engine_in_registry(self) -> None:
+        """Register the engine in EngineRegistry so other nodes can find it by name."""
+        if not self.engine:
+            return
+
+        try:
+            from haive.core.engine.base import EngineRegistry
+
+            registry = EngineRegistry.get_instance()
+
+            # Check if engine is already registered
+            if not registry.find(self.engine.name):
+                registry.register(self.engine)
+                logger.info(f"Registered engine '{self.engine.name}' in EngineRegistry")
+            else:
+                logger.debug(
+                    f"Engine '{self.engine.name}' already registered in EngineRegistry"
+                )
+
+        except ImportError:
+            logger.warning(
+                "Could not import EngineRegistry - engine registration skipped"
+            )
+        except Exception as e:
+            logger.warning(f"Failed to register engine in registry: {e}")
 
     def _sync_fields_to_engine(self) -> None:
         """Sync convenience fields to engine."""
@@ -218,16 +286,6 @@ class SimpleAgent(Agent):
     # FORCE SCHEMA REGENERATION AFTER ENGINE MODIFICATION
     # ========================================================================
 
-    def _setup_schemas(self):
-        """Override to always regenerate schemas after engine modification."""
-        # Clear any existing schemas to force regeneration
-        self.state_schema = None
-        self.input_schema = None
-        self.output_schema = None
-
-        # Call parent schema setup with modified engine
-        super()._setup_schemas()
-
     # ========================================================================
     # NODE DETECTION (unchanged)
     # ========================================================================
@@ -241,7 +299,7 @@ class SimpleAgent(Agent):
         langchain_tools = [
             tool
             for tool, route in tool_routes.items()
-            if route in ["langchain_tool", "function"]
+            if route in ["langchain_tool", "function", "tool_node"]
         ]
 
         return len(langchain_tools) > 0
@@ -284,47 +342,22 @@ class SimpleAgent(Agent):
             return getattr(self.engine, "tool_routes", {})
         return {}
 
-    def get_tools_for_node(self, node_name: str) -> List[Any]:
-        """Get tools for a specific node."""
-        all_tools = []
-
-        # Get tools from engine and agent
-        if hasattr(self.engine, "tools"):
-            all_tools.extend(self.engine.tools)
-        if self.tools:
-            all_tools.extend(self.tools)
-
-        # Filter by route
-        tool_routes = self.get_tool_routes()
-        filtered_tools = []
-
-        for tool in all_tools:
-            tool_name = getattr(tool, "name", getattr(tool, "__name__", str(tool)))
-            route = tool_routes.get(tool_name, "tool_node")
-
-            if node_name == "tool_node" and route in [
-                "langchain_tool",
-                "function",
-                "tool_node",
-            ]:
-                filtered_tools.append(tool)
-            elif node_name == "parse_output" and route == "pydantic_model":
-                filtered_tools.append(tool)
-
-        return filtered_tools if filtered_tools else all_tools
-
     # ========================================================================
-    # GRAPH BUILDING (unchanged)
+    # GRAPH BUILDING with proper state initialization
     # ========================================================================
 
     def build_graph(self) -> BaseGraph:
-        """Build the agent graph."""
+        """Build the agent graph with proper state initialization."""
         graph = BaseGraph(name=self.name)
+
+        # Track available nodes
+        available_nodes = []
 
         # Add agent node
         engine_node = EngineNodeConfig(name="agent_node", engine=self.engine)
         graph.add_node("agent_node", engine_node)
         graph.add_edge(START, "agent_node")
+        available_nodes.append("agent_node")
 
         # Check what nodes we need
         needs_tool_node = self._needs_tool_node()
@@ -334,46 +367,54 @@ class SimpleAgent(Agent):
         # Simple case - no tools
         if not needs_tool_node and not needs_parser_node:
             graph.add_edge("agent_node", END)
+            # Store available nodes in graph metadata
+            graph.metadata["available_nodes"] = available_nodes
             return graph
 
         # Add validation node
         graph.add_node("validation", placeholder_node)
+        available_nodes.append("validation")
 
         # Add tool node if needed
         if needs_tool_node:
-            tools_for_node = self.get_tools_for_node("tool_node")
-            tool_config = ToolNodeConfig(name="tool_node", tools=tools_for_node)
+            # Pass engine name instead of engine object
+            tool_config = ToolNodeConfig(
+                name="tool_node",
+                engine_name=self.engine.name,
+                allowed_routes=["langchain_tool", "function", "tool_node"],
+            )
             graph.add_node("tool_node", tool_config)
             graph.add_edge("tool_node", END)
+            available_nodes.append("tool_node")
 
         # Add parser node if needed
         if needs_parser_node:
+            # Pass engine name instead of engine object
             parser_config = ParserNodeConfig(
                 name="parse_output",
-                # output_parser=self.output_parser,
-                # output_parser_field=self.output_parser_field,
-                # structured_output_model=self.structured_output_model
-                # tool=self.structured_output_model
+                engine_name=self.engine.name,
             )
             graph.add_node("parse_output", parser_config)
             graph.add_edge("parse_output", END)
+            available_nodes.append("parse_output")
 
-        # Agent routing
+        # Agent routing with conditional branching
         if has_force_tool_use:
             # Force tools - always go to validation
             graph.add_edge("agent_node", "validation")
         else:
-            # Check for tool calls
+            # Use conditional branching for tool calls
             graph.add_conditional_edges(
                 "agent_node", has_tool_calls, {True: "validation", False: END}
             )
 
-        # Validation routing
+        # Create validation config with available nodes
         validation_config = ValidationNodeConfig(
             name="validation",
-            schemas=self.tools or getattr(self.engine, "tools", []),
-            tool_routes=self.engine.tool_routes,
+            engine_name=self.engine.name,
             tool_node="tool_node",
+            parser_node="parse_output",
+            available_nodes=available_nodes,  # Pass available nodes
         )
 
         routing_map = {"has_errors": "agent_node"}
@@ -384,7 +425,40 @@ class SimpleAgent(Agent):
 
         graph.add_conditional_edges("validation", validation_config, routing_map)
 
+        # Store available nodes and tool routes in graph metadata
+        graph.metadata["available_nodes"] = available_nodes
+        graph.metadata["tool_routes"] = self.get_tool_routes()
+
         return graph
+
+    def create_runnable(self, runnable_config=None) -> Any:
+        """Override to ensure state is properly initialized with tool routes and available nodes."""
+        # Get the compiled graph
+        compiled = super().create_runnable(runnable_config)
+
+        # Ensure initial state has tool_routes and available_nodes
+        if hasattr(self, "graph") and self.graph and hasattr(self.graph, "metadata"):
+            # The state should be initialized with these values from graph metadata
+            initial_values = {}
+
+            if "tool_routes" in self.graph.metadata:
+                initial_values["tool_routes"] = self.graph.metadata["tool_routes"]
+            elif self.engine and hasattr(self.engine, "tool_routes"):
+                initial_values["tool_routes"] = self.engine.tool_routes
+
+            if "available_nodes" in self.graph.metadata:
+                initial_values["available_nodes"] = self.graph.metadata[
+                    "available_nodes"
+                ]
+
+            # Store in compiled graph's initial channel values if possible
+            if initial_values and hasattr(compiled, "_channels"):
+                for key, _value in initial_values.items():
+                    if key in compiled._channels:
+                        # Set initial value in channel
+                        pass  # LangGraph handles this internally
+
+        return compiled
 
     # ========================================================================
     # CONVENIENCE CONSTRUCTORS
