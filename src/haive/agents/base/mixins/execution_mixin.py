@@ -14,9 +14,12 @@ from haive.core.persistence.handlers import (
     prepare_merged_input,
     register_thread_if_needed,
 )
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel
+
+# Import debug utilities
+from haive.agents.base.debug_utils import debug_logger, get_agent_debugger
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +37,14 @@ class ExecutionMixin:
         Returns:
             Processed input compatible with the graph
         """
+        # Debug: Log what type of input we're receiving for ToolMessage issues
+        if hasattr(input_data, "messages") and input_data.messages:
+            for i, msg in enumerate(input_data.messages):
+                if hasattr(msg, "tool_call_id"):
+                    logger.debug(
+                        f"Input message {i}: {type(msg).__name__} with tool_call_id={getattr(msg, 'tool_call_id', 'None')}"
+                    )
+
         # Get input schema from agent
         input_schema = getattr(self, "input_schema", None)
 
@@ -139,11 +150,46 @@ class ExecutionMixin:
                     input_data["messages"], list
                 ):
                     messages = input_data["messages"]
+                    # Convert string messages to HumanMessage, but preserve BaseMessage objects
                     for i, msg in enumerate(messages):
                         if isinstance(msg, str):
                             messages[i] = HumanMessage(content=msg)
 
                 try:
+                    # CRITICAL FIX: If messages are already BaseMessage objects, don't let Pydantic
+                    # try to reconstruct them from dicts, as this can lose important fields like tool_call_id
+                    if "messages" in input_data and input_data["messages"]:
+                        # Check if messages are already BaseMessage objects
+                        all_base_messages = all(
+                            isinstance(msg, BaseMessage)
+                            for msg in input_data["messages"]
+                        )
+                        logger.debug(
+                            f"Messages validation: count={len(input_data['messages'])}, all_base_messages={all_base_messages}"
+                        )
+                        for i, msg in enumerate(input_data["messages"]):
+                            logger.debug(
+                                f"  Message {i}: {type(msg)} (is BaseMessage: {isinstance(msg, BaseMessage)})"
+                            )
+
+                        if all_base_messages:
+                            # Create a copy of input_data without messages for validation
+                            validation_data = {
+                                k: v for k, v in input_data.items() if k != "messages"
+                            }
+                            logger.debug(
+                                f"Creating schema instance without messages, remaining fields: {list(validation_data.keys())}"
+                            )
+                            # Create the schema instance
+                            result = input_schema(**validation_data)
+                            # Directly set the messages field to preserve BaseMessage objects
+                            result.messages = input_data["messages"]
+                            logger.debug(
+                                f"Created input schema instance with preserved BaseMessage objects"
+                            )
+                            return result
+
+                    # Fallback to normal validation
                     result = input_schema(**input_data)
                     logger.debug(
                         f"Created input schema instance from dict with {len(input_data)} fields"
@@ -161,11 +207,58 @@ class ExecutionMixin:
         elif isinstance(input_data, BaseModel):
             if input_schema and not isinstance(input_data, input_schema):
                 if hasattr(input_data, "model_dump"):
-                    data_dict = input_data.model_dump()
+                    data_dict = input_data.model_dump(
+                        exclude_none=False, exclude_unset=False
+                    )
                 else:
-                    data_dict = input_data.dict()
+                    data_dict = input_data.dict(exclude_none=False, exclude_unset=False)
 
                 try:
+                    # CRITICAL FIX: Same as dict case - preserve BaseMessage objects
+                    if "messages" in data_dict and data_dict["messages"]:
+                        # Check if the original input_data has BaseMessage objects
+                        if hasattr(input_data, "messages") and input_data.messages:
+                            original_messages = input_data.messages
+                            # Get actual BaseMessage objects, not their dict representations
+                            if hasattr(original_messages, "root"):
+                                actual_messages = original_messages.root
+                            elif isinstance(original_messages, (list, tuple)):
+                                actual_messages = list(original_messages)
+                            else:
+                                try:
+                                    actual_messages = list(original_messages)
+                                except:
+                                    actual_messages = []
+
+                            # Check if they're BaseMessage objects
+                            if actual_messages and all(
+                                isinstance(msg, BaseMessage) for msg in actual_messages
+                            ):
+                                logger.debug(
+                                    f"PRESERVING {len(actual_messages)} BaseMessage objects during input schema conversion"
+                                )
+                                # Log any ToolMessages
+                                for i, msg in enumerate(actual_messages):
+                                    if hasattr(msg, "tool_call_id"):
+                                        logger.debug(
+                                            f"  Preserving ToolMessage {i} with tool_call_id={getattr(msg, 'tool_call_id', 'None')}"
+                                        )
+
+                                # Create schema instance without messages first
+                                validation_data = {
+                                    k: v
+                                    for k, v in data_dict.items()
+                                    if k != "messages"
+                                }
+                                result = input_schema(**validation_data)
+                                # Directly set the actual BaseMessage objects
+                                result.messages = actual_messages
+                                logger.debug(
+                                    "Converted BaseModel to input schema with preserved BaseMessage objects"
+                                )
+                                return result
+
+                    # Fallback to normal conversion
                     result = input_schema(**data_dict)
                     logger.debug("Converted BaseModel to input schema instance")
                     return result
@@ -199,6 +292,14 @@ class ExecutionMixin:
         Returns:
             Prepared runnable configuration
         """
+        # Get debugger for this agent
+        agent_name = getattr(self, "name", "Agent")
+        debugger = get_agent_debugger(agent_name)
+
+        # Enable debugging if debug logger is active
+        if debug_logger.level <= logging.DEBUG:
+            debugger.enable()
+
         # Get base config from agent
         base_config = getattr(self, "runnable_config", None)
         if (
@@ -207,6 +308,12 @@ class ExecutionMixin:
             and hasattr(self.config, "runnable_config")
         ):
             base_config = self.config.runnable_config
+
+        debugger.log_recursion_limit_flow(
+            "Initial base_config",
+            base_config.get("recursion_limit") if base_config else None,
+            "agent.runnable_config or agent.config.runnable_config",
+        )
 
         # Create new config with thread_id if provided
         if thread_id:
@@ -349,9 +456,9 @@ class ExecutionMixin:
             runtime_config["recursion_limit"] = runtime_config["configurable"][
                 "recursion_limit"
             ]
-        # elif not runtime_config.get("recursion_limit"):
-        # Set a default if not present
-        # runtime_config["recursion_limit"] = 100
+        elif not runtime_config.get("recursion_limit"):
+            # Set a default if not present
+            runtime_config["recursion_limit"] = 100
         # Register thread if needed
         checkpointer = getattr(self, "checkpointer", None)
         if checkpointer and thread_id:
@@ -484,6 +591,15 @@ class ExecutionMixin:
 
         # Extract thread_id for persistence
         thread_id = runtime_config["configurable"].get("thread_id")
+
+        # IMPORTANT: Extract recursion limit from configurable and set it at top level
+        if "recursion_limit" in runtime_config["configurable"]:
+            runtime_config["recursion_limit"] = runtime_config["configurable"][
+                "recursion_limit"
+            ]
+        elif not runtime_config.get("recursion_limit"):
+            # Set a default if not present
+            runtime_config["recursion_limit"] = 100
 
         # Register thread if needed
         checkpointer = getattr(self, "checkpointer", None)
