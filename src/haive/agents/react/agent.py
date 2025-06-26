@@ -1,6 +1,8 @@
 # ============================================================================
 # REACT AGENT
 # ============================================================================
+import logging
+
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.tool_node_config import ToolNodeConfig
 from haive.core.graph.node.validation_node_config import ValidationNodeConfig
@@ -9,12 +11,30 @@ from langgraph.graph import END
 
 from haive.agents.simple.agent import SimpleAgent
 
+logger = logging.getLogger(__name__)
+
 # ========================================================================
 # REACT AGENT
 # ============================================================================
 
 
 class ReactAgent(SimpleAgent):
+    """ReAct agent with looping behavior.
+
+    This agent inherits SimpleAgent's serialization behavior.
+    """
+
+    def __reduce__(self):
+        """Make ReactAgent picklable.
+
+        Override SimpleAgent's __reduce__ to ensure proper class reconstruction.
+        """
+        # Get the state dict from parent method
+        parent_class, _, state_dict = super().__reduce__()
+
+        # Return with the correct class (ReactAgent instead of SimpleAgent)
+        return (self.__class__, (), state_dict)
+
     """ReAct agent with looping behavior."""
 
     def build_graph(self) -> BaseGraph:
