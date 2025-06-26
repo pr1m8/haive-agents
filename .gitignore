@@ -146,3 +146,9 @@ poetry.lock
 
 
 **/.claude/settings.local.json
+
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+**/__pycache__/
+**/*.pyc
