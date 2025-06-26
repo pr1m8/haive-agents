@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 logger.set_level(LogLevel.WARNING)
 
 
-class DirectedConversationState(ConversationState):
+class DirectedState(ConversationState):
     """Extended state for directed conversations."""
 
     # Track who was mentioned
