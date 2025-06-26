@@ -21,43 +21,87 @@ from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
-from pydantic import BaseModel, Field, PrivateAttr, model_validator
+from pydantic import BaseModel, Field, PrivateAttr, create_model, model_validator
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.table import Table
+from rich.tree import Tree
 
 # Import mixins
 from haive.agents.base.mixins.execution_mixin import ExecutionMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
+from haive.agents.base.serialization_mixin import SerializationMixin
 
+# Configure rich logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    handlers=[RichHandler(rich_tracebacks=True)],
+)
 logger = logging.getLogger(__name__)
 
+# Console for visualization only
+console = Console()
 
-class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, ABC):
-    """
-    Abstract base agent class that extends InvokableEngine with execution and state management.
+
+class Agent(
+    InvokableEngine[BaseModel, BaseModel],
+    ExecutionMixin,
+    StateMixin,
+    SerializationMixin,
+    ABC,
+):
+    """Abstract base agent class that extends InvokableEngine with execution and state management.
 
     This class provides the foundation for all agent implementations in the Haive framework,
     combining the Engine interface with execution and state management capabilities through mixins.
+    It supports automatic schema generation, persistence, and graph compilation.
 
     The agent lifecycle follows this initialization order:
-    1. Normalize engines and setup name
-    2. Subclass field syncing (hook: setup_agent())
-    3. Schema generation from engines
-    4. Persistence setup
-    5. Graph building and compilation
+        1. Normalize engines and setup name
+        2. Subclass field syncing (hook: setup_agent())
+        3. Schema generation from engines
+        4. Persistence setup
+        5. Graph building and compilation
+
+    Args:
+        name: Agent name, auto-generated from class name if not provided.
+        engines: Dictionary of named engines used by this agent.
+        engine: Primary/main engine for the agent.
+        state_schema: Schema for agent state.
+        input_schema: Schema for agent input.
+        output_schema: Schema for agent output.
+        config_schema: Schema for agent configuration.
+        set_schema: Whether to auto-generate schemas from engines.
 
     Attributes:
-        engine_type: Always EngineType.AGENT for agents
-        name: Agent name, auto-generated from class name if not provided
-        engines: Dictionary of named engines used by this agent
-        engine: Primary/main engine for the agent
-        graph: The workflow graph (excluded from serialization)
-        state_schema: Schema for agent state
-        input_schema: Schema for agent input
-        output_schema: Schema for agent output
-        config_schema: Schema for agent configuration
-        checkpointer: Persistence checkpointer (excluded from serialization)
-        store: Optional state store (excluded from serialization)
-        config: Reference to AgentConfig (excluded from serialization)
-        set_schema: Whether to auto-generate schemas from engines
+        engine_type: Always EngineType.AGENT for agents.
+        graph: The workflow graph (excluded from serialization).
+        checkpointer: Persistence checkpointer (excluded from serialization).
+        store: Optional state store (excluded from serialization).
+        config: Reference to AgentConfig (excluded from serialization).
+
+    Example:
+        Creating a simple agent with one engine::
+
+            class MyAgent(Agent):
+                def setup_agent(self):
+                    # Custom setup logic here
+                    pass
+
+                def build_graph(self) -> BaseGraph:
+                    # Build the workflow graph
+                    return my_graph
+
+            agent = MyAgent(
+                name="my_agent",
+                engine=my_llm_engine
+            )
+            result = agent.invoke(input_data)
+
+    Note:
+        This is an abstract base class. Subclasses must implement the abstract
+        methods for graph building and agent setup.
     """
 
     # Engine type for this agent
@@ -213,9 +257,8 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
             # STEP 2: Call subclass setup hook for field syncing
             self.setup_agent()
 
-            # STEP 3: Generate schemas from engines (only if set_schema is True)
-            if self.set_schema:
-                self._setup_schemas()
+            # STEP 3: Generate schemas from engines
+            self._setup_schemas()
 
             # STEP 4: Setup persistence
             self._setup_persistence()
@@ -224,6 +267,22 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
             self._build_initial_graph()
 
             self._setup_complete = True
+
+            # Log setup completion with rich formatting
+            if self.verbose:
+                tree = Tree(f"[bold blue]Agent Setup Complete: {self.name}[/bold blue]")
+                tree.add(f"Engine Type: {self.engine_type.value}")
+                tree.add(f"Engines: {len(self.engines)}")
+                tree.add(
+                    f"State Schema: {getattr(self.state_schema, '__name__', 'None')}"
+                )
+                tree.add(
+                    f"Input Schema: {getattr(self.input_schema, '__name__', 'None')}"
+                )
+                tree.add(
+                    f"Output Schema: {getattr(self.output_schema, '__name__', 'None')}"
+                )
+                logger.info(tree)
 
         except Exception as e:
             logger.error(f"Failed to setup agent {self.__class__.__name__}: {e}")
@@ -334,12 +393,13 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
 
     def _setup_schemas(self) -> None:
         """
-        Generate schemas from available engines and sub-agents with enhanced tool synchronization.
+        Generate schemas from available engines with intelligent defaults.
 
-        This method creates state, input, and output schemas by analyzing
-        the engines and sub-agents configured for this agent. It uses the enhanced
-        SchemaComposer functionality to ensure proper tool routing and engine
-        synchronization based on the tool route mixin system.
+        This method:
+        1. Always generates a state schema from engines
+        2. Automatically derives input schema if not provided
+        3. Automatically derives output schema if not provided
+        4. Handles special cases like structured output models
         """
         # Collect all engines and agents
         engine_list = []
@@ -417,9 +477,9 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
                     # Create basic message state
                     self._create_basic_message_state()
 
-            # Optionally auto-derive input and output schemas
-            if self.set_schema:
-                self.auto_derive_schemas()
+            # AUTOMATIC INPUT/OUTPUT SCHEMA DERIVATION
+            # Always derive if not explicitly provided
+            self._auto_derive_io_schemas()
 
             logger.debug(f"Schema setup complete. State schema: {self.state_schema}")
 
@@ -430,6 +490,217 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
             # Fallback to basic message state
             if not self.state_schema:
                 self._create_basic_message_state()
+
+    def _auto_derive_io_schemas(self) -> None:
+        """
+        Automatically derive input and output schemas with intelligent defaults.
+
+        This method:
+        1. Derives input schema from state schema or first engine
+        2. Derives output schema considering structured output models
+        3. Falls back to messages-based schemas when appropriate
+        """
+        # Derive input schema if not provided
+        if not self.input_schema:
+            logger.debug("No input schema provided, deriving from available sources")
+
+            # Try to derive from state schema first
+            if self.state_schema and hasattr(self.state_schema, "derive_input_schema"):
+                try:
+                    self.input_schema = self.state_schema.derive_input_schema(
+                        name=f"{self.name}Input"
+                    )
+                    logger.debug(
+                        f"Derived input schema from state schema: {self.input_schema.__name__}"
+                    )
+                except Exception as e:
+                    logger.debug(f"Could not derive input schema from state: {e}")
+
+            # If still no input schema, try first engine
+            if not self.input_schema and self.engines:
+                first_engine = next(iter(self.engines.values()), None)
+                if first_engine and hasattr(first_engine, "get_input_fields"):
+                    try:
+                        fields = first_engine.get_input_fields()
+                        if fields:
+                            self.input_schema = create_model(
+                                f"{self.name}Input", **fields
+                            )
+                            logger.debug("Derived input schema from first engine")
+                    except Exception as e:
+                        logger.debug(f"Could not derive input schema from engine: {e}")
+
+            # Final fallback - messages input
+            if not self.input_schema:
+                from typing import List
+
+                from langchain_core.messages import BaseMessage
+
+                self.input_schema = create_model(
+                    f"{self.name}Input",
+                    messages=(List[BaseMessage], Field(default_factory=list)),
+                )
+                logger.debug("Using default messages-based input schema")
+
+        # Derive output schema if not provided
+        if not self.output_schema:
+            logger.debug("No output schema provided, deriving from available sources")
+
+            # Special handling for engines with structured output
+            main_engine = self.main_engine
+            if main_engine:
+                # Check for structured output model
+                structured_output = getattr(
+                    main_engine, "structured_output_model", None
+                )
+                if structured_output:
+                    # Check if we're using v2 structured output (tool-based)
+                    output_version = getattr(
+                        main_engine, "structured_output_version", None
+                    )
+
+                    if output_version == "v2" or output_version == 2:
+                        # For v2, we need to create a schema that includes the parsed output field
+                        # The field name is typically the lowercased model name
+                        field_name = structured_output.__name__.lower()
+
+                        # Create output schema with just the structured field
+                        self.output_schema = create_model(
+                            f"{self.name}Output",
+                            **{
+                                field_name: (
+                                    structured_output,
+                                    Field(
+                                        description=f"Parsed {structured_output.__name__}"
+                                    ),
+                                )
+                            },
+                        )
+                        logger.debug(
+                            f"Created output schema with structured field '{field_name}': {self.output_schema.__name__}"
+                        )
+                    else:
+                        # For v1 or direct structured output, use the model as-is
+                        self.output_schema = structured_output
+                        logger.debug(
+                            f"Using structured output model as output schema: {structured_output.__name__}"
+                        )
+                    return
+
+                # Check if engine has specific output field configuration
+                output_field_name = getattr(main_engine, "output_field_name", None)
+                if output_field_name and hasattr(main_engine, "get_output_fields"):
+                    try:
+                        fields = main_engine.get_output_fields()
+                        # Filter to only include the specified output field
+                        if output_field_name in fields:
+                            self.output_schema = create_model(
+                                f"{self.name}Output",
+                                **{output_field_name: fields[output_field_name]},
+                            )
+                            logger.debug(
+                                f"Created output schema with field '{output_field_name}'"
+                            )
+                            return
+                    except Exception as e:
+                        logger.debug(
+                            f"Could not create output schema from output field: {e}"
+                        )
+
+                # Check engine's output fields
+                if hasattr(main_engine, "get_output_fields"):
+                    try:
+                        fields = main_engine.get_output_fields()
+                        if fields:
+                            # For agents, we typically want a focused output schema
+                            # Check if this looks like a state schema (has many fields)
+                            if len(fields) > 5:  # Likely a full state schema
+                                # Try to extract just the output-relevant fields
+                                output_fields = {}
+
+                                # Common output field names to look for
+                                output_field_names = [
+                                    "output",
+                                    "result",
+                                    "response",
+                                    "answer",
+                                    "completion",
+                                    "generated",
+                                    "prediction",
+                                    "summary",
+                                    "extraction",
+                                ]
+
+                                # Also check for any field that matches the structured output model name
+                                if structured_output:
+                                    output_field_names.append(
+                                        structured_output.__name__.lower()
+                                    )
+
+                                for field_name in output_field_names:
+                                    if field_name in fields:
+                                        output_fields[field_name] = fields[field_name]
+
+                                # If we found output fields, use them
+                                if output_fields:
+                                    self.output_schema = create_model(
+                                        f"{self.name}Output", **output_fields
+                                    )
+                                    logger.debug(
+                                        f"Created focused output schema with fields: {list(output_fields.keys())}"
+                                    )
+                                    return
+
+                                # Otherwise just use messages
+                                from typing import List
+
+                                from langchain_core.messages import BaseMessage
+
+                                self.output_schema = create_model(
+                                    f"{self.name}Output",
+                                    messages=(
+                                        List[BaseMessage],
+                                        Field(default_factory=list),
+                                    ),
+                                )
+                                logger.debug(
+                                    "Using messages output schema to avoid exposing full state"
+                                )
+                                return
+                            else:
+                                # Small number of fields, use them all
+                                self.output_schema = create_model(
+                                    f"{self.name}Output", **fields
+                                )
+                                logger.debug("Created output schema from engine fields")
+                                return
+                    except Exception as e:
+                        logger.debug(f"Could not derive output schema from engine: {e}")
+
+            # Try to derive from state schema with focus on output fields
+            if self.state_schema and hasattr(self.state_schema, "derive_output_schema"):
+                try:
+                    self.output_schema = self.state_schema.derive_output_schema(
+                        name=f"{self.name}Output"
+                    )
+                    logger.debug(
+                        f"Derived output schema from state schema: {self.output_schema.__name__}"
+                    )
+                    return
+                except Exception as e:
+                    logger.debug(f"Could not derive output schema from state: {e}")
+
+            # Final fallback - messages output
+            if not self.output_schema:
+                from typing import List
+
+                from langchain_core.messages import BaseMessage
+
+                self.output_schema = create_model(
+                    f"{self.name}Output",
+                    messages=(List[BaseMessage], Field(default_factory=list)),
+                )
+                logger.debug("Using default messages-based output schema")
 
     def _create_basic_message_state(self) -> None:
         """Create a basic message state schema as fallback."""
@@ -479,7 +750,7 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
 
         This implements the abstract method from Engine base class.
         """
-        # Only return from input schema if explicitly defined and it's a BaseModel
+        # Return from input schema if defined
         if (
             self.input_schema
             and not isinstance(self.input_schema, dict)
@@ -494,16 +765,6 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
                 result[name] = (field_type, default_value)
             return result
 
-        # If no explicit input schema, try to get from first engine
-        if self.engines:
-            # Get the first engine (in order of declaration)
-            first_engine = next(iter(self.engines.values()), None)
-            if first_engine and hasattr(first_engine, "get_input_fields"):
-                try:
-                    return first_engine.get_input_fields()
-                except:
-                    pass
-
         # Fallback - return empty to avoid exposing internal state
         return {}
 
@@ -513,7 +774,7 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
 
         This implements the abstract method from Engine base class.
         """
-        # Only return from output schema if explicitly defined and it's a BaseModel
+        # Return from output schema if defined
         if (
             self.output_schema
             and not isinstance(self.output_schema, dict)
@@ -527,16 +788,6 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
                 )
                 result[name] = (field_type, default_value)
             return result
-
-        # If no explicit output schema, try to get from last engine
-        if self.engines:
-            # Get the last engine
-            last_engine = list(self.engines.values())[-1] if self.engines else None
-            if last_engine and hasattr(last_engine, "get_output_fields"):
-                try:
-                    return last_engine.get_output_fields()
-                except:
-                    pass
 
         # Fallback - return empty to avoid exposing internal state
         return {}
@@ -558,27 +809,21 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
         if not self.graph:
             raise ValueError("Graph could not be built")
 
-        # Ensure we have a state schema - regenerate if needed
+        # Ensure we have schemas - regenerate if needed
         if not self.state_schema:
             logger.warning(f"No state schema found for {self.name}, regenerating...")
             self._setup_schemas()
 
-        # If still no state schema, create a basic one
-        if not self.state_schema:
-            logger.warning(f"Creating fallback state schema for {self.name}")
-            self._create_basic_message_state()
-
         # Build schema kwargs - only pass what StateGraph expects
         schema_kwargs = {}
 
-        # CRITICAL FIX: Ensure state_schema is always passed
+        # CRITICAL: state_schema is required
         if self.state_schema:
             schema_kwargs["state_schema"] = self.state_schema
         else:
-            # This should never happen due to fallbacks above, but just in case
             raise ValueError(f"No state schema available for {self.name}")
 
-        # Only add input/output if they exist (they're optional if state_schema is provided)
+        # Only add input/output if they exist
         if self.input_schema:
             schema_kwargs["input"] = self.input_schema
 
@@ -591,6 +836,8 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
         # Debug logging
         logger.debug(f"Schema kwargs for {self.name}: {list(schema_kwargs.keys())}")
         logger.debug(f"State schema: {self.state_schema}")
+        logger.debug(f"Input schema: {self.input_schema}")
+        logger.debug(f"Output schema: {self.output_schema}")
 
         # Convert BaseGraph to LangGraph with schemas
         try:
@@ -718,16 +965,12 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
             # Build schema kwargs for conversion
             schema_kwargs = {}
 
-            # Ensure we have a state schema
+            # Ensure we have schemas
             if not self.state_schema:
                 logger.warning(
                     f"No state schema found for {self.name}, regenerating..."
                 )
                 self._setup_schemas()
-
-            if not self.state_schema:
-                logger.warning(f"Creating fallback state schema for {self.name}")
-                self._create_basic_message_state()
 
             # Add schemas to kwargs
             if self.state_schema:
@@ -791,7 +1034,7 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
 
         Args:
             input_data: Input data for the agent
-            runnable_config: Optional runtime configuration
+            config: Optional runtime configuration
 
         Returns:
             Output from the agent
@@ -808,7 +1051,7 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
 
         Args:
             input_data: Input data for the agent
-            runnable_config: Optional runtime configuration
+            config: Optional runtime configuration
 
         Returns:
             Output from the agent
@@ -1148,6 +1391,22 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
                 "supports_routing": False,
                 "tools_count": 0,
             },
+            "input_schema": {
+                "name": (
+                    getattr(self.input_schema, "__name__", None)
+                    if self.input_schema
+                    else None
+                ),
+                "fields": [],
+            },
+            "output_schema": {
+                "name": (
+                    getattr(self.output_schema, "__name__", None)
+                    if self.output_schema
+                    else None
+                ),
+                "fields": [],
+            },
             "total_engines": 0,
             "total_tools": 0,
         }
@@ -1174,6 +1433,16 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
             except Exception as e:
                 logger.debug(f"Could not analyze state schema: {e}")
 
+        # Add input schema fields
+        if self.input_schema and hasattr(self.input_schema, "model_fields"):
+            info["input_schema"]["fields"] = list(self.input_schema.model_fields.keys())
+
+        # Add output schema fields
+        if self.output_schema and hasattr(self.output_schema, "model_fields"):
+            info["output_schema"]["fields"] = list(
+                self.output_schema.model_fields.keys()
+            )
+
         # Count total engines and tools
         all_engines = self.get_all_instance_engines()
         info["total_engines"] = len(all_engines)
@@ -1183,55 +1452,56 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, A
 
     def display_schema_info(self) -> None:
         """
-        Display comprehensive information about the agent's schema system.
+        Display comprehensive information about the agent's schema system using rich formatting.
         """
         info = self.get_schema_info()
 
-        print(f"\n=== Agent Schema Information: {info['agent_name']} ===")
-        print(f"Agent Engines: {info['agent_engines']}")
-        print(f"Main Engine: {info['main_engine']}")
+        # Create a table for schema information
+        table = Table(title=f"Agent Schema Information: {info['agent_name']}")
+        table.add_column("Property", style="cyan")
+        table.add_column("Value", style="green")
 
-        print(f"\nState Schema: {info['state_schema']['name']}")
-        print(f"  Class-level Engines: {info['state_schema']['class_engines']}")
-        print(f"  Supports Tools: {info['state_schema']['supports_tools']}")
-        print(f"  Supports Routing: {info['state_schema']['supports_routing']}")
-        print(f"  Tools Count: {info['state_schema']['tools_count']}")
+        # Add agent info
+        table.add_row("Agent Engines", str(info["agent_engines"]))
+        table.add_row("Main Engine", str(info["main_engine"]))
+        table.add_row("Total Engines", str(info["total_engines"]))
+        table.add_row("Total Tools", str(info["total_tools"]))
 
-        print(f"\nTotals:")
-        print(f"  Total Engines: {info['total_engines']}")
-        print(f"  Total Tools: {info['total_tools']}")
-
-        # Show schema information
-        print(f"\nSchema Information:")
-        print(
-            f"  Input Schema: {getattr(self.input_schema, '__name__', 'None') if self.input_schema else 'None'}"
+        # Add state schema info
+        table.add_section()
+        table.add_row("State Schema", str(info["state_schema"]["name"]))
+        table.add_row("  Class Engines", str(info["state_schema"]["class_engines"]))
+        table.add_row(
+            "  Supports Tools", "✅" if info["state_schema"]["supports_tools"] else "❌"
         )
-        print(
-            f"  Output Schema: {getattr(self.output_schema, '__name__', 'None') if self.output_schema else 'None'}"
+        table.add_row(
+            "  Supports Routing",
+            "✅" if info["state_schema"]["supports_routing"] else "❌",
         )
-        print(
-            f"  Config Schema: {getattr(self.config_schema, '__name__', 'None') if self.config_schema else 'None'}"
-        )
+        table.add_row("  Tools Count", str(info["state_schema"]["tools_count"]))
 
-        # Show derived schema capabilities
-        if self.state_schema and hasattr(self.state_schema, "derive_input_schema"):
-            print(f"  Can derive input schema: ✅")
-        else:
-            print(f"  Can derive input schema: ❌")
+        # Add input/output schema info
+        table.add_section()
+        table.add_row("Input Schema", str(info["input_schema"]["name"]))
+        if info["input_schema"]["fields"]:
+            table.add_row("  Fields", ", ".join(info["input_schema"]["fields"]))
 
-        if self.state_schema and hasattr(self.state_schema, "derive_output_schema"):
-            print(f"  Can derive output schema: ✅")
-        else:
-            print(f"  Can derive output schema: ❌")
+        table.add_row("Output Schema", str(info["output_schema"]["name"]))
+        if info["output_schema"]["fields"]:
+            table.add_row("  Fields", ", ".join(info["output_schema"]["fields"]))
 
-        # Show engine details
-        all_engines = self.get_all_instance_engines()
-        if all_engines:
-            print(f"\nAll Available Engines:")
-            for name, engine in all_engines.items():
-                engine_type = getattr(engine, "engine_type", "unknown")
-                tool_count = len(getattr(engine, "tools", []))
-                print(f"  - {name}: {engine_type} ({tool_count} tools)")
+        logger.info(table)
+
+        # Show detailed engine information if verbose
+        if self.verbose:
+            all_engines = self.get_all_instance_engines()
+            if all_engines:
+                engine_tree = Tree("All Available Engines")
+                for name, engine in all_engines.items():
+                    engine_type = getattr(engine, "engine_type", "unknown")
+                    tool_count = len(getattr(engine, "tools", []))
+                    engine_tree.add(f"{name}: {engine_type} ({tool_count} tools)")
+                logger.info(engine_tree)
 
     def derive_input_schema(
         self, engine_name: Optional[str] = None, name: Optional[str] = None
