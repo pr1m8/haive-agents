@@ -2,7 +2,23 @@
 Base conversation agent providing core multi-agent conversation functionality.
 
 This base class handles the orchestration of conversations between multiple agents,
-with support for different conversation modes and patterns.
+with support for different conversation modes and patterns. It implements the core
+graph-based state management system that all conversation types extend.
+
+The BaseConversationAgent provides:
+
+1. A common orchestration flow for all conversation types
+2. Agent compilation and execution management
+3. Message routing and processing
+4. Automatic state tracking via reducers
+5. Conversation initialization and conclusion
+6. Extension points for specialized conversation behaviors
+
+The conversation flow follows a standard pattern:
+initialize → select_speaker → execute_agent → process_response → check_end → conclude
+
+Each conversation type extends this base by implementing the abstract methods,
+particularly the `select_speaker` method that defines the conversation pattern.
 """
 
 from abc import abstractmethod
@@ -30,6 +46,25 @@ class BaseConversationAgent(Agent):
 
     This abstract base class provides the core functionality for managing
     conversations between multiple agents, with hooks for customization.
+
+    The BaseConversationAgent implements a graph-based conversation flow
+    that all specialized conversation types extend and customize. It handles
+    agent compilation, message routing, state tracking, and conversation
+    lifecycle management.
+
+    Attributes:
+        participant_agents (Dict[str, Union[SimpleAgent, AugLLMConfig]]):
+            Mapping of participant names to agent instances or configs.
+        topic (str): The conversation topic.
+        max_rounds (int): Maximum number of conversation rounds.
+        mode (str): Conversation mode identifier (e.g., "round_robin", "debate").
+        recursion_limit (int): Maximum recursion depth for agent execution.
+        handle_errors (bool): Whether to handle agent execution errors gracefully.
+        max_turns_safety (int): Absolute maximum turns as a safety limit.
+
+    Note:
+        This is an abstract base class. Concrete conversation types must implement
+        at minimum the `select_speaker` method to define their conversation pattern.
     """
 
     # Agents participating in the conversation
@@ -59,7 +94,21 @@ class BaseConversationAgent(Agent):
     )
 
     def setup_agent(self):
-        """Set up the conversation orchestrator."""
+        """
+        Set up the conversation orchestrator.
+
+        This method performs critical initialization steps for the conversation agent:
+
+        1. Configures the state schema for conversation tracking
+        2. Creates a default orchestrator engine if none is provided
+        3. Compiles all participant agents to ensure they're ready for execution
+
+        This method is called automatically during the agent's lifecycle and
+        should rarely need to be called directly.
+
+        Returns:
+            None
+        """
         # Set the state schema
         self.state_schema = self.get_conversation_state_schema()
         self.set_schema = True
@@ -216,12 +265,33 @@ class BaseConversationAgent(Agent):
     @abstractmethod
     def select_speaker(self, state: Any) -> Command:
         """
-        Select the next speaker.
+        Select the next speaker in the conversation.
 
-        Must be implemented by subclasses to define speaker selection logic.
-        MUST return Command with either:
-        - update={"current_speaker": speaker_name} to continue
-        - update={"current_speaker": None, "conversation_ended": True} to end
+        This is the primary method that defines the conversation pattern and must
+        be implemented by all conversation type subclasses. It determines which
+        participant should speak next based on the current conversation state.
+
+        The implementation of this method defines the fundamental behavior of each
+        conversation type. For example:
+        - Round-robin conversations select speakers in a fixed rotating order
+        - Debate conversations select based on debate phase and structure
+        - Directed conversations use a moderator to select the next speaker
+
+        Args:
+            state (Any): The current conversation state, containing speakers,
+                         message history, and conversation metadata.
+
+        Returns:
+            Command: A langgraph Command object with state updates. Must include either:
+                - update={"current_speaker": speaker_name} to continue conversation
+                - update={"current_speaker": None, "conversation_ended": True} to end
+
+        Raises:
+            NotImplementedError: If not implemented by a subclass.
+
+        Note:
+            This is the core method that differentiates conversation types. Each
+            subclass must implement this method to define its unique conversation pattern.
         """
         raise NotImplementedError("Subclasses must implement select_speaker")
 

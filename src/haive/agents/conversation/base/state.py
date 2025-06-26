@@ -1,6 +1,20 @@
 # src/haive/agents/conversation/base/state.py
 """
 Base conversation state with automatic round tracking via reducers.
+
+This module defines the ConversationState class, which is the foundational state schema
+for all conversation types. It extends MessagesState with specialized tracking for
+conversation rounds, speaker history, and flow management.
+
+The state uses Pydantic for validation and reducer functions for automatic field updates,
+allowing for elegant tracking of conversation progress without complex manual state management.
+Key features include:
+
+- Automatic message accumulation (inherited from MessagesState)
+- Turn count tracking with automatic incrementation
+- Speaker history with automatic appending
+- Round calculation based on turn count and speaker count
+- Computed properties for conversation progress and remaining speakers
 """
 
 import logging
@@ -18,16 +32,36 @@ logger.set_level(LogLevel.WARNING)
 
 class ConversationState(MessagesState):
     """
-    Base conversation state extending MessagesState with automatic tracking.
+    Base conversation state schema with automatic tracking and progress calculations.
 
-    MessagesState provides:
-    - messages: List[BaseMessage] with add_messages reducer
-    - __reducer_fields__ = {"messages": add_messages}
+    This state schema extends MessagesState with specialized fields and reducers for
+    tracking multi-agent conversations. It provides automatic management of turns,
+    rounds, speaker history, and conversation progress through a combination of
+    Pydantic fields, reducers, and computed properties.
 
-    This class adds:
-    - Automatic round counting via reducer
-    - Turn tracking
-    - Conversation flow management
+    Attributes:
+        messages (List[BaseMessage]): Conversation messages (inherited from MessagesState)
+        current_speaker (Optional[str]): The currently active speaker
+        speakers (List[str]): List of all participant speaker names
+        turn_count (int): Total number of speaking turns taken (auto-incremented)
+        max_rounds (int): Maximum number of conversation rounds
+        topic (Optional[str]): The conversation topic
+        conversation_ended (bool): Flag indicating if conversation is complete
+        mode (str): Conversation mode identifier (e.g., "round_robin", "debate")
+        speaker_history (List[str]): Chronological history of speakers (auto-appended)
+
+    Computed Properties:
+        round_number (int): Current round number calculated from turns and speakers
+        current_round_speakers (List[str]): Speakers who have spoken in current round
+        remaining_speakers_this_round (List[str]): Speakers yet to speak in current round
+        should_end_by_rounds (bool): Whether round limit has been reached
+        turns_per_round (int): Number of turns in a complete round
+        conversation_progress (float): Progress from 0.0 to 1.0
+
+    Note:
+        This state uses reducer functions for automatic field updates. When a turn is taken,
+        the turn_count and speaker_history are automatically updated through reducers,
+        allowing for clean state updates without manual tracking.
     """
 
     # Track conversation flow
