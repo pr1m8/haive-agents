@@ -1,6 +1,4 @@
-"""
-Debate Conversation
-==================
+"""Debate Conversation.
 
 Structured debate agent with formal positions, arguments, rebuttals, and judging.
 
@@ -17,41 +15,40 @@ This agent is ideal for simulating formal debates, exploring opposing viewpoints
 and creating structured argumentative conversations with clear positions.
 
 Features:
---------
-- Multiple debate formats (traditional, oxford, parliamentary)
-- Configurable debate phases
-- Position assignment and tracking
-- Automatic argument and rebuttal counting
-- Optional judge participant for scoring and feedback
-- Comprehensive debate statistics and results
+    - Multiple debate formats (traditional, oxford, parliamentary)
+    - Configurable debate phases
+    - Position assignment and tracking
+    - Automatic argument and rebuttal counting
+    - Optional judge participant for scoring and feedback
+    - Comprehensive debate statistics and results
 
 Usage:
-------
-```python
-from haive.agents.conversation import DebateConversation
+    Basic usage example::
 
-# Create a simple two-sided debate
-debate = DebateConversation.create_simple_debate(
-    topic="Artificial Intelligence Benefits Outweigh Risks",
-    position_a=("Proponent", "AI benefits far outweigh potential risks"),
-    position_b=("Skeptic", "AI risks outweigh the potential benefits"),
-    enable_judge=True,
-    arguments_per_side=3
-)
+        from haive.agents.conversation import DebateConversation
 
-# Run the debate
-result = debate.invoke()
+        # Create a simple two-sided debate
+        debate = DebateConversation.create_simple_debate(
+            topic="Artificial Intelligence Benefits Outweigh Risks",
+            position_a=("Proponent", "AI benefits far outweigh potential risks"),
+            position_b=("Skeptic", "AI risks outweigh the potential benefits"),
+            enable_judge=True,
+            arguments_per_side=3
+        )
 
-# Access debate results
-messages = result["messages"]
-winner = result.get("debate_winner")
-```
+        # Run the debate
+        result = debate.invoke()
 
-The debate conversation is particularly useful for:
-- Exploring different perspectives on complex topics
-- Creating balanced discussions with formal structure
-- Educational simulations of debate formats
-- Testing argument strength and persuasive capabilities
+        # Access debate results
+        messages = result["messages"]
+        winner = result.get("debate_winner")
+
+Note:
+    The debate conversation is particularly useful for:
+    - Exploring different perspectives on complex topics
+    - Creating balanced discussions with formal structure
+    - Educational simulations of debate formats
+    - Testing argument strength and persuasive capabilities
 """
 
 from haive.agents.conversation.debate.agent import DebateConversation

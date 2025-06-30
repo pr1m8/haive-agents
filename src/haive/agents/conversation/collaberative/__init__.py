@@ -1,6 +1,4 @@
-"""
-Collaborative Conversation
-========================
+"""Collaborative Conversation.
 
 Multi-agent conversations focused on collaborative problem-solving and teamwork.
 
@@ -20,45 +18,44 @@ constructive cooperation toward a common objective rather than turn-taking or
 dialectical exchange.
 
 Features:
---------
-- Task-oriented conversation structure
-- Role assignment and specialization
-- Work product tracking and versioning
-- Contribution assessment
-- Progress monitoring
-- Final deliverable synthesis
-- Configurable collaboration modes
+    - Task-oriented conversation structure
+    - Role assignment and specialization
+    - Work product tracking and versioning
+    - Contribution assessment
+    - Progress monitoring
+    - Final deliverable synthesis
+    - Configurable collaboration modes
 
 Usage:
-------
-```python
-from haive.agents.conversation import CollaborativeConversation
+    Basic usage example::
 
-# Create a collaborative conversation for coding
-collab = CollaborativeConversation.create_team(
-    objective="Design a REST API for a todo application",
-    roles={
-        "Architect": "Focus on overall system design and patterns",
-        "Backend": "Define API endpoints and data models",
-        "DevOps": "Consider deployment and scaling concerns"
-    },
-    max_rounds=5,
-    output_format="markdown"
-)
+        from haive.agents.conversation import CollaborativeConversation
 
-# Run the conversation
-result = collab.invoke()
+        # Create a collaborative conversation for coding
+        collab = CollaborativeConversation.create_team(
+            objective="Design a REST API for a todo application",
+            roles={
+                "Architect": "Focus on overall system design and patterns",
+                "Backend": "Define API endpoints and data models",
+                "DevOps": "Consider deployment and scaling concerns"
+            },
+            max_rounds=5,
+            output_format="markdown"
+        )
 
-# Access collaboration results
-messages = result["messages"]
-final_output = result["work_product"]
-```
+        # Run the conversation
+        result = collab.invoke()
 
-The collaborative conversation is particularly useful for:
-- Multi-agent problem solving with specialized roles
-- Simulating team dynamics and workflows
-- Producing composite outputs requiring diverse expertise
-- Brainstorming and idea refinement sessions
+        # Access collaboration results
+        messages = result["messages"]
+        final_output = result["work_product"]
+
+Note:
+    The collaborative conversation is particularly useful for:
+    - Multi-agent problem solving with specialized roles
+    - Simulating team dynamics and workflows
+    - Producing composite outputs requiring diverse expertise
+    - Brainstorming and idea refinement sessions
 """
 
 from haive.agents.conversation.collaberative.agent import CollaborativeConversation

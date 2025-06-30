@@ -1,6 +1,4 @@
-"""
-Base Conversation Agent
-======================
+"""Base Conversation Agent.
 
 Core foundation classes for conversation agents that orchestrate multi-agent interactions.
 
