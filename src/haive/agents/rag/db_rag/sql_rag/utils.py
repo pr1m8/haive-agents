@@ -17,7 +17,7 @@ Example:
         Available tools: ['sql_db_query', 'sql_db_schema', 'sql_db_list_tables', ...]
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import LLMConfig
@@ -33,7 +33,7 @@ from haive.agents.rag.db_rag.sql_rag.config import SQLDatabaseConfig
 
 def create_sql_toolkit(
     db_config: SQLDatabaseConfig,
-    llm_config: Optional[Union[AugLLMConfig, LLMConfig]] = None,
+    llm_config: AugLLMConfig | LLMConfig | None = None,
 ) -> SQLDatabaseToolkit:
     """Create a SQL Database Toolkit using the provided configuration.
 
@@ -86,7 +86,7 @@ def create_sql_toolkit(
     return SQLDatabaseToolkit(db=db, llm=llm)
 
 
-def get_all_toolkit_tools(toolkit: SQLDatabaseToolkit) -> List[BaseTool]:
+def get_all_toolkit_tools(toolkit: SQLDatabaseToolkit) -> list[BaseTool]:
     """Get all tools from a SQLDatabaseToolkit.
 
     Args:
@@ -108,7 +108,7 @@ def get_all_toolkit_tools(toolkit: SQLDatabaseToolkit) -> List[BaseTool]:
 
 
 def create_tool_node_with_fallback(
-    tools: Union[BaseTool, List[BaseTool]],
+    tools: BaseTool | list[BaseTool],
 ) -> RunnableWithFallbacks:
     """Create a ToolNode with a fallback to handle errors gracefully.
 
@@ -141,7 +141,7 @@ def create_tool_node_with_fallback(
     )
 
 
-def handle_tool_error(state: Dict[str, Any]) -> Dict[str, Any]:
+def handle_tool_error(state: dict[str, Any]) -> dict[str, Any]:
     r"""Handle tool execution errors by surfacing them to the agent.
 
     This function processes tool execution errors and formats them
@@ -166,7 +166,7 @@ def handle_tool_error(state: Dict[str, Any]) -> Dict[str, Any]:
 
     # Check if there are tool calls in the last message
     tool_calls = []
-    if "messages" in state and state["messages"]:
+    if state.get("messages"):
         last_message = state["messages"][-1]
         if hasattr(last_message, "tool_calls"):
             tool_calls = last_message.tool_calls
@@ -178,7 +178,7 @@ def handle_tool_error(state: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "messages": [
                 ToolMessage(
-                    content=f"Error: {repr(error)}\nPlease fix your mistakes.",
+                    content=f"Error: {error!r}\nPlease fix your mistakes.",
                     tool_call_id=tc["id"],
                 )
                 for tc in tool_calls
@@ -186,10 +186,10 @@ def handle_tool_error(state: Dict[str, Any]) -> Dict[str, Any]:
         }
 
     # Otherwise, just add error to state
-    return {"sql_errors": [f"Error: {repr(error)}"]}
+    return {"sql_errors": [f"Error: {error!r}"]}
 
 
-def explore_database_schema(db: SQLDatabase) -> Dict[str, Any]:
+def explore_database_schema(db: SQLDatabase) -> dict[str, Any]:
     """Explore the database schema thoroughly to get comprehensive information.
 
     This function performs a deep exploration of the database schema,
@@ -246,7 +246,7 @@ def explore_database_schema(db: SQLDatabase) -> Dict[str, Any]:
             samples = db.run(f"SELECT * FROM {table} LIMIT 3")
             schema_info["table_samples"][table] = samples
         except Exception as e:
-            schema_info["table_samples"][table] = f"Error fetching samples: {str(e)}"
+            schema_info["table_samples"][table] = f"Error fetching samples: {e!s}"
 
     # Try to detect relationships between tables
     try:

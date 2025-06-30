@@ -37,7 +37,7 @@ import json
 import logging
 import sys
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
@@ -55,7 +55,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def basic_example() -> Dict[str, Any]:
+def basic_example() -> dict[str, Any]:
     """Run a basic example with default configuration.
 
     This example demonstrates the simplest usage of the SQL RAG Agent
@@ -83,14 +83,14 @@ def basic_example() -> Dict[str, Any]:
     # Run a sample query
     result = agent.run({"question": "What tables are in this database?"})
 
-    print(f"\nQuestion: What tables are in this database?")
+    print("\nQuestion: What tables are in this database?")
     print(f"Answer: {result.get('answer', 'No answer generated')}")
     print(f"SQL Used: {result.get('sql_statement', 'No SQL generated')}")
 
     return result
 
 
-def postgresql_example() -> Dict[str, Any]:
+def postgresql_example() -> dict[str, Any]:
     """Example with PostgreSQL configuration and specific tables.
 
     This example shows how to configure the agent for a PostgreSQL
@@ -137,14 +137,14 @@ def postgresql_example() -> Dict[str, Any]:
     # Run a complex query
     result = agent.run({"question": "Who are my top 5 customers by total order value?"})
 
-    print(f"\nQuestion: Who are my top 5 customers by total order value?")
+    print("\nQuestion: Who are my top 5 customers by total order value?")
     print(f"Answer: {result.get('answer', 'No answer generated')}")
     print(f"SQL Used: {result.get('sql_statement', 'No SQL generated')}")
 
     return result
 
 
-def sqlite_example() -> Dict[str, Any]:
+def sqlite_example() -> dict[str, Any]:
     """Example with SQLite database file.
 
     This example demonstrates using a local SQLite database file,
@@ -178,13 +178,13 @@ def sqlite_example() -> Dict[str, Any]:
     # Run query
     result = agent.run({"question": "How many active users do we have?"})
 
-    print(f"\nQuestion: How many active users do we have?")
+    print("\nQuestion: How many active users do we have?")
     print(f"Answer: {result.get('answer', 'No answer generated')}")
 
     return result
 
 
-def mysql_example() -> Dict[str, Any]:
+def mysql_example() -> dict[str, Any]:
     """Example with MySQL database and authentication.
 
     This example shows MySQL configuration with full authentication
@@ -240,7 +240,7 @@ def mysql_example() -> Dict[str, Any]:
         {"question": "What's the product sales trend for the last 6 months?"}
     )
 
-    print(f"\nQuestion: What's the product sales trend for the last 6 months?")
+    print("\nQuestion: What's the product sales trend for the last 6 months?")
     print(f"Answer: {result.get('answer', 'No answer generated')}")
 
     return result
@@ -279,10 +279,10 @@ def error_handling_example() -> None:
             result = agent.run({"question": question})
             print(f"Result: {result.get('answer', 'No answer')[:100]}...")
         except Exception as e:
-            print(f"Error handled: {str(e)}")
+            print(f"Error handled: {e!s}")
 
 
-def custom_llm_example() -> Dict[str, Any]:
+def custom_llm_example() -> dict[str, Any]:
     """Example with custom LLM configuration.
 
     This example demonstrates how to customize the LLM engines
@@ -325,13 +325,13 @@ def custom_llm_example() -> Dict[str, Any]:
 
     result = agent.run({"question": "Calculate the average order value by month"})
 
-    print(f"\nQuestion: Calculate the average order value by month")
+    print("\nQuestion: Calculate the average order value by month")
     print(f"Answer: {result.get('answer', 'No answer generated')}")
 
     return result
 
 
-def batch_processing_example() -> List[Dict[str, Any]]:
+def batch_processing_example() -> list[dict[str, Any]]:
     """Example of processing multiple queries in batch.
 
     This example shows how to efficiently process multiple queries
@@ -438,19 +438,19 @@ def interactive_mode():
             if question.lower() == "exit":
                 print("Goodbye!")
                 break
-            elif question.lower() == "help":
+            if question.lower() == "help":
                 print("\nCommands:")
                 print("  exit - Quit the program")
                 print("  help - Show this help")
                 print("  clear - Clear the screen")
                 print("\nOr type any question about the database.")
                 continue
-            elif question.lower() == "clear":
+            if question.lower() == "clear":
                 import os
 
                 os.system("clear" if os.name == "posix" else "cls")
                 continue
-            elif not question:
+            if not question:
                 continue
 
             # Process the query
@@ -467,7 +467,7 @@ def interactive_mode():
         except KeyboardInterrupt:
             print("\n\nInterrupted. Type 'exit' to quit.")
         except Exception as e:
-            print(f"\nError: {str(e)}")
+            print(f"\nError: {e!s}")
 
 
 def main():
@@ -526,7 +526,7 @@ def main():
 
             # Load config from file if provided
             if args.config:
-                with open(args.config, "r") as f:
+                with open(args.config) as f:
                     config_data = json.load(f)
                 config = SQLRAGConfig(**config_data)
             else:
@@ -538,24 +538,23 @@ def main():
             print(f"\nAnswer: {result.get('answer', 'No answer generated')}")
             print(f"\nSQL: {result.get('sql_statement', 'No SQL generated')}")
 
-        else:
-            # Run selected example
-            if args.example == "basic":
-                basic_example()
-            elif args.example == "postgresql":
-                postgresql_example()
-            elif args.example == "sqlite":
-                sqlite_example()
-            elif args.example == "mysql":
-                mysql_example()
-            elif args.example == "error":
-                error_handling_example()
-            elif args.example == "custom":
-                custom_llm_example()
-            elif args.example == "batch":
-                batch_processing_example()
-            elif args.example == "interactive":
-                interactive_mode()
+        # Run selected example
+        elif args.example == "basic":
+            basic_example()
+        elif args.example == "postgresql":
+            postgresql_example()
+        elif args.example == "sqlite":
+            sqlite_example()
+        elif args.example == "mysql":
+            mysql_example()
+        elif args.example == "error":
+            error_handling_example()
+        elif args.example == "custom":
+            custom_llm_example()
+        elif args.example == "batch":
+            batch_processing_example()
+        elif args.example == "interactive":
+            interactive_mode()
 
     except Exception as e:
         logger.error(f"Example failed: {e}")

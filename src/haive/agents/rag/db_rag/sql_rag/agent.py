@@ -285,7 +285,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             logger.error(f"Error in check_domain_relevance: {e}")
             return Command(
                 update={
-                    "error": f"Error checking domain relevance: {str(e)}",
+                    "error": f"Error checking domain relevance: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -333,7 +333,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                             {"table_names": table}
                         )
                     except Exception as e:
-                        schema_info[table] = f"Error retrieving schema: {str(e)}"
+                        schema_info[table] = f"Error retrieving schema: {e!s}"
             else:
                 # Fallback if tool not available
                 for table in self.db_schema["tables"][:10]:
@@ -359,7 +359,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             logger.error(f"Error in retrieve_schema: {e}")
             return Command(
                 update={
-                    "error": f"Error retrieving database schema: {str(e)}",
+                    "error": f"Error retrieving database schema: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -434,7 +434,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             logger.error(f"Error in analyze_query: {e}")
             return Command(
                 update={
-                    "error": f"Error analyzing query: {str(e)}",
+                    "error": f"Error analyzing query: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -563,7 +563,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             logger.error(f"Error in generate_query: {e}")
             return Command(
                 update={
-                    "error": f"Error generating SQL query: {str(e)}",
+                    "error": f"Error generating SQL query: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -647,18 +647,17 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                         "steps": state.steps + ["validate_query"],
                     }
                 )
-            else:
-                return Command(
-                    update={
-                        "next_action": "execute_query",
-                        "steps": state.steps + ["validate_query"],
-                    }
-                )
+            return Command(
+                update={
+                    "next_action": "execute_query",
+                    "steps": state.steps + ["validate_query"],
+                }
+            )
         except Exception as e:
             logger.error(f"Error in validate_query: {e}")
             return Command(
                 update={
-                    "error": f"Error validating SQL query: {str(e)}",
+                    "error": f"Error validating SQL query: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -726,7 +725,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             logger.error(f"Error in correct_query: {e}")
             return Command(
                 update={
-                    "error": f"Error correcting SQL query: {str(e)}",
+                    "error": f"Error correcting SQL query: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -788,7 +787,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                         result = self.no_results
                 except Exception as e:
                     logger.error(f"Error executing SQL query: {e}")
-                    result = f"Error executing query: {str(e)}"
+                    result = f"Error executing query: {e!s}"
             else:
                 # Execute directly if tool not available
                 try:
@@ -797,7 +796,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                         result = self.no_results
                 except Exception as e:
                     logger.error(f"Error executing SQL query directly: {e}")
-                    result = f"Error executing query: {str(e)}"
+                    result = f"Error executing query: {e!s}"
 
             return Command(
                 update={
@@ -810,7 +809,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             logger.error(f"Error in execute_query: {e}")
             return Command(
                 update={
-                    "error": f"Error executing SQL query: {str(e)}",
+                    "error": f"Error executing SQL query: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -923,8 +922,8 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             logger.error(f"Error in generate_answer: {e}")
             return Command(
                 update={
-                    "error": f"Error generating answer: {str(e)}",
-                    "answer": f"An error occurred while generating the answer: {str(e)}",
+                    "error": f"Error generating answer: {e!s}",
+                    "answer": f"An error occurred while generating the answer: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -953,7 +952,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
         """
         if state.next_action == "end":
             return END
-        elif state.next_action == "correct_query":
+        if state.next_action == "correct_query":
             return "correct_query"
         return "execute_query"
 

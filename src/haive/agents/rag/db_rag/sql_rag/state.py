@@ -24,7 +24,7 @@ Example:
         >>> state.answer = "The top customers by revenue are..."
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -72,10 +72,10 @@ class OutputState(BaseModel):
     sql_statement: str = Field(
         default="", description="The SQL statement that was executed"
     )
-    hallucination_check: Optional[str] = Field(
+    hallucination_check: str | None = Field(
         default=None, description="Result of hallucination check"
     )
-    answer_grade: Optional[str] = Field(
+    answer_grade: str | None = Field(
         default=None, description="Result of answer grading"
     )
 
@@ -139,17 +139,17 @@ class OverallState(InputState, OutputState):
     # question: str
 
     # Intermediary fields
-    steps: List[str] = Field(
+    steps: list[str] = Field(
         default_factory=list, description="Steps executed in the agent workflow"
     )
     next_action: str = Field(
         default="", description="The next action to take in the workflow"
     )
-    analysis: Dict[str, Any] = Field(
+    analysis: dict[str, Any] = Field(
         default_factory=dict,
         description="Analysis of the query structure and requirements",
     )
-    sql_errors: List[str] = Field(
+    sql_errors: list[str] = Field(
         default_factory=list,
         description="Errors found in the SQL statement during validation",
     )
@@ -160,7 +160,7 @@ class OverallState(InputState, OutputState):
     database_records: Any = Field(
         default=None, description="Structured results from the database query"
     )
-    messages: List[Any] = Field(
+    messages: list[Any] = Field(
         default_factory=list, description="Messages in the conversation for context"
     )
 

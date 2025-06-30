@@ -114,10 +114,10 @@ from haive.agents.rag.db_rag.sql_rag.config import SQLDatabaseConfig, SQLRAGConf
 SQLDatabaseAgent = SQLRAGAgent
 
 __all__ = [
+    "SQLDatabaseAgent",  # Backward compatibility
+    "SQLDatabaseConfig",
     "SQLRAGAgent",
     "SQLRAGConfig",
-    "SQLDatabaseConfig",
-    "SQLDatabaseAgent",  # Backward compatibility
 ]
 
 __version__ = "1.0.0"

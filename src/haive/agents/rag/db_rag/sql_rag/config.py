@@ -34,7 +34,7 @@ Note:
 
 import inspect
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from dotenv import load_dotenv
 from haive.core.engine.agent.agent import AgentConfig
@@ -113,7 +113,7 @@ class SQLDatabaseConfig(BaseModel):
         default=os.getenv("SQL_DB_TYPE", "postgresql"),
         description="Type of SQL database (postgresql, mysql, sqlite, etc.)",
     )
-    db_uri: Optional[str] = Field(
+    db_uri: str | None = Field(
         default=None, description="The database connection URI (if provided directly)"
     )
     db_user: str = Field(
@@ -133,7 +133,7 @@ class SQLDatabaseConfig(BaseModel):
     db_name: str = Field(
         default=os.getenv("SQL_DB_NAME", "postgres"), description="The database name"
     )
-    include_tables: Optional[List[str]] = Field(
+    include_tables: list[str] | None = Field(
         default_factory=lambda: (
             os.getenv("SQL_INCLUDE_TABLES", "").split(",")
             if os.getenv("SQL_INCLUDE_TABLES")
@@ -141,7 +141,7 @@ class SQLDatabaseConfig(BaseModel):
         ),
         description="Specific tables to include, if None then include all",
     )
-    exclude_tables: List[str] = Field(
+    exclude_tables: list[str] = Field(
         default_factory=lambda: (
             os.getenv("SQL_EXCLUDE_TABLES", "").split(",")
             if os.getenv("SQL_EXCLUDE_TABLES")
@@ -152,7 +152,7 @@ class SQLDatabaseConfig(BaseModel):
     sample_rows_in_table_info: int = Field(
         default=3, description="Number of sample rows to include in table info"
     )
-    custom_query: Optional[str] = Field(
+    custom_query: str | None = Field(
         default=None, description="Custom query to execute for schema info"
     )
 
@@ -182,17 +182,16 @@ class SQLDatabaseConfig(BaseModel):
 
         if self.db_type == "postgresql":
             return f"postgresql+psycopg2://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
-        elif self.db_type == "mysql":
+        if self.db_type == "mysql":
             return f"mysql+pymysql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
-        elif self.db_type == "sqlite":
+        if self.db_type == "sqlite":
             # For SQLite, the db_name is the path to the file
             return f"sqlite:///{self.db_name}"
-        elif self.db_type == "mssql":
+        if self.db_type == "mssql":
             return f"mssql+pyodbc://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
-        else:
-            raise ValueError(f"Unsupported database type: {self.db_type}")
+        raise ValueError(f"Unsupported database type: {self.db_type}")
 
-    def get_sql_db(self) -> Optional[SQLDatabase]:
+    def get_sql_db(self) -> SQLDatabase | None:
         """Create and return a SQLDatabase object for interacting with the database.
 
         Returns:
@@ -232,7 +231,7 @@ class SQLDatabaseConfig(BaseModel):
             print(f"🚨 Failed to connect to database: {e}")
             return None
 
-    def get_db_schema(self) -> Dict[str, Any]:
+    def get_db_schema(self) -> dict[str, Any]:
         """Retrieve the schema and basic table info from the database.
 
         Returns:
@@ -333,7 +332,7 @@ class SQLRAGConfig(AgentConfig):
         ValueError: If required engines are missing from configuration.
     """
 
-    engines: Dict[str, AugLLMConfig] = Field(
+    engines: dict[str, AugLLMConfig] = Field(
         description="The LLM runnable configs for the SQL database agent",
         default=default_sql_engines,
     )
@@ -348,7 +347,7 @@ class SQLRAGConfig(AgentConfig):
         description="The domain name the agent is specialized for (e.g., 'SQL database', 'database records', etc.)",
     )
 
-    domain_categories: List[str] = Field(
+    domain_categories: list[str] = Field(
         default=["database"],
         description="Valid categories for the guardrails to recognize, in addition to 'end'",
     )
@@ -379,11 +378,11 @@ class SQLRAGConfig(AgentConfig):
         description="Whether to grade the answer for relevance to the question",
     )
 
-    examples_path: Optional[str] = Field(
+    examples_path: str | None = Field(
         default=None, description="Path to examples JSON file"
     )
 
-    domain_examples: Dict[str, List[Dict[str, str]]] = Field(
+    domain_examples: dict[str, list[dict[str, str]]] = Field(
         default_factory=dict,
         description="Examples for different domains to guide the model",
     )
@@ -394,8 +393,8 @@ class SQLRAGConfig(AgentConfig):
 
     @field_validator("engines")
     def check_required_engines(
-        cls, v: Dict[str, AugLLMConfig]
-    ) -> Dict[str, AugLLMConfig]:
+        cls, v: dict[str, AugLLMConfig]
+    ) -> dict[str, AugLLMConfig]:
         """Validate that all required engines are present.
 
         Args:
