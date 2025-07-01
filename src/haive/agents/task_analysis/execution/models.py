@@ -1,7 +1,7 @@
 # src/haive/agents/task_analysis/execution/models.py
 
 from enum import Enum
-from typing import Dict, List, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -27,28 +27,28 @@ class ExecutionPhase(BaseModel):
     description: str = Field(default="", description="Phase description")
 
     # Tasks in this phase
-    task_ids: List[str] = Field(default_factory=list)
-    parallel_groups: List[List[str]] = Field(
+    task_ids: list[str] = Field(default_factory=list)
+    parallel_groups: list[list[str]] = Field(
         default_factory=list, description="Groups of tasks that can run in parallel"
     )
 
     # Timing
     estimated_duration_minutes: float = Field(..., gt=0)
     can_start_early: bool = Field(default=False)
-    earliest_start_minutes: Optional[float] = None
+    earliest_start_minutes: float | None = None
 
     # Dependencies
-    depends_on_phases: List[str] = Field(default_factory=list)
+    depends_on_phases: list[str] = Field(default_factory=list)
 
     # Resources
-    required_resources: Dict[ResourceType, float] = Field(
+    required_resources: dict[ResourceType, float] = Field(
         default_factory=dict, description="Resource requirements (type -> amount)"
     )
 
     # Completion criteria
-    completion_criteria: List[str] = Field(default_factory=list)
+    completion_criteria: list[str] = Field(default_factory=list)
 
-    def add_task(self, task_id: str, group_index: Optional[int] = None):
+    def add_task(self, task_id: str, group_index: int | None = None):
         """Add a task to this phase."""
         if task_id not in self.task_ids:
             self.task_ids.append(task_id)
@@ -68,14 +68,14 @@ class JoinPoint(BaseModel):
     join_type: Literal["aggregate", "merge", "select", "custom"] = Field(...)
 
     # Tasks involved
-    input_task_ids: List[str] = Field(..., min_length=2)
+    input_task_ids: list[str] = Field(..., min_length=2)
     output_task_id: str = Field(...)
 
     # Join logic
     join_function: str = Field(
         default="merge", description="How to combine results (merge, sum, concat, etc.)"
     )
-    custom_logic: Optional[str] = Field(
+    custom_logic: str | None = Field(
         default=None, description="Custom join logic description"
     )
 
@@ -83,13 +83,13 @@ class JoinPoint(BaseModel):
     wait_for_all: bool = Field(
         default=True, description="Wait for all inputs vs proceed with partial"
     )
-    timeout_minutes: Optional[float] = Field(
+    timeout_minutes: float | None = Field(
         default=None, description="Max wait time before proceeding"
     )
 
     # Error handling
     on_partial_failure: Literal["fail", "continue", "retry"] = Field(default="continue")
-    fallback_strategy: Optional[str] = None
+    fallback_strategy: str | None = None
 
 
 class ResourceAllocation(BaseModel):
@@ -102,8 +102,8 @@ class ResourceAllocation(BaseModel):
     duration_minutes: float
 
     # Optional fields
-    cost_per_unit: Optional[float] = None
-    availability: Optional[float] = Field(default=1.0, ge=0, le=1)
+    cost_per_unit: float | None = None
+    availability: float | None = Field(default=1.0, ge=0, le=1)
 
 
 class ExecutionPlan(BaseModel):
@@ -113,16 +113,16 @@ class ExecutionPlan(BaseModel):
     name: str = Field(..., description="Plan name")
 
     # Phases
-    phases: List[ExecutionPhase] = Field(default_factory=list)
-    phase_dependencies: Dict[str, List[str]] = Field(
+    phases: list[ExecutionPhase] = Field(default_factory=list)
+    phase_dependencies: dict[str, list[str]] = Field(
         default_factory=dict, description="Phase ID -> List of dependent phase IDs"
     )
 
     # Join points
-    join_points: List[JoinPoint] = Field(default_factory=list)
+    join_points: list[JoinPoint] = Field(default_factory=list)
 
     # Critical path
-    critical_path_task_ids: List[str] = Field(default_factory=list)
+    critical_path_task_ids: list[str] = Field(default_factory=list)
     critical_path_duration_minutes: float = Field(default=0.0)
 
     # Overall timing
@@ -130,16 +130,16 @@ class ExecutionPlan(BaseModel):
     parallel_efficiency: float = Field(default=1.0, ge=0, le=1)
 
     # Resources
-    resource_timeline: List[ResourceAllocation] = Field(default_factory=list)
-    peak_resource_usage: Dict[ResourceType, float] = Field(default_factory=dict)
+    resource_timeline: list[ResourceAllocation] = Field(default_factory=list)
+    peak_resource_usage: dict[ResourceType, float] = Field(default_factory=dict)
 
     # Risk and optimization
-    bottlenecks: List[str] = Field(default_factory=list)
-    optimization_opportunities: List[str] = Field(default_factory=list)
+    bottlenecks: list[str] = Field(default_factory=list)
+    optimization_opportunities: list[str] = Field(default_factory=list)
 
     # Execution metadata
     can_checkpoint: bool = Field(default=True)
-    checkpoint_phases: List[str] = Field(default_factory=list)
+    checkpoint_phases: list[str] = Field(default_factory=list)
 
     def add_phase(self, phase: ExecutionPhase):
         """Add a phase to the plan."""
@@ -147,13 +147,13 @@ class ExecutionPlan(BaseModel):
         # Update phase number
         phase.phase_number = len(self.phases)
 
-    def calculate_critical_path(self) -> List[str]:
+    def calculate_critical_path(self) -> list[str]:
         """Calculate and return the critical path."""
         # This would implement CPM algorithm
         # For now, return stored critical path
         return self.critical_path_task_ids
 
-    def get_phase_by_task(self, task_id: str) -> Optional[ExecutionPhase]:
+    def get_phase_by_task(self, task_id: str) -> ExecutionPhase | None:
         """Find which phase contains a task."""
         for phase in self.phases:
             if task_id in phase.task_ids:

@@ -17,11 +17,10 @@ Example:
 """
 
 import logging
-import operator
-from typing import Annotated, List, Optional
-from typing_extensions import TypedDict
-from pydantic import BaseModel, Field
+
 from langchain_core.documents import Document
+from pydantic import BaseModel, Field
+
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("tnt-llm")
 
@@ -52,18 +51,18 @@ class Doc(BaseModel):
         ...     category="Technical Support"
         ... )
     """
+
     id: str = Field(description="The unique identifier for the document.")
     content: str = Field(description="The content of the document.")
-    summary: Optional[str] = Field('', description="The summary of the document.")
-    explanation: Optional[str] = Field('', description="The explanation of the document.")
-    category: Optional[str] = Field('', description="The category of the document.")
-    metadata: Optional[dict] = Field({}, description="Any additional metadata for the document.")
-    
+    summary: str | None = Field("", description="The summary of the document.")
+    explanation: str | None = Field("", description="The explanation of the document.")
+    category: str | None = Field("", description="The category of the document.")
+    metadata: dict | None = Field(
+        {}, description="Any additional metadata for the document."
+    )
+
     @classmethod
     def from_document(cls, document: Document) -> "Doc":
         return cls(
-            id=document.id,
-            content=document.page_content,
-            metadata=document.metadata
+            id=document.id, content=document.page_content, metadata=document.metadata
         )
-    

@@ -1,27 +1,26 @@
-"""
-Configuration for the LLMCompiler agent using AugLLMConfig system.
-"""
+"""Configuration for the LLMCompiler agent using AugLLMConfig system."""
 
 import uuid
-from typing import List, Dict, Any, Type, Optional, Union
-from pydantic import BaseModel, Field, model_validator
+from typing import Any
 
-from langchain_core.tools import BaseTool, StructuredTool
-from langchain_core.runnables import RunnableConfig
-from langchain_core.prompts import ChatPromptTemplate
-
+from agents.llm_compiler.models import JoinerOutput
+from agents.llm_compiler.state import CompilerState
 from haive.core.engine.agent.agent import AgentArchitectureConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from agents.plan_and_execute.models import Step, Plan
-
-from agents.llm_compiler.state import CompilerState
-from agents.llm_compiler.models import JoinerOutput
-from haive.core.tools.search_tools import tavily_search_tool
 from haive.core.tools.dev_tools import python_repl_tool
+from haive.core.tools.search_tools import tavily_search_tool
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableConfig
+from langchain_core.tools import BaseTool, StructuredTool
+from pydantic import BaseModel, Field, model_validator
+
 # Base planner prompt template
-planner_prompt = ChatPromptTemplate.from_messages([
-    ("system", """You are an AI assistant that creates detailed step-by-step plans to solve complex user queries.
+planner_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You are an AI assistant that creates detailed step-by-step plans to solve complex user queries.
 
 Your task is to create a plan that maximizes parallelizability - execute as many steps in parallel as possible.
 
@@ -54,13 +53,18 @@ Thought: Now I need to find population data
 ```
 
 Your plan should accomplish the user's goal efficiently in as few steps as possible.
-"""),
-    ("user", "{query}")
-])
+""",
+        ),
+        ("user", "{query}"),
+    ]
+)
 
 # Replanner prompt template that adds context from previous plan
-replanner_prompt = ChatPromptTemplate.from_messages([
-    ("system", """You are an AI assistant that improves existing plans based on execution results.
+replanner_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You are an AI assistant that improves existing plans based on execution results.
 
 Your task is to create a new plan that builds on the previous execution results to solve the user's query.
 
@@ -95,14 +99,19 @@ Thought: The previous plan found GDP and population data but failed to calculate
 ```
 
 Your plan should efficiently solve the remaining parts of the user's query.
-"""),
-    ("user", "{query}"),
-    ("system", "{feedback}")
-])
+""",
+        ),
+        ("user", "{query}"),
+        ("system", "{feedback}"),
+    ]
+)
 
 # Joiner prompt template
-joiner_prompt = ChatPromptTemplate.from_messages([
-    ("system", """You analyze execution results and decide whether to provide a final answer or request additional steps.
+joiner_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You analyze execution results and decide whether to provide a final answer or request additional steps.
 
 Your task is to:
 1. Review the user's original query
@@ -123,8 +132,11 @@ When providing a final answer:
 - Address all parts of the user's original query
 
 Be decisive - either provide a complete answer or explicitly request additional specific information.
-"""),
-    ("user", """
+""",
+        ),
+        (
+            "user",
+            """
 Original Query: {query}
 
 Executed Steps:
@@ -134,120 +146,103 @@ Results:
 {results}
 
 Based on these results, can I provide a complete answer or do I need more information?
-""")
-])
+""",
+        ),
+    ]
+)
 
 # Default planner LLM configuration
 default_planner_config = AugLLMConfig(
     name="llm_compiler_planner",
     llm_config=AzureLLMConfig(
-        model="gpt-4o",
-        parameters={
-            "temperature": 0.7,
-            "max_tokens": 4096
-        }
+        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
     ),
     prompt_template=planner_prompt,
-    tools=None  # Tools are registered separately
+    tools=None,  # Tools are registered separately
 )
 
 # Default replanner LLM configuration
 default_replanner_config = AugLLMConfig(
     name="llm_compiler_replanner",
     llm_config=AzureLLMConfig(
-        model="gpt-4o",
-        parameters={
-            "temperature": 0.7,
-            "max_tokens": 4096
-        }
+        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
     ),
     prompt_template=replanner_prompt,
-    tools=None  # Tools are registered separately
+    tools=None,  # Tools are registered separately
 )
 
 # Default joiner LLM configuration
 default_joiner_config = AugLLMConfig(
     name="llm_compiler_joiner",
     llm_config=AzureLLMConfig(
-        model="gpt-4o",
-        parameters={
-            "temperature": 0.7,
-            "max_tokens": 2048
-        }
+        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 2048}
     ),
     prompt_template=joiner_prompt,
     structured_output_model=JoinerOutput,  # Will be set in agent
-    structured_output_params={"method": "function_calling"}
+    structured_output_params={"method": "function_calling"},
 )
 
+
 class LLMCompilerAgentConfig(AgentArchitectureConfig):
-    """
-    Configuration for the LLM Compiler Agent using AugLLMConfig system.
-    
+    """Configuration for the LLM Compiler Agent using AugLLMConfig system.
+
     The LLM Compiler agent creates a directed acyclic graph (DAG) of tasks
     and executes them in parallel when dependencies are satisfied.
     """
+
     planner_config: AugLLMConfig = Field(
-        default=default_planner_config,
-        description="Configuration for the planner LLM"
+        default=default_planner_config, description="Configuration for the planner LLM"
     )
     replanner_config: AugLLMConfig = Field(
         default=default_replanner_config,
-        description="Configuration for the replanner LLM"
+        description="Configuration for the replanner LLM",
     )
     joiner_config: AugLLMConfig = Field(
-        default=default_joiner_config,
-        description="Configuration for the joiner LLM"
+        default=default_joiner_config, description="Configuration for the joiner LLM"
     )
     # Directly store tool instances in the config
-    tool_instances: List[Union[BaseTool, StructuredTool]] = Field(
-        default=[tavily_search_tool,python_repl_tool],
-        description="Tool instances available to the agent"
+    tool_instances: list[BaseTool | StructuredTool] = Field(
+        default=[tavily_search_tool, python_repl_tool],
+        description="Tool instances available to the agent",
     )
-    tool_configs: Dict[str, Dict[str, Any]] = Field(
-        default_factory=dict,
-        description="Configuration for tool instantiation"
+    tool_configs: dict[str, dict[str, Any]] = Field(
+        default_factory=dict, description="Configuration for tool instantiation"
     )
     max_execution_time: float = Field(
-        default=60.0,
-        description="Maximum time to wait for task execution in seconds"
+        default=60.0, description="Maximum time to wait for task execution in seconds"
     )
     max_replanning_attempts: int = Field(
-        default=3,
-        description="Maximum number of replanning attempts"
+        default=3, description="Maximum number of replanning attempts"
     )
     should_visualize_graph: bool = Field(
-        default=True,
-        description="Whether to visualize the agent graph"
+        default=True, description="Whether to visualize the agent graph"
     )
     visualize_graph_output_name: str = Field(
-        default="llm_compiler_graph.png",
-        description="Path to save graph visualization"
+        default="llm_compiler_graph.png", description="Path to save graph visualization"
     )
-    state_schema: Type[BaseModel] = Field(
-        default=CompilerState,
-        description="The state schema for the agent"
+    state_schema: type[BaseModel] = Field(
+        default=CompilerState, description="The state schema for the agent"
     )
     runnable_config: RunnableConfig = Field(
         default={"configurable": {"thread_id": str(uuid.uuid4())}},
-        description="The runnable config for the agent"
+        description="The runnable config for the agent",
     )
-    
+
     @model_validator(mode="after")
     def validate_configs(cls, values):
         """Ensure that the configurations are valid."""
         # Ensure planner config has the correct prompt template
         if not values.planner_config.prompt_template:
             values.planner_config.prompt_template = planner_prompt
-            
+
         # Ensure replanner config has the correct prompt template
         if not values.replanner_config.prompt_template:
             values.replanner_config.prompt_template = replanner_prompt
-            
+
         # Ensure joiner config has the correct prompt template
         if not values.joiner_config.prompt_template:
             values.joiner_config.prompt_template = joiner_prompt
-            
+
         return values
 
 

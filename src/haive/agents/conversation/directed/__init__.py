@@ -1,5 +1,4 @@
-"""
-Directed Conversation
+"""Directed Conversation
 ===================
 
 Conversations with explicit flow control directed by a moderator agent.

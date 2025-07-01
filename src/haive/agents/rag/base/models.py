@@ -2,8 +2,11 @@ from pydantic import BaseModel, Field
 
 
 class Query(BaseModel):
-    question: str = Field(..., description="The question to search the RAG database with.")
-    #context: str = Field(..., description="The context to search the RAG database with.")
+    question: str = Field(
+        ..., description="The question to search the RAG database with."
+    )
+    # context: str = Field(..., description="The context to search the RAG database with.")
+
 
 # Data model
 class GradeHallucinations(BaseModel):
@@ -12,6 +15,8 @@ class GradeHallucinations(BaseModel):
     binary_score: str = Field(
         description="Answer is grounded in the facts, 'yes' or 'no'"
     )
+
+
 # Data model
 class GradeAnswer(BaseModel):
     """Binary score to assess answer addresses question."""

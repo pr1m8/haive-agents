@@ -1,15 +1,15 @@
-
-from langchain_core.runnables import RunnableConfig
-from langchain_core.messages import get_buffer_string
-from langchain_core.tools import tool
-from agents.long_term_memory.tools import search_recall_memories
-from agents.long_term_memory.state import LongTermMemoryState
-
 import tiktoken
+from agents.long_term_memory.state import LongTermMemoryState
+from agents.long_term_memory.tools import search_recall_memories
+from langchain_core.messages import get_buffer_string
+from langchain_core.runnables import RunnableConfig
 
 tokenizer = tiktoken.encoding_for_model("gpt-4o")
 
-def load_memories(state: LongTermMemoryState, config: RunnableConfig) -> LongTermMemoryState:
+
+def load_memories(
+    state: LongTermMemoryState, config: RunnableConfig
+) -> LongTermMemoryState:
     """Load memories for the current conversation.
 
     Args:

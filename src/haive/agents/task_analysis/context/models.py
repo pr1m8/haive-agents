@@ -1,7 +1,7 @@
 # src/haive/agents/task_analysis/context/models.py
 
 from enum import Enum
-from typing import Dict, List, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -30,11 +30,11 @@ class ContextDomain(BaseModel):
 
     domain_name: str = Field(..., description="Domain identifier")
     expertise_level: Literal["basic", "intermediate", "advanced", "expert"] = "basic"
-    specific_topics: List[str] = Field(default_factory=list)
+    specific_topics: list[str] = Field(default_factory=list)
 
     # Sources
-    preferred_sources: List[str] = Field(default_factory=list)
-    required_sources: List[str] = Field(default_factory=list)
+    preferred_sources: list[str] = Field(default_factory=list)
+    required_sources: list[str] = Field(default_factory=list)
 
 
 class ContextFlow(BaseModel):
@@ -44,8 +44,8 @@ class ContextFlow(BaseModel):
     target_task_id: str
 
     # What flows
-    data_keys: List[str] = Field(default_factory=list)
-    transformations: List[str] = Field(default_factory=list)
+    data_keys: list[str] = Field(default_factory=list)
+    transformations: list[str] = Field(default_factory=list)
 
     # How it flows
     flow_type: Literal["direct", "transformed", "aggregated", "filtered"] = "direct"
@@ -57,30 +57,30 @@ class ContextRequirement(BaseModel):
 
     # Size and scope
     size: ContextSize = Field(default=ContextSize.MINIMAL)
-    estimated_tokens: Optional[int] = None
+    estimated_tokens: int | None = None
 
     # Domains
-    domains: List[ContextDomain] = Field(default_factory=list)
+    domains: list[ContextDomain] = Field(default_factory=list)
 
     # Freshness
     freshness: ContextFreshness = Field(default=ContextFreshness.CURRENT)
 
     # Specific requirements
-    required_information: List[str] = Field(default_factory=list)
-    optional_information: List[str] = Field(default_factory=list)
+    required_information: list[str] = Field(default_factory=list)
+    optional_information: list[str] = Field(default_factory=list)
 
     # Integration
-    integration_points: List[str] = Field(
+    integration_points: list[str] = Field(
         default_factory=list, description="Other contexts this must integrate with"
     )
 
     # Transformations
-    preprocessing_steps: List[str] = Field(default_factory=list)
-    postprocessing_steps: List[str] = Field(default_factory=list)
+    preprocessing_steps: list[str] = Field(default_factory=list)
+    postprocessing_steps: list[str] = Field(default_factory=list)
 
     # Constraints
-    must_exclude: List[str] = Field(default_factory=list)
-    quality_requirements: List[str] = Field(default_factory=list)
+    must_exclude: list[str] = Field(default_factory=list)
+    quality_requirements: list[str] = Field(default_factory=list)
 
     def merge_with(self, other: "ContextRequirement") -> "ContextRequirement":
         """Merge two context requirements."""
@@ -148,19 +148,19 @@ class ContextAnalysis(BaseModel):
     total_context_requirement: ContextRequirement
 
     # Per-task requirements
-    task_contexts: Dict[str, ContextRequirement] = Field(default_factory=dict)
+    task_contexts: dict[str, ContextRequirement] = Field(default_factory=dict)
 
     # Context flow
-    context_flows: List[ContextFlow] = Field(default_factory=list)
+    context_flows: list[ContextFlow] = Field(default_factory=list)
 
     # Aggregated metrics
     total_estimated_tokens: int = Field(default=0)
-    unique_domains: List[str] = Field(default_factory=list)
+    unique_domains: list[str] = Field(default_factory=list)
 
     # Loading strategy
     loading_strategy: Literal["eager", "lazy", "streaming"] = "lazy"
     caching_strategy: Literal["none", "lru", "full"] = "lru"
 
     # Risks
-    context_risks: List[str] = Field(default_factory=list)
-    mitigation_strategies: List[str] = Field(default_factory=list)
+    context_risks: list[str] = Field(default_factory=list)
+    mitigation_strategies: list[str] = Field(default_factory=list)

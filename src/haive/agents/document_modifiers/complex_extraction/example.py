@@ -1,5 +1,4 @@
 # Example usage
-from typing import Optional
 
 from langchain_core.messages import HumanMessage
 
@@ -14,7 +13,7 @@ if __name__ == "__main__":
     class PersonInfo(BaseModel):
         name: str = Field(description="The person's full name")
         age: int = Field(description="The person's age in years")
-        occupation: Optional[str] = Field(
+        occupation: str | None = Field(
             default=None, description="The person's job or profession"
         )
 

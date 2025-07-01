@@ -1,12 +1,9 @@
 # examples/conversation/debate_example.py
-"""
-Examples for structured debate conversations.
-"""
+"""Examples for structured debate conversations."""
 
 import logging
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import AIMessage, SystemMessage
 
 from haive.agents.conversation.debate.agent import DebateConversation
@@ -20,31 +17,42 @@ logging.getLogger("haive").setLevel(logging.WARNING)
 def example_simple_debate():
     """Simple two-sided debate on AI regulation."""
     print("=== Simple Two-Sided Debate ===\n")
-    
+
     # Create debate
     debate = DebateConversation.create_simple_debate(
         topic="Should AI development be regulated by governments?",
-        position_a=("ProRegulation", "AI development needs strict government oversight and regulation"),
-        position_b=("AntiRegulation", "AI development should remain free from government interference"),
+        position_a=(
+            "ProRegulation",
+            "AI development needs strict government oversight and regulation",
+        ),
+        position_b=(
+            "AntiRegulation",
+            "AI development should remain free from government interference",
+        ),
         arguments_per_side=2,
         enable_opening_statements=True,
         enable_closing_statements=True,
-        max_rounds=3
+        max_rounds=3,
     )
-    
+
     # Run debate
-    result = debate.run({}, config={"configurable": {"recursion_limit": 50}}, debug=True)
-    
+    result = debate.run(
+        {}, config={"configurable": {"recursion_limit": 50}}, debug=True
+    )
+
     # Display debate highlights
     print("\n\nDebate Highlights:\n")
     print(f"Topic: {debate.topic}\n")
-    
+
     # Extract key moments
-    for msg in result.get('messages', []):
-        if isinstance(msg, AIMessage) and hasattr(msg, 'name'):
+    for msg in result.get("messages", []):
+        if isinstance(msg, AIMessage) and hasattr(msg, "name"):
             content = msg.content
             # Show opening statements, closing statements, and strong arguments
-            if any(keyword in str(content).lower() for keyword in ['opening statement', 'closing', 'in conclusion']):
+            if any(
+                keyword in str(content).lower()
+                for keyword in ["opening statement", "closing", "in conclusion"]
+            ):
                 print(f"\n[{msg.name}]:\n{content}\n")
                 print("-" * 50)
         elif isinstance(msg, SystemMessage):
@@ -55,7 +63,7 @@ def example_simple_debate():
 def example_panel_debate():
     """Multi-participant panel debate - FIXED VERSION."""
     print("\n\n=== Panel Debate ===\n")
-    
+
     # Create participant agents with proper state schema
     participants = {
         "TechOptimist": SimpleAgent(
@@ -67,9 +75,9 @@ def example_panel_debate():
                     "Your position: Social media has been overwhelmingly positive for society. "
                     "Make ONE concise argument. Keep it under 100 words."
                 ),
-                temperature=0.7
+                temperature=0.7,
             ),
-            state_schema=DebateState
+            state_schema=DebateState,
         ),
         "DigitalWellbeing": SimpleAgent(
             name="DigitalWellbeing_agent",
@@ -80,9 +88,9 @@ def example_panel_debate():
                     "Your position: Social media needs reform to protect mental health. "
                     "Make ONE concise argument. Keep it under 100 words."
                 ),
-                temperature=0.7
+                temperature=0.7,
             ),
-            state_schema=DebateState
+            state_schema=DebateState,
         ),
         "PrivacyAdvocate": SimpleAgent(
             name="PrivacyAdvocate_agent",
@@ -93,12 +101,12 @@ def example_panel_debate():
                     "Your position: Social media companies violate user privacy and need strict regulation. "
                     "Make ONE concise argument. Keep it under 100 words."
                 ),
-                temperature=0.7
+                temperature=0.7,
             ),
-            state_schema=DebateState
-        )
+            state_schema=DebateState,
+        ),
     }
-    
+
     debate = DebateConversation(
         name="PanelDebate",
         participant_agents=participants,
@@ -106,35 +114,39 @@ def example_panel_debate():
         debate_positions={
             "TechOptimist": "Social media is a net positive",
             "DigitalWellbeing": "Social media needs mental health reforms",
-            "PrivacyAdvocate": "Social media violates privacy rights"
+            "PrivacyAdvocate": "Social media violates privacy rights",
         },
         arguments_per_side=1,  # Only 1 argument per participant
         enable_opening_statements=False,  # Skip opening statements
         enable_closing_statements=False,  # Skip closing statements
         enable_judge=False,  # No judge phase
         max_rounds=2,  # Only one round!
-        state_schema=DebateState
+        state_schema=DebateState,
     )
-    
+
     # Run debate with MUCH lower recursion limit
-    result = debate.run({}, config={"configurable": {"recursion_limit": 50}}, debug=False)
-    
+    result = debate.run(
+        {}, config={"configurable": {"recursion_limit": 50}}, debug=False
+    )
+
     # Show debate summary
     print("\n\nDebate Summary:")
-    
+
     # Show the actual arguments made
-    messages = result.get('messages', [])
+    messages = result.get("messages", [])
     for msg in messages:
-        if isinstance(msg, AIMessage) and hasattr(msg, 'name'):
+        if isinstance(msg, AIMessage) and hasattr(msg, "name"):
             print(f"\n[{msg.name}]:\n{msg.content}\n")
             print("-" * 50)
+
+
 def example_oxford_debate():
     """Oxford-style formal debate."""
     print("\n\n=== Oxford Style Debate ===\n")
-    
+
     # Create formal debate structure
     motion = "This house believes that artificial general intelligence (AGI) will be achieved within 10 years"
-    
+
     # Create debaters with proper naming and state schema
     debaters = {
         "FirstProposition": SimpleAgent(
@@ -146,9 +158,9 @@ def example_oxford_debate():
                     f"Motion: {motion}. "
                     "Make a strong opening case with clear arguments. Be formal and structured."
                 ),
-                temperature=0.6
+                temperature=0.6,
             ),
-            state_schema=DebateState
+            state_schema=DebateState,
         ),
         "FirstOpposition": SimpleAgent(
             name="FirstOpposition_agent",
@@ -159,9 +171,9 @@ def example_oxford_debate():
                     f"Motion: {motion}. "
                     "Refute the proposition and present counter-arguments. Be formal and structured."
                 ),
-                temperature=0.6
+                temperature=0.6,
             ),
-            state_schema=DebateState
+            state_schema=DebateState,
         ),
         "SecondProposition": SimpleAgent(
             name="SecondProposition_agent",
@@ -172,9 +184,9 @@ def example_oxford_debate():
                     f"Motion: {motion}. "
                     "Reinforce your side's arguments and address opposition points."
                 ),
-                temperature=0.6
+                temperature=0.6,
             ),
-            state_schema=DebateState
+            state_schema=DebateState,
         ),
         "SecondOpposition": SimpleAgent(
             name="SecondOpposition_agent",
@@ -185,12 +197,12 @@ def example_oxford_debate():
                     f"Motion: {motion}. "
                     "Strengthen opposition case and highlight flaws in proposition arguments."
                 ),
-                temperature=0.6
+                temperature=0.6,
             ),
-            state_schema=DebateState
-        )
+            state_schema=DebateState,
+        ),
     }
-    
+
     debate = DebateConversation(
         name="OxfordDebate",
         participant_agents=debaters,
@@ -199,7 +211,7 @@ def example_oxford_debate():
             "FirstProposition": "AGI within 10 years is achievable",
             "FirstOpposition": "AGI within 10 years is unrealistic",
             "SecondProposition": "Supporting AGI timeline",
-            "SecondOpposition": "Opposing AGI timeline"
+            "SecondOpposition": "Opposing AGI timeline",
         },
         arguments_per_side=1,
         enable_opening_statements=True,
@@ -207,29 +219,31 @@ def example_oxford_debate():
         enforce_position_consistency=True,
         debate_format="oxford",
         max_rounds=2,  # Enough for all phases
-        state_schema=DebateState
+        state_schema=DebateState,
     )
-    
+
     # Run debate
-    result = debate.run({}, config={"configurable": {"recursion_limit": 100}}, debug=True)
-    
+    result = debate.run(
+        {}, config={"configurable": {"recursion_limit": 100}}, debug=True
+    )
+
     # Display formal structure
     print(f"\n\nMotion: {motion}\n")
     print("Debate Structure Followed:")
     print("- Opening Statements")
-    print("- Main Arguments") 
+    print("- Main Arguments")
     print("- Rebuttals")
     print("- Closing Statements")
-    
+
     # Show winner if declared
-    if hasattr(result, 'debate_winner') and result.debate_winner:
+    if hasattr(result, "debate_winner") and result.debate_winner:
         print(f"\nWinner: {result.debate_winner}")
 
 
 def example_socratic_debate():
     """Socratic method debate with questioning."""
     print("\n\n=== Socratic Dialogue ===\n")
-    
+
     # Create Socratic dialogue participants
     participants = {
         "Socrates": SimpleAgent(
@@ -242,9 +256,9 @@ def example_socratic_debate():
                     "Challenge assumptions through questions, don't lecture. "
                     "Keep your responses concise and focused on questioning."
                 ),
-                temperature=0.7
+                temperature=0.7,
             ),
-            state_schema=DebateState
+            state_schema=DebateState,
         ),
         "Student": SimpleAgent(
             name="Student_agent",
@@ -256,54 +270,53 @@ def example_socratic_debate():
                     "Your initial position: Knowledge comes from education and books. "
                     "Be humble and open to learning."
                 ),
-                temperature=0.7
+                temperature=0.7,
             ),
-            state_schema=DebateState
-        )
+            state_schema=DebateState,
+        ),
     }
-    
+
     debate = DebateConversation(
         name="SocraticDialogue",
         participant_agents=participants,
         topic="What is the nature of true knowledge?",
         debate_positions={
             "Socrates": "Knowledge comes from questioning and self-examination",
-            "Student": "Knowledge comes from education and learning from others"
+            "Student": "Knowledge comes from education and learning from others",
         },
         arguments_per_side=1,
         enable_opening_statements=False,  # More natural flow
         enable_closing_statements=False,
         require_evidence=False,  # Philosophical debate
         max_rounds=2,
-        state_schema=DebateState
+        state_schema=DebateState,
     )
-    
+
     # Start with Socratic question
     initial_message = AIMessage(
         content="Tell me, young friend, what do you believe knowledge to be?",
-        name="Socrates"
+        name="Socrates",
     )
-    
+
     # Run dialogue
     result = debate.run(
         {"messages": [initial_message]},
-        config={"configurable": {"recursion_limit": 50}}
+        config={"configurable": {"recursion_limit": 50}},
     )
-    
+
     # Display dialogue
     print("\n\nPhilosophical Dialogue:\n")
-    messages = result.get('messages', [])
+    messages = result.get("messages", [])
     for msg in messages:
-        if isinstance(msg, AIMessage) and hasattr(msg, 'name'):
+        if isinstance(msg, AIMessage) and hasattr(msg, "name"):
             print(f"\n{msg.name}: {msg.content}")
         elif isinstance(msg, SystemMessage):
             print(f"\n[System]: {msg.content}")
 
 
-
-if __name__ == "__main__":
-    # Run examples
-    #example_simple_debate()
-    #example_panel_debate()
-    #example_oxford_debate()
-    #example_socratic_debate()
+# if __name__ == "__main__":
+# Run examples
+# example_simple_debate()
+# example_panel_debate()
+# example_oxford_debate()
+# example_socratic_debate()

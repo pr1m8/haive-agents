@@ -1,9 +1,5 @@
-
-
-
 def retrieve(state):
-    """
-    Retrieve documents
+    """Retrieve documents
 
     Args:
         state (dict): The current graph state

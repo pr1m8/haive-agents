@@ -1,17 +1,18 @@
-from haive.core.engine.aug_llm import AugLLMConfig
-from agents.reflexion.models import AnswerQuestion,ReviseAnswer
-#from langchain_core.tools import PydanticToolsParser
+from agents.reflexion.models import AnswerQuestion, ReviseAnswer
+
+# from langchain_core.tools import PydanticToolsParser
 from agents.reflexion.prompts import actor_prompt_template
-from langchain_core.tools import tool
-from langchain_core.output_parsers import PydanticToolsParser
+from haive.core.engine.aug_llm import AugLLMConfig
 
 initial_answer_prompt = actor_prompt_template.partial(
     first_instruction="Provide a detailed 1000 word essay.",
     function_name=AnswerQuestion.__name__,
 )
-#print(type(AnswerQuestion))
-initial_answer_chain_config = AugLLMConfig(tools=[AnswerQuestion],prompt_template=initial_answer_prompt,name="responder")
-#validator = PydanticToolsParser(tools=[AnswerQuestion])
+# print(type(AnswerQuestion))
+initial_answer_chain_config = AugLLMConfig(
+    tools=[AnswerQuestion], prompt_template=initial_answer_prompt, name="responder"
+)
+# validator = PydanticToolsParser(tools=[AnswerQuestion])
 
 
 revise_instructions = """Revise your previous answer using the new information.
@@ -28,4 +29,6 @@ revision_prompt = actor_prompt_template.partial(
     first_instruction=revise_instructions,
     function_name=ReviseAnswer.__name__,
 )
-revision_chain_config = AugLLMConfig(tools=[ReviseAnswer],prompt_template=revision_prompt,name="revisior")
+revision_chain_config = AugLLMConfig(
+    tools=[ReviseAnswer], prompt_template=revision_prompt, name="revisior"
+)

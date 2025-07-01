@@ -1,5 +1,4 @@
-"""
-Base Document Loader Agent.
+"""Base Document Loader Agent.
 
 This package provides the base document loader agent implementation.
 """

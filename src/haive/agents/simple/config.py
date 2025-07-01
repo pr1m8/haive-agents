@@ -1,5 +1,4 @@
-"""
-Configuration for SimpleAgent with comprehensive schema handling.
+"""Configuration for SimpleAgent with comprehensive schema handling.
 
 This module defines the configuration class for SimpleAgent with explicit
 input/output schema support, schema composition integration, and improved
@@ -9,26 +8,21 @@ mapping capabilities.
 import logging
 import uuid
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Optional, Type, Union
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from haive.core.schema.schema_composer import SchemaComposer
 from haive.core.schema.state_schema import StateSchema
-from langchain_core.messages import BaseMessage, SystemMessage
+from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator
 
 # Setup logging
 logger = logging.getLogger(__name__)
 
-from langgraph.prebuilt import create_react_agent
-
 
 class SimpleAgentConfig(AgentConfig):
-    """
-    Configuration for a simple single-node agent with comprehensive schema handling.
+    """Configuration for a simple single-node agent with comprehensive schema handling.
 
     This config supports:
     - Explicit input/output schemas
@@ -44,25 +38,25 @@ class SimpleAgentConfig(AgentConfig):
     )
 
     # Schema definitions
-    input_schema: Optional[Union[Type[BaseModel], Type[StateSchema]]] = Field(
+    input_schema: type[BaseModel] | type[StateSchema] | None = Field(
         default=None, description="Schema defining agent inputs (None for auto-derive)"
     )
 
-    output_schema: Optional[Union[Type[BaseModel], Type[StateSchema]]] = Field(
+    output_schema: type[BaseModel] | type[StateSchema] | None = Field(
         default=None, description="Schema defining agent outputs (None for auto-derive)"
     )
 
-    state_schema: Optional[Union[Type[StateSchema], Type[BaseModel]]] = Field(
+    state_schema: type[StateSchema] | type[BaseModel] | None = Field(
         default=None, description="Schema for the agent state (None for auto-derive)"
     )
 
     # Mapping configuration
-    input_mapping: Optional[Dict[str, str]] = Field(
+    input_mapping: dict[str, str] | None = Field(
         default=None,
         description="Maps state fields to engine input fields (None for auto-derive)",
     )
 
-    output_mapping: Optional[Dict[str, str]] = Field(
+    output_mapping: dict[str, str] | None = Field(
         default=None,
         description="Maps engine output fields to state fields (None for auto-derive)",
     )
@@ -106,15 +100,14 @@ class SimpleAgentConfig(AgentConfig):
     def from_aug_llm(
         cls,
         aug_llm: AugLLMConfig,
-        name: Optional[str] = None,
-        id: Optional[str] = None,
-        input_schema: Optional[Type[BaseModel]] = None,
-        output_schema: Optional[Type[BaseModel]] = None,
-        state_schema: Optional[Type[StateSchema]] = None,
+        name: str | None = None,
+        id: str | None = None,
+        input_schema: type[BaseModel] | None = None,
+        output_schema: type[BaseModel] | None = None,
+        state_schema: type[StateSchema] | None = None,
         **kwargs,
     ) -> "SimpleAgentConfig":
-        """
-        Create a SimpleAgentConfig from an existing AugLLMConfig.
+        """Create a SimpleAgentConfig from an existing AugLLMConfig.
 
         Args:
             aug_llm: Existing AugLLMConfig to use
@@ -152,16 +145,15 @@ class SimpleAgentConfig(AgentConfig):
         system_prompt: str = "You are a helpful assistant.",
         model: str = "gpt-4o",
         temperature: float = 0.7,
-        structured_output_model: Optional[Type[BaseModel]] = None,
-        name: Optional[str] = None,
-        id: Optional[str] = None,
-        input_schema: Optional[Type[BaseModel]] = None,
-        output_schema: Optional[Type[BaseModel]] = None,
-        state_schema: Optional[Type[StateSchema]] = None,
+        structured_output_model: type[BaseModel] | None = None,
+        name: str | None = None,
+        id: str | None = None,
+        input_schema: type[BaseModel] | None = None,
+        output_schema: type[BaseModel] | None = None,
+        state_schema: type[StateSchema] | None = None,
         **kwargs,
     ) -> "SimpleAgentConfig":
-        """
-        Create a SimpleAgentConfig from scratch with a new AugLLMConfig.
+        """Create a SimpleAgentConfig from scratch with a new AugLLMConfig.
 
         Args:
             system_prompt: System prompt for the LLM
@@ -217,15 +209,14 @@ class SimpleAgentConfig(AgentConfig):
     @classmethod
     def with_structured_output(
         cls,
-        output_model: Type[BaseModel],
-        system_prompt: Optional[str] = None,
+        output_model: type[BaseModel],
+        system_prompt: str | None = None,
         model: str = "gpt-4o",
         temperature: float = 0.2,
-        name: Optional[str] = None,
+        name: str | None = None,
         **kwargs,
     ) -> "SimpleAgentConfig":
-        """
-        Create a SimpleAgentConfig with structured output capabilities.
+        """Create a SimpleAgentConfig with structured output capabilities.
 
         Args:
             output_model: Pydantic model for structured output

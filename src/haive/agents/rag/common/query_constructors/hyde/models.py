@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import BaseModel, Field
 
 
@@ -10,7 +8,7 @@ class HypotheticalDocument(BaseModel):
     relevance_explanation: str = Field(
         description="Why this document would be relevant to the query"
     )
-    key_concepts: List[str] = Field(
+    key_concepts: list[str] = Field(
         description="Key concepts covered in the hypothetical document"
     )
     document_type: str = Field(
@@ -29,10 +27,10 @@ class HyDEResponse(BaseModel):
     query_analysis: str = Field(
         description="Analysis of what type of documents would be helpful"
     )
-    hypothetical_documents: List[HypotheticalDocument] = Field(
+    hypothetical_documents: list[HypotheticalDocument] = Field(
         description="Generated hypothetical documents"
     )
-    search_queries: List[str] = Field(
+    search_queries: list[str] = Field(
         description="Refined search queries based on hypothetical documents"
     )
     retrieval_strategy: str = Field(

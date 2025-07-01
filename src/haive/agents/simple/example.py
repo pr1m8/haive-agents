@@ -1,23 +1,19 @@
-"""
-Example usage of SimpleAgent implementation with enhanced debugging.
+"""Example usage of SimpleAgent implementation with enhanced debugging.
 
 This script demonstrates how to create and use SimpleAgent with custom state schema.
 """
 
 import logging
-import os
-import sys
 import uuid
-from typing import Any, Dict, List, Optional
 
-# Setup enhanced logging with rich
-import rich
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from langchain_core.messages import BaseMessage, HumanMessage
+from langchain_core.messages import BaseMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel, Field
+
+# Setup enhanced logging with rich
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.panel import Panel
@@ -26,8 +22,6 @@ from rich.traceback import install as install_rich_traceback
 from haive.agents.simple import (
     SimpleAgent,
     SimpleAgentConfig,
-    SimpleAgentState,
-    create_simple_agent,
 )
 
 # Install rich traceback for better error display
@@ -65,9 +59,9 @@ def example_with_custom_state_schema():
 
     # Define a minimal custom state schema with just what we need
     class CustomAgentState(BaseModel):
-        messages: List[BaseMessage] = Field(default_factory=list)
+        messages: list[BaseMessage] = Field(default_factory=list)
         input: str = Field(default="")
-        context: List[str] = Field(default_factory=list)
+        context: list[str] = Field(default_factory=list)
         # The field that will receive the LLM output
         answer: str = Field(default="")
 
@@ -158,7 +152,7 @@ def example_with_custom_state_schema():
         console.print("[bold green]Agent completed successfully!")
         debug_print("Response", response)
 
-    except Exception as e:
+    except Exception:
         console.print("[bold red]Error running agent:")
         console.print_exception(show_locals=True)
 

@@ -1,7 +1,5 @@
 # examples/conversation/round_robin_example.py
-"""
-Examples for round-robin conversation patterns.
-"""
+"""Examples for round-robin conversation patterns."""
 
 import logging
 

@@ -1,6 +1,5 @@
 # src/haive/agents/conversation/base/state.py
-"""
-Base conversation state with automatic round tracking via reducers.
+"""Base conversation state with automatic round tracking via reducers.
 
 This module defines the ConversationState class, which is the foundational state schema
 for all conversation types. It extends MessagesState with specialized tracking for
@@ -17,13 +16,10 @@ Key features include:
 - Computed properties for conversation progress and remaining speakers
 """
 
-import logging
 import operator
-from typing import Any, Dict, List, Optional
 
 from haive.core.logging.rich_logger import LogLevel, get_logger
 from haive.core.schema.prebuilt.messages_state import MessagesState
-from haive.core.schema.state_schema import StateSchema
 from pydantic import Field, computed_field
 
 logger = get_logger(__name__)
@@ -31,8 +27,7 @@ logger.set_level(LogLevel.WARNING)
 
 
 class ConversationState(MessagesState):
-    """
-    Base conversation state schema with automatic tracking and progress calculations.
+    """Base conversation state schema with automatic tracking and progress calculations.
 
     This state schema extends MessagesState with specialized fields and reducers for
     tracking multi-agent conversations. It provides automatic management of turns,
@@ -65,8 +60,8 @@ class ConversationState(MessagesState):
     """
 
     # Track conversation flow
-    current_speaker: Optional[str] = Field(default=None)
-    speakers: List[str] = Field(default_factory=list)
+    current_speaker: str | None = Field(default=None)
+    speakers: list[str] = Field(default_factory=list)
 
     # Use reducer for automatic round counting
     turn_count: int = Field(
@@ -76,12 +71,12 @@ class ConversationState(MessagesState):
     max_rounds: int = Field(default=10)
 
     # Conversation metadata
-    topic: Optional[str] = Field(default=None)
+    topic: str | None = Field(default=None)
     conversation_ended: bool = Field(default=False)
     mode: str = Field(default="round_robin")
 
     # Speaker history for tracking
-    speaker_history: List[str] = Field(
+    speaker_history: list[str] = Field(
         default_factory=list, description="History of speakers in order"
     )
 
@@ -95,8 +90,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def round_number(self) -> int:
-        """
-        Compute current round based on turn count and number of speakers.
+        """Compute current round based on turn count and number of speakers.
 
         Returns:
             Current round number (1-based)
@@ -108,9 +102,8 @@ class ConversationState(MessagesState):
 
     @computed_field
     @property
-    def current_round_speakers(self) -> List[str]:
-        """
-        Get list of speakers who have already spoken in current round.
+    def current_round_speakers(self) -> list[str]:
+        """Get list of speakers who have already spoken in current round.
 
         Returns:
             List of speaker names
@@ -128,9 +121,8 @@ class ConversationState(MessagesState):
 
     @computed_field
     @property
-    def remaining_speakers_this_round(self) -> List[str]:
-        """
-        Get speakers who haven't spoken yet in current round.
+    def remaining_speakers_this_round(self) -> list[str]:
+        """Get speakers who haven't spoken yet in current round.
 
         Returns:
             List of speaker names
@@ -144,8 +136,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def should_end_by_rounds(self) -> bool:
-        """
-        Check if conversation should end based on round limit.
+        """Check if conversation should end based on round limit.
 
         Returns:
             True if round limit reached
@@ -155,8 +146,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def turns_per_round(self) -> int:
-        """
-        Calculate expected turns per round.
+        """Calculate expected turns per round.
 
         Returns:
             Number of turns in a complete round
@@ -166,8 +156,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def conversation_progress(self) -> float:
-        """
-        Calculate conversation progress as percentage.
+        """Calculate conversation progress as percentage.
 
         Returns:
             Progress from 0.0 to 1.0

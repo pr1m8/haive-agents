@@ -1,12 +1,14 @@
-
-from typing import Dict,Any,Union,List
+import re
 import time
-from langchain_core.messages import FunctionMessage,BaseMessage
-from agents.llm_compiler.models import Task,SchedulerInput
-import re 
 from concurrent.futures import ThreadPoolExecutor, wait
+from typing import Any
+
+from agents.llm_compiler.models import SchedulerInput, Task
+from langchain_core.messages import BaseMessage, FunctionMessage
+
+
 def schedule_pending_task(
-    task: Task, observations: Dict[int, Any], retry_after: float = 0.2
+    task: Task, observations: dict[int, Any], retry_after: float = 0.2
 ):
     while True:
         deps = task["dependencies"]
@@ -19,7 +21,7 @@ def schedule_pending_task(
 
 
 @as_runnable
-def schedule_tasks(scheduler_input: SchedulerInput) -> List[FunctionMessage]:
+def schedule_tasks(scheduler_input: SchedulerInput) -> list[FunctionMessage]:
     """Group the tasks into a DAG schedule."""
     # For streaming, we are making a few simplifying assumption:
     # 1. The LLM does not create cyclic dependencies
@@ -48,7 +50,8 @@ def schedule_tasks(scheduler_input: SchedulerInput) -> List[FunctionMessage]:
             args_for_tasks[task["idx"]] = task["args"]
             if (
                 # Depends on other tasks
-                deps and (any([dep not in observations for dep in deps]))
+                deps
+                and (any([dep not in observations for dep in deps]))
             ):
                 futures.append(
                     executor.submit(
@@ -79,13 +82,17 @@ def schedule_tasks(scheduler_input: SchedulerInput) -> List[FunctionMessage]:
         for k, (name, task_args, obs) in new_observations.items()
     ]
     return tool_messages
-def _get_observations(messages: List[BaseMessage]) -> Dict[int, Any]:
+
+
+def _get_observations(messages: list[BaseMessage]) -> dict[int, Any]:
     # Get all previous tool responses
     results = {}
     for message in messages[::-1]:
         if isinstance(message, FunctionMessage):
             results[int(message.additional_kwargs["idx"])] = message.content
     return results
+
+
 def _execute_task(task, observations, config):
     tool_to_use = task["tool"]
     if isinstance(tool_to_use, str):
@@ -104,17 +111,18 @@ def _execute_task(task, observations, config):
     except Exception as e:
         return (
             f"ERROR(Failed to call {tool_to_use.name} with args {args}.)"
-            f" Args could not be resolved. Error: {repr(e)}"
+            f" Args could not be resolved. Error: {e!r}"
         )
     try:
         return tool_to_use.invoke(resolved_args, config)
     except Exception as e:
         return (
             f"ERROR(Failed to call {tool_to_use.name} with args {args}."
-            + f" Args resolved to {resolved_args}. Error: {repr(e)})"
+            + f" Args resolved to {resolved_args}. Error: {e!r})"
         )
 
-def _resolve_arg(arg: Union[str, Any], observations: Dict[int, Any]):
+
+def _resolve_arg(arg: str | Any, observations: dict[int, Any]):
     # $1 or ${1} -> 1
     ID_PATTERN = r"\$\{?(\d+)\}?"
 
@@ -129,15 +137,15 @@ def _resolve_arg(arg: Union[str, Any], observations: Dict[int, Any]):
     # For dependencies on other tasks
     if isinstance(arg, str):
         return re.sub(ID_PATTERN, replace_match, arg)
-    elif isinstance(arg, list):
+    if isinstance(arg, list):
         return [_resolve_arg(a, observations) for a in arg]
-    else:
-        return str(arg)
+    return str(arg)
+
 
 @as_runnable
 def schedule_task(task_inputs, config):
     task: Task = task_inputs["task"]
-    observations: Dict[int, Any] = task_inputs["observations"]
+    observations: dict[int, Any] = task_inputs["observations"]
     try:
         observation = _execute_task(task, observations, config)
     except Exception:
@@ -145,8 +153,10 @@ def schedule_task(task_inputs, config):
 
         observation = traceback.format_exception()  # repr(e) +
     observations[task["idx"]] = observation
+
+
 def schedule_pending_task(
-    task: Task, observations: Dict[int, Any], retry_after: float = 0.2
+    task: Task, observations: dict[int, Any], retry_after: float = 0.2
 ):
     while True:
         deps = task["dependencies"]

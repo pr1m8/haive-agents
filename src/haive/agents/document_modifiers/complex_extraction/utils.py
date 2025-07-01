@@ -1,5 +1,6 @@
 import uuid
-from typing import Callable, Dict, List, Optional, Sequence, Type, TypedDict, Union
+from collections.abc import Callable, Sequence
+from typing import TypedDict
 
 import jsonpatch
 from langchain_core.messages import AIMessage, AnyMessage, BaseMessage, ToolCall
@@ -26,8 +27,7 @@ def encode(state: BaseModel) -> dict:
 
 
 def decode(state: BaseModel) -> dict:
-    """
-    Ensure the output is in the expected format.
+    """Ensure the output is in the expected format.
 
     This function handles extracting data from the AI message's tool calls and optionally
     parsing it into a Pydantic object based on the configuration.
@@ -74,7 +74,7 @@ def decode(state: BaseModel) -> dict:
             except Exception as e:
                 import logging
 
-                logging.error(f"Error parsing data into Pydantic model: {e}")
+                logging.exception(f"Error parsing data into Pydantic model: {e}")
                 # Fall back to returning the raw data
 
     # Return the extracted data or empty dict
@@ -82,9 +82,7 @@ def decode(state: BaseModel) -> dict:
 
 
 def default_aggregator(messages: Sequence[AnyMessage]) -> AIMessage:
-    """
-    Aggregates a sequence of messages into a single AI message.
-    """
+    """Aggregates a sequence of messages into a single AI message."""
     for m in messages[::-1]:
         if m.type == "ai":
             return m
@@ -95,8 +93,8 @@ def aggregate_messages(
     messages: Sequence[AnyMessage],
 ) -> AIMessage:
     # Get all the AI messages and apply json patches
-    resolved_tool_calls: Dict[Union[str, None], ToolCall] = {}
-    content: Union[str, List[Union[str, dict]]] = ""
+    resolved_tool_calls: dict[str | None, ToolCall] = {}
+    content: str | list[str | dict] = ""
     for m in messages:
         if m.type != "ai":
             continue
@@ -128,7 +126,7 @@ def aggregate_messages(
     )
 
 
-def add_or_overwrite_messages(left: list, right: Union[list, dict]) -> list:
+def add_or_overwrite_messages(left: list, right: list | dict) -> list:
     """Append or replace messages depending on format."""
     if isinstance(right, dict) and "finalize" in right:
         finalized = right["finalize"]
@@ -154,14 +152,13 @@ class RetryStrategy(TypedDict, total=False):
 
     max_attempts: int
     """The maximum number of attempts to make."""
-    fallback: Optional[
-        Union[
-            Runnable[Sequence[AnyMessage], AIMessage],
-            Runnable[Sequence[AnyMessage], BaseMessage],
-            Callable[[Sequence[AnyMessage]], AIMessage],
-        ]
-    ]
+    fallback: (
+        Runnable[Sequence[AnyMessage], AIMessage]
+        | Runnable[Sequence[AnyMessage], BaseMessage]
+        | Callable[[Sequence[AnyMessage]], AIMessage]
+        | None
+    )
     """The function to use once validation fails."""
-    aggregate_messages: Optional[Callable[[Sequence[AnyMessage]], AIMessage]] = (
+    aggregate_messages: Callable[[Sequence[AnyMessage]], AIMessage] | None = (
         default_aggregator
     )

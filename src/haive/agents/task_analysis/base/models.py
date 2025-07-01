@@ -2,7 +2,7 @@
 
 import uuid
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Union
 
 from pydantic import BaseModel, Field
 
@@ -55,17 +55,16 @@ class TaskDependency(BaseModel):
     source_id: str = Field(..., description="Source task ID")
     target_id: str = Field(..., description="Target task ID")
     dependency_type: DependencyType = Field(default=DependencyType.SEQUENTIAL)
-    condition: Optional[str] = Field(
+    condition: str | None = Field(
         default=None, description="Condition for conditional deps"
     )
-    data_flow: Optional[Dict[str, str]] = Field(
+    data_flow: dict[str, str] | None = Field(
         default=None, description="Data that flows between tasks"
     )
 
 
 class ActionStep(BaseModel):
-    """
-    Atomic action that cannot be decomposed further.
+    """Atomic action that cannot be decomposed further.
     This is a leaf node in the task tree.
     """
 
@@ -79,19 +78,19 @@ class ActionStep(BaseModel):
     estimated_duration_minutes: float = Field(default=5.0, gt=0)
 
     # Requirements
-    required_tools: List[str] = Field(default_factory=list)
-    required_context: List[str] = Field(default_factory=list)
+    required_tools: list[str] = Field(default_factory=list)
+    required_context: list[str] = Field(default_factory=list)
 
     # Input/Output specification
-    inputs: Dict[str, str] = Field(
+    inputs: dict[str, str] = Field(
         default_factory=dict, description="Expected inputs with types"
     )
-    outputs: Dict[str, str] = Field(
+    outputs: dict[str, str] = Field(
         default_factory=dict, description="Expected outputs with types"
     )
 
     # Validation
-    success_criteria: List[str] = Field(default_factory=list)
+    success_criteria: list[str] = Field(default_factory=list)
 
     # State
     can_parallelize: bool = Field(default=True)
@@ -99,8 +98,7 @@ class ActionStep(BaseModel):
 
 
 class TaskNode(BaseModel):
-    """
-    A task that may contain subtasks or action steps.
+    """A task that may contain subtasks or action steps.
     Designed to work perfectly with AutoTree.
     """
 
@@ -113,32 +111,32 @@ class TaskNode(BaseModel):
     task_type: TaskType = Field(..., description="Type of task")
 
     # CRITICAL: Union type for AutoTree to detect and handle
-    subtasks: List[Union["TaskNode", ActionStep]] = Field(
+    subtasks: list[Union["TaskNode", ActionStep]] = Field(
         default_factory=list,
         description="Child tasks or action steps - AutoTree will handle this!",
     )
 
     # Dependencies (between children)
-    dependencies: List[TaskDependency] = Field(default_factory=list)
+    dependencies: list[TaskDependency] = Field(default_factory=list)
 
     # Estimates
-    estimated_duration_minutes: Optional[float] = Field(default=None)
+    estimated_duration_minutes: float | None = Field(default=None)
     complexity_score: float = Field(default=1.0, ge=0, le=10)
 
     # Requirements
-    required_resources: List[str] = Field(default_factory=list)
-    required_capabilities: List[str] = Field(default_factory=list)
+    required_resources: list[str] = Field(default_factory=list)
+    required_capabilities: list[str] = Field(default_factory=list)
 
     # Execution hints
     can_parallelize: bool = Field(default=True)
     can_expand: bool = Field(default=True, description="Can be further decomposed")
-    expansion_hints: Optional[str] = Field(
+    expansion_hints: str | None = Field(
         default=None, description="Hints for decomposition"
     )
 
     # Join information
     is_join_point: bool = Field(default=False)
-    join_strategy: Optional[str] = Field(default=None)
+    join_strategy: str | None = Field(default=None)
 
     def calculate_total_duration(self) -> float:
         """Calculate total duration including subtasks."""
@@ -158,7 +156,7 @@ class TaskNode(BaseModel):
 
         return total
 
-    def get_all_steps(self) -> List[ActionStep]:
+    def get_all_steps(self) -> list[ActionStep]:
         """Get all ActionSteps in this task tree."""
         steps = []
         for subtask in self.subtasks:
@@ -191,8 +189,7 @@ class TaskNode(BaseModel):
 
 
 class TaskPlan(BaseModel):
-    """
-    Root object representing a complete task plan.
+    """Root object representing a complete task plan.
     This is what we'll create from a task description.
     """
 
@@ -206,14 +203,14 @@ class TaskPlan(BaseModel):
 
     # Metadata
     created_at: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    total_estimated_duration_minutes: Optional[float] = None
-    total_tasks: Optional[int] = None
-    max_depth: Optional[int] = None
+    total_estimated_duration_minutes: float | None = None
+    total_tasks: int | None = None
+    max_depth: int | None = None
 
     # Analysis results (populated after analysis)
-    complexity_analysis: Optional[Dict[str, Any]] = None
-    parallelization_analysis: Optional[Dict[str, Any]] = None
-    execution_plan: Optional[Dict[str, Any]] = None
+    complexity_analysis: dict[str, Any] | None = None
+    parallelization_analysis: dict[str, Any] | None = None
+    execution_plan: dict[str, Any] | None = None
 
     def calculate_stats(self) -> None:
         """Calculate plan statistics."""

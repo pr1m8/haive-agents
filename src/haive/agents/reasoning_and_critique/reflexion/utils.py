@@ -1,5 +1,6 @@
-from typing import Dict, Any
 from pydantic import BaseModel
+
+
 def _get_num_iterations(state: BaseModel) -> int:
     """Counts consecutive 'tool' or 'ai' message types from the end of the list."""
     i = 0

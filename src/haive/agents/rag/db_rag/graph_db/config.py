@@ -28,7 +28,7 @@ Environment Variables:
 """
 
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from dotenv import load_dotenv
 from haive.core.engine.agent.agent import AgentConfig
@@ -102,7 +102,7 @@ class GraphDBConfig(BaseModel):
         default=True, description="Enable enhanced schema scanning for better detection"
     )
 
-    def get_graph_db(self) -> Optional[Neo4jGraph]:
+    def get_graph_db(self) -> Neo4jGraph | None:
         """Create and return a Neo4jGraph connection object.
 
         Establishes a secure connection to the Neo4j database with proper
@@ -137,7 +137,7 @@ class GraphDBConfig(BaseModel):
             print(f"🚨 Error connecting to Neo4j: {e}")
             return None
 
-    def get_graph_db_schema(self) -> Optional[Dict]:
+    def get_graph_db_schema(self) -> dict | None:
         """Retrieve the graph schema from the Neo4j database.
 
         Gets the complete schema including node labels, relationship types,
@@ -163,8 +163,7 @@ class GraphDBConfig(BaseModel):
         graph_db = self.get_graph_db()
         if graph_db:
             return graph_db.get_schema()  # type: ignore
-        else:
-            return None
+        return None
 
 
 class ExampleConfig(BaseModel):
@@ -204,10 +203,10 @@ class ExampleConfig(BaseModel):
         ... )
     """
 
-    examples_path: Optional[str] = Field(
+    examples_path: str | None = Field(
         default=None, description="Path to JSON file containing Cypher query examples"
     )
-    examples: Optional[List[Dict[str, str]]] = Field(
+    examples: list[dict[str, str]] | None = Field(
         default=None,
         description="Direct list of examples with 'question' and 'query' keys",
     )
@@ -264,7 +263,7 @@ class GraphDBRAGConfig(AgentConfig):
         if any are missing.
     """
 
-    engines: Dict[str, AugLLMConfig] = Field(
+    engines: dict[str, AugLLMConfig] = Field(
         description="LLM engine configurations for each workflow step",
         default={
             "correct_cypher": correct_cypher_aug_llm_config,
@@ -280,12 +279,12 @@ class GraphDBRAGConfig(AgentConfig):
         description="Domain specialization (e.g., 'movies', 'healthcare', 'finance')",
     )
 
-    domain_categories: List[str] = Field(
+    domain_categories: list[str] = Field(
         default_factory=list,
         description="Valid categories for routing within the domain",
     )
 
-    example_config: Optional[ExampleConfig] = Field(
+    example_config: ExampleConfig | None = Field(
         default=None, description="Configuration for Cypher query examples"
     )
 
@@ -306,15 +305,15 @@ class GraphDBRAGConfig(AgentConfig):
         default=OutputState, description="Schema for structuring agent outputs"
     )
 
-    domain_examples: Dict[str, List[Dict[str, str]]] = Field(
+    domain_examples: dict[str, list[dict[str, str]]] = Field(
         default_factory=dict,
         description="Domain-specific example queries for few-shot learning",
     )
 
     @field_validator("engines")
     def validate_engines(
-        cls, engines: Dict[str, AugLLMConfig]
-    ) -> Dict[str, AugLLMConfig]:
+        cls, engines: dict[str, AugLLMConfig]
+    ) -> dict[str, AugLLMConfig]:
         """Validate that all required engines are present.
 
         Checks for the presence of all required engine configurations and

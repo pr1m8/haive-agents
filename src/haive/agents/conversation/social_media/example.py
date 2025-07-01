@@ -1,12 +1,9 @@
 # examples/conversation/social_media_example.py
-"""
-Examples for social media style conversations with engagement mechanics.
-"""
+"""Examples for social media style conversations with engagement mechanics."""
 
 import logging
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import AIMessage, SystemMessage
 
 from haive.agents.conversation.social_media.agent import SocialMediaConversation
@@ -297,7 +294,7 @@ def example_viral_moment():
         max_rounds=8,
     )
 
-    result = conversation.invoke({})
+    result = conversation.run({}, debug=True)
 
     # Show viral progression
     print("🔥 Viral Moment Progression:\n")
@@ -314,12 +311,12 @@ def example_viral_moment():
 
             # Check if went viral
             if current_likes >= conversation.viral_threshold:
-                print(f"   🎉 WENT VIRAL!")
+                print("   🎉 WENT VIRAL!")
 
 
-if __name__ == "__main__":
-    example_twitter_thread()
-    example_instagram_discussion()
-    example_tiktok_comments()
-    example_linkedin_professional()
-    example_viral_moment()
+# if __name__ == "__main__":
+# example_twitter_thread()
+# example_instagram_discussion()
+##example_tiktok_comments()
+# example_linkedin_professional()
+# example_viral_moment()

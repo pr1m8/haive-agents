@@ -1,7 +1,8 @@
 # SEQUENTIAL AGENT
 # ============================================================================
 
-from typing import Any, Optional, Sequence, Type, Union
+from collections.abc import Sequence
+from typing import Any
 
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -18,10 +19,10 @@ class SequentialAgent(Agent):
     name: str = Field(default="Sequential Agent")
 
     # Use Union[Agent, Any] to be more permissive, or use forward reference
-    agents: Sequence[Union[Agent, Any]] = Field(
+    agents: Sequence[Agent | Any] = Field(
         ..., description="List of agents to execute sequentially"
     )
-    state_schema: Optional[Type[BaseModel]] = Field(default=None)
+    state_schema: type[BaseModel] | None = Field(default=None)
     smart_compose: bool = Field(
         default=True, description="Whether to use smart composition"
     )

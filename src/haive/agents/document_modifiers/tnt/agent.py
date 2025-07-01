@@ -23,36 +23,45 @@ Example:
         result = agent.run(input_data={"documents": [...]})
 """
 
-from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
-from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
-from pydantic import Field
-from langchain_core.runnables import RunnableConfig
 import random
-from haive.agents.document_modifiers.tnt.engines import (
-    taxonomy_review_aug_llm_config,
-    summary_aug_llm_config,
-    taxonomy_generation_aug_llm_config,
-    taxonomy_update_aug_llm_config
+from typing import Any
+
+from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
+from haive.core.engine.aug_llm import AugLLMConfig
+from langchain_core.runnables import (
+    RunnableConfig,
+    RunnableLambda,
+    RunnablePassthrough,
 )
 
-#from haive_agents.tnt.utils import invoke_taxonomy_chain
-from langgraph.graph import END, START, StateGraph
-from haive.agents.document_modifiers.tnt.branches import should_review
-from langchain_core.runnables import RunnablePassthrough, RunnableLambda, RunnableMap
-from haive.agents.document_modifiers.tnt.utils import parse_summary, format_docs, format_taxonomy
-from typing import Dict, Any, List
+# from haive_agents.tnt.utils import invoke_taxonomy_chain
+from langgraph.graph import END, START
 from langgraph.types import Command
-from haive.core.engine.aug_llm import AugLLMConfig
-#FR
+from pydantic import Field
+
+from haive.agents.document_modifiers.tnt.branches import should_review
+from haive.agents.document_modifiers.tnt.engines import (
+    summary_aug_llm_config,
+    taxonomy_generation_aug_llm_config,
+    taxonomy_review_aug_llm_config,
+    taxonomy_update_aug_llm_config,
+)
+from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
+from haive.agents.document_modifiers.tnt.utils import format_docs, format_taxonomy
+
+
+# FR
 class TaxonomyAgentConfig(AgentConfig):
     """Agent configuration for generating a taxonomy from conversation history."""
+
     state_schema: TaxonomyGenerationState = Field(
-        default=TaxonomyGenerationState, description="The state of the taxonomy generation."
+        default=TaxonomyGenerationState,
+        description="The state of the taxonomy generation.",
     )
     visualize: bool = Field(default=True, description="Whether to visualize the agent.")
     name: str = Field(default="TaxonomyAgent", description="The name of the agent.")
     # TODO: This should be a RunnableConfig
-    runtime_config: Dict[str, Any] = Field(
+    runtime_config: dict[str, Any] = Field(
         default_factory=lambda: {
             "configurable": {
                 "use_case": (
@@ -65,12 +74,12 @@ class TaxonomyAgentConfig(AgentConfig):
                 "cluster_description_length": 30,
                 "explanation_length": 20,
                 "max_num_clusters": 25,
-                'num_minibatches': 10,
-                'thread_id': 'thread-1'
+                "num_minibatches": 10,
+                "thread_id": "thread-1",
             },
             "max_concurrency": 2,
         },
-        description="The runtime configuration of the agent."
+        description="The runtime configuration of the agent.",
     )
 
 
@@ -82,14 +91,13 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         """Initialize the taxonomy agent."""
         self._setup_map_reduce_chain()
         super().__init__(config)
-        #self.graph = StateGraph(TaxonomyGenerationState)
-       
-        #self.setup_workflow()
+        # self.graph = StateGraph(TaxonomyGenerationState)
+
+        # self.setup_workflow()
 
     def _setup_map_reduce_chain(self):
         """Sets up the map-reduce chain for summarization."""
-
-        self.summary_chain = summary_aug_llm_config.create_runnable() 
+        self.summary_chain = summary_aug_llm_config.create_runnable()
 
         def wrap_content(state: TaxonomyGenerationState):
             """Ensures correct input format for RunnablePassthrough."""
@@ -99,54 +107,53 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             """Ensure batch function receives a list."""
             return self.summary_chain.batch(input_dict["documents"])  # Fix: Passes list
 
-        self.map_step = (
-            RunnableLambda(func=wrap_content)  # Wraps content in a dictionary
-            | RunnablePassthrough.assign(  # Assigns summaries key in dict
-                summaries=RunnableLambda(func=batch_summaries)  # Fix: Uses wrapped function
-            )
+        self.map_step = RunnableLambda(
+            func=wrap_content
+        ) | RunnablePassthrough.assign(  # Wraps content in a dictionary  # Assigns summaries key in dict
+            summaries=RunnableLambda(func=batch_summaries)  # Fix: Uses wrapped function
         )
 
         self.map_reduce_chain = self.map_step | self.reduce_summaries
-
-
 
     def get_content(self, state: TaxonomyGenerationState):
         """Extracts document content for processing."""
         return [{"content": doc["content"]} for doc in state["documents"]]
 
-
     def reduce_summaries(self, combined: dict) -> TaxonomyGenerationState:
         """Reduces summarized documents into a structured format."""
-        
         summaries = combined.get("summaries", [])
         documents = combined.get("documents", [])
-        
+
         # DEBUG: Print types and values
         print(f"DEBUG: Type of summaries -> {type(summaries)}")
         print(f"DEBUG: Type of documents -> {type(documents)}")
         print(f"DEBUG: First summary -> {summaries[0] if summaries else 'EMPTY'}")
         print(f"DEBUG: First document -> {documents[0] if documents else 'EMPTY'}")
 
-        return Command(update={
-            "documents": [
-                {
-                    "id": doc.get("id", "UNKNOWN_ID"),  # Handle missing key
-                    "content": doc.get("content", "UNKNOWN_CONTENT"),  # Handle missing key
-                    "summary": summ_info.get("summary", "NO_SUMMARY"),
-                    "explanation": summ_info.get("explanation", "NO_EXPLANATION"),
-                }
-                for doc, summ_info in zip(documents, summaries)
-            ]
-        })
+        return Command(
+            update={
+                "documents": [
+                    {
+                        "id": doc.get("id", "UNKNOWN_ID"),  # Handle missing key
+                        "content": doc.get(
+                            "content", "UNKNOWN_CONTENT"
+                        ),  # Handle missing key
+                        "summary": summ_info.get("summary", "NO_SUMMARY"),
+                        "explanation": summ_info.get("explanation", "NO_EXPLANATION"),
+                    }
+                    for doc, summ_info in zip(documents, summaries, strict=False)
+                ]
+            }
+        )
+
     def invoke_taxonomy_chain(
-    self,
-    chain_config: AugLLMConfig,
-    state: TaxonomyGenerationState,
-    config: RunnableConfig,
-    mb_indices: List[int],
+        self,
+        chain_config: AugLLMConfig,
+        state: TaxonomyGenerationState,
+        config: RunnableConfig,
+        mb_indices: list[int],
     ) -> TaxonomyGenerationState:
-        """
-        Invokes the taxonomy LLM to generate or refine taxonomies.
+        """Invokes the taxonomy LLM to generate or refine taxonomies.
 
         Args:
             chain (Runnable): LLM pipeline for taxonomy generation.
@@ -180,13 +187,15 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             }
         )
 
-        return Command(update={
-            "clusters": [updated_taxonomy['clusters']],
-        })
-        #Markdown(format_taxonomy_md(step["__end__"]["clusters"][-1]))
+        return Command(
+            update={
+                "clusters": [updated_taxonomy["clusters"]],
+            }
+        )
+        # Markdown(format_taxonomy_md(step["__end__"]["clusters"][-1]))
+
     def get_minibatches(self, state: TaxonomyGenerationState, config: RunnableConfig):
-        """
-        Splits documents into minibatches for iterative taxonomy generation.
+        """Splits documents into minibatches for iterative taxonomy generation.
 
         Args:
             state (TaxonomyGenerationState): The current state containing documents.
@@ -203,9 +212,12 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             return Command(update={"minibatches": [indices]})
 
         num_full_batches = len(indices) // batch_size
-        batches = [indices[i * batch_size : (i + 1) * batch_size] for i in range(num_full_batches)]
+        batches = [
+            indices[i * batch_size : (i + 1) * batch_size]
+            for i in range(num_full_batches)
+        ]
 
-        if (leftovers := len(indices) % batch_size):
+        if leftovers := len(indices) % batch_size:
             last_batch = indices[num_full_batches * batch_size :]
             elements_to_add = batch_size - leftovers
             last_batch += random.sample(indices, elements_to_add)
@@ -213,9 +225,10 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
 
         return Command(update={"minibatches": batches})
 
-    def review_taxonomy(self, state: TaxonomyGenerationState, config: RunnableConfig) -> TaxonomyGenerationState:
-        """
-        Evaluates the final taxonomy after all updates.
+    def review_taxonomy(
+        self, state: TaxonomyGenerationState, config: RunnableConfig
+    ) -> TaxonomyGenerationState:
+        """Evaluates the final taxonomy after all updates.
 
         Args:
             state (TaxonomyGenerationState): The current state with completed taxonomies.
@@ -227,11 +240,14 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         batch_size = config["configurable"].get("batch_size", 200)
         indices = list(range(len(state.documents)))
         random.shuffle(indices)
-        return self.invoke_taxonomy_chain(taxonomy_review_aug_llm_config, state, config, indices[:batch_size])
+        return self.invoke_taxonomy_chain(
+            taxonomy_review_aug_llm_config, state, config, indices[:batch_size]
+        )
 
-    def update_taxonomy(self, state: TaxonomyGenerationState, config: RunnableConfig) -> TaxonomyGenerationState:
-        """
-        Iteratively refines the taxonomy using new minibatches of data.
+    def update_taxonomy(
+        self, state: TaxonomyGenerationState, config: RunnableConfig
+    ) -> TaxonomyGenerationState:
+        """Iteratively refines the taxonomy using new minibatches of data.
 
         Args:
             state (TaxonomyGenerationState): The current state containing previous taxonomies.
@@ -240,9 +256,10 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         Returns:
             TaxonomyGenerationState: Updated state with revised taxonomy clusters.
         """
-
         print(f"DEBUG: Type of clusters -> {type(state.clusters)}")
-        print(f"DEBUG: First cluster -> {state.clusters[0] if state.clusters else 'EMPTY'}")
+        print(
+            f"DEBUG: First cluster -> {state.clusters[0] if state.clusters else 'EMPTY'}"
+        )
 
         # Ensure clusters is a list of lists
         if not isinstance(state.clusters, list):
@@ -255,10 +272,10 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             taxonomy_update_aug_llm_config, state, config, state.minibatches[which_mb]
         )
 
-
-    def generate_taxonomy(self, state: TaxonomyGenerationState, config: RunnableConfig) -> TaxonomyGenerationState:
-        """
-        Generates an initial taxonomy from the first document minibatch.
+    def generate_taxonomy(
+        self, state: TaxonomyGenerationState, config: RunnableConfig
+    ) -> TaxonomyGenerationState:
+        """Generates an initial taxonomy from the first document minibatch.
 
         Args:
             state (TaxonomyGenerationState): The current state of the taxonomy process.
@@ -267,7 +284,9 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         Returns:
             TaxonomyGenerationState: Updated state with the initial taxonomy.
         """
-        return self.invoke_taxonomy_chain(taxonomy_generation_aug_llm_config, state, config, state.minibatches[0])
+        return self.invoke_taxonomy_chain(
+            taxonomy_generation_aug_llm_config, state, config, state.minibatches[0]
+        )
 
     def setup_workflow(self):
         """Sets up the taxonomy generation workflow in LangGraph."""
@@ -283,8 +302,10 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         self.graph.add_conditional_edges(
             "update_taxonomy",
             should_review,
-            {"update_taxonomy": "update_taxonomy", "review_taxonomy": "review_taxonomy"},
+            {
+                "update_taxonomy": "update_taxonomy",
+                "review_taxonomy": "review_taxonomy",
+            },
         )
         self.graph.add_edge("review_taxonomy", END)
         self.graph.add_edge(START, "summarize")
-   

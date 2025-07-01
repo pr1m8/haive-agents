@@ -1,19 +1,20 @@
-from typing import Any, Dict, List, Optional, Type, Union
-from pydantic import BaseModel, Field, field_serializer, model_serializer
+from typing import Any, Optional
+
 from langchain_core.messages import BaseMessage
+from pydantic import BaseModel, Field, field_serializer, model_serializer
+
 
 class Node(BaseModel):
-    """
-    Node class for reflection/reflexion trees with proper serialization.
-    """
-    messages: List[BaseMessage]
-    reflection: Optional[Dict[str, Any]] = None
-    parent: Optional['Node'] = None
-    children: List['Node'] = Field(default_factory=list)
+    """Node class for reflection/reflexion trees with proper serialization."""
+
+    messages: list[BaseMessage]
+    reflection: dict[str, Any] | None = None
+    parent: Optional["Node"] = None
+    children: list["Node"] = Field(default_factory=list)
     value: float = 0.0
     visits: int = 0
     depth: int = Field(default=1)
-    
+
     def __init__(self, **data):
         super().__init__(**data)
         # Set depth based on parent
@@ -21,22 +22,22 @@ class Node(BaseModel):
             self.depth = self.parent.depth + 1
         else:
             self.depth = 1
-    
-    @field_serializer('parent')
-    def serialize_parent(self, parent: Optional['Node']) -> Optional[Dict[str, Any]]:
+
+    @field_serializer("parent")
+    def serialize_parent(self, parent: Optional["Node"]) -> dict[str, Any] | None:
         """Serialize parent node as ID only to avoid recursion."""
         if parent is None:
             return None
         # Return minimal representation - just enough to identify the node
         return {"id": id(parent), "depth": parent.depth}
-    
-    @field_serializer('children')
-    def serialize_children(self, children: List['Node']) -> List[Dict[str, Any]]:
+
+    @field_serializer("children")
+    def serialize_children(self, children: list["Node"]) -> list[dict[str, Any]]:
         """Serialize children as IDs only to avoid recursion."""
         return [{"id": id(child), "depth": child.depth} for child in children]
-    
+
     @model_serializer
-    def serialize_model(self) -> Dict[str, Any]:
+    def serialize_model(self) -> dict[str, Any]:
         """Custom model serializer to handle recursion."""
         return {
             "messages": self.messages,
@@ -47,14 +48,14 @@ class Node(BaseModel):
             "visits": self.visits,
             "depth": self.depth,
         }
-    
-    def add_child(self, child: 'Node') -> None:
+
+    def add_child(self, child: "Node") -> None:
         """Add a child node."""
         self.children.append(child)
         child.parent = self
         child.depth = self.depth + 1
-    
-    def get_path(self) -> List['Node']:
+
+    def get_path(self) -> list["Node"]:
         """Get path from root to this node."""
         path = []
         current = self
@@ -62,8 +63,8 @@ class Node(BaseModel):
             path.append(current)
             current = current.parent
         return list(reversed(path))
-    
-    def get_trajectory(self, include_reflections: bool = True) -> List[BaseMessage]:
+
+    def get_trajectory(self, include_reflections: bool = True) -> list[BaseMessage]:
         """Get all messages in the path from root to this node."""
         messages = []
         current = self
@@ -77,32 +78,33 @@ class Node(BaseModel):
             current = current.parent
         return list(reversed(messages))
 
+
 # NodeManager for keeping track of nodes and rebuilding the tree
 class NodeManager:
-    """
-    Manages Node objects to rebuild references after serialization/deserialization.
-    """
+    """Manages Node objects to rebuild references after serialization/deserialization."""
+
     def __init__(self):
-        self.nodes: Dict[int, Node] = {}
-    
+        self.nodes: dict[int, Node] = {}
+
     def register(self, node: Node) -> None:
         """Register a node."""
         self.nodes[id(node)] = node
-    
-    def get(self, node_id: int) -> Optional[Node]:
+
+    def get(self, node_id: int) -> Node | None:
         """Get a node by ID."""
         return self.nodes.get(node_id)
-    
+
     def rebuild_references(self) -> None:
         """Rebuild parent-child references after deserialization."""
         for node in self.nodes.values():
             parent_id = getattr(node, "parent_id", None)
             children_ids = getattr(node, "children_ids", [])
-            
+
             if parent_id and parent_id in self.nodes:
                 node.parent = self.nodes[parent_id]
-            
+
             node.children = [
-                self.nodes[child_id] for child_id in children_ids 
+                self.nodes[child_id]
+                for child_id in children_ids
                 if child_id in self.nodes
             ]

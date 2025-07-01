@@ -1,5 +1,4 @@
-"""
-Directory Document Loader Agent.
+"""Directory Document Loader Agent.
 
 This package provides a specialized document loader agent for directories.
 """

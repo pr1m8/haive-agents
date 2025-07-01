@@ -2,7 +2,6 @@
 # QUERY REFINEMENT MODELS
 # ============================================================================
 
-from typing import List
 
 from pydantic import BaseModel, Field
 
@@ -29,10 +28,10 @@ class QueryRefinementResponse(BaseModel):
     )
     query_type: str = Field(description="Classification of query type")
     complexity_level: str = Field(description="simple, moderate, or complex")
-    refinement_suggestions: List[QueryRefinementSuggestion] = Field(
+    refinement_suggestions: list[QueryRefinementSuggestion] = Field(
         description="List of suggested query improvements"
     )
     best_refined_query: str = Field(description="The recommended best refined query")
-    search_strategy_recommendations: List[str] = Field(
+    search_strategy_recommendations: list[str] = Field(
         description="Recommendations for search strategy"
     )

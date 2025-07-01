@@ -1,16 +1,13 @@
 # haive/core/engine/agent/mixins/execution_mixin.py
 
 import asyncio
-import json
 import logging
-import time
 import uuid
-from collections.abc import AsyncGenerator
-from typing import Any, Dict, Generator, Optional, Union
+from collections.abc import AsyncGenerator, Generator
+from typing import Any
 
 from haive.core.config.runnable import RunnableConfigManager
 from haive.core.persistence.handlers import (
-    ensure_pool_open,
     prepare_merged_input,
     register_thread_if_needed,
 )
@@ -28,8 +25,7 @@ class ExecutionMixin:
     """Mixin for agent execution functionality including run, stream, and state management."""
 
     def _prepare_input(self, input_data: Any) -> Any:
-        """
-        Prepare input for the agent based on the input schema.
+        """Prepare input for the agent based on the input schema.
 
         Args:
             input_data: Input in various formats
@@ -158,7 +154,7 @@ class ExecutionMixin:
                 try:
                     # CRITICAL FIX: If messages are already BaseMessage objects, don't let Pydantic
                     # try to reconstruct them from dicts, as this can lose important fields like tool_call_id
-                    if "messages" in input_data and input_data["messages"]:
+                    if input_data.get("messages"):
                         # Check if messages are already BaseMessage objects
                         all_base_messages = all(
                             isinstance(msg, BaseMessage)
@@ -185,7 +181,7 @@ class ExecutionMixin:
                             # Directly set the messages field to preserve BaseMessage objects
                             result.messages = input_data["messages"]
                             logger.debug(
-                                f"Created input schema instance with preserved BaseMessage objects"
+                                "Created input schema instance with preserved BaseMessage objects"
                             )
                             return result
 
@@ -215,7 +211,7 @@ class ExecutionMixin:
 
                 try:
                     # CRITICAL FIX: Same as dict case - preserve BaseMessage objects
-                    if "messages" in data_dict and data_dict["messages"]:
+                    if data_dict.get("messages"):
                         # Check if the original input_data has BaseMessage objects
                         if hasattr(input_data, "messages") and input_data.messages:
                             original_messages = input_data.messages
@@ -277,12 +273,11 @@ class ExecutionMixin:
 
     def _prepare_runnable_config(
         self,
-        thread_id: Optional[str] = None,
-        config: Optional[RunnableConfig] = None,
+        thread_id: str | None = None,
+        config: RunnableConfig | None = None,
         **kwargs,
     ) -> RunnableConfig:
-        """
-        Prepare a runnable config with thread ID and other parameters.
+        """Prepare a runnable config with thread ID and other parameters.
 
         Args:
             thread_id: Optional thread ID for persistence
@@ -311,7 +306,11 @@ class ExecutionMixin:
 
         debugger.log_recursion_limit_flow(
             "Initial base_config",
-            base_config.get("recursion_limit") if base_config else None,
+            (
+                base_config.get("configurable", {}).get("recursion_limit")
+                if base_config
+                else None
+            ),
             "agent.runnable_config or agent.config.runnable_config",
         )
 
@@ -333,11 +332,10 @@ class ExecutionMixin:
                 runtime_config = RunnableConfigManager.merge(base_config, config)
             else:
                 runtime_config = config
+        elif base_config:
+            runtime_config = base_config
         else:
-            if base_config:
-                runtime_config = base_config
-            else:
-                runtime_config = RunnableConfigManager.create()
+            runtime_config = RunnableConfigManager.create()
 
         # Ensure configurable section exists
         if "configurable" not in runtime_config:
@@ -387,8 +385,7 @@ class ExecutionMixin:
         return runtime_config
 
     def _process_output(self, output_data: Any) -> Any:
-        """
-        Process and validate output data.
+        """Process and validate output data.
 
         Args:
             output_data: Raw output data from the graph
@@ -424,14 +421,12 @@ class ExecutionMixin:
     def run(
         self,
         input_data: Any,
-        thread_id: Optional[str] = None,
+        thread_id: str | None = None,
         debug: bool = None,
-        config: Optional[RunnableConfig] = None,
+        config: RunnableConfig | None = None,
         **kwargs,
     ) -> Any:
-        """
-        Synchronously run the agent with input data.
-        """
+        """Synchronously run the agent with input data."""
         # Ensure we have compiled app
         if not hasattr(self, "_app") or self._app is None:
             self.compile()
@@ -459,15 +454,32 @@ class ExecutionMixin:
         elif not runtime_config.get("recursion_limit"):
             # Set a default if not present
             runtime_config["recursion_limit"] = 100
-        # Register thread if needed
+
+        # Register thread if needed - use async checkpointer if available and in async mode
+        # Only set up checkpointing if explicitly enabled
         checkpointer = getattr(self, "checkpointer", None)
-        if checkpointer and thread_id:
-            register_thread_if_needed(checkpointer, thread_id)
+        async_checkpointer = getattr(self, "_async_checkpointer", None)
+        disable_checkpointing = getattr(self, "_disable_checkpointing", False)
+
+        # Choose appropriate checkpointer based on mode
+        active_checkpointer = None
+        if not disable_checkpointing:
+            active_checkpointer = checkpointer
+            if self._checkpoint_mode == "async" and async_checkpointer:
+                active_checkpointer = async_checkpointer
+
+        if active_checkpointer and thread_id:
+            try:
+                register_thread_if_needed(active_checkpointer, thread_id)
+            except Exception as e:
+                logger.warning(f"Failed to register thread for checkpointing: {e}")
+                # Disable checkpointing for this session if it fails
+                active_checkpointer = None
 
         # Get previous state if available
         previous_state = None
         try:
-            if checkpointer and thread_id:
+            if active_checkpointer and thread_id:
                 previous_state = self._app.get_state(runtime_config)
                 if previous_state and debug:
                     logger.debug(f"Retrieved previous state for thread {thread_id}")
@@ -519,13 +531,12 @@ class ExecutionMixin:
     async def arun(
         self,
         input_data: Any,
-        thread_id: Optional[str] = None,
-        config: Optional[RunnableConfig] = None,
+        thread_id: str | None = None,
+        config: RunnableConfig | None = None,
         debug: bool = None,
         **kwargs,
     ) -> Any:
-        """
-        Asynchronously run the agent with input data.
+        """Asynchronously run the agent with input data.
 
         Args:
             input_data: Input data for the agent
@@ -537,27 +548,119 @@ class ExecutionMixin:
         Returns:
             Output from the agent
         """
-        # For now, run synchronously in executor
-        # TODO: Implement full async support with async checkpointers
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None,
-            lambda: self.run(
-                input_data, thread_id=thread_id, config=config, debug=debug, **kwargs
-            ),
-        )
+        # Check if we have async persistence setup
+        async_checkpointer = getattr(self, "_async_checkpointer", None)
+
+        # If we have async checkpointer, use full async implementation
+        if async_checkpointer and self._checkpoint_mode == "async":
+            # Ensure we have compiled app
+            if not hasattr(self, "_app") or self._app is None:
+                self.compile()
+
+            # Default debug to verbose if available
+            if debug is None:
+                debug = getattr(self, "verbose", False)
+
+            # Prepare input data
+            processed_input = self._prepare_input(input_data)
+
+            # Prepare runtime configuration
+            runtime_config = self._prepare_runnable_config(
+                thread_id=thread_id, config=config, debug=debug, **kwargs
+            )
+
+            # Extract thread_id for persistence
+            thread_id = runtime_config["configurable"].get("thread_id")
+
+            # Register thread if needed with async checkpointer
+            if async_checkpointer and thread_id:
+                from haive.core.persistence.handlers import (
+                    register_async_thread_if_needed,
+                )
+
+                await register_async_thread_if_needed(async_checkpointer, thread_id)
+
+            # Get previous state if available using async checkpointer
+            previous_state = None
+            try:
+                if async_checkpointer and thread_id:
+                    # Create async app with async checkpointer for state retrieval
+                    async_app = self.graph.to_langgraph(
+                        state_schema=self.state_schema
+                    ).compile(checkpointer=async_checkpointer, store=self.store)
+                    previous_state = await async_app.aget_state(runtime_config)
+                    if previous_state and debug:
+                        logger.debug(f"Retrieved previous state for thread {thread_id}")
+            except Exception as e:
+                logger.warning(f"Error retrieving async previous state: {e}")
+
+            # Prepare merged input with previous state if available
+            if previous_state:
+                try:
+                    input_schema = getattr(self, "input_schema", None)
+                    state_schema = getattr(self, "state_schema", None)
+                    full_input = prepare_merged_input(
+                        processed_input,
+                        previous_state,
+                        runtime_config,
+                        input_schema,
+                        state_schema,
+                    )
+                    logger.debug("Merged input with previous state")
+                    processed_input = full_input
+                except Exception as e:
+                    logger.warning(f"Error merging with previous state: {e}")
+
+            # Run the agent asynchronously
+            try:
+                # Convert to dict if it's a Pydantic model
+                if hasattr(processed_input, "model_dump"):
+                    processed_input = processed_input.model_dump()
+
+                # Create async app with async checkpointer
+                async_app = self.graph.to_langgraph(
+                    state_schema=self.state_schema
+                ).compile(checkpointer=async_checkpointer, store=self.store)
+
+                result = await async_app.ainvoke(processed_input, config=runtime_config)
+                logger.debug("Async agent execution completed successfully")
+
+                # Process the result
+                output = self._process_output(result)
+
+                # Save state history if configured
+                if runtime_config["configurable"].get("save_history", True):
+                    self.save_state_history(runtime_config)
+
+                return output
+
+            except Exception as e:
+                logger.error(f"Error during async agent execution: {e}")
+                raise
+        else:
+            # Fall back to sync execution in executor
+            loop = asyncio.get_event_loop()
+            return await loop.run_in_executor(
+                None,
+                lambda: self.run(
+                    input_data,
+                    thread_id=thread_id,
+                    config=config,
+                    debug=debug,
+                    **kwargs,
+                ),
+            )
 
     def stream(
         self,
         input_data: Any,
-        thread_id: Optional[str] = None,
+        thread_id: str | None = None,
         stream_mode: str = "values",
-        config: Optional[RunnableConfig] = None,
+        config: RunnableConfig | None = None,
         debug: bool = None,
         **kwargs,
-    ) -> Generator[Dict[str, Any], None, None]:
-        """
-        Stream agent execution with input data.
+    ) -> Generator[dict[str, Any], None, None]:
+        """Stream agent execution with input data.
 
         Args:
             input_data: Input data for the agent
@@ -601,15 +704,31 @@ class ExecutionMixin:
             # Set a default if not present
             runtime_config["recursion_limit"] = 100
 
-        # Register thread if needed
+        # Register thread if needed - use async checkpointer if available and in async mode
+        # Only set up checkpointing if explicitly enabled
         checkpointer = getattr(self, "checkpointer", None)
-        if checkpointer and thread_id:
-            register_thread_if_needed(checkpointer, thread_id)
+        async_checkpointer = getattr(self, "_async_checkpointer", None)
+        disable_checkpointing = getattr(self, "_disable_checkpointing", False)
+
+        # Choose appropriate checkpointer based on mode
+        active_checkpointer = None
+        if not disable_checkpointing:
+            active_checkpointer = checkpointer
+            if self._checkpoint_mode == "async" and async_checkpointer:
+                active_checkpointer = async_checkpointer
+
+        if active_checkpointer and thread_id:
+            try:
+                register_thread_if_needed(active_checkpointer, thread_id)
+            except Exception as e:
+                logger.warning(f"Failed to register thread for checkpointing: {e}")
+                # Disable checkpointing for this session if it fails
+                active_checkpointer = None
 
         # Get previous state if available
         previous_state = None
         try:
-            if checkpointer and thread_id:
+            if active_checkpointer and thread_id:
                 previous_state = self._app.get_state(runtime_config)
                 if previous_state and debug:
                     logger.debug(f"Retrieved previous state for thread {thread_id}")
@@ -661,9 +780,8 @@ class ExecutionMixin:
             logger.error(f"Error during streaming execution: {e}")
             raise
 
-    def _process_stream_chunk(self, chunk: Any, stream_mode: str) -> Dict[str, Any]:
-        """
-        Process a stream chunk based on stream mode.
+    def _process_stream_chunk(self, chunk: Any, stream_mode: str) -> dict[str, Any]:
+        """Process a stream chunk based on stream mode.
 
         Args:
             chunk: The raw stream chunk
@@ -674,39 +792,37 @@ class ExecutionMixin:
         """
         if stream_mode == "custom":
             return chunk
-        elif stream_mode == "values":
+        if stream_mode == "values":
             if isinstance(chunk, dict) and "values" in chunk:
                 return chunk["values"]
             return chunk
-        elif stream_mode == "updates":
+        if stream_mode == "updates":
             if isinstance(chunk, dict) and "updates" in chunk:
                 return chunk["updates"]
-            elif isinstance(chunk, dict) and "node" in chunk:
+            if isinstance(chunk, dict) and "node" in chunk:
                 return chunk
             return chunk
-        elif stream_mode == "messages":
+        if stream_mode == "messages":
             if isinstance(chunk, dict):
                 if "values" in chunk and "messages" in chunk["values"]:
                     return {"messages": chunk["values"]["messages"]}
-                elif "updates" in chunk and "messages" in chunk["updates"]:
+                if "updates" in chunk and "messages" in chunk["updates"]:
                     return {"messages": chunk["updates"]["messages"]}
-                elif "messages" in chunk:
+                if "messages" in chunk:
                     return {"messages": chunk["messages"]}
             return chunk
-        else:
-            return chunk
+        return chunk
 
     async def astream(
         self,
         input_data: Any,
-        thread_id: Optional[str] = None,
+        thread_id: str | None = None,
         stream_mode: str = "values",
-        config: Optional[RunnableConfig] = None,
+        config: RunnableConfig | None = None,
         debug: bool = None,
         **kwargs,
-    ) -> AsyncGenerator[Dict[str, Any], None]:
-        """
-        Asynchronously stream agent execution with input data.
+    ) -> AsyncGenerator[dict[str, Any], None]:
+        """Asynchronously stream agent execution with input data.
 
         Args:
             input_data: Input data for the agent

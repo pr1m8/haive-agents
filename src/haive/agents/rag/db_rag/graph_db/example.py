@@ -34,8 +34,6 @@ import asyncio
 import json
 import logging
 import time
-from datetime import datetime
-from typing import Any, Dict, List, Optional
 
 from haive.agents.rag.db_rag.graph_db.agent import GraphDBRAGAgent
 from haive.agents.rag.db_rag.graph_db.config import (
@@ -103,7 +101,7 @@ def basic_example():
 
     except Exception as e:
         logger.error(f"Error in basic example: {e}")
-        print(f"\n❌ Error: {str(e)}")
+        print(f"\n❌ Error: {e!s}")
 
 
 def streaming_example():
@@ -194,7 +192,7 @@ def streaming_example():
 
     except Exception as e:
         logger.error(f"Error in streaming example: {e}")
-        print(f"\n❌ Error: {str(e)}")
+        print(f"\n❌ Error: {e!s}")
 
 
 def custom_domain_example():
@@ -288,7 +286,7 @@ def custom_domain_example():
 
     except Exception as e:
         logger.error(f"Error in custom domain example: {e}")
-        print(f"\n❌ Error: {str(e)}")
+        print(f"\n❌ Error: {e!s}")
 
 
 def batch_processing_example():
@@ -377,7 +375,7 @@ def batch_processing_example():
             except Exception as e:
                 execution_time = time.time() - start_time
                 print(f'{i}. "{question}"')
-                print(f"   ❌ Error: {str(e)} ({execution_time:.1f}s)\n")
+                print(f"   ❌ Error: {e!s} ({execution_time:.1f}s)\n")
                 failed += 1
                 total_time += execution_time
 
@@ -396,7 +394,7 @@ def batch_processing_example():
 
     except Exception as e:
         logger.error(f"Error in batch processing: {e}")
-        print(f"\n❌ Error: {str(e)}")
+        print(f"\n❌ Error: {e!s}")
 
 
 def error_handling_example():
@@ -473,7 +471,7 @@ def error_handling_example():
 
     except Exception as e:
         logger.error(f"Error in error handling example: {e}")
-        print(f"\n❌ Error: {str(e)}")
+        print(f"\n❌ Error: {e!s}")
 
 
 def performance_monitoring_example():
@@ -574,7 +572,7 @@ def performance_monitoring_example():
 
     except Exception as e:
         logger.error(f"Error in performance monitoring: {e}")
-        print(f"\n❌ Error: {str(e)}")
+        print(f"\n❌ Error: {e!s}")
 
 
 async def async_example():
@@ -661,7 +659,7 @@ async def async_example():
 
     except Exception as e:
         logger.error(f"Error in async example: {e}")
-        print(f"\n❌ Error: {str(e)}")
+        print(f"\n❌ Error: {e!s}")
 
 
 def main():
@@ -722,7 +720,7 @@ def main():
             if choice == "0":
                 print("\n👋 Goodbye!")
                 break
-            elif choice in examples:
+            if choice in examples:
                 examples[choice]()
                 input("\nPress Enter to continue...")
             else:
@@ -733,7 +731,7 @@ def main():
             break
         except Exception as e:
             logger.error(f"Error in main menu: {e}")
-            print(f"\n❌ Error: {str(e)}")
+            print(f"\n❌ Error: {e!s}")
 
 
 def run_all_examples():
@@ -764,7 +762,7 @@ def run_all_examples():
             func()
         except Exception as e:
             logger.error(f"Error running {name}: {e}")
-            print(f"\n❌ Error in {name}: {str(e)}")
+            print(f"\n❌ Error in {name}: {e!s}")
 
         if i < len(examples):
             print("\n⏸️  Pausing before next example...")
@@ -782,5 +780,5 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         logger.error(f"Fatal error: {e}")
-        print(f"\n❌ Fatal error: {str(e)}")
+        print(f"\n❌ Fatal error: {e!s}")
         exit(1)

@@ -1,16 +1,14 @@
 # src/haive/agents/task_analysis/agent.py
 
 import logging
-from typing import Any, Dict, List, Literal, Optional, Type
-from typing import Union as UnionType
+from typing import Any, Literal
 
-from haive.core.common.structures.tree import AutoTree
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.schema_composer import SchemaComposer
 from langgraph.graph import END, START
 from langgraph.types import Command, Send
-from pydantic import BaseModel, Field, field_validator
+from pydantic import Field
 
 from haive.agents.base.agent import Agent
 from haive.agents.task_analysis.analysis.engines import (
@@ -18,16 +16,16 @@ from haive.agents.task_analysis.analysis.engines import (
     IntegratedAnalyzerEngine,
     OptimizationRecommenderEngine,
 )
+
+# Import models
+from haive.agents.task_analysis.base.models import TaskNode
 from haive.agents.task_analysis.complexity.engines import (
     ComplexityAssessorEngine,
-    ComplexityComparisonEngine,
     ComplexityFactorsEngine,
 )
+from haive.agents.task_analysis.complexity.models import ComplexityVector
 from haive.agents.task_analysis.context.engines import (
     ContextAnalyzerEngine,
-    ContextFlowEngine,
-    ContextOptimizerEngine,
-    DomainExpertiseEngine,
 )
 
 # Import all engines
@@ -39,21 +37,12 @@ from haive.agents.task_analysis.decomposer.engines import (
 from haive.agents.task_analysis.execution.engines import (
     ExecutionPlannerEngine,
     JoinPointStrategyEngine,
-    PhaseOptimizerEngine,
-    ResourceAllocatorEngine,
 )
+from haive.agents.task_analysis.execution.models import ExecutionPlan
 from haive.agents.task_analysis.tree.engines import (
-    CriticalPathAnalyzerEngine,
-    TreePatternRecognizerEngine,
     TreeStructureAnalyzerEngine,
 )
-
-# Import models
-from .base.models import TaskNode, TaskPlan
-from .complexity.models import ComplexityAnalysis, ComplexityVector
-from .context.models import ContextAnalysis, ContextRequirement
-from .execution.models import ExecutionPlan, JoinPoint
-from .tree.models import TaskTree
+from haive.agents.task_analysis.tree.models import TaskTree
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +51,7 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 
 
-def route_after_decomposition(state: Dict[str, Any]) -> str:
+def route_after_decomposition(state: dict[str, Any]) -> str:
     """Route after initial decomposition."""
     task_node = state.get("task_node")
 
@@ -87,7 +76,7 @@ def route_after_decomposition(state: Dict[str, Any]) -> str:
     return "parallel_analysis"
 
 
-def route_after_validation(state: Dict[str, Any]) -> str:
+def route_after_validation(state: dict[str, Any]) -> str:
     """Route after validation."""
     validation_result = state.get("validation_result", {})
 
@@ -100,7 +89,7 @@ def route_after_validation(state: Dict[str, Any]) -> str:
     return "parallel_analysis"
 
 
-def route_after_analysis(state: Dict[str, Any]) -> str:
+def route_after_analysis(state: dict[str, Any]) -> str:
     """Route after parallel analysis completes."""
     # Check if all analyses are complete
     has_complexity = state.get("complexity_vector") is not None
@@ -119,7 +108,7 @@ def route_after_analysis(state: Dict[str, Any]) -> str:
     return "execution_planning"
 
 
-def route_final_decision(state: Dict[str, Any]) -> str:
+def route_final_decision(state: dict[str, Any]) -> str:
     """Make final routing decision."""
     execution_plan = state.get("execution_plan")
     integrated_analysis = state.get("integrated_analysis")
@@ -144,7 +133,7 @@ def route_final_decision(state: Dict[str, Any]) -> str:
 
 
 def parallel_analysis_orchestrator(
-    state: Dict[str, Any],
+    state: dict[str, Any],
 ) -> Command[Literal["complexity_assessment", "context_analysis", "tree_analysis"]]:
     """Orchestrate parallel analysis using Send."""
     task_node = state["task_node"]
@@ -213,7 +202,7 @@ def parallel_analysis_orchestrator(
 
 
 def join_analyses(
-    state: Dict[str, Any],
+    state: dict[str, Any],
 ) -> Command[Literal["execution_planning", "optimization", "integrate_analysis"]]:
     """Join parallel analyses and route next."""
     # All analyses should be complete at this point
@@ -222,7 +211,7 @@ def join_analyses(
 
 
 def recursive_expansion_orchestrator(
-    state: Dict[str, Any],
+    state: dict[str, Any],
 ) -> Command[Literal["recursive_decompose", "validate_decomposition"]]:
     """Orchestrate recursive decomposition."""
     task_node = state["task_node"]
@@ -260,8 +249,7 @@ def recursive_expansion_orchestrator(
 
 
 class TaskAnalysisAgent(Agent):
-    """
-    Comprehensive task analysis agent that orchestrates multiple analysis engines.
+    """Comprehensive task analysis agent that orchestrates multiple analysis engines.
 
     This agent:
     1. Decomposes tasks hierarchically
@@ -527,10 +515,9 @@ class TaskAnalysisAgent(Agent):
         task_description: str,
         domain: str = "general",
         additional_context: str = "",
-        max_depth: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Analyze a task comprehensively.
+        max_depth: int | None = None,
+    ) -> dict[str, Any]:
+        """Analyze a task comprehensively.
 
         Args:
             task_description: Natural language task description
@@ -551,17 +538,17 @@ class TaskAnalysisAgent(Agent):
         )
 
     def get_execution_plan(
-        self, analysis_result: Dict[str, Any]
-    ) -> Optional[ExecutionPlan]:
+        self, analysis_result: dict[str, Any]
+    ) -> ExecutionPlan | None:
         """Extract execution plan from analysis results."""
         return analysis_result.get("execution_plan")
 
     def get_complexity_assessment(
-        self, analysis_result: Dict[str, Any]
-    ) -> Optional[ComplexityVector]:
+        self, analysis_result: dict[str, Any]
+    ) -> ComplexityVector | None:
         """Extract complexity assessment from analysis results."""
         return analysis_result.get("complexity_vector")
 
-    def get_recommendations(self, analysis_result: Dict[str, Any]) -> List[str]:
+    def get_recommendations(self, analysis_result: dict[str, Any]) -> list[str]:
         """Extract recommendations from analysis results."""
         return analysis_result.get("recommendations", [])

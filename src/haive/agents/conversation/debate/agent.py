@@ -1,13 +1,11 @@
-"""
-Structured debate conversation agent with positions and formal argumentation.
+"""Structured debate conversation agent with positions and formal argumentation.
 
 This module implements a debate conversation agent that manages structured debates
 between multiple participants with defined positions, argument tracking, and
 optional judging/scoring capabilities.
 """
 
-import logging
-from typing import Any, Dict, List, Literal, Optional, Set, Tuple, Type
+from typing import Any, Literal
 
 from haive.core.logging.rich_logger import LogLevel, get_logger
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
@@ -22,8 +20,7 @@ logger.set_level(LogLevel.INFO)
 
 
 class DebateConversation(BaseConversationAgent):
-    """
-    Structured debate conversation with positions and formal argumentation.
+    """Structured debate conversation with positions and formal argumentation.
 
     This agent orchestrates formal debates between participants using a
     reducer-based state system for automatic tracking and phase management.
@@ -42,12 +39,12 @@ class DebateConversation(BaseConversationAgent):
     )
 
     # CRITICAL: Explicitly declare state schema type
-    state_schema: Type[BaseModel] = Field(
+    state_schema: type[BaseModel] = Field(
         default=DebateState, description="State schema class to use for this agent"
     )
 
     # Debate configuration
-    debate_positions: Dict[str, str] = Field(
+    debate_positions: dict[str, str] = Field(
         default_factory=dict,
         description="Mapping of participant names to their debate positions",
     )
@@ -86,7 +83,7 @@ class DebateConversation(BaseConversationAgent):
         default=False, description="Require participants to cite evidence for claims"
     )
 
-    time_limit_per_turn: Optional[int] = Field(
+    time_limit_per_turn: int | None = Field(
         default=None, ge=50, le=1000, description="Word limit per turn (if set)"
     )
 
@@ -135,11 +132,11 @@ class DebateConversation(BaseConversationAgent):
             f"DebateConversation setup complete with state schema: {self.state_schema}"
         )
 
-    def get_conversation_state_schema(self) -> Type[DebateState]:
+    def get_conversation_state_schema(self) -> type[DebateState]:
         """Return the DebateState schema for this conversation."""
         return DebateState
 
-    def _custom_initialization(self, state: DebateState) -> Dict[str, Any]:
+    def _custom_initialization(self, state: DebateState) -> dict[str, Any]:
         """Initialize debate-specific state fields."""
         # Initialize argument tracking for all participants
         arguments_made = {}
@@ -288,7 +285,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
 
     def _transition_to_phase(
         self, state: DebateState, new_phase: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create state updates for transitioning to a new phase."""
         # Generate appropriate message
         messages = {
@@ -322,7 +319,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
 
         return updates
 
-    def _select_opening_speaker(self, state: DebateState) -> Dict[str, Any]:
+    def _select_opening_speaker(self, state: DebateState) -> dict[str, Any]:
         """Select speaker for opening statements."""
         # Get speakers who haven't gone yet in opening phase
         speakers_done = set()
@@ -345,7 +342,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
         # All done - let computed property handle transition
         return {}
 
-    def _select_argument_speaker(self, state: DebateState) -> Dict[str, Any]:
+    def _select_argument_speaker(self, state: DebateState) -> dict[str, Any]:
         """Select speaker for main arguments phase."""
         # Use computed property to check if complete
         if state.all_arguments_complete:
@@ -367,7 +364,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
 
         return {}
 
-    def _select_rebuttal_speaker(self, state: DebateState) -> Dict[str, Any]:
+    def _select_rebuttal_speaker(self, state: DebateState) -> dict[str, Any]:
         """Select speaker for rebuttal phase."""
         # Check who has already given rebuttals
         rebuttal_counts = {
@@ -387,7 +384,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
         # All have given at least one rebuttal - phase complete
         return {}
 
-    def _select_closing_speaker(self, state: DebateState) -> Dict[str, Any]:
+    def _select_closing_speaker(self, state: DebateState) -> dict[str, Any]:
         """Select speaker for closing statements."""
         # Track who has given closing statements
         closing_speakers = set()
@@ -423,7 +420,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
 
     def _prepare_agent_input(
         self, state: DebateState, agent_name: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Prepare input for a specific agent with debate context."""
         # Get base input from parent
         base_input = super()._prepare_agent_input(state, agent_name)
@@ -471,7 +468,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
                 "Present your opening statement. Clearly state your position "
                 "and preview your main arguments. Be compelling and set the tone."
             )
-        elif phase == "arguments":
+        if phase == "arguments":
             participant_info = state.get_participant_summary(agent_name)
             args_made = participant_info["arguments_made"]
             remaining = self.arguments_per_side - args_made
@@ -480,18 +477,18 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
                 "Make a specific, well-supported point for your position. "
                 f"You have {remaining} more arguments after this."
             )
-        elif phase == "rebuttals":
+        if phase == "rebuttals":
             return (
                 "Respond to your opponent's arguments. Point out flaws, "
                 "contradictions, or weaknesses. Defend your own position "
                 "against their attacks."
             )
-        elif phase == "closing":
+        if phase == "closing":
             return (
                 "Present your closing statement. Summarize your strongest points, "
                 "address key rebuttals, and make a final compelling case for your position."
             )
-        elif phase == "judging" and agent_name == self.judge_name:
+        if phase == "judging" and agent_name == self.judge_name:
             return (
                 "As the judge, evaluate both sides fairly. Consider argument strength, "
                 "evidence quality, and rebuttal effectiveness. Declare a winner and explain why."
@@ -609,7 +606,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
 
     def _identify_rebuttal_target(
         self, content: str, state: DebateState, speaker: str
-    ) -> Optional[str]:
+    ) -> str | None:
         """Identify who a rebuttal is targeting."""
         content_lower = content.lower()
 
@@ -623,7 +620,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
 
     def _extract_debate_winner(
         self, judge_content: str, state: DebateState
-    ) -> Optional[str]:
+    ) -> str | None:
         """Extract winner from judge's decision."""
         content_lower = judge_content.lower()
 
@@ -642,9 +639,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
 
         return None
 
-    def _check_custom_end_conditions(
-        self, state: DebateState
-    ) -> Optional[Dict[str, Any]]:
+    def _check_custom_end_conditions(self, state: DebateState) -> dict[str, Any] | None:
         """Check custom end conditions using computed properties."""
         # Use the state's should_end_debate computed property
         if state.should_end_debate:
@@ -715,8 +710,8 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
     def create_simple_debate(
         cls,
         topic: str,
-        position_a: Tuple[str, str],  # (name, position)
-        position_b: Tuple[str, str],  # (name, position)
+        position_a: tuple[str, str],  # (name, position)
+        position_b: tuple[str, str],  # (name, position)
         enable_judge: bool = False,
         arguments_per_side: int = 3,
         temperature: float = 0.7,

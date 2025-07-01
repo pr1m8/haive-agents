@@ -1,5 +1,4 @@
-"""
-Document Loader Agent Usage Examples.
+"""Document Loader Agent Usage Examples.
 
 This module demonstrates how to use the document loader agents in various scenarios.
 """

@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -26,17 +26,15 @@ logger = logging.getLogger(__name__)
 
 
 class ParallelKGTransformerConfig(AgentConfig):
-    """
-    Configuration for the Parallel Knowledge Graph Transformer.
-    """
+    """Configuration for the Parallel Knowledge Graph Transformer."""
 
     name: str = "ParallelKGTransformer"
-    contents: List[Document]
+    contents: list[Document]
     state_schema: KnowledgeGraphState = Field(
         default=KnowledgeGraphState,
         description="The state of the knowledge graph transformer.",
     )
-    engines: Dict[str, AugLLMConfig] = Field(
+    engines: dict[str, AugLLMConfig] = Field(
         default_factory=create_parallel_kg_transformer_configs,
         description="Configurations for different stages of graph transformation",
     )
@@ -47,8 +45,7 @@ class ParallelKGTransformerConfig(AgentConfig):
 
 @register_agent(ParallelKGTransformerConfig)
 class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
-    """
-    An agent that builds a knowledge graph by extracting
+    """An agent that builds a knowledge graph by extracting
     nodes and relationships in parallel across multiple documents.
     """
 
@@ -114,13 +111,11 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         ]
 
     async def collect_graph_documents(
-        self, state: Union[KnowledgeGraphState, Dict[str, Any]], **kwargs
+        self, state: KnowledgeGraphState | dict[str, Any], **kwargs
     ):
         content = state["content"]
         # At this point, `content` is a Document object
-        if isinstance(content, Document):
-            context = content
-        elif isinstance(content, dict):
+        if isinstance(content, Document) or isinstance(content, dict):
             context = content
         elif isinstance(content, BaseModel):
             context = str(content)
@@ -143,9 +138,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         return {"graph_documents": graph_docs}
 
     def map_nodes(self, state: KnowledgeGraphState):
-        """
-        Map node extraction across documents.
-        """
+        """Map node extraction across documents."""
         if state.index >= len(state.contents):
             return {"index": state.index}
 
@@ -163,8 +156,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
     async def collect_nodes(
         self,
         state: KnowledgeGraphState,
-        content: Optional[Union[Document, Dict, BaseModel]] = None,
-        index: Optional[int] = None,
+        content: Document | dict | BaseModel | None = None,
+        index: int | None = None,
     ):
         try:
             if isinstance(content, Document):
@@ -191,9 +184,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             return {"index": 1}
 
     def map_relationships(self, state: KnowledgeGraphState):
-        """
-        Map relationship extraction across documents and nodes.
-        """
+        """Map relationship extraction across documents and nodes."""
         # If no documents or nodes left, proceed to next stage
         if not state.contents and not state.nodes:
             return {"sends": [Send("merge_graphs", {})]}
@@ -228,9 +219,9 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
     async def collect_relationships(
         self,
         state: KnowledgeGraphState,
-        content: Optional[Union[Document, Dict, BaseModel]] = None,
-        nodes: Optional[List[EntityNode]] = None,
-        index: Optional[int] = None,
+        content: Document | dict | BaseModel | None = None,
+        nodes: list[EntityNode] | None = None,
+        index: int | None = None,
         context_type: str = "document",
     ):
         try:
@@ -282,9 +273,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             return {"index": 1}
 
     def merge_graphs(self, state: KnowledgeGraphState):
-        """
-        Merge extracted graph documents, nodes, and relationships.
-        """
+        """Merge extracted graph documents, nodes, and relationships."""
         try:
             # Create a KnowledgeGraph from extracted components
             kg = KnowledgeGraph()
@@ -351,9 +340,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             }
 
 
-def build_agent(documents: List[Document]) -> ParallelKGTransformer:
-    """
-    Build a Parallel Knowledge Graph Transformer agent.
+def build_agent(documents: list[Document]) -> ParallelKGTransformer:
+    """Build a Parallel Knowledge Graph Transformer agent.
 
     Args:
         documents (List[Document]): Documents to process

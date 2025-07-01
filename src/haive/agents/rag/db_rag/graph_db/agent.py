@@ -55,32 +55,19 @@ See Also:
 import json
 import logging
 import os
-from typing import Annotated, Any, Dict, List, Literal, Optional, Union
 
 from haive.core.engine.agent.agent import Agent, register_agent
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.branches import Branch
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores.chroma import Chroma
 from langchain_core.documents import Document
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
-from langchain_neo4j import Neo4jGraph, Neo4jVector
 from langchain_neo4j.chains.graph_qa.cypher_utils import CypherQueryCorrector, Schema
 from langgraph.graph import END, START
 from langgraph.types import Command
-from neo4j import GraphDatabase
-from neo4j.exceptions import CypherSyntaxError
-from pydantic import BaseModel, Field
 
 from haive.agents.rag.db_rag.graph_db.config import GraphDBRAGConfig
-from haive.agents.rag.db_rag.graph_db.engines import (
-    correct_cypher_aug_llm_config,
-    generate_final_aug_llm_config,
-    guardrails_aug_llm_config,
-    text2cypher_aug_llm_config,
-    validate_cypher_aug_llm_config,
-)
-from haive.agents.rag.db_rag.graph_db.state import InputState, OutputState, OverallState
+from haive.agents.rag.db_rag.graph_db.state import OverallState
 
 logger = logging.getLogger(__name__)
 
@@ -240,7 +227,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             if hasattr(config, "example_config") and config.example_config:
                 examples_path = config.example_config.examples_path
                 if examples_path and os.path.exists(examples_path):
-                    with open(examples_path, "r") as f:
+                    with open(examples_path) as f:
                         domain_examples = json.load(f)
                 elif config.example_config.examples:
                     domain_examples = config.example_config.examples
@@ -289,7 +276,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 "DummySelector", (), {"select_examples": lambda self, query: []}
             )()
 
-    def _get_default_examples(self, domain_name: str) -> List[Dict[str, str]]:
+    def _get_default_examples(self, domain_name: str) -> list[dict[str, str]]:
         """Get default examples for the specified domain.
 
         Provides pre-defined examples for common domains to help with few-shot
@@ -446,7 +433,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             logger.error(f"Error in check_domain_relevance: {e}")
             return Command(
                 update={
-                    "error": f"Error checking domain relevance: {str(e)}",
+                    "error": f"Error checking domain relevance: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -507,7 +494,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             logger.error(f"Error in generate_query: {e}")
             return Command(
                 update={
-                    "error": f"Error generating Cypher query: {str(e)}",
+                    "error": f"Error generating Cypher query: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -558,18 +545,17 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                         "steps": state.steps + ["validate_query"],
                     }
                 )
-            else:
-                return Command(
-                    update={
-                        "next_action": "execute_query",
-                        "steps": state.steps + ["validate_query"],
-                    }
-                )
+            return Command(
+                update={
+                    "next_action": "execute_query",
+                    "steps": state.steps + ["validate_query"],
+                }
+            )
         except Exception as e:
             logger.error(f"Error in validate_query: {e}")
             return Command(
                 update={
-                    "error": f"Error validating Cypher query: {str(e)}",
+                    "error": f"Error validating Cypher query: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -626,7 +612,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             logger.error(f"Error in correct_query: {e}")
             return Command(
                 update={
-                    "error": f"Error correcting Cypher query: {str(e)}",
+                    "error": f"Error correcting Cypher query: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -672,7 +658,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             logger.error(f"Error in execute_query: {e}")
             return Command(
                 update={
-                    "error": f"Error executing Cypher query: {str(e)}",
+                    "error": f"Error executing Cypher query: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -729,8 +715,8 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             logger.error(f"Error in generate_answer: {e}")
             return Command(
                 update={
-                    "error": f"Error generating answer: {str(e)}",
-                    "answer": f"An error occurred while generating the answer: {str(e)}",
+                    "error": f"Error generating answer: {e!s}",
+                    "answer": f"An error occurred while generating the answer: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -765,7 +751,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         """
         if state.next_action == "end":
             return END
-        elif state.next_action == "correct_cypher":
+        if state.next_action == "correct_cypher":
             return "correct_query"
         return "execute_query"
 

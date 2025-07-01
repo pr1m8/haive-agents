@@ -1,5 +1,4 @@
-"""
-File Document Loader Agent.
+"""File Document Loader Agent.
 
 This package provides a specialized document loader agent for files.
 """

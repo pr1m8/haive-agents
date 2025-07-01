@@ -4,7 +4,7 @@ This module implements a rubric-based grading system that evaluates
 multiple criteria with individual scores and weights.
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -44,11 +44,11 @@ class RubricCriterion(BaseModel):
         examples=["Content Quality", "Organization", "Grammar & Style", "Originality"],
     )
 
-    score: Union[int, float] = Field(
+    score: int | float = Field(
         ..., description="Score achieved for this criterion", examples=[8.5, 7, 4.2, 9]
     )
 
-    max_score: Union[int, float] = Field(
+    max_score: int | float = Field(
         ...,
         description="Maximum possible score for this criterion",
         gt=0,
@@ -76,7 +76,7 @@ class RubricCriterion(BaseModel):
 
     @field_validator("score")
     @classmethod
-    def validate_score_range(cls, v: Union[int, float], info) -> Union[int, float]:
+    def validate_score_range(cls, v: int | float, info) -> int | float:
         """Validate that score is within valid range.
 
         Args:
@@ -195,7 +195,7 @@ class RubricGrade(Grade):
         default=GradeType.RUBRIC, description="Type of grade model (always rubric)"
     )
 
-    criteria: List[RubricCriterion] = Field(
+    criteria: list[RubricCriterion] = Field(
         ...,
         description="List of individual rubric criteria",
         min_length=1,
@@ -205,8 +205,8 @@ class RubricGrade(Grade):
     @field_validator("criteria")
     @classmethod
     def validate_criteria_names_unique(
-        cls, v: List[RubricCriterion]
-    ) -> List[RubricCriterion]:
+        cls, v: list[RubricCriterion]
+    ) -> list[RubricCriterion]:
         """Validate that all criterion names are unique.
 
         Args:
@@ -261,7 +261,7 @@ class RubricGrade(Grade):
         """
         return sum(criterion.get_weighted_max_score() for criterion in self.criteria)
 
-    def is_passing(self, threshold: Optional[float] = None) -> bool:
+    def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the rubric grade represents a passing score.
 
         Args:
@@ -276,7 +276,7 @@ class RubricGrade(Grade):
 
         return self.get_normalized_score() >= threshold
 
-    def get_criterion_by_name(self, name: str) -> Optional[RubricCriterion]:
+    def get_criterion_by_name(self, name: str) -> RubricCriterion | None:
         """Get a specific criterion by name.
 
         Args:
@@ -291,7 +291,7 @@ class RubricGrade(Grade):
                 return criterion
         return None
 
-    def get_criteria_summary(self) -> Dict[str, Dict[str, Any]]:
+    def get_criteria_summary(self) -> dict[str, dict[str, Any]]:
         """Get a summary of all criteria performance.
 
         Returns:
@@ -310,7 +310,7 @@ class RubricGrade(Grade):
             for criterion in self.criteria
         }
 
-    def get_weakest_criteria(self, count: int = 3) -> List[RubricCriterion]:
+    def get_weakest_criteria(self, count: int = 3) -> list[RubricCriterion]:
         """Get the criteria with the lowest normalized scores.
 
         Args:
@@ -322,7 +322,7 @@ class RubricGrade(Grade):
         sorted_criteria = sorted(self.criteria, key=lambda c: c.get_normalized_score())
         return sorted_criteria[:count]
 
-    def get_strongest_criteria(self, count: int = 3) -> List[RubricCriterion]:
+    def get_strongest_criteria(self, count: int = 3) -> list[RubricCriterion]:
         """Get the criteria with the highest normalized scores.
 
         Args:
@@ -336,7 +336,7 @@ class RubricGrade(Grade):
         )
         return sorted_criteria[:count]
 
-    def get_improvement_suggestions(self) -> List[str]:
+    def get_improvement_suggestions(self) -> list[str]:
         """Generate improvement suggestions based on weakest criteria.
 
         Returns:
@@ -399,7 +399,7 @@ class RubricGrade(Grade):
     @classmethod
     def create_simple_rubric(
         cls,
-        criteria_scores: Dict[str, Union[float, Dict[str, Any]]],
+        criteria_scores: dict[str, float | dict[str, Any]],
         justification: str,
         max_score: float = 10.0,
         **kwargs,

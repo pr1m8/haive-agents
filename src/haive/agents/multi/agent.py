@@ -1,20 +1,17 @@
 # haive/agents/multi/agent.py
 
-"""
-Advanced multi-agent class for the Haive framework.
+"""Advanced multi-agent class for the Haive framework.
 
 This module provides a comprehensive implementation of multi-agent systems,
 enabling seamless composition of multiple agents with various coordination patterns.
 """
 
 import logging
-from typing import Any, Dict, List, Literal, Optional, Type, Union
+from typing import Any, Literal
 
-from haive.core.graph.node.agent_node import AgentNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.graph.state_graph.components.node import Node
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer
-from haive.core.schema.state_schema import StateSchema
 from langgraph.graph import END
 from langgraph.graph.graph import CompiledGraph
 from langgraph.types import Command
@@ -26,8 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class MultiAgent(Agent):
-    """
-    Advanced multi-agent system with flexible coordination patterns.
+    """Advanced multi-agent system with flexible coordination patterns.
 
     This class enables the seamless composition of multiple agents into
     coordinated systems with various execution patterns and state sharing
@@ -55,7 +51,7 @@ class MultiAgent(Agent):
     """
 
     # Multi-agent specific fields
-    agents: Dict[str, Agent] = Field(
+    agents: dict[str, Agent] = Field(
         default_factory=dict,
         description="Dictionary of sub-agents in this multi-agent system",
     )
@@ -98,9 +94,9 @@ class MultiAgent(Agent):
     )
 
     # Private tracking
-    _agent_order: List[str] = PrivateAttr(default_factory=list)
-    _coordinator_agent: Optional[str] = PrivateAttr(default=None)
-    _agent_nodes: Dict[str, Node] = PrivateAttr(default_factory=dict)
+    _agent_order: list[str] = PrivateAttr(default_factory=list)
+    _coordinator_agent: str | None = PrivateAttr(default=None)
+    _agent_nodes: dict[str, Node] = PrivateAttr(default_factory=dict)
 
     def __reduce__(self):
         """Make MultiAgent picklable."""
@@ -128,7 +124,7 @@ class MultiAgent(Agent):
 
     @model_validator(mode="before")
     @classmethod
-    def normalize_agents(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def normalize_agents(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Normalize agents into engines dict."""
         # Handle list of agents - convert to dict
         if "agents" in values and isinstance(values["agents"], list):
@@ -141,7 +137,7 @@ class MultiAgent(Agent):
             values["agents"] = agent_dict
 
         # Now handle the dict of agents
-        if "agents" in values and values["agents"]:
+        if values.get("agents"):
             # Also add agents to engines dict for compatibility
             if "engines" not in values:
                 values["engines"] = {}
@@ -416,9 +412,9 @@ class MultiAgent(Agent):
                 if (
                     "messages" not in input_data
                     and hasattr(state, "messages")
-                    and getattr(state, "messages")
+                    and state.messages
                 ):
-                    input_data["messages"] = getattr(state, "messages")
+                    input_data["messages"] = state.messages
 
                 return input_data
 
@@ -445,7 +441,7 @@ class MultiAgent(Agent):
 
     def _create_agent_output(
         self, agent_name: str, agent: Agent, result: Any, state: Any
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create state update from agent result."""
         update = {}
 
@@ -502,14 +498,14 @@ class MultiAgent(Agent):
 
     def _determine_next_node(
         self, agent_name: str, result: Any, state: Any
-    ) -> Optional[str]:
+    ) -> str | None:
         """Determine the next node based on agent result and coordination mode."""
         # Check if result explicitly specifies next_agent
         if isinstance(result, dict) and "next_agent" in result:
             next_agent = result["next_agent"]
             if next_agent in self.agents:
                 return f"{next_agent}_node"
-            elif next_agent == "END":
+            if next_agent == "END":
                 return END
 
         # Use coordination mode default behavior
@@ -519,8 +515,7 @@ class MultiAgent(Agent):
                 idx = self._agent_order.index(agent_name)
                 if idx < len(self._agent_order) - 1:
                     return f"{self._agent_order[idx + 1]}_node"
-                else:
-                    return END
+                return END
             except ValueError:
                 return END
 
@@ -535,7 +530,7 @@ class MultiAgent(Agent):
         if hasattr(state, "next_agent") and state.next_agent:
             if state.next_agent in self.agents:
                 return f"{state.next_agent}_node"
-            elif state.next_agent == "END":
+            if state.next_agent == "END":
                 return END
 
         # Check for active_agent_id
@@ -650,8 +645,8 @@ class MultiAgent(Agent):
     @classmethod
     def from_agents(
         cls,
-        agents: Union[List[Agent], Dict[str, Agent]],
-        name: Optional[str] = None,
+        agents: list[Agent] | dict[str, Agent],
+        name: str | None = None,
         coordination_mode: str = "sequential",
         **kwargs,
     ) -> "MultiAgent":
@@ -681,7 +676,7 @@ class MultiAgent(Agent):
 
     @classmethod
     def sequential(
-        cls, agents: List[Agent], name: Optional[str] = None, **kwargs
+        cls, agents: list[Agent], name: str | None = None, **kwargs
     ) -> "MultiAgent":
         """Create a sequential multi-agent system."""
         return cls.from_agents(
@@ -693,7 +688,7 @@ class MultiAgent(Agent):
 
     @classmethod
     def parallel(
-        cls, agents: List[Agent], name: Optional[str] = None, **kwargs
+        cls, agents: list[Agent], name: str | None = None, **kwargs
     ) -> "MultiAgent":
         """Create a parallel multi-agent system."""
         return cls.from_agents(
@@ -706,9 +701,9 @@ class MultiAgent(Agent):
     @classmethod
     def supervised(
         cls,
-        agents: List[Agent],
-        coordinator: Optional[Agent] = None,
-        name: Optional[str] = None,
+        agents: list[Agent],
+        coordinator: Agent | None = None,
+        name: str | None = None,
         **kwargs,
     ) -> "MultiAgent":
         """Create a supervised multi-agent system with a coordinator."""
@@ -726,10 +721,9 @@ class MultiAgent(Agent):
         )
 
     def create_runnable(
-        self, runnable_config: Optional[Dict[str, Any]] = None
+        self, runnable_config: dict[str, Any] | None = None
     ) -> CompiledGraph:
-        """
-        Create and compile the runnable with proper schema kwargs.
+        """Create and compile the runnable with proper schema kwargs.
 
         This overrides the base Agent implementation to handle our multi-agent
         state schema correctly.

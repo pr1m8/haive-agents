@@ -1,5 +1,4 @@
-"""
-Base conversation agent providing core multi-agent conversation functionality.
+"""Base conversation agent providing core multi-agent conversation functionality.
 
 This base class handles the orchestration of conversations between multiple agents,
 with support for different conversation modes and patterns. It implements the core
@@ -22,7 +21,7 @@ particularly the `select_speaker` method that defines the conversation pattern.
 """
 
 from abc import abstractmethod
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -41,8 +40,7 @@ logger.set_level(LogLevel.WARNING)
 
 
 class BaseConversationAgent(Agent):
-    """
-    Base conversation agent that orchestrates multi-agent conversations.
+    """Base conversation agent that orchestrates multi-agent conversations.
 
     This abstract base class provides the core functionality for managing
     conversations between multiple agents, with hooks for customization.
@@ -68,12 +66,12 @@ class BaseConversationAgent(Agent):
     """
 
     # Agents participating in the conversation
-    participant_agents: Dict[str, Union[SimpleAgent, AugLLMConfig]] = Field(
+    participant_agents: dict[str, SimpleAgent | AugLLMConfig] = Field(
         default_factory=dict, description="Agent instances or configs by name"
     )
 
     # Compiled agents cache
-    _compiled_agents: Dict[str, SimpleAgent] = PrivateAttr(default_factory=dict)
+    _compiled_agents: dict[str, SimpleAgent] = PrivateAttr(default_factory=dict)
 
     # Configuration
     topic: str = Field(default="General discussion")
@@ -94,8 +92,7 @@ class BaseConversationAgent(Agent):
     )
 
     def setup_agent(self):
-        """
-        Set up the conversation orchestrator.
+        """Set up the conversation orchestrator.
 
         This method performs critical initialization steps for the conversation agent:
 
@@ -124,8 +121,7 @@ class BaseConversationAgent(Agent):
         super().setup_agent()
 
     def get_conversation_state_schema(self) -> type:
-        """
-        Get the state schema for this conversation type.
+        """Get the state schema for this conversation type.
 
         Override in subclasses to provide custom state schemas.
         """
@@ -188,8 +184,7 @@ class BaseConversationAgent(Agent):
 
             if current_speaker is not None and not conversation_ended:
                 return "execute_agent"
-            else:
-                return "conclude"
+            return "conclude"
 
         graph.add_conditional_edges(
             "select_speaker",
@@ -208,8 +203,7 @@ class BaseConversationAgent(Agent):
 
             if conversation_ended:
                 return "conclude"
-            else:
-                return "select_speaker"
+            return "select_speaker"
 
         graph.add_conditional_edges(
             "check_end",
@@ -223,12 +217,10 @@ class BaseConversationAgent(Agent):
         return graph
 
     def _add_custom_graph_elements(self, graph: BaseGraph):
-        """
-        Hook for subclasses to add custom nodes and edges.
+        """Hook for subclasses to add custom nodes and edges.
 
         Override this method to extend the graph structure.
         """
-        pass
 
     def initialize_conversation(self, state: Any) -> Command:
         """Initialize the conversation."""
@@ -264,8 +256,7 @@ class BaseConversationAgent(Agent):
 
     @abstractmethod
     def select_speaker(self, state: Any) -> Command:
-        """
-        Select the next speaker in the conversation.
+        """Select the next speaker in the conversation.
 
         This is the primary method that defines the conversation pattern and must
         be implemented by all conversation type subclasses. It determines which
@@ -343,12 +334,10 @@ class BaseConversationAgent(Agent):
         except Exception as e:
             if self.handle_errors:
                 return self._handle_agent_error(e, current_speaker)
-            else:
-                raise
+            raise
 
     def process_response(self, state: Any) -> Command:
-        """
-        Process the agent's response.
+        """Process the agent's response.
 
         Override in subclasses to add custom response processing.
         """
@@ -454,11 +443,11 @@ class BaseConversationAgent(Agent):
             content=f"Topic: {self.topic}\nLet's begin our {self.mode} discussion."
         )
 
-    def _custom_initialization(self, state: Any) -> Dict[str, Any]:
+    def _custom_initialization(self, state: Any) -> dict[str, Any]:
         """Hook for custom initialization. Override in subclasses."""
         return {}
 
-    def _prepare_agent_input(self, state: Any, agent_name: str) -> Dict[str, Any]:
+    def _prepare_agent_input(self, state: Any, agent_name: str) -> dict[str, Any]:
         """Prepare input for an agent. Override for custom behavior."""
         if isinstance(state, dict):
             messages = state.get("messages", [])
@@ -467,8 +456,8 @@ class BaseConversationAgent(Agent):
         return {"messages": messages}
 
     def _extract_agent_messages(
-        self, result: Any, input_messages: List[BaseMessage]
-    ) -> List[BaseMessage]:
+        self, result: Any, input_messages: list[BaseMessage]
+    ) -> list[BaseMessage]:
         """Extract new messages from agent result."""
         new_messages = []
 
@@ -487,7 +476,7 @@ class BaseConversationAgent(Agent):
         """Handle errors from agent execution."""
         logger.error(f"Error executing agent {agent_name}: {error}")
         error_msg = AIMessage(
-            content=f"[Error from {agent_name}]: {str(error)}", name=agent_name
+            content=f"[Error from {agent_name}]: {error!s}", name=agent_name
         )
         return Command(
             update={
@@ -497,18 +486,18 @@ class BaseConversationAgent(Agent):
             }
         )
 
-    def _check_custom_end_conditions(self, state: Any) -> Optional[Dict[str, Any]]:
+    def _check_custom_end_conditions(self, state: Any) -> dict[str, Any] | None:
         """Check custom end conditions. Override in subclasses."""
         return None
 
-    def get_input_fields(self) -> Dict[str, Tuple[type, Any]]:
+    def get_input_fields(self) -> dict[str, tuple[type, Any]]:
         """Define input fields."""
-        return {"messages": (List[BaseMessage], []), "topic": (str, "")}
+        return {"messages": (list[BaseMessage], []), "topic": (str, "")}
 
-    def get_output_fields(self) -> Dict[str, Tuple[type, Any]]:
+    def get_output_fields(self) -> dict[str, tuple[type, Any]]:
         """Define output fields."""
         return {
-            "messages": (List[BaseMessage], []),
+            "messages": (list[BaseMessage], []),
             "round_number": (int, 0),
             "turn_count": (int, 0),
             "conversation_ended": (bool, False),
@@ -517,7 +506,7 @@ class BaseConversationAgent(Agent):
     # Factory method for easy creation
     @classmethod
     def create(
-        cls, participants: Dict[str, Union[SimpleAgent, AugLLMConfig]], **kwargs
+        cls, participants: dict[str, SimpleAgent | AugLLMConfig], **kwargs
     ) -> "BaseConversationAgent":
         """Create a conversation with participants."""
         return cls(participant_agents=participants, **kwargs)

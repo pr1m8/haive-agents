@@ -1,9 +1,9 @@
-from typing import List, Dict, Any
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-from langchain_core.output_parsers import PydanticOutputParser
+from typing import Any
 
 from agents.lats.models import Reflection
+from langchain_core.output_parsers import PydanticOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+
 
 def create_reflection_chain():
     """Create a chain for generating reflections on responses."""
@@ -36,26 +36,24 @@ def create_reflection_chain():
     }}
     ```
     """
-    
+
     # Create the chat prompt
     reflection_prompt = ChatPromptTemplate.from_template(reflection_template)
-    
+
     # Create the reflection model (use a specific model for good evaluations)
-    #model = ChatOpenAI(temperature=0)
-    
+    # model = ChatOpenAI(temperature=0)
+
     # Create parser for Reflection
     parser = PydanticOutputParser(pydantic_object=Reflection)
-    model = AzureLLMConfig(
-        model="gpt-4o",
-        parameters={"temperature": 0}
-    ).instantiate()
+    model = AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0}).instantiate()
     # Build and return the reflection chain
     return reflection_prompt | model | parser
 
-def format_messages_for_chain(messages: List[Any]) -> str:
+
+def format_messages_for_chain(messages: list[Any]) -> str:
     """Format a list of messages as a string for input to a chain."""
     formatted_msgs = []
-    
+
     for msg in messages:
         if hasattr(msg, "content") and msg.content:
             msg_type = getattr(msg, "type", "message").upper()
@@ -66,33 +64,32 @@ def format_messages_for_chain(messages: List[Any]) -> str:
         else:
             # Try to handle unexpected types gracefully
             formatted_msgs.append(str(msg))
-    
+
     return "\n\n".join(formatted_msgs)
+
 
 """
 Factory functions for creating LATS agents.
 """
-from typing import List, Optional
+from agents.lats.config import LATSAgentConfig
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.tools.search_tools import tavily_search_tool
 from langchain_core.tools import BaseTool
 
-from agents.lats.config import LATSAgentConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.prompts import ChatPromptTemplate
-from haive.core.tools.search_tools import tavily_search_tool
+
 def create_lats_agent(
     system_prompt: str = "You are a helpful assistant that can answer questions and help with tasks.",
-    tools: Optional[List[BaseTool]] = [tavily_search_tool],
+    tools: list[BaseTool] | None = [tavily_search_tool],
     max_depth: int = 3,
     max_iterations: int = 3,
     n_candidates: int = 3,
     exploration_weight: float = 1.0,
     name: str = "lats_agent",
-    model: str = "gpt-4o"
+    model: str = "gpt-4o",
 ) -> "LATSAgent":
-    """
-    Create a LATS agent with the specified configuration.
-    
+    """Create a LATS agent with the specified configuration.
+
     Args:
         system_prompt: System prompt for the agent
         tools: Optional list of tools for the agent to use
@@ -102,48 +99,50 @@ def create_lats_agent(
         exploration_weight: Weight for exploration in UCB calculation
         name: Name for the agent
         model: Model name to use
-        
+
     Returns:
         A configured LATS agent
     """
     # Create LLM config
-    llm_config = AzureLLMConfig(
-        model=model,
-        parameters={"temperature": 0.7}
-    )
-    
+    llm_config = AzureLLMConfig(model=model, parameters={"temperature": 0.7})
+
     # Create reflection engine
-    reflection_prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an objective evaluator tasked with analyzing responses."),
-        ("user", "Analyze how well the following response addresses the query:\n\nQuery: {input}\n\nResponse: {candidate}")
-    ])
-    
+    reflection_prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                "You are an objective evaluator tasked with analyzing responses.",
+            ),
+            (
+                "user",
+                "Analyze how well the following response addresses the query:\n\nQuery: {input}\n\nResponse: {candidate}",
+            ),
+        ]
+    )
+
     reflection_engine = AugLLMConfig(
         name="reflection_engine",
         llm_config=llm_config.model_copy(update={"parameters": {"temperature": 0.1}}),
-        prompt_template=reflection_prompt
+        prompt_template=reflection_prompt,
     )
-    
+
     # Create action engine
-    action_prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("user", "{input}")
-    ])
-    
+    action_prompt = ChatPromptTemplate.from_messages(
+        [("system", system_prompt), ("user", "{input}")]
+    )
+
     action_engine = AugLLMConfig(
         name="action_engine",
         llm_config=llm_config,
         prompt_template=action_prompt,
-        tools=tools or []
+        tools=tools or [],
     )
-    
+
     # Create main engine (same as action for simplicity)
     main_engine = AugLLMConfig(
-        name="main_engine",
-        llm_config=llm_config,
-        prompt_template=action_prompt
+        name="main_engine", llm_config=llm_config, prompt_template=action_prompt
     )
-    
+
     # Create agent config
     config = LATSAgentConfig(
         name=name,
@@ -154,8 +153,8 @@ def create_lats_agent(
         max_depth=max_depth,
         max_iterations=max_iterations,
         n_candidates=n_candidates,
-        exploration_weight=exploration_weight
+        exploration_weight=exploration_weight,
     )
-    
+
     # Build and return the agent
     return config.build_agent()

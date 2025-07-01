@@ -1,5 +1,3 @@
-from typing import Optional
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -15,8 +13,7 @@ from haive.agents.document_modifiers.kg.kg_map_merge.models import (
 def create_node_extraction_config(
     model: str = "gpt-4o", temperature: float = 0.7
 ) -> AugLLMConfig:
-    """
-    Create an AugLLMConfig for entity node extraction.
+    """Create an AugLLMConfig for entity node extraction.
 
     Args:
         model: LLM model to use
@@ -63,8 +60,7 @@ def create_node_extraction_config(
 def create_relationship_extraction_config(
     model: str = "gpt-4o", temperature: float = 0.7
 ) -> AugLLMConfig:
-    """
-    Create an AugLLMConfig for relationship extraction.
+    """Create an AugLLMConfig for relationship extraction.
 
     Args:
         model: LLM model to use
@@ -118,8 +114,7 @@ def create_relationship_extraction_config(
 def create_graph_extraction_config(
     model: str = "gpt-4o", temperature: float = 0.7
 ) -> AugLLMConfig:
-    """
-    Create an AugLLMConfig for comprehensive knowledge graph extraction.
+    """Create an AugLLMConfig for comprehensive knowledge graph extraction.
 
     Args:
         model: LLM model to use
@@ -170,8 +165,7 @@ def create_graph_extraction_config(
 def create_graph_merger_config(
     model: str = "gpt-4o", temperature: float = 0.7
 ) -> AugLLMConfig:
-    """
-    Create an AugLLMConfig for merging knowledge graphs.
+    """Create an AugLLMConfig for merging knowledge graphs.
 
     Args:
         model: LLM model to use
@@ -224,8 +218,7 @@ def create_graph_merger_config(
 
 
 def create_parallel_kg_transformer_configs() -> dict:
-    """
-    Create a comprehensive set of configurations for the Parallel KG Transformer.
+    """Create a comprehensive set of configurations for the Parallel KG Transformer.
 
     Returns:
         Dictionary of AugLLMConfigs

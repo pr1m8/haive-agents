@@ -3,7 +3,7 @@
 # ============================================================================
 
 from enum import Enum
-from typing import List, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -27,10 +27,10 @@ class HallucinationClaim(BaseModel):
     support_type: str = Field(
         description="Type of support: explicit, inferred, or unsupported"
     )
-    source_reference: Optional[str] = Field(
+    source_reference: str | None = Field(
         default=None, description="Reference to supporting source if available"
     )
-    hallucination_type: Optional[HallucinationType] = Field(
+    hallucination_type: HallucinationType | None = Field(
         default=None, description="Type of hallucination if detected"
     )
     severity: float = Field(
@@ -51,15 +51,15 @@ class HallucinationDetectionResponse(BaseModel):
         le=1.0,
         description="Overall hallucination score (0.0 = no hallucinations)",
     )
-    claim_analysis: List[HallucinationClaim] = Field(
+    claim_analysis: list[HallucinationClaim] = Field(
         description="Analysis of individual claims"
     )
-    supported_claims: List[str] = Field(description="Claims well-supported by sources")
-    unsupported_claims: List[str] = Field(description="Claims lacking source support")
-    contradictory_claims: List[str] = Field(
+    supported_claims: list[str] = Field(description="Claims well-supported by sources")
+    unsupported_claims: list[str] = Field(description="Claims lacking source support")
+    contradictory_claims: list[str] = Field(
         default_factory=list, description="Claims that contradict the sources"
     )
-    recommendations: List[str] = Field(
+    recommendations: list[str] = Field(
         description="Recommendations for improving answer accuracy"
     )
 
@@ -76,6 +76,6 @@ class HallucinationBinaryResponse(BaseModel):
         description="none, minor, moderate, major, or severe"
     )
     justification: str = Field(description="Detailed reasoning for the decision")
-    specific_issues: List[str] = Field(
+    specific_issues: list[str] = Field(
         default_factory=list, description="Specific hallucinated content identified"
     )

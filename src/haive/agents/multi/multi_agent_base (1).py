@@ -1,7 +1,6 @@
 # haive/agents/multi/base.py
 
-"""
-Base multi-agent class for the Haive framework.
+"""Base multi-agent class for the Haive framework.
 
 This module provides the abstract base class for multi-agent systems,
 enabling composition of multiple agents with various coordination patterns.
@@ -9,7 +8,7 @@ enabling composition of multiple agents with various coordination patterns.
 
 import logging
 from abc import abstractmethod
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Literal
 
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -24,15 +23,14 @@ logger = logging.getLogger(__name__)
 
 
 class MultiAgent(Agent):
-    """
-    Abstract base class for multi-agent systems.
+    """Abstract base class for multi-agent systems.
 
     This class provides the foundation for composing multiple agents into
     coordinated systems with various execution patterns.
     """
 
     # Multi-agent specific fields
-    agents: Dict[str, Agent] = Field(
+    agents: dict[str, Agent] = Field(
         default_factory=dict,
         description="Dictionary of sub-agents in this multi-agent system",
     )
@@ -64,8 +62,8 @@ class MultiAgent(Agent):
     )
 
     # Private tracking
-    _agent_order: List[str] = PrivateAttr(default_factory=list)
-    _coordinator_agent: Optional[str] = PrivateAttr(default=None)
+    _agent_order: list[str] = PrivateAttr(default_factory=list)
+    _coordinator_agent: str | None = PrivateAttr(default=None)
 
     def __reduce__(self):
         """Make MultiAgent picklable."""
@@ -92,7 +90,7 @@ class MultiAgent(Agent):
 
     @model_validator(mode="before")
     @classmethod
-    def normalize_agents(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def normalize_agents(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Normalize agents into engines dict."""
         # Handle list of agents - convert to dict
         if "agents" in values and isinstance(values["agents"], list):
@@ -105,7 +103,7 @@ class MultiAgent(Agent):
             values["agents"] = agent_dict
 
         # Now handle the dict of agents
-        if "agents" in values and values["agents"]:
+        if values.get("agents"):
             # Also add agents to engines dict for compatibility
             if "engines" not in values:
                 values["engines"] = {}
@@ -155,7 +153,6 @@ class MultiAgent(Agent):
     @abstractmethod
     def build_graph(self) -> BaseGraph:
         """Build the multi-agent graph - must be implemented by subclasses."""
-        pass
 
     def _create_agent_node(self, agent_name: str, agent: Agent) -> EngineNodeConfig:
         """Create an engine node for an agent."""
@@ -167,7 +164,7 @@ class MultiAgent(Agent):
             output_fields=self._get_agent_output_mapping(agent_name),
         )
 
-    def _get_agent_input_mapping(self, agent_name: str) -> Dict[str, str]:
+    def _get_agent_input_mapping(self, agent_name: str) -> dict[str, str]:
         """Get input field mapping for an agent based on separation strategy."""
         mapping = {}
 
@@ -175,7 +172,7 @@ class MultiAgent(Agent):
             # Direct mapping
             return None  # Use default mapping
 
-        elif self.separation_strategy == "namespaced":
+        if self.separation_strategy == "namespaced":
             # Map namespaced fields to agent's expected fields
             agent = self.agents.get(agent_name)
             if (
@@ -212,7 +209,7 @@ class MultiAgent(Agent):
 
         return mapping if mapping else None
 
-    def _get_agent_output_mapping(self, agent_name: str) -> Dict[str, str]:
+    def _get_agent_output_mapping(self, agent_name: str) -> dict[str, str]:
         """Get output field mapping for an agent based on separation strategy."""
         mapping = {}
 
@@ -220,7 +217,7 @@ class MultiAgent(Agent):
             # Direct mapping
             return None
 
-        elif self.separation_strategy == "namespaced":
+        if self.separation_strategy == "namespaced":
             # Map agent outputs to namespaced fields
             agent = self.agents.get(agent_name)
             if (
@@ -308,8 +305,8 @@ class MultiAgent(Agent):
     @classmethod
     def from_agents(
         cls,
-        agents: Union[List[Agent], Dict[str, Agent]],
-        name: Optional[str] = None,
+        agents: list[Agent] | dict[str, Agent],
+        name: str | None = None,
         coordination_mode: str = "sequential",
         **kwargs,
     ) -> "MultiAgent":

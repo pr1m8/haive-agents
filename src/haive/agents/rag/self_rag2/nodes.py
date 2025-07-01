@@ -1,9 +1,10 @@
 ### Nodes
 
 from pydantic import Field
+
+
 def retrieve(state):
-    """
-    Retrieve documents
+    """Retrieve documents
 
     Args:
         state (dict): The current graph state
@@ -20,8 +21,7 @@ def retrieve(state):
 
 
 def generate(state):
-    """
-    Generate answer
+    """Generate answer
 
     Args:
         state (dict): The current graph state
@@ -39,8 +39,7 @@ def generate(state):
 
 
 def grade_documents(state):
-    """
-    Determines whether the retrieved documents are relevant to the question.
+    """Determines whether the retrieved documents are relevant to the question.
 
     Args:
         state (dict): The current graph state
@@ -48,7 +47,6 @@ def grade_documents(state):
     Returns:
         state (dict): Updates documents key with only filtered relevant documents
     """
-
     print("---CHECK DOCUMENT RELEVANCE TO QUESTION---")
     question = state["question"]
     documents = state["documents"]
@@ -70,8 +68,7 @@ def grade_documents(state):
 
 
 def transform_query(state):
-    """
-    Transform the query to produce a better question.
+    """Transform the query to produce a better question.
 
     Args:
         state (dict): The current graph state
@@ -79,7 +76,6 @@ def transform_query(state):
     Returns:
         state (dict): Updates question key with a re-phrased question
     """
-
     print("---TRANSFORM QUERY---")
     question = state["question"]
     documents = state["documents"]
@@ -91,8 +87,9 @@ def transform_query(state):
 
 ### Edges
 
-def transform_query(question:str = Field(description="The question to be transformed")):
-    """
-    Transform the query to produce a better question.
-    """
+
+def transform_query(
+    question: str = Field(description="The question to be transformed"),
+):
+    """Transform the query to produce a better question."""
     question_rewi

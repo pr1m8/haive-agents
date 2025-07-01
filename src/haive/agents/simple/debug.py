@@ -1,10 +1,10 @@
 # Create a debug script to test input/output schema derivation
 
 import logging
-from pydantic import BaseModel
-from langchain_core.prompts import PromptTemplate
-from haive.core.models.llm.base import AzureLLMConfig
+
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
+from langchain_core.prompts import PromptTemplate
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -28,7 +28,7 @@ aug_llm = AugLLMConfig(
     name="debug_llm",
     llm_config=AzureLLMConfig(model="gpt-4o"),
     prompt_template=prompt,
-    system_prompt="You are a helpful assistant."
+    system_prompt="You are a helpful assistant.",
 )
 
 # Get variables from _get_input_variables
@@ -51,7 +51,7 @@ for idx, test_input in enumerate(test_inputs):
     print(f"\nTest {idx+1}: {type(test_input)}")
     result = aug_llm._process_input(test_input)
     print(f"Processed result: {result}")
-    
+
     # Check if all required variables are present
     missing = [var for var in input_vars if var not in result]
     if missing:

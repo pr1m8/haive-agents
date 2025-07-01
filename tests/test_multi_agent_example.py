@@ -1,12 +1,9 @@
-"""
-Test case for the Multi-Agent implementation using the example from the user's request.
+"""Test case for the Multi-Agent implementation using the example from the user's request.
 
 This module tests a specific example where we have:
 1. A simple agent with Plan structured output
 2. A react agent with add tool
 """
-
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
@@ -20,7 +17,7 @@ from haive.agents.simple.agent import SimpleAgent
 class Plan(BaseModel):
     """A planning model for structured output."""
 
-    steps: List[str] = Field(description="list of steps")
+    steps: list[str] = Field(description="list of steps")
 
 
 # The add tool as per user request

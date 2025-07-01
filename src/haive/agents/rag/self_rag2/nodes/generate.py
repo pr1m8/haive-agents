@@ -1,8 +1,5 @@
-from haive.haive.self_rag.state import GraphState
-
 def generate(state):
-    """
-    Generate answer
+    """Generate answer
 
     Args:
         state (dict): The current graph state

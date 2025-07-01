@@ -1,12 +1,10 @@
-"""
-Directory-specific Document Loader Agent.
+"""Directory-specific Document Loader Agent.
 
 This module provides a specialized document loader agent for loading
 documents from local directories.
 """
 
 from pathlib import Path
-from typing import List, Optional, Union
 
 from haive.core.engine.document_loader import create_directory_loader_engine
 from pydantic import Field
@@ -15,8 +13,7 @@ from haive.agents.document_loader.base.agent import DocumentLoaderAgent
 
 
 class DirectoryLoaderAgent(DocumentLoaderAgent):
-    """
-    Specialized document loader agent for loading documents from directories.
+    """Specialized document loader agent for loading documents from directories.
 
     This agent is pre-configured for loading from local directories and provides
     additional directory-specific options.
@@ -33,7 +30,7 @@ class DirectoryLoaderAgent(DocumentLoaderAgent):
     name: str = "Directory Loader Agent"
 
     # Directory-specific options
-    directory_path: Optional[Union[str, Path]] = Field(
+    directory_path: str | Path | None = Field(
         default=None, description="Path to the directory to load"
     )
 
@@ -41,15 +38,15 @@ class DirectoryLoaderAgent(DocumentLoaderAgent):
         default=True, description="Whether to recursively load files"
     )
 
-    glob_pattern: Optional[str] = Field(
+    glob_pattern: str | None = Field(
         default=None, description="Glob pattern for filtering files"
     )
 
-    include_extensions: Optional[List[str]] = Field(
+    include_extensions: list[str] | None = Field(
         default=None, description="List of file extensions to include"
     )
 
-    exclude_extensions: Optional[List[str]] = Field(
+    exclude_extensions: list[str] | None = Field(
         default=None, description="List of file extensions to exclude"
     )
 

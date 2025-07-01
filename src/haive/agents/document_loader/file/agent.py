@@ -1,12 +1,10 @@
-"""
-File-specific Document Loader Agent.
+"""File-specific Document Loader Agent.
 
 This module provides a specialized document loader agent for loading
 documents from local files.
 """
 
 from pathlib import Path
-from typing import Optional, Union
 
 from haive.core.engine.document_loader import create_file_loader_engine
 from pydantic import Field
@@ -15,8 +13,7 @@ from haive.agents.document_loader.base.agent import DocumentLoaderAgent
 
 
 class FileLoaderAgent(DocumentLoaderAgent):
-    """
-    Specialized document loader agent for loading documents from files.
+    """Specialized document loader agent for loading documents from files.
 
     This agent is pre-configured for loading from local files and provides
     additional file-specific options.
@@ -31,15 +28,15 @@ class FileLoaderAgent(DocumentLoaderAgent):
     name: str = "File Loader Agent"
 
     # File-specific options
-    file_path: Optional[Union[str, Path]] = Field(
+    file_path: str | Path | None = Field(
         default=None, description="Path to the file to load"
     )
 
-    file_extension: Optional[str] = Field(
+    file_extension: str | None = Field(
         default=None, description="File extension to use for loader selection"
     )
 
-    loader_name: Optional[str] = Field(
+    loader_name: str | None = Field(
         default=None, description="Explicit loader name to use"
     )
 

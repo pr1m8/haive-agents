@@ -4,12 +4,11 @@ This module defines the fundamental building blocks for task complexity analysis
 including task representations, dependency types, and complexity classifications.
 """
 
-from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Union
 
 from haive.core.common.structures.tree import AutoTree
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TaskType(str, Enum):
@@ -256,7 +255,7 @@ class TaskStep(BaseModel):
         examples=[1.0, 5.0, 30.0, 120.0],
     )
 
-    required_resources: List[ResourceType] = Field(
+    required_resources: list[ResourceType] = Field(
         default_factory=list,
         description="Resources needed to complete this step",
         max_length=10,
@@ -277,11 +276,11 @@ class TaskStep(BaseModel):
         default=False, description="Whether human judgment is essential for this step"
     )
 
-    dependencies: Set[str] = Field(
+    dependencies: set[str] = Field(
         default_factory=set, description="IDs of other steps this step depends on"
     )
 
-    outputs: List[str] = Field(
+    outputs: list[str] = Field(
         default_factory=list,
         description="What this step produces or provides",
         examples=[
@@ -291,7 +290,7 @@ class TaskStep(BaseModel):
         ],
     )
 
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata about this step"
     )
 
@@ -380,7 +379,7 @@ class DependencyNode(BaseModel):
         ..., description="Type of dependency relationship"
     )
 
-    condition: Optional[str] = Field(
+    condition: str | None = Field(
         default=None,
         description="Optional condition for conditional dependencies",
         examples=[
@@ -403,7 +402,7 @@ class DependencyNode(BaseModel):
         max_length=500,
     )
 
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata about this dependency"
     )
 
@@ -510,33 +509,33 @@ class Task(BaseModel):
     task_type: TaskType = Field(..., description="Primary type of this task")
 
     # This is the key field that AutoTree will handle - Union of Task and TaskStep
-    subtasks: List[Union["Task", TaskStep]] = Field(
+    subtasks: list[Union["Task", TaskStep]] = Field(
         default_factory=list,
         description="List of subtasks and steps that make up this task",
         max_length=50,
     )
 
-    dependencies: List[DependencyNode] = Field(
+    dependencies: list[DependencyNode] = Field(
         default_factory=list,
         description="Dependency relationships between subtasks",
         max_length=100,
     )
 
-    estimated_duration_minutes: Optional[float] = Field(
+    estimated_duration_minutes: float | None = Field(
         default=None,
         description="Total estimated duration in minutes (calculated if None)",
         gt=0,
     )
 
-    complexity_level: Optional[ComplexityLevel] = Field(
+    complexity_level: ComplexityLevel | None = Field(
         default=None, description="Overall complexity assessment (calculated if None)"
     )
 
-    required_resources: List[ResourceType] = Field(
+    required_resources: list[ResourceType] = Field(
         default_factory=list, description="Resources needed for the entire task"
     )
 
-    success_criteria: List[str] = Field(
+    success_criteria: list[str] = Field(
         default_factory=list,
         description="Criteria for measuring successful task completion",
         examples=[
@@ -561,11 +560,11 @@ class Task(BaseModel):
         default=True, description="Whether subtasks can potentially run in parallel"
     )
 
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata about this task"
     )
 
-    def get_all_steps(self) -> List[TaskStep]:
+    def get_all_steps(self) -> list[TaskStep]:
         """Get all TaskStep objects from the entire task hierarchy.
 
         Returns:
@@ -581,7 +580,7 @@ class Task(BaseModel):
 
         return steps
 
-    def get_all_tasks(self) -> List["Task"]:
+    def get_all_tasks(self) -> list["Task"]:
         """Get all Task objects from the hierarchy including self.
 
         Returns:

@@ -1,8 +1,6 @@
 # haive/agents/multi/sequential.py
 
-"""
-Sequential multi-agent implementation for the Haive framework.
-"""
+"""Sequential multi-agent implementation for the Haive framework."""
 
 import logging
 from typing import Any
@@ -22,8 +20,7 @@ def placeholder_node(state):
 
 
 class SequentialMultiAgent(MultiAgent):
-    """
-    Multi-agent system that executes agents sequentially.
+    """Multi-agent system that executes agents sequentially.
 
     Each agent runs in order, with the output of one feeding into the next.
     The execution follows a chain pattern: Agent1 -> Agent2 -> ... -> AgentN

@@ -1,10 +1,9 @@
+from agents.long_term_memory.tools import (
+    save_recall_memory,
+    search_recall_memories,
+)
 from haive.core.engine.aug_llm import AugLLMConfig
-from agents.long_term_memory.tools import save_recall_memory, save_structured_recall_memory, search_recall_memories
-from haive.core.models.vectorstore.base import VectorStoreConfig
 from langchain_core.prompts import ChatPromptTemplate
-
-
-
 
 long_term_memory_prompt_template = ChatPromptTemplate.from_messages(
     [
@@ -56,15 +55,15 @@ long_term_memory_prompt_template = ChatPromptTemplate.from_messages(
     ]
 ).partial(recall_memories="")
 
-lt_structured_memory_aug_llm_config=AugLLMConfig(
+lt_structured_memory_aug_llm_config = AugLLMConfig(
     name="lt_structured_memory_aug_llm_config",
-    #llm_config=AzureLLMConf ig(),
+    # llm_config=AzureLLMConf ig(),
     prompt_template=long_term_memory_prompt_template,
     tools=[save_recall_memory, search_recall_memories],
 )
-lt_memory_aug_llm_config=AugLLMConfig(
+lt_memory_aug_llm_config = AugLLMConfig(
     name="lt_memory_aug_llm_config",
-    #llm_config=AzureLLMConfig(),
+    # llm_config=AzureLLMConfig(),
     prompt_template=long_term_memory_prompt_template,
     tools=[save_recall_memory, search_recall_memories],
 )

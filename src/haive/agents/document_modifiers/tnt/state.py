@@ -14,11 +14,15 @@ Example:
         )
 """
 
-from typing import Annotated, List
-from pydantic import BaseModel, Field
 import operator
-from haive.agents.document_modifiers.tnt.models import Doc
+from typing import Annotated
+
 from langchain_core.documents import Document
+from pydantic import BaseModel, Field
+
+from haive.agents.document_modifiers.tnt.models import Doc
+
+
 class TaxonomyGenerationState(BaseModel):
     """Represents the state passed between graph nodes in the taxonomy generation process.
 
@@ -49,15 +53,20 @@ class TaxonomyGenerationState(BaseModel):
         ...     clusters=[[{"id": 1, "name": "Tech", "description": "Technology"}]]
         ... )
     """
+
     # The raw docs; we inject summaries within them in the first step
-    documents: List[Doc] = Field(description="The raw documents.")
+    documents: list[Doc] = Field(description="The raw documents.")
     # Indices to be concise
-    minibatches: List[List[int]] = Field(default=[], description="The indices to be concise.")
+    minibatches: list[list[int]] = Field(
+        default=[], description="The indices to be concise."
+    )
     # Candidate Taxonomies (full trajectory)
-    clusters: Annotated[List[List[dict]], operator.add] = Field(default=[], description="The candidate taxonomies.")
+    clusters: Annotated[list[list[dict]], operator.add] = Field(
+        default=[], description="The candidate taxonomies."
+    )
 
     @classmethod
-    def from_documents(cls, documents: List[Document]) -> "TaxonomyGenerationState":
+    def from_documents(cls, documents: list[Document]) -> "TaxonomyGenerationState":
         """Initialize state from a list of LangChain Document objects."""
         docs = [Doc.from_document(doc) for doc in documents]
         return cls(documents=docs, minibatches=[], clusters=[])

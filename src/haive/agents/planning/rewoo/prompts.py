@@ -1,7 +1,7 @@
-
-from langchain_core.prompts import ChatPromptTemplate,PromptTemplate
-from langchain_core.output_parsers import PydanticOutputParser
 from agents.rewoo.models import RewooPlan
+from langchain_core.output_parsers import PydanticOutputParser
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+
 system_prompt = """You are a planning agent that creates detailed, structured plans.
 Your role is to break down tasks into specific, actionable steps using available tools.
 Each step must be precise, properly numbered, and include evidence collection.
@@ -36,19 +36,15 @@ Task: {task}
 
 {format_instructions}"""
 
-messages = [
-    ("system", system_prompt),
-    ("user", user_prompt)
-]
+messages = [("system", system_prompt), ("user", user_prompt)]
 
 planning_output_parser = PydanticOutputParser(pydantic_object=RewooPlan)
-planning_prompt = ChatPromptTemplate.from_messages(
-            messages
-        ).partial(
-            format_instructions=planning_output_parser.get_format_instructions()
-        )
+planning_prompt = ChatPromptTemplate.from_messages(messages).partial(
+    format_instructions=planning_output_parser.get_format_instructions()
+)
 
-SOLVE_PROMPT_TEMPLATE=  PromptTemplate("""Solve the following task or problem. To solve the problem, we have made step-by-step Plan and \
+SOLVE_PROMPT_TEMPLATE = PromptTemplate(
+    """Solve the following task or problem. To solve the problem, we have made step-by-step Plan and \
         retrieved corresponding Evidence to each Plan. Use them with caution since long evidence might \
         contain irrelevant information.
 
@@ -58,5 +54,5 @@ SOLVE_PROMPT_TEMPLATE=  PromptTemplate("""Solve the following task or problem. T
         directly with no extra words.
 
         Task: {task}
-        Response:""")
-
+        Response:"""
+)

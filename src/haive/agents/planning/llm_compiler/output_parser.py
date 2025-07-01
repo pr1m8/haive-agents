@@ -1,14 +1,8 @@
 import ast
 import re
+from collections.abc import Iterator, Sequence
 from typing import (
     Any,
-    Dict,
-    Iterator,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
-    Union,
 )
 
 from langchain_core.exceptions import OutputParserException
@@ -35,7 +29,7 @@ def _ast_parse(arg: str) -> Any:
         return arg
 
 
-def _parse_llm_compiler_action_args(args: str, tool: Union[str, BaseTool]) -> list[Any]:
+def _parse_llm_compiler_action_args(args: str, tool: str | BaseTool) -> list[Any]:
     """Parse arguments from a string."""
     if args == "":
         return ()
@@ -69,7 +63,7 @@ def default_dependency_rule(idx, args: str):
 
 
 def _get_dependencies_from_graph(
-    idx: int, tool_name: str, args: Dict[str, Any]
+    idx: int, tool_name: str, args: dict[str, Any]
 ) -> dict[str, list[str]]:
     """Get dependencies from a graph."""
     if tool_name == "join":
@@ -81,16 +75,16 @@ class Task(TypedDict):
     idx: int
     tool: BaseTool
     args: list
-    dependencies: Dict[str, list]
-    thought: Optional[str]
+    dependencies: dict[str, list]
+    thought: str | None
 
 
 def instantiate_task(
     tools: Sequence[BaseTool],
     idx: int,
     tool_name: str,
-    args: Union[str, Any],
-    thought: Optional[str] = None,
+    args: str | Any,
+    thought: str | None = None,
 ) -> Task:
     if tool_name == "join":
         tool = "join"
@@ -114,9 +108,9 @@ def instantiate_task(
 class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
     """Planning output parser."""
 
-    tools: List[BaseTool]
+    tools: list[BaseTool]
 
-    def _transform(self, input: Iterator[Union[str, BaseMessage]]) -> Iterator[Task]:
+    def _transform(self, input: Iterator[str | BaseMessage]) -> Iterator[Task]:
         texts = []
         # TODO: Cleanup tuple state tracking here.
         thought = None
@@ -131,7 +125,7 @@ class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
             if task:
                 yield task
 
-    def parse(self, text: str) -> List[Task]:
+    def parse(self, text: str) -> list[Task]:
         return list(self._transform([text]))
 
     def stream(
@@ -143,8 +137,8 @@ class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
         yield from self.transform([input], config, **kwargs)
 
     def ingest_token(
-        self, token: str, buffer: List[str], thought: Optional[str]
-    ) -> Iterator[Tuple[Optional[Task], str]]:
+        self, token: str, buffer: list[str], thought: str | None
+    ) -> Iterator[tuple[Task | None, str]]:
         buffer.append(token)
         if "\n" in token:
             buffer_ = "".join(buffer).split("\n")
@@ -156,7 +150,7 @@ class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
             buffer.clear()
             buffer.append(suffix)
 
-    def _parse_task(self, line: str, thought: Optional[str] = None):
+    def _parse_task(self, line: str, thought: str | None = None):
         task = None
         if match := re.match(THOUGHT_PATTERN, line):
             # Optionally, action can be preceded by a thought

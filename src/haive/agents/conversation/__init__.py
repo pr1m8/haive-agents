@@ -1,5 +1,4 @@
-"""
-Conversation Agents
+"""Conversation Agents
 ==================
 
 A suite of multi-agent conversation orchestrators for facilitating different types of
@@ -50,9 +49,9 @@ from haive.agents.conversation.social_media.agent import SocialMediaConversation
 
 __all__ = [
     "BaseConversationAgent",
-    "RoundRobinConversation",
-    "DirectedConversation",
-    "DebateConversation",
     "CollaborativeConversation",
+    "DebateConversation",
+    "DirectedConversation",
+    "RoundRobinConversation",
     "SocialMediaConversation",
 ]

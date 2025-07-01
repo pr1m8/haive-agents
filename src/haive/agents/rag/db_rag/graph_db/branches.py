@@ -1,14 +1,11 @@
-from typing import Dict, Any
-from langgraph.graph import END
 from haive.core.graph.branches import Branch
+from langgraph.graph import END
+
 # Define the Guardrails Branch
 guardrails_branch = Branch(
     key="next_action",
-    destinations={
-        "end": "generate_final_answer",
-        "movie": "generate_cypher"
-    },
-    default=END  # Default to ending if no match
+    destinations={"end": "generate_final_answer", "movie": "generate_cypher"},
+    default=END,  # Default to ending if no match
 )
 
 # Define the Cypher Validation Branch
@@ -17,7 +14,7 @@ validate_cypher_branch = Branch(
     destinations={
         "end": "generate_final_answer",
         "correct_cypher": "correct_cypher",
-        "execute_cypher": "execute_cypher"
+        "execute_cypher": "execute_cypher",
     },
-    default=END  # Default to ending if no match
+    default=END,  # Default to ending if no match
 )

@@ -1,3 +1,1 @@
-"""
-Tests for Document Loader Agents.
-"""
+"""Tests for Document Loader Agents."""

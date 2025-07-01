@@ -1,30 +1,34 @@
-from agents.long_term_memory.state import LongTermMemoryState
-from agents.long_term_memory.tools import save_recall_memory, save_structured_recall_memory, search_recall_memories
-from langchain_core.tools import tool
-from langchain_core.runnables import RunnableConfig
-from langchain_core.documents import Document
-from haive.core.models.vectorstore.base import VectorStoreConfig
-from agents.react_agent2.agent import ReactAgentConfig
-from pydantic import Field
 from agents.long_term_memory.aug_llm import lt_mem_agent_aug_llm
+from agents.long_term_memory.state import LongTermMemoryState
+from agents.long_term_memory.tools import (
+    search_recall_memories,
+)
+from agents.react_agent2.agent import ReactAgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import get_buffer_string
-from langchain_core.messages import tokenizer
+from haive.core.models.vectorstore.base import VectorStoreConfig
+from langchain_core.messages import get_buffer_string, tokenizer
+from langchain_core.runnables import RunnableConfig
+from pydantic import Field
+
 
 class LongTermMemoryAgentConfig(ReactAgentConfig):
     """Config for the long term memory agent."""
+
     vs_config: VectorStoreConfig = Field(default_factory=VectorStoreConfig)
     state: LongTermMemoryState = Field(default_factory=LongTermMemoryState)
     state_schema: LongTermMemoryState = Field(default_factory=LongTermMemoryState)
     aug_llm: AugLLMConfig = Field(default_factory=lt_mem_agent_aug_llm)
+
+
 class LongTermMemoryAgent(ReactAgent):
     """Agent for the long term memory."""
+
     config: LongTermMemoryAgentConfig
-    
+
     def __init__(self, config: LongTermMemoryAgentConfig):
         super().__init__(config)
-    
-    def load_memories(self,state: State, config: RunnableConfig) -> State:
+
+    def load_memories(self, state: State, config: RunnableConfig) -> State:
         """Load memories for the current conversation.
 
         Args:
@@ -53,5 +57,5 @@ class LongTermMemoryAgent(ReactAgent):
         self.graph.add_edge("tools", "agent")
 
         # Compile the graph
-        #memory = MemorySaver()
-        #graph = builder.compile(checkpointer=memory)
+        # memory = MemorySaver()
+        # graph = builder.compile(checkpointer=memory)

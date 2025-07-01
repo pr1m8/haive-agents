@@ -1,36 +1,35 @@
-"""
-Utility functions for creating and using SimpleAgent.
+"""Utility functions for creating and using SimpleAgent.
 
 This module provides helper functions for easily creating SimpleAgent instances
 with various configurations.
 """
 
-from typing import Optional, List, Dict, Any, Type, Union
+from haive.core.engine.aug_llm import AugLLMConfig
+from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
-from haive.agents.simple.state import SimpleAgentState
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.agents.simple.agent import SimpleAgent
 from haive.agents.simple.config import SimpleAgentConfig
-from langchain_core.prompts import ChatPromptTemplate
+from haive.agents.simple.state import SimpleAgentState
+
+
 # =============================================
 # Factory Functions
 # =============================================
 def create_simple_agent(
     name: str = "simple_agent",
-    engine: Optional[AugLLMConfig] = None,
-    state_schema: Type[BaseModel] = SimpleAgentState,
+    engine: AugLLMConfig | None = None,
+    state_schema: type[BaseModel] = SimpleAgentState,
     system_prompt: str = "You are a helpful assistant.",
-    prompt_template: Optional[Union[str, ChatPromptTemplate]] = None,
-    input_mapping: Optional[Dict[str, str]] = None,
-    output_mapping: Optional[Dict[str, str]] = None,
+    prompt_template: str | ChatPromptTemplate | None = None,
+    input_mapping: dict[str, str] | None = None,
+    output_mapping: dict[str, str] | None = None,
     model: str = "gpt-4o",
     debug: bool = False,
-    preserve_model: bool = True
+    preserve_model: bool = True,
 ) -> SimpleAgent:
-    """
-    Create a SimpleAgent with the specified configuration.
-    
+    """Create a SimpleAgent with the specified configuration.
+
     Args:
         name: Name of the agent
         engine: LLM engine to use (created if not provided)
@@ -42,7 +41,7 @@ def create_simple_agent(
         model: Model to use if creating engine
         debug: Enable debug mode
         preserve_model: Whether to preserve BaseModel instances
-        
+
     Returns:
         Configured SimpleAgent instance
     """
@@ -57,8 +56,8 @@ def create_simple_agent(
         output_mapping=output_mapping,
         model=model,
         debug=debug,
-        preserve_model=preserve_model
+        preserve_model=preserve_model,
     )
-    
+
     # Create and return agent
     return SimpleAgent(config)

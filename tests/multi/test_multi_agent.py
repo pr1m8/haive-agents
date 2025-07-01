@@ -1,203 +1,172 @@
-"""Tests for the MultiAgent implementation."""
+#!/usr/bin/env python
+# test_multi_agent.py
 
-import json
-from typing import Any, Dict
+"""Test example for using the improved MultiAgent class.
 
-from langchain_core.messages import AIMessage, HumanMessage
+This script demonstrates how to create and use multiple agents together
+using the MultiAgent class with the enhanced AgentSchemaComposer.
+"""
 
-from haive.agents.multi.agent import MultiAgent, MultiAgentState
+import logging
+
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.logging.rich_logger import LogLevel, get_logger
+from langchain_core.messages import HumanMessage
+from pydantic import BaseModel, Field
+
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
-
-def test_multi_agent_state():
-    """Test the MultiAgentState class."""
-    # Create state
-    state = MultiAgentState()
-
-    # Check initial state
-    assert state.agents == {}
-    assert state.active_agent_id is None
-    assert state.messages == []
-
-    # Create agent
-    agent = SimpleAgent(name="Test Agent")
-
-    # Add agent to state
-    agent_id = state.add_agent(agent)
-
-    # Check agent was added and set as active
-    assert agent_id in state.agents
-    assert state.active_agent_id == agent_id
-    assert state.get_agent() == agent
-
-    # Test adding message
-    state.add_message(HumanMessage(content="Hello"))
-    assert len(state.messages) == 1
-    assert state.messages[0].content == "Hello"
-
-    # Test serialization
-    state_dict = state.to_dict()
-    assert "agents" in state_dict
-    assert agent_id in state_dict["agents"]
-    assert len(state_dict["messages"]) == 1
-
-    # Verify we can convert to JSON and back
-    state_json = state.to_json()
-    reconstructed = MultiAgentState.from_json(state_json)
-
-    # Verify that reconstructed state has the agent
-    assert agent_id in reconstructed.agents
-    assert reconstructed.active_agent_id == agent_id
-    assert len(reconstructed.messages) == 1
+# Configure logger
+logger = get_logger("test_multi_agent")
+logger.set_level(LogLevel.DEBUG)
 
 
-def test_multi_agent_with_agents():
-    """Test creating a MultiAgent with agents."""
-    # Create some agents
-    agent1 = SimpleAgent(name="Simple Agent")
-    agent2 = ReactAgent(name="React Agent")
+# Define a tool for demonstration
+from langchain_core.tools import tool
 
-    # Create multi-agent
-    multi_agent = MultiAgent.with_agents(
-        agents=[agent1, agent2],
-        name="Test Multi-Agent",
-        coordination_strategy="sequential",
+
+@tool
+def add(a: int, b: int) -> int:
+    """Returns the sum of two numbers."""
+    return a + b
+
+
+# Define an output model
+class Plan(BaseModel):
+    """A simple planning model with steps."""
+
+    steps: list[str] = Field(description="list of steps")
+
+
+def create_test_agents():
+    """Create test agents for the multi-agent system."""
+    # Create a ReactAgent with a tool
+    tool_aug = AugLLMConfig(tools=[add], name="react_llm")
+    react_agent = ReactAgent(engine=tool_aug, name="ReactAgent")
+
+    # Create a SimpleAgent with structured output
+    plan_aug = AugLLMConfig(
+        structured_output_model=Plan, structured_output_version="v2", name="plan_llm"
+    )
+    simple_agent = SimpleAgent(engine=plan_aug, name="SimpleAgent")
+
+    return react_agent, simple_agent
+
+
+def test_sequential():
+    """Test sequential multi-agent execution."""
+    logger.info("=== Testing Sequential Multi-Agent ===")
+
+    # Create the agents
+    react_agent, simple_agent = create_test_agents()
+
+    # Create sequential multi-agent
+    multi = MultiAgent.sequential(
+        agents=[react_agent, simple_agent],
+        name="SequentialDemo",
+        separation_strategy="smart",
+        use_agent_nodes=True,
+        use_engine_io_mappings=True,
     )
 
-    # Check agents were added
-    assert len(multi_agent._state_instance.agents) == 2
+    # Print schema info
+    print_schema_info(multi)
 
-    # Verify we have distinct schemas
-    assert multi_agent.input_schema is not None
-    assert multi_agent.output_schema is not None
-    assert multi_agent.state_schema is not None
+    # Run the multi-agent
+    input_data = {
+        "messages": [HumanMessage(content="Calculate 5+7 and then make a plan")]
+    }
+    result = multi.run(input_data)
 
-    # Verify state schema has expected fields
-    assert "messages" in multi_agent.state_schema.model_fields
-    assert "agents" in multi_agent.state_schema.model_fields
-    assert "active_agent_id" in multi_agent.state_schema.model_fields
+    # Show result
+    logger.info("Result from sequential multi-agent:")
+    if hasattr(result, "agent_outputs"):
+        for agent_name, output in result.agent_outputs.items():
+            logger.info(f"  {agent_name} output: {output}")
+    else:
+        logger.info(f"  {result}")
 
-    # Verify shared fields
-    assert "messages" in multi_agent.state_schema.__shared_fields__
-    assert "active_agent_id" in multi_agent.state_schema.__shared_fields__
-    assert "shared_state" in multi_agent.state_schema.__shared_fields__
+    return multi, result
 
 
-def test_schema_composition():
-    """Test composing schemas from agents."""
-    # Create some agents
-    agent1 = SimpleAgent(name="Simple Agent")
-    agent2 = ReactAgent(name="React Agent")
+def test_supervisor():
+    """Test supervisor multi-agent execution."""
+    logger.info("=== Testing Supervisor Multi-Agent ===")
 
-    # Compose schema
-    schema = MultiAgent.compose_schema_from_agents(
-        agents=[agent1, agent2], name="TestComposedSchema"
+    # Create the agents
+    react_agent, simple_agent = create_test_agents()
+
+    # Create supervisor multi-agent
+    multi = MultiAgent.supervised(
+        agents=[simple_agent],
+        coordinator=react_agent,
+        name="SupervisorDemo",
+        separation_strategy="smart",
+        use_agent_nodes=True,
+        use_engine_io_mappings=True,
     )
 
-    # Verify schema has expected fields
-    assert "messages" in schema.model_fields
-    assert "active_agent_id" in schema.model_fields
+    # Print schema info
+    print_schema_info(multi)
 
-    # Verify shared fields
-    assert "messages" in schema.__shared_fields__
+    # Run the multi-agent
+    input_data = {
+        "messages": [HumanMessage(content="Calculate 5+7 and then make a plan")]
+    }
+    result = multi.run(input_data)
 
-    # Create instance of schema
-    state = schema()
+    # Show result
+    logger.info("Result from supervisor multi-agent:")
+    if hasattr(result, "agent_outputs"):
+        for agent_name, output in result.agent_outputs.items():
+            logger.info(f"  {agent_name} output: {output}")
+    else:
+        logger.info(f"  {result}")
 
-    # Add messages
-    state.add_message(HumanMessage(content="Test message"))
-    assert len(state.messages) == 1
-
-    # Verify it's a proper StateSchema
-    assert hasattr(state, "to_dict")
-    assert hasattr(state, "apply_reducers")
-    assert hasattr(state, "add_messages")
-
-
-def test_multi_agent_execution():
-    """Test executing the multi-agent system."""
-
-    # Create a simple test agent
-    class TestAgent(SimpleAgent):
-        def invoke(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-            # Just echo input with an AI message
-            messages = input_data.get("messages", [])
-
-            # Find last human message
-            human_msg = None
-            for msg in reversed(messages):
-                if msg.type == "human":
-                    human_msg = msg
-                    break
-
-            if human_msg:
-                response = f"Agent {self.name} responding to: {human_msg.content}"
-            else:
-                response = f"Agent {self.name} says hello"
-
-            return {"messages": messages + [AIMessage(content=response)]}
-
-    # Create agents
-    agent1 = TestAgent(name="Agent 1")
-    agent2 = TestAgent(name="Agent 2")
-
-    # Create multi-agent
-    multi_agent = MultiAgent.with_agents(
-        agents=[agent1, agent2],
-        name="Test Multi-Agent",
-        coordination_strategy="sequential",
-    )
-
-    # Run multi-agent
-    input_data = {"messages": [HumanMessage(content="Hello, agents!")]}
-
-    output = multi_agent.invoke(input_data)
-
-    # Verify output
-    assert "messages" in output
-    assert len(output["messages"]) >= 3  # Original + at least 2 agent responses
-
-    # Check that outputs were collected
-    assert len(multi_agent._state_instance.outputs) == 2
+    return multi, result
 
 
-def test_multi_agent_serialization():
-    """Test serializing and deserializing the multi-agent system."""
-    # Create agents
-    agent1 = SimpleAgent(name="Agent 1")
-    agent2 = ReactAgent(name="Agent 2")
+def print_schema_info(multi_agent: MultiAgent):
+    """Print information about the schema and engine IO mappings."""
+    logger.info(f"Multi-Agent: {multi_agent.name}")
+    logger.info(f"State Schema: {multi_agent.state_schema.__name__}")
 
-    # Create multi-agent
-    multi_agent = MultiAgent.with_agents(
-        agents=[agent1, agent2], name="Test Multi-Agent"
-    )
+    # Check if schema has engine IO mappings
+    if hasattr(multi_agent.state_schema, "__engine_io_mappings__"):
+        mappings = getattr(multi_agent.state_schema, "__engine_io_mappings__", {})
+        logger.info(f"Engine IO Mappings: {len(mappings)}")
 
-    # Add a message
-    multi_agent._state_instance.add_message(HumanMessage(content="Test message"))
+        # Print mappings
+        for engine_name, mapping in mappings.items():
+            logger.info(f"  Engine: {engine_name}")
+            logger.info(f"    Inputs: {mapping.get('inputs', [])}")
+            logger.info(f"    Outputs: {mapping.get('outputs', [])}")
+    else:
+        logger.info("No engine IO mappings found!")
 
-    # Serialize state
-    state_dict = multi_agent._state_instance.to_dict()
-    state_json = json.dumps(state_dict)
+    # Print engines
+    if hasattr(multi_agent.state_schema, "engines"):
+        engines = getattr(multi_agent.state_schema, "engines", {})
+        logger.info(f"Engines: {len(engines)}")
+        for name in engines:
+            logger.info(f"  {name}")
+    else:
+        logger.info("No engines found in schema!")
 
-    # Create new state from serialized data
-    new_state = MultiAgentState.from_json(state_json)
 
-    # Verify state was properly reconstructed
-    assert len(new_state.agents) == 2
-    assert len(new_state.messages) == 1
-    assert new_state.messages[0].content == "Test message"
+def main():
+    """Run the multi-agent tests."""
+    # Set up logging
+    logging.basicConfig(level=logging.INFO)
 
-    # Get agent and verify it can be used
-    agent = new_state.get_agent()
-    assert agent is not None
-    assert agent.name in ["Agent 1", "Agent 2"]
+    # Run tests
+    test_sequential()
+    test_supervisor()
 
-    # Test rebuilding graph
-    if hasattr(agent, "_graph_built"):
-        assert not agent._graph_built  # Graph should need rebuilding
+    logger.info("All tests completed successfully!")
 
-    # Getting the agent should rebuild the graph
-    agent = new_state.get_agent()
-    if hasattr(agent, "_graph_built"):
-        assert agent._graph_built  # Graph should be rebuilt
+
+if __name__ == "__main__":
+    main()

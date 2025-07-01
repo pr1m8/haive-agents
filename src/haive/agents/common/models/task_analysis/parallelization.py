@@ -4,16 +4,14 @@ This module analyzes task dependencies to identify parallelization opportunities
 execution phases, join points, and optimal execution strategies.
 """
 
-from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any
 
 from haive.core.common.structures.tree import AutoTree
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.common.models.task_analysis.base import (
     DependencyNode,
-    DependencyType,
     Task,
     TaskStep,
 )
@@ -85,14 +83,14 @@ class JoinPoint(BaseModel):
         ],
     )
 
-    input_task_ids: List[str] = Field(
+    input_task_ids: list[str] = Field(
         ...,
         description="IDs of tasks that must complete before this join",
         min_length=2,
         examples=[["task_1", "task_2"], ["data_collection", "background_research"]],
     )
 
-    output_task_ids: List[str] = Field(
+    output_task_ids: list[str] = Field(
         default_factory=list,
         description="IDs of tasks that can start after this join",
         examples=[["task_3"], ["final_report", "presentation"]],
@@ -191,7 +189,7 @@ class ParallelGroup(BaseModel):
         examples=["group_1", "research_phase", "data_collection"],
     )
 
-    task_ids: List[str] = Field(
+    task_ids: list[str] = Field(
         ...,
         description="IDs of tasks in this parallel group",
         min_length=1,
@@ -202,7 +200,7 @@ class ParallelGroup(BaseModel):
         ..., description="Time for the longest task in the group", gt=0.0
     )
 
-    resource_requirements: Dict[str, Any] = Field(
+    resource_requirements: dict[str, Any] = Field(
         default_factory=dict,
         description="Combined resource requirements for the group",
         examples=[
@@ -307,12 +305,12 @@ class ExecutionPhase(BaseModel):
         examples=["Data Collection Phase", "Analysis Phase", "Reporting Phase"],
     )
 
-    parallel_groups: List[ParallelGroup] = Field(
+    parallel_groups: list[ParallelGroup] = Field(
         default_factory=list,
         description="Groups of tasks that can run in parallel within this phase",
     )
 
-    dependencies: List[str] = Field(
+    dependencies: list[str] = Field(
         default_factory=list,
         description="Phase dependencies (other phases that must complete first)",
     )
@@ -321,11 +319,11 @@ class ExecutionPhase(BaseModel):
         ..., description="Total time for this phase", gt=0.0
     )
 
-    critical_path_tasks: List[str] = Field(
+    critical_path_tasks: list[str] = Field(
         default_factory=list, description="Tasks on the critical path within this phase"
     )
 
-    resource_utilization: Dict[str, float] = Field(
+    resource_utilization: dict[str, float] = Field(
         default_factory=dict,
         description="Expected resource utilization during this phase",
         examples=[{"cpu": 0.8, "memory": 0.6, "network": 0.4}],
@@ -412,19 +410,19 @@ class ParallelizationAnalysis(BaseModel):
         validate_assignment=True,
     )
 
-    execution_phases: List[ExecutionPhase] = Field(
+    execution_phases: list[ExecutionPhase] = Field(
         default_factory=list, description="Sequential phases of execution"
     )
 
-    parallel_groups: List[ParallelGroup] = Field(
+    parallel_groups: list[ParallelGroup] = Field(
         default_factory=list, description="All identified parallel groups"
     )
 
-    join_points: List[JoinPoint] = Field(
+    join_points: list[JoinPoint] = Field(
         default_factory=list, description="Critical synchronization points"
     )
 
-    critical_path: List[str] = Field(
+    critical_path: list[str] = Field(
         default_factory=list, description="Task IDs on the critical path"
     )
 
@@ -444,12 +442,12 @@ class ParallelizationAnalysis(BaseModel):
         default=0.0, description="Total duration with optimal parallelization", ge=0.0
     )
 
-    resource_requirements: Dict[str, Any] = Field(
+    resource_requirements: dict[str, Any] = Field(
         default_factory=dict,
         description="Peak resource requirements for parallel execution",
     )
 
-    bottlenecks: List[str] = Field(
+    bottlenecks: list[str] = Field(
         default_factory=list,
         description="Identified bottlenecks and constraints",
         examples=[
@@ -561,7 +559,7 @@ class ParallelizationAnalyzer(BaseModel):
         default=10, description="Maximum number of tasks to run in parallel", gt=0
     )
 
-    resource_constraints: Dict[str, Any] = Field(
+    resource_constraints: dict[str, Any] = Field(
         default_factory=dict,
         description="Resource limitations that affect parallelization",
         examples=[
@@ -657,7 +655,7 @@ class ParallelizationAnalyzer(BaseModel):
             coordination_overhead_minutes=coordination_overhead,
         )
 
-    def _extract_all_items(self, tree: AutoTree) -> List[Union[Task, TaskStep]]:
+    def _extract_all_items(self, tree: AutoTree) -> list[Task | TaskStep]:
         """Extract all tasks and steps from the tree."""
         items = [tree.content]
 
@@ -666,7 +664,7 @@ class ParallelizationAnalyzer(BaseModel):
 
         return items
 
-    def _extract_dependencies(self, task: Task) -> List[DependencyNode]:
+    def _extract_dependencies(self, task: Task) -> list[DependencyNode]:
         """Extract all dependencies from task hierarchy."""
         dependencies = list(task.dependencies)
 
@@ -677,8 +675,8 @@ class ParallelizationAnalyzer(BaseModel):
         return dependencies
 
     def _build_dependency_graph(
-        self, items: List[Union[Task, TaskStep]], dependencies: List[DependencyNode]
-    ) -> Dict[str, Dict[str, Any]]:
+        self, items: list[Task | TaskStep], dependencies: list[DependencyNode]
+    ) -> dict[str, dict[str, Any]]:
         """Build a dependency graph from items and dependencies."""
         graph = {}
 
@@ -702,8 +700,8 @@ class ParallelizationAnalyzer(BaseModel):
         return graph
 
     def _identify_parallel_groups(
-        self, dependency_graph: Dict[str, Dict[str, Any]]
-    ) -> List[ParallelGroup]:
+        self, dependency_graph: dict[str, dict[str, Any]]
+    ) -> list[ParallelGroup]:
         """Identify groups of tasks that can run in parallel."""
         parallel_groups = []
         visited = set()
@@ -757,7 +755,7 @@ class ParallelizationAnalyzer(BaseModel):
         return parallel_groups
 
     def _has_blocking_dependency(
-        self, task_a: str, task_b: str, dependency_graph: Dict[str, Dict[str, Any]]
+        self, task_a: str, task_b: str, dependency_graph: dict[str, dict[str, Any]]
     ) -> bool:
         """Check if there's a blocking dependency between two tasks."""
         # Check direct dependencies
@@ -772,8 +770,8 @@ class ParallelizationAnalyzer(BaseModel):
         return False
 
     def _identify_join_points(
-        self, dependency_graph: Dict[str, Dict[str, Any]]
-    ) -> List[JoinPoint]:
+        self, dependency_graph: dict[str, dict[str, Any]]
+    ) -> list[JoinPoint]:
         """Identify join points where multiple tasks synchronize."""
         join_points = []
         join_id = 1
@@ -800,8 +798,8 @@ class ParallelizationAnalyzer(BaseModel):
         return join_points
 
     def _calculate_critical_path(
-        self, dependency_graph: Dict[str, Dict[str, Any]]
-    ) -> List[str]:
+        self, dependency_graph: dict[str, dict[str, Any]]
+    ) -> list[str]:
         """Calculate the critical path through the dependency graph."""
         # Simplified critical path calculation
         # In a real implementation, this would use proper CPM algorithm
@@ -827,8 +825,8 @@ class ParallelizationAnalyzer(BaseModel):
         return longest_path
 
     def _find_longest_path(
-        self, node: str, graph: Dict[str, Dict[str, Any]], visited: List[str]
-    ) -> Tuple[List[str], float]:
+        self, node: str, graph: dict[str, dict[str, Any]], visited: list[str]
+    ) -> tuple[list[str], float]:
         """Find the longest path from a given node."""
         if node in visited:  # Avoid cycles
             return [], 0.0
@@ -854,8 +852,8 @@ class ParallelizationAnalyzer(BaseModel):
         return max_path, max_duration
 
     def _create_execution_phases(
-        self, parallel_groups: List[ParallelGroup], dependencies: List[DependencyNode]
-    ) -> List[ExecutionPhase]:
+        self, parallel_groups: list[ParallelGroup], dependencies: list[DependencyNode]
+    ) -> list[ExecutionPhase]:
         """Create execution phases from parallel groups."""
         # Simplified phase creation
         # In reality, this would need sophisticated topological analysis
@@ -922,9 +920,7 @@ class ParallelizationAnalyzer(BaseModel):
 
         return phases
 
-    def _calculate_sequential_duration(
-        self, items: List[Union[Task, TaskStep]]
-    ) -> float:
+    def _calculate_sequential_duration(self, items: list[Task | TaskStep]) -> float:
         """Calculate total duration if all tasks run sequentially."""
         total = 0.0
         for item in items:
@@ -934,12 +930,12 @@ class ParallelizationAnalyzer(BaseModel):
                 total += item.calculate_total_duration()
         return total
 
-    def _calculate_parallel_duration(self, phases: List[ExecutionPhase]) -> float:
+    def _calculate_parallel_duration(self, phases: list[ExecutionPhase]) -> float:
         """Calculate total duration with parallel execution."""
         return sum(phase.estimated_duration_minutes for phase in phases)
 
     def _determine_execution_strategy(
-        self, parallel_groups: List[ParallelGroup], resource_constraints: Dict[str, Any]
+        self, parallel_groups: list[ParallelGroup], resource_constraints: dict[str, Any]
     ) -> ExecutionStrategy:
         """Determine the best execution strategy."""
         if not parallel_groups:
@@ -962,8 +958,8 @@ class ParallelizationAnalyzer(BaseModel):
         return ExecutionStrategy.BALANCED
 
     def _calculate_peak_resources(
-        self, parallel_groups: List[ParallelGroup]
-    ) -> Dict[str, Any]:
+        self, parallel_groups: list[ParallelGroup]
+    ) -> dict[str, Any]:
         """Calculate peak resource requirements."""
         peak_resources = {}
 
@@ -971,15 +967,14 @@ class ParallelizationAnalyzer(BaseModel):
             for resource, amount in group.resource_requirements.items():
                 if resource not in peak_resources:
                     peak_resources[resource] = amount
-                else:
-                    if isinstance(amount, (int, float)):
-                        peak_resources[resource] = max(peak_resources[resource], amount)
+                elif isinstance(amount, (int, float)):
+                    peak_resources[resource] = max(peak_resources[resource], amount)
 
         return peak_resources
 
     def _identify_bottlenecks(
-        self, parallel_groups: List[ParallelGroup], resource_constraints: Dict[str, Any]
-    ) -> List[str]:
+        self, parallel_groups: list[ParallelGroup], resource_constraints: dict[str, Any]
+    ) -> list[str]:
         """Identify potential bottlenecks."""
         bottlenecks = []
 

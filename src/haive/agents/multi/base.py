@@ -64,26 +64,25 @@ Note:
 
 import logging
 from abc import abstractmethod
+from collections.abc import Sequence
 from enum import Enum
+from inspect import signature
 from typing import (
     Any,
     Callable,
     Dict,
     List,
     Literal,
-    Optional,
-    Sequence,
-    Tuple,
+)
+from typing import Optional as Opt
+from typing import (
+    Set,
     Type,
     Union,
 )
 
-from haive.core.engine.base import EngineType
-from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer, BuildMode
-from haive.core.schema.state_schema import StateSchema
-from langchain_core.messages import BaseMessage
 from langgraph.graph import END, START
 from pydantic import BaseModel, Field, PrivateAttr, model_validator
 from rich.console import Console
@@ -190,20 +189,20 @@ class MultiAgent(Agent):
     )
 
     # Branching configuration
-    branches: Dict[str, Dict[str, Any]] = Field(
+    branches: dict[str, dict[str, Any]] = Field(
         default_factory=dict,
         description="Branch configurations keyed by source node name",
     )
 
     # Private state management
-    _agent_private_states: Dict[str, Type[BaseModel]] = PrivateAttr(
+    _agent_private_states: dict[str, type[BaseModel]] = PrivateAttr(
         default_factory=dict
     )
-    _agent_node_mapping: Dict[str, str] = PrivateAttr(default_factory=dict)
+    _agent_node_mapping: dict[str, str] = PrivateAttr(default_factory=dict)
 
     @model_validator(mode="before")
     @classmethod
-    def validate_agents(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_agents(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Ensure agents list is not empty."""
         if isinstance(values, dict):
             agents = values.get("agents", [])
@@ -284,13 +283,12 @@ class MultiAgent(Agent):
 
     def add_conditional_edge(
         self,
-        source_agent: Union[str, Agent],
-        condition: Callable[[Any], Union[str, bool]],
-        destinations: Dict[Union[str, bool], Union[str, Agent]],
-        default: Optional[Union[str, Agent]] = None,
+        source_agent: str | Agent,
+        condition: Callable[[Any], str | bool],
+        destinations: dict[str | bool, str | Agent],
+        default: str | Agent | None = None,
     ) -> None:
-        """
-        Add a conditional edge between agents.
+        """Add a conditional edge between agents.
 
         Args:
             source_agent: Source agent or its name/id
@@ -316,7 +314,7 @@ class MultiAgent(Agent):
             ),
         }
 
-    def _get_node_name(self, agent: Union[str, Agent]) -> str:
+    def _get_node_name(self, agent: str | Agent) -> str:
         """Get the node name for an agent."""
         if isinstance(agent, str):
             # Could be agent name or id
@@ -324,10 +322,9 @@ class MultiAgent(Agent):
                 if getattr(a, "name", None) == agent or getattr(a, "id", None) == agent:
                     return self._get_agent_node_name(a)
             return agent  # Assume it's a node name
-        elif isinstance(agent, Agent):
+        if isinstance(agent, Agent):
             return self._get_agent_node_name(agent)
-        else:
-            raise ValueError(f"Invalid agent reference: {agent}")
+        raise ValueError(f"Invalid agent reference: {agent}")
 
     def _get_agent_node_name(self, agent: Agent) -> str:
         """Get the unique node name for an agent."""
@@ -404,12 +401,11 @@ class MultiAgent(Agent):
                         END if i == len(node_names) - 1 else node_names[i + 1],
                     ),
                 )
+            # Normal sequential edge
+            elif i == len(node_names) - 1:
+                graph.add_edge(node_name, END)
             else:
-                # Normal sequential edge
-                if i == len(node_names) - 1:
-                    graph.add_edge(node_name, END)
-                else:
-                    graph.add_edge(node_name, node_names[i + 1])
+                graph.add_edge(node_name, node_names[i + 1])
 
     def _build_parallel_graph(self, graph: BaseGraph) -> None:
         """Build a parallel execution graph."""
@@ -470,8 +466,7 @@ class MultiAgent(Agent):
 
     @abstractmethod
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:
-        """
-        Build a custom graph - must be implemented by subclasses if using CUSTOM mode.
+        """Build a custom graph - must be implemented by subclasses if using CUSTOM mode.
 
         Args:
             graph: The graph to build on
@@ -483,7 +478,7 @@ class MultiAgent(Agent):
             "Subclasses must implement build_custom_graph for CUSTOM mode"
         )
 
-    def get_agent_by_name(self, name: str) -> Optional[Agent]:
+    def get_agent_by_name(self, name: str) -> Agent | None:
         """Get an agent by name or id."""
         for agent in self.agents:
             if (
@@ -493,16 +488,417 @@ class MultiAgent(Agent):
                 return agent
         return None
 
-    def _serialize_tool_for_state(self, tool: Any) -> Dict[str, Any]:
+    def analyze_io_compatibility(self) -> Dict[str, Any]:
+        """Analyze I/O schema compatibility between agents.
+
+        Returns:
+            Dict with compatibility analysis including:
+            - compatible_pairs: List of (agent1, agent2) tuples with compatible I/O
+            - schema_fields: Field mapping across agents
+            - routing_suggestions: Suggested routing based on compatibility
         """
-        Serialize a tool to a dict that can be stored in state and serialized by msgpack.
+        compatible_pairs = []
+        schema_fields = {}
+        routing_suggestions = []
+
+        for i, agent1 in enumerate(self.agents):
+            for j, agent2 in enumerate(self.agents[i + 1 :], i + 1):
+                compatibility = self._check_agent_compatibility(agent1, agent2)
+                if compatibility["compatible"]:
+                    compatible_pairs.append((agent1.name, agent2.name))
+
+        # Analyze field mappings
+        for agent in self.agents:
+            agent_fields = self._extract_agent_fields(agent)
+            schema_fields[agent.name] = agent_fields
+
+        # Generate routing suggestions based on I/O compatibility
+        routing_suggestions = self._generate_routing_suggestions(schema_fields)
+
+        return {
+            "compatible_pairs": compatible_pairs,
+            "schema_fields": schema_fields,
+            "routing_suggestions": routing_suggestions,
+            "total_agents": len(self.agents),
+            "compatibility_matrix": self._build_compatibility_matrix(),
+        }
+
+    def _check_agent_compatibility(
+        self, agent1: Agent, agent2: Agent
+    ) -> Dict[str, Any]:
+        """Check if two agents have compatible I/O schemas.
+
+        Args:
+            agent1: First agent
+            agent2: Second agent
+
+        Returns:
+            Dict with compatibility information
         """
+        agent1_outputs = self._get_agent_output_fields(agent1)
+        agent2_inputs = self._get_agent_input_fields(agent2)
+
+        # Check for overlapping fields
+        common_fields = agent1_outputs.intersection(agent2_inputs)
+
+        # Always compatible if they share messages (base communication)
+        has_messages = "messages" in common_fields
+
+        # Check for structured output compatibility
+        has_structured_overlap = len(common_fields - {"messages"}) > 0
+
+        compatibility_score = len(common_fields) / max(len(agent2_inputs), 1)
+
+        return {
+            "compatible": has_messages or has_structured_overlap,
+            "common_fields": list(common_fields),
+            "compatibility_score": compatibility_score,
+            "can_chain_directly": compatibility_score > 0.5,
+            "requires_adapter": compatibility_score < 0.3 and compatibility_score > 0,
+        }
+
+    def _extract_agent_fields(self, agent: Agent) -> Dict[str, Set[str]]:
+        """Extract input/output fields from an agent.
+
+        Args:
+            agent: Agent to analyze
+
+        Returns:
+            Dict with 'inputs' and 'outputs' field sets
+        """
+        inputs = self._get_agent_input_fields(agent)
+        outputs = self._get_agent_output_fields(agent)
+
+        return {
+            "inputs": inputs,
+            "outputs": outputs,
+            "state_schema": (
+                getattr(agent.state_schema, "__name__", "Unknown")
+                if agent.state_schema
+                else None
+            ),
+            "engine_types": [
+                getattr(engine, "engine_type", "unknown")
+                for engine in getattr(agent, "engines", {}).values()
+            ],
+        }
+
+    def _get_agent_input_fields(self, agent: Agent) -> Set[str]:
+        """Get input fields for an agent."""
+        fields = set()
+
+        # From input schema
+        if hasattr(agent, "input_schema") and agent.input_schema:
+            if hasattr(agent.input_schema, "model_fields"):
+                fields.update(agent.input_schema.model_fields.keys())
+
+        # From state schema
+        if hasattr(agent, "state_schema") and agent.state_schema:
+            if hasattr(agent.state_schema, "model_fields"):
+                fields.update(agent.state_schema.model_fields.keys())
+
+        # From engines
+        if hasattr(agent, "engines"):
+            for engine in agent.engines.values():
+                if hasattr(engine, "get_input_fields"):
+                    try:
+                        engine_inputs = engine.get_input_fields()
+                        fields.update(engine_inputs.keys())
+                    except:
+                        pass
+
+        # Always assume messages as basic communication
+        fields.add("messages")
+        return fields
+
+    def _get_agent_output_fields(self, agent: Agent) -> Set[str]:
+        """Get output fields for an agent."""
+        fields = set()
+
+        # From output schema
+        if hasattr(agent, "output_schema") and agent.output_schema:
+            if hasattr(agent.output_schema, "model_fields"):
+                fields.update(agent.output_schema.model_fields.keys())
+
+        # From state schema
+        if hasattr(agent, "state_schema") and agent.state_schema:
+            if hasattr(agent.state_schema, "model_fields"):
+                fields.update(agent.state_schema.model_fields.keys())
+
+        # From engines
+        if hasattr(agent, "engines"):
+            for engine in agent.engines.values():
+                if hasattr(engine, "get_output_fields"):
+                    try:
+                        engine_outputs = engine.get_output_fields()
+                        fields.update(engine_outputs.keys())
+                    except:
+                        pass
+
+        # Common output fields
+        fields.update(["messages", "response", "generated_text"])
+        return fields
+
+    def _generate_routing_suggestions(
+        self, schema_fields: Dict[str, Dict[str, Set[str]]]
+    ) -> List[Dict[str, Any]]:
+        """Generate routing suggestions based on schema compatibility."""
+        suggestions = []
+
+        agent_names = list(schema_fields.keys())
+
+        for i, source in enumerate(agent_names):
+            for j, target in enumerate(agent_names):
+                if i != j:
+                    source_outputs = schema_fields[source]["outputs"]
+                    target_inputs = schema_fields[target]["inputs"]
+
+                    common = source_outputs.intersection(target_inputs)
+                    if len(common) > 1:  # More than just messages
+                        suggestions.append(
+                            {
+                                "from": source,
+                                "to": target,
+                                "shared_fields": list(common),
+                                "confidence": (
+                                    len(common) / len(target_inputs)
+                                    if target_inputs
+                                    else 0
+                                ),
+                                "routing_type": (
+                                    "direct" if len(common) > 2 else "conditional"
+                                ),
+                            }
+                        )
+
+        # Sort by confidence
+        suggestions.sort(key=lambda x: x["confidence"], reverse=True)
+        return suggestions[:10]  # Top 10 suggestions
+
+    def _build_compatibility_matrix(self) -> List[List[float]]:
+        """Build compatibility matrix between all agents."""
+        n = len(self.agents)
+        matrix = [[0.0 for _ in range(n)] for _ in range(n)]
+
+        for i, agent1 in enumerate(self.agents):
+            for j, agent2 in enumerate(self.agents):
+                if i != j:
+                    compatibility = self._check_agent_compatibility(agent1, agent2)
+                    matrix[i][j] = compatibility["compatibility_score"]
+                else:
+                    matrix[i][j] = 1.0  # Self-compatibility
+
+        return matrix
+
+    def suggest_optimal_routing(self, start_agent: str, end_agent: str) -> List[str]:
+        """Suggest optimal routing path between two agents.
+
+        Args:
+            start_agent: Starting agent name
+            end_agent: Target agent name
+
+        Returns:
+            List of agent names forming the optimal path
+        """
+        compatibility = self.analyze_io_compatibility()
+        matrix = compatibility["compatibility_matrix"]
+
+        # Simple pathfinding based on compatibility scores
+        agent_names = [agent.name for agent in self.agents]
+
+        try:
+            start_idx = agent_names.index(start_agent)
+            end_idx = agent_names.index(end_agent)
+        except ValueError:
+            return [start_agent, end_agent]  # Fallback
+
+        # Find path with highest cumulative compatibility
+        # For now, simple direct connection or through best intermediate
+        direct_score = matrix[start_idx][end_idx]
+
+        best_path = [start_agent, end_agent]
+        best_score = direct_score
+
+        # Check single intermediate paths
+        for i, intermediate in enumerate(agent_names):
+            if i != start_idx and i != end_idx:
+                score1 = matrix[start_idx][i]
+                score2 = matrix[i][end_idx]
+                total_score = score1 * score2  # Multiplicative score
+
+                if total_score > best_score:
+                    best_path = [start_agent, intermediate, end_agent]
+                    best_score = total_score
+
+        return best_path
+
+    def create_adaptive_routing(
+        self, routing_conditions: Dict[str, Callable[[Any], str]]
+    ) -> Dict[str, Dict[str, Any]]:
+        """Create adaptive routing based on I/O compatibility and conditions.
+
+        Args:
+            routing_conditions: Dict mapping agent names to condition functions
+
+        Returns:
+            Routing configuration for ConditionalAgent
+        """
+        compatibility = self.analyze_io_compatibility()
+        routing_config = {}
+
+        for agent_name, condition_func in routing_conditions.items():
+            # Find compatible targets for this agent
+            compatible_targets = []
+
+            for suggestion in compatibility["routing_suggestions"]:
+                if suggestion["from"] == agent_name:
+                    compatible_targets.append(suggestion["to"])
+
+            if compatible_targets:
+                # Create routing mapping
+                def create_router(targets, condition):
+                    def router(state: Any) -> str:
+                        result = condition(state)
+                        if result in targets:
+                            return result
+                        return targets[0] if targets else "END"
+
+                    return router
+
+                routing_config[agent_name] = {
+                    "condition": create_router(compatible_targets, condition_func),
+                    "destinations": {target: target for target in compatible_targets},
+                    "default": compatible_targets[0] if compatible_targets else "END",
+                }
+
+        return routing_config
+
+    def replace_agent_by_compatibility(
+        self,
+        target_agent_name: str,
+        replacement_agent: Agent,
+        check_compatibility: bool = True,
+    ) -> bool:
+        """Replace an agent with another based on I/O compatibility.
+
+        Args:
+            target_agent_name: Name of agent to replace
+            replacement_agent: New agent to use
+            check_compatibility: Whether to verify compatibility
+
+        Returns:
+            True if replacement successful, False otherwise
+        """
+        target_idx = None
+        for i, agent in enumerate(self.agents):
+            if agent.name == target_agent_name:
+                target_idx = i
+                break
+
+        if target_idx is None:
+            return False
+
+        if check_compatibility:
+            # Check compatibility with neighbors
+            old_agent = self.agents[target_idx]
+
+            # Check with previous agent
+            if target_idx > 0:
+                prev_agent = self.agents[target_idx - 1]
+                compat = self._check_agent_compatibility(prev_agent, replacement_agent)
+                if not compat["compatible"]:
+                    logger.warning(
+                        f"Replacement agent {replacement_agent.name} not compatible with previous agent {prev_agent.name}"
+                    )
+                    return False
+
+            # Check with next agent
+            if target_idx < len(self.agents) - 1:
+                next_agent = self.agents[target_idx + 1]
+                compat = self._check_agent_compatibility(replacement_agent, next_agent)
+                if not compat["compatible"]:
+                    logger.warning(
+                        f"Replacement agent {replacement_agent.name} not compatible with next agent {next_agent.name}"
+                    )
+                    return False
+
+        # Perform replacement
+        self.agents = list(self.agents)  # Convert to list if needed
+        self.agents[target_idx] = replacement_agent
+
+        # Update node mapping
+        old_agent_id = getattr(self.agents[target_idx], "id", target_agent_name)
+        if old_agent_id in self._agent_node_mapping:
+            del self._agent_node_mapping[old_agent_id]
+
+        # Regenerate schema
+        build_mode = self._get_build_mode()
+        self.state_schema = AgentSchemaComposer.from_agents(
+            agents=list(self.agents),
+            name=f"{self.__class__.__name__}State",
+            include_meta=self.include_meta,
+            separation=self.schema_separation,
+            build_mode=build_mode,
+        )
+
+        logger.info(
+            f"Successfully replaced agent {target_agent_name} with {replacement_agent.name}"
+        )
+        return True
+
+    def optimize_agent_order(self) -> List[Agent]:
+        """Optimize agent order based on I/O compatibility.
+
+        Returns:
+            Reordered list of agents for better flow
+        """
+        if len(self.agents) <= 2:
+            return list(self.agents)
+
+        compatibility = self.analyze_io_compatibility()
+        matrix = compatibility["compatibility_matrix"]
+
+        # Simple greedy optimization
+        optimized = []
+        remaining = list(range(len(self.agents)))
+
+        # Start with agent that has highest total outgoing compatibility
+        start_scores = [sum(matrix[i]) for i in range(len(self.agents))]
+        current = start_scores.index(max(start_scores))
+
+        optimized.append(self.agents[current])
+        remaining.remove(current)
+
+        # Greedily add most compatible next agent
+        while remaining:
+            best_next = None
+            best_score = -1
+
+            for candidate in remaining:
+                score = matrix[current][candidate]
+                if score > best_score:
+                    best_score = score
+                    best_next = candidate
+
+            if best_next is not None:
+                optimized.append(self.agents[best_next])
+                remaining.remove(best_next)
+                current = best_next
+            else:
+                # Add remaining in original order
+                optimized.extend([self.agents[i] for i in remaining])
+                break
+
+        return optimized
+
+    def _serialize_tool_for_state(self, tool: Any) -> dict[str, Any]:
+        """Serialize a tool to a dict that can be stored in state and serialized by msgpack."""
         if hasattr(tool, "model_dump"):
             # It's a Pydantic model, serialize it
             try:
                 tool_dict = tool.model_dump(mode="json", exclude_none=True)
                 # Clean up args_schema - it's usually a Pydantic class
-                if "args_schema" in tool_dict and tool_dict["args_schema"]:
+                if tool_dict.get("args_schema"):
                     if hasattr(tool_dict["args_schema"], "__name__"):
                         tool_dict["args_schema"] = (
                             f"<PydanticModel:{tool_dict['args_schema'].__name__}>"
@@ -520,18 +916,16 @@ class MultiAgent(Agent):
                 "description": getattr(tool, "description", ""),
                 "type": "tool",
             }
-        elif hasattr(tool, "__name__"):
+        if hasattr(tool, "__name__"):
             return {
                 "name": tool.__name__,
                 "description": getattr(tool, "__doc__", ""),
                 "type": "function",
             }
-        else:
-            return {"name": str(tool), "type": "unknown"}
+        return {"name": str(tool), "type": "unknown"}
 
-    def _serialize_engine_for_state(self, engine: Any) -> Dict[str, Any]:
-        """
-        Serialize an engine to a dict that can be stored in state and serialized by msgpack.
+    def _serialize_engine_for_state(self, engine: Any) -> dict[str, Any]:
+        """Serialize an engine to a dict that can be stored in state and serialized by msgpack.
 
         The agent node can model validate this dict back to an engine if needed.
         """
@@ -561,7 +955,7 @@ class MultiAgent(Agent):
                     value = engine_dict[field]
                     if value is None:
                         continue
-                    elif field == "structured_output_model":
+                    if field == "structured_output_model":
                         # Convert Pydantic model class to string representation
                         if hasattr(value, "__name__"):
                             engine_dict[field] = f"<PydanticModel:{value.__name__}>"
@@ -597,8 +991,7 @@ class MultiAgent(Agent):
             }
 
     def _prepare_input(self, input_data: Any) -> Any:
-        """
-        Prepare input data for the multi-agent system.
+        """Prepare input data for the multi-agent system.
         Ensures engines are properly populated in the state.
         """
         # Call parent's _prepare_input first
@@ -633,7 +1026,7 @@ class MultiAgent(Agent):
             )
 
         # Serialize tools if they exist in prepared_dict to avoid msgpack errors
-        if "tools" in prepared_dict and prepared_dict["tools"]:
+        if prepared_dict.get("tools"):
             serialized_tools = []
             for tool in prepared_dict["tools"]:
                 if tool is not None:

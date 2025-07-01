@@ -1,5 +1,3 @@
-from typing import List, Optional, Union
-
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
@@ -43,7 +41,7 @@ def visualize_graph(
     # Draw nodes by type with different colors
     node_types = set(nx.get_node_attributes(G, "type").values())
     colors = plt.cm.Set3(np.linspace(0, 1, len(node_types)))
-    color_map = dict(zip(node_types, colors))
+    color_map = dict(zip(node_types, colors, strict=False))
 
     for node_type, color in color_map.items():
         nodelist = [
@@ -62,7 +60,7 @@ def visualize_graph(
     # Draw edges by type with different colors and line styles
     edge_types = set(nx.get_edge_attributes(G, "type").values())
     edge_colors = plt.cm.tab10(np.linspace(0, 1, len(edge_types)))
-    edge_color_map = dict(zip(edge_types, edge_colors))
+    edge_color_map = dict(zip(edge_types, edge_colors, strict=False))
 
     for edge_type, color in edge_color_map.items():
         edgelist = [
@@ -149,24 +147,21 @@ a = GraphDocument(
 )
 visualize_graph(a)
 
-from typing import Any, Dict, Tuple
+from typing import Any
 
 
 # Helper function to create and run the agent
 async def create_knowledge_graph(
-    documents: List[Union[str, Document]],
-    llm_config: Optional[LLMConfig] = None,
-    allowed_nodes: Optional[List[str]] = None,
-    allowed_relationships: Optional[
-        Union[List[str], List[Tuple[str, str, str]]]
-    ] = None,
-    node_properties: Union[bool, List[str]] = False,
-    relationship_properties: Union[bool, List[str]] = False,
-    additional_transformer_args: Optional[Dict[str, Any]] = None,
-    custom_system_prompt: Optional[str] = None,
+    documents: list[str | Document],
+    llm_config: LLMConfig | None = None,
+    allowed_nodes: list[str] | None = None,
+    allowed_relationships: list[str] | list[tuple[str, str, str]] | None = None,
+    node_properties: bool | list[str] = False,
+    relationship_properties: bool | list[str] = False,
+    additional_transformer_args: dict[str, Any] | None = None,
+    custom_system_prompt: str | None = None,
 ) -> GraphDocument:
-    """
-    Create a knowledge graph from multiple documents using parallel processing.
+    """Create a knowledge graph from multiple documents using parallel processing.
 
     Args:
         documents: List of documents or text strings

@@ -5,7 +5,7 @@ for plus/minus modifiers and customizable grading scales.
 """
 
 from enum import Enum
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from pydantic import Field, field_validator
 
@@ -235,25 +235,25 @@ class LetterGrade(Grade):
             }
             return gpa_4_scale[self.value]
 
-        else:  # 5.0 scale
-            gpa_5_scale = {
-                LetterValue.A_PLUS: 5.0,
-                LetterValue.A: 5.0,
-                LetterValue.A_MINUS: 4.7,
-                LetterValue.B_PLUS: 4.3,
-                LetterValue.B: 4.0,
-                LetterValue.B_MINUS: 3.7,
-                LetterValue.C_PLUS: 3.3,
-                LetterValue.C: 3.0,
-                LetterValue.C_MINUS: 2.7,
-                LetterValue.D_PLUS: 2.3,
-                LetterValue.D: 2.0,
-                LetterValue.D_MINUS: 1.7,
-                LetterValue.F: 0.0,
-            }
-            return gpa_5_scale[self.value]
+        # 5.0 scale
+        gpa_5_scale = {
+            LetterValue.A_PLUS: 5.0,
+            LetterValue.A: 5.0,
+            LetterValue.A_MINUS: 4.7,
+            LetterValue.B_PLUS: 4.3,
+            LetterValue.B: 4.0,
+            LetterValue.B_MINUS: 3.7,
+            LetterValue.C_PLUS: 3.3,
+            LetterValue.C: 3.0,
+            LetterValue.C_MINUS: 2.7,
+            LetterValue.D_PLUS: 2.3,
+            LetterValue.D: 2.0,
+            LetterValue.D_MINUS: 1.7,
+            LetterValue.F: 0.0,
+        }
+        return gpa_5_scale[self.value]
 
-    def is_passing(self, threshold: Optional[str] = None) -> bool:
+    def is_passing(self, threshold: str | None = None) -> bool:
         """Determine if the grade represents a passing score.
 
         Args:

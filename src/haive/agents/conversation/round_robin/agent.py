@@ -1,10 +1,7 @@
 # src/haive/agents/conversation/round_robin.py
-"""
-Round-robin conversation agent where each participant speaks in turn.
-"""
+"""Round-robin conversation agent where each participant speaks in turn."""
 
-import logging
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.logging.rich_logger import LogLevel, get_logger
@@ -19,8 +16,7 @@ logger.set_level(LogLevel.WARNING)
 
 
 class RoundRobinConversation(BaseConversationAgent):
-    """
-    Round-robin conversation where each agent speaks in a fixed order.
+    """Round-robin conversation where each agent speaks in a fixed order.
 
     Each participant gets exactly one turn per round, with the order
     maintained throughout the conversation.
@@ -36,7 +32,7 @@ class RoundRobinConversation(BaseConversationAgent):
         default=False, description="Announce who is speaking next"
     )
 
-    def select_speaker(self, state: ConversationState) -> Dict[str, Any]:
+    def select_speaker(self, state: ConversationState) -> dict[str, Any]:
         """Select the next speaker in round-robin order."""
         speakers = state.speakers
         current_speaker = state.current_speaker
@@ -78,7 +74,7 @@ class RoundRobinConversation(BaseConversationAgent):
 
         return update
 
-    def _custom_initialization(self, state: ConversationState) -> Dict[str, Any]:
+    def _custom_initialization(self, state: ConversationState) -> dict[str, Any]:
         """Add round-robin specific initialization."""
         return {
             "skip_unavailable": self.skip_unavailable,
@@ -87,7 +83,7 @@ class RoundRobinConversation(BaseConversationAgent):
 
     def _prepare_agent_input(
         self, state: ConversationState, agent_name: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Prepare input with round context."""
         base_input = super()._prepare_agent_input(state, agent_name)
 
@@ -108,14 +104,13 @@ class RoundRobinConversation(BaseConversationAgent):
     @classmethod
     def create_simple(
         cls,
-        participants: List[str],
+        participants: list[str],
         topic: str = "General discussion",
         max_rounds: int = 3,
-        system_message_template: Optional[str] = None,
+        system_message_template: str | None = None,
         **kwargs,
     ):
-        """
-        Create a simple round-robin conversation with auto-generated agents.
+        """Create a simple round-robin conversation with auto-generated agents.
 
         Args:
             participants: List of participant names

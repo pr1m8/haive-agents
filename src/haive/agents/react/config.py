@@ -1,8 +1,5 @@
-from typing import List
-
 from haive.core.graph.branches.branch import Branch
 from haive.core.types import Tool_Type
-from langgraph.prebuilt import create_react_agent
 from langgraph.types import RetryPolicy
 from pydantic import Field
 
@@ -10,11 +7,9 @@ from haive.agents.simple.config import SimpleAgentConfig
 
 
 class ReactAgentConfig(SimpleAgentConfig):
-    """
-    Configuration for the React Agent.
-    """
+    """Configuration for the React Agent."""
 
-    tools: List[Tool_Type] = Field(
+    tools: list[Tool_Type] = Field(
         default_factory=list, description="The tools to use for the agent"
     )
     continuation_branch: Branch = Field(

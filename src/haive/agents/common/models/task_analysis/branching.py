@@ -7,9 +7,9 @@ decomposition strategies.
 
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class BranchType(str, Enum):
@@ -153,7 +153,7 @@ class TaskBranch(BaseModel):
         ],
     )
 
-    prerequisites: List[str] = Field(
+    prerequisites: list[str] = Field(
         default_factory=list,
         description="IDs of other branches that must complete first",
         examples=[
@@ -164,7 +164,7 @@ class TaskBranch(BaseModel):
         ],
     )
 
-    enables: List[str] = Field(
+    enables: list[str] = Field(
         default_factory=list,
         description="IDs of branches that this branch enables",
         examples=[
@@ -175,7 +175,7 @@ class TaskBranch(BaseModel):
         ],
     )
 
-    resources_needed: List[str] = Field(
+    resources_needed: list[str] = Field(
         default_factory=list,
         description="Specific resources required for this branch",
         examples=[
@@ -216,14 +216,13 @@ class TaskBranch(BaseModel):
         """
         if self.estimated_effort <= 2:
             return "trivial"
-        elif self.estimated_effort <= 4:
+        if self.estimated_effort <= 4:
             return "low"
-        elif self.estimated_effort <= 6:
+        if self.estimated_effort <= 6:
             return "moderate"
-        elif self.estimated_effort <= 8:
+        if self.estimated_effort <= 8:
             return "high"
-        else:
-            return "extreme"
+        return "extreme"
 
     def get_duration_category(self) -> str:
         """Get duration category classification.
@@ -235,16 +234,15 @@ class TaskBranch(BaseModel):
 
         if total_seconds <= 3600:  # 1 hour
             return "immediate"
-        elif total_seconds <= 86400:  # 1 day
+        if total_seconds <= 86400:  # 1 day
             return "same_day"
-        elif total_seconds <= 604800:  # 1 week
+        if total_seconds <= 604800:  # 1 week
             return "short_term"
-        elif total_seconds <= 2592000:  # 30 days
+        if total_seconds <= 2592000:  # 30 days
             return "medium_term"
-        elif total_seconds <= 31536000:  # 1 year
+        if total_seconds <= 31536000:  # 1 year
             return "long_term"
-        else:
-            return "extended"
+        return "extended"
 
     def has_dependencies(self) -> bool:
         """Check if this branch has prerequisite dependencies.
@@ -331,7 +329,7 @@ class TaskDecomposition(BaseModel):
         ],
     )
 
-    branches: List[TaskBranch] = Field(
+    branches: list[TaskBranch] = Field(
         ...,
         description="List of individual execution branches",
         min_length=1,
@@ -351,7 +349,7 @@ class TaskDecomposition(BaseModel):
         ],
     )
 
-    critical_path: List[str] = Field(
+    critical_path: list[str] = Field(
         ...,
         description="Sequence of branch IDs on the critical path",
         examples=[
@@ -361,7 +359,7 @@ class TaskDecomposition(BaseModel):
         ],
     )
 
-    parallelization_opportunities: List[List[str]] = Field(
+    parallelization_opportunities: list[list[str]] = Field(
         default_factory=list,
         description="Groups of branch IDs that can run in parallel",
         examples=[
@@ -374,7 +372,7 @@ class TaskDecomposition(BaseModel):
         ],
     )
 
-    bottlenecks: List[str] = Field(
+    bottlenecks: list[str] = Field(
         default_factory=list,
         description="Branch IDs that are likely to be bottlenecks",
         examples=[
@@ -461,7 +459,7 @@ class TaskDecomposition(BaseModel):
 
         return self
 
-    def get_dependency_graph(self) -> Dict[str, List[str]]:
+    def get_dependency_graph(self) -> dict[str, list[str]]:
         """Get dependency graph as adjacency list.
 
         Returns:
@@ -469,7 +467,7 @@ class TaskDecomposition(BaseModel):
         """
         return {branch.branch_id: branch.prerequisites for branch in self.branches}
 
-    def get_enables_graph(self) -> Dict[str, List[str]]:
+    def get_enables_graph(self) -> dict[str, list[str]]:
         """Get enables graph as adjacency list.
 
         Returns:
@@ -477,7 +475,7 @@ class TaskDecomposition(BaseModel):
         """
         return {branch.branch_id: branch.enables for branch in self.branches}
 
-    def find_independent_branches(self) -> List[str]:
+    def find_independent_branches(self) -> list[str]:
         """Find branches with no dependencies.
 
         Returns:
@@ -489,7 +487,7 @@ class TaskDecomposition(BaseModel):
             if not branch.has_dependencies()
         ]
 
-    def find_terminal_branches(self) -> List[str]:
+    def find_terminal_branches(self) -> list[str]:
         """Find branches that don't enable anything else.
 
         Returns:
@@ -513,7 +511,7 @@ class TaskDecomposition(BaseModel):
 
         return sequential_seconds / optimal_seconds
 
-    def get_complexity_metrics(self) -> Dict[str, Any]:
+    def get_complexity_metrics(self) -> dict[str, Any]:
         """Get various complexity metrics for the decomposition.
 
         Returns:
@@ -543,7 +541,7 @@ class TaskDecomposition(BaseModel):
             ),
         }
 
-    def get_execution_recommendations(self) -> List[str]:
+    def get_execution_recommendations(self) -> list[str]:
         """Get recommendations for optimal execution.
 
         Returns:
@@ -595,9 +593,9 @@ class TaskDecomposition(BaseModel):
     def create_simple_sequential(
         cls,
         task_description: str,
-        branch_descriptions: List[str],
-        effort_estimates: Optional[List[int]] = None,
-        duration_estimates: Optional[List[timedelta]] = None,
+        branch_descriptions: list[str],
+        effort_estimates: list[int] | None = None,
+        duration_estimates: list[timedelta] | None = None,
     ) -> "TaskDecomposition":
         """Create a simple sequential task decomposition.
 

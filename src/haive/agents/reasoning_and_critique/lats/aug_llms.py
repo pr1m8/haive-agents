@@ -1,13 +1,10 @@
+from agents.lats.models import Reflection
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.output_parsers.openai_tools import (
     JsonOutputToolsParser,
     PydanticToolsParser,
 )
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import chain as as_runnable
-from agents.lats.models import Reflection
-from langchain_core.messages import AIMessage
-from haive.core.engine.aug_llm import AugLLMConfig,compose_runnable
-
 
 REFLECTION_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
     [
@@ -21,14 +18,16 @@ REFLECTION_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 )
 reflection_output_parser = PydanticToolsParser(tools=[Reflection])
 
-reflection_llm_config = AugLLMConfig(name="reflection_chain",
-                                     prompt_template=REFLECTION_PROMPT_TEMPLATE,
-                                     #tools=[Reflection],
-                                     #bind_tools_kwargs={"tool_choice": "Reflection"},
-                                     #output_parser=reflection_output_parser)
-                                     structured_output_model=Reflection)
+reflection_llm_config = AugLLMConfig(
+    name="reflection_chain",
+    prompt_template=REFLECTION_PROMPT_TEMPLATE,
+    # tools=[Reflection],
+    # bind_tools_kwargs={"tool_choice": "Reflection"},
+    # output_parser=reflection_output_parser)
+    structured_output_model=Reflection,
+)
 
-#reflection_llm_chain = compose_runnable(reflection_llm_config)
+# reflection_llm_chain = compose_runnable(reflection_llm_config)
 
 prompt_template = ChatPromptTemplate.from_messages(
     [
@@ -41,8 +40,9 @@ prompt_template = ChatPromptTemplate.from_messages(
     ]
 )
 from langchain.chat_models import BaseChatModel
+
 a = BaseChatModel
 parser = JsonOutputToolsParser(return_id=True)
-initial_answer_llm_config = AugLLMConfig(name="initial_answer_chain",
-                                        prompt_template=prompt_template,
-                                        output_parser=parser)
+initial_answer_llm_config = AugLLMConfig(
+    name="initial_answer_chain", prompt_template=prompt_template, output_parser=parser
+)

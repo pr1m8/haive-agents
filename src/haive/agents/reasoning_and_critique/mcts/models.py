@@ -1,9 +1,11 @@
 from __future__ import annotations
-from typing import List, Optional, Any
-from pydantic import BaseModel, Field, computed_field, field_serializer
-from langchain_core.messages import BaseMessage, HumanMessage
+
 import math
 from collections import deque
+from typing import Any
+
+from langchain_core.messages import BaseMessage, HumanMessage
+from pydantic import BaseModel, Field, computed_field, field_serializer
 
 
 class Reflection(BaseModel):
@@ -12,7 +14,9 @@ class Reflection(BaseModel):
     found_solution: bool = Field(..., description="True if task was solved")
 
     def as_message(self) -> HumanMessage:
-        return HumanMessage(content=f"Reasoning: {self.reflections}\nScore: {self.score}")
+        return HumanMessage(
+            content=f"Reasoning: {self.reflections}\nScore: {self.score}"
+        )
 
     @property
     def normalized_score(self) -> float:
@@ -20,10 +24,10 @@ class Reflection(BaseModel):
 
 
 class TreeNode(BaseModel):
-    messages: List[BaseMessage]
+    messages: list[BaseMessage]
     reflection: Reflection
-    parent: Optional[TreeNode] = Field(default=None, exclude=True)
-    children: List[TreeNode] = Field(default_factory=list)
+    parent: TreeNode | None = Field(default=None, exclude=True)
+    children: list[TreeNode] = Field(default_factory=list)
     value: float = 0.0
     visits: int = 0
     depth: int = 1
@@ -50,10 +54,12 @@ class TreeNode(BaseModel):
             node._is_solved = True
             node = node.parent
 
-    def get_messages(self, include_reflections: bool = True) -> List[BaseMessage]:
-        return self.messages + ([self.reflection.as_message()] if include_reflections else [])
+    def get_messages(self, include_reflections: bool = True) -> list[BaseMessage]:
+        return self.messages + (
+            [self.reflection.as_message()] if include_reflections else []
+        )
 
-    def get_trajectory(self, include_reflections: bool = True) -> List[BaseMessage]:
+    def get_trajectory(self, include_reflections: bool = True) -> list[BaseMessage]:
         node = self
         messages = []
         while node:
@@ -61,7 +67,7 @@ class TreeNode(BaseModel):
             node = node.parent
         return list(reversed(messages))
 
-    def _get_all_children(self) -> List[TreeNode]:
+    def _get_all_children(self) -> list[TreeNode]:
         all_nodes = []
         nodes = deque([self])
         while nodes:
@@ -74,7 +80,7 @@ class TreeNode(BaseModel):
         all_nodes = [self] + self._get_all_children()
         best = max(
             all_nodes,
-            key=lambda node: int(node.is_terminal and node.is_solved) * node.value
+            key=lambda node: int(node.is_terminal and node.is_solved) * node.value,
         )
         return best
 
@@ -96,7 +102,7 @@ class TreeNode(BaseModel):
         return not self.children
 
     @property
-    def best_child_score(self) -> Optional[float]:
+    def best_child_score(self) -> float | None:
         if not self.children:
             return None
         return max(child.value for child in self.children if child.is_solved)

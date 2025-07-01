@@ -1,7 +1,5 @@
 # examples/conversation/directed_example.py
-"""
-Examples for directed conversation patterns with mentions and targeted responses.
-"""
+"""Examples for directed conversation patterns with mentions and targeted responses."""
 
 import logging
 

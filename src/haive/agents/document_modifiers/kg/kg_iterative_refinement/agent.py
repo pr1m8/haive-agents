@@ -1,29 +1,42 @@
-from haive.agents.document_modifiers.kg.kg_iterative_refinement.config import IterativeGraphTransformerConfig      
-from haive.agents.document_modifiers.kg.kg_iterative_refinement.state import IterativeGraphTransformerState
-from langchain_core.runnables import RunnableConfig
-from langgraph.types import Command
-from langchain_community.graphs.graph_document import GraphDocument
-from haive.core.engine.agent.agent import Agent, register_agent
-from haive.agents.document_modifiers.kg.kg_iterative_refinement.utils import replace_empty_placeholders
-from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 import logging
-from langgraph.graph import START,END
+
+from haive.core.engine.agent.agent import Agent, register_agent
+from langchain_core.runnables import RunnableConfig
+from langgraph.graph import START
+from langgraph.types import Command
+
+from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
+from haive.agents.document_modifiers.kg.kg_iterative_refinement.config import (
+    IterativeGraphTransformerConfig,
+)
+from haive.agents.document_modifiers.kg.kg_iterative_refinement.state import (
+    IterativeGraphTransformerState,
+)
+from haive.agents.document_modifiers.kg.kg_iterative_refinement.utils import (
+    replace_empty_placeholders,
+)
+
 logger = logging.getLogger(__name__)
+
+
 @register_agent(IterativeGraphTransformerConfig)
 class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
-    """
-    An agent that transforms a graph document iteratively.
-    """
-    def __init__(self, config: IterativeGraphTransformerConfig=IterativeGraphTransformerConfig()):
-        #self.graph_transformer = GraphTransformer()
+    """An agent that transforms a graph document iteratively."""
+
+    def __init__(
+        self,
+        config: IterativeGraphTransformerConfig = IterativeGraphTransformerConfig(),
+    ):
+        # self.graph_transformer = GraphTransformer()
         self.llm_graph_transformer = GraphTransformer()
-        
+
         super().__init__(config)
-    
 
     # We define functions for each node, including a node that generates
     # the initial summary:
-    def generate_initial_summary(self, state: IterativeGraphTransformerState, config: RunnableConfig):
+    def generate_initial_summary(
+        self, state: IterativeGraphTransformerState, config: RunnableConfig
+    ):
         logger.debug(f"State: {state}")
         doc = state.contents[0]
         if isinstance(doc, str):
@@ -39,10 +52,11 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         )
         return Command(update={"graph_doc": graph_doc[0], "index": 1})
 
-
     # And a node that refines the summary based on the next document
-        
-    def refine_summary(self, state: IterativeGraphTransformerState, config: RunnableConfig):
+
+    def refine_summary(
+        self, state: IterativeGraphTransformerState, config: RunnableConfig
+    ):
         content = state.contents[state.index]
 
         # --- Normalize to Document ---
@@ -58,7 +72,8 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
 
         from langchain_core.prompts import PromptTemplate
 
-        refine_template = PromptTemplate.from_template("""\
+        refine_template = PromptTemplate.from_template(
+            """\
         Produce a final graph.
 
         Existing graph up to this point:
@@ -70,7 +85,8 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         ------------
 
         Given the new context, refine the original graph.
-        """).format(existing_answer=str(state.graph_doc), context=content.page_content)
+        """
+        ).format(existing_answer=str(state.graph_doc), context=content.page_content)
 
         refine_template = replace_empty_placeholders(refine_template)
 
@@ -83,31 +99,41 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
 
         return Command(update={"graph_doc": graph_doc[0], "index": state.index + 1})
 
-
     def setup_workflow(self):
         self.graph.add_node("generate_initial_summary", self.generate_initial_summary)
         self.graph.add_node("refine_summary", self.refine_summary)
 
         self.graph.add_edge(START, "generate_initial_summary")
-        self.graph.add_conditional_edges("generate_initial_summary", self.state_schema.should_refine)
-        self.graph.add_conditional_edges("refine_summary", self.state_schema.should_refine)
+        self.graph.add_conditional_edges(
+            "generate_initial_summary", self.state_schema.should_refine
+        )
+        self.graph.add_conditional_edges(
+            "refine_summary", self.state_schema.should_refine
+        )
+
 
 from langchain_core.documents import Document
-test_docs = ["Marie Curie, born in 1867, was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.",
-        "Marie Curie was the first woman to win a Nobel Prize. Her husband, Pierre Curie, was a co-winner of her first Nobel Prize.",
-        "Poland is a country in Europe. Poland was first established as a unified state in 966, and its capital is Warsaw.",
-        "Warsaw is the capital and largest city of Poland. It is located on the Vistula River.",
-        "Marie Curie discovered the elements polonium and radium. She named polonium after her native country Poland.",
-        "Pierre Curie was a French physicist who made pioneering contributions to crystallography, magnetism, and radioactivity."]
+
+test_docs = [
+    "Marie Curie, born in 1867, was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.",
+    "Marie Curie was the first woman to win a Nobel Prize. Her husband, Pierre Curie, was a co-winner of her first Nobel Prize.",
+    "Poland is a country in Europe. Poland was first established as a unified state in 966, and its capital is Warsaw.",
+    "Warsaw is the capital and largest city of Poland. It is located on the Vistula River.",
+    "Marie Curie discovered the elements polonium and radium. She named polonium after her native country Poland.",
+    "Pierre Curie was a French physicist who made pioneering contributions to crystallography, magnetism, and radioactivity.",
+]
 
 config = IterativeGraphTransformerConfig(
     contents=test_docs,
-    #aug_llm_configs=aug_llm_configs
+    # aug_llm_configs=aug_llm_configs
 )
 
 agent = IterativeGraphTransformer(config)
-def main():   
-    result = agent.run({'contents':test_docs},debug=True)
+
+
+def main():
+    result = agent.run({"contents": test_docs}, debug=True)
     print(result)
+
 
 main()

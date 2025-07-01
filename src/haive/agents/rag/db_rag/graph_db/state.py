@@ -23,8 +23,6 @@ Note:
     All fields have sensible defaults to support partial state updates.
 """
 
-from typing import List
-
 from pydantic import BaseModel, Field
 
 
@@ -73,7 +71,7 @@ class OutputState(BaseModel):
     answer: str = Field(
         default="", description="The final answer to the user's question"
     )
-    steps: List[str] = Field(
+    steps: list[str] = Field(
         default_factory=list,
         description="The workflow steps taken to reach the current state",
     )
@@ -122,9 +120,9 @@ class OverallState(InputState, OutputState):
     next_action: str = Field(
         default="", description="The next action/node to execute in the workflow"
     )
-    cypher_errors: List[str] = Field(
+    cypher_errors: list[str] = Field(
         default=[], description="Validation errors found in the Cypher statement"
     )
-    database_records: List[dict] = Field(
+    database_records: list[dict] = Field(
         default=[], description="Records retrieved from the Neo4j database query"
     )

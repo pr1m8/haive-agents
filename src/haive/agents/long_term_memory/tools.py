@@ -1,18 +1,18 @@
+import uuid
 
-from langchain_core.tools import tool
-from langchain_core.runnables import RunnableConfig
-from langchain_core.documents import Document
+from agents.long_term_memory.models import KnowledgeTriple
 from haive.core.models.vectorstore.base import VectorStoreConfig
 from haive.core.utils.runnable_config_utils import get_user_id
-import uuid
-from typing import List
-from agents.long_term_memory.models import KnowledgeTriple
+from langchain_core.documents import Document
+from langchain_core.runnables import RunnableConfig
+from langchain_core.tools import tool
 from pydantic import BaseModel
 
+
 @tool
-def save_recall_memory(memory: str, 
-                       config: RunnableConfig,
-                       vs_config: VectorStoreConfig) -> str:
+def save_recall_memory(
+    memory: str, config: RunnableConfig, vs_config: VectorStoreConfig
+) -> str:
     """Save memory to vectorstore for later semantic retrieval."""
     user_id = get_user_id(config)
     document = Document(
@@ -21,10 +21,13 @@ def save_recall_memory(memory: str,
     vs_config.add_documents([document])
     return memory
 
+
 @tool
-def save_structured_recall_memory(config: RunnableConfig,
-                                  vs_config: VectorStoreConfig,
-                                  memories: List[BaseModel]=[KnowledgeTriple]) -> str:
+def save_structured_recall_memory(
+    config: RunnableConfig,
+    vs_config: VectorStoreConfig,
+    memories: list[BaseModel] = [KnowledgeTriple],
+) -> str:
     """Save memory to vectorstore for later semantic retrieval."""
     user_id = get_user_id(config)
     for memory in memories:
@@ -39,9 +42,12 @@ def save_structured_recall_memory(config: RunnableConfig,
         )
         vs_config.add_documents([document])
     return memories
+
+
 @tool
-def search_recall_memories(query: str, config: RunnableConfig,
-                           vs_config: VectorStoreConfig) -> List[str]:
+def search_recall_memories(
+    query: str, config: RunnableConfig, vs_config: VectorStoreConfig
+) -> list[str]:
     """Search for relevant memories."""
     user_id = get_user_id(config)
 

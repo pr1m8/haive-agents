@@ -1,10 +1,8 @@
 # src/haive/agents/conversation/collaborative/state.py
-"""
-State for collaborative conversation agents.
-"""
+"""State for collaborative conversation agents."""
 
 import operator
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import Literal
 
 from pydantic import Field
 
@@ -12,8 +10,8 @@ from haive.agents.conversation.base.state import ConversationState
 
 
 def merge_document_sections(
-    current: Dict[str, str], update: Dict[str, str]
-) -> Dict[str, str]:
+    current: dict[str, str], update: dict[str, str]
+) -> dict[str, str]:
     """Merge document sections, preserving existing content."""
     result = current.copy()
     for section, content in update.items():
@@ -29,8 +27,8 @@ def merge_document_sections(
 
 
 def merge_contribution_counts(
-    current: Dict[str, int], update: Dict[str, int]
-) -> Dict[str, int]:
+    current: dict[str, int], update: dict[str, int]
+) -> dict[str, int]:
     """Merge contribution counts by summing values."""
     result = current.copy()
     for contributor, count in update.items():
@@ -43,25 +41,25 @@ class CollaborativeState(ConversationState):
 
     # Shared document/artifact
     shared_document: str = Field(default="")
-    document_sections: Dict[str, str] = Field(default_factory=dict)
+    document_sections: dict[str, str] = Field(default_factory=dict)
 
     # Contribution tracking
-    contributions: List[Tuple[str, str, str]] = Field(
+    contributions: list[tuple[str, str, str]] = Field(
         default_factory=list,
         description="List of (contributor, section, content) tuples",
     )
-    contribution_count: Dict[str, int] = Field(default_factory=dict)
+    contribution_count: dict[str, int] = Field(default_factory=dict)
 
     # Collaboration flow
-    current_section: Optional[str] = Field(default=None)
-    sections_order: List[str] = Field(default_factory=list)
-    completed_sections: List[str] = Field(default_factory=list)
+    current_section: str | None = Field(default=None)
+    sections_order: list[str] = Field(default_factory=list)
+    completed_sections: list[str] = Field(default_factory=list)
 
     # Review and consensus
-    pending_reviews: List[Tuple[str, str]] = Field(
+    pending_reviews: list[tuple[str, str]] = Field(
         default_factory=list, description="List of (section, content) pending review"
     )
-    approvals: Dict[str, List[str]] = Field(
+    approvals: dict[str, list[str]] = Field(
         default_factory=dict, description="Section -> list of approvers"
     )
 

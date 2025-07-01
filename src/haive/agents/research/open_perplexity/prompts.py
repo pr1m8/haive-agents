@@ -1,5 +1,4 @@
-"""
-Prompt templates for the open_perplexity research agent.
+"""Prompt templates for the open_perplexity research agent.
 
 This module contains the prompt templates used by various components of the
 research agent, including system prompts, task-specific prompts, and specialized

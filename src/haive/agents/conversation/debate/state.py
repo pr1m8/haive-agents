@@ -1,10 +1,8 @@
 # src/haive/agents/conversation/debate/state.py
-"""
-State schema for structured debate conversations with automatic tracking.
-"""
+"""State schema for structured debate conversations with automatic tracking."""
 
 import operator
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from pydantic import Field, computed_field
 
@@ -12,25 +10,24 @@ from haive.agents.conversation.base.state import ConversationState
 
 
 class DebateState(ConversationState):
-    """
-    Extended state schema for debate conversations with automatic tracking.
+    """Extended state schema for debate conversations with automatic tracking.
 
     Extends ConversationState with debate-specific fields and automatic
     computation of debate progress and statistics.
     """
 
     # Debate positions and tracking
-    debate_positions: Dict[str, str] = Field(
+    debate_positions: dict[str, str] = Field(
         default_factory=dict,
         description="Mapping of participant names to their debate positions",
     )
 
     # Use reducers for automatic counting
-    arguments_made: Dict[str, List[str]] = Field(
+    arguments_made: dict[str, list[str]] = Field(
         default_factory=dict, description="Arguments made by each participant"
     )
 
-    rebuttals: Dict[str, List[Tuple[str, str]]] = Field(
+    rebuttals: dict[str, list[tuple[str, str]]] = Field(
         default_factory=dict,
         description="Rebuttals as (target_name, rebuttal_summary) tuples",
     )
@@ -46,7 +43,7 @@ class DebateState(ConversationState):
 
     current_phase: str = Field(default="opening", description="Current debate phase")
 
-    phase_transitions: List[Tuple[str, int]] = Field(
+    phase_transitions: list[tuple[str, int]] = Field(
         default_factory=list,
         description="History of phase transitions as (phase_name, turn_number)",
     )
@@ -61,11 +58,11 @@ class DebateState(ConversationState):
     )
 
     # Optional scoring and judging
-    argument_scores: Dict[str, float] = Field(
+    argument_scores: dict[str, float] = Field(
         default_factory=dict, description="Optional scores for each participant"
     )
 
-    judge_feedback: List[str] = Field(
+    judge_feedback: list[str] = Field(
         default_factory=list, description="Feedback from judge participants"
     )
 
@@ -105,7 +102,7 @@ class DebateState(ConversationState):
 
     @computed_field
     @property
-    def debate_progress(self) -> Dict[str, float]:
+    def debate_progress(self) -> dict[str, float]:
         """Calculate progress for each participant."""
         progress = {}
         for participant in self.debate_positions:
@@ -117,13 +114,13 @@ class DebateState(ConversationState):
     @property
     def phase_should_transition(self) -> bool:
         """Check if current phase should transition."""
-        if self.current_phase == "opening" and self.opening_statements_complete:
+        if (self.current_phase == "opening" and self.opening_statements_complete) or (
+            self.current_phase == "arguments" and self.all_arguments_complete
+        ):
             return True
-        elif self.current_phase == "arguments" and self.all_arguments_complete:
-            return True
-        elif self.current_phase == "rebuttals" and self.all_rebuttals_complete:
-            return True
-        elif self.current_phase == "closing" and self.closing_statements_complete:
+        if (self.current_phase == "rebuttals" and self.all_rebuttals_complete) or (
+            self.current_phase == "closing" and self.closing_statements_complete
+        ):
             return True
         return False
 
@@ -139,7 +136,7 @@ class DebateState(ConversationState):
 
     @computed_field
     @property
-    def next_phase(self) -> Optional[str]:
+    def next_phase(self) -> str | None:
         """Determine what the next phase should be."""
         phase_order = {
             "opening": "arguments",
@@ -152,7 +149,7 @@ class DebateState(ConversationState):
 
     @computed_field
     @property
-    def debate_statistics(self) -> Dict[str, Any]:
+    def debate_statistics(self) -> dict[str, Any]:
         """Get comprehensive debate statistics."""
         return {
             "total_turns": self.turn_count,
@@ -181,7 +178,7 @@ class DebateState(ConversationState):
             or (self.debate_winner != "" and self.current_phase == "judging")
         )
 
-    def get_participant_summary(self, participant: str) -> Dict[str, Any]:
+    def get_participant_summary(self, participant: str) -> dict[str, Any]:
         """Get summary for a specific participant."""
         return {
             "name": participant,

@@ -1,5 +1,4 @@
 # from haive.core.engine.retriever import RetrieverConfig  # Correct import
-from typing import Union
 
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.retriever.mixins import RetrieverMixin
@@ -12,8 +11,8 @@ from pydantic import Field
 from haive.agents.base.agent import Agent
 
 
-class SimpleRAGAgent(RetrieverMixin, Agent):
-    """Simple RAG agent that performs retrieval.
+class BaseRAGAgent(RetrieverMixin, Agent):
+    """Base RAG agent that performs retrieval.
 
     This agent inherits from RetrieverMixin which provides:
     - Automatic conversion of VectorStoreConfig to VectorStoreRetrieverConfig
@@ -22,25 +21,25 @@ class SimpleRAGAgent(RetrieverMixin, Agent):
     Examples:
         ```python
         # Create from vector store config directly
-        agent = SimpleRAGAgent(engine=vector_store_config)
+        agent = BaseRAGAgent(engine=vector_store_config)
 
         # Create from documents
-        agent = SimpleRAGAgent.from_documents(
+        agent = BaseRAGAgent.from_documents(
             documents=[Document(page_content="...")],
             embedding_model=embedding_config,
             name="my_rag_agent"
         )
 
         # Create from existing vector store
-        agent = SimpleRAGAgent.from_vectorstore(
+        agent = BaseRAGAgent.from_vectorstore(
             vector_store_config=vs_config,
             name="my_rag_agent"
         )
         ```
     """
 
-    name: str = "Simple RAG Agent"
-    engine: Union[BaseRetrieverConfig, VectorStoreConfig] = Field(
+    name: str = "Base RAG Agent"
+    engine: BaseRetrieverConfig | VectorStoreConfig = Field(
         ...,
         description="Retriever Engine (accepts BaseRetrieverConfig or VectorStoreConfig)",
     )
@@ -48,7 +47,7 @@ class SimpleRAGAgent(RetrieverMixin, Agent):
     def build_graph(self) -> BaseGraph:
         """Build the RAG agent graph."""
         # Create base graph with proper name
-        graph = BaseGraph(name="SimpleRAGAgent")
+        graph = BaseGraph(name="BaseRAGAgent")
 
         # Add the retrieval node
         retrieval_node = EngineNodeConfig(engine=self.engine, name="retrieval_node")

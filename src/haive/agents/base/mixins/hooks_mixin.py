@@ -1,14 +1,14 @@
 # haive/agents/base/mixins/hooks_mixin.py
 
-"""
-Enhanced hooks mixin for the Haive framework.
+"""Enhanced hooks mixin for the Haive framework.
 
 Provides a flexible hooks system that can be used by both single and multi agents,
 with support for different hook points and graph-aware modifications.
 """
 
 import logging
-from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
+from collections.abc import Callable
+from typing import Any, Generic, TypeVar
 
 from pydantic import PrivateAttr
 
@@ -21,17 +21,16 @@ T = TypeVar("T")
 
 
 class HooksMixin(Generic[TState]):
-    """
-    Mixin that provides comprehensive hooks functionality.
+    """Mixin that provides comprehensive hooks functionality.
 
     This mixin is generic over the state type, allowing hooks to be
     type-safe with respect to the agent's state schema.
     """
 
     # Private storage for hooks
-    _hooks: Dict[HookPoint, List[Dict[str, Any]]] = PrivateAttr(default_factory=dict)
+    _hooks: dict[HookPoint, list[dict[str, Any]]] = PrivateAttr(default_factory=dict)
     _hook_enabled: bool = PrivateAttr(default=True)
-    _hook_results: Dict[str, Any] = PrivateAttr(default_factory=dict)
+    _hook_results: dict[str, Any] = PrivateAttr(default_factory=dict)
 
     def __init__(self, **kwargs):
         """Initialize hooks storage."""
@@ -68,12 +67,11 @@ class HooksMixin(Generic[TState]):
         point: HookPoint,
         hook: Callable,
         priority: int = 0,
-        name: Optional[str] = None,
+        name: str | None = None,
         graph_aware: bool = False,
-        condition: Optional[Callable[["HooksMixin", HookContext[TState]], bool]] = None,
+        condition: Callable[["HooksMixin", HookContext[TState]], bool] | None = None,
     ) -> None:
-        """
-        Register a hook with enhanced capabilities.
+        """Register a hook with enhanced capabilities.
 
         Args:
             point: Hook point to register at
@@ -111,11 +109,10 @@ class HooksMixin(Generic[TState]):
         self,
         point: HookPoint,
         *args,
-        context: Optional[HookContext[TState]] = None,
+        context: HookContext[TState] | None = None,
         **kwargs,
     ) -> Any:
-        """
-        Run hooks for a specific point with enhanced context.
+        """Run hooks for a specific point with enhanced context.
 
         Returns:
             Last non-None result from hooks, or None
@@ -182,7 +179,7 @@ class HooksMixin(Generic[TState]):
         self._hook_results.clear()
 
     def unregister_hook(
-        self, point: HookPoint, hook: Optional[Union[Callable, str]] = None
+        self, point: HookPoint, hook: Callable | str | None = None
     ) -> None:
         """Unregister one or all hooks at a point."""
         if point not in self._hooks:
@@ -205,7 +202,7 @@ class HooksMixin(Generic[TState]):
         """Disable hook execution."""
         self._hook_enabled = False
 
-    def list_hooks(self) -> Dict[str, List[Dict[str, Any]]]:
+    def list_hooks(self) -> dict[str, list[dict[str, Any]]]:
         """List all registered hooks with metadata."""
         return {
             point.value: [
@@ -226,12 +223,11 @@ class HooksMixin(Generic[TState]):
 def hook(
     point: HookPoint,
     priority: int = 0,
-    name: Optional[str] = None,
+    name: str | None = None,
     graph_aware: bool = False,
-    condition: Optional[Callable] = None,
+    condition: Callable | None = None,
 ):
-    """
-    Decorator for marking methods as hooks.
+    """Decorator for marking methods as hooks.
 
     Usage:
         @hook(HookPoint.AFTER_GRAPH_BUILD, priority=10)

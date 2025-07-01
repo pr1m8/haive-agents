@@ -18,7 +18,7 @@ Example:
         MATCH (m:Movie) WHERE m.year = $year RETURN m.title
 """
 
-from typing import Any, Dict, List, Literal, Optional, TypeVar
+from typing import Any, Literal, TypeVar
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -61,10 +61,10 @@ class PropertyFilter(BaseModel):
         description="The label of the node to which this property belongs"
     )
     property_key: str = Field(description="The key of the property being filtered")
-    property_value: Optional[Any] = Field(
+    property_value: Any | None = Field(
         description="The value that the property is being matched against"
     )
-    filter_type: Optional[Literal["=", "!=", ">", "<", ">=", "<="]] = Field(
+    filter_type: Literal["=", "!=", ">", "<", ">=", "<="] | None = Field(
         default="=", description="Type of filter operation used in the Cypher query"
     )
 
@@ -119,7 +119,7 @@ class CypherQueryOutput(BaseModel):
     """
 
     query: str = Field(..., description="The generated Cypher query")
-    parameters: Optional[Dict[str, Any]] = Field(
+    parameters: dict[str, Any] | None = Field(
         default=None,
         description="Query parameters if placeholders are used (e.g., $name)",
     )
@@ -194,11 +194,11 @@ class ValidateCypherOutput(BaseModel):
     is_valid: bool = Field(
         default=True, description="Whether the Cypher query is valid"
     )
-    errors: Optional[List[str]] = Field(
+    errors: list[str] | None = Field(
         default=[],
         description="List of syntax or semantic errors in the Cypher statement",
     )
-    filters: Optional[List[PropertyFilter]] = Field(
+    filters: list[PropertyFilter] | None = Field(
         default=[],
         description="Property-based filters detected in the Cypher statement",
     )
@@ -237,7 +237,7 @@ class GuardrailsOutput(BaseModel):
     decision: str = Field(
         description="Routing decision: 'end' or one of the allowed categories"
     )
-    allowed_categories: List[str] = Field(
+    allowed_categories: list[str] = Field(
         default=["movie", "sports", "music"],
         description="List of allowed categories for this domain",
     )

@@ -4,13 +4,13 @@ This module analyzes whether tasks are currently solvable, what barriers exist,
 and what would be required to make unsolvable tasks solvable.
 """
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from .base import SolvabilityStatus
+from haive.agents.common.models.task_analysis.base import SolvabilityStatus
 
 
 class SolvabilityBarrier(str, Enum):
@@ -121,7 +121,7 @@ class SolvabilityAssessment(BaseModel):
         examples=[0.95, 0.8, 0.6, 0.3],
     )
 
-    primary_barriers: List[SolvabilityBarrier] = Field(
+    primary_barriers: list[SolvabilityBarrier] = Field(
         default_factory=list,
         description="Main obstacles preventing solution",
         max_length=10,
@@ -136,7 +136,7 @@ class SolvabilityAssessment(BaseModel):
         ],
     )
 
-    secondary_barriers: List[SolvabilityBarrier] = Field(
+    secondary_barriers: list[SolvabilityBarrier] = Field(
         default_factory=list,
         description="Additional challenges that may arise",
         max_length=15,
@@ -150,7 +150,7 @@ class SolvabilityAssessment(BaseModel):
         ],
     )
 
-    enabling_factors: List[str] = Field(
+    enabling_factors: list[str] = Field(
         default_factory=list,
         description="Factors that make the task more solvable",
         max_length=20,
@@ -165,7 +165,7 @@ class SolvabilityAssessment(BaseModel):
         ],
     )
 
-    breakthrough_requirements: List[str] = Field(
+    breakthrough_requirements: list[str] = Field(
         default_factory=list,
         description="Specific breakthroughs needed to make task solvable",
         max_length=15,
@@ -177,13 +177,13 @@ class SolvabilityAssessment(BaseModel):
         ],
     )
 
-    estimated_time_to_solvable: Optional[timedelta] = Field(
+    estimated_time_to_solvable: timedelta | None = Field(
         default=None,
         description="Estimated time until task becomes solvable (None if never)",
         examples=[timedelta(0), timedelta(days=365), timedelta(days=3650), None],
     )
 
-    alternative_approaches: List[str] = Field(
+    alternative_approaches: list[str] = Field(
         default_factory=list,
         description="Possible alternative solution paths",
         max_length=10,
@@ -301,7 +301,7 @@ class SolvabilityAssessment(BaseModel):
 
         return any(barrier in showstoppers for barrier in self.primary_barriers)
 
-    def get_addressable_barriers(self) -> List[SolvabilityBarrier]:
+    def get_addressable_barriers(self) -> list[SolvabilityBarrier]:
         """Get barriers that could potentially be addressed.
 
         Returns:
@@ -325,7 +325,7 @@ class SolvabilityAssessment(BaseModel):
             if barrier in addressable
         ]
 
-    def estimate_breakthrough_timeline(self) -> Dict[str, Any]:
+    def estimate_breakthrough_timeline(self) -> dict[str, Any]:
         """Estimate timeline for required breakthroughs.
 
         Returns:
@@ -390,7 +390,7 @@ class SolvabilityAssessment(BaseModel):
             "parallel_possible": len(self.breakthrough_requirements) > 1,
         }
 
-    def get_immediate_actions(self) -> List[str]:
+    def get_immediate_actions(self) -> list[str]:
         """Get recommended immediate actions to improve solvability.
 
         Returns:
@@ -443,7 +443,7 @@ class SolvabilityAssessment(BaseModel):
         report_lines = []
 
         # Header
-        report_lines.append(f"SOLVABILITY ASSESSMENT")
+        report_lines.append("SOLVABILITY ASSESSMENT")
         report_lines.append(f"Status: {self.solvability_status.value.title()}")
         report_lines.append(
             f"Currently Solvable: {'Yes' if self.is_currently_solvable else 'No'}"

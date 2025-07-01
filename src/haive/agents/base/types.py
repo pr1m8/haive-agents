@@ -1,19 +1,14 @@
 # haive/agents/base/types.py
 
-"""
-Core type system for the Haive agent framework.
+"""Core type system for the Haive agent framework.
 
 Defines type variables, constraints, and base protocols for type-safe agent design.
 """
 
 from typing import (
     Any,
-    Dict,
     Generic,
-    List,
-    Optional,
     Protocol,
-    Type,
     TypeVar,
     runtime_checkable,
 )
@@ -62,7 +57,7 @@ class StateProvider(Protocol[TState]):
     """Protocol for objects that provide state schemas."""
 
     @property
-    def state_schema(self) -> Type[TState]:
+    def state_schema(self) -> type[TState]:
         """Get the state schema type."""
         ...
 
@@ -72,13 +67,13 @@ class Invokable(Protocol[TInput, TOutput]):
     """Protocol for objects that can be invoked."""
 
     def invoke(
-        self, input_data: TInput, config: Optional[Dict[str, Any]] = None
+        self, input_data: TInput, config: dict[str, Any] | None = None
     ) -> TOutput:
         """Invoke with input data."""
         ...
 
     async def ainvoke(
-        self, input_data: TInput, config: Optional[Dict[str, Any]] = None
+        self, input_data: TInput, config: dict[str, Any] | None = None
     ) -> TOutput:
         """Async invoke with input data."""
         ...
@@ -94,7 +89,7 @@ class EngineProvider(Protocol[TEngine]):
         ...
 
     @property
-    def engines(self) -> Dict[str, Engine]:
+    def engines(self) -> dict[str, Engine]:
         """Get all engines."""
         ...
 
@@ -113,8 +108,6 @@ class Agent(
 ):
     """Complete agent protocol combining all capabilities."""
 
-    pass
-
 
 # ============================================================================
 # GRAPH TOPOLOGY TYPES
@@ -126,18 +119,18 @@ class NodeConnection(BaseModel, Generic[TState]):
 
     source: str
     target: str
-    condition: Optional[Any] = None  # Callable[[TState], bool]
-    metadata: Dict[str, Any] = {}
+    condition: Any | None = None  # Callable[[TState], bool]
+    metadata: dict[str, Any] = {}
 
 
 class GraphSegment(BaseModel, Generic[TState]):
     """Represents a segment of a graph that can be composed."""
 
-    nodes: Dict[str, Any]  # node_name -> NodeConfig
-    edges: List[NodeConnection[TState]]
+    nodes: dict[str, Any]  # node_name -> NodeConfig
+    edges: list[NodeConnection[TState]]
     entry_point: str
-    exit_points: List[str]
-    metadata: Dict[str, Any] = {}
+    exit_points: list[str]
+    metadata: dict[str, Any] = {}
 
 
 # ============================================================================
@@ -187,9 +180,32 @@ class HookContext(BaseModel, Generic[TState]):
     hook_point: HookPoint
     agent_id: str
     agent_type: str
-    state_type: Optional[Type[TState]] = None
-    metadata: Dict[str, Any] = {}
+    state_type: type[TState] | None = None
+    metadata: dict[str, Any] = {}
 
 
 # Type for hook functions
 HookFunction = TypeVar("HookFunction", bound=Any)  # Callable[[Any, HookContext], Any]
+
+
+# ============================================================================
+# DEFAULT AGENT SCHEMAS
+# ============================================================================
+
+
+class AgentInput(BaseModel):
+    """Default input schema for agents."""
+
+    messages: list[Any] = []
+
+
+class AgentOutput(BaseModel):
+    """Default output schema for agents."""
+
+    messages: list[Any] = []
+
+
+class AgentState(BaseModel):
+    """Default state schema for agents."""
+
+    messages: list[Any] = []

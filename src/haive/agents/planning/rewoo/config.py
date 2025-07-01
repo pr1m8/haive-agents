@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, fields
-from typing import Annotated, Optional
+from dataclasses import field, fields
 
 from langchain_core.runnables import RunnableConfig, ensure_config
+
 
 class Configuration(BaseModel):
     system_prompt: str = field(
@@ -16,11 +16,9 @@ class Configuration(BaseModel):
         },
     )
 
-
-
     @classmethod
     def from_runnable_config(
-        cls, config: Optional[RunnableConfig] = None
+        cls, config: RunnableConfig | None = None
     ) -> Configuration:
         """Create a Configuration instance from a RunnableConfig object."""
         config = ensure_config(config)

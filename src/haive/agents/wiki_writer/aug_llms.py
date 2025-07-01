@@ -1,6 +1,6 @@
-from langchain_core.prompts import ChatPromptTemplate
+from agents.wiki_writer.models import Outline, Perspectives, RelatedSubjects
 from haive.core.engine.aug_llm import AugLLMConfig
-from agents.wiki_writer.models import Outline, RelatedSubjects, Perspectives
+from langchain_core.prompts import ChatPromptTemplate
 
 DIRECT_GEN_OUTLINE_PROMPT = ChatPromptTemplate.from_messages(
     [
@@ -12,7 +12,7 @@ DIRECT_GEN_OUTLINE_PROMPT = ChatPromptTemplate.from_messages(
     ]
 )
 
-# Add option for fast llm here ? 
+# Add option for fast llm here ?
 direct_gen_outline_aug_llm_config = AugLLMConfig(
     prompt=DIRECT_GEN_OUTLINE_PROMPT,
     output_parser=Outline,

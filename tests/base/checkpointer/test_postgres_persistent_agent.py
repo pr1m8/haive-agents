@@ -1,17 +1,13 @@
-"""
-Updated test for PostgreSQL persistence with correct StateSnapshot handling.
+"""Updated test for PostgreSQL persistence with correct StateSnapshot handling.
 
 Save as tests/agents/base/checkpointer/test_postgres_persistent_agent.py
 """
 
 import logging
-import os
 import sys
 import time
 import uuid
 from typing import Any
-
-import pytest   
 
 # Set up logging
 logging.basicConfig(
@@ -45,12 +41,7 @@ except ImportError as e:
     print(f"❌ PostgreSQL dependencies not available: {e}")
 
 
-from haive.agents.simple.agent import SimpleAgentConfig
 from haive.agents.simple.factory import create_simple_agent
-from haive.core.persistence.types import CheckpointerType
-from haive.core.engine.aug_llm import AugLLMConfig
-
-    
 
 # Database connection parameters
 DB_URI = "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
@@ -61,8 +52,7 @@ CONNECTION_KWARGS = {
 
 
 def extract_messages_from_state(state: Any) -> list[Any]:
-    """
-    Extract messages from a state object, regardless of its type.
+    """Extract messages from a state object, regardless of its type.
     Handles various state object formats.
 
     Args:
@@ -99,8 +89,7 @@ def extract_messages_from_state(state: Any) -> list[Any]:
 
 
 def extract_message_content(message: Any) -> str:
-    """
-    Extract content from a message object, regardless of its type.
+    """Extract content from a message object, regardless of its type.
 
     Args:
         message: A message object

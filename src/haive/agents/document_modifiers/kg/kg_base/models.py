@@ -1,5 +1,3 @@
-from typing import List, Optional, Tuple, Union
-
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import BaseDocumentTransformer, Document
 from langchain_core.prompts import ChatPromptTemplate
@@ -10,25 +8,22 @@ from langchain_neo4j.graphs.graph_document import GraphDocument
 
 
 class GraphTransformer(BaseDocumentTransformer):
-    """
-    A document transformer that transforms a document into a graph.
-    """
+    """A document transformer that transforms a document into a graph."""
 
     def transform_documents(
         self,
-        documents: List[Document],
+        documents: list[Document],
         llm_config: LLMConfig = AzureLLMConfig(),
-        allowed_nodes: List[str] = [],
-        allowed_relationships: Union[List[str], List[Tuple[str, str, str]]] = [],
-        prompt: Optional[ChatPromptTemplate] = None,
+        allowed_nodes: list[str] = [],
+        allowed_relationships: list[str] | list[tuple[str, str, str]] = [],
+        prompt: ChatPromptTemplate | None = None,
         strict_mode: bool = True,
-        node_properties: Union[bool, List[str]] = [],
-        relationship_properties: Union[bool, List[str]] = [],
+        node_properties: bool | list[str] = [],
+        relationship_properties: bool | list[str] = [],
         ignore_tool_usage: bool = True,
         additional_instructions: str = "",
-    ) -> List[GraphDocument]:
-        """
-        Transform a document into a graph.
+    ) -> list[GraphDocument]:
+        """Transform a document into a graph.
 
         Args:
             documents: The documents to transform.
@@ -42,7 +37,6 @@ class GraphTransformer(BaseDocumentTransformer):
             ignore_tool_usage: The ignore tool usage.
             additional_instructions: The additional instructions.
         """
-
         llm = llm_config.instantiate()
 
         print(

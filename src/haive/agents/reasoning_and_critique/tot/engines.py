@@ -1,19 +1,16 @@
-"""
-Engine configurations for the Tree of Thoughts agent.
+"""Engine configurations for the Tree of Thoughts agent.
 
 This module defines specialized engine configurations for candidate generation,
 evaluation, and selection in the Tree of Thoughts algorithm.
 """
 
-from typing import Dict, Optional, Type
-from pydantic import BaseModel
-
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.messages import SystemMessage
-
 from haive.core.engine.aug_llm import AugLLMConfig
+from langchain_core.messages import SystemMessage
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+
 from haive.agents.reasoning_and_critique.tot.models import (
-    CandidateGeneration, CandidateEvaluation
+    CandidateEvaluation,
+    CandidateGeneration,
 )
 
 # =============================
@@ -29,15 +26,20 @@ Explore different approaches and reasoning pathways.
 Return your response as a structured output with reasoning and multiple candidate solutions."""
 )
 
-generator_prompt = ChatPromptTemplate.from_messages([
-    ("system", generator_system_message.content),
-    MessagesPlaceholder(variable_name="history"),
-    ("user", """Problem: {problem}
+generator_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", generator_system_message.content),
+        MessagesPlaceholder(variable_name="history"),
+        (
+            "user",
+            """Problem: {problem}
 
 {seed_info}
 
-Generate {expansion_count} different candidate solutions.""")
-])
+Generate {expansion_count} different candidate solutions.""",
+        ),
+    ]
+)
 
 # Evaluator prompt
 evaluator_system_message = SystemMessage(
@@ -49,10 +51,13 @@ Return your response as a structured output with a numerical score between 0 and
 and detailed feedback explaining the score."""
 )
 
-evaluator_prompt = ChatPromptTemplate.from_messages([
-    ("system", evaluator_system_message.content),
-    MessagesPlaceholder(variable_name="history"),
-    ("user", """Problem: {problem}
+evaluator_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", evaluator_system_message.content),
+        MessagesPlaceholder(variable_name="history"),
+        (
+            "user",
+            """Problem: {problem}
 
 Candidate Solution:
 {candidate}
@@ -61,8 +66,10 @@ Evaluate this solution and provide a numerical score between 0 and 1, where:
 - 0 means completely incorrect or irrelevant
 - 1 means perfect solution
 
-Your evaluation:""")
-])
+Your evaluation:""",
+        ),
+    ]
+)
 
 # =============================
 # Pre-configured Engine Configs
@@ -73,13 +80,13 @@ generator_aug_llm_config = AugLLMConfig(
     name="tot_generator",
     description="Generates candidate solutions for tree of thoughts",
     prompt_template=generator_prompt,
-    structured_output_model=CandidateGeneration
+    structured_output_model=CandidateGeneration,
 )
 
 # Evaluator engine with default parameters
 evaluator_aug_llm_config = AugLLMConfig(
     name="tot_evaluator",
     description="Evaluates candidate solutions for tree of thoughts",
-    prompt_template=evaluator_prompt, 
-    structured_output_model=CandidateEvaluation
+    prompt_template=evaluator_prompt,
+    structured_output_model=CandidateEvaluation,
 )

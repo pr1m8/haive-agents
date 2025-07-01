@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
 import logging
-import sys
 import traceback
 
 # Minimal logging to see the key issues
 logging.basicConfig(level=logging.ERROR, format="%(levelname)s: %(message)s")
 
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -21,12 +19,12 @@ from haive.agents.simple.agent import SimpleAgent
 
 @tool
 def add(a: int, b: int) -> int:
-    """returns the sum of two numbers"""
+    """Returns the sum of two numbers"""
     return a + b
 
 
 class Plan(BaseModel):
-    steps: List[str] = Field(description="list of steps")
+    steps: list[str] = Field(description="list of steps")
 
 
 print("=== SIMPLE DEBUG TEST ===")

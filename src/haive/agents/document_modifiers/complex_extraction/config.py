@@ -1,5 +1,4 @@
 import uuid
-from typing import Optional, Type
 
 from haive.core.engine.agent.agent import AgentConfig, RunnableConfig
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -14,18 +13,17 @@ from haive.agents.document_modifiers.complex_extraction.state import (
 
 
 class ComplexExtractionAgentConfig(AgentConfig):
-    """
-    Configuration for the complex extraction agent.
+    """Configuration for the complex extraction agent.
 
     This agent handles the extraction of complex structured data from text
     using a validation and retry mechanism with optional JSONPatch corrections.
     """
 
-    llm_config: Optional[AugLLMConfig] = Field(
+    llm_config: AugLLMConfig | None = Field(
         default=AzureLLMConfig(model="gpt-4o"),
         description="The LLM configuration to use for the agent",
     )
-    extraction_model: Optional[Type[BaseModel]] = Field(
+    extraction_model: type[BaseModel] | None = Field(
         default=None, description="The Pydantic model to extract data into"
     )
     max_retries: int = Field(
@@ -35,7 +33,7 @@ class ComplexExtractionAgentConfig(AgentConfig):
         default=True,
         description="Whether to force the tool choice to use the extraction model",
     )
-    state_schema: Type[BaseModel] = Field(
+    state_schema: type[BaseModel] = Field(
         default=ComplexExtractionState, description="State schema for the agent"
     )
     system_prompt: str = Field(
@@ -56,9 +54,9 @@ class ComplexExtractionAgentConfig(AgentConfig):
         description="The runnable configuration to use for the agent",
     )
 
-    input_schema: Type[BaseModel] = Field(
+    input_schema: type[BaseModel] = Field(
         default=ComplexExtractionInput, description="The input schema for the agent"
     )
-    output_schema: Type[BaseModel] = Field(
+    output_schema: type[BaseModel] = Field(
         default=ComplexExtractionOutput, description="The output schema for the agent"
     )

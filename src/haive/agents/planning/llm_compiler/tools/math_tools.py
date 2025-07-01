@@ -1,16 +1,14 @@
 import math
 import re
-from typing import List, Optional
 
 import numexpr
-from langchain.chains.openai_functions import create_structured_output_runnable
+from agents.llm_compiler.models import ExecuteCode
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import StructuredTool
 from langchain_openai import ChatOpenAI
-from pydantic import BaseModel, Field
-from agents.llm_compiler.models import ExecuteCode,Task
+
 _MATH_DESCRIPTION = (
     "math(problem: str, context: Optional[list[str]]) -> float:\n"
     " - Solves the provided math problem.\n"
@@ -76,8 +74,6 @@ _ADDITIONAL_CONTEXT_PROMPT = """The following additional context is provided fro
 You must extract the relevant numbers and directly put them in code."""
 
 
-
-
 def _evaluate_expression(expression: str) -> str:
     try:
         local_dict = {"pi": math.pi, "e": math.e}
@@ -90,7 +86,7 @@ def _evaluate_expression(expression: str) -> str:
         )
     except Exception as e:
         raise ValueError(
-            f'Failed to evaluate "{expression}". Raised error: {repr(e)}.'
+            f'Failed to evaluate "{expression}". Raised error: {e!r}.'
             " Please try again with a valid numerical expression"
         )
 
@@ -110,8 +106,8 @@ def get_math_tool(llm: ChatOpenAI):
 
     def calculate_expression(
         problem: str,
-        context: Optional[List[str]] = None,
-        config: Optional[RunnableConfig] = None,
+        context: list[str] | None = None,
+        config: RunnableConfig | None = None,
     ):
         chain_input = {"problem": problem}
         if context:

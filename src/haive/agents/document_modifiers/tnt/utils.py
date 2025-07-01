@@ -19,39 +19,36 @@ Example:
         taxonomy = parse_taxonomy(xml_output)
 """
 
-import re
-from typing import Dict, List
-from IPython.display import Markdown
-from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
-from langchain_core.runnables import Runnable, RunnableConfig
-from langchain_core.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.messages import AIMessage, SystemMessage, HumanMessage
 import logging
+import re
+
 from langchain_core.documents import Document
-from haive.core.engine.aug_llm import AugLLMConfig
-from langgraph.types import Command
-#from haive.core.utils.doc_utils import format_docs,format_taxonomy
+
+from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
+
+# from haive.core.utils.doc_utils import format_docs,format_taxonomy
 logger = logging.getLogger(__name__)
-# Check if we should just use markdown, how to handle logging./ 
-# logger  - fix 
+
+
+# Check if we should just use markdown, how to handle logging./
+# logger  - fix
 def parse_summary(xml_string: str) -> dict:
     """Parse summary and explanation from XML-formatted string.
-    
+
     Extracts the content within <summary> and <explanation> tags from the input XML string.
     If tags are not found, returns empty strings for the missing elements.
-    
+
     Args:
         xml_string: XML-formatted string containing <summary> and <explanation> tags.
             Example::
                 <summary>Main points...</summary>
                 <explanation>Detailed analysis...</explanation>
-    
+
     Returns:
         dict: Dictionary containing:
             - summary (str): Content within <summary> tags
             - explanation (str): Content within <explanation> tags
-    
+
     Example:
         >>> xml = "<summary>Key points</summary><explanation>Details</explanation>"
         >>> result = parse_summary(xml)
@@ -69,26 +66,27 @@ def parse_summary(xml_string: str) -> dict:
 
     return {"summary": summary, "explanation": explanation}
 
-def parse_taxonomy(output_text: str) -> Dict:
+
+def parse_taxonomy(output_text: str) -> dict:
     """Parse taxonomy information from LLM-generated output.
-    
+
     Extracts cluster information including IDs, names, and descriptions from
     XML-formatted output text.
-    
+
     Args:
         output_text: XML-formatted string containing taxonomy clusters.
             Expected format::
                 <id>1</id>
                 <name>Category Name</name>
                 <description>Category Description</description>
-    
+
     Returns:
         dict: Dictionary containing:
             - clusters (list): List of dictionaries, each with:
                 - id (str): Cluster identifier
                 - name (str): Cluster name
                 - description (str): Cluster description
-    
+
     Example:
         >>> text = "<id>1</id><name>Tech</name><description>Technology</description>"
         >>> taxonomy = parse_taxonomy(text)
@@ -108,25 +106,25 @@ def parse_taxonomy(output_text: str) -> Dict:
     return {"clusters": clusters}
 
 
-def parse_labels(output_text: str) -> Dict:
+def parse_labels(output_text: str) -> dict:
     """Parse category labels from prediction output.
-    
+
     Extracts category information from XML-formatted prediction text.
     Handles multiple categories but returns only the first one.
-    
+
     Args:
         output_text: XML-formatted string containing category predictions.
             Expected format::
                 <category>Label Name</category>
-    
+
     Returns:
         dict: Dictionary containing:
             - category (str): The first category label found
-    
+
     Note:
         If multiple categories are found, a warning is logged and only
         the first category is returned.
-    
+
     Example:
         >>> text = "<category>Technology</category>"
         >>> result = parse_labels(text)
@@ -145,17 +143,18 @@ def parse_labels(output_text: str) -> Dict:
     stripped = re.sub(r"^\d+\.\s*", "", label["category"]).strip()
     return {"category": stripped}
 
-def get_content(state: TaxonomyGenerationState) -> List[Dict]:
+
+def get_content(state: TaxonomyGenerationState) -> list[dict]:
     """Extract document content from taxonomy generation state.
-    
+
     Args:
         state: Current state of the taxonomy generation process.
             Must contain a 'documents' key with list of document dictionaries.
-    
+
     Returns:
         list: List of dictionaries, each containing:
             - content (str): The content of a document
-    
+
     Example:
         >>> state = {"documents": [{"content": "doc1"}, {"content": "doc2"}]}
         >>> contents = get_content(state)
@@ -165,21 +164,22 @@ def get_content(state: TaxonomyGenerationState) -> List[Dict]:
     docs = state["documents"]
     return [{"content": doc["content"]} for doc in docs]
 
+
 def reduce_summaries(combined: dict) -> TaxonomyGenerationState:
     """Merge summarized content with original documents.
-    
+
     Takes a dictionary containing both original documents and their summaries,
     and combines them into a single state object.
-    
+
     Args:
         combined: Dictionary containing:
             - documents (list): Original document list
             - summaries (list): Corresponding summaries
-    
+
     Returns:
         TaxonomyGenerationState: Updated state containing:
             - documents (list): List of documents with added summaries
-    
+
     Example:
         >>> combined = {
         ...     "documents": [{"id": 1, "content": "text"}],
@@ -197,24 +197,24 @@ def reduce_summaries(combined: dict) -> TaxonomyGenerationState:
                 "summary": summ_info["summary"],
                 "explanation": summ_info["explanation"],
             }
-            for doc, summ_info in zip(documents, summaries)
+            for doc, summ_info in zip(documents, summaries, strict=False)
         ]
     }
 
 
 # IMPLEMTN WITH MARKDOWN
-def format_taxonomy_md(clusters: List[Dict]) -> str:
+def format_taxonomy_md(clusters: list[dict]) -> str:
     """Format taxonomy clusters as a Markdown table.
-    
+
     Args:
         clusters: List of cluster dictionaries, each containing:
             - id (str): Cluster identifier
             - name (str): Cluster name
             - description (str): Cluster description
-    
+
     Returns:
         str: Markdown-formatted table string
-    
+
     Example:
         >>> clusters = [{"id": "1", "name": "Tech", "description": "Technology"}]
         >>> md_table = format_taxonomy_md(clusters)
@@ -231,17 +231,18 @@ def format_taxonomy_md(clusters: List[Dict]) -> str:
 
     return md
 
-def format_docs(docs: List[Document]) -> str:
+
+def format_docs(docs: list[Document]) -> str:
     """Format documents as XML table for taxonomy generation.
-    
+
     Args:
         docs: List of Document objects, each must have:
             - id: Document identifier
             - summary: Document summary text
-    
+
     Returns:
         str: XML-formatted string containing conversation summaries
-    
+
     Example:
         >>> docs = [Document(id="1", summary="text")]
         >>> xml = format_docs(docs)
@@ -252,23 +253,23 @@ def format_docs(docs: List[Document]) -> str:
     """
     xml_table = "<conversations>\n"
     for doc in docs:
-        xml_table += f'<conv_summ id={doc.id}>{doc.summary}</conv_summ>\n'
+        xml_table += f"<conv_summ id={doc.id}>{doc.summary}</conv_summ>\n"
     xml_table += "</conversations>"
     return xml_table
 
 
-def format_taxonomy(clusters: List[Dict]) -> str:
+def format_taxonomy(clusters: list[dict]) -> str:
     """Convert taxonomy clusters to XML format.
-    
+
     Args:
         clusters: List of cluster dictionaries, each containing:
             - id (str): Cluster identifier
             - name (str): Cluster name
             - description (str): Cluster description
-    
+
     Returns:
         str: XML-formatted taxonomy string
-    
+
     Example:
         >>> clusters = [{"id": "1", "name": "Tech", "description": "Technology"}]
         >>> xml = format_taxonomy(clusters)

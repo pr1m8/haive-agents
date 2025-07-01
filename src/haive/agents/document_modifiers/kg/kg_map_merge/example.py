@@ -9,7 +9,6 @@ if __name__ == "__main__":
 
     async def main():
         # Import numpy for visualization
-        import numpy as np
 
         # Example documents
         documents = [

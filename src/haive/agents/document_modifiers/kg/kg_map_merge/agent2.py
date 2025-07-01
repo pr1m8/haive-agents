@@ -1,10 +1,8 @@
-from typing import Dict
-
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.aug_llm import compose_runnable
 from langchain_core.documents import Document
 from langchain_experimental.graph_transformers import LLMGraphTransformer
-from langchain_neo4j.graphs.graph_document import GraphDocument, Node, Relationship
+from langchain_neo4j.graphs.graph_document import GraphDocument, Relationship
 from langgraph.graph import END, START
 from langgraph.types import Command, Send
 
@@ -15,17 +13,12 @@ from haive.agents.document_modifiers.kg.kg_map_merge.engines import (
     merge_analysis_engine,
     schema_extraction_engine,
 )
-from haive.agents.document_modifiers.kg.kg_map_merge.models import Node as KGNode
-from haive.agents.document_modifiers.kg.kg_map_merge.models import (
-    Relationship as KGRelationship,
-)
 from haive.agents.document_modifiers.kg.kg_map_merge.state import ParallelKGState
 
 
 @register_agent(ParallelKGAgentConfig)
 class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
-    """
-    An agent that builds a knowledge graph using structured output models.
+    """An agent that builds a knowledge graph using structured output models.
 
     This agent:
     1. Extracts schema (node types, relationship types) from content
@@ -67,20 +60,16 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
         )
 
     def initialize_workflow(self, state: ParallelKGState):
-        """
-        Initial node that determines whether schema extraction is needed.
+        """Initial node that determines whether schema extraction is needed.
         Returns a Command directing to the appropriate next node.
         """
         # Check if schema is already defined
         if len(state.node_types) > 0 and len(state.relationship_types) > 0:
             return "distribute_documents"
-        else:
-            return "extract_schema"
+        return "extract_schema"
 
     async def extract_schema(self, state: ParallelKGState):
-        """
-        Extracts node and relationship types from the content using structured output.
-        """
+        """Extracts node and relationship types from the content using structured output."""
         try:
             # Combine a sample of content for schema extraction
             content_sample = []
@@ -134,17 +123,14 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             )
 
     def distribute_documents(self, state: ParallelKGState):
-        """
-        Set up the state for parallel document processing.
-        """
+        """Set up the state for parallel document processing."""
         print(f"Preparing to process {len(state.contents)} documents")
 
         # We don't need to update the state here, just proceed to map_documents
         return Command(goto=self.map_documents(state))
 
     def map_documents(self, state: ParallelKGState):
-        """
-        Map function that creates Send commands for each document to be processed.
+        """Map function that creates Send commands for each document to be processed.
         Returns a list of Send objects - one for each document.
         """
         # Create a Send object for each document - using DICTIONARY, not state object
@@ -169,9 +155,8 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             return Command(goto=END)
         return sends
 
-    async def process_document(self, state: Dict):
-        """
-        Process a single document to extract a knowledge graph fragment.
+    async def process_document(self, state: dict):
+        """Process a single document to extract a knowledge graph fragment.
         Uses structured output model to directly get KGExtraction object.
         """
         try:
@@ -202,8 +187,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             return {"index": state.get("index"), "processed": True, "error": str(e)}
 
     def distribute_graph_document_pairs(self, state: ParallelKGState):
-        """
-        Collect results from the parallel document processing.
+        """Collect results from the parallel document processing.
         Updates the main state with the processed graph documents.
         """
         # Check if we have a processed document result
@@ -263,8 +247,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
         # return Command()
 
     def route_after_collection(self, state: ParallelKGState):
-        """
-        Determine next steps after document collection.
+        """Determine next steps after document collection.
         Returns the appropriate node name for routing.
         """
         if not state.processing_complete:
@@ -283,8 +266,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
         return END
 
     def map_merge_pairs(self, state: ParallelKGState):
-        """
-        Map function for merge pairs, creating Send commands for each pair.
+        """Map function for merge pairs, creating Send commands for each pair.
         Returns a list of Send objects for parallel merging.
         """
         # Get valid graph documents
@@ -361,10 +343,8 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
         return sends
 
-    async def merge_pair(self, state: Dict):
-        """
-        Merge a pair of graph documents using structured output.
-        """
+    async def merge_pair(self, state: dict):
+        """Merge a pair of graph documents using structured output."""
         try:
             # Extract the graphs to merge
             graph1 = state["graph1"]
@@ -474,9 +454,8 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             # In case of error, return the first graph
             return {"merged_graph": state["graph1"], "pair_index": state["pair_index"]}
 
-    def collect_merged(self, state: Dict):
-        """
-        Collect a merged graph result.
+    def collect_merged(self, state: dict):
+        """Collect a merged graph result.
         Updates the main state with the latest merge result.
         """
         # Extract the merged graph and pair index from the state dict
@@ -495,8 +474,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
         )
 
     def continue_merging(self, state: ParallelKGState):
-        """
-        Update merged results list with latest merge result.
+        """Update merged results list with latest merge result.
         Decide whether to continue merging or finalize.
         """
         update = {}
@@ -542,13 +520,12 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
                     f"Created {len(pairs)} pairs for merging in round {state.merge_round}"
                 )
                 return Command(update=update, goto="map_merge_pairs")
-            elif len(valid_graphs) == 1:
+            if len(valid_graphs) == 1:
                 # Only one graph, no merging needed
                 update["merged_graph"] = valid_graphs[0]
                 return Command(update=update, goto="finalize_graph")
-            else:
-                # No graphs to merge
-                return Command(goto="finalize_graph")
+            # No graphs to merge
+            return Command(goto="finalize_graph")
 
         if expected_results > 0 and received_results >= expected_results:
             # All expected results received
@@ -563,34 +540,31 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
                         f"Merging complete. Final graph has {len(valid_results[0].nodes)} nodes and {len(valid_results[0].relationships)} relationships"
                     )
                 return Command(update=update, goto="finalize_graph")
-            else:
-                # More merging needed
-                # Create new pairs
-                pairs = []
-                for i in range(0, len(valid_results), 2):
-                    if i + 1 < len(valid_results):
-                        pairs.append((i, i + 1))
-                    else:
-                        # For odd number, the last one goes alone
-                        pairs.append((i, None))
+            # More merging needed
+            # Create new pairs
+            pairs = []
+            for i in range(0, len(valid_results), 2):
+                if i + 1 < len(valid_results):
+                    pairs.append((i, i + 1))
+                else:
+                    # For odd number, the last one goes alone
+                    pairs.append((i, None))
 
-                update["pairs_to_merge"] = pairs
-                update["graph_documents"] = valid_results
-                update["merged_results"] = []  # Reset for new round
-                update["merge_round"] = state.merge_round + 1
+            update["pairs_to_merge"] = pairs
+            update["graph_documents"] = valid_results
+            update["merged_results"] = []  # Reset for new round
+            update["merge_round"] = state.merge_round + 1
 
-                print(
-                    f"Starting merge round {state.merge_round + 1} with {len(pairs)} pairs"
-                )
-                return Command(update=update, goto="map_merge_pairs")
+            print(
+                f"Starting merge round {state.merge_round + 1} with {len(pairs)} pairs"
+            )
+            return Command(update=update, goto="map_merge_pairs")
 
         # Not all pairs merged yet, continue collecting
         return Command(update=update, goto="collect_merged")
 
     def finalize_graph(self, state: ParallelKGState):
-        """
-        Finalize the merged graph and extract valuable statistics.
-        """
+        """Finalize the merged graph and extract valuable statistics."""
         # Get the final merged graph
         final_graph = state.merged_graph
 
@@ -625,13 +599,12 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             return Command(
                 update={
                     "merged_graph": final_graph,
-                    "extracted_node_types": list(sorted(node_types)),
-                    "extracted_relationship_types": list(sorted(relationship_types)),
+                    "extracted_node_types": sorted(node_types),
+                    "extracted_relationship_types": sorted(relationship_types),
                 }
             )
-        else:
-            print("No graphs were generated")
-            return Command(update={"merged_graph": None})
+        print("No graphs were generated")
+        return Command(update={"merged_graph": None})
 
     def setup_workflow(self):
         """Set up the workflow for the structured knowledge graph agent."""

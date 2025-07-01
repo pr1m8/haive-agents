@@ -1,7 +1,6 @@
-"""
-Language Agent Tree Search (LATS) - a general LLM agent search algorithm.
+"""Language Agent Tree Search (LATS) - a general LLM agent search algorithm.
 
-LATS combines reflection/evaluation and Monte Carlo Tree Search (MCTS) 
+LATS combines reflection/evaluation and Monte Carlo Tree Search (MCTS)
 to achieve better overall task performance.
 
 

@@ -5,7 +5,7 @@ text-based assessments with sentiment analysis and quality indicators.
 """
 
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 
@@ -106,7 +106,7 @@ class QualitativeGrade(Grade):
         examples=["positive", "neutral", "negative"],
     )
 
-    strengths: List[str] = Field(
+    strengths: list[str] = Field(
         default_factory=list,
         description="List of identified strengths",
         max_length=10,
@@ -116,7 +116,7 @@ class QualitativeGrade(Grade):
         ],
     )
 
-    weaknesses: List[str] = Field(
+    weaknesses: list[str] = Field(
         default_factory=list,
         description="List of identified weaknesses or areas for improvement",
         max_length=10,
@@ -126,7 +126,7 @@ class QualitativeGrade(Grade):
         ],
     )
 
-    recommendations: List[str] = Field(
+    recommendations: list[str] = Field(
         default_factory=list,
         description="List of specific recommendations for improvement",
         max_length=10,
@@ -136,7 +136,7 @@ class QualitativeGrade(Grade):
         ],
     )
 
-    detailed_feedback: Optional[str] = Field(
+    detailed_feedback: str | None = Field(
         default=None,
         description="Extended qualitative feedback and commentary",
         max_length=5000,
@@ -148,7 +148,7 @@ class QualitativeGrade(Grade):
 
     @field_validator("strengths", "weaknesses", "recommendations")
     @classmethod
-    def validate_feedback_items(cls, v: List[str]) -> List[str]:
+    def validate_feedback_items(cls, v: list[str]) -> list[str]:
         """Validate that feedback items are meaningful.
 
         Args:
@@ -234,7 +234,7 @@ class QualitativeGrade(Grade):
 
         return quality_scores[self.quality_level]
 
-    def is_passing(self, threshold: Optional[float] = None) -> bool:
+    def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the grade represents a passing score.
 
         Args:
@@ -256,7 +256,7 @@ class QualitativeGrade(Grade):
 
         return self.get_normalized_score() >= threshold
 
-    def get_feedback_summary(self) -> Dict[str, Any]:
+    def get_feedback_summary(self) -> dict[str, Any]:
         """Get a structured summary of all feedback.
 
         Returns:
@@ -285,18 +285,17 @@ class QualitativeGrade(Grade):
 
         if strength_count == 0 and weakness_count == 0:
             return "no_specific_feedback"
-        elif strength_count > weakness_count * 2:
+        if strength_count > weakness_count * 2:
             return "predominantly_positive"
-        elif weakness_count > strength_count * 2:
+        if weakness_count > strength_count * 2:
             return "predominantly_negative"
-        elif abs(strength_count - weakness_count) <= 1:
+        if abs(strength_count - weakness_count) <= 1:
             return "balanced"
-        elif strength_count > weakness_count:
+        if strength_count > weakness_count:
             return "mostly_positive"
-        else:
-            return "mostly_negative"
+        return "mostly_negative"
 
-    def get_improvement_priority(self) -> List[str]:
+    def get_improvement_priority(self) -> list[str]:
         """Get prioritized improvement recommendations.
 
         Returns top weaknesses with corresponding recommendations.
@@ -380,7 +379,7 @@ class QualitativeGrade(Grade):
         try:
             if isinstance(value, QualityLevel):
                 return True
-            elif isinstance(value, str):
+            if isinstance(value, str):
                 QualityLevel(value.lower())
                 return True
             return False
@@ -391,8 +390,8 @@ class QualitativeGrade(Grade):
     def create_positive_feedback(
         cls,
         justification: str,
-        strengths: List[str],
-        minor_improvements: Optional[List[str]] = None,
+        strengths: list[str],
+        minor_improvements: list[str] | None = None,
         quality_level: QualityLevel = QualityLevel.GOOD,
         **kwargs,
     ) -> "QualitativeGrade":
@@ -421,9 +420,9 @@ class QualitativeGrade(Grade):
     def create_constructive_feedback(
         cls,
         justification: str,
-        strengths: List[str],
-        weaknesses: List[str],
-        recommendations: List[str],
+        strengths: list[str],
+        weaknesses: list[str],
+        recommendations: list[str],
         quality_level: QualityLevel = QualityLevel.FAIR,
         **kwargs,
     ) -> "QualitativeGrade":

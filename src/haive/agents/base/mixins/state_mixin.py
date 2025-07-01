@@ -5,7 +5,7 @@ import logging
 import os
 import uuid
 from datetime import datetime
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from haive.core.persistence.handlers import ensure_pool_open
 from haive.core.utils.pydantic_utils import ensure_json_serializable
@@ -23,11 +23,8 @@ class StateMixin:
         # Use regular attributes instead of trying to add Pydantic fields
         self._state_filename = None
 
-    def save_state_history(
-        self, runnable_config: Optional[RunnableConfig] = None
-    ) -> bool:
-        """
-        Save the current agent state to a JSON file.
+    def save_state_history(self, runnable_config: RunnableConfig | None = None) -> bool:
+        """Save the current agent state to a JSON file.
 
         Args:
             runnable_config: Optional runnable configuration
@@ -89,10 +86,9 @@ class StateMixin:
             return False
 
     async def save_state_history_async(
-        self, runnable_config: Optional[RunnableConfig] = None
+        self, runnable_config: RunnableConfig | None = None
     ) -> bool:
-        """
-        Asynchronously save the current agent state to a JSON file.
+        """Asynchronously save the current agent state to a JSON file.
 
         Args:
             runnable_config: Optional runnable configuration
@@ -108,10 +104,9 @@ class StateMixin:
         )
 
     def inspect_state(
-        self, thread_id: Optional[str] = None, config: Optional[RunnableConfig] = None
+        self, thread_id: str | None = None, config: RunnableConfig | None = None
     ) -> None:
-        """
-        Inspect the current state of the agent.
+        """Inspect the current state of the agent.
 
         Args:
             thread_id: Optional thread ID for persistence
@@ -166,10 +161,9 @@ class StateMixin:
             logger.error(f"Error inspecting state: {e}")
 
     async def inspect_state_async(
-        self, thread_id: Optional[str] = None, config: Optional[RunnableConfig] = None
+        self, thread_id: str | None = None, config: RunnableConfig | None = None
     ) -> None:
-        """
-        Asynchronously inspect the current state of the agent.
+        """Asynchronously inspect the current state of the agent.
 
         Args:
             thread_id: Optional thread ID for persistence
@@ -181,10 +175,9 @@ class StateMixin:
         await loop.run_in_executor(None, lambda: self.inspect_state(thread_id, config))
 
     def reset_state(
-        self, thread_id: Optional[str] = None, config: Optional[RunnableConfig] = None
+        self, thread_id: str | None = None, config: RunnableConfig | None = None
     ) -> bool:
-        """
-        Reset the agent's state for a thread.
+        """Reset the agent's state for a thread.
 
         Args:
             thread_id: Optional thread ID for persistence
@@ -238,10 +231,9 @@ class StateMixin:
             return False
 
     async def reset_state_async(
-        self, thread_id: Optional[str] = None, config: Optional[RunnableConfig] = None
+        self, thread_id: str | None = None, config: RunnableConfig | None = None
     ) -> bool:
-        """
-        Asynchronously reset the agent's state for a thread.
+        """Asynchronously reset the agent's state for a thread.
 
         Args:
             thread_id: Optional thread ID for persistence
@@ -258,10 +250,9 @@ class StateMixin:
         )
 
     def load_from_state(
-        self, state_data: Union[Dict[str, Any], str], thread_id: Optional[str] = None
+        self, state_data: dict[str, Any] | str, thread_id: str | None = None
     ) -> bool:
-        """
-        Load agent state from a saved state file or dictionary.
+        """Load agent state from a saved state file or dictionary.
 
         Args:
             state_data: Dictionary or path to JSON file containing state data
@@ -282,7 +273,7 @@ class StateMixin:
         # Load state from string path if provided
         if isinstance(state_data, str) and os.path.exists(state_data):
             try:
-                with open(state_data, "r") as f:
+                with open(state_data) as f:
                     state_data = json.load(f)
             except Exception as e:
                 logger.error(f"Error loading state file: {e}")
@@ -327,10 +318,9 @@ class StateMixin:
             return False
 
     async def load_from_state_async(
-        self, state_data: Union[Dict[str, Any], str], thread_id: Optional[str] = None
+        self, state_data: dict[str, Any] | str, thread_id: str | None = None
     ) -> bool:
-        """
-        Asynchronously load agent state from a saved state file or dictionary.
+        """Asynchronously load agent state from a saved state file or dictionary.
 
         Args:
             state_data: Dictionary or path to JSON file containing state data
@@ -346,7 +336,7 @@ class StateMixin:
             None, lambda: self.load_from_state(state_data, thread_id)
         )
 
-    def get_state_filename(self) -> Optional[str]:
+    def get_state_filename(self) -> str | None:
         """Get the current state filename if one has been generated."""
         return getattr(self, "_state_filename", None)
 

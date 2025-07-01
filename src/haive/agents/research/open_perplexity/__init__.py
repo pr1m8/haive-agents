@@ -1,5 +1,4 @@
-"""
-Open Perplexity - A deep research agent with dynamic document loader selection.
+"""Open Perplexity - A deep research agent with dynamic document loader selection.
 
 This module provides a comprehensive research agent capable of performing in-depth
 research on any topic, dynamically selecting document loaders based on the research
@@ -32,28 +31,32 @@ Classes:
 
 from haive.agents.research.open_perplexity.agent import ResearchAgent
 from haive.agents.research.open_perplexity.config import ResearchAgentConfig
-from haive.agents.research.open_perplexity.state import ResearchState, ResearchInputState, ResearchOutputState
 from haive.agents.research.open_perplexity.models import (
-    ResearchSummary, 
-    ResearchFinding, 
-    ResearchSource, 
-    DataSourceType, 
-    ContentReliability, 
     ContentFreshness,
-    ResearchDepth
+    ContentReliability,
+    DataSourceType,
+    ResearchDepth,
+    ResearchFinding,
+    ResearchSource,
+    ResearchSummary,
+)
+from haive.agents.research.open_perplexity.state import (
+    ResearchInputState,
+    ResearchOutputState,
+    ResearchState,
 )
 
 __all__ = [
+    "ContentFreshness",
+    "ContentReliability",
+    "DataSourceType",
     "ResearchAgent",
     "ResearchAgentConfig",
-    "ResearchState",
-    "ResearchInputState", 
-    "ResearchOutputState",
-    "ResearchSummary",
+    "ResearchDepth",
     "ResearchFinding",
+    "ResearchInputState",
+    "ResearchOutputState",
     "ResearchSource",
-    "DataSourceType",
-    "ContentReliability",
-    "ContentFreshness",
-    "ResearchDepth"
+    "ResearchState",
+    "ResearchSummary",
 ]

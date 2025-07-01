@@ -39,7 +39,7 @@ Example:
     ```
 """
 
-from .base import (
+from haive.agents.common.models.task_analysis.base import (
     ComplexityLevel,
     ComputationalComplexity,
     DependencyNode,
@@ -51,34 +51,34 @@ from .base import (
     TaskType,
     TimeComplexity,
 )
-from .complexity_metrics import (
+from haive.agents.common.models.task_analysis.complexity_metrics import (
     BreadthAnalysis,
     ComplexityMetrics,
     CriticalPathAnalysis,
     DepthAnalysis,
 )
-from .dependency_tree import (
+from haive.agents.common.models.task_analysis.dependency_tree import (
     DependencyAnalyzer,
     TaskDependencyTree,
 )
-from .parallelization import (
+from haive.agents.common.models.task_analysis.parallelization import (
     ExecutionPhase,
     JoinPoint,
     ParallelGroup,
     ParallelizationAnalysis,
     ParallelizationAnalyzer,
 )
-from .solvability import (
+from haive.agents.common.models.task_analysis.solvability import (
     BlockerType,
     ResourceRequirement,
     SolvabilityAnalyzer,
     SolvabilityAssessment,
 )
-from .task_analyzer import (
+from haive.agents.common.models.task_analysis.task_analyzer import (
     TaskComplexityAnalysis,
     TaskComplexityAnalyzer,
 )
-from .visualization import (
+from haive.agents.common.models.task_analysis.visualization import (
     ComplexityDashboard,
     DependencyGraphRenderer,
     TaskComplexityVisualizer,

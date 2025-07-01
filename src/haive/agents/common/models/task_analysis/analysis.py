@@ -5,10 +5,9 @@ complexity assessment, solvability analysis, task decomposition, and
 execution strategy recommendations.
 """
 
-import re
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -19,8 +18,6 @@ from haive.agents.common.models.task_analysis.base import (
     TaskDimension,
 )
 from haive.agents.common.models.task_analysis.branching import (
-    BranchType,
-    TaskBranch,
     TaskDecomposition,
 )
 from haive.agents.common.models.task_analysis.solvability import (
@@ -117,7 +114,7 @@ class ExecutionStrategy(BaseModel):
         ],
     )
 
-    resource_allocation: Dict[str, float] = Field(
+    resource_allocation: dict[str, float] = Field(
         ...,
         description="Recommended resource allocation (proportions sum to 1.0)",
         examples=[
@@ -140,7 +137,7 @@ class ExecutionStrategy(BaseModel):
         ],
     )
 
-    risk_mitigation: List[str] = Field(
+    risk_mitigation: list[str] = Field(
         ...,
         description="Risk mitigation strategies",
         min_length=1,
@@ -152,7 +149,7 @@ class ExecutionStrategy(BaseModel):
         ],
     )
 
-    success_factors: List[str] = Field(
+    success_factors: list[str] = Field(
         ...,
         description="Key factors for success",
         min_length=1,
@@ -164,7 +161,7 @@ class ExecutionStrategy(BaseModel):
         ],
     )
 
-    fallback_options: List[str] = Field(
+    fallback_options: list[str] = Field(
         default_factory=list,
         description="Alternative approaches if primary strategy fails",
         max_length=5,
@@ -177,7 +174,7 @@ class ExecutionStrategy(BaseModel):
 
     @field_validator("resource_allocation")
     @classmethod
-    def validate_resource_allocation(cls, v: Dict[str, float]) -> Dict[str, float]:
+    def validate_resource_allocation(cls, v: dict[str, float]) -> dict[str, float]:
         """Validate that resource allocation proportions sum to approximately 1.0.
 
         Args:
@@ -281,7 +278,7 @@ class TaskAnalysis(BaseModel):
         ],
     )
 
-    context: Optional[str] = Field(
+    context: str | None = Field(
         default=None,
         description="Additional context about the task",
         max_length=1000,
@@ -303,7 +300,7 @@ class TaskAnalysis(BaseModel):
         ..., description="Solvability assessment results"
     )
 
-    decomposition: Optional[TaskDecomposition] = Field(
+    decomposition: TaskDecomposition | None = Field(
         default=None, description="Task decomposition (if applicable)"
     )
 
@@ -371,7 +368,7 @@ class TaskAnalysis(BaseModel):
 
         return self
 
-    def get_overall_assessment(self) -> Dict[str, Any]:
+    def get_overall_assessment(self) -> dict[str, Any]:
         """Get overall assessment summary.
 
         Returns:
@@ -459,7 +456,7 @@ class TaskAnalysis(BaseModel):
 
         return "\n".join(summary_lines)
 
-    def get_execution_recommendations(self) -> List[str]:
+    def get_execution_recommendations(self) -> list[str]:
         """Get prioritized execution recommendations.
 
         Returns:
@@ -507,8 +504,8 @@ class TaskAnalysis(BaseModel):
     def analyze_task(
         cls,
         task_description: str,
-        domain: Optional[str] = None,
-        context: Optional[str] = None,
+        domain: str | None = None,
+        context: str | None = None,
         analysis_method: AnalysisMethod = AnalysisMethod.HYBRID,
     ) -> "TaskAnalysis":
         """Analyze a task and return comprehensive analysis.
@@ -640,12 +637,11 @@ class TaskAnalysis(BaseModel):
         # Return highest scoring domain or default
         if domain_scores:
             return max(domain_scores.items(), key=lambda x: x[1])[0]
-        else:
-            return "general"
+        return "general"
 
     @classmethod
     def _analyze_complexity(
-        cls, task_description: str, domain: str, context: Optional[str]
+        cls, task_description: str, domain: str, context: str | None
     ) -> TaskComplexity:
         """Analyze task complexity using heuristics."""
         text_lower = task_description.lower()
@@ -888,7 +884,7 @@ class TaskAnalysis(BaseModel):
     @classmethod
     def _generate_decomposition(
         cls, task_description: str, complexity: TaskComplexity
-    ) -> Optional[TaskDecomposition]:
+    ) -> TaskDecomposition | None:
         """Generate basic task decomposition."""
         if complexity.overall_complexity in [
             ComplexityType.TRIVIAL,

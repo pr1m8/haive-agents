@@ -3,7 +3,8 @@
 from langchain_core.prompts import ChatPromptTemplate
 
 # Prompt for extracting information from research notes
-EXTRACTION_PROMPT = ChatPromptTemplate.from_template("""Your task is to take notes gathered from web research and extract them into the following schema.
+EXTRACTION_PROMPT = ChatPromptTemplate.from_template(
+    """Your task is to take notes gathered from web research and extract them into the following schema.
 <schema>
 {info}
 </schema>
@@ -11,10 +12,12 @@ Here are all the notes from research:
 <web_research_notes>
 {notes}
 </web_research_notes>
-""")
+"""
+)
 
 # Prompt for generating search queries
-QUERY_WRITER_PROMPT = ChatPromptTemplate.from_template("""You are a search query generator tasked with creating targeted search queries to gather specific information about a person.
+QUERY_WRITER_PROMPT = ChatPromptTemplate.from_template(
+    """You are a search query generator tasked with creating targeted search queries to gather specific information about a person.
 Here is the person you are researching: {person}
 Generate at most {max_search_queries} search queries that will help gather the following information:
 <schema>
@@ -29,10 +32,12 @@ Your query should:
 3. Do not hallucinate search terms that will make you miss the persons profile entirely
 4. Take advantage of the Linkedin URL if it exists, you can include the raw URL in your search query as that will lead you to the correct page guaranteed.
 Create a focused query that will maximize the chances of finding schema-relevant information about the person.
-Remember we are interested in determining their work experience mainly.""")
+Remember we are interested in determining their work experience mainly."""
+)
 
 # Prompt for gathering information from website content
-INFO_PROMPT = ChatPromptTemplate.from_template("""You are doing web research on people, {people}. 
+INFO_PROMPT = ChatPromptTemplate.from_template(
+    """You are doing web research on people, {people}. 
 The following schema shows the type of information we're interested in:
 <schema>
 {info}
@@ -51,10 +56,12 @@ Please provide detailed research notes that:
 3. Include specific facts, dates, and figures when available
 4. Maintain accuracy of the original content
 5. Note when important information appears to be missing or unclear
-Remember: Don't try to format the output to match the schema - just take clear notes that capture all relevant information.""")
+Remember: Don't try to format the output to match the schema - just take clear notes that capture all relevant information."""
+)
 
 # Prompt for reflecting on the completeness of the information
-REFLECTION_PROMPT = ChatPromptTemplate.from_template("""You are a research analyst tasked with reviewing the quality and completeness of extracted person information.
+REFLECTION_PROMPT = ChatPromptTemplate.from_template(
+    """You are a research analyst tasked with reviewing the quality and completeness of extracted person information.
 Compare the extracted information with the required schema:
 <Schema>
 {schema}
@@ -67,4 +74,5 @@ Analyze if all required fields are present and sufficiently populated. Consider:
 1. Are any required fields missing?
 2. Are any fields incomplete or containing uncertain information?
 3. Are there fields with placeholder values or "unknown" markers?
-""")
+"""
+)

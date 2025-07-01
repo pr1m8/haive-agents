@@ -1,11 +1,11 @@
 from pydantic import BaseModel, Field
-from typing import List
+
 
 class AnswerWithCitations(BaseModel):
     answer: str = Field(
         description="Comprehensive answer to the user's question with citations.",
     )
-    cited_urls: List[str] = Field(
+    cited_urls: list[str] = Field(
         description="List of urls cited in the answer.",
     )
 

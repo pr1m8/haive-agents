@@ -1,5 +1,3 @@
-from typing import Optional, Type
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -15,8 +13,8 @@ from haive.agents.document_modifiers.complex_extraction.config import (
 
 # Helper function to create an extraction agent
 def create_complex_extraction_agent(
-    extraction_model: Type[BaseModel],
-    system_prompt: Optional[str] = None,
+    extraction_model: type[BaseModel],
+    system_prompt: str | None = None,
     model: str = "gpt-4o",
     max_retries: int = 3,
     force_tool_choice: bool = True,
@@ -24,8 +22,7 @@ def create_complex_extraction_agent(
     parse_pydantic: bool = False,
     **kwargs,
 ) -> ComplexExtractionAgent:
-    """
-    Create a complex extraction agent.
+    """Create a complex extraction agent.
 
     Args:
         extraction_model: Pydantic model for extraction
@@ -40,7 +37,6 @@ def create_complex_extraction_agent(
     Returns:
         ComplexExtractionAgent instance
     """
-
     # Set up default system prompt
     if system_prompt is None:
         system_prompt = f"You are a precise data extraction assistant specialized in extracting {extraction_model.__name__} information from text. Extract all required fields accurately according to the schema."

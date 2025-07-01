@@ -1,16 +1,13 @@
-from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
-from haive.core.models.retriever.base import RetrieverConfig
-from haive.core.models.vectorstore.base import VectorStoreConfig
-from haive.agents.rag.base.config import BaseRAGConfig
-from langgraph.types import Command
 import logging
-from haive.core.engine.aug_llm import AugLLMConfig    
+
+from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.GraphBuilder import DynamicGraph
-from haive.core.graph.branches import Branch
-from langgraph.graph import END, START
-from langchain_community.document_loaders import WebBaseLoader
+from langgraph.types import Command
+
+from haive.agents.rag.base.config import BaseRAGConfig
 
 logging.basicConfig(level=logging.DEBUG)
+
 
 @register_agent(BaseRAGConfig)
 class BaseRAGAgent(Agent[BaseRAGConfig]):
@@ -27,20 +24,26 @@ class BaseRAGAgent(Agent[BaseRAGConfig]):
         query = state.query
         documents = state.retrieved_documents
         if not documents:
-            return {"answer": "I couldn't find any relevant documents to answer your query."}
+            return {
+                "answer": "I couldn't find any relevant documents to answer your query."
+            }
         context = "\n\n".join([doc.page_content for doc in documents])
-        answer = self.config.engine.create_runnable().invoke({"query": query, "context": context})
+        answer = self.config.engine.create_runnable().invoke(
+            {"query": query, "context": context}
+        )
         return Command(update={"answer": answer})
 
     def setup_workflow(self):
         """Set up the RAG workflow for this agent."""
         gb = DynamicGraph(state_schema=self.state_schema)
         gb.add_node("retrieve", self.retrieve)
-        #gb.add_node("generate_answer", self.generate_answer)
-        #gb.add_edge(START, "retrieve")
-        #gb.add_edge("retrieve", "generate_answer")
-        #gb.add_edge("generate_answer", END)
+        # gb.add_node("generate_answer", self.generate_answer)
+        # gb.add_edge(START, "retrieve")
+        # gb.add_edge("retrieve", "generate_answer")
+        # gb.add_edge("generate_answer", END)
         self.graph = gb.build()
+
+
 """
 def test_base_rag_agent():
     # Initialize the WebBaseLoader with the URL for a Wiki page

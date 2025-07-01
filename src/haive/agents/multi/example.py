@@ -1,12 +1,11 @@
-"""
-Example demonstrating the MultiAgent system.
+"""Example demonstrating the MultiAgent system.
 
 This example shows how to create and use a multi-agent system
 with different agent types and coordination strategies.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
@@ -26,9 +25,8 @@ class ResearchAgent(SimpleAgent):
         super().setup_agent()
         # Could add research-specific tools here
 
-    def invoke(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Process input and perform research.
+    def invoke(self, input_data: dict[str, Any]) -> dict[str, Any]:
+        """Process input and perform research.
 
         This is a simplified example that just simulates research.
         """
@@ -72,9 +70,8 @@ class WritingAgent(SimpleAgent):
         super().setup_agent()
         # Could add writing-specific tools here
 
-    def invoke(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Process input and perform writing.
+    def invoke(self, input_data: dict[str, Any]) -> dict[str, Any]:
+        """Process input and perform writing.
 
         This is a simplified example that uses research results if available.
         """
@@ -110,8 +107,7 @@ class WritingAgent(SimpleAgent):
 
 
 def create_research_writing_system() -> MultiAgent:
-    """
-    Create a multi-agent system with research and writing agents.
+    """Create a multi-agent system with research and writing agents.
 
     Returns:
         MultiAgent system
@@ -140,9 +136,7 @@ def create_research_writing_system() -> MultiAgent:
 
 
 def demo_multi_agent_system():
-    """
-    Demonstrate a multi-agent system in action.
-    """
+    """Demonstrate a multi-agent system in action."""
     # Instead of the complex graph-based approach, just demonstrate
     # how research and writing agents can work together sequentially
 
@@ -208,8 +202,7 @@ def demo_multi_agent_system():
 
 
 def create_parallel_specialist_system():
-    """
-    Create a multi-agent system with multiple specialist agents.
+    """Create a multi-agent system with multiple specialist agents.
 
     This would use parallel coordination strategy.
 
@@ -232,9 +225,7 @@ def create_parallel_specialist_system():
 
 
 def save_and_load_demo():
-    """
-    Demonstrate saving and loading a multi-agent system.
-    """
+    """Demonstrate saving and loading a multi-agent system."""
     logger.info("\nSerialization demo:")
 
     # Create a system

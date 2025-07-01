@@ -1,11 +1,21 @@
-from haive.agents.rag.self_corr.state import SelfCorrectiveRAGState
+from typing import Any
+
 from pydantic import Field
-from typing import Optional, List, Dict, Any
+
+from haive.agents.rag.self_corr.state import SelfCorrectiveRAGState
+
 
 class MultiStrategyRAGState(SelfCorrectiveRAGState):
     """State for multi-strategy RAG agents."""
-    query_type: Optional[str] = Field(default=None, description="Classified query type")
-    strategy_name: Optional[str] = Field(default=None, description="Selected retrieval strategy")
-    query_variations: List[str] = Field(default_factory=list, description="Generated query variations")
-    rewritten_query: Optional[str] = Field(default=None, description="Rewritten query")
-    strategy_metrics: Dict[str, Any] = Field(default_factory=dict, description="Metrics for the selected strategy")
+
+    query_type: str | None = Field(default=None, description="Classified query type")
+    strategy_name: str | None = Field(
+        default=None, description="Selected retrieval strategy"
+    )
+    query_variations: list[str] = Field(
+        default_factory=list, description="Generated query variations"
+    )
+    rewritten_query: str | None = Field(default=None, description="Rewritten query")
+    strategy_metrics: dict[str, Any] = Field(
+        default_factory=dict, description="Metrics for the selected strategy"
+    )

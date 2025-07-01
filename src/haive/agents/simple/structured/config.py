@@ -1,5 +1,3 @@
-from typing import Type
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field, model_validator
@@ -9,14 +7,13 @@ from haive.agents.simple.config import SimpleAgentConfig
 
 
 class StructuredOutputAgentConfig(SimpleAgentConfig):
-    """
-    Configuration for a structured output agent.
+    """Configuration for a structured output agent.
 
     Automatically sets up a single StructuredOutputTool for the provided model
     and configures the engine to always use this tool.
     """
 
-    structured_output_model: Type[BaseModel]
+    structured_output_model: type[BaseModel]
     engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             force_tool_use=True,  # Force using a tool

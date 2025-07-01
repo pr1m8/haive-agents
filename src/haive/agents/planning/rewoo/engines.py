@@ -1,18 +1,19 @@
-"""
-Augmented LLM configurations for the ReWOO agent.
+"""Augmented LLM configurations for the ReWOO agent.
 
 This module defines the LLM configurations for the planner and solver
 components of the ReWOO agent.
 """
 
-from typing import List, Type, Optional
-from langchain_core.prompts import ChatPromptTemplate
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
+from langchain_core.prompts import ChatPromptTemplate
 
 # Planner prompt template that takes a task and available tools
-planner_prompt = ChatPromptTemplate.from_messages([
-    ("system", """You are a helpful planning assistant that creates detailed step-by-step plans.
+planner_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You are a helpful planning assistant that creates detailed step-by-step plans.
     
 Each step should be specific and actionable, using available tools when needed.
 You can use the following tools:
@@ -70,13 +71,18 @@ Example plan:
 ```
 
 Only include steps that are necessary to complete the task successfully.
-"""),
-    ("user", "{task}")
-])
+""",
+        ),
+        ("user", "{task}"),
+    ]
+)
 
 # Solver prompt template that takes a task, step, and evidence
-solver_prompt = ChatPromptTemplate.from_messages([
-    ("system", """You are a helpful assistant that solves tasks using evidence collected in earlier steps.
+solver_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You are a helpful assistant that solves tasks using evidence collected in earlier steps.
     
 You will be given:
 1. The original task
@@ -89,42 +95,39 @@ Your job is to:
 3. Provide a clear, concise solution for this specific step
 
 Present your answer in a clear, helpful format that directly addresses what was asked in the step.
-"""),
-    ("user", """
+""",
+        ),
+        (
+            "user",
+            """
 Task: {task}
 Step {step_number}: {step_description}
 Evidence: {evidence}
 
 Please analyze this evidence and provide a solution for this step.
-""")
-])
+""",
+        ),
+    ]
+)
 
 # Initialize AugLLM configurations for planner and solver
 # IMPORTANT: We're NOT passing tool instances to the AugLLMConfig
 rewoo_aug_llm_config = AugLLMConfig(
     name="rewoo_planner",
     llm_config=AzureLLMConfig(
-        model="gpt-4o",
-        parameters={
-            "temperature": 0.7,
-            "max_tokens": 4096
-        }
+        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
     ),
     prompt_template=planner_prompt,
     # No tools - these will be set in the agent config
-    tools=None
+    tools=None,
 )
 
 solve_aug_llm_config = AugLLMConfig(
     name="rewoo_solver",
     llm_config=AzureLLMConfig(
-        model="gpt-4o",
-        parameters={
-            "temperature": 0.7,
-            "max_tokens": 4096
-        }
+        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
     ),
     prompt_template=solver_prompt,
     # No tools - these will be set in the agent config
-    tools=None
+    tools=None,
 )

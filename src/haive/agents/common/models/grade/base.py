@@ -7,9 +7,9 @@ including the grade type enumeration and abstract base class.
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class GradeType(str, Enum):
@@ -91,7 +91,7 @@ class Grade(BaseModel, ABC):
         examples=[0.85, 0.95, 1.0],
     )
 
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional metadata about the grading process",
         examples=[
@@ -103,7 +103,7 @@ class Grade(BaseModel, ABC):
         ],
     )
 
-    grader_id: Optional[str] = Field(
+    grader_id: str | None = Field(
         default=None,
         description="Identifier of the entity that assigned the grade",
         examples=["human_grader_001", "agent_evaluator_v2", "peer_review_bot"],
@@ -170,10 +170,9 @@ class Grade(BaseModel, ABC):
         Returns:
             A float between 0.0 and 1.0 representing the normalized grade
         """
-        pass
 
     @abstractmethod
-    def is_passing(self, threshold: Optional[float] = None) -> bool:
+    def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the grade represents a passing score.
 
         Args:
@@ -183,9 +182,8 @@ class Grade(BaseModel, ABC):
         Returns:
             True if the grade is considered passing, False otherwise
         """
-        pass
 
-    def get_grade_summary(self) -> Dict[str, Any]:
+    def get_grade_summary(self) -> dict[str, Any]:
         """Get a summary of the grade information.
 
         Returns:
@@ -205,7 +203,7 @@ class Grade(BaseModel, ABC):
             "timestamp": self.timestamp.isoformat(),
         }
 
-    def compare_to(self, other: "Grade") -> Dict[str, Union[float, str]]:
+    def compare_to(self, other: "Grade") -> dict[str, float | str]:
         """Compare this grade to another grade.
 
         Args:
@@ -250,10 +248,9 @@ class Grade(BaseModel, ABC):
 
         if diff < 0.05:
             return "Grades are essentially equivalent"
-        elif self_score > other_score:
+        if self_score > other_score:
             return f"This grade is {diff:.1%} higher than the comparison grade"
-        else:
-            return f"This grade is {diff:.1%} lower than the comparison grade"
+        return f"This grade is {diff:.1%} lower than the comparison grade"
 
     def to_display_string(self) -> str:
         """Convert grade to a human-readable display string.

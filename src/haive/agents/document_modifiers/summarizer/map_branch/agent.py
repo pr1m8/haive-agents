@@ -1,24 +1,15 @@
-import asyncio
-import operator
-import re
-from typing import Annotated, Dict, List, Literal, TypedDict
+from typing import Literal
 
-import openai
-from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
-from haive.core.engine.aug_llm import AugLLMConfig, compose_runnable
-from haive.core.utils.doc_utils import clean_and_format_text
+from haive.core.engine.agent.agent import Agent, register_agent
+from haive.core.engine.aug_llm import compose_runnable
 from langchain.chains.combine_documents.reduce import (
     acollapse_docs,
     split_list_of_docs,
 )
 from langchain_core.documents import Document
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import AzureChatOpenAI
 from langgraph.constants import Send
-from langgraph.graph import END, START, StateGraph
+from langgraph.graph import END, START
 from langgraph.types import Command, Send
-from pydantic import BaseModel, Field
 
 from haive.agents.document_modifiers.summarizer.map_branch.config import (
     SummarizerAgentConfig,
@@ -123,7 +114,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
                         chunk_summary = await self.map_chain.ainvoke(chunk)
                         chunk_summaries.append(chunk_summary)
                     except Exception as chunk_error:
-                        print(f"Error processing chunk {i+1}: {str(chunk_error)}")
+                        print(f"Error processing chunk {i+1}: {chunk_error!s}")
                         # For really problematic chunks, just make a short summary note
                         chunk_summaries.append(
                             f"[Chunk {i+1} was too complex to summarize]"
@@ -135,19 +126,17 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
                         "\n\n".join(chunk_summaries)
                     )
                     return {"summaries": [combined_summary]}
-                elif len(chunk_summaries) == 1:
+                if len(chunk_summaries) == 1:
                     return {"summaries": [chunk_summaries[0]]}
-                else:
-                    return {
-                        "summaries": [
-                            "The document was too large to process and could not be summarized."
-                        ]
-                    }
-            else:
-                # For other types of errors, just return an error message
-                return Command(
-                    update={"summaries": [f"Error generating summary: {error_str}"]}
-                )
+                return {
+                    "summaries": [
+                        "The document was too large to process and could not be summarized."
+                    ]
+                }
+            # For other types of errors, just return an error message
+            return Command(
+                update={"summaries": [f"Error generating summary: {error_str}"]}
+            )
 
     def map_summaries(self, state: SummaryState):
         """Map out over documents to generate summaries."""
@@ -184,15 +173,14 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         num_tokens = self.length_function(state.collapsed_summaries)
         if num_tokens > self.token_max:
             return "collapse_summaries"
-        else:
-            return "generate_final_summary"
+        return "generate_final_summary"
 
     async def generate_final_summary(self, state: SummaryState):
         """Generate the final summary from collapsed summaries."""
         response = await self.reduce_chain.ainvoke(state.collapsed_summaries)
         return Command(update={"final_summary": response})
 
-    def length_function(self, documents: List[Document]) -> int:
+    def length_function(self, documents: list[Document]) -> int:
         """Calculate the total token count for a set of documents."""
         # llm = self.aug_llm_configs["reduce_chain"].llm_config.instantiate()
         # print(llm)
@@ -207,6 +195,3 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
 
 def build_agent() -> SummarizerAgent:
     return SummarizerAgent(SummarizerAgentConfig())
-
-
-from langgraph.prebuilt import ToolNode, ValidationNode

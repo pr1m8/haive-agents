@@ -1,13 +1,11 @@
 # src/haive/agents/conversation/directed/agent.py
-"""
-Directed conversation agent where participants respond to mentions and direct questions.
+"""Directed conversation agent where participants respond to mentions and direct questions.
 Uses structured output models for robust speaker selection and interaction tracking.
 """
 
-import logging
 import re
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional, Set, Union
+from typing import Any, Literal
 
 from haive.core.logging.rich_logger import LogLevel, get_logger
 from langchain_core.messages import AIMessage, BaseMessage, SystemMessage
@@ -37,21 +35,17 @@ class SpeakerMention(BaseModel):
     confidence: float = Field(
         default=1.0, description="Confidence in the mention detection"
     )
-    context: Optional[str] = Field(
-        default=None, description="Context around the mention"
-    )
+    context: str | None = Field(default=None, description="Context around the mention")
 
 
 class SpeakerSelectionResult(BaseModel):
     """Structured output for speaker selection logic."""
 
-    next_speaker: Optional[str] = Field(
-        default=None, description="Next speaker to talk"
-    )
-    pending_speakers: List[str] = Field(
+    next_speaker: str | None = Field(default=None, description="Next speaker to talk")
+    pending_speakers: list[str] = Field(
         default_factory=list, description="Queue of speakers waiting to talk"
     )
-    mentioned_speakers: List[str] = Field(
+    mentioned_speakers: list[str] = Field(
         default_factory=list, description="All speakers mentioned in last message"
     )
     selection_reason: str = Field(
@@ -66,7 +60,7 @@ class InteractionPattern(BaseModel):
     from_speaker: str = Field(description="Speaker who mentioned others")
     to_speaker: str = Field(description="Speaker who was mentioned")
     mention_count: int = Field(default=1, description="Number of mentions")
-    mention_types: List[MentionType] = Field(
+    mention_types: list[MentionType] = Field(
         default_factory=list, description="Types of mentions used"
     )
 
@@ -74,7 +68,7 @@ class InteractionPattern(BaseModel):
 class DirectedConversationConfig(BaseModel):
     """Configuration for directed conversation behavior."""
 
-    mention_patterns: List[str] = Field(
+    mention_patterns: list[str] = Field(
         default_factory=lambda: ["@{name}", "{name},", "{name}:", "ask {name}"],
         description="Patterns to detect mentions (use {name} as placeholder)",
     )
@@ -97,8 +91,7 @@ class DirectedConversationConfig(BaseModel):
 
 
 class DirectedConversation(BaseConversationAgent):
-    """
-    Directed conversation where agents respond to mentions and questions.
+    """Directed conversation where agents respond to mentions and questions.
 
     Uses structured output models for robust speaker selection and tracking.
     Participants speak when:
@@ -116,13 +109,13 @@ class DirectedConversation(BaseConversationAgent):
     )
 
     # Internal tracking
-    _interaction_history: List[InteractionPattern] = []
+    _interaction_history: list[InteractionPattern] = []
 
     def get_conversation_state_schema(self) -> type:
         """Use extended state schema."""
         return DirectedConversationState
 
-    def select_speaker(self, state: DirectedConversationState) -> Dict[str, Any]:
+    def select_speaker(self, state: DirectedConversationState) -> dict[str, Any]:
         """Select speaker based on mentions and context using structured models."""
         # Get structured selection result
         selection_result = self._get_speaker_selection(state)
@@ -199,12 +192,11 @@ class DirectedConversation(BaseConversationAgent):
         # No mentions - use fallback strategy
         if self.config.fallback_to_round_robin:
             return self._select_round_robin_structured(state)
-        else:
-            return self._select_least_active_structured(state)
+        return self._select_least_active_structured(state)
 
     def _extract_structured_mentions(
         self, state: DirectedConversationState
-    ) -> List[SpeakerMention]:
+    ) -> list[SpeakerMention]:
         """Extract mentions as structured models."""
         if not state.messages:
             return []
@@ -300,7 +292,7 @@ class DirectedConversation(BaseConversationAgent):
         }
         return priorities.get(mention_type, 0)
 
-    def _get_last_speaker_name(self, state: DirectedConversationState) -> Optional[str]:
+    def _get_last_speaker_name(self, state: DirectedConversationState) -> str | None:
         """Get the name of the last speaker."""
         if not state.messages:
             return None
@@ -346,7 +338,7 @@ class DirectedConversation(BaseConversationAgent):
     ) -> SpeakerSelectionResult:
         """Select the speaker who has been least active."""
         # Count messages per speaker
-        message_count = {speaker: 0 for speaker in state.speakers}
+        message_count = dict.fromkeys(state.speakers, 0)
 
         for msg in state.messages:
             if isinstance(msg, AIMessage) and hasattr(msg, "name"):
@@ -367,7 +359,7 @@ class DirectedConversation(BaseConversationAgent):
             selection_reason="Defaulting to first speaker",
         )
 
-    def process_response(self, state: DirectedConversationState) -> Dict[str, Any]:
+    def process_response(self, state: DirectedConversationState) -> dict[str, Any]:
         """Track interaction patterns using structured models."""
         update = {}
 
@@ -403,7 +395,7 @@ class DirectedConversation(BaseConversationAgent):
 
     def _prepare_agent_input(
         self, state: DirectedConversationState, agent_name: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Prepare input with mention context."""
         base_input = super()._prepare_agent_input(state, agent_name)
 
@@ -433,11 +425,10 @@ class DirectedConversation(BaseConversationAgent):
 
     @staticmethod
     def _sanitize_name_for_openai(name: str) -> str:
-        """
-        Sanitize a name to be compatible with OpenAI's API requirements.
+        """Sanitize a name to be compatible with OpenAI's API requirements.
 
         OpenAI's name field must match the pattern '^[^\\s<|\\\\/>]+$'
-        This means no spaces, <, |, \, /, or >
+        This means no spaces, <, |, \\, /, or >
 
         Args:
             name: The original name
@@ -463,13 +454,12 @@ class DirectedConversation(BaseConversationAgent):
     def create_classroom(
         cls,
         teacher_name: str = "Teacher",
-        student_names: Optional[List[str]] = None,
+        student_names: list[str] | None = None,
         topic: str = "Today's lesson",
-        config: Optional[DirectedConversationConfig] = None,
+        config: DirectedConversationConfig | None = None,
         **kwargs,
     ):
-        """
-        Create a classroom-style directed conversation.
+        """Create a classroom-style directed conversation.
 
         Args:
             teacher_name: Name of the teacher
@@ -547,10 +537,10 @@ class DirectedConversation(BaseConversationAgent):
 
     def _check_custom_end_conditions(
         self, state: DirectedConversationState
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """Check if everyone has participated sufficiently."""
         # Count participation
-        participation = {speaker: 0 for speaker in state.speakers}
+        participation = dict.fromkeys(state.speakers, 0)
 
         for msg in state.messages:
             if isinstance(msg, AIMessage) and hasattr(msg, "name"):

@@ -5,7 +5,7 @@ satisfaction ratings, and custom ordinal scales.
 """
 
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 
@@ -98,7 +98,7 @@ class ScaleGrade(Grade):
         examples=["agree", "satisfied", "good", "4", "neutral"],
     )
 
-    scale_labels: List[str] = Field(
+    scale_labels: list[str] = Field(
         ...,
         description="Ordered list of scale labels from lowest to highest",
         min_length=2,
@@ -110,20 +110,20 @@ class ScaleGrade(Grade):
         ],
     )
 
-    scale_type: Optional[str] = Field(
+    scale_type: str | None = Field(
         default=None,
         description="Optional identifier for the type of scale used",
         examples=["likert_5", "satisfaction", "quality", "numeric_7", "custom"],
     )
 
-    numeric_value: Optional[int] = Field(
+    numeric_value: int | None = Field(
         default=None,
         description="Numeric equivalent based on position in scale (1-indexed)",
     )
 
     @field_validator("scale_labels")
     @classmethod
-    def validate_scale_labels_unique(cls, v: List[str]) -> List[str]:
+    def validate_scale_labels_unique(cls, v: list[str]) -> list[str]:
         """Validate that all scale labels are unique.
 
         Args:
@@ -197,7 +197,7 @@ class ScaleGrade(Grade):
         """
         return self.get_normalized_score() * 100
 
-    def is_passing(self, threshold: Optional[float] = None) -> bool:
+    def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the scale grade represents a passing score.
 
         Args:
@@ -256,16 +256,15 @@ class ScaleGrade(Grade):
 
         if normalized >= 0.8:
             return "Highly Positive"
-        elif normalized >= 0.6:
+        if normalized >= 0.6:
             return "Positive"
-        elif normalized >= 0.4:
+        if normalized >= 0.4:
             return "Neutral/Mixed"
-        elif normalized >= 0.2:
+        if normalized >= 0.2:
             return "Negative"
-        else:
-            return "Highly Negative"
+        return "Highly Negative"
 
-    def get_adjacent_values(self) -> Dict[str, Optional[str]]:
+    def get_adjacent_values(self) -> dict[str, str | None]:
         """Get the adjacent scale values (one above and one below).
 
         Returns:
@@ -316,7 +315,7 @@ class ScaleGrade(Grade):
 
     @classmethod
     def create_likert_5(
-        cls, value: Union[str, LikertScale], justification: str, **kwargs
+        cls, value: str | LikertScale, justification: str, **kwargs
     ) -> "ScaleGrade":
         """Create a 5-point Likert scale grade.
 
@@ -347,7 +346,7 @@ class ScaleGrade(Grade):
 
     @classmethod
     def create_satisfaction_5(
-        cls, value: Union[str, SatisfactionScale], justification: str, **kwargs
+        cls, value: str | SatisfactionScale, justification: str, **kwargs
     ) -> "ScaleGrade":
         """Create a 5-point satisfaction scale grade.
 

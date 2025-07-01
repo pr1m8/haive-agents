@@ -1,7 +1,7 @@
 # src/haive/agents/simple/agent.py
 
 import logging
-from typing import Any, Dict, List, Optional, Sequence, Type, Union, get_origin
+from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -16,7 +16,7 @@ from langchain_core.output_parsers.base import BaseOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langgraph.graph import END, START
 from langgraph.types import Command
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator
 
 from haive.agents.base.agent import Agent
 
@@ -104,39 +104,39 @@ class SimpleAgent(Agent):
     # ========================================================================
 
     # LLM parameters
-    temperature: Optional[float] = Field(default=None, description="Temperature")
-    max_tokens: Optional[int] = Field(default=None, description="Max tokens")
-    model_name: Optional[str] = Field(default=None, description="Model name")
+    temperature: float | None = Field(default=None, description="Temperature")
+    max_tokens: int | None = Field(default=None, description="Max tokens")
+    model_name: str | None = Field(default=None, description="Model name")
 
     # Tool configuration
-    tools: Optional[List[Any]] = Field(default=None, description="Tools")
-    force_tool_use: Optional[bool] = Field(default=None, description="Force tool use")
+    tools: list[Any] | None = Field(default=None, description="Tools")
+    force_tool_use: bool | None = Field(default=None, description="Force tool use")
 
     # Structured output - THIS IS THE KEY FIELD
-    structured_output_model: Optional[Type[BaseModel]] = Field(
+    structured_output_model: type[BaseModel] | None = Field(
         default=None, description="Structured output model"
     )
-    structured_output_version: Optional[Union[int, str]] = Field(
+    structured_output_version: int | str | None = Field(
         default=None, description="Structured output version"
     )
 
     # Prompting
-    prompt_template: Optional[Union[ChatPromptTemplate, PromptTemplate]] = Field(
+    prompt_template: ChatPromptTemplate | PromptTemplate | None = Field(
         default=None, description="Prompt template"
     )
-    system_message: Optional[str] = Field(default=None, description="System message")
+    system_message: str | None = Field(default=None, description="System message")
 
     # LLM config
-    llm_config: Optional[LLMConfig] = Field(default=None, description="LLM config")
+    llm_config: LLMConfig | None = Field(default=None, description="LLM config")
 
     # ========================================================================
     # NON-SYNCED FIELDS
     # ========================================================================
 
-    output_parser: Optional[BaseOutputParser] = Field(
+    output_parser: BaseOutputParser | None = Field(
         default=None, description="Output parser"
     )
-    output_parser_field: Optional[str] = Field(
+    output_parser_field: str | None = Field(
         default=None, description="Output parser field name"
     )
 
@@ -153,8 +153,7 @@ class SimpleAgent(Agent):
         return v
 
     def setup_agent(self):
-        """
-        Custom setup that modifies the engine and regenerates schemas.
+        """Custom setup that modifies the engine and regenerates schemas.
 
         This is where we MODIFY THE ENGINE to include structured output
         and then force schema regeneration.
@@ -230,8 +229,7 @@ class SimpleAgent(Agent):
             self.engine.llm_config = self.llm_config
 
     def _modify_engine_schema(self) -> None:
-        """
-        MODIFY the engine's output schema to include structured output fields.
+        """MODIFY the engine's output schema to include structured output fields.
 
         This is the KEY METHOD that updates the engine schema.
         """
@@ -336,7 +334,7 @@ class SimpleAgent(Agent):
             or (getattr(self.engine, "structured_output_model", None) is not None)
         )
 
-    def get_tool_routes(self) -> Dict[str, str]:
+    def get_tool_routes(self) -> dict[str, str]:
         """Get tool routes from engine."""
         if self.engine and hasattr(self.engine, "tool_routes"):
             return getattr(self.engine, "tool_routes", {})
@@ -465,12 +463,12 @@ class SimpleAgent(Agent):
     # ========================================================================
 
     @classmethod
-    def from_engine(cls, engine: AugLLMConfig, name: Optional[str] = None, **kwargs):
+    def from_engine(cls, engine: AugLLMConfig, name: str | None = None, **kwargs):
         """Create SimpleAgent from engine."""
         return cls(name=name or "Simple Agent", engine=engine, **kwargs)
 
     @classmethod
-    def create_with_tools(cls, tools: List[Any], name: Optional[str] = None, **kwargs):
+    def create_with_tools(cls, tools: list[Any], name: str | None = None, **kwargs):
         """Create SimpleAgent with tools."""
         return cls(name=name or "Tool Agent", tools=tools, **kwargs)
 

@@ -1,7 +1,6 @@
 # src/haive/agents/task_analysis/complexity/models.py
 
 from enum import Enum
-from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -38,10 +37,10 @@ class ComplexityVector(BaseModel):
     )
 
     # Computed fields
-    overall_level: Optional[ComplexityLevel] = None
+    overall_level: ComplexityLevel | None = None
     confidence: float = Field(default=0.8, ge=0, le=1)
 
-    def total_score(self, weights: Optional[Dict[str, float]] = None) -> float:
+    def total_score(self, weights: dict[str, float] | None = None) -> float:
         """Calculate weighted total complexity score."""
         if weights is None:
             weights = {
@@ -68,16 +67,15 @@ class ComplexityVector(BaseModel):
 
         if total <= 2:
             return ComplexityLevel.TRIVIAL
-        elif total <= 3.5:
+        if total <= 3.5:
             return ComplexityLevel.SIMPLE
-        elif total <= 5:
+        if total <= 5:
             return ComplexityLevel.MODERATE
-        elif total <= 7:
+        if total <= 7:
             return ComplexityLevel.COMPLEX
-        elif total <= 8.5:
+        if total <= 8.5:
             return ComplexityLevel.HIGHLY_COMPLEX
-        else:
-            return ComplexityLevel.EXTREME
+        return ComplexityLevel.EXTREME
 
     @field_validator(
         "structural", "execution", "knowledge", "integration", "uncertainty"
@@ -141,13 +139,13 @@ class ComplexityAnalysis(BaseModel):
     complexity_factors: ComplexityFactors
 
     # Risk assessment
-    risk_factors: List[str] = Field(default_factory=list)
-    mitigation_strategies: List[str] = Field(default_factory=list)
+    risk_factors: list[str] = Field(default_factory=list)
+    mitigation_strategies: list[str] = Field(default_factory=list)
 
     # Recommendations
-    recommendations: List[str] = Field(default_factory=list)
-    simplification_opportunities: List[str] = Field(default_factory=list)
+    recommendations: list[str] = Field(default_factory=list)
+    simplification_opportunities: list[str] = Field(default_factory=list)
 
     # Confidence
     analysis_confidence: float = Field(default=0.8, ge=0, le=1)
-    confidence_factors: Dict[str, float] = Field(default_factory=dict)
+    confidence_factors: dict[str, float] = Field(default_factory=dict)

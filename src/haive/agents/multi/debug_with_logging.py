@@ -16,7 +16,6 @@ logging.getLogger("haive.agents.base.mixins.execution_mixin").setLevel(logging.D
 logging.getLogger("haive.core.graph.node.agent_node").setLevel(logging.DEBUG)
 logging.getLogger("haive.agents.multi.base").setLevel(logging.DEBUG)
 
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -30,12 +29,12 @@ from haive.agents.simple.agent import SimpleAgent
 
 @tool
 def add(a: int, b: int) -> int:
-    """returns the sum of two numbers"""
+    """Returns the sum of two numbers"""
     return a + b
 
 
 class Plan(BaseModel):
-    steps: List[str] = Field(description="list of steps")
+    steps: list[str] = Field(description="list of steps")
 
 
 print("=== DETAILED DEBUG WITH EXTENSIVE LOGGING ===")

@@ -1,9 +1,7 @@
 # src/haive/agents/conversation/collaborative/agent.py
-"""
-Collaborative conversation agent for building shared content.
-"""
+"""Collaborative conversation agent for building shared content."""
 
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 from haive.core.logging.rich_logger import LogLevel, get_logger
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
@@ -18,8 +16,7 @@ logger.set_level(LogLevel.WARNING)
 
 
 class CollaborativeConversation(BaseConversationAgent):
-    """
-    Collaborative conversation for building shared content.
+    """Collaborative conversation for building shared content.
 
     Features:
     - Structured document building
@@ -33,7 +30,7 @@ class CollaborativeConversation(BaseConversationAgent):
 
     # Document structure
     document_title: str = Field(default="Collaborative Document")
-    sections: List[str] = Field(
+    sections: list[str] = Field(
         default_factory=lambda: ["Introduction", "Main Content", "Conclusion"],
         description="Sections to collaborate on",
     )
@@ -61,7 +58,7 @@ class CollaborativeConversation(BaseConversationAgent):
         """Use collaborative state schema."""
         return CollaborativeState
 
-    def _custom_initialization(self, state: CollaborativeState) -> Dict[str, Any]:
+    def _custom_initialization(self, state: CollaborativeState) -> dict[str, Any]:
         """Initialize collaborative-specific state."""
         # Initialize document with title
         if self.output_format == "markdown":
@@ -78,7 +75,7 @@ class CollaborativeConversation(BaseConversationAgent):
             "sections_order": self.sections,
             "current_section": self.sections[0] if self.sections else None,
             "output_format": self.output_format,
-            "document_sections": {section: "" for section in self.sections},
+            "document_sections": dict.fromkeys(self.sections, ""),
         }
 
     def _create_initial_message(self) -> BaseMessage:
@@ -101,7 +98,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
     def select_speaker(self, state: CollaborativeState) -> Command:
         """Select speaker based on contribution balance and current section."""
-        logger.debug(f"=== SELECT SPEAKER ===")
+        logger.debug("=== SELECT SPEAKER ===")
         logger.debug(f"Current section: {state.current_section}")
         logger.debug(f"Completed sections: {state.completed_sections}")
         logger.debug(f"Total contributions: {len(state.contributions)}")
@@ -110,7 +107,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
         # Check if we need to move to next section
         section_update = self._check_section_completion(state)
         if section_update:
-            logger.debug(f"Section update triggered")
+            logger.debug("Section update triggered")
             return section_update
 
         # Get current section
@@ -150,7 +147,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
         logger.debug(f"Selected speaker: {min_contributor} (count: {min_count})")
         return Command(update={"current_speaker": min_contributor})
 
-    def _check_section_completion(self, state: CollaborativeState) -> Optional[Command]:
+    def _check_section_completion(self, state: CollaborativeState) -> Command | None:
         """Check if current section is complete and move to next."""
         current_section = state.current_section
         if not current_section:
@@ -194,10 +191,9 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
                         ),
                     }
                 )
-            else:
-                # All sections complete
-                logger.debug("All sections complete - finalizing document")
-                return self._finalize_document(state)
+            # All sections complete
+            logger.debug("All sections complete - finalizing document")
+            return self._finalize_document(state)
 
         return None
 
@@ -218,7 +214,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
     def _prepare_agent_input(
         self, state: CollaborativeState, agent_name: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Prepare input with collaboration context."""
         base_input = super()._prepare_agent_input(state, agent_name)
 
@@ -290,10 +286,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
                 new_content = str(content)
 
             # Append to existing section content
-            if (
-                current_section in new_document_sections
-                and new_document_sections[current_section]
-            ):
+            if new_document_sections.get(current_section):
                 new_document_sections[current_section] = (
                     new_document_sections[current_section].rstrip() + "\n" + new_content
                 )
@@ -314,24 +307,23 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
         )
 
     def _compile_document(
-        self, state: CollaborativeState, sections: Dict[str, str]
+        self, state: CollaborativeState, sections: dict[str, str]
     ) -> str:
         """Compile sections into final document."""
         # Get title from current document or use default
         if state.shared_document:
             doc_parts = [state.shared_document.split("\n\n")[0]]  # Keep title
-        else:
-            if self.output_format == "markdown":
-                doc_parts = [f"# {self.document_title}"]
-            elif self.output_format == "code":
-                doc_parts = [f"# {self.document_title}\n# Collaborative Code"]
-            elif self.output_format == "outline":
-                doc_parts = [f"{self.document_title}\n{'=' * len(self.document_title)}"]
-            else:  # report
-                doc_parts = [f"{self.document_title.upper()}"]
+        elif self.output_format == "markdown":
+            doc_parts = [f"# {self.document_title}"]
+        elif self.output_format == "code":
+            doc_parts = [f"# {self.document_title}\n# Collaborative Code"]
+        elif self.output_format == "outline":
+            doc_parts = [f"{self.document_title}\n{'=' * len(self.document_title)}"]
+        else:  # report
+            doc_parts = [f"{self.document_title.upper()}"]
 
         for section in state.sections_order:
-            if section in sections and sections[section]:
+            if sections.get(section):
                 if self.output_format == "markdown":
                     doc_parts.append(f"## {section}\n{sections[section]}")
                 elif self.output_format == "outline":
@@ -366,9 +358,7 @@ The final document has been compiled."""
 
         return Command(update={"messages": [summary_msg], "conversation_ended": True})
 
-    def _check_custom_end_conditions(
-        self, state: CollaborativeState
-    ) -> Optional[Command]:
+    def _check_custom_end_conditions(self, state: CollaborativeState) -> Command | None:
         """Check if all sections are complete."""
         if len(state.completed_sections) >= len(self.sections):
             return self._finalize_document(state)
@@ -378,12 +368,11 @@ The final document has been compiled."""
     def create_brainstorming_session(
         cls,
         topic: str,
-        participants: List[str],
-        sections: Optional[List[str]] = None,
+        participants: list[str],
+        sections: list[str] | None = None,
         **kwargs,
     ):
-        """
-        Create a brainstorming/ideation session.
+        """Create a brainstorming/ideation session.
 
         Args:
             topic: Brainstorming topic
@@ -438,11 +427,10 @@ The final document has been compiled."""
     def create_code_review(
         cls,
         code_description: str,
-        reviewers: Dict[str, str],  # name -> expertise
+        reviewers: dict[str, str],  # name -> expertise
         **kwargs,
     ):
-        """
-        Create a collaborative code review session.
+        """Create a collaborative code review session.
 
         Args:
             code_description: Description of code being reviewed

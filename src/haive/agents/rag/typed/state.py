@@ -1,12 +1,24 @@
-from haive.agents.rag.base.state import BaseRAGState
-from pydantic import Field
-from typing import Optional, Dict, Any, List
+from typing import Any
+
 from langchain.schema import Document
+from pydantic import Field
+
+from haive.agents.rag.base.state import BaseRAGState
+
 
 class TypedRAGState(BaseRAGState):
     """State for Typed-RAG."""
-    query_category: Optional[str] = Field(default=None, description="Classified query category")
-    query_metadata: Dict[str, Any] = Field(default_factory=dict, description="Metadata about the query")
-    subqueries: Dict[str, str] = Field(default_factory=dict, description="Generated subqueries by type")
-    subquery_results: Dict[str, List[Document]] = Field(default_factory=dict, description="Results for each subquery")
-    aggregated_answer: Optional[str] = Field(default=None, description="Aggregated answer")
+
+    query_category: str | None = Field(
+        default=None, description="Classified query category"
+    )
+    query_metadata: dict[str, Any] = Field(
+        default_factory=dict, description="Metadata about the query"
+    )
+    subqueries: dict[str, str] = Field(
+        default_factory=dict, description="Generated subqueries by type"
+    )
+    subquery_results: dict[str, list[Document]] = Field(
+        default_factory=dict, description="Results for each subquery"
+    )
+    aggregated_answer: str | None = Field(default=None, description="Aggregated answer")

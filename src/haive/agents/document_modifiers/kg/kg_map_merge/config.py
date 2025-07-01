@@ -1,18 +1,14 @@
-from typing import List
-
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 
 class ParallelKGTransformerConfig(AgentConfig):
-    """
-    Configuration for the Parallel Knowledge Graph Transformer.
-    """
+    """Configuration for the Parallel Knowledge Graph Transformer."""
 
-    contents: List[Document]
+    contents: list[Document]
     graph_extraction_config: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="graph_extractor",

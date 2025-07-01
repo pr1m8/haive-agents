@@ -4,7 +4,7 @@ This module implements numeric grading systems including general numeric
 scores and percentage-based grading.
 """
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 
@@ -56,23 +56,23 @@ class NumericGrade(Grade):
         default=GradeType.NUMERIC, description="Type of grade model (always numeric)"
     )
 
-    value: Union[int, float] = Field(
+    value: int | float = Field(
         ..., description="The numeric score value", examples=[8.5, 7, 92.3, 4.2]
     )
 
-    min_value: Union[int, float] = Field(
+    min_value: int | float = Field(
         default=0,
         description="Minimum possible score in the range",
         examples=[0, 1, -10, 200],
     )
 
-    max_value: Union[int, float] = Field(
+    max_value: int | float = Field(
         default=10,
         description="Maximum possible score in the range",
         examples=[10, 5, 100, 800],
     )
 
-    passing_threshold: Optional[Union[int, float]] = Field(
+    passing_threshold: int | float | None = Field(
         default=None,
         description="Minimum score considered passing. If None, defaults to 60% of range",
         examples=[6, 3, 70, 500],
@@ -127,7 +127,7 @@ class NumericGrade(Grade):
         """
         return self.get_normalized_score() * 100
 
-    def is_passing(self, threshold: Optional[float] = None) -> bool:
+    def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the grade represents a passing score.
 
         Args:
@@ -160,16 +160,15 @@ class NumericGrade(Grade):
 
         if percentage >= 90:
             return "A"
-        elif percentage >= 80:
+        if percentage >= 80:
             return "B"
-        elif percentage >= 70:
+        if percentage >= 70:
             return "C"
-        elif percentage >= 60:
+        if percentage >= 60:
             return "D"
-        else:
-            return "F"
+        return "F"
 
-    def distance_from_threshold(self, threshold: Optional[float] = None) -> float:
+    def distance_from_threshold(self, threshold: float | None = None) -> float:
         """Calculate distance from passing threshold.
 
         Args:
@@ -249,22 +248,22 @@ class PercentageGrade(NumericGrade):
         description="Type of grade model (always percentage)",
     )
 
-    min_value: Union[int, float] = Field(
+    min_value: int | float = Field(
         default=0, description="Minimum percentage (always 0)"
     )
 
-    max_value: Union[int, float] = Field(
+    max_value: int | float = Field(
         default=100, description="Maximum percentage (always 100)"
     )
 
-    passing_threshold: Union[int, float] = Field(
+    passing_threshold: int | float = Field(
         default=60,
         description="Minimum percentage considered passing (default 60%)",
         ge=0,
         le=100,
     )
 
-    value: Union[int, float] = Field(
+    value: int | float = Field(
         ...,
         description="Percentage value (0-100)",
         ge=0,
@@ -274,7 +273,7 @@ class PercentageGrade(NumericGrade):
 
     @field_validator("min_value")
     @classmethod
-    def validate_min_value(cls, v: Union[int, float]) -> Union[int, float]:
+    def validate_min_value(cls, v: int | float) -> int | float:
         """Ensure min_value is always 0 for percentages.
 
         Args:
@@ -289,7 +288,7 @@ class PercentageGrade(NumericGrade):
 
     @field_validator("max_value")
     @classmethod
-    def validate_max_value(cls, v: Union[int, float]) -> Union[int, float]:
+    def validate_max_value(cls, v: int | float) -> int | float:
         """Ensure max_value is always 100 for percentages.
 
         Args:

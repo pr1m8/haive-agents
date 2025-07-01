@@ -1,11 +1,11 @@
 import random
-from typing import Any, Dict, List, Literal, Optional, Set, Tuple
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.logging.rich_logger import LogLevel, get_logger
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langchain_core.tools import StructuredTool
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.social_media.models import (
@@ -21,8 +21,7 @@ logger.set_level(LogLevel.WARNING)
 
 
 class SocialMediaConversation(BaseConversationAgent):
-    """
-    Social media style conversation with engagement mechanics.
+    """Social media style conversation with engagement mechanics.
 
     Features:
     - Likes and reactions
@@ -47,7 +46,7 @@ class SocialMediaConversation(BaseConversationAgent):
     max_posts_per_round: int = Field(default=3)
 
     # Character limits by platform
-    char_limits: Dict[str, int] = Field(
+    char_limits: dict[str, int] = Field(
         default_factory=lambda: {
             "twitter": 280,
             "instagram": 2200,
@@ -122,7 +121,7 @@ class SocialMediaConversation(BaseConversationAgent):
                 agent.engine.force_tool_use = False  # Let them choose
                 agent.engine.tool_choice_mode = "auto"
 
-    def _like_post_handler(self, post_author: str, reason: Optional[str] = None) -> str:
+    def _like_post_handler(self, post_author: str, reason: str | None = None) -> str:
         """Handler for like_post tool."""
         # This will be processed in process_response
         return f"Liked @{post_author}'s post" + (f" because {reason}" if reason else "")
@@ -132,13 +131,12 @@ class SocialMediaConversation(BaseConversationAgent):
         return f"@{reply_to} {content}"
 
     def _share_post_handler(
-        self, original_author: str, comment: Optional[str] = None
+        self, original_author: str, comment: str | None = None
     ) -> str:
         """Handler for share_post tool."""
         if comment:
             return f"RT @{original_author}: {comment}"
-        else:
-            return f"RT @{original_author}"
+        return f"RT @{original_author}"
 
     def _create_initial_message(self) -> BaseMessage:
         """Create platform-specific initial message."""
@@ -158,7 +156,7 @@ class SocialMediaConversation(BaseConversationAgent):
             f"Share your thoughts! Go viral at {self.viral_threshold} likes 🔥"
         )
 
-    def select_speaker(self, state: SocialMediaState) -> Dict[str, Any]:
+    def select_speaker(self, state: SocialMediaState) -> dict[str, Any]:
         """Select speakers based on engagement dynamics."""
         speakers = state.speakers
 
@@ -184,7 +182,7 @@ class SocialMediaConversation(BaseConversationAgent):
 
         # Select multiple speakers who might post
         selected = []
-        for speaker, weight in zip(speakers, weights):
+        for speaker, weight in zip(speakers, weights, strict=False):
             if random.random() < weight:
                 selected.append(speaker)
 
@@ -197,12 +195,11 @@ class SocialMediaConversation(BaseConversationAgent):
 
         if len(selected) > 1:
             return {"current_speaker": selected[0], "pending_speakers": selected[1:]}
-        else:
-            return {"current_speaker": selected[0] if selected else None}
+        return {"current_speaker": selected[0] if selected else None}
 
     def _prepare_agent_input(
         self, state: SocialMediaState, agent_name: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Prepare input with social media context."""
         base_input = super()._prepare_agent_input(state, agent_name)
 
@@ -239,7 +236,7 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
 
         return base_input
 
-    def process_response(self, state: SocialMediaState) -> Dict[str, Any]:
+    def process_response(self, state: SocialMediaState) -> dict[str, Any]:
         """Process social media engagement."""
         update = {}
 
@@ -326,7 +323,7 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
 
     def _check_custom_end_conditions(
         self, state: SocialMediaState
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """Check for viral threshold."""
         # Check if anyone went viral
         for speaker, like_count in state.likes.items():
@@ -340,7 +337,7 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
 
     def _create_conclusion(
         self, state: SocialMediaState, reason: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create social media style conclusion."""
         # Get top posts
         top_posts = sorted(state.likes.items(), key=lambda x: x[1], reverse=True)[:3]
@@ -365,10 +362,9 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
 
     @classmethod
     def create_twitter_thread(
-        cls, topic: str, personas: Dict[str, str], viral_threshold: int = 10, **kwargs
+        cls, topic: str, personas: dict[str, str], viral_threshold: int = 10, **kwargs
     ):
-        """
-        Create a Twitter-style conversation thread.
+        """Create a Twitter-style conversation thread.
 
         Args:
             topic: Thread topic

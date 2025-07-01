@@ -1,5 +1,4 @@
-"""
-Document Loader Agent implementation.
+"""Document Loader Agent implementation.
 
 This module provides an agent implementation that uses the DocumentLoaderEngine
 to load documents from various sources and integrate with the Haive agent framework.
@@ -15,7 +14,7 @@ The agent can be integrated into more complex workflows and supports both
 synchronous and asynchronous operation modes.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from haive.core.engine.document_loader import (
     DocumentLoaderEngine,
@@ -31,8 +30,7 @@ from haive.agents.base.agent import Agent
 
 
 class DocumentLoaderAgent(Agent):
-    """
-    Document Loader Agent that integrates the document loader engine with the agent framework.
+    """Document Loader Agent that integrates the document loader engine with the agent framework.
 
     This agent provides a simple interface for loading documents from various sources
     through the agent framework. It can be used as a standalone agent or as part of
@@ -71,7 +69,7 @@ class DocumentLoaderAgent(Agent):
         default=True, description="Whether to include document metadata in the output"
     )
 
-    max_documents: Optional[int] = Field(
+    max_documents: int | None = Field(
         default=None,
         description="Maximum number of documents to load (None for unlimited)",
     )
@@ -81,8 +79,7 @@ class DocumentLoaderAgent(Agent):
     )
 
     def setup_agent(self) -> None:
-        """
-        Set up the agent by configuring the document loader engine.
+        """Set up the agent by configuring the document loader engine.
 
         This method is called during agent initialization to set up the engine
         with the agent's configuration parameters.
@@ -101,8 +98,7 @@ class DocumentLoaderAgent(Agent):
         self.engines["document_loader"] = self.engine
 
     def build_graph(self) -> BaseGraph:
-        """
-        Build the document loader agent graph.
+        """Build the document loader agent graph.
 
         Creates a simple linear graph that loads documents from the input source.
 
@@ -122,9 +118,8 @@ class DocumentLoaderAgent(Agent):
 
         return graph
 
-    def process_output(self, output: DocumentLoaderOutput) -> Dict[str, Any]:
-        """
-        Process the output from the document loader engine.
+    def process_output(self, output: DocumentLoaderOutput) -> dict[str, Any]:
+        """Process the output from the document loader engine.
 
         This method filters and formats the output based on the agent's configuration.
 

@@ -1,6 +1,7 @@
 # src/haive/agents/task_analysis/tree/models.py
 
-from typing import Any, Callable, Dict, List, Union
+from collections.abc import Callable
+from typing import Any
 
 from haive.core.common.structures.tree import AutoTree
 
@@ -11,17 +12,16 @@ from haive.agents.task_analysis.base.models import (
 
 
 class TaskTree(AutoTree[TaskNode]):
-    """
-    Enhanced AutoTree specifically for task analysis.
+    """Enhanced AutoTree specifically for task analysis.
     Adds task-specific functionality while leveraging AutoTree's auto-building.
     """
 
     def __init__(self, content: TaskNode, **kwargs):
         super().__init__(content, **kwargs)
         # Task-specific initialization
-        self._join_points: List[Dict[str, Any]] = []
-        self._parallel_groups: List[List[str]] = []
-        self._critical_path: List[str] = []
+        self._join_points: list[dict[str, Any]] = []
+        self._parallel_groups: list[list[str]] = []
+        self._critical_path: list[str] = []
         self._analyze_structure()
 
     def _analyze_structure(self):
@@ -96,7 +96,7 @@ class TaskTree(AutoTree[TaskNode]):
 
         self._critical_path = path
 
-    def _build_dependency_map(self) -> Dict[str, List[str]]:
+    def _build_dependency_map(self) -> dict[str, list[str]]:
         """Build a map of dependencies."""
         dep_map = {}
 
@@ -109,7 +109,7 @@ class TaskTree(AutoTree[TaskNode]):
 
         return dep_map
 
-    def _get_all_task_ids(self) -> List[str]:
+    def _get_all_task_ids(self) -> list[str]:
         """Get all task and step IDs."""
         ids = []
         for node in self.traverse_depth_first(lambda n: n):  # type: ignore
@@ -120,7 +120,7 @@ class TaskTree(AutoTree[TaskNode]):
         return ids
 
     def _has_path_between(
-        self, id1: str, id2: str, dep_map: Dict[str, List[str]]
+        self, id1: str, id2: str, dep_map: dict[str, list[str]]
     ) -> bool:
         """Check if there's a dependency path between two tasks."""
         # BFS to find path
@@ -142,7 +142,7 @@ class TaskTree(AutoTree[TaskNode]):
 
         return False
 
-    def _find_incoming_tasks(self, task_id: str) -> List[str]:
+    def _find_incoming_tasks(self, task_id: str) -> list[str]:
         """Find all tasks that have dependencies pointing to this task."""
         incoming = []
 
@@ -154,11 +154,11 @@ class TaskTree(AutoTree[TaskNode]):
 
         return incoming
 
-    def _get_subtask_duration(self, subtask: Union[TaskNode, ActionStep]) -> float:
+    def _get_subtask_duration(self, subtask: TaskNode | ActionStep) -> float:
         """Get duration of a subtask."""
         if isinstance(subtask, ActionStep):
             return subtask.estimated_duration_minutes
-        elif isinstance(subtask, TaskNode):
+        if isinstance(subtask, TaskNode):
             return subtask.calculate_total_duration()
         return 0.0
 
@@ -166,21 +166,20 @@ class TaskTree(AutoTree[TaskNode]):
     # PUBLIC METHODS
     # ========================================================================
 
-    def get_join_points(self) -> List[Dict[str, Any]]:
+    def get_join_points(self) -> list[dict[str, Any]]:
         """Get all join points in the tree."""
         return self._join_points
 
-    def get_parallel_groups(self) -> List[List[str]]:
+    def get_parallel_groups(self) -> list[list[str]]:
         """Get groups of tasks that can run in parallel."""
         return self._parallel_groups
 
-    def get_critical_path(self) -> List[str]:
+    def get_critical_path(self) -> list[str]:
         """Get the critical path."""
         return self._critical_path
 
-    def get_execution_phases(self) -> List[Dict[str, Any]]:
-        """
-        Organize tasks into execution phases.
+    def get_execution_phases(self) -> list[dict[str, Any]]:
+        """Organize tasks into execution phases.
         Tasks in the same phase can run in parallel.
         """
         phases = []
@@ -223,10 +222,9 @@ class TaskTree(AutoTree[TaskNode]):
     def expand_node(
         self,
         node_id: str,
-        expansion_fn: Callable[[TaskNode], List[Union[TaskNode, ActionStep]]],
+        expansion_fn: Callable[[TaskNode], list[TaskNode | ActionStep]],
     ) -> bool:
-        """
-        Expand a specific node using the provided expansion function.
+        """Expand a specific node using the provided expansion function.
         Returns True if expansion was successful.
         """
         # Find the node
@@ -257,7 +255,7 @@ class TaskTree(AutoTree[TaskNode]):
 
         return True
 
-    def get_analysis_summary(self) -> Dict[str, Any]:
+    def get_analysis_summary(self) -> dict[str, Any]:
         """Get a summary of the task tree analysis."""
         all_steps = self.content.get_all_steps()
 

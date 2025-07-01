@@ -4,7 +4,7 @@ This module implements a binary grading system suitable for pass/fail,
 yes/no, correct/incorrect, and similar binary evaluations.
 """
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from pydantic import Field, field_validator
 
@@ -126,7 +126,7 @@ class BinaryGrade(Grade):
         """
         return 1.0 if self.value else 0.0
 
-    def is_passing(self, threshold: Optional[float] = None) -> bool:
+    def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the grade represents a passing score.
 
         For binary grades, this simply returns the boolean value.

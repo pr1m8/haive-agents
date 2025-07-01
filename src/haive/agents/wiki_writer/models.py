@@ -1,7 +1,8 @@
 # Wiki Article Models:
+
 from pydantic import BaseModel, Field
-from typing import List, Optional
-from langchain_core.prompts import ChatPromptTemplate
+
+
 class Subsection(BaseModel):
     subsection_title: str = Field(..., title="Title of the subsection")
     description: str = Field(..., title="Content of the subsection")
@@ -14,7 +15,7 @@ class Subsection(BaseModel):
 class Section(BaseModel):
     section_title: str = Field(..., title="Title of the section")
     description: str = Field(..., title="Content of the section")
-    subsections: Optional[List[Subsection]] = Field(
+    subsections: list[Subsection] | None = Field(
         default=None,
         title="Titles and descriptions for each subsection of the Wikipedia page.",
     )
@@ -27,14 +28,15 @@ class Section(BaseModel):
         )
         return f"## {self.section_title}\n\n{self.description}\n\n{subsections}".strip()
 
+
 class WikiSection(BaseModel):
     section_title: str = Field(..., title="Title of the section")
     content: str = Field(..., title="Full content of the section")
-    subsections: Optional[List[Subsection]] = Field(
+    subsections: list[Subsection] | None = Field(
         default=None,
         title="Titles and descriptions for each subsection of the Wikipedia page.",
     )
-    citations: List[str] = Field(default_factory=list)
+    citations: list[str] = Field(default_factory=list)
 
     @property
     def as_str(self) -> str:
@@ -47,9 +49,10 @@ class WikiSection(BaseModel):
             + f"\n\n{citations}".strip()
         )
 
+
 class Outline(BaseModel):
     page_title: str = Field(..., title="Title of the Wikipedia page")
-    sections: List[Section] = Field(
+    sections: list[Section] = Field(
         default_factory=list,
         title="Titles and descriptions for each section of the Wikipedia page.",
     )
@@ -59,13 +62,16 @@ class Outline(BaseModel):
         sections = "\n\n".join(section.as_str for section in self.sections)
         return f"# {self.page_title}\n\n{sections}".strip()
 
+
 # Related Subjects Model
 class RelatedSubjects(BaseModel):
-    topics: List[str] = Field(
+    topics: list[str] = Field(
         description="Comprehensive list of related subjects as background research.",
     )
 
+
 # Perspectives
+
 
 class Editor(BaseModel):
     affiliation: str = Field(
@@ -87,7 +93,7 @@ class Editor(BaseModel):
 
 
 class Perspectives(BaseModel):
-    editors: List[Editor] = Field(
+    editors: list[Editor] = Field(
         description="Comprehensive list of editors with their roles and affiliations.",
         # Add a pydantic validation/restriction to be at most M editors
     )

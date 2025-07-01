@@ -1,6 +1,6 @@
-from haive.core.tools.search_tools import tavily_search_tool
-from langchain_core.tools import tool
 from haive.core.tools.search_tools import tavily_search
+from langchain_core.tools import tool
+
 
 @tool
 async def search_engine(query: str):

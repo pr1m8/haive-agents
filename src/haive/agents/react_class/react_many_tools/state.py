@@ -1,22 +1,22 @@
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional, Union, Literal
-from langchain_core.messages import BaseMessage
-from typing import Annotated, Sequence
-from agents.react.react.state import ReactAgentState  
+from typing import Any
+
+from agents.react.react.state import ReactAgentState
+from pydantic import Field
+
 
 class ReactManyToolsState(ReactAgentState):
-    """
-    State for React Agent with many tools.
-    
+    """State for React Agent with many tools.
+
     Adds fields for tool selection, filtering, and document retrieval.
     """
+
     # Add fields specific to many tools
-    tool_filter_query: Optional[str] = None
-    filtered_tools: List[str] = Field(default_factory=list)
-    tool_categories: Dict[str, List[str]] = Field(default_factory=dict)
-    current_tool_category: Optional[str] = None
-    
+    tool_filter_query: str | None = None
+    filtered_tools: list[str] = Field(default_factory=list)
+    tool_categories: dict[str, list[str]] = Field(default_factory=dict)
+    current_tool_category: str | None = None
+
     # RAG integration fields
-    query: Optional[str] = None
-    retrieved_documents: List[Dict[str, Any]] = Field(default_factory=list)
-    retrieval_metadata: Dict[str, Any] = Field(default_factory=dict)
+    query: str | None = None
+    retrieved_documents: list[dict[str, Any]] = Field(default_factory=list)
+    retrieval_metadata: dict[str, Any] = Field(default_factory=dict)

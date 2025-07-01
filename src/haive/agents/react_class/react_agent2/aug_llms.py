@@ -1,6 +1,7 @@
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.agents.react_class.react_agent2.models import Thought
 from langchain_core.prompts import ChatPromptTemplate
+
+from haive.agents.react_class.react_agent2.models import Thought
 
 REACT_SYSTEM_PROMPT = """
 You are an AI assistant that follows the ReAct framework:
@@ -31,15 +32,18 @@ Thought: <your final reasoning>
 Action: final_answer
 Action Input: <your final answer>
 """
-think_prompt = ChatPromptTemplate.from_messages([
-    ("system", REACT_SYSTEM_PROMPT),
-    #("human", "{input}"),
-    ("placeholder", "{messages}"),
-    ("placeholder", "{steps}")  # ✅ Corrected: Use "user" instead of "steps"
-    ])
+think_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", REACT_SYSTEM_PROMPT),
+        # ("human", "{input}"),
+        ("placeholder", "{messages}"),
+        ("placeholder", "{steps}"),  # ✅ Corrected: Use "user" instead of "steps"
+    ]
+)
 
 think_llm = AugLLMConfig(
-        name="think_llm",
-        #llm_config=llm_config,
-        prompt_template=think_prompt,
-        structured_output_model=Thought,)
+    name="think_llm",
+    # llm_config=llm_config,
+    prompt_template=think_prompt,
+    structured_output_model=Thought,
+)
