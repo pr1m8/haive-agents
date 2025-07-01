@@ -5,7 +5,7 @@ particularly focused on runnable config and recursion limit issues.
 """
 
 import logging
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from langchain_core.runnables import RunnableConfig
 from rich.console import Console
@@ -53,7 +53,7 @@ class AgentDebugger:
         # Top level items
         for key, value in config.items():
             if key == "configurable":
-                configurable_tree = tree.add(f"[yellow]configurable[/yellow]")
+                configurable_tree = tree.add("[yellow]configurable[/yellow]")
                 for config_key, config_value in value.items():
                     if config_key == "recursion_limit":
                         color = "green" if config_value and config_value > 0 else "red"
@@ -68,7 +68,7 @@ class AgentDebugger:
                         )
                     elif config_key == "engine_configs":
                         engine_tree = configurable_tree.add(
-                            f"[magenta]engine_configs[/magenta]"
+                            "[magenta]engine_configs[/magenta]"
                         )
                         if isinstance(config_value, dict):
                             for engine_id, engine_config in config_value.items():
@@ -121,10 +121,10 @@ class AgentDebugger:
 
     def log_config_preparation(
         self,
-        base_config: Optional[RunnableConfig],
+        base_config: RunnableConfig | None,
         runtime_config: RunnableConfig,
-        thread_id: Optional[str],
-        kwargs: Dict[str, Any],
+        thread_id: str | None,
+        kwargs: dict[str, Any],
     ):
         """Log the config preparation process."""
         if not self.enabled:
@@ -195,7 +195,7 @@ class AgentDebugger:
         kwargs_keys = ", ".join(
             [
                 k
-                for k in kwargs.keys()
+                for k in kwargs
                 if k not in ["recursion_limit", "thread_id", "debug", "config"]
             ]
         )
@@ -240,7 +240,7 @@ class AgentDebugger:
 
 
 # Global debugger instance
-_global_debugger: Optional[AgentDebugger] = None
+_global_debugger: AgentDebugger | None = None
 
 
 def get_agent_debugger(agent_name: str = "Agent") -> AgentDebugger:

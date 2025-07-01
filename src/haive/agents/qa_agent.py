@@ -2,7 +2,6 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from pydantic import BaseModel, Field
 
-from haive.agents.base import Agent, register_agent
 from haive.agents.simple.agent import SimpleAgentConfig
 
 qa_system_prompt = """
@@ -52,24 +51,21 @@ You are a highly intelligent AI assistant specializing in **retrieval-augmented 
   }}
 ]
 """
-from typing import Annotated, Any, Dict, List, Union
+from typing import Annotated, Any
 
 from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage
 from langchain_core.prompts import ChatPromptTemplate
-from pydantic import Field
 
 # Define the union type for contents
 ContentType = Annotated[
-    Union[
-        str,  # Plain text string
-        List[str],  # List of strings
-        Document,  # Single Document object
-        List[Document],  # List of Document objects
-        BaseMessage,  # Single message
-        List[BaseMessage],  # List of messages
-        Dict[str, Any],  # Dictionary (could be any structured data)
-    ],
+    str
+    | list[str]
+    | Document
+    | list[Document]
+    | BaseMessage
+    | list[BaseMessage]
+    | dict[str, Any],
     Field(
         description="Content to extract QA pairs from. Can be text, documents, messages, or structured data."
     ),
@@ -85,20 +81,16 @@ qa_prompt_template.input_types = {"contents": ContentType}
 
 
 class QA(BaseModel):
-    """
-    A question and answer pair.
-    """
+    """A question and answer pair."""
 
     question: str = Field(description="The question that was asked.")
     answer: str = Field(description="The answer to the question.")
 
 
 class QAs(BaseModel):
-    """
-    A list of question and answer pairs.
-    """
+    """A list of question and answer pairs."""
 
-    qas: List[QA] = Field(description="A list of question and answer pairs.")
+    qas: list[QA] = Field(description="A list of question and answer pairs.")
 
 
 qa_aug_llm_config = AugLLMConfig(
@@ -107,7 +99,6 @@ qa_aug_llm_config = AugLLMConfig(
     prompt_template=qa_prompt_template,
     # system_prompt=qa_system_prompt
 )
-from haive.agents.simple.agent import SimpleAgent
 
 qa_agent_config = SimpleAgentConfig.from_aug_llm(aug_llm=qa_aug_llm_config)
 qa_agent = qa_agent_config.build_agent()

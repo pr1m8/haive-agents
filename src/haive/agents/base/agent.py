@@ -1,7 +1,6 @@
 # haive/core/engine/agent/base.py
 
-"""
-Base Agent class for the Haive framework.
+"""Base Agent class for the Haive framework.
 
 This module provides the abstract base agent class that all agents inherit from,
 including execution, state management, and persistence functionality through mixins.
@@ -10,15 +9,12 @@ including execution, state management, and persistence functionality through mix
 import logging
 import re
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Literal, Optional, Tuple, Type, Union
+from typing import Any, Literal
 
-from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.base import Engine, EngineType, InvokableEngine
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.persistence.handlers import setup_checkpointer
 from haive.core.schema.schema_composer import SchemaComposer
 from haive.core.schema.state_schema import StateSchema
-from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
 from pydantic import BaseModel, Field, PrivateAttr, create_model, model_validator
@@ -29,6 +25,7 @@ from rich.tree import Tree
 
 # Import mixins
 from haive.agents.base.mixins.execution_mixin import ExecutionMixin
+from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
 
@@ -48,6 +45,7 @@ class Agent(
     InvokableEngine[BaseModel, BaseModel],
     ExecutionMixin,
     StateMixin,
+    PersistenceMixin,
     SerializationMixin,
     ABC,
 ):
@@ -116,32 +114,32 @@ class Agent(
     )
 
     # Engine management
-    engines: Dict[str, Engine] = Field(
+    engines: dict[str, Engine] = Field(
         default_factory=dict, description="Dictionary of engines this agent uses"
     )
 
-    engine: Optional[Engine] = Field(
+    engine: Engine | None = Field(
         default=None, description="Main/default engine for this agent"
     )
 
     # Graph state - will be built after setup
-    graph: Optional[BaseGraph] = Field(
+    graph: BaseGraph | None = Field(
         default=None,
         exclude=True,
         description="The workflow graph (excluded from serialization)",
     )
 
     # Schema definitions
-    state_schema: Optional[
-        Union[Type[StateSchema], Type[BaseModel], Dict[str, Any]]
-    ] = Field(default=None, description="Schema for agent state")
-    input_schema: Optional[Union[Type[BaseModel], Dict[str, Any]]] = Field(
+    state_schema: type[StateSchema] | type[BaseModel] | dict[str, Any] | None = Field(
+        default=None, description="Schema for agent state"
+    )
+    input_schema: type[BaseModel] | dict[str, Any] | None = Field(
         default=None, description="Schema for agent input"
     )
-    output_schema: Optional[Union[Type[BaseModel], Dict[str, Any]]] = Field(
+    output_schema: type[BaseModel] | dict[str, Any] | None = Field(
         default=None, description="Schema for agent output"
     )
-    config_schema: Optional[Union[Type[BaseModel], Dict[str, Any]]] = Field(
+    config_schema: type[BaseModel] | dict[str, Any] | None = Field(
         default=None, description="Schema for agent configuration"
     )
 
@@ -151,34 +149,48 @@ class Agent(
         exclude=True,
         description="Persistence checkpointer (excluded from serialization)",
     )
-    store: Optional[Any] = Field(
+    store: Any | None = Field(
         default=None,
         exclude=True,
         description="Optional state store (excluded from serialization)",
     )
 
-    # Configuration reference (non-serialized)
-    config: Optional[AgentConfig] = Field(
-        default=None,
-        exclude=True,
-        description="Reference to AgentConfig (excluded from serialization)",
+    # Persistence Configuration - these fields ARE serializable
+    persistence: Any | None = Field(
+        default=None, description="Persistence configuration for state checkpointing"
+    )
+
+    checkpoint_mode: Literal["sync", "async"] = Field(
+        default="sync", description="Checkpoint mode for persistence"
+    )
+
+    add_store: bool = Field(
+        default=True,
+        description="Whether to add a state store for cross-thread persistence",
     )
 
     # Runtime configuration
-    runnable_config: Optional[RunnableConfig] = Field(
+    runnable_config: RunnableConfig | None = Field(
         default=None, description="Default runtime configuration"
     )
 
     # Verbosity for debugging
     verbose: bool = Field(default=False, description="Enable verbose logging")
 
+    # Debug and history flags
+    debug: bool = Field(default=False, description="Enable debug mode")
+    save_history: bool = Field(default=True, description="Save state history")
+    visualize: bool = Field(default=True, description="Enable visualization")
+
     # Private state tracking
     _graph_built: bool = PrivateAttr(default=False)
-    _compiled_graph: Optional[CompiledGraph] = PrivateAttr(default=None)
+    _compiled_graph: CompiledGraph | None = PrivateAttr(default=None)
     _is_compiled: bool = PrivateAttr(default=False)
     _setup_complete: bool = PrivateAttr(default=False)
     _checkpoint_mode: str = PrivateAttr(default="sync")
-    _app: Optional[Any] = PrivateAttr(default=None)
+    _app: Any | None = PrivateAttr(default=None)
+    _async_checkpointer: Any | None = PrivateAttr(default=None)
+    _async_setup_pending: bool = PrivateAttr(default=False)
 
     # Schema control flag
     set_schema: Literal[True, False] = Field(
@@ -187,9 +199,8 @@ class Agent(
 
     @model_validator(mode="before")
     @classmethod
-    def normalize_engines_and_name(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        STEP 1: Normalize engines dict and auto-generate name.
+    def normalize_engines_and_name(cls, values: dict[str, Any]) -> dict[str, Any]:
+        """STEP 1: Normalize engines dict and auto-generate name.
 
         This validator:
         - Auto-generates agent name from class name if not provided
@@ -244,8 +255,7 @@ class Agent(
 
     @model_validator(mode="after")
     def complete_agent_setup(self) -> "Agent":
-        """
-        STEP 2-5: Complete agent setup in proper order.
+        """STEP 2-5: Complete agent setup in proper order.
 
         This validator handles the main initialization sequence:
         2. Call subclass setup hook for field syncing
@@ -260,8 +270,8 @@ class Agent(
             # STEP 3: Generate schemas from engines
             self._setup_schemas()
 
-            # STEP 4: Setup persistence
-            self._setup_persistence()
+            # STEP 4: Setup persistence using the new mixin
+            self._setup_persistence_from_config()
 
             # STEP 5: Build the initial graph
             self._build_initial_graph()
@@ -292,8 +302,7 @@ class Agent(
 
     @model_validator(mode="after")
     def ensure_basic_schema(self) -> "Agent":
-        """
-        Ensure we always have at least a basic state schema.
+        """Ensure we always have at least a basic state schema.
 
         This provides a fallback schema with messages field if no schema is defined.
         """
@@ -308,7 +317,6 @@ class Agent(
                 self.state_schema = MessagesState
             except ImportError:
                 # Create a very basic state schema as last resort
-                from typing import List
 
                 from langchain_core.messages import BaseMessage
                 from pydantic import BaseModel
@@ -316,7 +324,7 @@ class Agent(
                 class BasicMessagesState(BaseModel):
                     """Fallback state schema with messages field."""
 
-                    messages: List[BaseMessage] = []
+                    messages: list[BaseMessage] = []
 
                 self.state_schema = BasicMessagesState
                 logger.debug(f"Created BasicMessagesState fallback for {self.name}")
@@ -324,8 +332,7 @@ class Agent(
         return self
 
     def setup_agent(self) -> None:
-        """
-        Hook for subclasses to perform field syncing and custom setup.
+        """Hook for subclasses to perform field syncing and custom setup.
 
         This method is called BEFORE schema generation and graph building,
         allowing subclasses to sync fields to engines properly.
@@ -340,60 +347,14 @@ class Agent(
                 # Add engines to registry
                 self.engines["main"] = self.engine
         """
-        pass  # Default implementation does nothing
+        # Default implementation does nothing
 
-    def _setup_persistence(self) -> None:
-        """
-        Set up persistence with checkpointer and store.
-
-        This method:
-        - Sets up the checkpointer based on config
-        - Configures checkpoint mode (sync/async)
-        - Optionally adds a state store
-        """
-        # Setup checkpointer based on config
-        if hasattr(self, "config") and self.config:
-            # Get checkpoint mode from config
-            self._checkpoint_mode = getattr(self.config, "checkpoint_mode", "sync")
-
-            # Setup checkpointer using the handler
-            self.checkpointer = setup_checkpointer(self.config)
-            logger.debug(
-                f"Checkpointer set up for {self.name}: {type(self.checkpointer).__name__}"
-            )
-
-            # Set default runnable config from config if not already set
-            if not self.runnable_config and hasattr(self.config, "runnable_config"):
-                self.runnable_config = self.config.runnable_config
-
-            # Add store if configured
-            self.store = None
-            if getattr(self.config, "add_store", False):
-                try:
-                    from langgraph.store.base import BaseStore
-
-                    self.store = BaseStore()
-                    logger.debug("BaseStore added to agent")
-                except ImportError:
-                    logger.warning(
-                        "Could not import BaseStore, store functionality disabled"
-                    )
-        else:
-            # No config - use memory checkpointer as fallback
-            try:
-                from langgraph.checkpoint.memory import MemorySaver
-
-                self.checkpointer = MemorySaver()
-                self.store = None
-                logger.debug(f"Using fallback MemorySaver for {self.name}")
-            except ImportError:
-                logger.error("Could not import MemorySaver, persistence disabled")
-                self.checkpointer = None
-                self.store = None
+    async def _asetup_persistence(self) -> None:
+        """Set up asynchronous persistence using the PersistenceMixin."""
+        await self._asetup_persistence_from_fields()
 
     def _setup_schemas(self) -> None:
-        """
-        Generate schemas from available engines with intelligent defaults.
+        """Generate schemas from available engines with intelligent defaults.
 
         This method:
         1. Always generates a state schema from engines
@@ -411,7 +372,7 @@ class Agent(
         for name, component in self.engines.items():
             if isinstance(component, str):  # Skip string references
                 continue
-            elif isinstance(component, Agent):
+            if isinstance(component, Agent):
                 # It's a sub-agent
                 agent_list.append(component)
             else:
@@ -424,7 +385,7 @@ class Agent(
         )
 
         try:
-            # Generate state schema using enhanced SchemaComposer
+            # Generate state schema
             if not self.state_schema:
                 if agent_list:
                     # Use AgentSchemaComposer for agents
@@ -444,32 +405,21 @@ class Agent(
                         logger.warning(
                             "AgentSchemaComposer not available, using regular composer"
                         )
-                        # Use the classmethod from_components for proper schema creation
+                        # Fall back to regular composer
                         self.state_schema = SchemaComposer.from_components(
                             components=engine_list,
                             name=f"{self.__class__.__name__}State",
                         )
                 elif engine_list:
-                    # Use enhanced SchemaComposer for engines with tool routing
+                    # Use SchemaComposer for engines
                     logger.debug(f"Creating schema from {len(engine_list)} engines")
-
-                    # Use the classmethod from_components for proper schema creation
                     self.state_schema = SchemaComposer.from_components(
                         components=engine_list, name=f"{self.__class__.__name__}State"
                     )
 
                     logger.debug(
-                        f"Built schema with enhanced tool synchronization: "
-                        f"{getattr(self.state_schema, '__name__', 'Unknown')}"
+                        f"Built schema: {getattr(self.state_schema, '__name__', 'Unknown')}"
                     )
-
-                    # Log engines stored on schema class
-                    if hasattr(self.state_schema, "engines"):
-                        schema_engines = getattr(self.state_schema, "engines", {})
-                        logger.debug(
-                            f"Schema has {len(schema_engines)} class-level engines: "
-                            f"{list(schema_engines.keys())}"
-                        )
                 else:
                     logger.debug(
                         "No engines or agents found, creating basic message state"
@@ -477,8 +427,7 @@ class Agent(
                     # Create basic message state
                     self._create_basic_message_state()
 
-            # AUTOMATIC INPUT/OUTPUT SCHEMA DERIVATION
-            # Always derive if not explicitly provided
+            # Automatically derive input/output schemas if not provided
             self._auto_derive_io_schemas()
 
             logger.debug(f"Schema setup complete. State schema: {self.state_schema}")
@@ -492,8 +441,7 @@ class Agent(
                 self._create_basic_message_state()
 
     def _auto_derive_io_schemas(self) -> None:
-        """
-        Automatically derive input and output schemas with intelligent defaults.
+        """Automatically derive input and output schemas with intelligent defaults.
 
         This method:
         1. Derives input schema from state schema or first engine
@@ -532,13 +480,12 @@ class Agent(
 
             # Final fallback - messages input
             if not self.input_schema:
-                from typing import List
 
                 from langchain_core.messages import BaseMessage
 
                 self.input_schema = create_model(
                     f"{self.name}Input",
-                    messages=(List[BaseMessage], Field(default_factory=list)),
+                    messages=(list[BaseMessage], Field(default_factory=list)),
                 )
                 logger.debug("Using default messages-based input schema")
 
@@ -652,14 +599,13 @@ class Agent(
                                     return
 
                                 # Otherwise just use messages
-                                from typing import List
 
                                 from langchain_core.messages import BaseMessage
 
                                 self.output_schema = create_model(
                                     f"{self.name}Output",
                                     messages=(
-                                        List[BaseMessage],
+                                        list[BaseMessage],
                                         Field(default_factory=list),
                                     ),
                                 )
@@ -667,13 +613,12 @@ class Agent(
                                     "Using messages output schema to avoid exposing full state"
                                 )
                                 return
-                            else:
-                                # Small number of fields, use them all
-                                self.output_schema = create_model(
-                                    f"{self.name}Output", **fields
-                                )
-                                logger.debug("Created output schema from engine fields")
-                                return
+                            # Small number of fields, use them all
+                            self.output_schema = create_model(
+                                f"{self.name}Output", **fields
+                            )
+                            logger.debug("Created output schema from engine fields")
+                            return
                     except Exception as e:
                         logger.debug(f"Could not derive output schema from engine: {e}")
 
@@ -692,13 +637,12 @@ class Agent(
 
             # Final fallback - messages output
             if not self.output_schema:
-                from typing import List
 
                 from langchain_core.messages import BaseMessage
 
                 self.output_schema = create_model(
                     f"{self.name}Output",
-                    messages=(List[BaseMessage], Field(default_factory=list)),
+                    messages=(list[BaseMessage], Field(default_factory=list)),
                 )
                 logger.debug("Using default messages-based output schema")
 
@@ -711,7 +655,6 @@ class Agent(
             logger.debug("Using MessagesState fallback")
         except ImportError:
             # Create basic state schema
-            from typing import List
 
             from langchain_core.messages import BaseMessage
             from pydantic import BaseModel
@@ -719,14 +662,13 @@ class Agent(
             class FallbackMessagesState(BaseModel):
                 """Fallback state schema with messages field."""
 
-                messages: List[BaseMessage] = []
+                messages: list[BaseMessage] = []
 
             self.state_schema = FallbackMessagesState
             logger.debug("Using FallbackMessagesState")
 
     def _build_initial_graph(self) -> None:
-        """
-        Build the initial graph.
+        """Build the initial graph.
 
         This calls the abstract build_graph method that must be implemented by subclasses.
         """
@@ -744,9 +686,8 @@ class Agent(
     # ENGINE INTERFACE IMPLEMENTATION
     # ============================================================================
 
-    def get_input_fields(self) -> Dict[str, Tuple[Type, Any]]:
-        """
-        Return input field definitions as field_name -> (type, default) pairs.
+    def get_input_fields(self) -> dict[str, tuple[type, Any]]:
+        """Return input field definitions as field_name -> (type, default) pairs.
 
         This implements the abstract method from Engine base class.
         """
@@ -768,9 +709,8 @@ class Agent(
         # Fallback - return empty to avoid exposing internal state
         return {}
 
-    def get_output_fields(self) -> Dict[str, Tuple[Type, Any]]:
-        """
-        Return output field definitions as field_name -> (type, default) pairs.
+    def get_output_fields(self) -> dict[str, tuple[type, Any]]:
+        """Return output field definitions as field_name -> (type, default) pairs.
 
         This implements the abstract method from Engine base class.
         """
@@ -793,10 +733,9 @@ class Agent(
         return {}
 
     def create_runnable(
-        self, runnable_config: Optional[Dict[str, Any]] = None
+        self, runnable_config: dict[str, Any] | None = None
     ) -> CompiledGraph:
-        """
-        Create and compile the runnable with proper schema kwargs.
+        """Create and compile the runnable with proper schema kwargs.
 
         This implements the abstract method from Engine base class.
         """
@@ -874,7 +813,7 @@ class Agent(
     # ============================================================================
 
     @property
-    def main_engine(self) -> Optional[Engine]:
+    def main_engine(self) -> Engine | None:
         """Get the main engine (prioritize engine field, then first in engines dict)."""
         if self.engine:
             return self.engine
@@ -897,8 +836,7 @@ class Agent(
 
     @abstractmethod
     def build_graph(self) -> BaseGraph:
-        """
-        Abstract method to build the agent's graph.
+        """Abstract method to build the agent's graph.
 
         This is called after field syncing and schema generation.
         Must be implemented by all concrete agent classes.
@@ -932,8 +870,7 @@ class Agent(
         self._setup_schemas()
 
     def compile(self, **kwargs) -> CompiledGraph:
-        """
-        Compile the graph and cache the result.
+        """Compile the graph and cache the result.
 
         Args:
             **kwargs: Additional compilation arguments
@@ -949,6 +886,11 @@ class Agent(
 
             if not self.graph:
                 raise RuntimeError("Graph not built")
+
+            # Ensure persistence is set up if not already done
+            if not hasattr(self, "checkpointer") or self.checkpointer is None:
+                logger.debug("Setting up persistence before compilation")
+                self._setup_persistence()
 
             # Make sure checkpointer tables are set up if needed
             if self.checkpointer and hasattr(self.checkpointer, "setup"):
@@ -990,9 +932,7 @@ class Agent(
             # Convert BaseGraph to LangGraph StateGraph
             try:
                 langgraph_graph = self.graph.to_langgraph(**schema_kwargs)
-                logger.debug(
-                    f"Successfully converted BaseGraph to LangGraph StateGraph"
-                )
+                logger.debug("Successfully converted BaseGraph to LangGraph StateGraph")
             except Exception as e:
                 logger.error(f"Failed to convert BaseGraph to LangGraph: {e}")
                 raise
@@ -1026,9 +966,8 @@ class Agent(
     # ENGINE INVOCATION INTERFACE
     # ============================================================================
 
-    def invoke(self, input_data: Any, config: Optional[RunnableConfig] = None) -> Any:
-        """
-        Invoke the agent using ExecutionMixin's run method.
+    def invoke(self, input_data: Any, config: RunnableConfig | None = None) -> Any:
+        """Invoke the agent using ExecutionMixin's run method.
 
         This implements the Engine interface's invoke method.
 
@@ -1042,10 +981,9 @@ class Agent(
         return self.run(input_data, config=config)
 
     async def ainvoke(
-        self, input_data: Any, config: Optional[Dict[str, Any]] = None
+        self, input_data: Any, config: dict[str, Any] | None = None
     ) -> Any:
-        """
-        Async invoke the agent using ExecutionMixin's arun method.
+        """Async invoke the agent using ExecutionMixin's arun method.
 
         This implements the Engine interface's ainvoke method.
 
@@ -1069,9 +1007,8 @@ class Agent(
         engine_type = type(main_engine).__name__ if main_engine else "None"
         return f"{self.__class__.__name__}(name='{self.name}', engines={engine_count}, main_engine={engine_type})"
 
-    def get_all_tools(self) -> List[Any]:
-        """
-        Collect all tools from all engines and state schema.
+    def get_all_tools(self) -> list[Any]:
+        """Collect all tools from all engines and state schema.
 
         Returns:
             List of all tools available across all engines and state schema
@@ -1119,9 +1056,8 @@ class Agent(
         )
         return unique_tools
 
-    def get_all_tool_schemas(self) -> List[Any]:
-        """
-        Collect all tool schemas from engines for validation.
+    def get_all_tool_schemas(self) -> list[Any]:
+        """Collect all tool schemas from engines for validation.
 
         Returns:
             List of tool schemas/classes for validation
@@ -1146,9 +1082,8 @@ class Agent(
         logger.debug(f"Agent {self.name} collected {len(schemas)} tool schemas")
         return schemas
 
-    def visualize_graph(self, output_path: Optional[str] = None) -> None:
-        """
-        Generate and save a visualization of the agent's graph.
+    def visualize_graph(self, output_path: str | None = None) -> None:
+        """Generate and save a visualization of the agent's graph.
 
         Args:
             output_path: Optional custom path for visualization output
@@ -1184,9 +1119,8 @@ class Agent(
     # ENGINE ACCESS METHODS (StateSchema-compatible interface)
     # ============================================================================
 
-    def get_class_engine(self, name: str) -> Optional[Engine]:
-        """
-        Get a class-level engine by name from the state schema.
+    def get_class_engine(self, name: str) -> Engine | None:
+        """Get a class-level engine by name from the state schema.
 
         Args:
             name: Name of the engine to retrieve
@@ -1198,9 +1132,8 @@ class Agent(
             return self.state_schema.get_class_engine(name)
         return None
 
-    def get_all_class_engines(self) -> Dict[str, Engine]:
-        """
-        Get all class-level engines from the state schema.
+    def get_all_class_engines(self) -> dict[str, Engine]:
+        """Get all class-level engines from the state schema.
 
         Returns:
             Dictionary of all engines
@@ -1209,9 +1142,8 @@ class Agent(
             return self.state_schema.get_all_class_engines()
         return {}
 
-    def get_instance_engine(self, name: str) -> Optional[Engine]:
-        """
-        Get an engine from instance or class level (via state schema).
+    def get_instance_engine(self, name: str) -> Engine | None:
+        """Get an engine from instance or class level (via state schema).
 
         Args:
             name: Name of the engine to retrieve
@@ -1233,9 +1165,8 @@ class Agent(
 
         return None
 
-    def get_all_instance_engines(self) -> Dict[str, Engine]:
-        """
-        Get all engines from both instance and class level.
+    def get_all_instance_engines(self) -> dict[str, Engine]:
+        """Get all engines from both instance and class level.
 
         Returns:
             Dictionary mapping engine names to engine instances
@@ -1256,8 +1187,7 @@ class Agent(
         return engines
 
     def has_engine(self, name: str) -> bool:
-        """
-        Check if an engine exists in this agent.
+        """Check if an engine exists in this agent.
 
         Args:
             name: Name of the engine to check
@@ -1270,11 +1200,10 @@ class Agent(
     def add_tool_to_state(
         self,
         tool: Any,
-        route: Optional[str] = None,
-        target_engine: Optional[str] = None,
+        route: str | None = None,
+        target_engine: str | None = None,
     ) -> None:
-        """
-        Add a tool to the agent's state schema if it supports tools.
+        """Add a tool to the agent's state schema if it supports tools.
 
         Args:
             tool: Tool to add
@@ -1303,9 +1232,8 @@ class Agent(
             except Exception as e:
                 logger.error(f"Failed to add tool to state: {e}")
 
-    def configure_engine_routes(self, engine_type: str, routes: List[str]) -> None:
-        """
-        Configure which tool routes an engine type should accept in the state schema.
+    def configure_engine_routes(self, engine_type: str, routes: list[str]) -> None:
+        """Configure which tool routes an engine type should accept in the state schema.
 
         Args:
             engine_type: The engine type (e.g., 'llm', 'retriever', etc.)
@@ -1329,9 +1257,8 @@ class Agent(
             except Exception as e:
                 logger.error(f"Failed to configure engine routes: {e}")
 
-    def get_state_tools(self) -> List[Any]:
-        """
-        Get all tools from the state schema if it supports tools.
+    def get_state_tools(self) -> list[Any]:
+        """Get all tools from the state schema if it supports tools.
 
         Returns:
             List of tools from the state schema, empty list if not supported
@@ -1350,9 +1277,7 @@ class Agent(
         return []
 
     def sync_tools_to_engines(self) -> None:
-        """
-        Manually trigger tool synchronization to engines in the state schema.
-        """
+        """Manually trigger tool synchronization to engines in the state schema."""
         if self.state_schema:
             try:
                 # Create a temporary state instance
@@ -1369,9 +1294,8 @@ class Agent(
             except Exception as e:
                 logger.error(f"Failed to sync tools to engines: {e}")
 
-    def get_schema_info(self) -> Dict[str, Any]:
-        """
-        Get comprehensive information about the agent's schema system.
+    def get_schema_info(self) -> dict[str, Any]:
+        """Get comprehensive information about the agent's schema system.
 
         Returns:
             Dictionary containing schema information including engines, tools, and capabilities
@@ -1451,9 +1375,7 @@ class Agent(
         return info
 
     def display_schema_info(self) -> None:
-        """
-        Display comprehensive information about the agent's schema system using rich formatting.
-        """
+        """Display comprehensive information about the agent's schema system using rich formatting."""
         info = self.get_schema_info()
 
         # Create a table for schema information
@@ -1504,10 +1426,9 @@ class Agent(
                 logger.info(engine_tree)
 
     def derive_input_schema(
-        self, engine_name: Optional[str] = None, name: Optional[str] = None
-    ) -> Optional[Type[BaseModel]]:
-        """
-        Derive input schema from the agent's state schema.
+        self, engine_name: str | None = None, name: str | None = None
+    ) -> type[BaseModel] | None:
+        """Derive input schema from the agent's state schema.
 
         Args:
             engine_name: Optional name of the engine to target (default: all inputs)
@@ -1537,10 +1458,9 @@ class Agent(
             return None
 
     def derive_output_schema(
-        self, engine_name: Optional[str] = None, name: Optional[str] = None
-    ) -> Optional[Type[BaseModel]]:
-        """
-        Derive output schema from the agent's state schema.
+        self, engine_name: str | None = None, name: str | None = None
+    ) -> type[BaseModel] | None:
+        """Derive output schema from the agent's state schema.
 
         Args:
             engine_name: Optional name of the engine to target (default: all outputs)
@@ -1570,8 +1490,7 @@ class Agent(
             return None
 
     def auto_derive_schemas(self) -> None:
-        """
-        Automatically derive and set input and output schemas from the state schema.
+        """Automatically derive and set input and output schemas from the state schema.
 
         This convenience method will derive input and output schemas from the state schema
         and set them on the agent if they haven't been explicitly set.
@@ -1589,9 +1508,8 @@ class Agent(
                 self.output_schema = derived_output
                 logger.debug(f"Auto-derived output schema: {derived_output.__name__}")
 
-    def get_derived_schemas(self) -> Dict[str, Optional[Type[BaseModel]]]:
-        """
-        Get all derived schemas (input and output) from the state schema.
+    def get_derived_schemas(self) -> dict[str, type[BaseModel] | None]:
+        """Get all derived schemas (input and output) from the state schema.
 
         Returns:
             Dictionary containing derived input and output schemas

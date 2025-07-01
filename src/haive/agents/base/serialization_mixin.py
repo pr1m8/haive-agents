@@ -1,19 +1,17 @@
-"""
-Serialization mixin for Agent classes.
+"""Serialization mixin for Agent classes.
 
 This mixin provides proper serialization support for Agent instances in LangGraph,
 handling both pickle and msgpack serialization formats.
 """
 
 import logging
-from typing import Any, Dict, Tuple
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
 class SerializationMixin:
-    """
-    Mixin for serializing and deserializing Agent instances.
+    """Mixin for serializing and deserializing Agent instances.
 
     This mixin provides methods for handling serialization with both pickle and
     msgpack, focusing on addressing the specific needs of agents within LangGraph.
@@ -22,9 +20,8 @@ class SerializationMixin:
     This mixin ensures agents can be properly serialized without errors.
     """
 
-    def __getstate__(self) -> Dict[str, Any]:
-        """
-        Prepare instance for pickling.
+    def __getstate__(self) -> dict[str, Any]:
+        """Prepare instance for pickling.
 
         Excludes non-serializable components like graph, compiled_graph,
         checkpointer, store, etc. and handles complex type objects.
@@ -74,9 +71,8 @@ class SerializationMixin:
 
         return state
 
-    def __setstate__(self, state: Dict[str, Any]) -> None:
-        """
-        Reconstruct instance after unpickling.
+    def __setstate__(self, state: dict[str, Any]) -> None:
+        """Reconstruct instance after unpickling.
 
         Handles reconstruction of the state dictionary, rebuilding special fields
         like schemas and structured output models.
@@ -93,9 +89,8 @@ class SerializationMixin:
         # Schema restoration is typically handled by the invoke method
         # which will call setup_schemas() when needed
 
-    def __reduce__(self) -> Tuple:
-        """
-        Make agent picklable for both pickle and msgpack.
+    def __reduce__(self) -> tuple:
+        """Make agent picklable for both pickle and msgpack.
 
         This special method enables proper serialization with both pickle and msgpack.
         We return a tuple of (constructor, args, state) that can be used to reconstruct
@@ -110,9 +105,8 @@ class SerializationMixin:
         # Return the class and empty args along with state
         return (self.__class__, (), state)
 
-    def _serialize_for_msgpack(self) -> Dict[str, Any]:
-        """
-        Create a msgpack-serializable representation of this object.
+    def _serialize_for_msgpack(self) -> dict[str, Any]:
+        """Create a msgpack-serializable representation of this object.
 
         This method is used for explicitly controlling what's serialized when
         msgpack is directly used (e.g., in checkpointing).
@@ -130,9 +124,8 @@ class SerializationMixin:
         return state
 
     @classmethod
-    def _deserialize_from_msgpack(cls, data: Dict[str, Any]) -> "SerializationMixin":
-        """
-        Reconstruct an agent from msgpack-serialized data.
+    def _deserialize_from_msgpack(cls, data: dict[str, Any]) -> "SerializationMixin":
+        """Reconstruct an agent from msgpack-serialized data.
 
         Args:
             data: Serialized data dictionary from _serialize_for_msgpack.

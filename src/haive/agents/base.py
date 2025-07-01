@@ -1,5 +1,3 @@
-from typing import Dict, List, Union
-
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document
@@ -8,19 +6,15 @@ from pydantic import BaseModel, Field
 
 
 class ContentsState(BaseModel):
-    """
-    The state of the document agent.
-    """
+    """The state of the document agent."""
 
-    documents: List[Union[Document, AnyMessage, Dict, str]] = Field(
+    documents: list[Document | AnyMessage | dict | str] = Field(
         default_factory=list, description="The documents to process."
     )
 
 
 class DocumentAgentConfig(AgentConfig):
-    """
-    The configuration for the document agent.
-    """
+    """The configuration for the document agent."""
 
     aug_llm_config: AugLLMConfig = Field(default=AugLLMConfig())
 
