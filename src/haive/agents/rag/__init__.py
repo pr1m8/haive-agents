@@ -118,7 +118,6 @@ from .adaptive.agent import AdaptiveRAGAgent
 # Base components
 from .base.agent import BaseRAGAgent
 from .corrective.agent_v2 import CorrectiveRAGAgentV2
-from .document_grading.agent import DocumentGradingAgent
 
 # Factories for composable workflows
 from .factories.compatible_rag_factory_simple import (
@@ -130,7 +129,7 @@ from .factories.compatible_rag_factory_simple import (
 )
 
 # Advanced RAG architectures
-from .fusion.agent import RAGFusionAgent, ReciprocalRankFusionAgent
+# from .fusion.agent import RAGFusionAgent, ReciprocalRankFusionAgent  # Temporarily disabled - missing rag_state
 from .hallucination_grading.agent import (
     AdvancedHallucinationGraderAgent,
     HallucinationGraderAgent,
@@ -154,6 +153,9 @@ from .simple.agent import SimpleRAGAgent
 from .speculative.agent import HypothesisGeneratorAgent, SpeculativeRAGAgent
 from .step_back.agent import StepBackQueryGeneratorAgent, StepBackRAGAgent
 
+# from .document_grading.agent import DocumentGradingAgent  # Temporarily disabled - missing callable_node
+
+
 # Temporarily disabled due to import issues
 # from .factories.rag_workflow_factory import RAGWorkflowFactory
 
@@ -164,7 +166,7 @@ __all__ = [
     "HyDERAGAgentV2",
     "MultiQueryRAGAgent",
     "AdaptiveRAGAgent",
-    "DocumentGradingAgent",
+    # "DocumentGradingAgent",  # Temporarily disabled - missing callable_node
     # Modular Hallucination Graders
     "HallucinationGraderAgent",
     "AdvancedHallucinationGraderAgent",
@@ -177,8 +179,8 @@ __all__ = [
     "AdaptiveQueryDecomposerAgent",
     "create_query_decomposer",
     # Advanced RAG Architectures
-    "RAGFusionAgent",
-    "ReciprocalRankFusionAgent",
+    # "RAGFusionAgent",  # Temporarily disabled - missing rag_state
+    # "ReciprocalRankFusionAgent",  # Temporarily disabled - missing rag_state
     "StepBackRAGAgent",
     "StepBackQueryGeneratorAgent",
     "SelfRouteRAGAgent",

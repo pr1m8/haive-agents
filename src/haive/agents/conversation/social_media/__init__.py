@@ -55,7 +55,6 @@ The social media conversation is particularly useful for:
 """
 
 from haive.agents.conversation.social_media.agent import SocialMediaConversation
-from haive.agents.conversation.social_media.models import Post, Reaction, Thread
 from haive.agents.conversation.social_media.state import SocialMediaState
 
-__all__ = ["Post", "Reaction", "SocialMediaConversation", "SocialMediaState", "Thread"]
+__all__ = ["SocialMediaConversation", "SocialMediaState"]

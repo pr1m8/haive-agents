@@ -29,7 +29,7 @@ from haive.core.logging.rich_logger import LogLevel, get_logger
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.graph import END, START
 from langgraph.types import Command
-from pydantic import Field, PrivateAttr
+from pydantic import Field, PrivateAttr, model_validator
 
 from haive.agents.base.agent import Agent
 from haive.agents.conversation.base.state import ConversationState
@@ -91,6 +91,103 @@ class BaseConversationAgent(Agent):
         default=100, description="Absolute maximum turns as safety limit"
     )
 
+    @model_validator(mode="before")
+    @classmethod
+    def convert_persistence_boolean(cls, values: dict[str, Any]) -> dict[str, Any]:
+        """Convert persistence=True to actual persistence configuration."""
+        if not isinstance(values, dict):
+            return values
+
+        # Check if persistence is a boolean True
+        if values.get("persistence") is True:
+            logger.info(
+                "Converting persistence=True to PostgreSQL persistence configuration"
+            )
+
+            try:
+                import os
+
+                from haive.core.persistence.postgres_config import (
+                    PostgresCheckpointerConfig,
+                )
+                from haive.core.persistence.types import (
+                    CheckpointerMode,
+                    CheckpointStorageMode,
+                )
+
+                # Use environment connection string if available (Supabase)
+                connection_string = os.getenv("POSTGRES_CONNECTION_STRING")
+
+                if connection_string:
+                    # Use Supabase/environment connection string
+                    # Create unique pool per conversation to avoid prepared statement conflicts
+                    conversation_id = getattr(
+                        values.get("agent"), "name", "conversation"
+                    )
+                    app_name = f"haive_{conversation_id}_{id(values)}"
+
+                    values["persistence"] = PostgresCheckpointerConfig(
+                        connection_string=connection_string,
+                        mode=CheckpointerMode.SYNC,
+                        storage_mode=CheckpointStorageMode.FULL,
+                        prepare_threshold=None,  # Disable prepared statements completely
+                        auto_commit=True,  # Ensure auto-commit is enabled
+                        min_pool_size=1,  # Minimal pool to reduce conflicts
+                        max_pool_size=3,  # Small pool for isolation
+                        connection_kwargs={
+                            "prepare_threshold": None,  # Extra explicit disable
+                            "application_name": app_name,  # Unique app name for identification
+                            "connect_timeout": 30,  # 30 second connection timeout
+                            "keepalives_idle": 600,  # Keep connection alive for 10 minutes
+                            "keepalives_interval": 30,  # Send keepalive every 30 seconds
+                            "keepalives_count": 3,  # 3 failed keepalives before disconnect
+                        },
+                    )
+                    logger.info(
+                        f"Set up PostgreSQL persistence for {app_name} (prepared statements disabled)"
+                    )
+                else:
+                    # Use default local PostgreSQL
+                    conversation_id = getattr(
+                        values.get("agent"), "name", "conversation"
+                    )
+                    app_name = f"haive_{conversation_id}_{id(values)}"
+
+                    values["persistence"] = PostgresCheckpointerConfig(
+                        mode=CheckpointerMode.SYNC,
+                        storage_mode=CheckpointStorageMode.FULL,
+                        prepare_threshold=None,  # Disable prepared statements completely
+                        auto_commit=True,  # Ensure auto-commit is enabled
+                        min_pool_size=1,  # Minimal pool to reduce conflicts
+                        max_pool_size=3,  # Small pool for isolation
+                        connection_kwargs={
+                            "prepare_threshold": None,  # Extra explicit disable
+                            "application_name": app_name,  # Unique app name for identification
+                            "connect_timeout": 30,  # 30 second connection timeout
+                            "keepalives_idle": 600,  # Keep connection alive for 10 minutes
+                            "keepalives_interval": 30,  # Send keepalive every 30 seconds
+                            "keepalives_count": 3,  # 3 failed keepalives before disconnect
+                        },
+                    )
+                    logger.info("Set up default PostgreSQL persistence")
+
+            except ImportError as e:
+                logger.warning(f"PostgreSQL dependencies not available: {e}")
+                # Fall back to memory persistence
+                try:
+                    from haive.core.persistence.memory import MemoryCheckpointerConfig
+
+                    values["persistence"] = MemoryCheckpointerConfig()
+                    logger.info("Using memory persistence fallback")
+                except ImportError:
+                    logger.error("Could not import MemoryCheckpointerConfig")
+                    values["persistence"] = None
+            except Exception as e:
+                logger.error(f"Error setting up persistence configuration: {e}")
+                values["persistence"] = None
+
+        return values
+
     def setup_agent(self):
         """Set up the conversation orchestrator.
 
@@ -99,6 +196,7 @@ class BaseConversationAgent(Agent):
         1. Configures the state schema for conversation tracking
         2. Creates a default orchestrator engine if none is provided
         3. Compiles all participant agents to ensure they're ready for execution
+        4. Sets up persistence if persistence=True was passed
 
         This method is called automatically during the agent's lifecycle and
         should rarely need to be called directly.

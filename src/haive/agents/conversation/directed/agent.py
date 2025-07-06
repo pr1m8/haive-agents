@@ -12,7 +12,7 @@ from langchain_core.messages import AIMessage, BaseMessage, SystemMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
-from haive.agents.conversation.directed.state import DirectedConversationState
+from haive.agents.conversation.directed.state import DirectedState
 
 logger = get_logger(__name__)
 logger.set_level(LogLevel.WARNING)
@@ -113,9 +113,9 @@ class DirectedConversation(BaseConversationAgent):
 
     def get_conversation_state_schema(self) -> type:
         """Use extended state schema."""
-        return DirectedConversationState
+        return DirectedState
 
-    def select_speaker(self, state: DirectedConversationState) -> dict[str, Any]:
+    def select_speaker(self, state: DirectedState) -> dict[str, Any]:
         """Select speaker based on mentions and context using structured models."""
         # Get structured selection result
         selection_result = self._get_speaker_selection(state)
@@ -138,9 +138,7 @@ class DirectedConversation(BaseConversationAgent):
 
         return update
 
-    def _get_speaker_selection(
-        self, state: DirectedConversationState
-    ) -> SpeakerSelectionResult:
+    def _get_speaker_selection(self, state: DirectedState) -> SpeakerSelectionResult:
         """Get structured speaker selection result."""
         # Check pending speakers first
         if state.pending_speakers:
@@ -195,7 +193,7 @@ class DirectedConversation(BaseConversationAgent):
         return self._select_least_active_structured(state)
 
     def _extract_structured_mentions(
-        self, state: DirectedConversationState
+        self, state: DirectedState
     ) -> list[SpeakerMention]:
         """Extract mentions as structured models."""
         if not state.messages:
@@ -292,7 +290,7 @@ class DirectedConversation(BaseConversationAgent):
         }
         return priorities.get(mention_type, 0)
 
-    def _get_last_speaker_name(self, state: DirectedConversationState) -> str | None:
+    def _get_last_speaker_name(self, state: DirectedState) -> str | None:
         """Get the name of the last speaker."""
         if not state.messages:
             return None
@@ -304,7 +302,7 @@ class DirectedConversation(BaseConversationAgent):
         return None
 
     def _select_round_robin_structured(
-        self, state: DirectedConversationState
+        self, state: DirectedState
     ) -> SpeakerSelectionResult:
         """Select next speaker using round-robin."""
         current_speaker = state.current_speaker
@@ -334,7 +332,7 @@ class DirectedConversation(BaseConversationAgent):
             )
 
     def _select_least_active_structured(
-        self, state: DirectedConversationState
+        self, state: DirectedState
     ) -> SpeakerSelectionResult:
         """Select the speaker who has been least active."""
         # Count messages per speaker
@@ -359,7 +357,7 @@ class DirectedConversation(BaseConversationAgent):
             selection_reason="Defaulting to first speaker",
         )
 
-    def process_response(self, state: DirectedConversationState) -> dict[str, Any]:
+    def process_response(self, state: DirectedState) -> dict[str, Any]:
         """Track interaction patterns using structured models."""
         update = {}
 
@@ -394,7 +392,7 @@ class DirectedConversation(BaseConversationAgent):
         return update
 
     def _prepare_agent_input(
-        self, state: DirectedConversationState, agent_name: str
+        self, state: DirectedState, agent_name: str
     ) -> dict[str, Any]:
         """Prepare input with mention context."""
         base_input = super()._prepare_agent_input(state, agent_name)
@@ -536,7 +534,7 @@ class DirectedConversation(BaseConversationAgent):
         )
 
     def _check_custom_end_conditions(
-        self, state: DirectedConversationState
+        self, state: DirectedState
     ) -> dict[str, Any] | None:
         """Check if everyone has participated sufficiently."""
         # Count participation

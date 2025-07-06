@@ -30,8 +30,8 @@ class PersistenceMixin:
         serializable persistence fields. If no persistence is configured,
         it sets up default PostgreSQL persistence with recursion limit 100.
         """
-        # Set up defaults if no persistence configured
-        if not self.persistence:
+        # Set up defaults if no persistence configured or if persistence=True
+        if not self.persistence or self.persistence is True:
             self._setup_default_persistence()
 
         # Now set up the actual persistence objects
@@ -88,7 +88,10 @@ class PersistenceMixin:
             import uuid
 
             self.runnable_config = {
-                "configurable": {"thread_id": str(uuid.uuid4()), "recursion_limit": 100}
+                "configurable": {
+                    "thread_id": self._generate_default_thread_id(),
+                    "recursion_limit": 100,
+                }
             }
         elif "configurable" not in self.runnable_config:
             self.runnable_config["configurable"] = {"recursion_limit": 100}
@@ -115,22 +118,45 @@ class PersistenceMixin:
 
                 if connection_string:
                     # Use the connection string from environment (likely Supabase)
+                    # Create unique pool per agent to avoid prepared statement conflicts
+                    agent_name = getattr(self, "name", "Agent")
+                    app_name = f"haive_{agent_name}_{id(self)}"
+
                     self.persistence = PostgresCheckpointerConfig(
                         connection_string=connection_string,
                         mode=CheckpointerMode.SYNC,
                         storage_mode=CheckpointStorageMode.FULL,
+                        prepare_threshold=None,  # Disable prepared statements completely
+                        auto_commit=True,  # Ensure auto-commit is enabled
+                        min_pool_size=1,  # Minimal pool to reduce conflicts
+                        max_pool_size=2,  # Very small pool for isolation
+                        connection_kwargs={
+                            "prepare_threshold": None,  # Extra explicit disable
+                            "application_name": app_name,  # Unique app name for identification
+                        },
                     )
-                    logger.debug(
-                        f"Set up PostgreSQL persistence with connection string for {getattr(self, 'name', 'Agent')}"
+                    logger.info(
+                        f"Set up PostgreSQL persistence for {app_name} (prepared statements disabled)"
                     )
                 else:
                     # Use default local PostgreSQL config
+                    agent_name = getattr(self, "name", "Agent")
+                    app_name = f"haive_{agent_name}_{id(self)}"
+
                     self.persistence = PostgresCheckpointerConfig(
                         mode=CheckpointerMode.SYNC,
                         storage_mode=CheckpointStorageMode.FULL,
+                        prepare_threshold=None,  # Disable prepared statements completely
+                        auto_commit=True,  # Ensure auto-commit is enabled
+                        min_pool_size=1,  # Minimal pool to reduce conflicts
+                        max_pool_size=2,  # Very small pool for isolation
+                        connection_kwargs={
+                            "prepare_threshold": None,  # Extra explicit disable
+                            "application_name": app_name,  # Unique app name for identification
+                        },
                     )
-                    logger.debug(
-                        f"Set up default PostgreSQL persistence for {getattr(self, 'name', 'Agent')}"
+                    logger.info(
+                        f"Set up default PostgreSQL persistence for {app_name} (prepared statements disabled)"
                     )
             else:
                 from haive.core.persistence.memory import MemoryCheckpointerConfig
@@ -329,7 +355,8 @@ class PersistenceMixin:
 
         # Add default values
         if "thread_id" not in config["configurable"]:
-            config["configurable"]["thread_id"] = str(uuid.uuid4())
+            # Generate consistent thread_id based on agent identity for automatic persistence
+            config["configurable"]["thread_id"] = self._generate_default_thread_id()
         if "recursion_limit" not in config["configurable"]:
             config["configurable"]["recursion_limit"] = 100
 
@@ -344,3 +371,44 @@ class PersistenceMixin:
                 config[key] = value
 
         return config
+
+    def _generate_default_thread_id(self) -> str:
+        """Generate a consistent thread_id based on agent identity for automatic persistence."""
+        import hashlib
+
+        # Create a hash based on agent configuration for consistency
+        identity_components = [
+            getattr(self, "name", "UnnamedAgent"),
+            self.__class__.__name__,
+        ]
+
+        # Add engine type if available
+        if hasattr(self, "engine_type"):
+            identity_components.append(str(self.engine_type))
+
+        # Add engine name if available
+        if hasattr(self, "engine") and self.engine:
+            if hasattr(self.engine, "name"):
+                identity_components.append(self.engine.name)
+
+        # Add conversation-specific details for conversation agents
+        if hasattr(self, "topic"):
+            identity_components.append(str(self.topic))
+        if hasattr(self, "speakers") and self.speakers:
+            identity_components.append(",".join(sorted(self.speakers)))
+        if hasattr(self, "participant_agents") and self.participant_agents:
+            # Add participant agent names
+            participant_names = sorted(
+                [name for name in self.participant_agents.keys()]
+            )
+            identity_components.append(",".join(participant_names))
+
+        # Create a stable hash
+        identity_string = ":".join(identity_components)
+        hash_digest = hashlib.md5(identity_string.encode()).hexdigest()
+
+        # Create a meaningful thread_id
+        agent_name = getattr(self, "name", "agent")
+        thread_id = f"{agent_name}_{hash_digest[:8]}"
+
+        return thread_id

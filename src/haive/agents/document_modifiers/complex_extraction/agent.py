@@ -1,6 +1,55 @@
+"""Complex Extraction Agent for structured data extraction from text.
+
+This module provides the ComplexExtractionAgent class which implements sophisticated
+structured data extraction using validation with retries and optional JSONPatch-based
+error correction to reliably extract data according to specified schemas.
+
+The agent supports multiple retry strategies and can handle complex validation
+scenarios where initial extraction attempts may fail.
+
+Classes:
+    ComplexExtractionAgent: Main agent for complex structured data extraction
+
+Examples:
+    Basic usage::
+
+        from haive.agents.document_modifiers.complex_extraction import ComplexExtractionAgent
+        from haive.agents.document_modifiers.complex_extraction.config import ComplexExtractionAgentConfig
+        from pydantic import BaseModel
+
+        class PersonInfo(BaseModel):
+            name: str
+            age: int
+            occupation: str
+
+        config = ComplexExtractionAgentConfig(
+            extraction_model=PersonInfo,
+            max_retries=3
+        )
+        agent = ComplexExtractionAgent(config)
+
+        text = "John Smith is a 35-year-old software engineer."
+        result = agent.run(text)
+        person_data = result["extracted_data"]
+
+    With JSONPatch error correction::
+
+        config = ComplexExtractionAgentConfig(
+            extraction_model=PersonInfo,
+            use_jsonpatch=True,
+            max_retries=5
+        )
+        agent = ComplexExtractionAgent(config)
+        result = agent.run(complex_text)
+
+See Also:
+    - :class:`~haive.agents.document_modifiers.complex_extraction.config.ComplexExtractionAgentConfig`: Configuration class
+    - :class:`~haive.agents.document_modifiers.complex_extraction.models.RetryStrategy`: Retry strategy configuration
+"""
+
 import logging
 from collections.abc import Callable, Sequence
-from typing import Any
+from typing import Any, Dict, List, Optional, Union
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from langchain_core.language_models import BaseChatModel
@@ -30,26 +79,100 @@ from haive.agents.document_modifiers.complex_extraction.utils import (
     encode,
 )
 
-# Set up logging
 logger = logging.getLogger(__name__)
-
-
-# fr
-# Type for RetryStrategy
 
 
 @register_agent(ComplexExtractionAgentConfig)
 class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
     """Agent that extracts complex structured information from text.
 
-    This agent uses validation with retries and optional JSONPatch-based error correction
-    to reliably extract structured data according to a specified schema.
+    This agent implements sophisticated structured data extraction using validation
+    with retries and optional JSONPatch-based error correction to reliably extract
+    data according to specified Pydantic schemas.
+
+    The agent creates a validation workflow that can handle complex extraction
+    scenarios where initial attempts may fail due to parsing errors, validation
+    issues, or incomplete data. It supports multiple retry strategies and can
+    automatically correct errors using JSONPatch operations.
+
+    Args:
+        config: Configuration object containing extraction settings, model schema,
+            retry parameters, and LLM configuration.
+
+    Attributes:
+        extraction_model: Pydantic model class defining the extraction schema
+        max_retries: Maximum number of retry attempts for failed extractions
+        force_tool_choice: Whether to force the LLM to use the extraction tool
+        use_jsonpatch: Whether to enable JSONPatch-based error correction
+        extraction_tool: Tool instance created from the extraction model
+        llm: Language model instance for performing extractions
+
+    Examples:
+        Basic structured extraction::
+
+            from pydantic import BaseModel
+
+            class ProductInfo(BaseModel):
+                name: str
+                price: float
+                category: str
+
+            config = ComplexExtractionAgentConfig(
+                extraction_model=ProductInfo,
+                max_retries=3
+            )
+            agent = ComplexExtractionAgent(config)
+
+            text = "The MacBook Pro costs $2499 and is a laptop computer."
+            result = agent.run(text)
+            product = result["extracted_data"]
+            # product = {"name": "MacBook Pro", "price": 2499.0, "category": "laptop"}
+
+        With advanced error correction::
+
+            config = ComplexExtractionAgentConfig(
+                extraction_model=ProductInfo,
+                use_jsonpatch=True,
+                max_retries=5,
+                force_tool_choice=True
+            )
+            agent = ComplexExtractionAgent(config)
+
+        Processing multiple documents::
+
+            documents = ["Product A costs $100", "Product B is $200 software"]
+            results = [agent.run(doc) for doc in documents]
+
+    Note:
+        The agent requires a Pydantic model class to define the extraction schema.
+        JSONPatch functionality requires the 'jsonpatch' library to be installed.
+
+    Raises:
+        ImportError: If JSONPatch is enabled but the jsonpatch library is not installed
+        ValueError: If extraction fails after maximum retry attempts
+
+    See Also:
+        - :class:`ComplexExtractionAgentConfig`: Configuration options
+        - :class:`RetryStrategy`: Retry strategy configuration
+        - :class:`PatchFunctionParameters`: JSONPatch parameter schema
     """
 
     def __init__(
         self, config: ComplexExtractionAgentConfig = ComplexExtractionAgentConfig()
-    ):
-        """Initialize the complex extraction agent."""
+    ) -> None:
+        """Initialize the complex extraction agent.
+
+        Sets up the extraction model, validation tools, and retry mechanisms
+        based on the provided configuration.
+
+        Args:
+            config: Configuration object containing extraction model, retry settings,
+                and LLM configuration. Defaults to a new instance with default values.
+
+        Raises:
+            ImportError: If JSONPatch is enabled in config but jsonpatch library
+                is not installed.
+        """
         self.extraction_model = config.extraction_model
         self.max_retries = config.max_retries
         self.force_tool_choice = config.force_tool_choice
@@ -79,8 +202,15 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         super().__init__(config)
         # self.app = encode | self.app | decode
 
-    def _setup_extraction_tool(self):
-        """Set up the extraction tool based on the provided model."""
+    def _setup_extraction_tool(self) -> None:
+        """Set up the extraction tool based on the provided model.
+
+        Creates a LangChain Tool instance from the Pydantic extraction model
+        that can be used by the LLM for structured data extraction.
+
+        The tool is configured with the model's schema as the args_schema,
+        allowing the LLM to understand the expected output format.
+        """
         if not self.extraction_model:
             logger.warning("No extraction model provided")
             return
@@ -88,8 +218,18 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         # Create a tool from the extraction model
         extract_name = f"extract_{self.extraction_model.__name__}"
 
-        def extract_func(text: str) -> dict[str, Any]:
-            """Extract structured data according to the schema."""
+        def extract_func(text: str) -> Dict[str, Any]:
+            """Extract structured data according to the schema.
+
+            This is a placeholder function that defines the interface for
+            the extraction tool. The actual extraction is performed by the LLM.
+
+            Args:
+                text: Input text to extract data from.
+
+            Returns:
+                Empty dictionary (placeholder implementation).
+            """
             # This is just a placeholder implementation
             # The actual extraction is performed by the LLM
             return {}
@@ -104,29 +244,46 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
 
         # Store the tool
         self.extraction_tool = extract_data
-        logger.info(f"Created extraction tool: {extract_name}")
+        logger.info("Created extraction tool", extra={"tool_name": extract_name})
 
     def _bind_validator_with_retries(
         self,
-        llm: (
-            Runnable[Sequence[AnyMessage], AIMessage]
-            | Runnable[Sequence[BaseMessage], BaseMessage]
-        ),
+        llm: Union[
+            Runnable[Sequence[AnyMessage], AIMessage],
+            Runnable[Sequence[BaseMessage], BaseMessage],
+        ],
         *,
         validator: ValidationNode,
         retry_strategy: RetryStrategy,
-        tool_choice: str | None = None,
+        tool_choice: Optional[str] = None,
     ) -> StateGraph:
         """Bind a tool validator with retry logic and return the graph builder.
 
+        Creates a StateGraph that implements validation with retry logic for
+        tool calls. The graph includes nodes for message counting, LLM execution,
+        validation, fallback handling, and result finalization.
+
         Args:
-            llm: The LLM to generate responses
-            validator: Validation node for checking tool call validity
-            retry_strategy: Strategy for handling retries
-            tool_choice: Optional tool name to force
+            llm: The language model runnable to generate responses. Can be either
+                a message-to-AIMessage or message-to-BaseMessage runnable.
+            validator: Validation node for checking tool call validity against
+                the expected schema.
+            retry_strategy: Strategy configuration for handling retries, including
+                max attempts, fallback behavior, and message aggregation.
+            tool_choice: Optional tool name to force the LLM to use. If specified,
+                the LLM will be required to call this specific tool.
 
         Returns:
-            StateGraph builder (not compiled)
+            StateGraph builder instance (not compiled). The graph must be compiled
+            before use.
+
+        Note:
+            The returned graph includes the following nodes:
+            - count_messages: Tracks initial message count
+            - llm: Primary LLM execution
+            - validator: Tool call validation
+            - fallback: Fallback LLM for retry attempts
+            - finalizer: Result aggregation and finalization
         """
         # Define message merging function
 
@@ -134,8 +291,20 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         builder = StateGraph(self.state_schema)
 
         # Function to extract messages from state
-        def dedict(x: Any) -> list:
-            """Extract messages from state."""
+        def dedict(x: Any) -> List[BaseMessage]:
+            """Extract messages from state.
+
+            Utility function to extract the messages list from various state formats.
+
+            Args:
+                x: State object that may contain messages.
+
+            Returns:
+                List of messages extracted from the state.
+
+            Raises:
+                ValueError: If messages cannot be extracted from the state.
+            """
             if isinstance(x, dict) and "messages" in x:
                 return x["messages"]
             if hasattr(x, "messages"):
@@ -161,8 +330,18 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         )
 
         # Function to count initial messages
-        def count_messages(state: Any) -> dict[str, Any]:
-            """Count initial messages in state."""
+        def count_messages(state: Any) -> Dict[str, Any]:
+            """Count initial messages in state.
+
+            Tracks the number of messages present at the start of processing
+            to distinguish between initial and generated messages.
+
+            Args:
+                state: Current workflow state.
+
+            Returns:
+                Dictionary with initial_num_messages count.
+            """
             if isinstance(state, dict):
                 return {"initial_num_messages": len(state.get("messages", []))}
             return {"initial_num_messages": len(getattr(state, "messages", []))}
@@ -175,16 +354,36 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         # Set up message selection and validation
         select_messages = retry_strategy.get("aggregate_messages") or default_aggregator
 
-        def select_generated_messages(state: Any) -> list:
-            """Select only messages generated in this run."""
+        def select_generated_messages(state: Any) -> List[BaseMessage]:
+            """Select only messages generated in this run.
+
+            Filters out initial messages to return only those generated
+            during the current execution.
+
+            Args:
+                state: Current workflow state containing messages.
+
+            Returns:
+                List of messages generated during this execution.
+            """
             if isinstance(state, dict):
                 selected = state["messages"][state["initial_num_messages"] :]
             else:
                 selected = state.messages[state.initial_num_messages :]
             return [select_messages(selected)]
 
-        def endict_validator_output(x: Sequence[AnyMessage]) -> dict[str, Any]:
-            """Format validator output for the graph."""
+        def endict_validator_output(x: Sequence[AnyMessage]) -> Dict[str, Any]:
+            """Format validator output for the graph.
+
+            Converts validator output into the expected state format,
+            handling cases where validation fails.
+
+            Args:
+                x: Sequence of messages from the validator.
+
+            Returns:
+                Dictionary containing formatted messages for the workflow.
+            """
             if tool_choice and not x:
                 return {
                     "messages": [
@@ -242,8 +441,18 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         builder.add_edge("decode", END)
 
         # Define routing functions
-        def route_validator(state: Any):
-            """Decide whether to run validation."""
+        def route_validator(state: Any) -> str:
+            """Decide whether to run validation.
+
+            Determines if the current state requires validation based on
+            the presence of tool calls in the last message.
+
+            Args:
+                state: Current workflow state.
+
+            Returns:
+                Next node name: 'validator' if validation needed, END otherwise.
+            """
             messages = state["messages"] if isinstance(state, dict) else state.messages
             if not messages:
                 return END
@@ -257,8 +466,21 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                 return "validator"
             return END
 
-        def route_validation(state: Any):
-            """Route based on validation result."""
+        def route_validation(state: Any) -> str:
+            """Route based on validation result.
+
+            Determines the next step based on validation outcome and retry count.
+            Can route to fallback for retry attempts or finalizer for completion.
+
+            Args:
+                state: Current workflow state with validation results.
+
+            Returns:
+                Next node name: 'finalizer' for success, 'fallback' for retry.
+
+            Raises:
+                ValueError: If maximum retry attempts are exceeded.
+            """
             max_attempts = retry_strategy.get("max_attempts", 3)
             attempt_num = (
                 state["attempt_number"]
@@ -296,20 +518,38 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         self,
         llm: BaseChatModel,
         *,
-        tools: list,
-        tool_choice: str | None = None,
+        tools: List[Tool],
+        tool_choice: Optional[str] = None,
         max_attempts: int = 3,
     ) -> StateGraph:
-        """Bind a validator with JSONPatch-based retries, returning the StateGraph builder.
+        """Bind a validator with JSONPatch-based retries.
+
+        Creates an advanced validation workflow that uses JSONPatch operations
+        to automatically correct validation errors. When a tool call fails
+        validation, the system generates patch instructions to fix the errors.
 
         Args:
-            llm: The LLM to use
-            tools: List of tools to validate
-            tool_choice: Optional tool to force
-            max_attempts: Maximum retry attempts
+            llm: The base language model to use for extraction and error correction.
+            tools: List of tools available for extraction. The validation will
+                ensure tool calls conform to these tool schemas.
+            tool_choice: Optional specific tool name to force the LLM to use.
+                If specified, the LLM must use this tool.
+            max_attempts: Maximum number of retry attempts before giving up.
+                Defaults to 3.
 
         Returns:
-            StateGraph builder (not compiled)
+            StateGraph builder instance (not compiled). Must be compiled before use.
+
+        Raises:
+            ImportError: If the jsonpatch library is not installed but JSONPatch
+                functionality is requested.
+
+        Note:
+            This method creates a sophisticated retry mechanism where:
+            1. Initial extraction attempts use the primary LLM
+            2. Validation errors trigger JSONPatch correction attempts
+            3. Patch operations are applied to fix specific validation issues
+            4. Multiple correction iterations are supported up to max_attempts
         """
         # Ensure jsonpatch is available
         if not self.jsonpatch:
@@ -323,7 +563,21 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
 
         # Define message aggregation function
         def aggregate_messages(messages: Sequence[AnyMessage]) -> AIMessage:
-            """Aggregate messages with JSONPatch corrections."""
+            """Aggregate messages with JSONPatch corrections.
+
+            Processes a sequence of AI messages and applies JSONPatch operations
+            to correct tool call arguments, creating a final corrected message.
+
+            Args:
+                messages: Sequence of messages containing tool calls and patches.
+
+            Returns:
+                Single AIMessage with corrected and aggregated tool calls.
+
+            Note:
+                This function identifies JSONPatch tool calls and applies them
+                to previously generated tool calls to fix validation errors.
+            """
             # Get all the AI messages and apply json patches
             resolved_tool_calls = {}
             content = ""
@@ -344,8 +598,11 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                         tcid = tc.get("args", {}).get("tool_call_id")
                         if tcid not in resolved_tool_calls:
                             logger.debug(
-                                f"JsonPatch tool call ID {tcid} not found. "
-                                f"Valid tool call IDs: {list(resolved_tool_calls.keys())}"
+                                "JsonPatch tool call ID not found",
+                                extra={
+                                    "tool_call_id": tcid,
+                                    "valid_ids": list(resolved_tool_calls.keys()),
+                                },
                             )
                             # Fallback to first available tool call
                             tcid = next(iter(resolved_tool_calls.keys()), None)
@@ -366,7 +623,11 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                             # Update ID to latest
                             orig_tool_call["id"] = tc["id"]
                         except Exception as e:
-                            logger.error(f"Error applying JSONPatch: {e}")
+                            logger.error(
+                                "Error applying JSONPatch",
+                                extra={"error": str(e)},
+                                exc_info=True,
+                            )
                     else:
                         # Regular tool call - add to resolved list
                         resolved_tool_calls[tc["id"]] = tc.copy()
@@ -379,9 +640,21 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
 
         # Create format error function
         def format_exception(
-            error: BaseException, call: dict[str, Any], schema: type[BaseModel]
-        ):
-            """Format validation error for JSONPatch correction."""
+            error: BaseException, call: Dict[str, Any], schema: type[BaseModel]
+        ) -> str:
+            """Format validation error for JSONPatch correction.
+
+            Creates a detailed error message that includes the validation error,
+            expected schema, and instructions for generating JSONPatch corrections.
+
+            Args:
+                error: The validation exception that occurred.
+                call: The tool call that failed validation.
+                schema: The expected schema (Pydantic model) for the tool.
+
+            Returns:
+                Formatted error message with correction instructions.
+            """
             schema_json = (
                 schema.schema_json() if hasattr(schema, "schema_json") else str(schema)
             )
@@ -415,20 +688,32 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         self,
         llm: BaseChatModel,
         *,
-        tools: list,
-        tool_choice: str | None = None,
+        tools: List[Tool],
+        tool_choice: Optional[str] = None,
         max_attempts: int = 3,
     ) -> StateGraph:
-        """Bind a validator with standard retries (no JSONPatch), returning StateGraph builder.
+        """Bind a validator with standard retries (no JSONPatch).
+
+        Creates a basic validation workflow with simple retry logic. When
+        validation fails, the system will retry the extraction up to the
+        maximum number of attempts without advanced error correction.
 
         Args:
-            llm: The LLM to use
-            tools: List of tools to validate
-            tool_choice: Optional tool to force
-            max_attempts: Maximum retry attempts
+            llm: The base language model to use for extraction attempts.
+            tools: List of tools available for extraction. Tool calls will be
+                validated against these tool schemas.
+            tool_choice: Optional specific tool name to force the LLM to use.
+                If specified, the LLM must call this tool.
+            max_attempts: Maximum number of retry attempts before failing.
+                Defaults to 3.
 
         Returns:
-            StateGraph builder (not compiled)
+            StateGraph builder instance (not compiled). Must be compiled before use.
+
+        Note:
+            This is the simpler alternative to JSONPatch-based retries. It will
+            simply retry failed extractions without attempting to automatically
+            correct validation errors.
         """
         bound_llm = llm.bind_tools(tools, tool_choice=tool_choice)
         retry_strategy = RetryStrategy(max_attempts=max_attempts)
@@ -443,13 +728,35 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         )
 
     def setup_workflow(self) -> None:
-        """Set up the agent workflow."""
+        """Set up the agent workflow.
+
+        Initializes the extraction workflow graph based on the agent configuration.
+        This method creates the appropriate validation and retry mechanism (either
+        JSONPatch-based or standard retries) and configures the processing pipeline.
+
+        The workflow includes encoding/decoding steps, validation nodes, and
+        state management for tracking extraction progress.
+
+        Note:
+            This method is called automatically when needed and does not need
+            to be invoked manually. The workflow graph is not compiled here -
+            compilation happens in the parent class.
+        """
         logger.info(
-            f"Setting up workflow for ComplexExtractionAgent {self.config.name}"
+            "Setting up workflow for ComplexExtractionAgent",
+            extra={"agent_name": self.config.name},
         )
 
         # Create a state wrapper to pass configuration to the decoder
-        def state_wrapper(state):
+        def state_wrapper(state: Any) -> Any:
+            """Attach configuration to state for downstream processing.
+
+            Args:
+                state: Current workflow state.
+
+            Returns:
+                State with attached configuration.
+            """
             # Attach the config to the state for use in decode
             state.config = self.config
             return state
@@ -472,14 +779,27 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         # self.app = deddict
         # Note: We don't compile the graph here - that's done by the parent in compile()
 
-    def extract_node(self, state: Any) -> dict[str, Any]:
+    def extract_node(self, state: Any) -> Dict[str, Any]:
         """Main extraction node function.
 
+        Processes the current state through the extraction pipeline, invoking
+        the configured extraction tool and handling the results.
+
         Args:
-            state: Current state
+            state: Current workflow state containing messages and other context.
+                Can be either a dictionary with 'messages' key or an object
+                with messages attribute.
 
         Returns:
-            Updated state
+            Updated state dictionary containing:
+            - extracted_data: The structured data extracted by the tool
+            - messages: Updated message list including extraction results
+            - error: Error message if extraction failed
+
+        Note:
+            This method handles various state formats and gracefully manages
+            errors during extraction. If no extraction runnable is available,
+            the state is passed through unchanged.
         """
         # Check if we have the extraction runnable
         if hasattr(self, "extraction_runnable") and self.extraction_runnable:
@@ -523,23 +843,52 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                 return updates
             except Exception as e:
                 # Log error and return error in state
-                logger.error(f"Error in extraction node: {e!s}")
+                logger.error(
+                    "Error in extraction node", extra={"error": str(e)}, exc_info=True
+                )
                 return {"error": str(e)}
 
         # If we don't have the extraction runnable, just pass through
         return state
 
     def run(
-        self, input_data: str | list[str] | dict[str, Any] | BaseModel, **kwargs
-    ) -> dict[str, Any]:
+        self, input_data: Union[str, List[str], Dict[str, Any], BaseModel], **kwargs
+    ) -> Dict[str, Any]:
         """Run the extraction agent on input data.
 
+        Processes the input through the extraction pipeline, handling various
+        input formats and returning structured extraction results.
+
         Args:
-            input_data: Input text or data to extract information from
-            **kwargs: Additional runtime configuration
+            input_data: Input text or data to extract information from. Supports:
+                - str: Single text document
+                - List[str]: Multiple text documents to process together
+                - Dict[str, Any]: Dictionary with 'text', 'content', or 'messages' keys
+                - BaseModel: Pydantic model with text content
+            **kwargs: Additional runtime configuration options passed to the
+                underlying workflow execution.
 
         Returns:
-            Dictionary with extracted data and execution results
+            Dictionary containing extraction results:
+            - extracted_data: Structured data conforming to the extraction model
+            - messages: Full conversation history during extraction
+            - Additional metadata from the extraction process
+
+        Example:
+            Basic text extraction::
+
+                agent = ComplexExtractionAgent(config)
+                result = agent.run("John Smith is 30 years old.")
+                person_data = result["extracted_data"]
+
+            Multiple documents::
+
+                docs = ["Person A info", "Person B info"]
+                result = agent.run(docs)
+
+        Note:
+            If no extraction workflow has been set up, this method will
+            automatically call setup_workflow() before processing.
         """
         # Ensure we have a validation workflow
         if (
@@ -587,15 +936,29 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
     # def compile(self):
     # self.app = dec
     def _prepare_extraction_messages(
-        self, input_data: str | list[str] | dict[str, Any] | BaseModel
-    ) -> list[BaseMessage]:
+        self, input_data: Union[str, List[str], Dict[str, Any], BaseModel]
+    ) -> List[BaseMessage]:
         """Prepare messages for extraction.
 
+        Converts various input formats into a standardized list of BaseMessage
+        objects that can be processed by the extraction workflow.
+
         Args:
-            input_data: Input data in various formats
+            input_data: Input data in various formats:
+                - str: Single text to extract from
+                - List[str]: Multiple texts to combine
+                - Dict[str, Any]: Dictionary with text content
+                - BaseModel: Pydantic model with extractable content
+                - BaseMessage or List[BaseMessage]: Pre-formatted messages
 
         Returns:
-            List of messages ready for extraction
+            List of BaseMessage objects formatted for extraction. The messages
+            include appropriate prompts that instruct the LLM to extract data
+            according to the configured extraction model.
+
+        Note:
+            This method handles various edge cases and fallback scenarios to
+            ensure robust message preparation regardless of input format.
         """
         # Handle string input
         if isinstance(input_data, str):

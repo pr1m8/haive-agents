@@ -503,13 +503,19 @@ class ExecutionMixin:
             except Exception as e:
                 logger.warning(f"Error merging with previous state: {e}")
 
-        # Run the agent
+        # Run the agent with proper connection cleanup
+        pool_to_cleanup = None
         try:
+            # Ensure PostgreSQL connection pool is properly opened if needed
+            if active_checkpointer and hasattr(active_checkpointer, "conn"):
+                from haive.core.persistence.handlers import ensure_pool_open
+
+                pool_to_cleanup = ensure_pool_open(active_checkpointer)
+
             # Convert to dict if it's a Pydantic model
             if hasattr(processed_input, "model_dump"):
                 processed_input = processed_input.model_dump()
-            # print(runtime_config)
-            # breakpoint()
+
             result = self._app.invoke(
                 processed_input, config=runtime_config, debug=debug
             )
@@ -527,6 +533,15 @@ class ExecutionMixin:
         except Exception as e:
             logger.error(f"Error during agent execution: {e}")
             raise
+        finally:
+            # Clean up connection pool if we opened it
+            if pool_to_cleanup:
+                try:
+                    from haive.core.persistence.handlers import close_pool_if_needed
+
+                    close_pool_if_needed(active_checkpointer, pool_to_cleanup)
+                except Exception as cleanup_error:
+                    logger.warning(f"Error during connection cleanup: {cleanup_error}")
 
     async def arun(
         self,
@@ -611,8 +626,15 @@ class ExecutionMixin:
                 except Exception as e:
                     logger.warning(f"Error merging with previous state: {e}")
 
-            # Run the agent asynchronously
+            # Run the agent asynchronously with proper connection cleanup
+            pool_to_cleanup = None
             try:
+                # Ensure async PostgreSQL connection pool is properly opened if needed
+                if async_checkpointer and hasattr(async_checkpointer, "conn"):
+                    from haive.core.persistence.handlers import ensure_async_pool_open
+
+                    pool_to_cleanup = await ensure_async_pool_open(async_checkpointer)
+
                 # Convert to dict if it's a Pydantic model
                 if hasattr(processed_input, "model_dump"):
                     processed_input = processed_input.model_dump()
@@ -637,6 +659,21 @@ class ExecutionMixin:
             except Exception as e:
                 logger.error(f"Error during async agent execution: {e}")
                 raise
+            finally:
+                # Clean up async connection pool if we opened it
+                if pool_to_cleanup:
+                    try:
+                        from haive.core.persistence.handlers import (
+                            close_async_pool_if_needed,
+                        )
+
+                        await close_async_pool_if_needed(
+                            async_checkpointer, pool_to_cleanup
+                        )
+                    except Exception as cleanup_error:
+                        logger.warning(
+                            f"Error during async connection cleanup: {cleanup_error}"
+                        )
         else:
             # Fall back to sync execution in executor
             loop = asyncio.get_event_loop()
@@ -793,8 +830,18 @@ class ExecutionMixin:
         if stream_mode == "custom":
             return chunk
         if stream_mode == "values":
+            # First check for standard LangChain format
             if isinstance(chunk, dict) and "values" in chunk:
                 return chunk["values"]
+
+            # Handle LangGraph AddableUpdatesDict format - extract actual state values
+            if isinstance(chunk, dict):
+                # LangGraph returns {node_name: state_data}
+                for node_name, node_data in chunk.items():
+                    if isinstance(node_data, dict) and node_data:
+                        # Return the actual state data instead of node metadata
+                        return node_data
+
             return chunk
         if stream_mode == "updates":
             if isinstance(chunk, dict) and "updates" in chunk:

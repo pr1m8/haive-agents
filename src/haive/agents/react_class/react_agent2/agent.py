@@ -9,7 +9,7 @@ from typing import Any, Literal
 
 from haive.core.engine.agent.agent import register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.dynamic_graph_builder import DynamicGraph
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.graph.tool_config import ToolConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import AIMessage, SystemMessage
@@ -231,14 +231,14 @@ class ReactAgent(SimpleAgent):
         """Set up the React agent workflow graph."""
         logger.debug(f"Setting up workflow for ReactAgent {self.config.name}")
 
-        # Create DynamicGraph with proper component registration
-        gb = DynamicGraph(
-            components=[self.config.engine] + self.config.tools,
+        # Create BaseGraph with proper component registration
+        gb = BaseGraph(
+            name=f"{self.config.name}_react_agent",
             state_schema=self.state_schema,
         )
 
         # Add the main agent/LLM node
-        gb.add_node(name=self.config.node_name, config=self.config.engine)
+        gb.add_node(self.config.node_name, self.config.engine)
 
         # Add the tool execution node
         tool_node = ToolNode(
@@ -246,18 +246,16 @@ class ReactAgent(SimpleAgent):
             # name=self.config.tool_node_name,
             # config=self.config.tools
         )
-        gb.add_node(name=self.config.tool_node_name, config=tool_node)
+        gb.add_node(self.config.tool_node_name, tool_node)
 
         # Add the router node
-        gb.add_node(
-            name=self.config.router_node_name, config=self._create_router_function()
-        )
+        gb.add_node(self.config.router_node_name, self._create_router_function())
 
         # If structured output is requested, add that node
         if self.config.response_format:
             gb.add_node(
-                name="generate_structured_response",
-                config=self._create_structured_output_node(),
+                "generate_structured_response",
+                self._create_structured_output_node(),
             )
 
         # Add any custom tool-specific nodes
@@ -282,15 +280,17 @@ class ReactAgent(SimpleAgent):
                                 # config=[tool]
                                 tools=[tool]
                             )
-                            gb.add_node(name=destination, config=specialized_tool_node)
+                            gb.add_node(destination, specialized_tool_node)
                             custom_nodes[destination] = tool_name
                             # Connect back to the agent
-                            gb.add_edge(destination, self.config.node_name)
+                            gb.add_edge(
+                                source=destination, target=self.config.node_name
+                            )
                             break
 
         # Add edges between main nodes
-        gb.add_edge(self.config.node_name, self.config.router_node_name)
-        gb.add_edge(self.config.tool_node_name, self.config.node_name)
+        gb.add_edge(source=self.config.node_name, target=self.config.router_node_name)
+        gb.add_edge(source=self.config.tool_node_name, target=self.config.node_name)
 
         # Add conditional edges from router
         route_map = {"tools": self.config.tool_node_name, "end": END}
@@ -298,7 +298,7 @@ class ReactAgent(SimpleAgent):
         # Add structured response destination if needed
         if self.config.response_format:
             route_map["structured_response"] = "generate_structured_response"
-            gb.add_edge("generate_structured_response", END)
+            gb.add_edge(source="generate_structured_response", target=END)
 
         # Add custom tool routing destinations to the route map
         if self.config.tool_routing:
@@ -307,14 +307,16 @@ class ReactAgent(SimpleAgent):
                     route_map[destination] = destination
 
         gb.add_conditional_edges(
-            self.config.router_node_name, self._route_based_on_messages, route_map
+            source_node=self.config.router_node_name,
+            condition=self._route_based_on_messages,
+            destinations=route_map,
         )
 
         # Set entry point
         gb.set_entry_point(self.config.node_name)
 
         # Build the graph
-        self.graph = gb.build()
+        self.graph = gb.compile()
 
         # Generate visualization if requested
         if self.config.visualize:

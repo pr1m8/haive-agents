@@ -36,7 +36,9 @@ def example_brainstorming_session():
     )
 
     # Run session
-    result = session.run({},config={"configurable": {"recursion_limit": 100}},debug=True)
+    result = session.run(
+        {}, config={"configurable": {"recursion_limit": 100}}, debug=True
+    )
 
     # Display final document
     print("📄 Final Brainstorming Document:\n")
@@ -68,7 +70,9 @@ def example_code_review():
     )
 
     # Run review
-    result = review.run({},config={"configurable": {"recursion_limit": 100}},debug=True)
+    result = review.run(
+        {}, config={"configurable": {"recursion_limit": 100}}, debug=True
+    )
 
     # Display code review document
     print("🔍 Code Review Results:\n")
@@ -147,7 +151,9 @@ def example_project_planning():
         max_rounds=3,
     )
 
-    result = planning.run({},config={"configurable": {"recursion_limit": 100}},debug=True)
+    result = planning.run(
+        {}, config={"configurable": {"recursion_limit": 100}}, debug=True
+    )
 
     # Display project plan
     print("📋 Project Plan Document:\n")
@@ -221,7 +227,7 @@ def example_research_paper():
         max_rounds=3,
     )
 
-    result = paper.invoke({},config={"configurable": {"recursion_limit": 50}})
+    result = paper.invoke({}, config={"configurable": {"recursion_limit": 50}})
 
     # Display research paper
     print("📚 Research Paper Draft:\n")
@@ -297,7 +303,7 @@ def example_creative_writing():
         max_rounds=3,
     )
 
-    result = story.invoke({},config={"configurable": {"recursion_limit": 50}})
+    result = story.invoke({}, config={"configurable": {"recursion_limit": 50}})
 
     # Display story
     print("📖 Collaborative Story:\n")
@@ -314,8 +320,8 @@ def example_creative_writing():
 
 
 if __name__ == "__main__":
-    #example_brainstorming_session()
-    #example_code_review()
-    #example_project_planning()
-    #example_research_paper()
-    #example_creative_writing()
+    example_brainstorming_session()
+    # example_code_review()
+    # example_project_planning()
+    # example_research_paper()
+    # example_creative_writing()

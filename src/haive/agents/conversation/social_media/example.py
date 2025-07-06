@@ -314,9 +314,9 @@ def example_viral_moment():
                 print("   🎉 WENT VIRAL!")
 
 
-# if __name__ == "__main__":
-# example_twitter_thread()
-# example_instagram_discussion()
-##example_tiktok_comments()
-# example_linkedin_professional()
-# example_viral_moment()
+if __name__ == "__main__":
+    example_twitter_thread()
+    # example_instagram_discussion()
+    # example_tiktok_comments()
+    # example_linkedin_professional()
+    # example_viral_moment()

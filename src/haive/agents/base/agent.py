@@ -354,14 +354,21 @@ class Agent(
         await self._asetup_persistence_from_fields()
 
     def _setup_schemas(self) -> None:
-        """Generate schemas from available engines with intelligent defaults.
+        """Generate schemas from available engines using enhanced SchemaComposer.
 
         This method:
-        1. Always generates a state schema from engines
-        2. Automatically derives input schema if not provided
-        3. Automatically derives output schema if not provided
-        4. Handles special cases like structured output models
+        1. Uses the new SchemaComposer instance API
+        2. Leverages automatic engine management
+        3. Supports token usage tracking
+        4. Automatically derives I/O schemas
         """
+        # Only generate if not already provided
+        if self.state_schema:
+            logger.debug(f"State schema already provided for {self.name}")
+            # Still derive I/O schemas if needed
+            self._auto_derive_io_schemas()
+            return
+
         # Collect all engines and agents
         engine_list = []
         agent_list = []
@@ -385,47 +392,52 @@ class Agent(
         )
 
         try:
-            # Generate state schema
-            if not self.state_schema:
-                if agent_list:
-                    # Use AgentSchemaComposer for agents
-                    logger.debug(f"Creating schema from {len(agent_list)} sub-agents")
-                    try:
-                        from haive.core.schema.agent_schema_composer import (
-                            AgentSchemaComposer,
-                        )
-
-                        self.state_schema = AgentSchemaComposer.from_agents(
-                            agents=agent_list,
-                            name=f"{self.__class__.__name__}State",
-                            include_meta=True,
-                            separation="smart",
-                        )
-                    except ImportError:
-                        logger.warning(
-                            "AgentSchemaComposer not available, using regular composer"
-                        )
-                        # Fall back to regular composer
-                        self.state_schema = SchemaComposer.from_components(
-                            components=engine_list,
-                            name=f"{self.__class__.__name__}State",
-                        )
-                elif engine_list:
-                    # Use SchemaComposer for engines
-                    logger.debug(f"Creating schema from {len(engine_list)} engines")
-                    self.state_schema = SchemaComposer.from_components(
-                        components=engine_list, name=f"{self.__class__.__name__}State"
+            if agent_list:
+                # Use AgentSchemaComposer for multi-agent scenarios
+                logger.debug(f"Creating schema from {len(agent_list)} sub-agents")
+                try:
+                    from haive.core.schema.agent_schema_composer import (
+                        AgentSchemaComposer,
                     )
 
-                    logger.debug(
-                        f"Built schema: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                    self.state_schema = AgentSchemaComposer.from_agents(
+                        agents=agent_list,
+                        name=f"{self.__class__.__name__}State",
+                        include_meta=True,
+                        separation="smart",
                     )
-                else:
-                    logger.debug(
-                        "No engines or agents found, creating basic message state"
+                except ImportError:
+                    logger.warning(
+                        "AgentSchemaComposer not available, using regular composer"
                     )
-                    # Create basic message state
-                    self._create_basic_message_state()
+                    # Fall back to regular composer for sub-agents
+                    composer = SchemaComposer(name=f"{self.__class__.__name__}State")
+                    for agent in agent_list:
+                        if hasattr(agent, "state_schema"):
+                            composer.add_fields_from_model(agent.state_schema)
+                    self.state_schema = composer.build()
+            elif engine_list:
+                # Use enhanced SchemaComposer instance API
+                logger.debug(f"Creating schema from {len(engine_list)} engines")
+                composer = SchemaComposer(name=f"{self.__class__.__name__}State")
+
+                # Add all engines - composer will handle engine management
+                for engine in engine_list:
+                    composer.add_engine(engine)
+                    composer.add_fields_from_engine(engine)
+
+                # Build schema - this will auto-add engine management if needed
+                self.state_schema = composer.build()
+
+                logger.debug(
+                    f"Built schema: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                )
+            else:
+                logger.debug("No engines or agents found, using default MessagesState")
+                # Use prebuilt MessagesState
+                from haive.core.schema.prebuilt.messages_state import MessagesState
+
+                self.state_schema = MessagesState
 
             # Automatically derive input/output schemas if not provided
             self._auto_derive_io_schemas()

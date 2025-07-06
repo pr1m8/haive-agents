@@ -74,9 +74,28 @@ Each agent includes:
 __version__ = "0.1.0"
 
 # Import key agent base classes
-from haive.agents.base import Agent
+from haive.agents.base import Agent, GenericAgent
+from haive.agents.multi.agent import MultiAgent
+from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.rag.simple.agent import SimpleRAGAgent
+from haive.agents.react.agent import ReactAgent
+
+# Import commonly used agents
+from haive.agents.simple import SimpleAgent
+
+# from haive.agents.planning.plan_and_execute.agent import PlanAndExecuteAgent
 
 __all__ = [
-    "Agent",
+    # Version
     "__version__",
+    # Base classes
+    "Agent",
+    "GenericAgent",
+    # Common agents
+    "SimpleAgent",
+    "ReactAgent",
+    "BaseRAGAgent",
+    "SimpleRAGAgent",
+    "MultiAgent",
+    "PlanAndExecuteAgent",
 ]

@@ -1,20 +1,14 @@
-"""Reasoning And Critique - TODO: Add brief description
+"""Reasoning And Critique - Module for reasoning and self-critique agents.
 
-TODO: Add detailed description of module functionality
+This module provides agents that can reason about their outputs and perform
+self-critique and reflection to improve their responses.
 
-
+Module is currently under development.
 
 Example:
-    Basic usage::
+    Module is in development::
 
-        from haive.reasoning_and_critique import module_function
-
-        # TODO: Add example
-
-
-See Also:
-    :mod:`haive.reasoning_and_critique.reflection`: TODO: Add description
-    :mod:`haive.reasoning_and_critique.lats`: TODO: Add description
-    :mod:`haive.reasoning_and_critique.reflexion`: TODO: Add description
+        # TODO: Add example when agents are implemented
+        pass
 
 """

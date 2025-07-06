@@ -314,9 +314,9 @@ def example_socratic_debate():
             print(f"\n[System]: {msg.content}")
 
 
-# if __name__ == "__main__":
-# Run examples
-# example_simple_debate()
-# example_panel_debate()
-# example_oxford_debate()
-# example_socratic_debate()
+if __name__ == "__main__":
+    # Run examples
+    example_simple_debate()
+    # example_panel_debate()
+    # example_oxford_debate()
+    # example_socratic_debate()
