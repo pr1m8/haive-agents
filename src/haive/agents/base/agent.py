@@ -133,6 +133,10 @@ class Agent(
     state_schema: type[StateSchema] | type[BaseModel] | dict[str, Any] | None = Field(
         default=None, description="Schema for agent state"
     )
+    use_prebuilt_base: bool = Field(
+        default=False,
+        description="Whether to use the state_schema as a base for composition",
+    )
     input_schema: type[BaseModel] | dict[str, Any] | None = Field(
         default=None, description="Schema for agent input"
     )
@@ -362,9 +366,11 @@ class Agent(
         3. Supports token usage tracking
         4. Automatically derives I/O schemas
         """
-        # Only generate if not already provided
-        if self.state_schema:
-            logger.debug(f"State schema already provided for {self.name}")
+        # Check if we should skip schema generation
+        if self.state_schema and not self.use_prebuilt_base and not self.engines:
+            logger.debug(
+                f"State schema already provided for {self.name}, no engines to integrate"
+            )
             # Still derive I/O schemas if needed
             self._auto_derive_io_schemas()
             return
@@ -392,7 +398,28 @@ class Agent(
         )
 
         try:
-            if agent_list:
+            # Handle case where we have a prebuilt base schema to extend
+            if self.state_schema and self.use_prebuilt_base and engine_list:
+                logger.debug(
+                    f"Extending prebuilt schema {self.state_schema.__name__} with engine fields"
+                )
+                composer = SchemaComposer(name=f"{self.__class__.__name__}State")
+
+                # First add fields from the prebuilt schema
+                composer.add_fields_from_model(self.state_schema)
+
+                # Add all engines - composer will handle engine management and I/O
+                for engine in engine_list:
+                    composer.add_engine(engine)
+                    composer.add_fields_from_engine(engine)
+
+                # Build schema - this will auto-add engine management if needed
+                self.state_schema = composer.build()
+
+                logger.debug(
+                    f"Extended schema built: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                )
+            elif agent_list:
                 # Use AgentSchemaComposer for multi-agent scenarios
                 logger.debug(f"Creating schema from {len(agent_list)} sub-agents")
                 try:

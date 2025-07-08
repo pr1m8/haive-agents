@@ -12,7 +12,7 @@ from typing import Any, Literal
 
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.schema.multi_agent_schema_composer import MultiAgentSchemaComposer
+from haive.core.schema.agent_schema_composer import AgentSchemaComposer
 from langgraph.graph import END
 from langgraph.types import Command
 from pydantic import Field, PrivateAttr, model_validator
@@ -139,8 +139,8 @@ class MultiAgent(Agent):
         # Get list of agents
         agent_list = list(self.agents.values())
 
-        # Use MultiAgentSchemaComposer
-        self.state_schema = MultiAgentSchemaComposer.from_agents(
+        # Use AgentSchemaComposer
+        self.state_schema = AgentSchemaComposer.from_agents(
             agents=agent_list,
             name=f"{self.__class__.__name__}State",
             separation=self.separation_strategy,
