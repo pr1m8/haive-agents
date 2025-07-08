@@ -984,11 +984,17 @@ class MultiAgent(Agent):
                 f"Failed to serialize engine {getattr(engine, 'name', 'unknown')}: {e}"
             )
             # Return minimal engine info
-            engine_type = getattr(engine, "engine_type", None)
-            if engine_type and hasattr(engine_type, "value"):
-                engine_type_value = engine_type.value
+            # Check if this is an agent
+            from haive.agents.base.agent import Agent
+
+            if isinstance(engine, Agent):
+                engine_type_value = "agent"
             else:
-                engine_type_value = "unknown"
+                engine_type = getattr(engine, "engine_type", None)
+                if engine_type and hasattr(engine_type, "value"):
+                    engine_type_value = engine_type.value
+                else:
+                    engine_type_value = "unknown"
 
             return {
                 "id": getattr(engine, "id", str(id(engine))),
