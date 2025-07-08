@@ -984,10 +984,16 @@ class MultiAgent(Agent):
                 f"Failed to serialize engine {getattr(engine, 'name', 'unknown')}: {e}"
             )
             # Return minimal engine info
+            engine_type = getattr(engine, "engine_type", None)
+            if engine_type and hasattr(engine_type, "value"):
+                engine_type_value = engine_type.value
+            else:
+                engine_type_value = "unknown"
+
             return {
                 "id": getattr(engine, "id", str(id(engine))),
                 "name": getattr(engine, "name", "unknown"),
-                "engine_type": str(getattr(engine, "engine_type", "unknown")),
+                "engine_type": engine_type_value,
             }
 
     def _prepare_input(self, input_data: Any) -> Any:
