@@ -1,15 +1,19 @@
-"""React - TODO: Add brief description
+"""React - ReAct agent implementation
 
-TODO: Add detailed description of module functionality
+ReAct (Reasoning and Acting) agent that can use tools and reason about actions.
 
 
 
 Example:
     Basic usage::
 
-        from haive.react import module_function
+        from haive.agents.react import ReactAgent
 
-        # TODO: Add example
+        agent = ReactAgent(name="react_agent", engine=engine)
 
 
 """
+
+from haive.agents.react.agent import ReactAgent
+
+__all__ = ["ReactAgent"]

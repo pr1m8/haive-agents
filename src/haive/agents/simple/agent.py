@@ -5,9 +5,9 @@ from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
-from haive.core.graph.node.parser_node_config import ParserNodeConfig
-from haive.core.graph.node.tool_node_config import ToolNodeConfig
-from haive.core.graph.node.validation_node_config import ValidationNodeConfig
+from haive.core.graph.node.parser_node_config_v2 import ParserNodeConfigV2
+from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
+from haive.core.graph.node.validation_node_config_v2 import ValidationNodeConfigV2
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import LLMConfig
 from haive.core.schema.schema_composer import SchemaComposer
@@ -246,8 +246,22 @@ class SimpleAgent(Agent):
         # Create a new schema composer to build enhanced schema
         composer = SchemaComposer(name=f"Enhanced{current_output_schema.__name__}")
 
-        # Add existing fields from current schema
-        composer.add_fields_from_model(current_output_schema)
+        # Add the enhanced messages field using StandardFields
+        composer.add_standard_field("messages", use_enhanced=True)
+
+        # Add existing fields from current schema (except messages which we just added)
+        if hasattr(current_output_schema, "model_fields"):
+            for field_name, field_info in current_output_schema.model_fields.items():
+                if (
+                    field_name != "messages"
+                ):  # Skip messages since we added enhanced version
+                    composer.add_field(
+                        name=field_name,
+                        field_type=field_info.annotation,
+                        default=field_info.default,
+                        default_factory=field_info.default_factory,
+                        description=field_info.description,
+                    )
 
         # Add the structured output field
         field_name = (
@@ -369,17 +383,12 @@ class SimpleAgent(Agent):
             graph.metadata["available_nodes"] = available_nodes
             return graph
 
-        # Add validation node
-        graph.add_node("validation", placeholder_node)
-        available_nodes.append("validation")
-
         # Add tool node if needed
         if needs_tool_node:
-            # Pass engine name instead of engine object
+            # V2 tool node with better field handling
             tool_config = ToolNodeConfig(
                 name="tool_node",
                 engine_name=self.engine.name,
-                allowed_routes=["langchain_tool", "function", "tool_node"],
             )
             graph.add_node("tool_node", tool_config)
             graph.add_edge("tool_node", END)
@@ -387,14 +396,27 @@ class SimpleAgent(Agent):
 
         # Add parser node if needed
         if needs_parser_node:
-            # Pass engine name instead of engine object
-            parser_config = ParserNodeConfig(
+            # V2 parser node with better field handling
+            parser_config = ParserNodeConfigV2(
                 name="parse_output",
                 engine_name=self.engine.name,
             )
             graph.add_node("parse_output", parser_config)
             graph.add_edge("parse_output", END)
             available_nodes.append("parse_output")
+
+        # Create validation config with available nodes (v2)
+        validation_config = ValidationNodeConfigV2(
+            name="validation",
+            engine_name=self.engine.name,
+            tool_node="tool_node",
+            parser_node="parse_output",
+            available_nodes=available_nodes,
+        )
+
+        # Add validation node with proper config
+        graph.add_node("validation", validation_config)
+        available_nodes.append("validation")
 
         # Agent routing with conditional branching
         if has_force_tool_use:
@@ -406,22 +428,8 @@ class SimpleAgent(Agent):
                 "agent_node", has_tool_calls, {True: "validation", False: END}
             )
 
-        # Create validation config with available nodes
-        validation_config = ValidationNodeConfig(
-            name="validation",
-            engine_name=self.engine.name,
-            tool_node="tool_node",
-            parser_node="parse_output",
-            available_nodes=available_nodes,  # Pass available nodes
-        )
-
-        routing_map = {"has_errors": "agent_node"}
-        if needs_tool_node:
-            routing_map["tool_node"] = "tool_node"
-        if needs_parser_node:
-            routing_map["parse_output"] = "parse_output"
-
-        graph.add_conditional_edges("validation", validation_config, routing_map)
+        # ValidationNodeConfigV2 returns Command, not conditional routing
+        # Remove the conditional edges as V2 uses Send-based routing internally
 
         # Store available nodes and tool routes in graph metadata
         graph.metadata["available_nodes"] = available_nodes

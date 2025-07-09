@@ -535,7 +535,32 @@ class Agent(
             # Special handling for engines with structured output
             main_engine = self.main_engine
             if main_engine:
-                # Check for structured output model
+                # FIRST: Check if engine already has a modified output schema
+                # (SimpleAgentV2 modifies the engine's output schema to include structured output)
+                if hasattr(main_engine, "output_schema") and main_engine.output_schema:
+                    # Check if engine has derive_output_schema method
+                    if hasattr(main_engine, "derive_output_schema"):
+                        try:
+                            engine_output_schema = main_engine.derive_output_schema()
+                            if engine_output_schema:
+                                self.output_schema = engine_output_schema
+                                logger.debug(
+                                    f"Using engine's modified output schema: {engine_output_schema.__name__}"
+                                )
+                                return
+                        except Exception as e:
+                            logger.debug(
+                                f"Could not derive output schema from engine: {e}"
+                            )
+
+                    # Fallback: use engine's output_schema directly
+                    self.output_schema = main_engine.output_schema
+                    logger.debug(
+                        f"Using engine's output schema directly: {main_engine.output_schema.__name__}"
+                    )
+                    return
+
+                # SECOND: Check for structured output model (original logic)
                 structured_output = getattr(
                     main_engine, "structured_output_model", None
                 )
@@ -547,8 +572,13 @@ class Agent(
 
                     if output_version == "v2" or output_version == 2:
                         # For v2, we need to create a schema that includes the parsed output field
-                        # The field name is typically the lowercased model name
-                        field_name = structured_output.__name__.lower()
+                        # Use proper field naming utilities
+                        from haive.core.schema.field_utils import (
+                            get_field_info_from_model,
+                        )
+
+                        field_info = get_field_info_from_model(structured_output)
+                        field_name = field_info["field_name"]
 
                         # Create output schema with just the structured field
                         self.output_schema = create_model(

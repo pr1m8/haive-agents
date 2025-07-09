@@ -1,195 +1,236 @@
 #!/usr/bin/env python3
 """
-Dynamic Supervisor Example with Debug Output
+Dynamic Supervisor Example
 
-This example demonstrates the dynamic supervisor agent in action,
-showing how it can dynamically add agents and execute tasks with
-full debug visibility.
+This example demonstrates the dynamic supervisor agent coordinating
+multiple specialized agents to handle complex, multi-step tasks.
 """
 
 import asyncio
-import logging
-from typing import Any, Dict
 
-# Configure logging for debug output
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-
-from haive.core.engine import AugLLMEngine
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig, ModelType
 from langchain_core.messages import HumanMessage
 
-from haive.agents.experiments.dynamic_supervisor import (
-    AgentRegistry,
-    DynamicSupervisorAgent,
-    create_test_registry,
-)
+from haive.agents.dynamic_supervisor import DynamicSupervisorAgent
+from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
 
-async def create_example_supervisor() -> DynamicSupervisorAgent:
-    """Create a supervisor with a real engine for testing."""
-    print("🚀 Creating Dynamic Supervisor with Debug Mode")
+async def create_specialized_agents():
+    """Create specialized agents for different tasks."""
+    print("🤖 Creating Specialized Agents")
     print("=" * 60)
 
-    # Create test registry
-    registry = create_test_registry()
+    # Research Agent
+    research_engine = AugLLMConfig(
+        name="research_engine",
+        llm_config=AzureLLMConfig(model=ModelType.GPT_4O_MINI, temperature=0.7),
+        system_message="You are a research assistant. Search for information and provide detailed analysis.",
+    )
+    research_agent = SimpleAgent(name="research_agent", engine=research_engine)
+    print("✅ Created research agent")
 
-    # Create supervisor with debug=True
+    # Math Agent
+    math_engine = AugLLMConfig(
+        name="math_engine",
+        llm_config=AzureLLMConfig(model=ModelType.GPT_4O_MINI, temperature=0.0),
+        system_message="You are a mathematical expert. Solve calculations and explain mathematical concepts clearly.",
+    )
+    math_agent = ReactAgent(name="math_agent", engine=math_engine)
+    print("✅ Created math agent")
+
+    # Code Agent
+    code_engine = AugLLMConfig(
+        name="code_engine",
+        llm_config=AzureLLMConfig(model=ModelType.GPT_4O_MINI, temperature=0.0),
+        system_message="You are a coding expert. Write clean, efficient code and explain programming concepts.",
+    )
+    code_agent = SimpleAgent(name="code_agent", engine=code_engine)
+    print("✅ Created code agent")
+
+    return research_agent, math_agent, code_agent
+
+
+async def create_supervisor() -> DynamicSupervisorAgent:
+    """Create the dynamic supervisor."""
+    print("\n🎯 Creating Dynamic Supervisor")
+    print("=" * 60)
+
+    # Create supervisor engine
+    supervisor_engine = AugLLMConfig(
+        name="supervisor_engine",
+        llm_config=AzureLLMConfig(model=ModelType.GPT_4O, temperature=0.0),
+        force_tool_use=True,
+        system_message="",  # Will be set by supervisor
+    )
+
+    # Create supervisor
     supervisor = DynamicSupervisorAgent(
-        name="Debug Supervisor",
-        agent_registry=registry,
-        debug=True,  # Enable debug mode
+        name="task_coordinator", engine=supervisor_engine, enable_agent_builder=False
     )
 
     print(f"✅ Created supervisor: {supervisor.name}")
-    print(f"📝 Initial tools count: {len(supervisor.tools)}")
-
-    # List initial tools
-    print("\n🔧 Initial Tools:")
-    for i, tool in enumerate(supervisor.tools, 1):
-        print(f"  {i}. {tool.name}: {tool.description}")
-
     return supervisor
 
 
-async def demonstrate_dynamic_agent_addition(supervisor: DynamicSupervisorAgent):
-    """Show how agents can be added dynamically."""
+async def demonstrate_simple_routing(supervisor: DynamicSupervisorAgent, state):
+    """Demonstrate simple task routing to appropriate agents."""
     print("\n" + "=" * 60)
-    print("🔄 DYNAMIC AGENT ADDITION DEMONSTRATION")
+    print("📊 SIMPLE TASK ROUTING")
     print("=" * 60)
 
-    initial_count = len(supervisor.tools)
-    print(f"📊 Tools before addition: {initial_count}")
+    # Task 1: Math question
+    print("\n🔢 Task 1: What is the square root of 144?")
+    result = await supervisor.arun("What is the square root of 144?", state=state)
+
+    print(f"   Last executed agent: {state.last_executed_agent}")
+    print(f"   Response: {state.agent_response}")
+
+    # Task 2: Research question
+    print("\n🔍 Task 2: What are the latest developments in quantum computing?")
+    result = await supervisor.arun(
+        "What are the latest developments in quantum computing?", state=state
+    )
+
+    print(f"   Last executed agent: {state.last_executed_agent}")
+    print(f"   Response: {state.agent_response[:200]}...")
+
+    # Task 3: Code question
+    print("\n💻 Task 3: Write a Python function to calculate factorial")
+    result = await supervisor.arun(
+        "Write a Python function to calculate factorial", state=state
+    )
+
+    print(f"   Last executed agent: {state.last_executed_agent}")
+    print(f"   Response: {state.agent_response[:200]}...")
+
+
+async def demonstrate_multi_step_task(supervisor: DynamicSupervisorAgent, state):
+    """Demonstrate a complex multi-step task."""
+    print("\n" + "=" * 60)
+    print("🔗 MULTI-STEP TASK DEMONSTRATION")
+    print("=" * 60)
+
+    print(
+        "\n📝 Complex Task: Research Fibonacci sequence, calculate 10th number, write Python function"
+    )
+
+    result = await supervisor.arun(
+        "Research the Fibonacci sequence, calculate the 10th number, and write a Python function to generate it",
+        state=state,
+    )
+
+    print("\n📊 Execution Summary:")
+    # Show which agents were involved
+    agent_executions = []
+    for msg in state.messages:
+        if (
+            hasattr(msg, "additional_kwargs")
+            and msg.additional_kwargs.get("source") == "agent_execution"
+        ):
+            agent_name = msg.additional_kwargs.get("agent_name", "unknown")
+            if agent_name not in agent_executions:
+                agent_executions.append(agent_name)
+
+    print(f"   Agents involved: {', '.join(agent_executions)}")
+    print(f"   Total messages: {len(state.messages)}")
+    print(f"   Last response: {state.agent_response[:200]}...")
+
+
+async def demonstrate_dynamic_agent_management(
+    supervisor: DynamicSupervisorAgent, state
+):
+    """Show dynamic agent management capabilities."""
+    print("\n" + "=" * 60)
+    print("🔧 DYNAMIC AGENT MANAGEMENT")
+    print("=" * 60)
 
     # Add a new agent dynamically
-    print("\n➕ Adding 'writing_agent' to registry...")
-    supervisor.add_agent_to_registry(
-        name="writing_agent",
-        description="Specialized in creative writing, editing, and content creation",
-        agent_class=SimpleAgent,
-        config={
-            "name": "Creative Writer",
-            "system_message": "You are a creative writing assistant. Help with writing, editing, and content creation.",
-        },
+    print("\n➕ Adding translator agent...")
+    translator_engine = AugLLMConfig(
+        name="translator_engine",
+        llm_config=AzureLLMConfig(model=ModelType.GPT_4O_MINI, temperature=0.3),
+        system_message="You are a translation expert. Translate text accurately between languages.",
+    )
+    translator_agent = SimpleAgent(name="translator_agent", engine=translator_engine)
+
+    state.add_agent(
+        "translator",
+        translator_agent,
+        "Translation expert - translates text between languages",
+    )
+    print("✅ Translator agent added")
+
+    # Use the new agent
+    print("\n🌍 Task: Translate 'Hello, how are you?' to French")
+    result = await supervisor.arun(
+        "Translate 'Hello, how are you?' to French", state=state
     )
 
-    new_count = len(supervisor.tools)
-    print(f"📊 Tools after addition: {new_count}")
-    print(f"🆕 New tools added: {new_count - initial_count}")
+    print(f"   Last executed agent: {state.last_executed_agent}")
+    print(f"   Response: {state.agent_response}")
 
-    # Show updated tools
-    print("\n🔧 Updated Tools List:")
-    for i, tool in enumerate(supervisor.tools, 1):
-        is_new = "handoff_to_writing_agent" in tool.name
-        prefix = "🆕" if is_new else "  "
-        print(f"{prefix} {i}. {tool.name}: {tool.description}")
+    # Deactivate an agent
+    print("\n🚫 Deactivating math agent...")
+    state.deactivate_agent("math")
+    print("✅ Math agent deactivated")
 
-    return supervisor
+    # Try to use deactivated agent
+    print("\n🔢 Task: Calculate 15 * 23 (with math agent deactivated)")
+    result = await supervisor.arun("Calculate 15 * 23", state=state)
+
+    print(f"   Last executed agent: {state.last_executed_agent}")
+    print(f"   Note: {state.agent_response[:100]}...")
+
+    # Reactivate agent
+    print("\n✅ Reactivating math agent...")
+    state.activate_agent("math")
+
+    # Use reactivated agent
+    print("\n🔢 Task: Now calculate 15 * 23")
+    result = await supervisor.arun("Now calculate 15 * 23", state=state)
+
+    print(f"   Last executed agent: {state.last_executed_agent}")
+    print(f"   Response: {state.agent_response}")
 
 
-async def demonstrate_agent_listing(supervisor: DynamicSupervisorAgent):
-    """Show the list_agents tool in action."""
+async def show_execution_summary(state):
+    """Show a summary of the execution."""
     print("\n" + "=" * 60)
-    print("📋 AGENT LISTING DEMONSTRATION")
+    print("📊 EXECUTION SUMMARY")
     print("=" * 60)
 
-    # Find and use the list_agents tool
-    list_tool = next(t for t in supervisor.tools if t.name == "list_agents")
+    # Count agent executions
+    agent_executions = {}
+    for msg in state.messages:
+        if (
+            hasattr(msg, "additional_kwargs")
+            and msg.additional_kwargs.get("source") == "agent_execution"
+        ):
+            agent_name = msg.additional_kwargs.get("agent_name", "unknown")
+            agent_executions[agent_name] = agent_executions.get(agent_name, 0) + 1
 
-    print("🔍 Invoking list_agents tool...")
-    result = list_tool.invoke({})
+    print("\n🤖 Agent Execution Count:")
+    for agent, count in agent_executions.items():
+        print(f"   {agent}: {count} executions")
 
-    print("📋 Available Agents:")
-    print(result)
-
-    return result
-
-
-async def demonstrate_handoff_simulation(supervisor: DynamicSupervisorAgent):
-    """Simulate a handoff to an agent."""
-    print("\n" + "=" * 60)
-    print("🤝 AGENT HANDOFF SIMULATION")
-    print("=" * 60)
-
-    # Create a mock state for testing
-    mock_state = {
-        "messages": [HumanMessage(content="Hello, I need help with research.")],
-        "agent_registry": supervisor.agent_registry.to_state_format(),
-        "current_agent_name": None,
-        "current_task": None,
-        "execution_history": [],
-        "task_complete": False,
-        "current_iteration": 0,
-    }
-
-    print("📦 Created mock state:")
-    print(f"  Messages: {len(mock_state['messages'])}")
-    print(f"  Registry entries: {len(mock_state['agent_registry'])}")
-
-    # Find research agent handoff tool
-    research_handoff = next(
-        t for t in supervisor.tools if t.name == "handoff_to_research_agent"
-    )
-
-    print(f"\n🎯 Found handoff tool: {research_handoff.name}")
-    print(f"📝 Tool description: {research_handoff.description}")
-
-    # Note: In a real scenario, this would be called by the graph with proper state injection
+    print(f"\n📝 Total Messages: {len(state.messages)}")
     print(
-        "\n⚠️  Note: In actual usage, state injection happens automatically via LangGraph"
+        f"🔧 Active Agents: {len([a for a, info in state.agents.items() if info.is_active()])}"
     )
-    print("🔄 This simulation shows the tool structure and expected behavior")
-
-    try:
-        # This will fail because we're not in a real graph context with state injection
-        result = research_handoff.invoke(
-            {
-                "task": "Research the latest AI developments",
-                # State injection would normally happen here automatically
-            }
-        )
-        print(f"✅ Handoff result: {result}")
-    except Exception as e:
-        print(f"🔴 Expected error (state injection missing): {e}")
-        print("   This is normal - state injection happens during graph execution")
-
-
-async def show_supervisor_state_schema(supervisor: DynamicSupervisorAgent):
-    """Show the supervisor's state schema."""
-    print("\n" + "=" * 60)
-    print("📊 SUPERVISOR STATE SCHEMA")
-    print("=" * 60)
-
-    state_schema = supervisor.state_schema
-    print(f"🏗️  State Schema Class: {state_schema.__name__}")
-
-    # Create an example state
-    example_state = state_schema(
-        messages=[HumanMessage(content="Example message")],
-        agent_registry=supervisor.agent_registry.to_state_format(),
-        current_agent_name="research_agent",
-        current_task="Research AI trends",
-        execution_history=[
-            {
-                "agent_name": "research_agent",
-                "task": "Research task",
-                "result": "Research completed",
-                "success": True,
-            }
-        ],
+    print(
+        f"🚫 Inactive Agents: {len([a for a, info in state.agents.items() if not info.is_active()])}"
     )
 
-    print("\n📋 Example State Fields:")
-    print(f"  🗨️  messages: {len(example_state.messages)} messages")
-    print(f"  🤖 agent_registry: {len(example_state.agent_registry)} agents")
-    print(f"  🎯 current_agent_name: {example_state.current_agent_name}")
-    print(f"  📝 current_task: {example_state.current_task}")
-    print(f"  📚 execution_history: {len(example_state.execution_history)} entries")
-    print(f"  ✅ task_complete: {example_state.task_complete}")
-    print(f"  🔢 available_agents: {example_state.available_agents}")
-
-    return example_state
+    # Show available tools
+    tools = state.get_all_tools()
+    handoff_tools = [t.name for t in tools if t.name.startswith("handoff_to_")]
+    print(f"\n🔧 Available Tools: {len(tools)}")
+    print(f"   Handoff tools: {', '.join(handoff_tools)}")
+    print(
+        f"   Other tools: {', '.join([t.name for t in tools if not t.name.startswith('handoff_to_')])}"
+    )
 
 
 async def demonstrate_full_workflow():
@@ -197,43 +238,57 @@ async def demonstrate_full_workflow():
     print("🎭 DYNAMIC SUPERVISOR COMPLETE DEMONSTRATION")
     print("=" * 80)
 
-    # Step 1: Create supervisor
-    supervisor = await create_example_supervisor()
+    # Step 1: Create specialized agents
+    research_agent, math_agent, code_agent = await create_specialized_agents()
 
-    # Step 2: Show initial state
-    await show_supervisor_state_schema(supervisor)
+    # Step 2: Create supervisor
+    supervisor = await create_supervisor()
 
-    # Step 3: List available agents
-    await demonstrate_agent_listing(supervisor)
+    # Step 3: Initialize state with agents
+    print("\n📦 Initializing Supervisor State")
+    print("=" * 60)
 
-    # Step 4: Add agent dynamically
-    supervisor = await demonstrate_dynamic_agent_addition(supervisor)
+    state = supervisor.create_initial_state()
+    state.add_agent(
+        "research",
+        research_agent,
+        "Research expert - searches for information and provides analysis",
+    )
+    state.add_agent(
+        "math",
+        math_agent,
+        "Mathematics expert - performs calculations and explains math concepts",
+    )
+    state.add_agent(
+        "code",
+        code_agent,
+        "Programming expert - writes code and explains programming concepts",
+    )
 
-    # Step 5: List agents again to show the addition
-    print("\n🔄 Listing agents after dynamic addition:")
-    await demonstrate_agent_listing(supervisor)
+    print(f"✅ Added {len(state.agents)} agents to supervisor")
 
-    # Step 6: Simulate handoff
-    await demonstrate_handoff_simulation(supervisor)
+    # Step 4: Simple routing demonstration
+    await demonstrate_simple_routing(supervisor, state)
 
-    # Final summary
+    # Step 5: Multi-step task demonstration
+    await demonstrate_multi_step_task(supervisor, state)
+
+    # Step 6: Dynamic agent management
+    await demonstrate_dynamic_agent_management(supervisor, state)
+
+    # Step 7: Show execution summary
+    await show_execution_summary(state)
+
+    # Final message
     print("\n" + "=" * 80)
     print("🎉 DEMONSTRATION COMPLETE")
     print("=" * 80)
-    print(f"✅ Final supervisor state:")
-    print(f"   Name: {supervisor.name}")
-    print(f"   Tools: {len(supervisor.tools)}")
-    print(f"   Agents: {len(supervisor.agent_registry.list_agents())}")
-    print(f"   Debug Mode: {getattr(supervisor, 'debug', False)}")
-
-    agent_names = list(supervisor.agent_registry.list_agents().keys())
-    print(f"   Available Agents: {', '.join(agent_names)}")
-
-    tool_names = [t.name for t in supervisor.tools]
-    handoff_tools = [name for name in tool_names if name.startswith("handoff_to_")]
-    print(f"   Handoff Tools: {', '.join(handoff_tools)}")
-
-    print("\n🚀 The supervisor is ready for real execution with debug visibility!")
+    print("\n💡 Key Takeaways:")
+    print("   1. The supervisor automatically routes tasks to appropriate agents")
+    print("   2. Agents can be added, removed, and managed dynamically")
+    print("   3. Complex multi-step tasks are handled through the ReAct loop")
+    print("   4. Each agent execution is tracked with metadata")
+    print("\n🚀 The dynamic supervisor is ready for production use!")
 
 
 async def main():
@@ -248,4 +303,11 @@ async def main():
 
 
 if __name__ == "__main__":
+    # Note: This example uses mock LLM responses for demonstration
+    # In production, ensure you have proper Azure OpenAI credentials configured
+    print("\n⚠️  Note: This example requires configured Azure OpenAI credentials")
+    print(
+        "   Set AZURE_OPENAI_API_KEY and AZURE_OPENAI_ENDPOINT environment variables\n"
+    )
+
     asyncio.run(main())
