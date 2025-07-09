@@ -1,19 +1,20 @@
-"""Summarizer - TODO: Add brief description
+"""Summarizer document modifiers.
 
-TODO: Add detailed description of module functionality
-
-
-
-Example:
-    Basic usage::
-
-        from haive.summarizer import module_function
-
-        # TODO: Add example
-
-
-See Also:
-    :mod:`haive.summarizer.iterative_refinement`: TODO: Add description
-    :mod:`haive.summarizer.map_branch`: TODO: Add description
-
+This module provides tools for summarizing documents using various strategies.
 """
+
+# Import classes from submodules
+try:
+    from .base import SummarizerAgent
+except ImportError:
+    SummarizerAgent = None
+
+try:
+    from .iterative_refinement.iterative_summarizer import IterativeSummarizer
+except ImportError:
+    IterativeSummarizer = None
+
+__all__ = [
+    "SummarizerAgent",
+    "IterativeSummarizer",
+]

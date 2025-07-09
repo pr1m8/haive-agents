@@ -1,582 +1,226 @@
-"""ReWOO Agent Implementation
+"""ReWOO Agent following SimpleAgent pattern with ReWOO-specific routing."""
 
-This file contains the implementation of the Reasoning Without Observation agent.
-"""
-
-# Import directly from base, not from plan_and_execute to avoid circular imports
-import json
-import traceback
-from typing import Any
-
-from agents.rewoo.models import RewooPlan, RewooStep, ToolCall
-from agents.rewoo.state import ReWOOState
-from haive.core.engine.agent.agent import AgentArchitecture
-from haive.core.engine.aug_llm import compose_runnable
-from langgraph.graph import END, START, StateGraph
-from langgraph.types import Command
-
-"""
-Configuration for the ReWOO agent.
-"""
-
-import uuid
+import logging
+from typing import Any, Dict, List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.utils.tool_utils import _format_tool_descriptions
-from haive.tools.tools.search_tools import (
-    tavily_extract,
-    tavily_qna,
-    tavily_search_context,
-    tavily_search_tool,
-)
-from langchain_core.runnables import RunnableConfig
-from langchain_core.tools import BaseTool
-from pydantic import BaseModel, Field, model_validator
+from haive.core.graph.node.engine_node import EngineNodeConfig
+from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.schema.prebuilt.llm_state import LLMState
+from langchain_core.messages import AIMessage
+from langgraph.graph import END, START
+from langgraph.types import Command
+from pydantic import Field, computed_field
 
-from haive.agents.planning.rewoo.engines import (
-    rewoo_aug_llm_config,
-    solve_aug_llm_config,
-)
-from haive.agents.planning.rewoo.models import ToolCall
-from haive.agents.planning.rewoo.state import ReWOOState
+from haive.agents.planning.rewoo.models import EvidenceStatus, ReWOOPlan
+from haive.agents.simple.agent import SimpleAgent
+
+logger = logging.getLogger(__name__)
 
 
-class RewooAgentConfig(AgentConfig):
-    """Configuration for the ReWOO Agent with automatic prompt formatting.
+class ReWOOState(LLMState):
+    """ReWOO-specific state that extends LLMState with tool options.
 
-    This configuration extends the base AgentArchitectureConfig by adding:
-    - Separate planner and solver LLM configurations
-    - Tool registration for validation
-    - Automatic prompt formatting with tool descriptions
+    This state provides tools as a computed field that can be used by the agent
+    but doesn't automatically sync them to all engines. This gives us more control
+    over tool routing through validation nodes.
     """
 
-    planner: AugLLMConfig = Field(
-        default=rewoo_aug_llm_config,
-        description="The configuration for the planner LLM",
-    )
-    solver: AugLLMConfig = Field(
-        default=solve_aug_llm_config, description="The configuration for the solver LLM"
-    )
-    # Store tools directly in the config, not in AugLLMConfig
-    tools: list[BaseTool] = Field(
-        default_factory=lambda: [
-            tavily_search_tool,
-            tavily_search_context,
-            tavily_qna,
-            tavily_extract,
-        ],
-        description="The tools available for the agent",
-    )
-    state_schema: type[BaseModel] = Field(
-        default=ReWOOState, description="The state schema for the agent"
-    )
-    runnable_config: RunnableConfig = Field(
-        default={"configurable": {"thread_id": str(uuid.uuid4())}},
-        description="The runnable config for the agent",
-    )
-    should_visualize_graph: bool = Field(
-        default=True, description="Enable graph visualization"
-    )
-    visualize_graph_output_name: str = Field(
-        default="rewoo_graph.png", description="Graph output file name"
+    # Store available tools without auto-sync
+    available_tools: List[Any] = Field(
+        default_factory=list,
+        description="Available tools for ReWOO planning (no auto-sync)",
     )
 
-    @model_validator(mode="after")
-    def validate_and_register_tools(cls, values):
-        """Ensure tools are registered for validation.
+    # ReWOO-specific fields
+    current_plan: Optional[ReWOOPlan] = Field(
+        default=None, description="Current ReWOO plan being executed"
+    )
 
-        This validator:
-        1. Checks that tools are provided
-        2. Registers the tools with the ToolCall model for validation
+    evidence_collected: Dict[str, Any] = Field(
+        default_factory=dict, description="Evidence collected during execution"
+    )
 
-        Args:
-            values: Configuration values
+    @computed_field
+    @property
+    def tool_options(self) -> List[str]:
+        """Computed field providing tool names for planning prompts."""
+        return [
+            tool.name if hasattr(tool, "name") else str(tool)
+            for tool in self.available_tools
+        ]
 
-        Returns:
-            Validated configuration values
-        """
-        tools = values.tools
+    @computed_field
+    @property
+    def planning_context(self) -> str:
+        """Computed field for planning agent system message."""
+        return f"""You are a ReWOO planning agent. Create evidence-based plans.
 
-        if not tools:
-            raise ValueError("No tools provided in the configuration!")
+Given the user's query, create a ReWOO plan with:
+1. Steps that collect evidence (#E1, #E2, etc.)
+2. Tool calls for each piece of evidence  
+3. Evidence dependencies and references
 
-        # Register tools in ToolCall for validation
-        ToolCall.set_available_tools(tools)
+Available tools: {self.tool_options}
 
-        print(
-            f"Registered Tools for Validation: {list(ToolCall.available_tools.keys())}"
-        )
-        return values
-
-    @model_validator(mode="after")
-    def format_planning_prompt_with_tools(self):
-        """Format the planning prompt with available tools.
-
-        This ensures the planner has access to the correct tool descriptions.
-
-        Returns:
-            Self with updated prompt template
-        """
-        # Format tools for inclusion in the prompt
-        formatted_tools = _format_tool_descriptions(self.tools)
-        print(f"Formatted Tools: {formatted_tools}")
-
-        # Update the planner prompt template with tools
-        if not hasattr(self.planner, "prompt_template"):
-            raise ValueError("Planner does not have a prompt_template attribute!")
-
-        self.planner.prompt_template = self.planner.prompt_template.partial(
-            tools=formatted_tools
-        )
-
-        print("Updated Planner Prompt Template with formatted tools")
-        return self
+Create a structured plan where each step produces evidence that later steps can reference."""
 
 
-# Default configuration
-DEFAULT_CONFIG = RewooAgentConfig()
+class ReWOOAgent(SimpleAgent):
+    """ReWOO Agent that extends SimpleAgent with evidence-based planning.
 
+    This agent follows the ReWOO pattern:
+    1. Planning: Creates evidence-based plan
+    2. Collection: Collects evidence systematically
+    3. Reasoning: Uses evidence for final answer
 
-class RewooAgent(AgentArchitecture):
-    """ReWOO (Reasoning Without Observation) Agent implementation.
-
-    This agent architecture follows these steps:
-    1. Planning: Create steps with evidence references and tool calls
-    2. Execution: Run tools and collect evidence for each step
-    3. Solving: Use collected evidence to solve the task
-
-    The key feature is the use of evidence references that allow steps
-    to reference outputs from previous steps.
+    Uses LLMState with controlled tool routing instead of automatic sync.
     """
 
-    def __init__(self, config: RewooAgentConfig = None):
-        """Initialize the ReWOO agent with the given configuration.
+    # Use ReWOO-specific state schema
+    state_schema: type = Field(
+        default=ReWOOState,
+        description="ReWOO state with LLMState base and controlled tool routing",
+    )
 
-        Args:
-            config: Configuration for the agent
-        """
-        # Use default config if none provided
-        if config is None:
-            # from haive_agents.rewoo.config import DEFAULT_CONFIG
-            config = RewooAgentConfig()
+    def setup_agent(self):
+        """Setup ReWOO agent with proper engines and controlled tool routing."""
+        # 1. DEFINE ENGINES FIRST with proper names matching node config
+        planning_engine = self.engine.model_copy(
+            update={
+                "name": "planning",  # Use simple name to match node config
+                "structured_output_model": ReWOOPlan,
+                "force_tool_choice": "ReWOOPlan",
+                "system_message": None,  # Will be set dynamically from state.planning_context
+            }
+        )
 
-        # Call parent constructor
-        super().__init__(config)
+        reasoning_engine = self.engine.model_copy(
+            update={
+                "name": "reasoning",  # Use simple name to match node config
+                "system_message": """You are a ReWOO reasoning agent. Use collected evidence to answer.
 
-        # Store configuration and tools
-        self.config = config
-        self.tools = config.tools
+Review all evidence collected and synthesize into a comprehensive response.
+Reference specific evidence when making claims (e.g., "Based on #E1...").""",
+            }
+        )
 
-        # Create model instances
-        self.llm = config.planner.llm_config.instantiate()
-        self.planner = compose_runnable(config.planner)
-        self.solver = compose_runnable(config.solver)
-
-        # Register tools in ToolCall for validation
-        ToolCall.set_available_tools(self.tools)
-
-    def plan(self, state: ReWOOState) -> Command:
-        """Generate a plan with evidence references for the given task.
-
-        Args:
-            state: The current state
-
-        Returns:
-            Command to update the state
-        """
-        try:
-            # Invoke the planner with the task
-            planner_result = self.planner.invoke({"task": state.task})
-
-            # Parse the result into a RewooPlan
-            if isinstance(planner_result, dict) and "steps" in planner_result:
-                # Extract steps directly from the result
-                plan_data = planner_result
-            elif isinstance(planner_result, str):
-                # Try to extract JSON from string result
-                try:
-                    # Find JSON in the string
-                    json_str = self._extract_json(planner_result)
-                    plan_data = json.loads(json_str)
-                except Exception as e:
-                    print(f"Error parsing JSON from planner result: {e}")
-                    # Create a fallback plan
-                    plan_data = self._create_fallback_plan(state.task)
-            else:
-                # Create a fallback plan if result format is unexpected
-                plan_data = self._create_fallback_plan(state.task)
-
-            # Create the RewooPlan with RewooSteps
-            plan = self._create_plan_from_data(plan_data)
-
-            # Update state with the plan and set current step
-            return Command(update={"plan": plan, "current_step_index": 0})
-
-        except Exception as e:
-            # Handle errors during planning
-            print(f"Error during planning: {e}")
-            traceback.print_exc()
-
-            # Create a fallback plan
-            plan_data = self._create_fallback_plan(state.task)
-            plan = self._create_plan_from_data(plan_data)
-
-            return Command(update={"plan": plan, "current_step_index": 0})
-
-    def _extract_json(self, text: str) -> str:
-        """Extract JSON from text.
-
-        Args:
-            text: The text to extract JSON from
-
-        Returns:
-            Extracted JSON string
-        """
-        # Find the first opening brace
-        start = text.find("{")
-        if start == -1:
-            raise ValueError("No JSON found in text")
-
-        # Find the matching closing brace
-        brace_count = 0
-        for i in range(start, len(text)):
-            if text[i] == "{":
-                brace_count += 1
-            elif text[i] == "}":
-                brace_count -= 1
-                if brace_count == 0:
-                    return text[start : i + 1]
-
-        # If no matching closing brace, try a simple approach
-        end = text.rfind("}")
-        if end > start:
-            return text[start : end + 1]
-
-        raise ValueError("No complete JSON found in text")
-
-    def _create_fallback_plan(self, task: str) -> dict[str, Any]:
-        """Create a fallback plan when planning fails.
-
-        Args:
-            task: The task to create a plan for
-
-        Returns:
-            Fallback plan data
-        """
-        return {
-            "steps": [
-                {
-                    "step_number": 1,
-                    "description": f"Search for information about: {task}",
-                    "evidence_ref": "#E1",
-                    "tool_calls": [{"name": "tavily_search", "input": {"query": task}}],
-                },
-                {
-                    "step_number": 2,
-                    "description": f"Analyze search results and answer the question: {task}",
-                    "evidence_ref": "#E2",
-                    "tool_calls": [
-                        {
-                            "name": "LLM",
-                            "input": f"Based on the search results in #E1, answer the question: {task}",
-                        }
-                    ],
-                },
-            ]
+        # 2. REGISTER ENGINES (no tool sync - we control this)
+        self.engines = {
+            "planning": planning_engine,
+            "reasoning": reasoning_engine,
+            "main": self.engine,  # Keep main engine for tool execution
         }
 
-    def _create_plan_from_data(self, plan_data: dict[str, Any]) -> RewooPlan:
-        """Create a RewooPlan from parsed data.
+        # 3. CALL PARENT SETUP but skip tool sync
+        super().setup_agent()
 
-        Args:
-            plan_data: The parsed plan data
+        # 4. SET AVAILABLE TOOLS in state (no auto-sync)
+        if hasattr(self, "tools") and self.tools:
+            # This will be set in state but won't auto-sync to engines
+            pass
 
-        Returns:
-            RewooPlan instance
-        """
-        steps = []
+    def build_graph(self) -> BaseGraph:
+        """Build ReWOO graph with conditional routing and validation nodes."""
+        # Create ReWOO graph with proper state schema
+        graph = BaseGraph(name=f"{self.name}_rewoo_graph")
 
-        # Process each step
-        for step_data in plan_data.get("steps", []):
-            # Process tool calls
-            tool_calls = []
-            for tool_call_data in step_data.get("tool_calls", []):
-                # Correct common tool name mistakes
-                tool_name = tool_call_data["name"]
-
-                # Map common incorrect tool names to correct ones
-                tool_name_mapping = {
-                    "tavily_search": "tavily_search_tool",
-                    "tavily": "tavily_search_tool",
-                    "search": "tavily_search_tool",
-                    "search_tool": "tavily_search_tool",
-                    "context": "tavily_search_context",
-                    "qna": "tavily_qna",
-                    "extract": "tavily_extract",
-                }
-
-                if tool_name in tool_name_mapping:
-                    corrected_name = tool_name_mapping[tool_name]
-                    print(
-                        f"Correcting tool name from '{tool_name}' to '{corrected_name}'"
-                    )
-                    tool_name = corrected_name
-
-                tool_call = ToolCall(name=tool_name, input=tool_call_data["input"])
-                tool_calls.append(tool_call)
-
-            # Create the step
-            step = RewooStep(
-                step_number=step_data["step_number"],
-                description=step_data["description"],
-                evidence_ref=step_data.get(
-                    "evidence_ref", f"#E{step_data['step_number']}"
-                ),
-                tool_calls=tool_calls,
-                # Added status field
-                status="not_started",
-            )
-            steps.append(step)
-
-        # Create and return the plan
-        return RewooPlan(steps=steps)
-
-    def execute_step(self, state: ReWOOState) -> Command:
-        """Execute the current step in the plan.
-
-        Args:
-            state: The current state
-
-        Returns:
-            Command to update the state
-        """
-        # Get the current step
-        current_step = state.get_current_step()
-        if not current_step:
-            return Command(update={})
-
-        print(f"Executing step {current_step.step_number}: {current_step.description}")
-
-        # Initialize results for this step
-        step_results = {}
-
-        # Execute each tool call
-        for tool_call in current_step.tool_calls:
-            try:
-                if tool_call.name == "LLM":
-                    # Handle LLM tool call
-                    result = self._execute_llm_tool(tool_call, state)
-                    step_results["LLM"] = result
-                else:
-                    # Handle regular tool call
-                    result = self._execute_tool(tool_call, state)
-                    step_results[tool_call.name] = result
-            except Exception as e:
-                # Handle errors during execution
-                error_msg = f"Error executing tool {tool_call.name}: {e!s}"
-                print(error_msg)
-                traceback.print_exc()
-                step_results[tool_call.name] = error_msg
-
-        # Update results and advance to next step
-        results = state.results if hasattr(state, "results") else {}
-        results[current_step.evidence_ref] = step_results
-
-        # Mark the current step as complete
-        current_step.status = "complete"
-
-        # Calculate next step index
-        next_step_index = state.current_step_index + 1
-        if next_step_index >= len(state.plan.steps):
-            next_step_index = None  # All steps complete
-
-        return Command(
-            update={"results": results, "current_step_index": next_step_index}
+        # 1. PLANNING NODE - Forces ReWOO plan generation
+        planning_node = EngineNodeConfig(
+            name="planning", engine_name="planning"  # Use named engine
         )
 
-    def _execute_llm_tool(self, tool_call: ToolCall, state: ReWOOState) -> str:
-        """Execute an LLM tool call.
+        # 2. VALIDATION NODE - Controls tool routing based on plan
+        from haive.core.graph.node.validation_node_config_v2 import (
+            ValidationNodeConfigV2,
+        )
 
-        Args:
-            tool_call: The tool call to execute
-            state: The current state
+        validation_node = ValidationNodeConfigV2(
+            name="validation",
+            engine_name="main",  # Use main engine
+            tool_node="tool_execution",
+            parser_node="plan_parser",
+            available_nodes=["planning", "tool_execution", "plan_parser", "reasoning"],
+        )
 
-        Returns:
-            The result of the LLM invocation
-        """
-        input_text = tool_call.input
-        if isinstance(input_text, str):
-            # Replace evidence references with actual evidence
-            for ref, evidence in state.results.items():
-                if f"{ref}" in input_text:
-                    # Format evidence as a string
-                    evidence_str = json.dumps(evidence, indent=2)
-                    input_text = input_text.replace(f"{ref}", evidence_str)
+        # 3. TOOL EXECUTION NODE - Executes tools based on validation
+        tool_node = ToolNodeConfig(
+            name="tool_execution",
+            engine_name="main",
+            allowed_routes=["langchain_tool", "function", "pydantic_model"],
+        )
 
-        print(f"Invoking LLM with input: {input_text}")
-        result = self.llm.invoke(input_text)
+        # 4. PLAN PARSER NODE - Parses plan from structured output
+        from haive.core.graph.node.parser_node_config_v2 import ParserNodeConfigV2
 
-        return str(result)
+        parser_node = ParserNodeConfigV2(name="plan_parser", engine_name="main")
 
-    def _execute_tool(self, tool_call: ToolCall, state: ReWOOState) -> str:
-        """Execute a regular tool call.
+        # 5. REASONING NODE - Final answer synthesis
+        reasoning_node = EngineNodeConfig(
+            name="reasoning", engine_name="reasoning"  # Use reasoning engine
+        )
 
-        Args:
-            tool_call: The tool call to execute
-            state: The current state
+        # Add all nodes
+        graph.add_node("planning", planning_node)
+        graph.add_node("validation", validation_node)
+        graph.add_node("tool_execution", tool_node)
+        graph.add_node("plan_parser", parser_node)
+        graph.add_node("reasoning", reasoning_node)
 
-        Returns:
-            The result of the tool invocation
-        """
-        # Find the tool
-        tool = next((t for t in self.tools if t.name == tool_call.name), None)
-        if not tool:
-            raise ValueError(f"Unknown tool: {tool_call.name}")
+        # ReWOO Flow: Planning → Validation → [Tool Execution OR Parser] → Reasoning
+        graph.add_edge(START, "planning")
+        graph.add_edge("planning", "validation")
 
-        # Process the input
-        processed_input = self._process_tool_input(tool_call.input, state.results)
+        # Validation controls routing to tool execution or parser
+        # The validation node will use Command to route appropriately
+        graph.add_edge("tool_execution", "reasoning")
+        graph.add_edge("plan_parser", "reasoning")
+        graph.add_edge("reasoning", END)
 
-        # Execute the tool
-        print(f"Executing tool {tool_call.name} with input: {processed_input}")
-        result = tool.invoke(processed_input)
+        return graph
 
-        return str(result)
+    def create_runnable(self, runnable_config=None) -> Any:
+        """Override to set available_tools in initial state."""
+        # Set available tools in state without auto-sync
+        if hasattr(self, "tools") and self.tools:
+            # This will be used by ReWOOState.tool_options computed field
+            initial_state = {"available_tools": self.tools}
+        else:
+            initial_state = {"available_tools": []}
 
-    def _process_tool_input(
-        self, tool_input: Any, results: dict[str, dict[str, str]]
-    ) -> Any:
-        """Process tool input to replace evidence references.
+        # Create runnable with initial state
+        runnable = super().create_runnable(runnable_config)
 
-        Args:
-            tool_input: The tool input to process
-            results: The results dictionary
+        return runnable
 
-        Returns:
-            Processed tool input
-        """
-        # Handle string inputs with evidence references
-        if isinstance(tool_input, str) and tool_input.startswith("#E"):
-            evidence_ref = tool_input
-            if evidence_ref in results:
-                # Join all results for this evidence reference
-                evidence_values = list(results[evidence_ref].values())
-                return " ".join(evidence_values)
-            return f"No evidence found for {evidence_ref}"
 
-        # Handle dictionary inputs
-        if isinstance(tool_input, dict):
-            processed_input = {}
-            for key, value in tool_input.items():
-                if isinstance(value, str) and value.startswith("#E"):
-                    # Process evidence reference
-                    evidence_ref = value
-                    if evidence_ref in results:
-                        # Get the first tool result for this evidence
-                        evidence = results[evidence_ref]
-                        first_result = next(iter(evidence.values())) if evidence else ""
-                        processed_input[key] = first_result
-                    else:
-                        processed_input[key] = f"No evidence found for {evidence_ref}"
-                else:
-                    # Keep other values as is
-                    processed_input[key] = value
-            return processed_input
+# Example usage
+async def example_rewoo_agent():
+    """Example of using ReWOO agent with controlled tool routing."""
+    from haive.tools.tools.search_tools import tavily_qna, tavily_search_tool
+    from haive.tools.tools.yfinance_tool import yfinance_news_tool
 
-        # Return unmodified input for other types
-        return tool_input
+    # Create agent with tools
+    agent = ReWOOAgent(
+        name="rewoo_agent",
+        engine=AugLLMConfig(name="rewoo_main_engine", temperature=0.7),
+        tools=[tavily_search_tool, tavily_qna, yfinance_news_tool],
+    )
 
-    def solve(self, state: ReWOOState) -> Command:
-        """Generate the final solution using the collected evidence.
+    # Run agent - should create plan, execute tools, and reason
+    result = await agent.arun(
+        "What is the current stock price of Apple and latest news?"
+    )
 
-        Args:
-            state: The current state
+    print(f"Result: {result}")
 
-        Returns:
-            Command to update the state with the final solution
-        """
-        task = state.task
-        plan = state.plan
-        results = state.results
-        final_solution = []
+    # Check state for ReWOO plan
+    if hasattr(agent, "state") and hasattr(agent.state, "current_plan"):
+        print(f"Plan: {agent.state.current_plan}")
 
-        # Process each step
-        for step in plan.steps:
-            try:
-                # Get evidence for this step
-                evidence = results.get(step.evidence_ref, {})
-                evidence_str = json.dumps(evidence, indent=2)
 
-                # Create the solver prompt
-                step_prompt = {
-                    "task": task,
-                    "step_number": step.step_number,
-                    "step_description": step.description,
-                    "evidence": evidence_str,
-                }
+if __name__ == "__main__":
+    import asyncio
 
-                # Invoke the solver
-                print(f"Solving step {step.step_number}: {step.description}")
-                step_result = self.solver.invoke(step_prompt)
-
-                # Extract content from the result
-                if hasattr(step_result, "content"):
-                    result_content = step_result.content
-                elif isinstance(step_result, str):
-                    result_content = step_result
-                else:
-                    result_content = str(step_result)
-
-                # Add to the final solution
-                final_solution.append(
-                    {
-                        "step_number": step.step_number,
-                        "description": step.description,
-                        "result": result_content,
-                    }
-                )
-            except Exception as e:
-                # Handle errors during solving
-                error_msg = f"Error solving step {step.step_number}: {e!s}"
-                print(error_msg)
-                traceback.print_exc()
-                final_solution.append(
-                    {
-                        "step_number": step.step_number,
-                        "description": step.description,
-                        "result": error_msg,
-                    }
-                )
-
-        return Command(update={"final_solution": final_solution})
-
-    def _route(self, state: ReWOOState) -> str:
-        """Determine the next step in execution.
-
-        Args:
-            state: The current state
-
-        Returns:
-            The name of the next node to execute
-        """
-        if state.current_step_index is None:
-            return "solving_phase"
-        return "execute_step"
-
-    def setup_workflow(self):
-        """Set up the workflow graph for the agent.
-
-        Creates the nodes and edges for the state graph.
-        """
-        # Create the state graph
-        self.graph = StateGraph(self.config.state_schema)
-
-        # Add nodes
-        self.graph.add_node("planning_phase", self.plan)
-        self.graph.add_node("execute_step", self.execute_step)
-        self.graph.add_node("solving_phase", self.solve)
-
-        # Add edges
-        self.graph.add_edge("planning_phase", "execute_step")
-        self.graph.add_edge("solving_phase", END)
-        self.graph.add_conditional_edges("execute_step", self._route)
-        self.graph.add_edge(START, "planning_phase")
+    asyncio.run(example_rewoo_agent())

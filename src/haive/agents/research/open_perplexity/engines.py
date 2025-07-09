@@ -165,3 +165,12 @@ engines["main"] = AugLLMConfig(
     llm_config=AzureLLMConfig(model="gpt-4o", temperature=0.2),
     prompt_template=main_template,
 )
+
+
+def create_research_engines():
+    """Create and return the dictionary of research engines.
+
+    Returns:
+        dict: Dictionary mapping engine names to their configurations
+    """
+    return engines

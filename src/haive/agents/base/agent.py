@@ -9,7 +9,7 @@ including execution, state management, and persistence functionality through mix
 import logging
 import re
 from abc import ABC, abstractmethod
-from typing import Any, Literal
+from typing import Any, Dict, Literal
 
 from haive.core.engine.base import Engine, EngineType, InvokableEngine
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -114,7 +114,7 @@ class Agent(
     )
 
     # Engine management
-    engines: dict[str, Engine] = Field(
+    engines: Dict[str, Engine] = Field(
         default_factory=dict, description="Dictionary of engines this agent uses"
     )
 
