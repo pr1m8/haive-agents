@@ -116,6 +116,10 @@ class PersistenceMixin:
                 # Check for connection string from environment
                 connection_string = os.getenv("POSTGRES_CONNECTION_STRING")
 
+                # Determine the mode based on checkpoint_mode setting
+                checkpoint_mode = getattr(self, "checkpoint_mode", "sync")
+                mode = CheckpointerMode.ASYNC if checkpoint_mode == "async" else CheckpointerMode.SYNC
+
                 if connection_string:
                     # Use the connection string from environment (likely Supabase)
                     # Create unique pool per agent to avoid prepared statement conflicts
@@ -124,7 +128,7 @@ class PersistenceMixin:
 
                     self.persistence = PostgresCheckpointerConfig(
                         connection_string=connection_string,
-                        mode=CheckpointerMode.SYNC,
+                        mode=mode,
                         storage_mode=CheckpointStorageMode.FULL,
                         prepare_threshold=None,  # Disable prepared statements completely
                         auto_commit=True,  # Ensure auto-commit is enabled
@@ -136,7 +140,7 @@ class PersistenceMixin:
                         },
                     )
                     logger.info(
-                        f"Set up PostgreSQL persistence for {app_name} (prepared statements disabled)"
+                        f"Set up PostgreSQL persistence for {app_name} (mode: {mode.value}, prepared statements disabled)"
                     )
                 else:
                     # Use default local PostgreSQL config
@@ -144,7 +148,7 @@ class PersistenceMixin:
                     app_name = f"haive_{agent_name}_{id(self)}"
 
                     self.persistence = PostgresCheckpointerConfig(
-                        mode=CheckpointerMode.SYNC,
+                        mode=mode,
                         storage_mode=CheckpointStorageMode.FULL,
                         prepare_threshold=None,  # Disable prepared statements completely
                         auto_commit=True,  # Ensure auto-commit is enabled
@@ -156,7 +160,7 @@ class PersistenceMixin:
                         },
                     )
                     logger.info(
-                        f"Set up default PostgreSQL persistence for {app_name} (prepared statements disabled)"
+                        f"Set up default PostgreSQL persistence for {app_name} (mode: {mode.value}, prepared statements disabled)"
                     )
             else:
                 from haive.core.persistence.memory import MemoryCheckpointerConfig
@@ -189,24 +193,51 @@ class PersistenceMixin:
             return
 
         try:
-            from haive.core.persistence.handlers import setup_checkpointer
+            # Handle async mode
+            if self.checkpoint_mode == "async":
+                from haive.core.persistence.handlers import setup_async_checkpointer
+                
+                # Create a minimal config-like object for the handler
+                class PersistenceConfig:
+                    def __init__(self, persistence, checkpoint_mode="async"):
+                        self.persistence = persistence
+                        self.checkpoint_mode = checkpoint_mode
 
-            # Create a minimal config-like object for the handler
-            class PersistenceConfig:
-                def __init__(self, persistence, checkpoint_mode="sync"):
-                    self.persistence = persistence
-                    self.checkpoint_mode = checkpoint_mode
+                temp_config = PersistenceConfig(self.persistence, self.checkpoint_mode)
+                
+                # Set up async checkpointer - this will be used by the graph
+                import asyncio
+                if asyncio.iscoroutinefunction(setup_async_checkpointer):
+                    # Mark that we need async setup
+                    self._async_setup_needed = True
+                    self._async_persistence_config = temp_config
+                    logger.debug("Async checkpointer setup marked for later")
+                else:
+                    self.checkpointer = setup_async_checkpointer(temp_config)
+                    logger.debug(
+                        f"Async checkpointer set up for {getattr(self, 'name', 'Agent')}: "
+                        f"{type(self.checkpointer).__name__}"
+                    )
+            else:
+                # Handle sync mode
+                from haive.core.persistence.handlers import setup_checkpointer
 
-            temp_config = PersistenceConfig(self.persistence, self.checkpoint_mode)
-            self.checkpointer = setup_checkpointer(temp_config)
+                # Create a minimal config-like object for the handler
+                class PersistenceConfig:
+                    def __init__(self, persistence, checkpoint_mode="sync"):
+                        self.persistence = persistence
+                        self.checkpoint_mode = checkpoint_mode
+
+                temp_config = PersistenceConfig(self.persistence, self.checkpoint_mode)
+                self.checkpointer = setup_checkpointer(temp_config)
+
+                logger.debug(
+                    f"Sync checkpointer set up for {getattr(self, 'name', 'Agent')}: "
+                    f"{type(self.checkpointer).__name__}"
+                )
 
             # Set up private checkpoint mode tracking
             self._checkpoint_mode = self.checkpoint_mode
-
-            logger.debug(
-                f"Checkpointer set up for {getattr(self, 'name', 'Agent')}: "
-                f"{type(self.checkpointer).__name__}"
-            )
 
         except Exception as e:
             logger.error(f"Failed to set up checkpointer: {e}")

@@ -959,7 +959,7 @@ class Agent(
             # Ensure persistence is set up if not already done
             if not hasattr(self, "checkpointer") or self.checkpointer is None:
                 logger.debug("Setting up persistence before compilation")
-                self._setup_persistence()
+                self._setup_persistence_from_config()
 
             # Make sure checkpointer tables are set up if needed
             if self.checkpointer and hasattr(self.checkpointer, "setup"):
@@ -967,10 +967,58 @@ class Agent(
                     from haive.core.persistence.handlers import ensure_pool_open
 
                     ensure_pool_open(self.checkpointer)
+                    # Check if it's an async setup method
+                    setup_method = getattr(self.checkpointer, "setup")
+                    if hasattr(setup_method, "__aenter__") or "async" in str(setup_method):
+                        logger.warning("Sync context calling async setup method - this may cause issues")
                     self.checkpointer.setup()
                     logger.debug("Checkpointer tables set up successfully")
                 except Exception as e:
                     logger.error(f"Error setting up checkpointer tables: {e}")
+            
+            # Handle async checkpointer setup if needed
+            elif hasattr(self, '_async_setup_needed') and self._async_setup_needed:
+                # For async checkpointers, we need to set up the checkpointer during compilation
+                # But since this is a sync method, we need to check if we're in an async context
+                try:
+                    import asyncio
+                    
+                    # Check if there's already an event loop running
+                    try:
+                        loop = asyncio.get_running_loop()
+                        # If we get here, there's already a running loop, so we can't use run_until_complete
+                        logger.warning("Event loop already running - async checkpointer setup should be handled in async context")
+                        # Use a memory checkpointer as fallback for now
+                        from langgraph.checkpoint.memory import MemorySaver
+                        self.checkpointer = MemorySaver()
+                        logger.debug("Using MemorySaver fallback due to running event loop")
+                    except RuntimeError:
+                        # No running loop, so we can create one
+                        from haive.core.persistence.handlers import setup_async_checkpointer
+                        loop = asyncio.new_event_loop()
+                        asyncio.set_event_loop(loop)
+                        
+                        # Set up the async checkpointer
+                        if hasattr(self, '_async_persistence_config'):
+                            self.checkpointer = loop.run_until_complete(
+                                setup_async_checkpointer(self._async_persistence_config)
+                            )
+                            logger.debug("Async checkpointer set up successfully")
+                            self._async_setup_needed = False
+                        
+                        # Clean up the loop
+                        loop.close()
+                        
+                except Exception as e:
+                    logger.error(f"Error setting up async checkpointer: {e}")
+                    # Fall back to memory checkpointer
+                    try:
+                        from langgraph.checkpoint.memory import MemorySaver
+                        self.checkpointer = MemorySaver()
+                        logger.debug("Using MemorySaver fallback for async checkpointer")
+                    except ImportError:
+                        logger.error("Could not import MemorySaver, persistence disabled")
+                        self.checkpointer = None
 
             # First, we need to convert BaseGraph to LangGraph StateGraph
             # Build schema kwargs for conversion
