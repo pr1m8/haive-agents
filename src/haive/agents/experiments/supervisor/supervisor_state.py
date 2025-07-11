@@ -1,7 +1,5 @@
 """Supervisor state with agent registry and proper inheritance."""
 
-from typing import Dict, List, Optional
-
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import Field, field_validator
 

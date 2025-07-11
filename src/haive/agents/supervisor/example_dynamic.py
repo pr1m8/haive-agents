@@ -8,7 +8,6 @@ This example demonstrates the dynamic supervisor capabilities including:
 """
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage

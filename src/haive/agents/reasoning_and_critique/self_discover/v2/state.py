@@ -1,7 +1,7 @@
 # src/haive/agents/self_discovery/state.py
 """State schema for Self-Discovery reasoning system."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.schema.prebuilt.messages.messages_state import MessagesState
 from pydantic import Field

@@ -6,11 +6,10 @@ dynamic agent execution without graph rebuilding.
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Literal
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
-from langchain_core.runnables import RunnableConfig
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from pydantic import Field, PrivateAttr
 
 from haive.agents.base.agent import Agent

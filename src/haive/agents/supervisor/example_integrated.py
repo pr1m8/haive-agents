@@ -9,7 +9,6 @@ This example demonstrates:
 """
 
 import asyncio
-from typing import Any, Dict
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage

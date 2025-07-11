@@ -11,15 +11,13 @@ import sys
 
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive")
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from pydantic import Field
 
-from haive.agents.base.agent import Agent
-
 # Import the models and state
-from haive.agents.planning.p_and_e.models import Act, Plan, PlanStep, Response, StepType
+from haive.agents.planning.p_and_e.models import Act, Plan, PlanStep, StepType
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 # Import agents

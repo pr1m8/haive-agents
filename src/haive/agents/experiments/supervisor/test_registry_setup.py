@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Step 1: Test registry setup with real agents."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage

@@ -7,7 +7,7 @@ the BaseConversationAgent class and implementing core conversation patterns.
 
 import asyncio
 import operator
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.exceptions import ConversationError
 from haive.core.logging import get_logger
@@ -17,7 +17,6 @@ from pydantic import Field
 from haive.agents.conversation.base import (
     BaseConversationAgent,
     ConversationState,
-    create_conversation_state,
     get_conversation_progress,
 )
 from haive.agents.simple import SimpleAgent

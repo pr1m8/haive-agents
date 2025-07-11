@@ -6,7 +6,6 @@ FETCH -> LOAD -> TRANSFORM -> SPLIT -> ANNOTATE -> EMBED -> STORE -> RETRIEVE
 
 import tempfile
 from pathlib import Path
-from typing import List
 
 import pytest
 from haive.core.engine.document.config import (

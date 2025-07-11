@@ -6,9 +6,8 @@ This is a critical test to ensure the dynamic supervisor design works correctly.
 
 import asyncio
 import logging
-from typing import Any, Dict, List, Optional
 
-from langgraph.graph import END, START, StateGraph
+from langgraph.graph import END, StateGraph
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

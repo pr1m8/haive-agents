@@ -4,7 +4,7 @@ This module provides state schemas that include configuration fields,
 solving the issue of storing agent-specific configuration in a clean way.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.schema.prebuilt.rag_state import RAGState
 from pydantic import Field

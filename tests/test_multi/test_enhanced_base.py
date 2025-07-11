@@ -9,12 +9,10 @@ This test file demonstrates the new MultiAgentBase functionality with:
 - Plan and Execute patterns
 """
 
-from typing import Any, Dict, List
-
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.agent_schema_composer import BuildMode
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from langgraph.graph import END
 
 from haive.agents.multi.enhanced_base import (

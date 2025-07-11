@@ -8,12 +8,10 @@ This test shows:
 """
 
 import logging
-from typing import Any, Dict, List, Optional
 from unittest.mock import Mock, patch
 
-import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import BaseMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 

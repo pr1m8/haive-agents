@@ -1,7 +1,7 @@
 """Component 3: Agent execution node that mirrors tool_node pattern."""
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from haive.agents.experiments.supervisor.component_2_tools import (
     SupervisorStateWithTools,

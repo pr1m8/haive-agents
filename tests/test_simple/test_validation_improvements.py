@@ -1,11 +1,10 @@
 """Test validation node improvements with various tool types."""
 
 import uuid
-from typing import List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 

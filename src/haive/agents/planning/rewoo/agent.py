@@ -1,16 +1,14 @@
 """ReWOO Agent following SimpleAgent pattern with ReWOO-specific routing."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.llm_state import LLMState
-from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
-from langgraph.types import Command
 from pydantic import Field, computed_field
 
 from haive.agents.planning.rewoo.models import EvidenceStatus, ReWOOPlan

@@ -6,7 +6,7 @@ monitoring capabilities.
 """
 
 import logging
-from typing import Any, Literal
+from typing import Any
 
 from haive.core.schema import MessagesStateWithTokenUsage, SchemaComposer
 from pydantic import Field

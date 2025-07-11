@@ -14,7 +14,6 @@ from haive.agents.chain.chain_agent import (
     sequential_chain,
 )
 from haive.agents.rag.simple.agent import SimpleRAGAgent
-from haive.agents.simple.agent import SimpleAgent
 
 
 # Example 1: Simple sequential chain from mixed node types

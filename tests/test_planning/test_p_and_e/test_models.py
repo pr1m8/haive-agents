@@ -2,9 +2,6 @@
 """Tests for Plan and Execute models."""
 
 from datetime import datetime
-from typing import List
-
-import pytest
 
 from haive.agents.planning.p_and_e.models import (
     Act,

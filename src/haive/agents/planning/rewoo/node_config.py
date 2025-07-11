@@ -5,24 +5,22 @@ haive-core graph node pattern.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Optional
 
 from haive.core.graph.common.types import ConfigLike, StateLike
 from haive.core.graph.node.base_node_config import BaseNodeConfig
 from haive.core.graph.node.types import NodeType
 from haive.core.schema.field_definition import FieldDefinition
 from haive.core.schema.field_registry import StandardFields
-from langchain_core.messages import AIMessage, BaseMessage, ToolMessage
+from langchain_core.messages import AIMessage, BaseMessage
 from langgraph.types import Command
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
 from haive.agents.planning.rewoo.models import (
     Evidence,
     EvidenceStatus,
     ReWOOPlan,
 )
-from haive.agents.planning.rewoo.models import ToolCall as ReWOOToolCall
-from haive.agents.planning.rewoo.state import ReWOOState
 
 logger = logging.getLogger(__name__)
 

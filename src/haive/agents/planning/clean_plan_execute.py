@@ -8,7 +8,7 @@ This implementation follows the standard LangGraph Plan and Execute pattern with
 - Clean routing logic
 """
 
-from typing import List, Literal
+from typing import Literal
 
 from haive.core.schema.prebuilt.messages.messages_state import MessagesState
 from pydantic import BaseModel, Field

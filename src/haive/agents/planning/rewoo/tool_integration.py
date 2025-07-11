@@ -4,10 +4,9 @@ This module provides the integration between ReWOO's evidence-based planning
 and the tool execution system.
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.tools import tool
-from pydantic import Field
 
 from haive.agents.planning.rewoo.models import Evidence, EvidenceStatus, ToolCall
 from haive.agents.planning.rewoo.state import ReWOOState

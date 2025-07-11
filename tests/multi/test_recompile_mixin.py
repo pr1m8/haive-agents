@@ -3,9 +3,8 @@
 This follows the pattern of MetaStateSchema but adds recompilation tracking.
 """
 
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
-from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 from pydantic import Field, model_validator
 

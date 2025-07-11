@@ -4,11 +4,8 @@ Iterative document grading with structured output.
 Uses CallableNodeConfig to iterate over retrieved documents.
 """
 
-from typing import List, Optional
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.callable_node import (
-    CallableNodeConfig,
     create_document_grader,
 )
 from haive.core.graph.state_graph.base_graph2 import BaseGraph

@@ -1,11 +1,10 @@
 """Tests for ComplexExtractionAgent."""
 
-from typing import Any, Dict
 from unittest.mock import Mock, patch
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from haive.agents.document_modifiers.complex_extraction.agent import (
     ComplexExtractionAgent,

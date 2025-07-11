@@ -1,7 +1,7 @@
 """SimpleAgent with integrated StateUpdatingValidationNode implementation."""
 
 import logging
-from typing import Any, List, Optional, Union
+from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -18,7 +18,6 @@ from langchain_core.messages import AIMessage
 from langchain_core.output_parsers.base import BaseOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langgraph.graph import END, START
-from langgraph.types import Command, Send
 from pydantic import BaseModel, Field, field_validator
 
 from haive.agents.base.agent import Agent

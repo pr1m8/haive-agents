@@ -1,10 +1,8 @@
 """Test extending MetaStateSchema with recompilation support."""
 
-from typing import Any, Dict, List, Optional, Set
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from pydantic import Field, model_validator
+from pydantic import Field
 
 from haive.agents.simple.agent import SimpleAgent
 

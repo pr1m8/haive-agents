@@ -13,7 +13,7 @@ Functions:
     format_agent_list: Format agent list for inclusion in prompts
 """
 
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from haive.agents.dynamic_supervisor.models import AgentInfo

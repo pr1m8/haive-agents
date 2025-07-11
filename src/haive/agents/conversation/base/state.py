@@ -60,7 +60,7 @@ License: MIT
 from __future__ import annotations
 
 import operator
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from haive.core.logging.rich_logger import LogLevel, get_logger
 from haive.core.schema.prebuilt.messages_state import MessagesState

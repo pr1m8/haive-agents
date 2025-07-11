@@ -1,6 +1,5 @@
 """Simplified working test that demonstrates key concepts."""
 
-from typing import Any, Dict, List
 from unittest.mock import Mock
 
 import pytest

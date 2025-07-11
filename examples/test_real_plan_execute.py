@@ -8,16 +8,14 @@ This test actually runs the system with real LLM calls to verify:
 """
 
 import asyncio
-import json
 from datetime import datetime
-from typing import Any, Dict
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.agent_schema_composer import BuildMode
 from langchain_core.tools import tool
 
 from haive.agents.multi.enhanced_base import create_plan_execute_multi_agent
-from haive.agents.planning.p_and_e.models import Act, Plan, PlanStep, Response
+from haive.agents.planning.p_and_e.models import Act
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 from haive.agents.simple.agent import SimpleAgent
 

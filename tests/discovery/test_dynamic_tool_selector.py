@@ -4,13 +4,11 @@ This test suite provides extensive testing of the dynamic tool selection
 system with challenging scenarios, LangGraph-style patterns, and edge cases.
 """
 
-import asyncio
-from typing import Any, Dict, List, Optional
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
-from langchain_core.tools import BaseTool, StructuredTool
+from langchain_core.tools import BaseTool
 
 from haive.agents.discovery.dynamic_tool_selector import (
     ContextAwareSelector,

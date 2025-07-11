@@ -9,7 +9,7 @@ This test demonstrates:
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine import AugLLMConfig
 from haive.core.llm import LLMConfig

@@ -3,11 +3,11 @@
 This demonstrates the key concepts we've discussed.
 """
 
-from typing import Any, Dict, List, Optional
-from unittest.mock import Mock, patch
+from typing import Any, Optional
+from unittest.mock import Mock
 
 import pytest
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator
 
 
 # Test structured output and schema modification concept

@@ -4,7 +4,7 @@ Makes ChainAgent work seamlessly with the multi-agent framework.
 """
 
 import logging
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from pydantic import Field

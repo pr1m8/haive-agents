@@ -1,7 +1,7 @@
 """Test complete supervisor without MultiAgentBase (due to import bug)."""
 
 import asyncio
-from typing import Any, Dict, Literal
+from typing import Any, Literal
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import AIMessage, HumanMessage

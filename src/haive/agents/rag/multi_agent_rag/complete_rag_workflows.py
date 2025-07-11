@@ -10,7 +10,6 @@ Implements all RAG architectures from rag-architectures-flows.md including:
 """
 
 from enum import Enum
-from typing import List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.fixtures.documents import conversation_documents

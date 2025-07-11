@@ -3,14 +3,12 @@
 This shows how ReWOO's structured output integrates with the tool node system.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
-from langchain_core.messages import AIMessage, BaseMessage, ToolMessage
-from langgraph.types import Command
-from pydantic import Field
+from langchain_core.messages import AIMessage, ToolMessage
 
-from haive.agents.planning.rewoo.models import EvidenceStatus, ToolCall
+from haive.agents.planning.rewoo.models import EvidenceStatus
 from haive.agents.planning.rewoo.state import ReWOOState
 
 

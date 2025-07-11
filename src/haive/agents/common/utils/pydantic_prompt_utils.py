@@ -13,9 +13,9 @@ Key features:
 
 import json
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type, Union, get_args, get_origin
+from typing import Any, Union, get_args, get_origin
 
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 

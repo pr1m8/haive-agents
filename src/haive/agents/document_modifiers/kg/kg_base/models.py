@@ -4,8 +4,6 @@ This module provides the fundamental GraphTransformer class for converting
 documents into knowledge graphs using LLM-based extraction techniques.
 """
 
-from typing import Any, List, Optional, Union
-
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import BaseDocumentTransformer, Document
 from langchain_core.prompts import ChatPromptTemplate

@@ -5,11 +5,9 @@ parallel search execution, and synthesis.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional, Set, Union
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
-from pydantic.functional_validators import AfterValidator
-from typing_extensions import Annotated
 
 # ============================================================================
 # Query Understanding and Context Models

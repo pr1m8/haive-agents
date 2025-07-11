@@ -12,16 +12,12 @@ Key Features:
 - Context-aware component matching
 """
 
-import asyncio
 import logging
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Protocol, Tuple, Union
+from typing import Any, Protocol
 
 from haive.core.registry import (
-    CapabilityCategory,
-    ComponentAnalyzer,
     ComponentMetadata,
     ComponentType,
     EnhancedComponentRegistry,
@@ -34,7 +30,6 @@ from haive.core.utils.haive_discovery import (
 )
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
-from langchain_core.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore
 from langchain_openai import OpenAIEmbeddings
 from pydantic import BaseModel, Field, model_validator

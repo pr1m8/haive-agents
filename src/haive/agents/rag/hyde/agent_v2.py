@@ -4,10 +4,9 @@ Bridges query-document semantic gap by generating hypothetical documents.
 This version properly embeds the hypothetical document for retrieval.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.node.agent_node import AgentNodeConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import LLMConfig

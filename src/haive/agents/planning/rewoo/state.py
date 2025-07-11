@@ -5,9 +5,8 @@ collection, tool execution, and reasoning progress.
 """
 
 import logging
-from typing import Any, Dict, Generic, List, Optional, Set, TypeVar
+from typing import Any, TypeVar
 
-from haive.core.schema import StateSchema
 from haive.core.schema.prebuilt.tool_state import ToolState
 from pydantic import Field, computed_field, field_validator, model_validator
 

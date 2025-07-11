@@ -9,7 +9,6 @@ This test demonstrates how the dynamic supervisor integrates with:
 
 import asyncio
 import logging
-from typing import List
 
 from rich.console import Console
 

@@ -8,20 +8,14 @@ to LangGraph's supervisor package but with enhanced Haive-specific functionality
 import asyncio
 import logging
 import time
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable
 from uuid import uuid4
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
-from langgraph.graph import END, START
-from langgraph.types import Command
-from pydantic import BaseModel, Field
+from langgraph.graph import START
 from rich.console import Console
-from rich.live import Live
-from rich.panel import Panel
-from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
 from haive.agents.base.agent import Agent

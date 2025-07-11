@@ -18,7 +18,7 @@ Example:
         # Returns: [handoff_to_search, choose_agent]
 """
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from langchain_core.tools import tool
 

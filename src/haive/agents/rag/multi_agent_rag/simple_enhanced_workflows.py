@@ -3,8 +3,6 @@
 Clean implementation of advanced RAG patterns without complex dependencies.
 """
 
-from typing import Optional
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.callable_node import (
     CallableNodeConfig,

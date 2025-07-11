@@ -1,8 +1,5 @@
 """Simple test to verify engine modification necessity without complex imports."""
 
-from unittest.mock import MagicMock, patch
-
-import pytest
 from pydantic import BaseModel, Field
 
 

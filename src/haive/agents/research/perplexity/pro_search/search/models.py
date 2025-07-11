@@ -3,7 +3,6 @@
 These prompts guide the LLM through reasoning, query generation, and synthesis.
 """
 
-from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 # ============================================================================

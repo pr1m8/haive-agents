@@ -4,7 +4,7 @@ This module provides reusable grading agents for document relevance,
 answer quality, and hallucination detection.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field

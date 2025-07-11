@@ -55,7 +55,7 @@ def test_models():
 
 def test_state_schema():
     """Test the clean state schema."""
-    from langchain_core.messages import AIMessage, HumanMessage
+    from langchain_core.messages import HumanMessage
 
     from haive.agents.planning.clean_plan_execute import PlanExecuteState
 

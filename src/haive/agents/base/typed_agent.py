@@ -10,13 +10,8 @@ from abc import ABC, abstractmethod
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Generic,
-    List,
-    Optional,
-    Type,
     TypeVar,
-    Union,
 )
 
 from haive.core.schema.base_state_schemas import (
@@ -27,7 +22,6 @@ from haive.core.schema.base_state_schemas import (
     ToolExecutorState,
     WorkflowState,
 )
-from pydantic import BaseModel, Field
 
 if TYPE_CHECKING:
     from haive.core.engine.base import Engine

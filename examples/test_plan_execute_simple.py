@@ -1,7 +1,6 @@
 """Test the simplified Plan and Execute Agent implementation."""
 
 import asyncio
-import os
 from datetime import datetime
 
 from haive.agents.planning import PlanAndExecuteAgent

@@ -1,7 +1,7 @@
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import Field, field_validator, model_validator
 
 from haive.agents.memory.models.base import BaseMemoryModel
 from haive.agents.memory.models.semantic.mixins import TemporalMixin, UserContextMixin

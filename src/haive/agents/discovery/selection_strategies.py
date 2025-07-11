@@ -5,10 +5,9 @@ different criteria and approaches, providing flexibility in how tools
 are chosen for different contexts and use cases.
 """
 
-import asyncio
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.agents.discovery.dynamic_tool_selector import (
     ContextAwareState,
@@ -16,10 +15,6 @@ from haive.agents.discovery.dynamic_tool_selector import (
 )
 from haive.agents.discovery.semantic_discovery import (
     ComponentMetadata,
-    QueryAnalysis,
-)
-from haive.agents.discovery.semantic_discovery import (
-    ToolSelectionStrategy as TSStrategy,
 )
 
 logger = logging.getLogger(__name__)

@@ -1,11 +1,9 @@
 """Enhanced Dynamic Supervisor with self-modification capabilities."""
 
 import logging
-from typing import Any, Dict, Optional, Type
 
 from langchain_core.tools import tool
 
-from haive.agents.base import Agent
 from haive.agents.experiments.dynamic_supervisor import DynamicSupervisorAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent

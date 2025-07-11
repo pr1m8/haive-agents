@@ -5,7 +5,6 @@ This avoids the multi-agent serialization issues.
 """
 
 import asyncio
-import os
 
 from dotenv import load_dotenv
 from langchain_core.tools import tool

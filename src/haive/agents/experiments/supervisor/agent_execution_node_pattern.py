@@ -4,7 +4,7 @@ This demonstrates the key insight: instead of pre-compiled handoff tools,
 use a general agent execution node that can run any agent dynamically.
 """
 
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
 
 from haive.core.graph import BaseGraph
 from haive.core.schema import StateSchema

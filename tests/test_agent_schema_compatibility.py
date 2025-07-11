@@ -8,7 +8,6 @@ Tests for:
 - Engine I/O mappings
 """
 
-from typing import Any, Dict, List, Optional
 from unittest.mock import Mock, patch
 
 import pytest
@@ -20,8 +19,8 @@ from haive.core.schema.enhanced_schema_composer import (
     EnhancedSchemaComposer,
     SeparationStrategy,
 )
-from haive.core.schema.state import MessagesState, StateSchema, ToolState
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from haive.core.schema.state import MessagesState, ToolState
+from langchain_core.messages import BaseMessage, HumanMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.multi.base import SequentialAgent

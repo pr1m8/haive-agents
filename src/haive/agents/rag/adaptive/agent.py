@@ -4,7 +4,7 @@ Dynamic strategy selection based on query complexity.
 Routes queries to appropriate RAG strategies.
 """
 
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import LLMConfig

@@ -6,12 +6,10 @@ concerns from the main Agent class while ensuring proper serialization.
 """
 
 import logging
-import uuid
-from typing import Any, Literal
+from typing import Any
 
 from haive.core.persistence.types import CheckpointerMode
 from langchain_core.runnables import RunnableConfig
-from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 

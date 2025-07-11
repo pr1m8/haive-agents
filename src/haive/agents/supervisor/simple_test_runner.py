@@ -5,8 +5,6 @@ and how it would integrate with eventual agent building capabilities.
 """
 
 import asyncio
-import logging
-from typing import Any, Dict
 
 from rich.console import Console
 from rich.table import Table

@@ -4,10 +4,7 @@ Following the official LangGraph tutorial pattern:
 https://langchain-ai.github.io/langgraph/tutorials/plan-and-execute/plan-and-execute/
 """
 
-from typing import List, Literal, Union
-
 from haive.core.schema.prebuilt.messages.messages_state import MessagesState
-from langchain_core.messages import BaseMessage
 from langgraph.graph import END
 from pydantic import BaseModel, Field
 

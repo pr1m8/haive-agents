@@ -5,7 +5,7 @@ a SimpleAgent with the appropriate prompt template and Pydantic model. This foll
 the pattern of keeping prompts focused on generation while parsers handle structure.
 """
 
-from typing import Any, Dict, List, Optional, Type
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import LLMConfig

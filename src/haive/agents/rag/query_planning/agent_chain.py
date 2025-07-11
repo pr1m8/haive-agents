@@ -3,7 +3,7 @@
 Simplified version using the new ChainAgent approach.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig

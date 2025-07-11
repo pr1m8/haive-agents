@@ -4,7 +4,6 @@ Most basic example with minimal configuration.
 """
 
 import asyncio
-import os
 
 from dotenv import load_dotenv
 from langchain_core.tools import tool

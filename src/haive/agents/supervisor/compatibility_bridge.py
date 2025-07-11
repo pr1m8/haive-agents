@@ -5,19 +5,15 @@ and the existing multi-agent base classes, ensuring seamless interoperability.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any, Optional, Sequence
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer
-from langchain_core.messages import BaseMessage
 from pydantic import Field, model_validator
 
 from haive.agents.base.agent import Agent
 from haive.agents.multi.base import ExecutionMode, MultiAgent
 from haive.agents.supervisor.integrated_supervisor import IntegratedDynamicSupervisor
-from haive.agents.supervisor.multi_agent_dynamic_state import (
-    MultiAgentDynamicSupervisorState,
-)
 
 logger = logging.getLogger(__name__)
 

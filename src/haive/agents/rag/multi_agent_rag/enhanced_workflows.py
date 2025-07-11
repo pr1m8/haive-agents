@@ -4,8 +4,6 @@ Implements advanced RAG patterns like CRAG, Self-RAG, HYDE, and grading workflow
 using the new multi-agent base with compatibility and enhanced state management.
 """
 
-from typing import Optional
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.callable_node import (
     CallableNodeConfig,

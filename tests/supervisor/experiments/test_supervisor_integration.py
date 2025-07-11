@@ -4,13 +4,10 @@ These tests verify the complete supervisor functionality without mocks,
 testing actual agent registration, tool synchronization, and execution.
 """
 
-import pickle
 from datetime import datetime
-from typing import Any, Dict, List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, HumanMessage
 
 from haive.agents.experiments.supervisor import (
     AgentMetadata,

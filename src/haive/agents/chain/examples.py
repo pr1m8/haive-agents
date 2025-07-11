@@ -3,7 +3,7 @@
 Shows how to recreate our complex agents using declarative specifications.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
@@ -15,7 +15,6 @@ from haive.agents.chain.declarative_chain import (
     BranchSpec,
     ChainBuilder,
     ChainSpec,
-    LoopSpec,
     NodeSpec,
     SequenceSpec,
 )

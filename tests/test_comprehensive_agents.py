@@ -8,8 +8,7 @@ This test suite validates:
 5. Tool usage and routing
 """
 
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig

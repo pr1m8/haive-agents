@@ -12,7 +12,6 @@ from haive.core.persistence.handlers import (
     register_thread_if_needed,
 )
 from langchain_core.messages import BaseMessage, HumanMessage
-from langchain_core.output_parsers.base import BaseOutputParser
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel
 

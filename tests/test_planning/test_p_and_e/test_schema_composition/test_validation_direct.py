@@ -1,6 +1,5 @@
 """Direct test of StateUpdatingValidationNode without complex imports."""
 
-import os
 import sys
 
 # Add the package to Python path

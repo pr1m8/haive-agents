@@ -1,6 +1,5 @@
 """Test agent integration with Supabase persistence."""
 
-import asyncio
 import os
 
 import pytest

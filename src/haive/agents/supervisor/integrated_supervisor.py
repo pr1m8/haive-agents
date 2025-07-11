@@ -8,20 +8,16 @@ This module provides a complete integration of:
 - Tool-based agent addition/removal
 """
 
-import asyncio
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage, HumanMessage
-from langchain_core.prompts import ChatPromptTemplate
-from langgraph.graph import END, START
-from langgraph.types import Command
+from langchain_core.messages import AIMessage
+from langgraph.graph import START
 from rich.console import Console
 
 from haive.agents.supervisor.dynamic_agent_tools import (
-    AgentRegistryManager,
     create_agent_management_tools,
 )
 from haive.agents.supervisor.dynamic_supervisor import DynamicSupervisorAgent

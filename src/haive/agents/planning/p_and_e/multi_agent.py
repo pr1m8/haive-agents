@@ -6,7 +6,7 @@ for building Plan and Execute workflows with branches.
 
 import logging
 from datetime import datetime
-from typing import Any, List
+from typing import Any
 
 from langgraph.graph import END
 from langgraph.types import Command

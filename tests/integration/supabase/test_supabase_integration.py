@@ -2,7 +2,6 @@
 
 import asyncio
 import os
-from datetime import datetime
 
 import psycopg
 import pytest

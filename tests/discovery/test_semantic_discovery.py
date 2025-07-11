@@ -4,9 +4,7 @@ This test suite provides extensive testing of the semantic discovery
 system with challenging real-world scenarios and edge cases.
 """
 
-import asyncio
-from typing import Any, Dict, List, Optional
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import patch
 
 import pytest
 

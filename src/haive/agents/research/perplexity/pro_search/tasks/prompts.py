@@ -3,7 +3,7 @@
 These prompts guide task decomposition, execution planning, and adaptive replanning.
 """
 
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate
 
 # ============================================================================
 # Initial Task Decomposition Prompt

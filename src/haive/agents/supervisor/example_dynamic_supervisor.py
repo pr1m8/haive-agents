@@ -10,7 +10,6 @@ This example shows how to create a dynamic supervisor system that can:
 
 import asyncio
 import logging
-from typing import Any, Dict
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage, SystemMessage

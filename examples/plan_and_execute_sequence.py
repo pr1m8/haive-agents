@@ -5,7 +5,6 @@ This demonstrates the Plan and Execute pattern with sequential execution.
 """
 
 import asyncio
-import os
 
 from dotenv import load_dotenv
 from haive.core.schema.agent_schema_composer import BuildMode

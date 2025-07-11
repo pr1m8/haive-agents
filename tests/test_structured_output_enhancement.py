@@ -4,8 +4,6 @@ Tests the new modular approach where any agent can be enhanced with structured
 output by appending a SimpleAgent with appropriate Pydantic models.
 """
 
-from typing import List
-
 import pytest
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document

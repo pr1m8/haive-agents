@@ -2,7 +2,6 @@
 """Test different ways to set state schema in SimpleAgent."""
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import HumanMessage
 
 from haive.agents.planning.p_and_e.models import Plan
 from haive.agents.planning.p_and_e.prompts import planner_prompt
