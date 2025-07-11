@@ -1,0 +1,1 @@
+TODO: Consider moving SecretStr serialization tests from haive-agents to haive-core package for better organization. The serialization logic is already in haive-core, tests should probably be there too for consistency and easier maintenance.
