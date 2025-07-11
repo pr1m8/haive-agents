@@ -105,7 +105,7 @@ async def test_supervisor_basic():
         console.print("[green]✅ Basic test completed![/green]")
 
     except Exception as e:
-        console.print(f"[red]❌ Test failed: {e!s}[/red]"]")
+        console.print(f"[red]❌ Test failed: {e!s}[/red]")
         logger.error("Basic test failed", exc_info=True)
 
 
@@ -157,7 +157,7 @@ async def test_agent_registration():
         console.print("[green]✅ Registration test completed![/green]")
 
     except Exception as e:
-        console.print(f"[red]❌ Registration test failed: {e!s}[/red]"]")
+        console.print(f"[red]❌ Registration test failed: {e!s}[/red]")
         logger.error("Registration test failed", exc_info=True)
 
 
@@ -203,7 +203,7 @@ async def test_routing_flow():
         console.print("[green]✅ Routing test completed![/green]")
 
     except Exception as e:
-        console.print(f"[red]❌ Routing test failed: {e!s}[/red]"]")
+        console.print(f"[red]❌ Routing test failed: {e!s}[/red]")
         logger.error("Routing test failed", exc_info=True)
 
 
@@ -240,7 +240,7 @@ Tests:
             console.print(Panel("🎉 All tests completed!", style="bold green"))
 
         except Exception as e:
-            console.print(f"[red]❌ Test suite failed: {e!s}[/red]"]")
+            console.print(f"[red]❌ Test suite failed: {e!s}[/red]")
             logger.error("Test suite failed", exc_info=True)
 
     asyncio.run(run_all_tests())

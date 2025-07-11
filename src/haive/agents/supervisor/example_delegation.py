@@ -181,7 +181,7 @@ async def test_delegation_flow():
                 )
 
         except Exception as e:
-            console.print(f"[red]❌ Test failed: {e!s}[/red]"]")
+            console.print(f"[red]❌ Test failed: {e!s}[/red]")
             logger.error(f"Test case {i} failed", exc_info=True)
 
         console.print("-" * 60)
@@ -267,7 +267,7 @@ with Haive's ReactAgent architecture.
         console.print(Panel("🎊 All tests completed successfully!", style="bold green"))
 
     except Exception as e:
-        console.print(f"[red]❌ Test suite failed: {e!s}[/red]"]")
+        console.print(f"[red]❌ Test suite failed: {e!s}[/red]")
         logger.error("Test suite failed", exc_info=True)
 
 

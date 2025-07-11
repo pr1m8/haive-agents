@@ -28,6 +28,7 @@ from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.messages import AIMessage
 
 # Import BaseOutputParser to ensure it's available for LangGraph type evaluation
+from langchain_core.output_parsers import BaseOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langgraph.graph import END, START
 from pydantic import BaseModel, Field, field_validator
