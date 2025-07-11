@@ -12,7 +12,7 @@ from pydantic import Field, computed_field, field_validator, model_validator
 
 
 class DocumentModifierState(StateSchema):
-    """Base state schema for document modification agents.
+    r"""Base state schema for document modification agents.
 
     This class provides the core state management for all document processing
     operations. It handles document collections, provides computed properties
@@ -59,23 +59,18 @@ class DocumentModifierState(StateSchema):
         is present to prevent processing empty collections.
     """
 
-    name: Optional[str] = Field(
+    name: str | None = Field(
         default=None, description="The name of the document modifier."
     )
-    description: Optional[str] = Field(
+    description: str | None = Field(
         default=None, description="The description of the document modifier."
     )
-    documents: List[Document] = Field(
+    documents: list[Document] = Field(
         default_factory=list, description="The documents to process."
     )
 
-    # is_split: bool = Field(default=False,description="Whether the documents are split.")
-    # embeded_documents:List[Document] = Field(default_factory=list,description="The embeded documents.")
-    # split_documents:List[Document] = Field(default_factory=list,description="The split documents.")
-    # transformed_documents:List[Document] = Field(default_factory=list,description="The transformed documents.")
-    # annotations:List[Annotation]
     @classmethod
-    def from_documents(cls, documents: List[Document]) -> "DocumentModifierState":
+    def from_documents(cls, documents: list[Document]) -> "DocumentModifierState":
         """Create a DocumentModifierState from a list of documents.
 
         This is a convenience factory method for creating state instances
@@ -101,7 +96,7 @@ class DocumentModifierState(StateSchema):
     @computed_field
     @property
     def documents_text(self) -> str:
-        """Get the combined text content of all documents.
+        r"""Get the combined text content of all documents.
 
         This property concatenates the page_content of all documents
         in the collection, separated by newlines. Useful for operations
@@ -149,7 +144,7 @@ class DocumentModifierState(StateSchema):
         return self
 
     @field_validator("documents")
-    def validate_documents_field(cls, v):
+    def validate_documents_field(self, v):
         """Validate the documents field during assignment.
 
         Args:
@@ -179,10 +174,10 @@ class DocumentModifierState(StateSchema):
             New state instance with the document added.
         """
         # NOTE: This implementation appears incorrect - should be instance method
-        return cls(documents=cls.documents + [document])
+        return cls(documents=[*cls.documents, document])
 
     @classmethod
-    def add_documents(cls, documents: List[Document]) -> "DocumentModifierState":
+    def add_documents(cls, documents: list[Document]) -> "DocumentModifierState":
         """Add multiple documents to the state.
 
         Note: This method has issues with the class method implementation.
@@ -214,7 +209,7 @@ class DocumentModifierState(StateSchema):
         return cls(documents=cls.documents - [document])
 
     @classmethod
-    def remove_documents(cls, documents: List[Document]) -> "DocumentModifierState":
+    def remove_documents(cls, documents: list[Document]) -> "DocumentModifierState":
         """Remove multiple documents from the state.
 
         Note: This method has issues with the class method implementation.

@@ -1,4 +1,4 @@
-"""Simplified Compatible RAG Factory
+"""Simplified Compatible RAG Factory.
 
 Simplified version without legacy functions that have import issues.
 """
@@ -82,8 +82,8 @@ class CompatibleRAGFactory:
 
     def __init__(
         self,
-        documents: List[Document],
-        llm_config: Optional[LLMConfig] = None,
+        documents: list[Document],
+        llm_config: LLMConfig | None = None,
         name: str = "Compatible RAG Workflow",
     ):
         """Initialize factory with documents and configuration."""
@@ -97,7 +97,7 @@ class CompatibleRAGFactory:
 
     @classmethod
     def create_simple_workflow(
-        cls, documents: List[Document], llm_config: Optional[LLMConfig] = None, **kwargs
+        cls, documents: list[Document], llm_config: LLMConfig | None = None, **kwargs
     ) -> SequentialAgent:
         """Create simple RAG workflow."""
         return SimpleRAGAgent.from_documents(
@@ -107,8 +107,8 @@ class CompatibleRAGFactory:
     @classmethod
     def create_graded_hyde_workflow(
         cls,
-        documents: List[Document],
-        llm_config: Optional[LLMConfig] = None,
+        documents: list[Document],
+        llm_config: LLMConfig | None = None,
         enable_search_tools: bool = False,
         **kwargs,
     ) -> SequentialAgent:
@@ -126,8 +126,6 @@ class CompatibleRAGFactory:
         )
 
         # grading_agent = DocumentGradingAgent(  # Temporarily disabled - missing callable_node
-        #     documents=documents, llm_config=llm_config, name="Document Grader"
-        # )
         grading_agent = None  # Placeholder until DocumentGradingAgent is fixed
 
         corrective_agent = CorrectiveRAGAgentV2.from_documents(
@@ -143,12 +141,11 @@ class CompatibleRAGFactory:
 
 def create_plug_and_play_component(
     component_type: RAGComponent,
-    documents: List[Document],
-    llm_config: Optional[LLMConfig] = None,
+    documents: list[Document],
+    llm_config: LLMConfig | None = None,
     **kwargs,
-) -> Union[SimpleAgent, BaseRAGAgent]:
+) -> SimpleAgent | BaseRAGAgent:
     """Create any RAG component as a standalone agent."""
-
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
@@ -159,17 +156,17 @@ def create_plug_and_play_component(
     # Query decomposition components
     if component_type == RAGComponent.QUERY_DECOMPOSITION:
         return QueryDecomposerAgent(llm_config=llm_config, **kwargs)
-    elif component_type == RAGComponent.HIERARCHICAL_DECOMPOSITION:
+    if component_type == RAGComponent.HIERARCHICAL_DECOMPOSITION:
         return HierarchicalQueryDecomposerAgent(llm_config=llm_config, **kwargs)
-    elif component_type == RAGComponent.CONTEXTUAL_DECOMPOSITION:
+    if component_type == RAGComponent.CONTEXTUAL_DECOMPOSITION:
         return ContextualQueryDecomposerAgent(llm_config=llm_config, **kwargs)
-    elif component_type == RAGComponent.ADAPTIVE_DECOMPOSITION:
+    if component_type == RAGComponent.ADAPTIVE_DECOMPOSITION:
         return AdaptiveQueryDecomposerAgent(llm_config=llm_config, **kwargs)
 
     # Hallucination grading components
-    elif component_type == RAGComponent.HALLUCINATION_GRADING:
+    if component_type == RAGComponent.HALLUCINATION_GRADING:
         return HallucinationGraderAgent(llm_config=llm_config, **kwargs)
-    elif component_type == RAGComponent.ADVANCED_HALLUCINATION_GRADING:
+    if component_type == RAGComponent.ADVANCED_HALLUCINATION_GRADING:
         return AdvancedHallucinationGraderAgent(llm_config=llm_config, **kwargs)
     elif component_type == RAGComponent.REALTIME_HALLUCINATION_GRADING:
         return RealtimeHallucinationGraderAgent(llm_config=llm_config, **kwargs)
@@ -178,7 +175,6 @@ def create_plug_and_play_component(
     elif component_type == RAGComponent.DOCUMENT_GRADING:
         # return DocumentGradingAgent(  # Temporarily disabled - missing callable_node
         #     documents=documents, llm_config=llm_config, **kwargs
-        # )
         raise NotImplementedError(
             "DocumentGradingAgent temporarily disabled due to missing dependencies"
         )
@@ -203,9 +199,8 @@ def create_plug_and_play_component(
 
 def get_component_compatibility_info(
     component_type: RAGComponent,
-) -> Dict[str, List[str]]:
+) -> dict[str, list[str]]:
     """Get I/O schema information for a component type."""
-
     # Simplified I/O schemas for compatibility checking
     schemas = {
         RAGComponent.QUERY_DECOMPOSITION: {

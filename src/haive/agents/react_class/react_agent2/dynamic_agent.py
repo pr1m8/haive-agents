@@ -347,7 +347,7 @@ class DynamicReactAgent(ReactAgent):
                 )
 
             except Exception as e:
-                logger.error(f"Error creating vector store from src.config: {e}")
+                logger.exception(f"Error creating vector store from src.config: {e}")
                 # Fall back to in-memory vector store
                 self._initialize_in_memory_vector_store(tool_documents)
         else:
@@ -447,7 +447,7 @@ class DynamicReactAgent(ReactAgent):
             return state_update
 
         except Exception as e:
-            logger.error(f"Error during tool selection: {e}")
+            logger.exception(f"Error during tool selection: {e}")
             return state
 
     def _create_fixed_tool_node(self):
@@ -526,7 +526,7 @@ class DynamicReactAgent(ReactAgent):
                         logger.info(f"Successfully executed tool {tool_name}")
                     except Exception as e:
                         error_msg = f"Error executing tool {tool_name}: {e!s}"
-                        logger.error(error_msg)
+                        logger.exception(error_msg)
                         tool_message = ToolMessage(
                             content=error_msg, name=tool_name, tool_call_id=tool_call_id
                         )

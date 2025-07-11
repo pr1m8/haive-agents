@@ -1,7 +1,5 @@
 # src/haive/agents/plan_and_execute/example.py
-"""
-Example usage of the Plan and Execute agent.
-"""
+"""Example usage of the Plan and Execute agent."""
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -62,7 +60,6 @@ agent_with_tools = PlanAndExecuteAgent(
 # Use the agent
 from haive.agents.simple.agent import SimpleAgent
 
-print("\n=== Testing SimpleAgent with planner engine ===")
 planner_simple_agent = SimpleAgent(
     engine=agent_with_tools.engines["planner"], state_schema=PlanExecuteState
 )
@@ -79,7 +76,4 @@ input_data = {
 # Messages are being converted to dicts somewhere in the persistence layer
 try:
     result = planner_simple_agent.run(input_data=input_data, debug=False)
-    print("Result:", result)
 except Exception as e:
-    print(f"Error: {e}")
-    print(f"Error type: {type(e)}")

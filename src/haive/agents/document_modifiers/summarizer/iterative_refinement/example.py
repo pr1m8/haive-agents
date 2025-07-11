@@ -18,15 +18,13 @@ test_docs = [
 
 config = IterativeSummarizerConfig(
     contents=test_docs,
-    # aug_llm_configs=aug_llm_configs
 )
 
 agent = IterativeSummarizer(config)
 
 
 async def main():
-    result = await agent.arun({"contents": test_docs}, debug=True)
-    print(result)
+    await agent.arun({"contents": test_docs}, debug=True)
 
 
 if __name__ == "__main__":

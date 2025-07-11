@@ -34,7 +34,7 @@ DOCUMENT_LOADERS = {}
 
 
 def register_document_loader(loader_type: str):
-    """Decorator to register document loaders with metadata"""
+    """Decorator to register document loaders with metadata."""
 
     def decorator(loader_class):
         DOCUMENT_LOADERS[loader_type] = {
@@ -49,7 +49,7 @@ def register_document_loader(loader_type: str):
 # Metadata for each loader type
 @register_document_loader("web")
 class EnhancedWebBaseLoader(WebBaseLoader):
-    """Enhanced web page loader with metadata extraction"""
+    """Enhanced web page loader with metadata extraction."""
 
     loader_metadata = {
         "name": "Web Page Loader",
@@ -65,7 +65,7 @@ class EnhancedWebBaseLoader(WebBaseLoader):
         self.web_path = web_path
 
     def load(self):
-        """Override load method to add metadata"""
+        """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:
             # Add enhanced metadata
@@ -82,7 +82,7 @@ class EnhancedWebBaseLoader(WebBaseLoader):
 
 @register_document_loader("recursive_web")
 class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
-    """Enhanced recursive web crawler with metadata extraction"""
+    """Enhanced recursive web crawler with metadata extraction."""
 
     loader_metadata = {
         "name": "Recursive Web Crawler",
@@ -110,7 +110,7 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
 
     @staticmethod
     def _default_extractor(html):
-        """Default extractor using BeautifulSoup"""
+        """Default extractor using BeautifulSoup."""
         soup = BeautifulSoup(html, "html.parser")
 
         # Remove script and style elements
@@ -126,7 +126,7 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
         return text.strip()
 
     def load(self):
-        """Override load method to add metadata"""
+        """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:
             # Add enhanced metadata
@@ -144,7 +144,7 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
 
 @register_document_loader("github")
 class EnhancedGitHubIssuesLoader(GitHubIssuesLoader):
-    """Enhanced GitHub issues loader with metadata extraction"""
+    """Enhanced GitHub issues loader with metadata extraction."""
 
     loader_metadata = {
         "name": "GitHub Issues Loader",
@@ -161,7 +161,7 @@ class EnhancedGitHubIssuesLoader(GitHubIssuesLoader):
     }
 
     def load(self):
-        """Override load method to add metadata"""
+        """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:
             # Add enhanced metadata
@@ -179,7 +179,7 @@ class EnhancedGitHubIssuesLoader(GitHubIssuesLoader):
 
 @register_document_loader("arxiv")
 class EnhancedArxivLoader(ArxivLoader):
-    """Enhanced Arxiv paper loader with metadata extraction"""
+    """Enhanced Arxiv paper loader with metadata extraction."""
 
     loader_metadata = {
         "name": "ArXiv Papers Loader",
@@ -191,7 +191,7 @@ class EnhancedArxivLoader(ArxivLoader):
     }
 
     def load(self):
-        """Override load method to add metadata"""
+        """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:
             # Add enhanced metadata
@@ -209,7 +209,7 @@ class EnhancedArxivLoader(ArxivLoader):
 
 @register_document_loader("hackernews")
 class EnhancedHNLoader(HNLoader):
-    """Enhanced Hacker News loader with metadata extraction"""
+    """Enhanced Hacker News loader with metadata extraction."""
 
     loader_metadata = {
         "name": "Hacker News Loader",
@@ -225,7 +225,7 @@ class EnhancedHNLoader(HNLoader):
     }
 
     def load(self):
-        """Override load method to add metadata"""
+        """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:
             # Add enhanced metadata
@@ -243,13 +243,13 @@ class EnhancedHNLoader(HNLoader):
 
 # Document Loader Selection Tool Schemas
 class DocumentLoaderDescriptionInput(BaseModel):
-    """Input for document loader description"""
+    """Input for document loader description."""
 
     loader_type: str = Field(description="Type of document loader to describe")
 
 
 class DocumentLoaderRecommendationInput(BaseModel):
-    """Input for document loader recommendation"""
+    """Input for document loader recommendation."""
 
     research_topic: str = Field(
         description="Research topic to find appropriate loaders for"
@@ -263,13 +263,13 @@ class DocumentLoaderRecommendationInput(BaseModel):
 
 
 class WebLoaderInput(BaseModel):
-    """Input for web page loader"""
+    """Input for web page loader."""
 
     url: str = Field(description="URL of the web page to load")
 
 
 class RecursiveWebLoaderInput(BaseModel):
-    """Input for recursive web loader"""
+    """Input for recursive web loader."""
 
     url: str = Field(description="Root URL to crawl")
     max_depth: int = Field(2, description="Maximum crawl depth (1-3 recommended)")
@@ -279,7 +279,7 @@ class RecursiveWebLoaderInput(BaseModel):
 
 
 class ArxivLoaderInput(BaseModel):
-    """Input for ArXiv loader"""
+    """Input for ArXiv loader."""
 
     query: str = Field(description="Query to search for papers on ArXiv")
     max_results: int = Field(5, description="Maximum number of papers to return")
@@ -289,7 +289,7 @@ class ArxivLoaderInput(BaseModel):
 
 
 class GitHubIssuesLoaderInput(BaseModel):
-    """Input for GitHub issues loader"""
+    """Input for GitHub issues loader."""
 
     repo: str = Field(description="GitHub repository in format 'owner/repo'")
     access_token: str | None = Field(
@@ -299,19 +299,19 @@ class GitHubIssuesLoaderInput(BaseModel):
 
 
 class HackerNewsLoaderInput(BaseModel):
-    """Input for Hacker News loader"""
+    """Input for Hacker News loader."""
 
     story_id: int = Field(description="ID of the Hacker News story to load")
 
 
 # Dynamic document loader functions
 def get_available_loaders() -> dict[str, dict]:
-    """Get all available document loaders with their metadata"""
+    """Get all available document loaders with their metadata."""
     return DOCUMENT_LOADERS
 
 
 def describe_document_loader(loader_type: str) -> dict[str, Any]:
-    """Get detailed description of a document loader"""
+    """Get detailed description of a document loader."""
     if loader_type not in DOCUMENT_LOADERS:
         return {"error": f"Loader type '{loader_type}' not found"}
 
@@ -328,7 +328,7 @@ def recommend_document_loaders(
     research_question: str | None = None,
     data_types: list[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Recommend document loaders based on research topic and question"""
+    """Recommend document loaders based on research topic and question."""
     # Get all available loaders
     loaders = get_available_loaders()
 
@@ -360,7 +360,7 @@ def recommend_document_loaders(
 
 # Document loader execution functions
 def load_web_page(url: str) -> list[dict[str, Any]]:
-    """Load content from a web page"""
+    """Load content from a web page."""
     try:
         loader = EnhancedWebBaseLoader(url)
         docs = loader.load()
@@ -387,7 +387,7 @@ def load_web_page(url: str) -> list[dict[str, Any]]:
 def load_recursive_web(
     url: str, max_depth: int = 2, prevent_outside: bool = True
 ) -> dict[str, Any]:
-    """Recursively crawl a website"""
+    """Recursively crawl a website."""
     try:
         loader = EnhancedRecursiveUrlLoader(
             url=url, max_depth=max_depth, prevent_outside=prevent_outside
@@ -424,7 +424,7 @@ def load_recursive_web(
 def load_arxiv_papers(
     query: str, max_results: int = 5, load_all_available_meta: bool = True
 ) -> dict[str, Any]:
-    """Load papers from ArXiv"""
+    """Load papers from ArXiv."""
     try:
         loader = EnhancedArxivLoader(
             query=query,
@@ -465,7 +465,7 @@ def load_arxiv_papers(
 def load_github_issues(
     repo: str, access_token: str | None = None, state: str = "open"
 ) -> dict[str, Any]:
-    """Load issues from a GitHub repository"""
+    """Load issues from a GitHub repository."""
     try:
         if access_token:
             os.environ["GITHUB_TOKEN"] = access_token
@@ -509,7 +509,7 @@ def load_github_issues(
 
 
 def load_hackernews_thread(story_id: int) -> dict[str, Any]:
-    """Load a Hacker News thread"""
+    """Load a Hacker News thread."""
     try:
         loader = EnhancedHNLoader(story_id=story_id)
         docs = loader.load()
@@ -603,7 +603,7 @@ hackernews_loader_tool = StructuredTool.from_function(
 try:
 
     class TavilySearchInput(BaseModel):
-        """Input for Tavily search"""
+        """Input for Tavily search."""
 
         query: str = Field(description="Search query")
         max_results: int | None = Field(
@@ -616,7 +616,7 @@ try:
     def tavily_search(
         query: str, max_results: int = 5, search_depth: str = "basic"
     ) -> dict[str, Any]:
-        """Search the web using Tavily"""
+        """Search the web using Tavily."""
         try:
             client = TavilyClient(api_key=TAVILY_API_KEY)
             response = client.search(

@@ -123,5 +123,4 @@ def create_premise_extractor():
         prompt_template=PREMISE_EXTRACTION_PROMPT,
         structured_output_model=ReasoningChain,  # Returns initial chain with premises
         temperature=0.3,
-        # model="gpt-4o"
     )

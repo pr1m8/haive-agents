@@ -259,11 +259,11 @@ by replacing specific engines.
 
 Example:
     Using defaults::
-    
+
         >>> config = SQLRAGConfig(engines=default_sql_engines)
-        
+
     Customizing specific engine::
-    
+
         >>> custom_engines = {
         ...     **default_sql_engines,
         ...     "generate_sql": my_custom_sql_generator

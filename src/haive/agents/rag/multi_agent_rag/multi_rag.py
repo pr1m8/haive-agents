@@ -1,4 +1,4 @@
-"""Multi-Agent RAG System Implementation
+"""Multi-Agent RAG System Implementation.
 
 This module provides complete multi-agent RAG workflows using the multi-agent framework
 with conditional routing, sequential processing, and parallel execution patterns.

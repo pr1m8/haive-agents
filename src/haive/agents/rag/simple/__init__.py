@@ -1,4 +1,4 @@
-"""Simple RAG Module
+"""Simple RAG Module.
 
 Sequential workflow: BaseRAG → Answer Generation
 """

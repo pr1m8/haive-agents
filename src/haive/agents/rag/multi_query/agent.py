@@ -1,4 +1,4 @@
-"""Multi-Query RAG Agent
+"""Multi-Query RAG Agent.
 
 Improves recall through query diversification.
 Generates multiple query variations and retrieves from all.
@@ -63,7 +63,7 @@ class MultiRetrievalAgent(Agent):
         """Build graph that retrieves with multiple queries in parallel."""
         graph = BaseGraph(name="MultiRetriever")
 
-        def expand_and_retrieve(state: Dict[str, Any]) -> Dict[str, Any]:
+        def expand_and_retrieve(state: dict[str, Any]) -> dict[str, Any]:
             """Retrieve documents for all query variations."""
             # Get query variations
             variations = state.get("query_variations", {})
@@ -84,7 +84,6 @@ class MultiRetrievalAgent(Agent):
             all_queries = [q for q in all_queries if q.strip()]
 
             # Retrieve for each query
-            all_documents = []
             doc_scores = {}  # Track document scores across queries
 
             for query in all_queries:
@@ -140,9 +139,9 @@ class MultiQueryRAGAgent(SequentialAgent):
     @classmethod
     def from_documents(
         cls,
-        documents: List[Document],
-        llm_config: Optional[LLMConfig] = None,
-        embedding_model: Optional[str] = None,
+        documents: list[Document],
+        llm_config: LLMConfig | None = None,
+        embedding_model: str | None = None,
         **kwargs
     ):
         """Create Multi-Query RAG from documents.

@@ -1,4 +1,4 @@
-"""Planning - Agent planning and execution systems
+"""Planning - Agent planning and execution systems.
 
 This module provides planning-based agents that can break down complex tasks
 into manageable steps and execute them systematically.

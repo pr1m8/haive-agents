@@ -164,8 +164,10 @@ class TestIterativeGraphTransformer:
         """Test successful graph refinement."""
         # Create refined graph with additional node
         refined_graph = GraphDocument(
-            nodes=mock_graph_document.nodes
-            + [Node(id="3", type="Country", properties={"name": "Poland"})],
+            nodes=[
+                *mock_graph_document.nodes,
+                Node(id="3", type="Country", properties={"name": "Poland"}),
+            ],
             relationships=mock_graph_document.relationships,
             source=Document(page_content="Refined content"),
         )

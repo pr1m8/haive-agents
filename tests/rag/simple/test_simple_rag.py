@@ -1,4 +1,4 @@
-"""Test Simple RAG Workflow
+"""Test Simple RAG Workflow.
 
 Tests the SimpleRAGAgent that uses SequentialAgent to compose
 BaseRAGAgent with answer generation.
@@ -65,9 +65,6 @@ class TestSimpleRAGAgent:
             if "retrieved_documents" in result:
                 assert isinstance(result["retrieved_documents"], list)
 
-            print(f"✅ SimpleRAG workflow completed successfully")
-            print(f"Result keys: {list(result.keys())}")
-
         except Exception as e:
             pytest.fail(f"SimpleRAG workflow failed: {e}")
 
@@ -91,7 +88,6 @@ class TestSimpleRAGAgent:
 
             # Workflow should complete without errors
             assert result is not None
-            print(f"✅ Full SimpleRAG integration successful")
 
         except Exception as e:
             pytest.fail(f"SimpleRAG integration failed: {e}")

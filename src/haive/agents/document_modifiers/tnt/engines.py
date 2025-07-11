@@ -38,7 +38,7 @@ SUMMARY_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
         # Instruction
 
         ## Context
-        - **Goal**: You are tasked with summarizing the input text for the given use case. 
+        - **Goal**: You are tasked with summarizing the input text for the given use case.
           The summary will represent the input data for clustering in the next step.
         - **Data**: Your input data is a conversation history between a User and an AI agent.
 
@@ -85,11 +85,9 @@ SUMMARY_HUMAN_MESSAGE = HumanMessagePromptTemplate(
 SUMMARY_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
     [SUMMARY_SYSTEM_MESSAGE, SUMMARY_HUMAN_MESSAGE]
 )
-print(SUMMARY_PROMPT_TEMPLATE)
 summary_aug_llm_config = AugLLMConfig(
     prompt_template=SUMMARY_PROMPT_TEMPLATE,
     output_parser=StrOutputParser(),
-    # runtime_options={"run_name": "GenerateSummary"},
     postprocess=parse_summary,
 )
 
@@ -174,8 +172,8 @@ TAXONOMY_UPDATE_HUMAN_MESSAGE = HumanMessagePromptTemplate(
         template="""
         # Questions
 
-        ## Q1: Review the given reference table and the input data, and provide a rating score of the reference table.  
-        The rating score should be an **integer between 0 and 100** (higher means better quality).  
+        ## Q1: Review the given reference table and the input data, and provide a rating score of the reference table.
+        The rating score should be an **integer between 0 and 100** (higher means better quality).
         You should consider the following factors:
 
         - **Intrinsic quality**:
@@ -195,9 +193,9 @@ TAXONOMY_UPDATE_HUMAN_MESSAGE = HumanMessagePromptTemplate(
 
         **Tips**:
         - You can edit the category name, description, or remove a category.
-        - You can also merge or add new categories if needed.  
+        - You can also merge or add new categories if needed.
         - Your edits should meet the *Requirements* section.
-        - The cluster table should be a **flat list** of **mutually exclusive** categories.  
+        - The cluster table should be a **flat list** of **mutually exclusive** categories.
         - You can have *fewer than {max_num_clusters} categories*, but **do not exceed the limit**.
         - Be **specific** about each category. **Do not include vague categories** like `"Other", "General", "Unclear", "Miscellaneous"`.
         - You can ignore low-quality or ambiguous data points.
@@ -229,7 +227,6 @@ TAXONOMY_UPDATE_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 taxonomy_update_aug_llm_config = AugLLMConfig(
     prompt_template=TAXONOMY_UPDATE_PROMPT_TEMPLATE,
     output_parser=StrOutputParser(),
-    # runtime_options={"run_name": "UpdateTaxonomy"},
     postprocess=parse_taxonomy,
 )
 
@@ -409,8 +406,8 @@ TAXONOMY_REVIEW_HUMAN_MESSAGE = HumanMessagePromptTemplate(
         template="""
         # Questions
 
-        ## Q1: Review the given reference table and provide a rating score.  
-        The rating score should be an **integer between 0 and 100** (higher means better quality).  
+        ## Q1: Review the given reference table and provide a rating score.
+        The rating score should be an **integer between 0 and 100** (higher means better quality).
         You should consider the following factors:
 
         - **Intrinsic quality**:
@@ -423,11 +420,11 @@ TAXONOMY_REVIEW_HUMAN_MESSAGE = HumanMessagePromptTemplate(
           - If there are missing categories in the cluster table that appear in the input data.
           - If there are unnecessary categories in the cluster table that do not appear in the input data.
 
-        ## Q2: Explain your rating score in Q1.  
+        ## Q2: Explain your rating score in Q1.
         The explanation should be concise and based on the **intrinsic and extrinsic qualities** evaluated in Q1.
 
-        ## Q3: Based on your review, decide if you need to edit the reference table to improve its quality.  
-        If yes, suggest **specific and actionable edits**.  
+        ## Q3: Based on your review, decide if you need to edit the reference table to improve its quality.
+        If yes, suggest **specific and actionable edits**.
         If no, output `"N/A"`.
 
         **Tips**:
@@ -438,7 +435,7 @@ TAXONOMY_REVIEW_HUMAN_MESSAGE = HumanMessagePromptTemplate(
         - You can have *fewer than {max_num_clusters} categories*, but **do not exceed the limit**.
         - Be **specific** about each category. **Do not include vague categories** like `"Other", "General", "Unclear", "Miscellaneous"`.
 
-        ## Q4: If you decide to edit the reference table, provide your updated reference table.  
+        ## Q4: If you decide to edit the reference table, provide your updated reference table.
         If you decide **not** to edit the reference table, please output the original reference table.
 
         **Provide your answers between the following tags**:
@@ -465,7 +462,6 @@ TAXONOMY_REVIEW_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 taxonomy_review_aug_llm_config = AugLLMConfig(
     prompt_template=TAXONOMY_REVIEW_PROMPT_TEMPLATE,
     output_parser=StrOutputParser(),
-    # runtime_options={"run_name": "ReviewTaxonomy"},
     postprocess=parse_taxonomy,
 )
 

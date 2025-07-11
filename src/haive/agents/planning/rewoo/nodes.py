@@ -3,13 +3,13 @@
 This shows how ReWOO models and state work together in actual agent nodes.
 """
 
-from typing import Any, Dict
+from typing import Any
 
-from haive.agents.planning.rewoo.models import EvidenceStatus, ToolCall
+from haive.agents.planning.rewoo.models import EvidenceStatus
 from haive.agents.planning.rewoo.state import ReWOOState
 
 
-async def collect_evidence_node(state: ReWOOState) -> Dict[str, Any]:
+async def collect_evidence_node(state: ReWOOState) -> dict[str, Any]:
     """Node that collects evidence using tools.
 
     This is where models, state, and tools come together:
@@ -68,10 +68,10 @@ async def collect_evidence_node(state: ReWOOState) -> Dict[str, Any]:
 
     except Exception as e:
         state.update_evidence(evidence.id, status=EvidenceStatus.FAILED, error=str(e))
-        return {"messages": [f"Failed to collect {evidence.id}: {str(e)}"]}
+        return {"messages": [f"Failed to collect {evidence.id}: {e!s}"]}
 
 
-async def execute_tool_call_node(state: ReWOOState) -> Dict[str, Any]:
+async def execute_tool_call_node(state: ReWOOState) -> dict[str, Any]:
     """Node that executes a specific tool call.
 
     Shows how ToolCall model integrates with state.
@@ -99,9 +99,8 @@ async def execute_tool_call_node(state: ReWOOState) -> Dict[str, Any]:
             result = await tool.ainvoke(resolved_args)
 
         # Validate output if schema provided
-        if tool_call.expected_output_schema:
-            if not tool_call.validate_output(result):
-                return {"messages": ["Output validation failed"]}
+        if tool_call.expected_output_schema and not tool_call.validate_output(result):
+            return {"messages": ["Output validation failed"]}
 
         # Store result
         state.add_tool_result(tool_call.tool_name, result)
@@ -112,30 +111,22 @@ async def execute_tool_call_node(state: ReWOOState) -> Dict[str, Any]:
         return {"messages": [f"Executed {tool_call.tool_name}"]}
 
     except Exception as e:
-        return {"messages": [f"Tool execution failed: {str(e)}"]}
+        return {"messages": [f"Tool execution failed: {e!s}"]}
 
 
 async def check_evidence_complete_node(state: ReWOOState) -> str:
     """Conditional node to check if evidence collection is complete."""
     if state.is_evidence_complete:
         return "reason"  # Go to reasoning
-    else:
-        return "collect"  # Continue collecting
+    return "collect"  # Continue collecting
 
 
-async def reason_with_evidence_node(state: ReWOOState) -> Dict[str, Any]:
+async def reason_with_evidence_node(state: ReWOOState) -> dict[str, Any]:
     """Final reasoning node using all collected evidence."""
     # Get evidence context
-    context = state.get_evidence_context()
+    state.get_evidence_context()
 
     # Create reasoning prompt
-    prompt = f"""
-    Objective: {state.objective}
-    
-    {context}
-    
-    Based on the evidence above, provide your reasoning and conclusion.
-    """
 
     # In real implementation, would use LLM here
     reasoning_result = f"Based on evidence, conclusion for: {state.objective}"

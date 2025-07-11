@@ -745,7 +745,6 @@ class MultiAgent(Agent):
         # Build schema kwargs - only pass what StateGraph expects
         schema_kwargs = {}
 
-        # CRITICAL: state_schema is required
         if self.state_schema:
             schema_kwargs["state_schema"] = self.state_schema
         else:
@@ -777,9 +776,9 @@ class MultiAgent(Agent):
 
             langgraph = self.graph.to_langgraph(**schema_kwargs)
         except Exception as e:
-            logger.error(f"Failed to convert graph to langgraph: {e}")
-            logger.error(f"Schema kwargs were: {list(schema_kwargs.keys())}")
-            logger.error(f"State schema type: {type(self.state_schema)}")
+            logger.exception(f"Failed to convert graph to langgraph: {e}")
+            logger.exception(f"Schema kwargs were: {list(schema_kwargs.keys())}")
+            logger.exception(f"State schema type: {type(self.state_schema)}")
             raise
 
         # Now compile the LangGraph StateGraph with checkpointer and runtime config

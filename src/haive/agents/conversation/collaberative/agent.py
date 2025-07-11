@@ -246,7 +246,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
                 "Provide a solid foundation for others to build on."
             )
 
-        messages = [context_msg, instruction] + base_input.get("messages", [])
+        messages = [context_msg, instruction, *base_input.get("messages", [])]
         base_input["messages"] = messages
 
         return base_input
@@ -266,8 +266,9 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
         # Build complete updated values
         # Add new contribution to existing list
-        new_contributions = state.contributions + [
-            (contributor, current_section, content)
+        new_contributions = [
+            *state.contributions,
+            (contributor, current_section, content),
         ]
 
         # Update contribution count

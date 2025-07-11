@@ -57,12 +57,12 @@ from .types import AgentInput, AgentOutput, AgentState
 
 __all__ = [
     "Agent",
-    "GenericAgent",
     "AgentInput",
     "AgentOutput",
     "AgentState",
     "ExecutionMixin",
-    "StateMixin",
+    "GenericAgent",
     "PersistenceMixin",
     "SerializationMixin",
+    "StateMixin",
 ]

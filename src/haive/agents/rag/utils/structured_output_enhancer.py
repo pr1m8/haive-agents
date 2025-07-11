@@ -1,4 +1,4 @@
-"""Structured Output Enhancer for RAG Agents
+"""Structured Output Enhancer for RAG Agents.
 
 This utility enables any agent to be enhanced with structured output by appending
 a SimpleAgent with the appropriate prompt template and Pydantic model. This follows
@@ -42,7 +42,7 @@ class StructuredOutputEnhancer:
 
     def __init__(
         self,
-        output_model: Type[BaseModel],
+        output_model: type[BaseModel],
         prompt_style: PromptStyle = PromptStyle.DESCRIPTIVE,
         structured_output_version: str = "v1",
     ):
@@ -110,7 +110,7 @@ Please provide your structured analysis.""",
         self,
         llm_config: LLMConfig,
         context_prompt: str,
-        agent_name: Optional[str] = None,
+        agent_name: str | None = None,
         include_state_context: bool = True,
         **engine_kwargs,
     ) -> SimpleAgent:
@@ -146,11 +146,11 @@ Please provide your structured analysis.""",
 
     def enhance_agent_sequence(
         self,
-        agents: List[Any],
+        agents: list[Any],
         llm_config: LLMConfig,
-        context_prompt: Optional[str] = None,
+        context_prompt: str | None = None,
         **kwargs,
-    ) -> List[Any]:
+    ) -> list[Any]:
         """Enhance a sequence of agents by appending structured output processing.
 
         Args:
@@ -172,7 +172,7 @@ Please provide your structured analysis.""",
             llm_config=llm_config, context_prompt=context_prompt, **kwargs
         )
 
-        return agents + [enhancement_agent]
+        return [*agents, enhancement_agent]
 
 
 # Convenience functions for common RAG patterns
@@ -217,8 +217,6 @@ def demonstrate_enhancement_patterns():
     """Demonstrate various enhancement patterns."""
     from haive.core.models.llm.base import AzureLLMConfig
 
-    from haive.agents.rag.models import FusionResult, HyDEResult
-
     # Example LLM config
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
@@ -245,9 +243,9 @@ def demonstrate_enhancement_patterns():
     class CustomAnalysis(BaseModel):
         """Custom analysis model."""
 
-        insights: List[str]
+        insights: list[str]
         confidence: float
-        recommendations: List[str]
+        recommendations: list[str]
 
     custom_enhancer = StructuredOutputEnhancer(
         output_model=CustomAnalysis, prompt_style=PromptStyle.CONVERSATIONAL
@@ -272,7 +270,7 @@ class RAGEnhancementFactory:
     @staticmethod
     def enhance_simple_rag(
         llm_config: LLMConfig, enhancement_type: str = "hyde"
-    ) -> List[SimpleAgent]:
+    ) -> list[SimpleAgent]:
         """Create a simple RAG with structured output enhancement.
 
         Args:

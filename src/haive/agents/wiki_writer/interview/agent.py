@@ -29,7 +29,6 @@ class InterviewAgentConfig(AgentArchitectureConfig):
         default=InterviewState, description="State schema for the agent"
     )
     # runnable_config: RunnableConfig = Field(
-    # default={"configurable": {"thread_id": str(uuid.uuid4())}},
     #  description="Agent runnable config")
 
 

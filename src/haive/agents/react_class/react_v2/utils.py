@@ -113,7 +113,7 @@ def create_structured_react_agent(
 
 def organize_tools_by_category(
     tools: list[BaseTool | StructuredTool | Tool | Callable],
-    categories: dict[str, list[str]] = None,
+    categories: dict[str, list[str]] | None = None,
 ) -> dict[str, list[BaseTool | StructuredTool | Tool | Callable]]:
     """Organize tools into categories for parallel processing.
 

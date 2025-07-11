@@ -16,23 +16,23 @@ class PlannerState(LLMState):
     """
 
     # Available tools for planning context
-    available_tools: List[Any] = Field(
+    available_tools: list[Any] = Field(
         default_factory=list,
         description="Available tools for planning (provided to prompt context)",
     )
 
     # Generated plan
-    generated_plan: Optional[ReWOOPlan] = Field(
+    generated_plan: ReWOOPlan | None = Field(
         default=None, description="The generated ReWOO plan from structured output"
     )
 
     # Planning metadata
-    planning_metadata: Dict[str, Any] = Field(
+    planning_metadata: dict[str, Any] = Field(
         default_factory=dict, description="Metadata about the planning process"
     )
 
     @property
-    def tool_options(self) -> List[str]:
+    def tool_options(self) -> list[str]:
         """Get tool names for prompt context."""
         return [
             tool.name if hasattr(tool, "name") else str(tool)
@@ -61,13 +61,13 @@ class PlannerOutput(BaseModel):
 
     plan: ReWOOPlan = Field(..., description="The generated ReWOO plan")
 
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Planning metadata including tool usage, timing, etc.",
     )
 
     success: bool = Field(default=True, description="Whether planning was successful")
 
-    errors: List[str] = Field(
+    errors: list[str] = Field(
         default_factory=list, description="Any errors encountered during planning"
     )

@@ -192,7 +192,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             self._initialize_example_selector(config)
 
         except Exception as e:
-            logger.error(f"Error initializing GraphDBRAGAgent: {e}")
+            logger.exception(f"Error initializing GraphDBRAGAgent: {e}")
             raise
 
     def _initialize_example_selector(self, config: GraphDBRAGConfig) -> None:
@@ -270,7 +270,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 )()
 
         except Exception as e:
-            logger.error(f"Error initializing example selector: {e}")
+            logger.exception(f"Error initializing example selector: {e}")
             # Create a dummy selector that returns empty examples if all else fails
             self.example_selector = type(
                 "DummySelector", (), {"select_examples": lambda self, query: []}
@@ -430,7 +430,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 }
             )
         except Exception as e:
-            logger.error(f"Error in check_domain_relevance: {e}")
+            logger.exception(f"Error in check_domain_relevance: {e}")
             return Command(
                 update={
                     "error": f"Error checking domain relevance: {e!s}",
@@ -487,11 +487,11 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             return Command(
                 update={
                     "cypher_statement": cypher_statement,
-                    "steps": state.steps + ["generate_query"],
+                    "steps": [*state.steps, "generate_query"],
                 }
             )
         except Exception as e:
-            logger.error(f"Error in generate_query: {e}")
+            logger.exception(f"Error in generate_query: {e}")
             return Command(
                 update={
                     "error": f"Error generating Cypher query: {e!s}",
@@ -537,22 +537,22 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 }
             )
 
-            if validation_result.is_valid == False:
+            if not validation_result.is_valid:
                 return Command(
                     update={
                         "next_action": "correct_cypher",
                         "cypher_errors": validation_result.errors,
-                        "steps": state.steps + ["validate_query"],
+                        "steps": [*state.steps, "validate_query"],
                     }
                 )
             return Command(
                 update={
                     "next_action": "execute_query",
-                    "steps": state.steps + ["validate_query"],
+                    "steps": [*state.steps, "validate_query"],
                 }
             )
         except Exception as e:
-            logger.error(f"Error in validate_query: {e}")
+            logger.exception(f"Error in validate_query: {e}")
             return Command(
                 update={
                     "error": f"Error validating Cypher query: {e!s}",
@@ -605,11 +605,11 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 update={
                     "next_action": "validate_query",
                     "cypher_statement": corrected_cypher,
-                    "steps": state.steps + ["correct_query"],
+                    "steps": [*state.steps, "correct_query"],
                 }
             )
         except Exception as e:
-            logger.error(f"Error in correct_query: {e}")
+            logger.exception(f"Error in correct_query: {e}")
             return Command(
                 update={
                     "error": f"Error correcting Cypher query: {e!s}",
@@ -651,11 +651,11 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 update={
                     "database_records": records if records else self.no_results,
                     "next_action": "generate_answer",
-                    "steps": state.steps + ["execute_query"],
+                    "steps": [*state.steps, "execute_query"],
                 }
             )
         except Exception as e:
-            logger.error(f"Error in execute_query: {e}")
+            logger.exception(f"Error in execute_query: {e}")
             return Command(
                 update={
                     "error": f"Error executing Cypher query: {e!s}",
@@ -708,11 +708,11 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 update={
                     "answer": answer,
                     "next_action": "end",
-                    "steps": state.steps + ["generate_answer"],
+                    "steps": [*state.steps, "generate_answer"],
                 }
             )
         except Exception as e:
-            logger.error(f"Error in generate_answer: {e}")
+            logger.exception(f"Error in generate_answer: {e}")
             return Command(
                 update={
                     "error": f"Error generating answer: {e!s}",

@@ -185,5 +185,4 @@ def create_bias_detector():
         prompt_template=BIAS_DETECTION_PROMPT,
         structured_output_model=ReasoningAnalysis,
         temperature=0.4,
-        # model="gpt-4o"
     )

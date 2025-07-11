@@ -1,4 +1,4 @@
-"""RAG Structured Output Models
+"""RAG Structured Output Models.
 
 Pydantic models for structured outputs from RAG evaluation agents.
 """

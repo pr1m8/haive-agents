@@ -91,9 +91,6 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         """Initialize the taxonomy agent."""
         self._setup_map_reduce_chain()
         super().__init__(config)
-        # self.graph = StateGraph(TaxonomyGenerationState)
-
-        # self.setup_workflow()
 
     def _setup_map_reduce_chain(self):
         """Sets up the map-reduce chain for summarization."""
@@ -125,10 +122,6 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         documents = combined.get("documents", [])
 
         # DEBUG: Print types and values
-        print(f"DEBUG: Type of summaries -> {type(summaries)}")
-        print(f"DEBUG: Type of documents -> {type(documents)}")
-        print(f"DEBUG: First summary -> {summaries[0] if summaries else 'EMPTY'}")
-        print(f"DEBUG: First document -> {documents[0] if documents else 'EMPTY'}")
 
         return Command(
             update={
@@ -192,7 +185,6 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
                 "clusters": [updated_taxonomy["clusters"]],
             }
         )
-        # Markdown(format_taxonomy_md(step["__end__"]["clusters"][-1]))
 
     def get_minibatches(self, state: TaxonomyGenerationState, config: RunnableConfig):
         """Splits documents into minibatches for iterative taxonomy generation.
@@ -256,11 +248,6 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         Returns:
             TaxonomyGenerationState: Updated state with revised taxonomy clusters.
         """
-        print(f"DEBUG: Type of clusters -> {type(state.clusters)}")
-        print(
-            f"DEBUG: First cluster -> {state.clusters[0] if state.clusters else 'EMPTY'}"
-        )
-
         # Ensure clusters is a list of lists
         if not isinstance(state.clusters, list):
             state.clusters = []

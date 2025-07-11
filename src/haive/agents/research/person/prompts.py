@@ -37,7 +37,7 @@ Remember we are interested in determining their work experience mainly."""
 
 # Prompt for gathering information from website content
 INFO_PROMPT = ChatPromptTemplate.from_template(
-    """You are doing web research on people, {people}. 
+    """You are doing web research on people, {people}.
 The following schema shows the type of information we're interested in:
 <schema>
 {info}

@@ -14,7 +14,6 @@ def visualize_graph(
 ):
     """Visualize the graph document using NetworkX and matplotlib."""
     if not graph_document:
-        print("No graph to visualize")
         return
 
     # Create a NetworkX graph
@@ -100,8 +99,6 @@ def visualize_graph(
     plt.tight_layout()
     plt.savefig(output_file, format="png", dpi=300, bbox_inches="tight")
     plt.close()
-
-    print(f"Graph visualization saved to {output_file}")
 
 
 from langchain_community.graphs.graph_document import GraphDocument, Node, Relationship

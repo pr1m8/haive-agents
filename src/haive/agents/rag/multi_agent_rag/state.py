@@ -1,4 +1,4 @@
-"""Enhanced RAG State Schema for Multi-Agent RAG Systems
+"""Enhanced RAG State Schema for Multi-Agent RAG Systems.
 
 This module provides comprehensive state management for complex RAG workflows,
 supporting document processing, grading, multi-step retrieval, and conditional routing.
@@ -209,8 +209,8 @@ class MultiAgentRAGState(StateSchema):
         self,
         operation_type: RAGOperationType,
         agent_name: str,
-        input_data: dict[str, Any] = None,
-        output_data: dict[str, Any] = None,
+        input_data: dict[str, Any] | None = None,
+        output_data: dict[str, Any] | None = None,
     ) -> str:
         """Add a new workflow step."""
         import uuid

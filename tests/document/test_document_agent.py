@@ -266,7 +266,7 @@ class TestDocumentAgentSpecializedMethods:
 
         # This would normally process URLs, but we'll test the interface
         try:
-            result = agent.process_urls(urls)
+            agent.process_urls(urls)
             # In test environment, this may fail due to network access
             # The important thing is the method exists and accepts the right parameters
         except Exception:
@@ -281,7 +281,7 @@ class TestDocumentAgentSpecializedMethods:
 
         # Test the interface (won't actually access cloud in test)
         try:
-            result = agent.process_cloud_storage(cloud_paths)
+            agent.process_cloud_storage(cloud_paths)
         except Exception:
             # Expected in test environment without cloud access
             pass

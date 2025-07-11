@@ -1,4 +1,4 @@
-"""Adaptive RAG Agent
+"""Adaptive RAG Agent.
 
 Dynamic strategy selection based on query complexity.
 Routes queries to appropriate RAG strategies.
@@ -25,7 +25,7 @@ class QueryAnalysis(BaseModel):
     complexity: Literal["simple", "medium", "complex", "known"] = Field(
         description="Query complexity level"
     )
-    topics: List[str] = Field(description="Main topics in the query")
+    topics: list[str] = Field(description="Main topics in the query")
     requires_multi_hop: bool = Field(
         description="Whether query requires multiple reasoning steps"
     )
@@ -86,9 +86,9 @@ class AdaptiveRAGAgent(ConditionalAgent):
     @classmethod
     def from_documents(
         cls,
-        documents: List[Document],
-        llm_config: Optional[LLMConfig] = None,
-        embedding_model: Optional[str] = None,
+        documents: list[Document],
+        llm_config: LLMConfig | None = None,
+        embedding_model: str | None = None,
         **kwargs
     ):
         """Create Adaptive RAG from documents.
@@ -140,7 +140,7 @@ class AdaptiveRAGAgent(ConditionalAgent):
         hyde_rag.name = "HyDE RAG"
 
         # Routing function based on query analysis
-        def route_query(state: Dict[str, Any]) -> str:
+        def route_query(state: dict[str, Any]) -> str:
             """Route based on query complexity analysis."""
             analysis = state.get("query_analysis", {})
 
@@ -157,15 +157,14 @@ class AdaptiveRAGAgent(ConditionalAgent):
             # Route based on complexity
             if complexity == "known" and confidence > 0.8:
                 return "direct"
-            elif complexity == "simple":
+            if complexity == "simple":
                 return "simple_rag"
-            elif complexity == "medium":
+            if complexity == "medium":
                 return "multi_rag"
-            elif complexity == "complex":
+            if complexity == "complex":
                 return "hyde_rag"
-            else:
-                # Default to multi-query for unknown
-                return "multi_rag"
+            # Default to multi-query for unknown
+            return "multi_rag"
 
         # Define routing branches
         branches = {

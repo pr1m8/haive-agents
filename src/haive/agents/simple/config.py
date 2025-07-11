@@ -72,15 +72,15 @@ class SimpleAgentConfig(AgentConfig):
     model_config = {"arbitrary_types_allowed": True}
 
     @field_validator("engine")
-    def validate_engine(cls, v):
-        """Ensure engine is an AugLLMConfig instance"""
+    def validate_engine(self, v):
+        """Ensure engine is an AugLLMConfig instance."""
         if not isinstance(v, AugLLMConfig):
             raise TypeError(f"Engine must be AugLLMConfig, got {type(v)}")
         return v
 
     @field_validator("input_mapping", "output_mapping", mode="after")
-    def validate_mappings(cls, v, info):
-        """Validate mappings if provided"""
+    def validate_mappings(self, v, info):
+        """Validate mappings if provided."""
         if v is None:
             return v  # None is allowed for auto-derivation
 
@@ -133,9 +133,6 @@ class SimpleAgentConfig(AgentConfig):
             id=id,
             name=name,
             engine=aug_llm,
-            # input_schema=input_schema,
-            # output_schema=output_schema,
-            # state_schema=state_schema,
             **kwargs,
         )
 

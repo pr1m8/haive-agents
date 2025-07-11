@@ -14,6 +14,7 @@ from langgraph.types import Command
 from pydantic import Field, computed_field
 
 from haive.agents.planning.rewoo.models import EvidenceStatus, ReWOOPlan
+from haive.agents.planning.rewoo.planner.prompts import REWOO_PLANNING_TEMPLATE
 from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
@@ -28,23 +29,23 @@ class ReWOOState(LLMState):
     """
 
     # Store available tools without auto-sync
-    available_tools: List[Any] = Field(
+    available_tools: list[Any] = Field(
         default_factory=list,
         description="Available tools for ReWOO planning (no auto-sync)",
     )
 
     # ReWOO-specific fields
-    current_plan: Optional[ReWOOPlan] = Field(
+    current_plan: ReWOOPlan | None = Field(
         default=None, description="Current ReWOO plan being executed"
     )
 
-    evidence_collected: Dict[str, Any] = Field(
+    evidence_collected: dict[str, Any] = Field(
         default_factory=dict, description="Evidence collected during execution"
     )
 
     @computed_field
     @property
-    def tool_options(self) -> List[str]:
+    def tool_options(self) -> list[str]:
         """Computed field providing tool names for planning prompts."""
         return [
             tool.name if hasattr(tool, "name") else str(tool)
@@ -59,7 +60,7 @@ class ReWOOState(LLMState):
 
 Given the user's query, create a ReWOO plan with:
 1. Steps that collect evidence (#E1, #E2, etc.)
-2. Tool calls for each piece of evidence  
+2. Tool calls for each piece of evidence
 3. Evidence dependencies and references
 
 Available tools: {self.tool_options}
@@ -87,12 +88,24 @@ class ReWOOAgent(SimpleAgent):
     def setup_agent(self):
         """Setup ReWOO agent with proper engines and controlled tool routing."""
         # 1. DEFINE ENGINES FIRST with proper names matching node config
+        # Format the prompt template with available tools
+        tool_options = []
+        if hasattr(self, "tools") and self.tools:
+            tool_options = [
+                tool.name if hasattr(tool, "name") else str(tool) for tool in self.tools
+            ]
+
+        # Use the ReWOO planning template
+
+        planning_prompt = REWOO_PLANNING_TEMPLATE.format(tools=str(tool_options))
+
+        # Define planning engine with structured output v2
         planning_engine = self.engine.model_copy(
             update={
-                "name": "planning",  # Use simple name to match node config
+                "name": "planning",
                 "structured_output_model": ReWOOPlan,
-                "force_tool_choice": "ReWOOPlan",
-                "system_message": None,  # Will be set dynamically from state.planning_context
+                "structured_output_version": "v2",
+                "system_message": planning_prompt,
             }
         )
 
@@ -185,9 +198,9 @@ Reference specific evidence when making claims (e.g., "Based on #E1...").""",
         # Set available tools in state without auto-sync
         if hasattr(self, "tools") and self.tools:
             # This will be used by ReWOOState.tool_options computed field
-            initial_state = {"available_tools": self.tools}
+            pass
         else:
-            initial_state = {"available_tools": []}
+            pass
 
         # Create runnable with initial state
         runnable = super().create_runnable(runnable_config)
@@ -209,15 +222,11 @@ async def example_rewoo_agent():
     )
 
     # Run agent - should create plan, execute tools, and reason
-    result = await agent.arun(
-        "What is the current stock price of Apple and latest news?"
-    )
-
-    print(f"Result: {result}")
+    await agent.arun("What is the current stock price of Apple and latest news?")
 
     # Check state for ReWOO plan
     if hasattr(agent, "state") and hasattr(agent.state, "current_plan"):
-        print(f"Plan: {agent.state.current_plan}")
+        pass
 
 
 if __name__ == "__main__":

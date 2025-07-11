@@ -33,8 +33,8 @@ from haive.agents.research.person import PersonResearchAgent
 from haive.agents.research.storm import STORMAgentConfig
 
 __all__ = [
-    "PersonResearchAgent",
     "OpenPerplexityAgent",
     "OpenPerplexityConfig",
+    "PersonResearchAgent",
     "STORMAgentConfig",  # Config only - agent still in development
 ]

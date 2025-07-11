@@ -317,7 +317,7 @@ class ChainAgent(SimpleAgent):
                 return updated_state
 
             except Exception as e:
-                logger.error(f"Error in step {step_idx} ({step_name}): {e!s}")
+                logger.exception(f"Error in step {step_idx} ({step_name}): {e!s}")
                 error_msg = f"Error in step {step_idx} ({step_name}): {e!s}"
 
                 # Add error as AI message if we have messages
@@ -467,13 +467,10 @@ if __name__ == "__main__":
     )
 
     # Print results
-    print(f"\nOutput: {result.get('output', '')}")
-    print("\nIntermediate results:")
-    for step, output in result.get("intermediate_results", {}).items():
-        print(f"  {step}: {output}")
+    for _step, _output in result.get("intermediate_results", {}).items():
+        pass
 
     # Print messages
-    print("\nMessages:")
     for msg in result.get("messages", []):
         if hasattr(msg, "content"):
-            print(f"{msg.type.upper()}: {msg.content}")
+            pass

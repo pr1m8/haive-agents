@@ -1,4 +1,4 @@
-"""Person - TODO: Add brief description
+"""Person - TODO: Add brief description.
 
 TODO: Add detailed description of module functionality
 

@@ -250,7 +250,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
             )
             return {"summaries": [f"Error generating summary: {error_str}"]}
 
-    def map_summaries(self, state: SummaryState) -> List[Send]:
+    def map_summaries(self, state: SummaryState) -> list[Send]:
         """Map documents to summary generation tasks.
 
         Creates parallel summary generation tasks for each input document.
@@ -396,7 +396,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
                 update={"final_summary": "Error: Failed to generate final summary"}
             )
 
-    def length_function(self, documents: List[Document]) -> int:
+    def length_function(self, documents: list[Document]) -> int:
         """Calculate total token count for documents.
 
         Computes the sum of tokens across all provided documents using
@@ -491,7 +491,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
                 chunk_summary = await self.map_chain.ainvoke(chunk)
                 chunk_summaries.append(chunk_summary)
             except Exception as e:
-                logger.error(
+                logger.exception(
                     "Error processing chunk", extra={"chunk_index": i, "error": str(e)}
                 )
                 chunk_summaries.append(f"[Chunk {i+1} could not be summarized]")
@@ -499,17 +499,16 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         # Combine chunk summaries
         if not chunk_summaries:
             return {"summaries": ["Document could not be processed"]}
-        elif len(chunk_summaries) == 1:
+        if len(chunk_summaries) == 1:
             return {"summaries": chunk_summaries}
-        else:
-            try:
-                combined = await self.reduce_chain.ainvoke("\n\n".join(chunk_summaries))
-                return {"summaries": [combined]}
-            except Exception as e:
-                logger.error(
-                    "Failed to combine chunk summaries", extra={"error": str(e)}
-                )
-                return {"summaries": ["Error: Could not combine chunk summaries"]}
+        try:
+            combined = await self.reduce_chain.ainvoke("\n\n".join(chunk_summaries))
+            return {"summaries": [combined]}
+        except Exception as e:
+            logger.exception(
+                "Failed to combine chunk summaries", extra={"error": str(e)}
+            )
+            return {"summaries": ["Error: Could not combine chunk summaries"]}
 
 
 def build_agent() -> SummarizerAgent:

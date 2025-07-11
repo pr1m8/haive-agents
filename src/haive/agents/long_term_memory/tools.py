@@ -26,9 +26,19 @@ def save_recall_memory(
 def save_structured_recall_memory(
     config: RunnableConfig,
     vs_config: VectorStoreConfig,
-    memories: list[BaseModel] = [KnowledgeTriple],
+    memories: list[BaseModel] = None,
 ) -> str:
     """Save memory to vectorstore for later semantic retrieval."""
+    if memories is None:
+        memories = [KnowledgeTriple]
+    if memories is None:
+        memories = [KnowledgeTriple]
+    if memories is None:
+        memories = [KnowledgeTriple]
+    if memories is None:
+        memories = [KnowledgeTriple]
+    if memories is None:
+        memories = [KnowledgeTriple]
     user_id = get_user_id(config)
     for memory in memories:
         serialized = " ".join(memory.values())

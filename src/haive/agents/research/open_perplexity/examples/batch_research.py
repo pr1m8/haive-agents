@@ -116,7 +116,7 @@ def main():
             metadata = conduct_research(agent, topic, output_dir)
             results.append(metadata)
         except Exception as e:
-            logger.error(f"Error processing research topic '{topic['title']}': {e}")
+            logger.exception(f"Error processing research topic '{topic['title']}': {e}")
 
     # Generate summary report
     logger.info("Generating batch research summary...")
@@ -143,15 +143,6 @@ def main():
     logger.info(f"Batch summary saved to {summary_path}")
 
     # Print overall summary
-    print("\n" + "=" * 50)
-    print("BATCH RESEARCH SUMMARY")
-    print("=" * 50)
-    print(f"Total topics processed: {len(results)}")
-    print(
-        f"Average processing time: {sum(r['elapsed_time'] for r in results) / len(results):.2f} seconds"
-    )
-    print(f"All reports saved to: {output_dir}")
-    print("=" * 50)
 
 
 if __name__ == "__main__":

@@ -33,7 +33,6 @@ class TestAgentRegistry:
 
     def _create_test_agents(self):
         """Create a set of test agents with different capabilities."""
-
         # Research Agent with simulated search tools
         research_agent = ReactAgent(
             name="research_agent",
@@ -137,11 +136,11 @@ class TestAgentRegistry:
         """Get agent configuration."""
         return self.agent_configs.get(name)
 
-    def get_all_agents(self) -> Dict:
+    def get_all_agents(self) -> dict:
         """Get all test agents."""
         return self.test_agents.copy()
 
-    def get_agents_by_capability(self, capability_keyword: str) -> List[str]:
+    def get_agents_by_capability(self, capability_keyword: str) -> list[str]:
         """Get agents that match a capability keyword."""
         matching = []
         for name, config in self.agent_configs.items():
@@ -152,7 +151,6 @@ class TestAgentRegistry:
 
 async def test_dynamic_supervisor_with_registry():
     """Test dynamic supervisor using pre-loaded agent registry."""
-
     console.print(
         Panel(
             "[bold blue]🧪 Testing Dynamic Supervisor with Pre-loaded Registry[/bold blue]",
@@ -216,7 +214,7 @@ async def test_dynamic_supervisor_with_registry():
         console.print(f"Available routing options: {choice_model.option_names}")
 
         # Test all agents are valid choices
-        for agent_name in test_registry.get_all_agents().keys():
+        for agent_name in test_registry.get_all_agents():
             is_valid = choice_model.validate_choice(agent_name)
             status = "✅ Valid" if is_valid else "❌ Invalid"
             console.print(f"  {agent_name}: {status}")
@@ -266,7 +264,7 @@ async def test_dynamic_supervisor_with_registry():
 
         try:
             # Create state for testing
-            state = {
+            {
                 "messages": [HumanMessage(content=scenario["request"])],
                 "configurable": {"thread_id": f"test_session_{i}"},
             }
@@ -375,9 +373,8 @@ async def test_dynamic_supervisor_with_registry():
 
 async def _simulate_routing_decision(
     supervisor, request: str, test_registry: TestAgentRegistry
-) -> Dict:
+) -> dict:
     """Simulate routing decision based on keywords (for testing without LLM)."""
-
     # Simple keyword-based routing for testing
     request_lower = request.lower()
 
@@ -428,7 +425,6 @@ async def _simulate_routing_decision(
 
 async def test_tool_integration():
     """Test tool integration and routing."""
-
     console.print(
         Panel(
             "[bold blue]🔧 Testing Tool Integration and Routing[/bold blue]",
@@ -479,7 +475,6 @@ async def test_tool_integration():
 
 async def main():
     """Run all procedural tests."""
-
     console.print("[bold magenta]Dynamic Supervisor Procedural Testing[/bold magenta]")
     console.print("=" * 50)
 

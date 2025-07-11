@@ -187,7 +187,7 @@ Remember: Your goal is to provide maximum value by giving accurate, well-reasone
     visualize: bool = Field(default=True, description="Whether to visualize the graph")
 
     @field_validator("tools", mode="before")
-    def preprocess_tools(cls, v):
+    def preprocess_tools(self, v):
         """Preprocess tools to ensure consistency."""
         if v is None:
             return []
@@ -289,14 +289,14 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Create dynamic graph builder with tools integration
         if isinstance(self.state_schema, type):
             gb = DynamicGraph(
-                components=[self.config.engine] + self.config.tools,
+                components=[self.config.engine, *self.config.tools],
                 state_schema=self.state_schema,
                 name=self.config.name,
             )
         else:
             # If state_schema is already instantiated, use it directly
             gb = DynamicGraph(
-                components=[self.config.engine] + self.config.tools,
+                components=[self.config.engine, *self.config.tools],
                 state_schema=self.state_schema,
                 name=self.config.name,
             )
@@ -445,7 +445,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                 )
                 logger.info(f"Graph visualization saved for {self.config.name}")
             except Exception as e:
-                logger.error(f"Failed to visualize graph: {e!s}")
+                logger.exception(f"Failed to visualize graph: {e!s}")
 
     def chat(self, interactive=True):
         """Start an interactive chat session with the agent.
@@ -454,8 +454,6 @@ class ReactAgent(Agent[ReactAgentConfig]):
             interactive: Whether to run in interactive mode (default: True)
         """
         if interactive:
-            print(f"\n===== Starting chat with {self.config.name} =====")
-            print("Type 'exit', 'quit', or 'q' to end the conversation.\n")
 
             # Create a thread ID for this conversation
             thread_id = str(uuid.uuid4())
@@ -467,7 +465,6 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
                 # Check for exit command
                 if user_input.lower() in ["exit", "quit", "q"]:
-                    print("\n===== Ending chat =====")
                     break
 
                 # Create input message
@@ -484,7 +481,6 @@ class ReactAgent(Agent[ReactAgentConfig]):
                         input_data = {"messages": [user_message]}
 
                     # Stream the agent's response
-                    print("\nAgent: ", end="", flush=True)
 
                     last_message = None
                     tool_calls_seen = set()
@@ -516,11 +512,6 @@ class ReactAgent(Agent[ReactAgentConfig]):
                                             for call in msg.tool_calls:
                                                 if call["id"] not in tool_calls_seen:
                                                     tool_calls_seen.add(call["id"])
-                                                    print(
-                                                        f"\n[Using {call['name']}...]",
-                                                        end="",
-                                                        flush=True,
-                                                    )
                                         continue
 
                                     # Found a message to display
@@ -530,18 +521,15 @@ class ReactAgent(Agent[ReactAgentConfig]):
                                         # New AI message to display
                                         if last_message is None:
                                             # First message
-                                            print(f"{msg.content}", end="", flush=True)
+                                            pass
                                         else:
                                             # Updated content
-                                            print(
-                                                f"\n{msg.content}", end="", flush=True
-                                            )
+                                            pass
                                         last_message = msg
                                         break
 
-                    print("\n")
-                except Exception as e:
-                    print(f"\nError: {e!s}")
+                except Exception:
+                    pass
         else:
             # Non-interactive mode for testing or scripting
             pass

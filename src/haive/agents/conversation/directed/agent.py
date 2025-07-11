@@ -200,7 +200,7 @@ class DirectedConversation(BaseConversationAgent):
             return []
 
         last_message = state.messages[-1]
-        if not isinstance(last_message, (AIMessage, BaseMessage)) or not hasattr(
+        if not isinstance(last_message, AIMessage | BaseMessage) or not hasattr(
             last_message, "content"
         ):
             return []
@@ -413,17 +413,18 @@ class DirectedConversation(BaseConversationAgent):
             messages = base_input.get("messages", [])
 
             # Insert before the last message
-            if messages:
-                messages = messages[:-1] + [mention_msg] + messages[-1:]
-            else:
-                messages = [mention_msg]
+            messages = (
+                [*messages[:-1], mention_msg, *messages[-1:]]
+                if messages
+                else [mention_msg]
+            )
             base_input["messages"] = messages
 
         return base_input
 
     @staticmethod
     def _sanitize_name_for_openai(name: str) -> str:
-        """Sanitize a name to be compatible with OpenAI's API requirements.
+        r"""Sanitize a name to be compatible with OpenAI's API requirements.
 
         OpenAI's name field must match the pattern '^[^\\s<|\\\\/>]+$'
         This means no spaces, <, |, \\, /, or >

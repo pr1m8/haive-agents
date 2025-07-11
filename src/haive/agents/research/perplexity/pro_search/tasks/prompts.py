@@ -1,6 +1,5 @@
 # recursive_planning_prompts.py
-"""
-Chat prompt templates for recursive conditional planning with tree-based decomposition.
+"""Chat prompt templates for recursive conditional planning with tree-based decomposition.
 These prompts guide task decomposition, execution planning, and adaptive replanning.
 """
 

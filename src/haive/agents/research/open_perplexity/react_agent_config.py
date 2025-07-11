@@ -82,7 +82,7 @@ def create_research_rag_engine(
     2. Extract key information and insights
     3. Focus on high-quality, reliable sources
     4. Identify connections between pieces of information
-    
+
     Be thorough and accurate in your retrieval and analysis. Prioritize authoritative sources while
     considering multiple perspectives on the topic.
     """

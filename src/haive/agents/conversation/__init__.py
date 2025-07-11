@@ -131,24 +131,25 @@ __version__ = "1.0.0"
 __author__ = "Haive Team"
 __license__ = "MIT"
 
+from collections.abc import Callable
+
 # Type imports for better IDE support
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Dict,
     List,
+    Literal,
+    NotRequired,
     Optional,
     Protocol,
     Type,
+    TypeAlias,
     Union,
     runtime_checkable,
 )
 
 from typing_extensions import (
-    Literal,
-    NotRequired,
-    TypeAlias,
     TypedDict,
 )
 
@@ -218,41 +219,41 @@ class CollaborativeConfig(ConversationConfig, total=False):
     """Configuration specific to collaborative conversations."""
 
     task_decomposition: NotRequired[bool]
-    role_assignment: NotRequired[Dict[str, str]]
-    deliverables: NotRequired[List[str]]
+    role_assignment: NotRequired[dict[str, str]]
+    deliverables: NotRequired[list[str]]
     progress_tracking: NotRequired[bool]
 
 
 # Define public API
 __all__ = [
-    # Version information
-    "__version__",
-    "__author__",
-    "__license__",
     # Core conversation agents
     "BaseConversationAgent",
-    "RoundRobinConversation",
-    "DirectedConversation",
-    "DebateConversation",
+    "CollaborativeConfig",
     "CollaborativeConversation",
-    "SocialMediaConversation",
-    # Type aliases
-    "ConversationType",
-    "ParticipantRole",
-    "ConversationStatus",
-    "MessageType",
-    # Protocols
-    "ConversationParticipant",
     # Configuration types
     "ConversationConfig",
+    # Protocols
+    "ConversationParticipant",
+    "ConversationStatus",
+    # Type aliases
+    "ConversationType",
     "DebateConfig",
-    "CollaborativeConfig",
+    "DebateConversation",
+    "DirectedConversation",
+    "MessageType",
+    "ParticipantRole",
+    "RoundRobinConversation",
+    "SocialMediaConversation",
+    "__author__",
+    "__license__",
+    # Version information
+    "__version__",
+    "create_collaboration",
     # Convenience functions
     "create_conversation",
     "create_debate",
-    "create_collaboration",
-    "validate_participants",
     "get_conversation_types",
+    "validate_participants",
 ]
 
 
@@ -280,9 +281,9 @@ def _initialize_conversation_module() -> None:
 # Convenience factory functions
 def create_conversation(
     conversation_type: ConversationType,
-    participants: List[ConversationParticipant],
+    participants: list[ConversationParticipant],
     topic: str,
-    config: Optional[ConversationConfig] = None,
+    config: ConversationConfig | None = None,
     **kwargs: Any,
 ) -> BaseConversationAgent:
     """Create a conversation agent of the specified type.
@@ -323,31 +324,30 @@ def create_conversation(
         return RoundRobinConversation(
             participants=participants, topic=topic, **config, **kwargs
         )
-    elif conversation_type == "directed":
+    if conversation_type == "directed":
         return DirectedConversation(
             participants=participants, topic=topic, **config, **kwargs
         )
-    elif conversation_type == "debate":
+    if conversation_type == "debate":
         return DebateConversation(topic=topic, **config, **kwargs)
-    elif conversation_type == "collaborative":
+    if conversation_type == "collaborative":
         return CollaborativeConversation(
             participants=participants, topic=topic, **config, **kwargs
         )
-    elif conversation_type == "social_media":
+    if conversation_type == "social_media":
         return SocialMediaConversation(
             participants=participants, topic=topic, **config, **kwargs
         )
-    else:
-        raise ValueError(f"Unknown conversation type: {conversation_type}")
+    raise ValueError(f"Unknown conversation type: {conversation_type}")
 
 
 def create_debate(
     topic: str,
-    pro_agents: List[ConversationParticipant],
-    con_agents: List[ConversationParticipant],
-    judge_agent: Optional[ConversationParticipant] = None,
+    pro_agents: list[ConversationParticipant],
+    con_agents: list[ConversationParticipant],
+    judge_agent: ConversationParticipant | None = None,
     rounds: int = 3,
-    config: Optional[DebateConfig] = None,
+    config: DebateConfig | None = None,
 ) -> DebateConversation:
     """Create a structured debate conversation.
 
@@ -396,9 +396,9 @@ def create_debate(
 
 def create_collaboration(
     task: str,
-    participants: Dict[str, ConversationParticipant],
-    deliverables: Optional[List[str]] = None,
-    config: Optional[CollaborativeConfig] = None,
+    participants: dict[str, ConversationParticipant],
+    deliverables: list[str] | None = None,
+    config: CollaborativeConfig | None = None,
 ) -> CollaborativeConversation:
     """Create a collaborative conversation for team tasks.
 
@@ -444,9 +444,9 @@ def create_collaboration(
 
 
 def validate_participants(
-    participants: List[ConversationParticipant],
+    participants: list[ConversationParticipant],
     min_participants: int = 2,
-    max_participants: Optional[int] = None,
+    max_participants: int | None = None,
 ) -> bool:
     """Validate that participants meet conversation requirements.
 
@@ -489,7 +489,7 @@ def validate_participants(
     return True
 
 
-def get_conversation_types() -> List[ConversationType]:
+def get_conversation_types() -> list[ConversationType]:
     """Get list of available conversation types.
 
     Returns:
@@ -498,7 +498,7 @@ def get_conversation_types() -> List[ConversationType]:
     return ["round_robin", "directed", "debate", "collaborative", "social_media"]
 
 
-def __dir__() -> List[str]:
+def __dir__() -> list[str]:
     """Override dir() to show only public API."""
     return __all__
 

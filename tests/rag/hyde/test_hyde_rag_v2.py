@@ -1,4 +1,4 @@
-"""Test HyDE RAG V2 Agent
+"""Test HyDE RAG V2 Agent.
 
 Tests the improved HyDERAGAgentV2 with proper hypothetical document generation.
 """
@@ -57,13 +57,10 @@ class TestHyDERAGAgentV2:
 
             # Should have results
             assert result is not None
-            print(f"✅ HyDE RAG completed successfully")
 
             # Check if hypothetical doc was generated
             if "hypothetical_doc" in result:
-                print(
-                    f"Hypothetical document generated: {result['hypothetical_doc'][:100]}..."
-                )
+                pass
 
         except Exception as e:
             pytest.fail(f"HyDE RAG failed: {e}")
@@ -96,7 +93,6 @@ class TestHyDERAGAgentV2:
             result = rag.run({"query": query})
 
             assert result is not None
-            print(f"✅ HyDE RAG handled technical query")
 
         except Exception as e:
             pytest.fail(f"HyDE RAG failed on technical query: {e}")
@@ -129,11 +125,8 @@ class TestHyDERAGAgentV2:
             assert hyde_result is not None
             assert simple_result is not None
 
-            print("✅ Both HyDE and Simple RAG completed")
-            print("HyDE uses hypothetical document for better semantic matching")
-
-        except Exception as e:
-            print(f"Comparison test partial failure: {e}")
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":

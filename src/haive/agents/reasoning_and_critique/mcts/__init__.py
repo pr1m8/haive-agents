@@ -1,4 +1,4 @@
-"""Mcts - TODO: Add brief description
+"""Mcts - TODO: Add brief description.
 
 TODO: Add detailed description of module functionality
 

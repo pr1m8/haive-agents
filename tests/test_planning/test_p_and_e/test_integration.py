@@ -43,16 +43,14 @@ class TestPlanAndExecuteIntegration:
     @pytest.mark.skip(reason="Requires LLM connection")
     def test_agent_simple_execution(self):
         """Test agent executing a simple task."""
-        agent = PlanAndExecuteAgent(name="test_agent", tools=[get_weather])
+        PlanAndExecuteAgent(name="test_agent", tools=[get_weather])
 
-        state = PlanExecuteState(
+        PlanExecuteState(
             messages=[HumanMessage(content="What's the weather in Tokyo?")]
         )
 
         # This would run the full agent
-        # result = agent.run(state)
         # assert result.final_answer is not None
-        # assert "tokyo" in result.final_answer.lower()
 
     def test_state_initialization_flow(self):
         """Test the flow of state initialization and updates."""

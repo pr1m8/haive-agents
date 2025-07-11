@@ -1,8 +1,7 @@
 # ============================================================================
 # LTM MEMORY SCHEMAS
 # ============================================================================
-"""
-Memory schemas for LTM agent using LangMem patterns.
+"""Memory schemas for LTM agent using LangMem patterns.
 
 These schemas define the structure of memories that will be extracted
 and managed by the LTM agent.
@@ -47,7 +46,7 @@ class FactualMemory(BaseModel):
 
     fact: str = Field(description="The factual information")
     domain: str = Field(description="Domain or category of the fact")
-    source: Optional[str] = Field(default=None, description="Source of the information")
+    source: str | None = Field(default=None, description="Source of the information")
     verification_level: str = Field(
         default="stated",
         description="Level of verification: stated, confirmed, verified",
@@ -70,10 +69,10 @@ class ConversationalMemory(BaseModel):
 
     content: str = Field(description="The conversational memory content")
     topic: str = Field(description="Main topic or theme")
-    emotional_tone: Optional[str] = Field(
+    emotional_tone: str | None = Field(
         default=None, description="Emotional tone if relevant"
     )
-    action_items: List[str] = Field(
+    action_items: list[str] = Field(
         default_factory=list, description="Any action items or follow-ups mentioned"
     )
 

@@ -1,5 +1,3 @@
-# from haive.core.engine.retriever import RetrieverConfig  # Correct import
-
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.retriever.mixins import RetrieverMixin
 from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig

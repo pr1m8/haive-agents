@@ -164,8 +164,8 @@ class DynamicSupervisorAgent(ReactAgent):
 
     async def arun(
         self,
-        input_data: Union[str, Dict[str, Any], List[BaseMessage]],
-        state: Optional[SupervisorStateWithTools] = None,
+        input_data: str | dict[str, Any] | list[BaseMessage],
+        state: SupervisorStateWithTools | None = None,
         **kwargs,
     ) -> Any:
         """Run the supervisor asynchronously.
@@ -233,8 +233,8 @@ class DynamicSupervisorAgent(ReactAgent):
 
     def run(
         self,
-        input_data: Union[str, Dict[str, Any], List[BaseMessage]],
-        state: Optional[SupervisorStateWithTools] = None,
+        input_data: str | dict[str, Any] | list[BaseMessage],
+        state: SupervisorStateWithTools | None = None,
         **kwargs,
     ) -> Any:
         """Run the supervisor synchronously.

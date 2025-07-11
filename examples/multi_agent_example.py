@@ -89,32 +89,23 @@ def run_example():
     }
 
     # Invoke the multi-agent
-    print(f"Invoking multi-agent: {multi_agent.name}")
     result = multi_agent.invoke(input_data)
 
     # Print the result
-    print("\nMulti-agent result:")
 
     # Print messages
     if "messages" in result:
-        print("\nMessages:")
-        for i, msg in enumerate(result["messages"]):
-            print(f"  {i+1}. {msg.type}: {msg.content[:100]}...")
+        for _i, _msg in enumerate(result["messages"]):
+            pass
 
     # Print structured outputs
     if "structured_outputs" in result:
-        print("\nStructured outputs:")
-        for agent_id, output in result["structured_outputs"].items():
-            agent_name = multi_agent._state_instance.agents[agent_id].name
-            print(f"  {agent_name}:")
-            print(f"  {output}")
+        for agent_id, _output in result["structured_outputs"].items():
+            multi_agent._state_instance.agents[agent_id].name
 
     # Print agent outputs
-    print("\nAgent outputs:")
-    for agent_id, output in result.get("outputs", {}).items():
-        agent_name = multi_agent._state_instance.agents[agent_id].name
-        print(f"  {agent_name}:")
-        print(f"  {output}")
+    for agent_id, _output in result.get("outputs", {}).items():
+        multi_agent._state_instance.agents[agent_id].name
 
 
 if __name__ == "__main__":

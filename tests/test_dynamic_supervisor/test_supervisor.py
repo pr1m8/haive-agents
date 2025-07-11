@@ -32,7 +32,7 @@ class MockAgent:
     def __init__(self, name: str, response: str = "Mock response"):
         self.name = name
         self.response = response
-        self.calls: List[str] = []
+        self.calls: list[str] = []
 
     def run(self, task: str) -> str:
         """Synchronous execution."""
@@ -304,4 +304,3 @@ class TestSupervisorIntegration:
     async def test_multi_agent_coordination(self):
         """Test coordinating multiple agents."""
         # This would use real agents in a full integration test
-        pass

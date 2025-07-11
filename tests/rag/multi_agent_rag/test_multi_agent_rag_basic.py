@@ -1,4 +1,4 @@
-"""Basic tests for Multi-Agent RAG System
+"""Basic tests for Multi-Agent RAG System.
 
 Run with: poetry run pytest packages/haive-agents/tests/rag/multi_agent_rag/test_multi_agent_rag_basic.py -v
 """

@@ -256,7 +256,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             )
 
         except Exception as e:
-            logger.error(f"Error generating candidates: {e}")
+            logger.exception(f"Error generating candidates: {e}")
             return Command(update={"candidates": [], "error": str(e)}, goto=END)
 
     def _map_candidates_to_evaluation(self, state: TOTState) -> list[Send]:
@@ -318,7 +318,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             return Command(update={"scored_candidate": scored_candidate})
 
         except Exception as e:
-            logger.error(f"Error evaluating candidate: {e}")
+            logger.exception(f"Error evaluating candidate: {e}")
             # Create a zero-scored candidate as fallback
             fallback_score = Score(value=0.0, feedback=f"Error: {e}")
             scored_candidate = ScoredCandidate(
@@ -346,7 +346,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
 
         # Add to the list of scored candidates
         current_scored = state.get("scored_candidates", [])
-        updated_scored = current_scored + [scored_candidate]
+        updated_scored = [*current_scored, scored_candidate]
 
         return Command(update={"scored_candidates": updated_scored})
 
@@ -420,7 +420,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                 scored_candidates.append(scored_candidate)
 
             except Exception as e:
-                logger.error(f"Error scoring candidate: {e}")
+                logger.exception(f"Error scoring candidate: {e}")
                 # Add a zero-scored candidate as fallback
                 content = (
                     candidate.content

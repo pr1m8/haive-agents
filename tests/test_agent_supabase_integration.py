@@ -27,7 +27,6 @@ class TestSupabaseAgent(Agent):
 
     def setup_agent(self):
         """Setup hook."""
-        pass
 
     def build_graph(self) -> BaseGraph:
         """Build a simple test graph."""
@@ -41,7 +40,7 @@ class TestSupabaseAgent(Agent):
             messages = state.get("messages", [])
             count = state.get("count", 0)
             new_message = f"Processed message {count + 1}"
-            return {"messages": messages + [new_message], "count": count + 1}
+            return {"messages": [*messages, new_message], "count": count + 1}
 
         graph.add_node("process", process_message)
         graph.add_edge("process", END)

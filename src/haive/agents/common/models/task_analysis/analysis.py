@@ -350,12 +350,11 @@ class TaskAnalysis(BaseModel):
             )
 
         # Check decomposition consistency
-        if self.decomposition:
-            if (
-                self.complexity.overall_complexity == ComplexityType.TRIVIAL
-                and len(self.decomposition.branches) > 3
-            ):
-                raise ValueError("Trivial tasks should not have complex decomposition")
+        if self.decomposition and (
+            self.complexity.overall_complexity == ComplexityType.TRIVIAL
+            and len(self.decomposition.branches) > 3
+        ):
+            raise ValueError("Trivial tasks should not have complex decomposition")
 
         # Check confidence consistency
         avg_confidence = (

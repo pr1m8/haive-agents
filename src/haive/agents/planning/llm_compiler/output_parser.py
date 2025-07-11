@@ -38,7 +38,7 @@ def _parse_llm_compiler_action_args(args: str, tool: str | BaseTool) -> list[Any
     extracted_args = {}
     tool_key = None
     prev_idx = None
-    for key in tool.args.keys():
+    for key in tool.args:
         # Split if present
         if f"{key}=" in args:
             idx = args.index(f"{key}=")

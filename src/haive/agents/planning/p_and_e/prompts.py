@@ -1,6 +1,5 @@
 # src/haive/agents/plan_and_execute/prompts.py
-"""
-Prompt templates for Plan and Execute Agent System.
+"""Prompt templates for Plan and Execute Agent System.
 
 This module defines the prompts for planning, execution, and replanning agents.
 """

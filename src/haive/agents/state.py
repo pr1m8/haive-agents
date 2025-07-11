@@ -14,7 +14,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 def debug_print(message: str):
     """Helper function to print and log debug messages."""
-    print(f"[DEBUG] {message}")
     logging.debug(message)
 
 
@@ -22,7 +21,7 @@ def debug_print(message: str):
 # WebNavState Class
 # -----------------------------------------------------------------------------
 class WebNavState(BaseModel):
-    """Web Navigation State Model with Playwright Support & Serialization
+    """Web Navigation State Model with Playwright Support & Serialization.
 
     This model holds the state for a web navigation agent:
       - 'page': the live Playwright page (excluded from serialization)
@@ -67,7 +66,7 @@ class WebNavState(BaseModel):
         debug_print("WebNavState initialized with values (excluding page)")
 
     @field_validator("prediction", mode="before")
-    def ensure_prediction(cls, v):
+    def ensure_prediction(self, v):
         """Ensures prediction is either None or a valid object."""
         debug_print(f"Validating prediction: {v}")
         if isinstance(v, list) and len(v) == 0:

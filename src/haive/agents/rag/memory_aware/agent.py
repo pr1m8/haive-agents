@@ -1,4 +1,4 @@
-"""Memory-Aware RAG Agents
+"""Memory-Aware RAG Agents.
 
 Memory-aware RAG with persistent context and iterative learning.
 Uses structured output models for memory management.
@@ -53,7 +53,7 @@ class MemoryItem(BaseModel):
     importance: MemoryImportance = Field(description="Importance level")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in this memory")
     created_at: datetime = Field(default_factory=datetime.now)
-    keywords: List[str] = Field(
+    keywords: list[str] = Field(
         default_factory=list, description="Key terms for retrieval"
     )
 
@@ -64,7 +64,7 @@ class MemoryRetrievalAgent(Agent):
     name: str = "Memory Retrieval"
 
     def __init__(
-        self, llm_config: Optional[LLMConfig] = None, max_memories: int = 10, **kwargs
+        self, llm_config: LLMConfig | None = None, max_memories: int = 10, **kwargs
     ):
         """Initialize memory retrieval agent."""
         self.llm_config = llm_config or AzureLLMConfig(
@@ -73,14 +73,14 @@ class MemoryRetrievalAgent(Agent):
             api_key="${AZURE_OPENAI_API_KEY}",
         )
         self.max_memories = max_memories
-        self.memory_store: Dict[str, MemoryItem] = {}
+        self.memory_store: dict[str, MemoryItem] = {}
         super().__init__(**kwargs)
 
     def build_graph(self) -> BaseGraph:
         """Build memory retrieval graph."""
         graph = BaseGraph(name="MemoryRetrieval")
 
-        def retrieve_memories(state: Dict[str, Any]) -> Dict[str, Any]:
+        def retrieve_memories(state: dict[str, Any]) -> dict[str, Any]:
             """Retrieve relevant memories for the current query."""
             query = getattr(state, "query", "")
 
@@ -133,8 +133,8 @@ class MemoryAwareRAGAgent(SequentialAgent):
     @classmethod
     def from_documents(
         cls,
-        documents: List[Document],
-        llm_config: Optional[LLMConfig] = None,
+        documents: list[Document],
+        llm_config: LLMConfig | None = None,
         max_memories: int = 100,
         **kwargs,
     ):
@@ -184,8 +184,8 @@ class MemoryAwareRAGAgent(SequentialAgent):
 
 
 def create_memory_aware_rag_agent(
-    documents: List[Document],
-    llm_config: Optional[LLMConfig] = None,
+    documents: list[Document],
+    llm_config: LLMConfig | None = None,
     memory_mode: str = "adaptive",
     **kwargs,
 ) -> MemoryAwareRAGAgent:
@@ -202,7 +202,7 @@ def create_memory_aware_rag_agent(
     )
 
 
-def get_memory_aware_rag_io_schema() -> Dict[str, List[str]]:
+def get_memory_aware_rag_io_schema() -> dict[str, list[str]]:
     """Get I/O schema for Memory-Aware RAG agents."""
     return {
         "inputs": ["query", "conversation_history", "messages"],

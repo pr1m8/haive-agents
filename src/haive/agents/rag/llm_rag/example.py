@@ -225,7 +225,7 @@ def main():
     agent = create_llm_rag_agent()
 
     # Run example queries
-    results = run_example_queries(agent)
+    run_example_queries(agent)
 
     # Compare different configurations
     compare_agent_configurations()

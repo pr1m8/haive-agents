@@ -146,15 +146,15 @@ def test_document_structure_agent():
 
     # A short text for testing
     test_text = """# Introduction to Python
-    
+
     Python is a popular programming language.
-    
+
     ## Basic Syntax
-    
+
     Python has a simple syntax that is easy to learn.
-    
+
     ## Data Types
-    
+
     Python supports various data types including strings, numbers, and lists.
     """
 

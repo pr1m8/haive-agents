@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Base Conversation Agent Example
+"""Base Conversation Agent Example.
 
 This example demonstrates how to create custom conversation agents by extending
 the BaseConversationAgent class and implementing core conversation patterns.
@@ -30,9 +29,9 @@ class CustomConversationState(ConversationState):
     """Extended conversation state with quality tracking."""
 
     # Custom fields for tracking conversation quality
-    quality_scores: List[float] = Field(default_factory=list)
+    quality_scores: list[float] = Field(default_factory=list)
     engagement_level: float = Field(default=0.5)
-    sentiment_scores: Dict[str, float] = Field(default_factory=dict)
+    sentiment_scores: dict[str, float] = Field(default_factory=dict)
 
     # Custom reducers for automatic updates
     __reducer_fields__ = {
@@ -49,8 +48,7 @@ class CustomConversationState(ConversationState):
 
 
 class CustomConversationAgent(BaseConversationAgent[CustomConversationState]):
-    """
-    Custom conversation agent demonstrating extension patterns.
+    """Custom conversation agent demonstrating extension patterns.
 
     This example shows how to:
     - Implement custom speaker selection logic
@@ -69,9 +67,8 @@ class CustomConversationAgent(BaseConversationAgent[CustomConversationState]):
             "engagement_scores": [],
         }
 
-    def select_next_speaker(self, state: CustomConversationState) -> Optional[str]:
-        """
-        Custom speaker selection with engagement-based prioritization.
+    def select_next_speaker(self, state: CustomConversationState) -> str | None:
+        """Custom speaker selection with engagement-based prioritization.
 
         Selects speakers based on:
         1. Who hasn't spoken in the current round
@@ -99,8 +96,7 @@ class CustomConversationAgent(BaseConversationAgent[CustomConversationState]):
         return None
 
     def should_end_conversation(self, state: CustomConversationState) -> bool:
-        """
-        Enhanced termination logic with quality considerations.
+        """Enhanced termination logic with quality considerations.
 
         Ends conversation if:
         - Round limit reached
@@ -156,15 +152,14 @@ class CustomConversationAgent(BaseConversationAgent[CustomConversationState]):
             return response
 
         except TimeoutError:
-            logger.error(f"Agent {agent.name} timed out")
+            logger.exception(f"Agent {agent.name} timed out")
             return f"[{agent.name} is taking time to respond...]"
         except Exception as e:
-            logger.error(f"Error executing agent {agent.name}: {e}")
+            logger.exception(f"Error executing agent {agent.name}: {e}")
             raise ConversationError(f"Failed to execute agent: {e}")
 
     def _assess_response_quality(self, response: str) -> float:
-        """
-        Simplified quality assessment based on response characteristics.
+        """Simplified quality assessment based on response characteristics.
 
         In a real implementation, this could use:
         - Sentiment analysis
@@ -200,7 +195,7 @@ class CustomConversationAgent(BaseConversationAgent[CustomConversationState]):
 
         return max(0.0, min(1.0, score))
 
-    def get_conversation_summary(self) -> Dict[str, Any]:
+    def get_conversation_summary(self) -> dict[str, Any]:
         """Generate comprehensive conversation summary."""
         state = self.get_state()
 
@@ -241,23 +236,19 @@ class CustomConversationAgent(BaseConversationAgent[CustomConversationState]):
         """Determine why the conversation ended."""
         if state.should_end_by_rounds:
             return "Round limit reached"
-        elif state.conversation_ended:
+        if state.conversation_ended:
             return "Explicit termination"
-        elif state.average_quality < 0.3:
+        if state.average_quality < 0.3:
             return "Low conversation quality"
-        elif state.engagement_level < 0.2:
+        if state.engagement_level < 0.2:
             return "Low engagement level"
-        elif len(state.messages) > 50:
+        if len(state.messages) > 50:
             return "Message limit reached"
-        else:
-            return "Natural conclusion"
+        return "Natural conclusion"
 
 
 async def main():
     """Demonstrate custom conversation agent usage."""
-    print("Custom Conversation Agent Example")
-    print("=" * 50)
-
     # Create participant agents
     alice = SimpleAgent(
         name="Alice",
@@ -292,66 +283,42 @@ async def main():
         initial_state=initial_state,
     )
 
-    print(f"Starting conversation on: {initial_state.topic}")
-    print(f"Participants: {', '.join(initial_state.speakers)}")
-    print(f"Max rounds: {initial_state.max_rounds}")
-    print()
-
     # Run the conversation
     try:
         # Start the conversation
-        result = await conversation.arun(
+        await conversation.arun(
             "Let's discuss how AI can transform education. "
             "Alice, what are your thoughts on AI-powered personalized learning?"
         )
-
-        print("\nConversation Result:")
-        print("-" * 50)
 
         # Get final state
         final_state = conversation.get_state()
 
         # Display conversation messages
-        print("\nConversation Flow:")
-        for i, msg in enumerate(final_state.messages):
+        for _i, msg in enumerate(final_state.messages):
             if isinstance(msg, HumanMessage):
-                print(f"\n[Moderator]: {msg.content}")
+                pass
             elif isinstance(msg, AIMessage):
-                speaker = getattr(msg, "name", "Unknown")
-                print(f"\n[{speaker}]: {msg.content[:200]}...")
+                getattr(msg, "name", "Unknown")
 
         # Display progress tracking
-        print("\n\nProgress Tracking:")
-        print("-" * 30)
         progress_info = get_conversation_progress(final_state)
-        for key, value in progress_info.items():
-            print(f"{key}: {value}")
+        for _key, _value in progress_info.items():
+            pass
 
         # Display quality metrics
-        print("\n\nQuality Metrics:")
-        print("-" * 30)
-        print(f"Average quality: {final_state.average_quality:.2f}")
-        print(f"Final engagement: {final_state.engagement_level:.2f}")
-        print(f"Quality scores: {[f'{s:.2f}' for s in final_state.quality_scores]}")
 
         # Display conversation summary
-        print("\n\nConversation Summary:")
-        print("-" * 30)
         summary = conversation.get_conversation_summary()
-        for category, metrics in summary.items():
-            print(f"\n{category.replace('_', ' ').title()}:")
+        for _category, metrics in summary.items():
             if isinstance(metrics, dict):
-                for key, value in metrics.items():
-                    print(f"  {key}: {value}")
+                for _key, _value in metrics.items():
+                    pass
             else:
-                print(f"  {metrics}")
+                pass
 
     except Exception as e:
-        logger.error(f"Conversation failed: {e}")
-        print(f"\n❌ Error: {e}")
-
-    print("\n" + "=" * 50)
-    print("Custom conversation example complete!")
+        logger.exception(f"Conversation failed: {e}")
 
 
 if __name__ == "__main__":

@@ -43,7 +43,7 @@ def run_example():
             output_dir.mkdir(exist_ok=True)
             logger.debug(f"Created output directory: {output_dir}")
         except Exception as e:
-            logger.error(f"Error creating output directory: {e}")
+            logger.exception(f"Error creating output directory: {e}")
             return False
 
         # Generate timestamp for file naming
@@ -73,8 +73,8 @@ def run_example():
             agent = ResearchAgent(config=config)
             logger.debug("Research agent created successfully")
         except Exception as e:
-            logger.error(f"Error creating research agent: {e}")
-            logger.error(traceback.format_exc())
+            logger.exception(f"Error creating research agent: {e}")
+            logger.exception(traceback.format_exc())
             return False
 
         # File paths for outputs
@@ -96,8 +96,8 @@ def run_example():
                 f"Final state keys: {final_state.keys() if isinstance(final_state, dict) else 'Not a dict'}"
             )
         except Exception as e:
-            logger.error(f"Error running research agent: {e}")
-            logger.error(traceback.format_exc())
+            logger.exception(f"Error running research agent: {e}")
+            logger.exception(traceback.format_exc())
             return False
 
         # Step 2: Save state history
@@ -106,8 +106,8 @@ def run_example():
             history_path = agent.save_state_history(state_history_path)
             logger.info(f"State history saved to {history_path}")
         except Exception as e:
-            logger.error(f"Error saving state history: {e}")
-            logger.error(traceback.format_exc())
+            logger.exception(f"Error saving state history: {e}")
+            logger.exception(traceback.format_exc())
             # Continue even if saving state history fails
 
         # Step 3: Generate markdown report
@@ -118,8 +118,8 @@ def run_example():
                 f.write(report)
             logger.info(f"Markdown report saved to {report_path}")
         except Exception as e:
-            logger.error(f"Error generating markdown report: {e}")
-            logger.error(traceback.format_exc())
+            logger.exception(f"Error generating markdown report: {e}")
+            logger.exception(traceback.format_exc())
             # Continue even if generating report fails
 
         # Step 4: Visualize the final state
@@ -128,8 +128,8 @@ def run_example():
             agent.visualize_state(final_state)
             logger.info("State visualization completed")
         except Exception as e:
-            logger.error(f"Error visualizing state: {e}")
-            logger.error(traceback.format_exc())
+            logger.exception(f"Error visualizing state: {e}")
+            logger.exception(traceback.format_exc())
             # Continue even if visualization fails
 
         # Display execution information
@@ -151,8 +151,8 @@ def run_example():
 
         return True
     except Exception as e:
-        logger.error(f"Unexpected error in run_example: {e}")
-        logger.error(traceback.format_exc())
+        logger.exception(f"Unexpected error in run_example: {e}")
+        logger.exception(traceback.format_exc())
         return False
 
 

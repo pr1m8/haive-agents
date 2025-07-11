@@ -1,4 +1,4 @@
-"""Tests for Haive Query Processing and RAG Integration
+"""Tests for Haive Query Processing and RAG Integration.
 
 Run with: poetry run pytest packages/haive-agents/tests/rag/multi_agent_rag/test_haive_queries.py -v
 """

@@ -30,8 +30,6 @@ async def simple_agent_node(state):
 
 async def test_simple_multiagent():
     """Test basic MultiAgentBase functionality."""
-    print("\n=== Testing Simple MultiAgentBase ===\n")
-
     # Create a simple supervisor agent
     supervisor = SimpleAgent(
         name="supervisor",
@@ -60,11 +58,8 @@ async def test_simple_multiagent():
 
     result = await compiled.ainvoke(initial_state)
 
-    print(f"Messages count: {len(result.get('messages', []))}")
-    for i, msg in enumerate(result.get("messages", [])):
-        print(f"  Message {i}: {msg.content[:50]}...")
-
-    print("\n✅ Simple MultiAgentBase test complete!")
+    for _i, _msg in enumerate(result.get("messages", [])):
+        pass
 
 
 if __name__ == "__main__":

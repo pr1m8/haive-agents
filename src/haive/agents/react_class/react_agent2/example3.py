@@ -236,7 +236,7 @@ class ReactAgent(SimpleAgent):
         # Create DynamicGraph with proper component registration
         gb = DynamicGraph(
             name=f"{self.config.name}_graph",
-            components=[self.config.engine] + self.config.tools,
+            components=[self.config.engine, *self.config.tools],
             state_schema=self.config.state_schema,
         )
 
@@ -298,7 +298,7 @@ class ReactAgent(SimpleAgent):
 
         # Add custom tool routing if needed
         if self.config.tool_routing and self.config.version == "v2":
-            for tool_name, destination in self.config.tool_routing.items():
+            for _tool_name, destination in self.config.tool_routing.items():
                 if (
                     destination not in route_destinations
                     and destination != self.config.tool_node_name
@@ -343,7 +343,7 @@ class ReactAgent(SimpleAgent):
                 render_and_display_graph(self.app, output_name=graph_path)
                 logger.info(f"Graph visualization saved to: {graph_path}")
             except Exception as e:
-                logger.error(f"Error generating graph visualization: {e}")
+                logger.exception(f"Error generating graph visualization: {e}")
 
         logger.info(f"Set up React workflow for {self.config.name}")
 
@@ -541,7 +541,7 @@ class ReactAgent(SimpleAgent):
 
                 return {"structured_response": response}
             except Exception as e:
-                logger.error(f"Error generating structured response: {e}")
+                logger.exception(f"Error generating structured response: {e}")
                 return {"structured_response": {"error": str(e)}}
 
         return generate_structured_response
@@ -587,11 +587,9 @@ class ReactAgent(SimpleAgent):
                 )
 
                 # Save state history
-                # from haive.core.engine.agent.state_handling import save_state_history
-                # save_state_history(self.app, state_filename, config)
                 logger.info(f"State history saved to: {state_filename}")
             except Exception as e:
-                logger.error(f"Error saving state history: {e}")
+                logger.exception(f"Error saving state history: {e}")
 
         # Log results
         if "messages" in result:
@@ -606,7 +604,7 @@ class ReactAgent(SimpleAgent):
             try:
                 result = self.config.postprocess(result)
             except Exception as e:
-                logger.error(f"Error in post-processing: {e}")
+                logger.exception(f"Error in post-processing: {e}")
 
         return result
 

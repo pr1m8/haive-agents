@@ -25,7 +25,7 @@ Your role is to:
 - Model uncertainty
 - Can be reduced with more information
 
-## Aleatory Uncertainty (Irreducible)  
+## Aleatory Uncertainty (Irreducible)
 - Inherent randomness
 - Natural variability
 - Quantum effects
@@ -98,7 +98,7 @@ Multiple uncertain paths:
 
 ## Scenario Analysis
 - Best case: All uncertainties resolve favorably
-- Worst case: All resolve unfavorably  
+- Worst case: All resolve unfavorably
 - Most likely: Mixed resolution
 
 ## Monte Carlo Approach
@@ -181,5 +181,4 @@ def create_uncertainty_analyzer():
         prompt_template=UNCERTAINTY_ANALYSIS_PROMPT,
         structured_output_model=UncertaintyAnalysis,
         temperature=0.3,
-        # model="gpt-4o"
     )

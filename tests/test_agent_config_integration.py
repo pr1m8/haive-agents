@@ -15,7 +15,6 @@ class TestAgentConfigIntegration(ConfigurableAgent):
 
     def setup_agent(self):
         """Setup hook."""
-        pass
 
     def build_graph(self) -> BaseGraph:
         """Build a simple test graph."""

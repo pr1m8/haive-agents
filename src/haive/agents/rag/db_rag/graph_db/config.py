@@ -131,10 +131,8 @@ class GraphDBConfig(BaseModel):
                 refresh_schema=True,
                 enhanced_schema=self.enhanced_schema,
             )
-            print(f"✅ Successfully connected to Neo4j at {self.graph_db_uri}")
             return graph_db
-        except Exception as e:
-            print(f"🚨 Error connecting to Neo4j: {e}")
+        except Exception:
             return None
 
     def get_graph_db_schema(self) -> dict | None:
@@ -312,7 +310,7 @@ class GraphDBRAGConfig(AgentConfig):
 
     @field_validator("engines")
     def validate_engines(
-        cls, engines: dict[str, AugLLMConfig]
+        self, engines: dict[str, AugLLMConfig]
     ) -> dict[str, AugLLMConfig]:
         """Validate that all required engines are present.
 

@@ -287,7 +287,7 @@ class MultiAgent(Agent):
             updates = {
                 "current_agent": agent_name,
                 "completed_agents": (
-                    state.completed_agents + [agent_name]
+                    [*state.completed_agents, agent_name]
                     if agent_name not in state.completed_agents
                     else state.completed_agents
                 ),
@@ -312,10 +312,11 @@ class MultiAgent(Agent):
     ) -> "MultiAgent":
         """Create a multi-agent system from a list or dict of agents."""
         # Convert list to dict if needed
-        if isinstance(agents, list):
-            agent_dict = {agent.name: agent for agent in agents}
-        else:
-            agent_dict = agents
+        agent_dict = (
+            {agent.name: agent for agent in agents}
+            if isinstance(agents, list)
+            else agents
+        )
 
         return cls(
             name=name or f"{cls.__name__}",

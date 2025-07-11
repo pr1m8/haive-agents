@@ -8,11 +8,9 @@ initial_answer_prompt = actor_prompt_template.partial(
     first_instruction="Provide a detailed 1000 word essay.",
     function_name=AnswerQuestion.__name__,
 )
-# print(type(AnswerQuestion))
 initial_answer_chain_config = AugLLMConfig(
     tools=[AnswerQuestion], prompt_template=initial_answer_prompt, name="responder"
 )
-# validator = PydanticToolsParser(tools=[AnswerQuestion])
 
 
 revise_instructions = """Revise your previous answer using the new information.

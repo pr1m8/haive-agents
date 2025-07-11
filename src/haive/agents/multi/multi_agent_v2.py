@@ -41,8 +41,7 @@ class ExecutionMode(str, Enum):
 
 
 class MultiAgentV2(Agent[MultiAgentState]):
-    """
-    Rebuilt multi-agent system using proper state management.
+    """Rebuilt multi-agent system using proper state management.
 
     Key improvements:
     - Uses MultiAgentState without schema flattening
@@ -52,7 +51,7 @@ class MultiAgentV2(Agent[MultiAgentState]):
     """
 
     # Agent configuration
-    agents: Union[List[Agent], Dict[str, Agent]] = Field(
+    agents: list[Agent] | dict[str, Agent] = Field(
         ..., description="Agents to coordinate (list or dict)"
     )
 
@@ -61,7 +60,7 @@ class MultiAgentV2(Agent[MultiAgentState]):
     )
 
     # State configuration
-    state_schema: Type[StateSchema] = Field(
+    state_schema: type[StateSchema] = Field(
         default=MultiAgentState,
         description="State schema (defaults to MultiAgentState)",
     )
@@ -71,17 +70,17 @@ class MultiAgentV2(Agent[MultiAgentState]):
     )
 
     # Routing configuration (for conditional mode)
-    routing_function: Optional[Callable] = Field(
+    routing_function: Callable | None = Field(
         default=None, description="Function for conditional routing"
     )
 
-    route_map: Optional[Dict[str, str]] = Field(
+    route_map: dict[str, str] | None = Field(
         default=None, description="Map of routing outputs to agent names"
     )
 
     @model_validator(mode="before")
     @classmethod
-    def validate_agents(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_agents(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Ensure agents are provided."""
         agents = values.get("agents", [])
         if not agents:
@@ -100,10 +99,8 @@ class MultiAgentV2(Agent[MultiAgentState]):
         if self.state_schema == MultiAgentState:
             # Use default MultiAgentState
             pass
-        else:
-            # Validate custom schema extends MultiAgentState
-            if not issubclass(self.state_schema, MultiAgentState):
-                raise ValueError("state_schema must extend MultiAgentState")
+        elif not issubclass(self.state_schema, MultiAgentState):
+            raise ValueError("state_schema must extend MultiAgentState")
 
         # Validate routing for conditional mode
         if self.execution_mode == ExecutionMode.CONDITIONAL:
@@ -117,8 +114,8 @@ class MultiAgentV2(Agent[MultiAgentState]):
     @classmethod
     def from_agents(
         cls,
-        agents: Union[List[Agent], Dict[str, Agent]],
-        name: Optional[str] = None,
+        agents: list[Agent] | dict[str, Agent],
+        name: str | None = None,
         execution_mode: ExecutionMode = ExecutionMode.SEQUENCE,
         **kwargs,
     ) -> "MultiAgentV2":
@@ -143,8 +140,8 @@ class MultiAgentV2(Agent[MultiAgentState]):
     @classmethod
     def from_config(
         cls,
-        config: Dict[str, Any],
-        agents: Optional[Union[List[Agent], Dict[str, Agent]]] = None,
+        config: dict[str, Any],
+        agents: list[Agent] | dict[str, Agent] | None = None,
     ) -> "MultiAgentV2":
         """Create MultiAgent from configuration dict.
 
@@ -164,7 +161,7 @@ class MultiAgentV2(Agent[MultiAgentState]):
     def rebuild_with_agents(
         cls,
         original: "MultiAgentV2",
-        new_agents: Union[List[Agent], Dict[str, Agent]],
+        new_agents: list[Agent] | dict[str, Agent],
         **kwargs,
     ) -> "MultiAgentV2":
         """Rebuild MultiAgent with new agents.
@@ -205,13 +202,12 @@ class MultiAgentV2(Agent[MultiAgentState]):
         if isinstance(self.agents, dict):
             new_agents = {**self.agents, agent.name: agent}
         else:
-            new_agents = list(self.agents) + [agent]
+            new_agents = [*list(self.agents), agent]
 
         if rebuild:
             return self.rebuild_with_agents(self, new_agents)
-        else:
-            self.agents = new_agents
-            return self
+        self.agents = new_agents
+        return self
 
     def remove_agent(self, agent_name: str, rebuild: bool = True) -> "MultiAgentV2":
         """Remove an agent and optionally rebuild.
@@ -230,18 +226,16 @@ class MultiAgentV2(Agent[MultiAgentState]):
 
         if rebuild:
             return self.rebuild_with_agents(self, new_agents)
-        else:
-            self.agents = new_agents
-            return self
+        self.agents = new_agents
+        return self
 
-    def get_agent(self, agent_name: str) -> Optional[Agent]:
+    def get_agent(self, agent_name: str) -> Agent | None:
         """Get an agent by name."""
         if isinstance(self.agents, dict):
             return self.agents.get(agent_name)
-        else:
-            for agent in self.agents:
-                if agent.name == agent_name:
-                    return agent
+        for agent in self.agents:
+            if agent.name == agent_name:
+                return agent
         return None
 
     def build_graph(self) -> BaseGraph:
@@ -343,12 +337,12 @@ class MultiAgentV2(Agent[MultiAgentState]):
         # This is a simplified version - can be extended
         self._build_sequence_graph(graph)
 
-    def _coordinate_parallel(self, state: MultiAgentState) -> Dict[str, Any]:
+    def _coordinate_parallel(self, state: MultiAgentState) -> dict[str, Any]:
         """Coordinate parallel execution."""
         # Mark all agents for execution
         return {"execution_stage": "parallel_start"}
 
-    def _aggregate_results(self, state: MultiAgentState) -> Dict[str, Any]:
+    def _aggregate_results(self, state: MultiAgentState) -> dict[str, Any]:
         """Aggregate results from parallel execution."""
         # Results are already in agent_outputs
         return {"execution_stage": "parallel_complete"}
@@ -362,4 +356,3 @@ class MultiAgentV2(Agent[MultiAgentState]):
     @abstractmethod
     def setup_agent(self) -> None:
         """Setup hook for subclasses."""
-        pass

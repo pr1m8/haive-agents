@@ -82,7 +82,7 @@ class StateMixin:
             return True
 
         except Exception as e:
-            logger.error(f"Error saving state history: {e}")
+            logger.exception(f"Error saving state history: {e}")
             return False
 
     async def save_state_history_async(
@@ -158,7 +158,7 @@ class StateMixin:
                 logger.info(f"State (Type: {type(state).__name__}): {state}")
 
         except Exception as e:
-            logger.error(f"Error inspecting state: {e}")
+            logger.exception(f"Error inspecting state: {e}")
 
     async def inspect_state_async(
         self, thread_id: str | None = None, config: RunnableConfig | None = None
@@ -217,17 +217,16 @@ class StateMixin:
                 checkpointer.delete(thread_id)
             elif hasattr(checkpointer, "conn") and checkpointer.conn:
                 conn = checkpointer.conn
-                with conn.connection() as db_conn:
-                    with db_conn.cursor() as cursor:
-                        cursor.execute(
-                            "DELETE FROM checkpoints WHERE thread_id = %s", (thread_id,)
-                        )
+                with conn.connection() as db_conn, db_conn.cursor() as cursor:
+                    cursor.execute(
+                        "DELETE FROM checkpoints WHERE thread_id = %s", (thread_id,)
+                    )
 
             logger.info(f"State reset successfully for thread {thread_id}")
             return True
 
         except Exception as e:
-            logger.error(f"Error resetting state: {e}")
+            logger.exception(f"Error resetting state: {e}")
             return False
 
     async def reset_state_async(
@@ -276,7 +275,7 @@ class StateMixin:
                 with open(state_data) as f:
                     state_data = json.load(f)
             except Exception as e:
-                logger.error(f"Error loading state file: {e}")
+                logger.exception(f"Error loading state file: {e}")
                 return False
 
         # Ensure state is a dictionary
@@ -296,10 +295,7 @@ class StateMixin:
             )
             runtime_config["configurable"]["recursion_limit"] = 100
             # Process state based on its format
-            if "values" in state_data:
-                values = state_data["values"]
-            else:
-                values = state_data
+            values = state_data.get("values", state_data)
 
             # Use checkpoint save mechanism
             if hasattr(self._app, "checkpoint_save"):
@@ -314,7 +310,7 @@ class StateMixin:
             return True
 
         except Exception as e:
-            logger.error(f"Error loading state: {e}")
+            logger.exception(f"Error loading state: {e}")
             return False
 
     async def load_from_state_async(

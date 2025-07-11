@@ -25,7 +25,7 @@ from haive.agents.simple.agent import SimpleAgent
 class Plan(BaseModel):
     """A simple plan with list of steps."""
 
-    steps: List[str] = Field(description="List of steps to execute")
+    steps: list[str] = Field(description="List of steps to execute")
 
 
 class Act(BaseModel):
@@ -45,8 +45,8 @@ class Act(BaseModel):
 class PlanExecuteState(MessagesState):
     """Clean state schema for Plan and Execute."""
 
-    plan: List[str] = Field(default_factory=list, description="Current plan steps")
-    past_steps: List[str] = Field(default_factory=list, description="Completed steps")
+    plan: list[str] = Field(default_factory=list, description="Current plan steps")
+    past_steps: list[str] = Field(default_factory=list, description="Completed steps")
     response: str = Field(default="", description="Final response")
 
 
@@ -80,7 +80,7 @@ def create_clean_plan_execute_agent(
     name: str = "PlanExecute",
     planner_model: str = "gpt-4o-mini",
     executor_model: str = "gpt-4o-mini",
-    tools: List = None,
+    tools: list | None = None,
 ) -> MultiAgentBase:
     """Create a clean Plan and Execute agent following LangGraph patterns.
 
@@ -134,7 +134,7 @@ Your original plan was this:
 You have currently done the follow steps:
 {past_steps}
 
-Update your plan accordingly. If no more steps are needed and you can return to the user, then respond with that. 
+Update your plan accordingly. If no more steps are needed and you can return to the user, then respond with that.
 Otherwise, fill out the plan. Only add steps to the plan that still NEED to be done. Do not return previously done steps as part of the plan.""",
         structured_output_model=Act,
     )
@@ -167,7 +167,7 @@ Otherwise, fill out the plan. Only add steps to the plan that still NEED to be d
 # ============================================================================
 
 
-def create_simple_plan_execute(tools: List = None) -> MultiAgentBase:
+def create_simple_plan_execute(tools: list | None = None) -> MultiAgentBase:
     """Create a simple Plan and Execute agent with default settings."""
     return create_clean_plan_execute_agent(name="SimplePlanExecute", tools=tools or [])
 
@@ -179,4 +179,3 @@ if __name__ == "__main__":
 
     # Test basic functionality
     result = agent.run("What is the capital of France?")
-    print(f"Result: {result}")

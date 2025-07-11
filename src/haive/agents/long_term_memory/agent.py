@@ -57,5 +57,3 @@ class LongTermMemoryAgent(ReactAgent):
         self.graph.add_edge("tools", "agent")
 
         # Compile the graph
-        # memory = MemorySaver()
-        # graph = builder.compile(checkpointer=memory)

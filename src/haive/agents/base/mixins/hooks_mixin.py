@@ -139,7 +139,7 @@ class HooksMixin(Generic[TState]):
                     if not hook_entry["condition"](self, context):
                         continue
                 except Exception as e:
-                    logger.error(f"Hook condition error: {e}")
+                    logger.exception(f"Hook condition error: {e}")
                     continue
 
             # Run hook
@@ -163,7 +163,9 @@ class HooksMixin(Generic[TState]):
                     self._hook_results[f"{point.value}:{hook_name}"] = hook_result
 
             except Exception as e:
-                logger.error(f"Hook '{hook_entry['name']}' error at {point.value}: {e}")
+                logger.exception(
+                    f"Hook '{hook_entry['name']}' error at {point.value}: {e}"
+                )
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.exception("Full hook error:")
 

@@ -17,7 +17,6 @@ from haive.agents.simple.agent import SimpleAgent
 
 def create_test_agents():
     """Create real agent instances of different types for testing."""
-
     # SimpleAgent for basic tasks
     simple_engine = AugLLMConfig(
         name="simple_engine",

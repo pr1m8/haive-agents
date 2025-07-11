@@ -1,6 +1,5 @@
 # perplexity_search_prompts.py
-"""
-Chat prompt templates for Perplexity-style search workflow.
+"""Chat prompt templates for Perplexity-style search workflow.
 These prompts guide the LLM through reasoning, query generation, and synthesis.
 """
 
@@ -201,7 +200,7 @@ follow_up_prompt = ChatPromptTemplate.from_messages(
 # Conversational Search Prompts (for chat continuity)
 # ============================================================================
 
-CONVERSATIONAL_SEARCH_SYSTEM = """You are a helpful search assistant engaged in an ongoing conversation. 
+CONVERSATIONAL_SEARCH_SYSTEM = """You are a helpful search assistant engaged in an ongoing conversation.
 
 You have access to search capabilities and should:
 1. Understand queries in the context of the conversation

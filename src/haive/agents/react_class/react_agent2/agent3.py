@@ -494,4 +494,3 @@ if __name__ == "__main__":
 
     # Run the agent
     result = agent.run("What is the capital of France?")
-    print(result)

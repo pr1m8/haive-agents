@@ -36,7 +36,6 @@ class ReflexionAgent(Agent[ReflexionConfig]):
             > self.config.max_iterations,
             destinations={True: "end", False: "execute_tools"},
         )
-        # self.tool_node_tools = []
         super().__init__(config)
 
     def create_tool_node(self, tools: list[BaseTool | Callable]) -> ToolNode:
@@ -53,7 +52,6 @@ class ReflexionAgent(Agent[ReflexionConfig]):
                 tool_node_tools.append(
                     StructuredTool.from_function(tool, name=model.__name__)
                 )
-                print(f"Tool {model.__name__} added to tool node")
         return ToolNode(tools=tool_node_tools)
 
     def final_answer(self, state: dict):
@@ -76,12 +74,8 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.graph.add_node("tools", self.tool_node)
         self.graph.add_edge("draft", "tools")
         self.graph.add_node("revision", self.revisor.respond)
-        # self.graph.add_edge("revision","draft")
-        # self.graph.add_edge("draft","end")
-        # self.graph.add_edge("revision","end")
         self.graph.add_node("final_answer", self.final_answer)
         self.graph.add_edge("tools", "revision")
-        # return super().setup_workflow()
         self.graph.add_edge("final_answer", END)
         self.graph.add_conditional_edges(
             "revision",

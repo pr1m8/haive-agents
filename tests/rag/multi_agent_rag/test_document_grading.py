@@ -1,4 +1,4 @@
-"""Tests for Document Grading Components
+"""Tests for Document Grading Components.
 
 Run with: poetry run pytest packages/haive-agents/tests/rag/multi_agent_rag/test_document_grading.py -v
 """

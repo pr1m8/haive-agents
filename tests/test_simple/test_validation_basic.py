@@ -14,7 +14,7 @@ from haive.agents.simple import SimpleAgent
 class Plan(BaseModel):
     """A plan with steps."""
 
-    steps: List[str] = Field(description="A list of steps to complete the task")
+    steps: list[str] = Field(description="A list of steps to complete the task")
 
 
 # Test tools
@@ -26,7 +26,6 @@ def add_numbers(a: float, b: float) -> float:
 
 def test_simple_agent_creation():
     """Test that we can create simple agents with different configurations."""
-
     # Test 1: Agent with Pydantic model
     engine1 = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -65,12 +64,9 @@ def test_simple_agent_creation():
     assert "tool_node" in agent3.graph.nodes  # Should have both
     assert "parse_output" in agent3.graph.nodes
 
-    print("✅ All simple agent creation tests passed!")
-
 
 def test_graph_structure():
     """Test the graph structure of simple agents."""
-
     # Create agent with tools and Pydantic model
     engine = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -90,10 +86,6 @@ def test_graph_structure():
 
     # Check that validation is connected properly
     # In current implementation, validation is used as conditional edge
-    print(f"Graph nodes: {list(graph.nodes.keys())}")
-    print(f"Graph edges: {graph.edges}")
-
-    print("✅ Graph structure test passed!")
 
 
 if __name__ == "__main__":

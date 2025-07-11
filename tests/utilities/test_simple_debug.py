@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-Simple debug test to isolate the issue.
-"""
+"""Simple debug test to isolate the issue."""
 
 import sys
 
@@ -29,7 +27,6 @@ TEST_PROMPT = ChatPromptTemplate.from_messages(
 
 def test_simple_debug():
     """Debug test with simple model."""
-    print("=== Simple Debug Test ===")
 
     # Create agent with structured output
     agent = SimpleAgentV2(
@@ -41,35 +38,27 @@ def test_simple_debug():
         ),
     )
 
-    print(f"Agent: {agent.name}")
-    print(f"Engine: {agent.engine.name}")
-    print(f"Expected field name: test_response")
 
     # Check state schema
     if hasattr(agent, "state_schema") and agent.state_schema:
-        print(f"State schema fields: {list(agent.state_schema.model_fields.keys())}")
+        pass
 
     # Check output schema
     if hasattr(agent, "output_schema") and agent.output_schema:
-        print(f"Output schema fields: {list(agent.output_schema.model_fields.keys())}")
+        pass
 
     # Test run
     try:
         result = agent.run({"query": "world"}, debug=True)
-        print(f"\n✅ SUCCESS: Agent execution completed")
-        print(f"Result keys: {list(result.keys())}")
 
         # Check for the field
         if "test_response" in result:
-            print(f"✅ SUCCESS: Found 'test_response' in result")
-            print(f"Value: {result['test_response']}")
         else:
-            print(f"❌ FAILURE: 'test_response' not found in result")
+            pass")
 
         return result
 
     except Exception as e:
-        print(f"❌ ERROR: {e}")
         import traceback
 
         traceback.print_exc()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Test base ReactAgent without multi-agent"""
+"""Test base ReactAgent without multi-agent."""
 
 from langchain_core.messages import HumanMessage
 
@@ -11,7 +11,7 @@ agent = ReactAgent(name="Test React Agent")
 
 # Add a tool to the engine
 def add(a: int, b: int) -> int:
-    """Returns the sum of two numbers"""
+    """Returns the sum of two numbers."""
     return a + b
 
 
@@ -23,13 +23,9 @@ if agent.engine:
 agent.compile()
 
 # Test
-print("Testing base ReactAgent...")
 try:
     result = agent.run({"messages": [HumanMessage(content="What is 5 + 3?")]})
-    print("✅ Success!")
-    print(f"Result: {result}")
-except Exception as e:
-    print(f"❌ Error: {e}")
+except Exception:
     import traceback
 
     traceback.print_exc()

@@ -1,4 +1,4 @@
-"""Collaborative Conversation - Cooperative Multi-Agent Problem-Solving.
+r"""Collaborative Conversation - Cooperative Multi-Agent Problem-Solving.
 
 Multi-agent conversations focused on collaborative problem-solving and teamwork.
 The collaborative conversation implements a specialized conversation pattern designed
@@ -190,8 +190,8 @@ CollaborationMode: TypeAlias = Literal[
 CollaborationPhase: TypeAlias = Literal[
     "planning", "brainstorming", "development", "review", "synthesis", "consensus"
 ]
-WorkProduct: TypeAlias = Dict[str, Any]  # Collaborative output and deliverables
-CollaborativeResult: TypeAlias = Dict[str, Any]  # Collaboration outcome and artifacts
+WorkProduct: TypeAlias = dict[str, Any]  # Collaborative output and deliverables
+CollaborativeResult: TypeAlias = dict[str, Any]  # Collaboration outcome and artifacts
 
 
 # Configuration types for collaborative conversations
@@ -199,8 +199,8 @@ class CollaborativeConfiguration(TypedDict, total=False):
     """Configuration for collaborative conversations."""
 
     collaboration_mode: NotRequired[CollaborationMode]
-    phases: NotRequired[List[CollaborationPhase]]
-    deliverables: NotRequired[List[str]]
+    phases: NotRequired[list[CollaborationPhase]]
+    deliverables: NotRequired[list[str]]
     consensus_threshold: NotRequired[float]
     max_brainstorming_rounds: NotRequired[int]
     enable_role_rotation: NotRequired[bool]
@@ -213,8 +213,8 @@ class RoleConfiguration(TypedDict, total=False):
 
     role_name: NotRequired[str]
     role_description: NotRequired[str]
-    expertise_areas: NotRequired[List[str]]
-    responsibilities: NotRequired[List[str]]
+    expertise_areas: NotRequired[list[str]]
+    responsibilities: NotRequired[list[str]]
     contribution_weight: NotRequired[float]
 
 
@@ -222,36 +222,36 @@ class WorkProductConfig(TypedDict, total=False):
     """Configuration for work product management."""
 
     versioning_enabled: NotRequired[bool]
-    quality_gates: NotRequired[List[str]]
-    review_criteria: NotRequired[List[str]]
-    output_templates: NotRequired[Dict[str, str]]
+    quality_gates: NotRequired[list[str]]
+    review_criteria: NotRequired[list[str]]
+    output_templates: NotRequired[dict[str, str]]
 
 
 # Define public API
 __all__ = [
-    # Version information
-    "__version__",
-    "__author__",
-    "__license__",
-    # Core classes
-    "CollaborativeConversation",
-    "CollaborativeState",
-    # Type aliases
-    "CollaborativeParticipant",
-    "TeamRole",
     "CollaborationMode",
     "CollaborationPhase",
-    "WorkProduct",
-    "CollaborativeResult",
     # Configuration types
     "CollaborativeConfiguration",
+    # Core classes
+    "CollaborativeConversation",
+    # Type aliases
+    "CollaborativeParticipant",
+    "CollaborativeResult",
+    "CollaborativeState",
     "RoleConfiguration",
+    "TeamRole",
+    "WorkProduct",
     "WorkProductConfig",
+    "__author__",
+    "__license__",
+    # Version information
+    "__version__",
     # Utility functions
     "create_collaborative_conversation",
+    "create_creative_team",
     "create_development_team",
     "create_research_team",
-    "create_creative_team",
     "validate_team_setup",
 ]
 
@@ -259,12 +259,12 @@ __all__ = [
 # Utility functions
 def create_collaborative_conversation(
     objective: str,
-    participants: List[CollaborativeParticipant],
-    roles: Dict[str, str],
+    participants: list[CollaborativeParticipant],
+    roles: dict[str, str],
     collaboration_mode: CollaborationMode = "problem_solving",
-    config: Optional[CollaborativeConfiguration] = None,
+    config: CollaborativeConfiguration | None = None,
 ) -> CollaborativeConversation:
-    """Create a collaborative conversation for team-based work.
+    r"""Create a collaborative conversation for team-based work.
 
     Args:
         objective: Collaboration objective or goal
@@ -320,10 +320,10 @@ def create_collaborative_conversation(
 
 def create_development_team(
     project_goal: str,
-    team_members: Dict[str, CollaborativeParticipant],
+    team_members: dict[str, CollaborativeParticipant],
     sprint_length: int = 5,
 ) -> CollaborativeConversation:
-    """Create a software development team collaboration.
+    r"""Create a software development team collaboration.
 
     Args:
         project_goal: Development project goal
@@ -360,10 +360,10 @@ def create_development_team(
 
 def create_research_team(
     research_question: str,
-    researchers: List[CollaborativeParticipant],
+    researchers: list[CollaborativeParticipant],
     methodology: str = "mixed_methods",
 ) -> CollaborativeConversation:
-    """Create a research team collaboration.
+    r"""Create a research team collaboration.
 
     Args:
         research_question: Research question or hypothesis
@@ -400,10 +400,10 @@ def create_research_team(
 
 def create_creative_team(
     creative_brief: str,
-    creative_roles: Dict[str, CollaborativeParticipant],
+    creative_roles: dict[str, CollaborativeParticipant],
     brainstorming_rounds: int = 3,
 ) -> CollaborativeConversation:
-    """Create a creative team collaboration.
+    r"""Create a creative team collaboration.
 
     Args:
         creative_brief: Creative project brief or objective
@@ -439,7 +439,7 @@ def create_creative_team(
 
 
 def validate_team_setup(
-    participants: List[CollaborativeParticipant], roles: Dict[str, str]
+    participants: list[CollaborativeParticipant], roles: dict[str, str]
 ) -> bool:
     """Validate team setup for collaborative conversation.
 
@@ -469,7 +469,7 @@ def validate_team_setup(
         getattr(p, "name", f"participant_{i}") for i, p in enumerate(participants)
     ]
 
-    for name in roles.keys():
+    for name in roles:
         if name not in participant_names:
             raise ValueError(f"Role assigned to unknown participant: {name}")
 
@@ -483,7 +483,7 @@ def validate_team_setup(
     return True
 
 
-def __dir__() -> List[str]:
+def __dir__() -> list[str]:
     """Override dir() to show only public API."""
     return __all__
 

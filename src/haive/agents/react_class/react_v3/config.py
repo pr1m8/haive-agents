@@ -87,7 +87,7 @@ class ReactAgentConfig(AgentConfig):
 
     @model_validator(mode="after")
     def setup_defaults(self):
-        """Set up default retry policies if not provided"""
+        """Set up default retry policies if not provided."""
         if self.reasoning_retry is None:
             self.reasoning_retry = RetryPolicy(
                 initial_interval=1.0,

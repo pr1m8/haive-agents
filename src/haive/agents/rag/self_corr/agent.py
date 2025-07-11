@@ -59,7 +59,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
 
             logger.info("Self-corrective RAG agent components initialized successfully")
         except Exception as e:
-            logger.error(f"Error initializing Self-corrective RAG components: {e}")
+            logger.exception(f"Error initializing Self-corrective RAG components: {e}")
             raise
 
     @property
@@ -87,7 +87,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             return Command(update={"retrieved_documents": documents})
 
         except Exception as e:
-            logger.error(f"Error retrieving documents: {e!s}")
+            logger.exception(f"Error retrieving documents: {e!s}")
             return Command(
                 update={
                     "error": f"Error retrieving documents: {e!s}",
@@ -153,7 +153,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             )
 
         except Exception as e:
-            logger.error(f"Error in document filtering: {e!s}")
+            logger.exception(f"Error in document filtering: {e!s}")
             return Command(
                 update={
                     "error": f"Error filtering documents: {e!s}",
@@ -214,7 +214,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             )
 
         except Exception as e:
-            logger.error(f"Error generating answer: {e!s}")
+            logger.exception(f"Error generating answer: {e!s}")
             return Command(
                 update={
                     "error": f"Error generating answer: {e!s}",
@@ -290,7 +290,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             )
 
         except Exception as e:
-            logger.error(f"Error evaluating answer: {e!s}")
+            logger.exception(f"Error evaluating answer: {e!s}")
             return Command(
                 update={
                     "error": f"Error evaluating answer: {e!s}",
@@ -356,7 +356,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             )
 
         except Exception as e:
-            logger.error(f"Error correcting answer: {e!s}")
+            logger.exception(f"Error correcting answer: {e!s}")
             return Command(
                 update={
                     "error": f"Error correcting answer: {e!s}",
@@ -391,12 +391,11 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
                 logger.info(f"Answer confidence level: {confidence_level} ({score})")
 
                 # Optionally add confidence information to the answer
-                # final_answer += f"\n\nConfidence: {confidence_level} ({score:.2f})"
 
             return Command(update={"answer": final_answer, "final_confidence": score})
 
         except Exception as e:
-            logger.error(f"Error finalizing answer: {e!s}")
+            logger.exception(f"Error finalizing answer: {e!s}")
             return Command(
                 update={
                     "error": f"Error finalizing answer: {e!s}",

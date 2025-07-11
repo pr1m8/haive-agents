@@ -22,7 +22,7 @@ except ImportError:
     StructuredKGAgent = None
 
 __all__ = [
-    "ParallelKGTransformer",
     "IterativeGraphTransformer",
+    "ParallelKGTransformer",
     "StructuredKGAgent",
 ]

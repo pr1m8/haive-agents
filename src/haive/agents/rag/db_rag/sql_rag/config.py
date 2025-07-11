@@ -225,10 +225,8 @@ class SQLDatabaseConfig(BaseModel):
                 db_kwargs["exclude_tables"] = self.exclude_tables
 
             db = SQLDatabase.from_uri(connection_string, **db_kwargs)
-            print(f"✅ Connected to {self.db_type} database at {connection_string}")
             return db
-        except Exception as e:
-            print(f"🚨 Failed to connect to database: {e}")
+        except Exception:
             return None
 
     def get_db_schema(self) -> dict[str, Any]:
@@ -393,7 +391,7 @@ class SQLRAGConfig(AgentConfig):
 
     @field_validator("engines")
     def check_required_engines(
-        cls, v: dict[str, AugLLMConfig]
+        self, v: dict[str, AugLLMConfig]
     ) -> dict[str, AugLLMConfig]:
         """Validate that all required engines are present.
 

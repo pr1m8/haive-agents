@@ -199,8 +199,8 @@ def create_game24_tot_agent(
     """
     # Game of 24 specific system prompt
     system_prompt = """
-    You are solving the "Game of 24" puzzle. Given four numbers, you need to find a way to combine them using basic operations (addition, subtraction, multiplication, division) to reach exactly 24. 
-    
+    You are solving the "Game of 24" puzzle. Given four numbers, you need to find a way to combine them using basic operations (addition, subtraction, multiplication, division) to reach exactly 24.
+
     Each number must be used exactly once, and you can use parentheses to control the order of operations.
     """
 
@@ -218,7 +218,7 @@ def create_game24_tot_agent(
         )
 
         @field_validator("formula")
-        def validate_formula(cls, v):
+        def validate_formula(self, v):
             """Validate the formula has basic math operators."""
             if not any(op in v for op in ["+", "-", "*", "/"]):
                 raise ValueError(

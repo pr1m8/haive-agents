@@ -45,27 +45,27 @@ class ReWOOState(ToolState):
 
     objective: str = Field(..., description="Main objective to achieve")
 
-    plan: Optional[ReWOOPlan] = Field(default=None, description="Current ReWOO plan")
+    plan: ReWOOPlan | None = Field(default=None, description="Current ReWOO plan")
 
     # ========================================================================
     # EVIDENCE TRACKING
     # ========================================================================
 
-    evidence_map: Dict[str, Evidence] = Field(
+    evidence_map: dict[str, Evidence] = Field(
         default_factory=dict, description="Map of evidence ID to evidence objects"
     )
 
-    evidence_collection_order: List[str] = Field(
+    evidence_collection_order: list[str] = Field(
         default_factory=list, description="Order in which evidence was collected"
     )
 
-    failed_evidence_attempts: Dict[str, List[str]] = Field(
+    failed_evidence_attempts: dict[str, list[str]] = Field(
         default_factory=dict, description="Map of evidence ID to error messages"
     )
 
     @field_validator("evidence_map")
     @classmethod
-    def validate_evidence_map(cls, v: Dict[str, Evidence]) -> Dict[str, Evidence]:
+    def validate_evidence_map(cls, v: dict[str, Evidence]) -> dict[str, Evidence]:
         """Validate evidence map structure."""
         for eid, evidence in v.items():
             if evidence.id != eid:
@@ -79,16 +79,16 @@ class ReWOOState(ToolState):
     # tools is inherited from ToolState
     # tool_types/tool_routes functionality is inherited
 
-    tool_results: Dict[str, Any] = Field(
+    tool_results: dict[str, Any] = Field(
         default_factory=dict, description="Raw results from tool executions"
     )
 
-    active_tool_calls: List[ToolCall] = Field(
+    active_tool_calls: list[ToolCall] = Field(
         default_factory=list, description="Currently executing tool calls"
     )
 
     # Evidence-specific tool mapping
-    evidence_tool_mapping: Dict[str, str] = Field(
+    evidence_tool_mapping: dict[str, str] = Field(
         default_factory=dict, description="Map evidence IDs to specific tool names"
     )
 
@@ -96,11 +96,11 @@ class ReWOOState(ToolState):
     # REASONING & OUTPUT
     # ========================================================================
 
-    reasoning_chain: List[str] = Field(
+    reasoning_chain: list[str] = Field(
         default_factory=list, description="Chain of reasoning steps"
     )
 
-    final_reasoning: Optional[ReWOOReasoning] = Field(
+    final_reasoning: ReWOOReasoning | None = Field(
         default=None, description="Final structured reasoning output"
     )
 
@@ -143,7 +143,7 @@ class ReWOOState(ToolState):
 
     @computed_field
     @property
-    def collected_evidence_ids(self) -> Set[str]:
+    def collected_evidence_ids(self) -> set[str]:
         """Get IDs of successfully collected evidence."""
         return {
             eid
@@ -153,7 +153,7 @@ class ReWOOState(ToolState):
 
     @computed_field
     @property
-    def pending_evidence_ids(self) -> Set[str]:
+    def pending_evidence_ids(self) -> set[str]:
         """Get IDs of pending evidence."""
         return {
             eid
@@ -175,7 +175,7 @@ class ReWOOState(ToolState):
 
     @computed_field
     @property
-    def ready_evidence(self) -> List[Evidence]:
+    def ready_evidence(self) -> list[Evidence]:
         """Get evidence ready for collection (dependencies met)."""
         if not self.plan:
             return []
@@ -216,7 +216,7 @@ class ReWOOState(ToolState):
 
     @computed_field
     @property
-    def evidence_summary(self) -> Dict[str, str]:
+    def evidence_summary(self) -> dict[str, str]:
         """Get summary of collected evidence."""
         summary = {}
 
@@ -244,9 +244,8 @@ class ReWOOState(ToolState):
         if self.skip_failed_evidence:
             # At least 50% collected
             return self.evidence_completion_rate >= 50.0
-        else:
-            # All evidence must be complete
-            return self.is_evidence_complete
+        # All evidence must be complete
+        return self.is_evidence_complete
 
     # ========================================================================
     # STATE METHODS
@@ -263,9 +262,9 @@ class ReWOOState(ToolState):
     def update_evidence(
         self,
         evidence_id: str,
-        status: Optional[EvidenceStatus] = None,
-        content: Optional[Any] = None,
-        error: Optional[str] = None,
+        status: EvidenceStatus | None = None,
+        content: Any | None = None,
+        error: str | None = None,
     ) -> bool:
         """Update evidence in state."""
         if evidence_id not in self.evidence_map:
@@ -334,7 +333,7 @@ class ReWOOState(ToolState):
         self.current_collection_round += 1
         return self.current_collection_round < self.max_evidence_collection_rounds
 
-    def to_reasoning_context(self) -> Dict[str, Any]:
+    def to_reasoning_context(self) -> dict[str, Any]:
         """Create context for final reasoning."""
         return {
             "objective": self.objective,
@@ -358,24 +357,24 @@ class ReWOOStateWithRouting(ReWOOState):
     """
 
     # Additional routing fields
-    tool_route_overrides: Dict[str, str] = Field(
+    tool_route_overrides: dict[str, str] = Field(
         default_factory=dict, description="Override routes for specific tools"
     )
 
-    failed_tool_fallbacks: Dict[str, List[str]] = Field(
+    failed_tool_fallbacks: dict[str, list[str]] = Field(
         default_factory=dict, description="Fallback tools for failed executions"
     )
 
     @computed_field
     @property
-    def effective_tool_routes(self) -> Dict[str, str]:
+    def effective_tool_routes(self) -> dict[str, str]:
         """Get effective tool routes with overrides applied."""
         # Use parent's tool_routes from ToolState
         routes = self.tool_routes.copy() if hasattr(self, "tool_routes") else {}
         routes.update(self.tool_route_overrides)
         return routes
 
-    def get_tool_for_evidence(self, evidence_id: str) -> Optional[Any]:
+    def get_tool_for_evidence(self, evidence_id: str) -> Any | None:
         """Get the designated tool for collecting specific evidence."""
         tool_name = self.evidence_tool_mapping.get(evidence_id)
         if tool_name:
@@ -383,6 +382,6 @@ class ReWOOStateWithRouting(ReWOOState):
             return self.get_tool_by_name(tool_name)
         return None
 
-    def get_fallback_tools(self, tool_name: str) -> List[str]:
+    def get_fallback_tools(self, tool_name: str) -> list[str]:
         """Get fallback tools for a failed tool."""
         return self.failed_tool_fallbacks.get(tool_name, [])

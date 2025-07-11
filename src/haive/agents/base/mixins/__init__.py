@@ -23,6 +23,6 @@ from .state_mixin import StateMixin
 
 __all__ = [
     "ExecutionMixin",
-    "StateMixin",
     "PersistenceMixin",
+    "StateMixin",
 ]

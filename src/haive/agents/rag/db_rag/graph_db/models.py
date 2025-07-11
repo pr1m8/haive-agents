@@ -69,7 +69,7 @@ class PropertyFilter(BaseModel):
     )
 
     @field_validator("filter_type", mode="before")
-    def validate_filter_type(cls, v):
+    def validate_filter_type(self, v):
         """Validate that the filter type is a supported operator.
 
         Args:
@@ -125,7 +125,7 @@ class CypherQueryOutput(BaseModel):
     )
 
     @field_validator("query", mode="before")
-    def validate_cypher_syntax(cls, query: str) -> str:
+    def validate_cypher_syntax(self, query: str) -> str:
         """Validate that the query starts with a valid Cypher keyword.
 
         Args:
@@ -255,7 +255,7 @@ class GuardrailsOutput(BaseModel):
             >>> output = GuardrailsOutput(decision="invalid")
             >>> output.validate_decision()  # Raises ValueError
         """
-        valid_values = ["end"] + self.allowed_categories
+        valid_values = ["end", *self.allowed_categories]
         if self.decision not in valid_values:
             raise ValueError(
                 f"Invalid decision '{self.decision}'. "

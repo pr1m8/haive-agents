@@ -44,9 +44,9 @@ class DynamicMultiAgent(MultiAgent):
     )
 
     # Private attributes for dynamic management
-    _capability_registry: Dict[str, str] = PrivateAttr(default_factory=dict)
-    _performance_metrics: Dict[str, Dict[str, Any]] = PrivateAttr(default_factory=dict)
-    _execution_history: List[Dict[str, Any]] = PrivateAttr(default_factory=list)
+    _capability_registry: dict[str, str] = PrivateAttr(default_factory=dict)
+    _performance_metrics: dict[str, dict[str, Any]] = PrivateAttr(default_factory=dict)
+    _execution_history: list[dict[str, Any]] = PrivateAttr(default_factory=list)
 
     def setup_agent(self) -> None:
         """Set up the dynamic multi-agent system."""
@@ -94,7 +94,7 @@ class DynamicMultiAgent(MultiAgent):
         logger.info(f"Registered capability for {agent_name}: {capability}")
 
     def register_agent_dynamically(
-        self, agent: Agent, capability: str = None, agent_name: str = None
+        self, agent: Agent, capability: str | None = None, agent_name: str | None = None
     ) -> bool:
         """Register a new agent dynamically at runtime.
 
@@ -197,9 +197,8 @@ class DynamicMultiAgent(MultiAgent):
     def _create_dynamic_supervisor_node(self):
         """Create supervisor node for dynamic agent selection."""
 
-        async def supervisor_node(state: Any) -> Dict[str, Any]:
+        async def supervisor_node(state: Any) -> dict[str, Any]:
             """Select best agent for current task."""
-
             logger.info("=" * 60)
             logger.info("DYNAMIC SUPERVISOR NODE")
             logger.info("=" * 60)
@@ -234,18 +233,16 @@ class DynamicMultiAgent(MultiAgent):
                     "target_agent": selected_agent,
                     "is_complete": False,
                 }
-            else:
-                logger.info("No suitable agent found")
-                return {"is_complete": True}
+            logger.info("No suitable agent found")
+            return {"is_complete": True}
 
         return supervisor_node
 
     def _create_dynamic_executor_node(self):
         """Create executor node that dynamically runs selected agent."""
 
-        async def executor_node(state: Any) -> Dict[str, Any]:
+        async def executor_node(state: Any) -> dict[str, Any]:
             """Execute the selected agent with proper state handling."""
-
             logger.info("=" * 60)
             logger.info("DYNAMIC EXECUTOR NODE")
             logger.info("=" * 60)
@@ -312,7 +309,7 @@ class DynamicMultiAgent(MultiAgent):
                 return update
 
             except Exception as e:
-                logger.error(f"Error executing agent {target_agent}: {e}")
+                logger.exception(f"Error executing agent {target_agent}: {e}")
 
                 # Track failure
                 if self.track_performance:
@@ -326,7 +323,7 @@ class DynamicMultiAgent(MultiAgent):
 
         return executor_node
 
-    def _extract_state_dict(self, state: Any) -> Dict[str, Any]:
+    def _extract_state_dict(self, state: Any) -> dict[str, Any]:
         """Extract state dict with proper message handling."""
         if isinstance(state, dict):
             return state
@@ -345,7 +342,7 @@ class DynamicMultiAgent(MultiAgent):
         return state_dict
 
     def _should_end_conversation(
-        self, messages: List[BaseMessage], state: Dict[str, Any]
+        self, messages: list[BaseMessage], state: dict[str, Any]
     ) -> bool:
         """Check if we should end to avoid loops."""
         if not messages:
@@ -374,8 +371,8 @@ class DynamicMultiAgent(MultiAgent):
         return False
 
     def _select_best_agent_for_task(
-        self, message: BaseMessage, state: Dict[str, Any]
-    ) -> Optional[str]:
+        self, message: BaseMessage, state: dict[str, Any]
+    ) -> str | None:
         """Select the best agent for the current task."""
         content = getattr(message, "content", str(message))
 
@@ -385,7 +382,7 @@ class DynamicMultiAgent(MultiAgent):
         # Score each agent
         agent_scores = []
 
-        for agent_name, agent in self.agents.items():
+        for agent_name, _agent in self.agents.items():
             score = self._calculate_agent_score(agent_name, content, state)
             agent_scores.append((agent_name, score))
             logger.debug(f"Agent {agent_name} score: {score:.2f}")
@@ -398,10 +395,10 @@ class DynamicMultiAgent(MultiAgent):
             return agent_scores[0][0]
 
         # Default to first available agent
-        return list(self.agents.keys())[0] if self.agents else None
+        return next(iter(self.agents.keys())) if self.agents else None
 
     def _calculate_agent_score(
-        self, agent_name: str, content: str, state: Dict[str, Any]
+        self, agent_name: str, content: str, state: dict[str, Any]
     ) -> float:
         """Calculate suitability score for an agent."""
         score = 0.0
@@ -445,18 +442,16 @@ class DynamicMultiAgent(MultiAgent):
         return score
 
     def _prepare_agent_input(
-        self, agent_name: str, agent: Agent, state: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, agent_name: str, agent: Agent, state: dict[str, Any]
+    ) -> dict[str, Any]:
         """Prepare input for agent following AgentNode patterns."""
-
         # Use parent's extraction logic
         return self._extract_agent_input(agent_name, agent, state)
 
     def _process_agent_result(
-        self, agent_name: str, agent: Agent, result: Any, state: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, agent_name: str, agent: Agent, result: Any, state: dict[str, Any]
+    ) -> dict[str, Any]:
         """Process agent result into state update."""
-
         # Use parent's output creation logic
         update = self._create_agent_output(agent_name, agent, result, state)
 
@@ -484,7 +479,7 @@ class DynamicMultiAgent(MultiAgent):
         return "END"
 
     def _update_performance_metrics(
-        self, agent_name: str, success: bool, execution_time: float = None
+        self, agent_name: str, success: bool, execution_time: float | None = None
     ) -> None:
         """Update agent performance metrics."""
         if agent_name not in self._performance_metrics:
@@ -514,26 +509,26 @@ class DynamicMultiAgent(MultiAgent):
         success_rate = metrics["successful_executions"] / metrics["total_executions"]
         metrics["capability_score"] = 0.5 + 0.5 * success_rate
 
-    def get_agent_performance(self, agent_name: str = None) -> Dict[str, Any]:
+    def get_agent_performance(self, agent_name: str | None = None) -> dict[str, Any]:
         """Get performance metrics for agent(s)."""
         if agent_name:
             return self._performance_metrics.get(agent_name, {})
         return self._performance_metrics.copy()
 
-    def get_execution_history(self, limit: int = None) -> List[Dict[str, Any]]:
+    def get_execution_history(self, limit: int | None = None) -> list[dict[str, Any]]:
         """Get execution history."""
         if limit:
             return self._execution_history[-limit:]
         return self._execution_history.copy()
 
-    def get_agent_capabilities(self) -> Dict[str, str]:
+    def get_agent_capabilities(self) -> dict[str, str]:
         """Get all agent capabilities."""
         return self._capability_registry.copy()
 
 
 # Convenience factory function
 def create_dynamic_multi_agent(
-    agents: List[Agent], name: str = "DynamicMultiAgent", **kwargs
+    agents: list[Agent], name: str = "DynamicMultiAgent", **kwargs
 ) -> DynamicMultiAgent:
     """Create a dynamic multi-agent system.
 

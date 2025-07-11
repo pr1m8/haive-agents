@@ -32,7 +32,7 @@ from haive.agents.simple.agent import SimpleAgent
 class ConditionalMultiAgent(MultiAgent):
     """Multi-agent that uses conditional edges for dynamic routing."""
 
-    router_config: Dict[str, Any] = Field(default_factory=dict)
+    router_config: dict[str, Any] = Field(default_factory=dict)
     enable_conditional_routing: bool = Field(default=True)
 
     def model_post_init(self, __context):
@@ -91,7 +91,7 @@ class ConditionalMultiAgent(MultiAgent):
                 "target_inputs": getattr(target, "input_fields", []),
             }
 
-    def _route_based_on_state(self, state: Dict) -> str:
+    def _route_based_on_state(self, state: dict) -> str:
         """Routing function for conditional edges."""
         # Example routing logic
         last_message = state.get("messages", [])[-1] if state.get("messages") else None
@@ -104,10 +104,9 @@ class ConditionalMultiAgent(MultiAgent):
         # Route based on content
         if "analyze" in content.lower():
             return "analyzer"
-        elif "search" in content.lower():
+        if "search" in content.lower():
             return "searcher"
-        else:
-            return "sequential"
+        return "sequential"
 
     def build_graph(self) -> BaseGraph:
         """Build graph with conditional edges."""
@@ -157,11 +156,11 @@ class ConditionalMultiAgent(MultiAgent):
 class ComponentAgent(Agent):
     """Agent built from reusable components."""
 
-    components: Dict[str, Any] = Field(default_factory=dict)
-    component_config: Dict[str, Any] = Field(default_factory=dict)
+    components: dict[str, Any] = Field(default_factory=dict)
+    component_config: dict[str, Any] = Field(default_factory=dict)
 
     @field_validator("components")
-    def validate_components(cls, v):
+    def validate_components(self, v):
         """Validate that required components are present."""
         required = ["processor", "validator"]
         for req in required:
@@ -189,7 +188,7 @@ class ComponentAgent(Agent):
 
     def _register_components(self):
         """Register components for use in graph."""
-        for name, component in self.components.items():
+        for name, _component in self.components.items():
             # Could register in a component registry
             logger.info(f"Registered component: {name}")
 
@@ -223,7 +222,7 @@ class EnhancedRAGAgent(Agent):
     """RAG agent with retriever engine and proper schema handling."""
 
     retriever_engine: EngineRetriever = Field(description="Retriever engine")
-    llm_engine: Optional[AugLLMConfig] = Field(
+    llm_engine: AugLLMConfig | None = Field(
         default=None, description="Optional LLM for processing"
     )
     min_relevance_score: float = Field(default=0.7, ge=0, le=1)
@@ -293,7 +292,7 @@ def mock_engines():
     query_engine = Mock(spec=AugLLMConfig)
     query_engine.name = "query_processor"
     query_engine.get_input_fields.return_value = {
-        "messages": (List[BaseMessage], Field(default_factory=list)),
+        "messages": (list[BaseMessage], Field(default_factory=list)),
         "query": (str, Field(default="")),
     }
     query_engine.get_output_fields.return_value = {
@@ -575,8 +574,6 @@ def test_complete_multi_agent_system(mock_engines):
         # Verify graph structure
         assert "router" in graph.nodes
         assert all(agent.name in graph.nodes for agent in system.agents)
-
-        print("✅ Complete multi-agent system test passed!")
 
 
 # Run with: poetry run pytest packages/haive-agents/tests/test_multi_agent_complete.py -v

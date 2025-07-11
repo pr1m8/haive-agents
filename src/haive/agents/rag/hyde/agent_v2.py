@@ -1,4 +1,4 @@
-"""HyDE (Hypothetical Document Embeddings) RAG Agent V2
+"""HyDE (Hypothetical Document Embeddings) RAG Agent V2.
 
 Bridges query-document semantic gap by generating hypothetical documents.
 This version properly embeds the hypothetical document for retrieval.
@@ -80,7 +80,7 @@ class HyDERetrieverAgent(Agent):
         graph = BaseGraph(name="HyDERetriever")
 
         # Transform node that uses hypothetical_doc as the query
-        def transform_to_query(state: Dict[str, Any]) -> Dict[str, Any]:
+        def transform_to_query(state: dict[str, Any]) -> dict[str, Any]:
             """Use hypothetical document as the retrieval query."""
             # Get the structured HyDE result from state
             hyde_result = state.get("hyde_result", {})
@@ -130,9 +130,9 @@ class HyDERAGAgentV2(SequentialAgent):
     @classmethod
     def from_documents(
         cls,
-        documents: List[Document],
-        llm_config: Optional[LLMConfig] = None,
-        embedding_model: Optional[str] = None,
+        documents: list[Document],
+        llm_config: LLMConfig | None = None,
+        embedding_model: str | None = None,
         **kwargs
     ):
         """Create HyDE RAG from documents.

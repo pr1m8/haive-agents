@@ -199,7 +199,7 @@ class CompilerPlan(Plan):
         description: str,
         tool_name: str,
         arguments: dict[str, Any],
-        dependencies: list[int | TaskDependency] = None,
+        dependencies: list[int | TaskDependency] | None = None,
     ) -> CompilerStep:
         """Add a new compiler step to the plan.
 

@@ -1,4 +1,4 @@
-"""Round Robin Conversation - Sequential Turn-Based Multi-Agent Dialogue.
+r"""Round Robin Conversation - Sequential Turn-Based Multi-Agent Dialogue.
 
 A simple turn-based conversation agent where participants speak in sequence with
 automatic round tracking and progress management. The round robin conversation
@@ -128,19 +128,19 @@ from haive.agents.conversation.round_robin.agent import RoundRobinConversation
 
 # Type aliases for round robin conversations
 RoundRobinParticipant: TypeAlias = Any  # Agent with conversation capabilities
-RoundRobinResult: TypeAlias = Dict[str, Any]  # Conversation result data
+RoundRobinResult: TypeAlias = dict[str, Any]  # Conversation result data
 
 # Define public API
 __all__ = [
-    # Version information
-    "__version__",
-    "__author__",
-    "__license__",
     # Core classes
     "RoundRobinConversation",
     # Type aliases
     "RoundRobinParticipant",
     "RoundRobinResult",
+    "__author__",
+    "__license__",
+    # Version information
+    "__version__",
     # Utility functions
     "create_round_robin_conversation",
 ]
@@ -148,12 +148,12 @@ __all__ = [
 
 # Utility functions
 def create_round_robin_conversation(
-    participants: List[RoundRobinParticipant],
+    participants: list[RoundRobinParticipant],
     topic: str,
     max_rounds: int = 3,
     **kwargs: Any
 ) -> RoundRobinConversation:
-    """Create a round robin conversation with participants.
+    r"""Create a round robin conversation with participants.
 
     Args:
         participants: List of participant agents

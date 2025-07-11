@@ -46,7 +46,7 @@ def calculate_tool(expression: str) -> str:
         result = eval(expression)
         return f"Calculation result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 class TestPlanAndExecuteMultiAgent:

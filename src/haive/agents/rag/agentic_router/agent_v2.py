@@ -1,4 +1,4 @@
-"""Agentic RAG Router with Proper Conditional Routing
+"""Agentic RAG Router with Proper Conditional Routing.
 
 Implementation using conditional edges for routing between strategies.
 """
@@ -65,7 +65,7 @@ class AgenticRAGRouterV2(Agent):
     """Agentic RAG Router using proper conditional routing."""
 
     name: str = "Agentic RAG Router V2"
-    documents: List[Document] = Field(description="Documents for RAG")
+    documents: list[Document] = Field(description="Documents for RAG")
     llm_config: LLMConfig = Field(description="LLM configuration")
 
     def build_graph(self) -> BaseGraph:
@@ -113,7 +113,7 @@ class AgenticRAGRouterV2(Agent):
         graph.add_node("flare_rag", flare_rag)
 
         # Routing function
-        def route_to_strategy(state: Dict[str, Any]) -> str:
+        def route_to_strategy(state: dict[str, Any]) -> str:
             """Route to appropriate RAG strategy based on selection."""
             strategy_decision = state.get("strategy_decision", {})
             strategy = strategy_decision.get("strategy", RAGStrategy.SIMPLE)

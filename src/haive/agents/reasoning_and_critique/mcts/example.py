@@ -53,7 +53,7 @@ def run_mcts_agent_example(
         name="research_mcts_agent",
     )
     for step in agent.stream(question, debug=True):
-        print(step)
+        pass
 
     logger.info(f"Running MCTS agent on question: {question}")
 
@@ -90,9 +90,6 @@ def run_mcts_agent_example(
             logger.info(f"Solution score: {solution['score']}/10")
             if solution["output"]:
                 logger.info("Solution output:")
-                print("-" * 80)
-                print(solution["output"])
-                print("-" * 80)
 
     return final_result
 

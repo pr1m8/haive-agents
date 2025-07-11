@@ -146,14 +146,9 @@ async def run_storm_agent(
 
             # Print a preview of the article
             logger.info("Article generation complete!")
-            print("\n" + "=" * 50 + "\n")
-            print(f"# {topic}\n")
 
             # Print just the beginning of the article for a preview
-            article_preview = "\n".join(article.split("\n")[:20])
-            print(f"{article_preview}\n...\n")
-            print(f"Total length: {len(article.split())} words")
-            print("\n" + "=" * 50 + "\n")
+            "\n".join(article.split("\n")[:20])
 
             # Save to file if requested
             if output_file:
@@ -164,7 +159,7 @@ async def run_storm_agent(
             logger.error("Failed to generate article.")
 
     except Exception as e:
-        logger.error(f"Error running STORM agent: {e!s}")
+        logger.exception(f"Error running STORM agent: {e!s}")
         raise
 
 

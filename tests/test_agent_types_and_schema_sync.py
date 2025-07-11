@@ -116,7 +116,7 @@ class HybridAgent(Agent):
 
         return graph
 
-    def route_query(self, state: Dict) -> str:
+    def route_query(self, state: dict) -> str:
         """Route based on query type."""
         query = state.get("query", "")
         if "search" in query.lower() or "find" in query.lower():
@@ -129,22 +129,22 @@ class QueryInput(BaseModel):
     """Input schema for queries."""
 
     query: str = Field(description="User query")
-    search_type: Optional[str] = Field(default="semantic", description="Type of search")
+    search_type: str | None = Field(default="semantic", description="Type of search")
 
 
 class RetrievalOutput(BaseModel):
     """Output schema for retrieval."""
 
-    documents: List[Document] = Field(default_factory=list)
-    context: List[str] = Field(default_factory=list)
-    relevance_scores: Optional[List[float]] = None
+    documents: list[Document] = Field(default_factory=list)
+    context: list[str] = Field(default_factory=list)
+    relevance_scores: list[float] | None = None
 
 
 class AnalysisOutput(BaseModel):
     """Output schema for analysis."""
 
     response: str
-    sources: List[str] = Field(default_factory=list)
+    sources: list[str] = Field(default_factory=list)
     confidence: float = Field(ge=0, le=1)
 
 
@@ -173,7 +173,7 @@ class AutoConfiguredAgent(Agent):
         cls._schema_requirements = cls._analyze_schema_requirements()
 
     @classmethod
-    def _analyze_schema_requirements(cls) -> Dict[str, Any]:
+    def _analyze_schema_requirements(cls) -> dict[str, Any]:
         """Analyze what schema fields this agent type needs."""
         requirements = {
             "needs_messages": True,  # All agents need messages
@@ -185,8 +185,8 @@ class AutoConfiguredAgent(Agent):
         if hasattr(cls, "requires_retriever"):
             requirements["custom_fields"].extend(
                 [
-                    ("documents", List[Document], Field(default_factory=list)),
-                    ("context", List[str], Field(default_factory=list)),
+                    ("documents", list[Document], Field(default_factory=list)),
+                    ("context", list[str], Field(default_factory=list)),
                 ]
             )
 
@@ -290,11 +290,11 @@ class TestSchemaAdaptation:
 
         # LLM expects different format
         class LLMInput(BaseModel):
-            messages: List[BaseMessage]
+            messages: list[BaseMessage]
             context: str  # Single string, not list
 
         # Manual adaptation (what our system should do automatically)
-        def adapt_retriever_to_llm(retriever_out: RetrievalOutput) -> Dict:
+        def adapt_retriever_to_llm(retriever_out: RetrievalOutput) -> dict:
             return {
                 "messages": [
                     HumanMessage(content=f"Context: {' '.join(retriever_out.context)}")
@@ -335,7 +335,7 @@ class TestAgentTypeDetection:
         }
 
         # Helper to detect agent type
-        def detect_agent_type(engines: Dict) -> str:
+        def detect_agent_type(engines: dict) -> str:
             has_llm = any(
                 isinstance(e, AugLLMConfig) or hasattr(e, "invoke")
                 for e in engines.values()
@@ -347,10 +347,9 @@ class TestAgentTypeDetection:
 
             if has_llm and has_retriever:
                 return "hybrid"
-            elif has_retriever:
+            if has_retriever:
                 return "retriever"
-            else:
-                return "simple"
+            return "simple"
 
         assert detect_agent_type(llm_only) == "simple"
         assert detect_agent_type(retriever_only) == "retriever"
@@ -369,8 +368,8 @@ class TestSchemaCompositionPatterns:
         agent_type = "rag"
 
         if agent_type in ["rag", "retriever"]:
-            composer.add_field("documents", List[Document], default_factory=list)
-            composer.add_field("context", List[str], default_factory=list)
+            composer.add_field("documents", list[Document], default_factory=list)
+            composer.add_field("context", list[str], default_factory=list)
 
         if agent_type in ["simple", "rag"]:
             composer.add_field("response", str, default="")
@@ -392,7 +391,7 @@ class TestSchemaCompositionPatterns:
             confidence: float = Field(default=0.0)
 
         class Agent2Schema(StateSchema):
-            result: List[str] = Field(description="List of results")  # Conflict!
+            result: list[str] = Field(description="List of results")  # Conflict!
             confidence: int = Field(default=0)  # Different type!
 
         # Composer should handle this
@@ -400,7 +399,7 @@ class TestSchemaCompositionPatterns:
 
         # Add fields with namespace to avoid conflicts
         composer.add_field("agent1_result", str)
-        composer.add_field("agent2_result", List[str], default_factory=list)
+        composer.add_field("agent2_result", list[str], default_factory=list)
         composer.add_field("agent1_confidence", float, default=0.0)
         composer.add_field("agent2_confidence", int, default=0)
 
@@ -421,8 +420,6 @@ class TestAutoConfiguredAgents:
         class AutoRAGAgent(AutoConfiguredAgent):
             """Automatically configured RAG agent."""
 
-            pass
-
         # Should have auto-detected RAG configuration
         assert hasattr(AutoRAGAgent, "requires_retriever")
         assert AutoRAGAgent.requires_retriever
@@ -438,8 +435,6 @@ class TestAutoConfiguredAgents:
 
         class AutoToolAgent(AutoConfiguredAgent):
             """Automatically configured tool-using agent."""
-
-            pass
 
         # Should have tool requirements
         assert AutoToolAgent.requires_tools

@@ -1,6 +1,4 @@
-"""
-Standalone test for MCP RAG functionality
-"""
+"""Standalone test for MCP RAG functionality"""
 
 import asyncio
 import json
@@ -20,18 +18,16 @@ from haive.agents.rag.base.agent import BaseRAGAgent
 
 def create_mcp_documents():
     """Create documents from MCP server data."""
-    print("📚 Loading MCP server data...")
 
     # Direct path to the MCP servers data
     all_servers_path = Path(
         "packages/haive-mcp/data/mcp_servers/ALL_MCP_SERVERS_COMPLETE.json"
     )
 
-    with open(all_servers_path, "r") as f:
+    with open(all_servers_path) as f:
         data = json.load(f)
         servers = data.get("all_servers", [])
 
-    print(f"📊 Processing {len(servers)} MCP servers...")
 
     documents = []
     for server in servers[:100]:  # Just test with first 100
@@ -61,7 +57,6 @@ Keywords: {category} {language} MCP server {name.lower().replace('-', ' ')} data
         )
         documents.append(doc)
 
-    print(f"✅ Created {len(documents)} documents")
     return documents
 
 
@@ -77,7 +72,6 @@ async def test_mcp_rag():
         encode_kwargs={"normalize_embeddings": True},
     )
 
-    print("\n📊 Creating RAG agent...")
 
     # Create agent using from_documents
     agent = BaseRAGAgent.from_documents(
@@ -88,32 +82,22 @@ async def test_mcp_rag():
         retriever_kwargs={"k": 5},
     )
 
-    print("✅ Agent created!")
 
     # Test queries
     queries = ["python database", "SQLAlchemy", "PostgreSQL", "database connections"]
 
     for query in queries:
-        print(f"\n{'='*60}")
-        print(f"🔍 Query: {query}")
-        print(f"{'='*60}")
 
         result = await agent.arun(query)
 
-        print(f"\nResult type: {type(result)}")
 
         if hasattr(result, "retrieved_documents"):
             docs = result.retrieved_documents
-            print(f"📚 Retrieved {len(docs)} documents")
 
             for i, doc in enumerate(docs[:3], 1):
-                print(f"\n{i}. {doc.metadata.get('server_name', 'Unknown')}")
-                print(f"   Category: {doc.metadata.get('category', 'unknown')}")
-                print(f"   Preview: {doc.page_content[:100]}...")
         else:
-            print(f"Result: {result}")
+            pass
 
 
 if __name__ == "__main__":
-    print("🧪 Testing MCP RAG Agent directly...")
     asyncio.run(test_mcp_rag())

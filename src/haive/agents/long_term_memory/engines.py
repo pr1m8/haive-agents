@@ -63,7 +63,6 @@ lt_structured_memory_aug_llm_config = AugLLMConfig(
 )
 lt_memory_aug_llm_config = AugLLMConfig(
     name="lt_memory_aug_llm_config",
-    # llm_config=AzureLLMConfig(),
     prompt_template=long_term_memory_prompt_template,
     tools=[save_recall_memory, search_recall_memories],
 )

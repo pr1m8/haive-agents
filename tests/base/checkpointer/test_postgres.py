@@ -30,7 +30,7 @@ DEFAULT_SSL_MODE = "disable"
 # Configure logging for the test
 @pytest.fixture(scope="module")
 def configure_logging():
-    """Set up logging for tests"""
+    """Set up logging for tests."""
     log_dir = os.path.join("logs", "tests", "core", "engine", "agent")
     os.makedirs(log_dir, exist_ok=True)
 
@@ -257,17 +257,12 @@ def test_postgres_connection():
                 with conn.cursor() as cursor:
                     cursor.execute("SELECT version()")
                     version = cursor.fetchone()[0]
-                    print(f"Connected to PostgreSQL: {version}")
 
             # If we get here, connection worked
             assert True
 
         except Exception as e:
-            print(f"Could not connect to PostgreSQL: {e}")
             # Continue with test even if we can't connect
-            print("Continuing despite connection error...")
 
     except ImportError as e:
-        print(f"PostgreSQL dependencies not available: {e}")
         # Continue with test even if dependencies aren't available
-        print("Continuing despite missing dependencies...")

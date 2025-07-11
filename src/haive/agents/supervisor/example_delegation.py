@@ -26,7 +26,6 @@ console = Console()
 
 def create_mock_research_agent() -> SimpleAgent:
     """Create a mock research agent for testing."""
-
     # Mock LLM config (replace with real config)
     llm_config = LLMConfig(provider="openai", model="gpt-4", temperature=0.1)
 
@@ -44,7 +43,6 @@ def create_mock_research_agent() -> SimpleAgent:
 
 def create_mock_math_agent() -> SimpleAgent:
     """Create a mock math agent for testing."""
-
     llm_config = LLMConfig(provider="openai", model="gpt-4", temperature=0)
 
     engine_config = AugLLMConfig(
@@ -61,7 +59,6 @@ def create_mock_math_agent() -> SimpleAgent:
 
 def create_mock_writing_agent() -> SimpleAgent:
     """Create a mock writing agent for testing."""
-
     llm_config = LLMConfig(provider="openai", model="gpt-4", temperature=0.7)
 
     engine_config = AugLLMConfig(
@@ -78,7 +75,6 @@ def create_mock_writing_agent() -> SimpleAgent:
 
 def create_supervisor_agent() -> SupervisorAgent:
     """Create the supervisor agent."""
-
     llm_config = LLMConfig(provider="openai", model="gpt-4", temperature=0.1)
 
     supervisor_engine = AugLLMConfig(
@@ -91,7 +87,6 @@ def create_supervisor_agent() -> SupervisorAgent:
 
 async def test_delegation_flow():
     """Test the delegation flow with various task types."""
-
     console.print(
         Panel("🚀 Starting Haive Supervisor Delegation Test", style="bold blue")
     )
@@ -186,7 +181,7 @@ async def test_delegation_flow():
                 )
 
         except Exception as e:
-            console.print(f"[red]❌ Test failed: {str(e)}[/red]")
+            console.print(f"[red]❌ Test failed: {e!s}[/red]"]")
             logger.error(f"Test case {i} failed", exc_info=True)
 
         console.print("-" * 60)
@@ -196,7 +191,6 @@ async def test_delegation_flow():
 
 async def test_dynamic_agent_management():
     """Test dynamic agent registration/removal."""
-
     console.print(Panel("🔄 Testing Dynamic Agent Management", style="bold cyan"))
 
     # Create supervisor
@@ -239,12 +233,11 @@ async def test_dynamic_agent_management():
         console.print(f"[cyan]Routing decision:[/cyan] {routing_decision}")
 
     except Exception as e:
-        console.print(f"[red]Dynamic test failed: {str(e)}[/red]")
+        console.print(f"[red]Dynamic test failed: {e!s}[/red]")
 
 
 def main():
     """Main test function."""
-
     console.print(
         Panel(
             """
@@ -274,7 +267,7 @@ with Haive's ReactAgent architecture.
         console.print(Panel("🎊 All tests completed successfully!", style="bold green"))
 
     except Exception as e:
-        console.print(f"[red]❌ Test suite failed: {str(e)}[/red]")
+        console.print(f"[red]❌ Test suite failed: {e!s}[/red]"]")
         logger.error("Test suite failed", exc_info=True)
 
 

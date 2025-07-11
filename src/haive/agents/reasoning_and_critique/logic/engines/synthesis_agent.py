@@ -23,7 +23,7 @@ Your role is to:
 
 ### Dialectical Synthesis
 - Thesis: Initial position
-- Antithesis: Contradicting position  
+- Antithesis: Contradicting position
 - Synthesis: Higher truth incorporating both
 
 ### Convergent Integration
@@ -224,5 +224,4 @@ def create_synthesis_agent():
         prompt_template=REASONING_SYNTHESIS_PROMPT,
         structured_output_model=ReasoningReport,
         temperature=0.5,
-        # model="gpt-4o"
     )

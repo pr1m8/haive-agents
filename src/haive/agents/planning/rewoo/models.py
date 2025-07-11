@@ -77,7 +77,7 @@ class Evidence(BaseModel):
     collection_method: str = Field(..., description="How to collect this evidence")
 
     # Dependencies on other evidence
-    depends_on: List[str] = Field(
+    depends_on: list[str] = Field(
         default_factory=list, description="Other evidence IDs this depends on"
     )
 
@@ -87,21 +87,19 @@ class Evidence(BaseModel):
     )
 
     # Actual evidence data
-    content: Optional[Any] = Field(
-        default=None, description="The actual evidence content"
-    )
+    content: Any | None = Field(default=None, description="The actual evidence content")
 
-    error: Optional[str] = Field(default=None, description="Error if collection failed")
+    error: str | None = Field(default=None, description="Error if collection failed")
 
     # Metadata
-    collected_at: Optional[datetime] = None
+    collected_at: datetime | None = None
     confidence: float = Field(
         default=1.0, ge=0.0, le=1.0, description="Confidence in this evidence"
     )
 
     @field_validator("depends_on")
     @classmethod
-    def validate_evidence_refs(cls, v: List[str]) -> List[str]:
+    def validate_evidence_refs(cls, v: list[str]) -> list[str]:
         """Ensure evidence references are valid."""
         for ref in v:
             if not ref.startswith("#E"):
@@ -114,7 +112,7 @@ class Evidence(BaseModel):
         """Check if evidence is ready to be collected."""
         return self.status == EvidenceStatus.PLANNED and not self.depends_on
 
-    def resolve_references(self, evidence_map: Dict[str, "Evidence"]) -> str:
+    def resolve_references(self, evidence_map: dict[str, "Evidence"]) -> str:
         """Resolve evidence references in collection method."""
         resolved = self.collection_method
 
@@ -157,21 +155,21 @@ class ToolCall(BaseModel):
     )
 
     # Arguments can reference evidence
-    arguments: Dict[str, Any] = Field(
+    arguments: dict[str, Any] = Field(
         default_factory=dict, description="Tool arguments (can include #E references)"
     )
 
     # Expected output
-    expected_output_type: Optional[str] = Field(
+    expected_output_type: str | None = Field(
         default=None, description="Expected type of output (for validation)"
     )
 
-    expected_output_schema: Optional[Dict[str, Any]] = Field(
+    expected_output_schema: dict[str, Any] | None = Field(
         default=None, description="Expected schema for structured output"
     )
 
     # Execution constraints
-    timeout_seconds: Optional[int] = Field(
+    timeout_seconds: int | None = Field(
         default=None, description="Timeout for tool execution", gt=0
     )
 
@@ -187,7 +185,7 @@ class ToolCall(BaseModel):
         """Check if this is an LLM reasoning call."""
         return self.tool_name.upper() == "LLM" or self.tool_type == ToolCallType.LLM
 
-    def resolve_arguments(self, evidence_map: Dict[str, Evidence]) -> Dict[str, Any]:
+    def resolve_arguments(self, evidence_map: dict[str, Evidence]) -> dict[str, Any]:
         """Resolve evidence references in arguments."""
         resolved_args = {}
 
@@ -225,7 +223,7 @@ class ToolCall(BaseModel):
 
         if self.expected_output_schema and isinstance(output, dict):
             # Basic schema validation
-            for key, expected in self.expected_output_schema.items():
+            for key, _expected in self.expected_output_schema.items():
                 if key not in output:
                     return False
 
@@ -245,22 +243,20 @@ class ReWOOStep(BaseStep):
     )
 
     # Evidence this step produces
-    evidence: Optional[Evidence] = Field(
+    evidence: Evidence | None = Field(
         default=None, description="Evidence this step produces"
     )
 
     # Tool call for this step
-    tool_call: Optional[ToolCall] = Field(
-        default=None, description="Tool call to execute"
-    )
+    tool_call: ToolCall | None = Field(default=None, description="Tool call to execute")
 
     # Alternative: Multiple tool calls with fallback
-    tool_calls: List[ToolCall] = Field(
+    tool_calls: list[ToolCall] = Field(
         default_factory=list, description="Multiple tool calls (fallback options)"
     )
 
     # How to process tool output into evidence
-    output_processor: Optional[str] = Field(
+    output_processor: str | None = Field(
         default=None, description="Python expression to process tool output"
     )
 
@@ -277,13 +273,13 @@ class ReWOOStep(BaseStep):
 
     @computed_field
     @property
-    def evidence_id(self) -> Optional[str]:
+    def evidence_id(self) -> str | None:
         """Get evidence ID if this step produces evidence."""
         return self.evidence.id if self.evidence else None
 
     @computed_field
     @property
-    def evidence_dependencies(self) -> List[str]:
+    def evidence_dependencies(self) -> list[str]:
         """Get all evidence dependencies for this step."""
         deps = []
 
@@ -306,11 +302,11 @@ class ReWOOStep(BaseStep):
 
         return deps
 
-    def get_active_tool_call(self) -> Optional[ToolCall]:
+    def get_active_tool_call(self) -> ToolCall | None:
         """Get the tool call to execute."""
         if self.tool_call:
             return self.tool_call
-        elif self.tool_calls:
+        if self.tool_calls:
             # Return first non-failed tool call
             return self.tool_calls[0]
         return None
@@ -349,17 +345,17 @@ class ReWOOPlan(BasePlan):
     """ReWOO plan with evidence management."""
 
     # Override steps to be ReWOO-specific
-    steps: List[ReWOOStep] = Field(
+    steps: list[ReWOOStep] = Field(
         default_factory=list, description="ReWOO steps in the plan"
     )
 
     # Evidence registry
-    evidence_map: Dict[str, Evidence] = Field(
+    evidence_map: dict[str, Evidence] = Field(
         default_factory=dict, description="Map of evidence ID to evidence"
     )
 
     # Tool registry (populated during initialization)
-    available_tools: Dict[str, Any] = Field(
+    available_tools: dict[str, Any] = Field(
         default_factory=dict, description="Available tools for execution"
     )
 
@@ -382,7 +378,7 @@ class ReWOOPlan(BasePlan):
 
     @computed_field
     @property
-    def evidence_graph(self) -> Dict[str, List[str]]:
+    def evidence_graph(self) -> dict[str, list[str]]:
         """Get evidence dependency graph."""
         graph = {}
         for eid, evidence in self.evidence_map.items():
@@ -391,7 +387,7 @@ class ReWOOPlan(BasePlan):
 
     @computed_field
     @property
-    def next_evidence_to_collect(self) -> List[Evidence]:
+    def next_evidence_to_collect(self) -> list[Evidence]:
         """Get evidence that's ready to collect."""
         ready = []
 
@@ -429,7 +425,7 @@ class ReWOOPlan(BasePlan):
 
         return (collected / len(self.evidence_map)) * 100
 
-    def get_evidence_for_step(self, step_id: str) -> Optional[Evidence]:
+    def get_evidence_for_step(self, step_id: str) -> Evidence | None:
         """Get evidence produced by a specific step."""
         step = self.get_step(step_id)
         if isinstance(step, ReWOOStep) and step.evidence:
@@ -440,8 +436,8 @@ class ReWOOPlan(BasePlan):
         self,
         evidence_id: str,
         status: EvidenceStatus,
-        content: Optional[Any] = None,
-        error: Optional[str] = None,
+        content: Any | None = None,
+        error: str | None = None,
     ) -> bool:
         """Update evidence status and content."""
         if evidence_id not in self.evidence_map:
@@ -489,9 +485,9 @@ class ReWOOPlan(BasePlan):
         evidence_id: str,
         evidence_description: str,
         tool_name: str,
-        tool_args: Dict[str, Any],
-        depends_on: List[str] = None,
-        output_processor: Optional[str] = None,
+        tool_args: dict[str, Any],
+        depends_on: list[str] | None = None,
+        output_processor: str | None = None,
     ) -> ReWOOStep:
         """Convenience method to add a ReWOO step."""
         # Create evidence
@@ -582,11 +578,11 @@ class ReWOOReasoning(BaseModel):
 
     objective_restatement: str = Field(..., description="Restatement of the objective")
 
-    evidence_summary: Dict[str, str] = Field(
+    evidence_summary: dict[str, str] = Field(
         ..., description="Summary of key evidence collected"
     )
 
-    reasoning_steps: List[str] = Field(
+    reasoning_steps: list[str] = Field(
         ..., description="Step-by-step reasoning using evidence"
     )
 
@@ -596,10 +592,10 @@ class ReWOOReasoning(BaseModel):
         default=0.8, ge=0.0, le=1.0, description="Confidence in conclusion"
     )
 
-    limitations: List[str] = Field(
+    limitations: list[str] = Field(
         default_factory=list, description="Limitations or caveats"
     )
 
-    next_steps: Optional[List[str]] = Field(
+    next_steps: list[str] | None = Field(
         default=None, description="Suggested next steps if needed"
     )

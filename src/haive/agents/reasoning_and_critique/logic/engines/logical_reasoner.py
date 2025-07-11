@@ -152,5 +152,4 @@ def create_logical_reasoner():
         prompt_template=LOGICAL_REASONING_PROMPT,
         structured_output_model=ReasoningChain,
         temperature=0.2,
-        # model="gpt-4o"
     )

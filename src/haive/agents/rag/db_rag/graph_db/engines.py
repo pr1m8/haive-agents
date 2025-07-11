@@ -37,7 +37,7 @@ from haive.agents.rag.db_rag.graph_db.models import (
 # CYPHER CORRECTION ENGINE
 # ============================================================================
 
-CORRECT_CYPHER_SYSTEM_PROMPT = """You are a Cypher expert reviewing a statement written by a junior developer. 
+CORRECT_CYPHER_SYSTEM_PROMPT = """You are a Cypher expert reviewing a statement written by a junior developer.
 You need to correct the Cypher statement based on the provided errors. No pre-amble.
 Do not wrap the response in any backticks or anything else. Respond with a Cypher statement only!"""
 
@@ -184,7 +184,7 @@ Output:
 # GUARDRAILS ENGINE
 # ============================================================================
 
-GUARDRAILS_SYSTEM_PROMPT = """As an intelligent assistant, your primary objective is to decide whether a given question is related to the {domain_name} domain or not. 
+GUARDRAILS_SYSTEM_PROMPT = """As an intelligent assistant, your primary objective is to decide whether a given question is related to the {domain_name} domain or not.
 If the question is related to {domain_name}, output "{category}". Otherwise, output "end".
 To make this decision, assess the content of the question and determine if it refers to any topics in the {domain_name} domain.
 Provide only the specified output: "{category}" or "end"."""

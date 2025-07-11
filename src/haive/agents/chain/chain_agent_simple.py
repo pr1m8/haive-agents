@@ -1,4 +1,4 @@
-"""ChainAgent - The simplest way to build agent chains
+"""ChainAgent - The simplest way to build agent chains.
 
 Just list your nodes and define the flow. That's it.
 """
@@ -24,8 +24,8 @@ NodeLike = Union[Agent, Engine, Callable, NodeConfig]
 # Edge can be string "0->1" or tuple (0, 1) or conditional (0, {...}, func)
 EdgeLike = Union[
     str,
-    Tuple[Union[int, str], Union[int, str]],
-    Tuple[Union[int, str], Dict[Any, Union[int, str]], Callable],
+    tuple[int | str, int | str],
+    tuple[int | str, dict[Any, int | str], Callable],
 ]
 
 
@@ -33,8 +33,8 @@ class ChainAgent(Agent):
     """The simplest way to build chains - just list nodes and edges."""
 
     name: str = "Chain Agent"
-    nodes: List[NodeLike] = Field(default_factory=list)
-    edges: List[EdgeLike] = Field(default_factory=list)
+    nodes: list[NodeLike] = Field(default_factory=list)
+    edges: list[EdgeLike] = Field(default_factory=list)
 
     def __init__(self, *nodes: NodeLike, **kwargs):
         """Initialize with nodes directly.
@@ -105,7 +105,7 @@ class ChainAgent(Agent):
         return graph
 
     def _add_edge_to_graph(
-        self, graph: BaseGraph, edge: EdgeLike, node_names: Dict[int, str]
+        self, graph: BaseGraph, edge: EdgeLike, node_names: dict[int, str]
     ):
         """Add an edge to the graph."""
         if isinstance(edge, str):
@@ -188,7 +188,7 @@ def flow(*nodes: NodeLike, **kwargs) -> ChainAgent:
     return ChainAgent(*nodes, **kwargs)
 
 
-def flow_with_edges(nodes: List[NodeLike], *edges: EdgeLike) -> ChainAgent:
+def flow_with_edges(nodes: list[NodeLike], *edges: EdgeLike) -> ChainAgent:
     """Create a flow with custom edges.
 
     Example:
@@ -206,7 +206,7 @@ def flow_with_edges(nodes: List[NodeLike], *edges: EdgeLike) -> ChainAgent:
 class FlowBuilder:
     """Builder for method chaining."""
 
-    def __init__(self, initial: Optional[NodeLike] = None):
+    def __init__(self, initial: NodeLike | None = None):
         self.chain = ChainAgent() if initial is None else ChainAgent(initial)
 
     def add(self, node: NodeLike) -> "FlowBuilder":

@@ -171,7 +171,6 @@ class CompiledAgent(
         Raises:
             NotImplementedError: If not implemented by subclass
         """
-        pass
 
     async def areason(self, problem: Any, context: dict[str, Any] | None = None) -> Any:
         """Asynchronous version of reason method.
@@ -249,7 +248,6 @@ class CompiledAgent(
         by subclasses for custom setup logic. Maintained for backward
         compatibility with existing Agent interface.
         """
-        pass
 
     def invoke(self, input_data: Any, config: dict[str, Any] | None = None) -> Any:
         """Invoke the agent with input data.

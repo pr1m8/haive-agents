@@ -277,7 +277,6 @@ class SimpleAgentWithValidation(Agent):
 
     def _create_validation_node(self) -> StateUpdatingValidationNode:
         """Create the StateUpdatingValidationNode with proper configuration."""
-
         # Determine route to node mapping based on available nodes
         route_mapping = {}
 
@@ -470,7 +469,6 @@ def upgrade_simple_agent_with_validation(
     simple_agent: "SimpleAgent",
 ) -> SimpleAgentWithValidation:
     """Upgrade a SimpleAgent to use StateUpdatingValidationNode."""
-
     # Extract all fields from SimpleAgent
     agent_data = simple_agent.model_dump()
 

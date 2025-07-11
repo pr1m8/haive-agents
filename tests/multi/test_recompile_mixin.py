@@ -1,5 +1,4 @@
-"""
-Test RecompileMixin that adds recompilation support to any state schema.
+"""Test RecompileMixin that adds recompilation support to any state schema.
 
 This follows the pattern of MetaStateSchema but adds recompilation tracking.
 """
@@ -19,20 +18,20 @@ class RecompileMixin:
         default=False, description="Whether the state needs recompilation"
     )
 
-    recompile_reason: Optional[str] = Field(
+    recompile_reason: str | None = Field(
         default=None, description="Reason why recompilation is needed"
     )
 
-    fields_changed: Set[str] = Field(
+    fields_changed: set[str] = Field(
         default_factory=set,
         description="Set of field names that changed and triggered recompilation",
     )
 
-    recompile_history: List[Dict[str, Any]] = Field(
+    recompile_history: list[dict[str, Any]] = Field(
         default_factory=list, description="History of recompilation events"
     )
 
-    def mark_for_recompile(self, reason: str, changed_fields: Set[str] = None):
+    def mark_for_recompile(self, reason: str, changed_fields: set[str] | None = None):
         """Mark this state as needing recompilation."""
         self.needs_recompile = True
         self.recompile_reason = reason
@@ -118,29 +117,11 @@ def test_recompile_mixin():
     # Create recompile meta state
     meta_state = RecompileMetaState(agent=agent)
 
-    print(f"Agent: {meta_state.agent_name}")
-    print(f"Agent type: {meta_state.agent_type}")
-    print(f"Needs recompile: {meta_state.needs_recompile}")
-    print(
-        f"Agent state keys: {list(meta_state.agent_state.keys()) if meta_state.agent_state else 'None'}"
-    )
-
     # Test manual recompilation marking
     meta_state.mark_for_recompile("Manual test", {"messages", "context"})
 
-    print(f"\nAfter manual marking:")
-    print(f"Needs recompile: {meta_state.needs_recompile}")
-    print(f"Reason: {meta_state.recompile_reason}")
-    print(f"Changed fields: {meta_state.fields_changed}")
-    print(f"History entries: {len(meta_state.recompile_history)}")
-
     # Test clearing flag
     meta_state.clear_recompile_flag()
-    print(f"\nAfter clearing:")
-    print(f"Needs recompile: {meta_state.needs_recompile}")
-    print(f"Reason: {meta_state.recompile_reason}")
-    print(f"Changed fields: {meta_state.fields_changed}")
-    print(f"History preserved: {len(meta_state.recompile_history)} entries")
 
 
 if __name__ == "__main__":

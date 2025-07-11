@@ -95,9 +95,8 @@ class ResourceRequirement(BaseModel):
     @model_validator(mode="after")
     def validate_minimum(self) -> ResourceRequirement:
         """Ensure minimum is less than amount if flexible."""
-        if self.flexible and self.minimum is not None:
-            if self.minimum > self.amount:
-                raise ValueError("Minimum must be less than requested amount")
+        if self.flexible and self.minimum is not None and self.minimum > self.amount:
+            raise ValueError("Minimum must be less than requested amount")
         return self
 
 

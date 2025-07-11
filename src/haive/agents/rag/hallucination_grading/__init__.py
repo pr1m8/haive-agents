@@ -1,4 +1,4 @@
-"""Hallucination Grading Module
+"""Hallucination Grading Module.
 
 Standalone hallucination detection and grading agents that can be plugged into any RAG workflow.
 Compatible with all other agents through standardized I/O schemas.
@@ -11,7 +11,7 @@ from .agent import (
 )
 
 __all__ = [
-    "HallucinationGraderAgent",
     "AdvancedHallucinationGraderAgent",
+    "HallucinationGraderAgent",
     "RealtimeHallucinationGraderAgent",
 ]

@@ -135,7 +135,7 @@ class ReactAgentConfig(SimpleAgentConfig):
         flat_tools = []
         if isinstance(tools, dict):
             for tool_set in tools.values():
-                if isinstance(tool_set, (list, tuple)):
+                if isinstance(tool_set, list | tuple):
                     flat_tools.extend(tool_set)
                 else:
                     flat_tools.append(tool_set)
@@ -220,7 +220,7 @@ class ReactAgentConfig(SimpleAgentConfig):
         return config
 
     @field_validator("tools")
-    def validate_tools(cls, v):
+    def validate_tools(self, v):
         """Validate that tools are properly configured."""
         if not v:
             logger.warning("No tools provided for ReactAgent")

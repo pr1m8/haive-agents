@@ -1,4 +1,4 @@
-"""Memory-Aware RAG Module
+"""Memory-Aware RAG Module.
 
 Memory-aware RAG with persistent context and iterative learning.
 Uses structured output models for memory management.

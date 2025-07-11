@@ -24,22 +24,16 @@ agent = SequentialAgentConfig.from_components(
 ).build_agent()
 
 # Print the workflow
-print("\n=== SEQUENTIAL REASONING WORKFLOW ===\n")
-print(agent.explain_workflow())
 
 
 def run_example():
     # Define a task
     task = "Design an algorithm to detect fraudulent credit card transactions"
 
-    print(f"\nTask: {task}\n")
-    print("Running sequential reasoning workflow...\n")
-
     # Run the agent (automatically handles data passing between steps)
     result = agent.run({"task_description": task})
 
     # Display the final plan
-    print("\n=== FINAL REASONING PLAN ===\n")
 
     if "plan" in result:
         pretty_print(result["plan"], "Reasoning Plan")

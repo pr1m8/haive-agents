@@ -30,7 +30,7 @@ Available tools: {tool_options}
 
 ## Example Plan Structure:
 Step 1: Search for current stock price → Evidence #E1
-Step 2: Get latest news about company → Evidence #E2  
+Step 2: Get latest news about company →   
 Step 3: Analyze trends based on #E1 and #E2 → Evidence #E3
 
 Create a comprehensive plan that addresses the user's query systematically.""",

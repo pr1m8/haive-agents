@@ -1,7 +1,5 @@
 # src/haive/agents/self_discovery/prompts.py
-"""
-Prompt templates for Self-Discovery reasoning system.
-"""
+"""Prompt templates for Self-Discovery reasoning system."""
 
 from langchain_core.prompts import ChatPromptTemplate
 

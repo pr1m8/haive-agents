@@ -32,12 +32,11 @@ class BaseSelectionStrategy(ABC):
     async def select_tools(
         self,
         query: str,
-        available_tools: List[ComponentMetadata],
+        available_tools: list[ComponentMetadata],
         context: ContextAwareState,
         max_tools: int = 5,
     ) -> ToolSelectionResult:
         """Select tools based on strategy."""
-        pass
 
 
 class SemanticSelectionStrategy(BaseSelectionStrategy):
@@ -49,12 +48,11 @@ class SemanticSelectionStrategy(BaseSelectionStrategy):
     async def select_tools(
         self,
         query: str,
-        available_tools: List[ComponentMetadata],
+        available_tools: list[ComponentMetadata],
         context: ContextAwareState,
         max_tools: int = 5,
     ) -> ToolSelectionResult:
         """Select tools based on semantic similarity to query."""
-
         # Simple keyword-based similarity for now
         # In a real implementation, this would use vector embeddings
         query_words = set(query.lower().split())
@@ -90,18 +88,17 @@ class SemanticSelectionStrategy(BaseSelectionStrategy):
 class CapabilityBasedStrategy(BaseSelectionStrategy):
     """Capability-based tool selection."""
 
-    def __init__(self, capability_weights: Optional[Dict[str, float]] = None):
+    def __init__(self, capability_weights: dict[str, float] | None = None):
         self.capability_weights = capability_weights or {}
 
     async def select_tools(
         self,
         query: str,
-        available_tools: List[ComponentMetadata],
+        available_tools: list[ComponentMetadata],
         context: ContextAwareState,
         max_tools: int = 5,
     ) -> ToolSelectionResult:
         """Select tools based on capability matching."""
-
         # Extract capabilities from query (simple keyword matching)
         required_capabilities = self._extract_capabilities_from_query(query)
 
@@ -129,7 +126,7 @@ class CapabilityBasedStrategy(BaseSelectionStrategy):
             selection_confidence=0.7 if selected else 0.0,
         )
 
-    def _extract_capabilities_from_query(self, query: str) -> List[str]:
+    def _extract_capabilities_from_query(self, query: str) -> list[str]:
         """Extract required capabilities from query."""
         capability_keywords = {
             "search": ["search", "find", "lookup", "retrieve"],
@@ -149,7 +146,7 @@ class CapabilityBasedStrategy(BaseSelectionStrategy):
         return detected_capabilities
 
     def _calculate_capability_match(
-        self, required: List[str], available: List[str]
+        self, required: list[str], available: list[str]
     ) -> float:
         """Calculate capability match score."""
         if not required:
@@ -167,17 +164,16 @@ class AdaptiveSelectionStrategy(BaseSelectionStrategy):
 
     def __init__(self, learning_rate: float = 0.1):
         self.learning_rate = learning_rate
-        self.tool_performance: Dict[str, float] = {}
+        self.tool_performance: dict[str, float] = {}
 
     async def select_tools(
         self,
         query: str,
-        available_tools: List[ComponentMetadata],
+        available_tools: list[ComponentMetadata],
         context: ContextAwareState,
         max_tools: int = 5,
     ) -> ToolSelectionResult:
         """Select tools using adaptive learning."""
-
         # Combine semantic similarity with learned performance
         scored_tools = []
         for tool in available_tools:
@@ -238,12 +234,11 @@ class ContextualSelectionStrategy(BaseSelectionStrategy):
     async def select_tools(
         self,
         query: str,
-        available_tools: List[ComponentMetadata],
+        available_tools: list[ComponentMetadata],
         context: ContextAwareState,
         max_tools: int = 5,
     ) -> ToolSelectionResult:
         """Select tools considering full context."""
-
         scored_tools = []
         for tool in available_tools:
             # Base semantic score
@@ -352,7 +347,7 @@ class ContextualSelectionStrategy(BaseSelectionStrategy):
 class EnsembleSelectionStrategy(BaseSelectionStrategy):
     """Ensemble strategy combining multiple selection approaches."""
 
-    def __init__(self, strategies: Optional[List[BaseSelectionStrategy]] = None):
+    def __init__(self, strategies: list[BaseSelectionStrategy] | None = None):
         self.strategies = strategies or [
             SemanticSelectionStrategy(),
             CapabilityBasedStrategy(),
@@ -365,12 +360,11 @@ class EnsembleSelectionStrategy(BaseSelectionStrategy):
     async def select_tools(
         self,
         query: str,
-        available_tools: List[ComponentMetadata],
+        available_tools: list[ComponentMetadata],
         context: ContextAwareState,
         max_tools: int = 5,
     ) -> ToolSelectionResult:
         """Select tools using ensemble of strategies."""
-
         # Get results from all strategies
         strategy_results = []
         for strategy in self.strategies:
@@ -428,19 +422,18 @@ class LearningSelectionStrategy(BaseSelectionStrategy):
     """Selection strategy that learns from user feedback and tool performance."""
 
     def __init__(self):
-        self.tool_ratings: Dict[str, List[float]] = {}
-        self.user_feedback: Dict[str, List[Dict[str, Any]]] = {}
-        self.context_patterns: Dict[str, List[str]] = {}
+        self.tool_ratings: dict[str, list[float]] = {}
+        self.user_feedback: dict[str, list[dict[str, Any]]] = {}
+        self.context_patterns: dict[str, list[str]] = {}
 
     async def select_tools(
         self,
         query: str,
-        available_tools: List[ComponentMetadata],
+        available_tools: list[ComponentMetadata],
         context: ContextAwareState,
         max_tools: int = 5,
     ) -> ToolSelectionResult:
         """Select tools using learned patterns and feedback."""
-
         scored_tools = []
         for tool in available_tools:
             # Calculate base compatibility score
@@ -478,7 +471,7 @@ class LearningSelectionStrategy(BaseSelectionStrategy):
         )
 
     def add_feedback(
-        self, tool_name: str, rating: float, context: str, feedback_data: Dict[str, Any]
+        self, tool_name: str, rating: float, context: str, feedback_data: dict[str, Any]
     ) -> None:
         """Add user feedback for learning."""
         if tool_name not in self.tool_ratings:

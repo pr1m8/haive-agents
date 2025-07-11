@@ -18,7 +18,6 @@ from langgraph.types import Command
 async def generate_question(
     state: InterviewState,
     aug_llm_config: AugLLMConfig = gen_qn_aug_llm_config,
-    # gen_qn_prompt: ChatPromptTemplate=gen_qn_prompt,
 ):
     editor = state["editor"]
     gn_chain = (
@@ -43,7 +42,6 @@ async def gen_answer(
     query_results = await search_engine.abatch(
         queries["parsed"].queries, config, return_exceptions=True
     )
-    # query_results = [
 
     successful_results = [
         res for res in query_results if not isinstance(res, Exception)

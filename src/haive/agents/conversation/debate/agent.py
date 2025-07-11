@@ -238,7 +238,7 @@ class DebateConversation(BaseConversationAgent):
 ⚖️ **Rules**:
 {rules_str}
 
-Let us begin! {list(self.debate_positions.keys())[0]}, please present your opening statement."""
+Let us begin! {next(iter(self.debate_positions.keys()))}, please present your opening statement."""
         )
 
     def select_speaker(self, state: DebateState) -> Command:
@@ -313,7 +313,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
         # Set first speaker for new phase
         if new_phase in ["arguments", "rebuttals", "closing"]:
             # Start with first participant
-            updates["current_speaker"] = list(state.debate_positions.keys())[0]
+            updates["current_speaker"] = next(iter(state.debate_positions.keys()))
         elif new_phase == "judging":
             updates["current_speaker"] = self.judge_name
 
@@ -451,7 +451,7 @@ Let us begin! {list(self.debate_positions.keys())[0]}, please present your openi
 
         # Insert context at the beginning of messages
         messages = base_input.get("messages", [])
-        base_input["messages"] = [context_msg] + messages
+        base_input["messages"] = [context_msg, *messages]
 
         return base_input
 

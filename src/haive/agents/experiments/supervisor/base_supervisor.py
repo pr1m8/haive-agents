@@ -41,8 +41,8 @@ class BaseSupervisor(ReactAgent):
 
     def __init__(
         self,
-        state_schema: Type[SupervisorState] = SupervisorState,
-        agent_factory: Optional[Callable] = None,
+        state_schema: type[SupervisorState] = SupervisorState,
+        agent_factory: Callable | None = None,
         **kwargs,
     ):
         """Initialize supervisor with custom state schema.
@@ -104,8 +104,8 @@ class BaseSupervisor(ReactAgent):
         name: str,
         description: str,
         agent: Agent,
-        capabilities: Optional[List[str]] = None,
-        tags: Optional[List[str]] = None,
+        capabilities: list[str] | None = None,
+        tags: list[str] | None = None,
     ) -> None:
         """Register an agent with the supervisor.
 
@@ -179,7 +179,7 @@ class BaseSupervisor(ReactAgent):
                     if hasattr(last_msg, "tool_calls") and last_msg.tool_calls:
                         # Check for handoff tools
                         tool_call = last_msg.tool_calls[0]
-                        tool_name = tool_call.get("name", "")
+                        tool_call.get("name", "")
 
                         # If it's a handoff, it will be handled by our custom tool
                         # which deserializes from state
@@ -192,7 +192,7 @@ class BaseSupervisor(ReactAgent):
 
         return graph
 
-    def get_agent_status(self, agent_name: Optional[str] = None) -> Dict[str, Any]:
+    def get_agent_status(self, agent_name: str | None = None) -> dict[str, Any]:
         """Get status information about agents.
 
         Args:
@@ -214,25 +214,24 @@ class BaseSupervisor(ReactAgent):
                 "class": agent_info.agent_class,
                 "module": agent_info.agent_module,
             }
-        else:
-            # Return all agents
-            return {
-                "total_agents": len(state.agents),
-                "agents": {
-                    name: {
-                        "description": info.metadata.description,
-                        "usage_count": info.metadata.usage_count,
-                        "last_used": (
-                            info.metadata.last_used.isoformat()
-                            if info.metadata.last_used
-                            else None
-                        ),
-                    }
-                    for name, info in state.agents.items()
-                },
-            }
+        # Return all agents
+        return {
+            "total_agents": len(state.agents),
+            "agents": {
+                name: {
+                    "description": info.metadata.description,
+                    "usage_count": info.metadata.usage_count,
+                    "last_used": (
+                        info.metadata.last_used.isoformat()
+                        if info.metadata.last_used
+                        else None
+                    ),
+                }
+                for name, info in state.agents.items()
+            },
+        }
 
-    def get_execution_history(self, limit: int = 10) -> List[Dict[str, Any]]:
+    def get_execution_history(self, limit: int = 10) -> list[dict[str, Any]]:
         """Get recent execution history.
 
         Args:
@@ -257,13 +256,13 @@ class DynamicSupervisor(BaseSupervisor):
     This extends BaseSupervisor with dynamic agent creation capabilities.
     """
 
-    def __init__(self, agent_factory: Optional[Callable] = None, **kwargs):
+    def __init__(self, agent_factory: Callable | None = None, **kwargs):
         """Initialize with DynamicSupervisorState."""
         super().__init__(
             state_schema=DynamicSupervisorState, agent_factory=agent_factory, **kwargs
         )
 
-    def add_agent_template(self, name: str, template: Dict[str, Any]) -> None:
+    def add_agent_template(self, name: str, template: dict[str, Any]) -> None:
         """Add a template for agent creation.
 
         Templates can be used by the create_agent tool.

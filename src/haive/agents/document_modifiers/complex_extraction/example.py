@@ -37,9 +37,6 @@ if __name__ == "__main__":
         },
         debug=True,
     )
-    print(result)
 
     # Print the extracted data
     extracted_data = result.get("extracted_data", {})
-    print("\nExtracted Data Type:", type(extracted_data))
-    print("Extracted Data:", extracted_data)

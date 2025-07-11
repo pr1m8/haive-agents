@@ -439,11 +439,7 @@ class CompositeGrade(Grade):
                 return False
 
             # Check if all items are Grade instances or can be converted
-            for item in value:
-                if not isinstance(item, Grade):
-                    return False
-
-            return True
+            return all(isinstance(item, Grade) for item in value)
         except Exception:
             return False
 

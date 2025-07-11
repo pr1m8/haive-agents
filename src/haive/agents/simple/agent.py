@@ -442,10 +442,14 @@ class SimpleAgent(Agent):
         # Get the compiled graph
         compiled = super().create_runnable(runnable_config)
 
-        # Ensure initial state has tool_routes and available_nodes
+        # Ensure initial state has tool_routes, available_nodes, and engine
         if hasattr(self, "graph") and self.graph and hasattr(self.graph, "metadata"):
             # The state should be initialized with these values from graph metadata
             initial_values = {}
+
+            # Initialize engine field with actual engine object
+            if self.engine:
+                initial_values["engine"] = self.engine
 
             if "tool_routes" in self.graph.metadata:
                 initial_values["tool_routes"] = self.graph.metadata["tool_routes"]
@@ -459,10 +463,10 @@ class SimpleAgent(Agent):
 
             # Store in compiled graph's initial channel values if possible
             if initial_values and hasattr(compiled, "_channels"):
-                for key, _value in initial_values.items():
+                for key, value in initial_values.items():
                     if key in compiled._channels:
                         # Set initial value in channel
-                        pass  # LangGraph handles this internally
+                        compiled._channels[key].default_value = value
 
         return compiled
 

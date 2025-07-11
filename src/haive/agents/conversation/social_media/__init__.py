@@ -1,4 +1,4 @@
-"""Social Media Conversation - Platform-Style Multi-Agent Interactions.
+r"""Social Media Conversation - Platform-Style Multi-Agent Interactions.
 
 Agent conversations that simulate social media platform interactions with realistic
 social dynamics, content engagement, and viral propagation patterns. The social media
@@ -195,7 +195,7 @@ EngagementAction: TypeAlias = Literal[
 ]
 ContentType: TypeAlias = Literal["post", "reply", "share", "story", "video", "image"]
 ViralityLevel: TypeAlias = Literal["low", "medium", "high", "viral"]
-SocialMediaResult: TypeAlias = Dict[
+SocialMediaResult: TypeAlias = dict[
     str, Any
 ]  # Conversation outcome and engagement data
 
@@ -207,10 +207,10 @@ class SocialMediaConfiguration(TypedDict, total=False):
     platform_type: NotRequired[PlatformType]
     max_thread_depth: NotRequired[int]
     max_replies_per_post: NotRequired[int]
-    engagement_algorithms: NotRequired[Dict[str, Any]]
+    engagement_algorithms: NotRequired[dict[str, Any]]
     virality_threshold: NotRequired[float]
-    moderation_rules: NotRequired[List[str]]
-    trending_topics: NotRequired[List[str]]
+    moderation_rules: NotRequired[list[str]]
+    trending_topics: NotRequired[list[str]]
     character_limit: NotRequired[int]
 
 
@@ -221,7 +221,7 @@ class PersonaConfig(TypedDict, total=False):
     follower_count: NotRequired[int]
     engagement_rate: NotRequired[float]
     posting_frequency: NotRequired[str]
-    interests: NotRequired[List[str]]
+    interests: NotRequired[list[str]]
     communication_style: NotRequired[str]
     influence_level: NotRequired[str]
 
@@ -239,28 +239,28 @@ class EngagementConfig(TypedDict, total=False):
 
 # Define public API
 __all__ = [
-    # Version information
-    "__version__",
-    "__author__",
-    "__license__",
-    # Core classes
-    "SocialMediaConversation",
-    "SocialMediaState",
-    # Type aliases
-    "SocialMediaParticipant",
-    "PlatformType",
-    "EngagementAction",
     "ContentType",
-    "ViralityLevel",
-    "SocialMediaResult",
+    "EngagementAction",
+    "EngagementConfig",
+    "PersonaConfig",
+    "PlatformType",
     # Configuration types
     "SocialMediaConfiguration",
-    "PersonaConfig",
-    "EngagementConfig",
+    # Core classes
+    "SocialMediaConversation",
+    # Type aliases
+    "SocialMediaParticipant",
+    "SocialMediaResult",
+    "SocialMediaState",
+    "ViralityLevel",
+    "__author__",
+    "__license__",
+    # Version information
+    "__version__",
+    "create_reddit_discussion",
     # Utility functions
     "create_social_media_conversation",
     "create_twitter_thread",
-    "create_reddit_discussion",
     "create_viral_simulation",
     "validate_social_setup",
 ]
@@ -269,12 +269,12 @@ __all__ = [
 # Utility functions
 def create_social_media_conversation(
     topic: str,
-    participants: List[SocialMediaParticipant],
+    participants: list[SocialMediaParticipant],
     platform_type: PlatformType = "twitter",
-    original_poster: Optional[SocialMediaParticipant] = None,
-    config: Optional[SocialMediaConfiguration] = None,
+    original_poster: SocialMediaParticipant | None = None,
+    config: SocialMediaConfiguration | None = None,
 ) -> SocialMediaConversation:
-    """Create a social media conversation simulation.
+    r"""Create a social media conversation simulation.
 
     Args:
         topic: Discussion topic or original post content
@@ -322,11 +322,11 @@ def create_social_media_conversation(
 
 def create_twitter_thread(
     initial_tweet: str,
-    participants: List[SocialMediaParticipant],
+    participants: list[SocialMediaParticipant],
     max_replies: int = 10,
     enable_hashtags: bool = True,
 ) -> SocialMediaConversation:
-    """Create a Twitter-style threaded conversation.
+    r"""Create a Twitter-style threaded conversation.
 
     Args:
         initial_tweet: Content of the initial tweet
@@ -365,11 +365,11 @@ def create_twitter_thread(
 
 def create_reddit_discussion(
     subreddit_topic: str,
-    participants: List[SocialMediaParticipant],
+    participants: list[SocialMediaParticipant],
     post_title: str,
     enable_voting: bool = True,
 ) -> SocialMediaConversation:
-    """Create a Reddit-style discussion thread.
+    r"""Create a Reddit-style discussion thread.
 
     Args:
         subreddit_topic: Subreddit theme or topic
@@ -408,12 +408,12 @@ def create_reddit_discussion(
 
 def create_viral_simulation(
     seed_content: str,
-    influencers: List[SocialMediaParticipant],
-    general_users: List[SocialMediaParticipant],
+    influencers: list[SocialMediaParticipant],
+    general_users: list[SocialMediaParticipant],
     virality_threshold: float = 0.8,
     platform_type: PlatformType = "twitter",
 ) -> SocialMediaConversation:
-    """Create a viral content propagation simulation.
+    r"""Create a viral content propagation simulation.
 
     Args:
         seed_content: Initial content that may go viral
@@ -458,7 +458,7 @@ def create_viral_simulation(
 
 
 def validate_social_setup(
-    participants: List[SocialMediaParticipant], platform_type: PlatformType
+    participants: list[SocialMediaParticipant], platform_type: PlatformType
 ) -> bool:
     """Validate social media conversation setup.
 
@@ -491,7 +491,8 @@ def validate_social_setup(
 
             warnings.warn(
                 f"Participant {participant.name} lacks persona/social_profile attributes. "
-                f"Social media simulation will be less realistic."
+                f"Social media simulation will be less realistic.",
+                stacklevel=2,
             )
 
     # Platform-specific validations
@@ -499,7 +500,8 @@ def validate_social_setup(
         import warnings
 
         warnings.warn(
-            "Twitter simulations work best with fewer participants for realistic threading"
+            "Twitter simulations work best with fewer participants for realistic threading",
+            stacklevel=2,
         )
 
     # Check for unique names
@@ -511,7 +513,7 @@ def validate_social_setup(
     return True
 
 
-def __dir__() -> List[str]:
+def __dir__() -> list[str]:
     """Override dir() to show only public API."""
     return __all__
 

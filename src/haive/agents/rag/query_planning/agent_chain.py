@@ -1,4 +1,4 @@
-"""Query Planning RAG using ChainAgent
+"""Query Planning RAG using ChainAgent.
 
 Simplified version using the new ChainAgent approach.
 """
@@ -17,7 +17,7 @@ from haive.agents.chain import ChainAgent, flow_with_edges
 class QueryPlan(BaseModel):
     """Simplified query plan."""
 
-    sub_queries: List[str] = Field(description="Sub-queries to execute")
+    sub_queries: list[str] = Field(description="Sub-queries to execute")
     execution_strategy: str = Field(description="How to execute them")
     synthesis_approach: str = Field(description="How to combine results")
 
@@ -31,12 +31,11 @@ class SubQueryResult(BaseModel):
 
 
 def create_query_planning_chain(
-    documents: List[Document],
-    llm_config: Optional[LLMConfig] = None,
+    documents: list[Document],
+    llm_config: LLMConfig | None = None,
     name: str = "Query Planning RAG",
 ) -> ChainAgent:
     """Create query planning RAG using ChainAgent."""
-
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
@@ -62,7 +61,7 @@ def create_query_planning_chain(
     )
 
     # Sub-query executor
-    def execute_sub_queries(state: Dict[str, Any]) -> Dict[str, Any]:
+    def execute_sub_queries(state: dict[str, Any]) -> dict[str, Any]:
         """Execute all sub-queries."""
         plan = state.get("plan", {})
         sub_queries = plan.get("sub_queries", [])
@@ -86,7 +85,7 @@ def create_query_planning_chain(
                     "human",
                     """Original query: {query}
             Sub-query results: {sub_results}
-            
+
             Create a complete, coherent response.""",
                 ),
             ]
@@ -104,10 +103,9 @@ def create_query_planning_chain(
 
 
 def create_simple_decomposition_chain(
-    documents: List[Document], llm_config: Optional[LLMConfig] = None
+    documents: list[Document], llm_config: LLMConfig | None = None
 ) -> ChainAgent:
     """Even simpler version - just decompose and answer."""
-
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
@@ -125,7 +123,7 @@ def create_simple_decomposition_chain(
     )
 
     # Step 2: Answer each (simplified)
-    def answer_all(state: Dict[str, Any]) -> Dict[str, Any]:
+    def answer_all(state: dict[str, Any]) -> dict[str, Any]:
         sub_queries = state.get("sub_queries", "").split("\n")
         answers = [f"Answer: {q}" for q in sub_queries if q.strip()]
         return {"answers": answers}
@@ -147,10 +145,9 @@ def create_simple_decomposition_chain(
 
 # With conditional execution based on complexity
 def create_adaptive_planning_chain(
-    documents: List[Document], llm_config: Optional[LLMConfig] = None
+    documents: list[Document], llm_config: LLMConfig | None = None
 ) -> ChainAgent:
     """Adaptive planning based on query complexity."""
-
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
@@ -192,7 +189,7 @@ def create_adaptive_planning_chain(
 
 
 # I/O schema
-def get_query_planning_chain_io_schema() -> Dict[str, List[str]]:
+def get_query_planning_chain_io_schema() -> dict[str, list[str]]:
     """Get I/O schema for query planning chain."""
     return {
         "inputs": ["query", "context", "messages"],

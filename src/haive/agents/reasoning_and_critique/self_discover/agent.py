@@ -20,9 +20,8 @@ from haive.agents.reasoning_and_critique.self_discover.state import SelfDiscover
 
 
 class SelfDiscoverAgentConfig(AgentArchitectureConfig):
-    """Configuration for the Self Discover Agent"""
+    """Configuration for the Self Discover Agent."""
 
-    # task_description: str = Field(description="Task description")
     aug_llm_configs: dict[str, AugLLMConfig] = Field(
         default_factory=lambda: {
             "step_reasoning": step_reasoning_chain,
@@ -32,19 +31,16 @@ class SelfDiscoverAgentConfig(AgentArchitectureConfig):
         },
         description="Aug LLM configurations",
     )
-    # selected_modules: Optional[str] = Field(description="Selected modules")
-    # plan:Plan = Field(description="Plan to solve the problem with reasonsing ste-s")
     state_schema: SelfDiscoverState = Field(
         default=SelfDiscoverState, description="State schema"
     )
 
 
 class SelfDiscoverAgent(AgentArchitecture):
-    """Self Discover Agent"""
+    """Self Discover Agent."""
 
     def __init__(self, config: SelfDiscoverAgentConfig = SelfDiscoverAgentConfig()):
         super().__init__(config)
-        # print(self.aug_llm_model_runnables_dict)
 
     def select(self, inputs):
         """Selects relevant reasoning modules based on the task description."""
@@ -124,10 +120,10 @@ class SelfDiscoverAgent(AgentArchitecture):
 
     async def run(self, task_description: str):
         """Executes the self-discovery process."""
-        async for s in self.app.astream(
+        async for _s in self.app.astream(
             {"task_description": task_description}, config=self.runnable_config
         ):
-            print(s)
+            pass
 
 
 import asyncio

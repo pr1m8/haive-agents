@@ -30,9 +30,8 @@ def create_plan(task: str) -> str:
     return f"Plan for {task}:\n1. Analyze requirements\n2. Break down into steps\n3. Execute\n4. Verify"
 
 
-async def create_test_agents() -> Dict[str, AgentInfo]:
+async def create_test_agents() -> dict[str, AgentInfo]:
     """Create test agents for supervisor testing."""
-
     # Search agent with tavily tool
     search_engine = AugLLMConfig(
         name="search_engine",

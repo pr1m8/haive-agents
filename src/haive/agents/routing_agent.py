@@ -55,7 +55,7 @@ class RoutingAgent(SimpleAgent):
         """Set up the workflow with routing."""
         # Use DynamicGraph to build the workflow
         gb = DynamicGraph(
-            components=[self.config.engine] + list(self.config.handlers.values()),
+            components=[self.config.engine, *list(self.config.handlers.values())],
             state_schema=self.state_schema,
         )
 
@@ -63,7 +63,7 @@ class RoutingAgent(SimpleAgent):
         gb.add_node(name=self.config.node_name, config=self.config.engine)
 
         # Set main node's default route
-        main_default = self.config.default_routes.get(self.config.node_name, END)
+        self.config.default_routes.get(self.config.node_name, END)
 
         # Add handlers
         for name, handler in self.config.handlers.items():
@@ -228,12 +228,6 @@ if __name__ == "__main__":
 
     # Run with a question
     result = agent.run("What is the capital of France?")
-    print(
-        f"Question result: {result.get('route_history', [])} -> {result.get('output', '')}"
-    )
 
     # Run with a task
     result = agent.run("Can you help me create a workout plan?")
-    print(
-        f"Task result: {result.get('route_history', [])} -> {result.get('output', '')}"
-    )

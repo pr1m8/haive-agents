@@ -1,4 +1,4 @@
-"""Simple RAG Agent
+"""Simple RAG Agent.
 
 Uses SequentialAgent to compose BaseRAG with answer generation.
 """
@@ -17,11 +17,11 @@ from haive.agents.simple.agent import SimpleAgent
 
 
 class SimpleRAGAgent(SequentialAgent):
-    """Simple RAG workflow: Retrieval → Answer Generation"""
+    """Simple RAG workflow: Retrieval → Answer Generati.....on"""
 
     @classmethod
     def from_documents(
-        cls, documents: List[Document], llm_config: Optional[LLMConfig] = None, **kwargs
+        cls, documents: list[Document], llm_config: LLMConfig | None = None, **kwargs
     ):
         """Create SimpleRAG from documents."""
         # Create retrieval agent

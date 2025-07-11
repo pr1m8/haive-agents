@@ -98,25 +98,25 @@ class StepMetadata(BaseModel):
 
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
 
     # Execution tracking
     retry_count: int = Field(default=0, ge=0)
     error_count: int = Field(default=0, ge=0)
-    last_error: Optional[str] = None
+    last_error: str | None = None
 
     # Performance metrics
-    tokens_used: Optional[int] = Field(default=None, ge=0)
-    api_calls_made: Optional[int] = Field(default=None, ge=0)
+    tokens_used: int | None = Field(default=None, ge=0)
+    api_calls_made: int | None = Field(default=None, ge=0)
 
     # Custom metadata
-    tags: Set[str] = Field(default_factory=set)
-    custom_data: Dict[str, Any] = Field(default_factory=dict)
+    tags: set[str] = Field(default_factory=set)
+    custom_data: dict[str, Any] = Field(default_factory=dict)
 
     @computed_field
     @property
-    def execution_time(self) -> Optional[float]:
+    def execution_time(self) -> float | None:
         """Calculate execution time in seconds."""
         if self.started_at and self.completed_at:
             return (self.completed_at - self.started_at).total_seconds()
@@ -130,14 +130,14 @@ class Dependency(BaseModel):
     dependency_type: DependencyType = Field(
         default=DependencyType.HARD, description="Type of dependency"
     )
-    condition: Optional[str] = Field(
+    condition: str | None = Field(
         default=None, description="Condition for conditional dependencies"
     )
-    required_output: Optional[str] = Field(
+    required_output: str | None = Field(
         default=None, description="Specific output field required from dependency"
     )
 
-    def is_satisfied(self, step_results: Dict[str, Any]) -> bool:
+    def is_satisfied(self, step_results: dict[str, Any]) -> bool:
         """Check if this dependency is satisfied."""
         if self.step_id not in step_results:
             return False
@@ -150,7 +150,6 @@ class Dependency(BaseModel):
         # Check condition if specified
         if self.condition and self.dependency_type == DependencyType.CONDITIONAL:
             # Simple condition evaluation (can be extended)
-            # Format: "status == 'success'" or "output.score > 0.8"
             try:
                 # This is simplified - in production use safe evaluation
                 return eval(self.condition, {"result": result})
@@ -210,11 +209,11 @@ class BaseStep(BaseModel):
     # DATA
     # ========================================================================
 
-    input_data: Optional[Dict[str, Any]] = Field(
+    input_data: dict[str, Any] | None = Field(
         default=None, description="Input data/parameters"
     )
 
-    output_data: Optional[Dict[str, Any]] = Field(
+    output_data: dict[str, Any] | None = Field(
         default=None, description="Output/results"
     )
 
@@ -222,7 +221,7 @@ class BaseStep(BaseModel):
     # DEPENDENCIES
     # ========================================================================
 
-    dependencies: List[Dependency] = Field(
+    dependencies: list[Dependency] = Field(
         default_factory=list, description="Steps this depends on"
     )
 
@@ -244,7 +243,7 @@ class BaseStep(BaseModel):
 
     @field_validator("dependencies")
     @classmethod
-    def validate_unique_dependencies(cls, v: List[Dependency]) -> List[Dependency]:
+    def validate_unique_dependencies(cls, v: list[Dependency]) -> list[Dependency]:
         """Ensure no duplicate dependencies."""
         seen = set()
         for dep in v:
@@ -261,8 +260,8 @@ class BaseStep(BaseModel):
         self,
         step_id: str,
         dependency_type: DependencyType = DependencyType.HARD,
-        condition: Optional[str] = None,
-        required_output: Optional[str] = None,
+        condition: str | None = None,
+        required_output: str | None = None,
     ) -> None:
         """Add a dependency to this step."""
         dep = Dependency(
@@ -273,7 +272,7 @@ class BaseStep(BaseModel):
         )
         self.dependencies.append(dep)
 
-    def is_ready(self, completed_steps: Dict[str, Any]) -> bool:
+    def is_ready(self, completed_steps: dict[str, Any]) -> bool:
         """Check if all dependencies are satisfied."""
         if self.status != StepStatus.PENDING:
             return False
@@ -297,7 +296,7 @@ class BaseStep(BaseModel):
         self.metadata.started_at = datetime.now()
         self.metadata.updated_at = datetime.now()
 
-    def mark_completed(self, output: Optional[Dict[str, Any]] = None) -> None:
+    def mark_completed(self, output: dict[str, Any] | None = None) -> None:
         """Mark step as completed."""
         self.status = StepStatus.COMPLETED
         self.metadata.completed_at = datetime.now()
@@ -348,15 +347,13 @@ class ActionStep(BaseStep):
 
     step_type: StepType = Field(default=StepType.ACTION, frozen=True)
 
-    tool_name: Optional[str] = Field(
-        default=None, description="Name of tool to execute"
-    )
+    tool_name: str | None = Field(default=None, description="Name of tool to execute")
 
-    tool_args: Optional[Dict[str, Any]] = Field(
+    tool_args: dict[str, Any] | None = Field(
         default=None, description="Arguments for tool"
     )
 
-    expected_output_schema: Optional[Dict[str, Any]] = Field(
+    expected_output_schema: dict[str, Any] | None = Field(
         default=None, description="Expected structure of output"
     )
 
@@ -368,7 +365,7 @@ class ResearchStep(BaseStep):
 
     query: str = Field(..., description="Research query or question")
 
-    sources: List[str] = Field(default_factory=list, description="Sources to search")
+    sources: list[str] = Field(default_factory=list, description="Sources to search")
 
     max_results: int = Field(default=5, description="Maximum results to retrieve", ge=1)
 
@@ -384,7 +381,7 @@ class RecursiveStep(BaseStep):
         default=3, description="Maximum recursion depth", ge=1, le=10
     )
 
-    sub_plan_id: Optional[str] = Field(
+    sub_plan_id: str | None = Field(
         default=None, description="ID of generated sub-plan"
     )
 
@@ -396,11 +393,11 @@ class ConditionalStep(BaseStep):
 
     condition: str = Field(..., description="Condition to evaluate")
 
-    then_steps: List[str] = Field(
+    then_steps: list[str] = Field(
         default_factory=list, description="Steps to execute if true"
     )
 
-    else_steps: List[str] = Field(
+    else_steps: list[str] = Field(
         default_factory=list, description="Steps to execute if false"
     )
 
@@ -410,7 +407,7 @@ class ParallelStep(BaseStep):
 
     step_type: StepType = Field(default=StepType.PARALLEL, frozen=True)
 
-    parallel_steps: List[str] = Field(
+    parallel_steps: list[str] = Field(
         default_factory=list, description="IDs of steps to run in parallel"
     )
 
@@ -456,7 +453,7 @@ class BasePlan(BaseModel):
     # STEPS
     # ========================================================================
 
-    steps: List[AnyStep] = Field(default_factory=list, description="Steps in the plan")
+    steps: list[AnyStep] = Field(default_factory=list, description="Steps in the plan")
 
     # ========================================================================
     # METADATA
@@ -466,7 +463,7 @@ class BasePlan(BaseModel):
 
     updated_at: datetime = Field(default_factory=datetime.now)
 
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional plan metadata"
     )
 
@@ -482,25 +479,25 @@ class BasePlan(BaseModel):
 
     @computed_field
     @property
-    def completed_steps(self) -> List[AnyStep]:
+    def completed_steps(self) -> list[AnyStep]:
         """Get completed steps."""
         return [s for s in self.steps if s.status == StepStatus.COMPLETED]
 
     @computed_field
     @property
-    def failed_steps(self) -> List[AnyStep]:
+    def failed_steps(self) -> list[AnyStep]:
         """Get failed steps."""
         return [s for s in self.steps if s.status == StepStatus.FAILED]
 
     @computed_field
     @property
-    def pending_steps(self) -> List[AnyStep]:
+    def pending_steps(self) -> list[AnyStep]:
         """Get pending steps."""
         return [s for s in self.steps if s.status == StepStatus.PENDING]
 
     @computed_field
     @property
-    def ready_steps(self) -> List[AnyStep]:
+    def ready_steps(self) -> list[AnyStep]:
         """Get steps ready to execute."""
         return [s for s in self.steps if s.status == StepStatus.READY]
 
@@ -535,14 +532,14 @@ class BasePlan(BaseModel):
         self.steps.append(step)
         self.updated_at = datetime.now()
 
-    def get_step(self, step_id: str) -> Optional[AnyStep]:
+    def get_step(self, step_id: str) -> AnyStep | None:
         """Get step by ID."""
         for step in self.steps:
             if step.id == step_id:
                 return step
         return None
 
-    def update_ready_steps(self) -> List[AnyStep]:
+    def update_ready_steps(self) -> list[AnyStep]:
         """Update and return steps that are ready to execute."""
         completed = {s.id: s.output_data for s in self.completed_steps}
 
@@ -554,7 +551,7 @@ class BasePlan(BaseModel):
 
         return ready
 
-    def get_execution_order(self) -> List[List[AnyStep]]:
+    def get_execution_order(self) -> list[list[AnyStep]]:
         """Get steps organized by execution order (batches for parallel execution)."""
         # This is a simplified topological sort
         # Returns list of batches where each batch can run in parallel
@@ -675,18 +672,15 @@ class DAGPlan(BasePlan):
             rec_stack.remove(step_id)
             return False
 
-        for step in self.steps:
-            if step.id not in visited:
-                if has_cycle(step.id):
-                    return False
-
-        return True
+        return all(
+            not (step.id not in visited and has_cycle(step.id)) for step in self.steps
+        )
 
 
 class AdaptivePlan(BasePlan):
     """Plan that can adapt during execution (FLARE style)."""
 
-    adaptation_triggers: List[str] = Field(
+    adaptation_triggers: list[str] = Field(
         default_factory=list, description="Conditions that trigger adaptation"
     )
 
@@ -694,23 +688,22 @@ class AdaptivePlan(BasePlan):
 
     adaptation_count: int = Field(default=0, description="Current adaptation count")
 
-    def should_adapt(self, context: Dict[str, Any]) -> bool:
+    def should_adapt(self, context: dict[str, Any]) -> bool:
         """Check if plan should adapt based on context."""
         if self.adaptation_count >= self.max_adaptations:
             return False
 
         # Check triggers (simplified)
-        for trigger in self.adaptation_triggers:
+        for _trigger in self.adaptation_triggers:
             # This would evaluate trigger conditions
             pass
 
         return False
 
-    def adapt(self, context: Dict[str, Any]) -> None:
+    def adapt(self, context: dict[str, Any]) -> None:
         """Adapt plan based on execution context."""
         self.adaptation_count += 1
         # Adaptation logic here
-        pass
 
 
 # Type variable for generic plan operations

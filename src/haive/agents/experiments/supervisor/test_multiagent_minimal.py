@@ -24,8 +24,6 @@ from haive.agents.simple.agent import SimpleAgent
 
 async def test_minimal_multiagent():
     """Test minimal MultiAgentBase setup."""
-    print("\n=== Testing Minimal MultiAgentBase ===\n")
-
     # Create test agents
     agents_dict = await create_test_agents()
 
@@ -36,9 +34,8 @@ async def test_minimal_multiagent():
         active_agents={"search_agent", "math_agent"},
     )
 
-    print("State created with agents:")
-    for name, info in initial_state.agents.items():
-        print(f"  - {name}: {info.description} (active: {info.active})")
+    for _name, _info in initial_state.agents.items():
+        pass
 
     # Create agent execution node
     agent_execution_node = create_agent_execution_node()
@@ -57,11 +54,10 @@ async def test_minimal_multiagent():
         return {
             "next_agent": "math_agent",
             "agent_task": "Calculate 10 + 5",
-            "messages": state.messages + [AIMessage(content="Routing to math agent")],
+            "messages": [*state.messages, AIMessage(content="Routing to math agent")],
         }
 
     # Test 1: Build graph manually first
-    print("\n1. Testing manual graph build...")
     try:
         graph = BaseGraph(
             name="supervisor_graph", state_schema=SupervisorStateWithTools
@@ -74,18 +70,15 @@ async def test_minimal_multiagent():
         graph.set_entry_point("supervisor")
         graph.add_edge("execute", END)
 
-        compiled = graph.compile()
-        print("✅ Manual graph compiled successfully!")
+        graph.compile()
 
-    except Exception as e:
-        print(f"❌ Manual graph failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
         return
 
     # Test 2: Now try with MultiAgentBase
-    print("\n2. Testing MultiAgentBase...")
     try:
         # Create a dummy agent to satisfy MultiAgentBase validation
         dummy_agent = SimpleAgent(
@@ -112,46 +105,29 @@ async def test_minimal_multiagent():
         )
 
         # Ensure state schema is set
-        print(f"System state_schema: {system.state_schema}")
-        print(f"System has setup_complete: {system._setup_complete}")
 
         # Don't compile the graph directly - let the agent handle it
-        compiled2 = system.compile()
-        print("✅ MultiAgentBase compiled successfully!")
+        system.compile()
 
         # Test execution
-        print("\n3. Testing execution...")
 
         # Debug: Check what gets serialized
-        print("DEBUG: Checking state serialization...")
         serialized = initial_state.model_dump()
-        print(f"Serialized state keys: {list(serialized.keys())}")
         if "agents" in serialized:
-            print(f"Agents in serialized state: {list(serialized['agents'].keys())}")
-            for agent_name, agent_data in serialized["agents"].items():
-                print(
-                    f"  {agent_name}: {type(agent_data)} - keys: {list(agent_data.keys()) if isinstance(agent_data, dict) else 'not dict'}"
-                )
+            for _agent_name, agent_data in serialized["agents"].items():
                 if isinstance(agent_data, dict) and "agent" in agent_data:
                     agent_obj = agent_data["agent"]
-                    print(f"    Agent object type: {type(agent_obj)}")
-                    if isinstance(agent_obj, dict):
-                        print(f"    Agent object keys: {list(agent_obj.keys())}")
-                        if "engine" in agent_obj:
-                            engine_data = agent_obj["engine"]
-                            print(f"    Engine type: {type(engine_data)}")
-                            if isinstance(engine_data, dict):
-                                print(f"    Engine keys: {list(engine_data.keys())}")
+                    if isinstance(agent_obj, dict) and "engine" in agent_obj:
+                        engine_data = agent_obj["engine"]
+                        if isinstance(engine_data, dict):
+                            pass
 
         result = await system.arun("Calculate 10 + 5")
 
-        print(f"\nExecution result:")
-        print(f"  Messages: {len(result.get('messages', []))}")
         if result.get("agent_response"):
-            print(f"  Agent response: {result['agent_response']}")
+            pass
 
-    except Exception as e:
-        print(f"❌ MultiAgentBase failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

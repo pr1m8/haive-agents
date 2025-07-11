@@ -1,4 +1,4 @@
-"""Document Grading Module
+"""Document Grading Module.
 
 Standalone document grading and quality assessment agents.
 """

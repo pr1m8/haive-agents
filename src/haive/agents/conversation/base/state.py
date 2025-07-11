@@ -1,4 +1,4 @@
-"""Base conversation state with automatic round tracking via reducers.
+r"""Base conversation state with automatic round tracking via reducers.
 
 This module defines the ConversationState class, which is the foundational state schema
 for all conversation types. It extends MessagesState with specialized tracking for
@@ -68,11 +68,11 @@ from pydantic import Field, computed_field
 from typing_extensions import TypeAlias
 
 if TYPE_CHECKING:
-    from langchain_core.messages import BaseMessage
+    pass
 
 # Type aliases for better API clarity
 SpeakerName: TypeAlias = str
-SpeakerList: TypeAlias = List[SpeakerName]
+SpeakerList: TypeAlias = list[SpeakerName]
 ConversationTopic: TypeAlias = str
 ConversationMode: TypeAlias = str
 RoundNumber: TypeAlias = int
@@ -84,7 +84,7 @@ logger.set_level(LogLevel.WARNING)
 
 
 class ConversationState(MessagesState):
-    """Base conversation state schema with automatic tracking and progress calculations.
+    r"""Base conversation state schema with automatic tracking and progress calculations.
 
     This state schema extends MessagesState with specialized fields and reducers for
     tracking multi-agent conversations. It provides automatic management of turns,
@@ -150,7 +150,7 @@ class ConversationState(MessagesState):
     """
 
     # Track conversation flow with type hints
-    current_speaker: Optional[SpeakerName] = Field(
+    current_speaker: SpeakerName | None = Field(
         default=None, description="The currently active speaker in the conversation"
     )
     speakers: SpeakerList = Field(
@@ -168,7 +168,7 @@ class ConversationState(MessagesState):
     )
 
     # Conversation metadata with type hints
-    topic: Optional[ConversationTopic] = Field(
+    topic: ConversationTopic | None = Field(
         default=None, description="The conversation topic or subject matter"
     )
     conversation_ended: bool = Field(
@@ -186,7 +186,7 @@ class ConversationState(MessagesState):
     )
 
     # Add reducers for automatic tracking with proper type annotations
-    __reducer_fields__: Dict[str, Any] = {
+    __reducer_fields__: dict[str, Any] = {
         **MessagesState.__reducer_fields__,  # Inherit messages reducer
         "turn_count": operator.add,  # Auto-increment turns
         "speaker_history": operator.add,  # Append to history
@@ -195,7 +195,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def round_number(self) -> RoundNumber:
-        """Compute current round based on turn count and number of speakers.
+        r"""Compute current round based on turn count and number of speakers.
 
         Calculates the current round number using turn count and speaker count.
         Returns 0 if no speakers or no turns have been taken.
@@ -217,7 +217,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def current_round_speakers(self) -> SpeakerList:
-        """Get list of speakers who have already spoken in current round.
+        r"""Get list of speakers who have already spoken in current round.
 
         Analyzes the speaker history to determine which speakers have taken
         turns in the current round, based on round boundaries.
@@ -245,7 +245,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def remaining_speakers_this_round(self) -> SpeakerList:
-        """Get speakers who haven't spoken yet in current round.
+        r"""Get speakers who haven't spoken yet in current round.
 
         Determines which speakers from the participant list have not yet
         taken their turn in the current round.
@@ -267,7 +267,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def should_end_by_rounds(self) -> bool:
-        """Check if conversation should end based on round limit.
+        r"""Check if conversation should end based on round limit.
 
         Determines if the conversation has reached or exceeded the maximum
         number of rounds and should be terminated.
@@ -285,7 +285,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def turns_per_round(self) -> int:
-        """Calculate expected turns per round.
+        r"""Calculate expected turns per round.
 
         Determines the number of turns that constitute a complete round
         based on the number of speakers.
@@ -303,7 +303,7 @@ class ConversationState(MessagesState):
     @computed_field
     @property
     def conversation_progress(self) -> ProgressPercentage:
-        """Calculate conversation progress as percentage.
+        r"""Calculate conversation progress as percentage.
 
         Computes the progress of the conversation as a percentage from 0.0 to 1.0
         based on the current round number and maximum rounds.

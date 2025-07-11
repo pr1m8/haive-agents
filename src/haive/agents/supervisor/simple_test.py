@@ -48,7 +48,7 @@ class EchoAgent(SimpleAgent):
             response = f"{self.response_prefix}: No message to echo"
 
         # Return new state with echo response
-        new_messages = list(messages) + [AIMessage(content=response)]
+        new_messages = [*list(messages), AIMessage(content=response)]
 
         # Return the same type of state we received
         if hasattr(state, "__class__"):
@@ -63,7 +63,6 @@ class EchoAgent(SimpleAgent):
 
 async def test_supervisor_basic():
     """Test basic supervisor functionality."""
-
     console.print(Panel("🧪 Testing ReactAgent Supervisor", style="bold blue"))
 
     # Check for API key
@@ -106,13 +105,12 @@ async def test_supervisor_basic():
         console.print("[green]✅ Basic test completed![/green]")
 
     except Exception as e:
-        console.print(f"[red]❌ Test failed: {str(e)}[/red]")
+        console.print(f"[red]❌ Test failed: {e!s}[/red]"]")
         logger.error("Basic test failed", exc_info=True)
 
 
 async def test_agent_registration():
     """Test dynamic agent registration via tools."""
-
     console.print(Panel("🔧 Testing Agent Registration Tools", style="bold cyan"))
 
     if not os.getenv("OPENAI_API_KEY"):
@@ -138,7 +136,7 @@ async def test_agent_registration():
 
         # Show results
         final_messages = getattr(result, "messages", [])
-        console.print(f"\n[cyan]📋 Message Flow:[/cyan]")
+        console.print("\n[cyan]📋 Message Flow:[/cyan]"n]")
         for i, msg in enumerate(final_messages[-3:], 1):  # Show last 3 messages
             if hasattr(msg, "content"):
                 role = msg.__class__.__name__.replace("Message", "")
@@ -159,13 +157,12 @@ async def test_agent_registration():
         console.print("[green]✅ Registration test completed![/green]")
 
     except Exception as e:
-        console.print(f"[red]❌ Registration test failed: {str(e)}[/red]")
+        console.print(f"[red]❌ Registration test failed: {e!s}[/red]"]")
         logger.error("Registration test failed", exc_info=True)
 
 
 async def test_routing_flow():
     """Test the complete routing flow."""
-
     console.print(Panel("🎯 Testing Complete Routing Flow", style="bold magenta"))
 
     if not os.getenv("OPENAI_API_KEY"):
@@ -194,7 +191,7 @@ async def test_routing_flow():
 
         # Show complete flow
         final_messages = getattr(result, "messages", [])
-        console.print(f"\n[cyan]🔄 Complete Flow:[/cyan]")
+        console.print("\n[cyan]🔄 Complete Flow:[/cyan]"n]")
         for i, msg in enumerate(final_messages, 1):
             if hasattr(msg, "content"):
                 role = msg.__class__.__name__.replace("Message", "")
@@ -206,13 +203,12 @@ async def test_routing_flow():
         console.print("[green]✅ Routing test completed![/green]")
 
     except Exception as e:
-        console.print(f"[red]❌ Routing test failed: {str(e)}[/red]")
+        console.print(f"[red]❌ Routing test failed: {e!s}[/red]"]")
         logger.error("Routing test failed", exc_info=True)
 
 
 def main():
     """Main test runner."""
-
     console.print(
         Panel(
             """
@@ -220,7 +216,7 @@ def main():
 
 Architecture:
 ✅ ReactAgent with add_agent tool
-✅ Dynamic routing tool with base model  
+✅ Dynamic routing tool with base mod  
 ✅ Prompt template with agents in state
 ✅ Generic agent execution node
 ✅ Real LLM-powered routing decisions
@@ -244,7 +240,7 @@ Tests:
             console.print(Panel("🎉 All tests completed!", style="bold green"))
 
         except Exception as e:
-            console.print(f"[red]❌ Test suite failed: {str(e)}[/red]")
+            console.print(f"[red]❌ Test suite failed: {e!s}[/red]"]")
             logger.error("Test suite failed", exc_info=True)
 
     asyncio.run(run_all_tests())

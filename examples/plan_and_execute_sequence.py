@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Example of Plan and Execute agent using SEQUENCE mode to avoid serialization issues.
+"""Example of Plan and Execute agent using SEQUENCE mode to avoid serialization issues.
 
 This demonstrates the Plan and Execute pattern with sequential execution.
 """
@@ -33,14 +32,10 @@ def is_prime(n: int) -> bool:
     """Check if a number is prime."""
     if n < 2:
         return False
-    for i in range(2, int(n**0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
+    return all(n % i != 0 for i in range(2, int(n**0.5) + 1))
 
 
 async def main():
-    print("\n🚀 Starting Sequential Plan and Execute Demo\n")
 
     # Create agents
     planner = SimpleAgent(
@@ -72,18 +67,13 @@ async def main():
 
     # Test query
     query = "Calculate the sum of the first 5 prime numbers"
-    print(f"📋 Query: {query}\n")
 
     try:
-        result = await plan_execute_agent.arun(query)
-        print(f"\n✅ Result: {result}\n")
-    except Exception as e:
-        print(f"\n❌ Error: {e}\n")
+        await plan_execute_agent.arun(query)
+    except Exception:
         import traceback
 
         traceback.print_exc()
-
-    print("🎉 Demo completed!")
 
 
 if __name__ == "__main__":

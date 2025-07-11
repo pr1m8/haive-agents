@@ -1,4 +1,4 @@
-"""Simple Enhanced Multi-Agent RAG Workflows
+"""Simple Enhanced Multi-Agent RAG Workflows.
 
 Clean implementation of advanced RAG patterns without complex dependencies.
 """
@@ -69,7 +69,7 @@ class RequeryDecisionAgent(Agent):
 class SimpleCorrectiveRAGAgent(SequentialAgent):
     """Simple Corrective RAG implementation using sequential processing."""
 
-    def __init__(self, documents: Optional[list[Document]] = None, **kwargs):
+    def __init__(self, documents: list[Document] | None = None, **kwargs):
         # Create retrieval agent
         from haive.core.fixtures.documents import conversation_documents
 
@@ -94,7 +94,7 @@ class SimpleCorrectiveRAGAgent(SequentialAgent):
 class SimpleHYDERAGAgent(SequentialAgent):
     """Simple HYDE RAG agent that generates hypothetical documents before retrieval."""
 
-    def __init__(self, documents: Optional[list[Document]] = None, **kwargs):
+    def __init__(self, documents: list[Document] | None = None, **kwargs):
         # Create hypothesis generator
         from langchain_core.prompts import ChatPromptTemplate
 
@@ -132,7 +132,7 @@ class SimpleHYDERAGAgent(SequentialAgent):
 
 
 def create_simple_rag_workflow(
-    workflow_type: str = "crag", documents: Optional[list[Document]] = None, **kwargs
+    workflow_type: str = "crag", documents: list[Document] | None = None, **kwargs
 ) -> Agent:
     """Factory function to create simple RAG workflows.
 
@@ -146,10 +146,9 @@ def create_simple_rag_workflow(
     """
     if workflow_type.lower() == "crag":
         return SimpleCorrectiveRAGAgent(documents=documents, **kwargs)
-    elif workflow_type.lower() == "hyde":
+    if workflow_type.lower() == "hyde":
         return SimpleHYDERAGAgent(documents=documents, **kwargs)
-    else:
-        raise ValueError(f"Unknown workflow type: {workflow_type}")
+    raise ValueError(f"Unknown workflow type: {workflow_type}")
 
 
 __all__ = [

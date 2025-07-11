@@ -56,14 +56,14 @@ def test_simple_agent_with_tools():
 
     # Mock schema methods
     mock_engine.get_input_fields.return_value = {
-        "messages": (List[BaseMessage], Field(default_factory=list))
+        "messages": (list[BaseMessage], Field(default_factory=list))
     }
     mock_engine.get_output_fields.return_value = {"response": (str, Field(default=""))}
 
     # Mock output schema class
     class MockSchema(BaseModel):
         response: str = ""
-        messages: List[BaseMessage] = Field(default_factory=list)
+        messages: list[BaseMessage] = Field(default_factory=list)
 
     mock_engine.derive_output_schema.return_value = MockSchema
     mock_engine.output_schema = MockSchema
@@ -84,8 +84,6 @@ def test_simple_agent_with_tools():
         assert "langchain_tool" in tool_routes
         assert len(tool_routes["langchain_tool"]) == 2
 
-        print("✅ SimpleAgent test passed")
-
 
 def test_react_agent_looping():
     """Test ReactAgent creates loops in graph."""
@@ -94,7 +92,7 @@ def test_react_agent_looping():
     mock_engine.tools = [search_tool]
 
     mock_engine.get_input_fields.return_value = {
-        "messages": (List[BaseMessage], Field(default_factory=list))
+        "messages": (list[BaseMessage], Field(default_factory=list))
     }
     mock_engine.get_output_fields.return_value = {"response": (str, Field(default=""))}
 
@@ -102,15 +100,12 @@ def test_react_agent_looping():
         agent = ReactAgent(engine=mock_engine)
 
         # Build graph
-        graph = agent.build_graph()
+        agent.build_graph()
 
         # Check for loops
-        edges = graph.edges
 
         # Should have edges that create loops
         # In ReactAgent, tool_node connects back to agent_node
-        print(f"Graph edges: {edges}")
-        print("✅ ReactAgent test passed")
 
 
 def test_multi_agent_schema_composition():
@@ -119,7 +114,7 @@ def test_multi_agent_schema_composition():
     engine1 = Mock(spec=AugLLMConfig)
     engine1.name = "processor"
     engine1.get_input_fields.return_value = {
-        "messages": (List[BaseMessage], Field(default_factory=list)),
+        "messages": (list[BaseMessage], Field(default_factory=list)),
         "query": (str, Field(default="")),
     }
     engine1.get_output_fields.return_value = {
@@ -144,14 +139,11 @@ def test_multi_agent_schema_composition():
 
         # Create multi-agent
         with patch("haive.agents.multi.base.SequentialAgent.setup_workflow"):
-            multi_agent = SequentialAgent(
-                agents=[agent1, agent2], name="processing_pipeline"
-            )
+            SequentialAgent(agents=[agent1, agent2], name="processing_pipeline")
 
             # The schemas should be compatible
             # agent1 outputs processed_query and intent
             # agent2 expects processed_query and intent
-            print("✅ Multi-agent schema composition test passed")
 
 
 def test_multi_agent_with_model_post_init():
@@ -193,18 +185,15 @@ def test_multi_agent_with_model_post_init():
 
         # Verify model_post_init ran
         assert multi._agent_count == 2
-        assert multi._has_tools == True
-
-        print("✅ model_post_init test passed")
+        assert multi._has_tools
 
 
 def test_conditional_edges_concept():
     """Demonstrate how conditional edges should work in multi-agent."""
-
     # This shows the concept - actual implementation would be in multi-agent
     from haive.core.graph.base_graph import END, START, BaseGraph
 
-    def route_function(state: Dict) -> str:
+    def route_function(state: dict) -> str:
         """Route based on state content."""
         if "urgent" in str(state.get("messages", [])):
             return "fast_path"
@@ -233,8 +222,6 @@ def test_conditional_edges_concept():
     graph.add_edge("fast_path", END)
     graph.add_edge("normal_path", END)
 
-    print("✅ Conditional edges concept test passed")
-
 
 if __name__ == "__main__":
     # Run all tests
@@ -243,4 +230,3 @@ if __name__ == "__main__":
     test_multi_agent_schema_composition()
     test_multi_agent_with_model_post_init()
     test_conditional_edges_concept()
-    print("\n🎉 All integration tests passed!")

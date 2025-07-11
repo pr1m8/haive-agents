@@ -1,4 +1,4 @@
-"""Enhanced HyDE RAG Agent using Structured Output Pattern
+"""Enhanced HyDE RAG Agent using Structured Output Pattern.
 
 This demonstrates the new pattern where any agent can be enhanced with structured
 output by appending a SimpleAgent. This approach is more modular and follows the
@@ -27,8 +27,8 @@ ENHANCED_HYDE_PROMPT = ChatPromptTemplate.from_messages(
             "system",
             """You are an expert at generating hypothetical documents for enhanced retrieval.
 
-Your task is to create a detailed, authoritative document that would ideally contain 
-the complete answer to the given question. This hypothetical document will be used 
+Your task is to create a detailed, authoritative document that would ideally contain
+the complete answer to the given question. This hypothetical document will be used
 to improve document retrieval by bridging the semantic gap between queries and documents.
 
 Key principles:
@@ -40,7 +40,7 @@ Key principles:
 
 The document should be the type that would appear in:
 - Academic papers or textbooks for research questions
-- Technical documentation for technical questions  
+- Technical documentation for technical questions
 - News articles for current events questions
 - How-to guides for procedural questions
 
@@ -76,9 +76,9 @@ class EnhancedHyDERAGAgent(SequentialAgent):
     @classmethod
     def from_documents(
         cls,
-        documents: List[Document],
-        llm_config: Optional[LLMConfig] = None,
-        embedding_model: Optional[str] = None,
+        documents: list[Document],
+        llm_config: LLMConfig | None = None,
+        embedding_model: str | None = None,
         use_enhancement_pattern: bool = True,
         **kwargs
     ):
@@ -105,21 +105,19 @@ class EnhancedHyDERAGAgent(SequentialAgent):
             return cls._create_with_enhancement_pattern(
                 documents, llm_config, embedding_model, **kwargs
             )
-        else:
-            return cls._create_traditional_pattern(
-                documents, llm_config, embedding_model, **kwargs
-            )
+        return cls._create_traditional_pattern(
+            documents, llm_config, embedding_model, **kwargs
+        )
 
     @classmethod
     def _create_with_enhancement_pattern(
         cls,
-        documents: List[Document],
+        documents: list[Document],
         llm_config: LLMConfig,
-        embedding_model: Optional[str] = None,
+        embedding_model: str | None = None,
         **kwargs
     ):
         """Create using the new structured output enhancement pattern."""
-
         # Step 1: Base HyDE generation (focused on content, not structure)
         base_hyde_generator = SimpleAgent(
             engine=AugLLMConfig(
@@ -175,13 +173,12 @@ Consider how well the hypothetical document would serve for semantic retrieval."
     @classmethod
     def _create_traditional_pattern(
         cls,
-        documents: List[Document],
+        documents: list[Document],
         llm_config: LLMConfig,
-        embedding_model: Optional[str] = None,
+        embedding_model: str | None = None,
         **kwargs
     ):
         """Create using traditional pattern for comparison."""
-
         # Traditional: structured output embedded in initial generation
         hyde_generator = SimpleAgent(
             engine=AugLLMConfig(
@@ -220,15 +217,15 @@ class EnhancedHyDERetriever(Agent):
     """Enhanced retriever that handles both enhancement pattern and traditional outputs."""
 
     # Define as Pydantic fields
-    documents: List[Document] = Field(
+    documents: list[Document] = Field(
         default_factory=list, description="Documents for retrieval"
     )
-    embedding_model: Optional[str] = Field(
+    embedding_model: str | None = Field(
         default=None, description="Embedding model to use"
     )
 
     def __init__(
-        self, documents: List[Document], embedding_model: Optional[str] = None, **kwargs
+        self, documents: list[Document], embedding_model: str | None = None, **kwargs
     ):
         super().__init__(documents=documents, embedding_model=embedding_model, **kwargs)
 
@@ -239,9 +236,8 @@ class EnhancedHyDERetriever(Agent):
 
         graph = BaseGraph(name="EnhancedHyDERetriever")
 
-        def adaptive_retrieval(state: Dict[str, Any]) -> Dict[str, Any]:
+        def adaptive_retrieval(state: dict[str, Any]) -> dict[str, Any]:
             """Adaptively retrieve based on available state information."""
-
             # Try to get structured HyDE result first (traditional pattern)
             hyde_result = state.get("hyderesult_result") or state.get("hyde_result")
 
@@ -313,8 +309,8 @@ class EnhancedHyDERetriever(Agent):
 
 # Factory functions for easy creation
 def create_enhanced_hyde_agent(
-    documents: List[Document],
-    llm_config: Optional[LLMConfig] = None,
+    documents: list[Document],
+    llm_config: LLMConfig | None = None,
     use_enhancement_pattern: bool = True,
     **kwargs
 ) -> EnhancedHyDERAGAgent:

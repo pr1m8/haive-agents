@@ -17,7 +17,7 @@ Remember to:
 3. Properly interpret tool outputs
 4. Provide a clear final answer when done
 
-Available tools: 
+Available tools:
 {tool_descriptions}
 
 For each step, output your thought process and chosen action in a structured format:
@@ -35,7 +35,6 @@ Action Input: <your final answer>
 think_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", REACT_SYSTEM_PROMPT),
-        # ("human", "{input}"),
         ("placeholder", "{messages}"),
         ("placeholder", "{steps}"),  # ✅ Corrected: Use "user" instead of "steps"
     ]
@@ -43,7 +42,6 @@ think_prompt = ChatPromptTemplate.from_messages(
 
 think_llm = AugLLMConfig(
     name="think_llm",
-    # llm_config=llm_config,
     prompt_template=think_prompt,
     structured_output_model=Thought,
 )

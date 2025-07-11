@@ -1,4 +1,4 @@
-"""Tests for Hallucination Detection and Grading
+"""Tests for Hallucination Detection and Grading.
 
 Run with: poetry run pytest packages/haive-agents/tests/rag/multi_agent_rag/test_hallucination_grading.py -v
 """

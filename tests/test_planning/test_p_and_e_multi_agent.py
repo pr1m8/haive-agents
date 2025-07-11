@@ -1,5 +1,4 @@
-"""
-Comprehensive Test Suite for Plan and Execute Multi-Agent System.
+"""Comprehensive Test Suite for Plan and Execute Multi-Agent System.
 
 This test suite covers:
 1. Basic Plan and Execute workflow
@@ -400,14 +399,13 @@ class TestPlanExecuteMultiAgent:
 
         # Get routing functions from branches
         executor_branch = None
-        replanner_branch = None
 
         for branch in plan_execute_system.branches:
             source, condition, destinations = branch
             if source == executor_agent:
                 executor_branch = condition
             elif source == replanner_agent:
-                replanner_branch = condition
+                pass
 
         # Should handle no plan gracefully
         route = executor_branch(empty_state)
@@ -535,8 +533,7 @@ class TestPlanExecuteIntegration:
 def create_sequential_plan_execute_multi_agent(
     planner: Agent, executor: Agent, replanner: Agent, **kwargs
 ) -> MultiAgentBase:
-    """
-    Create a simple sequential Plan and Execute system.
+    """Create a simple sequential Plan and Execute system.
 
     Args:
         planner: Planning agent
@@ -559,11 +556,10 @@ def create_custom_plan_execute_multi_agent(
     planner: Agent,
     executor: Agent,
     replanner: Agent,
-    custom_branches: List[tuple],
+    custom_branches: list[tuple],
     **kwargs
 ) -> MultiAgentBase:
-    """
-    Create a Plan and Execute system with custom branches.
+    """Create a Plan and Execute system with custom branches.
 
     Args:
         planner: Planning agent

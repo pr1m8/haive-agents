@@ -1,4 +1,4 @@
-"""Test Basic Sequential RAG Workflow
+"""Test Basic Sequential RAG Workflow.
 
 Tests the clean implementation using SequentialAgent and core fixtures.
 No mocks - real integration testing.
@@ -77,9 +77,6 @@ class TestBasicSequentialRAG:
             if "retrieved_documents" in result:
                 assert isinstance(result["retrieved_documents"], list)
 
-            print(f"✅ RAG workflow completed successfully")
-            print(f"Result keys: {list(result.keys())}")
-
         except Exception as e:
             pytest.fail(f"RAG workflow failed: {e}")
 
@@ -103,7 +100,6 @@ class TestBasicSequentialRAG:
 
             # Workflow should complete without errors
             assert result is not None
-            print(f"✅ Full workflow integration successful")
 
         except Exception as e:
             pytest.fail(f"Workflow integration failed: {e}")

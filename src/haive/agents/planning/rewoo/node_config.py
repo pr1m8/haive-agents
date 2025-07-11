@@ -32,49 +32,49 @@ class ReWOOPlanningInput(BaseModel):
     """Input schema for planning node."""
 
     objective: str = Field(..., description="Main objective to achieve")
-    messages: List[BaseMessage] = Field(default_factory=list)
-    tools: List[Any] = Field(default_factory=list, description="Available tools")
+    messages: list[BaseMessage] = Field(default_factory=list)
+    tools: list[Any] = Field(default_factory=list, description="Available tools")
 
 
 class ReWOOPlanningOutput(BaseModel):
     """Output schema for planning node."""
 
     plan: ReWOOPlan = Field(..., description="Generated ReWOO plan")
-    evidence_map: Dict[str, Evidence] = Field(default_factory=dict)
-    messages: List[BaseMessage] = Field(default_factory=list)
+    evidence_map: dict[str, Evidence] = Field(default_factory=dict)
+    messages: list[BaseMessage] = Field(default_factory=list)
 
 
 class ReWOOEvidenceInput(BaseModel):
     """Input schema for evidence collection node."""
 
     plan: ReWOOPlan = Field(..., description="Current plan")
-    evidence_map: Dict[str, Evidence] = Field(default_factory=dict)
-    messages: List[BaseMessage] = Field(default_factory=list)
-    tools: List[Any] = Field(default_factory=list)
-    tool_routes: Dict[str, str] = Field(default_factory=dict)
+    evidence_map: dict[str, Evidence] = Field(default_factory=dict)
+    messages: list[BaseMessage] = Field(default_factory=list)
+    tools: list[Any] = Field(default_factory=list)
+    tool_routes: dict[str, str] = Field(default_factory=dict)
 
 
 class ReWOOEvidenceOutput(BaseModel):
     """Output schema for evidence collection node."""
 
-    evidence_map: Dict[str, Evidence] = Field(default_factory=dict)
-    messages: List[BaseMessage] = Field(default_factory=list)
-    current_evidence_id: Optional[str] = Field(default=None)
+    evidence_map: dict[str, Evidence] = Field(default_factory=dict)
+    messages: list[BaseMessage] = Field(default_factory=list)
+    current_evidence_id: str | None = Field(default=None)
 
 
 class ReWOOReasoningInput(BaseModel):
     """Input schema for reasoning node."""
 
     objective: str = Field(..., description="Original objective")
-    evidence_map: Dict[str, Evidence] = Field(default_factory=dict)
-    messages: List[BaseMessage] = Field(default_factory=list)
+    evidence_map: dict[str, Evidence] = Field(default_factory=dict)
+    messages: list[BaseMessage] = Field(default_factory=list)
 
 
 class ReWOOReasoningOutput(BaseModel):
     """Output schema for reasoning node."""
 
-    messages: List[BaseMessage] = Field(default_factory=list)
-    final_reasoning: Optional[str] = Field(default=None)
+    messages: list[BaseMessage] = Field(default_factory=list)
+    final_reasoning: str | None = Field(default=None)
 
 
 # Node Configurations
@@ -84,7 +84,7 @@ class ReWOOPlanningNodeConfig(BaseNodeConfig[ReWOOPlanningInput, ReWOOPlanningOu
     node_type: NodeType = Field(default=NodeType.AGENT, description="Node type")
     engine_name: str = Field(default="aug_llm", description="Engine for planning")
 
-    def get_default_input_fields(self) -> List[FieldDefinition]:
+    def get_default_input_fields(self) -> list[FieldDefinition]:
         """Get default input fields."""
         return [
             FieldDefinition(
@@ -96,7 +96,7 @@ class ReWOOPlanningNodeConfig(BaseNodeConfig[ReWOOPlanningInput, ReWOOPlanningOu
             StandardFields.tools(),
         ]
 
-    def get_default_output_fields(self) -> List[FieldDefinition]:
+    def get_default_output_fields(self) -> list[FieldDefinition]:
         """Get default output fields."""
         return [
             FieldDefinition(
@@ -104,22 +104,20 @@ class ReWOOPlanningNodeConfig(BaseNodeConfig[ReWOOPlanningInput, ReWOOPlanningOu
             ),
             FieldDefinition(
                 name="evidence_map",
-                field_type=Dict[str, Evidence],
+                field_type=dict[str, Evidence],
                 default_factory=dict,
                 description="Evidence mapping",
             ),
             StandardFields.messages(use_enhanced=True),
         ]
 
-    def __call__(
-        self, state: StateLike, config: Optional[ConfigLike] = None
-    ) -> Command:
+    def __call__(self, state: StateLike, config: ConfigLike | None = None) -> Command:
         """Execute planning node."""
         logger.info(f"ReWOO Planning Node: {self.name}")
 
         # Extract inputs
         objective = getattr(state, "objective", "")
-        tools = getattr(state, "tools", [])
+        getattr(state, "tools", [])
 
         if not objective:
             return Command(update={"messages": ["No objective provided"]})
@@ -163,7 +161,7 @@ class ReWOOEvidenceNodeConfig(BaseNodeConfig[ReWOOEvidenceInput, ReWOOEvidenceOu
 
     node_type: NodeType = Field(default=NodeType.TOOL, description="Node type")
 
-    def get_default_input_fields(self) -> List[FieldDefinition]:
+    def get_default_input_fields(self) -> list[FieldDefinition]:
         """Get default input fields."""
         return [
             FieldDefinition(
@@ -171,7 +169,7 @@ class ReWOOEvidenceNodeConfig(BaseNodeConfig[ReWOOEvidenceInput, ReWOOEvidenceOu
             ),
             FieldDefinition(
                 name="evidence_map",
-                field_type=Dict[str, Evidence],
+                field_type=dict[str, Evidence],
                 default_factory=dict,
                 description="Evidence mapping",
             ),
@@ -180,12 +178,12 @@ class ReWOOEvidenceNodeConfig(BaseNodeConfig[ReWOOEvidenceInput, ReWOOEvidenceOu
             StandardFields.tool_routes(),
         ]
 
-    def get_default_output_fields(self) -> List[FieldDefinition]:
+    def get_default_output_fields(self) -> list[FieldDefinition]:
         """Get default output fields."""
         return [
             FieldDefinition(
                 name="evidence_map",
-                field_type=Dict[str, Evidence],
+                field_type=dict[str, Evidence],
                 default_factory=dict,
                 description="Updated evidence mapping",
             ),
@@ -198,9 +196,7 @@ class ReWOOEvidenceNodeConfig(BaseNodeConfig[ReWOOEvidenceInput, ReWOOEvidenceOu
             ),
         ]
 
-    def __call__(
-        self, state: StateLike, config: Optional[ConfigLike] = None
-    ) -> Command:
+    def __call__(self, state: StateLike, config: ConfigLike | None = None) -> Command:
         """Execute evidence collection."""
         logger.info(f"ReWOO Evidence Node: {self.name}")
 
@@ -208,7 +204,7 @@ class ReWOOEvidenceNodeConfig(BaseNodeConfig[ReWOOEvidenceInput, ReWOOEvidenceOu
         plan = getattr(state, "plan", None)
         evidence_map = getattr(state, "evidence_map", {})
         messages = getattr(state, "messages", [])
-        tools = getattr(state, "tools", [])
+        getattr(state, "tools", [])
 
         if not plan:
             return Command(update={"messages": ["No plan available"]})
@@ -269,7 +265,7 @@ class ReWOOEvidenceNodeConfig(BaseNodeConfig[ReWOOEvidenceInput, ReWOOEvidenceOu
         evidence_map[evidence.id] = evidence
 
         # Update messages
-        updated_messages = list(messages) + [ai_message]
+        updated_messages = [*list(messages), ai_message]
 
         update = {
             "evidence_map": evidence_map,
@@ -288,7 +284,7 @@ class ReWOOReasoningNodeConfig(
     node_type: NodeType = Field(default=NodeType.AGENT, description="Node type")
     engine_name: str = Field(default="aug_llm", description="Engine for reasoning")
 
-    def get_default_input_fields(self) -> List[FieldDefinition]:
+    def get_default_input_fields(self) -> list[FieldDefinition]:
         """Get default input fields."""
         return [
             FieldDefinition(
@@ -296,14 +292,14 @@ class ReWOOReasoningNodeConfig(
             ),
             FieldDefinition(
                 name="evidence_map",
-                field_type=Dict[str, Evidence],
+                field_type=dict[str, Evidence],
                 default_factory=dict,
                 description="Collected evidence",
             ),
             StandardFields.messages(use_enhanced=True),
         ]
 
-    def get_default_output_fields(self) -> List[FieldDefinition]:
+    def get_default_output_fields(self) -> list[FieldDefinition]:
         """Get default output fields."""
         return [
             StandardFields.messages(use_enhanced=True),
@@ -315,9 +311,7 @@ class ReWOOReasoningNodeConfig(
             ),
         ]
 
-    def __call__(
-        self, state: StateLike, config: Optional[ConfigLike] = None
-    ) -> Command:
+    def __call__(self, state: StateLike, config: ConfigLike | None = None) -> Command:
         """Execute final reasoning."""
         logger.info(f"ReWOO Reasoning Node: {self.name}")
 

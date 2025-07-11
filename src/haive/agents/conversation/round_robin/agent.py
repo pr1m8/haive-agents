@@ -96,7 +96,7 @@ class RoundRobinConversation(BaseConversationAgent):
             )
 
             # Insert at beginning of messages
-            messages = [round_msg] + base_input.get("messages", [])
+            messages = [round_msg, *base_input.get("messages", [])]
             base_input["messages"] = messages
 
         return base_input

@@ -13,7 +13,6 @@ from haive.agents.task_analysis.decomposer.prompts import (
 # Main decomposer engine
 TaskDecomposerEngine = AugLLMConfig(
     name="task_decomposer",
-    # llm_config=AzureLLMConfig(model="gpt-4o", temperature=0.3, max_tokens=3000),
     llm_config=AzureLLMConfig(
         model="gpt-4o",
     ),

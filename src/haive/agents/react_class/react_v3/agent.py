@@ -45,7 +45,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
         # Auto-derive schema if not provided
         if self.config.state_schema is None:
-            components = [self.config.engine] + self.config.tools
+            components = [self.config.engine, *self.config.tools]
             schema_composer = SchemaComposer.from_components(components)
             self.config.state_schema = schema_composer.build()
             logger.info(
@@ -55,7 +55,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Create dynamic graph with state schema
         gb = DynamicGraph(
             name=self.config.name,
-            components=[self.config.engine] + self.config.tools,
+            components=[self.config.engine, *self.config.tools],
             state_schema=self.config.state_schema,
             visualize=self.config.visualize,
         )
@@ -146,7 +146,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     )
                 except Exception as e:
                     error_msg = f"Error executing tool '{tool_name}': {e!s}"
-                    logger.error(error_msg)
+                    logger.exception(error_msg)
                     messages.append(
                         ToolMessage(content=error_msg, tool_call_id=tool_id)
                     )

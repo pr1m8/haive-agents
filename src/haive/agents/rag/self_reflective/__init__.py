@@ -1,4 +1,4 @@
-"""Self-Reflective Agentic RAG
+"""Self-Reflective Agentic RAG.
 
 RAG with self-reflection, critique, and iterative improvement capabilities.
 Implements reflection loops for answer quality enhancement.

@@ -1,4 +1,4 @@
-"""Query Planning Agentic RAG
+"""Query Planning Agentic RAG.
 
 Intelligent query planning with structured decomposition and execution strategies.
 Provides autonomous query analysis, planning, and multi-stage execution.

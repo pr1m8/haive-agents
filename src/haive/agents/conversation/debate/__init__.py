@@ -1,4 +1,4 @@
-"""Debate Conversation - Structured Argumentative Multi-Agent Dialogue.
+r"""Debate Conversation - Structured Argumentative Multi-Agent Dialogue.
 
 Structured debate agent with formal positions, arguments, rebuttals, and judging
 systems. The debate conversation implements a formal debate structure where participants
@@ -176,7 +176,7 @@ DebateFormat: TypeAlias = Literal[
 DebatePhase: TypeAlias = Literal[
     "opening", "arguments", "cross_exam", "rebuttals", "closing", "judging"
 ]
-DebateResult: TypeAlias = Dict[str, Any]  # Debate outcome and statistics
+DebateResult: TypeAlias = dict[str, Any]  # Debate outcome and statistics
 
 
 # Configuration types for debates
@@ -189,7 +189,7 @@ class DebateConfiguration(TypedDict, total=False):
     time_limit_per_argument: NotRequired[float]
     enable_cross_examination: NotRequired[bool]
     enable_judge_scoring: NotRequired[bool]
-    scoring_criteria: NotRequired[List[str]]
+    scoring_criteria: NotRequired[list[str]]
 
 
 class DebatePositionConfig(TypedDict, total=False):
@@ -203,26 +203,26 @@ class DebatePositionConfig(TypedDict, total=False):
 
 # Define public API
 __all__ = [
-    # Version information
-    "__version__",
-    "__author__",
-    "__license__",
-    # Core classes
-    "DebateConversation",
-    "DebateState",
-    # Type aliases
-    "DebateParticipant",
-    "DebatePosition",
-    "DebateFormat",
-    "DebatePhase",
-    "DebateResult",
     # Configuration types
     "DebateConfiguration",
+    # Core classes
+    "DebateConversation",
+    "DebateFormat",
+    # Type aliases
+    "DebateParticipant",
+    "DebatePhase",
+    "DebatePosition",
     "DebatePositionConfig",
+    "DebateResult",
+    "DebateState",
+    "__author__",
+    "__license__",
+    # Version information
+    "__version__",
     # Utility functions
     "create_debate",
-    "create_traditional_debate",
     "create_oxford_debate",
+    "create_traditional_debate",
     "validate_debate_participants",
 ]
 
@@ -230,13 +230,13 @@ __all__ = [
 # Utility functions
 def create_debate(
     topic: str,
-    pro_agents: List[DebateParticipant],
-    con_agents: List[DebateParticipant],
-    judge_agent: Optional[DebateParticipant] = None,
+    pro_agents: list[DebateParticipant],
+    con_agents: list[DebateParticipant],
+    judge_agent: DebateParticipant | None = None,
     debate_format: DebateFormat = "traditional",
-    config: Optional[DebateConfiguration] = None,
+    config: DebateConfiguration | None = None,
 ) -> DebateConversation:
-    """Create a structured debate conversation.
+    r"""Create a structured debate conversation.
 
     Args:
         topic: Debate topic or resolution
@@ -289,10 +289,10 @@ def create_traditional_debate(
     topic: str,
     pro_agent: DebateParticipant,
     con_agent: DebateParticipant,
-    judge_agent: Optional[DebateParticipant] = None,
+    judge_agent: DebateParticipant | None = None,
     rounds: int = 3,
 ) -> DebateConversation:
-    """Create a traditional two-participant debate.
+    r"""Create a traditional two-participant debate.
 
     Args:
         topic: Debate topic or resolution
@@ -327,11 +327,11 @@ def create_traditional_debate(
 
 def create_oxford_debate(
     topic: str,
-    pro_team: List[DebateParticipant],
-    con_team: List[DebateParticipant],
-    moderator: Optional[DebateParticipant] = None,
+    pro_team: list[DebateParticipant],
+    con_team: list[DebateParticipant],
+    moderator: DebateParticipant | None = None,
 ) -> DebateConversation:
-    """Create an Oxford-style debate with teams.
+    r"""Create an Oxford-style debate with teams.
 
     Args:
         topic: Debate resolution
@@ -363,9 +363,9 @@ def create_oxford_debate(
 
 
 def validate_debate_participants(
-    pro_agents: List[DebateParticipant],
-    con_agents: List[DebateParticipant],
-    judge_agent: Optional[DebateParticipant] = None,
+    pro_agents: list[DebateParticipant],
+    con_agents: list[DebateParticipant],
+    judge_agent: DebateParticipant | None = None,
 ) -> bool:
     """Validate debate participants for proper configuration.
 
@@ -409,7 +409,7 @@ def validate_debate_participants(
     return True
 
 
-def __dir__() -> List[str]:
+def __dir__() -> list[str]:
     """Override dir() to show only public API."""
     return __all__
 

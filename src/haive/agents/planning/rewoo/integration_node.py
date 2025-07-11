@@ -14,7 +14,7 @@ from haive.agents.planning.rewoo.models import EvidenceStatus, ToolCall
 from haive.agents.planning.rewoo.state import ReWOOState
 
 
-async def rewoo_to_tool_calls_node(state: ReWOOState) -> Dict[str, Any]:
+async def rewoo_to_tool_calls_node(state: ReWOOState) -> dict[str, Any]:
     """Convert ReWOO plan into AIMessage with tool calls.
 
     This is the key integration point:
@@ -23,7 +23,6 @@ async def rewoo_to_tool_calls_node(state: ReWOOState) -> Dict[str, Any]:
     3. Standard tool node executes the calls
     4. Evidence collection node updates ReWOO state
     """
-
     # Get ready evidence
     ready_evidence = state.ready_evidence
 
@@ -64,7 +63,7 @@ async def rewoo_to_tool_calls_node(state: ReWOOState) -> Dict[str, Any]:
 
     # Add to messages (this will be processed by tool node)
     current_messages = state.messages or []
-    updated_messages = current_messages + [ai_message]
+    updated_messages = [*current_messages, ai_message]
 
     return {
         "messages": updated_messages,
@@ -72,7 +71,7 @@ async def rewoo_to_tool_calls_node(state: ReWOOState) -> Dict[str, Any]:
     }
 
 
-async def tool_results_to_evidence_node(state: ReWOOState) -> Dict[str, Any]:
+async def tool_results_to_evidence_node(state: ReWOOState) -> dict[str, Any]:
     """Process tool results back into evidence.
 
     This runs after the tool node executes:
@@ -80,7 +79,6 @@ async def tool_results_to_evidence_node(state: ReWOOState) -> Dict[str, Any]:
     2. This node extracts the result
     3. Updates the evidence in ReWOO state
     """
-
     # Get the last few messages
     messages = state.messages or []
     if len(messages) < 2:
@@ -128,7 +126,7 @@ async def tool_results_to_evidence_node(state: ReWOOState) -> Dict[str, Any]:
         state.update_evidence(
             current_evidence_id, status=EvidenceStatus.FAILED, error=str(e)
         )
-        return {"messages": [f"Failed to update evidence: {str(e)}"]}
+        return {"messages": [f"Failed to update evidence: {e!s}"]}
 
 
 def create_rewoo_tool_node(
@@ -199,7 +197,7 @@ def build_rewoo_integration_graph():
 
 
 # Placeholder nodes (would be actual implementations)
-async def planning_node(state: ReWOOState) -> Dict[str, Any]:
+async def planning_node(state: ReWOOState) -> dict[str, Any]:
     """Create ReWOO plan (placeholder)."""
     return {"messages": ["Plan created"]}
 
@@ -209,7 +207,7 @@ async def check_evidence_complete_node(state: ReWOOState) -> str:
     return "reason" if state.is_evidence_complete else "prepare_tools"
 
 
-async def final_reasoning_node(state: ReWOOState) -> Dict[str, Any]:
+async def final_reasoning_node(state: ReWOOState) -> dict[str, Any]:
     """Final reasoning (placeholder)."""
     context = state.get_evidence_context()
     return {"messages": [f"Final answer based on: {context}"]}

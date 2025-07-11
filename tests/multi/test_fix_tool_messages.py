@@ -80,14 +80,10 @@ def apply_state_serialization_fix():
     # Wrap the model_dump methods
     SimpleAgentState.model_dump = fixed_state_model_dump(SimpleAgentState.model_dump)
 
-    print("✅ Applied serialization fix to SimpleAgentState (ReactAgent inherits this)")
 
 
 # Test the fix
 if __name__ == "__main__":
-    print("=" * 80)
-    print("TEST: Tool Message Serialization Fix")
-    print("=" * 80)
 
     # Apply the fix
     apply_state_serialization_fix()
@@ -102,7 +98,7 @@ if __name__ == "__main__":
 
     @tool
     def add(a: int, b: int) -> int:
-        """Returns the sum of two numbers"""
+        """Returns the sum of two numbers."""
         return a + b
 
     class Plan(BaseModel):
@@ -119,7 +115,6 @@ if __name__ == "__main__":
 
     seq_agent = SequentialAgent(agents=[react_agent, simple_agent])
 
-    print("\nCompiling and running with fix...")
     try:
         seq_agent.compile()
         result = seq_agent.run(
@@ -132,15 +127,10 @@ if __name__ == "__main__":
             }
         )
 
-        print("✅ Success! The multi-agent system works with tool messages!")
 
         # Check final result
-        if hasattr(result, "model_dump"):
-            result_dict = result.model_dump()
-        else:
-            result_dict = result
+        result_dict = result.model_dump() if hasattr(result, "model_dump") else result
 
-        print(f"\nFinal message count: {len(result_dict.get('messages', []))}")
 
         # Check if we have the expected messages
         messages = result_dict.get("messages", [])
@@ -153,14 +143,11 @@ if __name__ == "__main__":
             if isinstance(msg, dict)
         )
 
-        print(f"Has tool message: {has_tool_message}")
-        print(f"Has plan in output: {has_plan}")
 
         if has_tool_message and has_plan:
-            print("\n✅ All expected outputs present!")
+            pass")
 
     except Exception as e:
-        print(f"❌ Error: {e}")
         import traceback
 
         traceback.print_exc()

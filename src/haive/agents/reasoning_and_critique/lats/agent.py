@@ -319,7 +319,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
                         )
                         tool_responses.append((i, response))
                     except Exception as e:
-                        logger.error(f"Error executing tool: {e}")
+                        logger.exception(f"Error executing tool: {e}")
                         # Create an error message
                         tool_responses.append(
                             (
@@ -401,7 +401,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
                 "best_node": best_node,
                 "output": best_messages[-1].content if best_messages else "",
                 "messages": (
-                    state.get("messages", []) + [best_messages[-1]]
+                    [*state.get("messages", []), best_messages[-1]]
                     if best_messages
                     else []
                 ),
@@ -453,10 +453,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
         def check_node(node):
             if node.is_solved:
                 return True
-            for child in node.children:
-                if check_node(child):
-                    return True
-            return False
+            return any(check_node(child) for child in node.children)
 
         return check_node(root)
 

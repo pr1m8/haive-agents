@@ -1,4 +1,4 @@
-"""Corrective RAG (CRAG) Agent
+"""Corrective RAG (CRAG) Agent.
 
 Self-correcting retrieval with quality assessment.
 Implements architecture from rag-architectures-flows.md:
@@ -59,8 +59,8 @@ class CorrectiveRAGAgent(ConditionalAgent):
     @classmethod
     def from_documents(
         cls,
-        documents: List[Document],
-        llm_config: Optional[LLMConfig] = None,
+        documents: list[Document],
+        llm_config: LLMConfig | None = None,
         relevance_threshold: float = 0.7,
         **kwargs
     ):

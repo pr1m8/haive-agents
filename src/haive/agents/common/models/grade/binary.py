@@ -112,7 +112,7 @@ class BinaryGrade(Grade):
                 f"Cannot convert string '{v}' to binary grade. Use 'pass'/'fail', 'yes'/'no', etc."
             )
 
-        if isinstance(v, (int, float)):
+        if isinstance(v, int | float):
             # Convert numbers: 0 = False, non-zero = True
             return bool(v)
 

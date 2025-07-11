@@ -92,7 +92,7 @@ Example plan format:
 Thought: The previous plan found GDP and population data but failed to calculate the ratio correctly.
 
 {next_idx}. math(problem="properly format GDP from ${{1}} to a number")
-{next_idx_plus_one}. math(problem="properly format population from ${{2}} to a number") 
+{next_idx_plus_one}. math(problem="properly format population from ${{2}} to a number")
 {next_idx_plus_two}. math(problem="divide ${{3}} by ${{4}}")
 {next_idx_plus_three}. join()
 <END_OF_PLAN>
@@ -229,7 +229,7 @@ class LLMCompilerAgentConfig(AgentArchitectureConfig):
     )
 
     @model_validator(mode="after")
-    def validate_configs(cls, values):
+    def validate_configs(self, values):
         """Ensure that the configurations are valid."""
         # Ensure planner config has the correct prompt template
         if not values.planner_config.prompt_template:

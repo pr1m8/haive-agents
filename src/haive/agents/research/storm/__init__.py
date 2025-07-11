@@ -28,26 +28,26 @@ __all__ = [
 # Placeholder classes that will be implemented later
 __all__.extend(
     [
-        # Main STORM components (to be implemented)
-        "STORMAgent",
-        "STORMAgentState",
-        # State models (to be implemented)
-        "Outline",
-        "Section",
-        "Subsection",
-        "RelatedSubjects",
-        "Perspectives",
         "Editor",
         "Interview",
-        "WikiSection",
-        # Research components (to be implemented)
-        "ResearchAgent",
-        "ResearchAgentConfig",
-        "ResearchState",
         # Interview components (to be implemented)
         "InterviewAgent",
         "InterviewAgentConfig",
         "InterviewState",
+        # State models (to be implemented)
+        "Outline",
+        "Perspectives",
+        "RelatedSubjects",
+        # Research components (to be implemented)
+        "ResearchAgent",
+        "ResearchAgentConfig",
+        "ResearchState",
+        # Main STORM components (to be implemented)
+        "STORMAgent",
+        "STORMAgentState",
+        "Section",
+        "Subsection",
+        "WikiSection",
         # Writing components (to be implemented)
         "WritingAgent",
         "WritingAgentConfig",

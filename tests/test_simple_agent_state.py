@@ -37,7 +37,7 @@ try:
     logger.info(f"State dict: {state_dict}")
 
 except ImportError as e:
-    logger.error(f"Failed to import SimpleAgentState: {e}")
+    logger.exception(f"Failed to import SimpleAgentState: {e}")
 
     # Let's see what SchemaComposer can create
     try:
@@ -71,4 +71,4 @@ except ImportError as e:
         logger.info(f"State dict: {state_dict}")
 
     except ImportError as e:
-        logger.error(f"Failed to import SchemaComposer: {e}")
+        logger.exception(f"Failed to import SchemaComposer: {e}")

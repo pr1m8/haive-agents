@@ -3,16 +3,14 @@
 This demonstrates the integration without reimplementing the existing agent.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.graph import END, START, BaseGraph
 from haive.core.tools import tool
 
 from haive.agents.planning.rewoo.models import (
-    Evidence,
     EvidenceStatus,
     ReWOOPlan,
-    ToolCall,
 )
 from haive.agents.planning.rewoo.state import ReWOOState
 
@@ -31,7 +29,7 @@ def analyze_tool(data: str) -> str:
 
 
 # Example nodes showing the integration
-async def planning_node(state: ReWOOState) -> Dict[str, Any]:
+async def planning_node(state: ReWOOState) -> dict[str, Any]:
     """Create ReWOO plan with evidence dependencies.
 
     This shows how models work with state.
@@ -64,7 +62,7 @@ async def planning_node(state: ReWOOState) -> Dict[str, Any]:
     return {"messages": [f"Created plan with {len(plan.steps)} steps"]}
 
 
-async def evidence_collection_node(state: ReWOOState) -> Dict[str, Any]:
+async def evidence_collection_node(state: ReWOOState) -> dict[str, Any]:
     """Collect evidence using tools from state.
 
     This shows how state provides tools and tracks evidence.
@@ -120,11 +118,10 @@ async def routing_node(state: ReWOOState) -> str:
     """Route based on evidence completion."""
     if state.is_evidence_complete:
         return "finalize"
-    else:
-        return "collect"
+    return "collect"
 
 
-async def finalize_node(state: ReWOOState) -> Dict[str, Any]:
+async def finalize_node(state: ReWOOState) -> dict[str, Any]:
     """Final node using all evidence."""
     # Get evidence context
     context = state.get_evidence_context()
@@ -173,12 +170,7 @@ async def run_example():
     graph = build_example_graph()
 
     # Execute
-    result = await graph.ainvoke(state)
-
-    print("Final state:")
-    print(f"- Evidence collected: {state.evidence_summary}")
-    print(f"- Completion: {state.evidence_completion_rate}%")
-    print(f"- Messages: {result.get('messages', [])}")
+    await graph.ainvoke(state)
 
 
 # Key integration points:

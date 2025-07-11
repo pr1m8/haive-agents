@@ -69,9 +69,9 @@ def example_with_custom_state_schema():
     prompt = PromptTemplate.from_template(
         """
         Context information: {context}
-        
+
         User query: {input}
-        
+
         Please provide a helpful response based on the context and query.
         """
     )
@@ -101,7 +101,7 @@ def example_with_custom_state_schema():
 
     # Define our processor directly as a factory function that will be called
     async def custom_process(state, inputs):
-        """Custom process function that ensures the answer is stored"""
+        """Custom process function that ensures the answer is stored."""
         # Call the LLM directly
         result = await aug_llm.ainvoke(inputs)
         console.print(f"[bold blue]LLM Result:[/bold blue] {result}")

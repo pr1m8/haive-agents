@@ -1,5 +1,4 @@
-"""
-Test the Plan and Execute Agent implementation.
+"""Test the Plan and Execute Agent implementation.
 
 This example demonstrates how to use the PlanAndExecuteAgent with proper
 Pydantic field configuration and MultiAgentBase inheritance.
@@ -17,9 +16,7 @@ from haive.agents.planning.plan_and_execute import PlanAndExecuteAgent
 
 async def main():
     """Run the Plan and Execute agent example."""
-
     # Create LLM engine
-    print("Creating LLM engine...")
     base_engine = LLMEngine(
         model="gpt-4",
         api_key=os.getenv("OPENAI_API_KEY"),
@@ -31,7 +28,6 @@ async def main():
     )
 
     # Create the Plan and Execute agent
-    print("\nCreating Plan and Execute agent...")
     agent = PlanAndExecuteAgent(
         engine=aug_engine,
         name="research_assistant",
@@ -47,9 +43,6 @@ async def main():
     ]
 
     for query in test_queries[:1]:  # Run first query for demo
-        print(f"\n{'='*60}")
-        print(f"Query: {query}")
-        print(f"{'='*60}")
 
         start_time = datetime.now()
 
@@ -58,15 +51,9 @@ async def main():
             result = await agent.arun(query)
 
             # Display results
-            print(f"\n{'='*60}")
-            print("FINAL RESULT:")
-            print(f"{'='*60}")
-            print(result)
 
             # Show execution time
             elapsed = (datetime.now() - start_time).total_seconds()
-            print(f"\n{'='*60}")
-            print(f"Execution time: {elapsed:.2f} seconds")
 
             # Access the state to show plan details
             if hasattr(agent, "_state") and agent._state:
@@ -74,29 +61,15 @@ async def main():
 
                 # Show plan details
                 if hasattr(state, "plan") and state.plan:
-                    print(f"\n{'='*60}")
-                    print("PLAN EXECUTION SUMMARY:")
-                    print(f"{'='*60}")
-                    print(f"Total steps: {state.plan.total_steps}")
-                    print(f"Completed: {len(state.plan.completed_steps)}")
-                    print(f"Failed: {len(state.plan.failed_steps)}")
-                    print(f"Progress: {state.plan.progress_percentage:.1f}%")
 
                     if state.plan.steps:
-                        print("\nSteps:")
                         for step in state.plan.steps:
                             status_icon = "✓" if step.status == "completed" else "○"
-                            print(
-                                f"  {status_icon} Step {step.step_id}: {step.description}"
-                            )
 
                 # Show replanning history
                 if hasattr(state, "replan_count") and state.replan_count > 0:
-                    print(f"\n{'='*60}")
-                    print(f"Replanning occurred {state.replan_count} time(s)")
 
         except Exception as e:
-            print(f"\nError: {e}")
             import traceback
 
             traceback.print_exc()
@@ -104,7 +77,6 @@ async def main():
 
 async def test_with_custom_prompts():
     """Test with custom prompts for agents."""
-
     # Create engine
     base_engine = LLMEngine(
         model="gpt-4",
@@ -120,7 +92,7 @@ async def test_with_custom_prompts():
         engine=aug_engine,
         name="custom_researcher",
         planner_prompt="""You are a strategic planner specializing in research tasks.
-        
+
 Create a detailed research plan for: {objective}
 
 Focus on:
@@ -156,8 +128,6 @@ Decide whether to:
         "Include performance considerations and use cases."
     )
 
-    print("Research Result:")
-    print(result)
 
 
 if __name__ == "__main__":
@@ -165,4 +135,3 @@ if __name__ == "__main__":
     asyncio.run(main())
 
     # Uncomment to test with custom prompts
-    # asyncio.run(test_with_custom_prompts())

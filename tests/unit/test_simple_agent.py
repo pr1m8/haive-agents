@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 def debug_print_schema(schema):
-    """Provide a comprehensive debug print of a schema"""
+    """Provide a comprehensive debug print of a schema."""
     logger.debug("Schema Details:")
     logger.debug(f"Schema Name: {schema.__name__}")
     logger.debug("Schema Fields:")
@@ -40,7 +40,7 @@ def debug_print_schema(schema):
 
 
 def inspect_module_members(module):
-    """Inspect module members and print relevant details"""
+    """Inspect module members and print relevant details."""
     logger.debug(f"Inspecting module: {module.__name__}")
     for name, obj in inspect.getmembers(module):
         if inspect.isclass(obj) and issubclass(obj, BaseModel):
@@ -49,7 +49,7 @@ def inspect_module_members(module):
 
 
 def test_simple_agent_schema_validation():
-    """Test that SimpleAgent correctly derives schema from AugLLMConfig with structured output model"""
+    """Test that SimpleAgent correctly derives schema from AugLLMConfig with structured output model."""
 
     # Define a custom structured model for demonstration
     class PersonInfo(BaseModel):
@@ -148,7 +148,7 @@ def test_simple_agent_schema_validation():
 
 
 def test_agent_with_output_parsing():
-    """Test that SimpleAgent correctly derives input fields from prompt template"""
+    """Test that SimpleAgent correctly derives input fields from prompt template."""
     # Create a simple output parser
     output_parser = StrOutputParser()
 

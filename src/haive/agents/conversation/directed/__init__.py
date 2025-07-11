@@ -1,4 +1,4 @@
-"""Directed Conversation - Moderator-Controlled Multi-Agent Dialogue.
+r"""Directed Conversation - Moderator-Controlled Multi-Agent Dialogue.
 
 Conversations with explicit flow control directed by a moderator agent. The directed
 conversation implements a flexible conversation pattern where a moderator agent
@@ -178,7 +178,7 @@ ConversationFormat: TypeAlias = Literal[
 SelectionStrategy: TypeAlias = Literal[
     "content_based", "expertise_based", "round_robin_fallback", "random", "custom"
 ]
-DirectedResult: TypeAlias = Dict[str, Any]  # Conversation outcome and flow data
+DirectedResult: TypeAlias = dict[str, Any]  # Conversation outcome and flow data
 
 
 # Configuration types for directed conversations
@@ -199,28 +199,28 @@ class ModeratorConfig(TypedDict, total=False):
 
     selection_reasoning: NotRequired[bool]
     context_window_size: NotRequired[int]
-    expertise_mapping: NotRequired[Dict[str, List[str]]]
-    flow_goals: NotRequired[List[str]]
+    expertise_mapping: NotRequired[dict[str, list[str]]]
+    flow_goals: NotRequired[list[str]]
 
 
 # Define public API
 __all__ = [
-    # Version information
-    "__version__",
-    "__author__",
-    "__license__",
-    # Core classes
-    "DirectedConversation",
-    "DirectedState",
-    # Type aliases
-    "DirectedParticipant",
-    "ModeratorAgent",
     "ConversationFormat",
-    "SelectionStrategy",
-    "DirectedResult",
     # Configuration types
     "DirectedConfiguration",
+    # Core classes
+    "DirectedConversation",
+    # Type aliases
+    "DirectedParticipant",
+    "DirectedResult",
+    "DirectedState",
+    "ModeratorAgent",
     "ModeratorConfig",
+    "SelectionStrategy",
+    "__author__",
+    "__license__",
+    # Version information
+    "__version__",
     # Utility functions
     "create_directed_conversation",
     "create_interview",
@@ -232,12 +232,12 @@ __all__ = [
 # Utility functions
 def create_directed_conversation(
     moderator: ModeratorAgent,
-    participants: List[DirectedParticipant],
+    participants: list[DirectedParticipant],
     topic: str,
     conversation_format: ConversationFormat = "panel",
-    config: Optional[DirectedConfiguration] = None,
+    config: DirectedConfiguration | None = None,
 ) -> DirectedConversation:
-    """Create a directed conversation with moderator control.
+    r"""Create a directed conversation with moderator control.
 
     Args:
         moderator: Moderator agent controlling conversation flow
@@ -286,12 +286,12 @@ def create_directed_conversation(
 
 def create_interview(
     interviewer: ModeratorAgent,
-    interviewees: List[DirectedParticipant],
+    interviewees: list[DirectedParticipant],
     topic: str,
     max_rounds: int = 10,
-    config: Optional[DirectedConfiguration] = None,
+    config: DirectedConfiguration | None = None,
 ) -> DirectedConversation:
-    """Create an interview-style directed conversation.
+    r"""Create an interview-style directed conversation.
 
     Args:
         interviewer: Interviewer agent (acts as moderator)
@@ -339,11 +339,11 @@ def create_interview(
 
 def create_panel_discussion(
     moderator: ModeratorAgent,
-    panelists: List[DirectedParticipant],
+    panelists: list[DirectedParticipant],
     topic: str,
-    expertise_areas: Optional[Dict[str, List[str]]] = None,
+    expertise_areas: dict[str, list[str]] | None = None,
 ) -> DirectedConversation:
-    """Create a panel discussion with expert moderation.
+    r"""Create a panel discussion with expert moderation.
 
     Args:
         moderator: Panel moderator agent
@@ -375,10 +375,6 @@ def create_panel_discussion(
     }
 
     if expertise_areas:
-        moderator_config: ModeratorConfig = {
-            "expertise_mapping": expertise_areas,
-            "selection_reasoning": True,
-        }
         config["moderator_instructions"] = f"Use expertise mapping: {expertise_areas}"
 
     return DirectedConversation(
@@ -391,7 +387,7 @@ def create_panel_discussion(
 
 
 def validate_moderator_setup(
-    moderator: ModeratorAgent, participants: List[DirectedParticipant]
+    moderator: ModeratorAgent, participants: list[DirectedParticipant]
 ) -> bool:
     """Validate moderator and participant setup for directed conversation.
 
@@ -424,7 +420,7 @@ def validate_moderator_setup(
             raise ValueError(f"Participant {i} missing required 'arun' method")
 
     # Check for unique names
-    all_agents = [moderator] + participants
+    all_agents = [moderator, *participants]
     names = [getattr(agent, "name", f"agent_{i}") for i, agent in enumerate(all_agents)]
     if len(names) != len(set(names)):
         duplicates = [name for name in names if names.count(name) > 1]
@@ -433,7 +429,7 @@ def validate_moderator_setup(
     return True
 
 
-def __dir__() -> List[str]:
+def __dir__() -> list[str]:
     """Override dir() to show only public API."""
     return __all__
 

@@ -1,5 +1,5 @@
 """Configuration file for pytest to properly handle imports and logging.
-Save as tests/conftest.py
+Save as tests/conftest.py.
 """
 
 import logging

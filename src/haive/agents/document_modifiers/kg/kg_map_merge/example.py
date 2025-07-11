@@ -21,7 +21,6 @@ if __name__ == "__main__":
         ]
 
         # Create knowledge graph
-        print("Creating knowledge graph...")
         graph = await create_knowledge_graph(
             documents=documents,
             allowed_nodes=["Person", "Country", "City", "Award", "Element", "Field"],
@@ -39,23 +38,15 @@ if __name__ == "__main__":
 
         # Print the result
         if graph:
-            print(f"\nNodes: {len(graph.nodes)}")
             for node in graph.nodes:
-                properties = ", ".join(
-                    f"{k}={v}" for k, v in (node.properties or {}).items()
-                )
-                print(f"  - {node.id} ({node.type}) {properties}")
+                ", ".join(f"{k}={v}" for k, v in (node.properties or {}).items())
 
-            print(f"\nRelationships: {len(graph.relationships)}")
             for rel in graph.relationships:
-                properties = ", ".join(
-                    f"{k}={v}" for k, v in (rel.properties or {}).items()
-                )
-                print(f"  - {rel.source.id} -{rel.type}-> {rel.target.id} {properties}")
+                ", ".join(f"{k}={v}" for k, v in (rel.properties or {}).items())
 
             # Visualize the graph
             await visualize_graph(graph, "knowledge_graph.png")
         else:
-            print("No graph was generated.")
+            pass
 
     asyncio.run(main())

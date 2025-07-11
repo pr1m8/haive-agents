@@ -1,4 +1,4 @@
-"""Multi-Agent RAG System Components
+"""Multi-Agent RAG System Components.
 
 This module provides specialized RAG agents that can be composed into complex workflows
 using the multi-agent framework. Each agent focuses on a specific aspect of the RAG process.
@@ -33,7 +33,7 @@ RAG_ANSWER_BASE_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
         (
             "system",
             """
-You are part of a RAG workflow where your job is to answer whether the documents 
+You are part of a RAG workflow where your job is to answer whether the documents
 retrieved answers the original query.
 """,
         ),
@@ -166,7 +166,9 @@ class SimpleRAGAgent(SimpleAgent):
 
         return cls(engine=engine_config, documents=documents, **kwargs)
 
-    def retrieve_documents(self, query: str, top_k: int = None) -> list[Document]:
+    def retrieve_documents(
+        self, query: str, top_k: int | None = None
+    ) -> list[Document]:
         """Simple document retrieval based on text matching."""
         top_k = top_k or self.max_documents
 

@@ -1,4 +1,4 @@
-"""Corrective RAG Module
+"""Corrective RAG Module.
 
 Self-correcting retrieval with quality assessment.
 """

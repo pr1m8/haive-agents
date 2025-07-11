@@ -193,18 +193,17 @@ class TestSummarizerAgent:
         with patch(
             "haive.agents.document_modifiers.summarizer.map_branch.agent.split_list_of_docs",
             return_value=[docs],
+        ), patch(
+            "haive.agents.document_modifiers.summarizer.map_branch.agent.acollapse_docs",
+            return_value=Document(page_content="Collapsed summary"),
         ):
-            with patch(
-                "haive.agents.document_modifiers.summarizer.map_branch.agent.acollapse_docs",
-                return_value=Document(page_content="Collapsed summary"),
-            ) as mock_collapse:
-                result = await summarizer_agent.collapse_summaries(state)
+            result = await summarizer_agent.collapse_summaries(state)
 
-                assert len(result.update["collapsed_summaries"]) == 1
-                assert (
-                    result.update["collapsed_summaries"][0].page_content
-                    == "Collapsed summary"
-                )
+            assert len(result.update["collapsed_summaries"]) == 1
+            assert (
+                result.update["collapsed_summaries"][0].page_content
+                == "Collapsed summary"
+            )
 
     async def test_generate_final_summary_success(
         self, summarizer_agent: SummarizerAgent

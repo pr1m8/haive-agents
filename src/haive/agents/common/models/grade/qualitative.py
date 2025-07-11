@@ -245,7 +245,6 @@ class QualitativeGrade(Grade):
             True if the quality level meets or exceeds the threshold
         """
         if threshold is None:
-            # Default: "fair" and above is passing
             passing_levels = {
                 QualityLevel.EXCEPTIONAL,
                 QualityLevel.EXCELLENT,

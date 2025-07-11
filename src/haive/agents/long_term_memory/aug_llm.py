@@ -60,12 +60,8 @@ from agents.long_term_memory.tools import (
 lt_mem_agent_aug_llm = AugLLMConfig(
     prompt_template=prompt,
     tools=[save_recall_memory, search_recall_memories],
-    # temperature=0.0,
-    # max_tokens=1000,
 )
 lt_mem_agent_aug_llm = AugLLMConfig(
     prompt_template=prompt,
     tools=[save_structured_recall_memory, search_recall_memories],
-    # temperature=0.0,
-    # max_tokens=1000,
 )

@@ -21,13 +21,10 @@ reflection_output_parser = PydanticToolsParser(tools=[Reflection])
 reflection_llm_config = AugLLMConfig(
     name="reflection_chain",
     prompt_template=REFLECTION_PROMPT_TEMPLATE,
-    # tools=[Reflection],
-    # bind_tools_kwargs={"tool_choice": "Reflection"},
     # output_parser=reflection_output_parser)
     structured_output_model=Reflection,
 )
 
-# reflection_llm_chain = compose_runnable(reflection_llm_config)
 
 prompt_template = ChatPromptTemplate.from_messages(
     [

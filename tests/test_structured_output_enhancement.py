@@ -1,4 +1,4 @@
-"""Test Structured Output Enhancement Pattern
+"""Test Structured Output Enhancement Pattern.
 
 Tests the new modular approach where any agent can be enhanced with structured
 output by appending a SimpleAgent with appropriate Pydantic models.
@@ -28,7 +28,7 @@ class TestStructuredOutputEnhancer:
     """Test the structured output enhancement utility."""
 
     @pytest.fixture
-    def sample_documents(self) -> List[Document]:
+    def sample_documents(self) -> list[Document]:
         """Create sample documents for testing."""
         return [
             Document(
@@ -154,7 +154,7 @@ class TestEnhancedHyDEAgent:
     """Test the Enhanced HyDE RAG Agent implementation."""
 
     @pytest.fixture
-    def sample_documents(self) -> List[Document]:
+    def sample_documents(self) -> list[Document]:
         """Create sample documents for testing."""
         return [
             Document(
@@ -253,9 +253,6 @@ class TestEnhancedHyDEAgent:
 
 def run_structured_output_enhancement_tests():
     """Run structured output enhancement tests and return results."""
-    import sys
-    from typing import Any, Dict
-
     # Create test instances
     enhancer_test = TestStructuredOutputEnhancer()
     hyde_test = TestEnhancedHyDEAgent()
@@ -334,15 +331,10 @@ def run_structured_output_enhancement_tests():
         try:
             test_func()
             results["passed"] += 1
-            print(f"✅ {method_name}")
         except Exception as e:
             results["failed"] += 1
             results["errors"].append(f"{method_name}: {e}")
-            print(f"❌ {method_name}: {e}")
 
-    print(
-        f"\n📊 Structured Output Enhancement Tests: {results['passed']}/{len(test_methods)} passed"
-    )
     return results
 
 

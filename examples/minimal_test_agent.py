@@ -30,9 +30,8 @@ def minimal_test():
     )
 
     # Print the initial state
-    print(f"Created multi-agent with {len(multi_agent._state_instance.agents)} agents")
-    for agent_id, agent in multi_agent._state_instance.agents.items():
-        print(f"  - Agent {agent_id}: {agent.name} ({agent.__class__.__name__})")
+    for _agent_id, _agent in multi_agent._state_instance.agents.items():
+        pass
 
     # Create minimal input with just a message
     input_data = {"messages": [HumanMessage(content="Test message")]}
@@ -41,30 +40,21 @@ def minimal_test():
     try:
         # Simple invocation
         result = multi_agent.invoke(input_data)
-        print("\nInvocation successful!")
 
         # Check if agents were preserved
-        print(f"Result has agents: {hasattr(result, 'agents')}")
         if hasattr(result, "agents"):
-            print(f"Agents in result: {len(result.agents)}")
-            for agent_id, agent in result.agents.items():
-                print(
-                    f"  - Agent {agent_id}: {agent.name} ({agent.__class__.__name__})"
-                )
+            for _agent_id, _agent in result.agents.items():
+                pass
 
         # Check messages
-        print(f"\nMessages in result: {len(result.messages)}")
-        for msg in result.messages:
-            print(f"  - {msg.type}: {msg.content[:50]}...")
+        for _msg in result.messages:
+            pass
 
-    except Exception as e:
-        print(f"\nError during invocation: {type(e).__name__}: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
 
 
 if __name__ == "__main__":
-    print("Running minimal MultiAgent serialization test...\n")
     minimal_test()
-    print("\nTest completed.")

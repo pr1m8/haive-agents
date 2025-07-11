@@ -52,8 +52,6 @@ class SimpleAgent(Agent[SimpleAgentConfig]):
             name=self.config.node_name,
             engine=self.config.engine,
             command_goto=END,  # Add this to tell the node where to go after processing
-            # input_mapping=self.config.input_mapping,
-            # output_mapping=self.config.output_mapping
         )
 
         # Create DynamicGraph with state schema
@@ -65,19 +63,11 @@ class SimpleAgent(Agent[SimpleAgentConfig]):
         )
 
         # Get mappings from config (handles auto-derivation)
-        # input_mapping = self.config.derive_input_mapping()
-        # output_mapping = self.config.derive_output_mapping()
-
-        # logger.debug(f"Using input mapping: {input_mapping}")
-        # logger.debug(f"Using output mapping: {output_mapping}")
 
         # Add the processing node
         gb.add_node(
             name=self.config.node_name,
             config=node_config,
-            # command_goto=END,
-            # input_mapping=input_mapping,
-            # output_mapping=output_mapping
         )
 
         # Set entry point

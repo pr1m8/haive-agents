@@ -1,7 +1,5 @@
 # src/haive/agents/self_discovery/agents.py
-"""
-Self-Discovery agent implementation using SimpleAgent and SequentialAgent.
-"""
+"""Self-Discovery agent implementation using SimpleAgent and SequentialAgent."""
 
 from typing import List
 
@@ -69,7 +67,6 @@ reason_agent = SimpleAgent(engine=reason_engine)
 # Create the SequentialAgent
 self_discovery = SequentialAgent(
     agents=[select_agent, adapt_agent, structure_agent, reason_agent],
-    # state_schema=SelfDiscoveryState
 )
 
 

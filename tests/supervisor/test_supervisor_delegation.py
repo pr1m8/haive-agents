@@ -36,7 +36,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Calculation result: {result}"
     except Exception as e:
-        return f"Calculation error: {str(e)}"
+        return f"Calculation error: {e!s}"
 
 
 @tool
@@ -65,7 +65,6 @@ def create_simple_agent(name: str, description: str) -> str:
 
 def create_math_agent() -> ReactAgent:
     """Create a real math agent with calculator tool."""
-
     # Use environment variable or fallback
     model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
@@ -74,9 +73,9 @@ def create_math_agent() -> ReactAgent:
     engine_config = AugLLMConfig(
         llm_config=llm_config,
         system_message="""You are a mathematics specialist. Use the calculator tool to solve mathematical problems.
-        
+
 When given a math problem:
-1. Use the calculator tool to perform calculations  
+1. Use the calculator tool to perform calculations
 2. Show your work step by step
 3. Provide clear, accurate results""",
         tools=[calculator],
@@ -90,7 +89,6 @@ When given a math problem:
 
 def create_text_agent() -> ReactAgent:
     """Create a real text analysis agent."""
-
     model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
     llm_config = LLMConfig(provider="openai", model=model, temperature=0.3)
@@ -114,7 +112,6 @@ When given text to analyze:
 
 def create_supervisor() -> SupervisorAgent:
     """Create a real supervisor agent."""
-
     model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
     llm_config = LLMConfig(provider="openai", model=model, temperature=0.1)
@@ -128,7 +125,7 @@ Available tools:
 
 Routing rules:
 - Math problems → math_agent
-- Text analysis → text_agent  
+- Text analysis → text_age  
 - Agent creation requests → use create_simple_agent tool
 - Task completion → FINISH""",
         tools=[create_simple_agent],
@@ -139,7 +136,6 @@ Routing rules:
 
 async def test_real_delegation():
     """Test real delegation with actual agents and tools."""
-
     console.print(Panel("🧪 Testing Real Supervisor Delegation", style="bold blue"))
 
     # Check for OpenAI API key
@@ -235,19 +231,18 @@ async def test_real_delegation():
                     )
 
             except Exception as e:
-                console.print(f"[red]❌ Test failed: {str(e)}[/red]")
+                console.print(f"[red]❌ Test failed: {e!s}[/red]"]")
                 logger.error(f"Test {i} failed", exc_info=True)
 
             console.print("-" * 60)
 
     except Exception as e:
-        console.print(f"[red]❌ Test setup failed: {str(e)}[/red]")
+        console.print(f"[red]❌ Test setup failed: {e!s}[/red]"]")
         logger.error("Test setup failed", exc_info=True)
 
 
 async def test_dynamic_agent_management():
     """Test dynamic agent registration and management."""
-
     console.print(Panel("🔄 Testing Dynamic Agent Management", style="bold cyan"))
 
     if not os.getenv("OPENAI_API_KEY"):
@@ -284,18 +279,17 @@ async def test_dynamic_agent_management():
         console.print(f"[cyan]Routing decision for math problem:[/cyan] {next_agent}")
 
         # Remove an agent
-        console.print(f"\n[yellow]➖ Removing math_agent:[/yellow]")
+        console.print("\n[yellow]➖ Removing math_agent:[/yellow]"]")
         supervisor.remove_worker_agent("math_agent")
         supervisor.print_supervisor_status()
 
     except Exception as e:
-        console.print(f"[red]❌ Dynamic test failed: {str(e)}[/red]")
+        console.print(f"[red]❌ Dynamic test failed: {e!s}[/red]"]")
         logger.error("Dynamic test failed", exc_info=True)
 
 
 async def test_supervisor_tool_usage():
     """Test supervisor using its own tools to create agents."""
-
     console.print(Panel("🛠️ Testing Supervisor Tool Usage", style="bold magenta"))
 
     if not os.getenv("OPENAI_API_KEY"):
@@ -328,13 +322,12 @@ async def test_supervisor_tool_usage():
                     console.print(f"[green]📝 Message:[/green] {msg.content}")
 
     except Exception as e:
-        console.print(f"[red]❌ Tool test failed: {str(e)}[/red]")
+        console.print(f"[red]❌ Tool test failed: {e!s}[/red]"]")
         logger.error("Tool test failed", exc_info=True)
 
 
 def main():
     """Main test runner."""
-
     console.print(
         Panel(
             """
@@ -362,7 +355,7 @@ Requires OPENAI_API_KEY environment variable.
             console.print(Panel("🎉 All tests completed!", style="bold green"))
 
         except Exception as e:
-            console.print(f"[red]❌ Test suite failed: {str(e)}[/red]")
+            console.print(f"[red]❌ Test suite failed: {e!s}[/red]"]")
             logger.error("Test suite failed", exc_info=True)
 
     asyncio.run(run_all_tests())

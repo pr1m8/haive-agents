@@ -1,4 +1,4 @@
-"""Base Conversation Agent - Multi-Agent Orchestration Foundation.
+r"""Base Conversation Agent - Multi-Agent Orchestration Foundation.
 
 Core foundation classes for conversation agents that orchestrate multi-agent interactions.
 This module provides the base infrastructure for all conversation agent types, with a
@@ -163,27 +163,27 @@ class BaseConversationConfig(TypedDict, total=False):
 
 # Define public API
 __all__ = [
-    # Version information
-    "__version__",
-    "__author__",
-    "__license__",
     # Core classes
     "BaseConversationAgent",
-    "ConversationState",
-    # Type aliases
-    "ConversationParticipant",
-    "SpeakerName",
-    "ConversationTopic",
-    "RoundNumber",
-    "TurnCount",
-    # Protocols
-    "ConversationCapable",
     # Configuration types
     "BaseConversationConfig",
-    # Utility functions
-    "validate_conversation_participants",
+    # Protocols
+    "ConversationCapable",
+    # Type aliases
+    "ConversationParticipant",
+    "ConversationState",
+    "ConversationTopic",
+    "RoundNumber",
+    "SpeakerName",
+    "TurnCount",
+    "__author__",
+    "__license__",
+    # Version information
+    "__version__",
     "create_conversation_state",
     "get_conversation_progress",
+    # Utility functions
+    "validate_conversation_participants",
 ]
 
 
@@ -211,7 +211,7 @@ def _initialize_base_conversation_module() -> None:
 
 # Utility functions
 def validate_conversation_participants(
-    participants: List[ConversationParticipant], min_participants: int = 2
+    participants: list[ConversationParticipant], min_participants: int = 2
 ) -> bool:
     """Validate that participants can engage in conversations.
 
@@ -251,13 +251,13 @@ def validate_conversation_participants(
 
 
 def create_conversation_state(
-    participants: List[ConversationParticipant],
-    topic: Optional[str] = None,
+    participants: list[ConversationParticipant],
+    topic: str | None = None,
     max_rounds: int = 10,
     mode: str = "base",
-    config: Optional[BaseConversationConfig] = None,
+    config: BaseConversationConfig | None = None,
 ) -> ConversationState:
-    """Create a conversation state with participants and configuration.
+    r"""Create a conversation state with participants and configuration.
 
     Args:
         participants: List of participant agents
@@ -303,7 +303,7 @@ def create_conversation_state(
     )
 
 
-def get_conversation_progress(state: ConversationState) -> Dict[str, Any]:
+def get_conversation_progress(state: ConversationState) -> dict[str, Any]:
     """Get detailed progress information for a conversation.
 
     Args:
@@ -326,7 +326,7 @@ def get_conversation_progress(state: ConversationState) -> Dict[str, Any]:
     }
 
 
-def __dir__() -> List[str]:
+def __dir__() -> list[str]:
     """Override dir() to show only public API."""
     return __all__
 

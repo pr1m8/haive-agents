@@ -35,7 +35,7 @@ SUPERVISOR_SYSTEM_MESSAGE = """You are an intelligent task supervisor that route
 Available agents:
 {agent_list}
 
-You have access to handoff tools that let you delegate work to the appropriate agents. 
+You have access to handoff tools that let you delegate work to the appropriate agents.
 Look at the available tools and use the one that best matches the user's request.
 
 When routing:

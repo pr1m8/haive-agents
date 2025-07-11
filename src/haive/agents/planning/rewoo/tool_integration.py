@@ -19,7 +19,7 @@ class ReWOOToolExecutor:
     def __init__(self, state: ReWOOState):
         self.state = state
 
-    async def execute_evidence_collection(self, evidence: Evidence) -> Dict[str, Any]:
+    async def execute_evidence_collection(self, evidence: Evidence) -> dict[str, Any]:
         """Execute tool to collect evidence.
 
         Args:
@@ -69,8 +69,8 @@ class ReWOOToolExecutor:
         return f"Result of {resolved_method}"
 
     async def execute_tool_call(
-        self, tool_call: ToolCall, evidence_id: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self, tool_call: ToolCall, evidence_id: str | None = None
+    ) -> dict[str, Any]:
         """Execute a tool call with evidence tracking.
 
         Args:
@@ -129,25 +129,24 @@ class ReWOOToolExecutor:
                 "tool_name": tool_call.tool_name,
             }
 
-    async def _execute_llm_reasoning(self, args: Dict[str, Any]) -> str:
+    async def _execute_llm_reasoning(self, args: dict[str, Any]) -> str:
         """Execute LLM reasoning."""
         # Use the main engine from state for reasoning
         # This is simplified - real implementation would format prompt
         return "LLM reasoning result"
 
-    async def _execute_standard_tool(self, tool: Any, args: Dict[str, Any]) -> Any:
+    async def _execute_standard_tool(self, tool: Any, args: dict[str, Any]) -> Any:
         """Execute a standard tool."""
         # Simplified - real implementation would handle different tool types
         if hasattr(tool, "ainvoke"):
             return await tool.ainvoke(**args)
-        elif hasattr(tool, "invoke"):
+        if hasattr(tool, "invoke"):
             return tool.invoke(**args)
-        elif callable(tool):
+        if callable(tool):
             return tool(**args)
-        else:
-            raise ValueError(f"Don't know how to execute tool: {tool}")
+        raise ValueError(f"Don't know how to execute tool: {tool}")
 
-    def get_ready_evidence(self) -> List[Evidence]:
+    def get_ready_evidence(self) -> list[Evidence]:
         """Get evidence ready for collection."""
         return self.state.ready_evidence
 

@@ -180,10 +180,10 @@ class BaseConversationAgent(Agent):
                     values["persistence"] = MemoryCheckpointerConfig()
                     logger.info("Using memory persistence fallback")
                 except ImportError:
-                    logger.error("Could not import MemoryCheckpointerConfig")
+                    logger.exception("Could not import MemoryCheckpointerConfig")
                     values["persistence"] = None
             except Exception as e:
-                logger.error(f"Error setting up persistence configuration: {e}")
+                logger.exception(f"Error setting up persistence configuration: {e}")
                 values["persistence"] = None
 
         return values

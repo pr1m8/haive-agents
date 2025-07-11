@@ -241,11 +241,7 @@ class ReactAgent(SimpleAgent):
         gb.add_node(self.config.node_name, self.config.engine)
 
         # Add the tool execution node
-        tool_node = ToolNode(
-            tools=self.config.tools
-            # name=self.config.tool_node_name,
-            # config=self.config.tools
-        )
+        tool_node = ToolNode(tools=self.config.tools)
         gb.add_node(self.config.tool_node_name, tool_node)
 
         # Add the router node
@@ -275,11 +271,7 @@ class ReactAgent(SimpleAgent):
                             tool_obj = tool.tool
 
                         if getattr(tool_obj, "name", "") == tool_name:
-                            specialized_tool_node = ToolNode(
-                                # name=destination,
-                                # config=[tool]
-                                tools=[tool]
-                            )
+                            specialized_tool_node = ToolNode(tools=[tool])
                             gb.add_node(destination, specialized_tool_node)
                             custom_nodes[destination] = tool_name
                             # Connect back to the agent
@@ -336,10 +328,9 @@ class ReactAgent(SimpleAgent):
                 render_and_display_graph(self.app, output_name=graph_path)
                 logger.info(f"Graph visualization saved to {graph_path}")
             except Exception as e:
-                logger.error(f"Error generating graph visualization: {e}")
+                logger.exception(f"Error generating graph visualization: {e}")
 
         # Ensure the graph is compiled
-        # self.compile()
 
         logger.info(f"Set up React workflow for {self.config.name}")
 
@@ -465,7 +456,7 @@ class ReactAgent(SimpleAgent):
 
                 return {"structured_response": response}
             except Exception as e:
-                logger.error(f"Error generating structured response: {e}")
+                logger.exception(f"Error generating structured response: {e}")
                 return {"structured_response": {"error": str(e)}}
 
         return generate_structured_response

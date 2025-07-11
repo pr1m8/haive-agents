@@ -1,6 +1,4 @@
-"""
-Direct test of new RAG workflow implementations without going through broken __init__.py
-"""
+"""Direct test of new RAG workflow implementations without going through broken __init__.py."""
 
 import os
 import sys
@@ -12,7 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 
 def test_memory_rag_agent():
-    """Test SimpleRAGWithMemoryAgent can be imported and created"""
+    """Test SimpleRAGWithMemoryAgent can be imported and created."""
     from haive.agents.rag.multi_agent_rag.additional_workflows import (
         MemoryRAGState,
         SimpleRAGWithMemoryAgent,
@@ -32,7 +30,7 @@ def test_memory_rag_agent():
 
 
 def test_self_rag_agent():
-    """Test SelfRAGAgent can be imported and created"""
+    """Test SelfRAGAgent can be imported and created."""
     from haive.agents.rag.multi_agent_rag.additional_workflows import (
         SelfRAGAgent,
         SelfRAGState,
@@ -52,7 +50,7 @@ def test_self_rag_agent():
 
 
 def test_multi_query_rag_agent():
-    """Test MultiQueryRAGAgent can be imported and created"""
+    """Test MultiQueryRAGAgent can be imported and created."""
     from haive.agents.rag.multi_agent_rag.additional_workflows import (
         MultiQueryRAGAgent,
         MultiQueryRAGState,
@@ -72,7 +70,7 @@ def test_multi_query_rag_agent():
 
 
 def test_rag_fusion_agent():
-    """Test RAGFusionAgent can be imported and created"""
+    """Test RAGFusionAgent can be imported and created."""
     from haive.agents.rag.multi_agent_rag.additional_workflows import RAGFusionAgent
 
     # Test agent creation
@@ -83,7 +81,7 @@ def test_rag_fusion_agent():
 
 
 def test_step_back_rag_agent():
-    """Test StepBackPromptingRAGAgent can be imported and created"""
+    """Test StepBackPromptingRAGAgent can be imported and created."""
     from haive.agents.rag.multi_agent_rag.additional_workflows import (
         StepBackPromptingRAGAgent,
     )
@@ -96,7 +94,7 @@ def test_step_back_rag_agent():
 
 
 def test_query_decomposition_rag_agent():
-    """Test QueryDecompositionRAGAgent can be imported and created"""
+    """Test QueryDecompositionRAGAgent can be imported and created."""
     from haive.agents.rag.multi_agent_rag.additional_workflows import (
         QueryDecompositionRAGAgent,
     )
@@ -109,7 +107,7 @@ def test_query_decomposition_rag_agent():
 
 
 def test_graph_rag_agent():
-    """Test GraphRAGAgent can be imported and created"""
+    """Test GraphRAGAgent can be imported and created."""
     from haive.agents.rag.multi_agent_rag.advanced_workflows import (
         GraphRAGAgent,
         GraphRAGState,
@@ -129,7 +127,7 @@ def test_graph_rag_agent():
 
 
 def test_agentic_graph_rag_agent():
-    """Test AgenticGraphRAGAgent can be imported and created"""
+    """Test AgenticGraphRAGAgent can be imported and created."""
     from haive.agents.rag.multi_agent_rag.advanced_workflows import AgenticGraphRAGAgent
 
     # Test agent creation
@@ -140,7 +138,7 @@ def test_agentic_graph_rag_agent():
 
 
 def test_speculative_rag_agent():
-    """Test SpeculativeRAGAgent can be imported and created"""
+    """Test SpeculativeRAGAgent can be imported and created."""
     from haive.agents.rag.multi_agent_rag.advanced_workflows import SpeculativeRAGAgent
 
     # Test agent creation
@@ -151,7 +149,7 @@ def test_speculative_rag_agent():
 
 
 def test_all_advanced_agents():
-    """Test all advanced RAG agents can be imported"""
+    """Test all advanced RAG agents can be imported."""
     from haive.agents.rag.multi_agent_rag.advanced_workflows import (
         AgenticRAGRouterAgent,
         QueryPlanningAgenticRAGAgent,

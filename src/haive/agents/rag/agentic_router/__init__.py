@@ -1,4 +1,4 @@
-"""Agentic RAG Router
+"""Agentic RAG Router.
 
 Intelligent RAG routing with ReAct patterns for dynamic agent selection and coordination.
 Provides autonomous decision-making for optimal RAG strategy selection.

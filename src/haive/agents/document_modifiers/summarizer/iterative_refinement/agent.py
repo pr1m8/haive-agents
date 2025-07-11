@@ -1,4 +1,4 @@
-# from haive.core.agent_architecture.base import AgentState
+# Initial summary
 from haive.core.engine.agent.agent import Agent, register_agent
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import START
@@ -6,7 +6,6 @@ from langgraph.graph import START
 # from haive.core.engine.agent.agent import AgentConfig
 from langgraph.types import Command
 
-# Initial summary
 from haive.agents.document_modifiers.summarizer.iterative_refinement.config import (
     IterativeSummarizerConfig,
 )

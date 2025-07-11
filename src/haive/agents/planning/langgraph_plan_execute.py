@@ -23,7 +23,7 @@ from haive.agents.simple.agent import SimpleAgent
 class Plan(BaseModel):
     """A plan to follow for solving a task."""
 
-    steps: List[str] = Field(
+    steps: list[str] = Field(
         description="Different steps to follow, should be in sorted order"
     )
 
@@ -37,7 +37,7 @@ class Response(BaseModel):
 class Act(BaseModel):
     """Action to perform - either respond or continue."""
 
-    action: Union[Response, Plan] = Field(
+    action: Response | Plan = Field(
         description="Action to perform. If you want to respond to user, use Response. "
         "If you need to further use tools to get the answer, use Plan."
     )
@@ -51,8 +51,8 @@ class Act(BaseModel):
 class PlanExecuteState(MessagesState):
     """State for the plan-and-execute agent."""
 
-    plan: List[str] = Field(default_factory=list, description="The plan to follow")
-    past_steps: List[str] = Field(
+    plan: list[str] = Field(default_factory=list, description="The plan to follow")
+    past_steps: list[str] = Field(
         default_factory=list, description="Steps that have been executed"
     )
     response: str = Field(default="", description="Final response")
@@ -112,7 +112,7 @@ Update your plan accordingly. If no more steps are needed and you can return to 
 
 
 def create_langgraph_plan_execute(
-    name: str = "PlanExecute", model: str = "gpt-4o-mini", tools: List = None
+    name: str = "PlanExecute", model: str = "gpt-4o-mini", tools: list | None = None
 ) -> MultiAgentBase:
     """Create Plan and Execute agent following official LangGraph tutorial.
 
@@ -172,7 +172,7 @@ def create_langgraph_plan_execute(
 # ============================================================================
 
 
-def create_plan_execute_agent(tools: List = None) -> MultiAgentBase:
+def create_plan_execute_agent(tools: list | None = None) -> MultiAgentBase:
     """Create a Plan and Execute agent with default settings."""
     return create_langgraph_plan_execute(name="PlanExecuteAgent", tools=tools or [])
 
@@ -187,4 +187,3 @@ if __name__ == "__main__":
 
     # Test the pattern
     result = agent.run("What is the capital of France and what is its population?")
-    print(f"Result: {result}")

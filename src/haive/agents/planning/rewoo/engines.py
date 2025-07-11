@@ -14,7 +14,7 @@ planner_prompt = ChatPromptTemplate.from_messages(
         (
             "system",
             """You are a helpful planning assistant that creates detailed step-by-step plans.
-    
+
 Each step should be specific and actionable, using available tools when needed.
 You can use the following tools:
 
@@ -22,7 +22,7 @@ You can use the following tools:
 
 IMPORTANT: When referring to tools, you MUST use EXACTLY one of the following tool names:
 - tavily_search_tool (NOT tavily_search)
-- tavily_search_context 
+- tavily_search_context
 - tavily_qna
 - tavily_extract
 - LLM
@@ -83,7 +83,7 @@ solver_prompt = ChatPromptTemplate.from_messages(
         (
             "system",
             """You are a helpful assistant that solves tasks using evidence collected in earlier steps.
-    
+
 You will be given:
 1. The original task
 2. A specific step from the plan

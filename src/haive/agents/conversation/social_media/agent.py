@@ -110,7 +110,7 @@ class SocialMediaConversation(BaseConversationAgent):
             tools.append(share_tool)
 
         # Add tools to each agent's engine
-        for name, agent in self._compiled_agents.items():
+        for _name, agent in self._compiled_agents.items():
             if hasattr(agent, "engine") and hasattr(agent.engine, "tools"):
                 # Add tools to existing tools list
                 if not agent.engine.tools:
@@ -228,11 +228,13 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
             feed_msg = SystemMessage(
                 content="Recent posts:\n" + "\n".join(recent_posts)
             )
-            base_input["messages"] = [context_msg, feed_msg] + base_input.get(
-                "messages", []
-            )
+            base_input["messages"] = [
+                context_msg,
+                feed_msg,
+                *base_input.get("messages", []),
+            ]
         else:
-            base_input["messages"] = [context_msg] + base_input.get("messages", [])
+            base_input["messages"] = [context_msg, *base_input.get("messages", [])]
 
         return base_input
 

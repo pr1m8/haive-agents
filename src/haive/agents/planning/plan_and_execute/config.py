@@ -9,14 +9,8 @@ from haive.agents.planning.plan_and_execute.state import PlanAndExecuteState
 class PlanAndExecuteConfig(AgentConfig):
     engines: dict[str, Engine] = {
         "planner": planner_aug_llm_config,
-        # "agent_executor":agent_executor_aug_llm_config,
         "replanner": rPlanAndExecuteStatenfig,
     }
-    agent_executor_config: ReactAgentConfig = ReactAgentConfig(
-        # llm_config=agent_executor_aug_llm_config,
-        # tools=[],
-        # state_schema=PlanAndExecuteState
-    )
-    # models:List[BaseModel] = [Plan,Act,Response,Step,Status]
+    agent_executor_config: ReactAgentConfig = ReactAgentConfig()
     state_schema: type[BaseModel] | list[BaseModel] = PlanAndExecuteState
     default_input_schema: dict[str, list] = {"input": [("user", "{}")]}
