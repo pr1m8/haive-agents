@@ -204,7 +204,7 @@ async def test_basic_delegation():
                 console.print(f"[dim]Response: {last_message.content[:100]}...[/dim]")
 
         except Exception as e:
-            console.print(f"[red]❌ Test failed: {e!s}[/red]"]")
+            console.print(f"[red]❌ Test failed: {e!s}[/red]")
             results_table.add_row(
                 test_case["name"], test_case["expected_worker"], "ERROR", "❌ ERROR"
             )
@@ -261,7 +261,7 @@ async def test_multi_turn_conversation():
                     )
 
         except Exception as e:
-            console.print(f"[red]❌ Turn failed: {e!s}[/red]"]")
+            console.print(f"[red]❌ Turn failed: {e!s}[/red]")
 
 
 async def test_error_handling():
@@ -331,7 +331,7 @@ Using Haive Architecture:
             console.print(Panel("🎉 All tests completed!", style="bold green"))
 
         except Exception as e:
-            console.print(f"[red]❌ Test suite failed: {e!s}[/red]"]")
+            console.print(f"[red]❌ Test suite failed: {e!s}[/red]")
             logger.error("Test suite failed", exc_info=True)
 
     asyncio.run(run_all_tests())

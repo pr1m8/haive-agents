@@ -231,13 +231,13 @@ async def test_real_delegation():
                     )
 
             except Exception as e:
-                console.print(f"[red]❌ Test failed: {e!s}[/red]"]")
+                console.print(f"[red]❌ Test failed: {e!s}[/red]")
                 logger.error(f"Test {i} failed", exc_info=True)
 
             console.print("-" * 60)
 
     except Exception as e:
-        console.print(f"[red]❌ Test setup failed: {e!s}[/red]"]")
+        console.print(f"[red]❌ Test setup failed: {e!s}[/red]")
         logger.error("Test setup failed", exc_info=True)
 
 
@@ -279,12 +279,12 @@ async def test_dynamic_agent_management():
         console.print(f"[cyan]Routing decision for math problem:[/cyan] {next_agent}")
 
         # Remove an agent
-        console.print("\n[yellow]➖ Removing math_agent:[/yellow]"]")
+        console.print("\n[yellow]➖ Removing math_agent:[/yellow]")
         supervisor.remove_worker_agent("math_agent")
         supervisor.print_supervisor_status()
 
     except Exception as e:
-        console.print(f"[red]❌ Dynamic test failed: {e!s}[/red]"]")
+        console.print(f"[red]❌ Dynamic test failed: {e!s}[/red]")
         logger.error("Dynamic test failed", exc_info=True)
 
 
@@ -322,7 +322,7 @@ async def test_supervisor_tool_usage():
                     console.print(f"[green]📝 Message:[/green] {msg.content}")
 
     except Exception as e:
-        console.print(f"[red]❌ Tool test failed: {e!s}[/red]"]")
+        console.print(f"[red]❌ Tool test failed: {e!s}[/red]")
         logger.error("Tool test failed", exc_info=True)
 
 
@@ -355,7 +355,7 @@ Requires OPENAI_API_KEY environment variable.
             console.print(Panel("🎉 All tests completed!", style="bold green"))
 
         except Exception as e:
-            console.print(f"[red]❌ Test suite failed: {e!s}[/red]"]")
+            console.print(f"[red]❌ Test suite failed: {e!s}[/red]")
             logger.error("Test suite failed", exc_info=True)
 
     asyncio.run(run_all_tests())
