@@ -534,7 +534,8 @@ class ExecutionMixin:
 
             # Convert to dict if it's a Pydantic model
             if hasattr(processed_input, "model_dump"):
-                processed_input = processed_input.model_dump()
+                # Use exclude_unset=False to include all fields, even if they have PydanticUndefined
+                processed_input = processed_input.model_dump(exclude_unset=False)
 
                 # CRITICAL FIX: Populate missing state schema fields
                 # If the state schema requires an engine field (like LLMState), populate it
@@ -568,6 +569,94 @@ class ExecutionMixin:
                                 logger.debug(
                                     f"Populated missing field '{field_name}' with default value"
                                 )
+
+            # Debug: Check processed_input for PydanticUndefined
+            logger.debug("=== PRE-INVOKE STATE CHECK ===")
+            if isinstance(processed_input, dict):
+                from pydantic_core import PydanticUndefined
+
+                state_schema = getattr(self, "state_schema", None)
+
+                for key, value in processed_input.items():
+                    if value is PydanticUndefined:
+                        logger.error(
+                            f"CRITICAL: Field '{key}' has PydanticUndefined in processed_input!"
+                        )
+
+                        # Get the field info to determine proper default
+                        field_info = None
+                        if state_schema and hasattr(state_schema, "model_fields"):
+                            field_info = state_schema.model_fields.get(key)
+
+                        # Try to fix it with a sensible default based on field type
+                        if key == "engine" and hasattr(self, "engine"):
+                            processed_input[key] = self.engine
+                            logger.warning(
+                                f"Fixed PydanticUndefined for 'engine' field"
+                            )
+                        elif field_info:
+                            # Check if field has default_factory
+                            if (
+                                hasattr(field_info, "default_factory")
+                                and field_info.default_factory is not None
+                            ):
+                                processed_input[key] = field_info.default_factory()
+                                logger.warning(
+                                    f"Fixed PydanticUndefined for '{key}' using default_factory"
+                                )
+                            # Check if field has default value
+                            elif (
+                                hasattr(field_info, "default")
+                                and field_info.default is not ...
+                            ):
+                                processed_input[key] = field_info.default
+                                logger.warning(
+                                    f"Fixed PydanticUndefined for '{key}' using default value"
+                                )
+                            else:
+                                # Use type-appropriate defaults
+                                if (
+                                    "list" in str(field_info.annotation).lower()
+                                    or key.endswith("_history")
+                                    or key.endswith("s")
+                                ):
+                                    processed_input[key] = []
+                                    logger.warning(
+                                        f"Fixed PydanticUndefined for '{key}' with empty list"
+                                    )
+                                elif (
+                                    "dict" in str(field_info.annotation).lower()
+                                    or key.endswith("_dict")
+                                    or key.endswith("_metadata")
+                                ):
+                                    processed_input[key] = {}
+                                    logger.warning(
+                                        f"Fixed PydanticUndefined for '{key}' with empty dict"
+                                    )
+                                else:
+                                    processed_input[key] = None
+                                    logger.warning(
+                                        f"Fixed PydanticUndefined for '{key}' with None"
+                                    )
+                        else:
+                            # Fallback: guess based on field name
+                            if (
+                                key.endswith("_history")
+                                or key.endswith("s")
+                                or "list" in key
+                            ):
+                                processed_input[key] = []
+                            elif (
+                                key.endswith("_dict")
+                                or key.endswith("_metadata")
+                                or "dict" in key
+                            ):
+                                processed_input[key] = {}
+                            else:
+                                processed_input[key] = None
+                            logger.warning(
+                                f"Fixed PydanticUndefined for '{key}' with guessed default"
+                            )
 
             result = self._app.invoke(
                 processed_input, config=runtime_config, debug=debug
@@ -890,7 +979,8 @@ class ExecutionMixin:
         try:
             # Convert to dict if it's a Pydantic model
             if hasattr(processed_input, "model_dump"):
-                processed_input = processed_input.model_dump()
+                # Use exclude_unset=False to include all fields, even if they have PydanticUndefined
+                processed_input = processed_input.model_dump(exclude_unset=False)
 
                 # CRITICAL FIX: Populate missing state schema fields
                 # If the state schema requires an engine field (like LLMState), populate it

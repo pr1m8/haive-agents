@@ -960,9 +960,10 @@ class Agent(
                 raise RuntimeError("Graph not built")
 
             # Ensure persistence is set up if not already done
-            if not hasattr(self, "checkpointer") or self.checkpointer is None:
-                logger.debug("Setting up persistence before compilation")
-                self._setup_persistence()
+            # TEMPORARILY DISABLED to debug PydanticUndefined issue
+            # if not hasattr(self, "checkpointer") or self.checkpointer is None:
+            #     logger.debug("Setting up persistence before compilation")
+            #     self._setup_persistence_from_config()
 
             # Make sure checkpointer tables are set up if needed
             if self.checkpointer and hasattr(self.checkpointer, "setup"):
