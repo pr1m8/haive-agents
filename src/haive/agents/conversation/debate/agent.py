@@ -142,7 +142,10 @@ class DebateConversation(BaseConversationAgent):
         arguments_made = {}
         rebuttals = {}
 
-        for name in self.debate_positions:
+        # Handle case where debate_positions might be None or not set
+        positions = self.debate_positions if self.debate_positions is not None else {}
+
+        for name in positions:
             arguments_made[name] = []
             rebuttals[name] = []
 
@@ -152,7 +155,7 @@ class DebateConversation(BaseConversationAgent):
             rebuttals[self.judge_name] = []
 
         return {
-            "debate_positions": self.debate_positions.copy(),
+            "debate_positions": positions.copy(),
             "arguments_made": arguments_made,
             "rebuttals": rebuttals,
             "arguments_per_side": self.arguments_per_side,  # Store in state
@@ -171,11 +174,13 @@ class DebateConversation(BaseConversationAgent):
     def _create_initial_message(self) -> BaseMessage:
         """Create the debate introduction message."""
         # Format positions
-        positions_str = "\n".join(
-            [
-                f"  • {name}: {position}"
-                for name, position in self.debate_positions.items()
-            ]
+        positions = self.debate_positions if self.debate_positions is not None else {}
+        positions_str = (
+            "\n".join(
+                [f"  • {name}: {position}" for name, position in positions.items()]
+            )
+            if positions
+            else "No positions assigned yet"
         )
 
         # Build debate structure description
@@ -238,7 +243,7 @@ class DebateConversation(BaseConversationAgent):
 ⚖️ **Rules**:
 {rules_str}
 
-Let us begin! {next(iter(self.debate_positions.keys()))}, please present your opening statement."""
+Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, please present your opening statement."""
         )
 
     def select_speaker(self, state: DebateState) -> Command:
@@ -313,7 +318,10 @@ Let us begin! {next(iter(self.debate_positions.keys()))}, please present your op
         # Set first speaker for new phase
         if new_phase in ["arguments", "rebuttals", "closing"]:
             # Start with first participant
-            updates["current_speaker"] = next(iter(state.debate_positions.keys()))
+            if state.debate_positions:
+                updates["current_speaker"] = next(iter(state.debate_positions.keys()))
+            else:
+                logger.warning("No debate positions available for speaker selection")
         elif new_phase == "judging":
             updates["current_speaker"] = self.judge_name
 

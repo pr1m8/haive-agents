@@ -50,6 +50,7 @@ def example_simple_debate():
                 keyword in str(content).lower()
                 for keyword in ["opening statement", "closing", "in conclusion"]
             ):
+                pass  # Add proper handling here if needed
         elif isinstance(msg, SystemMessage):
             pass
 
@@ -129,6 +130,7 @@ def example_panel_debate():
     messages = result.get("messages", [])
     for msg in messages:
         if isinstance(msg, AIMessage) and hasattr(msg, "name"):
+            pass  # Add proper handling here if needed
 
 
 def example_oxford_debate():
