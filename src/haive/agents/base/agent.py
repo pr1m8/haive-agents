@@ -1593,3 +1593,114 @@ class Agent(
             "output_schema": self.derive_output_schema(),
             "state_schema": self.state_schema,
         }
+
+    # ============================================================================
+    # AGENT AS TOOL CLASS METHODS
+    # ============================================================================
+
+    @classmethod
+    def as_tool(
+        cls, name: str | None = None, description: str | None = None, **agent_kwargs
+    ):
+        """Convert this agent class to a LangChain tool.
+
+        This creates a tool that instantiates and executes the agent class.
+        Uses the agent's input and output schemas for proper type handling.
+
+        Args:
+            name: Optional tool name, defaults to class name + '_tool'
+            description: Optional tool description
+            **agent_kwargs: Arguments to pass to agent constructor
+
+        Returns:
+            A LangChain tool that executes this agent class
+        """
+        from langchain_core.tools import tool
+
+        tool_name = name or f"{cls.__name__.lower()}_tool"
+        tool_description = description or f"Execute {cls.__name__} for processing"
+
+        # Try to get input schema from the agent class
+        # TODO: This could be enhanced to use actual agent input_schema when available
+
+        @tool(tool_name)
+        def agent_tool(query: str) -> str:
+            f"""{tool_description}"""
+
+            # Create agent instance
+            agent = cls(**agent_kwargs)
+
+            # Execute agent with query
+            # TODO: Use agent's actual input schema format
+            result = agent.invoke({"messages": [{"role": "user", "content": query}]})
+
+            # Extract response based on output schema
+            # TODO: Use agent's actual output schema
+            if isinstance(result, dict):
+                if "messages" in result and result["messages"]:
+                    return result["messages"][-1].get("content", str(result))
+                elif "output" in result:
+                    return result["output"]
+
+            return str(result)
+
+        return agent_tool
+
+    @classmethod
+    def create_retriever_tool(
+        cls,
+        vector_store,
+        name: str | None = None,
+        description: str | None = None,
+        **search_kwargs,
+    ):
+        """Create a retriever tool from a vector store.
+
+        This is a class method that creates a retriever tool without needing an agent instance.
+
+        Args:
+            vector_store: The vector store to create retriever from
+            name: Optional tool name, defaults to class name + '_retriever'
+            description: Optional tool description
+            **search_kwargs: Additional search parameters (k, score_threshold, etc.)
+
+        Returns:
+            A LangChain tool that performs retrieval
+        """
+        from langchain_core.tools import tool
+
+        tool_name = name or f"{cls.__name__.lower()}_retriever"
+        tool_description = (
+            description or f"Search knowledge base for relevant information"
+        )
+
+        # Set default search params
+        if "k" not in search_kwargs:
+            search_kwargs["k"] = 3
+
+        # Create retriever
+        retriever = vector_store.as_retriever(search_kwargs=search_kwargs)
+
+        @tool(tool_name)
+        def retriever_tool(query: str) -> str:
+            f"""{tool_description}"""
+
+            # Search for relevant documents
+            docs = retriever.invoke(query)
+
+            if not docs:
+                return "No relevant documents found."
+
+            # Format results
+            results = []
+            for i, doc in enumerate(docs[:5]):  # Limit to top 5
+                content_preview = (
+                    doc.page_content[:300] + "..."
+                    if len(doc.page_content) > 300
+                    else doc.page_content
+                )
+                results.append(f"Result {i+1}:\n{content_preview}")
+
+            return "\n\n".join(results)
+
+        return retriever_tool
