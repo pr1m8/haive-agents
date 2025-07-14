@@ -171,7 +171,11 @@ class DynamicSupervisor(ReactAgent):
     async def _supervisor_node(self, state: SupervisorState) -> dict[str, Any]:
         """Supervisor analyzes and decides routing."""
         # Get current task
-        task = state.messages[-1].get("content", "") if state.messages else state.current_task
+        task = (
+            state.messages[-1].get("content", "")
+            if state.messages
+            else state.current_task
+        )
 
         # Use LLM to decide
         prompt = f"""
@@ -320,7 +324,6 @@ async def demo_dynamic_supervisor():
         active=False,  # STARTS INACTIVE!
     )
 
-
     # Test 1: Math task (active agent)
     result1 = await supervisor.arun("Calculate 25 * 4")
 
@@ -328,9 +331,8 @@ async def demo_dynamic_supervisor():
     result2 = await supervisor.arun("Write a haiku about coding")
 
 
-
-
 if __name__ == "__main__":
     # For testing, you can run this directly
+    pass
 
     # Uncomment to run the demo:

@@ -101,7 +101,7 @@ class DynamicSupervisor(ReactAgent):
             }
 
         else:
-            passod")
+            pass
 
     def build_graph(self) -> BaseGraph:
         """Build supervisor graph with agent execution capabilities.
@@ -183,7 +183,7 @@ class DynamicSupervisor(ReactAgent):
             self._current_state.add_agent(name, agent, description, active)
             self._sync_tools_from_state()
         else:
-            passed")
+            pass
 
     def remove_agent(self, name: str) -> bool:
         """Remove an agent from the supervisor's registry."""

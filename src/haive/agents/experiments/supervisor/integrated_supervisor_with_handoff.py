@@ -46,6 +46,7 @@ class IntegratedSupervisorWithHandoff(ReactAgent):
         all_tools = [*handoff_tools, forward_tool, choice_tool, list_tool]
 
         for tool in all_tools:
+            # Tools are added to engine below
             pass
 
         # Create integrated supervisor engine
@@ -259,9 +260,9 @@ def test_integrated_supervisor():
         ]
         for expected in expected_tools:
             if expected in tool_names:
-                pass
+                print(f"✓ Found expected tool: {expected}")
             else:
-                pass
+                print(f"✗ Missing expected tool: {expected}")
 
     try:
         result = supervisor.invoke(
@@ -269,7 +270,7 @@ def test_integrated_supervisor():
         )
 
     except Exception as e:
-        pass
+        print(f"Error testing supervisor: {e}")
 
     return supervisor
 

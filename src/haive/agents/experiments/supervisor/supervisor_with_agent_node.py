@@ -303,4 +303,4 @@ async def demo_agent_node_pattern():
 
 if __name__ == "__main__":
     # Show the pattern
-    pass
+    print("Supervisor with Agent Node pattern example")
