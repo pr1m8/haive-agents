@@ -11,14 +11,13 @@ Key Pattern:
 ReactAgent (reasoning + tools) → SimpleAgent (structured output)
 """
 
-import asyncio
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -151,7 +150,7 @@ class TestMultiAgentSequentialPattern:
         """Test ReactAgent performs reasoning with tool usage."""
         problem = "Calculate the area of a circle with radius 5, then search for information about circle geometry."
 
-        print(f"\n=== ReactAgent Reasoning Test ===")
+        print("\n=== ReactAgent Reasoning Test ===")
         print(f"Problem: {problem}")
 
         # Create input without persistence to avoid msgpack serialization issues
@@ -217,7 +216,7 @@ class TestMultiAgentSequentialPattern:
         3. The final answer is approximately 78.54 square units
         """
 
-        print(f"\n=== SimpleAgent Structured Output Test ===")
+        print("\n=== SimpleAgent Structured Output Test ===")
         print(f"Input reasoning: {reasoning_text}")
 
         # Create input without persistence
@@ -265,7 +264,7 @@ class TestMultiAgentSequentialPattern:
         """Test manual sequential execution: ReactAgent → SimpleAgent."""
         problem = "I need to calculate 15 * 23 and then analyze what makes this calculation interesting."
 
-        print(f"\n=== Manual Sequential Execution Test ===")
+        print("\n=== Manual Sequential Execution Test ===")
         print(f"Problem: {problem}")
 
         # Step 1: ReactAgent reasoning
@@ -352,7 +351,7 @@ class TestMultiAgentSequentialPattern:
         Consider technology needs, privacy concerns, and implementation steps.
         """
 
-        print(f"\n=== Cross-Agent Data Validation Test ===")
+        print("\n=== Cross-Agent Data Validation Test ===")
         print(f"Complex problem: {complex_problem}")
 
         # Step 1: ReactAgent analysis
@@ -385,7 +384,7 @@ class TestMultiAgentSequentialPattern:
         """Test async sequential execution of agents."""
         problem = "Analyze the benefits and drawbacks of remote work, calculate productivity metrics."
 
-        print(f"\n=== Async Sequential Execution Test ===")
+        print("\n=== Async Sequential Execution Test ===")
         print(f"Problem: {problem}")
 
         # Step 1: Async ReactAgent execution
@@ -412,7 +411,7 @@ class TestMultiAgentSequentialPattern:
         """Test that important state/context is preserved across agent transitions."""
         problem = "Calculate compound interest on $1000 at 5% for 10 years, then explain the mathematical principle."
 
-        print(f"\n=== State Preservation Test ===")
+        print("\n=== State Preservation Test ===")
         print(f"Problem: {problem}")
 
         # ReactAgent with calculation
@@ -443,7 +442,7 @@ class TestMultiAgentSequentialPattern:
         # Use a problematic input that might cause issues
         problematic_input = "This is an empty problem with no clear instructions."
 
-        print(f"\n=== Error Handling Test ===")
+        print("\n=== Error Handling Test ===")
         print(f"Problematic input: {problematic_input}")
 
         try:
@@ -471,7 +470,7 @@ class TestMultiAgentSequentialPattern:
         """Test performance characteristics of sequential execution."""
         problem = "Quick analysis: What's 25 + 75 and why is this sum significant?"
 
-        print(f"\n=== Performance Test ===")
+        print("\n=== Performance Test ===")
 
         # Time the ReactAgent
         start_time = datetime.now()
@@ -482,7 +481,7 @@ class TestMultiAgentSequentialPattern:
 
         # Time the SimpleAgent
         start_time = datetime.now()
-        structured_result = simple_agent_analysis.run(f"Structure: {reasoning_result}")
+        simple_agent_analysis.run(f"Structure: {reasoning_result}")
         simple_time = (datetime.now() - start_time).total_seconds()
 
         print(f"SimpleAgent execution time: {simple_time:.2f}s")

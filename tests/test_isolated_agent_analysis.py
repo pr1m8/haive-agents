@@ -6,7 +6,7 @@ This test file examines each agent type in isolation to understand:
 3. Actual vs expected behavior
 """
 
-from typing import Any, Dict, List
+from typing import List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -235,7 +235,7 @@ class TestIsolatedAgentAnalysis:
 
         print(f"Input: {test_input}")
         print(
-            f"Expected output should contain TestAnalysis fields: summary, key_points, conclusion, confidence"
+            "Expected output should contain TestAnalysis fields: summary, key_points, conclusion, confidence"
         )
 
         try:

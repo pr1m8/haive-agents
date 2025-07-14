@@ -35,7 +35,6 @@ def test_with_original_validation():
     print(f"✅ Agent created with structured model: {TestResponse}")
 
     # Manually patch the build_graph method to use original ValidationNodeConfig
-    original_build_graph = agent.build_graph
 
     def patched_build_graph():
         """Build graph with original ValidationNodeConfig."""
@@ -93,7 +92,7 @@ def test_with_original_validation():
     test_input = {"messages": [HumanMessage(content="What is 2+2?")]}
     config = {"configurable": {"thread_id": None}}
 
-    print(f"\n--- EXECUTION WITH ORIGINAL VALIDATION ---")
+    print("\n--- EXECUTION WITH ORIGINAL VALIDATION ---")
     try:
         result = agent._app.invoke(test_input, config=config)
         print(f"Result keys: {list(result.keys())}")
@@ -106,7 +105,7 @@ def test_with_original_validation():
             for field in structured_fields:
                 print(f"   {field}: {result[field]}")
         else:
-            print(f"❌ No structured fields found")
+            print("❌ No structured fields found"d")
 
         # Check if engine_name is in messages
         messages = result.get("messages", [])
@@ -155,7 +154,7 @@ def test_engine_name_in_message():
             if engine_name:
                 print(f"  ✅ Engine name found: {engine_name}")
             else:
-                print(f"  ❌ No engine_name in additional_kwargs")
+                print("  ❌ No engine_name in additional_kwargs"s")
                 print(f"  Available kwargs: {list(msg.additional_kwargs.keys())}")
 
 

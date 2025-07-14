@@ -6,11 +6,10 @@ Tests the Haive Supervisor with actual agent delegation using real engines and t
 import asyncio
 import logging
 import os
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import LLMConfig
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from rich.console import Console
 from rich.panel import Panel
