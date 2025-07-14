@@ -716,7 +716,7 @@ class ParallelizationAnalyzer(BaseModel):
             parallel_tasks = [task_id]
 
             # Simple heuristic: tasks with the same predecessors can often run in parallel
-            predecessors = set(pred_id for pred_id, _ in task_info["predecessors"]}
+            predecessors = set(pred_id for pred_id, _ in task_info["predecessors"])
 
             for other_id, other_info in dependency_graph.items():
                 if other_id != task_id and other_id not in visited:
