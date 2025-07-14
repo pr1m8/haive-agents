@@ -229,70 +229,21 @@ class SimpleAgent(Agent):
             self.engine.llm_config = self.llm_config
 
     def _modify_engine_schema(self) -> None:
-        """MODIFY the engine's output schema to include structured output fields.
+        """NO-OP: Engine schema modification removed.
 
-        This is the KEY METHOD that updates the engine schema.
+        For both V1 and V2 structured output:
+        - Engines should maintain their original output schemas (messages only for LLM)
+        - V1: Parser-based extraction handled by validation nodes
+        - V2: Tool call extraction handled by validation nodes
+        - No need to modify engine schemas
         """
         if not self.structured_output_model or not self.engine:
             return
 
         logger.info(
-            f"Modifying engine schema to include {self.structured_output_model.__name__}"
+            f"Skipping engine schema modification for {self.structured_output_model.__name__} "
+            f"(version {self.structured_output_version}) - extraction handled by validation nodes"
         )
-
-        # Get the engine's current output schema
-        current_output_schema = self.engine.derive_output_schema()
-
-        # Create a new schema composer to build enhanced schema
-        composer = SchemaComposer(name=f"Enhanced{current_output_schema.__name__}")
-
-        # Add the enhanced messages field using StandardFields
-        composer.add_standard_field("messages", use_enhanced=True)
-
-        # Add existing fields from current schema (except messages which we just added)
-        if hasattr(current_output_schema, "model_fields"):
-            for field_name, field_info in current_output_schema.model_fields.items():
-                if (
-                    field_name != "messages"
-                ):  # Skip messages since we added enhanced version
-                    composer.add_field(
-                        name=field_name,
-                        field_type=field_info.annotation,
-                        default=field_info.default,
-                        default_factory=field_info.default_factory,
-                        description=field_info.description,
-                    )
-
-        # Add the structured output field
-        field_name = (
-            self.structured_output_model.__name__.lower()
-            .replace("response", "")
-            .replace("result", "")
-            .strip()
-        )
-        if not field_name:
-            field_name = "structured_result"
-
-        composer.add_field(
-            name=field_name,
-            field_type=Optional[self.structured_output_model],
-            default=None,
-            description=f"Structured output of type {self.structured_output_model.__name__}",
-        )
-
-        # Build the enhanced schema
-        enhanced_schema = composer.build()
-
-        # OVERRIDE the engine's output schema
-        self.engine.output_schema = enhanced_schema
-
-        # Clear any cached schemas in the engine
-        if hasattr(self.engine, "_output_schema_instance"):
-            self.engine._output_schema_instance = None
-        if hasattr(self.engine, "_schema_cache"):
-            self.engine._schema_cache.clear()
-
-        logger.info(f"Engine schema modified successfully - added field '{field_name}'")
 
     # ========================================================================
     # FORCE SCHEMA REGENERATION AFTER ENGINE MODIFICATION

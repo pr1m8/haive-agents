@@ -178,48 +178,9 @@ class SimpleAgentWithValidation(Agent):
             return
 
         logger.info(
-            f"Modifying engine schema to include {self.structured_output_model.__name__}"
+            f"Skipping engine schema modification for {self.structured_output_model.__name__} "
+            f"- extraction handled by validation nodes"
         )
-
-        # Get the engine's current output schema
-        current_output_schema = self.engine.derive_output_schema()
-
-        # Create a new schema composer to build enhanced schema
-        composer = SchemaComposer(name=f"Enhanced{current_output_schema.__name__}")
-
-        # Add existing fields from current schema
-        composer.add_fields_from_model(current_output_schema)
-
-        # Add the structured output field
-        field_name = (
-            self.structured_output_model.__name__.lower()
-            .replace("response", "")
-            .replace("result", "")
-            .strip()
-        )
-        if not field_name:
-            field_name = "structured_result"
-
-        composer.add_field(
-            name=field_name,
-            field_type=Optional[self.structured_output_model],
-            default=None,
-            description=f"Structured output of type {self.structured_output_model.__name__}",
-        )
-
-        # Build the enhanced schema
-        enhanced_schema = composer.build()
-
-        # OVERRIDE the engine's output schema
-        self.engine.output_schema = enhanced_schema
-
-        # Clear any cached schemas in the engine
-        if hasattr(self.engine, "_output_schema_instance"):
-            self.engine._output_schema_instance = None
-        if hasattr(self.engine, "_schema_cache"):
-            self.engine._schema_cache.clear()
-
-        logger.info(f"Engine schema modified successfully - added field '{field_name}'")
 
     # Node detection methods (unchanged from SimpleAgent)
     def _needs_tool_node(self) -> bool:

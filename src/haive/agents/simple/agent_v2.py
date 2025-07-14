@@ -218,42 +218,10 @@ class SimpleAgentV2(Agent):
         # Create a new schema composer to build enhanced schema
         composer = SchemaComposer(name=f"Enhanced{current_output_schema.__name__}")
 
-        # Add existing fields from current schema
-        composer.add_fields_from_model(current_output_schema)
-
-        # Add the structured output field using proper naming utilities
-        from haive.core.schema.field_utils import get_field_info_from_model
-
-        field_info = get_field_info_from_model(self.structured_output_model)
-        field_name = field_info["field_name"]
-        field_description = field_info.get(
-            "description",
-            f"Structured output of type {self.structured_output_model.__name__}",
+        logger.info(
+            f"Skipping engine schema modification for {self.structured_output_model.__name__} "
+            f"- extraction handled by validation nodes"
         )
-        field_type = field_info.get(
-            "field_type", Optional[self.structured_output_model]
-        )
-
-        composer.add_field(
-            name=field_name,
-            field_type=field_type,
-            default=None,
-            description=field_description,
-        )
-
-        # Build the enhanced schema
-        enhanced_schema = composer.build()
-
-        # OVERRIDE the engine's output schema
-        self.engine.output_schema = enhanced_schema
-
-        # Clear any cached schemas in the engine
-        if hasattr(self.engine, "_output_schema_instance"):
-            self.engine._output_schema_instance = None
-        if hasattr(self.engine, "_schema_cache"):
-            self.engine._schema_cache.clear()
-
-        logger.info(f"Engine schema modified successfully - added field '{field_name}'")
 
     # ========================================================================
     # NODE DETECTION (same as V1)
