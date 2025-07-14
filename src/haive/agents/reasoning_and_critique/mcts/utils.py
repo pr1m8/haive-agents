@@ -145,9 +145,9 @@ def print_tree_stats(result: dict[str, Any]) -> None:
 
     nodes = result["nodes"]
 
-
     # Get best solution
     best_solution = nodes.get_best_solution()
     if best_solution:
+        pass
     else:
         pass
