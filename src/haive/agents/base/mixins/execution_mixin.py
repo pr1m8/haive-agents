@@ -7,10 +7,7 @@ from collections.abc import AsyncGenerator, Generator
 from typing import TYPE_CHECKING, Any, cast
 
 from haive.core.config.runnable import RunnableConfigManager
-from haive.core.persistence.handlers import (
-    prepare_merged_input,
-    register_thread_if_needed,
-)
+from haive.core.persistence.handlers import prepare_merged_input
 from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel
@@ -486,15 +483,22 @@ class ExecutionMixin:
             if self._checkpoint_mode == "async" and async_checkpointer:
                 active_checkpointer = async_checkpointer
 
+        # Let LangGraph handle its own checkpoint management
+        # Removed custom register_thread_if_needed to avoid interference
         if active_checkpointer and thread_id:
             try:
-                agent_name = getattr(self, "name", "Unknown Agent")
-                metadata = {"thread_name": agent_name}
-                register_thread_if_needed(active_checkpointer, thread_id, metadata)
+                # Ensure checkpointer is properly setup (LangGraph standard pattern)
+                if hasattr(active_checkpointer, "setup") and not getattr(
+                    active_checkpointer, "_setup_called", False
+                ):
+                    logger.debug(
+                        "Calling checkpointer.setup() as per LangGraph best practices"
+                    )
+                    active_checkpointer.setup()
+                    active_checkpointer._setup_called = True
             except Exception as e:
-                logger.warning(f"Failed to register thread for checkpointing: {e}")
-                # Disable checkpointing for this session if it fails
-                active_checkpointer = None
+                logger.debug(f"Checkpointer setup note: {e}")
+                # Continue - setup may have already been called
 
         # Get previous state if available
         previous_state = None
@@ -538,7 +542,8 @@ class ExecutionMixin:
 
             # No longer need PydanticUndefined checking since we keep Pydantic models intact
             logger.debug("=== PRE-INVOKE STATE CHECK ===")
-
+            print(f"Runtime config: {runtime_config}")
+            # breakpoint()
             result = self._app.invoke(
                 processed_input, config=runtime_config, debug=debug
             )
@@ -788,15 +793,22 @@ class ExecutionMixin:
             if self._checkpoint_mode == "async" and async_checkpointer:
                 active_checkpointer = async_checkpointer
 
+        # Let LangGraph handle its own checkpoint management (async version)
+        # Removed custom register_thread_if_needed to avoid interference
         if active_checkpointer and thread_id:
             try:
-                agent_name = getattr(self, "name", "Unknown Agent")
-                metadata = {"thread_name": agent_name}
-                register_thread_if_needed(active_checkpointer, thread_id, metadata)
+                # Ensure checkpointer is properly setup (LangGraph standard pattern)
+                if hasattr(active_checkpointer, "setup") and not getattr(
+                    active_checkpointer, "_setup_called", False
+                ):
+                    logger.debug(
+                        "Calling checkpointer.setup() as per LangGraph best practices"
+                    )
+                    active_checkpointer.setup()
+                    active_checkpointer._setup_called = True
             except Exception as e:
-                logger.warning(f"Failed to register thread for checkpointing: {e}")
-                # Disable checkpointing for this session if it fails
-                active_checkpointer = None
+                logger.debug(f"Checkpointer setup note (async): {e}")
+                # Continue - setup may have already been called
 
         # Get previous state if available
         previous_state = None
