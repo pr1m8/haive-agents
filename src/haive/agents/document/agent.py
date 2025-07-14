@@ -689,7 +689,7 @@ class DocumentAgent(Agent):
                     else 0
                 ),
                 "formats": (
-                    list(set(doc.format.value for doc in result.documents})
+                    list(set(doc.format.value for doc in result.documents))
                     if hasattr(result, "documents")
                     else []
                 ),
