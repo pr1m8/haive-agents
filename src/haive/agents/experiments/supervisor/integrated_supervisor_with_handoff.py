@@ -79,7 +79,6 @@ Always follow this structured workflow for proper agent coordination.""",
         """Sync choice model options with available agents in registry."""
         available_agents = self.agent_registry.list_available()
 
-
         # Add each agent as an option to the choice model
         for agent_name in available_agents:
             self.agent_choice_model.add_option(agent_name)
@@ -122,7 +121,6 @@ Always follow this structured workflow for proper agent coordination.""",
                 # Get current choice model
                 ChoiceModel = self.agent_choice_model.current_model
                 available_options = self.agent_choice_model.option_names
-
 
                 # Simple heuristics for agent selection
                 task_lower = task_description.lower()
@@ -261,9 +259,9 @@ def test_integrated_supervisor():
         ]
         for expected in expected_tools:
             if expected in tool_names:
-                pass")
+                pass
             else:
-                pass")
+                pass
 
     try:
         result = supervisor.invoke(
