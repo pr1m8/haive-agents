@@ -140,7 +140,6 @@ async def test_rewoo_planner():
     # Test query
     query = "What is the current stock price of Apple (AAPL) and what are the latest news about the company?"
 
-
     try:
         # Generate plan
         plan = await planner.create_plan(query)
@@ -152,6 +151,7 @@ async def test_rewoo_planner():
             if step.evidence:
                 pass
             if step.tool_call:
+                pass
 
         if plan.evidence_map:
             for eid, evidence in plan.evidence_map.items():

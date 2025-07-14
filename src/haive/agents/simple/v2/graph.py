@@ -5,6 +5,5 @@ class SimpleGraph(BaseGraph):
     """
     A simple graph implementation for testing and demonstration purposes.
     """
-    #pass
-    main=
 
+    pass
