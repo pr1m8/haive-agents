@@ -163,7 +163,8 @@ class Agent(
 
     # Persistence Configuration - these fields ARE serializable
     persistence: Any | None = Field(
-        default=None, description="Persistence configuration for state checkpointing"
+        default=True,
+        description="Persistence configuration for state checkpointing (defaults to PostgreSQL/Supabase if available)",
     )
 
     checkpoint_mode: Literal["sync", "async"] = Field(

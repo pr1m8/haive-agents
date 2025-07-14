@@ -62,7 +62,8 @@ def test_simple_structured_output():
     test_input = {
         "messages": [HumanMessage(content="What is 2+2? Answer with confidence.")]
     }
-    config = {"configurable": {"thread_id": None}}
+    # Use the agent's default thread_id instead of None (required for PostgreSQL persistence)
+    config = agent.get_effective_runnable_config()
 
     print(f"   - Input: {test_input}")
     print(f"   - Config: {config}")

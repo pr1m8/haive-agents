@@ -421,9 +421,12 @@ class PersistenceMixin:
         if hasattr(self, "engine_type"):
             identity_components.append(str(self.engine_type))
 
-        # Add engine name if available
-        if hasattr(self, "engine") and self.engine and hasattr(self.engine, "name"):
-            identity_components.append(self.engine.name)
+        # Add engine type/model instead of engine name (which has random IDs)
+        if hasattr(self, "engine") and self.engine:
+            if hasattr(self.engine, "model"):
+                identity_components.append(str(self.engine.model))
+            elif hasattr(self.engine, "engine_type"):
+                identity_components.append(str(self.engine.engine_type))
 
         # Add conversation-specific details for conversation agents
         if hasattr(self, "topic"):
