@@ -239,7 +239,7 @@ class ReciprocalRankFusionAgent(Agent):
         # Calculate overlap between top results
         top_docs = {}
         for query, docs in retrieval_results.items():
-            top_docs[query] = set(self._doc_id(doc) for doc in docs[:5]}
+            top_docs[query] = set(self._doc_id(doc) for doc in docs[:5])
 
         # Average pairwise overlap
         overlaps = []

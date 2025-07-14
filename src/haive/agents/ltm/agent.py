@@ -412,7 +412,7 @@ class LTMAgent(Agent):
         ratio_quality = min(1.0, actual_ratio / expected_ratio)
 
         # Bonus for schema diversity
-        schema_types = set(m.get("schema", "Unknown") for m in memories}
+        schema_types = set(m.get("schema", "Unknown") for m in memories)
         diversity_bonus = min(0.2, len(schema_types) * 0.05)
 
         # Penalty for errors or low confidence
