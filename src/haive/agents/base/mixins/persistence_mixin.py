@@ -296,11 +296,52 @@ class PersistenceMixin:
                 and self.checkpointer
                 and "Postgres" in type(self.checkpointer).__name__
             ):
-                # Use InMemoryStore for now (PostgreSQL store not available yet)
-                from langgraph.store.memory import InMemoryStore
+                # Try to use PostgreSQL store if available
+                try:
+                    from haive.core.persistence.store.factory import create_store
+                    from haive.core.persistence.store.types import StoreType
 
-                self.store = InMemoryStore()
-                logger.debug("InMemoryStore added (PostgreSQL store not yet available)")
+                    # Get connection info from persistence config if available
+                    if hasattr(self, "persistence") and hasattr(
+                        self.persistence, "get_connection_uri"
+                    ):
+                        connection_string = self.persistence.get_connection_uri()
+
+                        # Determine if we need sync or async store
+                        store_type = (
+                            StoreType.POSTGRES_ASYNC
+                            if self.checkpoint_mode == "async"
+                            else StoreType.POSTGRES_SYNC
+                        )
+
+                        # Create PostgreSQL store
+                        self.store = create_store(
+                            store_type=store_type, connection_string=connection_string
+                        )
+                        logger.info(
+                            f"PostgreSQL store added successfully ({store_type.value})"
+                        )
+                    else:
+                        # Fall back to memory store if no connection info
+                        from langgraph.store.memory import InMemoryStore
+
+                        self.store = InMemoryStore()
+                        logger.debug(
+                            "InMemoryStore added (no PostgreSQL connection info)"
+                        )
+
+                except ImportError:
+                    # PostgreSQL store not available, use memory store
+                    from langgraph.store.memory import InMemoryStore
+
+                    self.store = InMemoryStore()
+                    logger.debug("InMemoryStore added (PostgreSQL store not available)")
+                except Exception as e:
+                    logger.warning(f"Failed to create PostgreSQL store: {e}")
+                    from langgraph.store.memory import InMemoryStore
+
+                    self.store = InMemoryStore()
+                    logger.debug("InMemoryStore added (fallback from PostgreSQL error)")
             else:
                 # Use InMemoryStore for other checkpointer types
                 from langgraph.store.memory import InMemoryStore
