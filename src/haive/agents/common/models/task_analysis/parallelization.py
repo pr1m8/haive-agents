@@ -722,7 +722,7 @@ class ParallelizationAnalyzer(BaseModel):
                 if other_id != task_id and other_id not in visited:
                     other_predecessors = set(
                         pred_id for pred_id, _ in other_info["predecessors"]
-                    }
+                    )
 
                     # Can run in parallel if they have the same predecessors
                     # and no blocking dependencies between them
