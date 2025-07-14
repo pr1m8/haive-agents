@@ -13,7 +13,7 @@ Key improvements over V1:
 """
 
 import logging
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
@@ -30,7 +30,6 @@ from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.messages import AIMessage
 
 # Import BaseOutputParser to ensure it's available for LangGraph type evaluation
-from langchain_core.output_parsers import BaseOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langgraph.graph import END, START
 from pydantic import BaseModel, Field, field_validator
@@ -218,7 +217,7 @@ class SimpleAgentV2(Agent):
         current_output_schema = self.engine.derive_output_schema()
 
         # Create a new schema composer to build enhanced schema
-        composer = SchemaComposer(name=f"Enhanced{current_output_schema.__name__}")
+        SchemaComposer(name=f"Enhanced{current_output_schema.__name__}")
 
         logger.info(
             f"Skipping engine schema modification for {self.structured_output_model.__name__} "

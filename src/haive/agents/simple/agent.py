@@ -10,7 +10,6 @@ from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
 from haive.core.graph.node.validation_node_config_v2 import ValidationNodeConfigV2
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import LLMConfig
-from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.messages import AIMessage
 from langchain_core.output_parsers.base import BaseOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
