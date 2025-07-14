@@ -133,20 +133,20 @@ class Agent(
 
     # Schema definitions
     state_schema: type[StateSchema] | type[BaseModel] | dict[str, Any] | None = Field(
-        default=None, description="Schema for agent state"
+        default=None, exclude=True, description="Schema for agent state"
     )
     use_prebuilt_base: bool = Field(
         default=False,
         description="Whether to use the state_schema as a base for composition",
     )
     input_schema: type[BaseModel] | dict[str, Any] | None = Field(
-        default=None, description="Schema for agent input"
+        default=None, exclude=True, description="Schema for agent input"
     )
     output_schema: type[BaseModel] | dict[str, Any] | None = Field(
-        default=None, description="Schema for agent output"
+        default=None, exclude=True, description="Schema for agent output"
     )
     config_schema: type[BaseModel] | dict[str, Any] | None = Field(
-        default=None, description="Schema for agent configuration"
+        default=None, exclude=True, description="Schema for agent configuration"
     )
 
     # Persistence fields (non-serialized)
