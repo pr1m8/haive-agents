@@ -25,11 +25,50 @@ class PersistenceMixin:
         """Set up persistence using the agent's serializable fields.
 
         This method sets up checkpointer and store based on the Agent's
-        serializable persistence fields. If no persistence is configured,
-        it sets up default PostgreSQL persistence with recursion limit 100.
+        serializable persistence fields.
+
+        Persistence behavior:
+        - persistence=False: Persistence is explicitly disabled
+        - persistence=None: Use memory persistence (safe default for testing)
+        - persistence=True: Use default persistence (PostgreSQL if available)
+        - persistence=<config>: Use specific configuration
         """
-        # Set up defaults if no persistence configured or if persistence=True
-        if not self.persistence or self.persistence is True:
+        # Check if persistence is explicitly disabled (False)
+        if self.persistence is False:
+            logger.debug(
+                f"Persistence explicitly disabled for {getattr(self, 'name', 'Agent')}"
+            )
+            self.checkpointer = None
+            self.store = None
+            # Still set up runnable config for recursion limit
+            if not self.runnable_config:
+                self.runnable_config = {
+                    "configurable": {
+                        "thread_id": self._generate_default_thread_id(),
+                        "recursion_limit": 100,
+                    }
+                }
+            return
+
+        # If persistence is None, use memory persistence as a safe default
+        if self.persistence is None:
+            logger.debug(
+                f"Using memory persistence for {getattr(self, 'name', 'Agent')} (persistence=None)"
+            )
+            try:
+                from haive.core.persistence.memory import MemoryCheckpointerConfig
+
+                self.persistence = MemoryCheckpointerConfig()
+            except ImportError:
+                logger.warning(
+                    "Could not import MemoryCheckpointerConfig, persistence disabled"
+                )
+                self.checkpointer = None
+                self.store = None
+                return
+
+        # Set up defaults if persistence=True
+        elif self.persistence is True:
             self._setup_default_persistence()
 
         # Now set up the actual persistence objects
