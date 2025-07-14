@@ -27,7 +27,6 @@ class Plan(BaseModel):
     steps: list[str] = Field(description="list of steps")
 
 
-
 # Just test the simplest possible case
 try:
     add_aug = AugLLMConfig(tools=[add])
@@ -42,7 +41,6 @@ try:
     structured_react.compile()
 
     result = structured_react.run({"messages": [HumanMessage(content="Hello")]})
-
 
     from langchain_core.messages import ToolMessage
 
@@ -59,3 +57,4 @@ except Exception as e:
     # Get just the last few frames of the traceback
     tb = traceback.extract_tb(e.__traceback__)
     for frame in tb[-3:]:  # Just show last 3 frames
+        pass
