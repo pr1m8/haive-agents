@@ -550,7 +550,11 @@ class ExecutionMixin:
                         and hasattr(self, "engine")
                         and self.engine is not None
                     ):
-                        processed_input["engine"] = self.engine
+                        # Convert engine to dict to avoid serialization issues
+                        if hasattr(self.engine, "model_dump"):
+                            processed_input["engine"] = self.engine.model_dump()
+                        else:
+                            processed_input["engine"] = self.engine
                         logger.debug(
                             "Populated missing engine field for state schema validation"
                         )
@@ -800,9 +804,13 @@ class ExecutionMixin:
                             and hasattr(self, "engine")
                             and self.engine is not None
                         ):
-                            processed_input["engine"] = self.engine
+                            # Convert engine to dict to avoid serialization issues
+                            if hasattr(self.engine, "model_dump"):
+                                processed_input["engine"] = self.engine.model_dump()
+                            else:
+                                processed_input["engine"] = self.engine
                             logger.debug(
-                                "Populated missing engine field for state schema validation"
+                                "Populated missing engine field for state schema validation (converted to dict)"
                             )
 
                         # Populate any other missing required fields with defaults
@@ -995,7 +1003,11 @@ class ExecutionMixin:
                         and hasattr(self, "engine")
                         and self.engine is not None
                     ):
-                        processed_input["engine"] = self.engine
+                        # Convert engine to dict to avoid serialization issues
+                        if hasattr(self.engine, "model_dump"):
+                            processed_input["engine"] = self.engine.model_dump()
+                        else:
+                            processed_input["engine"] = self.engine
                         logger.debug(
                             "Populated missing engine field for state schema validation"
                         )
