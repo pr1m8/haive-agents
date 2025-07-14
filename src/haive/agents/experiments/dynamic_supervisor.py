@@ -537,7 +537,7 @@ def test_dynamic_tools():
 
     # Check tools were created
     for tool in supervisor.tools:
-        pass
+        print(f"Tool: {getattr(tool, 'name', 'unnamed')}")
 
     # Test list_agents tool
     list_tool = next(t for t in supervisor.tools if t.name == "list_agents")
@@ -589,7 +589,7 @@ def test_supervisor_workflow():
             {"task": "Research the latest developments in AI", "_state": test_state}
         )
     except Exception as e:
-        pass
+        print(f"Error in workflow test: {e}")
 
     return supervisor
 

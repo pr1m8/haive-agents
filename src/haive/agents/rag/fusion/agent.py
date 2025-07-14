@@ -396,7 +396,7 @@ def create_multi_query_retrieval_callable(
             all_queries = [original_query]
 
         # Remove duplicates and empty queries
-        all_queries = list(set(q.strip() for q in all_queries if q.strip()})
+        all_queries = list(set(q.strip() for q in all_queries if q.strip()))
         logger.info(
             f"Multi-query retrieval with {len(all_queries)} queries: {all_queries}"
         )

@@ -6,9 +6,10 @@ including memory-based, multi-query, fusion, and advanced reasoning patterns.
 
 from typing import Dict, List
 
+from haive.core.schema.prebuilt.rag_state import RAGState
+
 from haive.agents.multi.base import ExecutionMode, MultiAgent
 from haive.agents.simple import SimpleAgent
-from haive.core.schema.prebuilt.rag_state import RAGState
 
 
 class MemoryRAGState(RAGState):
@@ -266,7 +267,7 @@ class RAGFusionAgent(MultiAgent):
             name="fusion_ranker",
             instructions="""
             Apply Reciprocal Rank Fusion (RRF) to combine results from different strategies.
-            RRF formula: score(d) = Î£(1/(k + rank_i(d))) for all strategies i
+            RRF formula: score(d) = sum(1/(k + rank_i(d))) for all strategies i
 
             Create a unified ranking of the most relevant documents.
             """,
@@ -322,7 +323,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
             - Help establish broader context
             - Lead to foundational knowledge retrieval
 
-            Example: "What is the best treatment for pneumonia?" â’ 
+            Example: "What is the best treatment for pneumonia?" ï¿½ 
             "What are the principles of treating bacterial infections?"
             """,
             output_schema={

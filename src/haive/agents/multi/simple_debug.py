@@ -57,4 +57,4 @@ except Exception as e:
     # Get just the last few frames of the traceback
     tb = traceback.extract_tb(e.__traceback__)
     for frame in tb[-3:]:  # Just show last 3 frames
-        pass
+        print(f"  {frame.filename}:{frame.lineno} in {frame.name}")

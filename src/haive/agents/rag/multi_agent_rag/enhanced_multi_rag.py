@@ -75,7 +75,6 @@ class EnhancedRAGSequentialAgent(CompatibilityEnhancedSequentialAgent):
             self.add_agent(SIMPLE_RAG_ANSWER_AGENT)
 
 
-
 class EnhancedRAGConditionalAgent(CompatibilityEnhancedConditionalAgent):
     """RAG conditional agent with built-in compatibility checking and smart routing.
 
@@ -115,7 +114,6 @@ class EnhancedRAGConditionalAgent(CompatibilityEnhancedConditionalAgent):
 
         # Set up conditional routing after all agents are added and validated
         self._setup_enhanced_conditional_routing()
-
 
     def _setup_enhanced_conditional_routing(self):
         """Set up conditional routing with compatibility awareness."""
@@ -185,7 +183,6 @@ class EnhancedRAGParallelAgent(CompatibilityEnhancedParallelAgent):
             self.add_agent(variant)
 
 
-
 # ============================================================================
 # SMART RAG FACTORY WITH COMPATIBILITY
 # ============================================================================
@@ -221,7 +218,6 @@ class SmartRAGFactory:
         retrieval_agents = [a for a in agents if isinstance(a, SimpleRAGAgent)]
         grading_agents = [a for a in agents if isinstance(a, DocumentGradingAgent)]
         answer_agents = [a for a in agents if isinstance(a, SimpleRAGAnswerAgent)]
-
 
         # Determine optimal structure
         if preferred_mode == "parallel" or len(retrieval_agents) > 1:
@@ -270,7 +266,7 @@ class SmartRAGFactory:
             try:
                 system.add_agent(agent)
             except Exception as e:
-                passs}")
+                pass
 
         # Generate compatibility report
         report = system.get_compatibility_report(detailed=True)
@@ -356,7 +352,7 @@ def demonstrate_enhanced_rag_compatibility():
     try:
         sequential_rag.add_agent(custom_agent)
     except Exception as e:
-        pass")
+        pass
 
     # Example 3: Smart factory creation
 
@@ -379,10 +375,8 @@ def demonstrate_enhanced_rag_compatibility():
             compatibility_mode=CompatibilityMode.STRICT,
         )
 
-
     except Exception as e:
-        pass")
-
+        pass
 
 
 # ============================================================================
