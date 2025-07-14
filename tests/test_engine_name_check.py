@@ -39,7 +39,7 @@ def check_engine_name_in_messages():
 
     result = agent._app.invoke(test_input, config=config)
 
-    print(f"\n=== MESSAGE ANALYSIS ===")
+    print("\n=== MESSAGE ANALYSIS ===")
     messages = result.get("messages", [])
     print(f"Found {len(messages)} messages")
 
@@ -55,7 +55,7 @@ def check_engine_name_in_messages():
             if "engine_name" in msg.additional_kwargs:
                 print(f"  ✅ Engine name found: {msg.additional_kwargs['engine_name']}")
             else:
-                print(f"  ❌ No engine_name in additional_kwargs")
+                print("  ❌ No engine_name in additional_kwargs"s")
 
             # Show all kwargs for analysis
             for key, value in msg.additional_kwargs.items():
@@ -76,7 +76,7 @@ def check_engine_name_in_messages():
             for j, tool_call in enumerate(msg.tool_calls):
                 print(f"    Tool {j}: {tool_call['name']} -> {tool_call['args']}")
 
-    print(f"\n=== STATE ANALYSIS ===")
+    print("\n=== STATE ANALYSIS ===")
     print(f"Result keys: {list(result.keys())}")
 
     # Check if engine_name is anywhere in the result
@@ -119,7 +119,7 @@ def check_direct_engine_output():
                     f"✅ Engine name in direct result: {result.additional_kwargs['engine_name']}"
                 )
             else:
-                print(f"❌ No engine_name in direct result")
+                print("❌ No engine_name in direct result"t")
 
     except Exception as e:
         print(f"Direct engine error: {e}")

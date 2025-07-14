@@ -2,7 +2,6 @@
 """Test to reproduce the exact issue from notebook Untitled83.ipynb."""
 
 import logging
-from typing import List, Literal, Optional
 
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field

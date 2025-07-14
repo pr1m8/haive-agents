@@ -11,9 +11,8 @@ This test validates:
 5. State composition with nested agents functions correctly
 """
 
-import asyncio
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 import pytest
 from haive.core.common.mixins.dynamic_tool_route_mixin import DynamicToolRouteMixin
@@ -22,9 +21,8 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.persistence.memory import MemoryCheckpointerConfig
 from haive.core.persistence.postgres_config import PostgresCheckpointerConfig
 from haive.core.persistence.types import CheckpointerMode, CheckpointStorageMode
-from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -382,7 +380,6 @@ class TestMetaStatePostgresPersistence:
             serializer = checkpointer.serde
 
             # Check if it's our custom serializer
-            from haive.core.persistence.serializers import SecureSecretStrSerializer
 
             # The serializer should be either our SecureSecretStrSerializer or EncryptedSerializer
             # that wraps our SecureSecretStrSerializer
@@ -615,7 +612,6 @@ class TestCompleteIntegration:
 
 if __name__ == "__main__":
     # Run basic tests
-    import sys
 
     logging.basicConfig(level=logging.INFO)
 

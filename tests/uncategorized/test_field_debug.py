@@ -2,7 +2,6 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-from typing import Any
 
 from haive.core.schema.field_definition import FieldDefinition
 

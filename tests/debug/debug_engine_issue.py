@@ -2,7 +2,6 @@
 """Debug the engine validation issue in SimpleAgent V2."""
 
 import logging
-from typing import List, Literal, Optional
 
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field

@@ -1,7 +1,5 @@
 """Test SimpleAgent v2 with a simple query to identify the exact error."""
 
-import asyncio
-
 from haive.agents.simple.agent_v2 import SimpleAgentV2
 
 try:

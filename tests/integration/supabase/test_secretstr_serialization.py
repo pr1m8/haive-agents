@@ -2,7 +2,6 @@
 
 import asyncio
 import os
-import uuid
 from datetime import datetime
 
 import psycopg
@@ -14,7 +13,6 @@ from haive.core.persistence.serializers import (
     create_encrypted_serializer_for_postgres,
     create_production_serializer,
 )
-from langchain_core.messages import HumanMessage
 from pydantic import SecretStr
 from pydantic_core import PydanticUndefined
 
@@ -81,7 +79,7 @@ class TestSecretStrSerialization:
         # Parse connection string to get individual components
         from urllib.parse import urlparse
 
-        parsed = urlparse(supabase_connection_string)
+        urlparse(supabase_connection_string)
 
         # Create config with Supabase connection details
         config = PostgresCheckpointerConfig(

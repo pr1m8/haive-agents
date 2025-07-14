@@ -37,11 +37,11 @@ def debug_engine_node_schema():
     # Compile to trigger setup
     agent.compile()
 
-    print(f"\n=== AGENT STATE SCHEMA ===")
+    print("\n=== AGENT STATE SCHEMA ===")
     print(f"Agent state schema: {agent.state_schema}")
     print(f"Agent state fields: {list(agent.state_schema.model_fields.keys())}")
 
-    print(f"\n=== ENGINE NODE ANALYSIS ===")
+    print("\n=== ENGINE NODE ANALYSIS ===")
     # Get the engine node from the graph
     if hasattr(agent, "graph") and agent.graph:
         nodes = agent.graph.nodes
@@ -53,11 +53,11 @@ def debug_engine_node_schema():
             print(f"Engine node name: {engine_node_config.name}")
             print(f"Engine node engine: {engine_node_config.engine}")
 
-            print(f"\n--- EngineNode Field Definitions ---")
+            print("\n--- EngineNode Field Definitions ---")
             print(f"Input field defs: {engine_node_config.input_field_defs}")
             print(f"Output field defs: {engine_node_config.output_field_defs}")
 
-            print(f"\n--- EngineNode Schemas ---")
+            print("\n--- EngineNode Schemas ---")
             print(f"Input schema: {engine_node_config.input_schema}")
             print(f"Output schema: {engine_node_config.output_schema}")
 
@@ -70,7 +70,7 @@ def debug_engine_node_schema():
                     f"Output schema fields: {list(engine_node_config.output_schema.model_fields.keys())}"
                 )
 
-            print(f"\n--- Engine Analysis ---")
+            print("\n--- Engine Analysis ---")
             engine = engine_node_config.engine
             if engine:
                 print(
@@ -82,7 +82,7 @@ def debug_engine_node_schema():
                         f"Engine output schema fields: {list(engine.output_schema.model_fields.keys())}"
                     )
 
-            print(f"\n--- StandardFields Analysis ---")
+            print("\n--- StandardFields Analysis ---")
             from haive.core.schema.field_registry import StandardFields
 
             try:
@@ -93,7 +93,7 @@ def debug_engine_node_schema():
             except Exception as e:
                 print(f"Error creating structured field: {e}")
 
-    print(f"\n=== DIAGNOSIS ===")
+    print("\n=== DIAGNOSIS ===")
     # Check if the issue is in field def → schema conversion
 
 

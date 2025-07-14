@@ -29,7 +29,7 @@ def test_v1_structured_output():
         debug=True,
     )
 
-    print(f"✅ V1 Agent created")
+    print("✅ V1 Agent created"d")
     print(f"   - Structured model: {agent.structured_output_model}")
     print(f"   - Version: {agent.structured_output_version}")
     print(f"   - Force tool use: {agent._has_force_tool_use()}")
@@ -44,7 +44,7 @@ def test_v1_structured_output():
     test_input = {"messages": [HumanMessage(content="What is 2+2?")]}
     config = {"configurable": {"thread_id": None}}
 
-    print(f"\n--- V1 EXECUTION ---")
+    print("\n--- V1 EXECUTION ---")
     try:
         result = agent._app.invoke(test_input, config=config)
         print(f"V1 Result keys: {list(result.keys())}")
@@ -57,7 +57,7 @@ def test_v1_structured_output():
             for field in structured_fields:
                 print(f"   {field}: {result[field]}")
         else:
-            print(f"❌ V1 no structured fields found")
+            print("❌ V1 no structured fields found"d")
 
     except Exception as e:
         print(f"V1 execution error: {e}")
@@ -79,7 +79,7 @@ def test_v2_structured_output():
         debug=True,
     )
 
-    print(f"✅ V2 Agent created")
+    print("✅ V2 Agent created"d")
     print(f"   - Structured model: {agent.structured_output_model}")
     print(f"   - Version: {agent.structured_output_version}")
     print(f"   - Force tool use: {agent._has_force_tool_use()}")
@@ -94,7 +94,7 @@ def test_v2_structured_output():
     test_input = {"messages": [HumanMessage(content="What is 2+2?")]}
     config = {"configurable": {"thread_id": None}}
 
-    print(f"\n--- V2 EXECUTION ---")
+    print("\n--- V2 EXECUTION ---")
     try:
         result = agent._app.invoke(test_input, config=config)
         print(f"V2 Result keys: {list(result.keys())}")
@@ -107,7 +107,7 @@ def test_v2_structured_output():
             for field in structured_fields:
                 print(f"   {field}: {result[field]}")
         else:
-            print(f"❌ V2 no structured fields found")
+            print("❌ V2 no structured fields found"d")
 
     except Exception as e:
         print(f"V2 execution error: {e}")
@@ -135,13 +135,13 @@ def compare_engines():
         structured_output_version="v2",
     )
 
-    print(f"V1 Engine:")
+    print("V1 Engine:")
     print(f"   - force_tool_use: {getattr(v1_engine, 'force_tool_use', None)}")
     print(f"   - force_tool_choice: {getattr(v1_engine, 'force_tool_choice', None)}")
     print(f"   - tools: {getattr(v1_engine, 'tools', None)}")
     print(f"   - tool_choice_mode: {getattr(v1_engine, 'tool_choice_mode', None)}")
 
-    print(f"\nV2 Engine:")
+    print("\nV2 Engine:")
     print(f"   - force_tool_use: {getattr(v2_engine, 'force_tool_use', None)}")
     print(f"   - force_tool_choice: {getattr(v2_engine, 'force_tool_choice', None)}")
     print(f"   - tools: {getattr(v2_engine, 'tools', None)}")

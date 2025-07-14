@@ -8,7 +8,6 @@ But implemented using Haive's architecture with MultiAgent base and proper state
 
 import asyncio
 import logging
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import LLMConfig
@@ -19,7 +18,6 @@ from rich.panel import Panel
 from rich.table import Table
 
 from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
 from haive.agents.supervisor.agent_v2 import SupervisorAgent, SupervisorState
 
 logging.basicConfig(level=logging.INFO)
@@ -187,7 +185,6 @@ async def test_basic_delegation():
             # Determine status
             if next_agent == test_case["expected_worker"]:
                 status = "✅ PASS"
-                status_style = "green"
             else:
                 status = "❌ FAIL"
 

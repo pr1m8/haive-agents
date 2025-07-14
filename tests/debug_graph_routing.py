@@ -29,7 +29,7 @@ def debug_graph_routing():
         debug=True,
     )
 
-    print(f"✅ Agent created")
+    print("✅ Agent created"d")
     print(f"   - Structured model: {agent.structured_output_model}")
     print(f"   - Force tool use check: {agent._has_force_tool_use()}")
     print(
@@ -42,7 +42,7 @@ def debug_graph_routing():
     # Compile to build graph
     agent.compile()
 
-    print(f"\n=== GRAPH ANALYSIS ===")
+    print("\n=== GRAPH ANALYSIS ===")
     if hasattr(agent, "graph") and agent.graph:
         print(f"Graph nodes: {list(agent.graph.nodes.keys())}")
         print(f"Graph edges: {list(agent.graph.edges)}")
@@ -59,7 +59,7 @@ def debug_graph_routing():
             elif hasattr(compiled_graph, "nodes"):
                 print(f"Direct nodes: {list(compiled_graph.nodes.keys())}")
 
-    print(f"\n=== ENGINE FORCE TOOL ANALYSIS ===")
+    print("\n=== ENGINE FORCE TOOL ANALYSIS ===")
     engine = agent.engine
     if engine:
         print(f"Engine type: {type(engine)}")
