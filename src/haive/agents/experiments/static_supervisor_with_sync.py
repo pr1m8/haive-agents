@@ -306,3 +306,4 @@ class StaticSupervisor(ReactAgent[SupervisorReactState]):
 # Example usage
 if __name__ == "__main__":
     # This demonstrates the structure - would need proper engine setup
+    pass

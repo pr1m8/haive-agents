@@ -225,7 +225,15 @@ def create_dynamic_handoff_tool(supervisor_instance, agent_name: str):
 
             # Update execution history
             if hasattr(state, "execution_history"):
-                state["execution_history"] = [*state.get("execution_history", []), {"agent_name": agent_name, "task": task, "result": response, "success": True}]
+                state["execution_history"] = [
+                    *state.get("execution_history", []),
+                    {
+                        "agent_name": agent_name,
+                        "task": task,
+                        "result": response,
+                        "success": True,
+                    },
+                ]
 
             return f"Agent {agent_name} completed task. Result: {response}"
 
@@ -234,7 +242,16 @@ def create_dynamic_handoff_tool(supervisor_instance, agent_name: str):
 
             # Update execution history with error
             if hasattr(state, "execution_history"):
-                state["execution_history"] = [*state.get("execution_history", []), {"agent_name": agent_name, "task": task, "result": None, "success": False, "error": str(e)}]
+                state["execution_history"] = [
+                    *state.get("execution_history", []),
+                    {
+                        "agent_name": agent_name,
+                        "task": task,
+                        "result": None,
+                        "success": False,
+                        "error": str(e),
+                    },
+                ]
 
             return error_msg
 
@@ -506,7 +523,6 @@ def test_supervisor_basic():
 
     supervisor = DynamicSupervisorAgent(name="Test Supervisor", agent_registry=registry)
 
-
     return supervisor
 
 
@@ -536,7 +552,6 @@ def test_dynamic_tools():
         agent_class=SimpleAgent,
         config={"name": "Calculator Agent"},
     )
-
 
     # Verify handoff tool was created
     handoff_tools = [t for t in supervisor.tools if t.name.startswith("handoff_to_")]
@@ -574,6 +589,7 @@ def test_supervisor_workflow():
             {"task": "Research the latest developments in AI", "_state": test_state}
         )
     except Exception as e:
+        pass
 
     return supervisor
 
@@ -589,4 +605,3 @@ if __name__ == "__main__":
 
     # Workflow test
     supervisor = test_supervisor_workflow()
-

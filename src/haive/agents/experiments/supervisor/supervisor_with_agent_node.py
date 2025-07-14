@@ -194,7 +194,11 @@ class SupervisorWithAgentNode(ReactAgent):
         # Get current task from messages
         if state.messages:
             last_msg = state.messages[-1]
-            task = last_msg.get("content", "") if isinstance(last_msg, dict) else str(last_msg)
+            task = (
+                last_msg.get("content", "")
+                if isinstance(last_msg, dict)
+                else str(last_msg)
+            )
         else:
             task = ""
 
@@ -297,7 +301,6 @@ async def demo_agent_node_pattern():
     result = await supervisor.graph.ainvoke(initial_state)
 
 
-
 if __name__ == "__main__":
-
     # Show the pattern
+    pass
