@@ -238,6 +238,7 @@ def main():
 
     # Demonstrate accessing configs
     for name, config in configs.items():
+        pass
 
 
 if __name__ == "__main__":
