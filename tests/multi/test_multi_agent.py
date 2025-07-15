@@ -10,7 +10,6 @@ using the MultiAgent class with the enhanced AgentSchemaComposer.
 import logging
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.logging.rich_logger import LogLevel, get_logger
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
@@ -20,7 +19,7 @@ from haive.agents.simple.agent import SimpleAgent
 
 # Configure logger
 logger = get_logger("test_multi_agent")
-logger.set_level(LogLevel.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 # Define a tool for demonstration
