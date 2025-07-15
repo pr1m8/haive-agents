@@ -156,3 +156,4 @@ __pycache__/
 .cache/trunk/
 # ignore your project venv
 .venv/
+poetry.lock
