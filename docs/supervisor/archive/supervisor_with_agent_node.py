@@ -5,14 +5,13 @@ Instead of creating tools for each agent, we have:
 2. One node that reads agent name from state and executes that agent
 """
 
-import asyncio
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema import StateSchema
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from langgraph.graph import END
 from pydantic import Field, model_validator
@@ -293,12 +292,12 @@ async def demo_agent_node_pattern():
 
     # Test routing
     initial_state.messages = [{"role": "user", "content": "Calculate 7 * 8"}]
-    result = await supervisor.graph.ainvoke(initial_state)
+    await supervisor.graph.ainvoke(initial_state)
 
     initial_state.messages = [
         {"role": "user", "content": "Find information about Python"}
     ]
-    result = await supervisor.graph.ainvoke(initial_state)
+    await supervisor.graph.ainvoke(initial_state)
 
 
 if __name__ == "__main__":
