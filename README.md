@@ -1,298 +1,464 @@
-# Haive Agents - Agent Architecture Library
+# Haive Agents - Multi-Agent Architecture Library
 
 ## Overview
 
-Haive Agents provides 50+ reusable agent architectures and patterns for building intelligent AI systems. These are general-purpose architectural patterns that can be adapted to any domain or use case.
+Haive Agents provides comprehensive multi-agent orchestration capabilities with dynamic supervisor patterns, reactive reasoning agents, and sophisticated coordination mechanisms. The library has been recently reorganized for better maintainability and developer experience.
 
-## Agent Categories
+## 🎯 Core Implementations
 
-### 1. RAG (Retrieval Augmented Generation) Agents
+### 1. Dynamic Supervisor Agent
 
-**What they do**: Combine document retrieval with generation for accurate, grounded responses.
+**Location**: `/src/haive/agents/dynamic_supervisor/`
 
-- **Agentic RAG**: Makes intelligent decisions about when and how to retrieve
-- **Dynamic RAG**: Adapts retrieval strategy based on query complexity
-- **Self-Correcting RAG**: Validates retrieved info and self-corrects errors
-- **Multi-Strategy RAG**: Combines multiple retrieval approaches
-- **HYDE RAG**: Generates hypothetical documents to improve retrieval
-- **Filtered RAG**: Advanced filtering based on metadata and relevance
-- **DB RAG**: Specialized for structured data (SQL, GraphDB)
-- **Typed RAG**: Enforces type safety on inputs and outputs
+Runtime agent management with tool-based execution:
 
-**Example Use:**
+- **Dynamic agent management** - Add/remove agents at runtime
+- **Tool-based execution** - Agents execute through tools
+- **ReAct integration** - Inherits reasoning capabilities
+- **State management** - Maintains agent registry and execution state
 
 ```python
-from haive.agents.rag import DynamicRAG
+from haive.agents.dynamic_supervisor import create_dynamic_supervisor
 
-agent = DynamicRAG(vector_store=my_store)
-response = agent.invoke("What are the Q3 financial results?")
+# Create supervisor
+supervisor = create_dynamic_supervisor(name="task_router")
+
+# Add agents
+state = supervisor.create_initial_state()
+state.add_agent("math", math_agent, "Mathematics expert")
+state.add_agent("search", search_agent, "Web search specialist")
+
+# Route tasks
+result = await supervisor.arun("Calculate 15 * 23", state=state)
 ```
 
-### 2. Reasoning & Critique Agents
+### 2. React Agent
 
-**What they do**: Advanced reasoning with self-evaluation and improvement.
+**Location**: `/src/haive/agents/react/`
 
-- **LATS (Language Agent Tree Search)**: Explores reasoning trees
-- **MCTS (Monte Carlo Tree Search)**: Probabilistic decision making
-- **Reflection**: Self-evaluates and improves responses
-- **Reflexion**: Iterative improvement through self-reflection
-- **Self-Discover**: Discovers own capabilities and limitations
-- **Tree of Thoughts (ToT)**: Explores multiple reasoning paths
+ReAct (Reasoning and Acting) pattern with looping behavior:
 
-**Example Use:**
+- **Reasoning loop** - Continuous reasoning and acting cycle
+- **Tool integration** - Seamless tool usage within the loop
+- **State management** - Maintains conversation state
+- **SimpleAgent extension** - Inherits base functionality
 
 ```python
-from haive.agents.reasoning import TreeOfThoughts
+from haive.agents.react import ReactAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
-agent = TreeOfThoughts(max_thoughts=5)
-solution = agent.solve("Design a sustainable city")
+agent = ReactAgent(
+    name="reasoning_agent",
+    engine=AugLLMConfig(
+        model="gpt-4",
+        tools=[calculator_tool],
+        system_message="Think step by step."
+    )
+)
+
+result = await agent.arun("What is 15 * 23 + 7?")
 ```
 
-### 3. Planning & Execution Agents
+### 3. Supervisor Package
 
-**What they do**: Break down complex tasks and execute them systematically.
+**Location**: `/src/haive/agents/supervisor/`
 
-- **Plan and Execute**: Creates and executes step-by-step plans
-- **LLM Compiler**: Optimizes execution order for efficiency
-- **ReWoo**: Reduces API calls through smart planning
-- **Task Analysis**: Analyzes complexity before execution
+Alternative supervisor implementations:
 
-**Example Use:**
+- **Basic SupervisorAgent** - Traditional supervisor pattern
+- **Integrated supervisor** - Multi-agent coordination
+- **Registry utilities** - Agent registry management
+- **Routing logic** - Task routing and agent selection
+
+## 🗂️ Package Organization
+
+### Source Code Structure
+
+```
+src/haive/agents/
+├── dynamic_supervisor/     # Main supervisor implementation
+├── supervisor/             # Alternative supervisor patterns
+├── react/                  # ReAct agent implementation
+├── simple/                 # Base SimpleAgent
+├── multi/                  # Multi-agent coordination
+├── rag/                    # RAG agent implementations
+└── ...                     # Other agent types
+```
+
+### Testing Structure
+
+```
+tests/
+├── supervisor/
+│   ├── components/         # Component-specific tests
+│   ├── experiments/        # Experimental pattern tests
+│   └── integration/        # Integration tests
+├── react/                  # React agent tests
+├── test_dynamic_supervisor/# Dynamic supervisor tests
+└── ...
+```
+
+### Examples Structure
+
+```
+examples/
+├── supervisor/
+│   ├── basic/              # Basic usage examples
+│   ├── advanced/           # Advanced patterns
+│   └── patterns/           # Architecture patterns
+├── react/                  # React agent examples
+└── ...
+```
+
+### Documentation Structure
+
+```
+docs/
+├── supervisor/
+│   ├── README.md           # Main supervisor documentation
+│   ├── patterns/           # Pattern documentation
+│   └── archive/            # Archived implementations
+└── ...
+```
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+pip install haive-agents
+```
+
+### Basic Multi-Agent Setup
 
 ```python
-from haive.agents.planning import PlanAndExecute
+import asyncio
+from haive.agents.dynamic_supervisor import create_dynamic_supervisor
+from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
-agent = PlanAndExecute(tools=[calculator, web_search])
-result = agent.run("Research and calculate ROI for solar panels")
+async def main():
+    # Create specialized agents
+    math_agent = SimpleAgent(
+        name="math_agent",
+        engine=AugLLMConfig(tools=[calculator_tool])
+    )
+
+    search_agent = SimpleAgent(
+        name="search_agent",
+        engine=AugLLMConfig(tools=[search_tool])
+    )
+
+    # Create supervisor
+    supervisor = create_dynamic_supervisor(name="coordinator")
+
+    # Add agents
+    state = supervisor.create_initial_state()
+    state.add_agent("math", math_agent, "Mathematics expert")
+    state.add_agent("search", search_agent, "Web search specialist")
+
+    # Route complex task
+    result = await supervisor.arun(
+        "Find the population of Tokyo and calculate the population density",
+        state=state
+    )
+
+    print(result)
+
+asyncio.run(main())
 ```
 
-### 4. Conversation & Collaboration Agents
-
-**What they do**: Handle complex conversational scenarios and multi-agent coordination.
-
-- **Collaborative**: Multiple agents working together
-- **Debate**: Agents debate to reach better conclusions
-- **Directed**: Goal-oriented conversation management
-- **Round Robin**: Turn-based multi-agent discussion
-- **Social Media**: Optimized for platform-specific interactions
-
-**Example Use:**
+### Advanced Agent Activation
 
 ```python
-from haive.agents.conversation import DebateAgent
+from haive.agents.dynamic_supervisor import DynamicSupervisorAgent
 
-pro = DebateAgent(stance="pro")
-con = DebateAgent(stance="con")
-moderator = DebateAgent(role="moderator")
+# Create supervisor with capability-based activation
+supervisor = DynamicSupervisorAgent(
+    name="adaptive_supervisor",
+    engine=supervisor_engine,
+    enable_agent_builder=True
+)
 
-conclusion = moderator.moderate_debate(pro, con, topic="AI regulation")
+# Start with minimal agents
+state = supervisor.create_initial_state()
+state.add_agent("general", general_agent, "General assistant")
+
+# Add specialized agents dynamically based on need
+async def handle_request(request):
+    # Analyze request capabilities
+    if "calculation" in request.lower():
+        state.add_agent("math", math_agent, "Mathematics expert")
+
+    if "research" in request.lower():
+        state.add_agent("search", search_agent, "Research specialist")
+
+    return await supervisor.arun(request, state=state)
 ```
 
-### 5. Document Processing Agents
+## 🏗️ Architecture Patterns
 
-**What they do**: Extract, transform, and analyze documents intelligently.
-
-- **Knowledge Graph Builders**: Extract entities and relationships
-- **Iterative Refinement**: Progressively improve extraction quality
-- **Map-Merge**: Parallel processing with intelligent merging
-- **Complex Extraction**: Handle nested and complex structures
-- **Summarizers**: Multi-level summarization strategies
-- **TNT (Transform and Tag)**: Document transformation pipeline
-
-**Example Use:**
+### 1. Tool-Based Agent Execution
 
 ```python
-from haive.agents.document_modifiers import KnowledgeGraphBuilder
-
-agent = KnowledgeGraphBuilder()
-kg = agent.process("research_paper.pdf")
-# Returns structured knowledge graph
+@tool
+def handoff_to_math_agent(task: str) -> str:
+    """Transfer task to math agent."""
+    result = await math_agent.arun(task)
+    return f"Math result: {result}"
 ```
 
-### 6. Research & Analysis Agents
-
-**What they do**: Conduct deep research and analysis on topics.
-
-- **Storm**: Systematic topic research and report generation
-- **Open Perplexity**: Open-source research assistant
-- **Person Researcher**: Deep research on individuals
-- **Wiki Writer**: Creates Wikipedia-style articles
-- **Interview Agent**: Conducts and analyzes interviews
-
-**Example Use:**
+### 2. Agent Execution Node Pattern
 
 ```python
-from haive.agents.research import StormAgent
+# Supervisor decides routing
+state.agent_route = "math_agent"
 
-agent = StormAgent()
-report = agent.research("quantum computing applications in medicine")
-# Returns comprehensive research report
+# Agent execution node runs selected agent
+async def agent_execution_node(state):
+    agent = registry.get_active_agent(state.agent_route)
+    return await agent.arun(state.current_task)
 ```
 
-### 7. ReAct Agents
-
-**What they do**: Reason and Act - combine reasoning with tool use.
-
-- **ReAct v1/v2/v3**: Different implementations with improvements
-- **ReAct Many Tools**: Optimized for 10+ tools
-- **ReAct Class**: Object-oriented implementation
-
-**Example Use:**
+### 3. Dynamic Tool Generation
 
 ```python
-from haive.agents.react import ReactV3
-
-agent = ReactV3(tools=[search, calculator, database])
-result = agent.solve("Find the market cap of the top 5 tech companies")
+def generate_handoff_tools(agents):
+    tools = []
+    for name, agent in agents.items():
+        tool = create_handoff_tool(name, agent)
+        tools.append(tool)
+    return tools
 ```
 
-### 8. Specialized Agents
+## 🧪 Testing Philosophy
 
-**What they do**: Unique capabilities for specific use cases.
+### No-Mocks Testing
 
-- **Long-Term Memory**: Maintains context across sessions
-- **Dynamic Supervisor**: Orchestrates other agents dynamically
-- **Sequential**: Step-by-step execution with dependencies
-- **Self-Healing Code**: Automatically fixes code errors
-- **Simple Agent**: Basic single-purpose agents
+All tests use real components:
 
-## Common Patterns
+- **Real LLM integrations** - Actual API calls
+- **Real agent implementations** - Full agent stack
+- **Real state management** - Actual persistence
+- **Real tool execution** - Complete workflow
 
-### Agent Composition
+### Test Categories
+
+```bash
+# Run all tests
+poetry run pytest tests/ -v
+
+# Run specific categories
+poetry run pytest tests/supervisor/ -v          # Supervisor tests
+poetry run pytest tests/react/ -v              # React agent tests
+poetry run pytest tests/supervisor/components/ -v  # Component tests
+poetry run pytest tests/supervisor/experiments/ -v # Experimental tests
+```
+
+## 📚 Examples and Patterns
+
+### Basic Examples
+
+- **[Basic Supervisor](examples/supervisor/basic/basic_supervisor_example.py)** - Simple multi-agent coordination
+- **[React Agent](examples/react/)** - ReAct pattern usage
+
+### Advanced Examples
+
+- **[Dynamic Activation](examples/supervisor/advanced/dynamic_activation_example.py)** - Capability-based agent activation
+- **[Multi-Step Workflows](examples/supervisor/advanced/)** - Complex task coordination
+
+### Pattern Examples
+
+- **[Agent Execution Node](examples/supervisor/patterns/agent_execution_node_pattern.py)** - Clean execution pattern
+- **[Dynamic Tool Generation](examples/supervisor/patterns/dynamic_tool_generation_pattern.py)** - Tool creation patterns
+- **[State Synchronized Tools](examples/supervisor/patterns/state_synchronized_tools_pattern.py)** - State-tool coordination
+
+## 🔧 Development
+
+### Running Examples
+
+```bash
+# Basic supervisor example
+poetry run python examples/supervisor/basic/basic_supervisor_example.py
+
+# Advanced patterns
+poetry run python examples/supervisor/advanced/dynamic_activation_example.py
+
+# Pattern demonstrations
+poetry run python examples/supervisor/patterns/agent_execution_node_pattern.py
+```
+
+### Development Setup
+
+```bash
+# Install dependencies
+poetry install
+
+# Run tests
+poetry run pytest tests/ -v
+
+# Run specific test suite
+poetry run pytest tests/supervisor/ -v
+```
+
+## 📖 Documentation
+
+### Core Documentation
+
+- **[Supervisor Documentation](docs/supervisor/README.md)** - Complete supervisor guide
+- **[React Agent Documentation](src/haive/agents/react/README.md)** - ReAct pattern guide
+- **[Dynamic Supervisor Documentation](src/haive/agents/dynamic_supervisor/README.md)** - Dynamic supervisor details
+
+### Testing Documentation
+
+- **[Test Guide](tests/supervisor/README.md)** - Testing approach and guidelines
+- **[No-Mocks Philosophy](docs/supervisor/TEST_GUIDE.md)** - Testing philosophy
+
+### Pattern Documentation
+
+- **[Architecture Patterns](docs/supervisor/patterns/)** - Detailed pattern explanations
+- **[Implementation Guide](docs/supervisor/IMPLEMENTATION_PLAN.md)** - Implementation strategy
+
+## 🎯 Common Use Cases
+
+### 1. Task Routing
+
+Route different types of tasks to specialized agents:
 
 ```python
-# Combine multiple agents
-researcher = ResearchAgent()
-writer = WriterAgent()
-critic = CriticAgent()
-
-# Chain them together
-research = researcher.investigate(topic)
-draft = writer.write(research)
-final = critic.review_and_improve(draft)
+# Question answering → General agent
+# Calculations → Math agent
+# Research → Search agent
+# Code generation → Code agent
 ```
 
-### Dynamic Configuration
+### 2. Multi-Step Workflows
+
+Coordinate complex processes:
 
 ```python
-# Adjust agent behavior at runtime
-agent = DynamicRAG()
-agent.set_retrieval_strategy("multi_query")
-agent.set_temperature(0.2)  # More focused
+# Research → Analysis → Presentation
+# Data Collection → Processing → Reporting
+# Problem Analysis → Solution Design → Implementation
 ```
 
-### State Persistence
+### 3. Resource Management
+
+Optimize resource usage:
 
 ```python
-# Save and restore agent state
-agent = LongTermMemoryAgent()
-conversation = agent.chat("Tell me about Paris")
-
-# Save state
-state = agent.save_state()
-
-# Restore later
-restored_agent = LongTermMemoryAgent.from_state(state)
+# Dynamic activation - Activate agents on demand
+# Load balancing - Distribute work across agents
+# Cost optimization - Use appropriate models
 ```
 
-## Best Practices
+### 4. Error Recovery
 
-1. **Choose the Right Agent**: Match agent capabilities to your use case
-2. **Extend Don't Replace**: Build on existing agents rather than starting from scratch
-3. **Configure Appropriately**: Adjust parameters for your specific needs
-4. **Monitor Performance**: Use built-in metrics and logging
-5. **Test Thoroughly**: Each agent includes test suites - use them!
-
-## Persistence & Configuration
-
-### Supabase Integration
-
-All Haive agents automatically integrate with Supabase for conversation persistence and state management.
-
-**Quick Setup:**
-
-1. Set your Supabase connection string:
-
-   ```bash
-   export POSTGRES_CONNECTION_STRING="postgresql://postgres.{project}:{password}@aws-0-{region}.pooler.supabase.com:6543/postgres"
-   ```
-
-2. Agents automatically detect and use Supabase:
-
-   ```python
-   from haive.agents.simple.agent import SimpleAgent
-
-   agent = SimpleAgent(name="My Agent")
-
-   # Conversations are automatically persisted to Supabase
-   result = agent.run(
-       {'messages': [HumanMessage(content="Hello!")]},
-       config={'configurable': {'thread_id': 'conversation-1'}}
-   )
-   ```
-
-**Features:**
-
-- ✅ **Automatic Configuration**: Detects Supabase connection from environment
-- ✅ **Conversation Persistence**: All agent interactions saved automatically
-- ✅ **Resume Conversations**: Continue from any point using thread IDs
-- ✅ **State Management**: Full conversation state preserved across sessions
-- ✅ **Recursion Limits**: Configurable limits (default: 100) for agent safety
-
-**Verification:**
+Handle failures gracefully:
 
 ```python
-# Check if agent is using Supabase
-if hasattr(agent, 'persistence') and agent.persistence:
-    if "supabase.com" in agent.persistence.connection_string:
-        print("✅ Using Supabase for persistence!")
+# Fallback agents - Backup for critical functions
+# Retry logic - Automatic retry for failures
+# Graceful degradation - Reduced functionality
 ```
 
-### Configuration Options
+## 🛠️ Best Practices
 
-**Environment Variables:**
+### 1. Agent Design
 
-- `POSTGRES_CONNECTION_STRING`: Supabase connection string (auto-detected)
-- `HAIVE_RECURSION_LIMIT`: Override default recursion limit
+- **Specialized agents** for specific tasks
+- **Clear descriptions** for routing decisions
+- **Robust error handling** in implementations
+- **Appropriate tool selection**
 
-**Runtime Configuration:**
+### 2. Supervisor Configuration
 
-```python
-# Custom thread IDs for conversation management
-config = {
-    'configurable': {
-        'thread_id': f'user-{user_id}-session-{session_id}',
-        'recursion_limit': 150  # Override default
-    }
-}
+- **Clear system messages** for routing logic
+- **Appropriate model selection** for complexity
+- **Proper state management** for multi-turn interactions
+- **Resource optimization** for cost efficiency
 
-result = agent.run(messages, config=config)
-```
+### 3. State Management
 
-## Advanced Features
+- **Minimal state** for performance
+- **Clear state transitions** for debugging
+- **Proper state persistence** for long conversations
+- **State validation** for correctness
 
-- **Modular Design**: Mix and match components
-- **Tool Integration**: Add any tool to any agent
-- **Custom Prompts**: Override default prompts
-- **State Management**: Full control over agent state with Supabase persistence
-- **Parallel Execution**: Many agents support concurrent operations
-- **Conversation Continuity**: Resume any conversation from exact state
+### 4. Error Handling
 
-## Troubleshooting
+- **Graceful degradation** when agents fail
+- **Retry logic** for transient failures
+- **Fallback agents** for critical functions
+- **Comprehensive logging** for debugging
 
-### Common Issues
+## 🔄 Recent Reorganization
 
-**Prepared Statement Errors:**
+The package has been recently reorganized for better maintainability:
 
-- Error: `prepared statement "_pg3_X" already exists`
-- **Impact**: ⚠️ Does NOT prevent data persistence
-- **Solution**: These errors can be safely ignored - conversations are still saved
+### What Was Moved
 
-**Missing Persistence:**
+- **64 test files** moved from source to proper test directories
+- **8 valuable examples** extracted from experimental code
+- **7 documentation files** organized in docs directory
+- **Debug and experimental files** properly archived
 
-- **Cause**: `POSTGRES_CONNECTION_STRING` not set
-- **Solution**: Set environment variable with your Supabase connection string
+### Benefits
 
-For detailed troubleshooting, see: [Supabase Integration Guide](../../project_docs/SUPABASE_INTEGRATION.md)
+- **Clean source code** - No test files in source directories
+- **Organized tests** - Tests categorized by purpose
+- **Preserved patterns** - Valuable patterns saved as examples
+- **Centralized documentation** - All docs in logical locations
 
-_Note: Detailed API documentation for each agent coming soon. Each agent is production-tested and includes examples._
+### Migration Guide
+
+See **[Reorganization Summary](docs/supervisor/REORGANIZATION_SUMMARY.md)** for complete details.
+
+## 🤝 Contributing
+
+### Adding New Patterns
+
+1. Study existing patterns in `/patterns/` directory
+2. Follow established architecture principles
+3. Implement comprehensive tests
+4. Document the pattern thoroughly
+5. Provide usage examples
+
+### Development Guidelines
+
+1. **Use real components** in tests (no mocks)
+2. **Follow existing patterns** and conventions
+3. **Include comprehensive documentation**
+4. **Test thoroughly** before submission
+5. **Update cross-references** as needed
+
+## 📈 Roadmap
+
+### Planned Improvements
+
+1. **Enhanced routing** - More sophisticated agent selection
+2. **Performance optimization** - Faster state management
+3. **Extended patterns** - New architectural patterns
+4. **Better monitoring** - Enhanced observability
+5. **Improved error handling** - More robust error recovery
+
+### Future Patterns
+
+1. **Hierarchical supervisors** - Multi-level coordination
+2. **Federated agents** - Distributed agent management
+3. **Adaptive routing** - Learning-based agent selection
+4. **Resource-aware scheduling** - Optimize resource usage
+5. **Stream processing** - Real-time agent coordination
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🔗 Related Projects
+
+- **[Haive Core](../haive-core/)** - Core framework components
+- **[Haive Tools](../haive-tools/)** - Tool implementations
+- **[Haive Games](../haive-games/)** - Game-playing agents
+- **[Haive MCP](../haive-mcp/)** - MCP integration
+
+For questions, issues, or contributions, please refer to the main project repository or create an issue.
