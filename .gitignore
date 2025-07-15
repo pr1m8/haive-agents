@@ -152,3 +152,7 @@ __pycache__/
 *.py[cod]
 **/__pycache__/
 **/*.pyc
+# ignore your trunk cache
+.cache/trunk/
+# ignore your project venv
+.venv/

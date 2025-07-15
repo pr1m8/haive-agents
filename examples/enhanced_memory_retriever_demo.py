@@ -15,8 +15,6 @@ This represents Phase 2 of our incremental memory system implementation.
 
 import asyncio
 import logging
-from datetime import datetime
-from pathlib import Path
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
