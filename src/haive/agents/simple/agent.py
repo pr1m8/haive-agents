@@ -1,7 +1,7 @@
 # src/haive/agents/simple/agent.py
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
