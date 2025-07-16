@@ -198,6 +198,7 @@ class Agent(
     _app: Any | None = PrivateAttr(default=None)
     _async_checkpointer: Any | None = PrivateAttr(default=None)
     _async_setup_pending: bool = PrivateAttr(default=False)
+    _state_graph: Any | None = PrivateAttr(default=None) # New attribute for StateGraph
 
     # Schema control flag
     set_schema: Literal[True, False] = Field(
@@ -898,6 +899,7 @@ class Agent(
         self._is_compiled = False
         self.graph = None
         self._compiled_graph = None
+        self._state_graph = None # Invalidate state graph as well
 
     def _ensure_graph_built(self) -> None:
         """Ensure the graph is built. Rebuild if needed."""
@@ -942,6 +944,64 @@ class Agent(
         # Regenerate
         self._setup_schemas()
 
+    def _create_state_graph(self, **schema_kwargs) -> Any:
+        """Create the LangGraph StateGraph with schema kwargs.
+        
+        Args:
+            **schema_kwargs: Additional schema arguments for StateGraph creation
+            
+        Returns:
+            The LangGraph StateGraph (not compiled)
+        """
+        # Build graph if not already built
+        if not hasattr(self, "graph") or self.graph is None:
+            logger.debug("Building graph before StateGraph creation")
+            self._ensure_graph_built()
+
+        if not self.graph:
+            raise RuntimeError("Graph not built")
+
+        # Build schema kwargs for conversion
+        final_schema_kwargs = {}
+
+        # Ensure we have schemas
+        if not self.state_schema:
+            logger.warning(
+                f"No state schema found for {self.name}, regenerating..."
+            )
+            self._setup_schemas()
+
+        # Add schemas to kwargs
+        if self.state_schema:
+            final_schema_kwargs["state_schema"] = self.state_schema
+        else:
+            raise ValueError(f"No state schema available for {self.name}")
+
+        if self.input_schema:
+            final_schema_kwargs["input"] = self.input_schema
+
+        if self.output_schema:
+            final_schema_kwargs["output"] = self.output_schema
+
+        if self.config_schema:
+            final_schema_kwargs["config_schema"] = self.config_schema
+
+        # Override with any provided schema kwargs
+        final_schema_kwargs.update(schema_kwargs)
+
+        # Convert BaseGraph to LangGraph StateGraph
+        try:
+            langgraph_graph = self.graph.to_langgraph(**final_schema_kwargs)
+            logger.debug("Successfully converted BaseGraph to LangGraph StateGraph")
+        except Exception as e:
+            logger.exception(f"Failed to convert BaseGraph to LangGraph: {e}")
+            raise
+
+        # Store StateGraph as private attribute
+        self._state_graph = langgraph_graph
+        
+        return langgraph_graph
+
     def compile(self, **kwargs) -> CompiledGraph:
         """Compile the graph and cache the result.
 
@@ -952,14 +1012,6 @@ class Agent(
             The compiled graph
         """
         if not self._is_compiled or kwargs:
-            # Build graph if not already built
-            if not hasattr(self, "graph") or self.graph is None:
-                logger.debug("Building graph before compilation")
-                self._ensure_graph_built()
-
-            if not self.graph:
-                raise RuntimeError("Graph not built")
-
             # Ensure persistence is set up if not already done
             # TEMPORARILY DISABLED to debug PydanticUndefined issue
             # if not hasattr(self, "checkpointer") or self.checkpointer is None:
@@ -977,41 +1029,10 @@ class Agent(
                 except Exception as e:
                     logger.exception(f"Error setting up checkpointer tables: {e}")
 
-            # First, we need to convert BaseGraph to LangGraph StateGraph
-            # Build schema kwargs for conversion
-            schema_kwargs = {}
+            # Create StateGraph with schema kwargs
+            langgraph_graph = self._create_state_graph()
 
-            # Ensure we have schemas
-            if not self.state_schema:
-                logger.warning(
-                    f"No state schema found for {self.name}, regenerating..."
-                )
-                self._setup_schemas()
-
-            # Add schemas to kwargs
-            if self.state_schema:
-                schema_kwargs["state_schema"] = self.state_schema
-            else:
-                raise ValueError(f"No state schema available for {self.name}")
-
-            if self.input_schema:
-                schema_kwargs["input"] = self.input_schema
-
-            if self.output_schema:
-                schema_kwargs["output"] = self.output_schema
-
-            if self.config_schema:
-                schema_kwargs["config_schema"] = self.config_schema
-
-            # Convert BaseGraph to LangGraph StateGraph
-            try:
-                langgraph_graph = self.graph.to_langgraph(**schema_kwargs)
-                logger.debug("Successfully converted BaseGraph to LangGraph StateGraph")
-            except Exception as e:
-                logger.exception(f"Failed to convert BaseGraph to LangGraph: {e}")
-                raise
-
-            # Now compile the LangGraph StateGraph with checkpointer and store
+            # Prepare compile kwargs (checkpointing happens here)
             compile_kwargs = kwargs.copy()
 
             # Add checkpointer if we have one and it's not already specified
@@ -1030,11 +1051,77 @@ class Agent(
             self._app = langgraph_graph.compile(**compile_kwargs)
             self._compiled_graph = self._app
             self._is_compiled = True
+            
+            # Apply JSON schema compatibility fix for CopilotKit integration
+            self._apply_json_schema_compatibility_fix()
 
         if self._compiled_graph is None:
             raise RuntimeError("Failed to compile graph")
 
         return self._compiled_graph
+
+    def _apply_json_schema_compatibility_fix(self) -> None:
+        """Apply JSON schema compatibility fix for CopilotKit integration.
+        
+        This fixes the 'Cannot generate a JsonSchema for core_schema.CallableSchema' error
+        that occurs when CopilotKit tries to introspect schemas containing callable fields.
+        """
+        if not self._compiled_graph:
+            return
+            
+        # Store original methods
+        original_get_input_jsonschema = self._compiled_graph.get_input_jsonschema
+        original_get_output_jsonschema = self._compiled_graph.get_output_jsonschema
+        
+        def safe_get_input_jsonschema(config=None):
+            """Safe wrapper for get_input_jsonschema that handles CallableSchema errors."""
+            try:
+                return original_get_input_jsonschema(config)
+            except Exception as e:
+                if "CallableSchema" in str(e):
+                    logger.debug("Handling CallableSchema error in input schema - providing fallback")
+                    # Return minimal schema for CopilotKit compatibility
+                    return {
+                        "type": "object",
+                        "properties": {
+                            "messages": {
+                                "type": "array",
+                                "items": {"type": "object"},
+                                "description": "Chat message history"
+                            }
+                        },
+                        "required": ["messages"],
+                        "title": f"{self.name}Input"
+                    }
+                raise
+        
+        def safe_get_output_jsonschema(config=None):
+            """Safe wrapper for get_output_jsonschema that handles CallableSchema errors."""
+            try:
+                return original_get_output_jsonschema(config)
+            except Exception as e:
+                if "CallableSchema" in str(e):
+                    logger.debug("Handling CallableSchema error in output schema - providing fallback")
+                    # Return minimal schema for CopilotKit compatibility
+                    return {
+                        "type": "object",
+                        "properties": {
+                            "messages": {
+                                "type": "array",
+                                "items": {"type": "object"},
+                                "description": "Chat message history"
+                            }
+                        },
+                        "required": ["messages"],
+                        "title": f"{self.name}Output"
+                    }
+                raise
+        
+        # Replace the methods on the compiled graph
+        self._compiled_graph.get_input_jsonschema = safe_get_input_jsonschema
+        self._compiled_graph.get_output_jsonschema = safe_get_output_jsonschema
+        
+        logger.debug(f"Applied JSON schema compatibility fix for agent '{self.name}'")
 
     # ============================================================================
     # ENGINE INVOCATION INTERFACE
