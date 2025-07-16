@@ -12,7 +12,6 @@ from abc import abstractmethod
 from typing import Any, Literal
 
 from haive.core.engine.base import Engine, EngineType
-from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.graph.state_graph.compiled_state_graph import CompiledStateGraph
 from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.tools import BaseTool

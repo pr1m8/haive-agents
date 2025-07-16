@@ -37,16 +37,14 @@ See Also:
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List
 
-from haive.core.engine.document import DocumentEngine, DocumentEngineConfig
+from haive.core.engine.document import DocumentEngineConfig
 from haive.core.engine.document.config import (
     ChunkingStrategy,
-    DocumentFormat,
     DocumentInput,
     DocumentOutput,
     DocumentSourceType,
-    ProcessedDocument,
     ProcessingStrategy,
 )
 from haive.core.graph.node.engine_node import EngineNodeConfig

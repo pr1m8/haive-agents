@@ -1,0 +1,369 @@
+"""Routing patterns for multi-agent systems.
+
+Experiments with conditional routing, branching, and dynamic paths.
+Uses BaseGraph's add_conditional_edges for sophisticated routing.
+"""
+
+import logging
+from typing import Any, Callable, Dict, List, Optional, Union
+
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from langgraph.graph import END, START
+from pydantic import Field
+
+from haive.agents.base.agent import Agent
+from haive.agents.multi.experiments.list_multi_agent import ListMultiAgent
+
+logger = logging.getLogger(__name__)
+
+
+class RoutingMultiAgent(ListMultiAgent):
+    """Multi-agent with conditional routing capabilities.
+
+    Extends ListMultiAgent with routing rules that determine
+    which agent executes next based on state conditions.
+
+    Example:
+        ```python
+        multi = RoutingMultiAgent("router")
+
+        # Add agents
+        multi.append(ClassifierAgent())
+        multi.append(TechnicalAgent())
+        multi.append(BusinessAgent())
+        multi.append(GeneralAgent())
+
+        # Add routing from classifier
+        multi.add_route(
+            source="ClassifierAgent",
+            condition=lambda state: state.get("category", "general"),
+            routes={
+                "technical": "TechnicalAgent",
+                "business": "BusinessAgent",
+                "general": "GeneralAgent"
+            }
+        )
+        ```
+    """
+
+    # Routing configuration
+    routing_rules: Dict[str, Dict[str, Any]] = Field(
+        default_factory=dict, description="Routing rules by agent name"
+    )
+
+    default_route: str = Field(
+        default=END, description="Default route when no condition matches"
+    )
+
+    # ========== Routing Methods ==========
+
+    def add_route(
+        self,
+        source: Union[str, Agent],
+        condition: Callable[[Any], Union[str, bool]],
+        routes: Dict[Union[str, bool], Union[str, Agent]],
+        default: Optional[str] = None,
+    ) -> "RoutingMultiAgent":
+        """Add routing rule for an agent.
+
+        Args:
+            source: Source agent (name or instance)
+            condition: Function that returns route key based on state
+            routes: Map of condition results to destination agents
+            default: Default route if no match (uses self.default_route if None)
+        """
+        source_name = source if isinstance(source, str) else source.name
+
+        # Convert agent references to names
+        route_map = {}
+        for key, dest in routes.items():
+            if isinstance(dest, Agent):
+                # Add agent if not already in list
+                if dest not in self.agents:
+                    self.append(dest)
+                route_map[key] = dest.name
+            else:
+                route_map[key] = dest
+
+        self.routing_rules[source_name] = {
+            "condition": condition,
+            "routes": route_map,
+            "default": default or self.default_route,
+        }
+
+        self.mark_for_recompile(f"Added routing for {source_name}")
+        return self
+
+    def add_boolean_route(
+        self,
+        source: Union[str, Agent],
+        condition: Callable[[Any], bool],
+        true_dest: Union[str, Agent],
+        false_dest: Union[str, Agent] = END,
+    ) -> "RoutingMultiAgent":
+        """Add simple boolean routing.
+
+        Args:
+            source: Source agent
+            condition: Boolean condition function
+            true_dest: Destination when condition is True
+            false_dest: Destination when condition is False (default: END)
+        """
+        return self.add_route(
+            source=source,
+            condition=condition,
+            routes={True: true_dest, False: false_dest},
+        )
+
+    def add_multi_route(
+        self,
+        source: Union[str, Agent],
+        condition: Callable[[Any], str],
+        **routes: Union[str, Agent],
+    ) -> "RoutingMultiAgent":
+        """Add multi-way routing with keyword arguments.
+
+        Example:
+            multi.add_multi_route(
+                "classifier",
+                lambda s: s["category"],
+                technical="tech_agent",
+                business="biz_agent",
+                creative="creative_agent"
+            )
+        """
+        return self.add_route(source, condition, routes)
+
+    # ========== Graph Building ==========
+
+    def build_graph(self) -> BaseGraph:
+        """Build graph with conditional routing."""
+        graph = BaseGraph(state_schema=self.state_schema)
+
+        if not self.agents:
+            graph.add_node("passthrough", lambda x: x)
+            graph.add_edge(START, "passthrough")
+            graph.add_edge("passthrough", END)
+            return graph.compile()
+
+        # Add all agent nodes first
+        agent_nodes = {}
+        for i, agent in enumerate(self.agents):
+            node_name = f"{agent.name}_{i}"
+            agent_nodes[agent.name] = node_name
+
+            # Create agent node
+            def make_agent_node(agent_instance):
+                def node(state: Dict[str, Any]) -> Dict[str, Any]:
+                    messages = state.get("messages", [])
+                    result = agent_instance.invoke({"messages": messages})
+
+                    output = {}
+                    if "messages" in result:
+                        output["messages"] = result["messages"]
+
+                    # Pass through other fields
+                    for key, value in result.items():
+                        if key != "messages":
+                            output[key] = value
+
+                    return output
+
+                return node
+
+            graph.add_node(node_name, make_agent_node(agent))
+
+        # Now add edges and routing
+        prev_node = START
+
+        for i, agent in enumerate(self.agents):
+            node_name = agent_nodes[agent.name]
+
+            # Connect from previous node if no explicit routing
+            if prev_node and agent.name not in self.routing_rules:
+                graph.add_edge(prev_node, node_name)
+
+            # Add routing if defined
+            if agent.name in self.routing_rules:
+                rule = self.routing_rules[agent.name]
+                condition = rule["condition"]
+                routes = rule["routes"]
+                default = rule["default"]
+
+                # Map agent names to node names
+                node_routes = {}
+                for key, dest in routes.items():
+                    if dest in agent_nodes:
+                        node_routes[key] = agent_nodes[dest]
+                    else:
+                        node_routes[key] = dest  # END or external node
+
+                # Add conditional edges
+                graph.add_conditional_edges(
+                    source_node=node_name,
+                    condition=condition,
+                    destinations=node_routes,
+                    default=default,
+                )
+
+                # No automatic progression after routing
+                prev_node = None
+            else:
+                prev_node = node_name
+
+        # Connect last non-routing node to END
+        if prev_node:
+            graph.add_edge(prev_node, END)
+
+        # Connect START to first agent if not connected
+        first_node = agent_nodes[self.agents[0].name]
+        if not any(edge[1] == first_node for edge in graph.edges):
+            graph.add_edge(START, first_node)
+
+        return graph.compile()
+
+
+class BranchingMultiAgent(RoutingMultiAgent):
+    """Multi-agent with branching and merging capabilities.
+
+    Supports parallel branches that merge back together.
+
+    Example:
+        ```python
+        multi = BranchingMultiAgent("branching")
+
+        # Main path
+        multi.append(InputProcessor())
+
+        # Branch based on input type
+        multi.branch_on(
+            "InputProcessor",
+            lambda s: s.get("input_type"),
+            branches={
+                "text": [TextAnalyzer(), TextSummarizer()],
+                "image": [ImageAnalyzer(), ImageCaptioner()],
+                "audio": [AudioTranscriber(), AudioAnalyzer()]
+            },
+            merge_to=OutputFormatter()
+        )
+        ```
+    """
+
+    # Track branches for merging
+    branches: Dict[str, List[str]] = Field(
+        default_factory=dict, description="Branch definitions"
+    )
+
+    merge_points: Dict[str, str] = Field(
+        default_factory=dict, description="Where branches merge"
+    )
+
+    def branch_on(
+        self,
+        source: Union[str, Agent],
+        condition: Callable[[Any], str],
+        branches: Dict[str, List[Agent]],
+        merge_to: Optional[Agent] = None,
+    ) -> "BranchingMultiAgent":
+        """Create branching paths that merge back.
+
+        Args:
+            source: Agent to branch from
+            condition: Function returning branch key
+            branches: Map of keys to agent sequences
+            merge_to: Agent where branches merge (optional)
+        """
+        source_name = source if isinstance(source, str) else source.name
+
+        # Add all branch agents
+        branch_heads = {}
+        branch_tails = {}
+
+        for branch_key, branch_agents in branches.items():
+            if branch_agents:
+                # Add agents
+                for agent in branch_agents:
+                    if agent not in self.agents:
+                        self.append(agent)
+
+                # Track head and tail
+                branch_heads[branch_key] = branch_agents[0].name
+                branch_tails[branch_key] = branch_agents[-1].name
+
+                # Store branch info
+                self.branches[f"{source_name}_{branch_key}"] = [
+                    agent.name for agent in branch_agents
+                ]
+
+        # Add merge point if provided
+        if merge_to:
+            if merge_to not in self.agents:
+                self.append(merge_to)
+
+            # All branches merge to this agent
+            for tail in branch_tails.values():
+                self.merge_points[tail] = merge_to.name
+
+        # Create routing to branch heads
+        self.add_route(source=source_name, condition=condition, routes=branch_heads)
+
+        self.mark_for_recompile(f"Added branching from {source_name}")
+        return self
+
+    def build_graph(self) -> BaseGraph:
+        """Build graph with branching support."""
+        # Start with base routing graph
+        graph = super().build_graph()
+
+        # Add merge edges
+        for source, target in self.merge_points.items():
+            # Find node names
+            source_node = None
+            target_node = None
+
+            for i, agent in enumerate(self.agents):
+                node_name = f"{agent.name}_{i}"
+                if agent.name == source:
+                    source_node = node_name
+                if agent.name == target:
+                    target_node = node_name
+
+            if source_node and target_node:
+                graph.add_edge(source_node, target_node)
+
+        return graph.compile()
+
+
+# Example routing conditions
+
+
+def category_router(state: Dict[str, Any]) -> str:
+    """Route based on category field."""
+    return state.get("category", "general")
+
+
+def confidence_router(state: Dict[str, Any]) -> str:
+    """Route based on confidence level."""
+    confidence = state.get("confidence", 0.5)
+    if confidence > 0.8:
+        return "high"
+    elif confidence > 0.5:
+        return "medium"
+    else:
+        return "low"
+
+
+def error_router(state: Dict[str, Any]) -> str:
+    """Route based on error presence."""
+    if state.get("error"):
+        return "error"
+    return "success"
+
+
+def has_tool_calls_router(state: Dict[str, Any]) -> bool:
+    """Check if there are tool calls in the last message."""
+    messages = state.get("messages", [])
+    if messages:
+        last_message = messages[-1]
+        return bool(getattr(last_message, "tool_calls", None))
+    return False

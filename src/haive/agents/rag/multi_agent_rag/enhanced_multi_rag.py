@@ -265,11 +265,11 @@ class SmartRAGFactory:
         for agent in remaining_agents:
             try:
                 system.add_agent(agent)
-            except Exception as e:
+            except Exception:
                 pass
 
         # Generate compatibility report
-        report = system.get_compatibility_report(detailed=True)
+        system.get_compatibility_report(detailed=True)
 
         return system
 
@@ -324,7 +324,7 @@ class SmartRAGFactory:
 
             return system
 
-        except Exception as e:
+        except Exception:
             raise
 
 
@@ -351,7 +351,7 @@ def demonstrate_enhanced_rag_compatibility():
 
     try:
         sequential_rag.add_agent(custom_agent)
-    except Exception as e:
+    except Exception:
         pass
 
     # Example 3: Smart factory creation
@@ -375,7 +375,7 @@ def demonstrate_enhanced_rag_compatibility():
             compatibility_mode=CompatibilityMode.STRICT,
         )
 
-    except Exception as e:
+    except Exception:
         pass
 
 

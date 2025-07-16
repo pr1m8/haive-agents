@@ -19,11 +19,10 @@ Example:
 from haive.agents.reasoning_and_critique.mcts.agent import MCTSAgent
 from haive.agents.reasoning_and_critique.mcts.config import MCTSAgentConfig
 from haive.agents.reasoning_and_critique.mcts.models import (
-    MCTSNodes,
-    NodeData,
     Reflection,
+    TreeNode,
 )
-from haive.agents.reasoning_and_critique.mcts.state import MCTSAgentState
+from haive.agents.reasoning_and_critique.mcts.state import TreeState
 from haive.agents.reasoning_and_critique.mcts.utils import (
     create_mcts_agent,
     extract_best_solution,

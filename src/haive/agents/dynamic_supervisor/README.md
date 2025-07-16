@@ -1,390 +1,281 @@
 # Dynamic Supervisor Agent
 
-The Dynamic Supervisor Agent is a powerful coordination system that manages multiple specialized agents at runtime. It provides dynamic agent registration, intelligent task routing, and multi-step workflow orchestration through a ReAct (Reasoning + Acting) loop.
+The Dynamic Supervisor Agent is a powerful multi-agent orchestration system that extends ReactAgent to provide runtime agent management capabilities. It can dynamically add, remove, activate, and coordinate specialized agents based on task requirements.
 
 ## Overview
 
-The Dynamic Supervisor extends ReactAgent to provide:
+The Dynamic Supervisor uses a tool-based approach where handoff tools execute agents directly within the ReAct loop. This provides flexible, runtime agent coordination without requiring pre-compiled graph structures.
 
-- **Runtime Agent Management**: Add, remove, activate, and deactivate agents dynamically
-- **Intelligent Task Routing**: Automatically route tasks to the most appropriate agent
-- **Multi-Step Coordination**: Handle complex workflows requiring multiple agents
-- **Tool-Based Execution**: Agents execute through handoff tools (no separate routing nodes)
-- **State Persistence**: Full state serialization with agent exclusions for safety
+## Key Features
 
-## Architecture
+- **Dynamic Agent Management**: Add/remove agents at runtime
+- **Tool-Based Execution**: Agents execute directly through tools
+- **ReAct Loop Integration**: Inherits reasoning and acting capabilities
+- **State Management**: Maintains agent registry and execution state
+- **Capability-Based Routing**: Route tasks based on agent capabilities
 
-```
-┌─────────────────────────────────────────────────┐
-│                Dynamic Supervisor               │
-│  ┌─────────────────┐  ┌─────────────────────┐   │
-│  │   ReactAgent    │  │  SupervisorState    │   │
-│  │   (Base Loop)   │  │  (With Tools)       │   │
-│  └─────────────────┘  └─────────────────────┘   │
-│           │                       │             │
-│           ▼                       ▼             │
-│  ┌─────────────────┐  ┌─────────────────────┐   │
-│  │  Dynamic Tools  │  │   Agent Registry    │   │
-│  │  (Handoff Tools)│  │   (Runtime Mgmt)    │   │
-│  └─────────────────┘  └─────────────────────┘   │
-└─────────────────────────────────────────────────┘
-                    │
-                    ▼
-        ┌─────────────────────────┐
-        │    Specialized Agents   │
-        │  ┌─────┐ ┌─────┐ ┌─────┐│
-        │  │Agent│ │Agent│ │Agent││
-        │  │  A  │ │  B  │ │  C  ││
-        │  └─────┘ └─────┘ └─────┘│
-        └─────────────────────────┘
-```
+## Quick Start
 
-## Key Components
-
-### DynamicSupervisorAgent
-
-The main supervisor class that coordinates agent execution.
+### Basic Usage
 
 ```python
-from haive.agents.dynamic_supervisor import DynamicSupervisorAgent
+from haive.agents.dynamic_supervisor import create_dynamic_supervisor
+from haive.agents.simple import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
-
-supervisor = DynamicSupervisorAgent(
-    name="task_coordinator",
-    engine=supervisor_engine,
-    enable_agent_builder=False  # Optional: enable agent request capability
-)
-```
-
-**Key Features:**
-
-- Inherits from ReactAgent for looping behavior
-- Uses SupervisorStateWithTools for dynamic tool generation
-- Automatically syncs tools when agents are added/removed
-- Supports both sync and async execution
-
-### SupervisorStateWithTools
-
-Enhanced state schema with dynamic agent management.
-
-```python
-from haive.agents.dynamic_supervisor.state import SupervisorStateWithTools
-
-# Create and manage state
-state = SupervisorStateWithTools()
-state.add_agent("research", research_agent, "Research specialist")
-state.activate_agent("research")
-state.deactivate_agent("research")
-state.remove_agent("research")
-```
-
-**State Fields:**
-
-- `agents`: Dictionary of managed agents with metadata
-- `last_executed_agent`: Track which agent last executed
-- `agent_response`: Last agent response
-- `execution_success`: Success/failure tracking
-- `agent_choice_model`: Dynamic choice validation model
-
-### Dynamic Tool Generation
-
-Tools are generated automatically based on registered agents.
-
-**Generated Tools:**
-
-- `handoff_to_{agent_name}`: Execute specific agent
-- `choose_agent`: Validate agent selection with current options
-
-**Tool Features:**
-
-- Execute agents directly (no separate routing node)
-- Extract last message from agent responses
-- Add engine metadata to HumanMessage responses
-- Handle sync/async agent execution patterns
-
-## Usage Examples
-
-### Basic Setup
-
-```python
-import asyncio
-from haive.agents.dynamic_supervisor import DynamicSupervisorAgent
-from haive.agents.simple.agent import SimpleAgent
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig, ModelType
 
 # Create specialized agents
-research_agent = SimpleAgent(
-    name="research_agent",
-    engine=AugLLMConfig(
-        name="research_engine",
-        llm_config=AzureLLMConfig(model=ModelType.GPT_4O_MINI),
-        system_message="You are a research assistant."
-    )
-)
-
 math_agent = SimpleAgent(
     name="math_agent",
-    engine=AugLLMConfig(
-        name="math_engine",
-        llm_config=AzureLLMConfig(model=ModelType.GPT_4O_MINI),
-        system_message="You are a math expert."
-    )
+    engine=AugLLMConfig(tools=[calculator_tool])
 )
 
 # Create supervisor
-supervisor = DynamicSupervisorAgent(
-    name="coordinator",
-    engine=AugLLMConfig(
-        name="supervisor_engine",
-        llm_config=AzureLLMConfig(model=ModelType.GPT_4O),
-        force_tool_use=True
-    )
+supervisor = create_dynamic_supervisor(
+    name="task_router",
+    model="gpt-4"
 )
 
-# Initialize state with agents
+# Add agents to supervisor
 state = supervisor.create_initial_state()
-state.add_agent("research", research_agent, "Research expert")
-state.add_agent("math", math_agent, "Math expert")
+state.add_agent("math_agent", math_agent, "Mathematics expert")
 
-# Execute tasks
-result = await supervisor.arun("What is the square root of 144?", state=state)
-print(f"Executed by: {state.last_executed_agent}")
-print(f"Response: {state.agent_response}")
+# Run task
+result = await supervisor.arun("Calculate 15 * 23", state=state)
 ```
 
-### Dynamic Agent Management
+### Advanced Usage
 
 ```python
-# Add agent at runtime
-translator_agent = SimpleAgent(name="translator", engine=translator_engine)
-state.add_agent("translator", translator_agent, "Translation expert")
+from haive.agents.dynamic_supervisor import DynamicSupervisorAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
-# Use new agent
-await supervisor.arun("Translate 'hello' to French", state=state)
+# Create custom supervisor
+supervisor = DynamicSupervisorAgent(
+    name="advanced_supervisor",
+    engine=AugLLMConfig(
+        model="gpt-4",
+        temperature=0.0,
+        system_message="You are an intelligent task coordinator"
+    ),
+    enable_agent_builder=True,
+    auto_sync_tools=True
+)
 
-# Deactivate agent temporarily
-state.deactivate_agent("math")
-await supervisor.arun("Calculate 5+5", state=state)  # Will use alternative
+# Add default agents that are always available
+supervisor.add_default_agent("general", general_agent, "General assistant")
 
-# Reactivate agent
-state.activate_agent("math")
-await supervisor.arun("Now calculate 5+5", state=state)  # Will use math agent
+# Create state and add task-specific agents
+state = supervisor.create_initial_state()
+state.add_agent("specialist", specialist_agent, "Domain specialist")
 
-# Remove agent permanently
-state.remove_agent("translator")
-```
-
-### Multi-Step Workflows
-
-```python
-# Complex task requiring multiple agents
-task = """
-Research the Fibonacci sequence, calculate the 10th number,
-and write a Python function to generate it
-"""
-
-result = await supervisor.arun(task, state=state)
-
-# Check execution history
-for msg in state.messages:
-    if hasattr(msg, 'additional_kwargs'):
-        if msg.additional_kwargs.get('source') == 'agent_execution':
-            agent = msg.additional_kwargs.get('agent_name')
-            print(f"Agent {agent} executed: {msg.content[:100]}...")
-```
-
-## How It Works
-
-### 1. Agent Registration
-
-Agents are registered in the state's agent registry with metadata:
-
-```python
-state.add_agent(
-    name="research",
-    agent=research_agent,
-    description="Research specialist",
-    capabilities=["web_search", "analysis"],
-    active=True
+# Run complex task
+result = await supervisor.arun(
+    "Analyze this data and provide insights",
+    state=state
 )
 ```
 
-### 2. Dynamic Tool Generation
+## Architecture
 
-For each active agent, a handoff tool is created:
+### Core Components
+
+1. **DynamicSupervisorAgent**: Main supervisor class extending ReactAgent
+2. **SupervisorStateWithTools**: State management with dynamic tool generation
+3. **AgentInfo**: Metadata container for agent information
+4. **Tool Creation**: Utilities for generating handoff tools
+
+### Execution Flow
+
+1. **Task Analysis**: Supervisor analyzes incoming task
+2. **Agent Selection**: Chooses appropriate agent based on capabilities
+3. **Tool Execution**: Handoff tool executes selected agent
+4. **Result Integration**: Supervisor processes and returns results
+5. **State Update**: Updates registry and execution history
+
+### Tool-Based Agent Execution
 
 ```python
+# Handoff tools are created dynamically
 @tool
-def handoff_to_research(task_description: str) -> str:
-    """Hand off a task to research agent."""
-    # Get agent from registry
-    agent = state.agents["research"].get_agent()
-
-    # Execute agent with task
-    result = agent.run(task_description)
-
-    # Extract last message and add metadata
-    response = extract_last_message(result)
-    human_msg = HumanMessage(
-        content=response,
-        additional_kwargs={
-            "agent_name": "research",
-            "engine_name": agent.engine.name,
-            "source": "agent_execution"
-        }
-    )
-    state.messages.append(human_msg)
-
-    return f"Agent research completed: {response}"
+def handoff_to_math_agent(task: str) -> str:
+    """Transfer task to math agent for calculation."""
+    result = await math_agent.arun(task)
+    return f"Math agent result: {result}"
 ```
 
-### 3. Supervisor Decision Making
+## State Management
 
-The supervisor uses its LLM engine to:
+### SupervisorStateWithTools
 
-1. Analyze the incoming task
-2. Select the most appropriate agent
-3. Call the corresponding handoff tool
-4. Process the response and continue if needed
+The state class provides:
 
-### 4. Message Flow
+- **Agent Registry**: Dynamic agent storage and retrieval
+- **Tool Generation**: Automatic creation of handoff tools
+- **Execution History**: Track of agent interactions
+- **Metadata**: Agent capabilities and descriptions
 
+```python
+# State operations
+state = SupervisorStateWithTools()
+state.add_agent("name", agent, "description")
+state.remove_agent("name")
+state.activate_agent("name")
+state.deactivate_agent("name")
 ```
-User Input → Supervisor → Tool Selection → Agent Execution → Response Processing → User Output
-    ↑                                                                                    ↓
-    └─────────────────── Continue if multi-step needed ←─────────────────────────────────┘
-```
 
-## Configuration
+## Configuration Options
 
 ### DynamicSupervisorAgent Parameters
 
+- `enable_agent_builder`: Enable dynamic agent creation capabilities
+- `auto_sync_tools`: Automatically sync tools when state changes
+- `state_schema_override`: Custom state schema (default: SupervisorStateWithTools)
+
+### Factory Function Options
+
 ```python
-DynamicSupervisorAgent(
-    name="supervisor",                              # Supervisor identifier
-    engine=supervisor_engine,                       # LLM engine for decision making
-    enable_agent_builder=False,                     # Enable agent request tools
-    state_schema_override=SupervisorStateWithTools, # Custom state schema
-    auto_sync_tools=True,                          # Auto-sync tools on state changes
-    **kwargs                                       # Additional ReactAgent parameters
+supervisor = create_dynamic_supervisor(
+    name="supervisor",
+    model="gpt-4",
+    temperature=0.0,
+    force_tool_use=True,
+    enable_agent_builder=False
 )
 ```
 
-### Engine Configuration
+## Examples
+
+### Basic Task Routing
 
 ```python
-# Supervisor engine - decision making
-supervisor_engine = AugLLMConfig(
-    name="supervisor_engine",
-    llm_config=AzureLLMConfig(
-        model=ModelType.GPT_4O,          # Use powerful model for coordination
-        temperature=0.0                   # Deterministic routing decisions
-    ),
-    force_tool_use=True,                 # Always use tools for routing
-    system_message=""                    # Set automatically by supervisor
-)
+import asyncio
+from haive.agents.dynamic_supervisor import create_dynamic_supervisor
 
-# Agent engines - task execution
-agent_engine = AugLLMConfig(
-    name="specialist_engine",
-    llm_config=AzureLLMConfig(
-        model=ModelType.GPT_4O_MINI,     # Efficient model for tasks
-        temperature=0.7                   # Allow creativity in responses
-    ),
-    system_message="You are a specialist in..."
-)
+async def main():
+    supervisor = create_dynamic_supervisor(name="router")
+    state = supervisor.create_initial_state()
+
+    # Add agents
+    state.add_agent("math", math_agent, "Mathematics expert")
+    state.add_agent("search", search_agent, "Web search specialist")
+
+    # Route tasks
+    math_result = await supervisor.arun("What is 15 * 23?", state=state)
+    search_result = await supervisor.arun("Find information about AI", state=state)
+
+asyncio.run(main())
 ```
 
-## Message Attribution
-
-Each agent execution adds metadata to messages:
+### Dynamic Agent Activation
 
 ```python
-# HumanMessage from agent execution
-{
-    "content": "The square root of 144 is 12.",
-    "additional_kwargs": {
-        "agent_name": "math_agent",
-        "engine_name": "math_engine",
-        "source": "agent_execution"
-    }
-}
+# Start with minimal agents
+state = supervisor.create_initial_state()
+state.add_agent("general", general_agent, "General assistant")
+
+# Add specialized agents as needed
+if task_requires_math:
+    state.add_agent("math", math_agent, "Mathematics expert")
+
+if task_requires_search:
+    state.add_agent("search", search_agent, "Web search specialist")
 ```
 
-## Serialization
-
-The implementation handles serialization by:
-
-- Using `exclude=True` on agent fields in AgentInfo
-- Storing only serializable metadata
-- Reconstructing agents from registry when needed
+### Agent Capabilities
 
 ```python
-# Safe for msgpack serialization
-serialized = msgpack.packb(state.model_dump())
-deserialized_state = SupervisorStateWithTools(**msgpack.unpackb(serialized))
+# Register agents with capabilities
+state.add_agent("math", math_agent, "Mathematics expert",
+               capabilities=["calculation", "algebra", "statistics"])
+state.add_agent("search", search_agent, "Web search specialist",
+               capabilities=["web_search", "fact_checking", "research"])
+
+# Query by capability
+math_agents = state.get_agents_by_capability("calculation")
 ```
 
 ## Testing
 
-Run the comprehensive test suite:
-
 ```bash
-# All dynamic supervisor tests
-poetry run pytest packages/haive-agents/tests/test_dynamic_supervisor/ -v
+# Run all dynamic supervisor tests
+poetry run pytest tests/test_dynamic_supervisor/ -v
 
-# Specific test file
-poetry run pytest packages/haive-agents/tests/test_dynamic_supervisor/test_supervisor_real.py -v
+# Run specific test
+poetry run pytest tests/test_dynamic_supervisor/test_supervisor_real.py -v
 ```
 
 ## Best Practices
 
-### 1. Agent Specialization
+1. **Agent Specialization**: Create focused agents for specific tasks
+2. **Clear Descriptions**: Provide detailed agent descriptions for routing
+3. **Capability Tags**: Use capabilities for intelligent routing
+4. **Error Handling**: Implement proper error handling in agent tools
+5. **State Management**: Keep state minimal and focused
+6. **Testing**: Use real components, avoid mocks
 
-Create focused, specialized agents rather than general-purpose ones:
+## Common Patterns
 
-```python
-# ✅ Good: Specialized agents
-math_agent = SimpleAgent(system_message="You are a math expert. Solve calculations step by step.")
-research_agent = SimpleAgent(system_message="You are a research assistant. Find and analyze information.")
-
-# ❌ Bad: Overly broad agents
-general_agent = SimpleAgent(system_message="You can do anything.")
-```
-
-### 2. Error Handling
-
-Always check execution success:
+### Multi-Step Tasks
 
 ```python
-result = await supervisor.arun(task, state=state)
-if not state.execution_success:
-    print(f"Agent execution failed: {state.agent_response}")
+# Supervisor can coordinate multi-step workflows
+result = await supervisor.arun(
+    "First research the topic, then summarize findings, finally create a presentation",
+    state=state
+)
 ```
 
-### 3. State Management
-
-Reuse state for related tasks to maintain context:
+### Conditional Agent Activation
 
 ```python
-# ✅ Good: Maintain context across related tasks
-state = supervisor.create_initial_state()
-await supervisor.arun("Research quantum computing", state=state)
-await supervisor.arun("Summarize the key findings", state=state)
-
-# ❌ Bad: New state loses context
-state1 = supervisor.create_initial_state()
-await supervisor.arun("Research quantum computing", state=state1)
-state2 = supervisor.create_initial_state()  # Lost context!
+# Activate agents based on task analysis
+if "calculation" in task_analysis:
+    state.activate_agent("math_agent")
+if "research" in task_analysis:
+    state.activate_agent("search_agent")
 ```
 
-## Key Differences from Experimental Version
+## Troubleshooting
 
-- **ReactAgent Base**: Now inherits from ReactAgent for proper looping behavior
-- **Enhanced State**: SupervisorStateWithTools with dynamic choice models
-- **Better Message Handling**: Proper last-message extraction and metadata
-- **Improved Engine Info**: Correct engine name extraction from agent engines
-- **Production Ready**: Comprehensive testing and error handling
+### Common Issues
 
-This implementation follows LangGraph patterns while maintaining the direct execution approach from our experiments.
+1. **Agent Not Found**: Ensure agent is added to state and active
+2. **Tool Generation Fails**: Check agent descriptions and capabilities
+3. **Execution Errors**: Verify agent implementations are correct
+4. **State Persistence**: Use proper state management between calls
+
+### Debug Tips
+
+```python
+# Check agent registry
+print(state.list_agents())
+
+# Verify tool generation
+tools = state.get_all_tools()
+print([tool.name for tool in tools])
+
+# Monitor execution
+supervisor.auto_sync_tools = True  # Enable automatic tool sync
+```
+
+## Related Documentation
+
+- [Examples](../../../../examples/supervisor/) - Usage examples and patterns
+- [Tests](../../../../tests/supervisor/) - Test implementations
+- [Patterns](../../../../docs/supervisor/) - Architecture patterns and guides
+
+## API Reference
+
+### DynamicSupervisorAgent
+
+Main supervisor class with full API documentation.
+
+### SupervisorStateWithTools
+
+State management class with agent registry and tool generation.
+
+### create_dynamic_supervisor
+
+Factory function for creating configured supervisors.
+
+For detailed API documentation, see the inline docstrings in the source code.

@@ -1,14 +1,13 @@
 """ReWOO Planner Agent - Simple agent focused on plan generation."""
 
 import logging
-from typing import Any, List, Optional
+from typing import Any, List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.planning.rewoo.models import ReWOOPlan
 from haive.agents.simple.agent import SimpleAgent
 
-from .models import PlannerState
 from .prompts import REWOO_PLANNING_TEMPLATE
 
 logger = logging.getLogger(__name__)
@@ -116,7 +115,7 @@ class ReWOOPlannerAgent(SimpleAgent):
         """Override to set available_tools in initial state."""
         # Set available tools in state for prompt context
         if hasattr(self, "tools") and self.tools:
-            initial_state = {"available_tools": self.tools}
+            pass
         else:
             pass
 
@@ -147,19 +146,19 @@ async def test_rewoo_planner():
         if plan.evidence_map:
             pass
 
-        for i, step in enumerate(plan.steps, 1):
+        for _i, step in enumerate(plan.steps, 1):
             if step.evidence:
                 pass
             if step.tool_call:
                 pass
 
         if plan.evidence_map:
-            for eid, evidence in plan.evidence_map.items():
+            for _eid, _evidence in plan.evidence_map.items():
                 pass
 
         return plan
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

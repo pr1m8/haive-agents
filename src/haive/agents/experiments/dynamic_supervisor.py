@@ -7,7 +7,7 @@ that can select and execute agents based on runtime decisions.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Set, Type
+from typing import Any, Dict
 
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import BaseModel, Field, computed_field
@@ -541,7 +541,7 @@ def test_dynamic_tools():
 
     # Test list_agents tool
     list_tool = next(t for t in supervisor.tools if t.name == "list_agents")
-    agents_result = list_tool.invoke({})
+    list_tool.invoke({})
 
     # Test adding a new agent dynamically
     from haive.agents.simple.agent import SimpleAgent
@@ -554,12 +554,10 @@ def test_dynamic_tools():
     )
 
     # Verify handoff tool was created
-    handoff_tools = [t for t in supervisor.tools if t.name.startswith("handoff_to_")]
+    [t for t in supervisor.tools if t.name.startswith("handoff_to_")]
 
     # Test the new handoff tool
-    calc_handoff = next(
-        t for t in supervisor.tools if t.name == "handoff_to_calculator_agent"
-    )
+    next(t for t in supervisor.tools if t.name == "handoff_to_calculator_agent")
 
     return supervisor
 
@@ -585,7 +583,7 @@ def test_supervisor_workflow():
 
     try:
         # This would normally be called by the graph, but we'll test directly
-        result = research_handoff.invoke(
+        research_handoff.invoke(
             {"task": "Research the latest developments in AI", "_state": test_state}
         )
     except Exception as e:

@@ -241,7 +241,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
             state.error = False
 
             # Test the new function
-            result = state.function(*state.arguments)
+            state.function(*state.arguments)
 
             print("...patch complete 😬\n")
 

@@ -237,7 +237,7 @@ def main():
     configs = create_parallel_kg_transformer_configs()
 
     # Demonstrate accessing configs
-    for name, config in configs.items():
+    for _name, _config in configs.items():
         pass
 
 

@@ -25,10 +25,9 @@ Example:
 from haive.agents.reasoning_and_critique.mcts import (
     MCTSAgent,
     MCTSAgentConfig,
-    MCTSAgentState,
-    MCTSNodes,
-    NodeData,
     Reflection,
+    TreeNode,
+    TreeState,
     create_mcts_agent,
     extract_best_solution,
     print_tree_stats,

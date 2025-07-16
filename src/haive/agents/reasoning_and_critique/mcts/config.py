@@ -1,18 +1,19 @@
 # src/haive/agents/mcts/config.py
 
-from agents.mcts.state import MCTSAgentState
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field
 
+from haive.agents.reasoning_and_critique.mcts.state import TreeState
+
 
 class MCTSAgentConfig(AgentConfig):
     """Configuration for MCTS Agent."""
 
     # State schema
-    state_schema: type[BaseModel] = Field(default=MCTSAgentState)
+    state_schema: type[BaseModel] = Field(default=TreeState)
 
     # LLM configuration
     llm_config: LLMConfig | None = Field(

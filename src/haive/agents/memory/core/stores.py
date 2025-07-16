@@ -6,7 +6,7 @@ self-query retrieval, and memory lifecycle management.
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 from haive.core.tools.store_tools import StoreManager
@@ -663,7 +663,7 @@ class MemoryStoreManager:
             duplicate_group = [memory1["id"]]
             content1 = memory1.get("content", "").lower().strip()
 
-            for j, memory2 in enumerate(memories[i + 1 :], i + 1):
+            for _j, memory2 in enumerate(memories[i + 1 :], i + 1):
                 if memory2["id"] in processed_ids:
                     continue
 

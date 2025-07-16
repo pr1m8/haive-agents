@@ -17,8 +17,8 @@ from langgraph.graph import END
 from langgraph.prebuilt import ToolNode
 
 from haive.agents.reasoning_and_critique.mcts.config import MCTSAgentConfig
-from haive.agents.reasoning_and_critique.mcts.models import NodeData, Reflection
-from haive.agents.reasoning_and_critique.mcts.state import MCTSAgentState
+from haive.agents.reasoning_and_critique.mcts.models import Reflection, TreeNode
+from haive.agents.reasoning_and_critique.mcts.state import TreeState
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -126,7 +126,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
             self.config.expansion_prompt_template | generate_candidates
         )
 
-    def _generate_initial_response(self, state: MCTSAgentState) -> dict[str, Any]:
+    def _generate_initial_response(self, state: TreeState) -> dict[str, Any]:
         """Generate the initial candidate response."""
         try:
             # Extract input
@@ -168,7 +168,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
             )
 
             # Create root node
-            node_data = NodeData(
+            node_data = TreeNode(
                 messages=state.nodes.serialize_messages(output_messages),
                 reflection=reflection.model_dump(),
                 is_solved=reflection.found_solution,
@@ -200,7 +200,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
                 "status": "error",
             }
 
-    def _expand(self, state: MCTSAgentState, config: RunnableConfig) -> dict[str, Any]:
+    def _expand(self, state: TreeState, config: RunnableConfig) -> dict[str, Any]:
         """Expand the search tree by generating new candidates from the best node."""
         try:
             # Get current nodes store
@@ -292,7 +292,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
                 output_messages, reflections, strict=False
             ):
                 # Create node
-                node_data = NodeData(
+                node_data = TreeNode(
                     messages=updated_nodes.serialize_messages(candidate_msgs),
                     reflection=reflection.model_dump(),
                     parent_id=best_node_id,
@@ -346,7 +346,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
             logger.exception(f"Error in expand node: {e!s}")
             return {"error": f"Error expanding search tree: {e!s}", "status": "error"}
 
-    def _should_continue(self, state: MCTSAgentState) -> str:
+    def _should_continue(self, state: TreeState) -> str:
         """Determine whether to continue the tree search or exit."""
         # Check for error
         if state.error:

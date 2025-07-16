@@ -11,7 +11,7 @@ from haive.core.schema.prebuilt.llm_state import LLMState
 from langgraph.graph import END, START
 from pydantic import Field, computed_field
 
-from haive.agents.planning.rewoo.models import EvidenceStatus, ReWOOPlan
+from haive.agents.planning.rewoo.models import ReWOOPlan
 from haive.agents.planning.rewoo.planner.prompts import REWOO_PLANNING_TEMPLATE
 from haive.agents.simple.agent import SimpleAgent
 

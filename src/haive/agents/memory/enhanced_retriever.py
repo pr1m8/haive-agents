@@ -15,18 +15,15 @@ bridging toward full Graph RAG implementation.
 """
 
 import logging
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Tuple, Union
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.tools.store_tools import StoreManager
 from pydantic import BaseModel, Field
 
 from haive.agents.memory.core.classifier import MemoryClassifier, MemoryClassifierConfig
 from haive.agents.memory.core.stores import MemoryStoreConfig, MemoryStoreManager
 from haive.agents.memory.core.types import (
-    MemoryEntry,
-    MemoryImportance,
     MemoryQueryIntent,
     MemoryType,
 )

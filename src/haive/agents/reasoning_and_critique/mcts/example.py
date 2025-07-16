@@ -3,11 +3,16 @@
 import logging
 from typing import Any
 
-from agents.mcts.utils import create_mcts_agent, extract_best_solution, print_tree_stats
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
 from langchain_core.tools import BaseTool
+
+from haive.agents.reasoning_and_critique.mcts.utils import (
+    create_mcts_agent,
+    extract_best_solution,
+    print_tree_stats,
+)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
