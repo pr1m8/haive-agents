@@ -57,6 +57,7 @@ def test_step_by_step():
         # Try with AgentInfo instance
         StateWithAgentInfo(agents={"test": info})
     except Exception as e:
+        pass
 
         # Get more details about the error
         if hasattr(e, "errors"):
