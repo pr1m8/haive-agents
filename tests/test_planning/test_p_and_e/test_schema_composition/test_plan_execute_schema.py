@@ -55,6 +55,7 @@ try:
 
 
 except Exception as e:
+    pass
 
     # Even if execution fails, we can check if the schema was properly composed
 

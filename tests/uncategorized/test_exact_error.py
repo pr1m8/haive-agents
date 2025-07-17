@@ -54,6 +54,7 @@ try:
     compiled = graph.compile()
 
 except NameError as e:
+    pass
 
 except Exception as e:
     import traceback

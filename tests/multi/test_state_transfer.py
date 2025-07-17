@@ -64,6 +64,7 @@ try:
     # The SequentialAgent would pass the entire state from ReactAgent to SimpleAgent
     simple_result = simple_agent.run(react_dict)
 except Exception as e:
+    pass
 
     # Try with just messages
     try:

@@ -54,6 +54,7 @@ async def test_debug_schema_validation():
         dumped = schema_instance.model_dump()
 
     except Exception as e:
+        pass
 
         # Check for engine fields
         for field_name, field_info in planner.state_schema.model_fields.items():

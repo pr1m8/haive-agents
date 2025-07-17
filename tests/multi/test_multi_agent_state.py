@@ -1,98 +1,65 @@
-"""Test MultiAgentState with before_validator for agent hierarchy."""
+"""Test building multi-agent state schema properly."""
 
-from typing import Any
+import sys
+
+sys.path.insert(0, "packages/haive-agents/src")
+sys.path.insert(0, "packages/haive-core/src")
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.tool_state import ToolState
-from pydantic import Field, field_validator, model_validator
+from haive.core.schema.prebuilt import multi_agent_state
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
+from langchain_core.messages import HumanMessage
 
-from haive.agents.base import Agent
+# Fix forward reference issue
+from haive.agents.base.agent import Agent
 from haive.agents.simple.agent import SimpleAgent
 
+multi_agent_state.Agent = Agent
+MultiAgentState.model_rebuild()
 
-class MultiAgentState(ToolState):
-    """Multi-agent state that contains agents without flattening schemas."""
 
-    # Agents can be passed as list or dict
-    agents: list[Agent] | dict[str, Agent] = Field(
-        default_factory=dict, description="Agent instances contained in this state"
+def test_basic_multi_agent_state():
+    """Test basic multi-agent state creation."""
+    print("=== BASIC MULTI-AGENT STATE TEST ===")
+
+    # Create agents
+    agent1 = SimpleAgent(name="agent1", engine=AugLLMConfig())
+    agent2 = SimpleAgent(name="agent2", engine=AugLLMConfig())
+
+    agents_dict = {"agent1": agent1, "agent2": agent2}
+
+    # Test 1: Create state with agents dict
+    print("\n1. Creating state with agents dict:")
+    state = MultiAgentState(
+        messages=[HumanMessage(content="Hello")], agents=agents_dict
     )
+    print(f"   State.agents keys: {list(state.agents.keys())}")
+    print(f"   State.agents['agent1']: {state.agents['agent1'].name}")
 
-    # Hierarchical state management
-    agent_states: dict[str, dict[str, Any]] = Field(
-        default_factory=dict, description="Isolated state for each agent"
+    # Test 2: Create state with agents list
+    print("\n2. Creating state with agents list:")
+    state2 = MultiAgentState(
+        messages=[HumanMessage(content="Hello")], agents=[agent1, agent2]
     )
+    print(f"   State.agents keys: {list(state2.agents.keys())}")
+    print(f"   State.agents['agent1']: {state2.agents['agent1'].name}")
 
-    # Execution tracking
-    active_agent: str | None = Field(default=None)
-    agent_outputs: dict[str, Any] = Field(default_factory=dict)
+    # Test 3: Create state with no agents (should be empty dict)
+    print("\n3. Creating state with no agents:")
+    state3 = MultiAgentState(messages=[HumanMessage(content="Hello")])
+    print(f"   State.agents keys: {list(state3.agents.keys())}")
+    print(f"   State.agents type: {type(state3.agents)}")
 
-    # Recompilation tracking
-    agents_needing_recompile: set[str] = Field(default_factory=set)
-    recompile_count: int = Field(default=0)
+    # Test 4: Test set_active_agent method
+    print("\n4. Testing set_active_agent:")
+    try:
+        state.set_active_agent("agent1")
+        print(f"   Active agent: {state.active_agent}")
+    except Exception as e:
+        print(f"   Error: {e}")
 
-    @field_validator("agents", mode="before")
-    @classmethod
-    def convert_agents_to_dict(cls, v):
-        """Convert list of agents to dict keyed by name."""
-        if isinstance(v, list):
-            # Convert list to dict using agent names
-            return {agent.name: agent for agent in v}
-        return v
-
-    @model_validator(mode="after")
-    def setup_agent_states(self) -> "MultiAgentState":
-        """Initialize agent states from contained agents."""
-        if isinstance(self.agents, dict):
-            for agent_name, agent in self.agents.items():
-                if agent_name not in self.agent_states:
-                    # Initialize empty state for each agent
-                    self.agent_states[agent_name] = {}
-
-                # Sync engines from agents to parent state
-                if hasattr(agent, "engines"):
-                    for engine_name, engine in agent.engines.items():
-                        # Namespace the engine to avoid conflicts
-                        namespaced_engine = f"{agent_name}.{engine_name}"
-                        self.engines[namespaced_engine] = engine
-
-        return self
-
-    def get_agent_state(self, agent_name: str) -> dict[str, Any]:
-        """Get isolated state for a specific agent."""
-        return self.agent_states.get(agent_name, {})
-
-    def update_agent_state(self, agent_name: str, updates: dict[str, Any]):
-        """Update isolated state for a specific agent."""
-        if agent_name not in self.agent_states:
-            self.agent_states[agent_name] = {}
-        self.agent_states[agent_name].update(updates)
-
-    def mark_for_recompile(self, agent_name: str):
-        """Mark an agent as needing recompilation."""
-        self.agents_needing_recompile.add(agent_name)
-
-
-def test_multi_agent_state():
-    """Test MultiAgentState with list and dict inputs."""
-    # Create some agents
-    planner = SimpleAgent(name="planner", engine=AugLLMConfig())
-    executor = SimpleAgent(name="executor", engine=AugLLMConfig())
-
-    # Test 1: Create with list of agents
-    MultiAgentState(agents=[planner, executor])
-
-    # Test 2: Create with dict of agents
-    state2 = MultiAgentState(agents={"plan": planner, "exec": executor})
-
-    # Test 3: Update agent state
-    state2.update_agent_state("plan", {"current_plan": "Step 1"})
-
-    # Test 4: Recompilation tracking
-    state2.mark_for_recompile("plan")
-
-    return state2
+    print("\n✅ Basic multi-agent state tests completed")
 
 
 if __name__ == "__main__":
-    state = test_multi_agent_state()
+    test_basic_multi_agent_state()

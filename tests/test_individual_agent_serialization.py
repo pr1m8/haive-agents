@@ -32,5 +32,6 @@ react_agent.compile()
 try:
     result = react_agent.run({"messages": [HumanMessage(content="Calculate 5 + 3")]})
 except Exception as e:
+    pass
 
     if "msgpack" in str(e):

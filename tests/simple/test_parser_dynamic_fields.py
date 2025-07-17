@@ -90,6 +90,7 @@ def test_parser_node_dynamic_field_addition():
             pass")
 
     except Exception as e:
+        pass
 
 
     # Test Case 2: State schema WITH the structured output field pre-defined

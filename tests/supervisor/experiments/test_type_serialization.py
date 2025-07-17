@@ -26,6 +26,7 @@ def test_type_serialization():
     try:
         ormsgpack.packb(MyModel)
     except Exception as e:
+        pass
 
     instance = MyModel(name="test")
     try:

@@ -71,6 +71,7 @@ try:
     state_class = agent.state_schema()
     test_state = state_class(query="test", messages=[])
 except Exception as e:
+    pass
 
     # Try with context
     try:

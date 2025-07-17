@@ -37,6 +37,7 @@ try:
     result = multi.run({"messages": [HumanMessage(content="Hello")]})
 
 except Exception as e:
+    pass
 
     # Check if it's the msgpack error
     if "msgpack" in str(e):

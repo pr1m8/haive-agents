@@ -102,6 +102,7 @@ async def test_pydantic_state():
     try:
         result = await app.ainvoke(state_with_type)
     except Exception as e:
+        pass
 
 
 if __name__ == "__main__":

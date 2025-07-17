@@ -47,13 +47,13 @@ async def test_schema_composer_fix():
 
         # Check if we have engine field from LLMState but not duplicated
         if "engine" in agent.state_schema.model_fields:
-            pass # engine is in state schema
+            pass  # engine is in state schema
         else:
             pass
 
         # Check if we have query field from prompt template
         if "query" in agent.state_schema.model_fields:
-            pass # query is in state schema
+            pass  # query is in state schema
         else:
             pass
 
@@ -62,13 +62,13 @@ async def test_schema_composer_fix():
 
         # Engine should NOT be in input schema
         if "engine" in agent.input_schema.model_fields:
-            pass # engine is not in input schema
+            pass  # engine is not in input schema
         else:
             pass
 
         # Query should be in input schema
         if "query" in agent.input_schema.model_fields:
-            pass # query is in input schema
+            pass  # query is in input schema
         else:
             pass
 
@@ -86,6 +86,7 @@ async def test_schema_composer_fix():
         agent.state_schema(**input_instance.model_dump())
 
     except Exception as e:
+        pass
 
     # Test actual usage with string input first
     try:

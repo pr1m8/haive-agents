@@ -93,6 +93,7 @@ try:
     try:
         test_input = agent_input_schema(query="test query")
     except Exception as e:
+        pass
 
 except Exception as e:
     traceback.print_exc()

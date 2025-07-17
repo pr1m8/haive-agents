@@ -186,8 +186,9 @@ Remember: Your goal is to provide maximum value by giving accurate, well-reasone
     # Visualization settings
     visualize: bool = Field(default=True, description="Whether to visualize the graph")
 
-    @field_validator("tools", mode="before")
-    def preprocess_tools(self, v):
+    @field_validatorpreprocess_tools
+    @classmethod
+    def preprocess_tools(cls, v):
         """Preprocess tools to ensure consistency."""
         if v is None:
             return []

@@ -47,6 +47,7 @@ try:
     )
 
 except Exception as e:
+    pass
 
     try:
         rag_agent = BaseRAGAgent(name="rag_test", engine=vectorstore_config)

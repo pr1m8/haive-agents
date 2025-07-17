@@ -31,6 +31,7 @@ def test_pydantic_field_addition():
         )
 
     except Exception as e:
+        pass
 
     # Test 2: Can we set a new attribute after creation?
     try:

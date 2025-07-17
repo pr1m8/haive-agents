@@ -153,6 +153,7 @@ async def test_real_haive_agents():
             save_state_history("registry", registry_state, "creation")
 
         except Exception as e:
+            pass
 
             error_state = {
                 "test_name": "multiple_agents",
