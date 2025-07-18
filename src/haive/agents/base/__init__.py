@@ -47,13 +47,13 @@ See Also:
 """
 
 # Re-export the correct Agent class from agent.py
-from .agent import Agent
-from .generic_agent import GenericAgent
+from haive.agents.base.agent import Agent
+from haive.agents.base.generic_agent import GenericAgent
 
 # Re-export mixins for convenience
-from .mixins import ExecutionMixin, PersistenceMixin, StateMixin
-from .serialization_mixin import SerializationMixin
-from .types import AgentInput, AgentOutput, AgentState
+from haive.agents.base.mixins import ExecutionMixin, PersistenceMixin, StateMixin
+from haive.agents.base.serialization_mixin import SerializationMixin
+from haive.agents.base.types import AgentInput, AgentOutput, AgentState
 
 __all__ = [
     "Agent",

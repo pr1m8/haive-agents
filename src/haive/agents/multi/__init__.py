@@ -1,72 +1,31 @@
-"""Multi-Agent System Components for the Haive Framework.
+"""Multi-Agent System for the Haive Framework.
 
-This module provides a comprehensive framework for building and orchestrating
-multi-agent systems with intelligent state management, message preservation,
-and flexible execution patterns.
-
-The multi-agent system enables complex agent coordination patterns while
-maintaining proper isolation between agents, preserving message integrity
-(including tool_call_id fields), and providing automatic schema composition.
-
-Key Components:
-    - MultiAgent: Abstract base class for all multi-agent patterns
-    - SequentialAgent: Execute agents one after another
-    - ParallelAgent: Execute agents independently (future)
-    - ConditionalAgent: Route based on conditions
-    - ExecutionMode: Enum defining execution patterns
+This module provides a clean, simple multi-agent system for coordinating
+multiple agents with intelligent routing and execution patterns.
 
 Example:
-    >>> from haive.agents.multi import SequentialAgent
-    >>> from haive.agents.react.agent import ReactAgent
+    >>> from haive.agents.multi import MultiAgent
     >>> from haive.agents.simple.agent import SimpleAgent
+    >>> from haive.agents.react.agent import ReactAgent
     >>>
-    >>> # Create a multi-agent pipeline
-    >>> system = SequentialAgent(
-    ...     name="Analysis Pipeline",
-    ...     agents=[
-    ...         SimpleAgent(name="Researcher", engine=research_engine),
-    ...         ReactAgent(name="Analyzer", engine=analysis_engine),
-    ...         SimpleAgent(name="Reporter", engine=report_engine)
-    ...     ]
+    >>> # Create agents
+    >>> writer = SimpleAgent(name="writer", engine=writer_config)
+    >>> editor = ReactAgent(name="editor", engine=editor_config)
+    >>>
+    >>> # Create multi-agent system
+    >>> system = MultiAgent.create(
+    ...     agents=[writer, editor],
+    ...     name="content_pipeline",
+    ...     execution_mode="sequential"
     ... )
     >>>
-    >>> # Run the system - messages flow between agents with tool_call_id preserved
-    >>> result = system.run({"messages": [HumanMessage(content="Analyze trends")]})
-
-Features:
-    - Automatic schema composition with field separation strategies
-    - Message preservation ensuring tool_call_id integrity
-    - Engine isolation preventing tool contamination
-    - Flexible routing with conditional branching
-    - Meta state for agent coordination
-
-Note:
-    The multi-agent system uses AgentSchemaComposer with preserve_messages_reducer
-    to ensure proper message handling across agent boundaries. This prevents the
-    loss of critical fields like tool_call_id in ToolMessage objects.
+    >>> # Run the system
+    >>> result = await system.arun("Write a story about AI")
 """
 
-# Import base multi-agent implementation
-from haive.agents.multi.base import (
-    ConditionalAgent,
-    ExecutionMode,
-    MultiAgent,
-    ParallelAgent,
-    SequentialAgent,
-)
-
-# Future implementations
+# Import clean multi-agent implementation
+from haive.agents.multi.clean import MultiAgent
 
 __all__ = [
-    "ConditionalAgent",
-    "ExecutionMode",
-    # Base classes
     "MultiAgent",
-    "ParallelAgent",
-    # Concrete implementations
-    "SequentialAgent",
-    # Future
-    # "SupervisorAgent",
-    # "Haive",
-    # "create_haive",
 ]

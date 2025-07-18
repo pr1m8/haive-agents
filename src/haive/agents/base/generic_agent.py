@@ -25,7 +25,7 @@ from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel, Field
 
 # Import base agent components
-from .agent import Agent
+from haive.agents.base.agent import Agent
 
 logger = logging.getLogger(__name__)
 

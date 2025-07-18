@@ -17,9 +17,9 @@ Example:
                 self.checkpoint_mode = "async"
 """
 
-from .execution_mixin import ExecutionMixin
-from .persistence_mixin import PersistenceMixin
-from .state_mixin import StateMixin
+from haive.agents.base.mixins.execution_mixin import ExecutionMixin
+from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
+from haive.agents.base.mixins.state_mixin import StateMixin
 
 __all__ = [
     "ExecutionMixin",

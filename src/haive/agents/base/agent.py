@@ -378,6 +378,22 @@ class Agent(
             self._auto_derive_io_schemas()
             return
 
+        # CRITICAL: If setup_agent() already set a composed schema (like married schema), respect it
+        # Check if the schema is not one of the default schemas (MessagesState, etc.)
+        if (
+            self.state_schema
+            and self.use_prebuilt_base
+            and hasattr(self.state_schema, "__name__")
+            and self.state_schema.__name__
+            not in ["MessagesState", "SimpleAgentState", "ToolState"]
+        ):
+            logger.debug(
+                f"State schema already set by setup_agent() to {self.state_schema.__name__}, skipping regeneration"
+            )
+            # Still derive I/O schemas if needed
+            self._auto_derive_io_schemas()
+            return
+
         # Collect all engines and agents
         engine_list = []
         agent_list = []
