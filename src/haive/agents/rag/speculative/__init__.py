@@ -4,7 +4,7 @@ Speculative RAG with parallel hypothesis generation and verification.
 Uses structured output models for complex reasoning and iterative processing.
 """
 
-from .agent import (
+from haive.agents.rag.speculative.agent import (
     HypothesisGeneratorAgent,
     ParallelVerificationAgent,
     SpeculativeRAGAgent,

@@ -68,8 +68,9 @@ class PropertyFilter(BaseModel):
         default="=", description="Type of filter operation used in the Cypher query"
     )
 
-    @field_validator("filter_type", mode="before")
-    def validate_filter_type(self, v):
+    @field_validatorvalidate_filter_type
+    @classmethod
+    def validate_filter_type(cls, v):
         """Validate that the filter type is a supported operator.
 
         Args:
@@ -124,8 +125,9 @@ class CypherQueryOutput(BaseModel):
         description="Query parameters if placeholders are used (e.g., $name)",
     )
 
-    @field_validator("query", mode="before")
-    def validate_cypher_syntax(self, query: str) -> str:
+    @field_validatorvalidate_cypher_syntax
+    @classmethod
+    def validate_cypher_syntax(cls, query: str) -> str:
         """Validate that the query starts with a valid Cypher keyword.
 
         Args:

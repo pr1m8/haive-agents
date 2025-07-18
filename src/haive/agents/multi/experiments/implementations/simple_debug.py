@@ -53,6 +53,7 @@ try:
 
 
 except Exception as e:
+    pass
 
     # Get just the last few frames of the traceback
     tb = traceback.extract_tb(e.__traceback__)

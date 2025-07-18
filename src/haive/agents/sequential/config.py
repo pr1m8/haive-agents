@@ -88,8 +88,9 @@ class SequentialAgentConfig(AgentConfig):
 
     model_config = {"arbitrary_types_allowed": True}
 
-    @field_validator("steps")
-    def validate_steps(self, v):
+    @field_validatorvalidate_steps
+    @classmethod
+    def validate_steps(cls, v):
         """Ensure we have at least one step."""
         if not v or len(v) == 0:
             raise ValueError("SequentialAgent must have at least one step")

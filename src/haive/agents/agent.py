@@ -50,8 +50,9 @@ class Prediction(BaseModel):
     action: str
     args: list[str] | None = None
 
-    @field_validator("args", mode="before")
-    def ensure_args(self, v):
+    @field_validatorensure_args
+    @classmethod
+    def ensure_args(cls, v):
         """Ensures args is a list."""
         if v is None:
             return []
@@ -89,8 +90,9 @@ class WebNavState(BaseModel):
         arbitrary_types_allowed=True,
     )
 
-    @field_validator("prediction", mode="before")
-    def ensure_prediction(self, v):
+    @field_validatorensure_prediction
+    @classmethod
+    def ensure_prediction(cls, v):
         """Ensures prediction is either None or a valid object."""
         debug_print(f"Validating prediction: {v}")
         if isinstance(v, list) and len(v) == 0:

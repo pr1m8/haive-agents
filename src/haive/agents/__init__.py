@@ -75,13 +75,16 @@ __version__ = "0.1.0"
 
 # Import key agent base classes
 from haive.agents.base import Agent, GenericAgent
-from haive.agents.multi.agent import MultiAgent
-from haive.agents.rag.base.agent import BaseRAGAgent
-from haive.agents.rag.simple.agent import SimpleRAGAgent
+from haive.agents.multi.clean import MultiAgent
 from haive.agents.react.agent import ReactAgent
 
 # Import commonly used agents
 from haive.agents.simple import SimpleAgent
+
+# Temporarily disable problematic imports with broken dependencies
+# TODO: Fix these imports after resolving multi.base references
+# from haive.agents.rag.base.agent import BaseRAGAgent
+# from haive.agents.rag.simple.agent import SimpleRAGAgent
 
 __all__ = [
     # Base classes

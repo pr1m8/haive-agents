@@ -33,7 +33,6 @@ def demonstrate_basic_state_creation():
         max_rounds=5,
     )
 
-
     return state, [alice, bob, charlie]
 
 
@@ -49,7 +48,6 @@ def demonstrate_state_updates(state: ConversationState):
         }
     )
 
-
     # Simulate second turn (Bob speaks)
     state = state.model_copy(
         update={
@@ -58,7 +56,6 @@ def demonstrate_state_updates(state: ConversationState):
             "current_speaker": "Bob",
         }
     )
-
 
     # Simulate third turn (Charlie speaks - completes round 1)
     state = state.model_copy(
@@ -69,13 +66,11 @@ def demonstrate_state_updates(state: ConversationState):
         }
     )
 
-
     return state
 
 
 def demonstrate_computed_properties(state: ConversationState):
     """Demonstrate computed properties for conversation analysis."""
-
 
     # Simulate several more turns to show progress
     for round_num in range(2, 6):  # Rounds 2-5
@@ -87,7 +82,6 @@ def demonstrate_computed_properties(state: ConversationState):
                     "current_speaker": speaker,
                 }
             )
-
 
     return state
 
@@ -115,7 +109,7 @@ def demonstrate_participant_validation():
     try:
         validate_conversation_participants([alice, bob, charlie])
     except ValueError as e:
-        pass")
+        pass
 
     # Test with duplicate names
     duplicate_alice = SimpleAgent(name="Alice")  # Same name as alice
@@ -123,14 +117,13 @@ def demonstrate_participant_validation():
     try:
         validate_conversation_participants([alice, bob, duplicate_alice])
     except ValueError as e:
-        pass")
+        pass
 
     # Test with insufficient participants
     try:
         validate_conversation_participants([alice])  # Only one participant
     except ValueError as e:
-        pass")
-
+        pass
 
 
 def demonstrate_custom_state_fields():
@@ -169,7 +162,6 @@ def demonstrate_custom_state_fields():
         speakers=["Alice", "Bob"], topic="Quality conversation example", max_rounds=3
     )
 
-
     # Update with custom data
     extended_state = extended_state.model_copy(
         update={
@@ -177,7 +169,6 @@ def demonstrate_custom_state_fields():
             "engagement_metrics": {"participation": 0.85, "sentiment": 0.72},
         }
     )
-
 
 
 async def main():
@@ -200,7 +191,6 @@ async def main():
 
     # Custom state extensions
     demonstrate_custom_state_fields()
-
 
 
 if __name__ == "__main__":

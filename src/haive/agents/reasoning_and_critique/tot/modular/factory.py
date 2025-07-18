@@ -217,8 +217,9 @@ def create_game24_tot_agent(
             description="Step-by-step reasoning for how this formula works"
         )
 
-        @field_validator("formula")
-        def validate_formula(self, v):
+        @field_validatorvalidate_formula
+        @classmethod
+        def validate_formula(cls, v):
             """Validate the formula has basic math operators."""
             if not any(op in v for op in ["+", "-", "*", "/"]):
                 raise ValueError(

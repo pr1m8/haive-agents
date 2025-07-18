@@ -323,6 +323,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             }
 
         except Exception:
+            pass
 
             # Fallback: use the created knowledge graph without LLM refinement
             return {

@@ -136,7 +136,7 @@ async def test_agent_registration():
 
         # Show results
         final_messages = getattr(result, "messages", [])
-        console.print("\n[cyan]📋 Message Flow:[/cyan]"n]")
+        console.print("\n[cyan]📋 Message Flow:[/cyan]")
         for i, msg in enumerate(final_messages[-3:], 1):  # Show last 3 messages
             if hasattr(msg, "content"):
                 role = msg.__class__.__name__.replace("Message", "")
@@ -191,7 +191,7 @@ async def test_routing_flow():
 
         # Show complete flow
         final_messages = getattr(result, "messages", [])
-        console.print("\n[cyan]🔄 Complete Flow:[/cyan]"n]")
+        console.print("\n[cyan]🔄 Complete Flow:[/cyan]")
         for i, msg in enumerate(final_messages, 1):
             if hasattr(msg, "content"):
                 role = msg.__class__.__name__.replace("Message", "")

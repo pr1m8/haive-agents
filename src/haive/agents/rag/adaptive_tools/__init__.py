@@ -4,6 +4,10 @@ Enhanced adaptive RAG that integrates search tools and ReAct patterns for dynami
 Includes Google Search integration and intelligent tool routing.
 """
 
-from .agent import AdaptiveToolsRAGAgent, SearchIntegrationAgent, ToolSelectionAgent
+from haive.agents.rag.adaptive_tools.agent import (
+    AdaptiveToolsRAGAgent,
+    SearchIntegrationAgent,
+    ToolSelectionAgent,
+)
 
 __all__ = ["AdaptiveToolsRAGAgent", "SearchIntegrationAgent", "ToolSelectionAgent"]

@@ -12,8 +12,7 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from pydantic import Field
 
 from haive.agents.react.agent import ReactAgent
-
-from .dynamic_state import DynamicSupervisorState
+from haive.agents.supervisor.dynamic_state import DynamicSupervisorState
 
 logger = logging.getLogger(__name__)
 

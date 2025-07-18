@@ -1,10 +1,10 @@
 # src/haive/agents/conversation/round_robin.py
 """Round-robin conversation agent where each participant speaks in turn."""
 
+import logging
 from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.logging.rich_logger import LogLevel, get_logger
 from pydantic import Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
@@ -12,7 +12,7 @@ from haive.agents.conversation.base.state import ConversationState
 from haive.agents.simple.agent import SimpleAgent
 
 logger = get_logger(__name__)
-logger.set_level(LogLevel.WARNING)
+logger.set_level(logging.WARNING)
 
 
 class RoundRobinConversation(BaseConversationAgent):

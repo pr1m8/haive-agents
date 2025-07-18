@@ -5,12 +5,14 @@ This module provides tools for summarizing documents using various strategies.
 
 # Import classes from submodules
 try:
-    from .base import SummarizerAgent
+    from haive.agents.document_modifiers.summarizer.base import SummarizerAgent
 except ImportError:
     SummarizerAgent = None
 
 try:
-    from .iterative_refinement.iterative_summarizer import IterativeSummarizer
+    from haive.agents.document_modifiers.summarizer.iterative_refinement.iterative_summarizer import (
+        IterativeSummarizer,
+    )
 except ImportError:
     IterativeSummarizer = None
 

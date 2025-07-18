@@ -20,9 +20,12 @@ from haive.agents.rag.common.document_graders.binary_grader.prompt import (
     RAG_DOCUMENT_GRADE_BINARY,
 )
 from haive.agents.rag.common.document_graders.models import DocumentBinaryResponse
+from haive.agents.rag.multi_agent_rag.state import (
+    DocumentGradingResult,
+    MultiAgentRAGState,
+    RAGOperationType,
+)
 from haive.agents.simple.agent import SimpleAgent
-
-from .state import DocumentGradingResult, MultiAgentRAGState, RAGOperationType
 
 # ============================================================================
 # PROMPT TEMPLATES

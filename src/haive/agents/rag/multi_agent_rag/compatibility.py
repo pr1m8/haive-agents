@@ -16,9 +16,8 @@ from haive.core.schema.compatibility import (
 from haive.core.schema.compatibility.reports import generate_report
 
 from haive.agents.base.agent import Agent
-
-from .agents import DocumentGradingAgent
-from .state import MultiAgentRAGState
+from haive.agents.rag.multi_agent_rag.agents import DocumentGradingAgent
+from haive.agents.rag.multi_agent_rag.state import MultiAgentRAGState
 
 logger = logging.getLogger(__name__)
 
@@ -245,7 +244,10 @@ class SafeCompatibilityTester:
         """
         # Import agents safely
         try:
-            from .agents import SIMPLE_RAG_AGENT, SIMPLE_RAG_ANSWER_AGENT
+            from haive.agents.rag.multi_agent_rag.agents import (
+                SIMPLE_RAG_AGENT,
+                SIMPLE_RAG_ANSWER_AGENT,
+            )
 
             # Test basic RAG chain
             basic_chain_report = self.test_agent_pair_compatibility(

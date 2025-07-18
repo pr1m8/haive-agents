@@ -139,33 +139,33 @@ def streaming_example():
         ):
             # Process each step
             for node_name, node_output in chunk.items():
-
                 # Handle different node outputs
                 if node_name == "check_domain_relevance":
                     if node_output.get("next_action") != "end":
-                        pass")
+                        pass
                     else:
-                        pass")
+                        pass
 
                 elif node_name == "generate_query":
                     cypher = node_output.get("cypher_statement", "")
                     if cypher:
-                        pass")
+                        pass
 
                 elif node_name == "validate_query":
                     if node_output.get("next_action") == "execute_query":
-                        pass")
+                        pass
                     else:
                         errors = node_output.get("cypher_errors", [])
 
                 elif node_name == "execute_query":
                     records = node_output.get("database_records", [])
                     if records and records != "No results found":
+                        pass
                     else:
-                        passnd")
+                        pass
 
                 elif node_name == "generate_answer":
-                    pass")
+                    pass
 
 
         # Get final result
@@ -243,17 +243,17 @@ def custom_domain_example():
         healthcare_question = "Which patients have diabetes?"
         result = agent.run({"question": healthcare_question})
         if "answer" in result and "not about healthcare" not in result["answer"]:
-            pass')
+            pass
         else:
-            pass')
+            pass
 
         # Should fail
         weather_question = "What's the weather today?"
         result = agent.run({"question": weather_question})
         if "not about healthcare" in result.get("answer", ""):
-            pass')
+            pass
         else:
-            pass')
+            pass
 
         # Process a real healthcare query
         result = agent.run({"question": healthcare_question})
@@ -393,7 +393,7 @@ def error_handling_example():
                 if chunk["validate_query"].get("cypher_errors"):
                     pass
             elif "correct_query" in chunk:
-                pass")
+                pass
 
         # Test 2: Query with non-existent entities
         result = agent.run(
@@ -402,7 +402,7 @@ def error_handling_example():
             }
         )
         if "not about movies" in result.get("answer", "").lower():
-            passin")
+            pass
         else:
             pass
 
@@ -413,7 +413,7 @@ def error_handling_example():
             }
         )
         if complex_result.get("answer"):
-
+            pass
     except Exception as e:
         logger.exception(f"Error in error handling example: {e}")
 
@@ -492,7 +492,7 @@ def performance_monitoring_example():
         if bottleneck[0] == "generate_query":
         elif bottleneck[0] == "execute_query":
         elif bottleneck[0] == "validate_query":
-
+    pass
     except Exception as e:
         logger.exception(f"Error in performance monitoring: {e}")
 
@@ -565,7 +565,7 @@ async def async_example():
         for result in sorted(results, key=lambda x: x["index"]):
             if result["success"]:
             else:
-
+    pass
         # Compare with sequential time
         sequential_time = sum(r["time"] for r in results)
 
@@ -622,7 +622,7 @@ def main():
                 examples[choice]()
                 input("\nPress Enter to continue...")
             else:
-                pass")
+                pass
 
         except KeyboardInterrupt:
             break
@@ -648,7 +648,7 @@ def run_all_examples():
     ]
 
     for i, (name, func) in enumerate(examples, 1):
-
+    pass
         try:
             func()
         except Exception as e:

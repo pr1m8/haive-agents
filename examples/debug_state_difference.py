@@ -67,6 +67,7 @@ try:
     # Try JSON serialization (similar to msgpack)
     json_str = json.dumps(state_dict)
 except Exception:
+    pass
 
     # Find problematic field
     if isinstance(state_dict, dict):

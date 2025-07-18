@@ -59,10 +59,10 @@ License: MIT
 
 from __future__ import annotations
 
+import logging
 import operator
 from typing import TYPE_CHECKING, Any
 
-from haive.core.logging.rich_logger import LogLevel, get_logger
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import Field, computed_field
 from typing_extensions import TypeAlias
@@ -80,7 +80,7 @@ TurnCount: TypeAlias = int
 ProgressPercentage: TypeAlias = float
 
 logger = get_logger(__name__)
-logger.set_level(LogLevel.WARNING)
+logger.set_level(logging.WARNING)
 
 
 class ConversationState(MessagesState):

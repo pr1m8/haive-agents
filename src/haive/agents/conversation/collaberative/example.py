@@ -222,7 +222,7 @@ def example_research_paper():
         for _i, line in enumerate(lines[:50]):  # First 50 lines
             pass
         if len(lines) > 50:
-
+    pass
 
 def example_creative_writing():
     """Collaborative story writing."""

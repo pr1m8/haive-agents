@@ -5,9 +5,9 @@ between multiple participants with defined positions, argument tracking, and
 optional judging/scoring capabilities.
 """
 
+import logging
 from typing import Any, Literal
 
-from haive.core.logging.rich_logger import LogLevel, get_logger
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.types import Command
 from pydantic import BaseModel, Field, model_validator
@@ -16,7 +16,7 @@ from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.debate.state import DebateState
 
 logger = get_logger(__name__)
-logger.set_level(LogLevel.INFO)
+logger.set_level(logging.INFO)
 
 
 class DebateConversation(BaseConversationAgent):

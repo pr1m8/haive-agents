@@ -274,6 +274,7 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
         )
 
     except Exception as e:
+        pass
 
         # Create a fallback response
         return Command(

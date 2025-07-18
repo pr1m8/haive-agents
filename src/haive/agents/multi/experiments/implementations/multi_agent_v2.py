@@ -5,14 +5,15 @@ schema flattening, maintaining type safety and hierarchical access.
 """
 
 import logging
-from abc import abstractmethod
+
+# abstractmethod removed - not needed
 from enum import Enum
 from typing import (
     Any,
     Callable,
 )
 
-from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
+from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from haive.core.schema.state_schema import StateSchema
@@ -33,7 +34,7 @@ class ExecutionMode(str, Enum):
     HIERARCHICAL = "hierarchical"
 
 
-class MultiAgentV2(Agent[MultiAgentState]):
+class MultiAgentV2(Agent):
     """Rebuilt multi-agent system using proper state management.
 
     Key improvements:
@@ -233,7 +234,7 @@ class MultiAgentV2(Agent[MultiAgentState]):
 
     def build_graph(self) -> BaseGraph:
         """Build the multi-agent graph based on execution mode."""
-        graph = BaseGraph(state_schema=self.state_schema)
+        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
 
         if self.execution_mode == ExecutionMode.SEQUENCE:
             self._build_sequence_graph(graph)
@@ -246,7 +247,7 @@ class MultiAgentV2(Agent[MultiAgentState]):
         else:
             raise ValueError(f"Unknown execution mode: {self.execution_mode}")
 
-        return graph.compile()
+        return graph
 
     def _build_sequence_graph(self, graph: BaseGraph) -> None:
         """Build sequential execution graph."""
@@ -258,8 +259,12 @@ class MultiAgentV2(Agent[MultiAgentState]):
 
         # Add nodes
         for i, agent_name in enumerate(agent_names):
-            node = create_agent_node_v3(
-                agent_name=agent_name, name=f"agent_{agent_name}"
+            node = AgentNodeV3Config(
+                name=f"agent_{agent_name}",
+                agent_name=agent_name,
+                project_state=True,
+                extract_from_container=True,
+                update_container_state=True,
             )
             graph.add_node(f"agent_{agent_name}", node)
 
@@ -284,8 +289,12 @@ class MultiAgentV2(Agent[MultiAgentState]):
 
         # Add agent nodes
         for agent_name in agent_names:
-            node = create_agent_node_v3(
-                agent_name=agent_name, name=f"agent_{agent_name}"
+            node = AgentNodeV3Config(
+                name=f"agent_{agent_name}",
+                agent_name=agent_name,
+                project_state=True,
+                extract_from_container=True,
+                update_container_state=True,
             )
             graph.add_node(f"agent_{agent_name}", node)
 
@@ -312,8 +321,12 @@ class MultiAgentV2(Agent[MultiAgentState]):
 
         # Add agent nodes and conditional edges
         for route_key, agent_name in self.route_map.items():
-            node = create_agent_node_v3(
-                agent_name=agent_name, name=f"agent_{agent_name}"
+            node = AgentNodeV3Config(
+                name=f"agent_{agent_name}",
+                agent_name=agent_name,
+                project_state=True,
+                extract_from_container=True,
+                update_container_state=True,
             )
             graph.add_node(f"agent_{agent_name}", node)
 
@@ -346,6 +359,7 @@ class MultiAgentV2(Agent[MultiAgentState]):
             return self.routing_function(state)
         return "END"
 
-    @abstractmethod
     def setup_agent(self) -> None:
-        """Setup hook for subclasses."""
+        """Setup hook - MultiAgent uses MultiAgentState by default."""
+        # MultiAgentState is already set as default
+        pass

@@ -55,6 +55,7 @@ try:
 
 
 except Exception as e:
+    pass
 
     traceback.print_exc()
 

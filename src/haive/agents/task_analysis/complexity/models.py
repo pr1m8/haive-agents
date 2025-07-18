@@ -77,10 +77,9 @@ class ComplexityVector(BaseModel):
             return ComplexityLevel.HIGHLY_COMPLEX
         return ComplexityLevel.EXTREME
 
-    @field_validator(
-        "structural", "execution", "knowledge", "integration", "uncertainty"
-    )
-    def validate_scores(self, v):
+    @field_validatorvalidate_scores
+    @classmethod
+    def validate_scores(cls, v):
         """Ensure scores are within valid range."""
         return round(v, 1)
 

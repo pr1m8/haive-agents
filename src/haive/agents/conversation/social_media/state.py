@@ -1,12 +1,12 @@
+import logging
 from typing import Literal
 
-from haive.core.logging.rich_logger import LogLevel, get_logger
 from pydantic import Field
 
 from haive.agents.conversation.base.state import ConversationState
 
 logger = get_logger(__name__)
-logger.set_level(LogLevel.WARNING)
+logger.set_level(logging.WARNING)
 
 
 class SocialMediaState(ConversationState):

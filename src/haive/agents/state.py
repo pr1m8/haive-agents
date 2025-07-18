@@ -65,8 +65,9 @@ class WebNavState(BaseModel):
         self._page = page
         debug_print("WebNavState initialized with values (excluding page)")
 
-    @field_validator("prediction", mode="before")
-    def ensure_prediction(self, v):
+    @field_validatorensure_prediction
+    @classmethod
+    def ensure_prediction(cls, v):
         """Ensures prediction is either None or a valid object."""
         debug_print(f"Validating prediction: {v}")
         if isinstance(v, list) and len(v) == 0:

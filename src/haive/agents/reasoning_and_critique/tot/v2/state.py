@@ -5,7 +5,7 @@ from haive.core.schema.prebuilt.messages_state import MessagesState
 from langchain_core.messages import HumanMessage
 from pydantic import Field, computed_field, model_validator
 
-from .models import Candidate, ScoredCandidate
+from haive.agents.reasoning_and_critique.tot.v2.models import Candidate, ScoredCandidate
 
 
 def update_candidates(

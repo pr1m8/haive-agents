@@ -12,10 +12,12 @@ from haive.core.tools import tool
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
+from haive.agents.multi.experiments.proper_list_multi_agent import (
+    MetaListMultiAgent,
+    ProperListMultiAgent,
+)
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
-
-from .proper_list_multi_agent import MetaListMultiAgent, ProperListMultiAgent
 
 
 # Test tools

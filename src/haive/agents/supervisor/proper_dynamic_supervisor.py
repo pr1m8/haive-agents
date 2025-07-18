@@ -12,8 +12,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import Field
 
 from haive.agents.react.agent import ReactAgent
-
-from .dynamic_executor_node import create_dynamic_executor_node
+from haive.agents.supervisor.dynamic_executor_node import create_dynamic_executor_node
 
 logger = logging.getLogger(__name__)
 

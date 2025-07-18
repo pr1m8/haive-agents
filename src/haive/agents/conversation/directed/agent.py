@@ -3,11 +3,11 @@
 Uses structured output models for robust speaker selection and interaction tracking.
 """
 
+import logging
 import re
 from enum import Enum
 from typing import Any, Literal
 
-from haive.core.logging.rich_logger import LogLevel, get_logger
 from langchain_core.messages import AIMessage, BaseMessage, SystemMessage
 from pydantic import BaseModel, Field
 
@@ -15,7 +15,7 @@ from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.directed.state import DirectedState
 
 logger = get_logger(__name__)
-logger.set_level(LogLevel.WARNING)
+logger.set_level(logging.WARNING)
 
 
 class MentionType(str, Enum):

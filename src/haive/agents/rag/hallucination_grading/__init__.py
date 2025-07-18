@@ -4,7 +4,7 @@ Standalone hallucination detection and grading agents that can be plugged into a
 Compatible with all other agents through standardized I/O schemas.
 """
 
-from .agent import (
+from haive.agents.rag.hallucination_grading.agent import (
     AdvancedHallucinationGraderAgent,
     HallucinationGraderAgent,
     RealtimeHallucinationGraderAgent,

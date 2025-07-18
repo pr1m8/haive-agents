@@ -1,8 +1,10 @@
-from agents.plan_and_execute.models import Plan, Step
-from pydantic import BaseModel, Field
+from haive.core.schema.state_schema import StateSchema
+from pydantic import Field
+
+from haive.agents.planning.plan_and_execute.models import Plan, Step
 
 
-class PlanAndExecuteState(BaseModel):
+class PlanAndExecuteState(StateSchema):
     """Represents the state for the PlanAndExecuteAgent."""
 
     input: str = Field(..., description="The original user query or objective.")

@@ -255,6 +255,7 @@ class DynamicSupervisorV2(ReactAgent):
                 return f"{agent_name} response: {response}"
 
             except Exception as e:
+                pass
 
                 # Record failure
                 self.state.execution_history.append(

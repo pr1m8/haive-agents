@@ -14,7 +14,7 @@ This module provides:
 
 # State Management
 # Core RAG Agents
-from .agents import (
+from haive.agents.rag.multi_agent_rag.agents import (
     SIMPLE_RAG_AGENT,
     SIMPLE_RAG_ANSWER_AGENT,
     DocumentGradingAgent,
@@ -28,7 +28,7 @@ from .agents import (
 )
 
 # Multi-Agent RAG Workflows
-from .multi_rag import (
+from haive.agents.rag.multi_agent_rag.multi_rag import (
     AdaptiveRAGMultiAgent,
     BaseRAGMultiAgent,
     ConditionalRAGMultiAgent,
@@ -42,7 +42,7 @@ from .multi_rag import (
     test_agent_compatibility,
     validate_multi_agent_compatibility,
 )
-from .state import (
+from haive.agents.rag.multi_agent_rag.state import (
     DocumentGradingResult,
     EnhancedRAGState,
     MultiAgentRAGState,

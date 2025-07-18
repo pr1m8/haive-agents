@@ -7,16 +7,28 @@ Key Features:
     - 11 memory types (semantic, episodic, procedural, contextual, preference, etc.)
     - Automatic memory classification with LLM-based analysis
     - Enhanced self-query retriever with memory context
-    - Memory lifecycle management and consolidation
-    - Integration with existing store tools and RAG systems
+    - Knowledge graph generation with entity/relationship extraction
+    - Graph RAG retrieval with knowledge graph integration
+    - Agentic RAG coordination with intelligent strategy selection
+    - Multi-agent memory coordination using MetaStateSchema patterns
+    - Unified API for easy integration and usage
 
 Phase Implementation Status:
     ✅ Phase 1: Memory Type Classification System (COMPLETE)
-    🔄 Phase 2: Enhanced Self-Query with Memory Context (CURRENT)
-    📋 Phase 3: Graph RAG implementation (PLANNED)
-    📋 Phase 4: Memory consolidation agent (PLANNED)
+    ✅ Phase 2: Enhanced Self-Query with Memory Context (COMPLETE)
+    ✅ Phase 3: Graph RAG implementation (COMPLETE)
+    ✅ Phase 4: Multi-agent coordination (COMPLETE)
+    ✅ Phase 5: Unified API integration (COMPLETE)
 
 Usage:
+    Unified Memory System (Recommended):
+        >>> from haive.agents.memory import UnifiedMemorySystem, MemorySystemConfig
+        >>> config = MemorySystemConfig(store_type="memory", collection_name="my_memories")
+        >>> memory_system = UnifiedMemorySystem(config)
+        >>> await memory_system.store_memory("Alice works at TechCorp")
+        >>> result = await memory_system.retrieve_memories("Who works at TechCorp?")
+        >>> kg_result = await memory_system.generate_knowledge_graph()
+
     Basic memory classification:
         >>> from haive.agents.memory import MemoryClassifier, MemoryType
         >>> classifier = MemoryClassifier()
@@ -35,6 +47,12 @@ Usage:
         >>> memory_id = await memory_manager.store_memory("Important fact about AI")
         >>> memories = await memory_manager.retrieve_memories("AI facts")
 """
+
+from haive.agents.memory.agentic_rag_coordinator import (
+    AgenticRAGCoordinator,
+    AgenticRAGCoordinatorConfig,
+    AgenticRAGResult,
+)
 
 # Core memory system components
 from haive.agents.memory.core import (  # Memory types and data structures; Memory classification system; Memory storage and management
@@ -56,6 +74,34 @@ from haive.agents.memory.enhanced_retriever import (
     EnhancedQueryResult,
     EnhancedRetrieverConfig,
     create_enhanced_memory_retriever,
+)
+from haive.agents.memory.graph_rag_retriever import (
+    GraphRAGResult,
+    GraphRAGRetriever,
+    GraphRAGRetrieverConfig,
+)
+
+# Advanced memory components (Phase 3-5)
+from haive.agents.memory.kg_generator_agent import (
+    KGGeneratorAgent,
+    KGGeneratorAgentConfig,
+    KnowledgeGraphNode,
+    KnowledgeGraphRelationship,
+    MemoryKnowledgeGraph,
+)
+from haive.agents.memory.multi_agent_coordinator import (
+    MemoryAgentCapabilities,
+    MemoryTask,
+    MultiAgentCoordinatorConfig,
+    MultiAgentMemoryCoordinator,
+)
+
+# Unified API (Phase 5 - Recommended)
+from haive.agents.memory.unified_memory_api import (
+    MemorySystemConfig,
+    MemorySystemResult,
+    UnifiedMemorySystem,
+    create_memory_system,
 )
 
 # Integration with existing memory agent framework
@@ -82,11 +128,35 @@ __all__ = [
     # Memory Storage and Management (Phase 1 ✅)
     "MemoryStoreManager",  # Enhanced memory storage manager
     "MemoryStoreConfig",  # Store manager configuration
-    # Enhanced Retrieval System (Phase 2 🔄)
+    # Enhanced Retrieval System (Phase 2 ✅)
     "EnhancedMemoryRetriever",  # Memory-aware self-query retriever
     "EnhancedRetrieverConfig",  # Retriever configuration
     "EnhancedQueryResult",  # Detailed retrieval results
     "create_enhanced_memory_retriever",  # Factory function
+    # Knowledge Graph Generation (Phase 3 ✅)
+    "KGGeneratorAgent",  # Knowledge graph generator agent
+    "KGGeneratorAgentConfig",  # KG generator configuration
+    "KnowledgeGraphNode",  # KG node representation
+    "KnowledgeGraphRelationship",  # KG relationship representation
+    "MemoryKnowledgeGraph",  # Complete knowledge graph
+    # Graph RAG Retrieval (Phase 3 ✅)
+    "GraphRAGRetriever",  # Graph RAG retriever
+    "GraphRAGRetrieverConfig",  # Graph RAG configuration
+    "GraphRAGResult",  # Graph RAG result
+    # Agentic RAG Coordination (Phase 4 ✅)
+    "AgenticRAGCoordinator",  # Agentic RAG coordinator
+    "AgenticRAGCoordinatorConfig",  # Agentic RAG configuration
+    "AgenticRAGResult",  # Agentic RAG result
+    # Multi-Agent Coordination (Phase 4 ✅)
+    "MultiAgentMemoryCoordinator",  # Multi-agent coordinator
+    "MultiAgentCoordinatorConfig",  # Multi-agent configuration
+    "MemoryTask",  # Memory task representation
+    "MemoryAgentCapabilities",  # Agent capabilities
+    # Unified API (Phase 5 ✅ - Recommended)
+    "UnifiedMemorySystem",  # Unified memory system
+    "MemorySystemConfig",  # System configuration
+    "MemorySystemResult",  # System result
+    "create_memory_system",  # Factory function
 ]
 
 # Add existing memory components if available

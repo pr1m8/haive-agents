@@ -31,7 +31,7 @@ def example_basic_document_loader():
 
     # Print the first document's content
     if result["total_documents"] > 0:
-
+        pass
     return result
 
 
@@ -139,10 +139,9 @@ async def example_async_loading():
     total_docs = sum(result["total_documents"] for result in results)
     total_time = sum(result["operation_time"] for result in results)
 
-
     # Print details for each source
     for i, result in enumerate(results):
-
+        pass
     return results
 
 
@@ -167,7 +166,7 @@ def example_rag_integration():
 
 
 if __name__ == "__main__":
-
+    pass
     try:
         example_basic_document_loader()
     except Exception as e:
@@ -197,4 +196,3 @@ if __name__ == "__main__":
         example_rag_integration()
     except Exception as e:
         pass
-

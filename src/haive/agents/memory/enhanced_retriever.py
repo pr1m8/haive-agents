@@ -19,7 +19,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 from haive.core.tools.store_tools import StoreManager
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.memory.core.classifier import MemoryClassifier, MemoryClassifierConfig
 from haive.agents.memory.core.stores import MemoryStoreConfig, MemoryStoreManager
@@ -33,6 +33,8 @@ logger = logging.getLogger(__name__)
 
 class EnhancedRetrieverConfig(BaseModel):
     """Configuration for enhanced memory retriever with self-query capabilities."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # Core components
     memory_store_manager: MemoryStoreManager = Field(

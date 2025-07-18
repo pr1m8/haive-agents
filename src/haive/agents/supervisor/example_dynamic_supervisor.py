@@ -193,6 +193,7 @@ async def demonstrate_react_agent_integration(supervisor):
 
         from haive.agents.react.agent import ReactAgent
     except ImportError:
+        pass
 
         # Create mock tools for demo
         class MockTool:

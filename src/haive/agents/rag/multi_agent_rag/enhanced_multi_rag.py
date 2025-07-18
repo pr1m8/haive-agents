@@ -17,8 +17,7 @@ from haive.agents.multi.compatibility_enhanced_base import (
     CompatibilityMode,
     create_compatible_multi_agent,
 )
-
-from .agents import (
+from haive.agents.rag.multi_agent_rag.agents import (
     SIMPLE_RAG_AGENT,
     SIMPLE_RAG_ANSWER_AGENT,
     DocumentGradingAgent,
@@ -26,7 +25,7 @@ from .agents import (
     SimpleRAGAgent,
     SimpleRAGAnswerAgent,
 )
-from .state import MultiAgentRAGState
+from haive.agents.rag.multi_agent_rag.state import MultiAgentRAGState
 
 # ============================================================================
 # COMPATIBILITY-ENHANCED RAG SYSTEMS

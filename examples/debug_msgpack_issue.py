@@ -48,6 +48,7 @@ try:
     dumped = add_aug.model_dump()
     json.dumps(dumped)
 except Exception as e:
+    pass
 
     # Find problematic fields
     for key, value in dumped.items():

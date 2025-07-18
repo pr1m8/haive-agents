@@ -4,7 +4,7 @@ Modular query decomposition agents that break complex queries into manageable su
 Can be plugged into any RAG workflow with compatible I/O schemas.
 """
 
-from .agent import (
+from haive.agents.rag.query_decomposition.agent import (
     AdaptiveQueryDecomposerAgent,
     ContextualQueryDecomposerAgent,
     HierarchicalQueryDecomposerAgent,

@@ -12,7 +12,7 @@ from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
-from haive.agents.multi.base import SequentialAgent
+from haive.agents.multi import MultiAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -55,7 +55,7 @@ Provide a comprehensive answer:""",
 )
 
 
-class HyDERAGAgent(SequentialAgent):
+class HyDERAGAgent(MultiAgent):
     """HyDE RAG using hypothetical document generation for better retrieval."""
 
     @classmethod
@@ -84,14 +84,14 @@ class HyDERAGAgent(SequentialAgent):
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=HYDE_GENERATION_PROMPT
             ),
-            name="HyDE Generator",
+            name="hyde_generator",
         )
 
         # Step 2: Use hypothetical doc for retrieval
         # In a full implementation, we'd embed the hypothetical doc
         # For now, we'll use it as the query
         retrieval_agent = BaseRAGAgent.from_documents(
-            documents=documents, name="HyDE Retriever"
+            documents=documents, name="hyde_retriever"
         )
 
         # Step 3: Generate final answer
@@ -99,11 +99,15 @@ class HyDERAGAgent(SequentialAgent):
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=HYDE_ANSWER_PROMPT
             ),
-            name="HyDE Answer Generator",
+            name="hyde_answer_generator",
         )
 
-        return cls(
+        # Use the clean MultiAgent.create() method
+        # Remove name from kwargs to avoid conflict
+        agent_name = kwargs.pop("name", "hyde_rag_agent")
+        return cls.create(
             agents=[hyde_generator, retrieval_agent, answer_agent],
-            name=kwargs.get("name", "HyDE RAG Agent"),
+            name=agent_name,
+            execution_mode="sequential",
             **kwargs
         )

@@ -77,3 +77,4 @@ input_data = {
 try:
     result = planner_simple_agent.run(input_data=input_data, debug=False)
 except Exception as e:
+    pass

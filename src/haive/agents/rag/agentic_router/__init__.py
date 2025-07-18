@@ -4,7 +4,7 @@ Intelligent RAG routing with ReAct patterns for dynamic agent selection and coor
 Provides autonomous decision-making for optimal RAG strategy selection.
 """
 
-from .agent import (
+from haive.agents.rag.agentic_router.agent import (
     AgenticRAGRouterAgent,
     create_agentic_rag_router_agent,
     get_agentic_rag_router_io_schema,

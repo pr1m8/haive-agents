@@ -4,7 +4,7 @@ Self-routing RAG with dynamic strategy selection, structured analysis, and itera
 Uses base models for complex preprocessing and loop iteration structures.
 """
 
-from .agent import (
+from haive.agents.rag.self_route.agent import (
     IterativePlannerAgent,
     QueryAnalyzerAgent,
     RoutingDecisionAgent,

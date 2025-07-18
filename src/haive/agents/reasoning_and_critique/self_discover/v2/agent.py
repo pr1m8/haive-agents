@@ -1,10 +1,10 @@
 # src/haive/agents/self_discovery/agents.py
-"""Self-Discovery agent implementation using SimpleAgent and SequentialAgent."""
+"""Self-Discovery agent implementation using SimpleAgent and ProperMultiAgent."""
 
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
-from haive.agents.multi.base import SequentialAgent
+from haive.agents.multi.proper_base import ProperMultiAgent
 from haive.agents.reasoning_and_critique.self_discover.v2.models import (
     AdaptedModules,
     FinalAnswer,
@@ -19,55 +19,8 @@ from haive.agents.reasoning_and_critique.self_discover.v2.prompts import (
 )
 from haive.agents.simple.agent import SimpleAgent
 
-# Create AugLLM configs for each step
-select_engine = AugLLMConfig(
-    name="select_modules",
-    structured_output_model=SelectedModules,
-    structured_output_version="v2",
-    prompt_template=select_prompt,
-    temperature=0.7,
-)
-
-adapt_engine = AugLLMConfig(
-    name="adapt_modules",
-    structured_output_model=AdaptedModules,
-    structured_output_version="v2",
-    prompt_template=adapt_prompt,
-    temperature=0.7,
-)
-
-structure_engine = AugLLMConfig(
-    name="create_structure",
-    structured_output_model=ReasoningStructure,
-    structured_output_version="v2",
-    prompt_template=structured_prompt,
-    temperature=0.3,
-)
-
-reason_engine = AugLLMConfig(
-    name="final_reasoning",
-    structured_output_model=FinalAnswer,
-    structured_output_version="v2",
-    prompt_template=reasoning_prompt,
-    temperature=0.1,
-)
-
-
-# Create SimpleAgent for each step
-select_agent = SimpleAgent(engine=select_engine)
-adapt_agent = SimpleAgent(engine=adapt_engine)
-structure_agent = SimpleAgent(engine=structure_engine)
-reason_agent = SimpleAgent(engine=reason_engine)
-
-
-# Create the SequentialAgent
-self_discovery = SequentialAgent(
-    agents=[select_agent, adapt_agent, structure_agent, reason_agent],
-)
-
-
 # Default reasoning modules
-DEFAULT_REASONING_MODULES = [
+default_reasoning_modules = [
     "1. How could I devise an experiment to help solve that problem?",
     "2. Make a list of ideas for solving this problem, and apply them one by one to the problem to see if any progress can be made.",
     "4. How can I simplify the problem so that it is easier to solve?",
@@ -98,9 +51,67 @@ DEFAULT_REASONING_MODULES = [
     "31. Does the problem require addressing systemic or structural issues?",
     "32. Is the problem time-sensitive or urgent?",
     "33. What kinds of solution typically are produced for this kind of problem?",
-    "34. Given the problem specification, have a guess about other possible solutions.",
+    "34. Given the problem specification, have a guess about other possible solutions?",
     "35. Let's imagine the current best solution is totally wrong, what other ways are there?",
     "36. What is the best way to modify this current best solution?",
     "37. Ignoring the current best solution, create an entirely new solution.",
     "39. Let's make a step by step plan and implement it with good notation and explanation.",
 ]
+
+# Create AugLLM configs for each step with reasoning_modules as partial variable
+select_engine = AugLLMConfig(
+    name="select_modules",
+    structured_output_model=SelectedModules,
+    structured_output_version="v2",
+    prompt_template=select_prompt.partial(
+        reasoning_modules="\n".join(
+            [f"{i+1}. {module}" for i, module in enumerate(default_reasoning_modules)]
+        )
+    ),
+    temperature=0.7,
+)
+
+adapt_engine = AugLLMConfig(
+    name="adapt_modules",
+    structured_output_model=AdaptedModules,
+    structured_output_version="v2",
+    prompt_template=adapt_prompt,
+    temperature=0.7,
+)
+
+structure_engine = AugLLMConfig(
+    name="create_structure",
+    structured_output_model=ReasoningStructure,
+    structured_output_version="v2",
+    prompt_template=structured_prompt,
+    temperature=0.3,
+)
+
+reason_engine = AugLLMConfig(
+    name="final_reasoning",
+    structured_output_model=FinalAnswer,
+    structured_output_version="v2",
+    prompt_template=reasoning_prompt,
+    temperature=0.1,
+)
+
+
+# Create SimpleAgent for each step
+select_agent = SimpleAgent(name="select_modules", engine=select_engine)
+adapt_agent = SimpleAgent(name="adapt_modules", engine=adapt_engine)
+structure_agent = SimpleAgent(name="create_structure", engine=structure_engine)
+reason_agent = SimpleAgent(name="final_reasoning", engine=reason_engine)
+
+
+# Import our proper state schema
+from haive.agents.reasoning_and_critique.self_discover.v2.state import (
+    SelfDiscoveryState,
+)
+
+# Create the ProperMultiAgent with sequential execution and our state schema
+self_discovery = ProperMultiAgent(
+    name="self_discovery",
+    agents=[select_agent, adapt_agent, structure_agent, reason_agent],
+    execution_mode="sequential",
+    state_schema=SelfDiscoveryState,  # CRITICAL: Use our clean state schema
+)

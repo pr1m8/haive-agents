@@ -113,14 +113,23 @@ See Also:
     :mod:`haive.agents.rag.memory_aware`: Memory-aware RAG with persistent learning
 """
 
-from .adaptive.agent import AdaptiveRAGAgent
+from haive.agents.rag.adaptive.agent import AdaptiveRAGAgent
+
+# Agentic RAG components
+from haive.agents.rag.agentic import (
+    AgenticRAGAgent,
+    AgenticRAGState,
+    ReactRAGAgent,
+    create_document_grader_agent,
+    create_query_rewriter_agent,
+)
 
 # Base components
-from .base.agent import BaseRAGAgent
-from .corrective.agent_v2 import CorrectiveRAGAgentV2
+from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
 
 # Factories for composable workflows
-from .factories.compatible_rag_factory_simple import (
+from haive.agents.rag.factories.compatible_rag_factory_simple import (
     CompatibleRAGFactory,
     RAGComponent,
     WorkflowPattern,
@@ -130,32 +139,47 @@ from .factories.compatible_rag_factory_simple import (
 
 # Advanced RAG architectures
 # from .fusion.agent import RAGFusionAgent, ReciprocalRankFusionAgent  # Temporarily disabled - missing rag_state
-from .hallucination_grading.agent import (
+from haive.agents.rag.hallucination_grading.agent import (
     AdvancedHallucinationGraderAgent,
     HallucinationGraderAgent,
     RealtimeHallucinationGraderAgent,
     create_hallucination_grader,
 )
-from .hyde.agent_v2 import HyDERAGAgentV2
-from .memory_aware.agent import MemoryAwareRAGAgent, MemoryRetrievalAgent
-from .multi_query.agent import MultiQueryRAGAgent
-from .query_decomposition.agent import (
+from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
+from haive.agents.rag.memory_aware.agent import (
+    MemoryAwareRAGAgent,
+    MemoryRetrievalAgent,
+)
+from haive.agents.rag.multi_query.agent import MultiQueryRAGAgent
+from haive.agents.rag.query_decomposition.agent import (
     AdaptiveQueryDecomposerAgent,
     ContextualQueryDecomposerAgent,
     HierarchicalQueryDecomposerAgent,
     QueryDecomposerAgent,
     create_query_decomposer,
 )
-from .self_route.agent import QueryAnalyzerAgent, SelfRouteRAGAgent
+from haive.agents.rag.self_route.agent import QueryAnalyzerAgent, SelfRouteRAGAgent
 
 # Core RAG agents
-from .simple.agent import SimpleRAGAgent
-from .speculative.agent import HypothesisGeneratorAgent, SpeculativeRAGAgent
-from .step_back.agent import StepBackQueryGeneratorAgent, StepBackRAGAgent
+from haive.agents.rag.simple.agent import SimpleRAGAgent
+from haive.agents.rag.speculative.agent import (
+    HypothesisGeneratorAgent,
+    SpeculativeRAGAgent,
+)
+from haive.agents.rag.step_back.agent import (
+    StepBackQueryGeneratorAgent,
+    StepBackRAGAgent,
+)
 
 # Temporarily disabled due to import issues
 
 __all__ = [
+    # Agentic RAG components
+    "create_document_grader_agent",
+    "create_query_rewriter_agent",
+    "ReactRAGAgent",
+    "AgenticRAGAgent",
+    "AgenticRAGState",
     "AdaptiveQueryDecomposerAgent",
     "AdaptiveRAGAgent",
     "AdvancedHallucinationGraderAgent",

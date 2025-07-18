@@ -1,20 +1,20 @@
 """Simple RAG Agent.
 
-Uses SequentialAgent to compose BaseRAG with answer generation.
+Uses clean MultiAgent with sequential execution to compose BaseRAG with answer generation.
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import Document
 
-from haive.agents.multi.base import SequentialAgent
+from haive.agents.multi import MultiAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import RAG_ANSWER_STANDARD
 from haive.agents.simple.agent import SimpleAgent
 
 
-class SimpleRAGAgent(SequentialAgent):
-    """Simple RAG workflow: Retrieval → Answer Generati.....on"""
+class SimpleRAGAgent(MultiAgent):
+    """Simple RAG workflow: Retrieval → Answer Generation"""
 
     @classmethod
     def from_documents(
@@ -23,7 +23,7 @@ class SimpleRAGAgent(SequentialAgent):
         """Create SimpleRAG from documents."""
         # Create retrieval agent
         retrieval_agent = BaseRAGAgent.from_documents(
-            documents=documents, name="Retriever"
+            documents=documents, name="retriever"
         )
 
         # Create answer agent with RAG prompt
@@ -38,12 +38,15 @@ class SimpleRAGAgent(SequentialAgent):
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
             ),
-            name="Answer Agent",
+            name="answer_generator",
         )
 
-        # Create sequential multi-agent
-        return cls(
+        # Use the clean MultiAgent.create() method
+        # Remove name from kwargs to avoid conflict
+        agent_name = kwargs.pop("name", "simple_rag_agent")
+        return cls.create(
             agents=[retrieval_agent, answer_agent],
-            name=kwargs.get("name", "Simple RAG Agent"),
+            name=agent_name,
+            execution_mode="sequential",
             **kwargs
         )

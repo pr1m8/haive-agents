@@ -188,7 +188,7 @@ def run_batch_problems(
     results = []
 
     for i, problem in enumerate(problems):
-
+    pass
         try:
             # Run the agent on this problem
             result = agent.run(problem)
@@ -447,10 +447,10 @@ def example_compare_models():
 
     # Compare reasoning structures
     for model in models:
-
+    pass
     # Compare final answers
     for model in models:
-
+    pass
 
 if __name__ == "__main__":
     # Run different examples based on command line arguments

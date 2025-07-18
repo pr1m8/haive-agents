@@ -7,17 +7,20 @@ from langgraph.graph import END
 from langgraph.types import Send
 
 from haive.agents.multi.enhanced_base import MultiAgentBase
-from haive.agents.simple.agent import SimpleAgent
-
-from .models import (
+from haive.agents.reasoning_and_critique.tot.v2.models import (
     Candidate,
     CandidateEvaluation,
     CandidateGeneration,
     ScoredCandidate,
     SearchControl,
 )
-from .prompts import control_prompt, expansion_prompt, scoring_prompt
-from .state import ExpansionState, ToTState
+from haive.agents.reasoning_and_critique.tot.v2.prompts import (
+    control_prompt,
+    expansion_prompt,
+    scoring_prompt,
+)
+from haive.agents.reasoning_and_critique.tot.v2.state import ExpansionState, ToTState
+from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 # In agent.py, fix the engines:

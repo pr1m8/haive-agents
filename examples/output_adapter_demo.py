@@ -55,10 +55,8 @@ def demo_basic_transformation():
         "recommendation": "Consider",
     }
 
-
     # Transform to structured output
     structured = adapter.transform(raw_output)
-
 
 
 def demo_field_mapping():
@@ -97,7 +95,6 @@ def demo_field_mapping():
     structured = adapter.transform(raw_output)
 
 
-
 def demo_field_extraction():
     """Demo: Extracting nested fields."""
 
@@ -120,10 +117,8 @@ def demo_field_extraction():
         "metadata": {"analyzer_version": "1.0", "confidence": 0.9},
     }
 
-
     # Extract and transform
     structured = adapter.transform(raw_output)
-
 
 
 def demo_missing_fields():
@@ -140,9 +135,7 @@ def demo_missing_fields():
         # deadline is missing but it's optional
     }
 
-
     structured = adapter.transform(partial_output)
-
 
 
 def demo_validation_errors():
@@ -157,10 +150,10 @@ def demo_validation_errors():
         # Missing: pros, cons, recommendation
     }
 
-
     try:
         structured = adapter.transform(invalid_output)
     except Exception as e:
+        pass
 
 
 def demo_complex_transformation():
@@ -201,9 +194,7 @@ def demo_complex_transformation():
         "meta": {"request_id": "req_456", "duration_ms": 125},
     }
 
-
     structured = adapter.transform(api_response)
-
 
 
 def demo_output_mixin():
@@ -233,9 +224,7 @@ def demo_output_mixin():
         "recommendation": "Buy",
     }
 
-
     result = processor.process(data)
-
 
 
 def main():
@@ -248,7 +237,6 @@ def main():
     demo_validation_errors()
     demo_complex_transformation()
     demo_output_mixin()
-
 
 
 if __name__ == "__main__":

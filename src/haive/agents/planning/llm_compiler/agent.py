@@ -109,6 +109,7 @@ class LLMCompilerAgent(AgentArchitecture):
             return {"plan": plan}
 
         except Exception:
+            pass
 
             # Create a fallback plan
             plan = self._create_fallback_plan(state.query)

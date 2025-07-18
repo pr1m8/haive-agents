@@ -47,7 +47,7 @@ def basic_example() -> None:
 
 
     except Exception as e:
-
+    pass
 
 def advanced_example() -> None:
     """Demonstrate advanced configuration with properties."""

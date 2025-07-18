@@ -18,8 +18,7 @@ from haive.core.schema.compatibility import (
 )
 
 from haive.agents.base.agent import Agent
-
-from .base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import ExecutionMode, MultiAgent
 
 logger = logging.getLogger(__name__)
 

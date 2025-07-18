@@ -155,7 +155,7 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
 
     def _setup_default_strategies(self) -> None:
         """Setup default tool selection strategies."""
-        from .selection_strategies import (
+        from haive.agents.discovery.selection_strategies import (
             AdaptiveSelectionStrategy,
             CapabilityBasedStrategy,
             ContextualSelectionStrategy,

@@ -22,7 +22,7 @@ def print_state(state: dict[str, Any], detailed: bool = False) -> None:
                 role = getattr(msg, "type", "unknown")
 
     if state.get("answer"):
-
+    pass
     if detailed and "candidates" in state and state["candidates"]:
         for i, candidate in enumerate(state["candidates"]):
             if candidate.feedback:

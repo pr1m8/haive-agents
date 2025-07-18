@@ -4,6 +4,9 @@ Implements step-back prompting for abstract reasoning and broader context retrie
 Based on the pattern from rag-architectures-flows.md.
 """
 
-from .agent import StepBackQueryGeneratorAgent, StepBackRAGAgent
+from haive.agents.rag.step_back.agent import (
+    StepBackQueryGeneratorAgent,
+    StepBackRAGAgent,
+)
 
 __all__ = ["StepBackQueryGeneratorAgent", "StepBackRAGAgent"]

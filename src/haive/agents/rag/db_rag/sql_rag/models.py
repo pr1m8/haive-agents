@@ -20,8 +20,9 @@ class SQLQueryOutput(BaseModel):
         description="Query parameters if placeholders are used (e.g., ?1, ?2).",
     )
 
-    @field_validator("query", mode="before")
-    def validate_sql_syntax(self, query: str) -> str:
+    @field_validatorvalidate_sql_syntax
+    @classmethod
+    def validate_sql_syntax(cls, query: str) -> str:
         """Ensure the query starts with a valid SQL keyword."""
         valid_keywords = ["SELECT", "WITH"]
         if not any(query.strip().upper().startswith(kw) for kw in valid_keywords):

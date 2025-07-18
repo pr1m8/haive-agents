@@ -73,7 +73,12 @@ class MultiAgent(Agent):
                 agent_dict = {}
                 for i, agent in enumerate(agents):
                     if hasattr(agent, "name") and agent.name:
-                        agent_dict[agent.name] = agent
+                        # Handle duplicate names by adding index
+                        base_name = agent.name
+                        if base_name in agent_dict:
+                            agent_dict[f"{base_name}_{i}"] = agent
+                        else:
+                            agent_dict[base_name] = agent
                     else:
                         agent_dict[f"agent_{i}"] = agent
                 values["agents"] = agent_dict

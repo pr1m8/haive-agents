@@ -219,8 +219,9 @@ class ReactAgentConfig(SimpleAgentConfig):
 
         return config
 
-    @field_validator("tools")
-    def validate_tools(self, v):
+    @field_validatorvalidate_tools
+    @classmethod
+    def validate_tools(cls, v):
         """Validate that tools are properly configured."""
         if not v:
             logger.warning("No tools provided for ReactAgent")

@@ -8,16 +8,20 @@ from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 
 from haive.agents.multi.enhanced_base import MultiAgentBase
-from haive.agents.simple.agent import SimpleAgent
-
-from .models import CandidateActions, Reflection, SelectionDecision, TreeNode
-from .prompts import (
+from haive.agents.reasoning_and_critique.lats.v2.models import (
+    CandidateActions,
+    Reflection,
+    SelectionDecision,
+    TreeNode,
+)
+from haive.agents.reasoning_and_critique.lats.v2.prompts import (
     expansion_prompt,
     initial_prompt,
     reflection_prompt,
     selection_prompt,
 )
-from .state import LATSState
+from haive.agents.reasoning_and_critique.lats.v2.state import LATSState
+from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 

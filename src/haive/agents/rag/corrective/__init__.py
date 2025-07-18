@@ -4,10 +4,10 @@ Self-correcting retrieval with quality assessment.
 """
 
 try:
-    from .agent import CorrectiveRAGAgent
+    from haive.agents.rag.corrective.agent import CorrectiveRAGAgent
 except ImportError:
     CorrectiveRAGAgent = None
 
-from .agent_v2 import CorrectiveRAGAgentV2
+from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
 
 __all__ = ["CorrectiveRAGAgent", "CorrectiveRAGAgentV2"]

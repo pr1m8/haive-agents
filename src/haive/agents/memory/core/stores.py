@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 from haive.core.tools.store_tools import StoreManager
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.memory.core.classifier import MemoryClassifier, MemoryClassifierConfig
 from haive.agents.memory.core.types import (
@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 
 class MemoryStoreConfig(BaseModel):
     """Configuration for enhanced memory store management."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # Store configuration
     store_manager: StoreManager = Field(..., description="Underlying store manager")
@@ -135,7 +137,7 @@ class MemoryStoreManager:
                 memory_entry.calculate_current_weight()
 
             # Store in underlying store manager
-            memory_id = await self.store_manager.store_memory(
+            memory_id = self.store_manager.store_memory(
                 content=content,
                 category=(
                     memory_entry.memory_types[0].value
@@ -211,7 +213,7 @@ class MemoryStoreManager:
                     memory_types = query_intent.memory_types
 
             # Search in underlying store
-            results = await self.store_manager.search_memories(
+            results = self.store_manager.search_memories(
                 query=query,
                 namespace=namespace,
                 limit=limit * 2,  # Get more results for re-ranking
@@ -220,7 +222,13 @@ class MemoryStoreManager:
             # Filter and re-rank results
             filtered_results = []
             for result in results:
-                metadata = result.get("metadata", {})
+                # Convert MemoryEntry to dict format for consistency
+                if hasattr(result, "to_store_value"):
+                    result_dict = result.to_store_value()
+                else:
+                    result_dict = result
+
+                metadata = result_dict.get("metadata", {})
 
                 # Filter by memory types if specified
                 if memory_types:
@@ -245,13 +253,13 @@ class MemoryStoreManager:
                         continue
 
                 # Update access metadata
-                await self._update_access_metadata(result.get("id"))
+                await self._update_access_metadata(result_dict.get("id"))
 
                 # Add ranking score
-                ranking_score = self._calculate_ranking_score(result, query_intent)
-                result["ranking_score"] = ranking_score
+                ranking_score = self._calculate_ranking_score(result_dict, query_intent)
+                result_dict["ranking_score"] = ranking_score
 
-                filtered_results.append(result)
+                filtered_results.append(result_dict)
 
             # Sort by ranking score and limit results
             filtered_results.sort(
@@ -274,10 +282,11 @@ class MemoryStoreManager:
             Memory data with metadata or None if not found
         """
         try:
-            result = await self.store_manager.get_memory(memory_id)
+            result = self.store_manager.retrieve_memory(memory_id)
             if result:
                 await self._update_access_metadata(memory_id)
-            return result
+                return result.to_store_value()
+            return None
         except Exception as e:
             logger.error(f"Error retrieving memory {memory_id}: {e}")
             return None
@@ -326,7 +335,7 @@ class MemoryStoreManager:
                     }
 
             # Update in store
-            success = await self.store_manager.update_memory(
+            success = self.store_manager.update_memory(
                 memory_id=memory_id, content=content, metadata=additional_metadata
             )
 
@@ -349,7 +358,7 @@ class MemoryStoreManager:
             True if successful, False otherwise
         """
         try:
-            return await self.store_manager.delete_memory(memory_id)
+            return self.store_manager.delete_memory(memory_id)
         except Exception as e:
             logger.error(f"Error deleting memory {memory_id}: {e}")
             return False
@@ -377,7 +386,7 @@ class MemoryStoreManager:
             namespace = namespace or self.config.default_namespace
 
             # Get all memories in namespace
-            all_memories = await self.store_manager.search_memories(
+            all_memories = self.store_manager.search_memories(
                 query="",  # Empty query to get all
                 namespace=namespace,
                 limit=10000,  # Large limit to get all
@@ -462,7 +471,7 @@ class MemoryStoreManager:
             namespace = namespace or self.config.default_namespace
 
             # Get all memories
-            all_memories = await self.store_manager.search_memories(
+            all_memories = self.store_manager.search_memories(
                 query="", namespace=namespace, limit=10000
             )
 
@@ -558,7 +567,7 @@ class MemoryStoreManager:
     async def _update_access_metadata(self, memory_id: str) -> None:
         """Update access metadata for a memory."""
         try:
-            await self.store_manager.update_memory(
+            self.store_manager.update_memory(
                 memory_id=memory_id,
                 metadata={
                     "last_accessed": datetime.utcnow().isoformat(),

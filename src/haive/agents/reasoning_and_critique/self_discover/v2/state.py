@@ -12,23 +12,40 @@ class SelfDiscoveryState(MessagesState):
 
     # Input fields
     reasoning_modules: str = Field(
-        description="All available reasoning module descriptions"
+        default="",
+        description="Available reasoning modules to choose from (formatted string)",
     )
-    task_description: str = Field(description="The task to be solved")
+    task_description: str = Field(
+        default="", description="Description of the task to solve"
+    )
 
     # Intermediate fields
-    selected_modules: list[str] | None = Field(
-        default=None, description="Selected reasoning modules for the task"
+    selected_modules: str | None = Field(
+        default=None, description="Selected reasoning modules suitable for the task"
     )
-    adapted_modules: list[dict[str, str]] | None = Field(
-        default=None, description="Adapted modules specific to the task"
+    adapted_modules: str | None = Field(
+        default=None,
+        description="Customized versions of the selected modules for this task",
     )
-    reasoning_structure: dict[str, Any] | None = Field(
-        default=None, description="Step-by-step reasoning structure"
+    reasoning_structure: str | None = Field(
+        default=None, description="Structured reasoning plan in JSON format"
     )
 
     # Output field
-    answer: str | None = Field(default=None, description="Final answer to the task")
+    answer: str | None = Field(
+        default=None, description="Final solution to the problem"
+    )
+
+    # Error handling and metadata (from original version)
+    error: str | None = Field(
+        default=None, description="Error message if any step fails"
+    )
+
+    # Optional metadata fields
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Additional metadata for the reasoning process",
+    )
 
     # Shared fields for LangGraph
     __shared_fields__ = [
@@ -39,4 +56,6 @@ class SelfDiscoveryState(MessagesState):
         "adapted_modules",
         "reasoning_structure",
         "answer",
+        "error",
+        "metadata",
     ]

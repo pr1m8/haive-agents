@@ -1,9 +1,9 @@
 # src/haive/agents/conversation/collaborative/agent.py
 """Collaborative conversation agent for building shared content."""
 
+import logging
 from typing import Any, Literal
 
-from haive.core.logging.rich_logger import LogLevel, get_logger
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.types import Command
 from pydantic import Field
@@ -12,7 +12,7 @@ from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.collaberative.state import CollaborativeState
 
 logger = get_logger(__name__)
-logger.set_level(LogLevel.WARNING)
+logger.set_level(logging.WARNING)
 
 
 class CollaborativeConversation(BaseConversationAgent):
