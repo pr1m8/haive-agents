@@ -397,6 +397,150 @@ class ExecutionMixin:
 
         return runtime_config
 
+    def _format_structured_output(self, output_data: Any) -> Any:
+        """Format structured output for cleaner display.
+
+        Args:
+            output_data: Raw output data that may contain structured outputs
+
+        Returns:
+            Formatted output data with cleaner representation
+        """
+        if not hasattr(output_data, "__dict__"):
+            return output_data
+
+        # Check if this looks like a state with structured output fields
+        for field_name, field_value in output_data.__dict__.items():
+            if field_name.endswith("_response") and hasattr(field_value, "__dict__"):
+                # Create a formatted wrapper for structured output fields
+                from collections import OrderedDict
+
+                class FormattedOutput:
+                    def __init__(self, original_data):
+                        self.original_data = original_data
+
+                    def __str__(self):
+                        if hasattr(self.original_data, "__dict__"):
+                            # Get the structured output field
+                            structured_field = None
+                            for name, value in self.original_data.__dict__.items():
+                                if name.endswith("_response") and hasattr(
+                                    value, "__dict__"
+                                ):
+                                    structured_field = value
+                                    break
+
+                            if structured_field:
+                                result = []
+                                result.append(
+                                    f"=== {type(structured_field).__name__} ==="
+                                )
+
+                                # Show key fields first
+                                key_fields = [
+                                    "original_query",
+                                    "query_analysis",
+                                    "query_type",
+                                    "complexity_level",
+                                    "best_refined_query",
+                                ]
+                                for key in key_fields:
+                                    if hasattr(structured_field, key):
+                                        value = getattr(structured_field, key)
+                                        if isinstance(value, str) and len(value) > 100:
+                                            value = value[:100] + "..."
+                                        result.append(f"{key}: {value}")
+
+                                # Show list fields in a compact format
+                                if hasattr(structured_field, "refinement_suggestions"):
+                                    suggestions = getattr(
+                                        structured_field, "refinement_suggestions", []
+                                    )
+                                    if suggestions:
+                                        result.append(
+                                            f"refinement_suggestions: {len(suggestions)} items"
+                                        )
+                                        for i, suggestion in enumerate(
+                                            suggestions[:2]
+                                        ):  # Show first 2
+                                            if hasattr(suggestion, "refined_query"):
+                                                result.append(
+                                                    f"  {i+1}. {suggestion.refined_query}"
+                                                )
+                                        if len(suggestions) > 2:
+                                            result.append(
+                                                f"  ... and {len(suggestions)-2} more"
+                                            )
+
+                                if hasattr(
+                                    structured_field, "search_strategy_recommendations"
+                                ):
+                                    strategies = getattr(
+                                        structured_field,
+                                        "search_strategy_recommendations",
+                                        [],
+                                    )
+                                    if strategies:
+                                        result.append(
+                                            f"search_strategy_recommendations: {len(strategies)} items"
+                                        )
+                                        for i, strategy in enumerate(
+                                            strategies[:2]
+                                        ):  # Show first 2
+                                            result.append(f"  {i+1}. {strategy}")
+                                        if len(strategies) > 2:
+                                            result.append(
+                                                f"  ... and {len(strategies)-2} more"
+                                            )
+
+                                # Show token usage if available
+                                if hasattr(self.original_data, "total_token_usage"):
+                                    usage = getattr(
+                                        self.original_data, "total_token_usage", {}
+                                    )
+                                    if usage:
+                                        result.append(f"token_usage: {usage}")
+                                elif hasattr(self.original_data, "token_usage"):
+                                    usage = getattr(
+                                        self.original_data, "token_usage", {}
+                                    )
+                                    if usage:
+                                        result.append(f"token_usage: {usage}")
+
+                                # Show token usage history if available
+                                if hasattr(self.original_data, "token_usage_history"):
+                                    history = getattr(
+                                        self.original_data, "token_usage_history", []
+                                    )
+                                    if history:
+                                        total_tokens = sum(
+                                            item.get("total_tokens", 0)
+                                            for item in history
+                                            if isinstance(item, dict)
+                                        )
+                                        if total_tokens > 0:
+                                            result.append(
+                                                f"session_tokens: {total_tokens} total ({len(history)} calls)"
+                                            )
+                                        else:
+                                            result.append(
+                                                f"token_usage_history: {len(history)} calls"
+                                            )
+
+                                return "\n".join(result)
+
+                        return str(self.original_data)
+
+                    def __repr__(self):
+                        return self.__str__()
+
+                    def __getattr__(self, name):
+                        return getattr(self.original_data, name)
+
+                return FormattedOutput(output_data)
+
+        return output_data
+
     def _process_output(self: "AgentProtocol", output_data: Any) -> Any:
         """Process and validate output data.
 
@@ -424,12 +568,17 @@ class ExecutionMixin:
 
                 result = output_schema(**data_dict)
                 logger.debug("Validated output with schema")
-                return result
+
+                # Format structured output for cleaner display
+                formatted_result = self._format_structured_output(result)
+                return formatted_result
             except Exception as e:
                 logger.warning(f"Error validating output with schema: {e}")
                 return output_data
 
-        return output_data
+        # Also format non-schema output if it has structured fields
+        formatted_output = self._format_structured_output(output_data)
+        return formatted_output
 
     def run(
         self: "AgentProtocol",
