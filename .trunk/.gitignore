@@ -8,3 +8,5 @@ user_trunk.yaml
 user.yaml
 tmp
 tests/*
+tests/
+tests
