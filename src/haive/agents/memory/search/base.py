@@ -5,10 +5,9 @@ with common functionality for memory integration, tool management, and structure
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import BaseMessage
 from langchain_core.tools import Tool
 from pydantic import BaseModel, Field
 
@@ -21,7 +20,7 @@ class SearchResponse(BaseModel):
 
     query: str = Field(..., description="The original search query")
     response: str = Field(..., description="The search response content")
-    sources: List[str] = Field(
+    sources: list[str] = Field(
         default_factory=list, description="Source URLs or references"
     )
     confidence: float = Field(
@@ -31,7 +30,7 @@ class SearchResponse(BaseModel):
     processing_time: float = Field(
         default=0.0, description="Time taken to process in seconds"
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata"
     )
 
@@ -47,7 +46,7 @@ class BaseSearchAgent(ReactAgent, ABC):
         self,
         name: str,
         engine: AugLLMConfig,
-        search_tools: Optional[List[Tool]] = None,
+        search_tools: list[Tool] | None = None,
         **kwargs,
     ):
         """Initialize the search agent.
@@ -69,21 +68,18 @@ class BaseSearchAgent(ReactAgent, ABC):
                 self.tools = search_tools
 
     @abstractmethod
-    def get_response_model(self) -> Type[SearchResponse]:
+    def get_response_model(self) -> type[SearchResponse]:
         """Get the structured response model for this search agent."""
-        pass
 
     @abstractmethod
     def get_system_prompt(self) -> str:
         """Get the system prompt template for this search agent."""
-        pass
 
     @abstractmethod
     def get_search_instructions(self) -> str:
         """Get specific search instructions for this agent type."""
-        pass
 
-    def format_search_context(self, query: str, context: Dict[str, Any]) -> str:
+    def format_search_context(self, query: str, context: dict[str, Any]) -> str:
         """Format search context for the agent.
 
         Args:
@@ -119,7 +115,7 @@ class BaseSearchAgent(ReactAgent, ABC):
 
         return "\n".join(context_parts)
 
-    def extract_memory_items(self, query: str, response: str) -> List[Dict[str, Any]]:
+    def extract_memory_items(self, query: str, response: str) -> list[dict[str, Any]]:
         """Extract memory items from search interaction.
 
         Args:
@@ -159,7 +155,7 @@ class BaseSearchAgent(ReactAgent, ABC):
     async def process_search(
         self,
         query: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
         save_to_memory: bool = True,
     ) -> SearchResponse:
         """Process a search query with memory integration.

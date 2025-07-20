@@ -1,26 +1,87 @@
-"""LLM Compiler Agent Implementation.
+"""Module exports."""
 
-This module implements the LLM Compiler agent architecture from:
-"LLM Compiler: An LLM Agent Architecture for Planning, Task Parallelization, and Execution"
-by Kim et al.
+from llm_compiler.agent import (
+    LLMCompilerAgent,
+    execute_tasks,
+    join,
+    main,
+    plan,
+    run,
+    setup_workflow,
+    should_execute_more,
+    should_replan,
+    stream,
+)
+from llm_compiler.config import LLMCompilerAgentConfig, validate_configs
+from llm_compiler.models import (
+    CompilerPlan,
+    CompilerStep,
+    CompilerTask,
+    FinalResponse,
+    JoinerOutput,
+    Replan,
+    TaskDependency,
+    add_compiler_step,
+    can_execute,
+    dependencies,
+    execute,
+    get_executable_steps,
+    get_join_step,
+    get_step_by_id,
+    is_join,
+    resolve,
+    resolve_arguments,
+)
+from llm_compiler.state import (
+    CompilerState,
+    all_steps_complete,
+    get_executable_steps,
+    get_highest_step_id,
+    has_join_result,
+)
+from llm_compiler.utils import (
+    replace_match,
+    schedule_pending_task,
+    schedule_task,
+    schedule_tasks,
+)
 
-The agent features:
-1. Planner - Creates a DAG of tasks with dependencies
-2. Task Fetching Unit - Executes tasks in parallel as their dependencies are met
-3. Joiner - Processes results and decides whether to provide final answer or replan
-
-Usage:
-    from haive_agents.llm_compiler import LLMCompilerAgent, LLMCompilerAgentConfig
-
-    # Create with default configuration
-    agent = LLMCompilerAgent(LLMCompilerAgentConfig())
-
-    # Run a query
-    result = agent.run("What's the GDP of Japan divided by its population?")
-    print(result)
-"""
-
-from agents.llm_compiler.agent import LLMCompilerAgent
-from agents.llm_compiler.config import DEFAULT_CONFIG, LLMCompilerAgentConfig
-
-__all__ = ["DEFAULT_CONFIG", "LLMCompilerAgent", "LLMCompilerAgentConfig"]
+__all__ = [
+    "CompilerPlan",
+    "CompilerState",
+    "CompilerStep",
+    "CompilerTask",
+    "FinalResponse",
+    "JoinerOutput",
+    "LLMCompilerAgent",
+    "LLMCompilerAgentConfig",
+    "Replan",
+    "TaskDependency",
+    "add_compiler_step",
+    "all_steps_complete",
+    "can_execute",
+    "dependencies",
+    "execute",
+    "execute_tasks",
+    "get_executable_steps",
+    "get_highest_step_id",
+    "get_join_step",
+    "get_step_by_id",
+    "has_join_result",
+    "is_join",
+    "join",
+    "main",
+    "plan",
+    "replace_match",
+    "resolve",
+    "resolve_arguments",
+    "run",
+    "schedule_pending_task",
+    "schedule_task",
+    "schedule_tasks",
+    "setup_workflow",
+    "should_execute_more",
+    "should_replan",
+    "stream",
+    "validate_configs",
+]

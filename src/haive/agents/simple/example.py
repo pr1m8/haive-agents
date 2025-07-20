@@ -1,5 +1,6 @@
 """Example usage of SimpleAgent implementation with enhanced debugging.
 
+from typing import Any
 This script demonstrates how to create and use SimpleAgent with custom state schema.
 """
 
@@ -41,7 +42,7 @@ logging.basicConfig(
 logger = logging.getLogger("SimpleAgentDebug")
 
 
-def debug_print(title, obj, expand=False):
+def debug_print(title, obj, expand=False) -> None:
     """Print debugging information in a rich panel."""
     if isinstance(obj, dict):
         from rich.pretty import Pretty
@@ -53,7 +54,7 @@ def debug_print(title, obj, expand=False):
         console.print(Panel(str(obj), title=title, border_style="cyan"))
 
 
-def example_with_custom_state_schema():
+def example_with_custom_state_schema() -> Any:
     """Create an agent with a custom state schema with enhanced debugging."""
     console.rule("[bold cyan]Creating agent with custom state schema")
 

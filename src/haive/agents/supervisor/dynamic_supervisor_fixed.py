@@ -6,7 +6,8 @@ based on BaseGraph2 limitations and requirements.
 
 import asyncio
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from pydantic import Field
@@ -38,7 +39,7 @@ class DynamicSupervisorFixed(ReactAgent):
     _needs_rebuild: bool = False
     _initial_build_complete: bool = False
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self._agent_registry = {}
         self._needs_rebuild = False
@@ -304,7 +305,7 @@ if __name__ == "__main__":
 
         # Create mock agents
         class MockAgent:
-            def __init__(self, name):
+            def __init__(self, name: str):
                 self.name = name
 
             async def ainvoke(self, state):

@@ -9,7 +9,6 @@ This test validates:
 
 import asyncio
 import logging
-from typing import List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -42,7 +41,7 @@ class AnalysisResult(BaseModel):
     """Result from analysis agent."""
 
     topic: str = Field(description="Main topic")
-    key_findings: List[str] = Field(description="Key findings")
+    key_findings: list[str] = Field(description="Key findings")
     confidence: float = Field(description="Confidence score 0-1")
 
 
@@ -62,7 +61,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"The result is {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 class RebuildMultiAgent(MultiAgentV2):
@@ -211,7 +210,7 @@ async def test_sequential_with_structured_output():
                 console.print(f"Last message content: {last_msg.content[:200]}...")
 
     except Exception as e:
-        console.print(f"\n[bold red]Error: {type(e).__name__}: {str(e)}[/bold red]")
+        console.print(f"\n[bold red]Error: {type(e).__name__}: {e!s}[/bold red]")
         import traceback
 
         console.print(traceback.format_exc())

@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 class AgentRegistry:
     """Registry of available agents that can be added to supervisor."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.available_agents: dict[str, ReactAgent] = {}
         self.agent_capabilities: dict[str, str] = {}
 

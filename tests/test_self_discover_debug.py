@@ -16,29 +16,17 @@ logger = logging.getLogger(__name__)
 
 def test_basic_imports():
     """Test if basic imports work without hanging."""
-    print("Testing basic imports...")
-
     try:
-        print("✅ AugLLMConfig imported successfully")
-
-        print("✅ SimpleAgent imported successfully")
-
-        print("✅ SequentialAgent imported successfully")
 
         # Try importing the models
 
-        print("✅ Models imported successfully")
-
         return True
-    except Exception as e:
-        print(f"❌ Import failed: {e}")
+    except Exception:
         return False
 
 
 def test_engine_creation():
     """Test creating AugLLM engines without agents."""
-    print("\nTesting engine creation...")
-
     try:
         from haive.core.engine.aug_llm import AugLLMConfig
 
@@ -50,24 +38,20 @@ def test_engine_creation():
         )
 
         # Create a simple engine config
-        engine_config = AugLLMConfig(
+        AugLLMConfig(
             name="test_engine",
             structured_output_model=SelectedModules,
             structured_output_version="v2",
             prompt_template=select_prompt,
             temperature=0.7,
         )
-        print("✅ Engine config created successfully")
         return True
-    except Exception as e:
-        print(f"❌ Engine creation failed: {e}")
+    except Exception:
         return False
 
 
 def test_simple_agent_creation():
     """Test creating a single SimpleAgent."""
-    print("\nTesting SimpleAgent creation...")
-
     try:
         from haive.core.engine.aug_llm import AugLLMConfig
 
@@ -88,20 +72,15 @@ def test_simple_agent_creation():
             temperature=0.7,
         )
 
-        print("Creating SimpleAgent...")
         # This is where it might hang
-        agent = SimpleAgent(engine=engine_config)
-        print("✅ SimpleAgent created successfully")
+        SimpleAgent(engine=engine_config)
         return True
-    except Exception as e:
-        print(f"❌ SimpleAgent creation failed: {e}")
+    except Exception:
         return False
 
 
 def main():
     """Run debug tests step by step."""
-    print("🔍 Debugging self-discover agent hanging issue...")
-
     # Disable PostgreSQL persistence for testing
     os.environ["HAIVE_DISABLE_PERSISTENCE"] = "1"
 
@@ -115,9 +94,6 @@ def main():
     if not test_simple_agent_creation():
         return 1
 
-    print(
-        "\n✅ All tests passed! The issue might be in the sequential creation or PostgreSQL setup."
-    )
     return 0
 
 

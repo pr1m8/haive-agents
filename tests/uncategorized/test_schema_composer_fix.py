@@ -29,7 +29,6 @@ RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
 
 async def test_schema_composer_fix():
     """Test that schema composer correctly handles engine field with LLMState."""
-
     # Create the same setup as the notebook
     config = AugLLMConfig(
         prompt_template=RAG_QUERY_REFINEMENT,
@@ -38,9 +37,6 @@ async def test_schema_composer_fix():
     )
 
     agent = SimpleAgentV2(name="test_schema_composer", engine=config)
-
-    print(agent.state_schema)
-    print(agent.input_schema)
 
     # Check the schema fields
     if hasattr(agent.state_schema, "model_fields"):
@@ -85,22 +81,20 @@ async def test_schema_composer_fix():
         # Check if the input instance can be used to create state
         agent.state_schema(**input_instance.model_dump())
 
-    except Exception as e:
+    except Exception:
         pass
 
     # Test actual usage with string input first
     try:
-        result = await agent.arun("what is the tallest building in france")
+        await agent.arun("what is the tallest building in france")
         return True
-    except Exception as e:
+    except Exception:
 
         # Try with dict input
         try:
-            result = await agent.arun(
-                {"query": "what is the tallest building in france"}
-            )
+            await agent.arun({"query": "what is the tallest building in france"})
             return True
-        except Exception as e2:
+        except Exception:
             return False
 
 

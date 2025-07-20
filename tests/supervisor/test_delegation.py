@@ -41,8 +41,7 @@ def python_repl(code: str) -> str:
             return "Compound Interest Result: $16,288.95 after 10 years"
         if "area" in code.lower() and "circle" in code.lower():
             return "Circle Area Result: 78.54 square units"
-        else:
-            return f"Executed: {code}\nResult: Calculation completed successfully"
+        return f"Executed: {code}\nResult: Calculation completed successfully"
     except Exception as e:
         return f"Error: {e!s}"
 
@@ -183,10 +182,9 @@ async def test_basic_delegation():
             next_agent = getattr(result, "next", "Unknown")
 
             # Determine status
-            if next_agent == test_case["expected_worker"]:
-                status = "✅ PASS"
-            else:
-                status = "❌ FAIL"
+            status = (
+                "✅ PASS" if next_agent == test_case["expected_worker"] else "❌ FAIL"
+            )
 
             results_table.add_row(
                 test_case["name"], test_case["expected_worker"], next_agent, status

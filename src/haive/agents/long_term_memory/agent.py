@@ -45,7 +45,7 @@ class LongTermMemoryAgent(ReactAgent):
             "recall_memories": recall_memories,
         }
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         self.graph.add_node(load_memories)
         self.graph.add_node(agent)
         self.graph.add_node("tools", ToolNode(tools))

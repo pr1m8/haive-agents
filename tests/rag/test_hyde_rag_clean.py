@@ -2,7 +2,6 @@
 """Test HyDE RAG with clean MultiAgent implementation."""
 
 import pytest
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
 
 from haive.agents.rag.hyde.agent import HyDERAGAgent
@@ -10,7 +9,6 @@ from haive.agents.rag.hyde.agent import HyDERAGAgent
 
 def test_hyde_rag_structure():
     """Test HyDE RAG structure without execution."""
-
     # Create test documents
     documents = [
         Document(
@@ -49,7 +47,6 @@ def test_hyde_rag_structure():
 @pytest.mark.asyncio
 async def test_hyde_rag_agent_structure():
     """Test HyDE RAG agent structure and components."""
-
     # Create minimal documents
     documents = [Document(page_content="Test content", metadata={"source": "test"})]
 
@@ -75,6 +72,5 @@ if __name__ == "__main__":
     async def run_tests():
         test_hyde_rag_structure()
         await test_hyde_rag_agent_structure()
-        print("✅ All HyDE RAG tests passed!")
 
     asyncio.run(run_tests())

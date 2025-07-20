@@ -92,7 +92,8 @@ class DebateConversation(BaseConversationAgent):
     )
 
     @model_validator(mode="after")
-    def validate_debate_setup(self) -> "DebateConversation":
+    @classmethod
+    def validate_debate_setup(cls) -> "DebateConversation":
         """Validate debate configuration and participant setup."""
         # Ensure state schema is set
         if not self.state_schema or self.state_schema != DebateState:

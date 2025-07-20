@@ -8,14 +8,12 @@ from haive.agents.planning.proper_plan_execute import (
 
 def test_proper_plan_execute_creation():
     """Test that the proper plan execute agent can be created."""
-
     try:
         # Create agent without tools first
         agent = create_proper_plan_execute()
 
-
         # List the agents
-        for i, sub_agent in enumerate(agent.agents):
+        for _i, sub_agent in enumerate(agent.agents):
 
             # Check structured output models
             if (
@@ -31,7 +29,7 @@ def test_proper_plan_execute_creation():
 
         return agent
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -40,11 +38,9 @@ def test_proper_plan_execute_creation():
 
 def test_proper_plan_execute_with_tools():
     """Test creating agent with search tools."""
-
     try:
         # Create agent with search tools
         agent = create_plan_execute_with_search()
-
 
         # Check executor has tools
         executor = None
@@ -55,14 +51,14 @@ def test_proper_plan_execute_with_tools():
 
         if executor and hasattr(executor, "tools"):
             for tool in executor.tools:
-                tool_name = getattr(tool, "name", str(tool))
+                getattr(tool, "name", str(tool))
 
         # Test compilation
         agent.compile()
 
         return agent
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -71,12 +67,10 @@ def test_proper_plan_execute_with_tools():
 
 def test_state_schema_compatibility():
     """Test that the state schema works with existing p_and_e models."""
-
     try:
         from langchain_core.messages import HumanMessage
 
         from haive.agents.planning.p_and_e.models import (
-            ExecutionResult,
             Plan,
             PlanStep,
             StepType,
@@ -112,13 +106,12 @@ def test_state_schema_compatibility():
             execution_results=[],
         )
 
-
         # Test serialization
-        serialized = state.model_dump()
+        state.model_dump()
 
         return state
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -127,14 +120,12 @@ def test_state_schema_compatibility():
 
 def test_routing_functions():
     """Test the routing functions with sample states."""
-
     try:
         from langchain_core.messages import HumanMessage
 
         from haive.agents.planning.p_and_e.models import (
             Plan,
             PlanStep,
-            StepStatus,
             StepType,
         )
         from haive.agents.planning.p_and_e.state import PlanExecuteState
@@ -185,8 +176,7 @@ def test_routing_functions():
         result = route_after_replan(state_with_next)
         assert result == "agent"
 
-
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -206,5 +196,6 @@ if __name__ == "__main__":
     test_routing_functions()
 
     if agent and test_state:
+        pass
     else:
-        pass")
+        pass

@@ -3,7 +3,7 @@
 
 import asyncio
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 from langchain_core.messages import AIMessage, HumanMessage
 
@@ -39,7 +39,7 @@ class MockEngine:
 class MockReactAgent:
     """Mock ReactAgent for demonstration."""
 
-    def __init__(self, name: str, engine: MockEngine, tools: list = None):
+    def __init__(self, name: str, engine: MockEngine, tools: list | None = None):
         self.name = name
         self.engine = engine
         self.tools = tools or []
@@ -58,7 +58,6 @@ class MockReactAgent:
 
 async def create_mock_agents():
     """Create mock ReactAgents for demonstration."""
-
     # Research agent
     research_engine = MockEngine(
         "research_engine",
@@ -94,7 +93,7 @@ class MockRegistrySupervisor:
         self.execution_log = []
 
     def populate_registry(
-        self, agents: list[MockReactAgent], capabilities: list[str] = None
+        self, agents: list[MockReactAgent], capabilities: list[str] | None = None
     ):
         """Populate registry with agents."""
         for i, agent in enumerate(agents):
@@ -107,7 +106,6 @@ class MockRegistrySupervisor:
                 "agent": agent,
                 "capability": capability,
             }
-
 
     def _update_choice_model(self):
         """Update choice model with active agents."""
@@ -122,12 +120,12 @@ class MockRegistrySupervisor:
             capability = agent_info["capability"].lower()
 
             # Simple matching
-            if "research" in capability and any(
-                word in task_lower for word in ["research", "find", "search"]
-            ):
-                return agent_name
-            elif "writing" in capability and any(
-                word in task_lower for word in ["write", "create", "draft"]
+            if (
+                "research" in capability
+                and any(word in task_lower for word in ["research", "find", "search"])
+            ) or (
+                "writing" in capability
+                and any(word in task_lower for word in ["write", "create", "draft"])
             ):
                 return agent_name
 
@@ -143,12 +141,12 @@ class MockRegistrySupervisor:
 
         # Check active agents
         for agent_name in self.active_agents:
-            if "research" in agent_name and any(
-                word in task_lower for word in ["research", "find"]
-            ):
-                return agent_name
-            elif "writing" in agent_name and any(
-                word in task_lower for word in ["write", "create"]
+            if (
+                "research" in agent_name
+                and any(word in task_lower for word in ["research", "find"])
+            ) or (
+                "writing" in agent_name
+                and any(word in task_lower for word in ["write", "create"])
             ):
                 return agent_name
 
@@ -164,12 +162,11 @@ class MockRegistrySupervisor:
         last_message = messages[-1]
         task = getattr(last_message, "content", "")
 
-
         # Step 1: Try to use active agent
         selected_agent = self._select_from_active(task)
 
         if selected_agent:
-            pass")
+            pass
         else:
             # Step 2: Get agent from registry
             registry_agent = self._select_agent_from_registry(task)
@@ -216,7 +213,6 @@ class MockRegistrySupervisor:
 
 async def demo_registry_supervisor():
     """Demonstrate the registry supervisor behavior."""
-
     # Create mock agents
     agents = await create_mock_agents()
 
@@ -235,7 +231,7 @@ async def demo_registry_supervisor():
 
     # Show initial status
     status = supervisor.get_status()
-    for key, value in status.items():
+    for _key, _value in status.items():
         pass
 
     # Test 1: Research request
@@ -244,15 +240,14 @@ async def demo_registry_supervisor():
         {"messages": [HumanMessage(content="Research the latest AI developments")]}
     )
 
-
     # Show response
     messages = result1.get("messages", [])
     if messages:
-        last_msg = messages[-1]
+        messages[-1]
 
     # Show updated status
     status = supervisor.get_status()
-    for key, value in status.items():
+    for _key, _value in status.items():
         pass
 
     # Test 2: Coding request
@@ -261,41 +256,36 @@ async def demo_registry_supervisor():
         {"messages": [HumanMessage(content="Write Python code for binary search")]}
     )
 
-
     # Show response
     messages = result2.get("messages", [])
     if messages:
-        last_msg = messages[-1]
+        messages[-1]
 
     # Test 3: Another research request (should use existing)
 
-    result3 = await supervisor.ainvoke(
+    await supervisor.ainvoke(
         {"messages": [HumanMessage(content="Find information about quantum computing")]}
     )
 
-
     # Test 4: Writing request
 
-    result4 = await supervisor.ainvoke(
+    await supervisor.ainvoke(
         {"messages": [HumanMessage(content="Write a blog post about remote work")]}
     )
-
 
     # Final status
 
     status = supervisor.get_status()
-    for key, value in status.items():
+    for _key, _value in status.items():
         pass
 
     # Show execution log
-    for i, log_entry in enumerate(supervisor.execution_log, 1):
+    for _i, _log_entry in enumerate(supervisor.execution_log, 1):
         pass
 
     # Show agent execution counts
     for agent_name in supervisor.active_agents:
-        agent = supervisor.active_agents[agent_name]
-
-
+        supervisor.active_agents[agent_name]
 
 
 if __name__ == "__main__":

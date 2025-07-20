@@ -1,4 +1,7 @@
-def retrieve(state):
+from typing import Any
+
+
+def retrieve(state: dict[str, Any]):
     """Retrieve documents.
 
     Args:

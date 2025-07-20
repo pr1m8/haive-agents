@@ -1,5 +1,6 @@
 """Configuration for the ReactAgent - a tool-using agent with ReAct pattern.
 
+from typing import Any
 This module defines the configuration class for ReactAgent, which implements the
 ReAct (Reasoning and Acting) pattern for tool-using agents.
 """
@@ -86,7 +87,8 @@ class ReactAgentConfig(AgentConfig):
     model_config = {"arbitrary_types_allowed": True}
 
     @model_validator(mode="after")
-    def setup_defaults(self):
+    @classmethod
+    def setup_defaults(cls) -> Any:
         """Set up default retry policies if not provided."""
         if self.reasoning_retry is None:
             self.reasoning_retry = RetryPolicy(
@@ -147,7 +149,7 @@ class ReactAgentConfig(AgentConfig):
         """
         return {tool.name: tool for tool in self.tools}
 
-    def build_agent(self):
+    def build_agent(self) -> Any:
         """Build and return a ReactAgent instance.
 
         Returns:

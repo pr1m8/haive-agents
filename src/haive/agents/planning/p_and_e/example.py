@@ -58,6 +58,8 @@ agent_with_tools = PlanAndExecuteAgent(
 )
 
 # Use the agent
+import contextlib
+
 from haive.agents.simple.agent import SimpleAgent
 
 planner_simple_agent = SimpleAgent(
@@ -74,7 +76,5 @@ input_data = {
 
 # Note: This will fail due to the serialization issue
 # Messages are being converted to dicts somewhere in the persistence layer
-try:
+with contextlib.suppress(Exception):
     result = planner_simple_agent.run(input_data=input_data, debug=False)
-except Exception as e:
-    pass

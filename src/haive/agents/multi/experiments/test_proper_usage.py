@@ -47,7 +47,7 @@ class PlanModel(BaseModel):
 class TestProperMultiAgentUsage:
     """Test cases for proper multi-agent usage patterns."""
 
-    def test_multi_agent_state_basic(self):
+    def test_multi_agent_state_basic(self) -> None:
         """Test basic MultiAgentState usage."""
         # Create agents
         planner = SimpleAgent(name="planner")
@@ -82,9 +82,7 @@ class TestProperMultiAgentUsage:
         # Test engine syncing
         assert len(state.engines) > 0  # Engines synced from agents
 
-        print("✅ MultiAgentState basic test passed")
-
-    def test_meta_state_schema_basic(self):
+    def test_meta_state_schema_basic(self) -> None:
         """Test basic MetaStateSchema usage."""
         # Create an agent
         simple_agent = SimpleAgent(name="embedded_agent")
@@ -109,9 +107,7 @@ class TestProperMultiAgentUsage:
         assert meta_state.execution_status == "ready"
         assert meta_state.meta_context["purpose"] == "testing"
 
-        print("✅ MetaStateSchema basic test passed")
-
-    def test_agent_node_v3_basic(self):
+    def test_agent_node_v3_basic(self) -> None:
         """Test AgentNodeV3 with MultiAgentState."""
         # Create agents
         planner = SimpleAgent(name="planner")
@@ -139,9 +135,7 @@ class TestProperMultiAgentUsage:
         assert node_config.extract_from_container
         assert node_config.project_state
 
-        print("✅ AgentNodeV3 basic test passed")
-
-    def test_proper_list_multi_agent(self):
+    def test_proper_list_multi_agent(self) -> None:
         """Test ProperListMultiAgent with real infrastructure."""
         # Create agents
         planner = SimpleAgent(
@@ -178,9 +172,7 @@ class TestProperMultiAgentUsage:
         # Should have init node + 2 agent nodes
         assert len(graph.nodes) >= 3
 
-        print("✅ ProperListMultiAgent test passed")
-
-    def test_meta_list_multi_agent(self):
+    def test_meta_list_multi_agent(self) -> None:
         """Test MetaListMultiAgent with MetaStateSchema."""
         # Create agents
         analyzer = SimpleAgent(name="analyzer")
@@ -202,9 +194,7 @@ class TestProperMultiAgentUsage:
         graph = meta_multi.build_graph()
         assert graph is not None
 
-        print("✅ MetaListMultiAgent test passed")
-
-    def test_conditional_routing(self):
+    def test_conditional_routing(self) -> None:
         """Test conditional routing with ProperListMultiAgent."""
         # Create agents
         classifier = SimpleAgent(name="classifier")
@@ -231,9 +221,7 @@ class TestProperMultiAgentUsage:
         graph = multi.build_graph()
         assert graph is not None
 
-        print("✅ Conditional routing test passed")
-
-    def test_builder_pattern(self):
+    def test_builder_pattern(self) -> None:
         """Test fluent builder pattern."""
         # Create agents
         planner = SimpleAgent(name="planner")
@@ -266,9 +254,7 @@ class TestProperMultiAgentUsage:
         ]
         assert "writer" in multi.routing_rules
 
-        print("✅ Builder pattern test passed")
-
-    def test_recompilation_tracking(self):
+    def test_recompilation_tracking(self) -> None:
         """Test recompilation tracking integration."""
         multi = ProperListMultiAgent(name="recompile_test")
 
@@ -288,9 +274,7 @@ class TestProperMultiAgentUsage:
         assert not multi.needs_recompile
         assert multi.recompile_count == 1
 
-        print("✅ Recompilation tracking test passed")
-
-    def test_tool_integration(self):
+    def test_tool_integration(self) -> None:
         """Test that tools work properly through agents."""
         # Create agents with tools
         math_agent = ReactAgent(
@@ -320,12 +304,8 @@ class TestProperMultiAgentUsage:
         assert "calculator" in math_tool_names
         assert "word_counter" in text_tool_names
 
-        print("✅ Tool integration test passed")
-
-    def run_all_tests(self):
+    def run_all_tests(self) -> None:
         """Run all test cases."""
-        print("🧪 Running proper multi-agent usage tests...\n")
-
         try:
             self.test_multi_agent_state_basic()
             self.test_meta_state_schema_basic()
@@ -337,31 +317,19 @@ class TestProperMultiAgentUsage:
             self.test_recompilation_tracking()
             self.test_tool_integration()
 
-            print("\n🎉 All tests passed!")
-
-        except Exception as e:
-            print(f"\n❌ Test failed: {e}")
+        except Exception:
             raise
 
 
-def demonstration_usage():
+def demonstration_usage() -> None:
     """Demonstrate proper usage patterns."""
-    print("📚 Demonstration of proper multi-agent patterns:\n")
-
     # 1. Basic sequential multi-agent
-    print("1. Basic Sequential Multi-Agent:")
     multi = ProperListMultiAgent("demo_sequential")
     multi.append(SimpleAgent(name="planner"))
     multi.append(SimpleAgent(name="executor"))
     multi.append(SimpleAgent(name="reviewer"))
 
-    print(f"   Created: {multi}")
-    print(f"   Agents: {multi.get_agent_names()}")
-    print(f"   Uses: {multi.state_schema.__name__}")
-    print()
-
     # 2. Conditional routing
-    print("2. Conditional Routing:")
     conditional = ProperListMultiAgent("demo_conditional")
     conditional.append(SimpleAgent(name="classifier"))
     conditional.when(
@@ -373,24 +341,13 @@ def demonstration_usage():
         },
     )
 
-    print(f"   Created: {conditional}")
-    print(f"   Routing from: {list(conditional.routing_rules.keys())}")
-    print(f"   Sequential: {conditional.sequential}")
-    print()
-
     # 3. Meta multi-agent
-    print("3. Meta Multi-Agent:")
     meta = MetaListMultiAgent("demo_meta")
     meta.append(SimpleAgent(name="analyzer"))
     meta.append(SimpleAgent(name="summarizer"))
 
-    print(f"   Created: {meta}")
-    print(f"   Uses: {meta.state_schema.__name__}")
-    print()
-
     # 4. Builder pattern
-    print("4. Builder Pattern:")
-    builder = (
+    (
         ProperListMultiAgent("demo_builder")
         .then(SimpleAgent(name="step1"))
         .then(SimpleAgent(name="step2"))
@@ -400,17 +357,11 @@ def demonstration_usage():
         )
     )
 
-    print(f"   Created: {builder}")
-    print(f"   Final agents: {builder.get_agent_names()}")
-    print()
-
 
 if __name__ == "__main__":
     # Run tests
     tester = TestProperMultiAgentUsage()
     tester.run_all_tests()
-
-    print("\n" + "=" * 50)
 
     # Run demonstrations
     demonstration_usage()

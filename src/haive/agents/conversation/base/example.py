@@ -56,7 +56,7 @@ class CustomConversationAgent(BaseConversationAgent[CustomConversationState]):
     - Track custom metrics
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize with custom configuration."""
         super().__init__(*args, **kwargs)
         self.speaker_preferences = {}

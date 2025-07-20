@@ -229,7 +229,7 @@ class LLMCompilerAgentConfig(AgentArchitectureConfig):
     )
 
     @model_validator(mode="after")
-    def validate_configs(self, values):
+    def validate_configs(self, values) -> Any:
         """Ensure that the configurations are valid."""
         # Ensure planner config has the correct prompt template
         if not values.planner_config.prompt_template:

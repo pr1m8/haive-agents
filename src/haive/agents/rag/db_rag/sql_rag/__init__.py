@@ -1,125 +1,99 @@
-"""SQL RAG Agent Package.
+"""Module exports."""
 
-This package provides a sophisticated SQL Retrieval-Augmented Generation (RAG) agent
-that enables natural language querying of SQL databases. The agent converts user
-questions into SQL queries, executes them safely, and returns natural language answers.
-
-Key Features:
-    - Natural language to SQL conversion
-    - Multi-dialect support (PostgreSQL, MySQL, SQLite, MS SQL)
-    - Query validation and correction
-    - Hallucination detection
-    - Answer quality grading
-    - Comprehensive error handling
-
-Quick Start:
-    Basic usage::
-
-        >>> from haive.agents.rag.db_rag.sql_rag import SQLRAGAgent, SQLRAGConfig
-        >>>
-        >>> # Configure agent
-        >>> config = SQLRAGConfig(
-        ...     domain_name="sales",
-        ...     db_config={"db_uri": "sqlite:///sales.db"}
-        ... )
-        >>>
-        >>> # Create and use agent
-        >>> agent = SQLRAGAgent(config)
-        >>> result = agent.invoke({"question": "What are total sales by region?"})
-        >>> print(result["answer"])
-
-Package Structure:
-    - agent.py: Main SQLRAGAgent implementation
-    - config.py: Configuration classes (SQLRAGConfig, SQLDatabaseConfig)
-    - models.py: Pydantic models for structured outputs
-    - state.py: State schemas for workflow management
-    - prompts.py: LLM prompt templates
-    - engines.py: Pre-configured LLM engines
-    - utils.py: Helper utilities
-
-Exports:
-    - SQLRAGAgent: Main agent class
-    - SQLRAGConfig: Agent configuration
-    - SQLDatabaseConfig: Database configuration
-    - SQLDatabaseAgent: Backward compatibility alias
-
-Example:
-    Advanced configuration::
-
-        >>> from haive.agents.rag.db_rag.sql_rag import (
-        ...     SQLRAGAgent,
-        ...     SQLRAGConfig,
-        ...     SQLDatabaseConfig
-        ... )
-        >>>
-        >>> # Database configuration with specific tables
-        >>> db_config = SQLDatabaseConfig(
-        ...     db_type="postgresql",
-        ...     db_host="analytics.company.com",
-        ...     db_name="analytics",
-        ...     db_user="analyst",
-        ...     db_password="secure_pass",
-        ...     include_tables=["sales", "customers", "products"],
-        ...     sample_rows_in_table_info=5
-        ... )
-        >>>
-        >>> # Agent configuration with custom settings
-        >>> agent_config = SQLRAGConfig(
-        ...     domain_name="analytics",
-        ...     domain_categories=["sales", "customers", "inventory"],
-        ...     db_config=db_config,
-        ...     hallucination_check=True,
-        ...     answer_grading=True,
-        ...     max_iterations=3,
-        ...     domain_examples={
-        ...         "analytics": [
-        ...             {
-        ...                 "question": "Top customers by revenue",
-        ...                 "query": "SELECT c.name, SUM(s.amount) as revenue FROM customers c JOIN sales s ON c.id = s.customer_id GROUP BY c.id ORDER BY revenue DESC LIMIT 10"
-        ...             }
-        ...         ]
-        ...     }
-        ... )
-        >>>
-        >>> # Create agent
-        >>> agent = SQLRAGAgent(agent_config)
-        >>>
-        >>> # Complex query
-        >>> result = agent.invoke({
-        ...     "question": "Show me customers who haven't ordered in the last 90 days"
-        ... })
-
-Environment Variables:
-    The package supports configuration through environment variables:
-
-    - SQL_DB_TYPE: Database type (default: postgresql)
-    - SQL_DB_HOST: Database host (default: localhost)
-    - SQL_DB_PORT: Database port (default: 5432)
-    - SQL_DB_NAME: Database name (default: postgres)
-    - SQL_DB_USER: Database username (default: postgres)
-    - SQL_DB_PASSWORD: Database password (default: postgres)
-    - SQL_INCLUDE_TABLES: Comma-separated list of tables to include
-    - SQL_EXCLUDE_TABLES: Comma-separated list of tables to exclude
-
-See Also:
-    - Documentation: https://docs.haive.ai/agents/sql-rag
-    - Examples: https://github.com/haive/examples/sql-rag
-    - API Reference: https://api.haive.ai/sql-rag
-"""
-
-from haive.agents.rag.db_rag.sql_rag.agent import SQLRAGAgent
-from haive.agents.rag.db_rag.sql_rag.config import SQLDatabaseConfig, SQLRAGConfig
-
-# For backward compatibility - some users might expect SQLDatabaseAgent
-SQLDatabaseAgent = SQLRAGAgent
+from sql_rag.agent import (
+    SQLRAGAgent,
+    analyze_query,
+    check_domain_relevance,
+    correct_query,
+    domain_router,
+    execute_query,
+    generate_answer,
+    generate_query,
+    retrieve_schema,
+    setup_workflow,
+    validate_query,
+    validation_router,
+)
+from sql_rag.config import (
+    SQLDatabaseConfig,
+    SQLRAGConfig,
+    check_required_engines,
+    get_connection_string,
+    get_db_schema,
+    get_sql_db,
+)
+from sql_rag.example import (
+    basic_example,
+    batch_processing_example,
+    custom_llm_example,
+    error_handling_example,
+    interactive_mode,
+    main,
+    mysql_example,
+    postgresql_example,
+    sqlite_example,
+)
+from sql_rag.models import (
+    GradeAnswer,
+    GradeHallucinations,
+    GuardrailsOutput,
+    Query,
+    SQLAnalysisOutput,
+    SQLQueryOutput,
+    SQLValidationOutput,
+    validate_sql_syntax,
+)
+from sql_rag.state import InputState, OutputState, OverallState
+from sql_rag.utils import (
+    create_sql_toolkit,
+    create_tool_node_with_fallback,
+    explore_database_schema,
+    get_all_toolkit_tools,
+    handle_tool_error,
+)
 
 __all__ = [
-    "SQLDatabaseAgent",  # Backward compatibility
+    "GradeAnswer",
+    "GradeHallucinations",
+    "GuardrailsOutput",
+    "InputState",
+    "OutputState",
+    "OverallState",
+    "Query",
+    "SQLAnalysisOutput",
     "SQLDatabaseConfig",
+    "SQLQueryOutput",
     "SQLRAGAgent",
     "SQLRAGConfig",
+    "SQLValidationOutput",
+    "analyze_query",
+    "basic_example",
+    "batch_processing_example",
+    "check_domain_relevance",
+    "check_required_engines",
+    "correct_query",
+    "create_sql_toolkit",
+    "create_tool_node_with_fallback",
+    "custom_llm_example",
+    "domain_router",
+    "error_handling_example",
+    "execute_query",
+    "explore_database_schema",
+    "generate_answer",
+    "generate_query",
+    "get_all_toolkit_tools",
+    "get_connection_string",
+    "get_db_schema",
+    "get_sql_db",
+    "handle_tool_error",
+    "interactive_mode",
+    "main",
+    "mysql_example",
+    "postgresql_example",
+    "retrieve_schema",
+    "setup_workflow",
+    "sqlite_example",
+    "validate_query",
+    "validate_sql_syntax",
+    "validation_router",
 ]
-
-__version__ = "1.0.0"
-__author__ = "Haive Team"
-__email__ = "support@haive.ai"

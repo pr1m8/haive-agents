@@ -6,7 +6,6 @@ from src.haive.agents.conversation.collaberative.agent import CollaborativeConve
 
 def test_current_streaming():
     """Test current streaming behavior."""
-
     agent = CollaborativeConversation.create_brainstorming_session(
         topic="Test", participants=["Alice"], max_rounds=1
     )
@@ -14,7 +13,6 @@ def test_current_streaming():
     # Force compilation
     if not hasattr(agent, "_app") or agent._app is None:
         agent.compile()
-
 
     # Test direct app streaming
     try:
@@ -42,8 +40,8 @@ def test_current_streaming():
             if i >= 2:
                 break
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     try:
         for i, chunk in enumerate(
@@ -52,13 +50,12 @@ def test_current_streaming():
 
             if i >= 2:
                 break
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
 
 def propose_fix():
     """Propose the fix for streaming values."""
-
 
 
 if __name__ == "__main__":

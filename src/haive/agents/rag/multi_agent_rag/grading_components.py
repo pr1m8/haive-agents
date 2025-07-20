@@ -344,7 +344,7 @@ def create_query_analyzer(name: str = "query_analyzer") -> SimpleAgent:
 class CompositeGradingAgent:
     """Combines multiple grading components for comprehensive evaluation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.document_grader = create_document_grader()
         self.answer_grader = create_answer_grader()
         self.hallucination_grader = create_hallucination_grader()

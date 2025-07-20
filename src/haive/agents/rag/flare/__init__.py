@@ -1,13 +1,37 @@
-"""FLARE RAG Module.
+"""Module exports."""
 
-Forward-Looking Active REtrieval (FLARE) RAG with iterative generation and active retrieval.
-Uses structured output models for planning and uncertainty detection.
-"""
-
-from haive.agents.rag.flare.agent import (
+from flare.agent import (
     ActiveRetrievalAgent,
+    ConfidenceLevel,
+    FLAREPlan,
     FLAREPlannerAgent,
     FLARERAGAgent,
+    FLAREResult,
+    RetrievalDecision,
+    active_retrieve,
+    build_graph,
+    create_active_retrieval_callable,
+    create_flare_planner_callable,
+    create_flare_rag_agent,
+    from_documents,
+    get_flare_rag_io_schema,
+    plan_flare_iteration,
 )
 
-__all__ = ["ActiveRetrievalAgent", "FLAREPlannerAgent", "FLARERAGAgent"]
+__all__ = [
+    "ActiveRetrievalAgent",
+    "ConfidenceLevel",
+    "FLAREPlan",
+    "FLAREPlannerAgent",
+    "FLARERAGAgent",
+    "FLAREResult",
+    "RetrievalDecision",
+    "active_retrieve",
+    "build_graph",
+    "create_active_retrieval_callable",
+    "create_flare_planner_callable",
+    "create_flare_rag_agent",
+    "from_documents",
+    "get_flare_rag_io_schema",
+    "plan_flare_iteration",
+]

@@ -141,7 +141,7 @@ def visualize_state(
             f.write(report)
 
 
-def main():
+def main() -> None:
     """CLI entry point for the research tool.
 
     Parses command-line arguments and executes the appropriate command

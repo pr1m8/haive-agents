@@ -8,8 +8,13 @@ from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage
 from langchain_core.output_parsers.openai_tools import (
+    Dict,
     JsonOutputToolsParser,
+    List,
     PydanticToolsParser,
+    from,
+    import,
+    typing,
 )
 from langchain_core.runnables import RunnableConfig
 from langchain_core.runnables import chain as as_runnable
@@ -110,7 +115,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
         self.reflection_chain = reflection_chain
 
         # Expansion chain
-        def generate_candidates(messages, config: RunnableConfig):
+        def generate_candidates(messages: List[Dict[str, Any]], config: RunnableConfig):
             n = config["configurable"].get("N", self.config.candidates_per_rollout)
             bound_kwargs = llm_with_tools.kwargs
             chat_result = llm.generate(

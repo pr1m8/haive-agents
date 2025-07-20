@@ -3,7 +3,7 @@
 
 import asyncio
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from langchain_core.messages import AIMessage, HumanMessage
 
@@ -35,7 +35,6 @@ class DebugAgent:
 
 async def test_graph_rebuilding():
     """Test that graph rebuilding works correctly."""
-
     # Import our rebuild supervisor
     try:
         from rebuild_dynamic_supervisor import RebuildDynamicSupervisor
@@ -57,13 +56,9 @@ async def test_graph_rebuilding():
     supervisor.register_agent(research_agent, "research and analysis")
     supervisor.register_agent(writing_agent, "writing and documentation")
 
-
     # First invocation - should build initial graph
 
-    await supervisor.ainvoke(
-        {"messages": [HumanMessage(content="Research AI trends")]}
-    )
-
+    await supervisor.ainvoke({"messages": [HumanMessage(content="Research AI trends")]})
 
     # Verify agent was called
 
@@ -72,13 +67,11 @@ async def test_graph_rebuilding():
     math_agent = DebugAgent("math_agent", "calculations")
     supervisor.register_agent(math_agent, "mathematical calculations")
 
-
     # Second invocation - should rebuild graph first
 
     await supervisor.ainvoke(
         {"messages": [HumanMessage(content="Calculate the sum of 15 and 27")]}
     )
-
 
     # Verify new agent was called
 
@@ -92,27 +85,22 @@ async def test_graph_rebuilding():
         {"messages": [HumanMessage(content="Write a summary")]}  # No writing agent!
     )
 
-
     # Summary
-
-
 
     # Verify graph structure
     if supervisor.graph:
 
         # Check if math_agent node exists
         if "math_agent" in supervisor.graph.nodes:
-            pass")
+            pass
 
         # Check if writing_agent node is gone
         if "writing_agent" not in supervisor.graph.nodes:
-            pass")
-
+            pass
 
 
 async def test_rebuild_edge_cases():
     """Test edge cases for graph rebuilding."""
-
     from rebuild_dynamic_supervisor import RebuildDynamicSupervisor
 
     # Test 1: Multiple rapid changes
@@ -124,12 +112,8 @@ async def test_rebuild_edge_cases():
         agent = DebugAgent(f"agent_{i}", f"task_{i}")
         supervisor.register_agent(agent, f"capability_{i}")
 
-
     # Single invocation should handle all changes
-    result = await supervisor.ainvoke(
-        {"messages": [HumanMessage(content="Do something")]}
-    )
-
+    await supervisor.ainvoke({"messages": [HumanMessage(content="Do something")]})
 
     # Test 2: Rebuild with no agents
 
@@ -138,13 +122,10 @@ async def test_rebuild_edge_cases():
     for name in agent_names:
         supervisor.unregister_agent(name)
 
-
     # Should handle gracefully
     await supervisor.ainvoke(
         {"messages": [HumanMessage(content="Do something with no agents")]}
     )
-
-
 
 
 if __name__ == "__main__":
@@ -154,4 +135,3 @@ if __name__ == "__main__":
 
     # Run edge cases
     asyncio.run(test_rebuild_edge_cases())
-

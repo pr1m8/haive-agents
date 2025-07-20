@@ -14,7 +14,7 @@ from haive.agents.multi.base import MultiAgent
 logger = logging.getLogger(__name__)
 
 
-def placeholder_node(state):
+def placeholder_node(state: dict[str, Any]):
     """Placeholder node that does nothing."""
     return Command(update={})
 
@@ -26,7 +26,7 @@ class SequentialMultiAgent(MultiAgent):
     The execution follows a chain pattern: Agent1 -> Agent2 -> ... -> AgentN
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Initialize with sequential coordination mode."""
         kwargs["coordination_mode"] = "sequential"
         super().__init__(**kwargs)

@@ -96,7 +96,7 @@ class ReactAgentConfig(AgentConfig):
 
     @field_validator("engine", mode="after")
     @classmethod
-    def validate_engine(cls, v):
+    def validate_engine(cls, v) -> Any:
         """Ensure `engine` is always provided and valid."""
         if not v:
             raise ValueError(
@@ -106,7 +106,7 @@ class ReactAgentConfig(AgentConfig):
 
     @field_validator("tools", "tool_node_tools", mode="before")
     @classmethod
-    def ensure_list(cls, v):
+    def ensure_list(cls, v) -> Any:
         """Ensure tools are always a list."""
         if v is None:
             return []
@@ -116,7 +116,7 @@ class ReactAgentConfig(AgentConfig):
 
     @field_validatorensure_serializable
     @classmethod
-    def ensure_serializable(cls, v):
+    def ensure_serializable(cls, v) -> Any:
         """Ensure structured output schema is serializable."""
         if v is not None and not isinstance(v, type) and not issubclass(v, BaseModel):
             raise TypeError(
@@ -186,7 +186,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         )
         return Command(update={"messages": state["messages"] + [response]})
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         """Configure the workflow graph."""
         if self.create_tool_node:
             self.graph.add_node("tool_node", self.tool_node)
@@ -221,7 +221,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         ):
             output["messages"][-1]
 
-    def chat(self):
+    def chat(self) -> None:
         """Interactive chat loop."""
         while True:
             try:

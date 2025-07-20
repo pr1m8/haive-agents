@@ -161,7 +161,7 @@ async def main():
 
     if multi_agent and state_instance and execution_state and hierarchical_state:
     else:
-        pass")
+        pass
 
     return {
         "multi_agent": multi_agent,

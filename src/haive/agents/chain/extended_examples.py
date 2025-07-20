@@ -6,16 +6,21 @@ from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.chain.extended_chain import (
+    Any,
     ChainBuilder,
+    Dict,
     ExtendedChainAgent,
     chain,
     chain_with_edges,
+    from,
+    import,
+    typing,
 )
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.simple.agent import SimpleAgent
 
 
-def example_simple_sequential():
+def example_simple_sequential() -> Any:
     """Simplest possible chain - just list the nodes."""
     # Just list your nodes - that's it!
     my_chain = chain(
@@ -27,7 +32,7 @@ def example_simple_sequential():
     return my_chain
 
 
-def example_with_agents_and_engines():
+def example_with_agents_and_engines() -> Any:
     """Mix different node types effortlessly."""
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
@@ -47,7 +52,7 @@ def example_with_agents_and_engines():
     docs = [Document(page_content="Test document")]
     rag_agent = SimpleRAGAgent.from_documents(docs, llm_config)
 
-    def post_processor(s):
+    def post_processor(s) -> Dict[str, Any]:
         return {"final": s.get("response", "")}
 
     # Just chain them together!
@@ -58,7 +63,7 @@ def example_with_agents_and_engines():
     return my_chain
 
 
-def example_custom_edges():
+def example_custom_edges() -> Any:
     """Use custom edges with easy syntax."""
     nodes = [
         lambda s: {"value": 1},  # 0
@@ -79,19 +84,19 @@ def example_custom_edges():
     return my_chain
 
 
-def example_with_branching():
+def example_with_branching() -> Any:
     """Easy branching syntax."""
 
-    def classifier(s):
+    def classifier(s) -> Dict[str, Any]:
         return {"type": "complex" if len(s.get("input", "")) > 50 else "simple"}
 
-    def simple_processor(s):
+    def simple_processor(s) -> Dict[str, Any]:
         return {"result": "Simple processing"}
 
-    def complex_processor(s):
+    def complex_processor(s) -> Dict[str, Any]:
         return {"result": "Complex processing"}
 
-    def finalizer(s):
+    def finalizer(s) -> Dict[str, Any]:
         return {"output": s.get("result", "")}
 
     # Method 1: Using branch() method
@@ -119,10 +124,10 @@ def example_with_branching():
     return my_chain
 
 
-def example_with_loop():
+def example_with_loop() -> Any:
     """Easy loop creation."""
 
-    def counter(s):
+    def counter(s) -> Dict[str, Any]:
         return {"count": s.get("count", 0) + 1}
 
     # Create a chain with a loop
@@ -133,7 +138,7 @@ def example_with_loop():
     return my_chain
 
 
-def example_rag_router_super_simple():
+def example_rag_router_super_simple() -> Any:
     """RAG router in the simplest possible way."""
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
@@ -157,7 +162,7 @@ def example_rag_router_super_simple():
 
     simple_rag = SimpleRAGAgent.from_documents(docs, llm_config)
 
-    def complex_rag(s):
+    def complex_rag(s) -> Dict[str, Any]:
         return {"response": "Complex RAG response"}
 
     # Build the router
@@ -169,7 +174,7 @@ def example_rag_router_super_simple():
     return router
 
 
-def example_start_and_end():
+def example_start_and_end() -> Any:
     """Using START and END explicitly."""
     nodes = [
         lambda s: {"initialized": True},
@@ -188,17 +193,17 @@ def example_start_and_end():
     return my_chain
 
 
-def example_operator_chaining():
+def example_operator_chaining() -> Any:
     """Using operator syntax for chaining."""
 
     # This would need more implementation, but shows the idea
-    def input_node(s):
+    def input_node(s) -> Dict[str, Any]:
         return {"data": s.get("input", "")}
 
-    def process_node(s):
+    def process_node(s) -> Dict[str, Any]:
         return {"processed": True}
 
-    def output_node(s):
+    def output_node(s) -> Dict[str, Any]:
         return {"result": "Done"}
 
     # Using >> operator
@@ -207,7 +212,7 @@ def example_operator_chaining():
     return my_chain.build()
 
 
-def example_mixed_indices_and_names():
+def example_mixed_indices_and_names() -> Any:
     """Mix numeric indices and node names."""
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
@@ -225,7 +230,7 @@ def example_mixed_indices_and_names():
         name="analyzer",  # Named node
     )
 
-    def processor(s):
+    def processor(s) -> Dict[str, Any]:
         return {"processed": True}  # Unnamed - will be node_1
 
     my_chain = chain_with_edges(

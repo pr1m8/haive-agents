@@ -416,7 +416,7 @@ class EnsembleSelectionStrategy(BaseSelectionStrategy):
 class LearningSelectionStrategy(BaseSelectionStrategy):
     """Selection strategy that learns from user feedback and tool performance."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.tool_ratings: dict[str, list[float]] = {}
         self.user_feedback: dict[str, list[dict[str, Any]]] = {}
         self.context_patterns: dict[str, list[str]] = {}

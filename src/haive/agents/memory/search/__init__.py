@@ -1,21 +1,21 @@
-"""Search agents for Perplexity-style research system.
+"""Module exports."""
 
-This module provides specialized search agents that mirror Perplexity's architecture:
-- QuickSearchAgent: Fast, basic search responses
-- ProSearchAgent: Deep, contextual search with preferences
-- DeepResearchAgent: Comprehensive research with multiple sources
-- LabsAgent: Interactive project automation with tools
+from search.base import (
+    BaseSearchAgent,
+    SearchResponse,
+    extract_memory_items,
+    format_search_context,
+    get_response_model,
+    get_search_instructions,
+    get_system_prompt,
+)
 
-All agents are built with:
-- Prompt templates for consistent behavior
-- Structured output models for predictable responses
-- Optional tools for enhanced capabilities
-- Memory integration for context retention
-"""
-
-from haive.agents.memory.search.deep_research.agent import DeepResearchAgent
-from haive.agents.memory.search.labs.agent import LabsAgent
-from haive.agents.memory.search.pro_search.agent import ProSearchAgent
-from haive.agents.memory.search.quick_search.agent import QuickSearchAgent
-
-__all__ = ["QuickSearchAgent", "ProSearchAgent", "DeepResearchAgent", "LabsAgent"]
+__all__ = [
+    "BaseSearchAgent",
+    "SearchResponse",
+    "extract_memory_items",
+    "format_search_context",
+    "get_response_model",
+    "get_search_instructions",
+    "get_system_prompt",
+]

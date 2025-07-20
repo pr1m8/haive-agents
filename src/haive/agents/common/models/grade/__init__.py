@@ -1,68 +1,217 @@
-"""Grade models for structured output in Haive agents.
+"""Module exports."""
 
-This module provides a comprehensive set of grading models that agents can use
-for structured output across various evaluation tasks. The models support
-different grading schemes including binary, numeric, letter grades, and
-custom categorical evaluations.
-
-Classes:
-    GradeType: Enumeration of available grade model types
-    Grade: Abstract base class for all grade models
-    BinaryGrade: Simple pass/fail or yes/no grading
-    NumericGrade: Numeric scoring with configurable ranges
-    LetterGrade: Traditional letter-based grading (A-F)
-    PercentageGrade: Percentage-based scoring (0-100%)
-    RubricGrade: Multi-criteria rubric-based evaluation
-    QualitativeGrade: Text-based qualitative assessment
-    ScaleGrade: Likert-scale or custom scale grading
-    CompositGrade: Combination of multiple grade types
-
-Example:
-    ```python
-    from haive.agents.common.models.grade import BinaryGrade, NumericGrade
-
-    # Simple binary evaluation
-    grade = BinaryGrade(
-        value=True,
-        justification="Response directly answers the question",
-        confidence=0.9
-    )
-
-    # Numeric scoring
-    score = NumericGrade(
-        value=8.5,
-        min_value=0,
-        max_value=10,
-        justification="High quality with minor improvements needed"
-    )
-    ```
-"""
-
-from haive.agents.common.models.grade.base import Grade, GradeType
-from haive.agents.common.models.grade.binary import BinaryGrade
-from haive.agents.common.models.grade.composite import CompositeGrade
-from haive.agents.common.models.grade.letter_grade import LetterGrade
-from haive.agents.common.models.grade.numeric import NumericGrade, PercentageGrade
-from haive.agents.common.models.grade.qualitative import QualitativeGrade
-from haive.agents.common.models.grade.rubric import RubricCriterion, RubricGrade
-from haive.agents.common.models.grade.scale import ScaleGrade
+from grade.base import (
+    Grade,
+    GradeType,
+    compare_to,
+    get_grade_summary,
+    get_normalized_score,
+    is_passing,
+    to_display_string,
+    validate_grade_value,
+    validate_justification,
+)
+from grade.binary import (
+    BinaryGrade,
+    convert_value_to_bool,
+    create_fail,
+    create_pass,
+    flip,
+    get_display_value,
+    get_emoji_representation,
+    get_normalized_score,
+    is_passing,
+    to_display_string,
+    validate_grade_value,
+)
+from grade.composite import (
+    CompositeGrade,
+    create_consensus_grade,
+    create_from_grades,
+    get_consensus_analysis,
+    get_grade_breakdown,
+    get_grade_statistics,
+    get_normalized_score,
+    get_normalized_score_using_method,
+    get_normalized_weights,
+    get_outlier_grades,
+    has_consensus,
+    is_passing,
+    to_display_string,
+    validate_combination_method,
+    validate_grade_value,
+    validate_weights_and_indices,
+)
+from grade.letter_grade import (
+    LetterGrade,
+    LetterValue,
+    convert_to_letter_value,
+    from_percentage,
+    get_gpa_points,
+    get_letter_quality_description,
+    get_normalized_score,
+    is_passing,
+    to_display_string,
+    validate_gpa_scale,
+    validate_grade_value,
+)
+from grade.numeric import (
+    NumericGrade,
+    PercentageGrade,
+    distance_from_threshold,
+    get_letter_equivalent,
+    get_normalized_score,
+    get_percentage_score,
+    is_passing,
+    to_display_string,
+    validate_grade_value,
+    validate_max_value,
+    validate_min_value,
+    validate_score_range,
+)
+from grade.qualitative import (
+    QualitativeGrade,
+    QualityLevel,
+    SentimentType,
+    create_constructive_feedback,
+    create_positive_feedback,
+    generate_narrative_summary,
+    get_feedback_summary,
+    get_improvement_priority,
+    get_normalized_score,
+    is_passing,
+    to_display_string,
+    validate_feedback_consistency,
+    validate_feedback_items,
+    validate_grade_value,
+)
+from grade.rubric import (
+    RubricCriterion,
+    RubricGrade,
+    create_simple_rubric,
+    get_criteria_summary,
+    get_criterion_by_name,
+    get_improvement_suggestions,
+    get_max_weighted_score,
+    get_normalized_score,
+    get_percentage_score,
+    get_raw_weighted_score,
+    get_strongest_criteria,
+    get_weakest_criteria,
+    get_weighted_max_score,
+    get_weighted_score,
+    is_passing,
+    to_display_string,
+    validate_criteria_names_unique,
+    validate_grade_value,
+    validate_score_range,
+    validate_score_within_max,
+)
+from grade.scale import (
+    LikertScale,
+    SatisfactionScale,
+    ScaleGrade,
+    create_likert_5,
+    create_numeric_scale,
+    create_quality_scale,
+    create_satisfaction_5,
+    distance_from_neutral,
+    get_adjacent_values,
+    get_descriptive_assessment,
+    get_normalized_score,
+    get_scale_percentage,
+    get_scale_position,
+    is_bottom_tier,
+    is_passing,
+    is_top_tier,
+    to_display_string,
+    validate_grade_value,
+    validate_scale_labels_unique,
+    validate_scale_value_and_set_numeric,
+)
 
 __all__ = [
-    # Concrete grade models
     "BinaryGrade",
     "CompositeGrade",
     "Grade",
-    # Base classes
     "GradeType",
     "LetterGrade",
+    "LetterValue",
+    "LikertScale",
     "NumericGrade",
     "PercentageGrade",
     "QualitativeGrade",
+    "QualityLevel",
     "RubricCriterion",
     "RubricGrade",
+    "SatisfactionScale",
     "ScaleGrade",
+    "SentimentType",
+    "compare_to",
+    "convert_to_letter_value",
+    "convert_value_to_bool",
+    "create_consensus_grade",
+    "create_constructive_feedback",
+    "create_fail",
+    "create_from_grades",
+    "create_likert_5",
+    "create_numeric_scale",
+    "create_pass",
+    "create_positive_feedback",
+    "create_quality_scale",
+    "create_satisfaction_5",
+    "create_simple_rubric",
+    "distance_from_neutral",
+    "distance_from_threshold",
+    "flip",
+    "from_percentage",
+    "generate_narrative_summary",
+    "get_adjacent_values",
+    "get_consensus_analysis",
+    "get_criteria_summary",
+    "get_criterion_by_name",
+    "get_descriptive_assessment",
+    "get_display_value",
+    "get_emoji_representation",
+    "get_feedback_summary",
+    "get_gpa_points",
+    "get_grade_breakdown",
+    "get_grade_statistics",
+    "get_grade_summary",
+    "get_improvement_priority",
+    "get_improvement_suggestions",
+    "get_letter_equivalent",
+    "get_letter_quality_description",
+    "get_max_weighted_score",
+    "get_normalized_score",
+    "get_normalized_score_using_method",
+    "get_normalized_weights",
+    "get_outlier_grades",
+    "get_percentage_score",
+    "get_raw_weighted_score",
+    "get_scale_percentage",
+    "get_scale_position",
+    "get_strongest_criteria",
+    "get_weakest_criteria",
+    "get_weighted_max_score",
+    "get_weighted_score",
+    "has_consensus",
+    "is_bottom_tier",
+    "is_passing",
+    "is_top_tier",
+    "to_display_string",
+    "validate_combination_method",
+    "validate_criteria_names_unique",
+    "validate_feedback_consistency",
+    "validate_feedback_items",
+    "validate_gpa_scale",
+    "validate_grade_value",
+    "validate_justification",
+    "validate_max_value",
+    "validate_min_value",
+    "validate_scale_labels_unique",
+    "validate_scale_value_and_set_numeric",
+    "validate_score_range",
+    "validate_score_within_max",
+    "validate_weights_and_indices",
 ]
-
-# Version info
-__version__ = "1.0.0"
-__author__ = "Haive Framework"

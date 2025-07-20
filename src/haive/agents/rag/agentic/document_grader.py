@@ -3,12 +3,11 @@
 This agent evaluates retrieved documents for relevance using existing models from common.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.rag.common.document_graders.models import (
-    DocumentBinaryGrading,
     DocumentBinaryResponse,
 )
 from haive.agents.simple import SimpleAgent
@@ -28,27 +27,28 @@ def create_document_grader_agent(
         SimpleAgent configured for document grading
 
     Example:
-        ```python
-        # Create grader agent
-        grader = create_document_grader_agent(
+        .. code-block:: python
+
+            # Create grader agent
+            grader = create_document_grader_agent(
             name="doc_grader",
             temperature=0.0
-        )
+            )
 
-        # Grade documents
-        result = await grader.arun({
+            # Grade documents
+            result = await grader.arun({
             "query": "What is quantum computing?",
             "documents": [
-                {"content": "Quantum computing uses quantum mechanics...", "id": "doc1"},
-                {"content": "Classical computing uses binary digits...", "id": "doc2"}
+            {"content": "Quantum computing uses quantum mechanics...", "id": "doc1"},
+            {"content": "Classical computing uses binary digits...", "id": "doc2"}
             ]
-        })
+            })
 
-        # Access results
-        for decision in result.document_decisions:
+            # Access results
+            for decision in result.document_decisions:
             print(f"Document {decision.document_id}: {decision.decision}")
             print(f"Reason: {decision.justification}")
-        ```
+
     """
     prompt_template = (
         "You are a document relevance grader. Evaluate whether documents are relevant to a given query.\n\n"
@@ -76,7 +76,7 @@ def create_document_grader_agent(
 
 
 async def grade_documents(
-    agent: SimpleAgent, query: str, documents: List[Dict[str, Any]]
+    agent: SimpleAgent, query: str, documents: list[dict[str, Any]]
 ) -> DocumentBinaryResponse:
     """Grade documents for relevance to a query.
 

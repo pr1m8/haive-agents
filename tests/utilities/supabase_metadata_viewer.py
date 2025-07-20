@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Supabase metadata viewer utility for monitoring conversation agent errors."""
 
-import json
 import os
 import sys
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -280,7 +279,6 @@ def test_conversation_agent_with_new_id():
         fresh_thread_id = f"fresh_test_{timestamp}_{datetime.now().microsecond}"
         config = {"configurable": {"thread_id": fresh_thread_id}}
 
-
         test_input = {
             "messages": [],
             "topic": "Quick prepared statement test",
@@ -289,18 +287,16 @@ def test_conversation_agent_with_new_id():
 
         result = agent.invoke(test_input, config)
 
-
         # Check result for errors
         if hasattr(result, "shared_document"):
             doc = result.shared_document
             if "prepared statement" in str(doc).lower():
                 return fresh_thread_id, False
-            print("✅ No prepared statement errors in result")
             return fresh_thread_id, True
 
         return fresh_thread_id, True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -309,24 +305,23 @@ def test_conversation_agent_with_new_id():
 
 def main():
     """Main function to run the metadata viewer."""
-
     try:
         # View recent errors
 
         errors = view_recent_errors(limit=5)
         if errors:
-            for i, error in enumerate(errors, 1):
+            for _i, error in enumerate(errors, 1):
 
-                for err in error["errors_found"][:3]:  # Show first 3 errors
+                for _err in error["errors_found"][:3]:  # Show first 3 errors
                     pass
         else:
-            pass")
+            pass
 
         # View conversation threads
 
         threads = view_conversation_threads(limit=10)
         for thread in threads:
-            status = "❌ HAS ERRORS" if thread["error_count"] > 0 else "✅ Clean"
+            "❌ HAS ERRORS" if thread["error_count"] > 0 else "✅ Clean"
 
         # Test with new thread ID
 
@@ -335,13 +330,12 @@ def main():
         if fresh_thread_id and success:
             details = get_thread_details(fresh_thread_id)
 
-
             if details["error_count"] == 0:
-                pass")
+                pass
             else:
-                pass")
+                pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

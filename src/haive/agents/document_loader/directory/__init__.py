@@ -1,9 +1,5 @@
-"""Directory Document Loader Agent.
+"""Module exports."""
 
-This package provides a specialized document loader agent for directories.
-"""
+from directory.agent import DirectoryLoaderAgent, setup_agent
 
-from haive.agents.document_loader.directory.agent import DirectoryLoaderAgent
-
-# Export all public components
-__all__ = ["DirectoryLoaderAgent"]
+__all__ = ["DirectoryLoaderAgent", "setup_agent"]

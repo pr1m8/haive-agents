@@ -7,10 +7,9 @@ the Dynamic Activation Pattern.
 Based on: @project_docs/active/patterns/dynamic_activation_pattern.md
 """
 
-import asyncio
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
@@ -104,29 +103,30 @@ class ComponentDiscoveryAgent(BaseModel):
     )
 
     # Component instances (initialized via model_validator)
-    discovery_agent: Optional[BaseRAGAgent] = Field(
+    discovery_agent: BaseRAGAgent | None = Field(
         default=None, description="BaseRAGAgent for performing retrieval"
     )
 
-    meta_state: Optional[MetaStateSchema] = Field(
+    meta_state: MetaStateSchema | None = Field(
         default=None, description="MetaStateSchema wrapper for the discovery agent"
     )
 
     # Configuration and caching
-    discovery_config: Dict[str, Any] = Field(
+    discovery_config: dict[str, Any] = Field(
         default_factory=dict, description="Configuration for discovery behavior"
     )
 
-    component_cache: Dict[str, List[Dict[str, Any]]] = Field(
+    component_cache: dict[str, list[dict[str, Any]]] = Field(
         default_factory=dict, description="Cache for discovered components"
     )
 
     # Internal state (private attributes)
-    _documents: Optional[List[Document]] = PrivateAttr(default=None)
-    _haive_discovery: Optional[HaiveComponentDiscovery] = PrivateAttr(default=None)
+    _documents: list[Document] | None = PrivateAttr(default=None)
+    _haive_discovery: HaiveComponentDiscovery | None = PrivateAttr(default=None)
 
     @model_validator(mode="after")
-    def setup_discovery_agent(self) -> "ComponentDiscoveryAgent":
+    @classmethod
+    def setup_discovery_agent(cls) -> "ComponentDiscoveryAgent":
         """Initialize the discovery agent after model creation.
 
         This validator:
@@ -177,7 +177,7 @@ class ComponentDiscoveryAgent(BaseModel):
                 )
 
             except Exception as e:
-                logger.error(f"Failed to initialize discovery agent: {e}")
+                logger.exception(f"Failed to initialize discovery agent: {e}")
                 # Create minimal fallback configuration
                 self._setup_fallback_agent()
 
@@ -221,7 +221,7 @@ class ComponentDiscoveryAgent(BaseModel):
             graph_context={"purpose": "fallback_discovery"},
         )
 
-    def _load_documents(self, path: str) -> List[Document]:
+    def _load_documents(self, path: str) -> list[Document]:
         """Load documents from the specified path.
 
         Args:
@@ -244,11 +244,11 @@ class ComponentDiscoveryAgent(BaseModel):
                 documents = self._load_from_filesystem(path)
 
         except Exception as e:
-            logger.error(f"Failed to load documents from {path}: {e}")
+            logger.exception(f"Failed to load documents from {path}: {e}")
 
         return documents
 
-    def _load_haive_components(self, path: str) -> List[Document]:
+    def _load_haive_components(self, path: str) -> list[Document]:
         """Load components using HaiveComponentDiscovery.
 
         Args:
@@ -290,11 +290,11 @@ class ComponentDiscoveryAgent(BaseModel):
             logger.info(f"Loaded {len(documents)} Haive components")
 
         except Exception as e:
-            logger.error(f"Failed to load Haive components: {e}")
+            logger.exception(f"Failed to load Haive components: {e}")
 
         return documents
 
-    def _load_at_notation(self, path: str) -> List[Document]:
+    def _load_at_notation(self, path: str) -> list[Document]:
         """Load documents from @ notation paths.
 
         Args:
@@ -307,7 +307,7 @@ class ComponentDiscoveryAgent(BaseModel):
         cleaned_path = path.replace("@", "")
         return self._load_from_filesystem(cleaned_path)
 
-    def _load_from_filesystem(self, path: str) -> List[Document]:
+    def _load_from_filesystem(self, path: str) -> list[Document]:
         """Load documents from filesystem path.
 
         Args:
@@ -322,7 +322,7 @@ class ComponentDiscoveryAgent(BaseModel):
         try:
             if path_obj.is_file():
                 # Load single file
-                with open(path_obj, "r", encoding="utf-8") as f:
+                with open(path_obj, encoding="utf-8") as f:
                     content = f.read()
                     doc = Document(
                         page_content=content,
@@ -338,7 +338,7 @@ class ComponentDiscoveryAgent(BaseModel):
                 # Load directory recursively
                 for file_path in path_obj.rglob("*.py"):
                     try:
-                        with open(file_path, "r", encoding="utf-8") as f:
+                        with open(file_path, encoding="utf-8") as f:
                             content = f.read()
                             doc = Document(
                                 page_content=content,
@@ -356,11 +356,11 @@ class ComponentDiscoveryAgent(BaseModel):
                         logger.warning(f"Failed to load file {file_path}: {e}")
 
         except Exception as e:
-            logger.error(f"Failed to load from filesystem path {path}: {e}")
+            logger.exception(f"Failed to load from filesystem path {path}: {e}")
 
         return documents
 
-    async def discover_components(self, query: str) -> List[Dict[str, Any]]:
+    async def discover_components(self, query: str) -> list[dict[str, Any]]:
         """Discover components based on a query.
 
         Args:
@@ -391,13 +391,13 @@ class ComponentDiscoveryAgent(BaseModel):
             # Execute discovery through meta state
             discovery_prompt = f"""
             Find components that can help with: {query}
-            
+
             Look for:
             - Functions or classes that match the requirements
             - Tools that provide the needed functionality
             - Agents that can handle the task
             - Components with relevant capabilities
-            
+
             Return information about:
             - Component name and description
             - Module path and location
@@ -420,10 +420,10 @@ class ComponentDiscoveryAgent(BaseModel):
             return components
 
         except Exception as e:
-            logger.error(f"Failed to discover components for query '{query}': {e}")
+            logger.exception(f"Failed to discover components for query '{query}': {e}")
             return []
 
-    def _parse_components(self, output: str) -> List[Dict[str, Any]]:
+    def _parse_components(self, output: str) -> list[dict[str, Any]]:
         """Parse component data from discovery output.
 
         Args:
@@ -459,7 +459,7 @@ class ComponentDiscoveryAgent(BaseModel):
             components = components[:max_results]
 
         except Exception as e:
-            logger.error(f"Failed to parse components: {e}")
+            logger.exception(f"Failed to parse components: {e}")
 
         return components
 
@@ -484,11 +484,9 @@ class ComponentDiscoveryAgent(BaseModel):
 
         # Check for common keywords
         keywords = ["tool", "agent", "component", "function", "class"]
-        for keyword in keywords:
-            if keyword in doc_text and keyword in output_text:
-                return True
-
-        return False
+        return any(
+            keyword in doc_text and keyword in output_text for keyword in keywords
+        )
 
     def _extract_description(self, doc: Document) -> str:
         """Extract description from document content.
@@ -524,8 +522,8 @@ class ComponentDiscoveryAgent(BaseModel):
         )
 
     async def load_component_from_doc(
-        self, component_doc: Dict[str, Any]
-    ) -> Optional[Any]:
+        self, component_doc: dict[str, Any]
+    ) -> Any | None:
         """Load actual component instance from component document.
 
         Args:
@@ -547,8 +545,8 @@ class ComponentDiscoveryAgent(BaseModel):
             # Use the tool loading pattern from notebooks/tool_loader.ipynb
             if self._haive_discovery and component_doc.get("has_tool"):
                 # Try to load using HaiveComponentDiscovery
-                module_path = component_doc.get("module_path", "")
-                name = component_doc.get("name", "")
+                component_doc.get("module_path", "")
+                component_doc.get("name", "")
 
                 # This would need to be implemented based on the actual
                 # tool loading logic from the notebook
@@ -556,7 +554,7 @@ class ComponentDiscoveryAgent(BaseModel):
                 return component_doc
 
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"Failed to load component {component_doc.get('name', 'unknown')}: {e}"
             )
 
@@ -574,7 +572,7 @@ class ComponentDiscoveryAgent(BaseModel):
         self.component_cache.clear()
         logger.info("Component cache cleared")
 
-    def get_cache_stats(self) -> Dict[str, Any]:
+    def get_cache_stats(self) -> dict[str, Any]:
         """Get statistics about the component cache.
 
         Returns:

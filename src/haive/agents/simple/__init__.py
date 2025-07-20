@@ -1,17 +1,116 @@
-"""Simple Agent Package.
+"""Module exports."""
 
-This package provides a simple agent implementation with a single-node workflow.
-"""
-
-from haive.agents.simple.agent import SimpleAgent
-
-"""
+from simple.agent_v2 import (
+    SimpleAgentV2,
+    add_prompt_template,
+    add_system_message,
+    add_tool,
+    build_graph,
+    clear_structured_output,
+    clear_tools,
+    create_runnable,
+    create_with_tools,
+    from_engine,
+    get_active_template,
+    get_configuration_summary,
+    get_structured_output_model,
+    get_tool_routes,
+    has_tool_calls_v2,
+    list_prompt_templates,
+    remove_prompt_template,
+    remove_tool,
+    set_structured_output,
+    setup_agent,
+    use_prompt_template,
+    validate_engine_type,
+)
+from simple.clean_enhanced_simple import SimpleAgent, build_graph, setup_agent
+from simple.config import (
+    SimpleAgentConfig,
+    from_aug_llm,
+    from_scratch,
+    validate_engine,
+    validate_mappings,
+    with_structured_output,
+)
+from simple.enhanced_simple_agent import (
+    EnhancedSimpleAgent,
+    add_tool,
+    build_graph,
+    create_default_engine,
+    create_simple_agent,
+    get_aug_llm_config,
+    has_tool_calls,
+    setup_agent,
+    update_system_message,
+    update_temperature,
+)
+from simple.enhanced_simple_agent_v2 import (
+    SimpleAgentV2,
+    build_graph,
+    check_tools,
+    ensure_engine,
+    setup_agent,
+)
+from simple.example import (
+    CustomAgentState,
+    debug_print,
+    example_with_custom_state_schema,
+)
+from simple.factory import create_simple_agent
+from simple.state import (
+    SimpleAgentState,
+    add_ai_message,
+    add_human_message,
+    extract_last_message_content,
+    with_messages,
+)
 
 __all__ = [
+    "CustomAgentState",
+    "EnhancedSimpleAgent",
     "SimpleAgent",
     "SimpleAgentConfig",
     "SimpleAgentState",
+    "SimpleAgentV2",
+    "add_ai_message",
+    "add_human_message",
+    "add_prompt_template",
+    "add_system_message",
+    "add_tool",
+    "build_graph",
+    "check_tools",
+    "clear_structured_output",
+    "clear_tools",
+    "create_default_engine",
+    "create_runnable",
     "create_simple_agent",
-    "create_simple_agents",
+    "create_with_tools",
+    "debug_print",
+    "ensure_engine",
+    "example_with_custom_state_schema",
+    "extract_last_message_content",
+    "from_aug_llm",
+    "from_engine",
+    "from_scratch",
+    "get_active_template",
+    "get_aug_llm_config",
+    "get_configuration_summary",
+    "get_structured_output_model",
+    "get_tool_routes",
+    "has_tool_calls",
+    "has_tool_calls_v2",
+    "list_prompt_templates",
+    "remove_prompt_template",
+    "remove_tool",
+    "set_structured_output",
+    "setup_agent",
+    "update_system_message",
+    "update_temperature",
+    "use_prompt_template",
+    "validate_engine",
+    "validate_engine_type",
+    "validate_mappings",
+    "with_messages",
+    "with_structured_output",
 ]
-"""

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Example script that demonstrates running the open_perplexity research agent
+from typing import Any
 with a research question loaded from a text file.
 """
 
@@ -19,7 +20,7 @@ from agents.open_perplexity.config import ResearchAgentConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 
 
-def setup_logging(log_file="research_run.log"):
+def setup_logging(log_file="research_run.log") -> Any:
     """Set up logging configuration."""
     logging.basicConfig(
         level=logging.INFO,
@@ -34,7 +35,7 @@ def setup_logging(log_file="research_run.log"):
     return logger
 
 
-def load_research_question(file_path):
+def load_research_question(file_path) -> Any:
     """Load research question from a text file."""
     try:
         with open(file_path, encoding="utf-8") as f:
@@ -43,7 +44,9 @@ def load_research_question(file_path):
         raise ValueError(f"Error reading research question file: {e}")
 
 
-def run_research(question_file, output_dir=None, research_depth=2, max_sources=5):
+def run_research(
+    question_file, output_dir=None, research_depth=2, max_sources=5
+) -> bool:
     """Run research based on a question from a file.
 
     Args:
@@ -132,7 +135,7 @@ def run_research(question_file, output_dir=None, research_depth=2, max_sources=5
         return False
 
 
-def parse_arguments():
+def parse_arguments() -> Any:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description="Run research based on a question file"

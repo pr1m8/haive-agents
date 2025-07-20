@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Detailed test to examine conversation agent inputs, outputs, and persistence behavior."""
 
+import contextlib
 import json
 import logging
 
@@ -13,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 def test_conversation_persistence_detailed():
     """Test conversation agents with detailed examination of inputs, outputs, and persistence."""
-
     # Test 1: Run conversation with persistence and examine the flow
 
     session = CollaborativeConversation.create_brainstorming_session(
@@ -24,23 +24,18 @@ def test_conversation_persistence_detailed():
         persistence=True,
     )
 
-
     # Test 2: Run conversation and capture detailed results
     thread_id = "detailed_test_001"
     config = {"configurable": {"thread_id": thread_id, "recursion_limit": 100}}
 
-
     result = session.run({}, config=config)
-
 
     # Extract and display key information from result
     if hasattr(result, "messages"):
-        for i, msg in enumerate(result.messages):
-            msg_type = type(msg).__name__
-            speaker = getattr(msg, "name", "System")
-            content_preview = (
-                msg.content[:100] + "..." if len(msg.content) > 100 else msg.content
-            )
+        for _i, msg in enumerate(result.messages):
+            type(msg).__name__
+            getattr(msg, "name", "System")
+            (msg.content[:100] + "..." if len(msg.content) > 100 else msg.content)
 
     # Check other result attributes
     for attr in [
@@ -69,12 +64,8 @@ def test_conversation_persistence_detailed():
                     if thread_info:
 
                         # Try to parse metadata if it exists
-                        try:
-                            metadata = (
-                                json.loads(thread_info[3]) if thread_info[3] else {}
-                            )
-                        except:
-                            pass
+                        with contextlib.suppress(Exception):
+                            (json.loads(thread_info[3]) if thread_info[3] else {})
 
                     # Get checkpoint info
                     cursor.execute(
@@ -83,17 +74,17 @@ def test_conversation_persistence_detailed():
                     )
                     checkpoints = cursor.fetchall()
 
-                    for i, (cp_id, created_at) in enumerate(
+                    for _i, (_cp_id, _created_at) in enumerate(
                         checkpoints[:5]
                     ):  # Show first 5
                         pass
                     if len(checkpoints) > 5:
                         pass
 
-        except Exception as e:
-            pass")
+        except Exception:
+            pass
     else:
-        pass")
+        pass
 
     # Test 4: Try to retrieve a specific checkpoint
 
@@ -108,22 +99,22 @@ def test_conversation_persistence_detailed():
                 channel_values = retrieved_checkpoint["channel_values"]
 
                 if isinstance(channel_values, dict):
-                    for key, value in channel_values.items():
+                    for key, _value in channel_values.items():
                         if key == "messages":
                             pass
                         else:
                             pass
                 elif hasattr(channel_values, "__dict__"):
-                    for key, value in channel_values.__dict__.items():
+                    for key, _value in channel_values.__dict__.items():
                         if key == "messages":
                             pass
                         else:
                             pass
         else:
-            pass")
+            pass
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Test 5: Try to resume conversation from persisted state
 
@@ -144,20 +135,16 @@ def test_conversation_persistence_detailed():
 
         resume_result = resume_session.run({}, config=resume_config)
 
-
         if hasattr(resume_result, "messages"):
 
             # Show the last few messages to see continuation
             for msg in resume_result.messages[-3:]:
-                msg_type = type(msg).__name__
-                speaker = getattr(msg, "name", "System")
-                content_preview = (
-                    msg.content[:80] + "..." if len(msg.content) > 80 else msg.content
-                )
+                type(msg).__name__
+                getattr(msg, "name", "System")
+                (msg.content[:80] + "..." if len(msg.content) > 80 else msg.content)
 
-    except Exception as e:
-        pass")
-
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

@@ -26,27 +26,28 @@ class CompositeGrade(Grade):
         consensus_threshold: Threshold for consensus analysis
 
     Example:
-        ```python
-        # Individual grades
-        binary_grade = BinaryGrade(value=True, justification="Meets requirements")
-        numeric_grade = NumericGrade(value=8.5, max_value=10, justification="High quality work")
-        letter_grade = LetterGrade(value="B+", justification="Good performance overall")
+        .. code-block:: python
 
-        # Composite grade
-        composite = CompositeGrade(
+            # Individual grades
+            binary_grade = BinaryGrade(value=True, justification="Meets requirements")
+            numeric_grade = NumericGrade(value=8.5, max_value=10, justification="High quality work")
+            letter_grade = LetterGrade(value="B+", justification="Good performance overall")
+
+            # Composite grade
+            composite = CompositeGrade(
             grades=[binary_grade, numeric_grade, letter_grade],
             weights=[0.2, 0.5, 0.3],  # Different importance levels
             combination_method="weighted_average",
             justification="Combined assessment across multiple criteria"
-        )
+            )
 
-        # Equal weight composite
-        composite_equal = CompositeGrade(
+            # Equal weight composite
+            composite_equal = CompositeGrade(
             grades=[binary_grade, numeric_grade, letter_grade],
             combination_method="simple_average",
             justification="Balanced multi-perspective evaluation"
-        )
-        ```
+            )
+
     """
 
     grade_type: GradeType = Field(
@@ -124,7 +125,8 @@ class CompositeGrade(Grade):
         return v
 
     @model_validator(mode="after")
-    def validate_weights_and_indices(self) -> "CompositeGrade":
+    @classmethod
+    def validate_weights_and_indices(cls) -> "CompositeGrade":
         """Validate weights match grades count and indices are valid.
 
         Returns:

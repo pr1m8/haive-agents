@@ -1,12 +1,29 @@
-"""Step-Back Prompting RAG Module.
+"""Module exports."""
 
-Implements step-back prompting for abstract reasoning and broader context retrieval.
-Based on the pattern from rag-architectures-flows.md.
-"""
-
-from haive.agents.rag.step_back.agent import (
+from step_back.agent import (
+    DualRetrievalAgent,
+    StepBackQuery,
     StepBackQueryGeneratorAgent,
     StepBackRAGAgent,
+    StepBackResult,
+    build_graph,
+    create_step_back_rag_agent,
+    dual_retrieve,
+    from_documents,
+    generate_step_back_query,
+    get_step_back_rag_io_schema,
 )
 
-__all__ = ["StepBackQueryGeneratorAgent", "StepBackRAGAgent"]
+__all__ = [
+    "DualRetrievalAgent",
+    "StepBackQuery",
+    "StepBackQueryGeneratorAgent",
+    "StepBackRAGAgent",
+    "StepBackResult",
+    "build_graph",
+    "create_step_back_rag_agent",
+    "dual_retrieve",
+    "from_documents",
+    "generate_step_back_query",
+    "get_step_back_rag_io_schema",
+]

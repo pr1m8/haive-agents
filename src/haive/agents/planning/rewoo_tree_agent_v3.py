@@ -1,5 +1,4 @@
-"""
-ReWOO Tree Agent V3 - Pure Agent Composition
+"""ReWOO Tree Agent V3 - Pure Agent Composition.
 
 This is the correct implementation:
 - No manual nodes at all
@@ -10,17 +9,14 @@ This is the correct implementation:
 - Parallelizable execution through MultiAgent patterns
 """
 
-from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from haive.agents.base.agent import Agent
 from haive.agents.multi.clean import MultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
@@ -47,7 +43,7 @@ class ToolAlias(BaseModel):
     alias: str = Field(..., min_length=1, max_length=50)
     actual_tool: str = Field(..., min_length=1, max_length=50)
     force_choice: bool = Field(default=True)
-    parameters: Dict[str, Any] = Field(default_factory=dict)
+    parameters: dict[str, Any] = Field(default_factory=dict)
 
     @field_validator("alias")
     @classmethod
@@ -70,42 +66,41 @@ class ReWOOPlan(BaseModel):
     approach_strategy: str = Field(..., min_length=10, max_length=1000)
 
     # Execution plan
-    tasks: List[str] = Field(default_factory=list)
-    dependencies: Dict[str, List[str]] = Field(default_factory=dict)
-    tool_assignments: Dict[str, str] = Field(default_factory=dict)
+    tasks: list[str] = Field(default_factory=list)
+    dependencies: dict[str, list[str]] = Field(default_factory=dict)
+    tool_assignments: dict[str, str] = Field(default_factory=dict)
 
     # Risk assessment
-    risk_factors: List[str] = Field(default_factory=list)
-    fallback_strategies: List[str] = Field(default_factory=list)
+    risk_factors: list[str] = Field(default_factory=list)
+    fallback_strategies: list[str] = Field(default_factory=list)
 
 
 class ReWOOTreeState(MultiAgentState):
     """State for ReWOO tree execution."""
 
-    current_plan: Optional[ReWOOPlan] = None
-    tool_aliases: Dict[str, ToolAlias] = Field(default_factory=dict)
+    current_plan: ReWOOPlan | None = None
+    tool_aliases: dict[str, ToolAlias] = Field(default_factory=dict)
     planning_depth: int = Field(default=0, ge=0, le=10)
-    task_results: Dict[str, Any] = Field(default_factory=dict)
+    task_results: dict[str, Any] = Field(default_factory=dict)
 
 
 class ReWOOTreeAgent(MultiAgent):
-    """
-    ReWOO Tree Agent using pure MultiAgent composition.
+    """ReWOO Tree Agent using pure MultiAgent composition.
 
     No manual nodes - everything is agents that get automatically wrapped.
     """
 
     # Pydantic fields
-    available_tools: List[BaseTool] = Field(default_factory=list)
-    tool_aliases: Dict[str, ToolAlias] = Field(default_factory=dict)
+    available_tools: list[BaseTool] = Field(default_factory=list)
+    tool_aliases: dict[str, ToolAlias] = Field(default_factory=dict)
     max_planning_depth: int = Field(default=3)
     max_parallelism: int = Field(default=4)
 
     def __init__(
         self,
         name: str = "rewoo_tree_agent",
-        available_tools: List[BaseTool] = None,
-        tool_aliases: Dict[str, ToolAlias] = None,
+        available_tools: list[BaseTool] | None = None,
+        tool_aliases: dict[str, ToolAlias] | None = None,
         max_planning_depth: int = 3,
         max_parallelism: int = 4,
         **kwargs,
@@ -116,10 +111,10 @@ class ReWOOTreeAgent(MultiAgent):
             engine=AugLLMConfig(
                 prompt_template="""
                 You are a ReWOO Planner. Create a structured execution plan.
-                
+
                 Problem: {input}
                 Available tools: {tools}
-                
+
                 Create a detailed plan with:
                 - Problem analysis
                 - Task breakdown
@@ -139,11 +134,11 @@ class ReWOOTreeAgent(MultiAgent):
                 engine=AugLLMConfig(
                     prompt_template="""
                     You are a ReWOO Executor. Execute tasks efficiently.
-                    
+
                     Task: {input}
                     Available tools: {tools}
                     Context: {context}
-                    
+
                     Execute the task and return results.
                     """,
                     temperature=0.5,
@@ -158,11 +153,11 @@ class ReWOOTreeAgent(MultiAgent):
             engine=AugLLMConfig(
                 prompt_template="""
                 You are a task coordinator managing parallel execution.
-                
+
                 Plan: {plan}
                 Completed: {completed}
                 Results: {results}
-                
+
                 Coordinate the next phase of execution.
                 """,
                 temperature=0.3,
@@ -175,10 +170,10 @@ class ReWOOTreeAgent(MultiAgent):
             engine=AugLLMConfig(
                 prompt_template="""
                 You are a result validator.
-                
+
                 Task: {task}
                 Result: {result}
-                
+
                 Validate the result and provide feedback.
                 """,
                 temperature=0.1,
@@ -186,7 +181,7 @@ class ReWOOTreeAgent(MultiAgent):
         )
 
         # Collect all agents
-        all_agents = [planner, coordinator, validator] + executors
+        all_agents = [planner, coordinator, validator, *executors]
 
         # Initialize MultiAgent with proper Pydantic fields
         super().__init__(
@@ -256,7 +251,7 @@ class ReWOOTreeAgent(MultiAgent):
                 # Update tool usage for this executor
                 agent.engine.prompt_template += f"\nUse {alias} to access {actual_tool}"
 
-    async def create_and_execute_plan(self, problem: str) -> Dict[str, Any]:
+    async def create_and_execute_plan(self, problem: str) -> dict[str, Any]:
         """Create and execute a plan using pure MultiAgent flow."""
         # Execute using MultiAgent - no manual nodes!
         result = await self.arun(problem)
@@ -283,7 +278,9 @@ class ParallelReWOOAgent(ReWOOTreeAgent):
 
 
 def create_rewoo_agent_with_tools(
-    tools: List[BaseTool], tool_aliases: Dict[str, str] = None, max_parallelism: int = 4
+    tools: list[BaseTool],
+    tool_aliases: dict[str, str] | None = None,
+    max_parallelism: int = 4,
 ) -> ReWOOTreeAgent:
     """Factory function to create ReWOO agent with tools."""
     # Convert tool aliases to ToolAlias objects

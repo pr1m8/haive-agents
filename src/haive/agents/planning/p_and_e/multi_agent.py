@@ -1,5 +1,6 @@
 """Plan and Execute Multi-Agent System using Configurable Base.
 
+from typing import Any
 This module demonstrates how to use the configurable multi-agent base
 for building Plan and Execute workflows with branches.
 """
@@ -241,7 +242,9 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
 # Example usage patterns:
 
 
-def create_plan_execute_system(planner_agent, executor_agent, replanner_agent):
+def create_plan_execute_system(
+    planner_agent: Any, executor_agent: Any, replanner_agent: Any
+):
     """Create Plan and Execute system with default workflow."""
     return PlanAndExecuteAgent(
         agents=[planner_agent, executor_agent, replanner_agent],
@@ -260,14 +263,14 @@ def create_custom_plan_execute_system(
     )
 
 
-def create_simple_sequential_system(agents):
+def create_simple_sequential_system(agents: Any):
     """Create simple sequential multi-agent system."""
     from haive.agents.multi.configurable_base import create_sequential_multi_agent
 
     return create_sequential_multi_agent(agents=agents, name="Sequential Agent System")
 
 
-def create_custom_branching_system(agents, branches):
+def create_custom_branching_system(agents: Any, branches):
     """Create custom branching multi-agent system."""
     from haive.agents.multi.configurable_base import create_branching_multi_agent
 

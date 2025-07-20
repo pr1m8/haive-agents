@@ -1,7 +1,7 @@
 """Data models for Deep Research Agent."""
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -13,8 +13,8 @@ class ResearchSource(BaseModel):
 
     url: str = Field(..., description="Source URL")
     title: str = Field(..., description="Source title")
-    author: Optional[str] = Field(default=None, description="Author if available")
-    publication_date: Optional[datetime] = Field(
+    author: str | None = Field(default=None, description="Author if available")
+    publication_date: datetime | None = Field(
         default=None, description="Publication date"
     )
     domain: str = Field(..., description="Source domain")
@@ -35,10 +35,10 @@ class ResearchSection(BaseModel):
 
     title: str = Field(..., description="Section title")
     content: str = Field(..., description="Section content")
-    sources: List[ResearchSource] = Field(
+    sources: list[ResearchSource] = Field(
         default_factory=list, description="Sources for this section"
     )
-    key_points: List[str] = Field(
+    key_points: list[str] = Field(
         default_factory=list, description="Key points from this section"
     )
     confidence_level: float = Field(
@@ -69,13 +69,13 @@ class DeepResearchResponse(SearchResponse):
     search_type: str = Field(
         default="DeepResearch", description="Type of search performed"
     )
-    research_sections: List[ResearchSection] = Field(
+    research_sections: list[ResearchSection] = Field(
         default_factory=list, description="Research report sections"
     )
     executive_summary: str = Field(
         default="", description="Executive summary of findings"
     )
-    research_queries: List[ResearchQuery] = Field(
+    research_queries: list[ResearchQuery] = Field(
         default_factory=list, description="Queries performed"
     )
     total_sources_examined: int = Field(default=0, description="Total sources examined")
@@ -85,13 +85,13 @@ class DeepResearchResponse(SearchResponse):
     research_depth: int = Field(
         default=1, ge=1, le=5, description="Research depth level"
     )
-    limitations: List[str] = Field(
+    limitations: list[str] = Field(
         default_factory=list, description="Research limitations"
     )
-    related_topics: List[str] = Field(
+    related_topics: list[str] = Field(
         default_factory=list, description="Related topics discovered"
     )
-    fact_checks: List[Dict[str, Any]] = Field(
+    fact_checks: list[dict[str, Any]] = Field(
         default_factory=list, description="Fact checking results"
     )
 
@@ -149,13 +149,13 @@ class DeepResearchRequest(BaseModel):
     research_depth: int = Field(
         default=3, ge=1, le=5, description="Research depth level (1-5)"
     )
-    focus_areas: List[str] = Field(
+    focus_areas: list[str] = Field(
         default_factory=list, description="Specific areas to focus on"
     )
-    source_types: List[str] = Field(
+    source_types: list[str] = Field(
         default_factory=list, description="Preferred source types"
     )
-    time_period: Optional[str] = Field(
+    time_period: str | None = Field(
         default=None, description="Time period for sources (e.g., 'last_5_years')"
     )
     include_fact_checking: bool = Field(

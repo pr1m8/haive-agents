@@ -11,7 +11,6 @@ from haive.agents.conversation.collaberative.agent import CollaborativeConversat
 
 def test_conversation_with_db():
     """Test conversation with database persistence."""
-
     # Generate a unique thread ID
     thread_id = f"test-{uuid.uuid4()}"
 
@@ -27,11 +26,8 @@ def test_conversation_with_db():
     # Run with specific thread ID
     result = session.invoke({}, config={"configurable": {"thread_id": thread_id}})
 
-
     # Handle result which might be an object
-    if hasattr(result, "messages"):
-        pass
-    elif isinstance(result, dict):
+    if hasattr(result, "messages") or isinstance(result, dict):
         pass
 
     return thread_id
@@ -39,7 +35,6 @@ def test_conversation_with_db():
 
 def query_database(thread_id):
     """Query database for thread data."""
-
     conn_string = os.getenv("POSTGRES_CONNECTION_STRING")
     if not conn_string:
         return
@@ -57,9 +52,7 @@ def query_database(thread_id):
 
             thread = cursor.fetchone()
             if thread:
-                print(f"✅ Thread found in threads table")
-                print(f"   Created: {thread[1]}")
-                print(f"   Last access: {thread[2]}")
+                pass
 
             # Check checkpoints
             cursor.execute(
@@ -69,8 +62,7 @@ def query_database(thread_id):
                 (thread_id,),
             )
 
-            count = cursor.fetchone()[0]
-            print(f"\n✅ Checkpoints found: {count}")
+            cursor.fetchone()[0]
 
             # Get latest checkpoint
             cursor.execute(
@@ -86,30 +78,21 @@ def query_database(thread_id):
 
             checkpoint = cursor.fetchone()
             if checkpoint:
-                print(f"\nLatest checkpoint:")
-                print(f"   ID: {checkpoint[0]}")
-                print(f"   Created: {checkpoint[2]}")
 
                 # Extract state
                 data = checkpoint[1]
                 if "channel_values" in data:
                     values = data["channel_values"]
-                    print(f"\nState summary:")
-                    print(f"   Messages: {len(values.get('messages', []))}")
-                    print(f"   Topic: {values.get('topic')}")
-                    print(f"   Speakers: {values.get('speakers', [])}")
-                    print(f"   Turn count: {values.get('turn_count')}")
 
                     # Show sections
                     sections = values.get("document_sections", {})
                     if sections:
-                        print(f"\nDocument sections:")
-                        for section, content in sections.items():
+                        for _section, content in sections.items():
                             if content:
-                                print(f"   - {section}: {len(content)} chars")
+                                pass
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

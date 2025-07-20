@@ -17,16 +17,12 @@ HyDE Process:
 4. Generate final answer from retrieved real documents
 """
 
-from datetime import datetime
-from typing import List, Optional
-
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.vectorstore import VectorStoreConfig, VectorStoreProvider
 from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
-from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
@@ -48,7 +44,7 @@ class HyDEResult(BaseModel):
     confidence: float = Field(
         description="Confidence score in the hypothesis (0.0 to 1.0)", ge=0.0, le=1.0
     )
-    key_concepts: List[str] = Field(
+    key_concepts: list[str] = Field(
         description="Key concepts extracted from the query", default_factory=list
     )
 
@@ -61,9 +57,9 @@ class EnhancedAnswer(BaseModel):
     hypothetical_context: str = Field(
         description="Summary of hypothetical document used"
     )
-    retrieved_sources: List[str] = Field(description="Sources from retrieved documents")
+    retrieved_sources: list[str] = Field(description="Sources from retrieved documents")
     confidence_score: float = Field(description="Overall confidence (0-1)")
-    improvements_from_hyde: List[str] = Field(
+    improvements_from_hyde: list[str] = Field(
         description="How HyDE improved the retrieval", default_factory=list
     )
 
@@ -106,9 +102,9 @@ class TestHyDERAGSequential:
         """Create technical documents for testing HyDE effectiveness."""
         return [
             Document(
-                page_content="""Distributed systems are computing infrastructures where components 
-                located on networked computers communicate and coordinate through message passing. 
-                Key characteristics include concurrency, lack of global clock, and independent failures. 
+                page_content="""Distributed systems are computing infrastructures where components
+                located on networked computers communicate and coordinate through message passing.
+                Key characteristics include concurrency, lack of global clock, and independent failures.
                 Common patterns include master-slave, peer-to-peer, and microservices architectures.""",
                 metadata={
                     "source": "distributed_systems_overview.md",
@@ -116,30 +112,30 @@ class TestHyDERAGSequential:
                 },
             ),
             Document(
-                page_content="""Consensus algorithms like Raft and Paxos ensure distributed systems 
-                maintain consistency despite failures. Raft divides time into terms and uses leader 
-                election. Paxos uses a two-phase protocol with prepare and accept phases. Both 
+                page_content="""Consensus algorithms like Raft and Paxos ensure distributed systems
+                maintain consistency despite failures. Raft divides time into terms and uses leader
+                election. Paxos uses a two-phase protocol with prepare and accept phases. Both
                 guarantee safety but differ in understandability and implementation complexity.""",
                 metadata={"source": "consensus_algorithms.md", "topic": "algorithms"},
             ),
             Document(
-                page_content="""CAP theorem states that distributed systems can guarantee at most two 
-                of: Consistency, Availability, and Partition tolerance. Modern systems often choose 
-                AP (eventually consistent) or CP (strongly consistent) based on requirements. 
+                page_content="""CAP theorem states that distributed systems can guarantee at most two
+                of: Consistency, Availability, and Partition tolerance. Modern systems often choose
+                AP (eventually consistent) or CP (strongly consistent) based on requirements.
                 Examples: Cassandra (AP), Zookeeper (CP), DynamoDB (configurable).""",
                 metadata={"source": "cap_theorem.md", "topic": "theory"},
             ),
             Document(
-                page_content="""Microservices architecture decomposes applications into small, 
-                independent services. Benefits include independent deployment, technology diversity, 
-                and fault isolation. Challenges include distributed debugging, network latency, 
+                page_content="""Microservices architecture decomposes applications into small,
+                independent services. Benefits include independent deployment, technology diversity,
+                and fault isolation. Challenges include distributed debugging, network latency,
                 and data consistency. Common patterns: API Gateway, Service Mesh, Saga pattern.""",
                 metadata={"source": "microservices_patterns.md", "topic": "patterns"},
             ),
             Document(
-                page_content="""Event-driven architectures use events to trigger actions across 
-                distributed components. Patterns include Event Sourcing (storing state changes as 
-                events), CQRS (separating reads and writes), and Event Streaming with platforms 
+                page_content="""Event-driven architectures use events to trigger actions across
+                distributed components. Patterns include Event Sourcing (storing state changes as
+                events), CQRS (separating reads and writes), and Event Streaming with platforms
                 like Kafka. Benefits: loose coupling, scalability, audit trails.""",
                 metadata={"source": "event_driven_systems.md", "topic": "patterns"},
             ),
@@ -207,34 +203,20 @@ class TestHyDERAGSequential:
         assert answer_generator.name == "hyde_aware_answerer"
         assert answer_generator.structured_output_model == EnhancedAnswer
 
-        print("✅ All HyDE components created successfully")
-
     def test_hyde_generation(self, hyde_generator):
         """Test hypothetical document generation."""
         query = "How do consensus algorithms work in distributed systems?"
 
-        print("\n=== HyDE Generation Test ===")
-        print(f"Query: {query}")
-
         # Generate hypothetical document
         result = hyde_generator.run(query)
 
-        print(f"\nResult type: {type(result)}")
-
         # Check for HyDEResult
         if hasattr(result, "hypothetical_doc"):
-            print(f"\nHypothetical Document Preview:")
-            print(f"{result.hypothetical_doc[:200]}...")
-            print(f"\nRefined Query: {result.refined_query}")
-            print(f"Confidence: {result.confidence}")
-            print(f"Key Concepts: {result.key_concepts}")
 
             assert len(result.hypothetical_doc) > 100
             assert 0.0 <= result.confidence <= 1.0
         else:
-            print(f"Raw result: {result}")
-
-        print("✅ HyDE generation working")
+            pass
 
     def test_manual_hyde_rag_flow(
         self, hyde_generator, rag_retriever, answer_generator
@@ -242,22 +224,15 @@ class TestHyDERAGSequential:
         """Test manual HyDE → Retrieval → Answer flow."""
         query = "What are the trade-offs in the CAP theorem for distributed databases?"
 
-        print("\n=== Manual HyDE RAG Flow Test ===")
-        print(f"Query: {query}")
-
         # Step 1: Generate hypothetical document
-        print("\n--- Step 1: HyDE Generation ---")
         hyde_result = hyde_generator.run(query)
 
         if hasattr(hyde_result, "hypothetical_doc"):
             hypothetical_doc = hyde_result.hypothetical_doc
-            print(f"Generated hypothetical document ({len(hypothetical_doc)} chars)")
-            print(f"Preview: {hypothetical_doc[:150]}...")
         else:
             hypothetical_doc = str(hyde_result)
 
         # Step 2: Use hypothetical document for retrieval
-        print("\n--- Step 2: Enhanced Retrieval ---")
         # Use the hypothetical document as the query for better semantic matching
         retrieval_result = rag_retriever.run({"query": hypothetical_doc})
 
@@ -267,14 +242,11 @@ class TestHyDERAGSequential:
             and "retrieved_documents" in retrieval_result
         ):
             retrieved_docs = retrieval_result["retrieved_documents"]
-            print(f"Retrieved {len(retrieved_docs)} documents using HyDE")
 
-            for i, doc in enumerate(retrieved_docs[:3]):
-                print(f"\nDoc {i+1} - {doc.metadata.get('source')}:")
-                print(f"  {doc.page_content[:100]}...")
+            for _i, _doc in enumerate(retrieved_docs[:3]):
+                pass
 
         # Step 3: Generate answer with HyDE context
-        print("\n--- Step 3: HyDE-Aware Answer Generation ---")
 
         answer_context = f"""Original Question: {query}
 
@@ -282,34 +254,26 @@ Hypothetical Document Used for Retrieval:
 {hypothetical_doc}
 
 Retrieved Real Documents:
-{chr(10).join([f"{i+1}. From {doc.metadata.get('source')}: {doc.page_content}" 
+{chr(10).join([f"{i+1}. From {doc.metadata.get('source')}: {doc.page_content}"
                 for i, doc in enumerate(retrieved_docs)])}
 
 Generate a comprehensive answer explaining how HyDE improved the retrieval."""
 
         answer = answer_generator.run(answer_context)
 
-        print(f"\nAnswer generated: {type(answer)}")
         if hasattr(answer, "answer"):
-            print(f"Answer preview: {answer.answer[:200]}...")
-            print(f"Improvements from HyDE: {answer.improvements_from_hyde}")
+            pass
 
         # Verify the flow
         assert len(hypothetical_doc) > 100
         assert len(retrieved_docs) > 0
         assert answer is not None
 
-        print("\n✅ Manual HyDE RAG flow successful")
-
     def test_hyde_vs_standard_retrieval(self, hyde_generator, rag_retriever):
         """Compare HyDE retrieval vs standard retrieval."""
         query = "Explain event-driven architecture patterns"
 
-        print("\n=== HyDE vs Standard Retrieval Comparison ===")
-        print(f"Query: {query}")
-
         # Standard retrieval (direct query)
-        print("\n--- Standard Retrieval ---")
         standard_result = rag_retriever.run({"query": query})
         standard_docs = (
             standard_result.get("retrieved_documents", [])
@@ -317,12 +281,10 @@ Generate a comprehensive answer explaining how HyDE improved the retrieval."""
             else []
         )
 
-        print(f"Standard retrieval: {len(standard_docs)} documents")
-        for doc in standard_docs[:2]:
-            print(f"  - {doc.metadata.get('source')}")
+        for _doc in standard_docs[:2]:
+            pass
 
         # HyDE retrieval (using hypothetical document)
-        print("\n--- HyDE Retrieval ---")
         hyde_result = hyde_generator.run(query)
         hypothetical_doc = (
             hyde_result.hypothetical_doc
@@ -337,37 +299,25 @@ Generate a comprehensive answer explaining how HyDE improved the retrieval."""
             else []
         )
 
-        print(f"HyDE retrieval: {len(hyde_docs)} documents")
-        for doc in hyde_docs[:2]:
-            print(f"  - {doc.metadata.get('source')}")
+        for _doc in hyde_docs[:2]:
+            pass
 
         # Compare results
-        print("\n--- Comparison ---")
-        standard_sources = {doc.metadata.get("source") for doc in standard_docs}
-        hyde_sources = {doc.metadata.get("source") for doc in hyde_docs}
-
-        print(f"Standard sources: {standard_sources}")
-        print(f"HyDE sources: {hyde_sources}")
-        print(f"Overlap: {standard_sources & hyde_sources}")
-        print(f"Unique to HyDE: {hyde_sources - standard_sources}")
-
-        print("\n✅ HyDE vs Standard comparison complete")
+        {doc.metadata.get("source") for doc in standard_docs}
+        {doc.metadata.get("source") for doc in hyde_docs}
 
     def test_complex_technical_query(
         self, hyde_generator, rag_retriever, answer_generator
     ):
         """Test HyDE with complex technical query."""
-        complex_query = """Compare and contrast different consensus algorithms in distributed systems, 
+        complex_query = """Compare and contrast different consensus algorithms in distributed systems,
         specifically focusing on their fault tolerance, performance characteristics, and use cases."""
-
-        print("\n=== Complex Technical Query Test ===")
-        print(f"Query: {complex_query[:100]}...")
 
         # Generate hypothetical document
         hyde_result = hyde_generator.run(complex_query)
 
         if hasattr(hyde_result, "key_concepts"):
-            print(f"\nExtracted concepts: {hyde_result.key_concepts}")
+            pass
 
         # Retrieve with HyDE
         hypothetical = (
@@ -382,11 +332,10 @@ Generate a comprehensive answer explaining how HyDE improved the retrieval."""
             if isinstance(retrieval, dict)
             else []
         )
-        print(f"\nRetrieved {len(docs)} documents")
 
         # Generate comprehensive answer
         context = f"""Question: {complex_query}
-        
+
 HyDE Document: {hypothetical[:500]}...
 
 Retrieved Documents:
@@ -397,12 +346,8 @@ Retrieved Documents:
         assert len(docs) > 0
         assert answer is not None
 
-        print("✅ Complex technical query handled successfully")
-
     def test_sequential_multi_agent_hyde(self, vector_store_config):
         """Test SequentialAgent with HyDE flow."""
-        print("\n=== Sequential Multi-Agent HyDE Test ===")
-
         # Create agents
         hyde_gen = SimpleAgent(
             name="hyde_gen",
@@ -428,18 +373,11 @@ Retrieved Documents:
             name="hyde_rag_system", agents=[hyde_gen, retriever, answerer]
         )
 
-        print(
-            f"Created HyDE system with agents: {[a.name for a in hyde_system.agents]}"
-        )
-        print(f"Execution mode: {hyde_system.execution_mode}")
-
         # Verify structure
         assert len(hyde_system.agents) == 3
         assert hyde_system.agents[0].name == "hyde_gen"
         assert hyde_system.agents[1].name == "retriever"
         assert hyde_system.agents[2].name == "answerer"
-
-        print("✅ Sequential HyDE multi-agent created successfully")
 
     @pytest.mark.asyncio
     async def test_async_hyde_flow(
@@ -448,11 +386,8 @@ Retrieved Documents:
         """Test async HyDE flow."""
         query = "What are microservices design patterns?"
 
-        print("\n=== Async HyDE Flow Test ===")
-
         # Async HyDE generation
         hyde_result = await hyde_generator.arun(query)
-        print(f"Async HyDE generation complete")
 
         # Async retrieval
         hypothetical = (
@@ -467,30 +402,22 @@ Retrieved Documents:
             if isinstance(retrieval, dict)
             else []
         )
-        print(f"Async retrieval: {len(docs)} documents")
 
         # Async answer generation
         context = f"Query: {query}\nHyDE: {hypothetical[:200]}...\nDocs: {len(docs)}"
         answer = await answer_generator.arun(context)
 
         assert answer is not None
-        print("✅ Async HyDE flow working")
 
     def test_hyde_edge_cases(self, hyde_generator, rag_retriever):
         """Test HyDE with edge cases."""
-        print("\n=== HyDE Edge Cases Test ===")
-
         # Very specific technical query
         specific_query = "What is the time complexity of leader election in Raft?"
-        hyde_result = hyde_generator.run(specific_query)
-
-        print(f"Specific query HyDE: {hasattr(hyde_result, 'confidence')}")
+        hyde_generator.run(specific_query)
 
         # Very broad query
         broad_query = "Tell me about computer systems"
-        hyde_result2 = hyde_generator.run(broad_query)
-
-        print(f"Broad query HyDE: {hasattr(hyde_result2, 'confidence')}")
+        hyde_generator.run(broad_query)
 
         # Query with no good matches
         no_match_query = "What is quantum blockchain?"
@@ -498,14 +425,11 @@ Retrieved Documents:
 
         if hasattr(hyde_result3, "hypothetical_doc"):
             retrieval = rag_retriever.run({"query": hyde_result3.hypothetical_doc})
-            docs = (
+            (
                 retrieval.get("retrieved_documents", [])
                 if isinstance(retrieval, dict)
                 else []
             )
-            print(f"No-match query retrieved: {len(docs)} documents")
-
-        print("✅ HyDE edge cases handled")
 
 
 if __name__ == "__main__":

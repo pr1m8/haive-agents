@@ -74,10 +74,10 @@ async def test_after_cleanup():
 
                 if count > 0:
                 else:
-                    pass")
+                    pass
 
     except Exception as e:
-        pass")
+        pass
 
 
 if __name__ == "__main__":

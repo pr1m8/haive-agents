@@ -12,11 +12,9 @@ logging.getLogger().setLevel(logging.CRITICAL)
 project_root = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.query_state import (
     QueryComplexity,
     QueryIntent,
-    QueryProcessingConfig,
     QueryState,
     QueryType,
     RetrievalStrategy,
@@ -31,8 +29,6 @@ from haive.agents.document_processing import (
 
 def test_advanced_query_state_features():
     """Debug the advanced QueryState features test."""
-    print("🔧 Testing Advanced QueryState Features...")
-
     try:
         # Create comprehensive query state
         query_state = QueryState(
@@ -48,13 +44,9 @@ def test_advanced_query_state_features():
             time_weighted_retrieval=True,
         )
 
-        print(f"✓ Query state created: {query_state.original_query}")
-
         # Test query management
         query_state.add_refined_query("ML applications in medical diagnosis")
         query_state.add_expanded_query("Deep learning in medical imaging")
-
-        print(f"✓ Added queries. Total: {len(query_state.get_all_queries())}")
 
         # Test document management
         doc = Document(
@@ -65,35 +57,23 @@ def test_advanced_query_state_features():
         query_state.add_context_document(doc)
         query_state.add_retrieved_document(doc)
 
-        print(f"✓ Added documents. Total: {len(query_state.get_all_documents())}")
-
         # Test advanced methods
-        all_queries = query_state.get_all_queries()
-        all_docs = query_state.get_all_documents()
-
-        print(f"✓ All queries: {len(all_queries)}")
-        print(f"✓ All documents: {len(all_docs)}")
+        query_state.get_all_queries()
+        query_state.get_all_documents()
 
         # Test workflow detection
-        is_multi = query_state.is_multi_query_workflow()
-        requires_structured = query_state.requires_structured_output()
-
-        print(f"✓ Multi-query workflow: {is_multi}")
-        print(f"✓ Requires structured output: {requires_structured}")
+        query_state.is_multi_query_workflow()
+        query_state.requires_structured_output()
 
         # Test cache key generation
-        cache_key = query_state.create_cache_key()
-        print(f"✓ Cache key generated: {cache_key[:8]}...")
+        query_state.create_cache_key()
 
         # Test processing summary
-        summary = query_state.get_processing_summary()
-        print(f"✓ Processing summary: {summary['query_type']}")
+        query_state.get_processing_summary()
 
-        print("✅ Advanced QueryState Features: ALL WORKING")
         return True
 
-    except Exception as e:
-        print(f"❌ Advanced QueryState Features FAILED: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -102,8 +82,6 @@ def test_advanced_query_state_features():
 
 def test_integration_workflows():
     """Debug the integration workflows test."""
-    print("\n🔧 Testing Integration Workflows...")
-
     try:
         # Create integrated workflow
         config = DocumentProcessingConfig(
@@ -113,10 +91,7 @@ def test_integration_workflows():
             rag_strategy="adaptive",
         )
 
-        print("✓ Config created")
-
         agent = DocumentProcessingAgent(config=config, name="integration_test")
-        print("✓ Agent created")
 
         # Create query state for integration
         query_state = QueryState(
@@ -126,8 +101,6 @@ def test_integration_workflows():
             multi_query_enabled=True,
         )
 
-        print("✓ Query state created")
-
         # Add queries
         research_queries = [
             "Latest machine learning breakthroughs",
@@ -136,8 +109,6 @@ def test_integration_workflows():
 
         for query in research_queries:
             query_state.add_refined_query(query)
-
-        print(f"✓ Added {len(research_queries)} queries")
 
         # Create sample documents
         research_docs = [
@@ -155,18 +126,12 @@ def test_integration_workflows():
             query_state.add_context_document(doc)
             query_state.add_retrieved_document(doc)
 
-        print(f"✓ Added {len(research_docs)} documents")
-
         # Test integration points
-        all_queries = query_state.get_all_queries()
-        all_docs = query_state.get_all_documents()
-
-        print(f"✓ Total queries: {len(all_queries)}")
-        print(f"✓ Total documents: {len(all_docs)}")
+        query_state.get_all_queries()
+        query_state.get_all_documents()
 
         # Test agent capabilities
         capabilities = agent.get_capabilities()
-        print("✓ Agent capabilities retrieved")
 
         # Verify key capabilities
         required_sections = [
@@ -178,13 +143,9 @@ def test_integration_workflows():
             if section not in capabilities:
                 raise ValueError(f"Missing capability section: {section}")
 
-        print("✓ All required capability sections present")
-
-        print("✅ Integration Workflows: ALL WORKING")
         return True
 
-    except Exception as e:
-        print(f"❌ Integration Workflows FAILED: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -193,29 +154,19 @@ def test_integration_workflows():
 
 def main():
     """Run debug tests."""
-    print("🚀 Debugging Failed Tests")
-    print("=" * 50)
-
     results = []
 
     # Test the two failing components
     results.append(test_advanced_query_state_features())
     results.append(test_integration_workflows())
 
-    print("\n" + "=" * 50)
-    print("📊 DEBUG SUMMARY")
-    print("=" * 50)
-
     passed = sum(results)
     total = len(results)
 
-    print(f"Passed: {passed}/{total}")
-    print(f"Success Rate: {(passed/total*100):.1f}%")
-
     if passed == total:
-        print("✅ All issues resolved!")
+        pass
     else:
-        print("❌ Some issues remain")
+        pass
 
     return passed == total
 

@@ -9,7 +9,7 @@ from langgraph.types import Command
 from pydantic import BaseModel
 
 
-def get_tool_by_name(tools, name):
+def get_tool_by_name(tools: list[str], name: str):
     """Get a tool by name from the tools dictionary or list.
     Handles different tool formats (function, BaseTool, or class with name attribute).
     """
@@ -36,7 +36,7 @@ def get_tool_by_name(tools, name):
     return None
 
 
-def get_tool_description(tool):
+def get_tool_description(tool) -> Any | None:
     """Get the description of a tool.
     Handles different tool formats (function, BaseTool, or class with description).
     """
@@ -52,7 +52,7 @@ def get_tool_description(tool):
     return f"Tool: {get_tool_name(tool)}"
 
 
-def get_tool_name(tool):
+def get_tool_name(tool) -> Any | None:
     """Get the name of a tool.
     Handles different tool formats (function, BaseTool, or class with name).
     """
@@ -72,7 +72,7 @@ def get_tool_name(tool):
     return "unknown_tool"
 
 
-def execute_tool(tool, input_value):
+def execute_tool(tool, input_value) -> Any:
     """Execute a tool with the given input.
     Handles different tool formats (function, BaseTool, or class with __call__).
     """
@@ -274,7 +274,6 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
         )
 
     except Exception as e:
-        pass
 
         # Create a fallback response
         return Command(

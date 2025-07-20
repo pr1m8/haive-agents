@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-"""
-Basic functionality test for DocumentProcessingAgent
+"""Basic functionality test for DocumentProcessingAgent.
 
 This test validates core functionality without external dependencies
 like real LLM calls or external services.
 """
 
-import asyncio
 import sys
 from pathlib import Path
 
@@ -33,8 +31,6 @@ from haive.agents.document_processing import (
 
 def test_basic_instantiation():
     """Test basic agent instantiation and configuration."""
-    print("🔧 Testing basic instantiation...")
-
     # Test with default config
     agent1 = DocumentProcessingAgent()
     assert agent1.name == "document_processor"
@@ -55,13 +51,9 @@ def test_basic_instantiation():
     assert not agent2.config.search_enabled
     assert agent2.config.annotation_enabled
 
-    print("✅ Basic instantiation tests passed!")
-
 
 def test_query_state_functionality():
     """Test QueryState creation and methods."""
-    print("🔧 Testing QueryState functionality...")
-
     # Basic query state
     query_state = QueryState(
         original_query="What is artificial intelligence?",
@@ -110,13 +102,9 @@ def test_query_state_functionality():
     assert summary["total_queries"] == 4
     assert summary["total_documents"] == 3
 
-    print("✅ QueryState functionality tests passed!")
-
 
 def test_agent_capabilities():
     """Test agent capabilities reporting."""
-    print("🔧 Testing agent capabilities...")
-
     config = DocumentProcessingConfig(
         search_enabled=True,
         annotation_enabled=True,
@@ -136,20 +124,16 @@ def test_agent_capabilities():
     assert "output_features" in capabilities
 
     # Check specific capabilities
-    assert capabilities["document_loading"]["bulk_processing"] == True
-    assert capabilities["search_capabilities"]["web_search"] == True
-    assert capabilities["processing_pipeline"]["annotation"] == True
-    assert capabilities["processing_pipeline"]["summarization"] == True
+    assert capabilities["document_loading"]["bulk_processing"]
+    assert capabilities["search_capabilities"]["web_search"]
+    assert capabilities["processing_pipeline"]["annotation"]
+    assert capabilities["processing_pipeline"]["summarization"]
     assert capabilities["rag_capabilities"]["strategy"] == "adaptive"
-    assert capabilities["output_features"]["structured_output"] == True
-
-    print("✅ Agent capabilities tests passed!")
+    assert capabilities["output_features"]["structured_output"]
 
 
 def test_state_management():
     """Test document processing state management."""
-    print("🔧 Testing state management...")
-
     from langchain_core.messages import HumanMessage
 
     from haive.agents.document_processing.agent import DocumentProcessingState
@@ -180,13 +164,9 @@ def test_state_management():
     assert len(state.operation_history) == 1
     assert state.operation_history[0]["operation"] == "test_op"
 
-    print("✅ State management tests passed!")
-
 
 def test_configuration_validation():
     """Test configuration validation and patterns."""
-    print("🔧 Testing configuration validation...")
-
     # Test valid configurations
     valid_configs = [
         DocumentProcessingConfig(rag_strategy="basic"),
@@ -216,13 +196,9 @@ def test_configuration_validation():
     assert config.chunk_size == 500
     assert config.chunk_overlap == 50
 
-    print("✅ Configuration validation tests passed!")
-
 
 def test_source_processing_helpers():
     """Test source processing helper methods."""
-    print("🔧 Testing source processing helpers...")
-
     agent = DocumentProcessingAgent()
 
     # Test source extraction (basic functionality)
@@ -247,15 +223,11 @@ def test_source_processing_helpers():
     assert "config_used" in metadata
     assert "document_state" in metadata
     assert metadata["config_used"]["rag_strategy"] == "adaptive"
-    assert metadata["config_used"]["search_enabled"] == True
-
-    print("✅ Source processing helpers tests passed!")
+    assert metadata["config_used"]["search_enabled"]
 
 
 def test_document_processing_result():
     """Test DocumentProcessingResult creation and validation."""
-    print("🔧 Testing DocumentProcessingResult...")
-
     # Create a sample result
     result = DocumentProcessingResult(
         response="Test response to the query",
@@ -277,13 +249,9 @@ def test_document_processing_result():
     assert result.timing["total_time"] == 2.0
     assert result.statistics["documents_processed"] == 1
 
-    print("✅ DocumentProcessingResult tests passed!")
-
 
 def test_comprehensive_workflow():
     """Test comprehensive workflow setup without external calls."""
-    print("🔧 Testing comprehensive workflow setup...")
-
     # Create comprehensive configuration
     config = DocumentProcessingConfig(
         search_enabled=True,
@@ -307,10 +275,10 @@ def test_comprehensive_workflow():
     assert agent.processing_agent is not None
 
     # Test configuration is applied
-    assert agent.config.search_enabled == True
-    assert agent.config.annotation_enabled == True
-    assert agent.config.summarization_enabled == True
-    assert agent.config.kg_extraction_enabled == True
+    assert agent.config.search_enabled
+    assert agent.config.annotation_enabled
+    assert agent.config.summarization_enabled
+    assert agent.config.kg_extraction_enabled
     assert agent.config.rag_strategy == "adaptive"
 
     # Test query state integration
@@ -326,22 +294,17 @@ def test_comprehensive_workflow():
         structured_query_enabled=True,
     )
 
-    assert query_state.is_multi_query_workflow() == True
-    assert query_state.requires_structured_output() == True
+    assert query_state.is_multi_query_workflow()
+    assert query_state.requires_structured_output()
 
     # Test cache key generation
     cache_key = query_state.create_cache_key()
     assert cache_key is not None
     assert len(cache_key) == 32  # MD5 hash length
 
-    print("✅ Comprehensive workflow setup tests passed!")
-
 
 def main():
     """Run all tests."""
-    print("🚀 Running DocumentProcessingAgent Basic Tests")
-    print("=" * 60)
-
     try:
         test_basic_instantiation()
         test_query_state_functionality()
@@ -352,22 +315,9 @@ def main():
         test_document_processing_result()
         test_comprehensive_workflow()
 
-        print("\n" + "=" * 60)
-        print("✅ ALL TESTS PASSED! DocumentProcessingAgent is working correctly.")
-        print("📊 Summary:")
-        print("  - Basic instantiation: ✅")
-        print("  - QueryState functionality: ✅")
-        print("  - Agent capabilities: ✅")
-        print("  - State management: ✅")
-        print("  - Configuration validation: ✅")
-        print("  - Source processing helpers: ✅")
-        print("  - DocumentProcessingResult: ✅")
-        print("  - Comprehensive workflow: ✅")
-
         return True
 
-    except Exception as e:
-        print(f"\n❌ Test failed with error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

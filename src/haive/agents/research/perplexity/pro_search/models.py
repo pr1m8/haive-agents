@@ -1,5 +1,6 @@
 # perplexity_search_models.py
 """Pydantic models for Perplexity-style quick search workflow.
+from typing import Any
 These models support a multi-stage search process with reasoning, query generation,
 parallel search execution, and synthesis.
 """
@@ -92,7 +93,7 @@ class QueryIntent(BaseModel):
 
     @field_validator("required_sources")
     @classmethod
-    def adjust_sources_by_complexity(cls, v, info):
+    def adjust_sources_by_complexity(cls, v, info) -> Any:
         """Adjust required sources based on complexity."""
         if "complexity_level" in info.data:
             complexity = info.data["complexity_level"]
@@ -133,7 +134,8 @@ class QueryReasoning(BaseModel):
     intent_analysis: QueryIntent = Field(description="Detailed intent analysis")
 
     @model_validator(mode="after")
-    def validate_reasoning_completeness(self) -> "QueryReasoning":
+    @classmethod
+    def validate_reasoning_completeness(cls) -> "QueryReasoning":
         """Ensure reasoning provides actionable insights."""
         if len(self.understanding) < 20:
             raise ValueError("Understanding must be substantive (>20 chars)")
@@ -177,7 +179,7 @@ class SearchQueryConfig(BaseModel):
 
     @field_validator("query_text")
     @classmethod
-    def clean_query_text(cls, v):
+    def clean_query_text(cls, v) -> Any:
         """Clean and validate query text."""
         # Remove excessive whitespace
         v = " ".join(v.split())
@@ -200,7 +202,8 @@ class QueryBatch(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_query_diversity(self) -> "QueryBatch":
+    @classmethod
+    def validate_query_diversity(cls) -> "QueryBatch":
         """Ensure queries are diverse and non-redundant."""
         query_texts = [q.query_text.lower() for q in self.queries]
 
@@ -325,7 +328,8 @@ class ContentAnalysis(BaseModel):
     )
 
     @model_validator(mode="after")
-    def adjust_confidence_by_contradictions(self) -> "ContentAnalysis":
+    @classmethod
+    def adjust_confidence_by_contradictions(cls) -> "ContentAnalysis":
         """Adjust confidence based on contradictions."""
         if len(self.contradictions) > 2 and self.confidence_level == "high":
             self.confidence_level = "medium"
@@ -377,7 +381,8 @@ class SearchSynthesis(BaseModel):
         )
 
     @model_validator(mode="after")
-    def ensure_citations(self) -> "SearchSynthesis":
+    @classmethod
+    def ensure_citations(cls) -> "SearchSynthesis":
         """Ensure citations are provided for summary."""
         if not self.citations and self.total_sources_used > 0:
             # Auto-generate basic citations

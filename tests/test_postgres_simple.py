@@ -14,19 +14,15 @@ def test_postgres_setup_works():
     agent = SimpleAgent(name="postgres_test", engine=AugLLMConfig(), persistence=True)
 
     # Check persistence was set up
-    print(f"\nPersistence type: {type(agent.persistence).__name__}")
-    print(f"Checkpointer type: {type(agent.checkpointer).__name__}")
 
     # Should have PostgreSQL if POSTGRES_CONNECTION_STRING is set
     if os.getenv("POSTGRES_CONNECTION_STRING"):
         assert "Postgres" in type(agent.checkpointer).__name__
-        print("✓ PostgreSQL persistence is set up correctly")
     else:
         assert (
             "Memory" in type(agent.checkpointer).__name__
             or "InMemory" in type(agent.checkpointer).__name__
         )
-        print("✓ Memory persistence is set up (PostgreSQL not available)")
 
 
 @pytest.mark.asyncio
@@ -40,7 +36,6 @@ async def test_basic_postgres_save_and_load():
 
     # Get the checkpointer directly
     checkpointer = agent.checkpointer
-    print(f"\nCheckpointer: {type(checkpointer).__name__}")
 
     # Create a simple checkpoint
     import uuid
@@ -59,21 +54,17 @@ async def test_basic_postgres_save_and_load():
     # Save checkpoint
     config = {"configurable": {"thread_id": thread_id}}
     checkpointer.put(config, checkpoint, {}, {})
-    print("✓ Checkpoint saved successfully")
 
     # Load checkpoint
     loaded = checkpointer.get_tuple(config)
     assert loaded is not None
     assert loaded.checkpoint.id == checkpoint.id
-    print("✓ Checkpoint loaded successfully")
 
     # Verify it's using PostgreSQL
     assert "Postgres" in type(checkpointer).__name__
-    print("✓ Confirmed using PostgreSQL checkpointer")
 
 
 if __name__ == "__main__":
-    print("Testing PostgreSQL persistence...\n")
 
     test_postgres_setup_works()
 

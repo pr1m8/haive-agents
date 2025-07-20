@@ -35,7 +35,7 @@ class GraphRAGAgent(MultiAgent):
     for contextually rich retrieval and reasoning.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Entity extraction agent
         entity_extractor = SimpleAgent(
             name="entity_extractor",
@@ -112,7 +112,7 @@ class GraphRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -122,7 +122,7 @@ class AgenticGraphRAGAgent(MultiAgent):
     and dynamic planning for complex multi-step reasoning.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Query complexity analyzer
         complexity_analyzer = SimpleAgent(
             name="complexity_analyzer",
@@ -188,7 +188,7 @@ class AgenticGraphRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -198,7 +198,7 @@ class AgenticRAGRouterAgent(MultiAgent):
     based on query type, complexity, and domain.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Query classifier
         query_classifier = SimpleAgent(
             name="query_classifier",
@@ -263,7 +263,7 @@ class AgenticRAGRouterAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -273,7 +273,7 @@ class QueryPlanningAgenticRAGAgent(MultiAgent):
     for complex queries requiring multiple reasoning steps.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Query planner
         query_planner = SimpleAgent(
             name="query_planner",
@@ -323,7 +323,7 @@ class QueryPlanningAgenticRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -333,7 +333,7 @@ class SelfReflectiveAgenticRAGAgent(MultiAgent):
     its own reasoning and retrieval processes.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Self-monitoring agent
         self_monitor = SimpleAgent(
             name="self_monitor",
@@ -401,7 +401,7 @@ class SelfReflectiveAgenticRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -411,7 +411,7 @@ class SpeculativeRAGAgent(MultiAgent):
     in parallel and validates them against retrieved evidence.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Hypothesis generator
         hypothesis_generator = SimpleAgent(
             name="hypothesis_generator",
@@ -476,7 +476,7 @@ class SpeculativeRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -486,7 +486,7 @@ class SelfRouteRAGAgent(MultiAgent):
     strategies based on intermediate results and confidence levels.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Initial assessment agent
         initial_assessor = SimpleAgent(
             name="initial_assessor",
@@ -545,6 +545,6 @@ class SelfRouteRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure

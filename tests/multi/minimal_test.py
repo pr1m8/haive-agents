@@ -21,7 +21,6 @@ class Plan(BaseModel):
     steps: list[str] = Field(description="list of steps")
 
 
-
 # Test ReactAgent alone
 try:
     add_aug = AugLLMConfig(tools=[add])
@@ -31,11 +30,11 @@ try:
         {"messages": [HumanMessage(content="Calculate 5 + 3")]}
     )
     if hasattr(react_result, "messages"):
-        for i, msg in enumerate(react_result.messages):
+        for _i, msg in enumerate(react_result.messages):
             if isinstance(msg, ToolMessage):
                 pass
-except Exception as e:
-    pass")
+except Exception:
+    pass
 
 # Test SimpleAgent alone
 try:
@@ -47,8 +46,8 @@ try:
     simple_result = simple_agent.run(
         {"messages": [HumanMessage(content="Create a plan")]}
     )
-except Exception as e:
-    pass")
+except Exception:
+    pass
 
 
 # Test multi-agent
@@ -67,7 +66,7 @@ try:
     result = structured_react.run(
         {"messages": [HumanMessage(content="Calculate 5 + 3, then create a plan")]}
     )
-except Exception as e:
+except Exception:
     import traceback
 
     traceback.print_exc()

@@ -1,5 +1,7 @@
 """Test why type objects aren't serializable."""
 
+import contextlib
+
 import ormsgpack
 from pydantic import BaseModel
 
@@ -17,50 +19,41 @@ def test_type_serialization():
         ("dict type", dict),
     ]
 
-    for name, obj in test_cases:
-        try:
+    for _name, obj in test_cases:
+        with contextlib.suppress(Exception):
             ormsgpack.packb(obj)
-        except Exception as e:
-            pass")
 
-    try:
+    with contextlib.suppress(Exception):
         ormsgpack.packb(MyModel)
-    except Exception as e:
-        pass
 
     instance = MyModel(name="test")
-    try:
+    with contextlib.suppress(Exception):
         ormsgpack.packb(instance)
-    except Exception as e:
-        pass")
 
     try:
         serialized = ormsgpack.packb(instance, option=ormsgpack.OPT_SERIALIZE_PYDANTIC)
         # Try to deserialize
-        deserialized = ormsgpack.unpackb(serialized)
-    except Exception as e:
+        ormsgpack.unpackb(serialized)
+    except Exception:
         pass
 
     # String representation
-    try:
+    with contextlib.suppress(Exception):
         ormsgpack.packb("MyModel")
-    except Exception as e:
-        pass")
 
     # Module + name
     try:
         class_ref = {"module": MyModel.__module__, "name": MyModel.__name__}
         ormsgpack.packb(class_ref)
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Schema representation
     try:
         schema = MyModel.model_json_schema()
         ormsgpack.packb(schema)
-    except Exception as e:
-        pass")
-
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

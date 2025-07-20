@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class StateMixin:
     """Mixin for agent state management functionality."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize the mixin with state tracking attributes."""
         super().__init__(*args, **kwargs)
         # Use regular attributes instead of trying to add Pydantic fields

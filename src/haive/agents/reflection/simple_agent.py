@@ -1,9 +1,11 @@
 """Simple Reflection Agent using clean MultiAgent pattern."""
 
+from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.multi.clean import MultiAgent
-from haive.agents.reflection.models import Critique, Improvement, ReflectionAction
+from haive.agents.reflection.models import Critique, Improvement
 from haive.agents.simple.agent import SimpleAgent
 
 
@@ -19,20 +21,19 @@ class ReflectionAgent(MultiAgent):
         **kwargs,
     ) -> "ReflectionAgent":
         """Create a simple reflection agent."""
-
         # Create critic
         critic = SimpleAgent(
             name="critic",
             engine=AugLLMConfig(
                 prompt_template="""Analyze the content and provide structured feedback.
-                
+
                 Content: {content}
-                
+
                 Evaluate:
                 1. Clarity and coherence
                 2. Completeness
                 3. Quality
-                
+
                 Give a score from 0.0 to 1.0 and identify strengths/weaknesses.
                 """,
                 structured_output_model=Critique,
@@ -46,11 +47,11 @@ class ReflectionAgent(MultiAgent):
             name="improver",
             engine=AugLLMConfig(
                 prompt_template="""Improve the content based on the critique.
-                
+
                 Original: {content}
                 Strengths: {strengths}
                 Weaknesses: {weaknesses}
-                
+
                 Create an improved version addressing the weaknesses.
                 """,
                 structured_output_model=Improvement,
@@ -64,9 +65,10 @@ class ReflectionAgent(MultiAgent):
         )
 
     @classmethod
-    def enhance_agent(cls, base_agent, name: str = None, **kwargs) -> "ReflectionAgent":
+    def enhance_agent(
+        cls, base_agent: Any, name: str | None = None, **kwargs
+    ) -> "ReflectionAgent":
         """Enhance any agent with reflection capability."""
-
         # Create reflection agent
         reflection_agent = cls.create(name=f"{base_agent.name}_reflection", **kwargs)
 

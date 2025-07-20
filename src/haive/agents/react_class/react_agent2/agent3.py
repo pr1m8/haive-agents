@@ -1,6 +1,8 @@
 import logging
 import uuid
 from collections.abc import Sequence
+
+# Set up logging
 from typing import Annotated, Literal
 
 from haive.core.config.runnable import RunnableConfigManager
@@ -20,7 +22,6 @@ from pydantic import BaseModel, Field
 
 from haive.agents.react_class.react_agent2.state2 import ReactAgentState
 
-# Set up logging
 logger = logging.getLogger(__name__)
 
 

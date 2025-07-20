@@ -1,10 +1,10 @@
 """Debug import issue - maybe it's comparing different AgentInfo classes."""
 
+import contextlib
 
 
 def test_import_paths():
     """Check if we have import path issues."""
-
     # Import AgentInfo two ways
     from agent_info import AgentInfo as AgentInfo1
 
@@ -19,20 +19,15 @@ def test_import_paths():
     info1 = AgentInfo1(agent=agent, name="test", description="Test")
     info2 = AgentInfo2(agent=agent, name="test", description="Test")
 
-
     # Now test with SupervisorState using different imports
 
     from supervisor_state import SupervisorState
 
-    try:
+    with contextlib.suppress(Exception):
         SupervisorState(agents={"test": info1})
-    except Exception as e:
-        pass")
 
-    try:
+    with contextlib.suppress(Exception):
         SupervisorState(agents={"test": info2})
-    except Exception as e:
-        pass")
 
     # Check what SupervisorState expects
     agents_field = SupervisorState.model_fields.get("agents")
@@ -43,7 +38,7 @@ def test_import_paths():
         if hasattr(typing, "get_args"):
             args = typing.get_args(agents_field.annotation)
             if len(args) > 1:
-                expected_type = args[1]
+                args[1]
 
 
 if __name__ == "__main__":

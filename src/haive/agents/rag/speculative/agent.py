@@ -1,5 +1,6 @@
 """Speculative RAG Agents.
 
+from typing import Any
 Implementation of speculative RAG with parallel hypothesis generation and verification.
 Uses structured output models for hypothesis planning and iterative refinement.
 """

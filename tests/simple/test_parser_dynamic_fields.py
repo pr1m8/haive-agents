@@ -87,7 +87,7 @@ def test_parser_node_dynamic_field_addition():
                 structured_result = result_command.update["testresult"]
             else:
         else:
-            pass")
+            pass
 
     except Exception as e:
         pass
@@ -114,14 +114,14 @@ def test_parser_node_dynamic_field_addition():
         if hasattr(result_command, "update") and result_command.update:
 
             if "testresult" in result_command.update:
-                pass")
+                pass
             else:
                 passld")
         else:
-            pass")
+            pass
 
     except Exception as e:
-        pass")
+        pass
 
 
 
@@ -146,7 +146,7 @@ def test_state_update_mechanics():
         new_state = BasicState(**{**state.model_dump(), **update_dict})
 
     except Exception as e:
-        pass")
+        pass
 
     # Test 2: Can we add completely new fields?
     try:

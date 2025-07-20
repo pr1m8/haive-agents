@@ -45,7 +45,7 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         self._available_loaders = self._discover_document_loaders()
 
     @property
-    def react_agent(self):
+    def react_agent(self) -> Any:
         """Get the ReAct agent for research tasks."""
         if not hasattr(self, "_react_agent"):
             if not self.config.react_agent_name:
@@ -54,7 +54,7 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         return self._react_agent
 
     @property
-    def rag_agent(self):
+    def rag_agent(self) -> Any:
         """Get the RAG agent for retrieval tasks."""
         if not hasattr(self, "_rag_agent"):
             if not self.config.rag_agent_name:
@@ -64,7 +64,7 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         return self._rag_agent
 
     @property
-    def vectorstore(self):
+    def vectorstore(self) -> Any:
         """Get or create the vector store."""
         if not hasattr(self, "_vectorstore"):
             if not self.vectorstore_config:
@@ -74,7 +74,7 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         return self._vectorstore
 
     @property
-    def retriever(self):
+    def retriever(self) -> Any:
         """Get or create the retriever from the vector store."""
         if not hasattr(self, "_retriever"):
             if not self.vectorstore:

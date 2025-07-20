@@ -129,7 +129,7 @@ def test_graph_structure():
         except Exception as e:
             pass
     else:
-        pass")
+        pass
 
     return supervisor
 
@@ -158,7 +158,7 @@ def test_state_integration():
     try:
         state.next_agent = "nonexistent"
     except Exception as e:
-        pass")
+        pass
 
     return state
 

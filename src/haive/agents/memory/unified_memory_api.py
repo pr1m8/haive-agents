@@ -8,7 +8,7 @@ knowledge graph generation, and multi-agent coordination.
 import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.persistence.store.types import StoreType
@@ -21,7 +21,7 @@ from haive.agents.memory.agentic_rag_coordinator import (
 )
 from haive.agents.memory.core.classifier import MemoryClassifier, MemoryClassifierConfig
 from haive.agents.memory.core.stores import MemoryStoreConfig, MemoryStoreManager
-from haive.agents.memory.core.types import MemoryEntry, MemoryType
+from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.enhanced_retriever import EnhancedRetrieverConfig
 from haive.agents.memory.graph_rag_retriever import (
     GraphRAGRetriever,
@@ -112,7 +112,7 @@ class MemorySystemConfig(BaseModel):
     collection_name: str = Field(
         default="haive_memories", description="Collection name"
     )
-    default_namespace: Tuple[str, ...] = Field(
+    default_namespace: tuple[str, ...] = Field(
         default=("user", "general"), description="Default namespace"
     )
 
@@ -220,15 +220,13 @@ class MemorySystemResult(BaseModel):
     success: bool = Field(..., description="Operation success status")
     operation: str = Field(..., description="Operation type")
     result: Any = Field(default=None, description="Operation result")
-    error: Optional[str] = Field(default=None, description="Error message if failed")
+    error: str | None = Field(default=None, description="Error message if failed")
 
     # Performance metrics
     execution_time_ms: float = Field(
         default=0.0, description="Execution time in milliseconds"
     )
-    agent_used: Optional[str] = Field(
-        default=None, description="Agent used for operation"
-    )
+    agent_used: str | None = Field(default=None, description="Agent used for operation")
 
     # Quality metrics
     confidence_score: float = Field(default=0.0, description="Confidence in result")
@@ -238,7 +236,7 @@ class MemorySystemResult(BaseModel):
     timestamp: datetime = Field(
         default_factory=datetime.utcnow, description="Result timestamp"
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata"
     )
 
@@ -511,7 +509,7 @@ class UnifiedMemorySystem:
 
         # Enhanced retriever
         if self.config.enable_enhanced_retrieval:
-            enhanced_config = EnhancedRetrieverConfig(
+            EnhancedRetrieverConfig(
                 memory_store_manager=self.memory_store,
                 memory_classifier=self.classifier,
             )
@@ -560,10 +558,10 @@ class UnifiedMemorySystem:
     async def store_memory(
         self,
         content: str,
-        namespace: Optional[Tuple[str, ...]] = None,
-        memory_type: Optional[MemoryType] = None,
-        importance: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        namespace: tuple[str, ...] | None = None,
+        memory_type: MemoryType | None = None,
+        importance: float | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> MemorySystemResult:
         """Store a memory in the system.
 
@@ -610,7 +608,7 @@ class UnifiedMemorySystem:
             )
 
         except Exception as e:
-            logger.error(f"Error storing memory: {e}")
+            logger.exception(f"Error storing memory: {e}")
             self._update_operation_stats(start_time, success=False)
 
             return MemorySystemResult(
@@ -624,8 +622,8 @@ class UnifiedMemorySystem:
         self,
         query: str,
         limit: int = 10,
-        namespace: Optional[Tuple[str, ...]] = None,
-        memory_types: Optional[List[MemoryType]] = None,
+        namespace: tuple[str, ...] | None = None,
+        memory_types: list[MemoryType] | None = None,
         use_graph_rag: bool = True,
         use_multi_agent: bool = True,
     ) -> MemorySystemResult:
@@ -702,7 +700,7 @@ class UnifiedMemorySystem:
             )
 
         except Exception as e:
-            logger.error(f"Error retrieving memories: {e}")
+            logger.exception(f"Error retrieving memories: {e}")
             self._update_operation_stats(start_time, success=False)
 
             return MemorySystemResult(
@@ -713,7 +711,7 @@ class UnifiedMemorySystem:
             )
 
     async def classify_memory(
-        self, content: str, user_context: Optional[Dict[str, Any]] = None
+        self, content: str, user_context: dict[str, Any] | None = None
     ) -> MemorySystemResult:
         """Classify memory content.
 
@@ -752,7 +750,7 @@ class UnifiedMemorySystem:
             )
 
         except Exception as e:
-            logger.error(f"Error classifying memory: {e}")
+            logger.exception(f"Error classifying memory: {e}")
             self._update_operation_stats(start_time, success=False)
 
             return MemorySystemResult(
@@ -764,7 +762,7 @@ class UnifiedMemorySystem:
 
     async def generate_knowledge_graph(
         self,
-        namespace: Optional[Tuple[str, ...]] = None,
+        namespace: tuple[str, ...] | None = None,
         force_regeneration: bool = False,
     ) -> MemorySystemResult:
         """Generate knowledge graph from memories.
@@ -807,7 +805,7 @@ class UnifiedMemorySystem:
             )
 
         except Exception as e:
-            logger.error(f"Error generating knowledge graph: {e}")
+            logger.exception(f"Error generating knowledge graph: {e}")
             self._update_operation_stats(start_time, success=False)
 
             return MemorySystemResult(
@@ -818,7 +816,7 @@ class UnifiedMemorySystem:
             )
 
     async def consolidate_memories(
-        self, namespace: Optional[Tuple[str, ...]] = None, dry_run: bool = False
+        self, namespace: tuple[str, ...] | None = None, dry_run: bool = False
     ) -> MemorySystemResult:
         """Consolidate memories by removing duplicates and expired entries.
 
@@ -854,7 +852,7 @@ class UnifiedMemorySystem:
             )
 
         except Exception as e:
-            logger.error(f"Error consolidating memories: {e}")
+            logger.exception(f"Error consolidating memories: {e}")
             self._update_operation_stats(start_time, success=False)
 
             return MemorySystemResult(
@@ -865,7 +863,7 @@ class UnifiedMemorySystem:
             )
 
     async def get_memory_statistics(
-        self, namespace: Optional[Tuple[str, ...]] = None
+        self, namespace: tuple[str, ...] | None = None
     ) -> MemorySystemResult:
         """Get comprehensive memory statistics.
 
@@ -908,7 +906,7 @@ class UnifiedMemorySystem:
             )
 
         except Exception as e:
-            logger.error(f"Error getting memory statistics: {e}")
+            logger.exception(f"Error getting memory statistics: {e}")
             self._update_operation_stats(start_time, success=False)
 
             return MemorySystemResult(
@@ -919,7 +917,7 @@ class UnifiedMemorySystem:
             )
 
     async def search_entities(
-        self, entity_name: str, namespace: Optional[Tuple[str, ...]] = None
+        self, entity_name: str, namespace: tuple[str, ...] | None = None
     ) -> MemorySystemResult:
         """Search for entities in the knowledge graph.
 
@@ -969,7 +967,7 @@ class UnifiedMemorySystem:
             )
 
         except Exception as e:
-            logger.error(f"Error searching entities: {e}")
+            logger.exception(f"Error searching entities: {e}")
             self._update_operation_stats(start_time, success=False)
 
             return MemorySystemResult(
@@ -1066,7 +1064,7 @@ class UnifiedMemorySystem:
             )
 
         except Exception as e:
-            logger.error(f"Error running system diagnostic: {e}")
+            logger.exception(f"Error running system diagnostic: {e}")
             self._update_operation_stats(start_time, success=False)
 
             return MemorySystemResult(
@@ -1094,7 +1092,7 @@ class UnifiedMemorySystem:
             current_avg * (total_ops - 1) + operation_time
         ) / total_ops
 
-    def get_system_info(self) -> Dict[str, Any]:
+    def get_system_info(self) -> dict[str, Any]:
         """Get comprehensive system information."""
         return {
             "system_version": "1.0.0",
@@ -1222,19 +1220,14 @@ async def quick_memory_demo():
             # Query your data
             result = await memory_system.retrieve_memories("your query")
     """
-    print("🚀 Creating unified memory system...")
-
     # Create memory system
     memory_system = await create_memory_system(
         store_type="memory", collection_name="demo_memories"
     )
 
-    print("✅ Memory system created successfully!")
-    system_info = memory_system.get_system_info()
-    print(f"Enabled components: {', '.join(system_info['components']['retrievers'])}")
+    memory_system.get_system_info()
 
     # Store some memories
-    print("\n📝 Storing memories with relationships...")
 
     memories_to_store = [
         "Alice works at TechCorp as a software engineer",
@@ -1252,16 +1245,13 @@ async def quick_memory_demo():
         result = await memory_system.store_memory(memory)
         if result.success:
             storage_times.append(result.execution_time_ms)
-            memory_id = result.result["memory_id"]
-            print(f"✅ Stored ({result.execution_time_ms:.1f}ms): {memory}")
+            result.result["memory_id"]
         else:
-            print(f"❌ Failed to store: {memory} - {result.error}")
+            pass
 
-    avg_storage_time = sum(storage_times) / len(storage_times) if storage_times else 0
-    print(f"\n📊 Average storage time: {avg_storage_time:.1f}ms")
+    sum(storage_times) / len(storage_times) if storage_times else 0
 
     # Retrieve memories with different strategies
-    print("\n🔍 Testing different retrieval strategies...")
 
     queries = [
         "Who works at TechCorp?",
@@ -1271,7 +1261,6 @@ async def quick_memory_demo():
     ]
 
     for query in queries:
-        print(f"\nQuery: {query}")
 
         # Test different retrieval modes
         modes = [
@@ -1280,7 +1269,7 @@ async def quick_memory_demo():
             ("Basic", False, False),
         ]
 
-        for mode_name, use_multi_agent, use_graph_rag in modes:
+        for _mode_name, use_multi_agent, use_graph_rag in modes:
             result = await memory_system.retrieve_memories(
                 query,
                 limit=2,
@@ -1290,37 +1279,26 @@ async def quick_memory_demo():
 
             if result.success:
                 memories = result.result["memories"]
-                print(
-                    f"  {mode_name} ({result.execution_time_ms:.1f}ms, {result.agent_used}): {len(memories)} results"
-                )
                 for memory in memories[:1]:  # Show first result
-                    content = memory.get("content", "")[:60]
-                    print(f"    → {content}...")
+                    memory.get("content", "")[:60]
             else:
-                print(f"  {mode_name}: ❌ {result.error}")
+                pass
 
     # Generate and analyze knowledge graph
-    print("\n🕸️ Generating knowledge graph...")
 
     kg_result = await memory_system.generate_knowledge_graph()
     if kg_result.success:
         kg = kg_result.result["knowledge_graph"]
-        print(
-            f"✅ Knowledge graph: {len(kg.nodes)} nodes, {len(kg.relationships)} relationships"
-        )
-        print(f"   Generation time: {kg_result.execution_time_ms:.1f}ms")
 
         # Show some entities
         if kg.nodes:
             sample_entities = list(kg.nodes.values())[:3]
-            print("   Sample entities:")
-            for entity in sample_entities:
-                print(f"     - {entity.name} ({entity.type})")
+            for _entity in sample_entities:
+                pass
     else:
-        print(f"❌ Failed to generate knowledge graph: {kg_result.error}")
+        pass
 
     # Entity search demonstration
-    print("\n🔎 Searching for entities...")
 
     entities_to_search = ["Alice", "TechCorp", "ML project"]
     for entity_name in entities_to_search:
@@ -1328,57 +1306,33 @@ async def quick_memory_demo():
         if entity_result.success:
             context = entity_result.result["entity_context"]
             if "error" not in context:
-                entity = context["entity"]
-                connections = context["total_connections"]
+                context["entity"]
+                context["total_connections"]
                 memories = context["memory_count"]
-                print(
-                    f"✅ {entity_name}: {connections} connections, {memories} memories"
-                )
             else:
-                print(f"❓ {entity_name}: Not found in knowledge graph")
+                pass
         else:
-            print(f"❌ {entity_name}: Search failed")
+            pass
 
     # Get comprehensive statistics
-    print("\n📈 System statistics...")
 
     stats_result = await memory_system.get_memory_statistics()
     if stats_result.success:
         stats = stats_result.result
-        store_stats = stats["store_statistics"]
-        system_stats = stats["system_statistics"]
-
-        print(f"✅ Total memories stored: {store_stats.get('total_count', 0)}")
-        print(f"   Total operations: {system_stats['total_operations']}")
-        print(
-            f"   Success rate: {system_stats['successful_operations']}/{system_stats['total_operations']}"
-        )
-        print(
-            f"   Average operation time: {system_stats['avg_operation_time_ms']:.1f}ms"
-        )
+        stats["store_statistics"]
+        stats["system_statistics"]
 
     # Run comprehensive diagnostic
-    print("\n🔧 Running system diagnostic...")
 
     diag_result = await memory_system.run_system_diagnostic()
     if diag_result.success:
-        health = diag_result.result["system_health"]
+        diag_result.result["system_health"]
         components = diag_result.result["component_diagnostics"]
 
-        print(f"✅ Overall system health: {health}")
-        print("   Component status:")
-        for component, status in components.items():
-            status_icon = "✅" if status["status"] == "healthy" else "❌"
-            print(f"     {status_icon} {component}: {status['status']}")
+        for _component, status in components.items():
+            "✅" if status["status"] == "healthy" else "❌"
     else:
-        print(f"❌ Diagnostic failed: {diag_result.error}")
-
-    print("\n🎉 Demo completed successfully!")
-    print("\n💡 Next steps:")
-    print("   - Try storing your own data")
-    print("   - Experiment with different query types")
-    print("   - Explore the knowledge graph relationships")
-    print("   - Monitor performance with get_memory_statistics()")
+        pass
 
 
 if __name__ == "__main__":

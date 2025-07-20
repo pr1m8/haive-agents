@@ -4,7 +4,6 @@ This test suite validates the KG Generator Agent's ability to extract
 entities and relationships from memories and build comprehensive knowledge graphs.
 """
 
-import asyncio
 from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
 
@@ -357,7 +356,6 @@ class TestKGGeneratorAgent:
 @pytest.mark.asyncio
 async def test_kg_generator_integration():
     """Integration test for KG Generator Agent with real components."""
-
     # Create real components (but we'll mock the LLM responses)
     try:
         from haive.core.tools.store_tools import StoreManager
@@ -463,10 +461,7 @@ async def test_kg_generator_integration():
         assert neighborhood["total_nodes"] >= 1
         assert neighborhood["total_relationships"] >= 1
 
-        print("✅ KG Generator Agent integration test passed!")
-
     except ImportError as e:
-        print(f"⚠️ Skipping integration test due to missing dependencies: {e}")
         pytest.skip(f"Missing dependencies: {e}")
 
 

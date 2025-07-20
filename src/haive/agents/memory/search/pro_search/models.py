@@ -1,6 +1,6 @@
 """Data models for Pro Search Agent."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -32,19 +32,19 @@ class ProSearchResponse(SearchResponse):
     search_type: str = Field(
         default="ProSearch", description="Type of search performed"
     )
-    refinements: List[SearchRefinement] = Field(
+    refinements: list[SearchRefinement] = Field(
         default_factory=list, description="Query refinements made"
     )
-    contextual_insights: List[ContextualInsight] = Field(
+    contextual_insights: list[ContextualInsight] = Field(
         default_factory=list, description="Contextual insights"
     )
-    user_preferences_applied: Dict[str, Any] = Field(
+    user_preferences_applied: dict[str, Any] = Field(
         default_factory=dict, description="User preferences considered"
     )
-    reasoning_steps: List[str] = Field(
+    reasoning_steps: list[str] = Field(
         default_factory=list, description="Reasoning steps taken"
     )
-    follow_up_questions: List[str] = Field(
+    follow_up_questions: list[str] = Field(
         default_factory=list, description="Suggested follow-up questions"
     )
     depth_level: int = Field(
@@ -102,7 +102,7 @@ class ProSearchRequest(BaseModel):
     """Request model for pro search operations."""
 
     query: str = Field(..., min_length=1, max_length=1000, description="Search query")
-    context: Optional[Dict[str, Any]] = Field(
+    context: dict[str, Any] | None = Field(
         default=None, description="Additional context"
     )
     depth_level: int = Field(

@@ -1,23 +1,33 @@
-"""Reflection - Reflection Agent package initialization.
+"""Module exports."""
 
-TODO: Add detailed description of module functionality
-
-
-
-Example:
-    Basic usage::
-
-        from haive.reflection import module_function
-
-        # TODO: Add example
-
-
-"""
-
-from agents.reflection.agent import ReflectionAgent
-from agents.reflection.config import ReflectionAgentConfig, ReflectionConfig
-from agents.reflection.models import ReflectionOutput, ReflectionResult
-from agents.reflection.state import ReflectionAgentState
+from reflection.agent import (
+    ReflectionAgent,
+    evaluation_function,
+    improvement_function,
+    initial_response_function,
+    reflection_function,
+    search_function,
+    setup_workflow,
+)
+from reflection.config import (
+    ReflectionAgentConfig,
+    ReflectionConfig,
+    from_aug_llm,
+    from_scratch,
+)
+from reflection.models import (
+    ReflectionOutput,
+    ReflectionResult,
+    SearchQuery,
+    as_message,
+    normalized_score,
+)
+from reflection.state import (
+    ReflectionAgentState,
+    add_reflection,
+    last_ai_message,
+    last_human_message,
+)
 
 __all__ = [
     "ReflectionAgent",
@@ -26,4 +36,18 @@ __all__ = [
     "ReflectionConfig",
     "ReflectionOutput",
     "ReflectionResult",
+    "SearchQuery",
+    "add_reflection",
+    "as_message",
+    "evaluation_function",
+    "from_aug_llm",
+    "from_scratch",
+    "improvement_function",
+    "initial_response_function",
+    "last_ai_message",
+    "last_human_message",
+    "normalized_score",
+    "reflection_function",
+    "search_function",
+    "setup_workflow",
 ]

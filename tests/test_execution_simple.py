@@ -1,7 +1,6 @@
 """Test if multi-agent execution works despite the warning."""
 
 import asyncio
-import os
 import sys
 
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -19,7 +18,6 @@ console = Console()
 
 async def test_simple_execution():
     """Test if execution works despite the warning."""
-
     console.print("\n[bold blue]Testing Multi-Agent Execution[/bold blue]\n")
 
     # Create agents
@@ -68,7 +66,7 @@ async def test_simple_execution():
 
     except Exception as e:
         console.print(
-            f"\n[bold red]Execution failed: {type(e).__name__}: {str(e)}[/bold red]"
+            f"\n[bold red]Execution failed: {type(e).__name__}: {e!s}[/bold red]"
         )
         import traceback
 

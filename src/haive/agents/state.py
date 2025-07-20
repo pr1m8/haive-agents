@@ -4,7 +4,7 @@ from typing import Any
 from agents.web_nav.models import BBox, Prediction
 from langchain_core.messages import BaseMessage
 from playwright.async_api import Page
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 # -----------------------------------------------------------------------------
 # Debugging Utility
@@ -57,7 +57,7 @@ class WebNavState(BaseModel):
         # Remove Page from json_encoders to ensure it's not serialized
     )
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Extract page object and initialize the model."""
         # Extract page from kwargs and store it separately
         page = kwargs.pop("page", None)
@@ -67,7 +67,7 @@ class WebNavState(BaseModel):
 
     @field_validatorensure_prediction
     @classmethod
-    def ensure_prediction(cls, v):
+    def ensure_prediction(cls, v) -> Any:
         """Ensures prediction is either None or a valid object."""
         debug_print(f"Validating prediction: {v}")
         if isinstance(v, list) and len(v) == 0:

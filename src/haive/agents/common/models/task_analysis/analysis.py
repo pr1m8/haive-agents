@@ -64,8 +64,9 @@ class ExecutionStrategy(BaseModel):
         fallback_options: Alternative approaches if primary fails
 
     Example:
-        ```python
-        strategy = ExecutionStrategy(
+        .. code-block:: python
+
+            strategy = ExecutionStrategy(
             strategy_type="parallel_execution",
             priority_level="high",
             recommended_approach="Execute independent branches in parallel while managing dependencies",
@@ -73,8 +74,8 @@ class ExecutionStrategy(BaseModel):
             timeline_strategy="front_load_critical_path",
             risk_mitigation=["backup_data_sources", "expert_consultation", "iterative_validation"],
             success_factors=["clear_requirements", "adequate_resources", "expert_oversight"]
-        )
-        ```
+            )
+
     """
 
     model_config = ConfigDict(
@@ -221,25 +222,26 @@ class TaskAnalysis(BaseModel):
         analysis_confidence: Overall confidence in the analysis
 
     Example:
-        ```python
-        # Analyze a simple research task
-        analysis = TaskAnalysis.analyze_task(
+        .. code-block:: python
+
+            # Analyze a simple research task
+            analysis = TaskAnalysis.analyze_task(
             task_description="Find the birthday of the most recent Wimbledon winner",
             domain="sports_research",
             context="Factual lookup requiring web search"
-        )
+            )
 
-        # Analyze a complex research problem
-        analysis = TaskAnalysis.analyze_task(
+            # Analyze a complex research problem
+            analysis = TaskAnalysis.analyze_task(
             task_description="Develop a cure for cancer through novel therapeutic approaches",
             domain="medical_research",
             context="Breakthrough research requiring novel discoveries"
-        )
+            )
 
-        print(f"Complexity: {analysis.complexity.overall_complexity}")
-        print(f"Solvable: {analysis.solvability.is_currently_solvable}")
-        print(f"Strategy: {analysis.execution_strategy.strategy_type}")
-        ```
+            print(f"Complexity: {analysis.complexity.overall_complexity}")
+            print(f"Solvable: {analysis.solvability.is_currently_solvable}")
+            print(f"Strategy: {analysis.execution_strategy.strategy_type}")
+
     """
 
     model_config = ConfigDict(
@@ -325,7 +327,8 @@ class TaskAnalysis(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_analysis_consistency(self) -> "TaskAnalysis":
+    @classmethod
+    def validate_analysis_consistency(cls) -> "TaskAnalysis":
         """Validate that all analysis components are consistent.
 
         Returns:

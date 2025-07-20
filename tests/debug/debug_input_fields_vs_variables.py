@@ -30,7 +30,6 @@ class QueryRefinementResponse(BaseModel):
     best_refined_query: str = Field(description="The recommended best refined query")
 
 
-
 config = AugLLMConfig(
     prompt_template=RAG_QUERY_REFINEMENT,
     structured_output_model=QueryRefinementResponse,
@@ -48,6 +47,6 @@ computed_fields = config._computed_input_fields
 # Check if we can access the field computation logic
 
 # Check for context field specifically
-for field_name, field_info in input_fields.items():
+for field_name, _field_info in input_fields.items():
     if field_name == "context":
-        pass")
+        pass

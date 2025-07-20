@@ -49,7 +49,8 @@ class BaseRAGConfig(AgentConfig):
         return data
 
     @model_validator(mode="after")
-    def setup_engine(self) -> "BaseRAGConfig":
+    @classmethod
+    def setup_engine(cls) -> "BaseRAGConfig":
         """After validation, set the engine property to the retriever_config.
         This ensures the agent can use the retriever directly.
         """

@@ -229,7 +229,7 @@ class PersistenceMixin:
 
             # Create a minimal config-like object for the handler
             class PersistenceConfig:
-                def __init__(self, persistence, checkpoint_mode="sync"):
+                def __init__(self, persistence, checkpoint_mode="sync") -> None:
                     self.persistence = persistence
                     self.checkpoint_mode = checkpoint_mode
 
@@ -265,7 +265,7 @@ class PersistenceMixin:
 
             # Create a minimal config-like object for the handler
             class PersistenceConfig:
-                def __init__(self, persistence, checkpoint_mode="async"):
+                def __init__(self, persistence, checkpoint_mode="async") -> None:
                     self.persistence = persistence
                     self.checkpoint_mode = checkpoint_mode
 
@@ -377,7 +377,7 @@ class PersistenceMixin:
 
             # Create a minimal config-like object for the handler
             class PersistenceConfig:
-                def __init__(self, persistence):
+                def __init__(self, persistence) -> None:
                     self.persistence = persistence
                     self.checkpoint_mode = "async"
 

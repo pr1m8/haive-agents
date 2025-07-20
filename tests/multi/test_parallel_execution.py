@@ -52,13 +52,13 @@ def test_parallel_execution():
     print("\n2. Testing graph construction:")
     try:
         graph = multi.build_graph()
-        print(f"   ✅ Graph built successfully")
+        print("   ✅ Graph built successfully"y")
         print(f"   Graph nodes: {list(graph.nodes.keys())}")
         print(f"   Graph edges: {list(graph.edges)}")
 
         # Check if gather node exists
         if "gather" in graph.nodes:
-            print(f"   ✅ Gather node exists for parallel coordination")
+            print("   ✅ Gather node exists for parallel coordination"n")
 
     except Exception as e:
         print(f"   ❌ Graph construction failed: {e}")
@@ -72,7 +72,7 @@ def test_parallel_execution():
         state = multi.state_schema(
             messages=[HumanMessage(content="Analyze the benefits of renewable energy")]
         )
-        print(f"   ✅ State created successfully")
+        print("   ✅ State created successfully"y")
         print(f"   State.agents: {list(state.agents.keys())}")
         print(f"   State.messages: {len(state.messages)}")
 
@@ -91,7 +91,7 @@ def test_parallel_execution():
             ]
         }
         result = multi.invoke(input_data)
-        print(f"   ✅ Parallel execution completed")
+        print("   ✅ Parallel execution completed"d")
         print(f"   Result type: {type(result)}")
         if hasattr(result, "messages"):
             print(f"   Final messages: {len(result.messages)}")
@@ -142,13 +142,13 @@ def test_branch_execution():
     print("\n2. Testing branch graph construction:")
     try:
         graph = multi.build_graph()
-        print(f"   ✅ Branch graph built successfully")
+        print("   ✅ Branch graph built successfully"y")
         print(f"   Graph nodes: {list(graph.nodes.keys())}")
         print(f"   Graph edges: {list(graph.edges)}")
 
         # Check if branch router exists
         if "branch_router" in graph.nodes:
-            print(f"   ✅ Branch router node exists")
+            print("   ✅ Branch router node exists"s")
 
     except Exception as e:
         print(f"   ❌ Branch graph construction failed: {e}")

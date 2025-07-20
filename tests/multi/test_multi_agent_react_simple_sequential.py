@@ -12,7 +12,6 @@ ReactAgent (reasoning + tools) → SimpleAgent (structured output)
 """
 
 from datetime import datetime
-from typing import List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -39,10 +38,10 @@ class AnalysisResult(BaseModel):
     """Final structured analysis result."""
 
     problem: str = Field(description="The problem being analyzed")
-    reasoning_steps: List[ReasoningStep] = Field(description="Steps taken in reasoning")
+    reasoning_steps: list[ReasoningStep] = Field(description="Steps taken in reasoning")
     final_answer: str = Field(description="Final conclusion or answer")
     confidence: float = Field(description="Confidence score 0-1")
-    tools_used: List[str] = Field(description="List of tools used during analysis")
+    tools_used: list[str] = Field(description="List of tools used during analysis")
 
 
 class TaskBreakdown(BaseModel):
@@ -51,8 +50,8 @@ class TaskBreakdown(BaseModel):
     task_name: str = Field(description="Name of the task")
     complexity: str = Field(description="simple/medium/complex")
     estimated_time: str = Field(description="Estimated completion time")
-    subtasks: List[str] = Field(description="List of subtasks")
-    dependencies: List[str] = Field(description="List of dependencies")
+    subtasks: list[str] = Field(description="List of subtasks")
+    dependencies: list[str] = Field(description="List of dependencies")
 
 
 # Test tools for ReactAgent
@@ -63,7 +62,7 @@ def calculator(expression: str) -> str:
         result = eval(expression, {"__builtins__": {}}, {})
         return f"Calculation result: {result}"
     except Exception as e:
-        return f"Calculation error: {str(e)}"
+        return f"Calculation error: {e!s}"
 
 
 @tool
@@ -144,14 +143,9 @@ class TestMultiAgentSequentialPattern:
         assert simple_agent_analysis.structured_output_model == AnalysisResult
         assert simple_agent_analysis.structured_output_version == "v2"
 
-        print("✅ Both agents created successfully")
-
     def test_react_agent_reasoning_with_tools(self, react_agent):
         """Test ReactAgent performs reasoning with tool usage."""
         problem = "Calculate the area of a circle with radius 5, then search for information about circle geometry."
-
-        print("\n=== ReactAgent Reasoning Test ===")
-        print(f"Problem: {problem}")
 
         # Create input without persistence to avoid msgpack serialization issues
         input_data = {"messages": [HumanMessage(content=problem)]}
@@ -166,8 +160,6 @@ class TestMultiAgentSequentialPattern:
             # Execute ReactAgent with real LLM - use invoke to avoid persistence
             result = react_agent._app.invoke(input_data, config=config)
 
-            print(f"ReactAgent result type: {type(result)}")
-
             # Extract the final message content
             messages = result.get("messages", [])
             if messages:
@@ -178,8 +170,6 @@ class TestMultiAgentSequentialPattern:
                     content = str(final_message)
             else:
                 content = str(result)
-
-            print(f"ReactAgent content: {content}")
 
             # Verify ReactAgent used tools and reasoning
             assert result is not None
@@ -194,15 +184,9 @@ class TestMultiAgentSequentialPattern:
                 or "78.5" in content_lower
             )
 
-            print("✅ ReactAgent reasoning with tools working")
-
         except Exception as e:
-            print(f"Error during ReactAgent test: {e}")
             # Still assert success if we got a TypeError about msgpack (means execution worked)
             if "msgpack serializable" in str(e):
-                print(
-                    "✅ ReactAgent executed successfully (serialization issue is separate)"
-                )
                 assert True
             else:
                 raise
@@ -216,9 +200,6 @@ class TestMultiAgentSequentialPattern:
         3. The final answer is approximately 78.54 square units
         """
 
-        print("\n=== SimpleAgent Structured Output Test ===")
-        print(f"Input reasoning: {reasoning_text}")
-
         # Create input without persistence
         input_data = {"messages": [HumanMessage(content=reasoning_text)]}
         config = {"configurable": {"thread_id": None}}
@@ -230,32 +211,21 @@ class TestMultiAgentSequentialPattern:
             # Execute SimpleAgent with real LLM for structured output
             result = simple_agent_analysis._app.invoke(input_data, config=config)
 
-            print(f"SimpleAgent result type: {type(result)}")
-            print(f"SimpleAgent result: {result}")
-
             # Verify structured output
             assert result is not None
 
             # Check for structured output in the result
             if "analysis" in result:
                 analysis = result["analysis"]
-                print(f"Structured analysis found: {analysis}")
 
                 # If it's our AnalysisResult model, verify structure
                 if hasattr(analysis, "problem") and hasattr(analysis, "final_answer"):
                     assert analysis.problem is not None
                     assert analysis.final_answer is not None
-                    print("✅ Full AnalysisResult structure validated")
-
-            print("✅ SimpleAgent structured output working")
 
         except Exception as e:
-            print(f"Error during SimpleAgent test: {e}")
             # Still assert success if we got a TypeError about msgpack (means execution worked)
             if "msgpack serializable" in str(e):
-                print(
-                    "✅ SimpleAgent executed successfully (serialization issue is separate)"
-                )
                 assert True
             else:
                 raise
@@ -264,11 +234,7 @@ class TestMultiAgentSequentialPattern:
         """Test manual sequential execution: ReactAgent → SimpleAgent."""
         problem = "I need to calculate 15 * 23 and then analyze what makes this calculation interesting."
 
-        print("\n=== Manual Sequential Execution Test ===")
-        print(f"Problem: {problem}")
-
         # Step 1: ReactAgent reasoning
-        print("\n--- Step 1: ReactAgent Reasoning ---")
 
         # Compile and execute ReactAgent
         react_agent.compile()
@@ -291,19 +257,15 @@ class TestMultiAgentSequentialPattern:
             else:
                 reasoning_content = str(react_result)
 
-            print(f"ReactAgent reasoning result: {reasoning_content}")
-            print(f"ReactAgent full result structure: {react_result}")
             assert reasoning_content is not None
 
         except Exception as e:
             if "msgpack serializable" in str(e):
-                print("✅ ReactAgent executed (serialization issue)")
                 reasoning_content = "Mathematical calculation result: 15 * 23 = 345. This is interesting because..."
             else:
                 raise
 
         # Step 2: SimpleAgent structured output from reasoning
-        print("\n--- Step 2: SimpleAgent Structured Output ---")
         format_prompt = (
             f"Convert this reasoning into a structured analysis:\n\n{reasoning_content}"
         )
@@ -317,23 +279,15 @@ class TestMultiAgentSequentialPattern:
                 input_data_2, config=config
             )
 
-            print(f"SimpleAgent structured result: {structured_result}")
-            print(f"SimpleAgent result keys: {list(structured_result.keys())}")
-
             # Check for analysis field (expected from AnalysisResult model)
             if "analysis" in structured_result:
-                print(f"✅ Found structured analysis: {structured_result['analysis']}")
-                print(f"Analysis type: {type(structured_result['analysis'])}")
+                pass
             else:
-                print(
-                    "❌ No 'analysis' field found - structured output may not be working"
-                )
-                print("Available fields:", list(structured_result.keys()))
+                pass
 
             assert structured_result is not None
         except Exception as e:
             if "msgpack serializable" in str(e):
-                print("✅ SimpleAgent executed (serialization issue)")
                 structured_result = {"analysis": "Structured analysis created"}
             else:
                 raise
@@ -342,33 +296,21 @@ class TestMultiAgentSequentialPattern:
         assert reasoning_content is not None
         assert len(reasoning_content) > 0
 
-        print("✅ Manual sequential execution working")
-
     def test_cross_agent_data_validation(self, react_agent, simple_agent_tasks):
         """Test data flow and validation across agents."""
         complex_problem = """
-        Design a system to track employee productivity in a remote work environment. 
+        Design a system to track employee productivity in a remote work environment.
         Consider technology needs, privacy concerns, and implementation steps.
         """
 
-        print("\n=== Cross-Agent Data Validation Test ===")
-        print(f"Complex problem: {complex_problem}")
-
         # Step 1: ReactAgent analysis
-        print("\n--- ReactAgent Analysis ---")
         analysis = react_agent.run(complex_problem)
 
-        print(f"Analysis length: {len(analysis)} characters")
-        print(f"Analysis preview: {analysis[:200]}...")
-
         # Step 2: SimpleAgent task breakdown
-        print("\n--- SimpleAgent Task Breakdown ---")
         breakdown_prompt = (
             f"Break down this analysis into a structured task plan:\n\n{analysis}"
         )
         task_breakdown = simple_agent_tasks.run(breakdown_prompt)
-
-        print(f"Task breakdown: {task_breakdown}")
 
         # Validate data transfer
         assert len(analysis) > 100  # Substantial analysis
@@ -377,54 +319,33 @@ class TestMultiAgentSequentialPattern:
         # Check for evidence of information transfer
         # The breakdown should reference concepts from the analysis
 
-        print("✅ Cross-agent data validation working")
-
     @pytest.mark.asyncio
     async def test_async_sequential_execution(self, react_agent, simple_agent_analysis):
         """Test async sequential execution of agents."""
         problem = "Analyze the benefits and drawbacks of remote work, calculate productivity metrics."
 
-        print("\n=== Async Sequential Execution Test ===")
-        print(f"Problem: {problem}")
-
         # Step 1: Async ReactAgent execution
-        print("\n--- Async ReactAgent ---")
         reasoning_result = await react_agent.arun(problem)
 
-        print(f"Async reasoning result length: {len(reasoning_result)}")
-
         # Step 2: Async SimpleAgent execution
-        print("\n--- Async SimpleAgent ---")
         format_prompt = f"Structure this analysis:\n\n{reasoning_result}"
         structured_result = await simple_agent_analysis.arun(format_prompt)
-
-        print(f"Async structured result: {structured_result}")
 
         # Verify async execution
         assert reasoning_result is not None
         assert structured_result is not None
         assert len(reasoning_result) > 0
 
-        print("✅ Async sequential execution working")
-
     def test_state_preservation_across_agents(self, react_agent, simple_agent_analysis):
         """Test that important state/context is preserved across agent transitions."""
         problem = "Calculate compound interest on $1000 at 5% for 10 years, then explain the mathematical principle."
 
-        print("\n=== State Preservation Test ===")
-        print(f"Problem: {problem}")
-
         # ReactAgent with calculation
         reasoning = react_agent.run(problem)
-        print(
-            f"Reasoning contains calculation: {'1000' in reasoning and '5%' in reasoning}"
-        )
 
         # SimpleAgent should preserve the numerical context
         analysis_prompt = f"Create structured analysis preserving all numerical details:\n\n{reasoning}"
         analysis = simple_agent_analysis.run(analysis_prompt)
-
-        print(f"Analysis result: {analysis}")
 
         # Verify state preservation
         assert reasoning is not None
@@ -433,8 +354,6 @@ class TestMultiAgentSequentialPattern:
         # Check that key information was preserved across agents
         # Both should reference the original problem context
 
-        print("✅ State preservation across agents working")
-
     def test_error_handling_in_sequential_flow(
         self, react_agent, simple_agent_analysis
     ):
@@ -442,27 +361,15 @@ class TestMultiAgentSequentialPattern:
         # Use a problematic input that might cause issues
         problematic_input = "This is an empty problem with no clear instructions."
 
-        print("\n=== Error Handling Test ===")
-        print(f"Problematic input: {problematic_input}")
-
         try:
             # ReactAgent should handle unclear input gracefully
             reasoning_result = react_agent.run(problematic_input)
-            print(f"ReactAgent handled unclear input: {len(reasoning_result)} chars")
 
             # SimpleAgent should handle poor reasoning input
             if reasoning_result:
-                structured_result = simple_agent_analysis.run(
-                    f"Structure this: {reasoning_result}"
-                )
-                print(
-                    f"SimpleAgent handled poor input: {structured_result is not None}"
-                )
+                simple_agent_analysis.run(f"Structure this: {reasoning_result}")
 
-            print("✅ Error handling working")
-
-        except Exception as e:
-            print(f"Exception during error handling test: {e}")
+        except Exception:
             # Even if there are exceptions, the test validates that we can detect them
             assert True  # We expect some errors with problematic input
 
@@ -470,28 +377,19 @@ class TestMultiAgentSequentialPattern:
         """Test performance characteristics of sequential execution."""
         problem = "Quick analysis: What's 25 + 75 and why is this sum significant?"
 
-        print("\n=== Performance Test ===")
-
         # Time the ReactAgent
         start_time = datetime.now()
         reasoning_result = react_agent.run(problem)
         react_time = (datetime.now() - start_time).total_seconds()
-
-        print(f"ReactAgent execution time: {react_time:.2f}s")
 
         # Time the SimpleAgent
         start_time = datetime.now()
         simple_agent_analysis.run(f"Structure: {reasoning_result}")
         simple_time = (datetime.now() - start_time).total_seconds()
 
-        print(f"SimpleAgent execution time: {simple_time:.2f}s")
-        print(f"Total sequential time: {react_time + simple_time:.2f}s")
-
         # Verify reasonable performance (under 30s total for simple problem)
         total_time = react_time + simple_time
         assert total_time < 30, f"Sequential execution too slow: {total_time:.2f}s"
-
-        print("✅ Performance within acceptable limits")
 
 
 if __name__ == "__main__":

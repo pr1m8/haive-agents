@@ -1,5 +1,8 @@
 import logging
 
+# Set up logging
+from typing import Any
+
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph.GraphBuilder import DynamicGraph
 from langgraph.graph import END, START
@@ -8,7 +11,6 @@ from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.typed.config import TypedRAGConfig
 from haive.agents.rag.typed.query_types import QueryCategory
 
-# Set up logging
 logger = logging.getLogger(__name__)
 
 
@@ -48,7 +50,7 @@ class TypedRAGAgent(BaseRAGAgent):
         else:
             self.retriever = self.config.retriever_config
 
-    def classify_query(self, state):
+    def classify_query(self, state: dict[str, Any]):
         """Classify the query into a category."""
         query = state["query"]
 
@@ -90,7 +92,7 @@ class TypedRAGAgent(BaseRAGAgent):
             logger.exception(f"Error classifying query: {e}")
             return {"query_category": "factoid", "query_metadata": {}}
 
-    def generate_subqueries(self, state):
+    def generate_subqueries(self, state: dict[str, Any]):
         """Generate specialized subqueries based on query category."""
         query = state["query"]
         category = state["query_category"]
@@ -133,7 +135,7 @@ class TypedRAGAgent(BaseRAGAgent):
             logger.exception(f"Error generating subqueries: {e}")
             return {"subqueries": {category: query}}
 
-    def retrieve_for_subqueries(self, state):
+    def retrieve_for_subqueries(self, state: dict[str, Any]):
         """Retrieve documents for each subquery."""
         category = state["query_category"]
         subqueries = state["subqueries"]
@@ -158,7 +160,7 @@ class TypedRAGAgent(BaseRAGAgent):
 
         return {"subquery_results": subquery_results, "retrieved_documents": all_docs}
 
-    def filter_documents(self, state):
+    def filter_documents(self, state: dict[str, Any]):
         """Filter documents for relevance."""
         # This is a placeholder - implement your actual filtering logic
         documents = state.get("retrieved_documents", [])
@@ -166,7 +168,7 @@ class TypedRAGAgent(BaseRAGAgent):
         # For now, we'll just pass through all documents
         return {"filtered_documents": documents}
 
-    def aggregate_answers(self, state):
+    def aggregate_answers(self, state: dict[str, Any]):
         """Aggregate information from different subqueries."""
         query = state["query"]
         category = state["query_category"]
@@ -215,7 +217,7 @@ class TypedRAGAgent(BaseRAGAgent):
             # Fall back to standard answer generation
             return self.generate_answer(state)
 
-    def generate_answer(self, state):
+    def generate_answer(self, state: dict[str, Any]):
         """Generate an answer from the documents."""
         query = state["query"]
         documents = state["filtered_documents"]
@@ -246,7 +248,7 @@ class TypedRAGAgent(BaseRAGAgent):
                 "answer": "I encountered an error while generating an answer to your question."
             }
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         """Set up the Typed-RAG workflow."""
         gb = DynamicGraph(state_schema=self.state_schema)
 

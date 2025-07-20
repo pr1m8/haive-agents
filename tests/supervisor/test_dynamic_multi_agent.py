@@ -3,8 +3,7 @@
 
 import asyncio
 import logging
-from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from pydantic import BaseModel, Field
@@ -128,7 +127,6 @@ class TestAgentState(BaseModel):
 
 async def test_basic_dynamic_multi_agent():
     """Test basic DynamicMultiAgent functionality."""
-
     # Import our implementation
     try:
         from dynamic_multi_agent import DynamicMultiAgent, create_dynamic_multi_agent
@@ -147,27 +145,23 @@ async def test_basic_dynamic_multi_agent():
         track_performance=True,
     )
 
-
     # Test execution
 
     # Research request
-    result1 = await multi_agent.ainvoke(
+    await multi_agent.ainvoke(
         {"messages": [HumanMessage(content="Research the latest AI developments")]}
     )
 
-
     # Writing request
-    result2 = await multi_agent.ainvoke(
+    await multi_agent.ainvoke(
         {"messages": [HumanMessage(content="Write a blog post about productivity")]}
     )
-
 
     return True
 
 
 async def test_dynamic_agent_management():
     """Test dynamic agent addition and removal."""
-
     from dynamic_multi_agent import DynamicMultiAgent
 
     # Start with minimal agents
@@ -175,9 +169,8 @@ async def test_dynamic_agent_management():
         name="dynamic_test", agents=[ResearchAgent(), WritingAgent()]
     )
 
-
     # Test with initial agents
-    result1 = await multi_agent.ainvoke(
+    await multi_agent.ainvoke(
         {"messages": [HumanMessage(content="Write code to solve this problem")]}
     )
 
@@ -185,13 +178,12 @@ async def test_dynamic_agent_management():
 
     # Add coding agent dynamically
     coding = CodingAgent()
-    success = multi_agent.register_agent_dynamically(
+    multi_agent.register_agent_dynamically(
         coding, capability="coding and software development"
     )
 
-
     # Test with coding request
-    result2 = await multi_agent.ainvoke(
+    await multi_agent.ainvoke(
         {
             "messages": [
                 HumanMessage(content="Write code to implement a sorting algorithm")
@@ -199,26 +191,23 @@ async def test_dynamic_agent_management():
         }
     )
 
-
     # Add analysis agent
     analysis = AnalysisAgent()
     multi_agent.register_agent_dynamically(analysis)
 
     # Remove writing agent
-    removed = multi_agent.unregister_agent_dynamically("writing_agent")
+    multi_agent.unregister_agent_dynamically("writing_agent")
 
     # Test that writing requests now go elsewhere
-    result3 = await multi_agent.ainvoke(
+    await multi_agent.ainvoke(
         {"messages": [HumanMessage(content="Write a summary of the findings")]}
     )
-
 
     return True
 
 
 async def test_performance_tracking():
     """Test performance tracking and agent selection."""
-
     from dynamic_multi_agent import DynamicMultiAgent
 
     # Create system with performance tracking
@@ -239,19 +228,17 @@ async def test_performance_tracking():
         "Write technical documentation",
     ]
 
-    for i, request in enumerate(requests):
-        result = await multi_agent.ainvoke(
-            {"messages": [HumanMessage(content=request)]}
-        )
+    for _i, request in enumerate(requests):
+        await multi_agent.ainvoke({"messages": [HumanMessage(content=request)]})
 
     # Check performance metrics
 
     for agent_name in multi_agent.agents:
-        metrics = multi_agent.get_agent_performance(agent_name)
+        multi_agent.get_agent_performance(agent_name)
 
     # Check execution history
     history = multi_agent.get_execution_history(limit=3)
-    for entry in history:
+    for _entry in history:
         pass
 
     return True
@@ -259,7 +246,6 @@ async def test_performance_tracking():
 
 async def test_capability_routing():
     """Test capability-based routing."""
-
     from dynamic_multi_agent import DynamicMultiAgent
 
     # Create agents with specific capabilities
@@ -277,7 +263,7 @@ async def test_capability_routing():
 
     # Show capabilities
     capabilities = multi_agent.get_agent_capabilities()
-    for agent, capability in capabilities.items():
+    for _agent, _capability in capabilities.items():
         pass
 
     # Test routing
@@ -301,14 +287,11 @@ async def test_capability_routing():
         is_correct = actual_agent == expected_agent
         correct_routes += is_correct
 
-
-
     return True
 
 
 async def test_complex_conversation():
     """Test a complex multi-turn conversation."""
-
     from dynamic_multi_agent import DynamicMultiAgent
 
     # Create comprehensive system
@@ -350,14 +333,13 @@ async def test_complex_conversation():
 
     # Performance after conversation
     for agent_name in multi_agent.agents:
-        agent = multi_agent.agents[agent_name]
+        multi_agent.agents[agent_name]
 
     return True
 
 
 async def run_all_tests():
     """Run all test cases."""
-
     tests = [
         ("Basic Functionality", test_basic_dynamic_multi_agent),
         ("Dynamic Agent Management", test_dynamic_agent_management),
@@ -372,7 +354,7 @@ async def run_all_tests():
         try:
             success = await test_func()
             results.append((test_name, success))
-        except Exception as e:
+        except Exception:
             import traceback
 
             traceback.print_exc()
@@ -384,11 +366,10 @@ async def run_all_tests():
     total = len(results)
 
     for test_name, success in results:
-        pass'}")
-
+        pass
 
     if passed == total:
-        pass.")
+        pass
 
     # Key insights
 

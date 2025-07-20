@@ -33,7 +33,7 @@ def test_detailed_streaming():
             if i >= 5:  # Limit output
                 break
     except Exception as e:
-        pass")
+        pass
 
     try:
         config = {"configurable": {"recursion_limit": 10}, "stream_mode": "updates"}
@@ -52,7 +52,7 @@ def test_detailed_streaming():
             if i >= 5:
                 break
     except Exception as e:
-        pass")
+        pass
 
     try:
         config = {"configurable": {"recursion_limit": 10}, "stream_mode": "messages"}
@@ -77,7 +77,7 @@ def test_detailed_streaming():
             if i >= 5:
                 break
     except Exception as e:
-        pass")
+        pass
 
     try:
         config = {
@@ -104,7 +104,7 @@ def test_detailed_streaming():
             if i >= 3:
                 break
     except Exception as e:
-        pass")
+        pass
 
     try:
         # Check what stream modes are available
@@ -116,7 +116,7 @@ def test_detailed_streaming():
         available_modes = ["values", "updates", "messages", "debug"]
 
     except Exception as e:
-        pass")
+        pass
 
 
 if __name__ == "__main__":

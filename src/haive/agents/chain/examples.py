@@ -246,7 +246,7 @@ def create_self_reflective_declarative(documents: list[Document]):
 
 
 # Example 4: Using raw ChainSpec for maximum control
-def create_complex_flow_from_spec():
+def create_complex_flow_from_spec() -> Any:
     """Create a complex flow using raw ChainSpec."""
     # Define nodes
     nodes = [
@@ -303,7 +303,7 @@ def create_complex_flow_from_spec():
 
 
 # Example 5: Simplified syntax with method chaining
-def create_rag_with_fallback():
+def create_rag_with_fallback() -> Any:
     """Create a RAG with fallback strategies."""
     return (
         ChainBuilder("RAG with Fallback")

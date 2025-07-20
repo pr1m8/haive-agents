@@ -44,7 +44,7 @@ def test_sequential_execution():
     state = multi.state_schema(
         messages=[HumanMessage(content="What is the capital of France?")]
     )
-    print(f"   ✅ State created successfully")
+    print("   ✅ State created successfully"y")
     print(f"   State.agents: {list(state.agents.keys())}")
     print(f"   State.messages: {len(state.messages)}")
 
@@ -60,7 +60,7 @@ def test_sequential_execution():
         # Test node execution
         print("\n4. Testing node execution:")
         result = analyzer_node(state)
-        print(f"   ✅ Node executed successfully")
+        print("   ✅ Node executed successfully"y")
         print(f"   Result type: {type(result)}")
         print(f"   Result has messages: {hasattr(result, 'messages')}")
         if hasattr(result, "messages"):
@@ -82,7 +82,7 @@ def test_sequential_execution():
         # Test with simple invoke
         input_data = {"messages": [HumanMessage(content="What is 2+2?")]}
         result = multi.invoke(input_data)
-        print(f"   ✅ Multi-agent execution completed")
+        print("   ✅ Multi-agent execution completed"d")
         print(f"   Result type: {type(result)}")
         if hasattr(result, "messages"):
             print(f"   Final messages: {len(result.messages)}")

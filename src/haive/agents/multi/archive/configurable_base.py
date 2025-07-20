@@ -8,7 +8,8 @@ This module provides a general multi-agent base where you can:
 """
 
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer, BuildMode
@@ -115,7 +116,8 @@ class ConfigurableMultiAgent(Agent):
     _workflow_node_mapping: dict[str, str] = PrivateAttr(default_factory=dict)
 
     @model_validator(mode="after")
-    def setup_configurable_multi_agent(self) -> "ConfigurableMultiAgent":
+    @classmethod
+    def setup_configurable_multi_agent(cls) -> "ConfigurableMultiAgent":
         """Set up the configurable multi-agent system."""
         # Validate agents
         if not self.agents:

@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import os
 import sys
 
 # Suppress all logging except errors
@@ -22,9 +21,6 @@ from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
 
 async def test_self_discover_debug():
     """Test self-discover agent with debug=True."""
-
-    print("🧠 Testing Self-Discovery Agent with DEBUG=True...")
-
     # Simple test problem
     test_problem = "What is 2+2?"
 
@@ -34,22 +30,15 @@ async def test_self_discover_debug():
         "task_description": test_problem,
     }
 
-    print(f"Test input keys: {list(test_input.keys())}")
-
     try:
-        print("🚀 Starting execution with debug=True...")
         result = await self_discovery.ainvoke(test_input, config={"debug": True})
 
-        print("\n✅ Self-discovery completed!")
-        print(f"Result type: {type(result)}")
-
         if isinstance(result, dict):
-            print(f"Result keys: {list(result.keys())}")
+            pass
 
         return result
 
-    except Exception as e:
-        print(f"❌ Self-discovery failed: {type(e).__name__}: {str(e)}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

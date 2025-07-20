@@ -49,7 +49,7 @@ def test_real_simple_agent_without_modification():
 
 
         if has_summary and has_completed:
-            pass")
+            pass
         else:
             pass
 
@@ -75,7 +75,7 @@ def test_real_simple_agent_without_modification():
 
 
         if not has_structured_in_v2 and has_messages_v2:
-            pass")
+            pass
         else:
             passed")
 
@@ -114,7 +114,7 @@ def test_real_simple_agent_without_modification():
                 has_parser = any("parse" in name.lower() for name in graph.nodes)
 
             except Exception as e:
-                pass")
+                pass
 
     except Exception as e:
         return
@@ -138,10 +138,10 @@ def test_real_simple_agent_without_modification():
 
 
             if model_matches:
-                pass")
+                pass
 
     except Exception as e:
-        pass")
+        pass
 
 
 

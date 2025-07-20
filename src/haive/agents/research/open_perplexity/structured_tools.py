@@ -36,7 +36,7 @@ DOCUMENT_LOADERS = {}
 def register_document_loader(loader_type: str):
     """Decorator to register document loaders with metadata."""
 
-    def decorator(loader_class):
+    def decorator(loader_class) -> Any:
         DOCUMENT_LOADERS[loader_type] = {
             "class": loader_class,
             "metadata": getattr(loader_class, "loader_metadata", {}),
@@ -60,11 +60,11 @@ class EnhancedWebBaseLoader(WebBaseLoader):
         "parameters": ["url"],
     }
 
-    def __init__(self, web_path):
+    def __init__(self, web_path) -> None:
         super().__init__(web_path)
         self.web_path = web_path
 
-    def load(self):
+    def load(self) -> Any:
         """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:
@@ -93,7 +93,7 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
         "parameters": ["url", "max_depth"],
     }
 
-    def __init__(self, url, max_depth=2, extractor=None, prevent_outside=True):
+    def __init__(self, url: str, max_depth=2, extractor=None, prevent_outside=True):
         # Use BS4 extractor if not provided
         if extractor is None:
             extractor = self._default_extractor
@@ -125,7 +125,7 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
 
         return text.strip()
 
-    def load(self):
+    def load(self) -> Any:
         """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:
@@ -160,7 +160,7 @@ class EnhancedGitHubIssuesLoader(GitHubIssuesLoader):
         "parameters": ["repo", "access_token"],
     }
 
-    def load(self):
+    def load(self) -> Any:
         """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:
@@ -190,7 +190,7 @@ class EnhancedArxivLoader(ArxivLoader):
         "parameters": ["query", "load_all_available_meta"],
     }
 
-    def load(self):
+    def load(self) -> Any:
         """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:
@@ -224,7 +224,7 @@ class EnhancedHNLoader(HNLoader):
         "parameters": ["story_id"],
     }
 
-    def load(self):
+    def load(self) -> Any:
         """Override load method to add metadata."""
         docs = super().load()
         for doc in docs:

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import contextlib
+import sys
 import traceback
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -34,7 +36,6 @@ class QueryRefinementResponse(BaseModel):
     best_refined_query: str = Field(description="The recommended best refined query")
 
 
-
 config = AugLLMConfig(
     prompt_template=RAG_QUERY_REFINEMENT,
     structured_output_model=QueryRefinementResponse,
@@ -46,19 +47,17 @@ try:
     aug_llm_input_schema = config.derive_input_schema()
 
     # Test creating an instance
-    try:
+    with contextlib.suppress(Exception):
         test_input = aug_llm_input_schema(query="test query")
-    except Exception as e:
-        pass")
 
-except Exception as e:
+except Exception:
     traceback.print_exc()
 
 try:
     agent = SimpleAgentV2(engine=config)
-except Exception as e:
+except Exception:
     traceback.print_exc()
-    exit()
+    sys.exit()
 
 try:
     state_schema_class = agent.state_schema()
@@ -73,7 +72,7 @@ try:
             optional_fields.append(field_name)
 
 
-except Exception as e:
+except Exception:
     traceback.print_exc()
 
 try:
@@ -88,14 +87,11 @@ try:
         else:
             optional_fields.append(field_name)
 
-
     # Test creating an input instance
-    try:
+    with contextlib.suppress(Exception):
         test_input = agent_input_schema(query="test query")
-    except Exception as e:
-        pass
 
-except Exception as e:
+except Exception:
     traceback.print_exc()
 
 try:
@@ -110,17 +106,14 @@ try:
         if field_info.is_required():
             required_fields.append(field_name)
 
-
     # Test creating an instance
-    try:
+    with contextlib.suppress(Exception):
         test_input = state_derived_input(query="test query")
-    except Exception as e:
-        pass")
 
-except Exception as e:
+except Exception:
     traceback.print_exc()
 
 try:
     result = agent.run({"query": "what is the tallest building in france"}, debug=True)
-except Exception as e:
+except Exception:
     traceback.print_exc()

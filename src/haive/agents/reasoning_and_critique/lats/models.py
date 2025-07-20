@@ -1,6 +1,6 @@
 import math
 from collections import deque
-from typing import Optional
+from typing import Any, Optional
 
 from langchain_core.messages import BaseMessage, HumanMessage
 from pydantic import BaseModel, Field
@@ -20,7 +20,7 @@ class Reflection(BaseModel):
         description="Whether the response has fully solved the question or task."
     )
 
-    def as_message(self):
+    def as_message(self) -> Any:
         return HumanMessage(
             content=f"Reasoning: {self.reflections}\nScore: {self.score}"
         )
@@ -56,16 +56,16 @@ class Node:
         )
 
     @property
-    def is_solved(self):
+    def is_solved(self) -> bool:
         """If any solutions exist, we can end the search."""
         return self._is_solved
 
     @property
-    def is_terminal(self):
+    def is_terminal(self) -> bool:
         return not self.children
 
     @property
-    def best_child_score(self):
+    def best_child_score(self) -> Any:
         """Return the child with the highest value."""
         if not self.children:
             return None
@@ -78,7 +78,7 @@ class Node:
             return 1 + max([child.height for child in self.children])
         return 1
 
-    def upper_confidence_bound(self, exploration_weight=1.0):
+    def upper_confidence_bound(self, exploration_weight=1.0) -> Any:
         """Return the UCT score. This helps balance exploration vs. exploitation of a branch."""
         if self.parent is None:
             raise ValueError("Cannot obtain UCT from root node")
@@ -126,7 +126,7 @@ class Node:
                 nodes.append(n)
         return all_nodes
 
-    def get_best_solution(self):
+    def get_best_solution(self) -> Any | None:
         """Return the best solution from within the current sub-tree."""
         all_nodes = [self, *self._get_all_children()]
         best_node = max(

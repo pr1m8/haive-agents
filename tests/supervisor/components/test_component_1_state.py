@@ -1,5 +1,7 @@
 """Test Component 1: AgentInfo & State Foundation with real agents."""
 
+import contextlib
+
 from haive.core.engine import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from haive.tools.tools.search_tools import tavily_search_tool
@@ -33,7 +35,6 @@ def create_plan(goal: str, steps: int = 3) -> str:
 
 def create_real_agents():
     """Create the 3 real agents for testing."""
-
     # 1. Search agent with tavily
     search_engine = AugLLMConfig(
         name="search_engine",
@@ -70,7 +71,6 @@ def create_real_agents():
 
 def test_agent_info():
     """Test AgentInfo with real agents."""
-
     agents = create_real_agents()
 
     # Test AgentInfo creation with automatic name/description extraction
@@ -80,7 +80,6 @@ def test_agent_info():
         description="Web search and research specialist",
     )
 
-
     # Test activation/deactivation
     search_info.deactivate()
 
@@ -89,7 +88,6 @@ def test_agent_info():
 
 def test_supervisor_state():
     """Test SupervisorState with real agents."""
-
     # Create state
     state = SupervisorState()
 
@@ -120,17 +118,17 @@ def test_supervisor_state():
 
     # Test state queries
 
-    for name, desc in state.list_active_agents().items():
+    for _name, _desc in state.list_active_agents().items():
         pass
 
-    for name, desc in state.list_all_agents().items():
-        active_status = "🟢" if name in state.active_agents else "🔴"
+    for _name, _desc in state.list_all_agents().items():
+        pass
 
     # Test routing
     state.set_routing("math_agent", "Calculate 25 * 8")
 
     # Test agent retrieval
-    math_agent = state.get_agent("math_agent")
+    state.get_agent("math_agent")
 
     # Test activation/deactivation
     state.activate_agent("planning_agent")
@@ -138,15 +136,12 @@ def test_supervisor_state():
     state.deactivate_agent("search_agent")
 
     # Test serialization capability
-    try:
+    with contextlib.suppress(Exception):
         state.model_dump()
-    except Exception as e:
-        pass")
 
 
 def test_state_operations():
     """Test various state operations."""
-
     state = SupervisorState()
     agents = create_real_agents()
 
@@ -162,7 +157,7 @@ def test_state_operations():
         state.add_agent(name, agent, descriptions[name], active)
 
     # Test remove operation
-    removed = state.remove_agent("planning_agent")
+    state.remove_agent("planning_agent")
 
     # Test clearing routing
     state.set_routing("search_agent", "Search for Python tutorials")
@@ -176,6 +171,5 @@ if __name__ == "__main__":
         test_supervisor_state()
         test_state_operations()
 
-
-    except Exception as e:
+    except Exception:
         raise

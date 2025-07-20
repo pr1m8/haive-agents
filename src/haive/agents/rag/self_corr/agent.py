@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.branches import Branch
@@ -63,7 +64,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             raise
 
     @property
-    def retriever(self):
+    def retriever(self) -> Any:
         """Lazy-loaded retriever property."""
         return self._retriever
 

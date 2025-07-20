@@ -24,32 +24,33 @@ class NumericGrade(Grade):
         passing_threshold: Minimum score considered passing (default 60% of range)
 
     Example:
-        ```python
-        # 0-10 scale
-        grade = NumericGrade(
+        .. code-block:: python
+
+            # 0-10 scale
+            grade = NumericGrade(
             value=8.5,
             min_value=0,
             max_value=10,
             justification="Strong performance with minor areas for improvement"
-        )
+            )
 
-        # 1-5 scale
-        grade = NumericGrade(
+            # 1-5 scale
+            grade = NumericGrade(
             value=4,
             min_value=1,
             max_value=5,
             passing_threshold=3,
             justification="Above average quality"
-        )
+            )
 
-        # Custom range
-        grade = NumericGrade(
+            # Custom range
+            grade = NumericGrade(
             value=850,
             min_value=200,
             max_value=800,  # This will raise an error - value exceeds max
             justification="SAT score"
-        )
-        ```
+            )
+
     """
 
     grade_type: GradeType = Field(
@@ -79,7 +80,8 @@ class NumericGrade(Grade):
     )
 
     @model_validator(mode="after")
-    def validate_score_range(self) -> "NumericGrade":
+    @classmethod
+    def validate_score_range(cls) -> "NumericGrade":
         """Validate that the score is within the specified range.
 
         Returns:
@@ -228,19 +230,20 @@ class PercentageGrade(NumericGrade):
         passing_threshold: Minimum percentage considered passing (default 60)
 
     Example:
-        ```python
-        grade = PercentageGrade(
+        .. code-block:: python
+
+            grade = PercentageGrade(
             value=87.5,
             justification="Excellent work with minor formatting issues",
             passing_threshold=70
-        )
+            )
 
-        # Automatically validates range
-        bad_grade = PercentageGrade(
+            # Automatically validates range
+            bad_grade = PercentageGrade(
             value=105,  # This will raise an error
             justification="Invalid percentage"
-        )
-        ```
+            )
+
     """
 
     grade_type: GradeType = Field(

@@ -2,7 +2,6 @@
 
 import asyncio
 import sys
-from typing import Any, Dict
 
 # Add paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -120,7 +119,7 @@ async def debug_execution():
     # Build the graph
     print("\n📌 STEP 5: Building the graph")
     graph = multi_agent.graph
-    print(f"✅ Graph built")
+    print("✅ Graph built"t")
     print(f"   - Nodes: {list(graph.nodes.keys())}")
 
     # Check node details
@@ -154,7 +153,7 @@ async def debug_execution():
         print("✅ Execution successful!")
 
         # Inspect result structure
-        print(f"\n📊 Result Analysis:")
+        print("\n📊 Result Analysis:"s:")
         print(f"   - Result type: {type(result)}")
         print(
             f"   - Result keys: {list(result.keys()) if isinstance(result, dict) else 'Not a dict'}"
@@ -162,7 +161,7 @@ async def debug_execution():
 
         # Check messages
         if isinstance(result, dict) and "messages" in result:
-            print(f"\n📨 Messages Analysis:")
+            print("\n📨 Messages Analysis:"s:")
             print(f"   - Total messages: {len(result['messages'])}")
 
             # Group messages by type
@@ -176,7 +175,7 @@ async def debug_execution():
             print(f"   - Message types: {message_types}")
 
             # Show each message
-            print(f"\n📜 Message Details:")
+            print("\n📜 Message Details:"s:")
             for i, msg in enumerate(result["messages"]):
                 print(f"\n   Message {i+1} ({type(msg).__name__}):")
                 if hasattr(msg, "content"):
@@ -197,7 +196,7 @@ async def debug_execution():
 
         # Check agent outputs if available
         if isinstance(result, dict) and "agent_outputs" in result:
-            print(f"\n🤖 Agent Outputs:")
+            print("\n🤖 Agent Outputs:"s:")
             for agent_name, output in result["agent_outputs"].items():
                 print(f"   - {agent_name}:")
                 print(f"     Type: {type(output).__name__}")
@@ -206,7 +205,7 @@ async def debug_execution():
 
         # Check agent states if available
         if isinstance(result, dict) and "agent_states" in result:
-            print(f"\n📊 Agent States:")
+            print("\n📊 Agent States:"s:")
             for agent_name, state in result["agent_states"].items():
                 print(f"   - {agent_name}:")
                 print(f"     Fields: {len(state)}")
@@ -267,7 +266,7 @@ if __name__ == "__main__":
         if isinstance(result, dict) and "messages" in result and result["messages"]:
             last_msg = result["messages"][-1]
             if hasattr(last_msg, "content"):
-                print(f"\n📝 Final Answer:")
+                print("\n📝 Final Answer:"r:")
                 print(f"{last_msg.content}")
     else:
         print("\n❌ Debug execution failed - check errors above")

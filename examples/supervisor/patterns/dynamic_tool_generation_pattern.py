@@ -72,7 +72,8 @@ class DynamicSupervisorV2(ReactAgent):
     agent_choice_model: DynamicChoiceModel | None = Field(default=None)
 
     @model_validator(mode="after")
-    def setup_dynamic_supervisor(self):
+    @classmethod
+    def setup_dynamic_supervisor(cls):
         """Set up supervisor with dynamic tool creation."""
         # Initialize choice model
         self.agent_choice_model = DynamicChoiceModel(
@@ -255,7 +256,6 @@ class DynamicSupervisorV2(ReactAgent):
                 return f"{agent_name} response: {response}"
 
             except Exception as e:
-                pass
 
                 # Record failure
                 self.state.execution_history.append(

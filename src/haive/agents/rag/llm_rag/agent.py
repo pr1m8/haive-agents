@@ -1,4 +1,6 @@
 import logging
+
+# Set up logging
 from typing import Any
 
 from haive.core.engine.agent.agent import register_agent
@@ -9,7 +11,6 @@ from langgraph.types import Command
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.llm_rag.config import LLMRAGConfig
 
-# Set up logging
 logger = logging.getLogger(__name__)
 
 
@@ -61,7 +62,7 @@ class LLMRAGAgent(BaseRAGAgent):
         base_rag_subgraph = super().create_runnable()
 
         # Define function to invoke the base RAG subgraph
-        def retrieve_documents(state):
+        def retrieve_documents(state: dict[str, Any]):
             logger.info(
                 f"Invoking base RAG for document retrieval with query: '{state.query}'"
             )
@@ -85,7 +86,7 @@ class LLMRAGAgent(BaseRAGAgent):
                 )
 
         # Define a function to check document relevance
-        def check_relevance(state):
+        def check_relevance(state: dict[str, Any]):
             logger.info(
                 f"Checking relevance of {len(state.retrieved_documents)} documents"
             )
@@ -120,7 +121,7 @@ class LLMRAGAgent(BaseRAGAgent):
                 )
 
         # Define a function to generate an answer
-        def generate_answer(state):
+        def generate_answer(state: dict[str, Any]):
             logger.info(f"Generating answer with relevance: {state.is_relevant}")
 
             try:
@@ -164,7 +165,7 @@ class LLMRAGAgent(BaseRAGAgent):
             graph_builder.add_node("check_relevance", check_relevance)
         else:
             # If no relevance checker, add a passthrough node
-            def default_relevance(state):
+            def default_relevance(state: dict[str, Any]):
                 return Command(
                     update={"is_relevant": bool(state.retrieved_documents)},
                     goto="generate_answer",

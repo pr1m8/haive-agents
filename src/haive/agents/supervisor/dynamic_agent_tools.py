@@ -1,5 +1,6 @@
 """Dynamic Agent Management Tools for Supervisor.
 
+from typing import Any
 This module provides tools that allow the supervisor to dynamically add, remove,
 and manage agents at runtime through tool calls, integrating with DynamicChoiceModel
 for routing and state management.
@@ -74,7 +75,7 @@ class ListAgentsInput(BaseModel):
 class AgentRegistryManager:
     """Manages dynamic agent registry with tool integration."""
 
-    def __init__(self, supervisor_agent):
+    def __init__(self, supervisor_agent: Any):
         """Initialize with supervisor agent reference."""
         self.supervisor = supervisor_agent
         self.choice_model = DynamicChoiceModel[str](
@@ -333,7 +334,7 @@ class AgentSelectorTool(BaseTool):
         return "This tool requires async execution"
 
 
-def create_agent_management_tools(supervisor_agent) -> list[BaseTool]:
+def create_agent_management_tools(supervisor_agent: Any) -> list[BaseTool]:
     """Create all agent management tools for a supervisor."""
     registry_manager = AgentRegistryManager(supervisor_agent)
 
@@ -359,7 +360,7 @@ def create_agent_management_tools(supervisor_agent) -> list[BaseTool]:
     return tools
 
 
-def register_agent_constructor(supervisor_agent, agent_type: str, constructor):
+def register_agent_constructor(supervisor_agent: Any, agent_type: str, constructor):
     """Register an agent constructor with the supervisor's registry manager."""
     # This would need to be called on the registry manager
     # For now, this is a placeholder for the integration pattern

@@ -1,26 +1,104 @@
-"""Enhanced Discovery System for Dynamic Agent and Tool Management.
+"""Module exports."""
 
-This module provides advanced discovery capabilities for Haive agents, including:
-- Semantic discovery using vector embeddings
-- Dynamic tool selection based on query content
-- Component capability matching and analysis
-- Memory-aware discovery for persistent systems
-- LangGraph-style tool management patterns
-
-The system builds on the existing haive.core.utils.discovery infrastructure
-while adding intelligent, context-aware discovery capabilities.
-"""
-
-# Re-export component registry items from core
-from haive.core.registry import DynamicRegistry, RegistryItem, RegistryManager
-
-from haive.agents.discovery.component_discovery_agent import ComponentDiscoveryAgent
+from discovery.component_discovery_agent import (
+    ComponentDiscoveryAgent,
+    clear_cache,
+    get_cache_stats,
+    setup_discovery_agent,
+)
+from discovery.dynamic_tool_selector import (
+    ContextAwareSelector,
+    ContextAwareState,
+    DynamicToolSelector,
+    LangGraphStyleSelector,
+    SelectionMode,
+    ToolBindingStrategy,
+    ToolSelectionResult,
+    ToolSelectionStrategy,
+    ToolUsageStats,
+    create_context_aware_selector,
+    create_dynamic_tool_selector,
+    create_langgraph_style_selector,
+    create_tool_selection_node,
+    placeholder_function,
+    setup_selector,
+)
+from discovery.selection_strategies import (
+    AdaptiveSelectionStrategy,
+    BaseSelectionStrategy,
+    CapabilityBasedStrategy,
+    ContextualSelectionStrategy,
+    EnsembleSelectionStrategy,
+    LearningSelectionStrategy,
+    SemanticSelectionStrategy,
+    add_feedback,
+    create_selection_strategy,
+    update_performance,
+)
+from discovery.semantic_discovery import (
+    CapabilityMatcher,
+    DiscoveryMode,
+    EmbeddingProvider,
+    QueryAnalysis,
+    QueryAnalyzer,
+    SemanticDiscoveryEngine,
+    ToolSelectionStrategy,
+    VectorBasedToolSelector,
+    analyze_query,
+    build_capability_matrix,
+    embed_documents,
+    embed_query,
+    index_tools,
+    match_tools,
+    setup_registry,
+    setup_vector_store,
+    update_selection_strategy,
+)
 
 __all__ = [
-    # Component Registry (re-exported from core)
-    "DynamicRegistry",
-    "RegistryItem",
-    "RegistryManager",
-    # Component Discovery Agent
+    "AdaptiveSelectionStrategy",
+    "BaseSelectionStrategy",
+    "CapabilityBasedStrategy",
+    "CapabilityMatcher",
     "ComponentDiscoveryAgent",
+    "ContextAwareSelector",
+    "ContextAwareState",
+    "ContextualSelectionStrategy",
+    "DiscoveryMode",
+    "DynamicToolSelector",
+    "EmbeddingProvider",
+    "EnsembleSelectionStrategy",
+    "LangGraphStyleSelector",
+    "LearningSelectionStrategy",
+    "QueryAnalysis",
+    "QueryAnalyzer",
+    "SelectionMode",
+    "SemanticDiscoveryEngine",
+    "SemanticSelectionStrategy",
+    "ToolBindingStrategy",
+    "ToolSelectionResult",
+    "ToolSelectionStrategy",
+    "ToolUsageStats",
+    "VectorBasedToolSelector",
+    "add_feedback",
+    "analyze_query",
+    "build_capability_matrix",
+    "clear_cache",
+    "create_context_aware_selector",
+    "create_dynamic_tool_selector",
+    "create_langgraph_style_selector",
+    "create_selection_strategy",
+    "create_tool_selection_node",
+    "embed_documents",
+    "embed_query",
+    "get_cache_stats",
+    "index_tools",
+    "match_tools",
+    "placeholder_function",
+    "setup_discovery_agent",
+    "setup_registry",
+    "setup_selector",
+    "setup_vector_store",
+    "update_performance",
+    "update_selection_strategy",
 ]

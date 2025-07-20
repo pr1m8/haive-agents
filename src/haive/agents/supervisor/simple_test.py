@@ -11,14 +11,12 @@ import logging
 import os
 from typing import Any
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import LLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
 from rich.console import Console
 from rich.panel import Panel
 
 from haive.agents.simple.agent import SimpleAgent
-from haive.agents.supervisor.agent_v2 import SupervisorAgent, SupervisorState
+from haive.agents.supervisor.agent_v2 import SupervisorAgent
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -207,7 +205,7 @@ async def test_routing_flow():
         logger.error("Routing test failed", exc_info=True)
 
 
-def main():
+def main() -> None:
     """Main test runner."""
     console.print(
         Panel(
@@ -216,7 +214,7 @@ def main():
 
 Architecture:
 ✅ ReactAgent with add_agent tool
-✅ Dynamic routing tool with base mod  
+✅ Dynamic routing tool with base mod
 ✅ Prompt template with agents in state
 ✅ Generic agent execution node
 ✅ Real LLM-powered routing decisions

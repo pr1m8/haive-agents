@@ -262,10 +262,10 @@ def main():
 
 
     for game in successful_games:
-        pass")
+        pass
 
     for game in failed_games:
-        pass")
+        pass
 
 
 

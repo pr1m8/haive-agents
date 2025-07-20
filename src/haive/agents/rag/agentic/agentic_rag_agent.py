@@ -4,17 +4,17 @@ This implements an advanced RAG system with document grading, query rewriting,
 and conditional routing between retrieval and web search.
 """
 
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.messages_state import MessagesState
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import AIMessage
 from langchain_core.tools import tool
 from langgraph.graph import END, START
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from haive.agents.rag.agentic.document_grader import create_document_grader_agent
 from haive.agents.rag.agentic.query_rewriter import create_query_rewriter_agent
@@ -32,21 +32,21 @@ class AgenticRAGState(MessagesState):
     query_rewrite_count: int = Field(default=0, description="Number of query rewrites")
 
     # Retrieved documents
-    retrieved_documents: List[Dict[str, Any]] = Field(
+    retrieved_documents: list[dict[str, Any]] = Field(
         default_factory=list, description="Documents retrieved from vector store"
     )
 
     # Graded documents
-    graded_documents: List[Dict[str, Any]] = Field(
+    graded_documents: list[dict[str, Any]] = Field(
         default_factory=list, description="Documents after relevance grading"
     )
 
-    relevant_documents: List[Dict[str, Any]] = Field(
+    relevant_documents: list[dict[str, Any]] = Field(
         default_factory=list, description="Only the relevant documents"
     )
 
     # Web search results
-    web_search_results: List[Dict[str, Any]] = Field(
+    web_search_results: list[dict[str, Any]] = Field(
         default_factory=list, description="Results from web search if needed"
     )
 
@@ -72,24 +72,25 @@ class AgenticRAGAgent(SimpleAgent):
     5. Final answer generation
 
     Example:
-        ```python
-        # Create agentic RAG agent
-        agent = AgenticRAGAgent.create_default(
+        .. code-block:: python
+
+            # Create agentic RAG agent
+            agent = AgenticRAGAgent.create_default(
             name="agentic_rag",
             retriever_config=vector_store_config,
             use_web_search=True
-        )
+            )
 
-        # Process a query
-        result = await agent.arun("What are the latest advances in quantum computing?")
+            # Process a query
+            result = await agent.arun("What are the latest advances in quantum computing?")
 
-        # The agent will:
-        # 1. Retrieve documents from vector store
-        # 2. Grade them for relevance
-        # 3. Rewrite query if needed
-        # 4. Use web search if local docs aren't sufficient
-        # 5. Generate comprehensive answer
-        ```
+            # The agent will:
+            # 1. Retrieve documents from vector store
+            # 2. Grade them for relevance
+            # 3. Rewrite query if needed
+            # 4. Use web search if local docs aren't sufficient
+            # 5. Generate comprehensive answer
+
     """
 
     # Component configurations
@@ -97,19 +98,19 @@ class AgenticRAGAgent(SimpleAgent):
         ..., description="Retriever configuration for document retrieval"
     )
 
-    grader_agent: Optional[Any] = Field(
+    grader_agent: Any | None = Field(
         default=None, description="Agent for grading document relevance"
     )
 
-    rewriter_agent: Optional[Any] = Field(
+    rewriter_agent: Any | None = Field(
         default=None, description="Agent for query refinement"
     )
 
-    generator_agent: Optional[SimpleAgent] = Field(
+    generator_agent: SimpleAgent | None = Field(
         default=None, description="Agent for final answer generation"
     )
 
-    web_search_agent: Optional[ReactRAGAgent] = Field(
+    web_search_agent: ReactRAGAgent | None = Field(
         default=None, description="Agent for web search fallback"
     )
 
@@ -269,7 +270,7 @@ class AgenticRAGAgent(SimpleAgent):
 
         return graph
 
-    async def _retrieve_documents(self, state: AgenticRAGState) -> Dict[str, Any]:
+    async def _retrieve_documents(self, state: AgenticRAGState) -> dict[str, Any]:
         """Retrieve documents using the RAG agent."""
         # Use refined query if available, otherwise original
         query = state.refined_query or state.original_query
@@ -287,15 +288,15 @@ class AgenticRAGAgent(SimpleAgent):
 
         return {
             "retrieved_documents": documents,
-            "messages": state.messages
-            + [
+            "messages": [
+                *state.messages,
                 AIMessage(
                     content=f"Retrieved {len(documents)} documents for query: {query}"
-                )
+                ),
             ],
         }
 
-    async def _grade_documents(self, state: AgenticRAGState) -> Dict[str, Any]:
+    async def _grade_documents(self, state: AgenticRAGState) -> dict[str, Any]:
         """Grade retrieved documents for relevance."""
         if not self.grader_agent:
             # Skip grading if no grader agent
@@ -332,12 +333,11 @@ class AgenticRAGAgent(SimpleAgent):
             "graded_documents": state.retrieved_documents,
             "relevant_documents": relevant_docs,
             "all_documents_relevant": all_relevant,
-            "messages": state.messages
-            + [
+            "messages": [
+                *state.messages,
                 AIMessage(
-                    content=f"Graded {len(state.retrieved_documents)} documents. "
-                    f"{len(relevant_docs)} are relevant."
-                )
+                    content=f"Graded {len(state.retrieved_documents)} documents. {len(relevant_docs)} are relevant."
+                ),
             ],
         }
 
@@ -358,7 +358,7 @@ class AgenticRAGAgent(SimpleAgent):
         # Otherwise, generate with what we have
         return "generate"
 
-    async def _rewrite_query(self, state: AgenticRAGState) -> Dict[str, Any]:
+    async def _rewrite_query(self, state: AgenticRAGState) -> dict[str, Any]:
         """Rewrite the query for better retrieval."""
         if not self.rewriter_agent:
             return {"query_rewrite_count": state.query_rewrite_count + 1}
@@ -373,16 +373,15 @@ class AgenticRAGAgent(SimpleAgent):
         return {
             "refined_query": rewrite_result.best_refined_query,
             "query_rewrite_count": state.query_rewrite_count + 1,
-            "messages": state.messages
-            + [
+            "messages": [
+                *state.messages,
                 AIMessage(
-                    content=f"Rewrote query from '{query}' to "
-                    f"'{rewrite_result.best_refined_query}'"
-                )
+                    content=f"Rewrote query from '{query}' to '{rewrite_result.best_refined_query}'"
+                ),
             ],
         }
 
-    async def _web_search(self, state: AgenticRAGState) -> Dict[str, Any]:
+    async def _web_search(self, state: AgenticRAGState) -> dict[str, Any]:
         """Perform web search as fallback."""
         if not self.web_search_agent:
             return {"web_search_results": []}
@@ -402,11 +401,13 @@ class AgenticRAGAgent(SimpleAgent):
 
         return {
             "web_search_results": web_results,
-            "messages": state.messages
-            + [AIMessage(content=f"Performed web search for: {query}")],
+            "messages": [
+                *state.messages,
+                AIMessage(content=f"Performed web search for: {query}"),
+            ],
         }
 
-    async def _generate_answer(self, state: AgenticRAGState) -> Dict[str, Any]:
+    async def _generate_answer(self, state: AgenticRAGState) -> dict[str, Any]:
         """Generate final answer using all available information."""
         if not self.generator_agent:
             return {"final_answer": "No generator agent available."}
@@ -433,5 +434,5 @@ class AgenticRAGAgent(SimpleAgent):
 
         return {
             "final_answer": answer,
-            "messages": state.messages + [AIMessage(content=answer)],
+            "messages": [*state.messages, AIMessage(content=answer)],
         }

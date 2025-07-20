@@ -2,7 +2,6 @@
 Tests for JoinStep - Auto DAG detection and parallelization
 """
 
-import pytest
 
 from haive.agents.planning.rewoo.models.join_step import JoinStep, JoinStrategy
 from haive.agents.planning.rewoo.models.plans import ExecutionPlan
@@ -12,7 +11,7 @@ from haive.agents.planning.rewoo.models.steps import BasicStep
 class TestJoinStep:
     """Test suite for JoinStep functionality."""
 
-    def test_basic_join_step_creation(self):
+    def test_basic_join_step_creation(self) -> None:
         """Test creating a basic join step."""
         step1 = BasicStep(description="First parallel step")
         step2 = BasicStep(description="Second parallel step")
@@ -23,12 +22,12 @@ class TestJoinStep:
             join_strategy=JoinStrategy.WAIT_ALL,
         )
 
-        assert join_step.is_join_point == True
+        assert join_step.is_join_point
         assert join_step.parallel_branch_count == 2
         assert join_step.join_complexity == "simple_parallel"
         assert join_step.join_strategy == JoinStrategy.WAIT_ALL
 
-    def test_auto_detection_on_init(self):
+    def test_auto_detection_on_init(self) -> None:
         """Test automatic detection during initialization."""
         deps = ["step_1", "step_2", "step_3"]
 
@@ -36,15 +35,15 @@ class TestJoinStep:
 
         # Should auto-detect parallel structure
         assert join_step.parallel_inputs == deps
-        assert join_step.join_metadata["auto_detected"] == True
+        assert join_step.join_metadata["auto_detected"]
         assert join_step.join_metadata["parallel_inputs"] == deps
         assert join_step.join_function is not None
 
-    def test_computed_fields(self):
+    def test_computed_fields(self) -> None:
         """Test computed fields are calculated correctly."""
         # Test sequential (single dependency)
         sequential = JoinStep(description="Sequential step", depends_on=["step_1"])
-        assert sequential.is_join_point == False
+        assert not sequential.is_join_point
         assert sequential.parallel_branch_count == 1
         assert sequential.join_complexity == "sequential"
 
@@ -52,7 +51,7 @@ class TestJoinStep:
         simple_parallel = JoinStep(
             description="Simple parallel", depends_on=["step_1", "step_2"]
         )
-        assert simple_parallel.is_join_point == True
+        assert simple_parallel.is_join_point
         assert simple_parallel.parallel_branch_count == 2
         assert simple_parallel.join_complexity == "simple_parallel"
 
@@ -64,7 +63,7 @@ class TestJoinStep:
         assert complex_parallel.join_complexity == "complex_parallel"
         assert complex_parallel.parallel_branch_count == 7
 
-    def test_join_strategies(self):
+    def test_join_strategies(self) -> None:
         """Test different join strategies."""
         deps = ["step_1", "step_2", "step_3"]
 
@@ -72,18 +71,18 @@ class TestJoinStep:
         wait_all = JoinStep(
             description="Wait all", depends_on=deps, join_strategy=JoinStrategy.WAIT_ALL
         )
-        assert wait_all.can_execute(set()) == False
-        assert wait_all.can_execute({"step_1"}) == False
-        assert wait_all.can_execute({"step_1", "step_2"}) == False
-        assert wait_all.can_execute({"step_1", "step_2", "step_3"}) == True
+        assert not wait_all.can_execute(set())
+        assert not wait_all.can_execute({"step_1"})
+        assert not wait_all.can_execute({"step_1", "step_2"})
+        assert wait_all.can_execute({"step_1", "step_2", "step_3"})
 
         # Test WAIT_ANY
         wait_any = JoinStep(
             description="Wait any", depends_on=deps, join_strategy=JoinStrategy.WAIT_ANY
         )
-        assert wait_any.can_execute(set()) == False
-        assert wait_any.can_execute({"step_1"}) == True
-        assert wait_any.can_execute({"step_1", "step_2"}) == True
+        assert not wait_any.can_execute(set())
+        assert wait_any.can_execute({"step_1"})
+        assert wait_any.can_execute({"step_1", "step_2"})
 
         # Test WAIT_MAJORITY
         wait_majority = JoinStep(
@@ -91,14 +90,14 @@ class TestJoinStep:
             depends_on=deps,
             join_strategy=JoinStrategy.WAIT_MAJORITY,
         )
-        assert wait_majority.can_execute(set()) == False
-        assert wait_majority.can_execute({"step_1"}) == False
+        assert not wait_majority.can_execute(set())
+        assert not wait_majority.can_execute({"step_1"})
         assert (
-            wait_majority.can_execute({"step_1", "step_2"}) == True
+            wait_majority.can_execute({"step_1", "step_2"})
         )  # 2/3 is majority
-        assert wait_majority.can_execute({"step_1", "step_2", "step_3"}) == True
+        assert wait_majority.can_execute({"step_1", "step_2", "step_3"})
 
-    def test_estimated_wait_time(self):
+    def test_estimated_wait_time(self) -> None:
         """Test wait time estimation."""
         # More branches should generally mean longer wait time for WAIT_ALL
         simple_join = JoinStep(
@@ -130,7 +129,7 @@ class TestJoinStep:
 
         assert wait_any_join.estimated_wait_time < wait_all_join.estimated_wait_time
 
-    def test_optimization_detection(self):
+    def test_optimization_detection(self) -> None:
         """Test optimization opportunity detection."""
         # Small joins shouldn't suggest optimization
         small_join = JoinStep(
@@ -138,7 +137,7 @@ class TestJoinStep:
             depends_on=["step_1", "step_2"],
             join_strategy=JoinStrategy.WAIT_ALL,
         )
-        assert small_join.can_optimize_parallel == False
+        assert not small_join.can_optimize_parallel
 
         # Large joins with WAIT_ANY should suggest optimization
         large_join = JoinStep(
@@ -146,9 +145,9 @@ class TestJoinStep:
             depends_on=[f"step_{i}" for i in range(1, 5)],
             join_strategy=JoinStrategy.WAIT_ANY,
         )
-        assert large_join.can_optimize_parallel == True
+        assert large_join.can_optimize_parallel
 
-    def test_join_function_suggestions(self):
+    def test_join_function_suggestions(self) -> None:
         """Test automatic join function suggestions."""
         # Single dependency should suggest passthrough
         single = JoinStep(description="Single", depends_on=["step_1"])
@@ -170,7 +169,7 @@ class TestJoinStep:
         )
         assert many_deps.join_function == "reduce_complex"
 
-    def test_execution_with_different_strategies(self):
+    def test_execution_with_different_strategies(self) -> None:
         """Test execution with different join strategies."""
         join_step = JoinStep(
             description="Test execution",
@@ -193,7 +192,7 @@ class TestJoinStep:
         assert join_step.parallel_results["step_1"] == "Result from step 1"
         assert join_step.parallel_results["step_2"] == "Result from step 2"
 
-    def test_dependency_analysis(self):
+    def test_dependency_analysis(self) -> None:
         """Test dependency pattern analysis."""
         # Create a set of steps with complex dependencies
         step1 = BasicStep(description="Independent 1")
@@ -214,7 +213,7 @@ class TestJoinStep:
         assert "parallel_opportunities" in analysis
         assert "suggested_optimizations" in analysis
 
-    def test_factory_method(self):
+    def test_factory_method(self) -> None:
         """Test factory method for creating join steps."""
         join_step = JoinStep.create_auto_join(
             description="Auto-created join",
@@ -224,9 +223,9 @@ class TestJoinStep:
 
         assert join_step.join_strategy == JoinStrategy.WAIT_MAJORITY
         assert join_step.depends_on == ["step_1", "step_2", "step_3"]
-        assert join_step.join_metadata["auto_detected"] == True
+        assert join_step.join_metadata["auto_detected"]
 
-    def test_get_join_info(self):
+    def test_get_join_info(self) -> None:
         """Test comprehensive join information."""
         join_step = JoinStep(
             description="Info test",
@@ -252,7 +251,7 @@ class TestJoinStep:
         for key in required_keys:
             assert key in info
 
-        assert info["is_join_point"] == True
+        assert info["is_join_point"]
         assert info["parallel_branch_count"] == 3
         assert info["join_complexity"] == "simple_parallel"
 
@@ -260,7 +259,7 @@ class TestJoinStep:
 class TestJoinStepDAGAnalysis:
     """Test DAG-wide analysis methods."""
 
-    def test_dag_structure_analysis(self):
+    def test_dag_structure_analysis(self) -> None:
         """Test analysis of entire DAG structure."""
         # Create a complex DAG
         step1 = BasicStep(description="Start 1")
@@ -288,7 +287,7 @@ class TestJoinStepDAGAnalysis:
         assert "dag_complexity" in analysis
         assert "parallelization_score" in analysis
 
-    def test_dag_complexity_calculation(self):
+    def test_dag_complexity_calculation(self) -> None:
         """Test DAG complexity classification."""
         # Linear structure
         linear_steps = [
@@ -308,7 +307,7 @@ class TestJoinStepDAGAnalysis:
         complex_complexity = JoinStep._calculate_dag_complexity(complex_steps)
         assert complex_complexity in ["moderate_dag", "complex_dag"]
 
-    def test_parallelization_score(self):
+    def test_parallelization_score(self) -> None:
         """Test parallelization benefit scoring."""
         # No parallelization opportunity
         sequential_steps = [
@@ -331,7 +330,7 @@ class TestJoinStepDAGAnalysis:
 class TestJoinStepIntegration:
     """Test JoinStep integration with ExecutionPlan."""
 
-    def test_join_steps_in_execution_plan(self):
+    def test_join_steps_in_execution_plan(self) -> None:
         """Test JoinSteps work properly in ExecutionPlan."""
         # Create parallel branches
         step1 = BasicStep(description="Parallel branch 1")
@@ -364,7 +363,7 @@ class TestJoinStepIntegration:
         assert plan.execution_levels[1] == [join_step.id]
         assert plan.execution_levels[2] == [final_step.id]
 
-    def test_complex_dag_with_multiple_joins(self):
+    def test_complex_dag_with_multiple_joins(self) -> None:
         """Test complex DAG with multiple join points."""
         # Create initial parallel work
         init1 = BasicStep(description="Init 1")
@@ -433,7 +432,7 @@ if __name__ == "__main__":
             join_strategy=JoinStrategy.WAIT_ANY,
         )
 
-        print(f"\n✅ WAIT_ANY strategy:")
+        print("\n✅ WAIT_ANY strategy:":")
         print(f"   Can execute with step_1: {wait_any.can_execute({'step_1'})}")
         print(f"   Can execute with both: {wait_any.can_execute({'step_1', 'step_2'})}")
 
@@ -449,7 +448,7 @@ if __name__ == "__main__":
         ]
 
         analysis = JoinStep.analyze_dag_structure(steps)
-        print(f"\n✅ DAG Analysis:")
+        print("\n✅ DAG Analysis:":")
         print(f"   Total steps: {analysis['total_steps']}")
         print(f"   Existing joins: {analysis['existing_join_points']}")
         print(f"   DAG complexity: {analysis['dag_complexity']}")

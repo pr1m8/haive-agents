@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Enhanced supervisor using DynamicChoiceModel for structured decision making."""
 
+import contextlib
 from typing import Any
 
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
@@ -34,7 +35,8 @@ class EnhancedSupervisorWithChoice(ReactAgent):
     )
 
     @model_validator(mode="after")
-    def setup_enhanced_supervisor(self) -> "EnhancedSupervisorWithChoice":
+    @classmethod
+    def setup_enhanced_supervisor(cls) -> "EnhancedSupervisorWithChoice":
         """Setup supervisor with choice model + route tools."""
         # Update choice model with available agents
         self._sync_choice_model_with_registry()
@@ -185,11 +187,8 @@ def test_enhanced_supervisor():
     supervisor.agent_choice_model.test_model("math_agent")
 
     # Test supervisor workflow
-    try:
+    with contextlib.suppress(Exception):
         supervisor.invoke({"messages": [HumanMessage("I need to calculate 15 * 7")]})
-
-    except Exception:
-        pass
 
     return supervisor
 

@@ -135,7 +135,7 @@ class ReactAgentConfig(AgentConfig):
     # Validators for tools list
     @field_validator("tools", mode="before")
     @classmethod
-    def ensure_tools_list(cls, v):
+    def ensure_tools_list(cls, v) -> Any:
         """Ensure tools are always a list."""
         if v is None:
             return []
@@ -144,7 +144,7 @@ class ReactAgentConfig(AgentConfig):
     # Validator to align output formats
     @field_validator("structured_output_model", "response_format", mode="before")
     @classmethod
-    def align_output_format(cls, v, info):
+    def align_output_format(cls, v, info) -> Any:
         """Align the structured output model and response format."""
         # If response_format is set but structured_output_model is not
         if info.field_name == "structured_output_model" and v is None:
@@ -157,7 +157,7 @@ class ReactAgentConfig(AgentConfig):
     # Validator for system prompt
     @field_validator("system_prompt", mode="before")
     @classmethod
-    def update_system_prompt(cls, v):
+    def update_system_prompt(cls, v) -> Any:
         """Update the system prompt in the engine if provided."""
         return v or DEFAULT_REACT_SYSTEM_PROMPT
 

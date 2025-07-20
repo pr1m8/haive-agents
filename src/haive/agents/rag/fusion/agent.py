@@ -1,5 +1,6 @@
 """RAG Fusion Agents.
 
+from typing import Any
 Implementation of RAG Fusion with reciprocal rank fusion for enhanced retrieval.
 Based on the architecture pattern from rag-architectures-flows.md.
 """
@@ -237,7 +238,7 @@ class ReciprocalRankFusionAgent(Agent):
         # Calculate overlap between top results
         top_docs = {}
         for query, docs in retrieval_results.items():
-            top_docs[query] = set(self._doc_id(doc) for doc in docs[:5])
+            top_docs[query] = {self._doc_id(doc) for doc in docs[:5]}
 
         # Average pairwise overlap
         overlaps = []
@@ -394,7 +395,7 @@ def create_multi_query_retrieval_callable(
             all_queries = [original_query]
 
         # Remove duplicates and empty queries
-        all_queries = list(set(q.strip() for q in all_queries if q.strip()))
+        all_queries = list({q.strip() for q in all_queries if q.strip()})
         logger.info(
             f"Multi-query retrieval with {len(all_queries)} queries: {all_queries}"
         )

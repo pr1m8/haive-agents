@@ -1,7 +1,7 @@
-# src/haive/agents/simple/agent.py
+# src/haive/agents/simple/clean_agent.py
 
 import logging
-from typing import Any
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -17,424 +17,309 @@ from langgraph.graph import END, START
 from langgraph.types import Command
 from pydantic import BaseModel, Field, field_validator
 
-from haive.agents.base.agent import Agent
+# Import the base Agent from the correct location
+from haive.agents.base import Agent
 
 logger = logging.getLogger(__name__)
 
 
-def has_tool_calls(state) -> bool:
-    """Check if the last AI message has tool calls."""
-    if not hasattr(state, "messages") or not state.messages:
-        return False
+# ========================================================================
+# HELPER FUNCTIONS
+# ========================================================================
 
-    last_msg = state.messages[-1]
 
-    if not isinstance(last_msg, AIMessage):
+def has_tool_calls(state: dict[str, Any]) -> Literal["true", "false"]:
+    """Check if the last message has tool calls."""
+    messages = state.get("messages", [])
+    if not messages:
+        return "false"
+
+    last_message = messages[-1]
+    if isinstance(last_message, AIMessage) and last_message.tool_calls:
+        return "true"
+    return "false"
+
+
+def check_if_should_use_tool(state: dict[str, Any]) -> bool:
+    """Check if the last message has tool calls."""
+    last_msg = state.get("messages", [])[-1] if state.get("messages") else None
+    if not last_msg:
         return False
 
     tool_calls = getattr(last_msg, "tool_calls", None)
     return bool(tool_calls)
 
 
-def placeholder_node(state):
+def placeholder_node(state: dict[str, Any]):
     """Placeholder node that does nothing."""
     return Command(update={})
 
 
+# ========================================================================
+# SIMPLE AGENT - A minimal Agent implementation with AugLLMConfig
+# ========================================================================
+
+
 class SimpleAgent(Agent):
-    """Simple agent that modifies its engine to include structured output schema.
+    """Simple agent that uses AugLLMConfig as its primary engine.
 
-    This agent provides a streamlined interface for creating agents with structured outputs
-    by automatically modifying the underlying AugLLM engine to include the desired output
-    schema. It's designed for straightforward LLM interactions with optional tool use.
-
-    The SimpleAgent automatically:
-        - Updates engine schemas to include structured output fields
-        - Handles tool routing and execution
-        - Manages conversation flow with tool calls
-        - Provides validation and parsing capabilities
-
-    Args:
-        engine: The AugLLM engine configuration for this agent.
-        tools: Optional list of tools available to the agent.
-        tool_node_config: Configuration for tool execution node.
-        parser_node_config: Configuration for output parsing node.
-        validation_node_config: Configuration for validation node.
-        structured_output_model: Pydantic model for structured outputs.
-        output_parser: Custom output parser for response processing.
-
-    Example:
-        Creating a simple agent with structured output::
-
-            from pydantic import BaseModel
+    This is the clean, minimal implementation that leverages the base Agent.
+    All the complex logic is handled by the base Agent class - this just provides
+    the SimpleAgent-specific convenience fields and graph building.
+    
+    The SimpleAgent is designed to be the most basic functional agent - essentially
+    just Agent[AugLLMConfig] with convenience fields for common LLM parameters.
+    
+    Attributes:
+        temperature: Optional temperature for the LLM (0.0-2.0). Syncs to engine.
+        max_tokens: Optional max tokens for responses. Syncs to engine.
+        model_name: Optional model name override. Syncs to engine.model.
+        force_tool_use: Optional flag to force tool usage. Syncs to engine.
+        structured_output_model: Optional Pydantic model for structured output.
+        system_message: Optional system message override. Syncs to engine.
+        llm_config: Optional LLM configuration dict or object.
+        output_parser: Optional parser for processing LLM output.
+        prompt_template: Optional custom prompt template.
+        
+    Examples:
+        Basic usage::
+        
             from haive.agents.simple import SimpleAgent
             from haive.core.engine.aug_llm import AugLLMConfig
-
-            class TaskResult(BaseModel):
-                completed: bool
-                result: str
-                confidence: float
-
+            
+            # Create with defaults
+            agent = SimpleAgent(name="assistant")
+            result = agent.run("Hello, how are you?")
+            
+        With configuration::
+        
             agent = SimpleAgent(
-                engine=AugLLMConfig(
-                    model="gpt-4",
-                    temperature=0.7
-                ),
-                structured_output_model=TaskResult
+                name="creative_writer",
+                temperature=0.9,
+                max_tokens=1000,
+                system_message="You are a creative writer."
             )
-
-            result = agent.invoke({"query": "Analyze this data"})
-
+            
+        With structured output::
+        
+            from pydantic import BaseModel, Field
+            
+            class Story(BaseModel):
+                title: str = Field(description="Story title")
+                content: str = Field(description="Story content")
+                genre: str = Field(description="Story genre")
+                
+            agent = SimpleAgent(
+                name="story_writer",
+                structured_output_model=Story
+            )
+            story = agent.run("Write a short sci-fi story")
+            # story will be a Story instance
+            
+        With tools::
+        from langchain_core.tools import tool
+        
+        @tool
+        def calculator(expression: str) -> str:
+            """Calculate mathematical expressions."""
+            return str(eval(expression))
+            
+        config = AugLLMConfig(tools=[calculator])
+        agent = SimpleAgent(name="math_assistant", engine=config)
+        result = agent.run("What is 15 * 23?")
+            
     Note:
-        The agent automatically modifies the engine schema to incorporate structured
-        output fields, ensuring seamless integration between the LLM and output models.
+        SimpleAgent always expects an AugLLMConfig engine. If none is provided,
+        it creates one with default settings. The convenience fields (temperature,
+        max_tokens, etc.) are synced to the engine during setup_agent().
+        
+    See Also:
+        haive.agents.react.ReactAgent: For agents that need reasoning loops
+        haive.agents.multi.MultiAgent: For coordinating multiple agents
+        haive.core.engine.aug_llm.AugLLMConfig: The engine configuration
     """
 
     # ========================================================================
-    # CORE ENGINE
+    # CONVENIENCE FIELDS (specific to SimpleAgent)
     # ========================================================================
 
-    engine: AugLLMConfig = Field(
-        default_factory=AugLLMConfig, description="The AugLLM engine for this agent"
+    # These fields sync to the engine for convenience
+    temperature: float | None = Field(
+        default=None, description="Temperature for the LLM (syncs to engine)"
     )
-
-    # ========================================================================
-    # CONVENIENCE FIELDS
-    # ========================================================================
-
-    # LLM parameters
-    temperature: float | None = Field(default=None, description="Temperature")
-    max_tokens: int | None = Field(default=None, description="Max tokens")
-    model_name: str | None = Field(default=None, description="Model name")
-
-    # Tool configuration
-    tools: list[Any] | None = Field(default=None, description="Tools")
-    force_tool_use: bool | None = Field(default=None, description="Force tool use")
-
-    # Structured output - THIS IS THE KEY FIELD
+    max_tokens: int | None = Field(
+        default=None, description="Max tokens for the LLM (syncs to engine)"
+    )
+    model_name: str | None = Field(
+        default=None, description="Model name for the LLM (syncs to engine.model)"
+    )
+    force_tool_use: bool | None = Field(
+        default=None, description="Force tool use (syncs to engine)"
+    )
     structured_output_model: type[BaseModel] | None = Field(
-        default=None, description="Structured output model"
+        default=None, description="Structured output model (syncs to engine)"
     )
-    structured_output_version: int | str | None = Field(
-        default=None, description="Structured output version"
+    system_message: str | None = Field(
+        default=None, description="System message (syncs to engine)"
+    )
+    llm_config: LLMConfig | dict[str, Any] | None = Field(
+        default=None, description="LLM config (syncs to engine)"
     )
 
-    # Prompting
-    prompt_template: ChatPromptTemplate | PromptTemplate | None = Field(
-        default=None, description="Prompt template"
-    )
-    system_message: str | None = Field(default=None, description="System message")
-
-    # LLM config
-    llm_config: LLMConfig | None = Field(default=None, description="LLM config")
-
-    # ========================================================================
-    # NON-SYNCED FIELDS
-    # ========================================================================
-
+    # SimpleAgent specific fields
     output_parser: BaseOutputParser | None = Field(
-        default=None, description="Output parser"
+        default=None, description="Optional output parser"
     )
-    output_parser_field: str | None = Field(
-        default=None, description="Output parser field name"
+    prompt_template: ChatPromptTemplate | PromptTemplate | None = Field(
+        default=None, description="Optional prompt template"
     )
 
     # ========================================================================
-    # VALIDATION AND SETUP
+    # ENGINE REQUIREMENT - SimpleAgent expects AugLLMConfig
     # ========================================================================
 
-    @field_validator("engine")
+    @field_validator("engine", mode="before")
     @classmethod
-    def validate_engine_type(cls, v):
-        """Ensure engine is AugLLMConfig."""
-        if v is not None and not isinstance(v, AugLLMConfig):
-            raise ValueError("SimpleAgent engine must be AugLLMConfig")
+    def ensure_aug_llm_config(cls, v):
+        """Ensure engine is AugLLMConfig or create one."""
+        if v is None:
+            return AugLLMConfig()
+        if isinstance(v, dict):
+            return AugLLMConfig(**v)
+        if not isinstance(v, AugLLMConfig):
+            raise ValueError(f"SimpleAgent requires AugLLMConfig, got {type(v)}")
         return v
 
-    def setup_agent(self):
-        """Custom setup that modifies the engine and regenerates schemas.
+    # ========================================================================
+    # SETUP - Sync convenience fields to engine
+    # ========================================================================
 
-        This is where we MODIFY THE ENGINE to include structured output
-        and then force schema regeneration.
+    def setup_agent(self) -> None:
+        """Sync convenience fields to engine and basic setup.
+        
+        This method is called during agent initialization to:
+        1. Add the engine to the engines dict
+        2. Sync all convenience fields to the engine
+        3. Enable automatic schema generation
+        
+        The convenience fields (temperature, max_tokens, etc.) are copied
+        to the engine configuration if they have non-None values.
         """
         if self.engine:
             # Add engine to engines dict
             self.engines["main"] = self.engine
 
-            # FIXED: Register engine in EngineRegistry so other nodes can find it
-            self._register_engine_in_registry()
+            # Sync convenience fields to engine
+            self._sync_convenience_fields()
 
-            # Sync fields to engine FIRST
-            self._sync_fields_to_engine()
-
-            # MODIFY ENGINE SCHEMA if we have structured output
-            if self.structured_output_model:
-                self._modify_engine_schema()
-
-            # Force schema regeneration after engine modification
+            # Set schema flag for auto-generation
             self.set_schema = True
 
-        # Don't call parent setup_agent() - we handle it ourselves
-
-    def _register_engine_in_registry(self) -> None:
-        """Register the engine in EngineRegistry so other nodes can find it by name."""
-        if not self.engine:
-            return
-
-        try:
-            from haive.core.engine.base import EngineRegistry
-
-            registry = EngineRegistry.get_instance()
-
-            # Check if engine is already registered
-            if not registry.find(self.engine.name):
-                registry.register(self.engine)
-                logger.info(f"Registered engine '{self.engine.name}' in EngineRegistry")
-            else:
-                logger.debug(
-                    f"Engine '{self.engine.name}' already registered in EngineRegistry"
-                )
-
-        except ImportError:
-            logger.warning(
-                "Could not import EngineRegistry - engine registration skipped"
-            )
-        except Exception as e:
-            logger.warning(f"Failed to register engine in registry: {e}")
-
-    def _sync_fields_to_engine(self) -> None:
+    def _sync_convenience_fields(self) -> None:
         """Sync convenience fields to engine."""
         if not self.engine:
             return
 
-        # Sync fields if they exist on engine
-        if self.temperature is not None and hasattr(self.engine, "temperature"):
+        # Sync all the convenience fields
+        if self.temperature is not None:
             self.engine.temperature = self.temperature
-        if self.max_tokens is not None and hasattr(self.engine, "max_tokens"):
+        if self.max_tokens is not None:
             self.engine.max_tokens = self.max_tokens
-        if self.model_name is not None and hasattr(self.engine, "model"):
+        if self.model_name is not None:
             self.engine.model = self.model_name
-        if self.tools is not None and hasattr(self.engine, "tools"):
-            self.engine.tools = self.tools
-        if self.force_tool_use is not None and hasattr(self.engine, "force_tool_use"):
+        if self.force_tool_use is not None:
             self.engine.force_tool_use = self.force_tool_use
-        if self.structured_output_model is not None and hasattr(
-            self.engine, "structured_output_model"
-        ):
+        if self.structured_output_model is not None:
             self.engine.structured_output_model = self.structured_output_model
-        if self.system_message is not None and hasattr(self.engine, "system_message"):
+        if self.system_message is not None:
             self.engine.system_message = self.system_message
-        if self.llm_config is not None and hasattr(self.engine, "llm_config"):
+        if self.llm_config is not None:
             self.engine.llm_config = self.llm_config
 
-    def _modify_engine_schema(self) -> None:
-        """NO-OP: Engine schema modification removed.
-
-        For both V1 and V2 structured output:
-        - Engines should maintain their original output schemas (messages only for LLM)
-        - V1: Parser-based extraction handled by validation nodes
-        - V2: Tool call extraction handled by validation nodes
-        - No need to modify engine schemas
-        """
-        if not self.structured_output_model or not self.engine:
-            return
-
-        logger.info(
-            f"Skipping engine schema modification for {self.structured_output_model.__name__} "
-            f"(version {self.structured_output_version}) - extraction handled by validation nodes"
-        )
-
     # ========================================================================
-    # FORCE SCHEMA REGENERATION AFTER ENGINE MODIFICATION
-    # ========================================================================
-
-    # ========================================================================
-    # NODE DETECTION (unchanged)
-    # ========================================================================
-
-    def _needs_tool_node(self) -> bool:
-        """Check if we need a tool node for langchain tools."""
-        if not self.engine:
-            return False
-
-        tool_routes = self.get_tool_routes()
-        langchain_tools = [
-            tool
-            for tool, route in tool_routes.items()
-            if route in ["langchain_tool", "function", "tool_node"]
-        ]
-
-        return len(langchain_tools) > 0
-
-    def _needs_parser_node(self) -> bool:
-        """Check if we need a parser node for pydantic models."""
-        if not self.engine:
-            return False
-
-        # Check for structured output
-        has_structured_output = bool(
-            self.structured_output_model
-            or getattr(self.engine, "structured_output_model", None)
-        )
-
-        # Check for output parser
-        has_output_parser = self.output_parser is not None
-
-        # Check for pydantic tools
-        tool_routes = self.get_tool_routes()
-        pydantic_tools = [
-            tool for tool, route in tool_routes.items() if route == "pydantic_model"
-        ]
-
-        return has_structured_output or has_output_parser or len(pydantic_tools) > 0
-
-    def _has_force_tool_use(self) -> bool:
-        """Check if tool use is forced."""
-        return bool(
-            getattr(self.engine, "force_tool_use", False)
-            or getattr(self.engine, "force_tool_choice", False)
-            or (self.force_tool_use is not None and self.force_tool_use)
-            or (self.structured_output_model is not None)
-            or (getattr(self.engine, "structured_output_model", None) is not None)
-        )
-
-    def get_tool_routes(self) -> dict[str, str]:
-        """Get tool routes from engine."""
-        if self.engine and hasattr(self.engine, "tool_routes"):
-            return getattr(self.engine, "tool_routes", {})
-        return {}
-
-    # ========================================================================
-    # GRAPH BUILDING with proper state initialization
+    # GRAPH BUILDING - Simple graph for LLM + tools + parsing
     # ========================================================================
 
     def build_graph(self) -> BaseGraph:
-        """Build the agent graph with proper state initialization."""
+        """Build the simple agent graph.
+        
+        Creates a graph with the following structure based on agent configuration:
+        
+        1. Basic (no tools/parsing): START → agent_node → END
+        2. With tools: START → agent_node → validation → tool_node → agent_node
+        3. With parsing: START → agent_node → validation → parse_output → END
+        4. With both: Combines tool and parsing flows
+        
+        The validation node routes between tools, parsing, or END based on
+        the LLM output (tool calls, structured output needs, etc.).
+        
+        Returns:
+            BaseGraph: The compiled agent graph ready for execution.
+            
+        Note:
+            This method is called automatically during agent initialization.
+            The graph structure adapts based on the presence of tools,
+            structured output models, or output parsers.
+        """
         graph = BaseGraph(name=self.name)
 
-        # Track available nodes
-        available_nodes = []
-
-        # Add agent node
+        # Add main agent node
         engine_node = EngineNodeConfig(name="agent_node", engine=self.engine)
         graph.add_node("agent_node", engine_node)
         graph.add_edge(START, "agent_node")
-        available_nodes.append("agent_node")
 
-        # Check what nodes we need
-        needs_tool_node = self._needs_tool_node()
-        needs_parser_node = self._needs_parser_node()
-        has_force_tool_use = self._has_force_tool_use()
+        # Check what additional nodes we need
+        needs_tools = self._has_tools()
+        needs_parsing = self._has_structured_output() or self.output_parser
 
-        # Simple case - no tools
-        if not needs_tool_node and not needs_parser_node:
+        # Simple case - just LLM
+        if not needs_tools and not needs_parsing:
             graph.add_edge("agent_node", END)
-            # Store available nodes in graph metadata
-            graph.metadata["available_nodes"] = available_nodes
             return graph
 
         # Add tool node if needed
-        if needs_tool_node:
-            # V2 tool node with better field handling
-            tool_config = ToolNodeConfig(
-                name="tool_node",
-                engine_name=self.engine.name,
-            )
+        if needs_tools:
+            tool_config = ToolNodeConfig(name="tool_node", engine_name=self.engine.name)
             graph.add_node("tool_node", tool_config)
-            graph.add_edge("tool_node", END)
-            available_nodes.append("tool_node")
 
         # Add parser node if needed
-        if needs_parser_node:
-            # V2 parser node with better field handling
+        if needs_parsing:
             parser_config = ParserNodeConfigV2(
-                name="parse_output",
-                engine_name=self.engine.name,
+                name="parse_output", engine_name=self.engine.name
             )
             graph.add_node("parse_output", parser_config)
-            graph.add_edge("parse_output", END)
-            available_nodes.append("parse_output")
 
-        # Create validation config with available nodes (v2)
-        validation_config = ValidationNodeConfigV2(
-            name="validation",
-            engine_name=self.engine.name,
-            tool_node="tool_node",
-            parser_node="parse_output",
-            available_nodes=available_nodes,
-        )
-
-        # Add validation node with proper config
-        graph.add_node("validation", validation_config)
-        available_nodes.append("validation")
-
-        # Agent routing with conditional branching
-        if has_force_tool_use:
-            # Force tools - always go to validation
-            graph.add_edge("agent_node", "validation")
-        else:
-            # Use conditional branching for tool calls
-            graph.add_conditional_edges(
-                "agent_node", has_tool_calls, {True: "validation", False: END}
+        # Add validation/routing if we have tools or parsing
+        if needs_tools or needs_parsing:
+            validation_config = ValidationNodeConfigV2(
+                name="validation",
+                engine_name=self.engine.name,
+                tool_node="tool_node" if needs_tools else None,
+                parser_node="parse_output" if needs_parsing else None,
             )
+            graph.add_node("validation", validation_config)
 
-        # ValidationNodeConfigV2 returns Command, not conditional routing
-        # Remove the conditional edges as V2 uses Send-based routing internally
-
-        # Store available nodes and tool routes in graph metadata
-        graph.metadata["available_nodes"] = available_nodes
-        graph.metadata["tool_routes"] = self.get_tool_routes()
+            # Route from agent to validation
+            if self.force_tool_use or self._always_needs_validation():
+                graph.add_edge("agent_node", "validation")
+            else:
+                graph.add_conditional_edges(
+                    "agent_node", has_tool_calls, {True: "validation", False: END}
+                )
 
         return graph
 
-    def create_runnable(self, runnable_config=None) -> Any:
-        """Override to ensure state is properly initialized with tool routes and available nodes."""
-        # Get the compiled graph
-        compiled = super().create_runnable(runnable_config)
+    def _has_tools(self) -> bool:
+        """Check if agent has tools."""
+        return bool(self.engine and getattr(self.engine, "tools", None))
 
-        # Ensure initial state has tool_routes, available_nodes, and engine
-        if hasattr(self, "graph") and self.graph and hasattr(self.graph, "metadata"):
-            # The state should be initialized with these values from graph metadata
-            initial_values = {}
+    def _has_structured_output(self) -> bool:
+        """Check if agent has structured output."""
+        return bool(
+            self.structured_output_model
+            or (self.engine and getattr(self.engine, "structured_output_model", None))
+        )
 
-            # Initialize engine field with actual engine object
-            if self.engine:
-                initial_values["engine"] = self.engine
-
-            if "tool_routes" in self.graph.metadata:
-                initial_values["tool_routes"] = self.graph.metadata["tool_routes"]
-            elif self.engine and hasattr(self.engine, "tool_routes"):
-                initial_values["tool_routes"] = self.engine.tool_routes
-
-            if "available_nodes" in self.graph.metadata:
-                initial_values["available_nodes"] = self.graph.metadata[
-                    "available_nodes"
-                ]
-
-            # Store in compiled graph's initial channel values if possible
-            if initial_values and hasattr(compiled, "_channels"):
-                for key, value in initial_values.items():
-                    if key in compiled._channels:
-                        # Set initial value in channel
-                        compiled._channels[key].default_value = value
-
-        return compiled
-
-    # ========================================================================
-    # CONVENIENCE CONSTRUCTORS
-    # ========================================================================
-
-    @classmethod
-    def from_engine(cls, engine: AugLLMConfig, name: str | None = None, **kwargs):
-        """Create SimpleAgent from engine."""
-        return cls(name=name or "Simple Agent", engine=engine, **kwargs)
-
-    @classmethod
-    def create_with_tools(cls, tools: list[Any], name: str | None = None, **kwargs):
-        """Create SimpleAgent with tools."""
-        return cls(name=name or "Tool Agent", tools=tools, **kwargs)
-
-    def __repr__(self) -> str:
-        engine_info = f"model={getattr(self.engine, 'model', 'unknown')}"
-        schema_info = f"structured_output={self.structured_output_model.__name__ if self.structured_output_model else 'None'}"
-        return f"SimpleAgent(name='{self.name}', {engine_info}, {schema_info})"
+    def _always_needs_validation(self) -> bool:
+        """Check if we always need validation (structured output or parser)."""
+        return self._has_structured_output() or bool(self.output_parser)

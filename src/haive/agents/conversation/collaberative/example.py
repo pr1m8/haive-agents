@@ -4,8 +4,6 @@
 import logging
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from langchain_core.messages import AIMessage, SystemMessage
 
 from haive.agents.conversation.collaberative.agent import CollaborativeConversation
 from haive.agents.simple.agent import SimpleAgent
@@ -14,9 +12,8 @@ from haive.agents.simple.agent import SimpleAgent
 logging.getLogger("haive").setLevel(logging.WARNING)
 
 
-def example_brainstorming_session():
+def example_brainstorming_session() -> None:
     """Collaborative brainstorming for a new product."""
-
     # Create brainstorming session
     session = CollaborativeConversation.create_brainstorming_session(
         topic="Eco-friendly smart home device ideas",
@@ -42,13 +39,12 @@ def example_brainstorming_session():
         pass
 
     # Show contribution summary
-    for speaker, count in result.get("contribution_count", {}).items():
+    for _speaker, _count in result.get("contribution_count", {}).items():
         pass
 
 
-def example_code_review():
+def example_code_review() -> None:
     """Collaborative code review session."""
-
     # Create code review
     review = CollaborativeConversation.create_code_review(
         code_description="New authentication microservice using JWT tokens and Redis caching",
@@ -71,9 +67,8 @@ def example_code_review():
         pass
 
 
-def example_project_planning():
+def example_project_planning() -> None:
     """Collaborative project planning session."""
-
     # Create project planning team
     team = {
         "ProjectManager": SimpleAgent(
@@ -149,9 +144,8 @@ def example_project_planning():
         pass
 
 
-def example_research_paper():
+def example_research_paper() -> None:
     """Collaborative research paper writing."""
-
     # Research team
     researchers = {
         "LeadResearcher": SimpleAgent(
@@ -219,14 +213,14 @@ def example_research_paper():
     if "shared_document" in result:
         # Show just first few sections for brevity
         lines = result["shared_document"].split("\n")
-        for _i, line in enumerate(lines[:50]):  # First 50 lines
+        for _i, _line in enumerate(lines[:50]):  # First 50 lines
             pass
         if len(lines) > 50:
-    pass
+            pass
 
-def example_creative_writing():
+
+def example_creative_writing() -> None:
     """Collaborative story writing."""
-
     # Writing team
     writers = {
         "NarrativeWriter": SimpleAgent(
@@ -290,9 +284,8 @@ def example_creative_writing():
     if "shared_document" in result:
         # Show opening sections
         sections = result["shared_document"].split("\n## ")
-        if len(sections) > 1:
-            if len(sections) > 2:
-                pass  # Second section
+        if len(sections) > 1 and len(sections) > 2:
+            pass  # Second section
 
 
 if __name__ == "__main__":

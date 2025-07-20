@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class ReactGraphBuilder(DynamicGraph):
     """Enhanced graph builder for React agents with support for human interaction."""
 
-    def __init__(self, components=None, custom_fields=None, state_schema=None):
+    def __init__(self, components=None, custom_fields=None, state_schema=None) -> None:
         """Initialize the React graph builder."""
         super().__init__(components, custom_fields, state_schema)
         self.has_human_node = False

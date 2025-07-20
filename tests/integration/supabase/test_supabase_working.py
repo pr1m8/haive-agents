@@ -53,7 +53,7 @@ async def main():
         if "prepared statement" in str(e):
             # Check if data was saved anyway
         else:
-            pass")
+            pass
 
     # Wait for writes
     await asyncio.sleep(2)

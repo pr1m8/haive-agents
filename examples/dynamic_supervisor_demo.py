@@ -4,16 +4,17 @@
 This demonstrates the dynamic supervisor with real agents, following
 the pattern we built in experiments.
 """
+"""
+"""
 
 import asyncio
+import contextlib
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from langchain_core.messages import HumanMessage
 
 from haive.agents.dynamic_supervisor import (
     DynamicSupervisorAgent,
-    SupervisorStateWithTools,
 )
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
@@ -48,7 +49,6 @@ def create_agents():
 
 async def demo_supervisor():
     """Demonstrate the dynamic supervisor in action."""
-
     # Create supervisor
     supervisor_engine = AugLLMConfig(
         name="supervisor_engine",
@@ -66,18 +66,18 @@ async def demo_supervisor():
     state.add_agent("assistant", simple_agent, "General purpose assistant")
     state.add_agent("reasoner", react_agent, "Step-by-step reasoning specialist")
 
-    for tool in state.generated_tools:
+    for _tool in state.generated_tools:
         pass
 
     # Show active agents
-    for name, desc in state.list_active_agents().items():
-        pass")
+    for _name, _desc in state.list_active_agents().items():
+        pass
 
     # Test handoff tools
     tools = state.get_all_tools()
 
     # Find a handoff tool
-    handoff_tool = next(t for t in tools if t.name == "handoff_to_assistant")
+    next(t for t in tools if t.name == "handoff_to_assistant")
 
     # Note: Can't execute without API keys, but show structure
 
@@ -111,20 +111,15 @@ async def demo_supervisor():
     # Verify agents are excluded from serialization
     if state.agents:
         agent_name = next(iter(state.agents.keys()))
-        agent_data = state_dict["agents"][agent_name]
+        state_dict["agents"][agent_name]
 
     # Serialize
-    try:
-        serialized = ormsgpack.packb(state_dict)
-    except Exception as e:
-        pass")
-
+    with contextlib.suppress(Exception):
+        ormsgpack.packb(state_dict)
 
 
 async def demo_supervisor_execution():
     """Demo what execution would look like (requires API keys)."""
-
-
 
 
 if __name__ == "__main__":

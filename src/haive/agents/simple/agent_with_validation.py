@@ -7,8 +7,12 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.parser_node_config import ParserNodeConfig
 from haive.core.graph.node.state_updating_validation_node import (
+    Dict,
     StateUpdatingValidationNode,
     ValidationMode,
+    from,
+    import,
+    typing,
 )
 from haive.core.graph.node.tool_node_config import ToolNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -24,7 +28,7 @@ from haive.agents.base.agent import Agent
 logger = logging.getLogger(__name__)
 
 
-def has_tool_calls(state) -> bool:
+def has_tool_calls(state: Dict[str, Any]) -> bool:
     """Check if the last AI message has tool calls."""
     if not hasattr(state, "messages") or not state.messages:
         return False
@@ -95,13 +99,13 @@ class SimpleAgentWithValidation(Agent):
 
     @field_validator("engine")
     @classmethod
-    def validate_engine_type(cls, v):
+    def validate_engine_type(cls, v) -> Any:
         """Ensure engine is AugLLMConfig."""
         if v is not None and not isinstance(v, AugLLMConfig):
             raise ValueError("SimpleAgentWithValidation engine must be AugLLMConfig")
         return v
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """Custom setup that modifies the engine and regenerates schemas."""
         if self.engine:
             # Add engine to engines dict
@@ -360,7 +364,7 @@ class SimpleAgentWithValidation(Agent):
 
         return graph
 
-    def create_runnable(self, runnable_config=None) -> Any:
+    def create_runnable(self, runnable_config: Dict[str, Any]=None) -> Any:
         """Override to ensure state is properly initialized."""
         # Get the compiled graph
         compiled = super().create_runnable(runnable_config)

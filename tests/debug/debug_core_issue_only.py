@@ -11,9 +11,10 @@ import sys
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 
-from haive.core.engine.aug_llm.config import AugLLMConfig
-
 # Direct imports to avoid syntax error issues
+import contextlib
+
+from haive.core.engine.aug_llm.config import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
@@ -34,13 +35,11 @@ class QueryRefinementResponse(BaseModel):
     best_refined_query: str = Field(description="The recommended best refined query")
 
 
-
 config = AugLLMConfig(
     prompt_template=RAG_QUERY_REFINEMENT,
     structured_output_model=QueryRefinementResponse,
     structured_output_version="v2",
 )
-
 
 
 # Check what methods exist for schema derivation
@@ -59,19 +58,17 @@ try:
             pass
 
     test_data = {"query": "test"}
-    try:
+    with contextlib.suppress(Exception):
         instance = input_schema.model_validate(test_data)
-    except Exception as e:
-        pass")
         # This tells us if the issue is in the input schema itself
 
-except Exception as e:
-    pass")
+except Exception:
+    pass
 
 
 try:
     computed_fields = config._compute_input_fields()
-    for name, (field_type, field_info) in computed_fields.items():
+    for name, (_field_type, field_info) in computed_fields.items():
         if name in ["engine", "context", "query"]:
             required = getattr(
                 field_info,
@@ -79,10 +76,8 @@ try:
                 lambda: hasattr(field_info, "default") and field_info.default is ...,
             )()
 
-except Exception as e:
-    pass")
-
-
+except Exception:
+    pass
 
 
 try:
@@ -91,6 +86,5 @@ try:
     input_fields = config.get_input_fields()
 
 
-except Exception as e:
-    pass")
-
+except Exception:
+    pass

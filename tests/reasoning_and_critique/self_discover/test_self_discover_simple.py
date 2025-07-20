@@ -1,11 +1,10 @@
 """Test the Self-Discover pattern with our unified MultiAgent - simplified version."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema import StateSchema
-from langchain_core.prompts import PromptTemplate
 from pydantic import Field
 
 from haive.agents.multi.clean import MultiAgent
@@ -16,10 +15,10 @@ class SimpleSelfDiscoverState(StateSchema):
     """Simplified state for testing."""
 
     task: str = Field(default="", description="Task to solve")
-    selected_modules: Optional[str] = Field(default=None)
-    adapted_modules: Optional[str] = Field(default=None)
-    reasoning_plan: Optional[str] = Field(default=None)
-    final_answer: Optional[str] = Field(default=None)
+    selected_modules: str | None = Field(default=None)
+    adapted_modules: str | None = Field(default=None)
+    reasoning_plan: str | None = Field(default=None)
+    final_answer: str | None = Field(default=None)
 
 
 def create_test_agents():
@@ -125,7 +124,7 @@ def test_multiagent_with_conditional():
     multi_agent.add_edge("adapter", "planner")
 
     # Add conditional routing from planner
-    def route_from_planner(state: Dict[str, Any]) -> str:
+    def route_from_planner(state: dict[str, Any]) -> str:
         if state.get("error"):
             return "error"
         return "continue"
@@ -178,7 +177,7 @@ def test_multiagent_with_parallel_group():
 
     # Verify
     assert len(multi_agent.branches) == 1
-    branch_key = list(multi_agent.branches.keys())[0]
+    branch_key = next(iter(multi_agent.branches.keys()))
     assert "parallel" in branch_key
     branch = multi_agent.branches[branch_key]
     assert branch["type"] == "parallel"

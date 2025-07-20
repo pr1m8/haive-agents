@@ -1,5 +1,6 @@
 """Agentic RAG Router with ReAct Pattern Agents.
 
+from typing import Any
 Implementation of autonomous RAG routing using ReAct (Reason + Act) patterns.
 Provides intelligent agent selection, strategy planning, and execution coordination.
 """

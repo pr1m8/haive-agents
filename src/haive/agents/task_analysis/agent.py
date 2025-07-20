@@ -274,7 +274,7 @@ class TaskAnalysisAgent(Agent):
     # INITIALIZE ENGINES IN __init__
     # ========================================================================
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Initialize with engines properly set up."""
         # Initialize engines dict before calling super().__init__
         if "engines" not in kwargs:
@@ -303,7 +303,7 @@ class TaskAnalysisAgent(Agent):
     # SCHEMA SETUP - USE from_components!
     # ========================================================================
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """Set up the agent with schema derived from engines."""
         # Get all engine instances
         engine_instances = list(self.engines.values())

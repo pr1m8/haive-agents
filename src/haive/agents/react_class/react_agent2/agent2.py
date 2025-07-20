@@ -2,6 +2,8 @@
 import logging
 import uuid
 from collections.abc import Callable
+
+# Set up logging
 from typing import Any
 
 from haive.core.engine.agent.agent import Agent, register_agent
@@ -16,12 +18,11 @@ from pydantic import BaseModel
 
 from haive.agents.react_class.react_agent2.config2 import ReactAgentConfig
 
-# Set up logging
 logger = logging.getLogger(__name__)
 
 
 # Helper function to check if the last message has tool calls
-def has_tool_calls(state):
+def has_tool_calls(state: dict[str, Any]):
     """Check if the last message has tool calls."""
     # Get messages from the state based on its type
     if isinstance(state, dict):
@@ -72,12 +73,12 @@ class MessageNormalizingToolNode:
     This fixes the Pydantic serialization warnings by properly normalizing message objects.
     """
 
-    def __init__(self, tools):
+    def __init__(self, tools: list[str]):
         """Initialize with the tools to use."""
         self.tools = tools
         self.tool_node = ToolNode(tools)
 
-    def __call__(self, state):
+    def __call__(self, state: dict[str, Any]):
         """Process the state with tools, ensuring message compatibility."""
         # Convert state to dict if needed
         state_dict = state.model_dump() if hasattr(state, "model_dump") else dict(state)
@@ -227,7 +228,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             )
 
         # 4. Define branch for conditional routing
-        def should_use_tools(state):
+        def should_use_tools(state: dict[str, Any]):
             """Determine if we should route to tools based on the last message."""
             # Normalize state if needed
             state_dict = (
@@ -271,7 +272,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             Function to use as a node in the graph
         """
 
-        def structured_output_node(state):
+        def structured_output_node(state: dict[str, Any]):
             """Generate structured output from conversation history."""
             try:
                 # Convert state to dict if needed
@@ -413,7 +414,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
             return processed_input
 
-    def chat(self):
+    def chat(self) -> None:
         """Start an interactive chat session with the agent."""
         # Create a thread ID for this conversation
         thread_id = str(uuid.uuid4())

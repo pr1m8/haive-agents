@@ -68,8 +68,8 @@ class TestProperMultiAgent:
         assert isinstance(multi.engines, dict)
 
         # Should have namespaced engines
-        agent1_engines = [k for k in multi.engines.keys() if k.startswith("agent1.")]
-        agent2_engines = [k for k in multi.engines.keys() if k.startswith("agent2.")]
+        agent1_engines = [k for k in multi.engines if k.startswith("agent1.")]
+        agent2_engines = [k for k in multi.engines if k.startswith("agent2.")]
 
         assert len(agent1_engines) > 0
         assert len(agent2_engines) > 0

@@ -1,5 +1,6 @@
 """Compatible RAG Workflow Factory.
 
+from typing import Any, Dict
 Generic factory for building composable RAG workflows based on I/O schema compatibility.
 Uses the enhanced multi-agent base with automatic compatibility checking, agent replacement,
 and workflow optimization. Allows replacing agents by compatible I/O schemas.
@@ -14,8 +15,9 @@ Key Features:
 """
 
 import logging
+from collections.abc import Callable
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -374,13 +376,13 @@ class CompatibleRAGFactory:
 
     # Pattern builders
     def _build_simple_pattern(self, **kwargs) -> SequentialAgent:
-        """Simple: Retrieval → Answer Generati.....on"""
+        """Simple: Retrieval → Answer Generati.....on."""
         return self.create_from_schema_compatibility(
             [RAGComponent.BASE_RETRIEVAL, RAGComponent.ANSWER_GENERATION], **kwargs
         )
 
     def _build_graded_pattern(self, **kwargs) -> SequentialAgent:
-        """Graded: Retrieval → Document Grading → Answer Genera.....tion"""
+        """Graded: Retrieval → Document Grading → Answer Genera.....tion."""
         return self.create_from_schema_compatibility(
             [
                 RAGComponent.BASE_RETRIEVAL,
@@ -391,25 +393,25 @@ class CompatibleRAGFactory:
         )
 
     def _build_corrective_pattern(self, **kwargs) -> ConditionalAgent:
-        """CRAG: Retrieval → Grade → Route (Refine/Web/Conti.....nue)"""
+        """CRAG: Retrieval → Grade → Route (Refine/Web/Conti.....nue)."""
         return self._build_corrective_rag(**kwargs)
 
     def _build_hyde_pattern(self, **kwargs) -> SequentialAgent:
-        """HyDE: Query → Hypothetical Doc → Retrieval → .....Answer"""
+        """HyDE: Query → Hypothetical Doc → Retrieval → .....Answer."""
         return self.create_from_schema_compatibility([RAGComponent.HYDE_RAG], **kwargs)
 
     def _build_multi_query_pattern(self, **kwargs) -> SequentialAgent:
-        """Multi-Query: Query Expansion → Parallel Retrieval → An.....swer"""
+        """Multi-Query: Query Expansion → Parallel Retrieval → An.....swer."""
         return self.create_from_schema_compatibility(
             [RAGComponent.MULTI_QUERY_RAG], **kwargs
         )
 
     def _build_adaptive_pattern(self, **kwargs) -> ConditionalAgent:
-        """Adaptive: Query Analysis → Route to Best Strate.....gy"""
+        """Adaptive: Query Analysis → Route to Best Strate.....gy."""
         return self._build_adaptive_rag(**kwargs)
 
     def _build_fusion_pattern(self, **kwargs) -> SequentialAgent:
-        """Fusion: Multi-Source → Rank Fusion → Gene.....rate"""
+        """Fusion: Multi-Source → Rank Fusion → Gene.....rate."""
         components = [RAGComponent.MULTI_QUERY_RAG]
 
         if self.enable_search_tools:
@@ -420,7 +422,7 @@ class CompatibleRAGFactory:
         return self.create_from_schema_compatibility(components, **kwargs)
 
     def _build_agentic_pattern(self, **kwargs) -> ConditionalAgent:
-        """Agentic: Tool Selection → Execute → Aggre.....gate"""
+        """Agentic: Tool Selection → Execute → Aggre.....gate."""
         query_analyzer = self._build_query_analysis(**kwargs)
 
         # Tool agents
@@ -1349,7 +1351,7 @@ def create_compatible_adaptive_rag(
 
     # Create adaptive routing agent
     class CompatibleAdaptiveRAG(ConditionalAgent):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__(
                 name=name,
                 agents=[analyzer_agent, simple_rag, multi_query_agent, complex_agent],
@@ -1364,7 +1366,7 @@ def create_compatible_adaptive_rag(
             self._setup_adaptive_routing()
 
         def _setup_adaptive_routing(self):
-            def adaptive_router(state) -> str:
+            def adaptive_router(state: Dict[str, Any]) -> str:
                 complexity = getattr(state, "complexity", QueryComplexity.UNKNOWN)
 
                 if complexity == QueryComplexity.SIMPLE:
@@ -1442,7 +1444,7 @@ def create_compatible_hyde_rag(
 # ============================================================================
 
 
-def example_modular_rag_usage():
+def example_modular_rag_usage() -> Dict[str, Any]:
     """Example showing how to use modular RAG components.
 
     This demonstrates the plug-and-play nature of the system.

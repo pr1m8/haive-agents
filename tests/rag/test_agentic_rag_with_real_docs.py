@@ -52,9 +52,6 @@ SAMPLE_DOCUMENTS = [
 
 async def test_document_grader_with_real_docs():
     """Test document grader with real documents."""
-    print("\n1️⃣ Testing DocumentGraderAgent with Real Documents")
-    print("=" * 60)
-
     try:
         grader = DocumentGraderAgent.create_default(temperature=0.0)
 
@@ -74,50 +71,34 @@ async def test_document_grader_with_real_docs():
 
         result = await grader.arun(input_data)
 
-        print(f"\nQuery: {query}")
-        print(f"Result type: {type(result)}")
-
         # Handle different result formats
         if hasattr(result, "get"):
-            print(f"Result keys: {list(result.keys())}")
 
             # Check for structured output
             if "document_binary_response" in result:
                 grading_result = result["document_binary_response"]
-                print("✅ Found structured output in 'document_binary_response' field")
             else:
                 grading_result = result
-                print("⚠️ Using raw result (structured output parsing may have failed)")
         else:
             grading_result = result
-            print("⚠️ Result is not dict-like")
 
         # Print successful execution
-        print("✅ Document grader agent executed successfully!")
-        print(f"Result structure: {type(grading_result)}")
         if hasattr(grading_result, "keys"):
-            print(f"Available keys: {list(grading_result.keys())}")
+            pass
 
         # Basic verification - if grading works, we should have some content
         if isinstance(grading_result, dict) and "content" in grading_result:
-            print(f"Content length: {len(str(grading_result['content']))}")
-            print("✅ Agent produced content output")
+            pass
 
-    except Exception as e:
-        print(f"❌ Document grader test failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
         # Don't fail the whole test suite, just this component
 
-    print("\n✅ Document grader test completed (basic functionality verified)!")
-
 
 async def test_query_rewriter_with_context():
     """Test query rewriter with real context."""
-    print("\n2️⃣ Testing QueryRewriterAgent with Real Context")
-    print("=" * 60)
-
     try:
         rewriter = QueryRewriterAgent.create_default(temperature=0.7)
 
@@ -129,51 +110,34 @@ async def test_query_rewriter_with_context():
 
         result = await rewriter.rewrite_query(test_query, test_context)
 
-        print(f"\nOriginal Query: {test_query}")
-        print(f"Context: {test_context}")
-        print(f"Result type: {type(result)}")
-
         # Handle different result formats
         if hasattr(result, "get"):
-            print(f"Result keys: {list(result.keys())}")
 
             # Check for structured output
             if "query_refinement_response" in result:
                 refinement = result["query_refinement_response"]
-                print("✅ Found structured output in 'query_refinement_response' field")
             else:
                 refinement = result
-                print("⚠️ Using raw result (structured output parsing may have failed)")
         else:
             refinement = result
-            print("⚠️ Result is not dict-like")
 
         # Print successful execution
-        print("✅ Query rewriter agent executed successfully!")
-        print(f"Result structure: {type(refinement)}")
         if hasattr(refinement, "keys"):
-            print(f"Available keys: {list(refinement.keys())}")
+            pass
 
         # Basic verification - if rewriting works, we should have some content
         if isinstance(refinement, dict) and "content" in refinement:
-            print(f"Content length: {len(str(refinement['content']))}")
-            print("✅ Agent produced content output")
+            pass
 
-    except Exception as e:
-        print(f"❌ Query rewriter test failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
         # Don't fail the whole test suite, just this component
 
-    print("\n✅ Query rewriter test completed (basic functionality verified)!")
-
 
 async def test_complete_agentic_rag_workflow():
     """Test the complete Agentic RAG workflow with real documents."""
-    print("\n3️⃣ Testing Complete AgenticRAG Workflow")
-    print("=" * 60)
-
     # Create a mock vector store config (in real use, this would connect to actual vector DB)
     embedding_config = EmbeddingConfig(
         provider="openai", model="text-embedding-3-small"
@@ -197,7 +161,6 @@ async def test_complete_agentic_rag_workflow():
     from haive.agents.rag.agentic import AgenticRAGState
 
     # 1. Test document grading
-    print("\n📄 Testing Document Grading Component:")
     state = AgenticRAGState(
         original_query="What are the latest advances in deep learning?",
         retrieved_documents=[
@@ -206,22 +169,14 @@ async def test_complete_agentic_rag_workflow():
         ],
     )
 
-    grading_result = await agent._grade_documents(state)
-    print(f"  - Graded {len(grading_result['graded_documents'])} documents")
-    print(f"  - Found {len(grading_result['relevant_documents'])} relevant documents")
-    print(f"  - All relevant: {grading_result['all_documents_relevant']}")
+    await agent._grade_documents(state)
 
     # 2. Test query rewriting
-    print("\n✏️ Testing Query Rewriting Component:")
     state = AgenticRAGState(original_query="DL applications", query_rewrite_count=0)
 
-    rewrite_result = await agent._rewrite_query(state)
-    print(f"  - Original: {state.original_query}")
-    print(f"  - Refined: {rewrite_result['refined_query']}")
-    print(f"  - Rewrite count: {rewrite_result['query_rewrite_count']}")
+    await agent._rewrite_query(state)
 
     # 3. Test routing logic
-    print("\n🔀 Testing Routing Logic:")
 
     # Test with good documents
     state_good = AgenticRAGState(
@@ -229,13 +184,11 @@ async def test_complete_agentic_rag_workflow():
         query_rewrite_count=0,
     )
     route = agent._route_after_grading(state_good)
-    print(f"  - With 2 relevant docs: routes to '{route}'")
     assert route == "generate"
 
     # Test with no relevant documents
     state_bad = AgenticRAGState(relevant_documents=[], query_rewrite_count=0)
     route = agent._route_after_grading(state_bad)
-    print(f"  - With 0 relevant docs: routes to '{route}'")
     assert route == "rewrite"
 
     # Test web search fallback
@@ -243,17 +196,11 @@ async def test_complete_agentic_rag_workflow():
         relevant_documents=[], query_rewrite_count=1  # Already tried rewriting
     )
     route = agent._route_after_grading(state_web)
-    print(f"  - After rewrite with no docs: routes to '{route}'")
     assert route == "web_search"
-
-    print("\n✅ Complete Agentic RAG workflow components working correctly!")
 
 
 async def test_react_rag_with_tools():
     """Test ReactRAG agent with real tools."""
-    print("\n4️⃣ Testing ReactRAGAgent with Tools")
-    print("=" * 60)
-
     from langchain_core.tools import tool
 
     # Create real tools
@@ -264,7 +211,7 @@ async def test_react_rag_with_tools():
             result = eval(expression)
             return f"Result: {result}"
         except Exception as e:
-            return f"Error: {str(e)}"
+            return f"Error: {e!s}"
 
     @tool
     def word_counter(text: str) -> str:
@@ -289,26 +236,20 @@ async def test_react_rag_with_tools():
         temperature=0.1,
     )
 
-    print(f"Created ReactRAG agent with {len(agent.tools)} tools:")
     for tool in agent.tools:
-        print(f"  - {tool.name}: {tool.description}")
+        pass
 
     # Test graph structure
     graph = agent.build_graph()
-    print(f"\nGraph nodes: {list(graph.nodes.keys())}")
 
     # Verify retrieval node exists
     assert "retrieval_node" in graph.nodes
     assert "tool_node" in graph.nodes
     assert "agent_node" in graph.nodes
 
-    print("\n✅ ReactRAG agent successfully integrated tools and retrieval!")
-
 
 async def main():
     """Run all tests with real documents."""
-    print("🚀 Testing Agentic RAG Components with Real Documents\n")
-
     test_results = {}
 
     # Test 1: Document Grader
@@ -316,52 +257,41 @@ async def main():
         await test_document_grader_with_real_docs()
         test_results["document_grader"] = "✅ PASSED"
     except Exception as e:
-        test_results["document_grader"] = f"❌ FAILED: {str(e)}"
-        print(f"Document grader test failed: {e}")
+        test_results["document_grader"] = f"❌ FAILED: {e!s}"
 
     # Test 2: Query Rewriter
     try:
         await test_query_rewriter_with_context()
         test_results["query_rewriter"] = "✅ PASSED"
     except Exception as e:
-        test_results["query_rewriter"] = f"❌ FAILED: {str(e)}"
-        print(f"Query rewriter test failed: {e}")
+        test_results["query_rewriter"] = f"❌ FAILED: {e!s}"
 
     # Test 3: Complete Workflow
     try:
         await test_complete_agentic_rag_workflow()
         test_results["complete_workflow"] = "✅ PASSED"
     except Exception as e:
-        test_results["complete_workflow"] = f"❌ FAILED: {str(e)}"
-        print(f"Complete workflow test failed: {e}")
+        test_results["complete_workflow"] = f"❌ FAILED: {e!s}"
 
     # Test 4: React RAG with Tools
     try:
         await test_react_rag_with_tools()
         test_results["react_rag_tools"] = "✅ PASSED"
     except Exception as e:
-        test_results["react_rag_tools"] = f"❌ FAILED: {str(e)}"
-        print(f"React RAG tools test failed: {e}")
+        test_results["react_rag_tools"] = f"❌ FAILED: {e!s}"
 
     # Print summary
-    print("\n" + "=" * 60)
-    print("📊 TEST SUMMARY")
-    print("=" * 60)
 
-    for test_name, result in test_results.items():
-        print(f"{test_name}: {result}")
+    for _test_name, _result in test_results.items():
+        pass
 
     passed_count = sum(1 for result in test_results.values() if "✅ PASSED" in result)
     total_count = len(test_results)
 
-    print(f"\n🎯 Results: {passed_count}/{total_count} tests passed")
-
     if passed_count == total_count:
-        print("✅ ALL TESTS PASSED WITH REAL DOCUMENTS!")
+        pass
     else:
-        print("⚠️ Some tests had issues, but this demonstrates the components work")
-
-    print("=" * 60)
+        pass
 
 
 if __name__ == "__main__":

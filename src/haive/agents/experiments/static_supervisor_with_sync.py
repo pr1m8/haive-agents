@@ -68,7 +68,8 @@ class SupervisorReactState(StateSchema):
     )
 
     @model_validator(mode="after")
-    def sync_tools_with_agents(self) -> "SupervisorReactState":
+    @classmethod
+    def sync_tools_with_agents(cls) -> "SupervisorReactState":
         """Ensure handoff tools are synchronized with registered agents.
 
         This validator runs after field assignment to ensure tools
@@ -104,7 +105,7 @@ class StaticSupervisor(ReactAgent[SupervisorReactState]):
     node to execute agent handoffs from state instead of regular tools.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Initialize supervisor with custom state schema."""
         # Set the state schema before parent init
         kwargs["state_schema"] = SupervisorReactState
@@ -293,8 +294,7 @@ class StaticSupervisor(ReactAgent[SupervisorReactState]):
                 # Get message from args
                 message = tool_call.get("args", {}).get("message", "")
                 return f"Message forwarded: {message}"
-            else:
-                return f"Unknown tool: {tool_name}"
+            return f"Unknown tool: {tool_name}"
 
         except Exception as e:
             return f"Error executing tool {tool_name}: {e!s}"

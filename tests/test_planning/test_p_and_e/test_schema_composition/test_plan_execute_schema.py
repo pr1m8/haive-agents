@@ -4,7 +4,6 @@
 from langchain_core.messages import HumanMessage
 
 from haive.agents.planning.p_and_e.agent import PlanAndExecuteAgent
-from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 # Create PlanAndExecuteAgent
 agent = PlanAndExecuteAgent(name="test_p_and_e")
@@ -23,17 +22,17 @@ plan_execute_fields = [
 ]
 for field in plan_execute_fields:
     if field in fields:
-        pass")
+        pass
     else:
-        pass")
+        pass
 
 # Check for engine management fields
 engine_fields = ["engine", "engines"]
 for field in engine_fields:
     if field in fields:
-        pass")
+        pass
     else:
-        pass")
+        pass
 
 try:
     # Create state instance
@@ -41,21 +40,19 @@ try:
 
     # Check inherited behavior
 
-except Exception as e:
-    pass")
+except Exception:
+    pass
 
 try:
     input_data = {
         "messages": [HumanMessage(content="Create a simple web scraper in Python")]
     }
 
-
     # Run the agent (this will fail for now due to graph building issues, but shows the schema works)
     result = agent.run(input_data=input_data, debug=True)
 
 
-except Exception as e:
+except Exception:
     pass
 
     # Even if execution fails, we can check if the schema was properly composed
-

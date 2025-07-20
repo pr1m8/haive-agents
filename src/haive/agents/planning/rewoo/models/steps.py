@@ -1,11 +1,10 @@
-"""
-Step Models for ReWOO Planning
+"""Step Models for ReWOO Planning.
 
 Abstract step class and concrete implementations with computed fields and validators.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
@@ -29,7 +28,7 @@ class AbstractStep(BaseModel, ABC):
     )
 
     # Dependencies - fundamental to any step
-    depends_on: List[str] = Field(
+    depends_on: list[str] = Field(
         default_factory=list, description="Step IDs this step depends on"
     )
 
@@ -44,7 +43,7 @@ class AbstractStep(BaseModel, ABC):
 
     @field_validator("depends_on")
     @classmethod
-    def validate_dependencies(cls, v: List[str]) -> List[str]:
+    def validate_dependencies(cls, v: list[str]) -> list[str]:
         """Validate dependency IDs."""
         for dep in v:
             if not dep.replace("_", "").replace("-", "").isalnum():
@@ -66,23 +65,21 @@ class AbstractStep(BaseModel, ABC):
 
     # Abstract methods that subclasses must implement
     @abstractmethod
-    def can_execute(self, completed_steps: Set[str]) -> bool:
+    def can_execute(self, completed_steps: set[str]) -> bool:
         """Check if this step can execute given completed steps."""
-        pass
 
     @abstractmethod
-    def execute(self, context: Dict[str, Any]) -> Any:
+    def execute(self, context: dict[str, Any]) -> Any:
         """Execute this step with given context."""
-        pass
 
 
 class BasicStep(AbstractStep):
     """Basic concrete implementation for testing."""
 
-    def can_execute(self, completed_steps: Set[str]) -> bool:
+    def can_execute(self, completed_steps: set[str]) -> bool:
         """Basic implementation - all dependencies must be completed."""
         return all(dep in completed_steps for dep in self.depends_on)
 
-    def execute(self, context: Dict[str, Any]) -> Any:
+    def execute(self, context: dict[str, Any]) -> Any:
         """Basic execution - just return the description."""
         return f"Executed: {self.description}"

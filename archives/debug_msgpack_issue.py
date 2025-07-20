@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """Debug the msgpack serialization issue systematically."""
 
+import contextlib
 import json
 import pickle
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -32,47 +32,36 @@ plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version=
 
 
 # Test if engine can be dumped
-try:
+with contextlib.suppress(Exception):
     dumped = add_aug.model_dump()
-except Exception as e:
-    pass")
 
 # Test pickle on engine directly
-try:
+with contextlib.suppress(Exception):
     pickle.dumps(add_aug)
-except Exception as e:
-    pass")
 
 # Test json on dumped engine
 try:
     dumped = add_aug.model_dump()
     json.dumps(dumped)
-except Exception as e:
-    pass
+except Exception:
 
     # Find problematic fields
     for key, value in dumped.items():
-        try:
+        with contextlib.suppress(Exception):
             json.dumps({key: value})
-        except:
-            pass
 
 
 # Test ReactAgent alone
 react = ReactAgent(engine=add_aug)
 react.compile()
-try:
+with contextlib.suppress(Exception):
     result = react.run({"messages": [HumanMessage(content="Test")]})
-except Exception as e:
-    pass")
 
 # Test SimpleAgent alone
 simple = SimpleAgent(engine=plan_aug)
 simple.compile()
-try:
+with contextlib.suppress(Exception):
     result = simple.run({"messages": [HumanMessage(content="Test")]})
-except Exception as e:
-    pass")
 
 multi = SequentialAgent(agents=[react, simple])
 multi.compile()
@@ -83,14 +72,12 @@ prepared = multi._prepare_input({"messages": [HumanMessage(content="Test")]})
 state_dict = prepared.model_dump() if hasattr(prepared, "model_dump") else prepared
 
 if "engines" in state_dict:
-    for name, engine in state_dict["engines"].items():
+    for _name, _engine in state_dict["engines"].items():
         pass
 
 if "engines" in state_dict:
-    for eng_name, eng_data in state_dict["engines"].items():
-        if hasattr(eng_data, "model_fields"):
-            pass
-        elif isinstance(eng_data, dict):
+    for _eng_name, eng_data in state_dict["engines"].items():
+        if hasattr(eng_data, "model_fields") or isinstance(eng_data, dict):
             pass
         else:
             pass
@@ -100,6 +87,7 @@ try:
     result = multi.run({"messages": [HumanMessage(content="Calculate 5 + 3")]})
 except Exception as e:
     if "msgpack" in str(e):
+        pass
 
 # Create agents without tools/schemas
 simple_react = ReactAgent(name="Simple React")
@@ -107,7 +95,5 @@ simple_simple = SimpleAgent(name="Simple Simple")
 simple_multi = SequentialAgent(agents=[simple_react, simple_simple])
 simple_multi.compile()
 
-try:
+with contextlib.suppress(Exception):
     result = simple_multi.run({"messages": [HumanMessage(content="Test")]})
-except Exception as e:
-    pass")

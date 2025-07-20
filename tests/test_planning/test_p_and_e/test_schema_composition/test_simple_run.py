@@ -34,19 +34,18 @@ try:
         debug=True,
     )
 
-
     # Check if we have a plan in the result
     if hasattr(result, "plan") and result.plan:
-        for step in result.plan.steps:
+        for _step in result.plan.steps:
             pass
 
     # Check the last message for parsed output
     if hasattr(result, "messages") and len(result.messages) > 0:
         last_msg = result.messages[-1]
         if hasattr(last_msg, "parsed") and isinstance(last_msg.parsed, Plan):
-            pass")
+            pass
 
-except Exception as e:
+except Exception:
     import traceback
 
     traceback.print_exc()

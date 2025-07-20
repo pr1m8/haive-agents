@@ -1,7 +1,7 @@
 """Test that reproduces the exact LangGraph scenario."""
 
 import logging
-from typing import TYPE_CHECKING, Any, Optional
+from typing import Any, Optional
 
 from langchain_core.output_parsers.base import BaseOutputParser
 from langgraph.graph import StateGraph
@@ -74,7 +74,7 @@ approaches = [
     (Approach6_DictField, "Dict field"),
 ]
 
-for approach_class, name in approaches:
+for approach_class, _name in approaches:
 
     class TestState(BaseModel):
         engine: approach_class = Field(...)
@@ -95,14 +95,13 @@ for approach_class, name in approaches:
         # Compile the graph
         compiled = graph.compile()
 
-
         # Test actual execution
         result = compiled.invoke({"engine": approach_class(), "messages": []})
 
-    except NameError as e:
-        pass")
-    except Exception as e:
-        pass")
+    except NameError:
+        pass
+    except Exception:
+        pass
 
 # Test the actual AugLLMConfig scenario
 
@@ -115,5 +114,5 @@ try:
 
     graph = StateGraph(RealScenarioState)
 
-except Exception as e:
-    pass")
+except Exception:
+    pass

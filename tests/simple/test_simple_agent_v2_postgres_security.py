@@ -45,8 +45,6 @@ class TestPostgreSQLSecurity:
         assert processed["number_field"] == 42
         assert processed["list_field"] == ["item1", "item2"]
 
-        print("✅ SecureSecretStrSerializer properly masks SecretStr values")
-
     def test_pydantic_undefined_handling(self):
         """Test that PydanticUndefined values are properly handled."""
         serializer = SecureSecretStrSerializer()
@@ -65,8 +63,6 @@ class TestPostgreSQLSecurity:
         assert processed["nested"]["normal"] == "value"
         assert processed["nested"]["undefined"] is None
 
-        print("✅ PydanticUndefined values properly converted to None")
-
     def test_create_production_serializer_without_key(self):
         """Test production serializer creation without encryption key."""
         # Ensure no encryption key is set
@@ -75,9 +71,6 @@ class TestPostgreSQLSecurity:
 
             # Should fall back to SecureSecretStrSerializer
             assert isinstance(serializer, SecureSecretStrSerializer)
-            print(
-                "✅ Production serializer falls back to SecureSecretStrSerializer without key"
-            )
 
     def test_create_production_serializer_with_fake_key(self):
         """Test production serializer creation with a fake encryption key."""
@@ -85,12 +78,11 @@ class TestPostgreSQLSecurity:
 
         # Try to create with fake key (will likely fail import, which is expected)
         try:
-            serializer = create_production_serializer(encryption_key=fake_key)
-            print(f"✅ Created serializer: {type(serializer).__name__}")
+            create_production_serializer(encryption_key=fake_key)
         except ImportError:
-            print("ℹ️ EncryptedSerializer not available (expected in test environment)")
-        except Exception as e:
-            print(f"ℹ️ Encryption setup failed as expected: {e}")
+            pass
+        except Exception:
+            pass
 
     def test_postgres_serializer_development(self):
         """Test PostgreSQL serializer in development environment."""
@@ -104,7 +96,6 @@ class TestPostgreSQLSecurity:
 
             # Should be SecureSecretStrSerializer in development without key
             assert isinstance(serializer, SecureSecretStrSerializer)
-            print("✅ PostgreSQL serializer uses secure fallback in development")
 
     def test_postgres_serializer_production_without_key(self):
         """Test PostgreSQL serializer in production without encryption key."""
@@ -117,7 +108,6 @@ class TestPostgreSQLSecurity:
                 create_encrypted_serializer_for_postgres(
                     connection_string=connection_string
                 )
-            print("✅ PostgreSQL serializer requires encryption key in production")
 
     @pytest.mark.asyncio
     async def test_simple_agent_v2_with_secure_serializer(self):
@@ -145,14 +135,13 @@ class TestPostgreSQLSecurity:
             """Recursively check if object contains PydanticUndefined."""
             if obj is PydanticUndefined:
                 return True
-            elif isinstance(obj, dict):
+            if isinstance(obj, dict):
                 return any(contains_pydantic_undefined(v) for v in obj.values())
-            elif isinstance(obj, (list, tuple)):
+            if isinstance(obj, list | tuple):
                 return any(contains_pydantic_undefined(item) for item in obj)
             return False
 
         assert not contains_pydantic_undefined(processed)
-        print("✅ SimpleAgentV2 state compatible with secure serializer")
 
     def test_secretstr_in_nested_structures(self):
         """Test SecretStr handling in complex nested structures."""
@@ -191,8 +180,6 @@ class TestPostgreSQLSecurity:
         assert processed["config"]["database"]["port"] == 5432
         assert processed["tools"][1]["config"] == "normal"
 
-        print("✅ Complex nested SecretStr structures properly handled")
-
     def test_serializer_performance(self):
         """Test serializer performance with large data structures."""
         import time
@@ -208,14 +195,12 @@ class TestPostgreSQLSecurity:
 
         start_time = time.time()
         processed = serializer._handle_secret_types(large_data)
-        processing_time = time.time() - start_time
+        time.time() - start_time
 
         # Verify processing completed
         assert len(processed["messages"]) == 1000
         assert len(processed["secrets"]) == 100
         assert all(v == "**SECRET_MASKED**" for v in processed["secrets"].values())
-
-        print(f"✅ Large data structure processed in {processing_time:.3f}s")
 
     def test_serialization_roundtrip(self):
         """Test that serialization is reversible for non-secret data."""
@@ -234,14 +219,11 @@ class TestPostgreSQLSecurity:
 
         # Should be identical for non-secret data
         assert processed == original_data
-        print("✅ Non-secret data passes through serializer unchanged")
 
 
 if __name__ == "__main__":
     # Run tests directly
     test_suite = TestPostgreSQLSecurity()
-
-    print("🧪 Testing PostgreSQL Security Features\n")
 
     # Run all tests
     test_suite.test_secure_secret_str_serializer()
@@ -257,5 +239,3 @@ if __name__ == "__main__":
     test_suite.test_secretstr_in_nested_structures()
     test_suite.test_serializer_performance()
     test_suite.test_serialization_roundtrip()
-
-    print("\n🎉 All security tests completed!")

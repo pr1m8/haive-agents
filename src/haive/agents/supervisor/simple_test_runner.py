@@ -1,5 +1,6 @@
 """Simple Test Runner for Dynamic Supervisor.
 
+from typing import Any, Dict, List
 This demonstrates the core flow of how dynamic agent addition/removal works
 and how it would integrate with eventual agent building capabilities.
 """
@@ -16,7 +17,7 @@ console = Console()
 class MockEngine:
     """Mock engine for testing without real LLM."""
 
-    def __init__(self, name="mock_engine"):
+    def __init__(self, name: str = "mock_engine"):
         self.name = name
         self.tools = []
         self.tool_routes = {}
@@ -25,7 +26,7 @@ class MockEngine:
         """Mock LLM response for testing."""
 
         class MockResponse:
-            def __init__(self, content):
+            def __init__(self, content: str):
                 self.content = content
 
         # Simple keyword-based routing for testing
@@ -60,7 +61,9 @@ class MockEngine:
 class MockAgent:
     """Mock agent for testing."""
 
-    def __init__(self, name, agent_type="MockAgent", tools=None):
+    def __init__(
+        self, name: str, agent_type: Any = "MockAgent", tools: List[str] = None
+    ):
         self.name = name
         self.agent_type = agent_type
         self.tools = tools or []
@@ -75,7 +78,7 @@ class MockAgent:
         """Mock agent execution."""
 
         class MockResult:
-            def __init__(self, messages):
+            def __init__(self, messages: List[Dict[str, Any]]):
                 self.messages = messages
 
         # Simulate agent response
@@ -83,7 +86,7 @@ class MockAgent:
 
         # Mock message type
         class MockMessage:
-            def __init__(self, content):
+            def __init__(self, content: str):
                 self.content = content
 
         return MockResult([MockMessage(response_content)])
@@ -92,7 +95,7 @@ class MockAgent:
 class SimpleDynamicSupervisorTest:
     """Simplified test of dynamic supervisor capabilities."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.agents = {}
         self.agent_configs = {}
         self.choice_options = ["END"]
@@ -229,7 +232,7 @@ class SimpleDynamicSupervisorTest:
         console.print(f"[green]✅ {agent_name} completed execution[/green]")
         return {"status": "success", "agent": agent_name, "result": result}
 
-    def print_status(self):
+    def print_status(self) -> None:
         """Print current supervisor status."""
         # Agents table
         table = Table(title="🤖 Registered Agents")

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Simple test for sequence inference and branching."""
 
-import asyncio
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
@@ -130,11 +129,11 @@ def main():
         # Test 3: Plan and Execute inference
         test_plan_and_execute_inference()
 
-        print(f"\n✅ All sequence inference and branching tests passed!")
-        print(f"✅ Features working:")
-        print(f"  - Automatic sequence inference from naming patterns")
-        print(f"  - Branch configuration and routing")
-        print(f"  - Plan and Execute sequence inference")
+        print("\n✅ All sequence inference and branching tests passed!"!")
+        print("✅ Features working:":")
+        print("  - Automatic sequence inference from naming patterns")
+        print("  - Branch configuration and routing")
+        print("  - Plan and Execute sequence inference")
 
     except Exception as e:
         print(f"\n❌ Test failed: {e}")

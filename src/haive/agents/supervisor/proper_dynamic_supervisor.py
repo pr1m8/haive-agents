@@ -33,7 +33,7 @@ class ProperDynamicSupervisor(ReactAgent):
     # Capability descriptions for routing decisions
     _agent_capabilities: dict[str, str] = Field(default_factory=dict, exclude=True)
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self._agent_registry = {}
         self._agent_capabilities = {}

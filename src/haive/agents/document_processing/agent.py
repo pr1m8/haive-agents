@@ -42,18 +42,15 @@ Author: Claude (Haive AI Agent Framework)
 Version: 1.0.0
 """
 
-import asyncio
 import logging
 from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.document.loaders.auto_loader import AutoLoader, AutoLoaderConfig
 
 # from haive.core.engine.document.universal_loader import UniversalDocumentLoader
 from haive.core.schema.prebuilt.document_state import (
-    DocumentEngineInputSchema,
     DocumentState,
 )
 from haive.core.schema.prebuilt.messages_state import MessagesState
@@ -63,7 +60,7 @@ from haive.tools.tools.search_tools import (
     tavily_search_tool,
 )
 from langchain_core.documents import Document
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.rag.base.agent import BaseRAGAgent
@@ -121,7 +118,7 @@ class DocumentProcessingConfig(BaseModel):
     """
 
     # Core Processing
-    auto_loader_config: Optional[AutoLoaderConfig] = Field(default=None)
+    auto_loader_config: AutoLoaderConfig | None = Field(default=None)
     enable_bulk_processing: bool = Field(default=True)
     max_concurrent_loads: int = Field(default=10, ge=1, le=50)
 
@@ -132,7 +129,7 @@ class DocumentProcessingConfig(BaseModel):
         default="adaptive",
         pattern="^(basic|adaptive|self_query|parent_document|multi_query|ensemble)$",
     )
-    retrieval_config: Dict[str, Any] = Field(default_factory=dict)
+    retrieval_config: dict[str, Any] = Field(default_factory=dict)
 
     # Query Processing
     query_refinement: bool = Field(default=True)
@@ -154,7 +151,7 @@ class DocumentProcessingConfig(BaseModel):
 
     # Embedding & Vectorization
     embedding_model: str = Field(default="text-embedding-3-small")
-    vector_store_config: Dict[str, Any] = Field(default_factory=dict)
+    vector_store_config: dict[str, Any] = Field(default_factory=dict)
 
     # Performance
     enable_caching: bool = Field(default=True)
@@ -184,22 +181,22 @@ class DocumentProcessingResult(BaseModel):
     """
 
     response: str = Field(description="Main response content")
-    sources: List[Dict[str, Any]] = Field(
+    sources: list[dict[str, Any]] = Field(
         default_factory=list, description="Source documents"
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Processing metadata"
     )
-    documents: List[Document] = Field(
+    documents: list[Document] = Field(
         default_factory=list, description="Processed documents"
     )
-    query_info: Dict[str, Any] = Field(
+    query_info: dict[str, Any] = Field(
         default_factory=dict, description="Query processing info"
     )
-    timing: Dict[str, float] = Field(
+    timing: dict[str, float] = Field(
         default_factory=dict, description="Timing information"
     )
-    statistics: Dict[str, Any] = Field(
+    statistics: dict[str, Any] = Field(
         default_factory=dict, description="Processing statistics"
     )
 
@@ -218,23 +215,23 @@ class DocumentProcessingState(MessagesState):
     document_state: DocumentState = Field(default_factory=DocumentState)
 
     # Processing State
-    current_sources: List[Union[str, Dict[str, Any]]] = Field(default_factory=list)
-    processed_documents: List[Document] = Field(default_factory=list)
-    annotation_results: Dict[str, Any] = Field(default_factory=dict)
+    current_sources: list[str | dict[str, Any]] = Field(default_factory=list)
+    processed_documents: list[Document] = Field(default_factory=list)
+    annotation_results: dict[str, Any] = Field(default_factory=dict)
 
     # Query State
     original_query: str = Field(default="")
-    refined_queries: List[str] = Field(default_factory=list)
-    search_results: List[Dict[str, Any]] = Field(default_factory=list)
+    refined_queries: list[str] = Field(default_factory=list)
+    search_results: list[dict[str, Any]] = Field(default_factory=list)
 
     # RAG State
-    retrieval_results: List[Document] = Field(default_factory=list)
-    context_documents: List[Document] = Field(default_factory=list)
+    retrieval_results: list[Document] = Field(default_factory=list)
+    context_documents: list[Document] = Field(default_factory=list)
 
     # Processing Metadata
     processing_stage: str = Field(default="initialized")
     last_operation: str = Field(default="")
-    operation_history: List[Dict[str, Any]] = Field(default_factory=list)
+    operation_history: list[dict[str, Any]] = Field(default_factory=list)
 
     class Config:
         arbitrary_types_allowed = True
@@ -256,8 +253,8 @@ class DocumentProcessingAgent:
 
     def __init__(
         self,
-        config: Optional[DocumentProcessingConfig] = None,
-        engine: Optional[AugLLMConfig] = None,
+        config: DocumentProcessingConfig | None = None,
+        engine: AugLLMConfig | None = None,
         name: str = "document_processor",
     ):
         """Initialize the document processing agent.
@@ -280,7 +277,6 @@ class DocumentProcessingAgent:
 
     def _init_components(self):
         """Initialize all agent components."""
-
         # Document Loading Components
         auto_loader_config = self.config.auto_loader_config or AutoLoaderConfig(
             max_concurrency=self.config.max_concurrent_loads,
@@ -309,14 +305,7 @@ class DocumentProcessingAgent:
 
     def _create_rag_agent(self) -> BaseRAGAgent:
         """Create RAG agent based on configuration."""
-
         # Configure retrieval based on strategy
-        retrieval_config = {
-            "chunk_size": self.config.chunk_size,
-            "chunk_overlap": self.config.chunk_overlap,
-            "embedding_model": self.config.embedding_model,
-            **self.config.retrieval_config,
-        }
 
         # For now, use base RAG agent for all strategies
         # TODO: Implement specific strategy loading with proper error handling
@@ -369,11 +358,13 @@ class DocumentProcessingAgent:
             return BaseRAGAgent(name=f"{self.name}_rag", engine=self.engine)
 
         except Exception as e:
-            logger.error(f"Error creating RAG agent: {e}, falling back to BaseRAGAgent")
+            logger.exception(
+                f"Error creating RAG agent: {e}, falling back to BaseRAGAgent"
+            )
             return BaseRAGAgent(name=f"{self.name}_rag", engine=self.engine)
 
     async def process_query(
-        self, query: str, sources: Optional[List[Union[str, Dict[str, Any]]]] = None
+        self, query: str, sources: list[str | dict[str, Any]] | None = None
     ) -> DocumentProcessingResult:
         """Process a query with comprehensive document processing pipeline.
 
@@ -446,19 +437,18 @@ class DocumentProcessingAgent:
         self, state: DocumentProcessingState
     ) -> DocumentProcessingState:
         """Discover relevant documents using search capabilities."""
-
         state.processing_stage = "document_discovery"
 
         # Use ReactAgent with search tools to find relevant documents
         search_query = f"""
         Find relevant documents, files, and sources for the query: "{state.original_query}"
-        
+
         Use search tools to:
         1. Search for relevant web content
         2. Find specific documents or files
         3. Identify authoritative sources
         4. Extract URLs and file paths
-        
+
         Return a structured list of sources with their URLs/paths and relevance scores.
         """
 
@@ -491,7 +481,7 @@ class DocumentProcessingAgent:
             )
 
         except Exception as e:
-            logger.error(f"Error in document discovery: {e}")
+            logger.exception(f"Error in document discovery: {e}")
             # Continue with empty sources
             state.current_sources = []
 
@@ -501,7 +491,6 @@ class DocumentProcessingAgent:
         self, state: DocumentProcessingState
     ) -> DocumentProcessingState:
         """Load documents using auto-loader with bulk processing."""
-
         state.processing_stage = "document_loading"
 
         try:
@@ -546,7 +535,7 @@ class DocumentProcessingAgent:
             )
 
         except Exception as e:
-            logger.error(f"Error in document loading: {e}")
+            logger.exception(f"Error in document loading: {e}")
             state.processed_documents = []
 
         return state
@@ -555,7 +544,6 @@ class DocumentProcessingAgent:
         self, state: DocumentProcessingState
     ) -> DocumentProcessingState:
         """Process documents through annotation, summarization, and other pipelines."""
-
         state.processing_stage = "document_processing"
 
         try:
@@ -582,7 +570,7 @@ class DocumentProcessingAgent:
             )
 
         except Exception as e:
-            logger.error(f"Error in document processing: {e}")
+            logger.exception(f"Error in document processing: {e}")
 
         return state
 
@@ -590,20 +578,19 @@ class DocumentProcessingAgent:
         self, state: DocumentProcessingState
     ) -> DocumentProcessingState:
         """Annotate documents with metadata and context."""
-
         # Use document modifier agents for annotation
         # This would integrate with existing document_modifiers
 
         annotation_prompt = f"""
         Analyze and annotate the following documents for the query: "{state.original_query}"
-        
+
         For each document, provide:
         1. Relevance score (0-1)
         2. Key topics and themes
         3. Important entities and concepts
         4. Relationships to the query
         5. Summary of key content
-        
+
         Documents to annotate: {len(state.processed_documents)} documents
         """
 
@@ -625,7 +612,7 @@ class DocumentProcessingAgent:
                 "annotated_count": len(state.processed_documents),
             }
         except Exception as e:
-            logger.error(f"Error in document annotation: {e}")
+            logger.exception(f"Error in document annotation: {e}")
             state.annotation_results = {}
 
         return state
@@ -634,22 +621,19 @@ class DocumentProcessingAgent:
         self, state: DocumentProcessingState
     ) -> DocumentProcessingState:
         """Summarize documents using map-branch summarization."""
-
         # This would integrate with existing summarization agents
         from haive.agents.document_modifiers.summarizer.map_branch.agent import (
             MapBranchSummarizerAgent,
         )
 
         try:
-            summarizer = MapBranchSummarizerAgent(
-                name=f"{self.name}_summarizer", engine=self.engine
-            )
+            MapBranchSummarizerAgent(name=f"{self.name}_summarizer", engine=self.engine)
 
             # Create summarization state and process
             # This would need to be implemented based on the summarizer's interface
 
         except Exception as e:
-            logger.error(f"Error in document summarization: {e}")
+            logger.exception(f"Error in document summarization: {e}")
 
         return state
 
@@ -657,20 +641,19 @@ class DocumentProcessingAgent:
         self, state: DocumentProcessingState
     ) -> DocumentProcessingState:
         """Extract knowledge graph from documents."""
-
         # This would integrate with existing KG extraction agents
         from haive.agents.document_modifiers.kg.kg_map_merge.agent import (
             StructuredKGAgent,
         )
 
         try:
-            kg_agent = StructuredKGAgent(name=f"{self.name}_kg", engine=self.engine)
+            StructuredKGAgent(name=f"{self.name}_kg", engine=self.engine)
 
             # Create KG extraction state and process
             # This would need to be implemented based on the KG agent's interface
 
         except Exception as e:
-            logger.error(f"Error in knowledge graph extraction: {e}")
+            logger.exception(f"Error in knowledge graph extraction: {e}")
 
         return state
 
@@ -678,7 +661,6 @@ class DocumentProcessingAgent:
         self, state: DocumentProcessingState
     ) -> DocumentProcessingState:
         """Process query through RAG pipeline."""
-
         state.processing_stage = "rag_processing"
 
         try:
@@ -687,23 +669,18 @@ class DocumentProcessingAgent:
                 state = await self._refine_query(state)
 
             # RAG Processing
-            rag_input = {
-                "query": state.original_query,
-                "documents": state.processed_documents,
-                "context": state.annotation_results,
-            }
 
             # Use the configured RAG agent
             rag_prompt = f"""
             Process the following documents to answer the query: "{state.original_query}"
-            
+
             Documents:
             {[doc.page_content[:200] + "..." for doc in state.processed_documents[:5]]}
-            
+
             Provide a comprehensive response based on the document content.
             """
 
-            rag_result = await self.rag_agent.arun(rag_prompt)
+            await self.rag_agent.arun(rag_prompt)
 
             # Extract context documents and results (simplified for now)
             state.context_documents = state.processed_documents[
@@ -721,7 +698,7 @@ class DocumentProcessingAgent:
             )
 
         except Exception as e:
-            logger.error(f"Error in RAG processing: {e}")
+            logger.exception(f"Error in RAG processing: {e}")
             state.context_documents = state.processed_documents[:10]  # Fallback
 
         return state
@@ -730,19 +707,17 @@ class DocumentProcessingAgent:
         self, state: DocumentProcessingState
     ) -> DocumentProcessingState:
         """Refine query for better retrieval."""
-
         # This would integrate with existing query refinement components
-        from haive.agents.rag.common.query_refinement import QueryRefinementEngine
 
         try:
             refinement_prompt = f"""
             Refine the following query for better document retrieval:
-            
+
             Original Query: "{state.original_query}"
-            
+
             Available Documents: {len(state.processed_documents)} documents
             Document Topics: {list(state.annotation_results.keys()) if state.annotation_results else "Not analyzed"}
-            
+
             Provide:
             1. Refined query with better keywords
             2. Alternative query formulations
@@ -765,30 +740,29 @@ class DocumentProcessingAgent:
             state.refined_queries = [state.original_query, refinement_content]
 
         except Exception as e:
-            logger.error(f"Error in query refinement: {e}")
+            logger.exception(f"Error in query refinement: {e}")
             state.refined_queries = [state.original_query]
 
         return state
 
     async def _generate_response(self, state: DocumentProcessingState) -> str:
         """Generate final response based on processed documents and RAG results."""
-
         state.processing_stage = "response_generation"
 
         response_prompt = f"""
         Generate a comprehensive response based on the document processing results:
-        
+
         Original Query: "{state.original_query}"
-        
+
         Processing Results:
         - Documents Processed: {len(state.processed_documents)}
         - Sources Used: {len(state.current_sources)}
         - Context Documents: {len(state.context_documents)}
         - Annotation Results: {bool(state.annotation_results)}
-        
+
         Context Information:
         {self._format_context_for_response(state)}
-        
+
         Requirements:
         - Provide a direct answer to the original query
         - Include relevant information from processed documents
@@ -803,20 +777,18 @@ class DocumentProcessingAgent:
             # Extract string content from response
             if hasattr(response, "content"):
                 return response.content
-            elif hasattr(response, "response"):
+            if hasattr(response, "response"):
                 return response.response
-            elif isinstance(response, str):
+            if isinstance(response, str):
                 return response
-            else:
-                return str(response)
+            return str(response)
 
         except Exception as e:
-            logger.error(f"Error in response generation: {e}")
+            logger.exception(f"Error in response generation: {e}")
             return f"Error generating response: {e}"
 
     def _format_context_for_response(self, state: DocumentProcessingState) -> str:
         """Format context information for response generation."""
-
         context_parts = []
 
         # Add document summaries
@@ -843,16 +815,14 @@ class DocumentProcessingAgent:
 
     def _extract_sources_from_search(
         self, search_result: str
-    ) -> List[Union[str, Dict[str, Any]]]:
+    ) -> list[str | dict[str, Any]]:
         """Extract sources from search agent result."""
-
         # This would need to be implemented based on the search agent's output format
         # For now, return empty list
         return []
 
-    def _extract_sources(self, state: DocumentProcessingState) -> List[Dict[str, Any]]:
+    def _extract_sources(self, state: DocumentProcessingState) -> list[dict[str, Any]]:
         """Extract source information for result."""
-
         sources = []
 
         for i, source in enumerate(state.current_sources):
@@ -870,9 +840,8 @@ class DocumentProcessingAgent:
 
         return sources
 
-    def _generate_metadata(self, state: DocumentProcessingState) -> Dict[str, Any]:
+    def _generate_metadata(self, state: DocumentProcessingState) -> dict[str, Any]:
         """Generate metadata for processing result."""
-
         return {
             "processing_stages": [op["operation"] for op in state.operation_history],
             "config_used": {
@@ -890,7 +859,7 @@ class DocumentProcessingAgent:
         }
 
     async def process_sources(
-        self, sources: List[Union[str, Dict[str, Any]]], query: str
+        self, sources: list[str | dict[str, Any]], query: str
     ) -> DocumentProcessingResult:
         """Process specific sources with a query.
 
@@ -901,12 +870,10 @@ class DocumentProcessingAgent:
         Returns:
             DocumentProcessingResult with results
         """
-
         return await self.process_query(query, sources)
 
-    def get_capabilities(self) -> Dict[str, Any]:
+    def get_capabilities(self) -> dict[str, Any]:
         """Get agent capabilities and configuration."""
-
         return {
             "document_loading": {
                 "auto_loader": True,

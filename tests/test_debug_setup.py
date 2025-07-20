@@ -13,7 +13,6 @@ console = Console()
 
 async def debug_setup():
     """Debug the setup process step by step."""
-
     console.print("\n[bold blue]Debug Setup Process[/bold blue]\n")
 
     # Step 1: Create agents

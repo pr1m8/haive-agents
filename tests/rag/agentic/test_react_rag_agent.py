@@ -1,10 +1,8 @@
 """Tests for ReactRAGAgent - real component testing with retriever node."""
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from haive.core.models.embeddings import EmbeddingConfig
-from langchain_core.documents import Document
 from langchain_core.tools import tool
 
 from haive.agents.rag.agentic import ReactRAGAgent
@@ -46,7 +44,7 @@ class TestReactRAGAgent:
                 result = eval(expression)
                 return f"The result is: {result}"
             except Exception as e:
-                return f"Error calculating: {str(e)}"
+                return f"Error calculating: {e!s}"
 
         return calculator
 

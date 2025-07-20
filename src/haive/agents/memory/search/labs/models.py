@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -29,9 +29,9 @@ class ProjectAsset(BaseModel):
     name: str = Field(..., description="Asset name")
     type: AssetType = Field(..., description="Asset type")
     description: str = Field(..., description="Asset description")
-    file_path: Optional[str] = Field(default=None, description="File path if saved")
-    content: Optional[str] = Field(default=None, description="Asset content or code")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Asset metadata")
+    file_path: str | None = Field(default=None, description="File path if saved")
+    content: str | None = Field(default=None, description="Asset content or code")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Asset metadata")
     created_at: datetime = Field(
         default_factory=datetime.now, description="Creation timestamp"
     )
@@ -47,18 +47,16 @@ class WorkflowStep(BaseModel):
     step_id: str = Field(..., description="Step identifier")
     name: str = Field(..., description="Step name")
     description: str = Field(..., description="Step description")
-    tool_used: Optional[str] = Field(
-        default=None, description="Tool used for this step"
-    )
-    input_data: Dict[str, Any] = Field(
+    tool_used: str | None = Field(default=None, description="Tool used for this step")
+    input_data: dict[str, Any] = Field(
         default_factory=dict, description="Input data for step"
     )
-    output_data: Dict[str, Any] = Field(
+    output_data: dict[str, Any] = Field(
         default_factory=dict, description="Output data from step"
     )
     duration_seconds: float = Field(default=0.0, description="Step execution time")
     success: bool = Field(default=True, description="Whether step succeeded")
-    error_message: Optional[str] = Field(
+    error_message: str | None = Field(
         default=None, description="Error message if failed"
     )
 
@@ -73,15 +71,15 @@ class InteractiveApp(BaseModel):
         ..., description="Type of app (dashboard, slideshow, website)"
     )
     html_content: str = Field(..., description="HTML content of the app")
-    css_styles: Optional[str] = Field(default=None, description="CSS styles")
-    javascript_code: Optional[str] = Field(default=None, description="JavaScript code")
-    data_sources: List[str] = Field(
+    css_styles: str | None = Field(default=None, description="CSS styles")
+    javascript_code: str | None = Field(default=None, description="JavaScript code")
+    data_sources: list[str] = Field(
         default_factory=list, description="Data sources used"
     )
-    interactive_elements: List[str] = Field(
+    interactive_elements: list[str] = Field(
         default_factory=list, description="Interactive elements"
     )
-    deployment_url: Optional[str] = Field(
+    deployment_url: str | None = Field(
         default=None, description="Deployment URL if deployed"
     )
 
@@ -94,32 +92,32 @@ class LabsResponse(SearchResponse):
 
     search_type: str = Field(default="Labs", description="Type of search performed")
     project_name: str = Field(default="", description="Name of the project")
-    workflow_steps: List[WorkflowStep] = Field(
+    workflow_steps: list[WorkflowStep] = Field(
         default_factory=list, description="Workflow steps executed"
     )
-    assets_created: List[ProjectAsset] = Field(
+    assets_created: list[ProjectAsset] = Field(
         default_factory=list, description="Assets created"
     )
-    interactive_apps: List[InteractiveApp] = Field(
+    interactive_apps: list[InteractiveApp] = Field(
         default_factory=list, description="Interactive apps created"
     )
     total_work_time: float = Field(
         default=0.0, description="Total work time in seconds"
     )
-    tools_used: List[str] = Field(
+    tools_used: list[str] = Field(
         default_factory=list, description="Tools used in workflow"
     )
-    code_execution_results: List[Dict[str, Any]] = Field(
+    code_execution_results: list[dict[str, Any]] = Field(
         default_factory=list, description="Code execution results"
     )
-    data_analysis_results: Dict[str, Any] = Field(
+    data_analysis_results: dict[str, Any] = Field(
         default_factory=dict, description="Data analysis results"
     )
     visualizations_created: int = Field(
         default=0, description="Number of visualizations created"
     )
     project_summary: str = Field(default="", description="Summary of project work")
-    next_steps: List[str] = Field(
+    next_steps: list[str] = Field(
         default_factory=list, description="Suggested next steps"
     )
 
@@ -209,10 +207,10 @@ class LabsRequest(BaseModel):
     project_type: str = Field(
         default="analysis", description="Type of project (analysis, dashboard, app)"
     )
-    data_sources: List[str] = Field(
+    data_sources: list[str] = Field(
         default_factory=list, description="Data sources to use"
     )
-    required_tools: List[str] = Field(
+    required_tools: list[str] = Field(
         default_factory=list, description="Required tools"
     )
     output_format: str = Field(

@@ -112,7 +112,7 @@ def view_ps_errors():
                 stats = cur.fetchone()
 
     except Exception as e:
-        pass")
+        pass
 
 
 if __name__ == "__main__":

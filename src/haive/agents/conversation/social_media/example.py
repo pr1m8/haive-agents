@@ -13,9 +13,8 @@ from haive.agents.simple.agent import SimpleAgent
 logging.getLogger("haive").setLevel(logging.WARNING)
 
 
-def example_twitter_thread():
+def example_twitter_thread() -> None:
     """Twitter-style conversation thread with viral mechanics."""
-
     # Create Twitter thread
     thread = SocialMediaConversation.create_twitter_thread(
         topic="🚀 Just shipped our new AI framework! It's 10x faster than before. AMA!",
@@ -42,7 +41,6 @@ def example_twitter_thread():
             likes = final_likes.get(author, 0)
             shares = final_shares.get(author, 0)
 
-
             # Show engagement
             engagement = []
             if likes > 0:
@@ -58,12 +56,11 @@ def example_twitter_thread():
     # Show trending hashtags
     trending = result.get("trending_topics", [])
     if trending:
-        pass}")
+        pass
 
 
-def example_instagram_discussion():
+def example_instagram_discussion() -> None:
     """Instagram-style post with comments."""
-
     # Create Instagram discussion
     personas = {
         "FitnessGuru": "fitness influencer sharing workout tips",
@@ -110,12 +107,11 @@ def example_instagram_discussion():
 
             # Format as Instagram comment
             if likes > 0:
-                passply")
+                pass
 
 
-def example_tiktok_comments():
+def example_tiktok_comments() -> None:
     """TikTok-style video comments."""
-
     # TikTok personas
     personas = {
         "Creator": "the video creator responding to comments",
@@ -160,12 +156,11 @@ def example_tiktok_comments():
             likes = result.get("likes", {}).get(author, 0)
 
             if likes > 0:
-                passs}")
+                pass
 
 
-def example_linkedin_professional():
+def example_linkedin_professional() -> None:
     """LinkedIn professional discussion."""
-
     # LinkedIn professionals
     professionals = {
         "ThoughtLeader": SimpleAgent(
@@ -233,19 +228,17 @@ def example_linkedin_professional():
             likes = result.get("likes", {}).get(author, 0)
             shares = result.get("shares", {}).get(author, 0)
 
-
             reactions = []
             if likes > 0:
                 reactions.append(f"👍 {likes}")
             if shares > 0:
                 reactions.append(f"♻️ {shares} reposts")
             if reactions:
-                pass)
+                pass
 
 
-def example_viral_moment():
+def example_viral_moment() -> None:
     """Demonstration of viral mechanics."""
-
     # Create scenario likely to go viral
     personas = {
         "CelebChef": "celebrity chef with millions of followers",
@@ -287,11 +280,11 @@ def example_viral_moment():
             current_likes = result.get("likes", {}).get(author, 0)
 
             if current_likes > 0:
-                passes")
+                pass
 
             # Check if went viral
             if current_likes >= conversation.viral_threshold:
-                pass!")
+                pass
 
 
 if __name__ == "__main__":

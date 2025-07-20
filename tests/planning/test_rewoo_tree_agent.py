@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Comprehensive tests for ReWOO Tree Agent with real components.
+"""Comprehensive tests for ReWOO Tree Agent with real components.
 
 This test suite validates all aspects of the ReWOO Tree Agent:
 - Structured output models with field validators
@@ -13,11 +12,9 @@ This test suite validates all aspects of the ReWOO Tree Agent:
 """
 
 import asyncio
-from typing import Any, Dict, List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.tools import tool
 
 from haive.agents.planning.rewoo_tree_agent import (
@@ -42,7 +39,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 @tool
@@ -334,7 +331,7 @@ class TestReWOOTreeAgent:
     async def test_state_management(self, rewoo_agent):
         """Test state management throughout execution."""
         # Execute a task
-        result = await rewoo_agent.arun("Calculate 7 * 6 and analyze the result")
+        await rewoo_agent.arun("Calculate 7 * 6 and analyze the result")
 
         # Check that state is properly maintained
         assert rewoo_agent.conversation_history
@@ -654,11 +651,9 @@ async def test_end_to_end_workflow():
 
 if __name__ == "__main__":
     # Run tests
-    print("🧪 Running ReWOO Tree Agent Tests...")
 
     # Run individual test functions
     asyncio.run(test_end_to_end_workflow())
-    print("✅ End-to-end workflow test passed!")
 
     # Run structured model tests
     structured_tests = TestStructuredOutputModels()
@@ -666,7 +661,6 @@ if __name__ == "__main__":
     structured_tests.test_plan_node_validation()
     structured_tests.test_plan_tree_validation()
     structured_tests.test_rewoo_planner_output_validation()
-    print("✅ Structured output model tests passed!")
 
     # Run parallelization tests
     parallel_tests = TestParallelizationAndTreeStructure()
@@ -674,20 +668,6 @@ if __name__ == "__main__":
     parallel_tests.test_node_execution_readiness()
     parallel_tests.test_tree_completion_tracking()
     parallel_tests.test_failure_handling()
-    print("✅ Parallelization and tree structure tests passed!")
 
     # Integration test
     test_integration_with_base_graph()
-    print("✅ BaseGraph integration test passed!")
-
-    print("\n🎉 All ReWOO Tree Agent tests completed successfully!")
-    print("✅ Features validated:")
-    print("  - Structured output models with field validators")
-    print("  - Tool aliasing and forced tool choice")
-    print("  - Parallelizable tree planning")
-    print("  - Recursive planning capabilities")
-    print("  - Real LLM integration (no mocks)")
-    print("  - BaseGraph integration")
-    print("  - Error handling and fallback strategies")
-    print("  - Performance optimization")
-    print("  - End-to-end workflow execution")

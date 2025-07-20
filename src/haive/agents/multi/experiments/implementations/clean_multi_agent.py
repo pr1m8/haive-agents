@@ -1,5 +1,6 @@
 """Clean Multi-Agent Implementation using AgentNodeV3.
 
+from typing import Any, Dict
 This module provides a clean multi-agent system that:
 - Uses AgentNodeV3 for proper state projection
 - Emulates the engines dict pattern from base Agent
@@ -8,14 +9,13 @@ This module provides a clean multi-agent system that:
 """
 
 import logging
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Literal
 
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
-from langchain_core.messages import BaseMessage
 from langgraph.graph import END, START
-from pydantic import BaseModel, Field, PrivateAttr, field_validator, model_validator
+from pydantic import Field, PrivateAttr, model_validator
 from typing_extensions import TypedDict
 
 from haive.agents.base.agent import Agent
@@ -27,25 +27,25 @@ logger = logging.getLogger(__name__)
 class MinimalMultiAgentState(TypedDict):
     """Minimal state for multi-agent coordination."""
 
-    current_agent: Optional[str]
-    completed_agents: List[str]
-    final_result: Optional[Any]
-    error: Optional[str]
+    current_agent: str | None
+    completed_agents: list[str]
+    final_result: Any | None
+    error: str | None
 
 
 # Container pattern for more complex multi-agent scenarios
 class ContainerMultiAgentState(StateSchema):
     """Container pattern with isolated agent states."""
 
-    agents: Dict[str, Agent] = Field(default_factory=dict)
-    agent_states: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
-    shared_context: Dict[str, Any] = Field(default_factory=dict)
+    agents: dict[str, Agent] = Field(default_factory=dict)
+    agent_states: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    shared_context: dict[str, Any] = Field(default_factory=dict)
 
     # Coordination fields
-    current_agent: Optional[str] = Field(default=None)
-    completed_agents: List[str] = Field(default_factory=list)
-    final_result: Optional[Any] = Field(default=None)
-    error: Optional[str] = Field(default=None)
+    current_agent: str | None = Field(default=None)
+    completed_agents: list[str] = Field(default_factory=list)
+    final_result: Any | None = Field(default=None)
+    error: str | None = Field(default=None)
 
 
 class MultiAgent(Agent):
@@ -76,7 +76,7 @@ class MultiAgent(Agent):
     """
 
     # Agents storage - emulating engines dict pattern
-    agents: Union[List[Agent], Dict[str, Agent]] = Field(
+    agents: list[Agent] | dict[str, Agent] = Field(
         ..., description="Agents to coordinate - can be list or dict like engines"
     )
 
@@ -91,27 +91,28 @@ class MultiAgent(Agent):
     )
 
     # Shared fields between agents
-    shared_fields: List[str] = Field(
+    shared_fields: list[str] = Field(
         default_factory=list,
         description="Fields shared between agents (empty for private state passing)",
     )
 
     # State transfer rules
-    state_transfer_map: Dict[str, Dict[str, str]] = Field(
+    state_transfer_map: dict[str, dict[str, str]] = Field(
         default_factory=dict, description="Maps agent outputs to next agent inputs"
     )
 
     # For conditional routing
-    routing_function: Optional[Any] = Field(
+    routing_function: Any | None = Field(
         default=None, description="Function for conditional routing"
     )
 
     # Internal registries (like engines registry)
-    _agent_registry: Dict[str, Agent] = PrivateAttr(default_factory=dict)
-    _agent_order: List[str] = PrivateAttr(default_factory=list)
+    _agent_registry: dict[str, Agent] = PrivateAttr(default_factory=dict)
+    _agent_order: list[str] = PrivateAttr(default_factory=list)
 
     @model_validator(mode="after")
-    def normalize_agents(self) -> "MultiAgent":
+    @classmethod
+    def normalize_agents(cls) -> "MultiAgent":
         """Normalize agents into registry dict, similar to engines normalization."""
         # Clear registries
         self._agent_registry.clear()
@@ -140,7 +141,7 @@ class MultiAgent(Agent):
 
         return self
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """Setup multi-agent specific configuration."""
         # Set our state schema based on strategy
         if self.state_strategy == "minimal":
@@ -226,7 +227,7 @@ class MultiAgent(Agent):
         """Build parallel execution edges."""
 
         # Add aggregator node
-        def aggregate_results(state):
+        def aggregate_results(state: dict[str, Any]):
             """Aggregate results from parallel agents."""
             return {"final_result": "Aggregated results"}
 
@@ -256,7 +257,7 @@ class SequentialAgent(MultiAgent):
 
     mode: Literal["sequential"] = Field(default="sequential", const=True)
 
-    def __init__(self, agents: List[Agent], **kwargs):
+    def __init__(self, agents: list[Agent], **kwargs):
         """Initialize with list of agents for sequential execution."""
         super().__init__(agents=agents, mode="sequential", **kwargs)
 
@@ -273,7 +274,7 @@ class ConditionalAgent(MultiAgent):
 
     mode: Literal["conditional"] = Field(default="conditional", const=True)
 
-    def __init__(self, agents: Dict[str, Agent], routing_function: Any, **kwargs):
+    def __init__(self, agents: dict[str, Agent], routing_function: Any, **kwargs):
         """Initialize with agents dict and routing function."""
         super().__init__(
             agents=agents,

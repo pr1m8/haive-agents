@@ -19,14 +19,10 @@ sys.path.insert(0, os.path.dirname(__file__))
 from test_hyde_rag_demo import demonstrate_hyde_rag
 
 if __name__ == "__main__":
-    print("\n" + "=" * 60)
-    print("RUNNING HYDE RAG DEMONSTRATION")
-    print("=" * 60 + "\n")
 
     try:
         demonstrate_hyde_rag()
-    except Exception as e:
-        print(f"\nTest failed with error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

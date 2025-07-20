@@ -22,7 +22,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import BaseTool, StructuredTool, Tool
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import add_messages
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 # Set up logging
 logger = logging.getLogger(__name__)

@@ -13,7 +13,7 @@ from haive.agents.simple.agent import SimpleAgent
 logging.getLogger("haive").setLevel(logging.WARNING)
 
 
-def example_classroom_discussion():
+def example_classroom_discussion() -> None:
     """Classroom-style directed conversation."""
     classroom = DirectedConversation.create_classroom(
         teacher_name="Ms. Johnson",
@@ -32,7 +32,7 @@ def example_classroom_discussion():
             pass
 
 
-def example_team_meeting():
+def example_team_meeting() -> None:
     """Team meeting with directed questions and responses."""
     participants = {
         "Manager": SimpleAgent(
@@ -108,7 +108,7 @@ def example_team_meeting():
                     )
 
 
-def example_customer_support():
+def example_customer_support() -> None:
     """Customer support scenario with directed escalation."""
     support_team = {
         "Bot": SimpleAgent(
@@ -172,7 +172,7 @@ def example_customer_support():
             pass
 
 
-def example_interactive_story():
+def example_interactive_story() -> None:
     """Interactive storytelling with character interactions."""
     characters = {
         "Narrator": SimpleAgent(

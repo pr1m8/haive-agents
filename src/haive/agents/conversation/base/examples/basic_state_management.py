@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Basic State Management Example for Base Conversation Agents.
 
+from typing import Any
 This example demonstrates the core state management capabilities of the base
 conversation system, including automatic tracking, computed properties, and
 reducer-based state updates.
 """
 
 import asyncio
-from typing import List
+import contextlib
 
 from haive.agents.conversation.base import (
     ConversationState,
@@ -18,9 +19,8 @@ from haive.agents.conversation.base import (
 from haive.agents.simple import SimpleAgent
 
 
-def demonstrate_basic_state_creation():
+def demonstrate_basic_state_creation() -> Any:
     """Demonstrate basic conversation state creation and properties."""
-
     # Create simple agents
     alice = SimpleAgent(name="Alice")
     bob = SimpleAgent(name="Bob")
@@ -38,7 +38,6 @@ def demonstrate_basic_state_creation():
 
 def demonstrate_state_updates(state: ConversationState):
     """Demonstrate reducer-based state updates."""
-
     # Simulate first turn (Alice speaks)
     state = state.model_copy(
         update={
@@ -71,9 +70,8 @@ def demonstrate_state_updates(state: ConversationState):
 
 def demonstrate_computed_properties(state: ConversationState):
     """Demonstrate computed properties for conversation analysis."""
-
     # Simulate several more turns to show progress
-    for round_num in range(2, 6):  # Rounds 2-5
+    for _round_num in range(2, 6):  # Rounds 2-5
         for speaker in state.speakers:
             state = state.model_copy(
                 update={
@@ -88,49 +86,41 @@ def demonstrate_computed_properties(state: ConversationState):
 
 def demonstrate_progress_tracking(state: ConversationState):
     """Demonstrate progress tracking utilities."""
-
     progress_info = get_conversation_progress(state)
 
-    for key, value in progress_info.items():
+    for _key, value in progress_info.items():
         if isinstance(value, float):
             pass
         else:
             pass
 
 
-def demonstrate_participant_validation():
+def demonstrate_participant_validation() -> None:
     """Demonstrate participant validation."""
-
     # Valid participants
     alice = SimpleAgent(name="Alice")
     bob = SimpleAgent(name="Bob")
     charlie = SimpleAgent(name="Charlie")
 
-    try:
+    with contextlib.suppress(ValueError):
         validate_conversation_participants([alice, bob, charlie])
-    except ValueError as e:
-        pass
 
     # Test with duplicate names
     duplicate_alice = SimpleAgent(name="Alice")  # Same name as alice
 
-    try:
+    with contextlib.suppress(ValueError):
         validate_conversation_participants([alice, bob, duplicate_alice])
-    except ValueError as e:
-        pass
 
     # Test with insufficient participants
     try:
         validate_conversation_participants([alice])  # Only one participant
-    except ValueError as e:
+    except ValueError:
         pass
 
 
-def demonstrate_custom_state_fields():
+def demonstrate_custom_state_fields() -> Any:
     """Demonstrate extending ConversationState with custom fields."""
-
     import operator
-    from typing import Dict
 
     from pydantic import Field
 
@@ -173,7 +163,6 @@ def demonstrate_custom_state_fields():
 
 async def main():
     """Run all state management demonstrations."""
-
     # Basic state creation
     state, participants = demonstrate_basic_state_creation()
 

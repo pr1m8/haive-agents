@@ -48,8 +48,6 @@ class TestSecretStrSerialization:
         # Verify PydanticUndefined is converted to None
         assert processed["undefined_field"] is None
 
-        print("✅ Basic SecretStr serialization working correctly!")
-
     def test_production_serializer_creation(self):
         """Test production serializer factory functions."""
         # Test without encryption key
@@ -68,8 +66,6 @@ class TestSecretStrSerialization:
         finally:
             os.environ.clear()
             os.environ.update(old_env)
-
-        print("✅ Production serializer creation working correctly!")
 
     @pytest.mark.asyncio
     async def test_postgres_config_with_secure_serializer(
@@ -96,8 +92,6 @@ class TestSecretStrSerialization:
         kwargs = config.get_connection_kwargs()
         assert kwargs["autocommit"] is True
         assert kwargs["prepare_threshold"] is None
-
-        print("✅ PostgreSQL configuration with secure serializer working!")
 
     @pytest.mark.asyncio
     async def test_secretstr_with_real_database_connection(
@@ -154,8 +148,6 @@ class TestSecretStrSerialization:
         assert "**SECRET_MASKED**" in json_data
         assert "sk-secret" not in json_data  # No actual secrets exposed
 
-        print("✅ Complex SecretStr data structure handled correctly!")
-
     @pytest.mark.asyncio
     async def test_simple_agent_v2_with_secrets_and_supabase(
         self, supabase_connection_string, test_thread_id
@@ -192,25 +184,19 @@ class TestSecretStrSerialization:
             if hasattr(result, "messages") and result.messages:
                 # Agent returned state with messages
                 assert len(result.messages) > 0
-                print(f"✅ Agent completed with {len(result.messages)} messages")
             elif isinstance(result, str):
                 # Agent returned string response
                 assert len(result) > 0
-                print(f"✅ Agent response: {result[:100]}...")
             else:
                 # Some other format
-                print(
-                    f"✅ Agent completed successfully with result type: {type(result).__name__}"
-                )
+                pass
 
         except Exception as e:
             # Allow prepared statement errors (they don't prevent functionality)
             if "prepared statement" not in str(e).lower():
                 pytest.fail(f"Unexpected agent error: {e}")
             else:
-                print(
-                    f"ℹ️ Expected prepared statement error (functionality still works): {e}"
-                )
+                pass
 
         # Wait for async database writes
         await asyncio.sleep(2)
@@ -219,8 +205,6 @@ class TestSecretStrSerialization:
         await self._verify_checkpoint_data_written(
             supabase_connection_string, test_thread_id
         )
-
-        print("✅ SimpleAgentV2 with SecretStr serialization working with Supabase!")
 
     async def _verify_checkpoint_data_written(
         self, connection_string: str, thread_id: str
@@ -247,9 +231,6 @@ class TestSecretStrSerialization:
                             )
                             count = (await cur.fetchone())[0]
                             if count > 0:
-                                print(
-                                    f"✅ Found {count} records in {table} for thread {thread_id}"
-                                )
                                 data_found = True
 
                                 # Additional check: verify no actual secrets are stored
@@ -265,24 +246,20 @@ class TestSecretStrSerialization:
                                         "sk-secret" not in row_str
                                     ), "Secret values should be masked!"
                                     if "**SECRET_MASKED**" in row_str:
-                                        print(
-                                            "✅ Confirmed: SecretStr values are properly masked in database"
-                                        )
+                                        pass
 
                         except psycopg.errors.UndefinedTable:
                             # Table doesn't exist, skip
                             continue
-                        except Exception as e:
-                            print(f"ℹ️ Could not check table {table}: {e}")
+                        except Exception:
+                            pass
 
                     if not data_found:
-                        print(
-                            f"ℹ️ No checkpoint data found for thread {thread_id} (may use different persistence)"
-                        )
+                        pass
                         # This is not necessarily an error - the agent might use different persistence
 
-        except Exception as e:
-            print(f"⚠️ Could not verify database contents: {e}")
+        except Exception:
+            pass
             # Don't fail the test - database verification is supplementary
 
     @pytest.mark.asyncio
@@ -352,8 +329,6 @@ class TestSecretStrSerialization:
         assert deserialized["metadata"]["user_id"] == "user123"
         assert deserialized["undefined_field"] is None
 
-        print("✅ Complete serializer roundtrip with database simulation successful!")
-
 
 class TestSecretStrErrorHandling:
     """Test error handling scenarios for SecretStr serialization."""
@@ -377,8 +352,6 @@ class TestSecretStrErrorHandling:
         assert processed["nested"]["secret"] == "**SECRET_MASKED**"
         assert processed["nested"]["none"] is None
 
-        print("✅ None values handled correctly!")
-
     def test_serializer_with_circular_references(self):
         """Test serializer handles potential circular references."""
         serializer = SecureSecretStrSerializer()
@@ -398,8 +371,6 @@ class TestSecretStrErrorHandling:
         assert processed["secret"] == "**SECRET_MASKED**"
         assert processed["normal"] == "value"
         assert all(s == "**SECRET_MASKED**" for s in processed["repeated_secrets"])
-
-        print("✅ Repeated/circular references handled correctly!")
 
     def test_serializer_performance_with_large_data(self):
         """Test serializer performance with large data structures."""
@@ -426,8 +397,6 @@ class TestSecretStrErrorHandling:
         assert len(processed["secrets"]) == 100
         assert all(v == "**SECRET_MASKED**" for v in processed["secrets"].values())
         assert all(u is None for u in processed["undefined_fields"])
-
-        print(f"✅ Large data structure processed in {processing_time:.3f}s")
 
         # Performance should be reasonable (< 1 second for this size)
         assert (

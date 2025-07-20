@@ -3,14 +3,14 @@
 import logging
 from collections.abc import Callable
 from datetime import datetime
-from typing import Union
+from typing import Any, Union
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import BaseTool, StructuredTool, Tool
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 from haive.agents.react_class.react_v2.state import ReactAgentState
 from haive.agents.simple.config import SimpleAgentConfig
@@ -221,7 +221,7 @@ class ReactAgentConfig(SimpleAgentConfig):
 
     @field_validatorvalidate_tools
     @classmethod
-    def validate_tools(cls, v):
+    def validate_tools(cls, v) -> Any:
         """Validate that tools are properly configured."""
         if not v:
             logger.warning("No tools provided for ReactAgent")

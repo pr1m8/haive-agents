@@ -48,7 +48,8 @@ class ReactAgentConfig(SimpleAgentConfig):
     output_node_name: str = Field(default="structured_output")
 
     @model_validator(mode="after")
-    def ensure_valid_configuration(self):
+    @classmethod
+    def ensure_valid_configuration(cls) -> Any:
         """Validate the configuration."""
         if not self.tools and not hasattr(self, "tool_node"):
             # Warning rather than error to allow dynamic tool loading

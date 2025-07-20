@@ -1,1 +1,85 @@
-"""RAG agent tests."""
+"""Module exports."""
+
+from rag.test_agentic_rag_with_real_docs import calculator, word_counter
+from rag.test_hyde_rag_clean import test_hyde_rag_structure
+from rag.test_hyde_rag_demo import (
+    HyDEResult,
+    compare_retrieval_methods,
+    create_sample_knowledge_base,
+    demonstrate_hyde_rag,
+)
+from rag.test_hyde_rag_sequential import (
+    EnhancedAnswer,
+    HyDEResult,
+    TestHyDERAGSequential,
+    answer_generator,
+    hyde_generator,
+    rag_retriever,
+    technical_documents,
+    test_complex_technical_query,
+    test_hyde_components_creation,
+    test_hyde_edge_cases,
+    test_hyde_generation,
+    test_hyde_vs_standard_retrieval,
+    test_manual_hyde_rag_flow,
+    test_sequential_multi_agent_hyde,
+    vector_store_config,
+)
+from rag.test_rag_simple_sequential import (
+    Citation,
+    RAGAnswer,
+    TestRAGSimpleSequential,
+    answer_generator_agent,
+    rag_agent,
+    sample_documents,
+    test_agents_creation,
+    test_answer_generation,
+    test_complex_rag_query,
+    test_manual_sequential_execution,
+    test_no_results_handling,
+    test_rag_retrieval,
+    test_sequential_multi_agent,
+    vector_store_config,
+)
+from rag.test_rag_simple_sequential_demo import RAGAnswer, create_sample_documents, main
+from rag.test_simple_rag_clean import test_simple_rag_structure
+
+__all__ = [
+    "Citation",
+    "EnhancedAnswer",
+    "HyDEResult",
+    "RAGAnswer",
+    "TestHyDERAGSequential",
+    "TestRAGSimpleSequential",
+    "answer_generator",
+    "answer_generator_agent",
+    "calculator",
+    "compare_retrieval_methods",
+    "create_sample_documents",
+    "create_sample_knowledge_base",
+    "demonstrate_hyde_rag",
+    "hyde_generator",
+    "main",
+    "rag_agent",
+    "rag_retriever",
+    "sample_documents",
+    "technical_documents",
+    "test_agents_creation",
+    "test_answer_generation",
+    "test_complex_rag_query",
+    "test_complex_technical_query",
+    "test_hyde_components_creation",
+    "test_hyde_edge_cases",
+    "test_hyde_generation",
+    "test_hyde_rag_structure",
+    "test_hyde_vs_standard_retrieval",
+    "test_manual_hyde_rag_flow",
+    "test_manual_sequential_execution",
+    "test_no_results_handling",
+    "test_rag_retrieval",
+    "test_sequential_multi_agent",
+    "test_sequential_multi_agent_hyde",
+    "test_simple_rag_structure",
+    "vector_store_config",
+    "word_counter",
+]

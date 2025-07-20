@@ -30,7 +30,7 @@ async def test_simple_sequential():
     # Test basic functionality
     try:
         result = await multi_agent.arun(task)
-        print(f"\n✅ SUCCESS!")
+        print("\n✅ SUCCESS!"!")
         print(f"Result type: {type(result)}")
         print(f"Result: {result}")
         return True
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         test2 = await test_multiagent_properties()
 
         print(f"\n{'='*50}")
-        print(f"Test Results:")
+        print("Test Results:")
         print(f"  Sequential: {'✅ PASS' if test1 else '❌ FAIL'}")
         print(f"  Properties: {'✅ PASS' if test2 else '❌ FAIL'}")
 

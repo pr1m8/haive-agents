@@ -7,10 +7,10 @@ schema flattening, maintaining type safety and hierarchical access.
 import logging
 
 # abstractmethod removed - not needed
+from collections.abc import Callable
 from enum import Enum
 from typing import (
     Any,
-    Callable,
 )
 
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
@@ -87,7 +87,8 @@ class MultiAgentV2(Agent):
         return values
 
     @model_validator(mode="after")
-    def setup_multi_agent(self) -> "MultiAgentV2":
+    @classmethod
+    def setup_multi_agent(cls) -> "MultiAgentV2":
         """Set up the multi-agent system."""
         # Create custom state schema if needed
         if self.state_schema == MultiAgentState:
@@ -362,4 +363,3 @@ class MultiAgentV2(Agent):
     def setup_agent(self) -> None:
         """Setup hook - MultiAgent uses MultiAgentState by default."""
         # MultiAgentState is already set as default
-        pass

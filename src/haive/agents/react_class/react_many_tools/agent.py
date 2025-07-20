@@ -71,7 +71,7 @@ class ReactManyToolsAgent(ReactAgent):
                 self._retriever = None
 
     @property
-    def retriever(self):
+    def retriever(self) -> Any:
         """Lazy initialization of retriever."""
         if self._retriever is None:
             # If we have a RAG agent, use its retriever

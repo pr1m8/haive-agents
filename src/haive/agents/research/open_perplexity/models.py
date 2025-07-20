@@ -1,5 +1,6 @@
 """Models for the open_perplexity research agent.
 
+from typing import Any
 This module defines data models used for representing, tracking, and evaluating
 research sources, findings, and summaries. It includes enumerations for categorizing
 data source types, content reliability, freshness, and research depth.
@@ -137,7 +138,7 @@ class ResearchSource(BaseModel):
 
     @field_validator("relevance_score")
     @classmethod
-    def validate_relevance_score(cls, v):
+    def validate_relevance_score(cls, v) -> Any:
         """Ensure relevance score is between 0 and 1.
 
         Args:
@@ -182,7 +183,7 @@ class ResearchFinding(BaseModel):
 
     @field_validator("confidence")
     @classmethod
-    def validate_confidence(cls, v):
+    def validate_confidence(cls, v) -> Any:
         """Ensure confidence is between 0 and 1.
 
         Args:
@@ -240,7 +241,7 @@ class ResearchSummary(BaseModel):
 
     @field_validator("confidence_score")
     @classmethod
-    def validate_confidence_score(cls, v):
+    def validate_confidence_score(cls, v) -> Any:
         """Ensure confidence score is between 0 and 1.
 
         Args:
@@ -303,7 +304,7 @@ class DataSourceConfig(BaseModel):
 
     @field_validator("priority")
     @classmethod
-    def validate_priority(cls, v):
+    def validate_priority(cls, v) -> Any:
         """Ensure priority is between 1 and 10.
 
         Args:

@@ -69,7 +69,8 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
         return v.strip()
 
     @model_validator(mode="after")
-    def validate_episodic_consistency(self) -> "EpisodicMemory":
+    @classmethod
+    def validate_episodic_consistency(cls) -> "EpisodicMemory":
         """Validate episodic memory consistency."""
         # Performance metrics should align with outcome
         if (

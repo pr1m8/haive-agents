@@ -1,7 +1,5 @@
 """Comprehensive tests for ProperMultiAgent system."""
 
-import asyncio
-
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
@@ -96,8 +94,8 @@ class TestProperMultiAgent:
         assert isinstance(multi.engines, dict)
 
         # Should have agent engines with proper namespacing
-        agent1_engines = [k for k in multi.engines.keys() if k.startswith("agent1.")]
-        agent2_engines = [k for k in multi.engines.keys() if k.startswith("agent2.")]
+        agent1_engines = [k for k in multi.engines if k.startswith("agent1.")]
+        agent2_engines = [k for k in multi.engines if k.startswith("agent2.")]
 
         assert len(agent1_engines) > 0
         assert len(agent2_engines) > 0

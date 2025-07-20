@@ -7,7 +7,7 @@ self-query retrieval, and memory lifecycle management.
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from haive.core.tools.store_tools import StoreManager
 from pydantic import BaseModel, ConfigDict, Field
@@ -30,7 +30,7 @@ class MemoryStoreConfig(BaseModel):
 
     # Store configuration
     store_manager: StoreManager = Field(..., description="Underlying store manager")
-    default_namespace: Tuple[str, ...] = Field(
+    default_namespace: tuple[str, ...] = Field(
         default=("memory", "general"), description="Default memory namespace"
     )
 
@@ -87,11 +87,11 @@ class MemoryStoreManager:
     async def store_memory(
         self,
         content: str,
-        namespace: Optional[Tuple[str, ...]] = None,
-        user_context: Optional[Dict[str, Any]] = None,
-        conversation_context: Optional[Dict[str, Any]] = None,
-        force_classification: Optional[MemoryType] = None,
-        importance_override: Optional[float] = None,
+        namespace: tuple[str, ...] | None = None,
+        user_context: dict[str, Any] | None = None,
+        conversation_context: dict[str, Any] | None = None,
+        force_classification: MemoryType | None = None,
+        importance_override: float | None = None,
     ) -> str:
         """Store a memory with automatic classification and metadata extraction.
 
@@ -176,18 +176,18 @@ class MemoryStoreManager:
             return memory_id
 
         except Exception as e:
-            logger.error(f"Error storing memory: {e}")
+            logger.exception(f"Error storing memory: {e}")
             raise
 
     async def retrieve_memories(
         self,
         query: str,
-        namespace: Optional[Tuple[str, ...]] = None,
-        memory_types: Optional[List[MemoryType]] = None,
-        limit: Optional[int] = None,
-        time_range: Optional[Tuple[datetime, datetime]] = None,
-        importance_threshold: Optional[float] = None,
-    ) -> List[Dict[str, Any]]:
+        namespace: tuple[str, ...] | None = None,
+        memory_types: list[MemoryType] | None = None,
+        limit: int | None = None,
+        time_range: tuple[datetime, datetime] | None = None,
+        importance_threshold: float | None = None,
+    ) -> list[dict[str, Any]]:
         """Retrieve memories using intelligent query analysis and ranking.
 
         Args:
@@ -269,10 +269,10 @@ class MemoryStoreManager:
             return filtered_results[:limit]
 
         except Exception as e:
-            logger.error(f"Error retrieving memories: {e}")
+            logger.exception(f"Error retrieving memories: {e}")
             return []
 
-    async def get_memory_by_id(self, memory_id: str) -> Optional[Dict[str, Any]]:
+    async def get_memory_by_id(self, memory_id: str) -> dict[str, Any] | None:
         """Retrieve a specific memory by ID and update access metadata.
 
         Args:
@@ -288,14 +288,14 @@ class MemoryStoreManager:
                 return result.to_store_value()
             return None
         except Exception as e:
-            logger.error(f"Error retrieving memory {memory_id}: {e}")
+            logger.exception(f"Error retrieving memory {memory_id}: {e}")
             return None
 
     async def update_memory(
         self,
         memory_id: str,
-        content: Optional[str] = None,
-        additional_metadata: Optional[Dict[str, Any]] = None,
+        content: str | None = None,
+        additional_metadata: dict[str, Any] | None = None,
         reclassify: bool = False,
     ) -> bool:
         """Update an existing memory with new content or metadata.
@@ -316,23 +316,22 @@ class MemoryStoreManager:
                 return False
 
             # Update content if provided
-            if content:
-                if reclassify and self.classifier:
-                    # Reclassify with new content
-                    memory_entry = self.classifier.create_memory_entry(content=content)
-                    classification_metadata = {
-                        "memory_types": [mt.value for mt in memory_entry.memory_types],
-                        "importance": memory_entry.importance.value,
-                        "importance_score": memory_entry.importance_score,
-                        "entities": memory_entry.entities,
-                        "topics": memory_entry.topics,
-                        "sentiment": memory_entry.sentiment,
-                        "confidence": memory_entry.confidence,
-                    }
-                    additional_metadata = {
-                        **(additional_metadata or {}),
-                        **classification_metadata,
-                    }
+            if content and reclassify and self.classifier:
+                # Reclassify with new content
+                memory_entry = self.classifier.create_memory_entry(content=content)
+                classification_metadata = {
+                    "memory_types": [mt.value for mt in memory_entry.memory_types],
+                    "importance": memory_entry.importance.value,
+                    "importance_score": memory_entry.importance_score,
+                    "entities": memory_entry.entities,
+                    "topics": memory_entry.topics,
+                    "sentiment": memory_entry.sentiment,
+                    "confidence": memory_entry.confidence,
+                }
+                additional_metadata = {
+                    **(additional_metadata or {}),
+                    **classification_metadata,
+                }
 
             # Update in store
             success = self.store_manager.update_memory(
@@ -345,7 +344,7 @@ class MemoryStoreManager:
             return success
 
         except Exception as e:
-            logger.error(f"Error updating memory {memory_id}: {e}")
+            logger.exception(f"Error updating memory {memory_id}: {e}")
             return False
 
     async def delete_memory(self, memory_id: str) -> bool:
@@ -360,13 +359,13 @@ class MemoryStoreManager:
         try:
             return self.store_manager.delete_memory(memory_id)
         except Exception as e:
-            logger.error(f"Error deleting memory {memory_id}: {e}")
+            logger.exception(f"Error deleting memory {memory_id}: {e}")
             return False
 
     async def consolidate_memories(
         self,
-        namespace: Optional[Tuple[str, ...]] = None,
-        max_age_hours: Optional[int] = None,
+        namespace: tuple[str, ...] | None = None,
+        max_age_hours: int | None = None,
         dry_run: bool = False,
     ) -> MemoryConsolidationResult:
         """Consolidate memories by removing duplicates, summarizing old memories, and cleaning up.
@@ -452,13 +451,13 @@ class MemoryStoreManager:
             return result
 
         except Exception as e:
-            logger.error(f"Error during memory consolidation: {e}")
+            logger.exception(f"Error during memory consolidation: {e}")
             result.errors_encountered.append(str(e))
             return result
 
     async def get_memory_statistics(
-        self, namespace: Optional[Tuple[str, ...]] = None
-    ) -> Dict[str, Any]:
+        self, namespace: tuple[str, ...] | None = None
+    ) -> dict[str, Any]:
         """Get statistics about stored memories.
 
         Args:
@@ -541,7 +540,7 @@ class MemoryStoreManager:
             return stats
 
         except Exception as e:
-            logger.error(f"Error getting memory statistics: {e}")
+            logger.exception(f"Error getting memory statistics: {e}")
             return {}
 
     def _should_consolidate(self) -> bool:
@@ -551,7 +550,7 @@ class MemoryStoreManager:
             self.config.consolidation_interval_hours * 3600
         )
 
-    async def _schedule_consolidation(self, namespace: Tuple[str, ...]) -> None:
+    async def _schedule_consolidation(self, namespace: tuple[str, ...]) -> None:
         """Schedule background memory consolidation."""
         try:
             # In a production system, this would trigger a background task
@@ -562,7 +561,7 @@ class MemoryStoreManager:
             # await self.consolidate_memories(namespace=namespace)
 
         except Exception as e:
-            logger.error(f"Error scheduling consolidation: {e}")
+            logger.exception(f"Error scheduling consolidation: {e}")
 
     async def _update_access_metadata(self, memory_id: str) -> None:
         """Update access metadata for a memory."""
@@ -575,10 +574,10 @@ class MemoryStoreManager:
                 },
             )
         except Exception as e:
-            logger.error(f"Error updating access metadata for {memory_id}: {e}")
+            logger.exception(f"Error updating access metadata for {memory_id}: {e}")
 
     def _calculate_ranking_score(
-        self, memory: Dict[str, Any], query_intent: Optional[MemoryQueryIntent] = None
+        self, memory: dict[str, Any], query_intent: MemoryQueryIntent | None = None
     ) -> float:
         """Calculate ranking score for memory retrieval."""
         metadata = memory.get("metadata", {})
@@ -659,8 +658,8 @@ class MemoryStoreManager:
         return max(0.0, min(1.0, decay_factor * importance_factor))
 
     def _find_duplicate_memories(
-        self, memories: List[Dict[str, Any]]
-    ) -> List[List[str]]:
+        self, memories: list[dict[str, Any]]
+    ) -> list[list[str]]:
         """Find groups of duplicate memories based on content similarity."""
         duplicates = []
         processed_ids = set()

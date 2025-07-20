@@ -78,20 +78,20 @@ def debug_schema_composition():
     try:
         input_instance = input_schema(query="hello")
     except Exception as e:
-        pass")
+        pass
 
     # Test state schema creation with just input data
     try:
         # This should fail because engine is required
         state_instance = state_schema(query="hello")
     except Exception as e:
-        pass")
+        pass
 
     # Test state schema creation with engine
     try:
         state_instance = state_schema(query="hello", engine=engine)
     except Exception as e:
-        pass")
+        pass
 
 
 if __name__ == "__main__":

@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def main():
+def main() -> None:
     """Run a simple research example on AI ethics."""
     # Define research question
     research_question = """

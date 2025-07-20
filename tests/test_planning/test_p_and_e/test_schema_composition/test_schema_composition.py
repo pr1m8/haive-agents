@@ -11,7 +11,6 @@ from haive.agents.simple.agent import SimpleAgent
 
 def test_schema_composition():
     """Test that schema composition works with prebuilt base schemas."""
-
     # Create planner engine
     planner_aug = AugLLMConfig(
         name="planner",
@@ -35,17 +34,17 @@ def test_schema_composition():
     expected_fields = ["messages", "engine", "engines", "plan"]
     for field in expected_fields:
         if field in fields:
-            pass")
+            pass
         else:
-            pass")
+            pass
 
     # Test creating state instance
     try:
         state = planner_simple_agent.state_schema()
         if hasattr(state, "plan"):
             pass
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Test running the agent
     try:
@@ -57,13 +56,11 @@ def test_schema_composition():
             ]
         }
 
-
         result = planner_simple_agent.run(input_data=input_data, debug=True)
-
 
         # Check if we got a plan in the result
         if hasattr(result, "plan") and result.plan:
-            for step in result.plan.steps:
+            for _step in result.plan.steps:
                 pass
 
         # Check messages in result
@@ -71,13 +68,12 @@ def test_schema_composition():
             last_msg = result.messages[-1]
             if hasattr(last_msg, "parsed") and last_msg.parsed:
                 if isinstance(last_msg.parsed, Plan):
-                    pass")
+                    pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
-
 
 
 if __name__ == "__main__":

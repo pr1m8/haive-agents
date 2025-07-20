@@ -1,12 +1,13 @@
 """Base state schema for document modification agents.
 
+from typing import Any
 This module defines the DocumentModifierState class which serves as the
 foundation for all document processing agents in the haive framework.
 """
 
 from haive.core.schema import StateSchema
 from langchain_core.documents import Document
-from pydantic import Field, computed_field, field_validator, model_validator
+from pydantic import Field, computed_field, model_validator
 
 
 class DocumentModifierState(StateSchema):
@@ -125,7 +126,8 @@ class DocumentModifierState(StateSchema):
         return len(self.documents)
 
     @model_validator(mode="after")
-    def validate_documents(self):
+    @classmethod
+    def validate_documents(cls) -> Any:
         """Validate that at least one document is present.
 
         This validator runs after model initialization to ensure
@@ -143,7 +145,7 @@ class DocumentModifierState(StateSchema):
 
     @field_validatorvalidate_documents_field
     @classmethod
-    def validate_documents_field(cls, v):
+    def validate_documents_field(cls, v) -> Any:
         """Validate the documents field during assignment.
 
         Args:

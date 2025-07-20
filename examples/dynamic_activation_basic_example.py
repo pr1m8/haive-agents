@@ -14,7 +14,7 @@ Usage:
 
 import asyncio
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.registry import RegistryItem
@@ -49,7 +49,7 @@ def calculator(expression: str) -> float:
         result = eval(expression)
         return float(result)
     except Exception as e:
-        logger.error(f"Calculator error: {e}")
+        logger.exception(f"Calculator error: {e}")
         return 0.0
 
 
@@ -71,7 +71,7 @@ def text_processor(text: str) -> str:
         processed = text.upper() + " (processed)"
         return processed
     except Exception as e:
-        logger.error(f"Text processor error: {e}")
+        logger.exception(f"Text processor error: {e}")
         return text
 
 
@@ -93,7 +93,7 @@ def word_counter(text: str) -> int:
         words = text.split()
         return len(words)
     except Exception as e:
-        logger.error(f"Word counter error: {e}")
+        logger.exception(f"Word counter error: {e}")
         return 0
 
 
@@ -153,7 +153,7 @@ async def example_1_basic_dynamic_react_agent():
         )
         logger.info(f"Agent result: {result}")
     except Exception as e:
-        logger.error(f"Agent execution error: {e}")
+        logger.exception(f"Agent execution error: {e}")
 
     # Get tool usage statistics
     stats = agent.get_tool_usage_stats()
@@ -234,8 +234,8 @@ async def example_2_dynamic_activation_supervisor():
     logger.info(f"Registry has {len(supervisor.state.registry.items)} components")
 
     # Activate components
-    meta_state_1 = supervisor.state.activate_component("math_processor")
-    meta_state_2 = supervisor.state.activate_component("text_analyzer")
+    supervisor.state.activate_component("math_processor")
+    supervisor.state.activate_component("text_analyzer")
 
     logger.info(
         f"Activated components: {list(supervisor.state.active_components.keys())}"
@@ -248,7 +248,7 @@ async def example_2_dynamic_activation_supervisor():
         )
         logger.info(f"Supervisor result: {result}")
     except Exception as e:
-        logger.error(f"Supervisor execution error: {e}")
+        logger.exception(f"Supervisor execution error: {e}")
 
     # Get activation statistics
     activation_stats = supervisor.state.get_activation_stats()
@@ -274,9 +274,9 @@ async def example_3_discovery_based_activation():
 
     tools_doc = """
     # Example Tools Documentation
-    
+
     ## Mathematical Tools
-    
+
     ### Advanced Calculator
     - **Name**: advanced_calculator
     - **Description**: Advanced mathematical calculations with scientific functions
@@ -284,7 +284,7 @@ async def example_3_discovery_based_activation():
     - **Output**: Precise numerical results
     - **Category**: math
     - **Capabilities**: basic_math, trigonometry, logarithms, statistics
-    
+
     ### Statistics Analyzer
     - **Name**: statistics_analyzer
     - **Description**: Statistical analysis and data processing
@@ -292,9 +292,9 @@ async def example_3_discovery_based_activation():
     - **Output**: Statistical results and insights
     - **Category**: math
     - **Capabilities**: mean, median, mode, standard_deviation, correlation
-    
+
     ## Text Processing Tools
-    
+
     ### Natural Language Processor
     - **Name**: nlp_processor
     - **Description**: Advanced natural language processing
@@ -302,7 +302,7 @@ async def example_3_discovery_based_activation():
     - **Output**: Processed text with annotations
     - **Category**: text
     - **Capabilities**: tokenization, pos_tagging, named_entity_recognition
-    
+
     ### Document Summarizer
     - **Name**: document_summarizer
     - **Description**: Automatic document summarization
@@ -310,9 +310,9 @@ async def example_3_discovery_based_activation():
     - **Output**: Concise summaries
     - **Category**: text
     - **Capabilities**: extractive_summary, abstractive_summary
-    
+
     ## Data Processing Tools
-    
+
     ### Data Cleaner
     - **Name**: data_cleaner
     - **Description**: Clean and preprocess data
@@ -320,7 +320,7 @@ async def example_3_discovery_based_activation():
     - **Output**: Cleaned and structured data
     - **Category**: data
     - **Capabilities**: null_handling, duplicate_removal, format_conversion
-    
+
     ### Schema Validator
     - **Name**: schema_validator
     - **Description**: Validate data against schemas
@@ -368,7 +368,7 @@ async def example_3_discovery_based_activation():
             logger.info(f"Discovery queries: {agent.state.discovery_queries}")
 
         except Exception as e:
-            logger.error(f"Discovery error: {e}")
+            logger.exception(f"Discovery error: {e}")
 
         # Execute agent with discovered tools
         try:
@@ -377,7 +377,7 @@ async def example_3_discovery_based_activation():
             )
             logger.info(f"Discovery agent result: {result}")
         except Exception as e:
-            logger.error(f"Discovery agent execution error: {e}")
+            logger.exception(f"Discovery agent execution error: {e}")
 
         # Get tool categorization
         categories = agent.state.tool_categories
@@ -405,7 +405,7 @@ async def example_4_registry_management():
     )
 
     # Create registry for custom components
-    registry = DynamicRegistry[Dict[str, Any]]()
+    registry = DynamicRegistry[dict[str, Any]]()
 
     # Create custom components
     components = [
@@ -462,7 +462,7 @@ async def example_4_registry_management():
 
     # Test deactivation
     registry.deactivate("comp_001")
-    logger.info(f"Deactivated comp_001")
+    logger.info("Deactivated comp_001")
 
     # Get registry statistics
     stats = registry.get_stats()
@@ -503,7 +503,7 @@ async def example_5_performance_testing():
     from haive.core.registry import DynamicRegistry
 
     # Create large registry
-    large_registry = DynamicRegistry[Dict[str, Any]]()
+    large_registry = DynamicRegistry[dict[str, Any]]()
 
     # Create many components
     num_components = 1000
@@ -620,7 +620,7 @@ async def main():
         logger.info(f"Performance registry components: {len(perf_registry.items)}")
 
     except Exception as e:
-        logger.error(f"Example execution failed: {e}")
+        logger.exception(f"Example execution failed: {e}")
         raise
 
 

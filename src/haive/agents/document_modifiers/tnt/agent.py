@@ -1,5 +1,6 @@
 """Taxonomy generation agent implementation.
 
+from typing import Any, Dict, Optional
 This module implements an agent that generates taxonomies from conversation histories
 through an iterative process of document summarization, clustering, and refinement.
 It uses LLM-based processing at each step to generate high-quality taxonomies.
@@ -275,7 +276,7 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             taxonomy_generation_aug_llm_config, state, config, state.minibatches[0]
         )
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         """Sets up the taxonomy generation workflow in LangGraph."""
         self.graph.add_node("summarize", self.map_reduce_chain)
         self.graph.add_node("get_minibatches", self.get_minibatches)

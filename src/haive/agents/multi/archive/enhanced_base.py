@@ -1,5 +1,6 @@
 """Enhanced Multi-Agent Base for flexible agent orchestration.
 
+from typing import Any, Dict
 This module provides an improved multi-agent base that leverages the advanced
 conditional edges functionality from base_graph2.py while keeping the API simple
 and similar to how it works in simple agents.
@@ -45,7 +46,8 @@ See Also:
 """
 
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from haive.core.graph.node.agent_node import AgentNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -193,7 +195,7 @@ class MultiAgentBase(Agent):
 
     @field_validator("agents", mode="before")
     @classmethod
-    def convert_to_agent_list(cls, v):
+    def convert_to_agent_list(cls, v) -> Any:
         """Convert regular list to AgentList."""
         if isinstance(v, list) and not isinstance(v, AgentList):
             return AgentList(v)
@@ -687,7 +689,7 @@ def create_plan_execute_multi_agent(
     if state_schema is None:
         state_schema = PlanExecuteState
 
-    def route_after_execution(state) -> str:
+    def route_after_execution(state: Dict[str, Any]) -> str:
         """Route after execution based on plan status."""
         if hasattr(state, "plan") and state.plan:
             if state.plan.is_complete:
@@ -695,7 +697,7 @@ def create_plan_execute_multi_agent(
             return "executor"
         return "replanner"
 
-    def route_after_replan(state) -> str:
+    def route_after_replan(state: Dict[str, Any]) -> str:
         """Route after replanning decision."""
         if hasattr(state, "final_answer") and state.final_answer:
             return END

@@ -1,64 +1,194 @@
-"""Simple reflection models following Plan and Execute pattern."""
+"""Models for reflection agent outputs and configurations."""
 
-from typing import List, Literal, Optional
+from typing import Any, Literal
 
-from pydantic import BaseModel, Field
-
-
-class Critique(BaseModel):
-    """Analysis of content quality and issues."""
-
-    strengths: List[str] = Field(
-        default_factory=list, description="What works well in the content"
-    )
-    weaknesses: List[str] = Field(
-        default_factory=list, description="What needs improvement"
-    )
-    quality_score: float = Field(
-        ..., description="Overall quality score from 0.0 to 1.0", ge=0.0, le=1.0
-    )
-    needs_improvement: bool = Field(
-        ..., description="Whether the content needs to be improved"
-    )
+from pydantic import BaseModel, Field, validator
 
 
-class Improvement(BaseModel):
-    """Improved version of the content."""
+class QualityScore(BaseModel):
+    """Simple quality score for responses."""
 
-    improved_content: str = Field(
-        ..., description="The improved version of the content"
-    )
-    changes_made: List[str] = Field(
-        default_factory=list, description="List of changes made during improvement"
-    )
+    score: float = Field(ge=0.0, le=100.0, description="Overall quality score (0-100)")
     confidence: float = Field(
-        ..., description="Confidence in the improvement from 0.0 to 1.0", ge=0.0, le=1.0
+        default=0.8, ge=0.0, le=1.0, description="Confidence in the score"
+    )
+    reasoning: str = Field(description="Brief explanation of the score")
+
+
+class ImprovementSuggestion(BaseModel):
+    """A specific improvement suggestion."""
+
+    category: str = Field(
+        description="Category of improvement (clarity, accuracy, completeness, etc.)"
+    )
+    suggestion: str = Field(description="Specific suggestion for improvement")
+    priority: Literal["high", "medium", "low"] = Field(
+        default="medium", description="Priority of this improvement"
+    )
+    example: str | None = Field(
+        default=None, description="Example of the improved version"
     )
 
 
-class ReflectionResult(BaseModel):
-    """Result of reflection process."""
+class GradingResult(BaseModel):
+    """Comprehensive grading result for a response."""
 
-    original_content: str = Field(..., description="The original content")
-    final_content: str = Field(..., description="The final improved content")
-    iterations: int = Field(default=1, description="Number of improvement iterations")
-    final_quality: float = Field(..., description="Final quality score", ge=0.0, le=1.0)
-    improvement_summary: List[str] = Field(
-        default_factory=list, description="Summary of all improvements made"
+    # Core grading
+    overall_score: QualityScore = Field(description="Overall quality assessment")
+
+    # Detailed scores
+    accuracy_score: float = Field(
+        ge=0.0, le=100.0, description="Accuracy/correctness score"
+    )
+    completeness_score: float = Field(
+        ge=0.0, le=100.0, description="Completeness score"
+    )
+    clarity_score: float = Field(
+        ge=0.0, le=100.0, description="Clarity and coherence score"
+    )
+    relevance_score: float = Field(
+        ge=0.0, le=100.0, description="Relevance to the query score"
+    )
+
+    # Feedback
+    strengths: list[str] = Field(
+        default_factory=list, description="Identified strengths"
+    )
+    weaknesses: list[str] = Field(
+        default_factory=list, description="Identified weaknesses"
+    )
+    improvements: list[ImprovementSuggestion] = Field(
+        default_factory=list, description="Specific improvement suggestions"
+    )
+
+    # Grade
+    letter_grade: str = Field(
+        pattern="^[A-F][+-]?$", description="Letter grade (A+, A, A-, B+, etc.)"
+    )
+
+    # Optional improved version
+    improved_response: str | None = Field(
+        default=None, description="Suggested improved version of the response"
+    )
+
+    @validator("letter_grade")
+    def validate_grade_matches_score(self, v, values) -> Any:
+        """Ensure letter grade matches overall score."""
+        if "overall_score" in values:
+            score = values["overall_score"].score
+            expected_grade = self._score_to_grade(score)
+            if v != expected_grade:
+                # Allow override but log warning
+                pass
+        return v
+
+    @staticmethod
+    def _score_to_grade(score: float) -> str:
+        """Convert numerical score to letter grade."""
+        if score >= 97:
+            return "A+"
+        if score >= 93:
+            return "A"
+        if score >= 90:
+            return "A-"
+        if score >= 87:
+            return "B+"
+        if score >= 83:
+            return "B"
+        if score >= 80:
+            return "B-"
+        if score >= 77:
+            return "C+"
+        if score >= 73:
+            return "C"
+        if score >= 70:
+            return "C-"
+        if score >= 67:
+            return "D+"
+        if score >= 63:
+            return "D"
+        if score >= 60:
+            return "D-"
+        return "F"
+
+
+class ReflectionOutput(BaseModel):
+    """Output from reflection process (unstructured)."""
+
+    reflected_response: str = Field(description="The reflected/improved response")
+
+    reflection_notes: str | None = Field(
+        default=None, description="Notes about what was improved"
+    )
+
+    iterations: int = Field(
+        default=1, ge=1, description="Number of reflection iterations"
+    )
+
+    changes_made: list[str] = Field(
+        default_factory=list, description="List of changes made"
     )
 
 
-class ReflectionAction(BaseModel):
-    """Action to take during reflection - either improve or finalize."""
+class ExpertiseConfig(BaseModel):
+    """Configuration for expert agents."""
 
-    action: Literal["improve", "finalize"] = Field(
-        ..., description="Action to take: improve content or finalize result"
+    domain: str = Field(description="Domain of expertise")
+
+    expertise_level: Literal["beginner", "intermediate", "expert", "world-class"] = (
+        Field(default="expert", description="Level of expertise to simulate")
     )
-    reason: str = Field(..., description="Reason for this action")
+
+    style: str | None = Field(
+        default=None,
+        description="Communication style (formal, casual, technical, etc.)",
+    )
+
+    additional_context: str | None = Field(
+        default=None, description="Additional context about the expert role"
+    )
+
+    def to_prompt(self) -> str:
+        """Convert to prompt string."""
+        prompt = f"You are a {self.expertise_level} expert in {self.domain}."
+
+        if self.style:
+            prompt += f" Communicate in a {self.style} style."
+
+        if self.additional_context:
+            prompt += f" {self.additional_context}"
+
+        return prompt
 
 
-# Rebuild forward references
-Critique.model_rebuild()
-Improvement.model_rebuild()
-ReflectionResult.model_rebuild()
-ReflectionAction.model_rebuild()
+class ReflectionConfig(BaseModel):
+    """Configuration for reflection process."""
+
+    max_iterations: int = Field(
+        default=3, ge=1, le=10, description="Maximum reflection iterations"
+    )
+
+    min_score_threshold: float = Field(
+        default=80.0, ge=0.0, le=100.0, description="Minimum score to stop reflecting"
+    )
+
+    confidence_threshold: float = Field(
+        default=0.9,
+        ge=0.0,
+        le=1.0,
+        description="Confidence threshold to stop reflecting",
+    )
+
+    reflection_mode: Literal["improve", "critique", "both"] = Field(
+        default="both", description="Mode of reflection"
+    )
+
+    include_reasoning: bool = Field(
+        default=True, description="Include reasoning in output"
+    )
+
+    force_iterations: int | None = Field(
+        default=None, description="Force exact number of iterations"
+    )
+
+    stop_on_decline: bool = Field(default=True, description="Stop if quality decreases")

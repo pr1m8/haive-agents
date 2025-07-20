@@ -30,12 +30,12 @@ class AgentDebugger:
         self.enabled = enabled
         self.console = Console()
 
-    def enable(self):
+    def enable(self) -> None:
         """Enable debugging output."""
         self.enabled = True
         debug_logger.setLevel(logging.DEBUG)
 
-    def disable(self):
+    def disable(self) -> None:
         """Disable debugging output."""
         self.enabled = False
         debug_logger.setLevel(logging.WARNING)
@@ -245,7 +245,7 @@ def get_agent_debugger(agent_name: str = "Agent") -> AgentDebugger:
     return _global_debugger
 
 
-def enable_agent_debugging():
+def enable_agent_debugging() -> None:
     """Enable global agent debugging."""
     debug_logger.setLevel(logging.DEBUG)
     if not debug_logger.handlers:
@@ -255,7 +255,7 @@ def enable_agent_debugging():
     debug_logger.info("🐛 Agent debugging enabled")
 
 
-def disable_agent_debugging():
+def disable_agent_debugging() -> None:
     """Disable global agent debugging."""
     debug_logger.setLevel(logging.WARNING)
     debug_logger.info("🔇 Agent debugging disabled")

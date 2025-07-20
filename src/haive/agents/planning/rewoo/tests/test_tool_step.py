@@ -1,9 +1,11 @@
-"""
-Tests for ToolStep - Tool validation and execution
+"""from typing import Any, List
+Tests for ToolStep - Tool validation and execution.
 """
 
+import contextlib
+
 import pytest
-from langchain_core.tools import BaseTool, tool
+from langchain_core.tools import tool
 from pydantic import ValidationError
 
 from haive.agents.planning.rewoo.models.plans import ExecutionPlan
@@ -22,7 +24,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 @tool
@@ -47,11 +49,11 @@ class TestToolStep:
     """Test suite for ToolStep functionality."""
 
     @pytest.fixture
-    def available_tools(self):
+    def available_tools(self) -> List[Any]:
         """Fixture providing test tools."""
         return [calculator, text_analyzer, file_reader]
 
-    def test_valid_tool_step_creation(self, available_tools):
+    def test_valid_tool_step_creation(self, available_tools) -> None:
         """Test creating a valid ToolStep."""
         step = ToolStep(
             description="Calculate 2 + 2",
@@ -62,11 +64,11 @@ class TestToolStep:
 
         assert step.tool_name == "calculator"
         assert step.tool_args == {"expression": "2 + 2"}
-        assert step.is_tool_valid == True
+        assert step.is_tool_valid
         assert step.selected_tool == calculator
         assert "expression" in step.required_args
 
-    def test_invalid_tool_name(self, available_tools):
+    def test_invalid_tool_name(self, available_tools) -> None:
         """Test validation fails for invalid tool name."""
         with pytest.raises(ValidationError, match="Tool 'nonexistent' not found"):
             ToolStep(
@@ -76,7 +78,7 @@ class TestToolStep:
                 available_tools=available_tools,
             )
 
-    def test_missing_required_args(self, available_tools):
+    def test_missing_required_args(self, available_tools) -> None:
         """Test validation fails for missing required arguments."""
         with pytest.raises(ValidationError, match="Missing required arguments"):
             ToolStep(
@@ -86,7 +88,7 @@ class TestToolStep:
                 available_tools=available_tools,
             )
 
-    def test_invalid_args(self, available_tools):
+    def test_invalid_args(self, available_tools) -> None:
         """Test validation fails for invalid arguments."""
         with pytest.raises(ValidationError, match="Invalid arguments"):
             ToolStep(
@@ -96,7 +98,7 @@ class TestToolStep:
                 available_tools=available_tools,
             )
 
-    def test_optional_args(self, available_tools):
+    def test_optional_args(self, available_tools) -> None:
         """Test tool with optional arguments."""
         # With optional arg
         step1 = ToolStep(
@@ -105,7 +107,7 @@ class TestToolStep:
             tool_args={"text": "Hello world", "min_length": 10},
             available_tools=available_tools,
         )
-        assert step1.is_tool_valid == True
+        assert step1.is_tool_valid
 
         # Without optional arg
         step2 = ToolStep(
@@ -114,9 +116,9 @@ class TestToolStep:
             tool_args={"text": "Hello world"},
             available_tools=available_tools,
         )
-        assert step2.is_tool_valid == True
+        assert step2.is_tool_valid
 
-    def test_computed_fields(self, available_tools):
+    def test_computed_fields(self, available_tools) -> None:
         """Test computed fields are calculated correctly."""
         step = ToolStep(
             description="Test computed fields",
@@ -134,7 +136,7 @@ class TestToolStep:
         assert "text" in step.required_args
         assert "min_length" in step.optional_args
 
-    def test_tool_execution(self, available_tools):
+    def test_tool_execution(self, available_tools) -> None:
         """Test actual tool execution."""
         step = ToolStep(
             description="Calculate 15 * 8",
@@ -144,14 +146,14 @@ class TestToolStep:
         )
 
         # Should be able to execute
-        assert step.can_execute(set()) == True
+        assert step.can_execute(set())
 
         # Execute and check result
         result = step.execute({"completed_steps": set()})
         assert "120" in str(result)
         assert step.result is not None
 
-    def test_tool_execution_with_dependencies(self, available_tools):
+    def test_tool_execution_with_dependencies(self, available_tools) -> None:
         """Test tool execution with dependencies."""
         step1 = ToolStep(
             description="First calculation",
@@ -169,15 +171,15 @@ class TestToolStep:
         )
 
         # Step 1 can execute
-        assert step1.can_execute(set()) == True
+        assert step1.can_execute(set())
 
         # Step 2 cannot execute yet
-        assert step2.can_execute(set()) == False
+        assert not step2.can_execute(set())
 
         # After step 1 completes
-        assert step2.can_execute({step1.id}) == True
+        assert step2.can_execute({step1.id})
 
-    def test_tool_info(self, available_tools):
+    def test_tool_info(self, available_tools) -> None:
         """Test get_tool_info method."""
         step = ToolStep(
             description="Get tool info",
@@ -193,9 +195,9 @@ class TestToolStep:
         assert "min_length" in info["optional_args"]
         assert info["provided_args"] == ["text"]
         assert info["missing_args"] == []
-        assert info["is_valid"] == True
+        assert info["is_valid"]
 
-    def test_update_tool_args(self, available_tools):
+    def test_update_tool_args(self, available_tools) -> None:
         """Test updating tool arguments."""
         step = ToolStep(
             description="Update args test",
@@ -209,7 +211,7 @@ class TestToolStep:
         assert step.tool_args["text"] == "updated"
         assert step.tool_args["min_length"] == 20
 
-    def test_factory_method(self, available_tools):
+    def test_factory_method(self, available_tools) -> None:
         """Test create_from_tool factory method."""
         step = ToolStep.create_from_tool(
             tool=calculator,
@@ -220,9 +222,9 @@ class TestToolStep:
 
         assert step.tool_name == "calculator"
         assert step.description == "Factory created step"
-        assert step.is_tool_valid == True
+        assert step.is_tool_valid
 
-    def test_empty_tools_list(self):
+    def test_empty_tools_list(self) -> None:
         """Test validation fails for empty tools list."""
         with pytest.raises(
             ValidationError, match="Available tools list cannot be empty"
@@ -234,7 +236,7 @@ class TestToolStep:
                 available_tools=[],
             )
 
-    def test_duplicate_tool_names(self, available_tools):
+    def test_duplicate_tool_names(self, available_tools) -> None:
         """Test validation fails for duplicate tool names."""
         # Create duplicate tool
         duplicate_tools = available_tools + [calculator]  # calculator appears twice
@@ -252,10 +254,10 @@ class TestToolStepFactories:
     """Test factory functions for ToolStep."""
 
     @pytest.fixture
-    def available_tools(self):
+    def available_tools(self) -> List[Any]:
         return [calculator, text_analyzer, file_reader]
 
-    def test_create_tool_steps_from_plan(self, available_tools):
+    def test_create_tool_steps_from_plan(self, available_tools) -> None:
         """Test creating multiple steps from plan."""
         plan_data = [
             {
@@ -278,7 +280,7 @@ class TestToolStepFactories:
         assert steps[1].tool_name == "text_analyzer"
         assert all(step.is_tool_valid for step in steps)
 
-    def test_validate_tool_compatibility(self, available_tools):
+    def test_validate_tool_compatibility(self, available_tools) -> None:
         """Test tool compatibility validation."""
         issues = validate_tool_compatibility(available_tools)
 
@@ -287,7 +289,7 @@ class TestToolStepFactories:
         assert len(issues["tools_without_descriptions"]) == 0
         assert len(issues["valid_tools"]) == 3
 
-    def test_validate_problematic_tools(self):
+    def test_validate_problematic_tools(self) -> str:
         """Test validation with problematic tools."""
 
         @tool
@@ -318,10 +320,10 @@ class TestToolStepIntegration:
     """Test ToolStep integration with ExecutionPlan."""
 
     @pytest.fixture
-    def available_tools(self):
+    def available_tools(self) -> List[Any]:
         return [calculator, text_analyzer, file_reader]
 
-    def test_tool_steps_in_execution_plan(self, available_tools):
+    def test_tool_steps_in_execution_plan(self, available_tools) -> None:
         """Test ToolSteps work in ExecutionPlan."""
         step1 = ToolStep(
             description="Calculate base value",
@@ -348,7 +350,7 @@ class TestToolStepIntegration:
         assert plan.max_parallelism == 1
         assert len(plan.execution_levels) == 2
 
-    def test_parallel_tool_execution(self, available_tools):
+    def test_parallel_tool_execution(self, available_tools) -> None:
         """Test parallel tool steps."""
         step1 = ToolStep(
             description="Calculate first",
@@ -386,49 +388,35 @@ class TestToolStepIntegration:
 
 if __name__ == "__main__":
     # Run basic tests without pytest
-    import sys
 
     tools = [calculator, text_analyzer, file_reader]
 
-    print("🧪 Testing ToolStep Validation")
-    print("=" * 50)
-
     # Test valid step
-    try:
+    with contextlib.suppress(Exception):
         step = ToolStep(
             description="Test calculation",
             tool_name="calculator",
             tool_args={"expression": "2 + 2"},
             available_tools=tools,
         )
-        print(f"✅ Valid step created: {step.tool_name}")
-        print(f"   Tool info: {step.get_tool_info()}")
-    except Exception as e:
-        print(f"❌ Valid step failed: {e}")
 
     # Test invalid tool name
-    try:
+    with contextlib.suppress(ValidationError):
         ToolStep(
             description="Invalid tool",
             tool_name="nonexistent",
             tool_args={},
             available_tools=tools,
         )
-        print("❌ Invalid tool name should have failed")
-    except ValidationError:
-        print("✅ Invalid tool name correctly rejected")
 
     # Test missing args
-    try:
+    with contextlib.suppress(ValidationError):
         ToolStep(
             description="Missing args",
             tool_name="calculator",
             tool_args={},
             available_tools=tools,
         )
-        print("❌ Missing args should have failed")
-    except ValidationError:
-        print("✅ Missing required args correctly rejected")
 
     # Test execution
     try:
@@ -439,8 +427,5 @@ if __name__ == "__main__":
             available_tools=tools,
         )
         result = step.execute({"completed_steps": set()})
-        print(f"✅ Tool execution result: {result}")
-    except Exception as e:
-        print(f"❌ Tool execution failed: {e}")
-
-    print("\n✅ All manual tests completed!")
+    except Exception:
+        pass

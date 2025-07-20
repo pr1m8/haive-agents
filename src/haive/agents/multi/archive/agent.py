@@ -38,16 +38,17 @@ class MultiAgent(Agent):
     - Meta-agent capabilities for self-modification
 
     Example:
-        ```python
-        # Create multi-agent with two component agents
-        multi = MultiAgent(
+        .. code-block:: python
+
+            # Create multi-agent with two component agents
+            multi = MultiAgent(
             agents=[react_agent, simple_agent],
             coordination_mode="sequential"
-        )
+            )
 
-        # Run the multi-agent system
-        result = multi.run({"messages": [HumanMessage(content="Hello")]})
-        ```
+            # Run the multi-agent system
+            result = multi.run({"messages": [HumanMessage(content="Hello")]})
+
     """
 
     # Multi-agent specific fields

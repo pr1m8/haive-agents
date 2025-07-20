@@ -1,18 +1,14 @@
 #!/usr/bin/env python3
-"""
-Comprehensive test suite for DocumentProcessingAgent
+"""Comprehensive test suite for DocumentProcessingAgent.
 
 This test demonstrates all features of the document processing system
 including query state management, document processing workflows, and
 advanced configurations.
 """
 
-import asyncio
 import logging
-import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
 
 # Suppress all logging output
 logging.getLogger().setLevel(logging.CRITICAL)
@@ -53,10 +49,8 @@ class DocumentProcessingTestSuite:
 
     def log_test(self, test_name: str, passed: bool, details: str = ""):
         """Log test results."""
-        status = "✅ PASSED" if passed else "❌ FAILED"
-        print(f"🔧 {test_name}: {status}")
         if details:
-            print(f"   {details}")
+            pass
 
         self.test_results.append(
             {"test": test_name, "passed": passed, "details": details}
@@ -95,8 +89,8 @@ class DocumentProcessingTestSuite:
 
             assert agent2.name == "custom_agent"
             assert agent2.config.rag_strategy == "basic"
-            assert agent2.config.search_enabled == True
-            assert agent2.config.annotation_enabled == True
+            assert agent2.config.search_enabled
+            assert agent2.config.annotation_enabled
             assert agent2.config.max_concurrent_loads == 5
 
             self.log_test(
@@ -178,8 +172,8 @@ class DocumentProcessingTestSuite:
             assert len(all_docs) == 6  # 3 docs × 2 collections
 
             # Test multi-query workflow detection
-            assert query_state.is_multi_query_workflow() == True
-            assert query_state.requires_structured_output() == True
+            assert query_state.is_multi_query_workflow()
+            assert query_state.requires_structured_output()
 
             # Test filters
             active_filters = query_state.get_active_filters()
@@ -363,13 +357,13 @@ class DocumentProcessingTestSuite:
                 assert section in capabilities
 
             # Test specific capabilities
-            assert capabilities["document_loading"]["bulk_processing"] == True
-            assert capabilities["search_capabilities"]["web_search"] == True
-            assert capabilities["processing_pipeline"]["annotation"] == True
-            assert capabilities["processing_pipeline"]["summarization"] == True
-            assert capabilities["processing_pipeline"]["kg_extraction"] == True
+            assert capabilities["document_loading"]["bulk_processing"]
+            assert capabilities["search_capabilities"]["web_search"]
+            assert capabilities["processing_pipeline"]["annotation"]
+            assert capabilities["processing_pipeline"]["summarization"]
+            assert capabilities["processing_pipeline"]["kg_extraction"]
             assert capabilities["rag_capabilities"]["strategy"] == "adaptive"
-            assert capabilities["output_features"]["structured_output"] == True
+            assert capabilities["output_features"]["structured_output"]
 
             self.log_test(
                 "Agent Capabilities & Configuration",
@@ -542,7 +536,7 @@ class DocumentProcessingTestSuite:
             assert basic_config.similarity_threshold == 0.7
 
             assert advanced_config.max_query_variations == 10
-            assert advanced_config.enable_result_reranking == True
+            assert advanced_config.enable_result_reranking
             assert advanced_config.context_window_size == 8000
             assert advanced_config.cache_ttl == 7200
 
@@ -646,8 +640,8 @@ class DocumentProcessingTestSuite:
             # Test integration points
             assert len(query_state.get_all_queries()) == 6  # original + 5 added
             assert len(query_state.get_all_documents()) == 6  # 3 docs × 2 collections
-            assert query_state.is_multi_query_workflow() == True
-            assert query_state.requires_structured_output() == True
+            assert query_state.is_multi_query_workflow()
+            assert query_state.requires_structured_output()
 
             # Test agent capabilities match query requirements
             capabilities = agent.get_capabilities()
@@ -691,9 +685,6 @@ class DocumentProcessingTestSuite:
 
     def run_all_tests(self):
         """Run all tests in the comprehensive suite."""
-        print("🚀 Running Comprehensive DocumentProcessingAgent Test Suite")
-        print("=" * 70)
-
         # Run all tests
         self.test_basic_agent_creation()
         self.test_query_state_advanced_features()
@@ -704,29 +695,11 @@ class DocumentProcessingTestSuite:
         self.test_integration_workflows()
 
         # Print summary
-        print("\n" + "=" * 70)
-        print("📊 TEST SUITE SUMMARY")
-        print("=" * 70)
-        print(f"Total Tests: {len(self.test_results)}")
-        print(f"Passed: {self.passed_tests}")
-        print(f"Failed: {self.failed_tests}")
-        print(f"Success Rate: {(self.passed_tests/len(self.test_results)*100):.1f}%")
 
         if self.failed_tests == 0:
-            print("\n🎉 ALL TESTS PASSED! DocumentProcessingAgent is fully functional!")
-            print("\n✅ Key Features Validated:")
-            print("  - ✅ Basic agent creation and configuration")
-            print("  - ✅ Advanced QueryState with multi-query support")
-            print("  - ✅ Document processing state management")
-            print("  - ✅ Comprehensive agent capabilities")
-            print("  - ✅ Structured result generation")
-            print("  - ✅ Query processing configurations")
-            print("  - ✅ Component integration workflows")
-            print("\n🚀 Ready for production use!")
+            pass
         else:
-            print(
-                f"\n❌ {self.failed_tests} tests failed. Please review the errors above."
-            )
+            pass
 
         return self.failed_tests == 0
 

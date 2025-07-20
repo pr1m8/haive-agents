@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-from datetime import datetime
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -135,7 +134,7 @@ async def test_pro_search_basic():
         }
 
         refinement = agent.refine_query(test_query, test_context)
-        print(f"🔄 Query refinement:")
+        print("🔄 Query refinement:"t:")
         print(f"  Original: {refinement.original_query}")
         print(f"  Refined: {refinement.refined_query}")
         print(f"  Reason: {refinement.refinement_reason}")
@@ -210,7 +209,7 @@ async def test_deep_research_basic():
         research_query = await agent.execute_research_query(
             "electric vehicle environmental impact studies", "background"
         )
-        print(f"📊 Research query result:")
+        print("📊 Research query result:"t:")
         print(f"  Query: {research_query.query}")
         print(f"  Type: {research_query.query_type}")
         print(f"  Success: {research_query.success}")
@@ -264,7 +263,7 @@ async def test_labs_basic():
         # Test workflow step execution
         if workflow_plan:
             step_result = await agent.execute_workflow_step(workflow_plan[0], 0)
-            print(f"✅ Workflow step executed:")
+            print("✅ Workflow step executed:":")
             print(f"  Step: {step_result.name}")
             print(f"  Success: {step_result.success}")
             print(f"  Duration: {step_result.duration_seconds:.2f}s")
@@ -290,15 +289,15 @@ def print_summary(results):
     print(f"✅ Tests passed: {passed_tests}/{total_tests}")
     print(f"📈 Success rate: {success_rate:.1f}%")
 
-    print(f"\n📋 Individual Results:")
+    print("\n📋 Individual Results:"s:")
     for test_name, result in results.items():
         status = "✅ PASSED" if result else "❌ FAILED"
         print(f"  {test_name}: {status}")
 
     if passed_tests == total_tests:
-        print(f"\n🎉 ALL TESTS PASSED! Search agents are working correctly!")
+        print("\n🎉 ALL TESTS PASSED! Search agents are working correctly!"y!")
     else:
-        print(f"\n⚠️ Some tests failed. Check output above for details.")
+        print("\n⚠️ Some tests failed. Check output above for details."ls.")
 
 
 async def main():

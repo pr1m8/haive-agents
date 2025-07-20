@@ -1,5 +1,7 @@
 """Test Component 2: Tool generation from state.agents with choice model."""
 
+import contextlib
+
 from haive.agents.experiments.supervisor.component_2_tools import (
     SupervisorStateWithTools,
 )
@@ -10,12 +12,10 @@ from haive.agents.experiments.supervisor.test_component_1_state import (
 
 def test_choice_model_integration():
     """Test choice model syncs with agents in state."""
-
     # Create state with choice model
     state = SupervisorStateWithTools()
 
     # Check initial choice model options
-    initial_options = state.agent_choice_model.option_names
 
     # Create and add real agents
     agents = create_real_agents()
@@ -28,8 +28,6 @@ def test_choice_model_integration():
         active=True,
     )
 
-    options_after_first = state.agent_choice_model.option_names
-
     state.add_agent(
         "math_agent",
         agents["math_agent"],
@@ -37,32 +35,23 @@ def test_choice_model_integration():
         active=True,
     )
 
-    options_after_second = state.agent_choice_model.option_names
-
     # Test choice model validation
     ChoiceModel = state.agent_choice_model.current_model
 
     # Test valid choices
-    try:
-        valid_choice = ChoiceModel(choice="search_agent")
-    except Exception as e:
-        pass")
+    with contextlib.suppress(Exception):
+        ChoiceModel(choice="search_agent")
 
-    try:
-        end_choice = ChoiceModel(choice="END")
-    except Exception as e:
-        pass")
+    with contextlib.suppress(Exception):
+        ChoiceModel(choice="END")
 
     # Test invalid choice
-    try:
-        invalid_choice = ChoiceModel(choice="nonexistent_agent")
-    except Exception as e:
-        pass")
+    with contextlib.suppress(Exception):
+        ChoiceModel(choice="nonexistent_agent")
 
 
 def test_tool_generation():
     """Test dynamic tool generation from agents."""
-
     # Create state and add agents
     state = SupervisorStateWithTools()
     agents = create_real_agents()
@@ -83,7 +72,7 @@ def test_tool_generation():
     # Get actual tool objects
     tools = state.get_all_tools()
 
-    for tool in tools:
+    for _tool in tools:
         pass
 
     # Test tool removal when agent removed
@@ -92,7 +81,6 @@ def test_tool_generation():
 
 def test_handoff_tool_execution():
     """Test handoff tool execution."""
-
     # Create state with agents
     state = SupervisorStateWithTools()
     agents = create_real_agents()
@@ -115,18 +103,15 @@ def test_handoff_tool_execution():
     if search_handoff_tool:
 
         # Test tool execution
-        result = search_handoff_tool.invoke(
-            {"task_description": "Search for Python tutorials"}
-        )
+        search_handoff_tool.invoke({"task_description": "Search for Python tutorials"})
 
         # Check if state was updated
     else:
-        pass")
+        pass
 
 
 def test_choice_tool_execution():
     """Test choice tool execution."""
-
     # Create state with agents
     state = SupervisorStateWithTools()
     agents = create_real_agents()
@@ -157,16 +142,15 @@ def test_choice_tool_execution():
         ]
 
         for task in test_tasks:
-            result = choice_tool.invoke(
+            choice_tool.invoke(
                 {"task_description": task, "reasoning": "Testing choice logic"}
             )
     else:
-        pass")
+        pass
 
 
 def test_field_validation():
     """Test field validation with choice model."""
-
     # Create state with agents
     state = SupervisorStateWithTools()
     agents = create_real_agents()
@@ -176,22 +160,16 @@ def test_field_validation():
     )
 
     # Test valid agent assignment
-    try:
+    with contextlib.suppress(Exception):
         state.next_agent = "search_agent"
-    except Exception as e:
-        pass")
 
     # Test END assignment
-    try:
+    with contextlib.suppress(Exception):
         state.next_agent = "END"
-    except Exception as e:
-        pass")
 
     # Test invalid agent assignment
-    try:
+    with contextlib.suppress(Exception):
         state.next_agent = "nonexistent_agent"
-    except Exception as e:
-        pass")
 
 
 if __name__ == "__main__":
@@ -203,6 +181,5 @@ if __name__ == "__main__":
         test_choice_tool_execution()
         test_field_validation()
 
-
-    except Exception as e:
+    except Exception:
         raise

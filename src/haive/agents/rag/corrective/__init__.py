@@ -1,13 +1,11 @@
-"""Corrective RAG Module.
+"""Module exports."""
 
-Self-correcting retrieval with quality assessment.
-"""
+from corrective.agent import CorrectiveRAGAgent, from_documents, grade_documents
+from corrective.agent_v2 import CorrectiveRAGAgentV2, from_documents, grade_documents
 
-try:
-    from haive.agents.rag.corrective.agent import CorrectiveRAGAgent
-except ImportError:
-    CorrectiveRAGAgent = None
-
-from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
-
-__all__ = ["CorrectiveRAGAgent", "CorrectiveRAGAgentV2"]
+__all__ = [
+    "CorrectiveRAGAgent",
+    "CorrectiveRAGAgentV2",
+    "from_documents",
+    "grade_documents",
+]

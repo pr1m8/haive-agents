@@ -98,7 +98,7 @@ async def test_and_verify():
                     for channel, write_type, idx in writes:
                         pass
                 else:
-                    pass")
+                    pass
 
                 # Check checkpoints
                 await cur.execute(
@@ -116,7 +116,7 @@ async def test_and_verify():
                     for cp_id, parent_id, _cp_type in checkpoints:
                         pass
                 else:
-                    pass")
+                    pass
 
                 # Check checkpoint_blobs
                 await cur.execute(
@@ -134,13 +134,13 @@ async def test_and_verify():
                     for channel, blob_type, size in blobs:
                         pass
                 else:
-                    pass")
+                    pass
 
                 # Summary
                 success = write_count > 0 or len(checkpoints) > 0
                 if success:
                 else:
-                    pass")
+                    pass
 
                 return success
 
@@ -184,7 +184,7 @@ async def check_database_status():
                     count = (await cur.fetchone())[0]
 
     except Exception as e:
-        pass")
+        pass
 
 
 if __name__ == "__main__":
@@ -196,4 +196,4 @@ if __name__ == "__main__":
 
     if success:
     else:
-        pass")
+        pass

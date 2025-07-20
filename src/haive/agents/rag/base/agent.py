@@ -17,23 +17,24 @@ class BaseRAGAgent(RetrieverMixin, Agent):
     - Class methods for creating agents from various sources
 
     Examples:
-        ```python
-        # Create from vector store config directly
-        agent = BaseRAGAgent(engine=vector_store_config)
+        .. code-block:: python
 
-        # Create from documents
-        agent = BaseRAGAgent.from_documents(
+            # Create from vector store config directly
+            agent = BaseRAGAgent(engine=vector_store_config)
+
+            # Create from documents
+            agent = BaseRAGAgent.from_documents(
             documents=[Document(page_content="...")],
             embedding_model=embedding_config,
             name="my_rag_agent"
-        )
+            )
 
-        # Create from existing vector store
-        agent = BaseRAGAgent.from_vectorstore(
+            # Create from existing vector store
+            agent = BaseRAGAgent.from_vectorstore(
             vector_store_config=vs_config,
             name="my_rag_agent"
-        )
-        ```
+            )
+
     """
 
     name: str = "Base RAG Agent"

@@ -70,7 +70,8 @@ class AgentInfo(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
 
     @model_validator(mode="after")
-    def extract_agent_info(self) -> "AgentInfo":
+    @classmethod
+    def extract_agent_info(cls) -> "AgentInfo":
         """Extract name and description from agent if not provided.
 
         Returns:

@@ -1,11 +1,9 @@
-"""
-Plan Models for ReWOO Planning
+"""Plan Models for ReWOO Planning.
 
 ExecutionPlan that takes generic AbstractStep instances with computed fields.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set
 from uuid import uuid4
 
 from pydantic import (
@@ -45,7 +43,7 @@ class ExecutionPlan(BaseModel):
     )
 
     # The steps - generic AbstractStep instances
-    steps: List[AbstractStep] = Field(
+    steps: list[AbstractStep] = Field(
         default_factory=list, description="List of steps in the plan"
     )
 
@@ -63,7 +61,7 @@ class ExecutionPlan(BaseModel):
 
     @computed_field
     @property
-    def step_ids(self) -> List[str]:
+    def step_ids(self) -> list[str]:
         """List of all step IDs."""
         return [step.id for step in self.steps]
 
@@ -75,13 +73,13 @@ class ExecutionPlan(BaseModel):
 
     @computed_field
     @property
-    def execution_levels(self) -> List[List[str]]:
+    def execution_levels(self) -> list[list[str]]:
         """Steps organized by execution level for parallelization."""
         if not self.steps:
             return []
 
         levels = []
-        step_map = {step.id: step for step in self.steps}
+        {step.id: step for step in self.steps}
         processed = set()
 
         while len(processed) < len(self.steps):
@@ -123,7 +121,7 @@ class ExecutionPlan(BaseModel):
     # Validators
     @field_validator("steps")
     @classmethod
-    def validate_steps(cls, v: List[AbstractStep]) -> List[AbstractStep]:
+    def validate_steps(cls, v: list[AbstractStep]) -> list[AbstractStep]:
         """Validate steps and check for duplicate IDs."""
         if not v:
             return v
@@ -144,7 +142,8 @@ class ExecutionPlan(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def validate_no_circular_dependencies(self) -> "ExecutionPlan":
+    @classmethod
+    def validate_no_circular_dependencies(cls) -> "ExecutionPlan":
         """Validate no circular dependencies exist."""
         if not self.steps:
             return self
@@ -184,10 +183,10 @@ class ExecutionPlan(BaseModel):
         self.steps.append(step)
         # Computed fields will automatically recalculate
 
-    def get_step_by_id(self, step_id: str) -> Optional[AbstractStep]:
+    def get_step_by_id(self, step_id: str) -> AbstractStep | None:
         """Get step by ID."""
         return next((step for step in self.steps if step.id == step_id), None)
 
-    def get_ready_steps(self, completed_steps: Set[str]) -> List[AbstractStep]:
+    def get_ready_steps(self, completed_steps: set[str]) -> list[AbstractStep]:
         """Get steps that are ready to execute."""
         return [step for step in self.steps if step.can_execute(completed_steps)]

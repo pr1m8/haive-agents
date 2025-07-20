@@ -25,15 +25,16 @@ class RubricCriterion(BaseModel):
         justification: Explanation for the score given
 
     Example:
-        ```python
-        criterion = RubricCriterion(
+        .. code-block:: python
+
+            criterion = RubricCriterion(
             name="Content Quality",
             score=8.5,
             max_score=10,
             weight=0.4,
             justification="Strong content with minor gaps in coverage"
-        )
-        ```
+            )
+
     """
 
     name: str = Field(
@@ -96,7 +97,8 @@ class RubricCriterion(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def validate_score_within_max(self) -> "RubricCriterion":
+    @classmethod
+    def validate_score_within_max(cls) -> "RubricCriterion":
         """Validate that score does not exceed max_score.
 
         Returns:
@@ -159,36 +161,37 @@ class RubricGrade(Grade):
         overall_justification: Overall summary justification
 
     Example:
-        ```python
-        criteria = [
-            RubricCriterion(
-                name="Content Quality",
-                score=8.5,
-                max_score=10,
-                weight=0.4,
-                justification="Strong content with comprehensive coverage"
-            ),
-            RubricCriterion(
-                name="Organization",
-                score=7.0,
-                max_score=10,
-                weight=0.3,
-                justification="Good structure but some transitions unclear"
-            ),
-            RubricCriterion(
-                name="Grammar",
-                score=9.0,
-                max_score=10,
-                weight=0.3,
-                justification="Excellent grammar with only minor errors"
-            )
-        ]
+        .. code-block:: python
 
-        grade = RubricGrade(
+            criteria = [
+            RubricCriterion(
+            name="Content Quality",
+            score=8.5,
+            max_score=10,
+            weight=0.4,
+            justification="Strong content with comprehensive coverage"
+            ),
+            RubricCriterion(
+            name="Organization",
+            score=7.0,
+            max_score=10,
+            weight=0.3,
+            justification="Good structure but some transitions unclear"
+            ),
+            RubricCriterion(
+            name="Grammar",
+            score=9.0,
+            max_score=10,
+            weight=0.3,
+            justification="Excellent grammar with only minor errors"
+            )
+            ]
+
+            grade = RubricGrade(
             criteria=criteria,
             justification="Overall strong performance with room for improvement in organization"
-        )
-        ```
+            )
+
     """
 
     grade_type: GradeType = Field(
@@ -416,17 +419,18 @@ class RubricGrade(Grade):
             RubricGrade instance with equal-weighted criteria
 
         Example:
-            ```python
-            grade = RubricGrade.create_simple_rubric(
+            .. code-block:: python
+
+                grade = RubricGrade.create_simple_rubric(
                 criteria_scores={
-                    "Content": 8.5,
-                    "Style": {"score": 7.0, "justification": "Good style overall"},
-                    "Accuracy": 9.0
+                "Content": 8.5,
+                "Style": {"score": 7.0, "justification": "Good style overall"},
+                "Accuracy": 9.0
                 },
                 justification="Strong overall performance",
                 max_score=10
-            )
-            ```
+                )
+
         """
         criteria = []
 

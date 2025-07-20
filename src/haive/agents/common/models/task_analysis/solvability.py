@@ -63,35 +63,36 @@ class SolvabilityAssessment(BaseModel):
         alternative_approaches: Possible alternative solution paths
 
     Example:
-        ```python
-        # Simple factual lookup - highly solvable
-        assessment = SolvabilityAssessment(
+        .. code-block:: python
+
+            # Simple factual lookup - highly solvable
+            assessment = SolvabilityAssessment(
             solvability_status=SolvabilityStatus.READY,
             is_currently_solvable=True,
             confidence_level=0.95,
             primary_barriers=[],
             enabling_factors=["web_search", "public_databases"],
             estimated_time_to_solvable=timedelta(0)
-        )
+            )
 
-        # Cancer cure - major breakthrough required
-        assessment = SolvabilityAssessment(
+            # Cancer cure - major breakthrough required
+            assessment = SolvabilityAssessment(
             solvability_status=SolvabilityStatus.THEORETICAL,
             is_currently_solvable=False,
             confidence_level=0.7,
             primary_barriers=[
-                SolvabilityBarrier.KNOWLEDGE_GAP,
-                SolvabilityBarrier.TECHNOLOGY_LIMITATION,
-                SolvabilityBarrier.RESOURCE_CONSTRAINT
+            SolvabilityBarrier.KNOWLEDGE_GAP,
+            SolvabilityBarrier.TECHNOLOGY_LIMITATION,
+            SolvabilityBarrier.RESOURCE_CONSTRAINT
             ],
             breakthrough_requirements=[
-                "fundamental_understanding_of_cancer_biology",
-                "advanced_genetic_engineering_tools",
-                "personalized_medicine_capabilities"
+            "fundamental_understanding_of_cancer_biology",
+            "advanced_genetic_engineering_tools",
+            "personalized_medicine_capabilities"
             ],
             estimated_time_to_solvable=timedelta(days=7300)  # ~20 years
-        )
-        ```
+            )
+
     """
 
     model_config = ConfigDict(
@@ -203,7 +204,8 @@ class SolvabilityAssessment(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_solvability_consistency(self) -> "SolvabilityAssessment":
+    @classmethod
+    def validate_solvability_consistency(cls) -> "SolvabilityAssessment":
         """Validate that solvability assessment is internally consistent.
 
         Returns:

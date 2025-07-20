@@ -1,13 +1,43 @@
-"""Adaptive RAG with Tools Integration.
+"""Module exports."""
 
-Enhanced adaptive RAG that integrates search tools and ReAct patterns for dynamic tool usage.
-Includes Google Search integration and intelligent tool routing.
-"""
-
-from haive.agents.rag.adaptive_tools.agent import (
+from adaptive_tools.agent import (
     AdaptiveToolsRAGAgent,
+    AdaptiveToolsResult,
+    QueryNeed,
     SearchIntegrationAgent,
+    SearchResult,
+    ToolSelection,
     ToolSelectionAgent,
+    ToolType,
+    build_graph,
+    create_adaptive_synthesis_callable,
+    create_adaptive_tools_rag_agent,
+    create_google_search_callable,
+    create_tool_selector_callable,
+    from_documents,
+    get_adaptive_tools_rag_io_schema,
+    perform_google_search,
+    select_tools,
+    synthesize_adaptive_response,
 )
 
-__all__ = ["AdaptiveToolsRAGAgent", "SearchIntegrationAgent", "ToolSelectionAgent"]
+__all__ = [
+    "AdaptiveToolsRAGAgent",
+    "AdaptiveToolsResult",
+    "QueryNeed",
+    "SearchIntegrationAgent",
+    "SearchResult",
+    "ToolSelection",
+    "ToolSelectionAgent",
+    "ToolType",
+    "build_graph",
+    "create_adaptive_synthesis_callable",
+    "create_adaptive_tools_rag_agent",
+    "create_google_search_callable",
+    "create_tool_selector_callable",
+    "from_documents",
+    "get_adaptive_tools_rag_io_schema",
+    "perform_google_search",
+    "select_tools",
+    "synthesize_adaptive_response",
+]

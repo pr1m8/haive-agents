@@ -1,6 +1,7 @@
 """Enhanced Dynamic Supervisor with self-modification capabilities."""
 
 import logging
+from typing import Any
 
 from langchain_core.tools import tool
 
@@ -11,7 +12,7 @@ from haive.agents.simple.agent import SimpleAgent
 logger = logging.getLogger(__name__)
 
 
-def create_agent_management_tools(supervisor_instance):
+def create_agent_management_tools(supervisor_instance) -> Any:
     """Create tools that allow the supervisor to manage its own agent registry."""
 
     @tool

@@ -15,13 +15,11 @@ from haive.agents.experiments.supervisor.test_utils import create_test_agents
 
 async def test_supervisor_agent():
     """Test the DynamicSupervisorAgent with our working components."""
-
     # Create test agents using our working utility
     agents_dict = await create_test_agents()
 
     # Create supervisor agent (no engine needed for this test)
     supervisor = create_supervisor_agent("dynamic_supervisor")
-
 
     # Test with a math task
 
@@ -39,7 +37,7 @@ async def test_supervisor_agent():
         if result.get("next_agent"):
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -58,8 +56,8 @@ async def test_supervisor_agent():
         if result.get("next_agent"):
             pass
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

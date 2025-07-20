@@ -16,16 +16,16 @@ Implementation Notes:
 - Proper Pydantic patterns throughout
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph import BaseGraph
-from haive.core.registry import DynamicRegistry, RegistryItem
+from haive.core.registry import RegistryItem
 from haive.core.schema.prebuilt.dynamic_activation_state import DynamicActivationState
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 from langchain_core.tools import tool
 from langgraph.graph import END
-from pydantic import Field, PrivateAttr
+from pydantic import PrivateAttr
 
 from haive.agents.base.agent import Agent
 from haive.agents.discovery.component_discovery_agent import ComponentDiscoveryAgent
@@ -105,8 +105,8 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
     state_schema: type[DynamicActivationState] = DynamicActivationState
 
     # Private attributes for internal state (not serialized)
-    _discovery_agent: Optional[ComponentDiscoveryAgent] = PrivateAttr(default=None)
-    _meta_self: Optional[MetaStateSchema] = PrivateAttr(default=None)
+    _discovery_agent: ComponentDiscoveryAgent | None = PrivateAttr(default=None)
+    _meta_self: MetaStateSchema | None = PrivateAttr(default=None)
 
     def setup_agent(self) -> None:
         """Setup the dynamic activation supervisor.
@@ -179,7 +179,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
     @classmethod
     def create_with_components(
-        cls, name: str, components: List[Dict[str, Any]], engine: AugLLMConfig, **kwargs
+        cls, name: str, components: list[dict[str, Any]], engine: AugLLMConfig, **kwargs
     ) -> "DynamicActivationSupervisor":
         """Factory method to create supervisor with pre-registered components.
 
@@ -241,7 +241,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
         # Tool for analyzing task requirements
         @tool
-        def analyze_task_requirements(task_description: str) -> Dict[str, Any]:
+        def analyze_task_requirements(task_description: str) -> dict[str, Any]:
             """Analyze task and identify required capabilities."""
             capabilities = []
 
@@ -275,7 +275,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
         # Tool for activating components
         @tool
-        def activate_component(component_id: str, reason: str = "") -> Dict[str, Any]:
+        def activate_component(component_id: str, reason: str = "") -> dict[str, Any]:
             """Activate a component by ID."""
             # Access state through self (tool has access to supervisor context)
             meta_state = self.state.activate_component(component_id)
@@ -287,19 +287,18 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
                     "reason": reason,
                     "meta_state_created": True,
                 }
-            else:
-                return {
-                    "success": False,
-                    "component_id": component_id,
-                    "reason": reason,
-                    "error": "Component not found or already active",
-                }
+            return {
+                "success": False,
+                "component_id": component_id,
+                "reason": reason,
+                "error": "Component not found or already active",
+            }
 
         # Tool for discovering components
         @tool
         def discover_components(
             query: str, max_results: int = 5
-        ) -> List[Dict[str, Any]]:
+        ) -> list[dict[str, Any]]:
             """Discover components that match a query."""
             if self._discovery_agent:
                 # Use discovery agent if available
@@ -334,7 +333,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
         # Tool for checking component status
         @tool
-        def check_component_status(component_id: str = None) -> Dict[str, Any]:
+        def check_component_status(component_id: str | None = None) -> dict[str, Any]:
             """Check status of components."""
             if component_id:
                 # Check specific component
@@ -349,17 +348,15 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
                             str(item.last_activated) if item.last_activated else None
                         ),
                     }
-                else:
-                    return {"error": f"Component {component_id} not found"}
-            else:
-                # Check all components
-                stats = self.state.get_activation_stats()
-                return {
-                    "total_components": stats["total_components"],
-                    "active_components": stats["active_components"],
-                    "activation_rate": stats["activation_rate"],
-                    "current_task": stats["current_task"],
-                }
+                return {"error": f"Component {component_id} not found"}
+            # Check all components
+            stats = self.state.get_activation_stats()
+            return {
+                "total_components": stats["total_components"],
+                "active_components": stats["active_components"],
+                "activation_rate": stats["activation_rate"],
+                "current_task": stats["current_task"],
+            }
 
         # Add tools to engine if it has tools attribute
         if hasattr(self.engine, "tools"):
@@ -411,7 +408,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
         return graph.compile()
 
-    async def _supervisor_node(self, state: DynamicActivationState) -> Dict[str, Any]:
+    async def _supervisor_node(self, state: DynamicActivationState) -> dict[str, Any]:
         """Main supervisor logic node."""
         # Update current task
         if hasattr(state, "messages") and state.messages:
@@ -439,26 +436,25 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
                     "next_action": "activate",
                     "reason": "Have components to activate",
                 }
-            else:
-                return {
-                    "next_action": "discover",
-                    "reason": "Need to discover components",
-                }
+            return {
+                "next_action": "discover",
+                "reason": "Need to discover components",
+            }
 
         # All capabilities satisfied, execute task
         return {"next_action": "execute", "reason": "Ready to execute task"}
 
-    async def _analyze_task_node(self, state: DynamicActivationState) -> Dict[str, Any]:
+    async def _analyze_task_node(self, state: DynamicActivationState) -> dict[str, Any]:
         """Analyze task requirements and update state."""
         # Use LLM to analyze task requirements
         analysis_prompt = f"""
         Analyze this task and identify required capabilities:
-        
+
         Task: {state.current_task}
-        
+
         Identify what types of tools, agents, or components would be needed.
         Consider capabilities like: math, search, visualization, file_processing, data_processing, etc.
-        
+
         Return a list of required capabilities.
         """
 
@@ -477,7 +473,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
     async def _discover_components_node(
         self, state: DynamicActivationState
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Discover components for missing capabilities."""
         discovered_components = []
 
@@ -508,7 +504,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
     async def _activate_components_node(
         self, state: DynamicActivationState
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Activate components to satisfy missing capabilities."""
         activated_components = []
 
@@ -534,7 +530,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
             "activation_complete": True,
         }
 
-    async def _execute_task_node(self, state: DynamicActivationState) -> Dict[str, Any]:
+    async def _execute_task_node(self, state: DynamicActivationState) -> dict[str, Any]:
         """Execute the task using active components."""
         # Get active components
         active_components = state.get_active_components()
@@ -548,12 +544,12 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
         # Execute task through LLM with available components
         execution_prompt = f"""
         Execute this task using the available components:
-        
+
         Task: {state.current_task}
-        
+
         Available components:
         {[str(comp) for comp in active_components]}
-        
+
         Provide a step-by-step execution plan and result.
         """
 
@@ -583,7 +579,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
         return action_map.get(next_action, "end")
 
-    def _parse_capabilities(self, output: str) -> List[str]:
+    def _parse_capabilities(self, output: str) -> list[str]:
         """Parse capabilities from LLM output."""
         capabilities = []
 
@@ -613,7 +609,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
         return list(set(capabilities))  # Remove duplicates
 
-    def get_registry_stats(self) -> Dict[str, Any]:
+    def get_registry_stats(self) -> dict[str, Any]:
         """Get statistics about the component registry.
 
         Returns:
@@ -653,7 +649,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
         return False
 
-    def get_active_component_names(self) -> List[str]:
+    def get_active_component_names(self) -> list[str]:
         """Get names of all active components.
 
         Returns:

@@ -21,7 +21,6 @@ async def create_new_agent_from_registry(
     agent_type: str, description: str
 ) -> SimpleAgent:
     """Create a new agent using the engine registry."""
-
     # Create engine configuration
     engine_name = f"{agent_type}_engine"
     engine = AugLLMConfig(
@@ -62,7 +61,6 @@ async def add_agent_to_state(
 
 async def test_full_dynamic_flow():
     """Test the complete dynamic supervisor flow."""
-
     # Create supervisor with no predefined agents
     supervisor = create_supervisor_agent("dynamic_supervisor")
 
@@ -77,7 +75,6 @@ async def test_full_dynamic_flow():
         active_agents=set(),
     )
 
-
     # Test 1: Request something that needs a new agent
 
     try:
@@ -86,11 +83,11 @@ async def test_full_dynamic_flow():
             initial_state.model_dump(), debug=True  # Show full execution trace
         )
 
-        for i, msg in enumerate(result1.get("messages", [])):
+        for _i, _msg in enumerate(result1.get("messages", [])):
             pass
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Test 2: Add code analysis agent dynamically
 
@@ -116,7 +113,7 @@ async def test_full_dynamic_flow():
         if result2.get("agent_response"):
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -143,7 +140,7 @@ async def test_full_dynamic_flow():
         if result3.get("agent_response"):
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -158,22 +155,19 @@ async def test_full_dynamic_flow():
     ]
 
     try:
-        result4 = await supervisor.arun(updated_state.model_dump(), debug=True)
+        await supervisor.arun(updated_state.model_dump(), debug=True)
 
-
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
 
     # Test 5: Show final state
 
-
     # Show engine registry
     registry = EngineRegistry.get_instance()
-    for name in registry._engines:
-        pass")
-
+    for _name in registry._engines:
+        pass
 
 
 if __name__ == "__main__":

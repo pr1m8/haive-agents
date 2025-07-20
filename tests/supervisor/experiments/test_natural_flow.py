@@ -106,7 +106,7 @@ Please complete all three steps."""
     )
 
     for name, info in initial_state.agents.items():
-        pass")
+        pass
 
 
     # Step 1: Run the multi-task - should identify missing translation capability
@@ -125,7 +125,7 @@ Please complete all three steps."""
             "translation" in supervisor_response.lower()
             or "translate" in supervisor_response.lower()
         ):
-            pass")
+            pass
         else:
             passd")
 
@@ -150,7 +150,7 @@ Please complete all three steps."""
     initial_state.sync_agents()
 
     for name, info in initial_state.agents.items():
-        pass")
+        pass
 
     # Step 3: Re-run with all agents available
 
@@ -177,7 +177,7 @@ Execute step by step using the appropriate specialist agents."""
 
         # Show the natural progression
         if result2.get("next_agent") == "search_agent":
-            pass")
+            pass
         elif result2.get("next_agent") == "math_agent":
             passn")
         elif result2.get("next_agent") == "translation_agent":

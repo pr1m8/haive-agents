@@ -5,7 +5,7 @@ from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
 
-def create_reflection_chain():
+def create_reflection_chain() -> Any:
     """Create a chain for generating reflections on responses."""
     # Template for reflection
     reflection_template = """You are an objective evaluator. Your task is to evaluate a candidate response based on how well it addresses a given query.

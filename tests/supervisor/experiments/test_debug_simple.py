@@ -70,11 +70,11 @@ async def test_debug_simple():
 
             # Check if it's a human message from agent execution
             if hasattr(last_msg, "content") and "France" in str(last_msg.content):
-                pass")
+                pass
             else:
                 passse")
         else:
-            pass")
+            pass
 
     except Exception as e:
         import traceback

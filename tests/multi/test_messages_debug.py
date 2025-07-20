@@ -9,7 +9,8 @@ sys.path.insert(
     0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
 )
 
-import json
+
+import contextlib
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
@@ -32,12 +33,8 @@ react_agent.compile()
 result = react_agent.run({"messages": [HumanMessage(content="Calculate 5 + 3")]})
 
 
-
 # Convert to dict if it's a Pydantic model
-if hasattr(result, "model_dump"):
-    result_dict = result.model_dump()
-else:
-    result_dict = result
+result_dict = result.model_dump() if hasattr(result, "model_dump") else result
 
 # Examine messages
 messages = result_dict.get("messages", []) if isinstance(result_dict, dict) else []
@@ -46,9 +43,8 @@ for i, msg in enumerate(messages):
 
     # For AIMessage, check tool calls
     if isinstance(msg, AIMessage) and hasattr(msg, "tool_calls") and msg.tool_calls:
-        print("Tool calls:")
-        for tc in msg.tool_calls:
-            print(f"  - {tc}")
+        for _tc in msg.tool_calls:
+            pass
 
     # For ToolMessage, check fields
     if isinstance(msg, ToolMessage):
@@ -56,10 +52,8 @@ for i, msg in enumerate(messages):
         # Check all attributes
 
         # Try to dump as dict
-        try:
+        with contextlib.suppress(Exception):
             msg_dict = msg.model_dump()
-        except Exception as e:
-            pass
 
 # Check if there are any tool messages without tool_call_id
 
@@ -70,10 +64,10 @@ for i, msg in enumerate(messages):
             problematic_messages.append((i, msg))
 
 if problematic_messages:
-    for idx, msg in problematic_messages:
+    for _idx, msg in problematic_messages:
         pass
 else:
-    pass")
+    pass
 
 # Check raw message data
 
@@ -85,5 +79,5 @@ for i, msg in enumerate(messages):
                 pass
             if hasattr(msg, "additional_kwargs"):
                 pass
-        except Exception as e:
+        except Exception:
             pass

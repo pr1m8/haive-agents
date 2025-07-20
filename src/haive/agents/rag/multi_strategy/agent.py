@@ -1,3 +1,5 @@
+from typing import Any
+
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph import DynamicGraph
 from langgraph.graph import END, START
@@ -37,7 +39,7 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
             strategies[name] = config.create_retriever()
         return strategies
 
-    def analyze_query(self, state):
+    def analyze_query(self, state: dict[str, Any]):
         """Analyze the query to determine the appropriate strategy."""
         query = state.query
 
@@ -72,7 +74,7 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
 
         return {"query_type": query_type, "strategy_name": strategy_name}
 
-    def rewrite_query(self, state):
+    def rewrite_query(self, state: dict[str, Any]):
         """Generate variations of the query for better retrieval."""
         query = state.query
 
@@ -98,7 +100,7 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
 
         return {"query_variations": variations, "rewritten_query": rewritten_query}
 
-    def retrieve_with_strategy(self, state):
+    def retrieve_with_strategy(self, state: dict[str, Any]):
         """Retrieve documents using the selected strategy."""
         query = state.query
         rewritten_query = state.rewritten_query
@@ -120,7 +122,7 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
 
         return {"retrieved_documents": documents, "strategy_metrics": metrics}
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         """Set up the multi-strategy RAG workflow."""
         from haive.core.graph.branches import Branch
 

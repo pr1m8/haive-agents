@@ -1,9 +1,5 @@
-"""Web Document Loader Agent.
+"""Module exports."""
 
-This package provides a specialized document loader agent for web URLs.
-"""
+from web.agent import WebLoaderAgent, setup_agent
 
-from haive.agents.document_loader.web.agent import WebLoaderAgent
-
-# Export all public components
-__all__ = ["WebLoaderAgent"]
+__all__ = ["WebLoaderAgent", "setup_agent"]

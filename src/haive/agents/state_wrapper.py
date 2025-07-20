@@ -13,7 +13,7 @@ class StateWrapper:
     outside the state dictionary.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Store global instances of non-serializable objects
         self._page_instance: Page | None = None
         self._other_objects: dict[str, Any] = {}

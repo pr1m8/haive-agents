@@ -27,8 +27,6 @@ def test_postgres_persistence_with_true():
 
     # Check if PostgreSQL was used (when available)
     checkpointer_type = type(agent.checkpointer).__name__
-    print(f"Checkpointer type: {checkpointer_type}")
-    print(f"Persistence config type: {type(agent.persistence).__name__}")
 
     # If POSTGRES_CONNECTION_STRING is set, it should use PostgreSQL
     if os.getenv("POSTGRES_CONNECTION_STRING"):
@@ -64,7 +62,6 @@ def test_explicit_postgres_config():
 
     # The checkpointer should be PostgreSQL-based
     checkpointer_type = type(agent.checkpointer).__name__
-    print(f"Explicit PostgreSQL checkpointer: {checkpointer_type}")
 
     # Should be PostgreSQL checkpointer
     assert "Postgres" in checkpointer_type or "PostgreSQL" in checkpointer_type
@@ -89,8 +86,7 @@ async def test_postgres_persistence_functionality():
     config_with_thread = {"configurable": {"thread_id": thread_id}}
 
     # Run the agent with some input
-    result1 = await agent.arun("Remember my name is Alice", config=config_with_thread)
-    print(f"First result: {result1}")
+    await agent.arun("Remember my name is Alice", config=config_with_thread)
 
     # Create a new agent instance with same name
     agent2 = SimpleAgent(
@@ -99,7 +95,6 @@ async def test_postgres_persistence_functionality():
 
     # Run with same thread ID - should remember previous conversation
     result2 = await agent2.arun("What's my name?", config=config_with_thread)
-    print(f"Second result: {result2}")
 
     # The agent should remember "Alice" from the previous conversation
     # Note: This is a basic check - full LLM response may vary
@@ -112,33 +107,22 @@ def test_postgres_available_check():
     try:
         from haive.core.engine.agent.config import POSTGRES_AVAILABLE
 
-        print(f"POSTGRES_AVAILABLE: {POSTGRES_AVAILABLE}")
-
         if POSTGRES_AVAILABLE:
-            print("PostgreSQL support is available")
             # Try to import PostgreSQL components
             from haive.core.persistence.postgres_config import (
                 PostgresCheckpointerConfig,
             )
 
-            print("✓ Can import PostgresCheckpointerConfig")
         else:
-            print("PostgreSQL support is not available")
-    except ImportError as e:
-        print(f"Import error: {e}")
+            pass
+    except ImportError:
+        pass
 
 
 if __name__ == "__main__":
-    print("Testing PostgreSQL persistence still works...\n")
 
-    print("1. Testing persistence=True...")
     test_postgres_persistence_with_true()
-    print("✓ persistence=True works\n")
 
-    print("2. Testing explicit PostgreSQL config...")
     test_explicit_postgres_config()
-    print("✓ Explicit PostgreSQL config works\n")
 
-    print("3. Testing PostgreSQL availability...")
     test_postgres_available_check()
-    print("\n✓ All PostgreSQL tests passed!")

@@ -13,8 +13,6 @@ from haive.agents.simple.agent import SimpleAgent
 
 async def test_clean_multi_agent():
     """Test clean multi-agent sequential execution."""
-    print("🧪 Testing clean multi-agent pattern...")
-
     # Create simple agents
     writer = SimpleAgent(
         name="writer",
@@ -38,50 +36,33 @@ async def test_clean_multi_agent():
     # Test execution
     result = await multi_agent.arun("a robot discovering emotions")
 
-    print(f"✅ Multi-agent result: {result}")
-    print(f"✅ Agents: {list(multi_agent.agents.keys())}")
-    print(f"✅ Execution mode: {multi_agent.execution_mode}")
-
     return result
 
 
 async def test_plan_and_execute():
     """Test simple plan and execute."""
-    print("\n🧪 Testing simple plan and execute...")
-
     # Create plan and execute agent
     agent = PlanAndExecuteAgent.create(name="simple_planner")
 
     # Test execution
     result = await agent.arun("Create a marketing plan for a new app")
 
-    print(f"✅ Plan and execute result: {result}")
-    print(f"✅ Plan: {result['plan']}")
-    print(f"✅ Execution: {result['execution']}")
-    print(f"✅ Final: {result['final_result']}")
-
     return result
 
 
 async def test_reflection_agent():
     """Test simple reflection agent."""
-    print("\n🧪 Testing simple reflection agent...")
-
     # Create reflection agent
     agent = ReflectionAgent.create(name="reflector")
 
     # Test execution
     result = await agent.arun("The quick brown fox jumps over the lazy dog.")
 
-    print(f"✅ Reflection result: {result}")
-
     return result
 
 
 async def test_enhanced_agent():
     """Test enhanced agent with reflection."""
-    print("\n🧪 Testing enhanced agent with reflection...")
-
     # Create base agent
     base_agent = SimpleAgent(
         name="writer",
@@ -98,16 +79,11 @@ async def test_enhanced_agent():
     # Test execution
     result = await enhanced.arun("quantum computing")
 
-    print(f"✅ Enhanced agent result: {result}")
-    print(f"✅ Enhanced agents: {list(enhanced.agents.keys())}")
-
     return result
 
 
 async def main():
     """Run all tests."""
-    print("🚀 Testing rebuilt multi-agent patterns...\n")
-
     try:
         # Test 1: Basic multi-agent
         await test_clean_multi_agent()
@@ -121,10 +97,7 @@ async def main():
         # Test 4: Enhanced agent
         await test_enhanced_agent()
 
-        print("\n✅ All tests passed! Rebuilt multi-agent patterns working perfectly.")
-
-    except Exception as e:
-        print(f"\n❌ Test failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

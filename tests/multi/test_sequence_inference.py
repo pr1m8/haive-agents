@@ -95,7 +95,7 @@ async def test_agent_type_inference():
 
     # Test type-based inference
     sequence = multi_agent._infer_agent_sequence()
-    print(f"✅ Agent types: SimpleAgent, ReactAgent")
+    print("✅ Agent types: SimpleAgent, ReactAgent"t")
     print(f"✅ Inferred sequence: {sequence}")
 
     # Should be: ReactAgent -> SimpleAgent (reasoning before processing)
@@ -183,7 +183,7 @@ async def test_manual_sequence_override():
     agent_names = list(multi_agent.agents.keys())
     assert agent_names[:3] == ["step1", "step2", "step3"]
     assert multi_agent.execution_mode == "sequential"
-    assert multi_agent.infer_sequence == False
+    assert not multi_agent.infer_sequence
 
     print("✅ Manual sequence override working correctly!")
     return multi_agent
@@ -232,13 +232,13 @@ async def main():
         # Test 5: Plan and Execute inference
         await test_plan_and_execute_inference()
 
-        print(f"\n✅ All sequence inference and branching tests passed!")
-        print(f"✅ Features working:")
-        print(f"  - Automatic sequence inference from naming patterns")
-        print(f"  - Agent type-based sequence inference")
-        print(f"  - Branch configuration and routing")
-        print(f"  - Manual sequence override")
-        print(f"  - Plan and Execute sequence inference")
+        print("\n✅ All sequence inference and branching tests passed!"!")
+        print("✅ Features working:":")
+        print("  - Automatic sequence inference from naming patterns")
+        print("  - Agent type-based sequence inference")
+        print("  - Branch configuration and routing")
+        print("  - Manual sequence override")
+        print("  - Plan and Execute sequence inference")
 
     except Exception as e:
         print(f"\n❌ Test failed: {e}")

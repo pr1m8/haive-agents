@@ -11,11 +11,15 @@ from pydantic import Field
 
 from haive.agents.base.agent import Agent
 from haive.agents.reasoning_and_critique.logic.engines import (
+    Dict,
     create_bias_detector,
     create_logical_reasoner,
     create_premise_extractor,
     create_synthesis_agent,
     create_uncertainty_analyzer,
+    from,
+    import,
+    typing,
 )
 from haive.agents.reasoning_and_critique.logic.models import (
     Evidence,
@@ -64,7 +68,7 @@ class ReasoningSystem(Agent):
     )
     synthesizer: AugLLMConfig = Field(default_factory=create_synthesis_agent)
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """Sync engines to the engines dict."""
         self.engines = {
             "premise_extractor": self.premise_extractor,
@@ -96,7 +100,7 @@ class ReasoningSystem(Agent):
         graph.add_edge("extract_premises", "primary_reasoning")
 
         # Conditional edge
-        def should_explore_alternatives(state):
+        def should_explore_alternatives(state: Dict[str, Any]):
             return state.explore_alternatives
 
         graph.add_conditional_edges(

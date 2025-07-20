@@ -147,7 +147,7 @@ def demonstrate_compatibility_workflow():
 
     # Step 5: Safe to proceed?
     if workflow_report.overall_compatible:
-        pass")
+        pass
     else:
         for adapter in workflow_report.required_adapters:
             pass

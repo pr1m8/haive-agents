@@ -163,11 +163,11 @@ def create_plug_and_play_component(
         return HallucinationGraderAgent(llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.ADVANCED_HALLUCINATION_GRADING:
         return AdvancedHallucinationGraderAgent(llm_config=llm_config, **kwargs)
-    elif component_type == RAGComponent.REALTIME_HALLUCINATION_GRADING:
+    if component_type == RAGComponent.REALTIME_HALLUCINATION_GRADING:
         return RealtimeHallucinationGraderAgent(llm_config=llm_config, **kwargs)
 
     # Document processing components
-    elif component_type == RAGComponent.DOCUMENT_GRADING:
+    if component_type == RAGComponent.DOCUMENT_GRADING:
         # return DocumentGradingAgent(  # Temporarily disabled - missing callable_node
         #     documents=documents, llm_config=llm_config, **kwargs
         raise NotImplementedError(
@@ -175,21 +175,20 @@ def create_plug_and_play_component(
         )
 
     # Retrieval components
-    elif component_type == RAGComponent.SIMPLE_RETRIEVAL:
+    if component_type == RAGComponent.SIMPLE_RETRIEVAL:
         return BaseRAGAgent.from_documents(
             documents=documents, llm_config=llm_config, **kwargs
         )
-    elif component_type == RAGComponent.HYDE_RETRIEVAL:
+    if component_type == RAGComponent.HYDE_RETRIEVAL:
         return HyDERAGAgentV2.from_documents(
             documents=documents, llm_config=llm_config, **kwargs
         )
-    elif component_type == RAGComponent.MULTI_QUERY_RETRIEVAL:
+    if component_type == RAGComponent.MULTI_QUERY_RETRIEVAL:
         return MultiQueryRAGAgent.from_documents(
             documents=documents, llm_config=llm_config, **kwargs
         )
 
-    else:
-        raise ValueError(f"Unknown component type: {component_type}")
+    raise ValueError(f"Unknown component type: {component_type}")
 
 
 def get_component_compatibility_info(

@@ -106,7 +106,8 @@ class DynamicNodeSupervisor(ReactAgent):
     agent_choice_model: DynamicChoiceModel | None = Field(default=None)
 
     @model_validator(mode="after")
-    def setup_dynamic_supervisor(self):
+    @classmethod
+    def setup_dynamic_supervisor(cls):
         """Setup supervisor with dynamic routing capabilities."""
         # Initialize choice model
         self._update_choice_model()

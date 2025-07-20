@@ -52,14 +52,15 @@ class Grade(BaseModel, ABC):
         timestamp: When the grade was assigned
 
     Example:
-        ```python
-        # This is an abstract class, use concrete implementations
-        grade = BinaryGrade(
+        .. code-block:: python
+
+            # This is an abstract class, use concrete implementations
+            grade = BinaryGrade(
             value=True,
             justification="Response meets all criteria",
             confidence=0.95
-        )
-        ```
+            )
+
     """
 
     model_config = ConfigDict(

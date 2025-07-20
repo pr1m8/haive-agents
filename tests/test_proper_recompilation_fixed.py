@@ -1,14 +1,12 @@
 """Test proper generalized recompilation system as designed in docs."""
 
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Set
-from unittest.mock import MagicMock
+from typing import Any
 
-import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.validation import ValidationNodeConfigV2
-from haive.core.schema import StateSchema
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from haive.agents.simple import SimpleAgent
 from haive.agents.simple.state import SimpleAgentState
@@ -19,11 +17,11 @@ class RecompilationMixin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._state_hash: Optional[str] = None
-        self._last_recompiled: Optional[datetime] = None
-        self._change_callbacks: List[tuple[str, Callable]] = []
-        self._pending_changes: Set[str] = set()
-        self._recompilation_reason: Optional[str] = None
+        self._state_hash: str | None = None
+        self._last_recompiled: datetime | None = None
+        self._change_callbacks: list[tuple[str, Callable]] = []
+        self._pending_changes: set[str] = set()
+        self._recompilation_reason: str | None = None
         self._batch_mode: bool = False
 
     def needs_recompilation(self) -> bool:
@@ -52,7 +50,7 @@ class RecompilationMixin:
         self._notify_change("compiled", reason=reason, timestamp=self._last_recompiled)
 
     def register_change_callback(
-        self, callback: Callable[[str, Dict[str, Any]], None]
+        self, callback: Callable[[str, dict[str, Any]], None]
     ) -> str:
         """Register callback for change notifications."""
         callback_id = f"callback_{len(self._change_callbacks)}"
@@ -91,10 +89,10 @@ class RecompilableValidationNodeConfigV2(RecompilationMixin, ValidationNodeConfi
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._tool_routes: Dict[str, str] = {}
-        self._validation_rules: Dict[str, Callable] = {}
+        self._tool_routes: dict[str, str] = {}
+        self._validation_rules: dict[str, Callable] = {}
 
-    def update_tool_routes(self, new_routes: Dict[str, str]) -> None:
+    def update_tool_routes(self, new_routes: dict[str, str]) -> None:
         """Update tool routes and notify of changes."""
         old_routes = self._tool_routes.copy()
         self._tool_routes.update(new_routes)
@@ -131,7 +129,7 @@ class RecompilableSimpleAgent(SimpleAgent):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._validation_node: Optional[RecompilableValidationNodeConfigV2] = None
+        self._validation_node: RecompilableValidationNodeConfigV2 | None = None
         self._custom_nodes = []
         self._output_parser = None
         self._recompilation_count = 0
@@ -153,7 +151,7 @@ class RecompilableSimpleAgent(SimpleAgent):
         """Set custom output parser."""
         self._output_parser = parser
 
-    def recompile_if_needed(self) -> Dict[str, Any]:
+    def recompile_if_needed(self) -> dict[str, Any]:
         """Recompile agent if any components need it."""
         needs_recompile = False
         reasons = []
@@ -184,9 +182,7 @@ class RecompilableSimpleAgent(SimpleAgent):
         """Check if agent needs recompilation."""
         if self._validation_node and self._validation_node.needs_recompilation():
             return True
-        if self._custom_nodes:
-            return True
-        return False
+        return bool(self._custom_nodes)
 
 
 class MetaAgentWithRecompilation:
@@ -194,8 +190,8 @@ class MetaAgentWithRecompilation:
 
     def __init__(self, name: str):
         self.name = name
-        self.managed_components: Dict[str, RecompilationMixin] = {}
-        self.recompilation_callbacks: Dict[str, str] = {}
+        self.managed_components: dict[str, RecompilationMixin] = {}
+        self.recompilation_callbacks: dict[str, str] = {}
 
     def add_managed_component(self, name: str, component: RecompilationMixin) -> None:
         """Add a component to manage."""
@@ -210,11 +206,9 @@ class MetaAgentWithRecompilation:
         self.recompilation_callbacks[name] = callback_id
 
     def _handle_component_change(
-        self, component_name: str, change_type: str, details: Dict
+        self, component_name: str, change_type: str, details: dict
     ):
         """Handle changes from managed components."""
-        print(f"[Meta-Agent] Component {component_name} changed: {change_type}")
-
         # Could trigger meta-agent recompilation logic here
         if self._should_recompile_meta_agent(change_type):
             self._schedule_meta_agent_recompilation()
@@ -232,9 +226,8 @@ class MetaAgentWithRecompilation:
 
     def _schedule_meta_agent_recompilation(self) -> None:
         """Schedule meta-agent recompilation."""
-        print("  [Meta-Agent] Scheduling recompilation...")
 
-    def recompile_all_if_needed(self) -> Dict[str, Any]:
+    def recompile_all_if_needed(self) -> dict[str, Any]:
         """Check and recompile all managed components."""
         result = {
             "components_checked": len(self.managed_components),
@@ -244,7 +237,6 @@ class MetaAgentWithRecompilation:
 
         for name, component in self.managed_components.items():
             if component.needs_recompilation():
-                print(f"[Meta-Agent] Recompiling component: {name}")
 
                 # Perform recompilation
                 if hasattr(component, "recompile_if_needed"):
@@ -295,8 +287,6 @@ def test_validation_node_recompilation():
     assert node.needs_recompilation()
     assert len(changes) == 4  # tool_routes, compiled, 2 validation rules
 
-    print(f"✅ ValidationNode tracked {len(changes)} changes")
-
 
 def test_recompilable_agent():
     """Test agent with recompilation capabilities."""
@@ -327,10 +317,6 @@ def test_recompilable_agent():
     # Add custom node
     agent.add_custom_node("custom_processor", lambda x: x)
     assert agent.needs_recompilation()
-
-    print(
-        f"✅ Agent recompilation working: {result['recompilation_count']} recompilations"
-    )
 
 
 def test_meta_agent_system():
@@ -370,7 +356,3 @@ def test_meta_agent_system():
     # After meta-agent recompilation, nothing should need recompilation
     assert not agent1.needs_recompilation()
     assert not agent2.needs_recompilation()
-
-    print(
-        f"✅ Meta-agent coordinated {len(result['components_recompiled'])} recompilations"
-    )

@@ -1,20 +1,35 @@
-"""Task Analysis - TODO: Add brief description.
+"""Module exports."""
 
-TODO: Add detailed description of module functionality
+from task_analysis.agent import (
+    TaskAnalysisAgent,
+    analyze_task,
+    build_graph,
+    get_complexity_assessment,
+    get_execution_plan,
+    get_recommendations,
+    join_analyses,
+    parallel_analysis_orchestrator,
+    recursive_expansion_orchestrator,
+    route_after_analysis,
+    route_after_decomposition,
+    route_after_validation,
+    route_final_decision,
+    setup_agent,
+)
 
-
-
-Example:
-    Basic usage::
-
-        from haive.task_analysis import module_function
-
-        # TODO: Add example
-
-
-See Also:
-    :mod:`haive.task_analysis.base`: TODO: Add description
-    :mod:`haive.task_analysis.decomposer`: TODO: Add description
-    :mod:`haive.task_analysis.tree`: TODO: Add description
-
-"""
+__all__ = [
+    "TaskAnalysisAgent",
+    "analyze_task",
+    "build_graph",
+    "get_complexity_assessment",
+    "get_execution_plan",
+    "get_recommendations",
+    "join_analyses",
+    "parallel_analysis_orchestrator",
+    "recursive_expansion_orchestrator",
+    "route_after_analysis",
+    "route_after_decomposition",
+    "route_after_validation",
+    "route_final_decision",
+    "setup_agent",
+]

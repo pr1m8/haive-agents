@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from typing import List
+
+import contextlib
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -34,8 +35,6 @@ class QueryRefinementResponse(BaseModel):
     best_refined_query: str = Field(description="The recommended best refined query")
 
 
-
-
 config = AugLLMConfig(
     prompt_template=RAG_QUERY_REFINEMENT,
     structured_output_model=QueryRefinementResponse,
@@ -44,7 +43,7 @@ config = AugLLMConfig(
 
 
 # Let's see what's inside the prompt template
-for i, message in enumerate(config.prompt_template.messages):
+for _i, message in enumerate(config.prompt_template.messages):
     if hasattr(message, "prompt"):
         prompt = message.prompt
 
@@ -57,24 +56,21 @@ engine = agent.engines[engine_name]
 # Let's see where the context requirement is coming from
 state_schema = agent.state_schema()
 
-for field_name, field_info in state_schema.model_fields.items():
+for field_name, _field_info in state_schema.model_fields.items():
     if field_name in ["query", "context", "engine"]:
         pass
 
 try:
     input_schema = agent.input_schema()
     test_input = input_schema(query="test")
-except Exception as e:
-    pass")
+except Exception:
+    pass
 
 try:
     state_class = agent.state_schema()
     test_state = state_class(query="test", messages=[])
-except Exception as e:
-    pass
+except Exception:
 
     # Try with context
-    try:
+    with contextlib.suppress(Exception):
         test_state = state_class(query="test", context="", messages=[])
-    except Exception as e2:
-        pass")

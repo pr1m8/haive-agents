@@ -66,7 +66,8 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
         return v
 
     @model_validator(mode="after")
-    def validate_semantic_consistency(self) -> "SemanticMemory":
+    @classmethod
+    def validate_semantic_consistency(cls) -> "SemanticMemory":
         """Advanced semantic consistency validation."""
         # Validate belief system consistency
         for belief, strength in self.belief_system.items():

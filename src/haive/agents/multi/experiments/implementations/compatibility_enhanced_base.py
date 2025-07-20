@@ -1,5 +1,6 @@
 """Compatibility-Enhanced Multi-Agent Base.
 
+from typing import Any
 This module extends the multi-agent base with built-in compatibility checking,
 ensuring agents are compatible before building workflows and providing
 automatic adaptation when possible.
@@ -73,7 +74,7 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
     enable_auto_adapters: bool = True
     compatibility_report_level: str = "summary"  # "none", "summary", "detailed"
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Initialize compatibility components
         self._compatibility_checker = CompatibilityChecker()
         self._type_analyzer = TypeAnalyzer()
@@ -359,7 +360,7 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
         # Add additional auto-fixes here
         # For example, automatic schema updates, field transformations, etc.
 
-    def build_graph(self):
+    def build_graph(self) -> Any:
         """Build graph with pre-build compatibility validation."""
         if self.auto_check_compatibility:
             self._validate_workflow_compatibility()
@@ -543,7 +544,7 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 class CompatibilityEnhancedSequentialAgent(CompatibilityEnhancedMultiAgent):
     """Sequential agent with built-in compatibility checking."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         kwargs["execution_mode"] = ExecutionMode.SEQUENCE
         super().__init__(**kwargs)
 
@@ -551,7 +552,7 @@ class CompatibilityEnhancedSequentialAgent(CompatibilityEnhancedMultiAgent):
 class CompatibilityEnhancedConditionalAgent(CompatibilityEnhancedMultiAgent):
     """Conditional agent with built-in compatibility checking."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         kwargs["execution_mode"] = ExecutionMode.CONDITIONAL
         super().__init__(**kwargs)
 
@@ -559,7 +560,7 @@ class CompatibilityEnhancedConditionalAgent(CompatibilityEnhancedMultiAgent):
 class CompatibilityEnhancedParallelAgent(CompatibilityEnhancedMultiAgent):
     """Parallel agent with built-in compatibility checking."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         kwargs["execution_mode"] = ExecutionMode.PARALLEL
         super().__init__(**kwargs)
 

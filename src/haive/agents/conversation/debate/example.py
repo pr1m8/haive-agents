@@ -14,9 +14,8 @@ from haive.agents.simple.agent import SimpleAgent
 logging.getLogger("haive").setLevel(logging.WARNING)
 
 
-def example_simple_debate():
+def example_simple_debate() -> None:
     """Simple two-sided debate on AI regulation."""
-
     # Create debate
     debate = DebateConversation.create_simple_debate(
         topic="Should AI development be regulated by governments?",
@@ -56,9 +55,8 @@ def example_simple_debate():
 
 
 # examples/conversation/debate_example.py
-def example_panel_debate():
+def example_panel_debate() -> None:
     """Multi-participant panel debate - FIXED VERSION."""
-
     # Create participant agents with proper state schema
     participants = {
         "TechOptimist": SimpleAgent(
@@ -133,9 +131,8 @@ def example_panel_debate():
             pass  # Add proper handling here if needed
 
 
-def example_oxford_debate():
+def example_oxford_debate() -> None:
     """Oxford-style formal debate."""
-
     # Create formal debate structure
     motion = "This house believes that artificial general intelligence (AGI) will be achieved within 10 years"
 
@@ -226,9 +223,8 @@ def example_oxford_debate():
         pass
 
 
-def example_socratic_debate():
+def example_socratic_debate() -> None:
     """Socratic method debate with questioning."""
-
     # Create Socratic dialogue participants
     participants = {
         "Socrates": SimpleAgent(
@@ -292,9 +288,9 @@ def example_socratic_debate():
     # Display dialogue
     messages = result.get("messages", [])
     for msg in messages:
-        if isinstance(msg, AIMessage) and hasattr(msg, "name"):
-            pass
-        elif isinstance(msg, SystemMessage):
+        if (isinstance(msg, AIMessage) and hasattr(msg, "name")) or isinstance(
+            msg, SystemMessage
+        ):
             pass
 
 

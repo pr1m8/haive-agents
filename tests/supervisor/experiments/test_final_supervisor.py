@@ -5,8 +5,9 @@ import operator
 
 # Direct imports to avoid haive module chain
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Annotated, Any, Literal, Sequence, TypedDict
+from typing import Annotated, Any, Literal, TypedDict
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, StateGraph

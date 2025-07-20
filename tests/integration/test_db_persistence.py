@@ -48,7 +48,7 @@ def check_database_after_run():
 
                 if thread_rows:
                 else:
-                    pass")
+                    pass
 
                 # Check checkpoints table
                 cur.execute(
@@ -68,7 +68,7 @@ def check_database_after_run():
                         # Print first 100 chars of checkpoint data
                         checkpoint_data = str(row[4])[:100] if row[4] else "None"
                 else:
-                    pass")
+                    pass
 
                 # Check checkpoint_writes table
                 cur.execute(
@@ -86,17 +86,17 @@ def check_database_after_run():
                     for i, row in enumerate(writes_rows):
                         pass
                 else:
-                    pass")
+                    pass
 
                 # Summary
 
                 if thread_rows and checkpoint_rows and writes_rows:
                 elif thread_rows:
                 else:
-                    pass")
+                    pass
 
     except Exception as e:
-        pass")
+        pass
 
 
 if __name__ == "__main__":

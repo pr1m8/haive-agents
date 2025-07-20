@@ -1,5 +1,6 @@
 """FLARE (Forward-Looking Active REtrieval) RAG Agents.
 
+from typing import Any
 Implementation of FLARE RAG with forward-looking retrieval and iterative generation.
 Uses structured output models for planning and managing active retrieval decisions.
 """

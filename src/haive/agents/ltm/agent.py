@@ -9,7 +9,7 @@ providing memory extraction, processing, and tool-based memory management.
 
 import logging
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -53,7 +53,7 @@ class LTMState(BaseModel):
     extracted_memories: list[dict[str, Any]] = Field(
         default_factory=list, description="Extracted memories from conversation"
     )
-    knowledge_graph: Dict[str, Any] | None = Field(
+    knowledge_graph: dict[str, Any] | None = Field(
         default=None, description="Extracted knowledge graph entities and relationships"
     )
     categories: list[str] = Field(
@@ -241,7 +241,7 @@ class LTMAgent(Agent):
             f"Reflection={self.enable_reflection}"
         )
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """Setup LTM agent engines and components."""
         logger.info("Setting up LTM agent engines...")
 
@@ -411,7 +411,7 @@ class LTMAgent(Agent):
         ratio_quality = min(1.0, actual_ratio / expected_ratio)
 
         # Bonus for schema diversity
-        schema_types = set(m.get("schema", "Unknown") for m in memories)
+        schema_types = {m.get("schema", "Unknown") for m in memories}
         diversity_bonus = min(0.2, len(schema_types) * 0.05)
 
         # Penalty for errors or low confidence

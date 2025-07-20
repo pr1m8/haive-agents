@@ -3,10 +3,11 @@
 
 This shows the supervisor actually executing agent handoffs with real state management.
 """
+"""
+"""
 
 import asyncio
 import logging
-from typing import Any, Dict
 
 from langchain_core.messages import HumanMessage
 
@@ -24,13 +25,11 @@ logging.basicConfig(
 
 async def demonstrate_full_workflow():
     """Complete workflow demonstration with actual agent execution."""
-
     # 1. Create supervisor
     registry = create_test_registry()
     supervisor = DynamicSupervisorAgent(
         name="Workflow Demo Supervisor", agent_registry=registry, debug=True
     )
-
 
     # 2. Add a new agent dynamically
     from haive.agents.simple.agent import SimpleAgent
@@ -44,7 +43,6 @@ async def demonstrate_full_workflow():
             "system_message": "You are a creative writing specialist. Help with stories, poems, and creative content.",
         },
     )
-
 
     # 3. Create initial state
     initial_state = SupervisorState(
@@ -63,17 +61,14 @@ async def demonstrate_full_workflow():
         current_iteration=0,
     )
 
-
     # 4. Test tools with state
 
     # Test list_agents tool
     list_tool = next(t for t in supervisor.tools if t.name == "list_agents")
-    agent_list = list_tool.invoke({})
+    list_tool.invoke({})
 
     # Test handoff tool simulation
-    math_handoff = next(
-        t for t in supervisor.tools if t.name == "handoff_to_math_agent"
-    )
+    next(t for t in supervisor.tools if t.name == "handoff_to_math_agent")
 
     # 5. Simulate state updates
 
@@ -93,7 +88,6 @@ async def demonstrate_full_workflow():
     )
     initial_state.completed_agents.add("math_agent")
 
-
     # Simulate creative writer handoff
     initial_state.current_agent_name = "creative_writer"
     initial_state.current_task = "Write a short story about the number 392"
@@ -110,16 +104,14 @@ async def demonstrate_full_workflow():
     )
     initial_state.completed_agents.add("creative_writer")
 
-
     # 6. Final state
     initial_state.task_complete = True
     initial_state.current_agent_name = None
     initial_state.current_task = None
 
-
     # 7. Summary
-    for i, entry in enumerate(initial_state.execution_history, 1):
-
+    for _i, _entry in enumerate(initial_state.execution_history, 1):
+        pass
 
     return supervisor, initial_state
 
@@ -132,10 +124,9 @@ async def main():
         # Save workflow summary
 
         tool_names = [t.name for t in supervisor.tools]
-        handoff_tools = [name for name in tool_names if name.startswith("handoff_to_")]
+        [name for name in tool_names if name.startswith("handoff_to_")]
 
-
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

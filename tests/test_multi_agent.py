@@ -1,5 +1,7 @@
 """Test file for the enhanced MultiAgent implementation."""
 
+import contextlib
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
@@ -324,22 +326,14 @@ def test_dynamic_agent_addition():
 if __name__ == "__main__":
     test_multi_agent_sequential()
 
-    try:
+    with contextlib.suppress(Exception):
         test_multi_agent_factory()
-    except Exception:
-        pass
 
-    try:
+    with contextlib.suppress(Exception):
         test_multi_agent_conditional()
-    except Exception:
-        pass
 
-    try:
+    with contextlib.suppress(Exception):
         test_dynamic_agent_addition()
-    except Exception:
-        pass
 
-    try:
+    with contextlib.suppress(Exception):
         test_direct_agent_construction()
-    except Exception:
-        pass

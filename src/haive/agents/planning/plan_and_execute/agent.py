@@ -32,7 +32,7 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
             update={"plan": plan}, goto="execute_step", resume={"plan": plan.steps}
         )
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         self.graph.add_node("planner", self.planner)
         self.graph.add_node("execute_step", self.execute_step)
         self.graph.add_node("replan_step", self.replan_step)

@@ -64,7 +64,8 @@ class PersonalityTraits(BaseModel):
         return [area.strip().title() for area in v if area.strip()]
 
     @model_validator(mode="after")
-    def validate_personality_consistency(self) -> "PersonalityTraits":
+    @classmethod
+    def validate_personality_consistency(cls) -> "PersonalityTraits":
         """Ensure personality traits are consistent."""
         if (
             self.communication_style == "technical"
@@ -89,7 +90,8 @@ class UserPreferences(BaseModel):
     avoided_topics: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
-    def validate_topic_consistency(self) -> "UserPreferences":
+    @classmethod
+    def validate_topic_consistency(cls) -> "UserPreferences":
         """Ensure no overlap between interested and avoided topics."""
         interest_set = set(self.topics_of_interest)
         avoided_set = set(self.avoided_topics)

@@ -18,9 +18,7 @@ Version: 1.0.0
 """
 
 import asyncio
-import json
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.query_state import (
@@ -40,10 +38,6 @@ from haive.agents.document_processing import (
 
 async def basic_query_example():
     """Basic example using DocumentProcessingAgent with QueryState."""
-
-    print("🚀 Basic Query Example")
-    print("=" * 50)
-
     # Create basic configuration
     doc_config = DocumentProcessingConfig(
         search_enabled=True,
@@ -73,20 +67,12 @@ async def basic_query_example():
     result = await agent.process_query(query_state.original_query)
 
     # Display results
-    print(f"Query: {query_state.original_query}")
-    print(f"Response: {result.response[:200]}...")
-    print(f"Sources: {len(result.sources)}")
-    print(f"Processing time: {result.timing.get('total_time', 0):.2f}s")
 
     return result
 
 
 async def advanced_query_example():
     """Advanced example with query refinement and multiple strategies."""
-
-    print("\n🔬 Advanced Query Example")
-    print("=" * 50)
-
     # Create advanced configuration
     doc_config = DocumentProcessingConfig(
         search_enabled=True,
@@ -154,26 +140,15 @@ async def advanced_query_example():
         refined_results.append(result)
 
     # Display results
-    print(f"Main Query: {query_state.original_query}")
-    print(f"Main Response: {main_result.response[:300]}...")
-    print(f"Main Sources: {len(main_result.sources)}")
-    print(f"Processing time: {main_result.timing.get('total_time', 0):.2f}s")
 
-    print(f"\nRefined Queries Processed: {len(refined_results)}")
-    for i, result in enumerate(refined_results):
-        print(f"  Query {i+1}: {query_state.refined_queries[i]}")
-        print(f"  Response: {result.response[:150]}...")
-        print(f"  Sources: {len(result.sources)}")
+    for _i, result in enumerate(refined_results):
+        pass
 
     return main_result, refined_results
 
 
 async def multi_source_example():
     """Example with specific document sources."""
-
-    print("\n📄 Multi-Source Example")
-    print("=" * 50)
-
     # Create configuration for document processing
     doc_config = DocumentProcessingConfig(
         search_enabled=False,  # Disable search, use provided sources
@@ -228,22 +203,12 @@ async def multi_source_example():
     result = await agent.process_sources(document_sources, query_state.original_query)
 
     # Display results
-    print(f"Query: {query_state.original_query}")
-    print(f"Query Type: {query_state.query_type.value}")
-    print(f"Retrieval Strategy: {query_state.retrieval_strategy.value}")
-    print(f"Response: {result.response[:400]}...")
-    print(f"Sources Processed: {len(document_sources)}")
-    print(f"Processing time: {result.timing.get('total_time', 0):.2f}s")
 
     return result
 
 
 async def structured_query_example():
     """Example with structured query processing."""
-
-    print("\n🏗️ Structured Query Example")
-    print("=" * 50)
-
     # Create configuration for structured processing
     doc_config = DocumentProcessingConfig(
         search_enabled=True,
@@ -310,22 +275,12 @@ async def structured_query_example():
     result = await agent.process_sources(financial_sources, query_state.original_query)
 
     # Display results
-    print(f"Query: {query_state.original_query}")
-    print(f"Query Type: {query_state.query_type.value}")
-    print(f"Structured Processing: {query_state.structured_query_enabled}")
-    print(f"Response: {result.response[:500]}...")
-    print(f"Sources Processed: {len(financial_sources)}")
-    print(f"Processing time: {result.timing.get('total_time', 0):.2f}s")
 
     return result
 
 
 async def comprehensive_workflow_example():
     """Comprehensive workflow combining all features."""
-
-    print("\n🎯 Comprehensive Workflow Example")
-    print("=" * 50)
-
     # Create comprehensive configuration
     doc_config = DocumentProcessingConfig(
         search_enabled=True,
@@ -407,48 +362,20 @@ async def comprehensive_workflow_example():
     )
 
     # Process main query
-    start_time = datetime.now()
+    datetime.now()
     result = await agent.process_query(query_state.original_query)
-    end_time = datetime.now()
+    datetime.now()
 
     # Display comprehensive results
-    print(f"Query: {query_state.original_query}")
-    print(f"Query Type: {query_state.query_type.value}")
-    print(f"Retrieval Strategy: {query_state.retrieval_strategy.value}")
-    print(f"Query Complexity: {query_state.query_complexity.value}")
-    print(f"Query Intent: {query_state.query_intent.value}")
-    print(f"\nFeatures Enabled:")
-    print(f"  - Query Expansion: {query_state.query_expansion_enabled}")
-    print(f"  - Query Refinement: {query_state.query_refinement_enabled}")
-    print(f"  - Multi-Query: {query_state.multi_query_enabled}")
-    print(f"  - Structured Output: {query_state.structured_query_enabled}")
-    print(f"  - Time-Weighted: {query_state.time_weighted_retrieval}")
-
-    print(f"\nProcessing Results:")
-    print(f"  - Total Queries: {len(query_state.get_all_queries())}")
-    print(f"  - Processing Time: {(end_time - start_time).total_seconds():.2f}s")
-    print(f"  - Sources Used: {len(result.sources)}")
-    print(f"  - Response Length: {len(result.response)} characters")
-
-    print(f"\nResponse Preview:")
-    print(
-        result.response[:600] + "..." if len(result.response) > 600 else result.response
-    )
 
     # Create summary
-    summary = query_state.get_processing_summary()
-    print(f"\nProcessing Summary:")
-    print(json.dumps(summary, indent=2, default=str))
+    query_state.get_processing_summary()
 
     return result, query_state
 
 
 async def main():
     """Run all examples."""
-
-    print("🤖 DocumentProcessingAgent + QueryState Examples")
-    print("=" * 60)
-
     try:
         # Run examples
         await basic_query_example()
@@ -457,10 +384,7 @@ async def main():
         await structured_query_example()
         await comprehensive_workflow_example()
 
-        print("\n✅ All examples completed successfully!")
-
-    except Exception as e:
-        print(f"\n❌ Error running examples: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

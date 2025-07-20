@@ -1,9 +1,31 @@
-"""RAG Fusion Module.
+"""Module exports."""
 
-RAG Fusion with reciprocal rank fusion for improved retrieval quality.
-Enhanced multi-query with advanced ranking and fusion techniques.
-"""
+from fusion.agent import (
+    FusionResult,
+    MultiQueryRetrievalAgent,
+    QueryVariationsFusion,
+    RAGFusionAgent,
+    ReciprocalRankFusionAgent,
+    build_graph,
+    create_multi_query_retrieval_callable,
+    create_rag_fusion_agent,
+    from_documents,
+    get_rag_fusion_io_schema,
+    multi_query_retrieve,
+    perform_rrf_fusion,
+)
 
-from haive.agents.rag.fusion.agent import RAGFusionAgent, ReciprocalRankFusionAgent
-
-__all__ = ["RAGFusionAgent", "ReciprocalRankFusionAgent"]
+__all__ = [
+    "FusionResult",
+    "MultiQueryRetrievalAgent",
+    "QueryVariationsFusion",
+    "RAGFusionAgent",
+    "ReciprocalRankFusionAgent",
+    "build_graph",
+    "create_multi_query_retrieval_callable",
+    "create_rag_fusion_agent",
+    "from_documents",
+    "get_rag_fusion_io_schema",
+    "multi_query_retrieve",
+    "perform_rrf_fusion",
+]

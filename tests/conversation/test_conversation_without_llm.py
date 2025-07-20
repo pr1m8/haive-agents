@@ -170,7 +170,7 @@ def test_react_agent_persistence():
                 if "error" in str(last_message.content).lower():
                     passt}")
                 else:
-                    pass")
+                    pass
 
             return True
         print("❌ No messages in result")
@@ -237,7 +237,7 @@ def check_database_health():
         if error_count > 0:
             passse")
         else:
-            pass")
+            pass
 
         cursor.close()
         conn.close()

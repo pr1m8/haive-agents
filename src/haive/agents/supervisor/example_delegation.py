@@ -234,7 +234,7 @@ async def test_dynamic_agent_management():
         console.print(f"[red]Dynamic test failed: {e!s}[/red]")
 
 
-def main():
+def main() -> None:
     """Main test function."""
     console.print(
         Panel(

@@ -134,7 +134,8 @@ class DynamicActivationSupervisor(ReactAgent):
     capability_model: DynamicChoiceModel | None = Field(default=None)
 
     @model_validator(mode="after")
-    def setup_activation_supervisor(self):
+    @classmethod
+    def setup_activation_supervisor(cls):
         """Setup supervisor with activation capabilities."""
         # Update tools when registry changes
         self._update_available_tools()

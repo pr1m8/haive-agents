@@ -11,7 +11,11 @@ from pydantic import BaseModel, Field
 
 from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.engines import (
+    Dict,
     create_parallel_kg_transformer_configs,
+    from,
+    import,
+    typing,
 )
 
 # Import models and engines
@@ -62,7 +66,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
 
         super().__init__(config)
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         self.graph.add_node("map_graph_documents", self.map_graph_documents)
         self.graph.add_node("collect_graph_documents", self.collect_graph_documents)
         self.graph.add_node("map_nodes", self.map_nodes)

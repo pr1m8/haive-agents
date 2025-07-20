@@ -81,7 +81,8 @@ class BaseMemoryModel(BaseModel, metaclass=MemoryValidationMeta):
         return v
 
     @model_validator(mode="after")
-    def validate_lifecycle_consistency(self) -> "BaseMemoryModel":
+    @classmethod
+    def validate_lifecycle_consistency(cls) -> "BaseMemoryModel":
         """Cross-field lifecycle validation."""
         now = datetime.now()
 

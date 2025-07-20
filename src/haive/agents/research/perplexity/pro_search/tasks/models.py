@@ -154,7 +154,7 @@ class TaskNode(BaseModel):
 
     @field_validator("children")
     @classmethod
-    def validate_children_for_type(cls, v, info):
+    def validate_children_for_type(cls, v, info) -> Any:
         """Validate children based on task type."""
         task_type = info.data.get("task_type", "action")
 
@@ -237,7 +237,8 @@ class PlanningStrategy(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_strategy_coherence(self) -> "PlanningStrategy":
+    @classmethod
+    def validate_strategy_coherence(cls) -> "PlanningStrategy":
         """Ensure strategy settings are coherent."""
         if "maximize_parallelism" in self.optimization_goals:
             if self.parallelization_threshold > 5:
@@ -275,7 +276,8 @@ class TaskDecomposition(BaseModel):
     )
 
     @model_validator(mode="after")
-    def calculate_critical_path(self) -> "TaskDecomposition":
+    @classmethod
+    def calculate_critical_path(cls) -> "TaskDecomposition":
         """Calculate critical path if not provided."""
         if not self.critical_path and self.subtasks:
             # Simple critical path: longest chain of dependencies
@@ -526,7 +528,8 @@ class ExecutionPlan(BaseModel):
     )
 
     @model_validator(mode="after")
-    def calculate_resource_requirements(self) -> "ExecutionPlan":
+    @classmethod
+    def calculate_resource_requirements(cls) -> "ExecutionPlan":
         """Calculate total resource requirements."""
         if not self.resource_requirements:
             requirements: dict[str, float] = {}

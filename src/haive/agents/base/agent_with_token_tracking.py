@@ -31,26 +31,27 @@ class TokenTrackingAgent(Agent):
     - Conversation cost analysis
 
     Example:
-        ```python
-        class MyAgent(TokenTrackingAgent):
-            def build_graph(self):
-                # Your graph logic
-                pass
+        .. code-block:: python
 
-        agent = MyAgent(
+            class MyAgent(TokenTrackingAgent):
+            def build_graph(self):
+            # Your graph logic
+            pass
+
+            agent = MyAgent(
             name="cost_aware_agent",
             engine=llm_engine,
             track_costs=True,
             input_cost_per_1k=0.003,
             output_cost_per_1k=0.015
-        )
+            )
 
-        # After running
-        result = agent.invoke({"query": "Hello"})
-        usage = agent.get_token_usage_summary()
-        print(f"Total tokens: {usage['total_tokens']}")
-        print(f"Total cost: ${usage['total_cost']:.4f}")
-        ```
+            # After running
+            result = agent.invoke({"query": "Hello"})
+            usage = agent.get_token_usage_summary()
+            print(f"Total tokens: {usage['total_tokens']}")
+            print(f"Total cost: ${usage['total_cost']:.4f}")
+
     """
 
     # Token tracking configuration

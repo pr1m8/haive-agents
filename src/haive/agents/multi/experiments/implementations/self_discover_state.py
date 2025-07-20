@@ -1,6 +1,6 @@
 """State schema for self-discover multi-agent system."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from pydantic import Field
@@ -24,7 +24,7 @@ class SelfDiscoverState(MultiAgentState):
     """
 
     # Input fields
-    reasoning_modules: List[str] = Field(
+    reasoning_modules: list[str] = Field(
         default_factory=list, description="List of available reasoning modules"
     )
     task_description: str = Field(
@@ -32,27 +32,27 @@ class SelfDiscoverState(MultiAgentState):
     )
 
     # Structured outputs from each agent
-    selected_modules: Optional[SelectedModules] = Field(
+    selected_modules: SelectedModules | None = Field(
         default=None, description="Output from select_agent"
     )
-    adapted_modules: Optional[AdaptedModules] = Field(
+    adapted_modules: AdaptedModules | None = Field(
         default=None, description="Output from adapt_agent"
     )
-    reasoning_structure: Optional[ReasoningStructure] = Field(
+    reasoning_structure: ReasoningStructure | None = Field(
         default=None, description="Output from structure_agent"
     )
-    final_answer: Optional[FinalAnswer] = Field(
+    final_answer: FinalAnswer | None = Field(
         default=None, description="Output from reason_agent"
     )
 
-    def get_select_inputs(self) -> Dict[str, Any]:
+    def get_select_inputs(self) -> dict[str, Any]:
         """Get inputs for select_agent."""
         return {
             "reasoning_modules": self.reasoning_modules,
             "task_description": self.task_description,
         }
 
-    def get_adapt_inputs(self) -> Dict[str, Any]:
+    def get_adapt_inputs(self) -> dict[str, Any]:
         """Get inputs for adapt_agent."""
         if not self.selected_modules:
             raise ValueError("selected_modules not available for adapt_agent")
@@ -67,7 +67,7 @@ class SelfDiscoverState(MultiAgentState):
             "task_description": self.task_description,
         }
 
-    def get_structure_inputs(self) -> Dict[str, Any]:
+    def get_structure_inputs(self) -> dict[str, Any]:
         """Get inputs for structure_agent."""
         if not self.adapted_modules:
             raise ValueError("adapted_modules not available for structure_agent")
@@ -85,7 +85,7 @@ class SelfDiscoverState(MultiAgentState):
             "task_description": self.task_description,
         }
 
-    def get_reason_inputs(self) -> Dict[str, Any]:
+    def get_reason_inputs(self) -> dict[str, Any]:
         """Get inputs for reason_agent."""
         if not self.reasoning_structure:
             raise ValueError("reasoning_structure not available for reason_agent")
@@ -102,7 +102,7 @@ class SelfDiscoverState(MultiAgentState):
             "task_description": self.task_description,
         }
 
-    def update_from_agent_output(self, agent_name: str, output: Dict[str, Any]) -> None:
+    def update_from_agent_output(self, agent_name: str, output: dict[str, Any]) -> None:
         """Update state with agent output."""
         if agent_name == "select_modules":
             if "selected_modules" in output:
@@ -115,6 +115,5 @@ class SelfDiscoverState(MultiAgentState):
                 self.reasoning_structure = ReasoningStructure(
                     **output["reasoning_structure"]
                 )
-        elif agent_name == "final_reasoning":
-            if "final_answer" in output:
-                self.final_answer = FinalAnswer(**output["final_answer"])
+        elif agent_name == "final_reasoning" and "final_answer" in output:
+            self.final_answer = FinalAnswer(**output["final_answer"])

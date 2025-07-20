@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Test database persistence and retrieve data by thread ID."""
 
-import json
 import os
 import uuid
-from datetime import datetime
 
 import psycopg2
 from haive.core.models.llm.base import AugLLMConfig
@@ -75,8 +73,9 @@ def query_database(thread_id):
 
             thread_data = cursor.fetchone()
             if thread_data:
+                pass
             else:
-                pass")
+                pass
 
             # 2. Check checkpoints table
             cursor.execute(
@@ -119,13 +118,13 @@ def query_database(thread_id):
 
                             # Show document sections if available
                             if "document_sections" in values:
-                                for section, content in values[
+                                for _section, content in values[
                                     "document_sections"
                                 ].items():
                                     if content:
                                         pass
             else:
-                pass")
+                pass
 
             # 3. List recent threads
             cursor.execute(
@@ -138,7 +137,7 @@ def query_database(thread_id):
             )
 
             recent_threads = cursor.fetchall()
-            for thread in recent_threads:
+            for _thread in recent_threads:
                 pass
 
     except Exception:

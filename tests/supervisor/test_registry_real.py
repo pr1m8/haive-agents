@@ -4,7 +4,6 @@
 import asyncio
 import logging
 import os
-from typing import Any, Dict
 
 from langchain_core.messages import AIMessage, HumanMessage
 
@@ -17,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 async def create_real_agents():
     """Create real ReactAgents for testing."""
-
     try:
         from haive.core.engine.aug_llm import AugLLMConfig
 
@@ -64,13 +62,12 @@ async def create_real_agents():
 
         return [research_agent, coding_agent, writing_agent]
 
-    except Exception as e:
+    except Exception:
         return []
 
 
 async def test_registry_supervisor_real():
     """Test the registry supervisor with real agents."""
-
     # Check for API key
     if not os.getenv("OPENAI_API_KEY"):
         return
@@ -78,7 +75,7 @@ async def test_registry_supervisor_real():
     # Import our registry supervisor
     try:
         from registry_supervisor import RegistrySupervisor
-    except ImportError as e:
+    except ImportError:
         return
 
     # Create real agents
@@ -101,7 +98,6 @@ async def test_registry_supervisor_real():
         ],
     )
 
-
     # Test 1: Research request (should activate research agent)
 
     research_request = "Research the latest developments in artificial intelligence and machine learning"
@@ -111,15 +107,14 @@ async def test_registry_supervisor_real():
             {"messages": [HumanMessage(content=research_request)]}
         )
 
-
         # Show response preview
         messages = result1.get("messages", [])
         if messages:
             last_message = messages[-1]
             if isinstance(last_message, AIMessage):
-                content = last_message.content
+                pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -135,15 +130,14 @@ async def test_registry_supervisor_real():
             {"messages": [HumanMessage(content=coding_request)]}
         )
 
-
         # Show response preview
         messages = result2.get("messages", [])
         if messages:
             last_message = messages[-1]
             if isinstance(last_message, AIMessage):
-                content = last_message.content
+                pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -157,15 +151,14 @@ async def test_registry_supervisor_real():
             {"messages": [HumanMessage(content=writing_request)]}
         )
 
-
         # Show response preview
         messages = result3.get("messages", [])
         if messages:
             last_message = messages[-1]
             if isinstance(last_message, AIMessage):
-                content = last_message.content
+                pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -179,29 +172,25 @@ async def test_registry_supervisor_real():
             {"messages": [HumanMessage(content=reuse_request)]}
         )
 
-
         # Show response preview
         messages = result4.get("messages", [])
         if messages:
             last_message = messages[-1]
             if isinstance(last_message, AIMessage):
-                content = last_message.content
+                pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
 
     # Final status
 
-
-    choice_status = supervisor.get_choice_model_status()
-
+    supervisor.get_choice_model_status()
 
 
 async def test_detailed_outputs():
     """Show detailed outputs of supervisor decisions."""
-
     # Check for API key
     if not os.getenv("OPENAI_API_KEY"):
         return
@@ -216,7 +205,6 @@ async def test_detailed_outputs():
     supervisor = RegistrySupervisor(name="detailed_test")
     supervisor.populate_registry(agents[:1])  # Just research agent
 
-
     # Test coding request (no coding agent active)
 
     try:
@@ -228,14 +216,13 @@ async def test_detailed_outputs():
             }
         )
 
-
         # Show actual response
         messages = result.get("messages", [])
         if messages:
-            last_msg = messages[-1]
+            messages[-1]
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

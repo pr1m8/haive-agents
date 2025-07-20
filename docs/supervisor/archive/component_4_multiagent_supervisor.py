@@ -135,7 +135,7 @@ def create_dynamic_supervisor_system() -> MultiAgentBase:
 async def test_multiagent_supervisor():
     """Test the MultiAgentBase supervisor implementation."""
     try:
-        from haive-agents.docs.supervisor.archive.test_utils import create_test_agents
+        from haive.agents.docs.supervisor.archive.test_utils import create_test_agents
     except ImportError:
         from test_utils import create_test_agents
 

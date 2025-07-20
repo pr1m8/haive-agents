@@ -1,5 +1,7 @@
 """Debug our actual SupervisorState."""
 
+import contextlib
+
 from agent_info import AgentInfo
 from supervisor_state import SupervisorState
 
@@ -15,25 +17,20 @@ def test_supervisor_state():
     agent = DummyAgent()
     info = AgentInfo(agent=agent, name="test", description="Test")
 
-
     # Test 1: Empty state
-    try:
+    with contextlib.suppress(Exception):
         SupervisorState()
-    except Exception as e:
-        pass")
 
     # Test 2: With dict
-    try:
-        state2 = SupervisorState(
+    with contextlib.suppress(Exception):
+        SupervisorState(
             agents={"test": {"agent": agent, "name": "test", "description": "Test"}}
         )
-    except Exception as e:
-        pass")
 
     # Test 3: With AgentInfo
     try:
-        state3 = SupervisorState(agents={"test": info})
-    except Exception as e:
+        SupervisorState(agents={"test": info})
+    except Exception:
         import traceback
 
         traceback.print_exc()

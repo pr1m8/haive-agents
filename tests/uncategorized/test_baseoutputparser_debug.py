@@ -26,7 +26,6 @@ simple_prompt = ChatPromptTemplate.from_messages(
 
 def test_basic_case():
     """Test the most basic case."""
-
     try:
         # Create AugLLMConfig
         engine = AugLLMConfig(
@@ -35,18 +34,15 @@ def test_basic_case():
             structured_output_version="v2",
         )
 
-
         # Check for PydanticUndefined
         from pydantic_core import PydanticUndefined
 
-        for field_name, field_info in engine.model_fields.items():
+        for _field_name, field_info in engine.model_fields.items():
             if (
                 hasattr(field_info, "default")
                 and field_info.default is PydanticUndefined
-            ):
-                pass")
-            elif hasattr(field_info, "default"):
-                pass")
+            ) or hasattr(field_info, "default"):
+                pass
 
         # Create agent
         agent = SimpleAgentV2(engine=engine)
@@ -56,18 +52,16 @@ def test_basic_case():
 
         # Check state schema for PydanticUndefined
         if state_schema and hasattr(state_schema, "model_fields"):
-            for field_name, field_info in state_schema.model_fields.items():
+            for _field_name, field_info in state_schema.model_fields.items():
                 if (
                     hasattr(field_info, "default")
                     and field_info.default is PydanticUndefined
-                ):
-                    pass
-                elif hasattr(field_info, "default"):
+                ) or hasattr(field_info, "default"):
                     pass
 
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -76,7 +70,6 @@ def test_basic_case():
 
 def test_run_attempt():
     """Test actually running the agent."""
-
     try:
         engine = AugLLMConfig(
             prompt_template=simple_prompt,
@@ -87,10 +80,10 @@ def test_run_attempt():
         agent = SimpleAgentV2(engine=engine)
 
         # Try to run
-        result = agent.run("What is 2+2?", debug=True)
+        agent.run("What is 2+2?", debug=True)
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -103,4 +96,4 @@ if __name__ == "__main__":
     if basic_ok:
         test_run_attempt()
     else:
-        pass")
+        pass

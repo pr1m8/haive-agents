@@ -55,9 +55,10 @@ class TaskBranch(BaseModel):
         parallel_compatible: Whether this can run in parallel with others
 
     Example:
-        ```python
-        # Finding Wimbledon winner's birthday - first branch
-        winner_branch = TaskBranch(
+        .. code-block:: python
+
+            # Finding Wimbledon winner's birthday - first branch
+            winner_branch = TaskBranch(
             branch_id="find_winner",
             name="Find Recent Wimbledon Winner",
             description="Look up the most recent Wimbledon championship winner",
@@ -67,10 +68,10 @@ class TaskBranch(BaseModel):
             prerequisites=[],
             enables=["find_birthday"],
             resources_needed=["web_search", "sports_database"]
-        )
+            )
 
-        # Cancer research - complex branch
-        research_branch = TaskBranch(
+            # Cancer research - complex branch
+            research_branch = TaskBranch(
             branch_id="mechanism_research",
             name="Research Cancer Mechanisms",
             description="Deep investigation into cellular mechanisms of cancer development",
@@ -79,8 +80,8 @@ class TaskBranch(BaseModel):
             estimated_duration=timedelta(weeks=52),
             prerequisites=["literature_review", "lab_setup"],
             resources_needed=["research_lab", "expert_oncologists", "funding"]
-        )
-        ```
+            )
+
     """
 
     model_config = ConfigDict(
@@ -298,23 +299,24 @@ class TaskDecomposition(BaseModel):
         estimated_duration_optimal: Duration with optimal parallelization
 
     Example:
-        ```python
-        # Simple factual lookup task
-        decomposition = TaskDecomposition.decompose_task(
+        .. code-block:: python
+
+            # Simple factual lookup task
+            decomposition = TaskDecomposition.decompose_task(
             task_description="Find the birthday of the most recent Wimbledon winner",
             complexity_hint="simple_research"
-        )
+            )
 
-        # Complex research task
-        decomposition = TaskDecomposition.decompose_task(
+            # Complex research task
+            decomposition = TaskDecomposition.decompose_task(
             task_description="Develop a cure for cancer",
             complexity_hint="breakthrough_research"
-        )
+            )
 
-        print(f"Branches: {len(decomposition.branches)}")
-        print(f"Critical path: {decomposition.critical_path}")
-        print(f"Parallelizable: {decomposition.parallelization_opportunities}")
-        ```
+            print(f"Branches: {len(decomposition.branches)}")
+            print(f"Critical path: {decomposition.critical_path}")
+            print(f"Parallelizable: {decomposition.parallelization_opportunities}")
+
     """
 
     task_description: str = Field(
@@ -412,7 +414,8 @@ class TaskDecomposition(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_decomposition_consistency(self) -> "TaskDecomposition":
+    @classmethod
+    def validate_decomposition_consistency(cls) -> "TaskDecomposition":
         """Validate that decomposition is internally consistent.
 
         Returns:

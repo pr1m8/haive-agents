@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Debug the difference in state between standalone and multi-agent."""
 
+import contextlib
 import json
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -67,7 +68,6 @@ try:
     # Try JSON serialization (similar to msgpack)
     json_str = json.dumps(state_dict)
 except Exception:
-    pass
 
     # Find problematic field
     if isinstance(state_dict, dict):
@@ -77,7 +77,5 @@ except Exception:
             except:
                 if key == "engines" and isinstance(value, dict):
                     for eng_name, eng_data in value.items():
-                        try:
+                        with contextlib.suppress(Exception):
                             json.dumps({eng_name: eng_data})
-                        except Exception:
-                            pass

@@ -30,22 +30,22 @@ def test_self_discovery_agent():
             ],
             task_description="Improve problem-solving skills",
         )
-        print(f"   ✅ State created successfully")
+        print("   ✅ State created successfully"y")
         print(f"   State.agents: {list(state.agents.keys())}")
         print(f"   State.messages: {len(state.messages)}")
         print(f"   State.task_description: {state.task_description}")
 
         # Check if state has self-discovery specific fields
         if hasattr(state, "reasoning_modules"):
-            print(f"   ✅ Has reasoning_modules field")
+            print("   ✅ Has reasoning_modules field"d")
         if hasattr(state, "selected_modules"):
-            print(f"   ✅ Has selected_modules field")
+            print("   ✅ Has selected_modules field"d")
         if hasattr(state, "adapted_modules"):
-            print(f"   ✅ Has adapted_modules field")
+            print("   ✅ Has adapted_modules field"d")
         if hasattr(state, "reasoning_structure"):
-            print(f"   ✅ Has reasoning_structure field")
+            print("   ✅ Has reasoning_structure field"d")
         if hasattr(state, "final_answer"):
-            print(f"   ✅ Has final_answer field")
+            print("   ✅ Has final_answer field"d")
 
     except Exception as e:
         print(f"   ❌ State creation failed: {e}")
@@ -58,7 +58,7 @@ def test_self_discovery_agent():
     print("\n3. Testing graph construction:")
     try:
         graph = self_discovery.build_graph()
-        print(f"   ✅ Graph built successfully")
+        print("   ✅ Graph built successfully"y")
         print(f"   Graph nodes: {list(graph.nodes.keys())}")
         print(f"   Graph edges: {list(graph.edges)}")
 
@@ -92,7 +92,7 @@ def test_self_discovery_agent():
             "task_description": "Improve problem-solving skills",
         }
         result = self_discovery.invoke(input_data)
-        print(f"   ✅ Self-discovery execution completed")
+        print("   ✅ Self-discovery execution completed"d")
         print(f"   Result type: {type(result)}")
 
         if hasattr(result, "messages"):
@@ -105,13 +105,13 @@ def test_self_discovery_agent():
             )
 
         if hasattr(result, "adapted_modules") and result.adapted_modules:
-            print(f"   ✅ Adapted modules: Present")
+            print("   ✅ Adapted modules: Present"t")
 
         if hasattr(result, "reasoning_structure") and result.reasoning_structure:
-            print(f"   ✅ Reasoning structure: Present")
+            print("   ✅ Reasoning structure: Present"t")
 
         if hasattr(result, "final_answer") and result.final_answer:
-            print(f"   ✅ Final answer: Present")
+            print("   ✅ Final answer: Present"t")
             if hasattr(result.final_answer, "answer"):
                 print(f"   Final answer content: {result.final_answer.answer[:100]}...")
 

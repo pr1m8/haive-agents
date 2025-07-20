@@ -134,4 +134,3 @@ if __name__ == "__main__":
     test_multi_agent_single_agent()
     test_multi_agent_execution_modes()
     test_multi_agent_default_execution_mode()
-    print("✅ All tests passed!")

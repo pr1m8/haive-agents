@@ -1,6 +1,7 @@
 # src/haive/agents/tot/factory.py
 
 from collections.abc import Callable
+from typing import Any
 
 from agents.tot.modular.agent import ToTAgent
 from agents.tot.modular.config import ToTAgentConfig
@@ -205,7 +206,7 @@ def create_game24_tot_agent(
     """
 
     # Define structured output models for Game of 24
-    from pydantic import BaseModel, Field, field_validator
+    from pydantic import BaseModel, Field
 
     class Equation(BaseModel):
         """An equation attempting to reach 24 using the provided numbers."""
@@ -219,7 +220,7 @@ def create_game24_tot_agent(
 
         @field_validatorvalidate_formula
         @classmethod
-        def validate_formula(cls, v):
+        def validate_formula(cls, v) -> Any:
             """Validate the formula has basic math operators."""
             if not any(op in v for op in ["+", "-", "*", "/"]):
                 raise ValueError(
@@ -310,7 +311,7 @@ def create_game24_tot_agent(
                 "floor": math.floor,
                 "ceil": math.ceil,
                 "pi": math.pi,
-                "e": math.e,
+                ": math.e,
             }
             # Add all numeric operators
             safe_dict.update({str(i): i for i in range(10)})

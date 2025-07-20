@@ -22,27 +22,28 @@ class BinaryGrade(Grade):
         grade_type: Always GradeType.BINARY
 
     Example:
-        ```python
-        # Passing grade
-        grade = BinaryGrade(
+        .. code-block:: python
+
+            # Passing grade
+            grade = BinaryGrade(
             value=True,
             justification="Response correctly identifies all key concepts",
             confidence=0.95
-        )
+            )
 
-        # Failing grade
-        grade = BinaryGrade(
+            # Failing grade
+            grade = BinaryGrade(
             value=False,
             justification="Response contains factual errors and misses main points",
             confidence=0.88
-        )
+            )
 
-        # Using string values (automatically converted)
-        grade = BinaryGrade(
+            # Using string values (automatically converted)
+            grade = BinaryGrade(
             value="pass",  # Converted to True
             justification="Meets minimum requirements"
-        )
-        ```
+            )
+
     """
 
     grade_type: GradeType = Field(

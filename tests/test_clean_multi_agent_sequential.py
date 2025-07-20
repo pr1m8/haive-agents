@@ -9,7 +9,6 @@ This test validates:
 
 import asyncio
 import logging
-from typing import List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
@@ -38,7 +37,7 @@ class AnalysisResult(BaseModel):
     """Structured result from analysis."""
 
     topic: str = Field(description="Main topic analyzed")
-    key_points: List[str] = Field(description="Key points discovered")
+    key_points: list[str] = Field(description="Key points discovered")
     confidence_score: float = Field(description="Confidence in analysis (0-1)")
     recommendation: str = Field(description="Final recommendation")
 
@@ -67,7 +66,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"The result of {expression} is {result}"
     except Exception as e:
-        return f"Error calculating {expression}: {str(e)}"
+        return f"Error calculating {expression}: {e!s}"
 
 
 @tool
@@ -86,7 +85,6 @@ def word_counter(text: str) -> str:
 
 async def test_sequential_structured_output():
     """Test ReactAgent → SimpleAgent with structured output."""
-
     console.print(
         "\n[bold blue]Testing Sequential Multi-Agent with Structured Output[/bold blue]\n"
     )
@@ -201,12 +199,12 @@ async def test_sequential_structured_output():
             )
 
         # Show any errors
-        if "error" in result and result["error"]:
+        if result.get("error"):
             console.print(f"\n[red]Error:[/red] {result['error']}")
 
     except Exception as e:
-        console.print(f"\n[bold red]Execution failed with error:[/bold red]")
-        console.print(f"{type(e).__name__}: {str(e)}")
+        console.print("\n[bold red]Execution failed with error:[/bold red]")
+        console.print(f"{type(e).__name__}: {e!s}")
 
         # Print full traceback for debugging
         import traceback
@@ -219,7 +217,6 @@ async def test_sequential_structured_output():
 
 async def test_state_projection_debug():
     """Debug test to verify state projection is working."""
-
     console.print("\n[bold blue]Testing State Projection Debug[/bold blue]\n")
 
     # Create simple agents with minimal functionality

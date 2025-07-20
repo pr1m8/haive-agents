@@ -1,8 +1,9 @@
 # tests/agents/react/test_react_agent.py
 
 
-# rom haive.agents.react.config import ReactAgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
+
+# rom haive.agents.react.config import ReactAgentConfig
 from langchain_core.tools import tool
 
 from haive.agents.react.agent import ReactAgent
@@ -29,5 +30,3 @@ react_agent = ReactAgent(
     ),
 )
 response = react_agent.run("What is 2 + 2?", debug=True)
-print(response)
-#

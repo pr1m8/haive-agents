@@ -8,7 +8,8 @@ to LangGraph's supervisor package but with enhanced Haive-specific functionality
 import asyncio
 import logging
 import time
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 from uuid import uuid4
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -926,12 +927,12 @@ Provide a JSON response with:
 class PerformanceMonitor:
     """Simple performance monitoring for supervisor operations."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.decision_start_time = None
         self.decision_count = 0
         self.total_decision_time = 0.0
 
-    def start_decision(self):
+    def start_decision(self) -> None:
         self.decision_start_time = time.time()
 
     def end_decision(self, target: str):

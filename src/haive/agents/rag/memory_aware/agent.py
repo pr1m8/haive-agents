@@ -1,5 +1,6 @@
 """Memory-Aware RAG Agents.
 
+from typing import Any
 Memory-aware RAG with persistent context and iterative learning.
 Uses structured output models for memory management.
 """
@@ -90,7 +91,7 @@ class MemoryRetrievalAgent(Agent):
 
             for memory in self.memory_store.values():
                 keyword_overlap = len(
-                    query_words.intersection(set(kw.lower() for kw in memory.keywords))
+                    query_words.intersection({kw.lower() for kw in memory.keywords})
                 )
                 if keyword_overlap > 0:
                     score = keyword_overlap / len(query_words)

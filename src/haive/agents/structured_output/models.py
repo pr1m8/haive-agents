@@ -1,6 +1,6 @@
 """Common structured output models for various agent patterns."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -12,9 +12,9 @@ from pydantic import BaseModel, Field
 class Critique(BaseModel):
     """Structured critique of an output."""
 
-    strengths: List[str] = Field(description="List of strengths in the output")
-    weaknesses: List[str] = Field(description="List of weaknesses or issues")
-    suggestions: List[str] = Field(description="Specific suggestions for improvement")
+    strengths: list[str] = Field(description="List of strengths in the output")
+    weaknesses: list[str] = Field(description="List of weaknesses or issues")
+    suggestions: list[str] = Field(description="Specific suggestions for improvement")
     overall_quality: float = Field(
         ge=0.0, le=1.0, description="Overall quality score (0-1)"
     )
@@ -26,7 +26,7 @@ class Improvement(BaseModel):
 
     original_issue: str = Field(description="Description of the issue to improve")
     proposed_solution: str = Field(description="Proposed solution or improvement")
-    implementation_steps: List[str] = Field(
+    implementation_steps: list[str] = Field(
         description="Steps to implement the improvement"
     )
     expected_impact: str = Field(description="Expected impact of the improvement")
@@ -38,8 +38,8 @@ class ReflectionResult(BaseModel):
 
     summary: str = Field(description="Summary of the reflection")
     critique: Critique = Field(description="Detailed critique")
-    improvements: List[Improvement] = Field(description="List of proposed improvements")
-    action_items: List[str] = Field(description="Concrete action items")
+    improvements: list[Improvement] = Field(description="List of proposed improvements")
+    action_items: list[str] = Field(description="Concrete action items")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in the analysis")
 
 
@@ -52,14 +52,14 @@ class ValidationResult(BaseModel):
     """Result of validation check."""
 
     is_valid: bool = Field(description="Whether the output is valid")
-    errors: List[str] = Field(
+    errors: list[str] = Field(
         default_factory=list, description="List of validation errors"
     )
-    warnings: List[str] = Field(
+    warnings: list[str] = Field(
         default_factory=list, description="List of validation warnings"
     )
     score: float = Field(ge=0.0, le=1.0, description="Validation score (0-1)")
-    details: Dict[str, Any] = Field(
+    details: dict[str, Any] = Field(
         default_factory=dict, description="Detailed validation results"
     )
 
@@ -87,12 +87,12 @@ class Analysis(BaseModel):
     """Structured analysis result."""
 
     topic: str = Field(description="Main topic or subject")
-    key_points: List[str] = Field(description="Key points identified")
-    insights: List[str] = Field(description="Key insights discovered")
-    data_points: Dict[str, Any] = Field(
+    key_points: list[str] = Field(description="Key points identified")
+    insights: list[str] = Field(description="Key insights discovered")
+    data_points: dict[str, Any] = Field(
         default_factory=dict, description="Relevant data points"
     )
-    conclusions: List[str] = Field(description="Conclusions drawn")
+    conclusions: list[str] = Field(description="Conclusions drawn")
     confidence_level: str = Field(description="Confidence level: high, medium, low")
 
 
@@ -101,11 +101,11 @@ class Summary(BaseModel):
 
     title: str = Field(description="Title or main topic")
     executive_summary: str = Field(description="Brief executive summary")
-    main_points: List[str] = Field(description="Main points covered")
-    details: Dict[str, str] = Field(
+    main_points: list[str] = Field(description="Main points covered")
+    details: dict[str, str] = Field(
         default_factory=dict, description="Detailed sections"
     )
-    action_items: List[str] = Field(
+    action_items: list[str] = Field(
         default_factory=list, description="Action items if any"
     )
     word_count: int = Field(description="Approximate word count")
@@ -122,11 +122,11 @@ class TaskResult(BaseModel):
     task_id: str = Field(description="Unique task identifier")
     status: str = Field(description="Status: success, failed, partial")
     result: Any = Field(description="Task result")
-    error: Optional[str] = Field(default=None, description="Error message if failed")
-    metadata: Dict[str, Any] = Field(
+    error: str | None = Field(default=None, description="Error message if failed")
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata"
     )
-    duration_ms: Optional[int] = Field(
+    duration_ms: int | None = Field(
         default=None, description="Execution duration in milliseconds"
     )
 
@@ -136,10 +136,10 @@ class Decision(BaseModel):
 
     decision: str = Field(description="The decision made")
     reasoning: str = Field(description="Reasoning behind the decision")
-    alternatives: List[str] = Field(description="Alternatives considered")
+    alternatives: list[str] = Field(description="Alternatives considered")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in decision")
-    risks: List[str] = Field(default_factory=list, description="Potential risks")
-    next_steps: List[str] = Field(description="Recommended next steps")
+    risks: list[str] = Field(default_factory=list, description="Potential risks")
+    next_steps: list[str] = Field(description="Recommended next steps")
 
 
 # ========================================================================
@@ -151,10 +151,10 @@ class SearchQuery(BaseModel):
     """Structured search query."""
 
     query: str = Field(description="Main search query")
-    filters: Dict[str, Any] = Field(default_factory=dict, description="Search filters")
-    sort_by: Optional[str] = Field(default=None, description="Sort field")
+    filters: dict[str, Any] = Field(default_factory=dict, description="Search filters")
+    sort_by: str | None = Field(default=None, description="Sort field")
     limit: int = Field(default=10, ge=1, le=100, description="Number of results")
-    include_fields: List[str] = Field(
+    include_fields: list[str] = Field(
         default_factory=list, description="Fields to include"
     )
 
@@ -164,11 +164,11 @@ class SearchResult(BaseModel):
 
     query: str = Field(description="Original query")
     total_results: int = Field(description="Total number of results")
-    results: List[Dict[str, Any]] = Field(description="List of results")
-    facets: Dict[str, List[str]] = Field(
+    results: list[dict[str, Any]] = Field(description="List of results")
+    facets: dict[str, list[str]] = Field(
         default_factory=dict, description="Faceted search results"
     )
-    next_page_token: Optional[str] = Field(
+    next_page_token: str | None = Field(
         default=None, description="Token for pagination"
     )
 
@@ -182,10 +182,10 @@ class Intent(BaseModel):
     """User intent classification."""
 
     primary_intent: str = Field(description="Primary user intent")
-    secondary_intents: List[str] = Field(
+    secondary_intents: list[str] = Field(
         default_factory=list, description="Secondary intents"
     )
-    entities: Dict[str, Any] = Field(
+    entities: dict[str, Any] = Field(
         default_factory=dict, description="Extracted entities"
     )
     confidence: float = Field(
@@ -200,8 +200,8 @@ class Response(BaseModel):
     content: str = Field(description="Main response content")
     type: str = Field(description="Response type: answer, clarification, suggestion")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in response")
-    sources: List[str] = Field(default_factory=list, description="Sources used")
-    follow_up: Optional[str] = Field(
+    sources: list[str] = Field(default_factory=list, description="Sources used")
+    follow_up: str | None = Field(
         default=None, description="Follow-up question or suggestion"
     )
 
@@ -214,14 +214,14 @@ class Response(BaseModel):
 class ExtractedData(BaseModel):
     """Extracted structured data."""
 
-    entities: Dict[str, List[str]] = Field(
+    entities: dict[str, list[str]] = Field(
         default_factory=dict, description="Extracted entities by type"
     )
-    relationships: List[Dict[str, str]] = Field(
+    relationships: list[dict[str, str]] = Field(
         default_factory=list, description="Relationships between entities"
     )
-    facts: List[str] = Field(default_factory=list, description="Extracted facts")
-    metadata: Dict[str, Any] = Field(
+    facts: list[str] = Field(default_factory=list, description="Extracted facts")
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata"
     )
-    source_text: Optional[str] = Field(default=None, description="Original source text")
+    source_text: str | None = Field(default=None, description="Original source text")

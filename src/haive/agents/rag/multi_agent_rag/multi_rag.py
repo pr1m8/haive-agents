@@ -1,5 +1,6 @@
 """Multi-Agent RAG System Implementation.
 
+from typing import Any
 This module provides complete multi-agent RAG workflows using the multi-agent framework
 with conditional routing, sequential processing, and parallel execution patterns.
 """
@@ -355,7 +356,7 @@ class AdaptiveRAGMultiAgent(ConditionalAgent):
 # ============================================================================
 
 
-def test_agent_compatibility(agent1, agent2) -> dict[str, Any]:
+def test_agent_compatibility(agent1: Any, agent2: Any) -> dict[str, Any]:
     """Test compatibility between two agents using the compatibility module.
 
     This demonstrates using the compatibility module to test if agents

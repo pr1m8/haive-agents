@@ -14,7 +14,7 @@ class IterativeSummarizerInput(BaseModel):
 
     @field_validator("contents", mode="before")
     @classmethod
-    def normalize_contents(cls, value):
+    def normalize_contents(cls, value: str):
         """Ensure all items are string representations."""
         normalized = []
         for item in value:

@@ -1,5 +1,6 @@
 """Corrective RAG (CRAG) Agent V2.
 
+from typing import Any
 Self-correcting retrieval with proper quality assessment.
 Implements architecture from rag-architectures-flows.md:
 Retrieval → Relevance Check → Knowledge Refinement/Web Search/Combine

@@ -10,8 +10,6 @@ from haive.agents.simple import SimpleAgent
 
 async def test_basic_multiagent():
     """Test basic MultiAgent with simple agents."""
-    print("=== Basic MultiAgent Test ===")
-
     # Create simple agents
     agent1 = SimpleAgent(name="agent1", engine=AugLLMConfig(temperature=0.1))
     agent2 = SimpleAgent(name="agent2", engine=AugLLMConfig(temperature=0.1))
@@ -19,20 +17,13 @@ async def test_basic_multiagent():
     # Create MultiAgent
     multi_agent = MultiAgent(agents=[agent1, agent2])
 
-    print(f"Created MultiAgent: {multi_agent.name}")
-    print(f"Agents: {list(multi_agent.agents.keys())}")
-    print(f"Mode: {multi_agent.execution_mode}")
-
     # Test execution
     try:
-        result = await multi_agent.arun("Say hello")
-        print(f"✅ SUCCESS: {type(result)}")
+        await multi_agent.arun("Say hello")
         return True
-    except Exception as e:
-        print(f"❌ ERROR: {e}")
+    except Exception:
         return False
 
 
 if __name__ == "__main__":
     success = asyncio.run(test_basic_multiagent())
-    print(f"Test: {'PASSED' if success else 'FAILED'}")

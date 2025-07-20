@@ -5,22 +5,19 @@ Similar to Perplexity's Deep Research feature that performs dozens of searches
 and reads hundreds of sources.
 """
 
-import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Type
+from typing import Any
 
 # from haive.agents.memory.document_modifiers.kg.kg_iterative_refinement import IterativeGraphTransformer
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import Tool
 
-from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.search.base import BaseSearchAgent, SearchResponse
 from haive.agents.memory.search.deep_research.models import (
     DeepResearchResponse,
     ResearchQuery,
     ResearchSection,
-    ResearchSource,
 )
 
 logger = logging.getLogger(__name__)
@@ -78,10 +75,10 @@ class DeepResearchAgent(BaseSearchAgent):
     def __init__(
         self,
         name: str = "deep_research_agent",
-        engine: Optional[AugLLMConfig] = None,
-        search_tools: Optional[List[Tool]] = None,
+        engine: AugLLMConfig | None = None,
+        search_tools: list[Tool] | None = None,
         enable_kg: bool = False,
-        kg_transformer: Optional[Any] = None,
+        kg_transformer: Any | None = None,
         **kwargs,
     ):
         """Initialize the Deep Research Agent.
@@ -110,7 +107,7 @@ class DeepResearchAgent(BaseSearchAgent):
 
         logger.info(f"Initialized DeepResearchAgent: {name} (KG enabled: {enable_kg})")
 
-    def get_response_model(self) -> Type[SearchResponse]:
+    def get_response_model(self) -> type[SearchResponse]:
         """Get the response model for deep research."""
         return DeepResearchResponse
 
@@ -195,8 +192,8 @@ Remember: Depth, accuracy, and comprehensive analysis are the hallmarks of excel
 Process each research query with systematic thoroughness and analytical rigor."""
 
     def decompose_research_query(
-        self, query: str, focus_areas: List[str] = None
-    ) -> List[str]:
+        self, query: str, focus_areas: list[str] | None = None
+    ) -> list[str]:
         """Decompose a complex research query into specific sub-queries.
 
         Args:
@@ -262,7 +259,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
 
         except Exception as e:
             processing_time = time.time() - start_time
-            logger.error(f"Research query failed: {query} - {e}")
+            logger.exception(f"Research query failed: {query} - {e}")
 
             return ResearchQuery(
                 query=query,
@@ -272,7 +269,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
                 success=False,
             )
 
-    def evaluate_source_credibility(self, source: Dict[str, Any]) -> float:
+    def evaluate_source_credibility(self, source: dict[str, Any]) -> float:
         """Evaluate the credibility of a source.
 
         Args:
@@ -317,8 +314,8 @@ Process each research query with systematic thoroughness and analytical rigor.""
         return min(1.0, credibility_score)
 
     def organize_findings_by_theme(
-        self, findings: List[Dict[str, Any]]
-    ) -> List[ResearchSection]:
+        self, findings: list[dict[str, Any]]
+    ) -> list[ResearchSection]:
         """Organize research findings into thematic sections.
 
         Args:
@@ -380,7 +377,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
 
         return sections
 
-    def generate_executive_summary(self, sections: List[ResearchSection]) -> str:
+    def generate_executive_summary(self, sections: list[ResearchSection]) -> str:
         """Generate an executive summary from research sections.
 
         Args:
@@ -403,7 +400,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
         self,
         query: str,
         research_depth: int = 3,
-        focus_areas: Optional[List[str]] = None,
+        focus_areas: list[str] | None = None,
         max_sources: int = 50,
         include_fact_checking: bool = True,
         save_to_memory: bool = True,
@@ -552,7 +549,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
     async def process_search(
         self,
         query: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
         save_to_memory: bool = True,
     ) -> DeepResearchResponse:
         """Process a search query with default deep research settings.

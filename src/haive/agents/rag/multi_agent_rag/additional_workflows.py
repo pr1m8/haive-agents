@@ -1,5 +1,6 @@
 """Additional RAG Workflows - Extended Multi-Agent RAG Implementations.
 
+from typing import Any
 This module implements additional RAG architectures beyond the simple enhanced workflows,
 including memory-based, multi-query, fusion, and advanced reasoning patterns.
 """
@@ -39,7 +40,7 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
     to provide contextually aware responses.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Memory context agent
         memory_agent = SimpleAgent(
             name="memory_context_agent",
@@ -92,7 +93,7 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         # Simple sequential execution for memory RAG
         return  # Use default graph structure
@@ -103,7 +104,7 @@ class SelfRAGAgent(MultiAgent):
     and reflects on the quality of generated answers.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Retrieval necessity checker
         retrieval_checker = SimpleAgent(
             name="retrieval_checker",
@@ -162,7 +163,7 @@ class SelfRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -172,7 +173,7 @@ class MultiQueryRAGAgent(MultiAgent):
     for each, then synthesizes results.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Query expansion agent
         query_expander = SimpleAgent(
             name="query_expander",
@@ -228,7 +229,7 @@ class MultiQueryRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -238,7 +239,7 @@ class RAGFusionAgent(MultiAgent):
     using reciprocal rank fusion and other techniques.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Multiple strategy retrieval
         fusion_retrieval_agent = SimpleAgent(
             name="fusion_retrieval_agent",
@@ -300,7 +301,7 @@ class RAGFusionAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -310,7 +311,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
     specific retrieval to get better context.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Step-back question generator
         step_back_agent = SimpleAgent(
             name="step_back_agent",
@@ -321,7 +322,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
             - Help establish broader context
             - Lead to foundational knowledge retrieval
 
-            Example: "What is the best treatment for pneumonia?" � 
+            Example: "What is the best treatment for pneumonia?" �
             "What are the principles of treating bacterial infections?"
             """,
             output_schema={
@@ -373,7 +374,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
@@ -383,7 +384,7 @@ class QueryDecompositionRAGAgent(MultiAgent):
     retrieves for each, then composes the final answer.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Query decomposer
         decomposition_agent = SimpleAgent(
             name="decomposition_agent",
@@ -441,6 +442,6 @@ class QueryDecompositionRAGAgent(MultiAgent):
             **kwargs
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure

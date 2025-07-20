@@ -4,7 +4,6 @@
 This shows the dynamic supervisor working with detailed debug output.
 """
 
-import asyncio
 import logging
 
 from haive.agents.experiments.dynamic_supervisor import (
@@ -20,7 +19,6 @@ logging.basicConfig(
 
 def demo_supervisor_with_debug():
     """Simple demonstration of supervisor with debug=True."""
-
     # Create supervisor with debug enabled
     registry = create_test_registry()
     supervisor = DynamicSupervisorAgent(
@@ -29,13 +27,14 @@ def demo_supervisor_with_debug():
         debug=True,  # This enables debug mode
     )
 
-
     # Show initial tools
-    for i, tool in enumerate(supervisor.tools, 1):
+    for _i, _tool in enumerate(supervisor.tools, 1):
+        pass
 
     # Show agent registry
     agents = supervisor.agent_registry.list_agents()
-    for name, info in agents.items():
+    for _name, _info in agents.items():
+        pass
 
     # Demonstrate dynamic tool addition
     from haive.agents.simple.agent import SimpleAgent
@@ -50,19 +49,16 @@ def demo_supervisor_with_debug():
         },
     )
 
-
     # Show new tools
     handoff_tools = [t for t in supervisor.tools if t.name.startswith("handoff_to_")]
-    for tool in handoff_tools:
-        pass")
+    for _tool in handoff_tools:
+        pass
 
     # Test list_agents tool
     list_tool = next(t for t in supervisor.tools if t.name == "list_agents")
-    result = list_tool.invoke({})
+    list_tool.invoke({})
 
     # Show state schema
-    state_schema = supervisor.state_schema
-
 
     return supervisor
 
@@ -83,5 +79,5 @@ if __name__ == "__main__":
         "state_fields": list(supervisor.state_schema.model_fields.keys()),
     }
 
-    for key, value in details.items():
+    for _key, _value in details.items():
         pass

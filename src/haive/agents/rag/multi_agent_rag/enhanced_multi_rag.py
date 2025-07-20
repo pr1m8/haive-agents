@@ -4,6 +4,7 @@ This module demonstrates RAG systems using the compatibility-enhanced multi-agen
 providing automatic compatibility checking and adaptation.
 """
 
+import contextlib
 from typing import Any
 
 from haive.core.fixtures.documents import conversation_documents
@@ -212,7 +213,6 @@ class SmartRAGFactory:
         Returns:
             Optimally configured RAG system with compatibility checking
         """
-
         # Analyze agent types
         retrieval_agents = [a for a in agents if isinstance(a, SimpleRAGAgent)]
         grading_agents = [a for a in agents if isinstance(a, DocumentGradingAgent)]
@@ -262,10 +262,8 @@ class SmartRAGFactory:
         ]
 
         for agent in remaining_agents:
-            try:
+            with contextlib.suppress(Exception):
                 system.add_agent(agent)
-            except Exception:
-                pass
 
         # Generate compatibility report
         system.get_compatibility_report(detailed=True)
@@ -284,7 +282,6 @@ class SmartRAGFactory:
         This method creates a RAG system that is guaranteed to be compatible
         or will fail with clear error messages.
         """
-
         try:
             # Create agents
             retrieval_agent = SimpleRAGAgent.from_documents(
@@ -332,9 +329,8 @@ class SmartRAGFactory:
 # ============================================================================
 
 
-def demonstrate_enhanced_rag_compatibility():
+def demonstrate_enhanced_rag_compatibility() -> None:
     """Demonstrate the enhanced RAG system with built-in compatibility checking."""
-
     # Example 1: Sequential RAG with automatic compatibility checking
 
     sequential_rag = EnhancedRAGSequentialAgent(
@@ -348,10 +344,8 @@ def demonstrate_enhanced_rag_compatibility():
     # Create a potentially incompatible agent
     custom_agent = SimpleRAGAgent(name="Custom Agent")
 
-    try:
+    with contextlib.suppress(Exception):
         sequential_rag.add_agent(custom_agent)
-    except Exception:
-        pass
 
     # Example 3: Smart factory creation
 
@@ -367,15 +361,12 @@ def demonstrate_enhanced_rag_compatibility():
 
     # Example 4: Safe RAG system
 
-    try:
+    with contextlib.suppress(Exception):
         SmartRAGFactory.create_safe_rag_system(
             include_grading=True,
             use_iterative_grading=True,
             compatibility_mode=CompatibilityMode.STRICT,
         )
-
-    except Exception:
-        pass
 
 
 # ============================================================================

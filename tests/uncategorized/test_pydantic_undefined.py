@@ -1,8 +1,4 @@
-"""
-Test for PydanticUndefined issues in SchemaComposer and AugLLMConfig integration.
-"""
-
-from typing import List, Optional
+"""Test for PydanticUndefined issues in SchemaComposer and AugLLMConfig integration."""
 
 import pytest
 from haive.core.engine.aug_llm.config import AugLLMConfig
@@ -22,7 +18,7 @@ class QueryRefinementResponse(BaseModel):
     original_intent: str = Field(
         description="The original user intent extracted from the query"
     )
-    key_concepts: List[str] = Field(
+    key_concepts: list[str] = Field(
         description="Key concepts and entities identified in the query",
         default_factory=list,
     )
@@ -39,7 +35,7 @@ class QueryRefinementResponse(BaseModel):
     requires_clarification: bool = Field(
         description="Whether the query needs user clarification", default=False
     )
-    clarification_questions: Optional[List[str]] = Field(
+    clarification_questions: list[str] | None = Field(
         description="Questions to ask if clarification is needed", default=None
     )
 
@@ -49,7 +45,7 @@ RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
         (
             "system",
             """You are an expert query refinement assistant for a RAG (Retrieval-Augmented Generation) system.
-    
+
 Your task is to analyze user queries and refine them for optimal document retrieval. Consider:
 1. Extract the core intent and information need
 2. Identify key concepts, entities, and relationships
@@ -108,7 +104,6 @@ class TestPydanticUndefinedFixes:
         # Verify base class hierarchy - should prioritize LLMState
         mro = schema.__mro__
         base_classes = [cls.__name__ for cls in mro]
-        print(f"MRO: {base_classes}")
 
         assert "LLMState" in base_classes, "Schema should inherit from LLMState"
         assert "ToolState" in base_classes, "Schema should inherit from ToolState"
@@ -231,12 +226,11 @@ class TestPydanticUndefinedFixes:
         instance = schema()
 
         # Check that no field values are PydanticUndefined
-        for field_name in schema.__fields__.keys():
+        for field_name in schema.__fields__:
             value = getattr(instance, field_name)
             assert (
                 value is not ...
             ), f"Field {field_name} has PydanticUndefined value: {value}"
-            print(f"Field {field_name}: {value} (type: {type(value)})")
 
 
 if __name__ == "__main__":

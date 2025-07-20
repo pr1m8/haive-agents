@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from langgraph.graph import END, START
@@ -52,7 +53,7 @@ class FilteredRAGAgent(Agent[FilteredRAGConfig]):
             raise
 
     @property
-    def retriever(self):
+    def retriever(self) -> Any:
         """Lazy-loaded retriever property."""
         return self._retriever
 

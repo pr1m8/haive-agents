@@ -2,7 +2,6 @@
 
 import asyncio
 import sys
-from typing import Any, Dict
 
 # Add paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -95,7 +94,7 @@ async def debug_execution():
     # Build the graph
     print("\n📌 BREAKPOINT 5: Building the graph")
     graph = multi_agent.graph
-    print(f"✅ Graph built")
+    print("✅ Graph built"t")
     print(f"   - Nodes: {list(graph.nodes.keys())}")
 
     # Check graph structure
@@ -149,13 +148,13 @@ async def debug_execution():
 
         # Check agent outputs if available
         if isinstance(result, dict) and "agent_outputs" in result:
-            print(f"\n🤖 Agent outputs:")
+            print("\n🤖 Agent outputs:"s:")
             for agent_name, output in result["agent_outputs"].items():
                 print(f"   - {agent_name}: {type(output).__name__}")
 
         # Check agent states if available
         if isinstance(result, dict) and "agent_states" in result:
-            print(f"\n📊 Agent states:")
+            print("\n📊 Agent states:"s:")
             for agent_name, state in result["agent_states"].items():
                 print(f"   - {agent_name}: {len(state)} fields")
 
@@ -178,7 +177,7 @@ async def debug_execution():
             )
 
             if hasattr(state, "agent_outputs"):
-                print(f"\n   - Agent outputs:")
+                print("\n   - Agent outputs:")
                 for name, output in state.agent_outputs.items():
                     print(f"     • {name}: {type(output).__name__}")
 

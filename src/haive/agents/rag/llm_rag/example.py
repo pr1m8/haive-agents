@@ -1,5 +1,6 @@
 """Example usage of the LLM RAG Agent.
 
+from typing import Any
 This script demonstrates how to:
 1. Create and configure an LLM RAG agent
 2. Run queries and access the results
@@ -53,7 +54,7 @@ SAMPLE_DOCUMENTS = [
 ]
 
 
-def create_llm_rag_agent(use_relevance_checker=True, return_documents=3):
+def create_llm_rag_agent(use_relevance_checker=True, return_documents=3) -> Any:
     """Creates and configures an LLM RAG agent.
 
     Args:
@@ -137,7 +138,7 @@ Only answer 'Yes' if the documents contain information that directly helps answe
     return agent
 
 
-def run_example_queries(agent):
+def run_example_queries(agent: Any):
     """Run a set of example queries against the agent.
 
     Args:
@@ -182,7 +183,7 @@ def run_example_queries(agent):
     return results
 
 
-def compare_agent_configurations():
+def compare_agent_configurations() -> None:
     """Compare different agent configurations side by side."""
     logger.info("\n\n=== Comparing Agent Configurations ===\n")
 
@@ -217,7 +218,7 @@ def compare_agent_configurations():
     logger.info("\n=== Comparison Complete ===")
 
 
-def main():
+def main() -> None:
     """Main function to run the example."""
     logger.info("=== LLM RAG Agent Example ===\n")
 

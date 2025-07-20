@@ -72,7 +72,7 @@ class SafeCompatibilityTester:
     without risking damage to existing systems.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.analyzer = TypeAnalyzer()
         self.converter_registry = ConverterRegistry()
         self._test_cache = {}
@@ -545,7 +545,7 @@ class SafeCompatibilityTester:
         """Basic schema compatibility check without CompatibilityChecker."""
 
         class BasicResult:
-            def __init__(self):
+            def __init__(self) -> None:
                 self.is_compatible = True
                 self.missing_required_fields = []
                 self.issues = []

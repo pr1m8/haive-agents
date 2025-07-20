@@ -115,7 +115,7 @@ class TreeNode(BaseModel):
         return 1 + max(child.height for child in self.children)
 
     @field_serializer("children", mode="wrap")
-    def serialize_children(self, children, handler):
+    def serialize_children(self, children, handler) -> Any:
         try:
             return handler(children)
         except ValueError as exc:

@@ -1,7 +1,5 @@
 """State schema for Reflection Agent."""
 
-from typing import List, Optional
-
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from pydantic import Field
 
@@ -14,11 +12,11 @@ class ReflectionState(MultiAgentState):
     input: str = Field(..., description="The original content to reflect on")
     current_content: str = Field(..., description="Current version of the content")
 
-    critique: Optional[Critique] = Field(
+    critique: Critique | None = Field(
         default=None, description="Current critique of the content"
     )
 
-    improvements: List[Improvement] = Field(
+    improvements: list[Improvement] = Field(
         default_factory=list, description="List of improvements made"
     )
 
@@ -30,7 +28,7 @@ class ReflectionState(MultiAgentState):
         default=0.8, description="Quality threshold to stop iterating"
     )
 
-    final_content: Optional[str] = Field(
+    final_content: str | None = Field(
         default=None, description="Final improved content"
     )
 

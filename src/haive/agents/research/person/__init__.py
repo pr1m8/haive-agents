@@ -1,28 +1,26 @@
-"""Person - TODO: Add brief description.
+"""Module exports."""
 
-TODO: Add detailed description of module functionality
-
-
-
-Example:
-    Basic usage::
-
-        from haive.person import module_function
-
-        # TODO: Add example
-
-
-"""
-
-# src/haive/agents/person_research/__init__.py
-
-from haive.agents.research.person.agent import PersonResearchAgent
-from haive.agents.research.person.config import PersonResearchAgentConfig
-from haive.agents.research.person.state import (
+from person.agent import (
+    PersonResearchAgent,
+    gather_notes_extract_schema,
+    generate_queries,
+    reflection,
+    route_from_reflection,
+    setup_workflow,
+)
+from person.config import PersonResearchAgentConfig
+from person.models import Queries, ReflectionOutput
+from person.state import (
     Person,
+    PersonResearchAgentConfig,
     PersonResearchInputState,
     PersonResearchOutputState,
     PersonResearchState,
+)
+from person.utils import (
+    deduplicate_and_format_sources,
+    format_all_notes,
+    get_config_from_runnable_config,
 )
 
 __all__ = [
@@ -32,4 +30,14 @@ __all__ = [
     "PersonResearchInputState",
     "PersonResearchOutputState",
     "PersonResearchState",
+    "Queries",
+    "ReflectionOutput",
+    "deduplicate_and_format_sources",
+    "format_all_notes",
+    "gather_notes_extract_schema",
+    "generate_queries",
+    "get_config_from_runnable_config",
+    "reflection",
+    "route_from_reflection",
+    "setup_workflow",
 ]

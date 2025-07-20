@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Any
 
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph import DynamicGraph
@@ -45,7 +46,7 @@ class DynamicRAGAgent(BaseRAGAgent):
         else:
             self.merger = None
 
-    def route_query(self, state):
+    def route_query(self, state: dict[str, Any]):
         """Route the query to appropriate data sources."""
         query = state.query
 
@@ -122,7 +123,7 @@ class DynamicRAGAgent(BaseRAGAgent):
             # Or use all sources as last resort
             return {"selected_sources": list(self.retrievers.keys())}
 
-    def retrieve_from_sources(self, state):
+    def retrieve_from_sources(self, state: dict[str, Any]):
         """Retrieve documents from selected sources."""
         query = state.query
         selected_sources = state.selected_sources
@@ -134,7 +135,7 @@ class DynamicRAGAgent(BaseRAGAgent):
             # Implement parallel retrieval with concurrent.futures or asyncio
             import concurrent.futures
 
-            def retrieve_from_source(source_name):
+            def retrieve_from_source(source_name) -> Any:
                 try:
                     retriever = self.retrievers.get(source_name)
                     if retriever:
@@ -190,7 +191,7 @@ class DynamicRAGAgent(BaseRAGAgent):
 
         return {"source_documents": source_documents, "source_metrics": source_metrics}
 
-    def merge_results(self, state):
+    def merge_results(self, state: dict[str, Any]):
         """Merge results from multiple sources."""
         source_documents = state.source_documents
 
@@ -258,7 +259,7 @@ class DynamicRAGAgent(BaseRAGAgent):
             # Fall back to all documents
             return {"retrieved_documents": all_docs}
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         """Set up the Dynamic RAG workflow."""
         gb = DynamicGraph(state_schema=self.state_schema)
 

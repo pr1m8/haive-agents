@@ -5,7 +5,6 @@ This script validates the test structure and provides information about
 what would be tested without actually running the tests.
 """
 
-import inspect
 import sys
 from pathlib import Path
 
@@ -16,7 +15,6 @@ sys.path.insert(0, str(project_root / "packages" / "haive-agents" / "src"))
 
 def analyze_test_structure():
     """Analyze the test structure and report findings."""
-
     try:
         # Import test classes
         from test_p_and_e_multi_agent import (
@@ -42,14 +40,13 @@ def analyze_test_structure():
             for method in test_methods:
                 method_obj = getattr(test_class, method)
                 if hasattr(method_obj, "__doc__") and method_obj.__doc__:
-                    pass")
+                    pass
                 else:
-                    pass")
+                    pass
 
-
-    except ImportError as e:
+    except ImportError:
         return False
-    except Exception as e:
+    except Exception:
         return False
 
     return True
@@ -57,7 +54,6 @@ def analyze_test_structure():
 
 def validate_convenience_functions():
     """Validate the convenience functions."""
-
     try:
         # Test function signature
         import inspect
@@ -67,13 +63,13 @@ def validate_convenience_functions():
         from haive.agents.multi.enhanced_base import create_plan_execute_multi_agent
         from haive.agents.simple.agent import SimpleAgent
 
-        sig = inspect.signature(create_plan_execute_multi_agent)
+        inspect.signature(create_plan_execute_multi_agent)
 
         # Test with mock agents
 
-    except ImportError as e:
+    except ImportError:
         return False
-    except Exception as e:
+    except Exception:
         return False
 
     return True
@@ -81,7 +77,6 @@ def validate_convenience_functions():
 
 def check_dependencies():
     """Check that all required dependencies are available."""
-
     required_modules = [
         "haive.agents.multi.enhanced_base",
         "haive.agents.simple.agent",
@@ -99,18 +94,14 @@ def check_dependencies():
     for module in required_modules:
         try:
             __import__(module)
-        except ImportError as e:
+        except ImportError:
             missing_modules.append(module)
 
-    if missing_modules:
-        return False
-    print(f"\nAll {len(required_modules)} dependencies available")
-    return True
+    return not missing_modules
 
 
 def main():
     """Main test analysis function."""
-
     success = True
 
     # Check dependencies
@@ -126,6 +117,7 @@ def main():
         success = False
 
     if success:
+        pass
     else:
         return 1
 

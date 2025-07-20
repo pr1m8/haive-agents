@@ -6,7 +6,6 @@ from haive.agents.conversation.collaberative.agent import CollaborativeConversat
 
 def test_fixed_streaming():
     """Test streaming after the fix."""
-
     agent = CollaborativeConversation.create_brainstorming_session(
         topic="Test fixed streaming", participants=["Alice"], max_rounds=1
     )
@@ -31,7 +30,7 @@ def test_fixed_streaming():
                         if key == "messages":
                             if chunk[key]:
                                 last_msg = chunk[key][-1]
-                                preview = (
+                                (
                                     str(last_msg)[:100] + "..."
                                     if len(str(last_msg)) > 100
                                     else str(last_msg)
@@ -51,7 +50,7 @@ def test_fixed_streaming():
             if i >= 3:  # Show first few chunks
                 break
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -63,9 +62,8 @@ def test_fixed_streaming():
 
             if i >= 2:
                 break
-    except Exception as e:
-        pass")
-
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

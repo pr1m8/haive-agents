@@ -1,7 +1,6 @@
 """Debug the self-discover agent to see state projection issues."""
 
 import asyncio
-import os
 import sys
 
 # Add direct paths to avoid import issues
@@ -28,14 +27,12 @@ original_project_state = AgentNodeV3._project_state_for_agent
 
 def debug_project_state(self, state, agent):
     """Debug version of _project_state_for_agent."""
-
     # Check what's in the state
     if hasattr(state, "agent_outputs"):
         pass
 
     # Get the projected state
     projected = original_project_state(self, state, agent)
-
 
     # Check if this agent's required inputs are available
     agent_name = self.agent_name
@@ -52,9 +49,9 @@ def debug_project_state(self, state, agent):
 
     missing = [key for key in required if key not in projected]
     if missing:
-        pass")
+        pass
     else:
-        pass")
+        pass
 
     return projected
 
@@ -65,7 +62,6 @@ AgentNodeV3._project_state_for_agent = debug_project_state
 
 async def test_self_discover_debug():
     """Test self-discover agent with debug."""
-
     # Simple test problem
     test_problem = "How do I solve 25 * 36?"
 
@@ -75,20 +71,16 @@ async def test_self_discover_debug():
         "task_description": test_problem,  # Add task_description
     }
 
-
     try:
         result = await self_discovery.ainvoke(test_input, config={"debug": True})
 
-
-        if isinstance(result, dict):
-
-            if "agent_outputs" in result:
-                for agent_name, output in result["agent_outputs"].items():
-                    pass
+        if isinstance(result, dict) and "agent_outputs" in result:
+            for _agent_name, _output in result["agent_outputs"].items():
+                pass
 
         return result
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

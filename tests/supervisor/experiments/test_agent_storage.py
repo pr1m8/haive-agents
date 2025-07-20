@@ -68,7 +68,7 @@ async def test_agent_storage():
             state, {"configurable": {"thread_id": "test1"}}
         )
     except Exception as e:
-        pass")
+        pass
 
     # Test with PostgreSQL (might fail)
     try:
@@ -98,7 +98,7 @@ async def test_agent_storage():
         # Check what's in the agents field
         for i, agent_data in enumerate(state_dict.get("agents", [])):
     except Exception as e:
-        pass")
+        pass
 
 
 if __name__ == "__main__":

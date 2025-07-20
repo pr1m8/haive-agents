@@ -91,7 +91,7 @@ def conduct_research(
     return metadata
 
 
-def main():
+def main() -> None:
     """Run batch research on multiple topics."""
     logger.info("Initializing batch research process...")
 

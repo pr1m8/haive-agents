@@ -48,7 +48,6 @@ def test_supabase_direct_postgres_from_env():
     if not connection_string:
         pytest.skip("POSTGRES_CONNECTION_STRING not set in environment")
 
-
     # Create PostgreSQL config using connection string from env
     postgres_config = PostgresCheckpointerConfig(connection_string=connection_string)
 
@@ -66,13 +65,12 @@ def test_supabase_direct_postgres_from_env():
     assert agent.persistence == postgres_config
     assert agent.runnable_config["configurable"]["recursion_limit"] == 100
 
-
     # Test basic functionality
     try:
         result = agent.run({"messages": ["Hello"]})
         assert "messages" in result
         assert len(result["messages"]) > 0
-    except Exception as e:
+    except Exception:
         pass
 
 
@@ -86,7 +84,6 @@ def test_supabase_rest_api_from_env():
         pytest.skip(
             "SUPABASE_URL and SUPABASE_SERVICE_KEY/ANON_KEY not set in environment"
         )
-
 
     # Create Supabase config - it will use env vars automatically
     supabase_config = SupabaseCheckpointerConfig(
@@ -108,13 +105,12 @@ def test_supabase_rest_api_from_env():
     assert agent.persistence.user_id == "test-user"
     assert agent.runnable_config["configurable"]["recursion_limit"] == 100
 
-
     # Test basic functionality
     try:
         result = agent.run({"messages": ["Hello from Supabase"]})
         assert "messages" in result
         assert len(result["messages"]) > 0
-    except Exception as e:
+    except Exception:
         pass
 
 
@@ -142,10 +138,8 @@ def test_parse_supabase_connection_string():
         )
 
 
-
 def test_env_variables_loaded():
     """Test that environment variables are properly loaded."""
-
     # Check PostgreSQL connection
     if os.getenv("POSTGRES_CONNECTION_STRING"):
         # Don't print the actual value for security
@@ -153,27 +147,25 @@ def test_env_variables_loaded():
         if "zkssazqhwcetsnbiuqik.supabase.co" in conn_str:
             pass
     else:
-        pass")
+        pass
 
     # Check Supabase REST API credentials
     if os.getenv("SUPABASE_URL"):
-        pass")
+        pass
     else:
-        pass")
+        pass
 
-    if os.getenv("SUPABASE_SERVICE_KEY"):
-        pass")
-    elif os.getenv("SUPABASE_ANON_KEY"):
-        pass")
+    if os.getenv("SUPABASE_SERVICE_KEY") or os.getenv("SUPABASE_ANON_KEY"):
+        pass
     else:
-        pass")
+        pass
 
     if os.getenv("POSTGRES_CONNECTION_STRING"):
-        pass")
+        pass
     if os.getenv("SUPABASE_URL") and (
         os.getenv("SUPABASE_SERVICE_KEY") or os.getenv("SUPABASE_ANON_KEY")
     ):
-        pass")
+        pass
 
 
 if __name__ == "__main__":

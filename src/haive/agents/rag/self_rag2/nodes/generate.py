@@ -1,4 +1,7 @@
-def generate(state):
+from typing import Any
+
+
+def generate(state: dict[str, Any]):
     """Generate answer.
 
     Args:

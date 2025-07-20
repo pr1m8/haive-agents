@@ -1,5 +1,6 @@
 """Example usage of SQL RAG Agent.
 
+from typing import Union
 This module demonstrates various usage patterns for the SQL RAG Agent,
 from basic queries to advanced configurations. It includes examples for
 different database types, error handling, and customization options.
@@ -33,6 +34,7 @@ Note:
 """
 
 import argparse
+import contextlib
 import json
 import logging
 import sys
@@ -240,10 +242,8 @@ def error_handling_example() -> None:
     ]
 
     for _i, question in enumerate(test_queries, 1):
-        try:
+        with contextlib.suppress(Exception):
             agent.run({"question": question})
-        except Exception:
-            pass
 
 
 def custom_llm_example() -> dict[str, Any]:
@@ -346,7 +346,7 @@ def batch_processing_example() -> list[dict[str, Any]]:
     return results
 
 
-def interactive_mode():
+def interactive_mode() -> None:
     """Run the agent in interactive mode.
 
     This function starts an interactive session where users can
@@ -402,7 +402,7 @@ def interactive_mode():
             pass
 
 
-def main():
+def main() -> Union[int, float]:
     """Main function to run examples.
 
     This function provides a command-line interface for running

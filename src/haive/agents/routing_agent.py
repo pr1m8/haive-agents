@@ -3,6 +3,9 @@
 import logging
 from collections.abc import Callable
 
+# Set up logging
+from typing import Any
+
 from agents.simple.agent import SimpleAgent, SimpleAgentConfig, SimpleAgentSchema
 from haive.core.engine.agent.agent import register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -10,7 +13,6 @@ from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langgraph.graph import END
 from pydantic import BaseModel, Field
 
-# Set up logging
 logger = logging.getLogger(__name__)
 
 
@@ -79,7 +81,7 @@ class RoutingAgent(SimpleAgent):
             default_dest = self.config.default_routes.get(source, END)
 
             # Create router function
-            def route_function(state):
+            def route_function(state: dict[str, Any]):
                 # Track the node we're in
                 if hasattr(state, "current_node"):
                     state.current_node = source
@@ -191,7 +193,7 @@ if __name__ == "__main__":
     }
 
     # Routing conditions
-    def route_to_question_handler(state):
+    def route_to_question_handler(state: dict[str, Any]):
         # Check if input is a question
         message = state["messages"][-1].content
         return (
@@ -200,7 +202,7 @@ if __name__ == "__main__":
             or message.lower().startswith("how")
         )
 
-    def route_to_task_handler(state):
+    def route_to_task_handler(state: dict[str, Any]):
         # Check if input is a task
         message = state["messages"][-1].content
         task_phrases = ["can you", "please", "help me", "i need"]

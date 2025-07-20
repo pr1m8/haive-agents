@@ -1,7 +1,7 @@
 """Test Pydantic models in LangGraph state."""
 
 import asyncio
-from typing import List
+import contextlib
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, START, StateGraph
@@ -35,7 +35,6 @@ class TestState(BaseModel):
 
 def test_node(state: TestState):
     """Test node that works with Pydantic state."""
-
     # Add a message
     new_messages = [*state.messages, AIMessage(content="Test response")]
 
@@ -53,7 +52,6 @@ def test_node(state: TestState):
 
 async def test_pydantic_state():
     """Test Pydantic models in LangGraph state."""
-
     # Build graph
     graph = StateGraph(TestState)
     graph.add_node("test", test_node)
@@ -66,20 +64,18 @@ async def test_pydantic_state():
     import psycopg
     from langgraph.checkpoint.memory import MemorySaver
     from langgraph.checkpoint.postgres import PostgresSaver
-    from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 
     # In-memory checkpointer (should work)
     graph.compile(checkpointer=MemorySaver())
 
     # PostgreSQL checkpointer (might fail)
-    postgres_app = None
     try:
         # Get connection string from environment
         db_url = os.environ.get("DATABASE_URL", "postgresql://localhost:5432/haive")
         with psycopg.connect(db_url) as conn:
             checkpointer = PostgresSaver(conn)
             graph.compile(checkpointer=checkpointer)
-    except Exception as e:
+    except Exception:
         pass
 
     # Test 1: With Pydantic model instances (should work)
@@ -88,10 +84,8 @@ async def test_pydantic_state():
         nested_model=NestedModel(value="initial", count=5),
     )
 
-    try:
-        result = await app.ainvoke(initial_state)
-    except Exception as e:
-        pass")
+    with contextlib.suppress(Exception):
+        await app.ainvoke(initial_state)
 
     # Test 2: With model type field (this is the problem)
     state_with_type = TestState(
@@ -99,10 +93,8 @@ async def test_pydantic_state():
         model_type=NestedModel,  # Storing the CLASS not an instance
     )
 
-    try:
-        result = await app.ainvoke(state_with_type)
-    except Exception as e:
-        pass
+    with contextlib.suppress(Exception):
+        await app.ainvoke(state_with_type)
 
 
 if __name__ == "__main__":

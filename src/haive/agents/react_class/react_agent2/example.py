@@ -177,6 +177,9 @@ Use internal tools (search_db, analyze_data, execute_action) for company-specifi
 Use external tools (search_web) for general information or market research.
 Always explain your reasoning before using a tool.
 """
+"""
+"""
+"""
 
     # Create a React agent with custom tool routing
     agent = create_react_agent(

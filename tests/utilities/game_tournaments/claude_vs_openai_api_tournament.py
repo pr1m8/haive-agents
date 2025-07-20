@@ -6,9 +6,7 @@ Uses the existing working API system to run all games.
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
-
-import requests
+from typing import Any
 
 # Tournament results directory
 TOURNAMENT_DIR = Path("claude_vs_openai_api_results")
@@ -50,17 +48,16 @@ def test_general_api():
         app = FastAPI()
         api = GeneralGameAPI(app)
 
-
         working_games = []
         for game_name, game_info in api.discovered_games.items():
             if game_info.get("config_class"):
                 working_games.append(game_name)
             else:
-                pass")
+                pass
 
         return working_games, api
 
-    except Exception as e:
+    except Exception:
         return [], None
 
 
@@ -99,7 +96,6 @@ def run_api_game(game_name: str, api):
                 initial_state = state_class.initialize()
             else:
                 initial_state = state_class()
-
 
             # Run with limited recursion
             config.runnable_config = {"configurable": {"recursion_limit": 15}}
@@ -142,13 +138,12 @@ def run_api_game(game_name: str, api):
 
             return save_api_result(game_name, error_result)
 
-    except Exception as e:
+    except Exception:
         return "Failed"
 
 
 def main():
     """Run the API-based tournament."""
-
     # Discover games
     working_games, api = test_general_api()
 
@@ -167,7 +162,6 @@ def main():
 
     tournament_results = {}
 
-
     for game_name in priority_games:
         if game_name in working_games:
             winner = run_api_game(game_name, api)
@@ -177,25 +171,20 @@ def main():
 
     # Summary
 
-    for game, result in tournament_results.items():
-        status_icon = (
-            "✅"
-            if result not in ["Failed", "Not Available", "No Config", "No Agent"]
-            else "❌"
-        )
+    for _game, _result in tournament_results.items():
+        pass
 
-    successful = len(
+    len(
         [
             r
             for r in tournament_results.values()
             if r not in ["Failed", "Not Available", "No Config", "No Agent"]
         ]
     )
-    total = len(tournament_results)
-
+    len(tournament_results)
 
     # Show individual game files
-    for file in sorted(TOURNAMENT_DIR.glob("*.json")):
+    for _file in sorted(TOURNAMENT_DIR.glob("*.json")):
         pass
 
 

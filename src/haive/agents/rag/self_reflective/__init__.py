@@ -1,12 +1,39 @@
-"""Self-Reflective Agentic RAG.
+"""Module exports."""
 
-RAG with self-reflection, critique, and iterative improvement capabilities.
-Implements reflection loops for answer quality enhancement.
-"""
-
-from haive.agents.rag.self_reflective.agent import (
+from self_reflective.agent import (
+    ImprovedAnswer,
+    ReflectionCritique,
+    ReflectionPlan,
+    ReflectionType,
     SelfReflectiveRAGAgent,
+    SelfReflectiveResult,
+    build_graph,
     create_self_reflective_rag_agent,
+    from_documents,
+    generate_initial_answer,
+    get_self_reflective_rag_io_schema,
+    improve_answer,
+    reflect_and_critique,
+    setup_agent,
+    should_continue_improving,
+    synthesize_result,
 )
 
-__all__ = ["SelfReflectiveRAGAgent", "create_self_reflective_rag_agent"]
+__all__ = [
+    "ImprovedAnswer",
+    "ReflectionCritique",
+    "ReflectionPlan",
+    "ReflectionType",
+    "SelfReflectiveRAGAgent",
+    "SelfReflectiveResult",
+    "build_graph",
+    "create_self_reflective_rag_agent",
+    "from_documents",
+    "generate_initial_answer",
+    "get_self_reflective_rag_io_schema",
+    "improve_answer",
+    "reflect_and_critique",
+    "setup_agent",
+    "should_continue_improving",
+    "synthesize_result",
+]

@@ -1,5 +1,6 @@
 """Simple RAG Agent.
 
+from typing import Any
 Uses clean MultiAgent with sequential execution to compose BaseRAG with answer generation.
 """
 
@@ -14,7 +15,7 @@ from haive.agents.simple.agent import SimpleAgent
 
 
 class SimpleRAGAgent(MultiAgent):
-    """Simple RAG workflow: Retrieval → Answer Generation"""
+    """Simple RAG workflow: Retrieval → Answer Generation."""
 
     @classmethod
     def from_documents(

@@ -7,7 +7,6 @@ import sys
 sys.path.insert(0, "packages/haive-agents/src")
 sys.path.insert(0, "packages/haive-core/src")
 
-from langchain_core.documents import Document
 
 from haive.agents.rag.agentic.document_grader import DocumentGraderAgent
 
@@ -52,7 +51,7 @@ async def test_document_grader_simple():
                     f"  - {decision.document_id}: {decision.decision} (confidence: {decision.confidence})"
                 )
         else:
-            print(f"❌ No document_decisions found in result")
+            print("❌ No document_decisions found in result"t")
             print(
                 f"Result keys: {list(result.keys()) if hasattr(result, 'keys') else 'No keys'}"
             )
@@ -84,7 +83,7 @@ async def test_document_grader_simple():
             if hasattr(structured, "document_decisions"):
                 print(f"✅ Found decisions: {len(structured.document_decisions)}")
         else:
-            print(f"❌ No structured output found")
+            print("❌ No structured output found"d")
             if hasattr(direct_result, "keys"):
                 print(f"Available keys: {list(direct_result.keys())}")
 

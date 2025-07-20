@@ -1,5 +1,6 @@
 """Enhanced HyDE RAG Agent v2 with Advanced Prompt Selection and Multi-Document Generation.
 
+from typing import Any
 This version integrates the new enhanced prompt system with:
 - Automatic prompt type selection based on query analysis
 - Multi-document generation from different perspectives
@@ -97,7 +98,8 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
     )
 
     @model_validator(mode="after")
-    def setup_hyde_agent(self) -> "EnhancedHyDERAGAgentV2":
+    @classmethod
+    def setup_hyde_agent(cls) -> "EnhancedHyDERAGAgentV2":
         """Setup HyDE agent with enhanced prompts."""
         # Set up tool routing for any additional tools
         if hasattr(self, "tools") and self.tools:
@@ -586,7 +588,7 @@ class EnhancedHyDERetrieverV2(Agent):
     documents: list[Document] = Field(default_factory=list)
     embedding_model: str | None = Field(default=None)
 
-    def build_graph(self):
+    def build_graph(self) -> Any:
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
         from langgraph.graph import END, START
 
@@ -659,7 +661,7 @@ class EnsembleHyDERetriever(Agent):
     perspectives: list[str] = Field(default_factory=list)
     ensemble_mode: bool = Field(default=False)
 
-    def build_graph(self):
+    def build_graph(self) -> Any:
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
         from langgraph.graph import END, START
 
@@ -750,7 +752,7 @@ class MultiDomainHyDERetriever(Agent):
     embedding_model: str | None = Field(default=None)
     domain_types: list[str] = Field(default_factory=list)
 
-    def build_graph(self):
+    def build_graph(self) -> Any:
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
         from langgraph.graph import END, START
 

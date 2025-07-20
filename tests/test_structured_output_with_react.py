@@ -1,7 +1,5 @@
 """Test StructuredOutputAgent with ReactAgent using sequential multi-agent pattern."""
 
-from typing import Any, Dict, List
-
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
@@ -22,10 +20,10 @@ class ResearchResult(BaseModel):
     """Structured research result from ReactAgent."""
 
     topic: str = Field(description="Research topic")
-    findings: List[str] = Field(description="Key findings")
-    sources: List[str] = Field(description="Sources consulted")
+    findings: list[str] = Field(description="Key findings")
+    sources: list[str] = Field(description="Sources consulted")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
-    recommendations: List[str] = Field(description="Next steps or recommendations")
+    recommendations: list[str] = Field(description="Next steps or recommendations")
 
 
 class CalculationResult(BaseModel):
@@ -33,7 +31,7 @@ class CalculationResult(BaseModel):
 
     expression: str = Field(description="Original calculation expression")
     result: float = Field(description="Calculation result")
-    steps: List[str] = Field(description="Calculation steps")
+    steps: list[str] = Field(description="Calculation steps")
     method: str = Field(description="Method used")
 
 
@@ -45,7 +43,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"The result of {expression} is {result}"
     except Exception as e:
-        return f"Error calculating {expression}: {str(e)}"
+        return f"Error calculating {expression}: {e!s}"
 
 
 @tool
@@ -193,7 +191,7 @@ class TestStructuredOutputWithReact:
 
         # Verify structured output fields
         assert state.structured_output_models is not None
-        assert state.parse_structured_outputs == True
+        assert state.parse_structured_outputs
         assert len(state.structured_output_models) == 2
 
         # Verify it has the parsing methods
@@ -278,7 +276,7 @@ class TestStructuredOutputWithReact:
             name="error_processor",
         )
 
-        assert processor.fallback_on_error == True
+        assert processor.fallback_on_error
 
         # Test enhancement with error handling
         enhanced = StructuredOutputAgent.enhance_agent(
@@ -286,31 +284,19 @@ class TestStructuredOutputWithReact:
         )
 
         structured_agent = enhanced.agents["error_test_structured_output"]
-        assert structured_agent.fallback_on_error == True
+        assert structured_agent.fallback_on_error
 
 
 if __name__ == "__main__":
     # Run basic tests
     test = TestStructuredOutputWithReact()
 
-    print("Testing basic ReactAgent with structured output...")
     test.test_basic_react_with_structured_output()
-    print("✅ Basic integration test passed")
 
-    print("\nTesting calculation with structured output...")
     test.test_react_calculation_with_structured_output()
-    print("✅ Calculation test passed")
 
-    print("\nTesting research with structured output...")
     test.test_react_research_with_structured_output()
-    print("✅ Research test passed")
 
-    print("\nTesting sequential execution pattern...")
     test.test_sequential_execution_pattern()
-    print("✅ Sequential pattern test passed")
 
-    print("\nTesting state schema integration...")
     test.test_state_schema_integration()
-    print("✅ State schema test passed")
-
-    print("\nAll tests passed! ✅")

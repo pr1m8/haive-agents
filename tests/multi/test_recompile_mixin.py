@@ -62,7 +62,8 @@ class RecompileMetaState(MetaStateSchema, RecompileMixin):
     """
 
     @model_validator(mode="after")
-    def setup_recompile_tracking(self) -> "RecompileMetaState":
+    @classmethod
+    def setup_recompile_tracking(cls) -> "RecompileMetaState":
         """Set up recompilation tracking after MetaStateSchema setup."""
         # Call parent setup first
         super().setup_agent_integration()

@@ -78,7 +78,8 @@ class LLMRAGConfig(BaseRAGConfig):
     output_schema: type[BaseModel] = LLMRAGOutputState
 
     @model_validator(mode="after")
-    def setup_engines(self) -> "LLMRAGConfig":
+    @classmethod
+    def setup_engines(cls) -> "LLMRAGConfig":
         """After validation, register all engines needed by the agent.
         This ensures the agent workflow can access all the necessary components.
         """

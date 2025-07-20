@@ -59,15 +59,15 @@ def test_basic_setup():
     )
 
     if supervisor.agent_registry.list_available():
-        pass")
+        pass
     else:
-        pass")
+        pass
 
     # Test choice model
     if supervisor.agent_choice_model:
         options = supervisor.agent_choice_model.option_names
     else:
-        pass")
+        pass
 
     # Test initial tools (should be minimal)
     if hasattr(supervisor, "engine") and supervisor.engine:
@@ -128,9 +128,9 @@ def test_agent_addition():
 
         for expected in expected_tools:
             if expected in tool_names:
-                pass")
+                pass
             else:
-                pass")
+                pass
 
     return supervisor
 
@@ -154,22 +154,22 @@ def test_choice_model_validation():
         try:
             choice1 = ChoiceModel(choice="math_agent")
         except Exception as e:
-            pass")
+            pass
 
         try:
             choice2 = ChoiceModel(choice="planning_agent")
         except Exception as e:
-            pass")
+            pass
 
         try:
             choice3 = ChoiceModel(choice="END")
         except Exception as e:
-            pass")
+            pass
 
         try:
             invalid_choice = ChoiceModel(choice="nonexistent_agent")
         except Exception as e:
-            pass")
+            pass
 
     return supervisor
 
@@ -195,9 +195,9 @@ def test_tool_execution():
             try:
                 result = list_tool.invoke({})
             except Exception as e:
-                pass")
+                pass
         else:
-            pass")
+            pass
 
     return supervisor
 

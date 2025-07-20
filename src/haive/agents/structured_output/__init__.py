@@ -1,5 +1,51 @@
-"""Structured Output Agent for adding structured output capabilities to any agent."""
+"""Module exports."""
 
-from .agent import StructuredOutputAgent
+from structured_output.agent import (
+    StructuredOutputAgent,
+    create_processor,
+    create_reflection_processor,
+    create_validation_processor,
+    enhance_agent,
+    process_with_context,
+    setup_agent,
+)
+from structured_output.models import (
+    Analysis,
+    Critique,
+    Decision,
+    ExtractedData,
+    Improvement,
+    Intent,
+    QualityCheck,
+    ReflectionResult,
+    Response,
+    SearchQuery,
+    SearchResult,
+    Summary,
+    TaskResult,
+    ValidationResult,
+)
 
-__all__ = ["StructuredOutputAgent"]
+__all__ = [
+    "Analysis",
+    "Critique",
+    "Decision",
+    "ExtractedData",
+    "Improvement",
+    "Intent",
+    "QualityCheck",
+    "ReflectionResult",
+    "Response",
+    "SearchQuery",
+    "SearchResult",
+    "StructuredOutputAgent",
+    "Summary",
+    "TaskResult",
+    "ValidationResult",
+    "create_processor",
+    "create_reflection_processor",
+    "create_validation_processor",
+    "enhance_agent",
+    "process_with_context",
+    "setup_agent",
+]

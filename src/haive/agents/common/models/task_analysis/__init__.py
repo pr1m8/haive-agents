@@ -1,45 +1,17 @@
-"""Task Complexity Analysis Module for Haive Agents.
+"""Module exports."""
 
-This module provides sophisticated analysis of task complexity including dependency
-mapping, parallelization opportunities, solvability assessment, and execution planning.
-Uses AutoTree for dynamic dependency graph management and supports complex
-task decomposition patterns.
-
-Classes:
-    TaskType: Enumeration of different task categories
-    DependencyType: Types of dependency relationships
-    ComplexityLevel: Overall complexity classifications
-    Task: Base task representation with subtasks
-    TaskStep: Individual executable steps
-    DependencyNode: Dependency relationship modeling
-    ComplexityMetrics: Quantitative complexity measurements
-    SolvabilityAssessment: Task solvability analysis
-    ParallelizationAnalysis: Parallel execution opportunities
-    TaskComplexityAnalysis: Complete task analysis results
-    TaskComplexityAnalyzer: Main analyzer engine
-
-Example:
-    ```python
-    from haive.agents.common.models.task_complexity import TaskComplexityAnalyzer
-
-    analyzer = TaskComplexityAnalyzer()
-
-    # Analyze a complex task
-    analysis = analyzer.analyze_task(
-        "Find the birthday of the most recent Wimbledon winner and calculate
-         their age in days, then find the square root of that number"
-    )
-
-    print(f"Complexity Level: {analysis.complexity_level}")
-    print(f"Parallelizable Steps: {len(analysis.parallelization.parallel_groups)}")
-    print(f"Estimated Duration: {analysis.estimated_duration_hours}")
-
-    # Visualize dependency tree
-    print(analysis.dependency_tree.visualize())
-    ```
-"""
-
-from haive.agents.common.models.task_analysis.base import (
+from task_analysis.analysis import (
+    AnalysisMethod,
+    ExecutionStrategy,
+    TaskAnalysis,
+    analyze_task,
+    generate_executive_summary,
+    get_execution_recommendations,
+    get_overall_assessment,
+    validate_analysis_consistency,
+    validate_resource_allocation,
+)
+from task_analysis.base import (
     ComplexityLevel,
     ComputationalComplexity,
     DependencyNode,
@@ -50,79 +22,153 @@ from haive.agents.common.models.task_analysis.base import (
     TaskStep,
     TaskType,
     TimeComplexity,
+    allows_parallelization,
+    calculate_total_duration,
+    create_auto_tree,
+    creates_join_point,
+    get_all_steps,
+    get_all_tasks,
+    get_breadth,
+    get_complexity_score,
+    get_duration_hours,
+    get_max_depth,
+    has_parallel_opportunities,
+    is_blocking,
 )
-from haive.agents.common.models.task_analysis.complexity_metrics import (
-    BreadthAnalysis,
-    ComplexityMetrics,
-    CriticalPathAnalysis,
-    DepthAnalysis,
+from task_analysis.branching import (
+    BranchType,
+    TaskBranch,
+    TaskDecomposition,
+    calculate_parallelization_speedup,
+    create_simple_sequential,
+    find_independent_branches,
+    find_terminal_branches,
+    get_complexity_metrics,
+    get_dependency_graph,
+    get_duration_category,
+    get_effort_category,
+    get_enables_graph,
+    get_execution_recommendations,
+    has_dependencies,
+    is_enabling,
+    is_high_risk,
+    is_likely_to_succeed,
+    validate_decomposition_consistency,
 )
-from haive.agents.common.models.task_analysis.dependency_tree import (
-    DependencyAnalyzer,
-    TaskDependencyTree,
-)
-from haive.agents.common.models.task_analysis.parallelization import (
+from task_analysis.parallelization import (
     ExecutionPhase,
+    ExecutionStrategy,
     JoinPoint,
     ParallelGroup,
     ParallelizationAnalysis,
     ParallelizationAnalyzer,
+    analyze_task,
+    calculate_actual_duration,
+    calculate_sequential_duration,
+    calculate_time_savings,
+    get_critical_path_duration,
+    get_efficiency_percentage,
+    get_input_count,
+    get_max_parallelism,
+    get_output_count,
+    get_parallelization_benefit,
+    get_task_count,
+    get_theoretical_speedup,
+    get_total_phases,
+    get_total_task_count,
+    is_merge_point,
+    is_split_point,
+    is_worth_parallelizing,
 )
-from haive.agents.common.models.task_analysis.solvability import (
-    BlockerType,
-    ResourceRequirement,
-    SolvabilityAnalyzer,
+from task_analysis.solvability import (
     SolvabilityAssessment,
-)
-from haive.agents.common.models.task_analysis.task_analyzer import (
-    TaskComplexityAnalysis,
-    TaskComplexityAnalyzer,
-)
-from haive.agents.common.models.task_analysis.visualization import (
-    ComplexityDashboard,
-    DependencyGraphRenderer,
-    TaskComplexityVisualizer,
+    SolvabilityBarrier,
+    estimate_breakthrough_timeline,
+    generate_solvability_report,
+    get_addressable_barriers,
+    get_immediate_actions,
+    get_solvability_score,
+    has_showstopper_barriers,
+    validate_solvability_consistency,
 )
 
 __all__ = [
-    "BlockerType",
-    "BreadthAnalysis",
-    "ComplexityDashboard",
+    "AnalysisMethod",
+    "BranchType",
     "ComplexityLevel",
-    # Analysis components
-    "ComplexityMetrics",
     "ComputationalComplexity",
-    "CriticalPathAnalysis",
-    "DependencyAnalyzer",
-    "DependencyGraphRenderer",
     "DependencyNode",
     "DependencyType",
-    "DepthAnalysis",
     "ExecutionPhase",
+    "ExecutionStrategy",
     "JoinPoint",
     "KnowledgeComplexity",
     "ParallelGroup",
     "ParallelizationAnalysis",
     "ParallelizationAnalyzer",
-    "ResourceRequirement",
     "ResourceType",
-    "SolvabilityAnalyzer",
     "SolvabilityAssessment",
-    # Core task models
+    "SolvabilityBarrier",
     "Task",
-    # Main analyzer
-    "TaskComplexityAnalysis",
-    "TaskComplexityAnalyzer",
-    # Visualization
-    "TaskComplexityVisualizer",
-    # Tree and dependency analysis
-    "TaskDependencyTree",
+    "TaskAnalysis",
+    "TaskBranch",
+    "TaskDecomposition",
     "TaskStep",
-    # Base enums and types
     "TaskType",
     "TimeComplexity",
+    "allows_parallelization",
+    "analyze_task",
+    "calculate_actual_duration",
+    "calculate_parallelization_speedup",
+    "calculate_sequential_duration",
+    "calculate_time_savings",
+    "calculate_total_duration",
+    "create_auto_tree",
+    "create_simple_sequential",
+    "creates_join_point",
+    "estimate_breakthrough_timeline",
+    "find_independent_branches",
+    "find_terminal_branches",
+    "generate_executive_summary",
+    "generate_solvability_report",
+    "get_addressable_barriers",
+    "get_all_steps",
+    "get_all_tasks",
+    "get_breadth",
+    "get_complexity_metrics",
+    "get_complexity_score",
+    "get_critical_path_duration",
+    "get_dependency_graph",
+    "get_duration_category",
+    "get_duration_hours",
+    "get_efficiency_percentage",
+    "get_effort_category",
+    "get_enables_graph",
+    "get_execution_recommendations",
+    "get_immediate_actions",
+    "get_input_count",
+    "get_max_depth",
+    "get_max_parallelism",
+    "get_output_count",
+    "get_overall_assessment",
+    "get_parallelization_benefit",
+    "get_solvability_score",
+    "get_task_count",
+    "get_theoretical_speedup",
+    "get_total_phases",
+    "get_total_task_count",
+    "has_dependencies",
+    "has_parallel_opportunities",
+    "has_showstopper_barriers",
+    "is_blocking",
+    "is_enabling",
+    "is_high_risk",
+    "is_likely_to_succeed",
+    "is_merge_point",
+    "is_split_point",
+    "is_worth_parallelizing",
+    "validate_analysis_consistency",
+    "validate_decomposition_consistency",
+    "validate_resource_allocation",
+    "validate_solvability_consistency",
 ]
-
-# Version info
-__version__ = "1.0.0"
-__author__ = "Haive Framework"

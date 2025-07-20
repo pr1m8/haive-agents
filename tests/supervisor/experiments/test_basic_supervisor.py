@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Step 3: Test basic supervisor using proper Pydantic patterns."""
 
-from typing import Any, List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -22,14 +21,15 @@ class BasicSupervisor(ReactAgent):
     )
 
     @model_validator(mode="after")
-    def setup_supervisor_engine(self) -> "BasicSupervisor":
+    @classmethod
+    def setup_supervisor_engine(cls) -> "BasicSupervisor":
         """Setup supervisor engine with registry tools using model validator."""
         # Create tools from registry
         route_tools = create_route_tools(self.agent_registry)
         list_tool = create_list_agents_tool(self.agent_registry)
         all_tools = [*route_tools, list_tool]
 
-        for tool in all_tools:
+        for _tool in all_tools:
             pass
 
         # Create supervisor engine with routing tools
@@ -54,7 +54,6 @@ Always start by using list_agents to see what's available, then route the task t
 
 def test_supervisor_creation():
     """Test 1: Supervisor can be created with registry."""
-
     # Create registry with agents
     registry = AgentRegistry()
     agents = create_test_agents()
@@ -85,7 +84,6 @@ def test_supervisor_creation():
 
 def test_supervisor_list_agents():
     """Test 2: Supervisor can list available agents."""
-
     supervisor = test_supervisor_creation()
 
     # Test listing agents
@@ -104,13 +102,12 @@ def test_supervisor_list_agents():
 
         return supervisor
 
-    except Exception as e:
+    except Exception:
         raise
 
 
 def test_supervisor_routing():
     """Test 3: Supervisor can route tasks to agents."""
-
     supervisor = test_supervisor_list_agents()
 
     # Test routing to math agent
@@ -124,9 +121,8 @@ def test_supervisor_routing():
             "20" in result_str or "math_agent" in result_str
         ), f"Expected math result, got: {result_str}"
 
-
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
         # Continue with other tests
 
     # Test routing to planning agent
@@ -140,16 +136,14 @@ def test_supervisor_routing():
             "plan" in result_str.lower() or "planning_agent" in result_str
         ), f"Expected planning result, got: {result_str}"
 
-
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     return supervisor
 
 
 def test_supervisor_decision_making():
     """Test 4: Supervisor makes correct routing decisions."""
-
     supervisor = test_supervisor_routing()
 
     # Test that supervisor chooses the right agent for the task
@@ -168,12 +162,12 @@ def test_supervisor_decision_making():
 
             # Check if it used the expected agent
             if f"{expected_agent}_agent" in result_str:
-                pass")
+                pass
             else:
                 pass
 
-        except Exception as e:
-            pass")
+        except Exception:
+            pass
 
     return supervisor
 
@@ -186,6 +180,5 @@ if __name__ == "__main__":
         test_supervisor_routing()
         supervisor = test_supervisor_decision_making()
 
-
-    except Exception as e:
+    except Exception:
         raise

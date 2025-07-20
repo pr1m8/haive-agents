@@ -182,7 +182,7 @@ async def example_direct_usage_pattern():
     if REACT_AGENT_AVAILABLE:
         react_agent = ReactAgent(engine=add_aug)
     else:
-        pass")
+        pass
 
 
     return True
@@ -214,7 +214,7 @@ async def main():
     all_success = all(result for _, result in results)
     if all_success:
         if REACT_AGENT_AVAILABLE:
-            pass")
+            pass
     else:
         passes")
 

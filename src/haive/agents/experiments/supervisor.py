@@ -9,9 +9,14 @@ from haive.core.engine.aug_llm import AugLLMConfig
 # ============================================================================
 from langchain_core.tools import tool
 from pydantic import (
+    Any,
     BaseModel,
+    Dict,
     Field,
     computed_field,
+    from,
+    import,
+    typing,
 )
 
 from haive.agents.base.agent import Agent
@@ -46,7 +51,7 @@ class MultiAgentState(BaseModel, GetterMixin):
         return selected_agents[-1] if selected_agents else None
 
 
-def temp_node(state):
+def temp_node(state: Dict[str, Any]):
     state.get("selected_agent")
     agent = agent.create_runnable()
     agent.run(input_payload)

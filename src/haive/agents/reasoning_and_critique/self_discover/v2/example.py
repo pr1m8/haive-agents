@@ -4,14 +4,18 @@
 
 from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
     DEFAULT_REASONING_MODULES,
+    Any,
+    from,
+    import,
     self_discovery,
+    typing,
 )
 from haive.agents.reasoning_and_critique.self_discover.v2.state import (
     SelfDiscoveryState,
 )
 
 
-def run_self_discovery_example():
+def run_self_discovery_example() -> None:
     """Run the self-discovery agent on example tasks."""
     # Example 1: Simple math problem
     task1 = "Lisa has 10 apples. She gives 3 apples to her friend and then buys 5 more apples from the store. How many apples does Lisa have now?"

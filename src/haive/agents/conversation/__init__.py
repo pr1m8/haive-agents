@@ -167,14 +167,14 @@ from haive.agents.conversation.round_robin.agent import RoundRobinConversation
 from haive.agents.conversation.social_media.agent import SocialMediaConversation
 
 # Type aliases for better API clarity
-ConversationType: TypeAlias = Literal[
+type ConversationType = Literal[
     "round_robin", "directed", "debate", "collaborative", "social_media"
 ]
-ParticipantRole: TypeAlias = Literal["speaker", "moderator", "judge", "observer"]
-ConversationStatus: TypeAlias = Literal[
+type ParticipantRole = Literal["speaker", "moderator", "judge", "observer"]
+type ConversationStatus = Literal[
     "pending", "active", "paused", "completed", "cancelled"
 ]
-MessageType: TypeAlias = Literal[
+type MessageType = Literal[
     "statement", "question", "response", "argument", "rebuttal", "judgment"
 ]
 

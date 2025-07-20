@@ -18,7 +18,7 @@ from haive.core.graph.base_graph import END, START, BaseGraph
 from haive.core.schema.state import MessagesState, ToolState
 from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage, HumanMessage
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, model_validator
 
 from haive.agents.base.agent import Agent
 from haive.agents.multi.base import MultiAgent, SequentialAgent
@@ -226,7 +226,8 @@ class EnhancedRAGAgent(Agent):
     min_relevance_score: float = Field(default=0.7, ge=0, le=1)
 
     @model_validator(mode="after")
-    def validate_engines(self):
+    @classmethod
+    def validate_engines(cls):
         """Ensure engines are properly configured."""
         if not hasattr(self.retriever_engine, "search"):
             raise ValueError("Retriever engine must have search method")

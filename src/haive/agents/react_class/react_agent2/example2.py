@@ -2,18 +2,20 @@
 import logging
 import uuid
 
+# Set up logging
+from typing import Any
+
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.react_class.react_agent2.agent2 import create_react_agent
 
-# Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 # Helper function to print the latest message
-def print_latest_message(result):
+def print_latest_message(result) -> None:
     """Print the latest message from the result."""
     messages = result.get("messages", [])
     if messages:
@@ -31,7 +33,7 @@ def print_latest_message(result):
 # =============================================
 
 
-def example_basic_react_agent():
+def example_basic_react_agent() -> Any:
     """Basic React agent with search and calculator tools."""
 
     # Define a simple search tool
@@ -72,7 +74,7 @@ def example_basic_react_agent():
 # =============================================
 
 
-def example_structured_output_agent():
+def example_structured_output_agent() -> Any:
     """React agent that returns structured output."""
 
     # Define a structured output model
@@ -130,7 +132,7 @@ def example_structured_output_agent():
 # =============================================
 
 
-def example_memory_agent():
+def example_memory_agent() -> Any:
     """React agent with conversation memory."""
 
     # Define a simple weather tool
@@ -172,7 +174,7 @@ def example_memory_agent():
 # =============================================
 
 
-def example_business_intelligence_agent():
+def example_business_intelligence_agent() -> Any:
     """React agent specialized in business intelligence tasks."""
 
     # Define business intelligence tools
@@ -237,7 +239,7 @@ def example_business_intelligence_agent():
 # =============================================
 
 
-def interactive_chat():
+def interactive_chat() -> Any:
     """Start an interactive chat with a React agent."""
 
     # Define tools
@@ -275,7 +277,7 @@ def interactive_chat():
 # =============================================
 
 
-def run_examples():
+def run_examples() -> None:
     """Run all React agent examples."""
     # Run basic example
     example_basic_react_agent()

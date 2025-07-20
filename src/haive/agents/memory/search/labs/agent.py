@@ -7,12 +7,11 @@ Similar to Perplexity's Labs feature that creates apps, dashboards, and automate
 import logging
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Type
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import Tool, tool
 
-from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.search.base import BaseSearchAgent, SearchResponse
 from haive.agents.memory.search.labs.models import (
     AssetType,
@@ -72,8 +71,8 @@ class LabsAgent(BaseSearchAgent):
     def __init__(
         self,
         name: str = "labs_agent",
-        engine: Optional[AugLLMConfig] = None,
-        search_tools: Optional[List[Tool]] = None,
+        engine: AugLLMConfig | None = None,
+        search_tools: list[Tool] | None = None,
         enable_code_execution: bool = True,
         **kwargs,
     ):
@@ -109,11 +108,11 @@ class LabsAgent(BaseSearchAgent):
             f"Initialized LabsAgent: {name} (Code execution: {enable_code_execution})"
         )
 
-    def _create_labs_tools(self) -> List[Tool]:
+    def _create_labs_tools(self) -> list[Tool]:
         """Create Labs-specific tools for project automation."""
 
         @tool
-        def execute_python_code(code: str, description: str = "") -> Dict[str, Any]:
+        def execute_python_code(code: str, description: str = "") -> dict[str, Any]:
             """Execute Python code and return results.
 
             Args:
@@ -155,7 +154,7 @@ class LabsAgent(BaseSearchAgent):
         @tool
         def create_visualization(
             data_description: str, chart_type: str, title: str
-        ) -> Dict[str, Any]:
+        ) -> dict[str, Any]:
             """Create a data visualization.
 
             Args:
@@ -190,8 +189,8 @@ class LabsAgent(BaseSearchAgent):
 
         @tool
         def create_interactive_app(
-            app_type: str, features: List[str], data_sources: List[str]
-        ) -> Dict[str, Any]:
+            app_type: str, features: list[str], data_sources: list[str]
+        ) -> dict[str, Any]:
             """Create an interactive web application.
 
             Args:
@@ -246,7 +245,7 @@ class LabsAgent(BaseSearchAgent):
                 }
 
         @tool
-        def process_data_file(file_path: str, operations: List[str]) -> Dict[str, Any]:
+        def process_data_file(file_path: str, operations: list[str]) -> dict[str, Any]:
             """Process a data file with specified operations.
 
             Args:
@@ -288,7 +287,7 @@ class LabsAgent(BaseSearchAgent):
             process_data_file,
         ]
 
-    def get_response_model(self) -> Type[SearchResponse]:
+    def get_response_model(self) -> type[SearchResponse]:
         """Get the response model for Labs."""
         return LabsResponse
 
@@ -379,8 +378,8 @@ Remember: You are automating complex workflows and creating professional-grade d
 Execute each project with professional standards and comprehensive automation."""
 
     def plan_project_workflow(
-        self, query: str, project_type: str, data_sources: List[str]
-    ) -> List[Dict[str, Any]]:
+        self, query: str, project_type: str, data_sources: list[str]
+    ) -> list[dict[str, Any]]:
         """Plan the workflow steps for a project.
 
         Args:
@@ -465,7 +464,7 @@ Execute each project with professional standards and comprehensive automation.""
         return workflow_steps
 
     async def execute_workflow_step(
-        self, step_plan: Dict[str, Any], step_index: int
+        self, step_plan: dict[str, Any], step_index: int
     ) -> WorkflowStep:
         """Execute a single workflow step.
 
@@ -540,7 +539,7 @@ Execute each project with professional standards and comprehensive automation.""
 
         except Exception as e:
             duration = time.time() - start_time
-            logger.error(f"Workflow step failed: {step_plan['name']} - {e}")
+            logger.exception(f"Workflow step failed: {step_plan['name']} - {e}")
 
             return WorkflowStep(
                 step_id=step_id,
@@ -555,8 +554,8 @@ Execute each project with professional standards and comprehensive automation.""
             )
 
     def create_project_assets(
-        self, workflow_steps: List[WorkflowStep]
-    ) -> List[ProjectAsset]:
+        self, workflow_steps: list[WorkflowStep]
+    ) -> list[ProjectAsset]:
         """Create project assets from workflow results.
 
         Args:
@@ -628,8 +627,8 @@ Execute each project with professional standards and comprehensive automation.""
         return assets
 
     def create_interactive_apps(
-        self, workflow_steps: List[WorkflowStep]
-    ) -> List[InteractiveApp]:
+        self, workflow_steps: list[WorkflowStep]
+    ) -> list[InteractiveApp]:
         """Create interactive apps from workflow results.
 
         Args:
@@ -668,8 +667,8 @@ Execute each project with professional standards and comprehensive automation.""
         self,
         query: str,
         project_type: str = "analysis",
-        data_sources: Optional[List[str]] = None,
-        required_tools: Optional[List[str]] = None,
+        data_sources: list[str] | None = None,
+        required_tools: list[str] | None = None,
         create_interactive_app: bool = True,
         max_work_time: int = 600,
         save_to_memory: bool = True,
@@ -724,9 +723,7 @@ Execute each project with professional standards and comprehensive automation.""
 
         # Calculate metrics
         total_work_time = time.time() - start_time
-        tools_used = list(
-            set(step.tool_used for step in workflow_steps if step.tool_used)
-        )
+        tools_used = list({step.tool_used for step in workflow_steps if step.tool_used})
         visualizations_created = len(
             [asset for asset in assets_created if asset.type == AssetType.CHART]
         )
@@ -754,11 +751,11 @@ Execute each project with professional standards and comprehensive automation.""
         # Compile response
         full_response = f"# {project_name}\n\n"
         full_response += f"## Project Summary\n{project_summary}\n\n"
-        full_response += f"## Workflow Steps Completed\n"
+        full_response += "## Workflow Steps Completed\n"
         for step in workflow_steps:
             status = "✅" if step.success else "❌"
             full_response += f"{status} {step.name}: {step.description}\n"
-        full_response += f"\n## Assets Created\n"
+        full_response += "\n## Assets Created\n"
         for asset in assets_created:
             full_response += f"- {asset.name} ({asset.type.value})\n"
 
@@ -796,7 +793,7 @@ Execute each project with professional standards and comprehensive automation.""
     async def process_search(
         self,
         query: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
         save_to_memory: bool = True,
     ) -> LabsResponse:
         """Process a search query with default Labs settings.

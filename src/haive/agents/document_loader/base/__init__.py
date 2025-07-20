@@ -1,9 +1,5 @@
-"""Base Document Loader Agent.
+"""Module exports."""
 
-This package provides the base document loader agent implementation.
-"""
+from base.agent import DocumentLoaderAgent, build_graph, process_output, setup_agent
 
-from haive.agents.document_loader.base.agent import DocumentLoaderAgent
-
-# Export all public components
-__all__ = ["DocumentLoaderAgent"]
+__all__ = ["DocumentLoaderAgent", "build_graph", "process_output", "setup_agent"]

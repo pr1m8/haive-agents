@@ -1,5 +1,6 @@
 """Enhanced HyDE RAG Agent using Structured Output Pattern.
 
+from typing import Any, Dict
 This demonstrates the new pattern where any agent can be enhanced with structured
 output by appending a SimpleAgent. This approach is more modular and follows the
 principle of separation of concerns.
@@ -229,7 +230,7 @@ class EnhancedHyDERetriever(Agent):
     ):
         super().__init__(documents=documents, embedding_model=embedding_model, **kwargs)
 
-    def build_graph(self):
+    def build_graph(self) -> Any:
         """Build graph that adapts to both enhancement and traditional patterns."""
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
         from langgraph.graph import END, START
@@ -334,7 +335,7 @@ def create_enhanced_hyde_agent(
 
 
 # Demonstration of the pattern
-def demonstrate_enhancement_vs_traditional():
+def demonstrate_enhancement_vs_traditional() -> Dict[str, Any]:
     """Demonstrate the difference between enhancement and traditional patterns."""
     from langchain_core.documents import Document
 

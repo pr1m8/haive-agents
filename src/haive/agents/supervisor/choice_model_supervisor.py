@@ -67,7 +67,7 @@ class AgentCreationTool(BaseTool):
     description: str = """Create a new ReactAgent when no suitable agent exists.
     Specify the agent type and capability needed."""
 
-    def __init__(self, supervisor, **kwargs):
+    def __init__(self, supervisor, **kwargs) -> None:
         super().__init__(**kwargs)
         self.supervisor = supervisor
 

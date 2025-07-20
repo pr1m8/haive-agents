@@ -1,5 +1,6 @@
 """Graded RAG Workflows - RAG with comprehensive grading and evaluation.
 
+from typing import Any
 This module implements RAG workflows with integrated document grading,
 answer quality assessment, and hallucination detection.
 """
@@ -155,7 +156,7 @@ class FullyGradedRAGAgent(MultiAgent):
             **kwargs,
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for graded RAG workflow."""
         return  # Use default sequential execution
 
@@ -165,7 +166,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
     and document availability.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Query complexity analyzer
         complexity_analyzer = SimpleAgent(
             name="complexity_analyzer",
@@ -252,7 +253,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
             **kwargs,
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for adaptive graded RAG."""
         return
 
@@ -346,7 +347,7 @@ class MultiCriteriaGradedRAGAgent(MultiAgent):
             **kwargs,
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for multi-criteria graded RAG."""
         return
 
@@ -356,7 +357,7 @@ class ReflexiveGradedRAGAgent(MultiAgent):
     through self-reflection and strategy adjustment.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Self-assessment agent
         self_assessor = SimpleAgent(
             name="self_assessor",
@@ -422,6 +423,6 @@ class ReflexiveGradedRAGAgent(MultiAgent):
             **kwargs,
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for reflexive graded RAG."""
         return

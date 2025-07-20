@@ -24,13 +24,11 @@ def calculate(expression: str) -> str:
         result = eval(expression)
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 async def main():
     """Run the basic supervisor example."""
-    print("=== Basic Dynamic Supervisor Example ===")
-
     # Create specialized agents
 
     # Math agent
@@ -64,24 +62,16 @@ async def main():
     state.add_agent("general_agent", general_agent, "General purpose assistant")
 
     # Test 1: Math task
-    print("\n--- Test 1: Math Task ---")
-    result = await supervisor.arun("Calculate the result of 15 * 23 + 7", state=state)
-    print(f"Result: {result}")
+    await supervisor.arun("Calculate the result of 15 * 23 + 7", state=state)
 
     # Test 2: General task
-    print("\n--- Test 2: General Task ---")
-    result = await supervisor.arun("What is the capital of France?", state=state)
-    print(f"Result: {result}")
+    await supervisor.arun("What is the capital of France?", state=state)
 
     # Test 3: Task requiring reasoning about which agent to use
-    print("\n--- Test 3: Routing Decision ---")
-    result = await supervisor.arun(
+    await supervisor.arun(
         "I need help with both math and general knowledge. First, calculate 100 / 4, then tell me what that number represents in terms of a perfect score.",
         state=state,
     )
-    print(f"Result: {result}")
-
-    print("\n=== Example Complete ===")
 
 
 if __name__ == "__main__":

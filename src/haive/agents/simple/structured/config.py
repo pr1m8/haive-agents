@@ -1,3 +1,5 @@
+from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field, model_validator
@@ -26,7 +28,8 @@ class StructuredOutputAgentConfig(SimpleAgentConfig):
     output_schema = structured_output_model
 
     @model_validator(mode="after")
-    def validate_and_setup(self):
+    @classmethod
+    def validate_and_setup(cls) -> Any:
         """Set up the structured output tool and configure the engine."""
         # Create the StructuredOutputTool with the model
         output_tool = tools.StructuredOutputTool(self.structured_output_model)

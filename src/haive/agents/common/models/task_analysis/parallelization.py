@@ -51,15 +51,16 @@ class JoinPoint(BaseModel):
         is_critical_path: Whether this join point is on the critical path
 
     Example:
-        ```python
-        join_point = JoinPoint(
+        .. code-block:: python
+
+            join_point = JoinPoint(
             id="analysis_join",
             name="Combine Analysis Results",
             input_task_ids=["data_collection", "background_research"],
             output_task_ids=["final_report"],
             join_type="synchronous"
-        )
-        ```
+            )
+
     """
 
     model_config = ConfigDict(
@@ -168,14 +169,15 @@ class ParallelGroup(BaseModel):
         phase: Execution phase this group belongs to
 
     Example:
-        ```python
-        parallel_group = ParallelGroup(
+        .. code-block:: python
+
+            parallel_group = ParallelGroup(
             group_id="research_phase",
             task_ids=["web_research", "library_research", "expert_interviews"],
             estimated_duration_minutes=120,
             resource_requirements={"researchers": 3, "internet": True}
-        )
-        ```
+            )
+
     """
 
     model_config = ConfigDict(
@@ -282,14 +284,15 @@ class ExecutionPhase(BaseModel):
         critical_path_tasks: Tasks on the critical path within this phase
 
     Example:
-        ```python
-        phase = ExecutionPhase(
+        .. code-block:: python
+
+            phase = ExecutionPhase(
             phase_number=1,
             name="Data Collection Phase",
             parallel_groups=[research_group, survey_group],
             estimated_duration_minutes=180
-        )
-        ```
+            )
+
     """
 
     model_config = ConfigDict(
@@ -394,15 +397,16 @@ class ParallelizationAnalysis(BaseModel):
         bottlenecks: Identified bottlenecks and constraints
 
     Example:
-        ```python
-        analysis = ParallelizationAnalysis(
+        .. code-block:: python
+
+            analysis = ParallelizationAnalysis(
             execution_phases=[phase1, phase2, phase3],
             parallel_groups=[group1, group2],
             join_points=[join1, join2],
             critical_path=["task_1", "task_3", "task_5"],
             estimated_speedup=2.5
-        )
-        ```
+            )
+
     """
 
     model_config = ConfigDict(
@@ -539,15 +543,16 @@ class ParallelizationAnalyzer(BaseModel):
         include_coordination_overhead: Whether to include coordination overhead
 
     Example:
-        ```python
-        analyzer = ParallelizationAnalyzer(
+        .. code-block:: python
+
+            analyzer = ParallelizationAnalyzer(
             max_parallel_tasks=8,
             resource_constraints={"cpu_cores": 4, "memory_gb": 16}
-        )
+            )
 
-        analysis = analyzer.analyze_task(complex_task)
-        print(f"Recommended speedup: {analysis.estimated_speedup:.1f}x")
-        ```
+            analysis = analyzer.analyze_task(complex_task)
+            print(f"Recommended speedup: {analysis.estimated_speedup:.1f}x")
+
     """
 
     model_config = ConfigDict(
@@ -716,13 +721,13 @@ class ParallelizationAnalyzer(BaseModel):
             parallel_tasks = [task_id]
 
             # Simple heuristic: tasks with the same predecessors can often run in parallel
-            predecessors = set(pred_id for pred_id, _ in task_info["predecessors"])
+            predecessors = {pred_id for pred_id, _ in task_info["predecessors"]}
 
             for other_id, other_info in dependency_graph.items():
                 if other_id != task_id and other_id not in visited:
-                    other_predecessors = set(
+                    other_predecessors = {
                         pred_id for pred_id, _ in other_info["predecessors"]
-                    )
+                    }
 
                     # Can run in parallel if they have the same predecessors
                     # and no blocking dependencies between them
@@ -985,8 +990,8 @@ class ParallelizationAnalyzer(BaseModel):
             available = resource_constraints.get(resource)
             if (
                 available is not None
-                and isinstance(required, (int, float))
-                and isinstance(available, (int, float))
+                and isinstance(required, int | float)
+                and isinstance(available, int | float)
             ) and required > available:
                 bottlenecks.append(
                     f"Insufficient {resource}: need {required}, have {available}"

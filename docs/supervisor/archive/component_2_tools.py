@@ -27,7 +27,8 @@ class SupervisorStateWithTools(SupervisorState):
     model_config = {"validate_assignment": True, "arbitrary_types_allowed": True}
 
     @model_validator(mode="after")
-    def sync_choice_model_and_tools(self):
+    @classmethod
+    def sync_choice_model_and_tools(cls):
         """Sync choice model with agents and generate tools."""
         # Update choice model with available agents
         self._update_choice_model()
@@ -63,7 +64,8 @@ class SupervisorStateWithTools(SupervisorState):
         self.generated_tools.append(choice_tool_name)
 
     @model_validator(mode="after")
-    def validate_agent_routing(self):
+    @classmethod
+    def validate_agent_routing(cls):
         """Validate agent routing after all fields are set."""
         # Validate next_agent exists in registry
         if self.next_agent is not None and self.next_agent != "END":

@@ -9,7 +9,7 @@ This example shows how the supervisor can:
 import asyncio
 import os
 import tempfile
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -38,11 +38,11 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 @tool
-def text_analyzer(text: str) -> Dict[str, Any]:
+def text_analyzer(text: str) -> dict[str, Any]:
     """Analyze text for various metrics.
 
     Args:
@@ -77,8 +77,6 @@ def web_search(query: str) -> str:
 
 async def basic_supervisor_example():
     """Basic example of DynamicToolDiscoverySupervisor."""
-    print("\n=== Basic Dynamic Tool Discovery Supervisor Example ===\n")
-
     # Configure LLM
     config = AugLLMConfig(temperature=0.1)
 
@@ -102,23 +100,16 @@ async def basic_supervisor_example():
         ],
     )
 
-    print(f"Supervisor created with agents: {list(agents.keys())}")
-    print(f"Initial tools: {supervisor.discovered_tools}")
-
     # Run task that needs tool discovery
-    result = await supervisor.arun(
+    await supervisor.arun(
         "I need to calculate 25 * 4 and analyze the word 'supervisor'"
     )
-    print(f"\nResult: {result}")
 
     # Check discovered tools
-    print(f"\nDiscovered tools after execution: {supervisor.discovered_tools}")
 
 
 async def factory_method_example():
     """Example using factory method with discovery sources."""
-    print("\n=== Factory Method with Discovery Sources Example ===\n")
-
     config = AugLLMConfig(temperature=0.1)
 
     # Create temporary directory with tool documentation
@@ -184,26 +175,19 @@ async def factory_method_example():
             },
         )
 
-        print(f"Supervisor created with discovery mode: {supervisor.discovery_mode}")
-        print(f"RAG agent configured: {supervisor.rag_tool_agent is not None}")
-
         # Run task requiring tool discovery
-        result = await supervisor.arun(
+        await supervisor.arun(
             "Research the latest Python features, analyze their impact, and create a summary report"
         )
-        print(f"\nResult: {result}")
 
         # Show tool discovery process
         if supervisor.discovered_tools:
-            print(f"\nTools discovered during execution:")
-            for tool_name in supervisor.discovered_tools:
-                print(f"  - {tool_name}")
+            for _tool_name in supervisor.discovered_tools:
+                pass
 
 
 async def multi_agent_tool_routing_example():
     """Example showing how supervisor routes based on tool availability."""
-    print("\n=== Multi-Agent Tool Routing Example ===\n")
-
     config = AugLLMConfig(temperature=0.1)
 
     # Create specialized agents
@@ -222,12 +206,9 @@ async def multi_agent_tool_routing_example():
         discovery_mode=ToolDiscoveryMode.COMPONENT_DISCOVERY,
     )
 
-    print("Supervisor configured with specialized agents:")
-    for agent_name, agent in supervisor.agents.items():
-        tools = []
+    for _agent_name, agent in supervisor.agents.items():
         if hasattr(agent, "tools") and agent.tools:
-            tools = [t.name for t in agent.tools]
-        print(f"  - {agent_name}: {tools}")
+            [t.name for t in agent.tools]
 
     # Test routing for different tasks
     tasks = [
@@ -237,7 +218,6 @@ async def multi_agent_tool_routing_example():
     ]
 
     for task in tasks:
-        print(f"\nTask: {task}")
 
         # Simulate decision making
         from haive.agents.supervisor.types import SupervisorState
@@ -246,15 +226,11 @@ async def multi_agent_tool_routing_example():
             messages=[HumanMessage(content=task)], next_agent="", agent_outputs={}
         )
 
-        decision = await supervisor._make_decision(state)
-        print(f"Decision: Route to '{decision.next_agent}' - {decision.reasoning}")
-        print(f"Confidence: {decision.confidence}")
+        await supervisor._make_decision(state)
 
 
 async def dynamic_tool_loading_example():
     """Example showing dynamic tool loading during execution."""
-    print("\n=== Dynamic Tool Loading Example ===\n")
-
     config = AugLLMConfig(temperature=0.1)
 
     # Start with minimal tools
@@ -265,31 +241,20 @@ async def dynamic_tool_loading_example():
         discovery_mode=ToolDiscoveryMode.HYBRID,
     )
 
-    print(f"Initial tools: {supervisor.discovered_tools}")
-
     # Simulate tool discovery
     discovery_tool = supervisor.tool_registry.get("discover_and_load_tools")
 
     # Discover tools for math
-    print("\nDiscovering math tools...")
-    math_result = discovery_tool.func(
-        "I need to perform complex mathematical calculations"
-    )
-    print(f"Discovery result: {math_result}")
+    discovery_tool.func("I need to perform complex mathematical calculations")
 
     # Discover tools for text
-    print("\nDiscovering text tools...")
-    text_result = discovery_tool.func("I need to analyze and process text documents")
-    print(f"Discovery result: {text_result}")
+    discovery_tool.func("I need to analyze and process text documents")
 
     # Show final tool registry
-    print(f"\nFinal tool registry: {list(supervisor.tool_registry.keys())}")
 
 
 async def performance_monitoring_example():
     """Example showing supervisor performance monitoring."""
-    print("\n=== Performance Monitoring Example ===\n")
-
     config = AugLLMConfig(temperature=0.1)
 
     # Create supervisor with multiple agents
@@ -306,8 +271,6 @@ async def performance_monitoring_example():
         max_discovery_attempts=3,
     )
 
-    print("Running multiple tasks to gather performance data...")
-
     # Run several tasks
     tasks = [
         "What is 2 + 2?",
@@ -317,16 +280,13 @@ async def performance_monitoring_example():
         "Compute the factorial of 5",
     ]
 
-    for i, task in enumerate(tasks):
-        print(f"\nTask {i+1}: {task}")
-        result = await supervisor.arun(task)
-        print(f"Completed: {result[:50]}...")
+    for _i, task in enumerate(tasks):
+        await supervisor.arun(task)
 
     # Show routing history
     if hasattr(supervisor.state, "routing_history"):
-        print("\nRouting History:")
-        for route in supervisor.state.get("routing_history", []):
-            print(f"  - Routed to: {route}")
+        for _route in supervisor.state.get("routing_history", []):
+            pass
 
 
 async def main():
@@ -339,11 +299,6 @@ async def main():
 
 
 if __name__ == "__main__":
-    print("Dynamic Tool Discovery Supervisor Examples")
-    print("=" * 50)
 
     # Run examples
     asyncio.run(main())
-
-    print("\n" + "=" * 50)
-    print("All examples completed!")

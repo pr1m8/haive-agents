@@ -16,8 +16,6 @@ Version: 1.0.0
 """
 
 import asyncio
-from pathlib import Path
-from typing import Any, Dict, List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -496,8 +494,6 @@ class TestDocumentProcessingAgent:
 # Integration test that can be run independently
 async def test_integration_run():
     """Standalone integration test that can be run directly."""
-    print("🚀 Running DocumentProcessingAgent Integration Test...")
-
     # Create basic configuration
     config = DocumentProcessingConfig(
         search_enabled=True,
@@ -516,19 +512,13 @@ async def test_integration_run():
         config=config, engine=llm_config, name="integration_test"
     )
 
-    print("✅ Agent created successfully")
-
     # Test capabilities
-    capabilities = agent.get_capabilities()
-    print(f"📋 Agent capabilities: {list(capabilities.keys())}")
+    agent.get_capabilities()
 
     # Test simple query
-    print("🔍 Testing simple query...")
     result = await agent.process_query("What is machine learning?")
-    print(f"✅ Simple query result: {result.response[:100]}...")
 
     # Test with sources
-    print("📄 Testing with document sources...")
     test_sources = [
         "Machine learning is a method of data analysis that automates analytical model building.",
         "Deep learning is a subset of machine learning that uses neural networks with multiple layers.",
@@ -536,15 +526,10 @@ async def test_integration_run():
     ]
 
     result = await agent.process_sources(test_sources, "Compare these AI technologies")
-    print(f"✅ Sources result: {result.response[:100]}...")
-    print(f"📊 Statistics: {result.statistics}")
 
-    print("🎉 Integration test completed successfully!")
     return result
 
 
 if __name__ == "__main__":
     # Run the integration test directly
     result = asyncio.run(test_integration_run())
-    print(f"\n📈 Final result statistics: {result.statistics}")
-    print(f"⏱️ Total time: {result.timing.get('total_time', 0):.2f} seconds")

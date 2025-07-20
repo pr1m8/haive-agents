@@ -1,6 +1,7 @@
 """Test just the state serialization without running the agent."""
 
 import asyncio
+import contextlib
 
 import ormsgpack
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -17,7 +18,6 @@ from haive.agents.react.agent import ReactAgent
 
 async def test_state_serialization():
     """Test state serialization directly."""
-
     # Create ReactAgent
     search_engine = AugLLMConfig(
         name="search_engine",
@@ -32,10 +32,8 @@ async def test_state_serialization():
     state = SupervisorStateWithTools()
     state.messages = [HumanMessage(content="Find information about France")]
 
-    try:
-        serialized = ormsgpack.packb(state.model_dump())
-    except Exception as e:
-        pass")
+    with contextlib.suppress(Exception):
+        ormsgpack.packb(state.model_dump())
 
     state.agents = {
         "search_agent": AgentInfo(
@@ -51,24 +49,20 @@ async def test_state_serialization():
         state_dict = state.model_dump()
         if "agents" in state_dict:
             pass
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     try:
         state_dict = state.model_dump()
-        serialized = ormsgpack.packb(state_dict)
-    except Exception as e:
-        pass")
-
-    try:
-        ormsgpack.packb(state)
-    except Exception as e:
-        pass")
-
-    try:
-        agent_info_dict = state.agents["search_agent"].model_dump()
-    except Exception as e:
+        ormsgpack.packb(state_dict)
+    except Exception:
         pass
+
+    with contextlib.suppress(Exception):
+        ormsgpack.packb(state)
+
+    with contextlib.suppress(Exception):
+        state.agents["search_agent"].model_dump()
 
 
 if __name__ == "__main__":

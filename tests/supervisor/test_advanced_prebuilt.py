@@ -473,7 +473,7 @@ async def test_advanced_dynamic_supervisor():
                 if hasattr(response, "additional_kwargs"):
                     agent_used = response.additional_kwargs.get("agent", "unknown")
         except Exception as e:
-            pass")
+            pass
 
     # Test 2: Dynamic activation based on demand
 
@@ -595,7 +595,7 @@ async def test_edge_cases_advanced():
             {"messages": [HumanMessage(content="Write some code")]}
         )
     except Exception as e:
-        pass")
+        pass
 
     # Edge case 2: All agents inactive
 

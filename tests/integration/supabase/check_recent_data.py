@@ -3,14 +3,12 @@
 
 import asyncio
 import os
-from datetime import datetime, timedelta
 
 import psycopg
 
 
 async def check_recent_data():
     """Check for recent data in Supabase."""
-
     conn_string = os.getenv("POSTGRES_CONNECTION_STRING")
 
     try:
@@ -49,7 +47,7 @@ async def check_recent_data():
 
                 test_threads = await cur.fetchall()
                 if test_threads:
-                    for (thread,) in test_threads:
+                    for (_thread,) in test_threads:
                         pass
                 else:
                     pass
@@ -68,12 +66,12 @@ async def check_recent_data():
                     )
                     count = (await cur.fetchone())[0]
                     if count > 0:
-                        pass")
+                        pass
                     else:
-                        pass")
+                        pass
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

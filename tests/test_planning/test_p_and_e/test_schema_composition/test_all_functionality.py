@@ -296,7 +296,7 @@ def run_all_tests():
 
 
     if failed == 0:
-        pass.")
+        pass
     else:
         passg.")
 

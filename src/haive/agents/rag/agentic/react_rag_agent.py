@@ -4,20 +4,18 @@ This agent extends ReactAgent to add a dedicated retrieval node to the graph,
 with intelligent routing between tool calls and retrieval based on the query.
 """
 
-from typing import Any, Callable, Dict, List, Optional
+import contextlib
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.documents import Document
-from langchain_core.messages import AIMessage, ToolMessage
+from langchain_core.messages import AIMessage
 from langchain_core.tools import Tool
 from langgraph.graph import END
 from pydantic import Field
 
-from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.react import ReactAgent
 
 
@@ -34,28 +32,29 @@ class ReactRAGAgent(ReactAgent):
     the retrieval node when called.
 
     Example:
-        ```python
-        # Create ReactRAG agent with both types of tools
-        agent = ReactRAGAgent.create_default(
+        .. code-block:: python
+
+            # Create ReactRAG agent with both types of tools
+            agent = ReactRAGAgent.create_default(
             name="react_rag",
             retriever_config=vector_store_config,
             tools=[calculator_tool, web_search_tool],
             temperature=0.1
-        )
+            )
 
-        # The agent will intelligently decide whether to:
-        # 1. Use retriever for knowledge queries
-        # 2. Use tools for computational/action queries
-        # 3. Use both when needed
+            # The agent will intelligently decide whether to:
+            # 1. Use retriever for knowledge queries
+            # 2. Use tools for computational/action queries
+            # 3. Use both when needed
 
-        result = await agent.arun("What is the capital of France?")  # Uses retriever
-        result = await agent.arun("Calculate 15 * 23")  # Uses calculator tool
-        result = await agent.arun("Search for Python tutorials")  # Uses web search
-        ```
+            result = await agent.arun("What is the capital of France?")  # Uses retriever
+            result = await agent.arun("Calculate 15 * 23")  # Uses calculator tool
+            result = await agent.arun("Search for Python tutorials")  # Uses web search
+
     """
 
     # Retriever configuration
-    retriever_config: Optional[BaseRetrieverConfig | VectorStoreConfig] = Field(
+    retriever_config: BaseRetrieverConfig | VectorStoreConfig | None = Field(
         default=None, description="Retriever configuration for RAG functionality"
     )
 
@@ -200,10 +199,8 @@ class ReactRAGAgent(ReactAgent):
 
                 # Remove existing edges
                 for edge in existing_edges:
-                    try:
+                    with contextlib.suppress(Exception):
                         graph.remove_edge(edge[0], edge[1])
-                    except:
-                        pass
 
                 # Add new conditional routing
                 graph.add_conditional_edges(

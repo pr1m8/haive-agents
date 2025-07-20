@@ -3,8 +3,6 @@
 This agent rewrites queries to improve retrieval using existing models from common.
 """
 
-from typing import Any, Dict
-
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.rag.common.query_refinement.models import QueryRefinementResponse
@@ -25,24 +23,25 @@ def create_query_rewriter_agent(
         SimpleAgent configured for query refinement
 
     Example:
-        ```python
-        # Create query rewriter agent
-        rewriter = create_query_rewriter_agent(
+        .. code-block:: python
+
+            # Create query rewriter agent
+            rewriter = create_query_rewriter_agent(
             name="query_rewriter",
             temperature=0.7
-        )
+            )
 
-        # Rewrite a query
-        result = await rewriter.arun({
+            # Rewrite a query
+            result = await rewriter.arun({
             "query": "quantum computing basics"
-        })
+            })
 
-        # Access results
-        print(f"Original: {result.original_query}")
-        print(f"Best rewrite: {result.best_refined_query}")
-        for suggestion in result.refinement_suggestions:
+            # Access results
+            print(f"Original: {result.original_query}")
+            print(f"Best rewrite: {result.best_refined_query}")
+            for suggestion in result.refinement_suggestions:
             print(f"- {suggestion.refined_query} ({suggestion.improvement_type})")
-        ```
+
     """
     prompt_template = (
         "You are a query optimization specialist for RAG systems. "

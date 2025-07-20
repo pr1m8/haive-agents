@@ -70,7 +70,7 @@ except Exception as e:
     try:
         simple_result = simple_agent.run({"messages": react_dict.get("messages", [])})
     except Exception as e2:
-        pass")
+        pass
 
 # Now test the actual SequentialAgent
 
@@ -79,7 +79,6 @@ seq_agent = SequentialAgent(agents=[react_agent, simple_agent])
 
 # Add some debug logging to see state transfer
 import logging
-
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(name)s - %(levelname)s - %(message)s"

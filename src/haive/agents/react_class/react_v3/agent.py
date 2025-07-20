@@ -1,5 +1,6 @@
 """ReactAgent implementation with tool usage and ReAct pattern.
 
+from typing import Any, Dict
 This module implements a tool-using agent that follows the ReAct pattern
 (Reasoning, Acting, and Observing) for solving tasks.
 """
@@ -101,7 +102,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Get tools indexed by name
         tools_by_name = self.config.get_tools_by_name()
 
-        def execute_tool(state):
+        def execute_tool(state: Dict[str, Any]):
             """Execute the appropriate tool based on the last AI message."""
             # Get messages
             messages = state.get("messages", [])

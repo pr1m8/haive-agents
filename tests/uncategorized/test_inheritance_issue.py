@@ -84,7 +84,7 @@ try:
     try:
         engine = AugLLMConfig()
         instance2 = TestState(engine=engine, query="test")
-        logger.info("✓ Created instance with engine"e")
+        logger.info("✓ Created instance with engine")
     except Exception as e:
         logger.exception(f"✗ Failed with engine: {e}")
 

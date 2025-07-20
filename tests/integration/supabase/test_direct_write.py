@@ -79,7 +79,7 @@ async def check_tables():
                     count = (await cur.fetchone())[0]
 
     except Exception as e:
-        pass")
+        pass
 
 
 if __name__ == "__main__":

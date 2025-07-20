@@ -50,9 +50,9 @@ if hasattr(config, "derive_input_schema"):
         for name, field_info in input_schema.model_fields.items():
             pass
     except Exception as e:
-        pass")
+        pass
 else:
-    pass")
+    pass
 
 raw_fields = config._compute_input_fields()
 for field_name, field_def in raw_fields.items():

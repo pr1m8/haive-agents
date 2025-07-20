@@ -4,9 +4,13 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from haive.agents.research.open_perplexity.models import (
+    Any,
     ResearchFinding,
     ResearchSource,
     ResearchSummary,
+    from,
+    import,
+    typing,
 )
 from haive.agents.research.open_perplexity.prompts import (
     CONFIDENCE_ASSESSMENT_PROMPT,
@@ -167,7 +171,7 @@ engines["main"] = AugLLMConfig(
 )
 
 
-def create_research_engines():
+def create_research_engines() -> Any:
     """Create and return the dictionary of research engines.
 
     Returns:

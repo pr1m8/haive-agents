@@ -1,6 +1,6 @@
 """Proper multi-agent base following exact engines dict pattern."""
 
-from typing import Any, Dict, List, Union
+from typing import Any
 
 # Fix forward references EARLY before importing MultiAgentState
 from haive.core.graph.node import agent_node_v3
@@ -36,7 +36,7 @@ class ProperMultiAgent(Agent):
     """
 
     # Agent management - exact same pattern as engines
-    agents: Dict[str, Agent] = Field(
+    agents: dict[str, Agent] = Field(
         default_factory=dict,
         description="Dictionary of agents this multi-agent coordinates",
     )
@@ -113,10 +113,10 @@ class ProperMultiAgent(Agent):
         if self.state_schema is None:
             # Create a simple schema that inherits from MultiAgentState
             # but requires agents to be provided
-            from typing import Any, Dict
+            from typing import Any
 
             from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-            from pydantic import Field, model_validator
+            from pydantic import model_validator
 
             # Store reference to the multi-agent instance for closure
             multi_agent_instance = self
@@ -128,7 +128,7 @@ class ProperMultiAgent(Agent):
 
                 @model_validator(mode="before")
                 @classmethod
-                def populate_agents_from_multi_agent(cls, data):
+                def populate_agents_from_multi_agent(cls, data: dict[str, Any]):
                     """Populate agents if not provided."""
                     if isinstance(data, dict) and "agents" not in data:
                         # Get agents from the multi-agent instance
@@ -214,7 +214,7 @@ class ProperMultiAgent(Agent):
 
         if self.parallel_wait_for_all:
             # Add a gather node to wait for all agents
-            def gather_results(state):
+            def gather_results(state: dict[str, Any]):
                 """Gather results from all parallel agents."""
                 return state
 
@@ -246,7 +246,7 @@ class ProperMultiAgent(Agent):
         graph.add_edge(START, f"agent_{decision_agent}")
 
         # Add branch router node
-        def branch_router(state):
+        def branch_router(state: dict[str, Any]):
             """Route to appropriate branch based on condition."""
             # Simple condition evaluation - can be enhanced
             if self.branch_condition:
@@ -279,7 +279,9 @@ class ProperMultiAgent(Agent):
             next_agent = agent_names[i + 1]
 
             # Add condition evaluator
-            def condition_evaluator(state, current=current_agent, next=next_agent):
+            def condition_evaluator(
+                state: dict[str, Any], current=current_agent, next=next_agent
+            ):
                 """Evaluate condition to determine next agent."""
                 # Simple condition evaluation
                 if self.branch_condition:

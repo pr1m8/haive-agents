@@ -65,19 +65,18 @@ from typing import TYPE_CHECKING, Any
 
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import Field, computed_field
-from typing_extensions import TypeAlias
 
 if TYPE_CHECKING:
     pass
 
 # Type aliases for better API clarity
-SpeakerName: TypeAlias = str
-SpeakerList: TypeAlias = list[SpeakerName]
-ConversationTopic: TypeAlias = str
-ConversationMode: TypeAlias = str
-RoundNumber: TypeAlias = int
-TurnCount: TypeAlias = int
-ProgressPercentage: TypeAlias = float
+type SpeakerName = str
+type SpeakerList = list[SpeakerName]
+type ConversationTopic = str
+type ConversationMode = str
+type RoundNumber = int
+type TurnCount = int
+type ProgressPercentage = float
 
 logger = get_logger(__name__)
 logger.set_level(logging.WARNING)

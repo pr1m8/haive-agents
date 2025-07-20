@@ -1,17 +1,31 @@
-"""Hallucination Grading Module.
+"""Module exports."""
 
-Standalone hallucination detection and grading agents that can be plugged into any RAG workflow.
-Compatible with all other agents through standardized I/O schemas.
-"""
-
-from haive.agents.rag.hallucination_grading.agent import (
+from hallucination_grading.agent import (
+    AdvancedHallucinationGrade,
     AdvancedHallucinationGraderAgent,
+    HallucinationGrade,
     HallucinationGraderAgent,
+    RealtimeHallucinationCheck,
     RealtimeHallucinationGraderAgent,
+    advanced_hallucination_analysis,
+    build_graph,
+    create_hallucination_grader,
+    get_hallucination_grader_io_schema,
+    grade_hallucination,
+    quick_hallucination_check,
 )
 
 __all__ = [
+    "AdvancedHallucinationGrade",
     "AdvancedHallucinationGraderAgent",
+    "HallucinationGrade",
     "HallucinationGraderAgent",
+    "RealtimeHallucinationCheck",
     "RealtimeHallucinationGraderAgent",
+    "advanced_hallucination_analysis",
+    "build_graph",
+    "create_hallucination_grader",
+    "get_hallucination_grader_io_schema",
+    "grade_hallucination",
+    "quick_hallucination_check",
 ]

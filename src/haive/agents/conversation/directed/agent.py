@@ -1,5 +1,6 @@
 # src/haive/agents/conversation/directed/agent.py
 """Directed conversation agent where participants respond to mentions and direct questions.
+from typing import Any
 Uses structured output models for robust speaker selection and interaction tracking.
 """
 

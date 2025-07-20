@@ -1,7 +1,6 @@
 """Test Plan and Execute Agent v2 with real components."""
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.tools.math.calculator import Calculator
 
 from haive.agents.planning.plan_and_execute.v2.agent import PlanAndExecuteAgent

@@ -54,7 +54,7 @@ def test_simple_debug():
         # Check for the field
         if "test_response" in result:
         else:
-            pass")
+            pass
 
         return result
 

@@ -43,9 +43,9 @@ async def test_minimal_flow():
                 else:
                     passse")
             else:
-                pass")
+                pass
         else:
-            pass")
+            pass
 
     except Exception as e:
         import traceback

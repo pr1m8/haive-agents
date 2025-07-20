@@ -35,14 +35,14 @@ def test_composed_multi_agent():
     print("\n2. Testing state creation without providing agents:")
     try:
         state = multi.state_schema(messages=[HumanMessage(content="Hello")])
-        print(f"   ✅ State created successfully")
+        print("   ✅ State created successfully"y")
         print(f"   State.agents: {list(state.agents.keys())}")
         print(f"   State.messages: {len(state.messages)}")
         print(f"   State type: {type(state).__name__}")
 
         # Test if it has MultiAgentState features
         if hasattr(state, "set_active_agent"):
-            print(f"   ✅ Has set_active_agent method")
+            print("   ✅ Has set_active_agent method"d")
             if state.agents:
                 try:
                     state.set_active_agent("agent1")
@@ -65,7 +65,7 @@ def test_composed_multi_agent():
         state2 = multi.state_schema(
             messages=[HumanMessage(content="Hello")], agents={"custom": agent1}
         )
-        print(f"   ✅ State created successfully")
+        print("   ✅ State created successfully"y")
         print(f"   State.agents: {list(state2.agents.keys())}")
 
     except Exception as e:

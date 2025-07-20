@@ -8,6 +8,7 @@ import argparse
 import asyncio
 import logging
 import os
+import sys
 
 from agents.sequence.storm import STORMAgentConfig
 from haive.core.engine.retriever import VectorStoreRetrieverConfig
@@ -22,7 +23,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def setup_environment():
+def setup_environment() -> None:
     """Set up required environment variables."""
     # Check for Azure OpenAI credentials
     missing_vars = []
@@ -42,7 +43,7 @@ def setup_environment():
             f"Missing required environment variables: {', '.join(missing_vars)}"
         )
         logger.error("Please set these variables before running the example.")
-        exit(1)
+        sys.exit(1)
 
 
 async def run_storm_agent(
@@ -163,7 +164,7 @@ async def run_storm_agent(
         raise
 
 
-def main():
+def main() -> None:
     """Main entry point for the script."""
     parser = argparse.ArgumentParser(
         description="Generate a Wikipedia-style article using the STORM agent"

@@ -1,10 +1,35 @@
-"""Pro Search Agent module.
+"""Module exports."""
 
-Provides deep, contextual search with user preferences and advanced reasoning.
-Similar to Perplexity's Pro Search feature.
-"""
+from pro_search.agent import (
+    ProSearchAgent,
+    extract_contextual_insights,
+    generate_follow_up_questions,
+    generate_reasoning_steps,
+    get_response_model,
+    get_search_instructions,
+    get_system_prompt,
+    refine_query,
+)
+from pro_search.models import (
+    Config,
+    ContextualInsight,
+    ProSearchRequest,
+    ProSearchResponse,
+    SearchRefinement,
+)
 
-from haive.agents.memory.search.pro_search.agent import ProSearchAgent
-from haive.agents.memory.search.pro_search.models import ProSearchResponse
-
-__all__ = ["ProSearchAgent", "ProSearchResponse"]
+__all__ = [
+    "Config",
+    "ContextualInsight",
+    "ProSearchAgent",
+    "ProSearchRequest",
+    "ProSearchResponse",
+    "SearchRefinement",
+    "extract_contextual_insights",
+    "generate_follow_up_questions",
+    "generate_reasoning_steps",
+    "get_response_model",
+    "get_search_instructions",
+    "get_system_prompt",
+    "refine_query",
+]

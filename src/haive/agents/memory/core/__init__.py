@@ -1,44 +1,44 @@
-"""Haive Agents Memory Core System - Comprehensive long-term memory for agents.
+"""Module exports."""
 
-This module provides the core memory system components for building
-intelligent agents with long-term memory capabilities.
-
-Key Components:
-    - Memory type classification and importance scoring (11 memory types)
-    - Self-query retriever with memory context
-    - Memory consolidation and lifecycle management
-    - Integration with existing store tools
-
-Phase Implementation:
-    Phase 1 (✅ COMPLETE): Memory Type Classification
-    Phase 2 (🔄 CURRENT): Enhanced Self-Query with Memory Context
-    Phase 3 (📋 PLANNED): Graph RAG implementation
-    Phase 4 (📋 PLANNED): Memory consolidation agent
-"""
-
-from haive.agents.memory.core.classifier import MemoryClassifier, MemoryClassifierConfig
-from haive.agents.memory.core.stores import MemoryStoreConfig, MemoryStoreManager
-from haive.agents.memory.core.types import (
+from core.classifier import (
+    MemoryClassifier,
+    MemoryClassifierConfig,
+    batch_classify,
+    classify_memory,
+    classify_query_intent,
+    create_memory_entry,
+)
+from core.stores import MemoryStoreConfig, MemoryStoreManager
+from core.types import (
     MemoryClassificationResult,
     MemoryConsolidationResult,
     MemoryEntry,
     MemoryImportance,
     MemoryQueryIntent,
     MemoryType,
+    add_relationship,
+    calculate_current_weight,
+    is_expired,
+    update_access,
 )
 
 __all__ = [
-    # Core memory types and data structures
-    "MemoryType",
-    "MemoryEntry",
-    "MemoryImportance",
     "MemoryClassificationResult",
-    "MemoryQueryIntent",
-    "MemoryConsolidationResult",
-    # Memory classification system
     "MemoryClassifier",
     "MemoryClassifierConfig",
-    # Memory storage and management
-    "MemoryStoreManager",
+    "MemoryConsolidationResult",
+    "MemoryEntry",
+    "MemoryImportance",
+    "MemoryQueryIntent",
     "MemoryStoreConfig",
+    "MemoryStoreManager",
+    "MemoryType",
+    "add_relationship",
+    "batch_classify",
+    "calculate_current_weight",
+    "classify_memory",
+    "classify_query_intent",
+    "create_memory_entry",
+    "is_expired",
+    "update_access",
 ]

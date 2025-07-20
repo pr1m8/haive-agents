@@ -2,6 +2,7 @@
 
 """Base Agent class for the Haive framework.
 
+from typing import Any
 This module provides the abstract base agent class that all agents inherit from,
 including execution, state management, and persistence functionality through mixins.
 """
@@ -24,6 +25,8 @@ from rich.console import Console
 from rich.logging import RichHandler
 from rich.table import Table
 from rich.tree import Tree
+
+from haive.agents.base.agent_structured_output_mixin import StructuredOutputMixin
 
 # Import mixins
 from haive.agents.base.mixins.execution_mixin import ExecutionMixin
@@ -49,6 +52,7 @@ class Agent(
     StateMixin,
     PersistenceMixin,
     SerializationMixin,
+    StructuredOutputMixin,
     ABC,
 ):
     """Abstract base agent class that extends InvokableEngine with execution and state management.
@@ -261,7 +265,8 @@ class Agent(
         return values
 
     @model_validator(mode="after")
-    def complete_agent_setup(self) -> "Agent":
+    @classmethod
+    def complete_agent_setup(cls) -> "Agent":
         """STEP 2-5: Complete agent setup in proper order.
 
         This validator handles the main initialization sequence:
@@ -308,7 +313,8 @@ class Agent(
         return self
 
     @model_validator(mode="after")
-    def ensure_basic_schema(self) -> "Agent":
+    @classmethod
+    def ensure_basic_schema(cls) -> "Agent":
         """Ensure we always have at least a basic state schema.
 
         This provides a fallback schema with messages field if no schema is defined.
@@ -1653,9 +1659,9 @@ class Agent(
             # Extract response based on output schema
             # TODO: Use agent's actual output schema
             if isinstance(result, dict):
-                if "messages" in result and result["messages"]:
+                if result.get("messages"):
                     return result["messages"][-1].get("content", str(result))
-                elif "output" in result:
+                if "output" in result:
                     return result["output"]
 
             return str(result)

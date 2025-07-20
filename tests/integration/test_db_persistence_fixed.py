@@ -130,7 +130,7 @@ def check_database_persistence():
                 print("   ❌ No persistence data found")")
 
     except Exception as e:
-        pass")
+        pass
 
 
 if __name__ == "__main__":

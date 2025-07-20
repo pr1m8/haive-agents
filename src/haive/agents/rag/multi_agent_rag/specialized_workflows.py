@@ -50,7 +50,7 @@ class FLAREAgent(MultiAgent):
     predicting when retrieval would be beneficial.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Generation monitor agent
         generation_monitor = SimpleAgent(
             name="generation_monitor",
@@ -145,7 +145,7 @@ class FLAREAgent(MultiAgent):
             **kwargs,
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for FLARE workflow."""
         # FLARE uses conditional execution based on uncertainty detection
         return  # Use default graph structure
@@ -156,7 +156,7 @@ class DynamicRAGAgent(MultiAgent):
     based on query characteristics and retriever performance.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Retriever manager agent
         retriever_manager = SimpleAgent(
             name="retriever_manager",
@@ -246,7 +246,7 @@ class DynamicRAGAgent(MultiAgent):
             **kwargs,
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for Dynamic RAG workflow."""
         return  # Use default graph structure
 
@@ -357,7 +357,7 @@ class DebateRAGAgent(MultiAgent):
             **kwargs,
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for Debate RAG workflow."""
         # Debate RAG uses complex conditional routing between positions
         return  # Use default graph structure
@@ -368,7 +368,7 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
     based on query difficulty and answer confidence.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Query analyzer
         query_analyzer = SimpleAgent(
             name="query_analyzer",
@@ -461,6 +461,6 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
             **kwargs,
         )
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for Adaptive Threshold RAG workflow."""
         return  # Use default graph structure

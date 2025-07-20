@@ -26,7 +26,7 @@ def save_recall_memory(
 def save_structured_recall_memory(
     config: RunnableConfig,
     vs_config: VectorStoreConfig,
-    memories: list[BaseModel] = None,
+    memories: list[BaseModel] | None = None,
 ) -> str:
     """Save memory to vectorstore for later semantic retrieval."""
     if memories is None:

@@ -1,5 +1,6 @@
 """Self-Reflective Agentic RAG Agent.
 
+from typing import Any
 Implementation of self-reflective RAG with critique and iterative improvement.
 Uses reflection loops to assess and enhance answer quality.
 """

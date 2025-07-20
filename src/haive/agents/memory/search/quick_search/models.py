@@ -1,7 +1,5 @@
 """Data models for Quick Search Agent."""
 
-from typing import List, Optional
-
 from pydantic import BaseModel, Field
 
 from haive.agents.memory.search.base import SearchResponse
@@ -19,7 +17,7 @@ class QuickSearchResponse(SearchResponse):
     answer_type: str = Field(
         default="factual", description="Type of answer (factual, definition, etc.)"
     )
-    keywords: List[str] = Field(
+    keywords: list[str] = Field(
         default_factory=list, description="Key terms identified in query"
     )
 

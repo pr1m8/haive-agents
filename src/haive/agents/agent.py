@@ -1,9 +1,14 @@
 import asyncio
 import base64
+import contextlib
 import logging
 import platform
 import re
 import uuid
+
+# -----------------------------------------------------------------------------
+# Debugging Utility
+# -----------------------------------------------------------------------------
 from typing import Any
 
 from haive.core.engine.agent.agent import Agent, AgentConfig
@@ -14,11 +19,8 @@ from langchain_core.runnables import RunnableLambda
 from langgraph.graph import START
 from playwright.async_api import Browser, Page, async_playwright
 from playwright_stealth import stealth_async
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
 
-# -----------------------------------------------------------------------------
-# Debugging Utility
-# -----------------------------------------------------------------------------
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
@@ -52,7 +54,7 @@ class Prediction(BaseModel):
 
     @field_validatorensure_args
     @classmethod
-    def ensure_args(cls, v):
+    def ensure_args(cls, v) -> Any:
         """Ensures args is a list."""
         if v is None:
             return []
@@ -92,7 +94,7 @@ class WebNavState(BaseModel):
 
     @field_validatorensure_prediction
     @classmethod
-    def ensure_prediction(cls, v):
+    def ensure_prediction(cls, v) -> Any:
         """Ensures prediction is either None or a valid object."""
         debug_print(f"Validating prediction: {v}")
         if isinstance(v, list) and len(v) == 0:
@@ -165,7 +167,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
     # -------------------------------------------------------------------------
     # Core Agent Functions
     # -------------------------------------------------------------------------
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         """Sets up the workflow graph for the agent."""
         # Add agent node
         self.graph.add_node("agent", self.agent)
@@ -210,7 +212,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 return "agent"
         return "agent"
 
-    def update_scratchpad(self, state):
+    def update_scratchpad(self, state: dict[str, Any]):
         """Updates the scratchpad with the latest observation and agent's reasoning."""
         debug_print("Updating scratchpad")
 
@@ -293,10 +295,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         state_dict = {}
         for field in dir(state):
             if not field.startswith("_") and field not in {"scratchpad", "observation"}:
-                try:
+                with contextlib.suppress(Exception):
                     state_dict[field] = getattr(state, field)
-                except:
-                    pass
 
         return {**state_dict, "scratchpad": new_scratchpad, "observation": observation}
 
@@ -438,10 +438,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
             # Try to get a screenshot even if annotation failed
             screenshot = ""
-            try:
+            with contextlib.suppress(Exception):
                 screenshot = await self.capture_screenshot()
-            except:
-                pass
 
             # Return state with whatever we have
             return {

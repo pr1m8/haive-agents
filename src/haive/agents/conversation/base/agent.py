@@ -188,7 +188,7 @@ class BaseConversationAgent(Agent):
 
         return values
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """Set up the conversation orchestrator.
 
         This method performs critical initialization steps for the conversation agent:

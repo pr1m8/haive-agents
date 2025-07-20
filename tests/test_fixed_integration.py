@@ -190,7 +190,7 @@ def test_multi_agent_concept():
         ValidatedConfig(name="bad_multi", min_agents=5, agents=["only_one"])
         raise AssertionError("Should have raised ValueError")
     except ValueError as e:
-        pass")
+        pass
 
     return True
 
@@ -297,4 +297,4 @@ if __name__ == "__main__":
     if all_passed:
         pass!")
     else:
-        pass")
+        pass

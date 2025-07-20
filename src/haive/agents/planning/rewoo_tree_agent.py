@@ -19,14 +19,14 @@ Reference:
 import logging
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Set
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.messages_state import MessagesState
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import AIMessage
 from langchain_core.tools import BaseTool
-from langgraph.types import Command, Send
+from langgraph.types import Command
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from haive.agents.base.agent import Agent
@@ -207,7 +207,10 @@ class PlanNode(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def validate_dependencies(self) -> "PlanNode":
+
+
+    @classmethod
+    def validate_dependencies(cls) -> "PlanNode":
         """Validate dependency relationships."""
         # Cannot depend on itself
         if self.id in self.dependencies:
@@ -500,7 +503,10 @@ class ReWOOTreePlannerOutput(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def validate_consistency(self) -> "ReWOOTreePlannerOutput":
+
+
+    @classmethod
+    def validate_consistency(cls) -> "ReWOOTreePlannerOutput":
         """Validate consistency between plan components."""
         # Plan tree ID should match plan ID
         if self.plan_tree.id != self.plan_id:
@@ -639,7 +645,7 @@ class ReWOOTreeAgent(Agent):
         default=None, description="Specialized agent for execution"
     )
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Initialize ReWOO Tree Agent."""
         # Set default state schema
         if "state_schema" not in kwargs:
@@ -777,7 +783,6 @@ class ReWOOTreeAgent(Agent):
 
     def _planning_node(self, state: ReWOOTreeAgentState) -> Command:
         """Execute the planning phase."""
-        import asyncio
 
         # Get planning depth (default to 0 if not set)
         planning_depth = getattr(state, "planning_depth", 0)
@@ -889,9 +894,8 @@ class ReWOOTreeAgent(Agent):
 
     def _execution_coordinator_node(self, state: ReWOOTreeAgentState) -> Command:
         """Coordinate the execution of the plan tree."""
-        import asyncio
 
-        logger.info(f"⚡ Execution coordination phase")
+        logger.info("⚡ Execution coordination phase")
 
         if not state.current_plan:
             return Command(
@@ -1102,7 +1106,7 @@ class ReWOOTreeAgent(Agent):
 
     def _recursive_planning_check_node(self, state: ReWOOTreeAgentState) -> Command:
         """Check if recursive planning is needed."""
-        logger.info(f"🔄 Recursive planning check")
+        logger.info("🔄 Recursive planning check")
 
         # Get current state values with defaults
         planning_depth = getattr(state, "planning_depth", 0)
@@ -1149,7 +1153,7 @@ class ReWOOTreeAgent(Agent):
 
     def _result_aggregator_node(self, state: ReWOOTreeAgentState) -> Command:
         """Aggregate results from all executions."""
-        logger.info(f"📊 Result aggregation phase")
+        logger.info("📊 Result aggregation phase"se")
 
         # Aggregate all node results
         final_result = None

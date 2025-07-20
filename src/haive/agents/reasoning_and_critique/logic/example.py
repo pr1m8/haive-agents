@@ -2,13 +2,17 @@
 
 from haive.agents.reasoning_and_critique.logic.agent import ReasoningSystem
 from haive.agents.reasoning_and_critique.logic.models import (
+    Any,
     ArgumentStrength,
     Evidence,
     EvidenceType,
+    from,
+    import,
+    typing,
 )
 
 
-def example_business_decision():
+def example_business_decision() -> Any:
     """Example: Reasoning about a business decision."""
     # Create the reasoning system
     reasoner = ReasoningSystem()
@@ -71,7 +75,7 @@ def example_business_decision():
     return result
 
 
-def example_quick_reasoning():
+def example_quick_reasoning() -> Any:
     """Example: Quick reasoning with minimal setup."""
     reasoner = ReasoningSystem()
 

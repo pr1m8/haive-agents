@@ -3,8 +3,12 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import Field
 
 from haive.agents.document_modifiers.summarizer.map_branch.engines import (
+    Any,
+    from,
+    import,
     map_aug_llm_config,
     reduce_augllm_config,
+    typing,
 )
 from haive.agents.document_modifiers.summarizer.map_branch.state import (
     InputState,
@@ -34,7 +38,7 @@ class SummarizerAgentConfig(AgentConfig):
         default="async", description="The checkpoint mode for the summarizer."
     )
 
-    def build_agent(self):
+    def build_agent(self) -> Any:
         from haive.agents.document_modifiers.summarizer.map_branch.agent import (
             SummarizerAgent,
         )

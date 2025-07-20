@@ -12,7 +12,6 @@ This test validates:
 """
 
 import logging
-from typing import Optional
 
 import pytest
 from haive.core.common.mixins.dynamic_tool_route_mixin import DynamicToolRouteMixin
@@ -41,7 +40,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 @tool
@@ -330,7 +329,7 @@ class TestMetaStatePostgresPersistence:
             assert "agent" in serialized
 
         except Exception as e:
-            logger.error(f"❌ Serialization failed: {e}")
+            logger.exception(f"❌ Serialization failed: {e}")
             # This would be the old error: "Type is not msgpack serializable: SecretStr"
             if "SecretStr" in str(e):
                 pytest.fail(f"SecretStr serialization issue not resolved: {e}")
@@ -362,7 +361,7 @@ class TestMetaStatePostgresPersistence:
             logger.info("✅ Agent execution with PostgreSQL persistence succeeded")
 
         except Exception as e:
-            logger.error(f"❌ Agent execution failed: {e}")
+            logger.exception(f"❌ Agent execution failed: {e}")
             if "msgpack" in str(e) or "SecretStr" in str(e):
                 pytest.fail(f"Persistence serialization error: {e}")
             else:
@@ -393,7 +392,7 @@ class TestMetaStatePostgresPersistence:
                 logger.warning(f"Database connection error (expected in tests): {e}")
                 pytest.skip("PostgreSQL not available for testing")
             else:
-                logger.error(f"❌ Unexpected error: {e}")
+                logger.exception(f"❌ Unexpected error: {e}")
                 raise
 
 
@@ -490,7 +489,7 @@ class TestDynamicToolRouting:
                 self.tool_change_log = []
 
             def _on_tool_route_change(
-                self, tool_name: str, action: str, old_route: Optional[str]
+                self, tool_name: str, action: str, old_route: str | None
             ):
                 """Handle tool route changes."""
                 self.tool_change_log.append(
@@ -564,7 +563,7 @@ class TestCompleteIntegration:
                 )
 
             def _on_tool_change(
-                self, tool_name: str, action: str, old_route: Optional[str]
+                self, tool_name: str, action: str, old_route: str | None
             ):
                 """Mark for recompilation on tool changes."""
                 self.mark_for_recompile(f"Tool {action}: {tool_name}")
@@ -619,9 +618,7 @@ if __name__ == "__main__":
     test_instance = TestMetaStateWithAgents()
 
     # Run basic structure test
-    print("Testing MetaStateSchema basic structure...")
     test_instance.test_meta_state_basic_structure()
-    print("✓ Basic structure test passed")
 
     # Create fixtures
     config = AugLLMConfig(name="test_llm", temperature=0.1)
@@ -631,8 +628,4 @@ if __name__ == "__main__":
     )
 
     # Run embedding test
-    print("\nTesting agent embedding...")
     test_instance.test_embed_agent_in_meta_state(simple_agent)
-    print("✓ Agent embedding test passed")
-
-    print("\nAll synchronous tests passed! Run pytest for async tests.")

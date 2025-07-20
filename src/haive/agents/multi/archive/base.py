@@ -9,12 +9,11 @@ This module provides an abstract base class for multi-agent systems that can:
 
 import logging
 from abc import abstractmethod
+from collections.abc import Callable, Sequence
 from enum import Enum
 from typing import (
     Any,
-    Callable,
     Literal,
-    Sequence,
 )
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -92,7 +91,8 @@ class MultiAgent(Agent):
         return values
 
     @model_validator(mode="after")
-    def setup_multi_agent(self) -> "MultiAgent":
+    @classmethod
+    def setup_multi_agent(cls) -> "MultiAgent":
         """Set up the multi-agent system after initialization."""
         # Generate schema based on execution mode
         build_mode = self._get_build_mode()

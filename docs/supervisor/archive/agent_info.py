@@ -21,7 +21,8 @@ class AgentInfo(BaseModel):
     model_config = {"arbitrary_types_allowed": True}  # Allow agent instances
 
     @model_validator(mode="after")
-    def extract_agent_info(self):
+    @classmethod
+    def extract_agent_info(cls):
         """Extract name and description from agent if not provided."""
         # If name not provided, try to get from agent
         if not self.name and hasattr(self.agent, "name"):

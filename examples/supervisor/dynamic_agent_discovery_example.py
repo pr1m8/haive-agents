@@ -10,13 +10,10 @@ This example shows how the supervisor can:
 import asyncio
 import os
 import tempfile
-from typing import Any, Dict
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
-from langchain_core.tools import tool
 
-from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 from haive.agents.supervisor.dynamic_agent_discovery_supervisor import (
     AgentDiscoveryMode,
@@ -26,8 +23,6 @@ from haive.agents.supervisor.dynamic_agent_discovery_supervisor import (
 
 async def basic_agent_discovery_example():
     """Basic example of DynamicAgentDiscoverySupervisor."""
-    print("\n=== Basic Dynamic Agent Discovery Supervisor Example ===\n")
-
     # Configure LLM
     config = AugLLMConfig(temperature=0.1)
 
@@ -42,24 +37,16 @@ async def basic_agent_discovery_example():
         discovery_mode=AgentDiscoveryMode.HYBRID,
     )
 
-    print(f"Initial team: {list(supervisor.agents.keys())}")
-    print(f"Discovered agents: {supervisor.discovered_agents}")
-
     # Run task that needs specialists
-    result = await supervisor.arun(
+    await supervisor.arun(
         "I need an expert to analyze financial data and another to write a professional report"
     )
-    print(f"\nResult: {result}")
 
     # Check discovered agents
-    print(f"\nTeam after task: {list(supervisor.agents.keys())}")
-    print(f"Discovered agents: {supervisor.discovered_agents}")
 
 
 async def factory_with_agent_specs_example():
     """Example using factory method with agent specifications."""
-    print("\n=== Factory Method with Agent Specs Example ===\n")
-
     config = AugLLMConfig(temperature=0.1)
 
     # Define team specifications
@@ -95,24 +82,19 @@ async def factory_with_agent_specs_example():
         name="project_team", initial_agent_specs=team_specs, engine=config
     )
 
-    print("Pre-built team:")
-    for agent_name, agent in supervisor.agents.items():
+    for agent_name, _agent in supervisor.agents.items():
         cap = supervisor.agent_capabilities.get(agent_name)
         if cap:
-            print(f"  - {agent_name} ({cap.agent_type}): {cap.description}")
-            print(f"    Specialties: {', '.join(cap.specialties)}")
+            pass
 
     # Run complex project task
-    result = await supervisor.arun(
+    await supervisor.arun(
         "Analyze our sales data, identify trends, and create a comprehensive business report"
     )
-    print(f"\nProject result: {result[:200]}...")
 
 
 async def discovery_sources_example():
     """Example with configured discovery sources."""
-    print("\n=== Discovery Sources Configuration Example ===\n")
-
     config = AugLLMConfig(temperature=0.1)
 
     # Create temporary directory with agent documentation
@@ -131,7 +113,7 @@ async def discovery_sources_example():
 - **Description**: Specialized in financial analysis, investment strategies, and market trends
 - **Specialties**: finance, investments, market analysis, risk assessment
 - **Tools**: financial_calculator, market_data_api, risk_analyzer
-- **Use Cases**: 
+- **Use Cases**:
   - Portfolio analysis
   - Investment recommendations
   - Financial reporting
@@ -192,26 +174,14 @@ async def discovery_sources_example():
             },
         )
 
-        print(f"Supervisor configured with discovery mode: {supervisor.discovery_mode}")
-        print(
-            f"RAG discovery: {'Enabled' if supervisor.rag_discovery_agent else 'Disabled'}"
-        )
-        print(
-            f"Component discovery: {'Enabled' if supervisor.discovery_agent else 'Disabled'}"
-        )
-        print(f"MCP discovery: {'Enabled' if supervisor.mcp_framework else 'Disabled'}")
-
         # Run task requiring specialists
-        result = await supervisor.arun(
+        await supervisor.arun(
             "I need help with a legal contract review and then a marketing strategy for the product launch"
         )
-        print(f"\nResult: {result}")
 
 
 async def dynamic_team_building_example():
     """Example showing dynamic team building based on project needs."""
-    print("\n=== Dynamic Team Building Example ===\n")
-
     config = AugLLMConfig(temperature=0.1)
 
     # Start with just a project manager
@@ -220,8 +190,6 @@ async def dynamic_team_building_example():
         agents={"project_manager": SimpleAgent(name="project_manager", engine=config)},
         engine=config,
     )
-
-    print("Initial team: Project Manager only")
 
     # Series of tasks that require different specialists
     tasks = [
@@ -232,25 +200,20 @@ async def dynamic_team_building_example():
         "Ensure all activities comply with regulations",
     ]
 
-    for i, task in enumerate(tasks):
-        print(f"\nPhase {i+1}: {task}")
+    for _i, task in enumerate(tasks):
 
         # Check team before task
-        print(f"Current team size: {len(supervisor.agents)}")
 
         # Execute task
-        result = await supervisor.arun(task)
-        print(f"Result: {result[:100]}...")
+        await supervisor.arun(task)
 
         # Check if new agents were discovered
         if len(supervisor.discovered_agents) > 0:
-            print(f"Discovered specialists: {supervisor.discovered_agents}")
+            pass
 
 
 async def agent_capability_routing_example():
     """Example showing routing based on agent capabilities."""
-    print("\n=== Agent Capability-Based Routing Example ===\n")
-
     config = AugLLMConfig(temperature=0.1)
 
     # Create diverse team with specific capabilities
@@ -293,9 +256,8 @@ async def agent_capability_routing_example():
         name="dev_team_supervisor", initial_agent_specs=team_specs, engine=config
     )
 
-    print("Development team assembled:")
-    for name, cap in supervisor.agent_capabilities.items():
-        print(f"  - {name}: {', '.join(cap.specialties)}")
+    for _name, _cap in supervisor.agent_capabilities.items():
+        pass
 
     # Test routing for different technical tasks
     technical_tasks = [
@@ -306,7 +268,6 @@ async def agent_capability_routing_example():
     ]
 
     for task in technical_tasks:
-        print(f"\nTask: {task}")
 
         # Simulate routing decision
         from haive.agents.supervisor.types import SupervisorState
@@ -315,15 +276,11 @@ async def agent_capability_routing_example():
             messages=[HumanMessage(content=task)], next_agent="", agent_outputs={}
         )
 
-        decision = await supervisor._make_decision(state)
-        print(f"Assigned to: {decision.next_agent}")
-        print(f"Reasoning: {decision.reasoning}")
+        await supervisor._make_decision(state)
 
 
 async def performance_tracking_example():
     """Example showing agent performance tracking."""
-    print("\n=== Agent Performance Tracking Example ===\n")
-
     config = AugLLMConfig(temperature=0.1)
 
     # Create team
@@ -350,8 +307,6 @@ async def performance_tracking_example():
         engine=config,
     )
 
-    print("Running multiple tasks to track performance...")
-
     # Run several tasks
     test_tasks = [
         "Write a short poem",
@@ -362,19 +317,12 @@ async def performance_tracking_example():
     ]
 
     for task in test_tasks:
-        print(f"\nTask: {task}")
-        result = await supervisor.arun(task)
-        print(f"Completed by: {getattr(supervisor.state, 'last_agent', 'Unknown')}")
-
-    print("\nTeam Performance Summary:")
-    print(f"Total agents: {len(supervisor.agents)}")
-    print(f"Discovered agents: {len(supervisor.discovered_agents)}")
+        await supervisor.arun(task)
 
     # Show agent utilization
     if hasattr(supervisor.state, "agent_execution_count"):
-        print("\nAgent utilization:")
-        for agent, count in supervisor.state.agent_execution_count.items():
-            print(f"  - {agent}: {count} tasks")
+        for _agent, _count in supervisor.state.agent_execution_count.items():
+            pass
 
 
 async def main():
@@ -388,11 +336,6 @@ async def main():
 
 
 if __name__ == "__main__":
-    print("Dynamic Agent Discovery Supervisor Examples")
-    print("=" * 50)
 
     # Run examples
     asyncio.run(main())
-
-    print("\n" + "=" * 50)
-    print("All examples completed!")

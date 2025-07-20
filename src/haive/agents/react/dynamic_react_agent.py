@@ -10,10 +10,10 @@ Based on:
 - @packages/haive-agents/examples/supervisor/advanced/dynamic_activation_example.py
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.registry import DynamicRegistry, RegistryItem
+from haive.core.registry import RegistryItem
 from haive.core.schema.prebuilt.dynamic_activation_state import DynamicActivationState
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 from langchain_core.tools import BaseTool
@@ -62,23 +62,23 @@ class DynamicToolState(DynamicActivationState):
     """
 
     # Tool-specific fields
-    tool_categories: Dict[str, List[str]] = Field(
+    tool_categories: dict[str, list[str]] = Field(
         default_factory=dict, description="Categorization of tools by type"
     )
 
-    tool_usage_stats: Dict[str, int] = Field(
+    tool_usage_stats: dict[str, int] = Field(
         default_factory=dict, description="Usage statistics for each tool"
     )
 
-    last_tool_discovery: Optional[str] = Field(
+    last_tool_discovery: str | None = Field(
         default=None, description="Timestamp of last tool discovery"
     )
 
-    discovery_queries: List[str] = Field(
+    discovery_queries: list[str] = Field(
         default_factory=list, description="History of discovery queries"
     )
 
-    def get_active_tools(self) -> List[BaseTool]:
+    def get_active_tools(self) -> list[BaseTool]:
         """Get all active tools as LangChain tools.
 
         Returns:
@@ -127,7 +127,7 @@ class DynamicToolState(DynamicActivationState):
         else:
             self.tool_usage_stats[tool_name] = 1
 
-    def get_tool_usage_stats(self) -> Dict[str, int]:
+    def get_tool_usage_stats(self) -> dict[str, int]:
         """Get tool usage statistics.
 
         Returns:
@@ -162,7 +162,7 @@ class DynamicToolState(DynamicActivationState):
         if tool_name not in self.tool_categories[category]:
             self.tool_categories[category].append(tool_name)
 
-    def get_tools_by_category(self, category: str) -> List[str]:
+    def get_tools_by_category(self, category: str) -> list[str]:
         """Get tools in a specific category.
 
         Args:
@@ -249,21 +249,17 @@ class DynamicReactAgent(ReactAgent):
     state_schema: type[DynamicToolState] = DynamicToolState
 
     # Initial tools to register (used during factory creation)
-    tools_to_register: Optional[List[Dict[str, Any]]] = Field(
-        default=None, exclude=True
-    )
+    tools_to_register: list[dict[str, Any]] | None = Field(default=None, exclude=True)
 
     # Tool discovery agents (part of agent's persistent state)
-    discovery_agent: Optional[ComponentDiscoveryAgent] = Field(
-        default=None, exclude=True
-    )
-    rag_tool_agent: Optional[Any] = Field(
+    discovery_agent: ComponentDiscoveryAgent | None = Field(default=None, exclude=True)
+    rag_tool_agent: Any | None = Field(
         default=None, exclude=True
     )  # BaseRAGAgent for tool discovery
 
     # Private attributes for internal state (not serialized)
-    _meta_self: Optional[MetaStateSchema] = PrivateAttr(default=None)
-    _tool_loader: Optional[Any] = PrivateAttr(default=None)
+    _meta_self: MetaStateSchema | None = PrivateAttr(default=None)
+    _tool_loader: Any | None = PrivateAttr(default=None)
 
     def setup_agent(self) -> None:
         """Setup the dynamic React agent.
@@ -271,7 +267,6 @@ class DynamicReactAgent(ReactAgent):
         This method is called during agent initialization to set up
         the agent's internal state and discovery capabilities.
         """
-
         # Set state schema before parent setup
         if not hasattr(self, "state_schema") or self.state_schema is None:
             self.state_schema = DynamicToolState
@@ -363,8 +358,8 @@ class DynamicReactAgent(ReactAgent):
         cls,
         name: str,
         engine: AugLLMConfig,
-        rag_documents: List[str],
-        tool_documents: Optional[List[str]] = None,
+        rag_documents: list[str],
+        tool_documents: list[str] | None = None,
         use_mcp: bool = False,
         **kwargs,
     ) -> "DynamicReactAgent":
@@ -427,7 +422,7 @@ class DynamicReactAgent(ReactAgent):
 
     @classmethod
     def create_with_tools(
-        cls, name: str, tools: List[Dict[str, Any]], engine: AugLLMConfig, **kwargs
+        cls, name: str, tools: list[dict[str, Any]], engine: AugLLMConfig, **kwargs
     ) -> "DynamicReactAgent":
         """Factory method to create agent with pre-registered tools.
 
@@ -501,7 +496,7 @@ class DynamicReactAgent(ReactAgent):
             # Any other error - fallback to None
             self._tool_loader = None
 
-    def _register_initial_tools(self, tools: List[Dict[str, Any]]) -> None:
+    def _register_initial_tools(self, tools: list[dict[str, Any]]) -> None:
         """Register initial tools during agent setup.
 
         This method registers tools that were provided during agent creation
@@ -567,10 +562,7 @@ class DynamicReactAgent(ReactAgent):
                 name=f"{self.name}_tool_discovery", engine=retriever_config
             )
 
-            print(f"✅ RAG tool agent created with {len(documents)} documents")
-
-        except Exception as e:
-            print(f"❌ Failed to setup RAG tool agent: {e}")
+        except Exception:
             self.rag_tool_agent = None
 
     def _add_dynamic_tool_discovery_tool(self) -> None:
@@ -614,11 +606,10 @@ class DynamicReactAgent(ReactAgent):
                             for tool in tools
                         ]
                         return f"Discovered and loaded {len(tools)} tools: {', '.join(tool_names)}"
-                    else:
-                        return "No suitable tools found for this task"
+                    return "No suitable tools found for this task"
 
                 # Use RAG tool agent if available
-                elif self.rag_tool_agent:
+                if self.rag_tool_agent:
                     # Query RAG agent for tool suggestions
                     query = f"What tools are available for: {task_description}"
 
@@ -635,16 +626,15 @@ class DynamicReactAgent(ReactAgent):
 
                     return f"RAG tool suggestions: {result}"
 
-                else:
-                    return "No tool discovery system available"
+                return "No tool discovery system available"
 
             except Exception as e:
-                return f"Error discovering tools: {str(e)}"
+                return f"Error discovering tools: {e!s}"
 
         # Add the tool to the engine
         self.engine.add_tool(discover_and_load_tools)
 
-    async def discover_and_load_tools(self, task: str) -> List[BaseTool]:
+    async def discover_and_load_tools(self, task: str) -> list[BaseTool]:
         """Discover and load tools for a specific task.
 
         Args:
@@ -689,7 +679,7 @@ class DynamicReactAgent(ReactAgent):
                 import logging
 
                 logger = logging.getLogger(__name__)
-                logger.error(f"Discovery agent failed for task '{task}': {e}")
+                logger.exception(f"Discovery agent failed for task '{task}': {e}")
 
         # Try RAG tool agent if discovery agent didn't work or found nothing
         if not loaded_tools and self.rag_tool_agent:
@@ -712,7 +702,7 @@ class DynamicReactAgent(ReactAgent):
                 import logging
 
                 logger = logging.getLogger(__name__)
-                logger.error(f"RAG tool agent failed for task '{task}': {e}")
+                logger.exception(f"RAG tool agent failed for task '{task}': {e}")
 
         # Register loaded tools
         for tool in loaded_tools:
@@ -752,7 +742,7 @@ class DynamicReactAgent(ReactAgent):
                 import logging
 
                 logger = logging.getLogger(__name__)
-                logger.error(f"Failed to register tool {tool}: {e}")
+                logger.exception(f"Failed to register tool {tool}: {e}")
 
         # Mark for recompilation if tools were loaded
         if loaded_tools and self._meta_self:
@@ -767,7 +757,7 @@ class DynamicReactAgent(ReactAgent):
 
     def _parse_rag_tool_suggestions(
         self, rag_result: str, task: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Parse RAG result to extract tool suggestions.
 
         Args:
@@ -821,16 +811,16 @@ class DynamicReactAgent(ReactAgent):
         # Look for words that might be tool names
         words = line.split()
         for word in words:
-            if word.islower() and "_" in word:
-                return word
-            elif word[0].isupper() and len(word) > 3:
+            if (word.islower() and "_" in word) or (
+                word[0].isupper() and len(word) > 3
+            ):
                 return word
 
         return ""
 
     async def _load_tool_from_suggestion(
-        self, suggestion: Dict[str, Any]
-    ) -> Optional[BaseTool]:
+        self, suggestion: dict[str, Any]
+    ) -> BaseTool | None:
         """Load a tool from a RAG suggestion.
 
         Args:
@@ -866,10 +856,10 @@ class DynamicReactAgent(ReactAgent):
             import logging
 
             logger = logging.getLogger(__name__)
-            logger.error(f"Failed to load tool from suggestion {suggestion}: {e}")
+            logger.exception(f"Failed to load tool from suggestion {suggestion}: {e}")
             return None
 
-    async def discover_and_load_tools_legacy(self, task: str) -> List[BaseTool]:
+    async def discover_and_load_tools_legacy(self, task: str) -> list[BaseTool]:
         """Legacy version of discover_and_load_tools for backward compatibility."""
         loaded_tools = []
 
@@ -926,13 +916,15 @@ class DynamicReactAgent(ReactAgent):
             import logging
 
             logger = logging.getLogger(__name__)
-            logger.error(f"Failed to discover and load tools for task '{task}': {e}")
+            logger.exception(
+                f"Failed to discover and load tools for task '{task}': {e}"
+            )
 
         return loaded_tools
 
     async def _load_tool_from_document(
-        self, tool_doc: Dict[str, Any]
-    ) -> Optional[BaseTool]:
+        self, tool_doc: dict[str, Any]
+    ) -> BaseTool | None:
         """Load actual tool instance from tool document.
 
         Args:
@@ -949,8 +941,8 @@ class DynamicReactAgent(ReactAgent):
             # This is a simplified version - the actual implementation would
             # need to handle different tool types and module loading
 
-            module_path = tool_doc.get("module_path", "")
-            name = tool_doc.get("name", "")
+            tool_doc.get("module_path", "")
+            tool_doc.get("name", "")
 
             # For now, return the tool document as a placeholder
             # In a real implementation, this would load the actual tool
@@ -960,12 +952,10 @@ class DynamicReactAgent(ReactAgent):
             import logging
 
             logger = logging.getLogger(__name__)
-            logger.error(f"Failed to load tool from document: {e}")
+            logger.exception(f"Failed to load tool from document: {e}")
             return None
 
-    def _infer_tool_category(
-        self, task: str, tool_doc: Dict[str, Any]
-    ) -> Optional[str]:
+    def _infer_tool_category(self, task: str, tool_doc: dict[str, Any]) -> str | None:
         """Infer tool category based on task and tool documentation.
 
         Args:
@@ -982,30 +972,30 @@ class DynamicReactAgent(ReactAgent):
         # Simple category inference
         if any(word in task_lower for word in ["math", "calculate", "compute"]):
             return "math"
-        elif any(word in task_lower for word in ["search", "web", "lookup"]):
+        if any(word in task_lower for word in ["search", "web", "lookup"]):
             return "web"
-        elif any(word in task_lower for word in ["file", "read", "write"]):
+        if any(word in task_lower for word in ["file", "read", "write"]):
             return "file"
-        elif any(word in task_lower for word in ["chart", "plot", "visualize"]):
+        if any(word in task_lower for word in ["chart", "plot", "visualize"]):
             return "visualization"
-        elif any(word in task_lower for word in ["data", "process", "analyze"]):
+        if any(word in task_lower for word in ["data", "process", "analyze"]):
             return "data"
 
         # Check tool name/description for category hints
         if any(word in tool_name + tool_desc for word in ["math", "calc"]):
             return "math"
-        elif any(word in tool_name + tool_desc for word in ["search", "web"]):
+        if any(word in tool_name + tool_desc for word in ["search", "web"]):
             return "web"
-        elif any(word in tool_name + tool_desc for word in ["file", "io"]):
+        if any(word in tool_name + tool_desc for word in ["file", "io"]):
             return "file"
-        elif any(word in tool_name + tool_desc for word in ["chart", "plot"]):
+        if any(word in tool_name + tool_desc for word in ["chart", "plot"]):
             return "visualization"
-        elif any(word in tool_name + tool_desc for word in ["data", "process"]):
+        if any(word in tool_name + tool_desc for word in ["data", "process"]):
             return "data"
 
         return None
 
-    async def _recompile_with_new_tools(self, new_tools: List[BaseTool]) -> None:
+    async def _recompile_with_new_tools(self, new_tools: list[BaseTool]) -> None:
         """Recompile agent graph with new tools.
 
         Args:
@@ -1030,9 +1020,9 @@ class DynamicReactAgent(ReactAgent):
             import logging
 
             logger = logging.getLogger(__name__)
-            logger.error(f"Failed to recompile with new tools: {e}")
+            logger.exception(f"Failed to recompile with new tools: {e}")
 
-    def get_active_tool_names(self) -> List[str]:
+    def get_active_tool_names(self) -> list[str]:
         """Get names of all active tools.
 
         Returns:
@@ -1047,7 +1037,7 @@ class DynamicReactAgent(ReactAgent):
         active_items = self.state.registry.get_active_items()
         return [item.name for item in active_items]
 
-    def get_tool_usage_stats(self) -> Dict[str, int]:
+    def get_tool_usage_stats(self) -> dict[str, int]:
         """Get tool usage statistics.
 
         Returns:
@@ -1077,7 +1067,7 @@ class DynamicReactAgent(ReactAgent):
         """
         self.state.categorize_tool(tool_name, category)
 
-    def get_tools_by_category(self, category: str) -> List[str]:
+    def get_tools_by_category(self, category: str) -> list[str]:
         """Get tools in a specific category.
 
         Args:
@@ -1122,7 +1112,7 @@ class DynamicReactAgent(ReactAgent):
                     ):
                         current_tools = getattr(self.engine, "tools", [])
                         if item.component not in current_tools:
-                            self.engine.tools = current_tools + [item.component]
+                            self.engine.tools = [*current_tools, item.component]
 
                     return True
 
@@ -1164,7 +1154,7 @@ class DynamicReactAgent(ReactAgent):
 
         return False
 
-    def get_registry_stats(self) -> Dict[str, Any]:
+    def get_registry_stats(self) -> dict[str, Any]:
         """Get statistics about the tool registry.
 
         Returns:

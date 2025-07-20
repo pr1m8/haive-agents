@@ -1,6 +1,7 @@
 """Demo of OutputAdapter and transformation functionality."""
 
-from typing import Any, Dict, List, Optional
+import contextlib
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -38,7 +39,6 @@ class APIResponse(BaseModel):
 
 def demo_basic_transformation():
     """Demo: Basic output transformation."""
-
     # Create adapter for product analysis
     adapter = OutputAdapter(target_schema=ProductAnalysis)
 
@@ -56,12 +56,11 @@ def demo_basic_transformation():
     }
 
     # Transform to structured output
-    structured = adapter.transform(raw_output)
+    adapter.transform(raw_output)
 
 
 def demo_field_mapping():
     """Demo: Field mapping during transformation."""
-
     # Create adapter with field mapping
     adapter = OutputAdapter(
         target_schema=EmailSummary,
@@ -88,16 +87,15 @@ def demo_field_mapping():
         "other_field": "ignored",  # This will be ignored
     }
 
-    for key, value in raw_output.items():
+    for _key, _value in raw_output.items():
         pass
 
     # Transform with field mapping
-    structured = adapter.transform(raw_output)
+    adapter.transform(raw_output)
 
 
 def demo_field_extraction():
     """Demo: Extracting nested fields."""
-
     # Create adapter that extracts from nested field
     adapter = OutputAdapter(
         target_schema=ProductAnalysis, extract_field="analysis_result"
@@ -118,12 +116,11 @@ def demo_field_extraction():
     }
 
     # Extract and transform
-    structured = adapter.transform(raw_output)
+    adapter.transform(raw_output)
 
 
 def demo_missing_fields():
     """Demo: Handling missing fields with defaults."""
-
     adapter = OutputAdapter(target_schema=EmailSummary)
 
     # Partial data - missing optional fields
@@ -135,12 +132,11 @@ def demo_missing_fields():
         # deadline is missing but it's optional
     }
 
-    structured = adapter.transform(partial_output)
+    adapter.transform(partial_output)
 
 
 def demo_validation_errors():
     """Demo: How validation errors are handled."""
-
     adapter = OutputAdapter(target_schema=ProductAnalysis)
 
     # Invalid data - missing required fields
@@ -150,10 +146,8 @@ def demo_validation_errors():
         # Missing: pros, cons, recommendation
     }
 
-    try:
-        structured = adapter.transform(invalid_output)
-    except Exception as e:
-        pass
+    with contextlib.suppress(Exception):
+        adapter.transform(invalid_output)
 
 
 def demo_complex_transformation():
@@ -194,7 +188,7 @@ def demo_complex_transformation():
         "meta": {"request_id": "req_456", "duration_ms": 125},
     }
 
-    structured = adapter.transform(api_response)
+    adapter.transform(api_response)
 
 
 def demo_output_mixin():
@@ -224,12 +218,11 @@ def demo_output_mixin():
         "recommendation": "Buy",
     }
 
-    result = processor.process(data)
+    processor.process(data)
 
 
 def main():
     """Run all demos."""
-
     demo_basic_transformation()
     demo_field_mapping()
     demo_field_extraction()

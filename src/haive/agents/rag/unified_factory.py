@@ -1,5 +1,6 @@
 """Unified RAG Factory.
 
+from typing import Any, Dict
 Create any RAG agent using either traditional or ChainAgent approach.
 Integrates with multi-agent system.
 """
@@ -209,43 +210,42 @@ class RAGFactory:
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
-        elif rag_type == RAGType.MEMORY_AWARE:
+        if rag_type == RAGType.MEMORY_AWARE:
             from haive.agents.rag.memory_aware.agent import MemoryAwareRAGAgent
 
             return MemoryAwareRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
-        elif rag_type == RAGType.STEP_BACK:
+        if rag_type == RAGType.STEP_BACK:
             from haive.agents.rag.step_back.agent import StepBackRAGAgent
 
             return StepBackRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
-        elif rag_type == RAGType.SELF_ROUTE:
+        if rag_type == RAGType.SELF_ROUTE:
             from haive.agents.rag.self_route.agent import SelfRouteRAGAgent
 
             return SelfRouteRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
-        elif rag_type == RAGType.ADAPTIVE_TOOLS:
+        if rag_type == RAGType.ADAPTIVE_TOOLS:
             from haive.agents.rag.adaptive_tools.agent import AdaptiveToolsRAGAgent
 
             return AdaptiveToolsRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
-        elif rag_type == RAGType.CORRECTIVE:
+        if rag_type == RAGType.CORRECTIVE:
             from haive.agents.rag.corrective.agent import CorrectiveRAGAgent
 
             return CorrectiveRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
-        else:
-            raise ValueError(f"Unknown RAG type: {rag_type}")
+        raise ValueError(f"Unknown RAG type: {rag_type}")
 
 
 # Convenience functions
@@ -292,7 +292,7 @@ def create_rag_pipeline(
 
 
 # Examples of easy usage
-def example_usage():
+def example_usage() -> Dict[str, Any]:
     """Examples of how to use the unified factory."""
     docs = [Document(page_content="Test document")]
 

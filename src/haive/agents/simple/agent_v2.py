@@ -1,5 +1,6 @@
 """SimpleAgent V2 - Uses V2 validation node + router system.
 
+from typing import Any, Dict
 This version uses the V2 validation system that can properly:
 1. Add ToolMessages to state for Pydantic model validation
 2. Use separate validation node + router for proper state management
@@ -37,7 +38,7 @@ from haive.agents.base.agent import Agent
 logger = logging.getLogger(__name__)
 
 
-def has_tool_calls_v2(state) -> bool:
+def has_tool_calls_v2(state: Dict[str, Any]) -> bool:
     """Check if the last AI message has tool calls - V2 version."""
     if not hasattr(state, "messages") or not state.messages:
         return False
@@ -81,7 +82,7 @@ class SimpleAgentV2(Agent):
     model_name: str | None = Field(default=None, description="Model name")
 
     # Tool configuration
-    tools: list[Any] | None = Field(default=None, description="Tools")
+    # Note: tools field is inherited from ToolRouteMixin with default_factory=list
     force_tool_use: bool | None = Field(default=None, description="Force tool use")
 
     # Structured output - THIS IS THE KEY FIELD
@@ -126,13 +127,13 @@ class SimpleAgentV2(Agent):
 
     @field_validator("engine")
     @classmethod
-    def validate_engine_type(cls, v):
+    def validate_engine_type(cls, v) -> Any:
         """Ensure engine is AugLLMConfig."""
         if v is not None and not isinstance(v, AugLLMConfig):
             raise ValueError("SimpleAgentV2 engine must be AugLLMConfig")
         return v
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """Custom setup that modifies the engine and regenerates schemas."""
         if self.engine:
             # Add engine to engines dict
@@ -189,8 +190,8 @@ class SimpleAgentV2(Agent):
             self.engine.max_tokens = self.max_tokens
         if self.model_name is not None and hasattr(self.engine, "model"):
             self.engine.model = self.model_name
-        if self.tools is not None and hasattr(self.engine, "tools"):
-            self.engine.tools = self.tools
+        # Tools are managed directly by the engine (via ToolRouteMixin)
+        # No need to sync from agent to engine
         if self.force_tool_use is not None and hasattr(self.engine, "force_tool_use"):
             self.engine.force_tool_use = self.force_tool_use
         if self.structured_output_model is not None and hasattr(
@@ -378,7 +379,7 @@ class SimpleAgentV2(Agent):
 
         return graph
 
-    def create_runnable(self, runnable_config=None):
+    def create_runnable(self, runnable_config: Dict[str, Any] = None):
         """Override to ensure state includes required fields."""
         compiled = super().create_runnable(runnable_config)
 
@@ -401,6 +402,164 @@ class SimpleAgentV2(Agent):
 
         compiled.ainvoke = wrapped_ainvoke
         return compiled
+
+    # ========================================================================
+    # DIRECT MANAGEMENT METHODS
+    # ========================================================================
+
+    def add_prompt_template(
+        self, name: str, template: ChatPromptTemplate | PromptTemplate
+    ) -> None:
+        """Add a named prompt template to the engine.
+
+        Args:
+            name: Unique name for the template
+            template: The prompt template to store
+        """
+        self.engine.add_prompt_template(name, template)
+        logger.info(f"Added prompt template '{name}' to agent '{self.name}'")
+
+    def use_prompt_template(self, name: str) -> None:
+        """Switch to using a specific template.
+
+        Args:
+            name: Name of the template to activate
+
+        Raises:
+            ValueError: If template name not found
+        """
+        self.engine.use_prompt_template(name)
+        logger.info(f"Agent '{self.name}' now using template '{name}'")
+
+    def remove_prompt_template(self, name: str | None = None) -> None:
+        """Remove a template or disable the active one.
+
+        Args:
+            name: Template name to remove. If None, disables active template.
+        """
+        self.engine.remove_prompt_template(name)
+        action = f"removed template '{name}'" if name else "disabled active template"
+        logger.info(f"Agent '{self.name}' {action}")
+
+    def list_prompt_templates(self) -> list[str]:
+        """List available template names."""
+        return self.engine.list_prompt_templates()
+
+    def get_active_template(self) -> str | None:
+        """Get the name of the currently active template."""
+        return self.engine.get_active_template()
+
+    def add_tool(self, tool: Any) -> None:
+        """Add a tool to the agent.
+
+        Args:
+            tool: Tool to add (LangChain tool, Pydantic model, or callable)
+        """
+        # Add to engine
+        self.engine.add_tool(tool)
+
+        # Engine handles the actual tools (via ToolRouteMixin)
+        # No need to maintain a separate tools list on SimpleAgentV2
+
+        tool_name = getattr(tool, "name", type(tool).__name__)
+        logger.info(f"Added tool '{tool_name}' to agent '{self.name}'")
+
+    def remove_tool(self, tool: Any) -> None:
+        """Remove a tool from the agent.
+
+        Args:
+            tool: Tool instance to remove
+        """
+        # Remove from engine
+        self.engine.remove_tool(tool)
+
+        # Engine handles the actual tools (via ToolRouteMixin)
+        # No need to maintain a separate tools list on SimpleAgentV2
+
+        tool_name = getattr(tool, "name", type(tool).__name__)
+        logger.info(f"Removed tool '{tool_name}' from agent '{self.name}'")
+
+    def clear_tools(self) -> None:
+        """Clear all tools from the agent."""
+        self.engine.clear_tools()
+        # Engine handles the actual tools (via ToolRouteMixin)
+        logger.info(f"Cleared all tools from agent '{self.name}'")
+
+    def set_structured_output(
+        self,
+        model: type[BaseModel],
+        version: str = "v2",
+        include_instructions: bool = True,
+    ) -> None:
+        """Set structured output model.
+
+        Args:
+            model: Pydantic model for structured output
+            version: Version to use ("v1" or "v2")
+            include_instructions: Whether to include format instructions
+        """
+        # Update engine with structured output
+        self.engine = self.engine.with_structured_output(
+            model=model, version=version, include_instructions=include_instructions
+        )
+
+        # Update convenience fields
+        self.structured_output_model = model
+        self.structured_output_version = version
+
+        # Force schema regeneration
+        self.set_schema = True
+
+        logger.info(
+            f"Set structured output to {model.__name__} (version {version}) for agent '{self.name}'"
+        )
+
+    def clear_structured_output(self) -> None:
+        """Clear structured output configuration."""
+        self.engine.structured_output_model = None
+        self.engine.structured_output_version = None
+        self.structured_output_model = None
+        self.structured_output_version = None
+
+        # Force schema regeneration
+        self.set_schema = True
+
+        logger.info(f"Cleared structured output for agent '{self.name}'")
+
+    def get_structured_output_model(self) -> type[BaseModel] | None:
+        """Get current structured output model."""
+        return self.structured_output_model
+
+    def add_system_message(self, message: str) -> None:
+        """Add or update the system message.
+
+        Args:
+            message: System message content
+        """
+        self.engine.system_message = message
+        self.system_message = message
+        logger.info(f"Updated system message for agent '{self.name}'")
+
+    def get_configuration_summary(self) -> dict[str, Any]:
+        """Get a summary of current agent configuration."""
+        return {
+            "name": self.name,
+            "active_template": self.get_active_template(),
+            "available_templates": self.list_prompt_templates(),
+            "tools_count": (
+                len(self.engine.tools)
+                if self.engine and hasattr(self.engine, "tools")
+                else 0
+            ),
+            "structured_output": (
+                self.get_structured_output_model().__name__
+                if self.get_structured_output_model()
+                else None
+            ),
+            "engine_model": getattr(self.engine, "model", None),
+            "engine_temperature": getattr(self.engine, "temperature", None),
+            "system_message": bool(self.system_message),
+        }
 
     # ========================================================================
     # CONVENIENCE CONSTRUCTORS (same as V1)

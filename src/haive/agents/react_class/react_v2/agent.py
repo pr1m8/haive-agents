@@ -330,7 +330,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             return "structured_output"
         return "end"
 
-    def run(self, input_data, thread_id=None, **kwargs):
+    def run(self, input_data, thread_id: str | None = None, **kwargs):
         """Override run to handle tool-based workflows and proper state preparation."""
         # Add remaining_steps to input if not present but in our schema
         if hasattr(self.state_schema, "remaining_steps"):

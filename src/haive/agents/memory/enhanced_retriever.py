@@ -16,7 +16,7 @@ bridging toward full Graph RAG implementation.
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from haive.core.tools.store_tools import StoreManager
 from pydantic import BaseModel, ConfigDict, Field
@@ -56,7 +56,7 @@ class EnhancedRetrieverConfig(BaseModel):
     )
 
     # Memory type weighting
-    memory_type_weights: Dict[str, float] = Field(
+    memory_type_weights: dict[str, float] = Field(
         default_factory=lambda: {
             MemoryType.SEMANTIC.value: 1.0,
             MemoryType.EPISODIC.value: 1.2,  # Boost episodic memories
@@ -105,7 +105,7 @@ class EnhancedQueryResult(BaseModel):
     """Result of enhanced memory retrieval with detailed metadata."""
 
     # Core results
-    memories: List[Dict[str, Any]] = Field(
+    memories: list[dict[str, Any]] = Field(
         default_factory=list, description="Retrieved memories"
     )
     total_found: int = Field(
@@ -113,27 +113,27 @@ class EnhancedQueryResult(BaseModel):
     )
 
     # Query analysis
-    query_intent: Optional[MemoryQueryIntent] = Field(
+    query_intent: MemoryQueryIntent | None = Field(
         default=None, description="Analyzed query intent"
     )
-    expanded_query: Optional[str] = Field(
+    expanded_query: str | None = Field(
         default=None, description="Query after expansion"
     )
-    memory_types_targeted: List[MemoryType] = Field(
+    memory_types_targeted: list[MemoryType] = Field(
         default_factory=list, description="Memory types targeted"
     )
 
     # Retrieval metadata
-    similarity_scores: List[float] = Field(
+    similarity_scores: list[float] = Field(
         default_factory=list, description="Similarity scores for each result"
     )
-    importance_scores: List[float] = Field(
+    importance_scores: list[float] = Field(
         default_factory=list, description="Importance scores for each result"
     )
-    recency_scores: List[float] = Field(
+    recency_scores: list[float] = Field(
         default_factory=list, description="Recency scores for each result"
     )
-    final_scores: List[float] = Field(
+    final_scores: list[float] = Field(
         default_factory=list, description="Combined final scores"
     )
 
@@ -178,12 +178,12 @@ class EnhancedMemoryRetriever:
     async def retrieve_memories(
         self,
         query: str,
-        memory_types: Optional[List[MemoryType]] = None,
-        importance_threshold: Optional[float] = None,
-        time_range: Optional[Tuple[datetime, datetime]] = None,
-        limit: Optional[int] = None,
+        memory_types: list[MemoryType] | None = None,
+        importance_threshold: float | None = None,
+        time_range: tuple[datetime, datetime] | None = None,
+        limit: int | None = None,
         include_metadata: bool = True,
-        namespace: Optional[Tuple[str, ...]] = None,
+        namespace: tuple[str, ...] | None = None,
     ) -> EnhancedQueryResult:
         """Retrieve memories using enhanced self-query with memory context.
 
@@ -281,7 +281,7 @@ class EnhancedMemoryRetriever:
             return result
 
         except Exception as e:
-            logger.error(f"Error in enhanced memory retrieval: {e}")
+            logger.exception(f"Error in enhanced memory retrieval: {e}")
             # Return empty result on error
             return EnhancedQueryResult(
                 total_time_ms=(datetime.utcnow() - start_time).total_seconds() * 1000
@@ -304,12 +304,10 @@ class EnhancedMemoryRetriever:
                 if any(word in query.lower() for word in ["how", "process", "step"]):
                     expansion_terms.extend(["workflow", "procedure", "method"])
 
-            if MemoryType.EPISODIC in query_intent.memory_types:
-                if any(
-                    word in query.lower()
-                    for word in ["when", "conversation", "meeting"]
-                ):
-                    expansion_terms.extend(["discussion", "event", "interaction"])
+            if MemoryType.EPISODIC in query_intent.memory_types and any(
+                word in query.lower() for word in ["when", "conversation", "meeting"]
+            ):
+                expansion_terms.extend(["discussion", "event", "interaction"])
 
             # Limit expansion terms
             expansion_terms = expansion_terms[: self.config.expansion_terms_limit]
@@ -322,16 +320,16 @@ class EnhancedMemoryRetriever:
             return query
 
         except Exception as e:
-            logger.error(f"Error expanding query: {e}")
+            logger.exception(f"Error expanding query: {e}")
             return query
 
     async def _apply_enhanced_scoring(
         self,
-        memories: List[Dict[str, Any]],
+        memories: list[dict[str, Any]],
         query: str,
         query_intent: MemoryQueryIntent,
-        memory_types: List[MemoryType],
-    ) -> List[Dict[str, Any]]:
+        memory_types: list[MemoryType],
+    ) -> list[dict[str, Any]]:
         """Apply enhanced multi-factor scoring to memories."""
         try:
             scored_memories = []
@@ -380,11 +378,11 @@ class EnhancedMemoryRetriever:
             return scored_memories
 
         except Exception as e:
-            logger.error(f"Error in enhanced scoring: {e}")
+            logger.exception(f"Error in enhanced scoring: {e}")
             return memories
 
     def _calculate_type_score(
-        self, memory_types: List[MemoryType], target_types: List[MemoryType]
+        self, memory_types: list[MemoryType], target_types: list[MemoryType]
     ) -> float:
         """Calculate memory type relevance score."""
         if not memory_types or not target_types:
@@ -406,7 +404,7 @@ class EnhancedMemoryRetriever:
 
         return min(1.0, normalized_score)
 
-    def _calculate_recency_score(self, metadata: Dict[str, Any]) -> float:
+    def _calculate_recency_score(self, metadata: dict[str, Any]) -> float:
         """Calculate time-based recency score."""
         try:
             created_at_str = metadata.get("created_at", datetime.utcnow().isoformat())
@@ -429,11 +427,11 @@ class EnhancedMemoryRetriever:
             return decay_factor
 
         except Exception as e:
-            logger.error(f"Error calculating recency score: {e}")
+            logger.exception(f"Error calculating recency score: {e}")
             return 0.5
 
     def _update_stats(
-        self, retrieval_time: float, results_count: int, memory_types: List[MemoryType]
+        self, retrieval_time: float, results_count: int, memory_types: list[MemoryType]
     ) -> None:
         """Update retrieval performance statistics."""
         try:
@@ -457,13 +455,13 @@ class EnhancedMemoryRetriever:
                 ] += 1
 
         except Exception as e:
-            logger.error(f"Error updating stats: {e}")
+            logger.exception(f"Error updating stats: {e}")
 
-    def get_performance_stats(self) -> Dict[str, Any]:
+    def get_performance_stats(self) -> dict[str, Any]:
         """Get retrieval performance statistics."""
         return dict(self._retrieval_stats)
 
-    async def optimize_for_usage_patterns(self) -> Dict[str, Any]:
+    async def optimize_for_usage_patterns(self) -> dict[str, Any]:
         """Analyze usage patterns and suggest optimizations."""
         stats = self.get_performance_stats()
 
@@ -503,8 +501,8 @@ class EnhancedMemoryRetriever:
 # Factory function for easy creation
 async def create_enhanced_memory_retriever(
     store_manager: StoreManager,
-    namespace: Tuple[str, ...] = ("memory", "enhanced"),
-    classifier_config: Optional[MemoryClassifierConfig] = None,
+    namespace: tuple[str, ...] = ("memory", "enhanced"),
+    classifier_config: MemoryClassifierConfig | None = None,
     **retriever_kwargs,
 ) -> EnhancedMemoryRetriever:
     """Factory function to create an enhanced memory retriever.

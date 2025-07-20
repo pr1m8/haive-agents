@@ -1,6 +1,8 @@
 # Example usage of ReactAgent with Human Interaction
 
+# 1. Define our tools
 import uuid
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
@@ -11,7 +13,6 @@ from pydantic import BaseModel, Field
 from haive.agents.react_class.react_v2.config import ReactAgentConfig
 
 
-# 1. Define our tools
 def get_weather(location: str) -> str:
     """Get the current weather for a location."""
     return f"The weather in {location} is sunny and 72 degrees."
@@ -89,7 +90,7 @@ user_input = "I want to plan a trip but I'm not sure where to go. Can you help?"
 
 
 # This simulates an interaction with human intervention
-def simulate_react_agent_with_human():
+def simulate_react_agent_with_human() -> Any:
 
     # Start a thread for persistence
     thread_id = uuid.uuid4()

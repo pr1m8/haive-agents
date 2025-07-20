@@ -45,7 +45,6 @@ async def main():
     )  # ReactAgent for tools!
     replanner = SimpleAgent(name="replanner", engine=replanner_engine)
 
-
     # Create Plan & Execute system using our new MultiAgentBase
     system = create_plan_execute_multi_agent(
         planner_agent=planner,
@@ -54,10 +53,8 @@ async def main():
         schema_build_mode=BuildMode.PARALLEL,
     )
 
-
     # Test objective
     objective = "What is the current population of Tokyo and how does it compare to New York City?"
-
 
     try:
         # Build and compile the graph
@@ -70,12 +67,11 @@ async def main():
             "objective": objective,
         }
 
-
         step_count = 0
         async for event in compiled.astream(initial_state):
             step_count += 1
 
-            for node_name, state_update in event.items():
+            for _node_name, state_update in event.items():
 
                 # Show key state changes to verify sharing
                 if isinstance(state_update, dict):
@@ -84,21 +80,17 @@ async def main():
                         if hasattr(plan, "objective"):
                             pass
                         if hasattr(plan, "steps"):
-                            for i, step in enumerate(plan.steps[:3], 1):  # Show first 3
-                                status = (
-                                    step.status
-                                    if hasattr(step, "status")
-                                    else "unknown"
-                                )
+                            for _i, step in enumerate(
+                                plan.steps[:3], 1
+                            ):  # Show first 3
+                                (step.status if hasattr(step, "status") else "unknown")
 
-                    if (
-                        state_update.get("execution_results")
-                    ):
+                    if state_update.get("execution_results"):
                         for result in state_update["execution_results"][
                             -2:
                         ]:  # Show last 2
                             if hasattr(result, "output"):
-                                output = (
+                                (
                                     result.output[:100] + "..."
                                     if len(result.output) > 100
                                     else result.output
@@ -108,15 +100,13 @@ async def main():
                         pass
 
                     if "messages" in state_update:
-                        passl")
+                        pass
 
             # Limit to prevent runaway
             if step_count > 15:
                 break
 
-
-
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

@@ -2,7 +2,6 @@
 """Test Simple RAG with clean MultiAgent implementation."""
 
 import pytest
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
 
 from haive.agents.rag.simple.agent import SimpleRAGAgent
@@ -10,7 +9,6 @@ from haive.agents.rag.simple.agent import SimpleRAGAgent
 
 def test_simple_rag_structure():
     """Test Simple RAG structure without execution."""
-
     # Create test documents
     documents = [
         Document(
@@ -46,7 +44,6 @@ def test_simple_rag_structure():
 @pytest.mark.asyncio
 async def test_simple_rag_agent_structure():
     """Test Simple RAG agent structure and components."""
-
     # Create minimal documents
     documents = [Document(page_content="Test content", metadata={"source": "test"})]
 
@@ -69,7 +66,6 @@ async def test_simple_rag_agent_structure():
 @pytest.mark.asyncio
 async def test_simple_rag_custom_name():
     """Test Simple RAG with custom agent name."""
-
     documents = [Document(page_content="Test content", metadata={"source": "test"})]
 
     # Create agent with custom name
@@ -87,6 +83,5 @@ if __name__ == "__main__":
         test_simple_rag_structure()
         await test_simple_rag_agent_structure()
         await test_simple_rag_custom_name()
-        print("✅ All Simple RAG tests passed!")
 
     asyncio.run(run_tests())

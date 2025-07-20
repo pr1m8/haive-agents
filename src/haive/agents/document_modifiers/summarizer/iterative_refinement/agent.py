@@ -44,7 +44,7 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
 
         return Command(update={"summary": summary, "index": state.index + 1})
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         self.graph.add_node("generate_initial_summary", self.generate_initial_summary)
         self.graph.add_node("refine_summary", self.refine_summary)
 

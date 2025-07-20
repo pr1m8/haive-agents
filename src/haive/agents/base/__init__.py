@@ -48,12 +48,15 @@ See Also:
 
 # Re-export the correct Agent class from agent.py
 from haive.agents.base.agent import Agent
-from haive.agents.base.generic_agent import GenericAgent
 
 # Re-export mixins for convenience
 from haive.agents.base.mixins import ExecutionMixin, PersistenceMixin, StateMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
 from haive.agents.base.types import AgentInput, AgentOutput, AgentState
+
+# Enhanced agent classes will be imported separately
+# from haive.agents.base.enhanced_agent import Agent as EnhancedAgent, Workflow, MultiAgent
+
 
 __all__ = [
     "Agent",
@@ -61,7 +64,6 @@ __all__ = [
     "AgentOutput",
     "AgentState",
     "ExecutionMixin",
-    "GenericAgent",
     "PersistenceMixin",
     "SerializationMixin",
     "StateMixin",

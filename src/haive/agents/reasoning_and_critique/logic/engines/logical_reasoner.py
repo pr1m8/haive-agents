@@ -1,5 +1,7 @@
 # src/haive/agents/reasoning/logical_reasoner.py
 
+from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
@@ -145,7 +147,7 @@ For each step specify:
 )
 
 
-def create_logical_reasoner():
+def create_logical_reasoner() -> Any:
     """Create the logical reasoning agent."""
     return AugLLMConfig(
         name="logical_reasoner",

@@ -5,9 +5,7 @@ This script demonstrates how to use the GraphTransformer to extract
 knowledge graphs from documents with various configurations.
 """
 
-from typing import List
 
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
 
 from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
@@ -15,7 +13,6 @@ from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 
 def basic_example() -> None:
     """Demonstrate basic graph transformation."""
-
     # Create transformer instance
     GraphTransformer()
 
@@ -29,33 +26,25 @@ def basic_example() -> None:
     ]
 
     # Define allowed entities and relationships
-    allowed_nodes = ["Person", "Organization", "Location"]
-    allowed_relationships = [
-        ("Person", "WORKS_FOR", "Organization"),
-        ("Person", "LEADS", "Organization"),
-        ("Organization", "LOCATED_IN", "Location"),
-    ]
-
 
     try:
         # Transform documents (this would normally use an actual LLM)
         # For demonstration, we'll just show the structure
-        for i, doc in enumerate(documents):
+        for _i, _doc in enumerate(documents):
             pass
 
         # In a real scenario:
 
+    except Exception:
+        pass
 
-    except Exception as e:
-    pass
 
 def advanced_example() -> None:
     """Demonstrate advanced configuration with properties."""
-
     GraphTransformer()
 
     # Sample document with rich information
-    documents = [
+    [
         Document(
             page_content=(
                 "Dr. Emily Chen, a 35-year-old software engineer, has been working "
@@ -68,21 +57,12 @@ def advanced_example() -> None:
     # Extended schema with properties
 
     # Properties to extract
-    node_properties = ["age", "title", "experience_years", "expertise"]
-    relationship_properties = ["since", "duration", "role"]
-
 
     # Additional instructions for better extraction
-    additional_instructions = (
-        "Extract specific details about experience, education, and achievements. "
-        "Include temporal information where available."
-    )
-
 
 
 def schema_validation_example() -> None:
     """Demonstrate schema validation and error handling."""
-
     GraphTransformer()
 
     # Test with invalid inputs
@@ -105,12 +85,12 @@ def schema_validation_example() -> None:
         },
     ]
 
-    for test in test_cases:
+    for _test in test_cases:
         try:
             # This would trigger the validation error
             pass
-        except Exception as e:
-            pass")
+        except Exception:
+            pass
 
 
 def type_hints_example() -> None:
@@ -142,19 +122,17 @@ def type_hints_example() -> None:
         return ["Entity1", "Entity2", "Entity3"]
 
     # Example usage with proper types
-    entities = extract_knowledge_graph(
+    extract_knowledge_graph(
         text_content="Sample text about companies and people",
         entity_types=["Person", "Company"],
         relation_types=[("Person", "WORKS_FOR", "Company")],
     )
 
 
-
 if __name__ == "__main__":
-    """Run all examples."""
+    # Run all examples
 
     basic_example()
     advanced_example()
     schema_validation_example()
     type_hints_example()
-

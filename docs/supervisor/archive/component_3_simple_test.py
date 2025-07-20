@@ -1,6 +1,7 @@
 """Simple focused test for Component 3 - Agent Execution Node."""
 
 import asyncio
+import contextlib
 
 from haive.agents.experiments.supervisor.component_2_tools import (
     SupervisorStateWithTools,
@@ -108,8 +109,6 @@ if __name__ == "__main__":
         # Test async if available
         with contextlib.suppress(Exception):
             async_result = asyncio.run(test_async_execution())
-        except Exception:
-            pass
 
     except Exception:
         import traceback

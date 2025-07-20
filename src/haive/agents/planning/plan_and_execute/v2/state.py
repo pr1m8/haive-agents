@@ -1,7 +1,5 @@
 """State schema for Plan and Execute Agent v2."""
 
-from typing import List, Optional
-
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from pydantic import Field
 
@@ -12,16 +10,12 @@ class PlanAndExecuteState(MultiAgentState):
     """State for Plan and Execute Agent v2."""
 
     input: str = Field(..., description="The original user query or objective")
-    plan: Optional[Plan] = Field(
-        default=None, description="The current plan with steps"
-    )
-    past_steps: List[Step] = Field(
+    plan: Plan | None = Field(default=None, description="The current plan with steps")
+    past_steps: list[Step] = Field(
         default_factory=list, description="List of completed steps"
     )
-    response: Optional[str] = Field(
-        default=None, description="Current response or output"
-    )
-    final_response: Optional[str] = Field(
+    response: str | None = Field(default=None, description="Current response or output")
+    final_response: str | None = Field(
         default=None, description="Final response when complete"
     )
 
@@ -32,7 +26,7 @@ class PlanAndExecuteState(MultiAgentState):
             if self.plan:
                 self.plan.update_status()
 
-    def get_next_step(self) -> Optional[Step]:
+    def get_next_step(self) -> Step | None:
         """Get the next incomplete step."""
         if not self.plan:
             return None

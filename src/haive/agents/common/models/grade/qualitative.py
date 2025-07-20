@@ -66,27 +66,28 @@ class QualitativeGrade(Grade):
         detailed_feedback: Extended qualitative feedback
 
     Example:
-        ```python
-        grade = QualitativeGrade(
+        .. code-block:: python
+
+            grade = QualitativeGrade(
             quality_level=QualityLevel.GOOD,
             sentiment=SentimentType.POSITIVE,
             strengths=[
-                "Clear logical structure",
-                "Strong supporting evidence",
-                "Engaging writing style"
+            "Clear logical structure",
+            "Strong supporting evidence",
+            "Engaging writing style"
             ],
             weaknesses=[
-                "Minor grammatical errors",
-                "Could use more varied sentence structure"
+            "Minor grammatical errors",
+            "Could use more varied sentence structure"
             ],
             recommendations=[
-                "Proofread for grammatical accuracy",
-                "Vary sentence length and structure for better flow"
+            "Proofread for grammatical accuracy",
+            "Vary sentence length and structure for better flow"
             ],
             justification="Well-written piece with strong content but needs polish",
             detailed_feedback="This work demonstrates a solid understanding..."
-        )
-        ```
+            )
+
     """
 
     grade_type: GradeType = Field(
@@ -179,7 +180,8 @@ class QualitativeGrade(Grade):
         return validated_items
 
     @model_validator(mode="after")
-    def validate_feedback_consistency(self) -> "QualitativeGrade":
+    @classmethod
+    def validate_feedback_consistency(cls) -> "QualitativeGrade":
         """Validate that feedback is consistent with quality level.
 
         Returns:

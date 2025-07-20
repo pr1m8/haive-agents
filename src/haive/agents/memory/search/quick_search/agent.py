@@ -5,12 +5,11 @@ Similar to Perplexity's Quick Search feature.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Type
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import Tool
 
-from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.search.base import BaseSearchAgent, SearchResponse
 from haive.agents.memory.search.quick_search.models import QuickSearchResponse
 
@@ -55,8 +54,8 @@ class QuickSearchAgent(BaseSearchAgent):
     def __init__(
         self,
         name: str = "quick_search_agent",
-        engine: Optional[AugLLMConfig] = None,
-        search_tools: Optional[List[Tool]] = None,
+        engine: AugLLMConfig | None = None,
+        search_tools: list[Tool] | None = None,
         **kwargs,
     ):
         """Initialize the Quick Search Agent.
@@ -79,7 +78,7 @@ class QuickSearchAgent(BaseSearchAgent):
 
         logger.info(f"Initialized QuickSearchAgent: {name}")
 
-    def get_response_model(self) -> Type[SearchResponse]:
+    def get_response_model(self) -> type[SearchResponse]:
         """Get the response model for quick search."""
         return QuickSearchResponse
 
@@ -143,7 +142,7 @@ Remember: Speed and accuracy are more important than comprehensive coverage."""
 
 Process the query efficiently and provide a clear, concise response."""
 
-    def extract_keywords(self, query: str) -> List[str]:
+    def extract_keywords(self, query: str) -> list[str]:
         """Extract key terms from the search query.
 
         Args:
@@ -201,25 +200,24 @@ Process the query efficiently and provide a clear, concise response."""
 
         if query_lower.startswith(("what is", "what are", "define")):
             return "definition"
-        elif query_lower.startswith(("who is", "who was", "who are")):
+        if query_lower.startswith(("who is", "who was", "who are")):
             return "biographical"
-        elif query_lower.startswith(("when is", "when was", "when did")):
+        if query_lower.startswith(("when is", "when was", "when did")):
             return "temporal"
-        elif query_lower.startswith(("where is", "where was", "where are")):
+        if query_lower.startswith(("where is", "where was", "where are")):
             return "geographical"
-        elif query_lower.startswith(("how to", "how do", "how can")):
+        if query_lower.startswith(("how to", "how do", "how can")):
             return "procedural"
-        elif query_lower.startswith(("how much", "how many", "how tall", "how long")):
+        if query_lower.startswith(("how much", "how many", "how tall", "how long")):
             return "quantitative"
-        elif query_lower.startswith(("why is", "why do", "why did")):
+        if query_lower.startswith(("why is", "why do", "why did")):
             return "explanatory"
-        else:
-            return "factual"
+        return "factual"
 
     async def process_search(
         self,
         query: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
         save_to_memory: bool = True,
     ) -> QuickSearchResponse:
         """Process a quick search query.
@@ -265,7 +263,7 @@ Process the query efficiently and provide a clear, concise response."""
 
         return response
 
-    async def batch_search(self, queries: List[str]) -> List[QuickSearchResponse]:
+    async def batch_search(self, queries: list[str]) -> list[QuickSearchResponse]:
         """Process multiple quick search queries efficiently.
 
         Args:
@@ -282,6 +280,6 @@ Process the query efficiently and provide a clear, concise response."""
         tasks = [self.process_search(query) for query in queries]
         responses = await asyncio.gather(*tasks)
 
-        logger.info(f"Batch processing completed")
+        logger.info("Batch processing completed")
 
         return responses

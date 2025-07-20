@@ -84,4 +84,4 @@ try:
     }
     hints = get_type_hints(state_schema, localns=localns)
 except Exception as e:
-    pass")
+    pass

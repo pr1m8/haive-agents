@@ -5,7 +5,8 @@ and the existing multi-agent base classes, ensuring seamless interoperability.
 """
 
 import logging
-from typing import Any, Optional, Sequence
+from collections.abc import Sequence
+from typing import Any, Optional
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer
@@ -47,7 +48,8 @@ class DynamicMultiAgentSupervisor(MultiAgent):
     _dynamic_supervisor: IntegratedDynamicSupervisor | None = None
 
     @model_validator(mode="after")
-    def setup_dynamic_supervisor(self) -> "DynamicMultiAgentSupervisor":
+    @classmethod
+    def setup_dynamic_supervisor(cls) -> "DynamicMultiAgentSupervisor":
         """Set up the dynamic supervisor if needed."""
         if (
             self.execution_mode == ExecutionMode.HIERARCHICAL

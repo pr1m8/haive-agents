@@ -1,5 +1,6 @@
 """Step-Back Prompting RAG Agents.
 
+from typing import Any
 Implementation of step-back prompting for abstract reasoning.
 Generates broader conceptual queries for enhanced context retrieval.
 """
@@ -309,8 +310,8 @@ class DualRetrievalAgent(Agent):
             combined_docs = step_back_docs + original_docs
 
             # Calculate coverage metrics
-            original_content = set(doc.page_content[:100] for doc in original_docs)
-            step_back_content = set(doc.page_content[:100] for doc in step_back_docs)
+            original_content = {doc.page_content[:100] for doc in original_docs}
+            step_back_content = {doc.page_content[:100] for doc in step_back_docs}
 
             overlap = len(original_content.intersection(step_back_content))
             total_unique = len(original_content.union(step_back_content))

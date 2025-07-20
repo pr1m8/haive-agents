@@ -50,16 +50,16 @@ try:
     test_data = {"query": "test"}
     instance = schema_class.model_validate(test_data)
 except Exception as e:
-    pass")
+    pass
 
 try:
     test_data_with_context = {"query": "test", "context": ""}
     instance = schema_class.model_validate(test_data_with_context)
 except Exception as e:
-    pass")
+    pass
 
 try:
     empty_data = {}
     instance = schema_class.model_validate(empty_data)
 except Exception as e:
-    pass")
+    pass

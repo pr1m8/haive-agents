@@ -75,28 +75,23 @@ See Also:
 """
 
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Union, cast
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.node import NodeSchemaComposer
 from haive.core.models.embeddings import OpenAIEmbeddings
 from haive.core.models.vectorstore import InMemoryVectorStore
-from haive.core.schema.prebuilt.messages_state import MessagesState
-from haive.core.schema.state_schema import StateSchema
 from haive.core.types import Name
 from haive.tools.utility.document_loaders import DirectoryLoader
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import Tool, tool
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import ConfigDict, Field, field_validator, model_validator
 
 from haive.agents.base.base_agent import BaseAgent
-from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.react.dynamic_activation_supervisor import ComponentDiscoveryAgent
 from haive.agents.simple.agent import SimpleAgent
 from haive.agents.supervisor.base_supervisor import BaseSupervisor
 from haive.agents.supervisor.types import (
-    AgentOutput,
     SupervisorDecision,
     SupervisorState,
 )
@@ -223,23 +218,19 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
     )
 
     # Discovery agents (excluded from serialization)
-    discovery_agent: Optional[ComponentDiscoveryAgent] = Field(
-        default=None, exclude=True
-    )
-    rag_tool_agent: Optional[Any] = Field(default=None, exclude=True)  # BaseRAGAgent
-    mcp_framework: Optional[Dict[str, Any]] = Field(default=None, exclude=True)
+    discovery_agent: ComponentDiscoveryAgent | None = Field(default=None, exclude=True)
+    rag_tool_agent: Any | None = Field(default=None, exclude=True)  # BaseRAGAgent
+    mcp_framework: dict[str, Any] | None = Field(default=None, exclude=True)
 
     # Tool management
-    discovered_tools: Set[str] = Field(
+    discovered_tools: set[str] = Field(
         default_factory=set, description="Set of discovered tool names"
     )
-    tool_registry: Dict[str, Tool] = Field(default_factory=dict, exclude=True)
+    tool_registry: dict[str, Tool] = Field(default_factory=dict, exclude=True)
     max_discovery_attempts: int = Field(default=3, ge=1, le=10)
 
     # Initial tools to register (used during factory creation)
-    tools_to_register: Optional[List[Dict[str, Any]]] = Field(
-        default=None, exclude=True
-    )
+    tools_to_register: list[dict[str, Any]] | None = Field(default=None, exclude=True)
 
     @field_validator("discovery_mode")
     @classmethod
@@ -250,7 +241,8 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
         return v
 
     @model_validator(mode="after")
-    def setup_supervisor(self) -> "DynamicToolDiscoverySupervisor":
+    @classmethod
+    def setup_supervisor(cls) -> "DynamicToolDiscoverySupervisor":
         """Set up supervisor after initialization."""
         # Register initial tools if provided
         if self.tools_to_register:
@@ -264,7 +256,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
 
         return self
 
-    def _register_tool(self, tool_data: Dict[str, Any]) -> None:
+    def _register_tool(self, tool_data: dict[str, Any]) -> None:
         """Register a tool in the supervisor's tool registry.
 
         This method creates a Tool instance from the provided data and registers it
@@ -310,7 +302,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
             self.discovered_tools.add(tool_name)
 
             # Add tool to agents if they support it
-            for agent_name, agent in self.agents.items():
+            for _agent_name, agent in self.agents.items():
                 if hasattr(agent, "add_tool") and callable(agent.add_tool):
                     agent.add_tool(tool_instance)
 
@@ -333,65 +325,71 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
             discovered = []
 
             # Component discovery
-            if self.discovery_mode in [
-                ToolDiscoveryMode.COMPONENT_DISCOVERY,
-                ToolDiscoveryMode.HYBRID,
-            ]:
-                if self.discovery_agent:
-                    try:
-                        components = self.discovery_agent.discover_components(
-                            query=f"tools for: {task_description}",
-                            component_type="tool",
-                        )
-                        for comp in components:
-                            if comp["name"] not in self.discovered_tools:
-                                self._register_tool(comp)
-                                discovered.append(f"Component: {comp['name']}")
-                    except Exception as e:
-                        discovered.append(f"Component discovery error: {str(e)}")
+            if (
+                self.discovery_mode
+                in [
+                    ToolDiscoveryMode.COMPONENT_DISCOVERY,
+                    ToolDiscoveryMode.HYBRID,
+                ]
+                and self.discovery_agent
+            ):
+                try:
+                    components = self.discovery_agent.discover_components(
+                        query=f"tools for: {task_description}",
+                        component_type="tool",
+                    )
+                    for comp in components:
+                        if comp["name"] not in self.discovered_tools:
+                            self._register_tool(comp)
+                            discovered.append(f"Component: {comp['name']}")
+                except Exception as e:
+                    discovered.append(f"Component discovery error: {e!s}")
 
             # RAG discovery
-            if self.discovery_mode in [
-                ToolDiscoveryMode.RAG_DISCOVERY,
-                ToolDiscoveryMode.HYBRID,
-            ]:
-                if self.rag_tool_agent:
-                    try:
-                        # Query RAG agent for tools
-                        rag_response = self.rag_tool_agent.run(
-                            f"Find tools or functions that can help with: {task_description}"
-                        )
-                        # Parse response for tool definitions
-                        # This is simplified - real implementation would parse structured output
-                        if "tool:" in rag_response.lower():
-                            discovered.append(
-                                f"RAG: Found tool definitions in documents"
-                            )
-                    except Exception as e:
-                        discovered.append(f"RAG discovery error: {str(e)}")
+            if (
+                self.discovery_mode
+                in [
+                    ToolDiscoveryMode.RAG_DISCOVERY,
+                    ToolDiscoveryMode.HYBRID,
+                ]
+                and self.rag_tool_agent
+            ):
+                try:
+                    # Query RAG agent for tools
+                    rag_response = self.rag_tool_agent.run(
+                        f"Find tools or functions that can help with: {task_description}"
+                    )
+                    # Parse response for tool definitions
+                    # This is simplified - real implementation would parse structured output
+                    if "tool:" in rag_response.lower():
+                        discovered.append("RAG: Found tool definitions in documents")
+                except Exception as e:
+                    discovered.append(f"RAG discovery error: {e!s}")
 
             # MCP discovery
-            if self.discovery_mode in [
-                ToolDiscoveryMode.MCP_DISCOVERY,
-                ToolDiscoveryMode.HYBRID,
-            ]:
-                if self.mcp_framework:
-                    try:
-                        # Query MCP framework
-                        mcp_tools = self.mcp_framework.get(
-                            "discover_tools", lambda x: []
-                        )(task_description)
-                        for tool_def in mcp_tools:
-                            if tool_def["name"] not in self.discovered_tools:
-                                self._register_tool(tool_def)
-                                discovered.append(f"MCP: {tool_def['name']}")
-                    except Exception as e:
-                        discovered.append(f"MCP discovery error: {str(e)}")
+            if (
+                self.discovery_mode
+                in [
+                    ToolDiscoveryMode.MCP_DISCOVERY,
+                    ToolDiscoveryMode.HYBRID,
+                ]
+                and self.mcp_framework
+            ):
+                try:
+                    # Query MCP framework
+                    mcp_tools = self.mcp_framework.get("discover_tools", lambda x: [])(
+                        task_description
+                    )
+                    for tool_def in mcp_tools:
+                        if tool_def["name"] not in self.discovered_tools:
+                            self._register_tool(tool_def)
+                            discovered.append(f"MCP: {tool_def['name']}")
+                except Exception as e:
+                    discovered.append(f"MCP discovery error: {e!s}")
 
             if discovered:
                 return f"Discovered and loaded tools: {', '.join(discovered)}"
-            else:
-                return "No new tools discovered for this task"
+            return "No new tools discovered for this task"
 
         # Register the discovery tool
         self._register_tool(
@@ -552,7 +550,7 @@ Respond with:
 
         # Default to first agent if parsing fails
         if not agent or agent not in self.agents:
-            agent = list(self.agents.keys())[0] if self.agents else self.name
+            agent = next(iter(self.agents.keys())) if self.agents else self.name
 
         return SupervisorDecision(
             next_agent=agent,
@@ -567,12 +565,12 @@ Respond with:
     def create_with_discovery(
         cls,
         name: str,
-        agents: Dict[Name, BaseAgent],
+        agents: dict[Name, BaseAgent],
         engine: AugLLMConfig,
         discovery_mode: ToolDiscoveryMode = ToolDiscoveryMode.HYBRID,
-        component_discovery_config: Optional[Dict[str, Any]] = None,
-        rag_documents_path: Optional[str] = None,
-        mcp_config: Optional[Dict[str, Any]] = None,
+        component_discovery_config: dict[str, Any] | None = None,
+        rag_documents_path: str | None = None,
+        mcp_config: dict[str, Any] | None = None,
         **kwargs,
     ) -> "DynamicToolDiscoverySupervisor":
         """Create supervisor with configured discovery sources.
@@ -644,43 +642,49 @@ Respond with:
         """
         # Create discovery agent if needed
         discovery_agent = None
-        if discovery_mode in [
-            ToolDiscoveryMode.COMPONENT_DISCOVERY,
-            ToolDiscoveryMode.HYBRID,
-        ]:
-            if component_discovery_config:
-                discovery_agent = ComponentDiscoveryAgent(**component_discovery_config)
+        if (
+            discovery_mode
+            in [
+                ToolDiscoveryMode.COMPONENT_DISCOVERY,
+                ToolDiscoveryMode.HYBRID,
+            ]
+            and component_discovery_config
+        ):
+            discovery_agent = ComponentDiscoveryAgent(**component_discovery_config)
 
         # Create RAG agent if needed
         rag_tool_agent = None
-        if discovery_mode in [
-            ToolDiscoveryMode.RAG_DISCOVERY,
-            ToolDiscoveryMode.HYBRID,
-        ]:
-            if rag_documents_path:
-                # Create simple RAG agent for tool discovery
-                from haive.core.tools import create_retriever_tool
+        if (
+            discovery_mode
+            in [
+                ToolDiscoveryMode.RAG_DISCOVERY,
+                ToolDiscoveryMode.HYBRID,
+            ]
+            and rag_documents_path
+        ):
+            # Create simple RAG agent for tool discovery
+            from haive.core.tools import create_retriever_tool
 
-                # Load documents
-                loader = DirectoryLoader(rag_documents_path)
-                documents = loader.load()
+            # Load documents
+            loader = DirectoryLoader(rag_documents_path)
+            documents = loader.load()
 
-                # Create vector store
-                embeddings = OpenAIEmbeddings()
-                vectorstore = InMemoryVectorStore(embedding=embeddings)
-                vectorstore.add_documents(documents)
+            # Create vector store
+            embeddings = OpenAIEmbeddings()
+            vectorstore = InMemoryVectorStore(embedding=embeddings)
+            vectorstore.add_documents(documents)
 
-                # Create retriever tool
-                retriever_tool = create_retriever_tool(
-                    retriever=vectorstore.as_retriever(),
-                    name="search_tool_docs",
-                    description="Search for tool documentation and definitions",
-                )
+            # Create retriever tool
+            retriever_tool = create_retriever_tool(
+                retriever=vectorstore.as_retriever(),
+                name="search_tool_docs",
+                description="Search for tool documentation and definitions",
+            )
 
-                # Create RAG agent
-                rag_tool_agent = ReactAgent(
-                    name="rag_tool_discovery", engine=engine, tools=[retriever_tool]
-                )
+            # Create RAG agent
+            rag_tool_agent = ReactAgent(
+                name="rag_tool_discovery", engine=engine, tools=[retriever_tool]
+            )
 
         # Create supervisor
         return cls(
@@ -698,9 +702,9 @@ Respond with:
     def create_with_agents_and_tools(
         cls,
         name: str,
-        agent_configs: List[Dict[str, Any]],
+        agent_configs: list[dict[str, Any]],
         engine: AugLLMConfig,
-        initial_tools: Optional[List[Union[Tool, Dict[str, Any]]]] = None,
+        initial_tools: list[Tool | dict[str, Any]] | None = None,
         discovery_mode: ToolDiscoveryMode = ToolDiscoveryMode.HYBRID,
         **kwargs,
     ) -> "DynamicToolDiscoverySupervisor":

@@ -1,4 +1,7 @@
-def decide_to_generate(state):
+from typing import Any
+
+
+def decide_to_generate(state: dict[str, Any]):
     """Determines whether to generate an answer, or re-generate a question.
 
     Args:

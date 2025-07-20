@@ -113,7 +113,7 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
             "workflow_type": "fully_graded_rag",
         }
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph with state initialization."""
         # In a real implementation, you would initialize state here
         # For now, return None to use default
@@ -232,7 +232,7 @@ class FLAREAgentV2Example(MultiAgent, StateConfigMixin):
             "workflow_type": "flare",
         }
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build custom graph."""
         return
 

@@ -21,7 +21,6 @@ def test_key_insight():
     state = MinimalState(messages=["test message"])
     structured_result = TaskResult(summary="Task done", completed=True)
 
-
     # The critical test: Can we update state with a field that doesn't exist?
     try:
         update_dict = {"taskresult": structured_result, "messages": ["updated"]}
@@ -29,16 +28,14 @@ def test_key_insight():
         # This is what parser node essentially does
         updated_state = MinimalState(**{**state.model_dump(), **update_dict})
 
-
         # Check if the structured result is actually there
         if hasattr(updated_state, "taskresult"):
             pass
         else:
-            pass")
+            pass
 
-    except Exception as e:
-        pass")
-
+    except Exception:
+        pass
 
 
 def test_schema_composer_approach():
@@ -51,25 +48,20 @@ def test_schema_composer_approach():
     # Simulate what SchemaComposer does automatically
     mock_engine_fields = {"messages": (list, Field(default_factory=list))}
 
-
     # This is what SchemaComposer.add_fields_from_engine() does
     final_fields = {**mock_engine_fields}
     final_fields["taskresult"] = (Optional[TaskResult], Field(default=None))
 
     ComposedState = create_model("ComposedState", **final_fields)
 
-
     # Test if this works
     state = ComposedState(messages=["test"])
     structured_result = TaskResult(summary="Auto-composed", completed=True)
 
     update_dict = {"taskresult": structured_result}
-    updated_state = ComposedState(**{**state.model_dump(), **update_dict})
-
-
+    ComposedState(**{**state.model_dump(), **update_dict})
 
 
 if __name__ == "__main__":
     test_key_insight()
     test_schema_composer_approach()
-

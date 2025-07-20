@@ -60,26 +60,27 @@ class LetterGrade(Grade):
         passing_grade: Minimum letter grade considered passing (default C-)
 
     Example:
-        ```python
-        grade = LetterGrade(
+        .. code-block:: python
+
+            grade = LetterGrade(
             value="B+",
             justification="Strong understanding with minor gaps in analysis",
             gpa_scale=4.0
-        )
+            )
 
-        # Using enum value
-        grade = LetterGrade(
+            # Using enum value
+            grade = LetterGrade(
             value=LetterValue.A_MINUS,
             justification="Excellent work with room for improvement"
-        )
+            )
 
-        # Custom passing threshold
-        grade = LetterGrade(
+            # Custom passing threshold
+            grade = LetterGrade(
             value="C",
             passing_grade="C",  # C is passing instead of default C-
             justification="Meets basic requirements"
-        )
-        ```
+            )
+
     """
 
     grade_type: GradeType = Field(

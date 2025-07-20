@@ -51,7 +51,7 @@ def create_multi_query_processor(documents: list[Document]):
 
 
 # Example 2: Process documents through summarization
-def create_document_summarizer():
+def create_document_summarizer() -> Any:
     """Create a list iteration node that summarizes multiple documents."""
     # Create summarization engine
     summarize_prompt = ChatPromptTemplate.from_messages(
@@ -92,7 +92,7 @@ def create_document_summarizer():
 
 
 # Example 3: Batch entity extraction
-def create_entity_extractor():
+def create_entity_extractor() -> Any:
     """Create a list iteration node for entity extraction."""
     from pydantic import BaseModel, Field
 
@@ -133,7 +133,7 @@ def create_entity_extractor():
 
 
 # Example 4: Parallel document grading with Send pattern
-def create_parallel_document_grader():
+def create_parallel_document_grader() -> Any:
     """Create a list iteration node that grades documents in parallel."""
 
     def grade_document(doc: Document, context: dict[str, Any]) -> dict[str, Any]:
@@ -158,7 +158,7 @@ def create_parallel_document_grader():
 
 
 # Example usage in a graph
-def example_graph_usage():
+def example_graph_usage() -> Any:
     """Example of how to use list iteration nodes in a graph."""
     from haive.core.graph.state_graph.base_graph2 import BaseGraph
     from langgraph.graph import END, START

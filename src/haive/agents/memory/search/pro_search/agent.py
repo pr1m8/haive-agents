@@ -5,12 +5,11 @@ Similar to Perplexity's Pro Search feature that goes deeper and considers user c
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Type
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import Tool
 
-from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.search.base import BaseSearchAgent, SearchResponse
 from haive.agents.memory.search.pro_search.models import (
     ContextualInsight,
@@ -61,8 +60,8 @@ class ProSearchAgent(BaseSearchAgent):
     def __init__(
         self,
         name: str = "pro_search_agent",
-        engine: Optional[AugLLMConfig] = None,
-        search_tools: Optional[List[Tool]] = None,
+        engine: AugLLMConfig | None = None,
+        search_tools: list[Tool] | None = None,
         **kwargs,
     ):
         """Initialize the Pro Search Agent.
@@ -85,7 +84,7 @@ class ProSearchAgent(BaseSearchAgent):
 
         logger.info(f"Initialized ProSearchAgent: {name}")
 
-    def get_response_model(self) -> Type[SearchResponse]:
+    def get_response_model(self) -> type[SearchResponse]:
         """Get the response model for pro search."""
         return ProSearchResponse
 
@@ -170,7 +169,7 @@ Remember: Depth, context, and personalization are key to pro search excellence."
 
 Process each query with thoroughness and attention to user context."""
 
-    def refine_query(self, query: str, context: Dict[str, Any]) -> SearchRefinement:
+    def refine_query(self, query: str, context: dict[str, Any]) -> SearchRefinement:
         """Refine the search query based on context and preferences.
 
         Args:
@@ -213,8 +212,8 @@ Process each query with thoroughness and attention to user context."""
         )
 
     def extract_contextual_insights(
-        self, query: str, context: Dict[str, Any]
-    ) -> List[ContextualInsight]:
+        self, query: str, context: dict[str, Any]
+    ) -> list[ContextualInsight]:
         """Extract contextual insights from available context.
 
         Args:
@@ -264,8 +263,8 @@ Process each query with thoroughness and attention to user context."""
         return insights
 
     def generate_reasoning_steps(
-        self, query: str, context: Dict[str, Any]
-    ) -> List[str]:
+        self, query: str, context: dict[str, Any]
+    ) -> list[str]:
         """Generate reasoning steps for the search process.
 
         Args:
@@ -293,8 +292,8 @@ Process each query with thoroughness and attention to user context."""
         return steps
 
     def generate_follow_up_questions(
-        self, query: str, response: str, context: Dict[str, Any]
-    ) -> List[str]:
+        self, query: str, response: str, context: dict[str, Any]
+    ) -> list[str]:
         """Generate relevant follow-up questions.
 
         Args:
@@ -342,7 +341,7 @@ Process each query with thoroughness and attention to user context."""
     async def process_pro_search(
         self,
         query: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
         depth_level: int = 3,
         use_preferences: bool = True,
         generate_follow_ups: bool = True,
@@ -434,7 +433,7 @@ Process each query with thoroughness and attention to user context."""
     async def process_search(
         self,
         query: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
         save_to_memory: bool = True,
     ) -> ProSearchResponse:
         """Process a search query with default pro search settings.

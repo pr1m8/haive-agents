@@ -1,6 +1,6 @@
 """Generic MetaAgent class for agent composition and recompilation management."""
 
-from typing import Any, Dict, Generic, Optional, Type, TypeVar
+from typing import Any, Generic, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema import StateSchema
@@ -24,7 +24,7 @@ class MetaAgentState(StateSchema):
 
     # Tracking
     execution_count: int = Field(default=0)
-    last_result: Dict[str, Any] | None = Field(default=None)
+    last_result: dict[str, Any] | None = Field(default=None)
 
     # Recompilation tracking
     recompilation_count: int = Field(default=0)
@@ -48,25 +48,26 @@ class MetaAgent(Agent, Generic[TAgent]):
     - Dynamic agent modification
 
     Usage:
-        ```python
-        # Wrap any agent type
-        simple_agent = SimpleAgent(name="worker", engine=engine)
-        meta_simple = MetaAgent[SimpleAgent](wrapped_agent=simple_agent)
+        .. code-block:: python
 
-        # Execute through meta layer
-        result = await meta_simple.execute()
+            # Wrap any agent type
+            simple_agent = SimpleAgent(name="worker", engine=engine)
+            meta_simple = MetaAgent[SimpleAgent](wrapped_agent=simple_agent)
 
-        # Check recompilation
-        if meta_simple.needs_recompilation():
+            # Execute through meta layer
+            result = await meta_simple.execute()
+
+            # Check recompilation
+            if meta_simple.needs_recompilation():
             meta_simple.recompile()
-        ```
+
     """
 
     def __init__(
         self,
         wrapped_agent: TAgent,
-        name: Optional[str] = None,
-        engine: Optional[AugLLMConfig] = None,
+        name: str | None = None,
+        engine: AugLLMConfig | None = None,
         **kwargs,
     ):
         """Initialize meta agent with wrapped agent.
@@ -125,27 +126,26 @@ class MetaAgent(Agent, Generic[TAgent]):
         wrapped = self.wrapped_agent
         if wrapped and hasattr(wrapped, "_app") and wrapped._app:
             return wrapped._app
-        elif wrapped and hasattr(wrapped, "build_graph"):
+        if wrapped and hasattr(wrapped, "build_graph"):
             return wrapped.build_graph()
-        else:
-            # Build a minimal graph that executes through meta state
-            from haive.core.graph import BaseGraph
+        # Build a minimal graph that executes through meta state
+        from haive.core.graph import BaseGraph
 
-            graph = BaseGraph()
+        graph = BaseGraph()
 
-            # Add a single node that executes through meta state
-            def meta_execute(state):
-                # Execute wrapped agent through meta state
-                result = self.state.meta_state.execute_agent(
-                    input_data=state, update_state=True
-                )
-                return result
+        # Add a single node that executes through meta state
+        def meta_execute(state: dict[str, Any]):
+            # Execute wrapped agent through meta state
+            result = self.state.meta_state.execute_agent(
+                input_data=state, update_state=True
+            )
+            return result
 
-            graph.add_node("execute", meta_execute)
-            graph.set_entry_point("execute")
-            graph.set_finish_point("execute")
+        graph.add_node("execute", meta_execute)
+        graph.set_entry_point("execute")
+        graph.set_finish_point("execute")
 
-            return graph.compile()
+        return graph.compile()
 
     @property
     def wrapped_agent(self) -> TAgent:
@@ -173,7 +173,7 @@ class MetaAgent(Agent, Generic[TAgent]):
         """Check if wrapped agent needs recompilation."""
         return self.state.meta_state.check_agent_recompilation()
 
-    def recompile(self, reason: str = "Manual recompilation") -> Dict[str, Any]:
+    def recompile(self, reason: str = "Manual recompilation") -> dict[str, Any]:
         """Recompile the wrapped agent if needed."""
         result = {
             "needed_recompilation": self.needs_recompilation(),
@@ -230,7 +230,7 @@ class MetaAgent(Agent, Generic[TAgent]):
         object.__setattr__(self, "_wrapped_agent", new_agent)
         self.state.meta_state.update_agent(new_agent)
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get execution and recompilation summary."""
         wrapped = self.wrapped_agent
         return {
@@ -259,8 +259,7 @@ class MetaAgent(Agent, Generic[TAgent]):
     def __repr__(self) -> str:
         """String representation."""
         wrapped = self.wrapped_agent
-        if wrapped:
-            wrapped_info = f"{type(wrapped).__name__}({wrapped.name})"
-        else:
-            wrapped_info = "None"
+        wrapped_info = (
+            f"{type(wrapped).__name__}({wrapped.name})" if wrapped else "None"
+        )
         return f"MetaAgent[{wrapped_info}](name={self.name}, executions={self.state.execution_count})"

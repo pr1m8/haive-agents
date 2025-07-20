@@ -90,7 +90,7 @@ async def test_dynamic_addition_with_fixed_supervisor():
 
         # Verify it went to math agent
         if "Calculator" in last_message:
-            pass")
+            pass
         else:
             passnt")
 
@@ -144,7 +144,7 @@ async def test_edge_cases():
     try:
         await supervisor.ainvoke({"messages": [HumanMessage(content="Hello")]})
     except Exception as e:
-        pass")
+        pass
 
     # Test 2: Add duplicate agent
     agent1 = TestAgent("duplicate")

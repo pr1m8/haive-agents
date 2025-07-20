@@ -32,9 +32,9 @@ class ModuleSelectionResult(BaseModel):
             formatted += f"Rationale: {module.rationale}\n\n"
         return formatted
 
-    @field_validatorvalidate_modules
+    @field_validator("selected_modules")
     @classmethod
-    def validate_modules(cls, modules):
+    def validate_modules(cls, modules) -> Any:
         """Ensure we have a reasonable number of modules."""
         if len(modules) < 1:
             raise ValueError("At least one module must be selected")
@@ -100,9 +100,9 @@ class ReasoningStructure(BaseModel):
         formatted = formatted.rstrip(",\n") + "\n}"
         return formatted
 
-    @field_validatorvalidate_steps
+    @field_validator("steps")
     @classmethod
-    def validate_steps(cls, steps):
+    def validate_steps(cls, steps) -> Any:
         """Ensure we have a reasonable number of steps."""
         if len(steps) < 1:
             raise ValueError("At least one step must be included")

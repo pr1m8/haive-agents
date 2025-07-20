@@ -14,8 +14,9 @@ Key Features:
 
 import asyncio
 import logging
+from collections.abc import Callable
 from enum import Enum
-from typing import Any, Callable, Protocol
+from typing import Any, Protocol
 
 from haive.core.common.mixins.tool_route_mixin import ToolRouteMixin
 from haive.core.registry import (
@@ -137,7 +138,8 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
     cache_ttl_seconds: float = Field(default=300.0)  # 5 minutes
 
     @model_validator(mode="after")
-    def setup_selector(self) -> "DynamicToolSelector":
+    @classmethod
+    def setup_selector(cls) -> "DynamicToolSelector":
         """Setup the tool selector with default components."""
         # Initialize semantic discovery if not provided
         if not self.semantic_discovery:
@@ -704,7 +706,7 @@ class LangGraphStyleSelector(DynamicToolSelector):
 class ContextAwareSelector(DynamicToolSelector):
     """Context-aware tool selector that considers conversation history."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.conversation_memory: list[dict[str, Any]] = []
 

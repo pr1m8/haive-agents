@@ -2,7 +2,6 @@
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import HumanMessage
 
 from haive.agents.rag.agentic import DocumentGraderAgent
 from haive.agents.rag.common.document_graders.models import DocumentBinaryResponse

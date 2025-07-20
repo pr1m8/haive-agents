@@ -22,30 +22,31 @@ Key Features:
 - Rate limiting and API quota management
 
 Usage:
-    ```python
-    from haive.agents.research.person import PersonResearchAgent, PersonResearchAgentConfig
+    .. code-block:: python
 
-    # Configure the agent
-    config = PersonResearchAgentConfig(
+        from haive.agents.research.person import PersonResearchAgent, PersonResearchAgentConfig
+
+        # Configure the agent
+        config = PersonResearchAgentConfig(
         name="person_researcher",
         target_person="Dr. Jane Smith",
         extraction_schema={
-            "name": "Full name",
-            "profession": "Current profession or role",
-            "education": "Educational background",
-            "achievements": "Notable achievements or awards"
+        "name": "Full name",
+        "profession": "Current profession or role",
+        "education": "Educational background",
+        "achievements": "Notable achievements or awards"
         }
-    )
+        )
 
-    # Create and run the agent
-    agent = PersonResearchAgent(config)
-    result = await agent.ainvoke({
+        # Create and run the agent
+        agent = PersonResearchAgent(config)
+        result = await agent.ainvoke({
         "person": "Dr. Jane Smith, AI researcher",
         "research_depth": "comprehensive"
-    })
+        })
 
-    print(result.extracted_info)
-    ```
+        print(result.extracted_info)
+
 
 The agent integrates with external services (Tavily) for web search and requires
 appropriate API keys to function fully. It includes comprehensive error handling

@@ -1,8 +1,8 @@
 """Debug the field validator to understand info.data access."""
 
-from typing import Optional
+import contextlib
 
-from pydantic import Field, ValidationInfo, field_validator
+from pydantic import ValidationInfo, field_validator
 
 from haive.agents.experiments.supervisor.component_2_tools import (
     SupervisorStateWithTools,
@@ -14,12 +14,10 @@ from haive.agents.experiments.supervisor.test_component_1_state import (
 
 def test_validator_access():
     """Test what info.data contains during validation."""
-
     # Create state with agents
     state = SupervisorStateWithTools()
     agents = create_real_agents()
     state.add_agent("search_agent", agents["search_agent"], "Test", True)
-
 
     # Create a custom debug validator to see what we get
     class DebugState(SupervisorStateWithTools):
@@ -42,10 +40,8 @@ def test_validator_access():
     debug_state = DebugState()
     debug_state.add_agent("search_agent", agents["search_agent"], "Test", True)
 
-    try:
+    with contextlib.suppress(Exception):
         debug_state.next_agent = "search_agent"
-    except Exception as e:
-        pass")
 
 
 if __name__ == "__main__":

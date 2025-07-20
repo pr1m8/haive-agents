@@ -37,17 +37,17 @@ def test_married_schema_composition():
         # Verify it has MultiAgentState fields
         multi_missing = multi_fields - married_fields
         if multi_missing:
-            pass")
+            pass
         else:
-            pass")
+            pass
 
         # Verify it has SelfDiscovery fields (excluding conflicts)
         discovery_specific = agent_fields - multi_fields
         discovery_missing = discovery_specific - married_fields
         if discovery_missing:
-            pass")
+            pass
         else:
-            pass")
+            pass
 
         # Create an instance to verify it works
         instance = married_schema()
@@ -89,14 +89,14 @@ def test_proper_multi_agent():
         missing_discovery = required_discovery_fields - schema_fields
 
         if missing_multi:
-            pass")
+            pass
         else:
-            pass")
+            pass
 
         if missing_discovery:
-            pass")
+            pass
         else:
-            pass")
+            pass
 
         return multi_agent
 

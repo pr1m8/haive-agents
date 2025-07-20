@@ -1,7 +1,6 @@
 """Test to demonstrate multi-agent type safety issues and solutions."""
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.state_schema import StateSchema
@@ -32,7 +31,6 @@ class SimpleFormatterState(StateSchema):
 
 async def test_multi_agent_type_safety():
     """Test that demonstrates the type safety issue with current multi-agent."""
-
     # Create agents with specific typed state schemas
     react_planner = ReactAgent(
         name="planner",
@@ -70,13 +68,13 @@ async def test_multi_agent_type_safety():
 
     # Let's try to run it
     try:
-        result = await multi_agent.ainvoke(
+        await multi_agent.ainvoke(
             {"messages": [HumanMessage(content="Create a plan for learning Python")]}
         )
 
         # Can we access typed fields?
 
-    except Exception as e:
+    except Exception:
         pass
 
     # What we need: A multi-agent that preserves individual agent state schemas

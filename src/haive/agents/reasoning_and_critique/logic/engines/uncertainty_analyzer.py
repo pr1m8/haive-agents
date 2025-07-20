@@ -1,5 +1,7 @@
 # src/haive/agents/reasoning/uncertainty_analyzer.py
 
+from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
@@ -174,7 +176,7 @@ Provide comprehensive uncertainty analysis:
 )
 
 
-def create_uncertainty_analyzer():
+def create_uncertainty_analyzer() -> Any:
     """Create the uncertainty analysis agent."""
     return AugLLMConfig(
         name="uncertainty_analyzer",

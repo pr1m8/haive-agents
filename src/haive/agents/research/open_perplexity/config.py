@@ -1,5 +1,6 @@
 """Configuration for the open_perplexity research agent.
 
+from typing import Any
 This module defines the configuration class and factory methods for creating
 research agent configurations. It includes settings for LLM engines, tools,
 vector stores, and research parameters.

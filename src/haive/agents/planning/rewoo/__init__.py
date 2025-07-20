@@ -1,5 +1,4 @@
-"""
-ReWOO Planning System
+"""ReWOO Planning System.
 
 A comprehensive planning system based on ReWOO (Reasoning without Observation) methodology.
 """

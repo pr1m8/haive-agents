@@ -38,7 +38,7 @@ class InterviewAgent(AgentArchitecture):
     def __init__(self, config: InterviewAgentConfig = InterviewAgentConfig()):
         super().__init__(config)
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         """Setup the workflow for the agent."""
         self.graph.add_node(
             "ask_question", generate_question, retry=RetryPolicy(max_attempts=5)

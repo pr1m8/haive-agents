@@ -2,6 +2,8 @@
 import json
 import logging
 from datetime import datetime
+
+# Set up logging
 from typing import Any
 
 from agents.simple.agent import SimpleAgent, SimpleAgentConfig, SimpleAgentStateSchema
@@ -14,7 +16,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END
 from pydantic import BaseModel, Field
 
-# Set up logging
 logger = logging.getLogger(__name__)
 
 # =============================================
@@ -159,7 +160,7 @@ class ChainAgent(SimpleAgent):
             gb.add_node(name=step_name, config=processor, command_goto=next_step)
 
         # Create an initialization node to set up the first step
-        def init_node(state):
+        def init_node(state: dict[str, Any]):
             """Initialize the chain state."""
             # Extract text from messages
             if hasattr(state, "messages") and state.messages:
@@ -191,7 +192,7 @@ class ChainAgent(SimpleAgent):
     def _create_step_processor(self, step_idx, step_name, engine_config):
         """Create a processor function for the given step."""
 
-        def process_step(state):
+        def process_step(state: dict[str, Any]):
             """Process the current step with its engine."""
             try:
                 # Get step data

@@ -1,5 +1,6 @@
 """Simple examples of using ChainAgent.
 
+from typing import Any, Dict
 Shows how easy it is to build chains.
 """
 
@@ -13,7 +14,7 @@ from haive.agents.rag.simple.agent import SimpleRAGAgent
 
 
 # Example 1: Simplest possible - just functions
-def example_basic():
+def example_basic() -> Any:
     """Just list your nodes."""
     chain = flow(
         lambda s: {"step": 1},
@@ -25,7 +26,7 @@ def example_basic():
 
 
 # Example 2: Mix agents and engines
-def example_mixed():
+def example_mixed() -> Any:
     """Mix different node types."""
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
@@ -47,7 +48,7 @@ def example_mixed():
     rag = SimpleRAGAgent.from_documents(docs, llm_config)
 
     # A function
-    def formatter(s):
+    def formatter(s) -> Dict[str, Any]:
         return {"output": f"Summary: {s.get('summary', '')}"}
 
     # Just chain them!
@@ -57,7 +58,7 @@ def example_mixed():
 
 
 # Example 3: Custom routing
-def example_routing():
+def example_routing() -> Any:
     """Custom edges for complex flows."""
     nodes = [
         lambda s: {
@@ -80,7 +81,7 @@ def example_routing():
 
 
 # Example 4: Using ChainAgent directly
-def example_direct():
+def example_direct() -> Any:
     """Using ChainAgent class directly."""
     # Initialize with nodes
     chain = ChainAgent(
@@ -94,7 +95,7 @@ def example_direct():
 
 
 # Example 5: Building incrementally
-def example_incremental():
+def example_incremental() -> Any:
     """Build step by step."""
     chain = ChainAgent()  # Empty chain
 
@@ -113,7 +114,7 @@ def example_incremental():
 
 
 # Example 6: RAG router in 5 lines
-def example_rag_router():
+def example_rag_router() -> Any:
     """Complete RAG router - super simple."""
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",

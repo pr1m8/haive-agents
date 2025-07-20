@@ -1,15 +1,5 @@
-"""Structured - TODO: Add brief description.
+"""Module exports."""
 
-TODO: Add detailed description of module functionality
+from structured.config import StructuredOutputAgentConfig, validate_and_setup
 
-
-
-Example:
-    Basic usage::
-
-        from haive.structured import module_function
-
-        # TODO: Add example
-
-
-"""
+__all__ = ["StructuredOutputAgentConfig", "validate_and_setup"]

@@ -23,7 +23,7 @@ class ResearchAgentConfig(BaseModel):
     llm_config: Any | None = None
     topic: str = ""
 
-    def build_agent(self):
+    def build_agent(self) -> Any:
         """Placeholder build method."""
         return type("Agent", (), {"config": self})()
 
@@ -36,7 +36,7 @@ class InterviewAgentConfig(BaseModel):
     max_turns: int = 5
     num_perspectives: int = 3
 
-    def build_agent(self):
+    def build_agent(self) -> Any:
         """Placeholder build method."""
         return type("Agent", (), {"config": self})()
 
@@ -48,7 +48,7 @@ class WritingAgentConfig(BaseModel):
     llm_config: Any | None = None
     retriever_config: Any | None = None
 
-    def build_agent(self):
+    def build_agent(self) -> Any:
         """Placeholder build method."""
         return type("Agent", (), {"config": self})()
 
@@ -143,7 +143,7 @@ class STORMAgentConfig(SequenceAgentConfig):
         description="Maximum number of conversation turns per interview (M parameter)",
     )
 
-    def __init__(self, **data):
+    def __init__(self, **data) -> None:
         # Initialize with parent class
         super().__init__(**data)
 

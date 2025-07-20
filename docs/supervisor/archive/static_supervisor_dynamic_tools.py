@@ -55,7 +55,8 @@ class SupervisorState(StateSchema):
     last_sync: datetime | None = Field(default=None)
 
     @model_validator(mode="after")
-    def sync_available_agents(self):
+    @classmethod
+    def sync_available_agents(cls):
         """Sync available agents after state changes."""
         # This will be called to ensure state stays in sync
         return self
@@ -69,7 +70,8 @@ class StaticSupervisorWithDynamicTools(ReactAgent):
     _tool_cache: dict[str, BaseTool] = {}
 
     @model_validator(mode="after")
-    def setup_supervisor(self):
+    @classmethod
+    def setup_supervisor(cls):
         """Initial setup."""
         # Create base tools that are always available
         self._create_base_tools()

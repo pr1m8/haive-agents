@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 from agents.rag.base.config import BaseRAGConfig
 from agents.react.react.config import ReactAgentConfig
@@ -69,7 +69,8 @@ class ReactManyToolsConfig(ReactAgentConfig):
     )
 
     @model_validator(mode="after")
-    def ensure_valid_configuration(self):
+    @classmethod
+    def ensure_valid_configuration(cls) -> Any:
         """Validate the configuration."""
         # Call parent validator
         super().ensure_valid_configuration()

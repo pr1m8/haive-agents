@@ -1,10 +1,23 @@
-"""Quick Search Agent module.
+"""Module exports."""
 
-Provides fast, basic search responses similar to Perplexity's Quick Search feature.
-Optimized for speed and concise answers.
-"""
+from quick_search.agent import (
+    QuickSearchAgent,
+    determine_answer_type,
+    extract_keywords,
+    get_response_model,
+    get_search_instructions,
+    get_system_prompt,
+)
+from quick_search.models import Config, QuickSearchRequest, QuickSearchResponse
 
-from haive.agents.memory.search.quick_search.agent import QuickSearchAgent
-from haive.agents.memory.search.quick_search.models import QuickSearchResponse
-
-__all__ = ["QuickSearchAgent", "QuickSearchResponse"]
+__all__ = [
+    "Config",
+    "QuickSearchAgent",
+    "QuickSearchRequest",
+    "QuickSearchResponse",
+    "determine_answer_type",
+    "extract_keywords",
+    "get_response_model",
+    "get_search_instructions",
+    "get_system_prompt",
+]

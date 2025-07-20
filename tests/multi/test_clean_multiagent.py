@@ -7,13 +7,14 @@ graph building capabilities.
 ALL TESTS USE REAL COMPONENTS - NO MOCKS EVER.
 """
 
+from typing import Any
+
 import pytest
-from typing import Dict, Any
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
 
 from haive.agents.multi.clean import MultiAgent
 from haive.agents.simple import SimpleAgent
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.state_graph.base_graph2 import BaseGraph
 
 
 class TestMultiAgentInitialization:
@@ -101,7 +102,7 @@ class TestMultiAgentRoutingMethods:
     def test_add_conditional_routing(self):
         """Test adding conditional routing configuration."""
 
-        def route_function(state: Dict[str, Any]) -> str:
+        def route_function(state: dict[str, Any]) -> str:
             return state.get("category", "default")
 
         routes = {
@@ -220,7 +221,7 @@ class TestMultiAgentGraphBuilding:
         multi_agent.set_sequence(["agent2", "agent1", "agent3"])
 
         assert multi_agent.execution_mode == "sequential"
-        assert multi_agent.infer_sequence == False
+        assert not multi_agent.infer_sequence
 
         # Check that agents are reordered
         agent_names = list(multi_agent.agents.keys())
@@ -312,7 +313,7 @@ class TestMultiAgentIntegration:
         )
 
         # Add conditional routing from classifier
-        def route_by_type(state: Dict[str, Any]) -> str:
+        def route_by_type(state: dict[str, Any]) -> str:
             return state.get("data_type", "default")
 
         multi_agent.add_conditional_routing(
@@ -369,7 +370,7 @@ class TestMultiAgentIntegration:
 
             # Verify real execution occurred
             assert result is not None
-            assert isinstance(result, (str, dict))
+            assert isinstance(result, str | dict)
 
             # Verify agents were actually used
             assert len(multi_agent.agents) == 2
@@ -397,7 +398,7 @@ class TestMultiAgentIntegration:
         )
 
         # Add real conditional routing
-        def route_by_content(state: Dict[str, Any]) -> str:
+        def route_by_content(state: dict[str, Any]) -> str:
             # Simple routing based on message content
             messages = state.get("messages", [])
             if messages and "urgent" in str(messages[-1]).lower():

@@ -1,6 +1,7 @@
 """Test SimpleAgentV2 persistence and checkpointing behavior."""
 
 import asyncio
+import contextlib
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -51,7 +52,6 @@ class TestSimpleAgentV2Persistence:
 
         result = await agent.arun("Say hello")
         assert result is not None
-        print(f"✅ SUCCESS without persistence: {type(result).__name__}")
 
     @pytest.mark.asyncio
     async def test_run_with_persistence_disabled_in_config(self):
@@ -71,7 +71,6 @@ class TestSimpleAgentV2Persistence:
 
             result = await agent.arun("Say hello", config=config)
             assert result is not None
-            print(f"✅ SUCCESS with empty config: {type(result).__name__}")
         finally:
             agent.checkpointer = original_checkpointer
 
@@ -91,11 +90,9 @@ class TestSimpleAgentV2Persistence:
             config = {"configurable": {"thread_id": "test-thread-123"}}
 
             result = await agent.arun("Say hello", config=config)
-            print(f"✅ SUCCESS with persistence: {type(result).__name__}")
             assert result is not None
         except TypeError as e:
             if "msgpack serializable" in str(e) and "PydanticUndefinedType" in str(e):
-                print(f"❌ REPRODUCED msgpack error: {e}")
                 # This is the error we're trying to fix
                 pytest.fail(f"PydanticUndefined msgpack serialization error: {e}")
             else:
@@ -114,7 +111,6 @@ class TestSimpleAgentV2Persistence:
         # Try to serialize to dict (what msgpack will do)
         try:
             state_dict = state.model_dump()
-            print(f"✅ State serialized successfully: {list(state_dict.keys())}")
 
             # Check for any None values that might be PydanticUndefined
             for key, value in state_dict.items():
@@ -137,17 +133,13 @@ class TestSimpleAgentV2Persistence:
         try:
             # Disable checkpointing for invoke test
             agent.checkpointer = None
-            result = agent.invoke("Say hello")
-            print(f"✅ invoke() SUCCESS: {type(result).__name__}")
-        except Exception as e:
-            print(f"❌ invoke() FAILED: {e}")
+            agent.invoke("Say hello")
+        except Exception:
+            pass
 
         # Test with arun (async)
-        try:
-            result = await agent.arun("Say hello")
-            print(f"✅ arun() SUCCESS: {type(result).__name__}")
-        except Exception as e:
-            print(f"❌ arun() FAILED: {e}")
+        with contextlib.suppress(Exception):
+            await agent.arun("Say hello")
 
 
 if __name__ == "__main__":

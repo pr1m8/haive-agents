@@ -1,13 +1,11 @@
 """Tests for DynamicToolDiscoverySupervisor with real components."""
 
-import asyncio
 import os
 import tempfile
-from typing import Any, Dict, List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 
 from haive.agents.react.agent import ReactAgent
@@ -188,7 +186,7 @@ class TestDynamicToolDiscoverySupervisor:
             with open(tool_doc_path, "w") as f:
                 f.write(
                     """# Available Tools
-                
+
 ## Calculator Tool
 Function: calculator(expression: str) -> float
 Description: Evaluates mathematical expressions

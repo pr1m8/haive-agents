@@ -1,9 +1,11 @@
 ### Nodes
 
+from typing import Any
+
 from pydantic import Field
 
 
-def retrieve(state):
+def retrieve(state: dict[str, Any]):
     """Retrieve documents.
 
     Args:
@@ -19,7 +21,7 @@ def retrieve(state):
     return {"documents": documents, "question": question}
 
 
-def generate(state):
+def generate(state: dict[str, Any]):
     """Generate answer.
 
     Args:
@@ -36,7 +38,7 @@ def generate(state):
     return {"documents": documents, "question": question, "generation": generation}
 
 
-def grade_documents(state):
+def grade_documents(state: dict[str, Any]):
     """Determines whether the retrieved documents are relevant to the question.
 
     Args:
@@ -62,7 +64,7 @@ def grade_documents(state):
     return {"documents": filtered_docs, "question": question}
 
 
-def transform_query(state):
+def transform_query(state: dict[str, Any]):
     """Transform the query to produce a better question.
 
     Args:

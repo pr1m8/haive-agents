@@ -1,5 +1,6 @@
 """Pydantic models for structured outputs in the Graph DB RAG Agent.
 
+from typing import Any
 This module defines the structured output models used by various LLM engines
 in the Graph DB RAG workflow. These models ensure type safety and validation
 for LLM responses.
@@ -20,7 +21,7 @@ Example:
 
 from typing import Any, Literal, TypeVar
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 T = TypeVar("T", bound=str)  # Used for dynamic literals
 
@@ -70,7 +71,7 @@ class PropertyFilter(BaseModel):
 
     @field_validatorvalidate_filter_type
     @classmethod
-    def validate_filter_type(cls, v):
+    def validate_filter_type(cls, v) -> Any:
         """Validate that the filter type is a supported operator.
 
         Args:

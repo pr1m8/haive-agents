@@ -13,6 +13,4 @@ field_def = FieldDefinition(
     description="Test context field",
 )
 
-print("🔍 Testing field definition...")
 field_type, field_info = field_def.to_field_info()
-print(f"Field info: default={field_info.default}, required={field_info.default is ...}")

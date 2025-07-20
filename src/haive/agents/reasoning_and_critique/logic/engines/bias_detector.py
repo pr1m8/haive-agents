@@ -4,7 +4,11 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from haive.agents.reasoning_and_critique.logic.models import (
+    Any,
     ReasoningAnalysis,
+    from,
+    import,
+    typing,
 )
 
 BIAS_DETECTION_PROMPT = ChatPromptTemplate.from_messages(
@@ -178,7 +182,7 @@ Overall assessment:
 )
 
 
-def create_bias_detector():
+def create_bias_detector() -> Any:
     """Create the bias detection agent."""
     return AugLLMConfig(
         name="bias_detector",

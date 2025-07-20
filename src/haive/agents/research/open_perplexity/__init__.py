@@ -1,57 +1,106 @@
-"""Open Perplexity - A deep research agent with dynamic document loader selection.
+"""Module exports."""
 
-This module provides a comprehensive research agent capable of performing in-depth
-research on any topic, dynamically selecting document loaders based on the research
-needs, and producing detailed reports with confidence assessments.
-
-Modules:
-- agent: Implements the ResearchAgent class that conducts the research process
-- config: Defines the configuration for the research agent
-- state: Contains state schemas for tracking research progress
-- models: Defines data models for research findings and sources
-- prompts: Contains prompt templates for different research tasks
-- structured_tools: Implements document loader tools and utilities
-- engines: Factory functions for creating specialized LLM engines
-- react_agent_config: Configuration for React-based sub-agents
-- cli: Command-line interface for running research
-
-Classes:
-    ResearchAgent: Main agent class that performs research
-    ResearchAgentConfig: Configuration for the research agent
-    ResearchState: State schema for the research process
-    ResearchInputState: Input state schema
-    ResearchOutputState: Output state schema
-    ResearchSummary: Model for summarizing research findings
-    ResearchFinding: Model for individual research findings
-    ResearchSource: Model for tracking and evaluating sources
-    DataSourceType: Enumeration of data source types
-    ContentReliability: Enumeration of content reliability levels
-    ContentFreshness: Enumeration of content freshness levels
-"""
-
-from haive.agents.research.open_perplexity.agent import ResearchAgent
-from haive.agents.research.open_perplexity.config import ResearchAgentConfig
-from haive.agents.research.open_perplexity.models import (
+from open_perplexity.agent import (
+    ResearchAgent,
+    assess_confidence,
+    check_section_completion,
+    compile_final_report,
+    consolidate_findings,
+    evaluate_sources,
+    execute_searches,
+    extract_topic,
+    generate_markdown_report,
+    generate_report_plan,
+    generate_search_queries,
+    process_input,
+    rag_agent,
+    react_agent,
+    recommend_document_loaders,
+    retriever,
+    save_state_history,
+    setup_workflow,
+    vectorstore,
+    visualize_state,
+    write_section,
+)
+from open_perplexity.cli import main, run_research, visualize_state
+from open_perplexity.config import ResearchAgentConfig, from_scratch
+from open_perplexity.models import (
     ContentFreshness,
     ContentReliability,
+    DataSourceConfig,
     DataSourceType,
     ResearchDepth,
     ResearchFinding,
     ResearchSource,
     ResearchSummary,
+    assess_depth,
+    validate_confidence,
+    validate_confidence_score,
+    validate_priority,
+    validate_relevance_score,
 )
-from haive.agents.research.open_perplexity.state import (
+from open_perplexity.react_agent_config import (
+    create_research_rag_agent_config,
+    create_research_rag_engine,
+    create_research_react_agent_config,
+)
+from open_perplexity.state import (
+    ReportSection,
+    ResearchConfidenceLevel,
     ResearchInputState,
     ResearchOutputState,
     ResearchState,
+    WebSearchQuery,
+)
+from open_perplexity.structured_tools import (
+    ArxivLoaderInput,
+    DocumentLoaderDescriptionInput,
+    DocumentLoaderRecommendationInput,
+    EnhancedArxivLoader,
+    EnhancedGitHubIssuesLoader,
+    EnhancedHNLoader,
+    EnhancedRecursiveUrlLoader,
+    EnhancedWebBaseLoader,
+    GitHubIssuesLoaderInput,
+    HackerNewsLoaderInput,
+    RecursiveWebLoaderInput,
+    TavilySearchInput,
+    WebLoaderInput,
+    decorator,
+    describe_document_loader,
+    get_available_loaders,
+    load,
+    load_arxiv_papers,
+    load_github_issues,
+    load_hackernews_thread,
+    load_recursive_web,
+    load_web_page,
+    recommend_document_loaders,
+    register_document_loader,
+    tavily_search,
 )
 
 __all__ = [
+    "ArxivLoaderInput",
     "ContentFreshness",
     "ContentReliability",
+    "DataSourceConfig",
     "DataSourceType",
+    "DocumentLoaderDescriptionInput",
+    "DocumentLoaderRecommendationInput",
+    "EnhancedArxivLoader",
+    "EnhancedGitHubIssuesLoader",
+    "EnhancedHNLoader",
+    "EnhancedRecursiveUrlLoader",
+    "EnhancedWebBaseLoader",
+    "GitHubIssuesLoaderInput",
+    "HackerNewsLoaderInput",
+    "RecursiveWebLoaderInput",
+    "ReportSection",
     "ResearchAgent",
     "ResearchAgentConfig",
+    "ResearchConfidenceLevel",
     "ResearchDepth",
     "ResearchFinding",
     "ResearchInputState",
@@ -59,4 +108,49 @@ __all__ = [
     "ResearchSource",
     "ResearchState",
     "ResearchSummary",
+    "TavilySearchInput",
+    "WebLoaderInput",
+    "WebSearchQuery",
+    "assess_confidence",
+    "assess_depth",
+    "check_section_completion",
+    "compile_final_report",
+    "consolidate_findings",
+    "create_research_rag_agent_config",
+    "create_research_rag_engine",
+    "create_research_react_agent_config",
+    "decorator",
+    "describe_document_loader",
+    "evaluate_sources",
+    "execute_searches",
+    "extract_topic",
+    "from_scratch",
+    "generate_markdown_report",
+    "generate_report_plan",
+    "generate_search_queries",
+    "get_available_loaders",
+    "load",
+    "load_arxiv_papers",
+    "load_github_issues",
+    "load_hackernews_thread",
+    "load_recursive_web",
+    "load_web_page",
+    "main",
+    "process_input",
+    "rag_agent",
+    "react_agent",
+    "recommend_document_loaders",
+    "register_document_loader",
+    "retriever",
+    "run_research",
+    "save_state_history",
+    "setup_workflow",
+    "tavily_search",
+    "validate_confidence",
+    "validate_confidence_score",
+    "validate_priority",
+    "validate_relevance_score",
+    "vectorstore",
+    "visualize_state",
+    "write_section",
 ]

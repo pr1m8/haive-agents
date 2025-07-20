@@ -1,9 +1,5 @@
-"""File Document Loader Agent.
+"""Module exports."""
 
-This package provides a specialized document loader agent for files.
-"""
+from file.agent import FileLoaderAgent, setup_agent
 
-from haive.agents.document_loader.file.agent import FileLoaderAgent
-
-# Export all public components
-__all__ = ["FileLoaderAgent"]
+__all__ = ["FileLoaderAgent", "setup_agent"]

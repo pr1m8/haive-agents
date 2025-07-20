@@ -132,6 +132,3 @@ result = agent_tester(
     QueryRefinementResponse,
     {"query": "what is the tallest building in france"},
 )
-print("Result type:", type(result))
-print("\nResult keys:", list(result.keys()) if hasattr(result, "keys") else "No keys")
-print("\nResult:", result)

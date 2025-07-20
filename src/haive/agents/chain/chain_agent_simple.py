@@ -4,7 +4,8 @@ Just list your nodes and define the flow. That's it.
 """
 
 import logging
-from typing import Any, Callable, Union
+from collections.abc import Callable
+from typing import Any, Union
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.base import Engine

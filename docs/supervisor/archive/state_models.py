@@ -137,7 +137,8 @@ class SupervisorState(StateSchema):
     )
 
     @model_validator(mode="after")
-    def sync_tools_if_enabled(self) -> "SupervisorState":
+    @classmethod
+    def sync_tools_if_enabled(cls) -> "SupervisorState":
         """Sync tools with agents if auto-sync is enabled."""
         if not self.auto_sync_tools:
             return self
@@ -174,7 +175,8 @@ class SupervisorState(StateSchema):
         return self
 
     @model_validator(mode="after")
-    def trim_history_if_needed(self) -> "SupervisorState":
+    @classmethod
+    def trim_history_if_needed(cls) -> "SupervisorState":
         """Keep execution history within size limits."""
         if len(self.execution_history) > self.max_history_size:
             # Keep most recent entries
@@ -227,7 +229,8 @@ class DynamicSupervisorState(SupervisorState):
     max_agents: int = Field(default=10, description="Maximum number of agents allowed")
 
     @model_validator(mode="after")
-    def enforce_agent_limit(self) -> "DynamicSupervisorState":
+    @classmethod
+    def enforce_agent_limit(cls) -> "DynamicSupervisorState":
         """Ensure we don't exceed agent limits."""
         if len(self.agents) > self.max_agents:
             # Remove least recently used agents

@@ -7,17 +7,16 @@ multiple retrieval strategies based on query analysis and context.
 import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.messages_state import MessagesState
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.memory.core.classifier import MemoryClassifier
 from haive.agents.memory.core.stores import MemoryStoreManager
-from haive.agents.memory.core.types import MemoryQueryIntent, MemoryType
+from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.enhanced_retriever import EnhancedRetrieverConfig
 from haive.agents.memory.graph_rag_retriever import (
     GraphRAGRetriever,
@@ -75,10 +74,10 @@ class RetrievalStrategy(BaseModel):
 
     name: str = Field(..., description="Strategy name")
     description: str = Field(..., description="Strategy description")
-    best_for: List[str] = Field(
+    best_for: list[str] = Field(
         ..., description="Query types this strategy is best for"
     )
-    memory_types: List[MemoryType] = Field(
+    memory_types: list[MemoryType] = Field(
         ..., description="Memory types this strategy handles well"
     )
     confidence_threshold: float = Field(
@@ -94,7 +93,7 @@ class RetrievalStrategy(BaseModel):
     )
 
     # Strategy-specific parameters
-    parameters: Dict[str, Any] = Field(
+    parameters: dict[str, Any] = Field(
         default_factory=dict, description="Strategy-specific parameters"
     )
 
@@ -163,29 +162,29 @@ class AgenticRAGResult(BaseModel):
     """
 
     query: str = Field(..., description="Original query")
-    selected_strategies: List[str] = Field(
+    selected_strategies: list[str] = Field(
         default_factory=list, description="Selected retrieval strategies"
     )
-    strategy_results: Dict[str, Any] = Field(
+    strategy_results: dict[str, Any] = Field(
         default_factory=dict, description="Results from each strategy"
     )
 
     # Final combined results
-    final_memories: List[Dict[str, Any]] = Field(
+    final_memories: list[dict[str, Any]] = Field(
         default_factory=list, description="Final ranked memories"
     )
-    final_scores: List[float] = Field(
+    final_scores: list[float] = Field(
         default_factory=list, description="Final ranking scores"
     )
 
     # Performance metrics
     total_time_ms: float = Field(default=0.0, description="Total processing time")
-    strategy_times: Dict[str, float] = Field(
+    strategy_times: dict[str, float] = Field(
         default_factory=dict, description="Time for each strategy"
     )
 
     # Analysis information
-    query_analysis: Optional[Dict[str, Any]] = Field(
+    query_analysis: dict[str, Any] | None = Field(
         default=None, description="Query analysis results"
     )
     strategy_reasoning: str = Field(
@@ -316,15 +315,15 @@ class AgenticRAGCoordinatorConfig(BaseModel):
         ..., description="Memory store manager"
     )
     memory_classifier: MemoryClassifier = Field(..., description="Memory classifier")
-    kg_generator: Optional[KGGeneratorAgent] = Field(
+    kg_generator: KGGeneratorAgent | None = Field(
         default=None, description="Knowledge graph generator"
     )
 
     # Retrieval components
-    enhanced_retriever_config: Optional[EnhancedRetrieverConfig] = Field(
+    enhanced_retriever_config: EnhancedRetrieverConfig | None = Field(
         default=None, description="Enhanced retriever configuration"
     )
-    graph_rag_config: Optional[GraphRAGRetrieverConfig] = Field(
+    graph_rag_config: GraphRAGRetrieverConfig | None = Field(
         default=None, description="Graph RAG configuration"
     )
 
@@ -458,15 +457,15 @@ class AgenticRAGCoordinator(SimpleAgent):
     # RAG-specific fields
     memory_store: MemoryStoreManager = Field(..., description="Memory store manager")
     classifier: MemoryClassifier = Field(..., description="Memory classifier")
-    kg_generator: Optional[KGGeneratorAgent] = Field(
+    kg_generator: KGGeneratorAgent | None = Field(
         default=None, description="Knowledge graph generator"
     )
 
     # Retrieval components
-    enhanced_retriever_config: Optional[EnhancedRetrieverConfig] = Field(
+    enhanced_retriever_config: EnhancedRetrieverConfig | None = Field(
         default=None, description="Enhanced retriever configuration"
     )
-    graph_rag_config: Optional[GraphRAGRetrieverConfig] = Field(
+    graph_rag_config: GraphRAGRetrieverConfig | None = Field(
         default=None, description="Graph RAG configuration"
     )
 
@@ -591,7 +590,6 @@ class AgenticRAGCoordinator(SimpleAgent):
 
     def _setup_retrievers(self) -> None:
         """Setup individual retrievers."""
-
         # Enhanced retriever (vector similarity with memory types)
         if self.enhanced_retriever_config:
             from haive.agents.memory.enhanced_retriever import EnhancedRetriever
@@ -607,9 +605,8 @@ class AgenticRAGCoordinator(SimpleAgent):
         # Basic vector retriever (fallback)
         self.retrievers["basic"] = self.memory_store
 
-    def _define_strategies(self) -> Dict[str, RetrievalStrategy]:
+    def _define_strategies(self) -> dict[str, RetrievalStrategy]:
         """Define available retrieval strategies."""
-
         strategies = {}
 
         # Enhanced similarity strategy
@@ -688,7 +685,6 @@ class AgenticRAGCoordinator(SimpleAgent):
 
     def _setup_prompts(self) -> None:
         """Setup prompts for strategy selection and coordination."""
-
         self.strategy_selection_prompt = PromptTemplate(
             template="""You are an expert retrieval strategy coordinator. Analyze the query and select the most appropriate retrieval strategies.
 
@@ -784,10 +780,10 @@ Fuse and rank results now:""",
     async def retrieve_memories(
         self,
         query: str,
-        limit: Optional[int] = None,
-        memory_types: Optional[List[MemoryType]] = None,
-        namespace: Optional[Tuple[str, ...]] = None,
-        force_strategies: Optional[List[str]] = None,
+        limit: int | None = None,
+        memory_types: list[MemoryType] | None = None,
+        namespace: tuple[str, ...] | None = None,
+        force_strategies: list[str] | None = None,
     ) -> AgenticRAGResult:
         """Retrieve memories using intelligent strategy coordination and result fusion.
 
@@ -899,20 +895,19 @@ Fuse and rank results now:""",
                 final_memories, final_scores, fusion_metrics = await self._fuse_results(
                     query, strategy_results, limit or 10
                 )
+            # Use single strategy results
+            elif strategy_results:
+                first_strategy = next(iter(strategy_results.keys()))
+                strategy_data = strategy_results[first_strategy]
+                final_memories = strategy_data.get("memories", [])
+                final_scores = strategy_data.get("scores", [])
+                fusion_metrics = {
+                    "diversity_score": 0.5,
+                    "coverage_score": 0.5,
+                    "confidence_score": 0.5,
+                }
             else:
-                # Use single strategy results
-                if strategy_results:
-                    first_strategy = list(strategy_results.keys())[0]
-                    strategy_data = strategy_results[first_strategy]
-                    final_memories = strategy_data.get("memories", [])
-                    final_scores = strategy_data.get("scores", [])
-                    fusion_metrics = {
-                        "diversity_score": 0.5,
-                        "coverage_score": 0.5,
-                        "confidence_score": 0.5,
-                    }
-                else:
-                    final_memories, final_scores, fusion_metrics = [], [], {}
+                final_memories, final_scores, fusion_metrics = [], [], {}
 
             result.final_memories = final_memories
             result.final_scores = final_scores
@@ -931,15 +926,14 @@ Fuse and rank results now:""",
             return result
 
         except Exception as e:
-            logger.error(f"Error in agentic RAG coordination: {e}")
+            logger.exception(f"Error in agentic RAG coordination: {e}")
             # Return empty result on error
             result = AgenticRAGResult(query=query)
             result.total_time_ms = (datetime.now() - start_time).total_seconds() * 1000
             return result
 
-    async def _analyze_query(self, query: str) -> Dict[str, Any]:
+    async def _analyze_query(self, query: str) -> dict[str, Any]:
         """Analyze query to understand intent and requirements."""
-
         # Use classifier if available
         if self.classifier:
             query_intent = self.classifier.classify_query_intent(query)
@@ -953,26 +947,24 @@ Fuse and rank results now:""",
                 "topics": query_intent.topics,
                 "preferred_strategy": query_intent.preferred_retrieval_strategy,
             }
-        else:
-            # Fallback analysis
-            return {
-                "memory_types": [MemoryType.SEMANTIC.value],
-                "complexity": "simple",
-                "temporal_scope": "recent",
-                "requires_reasoning": False,
-                "entities": [],
-                "topics": [],
-                "preferred_strategy": "enhanced_similarity",
-            }
+        # Fallback analysis
+        return {
+            "memory_types": [MemoryType.SEMANTIC.value],
+            "complexity": "simple",
+            "temporal_scope": "recent",
+            "requires_reasoning": False,
+            "entities": [],
+            "topics": [],
+            "preferred_strategy": "enhanced_similarity",
+        }
 
     async def _select_strategies(
         self,
         query: str,
-        query_analysis: Dict[str, Any],
-        memory_types: Optional[List[MemoryType]] = None,
-    ) -> Tuple[List[str], str]:
+        query_analysis: dict[str, Any],
+        memory_types: list[MemoryType] | None = None,
+    ) -> tuple[list[str], str]:
         """Select appropriate strategies for the query."""
-
         try:
             # Prepare strategies description
             strategies_desc = []
@@ -1023,16 +1015,15 @@ Fuse and rank results now:""",
             return self._fallback_strategy_selection(query_analysis, memory_types)
 
         except Exception as e:
-            logger.error(f"Error in strategy selection: {e}")
+            logger.exception(f"Error in strategy selection: {e}")
             return self._fallback_strategy_selection(query_analysis, memory_types)
 
     def _fallback_strategy_selection(
         self,
-        query_analysis: Dict[str, Any],
-        memory_types: Optional[List[MemoryType]] = None,
-    ) -> Tuple[List[str], str]:
+        query_analysis: dict[str, Any],
+        memory_types: list[MemoryType] | None = None,
+    ) -> tuple[list[str], str]:
         """Fallback strategy selection using rules."""
-
         complexity = query_analysis.get("complexity", "simple")
         memory_types_needed = query_analysis.get("memory_types", [])
         requires_reasoning = query_analysis.get("requires_reasoning", False)
@@ -1074,14 +1065,13 @@ Fuse and rank results now:""",
 
     async def _execute_strategies(
         self,
-        strategies: List[str],
+        strategies: list[str],
         query: str,
-        limit: Optional[int],
-        memory_types: Optional[List[MemoryType]],
-        namespace: Optional[Tuple[str, ...]],
-    ) -> Dict[str, Any]:
+        limit: int | None,
+        memory_types: list[MemoryType] | None,
+        namespace: tuple[str, ...] | None,
+    ) -> dict[str, Any]:
         """Execute selected strategies in parallel."""
-
         # Create tasks for parallel execution
         tasks = []
         strategy_names = []
@@ -1122,12 +1112,11 @@ Fuse and rank results now:""",
         self,
         strategy_name: str,
         query: str,
-        limit: Optional[int],
-        memory_types: Optional[List[MemoryType]],
-        namespace: Optional[Tuple[str, ...]],
-    ) -> Dict[str, Any]:
+        limit: int | None,
+        memory_types: list[MemoryType] | None,
+        namespace: tuple[str, ...] | None,
+    ) -> dict[str, Any]:
         """Execute a single retrieval strategy."""
-
         start_time = datetime.now()
 
         try:
@@ -1180,7 +1169,7 @@ Fuse and rank results now:""",
             }
 
         except Exception as e:
-            logger.error(f"Error executing strategy {strategy_name}: {e}")
+            logger.exception(f"Error executing strategy {strategy_name}: {e}")
             return {
                 "memories": [],
                 "scores": [],
@@ -1193,34 +1182,31 @@ Fuse and rank results now:""",
         self,
         query: str,
         limit: int,
-        memory_types: Optional[List[MemoryType]],
-        namespace: Optional[Tuple[str, ...]],
-        parameters: Dict[str, Any],
-    ) -> List[Dict[str, Any]]:
+        memory_types: list[MemoryType] | None,
+        namespace: tuple[str, ...] | None,
+        parameters: dict[str, Any],
+    ) -> list[dict[str, Any]]:
         """Execute enhanced similarity strategy."""
-
         if "enhanced" in self.retrievers:
             retriever = self.retrievers["enhanced"]
             result = await retriever.retrieve_memories(
                 query=query, limit=limit, memory_types=memory_types, namespace=namespace
             )
             return result.memories if hasattr(result, "memories") else result
-        else:
-            # Fallback to basic retrieval
-            return await self.memory_store.retrieve_memories(
-                query=query, namespace=namespace, memory_types=memory_types, limit=limit
-            )
+        # Fallback to basic retrieval
+        return await self.memory_store.retrieve_memories(
+            query=query, namespace=namespace, memory_types=memory_types, limit=limit
+        )
 
     async def _execute_graph_traversal(
         self,
         query: str,
         limit: int,
-        memory_types: Optional[List[MemoryType]],
-        namespace: Optional[Tuple[str, ...]],
-        parameters: Dict[str, Any],
-    ) -> List[Dict[str, Any]]:
+        memory_types: list[MemoryType] | None,
+        namespace: tuple[str, ...] | None,
+        parameters: dict[str, Any],
+    ) -> list[dict[str, Any]]:
         """Execute graph traversal strategy."""
-
         if "graph_rag" in self.retrievers:
             retriever = self.retrievers["graph_rag"]
             result = await retriever.retrieve_memories(
@@ -1231,22 +1217,20 @@ Fuse and rank results now:""",
                 enable_graph_traversal=True,
             )
             return result.memories if hasattr(result, "memories") else result
-        else:
-            # Fallback to basic retrieval
-            return await self.memory_store.retrieve_memories(
-                query=query, namespace=namespace, memory_types=memory_types, limit=limit
-            )
+        # Fallback to basic retrieval
+        return await self.memory_store.retrieve_memories(
+            query=query, namespace=namespace, memory_types=memory_types, limit=limit
+        )
 
     async def _execute_procedural_search(
         self,
         query: str,
         limit: int,
-        memory_types: Optional[List[MemoryType]],
-        namespace: Optional[Tuple[str, ...]],
-        parameters: Dict[str, Any],
-    ) -> List[Dict[str, Any]]:
+        memory_types: list[MemoryType] | None,
+        namespace: tuple[str, ...] | None,
+        parameters: dict[str, Any],
+    ) -> list[dict[str, Any]]:
         """Execute procedural search strategy."""
-
         # Focus on procedural memories
         procedural_types = [MemoryType.PROCEDURAL, MemoryType.SEMANTIC]
 
@@ -1258,12 +1242,11 @@ Fuse and rank results now:""",
         self,
         query: str,
         limit: int,
-        memory_types: Optional[List[MemoryType]],
-        namespace: Optional[Tuple[str, ...]],
-        parameters: Dict[str, Any],
-    ) -> List[Dict[str, Any]]:
+        memory_types: list[MemoryType] | None,
+        namespace: tuple[str, ...] | None,
+        parameters: dict[str, Any],
+    ) -> list[dict[str, Any]]:
         """Execute temporal search strategy."""
-
         # Focus on temporal and episodic memories
         temporal_types = [MemoryType.TEMPORAL, MemoryType.EPISODIC]
 
@@ -1275,12 +1258,11 @@ Fuse and rank results now:""",
         self,
         query: str,
         limit: int,
-        memory_types: Optional[List[MemoryType]],
-        namespace: Optional[Tuple[str, ...]],
-        parameters: Dict[str, Any],
-    ) -> List[Dict[str, Any]]:
+        memory_types: list[MemoryType] | None,
+        namespace: tuple[str, ...] | None,
+        parameters: dict[str, Any],
+    ) -> list[dict[str, Any]]:
         """Execute error/feedback search strategy."""
-
         # Focus on error and feedback memories
         error_types = [MemoryType.ERROR, MemoryType.FEEDBACK]
 
@@ -1289,10 +1271,9 @@ Fuse and rank results now:""",
         )
 
     async def _fuse_results(
-        self, query: str, strategy_results: Dict[str, Any], limit: int
-    ) -> Tuple[List[Dict[str, Any]], List[float], Dict[str, Any]]:
+        self, query: str, strategy_results: dict[str, Any], limit: int
+    ) -> tuple[list[dict[str, Any]], list[float], dict[str, Any]]:
         """Fuse results from multiple strategies."""
-
         try:
             # Prepare strategy results for fusion
             results_summary = {}
@@ -1381,7 +1362,7 @@ Fuse and rank results now:""",
             return final_memories, final_scores, fusion_metrics
 
         except Exception as e:
-            logger.error(f"Error in result fusion: {e}")
+            logger.exception(f"Error in result fusion: {e}")
             # Fallback to simple combination
             all_memories = []
             for result_data in strategy_results.values():
@@ -1397,7 +1378,7 @@ Fuse and rank results now:""",
 
             return final_memories, final_scores, fusion_metrics
 
-    def _parse_json_response(self, response: str) -> Optional[Dict[str, Any]]:
+    def _parse_json_response(self, response: str) -> dict[str, Any] | None:
         """Parse JSON response from LLM."""
         try:
             import json
@@ -1472,7 +1453,6 @@ Fuse and rank results now:""",
             - Top 3 memories with relevance scores
             - Graceful error handling for failed retrievals
         """
-
         # Default to retrieve memories
         result = await self.retrieve_memories(user_input)
 

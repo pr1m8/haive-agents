@@ -81,7 +81,6 @@ def apply_state_serialization_fix():
     SimpleAgentState.model_dump = fixed_state_model_dump(SimpleAgentState.model_dump)
 
 
-
 # Test the fix
 if __name__ == "__main__":
 
@@ -127,10 +126,8 @@ if __name__ == "__main__":
             }
         )
 
-
         # Check final result
         result_dict = result.model_dump() if hasattr(result, "model_dump") else result
-
 
         # Check if we have the expected messages
         messages = result_dict.get("messages", [])
@@ -143,11 +140,10 @@ if __name__ == "__main__":
             if isinstance(msg, dict)
         )
 
-
         if has_tool_message and has_plan:
-            pass")
+            pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

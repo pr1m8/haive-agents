@@ -232,7 +232,7 @@ def create_parallel_kg_transformer_configs() -> dict:
 
 
 # Example usage
-def main():
+def main() -> None:
     # Create configurations
     configs = create_parallel_kg_transformer_configs()
 

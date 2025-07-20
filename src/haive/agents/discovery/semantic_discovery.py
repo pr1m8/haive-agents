@@ -112,7 +112,8 @@ class VectorBasedToolSelector(BaseModel):
     )
 
     @model_validator(mode="after")
-    def setup_vector_store(self) -> "VectorBasedToolSelector":
+    @classmethod
+    def setup_vector_store(cls) -> "VectorBasedToolSelector":
         """Setup vector store if not provided."""
         if self.vector_store is None:
             self.vector_store = Chroma(
@@ -504,7 +505,8 @@ class SemanticDiscoveryEngine(BaseModel):
     )
 
     @model_validator(mode="after")
-    def setup_registry(self) -> "SemanticDiscoveryEngine":
+    @classmethod
+    def setup_registry(cls) -> "SemanticDiscoveryEngine":
         """Setup shared component registry."""
         if self.component_registry is None:
             self.component_registry = create_component_registry(use_embeddings=True)

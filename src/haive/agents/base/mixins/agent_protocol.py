@@ -1,12 +1,10 @@
+from collections.abc import AsyncGenerator, Generator
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncGenerator,
-    Generator,
     Literal,
     Optional,
     Protocol,
-    Type,
 )
 
 from langchain_core.runnables import RunnableConfig
@@ -25,20 +23,20 @@ class AgentProtocol(Protocol):
     # Attributes from Agent class required by ExecutionMixin
     name: str
     verbose: bool
-    input_schema: Optional[Type[BaseModel]]
-    output_schema: Optional[Type[BaseModel]]
-    state_schema: Optional[Type["StateSchema"]]
+    input_schema: type[BaseModel] | None
+    output_schema: type[BaseModel] | None
+    state_schema: type["StateSchema"] | None
     engine: Optional["Engine"]
     graph: Optional["BaseGraph"]
-    checkpointer: Optional[Any]
-    store: Optional[Any]
-    config: Optional[Any]  # For self.config.runnable_config
-    runnable_config: Optional[RunnableConfig]
+    checkpointer: Any | None
+    store: Any | None
+    config: Any | None  # For self.config.runnable_config
+    runnable_config: RunnableConfig | None
 
     # Private attributes
     _app: Optional["CompiledGraph"]
     _checkpoint_mode: Literal["sync", "async"]
-    _async_checkpointer: Optional[Any]
+    _async_checkpointer: Any | None
     _disable_checkpointing: bool
 
     # Methods from Agent

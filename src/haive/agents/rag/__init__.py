@@ -1,221 +1,195 @@
-"""RAG (Retrieval-Augmented Generation) Module.
+"""Module exports."""
 
-Comprehensive RAG implementations with multi-agent orchestration, document grading,
-hallucination detection, and adaptive retrieval strategies. Built on the Haive
-multi-agent framework for flexible composition and routing.
-
-Key Features:
-    - Multiple RAG architectures (Simple, Corrective, HyDE, Multi-Query, Adaptive)
-    - Advanced document grading and quality assessment
-    - Hallucination detection and mitigation
-    - Search tool integration (Google, DuckDuckGo, ArXiv)
-    - Composable workflows with I/O schema compatibility
-    - Conditional routing based on query complexity
-    - ReAct pattern integration for tool usage
-
-Available RAG Agents:
-    - SimpleRAGAgent: Basic retrieval → answer generation
-    - CorrectiveRAGAgent: Self-correcting with document grading
-    - HyDERAGAgent: Hypothetical Document Embeddings for better matching
-    - MultiQueryRAGAgent: Query expansion for improved recall
-    - AdaptiveRAGAgent: Dynamic strategy selection based on complexity
-    - DocumentGradingAgent: Standalone document quality assessment
-    - RAGFusionAgent: Multi-query with reciprocal rank fusion
-    - StepBackRAGAgent: Abstract reasoning with step-back prompting
-    - SelfRouteRAGAgent: Dynamic routing with structured analysis
-    - SpeculativeRAGAgent: Parallel hypothesis generation and verification
-    - MemoryAwareRAGAgent: Persistent context and iterative learning
-
-Example:
-    Basic RAG workflow::
-
-        from haive.agents.rag import SimpleRAGAgent
-        from haive.agents.rag.factories import CompatibleRAGFactory
-        from langchain_core.documents import Document
-
-        # Simple RAG
-        docs = [Document(page_content="AI is transformative technology")]
-        agent = SimpleRAGAgent.from_documents(docs)
-        result = agent.run({"query": "What is AI?"})
-
-        # Composable workflow with grading
-        workflow = CompatibleRAGFactory.create_graded_hyde_workflow(
-            documents=docs,
-            enable_search_tools=True
-        )
-        result = workflow.run({"query": "Latest AI developments"})
-
-    Advanced adaptive routing::
-
-        from haive.agents.rag import AdaptiveRAGAgent
-
-        # Automatically routes based on query complexity
-        adaptive_agent = AdaptiveRAGAgent.from_documents(docs)
-
-        # Simple query → SimpleRAG
-        result1 = adaptive_agent.run({"query": "What is machine learning?"})
-
-        # Complex query → HyDE + Multi-Query
-        result2 = adaptive_agent.run({"query": "How do transformer attention mechanisms enable emergent capabilities in large language models?"})
-
-    Modular plug-and-play components::
-
-        from haive.agents.rag import (
-            create_plug_and_play_component,
-            RAGComponent,
-            CompatibleRAGFactory
-        )
-        from haive.agents.multi.base import SequentialAgent
-
-        # Create standalone components
-        decomposer = create_plug_and_play_component(
-            RAGComponent.ADAPTIVE_DECOMPOSITION, docs
-        )
-        hallucination_grader = create_plug_and_play_component(
-            RAGComponent.ADVANCED_HALLUCINATION_GRADING, docs
-        )
-
-        # Combine with any workflow
-        workflow = SequentialAgent(
-            agents=[decomposer, simple_rag, hallucination_grader],
-            schema_separation="smart"  # Uses I/O compatibility checking
-        )
-
-        # Or use the factory for common patterns
-        full_pipeline = CompatibleRAGFactory.create_full_pipeline_workflow(
-            documents=docs,
-            enable_search_tools=True
-        )
-
-        # Replace components at runtime
-        factory = CompatibleRAGFactory(docs)
-        success = factory.replace_agent_in_workflow(
-            workflow=full_pipeline,
-            target_agent_name="Advanced Hallucination Grader",
-            replacement_component=RAGComponent.REALTIME_HALLUCINATION_GRADING
-        )
-
-See Also:
-    :mod:`haive.agents.rag.base`: Core RAG functionality and BaseRAGAgent
-    :mod:`haive.agents.rag.simple`: Basic RAG implementation
-    :mod:`haive.agents.rag.corrective`: Self-correcting RAG with grading
-    :mod:`haive.agents.rag.hyde`: Hypothetical Document Embeddings
-    :mod:`haive.agents.rag.multi_query`: Query expansion for better recall
-    :mod:`haive.agents.rag.adaptive`: Dynamic strategy selection
-    :mod:`haive.agents.rag.common`: Shared components (graders, generators)
-    :mod:`haive.agents.rag.factories`: Workflow builders and composers
-    :mod:`haive.agents.rag.hallucination_grading`: Modular hallucination detection agents
-    :mod:`haive.agents.rag.query_decomposition`: Modular query decomposition agents
-    :mod:`haive.agents.rag.fusion`: RAG Fusion with reciprocal rank fusion
-    :mod:`haive.agents.rag.step_back`: Step-back prompting for abstract reasoning
-    :mod:`haive.agents.rag.self_route`: Self-routing with dynamic strategy selection
-    :mod:`haive.agents.rag.speculative`: Speculative RAG with parallel hypothesis processing
-    :mod:`haive.agents.rag.memory_aware`: Memory-aware RAG with persistent learning
-"""
-
-from haive.agents.rag.adaptive.agent import AdaptiveRAGAgent
-
-# Agentic RAG components
-from haive.agents.rag.agentic import (
-    AgenticRAGAgent,
-    AgenticRAGState,
-    ReactRAGAgent,
-    create_document_grader_agent,
-    create_query_rewriter_agent,
+from rag.branched_chain import (
+    BranchResult,
+    MergedResult,
+    QueryClassification,
+    QueryType,
+    add_context,
+    analytical_processor,
+    create_adaptive_branched_rag,
+    create_branched_rag_chain,
+    create_parallel_branched_rag,
+    creative_processor,
+    factual_branch,
+    get_branched_rag_io_schema,
+    prepare_context,
+    procedural_processor,
 )
-
-# Base components
-from haive.agents.rag.base.agent import BaseRAGAgent
-from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
-
-# Factories for composable workflows
-from haive.agents.rag.factories.compatible_rag_factory_simple import (
-    CompatibleRAGFactory,
-    RAGComponent,
-    WorkflowPattern,
-    create_plug_and_play_component,
-    get_component_compatibility_info,
+from rag.chain_collection import (
+    RAGChainCollection,
+    active_retrieve,
+    analyze_memory,
+    combiner,
+    context_retrieve,
+    create_flare_rag,
+    create_fusion_rag,
+    create_hyde_rag,
+    create_memory_aware_rag,
+    create_rag_chain,
+    create_rag_pipeline,
+    create_simple_rag,
+    create_speculative_rag,
+    create_step_back_rag,
+    enhanced_retrieve,
+    fusion_rank,
+    maybe_refine,
+    memory_retrieve,
+    retrieve,
+    verify_hypotheses,
 )
-
-# Advanced RAG architectures
-# from .fusion.agent import RAGFusionAgent, ReciprocalRankFusionAgent  # Temporarily disabled - missing rag_state
-from haive.agents.rag.hallucination_grading.agent import (
-    AdvancedHallucinationGraderAgent,
-    HallucinationGraderAgent,
-    RealtimeHallucinationGraderAgent,
-    create_hallucination_grader,
+from rag.enhanced_memory_react import (
+    EnhancedResponse,
+    MemoryAnalysis,
+    MemoryEntry,
+    MemoryType,
+    ReActStep,
+    ReActStepResult,
+    add_context,
+    analyze_memory,
+    check_memory,
+    check_tools,
+    create_enhanced_memory_react_rag,
+    create_memory_react_with_tools,
+    create_simple_memory_react_rag,
+    execute_action,
+    get_enhanced_memory_react_io_schema,
+    prepare_document_context,
+    update_memory,
 )
-from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
-from haive.agents.rag.memory_aware.agent import (
-    MemoryAwareRAGAgent,
-    MemoryRetrievalAgent,
+from rag.list_iteration_example import (
+    ExtractedEntities,
+    create_document_summarizer,
+    create_entity_extractor,
+    create_multi_query_processor,
+    create_parallel_document_grader,
+    example_graph_usage,
+    grade_document,
+    process_query,
+    summarize_document,
 )
-from haive.agents.rag.multi_query.agent import MultiQueryRAGAgent
-from haive.agents.rag.query_decomposition.agent import (
-    AdaptiveQueryDecomposerAgent,
-    ContextualQueryDecomposerAgent,
-    HierarchicalQueryDecomposerAgent,
-    QueryDecomposerAgent,
-    create_query_decomposer,
+from rag.models import (
+    BranchResult,
+    EnhancedResponse,
+    FusionResult,
+    HyDEResult,
+    MemoryAnalysis,
+    MemoryEntry,
+    MemoryType,
+    MergedResult,
+    QueryClassification,
+    QueryPlan,
+    QueryType,
+    RAGModuleType,
+    ReActStep,
+    ReActStepResult,
+    SpeculativeResult,
+    StepBackResult,
+    StrategyDecision,
+    SubQueryResult,
 )
-from haive.agents.rag.self_route.agent import QueryAnalyzerAgent, SelfRouteRAGAgent
-
-# Core RAG agents
-from haive.agents.rag.simple.agent import SimpleRAGAgent
-from haive.agents.rag.speculative.agent import (
-    HypothesisGeneratorAgent,
-    SpeculativeRAGAgent,
+from rag.modular_chain import (
+    ModularConfig,
+    RAGModule,
+    create_comprehensive_modular_rag,
+    create_custom_modular_rag,
+    create_modular_rag,
+    create_simple_modular_rag,
+    filter_documents,
+    verify_answer,
 )
-from haive.agents.rag.step_back.agent import (
-    StepBackQueryGeneratorAgent,
-    StepBackRAGAgent,
+from rag.unified_factory import (
+    RAGFactory,
+    RAGStyle,
+    RAGType,
+    create,
+    create_rag,
+    create_rag_chain,
+    create_rag_multi,
+    create_rag_pipeline,
+    example_usage,
 )
-
-# Temporarily disabled due to import issues
 
 __all__ = [
-    # Agentic RAG components
-    "create_document_grader_agent",
-    "create_query_rewriter_agent",
-    "ReactRAGAgent",
-    "AgenticRAGAgent",
-    "AgenticRAGState",
-    "AdaptiveQueryDecomposerAgent",
-    "AdaptiveRAGAgent",
-    "AdvancedHallucinationGraderAgent",
-    # Base components
-    "BaseRAGAgent",
-    # Workflow factories and components
-    "CompatibleRAGFactory",
-    "ContextualQueryDecomposerAgent",
-    "CorrectiveRAGAgentV2",
-    # "DocumentGradingAgent",  # Temporarily disabled - missing callable_node
-    # Modular Hallucination Graders
-    "HallucinationGraderAgent",
-    "HierarchicalQueryDecomposerAgent",
-    "HyDERAGAgentV2",
-    "HypothesisGeneratorAgent",
-    "MemoryAwareRAGAgent",
-    "MemoryRetrievalAgent",
-    "MultiQueryRAGAgent",
-    "QueryAnalyzerAgent",
-    # Modular Query Decomposers
-    "QueryDecomposerAgent",
-    # "RAGWorkflowFactory",  # Temporarily disabled
-    "RAGComponent",
-    "RealtimeHallucinationGraderAgent",
-    "SelfRouteRAGAgent",
-    # Core RAG Agents
-    "SimpleRAGAgent",
-    "SpeculativeRAGAgent",
-    "StepBackQueryGeneratorAgent",
-    # Advanced RAG Architectures
-    # "RAGFusionAgent",  # Temporarily disabled - missing rag_state
-    # "ReciprocalRankFusionAgent",  # Temporarily disabled - missing rag_state
-    "StepBackRAGAgent",
-    "WorkflowPattern",
-    "create_hallucination_grader",
-    "create_plug_and_play_component",
-    "create_query_decomposer",
-    "get_component_compatibility_info",
+    "BranchResult",
+    "EnhancedResponse",
+    "ExtractedEntities",
+    "FusionResult",
+    "HyDEResult",
+    "MemoryAnalysis",
+    "MemoryEntry",
+    "MemoryType",
+    "MergedResult",
+    "ModularConfig",
+    "QueryClassification",
+    "QueryPlan",
+    "QueryType",
+    "RAGChainCollection",
+    "RAGFactory",
+    "RAGModule",
+    "RAGModuleType",
+    "RAGStyle",
+    "RAGType",
+    "ReActStep",
+    "ReActStepResult",
+    "SpeculativeResult",
+    "StepBackResult",
+    "StrategyDecision",
+    "SubQueryResult",
+    "active_retrieve",
+    "add_context",
+    "analytical_processor",
+    "analyze_memory",
+    "check_memory",
+    "check_tools",
+    "combiner",
+    "context_retrieve",
+    "create",
+    "create_adaptive_branched_rag",
+    "create_branched_rag_chain",
+    "create_comprehensive_modular_rag",
+    "create_custom_modular_rag",
+    "create_document_summarizer",
+    "create_enhanced_memory_react_rag",
+    "create_entity_extractor",
+    "create_flare_rag",
+    "create_fusion_rag",
+    "create_hyde_rag",
+    "create_memory_aware_rag",
+    "create_memory_react_with_tools",
+    "create_modular_rag",
+    "create_multi_query_processor",
+    "create_parallel_branched_rag",
+    "create_parallel_document_grader",
+    "create_rag",
+    "create_rag_chain",
+    "create_rag_multi",
+    "create_rag_pipeline",
+    "create_simple_memory_react_rag",
+    "create_simple_modular_rag",
+    "create_simple_rag",
+    "create_speculative_rag",
+    "create_step_back_rag",
+    "creative_processor",
+    "enhanced_retrieve",
+    "example_graph_usage",
+    "example_usage",
+    "execute_action",
+    "factual_branch",
+    "filter_documents",
+    "fusion_rank",
+    "get_branched_rag_io_schema",
+    "get_enhanced_memory_react_io_schema",
+    "grade_document",
+    "maybe_refine",
+    "memory_retrieve",
+    "prepare_context",
+    "prepare_document_context",
+    "procedural_processor",
+    "process_query",
+    "retrieve",
+    "summarize_document",
+    "update_memory",
+    "verify_answer",
+    "verify_hypotheses",
 ]

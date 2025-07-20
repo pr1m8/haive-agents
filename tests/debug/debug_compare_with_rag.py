@@ -61,7 +61,7 @@ except Exception as e:
                 else:
                     pass
     except Exception as e2:
-        pass")
+        pass
 
 
 
@@ -72,7 +72,6 @@ try:
     )
     from haive.core.schema.prebuilt.messages_state import MessagesState
     from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-
 
     # Check their fields
     for state_name, state_class in [
@@ -85,7 +84,7 @@ try:
                 pass
 
 except Exception as e:
-    pass")
+    pass
 
 
 try:

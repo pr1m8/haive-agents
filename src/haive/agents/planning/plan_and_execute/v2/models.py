@@ -1,6 +1,6 @@
 """Models for Plan and Execute Agent v2."""
 
-from typing import List, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -13,7 +13,7 @@ class Step(BaseModel):
     status: Literal["not_started", "in_progress", "complete"] = Field(
         default="not_started", description="Current status of the step"
     )
-    result: Optional[str] = Field(
+    result: str | None = Field(
         default=None, description="Result of executing this step"
     )
 
@@ -31,7 +31,7 @@ class Plan(BaseModel):
     """A plan containing steps to execute."""
 
     description: str = Field(..., description="Overall description of the plan")
-    steps: List[Step] = Field(
+    steps: list[Step] = Field(
         default_factory=list, description="List of steps in the plan"
     )
     status: Literal["not_started", "in_progress", "complete"] = Field(
@@ -47,7 +47,7 @@ class Plan(BaseModel):
         else:
             self.status = "not_started"
 
-    def get_next_step(self) -> Optional[Step]:
+    def get_next_step(self) -> Step | None:
         """Get the next incomplete step."""
         for step in self.steps:
             if step.status in ["not_started", "in_progress"]:
@@ -73,7 +73,7 @@ class Act(BaseModel):
 class ExecutionResult(BaseModel):
     """Result of executing a step."""
 
-    step_id: Optional[int] = Field(
+    step_id: int | None = Field(
         default=None, description="ID of the step that was executed"
     )
     result: str = Field(..., description="Result of the execution")

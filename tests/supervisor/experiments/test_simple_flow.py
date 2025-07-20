@@ -86,7 +86,7 @@ async def test_simple_natural_flow():
 
 
     if supervisor_result.get("need_new_agent"):
-        pass")
+        pass
     else:
         return
 

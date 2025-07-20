@@ -1,4 +1,7 @@
-def grade_generation_v_documents_and_question(state):
+from typing import Any
+
+
+def grade_generation_v_documents_and_question(state: dict[str, Any]):
     """Determines whether the generation is grounded in the document and answers question.
 
     Args:

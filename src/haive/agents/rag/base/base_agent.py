@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.GraphBuilder import DynamicGraph
@@ -13,13 +14,13 @@ logging.basicConfig(level=logging.DEBUG)
 class BaseRAGAgent(Agent[BaseRAGConfig]):
     """Simple base RAG agent with retrieve and generate functionality."""
 
-    def retrieve(self, state):
+    def retrieve(self, state: dict[str, Any]):
         """Retrieve documents based on the query."""
         query = state.query
         documents = self.config.retriever_engine.create_retriever().invoke(query)
         return Command(update={"retrieved_documents": documents})
 
-    def generate_answer(self, state):
+    def generate_answer(self, state: dict[str, Any]):
         """Generate an answer based on retrieved documents."""
         query = state.query
         documents = state.retrieved_documents
@@ -33,7 +34,7 @@ class BaseRAGAgent(Agent[BaseRAGConfig]):
         )
         return Command(update={"answer": answer})
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         """Set up the RAG workflow for this agent."""
         gb = DynamicGraph(state_schema=self.state_schema)
         gb.add_node("retrieve", self.retrieve)

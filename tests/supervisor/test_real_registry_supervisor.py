@@ -79,7 +79,6 @@ def save_state_history(agent_name: str, state_data: dict, test_phase: str):
 
 async def test_real_registry_supervisor():
     """Test with REAL ReactAgents and save state history."""
-
     # Create REAL ReactAgent instances
 
     research_agent = ReactAgent(
@@ -100,13 +99,11 @@ async def test_real_registry_supervisor():
         tools=[RealWritingTool()],
     )
 
-
     # Create REAL supervisor
     supervisor = RegistrySupervisor(name="dynamic_supervisor")
 
     # Populate registry with real agents
     supervisor.populate_registry(agents=[research_agent, coding_agent, writing_agent])
-
 
     # Save initial state
     initial_state = {
@@ -192,12 +189,10 @@ async def test_real_registry_supervisor():
         tools=[RealAnalysisTool()],
     )
 
-
     # Add to registry dynamically
     supervisor.agent_registry["data_analyst"] = analysis_agent
     supervisor.tools.extend(analysis_agent.tools)
     supervisor._update_supervisor_tools()
-
 
     # Test with new agent
     analysis_input = {
@@ -222,11 +217,11 @@ async def test_real_registry_supervisor():
 
     # Final verification
 
-    for name, agent in supervisor.agent_registry.items():
-        pass")
+    for _name, _agent in supervisor.agent_registry.items():
+        pass
 
-    for tool in supervisor.tools:
-        pass")
+    for _tool in supervisor.tools:
+        pass
 
     # Save final state
     final_state = {
@@ -238,7 +233,6 @@ async def test_real_registry_supervisor():
         "all_tools": {tool.name: tool.description for tool in supervisor.tools},
     }
     save_state_history("supervisor", final_state, "final_verification")
-
 
 
 if __name__ == "__main__":

@@ -48,28 +48,27 @@ async def main():
 
         try:
             # Run the agent
-            result = await agent.arun(query)
+            await agent.arun(query)
 
             # Display results
 
             # Show execution time
-            elapsed = (datetime.now() - start_time).total_seconds()
+            (datetime.now() - start_time).total_seconds()
 
             # Access the state to show plan details
             if hasattr(agent, "_state") and agent._state:
                 state = agent._state
 
                 # Show plan details
-                if hasattr(state, "plan") and state.plan:
-
-                    if state.plan.steps:
-                        for step in state.plan.steps:
-                            status_icon = "✓" if step.status == "completed" else "○"
+                if hasattr(state, "plan") and state.plan and state.plan.steps:
+                    for _step in state.plan.steps:
+                        pass
 
                 # Show replanning history
                 if hasattr(state, "replan_count") and state.replan_count > 0:
+                    pass
 
-        except Exception as e:
+        except Exception:
             import traceback
 
             traceback.print_exc()
@@ -123,11 +122,10 @@ Decide whether to:
     )
 
     # Run a research task
-    result = await agent.arun(
+    await agent.arun(
         "What are the main differences between REST and GraphQL APIs? "
         "Include performance considerations and use cases."
     )
-
 
 
 if __name__ == "__main__":

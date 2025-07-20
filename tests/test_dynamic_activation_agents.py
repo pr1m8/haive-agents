@@ -10,15 +10,12 @@ Based on:
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional
-from unittest.mock import patch
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.registry import DynamicRegistry, RegistryItem
+from haive.core.registry import DynamicRegistry
 from haive.core.schema.prebuilt.dynamic_activation_state import DynamicActivationState
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from pydantic import BaseModel, Field
 
 from haive.agents.discovery.component_discovery_agent import ComponentDiscoveryAgent
 from haive.agents.react.dynamic_react_agent import DynamicReactAgent, DynamicToolState
@@ -35,31 +32,31 @@ class TestComponentDiscoveryAgent:
         """Create test document content for discovery."""
         return """
         # Test Tools Documentation
-        
+
         ## Calculator Tool
-        
+
         A mathematical calculation tool that can perform basic arithmetic operations.
-        
+
         - **Name**: calculator
         - **Description**: Mathematical calculations and arithmetic operations
         - **Input**: Mathematical expressions as strings
         - **Output**: Numerical results
         - **Category**: math
-        
+
         ## Web Search Tool
-        
+
         A web search tool that can search the internet for information.
-        
+
         - **Name**: web_search
         - **Description**: Search the web for information and return results
         - **Input**: Search queries as strings
         - **Output**: Search results with titles and URLs
         - **Category**: web
-        
+
         ## File Reader Tool
-        
+
         A file reading tool that can read various file formats.
-        
+
         - **Name**: file_reader
         - **Description**: Read and process files of various formats
         - **Input**: File paths and format specifications
@@ -183,12 +180,12 @@ class TestDynamicActivationSupervisor:
         """Create temporary document file for testing."""
         doc_content = """
         # Test Components
-        
+
         ## Data Processor
         - **Name**: data_processor
         - **Description**: Process and analyze data
         - **Category**: data
-        
+
         ## Report Generator
         - **Name**: report_generator
         - **Description**: Generate reports from data
@@ -257,7 +254,6 @@ class TestDynamicActivationSupervisor:
         )
 
         # Manually register a component for testing
-        from haive.core.registry import RegistryItem
 
         test_component = {"name": "test_processor", "type": "processor"}
         item = RegistryItem(
@@ -336,13 +332,13 @@ class TestDynamicReactAgent:
         """Create temporary tools document for testing."""
         tools_content = """
         # Test Tools
-        
+
         ## Calculator
         - **Name**: calculator
         - **Description**: Mathematical calculations
         - **Input**: Mathematical expressions
         - **Category**: math
-        
+
         ## Text Processor
         - **Name**: text_processor
         - **Description**: Process and analyze text
@@ -607,48 +603,48 @@ class TestDynamicActivationIntegration:
         """Create comprehensive tools document for integration testing."""
         tools_content = """
         # Comprehensive Tools Documentation
-        
+
         ## Mathematical Tools
-        
+
         ### Calculator
         - **Name**: calculator
         - **Description**: Basic arithmetic calculations
         - **Input**: Mathematical expressions as strings
         - **Output**: Numerical results
         - **Category**: math
-        
+
         ### Statistics Calculator
         - **Name**: stats_calculator
         - **Description**: Statistical calculations and analysis
         - **Input**: Lists of numbers and statistical operations
         - **Output**: Statistical results
         - **Category**: math
-        
+
         ## Text Processing Tools
-        
+
         ### Text Analyzer
         - **Name**: text_analyzer
         - **Description**: Analyze text for patterns and insights
         - **Input**: Text strings
         - **Output**: Analysis results
         - **Category**: text
-        
+
         ### Language Detector
         - **Name**: language_detector
         - **Description**: Detect language of input text
         - **Input**: Text strings
         - **Output**: Language code and confidence
         - **Category**: text
-        
+
         ## Web Tools
-        
+
         ### Web Search
         - **Name**: web_search
         - **Description**: Search the web for information
         - **Input**: Search queries
         - **Output**: Search results
         - **Category**: web
-        
+
         ### URL Validator
         - **Name**: url_validator
         - **Description**: Validate URL format and accessibility
@@ -727,7 +723,7 @@ class TestDynamicActivationIntegration:
 
         # Test independent tool discovery
         for i, agent in enumerate(agents):
-            tools = await agent.discover_and_load_tools(f"tools for agent {i}")
+            await agent.discover_and_load_tools(f"tools for agent {i}")
             # Each agent can discover independently
             assert len(agent.state.discovery_queries) > 0
 
@@ -739,7 +735,7 @@ class TestDynamicActivationIntegration:
         import time
 
         # Create agent with discovery
-        agent = DynamicReactAgent.create_with_discovery(
+        DynamicReactAgent.create_with_discovery(
             name="performance_test_agent",
             document_path=comprehensive_tools_file,
             engine=aug_llm_config,

@@ -1,5 +1,6 @@
 """Example demonstrating the MultiAgent system.
 
+from typing import Any
 This example shows how to create and use a multi-agent system
 with different agent types and coordination strategies.
 """
@@ -135,7 +136,7 @@ def create_research_writing_system() -> MultiAgent:
     return system
 
 
-def demo_multi_agent_system():
+def demo_multi_agent_system() -> None:
     """Demonstrate a multi-agent system in action."""
     # Instead of the complex graph-based approach, just demonstrate
     # how research and writing agents can work together sequentially
@@ -201,7 +202,7 @@ def demo_multi_agent_system():
     logger.info("\nDemo completed successfully")
 
 
-def create_parallel_specialist_system():
+def create_parallel_specialist_system() -> Any:
     """Create a multi-agent system with multiple specialist agents.
 
     This would use parallel coordination strategy.
@@ -224,7 +225,7 @@ def create_parallel_specialist_system():
     return system
 
 
-def save_and_load_demo():
+def save_and_load_demo() -> None:
     """Demonstrate saving and loading a multi-agent system."""
     logger.info("\nSerialization demo:")
 

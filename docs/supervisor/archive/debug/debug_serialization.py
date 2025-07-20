@@ -14,13 +14,12 @@ def test_serialization(obj, name):
     try:
         ormsgpack.packb(obj)
         return True
-    except Exception as e:
+    except Exception:
         return False
 
 
 def analyze_agent_serialization():
     """Analyze what parts of an agent are not serializable."""
-
     # Create a ReactAgent
     search_engine = AugLLMConfig(
         name="search_engine",
@@ -78,14 +77,14 @@ def analyze_agent_serialization():
     try:
         agent_dict = search_agent.model_dump()
         test_serialization(agent_dict, "agent.model_dump()")
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     try:
         agent_info_dict = agent_info.model_dump()
         test_serialization(agent_info_dict, "agent_info.model_dump()")
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

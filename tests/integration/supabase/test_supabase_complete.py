@@ -25,7 +25,7 @@ async def main():
         return False
 
     if "supabase.com" in conn_string:
-        pass")
+        pass
     else:
         passon")
 
@@ -129,7 +129,7 @@ async def main():
 
 
                 else:
-                    pass")
+                    pass
 
                 return success
 

@@ -1,391 +1,267 @@
 """Haive Supervisor Agent Implementation.
 
-A ReactAgent-based supervisor that manages multiple specialized agents using
-state-driven prompts and generic routing nodes, following LangGraph patterns
-but adapted to Haive's architecture.
+A clean supervisor that manages multiple specialized agents using
+LLM-based routing decisions.
 """
 
 import logging
-import time
-from typing import Any, Callable
+from typing import Any
 
-from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage
 from langchain_core.prompts import ChatPromptTemplate
-from langgraph.graph import START
-from pydantic import BaseModel, Field
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
+from langgraph.graph import END
+from pydantic import BaseModel, Field, field_validator
 
-from haive.agents.base.agent import Agent
+from haive.agents.base import Agent
 from haive.agents.react.agent import ReactAgent
-from haive.agents.supervisor.registry import AgentRegistry
 
 logger = logging.getLogger(__name__)
-console = Console()
 
 
 class SupervisorState(BaseModel):
-    """Extended state for supervisor operations."""
+    """State for supervisor operations."""
 
-    # Core messaging (inherited from base state)
     messages: list[Any] = Field(default_factory=list)
-
-    # Supervisor-specific fields
-    registered_agents: dict[str, Any] = Field(
-        default_factory=dict, description="Available agents"
-    )
     routing_decision: str | None = Field(None, description="Last routing decision")
-    routing_timestamp: float | None = Field(None, description="When routing occurred")
     target_agent: str | None = Field(None, description="Current target agent")
-    last_agent: str | None = Field(None, description="Previously active agent")
-    conversation_complete: bool = Field(
-        False, description="Whether conversation is done"
-    )
 
-    # Task tracking
-    task_keywords: list[str] = Field(
-        default_factory=list, description="Detected task types"
-    )
-    task_complexity: str = Field("Simple", description="Estimated complexity")
+
+# Default supervisor prompt
+DEFAULT_SUPERVISOR_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You are a supervisor managing specialized agents.
+
+Available Agents:
+{agent_descriptions}
+
+Instructions:
+1. Analyze the user's request
+2. Determine which agent is best suited
+3. Respond with ONLY the agent name or "END" if complete
+
+Decision:""",
+        ),
+        ("placeholder", "{messages}"),
+    ]
+)
 
 
 class SupervisorAgent(ReactAgent):
-    """Supervisor agent that manages multiple specialized agents.
+    """Supervisor agent that routes between multiple specialized agents.
 
-    Extends ReactAgent to provide intelligent routing between registered agents
-    using state-driven prompts and a generic routing mechanism.
+    Extends ReactAgent to leverage its looping behavior for continuous
+    routing decisions based on conversation context.
     """
 
-    def __init__(
-        self, name: str = "supervisor", engine: AugLLMConfig | None = None, **kwargs
-    ):
-        """Initialize supervisor agent.
+    # ========================================================================
+    # SUPERVISOR SPECIFIC FIELDS
+    # ========================================================================
 
-        Args:
-            name: Agent name
-            engine: LLM engine for routing decisions
-            **kwargs: Additional ReactAgent arguments
-        """
-        # Set default state schema to SupervisorState
-        if "state_schema" not in kwargs:
-            kwargs["state_schema"] = SupervisorState
+    registered_agents: dict[str, Agent] = Field(
+        default_factory=dict, description="Registered agents by name"
+    )
 
-        super().__init__(name=name, engine=engine, **kwargs)
+    agent_descriptions: dict[str, str] = Field(
+        default_factory=dict, description="Descriptions of agent capabilities"
+    )
 
-        # Initialize agent registry
-        self.routing_model = DynamicChoiceModel[str](
-            options=[], model_name="SupervisorChoice", include_end=True
-        )
-        self.agent_registry = AgentRegistry(self.routing_model)
+    supervisor_prompt: ChatPromptTemplate | None = Field(
+        default=None, description="Custom prompt for routing decisions"
+    )
 
-        # Supervisor-specific configuration
-        self.delegation_prompt = self._create_delegation_prompt()
+    # ========================================================================
+    # ENGINE CONFIGURATION
+    # ========================================================================
 
-        logger.info(f"SupervisorAgent '{name}' initialized")
+    @field_validator("engine", mode="before")
+    @classmethod
+    def ensure_supervisor_engine(cls, v):
+        """Ensure supervisor has a low-temperature engine for routing."""
+        if v is None:
+            v = AugLLMConfig(temperature=0.1)
+        elif isinstance(v, dict):
+            v = AugLLMConfig(**v)
+        elif isinstance(v, AugLLMConfig):
+            # Set low temperature for consistent routing
+            v.temperature = min(v.temperature or 0.7, 0.3)
+        return v
 
-    def register_agent(
-        self, agent: Agent, capability_description: str | None = None
-    ) -> bool:
-        """Register an agent for supervision.
+    # ========================================================================
+    # SETUP
+    # ========================================================================
 
-        Args:
-            agent: Agent to register
-            capability_description: Description of agent capabilities
+    def setup_agent(self) -> None:
+        """Setup supervisor with routing configuration."""
+        # Call parent setup
+        super().setup_agent()
 
-        Returns:
-            bool: True if registration successful
-        """
-        success = self.agent_registry.register(agent, capability_description)
+        # Update prompt template for routing
+        if self.engine:
+            self.engine.prompt_template = (
+                self.supervisor_prompt or self._create_routing_prompt()
+            )
 
-        if success:
-            # Update delegation prompt with new agents
-            self.delegation_prompt = self._create_delegation_prompt()
-            console.print(f"[green]✅ Registered agent:[/green] {agent.name}")
-
-        return success
-
-    def unregister_agent(self, agent_name: str) -> bool:
-        """Unregister an agent.
-
-        Args:
-            agent_name: Name of agent to remove
-
-        Returns:
-            bool: True if removal successful
-        """
-        success = self.agent_registry.unregister(agent_name)
-
-        if success:
-            # Update delegation prompt
-            self.delegation_prompt = self._create_delegation_prompt()
-            console.print(f"[red]❌ Unregistered agent:[/red] {agent_name}")
-
-        return success
-
-    def _create_delegation_prompt(self) -> ChatPromptTemplate:
-        """Create prompt template for agent delegation."""
-        # Get available agents and capabilities
-        available_agents = self.agent_registry.get_available_agents()
-        capabilities = self.agent_registry.get_agent_capabilities()
-
-        # Build agent list for prompt
-        if available_agents:
-            agent_list = []
-            for agent_name in available_agents:
-                capability = capabilities.get(agent_name, f"Handles {agent_name} tasks")
-                agent_list.append(f"- {agent_name}: {capability}")
-            agents_text = "\n".join(agent_list)
+    def _create_routing_prompt(self) -> ChatPromptTemplate:
+        """Create routing prompt with current agent descriptions."""
+        if not self.agent_descriptions:
+            descriptions = "No agents registered yet"
         else:
-            agents_text = "No agents currently available"
+            descriptions = "\n".join(
+                [f"- {name}: {desc}" for name, desc in self.agent_descriptions.items()]
+            )
 
-        system_prompt = f"""You are a supervisor managing a team of specialized agents. Your job is to analyze incoming requests and delegate them to the most appropriate agent.
+        # Use default template with current descriptions
+        return DEFAULT_SUPERVISOR_PROMPT.partial(agent_descriptions=descriptions)
 
-Available Agents:
-{agents_text}
-- END: Use this when the conversation should end or task is complete
+    # ========================================================================
+    # AGENT REGISTRATION
+    # ========================================================================
 
-Instructions:
-1. Analyze the user's request carefully
-2. Determine which agent is best suited for the task
-3. Respond with ONLY the agent name (e.g., "research_agent" or "END")
-4. Choose END if the conversation is complete or no further action is needed
+    def register_agent(self, name: str, agent: Agent, description: str) -> None:
+        """Register an agent with the supervisor.
 
-Current agents available: {', '.join(available_agents) if available_agents else 'None'}
+        Args:
+            name: Unique name for the agent
+            agent: The agent instance
+            description: Description of capabilities
+        """
+        self.registered_agents[name] = agent
+        self.agent_descriptions[name] = description
 
-Response format: Provide only the agent name or END, nothing else."""
+        # Add to engines for state composition
+        self.engines[f"agent_{name}"] = agent
 
-        return ChatPromptTemplate.from_messages(
-            [
-                ("system", system_prompt),
-                ("placeholder", "{messages}"),
-            ]
-        )
+        # Update routing prompt
+        if self.engine:
+            self.engine.prompt_template = self._create_routing_prompt()
+
+        logger.info(f"Registered agent '{name}': {description}")
+
+    def unregister_agent(self, name: str) -> None:
+        """Remove an agent from supervision."""
+        if name in self.registered_agents:
+            del self.registered_agents[name]
+            del self.agent_descriptions[name]
+
+            # Remove from engines
+            engine_key = f"agent_{name}"
+            if engine_key in self.engines:
+                del self.engines[engine_key]
+
+            # Update routing prompt
+            if self.engine:
+                self.engine.prompt_template = self._create_routing_prompt()
+
+            logger.info(f"Unregistered agent '{name}'")
+
+    # ========================================================================
+    # GRAPH BUILDING
+    # ========================================================================
 
     def build_graph(self) -> BaseGraph:
-        """Build supervisor graph with custom routing logic."""
-        # Create base graph
-        graph = BaseGraph(self.state_schema)
+        """Build supervisor graph with agent routing."""
+        # Start with ReactAgent's graph
+        graph = super().build_graph()
 
-        # Add supervisor node (the LLM decision maker)
-        supervisor_node = self._create_supervisor_node()
-        graph.add_node("supervisor", supervisor_node)
-        graph.add_edge(START, "supervisor")
+        if not self.registered_agents:
+            logger.warning(
+                "No agents registered, supervisor will only make routing decisions"
+            )
+            return graph
 
-        # Add routing node (interprets LLM decision and routes)
-        routing_node = self._create_routing_node()
-        graph.add_node("routing", routing_node)
-        graph.add_edge("supervisor", "routing")
+        # Add routing logic node after agent_node
+        def route_to_agent(state: dict[str, Any]) -> str:
+            """Route based on supervisor's decision."""
+            messages = state.get("messages", [])
+            if not messages:
+                return END
 
-        # Add registered agents as nodes
-        available_agents = self.agent_registry.get_available_agents()
-        for agent_name in available_agents:
-            agent_wrapper = self._create_agent_wrapper(agent_name)
-            graph.add_node(agent_name, agent_wrapper)
-            # Agents return to supervisor after execution
-            graph.add_edge(agent_name, "supervisor")
+            last_msg = messages[-1]
+            if hasattr(last_msg, "content"):
+                decision = last_msg.content.strip().lower()
 
-        # Add conditional edges from routing node
-        routing_destinations = [*available_agents, "__end__"]
-        graph.add_conditional_edges(
-            "routing", self._routing_condition, routing_destinations
-        )
+                # Check for END
+                if decision == "end":
+                    return END
+
+                # Match agent names
+                for agent_name in self.registered_agents:
+                    if agent_name.lower() in decision:
+                        return f"{agent_name}_node"
+
+            # Default to END if no clear decision
+            return END
+
+        # Remove existing edge from agent_node to END/tool_node
+        # and add routing instead
+        if "agent_node" in graph.nodes:
+            # Find and remove outgoing edges from agent_node
+            edges_to_remove = []
+            for source, target in graph.edges:
+                if source == "agent_node":
+                    edges_to_remove.append((source, target))
+
+            for edge in edges_to_remove:
+                graph.remove_edge(*edge)
+
+            # Add routing node
+            graph.add_node("route_decision", route_to_agent)
+            graph.add_edge("agent_node", "route_decision")
+
+            # Add agent nodes
+            for name, agent in self.registered_agents.items():
+                node = AgentNodeV3Config(name=f"{name}_node", agent=agent)
+                graph.add_node(f"{name}_node", node)
+                # Agent outputs go back to supervisor
+                graph.add_edge(f"{name}_node", "agent_node")
+
+            # Add conditional routing
+            route_map = {
+                END: END,
+                **{f"{name}_node": f"{name}_node" for name in self.registered_agents},
+            }
+
+            graph.add_conditional_edges("route_decision", route_to_agent, route_map)
 
         return graph
 
-    def _create_supervisor_node(self) -> Callable:
-        """Create the supervisor LLM node."""
+    # ========================================================================
+    # CONVENIENCE METHODS
+    # ========================================================================
 
-        async def supervisor_node(state: SupervisorState, config=None) -> dict:
-            """Supervisor node that makes routing decisions."""
-            # Update registered agents in state
-            agent_dict = {}
-            for agent_name in self.agent_registry.get_available_agents():
-                agent = self.agent_registry.get_agent(agent_name)
-                if agent:
-                    # Store agent reference or metadata
-                    agent_dict[agent_name] = {
-                        "name": agent_name,
-                        "capability": self.agent_registry.get_agent_capability(
-                            agent_name
-                        ),
-                    }
+    @classmethod
+    def create_with_agents(
+        cls,
+        agents: list[tuple[str, Agent, str]],
+        name: str = "supervisor",
+        engine: AugLLMConfig | None = None,
+        **kwargs,
+    ) -> "SupervisorAgent":
+        """Create supervisor with pre-registered agents.
 
-            # Use the delegation prompt
-            formatted_prompt = self.delegation_prompt.format_messages(
-                messages=state.messages
-            )
+        Args:
+            agents: List of (name, agent, description) tuples
+            name: Supervisor name
+            engine: Custom engine config
+            **kwargs: Additional arguments
 
-            # Get LLM response
-            if self.main_engine:
-                response = await self.main_engine.ainvoke(formatted_prompt, config)
+        Returns:
+            Configured SupervisorAgent
 
-                # Extract routing decision from response
-                if isinstance(response, AIMessage):
-                    decision = response.content.strip()
-                else:
-                    decision = str(response).strip()
+        Example:
+            supervisor = SupervisorAgent.create_with_agents([
+                ("writer", writer_agent, "Creative writing tasks"),
+                ("coder", coder_agent, "Programming tasks"),
+                ("analyst", analyst_agent, "Data analysis")
+            ])
+        """
+        supervisor = cls(name=name, engine=engine, **kwargs)
 
-                # Validate decision
-                valid_options = self.agent_registry.get_routing_options()
-                if decision not in valid_options:
-                    # Try to find a match
-                    decision_upper = decision.upper()
-                    for option in valid_options:
-                        if option.upper() == decision_upper:
-                            decision = option
-                            break
-                    else:
-                        # Default to END if no match
-                        decision = "END"
+        for agent_name, agent, description in agents:
+            supervisor.register_agent(agent_name, agent, description)
 
-                logger.info(f"Supervisor decision: {decision}")
-
-                return {
-                    "messages": [
-                        *state.messages,
-                        AIMessage(content=f"Routing to: {decision}"),
-                    ],
-                    "registered_agents": agent_dict,
-                    "routing_decision": decision,
-                    "routing_timestamp": time.time(),
-                    "target_agent": decision if decision != "END" else None,
-                }
-
-            # Fallback if no engine
-            return {"routing_decision": "END", "target_agent": None}
-
-        return supervisor_node
-
-    def _create_routing_node(self) -> Callable:
-        """Create the routing node that interprets decisions."""
-
-        def routing_node(state: SupervisorState, config=None) -> dict:
-            """Route based on supervisor decision."""
-            decision = state.routing_decision
-
-            if not decision:
-                decision = "END"
-
-            logger.info(f"Routing to: {decision}")
-
-            return {"routing_decision": decision, "last_agent": state.target_agent}
-
-        return routing_node
-
-    def _create_agent_wrapper(self, agent_name: str) -> Callable:
-        """Create wrapper for executing a specific agent."""
-
-        async def agent_wrapper(state: SupervisorState, config=None) -> dict:
-            """Execute the target agent and return results."""
-            agent = self.agent_registry.get_agent(agent_name)
-            if not agent:
-                logger.error(f"Agent {agent_name} not found")
-                return {
-                    "messages": [
-                        *state.messages,
-                        AIMessage(content=f"Error: Agent {agent_name} not available"),
-                    ],
-                    "last_agent": agent_name,
-                    "target_agent": None,
-                }
-
-            try:
-                # Create agent state from supervisor state
-                agent_state = self._prepare_agent_state(state, agent)
-
-                # Execute agent
-                result = await agent.ainvoke(agent_state, config)
-
-                # Extract messages from result
-                result_messages = getattr(result, "messages", [])
-                if isinstance(result, dict):
-                    result_messages = result.get("messages", [])
-
-                # Return updated state
-                return {
-                    "messages": state.messages + result_messages,
-                    "last_agent": agent_name,
-                    "target_agent": None,
-                    "routing_decision": None,  # Clear for next routing
-                }
-
-            except Exception as e:
-                logger.exception(f"Agent {agent_name} execution failed: {e}")
-                return {
-                    "messages": [
-                        *state.messages,
-                        AIMessage(
-                            content=f"Agent {agent_name} encountered an error: {e!s}"
-                        ),
-                    ],
-                    "last_agent": agent_name,
-                    "target_agent": None,
-                }
-
-        return agent_wrapper
-
-    def _prepare_agent_state(
-        self, supervisor_state: SupervisorState, agent: Agent
-    ) -> Any:
-        """Prepare state for agent execution."""
-        # If agent has specific state schema, try to convert
-        if hasattr(agent, "state_schema") and agent.state_schema:
-            try:
-                # Try to create agent state with messages
-                agent_state = agent.state_schema(messages=supervisor_state.messages)
-                return agent_state
-            except Exception as e:
-                logger.warning(f"Could not create specific state for {agent.name}: {e}")
-
-        # Fallback to basic state with messages
-        return type("State", (), {"messages": supervisor_state.messages})()
-
-    def _routing_condition(self, state: SupervisorState) -> str:
-        """Determine routing destination from state."""
-        decision = state.routing_decision
-
-        if decision == "END":
-            return "__end__"
-
-        # Validate decision is available
-        available_agents = self.agent_registry.get_available_agents()
-        if decision in available_agents:
-            return decision
-
-        # Default to end if invalid
-        return "__end__"
-
-    def get_registered_agents(self) -> list[str]:
-        """Get list of registered agent names."""
-        return self.agent_registry.get_available_agents()
-
-    def print_supervisor_status(self) -> None:
-        """Print comprehensive supervisor status."""
-        # Main status table
-        table = Table(title="🔧 Supervisor Agent Status")
-        table.add_column("Property", style="cyan")
-        table.add_column("Value", style="green")
-
-        table.add_row("Supervisor Name", self.name)
-        table.add_row("Registered Agents", str(self.agent_registry.get_agent_count()))
-        table.add_row(
-            "Routing Options", str(len(self.agent_registry.get_routing_options()))
-        )
-        table.add_row("Has Engine", str(self.main_engine is not None))
-
-        console.print(table)
-
-        # Show registry details
-        self.agent_registry.print_registry_state()
-
-        # Show available routing options
-        options_panel = Panel(
-            f"Available routing options: {', '.join(self.agent_registry.get_routing_options())}",
-            title="🎯 Routing Options",
-            style="blue",
-        )
-        console.print(options_panel)
+        return supervisor

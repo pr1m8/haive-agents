@@ -124,7 +124,7 @@ Available tools:
 
 Routing rules:
 - Math problems → math_agent
-- Text analysis → text_age  
+- Text analysis → text_age
 - Agent creation requests → use create_simple_agent tool
 - Task completion → FINISH""",
         tools=[create_simple_agent],

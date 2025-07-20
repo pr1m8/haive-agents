@@ -1,6 +1,7 @@
 """Test direct dict approach to understand the issue."""
 
-from typing import Any, Dict
+import contextlib
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -18,15 +19,12 @@ class TestAgent:
 
 def test_simple():
     """Test with simple models."""
-
     # Create test agent
     agent = TestAgent("test")
 
     # Test 1: Direct dict with Any
-    try:
-        state = SimpleState(agents={"test": agent})
-    except Exception as e:
-        pass")
+    with contextlib.suppress(Exception):
+        SimpleState(agents={"test": agent})
 
     # Test 2: Let's try with AgentInfo type annotation
     from agent_info import AgentInfo
@@ -38,9 +36,9 @@ def test_simple():
     try:
         # Create AgentInfo
         info = AgentInfo(agent=agent, name="test", description="Test agent")
-        state2 = TypedState(agents={"test": info})
-    except Exception as e:
-        pass")
+        TypedState(agents={"test": info})
+    except Exception:
+        pass
 
     # Test 3: With inheritance
     from haive.core.schema.prebuilt.messages_state import MessagesState
@@ -49,10 +47,8 @@ def test_simple():
         agents: dict[str, Any] = Field(default_factory=dict)
         model_config = {"arbitrary_types_allowed": True}
 
-    try:
-        state3 = InheritedState(agents={"test": agent})
-    except Exception as e:
-        pass")
+    with contextlib.suppress(Exception):
+        InheritedState(agents={"test": agent})
 
 
 if __name__ == "__main__":

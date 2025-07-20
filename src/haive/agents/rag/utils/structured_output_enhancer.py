@@ -1,5 +1,6 @@
 """Structured Output Enhancer for RAG Agents.
 
+from typing import Any, Dict
 This utility enables any agent to be enhanced with structured output by appending
 a SimpleAgent with the appropriate prompt template and Pydantic model. This follows
 the pattern of keeping prompts focused on generation while parsers handle structure.
@@ -213,7 +214,7 @@ def create_memory_enhancer() -> StructuredOutputEnhancer:
 
 
 # Example usage patterns
-def demonstrate_enhancement_patterns():
+def demonstrate_enhancement_patterns() -> Dict[str, Any]:
     """Demonstrate various enhancement patterns."""
     from haive.core.models.llm.base import AzureLLMConfig
 

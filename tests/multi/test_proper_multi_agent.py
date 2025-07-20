@@ -6,7 +6,6 @@ sys.path.insert(0, "packages/haive-agents/src")
 sys.path.insert(0, "packages/haive-core/src")
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langchain_core.messages import HumanMessage
 
 from haive.agents.multi.proper_base import ProperMultiAgent
@@ -33,13 +32,13 @@ def test_proper_multi_agent():
     print("\n2. Testing state creation:")
     try:
         state = multi.state_schema(messages=[HumanMessage(content="Hello")])
-        print(f"   ✅ State created successfully")
+        print("   ✅ State created successfully"y")
         print(f"   State.agents: {list(state.agents.keys())}")
         print(f"   State.messages: {len(state.messages)}")
 
         # Test if it has MultiAgentState features
         if hasattr(state, "set_active_agent"):
-            print(f"   ✅ Has set_active_agent method")
+            print("   ✅ Has set_active_agent method"d")
             try:
                 state.set_active_agent("agent1")
                 print(f"   ✅ set_active_agent works: {state.active_agent}")

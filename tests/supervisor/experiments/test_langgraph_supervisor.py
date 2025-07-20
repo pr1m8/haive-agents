@@ -2,7 +2,8 @@
 
 import asyncio
 import operator
-from typing import Annotated, Any, Literal, Sequence, TypedDict
+from collections.abc import Sequence
+from typing import Annotated, Any, Literal, TypedDict
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, StateGraph

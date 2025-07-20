@@ -14,7 +14,7 @@ from haive.agents.simple.agent import SimpleAgent
 logging.getLogger("haive").setLevel(logging.WARNING)
 
 
-def example_simple_round_robin():
+def example_simple_round_robin() -> None:
     """Simple round-robin conversation with auto-generated agents."""
     # Create using the factory method
     conversation = RoundRobinConversation.create_simple(
@@ -33,7 +33,7 @@ def example_simple_round_robin():
             pass
 
 
-def example_custom_round_robin():
+def example_custom_round_robin() -> None:
     """Round-robin with custom agent configurations."""
     # Create custom agents with specific personalities
     agents = {
@@ -75,7 +75,7 @@ def example_custom_round_robin():
             pass
 
 
-def example_panel_discussion():
+def example_panel_discussion() -> None:
     """Simulate a panel discussion with round-robin format."""
     # Create panel discussion
     panelists = {

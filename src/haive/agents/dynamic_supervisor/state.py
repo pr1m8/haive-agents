@@ -1,5 +1,6 @@
 """State schemas for dynamic supervisor agent.
 
+from typing import Any
 This module defines the state management for the dynamic supervisor, including
 agent registry, routing control, and tool generation. Two versions are provided:
 - SupervisorState: Uses exclude=True for agent serialization (v1)
@@ -234,7 +235,8 @@ class SupervisorStateWithTools(SupervisorState):
     )
 
     @model_validator(mode="after")
-    def sync_on_init(self):
+    @classmethod
+    def sync_on_init(cls) -> Any:
         """Sync tools and choice model after initialization."""
         self._sync_internal()
         return self

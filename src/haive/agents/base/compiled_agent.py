@@ -93,7 +93,8 @@ class CompiledAgent(
     )
 
     @model_validator(mode="after")
-    def validate_agent_requirements(self) -> CompiledAgent:
+    @classmethod
+    def validate_agent_requirements(cls) -> CompiledAgent:
         """Validate that agent has required LLM capabilities.
 
         Agents must have an LLM engine for reasoning. This validator ensures

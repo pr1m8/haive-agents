@@ -1,7 +1,7 @@
 import operator
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class Step(BaseModel):
@@ -26,7 +26,7 @@ class Step(BaseModel):
             step.is_complete() for step in self.steps or []
         )
 
-    def remove_completed_substeps(self):
+    def remove_completed_substeps(self) -> None:
         """Removes substeps that have been marked as complete."""
         self.steps = list(
             filter(operator.not_, map(operator.attrgetter("is_complete"), self.steps))
@@ -57,7 +57,7 @@ class Plan(BaseModel):
         default_factory=list
     )  # ✅ Use `default_factory` instead of `default=[]`
 
-    def update_status(self):
+    def update_status(self) -> None:
         """Updates the overall status of the plan based on step completion."""
         if all(step.is_complete() for step in self.steps):
             self.status = "complete"
@@ -70,7 +70,7 @@ class Plan(BaseModel):
         """Adds a new step to the plan."""
         self.steps = operator.add(self.steps, [step])  # ✅ Using `operator.add`
 
-    def remove_completed_steps(self):
+    def remove_completed_steps(self) -> None:
         """Removes steps that have been completed."""
         self.steps = list(
             filter(operator.not_, map(operator.attrgetter("is_complete"), self.steps))

@@ -4,12 +4,10 @@ This test suite validates the complete memory system integration including
 classification, storage, retrieval, knowledge graph generation, and coordination.
 """
 
-import asyncio
 from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.tools.store_tools import StoreManager
 
 from haive.agents.memory.agentic_rag_coordinator import AgenticRAGCoordinatorConfig
@@ -122,7 +120,6 @@ class TestMultiAgentCoordinator:
     @pytest.fixture
     def coordinator_config(self, mock_memory_store, mock_classifier):
         """Create coordinator configuration."""
-
         # KG generator config
         kg_config = KGGeneratorAgentConfig(
             memory_store_manager=mock_memory_store, memory_classifier=mock_classifier
@@ -339,7 +336,7 @@ class TestMultiAgentCoordinator:
         assert len(result["agent_diagnostics"]) == len(coordinator.meta_agents)
 
         # Check each agent diagnostic
-        for agent_name in coordinator.meta_agents.keys():
+        for agent_name in coordinator.meta_agents:
             assert agent_name in result["agent_diagnostics"]
             assert result["agent_diagnostics"][agent_name]["status"] == "healthy"
 
@@ -396,7 +393,6 @@ class TestMultiAgentCoordinator:
 @pytest.mark.asyncio
 async def test_multi_agent_integration():
     """Integration test for the complete multi-agent memory system."""
-
     try:
         # Skip if dependencies not available
         from haive.core.tools.store_tools import StoreManager
@@ -464,10 +460,7 @@ async def test_multi_agent_integration():
 
         assert len(memories) >= 0  # Should work without errors
 
-        print("✅ Multi-agent integration test passed!")
-
     except ImportError as e:
-        print(f"⚠️ Skipping integration test due to missing dependencies: {e}")
         pytest.skip(f"Missing dependencies: {e}")
 
 

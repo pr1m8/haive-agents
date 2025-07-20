@@ -1,5 +1,4 @@
-"""
-ReWOO Tree-based Planning Agent V2 - Using MultiAgent Pattern
+"""ReWOO Tree-based Planning Agent V2 - Using MultiAgent Pattern.
 
 This agent implements the ReWOO (Reasoning without Observation) methodology
 using proper agent composition without manual node creation. All nodes are
@@ -21,16 +20,14 @@ Reference:
 import logging
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import BaseTool
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from haive.agents.base.agent import Agent
 from haive.agents.multi.clean import MultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
@@ -87,7 +84,7 @@ class ToolAlias(BaseModel):
         default=True, description="Whether to force this tool choice"
     )
 
-    parameters: Dict[str, Any] = Field(
+    parameters: dict[str, Any] = Field(
         default_factory=dict, description="Default parameters for the tool"
     )
 
@@ -131,17 +128,17 @@ class PlanTask(BaseModel):
     # Agent assignment
     agent_name: str = Field(..., description="Name of the agent to execute this task")
 
-    tool_alias: Optional[str] = Field(
+    tool_alias: str | None = Field(
         default=None, description="Tool alias to use for execution"
     )
 
     # Dependencies
-    dependencies: List[str] = Field(
+    dependencies: list[str] = Field(
         default_factory=list, description="List of task IDs this task depends on"
     )
 
     # Results
-    result: Optional[Any] = Field(
+    result: Any | None = Field(
         default=None, description="Result of executing this task"
     )
 
@@ -183,21 +180,21 @@ class ReWOOPlan(BaseModel):
     )
 
     # Task management
-    tasks: List[PlanTask] = Field(
+    tasks: list[PlanTask] = Field(
         default_factory=list, description="List of tasks in the plan"
     )
 
     # Execution order (levels for parallelization)
-    execution_levels: List[List[str]] = Field(
+    execution_levels: list[list[str]] = Field(
         default_factory=list, description="Task IDs organized by execution level"
     )
 
     # Tool requirements
-    required_tools: List[str] = Field(
+    required_tools: list[str] = Field(
         default_factory=list, description="List of tools required for execution"
     )
 
-    tool_aliases: Dict[str, ToolAlias] = Field(
+    tool_aliases: dict[str, ToolAlias] = Field(
         default_factory=dict, description="Tool aliases for forced tool choice"
     )
 
@@ -209,7 +206,7 @@ class ReWOOPlan(BaseModel):
     def _update_execution_levels(self) -> None:
         """Update execution levels based on dependencies."""
         # Create task lookup
-        task_map = {task.id: task for task in self.tasks}
+        {task.id: task for task in self.tasks}
 
         # Calculate levels
         levels = []
@@ -240,7 +237,7 @@ class ReWOOPlan(BaseModel):
 
         self.execution_levels = levels
 
-    def get_ready_tasks(self, completed_tasks: Set[str]) -> List[PlanTask]:
+    def get_ready_tasks(self, completed_tasks: set[str]) -> list[PlanTask]:
         """Get tasks that are ready for execution."""
         ready = []
         for task in self.tasks:
@@ -257,54 +254,54 @@ class ReWOOTreeState(MultiAgentState):
     """State for ReWOO tree execution."""
 
     # Current plan
-    current_plan: Optional[ReWOOPlan] = None
+    current_plan: ReWOOPlan | None = None
 
     # Task tracking
-    completed_tasks: Set[str] = Field(default_factory=set)
-    task_results: Dict[str, Any] = Field(default_factory=dict)
+    completed_tasks: set[str] = Field(default_factory=set)
+    task_results: dict[str, Any] = Field(default_factory=dict)
 
     # Tool management
-    tool_aliases: Dict[str, ToolAlias] = Field(default_factory=dict)
+    tool_aliases: dict[str, ToolAlias] = Field(default_factory=dict)
 
     # Recursive planning
     planning_depth: int = Field(default=0, ge=0, le=10)
 
     # Execution metadata
-    start_time: Optional[datetime] = None
-    end_time: Optional[datetime] = None
+    start_time: datetime | None = None
+    end_time: datetime | None = None
 
 
 class ReWOOPlannerAgent(SimpleAgent):
     """Specialized agent for creating ReWOO plans."""
 
     # Add as Pydantic field
-    available_tools: List[BaseTool] = Field(default_factory=list)
+    available_tools: list[BaseTool] = Field(default_factory=list)
 
     def __init__(
         self,
         name: str = "rewoo_planner",
-        available_tools: List[BaseTool] = None,
+        available_tools: list[BaseTool] | None = None,
         **kwargs,
     ):
         # Create planning-specific prompt
         prompt_template = """
         You are a ReWOO Planner that creates detailed execution plans.
-        
+
         Your task is to:
         1. Analyze the problem thoroughly
         2. Break it down into specific tasks
         3. Identify dependencies between tasks
         4. Assign appropriate agents to each task
         5. Specify tool requirements
-        
+
         Available tools: {tools}
-        
+
         Create a structured plan with:
         - Clear task hierarchy
         - Dependency relationships
         - Agent assignments (use: researcher, analyzer, executor, validator)
         - Tool specifications
-        
+
         Problem: {input}
         Context: {context}
         """
@@ -323,7 +320,9 @@ class ReWOOPlannerAgent(SimpleAgent):
             name=name, engine=engine, available_tools=available_tools or [], **kwargs
         )
 
-    def create_plan(self, problem: str, context: Dict[str, Any] = None) -> ReWOOPlan:
+    def create_plan(
+        self, problem: str, context: dict[str, Any] | None = None
+    ) -> ReWOOPlan:
         """Create a ReWOO plan for the given problem."""
         tools_list = [tool.name for tool in self.available_tools]
 
@@ -333,11 +332,10 @@ class ReWOOPlannerAgent(SimpleAgent):
 
         if isinstance(result, ReWOOPlan):
             return result
-        elif isinstance(result, dict):
+        if isinstance(result, dict):
             return ReWOOPlan(**result)
-        else:
-            # Fallback plan
-            return self._create_fallback_plan(problem)
+        # Fallback plan
+        return self._create_fallback_plan(problem)
 
     def _create_fallback_plan(self, problem: str) -> ReWOOPlan:
         """Create a simple fallback plan."""
@@ -366,20 +364,22 @@ class ReWOOExecutorAgent(ReactAgent):
     """Agent that executes individual tasks with tool support."""
 
     # Add as Pydantic field
-    tool_aliases: Dict[str, ToolAlias] = Field(default_factory=dict)
+    tool_aliases: dict[str, ToolAlias] = Field(default_factory=dict)
 
     def __init__(
         self,
         name: str = "rewoo_executor",
-        tools: List[BaseTool] = None,
-        tool_aliases: Dict[str, ToolAlias] = None,
+        tools: list[BaseTool] | None = None,
+        tool_aliases: dict[str, ToolAlias] | None = None,
         **kwargs,
     ):
         super().__init__(
             name=name, tools=tools or [], tool_aliases=tool_aliases or {}, **kwargs
         )
 
-    def execute_task(self, task: PlanTask, context: Dict[str, Any] = None) -> Any:
+    def execute_task(
+        self, task: PlanTask, context: dict[str, Any] | None = None
+    ) -> Any:
         """Execute a single task."""
         # Check for tool alias
         if task.tool_alias and task.tool_alias in self.tool_aliases:
@@ -397,8 +397,7 @@ class ReWOOExecutorAgent(ReactAgent):
 
 
 class ReWOOTreeAgent(MultiAgent):
-    """
-    ReWOO Tree Agent using proper MultiAgent composition.
+    """ReWOO Tree Agent using proper MultiAgent composition.
 
     This agent creates and executes tree-based plans using multiple specialized agents:
     - Planner: Creates structured execution plans
@@ -408,16 +407,16 @@ class ReWOOTreeAgent(MultiAgent):
     """
 
     # Add as Pydantic fields
-    available_tools: List[BaseTool] = Field(default_factory=list)
-    tool_aliases: Dict[str, ToolAlias] = Field(default_factory=dict)
+    available_tools: list[BaseTool] = Field(default_factory=list)
+    tool_aliases: dict[str, ToolAlias] = Field(default_factory=dict)
     max_planning_depth: int = Field(default=3)
     max_parallelism: int = Field(default=4)
 
     def __init__(
         self,
         name: str = "rewoo_tree_agent",
-        available_tools: List[BaseTool] = None,
-        tool_aliases: Dict[str, ToolAlias] = None,
+        available_tools: list[BaseTool] | None = None,
+        tool_aliases: dict[str, ToolAlias] | None = None,
         max_planning_depth: int = 3,
         max_parallelism: int = 4,
         **kwargs,
@@ -444,16 +443,16 @@ class ReWOOTreeAgent(MultiAgent):
             engine=AugLLMConfig(
                 prompt_template="""
                 You are a task coordinator managing parallel execution.
-                
+
                 Current plan: {plan}
                 Completed tasks: {completed}
                 Task results: {results}
-                
+
                 Determine:
                 1. Which tasks can execute next
                 2. How to assign tasks to executors
                 3. When to trigger replanning
-                
+
                 Respond with task assignments.
                 """
             ),
@@ -465,11 +464,11 @@ class ReWOOTreeAgent(MultiAgent):
             engine=AugLLMConfig(
                 prompt_template="""
                 You are a result validator.
-                
+
                 Task: {task}
                 Result: {result}
                 Expected output: {expected}
-                
+
                 Validate if the result meets requirements.
                 Provide validation status and any issues found.
                 """
@@ -477,7 +476,7 @@ class ReWOOTreeAgent(MultiAgent):
         )
 
         # Initialize MultiAgent with all agents
-        all_agents = [planner, coordinator, validator] + executors
+        all_agents = [planner, coordinator, validator, *executors]
 
         # Set custom state schema
         if "state_schema" not in kwargs:
@@ -546,7 +545,7 @@ class ReWOOTreeAgent(MultiAgent):
             for executor in self.executors.values():
                 executor.tool_aliases[alias] = tool_alias
 
-    async def create_and_execute_plan(self, problem: str) -> Dict[str, Any]:
+    async def create_and_execute_plan(self, problem: str) -> dict[str, Any]:
         """Create and execute a plan for the given problem."""
         # Initialize state
         initial_state = {
@@ -560,7 +559,7 @@ class ReWOOTreeAgent(MultiAgent):
 
         return self._format_result(result)
 
-    def _format_result(self, raw_result: Any) -> Dict[str, Any]:
+    def _format_result(self, raw_result: Any) -> dict[str, Any]:
         """Format the execution result."""
         # Extract key information from the result
         if isinstance(raw_result, dict):
@@ -576,8 +575,7 @@ class ReWOOTreeAgent(MultiAgent):
 
 
 class ParallelReWOOAgent(ReWOOTreeAgent):
-    """
-    Enhanced ReWOO agent with advanced parallel execution capabilities.
+    """Enhanced ReWOO agent with advanced parallel execution capabilities.
 
     This version focuses on maximizing parallelization by:
     - Creating multiple executor instances dynamically
@@ -616,10 +614,11 @@ class ParallelReWOOAgent(ReWOOTreeAgent):
 
 
 def create_rewoo_agent_with_tools(
-    tools: List[BaseTool], tool_aliases: Dict[str, str] = None, max_parallelism: int = 4
+    tools: list[BaseTool],
+    tool_aliases: dict[str, str] | None = None,
+    max_parallelism: int = 4,
 ) -> ReWOOTreeAgent:
-    """
-    Factory function to create a ReWOO agent with tools.
+    """Factory function to create a ReWOO agent with tools.
 
     Args:
         tools: List of tools available to the agent

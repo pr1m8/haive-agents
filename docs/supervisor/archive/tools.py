@@ -5,7 +5,8 @@ including handoff tools, control tools, and utility tools.
 """
 
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from langchain_core.tools import BaseTool, tool
 from langgraph_supervisor import create_forward_message_tool

@@ -167,7 +167,8 @@ class Plan(BaseModel):
         return steps
 
     @model_validator(mode="after")
-    def update_total_steps(self) -> "Plan":
+    @classmethod
+    def update_total_steps(cls) -> "Plan":
         """Ensure total_steps matches actual step count."""
         self.total_steps = len(self.steps)
         return self
@@ -325,7 +326,8 @@ class ReplanDecision(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_decision_fields(self) -> "ReplanDecision":
+    @classmethod
+    def validate_decision_fields(cls) -> "ReplanDecision":
         """Ensure required fields are present based on decision."""
         if self.decision == "answer" and not self.final_answer:
             raise ValueError("final_answer required when decision is 'answer'")

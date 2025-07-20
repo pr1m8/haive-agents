@@ -413,10 +413,9 @@ class ExecutionMixin:
         for field_name, field_value in output_data.__dict__.items():
             if field_name.endswith("_response") and hasattr(field_value, "__dict__"):
                 # Create a formatted wrapper for structured output fields
-                from collections import OrderedDict
 
                 class FormattedOutput:
-                    def __init__(self, original_data):
+                    def __init__(self, original_data) -> None:
                         self.original_data = original_data
 
                     def __str__(self):
@@ -691,7 +690,6 @@ class ExecutionMixin:
 
             # No longer need PydanticUndefined checking since we keep Pydantic models intact
             logger.debug("=== PRE-INVOKE STATE CHECK ===")
-            print(f"Runtime config: {runtime_config}")
             # breakpoint()
             result = self._app.invoke(
                 processed_input, config=runtime_config, debug=debug
@@ -1097,4 +1095,3 @@ class ExecutionMixin:
         """Optionally save state history to a file."""
         # This method is a placeholder to be implemented by the agent class
         # that uses this mixin if state history saving is desired.
-        pass

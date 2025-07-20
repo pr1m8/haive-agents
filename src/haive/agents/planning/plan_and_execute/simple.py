@@ -10,6 +10,11 @@ from haive.agents.planning.plan_and_execute.v2.prompts import (
     EXECUTOR_PROMPT,
     PLANNER_PROMPT,
     REPLANNER_PROMPT,
+    Any,
+    Dict,
+    from,
+    import,
+    typing,
 )
 from haive.agents.planning.plan_and_execute.v2.state import PlanAndExecuteState
 from haive.agents.simple.agent import SimpleAgent
@@ -65,7 +70,7 @@ class PlanAndExecuteAgent(MultiAgent):
             **kwargs,
         )
 
-    def build_graph(self):
+    def build_graph(self) -> Any:
         """Build the plan-execute-replan graph using BaseGraph."""
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
 
@@ -84,7 +89,7 @@ class PlanAndExecuteAgent(MultiAgent):
         graph.add_edge("executor", "replanner")
 
         # Conditional edge from replanner
-        def should_continue(state):
+        def should_continue(state: Dict[str, Any]):
             return "executor" if not state.is_plan_complete() else END
 
         graph.add_conditional_edges(

@@ -28,7 +28,7 @@ async def test_self_discover():
 
     try:
         result = await agent.arun(input_data)
-        print(f"\n✅ SUCCESS!")
+        print("\n✅ SUCCESS!"!")
         print(f"Result: {result}")
         return True
     except Exception as e:

@@ -1,5 +1,6 @@
 """Document Agent for comprehensive document processing pipeline.
 
+from typing import Any
 This module provides the DocumentAgent class which implements the full document processing
 pipeline: FETCH -> LOAD -> TRANSFORM -> SPLIT -> ANNOTATE -> EMBED -> STORE -> RETRIEVE.
 
@@ -37,7 +38,7 @@ See Also:
 """
 
 import logging
-from typing import Any, List
+from typing import Any
 
 from haive.core.engine.document import DocumentEngineConfig
 from haive.core.engine.document.config import (
@@ -184,43 +185,46 @@ class DocumentAgent(Agent):
     ## Example Usage:
 
     ### Basic Document Processing:
-    ```python
-    from haive.agents.document import DocumentAgent
-    from haive.core.engine.document import DocumentEngineConfig
+    .. code-block:: python
 
-    # Create agent for PDF processing
-    agent = DocumentAgent(
+        from haive.agents.document import DocumentAgent
+        from haive.core.engine.document import DocumentEngineConfig
+
+        # Create agent for PDF processing
+        agent = DocumentAgent(
         engine=DocumentEngineConfig(
-            chunking_strategy=ChunkingStrategy.PARAGRAPH,
-            chunk_size=1000,
-            parallel_processing=True
+        chunking_strategy=ChunkingStrategy.PARAGRAPH,
+        chunk_size=1000,
+        parallel_processing=True
         )
-    )
+        )
 
-    # Process a single document
-    result = agent.invoke({
+        # Process a single document
+        result = agent.invoke({
         "source": "document.pdf",
         "extract_metadata": True
-    })
-    ```
+        })
+
 
     ### Multi-Source Processing:
-    ```python
-    # Process multiple sources with different types
-    agent = DocumentAgent.create_for_enterprise()
+    .. code-block:: python
 
-    result = agent.process_sources([
+        # Process multiple sources with different types
+        agent = DocumentAgent.create_for_enterprise()
+
+        result = agent.process_sources([
         "documents/reports/",  # Directory
         "https://example.com/api/docs",  # Web API
         "s3://bucket/documents/",  # Cloud storage
         "postgresql://db/documents"  # Database
-    ])
-    ```
+        ])
+
 
     ### Custom Pipeline Configuration:
-    ```python
-    # Configure custom processing pipeline
-    agent = DocumentAgent(
+    .. code-block:: python
+
+        # Configure custom processing pipeline
+        agent = DocumentAgent(
         processing_strategy=ProcessingStrategy.ENHANCED,
         chunking_strategy=ChunkingStrategy.SEMANTIC,
         chunk_size=1500,
@@ -228,8 +232,8 @@ class DocumentAgent(Agent):
         enable_storage=True,
         normalize_content=True,
         detect_language=True
-    )
-    ```
+        )
+
 
     ## Document Source Types Supported:
 
@@ -401,7 +405,7 @@ class DocumentAgent(Agent):
 
     @field_validator("engine")
     @classmethod
-    def validate_engine_type(cls, v):
+    def validate_engine_type(cls, v) -> Any:
         """Ensure engine is DocumentEngineConfig."""
         if v is not None and not isinstance(v, DocumentEngineConfig):
             raise ValueError("DocumentAgent engine must be DocumentEngineConfig")
@@ -409,7 +413,7 @@ class DocumentAgent(Agent):
 
     @field_validator("chunk_overlap")
     @classmethod
-    def validate_chunk_overlap(cls, v, info):
+    def validate_chunk_overlap(cls, v, info) -> Any:
         """Ensure chunk overlap is less than chunk size."""
         if hasattr(info, "data") and "chunk_size" in info.data:
             chunk_size = info.data["chunk_size"]
@@ -417,7 +421,7 @@ class DocumentAgent(Agent):
                 raise ValueError("chunk_overlap must be less than chunk_size")
         return v
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """Configure the document engine with agent settings."""
         if self.engine:
             # Create actual engine instance from config
@@ -538,7 +542,7 @@ class DocumentAgent(Agent):
     # ========================================================================
 
     def process_sources(
-        self, sources: str | List[str], **kwargs
+        self, sources: str | list[str], **kwargs
     ) -> DocumentProcessingResult:
         """Process multiple document sources through the full pipeline.
 
@@ -593,8 +597,8 @@ class DocumentAgent(Agent):
         self,
         directory_path: str,
         recursive: bool = True,
-        include_patterns: List[str] | None = None,
-        exclude_patterns: List[str] | None = None,
+        include_patterns: list[str] | None = None,
+        exclude_patterns: list[str] | None = None,
         **kwargs,
     ) -> DocumentProcessingResult:
         """Process all documents in a directory.
@@ -687,7 +691,7 @@ class DocumentAgent(Agent):
                     else 0
                 ),
                 "formats": (
-                    list(set(doc.format.value for doc in result.documents))
+                    list({doc.format.value for doc in result.documents})
                     if hasattr(result, "documents")
                     else []
                 ),

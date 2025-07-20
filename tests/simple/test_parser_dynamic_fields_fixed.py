@@ -38,7 +38,7 @@ def test_pydantic_field_addition():
         instance.dynamic_field = "test_value"
 
     except Exception as e:
-        pass")
+        pass
 
     # Test 3: What about model updates?
     try:
@@ -94,7 +94,7 @@ def test_state_schema_requirements():
         )
 
     except Exception as e:
-        pass")
+        pass
 
 
 def test_command_update_behavior():
@@ -102,7 +102,6 @@ def test_command_update_behavior():
 
     try:
         from langgraph.types import Command
-
 
         # Test what Command.update can contain
         class TestResult(BaseModel):
@@ -117,7 +116,7 @@ def test_command_update_behavior():
         # The key question: Can Command.update contain fields not in state schema?
 
     except Exception as e:
-        pass")
+        pass
 
 
 def test_simple_simulation():

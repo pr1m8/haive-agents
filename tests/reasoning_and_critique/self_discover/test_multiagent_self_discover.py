@@ -1,6 +1,6 @@
 """Test Self-Discover pattern with unified MultiAgent - unit tests only."""
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -15,10 +15,10 @@ class SelfDiscoverState(StateSchema):
     """State for self-discover workflow."""
 
     task_description: str = Field(default="")
-    selected_modules: Optional[str] = Field(default=None)
-    adapted_modules: Optional[str] = Field(default=None)
-    reasoning_plan: Optional[str] = Field(default=None)
-    final_answer: Optional[str] = Field(default=None)
+    selected_modules: str | None = Field(default=None)
+    adapted_modules: str | None = Field(default=None)
+    reasoning_plan: str | None = Field(default=None)
+    final_answer: str | None = Field(default=None)
 
 
 class TestSelfDiscoverMultiAgent:
@@ -98,7 +98,7 @@ class TestSelfDiscoverMultiAgent:
         multi_agent.add_edge("adapter", "planner")
 
         # Conditional routing from planner
-        def check_plan_validity(state: Dict[str, Any]) -> str:
+        def check_plan_validity(state: dict[str, Any]) -> str:
             if state.get("error") or not state.get("reasoning_plan"):
                 return "error"
             return "continue"
@@ -160,7 +160,7 @@ class TestSelfDiscoverMultiAgent:
         multi_agent.add_edge("adapter", "planner")
 
         # Verify parallel configuration
-        parallel_key = next(k for k in multi_agent.branches.keys() if "parallel" in k)
+        parallel_key = next(k for k in multi_agent.branches if "parallel" in k)
         assert multi_agent.branches[parallel_key]["type"] == "parallel"
         assert len(multi_agent.branches[parallel_key]["agents"]) == 3
         assert multi_agent.branches[parallel_key]["next"] == "module_selector"
@@ -177,14 +177,13 @@ class TestSelfDiscoverMultiAgent:
         multi_agent = MultiAgent(agents=agents, entry_point="classifier")
 
         # Use backward-compatible method
-        def route_by_difficulty(state: Dict[str, Any]) -> str:
+        def route_by_difficulty(state: dict[str, Any]) -> str:
             difficulty = state.get("difficulty", "medium")
             if difficulty == "easy":
                 return "easy_path"
-            elif difficulty == "hard":
+            if difficulty == "hard":
                 return "hard_path"
-            else:
-                return "easy_path"  # default
+            return "easy_path"  # default
 
         multi_agent.add_conditional_edges("classifier", route_by_difficulty)
 

@@ -57,15 +57,15 @@ def basic_example():
 
     Example Output:
         >>> basic_example()
-        🎬 Basic GraphDB RAG Agent Example
+        Basic GraphDB RAG Agent Example
         =====================================
 
         Question: What is the movie with the highest rating?
 
         Processing...
-        ✅ Answer: The highest rated movie is "The Shawshank Redemption" with a rating of 9.3.
+         Answer: The highest rated movie is "The Shawshank Redemption" with a rating of 9.3.
 
-        📊 Execution Details:
+         Execution Details:
         - Cypher Query: MATCH (m:Movie) RETURN m.title, m.rating ORDER BY m.rating DESC LIMIT 1
         - Processing Time: 2.3 seconds
         - Steps: ['check_domain_relevance', 'generate_query', 'validate_query', 'execute_query', 'generate_answer']
@@ -89,7 +89,6 @@ def basic_example():
 
         # Display results
 
-
     except Exception as e:
         logger.exception(f"Error in basic example: {e}")
 
@@ -102,28 +101,29 @@ def streaming_example():
 
     Example Output:
         >>> streaming_example()
-        🌊 Streaming GraphDB RAG Agent Example
+         Streaming GraphDB RAG Agent Example
         =====================================
 
         Question: Who directed The Matrix?
 
-        📍 Step: check_domain_relevance
-           ✓ Domain check passed
+         Step: check_domain_relevance
+            Domain check passed
 
-        📍 Step: generate_query
-           ✓ Generated Cypher: MATCH (p:Person)-[:DIRECTED]->(m:Movie {title: 'The Matrix'}) RETURN p.name
+         Step: generate_query
+            Generated Cypher: MATCH (p:Person)-[:DIRECTED]->(m:Movie {title: 'The Matrix'}) RETURN p.name
 
-        📍 Step: validate_query
-           ✓ Query validation passed
+         Step: validate_query
+            Query validation passed
 
-        📍 Step: execute_query
-           ✓ Query executed successfully
-           📊 Results: [{'p.name': 'Lana Wachowski'}, {'p.name': 'Lilly Wachowski'}]
+         Step: execute_query
+            Query executed successfully
+            Results: [{'p.name': 'Lana Wachowski'},
+                {'p.name': 'Lilly Wachowski'}]
 
-        📍 Step: generate_answer
-           ✓ Final answer generated
+         Step: generate_answer
+            Final answer generated
 
-        ✅ Final Answer: The Matrix was directed by Lana Wachowski and Lilly Wachowski.
+         Final Answer: The Matrix was directed by Lana Wachowski and Lilly Wachowski.
     """
 
     try:
@@ -167,7 +167,6 @@ def streaming_example():
                 elif node_name == "generate_answer":
                     pass
 
-
         # Get final result
         final_result = agent.run({"question": question})
 
@@ -183,14 +182,14 @@ def custom_domain_example():
 
     Example Output:
         >>> custom_domain_example()
-        🏥 Custom Domain (Healthcare) Example
+         Custom Domain (Healthcare) Example
         =====================================
 
         Configuring agent for healthcare domain...
 
         Testing domain relevance:
-        - ✅ "Which patients have diabetes?" - Accepted
-        - ❌ "What's the weather today?" - Rejected (out of domain)
+        -  "Which patients have diabetes?" - Accepted
+        -  "What's the weather today?" - Rejected (out of domain)
 
         Processing healthcare query...
         Answer: The following patients have been diagnosed with diabetes: John Smith, Mary Johnson, and Robert Williams.
@@ -270,21 +269,21 @@ def batch_processing_example():
 
     Example Output:
         >>> batch_processing_example()
-        📦 Batch Processing Example
+         Batch Processing Example
         =====================================
 
         Processing 5 queries...
 
         1. "What are the top 5 rated movies?"
-           ✅ Success (2.1s)
+            Success (2.1s)
 
         2. "Who acted in The Godfather?"
-           ✅ Success (1.8s)
+            Success (1.8s)
 
         3. "What's the weather?"
-           ❌ Out of domain (0.5s)
+            Out of domain (0.5s)
 
-        📊 Batch Statistics:
+         Batch Statistics:
         - Total Queries: 5
         - Successful: 4 (80%)
         - Failed: 1 (20%)
@@ -304,7 +303,6 @@ def batch_processing_example():
             "What's the weather today?",  # This should fail domain check
             "Who directed Inception?",
         ]
-
 
         # Track statistics
         results = []
@@ -360,27 +358,26 @@ def error_handling_example():
 
     Example Output:
         >>> error_handling_example()
-        🛡️ Error Handling Example
+         Error Handling Example
         =====================================
 
         Testing various error scenarios...
 
         1. Invalid Cypher syntax:
            Initial query had errors: ['Syntax error at line 1']
-           ✅ Successfully corrected and executed
+            Successfully corrected and executed
 
         2. Non-existent labels:
-           ⚠️  Handled gracefully: Label 'NonExistentNode' not in schema
+             Handled gracefully: Label 'NonExistentNode' not in schema
 
         3. Complex nested query:
-           ✅ Successfully validated and executed
+            Successfully validated and executed
     """
 
     try:
         # Create agent with debug configuration
         config = GraphDBRAGConfig(domain_name="movies")
         agent = GraphDBRAGAgent(config)
-
 
         # Test 1: Query that might generate invalid Cypher
         complex_question = (
@@ -426,12 +423,12 @@ def performance_monitoring_example():
 
     Example Output:
         >>> performance_monitoring_example()
-        ⚡ Performance Monitoring Example
+         Performance Monitoring Example
         =====================================
 
         Running performance analysis...
 
-        📊 Performance Metrics:
+         Performance Metrics:
 
         Step                    | Time (s) | % of Total
         -------------------------|----------|------------
@@ -443,7 +440,7 @@ def performance_monitoring_example():
         -------------------------|----------|------------
         Total                    |   2.5    |   100%
 
-        🎯 Optimization Suggestions:
+         Optimization Suggestions:
         - Query generation is the bottleneck (48% of time)
         - Consider caching frequent queries
         - Use more specific examples for faster generation
@@ -452,7 +449,6 @@ def performance_monitoring_example():
     try:
         # Create agent
         agent = GraphDBRAGAgent(config=GraphDBRAGConfig())
-
 
         # Track timing for each step
         step_times = {}
@@ -484,15 +480,15 @@ def performance_monitoring_example():
             if timing["duration"]:
                 percentage = (timing["duration"] / total_time) * 100
 
-
         # Identify bottlenecks
         bottleneck = max(step_times.items(), key=lambda x: x[1]["duration"] or 0)
 
-
         if bottleneck[0] == "generate_query":
+            pass
         elif bottleneck[0] == "execute_query":
+            pass
         elif bottleneck[0] == "validate_query":
-    pass
+            pass
     except Exception as e:
         logger.exception(f"Error in performance monitoring: {e}")
 
@@ -505,14 +501,14 @@ async def async_example():
 
     Example Output:
         >>> asyncio.run(async_example())
-        🔄 Async Execution Example
+         Async Execution Example
         =====================================
 
         Processing 3 queries concurrently...
 
-        ✅ Query 1 completed: "What are the top rated movies?"
-        ✅ Query 2 completed: "Who directed The Godfather?"
-        ✅ Query 3 completed: "Which actors have won an Oscar?"
+         Query 1 completed: "What are the top rated movies?"
+         Query 2 completed: "Who directed The Godfather?"
+         Query 3 completed: "Which actors have won an Oscar?"
 
         Total time: 2.8s (vs ~7s sequential)
     """
@@ -528,8 +524,8 @@ async def async_example():
             "Which actors have won multiple Oscars?",
         ]
 
-
         # Define async task
+
         async def process_query(agent, question, index):
             start_time = time.time()
             try:
@@ -564,8 +560,9 @@ async def async_example():
         # Display results
         for result in sorted(results, key=lambda x: x["index"]):
             if result["success"]:
+                pass
             else:
-    pass
+                pass
         # Compare with sequential time
         sequential_time = sum(r["time"] for r in results)
 
@@ -584,7 +581,7 @@ def main():
 
             $ python example.py
 
-            🎯 GraphDB RAG Agent Examples
+             GraphDB RAG Agent Examples
             =============================
 
             Select an example to run:
@@ -648,7 +645,6 @@ def run_all_examples():
     ]
 
     for i, (name, func) in enumerate(examples, 1):
-    pass
         try:
             func()
         except Exception as e:
@@ -656,7 +652,6 @@ def run_all_examples():
 
         if i < len(examples):
             time.sleep(2)
-
 
 
 if __name__ == "__main__":

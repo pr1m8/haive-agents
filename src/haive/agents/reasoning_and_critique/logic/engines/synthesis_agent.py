@@ -1,5 +1,7 @@
 # src/haive/agents/reasoning/synthesis_agent.py
 
+from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
@@ -217,7 +219,7 @@ Remember: Great synthesis doesn't just summarize - it creates new understanding 
 )
 
 
-def create_synthesis_agent():
+def create_synthesis_agent() -> Any:
     """Create the reasoning synthesis agent."""
     return AugLLMConfig(
         name="reasoning_synthesizer",

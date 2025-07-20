@@ -1,13 +1,12 @@
 """Generalized Structured Output Agent for enhancing any agent with structured output parsing."""
 
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.messages.messages_with_token_usage import (
     MessagesStateWithTokenUsage,
 )
-from haive.core.schema.prebuilt.messages_state import MessagesState
-from langchain_core.output_parsers import BaseOutputParser, PydanticToolsParser
+from langchain_core.output_parsers import PydanticToolsParser
 from pydantic import BaseModel, Field
 
 from haive.agents.base.agent import Agent
@@ -30,23 +29,24 @@ class StructuredOutputAgent(SimpleAgent):
     - Supports multiple output models
 
     Example:
-        ```python
-        # Enhance any agent with structured output
-        enhanced_agent = StructuredOutputAgent.enhance_agent(
+        .. code-block:: python
+
+            # Enhance any agent with structured output
+            enhanced_agent = StructuredOutputAgent.enhance_agent(
             base_agent=my_agent,
             output_models=[SearchResult, AnalysisResult]
-        )
+            )
 
-        # Or use as standalone post-processor
-        processor = StructuredOutputAgent.create_processor(
+            # Or use as standalone post-processor
+            processor = StructuredOutputAgent.create_processor(
             output_models=[ResultModel],
             include_original_input=True
-        )
-        ```
+            )
+
     """
 
     # Configuration
-    output_models: List[Type[BaseModel]] = Field(
+    output_models: list[type[BaseModel]] = Field(
         default_factory=list, description="Pydantic models to parse outputs into"
     )
 
@@ -63,8 +63,8 @@ class StructuredOutputAgent(SimpleAgent):
     def enhance_agent(
         cls,
         base_agent: Agent,
-        output_models: List[Type[BaseModel]],
-        name: Optional[str] = None,
+        output_models: list[type[BaseModel]],
+        name: str | None = None,
         include_original_input: bool = True,
         **kwargs,
     ) -> ProperMultiAgent:
@@ -96,11 +96,10 @@ class StructuredOutputAgent(SimpleAgent):
         enhanced_name = name or f"{base_agent.name}_with_structured_output"
 
         # Create enhanced state class with proper annotations
-        from typing import List as ListType
 
         enhanced_state_attrs = {
             "__annotations__": {
-                "structured_output_models": Optional[ListType[Type[BaseModel]]],
+                "structured_output_models": Optional[list[type[BaseModel]]],
                 "parse_structured_outputs": bool,
             },
             "structured_output_models": Field(default=output_models),
@@ -121,10 +120,10 @@ class StructuredOutputAgent(SimpleAgent):
     @classmethod
     def create_processor(
         cls,
-        output_models: List[Type[BaseModel]],
+        output_models: list[type[BaseModel]],
         name: str = "structured_output_processor",
         include_original_input: bool = True,
-        system_message: Optional[str] = None,
+        system_message: str | None = None,
         **kwargs,
     ) -> "StructuredOutputAgent":
         """Create a standalone structured output processor.
@@ -140,8 +139,7 @@ class StructuredOutputAgent(SimpleAgent):
             Configured StructuredOutputAgent instance
         """
         # Generate format instructions
-        parser = PydanticToolsParser(tools=output_models)
-        format_instructions = ""
+        PydanticToolsParser(tools=output_models)
 
         # Get example schemas
         model_examples = []
@@ -162,7 +160,7 @@ Instructions:
 4. Output ONLY valid JSON that matches one of the schemas
 5. If the content doesn't fit any model perfectly, choose the closest match
 
-{f'Include context from the original task when structuring the output.' if include_original_input else ''}
+{'Include context from the original task when structuring the output.' if include_original_input else ''}
 
 Remember: Output must be valid JSON matching one of the provided schemas."""
 
@@ -184,8 +182,8 @@ Remember: Output must be valid JSON matching one of the provided schemas."""
         )
 
     def process_with_context(
-        self, content: str, original_input: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self, content: str, original_input: str | None = None
+    ) -> dict[str, Any]:
         """Process content with optional original context.
 
         Args:
@@ -213,7 +211,7 @@ Remember: Output must be valid JSON matching one of the provided schemas."""
     @classmethod
     def create_reflection_processor(
         cls,
-        reflection_models: List[Type[BaseModel]],
+        reflection_models: list[type[BaseModel]],
         name: str = "reflection_processor",
         **kwargs,
     ) -> "StructuredOutputAgent":
@@ -254,7 +252,7 @@ Output must be valid JSON matching one of the reflection schemas."""
     @classmethod
     def create_validation_processor(
         cls,
-        validation_models: List[Type[BaseModel]],
+        validation_models: list[type[BaseModel]],
         name: str = "validation_processor",
         **kwargs,
     ) -> "StructuredOutputAgent":

@@ -5,7 +5,6 @@ This script tests the registration and basic configuration of all vector stores.
 """
 
 import sys
-from typing import Dict, List, Type
 
 # Add the package path
 sys.path.insert(0, "packages/haive-core/src")
@@ -17,10 +16,8 @@ from haive.core.engine.vectorstore.base import (
 
 def test_all_vector_stores():
     """Test all registered vector stores."""
-
     # Get all registered vector stores
     registered_stores = _VECTOR_STORE_REGISTRY
-
 
     # Group vector stores by category
     categories = {
@@ -50,7 +47,7 @@ def test_all_vector_stores():
     failed = []
 
     # Test each category
-    for category, expected_stores in categories.items():
+    for _category, expected_stores in categories.items():
 
         for store_name in expected_stores:
             if store_name in registered_stores:
@@ -63,16 +60,15 @@ def test_all_vector_stores():
                     try:
                         # Try to get required fields
                         config_class(name=f"test_{store_name.lower()}")
-                        status = "✓ (No required fields)"
                     except Exception as e:
                         # This is expected for stores with required fields
                         if (
                             "field required" in str(e).lower()
                             or "missing" in str(e).lower()
                         ):
-                            status = "✓ (Has required fields)"
+                            pass
                         else:
-                            status = f"✓ (Config validated: {type(e).__name__})"
+                            pass  # f"✓ (Config validated: {type(e).__name__})"
 
                     successful.append(store_name)
 
@@ -84,7 +80,7 @@ def test_all_vector_stores():
     # Print summary
 
     if failed:
-        for store, error in failed:
+        for _store, _error in failed:
             pass
 
     # List all registered stores not in our categories (if any)
@@ -94,7 +90,7 @@ def test_all_vector_stores():
 
     extra_stores = set(registered_stores.keys()) - all_expected
     if extra_stores:
-        for store in sorted(extra_stores):
+        for _store in sorted(extra_stores):
             pass
 
     # Test specific configurations for popular stores
@@ -103,14 +99,14 @@ def test_all_vector_stores():
     try:
         from haive.core.engine.vectorstore import VectaraVectorStoreConfig
 
-        config = VectaraVectorStoreConfig(
+        VectaraVectorStoreConfig(
             name="test_vectara",
             vectara_customer_id="123456",
             vectara_corpus_id="1",
             api_key="test_key",
         )
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Test ClickHouse
     try:
@@ -122,40 +118,40 @@ def test_all_vector_stores():
             def instantiate(self):
                 return None
 
-        config = ClickHouseVectorStoreConfig(
+        ClickHouseVectorStoreConfig(
             name="test_clickhouse",
             embedding=MockEmbedding(name="mock"),
             host="localhost",
             database="default",
             table="vectors",
         )
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Test Marqo
     try:
         from haive.core.engine.vectorstore import MarqoVectorStoreConfig
 
-        config = MarqoVectorStoreConfig(
+        MarqoVectorStoreConfig(
             name="test_marqo",
             marqo_url="http://localhost:8882",
             index_name="test_index",
         )
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Test OpenSearch
     try:
         from haive.core.engine.vectorstore import OpenSearchVectorStoreConfig
 
-        config = OpenSearchVectorStoreConfig(
+        OpenSearchVectorStoreConfig(
             name="test_opensearch",
             embedding=MockEmbedding(name="mock"),
             opensearch_url="http://localhost:9200",
             index_name="test_index",
         )
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Test Amazon OpenSearch
     try:
@@ -168,9 +164,8 @@ def test_all_vector_stores():
             index_name="test_index",
             aws_region="us-east-1",
         )
-    except Exception as e:
-        pass")
-
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

@@ -29,7 +29,7 @@ class SequentialAgent(Agent):
 
     @model_validator(mode="before")
     @classmethod
-    def validate_agents(cls, values):
+    def validate_agents(cls, values) -> Any:
         """Validate that agents are Agent instances or convertible."""
         if isinstance(values, dict) and "agents" in values:
             agents = values["agents"]
@@ -50,7 +50,8 @@ class SequentialAgent(Agent):
         return values
 
     @model_validator(mode="after")
-    def set_state_schema(self):
+    @classmethod
+    def set_state_schema(cls) -> Any:
         self.input_schema = SchemaComposer.from_components(
             [self.agents[0].engine]
         ).derive_input_schema()
@@ -60,7 +61,8 @@ class SequentialAgent(Agent):
         return self
 
     @model_validator(mode="after")
-    def validate_non_empty_agents(self):
+    @classmethod
+    def validate_non_empty_agents(cls) -> Any:
         """Ensure we have at least one agent."""
         if not self.agents or len(self.agents) == 0:
             raise ValueError("SequentialAgent requires at least one agent")

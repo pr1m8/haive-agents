@@ -2,6 +2,7 @@
 
 """Enhanced hooks mixin for the Haive framework.
 
+from typing import Any
 Provides a flexible hooks system that can be used by both single and multi agents,
 with support for different hook points and graph-aware modifications.
 """
@@ -32,7 +33,7 @@ class HooksMixin(Generic[TState]):
     _hook_enabled: bool = PrivateAttr(default=True)
     _hook_results: dict[str, Any] = PrivateAttr(default_factory=dict)
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Initialize hooks storage."""
         super().__init__(**kwargs)
         self._hooks = {point: [] for point in HookPoint}
@@ -176,7 +177,7 @@ class HooksMixin(Generic[TState]):
         key = f"{point.value}:{hook_name}"
         return self._hook_results.get(key)
 
-    def clear_hook_results(self):
+    def clear_hook_results(self) -> None:
         """Clear all stored hook results."""
         self._hook_results.clear()
 

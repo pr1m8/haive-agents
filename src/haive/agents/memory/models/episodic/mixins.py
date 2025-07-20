@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -12,7 +12,7 @@ class PerformanceMetrics(BaseModel):
     completion_time: float = Field(
         default=0.0, ge=0.0, description="Average completion time in seconds"
     )
-    user_satisfaction: Optional[float] = Field(
+    user_satisfaction: float | None = Field(
         None, ge=1.0, le=5.0, description="User satisfaction score (1-5)"
     )
     complexity_score: int = Field(
@@ -23,7 +23,8 @@ class PerformanceMetrics(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_performance_logic(self) -> "PerformanceMetrics":
+    @classmethod
+    def validate_performance_logic(cls) -> "PerformanceMetrics":
         """Validate performance metric consistency."""
         if self.success_rate > 0.9 and self.error_frequency > 0.1:
             raise ValueError("High success rate inconsistent with high error frequency")
@@ -35,22 +36,22 @@ class TaskExecution(BaseModel):
     """Detailed task execution context."""
 
     task_type: str = Field(..., description="Type of task executed")
-    input_parameters: Dict[str, Any] = Field(
+    input_parameters: dict[str, Any] = Field(
         default_factory=dict, description="Task input parameters"
     )
-    execution_steps: List[str] = Field(
+    execution_steps: list[str] = Field(
         default_factory=list, description="Step-by-step execution log"
     )
-    tools_used: List[str] = Field(
+    tools_used: list[str] = Field(
         default_factory=list, description="Tools utilized during execution"
     )
-    decision_points: List[Dict[str, Any]] = Field(
+    decision_points: list[dict[str, Any]] = Field(
         default_factory=list, description="Key decision points"
     )
 
     @field_validator("execution_steps")
     @classmethod
-    def validate_execution_steps(cls, v: List[str]) -> List[str]:
+    def validate_execution_steps(cls, v: list[str]) -> list[str]:
         """Validate execution step format."""
         if len(v) > 100:
             raise ValueError("Too many execution steps (max 100)")

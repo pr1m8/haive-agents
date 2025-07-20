@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Test supervisor coordinating three specialized agents for complex tasks."""
 
-from typing import List
+
+import contextlib
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.tools.tools.search_tools import tavily_search_tool
@@ -28,7 +29,6 @@ class Essay(BaseModel):
 
 def create_three_specialized_agents():
     """Create three agents with different specializations."""
-
     # 1. Research Agent - uses tavily_search tool
     research_engine = AugLLMConfig(
         name="research_engine",
@@ -91,7 +91,6 @@ def create_three_specialized_agents():
 
 def test_three_agent_coordination():
     """Test supervisor coordinating all three agents for a complex task."""
-
     # Create all agents
     agents = create_three_specialized_agents()
 
@@ -113,7 +112,7 @@ def test_three_agent_coordination():
         "Writes structured essays based on research and data",
     )
 
-    for name, desc in registry.list_available().items():
+    for _name, _desc in registry.list_available().items():
         pass
 
     # Create integrated supervisor with all agents
@@ -121,34 +120,28 @@ def test_three_agent_coordination():
         name="three_agent_supervisor", agent_registry=registry
     )
 
-
     # Test multi-step task requiring all three agents
     complex_task = """Research the current costs of implementing AI chatbots for customer service
     in small businesses. Calculate the ROI over 5 years assuming 20% efficiency gain and
     $50,000 annual savings. Then write a brief essay about whether small businesses should
     invest in AI chatbots based on the research and calculations."""
 
-
-
-
     try:
         result = supervisor.invoke({"messages": [HumanMessage(complex_task)]})
-
 
         # Extract and display results
         if hasattr(result, "messages") and result.messages:
 
             # Show last few messages to see the flow
-            for i, msg in enumerate(result.messages[-5:]):  # Last 5 messages
-                msg_type = type(msg).__name__
-                content_preview = (
+            for _i, msg in enumerate(result.messages[-5:]):  # Last 5 messages
+                type(msg).__name__
+                (
                     str(msg.content)[:200] + "..."
                     if len(str(msg.content)) > 200
                     else str(msg.content)
                 )
 
-
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -158,24 +151,21 @@ def test_three_agent_coordination():
 
 def test_individual_agent_capabilities():
     """Test each agent individually to ensure they work before coordination."""
-
     agents = create_three_specialized_agents()
 
     # Test research agent
-    try:
-        research_result = agents["research_agent"].invoke(
+    with contextlib.suppress(Exception):
+        agents["research_agent"].invoke(
             {
                 "messages": [
                     HumanMessage("Search for average cost of AI chatbot implementation")
                 ]
             }
         )
-    except Exception as e:
-        pass")
 
     # Test math agent
-    try:
-        math_result = agents["math_agent"].invoke(
+    with contextlib.suppress(Exception):
+        agents["math_agent"].invoke(
             {
                 "messages": [
                     HumanMessage(
@@ -184,12 +174,10 @@ def test_individual_agent_capabilities():
                 ]
             }
         )
-    except Exception as e:
-        pass")
 
     # Test essay writer
-    try:
-        essay_result = agents["essay_writer_agent"].invoke(
+    with contextlib.suppress(Exception):
+        agents["essay_writer_agent"].invoke(
             {
                 "messages": [
                     HumanMessage(
@@ -198,8 +186,6 @@ def test_individual_agent_capabilities():
                 ]
             }
         )
-    except Exception as e:
-        pass")
 
 
 if __name__ == "__main__":

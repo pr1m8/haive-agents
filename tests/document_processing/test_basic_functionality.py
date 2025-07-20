@@ -2,7 +2,6 @@
 """Simple test to verify everything is working correctly."""
 
 import logging
-import os
 import sys
 from pathlib import Path
 
@@ -20,18 +19,12 @@ try:
 
     from haive.agents.document_processing import DocumentProcessingAgent
 
-    print("📋 Testing DocumentProcessingAgent Basic Functionality")
-    print("=" * 60)
-
     # Test 1: Basic agent creation
-    print("🔧 Test 1: Basic agent creation...")
     config = AugLLMConfig()
     agent = DocumentProcessingAgent(engine=config)
     assert agent.name == "document_processor"
-    print("✅ Basic agent creation: PASSED")
 
     # Test 2: QueryState functionality
-    print("🔧 Test 2: QueryState functionality...")
     query_state = QueryState(original_query="Test query", query_type=QueryType.SIMPLE)
 
     # Add some queries
@@ -55,20 +48,15 @@ try:
     assert summary["original_query"] == "Test query"
     assert summary["total_queries"] == 3
 
-    print("✅ QueryState functionality: PASSED")
-
     # Test 3: Agent capabilities
-    print("🔧 Test 3: Agent capabilities...")
     capabilities = agent.get_capabilities()
     assert "document_loading" in capabilities
     assert "search_capabilities" in capabilities
     assert "processing_pipeline" in capabilities
     assert "rag_capabilities" in capabilities
     assert "output_features" in capabilities
-    print("✅ Agent capabilities: PASSED")
 
     # Test 4: Configuration validation
-    print("🔧 Test 4: Configuration validation...")
     from haive.agents.document_processing import DocumentProcessingConfig
 
     custom_config = DocumentProcessingConfig(
@@ -76,22 +64,12 @@ try:
     )
 
     custom_agent = DocumentProcessingAgent(config=custom_config)
-    assert custom_agent.config.search_enabled == True
-    assert custom_agent.config.annotation_enabled == True
+    assert custom_agent.config.search_enabled
+    assert custom_agent.config.annotation_enabled
     assert custom_agent.config.rag_strategy == "adaptive"
-    print("✅ Configuration validation: PASSED")
 
-    print("\n" + "=" * 60)
-    print("✅ ALL TESTS PASSED!")
-    print("📊 Summary:")
-    print("  - Basic agent creation: ✅")
-    print("  - QueryState functionality: ✅")
-    print("  - Agent capabilities: ✅")
-    print("  - Configuration validation: ✅")
-    print("\n🎉 DocumentProcessingAgent is working correctly!")
 
-except Exception as e:
-    print(f"\n❌ Test failed with error: {e}")
+except Exception:
     import traceback
 
     traceback.print_exc()

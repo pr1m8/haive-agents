@@ -12,8 +12,6 @@ from haive.agents.simple.agent import SimpleAgent
 
 async def test_clean_multi_agent():
     """Test clean multi-agent with list input."""
-    print("🧪 Testing clean multi-agent with list input...")
-
     # Create agents
     writer = SimpleAgent(
         name="writer",
@@ -34,37 +32,25 @@ async def test_clean_multi_agent():
         agents=[writer, editor], name="story_creator", execution_mode="sequential"
     )
 
-    print(f"✅ Agents dict keys: {list(multi_agent.agents.keys())}")
-    print(f"✅ Execution mode: {multi_agent.execution_mode}")
-
     # Test execution
     result = await multi_agent.arun("a robot discovering emotions")
-    print(f"✅ Result: {result}")
 
     return result
 
 
 async def test_plan_and_execute():
     """Test plan and execute agent."""
-    print("\n🧪 Testing Plan and Execute agent...")
-
     # Create plan and execute agent
     agent = PlanAndExecuteAgent.create(name="planner")
 
-    print(f"✅ P&E agents: {list(agent.agents.keys())}")
-    print(f"✅ State schema: {agent.state_schema}")
-
     # Test execution
     result = await agent.arun("Create a simple marketing plan for a new mobile app")
-    print(f"✅ Plan result: {result}")
 
     return result
 
 
 async def main():
     """Run all tests."""
-    print("🚀 Testing final multi-agent implementation...\n")
-
     try:
         # Test 1: Clean multi-agent
         await test_clean_multi_agent()
@@ -72,10 +58,7 @@ async def main():
         # Test 2: Plan and execute
         await test_plan_and_execute()
 
-        print("\n✅ All tests passed! Multi-agent implementation working correctly.")
-
-    except Exception as e:
-        print(f"\n❌ Test failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

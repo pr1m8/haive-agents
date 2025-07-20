@@ -6,7 +6,7 @@ importance scoring, and metadata extraction using language models.
 
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
@@ -90,7 +90,6 @@ class MemoryClassifier:
 
     def _setup_classification_prompts(self) -> None:
         """Setup prompts for different classification tasks."""
-
         self.classification_prompt = """You are an expert memory analyst. Analyze the given content and classify it according to cognitive memory types.
 
 MEMORY TYPES:
@@ -163,8 +162,8 @@ Determine:
     def classify_memory(
         self,
         content: str,
-        user_context: Optional[Dict[str, Any]] = None,
-        conversation_context: Optional[Dict[str, Any]] = None,
+        user_context: dict[str, Any] | None = None,
+        conversation_context: dict[str, Any] | None = None,
     ) -> MemoryClassificationResult:
         """Classify a single memory content into types and extract metadata.
 
@@ -206,12 +205,11 @@ Determine:
             if hasattr(result, "content"):
                 # Parse structured output if available
                 return self._parse_classification_result(result.content, content)
-            else:
-                # Fallback to manual parsing
-                return self._fallback_classification(content)
+            # Fallback to manual parsing
+            return self._fallback_classification(content)
 
         except Exception as e:
-            logger.error(f"Error classifying memory: {e}")
+            logger.exception(f"Error classifying memory: {e}")
             return self._fallback_classification(content)
 
     def classify_query_intent(self, query: str) -> MemoryQueryIntent:
@@ -238,12 +236,12 @@ Determine:
             )
 
         except Exception as e:
-            logger.error(f"Error analyzing query intent: {e}")
+            logger.exception(f"Error analyzing query intent: {e}")
             return self._fallback_query_intent(query)
 
     def batch_classify(
-        self, contents: List[str], contexts: Optional[List[Dict[str, Any]]] = None
-    ) -> List[MemoryClassificationResult]:
+        self, contents: list[str], contexts: list[dict[str, Any]] | None = None
+    ) -> list[MemoryClassificationResult]:
         """Classify multiple memories in batch for efficiency.
 
         Args:
@@ -262,7 +260,7 @@ Determine:
             batch_contexts = contexts[i : i + self.config.batch_size]
 
             batch_results = []
-            for content, context in zip(batch_contents, batch_contexts):
+            for content, context in zip(batch_contents, batch_contexts, strict=False):
                 result = self.classify_memory(
                     content,
                     context.get("user_context"),
@@ -277,9 +275,9 @@ Determine:
     def create_memory_entry(
         self,
         content: str,
-        user_context: Optional[Dict[str, Any]] = None,
-        conversation_context: Optional[Dict[str, Any]] = None,
-        namespace: Optional[str] = None,
+        user_context: dict[str, Any] | None = None,
+        conversation_context: dict[str, Any] | None = None,
+        namespace: str | None = None,
     ) -> MemoryEntry:
         """Create a complete memory entry with automatic classification.
 
@@ -368,7 +366,7 @@ Determine:
             )
 
         except Exception as e:
-            logger.error(f"Error parsing classification result: {e}")
+            logger.exception(f"Error parsing classification result: {e}")
             return self._fallback_classification(original_content)
 
     def _fallback_classification(self, content: str) -> MemoryClassificationResult:
@@ -452,7 +450,7 @@ Determine:
             preferred_retrieval_strategy="semantic",
         )
 
-    def _extract_entities_simple(self, text: str) -> List[str]:
+    def _extract_entities_simple(self, text: str) -> list[str]:
         """Simple entity extraction using regex patterns."""
         entities = []
 
@@ -475,7 +473,7 @@ Determine:
 
         return unique_entities[:10]  # Limit to top 10
 
-    def _extract_topics_simple(self, text: str) -> List[str]:
+    def _extract_topics_simple(self, text: str) -> list[str]:
         """Simple topic extraction using keyword analysis."""
         # Common topic keywords
         topic_keywords = {

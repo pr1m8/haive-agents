@@ -3,6 +3,8 @@
 """Dynamic React Agent - an extension of React agent with tool selection capabilities."""
 import logging
 import uuid
+
+# Set up logging
 from typing import Any
 
 from agents.react_agent2.agent2 import ReactAgent
@@ -20,7 +22,6 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END
 from pydantic import BaseModel, Field
 
-# Set up logging
 logger = logging.getLogger(__name__)
 
 
@@ -218,7 +219,7 @@ class DynamicReactAgent(ReactAgent):
             )
 
         # 5. Define branch for conditional routing
-        def has_tool_calls(state):
+        def has_tool_calls(state: dict[str, Any]):
             """Check if the last message has tool calls."""
             messages = state.get("messages", [])
             if not messages:
@@ -381,7 +382,7 @@ class DynamicReactAgent(ReactAgent):
         logger.info("Initialized in-memory vector store for tool selection")
 
     @property
-    def vector_store(self):
+    def vector_store(self) -> Any:
         """Get the vector store property."""
         return self._vector_store
 
@@ -453,7 +454,7 @@ class DynamicReactAgent(ReactAgent):
     def _create_fixed_tool_node(self):
         """Create a fixed version of the tool node that handles tool_call_id properly."""
 
-        def fixed_tool_node(state):
+        def fixed_tool_node(state: dict[str, Any]):
             """Process tool calls properly with tool_call_id."""
             # Extract messages and tool registry
             messages = state.get("messages", [])

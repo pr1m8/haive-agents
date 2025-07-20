@@ -59,7 +59,7 @@ class TOTState(TOTInput, TOTOutput):
 
     @field_validator("candidates", "scored_candidates", mode="before")
     @classmethod
-    def convert_candidates(cls, v):
+    def convert_candidates(cls, v) -> Any:
         """Convert Candidate objects to dictionaries if needed."""
         if v is None:
             return []
@@ -89,7 +89,7 @@ class TOTState(TOTInput, TOTOutput):
 
     @field_validator("best_candidate", "current_seed", mode="before")
     @classmethod
-    def convert_single_candidate(cls, v):
+    def convert_single_candidate(cls, v) -> Any:
         """Convert a single Candidate object to a dictionary if needed."""
         if v is None:
             return None

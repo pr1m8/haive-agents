@@ -9,16 +9,10 @@ sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/
 
 def test_self_discovery_agent():
     """Test the self-discovery agent with proper input format."""
-    print("🔍 TESTING: Self-Discovery Agent (Fixed)")
-
     try:
         from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
             self_discovery,
         )
-
-        print(f"✅ Agent: {self_discovery.name}")
-        print(f"✅ Type: {type(self_discovery)}")
-        print(f"✅ Schema: {self_discovery.state_schema.__name__}")
 
         # Test with SelfDiscoveryState format
         problem = "Lisa has 10 apples. She gives 3 apples to her friend and then buys 5 more apples from the store. How many apples does Lisa have now?"
@@ -38,33 +32,20 @@ def test_self_discovery_agent():
             "metadata": {},
         }
 
-        print(f"📝 Input keys: {list(test_input.keys())}")
-        print(f"📝 Problem: {problem}")
-
-        print("\n🚀 RUNNING AGENT...")
         result = self_discovery.run(test_input)
 
-        print(f"✅ SUCCESS! Result type: {type(result)}")
-        print(
-            f"✅ Result keys: {list(result.keys()) if isinstance(result, dict) else 'N/A'}"
-        )
-
         if isinstance(result, dict) and "answer" in result:
-            print(f"✅ Final answer: {result['answer']}")
+            pass
 
         return True
 
     except Exception as e:
-        print(f"❌ FAILED: {e}")
-        print(f"Error type: {type(e)}")
 
         # Check if it's the original LangGraph error
         if "Expected dict, got" in str(e):
-            print(
-                "🔴 CONFIRMED: This is the original 'Expected dict, got' LangGraph error"
-            )
+            pass
         else:
-            print("🔵 DIFFERENT ERROR: Not the original LangGraph error")
+            pass
 
         import traceback
 
@@ -73,12 +54,10 @@ def test_self_discovery_agent():
 
 
 if __name__ == "__main__":
-    print("🚀 Testing Fixed Self-Discovery Agent")
-    print("=" * 50)
 
     success = test_self_discovery_agent()
 
     if success:
-        print("\n🎉 SUCCESS: Agent working properly!")
+        pass
     else:
-        print("\n💥 FAILED: Still has issues to resolve")
+        pass

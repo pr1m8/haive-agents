@@ -13,7 +13,7 @@ class ToTBranch(Branch):
     terminate the search and return the best solution found.
     """
 
-    def __init__(self, agent):
+    def __init__(self, agent: Any):
         """Initialize with reference to parent agent for config access."""
         self.agent = agent
 

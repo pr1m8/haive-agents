@@ -1,5 +1,6 @@
 # recursive_planning_prompts.py
 """Chat prompt templates for recursive conditional planning with tree-based decomposition.
+from typing import Any, Dict
 These prompts guide task decomposition, execution planning, and adaptive replanning.
 """
 
@@ -349,7 +350,7 @@ loop_condition_prompt = ChatPromptTemplate.from_messages(
 # ============================================================================
 
 
-def create_decomposition_aug_llm(llm_config):
+def create_decomposition_aug_llm(llm_config: Dict[str, Any]):
     """Create AugLLMConfig for task decomposition."""
     from haive.core.engine.aug_llm import AugLLMConfig
     from recursive_planning_models import TaskDecomposition
@@ -371,7 +372,7 @@ def create_decomposition_aug_llm(llm_config):
     )
 
 
-def create_execution_planning_aug_llm(llm_config):
+def create_execution_planning_aug_llm(llm_config: Dict[str, Any]):
     """Create AugLLMConfig for execution planning."""
     from haive.core.engine.aug_llm import AugLLMConfig
     from recursive_planning_models import ExecutionPlan
@@ -394,7 +395,7 @@ def create_execution_planning_aug_llm(llm_config):
     )
 
 
-def create_replanning_analysis_aug_llm(llm_config):
+def create_replanning_analysis_aug_llm(llm_config: Dict[str, Any]):
     """Create AugLLMConfig for replanning analysis."""
     from haive.core.engine.aug_llm import AugLLMConfig
     from recursive_planning_models import ReplanningAnalysis

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Test script for ReactAgent demonstrating various usage patterns.
 
+from typing import Any
 This script shows how to:
 1. Create ReactAgents with different tools
 2. Use RetryPolicy with LangGraph
@@ -98,7 +99,7 @@ def search_api(query: str) -> str:
     return f"Search results for '{query}': Found multiple sources with relevant information."
 
 
-def test_basic_react_agent():
+def test_basic_react_agent() -> Any:
     """Test a basic ReactAgent with simple tools."""
     logger.info("Testing basic ReactAgent with simple tools")
 
@@ -133,7 +134,7 @@ def test_basic_react_agent():
     return agent
 
 
-def test_structured_tool_agent():
+def test_structured_tool_agent() -> Any:
     """Test a ReactAgent with structured tools."""
     logger.info("Testing ReactAgent with structured tools")
 
@@ -176,7 +177,7 @@ def test_structured_tool_agent():
     return agent
 
 
-def test_retry_policy():
+def test_retry_policy() -> Any:
     """Test a ReactAgent with retry policies for flaky tools."""
     logger.info("Testing ReactAgent with retry policies")
 
@@ -223,7 +224,7 @@ def test_retry_policy():
     return agent
 
 
-def test_multi_turn_conversation():
+def test_multi_turn_conversation() -> Any:
     """Test a ReactAgent with a multi-turn conversation."""
     logger.info("Testing ReactAgent with multi-turn conversation")
 
@@ -275,7 +276,7 @@ def test_multi_turn_conversation():
     return agent, result2
 
 
-def test_all():
+def test_all() -> None:
     """Run all ReactAgent tests."""
     test_basic_react_agent()
     test_structured_tool_agent()

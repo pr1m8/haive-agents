@@ -1,8 +1,5 @@
-"""Simple RAG Module.
+"""Module exports."""
 
-Sequential workflow: BaseRAG → Answer Generation
-"""
+from simple.agent import SimpleRAGAgent, from_documents
 
-from haive.agents.rag.simple.agent import SimpleRAGAgent
-
-__all__ = ["SimpleRAGAgent"]
+__all__ = ["SimpleRAGAgent", "from_documents"]

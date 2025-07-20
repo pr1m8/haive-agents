@@ -202,16 +202,17 @@ class TaskStep(BaseModel):
         outputs: What this step produces
 
     Example:
-        ```python
-        step = TaskStep(
+        .. code-block:: python
+
+            step = TaskStep(
             name="Look up Wimbledon winner",
             description="Search for the most recent Wimbledon men's singles champion",
             task_type=TaskType.FACTUAL,
             estimated_duration_minutes=5,
             required_resources=[ResourceType.NETWORK, ResourceType.DATA],
             can_be_automated=True
-        )
-        ```
+            )
+
     """
 
     model_config = ConfigDict(
@@ -352,15 +353,16 @@ class DependencyNode(BaseModel):
         description: Human-readable description of the dependency
 
     Example:
-        ```python
-        dependency = DependencyNode(
+        .. code-block:: python
+
+            dependency = DependencyNode(
             source_id="lookup_winner",
             target_id="lookup_birthday",
             dependency_type=DependencyType.SEQUENTIAL,
             weight=1.0,
             description="Must know winner before looking up their birthday"
-        )
-        ```
+            )
+
     """
 
     source_id: str = Field(
@@ -454,31 +456,32 @@ class Task(BaseModel):
         success_criteria: How to measure successful completion
 
     Example:
-        ```python
-        # Create a complex task with mixed subtasks and steps
-        main_task = Task(
+        .. code-block:: python
+
+            # Create a complex task with mixed subtasks and steps
+            main_task = Task(
             name="Analyze Wimbledon Champion Age",
             description="Find recent champion, calculate age, and analyze",
             task_type=TaskType.RESEARCH,
             subtasks=[
-                TaskStep(
-                    name="Find winner",
-                    description="Look up most recent Wimbledon champion",
-                    task_type=TaskType.FACTUAL
-                ),
-                Task(
-                    name="Age Analysis",
-                    description="Calculate and analyze age",
-                    task_type=TaskType.COMPUTATIONAL,
-                    subtasks=[
-                        TaskStep(name="Get birthday", ...),
-                        TaskStep(name="Calculate age", ...),
-                        TaskStep(name="Find square root", ...)
-                    ]
-                )
+            TaskStep(
+            name="Find winner",
+            description="Look up most recent Wimbledon champion",
+            task_type=TaskType.FACTUAL
+            ),
+            Task(
+            name="Age Analysis",
+            description="Calculate and analyze age",
+            task_type=TaskType.COMPUTATIONAL,
+            subtasks=[
+            TaskStep(name="Get birthday", ...),
+            TaskStep(name="Calculate age", ...),
+            TaskStep(name="Find square root", ...)
             ]
-        )
-        ```
+            )
+            ]
+            )
+
     """
 
     model_config = ConfigDict(

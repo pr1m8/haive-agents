@@ -1,5 +1,6 @@
 """Complete Collection of RAG Agents using ChainAgent.
 
+from typing import Any, Dict
 This module provides a comprehensive collection of Retrieval-Augmented Generation (RAG)
 agents implemented using the ChainAgent framework. Each agent represents a different
 RAG strategy or pattern, optimized for specific use cases.
@@ -495,10 +496,9 @@ def create_rag_chain(
         return collection.create_speculative_rag(documents, llm_config)
     if rag_type == "memory_aware":
         return collection.create_memory_aware_rag(documents, llm_config)
-    elif rag_type == "flare":
+    if rag_type == "flare":
         return collection.create_flare_rag(documents, llm_config)
-    else:
-        raise ValueError(f"Unknown RAG type: {rag_type}")
+    raise ValueError(f"Unknown RAG type: {rag_type}")
 
 
 # Multi-RAG pipeline
@@ -518,7 +518,7 @@ def create_rag_pipeline(
         return ChainAgent(*chains, name="RAG Pipeline")
     if combination_strategy == "parallel":
         # All run in parallel then combine (simplified)
-        def combiner(state):
+        def combiner(state: Dict[str, Any]):
             return {"combined_responses": [state.get("response", "")]}
 
         return flow_with_edges(

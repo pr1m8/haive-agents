@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Final comprehensive test of PostgreSQL persistence fixes."""
 
-import json
 import os
 import sys
-from datetime import datetime
 
 import psycopg
 
@@ -23,8 +21,8 @@ def check_prepared_statements():
         with psycopg.connect(conn_string) as conn, conn.cursor() as cur:
             cur.execute(
                 """
-                    SELECT COUNT(*) 
-                    FROM pg_prepared_statements 
+                    SELECT COUNT(*)
+                    FROM pg_prepared_statements
                     WHERE name LIKE '%pg%'
                 """
             )
@@ -35,7 +33,6 @@ def check_prepared_statements():
 
 def test_persistence_fixes():
     """Test all persistence fixes."""
-
     # Initial check
     initial_ps = check_prepared_statements()
 
@@ -51,20 +48,21 @@ def test_persistence_fixes():
         )
         agent.compile()
 
-        result = agent.invoke(
+        agent.invoke(
             {"messages": [HumanMessage(content="Test message")]},
             {"configurable": {"thread_id": "final_test_simple"}},
         )
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Test 2: Conversation agent
     try:
+        from haive.core.engine.aug_llm import AugLLMConfig
+
         from haive.agents.conversation.collaberative.agent import (
             CollaborativeConversation,
         )
-        from haive.core.engine.aug_llm import AugLLMConfig
 
         participants = {
             "TestA": AugLLMConfig(name="TestA", system_message="Test A"),
@@ -86,16 +84,16 @@ def test_persistence_fixes():
             {"configurable": {"thread_id": "final_test_collab"}},
         )
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     # Check for new prepared statements
     final_ps = check_prepared_statements()
 
     if final_ps > initial_ps:
-        pass")
+        pass
     else:
-        pass")
+        pass
 
     # Check configurations
 
@@ -108,11 +106,11 @@ def test_persistence_fixes():
             content = f.read()
 
         if '"prepare_threshold": None' in content:
-            pass")
+            pass
         else:
-            pass")
-    except Exception as e:
-        pass")
+            pass
+    except Exception:
+        pass
 
     # Check persistence mixin
     try:
@@ -123,12 +121,11 @@ def test_persistence_fixes():
             content = f.read()
 
         if "prepare_threshold=None" in content:
-            pass")
+            pass
         else:
-            pass")
-    except Exception as e:
-        pass")
-
+            pass
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

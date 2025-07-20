@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def run_example():
+def run_example() -> bool:
     """Run a complete example of the research agent with visualization."""
     try:
         logger.debug("Starting run_example() function")

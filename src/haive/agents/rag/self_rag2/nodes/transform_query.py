@@ -1,4 +1,7 @@
-def transform_query(state):
+from typing import Any
+
+
+def transform_query(state: dict[str, Any]):
     """Transform the query to produce a better question.
 
     Args:

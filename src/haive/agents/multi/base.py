@@ -27,10 +27,10 @@ BranchAgent = MultiAgent
 
 # Export the main classes
 __all__ = [
-    "MultiAgent",
-    "SequentialAgent",
-    "ConditionalAgent",
-    "ParallelAgent",
     "BranchAgent",
+    "ConditionalAgent",
     "ExecutionMode",  # For legacy code that still uses the enum
+    "MultiAgent",
+    "ParallelAgent",
+    "SequentialAgent",
 ]

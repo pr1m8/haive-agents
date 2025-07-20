@@ -1,7 +1,7 @@
 """Test meta-agent integration using MetaStateSchema with real agents."""
 
 import asyncio
-from typing import Any, Dict, Type
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema import StateSchema
@@ -163,8 +163,6 @@ class SimpleMetaAgent(SimpleAgent):
 
 def test_meta_state_with_simple_agent():
     """Test MetaStateSchema with a real SimpleAgent."""
-    print("\n=== Test: MetaStateSchema with SimpleAgent ===")
-
     # Create a real agent
     inner_agent = SimpleAgent(name="inner_agent", engine=AugLLMConfig(temperature=0.1))
 
@@ -176,22 +174,14 @@ def test_meta_state_with_simple_agent():
     )
 
     # Check initial state
-    print(f"Meta state created: {meta_state}")
-    print(f"Agent name: {meta_state.agent_name}")
-    print(f"Agent type: {meta_state.agent_type}")
-    print(f"Needs recompile: {meta_state.needs_recompile}")
 
     # Execute agent through meta state
-    result = meta_state.execute_agent(
+    meta_state.execute_agent(
         input_data={"messages": [{"role": "user", "content": "Hello!"}]}
     )
 
-    print(f"Execution result: {result['status']}")
-    print(f"Execution count: {meta_state.graph_context.get('execution_count', 0)}")
-
     # Check recompilation
     if meta_state.check_agent_recompilation():
-        print("Agent needs recompilation")
         meta_state.mark_for_recompile("Test recompilation")
 
     return meta_state
@@ -199,8 +189,6 @@ def test_meta_state_with_simple_agent():
 
 def test_simple_meta_agent():
     """Test SimpleAgent with meta capabilities."""
-    print("\n=== Test: SimpleMetaAgent with Nested Agent ===")
-
     # Create nested agent
     nested_agent = SimpleAgent(
         name="analyzer",
@@ -218,25 +206,13 @@ def test_simple_meta_agent():
         ),
     )
 
-    print(f"Created meta agent: {meta_agent.name}")
-    print(
-        f"Has meta state: {hasattr(meta_agent, 'state') and meta_agent.state.meta_state is not None}"
-    )
-
     # Run async test
     async def run_test():
         # Process with nested execution
         result = await meta_agent.process_with_nested("Analyze the weather today")
 
-        print(f"Combined execution: {result.get('combined', False)}")
-        print(f"Main result available: {'main_result' in result}")
-        print(f"Nested result available: {'nested_result' in result}")
-
         if result.get("combined"):
-            print(f"Nested execution count: {meta_agent.state.nested_execution_count}")
-            print(
-                f"Nested agent status: {meta_agent.state.meta_state.execution_status}"
-            )
+            pass
 
     # Run the async test
     asyncio.run(run_test())
@@ -246,8 +222,6 @@ def test_simple_meta_agent():
 
 def test_react_agent_with_meta_state():
     """Test ReactAgent with embedded SimpleAgent via MetaStateSchema."""
-    print("\n=== Test: ReactAgent with Embedded SimpleAgent ===")
-
     # Create an analysis agent to embed
     analysis_agent = SimpleAgent(
         name="analyzer",
@@ -305,20 +279,14 @@ def test_react_agent_with_meta_state():
         embedded_agent=analysis_agent,
     )
 
-    print(f"Created ReactAgent with embedded: {analysis_agent.name}")
-
     # Test execution
     async def test_execution():
         result = await react_meta.think_then_analyze(
             "What are the key factors in climate change?"
         )
 
-        print(f"Execution method: {result.get('method')}")
-        print(f"Has ReAct thinking: {'react_thinking' in result}")
-        print(f"Has deep analysis: {'deep_analysis' in result}")
-
         if "deep_analysis" in result:
-            print(f"Analysis status: {result['deep_analysis'].get('status')}")
+            pass
 
     asyncio.run(test_execution())
 
@@ -327,10 +295,9 @@ def test_react_agent_with_meta_state():
 
 def test_agent_class_method_meta_creation():
     """Test creating meta-capable agents via class methods."""
-    print("\n=== Test: Agent Class Method for Meta Creation ===")
 
     # Add class method to Agent base class for meta creation
-    def create_as_meta(cls: Type[Agent], embedded_agent: Agent, **kwargs) -> Agent:
+    def create_as_meta(cls: type[Agent], embedded_agent: Agent, **kwargs) -> Agent:
         """Create this agent type with an embedded agent."""
 
         # Custom state with meta field
@@ -372,44 +339,26 @@ def test_agent_class_method_meta_creation():
         engine=AugLLMConfig(),
     )
 
-    print(f"Created SimpleAgent with meta: {hasattr(meta_simple.state, 'meta_state')}")
-    print(f"Created ReactAgent with meta: {hasattr(meta_react.state, 'meta_state')}")
-
     # Test execution through meta state
     if hasattr(meta_simple.state, "meta_state"):
-        result = meta_simple.state.meta_state.execute_agent(
+        meta_simple.state.meta_state.execute_agent(
             {"messages": [{"role": "user", "content": "Test"}]}
         )
-        print(f"Embedded execution status: {result['status']}")
         meta_simple.state.meta_execution_count += 1
-        print(f"Meta execution count: {meta_simple.state.meta_execution_count}")
 
     return meta_simple, meta_react
 
 
 if __name__ == "__main__":
-    print("🧪 Testing Meta-Agent Integration with Real Components")
-    print("=" * 60)
 
     # Test 1: Basic MetaStateSchema with SimpleAgent
     meta_state = test_meta_state_with_simple_agent()
-    print(f"\n✅ MetaStateSchema test complete")
 
     # Test 2: SimpleMetaAgent with nested composition
     simple_meta = test_simple_meta_agent()
-    print(f"\n✅ SimpleMetaAgent test complete")
 
     # Test 3: ReactAgent with embedded SimpleAgent
     react_meta = test_react_agent_with_meta_state()
-    print(f"\n✅ ReactAgent with meta test complete")
 
     # Test 4: Class method for meta creation
     meta_agents = test_agent_class_method_meta_creation()
-    print(f"\n✅ Class method meta creation test complete")
-
-    print("\n🎉 All meta-agent integration tests completed!")
-    print("\nKey Patterns Demonstrated:")
-    print("1. MetaStateSchema embeds agents in state for graph composition")
-    print("2. Agents can have meta_state field for nested agent execution")
-    print("3. Class methods can create meta-capable versions of any agent")
-    print("4. Recompilation tracking works through MetaStateSchema")

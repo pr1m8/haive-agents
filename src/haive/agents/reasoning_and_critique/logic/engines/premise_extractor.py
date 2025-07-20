@@ -1,5 +1,7 @@
 # src/haive/agents/reasoning/premise_extractor.py
 
+from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
@@ -116,7 +118,7 @@ Remember: Good reasoning requires making ALL premises explicit, especially the h
 )
 
 
-def create_premise_extractor():
+def create_premise_extractor() -> Any:
     """Create the premise extraction agent."""
     return AugLLMConfig(
         name="premise_extractor",

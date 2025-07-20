@@ -1,143 +1,79 @@
-from haive.core.engine.agent.agent import AgentArchitecture, AgentArchitectureConfig
-from haive.core.engine.aug_llm import AugLLMConfig
-from langgraph.graph import END, START
-from langgraph.types import Command
+"""Self-Discover MultiAgent implementation."""
 
-# from haive.agents.reasoning_and_critique.self_discover.models import #Plan
-from pydantic import Field
+from haive.agents.multi.clean import MultiAgent
 
-from haive.agents.reasoning_and_critique.self_discover.aug_llms import (
-    adapt_chain,
-    select_chain,
-    step_reasoning_chain,
-    structured_chain,
-)
-from haive.agents.reasoning_and_critique.self_discover.models import (
-    AdaptedModule,
-    AdaptedModules,
-)
-from haive.agents.reasoning_and_critique.self_discover.state import SelfDiscoverState
+from .adapter import AdapterAgent
+from .executor import ExecutorAgent
+from .selector import SelectorAgent
+from .structurer import StructurerAgent
 
 
-class SelfDiscoverAgentConfig(AgentArchitectureConfig):
-    """Configuration for the Self Discover Agent."""
+def get_default_modules() -> str:
+    """Get default reasoning modules for Self-Discover process."""
+    return """1. Critical Thinking: Question assumptions, identify biases, evaluate evidence
+2. Systems Analysis: Break down complex systems, identify components and relationships
+3. Root Cause Analysis: Identify underlying causes of problems or phenomena
+4. Stakeholder Analysis: Identify and understand different perspectives and interests
+5. SWOT Analysis: Analyze strengths, weaknesses, opportunities, and threats
+6. Cost-Benefit Analysis: Evaluate trade-offs and resource allocation
+7. Risk Assessment: Identify and evaluate potential risks and mitigation strategies
+8. Design Thinking: User-centered approach to innovation and problem-solving
+9. Analogical Reasoning: Draw insights from similar situations or domains
+10. Causal Analysis: Understand cause-and-effect relationships
+11. Scenario Planning: Consider multiple future possibilities and outcomes
+12. Constraint Analysis: Identify limitations and work within boundaries
+13. Optimization: Find the best solution within given parameters
+14. Pattern Recognition: Identify recurring themes, trends, or structures
+15. Hypothesis Testing: Formulate and test explanatory theories
+16. Brainstorming: Generate creative ideas and solutions
+17. Prioritization: Rank options by importance or impact
+18. Process Analysis: Examine workflows and procedures for improvement
+19. Competitive Analysis: Understand competitive landscape and positioning
+20. Data Analysis: Extract insights from quantitative and qualitative data"""
 
-    aug_llm_configs: dict[str, AugLLMConfig] = Field(
-        default_factory=lambda: {
-            "step_reasoning": step_reasoning_chain,
-            "select": select_chain,
-            "adapt": adapt_chain,
-            "structured": structured_chain,
-        },
-        description="Aug LLM configurations",
-    )
-    state_schema: SelfDiscoverState = Field(
-        default=SelfDiscoverState, description="State schema"
-    )
+
+def create_self_discover_agent(name: str = "self_discover") -> MultiAgent:
+    """Create a Self-Discover MultiAgent with the four-stage process.
+
+    Args:
+        name: Name for the multi-agent system
+
+    Returns:
+        MultiAgent configured for Self-Discover workflow
+    """
+    # Create the four specialized agents in sequential order
+    agents = [SelectorAgent(), AdapterAgent(), StructurerAgent(), ExecutorAgent()]
+
+    # Create and return the MultiAgent (no engine needed for sequential execution)
+    return MultiAgent(name=name, agents=agents)
 
 
-class SelfDiscoverAgent(AgentArchitecture):
-    """Self Discover Agent."""
-
-    def __init__(self, config: SelfDiscoverAgentConfig = SelfDiscoverAgentConfig()):
-        super().__init__(config)
-
-    def select(self, inputs):
-        """Selects relevant reasoning modules based on the task description."""
-        selected_modules = self.aug_llm_model_runnables_dict["select"].invoke(inputs)
-        return Command(update={"selected_modules": selected_modules})
-
-    def adapt(self, inputs):
-        """Adapts the selected reasoning modules to be more specific to the task."""
-        adapted_modules = self.aug_llm_model_runnables_dict["adapt"].invoke(inputs)
-
-        if isinstance(adapted_modules, str):
-            adapted_modules = AdaptedModules(
-                adapted_modules=[
-                    AdaptedModule(adapted_module=mod.name)
-                    for mod in inputs["selected_modules"].modules
-                ]
-            )
-
-        return Command(update={"adapted_modules": adapted_modules})
-
-    def structure(self, inputs):
-        """Structures the reasoning process and ensures the reasoning plan is carried over."""
-        reasoning_plan = self.aug_llm_model_runnables_dict["structured"].invoke(inputs)
-        return Command(
-            update={"reasoning_structure": reasoning_plan, "plan": reasoning_plan}
-        )
-
-    async def reason(self, state: SelfDiscoverState):
-        """Processes the next step in the reasoning structure sequentially."""
-        plan = state["plan"]
-        if not plan or not plan.steps:
-            raise ValueError("No steps available in the reasoning plan.")
-
-        # Identify next step that is not started
-        next_step = next(
-            (step for step in plan.steps if step.status == "not_started"), None
-        )
-
-        if not next_step:
-            return {"response": "All steps completed."}
-
-        # Format reasoning input
-        reasoning_input = {
-            "step_id": next_step.id,
-            "step_description": next_step.description,
-            "task_description": state["task_description"],
-            "reasoning_modules": "\n".join(
-                [
-                    f"- {mod.name}: {mod.description}"
-                    for mod in next_step.reasoning_modules
-                ]
-            ),
-        }
-
-        # Invoke the reasoning model
-        reasoning_response = await self.aug_llm_model_runnables_dict[
-            "step_reasoning"
-        ].ainvoke(reasoning_input)
-
-        # Update step with response
-        next_step.add_response(reasoning_response)
-
-        return {"response": reasoning_response}
-
-    def setup_workflow(self):
-        """Sets up the execution workflow."""
-        self.graph.add_node("select", self.select)
-        self.graph.add_node("adapt", self.adapt)
-        self.graph.add_node("structure", self.structure)
-        self.graph.add_node("reason", self.reason)
-
-        self.graph.add_edge(START, "select")
-        self.graph.add_edge("select", "adapt")
-        self.graph.add_edge("adapt", "structure")
-        self.graph.add_edge("structure", "reason")
-        self.graph.add_edge("reason", END)
-
-    async def run(self, task_description: str):
-        """Executes the self-discovery process."""
-        async for _s in self.app.astream(
-            {"task_description": task_description}, config=self.runnable_config
-        ):
-            pass
+# Create a default instance for easy import
+SelfDiscoverAgent = create_self_discover_agent()
 
 
 import asyncio
 
 
-def main():
-    # Example Run
-    a = SelfDiscoverAgent()
+async def main():
+    """Example usage of Self-Discover agent."""
+    # Create Self-Discover agent
+    agent = create_self_discover_agent()
+
+    # Example task
     task_example = """This SVG path element <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L
 45.58,47.78 M 45.58,47.78 L 53.25,36.07 L 66.29,48.90 L 78.69,61.09 L 55.57,80.69"/> draws a:
 (A) circle (B) heptagon (C) hexagon (D) kite (E) line (F) octagon (G) pentagon(H) rectangle (I) sector (J) triangle"""
 
-    asyncio.run(a.run(task_example))
+    # Prepare input with modules and task
+    input_data = {
+        "available_modules": get_default_modules(),
+        "task_description": task_example,
+    }
+
+    # Execute the Self-Discover process
+    await agent.arun(input_data)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

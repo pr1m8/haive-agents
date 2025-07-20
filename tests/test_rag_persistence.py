@@ -126,11 +126,11 @@ def verify_message_quality():
 
         # Check greeting quality
         if any(word in response1.lower() for word in ["hello", "hi", "nice to meet"]):
-            pass")
+            pass
         if "sarah" in response1.lower():
-            pass")
+            pass
         if "hiking" in response1.lower():
-            pass")
+            pass
 
         # Message 2
         result2 = agent.invoke(
@@ -144,9 +144,9 @@ def verify_message_quality():
         )
 
         if "sarah" in response2.lower():
-            pass")
+            pass
         else:
-            pass")
+            pass
 
         # Message 3
         result3 = agent.invoke(
@@ -165,7 +165,7 @@ def verify_message_quality():
         )
 
         if "trail" in response3.lower() or "hik" in response3.lower():
-            pass")
+            pass
 
         # Check conversation continuity
 

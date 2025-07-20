@@ -450,7 +450,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
             return True
 
         # Recursively check all nodes
-        def check_node(node):
+        def check_node(node) -> Any:
             if node.is_solved:
                 return True
             return any(check_node(child) for child in node.children)
@@ -462,7 +462,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
         # Collect all nodes
         all_nodes = []
 
-        def collect_nodes(node):
+        def collect_nodes(node) -> None:
             all_nodes.append(node)
             for child in node.children:
                 collect_nodes(child)

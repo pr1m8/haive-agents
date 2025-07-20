@@ -2,12 +2,13 @@
 
 """Dynamic Supervisor Agent Experiment.
 
+from typing import Any
 This module contains experimental implementation of a dynamic supervisor
 that can select and execute agents based on runtime decisions.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import BaseModel, Field, computed_field
@@ -98,7 +99,7 @@ class AgentRegistryEntry(BaseModel):
 class AgentRegistry:
     """Registry for managing available agents."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._registry: dict[str, AgentRegistryEntry] = {}
         self._instances: dict[str, Agent] = {}  # Cache
 
@@ -107,7 +108,7 @@ class AgentRegistry:
         name: str,
         description: str,
         agent_class: type[Agent],
-        config: Dict[str, Any] | None = None,
+        config: dict[str, Any] | None = None,
         capabilities: list[str] | None = None,
     ) -> None:
         """Register an agent with the registry."""
@@ -306,7 +307,7 @@ def create_forward_message_tool(supervisor_name: str = "supervisor"):
     return forward_message
 
 
-def create_list_agents_tool(supervisor_instance):
+def create_list_agents_tool(supervisor_instance) -> Any:
     """Create a tool to list available agents."""
 
     @tool
@@ -356,7 +357,7 @@ class DynamicSupervisorAgent(ReactAgent):
     # Agent registry
     agent_registry: AgentRegistry = Field(default_factory=AgentRegistry)
 
-    def setup_agent(self):
+    def setup_agent(self) -> None:
         """Setup supervisor with dynamic agent tools."""
         # Create dynamic tools based on registry
         self.tools = self._create_dynamic_tools()
@@ -444,7 +445,7 @@ Available tools:
         name: str,
         description: str,
         agent_class: type[Agent],
-        config: Dict[str, Any] | None = None,
+        config: dict[str, Any] | None = None,
     ):
         """Dynamically add an agent to the registry and update tools."""
         self.agent_registry.register(name, description, agent_class, config)
@@ -516,7 +517,7 @@ def create_test_registry() -> AgentRegistry:
     return registry
 
 
-def test_supervisor_basic():
+def test_supervisor_basic() -> Any:
     """Basic test of supervisor functionality."""
     # Create supervisor with test registry
     registry = create_test_registry()
@@ -526,9 +527,8 @@ def test_supervisor_basic():
     return supervisor
 
 
-def test_dynamic_tools():
+def test_dynamic_tools() -> Any:
     """Test dynamic tool creation and handoff functionality."""
-
     # Create supervisor
     registry = create_test_registry()
     supervisor = DynamicSupervisorAgent(
@@ -536,8 +536,8 @@ def test_dynamic_tools():
     )
 
     # Check tools were created
-    for tool in supervisor.tools:
-        print(f"Tool: {getattr(tool, 'name', 'unnamed')}")
+    for _tool in supervisor.tools:
+        pass
 
     # Test list_agents tool
     list_tool = next(t for t in supervisor.tools if t.name == "list_agents")
@@ -562,9 +562,8 @@ def test_dynamic_tools():
     return supervisor
 
 
-def test_supervisor_workflow():
+def test_supervisor_workflow() -> Any:
     """Test a complete supervisor workflow."""
-
     supervisor = test_dynamic_tools()
 
     # Create a mock state for testing
@@ -586,8 +585,8 @@ def test_supervisor_workflow():
         research_handoff.invoke(
             {"task": "Research the latest developments in AI", "_state": test_state}
         )
-    except Exception as e:
-        print(f"Error in workflow test: {e}")
+    except Exception:
+        pass
 
     return supervisor
 

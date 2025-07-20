@@ -4,7 +4,6 @@
 # Suppress verbose logging
 import logging
 import traceback
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -29,7 +28,6 @@ class Plan(BaseModel):
     steps: list[str] = Field(description="list of steps")
 
 
-
 # Create engines and agents
 add_aug = AugLLMConfig(tools=[add])
 plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
@@ -45,10 +43,10 @@ multi.compile()
 
 prepared = multi._prepare_input({"messages": [HumanMessage(content="Test")]})
 if hasattr(prepared, "engines"):
-    for name, engine in prepared.engines.items():
+    for _name, _engine in prepared.engines.items():
         pass
 elif isinstance(prepared, dict) and "engines" in prepared:
-    for name, engine in prepared["engines"].items():
+    for _name, _engine in prepared["engines"].items():
         pass
 
 try:
@@ -67,7 +65,8 @@ except Exception as e:
                 test_state = multi.state_schema(messages=[HumanMessage(content="Test")])
                 # Check if engines field exists
                 if hasattr(test_state, "engines"):
-            except Exception as e2:
+                    pass
+            except Exception:
                 pass
 
 # Try to disable checkpointing
@@ -86,5 +85,5 @@ try:
             pass
         if hasattr(app, "config"):
             pass
-except Exception as e:
+except Exception:
     pass

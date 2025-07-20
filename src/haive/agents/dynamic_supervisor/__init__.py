@@ -1,51 +1,100 @@
-"""Dynamic Supervisor Agent - Runtime agent management for Haive.
+"""Module exports."""
 
-This module provides a dynamic supervisor agent that can add, remove, and manage
-other agents at runtime. Handoff tools execute agents directly within the tool
-function, following our experimental pattern.
-
-Classes:
-    DynamicSupervisorAgent: Main supervisor agent that extends SimpleAgent
-    SupervisorState: State management for dynamic agent registry
-    AgentInfo: Metadata container for agent information
-
-Example:
-    Basic usage with dynamic agent management::
-
-        from haive.agents.dynamic_supervisor import DynamicSupervisorAgent
-        from haive.agents.simple import SimpleAgent
-
-        # Create supervisor
-        supervisor = DynamicSupervisorAgent(
-            name="task_router",
-            engine=supervisor_engine
-        )
-
-        # Add agents dynamically
-        state = supervisor.create_initial_state()
-        state.add_agent("search", search_agent, "Web search specialist")
-        state.add_agent("math", math_agent, "Mathematics expert")
-
-        # Run task - supervisor routes to appropriate agent
-        result = await supervisor.arun("Find the population of Tokyo")
-
-Version: 1.0.0
-Author: Haive Team
-"""
-
-from haive.agents.dynamic_supervisor.agent import DynamicSupervisorAgent
-from haive.agents.dynamic_supervisor.models import AgentInfo
-from haive.agents.dynamic_supervisor.state import (
+from dynamic_supervisor.agent import (
+    DynamicSupervisorAgent,
+    add_default_agent,
+    build_graph,
+    create_dynamic_supervisor,
+    create_initial_state,
+    run,
+    setup_agent,
+)
+from dynamic_supervisor.models import (
+    AgentInfo,
+    AgentInfoV2,
+    AgentRequest,
+    RoutingDecision,
+    activate,
+    deactivate,
+    extract_agent_info,
+    get_agent,
+    is_active,
+    matches_capability,
+    serialize_agent,
+)
+from dynamic_supervisor.prompts import (
+    format_agent_list,
+    format_missing_capability,
+    format_supervisor_prompt,
+)
+from dynamic_supervisor.state import (
     SupervisorState,
     SupervisorStateV2,
     SupervisorStateWithTools,
+    activate_agent,
+    add_agent,
+    clear_execution_state,
+    deactivate_agent,
+    ensure_unique_agents,
+    get_agent,
+    get_all_tools,
+    list_active_agents,
+    list_all_agents,
+    remove_agent,
+    sync_agents,
+    sync_on_init,
+)
+from dynamic_supervisor.tools import (
+    choose_agent,
+    create_add_agent_tool,
+    create_agent_tools,
+    create_choice_tool,
+    create_handoff_tool,
+    handoff_tool,
+    request_agent,
 )
 
-__version__ = "1.0.0"
 __all__ = [
     "AgentInfo",
+    "AgentInfoV2",
+    "AgentRequest",
     "DynamicSupervisorAgent",
+    "RoutingDecision",
     "SupervisorState",
     "SupervisorStateV2",
     "SupervisorStateWithTools",
+    "activate",
+    "activate_agent",
+    "add_agent",
+    "add_default_agent",
+    "build_graph",
+    "choose_agent",
+    "clear_execution_state",
+    "create_add_agent_tool",
+    "create_agent_tools",
+    "create_choice_tool",
+    "create_dynamic_supervisor",
+    "create_handoff_tool",
+    "create_initial_state",
+    "deactivate",
+    "deactivate_agent",
+    "ensure_unique_agents",
+    "extract_agent_info",
+    "format_agent_list",
+    "format_missing_capability",
+    "format_supervisor_prompt",
+    "get_agent",
+    "get_all_tools",
+    "handoff_tool",
+    "is_active",
+    "list_active_agents",
+    "list_all_agents",
+    "matches_capability",
+    "remove_agent",
+    "request_agent",
+    "run",
+    "serialize_agent",
+    "setup_agent",
+    "sync_agents",
+    "sync_on_init",
 ]

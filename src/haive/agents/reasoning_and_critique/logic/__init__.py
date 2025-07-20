@@ -1,18 +1,49 @@
-"""Logic - TODO: Add brief description.
+"""Module exports."""
 
-TODO: Add detailed description of module functionality
+from logic.models import (
+    ArgumentStrength,
+    ArgumentStructure,
+    Assumption,
+    BiasAssessment,
+    BiasType,
+    CertaintyLevel,
+    CounterArgument,
+    Evidence,
+    EvidenceType,
+    FallacyDetection,
+    LogicalFallacy,
+    LogicalStep,
+    Premise,
+    ReasoningAnalysis,
+    ReasoningChain,
+    ReasoningQuality,
+    ReasoningReport,
+    ReasoningType,
+    UncertaintyAnalysis,
+    max_inference_chain,
+    num_steps,
+)
 
-
-
-Example:
-    Basic usage::
-
-        from haive.logic import module_function
-
-        # TODO: Add example
-
-
-See Also:
-    :mod:`haive.logic.engines`: TODO: Add description
-
-"""
+__all__ = [
+    "ArgumentStrength",
+    "ArgumentStructure",
+    "Assumption",
+    "BiasAssessment",
+    "BiasType",
+    "CertaintyLevel",
+    "CounterArgument",
+    "Evidence",
+    "EvidenceType",
+    "FallacyDetection",
+    "LogicalFallacy",
+    "LogicalStep",
+    "Premise",
+    "ReasoningAnalysis",
+    "ReasoningChain",
+    "ReasoningQuality",
+    "ReasoningReport",
+    "ReasoningType",
+    "UncertaintyAnalysis",
+    "max_inference_chain",
+    "num_steps",
+]

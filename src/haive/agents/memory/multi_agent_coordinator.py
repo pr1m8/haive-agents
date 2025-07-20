@@ -8,10 +8,9 @@ and agent composition.
 import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Type
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import PromptTemplate
@@ -106,7 +105,7 @@ class MemoryTask(BaseModel):
     query: str = Field(..., description="Task query or description")
 
     # Task parameters
-    parameters: Dict[str, Any] = Field(
+    parameters: dict[str, Any] = Field(
         default_factory=dict, description="Task-specific parameters"
     )
     priority: int = Field(
@@ -114,27 +113,25 @@ class MemoryTask(BaseModel):
     )
 
     # Execution context
-    namespace: Optional[Tuple[str, ...]] = Field(
+    namespace: tuple[str, ...] | None = Field(
         default=None, description="Memory namespace"
     )
-    memory_types: Optional[List[MemoryType]] = Field(
+    memory_types: list[MemoryType] | None = Field(
         default=None, description="Target memory types"
     )
 
     # Task state
     status: str = Field(default="pending", description="Task status")
-    assigned_agent: Optional[str] = Field(
-        default=None, description="Assigned agent name"
-    )
-    result: Optional[Any] = Field(default=None, description="Task result")
-    error: Optional[str] = Field(default=None, description="Error message if failed")
+    assigned_agent: str | None = Field(default=None, description="Assigned agent name")
+    result: Any | None = Field(default=None, description="Task result")
+    error: str | None = Field(default=None, description="Error message if failed")
 
     # Timing
     created_at: datetime = Field(
         default_factory=datetime.utcnow, description="Task creation time"
     )
-    started_at: Optional[datetime] = Field(default=None, description="Task start time")
-    completed_at: Optional[datetime] = Field(
+    started_at: datetime | None = Field(default=None, description="Task start time")
+    completed_at: datetime | None = Field(
         default=None, description="Task completion time"
     )
 
@@ -235,7 +232,7 @@ class MemoryAgentCapabilities(BaseModel):
     )
 
     # Supported memory types
-    supported_memory_types: List[MemoryType] = Field(
+    supported_memory_types: list[MemoryType] = Field(
         default_factory=list, description="Supported memory types"
     )
 
@@ -246,7 +243,7 @@ class MemoryAgentCapabilities(BaseModel):
     max_concurrent_tasks: int = Field(default=1, description="Maximum concurrent tasks")
 
     # Specialization
-    specialization: List[str] = Field(
+    specialization: list[str] = Field(
         default_factory=list, description="Agent specializations"
     )
 
@@ -539,13 +536,13 @@ class MultiAgentMemoryCoordinator:
         self.coordinator_llm = config.coordinator_llm.create_runnable()
 
         # Initialize agents with MetaStateSchema
-        self.meta_agents: Dict[str, MetaStateSchema] = {}
-        self.agent_capabilities: Dict[str, MemoryAgentCapabilities] = {}
+        self.meta_agents: dict[str, MetaStateSchema] = {}
+        self.agent_capabilities: dict[str, MemoryAgentCapabilities] = {}
 
         # Task management
-        self.task_queue: List[MemoryTask] = []
-        self.active_tasks: Dict[str, MemoryTask] = {}
-        self.completed_tasks: Dict[str, MemoryTask] = {}
+        self.task_queue: list[MemoryTask] = []
+        self.active_tasks: dict[str, MemoryTask] = {}
+        self.completed_tasks: dict[str, MemoryTask] = {}
 
         # Performance tracking
         self.performance_metrics = {
@@ -564,7 +561,6 @@ class MultiAgentMemoryCoordinator:
 
     def _setup_agents(self) -> None:
         """Setup and wrap agents with MetaStateSchema."""
-
         # 1. KG Generator Agent
         kg_agent = KGGeneratorAgent(self.config.kg_generator_config)
         # Set persistence if configured
@@ -665,13 +661,12 @@ class MultiAgentMemoryCoordinator:
 
     def _create_store_agent(self) -> SimpleAgent:
         """Create a simple agent wrapper for memory store operations."""
-
         # Create a simple agent that wraps store operations
         store_agent = SimpleAgent(
             name="memory_store_agent",
             engine=AugLLMConfig(temperature=0.1),
             system_message="""You are a memory store agent. You help users store and retrieve memories.
-            
+
 Available operations:
 - Store new memories with automatic classification
 - Retrieve memories based on queries
@@ -688,12 +683,11 @@ Always provide clear, helpful responses about memory operations.""",
 
     def _create_classifier_agent(self) -> SimpleAgent:
         """Create a simple agent wrapper for memory classification."""
-
         classifier_agent = SimpleAgent(
             name="memory_classifier_agent",
             engine=AugLLMConfig(temperature=0.1),
             system_message="""You are a memory classification agent. You analyze and classify memories.
-            
+
 Available operations:
 - Classify memory content into types
 - Analyze query intent
@@ -710,7 +704,6 @@ Always provide detailed analysis and classification results.""",
 
     def _setup_prompts(self) -> None:
         """Setup prompts for task routing and coordination."""
-
         self.task_routing_prompt = PromptTemplate(
             template="""You are an expert task router for a multi-agent memory system. Analyze the task and route it to the most appropriate agent.
 
@@ -861,7 +854,6 @@ Decompose the task now:""",
                 except Exception as e:
                     logger.error(f"Unexpected error executing task: {e}")
         """
-
         task.status = "routing"
         task.started_at = datetime.utcnow()
 
@@ -894,7 +886,7 @@ Decompose the task now:""",
             return task
 
         except Exception as e:
-            logger.error(f"Task {task.id} failed: {e}")
+            logger.exception(f"Task {task.id} failed: {e}")
             task.error = str(e)
             task.status = "failed"
             task.completed_at = datetime.utcnow()
@@ -904,7 +896,7 @@ Decompose the task now:""",
 
             return task
 
-    async def _route_task(self, task: MemoryTask) -> Dict[str, Any]:
+    async def _route_task(self, task: MemoryTask) -> dict[str, Any]:
         """Route task to appropriate agents using LLM-based intelligent routing.
 
         This method analyzes the task and uses the coordinator's LLM to determine
@@ -949,7 +941,6 @@ Decompose the task now:""",
                     "confidence": 0.85
                 }
         """
-
         try:
             # Prepare agent capabilities description
             capabilities_desc = []
@@ -980,17 +971,15 @@ Decompose the task now:""",
 
             if routing_decision and "routing_decision" in routing_decision:
                 return routing_decision
-            else:
-                # Fallback to rule-based routing
-                return self._fallback_task_routing(task)
-
-        except Exception as e:
-            logger.error(f"Error routing task {task.id}: {e}")
+            # Fallback to rule-based routing
             return self._fallback_task_routing(task)
 
-    def _fallback_task_routing(self, task: MemoryTask) -> Dict[str, Any]:
-        """Fallback rule-based task routing."""
+        except Exception as e:
+            logger.exception(f"Error routing task {task.id}: {e}")
+            return self._fallback_task_routing(task)
 
+    def _fallback_task_routing(self, task: MemoryTask) -> dict[str, Any]:
+        """Fallback rule-based task routing."""
         task_type = task.type.lower()
 
         if "store" in task_type or "save" in task_type:
@@ -1003,7 +992,7 @@ Decompose the task now:""",
                 "estimated_time_ms": 500,
                 "confidence": 0.8,
             }
-        elif "retrieve" in task_type or "search" in task_type:
+        if "retrieve" in task_type or "search" in task_type:
             return {
                 "routing_decision": "single_agent",
                 "primary_agent": "agentic_rag",
@@ -1013,7 +1002,7 @@ Decompose the task now:""",
                 "estimated_time_ms": 1500,
                 "confidence": 0.8,
             }
-        elif "analyze" in task_type or "classify" in task_type:
+        if "analyze" in task_type or "classify" in task_type:
             return {
                 "routing_decision": "single_agent",
                 "primary_agent": "memory_classifier",
@@ -1023,7 +1012,7 @@ Decompose the task now:""",
                 "estimated_time_ms": 800,
                 "confidence": 0.8,
             }
-        elif "graph" in task_type or "knowledge" in task_type:
+        if "graph" in task_type or "knowledge" in task_type:
             return {
                 "routing_decision": "single_agent",
                 "primary_agent": "kg_generator",
@@ -1033,23 +1022,21 @@ Decompose the task now:""",
                 "estimated_time_ms": 2000,
                 "confidence": 0.8,
             }
-        else:
-            # Default to agentic RAG for unknown tasks
-            return {
-                "routing_decision": "single_agent",
-                "primary_agent": "agentic_rag",
-                "secondary_agents": [],
-                "execution_strategy": "single",
-                "reasoning": "Unknown task type, defaulting to agentic RAG",
-                "estimated_time_ms": 1500,
-                "confidence": 0.5,
-            }
+        # Default to agentic RAG for unknown tasks
+        return {
+            "routing_decision": "single_agent",
+            "primary_agent": "agentic_rag",
+            "secondary_agents": [],
+            "execution_strategy": "single",
+            "reasoning": "Unknown task type, defaulting to agentic RAG",
+            "estimated_time_ms": 1500,
+            "confidence": 0.5,
+        }
 
     async def _execute_single_agent_task(
-        self, task: MemoryTask, routing_decision: Dict[str, Any]
+        self, task: MemoryTask, routing_decision: dict[str, Any]
     ) -> Any:
         """Execute task with a single agent."""
-
         agent_name = routing_decision["primary_agent"]
         if agent_name not in self.meta_agents:
             raise ValueError(f"Agent {agent_name} not found")
@@ -1067,13 +1054,12 @@ Decompose the task now:""",
         return result
 
     async def _execute_multi_agent_task(
-        self, task: MemoryTask, routing_decision: Dict[str, Any]
+        self, task: MemoryTask, routing_decision: dict[str, Any]
     ) -> Any:
         """Execute task with multiple agents in parallel."""
-
         primary_agent = routing_decision["primary_agent"]
         secondary_agents = routing_decision.get("secondary_agents", [])
-        all_agents = [primary_agent] + secondary_agents
+        all_agents = [primary_agent, *secondary_agents]
 
         task.assigned_agent = f"multi:{','.join(all_agents)}"
         task.status = "executing"
@@ -1102,13 +1088,12 @@ Decompose the task now:""",
         return combined_result
 
     async def _execute_sequential_task(
-        self, task: MemoryTask, routing_decision: Dict[str, Any]
+        self, task: MemoryTask, routing_decision: dict[str, Any]
     ) -> Any:
         """Execute task with agents in sequence."""
-
         primary_agent = routing_decision["primary_agent"]
         secondary_agents = routing_decision.get("secondary_agents", [])
-        all_agents = [primary_agent] + secondary_agents
+        all_agents = [primary_agent, *secondary_agents]
 
         task.assigned_agent = f"seq:{','.join(all_agents)}"
         task.status = "executing"
@@ -1138,10 +1123,9 @@ Decompose the task now:""",
         }
 
     async def _execute_decomposed_task(
-        self, task: MemoryTask, routing_decision: Dict[str, Any]
+        self, task: MemoryTask, routing_decision: dict[str, Any]
     ) -> Any:
         """Execute task that has been decomposed into subtasks."""
-
         # This would involve decomposing the task and executing subtasks
         # For now, fall back to single agent execution
         return await self._execute_single_agent_task(
@@ -1153,7 +1137,7 @@ Decompose the task now:""",
             },
         )
 
-    def _parse_json_response(self, response: str) -> Optional[Dict[str, Any]]:
+    def _parse_json_response(self, response: str) -> dict[str, Any] | None:
         """Parse JSON response from LLM."""
         try:
             import json
@@ -1170,7 +1154,6 @@ Decompose the task now:""",
 
     def _update_performance_metrics(self, task: MemoryTask, success: bool) -> None:
         """Update performance metrics."""
-
         self.performance_metrics["total_tasks"] += 1
 
         if success:
@@ -1197,7 +1180,7 @@ Decompose the task now:""",
             self.performance_metrics["agent_utilization"][agent_key] += 1
 
     async def store_memory(
-        self, content: str, namespace: Optional[Tuple[str, ...]] = None
+        self, content: str, namespace: tuple[str, ...] | None = None
     ) -> str:
         """Store a memory using the multi-agent system with intelligent routing.
 
@@ -1242,7 +1225,6 @@ Decompose the task now:""",
             The system automatically classifies the memory type, extracts metadata,
             and updates relevant knowledge graphs based on the content.
         """
-
         task = MemoryTask(
             id=f"store_{datetime.utcnow().timestamp()}",
             type="store_memory",
@@ -1256,16 +1238,15 @@ Decompose the task now:""",
 
         if result_task.status == "completed":
             return f"Memory stored successfully: {result_task.result}"
-        else:
-            return f"Failed to store memory: {result_task.error}"
+        return f"Failed to store memory: {result_task.error}"
 
     async def retrieve_memories(
         self,
         query: str,
         limit: int = 10,
-        memory_types: Optional[List[MemoryType]] = None,
-        namespace: Optional[Tuple[str, ...]] = None,
-    ) -> List[Dict[str, Any]]:
+        memory_types: list[MemoryType] | None = None,
+        namespace: tuple[str, ...] | None = None,
+    ) -> list[dict[str, Any]]:
         """Retrieve memories using the multi-agent system with intelligent routing.
 
         This method creates a memory retrieval task and routes it to the most appropriate
@@ -1322,7 +1303,6 @@ Decompose the task now:""",
             - Applies relevance scoring and ranking
             - Returns structured results with metadata and provenance
         """
-
         task = MemoryTask(
             id=f"retrieve_{datetime.utcnow().timestamp()}",
             type="retrieve_memories",
@@ -1340,15 +1320,13 @@ Decompose the task now:""",
             result = result_task.result
             if isinstance(result, dict) and "final_memories" in result:
                 return result["final_memories"]
-            elif isinstance(result, list):
+            if isinstance(result, list):
                 return result
-            else:
-                return []
-        else:
-            logger.error(f"Failed to retrieve memories: {result_task.error}")
             return []
+        logger.error(f"Failed to retrieve memories: {result_task.error}")
+        return []
 
-    async def analyze_memory(self, content: str) -> Dict[str, Any]:
+    async def analyze_memory(self, content: str) -> dict[str, Any]:
         """Analyze memory content using the multi-agent system with specialized routing.
 
         This method creates a memory analysis task and routes it to the most appropriate
@@ -1408,7 +1386,6 @@ Decompose the task now:""",
             - Relationship identification
             - Content summarization
         """
-
         task = MemoryTask(
             id=f"analyze_{datetime.utcnow().timestamp()}",
             type="analyze_memory",
@@ -1421,12 +1398,11 @@ Decompose the task now:""",
 
         if result_task.status == "completed":
             return {"analysis": result_task.result, "success": True}
-        else:
-            return {"error": result_task.error, "success": False}
+        return {"error": result_task.error, "success": False}
 
     async def generate_knowledge_graph(
-        self, namespace: Optional[Tuple[str, ...]] = None
-    ) -> Dict[str, Any]:
+        self, namespace: tuple[str, ...] | None = None
+    ) -> dict[str, Any]:
         """Generate knowledge graph using the multi-agent system with KG specialization.
 
         This method creates a knowledge graph generation task and routes it to the
@@ -1495,7 +1471,6 @@ Decompose the task now:""",
             - Metadata: Creation timestamps, memory references, etc.
             - Graph statistics: Node counts, relationship types, etc.
         """
-
         task = MemoryTask(
             id=f"kg_{datetime.utcnow().timestamp()}",
             type="generate_knowledge_graph",
@@ -1509,10 +1484,9 @@ Decompose the task now:""",
 
         if result_task.status == "completed":
             return {"knowledge_graph": result_task.result, "success": True}
-        else:
-            return {"error": result_task.error, "success": False}
+        return {"error": result_task.error, "success": False}
 
-    def get_system_status(self) -> Dict[str, Any]:
+    def get_system_status(self) -> dict[str, Any]:
         """Get comprehensive system status and health information.
 
         This method provides a complete overview of the multi-agent system's current
@@ -1569,7 +1543,6 @@ Decompose the task now:""",
             state. For continuous monitoring, call this method periodically or use
             the run_diagnostic() method for health checks.
         """
-
         agent_status = {}
         for agent_name, meta_state in self.meta_agents.items():
             agent_status[agent_name] = {
@@ -1598,7 +1571,7 @@ Decompose the task now:""",
             },
         }
 
-    async def run_diagnostic(self) -> Dict[str, Any]:
+    async def run_diagnostic(self) -> dict[str, Any]:
         """Run comprehensive system diagnostic with agent health checks.
 
         This method performs a complete system diagnostic by testing each agent
@@ -1659,7 +1632,6 @@ Decompose the task now:""",
             functionality. For production systems, consider running this periodically
             to monitor system health and detect degradation early.
         """
-
         diagnostic_results = {}
 
         # Test each agent

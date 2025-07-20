@@ -7,7 +7,7 @@ with real LLM execution and comprehensive validation.
 import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict
+from typing import Dict
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -90,7 +90,7 @@ async def test_quick_search_agent():
                 print(f"❌ Query {i} failed: {e}")
 
         # Test batch processing
-        print(f"\n🔄 Testing batch processing...")
+        print("\n🔄 Testing batch processing..."..")
         batch_results = await agent.batch_search(test_queries[:2])
         print(f"✅ Batch processing completed: {len(batch_results)} results")
 
@@ -368,15 +368,15 @@ async def test_multi_agent_coordination():
         base_query = "Machine learning in healthcare"
 
         print(f"🔍 Base query: {base_query}")
-        print(f"🤖 Agent progression: Quick → Pro → Research → Labs")
+        print("🤖 Agent progression: Quick → Pro → Research → Labs"→ Labs")
 
         # Step 1: Quick search for basic info
-        print(f"\n1️⃣ Quick Search...")
+        print("\n1️⃣ Quick Search..."...")
         quick_response = await agents["quick"].process_search(base_query)
         print(f"✅ Quick search completed: {quick_response.response[:80]}...")
 
         # Step 2: Pro search for detailed analysis
-        print(f"\n2️⃣ Pro Search...")
+        print("\n2️⃣ Pro Search..."...")
         pro_context = {
             "domain": "healthcare",
             "experience_level": "intermediate",
@@ -390,7 +390,7 @@ async def test_multi_agent_coordination():
         )
 
         # Step 3: Deep research for comprehensive analysis
-        print(f"\n3️⃣ Deep Research...")
+        print("\n3️⃣ Deep Research..."...")
         research_response = await agents["research"].process_deep_research(
             query=base_query,
             research_depth=2,
@@ -402,7 +402,7 @@ async def test_multi_agent_coordination():
         )
 
         # Step 4: Labs for interactive implementation
-        print(f"\n4️⃣ Labs Project...")
+        print("\n4️⃣ Labs Project..."...")
         labs_response = await agents["labs"].process_labs_project(
             query=f"Create a dashboard for {base_query} analysis",
             project_type="dashboard",
@@ -414,7 +414,7 @@ async def test_multi_agent_coordination():
         )
 
         # Summary
-        print(f"\n📊 Multi-Agent Coordination Summary:")
+        print("\n📊 Multi-Agent Coordination Summary:"y:")
         print(f"🚀 Quick: {quick_response.processing_time:.1f}s")
         print(f"⚡ Pro: {pro_response.processing_time:.1f}s")
         print(f"🔍 Research: {research_response.processing_time:.1f}s")
@@ -428,8 +428,8 @@ async def test_multi_agent_coordination():
         print(f"⏱️ Total time: {total_time:.1f}s")
 
         # Demonstrate knowledge transfer
-        print(f"\n🔄 Knowledge Transfer Demo:")
-        print(f"📝 Quick → Pro: Context aware of basic facts")
+        print("\n🔄 Knowledge Transfer Demo:"o:")
+        print("📝 Quick → Pro: Context aware of basic facts"acts")
         print(
             f"🔍 Pro → Research: {len(pro_response.follow_up_questions)} questions for deeper investigation"
         )
@@ -458,17 +458,17 @@ def print_performance_summary(test_results: Dict[str, bool], start_time: datetim
     print(f"✅ Tests passed: {passed_tests}/{total_tests}")
     print(f"📊 Success rate: {(passed_tests/total_tests)*100:.1f}%")
 
-    print(f"\n📋 Test Results:")
+    print("\n📋 Test Results:"s:")
     for test_name, result in test_results.items():
         status = "✅ PASSED" if result else "❌ FAILED"
         print(f"  {test_name}: {status}")
 
     if passed_tests == total_tests:
         print(
-            f"\n🎉 ALL TESTS PASSED! Perplexity-style agents are ready for production!"
+            "\n🎉 ALL TESTS PASSED! Perplexity-style agents are ready for production!"n!"
         )
     else:
-        print(f"\n⚠️ Some tests failed. Review the output above for details.")
+        print("\n⚠️ Some tests failed. Review the output above for details."ls.")
 
 
 async def main():

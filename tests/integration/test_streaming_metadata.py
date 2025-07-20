@@ -24,7 +24,7 @@ def test_streaming_metadata():
                 else:
                     pass
     except Exception as e:
-        pass")
+        pass
 
     try:
         stream = agent.stream({}, config={"configurable": {"recursion_limit": 3}})
@@ -63,7 +63,7 @@ def test_streaming_metadata():
                 break
 
     except Exception as e:
-        pass")
+        pass
 
     try:
         import asyncio
@@ -91,7 +91,7 @@ def test_streaming_metadata():
         asyncio.run(test_astream())
 
     except Exception as e:
-        pass")
+        pass
 
     if metadata_chunks:
         for i, metadata in enumerate(metadata_chunks):

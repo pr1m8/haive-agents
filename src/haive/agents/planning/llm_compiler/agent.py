@@ -1,5 +1,6 @@
 """LLM Compiler Agent Implementation.
 
+from typing import Any, Dict
 This implementation follows the LLM Compiler architecture from the paper by Kim et al.,
 focusing on parallelizable task execution through a DAG structure.
 """
@@ -109,7 +110,6 @@ class LLMCompilerAgent(AgentArchitecture):
             return {"plan": plan}
 
         except Exception:
-            pass
 
             # Create a fallback plan
             plan = self._create_fallback_plan(state.query)
@@ -362,7 +362,9 @@ class LLMCompilerAgent(AgentArchitecture):
         join_step = state.plan.get_join_step() if state.plan else None
         return f"Execution failed. Join step: {join_step}"
 
-    def should_execute_more(self, state: CompilerState, config=None) -> str:
+    def should_execute_more(
+        self, state: CompilerState, config: Dict[str, Any] = None
+    ) -> str:
         """Determine the next execution step.
 
         Args:
@@ -388,7 +390,7 @@ class LLMCompilerAgent(AgentArchitecture):
 
         return "execute_tasks"  # Default to continuing execution
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> Any:
         """Set up the agent workflow as a state graph."""
         # Create the state graph
         self.graph = StateGraph(CompilerState)
@@ -408,7 +410,7 @@ class LLMCompilerAgent(AgentArchitecture):
             {"planner": "planner", "execute_tasks": "execute_tasks", "join": "join"},
         )
 
-        def should_replan(state: CompilerState, config=None) -> bool:
+        def should_replan(state: CompilerState, config: Dict[str, Any] = None) -> bool:
             """Determines whether the agent should replan based on execution results.
 
             Args:
@@ -529,7 +531,7 @@ class LLMCompilerAgent(AgentArchitecture):
 import asyncio
 
 
-def main():
+def main() -> None:
     agent = LLMCompilerAgent(config=LLMCompilerAgentConfig())
     asyncio.run(
         agent.arun(

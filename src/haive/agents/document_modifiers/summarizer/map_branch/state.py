@@ -1,7 +1,7 @@
 """State for the summarizer agent."""
 
 import operator
-from typing import Annotated
+from typing import Annotated, Any
 
 from langchain_core.documents import Document
 from pydantic import BaseModel, Field, field_validator
@@ -14,7 +14,7 @@ class InputState(BaseModel):
 
     @field_validator("contents", mode="before")
     @classmethod
-    def normalize_contents(cls, v):
+    def normalize_contents(cls, v) -> Any:
         """Normalize inputs to strings.
         Accepts:
         - List[str]

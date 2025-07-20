@@ -1,17 +1,35 @@
-"""Speculative RAG Module.
+"""Module exports."""
 
-Speculative RAG with parallel hypothesis generation and verification.
-Uses structured output models for complex reasoning and iterative processing.
-"""
-
-from haive.agents.rag.speculative.agent import (
+from speculative.agent import (
+    Hypothesis,
+    HypothesisConfidence,
     HypothesisGeneratorAgent,
     ParallelVerificationAgent,
+    SpeculativeExecutionPlan,
     SpeculativeRAGAgent,
+    SpeculativeResult,
+    VerificationStatus,
+    build_graph,
+    create_speculative_rag_agent,
+    from_documents,
+    generate_hypotheses,
+    get_speculative_rag_io_schema,
+    verify_hypotheses_parallel,
 )
 
 __all__ = [
+    "Hypothesis",
+    "HypothesisConfidence",
     "HypothesisGeneratorAgent",
     "ParallelVerificationAgent",
+    "SpeculativeExecutionPlan",
     "SpeculativeRAGAgent",
+    "SpeculativeResult",
+    "VerificationStatus",
+    "build_graph",
+    "create_speculative_rag_agent",
+    "from_documents",
+    "generate_hypotheses",
+    "get_speculative_rag_io_schema",
+    "verify_hypotheses_parallel",
 ]

@@ -1,7 +1,5 @@
 """Clean multi-agent base following proper Agent patterns."""
 
-from typing import Dict, List, Union
-
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
@@ -21,7 +19,7 @@ class CleanMultiAgent(Agent):
     """
 
     # Agents field - similar to engines field in base Agent
-    agents: Union[List[Agent], Dict[str, Agent]] = Field(
+    agents: list[Agent] | dict[str, Agent] = Field(
         default_factory=list,
         description="Agents to coordinate - similar to engines field",
     )
@@ -33,7 +31,8 @@ class CleanMultiAgent(Agent):
     )
 
     @model_validator(mode="after")
-    def normalize_agents(self) -> "CleanMultiAgent":
+    @classmethod
+    def normalize_agents(cls) -> "CleanMultiAgent":
         """Normalize agents similar to how base Agent normalizes engines."""
         if isinstance(self.agents, list):
             # Convert list to dict using agent names - similar to engine normalization

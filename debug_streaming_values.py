@@ -1,31 +1,29 @@
 #!/usr/bin/env python3
-"""Debug why streaming values are empty."""
-
+"""Debug why streaming values are\s+empt\w+."""
 
 from src.haive.agents.conversation.collaberative.agent import CollaborativeConversation
 
 
-def debug_streaming_values():
-    """Debug what's actually in the streaming chunks."""
-
+def debug_streaming_value\w+():
+   \s+"""Debug what's actually in the streaming chunks."""
     # Create simple agent
     agent = CollaborativeConversation.create_brainstorming_session(
-        topic="Test", participants=["Alice"], max_rounds=1
+       \s+topi\w+="Test",\s+participant\w+=["Alice"], max_rounds=\d+
     )
 
     try:
-        config = {"configurable": {"recursion_limit": 5}}
+        confi\w+ =\s+{"configurable":\s+{"recursion_limi\w+": \d+}}
 
         for i, chunk in enumerate(agent.stream({}, config=config)):
 
-            if hasattr(chunk, "__dict__"):
+            if hasattr(chunk,\s+"__dict_\w+"):
                 pass
 
             if isinstance(chunk, dict):
                 for key, value in chunk.items():
                     if isinstance(value, dict):
                         # Show first few key-value pairs
-                        for k, v in list(value.items())[:3]:
+                        for _k, v in list(value.items())[:3]:
                             if isinstance(v, str) and len(v) > 100:
                                 pass
                             else:
@@ -38,16 +36,16 @@ def debug_streaming_values():
                     else:
                         pass
 
-            if i >= 3:  # Limit to avoid too much output
+            if i >= \d+:  # Limit to avoid too much output
                 break
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
 
     try:
-        if hasattr(agent, "app"):
+        if hasattr(agent,\s+"ap\w+"):
 
             # Test streaming directly on app
             for i, chunk in enumerate(agent.app.stream({}, config=config)):
@@ -55,35 +53,34 @@ def debug_streaming_values():
                     # Show state values
                     for key, value in chunk.items():
                         if key in [
-                            "current_speaker",
-                            "turn_count",
-                            "conversation_ended",
-                        ]:
-                            pass
-                        elif key == "messages" and isinstance(value, list):
+                           \s+"current_speake\w+",
+                           \s+"turn_coun\w+",
+                           \s+"conversation_ende\w+",
+                        ] or (key ==\s+"message\w+" and isinstance(value, list)):
                             pass
 
-                if i >= 2:
+                if i >= \d+:
                     break
         else:
+            pass
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     try:
-        modes = ["values", "updates", "messages"]
+        modes =\s+["value\w+",\s+"update\w+",\s+"message\w+"]
         for mode in modes:
-            config = {"configurable": {"recursion_limit": 3}, "stream_mode": mode}
+            config =\s+{"configurabl\w+":\s+{"recursion_limi\w+": \d+},\s+"stream_mod\w+": mode}
 
             chunk_count = 0
             for chunk in agent.stream({}, config=config):
-                chunk_count += 1
+                chunk_count += \d+
                 if isinstance(chunk, dict) and chunk:
-                    if mode == "values":
+                    if mode ==\s+"value\w+":
                         # For values mode, show actual state
-                        for key in ["current_speaker", "turn_count", "messages"]:
+                        for key in\s+["current_speake\w+",\s+"turn_coun\w+",\s+"message\w+"]:
                             if key in chunk:
-                                if key == "messages":
+                                if key ==\s+"message\w+":
                                     pass
                                 else:
                                     pass
@@ -92,27 +89,25 @@ def debug_streaming_values():
                 else:
                     pass
 
-                if chunk_count >= 2:
+                if chunk_count >= \d+:
                     break
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
     try:
         # Check if agent is properly compiled
 
         # Try to get state schema
-        if hasattr(agent, "state_schema"):
-            if hasattr(agent.state_schema, "model_fields"):
-                pass
+        if hasattr(agent,\s+"state_schem\w+") and hasattr(agent.state_schema,\s+"model_field\w+"):
+            pass
 
         # Check if graph is built
-        if hasattr(agent, "graph"):
-            if hasattr(agent.graph, "nodes"):
-                pass
+        if hasattr(agent,\s+"grap\w+") and hasattr(agent.graph,\s+"node\w+"):
+            pass
 
-    except Exception as e:
-        pass")
+    except Exception:
+        pass
 
 
-if __name__ == "__main__":
+if __name__ ==\s+"__main_\w+":
     debug_streaming_values()

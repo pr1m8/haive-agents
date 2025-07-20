@@ -61,31 +61,32 @@ class ScaleGrade(Grade):
         numeric_value: Numeric equivalent of the scale position
 
     Example:
-        ```python
-        # Using predefined Likert scale
-        grade = ScaleGrade(
+        .. code-block:: python
+
+            # Using predefined Likert scale
+            grade = ScaleGrade(
             scale_value="agree",
             scale_labels=["strongly_disagree", "disagree", "neutral", "agree", "strongly_agree"],
             scale_type="likert_5",
             justification="Response shows good understanding with minor reservations"
-        )
+            )
 
-        # Custom satisfaction scale
-        grade = ScaleGrade(
+            # Custom satisfaction scale
+            grade = ScaleGrade(
             scale_value="satisfied",
             scale_labels=["very_dissatisfied", "dissatisfied", "neutral", "satisfied", "very_satisfied"],
             scale_type="satisfaction",
             justification="User feedback indicates satisfaction with minor issues"
-        )
+            )
 
-        # Custom numeric scale with labels
-        grade = ScaleGrade(
+            # Custom numeric scale with labels
+            grade = ScaleGrade(
             scale_value="good",
             scale_labels=["poor", "fair", "good", "very_good", "excellent"],
             scale_type="quality_5",
             justification="Quality meets expectations"
-        )
-        ```
+            )
+
     """
 
     grade_type: GradeType = Field(
@@ -141,7 +142,8 @@ class ScaleGrade(Grade):
         return [label.strip() for label in v]
 
     @model_validator(mode="after")
-    def validate_scale_value_and_set_numeric(self) -> "ScaleGrade":
+    @classmethod
+    def validate_scale_value_and_set_numeric(cls) -> "ScaleGrade":
         """Validate scale_value is in scale_labels and set numeric_value.
 
         Returns:

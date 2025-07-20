@@ -1,11 +1,13 @@
 """Routing patterns for multi-agent systems.
 
+from typing import Any
 Experiments with conditional routing, branching, and dynamic paths.
 Uses BaseGraph's add_conditional_edges for sophisticated routing.
 """
 
 import logging
-from typing import Any, Callable, Dict, List, Optional, Union
+from collections.abc import Callable
+from typing import Any
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
@@ -24,30 +26,31 @@ class RoutingMultiAgent(ListMultiAgent):
     which agent executes next based on state conditions.
 
     Example:
-        ```python
-        multi = RoutingMultiAgent("router")
+        .. code-block:: python
 
-        # Add agents
-        multi.append(ClassifierAgent())
-        multi.append(TechnicalAgent())
-        multi.append(BusinessAgent())
-        multi.append(GeneralAgent())
+            multi = RoutingMultiAgent("router")
 
-        # Add routing from classifier
-        multi.add_route(
+            # Add agents
+            multi.append(ClassifierAgent())
+            multi.append(TechnicalAgent())
+            multi.append(BusinessAgent())
+            multi.append(GeneralAgent())
+
+            # Add routing from classifier
+            multi.add_route(
             source="ClassifierAgent",
             condition=lambda state: state.get("category", "general"),
             routes={
-                "technical": "TechnicalAgent",
-                "business": "BusinessAgent",
-                "general": "GeneralAgent"
+            "technical": "TechnicalAgent",
+            "business": "BusinessAgent",
+            "general": "GeneralAgent"
             }
-        )
-        ```
+            )
+
     """
 
     # Routing configuration
-    routing_rules: Dict[str, Dict[str, Any]] = Field(
+    routing_rules: dict[str, dict[str, Any]] = Field(
         default_factory=dict, description="Routing rules by agent name"
     )
 
@@ -59,10 +62,10 @@ class RoutingMultiAgent(ListMultiAgent):
 
     def add_route(
         self,
-        source: Union[str, Agent],
-        condition: Callable[[Any], Union[str, bool]],
-        routes: Dict[Union[str, bool], Union[str, Agent]],
-        default: Optional[str] = None,
+        source: str | Agent,
+        condition: Callable[[Any], str | bool],
+        routes: dict[str | bool, str | Agent],
+        default: str | None = None,
     ) -> "RoutingMultiAgent":
         """Add routing rule for an agent.
 
@@ -96,10 +99,10 @@ class RoutingMultiAgent(ListMultiAgent):
 
     def add_boolean_route(
         self,
-        source: Union[str, Agent],
+        source: str | Agent,
         condition: Callable[[Any], bool],
-        true_dest: Union[str, Agent],
-        false_dest: Union[str, Agent] = END,
+        true_dest: str | Agent,
+        false_dest: str | Agent = END,
     ) -> "RoutingMultiAgent":
         """Add simple boolean routing.
 
@@ -117,9 +120,9 @@ class RoutingMultiAgent(ListMultiAgent):
 
     def add_multi_route(
         self,
-        source: Union[str, Agent],
+        source: str | Agent,
         condition: Callable[[Any], str],
-        **routes: Union[str, Agent],
+        **routes: str | Agent,
     ) -> "RoutingMultiAgent":
         """Add multi-way routing with keyword arguments.
 
@@ -153,8 +156,8 @@ class RoutingMultiAgent(ListMultiAgent):
             agent_nodes[agent.name] = node_name
 
             # Create agent node
-            def make_agent_node(agent_instance):
-                def node(state: Dict[str, Any]) -> Dict[str, Any]:
+            def make_agent_node(agent_instance: Any):
+                def node(state: dict[str, Any]) -> dict[str, Any]:
                     messages = state.get("messages", [])
                     result = agent_instance.invoke({"messages": messages})
 
@@ -229,41 +232,42 @@ class BranchingMultiAgent(RoutingMultiAgent):
     Supports parallel branches that merge back together.
 
     Example:
-        ```python
-        multi = BranchingMultiAgent("branching")
+        .. code-block:: python
 
-        # Main path
-        multi.append(InputProcessor())
+            multi = BranchingMultiAgent("branching")
 
-        # Branch based on input type
-        multi.branch_on(
+            # Main path
+            multi.append(InputProcessor())
+
+            # Branch based on input type
+            multi.branch_on(
             "InputProcessor",
             lambda s: s.get("input_type"),
             branches={
-                "text": [TextAnalyzer(), TextSummarizer()],
-                "image": [ImageAnalyzer(), ImageCaptioner()],
-                "audio": [AudioTranscriber(), AudioAnalyzer()]
+            "text": [TextAnalyzer(), TextSummarizer()],
+            "image": [ImageAnalyzer(), ImageCaptioner()],
+            "audio": [AudioTranscriber(), AudioAnalyzer()]
             },
             merge_to=OutputFormatter()
-        )
-        ```
+            )
+
     """
 
     # Track branches for merging
-    branches: Dict[str, List[str]] = Field(
+    branches: dict[str, list[str]] = Field(
         default_factory=dict, description="Branch definitions"
     )
 
-    merge_points: Dict[str, str] = Field(
+    merge_points: dict[str, str] = Field(
         default_factory=dict, description="Where branches merge"
     )
 
     def branch_on(
         self,
-        source: Union[str, Agent],
+        source: str | Agent,
         condition: Callable[[Any], str],
-        branches: Dict[str, List[Agent]],
-        merge_to: Optional[Agent] = None,
+        branches: dict[str, list[Agent]],
+        merge_to: Agent | None = None,
     ) -> "BranchingMultiAgent":
         """Create branching paths that merge back.
 
@@ -337,30 +341,29 @@ class BranchingMultiAgent(RoutingMultiAgent):
 # Example routing conditions
 
 
-def category_router(state: Dict[str, Any]) -> str:
+def category_router(state: dict[str, Any]) -> str:
     """Route based on category field."""
     return state.get("category", "general")
 
 
-def confidence_router(state: Dict[str, Any]) -> str:
+def confidence_router(state: dict[str, Any]) -> str:
     """Route based on confidence level."""
     confidence = state.get("confidence", 0.5)
     if confidence > 0.8:
         return "high"
-    elif confidence > 0.5:
+    if confidence > 0.5:
         return "medium"
-    else:
-        return "low"
+    return "low"
 
 
-def error_router(state: Dict[str, Any]) -> str:
+def error_router(state: dict[str, Any]) -> str:
     """Route based on error presence."""
     if state.get("error"):
         return "error"
     return "success"
 
 
-def has_tool_calls_router(state: Dict[str, Any]) -> bool:
+def has_tool_calls_router(state: dict[str, Any]) -> bool:
     """Check if there are tool calls in the last message."""
     messages = state.get("messages", [])
     if messages:

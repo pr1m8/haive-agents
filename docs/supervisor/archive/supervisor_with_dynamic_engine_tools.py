@@ -52,7 +52,8 @@ class DynamicToolSupervisor(ReactAgent):
     agent_choice_model: DynamicChoiceModel | None = Field(default=None)
 
     @model_validator(mode="after")
-    def setup_supervisor(self):
+    @classmethod
+    def setup_supervisor(cls):
         """Setup supervisor and sync initial tools."""
         # Create base tools
         self._create_base_tools()

@@ -65,7 +65,8 @@ class DynamicSupervisor(ReactAgent):
         )
 
     @model_validator(mode="after")
-    def setup_dynamic_supervisor(self):
+    @classmethod
+    def setup_dynamic_supervisor(cls):
         """Setup supervisor with dynamic tool integration."""
 
         # Sync tools from state to engine
@@ -107,7 +108,7 @@ class DynamicSupervisor(ReactAgent):
         """Build supervisor graph with agent execution capabilities.
 
         Architecture:
-        supervisor (reasoning) → agent_execution | END
+        supervisor (reasoning) -> agent_execution | END
 
         The supervisor uses dynamic tools to make routing decisions,
         then the agent_execution node handles the actual execution.
@@ -146,7 +147,6 @@ class DynamicSupervisor(ReactAgent):
         2. Uses ReactAgent reasoning with dynamic tools
         3. Sets routing decisions in state
         """
-
         # Update tools from current state before reasoning
         self._sync_tools_from_state_instance(state)
 
@@ -173,7 +173,7 @@ class DynamicSupervisor(ReactAgent):
         """Route based on supervisor's decision in state."""
         if state.next_agent and state.next_agent != "END":
             return "execute"
-        print("🏁 Routing to end"nd")
+        print("Routing to end")
         return "end"
 
     # Convenience methods for agent management
@@ -223,7 +223,6 @@ def create_dynamic_supervisor(
     Returns:
         Configured DynamicSupervisor ready for use
     """
-
     supervisor = DynamicSupervisor(name=name, engine=engine)
 
     # Add initial agents if provided

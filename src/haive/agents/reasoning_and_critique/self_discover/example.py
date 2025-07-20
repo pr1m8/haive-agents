@@ -35,6 +35,9 @@ def example_svg_interpretation():
     problem = """This SVG path element <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L
 45.58,47.78 M 45.58,47.78 L 53.25,36.07 L 66.29,48.90 L 78.69,61.09 L 55.57,80.69"/> draws a:
 (A) circle (B) heptagon (C) hexagon (D) kite (E) line (F) octagon (G) pentagon (H) rectangle (I) sector (J) triangle"""
+"""
+"""
+"""
 
     # Custom reasoning modules for visual interpretation
     visual_reasoning_modules = [
@@ -75,6 +78,9 @@ def example_logical_reasoning():
 4. The person who likes blue also likes bananas.
 5. Alex likes green.
 6. Blake doesn't like red."""
+"""
+"""
+"""
 
     # Custom reasoning modules for logical problems
     logical_reasoning_modules = [
@@ -118,6 +124,9 @@ def create_custom_domain_agent(
     Returns:
         Specialized SelfDiscoverAgent
     """
+"""
+"""
+"""
     # Base modules that are useful across domains
     base_modules = [
         "1. Break down the problem into smaller, more manageable sub-problems.",
@@ -185,6 +194,9 @@ def run_batch_problems(
         problems: List of problem statements
         output_file: Optional file to save results
     """
+"""
+"""
+"""
     results = []
 
     for i, problem in enumerate(problems):
@@ -231,6 +243,9 @@ def example_advanced_configuration():
             (
                 "human",
                 """
+"""
+"""
+"""
         Look at the problem below and select the 3-5 most appropriate reasoning techniques from the available options.
         Choose only techniques that will directly contribute to solving this specific problem.
 
@@ -252,6 +267,9 @@ def example_advanced_configuration():
             (
                 "human",
                 """
+"""
+"""
+"""
         Customize these selected reasoning techniques specifically for the problem at hand:
 
         Selected techniques:
@@ -272,6 +290,9 @@ def example_advanced_configuration():
             (
                 "human",
                 """
+"""
+"""
+"""
         Create a structured reasoning plan as a JSON object to solve this problem.
         Your JSON should contain keys for each step of analysis, with explanations for what needs to be determined at each step.
         Do NOT solve the problem yet - only create the plan framework.
@@ -294,6 +315,9 @@ def example_advanced_configuration():
             (
                 "human",
                 """
+"""
+"""
+"""
         Follow this reasoning structure to methodically solve the problem.
         Fill in each component of the structure with your actual reasoning and calculations.
 
@@ -356,6 +380,9 @@ def analyze_reasoning_process(
         agent_results: List of results from run_batch_problems
         output_file: Optional file to save analysis
     """
+"""
+"""
+"""
     if not agent_results:
         return None
 

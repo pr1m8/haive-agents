@@ -4,13 +4,9 @@ This test verifies that the DynamicReactAgent can properly discover and load
 tools dynamically, following the no-mocks testing philosophy.
 """
 
-import asyncio
-from typing import Any, Dict, List
-
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.registry import RegistryItem
-from langchain_core.tools import BaseTool, tool
+from langchain_core.tools import tool
 
 from haive.agents.react.dynamic_react_agent import DynamicReactAgent, DynamicToolState
 

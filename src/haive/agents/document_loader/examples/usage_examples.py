@@ -1,9 +1,11 @@
 """Document Loader Agent Usage Examples.
 
+from typing import Any
 This module demonstrates how to use the document loader agents in various scenarios.
 """
 
 import asyncio
+import contextlib
 
 from haive.agents.document_loader import (
     DirectoryLoaderAgent,
@@ -13,9 +15,8 @@ from haive.agents.document_loader import (
 )
 
 
-def example_basic_document_loader():
+def example_basic_document_loader() -> Any:
     """Basic example using the DocumentLoaderAgent."""
-
     # Create a document loader agent
     agent = DocumentLoaderAgent(
         name="Basic Document Loader", include_metadata=True, max_documents=10
@@ -35,9 +36,8 @@ def example_basic_document_loader():
     return result
 
 
-def example_file_loader():
+def example_file_loader() -> Any:
     """Example using the FileLoaderAgent."""
-
     # Create a file loader agent
     agent = FileLoaderAgent(
         name="PDF File Loader",
@@ -56,15 +56,14 @@ def example_file_loader():
 
     # Print metadata from the first document
     if result["total_documents"] > 0 and "metadata" in result["documents"][0]:
-        for key, value in result["documents"][0]["metadata"].items():
+        for _key, _value in result["documents"][0]["metadata"].items():
             pass
 
     return result
 
 
-def example_web_loader():
+def example_web_loader() -> Any:
     """Example using the WebLoaderAgent."""
-
     # Create a web loader agent
     agent = WebLoaderAgent(
         name="Dynamic Web Loader",
@@ -84,15 +83,14 @@ def example_web_loader():
     # Print the titles extracted from the web page
     if result["total_documents"] > 0:
         for doc in result["documents"][:2]:  # Show first 2 documents
-            content = doc["page_content"]
+            doc["page_content"]
             # Extract first 100 characters
 
     return result
 
 
-def example_directory_loader():
+def example_directory_loader() -> Any:
     """Example using the DirectoryLoaderAgent."""
-
     # Create a directory loader agent
     agent = DirectoryLoaderAgent(
         name="Markdown Directory Loader",
@@ -113,15 +111,14 @@ def example_directory_loader():
     # Print a summary of loaded files
     if result["total_documents"] > 0:
         for doc in result["documents"]:
-            source = doc["metadata"].get("source", "unknown")
-            size = len(doc["page_content"])
+            doc["metadata"].get("source", "unknown")
+            len(doc["page_content"])
 
     return result
 
 
 async def example_async_loading():
     """Example of asynchronous document loading."""
-
     # Create an agent with async loading enabled
     agent = DocumentLoaderAgent(name="Async Document Loader", use_async=True)
 
@@ -136,18 +133,17 @@ async def example_async_loading():
     results = await asyncio.gather(*tasks)
 
     # Print summary
-    total_docs = sum(result["total_documents"] for result in results)
-    total_time = sum(result["operation_time"] for result in results)
+    sum(result["total_documents"] for result in results)
+    sum(result["operation_time"] for result in results)
 
     # Print details for each source
-    for i, result in enumerate(results):
+    for _i, _result in enumerate(results):
         pass
     return results
 
 
-def example_rag_integration():
+def example_rag_integration() -> str:
     """Example of integrating document loader with RAG."""
-
     # This would be a real implementation in a production system
     # Here we just demonstrate the pattern
 
@@ -166,33 +162,20 @@ def example_rag_integration():
 
 
 if __name__ == "__main__":
-    pass
-    try:
+    with contextlib.suppress(Exception):
         example_basic_document_loader()
-    except Exception as e:
-        pass
 
-    try:
+    with contextlib.suppress(Exception):
         example_file_loader()
-    except Exception as e:
-        pass
 
-    try:
+    with contextlib.suppress(Exception):
         example_web_loader()
-    except Exception as e:
-        pass
 
-    try:
+    with contextlib.suppress(Exception):
         example_directory_loader()
-    except Exception as e:
-        pass
 
-    try:
+    with contextlib.suppress(Exception):
         asyncio.run(example_async_loading())
-    except Exception as e:
-        pass
 
-    try:
+    with contextlib.suppress(Exception):
         example_rag_integration()
-    except Exception as e:
-        pass

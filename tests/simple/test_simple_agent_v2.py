@@ -60,32 +60,25 @@ class TestSimpleAgentV2:
 
         # Get the state schema class
         StateClass = agent.state_schema
-        print(f"\nState class: {StateClass.__name__}")
-        print(f"MRO: {[c.__name__ for c in StateClass.__mro__]}")
 
         # Check field definitions
-        print("\n=== Field Definitions ===")
         for field_name, field_info in StateClass.model_fields.items():
-            default = getattr(field_info, "default", PydanticUndefined)
-            default_factory = getattr(field_info, "default_factory", None)
-            print(f"{field_name}: default={default}, default_factory={default_factory}")
+            getattr(field_info, "default", PydanticUndefined)
+            getattr(field_info, "default_factory", None)
 
         # Create instance and check actual values
-        print("\n=== Creating Instance ===")
         instance = StateClass()
 
-        print("\n=== Instance Field Values ===")
         undefined_fields = []
         for field_name in StateClass.model_fields:
             try:
                 value = getattr(instance, field_name)
                 if value is PydanticUndefined:
                     undefined_fields.append(field_name)
-                    print(f"{field_name}: PydanticUndefined ❌")
                 else:
-                    print(f"{field_name}: {type(value).__name__} ✓")
-            except AttributeError as e:
-                print(f"{field_name}: AttributeError - {e}")
+                    pass
+            except AttributeError:
+                pass
 
         assert (
             len(undefined_fields) == 0
@@ -101,28 +94,22 @@ class TestSimpleAgentV2:
         )
 
         # Try to run without persistence first
-        print("\n--- Testing without persistence ---")
         original_checkpointer = agent.checkpointer
         agent.checkpointer = None  # Disable checkpointing to avoid msgpack issue
 
         try:
             result = await agent.arun("Hello! Please respond with a greeting.")
-            print(f"SUCCESS without persistence: Got response: {result}")
-            print(f"Response type: {type(result)}")
             assert result is not None
 
             # Handle both string and object responses
             if isinstance(result, str):
                 assert len(result) > 0
-            else:
-                # It's a structured output - check it has content
-                print(f"Response attributes: {dir(result)}")
-                if hasattr(result, "content"):
-                    assert result.content is not None
-                elif hasattr(result, "messages"):
-                    assert result.messages is not None
-        except Exception as e:
-            print(f"FAILED without persistence: {e}")
+            # It's a structured output - check it has content
+            elif hasattr(result, "content"):
+                assert result.content is not None
+            elif hasattr(result, "messages"):
+                assert result.messages is not None
+        except Exception:
             raise
         finally:
             agent.checkpointer = original_checkpointer

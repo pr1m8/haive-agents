@@ -1,5 +1,6 @@
 """Configuration for SequentialAgent that connects components in a linear workflow.
 
+from typing import Any
 This module defines the configuration class for SequentialAgent, which
 automates the process of connecting multiple engine components in a sequence.
 """
@@ -11,7 +12,7 @@ from typing import Any
 from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.state_schema import StateSchema
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 logger = logging.getLogger(__name__)
 
@@ -90,14 +91,15 @@ class SequentialAgentConfig(AgentConfig):
 
     @field_validatorvalidate_steps
     @classmethod
-    def validate_steps(cls, v):
+    def validate_steps(cls, v) -> Any:
         """Ensure we have at least one step."""
         if not v or len(v) == 0:
             raise ValueError("SequentialAgent must have at least one step")
         return v
 
     @model_validator(mode="after")
-    def setup_components(self):
+    @classmethod
+    def setup_components(cls) -> Any:
         """Collect all step components into the components list for schema derivation."""
         # Collect step components
         step_components = [step.component for step in self.steps]
@@ -123,7 +125,7 @@ class SequentialAgentConfig(AgentConfig):
                 return step
         return None
 
-    def build_agent(self):
+    def build_agent(self) -> Any:
         """Build and return a SequentialAgent instance."""
         from haive.agents.sequential.agent import SequentialAgent
 

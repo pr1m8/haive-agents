@@ -1,5 +1,6 @@
 """Query Planning Agentic RAG Agent.
 
+from typing import Any
 Implementation of query planning RAG with structured decomposition and execution.
 Provides intelligent query analysis, planning, and multi-stage retrieval strategies.
 """

@@ -54,7 +54,7 @@ async def test_mcp_rag_agent():
                                 for i, doc in enumerate(direct_results[:2], 1):
                                     pass
                 else:
-                    pass.")
+                    pass
 
             except Exception as e:
                 import traceback

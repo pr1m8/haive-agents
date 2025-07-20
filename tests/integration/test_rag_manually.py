@@ -6,6 +6,8 @@ import sys
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 
+import contextlib
+
 from langchain_core.documents import Document
 
 from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
@@ -31,28 +33,19 @@ test_documents = [
 
 
 # Test 1: SimpleRAGAgent
-try:
+with contextlib.suppress(Exception):
     simple_agent = SimpleRAGAgent.from_documents(documents=test_documents)
-except Exception as e:
-    pass")
 
 # Test 2: CorrectiveRAGAgentV2
-try:
+with contextlib.suppress(Exception):
     corrective_agent = CorrectiveRAGAgentV2.from_documents(
         documents=test_documents, relevance_threshold=0.7
     )
-except Exception as e:
-    pass")
 
 # Test 3: HyDERAGAgentV2
-try:
+with contextlib.suppress(Exception):
     hyde_agent = HyDERAGAgentV2.from_documents(documents=test_documents)
-except Exception as e:
-    pass")
 
 # Test 4: MultiQueryRAGAgent
-try:
+with contextlib.suppress(Exception):
     multi_agent = MultiQueryRAGAgent.from_documents(documents=test_documents)
-except Exception as e:
-    pass")
-

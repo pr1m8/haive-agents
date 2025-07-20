@@ -16,7 +16,8 @@ class EntityNode(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_node(self):
+    @classmethod
+    def validate_node(cls) -> Any:
         """Validate the node properties."""
         # Ensure ID is not empty
         if not self.id or not isinstance(self.id, str):
@@ -62,7 +63,8 @@ class EntityRelationship(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_relationship(self):
+    @classmethod
+    def validate_relationship(cls) -> Any:
         """Validate the relationship properties."""
         # Ensure source and target are non-empty strings
         if not self.source or not isinstance(self.source, str):
@@ -154,7 +156,7 @@ class KnowledgeGraph(BaseModel):
 
 
 # Example usage demonstrator
-def main():
+def main() -> None:
     # Create some example nodes
     person_node = EntityNode(
         id="marie_curie",

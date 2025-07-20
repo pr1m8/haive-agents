@@ -1,5 +1,6 @@
 """Adaptive RAG with Tools Integration Agents.
 
+from typing import Any
 Implementation of adaptive RAG with tool integration and ReAct patterns.
 Includes Google Search integration, tool selection, and dynamic routing based on query needs.
 """

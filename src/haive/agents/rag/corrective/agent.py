@@ -1,5 +1,6 @@
 """Corrective RAG (CRAG) Agent.
 
+from typing import Any, Dict
 Self-correcting retrieval with quality assessment.
 Implements architecture from rag-architectures-flows.md:
 Retrieval → Relevance Check → Knowledge Refinement/Web Search/Combine
@@ -100,7 +101,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
         )
 
         # Define conditional routing based on grading
-        def grade_documents(state):
+        def grade_documents(state: Dict[str, Any]):
             """Grade documents and determine next step."""
             docs = state.get("retrieved_documents", [])
             if not docs:

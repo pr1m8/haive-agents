@@ -30,7 +30,6 @@ class QueryRefinementResponse(BaseModel):
     best_refined_query: str = Field(description="The recommended best refined query")
 
 
-
 config = AugLLMConfig(
     prompt_template=RAG_QUERY_REFINEMENT,
     structured_output_model=QueryRefinementResponse,
@@ -38,7 +37,7 @@ config = AugLLMConfig(
 )
 
 computed_fields = config._compute_input_fields()
-for field_name, field_def in computed_fields.items():
+for _field_name, field_def in computed_fields.items():
     field_type, field_info = field_def
     if hasattr(field_info, "default"):
         pass
@@ -46,20 +45,20 @@ for field_name, field_def in computed_fields.items():
         pass
 
 input_fields = config.get_input_fields()
-for field_name, field_def in input_fields.items():
+for _field_name, field_def in input_fields.items():
     field_type, field_info = field_def
     if hasattr(field_info, "default"):
         pass
     if hasattr(field_info, "default_factory"):
         pass
 
-for field_name, field_def in input_fields.items():
+for _field_name, field_def in input_fields.items():
     field_type, field_info = field_def
-    if hasattr(field_info, "default") and field_info.default is ...:
-        pass")
-    elif hasattr(field_info, "default"):
-        pass")
-    elif hasattr(field_info, "default_factory"):
-        pass")
+    if (
+        (hasattr(field_info, "default") and field_info.default is ...)
+        or hasattr(field_info, "default")
+        or hasattr(field_info, "default_factory")
+    ):
+        pass
     else:
-        pass")
+        pass

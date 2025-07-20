@@ -110,7 +110,8 @@ class SupervisorWithAgentNode(ReactAgent):
     """
 
     @model_validator(mode="after")
-    def setup_supervisor(self):
+    @classmethod
+    def setup_supervisor(cls):
         """Setup supervisor tools."""
         self._create_routing_tools()
         return self
@@ -302,4 +303,4 @@ async def demo_agent_node_pattern():
 
 if __name__ == "__main__":
     # Show the pattern
-    print("Supervisor with Agent Node pattern example")
+    pass

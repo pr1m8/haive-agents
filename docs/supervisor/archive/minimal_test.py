@@ -1,28 +1,22 @@
 """Minimal test to verify imports and basic setup."""
 
+import contextlib
 
-try:
+with contextlib.suppress(Exception):
+    pass
 
-except Exception as e:
-    pass")
 
-try:
+with contextlib.suppress(Exception):
+    pass
 
-except Exception as e:
-    pass")
 
-try:
+with contextlib.suppress(Exception):
+    pass
 
-except Exception as e:
-    pass")
 
-try:
+with contextlib.suppress(Exception):
+    pass
 
-except Exception as e:
-    pass")
 
-try:
-
-except Exception as e:
-    pass")
-
+with contextlib.suppress(Exception):
+    pass

@@ -6,7 +6,7 @@ and metadata schemas used throughout the Haive memory system.
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -51,7 +51,7 @@ class MemoryEntry(BaseModel):
 
     # Core content
     content: str = Field(..., description="Memory content")
-    memory_types: List[MemoryType] = Field(
+    memory_types: list[MemoryType] = Field(
         ..., description="Memory type classifications"
     )
     importance: MemoryImportance = Field(
@@ -79,25 +79,25 @@ class MemoryEntry(BaseModel):
     )
 
     # Contextual metadata
-    entities: List[str] = Field(
+    entities: list[str] = Field(
         default_factory=list, description="Named entities mentioned"
     )
-    relationships: List[Dict[str, str]] = Field(
+    relationships: list[dict[str, str]] = Field(
         default_factory=list, description="Entity relationships"
     )
-    topics: List[str] = Field(default_factory=list, description="Key topics/themes")
-    sentiment: Optional[float] = Field(
+    topics: list[str] = Field(default_factory=list, description="Key topics/themes")
+    sentiment: float | None = Field(
         default=None, ge=-1.0, le=1.0, description="Sentiment score (-1 to 1)"
     )
 
     # Conversational context
-    conversation_id: Optional[str] = Field(
+    conversation_id: str | None = Field(
         default=None, description="Source conversation ID"
     )
-    user_context: Dict[str, Any] = Field(
+    user_context: dict[str, Any] = Field(
         default_factory=dict, description="User-specific context"
     )
-    session_context: Dict[str, Any] = Field(
+    session_context: dict[str, Any] = Field(
         default_factory=dict, description="Session-specific context"
     )
 
@@ -113,11 +113,11 @@ class MemoryEntry(BaseModel):
     )
 
     # System metadata
-    namespace: Optional[str] = Field(
+    namespace: str | None = Field(
         default=None, description="Memory namespace for organization"
     )
-    tags: List[str] = Field(default_factory=list, description="User-defined tags")
-    metadata: Dict[str, Any] = Field(
+    tags: list[str] = Field(default_factory=list, description="User-defined tags")
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata"
     )
 
@@ -169,16 +169,16 @@ class MemoryEntry(BaseModel):
 class MemoryClassificationResult(BaseModel):
     """Result of memory classification analysis."""
 
-    memory_types: List[MemoryType] = Field(..., description="Identified memory types")
+    memory_types: list[MemoryType] = Field(..., description="Identified memory types")
     importance: MemoryImportance = Field(..., description="Assessed importance level")
     importance_score: float = Field(
         ..., ge=0.0, le=1.0, description="Numerical importance score"
     )
 
     # Extracted metadata
-    entities: List[str] = Field(default_factory=list, description="Extracted entities")
-    topics: List[str] = Field(default_factory=list, description="Identified topics")
-    sentiment: Optional[float] = Field(
+    entities: list[str] = Field(default_factory=list, description="Extracted entities")
+    topics: list[str] = Field(default_factory=list, description="Identified topics")
+    sentiment: float | None = Field(
         default=None, description="Sentiment analysis result"
     )
 
@@ -194,7 +194,7 @@ class MemoryClassificationResult(BaseModel):
 class MemoryQueryIntent(BaseModel):
     """Analysis of user query intent for memory retrieval."""
 
-    memory_types: List[MemoryType] = Field(..., description="Required memory types")
+    memory_types: list[MemoryType] = Field(..., description="Required memory types")
     complexity: str = Field(
         default="simple", description="Query complexity: simple, moderate, complex"
     )
@@ -206,13 +206,13 @@ class MemoryQueryIntent(BaseModel):
     )
 
     # Extracted query elements
-    entities: List[str] = Field(
+    entities: list[str] = Field(
         default_factory=list, description="Entities mentioned in query"
     )
-    topics: List[str] = Field(
+    topics: list[str] = Field(
         default_factory=list, description="Topics mentioned in query"
     )
-    intent_keywords: List[str] = Field(
+    intent_keywords: list[str] = Field(
         default_factory=list, description="Intent-indicating keywords"
     )
 
@@ -254,7 +254,7 @@ class MemoryConsolidationResult(BaseModel):
     processing_time: float = Field(
         default=0.0, description="Consolidation processing time in seconds"
     )
-    errors_encountered: List[str] = Field(
+    errors_encountered: list[str] = Field(
         default_factory=list, description="Any errors during consolidation"
     )
     summary: str = Field(default="", description="Human-readable consolidation summary")

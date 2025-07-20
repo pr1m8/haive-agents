@@ -101,4 +101,3 @@ def agent_tester(prompt, model, test_prompt):
 if __name__ == "__main__":
     test_prompt = "How can I improve my search queries for better results?"
     result = agent_tester(RAG_QUERY_REFINEMENT, QueryRefinementResponse, test_prompt)
-    print(result)

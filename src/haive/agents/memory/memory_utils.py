@@ -210,7 +210,7 @@ def retrieve_memories(
     # Default filter by user ID
     if filter_fn is None:
 
-        def filter_fn(doc):
+        def filter_fn(doc) -> Any:
             return doc.metadata.get("user_id") == user_id
 
     try:

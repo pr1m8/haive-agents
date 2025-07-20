@@ -2,7 +2,7 @@
 
 import os
 import sys
-from typing import Any, Dict, List
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -57,7 +57,7 @@ class MockTool:
 
 
 class MockAIMessage:
-    def __init__(self, content: str, tool_calls: list[dict[str, Any]] = None):
+    def __init__(self, content: str, tool_calls: list[dict[str, Any]] | None = None):
         self.content = content
         self.tool_calls = tool_calls or []
 
@@ -93,7 +93,6 @@ class MockState:
 
 def demonstrate_validation_integration():
     """Demonstrate how SimpleAgentWithValidation works."""
-
     # Create tools
     search_tool = MockTool("web_search")
     calculator_tool = MockTool("calculator")
@@ -103,14 +102,12 @@ def demonstrate_validation_integration():
         model="gpt-4", temperature=0.7, tools=[search_tool, calculator_tool]
     )
 
-
     # Define structured output model
     class TaskResult(BaseModel):
         completed: bool = Field(description="Whether the task was completed")
         result: str = Field(description="The result of the task")
         confidence: float = Field(description="Confidence score 0-1")
         tools_used: list[str] = Field(description="List of tools that were used")
-
 
     # Create agent configuration (mock)
     agent_config = {
@@ -122,7 +119,6 @@ def demonstrate_validation_integration():
         "track_error_tools": True,
     }
 
-
     # Show how the validation node would be configured
     route_mapping = {
         "langchain_tool": "tool_node",
@@ -132,7 +128,7 @@ def demonstrate_validation_integration():
         "unknown": "tool_node",
     }
 
-    validation_config = {
+    {
         "name": "state_validator",
         "engine_name": engine.name,
         "validation_mode": agent_config["validation_mode"],
@@ -140,7 +136,6 @@ def demonstrate_validation_integration():
         "track_error_tools": agent_config["track_error_tools"],
         "route_to_node_mapping": route_mapping,
     }
-
 
     # Show the graph structure
 
@@ -163,7 +158,7 @@ def demonstrate_validation_integration():
     )
     state.messages.append(ai_message)
 
-    for tc in ai_message.tool_calls:
+    for _tc in ai_message.tool_calls:
         pass
 
     # Simulate validation process
@@ -186,7 +181,7 @@ def demonstrate_validation_integration():
 
     if valid_tools:
         for tool_name, target in valid_tools:
-            pass)")
+            pass
 
         for tool_name, target in valid_tools:
             pass
@@ -196,25 +191,15 @@ def demonstrate_validation_integration():
     # Show validation modes
 
 
-
 def show_comparison():
     """Show comparison between old and new approach."""
-
-
 
 
 def show_usage_examples():
     """Show different usage patterns."""
 
 
-
-
-
-
-
-
 if __name__ == "__main__":
     demonstrate_validation_integration()
     show_comparison()
     show_usage_examples()
-

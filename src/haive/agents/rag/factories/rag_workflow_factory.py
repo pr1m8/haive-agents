@@ -1,5 +1,6 @@
 """RAG Workflow Factory.
 
+from typing import Any, Dict
 Generic factory for creating RAG workflows by composing callable functions
 into different agent patterns. This provides a clean, modular approach to
 building complex RAG systems.
@@ -82,7 +83,7 @@ class ConditionalCallableAgent(Agent):
             graph.add_node(action_name, action_node)
 
         # Add conditional edges from router
-        def route_condition(state) -> str:
+        def route_condition(state: Dict[str, Any]) -> str:
             next_action = getattr(state, "next_action", "complete")
             if next_action in self.action_callables:
                 return next_action
@@ -234,7 +235,7 @@ def create_adaptive_rag_agent(
     complex_rag = create_corrective_rag_agent(documents, "Complex RAG")
 
     # Adaptive router
-    def adaptive_router(state) -> str:
+    def adaptive_router(state: Dict[str, Any]) -> str:
         complexity = getattr(state, "complexity", QueryComplexity.UNKNOWN)
 
         if complexity == QueryComplexity.SIMPLE:
@@ -252,7 +253,7 @@ def create_adaptive_rag_agent(
 
     # Create conditional multi-agent
     class AdaptiveRAGAgent(ConditionalAgent):
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__(
                 name=name,
                 agents=[analyzer_agent, simple_rag, multi_query_agent, complex_rag],

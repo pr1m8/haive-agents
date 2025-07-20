@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Quick example of using SequentialAgent with imported AugLLMConfig components.
 
+from typing import Any
 This demonstrates how to easily chain together pre-configured components
 for a sequential reasoning workflow.
 """
@@ -26,7 +27,7 @@ agent = SequentialAgentConfig.from_components(
 # Print the workflow
 
 
-def run_example():
+def run_example() -> Any:
     # Define a task
     task = "Design an algorithm to detect fraudulent credit card transactions"
 

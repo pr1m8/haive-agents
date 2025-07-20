@@ -1,5 +1,6 @@
 """Haive Supervisor Agent - ReactAgent with Dynamic Routing and Agent Registry.
 
+from typing import Any, Dict
 ReactAgent-based supervisor with:
 1. Agent registry with add_agent tool
 2. Dynamic routing tool that creates base model with agents in state
@@ -134,7 +135,7 @@ class SupervisorAgent(ReactAgent):
             graph.add_node("tool_node", tool_node)
 
             # Add conditional edges for tool routing
-            def should_continue(state):
+            def should_continue(state: Dict[str, Any]):
                 last_message = (
                     getattr(state, "messages", [])[-1]
                     if hasattr(state, "messages") and state.messages
@@ -272,7 +273,7 @@ If no suitable agent exists, use add_agent to create one first.
         """Get list of worker agent names."""
         return list(self._agent_registry.keys())
 
-    def create_generic_agent_execution_node(self):
+    def create_generic_agent_execution_node(self) -> Any:
         """Create generic agent execution node that takes routing output and runs selected agent."""
 
         async def generic_agent_node(state, config=None):
@@ -344,7 +345,7 @@ If no suitable agent exists, use add_agent to create one first.
         # Fallback to basic state
         return type("AgentState", (), {"messages": messages})()
 
-    def print_supervisor_status(self):
+    def print_supervisor_status(self) -> None:
         """Print supervisor status."""
         panel_content = f"""
 [bold]Supervisor:[/bold] {self.name} (ReactAgent)

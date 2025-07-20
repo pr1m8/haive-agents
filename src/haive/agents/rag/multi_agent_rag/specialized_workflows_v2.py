@@ -102,7 +102,7 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
                 inputs[key] = value
         return await super().ainvoke(inputs)
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this workflow."""
         return  # Use default graph structure
 
@@ -195,7 +195,7 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
                 inputs[key] = value
         return await super().ainvoke(inputs)
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this workflow."""
         return  # Use default graph structure
 
@@ -307,7 +307,7 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
 
         return await super().ainvoke(inputs)
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this workflow."""
         return  # Use default graph structure
 
@@ -400,6 +400,6 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
                 inputs[key] = value
         return await super().ainvoke(inputs)
 
-    def build_custom_graph(self):
+    def build_custom_graph(self) -> Any:
         """Build the custom graph for this workflow."""
         return  # Use default graph structure

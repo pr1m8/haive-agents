@@ -9,9 +9,13 @@ from langgraph.types import Command, Send
 from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.config import ParallelKGAgentConfig
 from haive.agents.document_modifiers.kg.kg_map_merge.engines import (
+    Any,
+    from,
+    import,
     kg_extraction_engine,
     merge_analysis_engine,
     schema_extraction_engine,
+    typing,
 )
 from haive.agents.document_modifiers.kg.kg_map_merge.state import ParallelKGState
 
@@ -561,7 +565,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             )
         return Command(update={"merged_graph": None})
 
-    def setup_workflow(self):
+    def setup_workflow(self) -> None:
         """Set up the workflow for the structured knowledge graph agent."""
         # Add nodes to the graph
         self.graph.add_node("extract_schema", self.extract_schema)

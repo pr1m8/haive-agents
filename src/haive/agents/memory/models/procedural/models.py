@@ -45,7 +45,8 @@ class ReflectionCycle(BaseModel):
     confidence_score: float = Field(default=0.5, ge=0.0, le=1.0)
 
     @model_validator(mode="after")
-    def validate_reflection_logic(self) -> "ReflectionCycle":
+    @classmethod
+    def validate_reflection_logic(cls) -> "ReflectionCycle":
         """Validate reflection cycle logic."""
         if len(self.proposed_changes) > 10:
             raise ValueError("Too many proposed changes in one cycle (max 10)")
@@ -110,7 +111,8 @@ class ProceduralMemory(BaseMemoryModel, TemporalMixin):
         return v
 
     @model_validator(mode="after")
-    def validate_procedural_integrity(self) -> "ProceduralMemory":
+    @classmethod
+    def validate_procedural_integrity(cls) -> "ProceduralMemory":
         """Validate overall procedural memory integrity."""
         # Update overall effectiveness based on components
         if self.core_instructions:

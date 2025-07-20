@@ -72,16 +72,8 @@ def test_persistence_true_uses_defaults():
 
 
 if __name__ == "__main__":
-    print("Testing persistence disabled...")
     test_persistence_explicitly_disabled()
-    print("✓ Persistence can be explicitly disabled")
 
-    print("\nTesting default persistence...")
     test_persistence_default_is_memory()
-    print("✓ Default persistence uses memory")
 
-    print("\nTesting persistence=True...")
     test_persistence_true_uses_defaults()
-    print("✓ persistence=True uses defaults")
-
-    print("\nAll tests passed!")
