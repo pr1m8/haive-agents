@@ -9,8 +9,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.persistence.serializers import (
     SecureSecretStrSerializer,
     create_encrypted_serializer_for_postgres,
-    create_production_serializer,
-)
+    create_production_serializer)
 from pydantic import SecretStr
 from pydantic_core import PydanticUndefined
 
@@ -115,8 +114,7 @@ class TestPostgreSQLSecurity:
         # Create agent
         agent = SimpleAgentV2(
             name="security_test_agent",
-            engine=AugLLMConfig(temperature=0.1),
-        )
+            engine=AugLLMConfig(temperature=0.1))
 
         # Mock the serializer to use our secure one
         from haive.core.persistence.serializers import SecureSecretStrSerializer

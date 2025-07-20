@@ -9,16 +9,11 @@ from haive.agents.planning.plan_and_execute.v2.models import (
     ExecutionResult,
     Plan,
     Response,
-    Step,
-    from,
-    import,
-    typing,
-)
+    Step)
 from haive.agents.planning.plan_and_execute.v2.prompts import (
     EXECUTOR_PROMPT,
     PLANNER_PROMPT,
-    REPLANNER_PROMPT,
-)
+    REPLANNER_PROMPT)
 from haive.agents.planning.plan_and_execute.v2.state import PlanAndExecuteState
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
@@ -42,9 +37,7 @@ class PlanAndExecuteAgent(ProperMultiAgent):
                 prompt_template=PLANNER_PROMPT,
                 structured_output_model=Plan,
                 structured_output_version="v2",
-                temperature=0.7,
-            ),
-        )
+                temperature=0.7))
 
         # Create executor agent (ReactAgent with tools)
         executor_agent = ReactAgent(
@@ -54,10 +47,8 @@ class PlanAndExecuteAgent(ProperMultiAgent):
                 prompt_template=EXECUTOR_PROMPT,
                 structured_output_model=ExecutionResult,
                 structured_output_version="v2",
-                temperature=0.3,
-            ),
-            tools=tools or [],
-        )
+                temperature=0.3),
+            tools=tools or [])
 
         # Create replanner agent
         replanner_agent = SimpleAgent(
@@ -67,9 +58,7 @@ class PlanAndExecuteAgent(ProperMultiAgent):
                 prompt_template=REPLANNER_PROMPT,
                 structured_output_model=Act,
                 structured_output_version="v2",
-                temperature=0.5,
-            ),
-        )
+                temperature=0.5))
 
         # Create sequential multi-agent
         name = kwargs.pop("name", "Plan and Execute Agent")

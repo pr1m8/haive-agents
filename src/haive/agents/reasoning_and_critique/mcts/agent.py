@@ -11,11 +11,7 @@ from langchain_core.output_parsers.openai_tools import (
     Dict,
     JsonOutputToolsParser,
     List,
-    PydanticToolsParser,
-    from,
-    import,
-    typing,
-)
+    PydanticToolsParser)
 from langchain_core.runnables import RunnableConfig
 from langchain_core.runnables import chain as as_runnable
 from langgraph.graph import END
@@ -67,8 +63,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
         gb.add_conditional_edges(
             "generate_initial_response",
             self._should_continue,
-            {"end": END, "expand": "expand"},
-        )
+            {"end": END, "expand": "expand"})
 
         gb.add_conditional_edges(
             "expand", self._should_continue, {"end": END, "expand": "expand"}
@@ -123,8 +118,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
                 n=n,
                 callbacks=config["callbacks"],
                 run_name="GenerateCandidates",
-                **bound_kwargs,
-            )
+                **bound_kwargs)
             return [gen.message for gen in chat_result.generations[0]]
 
         self.expansion_chain = (
@@ -157,8 +151,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
                                         "args": r["args"],
                                         "id": r["id"],
                                     }
-                                ],
-                            )
+                                ])
                         ]
                     }
                 )
@@ -176,8 +169,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
             node_data = TreeNode(
                 messages=state.nodes.serialize_messages(output_messages),
                 reflection=reflection.model_dump(),
-                is_solved=reflection.found_solution,
-            )
+                is_solved=reflection.found_solution)
 
             # Update nodes store
             updated_nodes = state.nodes
@@ -266,8 +258,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
                                         "args": tool_call["args"],
                                         "id": tool_call["id"],
                                     }
-                                ],
-                            )
+                                ])
                         ]
                     }
                 )
@@ -302,8 +293,7 @@ class MCTSAgent(Agent[MCTSAgentConfig]):
                     reflection=reflection.model_dump(),
                     parent_id=best_node_id,
                     depth=best_node.depth + 1,
-                    is_solved=reflection.found_solution,
-                )
+                    is_solved=reflection.found_solution)
 
                 # Add to nodes store
                 updated_nodes.add_node(node_data)

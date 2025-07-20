@@ -10,8 +10,7 @@ from tests.archive_test_generic_meta_agent import (
     test_meta_agent_with_react,
     test_meta_agent_with_simple,
     test_nested_meta_agents,
-    test_recompilation_tracking,
-)
+    test_recompilation_tracking)
 from tests.archive_test_simple_meta_agent import main
 from tests.chain_test import (
     AcademicAnalysis,
@@ -30,8 +29,7 @@ from tests.chain_test import (
     init_node,
     router_node,
     setup_workflow,
-    summary_node,
-)
+    summary_node)
 from tests.conftest import (
     MockEngine,
     MockInvokableEngine,
@@ -47,8 +45,7 @@ from tests.conftest import (
     real_embeddings_engine,
     real_llm_engine,
     real_retriever_engine,
-    real_vectorstore_engine,
-)
+    real_vectorstore_engine)
 from tests.debug_engine_node_schema import TestModel, debug_engine_node_schema
 from tests.test_agent_concepts import (
     AnalyzerInput,
@@ -74,8 +71,7 @@ from tests.test_agent_concepts import (
     test_multi_agent_validation,
     test_schema_compatibility,
     test_simple_agent_schema_modification,
-    validate_mode,
-)
+    validate_mode)
 from tests.test_agent_config_integration import (
     TestAgentConfigIntegration,
     build_graph,
@@ -86,8 +82,7 @@ from tests.test_agent_config_integration import (
     test_agent_field_overrides,
     test_agent_persistence_config_consistency,
     test_agent_serialization_with_config,
-    test_agent_uses_provided_agent_config,
-)
+    test_agent_uses_provided_agent_config)
 from tests.test_agent_config_refactor import (
     TestAgent,
     build_graph,
@@ -97,8 +92,7 @@ from tests.test_agent_config_refactor import (
     test_agent_not_inheriting_from_config,
     test_agent_with_custom_config,
     test_agent_with_default_config,
-    test_agent_with_supabase_config,
-)
+    test_agent_with_supabase_config)
 from tests.test_agent_fix import Plan, add, test_multi_agent_serialization
 from tests.test_agent_integration import (
     AnalysisResult,
@@ -112,8 +106,7 @@ from tests.test_agent_integration import (
     test_multi_agent_schema_composition,
     test_multi_agent_with_model_post_init,
     test_react_agent_looping,
-    test_simple_agent_with_tools,
-)
+    test_simple_agent_with_tools)
 from tests.test_agent_schema_compatibility import (
     AnalysisSchema,
     InputSchema,
@@ -146,8 +139,7 @@ from tests.test_agent_schema_compatibility import (
     test_separation_strategy_smart,
     test_sequential_agent_schema_compatibility,
     test_shared_fields_detection,
-    test_tool_state_compatibility,
-)
+    test_tool_state_compatibility)
 from tests.test_agent_serialization import (
     Plan,
     add,
@@ -160,8 +152,7 @@ from tests.test_agent_serialization import (
     test_state_with_agents_serialization,
     try_json_serialization,
     try_model_dump,
-    try_pickle_serialization,
-)
+    try_pickle_serialization)
 from tests.test_agent_supabase_integration import (
     SupabaseEnabledAgent,
     TestAgentSupabaseIntegration,
@@ -179,8 +170,7 @@ from tests.test_agent_supabase_integration import (
     test_agent_with_store_integration,
     test_agent_with_supabase_persistence,
     test_multiple_agents_same_database,
-    test_node,
-)
+    test_node)
 from tests.test_agent_types_and_schema_sync import (
     Agent1Schema,
     Agent2Schema,
@@ -214,20 +204,17 @@ from tests.test_agent_types_and_schema_sync import (
     test_rag_agent_detection,
     test_retriever_to_llm_adaptation,
     test_schema_composition_with_conflicts,
-    test_simple_to_rag_adaptation,
-)
+    test_simple_to_rag_adaptation)
 from tests.test_basic import (
     QueryRefinementResponse,
     QueryRefinementSuggestion,
     agent_test,
-    agent_tester,
-)
+    agent_tester)
 from tests.test_clean_multi_agent_sequential import (
     AnalysisResult,
     FormattedReport,
     calculator,
-    word_counter,
-)
+    word_counter)
 from tests.test_comprehensive_agents import (
     AnalysisResult,
     MockOutputSchema,
@@ -253,8 +240,7 @@ from tests.test_comprehensive_agents import (
     test_schema_modification,
     test_sequential_rag_agent,
     test_simple_agent_execution,
-    test_tool_node_detection,
-)
+    test_tool_node_detection)
 from tests.test_direct_rag_import import (
     test_agentic_graph_rag_agent,
     test_all_advanced_agents,
@@ -265,8 +251,7 @@ from tests.test_direct_rag_import import (
     test_rag_fusion_agent,
     test_self_rag_agent,
     test_speculative_rag_agent,
-    test_step_back_rag_agent,
-)
+    test_step_back_rag_agent)
 from tests.test_document_processing_agent import (
     TestDocumentProcessingAgent,
     advanced_config,
@@ -276,8 +261,7 @@ from tests.test_document_processing_agent import (
     test_agent_creation_advanced,
     test_agent_creation_basic,
     test_config_validation,
-    test_state_initialization,
-)
+    test_state_initialization)
 from tests.test_dynamic_activation_agents import (
     TestComponentDiscoveryAgent,
     TestDynamicActivationIntegration,
@@ -306,8 +290,7 @@ from tests.test_dynamic_activation_agents import (
     test_text_processor,
     test_tool,
     test_tool_func,
-    text_tool,
-)
+    text_tool)
 from tests.test_dynamic_agent_discovery_supervisor import (
     TestDynamicAgentDiscoverySupervisor,
     agent_specs,
@@ -321,8 +304,7 @@ from tests.test_dynamic_agent_discovery_supervisor import (
     test_factory_with_discovery_sources,
     test_max_discovery_attempts,
     test_register_discovered_agent,
-    test_supervisor_creation,
-)
+    test_supervisor_creation)
 from tests.test_dynamic_react_agent import (
     TestDynamicReactAgent,
     calculator,
@@ -337,14 +319,12 @@ from tests.test_dynamic_react_agent import (
     test_tool_inference_and_categorization,
     test_tool_management_methods,
     text_processor,
-    word_counter,
-)
+    word_counter)
 from tests.test_dynamic_supervisor import (
     TestDynamicSupervisorAgent,
     mock_engine,
     supervisor,
-    test_agent,
-)
+    test_agent)
 from tests.test_dynamic_tool_discovery_supervisor import (
     TestDynamicToolDiscoverySupervisor,
     base_config,
@@ -359,8 +339,7 @@ from tests.test_dynamic_tool_discovery_supervisor import (
     test_supervisor_with_initial_tools,
     test_tool,
     test_tool_registration_to_agents,
-    word_counter,
-)
+    word_counter)
 from tests.test_enhanced_rag_workflows import (
     TestCorrectiveRAGAgent,
     TestDocumentGradingAgent,
@@ -385,8 +364,7 @@ from tests.test_enhanced_rag_workflows import (
     test_rag_state_basic,
     test_requery_logic,
     test_self_rag_agent_creation,
-    test_self_rag_workflow,
-)
+    test_self_rag_workflow)
 from tests.test_fixed_agent import test_self_discovery_agent
 from tests.test_isolated_agent_analysis import (
     TestAnalysis,
@@ -396,8 +374,7 @@ from tests.test_isolated_agent_analysis import (
     test_react_agent_with_structured_output_schema,
     test_simple_agent_isolated_execution,
     test_simple_agent_state_schema_inspection,
-    test_simple_agent_with_structured_output_schema,
-)
+    test_simple_agent_with_structured_output_schema)
 from tests.test_kg_generator_agent import (
     TestKGGeneratorAgent,
     TestKnowledgeGraphStructures,
@@ -412,8 +389,7 @@ from tests.test_kg_generator_agent import (
     test_knowledge_graph_node_creation,
     test_knowledge_graph_relationship_creation,
     test_memory_knowledge_graph_operations,
-    test_relationship_id_generation,
-)
+    test_relationship_id_generation)
 from tests.test_meta_agent_graph_recompilation import (
     GraphFocusedMetaState,
     GraphRecompilableSimpleAgent,
@@ -437,8 +413,7 @@ from tests.test_meta_agent_graph_recompilation import (
     test_graph_recompilation_with_custom_nodes,
     test_meta_state_graph_composition,
     test_output_parser_recompilation,
-    validation_node,
-)
+    validation_node)
 from tests.test_meta_agent_integration import (
     MetaCapableAgent,
     MetaCapableAgentState,
@@ -453,8 +428,7 @@ from tests.test_meta_agent_integration import (
     test_meta_state_with_simple_agent,
     test_react_agent_with_meta_state,
     test_simple_meta_agent,
-    with_meta_agent,
-)
+    with_meta_agent)
 from tests.test_meta_state_with_agents import (
     BatchUpdateAgent,
     DynamicToolAgent,
@@ -484,8 +458,7 @@ from tests.test_meta_state_with_agents import (
     test_postgres_config_serializer_integration,
     test_recompilation_history_tracking,
     test_serialization_with_embedded_agents,
-    test_state_isolation_between_meta_states,
-)
+    test_state_isolation_between_meta_states)
 from tests.test_multi_agent import (
     Plan,
     add,
@@ -495,8 +468,7 @@ from tests.test_multi_agent import (
     test_multi_agent_conditional,
     test_multi_agent_factory,
     test_multi_agent_sequential,
-    zigzag_selector,
-)
+    zigzag_selector)
 from tests.test_multi_agent_complete import (
     ComponentAgent,
     ComponentSetupAgent,
@@ -518,14 +490,12 @@ from tests.test_multi_agent_complete import (
     test_rag_agent_with_schema,
     validate_components,
     validate_engines,
-    validator,
-)
+    validator)
 from tests.test_multi_agent_example import (
     Plan,
     add,
     test_user_example,
-    test_user_example_factory,
-)
+    test_user_example_factory)
 from tests.test_multi_agent_incremental import MathProblem, calculator
 from tests.test_multi_agent_memory_system import (
     TestMemoryAgentCapabilities,
@@ -542,8 +512,7 @@ from tests.test_multi_agent_memory_system import (
     test_get_system_status,
     test_memory_task_creation,
     test_memory_task_with_namespace,
-    test_performance_metrics_update,
-)
+    test_performance_metrics_update)
 from tests.test_multi_agent_proper import (
     TestProperMultiAgent,
     simple_agents,
@@ -557,16 +526,14 @@ from tests.test_multi_agent_proper import (
     test_multi_agent_creation_with_list,
     test_multi_agent_creation_with_single_agent,
     test_schema_composition_with_engines,
-    test_state_schema_composition,
-)
+    test_state_schema_composition)
 from tests.test_multi_agent_rebuild import (
     AnalysisResult,
     FormattedReport,
     RebuildMultiAgent,
     build_graph,
     calculator,
-    setup_agent,
-)
+    setup_agent)
 from tests.test_multi_agent_simple import (
     TestProperMultiAgent,
     test_agent_dict_passthrough,
@@ -577,30 +544,25 @@ from tests.test_multi_agent_simple import (
     test_invalid_execution_mode,
     test_sequential_execution_mode,
     test_single_agent_normalization,
-    test_state_schema_setup,
-)
+    test_state_schema_setup)
 from tests.test_multi_agent_type_safety import ReactPlannerState, SimpleFormatterState
 from tests.test_new_rag_workflows import (
     TestBasicRAGWorkflows,
     test_import_advanced_workflows,
     test_import_workflows,
-    test_state_schemas,
-)
+    test_state_schemas)
 from tests.test_persistence_disabled import (
     test_persistence_default_is_memory,
     test_persistence_explicitly_disabled,
-    test_persistence_true_uses_defaults,
-)
+    test_persistence_true_uses_defaults)
 from tests.test_plan_and_execute_v2 import (
     test_plan_and_execute_agent_creation,
     test_plan_and_execute_agent_methods,
-    test_plan_and_execute_agent_state_schema,
-)
+    test_plan_and_execute_agent_state_schema)
 from tests.test_postgres_persistence_works import (
     test_explicit_postgres_config,
     test_postgres_available_check,
-    test_postgres_persistence_with_true,
-)
+    test_postgres_persistence_with_true)
 from tests.test_postgres_simple import test_postgres_setup_works
 from tests.test_proper_recompilation_fixed import (
     MetaAgentWithRecompilation,
@@ -624,8 +586,7 @@ from tests.test_proper_recompilation_fixed import (
     test_recompilable_agent,
     test_validation_node_recompilation,
     update_tool_routes,
-    update_validation_rules,
-)
+    update_validation_rules)
 from tests.test_proper_recompilation_system import (
     MetaAgentWithRecompilation,
     RecompilableBaseGraph,
@@ -654,8 +615,7 @@ from tests.test_proper_recompilation_system import (
     test_recompilable_agent,
     test_validation_node_recompilation,
     unregister_change_callback,
-    update_tool_routes,
-)
+    update_tool_routes)
 from tests.test_rag_comprehensive import (
     TestAgendicRouterChain,
     TestBranchedRAG,
@@ -699,8 +659,7 @@ from tests.test_rag_comprehensive import (
     test_simple_rag_chain,
     test_simple_router_chain_creation,
     test_speculative_rag_chain,
-    test_step_back_rag_chain,
-)
+    test_step_back_rag_chain)
 from tests.test_rag_real_execution import (
     TestRealRAGExecution,
     run_real_rag_tests,
@@ -715,27 +674,23 @@ from tests.test_rag_real_execution import (
     test_rag_io_schemas,
     test_rag_performance_characteristics,
     test_rag_state_handling,
-    test_unified_factory_creation,
-)
+    test_unified_factory_creation)
 from tests.test_react_agent import (
     calculate,
     get_current_date,
     run_test_cases,
     search_web,
-    translate_text,
-)
+    translate_text)
 from tests.test_react_base import add
 from tests.test_self_discover_debug import (
     main,
     test_basic_imports,
     test_engine_creation,
-    test_simple_agent_creation,
-)
+    test_simple_agent_creation)
 from tests.test_sequential_agents import (
     create_multiple_simple_agents,
     main,
-    test_sequential_agent,
-)
+    test_sequential_agent)
 from tests.test_simple_agent import (
     SimpleTestAgent,
     build_graph,
@@ -744,8 +699,7 @@ from tests.test_simple_agent import (
     test_base_agent_is_serializable,
     test_base_agent_is_simple,
     test_base_agent_respects_explicit_persistence,
-    test_base_agent_sets_up_default_persistence,
-)
+    test_base_agent_sets_up_default_persistence)
 from tests.test_simple_working import (
     BaseState,
     Component,
@@ -757,14 +711,13 @@ from tests.test_simple_working import (
     add_node,
     model_post_init,
     router,
-    sync_from,
+    sync_
     test_conditional_edges_concept,
     test_conditional_routing_concept,
     test_field_sync_concept,
     test_model_post_init_pattern,
     test_multi_agent_coordination,
-    test_schema_composition_concept,
-)
+    test_schema_composition_concept)
 from tests.test_structured_output_enhancement import (
     CustomModel,
     TestEnhancedHyDEAgent,
@@ -781,8 +734,7 @@ from tests.test_structured_output_enhancement import (
     test_llm_config,
     test_pattern_comparison_demo,
     test_rag_enhancement_factory,
-    test_structured_output_enhancer_creation,
-)
+    test_structured_output_enhancer_creation)
 from tests.test_structured_output_with_react import (
     CalculationResult,
     ResearchResult,
@@ -796,8 +748,7 @@ from tests.test_structured_output_with_react import (
     test_react_calculation_with_structured_output,
     test_react_research_with_structured_output,
     test_sequential_execution_pattern,
-    test_state_schema_integration,
-)
+    test_state_schema_integration)
 from tests.test_supabase_env_config import (
     TestSupabaseAgent,
     build_graph,
@@ -806,16 +757,14 @@ from tests.test_supabase_env_config import (
     test_env_variables_loaded,
     test_parse_supabase_connection_string,
     test_supabase_direct_postgres_from_env,
-    test_supabase_rest_api_from_env,
-)
+    test_supabase_rest_api_from_env)
 from tests.test_supervisor_state import (
     test_execution_tracking,
     test_iteration_limits,
     test_message_integration,
     test_reset_functionality,
     test_supervisor_state_initialization,
-    test_supervisor_state_with_registry,
-)
+    test_supervisor_state_with_registry)
 from tests.test_websocket_schema import (
     TestSimpleAgentSchema,
     create_weather_tool,
@@ -823,8 +772,7 @@ from tests.test_websocket_schema import (
     test_minimal_input_works_with_tools,
     test_schema_field_details,
     test_simple_agent_with_tools,
-    test_simple_agent_without_tools,
-)
+    test_simple_agent_without_tools)
 from tests.test_working_integration import (
     AgentState,
     ConfiguredModel,
@@ -841,8 +789,7 @@ from tests.test_working_integration import (
     test_model_post_init_pattern,
     test_multi_agent_concepts,
     test_schema_composition_concepts,
-    validator,
-)
+    validator)
 
 __all__ = [
     "AcademicAnalysis",

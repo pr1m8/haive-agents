@@ -38,8 +38,7 @@ from haive.agents.base.serialization_mixin import SerializationMixin
 logging.basicConfig(
     level=logging.INFO,
     format="%(message)s",
-    handlers=[RichHandler(rich_tracebacks=True)],
-)
+    handlers=[RichHandler(rich_tracebacks=True)])
 logger = logging.getLogger(__name__)
 
 # Console for visualization only
@@ -53,8 +52,7 @@ class Agent(
     PersistenceMixin,
     SerializationMixin,
     StructuredOutputMixin,
-    ABC,
-):
+    ABC):
     """Abstract base agent class that extends InvokableEngine with execution and state management.
 
     This class provides the foundation for all agent implementations in the Haive framework,
@@ -116,8 +114,7 @@ class Agent(
     # Core identification
     name: str = Field(
         default="Agent",
-        description="Name of the agent - auto-generated from class name if not provided",
-    )
+        description="Name of the agent - auto-generated from class name if not provided")
 
     # Engine management
     engines: dict[str, Engine] = Field(
@@ -132,8 +129,7 @@ class Agent(
     graph: BaseGraph | None = Field(
         default=None,
         exclude=True,
-        description="The workflow graph (excluded from serialization)",
-    )
+        description="The workflow graph (excluded from serialization)")
 
     # Schema definitions
     state_schema: type[StateSchema] | type[BaseModel] | dict[str, Any] | None = Field(
@@ -141,8 +137,7 @@ class Agent(
     )
     use_prebuilt_base: bool = Field(
         default=False,
-        description="Whether to use the state_schema as a base for composition",
-    )
+        description="Whether to use the state_schema as a base for composition")
     input_schema: type[BaseModel] | dict[str, Any] | None = Field(
         default=None, exclude=True, description="Schema for agent input"
     )
@@ -157,19 +152,16 @@ class Agent(
     checkpointer: Any = Field(
         default=None,
         exclude=True,
-        description="Persistence checkpointer (excluded from serialization)",
-    )
+        description="Persistence checkpointer (excluded from serialization)")
     store: Any | None = Field(
         default=None,
         exclude=True,
-        description="Optional state store (excluded from serialization)",
-    )
+        description="Optional state store (excluded from serialization)")
 
     # Persistence Configuration - these fields ARE serializable
     persistence: Any | None = Field(
         default=True,
-        description="Persistence configuration for state checkpointing (defaults to PostgreSQL/Supabase if available)",
-    )
+        description="Persistence configuration for state checkpointing (defaults to PostgreSQL/Supabase if available)")
 
     checkpoint_mode: Literal["sync", "async"] = Field(
         default="sync", description="Checkpoint mode for persistence"
@@ -177,8 +169,7 @@ class Agent(
 
     add_store: bool = Field(
         default=True,
-        description="Whether to add a state store for cross-thread persistence",
-    )
+        description="Whether to add a state store for cross-thread persistence")
 
     # Runtime configuration
     runnable_config: RunnableConfig | None = Field(
@@ -449,15 +440,13 @@ class Agent(
                 logger.debug(f"Creating schema from {len(agent_list)} sub-agents")
                 try:
                     from haive.core.schema.agent_schema_composer import (
-                        AgentSchemaComposer,
-                    )
+                        AgentSchemaComposer)
 
                     self.state_schema = AgentSchemaComposer.from_agents(
                         agents=agent_list,
                         name=f"{self.__class__.__name__}State",
                         include_meta=True,
-                        separation="smart",
-                    )
+                        separation="smart")
                 except ImportError:
                     logger.warning(
                         "AgentSchemaComposer not available, using regular composer"
@@ -549,8 +538,7 @@ class Agent(
 
                 self.input_schema = create_model(
                     f"{self.name}Input",
-                    messages=(list[BaseMessage], Field(default_factory=list)),
-                )
+                    messages=(list[BaseMessage], Field(default_factory=list)))
                 logger.debug("Using default messages-based input schema")
 
         # Derive output schema if not provided
@@ -599,8 +587,7 @@ class Agent(
                         # For v2, we need to create a schema that includes the parsed output field
                         # Use proper field naming utilities
                         from haive.core.schema.field_utils import (
-                            get_field_info_from_model,
-                        )
+                            get_field_info_from_model)
 
                         field_info = get_field_info_from_model(structured_output)
                         field_name = field_info["field_name"]
@@ -613,10 +600,8 @@ class Agent(
                                     structured_output,
                                     Field(
                                         description=f"Parsed {structured_output.__name__}"
-                                    ),
-                                )
-                            },
-                        )
+                                    ))
+                            })
                         logger.debug(
                             f"Created output schema with structured field '{field_name}': {self.output_schema.__name__}"
                         )
@@ -637,8 +622,7 @@ class Agent(
                         if output_field_name in fields:
                             self.output_schema = create_model(
                                 f"{self.name}Output",
-                                **{output_field_name: fields[output_field_name]},
-                            )
+                                **{output_field_name: fields[output_field_name]})
                             logger.debug(
                                 f"Created output schema with field '{output_field_name}'"
                             )
@@ -700,9 +684,7 @@ class Agent(
                                     f"{self.name}Output",
                                     messages=(
                                         list[BaseMessage],
-                                        Field(default_factory=list),
-                                    ),
-                                )
+                                        Field(default_factory=list)))
                                 logger.debug(
                                     "Using messages output schema to avoid exposing full state"
                                 )
@@ -736,8 +718,7 @@ class Agent(
 
                 self.output_schema = create_model(
                     f"{self.name}Output",
-                    messages=(list[BaseMessage], Field(default_factory=list)),
-                )
+                    messages=(list[BaseMessage], Field(default_factory=list)))
                 logger.debug("Using default messages-based output schema")
 
     def _create_basic_message_state(self) -> None:
@@ -1297,8 +1278,7 @@ class Agent(
         self,
         tool: Any,
         route: str | None = None,
-        target_engine: str | None = None,
-    ) -> None:
+        target_engine: str | None = None) -> None:
         """Add a tool to the agent's state schema if it supports tools.
 
         Args:
@@ -1494,8 +1474,7 @@ class Agent(
         )
         table.add_row(
             "  Supports Routing",
-            "✅" if info["state_schema"]["supports_routing"] else "❌",
-        )
+            "✅" if info["state_schema"]["supports_routing"] else "❌")
         table.add_row("  Tools Count", str(info["state_schema"]["tools_count"]))
 
         # Add input/output schema info

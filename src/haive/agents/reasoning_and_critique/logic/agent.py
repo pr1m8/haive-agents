@@ -16,17 +16,12 @@ from haive.agents.reasoning_and_critique.logic.engines import (
     create_logical_reasoner,
     create_premise_extractor,
     create_synthesis_agent,
-    create_uncertainty_analyzer,
-    from,
-    import,
-    typing,
-)
+    create_uncertainty_analyzer)
 from haive.agents.reasoning_and_critique.logic.models import (
     Evidence,
     ReasoningAnalysis,
     ReasoningChain,
-    ReasoningReport,
-)
+    ReasoningReport)
 
 
 # Define the actual state we want
@@ -106,8 +101,7 @@ class ReasoningSystem(Agent):
         graph.add_conditional_edges(
             "primary_reasoning",
             should_explore_alternatives,
-            {True: "alternative_reasoning", False: "analyze_biases"},
-        )
+            {True: "alternative_reasoning", False: "analyze_biases"})
 
         graph.add_edge("alternative_reasoning", "analyze_biases")
         graph.add_edge("analyze_biases", "analyze_uncertainty")

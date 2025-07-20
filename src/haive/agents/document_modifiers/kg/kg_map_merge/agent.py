@@ -12,18 +12,13 @@ from pydantic import BaseModel, Field
 from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.engines import (
     Dict,
-    create_parallel_kg_transformer_configs,
-    from,
-    import,
-    typing,
-)
+    create_parallel_kg_transformer_configs)
 
 # Import models and engines
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
-    KnowledgeGraph,
-)
+    KnowledgeGraph)
 from haive.agents.document_modifiers.kg.kg_map_merge.state import KnowledgeGraphState
 
 logger = logging.getLogger(__name__)
@@ -36,12 +31,10 @@ class ParallelKGTransformerConfig(AgentConfig):
     contents: list[Document]
     state_schema: KnowledgeGraphState = Field(
         default=KnowledgeGraphState,
-        description="The state of the knowledge graph transformer.",
-    )
+        description="The state of the knowledge graph transformer.")
     engines: dict[str, AugLLMConfig] = Field(
         default_factory=create_parallel_kg_transformer_configs,
-        description="Configurations for different stages of graph transformation",
-    )
+        description="Configurations for different stages of graph transformation")
     checkpoint_mode: str = Field(
         default="async", description="The checkpoint mode for the iterative summarizer."
     )
@@ -89,16 +82,14 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         self.graph.add_conditional_edges(
             "map_nodes",
             lambda state: "collect_nodes",
-            {"collect_nodes": "collect_nodes"},
-        )
+            {"collect_nodes": "collect_nodes"})
 
         self.graph.add_edge("collect_nodes", "map_relationships")
 
         self.graph.add_conditional_edges(
             "map_relationships",
             lambda state: "collect_relationships",
-            {"collect_relationships": "collect_relationships"},
-        )
+            {"collect_relationships": "collect_relationships"})
 
         self.graph.add_edge("collect_relationships", "merge_graphs")
         self.graph.add_edge("merge_graphs", END)
@@ -131,8 +122,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         graph_docs = await self.llm_graph_transformer.atransform_documents(
             documents=[context],
             strict_mode=True,
-            ignore_tool_usage=True,
-        )
+            ignore_tool_usage=True)
 
         return {"graph_documents": graph_docs}
 
@@ -146,8 +136,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             "sends": [
                 Send(
                     "collect_nodes",
-                    {"content": state.contents[state.index], "index": state.index},
-                )
+                    {"content": state.contents[state.index], "index": state.index})
             ],
             "index": state.index,
         }
@@ -156,8 +145,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         self,
         state: KnowledgeGraphState,
         content: Document | dict | BaseModel | None = None,
-        index: int | None = None,
-    ):
+        index: int | None = None):
         try:
             if isinstance(content, Document):
                 context = content.page_content
@@ -200,8 +188,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
                         "content": state.contents[state.index],
                         "index": state.index,
                         "context_type": "document",
-                    },
-                )
+                    })
             )
 
         # Process nodes
@@ -209,8 +196,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             sends.append(
                 Send(
                     "collect_relationships",
-                    {"nodes": state.nodes, "context_type": "nodes"},
-                )
+                    {"nodes": state.nodes, "context_type": "nodes"})
             )
 
         return {"sends": sends, "index": state.index}
@@ -221,8 +207,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         content: Document | dict | BaseModel | None = None,
         nodes: list[EntityNode] | None = None,
         index: int | None = None,
-        context_type: str = "document",
-    ):
+        context_type: str = "document"):
         try:
             if context_type == "document":
                 if isinstance(content, Document):
@@ -298,8 +283,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
                             source=rel.source.id,
                             target=rel.target.id,
                             type=rel.type,
-                            confidence_score=getattr(rel, "confidence_score", None),
-                        )
+                            confidence_score=getattr(rel, "confidence_score", None))
                     )
 
             # Prepare context for graph merger
@@ -382,8 +366,7 @@ async def main():
             "index": 0,
         },
         config=agent.runnable_config,
-        debug=True,
-    )
+        debug=True)
 
     # Print final knowledge graph
     final_graph = result.get("final_knowledge_graph")
