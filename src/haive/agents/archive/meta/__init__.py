@@ -1,6 +1,6 @@
 """Module exports."""
 
-from meta.agent import (
+from .agent import (
     MetaAgent,
     MetaAgentState,
     build_graph,
