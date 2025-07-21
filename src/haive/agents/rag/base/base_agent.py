@@ -2,7 +2,7 @@ import logging
 from typing import Any
 
 from haive.core.engine.agent.agent import Agent, register_agent
-from haive.core.graph.GraphBuilder import DynamicGraph
+from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langgraph.types import Command
 
 from haive.agents.rag.base.config import BaseRAGConfig

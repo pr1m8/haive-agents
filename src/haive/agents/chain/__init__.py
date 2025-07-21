@@ -1,6 +1,6 @@
 """Module exports."""
 
-from chain.chain_agent_simple import (
+from haive.agents.chain.chain_agent_simple import (
     ChainAgent,
     FlowBuilder,
     add,
@@ -11,7 +11,7 @@ from chain.chain_agent_simple import (
     flow_with_edges,
     merge_to,
 )
-from chain.chain_examples import (
+from haive.agents.chain.chain_examples import (
     complex_rag,
     example_engines_as_nodes,
     example_incremental_building,
@@ -21,7 +21,7 @@ from chain.chain_examples import (
     example_sequential_mixed,
     process_summary,
 )
-from chain.examples import (
+from haive.agents.chain.examples import (
     StrategyDecision,
     create_agentic_router_declarative,
     create_complex_flow_from_spec,
@@ -35,7 +35,7 @@ from chain.examples import (
     reflect_and_critique,
     synthesize_results,
 )
-from chain.examples_simple import (
+from haive.agents.chain.examples_simple import (
     example_basic,
     example_direct,
     example_incremental,
@@ -44,7 +44,7 @@ from chain.examples_simple import (
     example_routing,
     formatter,
 )
-from chain.multi_integration import (
+from haive.agents.chain.multi_integration import (
     ChainMultiAgent,
     ChainNodeWrapper,
     ExtendedExecutionMode,

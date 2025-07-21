@@ -267,7 +267,7 @@ async def main():
         print(f"     - {agent_ref.name}: {agent_ref.agent_type}")
 
     result = await coordinator.execute("Explain quantum computing")
-    print(f"\n   Coordination result:")
+    print("\n   Coordination result:")
     for agent_name, agent_result in result["results"].items():
         print(f"     {agent_name}: {agent_result}")
 

@@ -265,8 +265,7 @@ class Agent(
         return values
 
     @model_validator(mode="after")
-    @classmethod
-    def complete_agent_setup(cls) -> "Agent":
+    def complete_agent_setup(self) -> "Agent":
         """STEP 2-5: Complete agent setup in proper order.
 
         This validator handles the main initialization sequence:
@@ -313,8 +312,7 @@ class Agent(
         return self
 
     @model_validator(mode="after")
-    @classmethod
-    def ensure_basic_schema(cls) -> "Agent":
+    def ensure_basic_schema(self) -> "Agent":
         """Ensure we always have at least a basic state schema.
 
         This provides a fallback schema with messages field if no schema is defined.
@@ -1617,53 +1615,51 @@ class Agent(
         }
 
     # ============================================================================
-    # AGENT AS TOOL CLASS METHODS
+    # AGENT AS TOOL CLASS METHODS - COMMENTED OUT FOR NOW
     # ============================================================================
 
-    @classmethod
-    def as_tool(
-        cls, name: str | None = None, description: str | None = None, **agent_kwargs
-    ):
-        """Convert this agent class to a LangChain tool.
-
-        This creates a tool that instantiates and executes the agent class.
-        Uses the agent's input and output schemas for proper type handling.
-
-        Args:
-            name: Optional tool name, defaults to class name + '_tool'
-            description: Optional tool description
-            **agent_kwargs: Arguments to pass to agent constructor
-
-        Returns:
-            A LangChain tool that executes this agent class
-        """
-        from langchain_core.tools import tool
-
-        tool_name = name or f"{cls.__name__.lower()}_tool"
-        tool_description = description or f"Execute {cls.__name__} for processing"
-
-        # Try to get input schema from the agent class
-        # TODO: This could be enhanced to use actual agent input_schema when available
-
-        @tool(tool_name)
-        def agent_tool(query: str) -> str:
-            f"""{tool_description}"""
-
-            # Create agent instance
-            agent = cls(**agent_kwargs)
-
-            # Execute agent with query
-            # TODO: Use agent's actual input schema format
-            result = agent.invoke({"messages": [{"role": "user", "content": query}]})
-
-            # Extract response based on output schema
-            # TODO: Use agent's actual output schema
-            if isinstance(result, dict):
-                if result.get("messages"):
-                    return result["messages"][-1].get("content", str(result))
-                if "output" in result:
-                    return result["output"]
-
-            return str(result)
-
-        return agent_tool
+    # @classmethod
+    # def as_tool(
+    #     cls, name: str | None = None, description: str | None = None, **agent_kwargs
+    # ):
+    #     """Convert this agent class to a LangChain tool.
+    #
+    #     This creates a tool that instantiates and executes the agent class.
+    #     Uses the agent's input and output schemas for proper type handling.
+    #
+    #     Args:
+    #         name: Optional tool name, defaults to class name + '_tool'
+    #         description: Optional tool description
+    #         **agent_kwargs: Arguments to pass to agent constructor
+    #
+    #     Returns:
+    #         A LangChain tool that executes this agent class
+    #     """
+    #     from langchain_core.tools import tool
+    #
+    #     tool_name = name or f"{cls.__name__.lower()}_tool"
+    #     tool_description = description or f"Execute {cls.__name__} for processing"
+    #
+    #     # Try to get input schema from the agent class
+    #     # TODO: This could be enhanced to use actual agent input_schema when available
+    #
+    #     @tool(tool_name, description=tool_description)
+    #     def agent_tool(query: str) -> str:
+    #         # Create agent instance
+    #         agent = cls(**agent_kwargs)
+    #
+    #         # Execute agent with query
+    #         # TODO: Use agent's actual input schema format
+    #         result = agent.invoke({"messages": [{"role": "user", "content": query}]})
+    #
+    #         # Extract response based on output schema
+    #         # TODO: Use agent's actual output schema
+    #         if isinstance(result, dict):
+    #             if "messages" in result and result["messages"]:
+    #                 return result["messages"][-1].get("content", str(result))
+    #             elif "output" in result:
+    #                 return result["output"]
+    #
+    #         return str(result)
+    #
+    #     return agent_tool

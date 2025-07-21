@@ -84,7 +84,6 @@ def main():
 
         # Extract and print the final answer
         if last_step:
-    pass
             # Get the output from the final state
             final_state = last_step["output"]
 
@@ -104,7 +103,6 @@ def main():
                     except Exception as e:
                         logger.warning(f"Error converting message: {e}")
 
-
             # Print some statistics
             if "nodes_data" in final_state:
                 pass
@@ -115,7 +113,8 @@ def main():
                 if root_id in final_state["nodes_data"]:
                     root_data = final_state["nodes_data"][root_id]
                     if root_data.reflection:
-    pass
+                        pass
+
 
 if __name__ == "__main__":
     main()

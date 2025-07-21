@@ -22,7 +22,7 @@ def print_state(state: dict[str, Any], detailed: bool = False) -> None:
                 role = getattr(msg, "type", "unknown")
 
     if state.get("answer"):
-    pass
+        pass
     if detailed and "candidates" in state and state["candidates"]:
         for i, candidate in enumerate(state["candidates"]):
             if candidate.feedback:
@@ -32,7 +32,6 @@ def print_state(state: dict[str, Any], detailed: bool = False) -> None:
         best = state["best_candidate"]
         if best.feedback:
             pass
-
 
 
 def run_tot_example():
@@ -50,10 +49,8 @@ def run_tot_example():
     # Simple problem for demonstration
     problem = "How can I calculate the probability of drawing exactly 2 aces from a standard deck of 52 cards if I draw 5 cards without replacement?"
 
-
     # Run the agent and stream results
     events = agent.run(problem, debug=True)
-
 
 
 def run_game24_example():
@@ -64,7 +61,6 @@ def run_game24_example():
 
     # Game of 24 problem
     problem = "3 8 9 4"
-
 
     # Run the agent
     final_state = agent.run(problem)
@@ -80,7 +76,6 @@ def run_math_example():
 
     # Math problem
     problem = "Find the area of a circle that has the same perimeter as a square with an area of 64 square units."
-
 
     # Run the agent
     final_state = agent.run(problem)

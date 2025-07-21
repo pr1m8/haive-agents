@@ -14,9 +14,6 @@ from pydantic import (
     Dict,
     Field,
     computed_field,
-    from,
-    import,
-    typing,
 )
 
 from haive.agents.base.agent import Agent
@@ -47,14 +44,17 @@ class MultiAgentState(BaseModel, GetterMixin):
     selected_agents: Annotated[list[Agent], operator.add] = Field(default_factory=[])
 
     @computed_field
+    @property
     def selected_agent(self) -> Agent:
-        return selected_agents[-1] if selected_agents else None
+        return self.selected_agents[-1] if self.selected_agents else None
 
 
 def temp_node(state: Dict[str, Any]):
-    state.get("selected_agent")
-    agent = agent.create_runnable()
-    agent.run(input_payload)
+    agent = state.get("selected_agent")
+    if agent:
+        runnable = agent.create_runnable()
+        # runnable.run(input_payload) # input_payload undefined
+    return state
 
 
 from langgraph.graph import StateGraph

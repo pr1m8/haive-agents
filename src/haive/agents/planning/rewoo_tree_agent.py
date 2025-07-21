@@ -207,8 +207,6 @@ class PlanNode(BaseModel):
         return v
 
     @model_validator(mode="after")
-
-
     @classmethod
     def validate_dependencies(cls) -> "PlanNode":
         """Validate dependency relationships."""
@@ -503,8 +501,6 @@ class ReWOOTreePlannerOutput(BaseModel):
         return v
 
     @model_validator(mode="after")
-
-
     @classmethod
     def validate_consistency(cls) -> "ReWOOTreePlannerOutput":
         """Validate consistency between plan components."""
@@ -1153,7 +1149,7 @@ class ReWOOTreeAgent(Agent):
 
     def _result_aggregator_node(self, state: ReWOOTreeAgentState) -> Command:
         """Aggregate results from all executions."""
-        logger.info("📊 Result aggregation phase"se")
+        logger.info("📊 Result aggregation phase")
 
         # Aggregate all node results
         final_result = None

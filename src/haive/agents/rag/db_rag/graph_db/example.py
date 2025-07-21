@@ -82,10 +82,10 @@ def basic_example():
         start_time = time.time()
 
         # Invoke the agent
-        result = agent.run({"question": question})
+        agent.run({"question": question})
 
         # Calculate execution time
-        execution_time = time.time() - start_time
+        time.time() - start_time
 
         # Display results
 
@@ -155,7 +155,7 @@ def streaming_example():
                     if node_output.get("next_action") == "execute_query":
                         pass
                     else:
-                        errors = node_output.get("cypher_errors", [])
+                        node_output.get("cypher_errors", [])
 
                 elif node_name == "execute_query":
                     records = node_output.get("database_records", [])
@@ -168,7 +168,7 @@ def streaming_example():
                     pass
 
         # Get final result
-        final_result = agent.run({"question": question})
+        agent.run({"question": question})
 
     except Exception as e:
         logger.exception(f"Error in streaming example: {e}")
@@ -311,7 +311,7 @@ def batch_processing_example():
         total_time = 0
 
         # Process each query
-        for i, question in enumerate(queries, 1):
+        for _i, question in enumerate(queries, 1):
             start_time = time.time()
 
             try:
@@ -335,7 +335,7 @@ def batch_processing_example():
 
                 total_time += execution_time
 
-            except Exception as e:
+            except Exception:
                 execution_time = time.time() - start_time
                 failed += 1
                 total_time += execution_time
@@ -476,9 +476,9 @@ def performance_monitoring_example():
         # Display performance metrics
 
         # Calculate and display metrics
-        for step, timing in step_times.items():
+        for _step, timing in step_times.items():
             if timing["duration"]:
-                percentage = (timing["duration"] / total_time) * 100
+                (timing["duration"] / total_time) * 100
 
         # Identify bottlenecks
         bottleneck = max(step_times.items(), key=lambda x: x[1]["duration"] or 0)
@@ -555,7 +555,7 @@ async def async_example():
             process_query(agent, question, i) for i, question in enumerate(queries, 1)
         ]
         results = await asyncio.gather(*tasks)
-        total_time = time.time() - start_time
+        time.time() - start_time
 
         # Display results
         for result in sorted(results, key=lambda x: x["index"]):
@@ -564,7 +564,7 @@ async def async_example():
             else:
                 pass
         # Compare with sequential time
-        sequential_time = sum(r["time"] for r in results)
+        sum(r["time"] for r in results)
 
     except Exception as e:
         logger.exception(f"Error in async example: {e}")

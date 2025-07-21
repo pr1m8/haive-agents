@@ -6,7 +6,7 @@ This is the cleanest implementation showing SimpleAgent is just Agent[AugLLMConf
 """
 
 import logging
-from typing import Any, Literal
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -14,7 +14,7 @@ from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
-from pydantic import Field, model_validator
+from pydantic import Field
 
 # Import from enhanced base module
 from haive.agents.base.enhanced_agent import Agent

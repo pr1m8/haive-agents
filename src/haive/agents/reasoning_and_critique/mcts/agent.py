@@ -4,7 +4,6 @@ import logging
 from collections import defaultdict
 from typing import Any
 
-from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage
 from langchain_core.output_parsers.openai_tools import (
@@ -12,15 +11,13 @@ from langchain_core.output_parsers.openai_tools import (
     JsonOutputToolsParser,
     List,
     PydanticToolsParser,
-    from,
-    import,
-    typing,
 )
 from langchain_core.runnables import RunnableConfig
 from langchain_core.runnables import chain as as_runnable
 from langgraph.graph import END
 from langgraph.prebuilt import ToolNode
 
+from haive.agents.base.agent import Agent
 from haive.agents.reasoning_and_critique.mcts.config import MCTSAgentConfig
 from haive.agents.reasoning_and_critique.mcts.models import Reflection, TreeNode
 from haive.agents.reasoning_and_critique.mcts.state import TreeState
@@ -29,8 +26,7 @@ from haive.agents.reasoning_and_critique.mcts.state import TreeState
 logger = logging.getLogger(__name__)
 
 
-@register_agent(MCTSAgentConfig)
-class MCTSAgent(Agent[MCTSAgentConfig]):
+class MCTSAgent(Agent):
     """Monte Carlo Tree Search Agent implementation.
 
     This agent uses a Monte Carlo Tree Search approach to iteratively explore

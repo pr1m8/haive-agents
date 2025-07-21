@@ -23,7 +23,6 @@ sys.path.insert(
 
 # Now import the enhanced Agent directly
 from base.enhanced_agent import Agent as EnhancedAgent
-from base.enhanced_agent import EngineT
 
 # Import other dependencies normally
 from haive.core.engine.aug_llm import AugLLMConfig

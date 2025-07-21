@@ -3,11 +3,12 @@
 from collections.abc import Callable
 from typing import Any
 
-from agents.tot.modular.agent import ToTAgent
-from agents.tot.modular.config import ToTAgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
+
+from haive.agents.reasoning_and_critique.tot.modular.agent import ToTAgent
+from haive.agents.reasoning_and_critique.tot.modular.config import ToTAgentConfig
 
 
 def create_tot_agent(
@@ -206,7 +207,7 @@ def create_game24_tot_agent(
     """
 
     # Define structured output models for Game of 24
-    from pydantic import BaseModel, Field
+    from pydantic import BaseModel, Field, field_validator
 
     class Equation(BaseModel):
         """An equation attempting to reach 24 using the provided numbers."""
@@ -218,7 +219,7 @@ def create_game24_tot_agent(
             description="Step-by-step reasoning for how this formula works"
         )
 
-        @field_validatorvalidate_formula
+        @field_validator("formula")
         @classmethod
         def validate_formula(cls, v) -> Any:
             """Validate the formula has basic math operators."""
@@ -311,7 +312,7 @@ def create_game24_tot_agent(
                 "floor": math.floor,
                 "ceil": math.ceil,
                 "pi": math.pi,
-                ": math.e,
+                "e": math.e,
             }
             # Add all numeric operators
             safe_dict.update({str(i): i for i in range(10)})

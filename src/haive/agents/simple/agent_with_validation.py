@@ -10,9 +10,6 @@ from haive.core.graph.node.state_updating_validation_node import (
     Dict,
     StateUpdatingValidationNode,
     ValidationMode,
-    from,
-    import,
-    typing,
 )
 from haive.core.graph.node.tool_node_config import ToolNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -364,7 +361,7 @@ class SimpleAgentWithValidation(Agent):
 
         return graph
 
-    def create_runnable(self, runnable_config: Dict[str, Any]=None) -> Any:
+    def create_runnable(self, runnable_config: Dict[str, Any] = None) -> Any:
         """Override to ensure state is properly initialized."""
         # Get the compiled graph
         compiled = super().create_runnable(runnable_config)

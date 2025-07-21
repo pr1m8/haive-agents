@@ -4,20 +4,16 @@ This module provides various agent implementations for the Haive framework.
 """
 
 # Core base agent
-# from haive.agents.base import Agent
-
-# Simple agent
-# from haive.agents.simple import SimpleAgent
-
-# React agent
-# from haive.agents.react import ReactAgent
+from haive.agents.base import Agent
 
 # Multi-agent implementations
-# from haive.agents.multi import (
-#     SimpleMultiAgent,
-#     SupervisorAgent,
-#     DynamicSupervisor,
-# )
+from haive.agents.multi.clean import MultiAgent
+
+# React agent
+from haive.agents.react.agent import ReactAgent
+
+# Simple agent
+from haive.agents.simple import SimpleAgent
 
 # RAG agents
 # from haive.agents.rag import (
@@ -69,15 +65,13 @@ This module provides various agent implementations for the Haive framework.
 
 __all__ = [
     # Base
-    # "Agent",
-    # # Simple
-    # "SimpleAgent",
-    # # React
-    # "ReactAgent",
-    # # Multi-agent
-    # "SimpleMultiAgent",
-    # "SupervisorAgent",
-    # "DynamicSupervisor",
+    "Agent",
+    # Simple
+    "SimpleAgent",
+    # React
+    "ReactAgent",
+    # Multi-agent
+    "MultiAgent",
     # # RAG
     # "BaseRAGAgent",
     # "ConversationRAGAgent",

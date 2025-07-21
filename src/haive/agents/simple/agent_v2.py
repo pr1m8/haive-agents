@@ -1,6 +1,5 @@
 """SimpleAgent V2 - Uses V2 validation node + router system.
 
-from typing import Any, Dict
 This version uses the V2 validation system that can properly:
 1. Add ToolMessages to state for Pydantic model validation
 2. Use separate validation node + router for proper state management
@@ -14,7 +13,7 @@ Key improvements over V1:
 """
 
 import logging
-from typing import Any, Literal
+from typing import Any, Dict, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig

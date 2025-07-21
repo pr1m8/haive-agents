@@ -66,10 +66,10 @@ class SimpleAgent(Agent):
     This is the clean, minimal implementation that leverages the base Agent.
     All the complex logic is handled by the base Agent class - this just provides
     the SimpleAgent-specific convenience fields and graph building.
-    
+
     The SimpleAgent is designed to be the most basic functional agent - essentially
     just Agent[AugLLMConfig] with convenience fields for common LLM parameters.
-    
+
     Attributes:
         temperature: Optional temperature for the LLM (0.0-2.0). Syncs to engine.
         max_tokens: Optional max tokens for responses. Syncs to engine.
@@ -80,59 +80,60 @@ class SimpleAgent(Agent):
         llm_config: Optional LLM configuration dict or object.
         output_parser: Optional parser for processing LLM output.
         prompt_template: Optional custom prompt template.
-        
+
     Examples:
         Basic usage::
-        
+
             from haive.agents.simple import SimpleAgent
             from haive.core.engine.aug_llm import AugLLMConfig
-            
+
             # Create with defaults
             agent = SimpleAgent(name="assistant")
             result = agent.run("Hello, how are you?")
-            
+
         With configuration::
-        
+
             agent = SimpleAgent(
                 name="creative_writer",
                 temperature=0.9,
                 max_tokens=1000,
                 system_message="You are a creative writer."
             )
-            
+
         With structured output::
-        
+
             from pydantic import BaseModel, Field
-            
+
             class Story(BaseModel):
                 title: str = Field(description="Story title")
                 content: str = Field(description="Story content")
                 genre: str = Field(description="Story genre")
-                
+
             agent = SimpleAgent(
                 name="story_writer",
                 structured_output_model=Story
             )
             story = agent.run("Write a short sci-fi story")
             # story will be a Story instance
-            
+
         With tools::
-        from langchain_core.tools import tool
-        
-        @tool
-        def calculator(expression: str) -> str:
-            """Calculate mathematical expressions."""
-            return str(eval(expression))
-            
-        config = AugLLMConfig(tools=[calculator])
-        agent = SimpleAgent(name="math_assistant", engine=config)
-        result = agent.run("What is 15 * 23?")
-            
+
+            from langchain_core.tools import tool
+
+            @tool
+            def calculator(expression: str) -> str:
+                '''Calculate mathematical expressions.'''
+                return str(eval(expression))
+
+            config = AugLLMConfig(tools=[calculator])
+            agent = SimpleAgent(name="math_assistant", engine=config)
+            result = agent.run("What is 15 * 23?")
+
     Note:
         SimpleAgent always expects an AugLLMConfig engine. If none is provided,
         it creates one with default settings. The convenience fields (temperature,
         max_tokens, etc.) are synced to the engine during setup_agent().
-        
+
     See Also:
         haive.agents.react.ReactAgent: For agents that need reasoning loops
         haive.agents.multi.MultiAgent: For coordinating multiple agents
@@ -196,12 +197,12 @@ class SimpleAgent(Agent):
 
     def setup_agent(self) -> None:
         """Sync convenience fields to engine and basic setup.
-        
+
         This method is called during agent initialization to:
         1. Add the engine to the engines dict
         2. Sync all convenience fields to the engine
         3. Enable automatic schema generation
-        
+
         The convenience fields (temperature, max_tokens, etc.) are copied
         to the engine configuration if they have non-None values.
         """
@@ -242,20 +243,20 @@ class SimpleAgent(Agent):
 
     def build_graph(self) -> BaseGraph:
         """Build the simple agent graph.
-        
+
         Creates a graph with the following structure based on agent configuration:
-        
+
         1. Basic (no tools/parsing): START → agent_node → END
         2. With tools: START → agent_node → validation → tool_node → agent_node
         3. With parsing: START → agent_node → validation → parse_output → END
         4. With both: Combines tool and parsing flows
-        
+
         The validation node routes between tools, parsing, or END based on
         the LLM output (tool calls, structured output needs, etc.).
-        
+
         Returns:
             BaseGraph: The compiled agent graph ready for execution.
-            
+
         Note:
             This method is called automatically during agent initialization.
             The graph structure adapts based on the presence of tools,

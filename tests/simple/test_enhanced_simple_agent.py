@@ -6,8 +6,6 @@ This test demonstrates that SimpleAgent is now essentially Agent[AugLLMConfig]
 with proper type safety and clean design.
 """
 
-import asyncio
-from typing import Any
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig

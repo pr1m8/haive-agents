@@ -13,7 +13,6 @@ from pydantic import Field, model_validator
 
 # Carefully import to avoid cycles
 if TYPE_CHECKING:
-    from haive.core.engine.aug_llm.config import AugLLMConfig
     from haive.core.graph.state_graph.base_graph2 import BaseGraph
 
 logger = logging.getLogger(__name__)
