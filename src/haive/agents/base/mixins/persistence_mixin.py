@@ -449,42 +449,24 @@ class PersistenceMixin:
         return config
 
     def _generate_default_thread_id(self) -> str:
-        """Generate a consistent thread_id based on agent identity for automatic persistence."""
-        import hashlib
+        """Generate a unique thread_id for each agent instance.
 
-        # Create a hash based on agent configuration for consistency
-        identity_components = [
-            getattr(self, "name", "UnnamedAgent"),
-            self.__class__.__name__,
-        ]
+        This method now generates truly unique thread IDs using UUIDs to prevent
+        collisions when multiple instances of the same agent run concurrently.
 
-        # Add engine type if available
-        if hasattr(self, "engine_type"):
-            identity_components.append(str(self.engine_type))
+        For cases where you need consistent thread IDs (e.g., resuming conversations),
+        explicitly pass a thread_id to the run() method.
+        """
+        import uuid
 
-        # Add engine type/model instead of engine name (which has random IDs)
-        if hasattr(self, "engine") and self.engine:
-            if hasattr(self.engine, "model"):
-                identity_components.append(str(self.engine.model))
-            elif hasattr(self.engine, "engine_type"):
-                identity_components.append(str(self.engine.engine_type))
+        # Generate a unique UUID for this agent instance
+        unique_id = str(uuid.uuid4())
 
-        # Add conversation-specific details for conversation agents
-        if hasattr(self, "topic"):
-            identity_components.append(str(self.topic))
-        if hasattr(self, "speakers") and self.speakers:
-            identity_components.append(",".join(sorted(self.speakers)))
-        if hasattr(self, "participant_agents") and self.participant_agents:
-            # Add participant agent names
-            participant_names = sorted(self.participant_agents.keys())
-            identity_components.append(",".join(participant_names))
-
-        # Create a stable hash
-        identity_string = ":".join(identity_components)
-        hash_digest = hashlib.md5(identity_string.encode()).hexdigest()
-
-        # Create a meaningful thread_id
+        # Include agent name for readability in logs/debugging
         agent_name = getattr(self, "name", "agent")
-        thread_id = f"{agent_name}_{hash_digest[:8]}"
+
+        # Create thread_id with format: {agent_name}_{uuid}
+        # This ensures uniqueness while maintaining readability
+        thread_id = f"{agent_name}_{unique_id}"
 
         return thread_id

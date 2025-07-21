@@ -205,18 +205,11 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
 
     @model_validator(mode="before")
     @classmethod
-    def prepare_agents_field(cls, values: dict) -> dict:
-        """Prepare agents field for EnhancedMultiAgent initialization."""
-        if not isinstance(values, dict):
-            return values
-
-        # The EnhancedMultiAgent expects agents to be provided
-        # We'll create them in the after validator, so just ensure
-        # the field exists
+    def ensure_agents_is_list(cls, values: dict) -> dict:
+        """Ensure agents field starts as an empty list for our List type."""
         if "agents" not in values:
-            # Initialize as empty list since our type is List
+            # Provide empty list to match our generic type
             values["agents"] = []
-
         return values
 
     @model_validator(mode="after")
@@ -255,7 +248,7 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
             if hasattr(answer_agent.engine, "system_message"):
                 answer_agent.engine.system_message = self.system_prompt_template
 
-        # Set up the agents list (required by EnhancedMultiAgent V3)
+        # Set up the agents as a list - parent class will normalize to dict
         self.agents = [retriever_agent, answer_agent]
 
         # Configure execution mode

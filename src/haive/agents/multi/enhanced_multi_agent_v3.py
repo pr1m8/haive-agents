@@ -173,7 +173,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
     # Generic agents field - follows enhanced base Agent pattern
     agents: AgentsT = Field(
-        default_factory=dict,
+        default_factory=dict,  # Default to dict for backward compatibility
         description="Generic collection of agents this multi-agent coordinates",
     )
 
@@ -263,9 +263,28 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         if not isinstance(values, dict):
             return values
 
-        # Initialize agents dict if not present
-        if "agents" not in values:
-            values["agents"] = {}
+        # Initialize agents if not present
+        # Check the type annotation to determine default type
+        if "agents" not in values or values.get("agents") is None:
+            # Check the actual field annotation from the model
+            if "agents" in cls.model_fields:
+                field_info = cls.model_fields["agents"]
+
+                # Check if the annotation is a List type
+                import typing
+                from typing import get_args, get_origin
+
+                annotation = field_info.annotation
+                origin = get_origin(annotation)
+
+                if origin is list or origin is typing.List:
+                    values["agents"] = []
+                else:
+                    # Default to dict for backward compatibility
+                    values["agents"] = {}
+            else:
+                # Default to dict if field not found
+                values["agents"] = {}
 
         # Move single agent to agents dict
         if "agent" in values and values["agent"] is not None:
@@ -276,31 +295,55 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
             else:
                 values["agents"]["main"] = agent
 
-        # Normalize agents field to always be a dict
+        # Normalize agents field based on the generic type
         if "agents" in values and values["agents"] is not None:
             agents = values["agents"]
 
+            # Check if we should keep as list based on the field annotation
+            should_keep_list = False
+
+            # Check the actual field annotation from the model
+            if "agents" in cls.model_fields:
+                field_info = cls.model_fields["agents"]
+
+                # Check if the annotation is a List type
+                import typing
+                from typing import get_args, get_origin
+
+                annotation = field_info.annotation
+                origin = get_origin(annotation)
+
+                if origin is list or origin is typing.List:
+                    should_keep_list = True
+
             if isinstance(agents, list):
-                # Convert list to dict using agent names
-                agent_dict = {}
-                for i, agent in enumerate(agents):
-                    if hasattr(agent, "name") and agent.name:
-                        # Handle duplicate names by adding index
-                        base_name = agent.name
-                        if base_name in agent_dict:
-                            agent_dict[f"{base_name}_{i}"] = agent
+                if should_keep_list:
+                    # Keep as list for List generic types
+                    values["agents"] = agents
+                else:
+                    # Convert list to dict using agent names
+                    agent_dict = {}
+                    for i, agent in enumerate(agents):
+                        if hasattr(agent, "name") and agent.name:
+                            # Handle duplicate names by adding index
+                            base_name = agent.name
+                            if base_name in agent_dict:
+                                agent_dict[f"{base_name}_{i}"] = agent
+                            else:
+                                agent_dict[base_name] = agent
                         else:
-                            agent_dict[base_name] = agent
-                    else:
-                        agent_dict[f"agent_{i}"] = agent
-                values["agents"] = agent_dict
+                            agent_dict[f"agent_{i}"] = agent
+                    values["agents"] = agent_dict
 
             elif not isinstance(agents, dict):
                 # Single agent not in dict form
-                if hasattr(agents, "name") and agents.name:
-                    values["agents"] = {agents.name: agents}
+                if should_keep_list:
+                    values["agents"] = [agents]
                 else:
-                    values["agents"] = {"main": agents}
+                    if hasattr(agents, "name") and agents.name:
+                        values["agents"] = {agents.name: agents}
+                    else:
+                        values["agents"] = {"main": agents}
 
         return values
 
@@ -309,29 +352,31 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
     def validate_agents(cls, v: AgentsT) -> AgentsT:
         """Validate agents collection."""
         if isinstance(v, dict):
-            if not v:
-                raise ValueError("Agent dict cannot be empty")
-            # Validate all values are agents
-            for name, agent in v.items():
-                if (
-                    not hasattr(agent, "run")
-                    and not hasattr(agent, "arun")
-                    and not hasattr(agent, "invoke")
-                ):
-                    raise ValueError(f"Agent '{name}' must have run/arun/invoke method")
+            # Allow empty dict during initialization - some subclasses populate later
+            if v:
+                # Validate all values are agents
+                for name, agent in v.items():
+                    if (
+                        not hasattr(agent, "run")
+                        and not hasattr(agent, "arun")
+                        and not hasattr(agent, "invoke")
+                    ):
+                        raise ValueError(
+                            f"Agent '{name}' must have run/arun/invoke method"
+                        )
         elif isinstance(v, list):
-            if not v:
-                raise ValueError("Agent list cannot be empty")
-            # Validate all items are agents
-            for i, agent in enumerate(v):
-                if (
-                    not hasattr(agent, "run")
-                    and not hasattr(agent, "arun")
-                    and not hasattr(agent, "invoke")
-                ):
-                    raise ValueError(
-                        f"Agent at index {i} must have run/arun/invoke method"
-                    )
+            # Allow empty list during initialization - some subclasses populate later
+            if v:
+                # Validate all items are agents
+                for i, agent in enumerate(v):
+                    if (
+                        not hasattr(agent, "run")
+                        and not hasattr(agent, "arun")
+                        and not hasattr(agent, "invoke")
+                    ):
+                        raise ValueError(
+                            f"Agent at index {i} must have run/arun/invoke method"
+                        )
         else:
             raise ValueError("Agents must be dict or list")
         return v

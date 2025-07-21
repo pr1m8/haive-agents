@@ -1,6 +1,7 @@
 """Module exports."""
 
-from reflection.agent import (
+# Existing reflection patterns
+from .agent import (
     ExpertAgent,
     GradedReflectionMultiAgent,
     GradingAgent,
@@ -16,26 +17,58 @@ from reflection.agent import (
     create_tool_based_reflection_agent,
     model_post_init,
 )
-from reflection.models import (
+
+# New message transformer reflection patterns
+from .message_transformer import (
+    ConversationalReflectionAgent,
+    MessageTransformerReflectionAgent,
+    ReflectionMessageFlow,
+    create_conversational_reflection_agent,
+    create_message_transformer_reflection_agent,
+    create_reflection_context_transformer,
+    create_reflection_message_flow,
+)
+from .models import (  # Add new models
+    Critique,
     ExpertiseConfig,
     GradingResult,
+    Improvement,
     ImprovementSuggestion,
     QualityScore,
     ReflectionConfig,
     ReflectionOutput,
+    ReflectionResult,
     to_prompt,
     validate_grade_matches_score,
 )
-from reflection.prompts import (
+from .prompts import (
     create_expert_prompt,
     create_grading_prompt,
     create_improvement_prompt,
     create_reflection_prompt,
 )
-from reflection.simple_agent import ReflectionAgent, create, enhance_agent
-from reflection.state import ReflectionState, add_improvement, finalize, should_continue
+from .simple_agent import ReflectionAgent, create, enhance_agent
+from .state import ReflectionState, add_improvement, finalize, should_continue
+
+# New structured output reflection patterns
+from .structured_output import (
+    ReflectionLoop,
+    StructuredImprovementAgent,
+    StructuredReflectionAgent,
+    create_improvement_agent,
+)
+from .structured_output import (
+    create_reflection_agent as create_structured_reflection_agent,
+)
+from .structured_output import (
+    create_reflection_loop,
+    extract_structured_output,
+)
+
+# Models already imported above
 
 __all__ = [
+    # Existing reflection patterns
     "ExpertAgent",
     "ExpertiseConfig",
     "GradedReflectionMultiAgent",
@@ -67,4 +100,24 @@ __all__ = [
     "should_continue",
     "to_prompt",
     "validate_grade_matches_score",
+    # New structured output reflection patterns
+    "StructuredReflectionAgent",
+    "StructuredImprovementAgent",
+    "ReflectionLoop",
+    "create_structured_reflection_agent",
+    "create_improvement_agent",
+    "create_reflection_loop",
+    "extract_structured_output",
+    # New message transformer reflection patterns
+    "MessageTransformerReflectionAgent",
+    "ConversationalReflectionAgent",
+    "ReflectionMessageFlow",
+    "create_message_transformer_reflection_agent",
+    "create_conversational_reflection_agent",
+    "create_reflection_message_flow",
+    "create_reflection_context_transformer",
+    # Shared models for new patterns
+    "Critique",
+    "Improvement",
+    "ReflectionResult",
 ]

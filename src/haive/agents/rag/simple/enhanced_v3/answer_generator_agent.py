@@ -11,11 +11,42 @@ from typing import Any, Dict, List, Optional, Type
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
+
+
+# RAG Answer Generation Prompt Template
+RAG_ANSWER_GENERATION = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """You are a helpful AI assistant that answers questions based on retrieved documents. 
+Your responses should be accurate, well-sourced, and acknowledge any limitations 
+in the available information. Always cite specific sources when possible.""",
+        ),
+        (
+            "human",
+            """Based on the following retrieved documents, please answer the question.
+
+Retrieved Documents:
+{retrieved_documents}
+
+Question: {query}
+
+Instructions:
+- Use only the information provided in the retrieved documents
+- If the retrieved documents don't contain enough information, say so clearly
+- Include source references where appropriate
+- Be concise but comprehensive
+
+Answer:""",
+        ),
+    ]
+)
 
 
 class SimpleAnswerAgent(SimpleAgent):
@@ -67,19 +98,9 @@ class SimpleAnswerAgent(SimpleAgent):
         description="Maximum context length in characters",
     )
 
-    context_template: str = Field(
-        default=(
-            "Based on the following documents, please answer the question.\n\n"
-            "Documents:\n{context}\n\n"
-            "Question: {query}\n\n"
-            "Instructions:\n"
-            "- Use only the information provided in the documents\n"
-            "- If the documents don't contain enough information, say so clearly\n"
-            "- Include source references where appropriate\n"
-            "- Be concise but comprehensive\n\n"
-            "Answer:"
-        ),
-        description="Template for formatting context and query",
+    # Use ChatPromptTemplate instead of string template
+    use_chat_prompt_template: bool = Field(
+        default=True, description="Use ChatPromptTemplate for formatting prompts"
     )
 
     system_prompt_template: str = Field(
@@ -198,23 +219,40 @@ class SimpleAnswerAgent(SimpleAgent):
             return error_result["answer"]
 
     def _parse_retriever_input(self, input_data: Any) -> Dict[str, Any]:
-        """Parse input from RetrieverAgent or direct query."""
+        """Parse input from RetrieverAgent, BaseRAGAgent, or direct query.
+
+        Handles multiple input formats:
+        - BaseRAGAgent: Uses 'retrieved_documents' field
+        - RetrieverAgent: Uses 'documents' field
+        - Direct string: Creates empty document list
+        """
         if isinstance(input_data, str):
             # Direct query string
             return {"query": input_data, "documents": [], "metadata": {}}
 
         if isinstance(input_data, dict):
-            # Input from RetrieverAgent
+            # Input from RetrieverAgent or BaseRAGAgent
+            # Check for 'retrieved_documents' first (BaseRAG format)
+            documents = input_data.get(
+                "retrieved_documents", input_data.get("documents", [])
+            )
+
             return {
                 "query": input_data.get("query", ""),
-                "documents": input_data.get("documents", []),
+                "documents": documents,
                 "metadata": input_data.get("metadata", {}),
             }
 
-        # Try to extract from object attributes
+        # Try to extract from object attributes (e.g., RetrieverOutput)
+        # Check for 'retrieved_documents' attribute first
+        if hasattr(input_data, "retrieved_documents"):
+            documents = getattr(input_data, "retrieved_documents", [])
+        else:
+            documents = getattr(input_data, "documents", [])
+
         return {
             "query": getattr(input_data, "query", ""),
-            "documents": getattr(input_data, "documents", []),
+            "documents": documents,
             "metadata": getattr(input_data, "metadata", {}),
         }
 

@@ -177,9 +177,6 @@ Use internal tools (search_db, analyze_data, execute_action) for company-specifi
 Use external tools (search_web) for general information or market research.
 Always explain your reasoning before using a tool.
 """
-"""
-"""
-"""
 
     # Create a React agent with custom tool routing
     agent = create_react_agent(
@@ -208,7 +205,6 @@ Always explain your reasoning before using a tool.
     ]
 
     for i, question in enumerate(questions):
-    pass
         # Create input with human message
         input_data = {"messages": [HumanMessage(content=question)]}
 
@@ -225,9 +221,13 @@ Always explain your reasoning before using a tool.
                 if hasattr(msg, "tool_calls") and msg.tool_calls:
                     for tool_call in msg.tool_calls:
                         pass
-                else:
             elif isinstance(msg, tuple) and len(msg) == 2:
-    pass
+                # Handle tuple messages
+                msg_type, content = msg
+                print(f"        {msg_type}: {content}")
+            else:
+                # Handle other message types
+                print(f"        {type(msg).__name__}: {str(msg)}")
     # Visualization should have been saved to the output directory
     visualization_dir = agent.config.output_dir or "outputs"
 

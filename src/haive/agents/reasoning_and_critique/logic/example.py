@@ -1,14 +1,12 @@
 # src/haive/agents/reasoning/examples.py
 
+from typing import Any
+
 from haive.agents.reasoning_and_critique.logic.agent import ReasoningSystem
 from haive.agents.reasoning_and_critique.logic.models import (
-    Any,
     ArgumentStrength,
     Evidence,
     EvidenceType,
-    from,
-    import,
-    typing,
 )
 
 
@@ -68,7 +66,6 @@ def example_business_decision() -> Any:
     report = result.get("final_report") or result.get("synthesized_conclusion")
 
     if report:
-
         for _insight in report.key_insights[:5]:
             pass
 
@@ -103,7 +100,7 @@ def example_quick_reasoning() -> Any:
 
 # Run examples
 if __name__ == "__main__":
-
+    pass
     # Run business example
     business_result = example_business_decision()
 

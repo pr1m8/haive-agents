@@ -192,3 +192,25 @@ class ReflectionConfig(BaseModel):
     )
 
     stop_on_decline: bool = Field(default=True, description="Stop if quality decreases")
+
+
+# Additional models for structured output reflection pattern
+class Critique(BaseModel):
+    """Structured critique of an output (for structured output pattern)."""
+
+    strengths: list[str] = Field(description="Identified strengths")
+    weaknesses: list[str] = Field(description="Identified weaknesses")
+    suggestions: list[str] = Field(description="Specific improvement suggestions")
+    overall_quality: float = Field(
+        ge=0.0, le=1.0, description="Quality score 0.0 to 1.0"
+    )
+    needs_revision: bool = Field(description="Whether revision is needed")
+
+
+class ReflectionResult(BaseModel):
+    """Complete reflection analysis (for structured output pattern)."""
+
+    summary: str = Field(description="Summary of the reflection analysis")
+    critique: Critique = Field(description="Detailed critique")
+    action_items: list[str] = Field(description="Specific action items for improvement")
+    confidence: float = Field(ge=0.0, le=1.0, description="Confidence in the analysis")
