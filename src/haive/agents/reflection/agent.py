@@ -9,10 +9,10 @@ from haive.core.graph.node.message_transformation_v2 import (
 from pydantic import BaseModel, Field
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.base.agent import MultiAgent
+from haive.agents.multi.enhanced_multi_agent_v3 import EnhancedMultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
-from haive.agents.structured import StructuredOutputAgent
+from haive.agents.structured_output.agent import StructuredOutputAgent
 
 from .models import ExpertiseConfig, GradingResult, ReflectionConfig
 from .prompts import (
@@ -26,7 +26,9 @@ TPreAgent = TypeVar("TPreAgent", bound=Agent)
 TPostAgent = TypeVar("TPostAgent", bound=Agent)
 
 
-class PrePostMultiAgent(MultiAgent, Generic[TPreAgent, TMainAgent, TPostAgent]):
+class PrePostMultiAgent(
+    EnhancedMultiAgent[Any], Generic[TPreAgent, TMainAgent, TPostAgent]
+):
     """Generic pre/post hook multi-agent pattern.
 
     This provides a general pattern for:

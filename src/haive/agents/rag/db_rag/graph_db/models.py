@@ -21,7 +21,7 @@ Example:
 
 from typing import Any, Literal, TypeVar
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 T = TypeVar("T", bound=str)  # Used for dynamic literals
 
@@ -69,7 +69,7 @@ class PropertyFilter(BaseModel):
         default="=", description="Type of filter operation used in the Cypher query"
     )
 
-    @field_validatorvalidate_filter_type
+    @field_validator("filter_type")
     @classmethod
     def validate_filter_type(cls, v) -> Any:
         """Validate that the filter type is a supported operator.

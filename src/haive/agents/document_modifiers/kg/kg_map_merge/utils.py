@@ -5,9 +5,6 @@ from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import Document
 from langchain_neo4j.graphs.graph_document import GraphDocument
 
-from haive.agents.document_modifiers.kg.kg_map_merge.agent import StructuredKGAgent
-from haive.agents.document_modifiers.kg.kg_map_merge.config import ParallelKGAgentConfig
-
 
 def visualize_graph(
     graph_document: GraphDocument, output_file: str = "knowledge_graph.png"
@@ -146,55 +143,55 @@ visualize_graph(a)
 
 from typing import Any
 
-
 # Helper function to create and run the agent
-async def create_knowledge_graph(
-    documents: list[str | Document],
-    llm_config: LLMConfig | None = None,
-    allowed_nodes: list[str] | None = None,
-    allowed_relationships: list[str] | list[tuple[str, str, str]] | None = None,
-    node_properties: bool | list[str] = False,
-    relationship_properties: bool | list[str] = False,
-    additional_transformer_args: dict[str, Any] | None = None,
-    custom_system_prompt: str | None = None,
-) -> GraphDocument:
-    """Create a knowledge graph from multiple documents using parallel processing.
-
-    Args:
-        documents: List of documents or text strings
-        llm_config: LLM configuration to use
-        allowed_nodes: List of allowed node types (optional)
-        allowed_relationships: List of allowed relationship types (optional)
-        node_properties: Whether to extract node properties and which ones
-        relationship_properties: Whether to extract relationship properties and which ones
-        additional_transformer_args: Additional arguments for the GraphTransformer
-        custom_system_prompt: Custom system prompt for graph extraction
-
-    Returns:
-        The merged knowledge graph
-    """
-    # Set defaults
-    llm_config = llm_config or AzureLLMConfig()
-    allowed_nodes = allowed_nodes or []
-    allowed_relationships = allowed_relationships or []
-    additional_transformer_args = additional_transformer_args or {}
-
-    # Create agent config
-    config = ParallelKGAgentConfig(
-        llm_config=llm_config,
-        allowed_nodes=allowed_nodes,
-        allowed_relationships=allowed_relationships,
-        node_properties=node_properties,
-        relationship_properties=relationship_properties,
-        graph_transformer_args=additional_transformer_args,
-        custom_system_prompt=custom_system_prompt,
-    )
-
-    # Create and initialize the agent
-    agent = StructuredKGAgent(config)
-
-    # Run the agent
-    result = await agent.arun({"contents": documents})
-
-    # Return the merged graph
-    return result.get("merged_graph")
+# NOTE: Commented out to avoid circular imports
+# async def create_knowledge_graph(
+#     documents: list[str | Document],
+#     llm_config: LLMConfig | None = None,
+#     allowed_nodes: list[str] | None = None,
+#     allowed_relationships: list[str] | list[tuple[str, str, str]] | None = None,
+#     node_properties: bool | list[str] = False,
+#     relationship_properties: bool | list[str] = False,
+#     additional_transformer_args: dict[str, Any] | None = None,
+#     custom_system_prompt: str | None = None,
+# ) -> GraphDocument:
+#     """Create a knowledge graph from multiple documents using parallel processing.
+#
+#     Args:
+#         documents: List of documents or text strings
+#         llm_config: LLM configuration to use
+#         allowed_nodes: List of allowed node types (optional)
+#         allowed_relationships: List of allowed relationship types (optional)
+#         node_properties: Whether to extract node properties and which ones
+#         relationship_properties: Whether to extract relationship properties and which ones
+#         additional_transformer_args: Additional arguments for the GraphTransformer
+#         custom_system_prompt: Custom system prompt for graph extraction
+#
+#     Returns:
+#         The merged knowledge graph
+#     """
+#     # Set defaults
+#     llm_config = llm_config or AzureLLMConfig()
+#     allowed_nodes = allowed_nodes or []
+#     allowed_relationships = allowed_relationships or []
+#     additional_transformer_args = additional_transformer_args or {}
+#
+#     # Create agent config
+#     config = ParallelKGAgentConfig(
+#         llm_config=llm_config,
+#         allowed_nodes=allowed_nodes,
+#         allowed_relationships=allowed_relationships,
+#         node_properties=node_properties,
+#         relationship_properties=relationship_properties,
+#         graph_transformer_args=additional_transformer_args,
+#         custom_system_prompt=custom_system_prompt,
+#     )
+#
+#     # Create and initialize the agent
+#     agent = StructuredKGAgent(config)
+#
+#     # Run the agent
+#     result = await agent.arun({"contents": documents})
+#
+#     # Return the merged graph
+#     return result.get("merged_graph")
