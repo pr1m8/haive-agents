@@ -76,7 +76,7 @@ You must extract the relevant numbers and directly put them in code."""
 
 def _evaluate_expression(expression: str) -> str:
     try:
-        local_dict = {"pi": math.pi, "e": math.e}
+        local_dict = {"pi": math.pi, ": math.e}
         output = str(
             numexpr.evaluate(
                 expression.strip(),

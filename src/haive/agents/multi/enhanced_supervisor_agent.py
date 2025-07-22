@@ -4,12 +4,13 @@ SupervisorAgent = Agent[AugLLMConfig] + worker management + delegation.
 """
 
 import logging
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 
+from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage
-from langgraph.graph import END
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langgraph.graph import END, START
 from pydantic import Field, field_validator, model_validator
 
 # Import base enhanced agent when available
@@ -49,233 +50,276 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
 
             # Create supervisor
             supervisor = SupervisorAgent(
-                name="supervisor",
-                workers={"analyst": analyst, "researcher": researcher},
-                engine=AugLLMConfig()
+                name="project_manager",
+                workers={
+                    "analyst": analyst,
+                    "researcher": researcher
+                }
             )
 
-            # Run delegation
-            result = supervisor.run("Analyze the latest market trends")
+            result = supervisor.run("Analyze market trends for electric vehicles")
+            # Supervisor will delegate to researcher for data, then analyst for insights
 
-        Custom delegation strategy::
+        Dynamic worker addition::
 
-            supervisor = SupervisorAgent(
-                name="supervisor",
-                workers=workers,
-                delegation_strategy="best",  # Choose best worker for each task
-                supervisor_prompt="You are a project manager..."
-            )
+            supervisor = SupervisorAgent(name="manager")
+            supervisor.add_worker("coder", CodingAgent())
+            supervisor.add_worker("tester", TestingAgent())
+
+            result = supervisor.run("Implement and test a sorting algorithm")
     """
 
-    # Worker management
-    workers: Dict[str, Any] = Field(
-        default_factory=dict,
-        description="Dictionary of worker agents managed by this supervisor",
+    # Supervisor specific fields
+    workers: Dict[str, Agent] = Field(
+        default_factory=dict, description="Dictionary of worker agents"
     )
 
-    # Delegation configuration
     max_delegation_rounds: int = Field(
-        default=3, description="Maximum number of delegation rounds", ge=1, le=10
+        default=3, ge=1, le=10, description="Maximum rounds of delegation to workers"
     )
 
-    delegation_strategy: Literal["first", "best", "all", "round-robin"] = Field(
-        default="best", description="How to select workers for tasks"
+    delegation_strategy: Literal["first", "best", "all", "round_robin"] = Field(
+        default="best", description="Strategy for choosing workers"
     )
 
-    # Prompting
     supervisor_prompt: Optional[str] = Field(
-        default=None, description="Custom prompt for supervisor behavior"
+        default=None, description="Custom supervisor prompt"
     )
 
-    # Tracking
-    delegation_history: List[Dict[str, Any]] = Field(
-        default_factory=list, description="History of delegations made"
+    allow_direct_response: bool = Field(
+        default=True, description="Whether supervisor can respond without delegating"
     )
+
+    # Convenience fields
+    temperature: float = Field(default=0.3, ge=0.0, le=2.0)  # Lower temp for decisions
+    max_tokens: Optional[int] = Field(default=None, ge=1)
 
     @field_validator("workers")
     @classmethod
-    def validate_workers(cls, v: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate that workers are proper agents."""
-        if not v:
-            logger.warning("SupervisorAgent created without workers")
+    def validate_workers(cls, v: Dict[str, Agent]) -> Dict[str, Agent]:
+        """Validate worker agents."""
+        if not isinstance(v, dict):
+            raise ValueError("Workers must be a dictionary")
+
+        for name, agent in v.items():
+            if not hasattr(agent, "run") and not hasattr(agent, "arun"):
+                raise ValueError(f"Worker '{name}' must be a valid agent")
+
         return v
 
-    @model_validator(mode="after")
-    def validate_supervisor_config(self) -> "SupervisorAgent":
-        """Validate supervisor configuration."""
-        # Ensure we have an engine for LLM-based coordination
-        if not hasattr(self, "engine") or self.engine is None:
-            raise ValueError("SupervisorAgent requires an engine (AugLLMConfig)")
+    @model_validator(mode="before")
+    @classmethod
+    def ensure_aug_llm_config(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """Ensure supervisor has AugLLMConfig engine."""
+        if not isinstance(values, dict):
+            return values
 
-        return self
+        # Create engine if not provided
+        if "engine" not in values or values["engine"] is None:
+            values["engine"] = AugLLMConfig(
+                temperature=values.get("temperature", 0.3),
+                max_tokens=values.get("max_tokens"),
+                system_message=values.get("supervisor_prompt"),
+            )
 
-    def build_graph(self) -> BaseGraph:
-        """Build the supervisor delegation graph.
+        return values
 
-        Creates a graph with:
-        1. Supervisor node - makes delegation decisions
-        2. Worker nodes - execute delegated tasks
-        3. Coordination node - aggregates results
-        4. Decision routing - based on supervisor decisions
+    def add_worker(self, name: str, agent: Agent) -> None:
+        """Add a worker agent.
+
+        Args:
+            name: Unique name for the worker
+            agent: Worker agent instance
+
+        Raises:
+            ValueError: If worker name already exists
         """
-        graph = BaseGraph(
-            name=f"{self.name}_supervisor_graph", state_schema=self.state_schema
-        )
+        if name in self.workers:
+            raise ValueError(f"Worker '{name}' already exists")
 
-        # Add supervisor node
-        supervisor_node_config = EngineNodeConfig(
-            engines={"supervisor": self.engine},
-            system_message=self._get_supervisor_prompt(),
-        )
-        graph.add_node("supervisor", supervisor_node_config)
+        self.workers[name] = agent
+        logger.info(f"Added worker '{name}' to supervisor '{self.name}'")
 
-        # Add worker nodes
-        for worker_name, worker_agent in self.workers.items():
-            # Each worker is its own subgraph
-            worker_graph = worker_agent.build_graph()
-            graph.add_node(f"worker_{worker_name}", worker_graph)
+    def remove_worker(self, name: str) -> Optional[Agent]:
+        """Remove a worker agent.
 
-        # Add coordination node for result aggregation
-        coordination_config = EngineNodeConfig(
-            engines={"coordinator": self.engine},
-            system_message="Aggregate and summarize the results from all workers.",
-        )
-        graph.add_node("coordinator", coordination_config)
+        Args:
+            name: Name of worker to remove
 
-        # Set up routing
-        graph.set_entry_point("supervisor")
+        Returns:
+            Removed agent or None if not found
+        """
+        return self.workers.pop(name, None)
 
-        # Supervisor can delegate to any worker
-        def route_to_worker(state: Dict[str, Any]) -> str:
-            """Route based on supervisor's decision."""
-            messages = state.get("messages", [])
-            if messages and isinstance(messages[-1], AIMessage):
-                content = messages[-1].content
-                # Parse worker selection from supervisor response
-                for worker_name in self.workers:
-                    if worker_name.lower() in content.lower():
-                        return f"worker_{worker_name}"
+    def list_workers(self) -> List[str]:
+        """List all worker names."""
+        return list(self.workers.keys())
 
-            # Default to first worker or coordinator
-            if self.workers:
-                return f"worker_{list(self.workers.keys())[0]}"
-            return "coordinator"
+    def get_worker(self, name: str) -> Optional[Agent]:
+        """Get a specific worker by name."""
+        return self.workers.get(name)
 
-        graph.add_conditional_edges("supervisor", route_to_worker)
+    def setup_agent(self) -> None:
+        """Setup supervisor with appropriate prompt."""
+        if isinstance(self.engine, AugLLMConfig):
+            self.engine.temperature = self.temperature
+            if self.max_tokens:
+                self.engine.max_tokens = self.max_tokens
 
-        # All workers route back to coordinator
-        for worker_name in self.workers:
-            graph.add_edge(f"worker_{worker_name}", "coordinator")
+            # Set supervisor prompt
+            if not self.engine.system_message:
+                self.engine.system_message = self._get_default_supervisor_prompt()
 
-        # Coordinator can go back to supervisor or end
-        def should_continue(state: Dict[str, Any]) -> str:
-            """Decide if more delegation is needed."""
-            rounds = len(self.delegation_history)
-            if rounds >= self.max_delegation_rounds:
-                return END
-
-            # Check if task is complete
-            messages = state.get("messages", [])
-            if messages and isinstance(messages[-1], AIMessage):
-                if "complete" in messages[-1].content.lower():
-                    return END
-
-            return "supervisor"
-
-        graph.add_conditional_edges("coordinator", should_continue)
-
-        return graph
-
-    def _get_supervisor_prompt(self) -> str:
-        """Get the supervisor system prompt."""
-        if self.supervisor_prompt:
-            return self.supervisor_prompt
-
+    def _get_default_supervisor_prompt(self) -> str:
+        """Get default supervisor prompt."""
         worker_descriptions = "\n".join(
             [
-                f"- {name}: {getattr(agent, 'description', 'A worker agent')}"
+                f"- {name}: {type(agent).__name__}"
                 for name, agent in self.workers.items()
             ]
         )
 
-        return f"""You are a supervisor agent managing a team of workers.
+        return f"""You are a supervisor agent coordinating a team of workers.
 
-Your workers are:
-{worker_descriptions}
+Your workers:
+{worker_descriptions if worker_descriptions else "No workers assigned yet"}
 
-Your job is to:
-1. Analyze the user's request
-2. Decide which worker(s) should handle it
-3. Delegate tasks appropriately
-4. Review worker outputs
-5. Provide a final response
+Your responsibilities:
+1. Analyze incoming requests
+2. Decide which worker(s) should handle each task
+3. Delegate tasks to appropriate workers
+4. Synthesize results from workers
+5. Provide comprehensive responses
 
 Delegation strategy: {self.delegation_strategy}
+Can respond directly: {self.allow_direct_response}
 
-When delegating, clearly state which worker should handle the task and why.
-"""
+For each request, think about:
+- What expertise is needed
+- Which worker(s) are best suited
+- How to combine multiple worker outputs
+- Whether you need to handle it yourself"""
 
-    def delegate_task(
-        self, task: str, worker_name: Optional[str] = None
-    ) -> Dict[str, Any]:
-        """Delegate a specific task to a worker.
+    def build_graph(self) -> BaseGraph:
+        """Build supervisor delegation graph."""
+        graph = BaseGraph(name=f"{self.name}_supervisor_graph")
 
-        Args:
-            task: The task to delegate
-            worker_name: Specific worker to use (optional)
+        # Supervisor decision node
+        supervisor_node = EngineNodeConfig(name="supervisor", engine=self.engine)
+        graph.add_node("supervisor", supervisor_node)
+        graph.add_edge(START, "supervisor")
 
-        Returns:
-            Dict with delegation result
-        """
-        if worker_name and worker_name not in self.workers:
-            raise ValueError(f"Unknown worker: {worker_name}")
+        # Add worker nodes
+        for worker_name, worker_agent in self.workers.items():
+            # Create node for each worker
+            worker_node = EngineNodeConfig(
+                name=f"worker_{worker_name}",
+                engine=(
+                    worker_agent.engine
+                    if hasattr(worker_agent, "engine")
+                    else worker_agent
+                ),
+            )
+            graph.add_node(f"worker_{worker_name}", worker_node)
 
-        # Record delegation
-        delegation = {
-            "task": task,
-            "worker": worker_name or "auto-selected",
-            "strategy": self.delegation_strategy,
-        }
-        self.delegation_history.append(delegation)
+        # Routing function
+        def route_supervisor(state: Dict[str, Any]) -> str:
+            """Route based on supervisor decision."""
+            messages = state.get("messages", [])
+            if not messages:
+                return "end"
 
-        # If specific worker requested, use it directly
-        if worker_name:
-            worker = self.workers[worker_name]
-            result = worker.run(task)
-            delegation["result"] = result
-            return delegation
+            last_message = messages[-1]
 
-        # Otherwise use delegation strategy
-        if self.delegation_strategy == "all":
-            # Delegate to all workers
-            results = {}
-            for name, worker in self.workers.items():
-                results[name] = worker.run(task)
-            delegation["result"] = results
+            # Check delegation rounds
+            delegations = sum(
+                1
+                for m in messages
+                if isinstance(m, AIMessage)
+                and "delegating to" in str(m.content).lower()
+            )
+            if delegations >= self.max_delegation_rounds:
+                return "end"
 
-        elif self.delegation_strategy == "first":
-            # Use first available worker
-            if self.workers:
-                name = list(self.workers.keys())[0]
-                delegation["worker"] = name
-                delegation["result"] = self.workers[name].run(task)
+            # Parse supervisor decision (in real implementation, use structured output)
+            if isinstance(last_message, AIMessage):
+                content = str(last_message.content).lower()
 
-        else:  # "best" or "round-robin"
-            # Use LLM to decide best worker
-            # This would be handled by the graph execution
-            pass
+                # Check for delegation indicators
+                for worker_name in self.workers:
+                    if (
+                        f"delegate to {worker_name}" in content
+                        or f"asking {worker_name}" in content
+                    ):
+                        return f"worker_{worker_name}"
 
-        return delegation
+                # Check if supervisor is providing final answer
+                if any(
+                    phrase in content
+                    for phrase in ["final answer", "in conclusion", "to summarize"]
+                ):
+                    return "end"
 
-    def get_delegation_summary(self) -> str:
-        """Get a summary of all delegations made."""
-        if not self.delegation_history:
-            return "No delegations made yet."
+            # Default to end if no clear delegation
+            return "end" if self.allow_direct_response else "supervisor"
 
-        summary = f"Delegation Summary ({len(self.delegation_history)} total):\n"
-        for i, delegation in enumerate(self.delegation_history, 1):
-            summary += f"\n{i}. Task: {delegation['task'][:50]}...\n"
-            summary += f"   Worker: {delegation['worker']}\n"
-            summary += f"   Strategy: {delegation['strategy']}\n"
+        # Add conditional routing
+        routes = {f"worker_{name}": f"worker_{name}" for name in self.workers}
+        routes["end"] = END
+        if not self.allow_direct_response and self.workers:
+            routes["supervisor"] = "supervisor"  # Loop back if must delegate
 
-        return summary
+        graph.add_conditional_edges("supervisor", route_supervisor, routes)
+
+        # Workers report back to supervisor
+        for worker_name in self.workers:
+            graph.add_edge(f"worker_{worker_name}", "supervisor")
+
+        return graph
+
+    def __repr__(self) -> str:
+        """String representation with worker info."""
+        engine_type = type(self.engine).__name__ if self.engine else "None"
+        worker_names = list(self.workers.keys())
+        return f"SupervisorAgent[{engine_type}](name='{self.name}', workers={worker_names})"
+
+
+# Example usage
+if __name__ == "__main__":
+    # Mock worker agents for demo
+    class MockWorker:
+        def __init__(self, name: str, specialty: str):
+            self.name = name
+            self.specialty = specialty
+            self.engine = AugLLMConfig()
+
+        async def arun(self, input_data: str) -> str:
+            return f"{self.name} ({self.specialty}): Processed '{input_data}'"
+
+    # Create supervisor with workers
+    supervisor = SupervisorAgent(
+        name="project_manager",
+        temperature=0.3,  # Low temperature for decisions
+        delegation_strategy="best",
+        workers={
+            "analyst": MockWorker("Alice", "Data Analysis"),
+            "developer": MockWorker("Bob", "Software Development"),
+            "designer": MockWorker("Carol", "UI/UX Design"),
+        },
+    )
+
+    print(f"Created: {supervisor}")
+    print(f"Workers: {supervisor.list_workers()}")
+    print(f"Delegation strategy: {supervisor.delegation_strategy}")
+
+    # Add another worker dynamically
+    supervisor.add_worker("tester", MockWorker("Dave", "Quality Assurance"))
+    print(f"Updated workers: {supervisor.list_workers()}")
+
+    # Example delegation scenarios
+    print("\nExample delegation scenarios:")
+    print("1. 'Analyze user engagement metrics' -> delegate to analyst")
+    print("2. 'Build a REST API' -> delegate to developer")
+    print("3. 'Create mockups for mobile app' -> delegate to designer")
+    print("4. 'Test the new features' -> delegate to tester")
+    print("5. 'Plan the project timeline' -> supervisor handles directly")

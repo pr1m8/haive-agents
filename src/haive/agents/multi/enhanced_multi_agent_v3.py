@@ -22,6 +22,7 @@ from collections.abc import Callable
 from typing import Any, Generic, Literal, Optional, Type, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
     EnhancedMultiAgentState,
@@ -508,6 +509,9 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         # Create BaseGraph with state schema
         graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
 
+        # Store agents in graph metadata for AgentNodeV3Config to access
+        graph.metadata["agents"] = self.agents
+
         # Check if we have custom routing patterns
         has_custom_routing = any(
             branch.get("type") in ["conditional", "parallel", "direct"]
@@ -522,9 +526,20 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         else:
             if self.debug_mode:
                 logger.info("Using intelligent routing")
-            # Use BaseGraph's intelligent routing
+            # Wrap agents in AgentNodeV3Config for intelligent routing
+            wrapped_agents = {}
+            for agent_name, agent in self.agents.items():
+                # Create AgentNodeV3Config to make agent callable
+                agent_node = AgentNodeV3Config(
+                    name=f"agent_{agent_name}",
+                    agent_name=agent_name,
+                    agent=agent,  # Pass agent directly
+                )
+                wrapped_agents[agent_name] = agent_node
+
+            # Use BaseGraph's intelligent routing with wrapped agents
             graph.add_intelligent_agent_routing(
-                agents=self.agents,
+                agents=wrapped_agents,
                 execution_mode=self.execution_mode,
                 branches=self.branches,
                 prefix="",  # No prefix for clean agent names
@@ -537,9 +552,15 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
     def _build_custom_routing(self, graph: BaseGraph):
         """Build custom routing based on enhanced branch configurations."""
-        # Add all agents as nodes first
+        # Add all agents as nodes first, wrapped in AgentNodeV3Config
         for agent_name, agent in self.agents.items():
-            graph.add_node(agent_name, agent)
+            # Create AgentNodeV3Config to make agent callable
+            agent_node = AgentNodeV3Config(
+                name=f"agent_{agent_name}",
+                agent_name=agent_name,
+                agent=agent,  # Pass agent directly
+            )
+            graph.add_node(agent_name, agent_node)
 
         # Track processed edges to handle entry point
         processed_sources = set()

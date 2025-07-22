@@ -1,9 +1,7 @@
 import ast
 import re
 from collections.abc import Iterator, Sequence
-from typing import (
-    Any,
-)
+from typing import Any
 
 from langchain_core.exceptions import OutputParserException
 from langchain_core.messages import BaseMessage
@@ -97,11 +95,7 @@ def instantiate_task(
     dependencies = _get_dependencies_from_graph(idx, tool_name, tool_args)
 
     return Task(
-        idx=idx,
-        tool=tool,
-        args=tool_args,
-        dependencies=dependencies,
-        thought=thought,
+        idx=idx, tool=tool, args=tool_args, dependencies=dependencies, thought=thought
     )
 
 

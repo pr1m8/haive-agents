@@ -91,8 +91,7 @@ class MultiAgent(Agent):
         return values
 
     @model_validator(mode="after")
-    @classmethod
-    def setup_multi_agent(cls) -> "MultiAgent":
+    def setup_multi_agent(self) -> "MultiAgent":
         """Set up the multi-agent system after initialization."""
         # Generate schema based on execution mode
         build_mode = self._get_build_mode()
