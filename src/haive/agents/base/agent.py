@@ -2,7 +2,6 @@
 
 """Base Agent class for the Haive framework.
 
-from typing import Any
 This module provides the abstract base agent class that all agents inherit from,
 including execution, state management, and persistence functionality through mixins.
 """
