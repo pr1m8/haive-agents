@@ -11,8 +11,8 @@ from pydantic import Field
 from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.collaberative.state import CollaborativeState
 
-logger = get_logger(__name__)
-logger.set_level(logging.WARNING)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 
 class CollaborativeConversation(BaseConversationAgent):

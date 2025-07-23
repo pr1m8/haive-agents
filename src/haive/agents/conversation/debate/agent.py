@@ -15,8 +15,8 @@ from pydantic import BaseModel, Field, model_validator
 from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.debate.state import DebateState
 
-logger = get_logger(__name__)
-logger.set_level(logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class DebateConversation(BaseConversationAgent):

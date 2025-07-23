@@ -16,8 +16,8 @@ from haive.agents.conversation.social_media.models import (
 from haive.agents.conversation.social_media.state import SocialMediaState
 from haive.agents.simple.agent import SimpleAgent
 
-logger = get_logger(__name__)
-logger.set_level(logging.WARNING)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 
 class SocialMediaConversation(BaseConversationAgent):

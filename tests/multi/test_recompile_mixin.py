@@ -96,9 +96,9 @@ class RecompileMetaState(MetaStateSchema, RecompileMixin):
 
                 except Exception as e:
                     # Log but don't fail
-                    from haive.core.logging.rich_logger import get_logger
+                    import logging
 
-                    logger = get_logger(__name__)
+                    logger = logging.getLogger(__name__)
                     logger.debug(f"Could not check for state changes: {e}")
 
         return self

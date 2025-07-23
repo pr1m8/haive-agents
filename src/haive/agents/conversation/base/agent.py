@@ -35,8 +35,8 @@ from haive.agents.base.agent import Agent
 from haive.agents.conversation.base.state import ConversationState
 from haive.agents.simple.agent import SimpleAgent
 
-logger = get_logger(__name__)
-logger.set_level(logging.WARNING)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 
 class BaseConversationAgent(Agent):

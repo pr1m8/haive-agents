@@ -18,7 +18,7 @@ from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
 # Configure logger
-logger = get_logger("test_multi_agent")
+logger = logging.getLogger("test_multi_agent")
 logger.setLevel(logging.INFO)
 
 

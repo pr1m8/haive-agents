@@ -15,8 +15,8 @@ from pydantic import BaseModel, Field
 from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.directed.state import DirectedState
 
-logger = get_logger(__name__)
-logger.set_level(logging.WARNING)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 
 class MentionType(str, Enum):

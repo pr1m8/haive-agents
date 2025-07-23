@@ -78,8 +78,8 @@ type RoundNumber = int
 type TurnCount = int
 type ProgressPercentage = float
 
-logger = get_logger(__name__)
-logger.set_level(logging.WARNING)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 
 class ConversationState(MessagesState):
