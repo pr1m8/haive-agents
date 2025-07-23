@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Debug script to demonstrate the multi-agent routing issue and\s+fi\w+."""
+r"""Debug script to demonstrate the multi-agent routing issue and\s+fi\w+."""
 
 import sys
 

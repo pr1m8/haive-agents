@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Debug why streaming values are\s+empt\w+."""
+r"""Debug why streaming values are\s+empt\w+."""
 
 from src.haive.agents.conversation.collaberative.agent import CollaborativeConversation
 

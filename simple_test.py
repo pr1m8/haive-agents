@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Simple test to check if RAG agents can be imported and\s+create\w+."""
+r"""Simple test to check if RAG agents can be imported and\s+create\w+."""
 
 import os
 import sys

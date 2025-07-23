@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add missing build_custom_graph methods to V\d+\s+classe\w+."""
+r"""Add missing build_custom_graph methods to V\d+\s+classe\w+."""
 
 import re
 
@@ -34,7 +34,7 @@ for class_name in missing:
             + '''
 
     def build_custom_graph(self):
-        """Build the custom graph for this\s+workflo\w+"""
+        r"""Build the custom graph for this\s+workflo\w+"""
         return None  # Use default graph structure'''
         )
 
