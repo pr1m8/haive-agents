@@ -9,13 +9,10 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
-from haive.core.schema import StateSchema
-from langchain_core.documents import Document
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.simple.agent import SimpleAgent
@@ -85,8 +82,8 @@ class MemoryRoutingRule:
     query_type: QueryType
     strategy: MemoryStrategy
     confidence_threshold: float = 0.7
-    fallback_strategy: Optional[MemoryStrategy] = None
-    conditions: Dict[str, Any] = field(default_factory=dict)
+    fallback_strategy: MemoryStrategy | None = None
+    conditions: dict[str, Any] = field(default_factory=dict)
 
 
 class MultiMemoryConfig(BaseModel):
@@ -104,19 +101,19 @@ class MultiMemoryConfig(BaseModel):
 
     # Memory agent configurations
     enable_simple_memory: bool = Field(default=True)
-    simple_memory_config: Optional[TokenAwareMemoryConfig] = Field(
+    simple_memory_config: TokenAwareMemoryConfig | None = Field(
         default_factory=TokenAwareMemoryConfig
     )
 
     enable_graph_memory: bool = Field(default=HAS_GRAPH_MEMORY)
-    graph_memory_config: Optional[Dict[str, Any]] = Field(default_factory=dict)
+    graph_memory_config: dict[str, Any] | None = Field(default_factory=dict)
 
     enable_rag_memory: bool = Field(default=HAS_RAG_MEMORY)
-    rag_memory_config: Optional[Dict[str, Any]] = Field(default_factory=dict)
+    rag_memory_config: dict[str, Any] | None = Field(default_factory=dict)
 
     # Routing configuration
     default_strategy: MemoryStrategy = Field(default=MemoryStrategy.ADAPTIVE)
-    routing_rules: List[MemoryRoutingRule] = Field(
+    routing_rules: list[MemoryRoutingRule] = Field(
         default_factory=lambda: [
             MemoryRoutingRule(QueryType.CONVERSATIONAL, MemoryStrategy.SIMPLE),
             MemoryRoutingRule(
@@ -162,16 +159,16 @@ class MultiMemoryState(MemoryStateWithTokens):
 
     # Memory routing
     selected_strategy: MemoryStrategy = Field(default=MemoryStrategy.SIMPLE)
-    routing_decision: Dict[str, Any] = Field(default_factory=dict)
+    routing_decision: dict[str, Any] = Field(default_factory=dict)
     fallback_used: bool = Field(default=False)
 
     # Multi-memory responses
-    memory_responses: Dict[str, Any] = Field(default_factory=dict)
-    response_synthesis: Dict[str, Any] = Field(default_factory=dict)
+    memory_responses: dict[str, Any] = Field(default_factory=dict)
+    response_synthesis: dict[str, Any] = Field(default_factory=dict)
 
     # Performance tracking
     query_processing_time: float = Field(default=0.0)
-    memory_latencies: Dict[str, float] = Field(default_factory=dict)
+    memory_latencies: dict[str, float] = Field(default_factory=dict)
     total_coordination_time: float = Field(default=0.0)
 
 
@@ -225,7 +222,7 @@ class MultiMemoryAgent(SimpleAgent):
                 )
                 logger.info("Initialized SimpleMemoryAgent")
             except Exception as e:
-                logger.error(f"Failed to initialize SimpleMemoryAgent: {e}")
+                logger.exception(f"Failed to initialize SimpleMemoryAgent: {e}")
 
         # Graph Memory Agent (if available)
         if self.multi_config.enable_graph_memory and HAS_GRAPH_MEMORY:
@@ -251,7 +248,11 @@ class MultiMemoryAgent(SimpleAgent):
                 logger.warning(f"Failed to initialize RAG Memory Agent: {e}")
 
         logger.info(
-            f"Initialized {len(self.memory_agents)} memory agents: {list(self.memory_agents.keys())}"
+            f"Initialized {
+                len(
+                    self.memory_agents)} memory agents: {
+                list(
+                    self.memory_agents.keys())}"
         )
 
     def _init_query_classifier(self):
@@ -262,7 +263,7 @@ class MultiMemoryAgent(SimpleAgent):
         """Initialize the response synthesis system."""
         self.response_synthesizer = ResponseSynthesizer(self.multi_config.llm_config)
 
-    async def classify_query(self, query: str) -> Dict[str, Any]:
+    async def classify_query(self, query: str) -> dict[str, Any]:
         """Classify the query to determine appropriate memory strategy."""
         return await self.query_classifier.classify(query)
 
@@ -270,10 +271,9 @@ class MultiMemoryAgent(SimpleAgent):
         self,
         query_type: QueryType,
         confidence: float,
-        context: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        context: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         """Route query to appropriate memory strategy based on classification."""
-
         # Find matching routing rule
         selected_rule = None
         for rule in self.multi_config.routing_rules:
@@ -327,11 +327,12 @@ class MultiMemoryAgent(SimpleAgent):
             "fallback_used": fallback_used,
             "rule_matched": rule_matched,
             "available_strategies": [s.value for s in available_strategies],
-            "reasoning": f"Query type {query_type} routed to {final_strategy} (confidence: {confidence:.2f})",
+            "reasoning": f"Query type {query_type} routed to {final_strategy} (confidence: {
+                confidence:.2f})",
         }
 
     def _check_rule_conditions(
-        self, rule: MemoryRoutingRule, context: Optional[Dict[str, Any]]
+        self, rule: MemoryRoutingRule, context: dict[str, Any] | None
     ) -> bool:
         """Check if additional rule conditions are met."""
         if not rule.conditions or not context:
@@ -344,8 +345,8 @@ class MultiMemoryAgent(SimpleAgent):
         return True
 
     async def query_memory_agent(
-        self, agent_key: str, query: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, agent_key: str, query: str, context: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """Query a specific memory agent."""
         start_time = datetime.now()
 
@@ -376,7 +377,7 @@ class MultiMemoryAgent(SimpleAgent):
 
         except Exception as e:
             latency = (datetime.now() - start_time).total_seconds()
-            logger.error(f"Error querying {agent_key} memory agent: {e}")
+            logger.exception(f"Error querying {agent_key} memory agent: {e}")
 
             return {
                 "error": str(e),
@@ -389,20 +390,19 @@ class MultiMemoryAgent(SimpleAgent):
         self,
         strategy: MemoryStrategy,
         query: str,
-        context: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        context: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         """Execute the selected memory strategy."""
-
         if strategy == MemoryStrategy.SIMPLE:
             return await self.query_memory_agent("simple", query, context)
 
-        elif strategy == MemoryStrategy.GRAPH:
+        if strategy == MemoryStrategy.GRAPH:
             return await self.query_memory_agent("graph", query, context)
 
-        elif strategy == MemoryStrategy.RAG:
+        if strategy == MemoryStrategy.RAG:
             return await self.query_memory_agent("rag", query, context)
 
-        elif strategy == MemoryStrategy.HYBRID:
+        if strategy == MemoryStrategy.HYBRID:
             # Query multiple agents in parallel
             tasks = []
             available_agents = list(self.memory_agents.keys())[
@@ -433,21 +433,19 @@ class MultiMemoryAgent(SimpleAgent):
                 ),
             }
 
-        elif strategy == MemoryStrategy.ADAPTIVE:
+        if strategy == MemoryStrategy.ADAPTIVE:
             # Use AI to decide the best approach
             adaptive_result = await self._adaptive_strategy_selection(query, context)
             return await self.execute_strategy(
                 adaptive_result["selected_strategy"], query, context
             )
 
-        else:
-            return {"error": f"Unknown strategy: {strategy}", "success": False}
+        return {"error": f"Unknown strategy: {strategy}", "success": False}
 
     async def _adaptive_strategy_selection(
-        self, query: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, query: str, context: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """Use AI to adaptively select the best memory strategy."""
-
         available_strategies = list(self.memory_agents.keys())
         strategy_descriptions = {
             "simple": "Basic conversational memory with token-aware management",
@@ -457,16 +455,16 @@ class MultiMemoryAgent(SimpleAgent):
 
         # Create prompt for strategy selection
         strategy_prompt = f"""
-        You are a memory strategy coordinator. Given the query and available memory strategies, 
+        You are a memory strategy coordinator. Given the query and available memory strategies,
         select the most appropriate approach.
 
         Query: "{query}"
-        
+
         Available strategies:
         {chr(10).join([f"- {k}: {strategy_descriptions.get(k, 'Unknown')}" for k in available_strategies])}
-        
+
         Context: {context if context else "None"}
-        
+
         Select the best strategy and explain your reasoning. Respond with just the strategy name.
         """
 
@@ -493,7 +491,7 @@ class MultiMemoryAgent(SimpleAgent):
             }
 
         except Exception as e:
-            logger.error(f"Adaptive strategy selection failed: {e}")
+            logger.exception(f"Adaptive strategy selection failed: {e}")
             return {
                 "selected_strategy": MemoryStrategy.SIMPLE,
                 "reasoning": f"Fallback to simple due to error: {e}",
@@ -501,10 +499,9 @@ class MultiMemoryAgent(SimpleAgent):
             }
 
     async def synthesize_responses(
-        self, responses: List[Dict[str, Any]], query: str
-    ) -> Dict[str, Any]:
+        self, responses: list[dict[str, Any]], query: str
+    ) -> dict[str, Any]:
         """Synthesize multiple memory responses into a coherent answer."""
-
         if not self.multi_config.enable_response_synthesis:
             # Just return the first successful response
             for response in responses:
@@ -515,7 +512,7 @@ class MultiMemoryAgent(SimpleAgent):
         # Use the response synthesizer
         return await self.response_synthesizer.synthesize(responses, query)
 
-    async def _prepare_input(self, input_data: Any) -> Dict[str, Any]:
+    async def _prepare_input(self, input_data: Any) -> dict[str, Any]:
         """Prepare input with multi-memory coordination."""
         start_time = datetime.now()
 
@@ -587,7 +584,7 @@ class MultiMemoryAgent(SimpleAgent):
         new_avg = (prev_avg * (total_queries - 1) + latency) / total_queries
         self._query_stats["average_latency"] = new_avg
 
-    def get_coordination_stats(self) -> Dict[str, Any]:
+    def get_coordination_stats(self) -> dict[str, Any]:
         """Get statistics about query coordination and routing."""
         return {
             **self._query_stats,
@@ -603,7 +600,7 @@ class MultiMemoryAgent(SimpleAgent):
             "timestamp": datetime.now().isoformat(),
         }
 
-    def get_comprehensive_status(self) -> Dict[str, Any]:
+    def get_comprehensive_status(self) -> dict[str, Any]:
         """Get comprehensive status of the MultiMemoryAgent."""
         base_status = super().get_comprehensive_status()
 
@@ -640,19 +637,18 @@ class QueryClassifier:
         self.llm_config = llm_config
         self.engine = llm_config.instantiate()
 
-    async def classify(self, query: str) -> Dict[str, Any]:
+    async def classify(self, query: str) -> dict[str, Any]:
         """Classify a query to determine its type and characteristics."""
-
         classification_prompt = f"""
         Classify the following query to determine the best memory strategy approach.
-        
+
         Query: "{query}"
-        
+
         Analyze the query for:
         1. Primary intent (conversational, factual, relationship-based, temporal, preference, memory retrieval)
         2. Information type needed (recent conversation, stored facts, relationships, timeline, user preferences)
         3. Complexity level (simple, moderate, complex)
-        
+
         Respond in this format:
         Type: [conversational/factual/relationship/temporal/preference/memory_retrieval/mixed]
         Confidence: [0.0-1.0]
@@ -699,7 +695,7 @@ class QueryClassifier:
             return result
 
         except Exception as e:
-            logger.error(f"Query classification failed: {e}")
+            logger.exception(f"Query classification failed: {e}")
             return {
                 "query_type": QueryType.CONVERSATIONAL,
                 "confidence": 0.5,
@@ -716,10 +712,9 @@ class ResponseSynthesizer:
         self.engine = llm_config.instantiate()
 
     async def synthesize(
-        self, responses: List[Dict[str, Any]], original_query: str
-    ) -> Dict[str, Any]:
+        self, responses: list[dict[str, Any]], original_query: str
+    ) -> dict[str, Any]:
         """Synthesize multiple memory responses into a coherent answer."""
-
         # Filter successful responses
         successful_responses = [r for r in responses if r.get("success", False)]
 
@@ -743,12 +738,12 @@ class ResponseSynthesizer:
 
         synthesis_prompt = f"""
         Synthesize the following responses from different memory agents into a single, coherent answer.
-        
+
         Original Query: "{original_query}"
-        
+
         Agent Responses:
         {chr(10).join(response_summaries)}
-        
+
         Provide a synthesized response that:
         1. Combines relevant information from all agents
         2. Resolves any contradictions by noting different perspectives
@@ -767,7 +762,7 @@ class ResponseSynthesizer:
             }
 
         except Exception as e:
-            logger.error(f"Response synthesis failed: {e}")
+            logger.exception(f"Response synthesis failed: {e}")
             return {
                 "error": f"Synthesis failed: {e}",
                 "fallback_response": successful_responses[0]["result"],
@@ -784,7 +779,6 @@ def create_multi_memory_agent(
     **kwargs,
 ) -> MultiMemoryAgent:
     """Factory function to create a MultiMemoryAgent with sensible defaults."""
-
     config = MultiMemoryConfig(
         name=name,
         enable_graph_memory=enable_graph,

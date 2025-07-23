@@ -106,11 +106,11 @@ class SequentialAgentWithStructuredOutput(Generic[OutputT]):
                 [
                     (
                         "system",
-                        """You are a structured output specialist. Your role is to take the provided 
-information and organize it into the requested structured format. 
+                        """You are a structured output specialist. Your role is to take the provided
+information and organize it into the requested structured format.
 
 Ensure all required fields are populated accurately based on the input data.
-If certain information is not available, use reasonable defaults or indicate 
+If certain information is not available, use reasonable defaults or indicate
 that the information is missing.""",
                     ),
                     (
@@ -174,7 +174,7 @@ Provide the structured output now:""",
             first_result = await self.first_agent.arun(input_data, **kwargs)
 
             if self.debug:
-                print(f"   ✅ First agent completed")
+                print("   ✅ First agent completed")
                 print(f"   Result type: {type(first_result)}")
 
             # Transform intermediate result if hook provided
@@ -195,7 +195,7 @@ Provide the structured output now:""",
             structured_result = await self.second_agent.arun(structured_input, **kwargs)
 
             if self.debug:
-                print(f"   ✅ Structured output completed")
+                print("   ✅ Structured output completed")
                 print(f"   Output type: {type(structured_result)}")
 
             # Extract the actual structured output from the result

@@ -11,13 +11,12 @@ This implementation provides state-of-the-art RAG capabilities:
 import asyncio
 import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.messages_state import MessagesState
 from langchain.retrievers import EnsembleRetriever
 from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import (
@@ -30,12 +29,8 @@ from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.retrievers import BM25Retriever
 from langchain_community.vectorstores import FAISS, Chroma
 from langchain_core.documents import Document
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from langchain_core.retrievers import BaseRetriever
-from langchain_core.vectorstores import VectorStore
 
 from haive.agents.memory_v2.time_weighted_retriever import TimeWeightedRetriever
-from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -68,8 +63,8 @@ class AdvancedRAGConfig:
 
     # Basic settings
     user_id: str = "default_user"
-    memory_store_path: Optional[str] = None
-    llm_config: Optional[AugLLMConfig] = None
+    memory_store_path: str | None = None
+    llm_config: AugLLMConfig | None = None
 
     # Retrieval settings
     strategy: RetrievalStrategy = RetrievalStrategy.ADAPTIVE
@@ -125,8 +120,8 @@ class AdvancedRAGMemoryAgent:
         self.logger = logger
 
         # Initialize storage
-        self.documents: List[Document] = []
-        self.document_metadata: Dict[str, Dict[str, Any]] = {}
+        self.documents: list[Document] = []
+        self.document_metadata: dict[str, dict[str, Any]] = {}
 
         # Initialize retrievers
         self._init_vector_store()
@@ -136,7 +131,7 @@ class AdvancedRAGMemoryAgent:
         self._init_generation_components()
 
         # Memory for query analysis
-        self.query_history: List[Dict[str, Any]] = []
+        self.query_history: list[dict[str, Any]] = []
 
     def _init_vector_store(self):
         """Initialize vector store for dense retrieval."""
@@ -156,7 +151,8 @@ class AdvancedRAGMemoryAgent:
                         embedding_function=embeddings,
                     )
                 self.logger.info(
-                    f"Loaded existing vector store from {self.config.memory_store_path}"
+                    f"Loaded existing vector store from {
+                        self.config.memory_store_path}"
                 )
             except Exception as e:
                 self.logger.warning(
@@ -336,10 +332,9 @@ class AdvancedRAGMemoryAgent:
 
         if total_complexity >= 3 or word_count > 15:
             return QueryComplexity.COMPLEX
-        elif total_complexity >= 1 or word_count > 7:
+        if total_complexity >= 1 or word_count > 7:
             return QueryComplexity.MEDIUM
-        else:
-            return QueryComplexity.SIMPLE
+        return QueryComplexity.SIMPLE
 
     def choose_retrieval_strategy(
         self, query: str, complexity: QueryComplexity
@@ -369,9 +364,9 @@ class AdvancedRAGMemoryAgent:
     async def retrieve_documents(
         self,
         query: str,
-        strategy: Optional[RetrievalStrategy] = None,
-        k: Optional[int] = None,
-    ) -> List[Document]:
+        strategy: RetrievalStrategy | None = None,
+        k: int | None = None,
+    ) -> list[Document]:
         """Retrieve documents using specified strategy."""
         if strategy is None:
             complexity = self.analyze_query_complexity(query)
@@ -416,11 +411,11 @@ class AdvancedRAGMemoryAgent:
             return docs[:k]
 
         except Exception as e:
-            self.logger.error(f"Error in retrieval with strategy {strategy}: {e}")
+            self.logger.exception(f"Error in retrieval with strategy {strategy}: {e}")
             # Fallback to simple dense retrieval
             return self.dense_retriever.get_relevant_documents(query)[:k]
 
-    def _apply_importance_boost(self, docs: List[Document]) -> List[Document]:
+    def _apply_importance_boost(self, docs: list[Document]) -> list[Document]:
         """Boost important documents in ranking."""
         if not self.config.importance_boost or self.config.importance_boost == 1.0:
             return docs
@@ -432,7 +427,8 @@ class AdvancedRAGMemoryAgent:
             base_score = importance_values.get(importance, 2)
             return base_score * self.config.importance_boost
 
-        # Sort by importance while maintaining relative order within importance levels
+        # Sort by importance while maintaining relative order within importance
+        # levels
         docs_with_scores = [
             (doc, importance_score(doc), i) for i, doc in enumerate(docs)
         ]
@@ -443,9 +439,9 @@ class AdvancedRAGMemoryAgent:
     async def generate_with_citations(
         self,
         query: str,
-        retrieved_docs: List[Document],
-        include_citations: Optional[bool] = None,
-    ) -> Dict[str, Any]:
+        retrieved_docs: list[Document],
+        include_citations: bool | None = None,
+    ) -> dict[str, Any]:
         """Generate response with citations."""
         include_citations = include_citations or self.config.include_citations
 
@@ -506,9 +502,9 @@ Answer:"""
     async def add_memory(
         self,
         content: str,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
         importance: str = "normal",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Add new memory to the system."""
         # Prepare metadata
         doc_metadata = {
@@ -553,9 +549,9 @@ Answer:"""
     async def query_memory(
         self,
         query: str,
-        strategy: Optional[RetrievalStrategy] = None,
+        strategy: RetrievalStrategy | None = None,
         include_analysis: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Query memory with advanced RAG capabilities."""
         start_time = datetime.now()
 
@@ -601,7 +597,7 @@ Answer:"""
 
         return result
 
-    async def get_memory_analytics(self) -> Dict[str, Any]:
+    async def get_memory_analytics(self) -> dict[str, Any]:
         """Get comprehensive analytics about memory usage."""
         # Document statistics
         doc_stats = {
@@ -632,7 +628,7 @@ Answer:"""
                     ).timestamp()
                     if doc_time > recent_threshold:
                         doc_stats["recent_additions"] += 1
-            except:
+            except BaseException:
                 pass
 
         # Query statistics
@@ -671,7 +667,7 @@ Answer:"""
             "queries": query_stats,
         }
 
-    def save_memory_store(self, path: Optional[str] = None):
+    def save_memory_store(self, path: str | None = None):
         """Save the vector store and metadata."""
         save_path = path or self.config.memory_store_path
         if save_path:
@@ -689,7 +685,7 @@ Answer:"""
 
                 self.logger.info(f"Memory store saved to {save_path}")
             except Exception as e:
-                self.logger.error(f"Error saving memory store: {e}")
+                self.logger.exception(f"Error saving memory store: {e}")
 
 
 # Example usage and factory functions
@@ -751,10 +747,8 @@ async def example_advanced_rag_usage():
         ("She mentioned that graph transformers could revolutionize NLP.", "critical"),
     ]
 
-    print("Adding memories...")
     for content, importance in memories:
-        result = await agent.add_memory(content, importance=importance)
-        print(f"Added: {result['doc_id']}")
+        await agent.add_memory(content, importance=importance)
 
     # Query with different complexities
     queries = [
@@ -763,21 +757,11 @@ async def example_advanced_rag_usage():
         "How do Sarah Chen's graph neural network contributions relate to NLP and what impact have they had?",  # Complex
     ]
 
-    print("\nQuerying memories...")
     for query in queries:
-        result = await agent.query_memory(query, include_analysis=True)
-        print(f"\nQuery: {query}")
-        print(f"Complexity: {result['analysis']['complexity']}")
-        print(f"Strategy: {result['analysis']['strategy_used']}")
-        print(f"Answer: {result['answer'][:200]}...")
-        print(
-            f"Citations: {list(result['citations'].keys()) if result['citations'] else 'None'}"
-        )
+        await agent.query_memory(query, include_analysis=True)
 
     # Get analytics
-    print("\nMemory Analytics:")
-    analytics = await agent.get_memory_analytics()
-    print(json.dumps(analytics, indent=2))
+    await agent.get_memory_analytics()
 
 
 if __name__ == "__main__":

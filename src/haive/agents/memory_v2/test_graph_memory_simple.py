@@ -31,7 +31,7 @@ def test_graph_memory_config():
         enable_vector_index=False,  # Disable for testing
     )
 
-    print(f"✅ GraphMemoryConfig created successfully:")
+    print("✅ GraphMemoryConfig created successfully:")
     print(f"  - User ID: {config.user_id}")
     print(f"  - Mode: {config.mode}")
     print(f"  - LLM Config: {type(config.llm_config.llm_config).__name__}")
@@ -41,7 +41,7 @@ def test_graph_memory_config():
 
     # Test all modes
     for mode in GraphMemoryMode:
-        test_config = GraphMemoryConfig(mode=mode, llm_config=llm_config)
+        GraphMemoryConfig(mode=mode, llm_config=llm_config)
         print(f"  - Mode {mode.name} ({mode.value}): ✅")
 
     print("\n✅ All GraphMemoryConfig tests passed!")
@@ -153,13 +153,13 @@ def comprehensive_test():
     print("\n" + "=" * 50)
     print("📊 Test Summary:")
     print("=" * 50)
-    print(f"✅ Configuration: PASSED")
+    print("✅ Configuration: PASSED")
     print(
         f"{'✅' if transformers_ok else '❌'} Graph Transformers: {'PASSED' if transformers_ok else 'FAILED'}"
     )
     print(f"{'✅' if rag_ok else '❌'} GraphDB RAG: {'PASSED' if rag_ok else 'FAILED'}")
-    print(f"⚠️  Tool Creation: SKIPPED (requires Neo4j)")
-    print(f"⚠️  Full Agent Test: SKIPPED (requires Neo4j)")
+    print("⚠️  Tool Creation: SKIPPED (requires Neo4j)")
+    print("⚠️  Full Agent Test: SKIPPED (requires Neo4j)")
 
     if transformers_ok and rag_ok:
         print("\n🎉 GraphMemoryAgent is properly implemented and ready for use!")

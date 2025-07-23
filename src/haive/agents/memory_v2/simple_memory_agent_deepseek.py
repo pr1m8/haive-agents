@@ -7,12 +7,9 @@ This is a working version of SimpleMemoryAgent that:
 """
 
 import logging
-from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
-from pydantic import Field
 
 from haive.agents.simple.agent import SimpleAgent
 
@@ -50,7 +47,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
     def __init__(
         self,
         name: str = "memory_agent",
-        engine: Optional[AugLLMConfig] = None,
+        engine: AugLLMConfig | None = None,
         user_id: str = "default_user",
         max_memories: int = 100,
         **kwargs,
@@ -89,7 +86,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
             f"Initialized SimpleMemoryAgentDeepSeek: {name} for user: {user_id}"
         )
 
-    def _classify_input(self, user_input: str) -> Dict[str, Any]:
+    def _classify_input(self, user_input: str) -> dict[str, Any]:
         """Classify user input to determine if it's a memory operation.
 
         Args:
@@ -170,9 +167,12 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
         entry = UnifiedMemoryEntry.from_memory_item(memory)
         self.token_state.current_memories.append(entry)
 
-        return f"I've stored that in my memory (ID: {memory.id}). Type: {memory_type.value}, Importance: {importance.value}"
+        return f"I've stored that in my memory (ID: {
+            memory.id}). Type: {
+            memory_type.value}, Importance: {
+            importance.value}"
 
-    def _search_memories(self, query: str, k: int = 5) -> List[EnhancedMemoryItem]:
+    def _search_memories(self, query: str, k: int = 5) -> list[EnhancedMemoryItem]:
         """Search for relevant memories.
 
         Args:
@@ -193,7 +193,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
 
         return memory_items
 
-    def _format_memories_as_context(self, memories: List[EnhancedMemoryItem]) -> str:
+    def _format_memories_as_context(self, memories: list[EnhancedMemoryItem]) -> str:
         """Format memories as context for the LLM.
 
         Args:
@@ -251,7 +251,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
             return f"{result}\n\n{response}"
 
         # Handle memory queries
-        elif classification["is_query"]:
+        if classification["is_query"]:
             # Search for relevant memories
             memories = self._search_memories(user_input)
             context = self._format_memories_as_context(memories)
@@ -264,19 +264,15 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
             return response
 
         # Normal processing
-        else:
-            # Check if we should add any context
-            memories = self._search_memories(user_input, k=3)
-            if memories:
-                context = self._format_memories_as_context(memories)
-                enhanced_input = (
-                    f"Context from memory:\n{context}\n\nUser: {user_input}"
-                )
-                return await super().arun(enhanced_input, **kwargs)
-            else:
-                return await super().arun(user_input, **kwargs)
+        # Check if we should add any context
+        memories = self._search_memories(user_input, k=3)
+        if memories:
+            context = self._format_memories_as_context(memories)
+            enhanced_input = f"Context from memory:\n{context}\n\nUser: {user_input}"
+            return await super().arun(enhanced_input, **kwargs)
+        return await super().arun(user_input, **kwargs)
 
-    def get_memory_stats(self) -> Dict[str, Any]:
+    def get_memory_stats(self) -> dict[str, Any]:
         """Get memory statistics.
 
         Returns:
@@ -294,8 +290,6 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
 
 async def test_with_deepseek():
     """Test the agent with DeepSeek configuration."""
-    print("\n🚀 Testing SimpleMemoryAgentDeepSeek with DeepSeek LLM 🚀\n")
-
     # Create DeepSeek configuration
     from haive.core.models.llm.base import DeepSeekLLMConfig
 
@@ -322,17 +316,12 @@ async def test_with_deepseek():
     ]
 
     for user_input in test_inputs:
-        print(f"\nUser: {user_input}")
-        response = await agent.arun(user_input)
-        print(f"Agent: {response}")
+        await agent.arun(user_input)
 
     # Show stats
-    print("\n📊 Memory Statistics:")
     stats = agent.get_memory_stats()
-    for key, value in stats.items():
-        print(f"  {key}: {value}")
-
-    print("\n✅ Test completed!")
+    for _key, _value in stats.items():
+        pass
 
 
 if __name__ == "__main__":
@@ -341,7 +330,6 @@ if __name__ == "__main__":
 
     # Set DeepSeek API key if needed
     if not os.getenv("DEEPSEEK_API_KEY"):
-        print("⚠️  Setting test DeepSeek API key...")
         os.environ["DEEPSEEK_API_KEY"] = "test-key-replace-with-real"
 
     asyncio.run(test_with_deepseek())
