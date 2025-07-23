@@ -20,7 +20,7 @@ from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage, HumanMessage
 from pydantic import Field, model_validator
 
-from haive.agents.base.agent import Agent
+from haive.agents.base import Agent
 from haive.agents.multi.base import MultiAgent, SequentialAgent
 from haive.agents.simple.agent import SimpleAgent
 
