@@ -1,6 +1,6 @@
 """Module exports."""
 
-from dynamic_supervisor.agent import (
+from haive.agents.dynamic_supervisor.agent import (
     DynamicSupervisorAgent,
     add_default_agent,
     build_graph,
@@ -9,7 +9,7 @@ from dynamic_supervisor.agent import (
     run,
     setup_agent,
 )
-from dynamic_supervisor.models import (
+from haive.agents.dynamic_supervisor.models import (
     AgentInfo,
     AgentInfoV2,
     AgentRequest,
@@ -22,12 +22,12 @@ from dynamic_supervisor.models import (
     matches_capability,
     serialize_agent,
 )
-from dynamic_supervisor.prompts import (
+from haive.agents.dynamic_supervisor.prompts import (
     format_agent_list,
     format_missing_capability,
     format_supervisor_prompt,
 )
-from dynamic_supervisor.state import (
+from haive.agents.dynamic_supervisor.state import (
     SupervisorState,
     SupervisorStateV2,
     SupervisorStateWithTools,
@@ -44,7 +44,7 @@ from dynamic_supervisor.state import (
     sync_agents,
     sync_on_init,
 )
-from dynamic_supervisor.tools import (
+from haive.agents.dynamic_supervisor.tools import (
     choose_agent,
     create_add_agent_tool,
     create_agent_tools,

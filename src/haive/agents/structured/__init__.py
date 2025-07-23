@@ -1,19 +1,20 @@
 """Module exports."""
 
-from structured.agent import (
+from structured.prompts import create_contextual_prompt, get_prompt_for_model
+
+from haive.agents.structured.agent import (
     StructuredOutputAgent,
     create_structured_agent,
     extract_from_messages,
     extract_from_state,
     model_post_init,
 )
-from structured.models import (
+from haive.agents.structured.models import (
     AnalysisOutput,
     DecisionOutput,
     GenericStructuredOutput,
     TaskOutput,
 )
-from structured.prompts import create_contextual_prompt, get_prompt_for_model
 
 __all__ = [
     "AnalysisOutput",

@@ -1,6 +1,6 @@
 """Module exports."""
 
-from reflection.agent import (
+from haive.agents.reasoning_and_critique.reflection.agent import (
     ReflectionAgent,
     evaluation_function,
     improvement_function,
@@ -9,20 +9,20 @@ from reflection.agent import (
     search_function,
     setup_workflow,
 )
-from reflection.config import (
+from haive.agents.reasoning_and_critique.reflection.config import (
     ReflectionAgentConfig,
     ReflectionConfig,
     from_aug_llm,
     from_scratch,
 )
-from reflection.models import (
+from haive.agents.reasoning_and_critique.reflection.models import (
     ReflectionOutput,
     ReflectionResult,
     SearchQuery,
     as_message,
     normalized_score,
 )
-from reflection.state import (
+from haive.agents.reasoning_and_critique.reflection.state import (
     ReflectionAgentState,
     add_reflection,
     last_ai_message,

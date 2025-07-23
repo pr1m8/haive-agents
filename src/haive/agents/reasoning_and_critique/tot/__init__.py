@@ -1,8 +1,12 @@
 """Module exports."""
 
-from tot.agent import ToTAgent, setup_workflow
-from tot.config import TOTAgentConfig, create_for_problem_type, get_engine
-from tot.models import (
+from haive.agents.reasoning_and_critique.tot.agent import ToTAgent, setup_workflow
+from haive.agents.reasoning_and_critique.tot.config import (
+    TOTAgentConfig,
+    create_for_problem_type,
+    get_engine,
+)
+from haive.agents.reasoning_and_critique.tot.models import (
     Candidate,
     CandidateEvaluation,
     CandidateGeneration,
@@ -19,7 +23,7 @@ from tot.models import (
     update_candidates,
     value,
 )
-from tot.state import (
+from haive.agents.reasoning_and_critique.tot.state import (
     TOTInput,
     TOTOutput,
     TOTState,

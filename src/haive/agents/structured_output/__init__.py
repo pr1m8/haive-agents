@@ -1,6 +1,6 @@
 """Module exports."""
 
-from structured_output.agent import (
+from haive.agents.structured_output.agent import (
     StructuredOutputAgent,
     create_processor,
     create_reflection_processor,
@@ -9,7 +9,7 @@ from structured_output.agent import (
     process_with_context,
     setup_agent,
 )
-from structured_output.models import (
+from haive.agents.structured_output.models import (
     Analysis,
     Critique,
     Decision,

@@ -1,6 +1,6 @@
 """Module exports."""
 
-from collaberative.agent import (
+from haive.agents.conversation.collaberative.agent import (
     CollaborativeConversation,
     create_brainstorming_session,
     create_code_review,
@@ -8,14 +8,14 @@ from collaberative.agent import (
     process_response,
     select_speaker,
 )
-from collaberative.example import (
+from haive.agents.conversation.collaberative.example import (
     example_brainstorming_session,
     example_code_review,
     example_creative_writing,
     example_project_planning,
     example_research_paper,
 )
-from collaberative.state import (
+from haive.agents.conversation.collaberative.state import (
     CollaborativeState,
     merge_contribution_counts,
     merge_document_sections,

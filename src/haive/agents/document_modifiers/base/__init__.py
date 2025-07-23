@@ -1,6 +1,6 @@
 """Module exports."""
 
-from base.state import (
+from haive.agents.document_modifiers.base.state import (
     DocumentModifierState,
     add_document,
     add_documents,

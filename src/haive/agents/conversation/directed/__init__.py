@@ -1,6 +1,6 @@
 """Module exports."""
 
-from directed.agent import (
+from haive.agents.conversation.directed.agent import (
     DirectedConversation,
     DirectedConversationConfig,
     InteractionPattern,
@@ -12,13 +12,13 @@ from directed.agent import (
     process_response,
     select_speaker,
 )
-from directed.example import (
+from haive.agents.conversation.directed.example import (
     example_classroom_discussion,
     example_customer_support,
     example_interactive_story,
     example_team_meeting,
 )
-from directed.state import DirectedState
+from haive.agents.conversation.directed.state import DirectedState
 
 __all__ = [
     "DirectedConversation",

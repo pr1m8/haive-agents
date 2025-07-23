@@ -125,8 +125,7 @@ class ComponentDiscoveryAgent(BaseModel):
     _haive_discovery: HaiveComponentDiscovery | None = PrivateAttr(default=None)
 
     @model_validator(mode="after")
-    @classmethod
-    def setup_discovery_agent(cls) -> "ComponentDiscoveryAgent":
+    def setup_discovery_agent(self) -> "ComponentDiscoveryAgent":
         """Initialize the discovery agent after model creation.
 
         This validator:

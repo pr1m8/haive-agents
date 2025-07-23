@@ -1,5 +1,5 @@
 """Module exports."""
 
-from models.mixins import Reasoning
+from haive.agents.common.models.mixins import Reasoning
 
 __all__ = ["Reasoning"]

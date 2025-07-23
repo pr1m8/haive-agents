@@ -1,6 +1,6 @@
 """Module exports."""
 
-from memory.agent import (
+from haive.agents.memory.agent import (
     MemoryAgent,
     add_system_message,
     recall_memory,
@@ -9,25 +9,25 @@ from memory.agent import (
     save_structured_memory,
     setup_workflow,
 )
-from memory.agentic_rag_coordinator import (
+from haive.agents.memory.agentic_rag_coordinator import (
     AgenticRAGCoordinator,
     AgenticRAGCoordinatorConfig,
     AgenticRAGResult,
     RetrievalStrategy,
 )
-from memory.enhanced_retriever import (
+from haive.agents.memory.enhanced_retriever import (
     EnhancedMemoryRetriever,
     EnhancedQueryResult,
     EnhancedRetrieverConfig,
     get_performance_stats,
 )
-from memory.graph_rag_retriever import (
+from haive.agents.memory.graph_rag_retriever import (
     GraphRAGResult,
     GraphRAGRetriever,
     GraphRAGRetrieverConfig,
     get_top_memories,
 )
-from memory.kg_generator_agent import (
+from haive.agents.memory.kg_generator_agent import (
     KGGeneratorAgent,
     KGGeneratorAgentConfig,
     KnowledgeGraphNode,
@@ -39,7 +39,7 @@ from memory.kg_generator_agent import (
     get_relationships_for_node,
     setup_agent,
 )
-from memory.memory_utils import (
+from haive.agents.memory.memory_utils import (
     create_memory_tools,
     create_memory_vectorstore,
     filter_fn,
@@ -51,21 +51,21 @@ from memory.memory_utils import (
     save_structured_memory,
     save_unstructured_memories,
 )
-from memory.models import KnowledgeTriple, MemoryItem
-from memory.multi_agent_coordinator import (
+from haive.agents.memory.models import KnowledgeTriple, MemoryItem
+from haive.agents.memory.multi_agent_coordinator import (
     MemoryAgentCapabilities,
     MemoryTask,
     MultiAgentCoordinatorConfig,
     MultiAgentMemoryCoordinator,
     get_system_status,
 )
-from memory.sphinx_config import (
+from haive.agents.memory.sphinx_config import (
     create_sphinx_documentation,
     generate_memory_agents_rst,
     main,
 )
-from memory.state import MemoryAgentState
-from memory.unified_memory_api import (
+from haive.agents.memory.state import MemoryAgentState
+from haive.agents.memory.unified_memory_api import (
     MemorySystemConfig,
     MemorySystemResult,
     UnifiedMemorySystem,

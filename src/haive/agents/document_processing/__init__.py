@@ -1,6 +1,6 @@
 """Module exports."""
 
-from document_processing.agent import (
+from haive.agents.document_processing.agent import (
     Config,
     DocumentProcessingAgent,
     DocumentProcessingConfig,

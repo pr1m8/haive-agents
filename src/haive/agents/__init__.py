@@ -3,13 +3,52 @@
 This module provides various agent implementations for the Haive framework.
 """
 
+import os
+import sys
+from typing import TYPE_CHECKING
+
 # Lazy loading for performance - defer all agent imports until needed
 _AGENT_IMPORTS = {
     "Agent": ("haive.agents.base", "Agent"),
-    "MultiAgent": ("haive.agents.multi.clean", "MultiAgent"),
-    "ReactAgent": ("haive.agents.react.agent", "ReactAgent"),
+    "MultiAgent": ("haive.agents.multi", "MultiAgent"),
+    "ReactAgent": ("haive.agents.react", "ReactAgent"),
     "SimpleAgent": ("haive.agents.simple", "SimpleAgent"),
 }
+
+# Check if we're in documentation mode (Sphinx is running)
+_DOCUMENTATION_MODE = (
+    "sphinx" in sys.modules
+    or "SPHINX_BUILD" in os.environ
+    or "HAIVE_DOCS_MODE" in os.environ
+    or any("sphinx" in arg for arg in sys.argv)
+)
+
+# Type checking imports (for linters and IDE support)
+if TYPE_CHECKING:
+    from haive.agents.base import Agent
+    from haive.agents.multi import MultiAgent
+    from haive.agents.react import ReactAgent
+    from haive.agents.simple import SimpleAgent
+else:
+    # Forward declarations for linters when not type checking
+    Agent = None  # type: ignore
+    SimpleAgent = None  # type: ignore
+    ReactAgent = None  # type: ignore
+    MultiAgent = None  # type: ignore
+
+# For documentation generation, import all classes immediately
+# This ensures Sphinx/autoapi can find them during static analysis
+if _DOCUMENTATION_MODE:
+    try:
+        import importlib
+
+        for name, (module_path, class_name) in _AGENT_IMPORTS.items():
+            module = importlib.import_module(module_path)
+            agent_class = getattr(module, class_name)
+            globals()[name] = agent_class
+    except ImportError as e:
+        # If imports fail during docs build, just log and continue
+        print(f"Warning: Could not import {name} for documentation: {e}")
 
 
 def __getattr__(name: str):

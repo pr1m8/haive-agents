@@ -1,6 +1,6 @@
 """Module exports."""
 
-from .agent import (
+from haive.agents.self_healing_code.agent import (
     SelfHealingCodeAgent,
     SelfHealingCodeAgentConfig,
     bug_report_node,
@@ -13,13 +13,13 @@ from .agent import (
     memory_search_node,
     setup_workflow,
 )
-from .branches import (
+from haive.agents.self_healing_code.branches import (
     error_router,
     memory_filter_router,
     memory_generation_router,
     memory_update_router,
 )
-from .state import SelfHealingCodeState
+from haive.agents.self_healing_code.state import SelfHealingCodeState
 
 __all__ = [
     "SelfHealingCodeAgent",

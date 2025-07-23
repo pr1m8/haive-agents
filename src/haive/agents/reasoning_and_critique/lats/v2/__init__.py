@@ -1,6 +1,6 @@
 """Module exports."""
 
-from v2.agents import (
+from haive.agents.reasoning_and_critique.lats.v2.agents import (
     backpropagate,
     create_lats,
     evaluate_candidates,
@@ -11,7 +11,7 @@ from v2.agents import (
     should_continue_search,
     should_execute_tools,
 )
-from v2.models import (
+from haive.agents.reasoning_and_critique.lats.v2.models import (
     CandidateActions,
     Config,
     Reflection,
@@ -20,7 +20,7 @@ from v2.models import (
     normalized_score,
     uct_score,
 )
-from v2.state import (
+from haive.agents.reasoning_and_critique.lats.v2.state import (
     LATSState,
     current_trajectory,
     get_best_leaf_to_expand,

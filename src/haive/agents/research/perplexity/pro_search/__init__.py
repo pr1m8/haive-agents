@@ -1,6 +1,6 @@
 """Module exports."""
 
-from pro_search.models import (
+from haive.agents.research.perplexity.pro_search.models import (
     ContentAnalysis,
     PerplexitySearchState,
     QueryBatch,

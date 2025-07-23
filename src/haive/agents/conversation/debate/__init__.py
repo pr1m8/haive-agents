@@ -1,6 +1,6 @@
 """Module exports."""
 
-from debate.agent import (
+from haive.agents.conversation.debate.agent import (
     DebateConversation,
     conclude_conversation,
     create_simple_debate,
@@ -10,13 +10,13 @@ from debate.agent import (
     setup_agent,
     validate_debate_setup,
 )
-from debate.example import (
+from haive.agents.conversation.debate.example import (
     example_oxford_debate,
     example_panel_debate,
     example_simple_debate,
     example_socratic_debate,
 )
-from debate.state import (
+from haive.agents.conversation.debate.state import (
     DebateState,
     all_arguments_complete,
     all_rebuttals_complete,

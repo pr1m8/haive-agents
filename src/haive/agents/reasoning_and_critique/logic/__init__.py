@@ -1,6 +1,6 @@
 """Module exports."""
 
-from logic.models import (
+from haive.agents.reasoning_and_critique.logic.models import (
     ArgumentStrength,
     ArgumentStructure,
     Assumption,

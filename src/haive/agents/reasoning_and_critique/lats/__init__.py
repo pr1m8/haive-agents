@@ -1,6 +1,6 @@
 """Module exports."""
 
-from lats.agent import (
+from haive.agents.reasoning_and_critique.lats.agent import (
     LATSAgent,
     LATSAgentConfig,
     check_node,
@@ -17,8 +17,8 @@ from lats.agent import (
     should_continue,
     stream,
 )
-from lats.config import LATSAgentConfig, from_llms
-from lats.models import (
+from haive.agents.reasoning_and_critique.lats.config import LATSAgentConfig, from_llms
+from haive.agents.reasoning_and_critique.lats.models import (
     Node,
     Reflection,
     as_message,
@@ -33,7 +33,7 @@ from lats.models import (
     normalized_score,
     upper_confidence_bound,
 )
-from lats.node import (
+from haive.agents.reasoning_and_critique.lats.node import (
     Node,
     NodeManager,
     add_child,
@@ -46,8 +46,8 @@ from lats.node import (
     serialize_model,
     serialize_parent,
 )
-from lats.state import TreeState
-from lats.utils import (
+from haive.agents.reasoning_and_critique.lats.state import TreeState
+from haive.agents.reasoning_and_critique.lats.utils import (
     create_lats_agent,
     create_reflection_chain,
     format_messages_for_chain,

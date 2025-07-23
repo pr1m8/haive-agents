@@ -10,7 +10,6 @@ import operator
 from typing import Any
 
 from haive.core.exceptions import ConversationError
-from haive.core.logging import get_logger
 from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import Field
 
@@ -21,7 +20,7 @@ from haive.agents.conversation.base import (
 )
 from haive.agents.simple import SimpleAgent
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class CustomConversationState(ConversationState):

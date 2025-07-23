@@ -1,5 +1,5 @@
 """Module exports."""
 
-from web.agent import WebLoaderAgent, setup_agent
+from haive.agents.document_loader.web.agent import WebLoaderAgent, setup_agent
 
 __all__ = ["WebLoaderAgent", "setup_agent"]

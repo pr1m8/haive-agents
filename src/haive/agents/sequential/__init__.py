@@ -1,13 +1,15 @@
 """Module exports."""
 
-from sequential.agent import (
+from sequential.example import run_example
+
+from haive.agents.sequential.agent import (
     SequentialAgent,
     build_graph,
     set_state_schema,
     validate_agents,
     validate_non_empty_agents,
 )
-from sequential.config import (
+from haive.agents.sequential.config import (
     SequentialAgentConfig,
     StepConfig,
     build_agent,
@@ -18,7 +20,6 @@ from sequential.config import (
     setup_components,
     validate_steps,
 )
-from sequential.example import run_example
 
 __all__ = [
     "SequentialAgent",

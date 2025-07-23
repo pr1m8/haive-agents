@@ -1,6 +1,6 @@
 """Module exports."""
 
-from open_perplexity.agent import (
+from haive.agents.research.open_perplexity.agent import (
     ResearchAgent,
     assess_confidence,
     check_section_completion,
@@ -23,9 +23,16 @@ from open_perplexity.agent import (
     visualize_state,
     write_section,
 )
-from open_perplexity.cli import main, run_research, visualize_state
-from open_perplexity.config import ResearchAgentConfig, from_scratch
-from open_perplexity.models import (
+from haive.agents.research.open_perplexity.cli import (
+    main,
+    run_research,
+    visualize_state,
+)
+from haive.agents.research.open_perplexity.config import (
+    ResearchAgentConfig,
+    from_scratch,
+)
+from haive.agents.research.open_perplexity.models import (
     ContentFreshness,
     ContentReliability,
     DataSourceConfig,
@@ -40,12 +47,12 @@ from open_perplexity.models import (
     validate_priority,
     validate_relevance_score,
 )
-from open_perplexity.react_agent_config import (
+from haive.agents.research.open_perplexity.react_agent_config import (
     create_research_rag_agent_config,
     create_research_rag_engine,
     create_research_react_agent_config,
 )
-from open_perplexity.state import (
+from haive.agents.research.open_perplexity.state import (
     ReportSection,
     ResearchConfidenceLevel,
     ResearchInputState,
@@ -53,7 +60,7 @@ from open_perplexity.state import (
     ResearchState,
     WebSearchQuery,
 )
-from open_perplexity.structured_tools import (
+from haive.agents.research.open_perplexity.structured_tools import (
     ArxivLoaderInput,
     DocumentLoaderDescriptionInput,
     DocumentLoaderRecommendationInput,

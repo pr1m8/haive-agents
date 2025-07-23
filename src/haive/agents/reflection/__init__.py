@@ -1,7 +1,7 @@
 """Module exports."""
 
 # Existing reflection patterns
-from .agent import (
+from haive.agents.reflection.agent import (
     ExpertAgent,
     GradedReflectionMultiAgent,
     GradingAgent,
@@ -19,7 +19,7 @@ from .agent import (
 )
 
 # New message transformer reflection patterns
-from .message_transformer import (
+from haive.agents.reflection.message_transformer import (
     ConversationalReflectionAgent,
     MessageTransformerReflectionAgent,
     ReflectionMessageFlow,
@@ -28,6 +28,35 @@ from .message_transformer import (
     create_reflection_context_transformer,
     create_reflection_message_flow,
 )
+from haive.agents.reflection.prompts import (
+    create_expert_prompt,
+    create_grading_prompt,
+    create_improvement_prompt,
+    create_reflection_prompt,
+)
+from haive.agents.reflection.simple_agent import ReflectionAgent, create, enhance_agent
+from haive.agents.reflection.state import (
+    ReflectionState,
+    add_improvement,
+    finalize,
+    should_continue,
+)
+
+# New structured output reflection patterns
+from haive.agents.reflection.structured_output import (
+    ReflectionLoop,
+    StructuredImprovementAgent,
+    StructuredReflectionAgent,
+    create_improvement_agent,
+)
+from haive.agents.reflection.structured_output import (
+    create_reflection_agent as create_structured_reflection_agent,
+)
+from haive.agents.reflection.structured_output import (
+    create_reflection_loop,
+    extract_structured_output,
+)
+
 from .models import (  # Add new models
     Critique,
     ExpertiseConfig,
@@ -40,29 +69,6 @@ from .models import (  # Add new models
     ReflectionResult,
     to_prompt,
     validate_grade_matches_score,
-)
-from .prompts import (
-    create_expert_prompt,
-    create_grading_prompt,
-    create_improvement_prompt,
-    create_reflection_prompt,
-)
-from .simple_agent import ReflectionAgent, create, enhance_agent
-from .state import ReflectionState, add_improvement, finalize, should_continue
-
-# New structured output reflection patterns
-from .structured_output import (
-    ReflectionLoop,
-    StructuredImprovementAgent,
-    StructuredReflectionAgent,
-    create_improvement_agent,
-)
-from .structured_output import (
-    create_reflection_agent as create_structured_reflection_agent,
-)
-from .structured_output import (
-    create_reflection_loop,
-    extract_structured_output,
 )
 
 # Models already imported above

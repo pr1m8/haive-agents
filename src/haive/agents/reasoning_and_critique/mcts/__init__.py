@@ -1,8 +1,14 @@
 """Module exports."""
 
-from mcts.config import MCTSAgentConfig, from_llm_and_tools
-from mcts.example import run_mcts_agent_example, setup_tavily_tool
-from mcts.models import (
+from haive.agents.reasoning_and_critique.mcts.config import (
+    MCTSAgentConfig,
+    from_llm_and_tools,
+)
+from haive.agents.reasoning_and_critique.mcts.example import (
+    run_mcts_agent_example,
+    setup_tavily_tool,
+)
+from haive.agents.reasoning_and_critique.mcts.models import (
     Reflection,
     TreeNode,
     as_message,
@@ -18,8 +24,12 @@ from mcts.models import (
     serialize_children,
     upper_confidence_bound,
 )
-from mcts.state import TreeState
-from mcts.utils import create_mcts_agent, extract_best_solution, print_tree_stats
+from haive.agents.reasoning_and_critique.mcts.state import TreeState
+from haive.agents.reasoning_and_critique.mcts.utils import (
+    create_mcts_agent,
+    extract_best_solution,
+    print_tree_stats,
+)
 
 __all__ = [
     "MCTSAgentConfig",

@@ -1,11 +1,11 @@
 """Module exports."""
 
-from search.models import (
+from haive.agents.research.perplexity.pro_search.search.models import (
     create_query_generation_aug_llm,
     create_reasoning_aug_llm,
     create_synthesis_aug_llm,
 )
-from search.prompts import (
+from haive.agents.research.perplexity.pro_search.search.prompts import (
     create_query_generation_aug_llm,
     create_reasoning_aug_llm,
     create_synthesis_aug_llm,

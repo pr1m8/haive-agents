@@ -45,7 +45,7 @@ This package provides memory-capable agents built on BaseRAGAgent as requested:
 """
 
 # Import working standalone RAG memory components
-from .standalone_rag_memory import (
+from haive.agents.memory_v2.standalone_rag_memory import (
     ConversationMemoryAgent,
     FactualMemoryAgent,
     ImportanceLevel,
@@ -60,14 +60,17 @@ from .standalone_rag_memory import (
 
 # Optional components that may have import issues - try to import gracefully
 try:
-    from .time_weighted_retriever import TimeWeightConfig, TimeWeightedRetriever
+    from haive.agents.memory_v2.time_weighted_retriever import (
+        TimeWeightConfig,
+        TimeWeightedRetriever,
+    )
 
     TIME_RETRIEVER_AVAILABLE = True
 except ImportError:
     TIME_RETRIEVER_AVAILABLE = False
 
 try:
-    from .message_document_converter import (
+    from haive.agents.memory_v2.message_document_converter import (
         MessageDocumentConverter,
         TimestampedDocument,
     )
@@ -77,7 +80,7 @@ except ImportError:
     DOCUMENT_CONVERTER_AVAILABLE = False
 
 try:
-    from .extraction_prompts import (
+    from haive.agents.memory_v2.extraction_prompts import (
         EXTRACTION_PROMPTS,
         get_all_extraction_types,
         get_extraction_prompt,

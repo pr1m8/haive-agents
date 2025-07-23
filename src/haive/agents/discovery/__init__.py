@@ -1,12 +1,9 @@
 """Module exports."""
 
-from discovery.component_discovery_agent import (
+from haive.agents.discovery.component_discovery_agent import (  # clear_cache,  # Instance method, not module function; get_cache_stats,  # Instance method, not module function; setup_discovery_agent,  # Instance method, not module function
     ComponentDiscoveryAgent,
-    clear_cache,
-    get_cache_stats,
-    setup_discovery_agent,
 )
-from discovery.dynamic_tool_selector import (
+from haive.agents.discovery.dynamic_tool_selector import (
     ContextAwareSelector,
     ContextAwareState,
     DynamicToolSelector,
@@ -23,7 +20,7 @@ from discovery.dynamic_tool_selector import (
     placeholder_function,
     setup_selector,
 )
-from discovery.selection_strategies import (
+from haive.agents.discovery.selection_strategies import (
     AdaptiveSelectionStrategy,
     BaseSelectionStrategy,
     CapabilityBasedStrategy,
@@ -35,7 +32,7 @@ from discovery.selection_strategies import (
     create_selection_strategy,
     update_performance,
 )
-from discovery.semantic_discovery import (
+from haive.agents.discovery.semantic_discovery import (
     CapabilityMatcher,
     DiscoveryMode,
     EmbeddingProvider,
@@ -83,7 +80,7 @@ __all__ = [
     "add_feedback",
     "analyze_query",
     "build_capability_matrix",
-    "clear_cache",
+    # "clear_cache",  # Instance method
     "create_context_aware_selector",
     "create_dynamic_tool_selector",
     "create_langgraph_style_selector",
@@ -91,11 +88,11 @@ __all__ = [
     "create_tool_selection_node",
     "embed_documents",
     "embed_query",
-    "get_cache_stats",
+    # "get_cache_stats",  # Instance method
     "index_tools",
     "match_tools",
     "placeholder_function",
-    "setup_discovery_agent",
+    # "setup_discovery_agent",  # Instance method
     "setup_registry",
     "setup_selector",
     "setup_vector_store",

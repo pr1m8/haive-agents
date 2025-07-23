@@ -95,6 +95,8 @@ class HookEvent(str, Enum):
 class HookContext(BaseModel):
     """Context passed to hook functions."""
 
+    model_config = {"arbitrary_types_allowed": True}
+
     event: HookEvent = Field(..., description="The hook event")
     agent_name: str = Field(..., description="Name of the agent")
     agent_type: str = Field(..., description="Type of the agent")

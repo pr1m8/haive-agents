@@ -1,6 +1,6 @@
 """Module exports."""
 
-from experiments.dynamic_supervisor import (
+from haive.agents.experiments.dynamic_supervisor import (
     AgentRegistry,
     AgentRegistryEntry,
     DynamicSupervisorAgent,
@@ -26,7 +26,7 @@ from experiments.dynamic_supervisor import (
     to_state_format,
     unregister,
 )
-from experiments.dynamic_supervisor_enhanced import (
+from haive.agents.experiments.dynamic_supervisor_enhanced import (
     SelfModifyingSupervisor,
     analyze_task_and_suggest_agent,
     create_agent,
@@ -34,7 +34,7 @@ from experiments.dynamic_supervisor_enhanced import (
     modify_agent,
     remove_agent,
 )
-from experiments.static_supervisor_with_sync import (
+from haive.agents.experiments.static_supervisor_with_sync import (
     AgentEntry,
     StaticSupervisor,
     SupervisorReactState,

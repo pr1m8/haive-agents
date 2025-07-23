@@ -1,6 +1,6 @@
 """Module exports."""
 
-from complex_extraction.agent import (
+from haive.agents.document_modifiers.complex_extraction.agent import (
     ComplexExtractionAgent,
     Finalizer,
     aggregate_messages,
@@ -19,16 +19,24 @@ from complex_extraction.agent import (
     setup_workflow,
     state_wrapper,
 )
-from complex_extraction.config import ComplexExtractionAgentConfig
-from complex_extraction.example import PersonInfo
-from complex_extraction.factory import create_complex_extraction_agent
-from complex_extraction.models import JsonPatch, PatchFunctionParameters, RetryStrategy
-from complex_extraction.state import (
+from haive.agents.document_modifiers.complex_extraction.config import (
+    ComplexExtractionAgentConfig,
+)
+from haive.agents.document_modifiers.complex_extraction.example import PersonInfo
+from haive.agents.document_modifiers.complex_extraction.factory import (
+    create_complex_extraction_agent,
+)
+from haive.agents.document_modifiers.complex_extraction.models import (
+    JsonPatch,
+    PatchFunctionParameters,
+    RetryStrategy,
+)
+from haive.agents.document_modifiers.complex_extraction.state import (
     ComplexExtractionInput,
     ComplexExtractionOutput,
     ComplexExtractionState,
 )
-from complex_extraction.utils import (
+from haive.agents.document_modifiers.complex_extraction.utils import (
     RetryStrategy,
     add_or_overwrite_messages,
     aggregate_messages,

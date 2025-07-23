@@ -1,6 +1,6 @@
 """Module exports."""
 
-from task_analysis.analysis import (
+from haive.agents.common.models.task_analysis.analysis import (
     AnalysisMethod,
     ExecutionStrategy,
     TaskAnalysis,
@@ -11,7 +11,7 @@ from task_analysis.analysis import (
     validate_analysis_consistency,
     validate_resource_allocation,
 )
-from task_analysis.base import (
+from haive.agents.common.models.task_analysis.base import (
     ComplexityLevel,
     ComputationalComplexity,
     DependencyNode,
@@ -35,7 +35,7 @@ from task_analysis.base import (
     has_parallel_opportunities,
     is_blocking,
 )
-from task_analysis.branching import (
+from haive.agents.common.models.task_analysis.branching import (
     BranchType,
     TaskBranch,
     TaskDecomposition,
@@ -55,7 +55,7 @@ from task_analysis.branching import (
     is_likely_to_succeed,
     validate_decomposition_consistency,
 )
-from task_analysis.parallelization import (
+from haive.agents.common.models.task_analysis.parallelization import (
     ExecutionPhase,
     ExecutionStrategy,
     JoinPoint,
@@ -80,7 +80,7 @@ from task_analysis.parallelization import (
     is_split_point,
     is_worth_parallelizing,
 )
-from task_analysis.solvability import (
+from haive.agents.common.models.task_analysis.solvability import (
     SolvabilityAssessment,
     SolvabilityBarrier,
     estimate_breakthrough_timeline,

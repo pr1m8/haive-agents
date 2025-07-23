@@ -1,6 +1,6 @@
 """Module exports."""
 
-from grade.base import (
+from haive.agents.common.models.grade.base import (
     Grade,
     GradeType,
     compare_to,
@@ -11,7 +11,7 @@ from grade.base import (
     validate_grade_value,
     validate_justification,
 )
-from grade.binary import (
+from haive.agents.common.models.grade.binary import (
     BinaryGrade,
     convert_value_to_bool,
     create_fail,
@@ -24,7 +24,7 @@ from grade.binary import (
     to_display_string,
     validate_grade_value,
 )
-from grade.composite import (
+from haive.agents.common.models.grade.composite import (
     CompositeGrade,
     create_consensus_grade,
     create_from_grades,
@@ -42,7 +42,7 @@ from grade.composite import (
     validate_grade_value,
     validate_weights_and_indices,
 )
-from grade.letter_grade import (
+from haive.agents.common.models.grade.letter_grade import (
     LetterGrade,
     LetterValue,
     convert_to_letter_value,
@@ -55,7 +55,7 @@ from grade.letter_grade import (
     validate_gpa_scale,
     validate_grade_value,
 )
-from grade.numeric import (
+from haive.agents.common.models.grade.numeric import (
     NumericGrade,
     PercentageGrade,
     distance_from_threshold,
@@ -69,7 +69,7 @@ from grade.numeric import (
     validate_min_value,
     validate_score_range,
 )
-from grade.qualitative import (
+from haive.agents.common.models.grade.qualitative import (
     QualitativeGrade,
     QualityLevel,
     SentimentType,
@@ -85,7 +85,7 @@ from grade.qualitative import (
     validate_feedback_items,
     validate_grade_value,
 )
-from grade.rubric import (
+from haive.agents.common.models.grade.rubric import (
     RubricCriterion,
     RubricGrade,
     create_simple_rubric,
@@ -107,7 +107,7 @@ from grade.rubric import (
     validate_score_range,
     validate_score_within_max,
 )
-from grade.scale import (
+from haive.agents.common.models.grade.scale import (
     LikertScale,
     SatisfactionScale,
     ScaleGrade,

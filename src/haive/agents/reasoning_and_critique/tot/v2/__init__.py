@@ -1,6 +1,6 @@
 """Module exports."""
 
-from v2.agent import (
+from haive.agents.reasoning_and_critique.tot.v2.agent import (
     control_workflow,
     create_tree_of_thoughts,
     expansion_workflow,
@@ -12,7 +12,7 @@ from v2.agent import (
     should_continue_search,
     solve_with_tot,
 )
-from v2.models import (
+from haive.agents.reasoning_and_critique.tot.v2.models import (
     Candidate,
     CandidateEvaluation,
     CandidateGeneration,
@@ -23,7 +23,7 @@ from v2.models import (
     validate_content,
     validate_score,
 )
-from v2.state import (
+from haive.agents.reasoning_and_critique.tot.v2.state import (
     ExpansionState,
     ToTState,
     best_candidates_summary,

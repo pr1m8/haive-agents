@@ -146,7 +146,7 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
 class EnhancedGitHubIssuesLoader(GitHubIssuesLoader):
     """Enhanced GitHub issues loader with metadata extraction."""
 
-    loader_metadata = {
+    loader_metadata: dict = {
         "name": "GitHub Issues Loader",
         "description": "Loads issues from GitHub repositories",
         "best_for": [
