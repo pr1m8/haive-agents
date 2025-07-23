@@ -39,7 +39,12 @@ class ExecutionMixin:
             for i, msg in enumerate(input_data.messages):
                 if hasattr(msg, "tool_call_id"):
                     logger.debug(
-                        f"Input message {i}: {type(msg).__name__} with tool_call_id={getattr(msg, 'tool_call_id', 'None')}"
+                        f"Input message {i}: {
+                            type(msg).__name__} with tool_call_id={
+                            getattr(
+                                msg,
+                                'tool_call_id',
+                                'None')}"
                     )
 
         # Get input schema from agent
@@ -88,7 +93,8 @@ class ExecutionMixin:
                 try:
                     result = input_schema(**prepared_input)
                     logger.debug(
-                        f"Created input schema instance with {len(prepared_input)} fields"
+                        f"Created input schema instance with {
+                            len(prepared_input)} fields"
                     )
                     return result
                 except Exception as e:
@@ -142,7 +148,8 @@ class ExecutionMixin:
                 try:
                     result = input_schema(**prepared_input)
                     logger.debug(
-                        f"Created input schema instance with {len(prepared_input)} fields"
+                        f"Created input schema instance with {
+                            len(prepared_input)} fields"
                     )
                     return result
                 except Exception as e:
@@ -158,14 +165,16 @@ class ExecutionMixin:
                     input_data["messages"], list
                 ):
                     messages = input_data["messages"]
-                    # Convert string messages to HumanMessage, but preserve BaseMessage objects
+                    # Convert string messages to HumanMessage, but preserve
+                    # BaseMessage objects
                     for i, msg in enumerate(messages):
                         if isinstance(msg, str):
                             messages[i] = HumanMessage(content=msg)
 
                 try:
                     # CRITICAL FIX: If messages are already BaseMessage objects, don't let Pydantic
-                    # try to reconstruct them from dicts, as this can lose important fields like tool_call_id
+                    # try to reconstruct them from dicts, as this can lose
+                    # important fields like tool_call_id
                     if input_data.get("messages"):
                         # Check if messages are already BaseMessage objects
                         all_base_messages = all(
@@ -173,24 +182,33 @@ class ExecutionMixin:
                             for msg in input_data["messages"]
                         )
                         logger.debug(
-                            f"Messages validation: count={len(input_data['messages'])}, all_base_messages={all_base_messages}"
+                            f"Messages validation: count={
+                                len(
+                                    input_data['messages'])}, all_base_messages={all_base_messages}"
                         )
                         for i, msg in enumerate(input_data["messages"]):
                             logger.debug(
-                                f"  Message {i}: {type(msg)} (is BaseMessage: {isinstance(msg, BaseMessage)})"
+                                f"  Message {i}: {
+                                    type(msg)} (is BaseMessage: {
+                                    isinstance(
+                                        msg, BaseMessage)})"
                             )
 
                         if all_base_messages:
-                            # Create a copy of input_data without messages for validation
+                            # Create a copy of input_data without messages for
+                            # validation
                             validation_data = {
                                 k: v for k, v in input_data.items() if k != "messages"
                             }
                             logger.debug(
-                                f"Creating schema instance without messages, remaining fields: {list(validation_data.keys())}"
+                                f"Creating schema instance without messages, remaining fields: {
+                                    list(
+                                        validation_data.keys())}"
                             )
                             # Create the schema instance
                             result = input_schema(**validation_data)
-                            # Directly set the messages field to preserve BaseMessage objects
+                            # Directly set the messages field to preserve
+                            # BaseMessage objects
                             result.messages = input_data["messages"]
                             logger.debug(
                                 "Created input schema instance with preserved BaseMessage objects"
@@ -200,7 +218,8 @@ class ExecutionMixin:
                     # Fallback to normal validation
                     result = input_schema(**input_data)
                     logger.debug(
-                        f"Created input schema instance from dict with {len(input_data)} fields"
+                        f"Created input schema instance from dict with {
+                            len(input_data)} fields"
                     )
                     return result
                 except Exception as e:
@@ -222,12 +241,15 @@ class ExecutionMixin:
                     data_dict = input_data.dict(exclude_none=False, exclude_unset=False)
 
                 try:
-                    # CRITICAL FIX: Same as dict case - preserve BaseMessage objects
+                    # CRITICAL FIX: Same as dict case - preserve BaseMessage
+                    # objects
                     if data_dict.get("messages"):
-                        # Check if the original input_data has BaseMessage objects
+                        # Check if the original input_data has BaseMessage
+                        # objects
                         if hasattr(input_data, "messages") and input_data.messages:
                             original_messages = input_data.messages
-                            # Get actual BaseMessage objects, not their dict representations
+                            # Get actual BaseMessage objects, not their dict
+                            # representations
                             if hasattr(original_messages, "root"):
                                 actual_messages = original_messages.root
                             elif isinstance(original_messages, list | tuple):
@@ -235,7 +257,7 @@ class ExecutionMixin:
                             else:
                                 try:
                                     actual_messages = list(original_messages)
-                                except:
+                                except BaseException:
                                     actual_messages = []
 
                             # Check if they're BaseMessage objects
@@ -243,13 +265,16 @@ class ExecutionMixin:
                                 isinstance(msg, BaseMessage) for msg in actual_messages
                             ):
                                 logger.debug(
-                                    f"PRESERVING {len(actual_messages)} BaseMessage objects during input schema conversion"
+                                    f"PRESERVING {
+                                        len(actual_messages)} BaseMessage objects during input schema conversion"
                                 )
                                 # Log any ToolMessages
                                 for i, msg in enumerate(actual_messages):
                                     if hasattr(msg, "tool_call_id"):
                                         logger.debug(
-                                            f"  Preserving ToolMessage {i} with tool_call_id={getattr(msg, 'tool_call_id', 'None')}"
+                                            f"  Preserving ToolMessage {i} with tool_call_id={
+                                                getattr(
+                                                    msg, 'tool_call_id', 'None')}"
                                         )
 
                                 # Create schema instance without messages first
@@ -279,7 +304,8 @@ class ExecutionMixin:
         # Other types - convert to string and handle
         else:
             logger.warning(
-                f"Unsupported input type {type(input_data).__name__}, converting to string"
+                f"Unsupported input type {
+                    type(input_data).__name__}, converting to string"
             )
             return self._prepare_input(str(input_data))
 
@@ -398,146 +424,16 @@ class ExecutionMixin:
         return runtime_config
 
     def _format_structured_output(self, output_data: Any) -> Any:
-        """Format structured output for cleaner display.
+        """Format structured output for cleaner display without changing the type.
 
         Args:
             output_data: Raw output data that may contain structured outputs
 
         Returns:
-            Formatted output data with cleaner representation
+            The original output data unchanged (type preservation)
         """
-        if not hasattr(output_data, "__dict__"):
-            return output_data
-
-        # Check if this looks like a state with structured output fields
-        for field_name, field_value in output_data.__dict__.items():
-            if field_name.endswith("_response") and hasattr(field_value, "__dict__"):
-                # Create a formatted wrapper for structured output fields
-
-                class FormattedOutput:
-                    def __init__(self, original_data) -> None:
-                        self.original_data = original_data
-
-                    def __str__(self):
-                        if hasattr(self.original_data, "__dict__"):
-                            # Get the structured output field
-                            structured_field = None
-                            for name, value in self.original_data.__dict__.items():
-                                if name.endswith("_response") and hasattr(
-                                    value, "__dict__"
-                                ):
-                                    structured_field = value
-                                    break
-
-                            if structured_field:
-                                result = []
-                                result.append(
-                                    f"=== {type(structured_field).__name__} ==="
-                                )
-
-                                # Show key fields first
-                                key_fields = [
-                                    "original_query",
-                                    "query_analysis",
-                                    "query_type",
-                                    "complexity_level",
-                                    "best_refined_query",
-                                ]
-                                for key in key_fields:
-                                    if hasattr(structured_field, key):
-                                        value = getattr(structured_field, key)
-                                        if isinstance(value, str) and len(value) > 100:
-                                            value = value[:100] + "..."
-                                        result.append(f"{key}: {value}")
-
-                                # Show list fields in a compact format
-                                if hasattr(structured_field, "refinement_suggestions"):
-                                    suggestions = getattr(
-                                        structured_field, "refinement_suggestions", []
-                                    )
-                                    if suggestions:
-                                        result.append(
-                                            f"refinement_suggestions: {len(suggestions)} items"
-                                        )
-                                        for i, suggestion in enumerate(
-                                            suggestions[:2]
-                                        ):  # Show first 2
-                                            if hasattr(suggestion, "refined_query"):
-                                                result.append(
-                                                    f"  {i+1}. {suggestion.refined_query}"
-                                                )
-                                        if len(suggestions) > 2:
-                                            result.append(
-                                                f"  ... and {len(suggestions)-2} more"
-                                            )
-
-                                if hasattr(
-                                    structured_field, "search_strategy_recommendations"
-                                ):
-                                    strategies = getattr(
-                                        structured_field,
-                                        "search_strategy_recommendations",
-                                        [],
-                                    )
-                                    if strategies:
-                                        result.append(
-                                            f"search_strategy_recommendations: {len(strategies)} items"
-                                        )
-                                        for i, strategy in enumerate(
-                                            strategies[:2]
-                                        ):  # Show first 2
-                                            result.append(f"  {i+1}. {strategy}")
-                                        if len(strategies) > 2:
-                                            result.append(
-                                                f"  ... and {len(strategies)-2} more"
-                                            )
-
-                                # Show token usage if available
-                                if hasattr(self.original_data, "total_token_usage"):
-                                    usage = getattr(
-                                        self.original_data, "total_token_usage", {}
-                                    )
-                                    if usage:
-                                        result.append(f"token_usage: {usage}")
-                                elif hasattr(self.original_data, "token_usage"):
-                                    usage = getattr(
-                                        self.original_data, "token_usage", {}
-                                    )
-                                    if usage:
-                                        result.append(f"token_usage: {usage}")
-
-                                # Show token usage history if available
-                                if hasattr(self.original_data, "token_usage_history"):
-                                    history = getattr(
-                                        self.original_data, "token_usage_history", []
-                                    )
-                                    if history:
-                                        total_tokens = sum(
-                                            item.get("total_tokens", 0)
-                                            for item in history
-                                            if isinstance(item, dict)
-                                        )
-                                        if total_tokens > 0:
-                                            result.append(
-                                                f"session_tokens: {total_tokens} total ({len(history)} calls)"
-                                            )
-                                        else:
-                                            result.append(
-                                                f"token_usage_history: {len(history)} calls"
-                                            )
-
-                                return "\n".join(result)
-
-                        return str(self.original_data)
-
-                    def __repr__(self):
-                        return self.__str__()
-
-                    def __getattr__(self, name):
-                        return getattr(self.original_data, name)
-
-                return FormattedOutput(output_data)
-
+        # Don't wrap the output in another class - just return it as-is
+        # The Pydantic models should handle their own __str__ and __repr__
         return output_data
 
     def _process_output(self: "AgentProtocol", output_data: Any) -> Any:
@@ -608,7 +504,8 @@ class ExecutionMixin:
         # Extract thread_id for persistence
         thread_id = runtime_config.get("configurable", {}).get("thread_id")
 
-        # IMPORTANT: Extract recursion limit from configurable and set it at top level
+        # IMPORTANT: Extract recursion limit from configurable and set it at
+        # top level
         configurable = runtime_config.get("configurable", {})
         if "recursion_limit" in configurable:
             limit = configurable.get("recursion_limit")
@@ -635,7 +532,8 @@ class ExecutionMixin:
         # Removed custom register_thread_if_needed to avoid interference
         if active_checkpointer and thread_id:
             try:
-                # Ensure checkpointer is properly setup (LangGraph standard pattern)
+                # Ensure checkpointer is properly setup (LangGraph standard
+                # pattern)
                 if hasattr(active_checkpointer, "setup") and not getattr(
                     active_checkpointer, "_setup_called", False
                 ):
@@ -688,7 +586,8 @@ class ExecutionMixin:
             # LangGraph can handle Pydantic models directly
             logger.debug("Keeping processed_input as Pydantic model for LangGraph")
 
-            # No longer need PydanticUndefined checking since we keep Pydantic models intact
+            # No longer need PydanticUndefined checking since we keep Pydantic
+            # models intact
             logger.debug("=== PRE-INVOKE STATE CHECK ===")
             # breakpoint()
             result = self._app.invoke(
@@ -779,7 +678,8 @@ class ExecutionMixin:
             previous_state = None
             try:
                 if async_checkpointer and thread_id:
-                    # Create async app with async checkpointer for state retrieval
+                    # Create async app with async checkpointer for state
+                    # retrieval
                     assert self.graph is not None, "Graph not built"
                     async_app = self.graph.to_langgraph(
                         state_schema=self.state_schema
@@ -810,7 +710,8 @@ class ExecutionMixin:
             # Run the agent asynchronously with proper connection cleanup
             pool_to_cleanup = None
             try:
-                # Ensure async PostgreSQL connection pool is properly opened if needed
+                # Ensure async PostgreSQL connection pool is properly opened if
+                # needed
                 if async_checkpointer and hasattr(async_checkpointer, "conn"):
                     from haive.core.persistence.handlers import ensure_async_pool_open
 
@@ -917,7 +818,8 @@ class ExecutionMixin:
         # Extract thread_id for persistence
         thread_id = runtime_config.get("configurable", {}).get("thread_id")
 
-        # IMPORTANT: Extract recursion limit from configurable and set it at top level
+        # IMPORTANT: Extract recursion limit from configurable and set it at
+        # top level
         configurable = runtime_config.get("configurable", {})
         if "recursion_limit" in configurable:
             limit = configurable.get("recursion_limit")
@@ -944,7 +846,8 @@ class ExecutionMixin:
         # Removed custom register_thread_if_needed to avoid interference
         if active_checkpointer and thread_id:
             try:
-                # Ensure checkpointer is properly setup (LangGraph standard pattern)
+                # Ensure checkpointer is properly setup (LangGraph standard
+                # pattern)
                 if hasattr(active_checkpointer, "setup") and not getattr(
                     active_checkpointer, "_setup_called", False
                 ):
@@ -1031,7 +934,8 @@ class ExecutionMixin:
             if isinstance(chunk, dict) and "values" in chunk:
                 return chunk["values"]
 
-            # Handle LangGraph AddableUpdatesDict format - extract actual state values
+            # Handle LangGraph AddableUpdatesDict format - extract actual state
+            # values
             if isinstance(chunk, dict):
                 # LangGraph returns {node_name: state_data}
                 for _node_name, node_data in chunk.items():
