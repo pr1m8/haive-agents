@@ -36,7 +36,7 @@ async def test_fix():
     # Try execution
     try:
         result = await multi.ainvoke(test_input)
-        print("✅ Execution succeeded!"!")
+        print("✅ Execution succeeded!")
         print(f"Result type: {type(result)}")
         return True
 
