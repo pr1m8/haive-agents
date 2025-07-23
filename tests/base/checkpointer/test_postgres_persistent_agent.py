@@ -32,7 +32,7 @@ try:
     from psycopg_pool import ConnectionPool
 
     POSTGRES_AVAILABLE = True
-except ImportError as e:
+except ImportError:
     POSTGRES_AVAILABLE = False
 
 
@@ -119,7 +119,7 @@ def test_postgres_connection():
         with psycopg.connect(DB_URI) as conn, conn.cursor() as cursor:
             cursor.execute("SELECT version()")
             version = cursor.fetchone()[0]
-            print(f"✅ Connected to PostgreSQL: {version}")")
+            print(f"✅ Connected to PostgreSQL: {version})")
         assert True, "PostgreSQL connection successful"
     except Exception as e:
         raise AssertionError(f"PostgreSQL connection failed: {e}")
@@ -197,7 +197,6 @@ def test_memory_persistence():
             ), "Memory not working: response doesn't show evidence of persistence"
         else:
             raise AssertionError("No messages in second response")
-
 
     except Exception as e:
         import traceback
@@ -317,7 +316,6 @@ def test_postgres_persistence():
         else:
             raise AssertionError("No messages in second response")
 
-
         # Close the pool after the test
         pool.close()
 
@@ -408,7 +406,6 @@ def test_memory_persistence():
             ), "Memory not working: response doesn't show evidence of persistence"
         else:
             raise AssertionError("No messages in second response")
-
 
     except Exception as e:
         import traceback
