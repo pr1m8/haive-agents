@@ -3,17 +3,32 @@
 This module provides various agent implementations for the Haive framework.
 """
 
-# Core base agent
-from haive.agents.base import Agent
+# Lazy loading for performance - defer all agent imports until needed
+_AGENT_IMPORTS = {
+    "Agent": ("haive.agents.base", "Agent"),
+    "MultiAgent": ("haive.agents.multi.clean", "MultiAgent"),
+    "ReactAgent": ("haive.agents.react.agent", "ReactAgent"),
+    "SimpleAgent": ("haive.agents.simple", "SimpleAgent"),
+}
 
-# Multi-agent implementations
-from haive.agents.multi.clean import MultiAgent
 
-# React agent
-from haive.agents.react.agent import ReactAgent
+def __getattr__(name: str):
+    """Lazy load agent classes to avoid import-time overhead."""
+    if name in _AGENT_IMPORTS:
+        module_path, class_name = _AGENT_IMPORTS[name]
 
-# Simple agent
-from haive.agents.simple import SimpleAgent
+        # Import module and get class
+        import importlib
+
+        module = importlib.import_module(module_path)
+        agent_class = getattr(module, class_name)
+
+        # Cache in globals for subsequent access
+        globals()[name] = agent_class
+        return agent_class
+
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
 
 # RAG agents
 # from haive.agents.rag import (
