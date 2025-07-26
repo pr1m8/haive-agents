@@ -228,32 +228,32 @@ class CollaborativeConfig(ConversationConfig, total=False):
 __all__ = [
     # Core conversation agents
     "BaseConversationAgent",
-    "CollaborativeConfig",
     "CollaborativeConversation",
-    # Configuration types
-    "ConversationConfig",
-    # Protocols
-    "ConversationParticipant",
-    "ConversationStatus",
-    # Type aliases
-    "ConversationType",
-    "DebateConfig",
     "DebateConversation",
     "DirectedConversation",
-    "MessageType",
-    "ParticipantRole",
     "RoundRobinConversation",
     "SocialMediaConversation",
-    "__author__",
-    "__license__",
-    # Version information
-    "__version__",
-    "create_collaboration",
+    # Configuration types
+    "ConversationConfig",
+    "DebateConfig",
+    "CollaborativeConfig",
+    # Protocols
+    "ConversationParticipant",
+    # Type aliases
+    "ConversationType",
+    "ConversationStatus",
+    "MessageType",
+    "ParticipantRole",
     # Convenience functions
     "create_conversation",
     "create_debate",
+    "create_collaboration",
     "get_conversation_types",
     "validate_participants",
+    # Version information
+    "__version__",
+    "__author__",
+    "__license__",
 ]
 
 
