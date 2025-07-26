@@ -55,7 +55,10 @@ class EnhancedMultiAgent(MultiAgent):
         if self._state_schema_override:
             # Use provided state schema instead of composing
             self.state_schema = self._state_schema_override
-            logger.info(f"Using provided state schema: {self.state_schema.__name__}")
+            logger.info(
+                f"Using provided state schema: {
+                    self.state_schema.__name__}"
+            )
         else:
             # Use parent's schema composition
             build_mode = self._get_build_mode()
@@ -119,7 +122,8 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
                 "condition": self._route_after_replan,
                 "destinations": {
                     "continue": "prepare_execution",
-                    "new_plan": self._get_agent_node_name(agents[0]),  # planner
+                    # planner
+                    "new_plan": self._get_agent_node_name(agents[0]),
                     "complete": "END",
                 },
             },
@@ -188,7 +192,8 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
 
         return graph
 
-    # Workflow logic methods - these would be implemented based on your Plan & Execute logic
+    # Workflow logic methods - these would be implemented based on your Plan &
+    # Execute logic
     def _prepare_execution_step(self, state: Any):
         """Prepare the next execution step."""
         # Your implementation here

@@ -380,7 +380,7 @@ class SimpleRAG(MultiAgent):
         for i, doc in enumerate(documents):
             content = doc.page_content.strip()
             if content:
-                source = doc.metadata.get("source", f"Document {i+1}")
+                source = doc.metadata.get("source", f"Document {i + 1}")
                 context_parts.append(f"Source: {source}\n{content}")
 
         context = "\n\n".join(context_parts)
@@ -427,7 +427,8 @@ class SimpleRAG(MultiAgent):
             logger.info(f"⚙️ Execution mode: {self.execution_mode}")
 
         # Use clean MultiAgent's execution infrastructure
-        # This automatically handles sequential execution: retriever → generator
+        # This automatically handles sequential execution: retriever →
+        # generator
         result = await super().arun(input_data, debug=debug, **kwargs)
 
         if debug:

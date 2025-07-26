@@ -511,7 +511,8 @@ class Task(BaseModel):
 
     task_type: TaskType = Field(..., description="Primary type of this task")
 
-    # This is the key field that AutoTree will handle - Union of Task and TaskStep
+    # This is the key field that AutoTree will handle - Union of Task and
+    # TaskStep
     subtasks: list[Union["Task", TaskStep]] = Field(
         default_factory=list,
         description="List of subtasks and steps that make up this task",
@@ -653,7 +654,8 @@ class Task(BaseModel):
         if len(self.subtasks) < 2:
             return False
 
-        # Simple heuristic: if we have multiple subtasks and not all are sequential
+        # Simple heuristic: if we have multiple subtasks and not all are
+        # sequential
         sequential_deps = [
             d
             for d in self.dependencies

@@ -126,7 +126,8 @@ def _resolve_arg(arg: str | Any, observations: dict[int, Any]):
     ID_PATTERN = r"\$\{?(\d+)\}?"
 
     def replace_match(match) -> Any:
-        # If the string is ${123}, match.group(0) is ${123}, and match.group(1) is 123.
+        # If the string is ${123}, match.group(0) is ${123}, and match.group(1)
+        # is 123.
 
         # Return the match group, in this case the index, from the string. This is the index
         # number we get back.

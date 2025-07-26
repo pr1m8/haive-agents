@@ -95,7 +95,7 @@ def test_simple_agent_v3_with_tools():
     print(f"Result type: {type(result4)}")
     print(f"Result: {result4}")
 
-    return agent
+    # Don't return in pytest tests
 
 
 if __name__ == "__main__":

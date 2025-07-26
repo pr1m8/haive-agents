@@ -147,7 +147,7 @@ def test_agent_execution(agent):
     from langchain_core.messages import HumanMessage
 
     result = agent.invoke({"messages": [HumanMessage(content="Hello, test message")]})
-    console.print("✅ Agent execution successful"l")
+    console.print("✅ Agent execution successfull")
     console.print(f"Result type: {type(result)}")
 
     return result
@@ -172,9 +172,7 @@ def main():
         trace_step("Create state", lambda: test_state_creation(agent))
 
         # Step 4: Test input schema derivation
-        trace_step(
-            "Derive input schema", lambda: test_input_schema_derivation(agent)
-        )
+        trace_step("Derive input schema", lambda: test_input_schema_derivation(agent))
 
         # Step 5: Test graph building
         trace_step("Build graph", lambda: test_graph_building(agent))

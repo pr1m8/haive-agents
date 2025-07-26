@@ -158,7 +158,9 @@ class ScaleGrade(Grade):
 
         if scale_value_normalized not in labels_normalized:
             raise ValueError(
-                f"scale_value '{self.scale_value}' must be one of: {self.scale_labels}"
+                f"scale_value '{
+                    self.scale_value}' must be one of: {
+                    self.scale_labels}"
             )
 
         # Set numeric value based on position (1-indexed)
@@ -296,7 +298,11 @@ class ScaleGrade(Grade):
         percentage = self.get_scale_percentage()
         assessment = self.get_descriptive_assessment()
 
-        return f"📊 {self.scale_value} ({position}/{max_position} | {percentage:.0f}% | {assessment}) | {self.justification[:30]}..."
+        return f"📊 {
+            self.scale_value} ({position}/{max_position} | {
+            percentage:.0f}% | {assessment}) | {
+            self.justification[
+                :30]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a value exists in the scale labels.

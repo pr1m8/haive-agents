@@ -6,7 +6,6 @@ are separated into distinct phases with structured outputs.
 
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -29,17 +28,17 @@ class PlanStep(BaseModel):
         description="Clear, actionable description of what needs to be done"
     )
     expected_output: str = Field(description="What we expect to achieve from this step")
-    dependencies: List[int] = Field(
+    dependencies: list[int] = Field(
         default_factory=list,
         description="List of step IDs that must be completed before this step",
     )
-    tools_required: List[str] = Field(
+    tools_required: list[str] = Field(
         default_factory=list, description="Tools that might be needed for this step"
     )
     status: StepStatus = Field(default=StepStatus.PENDING)
-    result: Optional[str] = None
-    error: Optional[str] = None
-    execution_time: Optional[float] = None
+    result: str | None = None
+    error: str | None = None
+    execution_time: float | None = None
 
     @field_validator("dependencies")
     @classmethod
@@ -59,13 +58,13 @@ class ExecutionPlan(BaseModel):
     """Complete execution plan with metadata."""
 
     objective: str = Field(description="The main objective this plan aims to achieve")
-    steps: List[PlanStep] = Field(description="Ordered list of steps to execute")
+    steps: list[PlanStep] = Field(description="Ordered list of steps to execute")
     total_steps: int = Field(description="Total number of steps in the plan")
     created_at: datetime = Field(default_factory=datetime.now)
     reasoning: str = Field(
         description="Reasoning behind this plan structure and approach"
     )
-    estimated_duration: Optional[str] = Field(
+    estimated_duration: str | None = Field(
         default=None, description="Rough estimate of how long the plan might take"
     )
 
@@ -84,7 +83,7 @@ class ExecutionPlan(BaseModel):
                 step.step_id = i
         return v
 
-    def get_next_step(self) -> Optional[PlanStep]:
+    def get_next_step(self) -> PlanStep | None:
         """Get the next step ready for execution."""
         completed_ids = {
             s.step_id for s in self.steps if s.status == StepStatus.COMPLETED
@@ -121,11 +120,11 @@ class StepExecution(BaseModel):
     step_id: int = Field(description="ID of the executed step")
     step_description: str = Field(description="Description of what was executed")
     result: str = Field(description="Detailed result from the execution")
-    tools_used: List[str] = Field(
+    tools_used: list[str] = Field(
         default_factory=list, description="Tools that were actually used"
     )
     success: bool = Field(description="Whether execution was successful")
-    error: Optional[str] = Field(default=None, description="Error message if failed")
+    error: str | None = Field(default=None, description="Error message if failed")
     execution_time: float = Field(description="Time taken in seconds")
     observations: str = Field(
         default="", description="Key observations from this step execution"
@@ -145,10 +144,10 @@ class PlanEvaluation(BaseModel):
         description="Decision on next action: continue, replan, or finalize"
     )
     reasoning: str = Field(description="Detailed reasoning for the decision")
-    final_answer: Optional[str] = Field(
+    final_answer: str | None = Field(
         default=None, description="Final answer if decision is 'finalize'"
     )
-    revision_notes: Optional[str] = Field(
+    revision_notes: str | None = Field(
         default=None, description="Notes for replanning if decision is 'replan'"
     )
 
@@ -167,7 +166,7 @@ class RevisedPlan(BaseModel):
 
     original_objective: str = Field(description="The original objective (unchanged)")
     revision_reason: str = Field(description="Why the plan needed revision")
-    retained_results: List[str] = Field(
+    retained_results: list[str] = Field(
         description="Key results from completed steps to retain"
     )
     new_plan: ExecutionPlan = Field(description="The revised plan moving forward")
@@ -180,13 +179,13 @@ class PlanExecuteInput(BaseModel):
     """Input format for the Plan-and-Execute agent."""
 
     objective: str = Field(description="The main goal or question to address")
-    context: Optional[str] = Field(
+    context: str | None = Field(
         default=None, description="Additional context or constraints"
     )
     max_steps: int = Field(
         default=10, description="Maximum number of steps allowed in the plan"
     )
-    time_limit: Optional[int] = Field(
+    time_limit: int | None = Field(
         default=None, description="Time limit in seconds for execution"
     )
 
@@ -201,7 +200,7 @@ class PlanExecuteOutput(BaseModel):
     total_steps: int = Field(description="Total number of steps planned")
     revisions_made: int = Field(description="Number of plan revisions")
     total_execution_time: float = Field(description="Total time in seconds")
-    key_findings: List[str] = Field(description="Key findings from the execution")
+    key_findings: list[str] = Field(description="Key findings from the execution")
     confidence_score: float = Field(
         description="Confidence in the final answer (0-1)", ge=0.0, le=1.0
     )

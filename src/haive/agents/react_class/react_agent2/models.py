@@ -45,7 +45,10 @@ class Thought(BaseModel):
     action: Action
 
     def __str__(self):
-        return f"Thought: {self.thought}\nAction: ActionType.{self.action.action_type}, ActionInput: {self.action.action_input}"
+        return f"Thought: {
+            self.thought}\nAction: ActionType.{
+            self.action.action_type}, ActionInput: {
+            self.action.action_input}"
 
 
 class ReactState(BaseModel):

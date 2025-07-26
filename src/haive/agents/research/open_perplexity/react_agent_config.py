@@ -8,11 +8,11 @@ from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from haive.agents.rag.base.config import BaseRAGConfig
+from haive.agents.react.config import ReactAgentConfig
 
 # Import agent-specific modules
 from haive.agents.research.open_perplexity.prompts import RESEARCH_SYSTEM_PROMPT
 from haive.agents.research.open_perplexity.structured_tools import RESEARCH_TOOLS
-from haive.agents.v2.config import ReactAgentConfig
 
 
 def create_research_react_agent_config(
@@ -30,7 +30,8 @@ def create_research_react_agent_config(
     """
     # Create a name if not provided
     if not name:
-        name = f"open_perplexity_research_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        name = f"open_perplexity_research_{
+            datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Create LLM configuration
     llm_config = AzureLLMConfig(
@@ -68,7 +69,8 @@ def create_research_rag_engine(
     """
     # Create a name if not provided
     if not name:
-        name = f"open_perplexity_retrieval_engine_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        name = f"open_perplexity_retrieval_engine_{
+            datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Create LLM configuration
     llm_config = AzureLLMConfig(
@@ -122,7 +124,8 @@ def create_research_rag_agent_config(
     """
     # Create a name if not provided
     if not name:
-        name = f"open_perplexity_retrieval_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        name = f"open_perplexity_retrieval_{
+            datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Create the RAG engine
     rag_engine = create_research_rag_engine(
@@ -133,7 +136,8 @@ def create_research_rag_agent_config(
     retriever_config = VectorStoreRetrieverConfig(
         name=f"retriever_for_{name}",
         vector_store_config=vectorstore_config,
-        search_type="similarity_score_threshold",  # Use similarity with threshold for better results
+        search_type="similarity_score_threshold",
+        # Use similarity with threshold for better results
         search_kwargs={
             "k": 8,  # Retrieve more documents for comprehensive research
             "score_threshold": 0.7,  # Only include highly relevant documents

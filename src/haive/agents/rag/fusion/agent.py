@@ -436,7 +436,9 @@ def create_multi_query_retrieval_callable(
             all_retrieved_docs.extend(docs)
 
         logger.info(
-            f"Total retrieved: {len(all_retrieved_docs)} documents across {len(all_queries)} queries"
+            f"Total retrieved: {
+                len(all_retrieved_docs)} documents across {
+                len(all_queries)} queries"
         )
 
         return {

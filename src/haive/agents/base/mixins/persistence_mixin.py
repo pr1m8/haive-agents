@@ -36,7 +36,11 @@ class PersistenceMixin:
         # Check if persistence is explicitly disabled (False)
         if self.persistence is False:
             logger.debug(
-                f"Persistence explicitly disabled for {getattr(self, 'name', 'Agent')}"
+                f"Persistence explicitly disabled for {
+                    getattr(
+                        self,
+                        'name',
+                        'Agent')}"
             )
             self.checkpointer = None
             self.store = None
@@ -53,7 +57,11 @@ class PersistenceMixin:
         # If persistence is None, use memory persistence as a safe default
         if self.persistence is None:
             logger.debug(
-                f"Using memory persistence for {getattr(self, 'name', 'Agent')} (persistence=None)"
+                f"Using memory persistence for {
+                    getattr(
+                        self,
+                        'name',
+                        'Agent')} (persistence=None)"
             )
             try:
                 from haive.core.persistence.memory import MemoryCheckpointerConfig
@@ -154,7 +162,8 @@ class PersistenceMixin:
 
                 if connection_string:
                     # Use the connection string from environment (likely Supabase)
-                    # Create unique pool per agent to avoid prepared statement conflicts
+                    # Create unique pool per agent to avoid prepared statement
+                    # conflicts
                     agent_name = getattr(self, "name", "Agent")
                     app_name = f"haive_{agent_name}_{id(self)}"
 
@@ -199,7 +208,9 @@ class PersistenceMixin:
 
                 self.persistence = MemoryCheckpointerConfig()
                 logger.debug(
-                    f"Set up default memory persistence for {getattr(self, 'name', 'Agent')}"
+                    f"Set up default memory persistence for {
+                        getattr(
+                            self, 'name', 'Agent')}"
                 )
 
         except Exception as e:
@@ -210,7 +221,9 @@ class PersistenceMixin:
 
                 self.persistence = MemoryCheckpointerConfig()
                 logger.debug(
-                    f"Using memory persistence fallback for {getattr(self, 'name', 'Agent')}"
+                    f"Using memory persistence fallback for {
+                        getattr(
+                            self, 'name', 'Agent')}"
                 )
             except Exception as e2:
                 logger.exception(f"Failed to set up memory persistence fallback: {e2}")
@@ -220,7 +233,11 @@ class PersistenceMixin:
         """Set up checkpointer using the persistence field."""
         if not self.persistence:
             logger.warning(
-                f"No persistence config found for {getattr(self, 'name', 'Agent')}"
+                f"No persistence config found for {
+                    getattr(
+                        self,
+                        'name',
+                        'Agent')}"
             )
             return
 
@@ -276,7 +293,11 @@ class PersistenceMixin:
             self._async_setup_pending = True
 
             logger.debug(
-                f"Async checkpointer setup pending for {getattr(self, 'name', 'Agent')}"
+                f"Async checkpointer setup pending for {
+                    getattr(
+                        self,
+                        'name',
+                        'Agent')}"
             )
 
         except Exception as e:
@@ -290,7 +311,8 @@ class PersistenceMixin:
             return
 
         try:
-            # Check if we have a PostgreSQL checkpointer for store compatibility
+            # Check if we have a PostgreSQL checkpointer for store
+            # compatibility
             if (
                 hasattr(self, "checkpointer")
                 and self.checkpointer
@@ -319,7 +341,8 @@ class PersistenceMixin:
                             store_type=store_type, connection_string=connection_string
                         )
                         logger.info(
-                            f"PostgreSQL store added successfully ({store_type.value})"
+                            f"PostgreSQL store added successfully ({
+                                store_type.value})"
                         )
                     else:
                         # Fall back to memory store if no connection info
@@ -386,8 +409,14 @@ class PersistenceMixin:
             self._checkpoint_mode = "async"
 
             logger.debug(
-                f"Async checkpointer set up for {getattr(self, 'name', 'Agent')}: "
-                f"{type(self._async_checkpointer).__name__}"
+                f"Async checkpointer set up for {
+                    getattr(
+                        self,
+                        'name',
+                        'Agent')}: "
+                f"{
+                    type(
+                        self._async_checkpointer).__name__}"
             )
 
         except Exception as e:
@@ -431,7 +460,8 @@ class PersistenceMixin:
 
         # Add default values
         if "thread_id" not in config["configurable"]:
-            # Generate consistent thread_id based on agent identity for automatic persistence
+            # Generate consistent thread_id based on agent identity for
+            # automatic persistence
             config["configurable"]["thread_id"] = self._generate_default_thread_id()
         if "recursion_limit" not in config["configurable"]:
             config["configurable"]["recursion_limit"] = 100

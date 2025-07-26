@@ -172,14 +172,19 @@ class MultiAgent(Agent):
         """Generate schemas using AgentSchemaComposer."""
         # Don't regenerate if we already have schemas
         if self.state_schema:
-            logger.debug(f"Using existing schema: {self.state_schema.__name__}")
+            logger.debug(
+                f"Using existing schema: {
+                    self.state_schema.__name__}"
+            )
             return
 
         # Get list of agents
         agent_list = list(self.agents.values())
 
         logger.info(
-            f"Creating schema from {len(agent_list)} agents using {self.separation_strategy} strategy"
+            f"Creating schema from {
+                len(agent_list)} agents using {
+                self.separation_strategy} strategy"
         )
 
         # Use AgentSchemaComposer
@@ -193,7 +198,10 @@ class MultiAgent(Agent):
         # Log engine IO mappings
         if hasattr(self.state_schema, "__engine_io_mappings__"):
             mappings = getattr(self.state_schema, "__engine_io_mappings__", {})
-            logger.debug(f"Schema created with {len(mappings)} engine I/O mappings")
+            logger.debug(
+                f"Schema created with {
+                    len(mappings)} engine I/O mappings"
+            )
 
             # Log a few mappings as examples
             for i, (engine_name, mapping) in enumerate(mappings.items()):
@@ -278,7 +286,8 @@ class MultiAgent(Agent):
     def _build_supervisor_graph(self, graph: BaseGraph) -> None:
         """Build a supervisor-based execution graph."""
         logger.info(
-            f"Building supervisor graph with coordinator: {self._coordinator_agent}"
+            f"Building supervisor graph with coordinator: {
+                self._coordinator_agent}"
         )
 
         if not self._coordinator_agent:
@@ -393,7 +402,10 @@ class MultiAgent(Agent):
             self.state_schema, "__engine_io_mappings__"
         ):
             # Get engine name with prefix
-            prefixed_name = f"{agent_name.lower().replace(' ', '_')}_{agent.name}"
+            prefixed_name = f"{
+                agent_name.lower().replace(
+                    ' ', '_')}_{
+                agent.name}"
             mappings = getattr(self.state_schema, "__engine_io_mappings__", {})
 
             if prefixed_name in mappings:
@@ -437,7 +449,8 @@ class MultiAgent(Agent):
 
             return input_data
 
-        # For shared or smart, pass the state directly (let agent extract what it needs)
+        # For shared or smart, pass the state directly (let agent extract what
+        # it needs)
         return state
 
     def _create_agent_output(
@@ -468,7 +481,10 @@ class MultiAgent(Agent):
             self.state_schema, "__engine_io_mappings__"
         ):
             # Get engine name with prefix
-            prefixed_name = f"{agent_name.lower().replace(' ', '_')}_{agent.name}"
+            prefixed_name = f"{
+                agent_name.lower().replace(
+                    ' ', '_')}_{
+                agent.name}"
             mappings = getattr(self.state_schema, "__engine_io_mappings__", {})
 
             if prefixed_name in mappings:
@@ -641,7 +657,10 @@ class MultiAgent(Agent):
         # Select coordinator agent - by default, use first agent
         if self._agent_order:
             self._coordinator_agent = self._agent_order[0]
-            logger.info(f"Using {self._coordinator_agent} as coordinator agent")
+            logger.info(
+                f"Using {
+                    self._coordinator_agent} as coordinator agent"
+            )
 
     @classmethod
     def from_agents(
@@ -740,7 +759,10 @@ class MultiAgent(Agent):
 
         # Ensure we have schemas - regenerate if needed
         if not self.state_schema:
-            logger.warning(f"No state schema found for {self.name}, regenerating...")
+            logger.warning(
+                f"No state schema found for {
+                    self.name}, regenerating..."
+            )
             self._setup_schemas()
 
         # Build schema kwargs - only pass what StateGraph expects
@@ -762,9 +784,20 @@ class MultiAgent(Agent):
             schema_kwargs["config_schema"] = self.config_schema
 
         # Debug logging
-        logger.debug(f"Schema kwargs for {self.name}: {list(schema_kwargs.keys())}")
+        logger.debug(
+            f"Schema kwargs for {
+                self.name}: {
+                list(
+                    schema_kwargs.keys())}"
+        )
         logger.debug(f"State schema: {self.state_schema.__name__}")
-        logger.debug(f"Input schema: {getattr(self.input_schema, '__name__', 'None')}")
+        logger.debug(
+            f"Input schema: {
+                getattr(
+                    self.input_schema,
+                    '__name__',
+                    'None')}"
+        )
         logger.debug(
             f"Output schema: {getattr(self.output_schema, '__name__', 'None')}"
         )
@@ -778,11 +811,16 @@ class MultiAgent(Agent):
             langgraph = self.graph.to_langgraph(**schema_kwargs)
         except Exception as e:
             logger.exception(f"Failed to convert graph to langgraph: {e}")
-            logger.exception(f"Schema kwargs were: {list(schema_kwargs.keys())}")
+            logger.exception(
+                f"Schema kwargs were: {
+                    list(
+                        schema_kwargs.keys())}"
+            )
             logger.exception(f"State schema type: {type(self.state_schema)}")
             raise
 
-        # Now compile the LangGraph StateGraph with checkpointer and runtime config
+        # Now compile the LangGraph StateGraph with checkpointer and runtime
+        # config
         compile_kwargs = {}
 
         # Always add our checkpointer
@@ -793,7 +831,8 @@ class MultiAgent(Agent):
         if self.store:
             compile_kwargs["store"] = self.store
 
-        # Extract compilation-relevant parameters from runnable_config if provided
+        # Extract compilation-relevant parameters from runnable_config if
+        # provided
         if runnable_config:
             if "interrupt_before" in runnable_config:
                 compile_kwargs["interrupt_before"] = runnable_config["interrupt_before"]

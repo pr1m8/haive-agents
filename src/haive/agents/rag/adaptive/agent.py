@@ -89,7 +89,7 @@ class AdaptiveRAGAgent(ConditionalAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         embedding_model: str | None = None,
-        **kwargs
+        **kwargs,
     ):
         """Create Adaptive RAG from documents.
 
@@ -183,5 +183,5 @@ class AdaptiveRAGAgent(ConditionalAgent):
             agents=[query_analyzer, direct_agent, simple_rag, multi_rag, hyde_rag],
             branches=branches,
             name=kwargs.get("name", "Adaptive RAG Agent"),
-            **kwargs
+            **kwargs,
         )

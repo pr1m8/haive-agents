@@ -212,7 +212,9 @@ class QualitativeGrade(Grade):
         expected_sentiments = quality_to_sentiment[self.quality_level]
         if self.sentiment not in expected_sentiments:
             raise ValueError(
-                f"Sentiment '{self.sentiment}' is inconsistent with quality level '{self.quality_level}'"
+                f"Sentiment '{
+                    self.sentiment}' is inconsistent with quality level '{
+                    self.quality_level}'"
             )
 
         return self
@@ -366,7 +368,15 @@ class QualitativeGrade(Grade):
         emoji = quality_emoji[self.quality_level]
         percentage = self.get_normalized_score() * 100
 
-        return f"{emoji} {self.quality_level.value.title()} ({percentage:.0f}%) | {len(self.strengths)}+ / {len(self.weaknesses)}- | {self.justification[:25]}..."
+        return f"{emoji} {
+            self.quality_level.value.title()} ({
+            percentage:.0f}%) | {
+            len(
+                self.strengths)}+ / {
+                    len(
+                        self.weaknesses)}- | {
+                            self.justification[
+                                :25]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a value can be converted to a quality level.

@@ -1,5 +1,4 @@
-"""
-ReWOO Tree-based Planning Agent with Parallelizable Execution
+"""ReWOO Tree-based Planning Agent with Parallelizable Execution.
 
 This agent implements the ReWOO (Reasoning without Observation) methodology
 with tree-based planning for parallelizable execution. It features:
@@ -19,7 +18,7 @@ Reference:
 import logging
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -83,7 +82,7 @@ class ToolAlias(BaseModel):
         default=True, description="Whether to force this tool choice"
     )
 
-    parameters: Dict[str, Any] = Field(
+    parameters: dict[str, Any] = Field(
         default_factory=dict, description="Default parameters for the tool"
     )
 
@@ -137,53 +136,51 @@ class PlanNode(BaseModel):
     )
 
     # Execution details
-    agent_name: Optional[str] = Field(
+    agent_name: str | None = Field(
         default=None, description="Name of the agent to execute this task"
     )
 
-    tool_alias: Optional[str] = Field(
+    tool_alias: str | None = Field(
         default=None, description="Tool alias to use for execution"
     )
 
-    expected_output: Optional[str] = Field(
+    expected_output: str | None = Field(
         default=None, description="Expected output format or type"
     )
 
     # Tree structure
-    parent_id: Optional[str] = Field(default=None, description="ID of the parent node")
+    parent_id: str | None = Field(default=None, description="ID of the parent node")
 
-    children_ids: List[str] = Field(
+    children_ids: list[str] = Field(
         default_factory=list, description="List of child node IDs"
     )
 
     # Dependencies
-    dependencies: List[str] = Field(
+    dependencies: list[str] = Field(
         default_factory=list, description="List of node IDs this task depends on"
     )
 
-    dependent_nodes: List[str] = Field(
+    dependent_nodes: list[str] = Field(
         default_factory=list, description="List of node IDs that depend on this task"
     )
 
     # Execution results
-    result: Optional[Any] = Field(
+    result: Any | None = Field(
         default=None, description="Result of executing this task"
     )
 
-    error: Optional[str] = Field(
-        default=None, description="Error message if task failed"
-    )
+    error: str | None = Field(default=None, description="Error message if task failed")
 
     # Timing
     created_at: datetime = Field(
         default_factory=datetime.now, description="When the task was created"
     )
 
-    started_at: Optional[datetime] = Field(
+    started_at: datetime | None = Field(
         default=None, description="When the task started execution"
     )
 
-    completed_at: Optional[datetime] = Field(
+    completed_at: datetime | None = Field(
         default=None, description="When the task completed"
     )
 
@@ -192,7 +189,7 @@ class PlanNode(BaseModel):
         default=True, description="Whether this task can be executed in parallel"
     )
 
-    estimated_duration: Optional[float] = Field(
+    estimated_duration: float | None = Field(
         default=None, description="Estimated execution time in seconds"
     )
 
@@ -230,7 +227,7 @@ class PlanNode(BaseModel):
         if dependency_id not in self.dependencies:
             self.dependencies.append(dependency_id)
 
-    def can_execute(self, completed_nodes: Set[str]) -> bool:
+    def can_execute(self, completed_nodes: set[str]) -> bool:
         """Check if this node can be executed given completed nodes."""
         if self.status != TaskStatus.PENDING:
             return False
@@ -287,11 +284,11 @@ class PlanTree(BaseModel):
     )
 
     # Tree structure
-    nodes: Dict[str, PlanNode] = Field(
+    nodes: dict[str, PlanNode] = Field(
         default_factory=dict, description="Dictionary of all nodes in the tree"
     )
 
-    root_id: Optional[str] = Field(default=None, description="ID of the root node")
+    root_id: str | None = Field(default=None, description="ID of the root node")
 
     # Execution metadata
     created_at: datetime = Field(
@@ -305,7 +302,7 @@ class PlanTree(BaseModel):
     failed_nodes: int = Field(default=0, description="Number of failed nodes")
 
     # Parallelization data
-    execution_levels: List[List[str]] = Field(
+    execution_levels: list[list[str]] = Field(
         default_factory=list,
         description="Nodes organized by execution level for parallelization",
     )
@@ -337,11 +334,11 @@ class PlanTree(BaseModel):
         if node.parent_id is None and self.root_id is None:
             self.root_id = node.id
 
-    def get_node(self, node_id: str) -> Optional[PlanNode]:
+    def get_node(self, node_id: str) -> PlanNode | None:
         """Get a node by ID."""
         return self.nodes.get(node_id)
 
-    def get_ready_nodes(self) -> List[PlanNode]:
+    def get_ready_nodes(self) -> list[PlanNode]:
         """Get nodes that are ready for execution."""
         completed_ids = {
             node_id
@@ -356,7 +353,7 @@ class PlanTree(BaseModel):
 
         return ready_nodes
 
-    def get_parallelizable_nodes(self) -> List[List[PlanNode]]:
+    def get_parallelizable_nodes(self) -> list[list[PlanNode]]:
         """Get nodes organized by parallelizable execution levels."""
         levels = []
         processed = set()
@@ -472,20 +469,20 @@ class ReWOOTreePlannerOutput(BaseModel):
     )
 
     # Tool usage
-    required_tools: List[str] = Field(
+    required_tools: list[str] = Field(
         default_factory=list, description="List of tools required for execution"
     )
 
-    tool_aliases: Dict[str, ToolAlias] = Field(
+    tool_aliases: dict[str, ToolAlias] = Field(
         default_factory=dict, description="Tool aliases for forced tool choice"
     )
 
     # Risk assessment
-    risk_factors: List[str] = Field(
+    risk_factors: list[str] = Field(
         default_factory=list, description="Identified risk factors in the plan"
     )
 
-    fallback_strategies: List[str] = Field(
+    fallback_strategies: list[str] = Field(
         default_factory=list,
         description="Fallback strategies if parts of the plan fail",
     )
@@ -509,7 +506,7 @@ class ReWOOTreePlannerOutput(BaseModel):
             raise ValueError("Plan tree ID must match plan ID")
 
         # Required tools should include all tool aliases
-        alias_tools = set(alias.actual_tool for alias in self.tool_aliases.values())
+        alias_tools = {alias.actual_tool for alias in self.tool_aliases.values()}
         missing_tools = alias_tools - set(self.required_tools)
         if missing_tools:
             raise ValueError(f"Required tools missing aliases: {missing_tools}")
@@ -537,16 +534,16 @@ class ReWOOTreeExecutorOutput(BaseModel):
     )
 
     # Execution results
-    completed_nodes: Dict[str, Any] = Field(
+    completed_nodes: dict[str, Any] = Field(
         default_factory=dict, description="Results from completed nodes"
     )
 
-    failed_nodes: Dict[str, str] = Field(
+    failed_nodes: dict[str, str] = Field(
         default_factory=dict, description="Error messages from failed nodes"
     )
 
     # Final result
-    final_result: Optional[Any] = Field(
+    final_result: Any | None = Field(
         default=None, description="Final aggregated result of the execution"
     )
 
@@ -582,29 +579,28 @@ class ReWOOTreeAgentState(MessagesState):
     """Enhanced state for ReWOO tree agent."""
 
     # Current planning context
-    current_plan: Optional[ReWOOTreePlannerOutput] = None
-    current_execution: Optional[ReWOOTreeExecutorOutput] = None
+    current_plan: ReWOOTreePlannerOutput | None = None
+    current_execution: ReWOOTreeExecutorOutput | None = None
 
     # Tool management
-    available_tools: List[str] = Field(default_factory=list)
-    tool_aliases: Dict[str, ToolAlias] = Field(default_factory=dict)
+    available_tools: list[str] = Field(default_factory=list)
+    tool_aliases: dict[str, ToolAlias] = Field(default_factory=dict)
 
     # Recursive planning state
     planning_depth: int = Field(default=0, ge=0, le=10)
-    subplan_stack: List[str] = Field(default_factory=list)
+    subplan_stack: list[str] = Field(default_factory=list)
 
     # Parallelization state
-    active_executions: Dict[str, Any] = Field(default_factory=dict)
-    execution_queue: List[str] = Field(default_factory=list)
+    active_executions: dict[str, Any] = Field(default_factory=dict)
+    execution_queue: list[str] = Field(default_factory=list)
 
     # Result aggregation
-    node_results: Dict[str, Any] = Field(default_factory=dict)
-    final_output: Optional[Any] = None
+    node_results: dict[str, Any] = Field(default_factory=dict)
+    final_output: Any | None = None
 
 
 class ReWOOTreeAgent(Agent):
-    """
-    ReWOO Tree-based Planning Agent with Parallelizable Execution.
+    """ReWOO Tree-based Planning Agent with Parallelizable Execution.
 
     This agent implements the ReWOO methodology with enhancements:
     - Hierarchical tree planning with recursive decomposition
@@ -615,11 +611,11 @@ class ReWOOTreeAgent(Agent):
     """
 
     # Tool management
-    available_tools: List[BaseTool] = Field(
+    available_tools: list[BaseTool] = Field(
         default_factory=list, description="Available tools for execution"
     )
 
-    tool_aliases: Dict[str, ToolAlias] = Field(
+    tool_aliases: dict[str, ToolAlias] = Field(
         default_factory=dict, description="Tool aliases for forced choice"
     )
 
@@ -633,11 +629,11 @@ class ReWOOTreeAgent(Agent):
     )
 
     # Specialized agents
-    planner_agent: Optional[Agent] = Field(
+    planner_agent: Agent | None = Field(
         default=None, description="Specialized agent for planning"
     )
 
-    executor_agent: Optional[Agent] = Field(
+    executor_agent: Agent | None = Field(
         default=None, description="Specialized agent for execution"
     )
 
@@ -662,14 +658,14 @@ class ReWOOTreeAgent(Agent):
 
         planner_prompt = """
         You are a ReWOO Tree Planner. Your task is to analyze a problem and create a detailed execution plan.
-        
+
         Analysis Framework:
         1. Problem Decomposition: Break down the problem into manageable tasks
         2. Dependency Analysis: Identify task dependencies and parallelizable components
         3. Resource Planning: Determine tools and agents needed
         4. Risk Assessment: Identify potential failures and mitigation strategies
         5. Optimization: Maximize parallelization opportunities
-        
+
         Task Types:
         - RESEARCH: Information gathering and analysis
         - ANALYSIS: Data processing and evaluation
@@ -677,14 +673,14 @@ class ReWOOTreeAgent(Agent):
         - EXECUTION: Performing actions or operations
         - VALIDATION: Checking results and quality
         - PLANNING: Further decomposition if needed
-        
+
         Create a structured plan with:
         - Clear task hierarchy
         - Dependency relationships
         - Tool assignments
         - Parallelization opportunities
         - Risk mitigation strategies
-        
+
         Input: {input}
         Planning Context: {context}
         Available Tools: {tools}
@@ -705,21 +701,21 @@ class ReWOOTreeAgent(Agent):
 
         executor_prompt = """
         You are a ReWOO Tree Executor. Your task is to execute plan nodes efficiently and in parallel.
-        
+
         Execution Framework:
         1. Dependency Check: Ensure all prerequisites are met
         2. Resource Allocation: Assign tools and agents to tasks
         3. Parallel Execution: Execute independent tasks concurrently
         4. Result Aggregation: Combine results from parallel executions
         5. Error Handling: Manage failures and recovery strategies
-        
+
         Execution Rules:
         - Always check dependencies before execution
         - Use tool aliases when specified
         - Maximize parallelization opportunities
         - Handle errors gracefully with fallback strategies
         - Aggregate results coherently
-        
+
         Current Task: {task}
         Available Tools: {tools}
         Dependencies: {dependencies}
@@ -779,7 +775,6 @@ class ReWOOTreeAgent(Agent):
 
     def _planning_node(self, state: ReWOOTreeAgentState) -> Command:
         """Execute the planning phase."""
-
         # Get planning depth (default to 0 if not set)
         planning_depth = getattr(state, "planning_depth", 0)
         logger.info(f"🧠 Planning phase for depth {planning_depth}")
@@ -827,22 +822,29 @@ class ReWOOTreeAgent(Agent):
                 update={
                     "current_plan": plan_result,
                     "tool_aliases": plan_result.tool_aliases,
-                    "messages": state.messages
-                    + [AIMessage(content=f"Created plan: {plan_result.plan_name}")],
+                    "messages": [
+                        *state.messages,
+                        AIMessage(
+                            content=f"Created plan: {
+                                plan_result.plan_name}"
+                        ),
+                    ],
                 },
                 goto="executor",
             )
 
         except Exception as e:
-            logger.error(f"Planning failed: {e}")
+            logger.exception(f"Planning failed: {e}")
             # Create fallback plan
             fallback_plan = self._create_fallback_plan(str(e), user_input)
 
             return Command(
                 update={
                     "current_plan": fallback_plan,
-                    "messages": state.messages
-                    + [AIMessage(content=f"Created fallback plan due to error: {e}")],
+                    "messages": [
+                        *state.messages,
+                        AIMessage(content=f"Created fallback plan due to error: {e}"),
+                    ],
                 },
                 goto="executor",
             )
@@ -890,14 +892,15 @@ class ReWOOTreeAgent(Agent):
 
     def _execution_coordinator_node(self, state: ReWOOTreeAgentState) -> Command:
         """Coordinate the execution of the plan tree."""
-
         logger.info("⚡ Execution coordination phase")
 
         if not state.current_plan:
             return Command(
                 update={
-                    "messages": state.messages
-                    + [AIMessage(content="No plan to execute")]
+                    "messages": [
+                        *state.messages,
+                        AIMessage(content="No plan to execute"),
+                    ]
                 },
                 goto="aggregator",
             )
@@ -912,7 +915,10 @@ class ReWOOTreeAgent(Agent):
 
         for level_idx, level_nodes in enumerate(execution_levels):
             logger.info(
-                f"📊 Executing level {level_idx + 1} with {len(level_nodes)} nodes"
+                f"📊 Executing level {
+                    level_idx +
+                    1} with {
+                    len(level_nodes)} nodes"
             )
 
             # Execute nodes in this level (simplified for sync execution)
@@ -946,19 +952,20 @@ class ReWOOTreeAgent(Agent):
             update={
                 "current_execution": execution_output,
                 "node_results": execution_results,
-                "messages": state.messages
-                + [
+                "messages": [
+                    *state.messages,
                     AIMessage(
-                        content=f"Execution completed: {execution_output.completion_percentage:.1f}% success"
-                    )
+                        content=f"Execution completed: {
+                            execution_output.completion_percentage:.1f}% success"
+                    ),
                 ],
             },
             goto="recursive_check",
         )
 
     def _execute_nodes_sync(
-        self, nodes: List[PlanNode], state: ReWOOTreeAgentState
-    ) -> Dict[str, Any]:
+        self, nodes: list[PlanNode], state: ReWOOTreeAgentState
+    ) -> dict[str, Any]:
         """Execute nodes synchronously (simplified version)."""
         results = {}
 
@@ -984,7 +991,7 @@ class ReWOOTreeAgent(Agent):
                 results[node.id] = result
 
             except Exception as e:
-                logger.error(f"Node {node.id} failed: {e}")
+                logger.exception(f"Node {node.id} failed: {e}")
                 results[node.id] = e
 
         return results
@@ -1008,12 +1015,12 @@ class ReWOOTreeAgent(Agent):
             result = actual_tool.run(description)
             return result
         except Exception as e:
-            logger.error(f"Tool execution failed: {e}")
-            raise e
+            logger.exception(f"Tool execution failed: {e}")
+            raise
 
     async def _execute_parallel_nodes(
-        self, nodes: List[PlanNode], state: ReWOOTreeAgentState
-    ) -> Dict[str, Any]:
+        self, nodes: list[PlanNode], state: ReWOOTreeAgentState
+    ) -> dict[str, Any]:
         """Execute nodes in parallel with proper coordination."""
         import asyncio
 
@@ -1030,7 +1037,7 @@ class ReWOOTreeAgent(Agent):
                 result = await task
                 results[node_id] = result
             except Exception as e:
-                logger.error(f"Node {node_id} failed: {e}")
+                logger.exception(f"Node {node_id} failed: {e}")
                 results[node_id] = e
 
         return results
@@ -1066,17 +1073,16 @@ class ReWOOTreeAgent(Agent):
                     alias_config, execution_context
                 )
                 return tool_result
-            else:
-                # Use general executor agent
-                result = await self.executor_agent.arun(execution_context)
-                return result
+            # Use general executor agent
+            result = await self.executor_agent.arun(execution_context)
+            return result
 
         except Exception as e:
-            logger.error(f"Node execution failed: {e}")
-            raise e
+            logger.exception(f"Node execution failed: {e}")
+            raise
 
     async def _execute_with_tool_alias(
-        self, alias_config: ToolAlias, context: Dict[str, Any]
+        self, alias_config: ToolAlias, context: dict[str, Any]
     ) -> Any:
         """Execute a task using a specific tool alias."""
         # Find the actual tool
@@ -1097,8 +1103,8 @@ class ReWOOTreeAgent(Agent):
             result = await actual_tool.arun(tool_input)
             return result
         except Exception as e:
-            logger.error(f"Tool execution failed: {e}")
-            raise e
+            logger.exception(f"Tool execution failed: {e}")
+            raise
 
     def _recursive_planning_check_node(self, state: ReWOOTreeAgentState) -> Command:
         """Check if recursive planning is needed."""
@@ -1126,19 +1132,21 @@ class ReWOOTreeAgent(Agent):
 
             if failed_nodes:
                 logger.info(
-                    f"🔄 Triggering recursive planning for {len(failed_nodes)} failed nodes"
+                    f"🔄 Triggering recursive planning for {
+                        len(failed_nodes)} failed nodes"
                 )
 
                 # Update state for recursive planning
                 return Command(
                     update={
                         "planning_depth": planning_depth + 1,
-                        "subplan_stack": subplan_stack + [state.current_plan.plan_id],
-                        "messages": state.messages
-                        + [
+                        "subplan_stack": [*subplan_stack, state.current_plan.plan_id],
+                        "messages": [
+                            *state.messages,
                             AIMessage(
-                                content=f"Initiating recursive planning (depth {planning_depth + 1})"
-                            )
+                                content=f"Initiating recursive planning (depth {
+                                    planning_depth + 1})"
+                            ),
                         ],
                     },
                     goto="planner",
@@ -1183,13 +1191,13 @@ class ReWOOTreeAgent(Agent):
         return Command(
             update={
                 "final_output": final_result,
-                "messages": state.messages + [AIMessage(content=response_content)],
+                "messages": [*state.messages, AIMessage(content=response_content)],
             },
             goto="__end__",
         )
 
     def _format_final_response(
-        self, result: Dict[str, Any], state: ReWOOTreeAgentState
+        self, result: dict[str, Any], state: ReWOOTreeAgentState
     ) -> str:
         """Format the final response for the user."""
         if not result:
@@ -1217,7 +1225,7 @@ class ReWOOTreeAgent(Agent):
 
         return response
 
-    def _format_node_results(self, node_results: Dict[str, Any]) -> str:
+    def _format_node_results(self, node_results: dict[str, Any]) -> str:
         """Format node results for display."""
         if not node_results:
             return "No results available"
@@ -1225,7 +1233,7 @@ class ReWOOTreeAgent(Agent):
         formatted = []
         for node_id, result in node_results.items():
             if isinstance(result, Exception):
-                formatted.append(f"- {node_id}: ❌ Error - {str(result)}")
+                formatted.append(f"- {node_id}: ❌ Error - {result!s}")
             else:
                 # Truncate long results
                 result_str = str(result)

@@ -45,7 +45,8 @@ class SerializationMixin:
             if exclude_key in state:
                 state.pop(exclude_key)
 
-        # Handle dynamically created schemas (which are picklable but cause issues with msgpack)
+        # Handle dynamically created schemas (which are picklable but cause
+        # issues with msgpack)
         for schema_key in ["input_schema", "output_schema", "config_schema"]:
             if schema_key in state and state[schema_key] is not None:
                 # Store schema name and module for reconstruction

@@ -117,7 +117,10 @@ class BinaryGrade(Grade):
             # Convert numbers: 0 = False, non-zero = True
             return bool(v)
 
-        raise ValueError(f"Cannot convert type {type(v)} to binary grade value")
+        raise ValueError(
+            f"Cannot convert type {
+                type(v)} to binary grade value"
+        )
 
     def get_normalized_score(self) -> float:
         """Get the grade as a normalized score between 0.0 and 1.0.
@@ -198,7 +201,9 @@ class BinaryGrade(Grade):
         display_value = self.get_display_value()
         confidence_pct = f"{self.confidence:.0%}"
 
-        return f"{emoji} {display_value} ({confidence_pct} confidence) | {self.justification[:50]}..."
+        return f"{emoji} {display_value} ({confidence_pct} confidence) | {
+            self.justification[
+                :50]}..."
 
     @classmethod
     def create_pass(

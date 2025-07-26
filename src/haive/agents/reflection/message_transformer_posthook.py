@@ -17,7 +17,7 @@ import asyncio
 from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
@@ -69,7 +69,7 @@ except (ImportError, AttributeError):
             return transformed
 
 
-from .models import Critique, ReflectionResult
+from .models import Critique
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -352,7 +352,7 @@ def create_reflection_post_hook(
                 (
                     "system",
                     """You are a reflection agent that analyzes responses.
-            
+
 Analyze the conversation and provide constructive feedback on:
 1. Quality and accuracy
 2. Completeness
@@ -507,7 +507,7 @@ async def example_graded_reflection_post_hook():
 
     # Show grade context
     if "grade_context" in result:
-        print(f"\n📊 Grade Context:")
+        print("\n📊 Grade Context:")
         print(result["grade_context"])
 
     # Show reflection result
@@ -548,7 +548,7 @@ async def example_factory_pattern():
 
     query = f"Summarize this text: {long_text}"
 
-    print(f"Query: Summarize a long text about AI")
+    print("Query: Summarize a long text about AI")
 
     result = await enhanced_agent.arun(query)
 

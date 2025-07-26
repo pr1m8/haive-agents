@@ -10,11 +10,8 @@ This script tests that:
 
 import asyncio
 import logging
-import os
-import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
@@ -33,7 +30,7 @@ def test_unique_thread_generation():
 
     # Create multiple agents with the same configuration
     agents = []
-    for i in range(5):
+    for _i in range(5):
         agent = SimpleAgent(
             name="test_agent",  # Same name
             engine=AugLLMConfig(temperature=0.1),
@@ -205,9 +202,7 @@ def test_thread_id_format():
     logger.info(f"Generated thread_id: {thread_id}")
 
     # Should start with agent name
-    assert thread_id.startswith(
-        "test_agent_"
-    ), f"Thread ID should start with agent name"
+    assert thread_id.startswith("test_agent_"), "Thread ID should start with agent name"
 
     # Extract UUID part (everything after agent_name_)
     uuid_part = thread_id[len("test_agent_") :]
@@ -216,7 +211,7 @@ def test_thread_id_format():
     assert (
         len(uuid_part) == 36
     ), f"UUID part should be 36 characters, got {len(uuid_part)}"
-    assert uuid_part.count("-") == 4, f"UUID should have 4 hyphens"
+    assert uuid_part.count("-") == 4, "UUID should have 4 hyphens"
 
     # Test with agent name that has underscores
     agent2 = SimpleAgent(
@@ -229,7 +224,7 @@ def test_thread_id_format():
     # Should start with the full agent name
     assert thread_id2.startswith(
         "complex_agent_name_"
-    ), f"Thread ID should start with full agent name"
+    ), "Thread ID should start with full agent name"
 
     # Extract UUID part
     uuid_part2 = thread_id2[len("complex_agent_name_") :]

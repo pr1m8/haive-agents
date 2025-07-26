@@ -46,9 +46,9 @@ if _DOCUMENTATION_MODE:
             module = importlib.import_module(module_path)
             agent_class = getattr(module, class_name)
             globals()[name] = agent_class
-    except ImportError as e:
+    except ImportError:
         # If imports fail during docs build, just log and continue
-        print(f"Warning: Could not import {name} for documentation: {e}")
+        pass
 
 
 def __getattr__(name: str):
@@ -87,6 +87,16 @@ def __getattr__(name: str):
 #     HybridMemoryAgent,
 # )
 
+# Import submodules for documentation
+try:
+    # These imports allow sphinx to find the submodules
+    from haive.agents import conversation, planning, research, sequential, supervisor
+except ImportError as e:
+    # Log but don't fail if submodules aren't available
+    import warnings
+
+    warnings.warn(f"Failed to import agent submodules: {e}")
+
 # Planning agents
 # from haive.agents.planning import (
 #     PlannerAgent,
@@ -120,12 +130,12 @@ def __getattr__(name: str):
 __all__ = [
     # Base
     "Agent",
-    # Simple
-    "SimpleAgent",
-    # React
-    "ReactAgent",
     # Multi-agent
     "MultiAgent",
+    # React
+    "ReactAgent",
+    # Simple
+    "SimpleAgent",
     # # RAG
     # "BaseRAGAgent",
     # "ConversationRAGAgent",

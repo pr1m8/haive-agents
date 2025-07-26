@@ -385,7 +385,9 @@ class ReWOOExecutorAgent(ReactAgent):
         if task.tool_alias and task.tool_alias in self.tool_aliases:
             alias = self.tool_aliases[task.tool_alias]
             # Force specific tool usage
-            input_str = f"Use the {alias.actual_tool} tool to: {task.description}"
+            input_str = f"Use the {
+                alias.actual_tool} tool to: {
+                task.description}"
         else:
             input_str = task.description
 

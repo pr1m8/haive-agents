@@ -82,7 +82,10 @@ class MockAgent:
                 self.messages = messages
 
         # Simulate agent response
-        response_content = f"Response from {self.name}: I processed your request using my {len(self.tools)} tools."
+        response_content = f"Response from {
+            self.name}: I processed your request using my {
+            len(
+                self.tools)} tools."
 
         # Mock message type
         class MockMessage:

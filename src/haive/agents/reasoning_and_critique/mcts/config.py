@@ -57,7 +57,7 @@ class MCTSAgentConfig(AgentConfig):
         llm_config: LLMConfig | None = None,
         tools: list[BaseTool] | None = None,
         system_prompt: str | None = None,
-        **kwargs
+        **kwargs,
     ) -> "MCTSAgentConfig":
         """Create an MCTS Agent config from LLM config and tools."""
         # Use defaults if not provided

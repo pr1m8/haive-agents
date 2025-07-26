@@ -134,10 +134,14 @@ class SimpleAgentWithValidation(Agent):
             # Check if engine is already registered
             if not registry.find(self.engine.name):
                 registry.register(self.engine)
-                logger.info(f"Registered engine '{self.engine.name}' in EngineRegistry")
+                logger.info(
+                    f"Registered engine '{
+                        self.engine.name}' in EngineRegistry"
+                )
             else:
                 logger.debug(
-                    f"Engine '{self.engine.name}' already registered in EngineRegistry"
+                    f"Engine '{
+                        self.engine.name}' already registered in EngineRegistry"
                 )
 
         except ImportError:
@@ -419,9 +423,11 @@ class SimpleAgentWithValidation(Agent):
 
     def __repr__(self) -> str:
         engine_info = f"model={getattr(self.engine, 'model', 'unknown')}"
-        schema_info = f"structured_output={self.structured_output_model.__name__ if self.structured_output_model else 'None'}"
+        schema_info = f"structured_output={
+            self.structured_output_model.__name__ if self.structured_output_model else 'None'}"
         validation_info = f"validation_mode={self.validation_mode.value}"
-        return f"SimpleAgentWithValidation(name='{self.name}', {engine_info}, {schema_info}, {validation_info})"
+        return f"SimpleAgentWithValidation(name='{
+            self.name}', {engine_info}, {schema_info}, {validation_info})"
 
 
 # For backward compatibility, provide a function to upgrade SimpleAgent

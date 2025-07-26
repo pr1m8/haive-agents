@@ -19,7 +19,8 @@ class StructuredOutputAgentConfig(SimpleAgentConfig):
     engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             force_tool_use=True,  # Force using a tool
-            force_tool_choice=True,  # Auto-select the appropriate tool (will be the only one)
+            force_tool_choice=True,
+            # Auto-select the appropriate tool (will be the only one)
         )
     )
     output_parser: PydanticOutputParser = Field(

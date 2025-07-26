@@ -42,7 +42,8 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
         self.graph.add_edge("execute_step", "replan_step")
         self.graph.add_conditional_edges(
             "replan_step",
-            # Next, we pass in the function that will determine which node is called next.
+            # Next, we pass in the function that will determine which node is
+            # called next.
             self.should_end,
             ["execute_step", END],
         )
@@ -62,7 +63,9 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
 
         # If the step is still in progress, complete it before moving on
         if next_step.status == "in_progress" and next_step.result is None:
-            state.response = f"Continuing step {next_step.id}: {next_step.description}."
+            state.response = f"Continuing step {
+                next_step.id}: {
+                next_step.description}."
             return Command(update={"response": state.response}, goto="replan_step")
 
         # Format the task description
@@ -102,7 +105,8 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
         """Replans the steps based on completed progress."""
         # If all steps are complete, return the final response
         if all(step.status == "complete" for step in state.plan.steps):
-            state.response = f"Final response: {state.past_steps[-1].result}"  # ✅ Uses last step's result
+            # ✅ Uses last step's result
+            state.response = f"Final response: {state.past_steps[-1].result}"
             return Command(update={"response": state.response}, goto=END)
 
         output = await self.replanner_runnable.ainvoke(

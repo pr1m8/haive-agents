@@ -271,7 +271,7 @@ class HallucinationGraderAgent(Agent):
             doc_context = (
                 "\n\n".join(
                     [
-                        f"Document {i+1}: {doc.page_content}"
+                        f"Document {i + 1}: {doc.page_content}"
                         for i, doc in enumerate(retrieved_documents[:5])
                     ]
                 )
@@ -370,7 +370,7 @@ class AdvancedHallucinationGraderAgent(Agent):
             doc_context = (
                 "\n\n".join(
                     [
-                        f"Document {i+1}: {doc.page_content}"
+                        f"Document {i + 1}: {doc.page_content}"
                         for i, doc in enumerate(retrieved_documents[:10])
                     ]
                 )
@@ -476,7 +476,7 @@ class RealtimeHallucinationGraderAgent(Agent):
             doc_context = (
                 "\n\n".join(
                     [
-                        f"Doc {i+1}: {doc.page_content[:200]}..."
+                        f"Doc {i + 1}: {doc.page_content[:200]}..."
                         for i, doc in enumerate(retrieved_documents[:3])
                     ]
                 )

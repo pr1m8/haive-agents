@@ -186,7 +186,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         ai_messages = [m for m in messages if isinstance(m, AIMessage)]
         if len(ai_messages) >= self.config.max_iterations:
             logger.info(
-                f"Reached maximum iterations ({self.config.max_iterations}), stopping"
+                f"Reached maximum iterations ({
+                    self.config.max_iterations}), stopping"
             )
             return False
 

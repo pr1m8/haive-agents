@@ -30,7 +30,7 @@ async def test_simple_sequential():
     # Test basic functionality
     try:
         result = await multi_agent.arun(task)
-        print("\n✅ SUCCESS!"!")
+        print("\n✅ SUCCESS!!")
         print(f"Result type: {type(result)}")
         print(f"Result: {result}")
         return True

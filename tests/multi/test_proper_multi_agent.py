@@ -32,13 +32,13 @@ def test_proper_multi_agent():
     print("\n2. Testing state creation:")
     try:
         state = multi.state_schema(messages=[HumanMessage(content="Hello")])
-        print("   ✅ State created successfully"y")
+        print("   ✅ State created successfullyy")
         print(f"   State.agents: {list(state.agents.keys())}")
         print(f"   State.messages: {len(state.messages)}")
 
         # Test if it has MultiAgentState features
         if hasattr(state, "set_active_agent"):
-            print("   ✅ Has set_active_agent method"d")
+            print("   ✅ Has set_active_agent methodd")
             try:
                 state.set_active_agent("agent1")
                 print(f"   ✅ set_active_agent works: {state.active_agent}")

@@ -58,7 +58,7 @@ try:
     # Test node execution
     print("\n6. Testing node execution...")
     result = node(test_state)
-    print("   ✅ Node executed successfully"y")
+    print("   ✅ Node executed successfullyy")
     print(f"   Result type: {type(result)}")
 
 except Exception as e:

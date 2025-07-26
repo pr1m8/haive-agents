@@ -35,12 +35,12 @@ def test_reflection_agent_with_real_persistence():
         # Test that it starts with agent name + UUID format
         assert thread_id.startswith(
             "reflection_analyzer_"
-        ), f"Thread ID should start with agent name"
+        ), "Thread ID should start with agent name"
 
         # Check that it's a UUID format
         uuid_part = thread_id[len("reflection_analyzer_") :]
-        assert len(uuid_part) == 36, f"UUID part should be 36 characters"
-        assert uuid_part.count("-") == 4, f"UUID should have 4 hyphens"
+        assert len(uuid_part) == 36, "UUID part should be 36 characters"
+        assert uuid_part.count("-") == 4, "UUID should have 4 hyphens"
 
         print("✅ Thread ID generation working correctly")
 

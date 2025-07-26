@@ -93,7 +93,7 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
                 variations = [
                     q.strip() for q in rewrite_result.split("\n") if q.strip()
                 ]
-            except:
+            except BaseException:
                 variations = []
 
         rewritten_query = variations[0] if variations else None

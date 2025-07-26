@@ -40,7 +40,8 @@ def setup_environment() -> None:
 
     if missing_vars:
         logger.error(
-            f"Missing required environment variables: {', '.join(missing_vars)}"
+            f"Missing required environment variables: {
+                ', '.join(missing_vars)}"
         )
         logger.error("Please set these variables before running the example.")
         sys.exit(1)

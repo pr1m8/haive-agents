@@ -50,7 +50,8 @@ def decode(state: BaseModel) -> dict:
             ):
                 # Extract data from tool calls
                 for tool_call in message.tool_calls:
-                    # If we have a tool call with args, use that as extracted data
+                    # If we have a tool call with args, use that as extracted
+                    # data
                     if "args" in tool_call:
                         extracted_data = tool_call.get("args", {})
                         break

@@ -150,7 +150,8 @@ async def scroll(state: dict[str, Any]) -> dict[str, Any]:
 
     page_url = page.url
     return {
-        "message": f"Scrolled {direction} in {'window' if target.upper() == 'WINDOW' else 'element'}",
+        "message": f"Scrolled {direction} in {
+            'window' if target.upper() == 'WINDOW' else 'element'}",
         "page_url": page_url,
     }
 

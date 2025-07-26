@@ -141,7 +141,11 @@ class QueryReasoning(BaseModel):
             raise ValueError("Understanding must be substantive (>20 chars)")
 
         if not self.search_strategy:
-            self.search_strategy = f"Search for {self.intent_analysis.intent_type} information about {', '.join(self.intent_analysis.key_entities[:2])}"
+            self.search_strategy = f"Search for {
+                self.intent_analysis.intent_type} information about {
+                ', '.join(
+                    self.intent_analysis.key_entities[
+                        :2])}"
 
         return self
 
@@ -391,7 +395,8 @@ class SearchSynthesis(BaseModel):
                     top = result.top_results[0]
                     self.citations.append(
                         {
-                            "claim": f"Information about {result.query.query_text}",
+                            "claim": f"Information about {
+                                result.query.query_text}",
                             "source": top.title,
                             "url": top.url,
                         }

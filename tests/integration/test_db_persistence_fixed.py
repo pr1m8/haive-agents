@@ -95,9 +95,7 @@ def check_database_persistence():
                             sample_writes = cur.fetchall()
                             print("   Sample writes:")
                             for write in sample_writes:
-                                print(
-                                    f"     - Channel: {write[0]}, Type: {write[1]}"
-                                )
+                                print(f"     - Channel: {write[0]}, Type: {write[1]}")
 
                     print()
             else:
@@ -120,16 +118,14 @@ def check_database_persistence():
                 print(
                     f"   ✅ Total checkpoints across all threads: {total_checkpoints}"
                 )
-                print(f"   🎉 PERSISTENCE IS WORKING!")
-                print(
-                    f"      - Agents automatically generate consistent thread_ids"
-                )
-                print(f"      - State is being saved to Supabase database")
-                print(f"      - No manual thread_id configuration needed")
+                print("   🎉 PERSISTENCE IS WORKING!"G!")
+                print("      - Agents automatically generate consistent thread_ids")
+                print("      - State is being saved to Supabase database")
+                print("      - No manual thread_id configuration needed")
             else:
-                print("   ❌ No persistence data found")")
+                print("   ❌ No persistence data found)")
 
-    except Exception as e:
+    except Exception:
         pass
 
 

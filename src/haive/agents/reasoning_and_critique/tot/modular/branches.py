@@ -74,7 +74,8 @@ class ToTBranch(Branch):
             # Create a final message with the solution
             final_message = AIMessage(content=message_text)
 
-            # Return END with the final state updates, setting answer explicitly
+            # Return END with the final state updates, setting answer
+            # explicitly
             return END, {
                 "messages": [*state.messages, final_message],
                 "answer": content,  # Make sure this is set explicitly

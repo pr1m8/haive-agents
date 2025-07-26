@@ -83,7 +83,11 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
             except Exception as e:
                 logger.exception(f"Error in select_modules: {e!s}")
                 return Command(
-                    update={"error": f"Error in module selection: {e!s}"}, goto=END
+                    update={
+                        "error": f"Error in module selection: {
+                            e!s}"
+                    },
+                    goto=END,
                 )
 
         def adapt_modules(state: SelfDiscoverState) -> Command:
@@ -131,7 +135,11 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
             except Exception as e:
                 logger.exception(f"Error in adapt_modules: {e!s}")
                 return Command(
-                    update={"error": f"Error in module adaptation: {e!s}"}, goto=END
+                    update={
+                        "error": f"Error in module adaptation: {
+                            e!s}"
+                    },
+                    goto=END,
                 )
 
         def create_structure(state: SelfDiscoverState) -> Command:
@@ -180,7 +188,11 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
             except Exception as e:
                 logger.exception(f"Error in create_structure: {e!s}")
                 return Command(
-                    update={"error": f"Error in structure creation: {e!s}"}, goto=END
+                    update={
+                        "error": f"Error in structure creation: {
+                            e!s}"
+                    },
+                    goto=END,
                 )
 
         def execute_reasoning(state: SelfDiscoverState) -> Command:

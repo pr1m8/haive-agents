@@ -7,7 +7,7 @@ from langgraph.graph import END
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 
-from haive.agents.multi.enhanced_base import MultiAgentBase
+from haive.agents.multi.archive.enhanced_base import MultiAgentBase
 from haive.agents.reasoning_and_critique.lats.v2.models import (
     CandidateActions,
     Reflection,
@@ -185,7 +185,8 @@ def evaluate_candidates(state: LATSState) -> list[Send]:
         )
 
         if candidate.tool_response:
-            response_to_evaluate += f"\nTool Response: {candidate.tool_response}"
+            response_to_evaluate += f"\nTool Response: {
+                candidate.tool_response}"
 
         evaluation_state = {
             **state.dict(),

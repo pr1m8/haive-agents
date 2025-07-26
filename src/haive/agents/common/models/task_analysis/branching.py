@@ -451,7 +451,8 @@ class TaskDecomposition(BaseModel):
         calculated_effort = sum(branch.estimated_effort for branch in self.branches)
         if abs(calculated_effort - self.total_estimated_effort) > 1:
             raise ValueError(
-                f"Total effort {self.total_estimated_effort} doesn't match sum of branches {calculated_effort}"
+                f"Total effort {
+                    self.total_estimated_effort} doesn't match sum of branches {calculated_effort}"
             )
 
         # Validate that optimal duration is not longer than sequential
@@ -564,19 +565,22 @@ class TaskDecomposition(BaseModel):
         # Bottleneck recommendations
         if metrics["bottleneck_count"] > 0:
             recommendations.append(
-                f"Address {metrics['bottleneck_count']} identified bottlenecks early"
+                f"Address {
+                    metrics['bottleneck_count']} identified bottlenecks early"
             )
 
         # Risk recommendations
         if metrics["high_risk_branches"] > 0:
             recommendations.append(
-                f"Plan mitigation for {metrics['high_risk_branches']} high-risk branches"
+                f"Plan mitigation for {
+                    metrics['high_risk_branches']} high-risk branches"
             )
 
         # Success probability recommendations
         if metrics["low_success_probability"] > 0:
             recommendations.append(
-                f"Consider alternatives for {metrics['low_success_probability']} low-probability branches"
+                f"Consider alternatives for {
+                    metrics['low_success_probability']} low-probability branches"
             )
 
         # Complexity recommendations
@@ -621,13 +625,13 @@ class TaskDecomposition(BaseModel):
 
         branches = []
         for i, description in enumerate(branch_descriptions):
-            branch_id = f"step_{i+1}"
+            branch_id = f"step_{i + 1}"
             prerequisites = [f"step_{i}"] if i > 0 else []
-            enables = [f"step_{i+2}"] if i < num_branches - 1 else []
+            enables = [f"step_{i + 2}"] if i < num_branches - 1 else []
 
             branch = TaskBranch(
                 branch_id=branch_id,
-                name=f"Step {i+1}",
+                name=f"Step {i + 1}",
                 description=description,
                 branch_type=BranchType.SEQUENTIAL,
                 estimated_effort=effort_estimates[i],
@@ -638,7 +642,7 @@ class TaskDecomposition(BaseModel):
             )
             branches.append(branch)
 
-        critical_path = [f"step_{i+1}" for i in range(num_branches)]
+        critical_path = [f"step_{i + 1}" for i in range(num_branches)]
         total_effort = sum(effort_estimates)
         sequential_duration = sum(duration_estimates, timedelta())
 

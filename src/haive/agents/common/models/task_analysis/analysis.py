@@ -190,7 +190,8 @@ class ExecutionStrategy(BaseModel):
         total = sum(v.values())
         if abs(total - 1.0) > 0.1:  # Allow 10% tolerance
             raise ValueError(
-                f"Resource allocation proportions must sum to 1.0, got {total:.2f}"
+                f"Resource allocation proportions must sum to 1.0, got {
+                    total:.2f}"
             )
 
         for resource, proportion in v.items():
@@ -404,7 +405,11 @@ class TaskAnalysis(BaseModel):
 
         # Task info
         summary_lines.append(f"Task: {self.task_description[:80]}...")
-        summary_lines.append(f"Domain: {self.domain.replace('_', ' ').title()}")
+        summary_lines.append(
+            f"Domain: {
+                self.domain.replace(
+                    '_', ' ').title()}"
+        )
         summary_lines.append("")
 
         # Key findings
@@ -413,12 +418,17 @@ class TaskAnalysis(BaseModel):
             f"• Complexity: {self.complexity.overall_complexity.value.title()}"
         )
         summary_lines.append(
-            f"• Solvability: {self.solvability.solvability_status.value.title()}"
+            f"• Solvability: {
+                self.solvability.solvability_status.value.title()}"
         )
         summary_lines.append(
-            f"• Ready to Execute: {'Yes' if self.solvability.is_currently_solvable else 'No'}"
+            f"• Ready to Execute: {
+                'Yes' if self.solvability.is_currently_solvable else 'No'}"
         )
-        summary_lines.append(f"• Estimated Steps: {self.complexity.estimated_steps}")
+        summary_lines.append(
+            f"• Estimated Steps: {
+                self.complexity.estimated_steps}"
+        )
 
         if self.decomposition:
             summary_lines.append(
@@ -430,13 +440,17 @@ class TaskAnalysis(BaseModel):
         # Strategy
         summary_lines.append("RECOMMENDED STRATEGY:")
         summary_lines.append(
-            f"• Approach: {self.execution_strategy.strategy_type.replace('_', ' ').title()}"
+            f"• Approach: {
+                self.execution_strategy.strategy_type.replace(
+                    '_', ' ').title()}"
         )
         summary_lines.append(
             f"• Priority: {self.execution_strategy.priority_level.title()}"
         )
         summary_lines.append(
-            f"• Timeline: {self.execution_strategy.timeline_strategy.replace('_', ' ').title()}"
+            f"• Timeline: {
+                self.execution_strategy.timeline_strategy.replace(
+                    '_', ' ').title()}"
         )
         summary_lines.append("")
 
@@ -444,7 +458,12 @@ class TaskAnalysis(BaseModel):
         if self.solvability.primary_barriers:
             summary_lines.append("PRIMARY BARRIERS:")
             for barrier in self.solvability.primary_barriers[:3]:
-                summary_lines.append(f"• {barrier.value.replace('_', ' ').title()}")
+                summary_lines.append(
+                    f"• {
+                        barrier.value.replace(
+                            '_',
+                            ' ').title()}"
+                )
             summary_lines.append("")
 
         if self.solvability.enabling_factors:
@@ -454,7 +473,10 @@ class TaskAnalysis(BaseModel):
             summary_lines.append("")
 
         # Confidence
-        summary_lines.append(f"Analysis Confidence: {self.analysis_confidence:.1%}")
+        summary_lines.append(
+            f"Analysis Confidence: {
+                self.analysis_confidence:.1%}"
+        )
 
         return "\n".join(summary_lines)
 

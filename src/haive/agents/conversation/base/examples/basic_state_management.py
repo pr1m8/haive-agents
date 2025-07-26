@@ -50,8 +50,10 @@ def demonstrate_state_updates(state: ConversationState):
     # Simulate second turn (Bob speaks)
     state = state.model_copy(
         update={
-            "turn_count": 1,  # This will be added to existing count (becomes 2)
-            "speaker_history": ["Bob"],  # This will be appended to existing history
+            # This will be added to existing count (becomes 2)
+            "turn_count": 1,
+            # This will be appended to existing history
+            "speaker_history": ["Bob"],
             "current_speaker": "Bob",
         }
     )

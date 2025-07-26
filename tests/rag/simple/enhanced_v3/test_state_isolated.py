@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Test only the SimpleRAGState implementation in isolation."""
 
-import os
 import sys
 
 # Add the source directories to Python path

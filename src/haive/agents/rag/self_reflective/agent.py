@@ -428,7 +428,7 @@ class SelfReflectiveRAGAgent(Agent):
                 "query": query,
                 "documents": "\n\n".join(
                     [
-                        f"Document {i+1}: {doc.page_content[:500]}..."
+                        f"Document {i + 1}: {doc.page_content[:500]}..."
                         for i, doc in enumerate(self.documents[:5])
                     ]
                 ),

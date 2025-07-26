@@ -259,7 +259,11 @@ class Grade(BaseModel, ABC):
         Returns:
             Formatted string representation of the grade
         """
-        return f"{self.grade_type.value.title()} Grade | Score: {self.get_normalized_score():.1%} | {self.justification[:50]}..."
+        return f"{
+            self.grade_type.value.title()} Grade | Score: {
+            self.get_normalized_score():.1%} | {
+            self.justification[
+                :50]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a grade value is appropriate for this grade type.

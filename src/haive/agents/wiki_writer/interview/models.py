@@ -12,5 +12,5 @@ class AnswerWithCitations(BaseModel):
     @property
     def as_str(self) -> str:
         return f"{self.answer}\n\nCitations:\n\n" + "\n".join(
-            f"[{i+1}]: {url}" for i, url in enumerate(self.cited_urls)
+            f"[{i + 1}]: {url}" for i, url in enumerate(self.cited_urls)
         )

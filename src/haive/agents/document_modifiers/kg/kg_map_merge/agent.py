@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -116,7 +116,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             context = str(content)
         else:
             logger.error(
-                f"Invalid content type for graph document extraction: {type(content)}"
+                f"Invalid content type for graph document extraction: {
+                    type(content)}"
             )
             return {}
 
@@ -163,7 +164,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
                 context = str(content)
             else:
                 logger.warning(
-                    f"Invalid content type for node extraction: {type(content)}"
+                    f"Invalid content type for node extraction: {
+                        type(content)}"
                 )
                 return {"index": 1}
 
@@ -229,7 +231,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
                     context = str(content)
                 else:
                     logger.warning(
-                        f"Invalid content type for relationship extraction: {type(content)}"
+                        f"Invalid content type for relationship extraction: {
+                            type(content)}"
                     )
                     return {"index": 1}
 
@@ -242,7 +245,10 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
 
                 context = "\n".join(
                     [
-                        f"Entity {node.id}: {node.type} with properties {node.properties}"
+                        f"Entity {
+                            node.id}: {
+                            node.type} with properties {
+                            node.properties}"
                         for node in nodes
                     ]
                 )
@@ -323,7 +329,6 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             }
 
         except Exception:
-            pass
 
             # Fallback: use the created knowledge graph without LLM refinement
             return {

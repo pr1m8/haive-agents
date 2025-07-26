@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Debug test for SimpleAgent v3 state schema issue."""
 
-import asyncio
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig

@@ -114,7 +114,10 @@ class SequentialAgentConfig(AgentConfig):
             # Check that entry point exists in steps
             step_names = [step.name for step in self.steps]
             if self.entry_point not in step_names:
-                raise ValueError(f"Entry point '{self.entry_point}' not found in steps")
+                raise ValueError(
+                    f"Entry point '{
+                        self.entry_point}' not found in steps"
+                )
 
         return self
 
@@ -208,7 +211,7 @@ class SequentialAgentConfig(AgentConfig):
                 if hasattr(component, "name"):
                     step_names.append(f"step_{component.name}")
                 else:
-                    step_names.append(f"step_{i+1}")
+                    step_names.append(f"step_{i + 1}")
 
         # Validate step names length
         if len(step_names) != len(components):

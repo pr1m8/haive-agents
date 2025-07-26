@@ -52,7 +52,7 @@ class ChainAgent(Agent):
         # Auto-sequence if no edges provided
         if not self.edges and len(self.nodes) > 1:
             for i in range(len(self.nodes) - 1):
-                self.edges.append(f"{i}->{i+1}")
+                self.edges.append(f"{i}->{i + 1}")
 
     def build_graph(self) -> BaseGraph:
         """Build the graph from nodes and edges."""
@@ -133,7 +133,10 @@ class ChainAgent(Agent):
                     branches[key] = node_names[to_idx]
 
                 graph.add_conditional_edges(
-                    node_names[from_idx], edge[2], branches  # condition function
+                    # condition function
+                    node_names[from_idx],
+                    edge[2],
+                    branches,
                 )
 
     # Convenience methods

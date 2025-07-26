@@ -15,13 +15,10 @@ Architecture:
 
 import asyncio
 import logging
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
-from uuid import uuid4
+from typing import Any, Dict, List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
-from langchain_core.documents import Document
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, ConfigDict, Field
@@ -95,7 +92,8 @@ class ReactMemoryCoordinator:
                 llm_config=AzureLLMConfig(deployment_name="gpt-4"),
                 temperature=0.3  # Lower temp for more focused reasoning
             )
-            coordinator = ReactMemoryCoordinator(user_id="user123", config=config)
+            coordinator = ReactMemoryCoordinator(
+                user_id="user123", config=config)
     """
 
     def __init__(
@@ -167,7 +165,8 @@ class ReactMemoryCoordinator:
 
         self._initialized = True
         logger.info(
-            f"✅ ReactMemoryCoordinator initialized with {len(memory_tools)} memory tools"
+            f"✅ ReactMemoryCoordinator initialized with {
+    len(memory_tools)} memory tools"
         )
 
     def _create_memory_tools(self) -> List:
@@ -208,11 +207,13 @@ class ReactMemoryCoordinator:
                     if docs:
                         results = []
                         for doc in docs:
-                            msg_type = doc.metadata.get("message_type", "unknown")
+                            msg_type = doc.metadata.get(
+                                "message_type", "unknown")
                             content = doc.page_content[:100]
                             results.append(f"[{msg_type}] {content}")
                         return (
-                            f"Found {len(docs)} relevant conversation messages:\n"
+                            f"Found {
+    len(docs)} relevant conversation messages:\n"
                             + "\n".join(results)
                         )
                     else:
@@ -233,7 +234,8 @@ class ReactMemoryCoordinator:
                     memory = MemoryEntry(
                         content=content,
                         memory_type=memory_type,
-                        importance=min(max(importance, 0.0), 1.0),  # Clamp to [0,1]
+                        importance=min(max(importance, 0.0),
+                                       1.0),  # Clamp to [0,1]
                         user_id=self.user_id,
                         tags=[memory_type],
                     )
@@ -258,7 +260,9 @@ class ReactMemoryCoordinator:
                 if self.long_term_memory:
                     ltm_summary = self.long_term_memory.get_memory_summary()
                     insights.append(
-                        f"Long-term: {ltm_summary['total_memories']} memories, types: {ltm_summary['memory_types']}"
+                        f"Long-term: {
+    ltm_summary['total_memories']} memories, types: {
+        ltm_summary['memory_types']}"
                     )
 
                 if self.conversation_memory:
@@ -266,7 +270,9 @@ class ReactMemoryCoordinator:
                         await self.conversation_memory.get_conversation_summary()
                     )
                     insights.append(
-                        f"Conversation: {conv_summary['total_messages']} messages across {conv_summary['conversations']} conversations"
+                        f"Conversation: {
+    conv_summary['total_messages']} messages across {
+        conv_summary['conversations']} conversations"
                     )
 
                 return (
@@ -306,7 +312,8 @@ When users ask questions:
 
 Be helpful, insightful, and proactive about memory management."""
 
-    async def run(self, query: str, add_to_conversation: bool = True) -> Dict[str, Any]:
+    async def run(self, query: str,
+                  add_to_conversation: bool = True) -> Dict[str, Any]:
         """Run memory-enhanced conversation with ReactAgent reasoning.
 
         This implements the ReactAgent pattern for memory operations:
@@ -474,7 +481,7 @@ async def demo_react_memory_coordinator():
 
     # Get comprehensive summary
     summary = await coordinator.get_comprehensive_memory_summary()
-    print(f"\n📊 Comprehensive Summary:")
+    print("\n📊 Comprehensive Summary:")
     print(f"   User: {summary['user_id']}")
     print(f"   Systems: {list(summary['memory_systems'].keys())}")
 

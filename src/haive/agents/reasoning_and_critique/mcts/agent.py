@@ -18,7 +18,6 @@ from langgraph.graph import END
 from langgraph.prebuilt import ToolNode
 
 from haive.agents.base.agent import Agent
-from haive.agents.reasoning_and_critique.mcts.config import MCTSAgentConfig
 from haive.agents.reasoning_and_critique.mcts.models import Reflection, TreeNode
 from haive.agents.reasoning_and_critique.mcts.state import TreeState
 
@@ -345,7 +344,11 @@ class MCTSAgent(Agent):
 
         except Exception as e:
             logger.exception(f"Error in expand node: {e!s}")
-            return {"error": f"Error expanding search tree: {e!s}", "status": "error"}
+            return {
+                "error": f"Error expanding search tree: {
+                    e!s}",
+                "status": "error",
+            }
 
     def _should_continue(self, state: TreeState) -> str:
         """Determine whether to continue the tree search or exit."""

@@ -287,7 +287,8 @@ class LTMAgent(Agent):
         # Start with extraction
         graph.add_edge(START, "extract_memories")
 
-        # After extraction - route based on success/failure (following SimpleAgent pattern)
+        # After extraction - route based on success/failure (following
+        # SimpleAgent pattern)
         graph.add_conditional_edges(
             "extract_memories",
             extraction_succeeded,
@@ -372,7 +373,9 @@ class LTMAgent(Agent):
             quality = self._calculate_extraction_quality(memories_data, state.messages)
 
             logger.info(
-                f"LangMem extracted {len(memories_data)} memories with quality {quality:.2f}"
+                f"LangMem extracted {
+                    len(memories_data)} memories with quality {
+                    quality:.2f}"
             )
 
             return {
@@ -432,7 +435,10 @@ class LTMAgent(Agent):
 
     def handle_errors_node(self, state: LTMState) -> dict[str, Any]:
         """Handle processing errors."""
-        logger.error(f"Handling LTM processing errors: {state.processing_errors}")
+        logger.error(
+            f"Handling LTM processing errors: {
+                state.processing_errors}"
+        )
 
         # For now, just log errors and mark as complete
         return {

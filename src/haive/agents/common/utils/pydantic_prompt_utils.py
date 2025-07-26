@@ -198,9 +198,15 @@ def generate_field_description(
         if constraints:
             constraint_parts = []
             if "min_length" in constraints:
-                constraint_parts.append(f"min length {constraints['min_length']}")
+                constraint_parts.append(
+                    f"min length {
+                        constraints['min_length']}"
+                )
             if "max_length" in constraints:
-                constraint_parts.append(f"max length {constraints['max_length']}")
+                constraint_parts.append(
+                    f"max length {
+                        constraints['max_length']}"
+                )
             if "ge" in constraints:
                 constraint_parts.append(f"≥ {constraints['ge']}")
             if "le" in constraints:
@@ -300,7 +306,10 @@ def create_pydantic_prompt(
 
     # Add custom instructions
     if config.custom_instructions:
-        prompt_parts.append(f"\nAdditional instructions: {config.custom_instructions}")
+        prompt_parts.append(
+            f"\nAdditional instructions: {
+                config.custom_instructions}"
+        )
 
     # Add examples if requested
     if config.include_examples:
@@ -334,7 +343,11 @@ def create_example_from_model(model_class: type[BaseModel]) -> str:
             if type_info["is_enum"] and type_info["enum_values"]:
                 example_data[field_name] = type_info["enum_values"][0]
             elif type_info["base_type"] == "str":
-                example_data[field_name] = f"Example {field_name.replace('_', ' ')}"
+                example_data[field_name] = (
+                    f"Example {
+                    field_name.replace(
+                        '_', ' ')}"
+                )
             elif type_info["base_type"] == "int":
                 example_data[field_name] = 42
             elif type_info["base_type"] == "float":
@@ -380,7 +393,7 @@ Target Schema: {model_class.__name__}
 ```
 
 Content to parse:
-{{{content_field}}}
+{content_field}
 
 Extract the information and provide it in valid JSON format matching the schema above.
 If information is missing or unclear, use null for optional fields or provide reasonable defaults.
@@ -451,5 +464,6 @@ def quick_pydantic_prompt(
     return create_pydantic_prompt(
         model_class=model_class,
         config=config,
-        base_instruction=f"Generate content that can be structured as {model_class.__name__}:",
+        base_instruction=f"Generate content that can be structured as {
+            model_class.__name__}:",
     )

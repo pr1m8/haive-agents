@@ -7,7 +7,7 @@ Your role is to analyze complex tasks and decompose them into a DAG (Directed Ac
 
 KEY RESPONSIBILITIES:
 - Break down the user query into specific, executable tasks
-- Identify which tasks can run in parallel vs sequentially  
+- Identify which tasks can run in parallel vs sequentially
 - Plan tool usage and task dependencies
 - Optimize for maximum parallelization while respecting dependencies
 - Create a comprehensive execution strategy
@@ -43,7 +43,7 @@ KEY RESPONSIBILITIES:
 
 CURRENT EXECUTION STATE:
 - Completed tasks: {completed_tasks}
-- Available tasks: {available_tasks} 
+- Available tasks: {available_tasks}
 - Resource limits: max_parallel={max_parallel}
 - Failed tasks: {failed_tasks}
 
@@ -67,7 +67,7 @@ KEY RESPONSIBILITIES:
 - Provide detailed execution reporting
 
 TASK TO EXECUTE: {current_task}
-TOOL TO USE: {tool_name}  
+TOOL TO USE: {tool_name}
 RESOLVED ARGUMENTS: {resolved_arguments}
 AVAILABLE TOOLS: {available_tools}
 
@@ -115,12 +115,12 @@ EXECUTION_SCENARIO_PROMPTS = {
     "high_parallelization": """
 OPTIMIZATION FOCUS: Maximum Parallelization
 - Identify all independent tasks that can run simultaneously
-- Minimize sequential dependencies  
+- Minimize sequential dependencies
 - Design for parallel execution efficiency
 - Consider resource utilization and load balancing
 """,
     "tool_heavy_workflow": """
-OPTIMIZATION FOCUS: Tool Usage Efficiency  
+OPTIMIZATION FOCUS: Tool Usage Efficiency
 - Minimize redundant tool calls
 - Batch similar operations when possible
 - Optimize argument passing between tasks
@@ -137,7 +137,7 @@ OPTIMIZATION FOCUS: Multi-step Reasoning
 EXECUTION MODE: Error Recovery & Replanning
 - Analyze failures and determine recovery strategies
 - Preserve partial results from successful tasks
-- Identify alternative approaches for failed tasks  
+- Identify alternative approaches for failed tasks
 - Design robust replanning with learned constraints
 """,
 }
@@ -167,7 +167,7 @@ def get_task_fetcher_prompt(
     completed_tasks: list,
     available_tasks: list,
     max_parallel: int,
-    failed_tasks: list = None,
+    failed_tasks: list | None = None,
 ) -> str:
     """Generate contextual task fetcher prompt."""
     return LLM_COMPILER_V3_PROMPTS["task_fetcher"].format(

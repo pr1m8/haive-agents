@@ -291,7 +291,8 @@ class AgenticRAGAgent(SimpleAgent):
             "messages": [
                 *state.messages,
                 AIMessage(
-                    content=f"Retrieved {len(documents)} documents for query: {query}"
+                    content=f"Retrieved {
+                        len(documents)} documents for query: {query}"
                 ),
             ],
         }
@@ -336,7 +337,10 @@ class AgenticRAGAgent(SimpleAgent):
             "messages": [
                 *state.messages,
                 AIMessage(
-                    content=f"Graded {len(state.retrieved_documents)} documents. {len(relevant_docs)} are relevant."
+                    content=f"Graded {
+                        len(
+                            state.retrieved_documents)} documents. {
+                        len(relevant_docs)} are relevant."
                 ),
             ],
         }
@@ -376,7 +380,8 @@ class AgenticRAGAgent(SimpleAgent):
             "messages": [
                 *state.messages,
                 AIMessage(
-                    content=f"Rewrote query from '{query}' to '{rewrite_result.best_refined_query}'"
+                    content=f"Rewrote query from '{query}' to '{
+                        rewrite_result.best_refined_query}'"
                 ),
             ],
         }

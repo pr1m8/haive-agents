@@ -178,7 +178,8 @@ class ResearchAgentConfig(AgentConfig):
         """
         # Create a name if not provided
         if not name:
-            name = f"open_perplexity_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            name = f"open_perplexity_agent_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         # Create LLM configuration
         llm_config = AzureLLMConfig(
@@ -211,7 +212,8 @@ class ResearchAgentConfig(AgentConfig):
             name=f"{name}_research", llm_model=llm_model, temperature=0.2
         )
 
-        # Create RAG engine (but not the full config yet since we need loaded documents)
+        # Create RAG engine (but not the full config yet since we need loaded
+        # documents)
         rag_engine_name = f"{name}_retrieval_engine"
         rag_engine = create_research_rag_engine(
             name=rag_engine_name, llm_model=llm_model, temperature=0.2
@@ -220,7 +222,8 @@ class ResearchAgentConfig(AgentConfig):
         # Store the engine in the engines dictionary
         engines["rag_engine"] = rag_engine
 
-        # No rag_agent_name yet - will be set up after vector store is populated
+        # No rag_agent_name yet - will be set up after vector store is
+        # populated
         rag_agent_name = None
 
         # Create the research agent config
@@ -229,7 +232,8 @@ class ResearchAgentConfig(AgentConfig):
             engine=main_engine,  # Set main engine as primary
             engines=engines,  # Set all engines in dictionary
             react_agent_name=react_agent_config.name,
-            rag_agent_name=rag_agent_name,  # This will be set later after documents are loaded
+            rag_agent_name=rag_agent_name,
+            # This will be set later after documents are loaded
             tools=RESEARCH_TOOLS,
             **kwargs,
         )

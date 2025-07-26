@@ -13,7 +13,8 @@ from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
 
-# from haive.agents.rag.document_grading.agent import DocumentGradingAgent  # Temporarily disabled - missing callable_node
+# from haive.agents.rag.document_grading.agent import DocumentGradingAgent
+# # Temporarily disabled - missing callable_node
 from haive.agents.rag.hallucination_grading.agent import (
     AdvancedHallucinationGraderAgent,
     HallucinationGraderAgent,
@@ -120,7 +121,8 @@ class CompatibleRAGFactory:
             documents=documents, llm_config=llm_config, name="HyDE RAG"
         )
 
-        # grading_agent = DocumentGradingAgent(  # Temporarily disabled - missing callable_node
+        # grading_agent = DocumentGradingAgent(  # Temporarily disabled -
+        # missing callable_node
         grading_agent = None  # Placeholder until DocumentGradingAgent is fixed
 
         corrective_agent = CorrectiveRAGAgentV2.from_documents(

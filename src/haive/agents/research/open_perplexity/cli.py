@@ -112,7 +112,8 @@ def visualize_state(
                 if step is not None:
                     if step < 0 or step >= len(state_data):
                         logging.error(
-                            f"Invalid step {step}, file contains {len(state_data)} states"
+                            f"Invalid step {step}, file contains {
+                                len(state_data)} states"
                         )
                         return
                     state = state_data[step]

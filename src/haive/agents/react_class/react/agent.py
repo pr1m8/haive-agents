@@ -136,7 +136,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         gb.add_node(
             name=self.config.tool_node_name,
             config=execute_tools_fn,
-            command_goto=self.config.llm_node_name,  # Always return to LLM after executing tools
+            command_goto=self.config.llm_node_name,
+            # Always return to LLM after executing tools
         )
 
         # Add router from agent to tools
@@ -155,7 +156,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         gb.add_node(
             name=self.config.tool_node_name,
             config=execute_tool_fn,
-            command_goto=self.config.llm_node_name,  # Always return to LLM after executing tools
+            command_goto=self.config.llm_node_name,
+            # Always return to LLM after executing tools
         )
 
         # Add router from agent to tools

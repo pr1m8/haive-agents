@@ -92,7 +92,8 @@ class RoutingAgent(SimpleAgent):
                 for condition in conditions:
                     if condition(state):
                         # Get destination from condition name
-                        # This is a simple approach - in practice, we'd want a more robust mapping
+                        # This is a simple approach - in practice, we'd want a
+                        # more robust mapping
                         condition_name = condition.__name__
                         if condition_name.startswith("route_to_"):
                             dest = condition_name[

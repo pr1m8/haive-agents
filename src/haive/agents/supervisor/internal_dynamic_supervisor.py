@@ -339,9 +339,11 @@ class InternalDynamicSupervisor(MultiAgent):
         # Check each existing agent
         for agent_name in self.agents:
             # Simple keyword matching for now
-            # In real implementation, this could use embeddings or LLM classification
+            # In real implementation, this could use embeddings or LLM
+            # classification
 
-            # Check against agent templates to see what this agent was designed for
+            # Check against agent templates to see what this agent was designed
+            # for
             for template_type, template in self._agent_templates.items():
                 if f"{template_type}_agent" == agent_name:
                     # Check if any template keywords match the content

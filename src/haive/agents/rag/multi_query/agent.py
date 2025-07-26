@@ -141,7 +141,7 @@ class MultiQueryRAGAgent(SequentialAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         embedding_model: str | None = None,
-        **kwargs
+        **kwargs,
     ):
         """Create Multi-Query RAG from documents.
 
@@ -190,5 +190,5 @@ class MultiQueryRAGAgent(SequentialAgent):
         return cls(
             agents=[query_expander, multi_retriever, answer_agent],
             name=kwargs.get("name", "Multi-Query RAG Agent"),
-            **kwargs
+            **kwargs,
         )

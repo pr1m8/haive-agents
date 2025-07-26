@@ -16,8 +16,7 @@ class EntityNode(BaseModel):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_node(cls) -> Any:
+    def validate_node(self) -> "EntityNode":
         """Validate the node properties."""
         # Ensure ID is not empty
         if not self.id or not isinstance(self.id, str):
@@ -63,8 +62,7 @@ class EntityRelationship(BaseModel):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_relationship(cls) -> Any:
+    def validate_relationship(self) -> "EntityRelationship":
         """Validate the relationship properties."""
         # Ensure source and target are non-empty strings
         if not self.source or not isinstance(self.source, str):

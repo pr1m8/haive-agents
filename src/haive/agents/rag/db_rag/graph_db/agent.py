@@ -58,8 +58,8 @@ import os
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.branches import Branch
-from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores.chroma import Chroma
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_neo4j.chains.graph_qa.cypher_utils import CypherQueryCorrector, Schema
@@ -245,7 +245,8 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 for ex in domain_examples
             ]
 
-            # Try to use OpenAI embeddings, falling back to default if not available
+            # Try to use OpenAI embeddings, falling back to default if not
+            # available
             try:
                 embedding = OpenAIEmbeddings()
                 vectorstore = Chroma.from_documents(
@@ -271,7 +272,8 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
 
         except Exception as e:
             logger.exception(f"Error initializing example selector: {e}")
-            # Create a dummy selector that returns empty examples if all else fails
+            # Create a dummy selector that returns empty examples if all else
+            # fails
             self.example_selector = type(
                 "DummySelector", (), {"select_examples": lambda self, query: []}
             )()
@@ -397,7 +399,8 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
 
             database_records = None
 
-            # Handle the output - it might be an AIMessage or a structured output
+            # Handle the output - it might be an AIMessage or a structured
+            # output
             if hasattr(guardrails_output, "decision"):
                 # It's a structured GuardrailsOutput
                 decision = guardrails_output.decision
@@ -412,7 +415,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                         decision = parsed.get("decision", "continue")
                     else:
                         decision = "continue"  # Default if we can't parse
-                except:
+                except BaseException:
                     # If parsing fails, default to continue
                     decision = "continue"
             else:
@@ -698,7 +701,8 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 )
 
             if state.database_records == self.no_results:
-                answer = f"I couldn't find any information about your question: {state.question}"
+                answer = f"I couldn't find any information about your question: {
+                    state.question}"
             else:
                 answer = self.engines["generate_final_answer"].invoke(
                     {"question": state.question, "results": state.database_records}
@@ -715,8 +719,10 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             logger.exception(f"Error in generate_answer: {e}")
             return Command(
                 update={
-                    "error": f"Error generating answer: {e!s}",
-                    "answer": f"An error occurred while generating the answer: {e!s}",
+                    "error": f"Error generating answer: {
+                        e!s}",
+                    "answer": f"An error occurred while generating the answer: {
+                        e!s}",
                     "next_action": "end",
                 }
             )

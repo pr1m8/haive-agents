@@ -31,15 +31,13 @@ Created: 2025-01-15
 Purpose: Complete ReactAgentV3 documentation for Sphinx AutoAPI
 """
 
-import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from langchain_core.tools import BaseTool, tool
+from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 # ReactAgentV3 and related imports
@@ -1047,7 +1045,7 @@ def demonstrate_create_research_agent_factory():
     logger.info(f"   Max research steps: {research_agent.max_iterations}")
     logger.info(f"   Temperature: {research_agent.engine.temperature}")
     logger.info(f"   Analysis model: {ResearchInvestigation.__name__}")
-    logger.info(f"   System optimized for: thorough research accuracy")
+    logger.info("   System optimized for: thorough research accuracy")
 
     return research_agent
 
@@ -1468,7 +1466,7 @@ def run_comprehensive_react_documentation():
         research_agent, structured_agent, technical_agent = (
             demonstrate_create_react_agent_factory()
         )
-        print(f"✅ Factory agents created:")
+        print("✅ Factory agents created:")
         print(f"   • Research: {research_agent.name}")
         print(f"   • Structured: {structured_agent.name}")
         print(f"   • Technical: {technical_agent.name}")
@@ -1484,7 +1482,7 @@ def run_comprehensive_react_documentation():
         print("\n⚖️  6. PERFORMANCE COMPARISON DEMONSTRATION")
         print("-" * 50)
         simple_agent, react_agent = demonstrate_react_vs_simple_comparison()
-        print(f"✅ Comparison agents created:")
+        print("✅ Comparison agents created:")
         print(f"   • SimpleAgentV3: {simple_agent.name} (linear)")
         print(f"   • ReactAgentV3: {react_agent.name} (iterative)")
 
@@ -1494,7 +1492,7 @@ def run_comprehensive_react_documentation():
         fast_agent, thorough_agent, production_agent = (
             demonstrate_performance_considerations()
         )
-        print(f"✅ Performance variants created:")
+        print("✅ Performance variants created:")
         print(f"   • Fast: {fast_agent.max_iterations} iterations")
         print(f"   • Thorough: {thorough_agent.max_iterations} iterations")
         print(f"   • Production: {production_agent.max_iterations} iterations")

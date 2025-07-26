@@ -2,13 +2,13 @@
 
 from collections.abc import Callable
 
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import BaseTool, StructuredTool, Tool
 from pydantic import BaseModel
-from src.haive.core.engine.aug_llm import AugLLMConfig
 
-from src.haive.agents.v2.agent import ReactAgent
-from src.haive.agents.v2.config import ReactAgentConfig, ToolsInput
-from src.haive.agents.v2.state import create_structured_state
+from haive.agents.react.agent import ReactAgent
+from haive.agents.react.config import ReactAgentConfig, ToolsInput
+from haive.agents.react.state import create_structured_state
 
 
 def create_react_agent(

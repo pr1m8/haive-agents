@@ -120,7 +120,10 @@ class DynamicExecutorNode:
 
         # If agent has state_schema, use it
         if hasattr(agent, "state_schema") and agent.state_schema:
-            logger.info(f"Using agent's state schema: {agent.state_schema.__name__}")
+            logger.info(
+                f"Using agent's state schema: {
+                    agent.state_schema.__name__}"
+            )
 
             agent_input = {}
 

@@ -4,8 +4,10 @@ from typing import Any, Dict
 Simple Plan and Execute agent using MultiAgentBase with proper configuration.
 """
 
+from haive.core.schema.agent_schema_composer import BuildMode
+
 from haive.agents.base.agent import Agent
-from haive.agents.multi.enhanced_base import BuildMode, MultiAgentBase
+from haive.agents.multi.archive.enhanced_base import MultiAgentBase
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 
@@ -40,7 +42,7 @@ def PlanAndExecuteAgent(
     executor: Agent,
     replanner: Agent,
     name: str = "Plan and Execute Agent",
-    **kwargs
+    **kwargs,
 ) -> MultiAgentBase:
     """Create a Plan and Execute multi-agent system.
 
@@ -67,6 +69,7 @@ def PlanAndExecuteAgent(
         entry_points=[planner],  # Start with planner
         name=name,
         state_schema_override=PlanExecuteState,
-        schema_build_mode=BuildMode.PARALLEL,  # Engine serialization is now handled by field validators
-        **kwargs
+        schema_build_mode=BuildMode.PARALLEL,
+        # Engine serialization is now handled by field validators
+        **kwargs,
     )

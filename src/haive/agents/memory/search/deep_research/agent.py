@@ -308,7 +308,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
                 days_old = (datetime.now() - pub_datetime).days
                 if days_old < 365:  # Less than a year old
                     credibility_score += 0.1
-            except:
+            except BaseException:
                 pass
 
         return min(1.0, credibility_score)
@@ -440,7 +440,8 @@ Process each research query with systematic thoroughness and analytical rigor.""
             research_queries.append(research_result)
 
             if research_result.success:
-                # Simulate findings (in real implementation, this would come from actual search)
+                # Simulate findings (in real implementation, this would come
+                # from actual search)
                 all_findings.append(
                     {
                         "content": f"Background research finding for: {bg_query}",
@@ -539,7 +540,8 @@ Process each research query with systematic thoroughness and analytical rigor.""
 
         # Save to memory if requested
         if save_to_memory:
-            # Note: Memory saving would be implemented when memory system is available
+            # Note: Memory saving would be implemented when memory system is
+            # available
             pass
 
         logger.info(f"Deep research completed in {processing_time:.2f}s")

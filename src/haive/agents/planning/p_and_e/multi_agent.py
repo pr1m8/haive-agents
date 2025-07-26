@@ -12,7 +12,7 @@ from typing import Any
 from langgraph.graph import END
 from langgraph.types import Command
 
-from haive.agents.multi.configurable_base import (
+from haive.agents.multi.archive.configurable_base import (
     AgentBranch,
     ConfigurableMultiAgent,
     WorkflowStep,
@@ -31,7 +31,7 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
         agents: list[Any],  # [planner, executor, replanner]
         branches: list[AgentBranch] | None = None,
         state_schema=None,
-        **kwargs
+        **kwargs,
     ):
         """Initialize Plan and Execute multi-agent.
 
@@ -114,7 +114,7 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
             workflow_steps=workflow_steps,
             state_schema_override=state_schema,
             start_agent=planner,
-            **kwargs
+            **kwargs,
         )
 
     # Workflow logic methods

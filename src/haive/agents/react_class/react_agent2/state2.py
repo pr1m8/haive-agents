@@ -112,7 +112,8 @@ class ReactAgentState(BaseModel):
         from pydantic import create_model
 
         return create_model(
-            f"ReactAgentState[{output_model_type.__name__}]",
+            f"ReactAgentState[{
+                output_model_type.__name__}]",
             structured_output=(Optional[output_model_type], Field(default=None)),
             __base__=cls,
         )

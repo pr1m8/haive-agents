@@ -255,7 +255,7 @@ def create_flare_planner_callable(llm_config: LLMConfig):
             context_str = (
                 "\n".join(
                     [
-                        f"Evidence {i+1}: {doc.page_content[:200]}..."
+                        f"Evidence {i + 1}: {doc.page_content[:200]}..."
                         for i, doc in enumerate(current_context[:3])
                     ]
                 )
@@ -280,7 +280,9 @@ def create_flare_planner_callable(llm_config: LLMConfig):
         )
 
         logger.info(
-            f"FLARE iteration {iteration_number}: {flare_plan.retrieval_decision} - {flare_plan.retrieval_justification}"
+            f"FLARE iteration {iteration_number}: {
+                flare_plan.retrieval_decision} - {
+                flare_plan.retrieval_justification}"
         )
 
         return {
@@ -341,14 +343,20 @@ def create_active_retrieval_callable(
                 # Limit docs per query
                 docs = docs[:3]  # Conservative for FLARE
                 all_new_docs.extend(docs)
-                logger.debug(f"Retrieved {len(docs)} documents for active query {i}")
+                logger.debug(
+                    f"Retrieved {
+                        len(docs)} documents for active query {i}"
+                )
 
             except Exception as e:
                 logger.warning(
                     f"Active retrieval failed for query '{retrieval_query}': {e}"
                 )
 
-        logger.info(f"Active retrieval completed: {len(all_new_docs)} new documents")
+        logger.info(
+            f"Active retrieval completed: {
+                len(all_new_docs)} new documents"
+        )
 
         return {
             "new_documents": all_new_docs,

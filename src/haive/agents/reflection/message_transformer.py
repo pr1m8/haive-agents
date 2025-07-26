@@ -38,9 +38,6 @@ except (ImportError, AttributeError):
         CUSTOM = "custom"
 
 
-from .models import Critique, ReflectionResult
-
-
 class SimpleReflectionTransformer:
     """Simple reflection transformer for when message_transformation_v2 is not available."""
 
@@ -489,7 +486,7 @@ async def example_message_transformer_reflection():
         conversation, original_query="What is artificial intelligence?"
     )
 
-    print(f"\n✅ Reflection Analysis:")
+    print("\n✅ Reflection Analysis:")
     print(f"Transformation applied: {reflection_result['transformation_applied']}")
     print(f"Messages before: {reflection_result['message_count_before']}")
     print(f"Messages after: {reflection_result['message_count_after']}")
@@ -563,7 +560,7 @@ async def example_reflection_message_flow():
         query=query, include_reflection=True
     )
 
-    print(f"\n📊 Flow Results:")
+    print("\n📊 Flow Results:")
     print(f"Reflection included: {flow_result['reflection_included']}")
 
     if "transformation_steps" in flow_result:

@@ -248,7 +248,8 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
 
             database_records = None
 
-            # Handle the output - it might be an AIMessage or a structured output
+            # Handle the output - it might be an AIMessage or a structured
+            # output
             if hasattr(guardrails_output, "decision"):
                 # It's a structured GuardrailsOutput
                 decision = guardrails_output.decision
@@ -264,7 +265,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                         decision = parsed.get("decision", "continue")
                     else:
                         decision = "continue"  # Default if we can't parse
-                except:
+                except BaseException:
                     # If parsing fails, default to continue
                     decision = "continue"
             else:
@@ -323,7 +324,8 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             )
 
             schema_info = {}
-            # Get schema for all tables (or limit to a subset for very large databases)
+            # Get schema for all tables (or limit to a subset for very large
+            # databases)
             if get_schema_tool:
                 for table in self.db_schema["tables"][
                     :10
@@ -483,7 +485,8 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             if "generate_sql" not in self.engines:
                 raise ValueError("Missing 'generate_sql' engine in configuration")
 
-            # For "what tables" questions, create a direct response based on schema
+            # For "what tables" questions, create a direct response based on
+            # schema
             question_lower = state.question.lower()
             if (
                 "what tables" in question_lower
@@ -910,20 +913,24 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                         hasattr(hallucination_result, "hallucination_detected")
                         and hallucination_result.hallucination_detected
                     ):
-                        warning = f"\n\nWarning: The answer may contain information not supported by the data. Areas of concern: {hallucination_result.problem_areas}"
+                        warning = f"\n\nWarning: The answer may contain information not supported by the data. Areas of concern: {
+                            hallucination_result.problem_areas}"
                         result["answer"] = answer + warning
 
                 except Exception as e:
                     logger.warning(f"Error in hallucination check: {e}")
-                    # Continue with generated answer even if hallucination check fails
+                    # Continue with generated answer even if hallucination
+                    # check fails
 
             return Command(update=result)
         except Exception as e:
             logger.exception(f"Error in generate_answer: {e}")
             return Command(
                 update={
-                    "error": f"Error generating answer: {e!s}",
-                    "answer": f"An error occurred while generating the answer: {e!s}",
+                    "error": f"Error generating answer: {
+                        e!s}",
+                    "answer": f"An error occurred while generating the answer: {
+                        e!s}",
                     "next_action": "end",
                 }
             )

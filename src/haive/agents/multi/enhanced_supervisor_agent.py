@@ -4,12 +4,12 @@ SupervisorAgent = Agent[AugLLMConfig] + worker management + delegation.
 """
 
 import logging
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
 from pydantic import Field, field_validator, model_validator
 
@@ -70,7 +70,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     """
 
     # Supervisor specific fields
-    workers: Dict[str, Agent] = Field(
+    workers: dict[str, Agent] = Field(
         default_factory=dict, description="Dictionary of worker agents"
     )
 
@@ -82,7 +82,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default="best", description="Strategy for choosing workers"
     )
 
-    supervisor_prompt: Optional[str] = Field(
+    supervisor_prompt: str | None = Field(
         default=None, description="Custom supervisor prompt"
     )
 
@@ -92,11 +92,11 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
 
     # Convenience fields
     temperature: float = Field(default=0.3, ge=0.0, le=2.0)  # Lower temp for decisions
-    max_tokens: Optional[int] = Field(default=None, ge=1)
+    max_tokens: int | None = Field(default=None, ge=1)
 
     @field_validator("workers")
     @classmethod
-    def validate_workers(cls, v: Dict[str, Agent]) -> Dict[str, Agent]:
+    def validate_workers(cls, v: dict[str, Agent]) -> dict[str, Agent]:
         """Validate worker agents."""
         if not isinstance(v, dict):
             raise ValueError("Workers must be a dictionary")
@@ -109,7 +109,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
 
     @model_validator(mode="before")
     @classmethod
-    def ensure_aug_llm_config(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def ensure_aug_llm_config(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Ensure supervisor has AugLLMConfig engine."""
         if not isinstance(values, dict):
             return values
@@ -140,7 +140,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         self.workers[name] = agent
         logger.info(f"Added worker '{name}' to supervisor '{self.name}'")
 
-    def remove_worker(self, name: str) -> Optional[Agent]:
+    def remove_worker(self, name: str) -> Agent | None:
         """Remove a worker agent.
 
         Args:
@@ -151,11 +151,11 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         """
         return self.workers.pop(name, None)
 
-    def list_workers(self) -> List[str]:
+    def list_workers(self) -> list[str]:
         """List all worker names."""
         return list(self.workers.keys())
 
-    def get_worker(self, name: str) -> Optional[Agent]:
+    def get_worker(self, name: str) -> Agent | None:
         """Get a specific worker by name."""
         return self.workers.get(name)
 
@@ -223,7 +223,7 @@ For each request, think about:
             graph.add_node(f"worker_{worker_name}", worker_node)
 
         # Routing function
-        def route_supervisor(state: Dict[str, Any]) -> str:
+        def route_supervisor(state: dict[str, Any]) -> str:
             """Route based on supervisor decision."""
             messages = state.get("messages", [])
             if not messages:
@@ -241,7 +241,8 @@ For each request, think about:
             if delegations >= self.max_delegation_rounds:
                 return "end"
 
-            # Parse supervisor decision (in real implementation, use structured output)
+            # Parse supervisor decision (in real implementation, use structured
+            # output)
             if isinstance(last_message, AIMessage):
                 content = str(last_message.content).lower()
 
@@ -281,7 +282,8 @@ For each request, think about:
         """String representation with worker info."""
         engine_type = type(self.engine).__name__ if self.engine else "None"
         worker_names = list(self.workers.keys())
-        return f"SupervisorAgent[{engine_type}](name='{self.name}', workers={worker_names})"
+        return f"SupervisorAgent[{engine_type}](name='{
+            self.name}', workers={worker_names})"
 
 
 # Example usage
@@ -308,18 +310,7 @@ if __name__ == "__main__":
         },
     )
 
-    print(f"Created: {supervisor}")
-    print(f"Workers: {supervisor.list_workers()}")
-    print(f"Delegation strategy: {supervisor.delegation_strategy}")
-
     # Add another worker dynamically
     supervisor.add_worker("tester", MockWorker("Dave", "Quality Assurance"))
-    print(f"Updated workers: {supervisor.list_workers()}")
 
     # Example delegation scenarios
-    print("\nExample delegation scenarios:")
-    print("1. 'Analyze user engagement metrics' -> delegate to analyst")
-    print("2. 'Build a REST API' -> delegate to developer")
-    print("3. 'Create mockups for mobile app' -> delegate to designer")
-    print("4. 'Test the new features' -> delegate to tester")
-    print("5. 'Plan the project timeline' -> supervisor handles directly")

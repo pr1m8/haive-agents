@@ -141,7 +141,10 @@ class ComponentDiscoveryAgent(BaseModel):
                 self._documents = self._load_documents(self.document_path)
 
                 if not self._documents:
-                    logger.warning(f"No documents found at path: {self.document_path}")
+                    logger.warning(
+                        f"No documents found at path: {
+                            self.document_path}"
+                    )
                     # Create empty documents list to avoid errors
                     self._documents = [
                         Document(
@@ -415,7 +418,10 @@ class ComponentDiscoveryAgent(BaseModel):
             if self.discovery_config.get("use_cache", True):
                 self.component_cache[query] = components
 
-            logger.info(f"Discovered {len(components)} components for query: {query}")
+            logger.info(
+                f"Discovered {
+                    len(components)} components for query: {query}"
+            )
             return components
 
         except Exception as e:
@@ -517,7 +523,11 @@ class ComponentDiscoveryAgent(BaseModel):
         # Fallback to metadata or default
         metadata = doc.metadata
         return metadata.get(
-            "description", f"Component from {metadata.get('source', 'unknown source')}"
+            "description",
+            f"Component from {
+                metadata.get(
+                    'source',
+                    'unknown source')}",
         )
 
     async def load_component_from_doc(
@@ -554,7 +564,9 @@ class ComponentDiscoveryAgent(BaseModel):
 
         except Exception as e:
             logger.exception(
-                f"Failed to load component {component_doc.get('name', 'unknown')}: {e}"
+                f"Failed to load component {
+                    component_doc.get(
+                        'name', 'unknown')}: {e}"
             )
 
         return None

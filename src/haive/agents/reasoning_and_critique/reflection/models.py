@@ -28,7 +28,12 @@ class ReflectionResult(BaseModel):
     def as_message(self) -> dict[str, Any]:
         """Convert to a message format."""
         return {
-            "content": f"Reflection: {self.reflection}\nMissing: {self.missing}\nSuperfluous: {self.superfluous}\nScore: {self.score}\nFound solution: {self.found_solution}"
+            "content": f"Reflection: {
+                self.reflection}\nMissing: {
+                self.missing}\nSuperfluous: {
+                self.superfluous}\nScore: {
+                    self.score}\nFound solution: {
+                        self.found_solution}"
         }
 
 

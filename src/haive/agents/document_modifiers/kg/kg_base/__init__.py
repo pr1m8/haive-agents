@@ -1,14 +1,12 @@
 """Module exports."""
 
-from kg_base.models import GraphTransformer, transform_documents
-
-from haive.agents.document_modifiers.kg.kg_base.example import (
+from haive.agents.document_modifiers.kg.kg_base.example import (  # extract_knowledge_graph,
     advanced_example,
     basic_example,
-    extract_knowledge_graph,
     schema_validation_example,
     type_hints_example,
 )
+from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 
 __all__ = [
     "GraphTransformer",

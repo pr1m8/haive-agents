@@ -92,7 +92,8 @@ class ToolStep(AbstractStep):
     @classmethod
     def validate_tool_name(cls, v: str, info) -> str:
         """Validate tool name exists in available tools."""
-        # Note: We can't access other fields here, so this will be checked in model_validator
+        # Note: We can't access other fields here, so this will be checked in
+        # model_validator
         if not v:
             raise ValueError("Tool name cannot be empty")
         return v
@@ -118,7 +119,10 @@ class ToolStep(AbstractStep):
         # Check tool exists
         if self.tool_name not in self.tool_names:
             raise ValueError(
-                f"Tool '{self.tool_name}' not found. Available tools: {', '.join(self.tool_names)}"
+                f"Tool '{
+                    self.tool_name}' not found. Available tools: {
+                    ', '.join(
+                        self.tool_names)}"
             )
 
         # Validate arguments
@@ -126,7 +130,9 @@ class ToolStep(AbstractStep):
             missing_args = set(self.required_args) - set(self.tool_args.keys())
             if missing_args:
                 raise ValueError(
-                    f"Missing required arguments for tool '{self.tool_name}': {', '.join(missing_args)}"
+                    f"Missing required arguments for tool '{
+                        self.tool_name}': {
+                        ', '.join(missing_args)}"
                 )
 
             # Check for invalid arguments
@@ -134,7 +140,9 @@ class ToolStep(AbstractStep):
             invalid_args = set(self.tool_args.keys()) - valid_args
             if invalid_args:
                 raise ValueError(
-                    f"Invalid arguments for tool '{self.tool_name}': {', '.join(invalid_args)}"
+                    f"Invalid arguments for tool '{
+                        self.tool_name}': {
+                        ', '.join(invalid_args)}"
                 )
 
         return self
@@ -238,7 +246,7 @@ def create_tool_steps_from_plan(
 
     for i, step_info in enumerate(tool_plan):
         step = ToolStep(
-            description=step_info.get("description", f"Step {i+1}"),
+            description=step_info.get("description", f"Step {i + 1}"),
             tool_name=step_info["tool_name"],
             tool_args=step_info.get("tool_args", {}),
             depends_on=step_info.get("depends_on", []),

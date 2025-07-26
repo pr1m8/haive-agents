@@ -199,7 +199,7 @@ class StepBackQueryGeneratorAgent(Agent):
                 context_str = (
                     "\n".join(
                         [
-                            f"Doc {i+1}: {doc.page_content[:200]}..."
+                            f"Doc {i + 1}: {doc.page_content[:200]}..."
                             for i, doc in enumerate(context[:3])
                         ]
                     )

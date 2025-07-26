@@ -4,12 +4,9 @@ This test runs all memory components together with real LLMs and databases.
 """
 
 import asyncio
-import json
 import shutil
 import tempfile
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -62,53 +59,37 @@ class TestCompleteMemorySystem:
     @pytest.mark.asyncio
     async def test_all_memory_agents_individually(self, test_config, temp_dir):
         """Test each memory agent individually."""
-        print("\n=== Testing All Memory Agents Individually ===\n")
-
         # Test data
         test_memory = "Alice Johnson is a senior AI researcher at TechCorp working on neural networks."
         test_query = "Who is Alice Johnson?"
 
         # 1. SimpleMemoryAgent
-        print("1. Testing SimpleMemoryAgent...")
         simple_agent = SimpleMemoryAgent(
             name="test_simple",
             engine=test_config["engine"],
             user_id=test_config["user_id"],
         )
-        simple_result = await simple_agent.arun(f"Remember: {test_memory}")
-        print(f"   Stored: {len(simple_result) > 0}")
-        query_result = await simple_agent.arun(test_query)
-        print(f"   Retrieved: {'alice' in query_result.lower()}")
+        await simple_agent.arun(f"Remember: {test_memory}")
+        await simple_agent.arun(test_query)
 
         # 2. ReactMemoryAgent
-        print("\n2. Testing ReactMemoryAgent...")
         react_agent = ReactMemoryAgent(
             name="test_react",
             engine=test_config["engine"],
             user_id=test_config["user_id"],
             memory_store_path=str(Path(temp_dir) / "react_memory"),
         )
-        react_store = await react_agent.arun(
-            f"Store this memory: {test_memory}", auto_save=True
-        )
-        print(f"   Stored: {'successfully' in react_store.lower()}")
-        react_query = await react_agent.arun(
-            f"Search memories for: {test_query}", auto_save=False
-        )
-        print(f"   Retrieved: {'alice' in react_query.lower()}")
+        await react_agent.arun(f"Store this memory: {test_memory}", auto_save=True)
+        await react_agent.arun(f"Search memories for: {test_query}", auto_save=False)
 
         # 3. LongTermMemoryAgent
-        print("\n3. Testing LongTermMemoryAgent...")
         longterm_agent = LongTermMemoryAgent(
             user_id=test_config["user_id"], llm_config=test_config["engine"]
         )
-        longterm_result = await longterm_agent.run(test_memory, extract_memories=True)
-        print(f"   Stored: {longterm_result.get('status') == 'success'}")
-        longterm_query = await longterm_agent.run(test_query, extract_memories=False)
-        print(f"   Retrieved: {'alice' in str(longterm_query).lower()}")
+        await longterm_agent.run(test_memory, extract_memories=True)
+        await longterm_agent.run(test_query, extract_memories=False)
 
         # 4. AdvancedRAGMemoryAgent
-        print("\n4. Testing AdvancedRAGMemoryAgent...")
         rag_config = AdvancedRAGConfig(
             user_id=test_config["user_id"],
             memory_store_path=str(Path(temp_dir) / "rag_memory"),
@@ -116,18 +97,12 @@ class TestCompleteMemorySystem:
             strategy=RetrievalStrategy.HYBRID,
         )
         rag_agent = AdvancedRAGMemoryAgent(rag_config)
-        rag_store = await rag_agent.add_memory(test_memory, importance="high")
-        print(f"   Stored: {rag_store['stored']}")
-        rag_query = await rag_agent.query_memory(test_query)
-        print(f"   Retrieved: {'alice' in rag_query['answer'].lower()}")
-
-        print("\n✅ All individual memory agents tested successfully!")
+        await rag_agent.add_memory(test_memory, importance="high")
+        await rag_agent.query_memory(test_query)
 
     @pytest.mark.asyncio
     async def test_multi_memory_coordinator_basic(self, test_config, temp_dir):
         """Test MultiMemoryCoordinator with basic operations."""
-        print("\n=== Testing MultiMemoryCoordinator Basic Operations ===\n")
-
         # Create coordinator without graph (doesn't require Neo4j)
         config = MultiMemoryConfig(
             user_id=test_config["user_id"],
@@ -138,7 +113,6 @@ class TestCompleteMemorySystem:
         )
 
         coordinator = MultiMemoryCoordinator(config)
-        print(f"Initialized with {len(coordinator.memory_systems)} memory systems")
 
         # Test intelligent storage
         memories = [
@@ -154,13 +128,9 @@ class TestCompleteMemorySystem:
             ("DataCorp is planning to expand to Europe next year.", "normal"),
         ]
 
-        print("\nStoring memories with intelligent routing...")
         for content, importance in memories:
-            result = await coordinator.store_memory(
+            await coordinator.store_memory(
                 content, importance=importance, mode=CoordinationMode.INTELLIGENT
-            )
-            print(
-                f"Stored in {len(result['systems_used'])} systems: {result['systems_used']}"
             )
 
         # Test different query modes
@@ -170,29 +140,15 @@ class TestCompleteMemorySystem:
             ("What is Bob's contact information?", CoordinationMode.HIERARCHICAL),
         ]
 
-        print("\nQuerying with different coordination modes...")
         for query, mode in queries:
-            result = await coordinator.query_memory(query, mode=mode)
-            print(f"\nQuery: {query}")
-            print(f"Mode: {mode.value}")
-            print(f"Systems queried: {result['systems_queried']}")
-            print(
-                f"Found answer: {'bob' in str(result.get('combined_result', '')).lower()}"
-            )
+            await coordinator.query_memory(query, mode=mode)
 
         # Test analytics
-        print("\nGetting system analytics...")
-        analytics = await coordinator.get_system_analytics()
-        print(f"Total operations: {analytics['coordinator']['operation_history']}")
-        print(f"Active systems: {list(analytics['systems'].keys())}")
-
-        print("\n✅ MultiMemoryCoordinator basic operations tested successfully!")
+        await coordinator.get_system_analytics()
 
     @pytest.mark.asyncio
     async def test_memory_system_integration(self, test_config, temp_dir):
         """Test integration between different memory systems."""
-        print("\n=== Testing Memory System Integration ===\n")
-
         # Create comprehensive coordinator
         coordinator = MultiMemoryCoordinator.create_comprehensive_system(
             user_id=test_config["user_id"],
@@ -201,7 +157,6 @@ class TestCompleteMemorySystem:
         )
 
         # Simulate a day of interactions
-        print("Simulating a day of memory interactions...")
 
         # Morning: Learning about a new project
         morning_memories = [
@@ -211,7 +166,6 @@ class TestCompleteMemorySystem:
             "Budget allocated: $2.5 million over 18 months.",
         ]
 
-        print("\nMorning: Storing project information...")
         for memory in morning_memories:
             await coordinator.store_memory(
                 memory,
@@ -227,7 +181,6 @@ class TestCompleteMemorySystem:
             "Important: Technical review meeting scheduled for next Tuesday at 2 PM.",
         ]
 
-        print("\nAfternoon: Storing technical discussions...")
         for memory in afternoon_memories:
             await coordinator.store_memory(
                 memory, importance="normal" if "Important" not in memory else "critical"
@@ -240,12 +193,10 @@ class TestCompleteMemorySystem:
             "Need to brush up on my knowledge of graph databases before the meeting.",
         ]
 
-        print("\nEvening: Storing personal notes...")
         for memory in evening_memories:
             await coordinator.store_memory(memory, importance="normal")
 
         # End of day queries
-        print("\n=== End of Day Queries ===")
 
         queries = [
             "What is Project Phoenix and who is leading it?",
@@ -255,14 +206,11 @@ class TestCompleteMemorySystem:
         ]
 
         for query in queries:
-            print(f"\nQuery: {query}")
             result = await coordinator.query_memory(
                 query, mode=CoordinationMode.INTELLIGENT, combine_results=True
             )
 
             answer = result.get("combined_result", "No answer found")
-            print(f"Answer preview: {answer[:200]}...")
-            print(f"Systems used: {result['systems_queried']}")
 
             # Verify key information is retrieved
             answer_lower = str(answer).lower()
@@ -271,13 +219,9 @@ class TestCompleteMemorySystem:
             if "technical" in query.lower():
                 assert "transformer" in answer_lower or "multi-agent" in answer_lower
 
-        print("\n✅ Memory system integration tested successfully!")
-
     @pytest.mark.asyncio
     async def test_advanced_rag_features(self, test_config, temp_dir):
         """Test advanced RAG features like reranking and citations."""
-        print("\n=== Testing Advanced RAG Features ===\n")
-
         # Create advanced RAG agent with all features
         config = AdvancedRAGConfig(
             user_id=test_config["user_id"],
@@ -318,7 +262,6 @@ class TestCompleteMemorySystem:
             ),
         ]
 
-        print("Adding technical memories...")
         for content, importance in technical_memories:
             await agent.add_memory(content, importance=importance)
 
@@ -335,27 +278,17 @@ class TestCompleteMemorySystem:
             ),
         ]
 
-        print("\nTesting queries of different complexities...")
-        for query, expected_complexity in test_queries:
-            print(f"\nQuery: {query}")
+        for query, _expected_complexity in test_queries:
 
             # Analyze complexity
-            complexity = agent.analyze_query_complexity(query)
-            print(
-                f"Detected complexity: {complexity.value} (expected: {expected_complexity})"
-            )
+            agent.analyze_query_complexity(query)
 
             # Query with full analysis
             result = await agent.query_memory(query, include_analysis=True)
 
-            print(f"Strategy used: {result['analysis']['strategy_used']}")
-            print(f"Documents retrieved: {result['retrieved_docs']}")
-
             # Check citations if enabled
             if result.get("citations"):
-                print(f"Citations included: {len(result['citations'])} sources")
-
-            print(f"Answer preview: {result['answer'][:150]}...")
+                pass
 
             # Verify answer quality
             answer_lower = result["answer"].lower()
@@ -363,27 +296,14 @@ class TestCompleteMemorySystem:
                 assert "bert" in answer_lower or "bidirectional" in answer_lower
 
         # Test analytics
-        analytics = await agent.get_memory_analytics()
-        print(f"\nRAG Analytics:")
-        print(f"  Total documents: {analytics['documents']['total_documents']}")
-        print(
-            f"  Query complexity distribution: {analytics['queries']['complexity_distribution']}"
-        )
-        print(
-            f"  Average processing time: {analytics['queries']['avg_processing_time']:.2f}s"
-        )
-
-        print("\n✅ Advanced RAG features tested successfully!")
+        await agent.get_memory_analytics()
 
     @pytest.mark.asyncio
     async def test_memory_persistence_and_recovery(self, test_config, temp_dir):
         """Test memory persistence across sessions."""
-        print("\n=== Testing Memory Persistence and Recovery ===\n")
-
         storage_path = str(Path(temp_dir) / "persistent_memory")
 
         # Session 1: Store memories
-        print("Session 1: Storing memories...")
         coordinator1 = MultiMemoryCoordinator.create_comprehensive_system(
             user_id=test_config["user_id"],
             enable_graph=False,
@@ -408,10 +328,7 @@ class TestCompleteMemorySystem:
                 str(Path(storage_path) / "react_memory")
             )
 
-        print("Session 1 completed, memories stored.")
-
         # Session 2: New coordinator, same storage
-        print("\nSession 2: Creating new coordinator with same storage...")
         coordinator2 = MultiMemoryCoordinator.create_comprehensive_system(
             user_id=test_config["user_id"],
             enable_graph=False,
@@ -425,12 +342,9 @@ class TestCompleteMemorySystem:
             "What is our budget status?",
         ]
 
-        print("\nQuerying memories from previous session...")
         for query in queries:
             result = await coordinator2.query_memory(query)
             answer = str(result.get("combined_result", ""))
-            print(f"\nQuery: {query}")
-            print(f"Found answer: {len(answer) > 20}")
 
             # Verify key information persisted
             answer_lower = answer.lower()
@@ -439,22 +353,15 @@ class TestCompleteMemorySystem:
             if "team" in query.lower():
                 assert any(name in answer_lower for name in ["alice", "bob", "carol"])
 
-        print("\n✅ Memory persistence and recovery tested successfully!")
-
     @pytest.mark.asyncio
     async def test_complex_real_world_scenario(self, test_config, temp_dir):
         """Test a complex real-world scenario with all systems."""
-        print("\n=== Testing Complex Real-World Scenario ===\n")
-
         # Create a comprehensive system for a research assistant
         coordinator = MultiMemoryCoordinator.create_comprehensive_system(
             user_id="researcher", enable_graph=False, storage_path=str(temp_dir)
         )
 
-        print("Scenario: AI Research Assistant managing research project")
-
         # Phase 1: Literature review
-        print("\nPhase 1: Literature Review")
         papers = [
             (
                 "'Attention is All You Need' (2017) introduced the transformer architecture, eliminating recurrence and convolutions.",
@@ -486,7 +393,6 @@ class TestCompleteMemorySystem:
             )
 
         # Phase 2: Research meetings
-        print("\nPhase 2: Research Meetings")
         meetings = [
             "Met with Prof. Smith who suggested exploring retrieval-augmented generation for our chatbot.",
             "Industry partner wants the system to handle 1000 concurrent users with <2s response time.",
@@ -503,7 +409,6 @@ class TestCompleteMemorySystem:
             )
 
         # Phase 3: Technical implementation notes
-        print("\nPhase 3: Technical Implementation")
         implementation = [
             "Implemented base transformer model using PyTorch, achieving 95% accuracy on validation set.",
             "RAG system using FAISS vector store reduces latency by 40% compared to full model inference.",
@@ -519,7 +424,6 @@ class TestCompleteMemorySystem:
             )
 
         # Phase 4: Complex queries spanning all phases
-        print("\nPhase 4: Complex Integrated Queries")
 
         complex_queries = [
             "Based on the literature review and our meetings, what architecture should we use for the chatbot?",
@@ -529,8 +433,6 @@ class TestCompleteMemorySystem:
         ]
 
         for query in complex_queries:
-            print(f"\n{'='*60}")
-            print(f"Query: {query}")
 
             result = await coordinator.query_memory(
                 query,
@@ -538,11 +440,7 @@ class TestCompleteMemorySystem:
                 combine_results=True,
             )
 
-            print(f"Systems consulted: {result['systems_queried']}")
-            print(f"Processing time: {result['total_time']:.2f}s")
-
             answer = result.get("combined_result", "No answer")
-            print(f"\nAnswer: {answer[:300]}...")
 
             # Verify comprehensive answers
             answer_lower = answer.lower()
@@ -560,19 +458,13 @@ class TestCompleteMemorySystem:
                 )
 
         # Final analytics
-        print("\n" + "=" * 60)
-        print("Final System Analytics:")
         analytics = await coordinator.get_system_analytics()
 
-        total_ops = analytics["coordinator"]["operation_history"]
-        print(f"Total operations performed: {total_ops}")
+        analytics["coordinator"]["operation_history"]
 
-        for system, stats in analytics["systems"].items():
+        for _system, stats in analytics["systems"].items():
             if isinstance(stats, dict) and "total_documents" in stats:
-                print(f"{system}: {stats['total_documents']} documents")
-
-        print("\n✅ Complex real-world scenario tested successfully!")
-        print("\n🎉 ALL MEMORY V2 SYSTEM TESTS COMPLETED SUCCESSFULLY! 🎉")
+                pass
 
 
 # GraphMemoryAgent test (requires Neo4j)
@@ -580,8 +472,6 @@ class TestCompleteMemorySystem:
 @pytest.mark.skipif(True, reason="Requires Neo4j to be running")
 async def test_graph_memory_with_neo4j():
     """Test GraphMemoryAgent with real Neo4j (skip if not available)."""
-    print("\n=== Testing GraphMemoryAgent with Neo4j ===\n")
-
     config = GraphMemoryConfig(
         neo4j_uri="bolt://localhost:7687",
         neo4j_username="neo4j",
@@ -594,23 +484,16 @@ async def test_graph_memory_with_neo4j():
         agent = GraphMemoryAgent(config)
 
         # Test structured knowledge
-        result = await agent.run(
+        await agent.run(
             "John Smith is the CEO of TechCorp. He knows Sarah Johnson who works as CTO. "
             "TechCorp is located in San Francisco and was founded in 2015.",
             auto_store=True,
         )
 
-        print(f"Extracted {result['extracted_graph']['total_nodes']} nodes")
-        print(
-            f"Extracted {result['extracted_graph']['total_relationships']} relationships"
-        )
-
         # Query the graph
-        query_result = await agent.query_graph(
+        await agent.query_graph(
             "Who are the executives at TechCorp?", query_type="natural"
         )
-
-        print(f"Query answer: {query_result.get('answer', 'No answer')}")
 
         # Cleanup
         agent.graph.query(
@@ -618,19 +501,13 @@ async def test_graph_memory_with_neo4j():
             {"user_id": "graph_test_user"},
         )
 
-        print("\n✅ GraphMemoryAgent tested successfully!")
-
-    except Exception as e:
-        print(f"Neo4j test skipped: {e}")
+    except Exception:
+        pass
 
 
 # Run all tests
 async def run_complete_test_suite():
     """Run the complete test suite."""
-    print("\n" + "=" * 80)
-    print("🚀 MEMORY V2 COMPLETE SYSTEM TEST SUITE 🚀")
-    print("=" * 80)
-
     test_instance = TestCompleteMemorySystem()
     temp_dir = tempfile.mkdtemp()
 
@@ -650,10 +527,6 @@ async def run_complete_test_suite():
 
     finally:
         shutil.rmtree(temp_dir)
-
-    print("\n" + "=" * 80)
-    print("✨ ALL TESTS COMPLETED SUCCESSFULLY! ✨")
-    print("=" * 80)
 
 
 if __name__ == "__main__":

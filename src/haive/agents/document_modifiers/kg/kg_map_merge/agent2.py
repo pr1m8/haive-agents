@@ -1,5 +1,3 @@
-from typing import Any
-
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.aug_llm import compose_runnable
 from langchain_core.documents import Document
@@ -123,7 +121,8 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
         """Map function that creates Send commands for each document to be processed.
         Returns a list of Send objects - one for each document.
         """
-        # Create a Send object for each document - using DICTIONARY, not state object
+        # Create a Send object for each document - using DICTIONARY, not state
+        # object
         sends = []
 
         for i, content in enumerate(state.contents):
@@ -273,7 +272,8 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             if not pairs:
                 # If no pairs could be created
                 if valid_graphs:
-                    # If there's a single valid graph, set it as the merged result
+                    # If there's a single valid graph, set it as the merged
+                    # result
                     update_cmd = Command(
                         update={
                             "merged_graph": valid_graphs[0],
@@ -627,7 +627,8 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
                 else "finalize_graph"
             ),
             {
-                "distribute_graph_document_pairs": "distribute_graph_document_pairs",  # Start another merge round
+                # Start another merge round
+                "distribute_graph_document_pairs": "distribute_graph_document_pairs",
                 "finalize_graph": "finalize_graph",  # Merging complete
             },
         )

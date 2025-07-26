@@ -81,7 +81,7 @@ class EnhancedHyDERAGAgent(SequentialAgent):
         llm_config: LLMConfig | None = None,
         embedding_model: str | None = None,
         use_enhancement_pattern: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """Create Enhanced HyDE RAG from documents.
 
@@ -116,7 +116,7 @@ class EnhancedHyDERAGAgent(SequentialAgent):
         documents: list[Document],
         llm_config: LLMConfig,
         embedding_model: str | None = None,
-        **kwargs
+        **kwargs,
     ):
         """Create using the new structured output enhancement pattern."""
         # Step 1: Base HyDE generation (focused on content, not structure)
@@ -168,7 +168,7 @@ Consider how well the hypothetical document would serve for semantic retrieval."
                 answer_agent,
             ],
             name=kwargs.get("name", "Enhanced HyDE RAG Agent"),
-            **kwargs
+            **kwargs,
         )
 
     @classmethod
@@ -177,7 +177,7 @@ Consider how well the hypothetical document would serve for semantic retrieval."
         documents: list[Document],
         llm_config: LLMConfig,
         embedding_model: str | None = None,
-        **kwargs
+        **kwargs,
     ):
         """Create using traditional pattern for comparison."""
         # Traditional: structured output embedded in initial generation
@@ -210,7 +210,7 @@ Consider how well the hypothetical document would serve for semantic retrieval."
         return cls(
             agents=[hyde_generator, retriever, answer_agent],
             name=kwargs.get("name", "Traditional HyDE RAG Agent"),
-            **kwargs
+            **kwargs,
         )
 
 
@@ -313,7 +313,7 @@ def create_enhanced_hyde_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     use_enhancement_pattern: bool = True,
-    **kwargs
+    **kwargs,
 ) -> EnhancedHyDERAGAgent:
     """Create an Enhanced HyDE RAG agent.
 
@@ -330,7 +330,7 @@ def create_enhanced_hyde_agent(
         documents=documents,
         llm_config=llm_config,
         use_enhancement_pattern=use_enhancement_pattern,
-        **kwargs
+        **kwargs,
     )
 
 

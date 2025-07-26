@@ -224,7 +224,10 @@ class DynamicSupervisor(ReactAgent):
             ]
             self.engine.tools = mgmt_tools + aggregated_tools
 
-            logger.info(f"Aggregated {len(aggregated_tools)} tools from agents")
+            logger.info(
+                f"Aggregated {
+                    len(aggregated_tools)} tools from agents"
+            )
 
     # ========================================================================
     # GRAPH BUILDING

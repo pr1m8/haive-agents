@@ -181,14 +181,29 @@ class SQLDatabaseConfig(BaseModel):
             return self.db_uri
 
         if self.db_type == "postgresql":
-            return f"postgresql+psycopg2://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
+            return f"postgresql+psycopg2://{
+                self.db_user}:{
+                self.db_password}@{
+                self.db_host}:{
+                self.db_port}/{
+                    self.db_name}"
         if self.db_type == "mysql":
-            return f"mysql+pymysql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
+            return f"mysql+pymysql://{
+                self.db_user}:{
+                self.db_password}@{
+                self.db_host}:{
+                self.db_port}/{
+                    self.db_name}"
         if self.db_type == "sqlite":
             # For SQLite, the db_name is the path to the file
             return f"sqlite:///{self.db_name}"
         if self.db_type == "mssql":
-            return f"mssql+pyodbc://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
+            return f"mssql+pyodbc://{
+                self.db_user}:{
+                self.db_password}@{
+                self.db_host}:{
+                self.db_port}/{
+                    self.db_name}"
         raise ValueError(f"Unsupported database type: {self.db_type}")
 
     def get_sql_db(self) -> SQLDatabase | None:
@@ -212,7 +227,8 @@ class SQLDatabaseConfig(BaseModel):
         try:
             connection_string = self.get_connection_string()
 
-            # Create kwargs dictionary with only the parameters that are supported
+            # Create kwargs dictionary with only the parameters that are
+            # supported
             db_kwargs = {
                 "include_tables": self.include_tables,
                 "sample_rows_in_table_info": self.sample_rows_in_table_info,

@@ -10,10 +10,9 @@ import asyncio
 import json
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.tools import tool
 
 from haive.agents.memory_v2.graph_memory_agent import (
@@ -47,9 +46,9 @@ class IntegratedMemorySystem:
     def __init__(
         self,
         user_id: str = "default_user",
-        neo4j_config: Optional[Dict[str, Any]] = None,
-        vector_store_path: Optional[str] = None,
-        engine: Optional[AugLLMConfig] = None,
+        neo4j_config: dict[str, Any] | None = None,
+        vector_store_path: str | None = None,
+        engine: AugLLMConfig | None = None,
     ):
         self.user_id = user_id
         self.engine = engine or AugLLMConfig(temperature=0.7)
@@ -65,7 +64,7 @@ class IntegratedMemorySystem:
         # Create coordinator agent
         self.coordinator = self._create_coordinator()
 
-    def _init_graph_memory(self, neo4j_config: Optional[Dict[str, Any]]):
+    def _init_graph_memory(self, neo4j_config: dict[str, Any] | None):
         """Initialize graph memory for structured knowledge."""
         config = GraphMemoryConfig(
             user_id=self.user_id,
@@ -82,7 +81,7 @@ class IntegratedMemorySystem:
         )
         self.graph_memory = GraphMemoryAgent(config)
 
-    def _init_react_memory(self, vector_store_path: Optional[str]):
+    def _init_react_memory(self, vector_store_path: str | None):
         """Initialize React memory for flexible tool-based management."""
         self.react_memory = ReactMemoryAgent(
             name="react_memory",
@@ -154,14 +153,13 @@ class IntegratedMemorySystem:
             # Determine best system
             if has_structured and not has_conversational:
                 return "structured"
-            elif has_conversational and not has_structured:
+            if has_conversational and not has_structured:
                 return "conversational"
-            elif has_persistent:
+            if has_persistent:
                 return "persistent"
-            elif has_structured and has_conversational:
+            if has_structured and has_conversational:
                 return "hybrid"
-            else:
-                return "conversational"  # Default
+            return "conversational"  # Default
 
         @tool
         def route_memory_query(query: str) -> str:
@@ -256,8 +254,8 @@ the best memory system(s) to use:
         self,
         content: str,
         mode: MemorySystemMode = MemorySystemMode.INTELLIGENT,
-        metadata: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        metadata: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         """Store memory using the appropriate system(s).
 
         Args:
@@ -319,7 +317,7 @@ the best memory system(s) to use:
         query: str,
         mode: MemorySystemMode = MemorySystemMode.INTELLIGENT,
         combine_results: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Query memory using appropriate system(s).
 
         Args:
@@ -384,7 +382,7 @@ the best memory system(s) to use:
 
         return results
 
-    async def _combine_query_results(self, query: str, results: Dict[str, Any]) -> str:
+    async def _combine_query_results(self, query: str, results: dict[str, Any]) -> str:
         """Combine results from multiple memory systems."""
         # Use a simple agent to synthesize results
         synthesis_prompt = f"""
@@ -409,7 +407,7 @@ Synthesize these results into a comprehensive answer.
         combined = await synthesizer.arun(synthesis_prompt)
         return combined
 
-    async def get_memory_analytics(self) -> Dict[str, Any]:
+    async def get_memory_analytics(self) -> dict[str, Any]:
         """Get analytics across all memory systems."""
         analytics = {
             "user_id": self.user_id,
@@ -433,7 +431,7 @@ Synthesize these results into a comprehensive answer.
                 "node_distribution": graph_stats,
                 "total_nodes": sum(stat["count"] for stat in graph_stats),
             }
-        except:
+        except BaseException:
             analytics["systems"]["graph"] = {"error": "Unable to get stats"}
 
         # React memory stats
@@ -451,7 +449,7 @@ Synthesize these results into a comprehensive answer.
 
         return analytics
 
-    async def consolidate_all_memories(self) -> Dict[str, Any]:
+    async def consolidate_all_memories(self) -> dict[str, Any]:
         """Consolidate memories across all systems."""
         consolidation_results = {
             "timestamp": datetime.now().isoformat(),
@@ -491,8 +489,6 @@ async def demo_integrated_memory():
         },
     )
 
-    print("=== Integrated Memory System Demo ===\n")
-
     # Store different types of memories
     memories = [
         # Structured knowledge
@@ -507,11 +503,8 @@ async def demo_integrated_memory():
         "Yesterday, John and Sarah presented the Q4 roadmap to the board.",
     ]
 
-    print("Storing memories...\n")
     for memory in memories:
         result = await system.store_memory(memory, mode=MemorySystemMode.INTELLIGENT)
-        print(f"Stored in: {result['systems_used']}")
-        print(f"Content: {memory[:50]}...\n")
 
     # Query memories in different ways
     queries = [
@@ -522,30 +515,21 @@ async def demo_integrated_memory():
         "What is John's contact information?",
     ]
 
-    print("\nQuerying memories...\n")
     for query in queries:
         result = await system.query_memory(query, mode=MemorySystemMode.INTELLIGENT)
-        print(f"Query: {query}")
-        print(f"Systems used: {result['systems_queried']}")
         if "combined_answer" in result:
-            print(f"Answer: {result['combined_answer'][:200]}...")
-        print()
+            pass
 
     # Get analytics
-    print("\nMemory System Analytics:")
-    analytics = await system.get_memory_analytics()
-    print(json.dumps(analytics, indent=2))
+    await system.get_memory_analytics()
 
     # Consolidate memories
-    print("\nConsolidating memories...")
-    consolidation = await system.consolidate_all_memories()
-    print(f"Consolidation complete: {consolidation['systems_consolidated']}")
+    await system.consolidate_all_memories()
 
 
 # Advanced example with custom agent
 async def create_research_assistant():
     """Create a research assistant with integrated memory."""
-
     # Initialize memory system
     memory_system = IntegratedMemorySystem(
         user_id="researcher",
@@ -586,8 +570,7 @@ async def create_research_assistant():
 
         if "combined_answer" in result:
             return result["combined_answer"]
-        else:
-            return "No related papers found in memory"
+        return "No related papers found in memory"
 
     @tool
     async def get_research_graph(entity: str) -> str:

@@ -130,7 +130,8 @@ class JoinStep(AbstractStep):
         if not self.depends_on:
             return
 
-        # Auto-detect parallel inputs (all dependencies are potential parallel inputs)
+        # Auto-detect parallel inputs (all dependencies are potential parallel
+        # inputs)
         self.parallel_inputs = list(self.depends_on)
 
         # Auto-generate join metadata
@@ -301,7 +302,8 @@ class JoinStep(AbstractStep):
         for dep_id in self.depends_on:
             dep_step = step_map.get(dep_id)
             if dep_step:
-                # A dependency is critical if it has the longest path to completion
+                # A dependency is critical if it has the longest path to
+                # completion
                 depth = self._calculate_dependency_depth({dep_id: dep_step})
                 if depth >= len(self.depends_on) - 1:  # Heuristic for critical path
                     critical_members.append(dep_id)
@@ -352,7 +354,8 @@ class JoinStep(AbstractStep):
         if self.join_strategy == JoinStrategy.WAIT_MAJORITY:
             return len(completed_deps) >= (len(self.depends_on) + 1) // 2
         if self.join_strategy == JoinStrategy.WAIT_CRITICAL:
-            # For now, treat as wait_all - could be enhanced with critical path detection
+            # For now, treat as wait_all - could be enhanced with critical path
+            # detection
             return len(completed_deps) == len(self.depends_on)
 
         return False

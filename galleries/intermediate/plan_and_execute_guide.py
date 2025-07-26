@@ -159,7 +159,7 @@ available tools effectively to complete each step.""",
         # The agent will first create a plan
         response = await agent.arun(task)
 
-        print("\n📝 Final result:"t:")
+        print("\n📝 Final result:t:")
         print(response)
 
         # Small pause between tasks

@@ -49,7 +49,8 @@ async def gen_answer(
     all_query_results = {
         res["url"]: res["content"] for results in successful_results for res in results
     }
-    # We could be more precise about handling max token length if we wanted to here
+    # We could be more precise about handling max token length if we wanted to
+    # here
     dumped = json.dumps(all_query_results)[:max_str_len]
     ai_message: AIMessage = queries["raw"]
     tool_call = queries["raw"].tool_calls[0]

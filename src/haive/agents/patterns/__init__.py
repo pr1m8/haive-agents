@@ -13,6 +13,6 @@ from haive.agents.patterns.sequential_with_structured_output import (
 __all__ = [
     "SequentialAgentWithStructuredOutput",
     "SequentialHooks",
-    "create_react_to_structured",
     "create_analysis_to_report",
+    "create_react_to_structured",
 ]

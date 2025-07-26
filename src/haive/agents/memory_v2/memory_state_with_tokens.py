@@ -6,20 +6,16 @@ functionality with pre-hooks for summarization and token management.
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.schema.prebuilt.messages.messages_with_token_usage import (
     MessagesStateWithTokenUsage,
 )
-from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AnyMessage
 from pydantic import ConfigDict, Field, computed_field
 
 from .memory_state_original import (
-    EnhancedKnowledgeTriple,
-    EnhancedMemoryItem,
-    ImportanceLevel,
     MemoryStats,
-    MemoryType,
     UnifiedMemoryEntry,
 )
 
@@ -84,15 +80,15 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # Memory tracking using original models
-    current_memories: List[UnifiedMemoryEntry] = Field(
+    current_memories: list[UnifiedMemoryEntry] = Field(
         default_factory=list, description="Current memories in working set"
     )
 
-    retrieved_memories: List[UnifiedMemoryEntry] = Field(
+    retrieved_memories: list[UnifiedMemoryEntry] = Field(
         default_factory=list, description="Recently retrieved memories"
     )
 
-    memory_metadata: Dict[str, Any] = Field(
+    memory_metadata: dict[str, Any] = Field(
         default_factory=dict, description="Memory operation metadata"
     )
 
@@ -101,20 +97,20 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
     )
 
     # Token management for memory
-    memory_token_usage: Dict[str, int] = Field(
+    memory_token_usage: dict[str, int] = Field(
         default_factory=dict, description="Token usage breakdown for memory operations"
     )
 
     # Summarization state
-    running_summary: Optional[str] = Field(
+    running_summary: str | None = Field(
         default=None, description="Current running summary of conversation"
     )
 
-    summarized_message_ids: List[str] = Field(
+    summarized_message_ids: list[str] = Field(
         default_factory=list, description="IDs of messages that have been summarized"
     )
 
-    last_summarization: Optional[Dict[str, Any]] = Field(
+    last_summarization: dict[str, Any] | None = Field(
         default=None, description="Details of last summarization operation"
     )
 
@@ -132,16 +128,16 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
     )
 
     # Graph transformation state
-    knowledge_graph: Optional[KnowledgeGraph] = Field(
+    knowledge_graph: KnowledgeGraph | None = Field(
         default=None,
         description="Current knowledge graph extracted from memories and conversations",
     )
 
-    graph_nodes: List[EntityNode] = Field(
+    graph_nodes: list[EntityNode] = Field(
         default_factory=list, description="Extracted entity nodes from content"
     )
 
-    graph_relationships: List[EntityRelationship] = Field(
+    graph_relationships: list[EntityRelationship] = Field(
         default_factory=list, description="Extracted relationships between entities"
     )
 
@@ -149,7 +145,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         default=True, description="Whether to automatically generate knowledge graphs"
     )
 
-    last_graph_update: Optional[Dict[str, Any]] = Field(
+    last_graph_update: dict[str, Any] | None = Field(
         default=None, description="Details of last graph transformation operation"
     )
 
@@ -197,16 +193,15 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
 
         if ratio >= self.critical_threshold:
             return "CRITICAL"
-        elif ratio >= self.warning_threshold:
+        if ratio >= self.warning_threshold:
             return "WARNING"
-        else:
-            return "OK"
+        return "OK"
 
     # ========================================================================
     # PRE-HOOK SYSTEM
     # ========================================================================
 
-    def pre_message_hook(self, message: AnyMessage) -> Dict[str, Any]:
+    def pre_message_hook(self, message: AnyMessage) -> dict[str, Any]:
         """Pre-hook executed before adding any message.
 
         This hook:
@@ -244,11 +239,13 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
                 {
                     "action_needed": True,
                     "recommended_route": "summarize_critical",
-                    "reason": f"Projected ratio {projected_ratio:.2%} >= critical threshold {self.critical_threshold:.2%}",
+                    "reason": f"Projected ratio {
+                        projected_ratio:.2%} >= critical threshold {
+                        self.critical_threshold:.2%}",
                 }
             )
             logger.info(
-                f"Pre-hook: Critical threshold reached, recommending summarization"
+                "Pre-hook: Critical threshold reached, recommending summarization"
             )
 
         elif projected_ratio >= self.warning_threshold:
@@ -256,11 +253,13 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
                 {
                     "action_needed": True,
                     "recommended_route": "summarize_warning",
-                    "reason": f"Projected ratio {projected_ratio:.2%} >= warning threshold {self.warning_threshold:.2%}",
+                    "reason": f"Projected ratio {
+                        projected_ratio:.2%} >= warning threshold {
+                        self.warning_threshold:.2%}",
                 }
             )
             logger.info(
-                f"Pre-hook: Warning threshold reached, recommending memory consolidation"
+                "Pre-hook: Warning threshold reached, recommending memory consolidation"
             )
 
         return hook_result
@@ -269,7 +268,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         """Check if summarization should be triggered."""
         return self.token_usage_ratio >= self.warning_threshold
 
-    def prepare_for_summarization(self) -> Dict[str, Any]:
+    def prepare_for_summarization(self) -> dict[str, Any]:
         """Prepare state for summarization operation.
 
         This method:
@@ -331,7 +330,9 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         }
 
         logger.info(
-            f"Summarization prep: {len(to_summarize)} messages, {len(old_memories)} memories, "
+            f"Summarization prep: {
+                len(to_summarize)} messages, {
+                len(old_memories)} memories, "
             f"{total_to_summarize} → {target_tokens} tokens"
         )
 
@@ -351,42 +352,39 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
             return "emergency_compress"
 
         # Critical: summarization required
-        elif status == "CRITICAL":
+        if status == "CRITICAL":
             return "summarize"
 
         # Warning: consider consolidation or graph transformation
-        elif status == "WARNING":
+        if status == "WARNING":
             if len(self.current_memories) > 20:
                 return "consolidate_memories"
-            elif self.running_summary is None:
+            if self.running_summary is None:
                 return "create_summary"
-            elif self.graph_generation_enabled and not self.knowledge_graph:
+            if self.graph_generation_enabled and not self.knowledge_graph:
                 return "transform_to_graph"
-            else:
-                return "update_summary"
+            return "update_summary"
 
         # Normal processing with optional graph updates
-        else:
-            if (
-                self.graph_generation_enabled
-                and len(self.current_memories) > 5
-                and len(self.messages) > 3
-                and (
-                    not self.last_graph_update
-                    or len(self.current_memories)
-                    - self.last_graph_update.get("memory_count", 0)
-                    > 5
-                )
-            ):
-                return "update_graph"
-            else:
-                return "process"
+        if (
+            self.graph_generation_enabled
+            and len(self.current_memories) > 5
+            and len(self.messages) > 3
+            and (
+                not self.last_graph_update
+                or len(self.current_memories)
+                - self.last_graph_update.get("memory_count", 0)
+                > 5
+            )
+        ):
+            return "update_graph"
+        return "process"
 
     # ========================================================================
     # SUMMARIZATION INTEGRATION
     # ========================================================================
 
-    def add_message_with_hooks(self, message: AnyMessage) -> Dict[str, Any]:
+    def add_message_with_hooks(self, message: AnyMessage) -> dict[str, Any]:
         """Add message with pre-hook processing.
 
         This method:
@@ -420,8 +418,8 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
     def apply_summarization_result(
         self,
         summary: str,
-        summarized_message_ids: List[str],
-        summarized_memory_ids: List[str],
+        summarized_message_ids: list[str],
+        summarized_memory_ids: list[str],
     ) -> None:
         """Apply results of summarization operation.
 
@@ -474,15 +472,18 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         }
 
         logger.info(
-            f"Applied summarization: {len(summarized_message_ids)} messages, "
-            f"{len(summarized_memory_ids)} memories → {len(summary)} char summary"
+            f"Applied summarization: {
+                len(summarized_message_ids)} messages, "
+            f"{
+                len(summarized_memory_ids)} memories → {
+                len(summary)} char summary"
         )
 
     # ========================================================================
     # UTILITY METHODS
     # ========================================================================
 
-    def get_comprehensive_status(self) -> Dict[str, Any]:
+    def get_comprehensive_status(self) -> dict[str, Any]:
         """Get comprehensive state status for debugging/monitoring."""
         token_summary = self.get_token_usage_summary()
 
@@ -535,5 +536,6 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         # (running_summary and summarized_message_ids remain)
 
         logger.info(
-            f"Reset for new session: kept {len(core_memories)} core memories and running summary"
+            f"Reset for new session: kept {
+                len(core_memories)} core memories and running summary"
         )

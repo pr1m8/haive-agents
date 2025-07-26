@@ -6,7 +6,7 @@ from haive.core.schema.agent_schema_composer import BuildMode
 from langgraph.graph import END
 from langgraph.types import Send
 
-from haive.agents.multi.enhanced_base import MultiAgentBase
+from haive.agents.multi.archive.enhanced_base import MultiAgentBase
 from haive.agents.reasoning_and_critique.tot.v2.models import (
     Candidate,
     CandidateEvaluation,
@@ -206,7 +206,7 @@ def create_tree_of_thoughts(
     beam_size: int = 3,
     expansion_factor: int = 5,
     threshold: float = 0.9,
-    **kwargs
+    **kwargs,
 ) -> MultiAgentBase:
     """Create a Tree of Thoughts multi-agent system."""
     # Define branches for routing
@@ -233,7 +233,7 @@ def create_tree_of_thoughts(
         state_schema_override=ToTState,
         schema_build_mode=BuildMode.SEQUENCE,
         workflow_nodes=workflow_nodes,
-        **kwargs
+        **kwargs,
     )
 
     # Set initial state values
@@ -253,7 +253,7 @@ def solve_with_tot(
     problem_type: str | None = None,
     max_depth: int = 5,
     beam_size: int = 3,
-    **kwargs
+    **kwargs,
 ) -> dict[str, Any]:
     """Solve a problem using Tree of Thoughts."""
     system = create_tree_of_thoughts(max_depth=max_depth, beam_size=beam_size, **kwargs)

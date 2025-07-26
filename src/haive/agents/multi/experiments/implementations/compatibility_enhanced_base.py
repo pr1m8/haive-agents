@@ -104,8 +104,11 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
             if not compatibility_result.is_compatible:
                 if self.compatibility_mode == CompatibilityMode.STRICT:
                     raise ValueError(
-                        f"Agent {agent.name} is incompatible with existing agents: "
-                        f"{'; '.join(compatibility_result.issues)}"
+                        f"Agent {
+                            agent.name} is incompatible with existing agents: "
+                        f"{
+                            '; '.join(
+                                compatibility_result.issues)}"
                     )
                 if self.compatibility_mode == CompatibilityMode.ADAPTIVE:
                     self._adapt_agent_for_compatibility(agent, compatibility_result)
@@ -134,10 +137,12 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
         auto_fixes_applied = []
         min_score = 1.0
 
-        # Check compatibility with each existing agent (for sequential workflows)
+        # Check compatibility with each existing agent (for sequential
+        # workflows)
         for existing_agent in self.agents:
             if self.execution_mode == ExecutionMode.SEQUENCE:
-                # Check if existing agent output is compatible with new agent input
+                # Check if existing agent output is compatible with new agent
+                # input
                 result = self._check_agent_pair_compatibility(existing_agent, new_agent)
 
                 if not result["compatible"]:
@@ -195,7 +200,9 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
         except Exception as e:
             logger.exception(
-                f"Error checking compatibility between {source_agent.name} and {target_agent.name}: {e}"
+                f"Error checking compatibility between {
+                    source_agent.name} and {
+                    target_agent.name}: {e}"
             )
             return {
                 "compatible": False,
@@ -230,7 +237,8 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
         except Exception as e:
             logger.exception(
-                f"Error checking state schema compatibility for {agent.name}: {e}"
+                f"Error checking state schema compatibility for {
+                    agent.name}: {e}"
             )
             return {
                 "compatible": False,
@@ -320,7 +328,9 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
             except Exception as e:
                 logger.exception(
-                    f"Failed to apply adapter {adapter_spec['type']} to {agent.name}: {e}"
+                    f"Failed to apply adapter {
+                        adapter_spec['type']} to {
+                        agent.name}: {e}"
                 )
 
     def _apply_field_mapping_adapter(
@@ -328,7 +338,8 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
     ) -> None:
         """Apply a field mapping adapter to an agent."""
         # This is a simplified implementation
-        # In practice, you might create wrapper classes or modify agent behavior
+        # In practice, you might create wrapper classes or modify agent
+        # behavior
 
         mapper = FieldMapper()
 
@@ -396,7 +407,10 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
                 f"{pair[0]} -> {pair[1]}: {'; '.join(pair[2]['issues'])}"
                 for pair in incompatible_pairs
             ]
-            raise ValueError(f"Workflow has compatibility issues: {'; '.join(issues)}")
+            raise ValueError(
+                f"Workflow has compatibility issues: {
+                    '; '.join(issues)}"
+            )
 
         if incompatible_pairs:
             logger.warning(
@@ -483,7 +497,10 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
         console = Console()
 
         # Create compatibility tree
-        tree = Tree(f"[bold blue]{self.name}[/bold blue] - Compatibility Status")
+        tree = Tree(
+            f"[bold blue]{
+                self.name}[/bold blue] - Compatibility Status"
+        )
 
         # Add overall status
         overall_compatible = all(

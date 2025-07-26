@@ -369,7 +369,10 @@ class EnsembleSelectionStrategy(BaseSelectionStrategy):
                 )
                 strategy_results.append(result)
             except Exception as e:
-                logger.warning(f"Strategy {type(strategy).__name__} failed: {e}")
+                logger.warning(
+                    f"Strategy {
+                        type(strategy).__name__} failed: {e}"
+                )
                 strategy_results.append(ToolSelectionResult())
 
         # Combine results using weighted voting

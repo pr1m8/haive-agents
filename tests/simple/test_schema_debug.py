@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Debug the SimpleAgentV3State schema."""
 
-import asyncio
-import json
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
@@ -51,7 +49,7 @@ def test_schema_fields():
         # Try with messages
         from langchain_core.messages import HumanMessage
 
-        state2 = agent.state_schema(messages=[HumanMessage(content="test")])
+        agent.state_schema(messages=[HumanMessage(content="test")])
         print("✅ Created with messages")
     except Exception as e:
         print(f"❌ Failed with messages: {e}")

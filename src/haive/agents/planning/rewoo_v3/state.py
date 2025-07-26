@@ -5,12 +5,12 @@ MessagesState + computed fields pattern from Plan-and-Execute V3 success.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import Field, computed_field
 
-from .models import EvidenceCollection, ReWOOPlan, ReWOOSolution
+from .models import EvidenceCollection, ReWOOPlan
 
 
 class ReWOOV3State(MessagesState):
@@ -29,29 +29,30 @@ class ReWOOV3State(MessagesState):
     original_query: str = Field(description="Original user query to solve")
     current_phase: str = Field(default="planning", description="Current ReWOO phase")
 
-    # Agent results (stored as dicts for state persistence, typed through models)
-    reasoning_plan: Optional[Dict[str, Any]] = Field(
+    # Agent results (stored as dicts for state persistence, typed through
+    # models)
+    reasoning_plan: dict[str, Any] | None = Field(
         default=None,
         description="Planner agent structured output with evidence placeholders",
     )
-    evidence_collection: Optional[Dict[str, Any]] = Field(
+    evidence_collection: dict[str, Any] | None = Field(
         default=None, description="Worker agent evidence collection results"
     )
-    final_solution: Optional[Dict[str, Any]] = Field(
+    final_solution: dict[str, Any] | None = Field(
         default=None, description="Solver agent final synthesized answer"
     )
 
     # Execution tracking
     started_at: datetime = Field(default_factory=datetime.now)
-    planning_completed_at: Optional[datetime] = Field(default=None)
-    execution_completed_at: Optional[datetime] = Field(default=None)
-    solving_completed_at: Optional[datetime] = Field(default=None)
+    planning_completed_at: datetime | None = Field(default=None)
+    execution_completed_at: datetime | None = Field(default=None)
+    solving_completed_at: datetime | None = Field(default=None)
 
     # Metadata
-    tools_available: List[str] = Field(
+    tools_available: list[str] = Field(
         default_factory=list, description="Available tool names"
     )
-    execution_metadata: Dict[str, Any] = Field(default_factory=dict)
+    execution_metadata: dict[str, Any] = Field(default_factory=dict)
 
     # CRITICAL: Computed fields for ChatPromptTemplate placeholders
 
@@ -86,7 +87,7 @@ class ReWOOV3State(MessagesState):
                     summary += f"   Depends on: {', '.join(step.depends_on)}\n"
                 summary += "\n"
 
-            summary += f"Expected Evidence Map:\n"
+            summary += "Expected Evidence Map:\n"
             for evidence_id, description in plan.expected_evidence.items():
                 summary += f"- {evidence_id}: {description}\n"
 
@@ -105,12 +106,16 @@ class ReWOOV3State(MessagesState):
             collection = EvidenceCollection(**self.evidence_collection)
             summary = f"Evidence Collection ID: {collection.collection_id}\n"
             summary += f"Collection Summary: {collection.summary}\n\n"
-            summary += f"Success Rate: {collection.success_count}/{collection.success_count + collection.failure_count}\n"
+            summary += f"Success Rate: {
+                collection.success_count}/{
+                collection.success_count + collection.failure_count}\n"
             summary += f"Tools Used: {', '.join(collection.tools_used)}\n\n"
 
             summary += "Collected Evidence:\n"
             for evidence in collection.evidence_items:
-                summary += f"\n{evidence.evidence_id} (Step: {evidence.step_id}):\n"
+                summary += f"\n{
+                    evidence.evidence_id} (Step: {
+                    evidence.step_id}):\n"
                 summary += f"Status: {evidence.status.value}\n"
                 summary += f"Source: {evidence.source}\n"
                 summary += f"Content: {evidence.content}\n"
@@ -118,7 +123,7 @@ class ReWOOV3State(MessagesState):
                     summary += f"Metadata: {evidence.metadata}\n"
 
             if collection.execution_notes:
-                summary += f"\nExecution Notes:\n"
+                summary += "\nExecution Notes:\n"
                 for note in collection.execution_notes:
                     summary += f"- {note}\n"
 
@@ -132,12 +137,11 @@ class ReWOOV3State(MessagesState):
         """Current ReWOO workflow status for prompts."""
         if not self.reasoning_plan:
             return "Planning phase - creating reasoning plan"
-        elif not self.evidence_collection:
+        if not self.evidence_collection:
             return "Execution phase - collecting evidence from tools"
-        elif not self.final_solution:
+        if not self.final_solution:
             return "Synthesis phase - combining evidence into final answer"
-        else:
-            return "ReWOO workflow completed"
+        return "ReWOO workflow completed"
 
     @computed_field
     @property
@@ -192,19 +196,19 @@ class ReWOOV3State(MessagesState):
         return " → ".join(phases)
 
     # State update methods
-    def update_planning_result(self, plan_result: Dict[str, Any]) -> None:
+    def update_planning_result(self, plan_result: dict[str, Any]) -> None:
         """Update with planner agent result."""
         self.reasoning_plan = plan_result
         self.current_phase = "execution"
         self.planning_completed_at = datetime.now()
 
-    def update_execution_result(self, execution_result: Dict[str, Any]) -> None:
+    def update_execution_result(self, execution_result: dict[str, Any]) -> None:
         """Update with worker agent result."""
         self.evidence_collection = execution_result
         self.current_phase = "synthesis"
         self.execution_completed_at = datetime.now()
 
-    def update_solution_result(self, solution_result: Dict[str, Any]) -> None:
+    def update_solution_result(self, solution_result: dict[str, Any]) -> None:
         """Update with solver agent result."""
         self.final_solution = solution_result
         self.current_phase = "completed"

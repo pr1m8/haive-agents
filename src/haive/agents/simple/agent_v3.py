@@ -1,6 +1,5 @@
 # SimpleAgent v3 - Enhanced Dynamic Architecture Implementation
-"""
-SimpleAgent v3 implementation using proper dynamic architecture patterns.
+"""SimpleAgent v3 implementation using proper dynamic architecture patterns.
 
 This implementation follows the established Haive patterns:
 - Enhanced base Agent with hooks system
@@ -15,8 +14,7 @@ This implementation follows the established Haive patterns:
 """
 
 import logging
-from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any, Literal, Optional
 
 # Use typing_extensions for TypeVar with default support
 try:
@@ -33,7 +31,6 @@ from haive.core.engine.base import InvokableEngine
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.engine_node_generic import (
     GenericEngineNodeConfig,
-    LLMNodeConfig,
 )
 from haive.core.graph.node.parser_node_config_v2 import ParserNodeConfigV2
 from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
@@ -42,12 +39,11 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.llm_state import LLMState
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import AIMessage
 from langchain_core.output_parsers.base import BaseOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.tools import BaseTool
 from langgraph.graph import END, START
-from langgraph.types import Command
 from pydantic import BaseModel, Field, field_validator
 
 # Use enhanced Agent base class with proper generic support
@@ -57,6 +53,25 @@ from haive.agents.base.enhanced_agent import Agent
 from haive.agents.base.hooks import HookContext, HookEvent
 
 logger = logging.getLogger(__name__)
+
+
+# ========================================================================
+# HELPER FUNCTIONS
+# ========================================================================
+
+
+def has_tool_calls(state: dict[str, Any]) -> bool:
+    """Check if the last message has tool calls."""
+    messages = state.get("messages", [])
+    if not messages:
+        return False
+
+    last_message = messages[-1]
+    if isinstance(last_message, AIMessage) and last_message.tool_calls:
+        return True
+    return False
+
+
 
 # Default TypeVar to AugLLMConfig for SimpleAgent
 EngineT = TypeVar("EngineT", bound=InvokableEngine, default=AugLLMConfig)
@@ -72,7 +87,8 @@ class SimpleAgentV3(
     Agent[AugLLMConfig],  # Use enhanced generic Agent with AugLLMConfig default
     RecompileMixin,
     DynamicToolRouteMixin,
-    # Note: Removed HooksMixin to avoid conflicts - enhanced Agent has its own hook system
+    # Note: Removed HooksMixin to avoid conflicts - enhanced Agent has its own
+    # hook system
 ):
     """SimpleAgent v3 with enhanced dynamic architecture and hooks system.
 
@@ -155,37 +171,37 @@ class SimpleAgentV3(
     # ENHANCED CONVENIENCE FIELDS - With hooks and change tracking
     # ========================================================================
 
-    temperature: Optional[float] = Field(
+    temperature: float | None = Field(
         default=None,
         description="Temperature for the LLM (syncs to engine, triggers recompile + hooks)",
     )
-    max_tokens: Optional[int] = Field(
+    max_tokens: int | None = Field(
         default=None,
         description="Max tokens for the LLM (syncs to engine, triggers recompile + hooks)",
     )
-    model_name: Optional[str] = Field(
+    model_name: str | None = Field(
         default=None,
         description="Model name for the LLM (syncs to engine.model, triggers recompile + hooks)",
     )
-    force_tool_use: Optional[bool] = Field(
+    force_tool_use: bool | None = Field(
         default=None,
         description="Force tool use (syncs to engine, triggers recompile + hooks)",
     )
-    structured_output_model: Optional[Type[BaseModel]] = Field(
+    structured_output_model: type[BaseModel] | None = Field(
         default=None,
         description="Structured output model (syncs to engine, triggers recompile + hooks)",
     )
-    system_message: Optional[str] = Field(
+    system_message: str | None = Field(
         default=None,
         description="System message (syncs to engine, triggers recompile + hooks)",
     )
 
     # SimpleAgent v3 enhanced fields
-    output_parser: Optional[BaseOutputParser] = Field(
+    output_parser: BaseOutputParser | None = Field(
         default=None,
         description="Optional output parser (triggers recompile + hooks on change)",
     )
-    prompt_template: Optional[Union[ChatPromptTemplate, PromptTemplate]] = Field(
+    prompt_template: ChatPromptTemplate | PromptTemplate | None = Field(
         default=None,
         description="Optional prompt template (triggers recompile + hooks on change)",
     )
@@ -205,6 +221,14 @@ class SimpleAgentV3(
     structured_output_compatible: bool = Field(
         default=True, description="Enable cross-agent structured output compatibility"
     )
+    
+    # V2 Parser configuration options (copied from SimpleAgentV2)
+    use_parser_safety_net: bool = Field(
+        default=True, description="Use V2 parser with ToolMessage safety net"
+    )
+    parser_safety_net_mode: str = Field(
+        default="create", description="Safety net mode: 'create', 'warn', or 'ignore'"
+    )
 
     # ========================================================================
     # ENGINE VALIDATION - Ensure AugLLMConfig (with debug logging)
@@ -216,15 +240,18 @@ class SimpleAgentV3(
         """Ensure engine is AugLLMConfig or create one with debug enabled."""
         if v is None:
             engine = AugLLMConfig()
-            logger.debug(f"Created default AugLLMConfig engine")
+            logger.debug("Created default AugLLMConfig engine")
             return engine
         if isinstance(v, dict):
             engine = AugLLMConfig(**v)
             logger.debug(f"Created AugLLMConfig from dict: {list(v.keys())}")
             return engine
         if not isinstance(v, AugLLMConfig):
-            raise ValueError(f"SimpleAgentV3 requires AugLLMConfig, got {type(v)}")
-        logger.debug(f"Using provided AugLLMConfig engine")
+            raise ValueError(
+                f"SimpleAgentV3 requires AugLLMConfig, got {
+                    type(v)}"
+            )
+        logger.debug("Using provided AugLLMConfig engine")
         return v
 
     # ========================================================================
@@ -235,7 +262,8 @@ class SimpleAgentV3(
         """Initialize enhanced dynamic architecture components with hooks."""
         if self.debug:
             logger.info(
-                f"Initializing SimpleAgentV3 '{self.name}' with enhanced architecture"
+                f"Initializing SimpleAgentV3 '{
+                    self.name}' with enhanced architecture"
             )
 
         # Initialize parent classes
@@ -272,7 +300,10 @@ class SimpleAgentV3(
     def _init_dynamic_tool_routing(self) -> None:
         """Initialize dynamic tool routing mixin with debug logging."""
         if self.debug:
-            logger.debug(f"Initializing DynamicToolRouteMixin for '{self.name}'")
+            logger.debug(
+                f"Initializing DynamicToolRouteMixin for '{
+                    self.name}'"
+            )
 
         # Register callback for tool changes
         self.register_route_change_callback(self._on_tool_route_change)
@@ -446,7 +477,8 @@ class SimpleAgentV3(
                 self.state_schema = LLMState
                 if self.debug:
                     logger.debug(
-                        f"Using LLMState as default state schema for '{self.name}'"
+                        f"Using LLMState as default state schema for '{
+                            self.name}'"
                     )
 
             # Setup initial graph if auto-recompile is enabled
@@ -513,8 +545,18 @@ class SimpleAgentV3(
             changes_made.append("structured_output_model")
             if self.debug:
                 logger.debug(
-                    f"Synced structured_output_model: {self.structured_output_model}"
+                    f"Synced structured_output_model: {
+                        self.structured_output_model}"
                 )
+
+        # Sync tools to engine
+        if self.tools and hasattr(self.engine, "tools"):
+            current_tools = getattr(self.engine, "tools", [])
+            if current_tools != self.tools:
+                self.engine.tools = self.tools
+                changes_made.append("tools")
+                if self.debug:
+                    logger.debug(f"Synced {len(self.tools)} tools to engine")
 
         if (
             self.system_message is not None
@@ -605,18 +647,21 @@ class SimpleAgentV3(
         @self.after_run
         def handle_structured_output(context: HookContext):
             """Post-process output for structured format if needed."""
-            if self.structured_output_model and context.output_data:
-                if self.debug:
-                    logger.debug(
-                        f"Processing structured output for model: {self.structured_output_model}"
-                    )
+            if self.structured_output_model and context.output_data and self.debug:
+                logger.debug(
+                    f"Processing structured output for model: {
+                        self.structured_output_model}"
+                )
                 # Additional structured output processing can be added here
 
     def _trigger_initial_compilation(self) -> None:
         """Trigger initial graph compilation with hooks."""
         try:
             if self.debug:
-                logger.debug(f"Triggering initial compilation for '{self.name}'")
+                logger.debug(
+                    f"Triggering initial compilation for '{
+                        self.name}'"
+                )
 
             # Execute before_build_graph hook
             if self.hooks_enabled:
@@ -642,7 +687,7 @@ class SimpleAgentV3(
                 )
 
         except Exception as e:
-            logger.error(f"Failed to compile initial graph: {e}")
+            logger.exception(f"Failed to compile initial graph: {e}")
             self.mark_for_recompile(f"Initial compilation failed: {e}")
 
             # Execute error hook
@@ -712,7 +757,7 @@ class SimpleAgentV3(
         if not needs_tools and not needs_parsing:
             graph.add_edge("agent_node", END)
             if self.debug:
-                logger.debug(f"Built simple graph: START -> agent_node -> END")
+                logger.debug("Built simple graph: START -> agent_node -> END")
             return graph
 
         # Add dynamic tool nodes if needed
@@ -743,6 +788,9 @@ class SimpleAgentV3(
         # Create tool node config using existing ToolNodeConfig
         tool_node_config = ToolNodeConfig(name="tool_node", engine_name=engine_name)
         graph.add_node("tool_node", tool_node_config)
+        
+        # Tool results go back to agent node
+        graph.add_edge("tool_node", "agent_node")
 
         # Register for tool change notifications with hooks
         def tool_change_handler(change_type: str, tool_name: str, **kwargs):
@@ -777,9 +825,29 @@ class SimpleAgentV3(
         if self.debug:
             logger.debug(f"Parser output schema: {output_schema}")
 
-        parser_node_config = ParserNodeConfigV2(
-            name="parse_output", engine_name=engine_name
-        )
+        # Copy the exact same logic from SimpleAgentV2
+        if self.use_parser_safety_net:
+            # Use V2 parser with safety net
+            parser_node_config = ParserNodeConfigV2(
+                name="parse_output",
+                engine_name=engine_name,
+                add_tool_message_safety_net=True,
+                safety_net_mode=self.parser_safety_net_mode,
+            )
+            if self.debug:
+                logger.debug(
+                    f"Using V2 parser with safety net mode: {self.parser_safety_net_mode}"
+                )
+        else:
+            # Use V1 parser (original behavior)
+            from haive.core.graph.node.parser_node_config import ParserNodeConfig
+            parser_node_config = ParserNodeConfig(
+                name="parse_output",
+                engine_name=engine_name,
+            )
+            if self.debug:
+                logger.debug("Using V1 parser (no safety net)")
+
         graph.add_node("parse_output", parser_node_config)
 
     def _add_validation_nodes(
@@ -787,11 +855,9 @@ class SimpleAgentV3(
     ) -> None:
         """Add validation/routing nodes with hooks."""
         if self.debug:
-            logger.debug(
-                f"Adding validation nodes - tools: {needs_tools}, parsing: {needs_parsing}"
-            )
+            logger.debug("Adding validation nodes")
 
-        # Create validation config with only valid fields
+        # Build validation config kwargs for ValidationNodeWithRouting
         validation_kwargs = {
             "name": "validation",
             "engine_name": engine_name,
@@ -802,28 +868,72 @@ class SimpleAgentV3(
         if needs_parsing:
             validation_kwargs["parser_node"] = "parse_output"
 
-        validation_config = ValidationNodeConfigV2(**validation_kwargs)
-        graph.add_node("validation", validation_config)
+        # Create validation node with routing - use the node function
+        validation_config = ValidationNodeWithRouting(**validation_kwargs)
+        validation_function = validation_config.create_node_function()
+        
+        # Wrap validation function to handle Pydantic state objects
+        def validation_wrapper(state):
+            """Wrapper to convert Pydantic state to dict for ValidationNodeWithRouting."""
+            if hasattr(state, 'model_dump'):
+                # Convert Pydantic state to dict
+                state_dict = state.model_dump()
+                result = validation_function(state_dict)
+                
+                # Update the original state with routing data
+                if isinstance(result, dict):
+                    for key, value in result.items():
+                        if hasattr(state, key):
+                            setattr(state, key, value)
+                return state
+            else:
+                # Already a dict
+                return validation_function(state)
+        
+        # Add validation node to graph using the wrapper
+        graph.add_node("validation", validation_wrapper)
+        
+        # Add conditional edges from agent_node 
+        # When tools are present, ALWAYS go to validation first
+        graph.add_conditional_edges(
+            "agent_node",
+            has_tool_calls,
+            {
+                True: "validation",   # Tools present -> validation (ALWAYS)
+                False: END,           # No tools -> end
+            },
+        )
+        
+        if self.debug:
+            logger.debug("Added conditional edges from agent_node -> validation (has_tool_calls)")
+            
+        # ValidationNodeWithRouting uses routing_data to determine next step
+        def routing_condition(state: dict[str, Any]) -> str:
+            """Route based on validation results."""
+            routing_data = state.get("routing_data", {})
+            
+            if routing_data.get("should_end", False):
+                return "end"
+            elif routing_data.get("should_return_to_agent", False):
+                return "agent_node"
+            elif routing_data.get("should_continue", False):
+                target_nodes = routing_data.get("target_nodes", [])
+                if target_nodes:
+                    return target_nodes[0]  # Route to first target
+            
+            # Default fallback
+            return "end"
+        
+        # Route from validation node based on routing_data
+        routing_map = {"end": END, "agent_node": "agent_node"}
+        if needs_tools:
+            routing_map["tool_node"] = "tool_node"
+        if needs_parsing:
+            routing_map["parse_output"] = "parse_output"
+            
+        graph.add_conditional_edges("validation", routing_condition, routing_map)
 
-        # Add conditional edges based on message content
-        if self.force_tool_use or self._always_needs_validation():
-            graph.add_edge("agent_node", "validation")
-            if self.debug:
-                logger.debug("Added direct edge: agent_node -> validation")
-        else:
-            graph.add_conditional_edges(
-                "agent_node",
-                self._routing_condition_with_hooks,
-                {
-                    "tools": "tool_node" if needs_tools else END,
-                    "parsing": "parse_output" if needs_parsing else END,
-                    "end": END,
-                },
-            )
-            if self.debug:
-                logger.debug("Added conditional edges from agent_node")
-
-    def _routing_condition_with_hooks(self, state: Dict[str, Any]) -> str:
+    def _routing_condition_with_hooks(self, state: dict[str, Any]) -> str:
         """Determine routing based on state with hooks integration."""
         messages = state.get("messages", [])
         if not messages:
@@ -859,7 +969,7 @@ class SimpleAgentV3(
     def _register_graph_for_recompilation(self, graph: BaseGraph) -> None:
         """Register graph for automatic recompilation with hooks."""
         if self.debug:
-            logger.debug(f"Registering graph for recompilation")
+            logger.debug("Registering graph for recompilation")
 
         # Store reference for recompilation
         self._compiled_graph = graph
@@ -868,7 +978,10 @@ class SimpleAgentV3(
         self._current_graph = graph
 
         if self.debug:
-            logger.debug(f"Graph registered for recompilation tracking: {graph.name}")
+            logger.debug(
+                f"Graph registered for recompilation tracking: {
+                    graph.name}"
+            )
 
         # Check if recompilation is immediately needed
         if self.check_recompile_conditions():
@@ -894,7 +1007,10 @@ class SimpleAgentV3(
             self.resolve_recompile(success=True)
 
             if self.debug:
-                logger.info(f"Graph recompilation successful for agent '{self.name}'")
+                logger.info(
+                    f"Graph recompilation successful for agent '{
+                        self.name}'"
+                )
 
             # Execute after recompile hook
             if self.hooks_enabled:
@@ -907,7 +1023,7 @@ class SimpleAgentV3(
                 )
 
         except Exception as e:
-            logger.error(f"Graph recompilation failed: {e}")
+            logger.exception(f"Graph recompilation failed: {e}")
             self.resolve_recompile(success=False)
 
             # Execute error hook
@@ -924,7 +1040,7 @@ class SimpleAgentV3(
     # ENHANCED EXECUTION METHODS - With debug=True and hooks
     # ========================================================================
 
-    async def arun(self, input_data: Any, debug: bool = None, **kwargs) -> Any:
+    async def arun(self, input_data: Any, debug: bool | None = None, **kwargs) -> Any:
         """Enhanced async run with debug=True default and hooks integration."""
         # Use debug=True by default, or override with parameter
         run_debug = debug if debug is not None else self.debug
@@ -956,7 +1072,7 @@ class SimpleAgentV3(
 
         except Exception as e:
             if run_debug:
-                logger.error(f"[{self.name}] Async execution failed: {e}")
+                logger.exception(f"[{self.name}] Async execution failed: {e}")
 
             # Execute error hook
             if self.hooks_enabled:
@@ -966,7 +1082,7 @@ class SimpleAgentV3(
 
             raise
 
-    def run(self, input_data: Any, debug: bool = None, **kwargs) -> Any:
+    def run(self, input_data: Any, debug: bool | None = None, **kwargs) -> Any:
         """Execute the agent with synchronous processing and structured output support.
 
         This method runs the agent synchronously using the configured LLM engine with
@@ -1159,7 +1275,7 @@ class SimpleAgentV3(
 
         except Exception as e:
             if run_debug:
-                logger.error(f"[{self.name}] Sync execution failed: {e}")
+                logger.exception(f"[{self.name}] Sync execution failed: {e}")
 
             # Execute error hook
             if self.hooks_enabled:
@@ -1212,8 +1328,8 @@ class SimpleAgentV3(
     @classmethod
     def as_tool(
         cls,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
+        name: str | None = None,
+        description: str | None = None,
         debug: bool = True,  # Enable debug by default
         **agent_kwargs,
     ) -> BaseTool:
@@ -1233,7 +1349,8 @@ class SimpleAgentV3(
             """Execute SimpleAgent v3 with the given query."""
             if debug:
                 logger.info(
-                    f"Executing agent tool '{tool_name}' with query length: {len(query)}"
+                    f"Executing agent tool '{tool_name}' with query length: {
+                        len(query)}"
                 )
 
             # Create agent instance with debug
@@ -1264,19 +1381,20 @@ class SimpleAgentV3(
     @classmethod
     def as_structured_tool(
         cls,
-        output_model: Type[BaseModel],
-        name: Optional[str] = None,
-        description: Optional[str] = None,
+        output_model: type[BaseModel],
+        name: str | None = None,
+        description: str | None = None,
         debug: bool = True,
         **agent_kwargs,
     ) -> BaseTool:
         """Convert SimpleAgentV3 to a structured output tool."""
         from langchain_core.tools import tool
-        from pydantic import create_model
 
         tool_name = name or f"structured_{output_model.__name__.lower()}_tool"
         tool_description = (
-            description or f"Generate structured {output_model.__name__} output"
+            description
+            or f"Generate structured {
+                output_model.__name__} output"
         )
 
         # Set structured output model in agent kwargs
@@ -1289,7 +1407,8 @@ class SimpleAgentV3(
             """Execute SimpleAgent v3 with structured output."""
             if debug:
                 logger.info(
-                    f"Executing structured agent tool '{tool_name}' for model: {output_model.__name__}"
+                    f"Executing structured agent tool '{tool_name}' for model: {
+                        output_model.__name__}"
                 )
 
             # Create agent with structured output
@@ -1314,14 +1433,14 @@ class SimpleAgentV3(
                         return parsed.model_dump()
 
                 # Try to parse from messages if no parsed_output
-                if "messages" in result and result["messages"]:
+                if result.get("messages"):
                     last_content = result["messages"][-1].content
                     try:
                         import json
 
                         parsed_dict = json.loads(last_content)
                         return output_model(**parsed_dict).model_dump()
-                    except:
+                    except BaseException:
                         pass
 
             # Fallback - return raw result
@@ -1335,8 +1454,8 @@ class SimpleAgentV3(
 
     def as_meta_capable(
         self,
-        initial_state: Optional[Dict[str, Any]] = None,
-        graph_context: Optional[Dict[str, Any]] = None,
+        initial_state: dict[str, Any] | None = None,
+        graph_context: dict[str, Any] | None = None,
     ) -> MetaStateSchema:
         """Convert agent to meta-capable agent with hooks integration."""
         if self.debug:
@@ -1381,98 +1500,118 @@ class SimpleAgentV3(
     # GRAPH BUILDING - Enhanced with hooks and recompilation
     # ========================================================================
 
-    def build_graph(self) -> BaseGraph:
-        """Build the enhanced SimpleAgent v3 graph with hooks and dynamic features.
+    def get_tool_routes(self) -> dict[str, str]:
+        """Get tool routes from engine (same as SimpleAgentV2)."""
+        if self.engine and hasattr(self.engine, "tool_routes"):
+            return getattr(self.engine, "tool_routes", {})
+        return {}
 
-        Creates a graph structure that adapts based on agent configuration:
+    def _prepare_input(self, input_data: Any) -> dict:
+        """Prepare input data by adding tool_routes (like SimpleAgentV2)."""
+        # Ensure we have a dict
+        if not isinstance(input_data, dict):
+            input_data = {"messages": [input_data]} if input_data else {}
+        
+        # Add tool_routes if not present
+        if "tool_routes" not in input_data:
+            input_data["tool_routes"] = self.get_tool_routes()
+            
+        # Add engine_name if not present
+        if "engine_name" not in input_data and self.engine:
+            input_data["engine_name"] = getattr(self.engine, "name", "default")
+            
+        return input_data
+
+    async def ainvoke(self, input_data: Any, config: Optional[Any] = None) -> Any:
+        """Async invoke with tool_routes added to input."""
+        prepared_input = self._prepare_input(input_data)
+        return await super().ainvoke(prepared_input, config)
+
+    def invoke(self, input_data: Any, config: Optional[Any] = None) -> Any:
+        """Sync invoke with tool_routes added to input."""
+        prepared_input = self._prepare_input(input_data)
+        return super().invoke(prepared_input, config)
+
+    def build_graph(self) -> BaseGraph:
+        """Build the simple agent graph.
+
+        Creates a graph with the following structure based on agent configuration:
+
         1. Basic (no tools/parsing): START → agent_node → END
         2. With tools: START → agent_node → validation → tool_node → agent_node
         3. With parsing: START → agent_node → validation → parse_output → END
-        4. With both: Combines tool and parsing flows with validation routing
+        4. With both: Combines tool and parsing flows
 
-        Enhanced with:
-        - Hooks integration for lifecycle events
-        - Dynamic recompilation triggers
-        - Change tracking and monitoring
-        - Debug logging throughout
+        The validation node routes between tools, parsing, or END based on
+        the LLM output (tool calls, structured output needs, etc.).
 
         Returns:
-            BaseGraph: The compiled agent graph with enhanced capabilities.
+            BaseGraph: The compiled agent graph ready for execution.
+
+        Note:
+            This method is called automatically during agent initialization.
+            The graph structure adapts based on the presence of tools,
+            structured output models, or output parsers.
         """
-        if self.debug:
-            logger.info(f"Building enhanced graph for SimpleAgentV3 '{self.name}'")
+        graph = BaseGraph(name=self.name)
 
-        # Execute pre-build hooks
-        if self.hooks_enabled:
-            self.execute_hooks(
-                HookEvent.BEFORE_BUILD_GRAPH,
-                metadata={"agent_name": self.name, "graph_type": "SimpleAgentV3"},
-            )
+        # Add main agent node
+        engine_node = EngineNodeConfig(name="agent_node", engine=self.engine)
+        graph.add_node("agent_node", engine_node)
+        graph.add_edge(START, "agent_node")
 
-        # Create base graph
-        graph = BaseGraph(name=f"{self.name}_graph")
-
-        if not self.engine:
-            raise ValueError("No engine configured for SimpleAgentV3")
-
-        engine_name = self.engine.name
-        if self.debug:
-            logger.debug(f"Using engine: {engine_name}")
-
-        # Add main agent node with enhanced config
-        self._add_agent_node(graph, engine_name)
-
-        # Determine what additional nodes are needed
+        # Check what additional nodes we need
         needs_tools = self._has_tools()
         needs_parsing = self._has_structured_output() or self.output_parser
 
-        if self.debug:
-            logger.debug(
-                f"Graph requirements - tools: {needs_tools}, parsing: {needs_parsing}"
-            )
-
-        # Simple case - just LLM execution
+        # Simple case - just LLM
         if not needs_tools and not needs_parsing:
             graph.add_edge("agent_node", END)
-            if self.debug:
-                logger.debug("Simple graph: agent_node → END")
-        else:
-            # Add complex routing with tools and/or parsing
-            self._add_complex_routing(graph, engine_name, needs_tools, needs_parsing)
+            return graph
 
-        # Register for recompilation tracking
-        self._register_graph_for_recompilation(graph)
+        # Add tool node if needed
+        if needs_tools:
+            tool_config = ToolNodeConfig(name="tool_node", engine_name=self.engine.name)
+            graph.add_node("tool_node", tool_config)
 
-        # Execute post-build hooks
-        if self.hooks_enabled:
-            self.execute_hooks(
-                HookEvent.AFTER_BUILD_GRAPH,
-                metadata={
-                    "graph": graph,
-                    "nodes_count": len(graph.nodes) if hasattr(graph, "nodes") else 0,
-                    "has_tools": needs_tools,
-                    "has_parsing": needs_parsing,
-                },
+        # Add parser node if needed
+        if needs_parsing:
+            parser_config = ParserNodeConfigV2(
+                name="parse_output", engine_name=self.engine.name
             )
+            graph.add_node("parse_output", parser_config)
 
-        if self.debug:
-            logger.info(f"Enhanced graph built successfully for '{self.name}'")
+        # Add validation/routing if we have tools or parsing
+        if needs_tools or needs_parsing:
+            # Get engine name
+            engine_name = getattr(self.engine, "name", "main")
+            
+            # Build validation config kwargs
+            validation_kwargs = {
+                "name": "validation",
+                "engine_name": engine_name,
+            }
+            if needs_tools:
+                validation_kwargs["tool_node"] = "tool_node"
+            if needs_parsing:
+                validation_kwargs["parser_node"] = "parse_output"
+                
+            # Create validation node - use ValidationNodeConfigV2 like SimpleAgent
+            validation_config = ValidationNodeConfigV2(**validation_kwargs)
+            graph.add_node("validation", validation_config)
+            
+            # Connect agent to validation
+            graph.add_edge("agent_node", "validation")
+            
+            # Validation routes to tools, parser, or end
+            # (ValidationNodeConfigV2 handles the routing internally)
+            if needs_tools:
+                graph.add_edge("tool_node", "agent_node")  # Tools go back to agent
+            if needs_parsing:
+                graph.add_edge("parse_output", END)  # Parser goes to end
 
         return graph
 
-    def _add_agent_node(self, graph: BaseGraph, engine_name: str) -> None:
-        """Add the main agent node with enhanced configuration."""
-        # Use GenericEngineNodeConfig with the actual engine object
-        # This now has the full EngineNodeConfig implementation
-        agent_node_config = GenericEngineNodeConfig(
-            name="agent_node",
-            engine=self.engine,  # Pass the actual engine, not engine_name
-        )
-        graph.add_node("agent_node", agent_node_config)
-        graph.add_edge(START, "agent_node")
-
-        if self.debug:
-            logger.debug(f"Added agent node with engine: {engine_name}")
 
     def _add_complex_routing(
         self, graph: BaseGraph, engine_name: str, needs_tools: bool, needs_parsing: bool
@@ -1524,9 +1663,8 @@ class SimpleAgentV3(
                 "output": (self.structured_output_model, None),
                 "messages": (list, []),
             }
-        else:
-            # Default message-based output
-            return {"messages": (list, []), "response": (str, "")}
+        # Default message-based output
+        return {"messages": (list, []), "response": (str, "")}
 
     def create_runnable(self, runnable_config: Any = None) -> Any:
         """Create a runnable from this agent configuration.

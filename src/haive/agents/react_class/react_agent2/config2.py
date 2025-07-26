@@ -213,7 +213,9 @@ class ReactAgentConfig(AgentConfig):
 
         # Create and return the config
         return cls(
-            name=name or f"react_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name
+            or f"react_agent_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}",
             engine=aug_llm,
             tools=tools or [],
             max_iterations=max_iterations,
@@ -245,7 +247,9 @@ class ReactAgentConfig(AgentConfig):
         from datetime import datetime
 
         return cls(
-            name=name or f"react_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name
+            or f"react_agent_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}",
             engine=aug_llm,
             tools=tools or [],
             max_iterations=max_iterations,

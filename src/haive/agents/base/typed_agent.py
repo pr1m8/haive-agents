@@ -183,7 +183,10 @@ class BaseAgent(BaseExecutor[AgentState]):
         # Get the engine
         engine = state.primary_engine
         if not engine:
-            raise ValueError(f"No primary engine available for agent {self.name}")
+            raise ValueError(
+                f"No primary engine available for agent {
+                    self.name}"
+            )
 
         # Execute main agent logic
         result = await self.run_engine(engine, state)
@@ -336,7 +339,8 @@ class MetaAgent(WorkflowAgent):
                     agent = agent_class(name=agent_name)
 
                     # Execute with sub-agent state
-                    # This is simplified - real implementation would handle state isolation
+                    # This is simplified - real implementation would handle
+                    # state isolation
                     result = await agent.execute(state)
                     state.update_sub_agent_result(agent_name, result)
 

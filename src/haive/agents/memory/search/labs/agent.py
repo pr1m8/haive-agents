@@ -397,7 +397,8 @@ Execute each project with professional standards and comprehensive automation.""
             workflow_steps.append(
                 {
                     "name": "Load and Validate Data",
-                    "description": f"Load data from {len(data_sources)} sources and validate structure",
+                    "description": f"Load data from {
+                        len(data_sources)} sources and validate structure",
                     "tool": "process_data_file",
                     "inputs": {
                         "files": data_sources,
@@ -487,7 +488,9 @@ Execute each project with professional standards and comprehensive automation.""
 
             if tool_name == "execute_python_code":
                 # Execute Python code
-                code = f"# {step_plan['description']}\nprint('Executing step: {step_plan['name']}')"
+                code = f"# {
+                    step_plan['description']}\nprint('Executing step: {
+                    step_plan['name']}')"
                 result = await self.tools[0].arun(
                     code=code, description=step_plan["description"]
                 )
@@ -539,7 +542,10 @@ Execute each project with professional standards and comprehensive automation.""
 
         except Exception as e:
             duration = time.time() - start_time
-            logger.exception(f"Workflow step failed: {step_plan['name']} - {e}")
+            logger.exception(
+                f"Workflow step failed: {
+                    step_plan['name']} - {e}"
+            )
 
             return WorkflowStep(
                 step_id=step_id,
@@ -614,9 +620,16 @@ Execute each project with professional standards and comprehensive automation.""
                         asset_id=str(uuid.uuid4()),
                         name="Processed Data",
                         type=AssetType.CSV,
-                        description=f"Processed data from step: {step.name}",
+                        description=f"Processed data from step: {
+                            step.name}",
                         file_path=processed.get("output_file"),
-                        content=f"Rows: {processed.get('rows', 0)}, Columns: {processed.get('columns', 0)}",
+                        content=f"Rows: {
+                            processed.get(
+                                'rows',
+                                0)}, Columns: {
+                            processed.get(
+                                'columns',
+                                0)}",
                         metadata={
                             "operations": processed.get("operations_performed", []),
                             "step_id": step.step_id,
@@ -649,8 +662,12 @@ Execute each project with professional standards and comprehensive automation.""
                 apps.append(
                     InteractiveApp(
                         app_id=output_data["app_id"],
-                        name=f"{output_data.get('app_type', 'Application').title()}",
-                        description=f"Interactive application created in step: {step.name}",
+                        name=f"{
+                            output_data.get(
+                                'app_type',
+                                'Application').title()}",
+                        description=f"Interactive application created in step: {
+                            step.name}",
                         app_type=output_data.get("app_type", "dashboard"),
                         html_content=output_data.get("html_content", ""),
                         css_styles="body { font-family: Arial, sans-serif; }",
@@ -733,7 +750,8 @@ Execute each project with professional standards and comprehensive automation.""
         project_summary = (
             f"Completed {len(successful_steps)}/{len(workflow_steps)} workflow steps. "
         )
-        project_summary += f"Created {len(assets_created)} assets including {visualizations_created} visualizations. "
+        project_summary += f"Created {
+            len(assets_created)} assets including {visualizations_created} visualizations. "
         if interactive_apps:
             project_summary += (
                 f"Built {len(interactive_apps)} interactive applications."
@@ -783,7 +801,8 @@ Execute each project with professional standards and comprehensive automation.""
 
         # Save to memory if requested
         if save_to_memory:
-            # Note: Memory saving would be implemented when memory system is available
+            # Note: Memory saving would be implemented when memory system is
+            # available
             pass
 
         logger.info(f"Labs project completed in {total_work_time:.2f}s")

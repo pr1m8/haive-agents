@@ -173,7 +173,10 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
 
     def setup_workflow(self) -> None:
         """Set up the workflow graph for this agent."""
-        logger.debug(f"Setting up workflow for PersonResearchAgent {self.config.name}")
+        logger.debug(
+            f"Setting up workflow for PersonResearchAgent {
+                self.config.name}"
+        )
 
         # Create state schema if not provided
         if not hasattr(self, "state_schema") or self.state_schema is None:
@@ -498,7 +501,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         if state.is_satisfactory:
             return END
 
-        # If results aren't satisfactory but we haven't hit max steps, continue research
+        # If results aren't satisfactory but we haven't hit max steps, continue
+        # research
         if state.reflection_steps_taken <= max_reflection_steps:
             return "research_person"
 
@@ -530,7 +534,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         try:
             json.loads(text)
             return text
-        except:
+        except BaseException:
             pass
 
         return None

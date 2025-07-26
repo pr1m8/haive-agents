@@ -109,7 +109,10 @@ class RubricCriterion(BaseModel):
         """
         if self.score > self.max_score:
             raise ValueError(
-                f"Score {self.score} exceeds max_score {self.max_score} for criterion '{self.name}'"
+                f"Score {
+                    self.score} exceeds max_score {
+                    self.max_score} for criterion '{
+                    self.name}'"
             )
         return self
 
@@ -368,7 +371,10 @@ class RubricGrade(Grade):
         passing_status = "✅" if self.is_passing() else "❌"
         criteria_count = len(self.criteria)
 
-        return f"{passing_status} Rubric: {overall_percentage:.1f}% ({criteria_count} criteria) | {self.justification[:30]}..."
+        return f"{passing_status} Rubric: {
+            overall_percentage:.1f}% ({criteria_count} criteria) | {
+            self.justification[
+                :30]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a value represents valid rubric criteria.

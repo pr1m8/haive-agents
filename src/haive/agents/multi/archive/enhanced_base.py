@@ -378,10 +378,12 @@ class MultiAgentBase(Agent):
             return {"name": str(engine), "type": "unknown"}
 
         try:
-            # Get base serialization with mode='json' to handle SecretStr and other special types
+            # Get base serialization with mode='json' to handle SecretStr and
+            # other special types
             engine_dict = engine.model_dump(
                 mode="json",  # This converts SecretStr and other non-JSON types
-                exclude={"input_schema", "output_schema"},  # These are already excluded
+                exclude={"input_schema", "output_schema"},
+                # These are already excluded
                 exclude_none=True,
                 exclude_unset=True,  # Don't include unset fields
             )
@@ -403,11 +405,15 @@ class MultiAgentBase(Agent):
                     if field == "structured_output_model":
                         # Convert Pydantic model class to string representation
                         if hasattr(value, "__name__"):
-                            engine_dict[field] = f"<PydanticModel:{value.__name__}>"
+                            engine_dict[field] = (
+                                f"<PydanticModel:{
+                                value.__name__}>"
+                            )
                         else:
                             engine_dict[field] = None
                     elif isinstance(value, list):
-                        # Convert list of Pydantic classes to string representations
+                        # Convert list of Pydantic classes to string
+                        # representations
                         cleaned_list = []
                         for item in value:
                             if hasattr(item, "__name__"):
@@ -426,7 +432,11 @@ class MultiAgentBase(Agent):
 
         except Exception as e:
             logger.warning(
-                f"Failed to serialize engine {getattr(engine, 'name', 'unknown')}: {e}"
+                f"Failed to serialize engine {
+                    getattr(
+                        engine,
+                        'name',
+                        'unknown')}: {e}"
             )
             # Return minimal engine info
             return {

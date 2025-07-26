@@ -11,7 +11,6 @@ from haive.agents.reflection.structured_output import (
     create_improvement_agent,
     create_reflection_agent,
     create_reflection_loop,
-    extract_structured_output,
 )
 
 

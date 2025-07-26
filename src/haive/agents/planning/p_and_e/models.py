@@ -162,13 +162,13 @@ class Plan(BaseModel):
             ]
             if invalid_deps:
                 raise ValueError(
-                    f"Step {step.step_id} has invalid dependencies: {invalid_deps}"
+                    f"Step {
+                        step.step_id} has invalid dependencies: {invalid_deps}"
                 )
         return steps
 
     @model_validator(mode="after")
-    @classmethod
-    def update_total_steps(cls) -> "Plan":
+    def update_total_steps(self) -> "Plan":
         """Ensure total_steps matches actual step count."""
         self.total_steps = len(self.steps)
         return self
@@ -326,8 +326,7 @@ class ReplanDecision(BaseModel):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_decision_fields(cls) -> "ReplanDecision":
+    def validate_decision_fields(self) -> "ReplanDecision":
         """Ensure required fields are present based on decision."""
         if self.decision == "answer" and not self.final_answer:
             raise ValueError("final_answer required when decision is 'answer'")

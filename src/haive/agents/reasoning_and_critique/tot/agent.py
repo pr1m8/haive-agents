@@ -212,7 +212,9 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             seed_info = f"\nUsing this as a starting point:\n{seed_content}"
 
         # Create the prompt
-        prompt = f"Problem: {state.problem}\n{seed_info}\n\nGenerate {self.expansion_count} different candidate solutions."
+        prompt = f"Problem: {
+            state.problem}\n{seed_info}\n\nGenerate {
+            self.expansion_count} different candidate solutions."
 
         try:
             # Invoke the generator
@@ -374,7 +376,8 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                 )
 
                 # Create the prompt
-                prompt = f"Problem: {state.problem}\n\nCandidate Solution:\n{content}\n\nEvaluate this solution and provide a score between 0 and 1, where 1 is perfect."
+                prompt = f"Problem: {
+                    state.problem}\n\nCandidate Solution:\n{content}\n\nEvaluate this solution and provide a score between 0 and 1, where 1 is perfect."
 
                 # Invoke the evaluator
                 response = await evaluator.ainvoke(
@@ -492,7 +495,8 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             "scored_candidates": "clear",
         }
 
-        # If we've found a good solution or reached max depth, prepare the answer
+        # If we've found a good solution or reached max depth, prepare the
+        # answer
         if solved or state.depth >= self.max_depth:
             best_content = (
                 best_candidate.candidate.content
@@ -544,11 +548,13 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             best_candidate.score.value if hasattr(best_candidate, "score") else 0.0
         )
 
-        # If we've found a solution that exceeds threshold or reached max depth, end
+        # If we've found a solution that exceeds threshold or reached max
+        # depth, end
         if best_score >= self.threshold or state.depth >= self.max_depth:
             return END
 
-        # Use beam search - for each candidate in the beam, create a separate path
+        # Use beam search - for each candidate in the beam, create a separate
+        # path
         sends = []
         beam_candidates = (
             state.beam_candidates if hasattr(state, "beam_candidates") else []
@@ -587,7 +593,8 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             getattr(best_candidate.get("score", {}), "value", 0.0),
         )
 
-        # If we've found a solution that exceeds threshold or reached max depth, end
+        # If we've found a solution that exceeds threshold or reached max
+        # depth, end
         if best_score >= self.threshold or state.depth >= self.max_depth:
             return END
 

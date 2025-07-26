@@ -2,7 +2,6 @@
 
 import asyncio
 import os
-import sys
 
 # Set up DeepSeek API key
 if not os.getenv("DEEPSEEK_API_KEY"):
@@ -26,7 +25,7 @@ async def test_deepseek_setup():
     aug_config = AugLLMConfig(
         llm_config=deepseek_config, system_message="You are a helpful memory assistant."
     )
-    print(f"✅ Created AugLLMConfig with DeepSeek")
+    print("✅ Created AugLLMConfig with DeepSeek")
 
     return aug_config
 

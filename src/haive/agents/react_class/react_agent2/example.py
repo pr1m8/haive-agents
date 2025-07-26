@@ -132,7 +132,6 @@ def action_executor_processor(state: dict[str, Any]) -> dict[str, Any]:
 
 def run_custom_tool_routing_example():
     """Example of React agent with custom tool routing."""
-
     # Define tools with configurations
     tools = [
         ToolConfig(
@@ -204,7 +203,7 @@ Always explain your reasoning before using a tool.
         "What's the current market trend for AI technology companies?",
     ]
 
-    for i, question in enumerate(questions):
+    for _i, question in enumerate(questions):
         # Create input with human message
         input_data = {"messages": [HumanMessage(content=question)]}
 
@@ -219,17 +218,15 @@ Always explain your reasoning before using a tool.
                     msg_type = f"{msg_type} ({msg.name})"
 
                 if hasattr(msg, "tool_calls") and msg.tool_calls:
-                    for tool_call in msg.tool_calls:
+                    for _tool_call in msg.tool_calls:
                         pass
             elif isinstance(msg, tuple) and len(msg) == 2:
                 # Handle tuple messages
                 msg_type, content = msg
-                print(f"        {msg_type}: {content}")
             else:
                 # Handle other message types
-                print(f"        {type(msg).__name__}: {str(msg)}")
+                pass
     # Visualization should have been saved to the output directory
-    visualization_dir = agent.config.output_dir or "outputs"
 
 
 # =============================================

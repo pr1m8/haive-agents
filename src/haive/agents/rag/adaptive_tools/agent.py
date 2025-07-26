@@ -300,7 +300,8 @@ def create_tool_selector_callable(llm_config: LLMConfig):
 
         # Analyze available documents
         retrieved_documents = getattr(state, "retrieved_documents", [])
-        available_docs_summary = f"{len(retrieved_documents)} documents available"
+        available_docs_summary = f"{
+            len(retrieved_documents)} documents available"
         if retrieved_documents:
             # Create summary of available documents
             doc_topics = [
@@ -318,7 +319,9 @@ def create_tool_selector_callable(llm_config: LLMConfig):
         )
 
         logger.info(
-            f"Tool selection: Primary={tool_selection.primary_tool}, Need={tool_selection.query_need}"
+            f"Tool selection: Primary={
+                tool_selection.primary_tool}, Need={
+                tool_selection.query_need}"
         )
 
         return {
@@ -348,7 +351,8 @@ def create_google_search_callable(llm_config: LLMConfig):
         query = getattr(state, "query", "")
         search_terms = getattr(state, "search_terms", [query])
 
-        # Mock Google search for now (in real implementation, integrate with Google Search API)
+        # Mock Google search for now (in real implementation, integrate with
+        # Google Search API)
         mock_search_results = f"""
         Search Results for "{search_terms[0]}":
 
@@ -369,7 +373,9 @@ def create_google_search_callable(llm_config: LLMConfig):
         )
 
         logger.info(
-            f"Google search completed: {search_result.results_count} results, quality={search_result.search_quality}"
+            f"Google search completed: {
+                search_result.results_count} results, quality={
+                search_result.search_quality}"
         )
 
         return {
@@ -403,7 +409,7 @@ def create_adaptive_synthesis_callable(llm_config: LLMConfig):
         local_results = (
             "\n".join(
                 [
-                    f"Doc {i+1}: {doc.page_content[:200]}..."
+                    f"Doc {i + 1}: {doc.page_content[:200]}..."
                     for i, doc in enumerate(retrieved_documents[:3])
                 ]
             )
@@ -415,13 +421,17 @@ def create_adaptive_synthesis_callable(llm_config: LLMConfig):
         search_result = getattr(state, "search_result", None)
         search_results = "No external search performed"
         if search_result:
-            search_results = f"Search Quality: {search_result.search_quality}, Relevance: {search_result.relevance_score}"
+            search_results = f"Search Quality: {
+                search_result.search_quality}, Relevance: {
+                search_result.relevance_score}"
 
         # Tool analysis
         tool_selection = getattr(state, "tool_selection", None)
         tool_analysis = "No tool analysis available"
         if tool_selection:
-            tool_analysis = f"Primary Tool: {tool_selection.primary_tool}, Confidence: {tool_selection.confidence}"
+            tool_analysis = f"Primary Tool: {
+                tool_selection.primary_tool}, Confidence: {
+                tool_selection.confidence}"
 
         # Quality metrics
         local_quality = len(retrieved_documents) / 10.0 if retrieved_documents else 0.0
@@ -442,7 +452,8 @@ def create_adaptive_synthesis_callable(llm_config: LLMConfig):
         )
 
         logger.info(
-            f"Adaptive synthesis completed: confidence={adaptive_result.response_confidence}"
+            f"Adaptive synthesis completed: confidence={
+                adaptive_result.response_confidence}"
         )
 
         return {

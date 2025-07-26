@@ -269,7 +269,8 @@ class TestToolStepFactories:
                 "description": "Analyze result",
                 "tool_name": "text_analyzer",
                 "tool_args": {"text": "Result is 15"},
-                "depends_on": ["step_1"],  # Will need to be updated with actual IDs
+                # Will need to be updated with actual IDs
+                "depends_on": ["step_1"],
             },
         ]
 

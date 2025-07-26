@@ -455,7 +455,8 @@ class DocumentAgent(Agent):
             if not registry.find(actual_engine.config.name):
                 registry.register(actual_engine)
                 logger.info(
-                    f"Registered engine '{actual_engine.config.name}' in EngineRegistry"
+                    f"Registered engine '{
+                        actual_engine.config.name}' in EngineRegistry"
                 )
             else:
                 logger.debug(f"Engine '{self.engine.name}' already registered")

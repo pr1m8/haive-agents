@@ -244,7 +244,11 @@ class MultiAgent(Agent):
         Uses intelligent routing from BaseGraph for sequence inference and branching.
         """
         # Create BaseGraph with state schema
-        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
+        graph = BaseGraph(
+            name=f"{
+                self.name}_graph",
+            state_schema=self.state_schema,
+        )
 
         # Check if we have custom routing patterns
         has_custom_routing = any(
@@ -319,13 +323,15 @@ class MultiAgent(Agent):
 
                 # Use a virtual node for parallel coordination
 
-                # Add virtual nodes if they don't represent actual parallel groups
+                # Add virtual nodes if they don't represent actual parallel
+                # groups
                 if source.startswith("parallel_"):
                     # This is a parallel group configuration, not a real agent
                     # Create edges from START to each parallel agent
                     for agent_name in agents:
                         if agent_name in self.agents:
-                            # If this is the first set of edges, connect from START
+                            # If this is the first set of edges, connect from
+                            # START
                             if not has_entry_edges and self.entry_point is None:
                                 graph.add_edge("__start__", agent_name)
 
@@ -337,7 +343,8 @@ class MultiAgent(Agent):
                                 graph.add_edge(agent_name, "__end__")
                     has_entry_edges = True
                 else:
-                    # Source is a real agent that branches to parallel execution
+                    # Source is a real agent that branches to parallel
+                    # execution
                     for agent_name in agents:
                         if agent_name in self.agents:
                             graph.add_edge(source, agent_name)
@@ -606,7 +613,8 @@ class MultiAgent(Agent):
         """
         # Build a dynamic route map based on the function
         # This is a simplified approach - in production, you might want
-        # to extract possible routes from the function or require explicit mapping
+        # to extract possible routes from the function or require explicit
+        # mapping
         possible_targets = list(self.agents.keys())
 
         # Create a wrapper that ensures valid agent names

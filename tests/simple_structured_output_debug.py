@@ -29,7 +29,7 @@ def test_simple_structured_output():
         debug=True,
     )
 
-    print("✅ Agent created"d")
+    print("✅ Agent createdd")
     print(f"   - Name: {agent.name}")
     print(f"   - Structured model: {agent.structured_output_model}")
     print(f"   - Version: {agent.structured_output_version}")
@@ -42,7 +42,7 @@ def test_simple_structured_output():
     print("\n=== STEP 3: Compiling Agent ===")
     agent.compile()
 
-    print("✅ Agent compiled"d")
+    print("✅ Agent compiledd")
     print(
         f"   - Engine output schema after: {getattr(agent.engine, 'output_schema', None)}"
     )
@@ -72,7 +72,7 @@ def test_simple_structured_output():
     try:
         result = agent._app.invoke(test_input, config=config)
 
-        print("✅ Execution completed"d")
+        print("✅ Execution completedd")
         print(f"   - Result type: {type(result)}")
         print(f"   - Result keys: {list(result.keys())}")
         print(f"   - Full result: {result}")
@@ -127,7 +127,7 @@ def test_engine_directly():
         structured_output_version="v2",
     )
 
-    print("✅ Engine created with structured output"t")
+    print("✅ Engine created with structured outputt")
     print(f"   - Type: {type(engine)}")
     print(f"   - Structured model: {getattr(engine, 'structured_output_model', None)}")
     print(f"   - Output schema: {getattr(engine, 'output_schema', None)}")
@@ -137,7 +137,7 @@ def test_engine_directly():
         test_input = {"messages": [HumanMessage(content="What is 2+2?")]}
         result = engine.invoke(test_input)
 
-        print("✅ Direct engine execution completed"d")
+        print("✅ Direct engine execution completedd")
         print(f"   - Result type: {type(result)}")
         print(f"   - Result: {result}")
 

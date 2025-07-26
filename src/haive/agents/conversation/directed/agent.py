@@ -123,7 +123,9 @@ class DirectedConversation(BaseConversationAgent):
 
         # Log the selection reasoning
         logger.debug(
-            f"Speaker selection: {selection_result.next_speaker} - {selection_result.selection_reason}"
+            f"Speaker selection: {
+                selection_result.next_speaker} - {
+                selection_result.selection_reason}"
         )
 
         # Convert to state update
@@ -349,7 +351,8 @@ class DirectedConversation(BaseConversationAgent):
             least_active = min(message_count.items(), key=lambda x: x[1])
             return SpeakerSelectionResult(
                 next_speaker=least_active[0],
-                selection_reason=f"Least active speaker (spoke {least_active[1]} times)",
+                selection_reason=f"Least active speaker (spoke {
+                    least_active[1]} times)",
                 confidence=0.8,
             )
 
@@ -371,7 +374,8 @@ class DirectedConversation(BaseConversationAgent):
                         from_speaker=state.current_speaker,
                         to_speaker=mentioned,
                         mention_count=1,
-                        mention_types=[MentionType.NAME_REFERENCE],  # Could be enhanced
+                        mention_types=[MentionType.NAME_REFERENCE],
+                        # Could be enhanced
                     )
                     self._interaction_history.append(interaction)
 
@@ -547,7 +551,8 @@ class DirectedConversation(BaseConversationAgent):
                 if msg.name in participation:
                     participation[msg.name] += 1
 
-        # If everyone has spoken at least once and we've had reasonable discussion
+        # If everyone has spoken at least once and we've had reasonable
+        # discussion
         min_participation = min(participation.values()) if participation else 0
         total_messages = len(state.messages)
 

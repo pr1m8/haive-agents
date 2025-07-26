@@ -112,7 +112,8 @@ class Node:
                 node.get_messages(include_reflections=include_reflections)[::-1]
             )
             node = node.parent
-        # Reverse the final back-tracked trajectory to return in the correct order
+        # Reverse the final back-tracked trajectory to return in the correct
+        # order
         return messages[::-1]  # root solution, reflection, child 1, ...
 
     def _get_all_children(self):

@@ -630,7 +630,8 @@ Analyze the relationship path now:""",
 
             # Step 3: Perform graph traversal if enabled
             if enable_graph_traversal:
-                # Use provided max_graph_depth or fall back to suggested or config default
+                # Use provided max_graph_depth or fall back to suggested or
+                # config default
                 traversal_depth = max_graph_depth or entities_info.get(
                     "suggested_traversal_depth", self.config.max_traversal_depth
                 )
@@ -717,7 +718,12 @@ Analyze the relationship path now:""",
             result.total_time_ms = (end_time - start_time).total_seconds() * 1000
 
             logger.info(
-                f"Graph RAG retrieval completed in {result.total_time_ms:.1f}ms: {len(result.memories)} memories, {len(result.traversed_entities)} entities"
+                f"Graph RAG retrieval completed in {
+                    result.total_time_ms:.1f}ms: {
+                    len(
+                        result.memories)} memories, {
+                    len(
+                        result.traversed_entities)} entities"
             )
 
             return result
@@ -970,7 +976,7 @@ Analyze the relationship path now:""",
                     recency = max(
                         0.0, 1.0 - (hours_ago / 1000)
                     )  # Decay over ~1000 hours
-                except:
+                except BaseException:
                     pass
 
             # Combine scores

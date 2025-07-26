@@ -6,6 +6,15 @@ This module provides a comprehensive collection of Retrieval-Augmented Generatio
 
 RAG (Retrieval-Augmented Generation) combines information retrieval with language generation to provide accurate, contextual responses based on specific document collections. This module implements various RAG patterns using the ChainAgent framework for consistency and composability.
 
+### NEW: V4 Architecture RAG Agents
+
+We now provide two new RAG agents following the V4 enhanced architecture pattern:
+
+- **SimpleRAGAgentV4** (`simple_rag_agent_v4.py`) - Clean RAG implementation with document retrieval and context injection
+- **CollectiveRAGAgentV4** (`collective_rag_agent_v4.py`) - Multi-source RAG orchestration with parallel/sequential execution
+
+These agents use the enhanced base Agent pattern with proper state management and provide a cleaner, more maintainable implementation.
+
 ## Available RAG Strategies
 
 ### Core RAG Patterns
@@ -52,6 +61,40 @@ Each RAG type can be created in three different styles:
 - **State Schemas** - Pydantic models for type safety and validation
 
 ## Quick Start
+
+### NEW: Using V4 RAG Agents
+
+The V4 agents provide a cleaner implementation following the enhanced base Agent pattern:
+
+```python
+# Simple RAG Agent V4
+from haive.agents.rag import SimpleRAGAgentV4
+from haive.core.engine.vectorstore import VectorStoreConfig
+
+# Create RAG agent
+rag_agent = SimpleRAGAgentV4(
+    name="knowledge_assistant",
+    vector_store_config=vector_store_config,
+    k=5  # Retrieve top 5 documents
+)
+
+# Query the agent
+result = await rag_agent.arun("What is machine learning?")
+
+# Collective RAG Agent V4 (Multi-source)
+from haive.agents.rag import CollectiveRAGAgentV4
+
+# Create collective agent from multiple sources
+collective = CollectiveRAGAgentV4(
+    name="multi_source_assistant",
+    rag_agents=[tech_rag, business_rag, legal_rag],
+    aggregation_mode="synthesis",
+    parallel_execution=True
+)
+
+# Query across all sources
+result = await collective.arun("How does AI impact business compliance?")
+```
 
 ### Using the Collection
 

@@ -260,7 +260,10 @@ class AgentRegistry:
             agents_branch = state_branch.add("Active Agents")
             for name in sorted(self.agents.keys()):
                 timestamp = self.registration_timestamps.get(name, 0)
-                agents_branch.add(f"🤖 {name} (registered: {time.ctime(timestamp)})")
+                agents_branch.add(
+                    f"🤖 {name} (registered: {
+                        time.ctime(timestamp)})"
+                )
 
         console.print(Panel(tree, title="Registry Update", expand=False))
 

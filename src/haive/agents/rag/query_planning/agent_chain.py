@@ -70,7 +70,7 @@ def create_query_planning_chain(
         results = []
         for i, sub_query in enumerate(sub_queries[:3]):  # Limit to 3
             # Mock answer generation
-            answer = f"Answer to sub-query {i+1}: {sub_query}"
+            answer = f"Answer to sub-query {i + 1}: {sub_query}"
             results.append({"query": sub_query, "answer": answer, "confidence": 0.8})
 
         return {"sub_results": results, "total_sub_queries": len(sub_queries)}

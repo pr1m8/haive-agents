@@ -22,10 +22,9 @@ class PlanAndExecuteAgent(MultiAgent):
 
     @classmethod
     def create(
-        cls, tools: list = None, name: str = "plan_and_execute", **kwargs
+        cls, tools: list | None = None, name: str = "plan_and_execute", **kwargs
     ) -> "PlanAndExecuteAgent":
         """Create Plan and Execute agent with planner, executor, replanner."""
-
         # Create planner
         planner = SimpleAgent(
             name="planner",
@@ -72,7 +71,11 @@ class PlanAndExecuteAgent(MultiAgent):
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
 
         # Create BaseGraph with state schema
-        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
+        graph = BaseGraph(
+            name=f"{
+                self.name}_graph",
+            state_schema=self.state_schema,
+        )
 
         # Add nodes for each agent
         for agent_name, agent in self.agents.items():

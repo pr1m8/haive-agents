@@ -22,7 +22,7 @@ def debug_print_state(state: dict[str, Any], label: str = "State") -> None:
         messages = state["messages"]
         logger.debug(f"Messages ({len(messages)}):")
         for i, msg in enumerate(messages):
-            logger.debug(f"  Message {i+1}:")
+            logger.debug(f"  Message {i + 1}:")
 
             # Convert message to dict if it's not already
             if hasattr(msg, "model_dump"):
@@ -40,7 +40,7 @@ def debug_print_state(state: dict[str, Any], label: str = "State") -> None:
                     if "tool_calls" in value:
                         logger.debug("      tool_calls:")
                         for j, tc in enumerate(value["tool_calls"]):
-                            logger.debug(f"        Tool Call {j+1}:")
+                            logger.debug(f"        Tool Call {j + 1}:")
                             for tc_key, tc_value in tc.items():
                                 logger.debug(f"          {tc_key}: {tc_value}")
                     else:
@@ -131,7 +131,8 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
             # If missing tool_call_id but we have a mapping for this tool
             if not tool_call_id and tool_name in tool_calls_map:
                 logger.debug(
-                    f"Fixing message for tool '{tool_name}' with ID {tool_calls_map[tool_name]}"
+                    f"Fixing message for tool '{tool_name}' with ID {
+                        tool_calls_map[tool_name]}"
                 )
 
                 # Create a new message with the fixed ID
@@ -298,7 +299,10 @@ def create_debug_tool_node(tools: list[Any]):
                 )
                 new_messages.append(tool_message)
                 logger.debug(
-                    f"Created tool message: {tool_message.model_dump() if hasattr(tool_message, 'model_dump') else tool_message}"
+                    f"Created tool message: {
+                        tool_message.model_dump() if hasattr(
+                            tool_message,
+                            'model_dump') else tool_message}"
                 )
 
                 # Record tool result

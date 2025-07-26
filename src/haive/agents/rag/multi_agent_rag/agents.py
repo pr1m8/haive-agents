@@ -130,7 +130,8 @@ class SimpleRAGAgent(SimpleAgent):
 
         super().__init__(**kwargs)
 
-        # Store documents and config as private attributes (not Pydantic fields)
+        # Store documents and config as private attributes (not Pydantic
+        # fields)
         self._documents = documents or conversation_documents
         self._max_documents = max_documents
 
@@ -242,7 +243,7 @@ class SimpleRAGAnswerAgent(SimpleAgent):
         """Generate answer from query and documents."""
         # Format documents for the prompt
         doc_text = "\n\n".join(
-            [f"Document {i+1}: {doc.page_content}" for i, doc in enumerate(documents)]
+            [f"Document {i + 1}: {doc.page_content}" for i, doc in enumerate(documents)]
         )
 
         # Use the engine to generate response
@@ -333,7 +334,10 @@ class DocumentGradingAgent(SimpleAgent):
     def grade_document(self, query: str, document: Document) -> DocumentGradingResult:
         """Grade a single document for relevance."""
         # Format the document for evaluation
-        doc_text = f"Title: {document.metadata.get('title', 'N/A')}\nContent: {document.page_content}"
+        doc_text = f"Title: {
+            document.metadata.get(
+                'title', 'N/A')}\nContent: {
+            document.page_content}"
 
         if self.grading_mode == "binary":
             # Use binary grading
@@ -341,7 +345,8 @@ class DocumentGradingAgent(SimpleAgent):
                 {"query": query, "retrieved_documents": doc_text}
             )
 
-            # Extract grading decision (this would be more sophisticated in practice)
+            # Extract grading decision (this would be more sophisticated in
+            # practice)
             is_relevant = "pass" in str(response).lower()
             score = 1.0 if is_relevant else 0.0
             reason = str(response)

@@ -9,11 +9,12 @@ import sys
 import time
 from pathlib import Path
 
+from agents.open_perplexity.agent import ResearchAgent
+from agents.open_perplexity.config import ResearchAgentConfig
+
 # Add the parent directory to the path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent.parent))
 
-from agents.open_perplexity.agent import ResearchAgent
-from agents.open_perplexity.config import ResearchAgentConfig
 
 # Set up logging
 logging.basicConfig(
@@ -116,7 +117,10 @@ def main() -> None:
             metadata = conduct_research(agent, topic, output_dir)
             results.append(metadata)
         except Exception as e:
-            logger.exception(f"Error processing research topic '{topic['title']}': {e}")
+            logger.exception(
+                f"Error processing research topic '{
+                    topic['title']}': {e}"
+            )
 
     # Generate summary report
     logger.info("Generating batch research summary...")

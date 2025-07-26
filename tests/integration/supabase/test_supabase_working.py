@@ -31,7 +31,7 @@ async def main():
             agent.persistence.connection_string
             and "supabase.com" in agent.persistence.connection_string
         ):
-            print("✅ Using Supabase connection!")")
+            print("✅ Using Supabase connection!)")
 
     # Run agent (ignoring prepared statement errors)
     success = False

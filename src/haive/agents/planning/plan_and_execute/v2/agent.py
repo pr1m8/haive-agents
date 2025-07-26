@@ -5,11 +5,9 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.agents.multi.proper_base import ProperMultiAgent
 from haive.agents.planning.plan_and_execute.v2.models import (
     Act,
-    Any,
     ExecutionResult,
     Plan,
     Response,
-    Step,
 )
 from haive.agents.planning.plan_and_execute.v2.prompts import (
     EXECUTOR_PROMPT,
@@ -28,9 +26,8 @@ class PlanAndExecuteAgent(ProperMultiAgent):
     """
 
     @classmethod
-    def create_default(cls, tools: list = None, **kwargs):
+    def create_default(cls, tools: list | None = None, **kwargs):
         """Create P&E agent with default configuration."""
-
         # Create planner agent
         planner_agent = SimpleAgent(
             name="planner",
@@ -75,7 +72,7 @@ class PlanAndExecuteAgent(ProperMultiAgent):
             agents=[planner_agent, executor_agent, replanner_agent],
             execution_mode="sequential",
             state_schema=PlanAndExecuteState,
-            **kwargs
+            **kwargs,
         )
 
     def should_continue_execution(self, state: PlanAndExecuteState) -> bool:
@@ -88,10 +85,7 @@ class PlanAndExecuteAgent(ProperMultiAgent):
             return False
 
         # Check if we have a final response
-        if state.response and "final response" in state.response.lower():
-            return False
-
-        return True
+        return not (state.response and "final response" in state.response.lower())
 
     def get_next_action(self, state: PlanAndExecuteState) -> str:
         """Determine next action based on current state."""

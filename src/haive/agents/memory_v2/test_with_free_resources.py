@@ -1,26 +1,21 @@
 """Test Memory V2 with free/local resources (no API keys needed)."""
 
 import asyncio
-import os
 import tempfile
 from pathlib import Path
 
 
 async def test_with_huggingface_embeddings():
     """Test memory system with free HuggingFace embeddings."""
-    print("\n=== Testing with HuggingFace Embeddings (Free) ===\n")
-
     try:
         # Use HuggingFace embeddings (free, no API key)
         from langchain_community.embeddings import HuggingFaceEmbeddings
 
-        print("Creating HuggingFace embeddings...")
         embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": "cpu"},
             encode_kwargs={"normalize_embeddings": False},
         )
-        print("✅ Created HuggingFace embeddings successfully")
 
         # Test embedding some text
         test_texts = [
@@ -29,15 +24,11 @@ async def test_with_huggingface_embeddings():
             "Carol is a data scientist",
         ]
 
-        print("\nTesting embeddings...")
-        embedded = embeddings.embed_documents(test_texts)
-        print(f"✅ Embedded {len(embedded)} documents")
-        print(f"   Embedding dimension: {len(embedded[0])}")
+        embeddings.embed_documents(test_texts)
 
         return embeddings
 
-    except Exception as e:
-        print(f"❌ HuggingFace embeddings failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -46,8 +37,6 @@ async def test_with_huggingface_embeddings():
 
 async def test_vector_store_with_free_embeddings():
     """Test creating a vector store with free embeddings."""
-    print("\n=== Testing Vector Store with Free Embeddings ===\n")
-
     embeddings = await test_with_huggingface_embeddings()
     if not embeddings:
         return None
@@ -76,25 +65,18 @@ async def test_vector_store_with_free_embeddings():
             ),
         ]
 
-        print("Creating FAISS vector store...")
         vector_store = FAISS.from_documents(documents, embeddings)
-        print(f"✅ Created vector store with {len(documents)} documents")
 
         # Test search
-        print("\nTesting similarity search...")
         query = "Who works with AI?"
         results = vector_store.similarity_search(query, k=2)
 
-        print(f"Query: '{query}'")
-        print(f"Found {len(results)} results:")
-        for i, doc in enumerate(results):
-            print(f"  {i+1}. {doc.page_content[:80]}...")
-            print(f"     Metadata: {doc.metadata}")
+        for _i, _doc in enumerate(results):
+            pass
 
         return vector_store
 
-    except Exception as e:
-        print(f"❌ Vector store creation failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -103,19 +85,15 @@ async def test_vector_store_with_free_embeddings():
 
 async def test_memory_rag_with_free_resources():
     """Test a simple RAG memory system without paid APIs."""
-    print("\n=== Testing Memory RAG with Free Resources ===\n")
-
     vector_store = await test_vector_store_with_free_embeddings()
     if not vector_store:
-        return
+        return None
 
     try:
         # Create a simple retriever
         retriever = vector_store.as_retriever(
             search_type="similarity", search_kwargs={"k": 3}
         )
-
-        print("\nTesting retriever...")
 
         # Test queries
         test_queries = [
@@ -126,28 +104,23 @@ async def test_memory_rag_with_free_resources():
         ]
 
         for query in test_queries:
-            print(f"\nQuery: '{query}'")
             docs = retriever.invoke(query)
-            print(f"Retrieved {len(docs)} documents:")
-            for i, doc in enumerate(docs):
-                print(f"  {i+1}. {doc.page_content[:60]}...")
+            for _i, _doc in enumerate(docs):
+                pass
 
         # Save the vector store for later use
         temp_dir = tempfile.mkdtemp()
         save_path = Path(temp_dir) / "memory_store"
         vector_store.save_local(str(save_path))
-        print(f"\n✅ Saved vector store to: {save_path}")
 
         # Test loading
-        loaded_store = FAISS.load_local(
+        FAISS.load_local(
             str(save_path), embeddings, allow_dangerous_deserialization=True
         )
-        print("✅ Successfully loaded vector store from disk")
 
         return retriever
 
-    except Exception as e:
-        print(f"❌ Memory RAG test failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -156,11 +129,9 @@ async def test_memory_rag_with_free_resources():
 
 async def test_memory_state_with_embeddings():
     """Test memory state with embedding support."""
-    print("\n=== Testing Memory State with Embeddings ===\n")
-
     embeddings = await test_with_huggingface_embeddings()
     if not embeddings:
-        return
+        return None
 
     try:
         from haive.agents.memory_v2.memory_state_original import (
@@ -202,7 +173,6 @@ async def test_memory_state_with_embeddings():
             ),
         ]
 
-        print("Adding memories with embeddings...")
         for content, mem_type, importance in memories_data:
             # Create embedding
             embedding_vector = embeddings.embed_query(content)
@@ -217,10 +187,7 @@ async def test_memory_state_with_embeddings():
             )
             state.add_memory_item(memory)
 
-        print(f"✅ Added {len(memories_data)} memories with embeddings")
-
         # Test similarity search using embeddings
-        print("\nTesting embedding-based search...")
         query = "Who works on AI and machine learning?"
         query_embedding = embeddings.embed_query(query)
 
@@ -244,15 +211,12 @@ async def test_memory_state_with_embeddings():
         scored_memories.sort(key=lambda x: x[0], reverse=True)
         top_results = scored_memories[:3]
 
-        print(f"Query: '{query}'")
-        print(f"Top {len(top_results)} results by similarity:")
-        for i, (score, entry) in enumerate(top_results):
-            print(f"  {i+1}. Score: {score:.3f} - {entry.content[:60]}...")
+        for _i, (score, _entry) in enumerate(top_results):
+            pass
 
         return state
 
-    except Exception as e:
-        print(f"❌ Memory state with embeddings failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -261,27 +225,11 @@ async def test_memory_state_with_embeddings():
 
 async def main():
     """Run all free resource tests."""
-    print("\n🚀 Testing Memory V2 with Free Resources (No API Keys) 🚀")
-    print("=" * 70)
-
     # Run tests
     await test_with_huggingface_embeddings()
     await test_vector_store_with_free_embeddings()
     await test_memory_rag_with_free_resources()
     await test_memory_state_with_embeddings()
-
-    print("\n" + "=" * 70)
-    print("✨ Free resource tests completed! ✨")
-    print("\nKey findings:")
-    print("- ✅ HuggingFace embeddings work without API keys")
-    print("- ✅ FAISS vector stores can be created and searched")
-    print("- ✅ Memory retrieval works with similarity search")
-    print("- ✅ Enhanced memory items can store embeddings")
-    print("- ✅ Vector stores can be saved and loaded from disk")
-    print("\nNext steps:")
-    print("- Integrate free embeddings into ReactMemoryAgent")
-    print("- Create custom retriever for memory state")
-    print("- Build memory-enhanced agents without paid APIs")
 
 
 if __name__ == "__main__":
@@ -289,7 +237,6 @@ if __name__ == "__main__":
     try:
         import sentence_transformers
     except ImportError:
-        print("Installing sentence-transformers...")
         import subprocess
 
         subprocess.check_call(["poetry", "add", "sentence-transformers"])

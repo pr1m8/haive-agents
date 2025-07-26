@@ -40,7 +40,8 @@ class TaskTree(AutoTree[TaskNode]):
                 if len(incoming) > 1:
                     self._join_points.append(
                         {
-                            "join_id": f"join_{node.content.task_id}",
+                            "join_id": f"join_{
+                                node.content.task_id}",
                             "task_id": node.content.task_id,
                             "incoming_tasks": incoming,
                             "join_strategy": node.content.join_strategy or "merge",

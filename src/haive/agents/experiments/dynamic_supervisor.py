@@ -8,9 +8,12 @@ that can select and execute agents based on runtime decisions.
 """
 
 import logging
-from typing import Any
+from typing import Annotated, Any
 
 from haive.core.schema.prebuilt.messages_state import MessagesState
+from langchain_core.messages import HumanMessage
+from langchain_core.tools import tool
+from langgraph.prebuilt import InjectedState
 from pydantic import BaseModel, Field, computed_field
 
 from haive.agents.base.agent import Agent
@@ -175,12 +178,6 @@ class AgentRegistry:
 # DYNAMIC TOOLS FOR AGENT EXECUTION
 # ============================================================================
 
-from typing import Annotated
-
-from langchain_core.messages import HumanMessage
-from langchain_core.tools import tool
-from langgraph.prebuilt import InjectedState
-
 
 def create_dynamic_handoff_tool(supervisor_instance, agent_name: str):
     """Create a handoff tool for a specific agent."""
@@ -327,7 +324,9 @@ def create_list_agents_tool(supervisor_instance) -> Any:
             for name, info in agents.items():
                 result += f"\n• {name}: {info['description']}"
                 if info.get("capabilities"):
-                    result += f"\n  Capabilities: {', '.join(info['capabilities'])}"
+                    result += f"\n  Capabilities: {
+                        ', '.join(
+                            info['capabilities'])}"
 
             return result
 

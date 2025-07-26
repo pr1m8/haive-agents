@@ -380,7 +380,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
         if self.config.debug:
             logger.debug(
-                f"Running agent {self.config.name} with input: {processed_input}"
+                f"Running agent {
+                    self.config.name} with input: {processed_input}"
             )
         else:
             logger.info(f"Running agent {self.config.name}")
@@ -452,7 +453,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
                 # Process and display new messages
                 for msg in new_messages:
-                    # Normalize message to ensure it's a proper LangChain message object
+                    # Normalize message to ensure it's a proper LangChain
+                    # message object
                     normalized_msg = normalize_message(msg)
 
                     # Add normalized message to history

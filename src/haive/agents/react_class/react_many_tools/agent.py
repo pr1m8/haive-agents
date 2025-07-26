@@ -108,11 +108,17 @@ class ReactManyToolsAgent(ReactAgent):
                 embedding = embeddings_model.embed_query(description)
                 self.tool_embeddings[tool.name] = embedding
             except Exception as e:
-                logger.warning(f"Error creating embedding for tool {tool.name}: {e}")
+                logger.warning(
+                    f"Error creating embedding for tool {
+                        tool.name}: {e}"
+                )
 
     def setup_workflow(self) -> None:
         """Set up the workflow with tool filtering nodes and RAG integration."""
-        logger.debug(f"Setting up workflow for ReactManyToolsAgent {self.config.name}")
+        logger.debug(
+            f"Setting up workflow for ReactManyToolsAgent {
+                self.config.name}"
+        )
 
         # Create dynamic graph builder
         gb = DynamicGraph(
@@ -247,7 +253,10 @@ class ReactManyToolsAgent(ReactAgent):
                     processed_docs.append({"page_content": str(doc), "metadata": {}})
 
             logger.info(
-                f"Retrieved {len(processed_docs)} documents in {time.time() - start_time:.2f}s"
+                f"Retrieved {
+                    len(processed_docs)} documents in {
+                    time.time() -
+                    start_time:.2f}s"
             )
 
             # If we have answer generation capability, route there
@@ -369,7 +378,7 @@ class ReactManyToolsAgent(ReactAgent):
                         if isinstance(doc, dict)
                         else str(doc)
                     )
-                    answer += f"Source {i+1}: {content[:200]}...\n\n"
+                    answer += f"Source {i + 1}: {content[:200]}...\n\n"
 
             # Update state with answer
             return Command(update={"answer": answer}, goto="add_system")
@@ -711,7 +720,8 @@ class ReactManyToolsAgent(ReactAgent):
             # Get messages from state
             messages = state.get("messages", [])
 
-            # Add retrieved document information if available and not already in messages
+            # Add retrieved document information if available and not already
+            # in messages
             documents = state.get("retrieved_documents", [])
             answer = state.get("answer")
 

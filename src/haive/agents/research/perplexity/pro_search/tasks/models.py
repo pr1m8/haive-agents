@@ -161,7 +161,8 @@ class TaskNode(BaseModel):
         if task_type == "action" and len(v) > 0:
             raise ValueError("Action nodes cannot have children")
         if task_type in ["parallel", "sequential"] and len(v) == 0:
-            # These types typically should have children, but allow empty for initialization
+            # These types typically should have children, but allow empty for
+            # initialization
             pass
 
         return v

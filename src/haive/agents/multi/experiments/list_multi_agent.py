@@ -138,7 +138,8 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             node_name = f"{agent.name}_{i}"
 
             # Each agent processes the full state but we only pass messages
-            # This keeps it simple - agents already have their tools in their engine/state
+            # This keeps it simple - agents already have their tools in their
+            # engine/state
             def make_agent_node(agent_instance: Any):
                 def agent_node(state: dict[str, Any]) -> dict[str, Any]:
                     # Extract messages
@@ -209,7 +210,10 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
 
     def __repr__(self) -> str:
         """Detailed representation."""
-        return f"ListMultiAgent(name='{self.name}', agents={len(self.agents)}, mode=sequential)"
+        return f"ListMultiAgent(name='{
+            self.name}', agents={
+            len(
+                self.agents)}, mode=sequential)"
 
 
 # Convenience factory functions

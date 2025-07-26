@@ -45,7 +45,7 @@ async def test_with_default_azure():
     print(f"Default LLM config type: {type(config.llm_config).__name__}")
     assert isinstance(config.llm_config, AzureLLMConfig), "Should default to Azure"
 
-    agent = SimpleAgentV3(name="azure_agent", engine=config, debug=False)
+    SimpleAgentV3(name="azure_agent", engine=config, debug=False)
 
     print("✅ Agent created with default Azure config")
     print(f"LLM model: {config.llm_config.model}")

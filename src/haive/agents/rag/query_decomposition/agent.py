@@ -304,9 +304,8 @@ class QueryDecomposerAgent(Agent):
             # Format context info
             context_info = ""
             if retrieved_documents:
-                context_info = (
-                    f"Available documents: {len(retrieved_documents)} documents"
-                )
+                context_info = f"Available documents: {
+                        len(retrieved_documents)} documents"
                 context_info += (
                     f"\nSample content: {retrieved_documents[0].page_content[:200]}..."
                     if retrieved_documents
@@ -392,7 +391,7 @@ class HierarchicalQueryDecomposerAgent(Agent):
             doc_context = (
                 "\n\n".join(
                     [
-                        f"Document {i+1}: {doc.page_content[:300]}..."
+                        f"Document {i + 1}: {doc.page_content[:300]}..."
                         for i, doc in enumerate(retrieved_documents[:3])
                     ]
                 )
@@ -479,7 +478,7 @@ class ContextualQueryDecomposerAgent(Agent):
             doc_context = (
                 "\n\n".join(
                     [
-                        f"Doc {i+1}: {doc.page_content[:200]}..."
+                        f"Doc {i + 1}: {doc.page_content[:200]}..."
                         for i, doc in enumerate(retrieved_documents[:5])
                     ]
                 )

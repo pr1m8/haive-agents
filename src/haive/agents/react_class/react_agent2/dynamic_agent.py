@@ -80,7 +80,8 @@ class DynamicReactAgentConfig(ReactAgentConfig):
         default=None, description="Vector store configuration for tool embeddings."
     )
 
-    # Tool documents (stored separately from vector store config to avoid validation issues)
+    # Tool documents (stored separately from vector store config to avoid
+    # validation issues)
     tool_documents: list[Document] | None = Field(
         default=None,
         description="Documents for tool descriptions to be stored in vector store.",
@@ -187,7 +188,10 @@ class DynamicReactAgent(ReactAgent):
 
     def setup_workflow(self) -> None:
         """Set up the workflow with dynamic tool selection."""
-        logger.info(f"Setting up workflow for DynamicReactAgent {self.config.name}")
+        logger.info(
+            f"Setting up workflow for DynamicReactAgent {
+                self.config.name}"
+        )
 
         # Create DynamicGraph with our state schema
         graph_builder = DynamicGraph(state_schema=self.state_schema)
@@ -269,7 +273,8 @@ class DynamicReactAgent(ReactAgent):
         # 6. Add conditional edge from agent to tools or end
         graph_builder.add_conditional_edges(self.config.agent_node_name, branch)
 
-        # 7. Add edge from tools back to either agent or tool selection based on config
+        # 7. Add edge from tools back to either agent or tool selection based
+        # on config
         if self.config.repeat_selection:
             graph_builder.add_edge(
                 self.config.tools_node_name, self.config.tool_selection_node_name
@@ -306,7 +311,8 @@ class DynamicReactAgent(ReactAgent):
         if self.config.tool_documents:
             tool_documents = self.config.tool_documents
             logger.info(
-                f"Using {len(tool_documents)} pre-created tool documents from src.config"
+                f"Using {
+                    len(tool_documents)} pre-created tool documents from src.config"
             )
         else:
             tool_documents = [
@@ -315,7 +321,10 @@ class DynamicReactAgent(ReactAgent):
                 )
                 for tool in tools
             ]
-            logger.info(f"Created {len(tool_documents)} tool documents from tools")
+            logger.info(
+                f"Created {
+                    len(tool_documents)} tool documents from tools"
+            )
 
         # Initialize vector store
         if self.vector_store_config:
@@ -332,7 +341,8 @@ class DynamicReactAgent(ReactAgent):
                         api_version=embedding_model.api_version,
                     )
                     logger.info(
-                        f"Created Azure OpenAI embeddings with model {embedding_model.model}"
+                        f"Created Azure OpenAI embeddings with model {
+                            embedding_model.model}"
                     )
 
                 # Create a new in-memory vector store with the embeddings
@@ -442,7 +452,9 @@ class DynamicReactAgent(ReactAgent):
             ]
 
             logger.info(
-                f"Selected {len(selected_tool_ids)} tools: {', '.join(selected_tool_names)}"
+                f"Selected {
+                    len(selected_tool_ids)} tools: {
+                    ', '.join(selected_tool_names)}"
             )
 
             return state_update

@@ -53,7 +53,7 @@ Your job is pure execution:
 - Handle errors and partial results
 - Document execution process thoroughly
 
-The Solver will handle all reasoning and synthesis - you focus purely on 
+The Solver will handle all reasoning and synthesis - you focus purely on
 gathering the evidence specified in the reasoning plan."""
 
 SOLVER_SYSTEM_MESSAGE = """You are a synthesis agent for ReWOO (Reasoning WithOut Observation).
@@ -162,10 +162,10 @@ Generate structured solution output with reasoning and synthesis process.""",
 
 # Export all prompts
 __all__ = [
-    "planner_prompt",
-    "worker_prompt",
-    "solver_prompt",
     "PLANNER_SYSTEM_MESSAGE",
-    "WORKER_SYSTEM_MESSAGE",
     "SOLVER_SYSTEM_MESSAGE",
+    "WORKER_SYSTEM_MESSAGE",
+    "planner_prompt",
+    "solver_prompt",
+    "worker_prompt",
 ]

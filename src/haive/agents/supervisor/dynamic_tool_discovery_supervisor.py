@@ -360,7 +360,8 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                         f"Find tools or functions that can help with: {task_description}"
                     )
                     # Parse response for tool definitions
-                    # This is simplified - real implementation would parse structured output
+                    # This is simplified - real implementation would parse
+                    # structured output
                     if "tool:" in rag_response.lower():
                         discovered.append("RAG: Found tool definitions in documents")
                 except Exception as e:
@@ -467,7 +468,8 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                             next_agent=self.name,  # Route to self for tool discovery
                             reasoning="Task appears to require tools. Discovering available tools first.",
                             confidence=0.9,
-                            suggested_prompt=f"discover_and_load_tools for: {last_message.content}",
+                            suggested_prompt=f"discover_and_load_tools for: {
+                                last_message.content}",
                         )
 
         # Standard routing decision
@@ -498,7 +500,9 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
             )
 
         # Get discovered tools
-        tool_info = f"Discovered tools: {', '.join(self.discovered_tools) or 'none'}"
+        tool_info = f"Discovered tools: {
+            ', '.join(
+                self.discovered_tools) or 'none'}"
 
         prompt = f"""As a supervisor, analyze the conversation and decide which agent should handle the next step.
 
@@ -543,7 +547,7 @@ Respond with:
             elif line.startswith("CONFIDENCE:"):
                 try:
                     confidence = float(line.replace("CONFIDENCE:", "").strip())
-                except:
+                except BaseException:
                     confidence = 0.8
             elif line.startswith("PROMPT:"):
                 prompt = line.replace("PROMPT:", "").strip()

@@ -129,8 +129,8 @@ def main():
         # Test 3: Plan and Execute inference
         test_plan_and_execute_inference()
 
-        print("\n✅ All sequence inference and branching tests passed!"!")
-        print("✅ Features working:":")
+        print("\n✅ All sequence inference and branching tests passed!!")
+        print("✅ Features working::")
         print("  - Automatic sequence inference from naming patterns")
         print("  - Branch configuration and routing")
         print("  - Plan and Execute sequence inference")

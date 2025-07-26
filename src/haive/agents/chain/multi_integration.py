@@ -103,7 +103,10 @@ def multi_to_chain(multi: MultiAgent) -> ChainAgent:
     if multi.execution_mode == ExecutionMode.SEQUENCE:
         # Simple sequential conversion
         return ChainAgent(*multi.agents, name=multi.name)
-    raise ValueError(f"Cannot convert {multi.execution_mode} MultiAgent to ChainAgent")
+    raise ValueError(
+        f"Cannot convert {
+            multi.execution_mode} MultiAgent to ChainAgent"
+    )
 
 
 # Extended execution modes

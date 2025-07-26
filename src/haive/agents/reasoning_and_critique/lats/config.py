@@ -1,11 +1,12 @@
 """Configuration for Language Agent Tree Search (LATS) agent."""
 
-from agents.lats.state import TreeState
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.tools.search_tools import tavily_search_tool
+from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.tools import BaseTool, StructuredTool
 from pydantic import BaseModel, Field
+
+from haive.agents.reasoning_and_critique.lats.state import TreeState
 
 
 class LATSAgentConfig(AgentConfig):
@@ -65,7 +66,7 @@ class LATSAgentConfig(AgentConfig):
         reflection_llm: AugLLMConfig,
         action_llm: AugLLMConfig,
         tools: list[BaseTool | StructuredTool] | None = None,
-        **kwargs
+        **kwargs,
     ) -> "LATSAgentConfig":
         """Create a LATS agent configuration from LLM configs.
 
@@ -82,5 +83,5 @@ class LATSAgentConfig(AgentConfig):
             reflection_engine=reflection_llm,
             action_engine=action_llm,
             tools=tools or [],
-            **kwargs
+            **kwargs,
         )

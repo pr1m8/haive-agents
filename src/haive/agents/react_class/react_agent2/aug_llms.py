@@ -36,7 +36,8 @@ think_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", REACT_SYSTEM_PROMPT),
         ("placeholder", "{messages}"),
-        ("placeholder", "{steps}"),  # ✅ Corrected: Use "user" instead of "steps"
+        # ✅ Corrected: Use "user" instead of "steps"
+        ("placeholder", "{steps}"),
     ]
 )
 

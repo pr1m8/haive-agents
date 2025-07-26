@@ -429,7 +429,9 @@ class AgenticRAGRouterAgent(Agent):
         )
 
         logger.info(
-            f"ReAct planning: Strategy={react_plan.selected_strategy}, Confidence={react_plan.strategy_confidence}"
+            f"ReAct planning: Strategy={
+                react_plan.selected_strategy}, Confidence={
+                react_plan.strategy_confidence}"
         )
 
         return {
@@ -499,7 +501,10 @@ class AgenticRAGRouterAgent(Agent):
         # Prepare synthesis inputs
         react_plan_summary = "No ReAct plan available"
         if react_plan:
-            react_plan_summary = f"Strategy: {react_plan.selected_strategy}, Steps: {len(react_plan.reasoning_chain)}"
+            react_plan_summary = f"Strategy: {
+                react_plan.selected_strategy}, Steps: {
+                len(
+                    react_plan.reasoning_chain)}"
 
         execution_summary = f"Success: {execution_successful}"
         if execution_result:
@@ -524,7 +529,8 @@ class AgenticRAGRouterAgent(Agent):
         )
 
         logger.info(
-            f"Agentic synthesis completed: Quality={agentic_result.answer_quality}"
+            f"Agentic synthesis completed: Quality={
+                agentic_result.answer_quality}"
         )
 
         return {

@@ -89,7 +89,7 @@ class DynamicRAGAgent(BaseRAGAgent):
                     if not isinstance(selected_sources, list):
                         selected_sources = [router_result]
                     explanation = ""
-                except:
+                except BaseException:
                     selected_sources = [router_result]
                     explanation = ""
 
@@ -244,7 +244,10 @@ class DynamicRAGAgent(BaseRAGAgent):
                 return {"retrieved_documents": merged_docs}
             if isinstance(merged_docs, dict) and "documents" in merged_docs:
                 return {"retrieved_documents": merged_docs["documents"]}
-            logger.error(f"Unexpected merger output format: {type(merged_docs)}")
+            logger.error(
+                f"Unexpected merger output format: {
+                    type(merged_docs)}"
+            )
             # Fall back to simple deduplication
             unique_docs = {}
             for doc in all_docs:

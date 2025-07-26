@@ -130,7 +130,7 @@ class ReflectionAgentConfig(SimpleAgentConfig):
         aug_llm: AugLLMConfig,
         name: str | None = None,
         system_prompt: str | None = None,
-        **kwargs
+        **kwargs,
     ) -> "ReflectionAgentConfig":
         """Create a ReflectionAgentConfig from an existing AugLLMConfig."""
         # First create a SimpleAgentConfig
@@ -143,7 +143,7 @@ class ReflectionAgentConfig(SimpleAgentConfig):
             name=simple_config.name,
             engine=simple_config.engine,
             system_prompt=simple_config.system_prompt,
-            **kwargs
+            **kwargs,
         )
 
     @classmethod
@@ -153,7 +153,7 @@ class ReflectionAgentConfig(SimpleAgentConfig):
         model: str = "gpt-4o",
         temperature: float = 0.7,
         name: str | None = None,
-        **kwargs
+        **kwargs,
     ) -> "ReflectionAgentConfig":
         """Create a ReflectionAgentConfig from scratch."""
         # First create a SimpleAgentConfig
@@ -166,5 +166,5 @@ class ReflectionAgentConfig(SimpleAgentConfig):
             name=simple_config.name,
             engine=simple_config.engine,
             system_prompt=simple_config.system_prompt,
-            **kwargs
+            **kwargs,
         )

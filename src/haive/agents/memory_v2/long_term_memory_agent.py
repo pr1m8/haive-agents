@@ -22,22 +22,21 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.vectorstore import VectorStoreProvider
 from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig
 from langchain_core.documents import Document
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.rag.base.agent import BaseRAGAgent
 
 # Import the fixed SimpleRAG components
-from haive.agents.rag.simple.agent import SimpleRAGAgent, create_simple_rag_pattern
+from haive.agents.rag.simple.agent import SimpleRAGAgent
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +54,9 @@ class MemoryEntry(BaseModel):
     )
 
     # Temporal information
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(
+    default_factory=lambda: datetime.now(
+        timezone.utc))
     updated_at: Optional[datetime] = Field(default=None)
     last_accessed: Optional[datetime] = Field(default=None)
 
@@ -143,14 +144,20 @@ class LongTermMemoryStore:
         self.memories[memory.id] = memory
         self._save_memory(memory)
 
-    def add_knowledge_triple(self, triple: KnowledgeTriple, **kwargs) -> MemoryEntry:
+    def add_knowledge_triple(
+    self,
+    triple: KnowledgeTriple,
+     **kwargs) -> MemoryEntry:
         """Add knowledge triple as memory."""
         memory = triple.to_memory_entry(**kwargs)
         self.add_memory(memory)
         self.knowledge_triples[memory.id] = triple
         return memory
 
-    def get_memories(self, user_id: str = None, limit: int = None) -> List[MemoryEntry]:
+    def get_memories(
+    self,
+    user_id: str = None,
+     limit: int = None) -> List[MemoryEntry]:
         """Get memories, optionally filtered by user."""
         memories = list(self.memories.values())
 
@@ -181,7 +188,11 @@ class LongTermMemoryStore:
                 matches.append(memory)
 
         # Sort by relevance and importance
-        matches.sort(key=lambda m: (m.importance, m.access_count), reverse=True)
+        matches.sort(
+    key=lambda m: (
+        m.importance,
+        m.access_count),
+         reverse=True)
         return matches[:limit]
 
     def _save_memory(self, memory: MemoryEntry) -> None:
@@ -248,7 +259,8 @@ class LongTermMemoryAgent:
         self.memory_store = LongTermMemoryStore(storage_path)
 
         # Vector store configuration
-        self.embedding_model = HuggingFaceEmbeddingConfig(model=embedding_model)
+        self.embedding_model = HuggingFaceEmbeddingConfig(
+            model=embedding_model)
         self.vector_store_provider = vector_store_provider
 
         # Agents (initialized in setup)
@@ -264,8 +276,12 @@ class LongTermMemoryAgent:
             return
 
         # Step 1: Load memories for this user
-        user_memories = self.memory_store.get_memories(user_id=self.user_id, limit=100)
-        logger.info(f"Loaded {len(user_memories)} memories for user {self.user_id}")
+        user_memories = self.memory_store.get_memories(
+            user_id=self.user_id, limit=100)
+        logger.info(
+    f"Loaded {
+        len(user_memories)} memories for user {
+            self.user_id}")
 
         # Step 2: Convert memories to documents for RAG
         memory_documents = [memory.to_document() for memory in user_memories]
@@ -286,7 +302,8 @@ class LongTermMemoryAgent:
             name=f"{self.name}_retriever",
         )
 
-        # Step 4: Create memory-enhanced response agent using fixed SimpleRAGAgent
+        # Step 4: Create memory-enhanced response agent using fixed
+        # SimpleRAGAgent
         self.memory_enhanced_agent = SimpleRAGAgent.from_documents(
             documents=memory_documents,
             llm_config=self.llm_config,
@@ -295,10 +312,12 @@ class LongTermMemoryAgent:
 
         self._initialized = True
         logger.info(
-            f"✅ Initialized LongTermMemoryAgent with {len(memory_documents)} memory documents"
+            f"✅ Initialized LongTermMemoryAgent with {
+    len(memory_documents)} memory documents"
         )
 
-    async def run(self, query: str, extract_memories: bool = True) -> Dict[str, Any]:
+    async def run(self, query: str,
+                  extract_memories: bool = True) -> Dict[str, Any]:
         """Run memory-enhanced conversation.
 
         This implements the "load memories first" pattern:
@@ -333,13 +352,16 @@ class LongTermMemoryAgent:
             "user_id": self.user_id,
         }
 
-    async def add_conversation(self, messages: List[BaseMessage]) -> List[MemoryEntry]:
+    async def add_conversation(
+    self,
+     messages: List[BaseMessage]) -> List[MemoryEntry]:
         """Add conversation and extract memories."""
         extracted_memories = []
 
         for message in messages:
             content = (
-                str(message.content) if hasattr(message, "content") else str(message)
+                str(message.content) if hasattr(
+                    message, "content") else str(message)
             )
 
             # Extract different types of memories using simple heuristics
@@ -364,11 +386,14 @@ class LongTermMemoryAgent:
             await self._refresh_agents()
 
         logger.info(
-            f"Extracted {len(extracted_memories)} memories from {len(messages)} messages"
+            f"Extracted {
+    len(extracted_memories)} memories from {
+        len(messages)} messages"
         )
         return extracted_memories
 
-    def _extract_memories_from_content(self, content: str) -> List[Dict[str, Any]]:
+    def _extract_memories_from_content(
+        self, content: str) -> List[Dict[str, Any]]:
         """Extract memories from content using heuristics."""
         content_lower = content.lower()
         memories = []
@@ -417,7 +442,8 @@ class LongTermMemoryAgent:
 
         return memories
 
-    async def _extract_and_store_memories(self, query: str, response: str) -> None:
+    async def _extract_and_store_memories(
+    self, query: str, response: str) -> None:
         """Extract memories from query and response."""
         # Extract from user query
         query_memories = self._extract_memories_from_content(query)
@@ -434,7 +460,8 @@ class LongTermMemoryAgent:
     async def _refresh_agents(self) -> None:
         """Refresh agents with updated memories."""
         # Get updated memories
-        user_memories = self.memory_store.get_memories(user_id=self.user_id, limit=100)
+        user_memories = self.memory_store.get_memories(
+            user_id=self.user_id, limit=100)
         memory_documents = [memory.to_document() for memory in user_memories]
 
         # Recreate agents
@@ -485,7 +512,7 @@ class LongTermMemoryAgent:
 
             memory_context = result.get("memory_context", [])
             if memory_context:
-                return f"Relevant memories found:\n" + "\n".join(
+                return "Relevant memories found:\n" + "\n".join(
                     f"- {mem}" for mem in memory_context
                 )
             else:
@@ -520,7 +547,8 @@ async def demo_long_term_memory():
 
     # Add some memories through conversation
     messages = [
-        HumanMessage("Hi, I'm Sarah and I work as a product manager at Spotify"),
+        HumanMessage(
+            "Hi, I'm Sarah and I work as a product manager at Spotify"),
         HumanMessage("I prefer morning meetings and I really love jazz music"),
         HumanMessage("I'm working on improving recommendation algorithms"),
     ]
@@ -548,7 +576,7 @@ async def demo_long_term_memory():
 
     # Get memory summary
     summary = agent.get_memory_summary()
-    print(f"\n📊 Memory Summary:")
+    print("\n📊 Memory Summary:")
     print(f"   Total memories: {summary['total_memories']}")
     print(f"   Memory types: {summary['memory_types']}")
 

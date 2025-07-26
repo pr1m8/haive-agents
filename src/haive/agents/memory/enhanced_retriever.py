@@ -276,7 +276,9 @@ class EnhancedMemoryRetriever:
             )
 
             logger.info(
-                f"Enhanced retrieval completed: {len(final_memories)} memories in {total_time:.1f}ms"
+                f"Enhanced retrieval completed: {
+                    len(final_memories)} memories in {
+                    total_time:.1f}ms"
             )
             return result
 

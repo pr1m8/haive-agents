@@ -152,7 +152,7 @@ class Dependency(BaseModel):
             try:
                 # This is simplified - in production use safe evaluation
                 return eval(self.condition, {"result": result})
-            except:
+            except BaseException:
                 return False
 
         # Check required output

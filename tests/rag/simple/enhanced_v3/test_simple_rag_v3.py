@@ -61,7 +61,7 @@ def test_simple_rag_v3_with_custom_config(vector_store_config, llm_config):
     assert rag.top_k == 10
     assert rag.similarity_threshold == 0.7
     assert rag.max_context_length == 8000
-    assert rag.include_citations == False
+    assert not rag.include_citations
     assert rag.citation_style == "footnote"
 
     # Verify agents have proper configuration
@@ -71,7 +71,7 @@ def test_simple_rag_v3_with_custom_config(vector_store_config, llm_config):
 
     answer_agent = rag.get_answer_agent()
     assert answer_agent.max_context_length == 8000
-    assert answer_agent.include_citations == False
+    assert not answer_agent.include_citations
     assert answer_agent.citation_style == "footnote"
 
 
@@ -133,12 +133,12 @@ def test_simple_rag_v3_performance_mode(vector_store_config):
     )
 
     # Verify performance settings
-    assert rag.performance_mode == True
+    assert rag.performance_mode
     assert rag.adaptation_rate == 0.2
 
     # Both agents should have performance mode
-    assert rag.agents[0].performance_mode == True
-    assert rag.agents[1].performance_mode == True
+    assert rag.agents[0].performance_mode
+    assert rag.agents[1].performance_mode
 
 
 def test_simple_rag_v3_debug_mode(vector_store_config):
@@ -149,11 +149,11 @@ def test_simple_rag_v3_debug_mode(vector_store_config):
     )
 
     # Verify debug settings
-    assert rag.debug_mode == True
+    assert rag.debug_mode
 
     # Both agents should have debug mode
-    assert rag.agents[0].debug_mode == True
-    assert rag.agents[1].debug_mode == True
+    assert rag.agents[0].debug_mode
+    assert rag.agents[1].debug_mode
 
 
 def test_simple_rag_v3_custom_templates(vector_store_config):
@@ -191,7 +191,7 @@ def test_simple_rag_v3_get_rag_info(vector_store_config):
     assert "retriever" in info["agents"]
     assert "answer_generator" in info["agents"]
     assert info["configuration"]["top_k"] == 5
-    assert info["configuration"]["include_citations"] == True
+    assert info["configuration"]["include_citations"]
 
 
 @pytest.mark.asyncio

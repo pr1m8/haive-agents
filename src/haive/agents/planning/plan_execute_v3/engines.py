@@ -6,7 +6,7 @@ for planning, validation, execution, and monitoring.
 
 import json
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -25,7 +25,7 @@ from .prompts import (
 class PlannerEngine:
     """Engine for generating execution plans."""
 
-    def __init__(self, llm_config: AugLLMConfig, tools: List[BaseTool]):
+    def __init__(self, llm_config: AugLLMConfig, tools: list[BaseTool]):
         """Initialize planner engine.
 
         Args:
@@ -96,7 +96,7 @@ class PlannerEngine:
 class ValidatorEngine:
     """Engine for validating and refining plans."""
 
-    def __init__(self, llm_config: AugLLMConfig, tools: List[BaseTool]):
+    def __init__(self, llm_config: AugLLMConfig, tools: list[BaseTool]):
         """Initialize validator engine."""
         self.llm = llm_config.to_aug_llm()
         self.tools = tools
@@ -174,14 +174,14 @@ class ValidatorEngine:
 class ExecutorEngine:
     """Engine for executing individual plan steps."""
 
-    def __init__(self, llm_config: AugLLMConfig, tools: List[BaseTool]):
+    def __init__(self, llm_config: AugLLMConfig, tools: list[BaseTool]):
         """Initialize executor engine."""
         self.llm = llm_config.to_aug_llm()
         self.tools = {tool.name: tool for tool in tools}
 
     async def execute_step(
-        self, step: Step, context: Dict[str, Any], previous_results: Dict[str, Any]
-    ) -> Tuple[Any, Optional[str]]:
+        self, step: Step, context: dict[str, Any], previous_results: dict[str, Any]
+    ) -> tuple[Any, str | None]:
         """Execute a single plan step.
 
         Args:
@@ -202,7 +202,7 @@ class ExecutorEngine:
                 result = await tool.ainvoke(step.tool_args or {})
                 return result, None
 
-            elif step.type == StepType.THINK:
+            if step.type == StepType.THINK:
                 # Use LLM for reasoning step
                 system_prompt = format_executor_prompt(
                     step.description, json.dumps(context), json.dumps(previous_results)
@@ -216,8 +216,7 @@ class ExecutorEngine:
                 response = await self.llm.ainvoke(messages)
                 return response.content, None
 
-            else:
-                return None, f"Unsupported step type: {step.type}"
+            return None, f"Unsupported step type: {step.type}"
 
         except Exception as e:
             return None, str(e)
@@ -230,7 +229,7 @@ class MonitorEngine:
         """Initialize monitor engine."""
         self.llm = llm_config.to_aug_llm()
 
-    async def analyze_execution(self, plan: Plan) -> Dict[str, Any]:
+    async def analyze_execution(self, plan: Plan) -> dict[str, Any]:
         """Analyze plan execution progress.
 
         Args:
@@ -261,9 +260,14 @@ class MonitorEngine:
     def _format_execution_state(self, plan: Plan) -> str:
         """Format execution state for monitoring."""
         lines = [
-            f"Plan: {plan.id}",
-            f"Goal: {plan.goal}",
-            f"Progress: {plan.completed_steps}/{plan.total_steps} steps ({plan.progress_percentage:.1f}%)",
+            f"Plan: {
+                plan.id}",
+            f"Goal: {
+                plan.goal}",
+            f"Progress: {
+                plan.completed_steps}/{
+                    plan.total_steps} steps ({
+                        plan.progress_percentage:.1f}%)",
             "\nStep Status:",
         ]
 
@@ -286,7 +290,7 @@ class MonitorEngine:
 class ReplannerEngine:
     """Engine for replanning when execution fails."""
 
-    def __init__(self, llm_config: AugLLMConfig, tools: List[BaseTool]):
+    def __init__(self, llm_config: AugLLMConfig, tools: list[BaseTool]):
         """Initialize replanner engine."""
         self.llm = llm_config.to_aug_llm()
         self.tools = tools
@@ -299,7 +303,7 @@ class ReplannerEngine:
             descriptions.append(f"- {tool.name}: {tool.description}")
         return "\n".join(descriptions)
 
-    async def create_revised_plan(self, original_plan: Plan, issues: List[str]) -> Plan:
+    async def create_revised_plan(self, original_plan: Plan, issues: list[str]) -> Plan:
         """Create a revised plan based on execution issues.
 
         Args:
@@ -336,7 +340,11 @@ class ReplannerEngine:
             status = f"[{step.status.upper()}]"
             result = f" -> {step.result}" if step.result else ""
             error = f" (ERROR: {step.error})" if step.error else ""
-            lines.append(f"{status} {step.id}: {step.description}{result}{error}")
+            lines.append(
+                f"{status} {
+                    step.id}: {
+                    step.description}{result}{error}"
+            )
         return "\n".join(lines)
 
     def _parse_plan_response(self, response: str, goal: str) -> Plan:

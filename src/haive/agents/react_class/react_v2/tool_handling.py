@@ -95,7 +95,8 @@ class GeneralizedToolNode:
             # For parallel tools, use the LangGraph ToolNode
             return self.tool_node(state)
         # For sequential tools, process one at a time
-        # This is a simplified implementation - might need more complexity for actual sequential processing
+        # This is a simplified implementation - might need more complexity for
+        # actual sequential processing
         tool_results = []
         tool_messages = []
 

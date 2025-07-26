@@ -176,7 +176,8 @@ class FilteredRAGAgent(Agent[FilteredRAGConfig]):
             if not self.answer_generator:
                 return Command(
                     update={
-                        "answer": f"Found {len(documents)} relevant documents, but no answer generator is configured."
+                        "answer": f"Found {
+                            len(documents)} relevant documents, but no answer generator is configured."
                     }
                 )
 
@@ -200,7 +201,8 @@ class FilteredRAGAgent(Agent[FilteredRAGConfig]):
             logger.exception(f"Error generating answer: {e!s}")
             return Command(
                 update={
-                    "error": f"Error generating answer: {e!s}",
+                    "error": f"Error generating answer: {
+                        e!s}",
                     "answer": "I encountered an error while trying to generate an answer.",
                 }
             )

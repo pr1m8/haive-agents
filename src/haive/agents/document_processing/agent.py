@@ -272,7 +272,8 @@ class DocumentProcessingAgent:
         self._init_components()
 
         logger.info(
-            f"DocumentProcessingAgent '{name}' initialized with {self.config.rag_strategy} strategy"
+            f"DocumentProcessingAgent '{name}' initialized with {
+                self.config.rag_strategy} strategy"
         )
 
     def _init_components(self):
@@ -324,7 +325,11 @@ class DocumentProcessingAgent:
                 try:
                     from haive.agents.rag.self_rag2.agent import SelfRAGAgent
 
-                    return SelfRAGAgent(name=f"{self.name}_rag", engine=self.engine)
+                    return SelfRAGAgent(
+                        name=f"{
+                            self.name}_rag",
+                        engine=self.engine,
+                    )
                 except ImportError:
                     logger.warning(
                         "SelfRAGAgent not available, falling back to BaseRAGAgent"
@@ -334,7 +339,11 @@ class DocumentProcessingAgent:
                 try:
                     from haive.agents.rag.hyde.enhanced_agent_v2 import HyDEAgent
 
-                    return HyDEAgent(name=f"{self.name}_rag", engine=self.engine)
+                    return HyDEAgent(
+                        name=f"{
+                            self.name}_rag",
+                        engine=self.engine,
+                    )
                 except ImportError:
                     logger.warning(
                         "HyDEAgent not available, falling back to BaseRAGAgent"
@@ -466,7 +475,8 @@ class DocumentProcessingAgent:
                 search_content = str(search_result)
 
             # Extract sources from search results
-            # This would need to be implemented based on the search agent's output format
+            # This would need to be implemented based on the search agent's
+            # output format
             state.current_sources = self._extract_sources_from_search(search_content)
             state.search_results = [
                 {"query": state.original_query, "result": search_content}
@@ -627,10 +637,15 @@ class DocumentProcessingAgent:
         )
 
         try:
-            MapBranchSummarizerAgent(name=f"{self.name}_summarizer", engine=self.engine)
+            MapBranchSummarizerAgent(
+                name=f"{
+                    self.name}_summarizer",
+                engine=self.engine,
+            )
 
             # Create summarization state and process
-            # This would need to be implemented based on the summarizer's interface
+            # This would need to be implemented based on the summarizer's
+            # interface
 
         except Exception as e:
             logger.exception(f"Error in document summarization: {e}")
@@ -650,7 +665,8 @@ class DocumentProcessingAgent:
             StructuredKGAgent(name=f"{self.name}_kg", engine=self.engine)
 
             # Create KG extraction state and process
-            # This would need to be implemented based on the KG agent's interface
+            # This would need to be implemented based on the KG agent's
+            # interface
 
         except Exception as e:
             logger.exception(f"Error in knowledge graph extraction: {e}")
@@ -699,7 +715,8 @@ class DocumentProcessingAgent:
 
         except Exception as e:
             logger.exception(f"Error in RAG processing: {e}")
-            state.context_documents = state.processed_documents[:10]  # Fallback
+            # Fallback
+            state.context_documents = state.processed_documents[:10]
 
         return state
 
@@ -797,12 +814,15 @@ class DocumentProcessingAgent:
                 f"Document Content ({len(state.processed_documents)} documents):"
             )
             for i, doc in enumerate(state.processed_documents[:5]):  # Limit to first 5
-                context_parts.append(f"Doc {i+1}: {doc.page_content[:200]}...")
+                context_parts.append(f"Doc {i + 1}: {doc.page_content[:200]}...")
 
         # Add annotation results
         if state.annotation_results:
             context_parts.append(
-                f"Annotation Results: {state.annotation_results.get('annotation_summary', 'N/A')}"
+                f"Annotation Results: {
+                    state.annotation_results.get(
+                        'annotation_summary',
+                        'N/A')}"
             )
 
         # Add search results

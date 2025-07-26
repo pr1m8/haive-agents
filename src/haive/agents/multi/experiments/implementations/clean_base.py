@@ -35,7 +35,8 @@ class CleanMultiAgent(Agent):
     def normalize_agents(cls) -> "CleanMultiAgent":
         """Normalize agents similar to how base Agent normalizes engines."""
         if isinstance(self.agents, list):
-            # Convert list to dict using agent names - similar to engine normalization
+            # Convert list to dict using agent names - similar to engine
+            # normalization
             agent_dict = {}
             for agent in self.agents:
                 if not hasattr(agent, "name"):
@@ -98,7 +99,7 @@ class CleanMultiAgent(Agent):
 
         # Connect agents in sequence
         for i in range(len(agent_names) - 1):
-            graph.add_edge(f"agent_{agent_names[i]}", f"agent_{agent_names[i+1]}")
+            graph.add_edge(f"agent_{agent_names[i]}", f"agent_{agent_names[i + 1]}")
 
         # Connect last agent to END
         graph.add_edge(f"agent_{agent_names[-1]}", END)

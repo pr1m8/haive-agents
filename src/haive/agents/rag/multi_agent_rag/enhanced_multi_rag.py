@@ -226,7 +226,8 @@ class SmartRAGFactory:
                     EnhancedRAGSequentialAgent(
                         retrieval_agent=ret_agent, compatibility_mode=compatibility_mode
                     )
-                    for ret_agent in retrieval_agents[:3]  # Limit to 3 variants
+                    # Limit to 3 variants
+                    for ret_agent in retrieval_agents[:3]
                 ],
                 compatibility_mode=compatibility_mode,
                 name="Smart Parallel RAG System",

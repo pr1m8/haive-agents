@@ -5,7 +5,7 @@ combined with a post-processing hook pattern for extracting results.
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional, Type, TypeVar
+from typing import Any, Dict, Optional, Type, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -13,7 +13,7 @@ from pydantic import BaseModel
 
 from haive.agents.simple.agent import SimpleAgent
 
-from .models import Critique, ReflectionResult
+from .models import ReflectionResult
 
 # Type variable for any Pydantic model
 T = TypeVar("T", bound=BaseModel)
@@ -95,7 +95,7 @@ class StructuredReflectionAgent:
         # Default reflection prompt
         if not system_prompt:
             system_prompt = """You are a reflection agent that analyzes and critiques responses.
-        
+
 Your role is to:
 1. Identify strengths and weaknesses in the provided response
 2. Suggest specific improvements
@@ -166,10 +166,10 @@ class StructuredImprovementAgent:
                 (
                     "system",
                     """You are an improvement agent that creates better versions of responses.
-        
+
 You will receive:
 1. An original query
-2. An original response  
+2. An original response
 3. Structured feedback about the response
 
 Your task is to create an improved version that addresses the feedback while
@@ -357,7 +357,7 @@ async def example_basic_reflection():
     # Original query and response to analyze
     query = "Explain quantum computing"
     response = """
-    Quantum computing uses quantum mechanics to process information. 
+    Quantum computing uses quantum mechanics to process information.
     It's faster than regular computers and uses qubits instead of bits.
     This makes it good for solving complex problems.
     """
@@ -369,25 +369,25 @@ async def example_basic_reflection():
     reflection = await reflector.reflect(query, response)
 
     if reflection:
-        print(f"\n✅ Reflection Analysis:")
+        print("\n✅ Reflection Analysis:")
         print(f"Summary: {reflection.summary}")
         print(f"Overall Quality: {reflection.critique.overall_quality:.2f}")
         print(f"Needs Revision: {reflection.critique.needs_revision}")
         print(f"Confidence: {reflection.confidence:.2f}")
 
-        print(f"\nStrengths:")
+        print("\nStrengths:")
         for strength in reflection.critique.strengths:
             print(f"  • {strength}")
 
-        print(f"\nWeaknesses:")
+        print("\nWeaknesses:")
         for weakness in reflection.critique.weaknesses:
             print(f"  • {weakness}")
 
-        print(f"\nSuggestions:")
+        print("\nSuggestions:")
         for suggestion in reflection.critique.suggestions:
             print(f"  • {suggestion}")
 
-        print(f"\nAction Items:")
+        print("\nAction Items:")
         for action in reflection.action_items:
             print(f"  • {action}")
     else:
@@ -416,7 +416,7 @@ async def example_reflection_with_improvement():
     reflection = await reflector.reflect(query, original_response)
 
     if reflection:
-        print(f"\n📊 Reflection Analysis:")
+        print("\n📊 Reflection Analysis:")
         print(f"Quality Score: {reflection.critique.overall_quality:.2f}")
         print(f"Needs Revision: {reflection.critique.needs_revision}")
 
@@ -428,11 +428,11 @@ async def example_reflection_with_improvement():
                 query, original_response, reflection
             )
 
-            print(f"\n✨ Improved Response:")
+            print("\n✨ Improved Response:")
             print(improved_response)
 
             # Optional: Reflect on the improvement
-            print(f"\n🔍 Re-analyzing improved response...")
+            print("\n🔍 Re-analyzing improved response...")
 
             second_reflection = await reflector.reflect(query, improved_response)
 
@@ -472,13 +472,13 @@ async def example_iterative_reflection():
     # Run iterative improvement
     result = await loop.iterate(query, initial_response)
 
-    print(f"\n📈 Final Results:")
+    print("\n📈 Final Results:")
     print(f"Iterations completed: {result['iterations']}")
     print(
         f"Quality progression: {' → '.join(f'{q:.2f}' for q in result['quality_scores'])}"
     )
     print(f"Improved: {result['improved']}")
-    print(f"\nFinal Response:")
+    print("\nFinal Response:")
     print(result["final_response"])
 
 

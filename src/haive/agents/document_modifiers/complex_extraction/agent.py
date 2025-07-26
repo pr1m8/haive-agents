@@ -237,7 +237,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         extract_data = Tool.from_function(
             func=extract_func,
             name=extract_name,
-            description=f"Extract {self.extraction_model.__name__} data from text",
+            description=f"Extract {
+                self.extraction_model.__name__} data from text",
             args_schema=self.extraction_model,
         )
 
@@ -772,7 +773,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                     self.graph._edges["finalizer"].remove("decode")
                 self.graph._edges["finalizer"].append("state_wrapper")
                 self.graph.add_edge("state_wrapper", "decode")
-        # Note: We don't compile the graph here - that's done by the parent in compile()
+        # Note: We don't compile the graph here - that's done by the parent in
+        # compile()
 
     def extract_node(self, state: Any) -> dict[str, Any]:
         """Main extraction node function.
@@ -899,7 +901,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         ):
 
             # Create state with messages
-            ##    "messages": messages
+            # "messages": messages
 
             # Run the graph with the input state
             result = super().run(input_data, **kwargs)
@@ -955,7 +957,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         if isinstance(input_data, str):
             return [
                 HumanMessage(
-                    content=f"Extract {self.extraction_model.__name__} from the following text:\n\n{input_data}"
+                    content=f"Extract {
+                        self.extraction_model.__name__} from the following text:\n\n{input_data}"
                 )
             ]
 
@@ -966,7 +969,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             combined = "\n".join(input_data)
             return [
                 HumanMessage(
-                    content=f"Extract {self.extraction_model.__name__} from the following text:\n\n{combined}"
+                    content=f"Extract {
+                        self.extraction_model.__name__} from the following text:\n\n{combined}"
                 )
             ]
 
@@ -993,7 +997,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             if content:
                 return [
                     HumanMessage(
-                        content=f"Extract {self.extraction_model.__name__} from the following text:\n\n{content}"
+                        content=f"Extract {
+                            self.extraction_model.__name__} from the following text:\n\n{content}"
                     )
                 ]
 
@@ -1015,13 +1020,16 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             if content:
                 return [
                     HumanMessage(
-                        content=f"Extract {self.extraction_model.__name__} from the following text:\n\n{content}"
+                        content=f"Extract {
+                            self.extraction_model.__name__} from the following text:\n\n{content}"
                     )
                 ]
 
         # Default case - convert to string
         return [
             HumanMessage(
-                content=f"Extract {self.extraction_model.__name__} from the following:\n\n{input_data!s}"
+                content=f"Extract {
+                    self.extraction_model.__name__} from the following:\n\n{
+                    input_data!s}"
             )
         ]

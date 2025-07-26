@@ -5,6 +5,7 @@
 Defines type variables, constraints, and base protocols for type-safe agent design.
 """
 
+from enum import Enum
 from typing import (
     Any,
     Generic,
@@ -137,8 +138,6 @@ class GraphSegment(BaseModel, Generic[TState]):
 # HOOK TYPES
 # ============================================================================
 
-from enum import Enum
-
 
 class HookPoint(str, Enum):
     """Standard hook points in agent lifecycle."""
@@ -185,7 +184,8 @@ class HookContext(BaseModel, Generic[TState]):
 
 
 # Type for hook functions
-HookFunction = TypeVar("HookFunction", bound=Any)  # Callable[[Any, HookContext], Any]
+# Callable[[Any, HookContext], Any]
+HookFunction = TypeVar("HookFunction", bound=Any)
 
 
 # ============================================================================

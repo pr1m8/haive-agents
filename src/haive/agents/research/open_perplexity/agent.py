@@ -181,7 +181,8 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
 
         input_text = state.input_context or ""
 
-        # Use the topic extraction engine to identify research topic and question
+        # Use the topic extraction engine to identify research topic and
+        # question
         response = engine.invoke({"input_text": input_text})
 
         # Update state with extracted information
@@ -193,7 +194,8 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
             # Add additional context if available
             additional_context = response.get("additional_context")
             if additional_context:
-                state.input_context = f"{state.input_context or ''}\n\nAdditional context: {additional_context}"
+                state.input_context = f"{
+                    state.input_context or ''}\n\nAdditional context: {additional_context}"
 
         state.current_step = "extract_topic"
 
@@ -502,14 +504,16 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         # Use RAG if we have documents and a vector store
         if self.retriever and state.vectorstore_documents:
             try:
-                query = f"Information about {current_section.name} related to {state.research_topic}"
+                query = f"Information about {
+                    current_section.name} related to {
+                    state.research_topic}"
                 relevant_docs = self.retriever.invoke(query)
 
                 research_context += (
                     "Additional relevant information from vector store:\n\n"
                 )
                 for i, doc in enumerate(relevant_docs[:3]):  # Limit to top 3
-                    research_context += f"--- Document {i+1} ---\n"
+                    research_context += f"--- Document {i + 1} ---\n"
                     research_context += doc.page_content[:500] + "...\n\n"
             except Exception as e:
                 logger.exception(f"Error retrieving documents from vector store: {e}")
@@ -590,7 +594,8 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
                     findings.append(response)
             except Exception as e:
                 logger.exception(
-                    f"Error extracting findings from section {section.name}: {e}"
+                    f"Error extracting findings from section {
+                        section.name}: {e}"
                 )
 
         # Update state with findings
@@ -654,7 +659,9 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         section_content = ""
         for section in state.report_sections:
             if section.content:
-                section_content += f"## {section.name}\n\n{section.content}\n\n"
+                section_content += f"## {
+                    section.name}\n\n{
+                    section.content}\n\n"
 
         # Format confidence assessment
         confidence_assessment = f"""
@@ -706,12 +713,14 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
             return state["final_report"]
 
         # If no final report, create a basic one from sections
-        report = (
-            f"# Research Report: {state.get('research_topic', 'Untitled Research')}\n\n"
-        )
+        report = f"# Research Report: {
+                state.get(
+                    'research_topic',
+                    'Untitled Research')}\n\n"
 
         if state.get("research_question"):
-            report += f"**Research Question:** {state['research_question']}\n\n"
+            report += f"**Research Question:** {
+                state['research_question']}\n\n"
 
         # Add confidence assessment
         if state.get("confidence_level"):
@@ -732,7 +741,7 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
             for i, source in enumerate(state["sources"]):
                 url = source.get("url", "No URL")
                 title = source.get("title", "Untitled")
-                report += f"{i+1}. [{title}]({url})\n"
+                report += f"{i + 1}. [{title}]({url})\n"
 
         return report
 

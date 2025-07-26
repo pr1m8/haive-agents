@@ -146,7 +146,9 @@ class ToTAgentConfig(AgentConfig):
 
         # Create and return the config
         return cls(
-            name=name or f"tot_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name
+            or f"tot_agent_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}",
             expand_llm_config=expand_llm,
             score_llm_config=score_llm,
             **kwargs,

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Demo SimpleRAG - shows the working pattern without broken imports."""
 
-import os
 import sys
 
 # Add paths to avoid broken __init__.py files

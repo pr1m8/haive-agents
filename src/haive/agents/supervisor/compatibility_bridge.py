@@ -67,8 +67,12 @@ class DynamicMultiAgentSupervisor(MultiAgent):
             # Register existing agents with supervisor
             for agent in self.agents:
                 if hasattr(agent, "name"):
-                    # Use asyncio.create_task or run in executor for async registration
-                    logger.info(f"Will register {agent.name} with dynamic supervisor")
+                    # Use asyncio.create_task or run in executor for async
+                    # registration
+                    logger.info(
+                        f"Will register {
+                            agent.name} with dynamic supervisor"
+                    )
 
         return self
 
@@ -155,7 +159,8 @@ class DynamicMultiAgentSupervisor(MultiAgent):
 
     def _build_dynamic_supervisor_graph(self) -> BaseGraph:
         """Build graph with integrated dynamic supervisor."""
-        # Create hybrid graph that combines multi-agent patterns with dynamic supervision
+        # Create hybrid graph that combines multi-agent patterns with dynamic
+        # supervision
         graph = BaseGraph(name=f"{self.name}DynamicGraph")
 
         # Add supervisor node
@@ -289,7 +294,10 @@ class DynamicMultiAgentSupervisor(MultiAgent):
             if success:
                 # Add to multi-agent agents list
                 self.agents = [*list(self.agents), agent]
-                logger.info(f"Successfully registered {agent.name} dynamically")
+                logger.info(
+                    f"Successfully registered {
+                        agent.name} dynamically"
+                )
 
             return success
 

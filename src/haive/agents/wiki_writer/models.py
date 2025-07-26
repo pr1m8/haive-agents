@@ -26,7 +26,9 @@ class Section(BaseModel):
             f"### {subsection.subsection_title}\n\n{subsection.description}"
             for subsection in self.subsections or []
         )
-        return f"## {self.section_title}\n\n{self.description}\n\n{subsections}".strip()
+        return f"## {
+            self.section_title}\n\n{
+            self.description}\n\n{subsections}".strip()
 
 
 class WikiSection(BaseModel):
@@ -45,7 +47,9 @@ class WikiSection(BaseModel):
         )
         citations = "\n".join([f" [{i}] {cit}" for i, cit in enumerate(self.citations)])
         return (
-            f"## {self.section_title}\n\n{self.content}\n\n{subsections}".strip()
+            f"## {
+                self.section_title}\n\n{
+                self.content}\n\n{subsections}".strip()
             + f"\n\n{citations}".strip()
         )
 
@@ -89,7 +93,11 @@ class Editor(BaseModel):
 
     @property
     def persona(self) -> str:
-        return f"Name: {self.name}\nRole: {self.role}\nAffiliation: {self.affiliation}\nDescription: {self.description}\n"
+        return f"Name: {
+            self.name}\nRole: {
+            self.role}\nAffiliation: {
+            self.affiliation}\nDescription: {
+                self.description}\n"
 
 
 class Perspectives(BaseModel):

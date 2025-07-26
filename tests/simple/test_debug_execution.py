@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Test SimpleAgent v3 with debug flag enabled."""
 
-import asyncio
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
@@ -69,7 +68,7 @@ def test_with_debug():
                     print(f"\n🎯 AI Response: {msg.content}")
                     break
             else:
-                print(f"\n⚠️  No AIMessage found in messages")
+                print("\n⚠️  No AIMessage found in messages"ges")
         else:
             print(f"\nUnexpected result type: {type(result)}")
 

@@ -26,6 +26,8 @@ class WikiSection(BaseModel):
         )
         citations = "\n".join([f" [{i}] {cit}" for i, cit in enumerate(self.citations)])
         return (
-            f"## {self.section_title}\n\n{self.content}\n\n{subsections}".strip()
+            f"## {
+                self.section_title}\n\n{
+                self.content}\n\n{subsections}".strip()
             + f"\n\n{citations}".strip()
         )

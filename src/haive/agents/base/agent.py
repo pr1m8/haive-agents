@@ -16,7 +16,8 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.schema_composer import SchemaComposer
 from haive.core.schema.state_schema import StateSchema
 
-# Import BaseOutputParser to ensure it's available for LangGraph type evaluation
+# Import BaseOutputParser to ensure it's available for LangGraph type
+# evaluation
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
 from pydantic import BaseModel, Field, PrivateAttr, create_model, model_validator
@@ -223,7 +224,8 @@ class Agent(
         # Auto-generate name from class name if default or empty
         if "name" not in values or not values["name"] or values["name"] == "Agent":
             class_name = cls.__name__
-            # Convert CamelCase to readable name (e.g., "SimpleAgent" -> "Simple Agent")
+            # Convert CamelCase to readable name (e.g., "SimpleAgent" ->
+            # "Simple Agent")
             name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", class_name)
             values["name"] = name
 
@@ -290,22 +292,40 @@ class Agent(
 
             # Log setup completion with rich formatting
             if self.verbose:
-                tree = Tree(f"[bold blue]Agent Setup Complete: {self.name}[/bold blue]")
+                tree = Tree(
+                    f"[bold blue]Agent Setup Complete: {
+                        self.name}[/bold blue]"
+                )
                 tree.add(f"Engine Type: {self.engine_type.value}")
                 tree.add(f"Engines: {len(self.engines)}")
                 tree.add(
-                    f"State Schema: {getattr(self.state_schema, '__name__', 'None')}"
+                    f"State Schema: {
+                        getattr(
+                            self.state_schema,
+                            '__name__',
+                            'None')}"
                 )
                 tree.add(
-                    f"Input Schema: {getattr(self.input_schema, '__name__', 'None')}"
+                    f"Input Schema: {
+                        getattr(
+                            self.input_schema,
+                            '__name__',
+                            'None')}"
                 )
                 tree.add(
-                    f"Output Schema: {getattr(self.output_schema, '__name__', 'None')}"
+                    f"Output Schema: {
+                        getattr(
+                            self.output_schema,
+                            '__name__',
+                            'None')}"
                 )
                 logger.info(tree)
 
         except Exception as e:
-            logger.exception(f"Failed to setup agent {self.__class__.__name__}: {e}")
+            logger.exception(
+                f"Failed to setup agent {
+                    self.__class__.__name__}: {e}"
+            )
             # Don't raise - allow partial setup for better debugging
 
         return self
@@ -318,7 +338,8 @@ class Agent(
         """
         if not self.state_schema:
             logger.debug(
-                f"No state schema found for {self.name}, creating basic fallback"
+                f"No state schema found for {
+                    self.name}, creating basic fallback"
             )
             try:
                 # Try to import prebuilt MessagesState
@@ -337,7 +358,10 @@ class Agent(
                     messages: list[BaseMessage] = []
 
                 self.state_schema = BasicMessagesState
-                logger.debug(f"Created BasicMessagesState fallback for {self.name}")
+                logger.debug(
+                    f"Created BasicMessagesState fallback for {
+                        self.name}"
+                )
 
         return self
 
@@ -375,14 +399,16 @@ class Agent(
         # Check if we should skip schema generation
         if self.state_schema and not self.use_prebuilt_base and not self.engines:
             logger.debug(
-                f"State schema already provided for {self.name}, no engines to integrate"
+                f"State schema already provided for {
+                    self.name}, no engines to integrate"
             )
             # Still derive I/O schemas if needed
             self._auto_derive_io_schemas()
             return
 
         # CRITICAL: If setup_agent() already set a composed schema (like married schema), respect it
-        # Check if the schema is not one of the default schemas (MessagesState, etc.)
+        # Check if the schema is not one of the default schemas (MessagesState,
+        # etc.)
         if (
             self.state_schema
             and self.use_prebuilt_base
@@ -391,7 +417,8 @@ class Agent(
             not in ["MessagesState", "SimpleAgentState", "ToolState"]
         ):
             logger.debug(
-                f"State schema already set by setup_agent() to {self.state_schema.__name__}, skipping regeneration"
+                f"State schema already set by setup_agent() to {
+                    self.state_schema.__name__}, skipping regeneration"
             )
             # Still derive I/O schemas if needed
             self._auto_derive_io_schemas()
@@ -415,22 +442,27 @@ class Agent(
                 engine_list.append(component)
 
         logger.debug(
-            f"Setting up schemas for {self.name} with {len(engine_list)} engines "
-            f"and {len(agent_list)} sub-agents"
+            f"Setting up schemas for {
+                self.name} with {
+                len(engine_list)} engines "
+            f"and {
+                len(agent_list)} sub-agents"
         )
 
         try:
             # Handle case where we have a prebuilt base schema to extend
             if self.state_schema and self.use_prebuilt_base and engine_list:
                 logger.debug(
-                    f"Extending prebuilt schema {self.state_schema.__name__} with engine fields"
+                    f"Extending prebuilt schema {
+                        self.state_schema.__name__} with engine fields"
                 )
                 composer = SchemaComposer(name=f"{self.__class__.__name__}State")
 
                 # First add fields from the prebuilt schema
                 composer.add_fields_from_model(self.state_schema)
 
-                # Add all engines - composer will handle engine management and I/O
+                # Add all engines - composer will handle engine management and
+                # I/O
                 for engine in engine_list:
                     composer.add_engine(engine)
                     composer.add_fields_from_engine(engine)
@@ -439,11 +471,18 @@ class Agent(
                 self.state_schema = composer.build()
 
                 logger.debug(
-                    f"Extended schema built: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                    f"Extended schema built: {
+                        getattr(
+                            self.state_schema,
+                            '__name__',
+                            'Unknown')}"
                 )
             elif agent_list:
                 # Use AgentSchemaComposer for multi-agent scenarios
-                logger.debug(f"Creating schema from {len(agent_list)} sub-agents")
+                logger.debug(
+                    f"Creating schema from {
+                        len(agent_list)} sub-agents"
+                )
                 try:
                     from haive.core.schema.agent_schema_composer import (
                         AgentSchemaComposer,
@@ -467,7 +506,10 @@ class Agent(
                     self.state_schema = composer.build()
             elif engine_list:
                 # Use enhanced SchemaComposer instance API
-                logger.debug(f"Creating schema from {len(engine_list)} engines")
+                logger.debug(
+                    f"Creating schema from {
+                        len(engine_list)} engines"
+                )
                 composer = SchemaComposer(name=f"{self.__class__.__name__}State")
 
                 # Add all engines - composer will handle engine management
@@ -479,7 +521,11 @@ class Agent(
                 self.state_schema = composer.build()
 
                 logger.debug(
-                    f"Built schema: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                    f"Built schema: {
+                        getattr(
+                            self.state_schema,
+                            '__name__',
+                            'Unknown')}"
                 )
             else:
                 logger.debug("No engines or agents found, using default MessagesState")
@@ -491,7 +537,10 @@ class Agent(
             # Automatically derive input/output schemas if not provided
             self._auto_derive_io_schemas()
 
-            logger.debug(f"Schema setup complete. State schema: {self.state_schema}")
+            logger.debug(
+                f"Schema setup complete. State schema: {
+                    self.state_schema}"
+            )
 
         except Exception as e:
             logger.warning(
@@ -520,7 +569,8 @@ class Agent(
                         name=f"{self.name}Input"
                     )
                     logger.debug(
-                        f"Derived input schema from state schema: {self.input_schema.__name__}"
+                        f"Derived input schema from state schema: {
+                            self.input_schema.__name__}"
                     )
                 except Exception as e:
                     logger.debug(f"Could not derive input schema from state: {e}")
@@ -567,7 +617,8 @@ class Agent(
                             if engine_output_schema:
                                 self.output_schema = engine_output_schema
                                 logger.debug(
-                                    f"Using engine's modified output schema: {engine_output_schema.__name__}"
+                                    f"Using engine's modified output schema: {
+                                        engine_output_schema.__name__}"
                                 )
                                 return
                         except Exception as e:
@@ -578,7 +629,8 @@ class Agent(
                     # Fallback: use engine's output_schema directly
                     self.output_schema = main_engine.output_schema
                     logger.debug(
-                        f"Using engine's output schema directly: {main_engine.output_schema.__name__}"
+                        f"Using engine's output schema directly: {
+                            main_engine.output_schema.__name__}"
                     )
                     return
 
@@ -615,13 +667,16 @@ class Agent(
                             },
                         )
                         logger.debug(
-                            f"Created output schema with structured field '{field_name}': {self.output_schema.__name__}"
+                            f"Created output schema with structured field '{field_name}': {
+                                self.output_schema.__name__}"
                         )
                     else:
-                        # For v1 or direct structured output, use the model as-is
+                        # For v1 or direct structured output, use the model
+                        # as-is
                         self.output_schema = structured_output
                         logger.debug(
-                            f"Using structured output model as output schema: {structured_output.__name__}"
+                            f"Using structured output model as output schema: {
+                                structured_output.__name__}"
                         )
                     return
 
@@ -651,9 +706,11 @@ class Agent(
                         fields = main_engine.get_output_fields()
                         if fields:
                             # For agents, we typically want a focused output schema
-                            # Check if this looks like a state schema (has many fields)
+                            # Check if this looks like a state schema (has many
+                            # fields)
                             if len(fields) > 5:  # Likely a full state schema
-                                # Try to extract just the output-relevant fields
+                                # Try to extract just the output-relevant
+                                # fields
                                 output_fields = {}
 
                                 # Common output field names to look for
@@ -669,7 +726,8 @@ class Agent(
                                     "extraction",
                                 ]
 
-                                # Also check for any field that matches the structured output model name
+                                # Also check for any field that matches the
+                                # structured output model name
                                 if structured_output:
                                     output_field_names.append(
                                         structured_output.__name__.lower()
@@ -685,7 +743,9 @@ class Agent(
                                         f"{self.name}Output", **output_fields
                                     )
                                     logger.debug(
-                                        f"Created focused output schema with fields: {list(output_fields.keys())}"
+                                        f"Created focused output schema with fields: {
+                                            list(
+                                                output_fields.keys())}"
                                     )
                                     return
 
@@ -720,7 +780,8 @@ class Agent(
                         name=f"{self.name}Output"
                     )
                     logger.debug(
-                        f"Derived output schema from state schema: {self.output_schema.__name__}"
+                        f"Derived output schema from state schema: {
+                            self.output_schema.__name__}"
                     )
                     return
                 except Exception as e:
@@ -768,7 +829,8 @@ class Agent(
             self._graph_built = True
         except Exception as e:
             logger.warning(
-                f"Initial graph build failed for {self.__class__.__name__}: {e}"
+                f"Initial graph build failed for {
+                    self.__class__.__name__}: {e}"
             )
             self.graph = None
             self._graph_built = False
@@ -841,7 +903,10 @@ class Agent(
 
         # Ensure we have schemas - regenerate if needed
         if not self.state_schema:
-            logger.warning(f"No state schema found for {self.name}, regenerating...")
+            logger.warning(
+                f"No state schema found for {
+                    self.name}, regenerating..."
+            )
             self._setup_schemas()
 
         # Build schema kwargs - only pass what StateGraph expects
@@ -863,7 +928,12 @@ class Agent(
             schema_kwargs["config_schema"] = self.config_schema
 
         # Debug logging
-        logger.debug(f"Schema kwargs for {self.name}: {list(schema_kwargs.keys())}")
+        logger.debug(
+            f"Schema kwargs for {
+                self.name}: {
+                list(
+                    schema_kwargs.keys())}"
+        )
         logger.debug(f"State schema: {self.state_schema}")
         logger.debug(f"Input schema: {self.input_schema}")
         logger.debug(f"Output schema: {self.output_schema}")
@@ -873,11 +943,16 @@ class Agent(
             langgraph = self.graph.to_langgraph(**schema_kwargs)
         except Exception as e:
             logger.exception(f"Failed to convert graph to langgraph: {e}")
-            logger.exception(f"Schema kwargs were: {list(schema_kwargs.keys())}")
+            logger.exception(
+                f"Schema kwargs were: {
+                    list(
+                        schema_kwargs.keys())}"
+            )
             logger.exception(f"State schema type: {type(self.state_schema)}")
             raise
 
-        # Now compile the LangGraph StateGraph with checkpointer and runtime config
+        # Now compile the LangGraph StateGraph with checkpointer and runtime
+        # config
         compile_kwargs = {}
 
         # Always add our checkpointer
@@ -888,7 +963,8 @@ class Agent(
         if self.store:
             compile_kwargs["store"] = self.store
 
-        # Extract compilation-relevant parameters from runnable_config if provided
+        # Extract compilation-relevant parameters from runnable_config if
+        # provided
         if runnable_config:
             if "interrupt_before" in runnable_config:
                 compile_kwargs["interrupt_before"] = runnable_config["interrupt_before"]
@@ -1042,10 +1118,13 @@ class Agent(
                 compile_kwargs["store"] = self.store
 
             logger.debug(
-                f"Compiling LangGraph with kwargs: {list(compile_kwargs.keys())}"
+                f"Compiling LangGraph with kwargs: {
+                    list(
+                        compile_kwargs.keys())}"
             )
 
-            # The LangGraph StateGraph.compile() method accepts checkpointer and store
+            # The LangGraph StateGraph.compile() method accepts checkpointer
+            # and store
             self._app = langgraph_graph.compile(**compile_kwargs)
             self._compiled_graph = self._app
             self._is_compiled = True
@@ -1098,7 +1177,9 @@ class Agent(
         engine_count = len(self.engines)
         main_engine = self.main_engine
         engine_type = type(main_engine).__name__ if main_engine else "None"
-        return f"{self.__class__.__name__}(name='{self.name}', engines={engine_count}, main_engine={engine_type})"
+        return f"{
+            self.__class__.__name__}(name='{
+            self.name}', engines={engine_count}, main_engine={engine_type})"
 
     def get_all_tools(self) -> list[Any]:
         """Collect all tools from all engines and state schema.
@@ -1145,7 +1226,9 @@ class Agent(
                 unique_tools.append(tool)
 
         logger.debug(
-            f"Agent {self.name} collected {len(unique_tools)} unique tools from all sources"
+            f"Agent {
+                self.name} collected {
+                len(unique_tools)} unique tools from all sources"
         )
         return unique_tools
 
@@ -1172,7 +1255,11 @@ class Agent(
             ):
                 schemas.append(tool.structured_output_model)
 
-        logger.debug(f"Agent {self.name} collected {len(schemas)} tool schemas")
+        logger.debug(
+            f"Agent {
+                self.name} collected {
+                len(schemas)} tool schemas"
+        )
         return schemas
 
     def visualize_graph(self, output_path: str | None = None) -> None:
@@ -1316,11 +1403,16 @@ class Agent(
                     else:
                         state_instance.add_tool(tool, route, target_engine)
                     logger.debug(
-                        f"Added tool to state schema: {getattr(tool, 'name', str(tool))}"
+                        f"Added tool to state schema: {
+                            getattr(
+                                tool,
+                                'name',
+                                str(tool))}"
                     )
                 else:
                     logger.warning(
-                        f"State schema {self.state_schema.__name__} does not support tools"
+                        f"State schema {
+                            self.state_schema.__name__} does not support tools"
                     )
             except Exception as e:
                 logger.exception(f"Failed to add tool to state: {e}")
@@ -1345,7 +1437,8 @@ class Agent(
                     )
                 else:
                     logger.warning(
-                        f"State schema {self.state_schema.__name__} does not support route configuration"
+                        f"State schema {
+                            self.state_schema.__name__} does not support route configuration"
                     )
             except Exception as e:
                 logger.exception(f"Failed to configure engine routes: {e}")
@@ -1382,7 +1475,8 @@ class Agent(
                     logger.debug("Manually triggered tool synchronization to engines")
                 else:
                     logger.warning(
-                        f"State schema {self.state_schema.__name__} does not support tool syncing"
+                        f"State schema {
+                            self.state_schema.__name__} does not support tool syncing"
                     )
             except Exception as e:
                 logger.exception(f"Failed to sync tools to engines: {e}")
@@ -1546,7 +1640,11 @@ class Agent(
                 return None
         else:
             logger.warning(
-                f"State schema {getattr(self.state_schema, '__name__', 'Unknown')} does not support input schema derivation"
+                f"State schema {
+                    getattr(
+                        self.state_schema,
+                        '__name__',
+                        'Unknown')} does not support input schema derivation"
             )
             return None
 
@@ -1578,7 +1676,11 @@ class Agent(
                 return None
         else:
             logger.warning(
-                f"State schema {getattr(self.state_schema, '__name__', 'Unknown')} does not support output schema derivation"
+                f"State schema {
+                    getattr(
+                        self.state_schema,
+                        '__name__',
+                        'Unknown')} does not support output schema derivation"
             )
             return None
 

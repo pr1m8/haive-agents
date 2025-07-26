@@ -920,7 +920,11 @@ Fuse and rank results now:""",
             result.total_time_ms = (end_time - start_time).total_seconds() * 1000
 
             logger.info(
-                f"Agentic RAG completed in {result.total_time_ms:.1f}ms: {len(result.final_memories)} memories from {len(selected_strategies)} strategies"
+                f"Agentic RAG completed in {
+                    result.total_time_ms:.1f}ms: {
+                    len(
+                        result.final_memories)} memories from {
+                    len(selected_strategies)} strategies"
             )
 
             return result
@@ -969,7 +973,10 @@ Fuse and rank results now:""",
             # Prepare strategies description
             strategies_desc = []
             for name, strategy in self.strategies.items():
-                desc = f"- {name}: {strategy.description} (best for: {', '.join(strategy.best_for)})"
+                desc = f"- {name}: {
+                    strategy.description} (best for: {
+                    ', '.join(
+                        strategy.best_for)})"
                 strategies_desc.append(desc)
 
             # Prepare prompt
@@ -1456,10 +1463,17 @@ Fuse and rank results now:""",
         # Default to retrieve memories
         result = await self.retrieve_memories(user_input)
 
-        response = f"Retrieved {len(result.final_memories)} memories using {len(result.selected_strategies)} strategies:\n"
+        response = f"Retrieved {
+            len(
+                result.final_memories)} memories using {
+            len(
+                result.selected_strategies)} strategies:\n"
         response += f"- Strategies: {', '.join(result.selected_strategies)}\n"
         response += f"- Total time: {result.total_time_ms:.1f}ms\n"
-        response += f"- Quality scores: Diversity={result.diversity_score:.2f}, Coverage={result.coverage_score:.2f}, Confidence={result.confidence_score:.2f}\n"
+        response += f"- Quality scores: Diversity={
+            result.diversity_score:.2f}, Coverage={
+            result.coverage_score:.2f}, Confidence={
+            result.confidence_score:.2f}\n"
 
         if result.strategy_reasoning:
             response += f"- Strategy reasoning: {result.strategy_reasoning}\n"
@@ -1474,6 +1488,6 @@ Fuse and rank results now:""",
                     else memory.get("content", "")
                 )
                 score = result.final_scores[i] if i < len(result.final_scores) else 0.0
-                response += f"{i+1}. [{score:.2f}] {content}\n"
+                response += f"{i + 1}. [{score:.2f}] {content}\n"
 
         return response

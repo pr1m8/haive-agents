@@ -11,10 +11,12 @@ The modern implementation uses string-based execution modes instead of enums:
 - "infer" for automatic sequence inference (default)
 """
 
-# Import ExecutionMode from the archived implementation for backward compatibility
+# Import ExecutionMode from the archived implementation for backward
+# compatibility
 from haive.agents.multi.archive.base import ExecutionMode
 
-# Import everything from the current implementation (clean.py is the modern approach)
+# Import everything from the current implementation (clean.py is the
+# modern approach)
 from haive.agents.multi.clean import MultiAgent
 
 # Create aliases for backward compatibility

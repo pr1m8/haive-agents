@@ -174,7 +174,8 @@ class DocumentModifierState(StateSchema):
         Returns:
             New state instance with the document added.
         """
-        # NOTE: This implementation appears incorrect - should be instance method
+        # NOTE: This implementation appears incorrect - should be instance
+        # method
         return cls(documents=[*cls.documents, document])
 
     @classmethod
@@ -190,7 +191,8 @@ class DocumentModifierState(StateSchema):
         Returns:
             New state instance with documents added.
         """
-        # NOTE: This implementation appears incorrect - should be instance method
+        # NOTE: This implementation appears incorrect - should be instance
+        # method
         return cls(documents=cls.documents + documents)
 
     @classmethod
@@ -206,7 +208,8 @@ class DocumentModifierState(StateSchema):
         Returns:
             New state instance with the document removed.
         """
-        # NOTE: This implementation appears incorrect - should be instance method
+        # NOTE: This implementation appears incorrect - should be instance
+        # method
         return cls(documents=cls.documents - [document])
 
     @classmethod
@@ -222,5 +225,6 @@ class DocumentModifierState(StateSchema):
         Returns:
             New state instance with documents removed.
         """
-        # NOTE: This implementation appears incorrect - should be instance method
+        # NOTE: This implementation appears incorrect - should be instance
+        # method
         return cls(documents=cls.documents - documents)

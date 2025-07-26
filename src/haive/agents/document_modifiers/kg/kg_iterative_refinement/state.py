@@ -39,7 +39,8 @@ class IterativeGraphTransformerState(BaseModel):
                     docs.append(Document(**item))
                 else:
                     raise ValueError(
-                        f"Unsupported content type in `contents` at index {i}: {type(item)}"
+                        f"Unsupported content type in `contents` at index {i}: {
+                            type(item)}"
                     )
         else:
             raise ValueError(

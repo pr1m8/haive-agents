@@ -328,13 +328,6 @@ taxonomy_generation_aug_llm_config = AugLLMConfig(
 )
 
 
-from langchain_core.prompts import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    PromptTemplate,
-    SystemMessagePromptTemplate,
-)
-
 # System Message: Provides instructions and context
 TAXONOMY_REVIEW_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
     prompt=PromptTemplate(

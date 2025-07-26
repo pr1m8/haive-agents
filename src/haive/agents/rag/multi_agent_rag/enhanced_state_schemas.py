@@ -161,7 +161,7 @@ def create_configured_state(
     state_class: type[ConfigurableRAGState],
     agent_name: str,
     workflow_type: str,
-    **config_kwargs
+    **config_kwargs,
 ) -> ConfigurableRAGState:
     """Create a state instance with configuration."""
     # Extract fields that belong to the state class

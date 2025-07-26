@@ -1,4 +1,4 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 
 
@@ -10,9 +10,6 @@ class BBox(TypedDict):
     text: str = Field(..., description="The text of the bounding box")
     type: str = Field(..., description="The type of the bounding box")
     ariaLabel: str = Field(..., description="The aria label of the bounding box")
-
-
-from pydantic import BaseModel, Field
 
 
 class Prediction(BaseModel):

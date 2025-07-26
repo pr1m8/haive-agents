@@ -188,7 +188,8 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             if not self.answer_generator:
                 return Command(
                     update={
-                        "answer": f"Found {len(documents)} relevant documents, but no answer generator is configured.",
+                        "answer": f"Found {
+                            len(documents)} relevant documents, but no answer generator is configured.",
                         "correction_iterations": 0,
                     }
                 )
@@ -218,7 +219,8 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             logger.exception(f"Error generating answer: {e!s}")
             return Command(
                 update={
-                    "error": f"Error generating answer: {e!s}",
+                    "error": f"Error generating answer: {
+                        e!s}",
                     "answer": "I encountered an error while trying to generate an answer.",
                     "correction_iterations": 0,
                 }
@@ -238,7 +240,8 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
         documents = state.filtered_documents
 
         logger.info(
-            f"Evaluating answer quality (iteration {state.correction_iterations})"
+            f"Evaluating answer quality (iteration {
+                state.correction_iterations})"
         )
 
         try:
@@ -269,7 +272,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
                 try:
                     score = float(evaluation)
                     assessment = {}
-                except:
+                except BaseException:
                     logger.warning(f"Could not parse evaluation result: {evaluation}")
                     score = 0.5
                     assessment = {}

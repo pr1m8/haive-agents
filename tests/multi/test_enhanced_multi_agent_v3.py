@@ -5,12 +5,8 @@ This script tests the enhanced MultiAgent V3 to ensure it works properly with
 all advanced features while maintaining backward compatibility.
 """
 
-import asyncio
 import logging
-from typing import Any, Dict, List
-
-from langchain_core.tools import tool
-from pydantic import BaseModel, Field
+from typing import Dict
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,7 +21,6 @@ def test_enhanced_multi_agent_v3_creation():
 
     try:
         # Import required components
-        from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.multi.enhanced_multi_agent_v3 import EnhancedMultiAgent
         from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
@@ -81,12 +76,12 @@ def test_enhanced_multi_agent_v3_creation():
         )
 
         print(f"✅ Typed MultiAgent created: {typed_multi.name}")
-        print(f"✅ Type validation passed for Dict[str, EnhancedSimpleAgent]")
+        print("✅ Type validation passed for Dict[str, EnhancedSimpleAgent]"]")
         print(
             f"✅ Performance tracking initialized: {len(typed_multi.agent_performance)} agents"
         )
 
-        print(f"\n🎯 Enhanced MultiAgent V3 Creation Tests: SUCCESS")
+        print("\n🎯 Enhanced MultiAgent V3 Creation Tests: SUCCESS"SS")
         return True
 
     except Exception as e:
@@ -158,7 +153,7 @@ def test_enhanced_multi_agent_v3_capabilities():
         best_agent = multi_agent.get_best_agent_for_task()
         print(f"✅ Best agent selected: {best_agent}")
 
-        print(f"\n🎯 Enhanced MultiAgent V3 Capabilities Tests: SUCCESS")
+        print("\n🎯 Enhanced MultiAgent V3 Capabilities Tests: SUCCESS"SS")
         return True
 
     except Exception as e:
@@ -258,7 +253,7 @@ def test_enhanced_multi_agent_v3_routing():
         print("✅ Direct edges added")
         print(f"✅ Edge count: {len(edge_multi.branches)}")
 
-        print(f"\n🎯 Enhanced MultiAgent V3 Routing Tests: SUCCESS")
+        print("\n🎯 Enhanced MultiAgent V3 Routing Tests: SUCCESS"SS")
         return True
 
     except Exception as e:
@@ -309,7 +304,7 @@ def test_enhanced_multi_agent_v3_execution():
                 config={"configurable": {"thread_id": "test_multi_thread"}},
             )
 
-            print(f"✅ Execution successful")
+            print("✅ Execution successful"l")
             print(f"✅ Result type: {type(result)}")
             if isinstance(result, dict) and "messages" in result:
                 print(f"✅ Messages in result: {len(result['messages'])}")
@@ -336,7 +331,7 @@ def test_enhanced_multi_agent_v3_execution():
 
         # Check performance analysis
         analysis = perf_multi.analyze_agent_performance()
-        print(f"✅ Performance tracking working")
+        print("✅ Performance tracking working"g")
         print(
             f"✅ Fast agent success rate: {analysis['agents']['fast']['success_rate']}"
         )
@@ -347,7 +342,7 @@ def test_enhanced_multi_agent_v3_execution():
         best_agent = perf_multi.get_best_agent_for_task()
         print(f"✅ Best performing agent: {best_agent}")
 
-        print(f"\n🎯 Enhanced MultiAgent V3 Execution Tests: SUCCESS")
+        print("\n🎯 Enhanced MultiAgent V3 Execution Tests: SUCCESS"SS")
         return True
 
     except Exception as e:
@@ -420,7 +415,7 @@ def test_enhanced_multi_agent_v3_factory():
         assert "factory_workflow" in repr_str
         print("✅ String representation format correct")
 
-        print(f"\n🎯 Enhanced MultiAgent V3 Factory Tests: SUCCESS")
+        print("\n🎯 Enhanced MultiAgent V3 Factory Tests: SUCCESS"SS")
         return True
 
     except Exception as e:

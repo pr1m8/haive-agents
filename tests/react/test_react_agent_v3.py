@@ -9,7 +9,7 @@ from haive.core.models.llm.base import DeepSeekLLMConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
-from haive.agents.react.agent_v3 import ReactAgentV3, create_react_agent
+from haive.agents.react.agent_v3 import ReactAgentV3
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -134,7 +134,7 @@ def test_basic_react_execution():
     reasoning_trace = agent.get_reasoning_trace()
     tool_history = agent.get_tool_usage_history()
 
-    print(f"\n📊 Execution Results:")
+    print("\n📊 Execution Results:"s:")
     print(f"   Iterations completed: {agent.iteration_count}")
     print(f"   Reasoning steps: {len(reasoning_trace)}")
     print(f"   Tools used: {len(tool_history)}")
@@ -305,8 +305,8 @@ def test_react_vs_simple_comparison():
     print("\n🔄 ReactAgentV3 execution:")
     react_result = react_agent.run(query)
 
-    print(f"\n📊 Comparison Results:")
-    print(f"   Simple iterations: 1 (linear execution)")
+    print("\n📊 Comparison Results:"s:")
+    print("   Simple iterations: 1 (linear execution)")
     print(f"   React iterations: {react_agent.iteration_count} (reasoning loops)")
 
     # Both should get the same mathematical result (500)

@@ -5,6 +5,7 @@ This implementation follows the LLM Compiler architecture from the paper by Kim 
 focusing on parallelizable task execution through a DAG structure.
 """
 
+import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
@@ -123,7 +124,7 @@ class LLMCompilerAgent(AgentArchitecture):
         """
         descriptions = []
         for i, tool in enumerate(self.tools):
-            desc = f"{i+1}. {tool.name}: {tool.description}"
+            desc = f"{i + 1}. {tool.name}: {tool.description}"
 
             # Add parameter info if available
             if hasattr(tool, "args_schema") and tool.args_schema:
@@ -329,7 +330,8 @@ class LLMCompilerAgent(AgentArchitecture):
 
         # Invoke joiner
         try:
-            # The joiner will return a structured output due to AugLLMConfig settings
+            # The joiner will return a structured output due to AugLLMConfig
+            # settings
             output: JoinerOutput = self.joiner_llm.invoke(joiner_inputs)
 
             # Process decision
@@ -526,9 +528,6 @@ class LLMCompilerAgent(AgentArchitecture):
         yield from self.app.stream(
             initial_state, config=self.config.runnable_config, debug=True
         )
-
-
-import asyncio
 
 
 def main() -> None:

@@ -95,7 +95,7 @@ async def test_agent_type_inference():
 
     # Test type-based inference
     sequence = multi_agent._infer_agent_sequence()
-    print("✅ Agent types: SimpleAgent, ReactAgent"t")
+    print("✅ Agent types: SimpleAgent, ReactAgentt")
     print(f"✅ Inferred sequence: {sequence}")
 
     # Should be: ReactAgent -> SimpleAgent (reasoning before processing)
@@ -232,8 +232,8 @@ async def main():
         # Test 5: Plan and Execute inference
         await test_plan_and_execute_inference()
 
-        print("\n✅ All sequence inference and branching tests passed!"!")
-        print("✅ Features working:":")
+        print("\n✅ All sequence inference and branching tests passed!!")
+        print("✅ Features working::")
         print("  - Automatic sequence inference from naming patterns")
         print("  - Agent type-based sequence inference")
         print("  - Branch configuration and routing")

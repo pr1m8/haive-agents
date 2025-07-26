@@ -156,7 +156,11 @@ class MultiAgent(Agent):
     def build_graph(self) -> BaseGraph:
         """Build graph using AgentNodeV3 for each agent."""
         # Create graph with appropriate state schema
-        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
+        graph = BaseGraph(
+            name=f"{
+                self.name}_graph",
+            state_schema=self.state_schema,
+        )
 
         # Add each agent using AgentNodeV3Config
         for agent_name, agent in self._agent_registry.items():
@@ -245,7 +249,8 @@ class MultiAgent(Agent):
         agent_info = f"agents={len(self._agent_registry)}"
         mode_info = f"mode={self.mode}"
         strategy_info = f"strategy={self.state_strategy}"
-        return f"MultiAgent(name='{self.name}', {agent_info}, {mode_info}, {strategy_info})"
+        return f"MultiAgent(name='{
+            self.name}', {agent_info}, {mode_info}, {strategy_info})"
 
 
 class SequentialAgent(MultiAgent):

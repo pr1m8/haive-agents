@@ -4,6 +4,15 @@ import logging
 import sys
 import traceback
 
+from haive.core.engine.aug_llm import AugLLMConfig
+from langchain_core.messages import HumanMessage
+from langchain_core.tools import tool
+from pydantic import BaseModel, Field
+
+from haive.agents.multi.base import SequentialAgent
+from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent import SimpleAgent
+
 # Set up detailed logging
 logging.basicConfig(
     level=logging.DEBUG,
@@ -15,16 +24,6 @@ logging.basicConfig(
 logging.getLogger("haive.agents.base.mixins.execution_mixin").setLevel(logging.DEBUG)
 logging.getLogger("haive.core.graph.node.agent_node").setLevel(logging.DEBUG)
 logging.getLogger("haive.agents.multi.base").setLevel(logging.DEBUG)
-
-
-from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import HumanMessage
-from langchain_core.tools import tool
-from pydantic import BaseModel, Field
-
-from haive.agents.multi.base import SequentialAgent
-from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
 
 
 @tool

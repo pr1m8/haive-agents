@@ -160,7 +160,8 @@ class SafeCompatibilityTester:
 
         except Exception as e:
             logger.exception(
-                f"Error testing compatibility between {source_name} and {target_name}: {e!s}"
+                f"Error testing compatibility between {source_name} and {target_name}: {
+                    e!s}"
             )
             return self._create_error_report(
                 source_name, target_name, f"Compatibility test failed: {e!s}"
@@ -294,7 +295,10 @@ class SafeCompatibilityTester:
                     return agent.engine.derive_output_schema()
             return None
         except Exception as e:
-            logger.warning(f"Could not extract output schema from {agent}: {e!s}")
+            logger.warning(
+                f"Could not extract output schema from {agent}: {
+                    e!s}"
+            )
             return None
 
     def _safe_extract_input_schema(self, agent: Agent) -> type | None:
@@ -311,7 +315,10 @@ class SafeCompatibilityTester:
                     return agent.engine.derive_input_schema()
             return None
         except Exception as e:
-            logger.warning(f"Could not extract input schema from {agent}: {e!s}")
+            logger.warning(
+                f"Could not extract input schema from {agent}: {
+                    e!s}"
+            )
             return None
 
     def _assess_compatibility_level(
@@ -349,7 +356,10 @@ class SafeCompatibilityTester:
 
         missing_fields = getattr(compat_result, "missing_required_fields", [])
         if missing_fields:
-            issues.append(f"Missing required fields: {', '.join(missing_fields)}")
+            issues.append(
+                f"Missing required fields: {
+                    ', '.join(missing_fields)}"
+            )
 
         return issues
 
@@ -442,7 +452,8 @@ class SafeCompatibilityTester:
                 paths.append("Direct conversion available")
 
             # Check for multi-step conversions
-            # This is a simplified check - real implementation would be more sophisticated
+            # This is a simplified check - real implementation would be more
+            # sophisticated
             common_types = [str, int, float, dict, list]
             for intermediate in common_types:
                 if self.converter_registry.can_convert(
@@ -463,12 +474,16 @@ class SafeCompatibilityTester:
         for _key, report in compatibility_matrix.items():
             if not report.safe_to_chain:
                 recommendations.append(
-                    f"Add adapter between {report.source_agent} and {report.target_agent}"
+                    f"Add adapter between {
+                        report.source_agent} and {
+                        report.target_agent}"
                 )
 
                 if report.recommended_adapters:
                     recommendations.append(
-                        f"Consider using: {', '.join(report.recommended_adapters)}"
+                        f"Consider using: {
+                            ', '.join(
+                                report.recommended_adapters)}"
                     )
 
         if not recommendations:
@@ -564,7 +579,10 @@ class SafeCompatibilityTester:
                 if missing:
                     result.missing_required_fields = list(missing)
                     result.is_compatible = False
-                    result.issues.append(f"Missing fields: {', '.join(missing)}")
+                    result.issues.append(
+                        f"Missing fields: {
+                            ', '.join(missing)}"
+                    )
 
         except Exception as e:
             result.is_compatible = False

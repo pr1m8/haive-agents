@@ -165,7 +165,7 @@ def create_structured_agent(
     name: str = "structured_output",
     temperature: float = 0.1,
     custom_context: str | None = None,
-    **kwargs
+    **kwargs,
 ) -> StructuredOutputAgent:
     """Factory function to create a structured output agent.
 
@@ -206,5 +206,5 @@ def create_structured_agent(
         output_model=output_model,
         structured_output_model=output_model,
         custom_context=custom_context,
-        **kwargs
+        **kwargs,
     )

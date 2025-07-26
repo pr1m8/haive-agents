@@ -1,6 +1,7 @@
 # src/haive/agents/research/storm/config.py
 
-# NOTE: The following imports are placeholders - these modules are not yet implemented
+# NOTE: The following imports are placeholders - these modules are not yet
+# implemented
 
 from typing import Any
 

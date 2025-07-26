@@ -167,7 +167,8 @@ class TOTAgentConfig(AgentConfig):
             # Custom state schemas for equations
             config.generator_output_model = EquationGeneration
 
-            # Create custom state schema derived from TOTState but with Equation content
+            # Create custom state schema derived from TOTState but with
+            # Equation content
             EquationState = create_model(
                 "EquationState",
                 __base__=TOTState[Equation],

@@ -204,7 +204,8 @@ class SimpleRAG(MultiAgent):
         self.execution_mode = "sequence"
 
         # Set up coordinator config (inherited from MultiAgent)
-        # For sequential mode, we don't need coordinator but MultiAgent expects it
+        # For sequential mode, we don't need coordinator but MultiAgent expects
+        # it
         if not hasattr(self, "coordinator_config") or self.coordinator_config is None:
             self.coordinator_config = self.llm_config
 
@@ -345,7 +346,7 @@ class SimpleRAG(MultiAgent):
         for i, doc in enumerate(documents):
             content = doc.page_content.strip()
             if content:
-                source = doc.metadata.get("source", f"Document {i+1}")
+                source = doc.metadata.get("source", f"Document {i + 1}")
                 context_parts.append(f"Source: {source}\n{content}")
 
         context = "\n\n".join(context_parts)

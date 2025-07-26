@@ -234,7 +234,8 @@ def create_self_discover_multiagent(
     )
 
     # No need for routing configuration - sequential execution is automatic
-    # The agents will execute in order: selector → adapter → structurer → reasoner
+    # The agents will execute in order: selector → adapter → structurer →
+    # reasoner
 
     return multi_agent
 

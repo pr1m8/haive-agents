@@ -50,8 +50,7 @@ See Also:
 """
 
 import logging
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
@@ -928,7 +927,7 @@ def demonstrate_programming_advice():
         print(f"   Language: {advice.language}")
         print(f"   Topic: {advice.topic}")
         print(f"   Explanation: {advice.explanation}")
-        print(f"\n📝 Example Code:")
+        print("\n📝 Example Code:"e:")
         print(f"   {advice.example_code}")
         print(f"\n⭐ Best Practices ({len(advice.best_practices)}):")
         for i, practice in enumerate(advice.best_practices, 1):
@@ -981,7 +980,7 @@ def run_all_demonstrations():
         successful_demos = sum(1 for result in results.values() if result is not None)
         total_demos = len(results)
 
-        print(f"\n🎉 DEMONSTRATION SUMMARY")
+        print("\n🎉 DEMONSTRATION SUMMARY"RY")
         print("=" * 40)
         print(f"Successful demonstrations: {successful_demos}/{total_demos}")
 

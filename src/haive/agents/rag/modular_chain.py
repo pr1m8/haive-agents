@@ -190,7 +190,7 @@ def create_modular_rag(
         return ChainAgent(*nodes, name=name)
     if config.routing_strategy == "conditional":
         # Add simple conditional routing
-        return flow_with_edges(nodes, *[f"{i}->{i+1}" for i in range(len(nodes) - 1)])
+        return flow_with_edges(nodes, *[f"{i}->{i + 1}" for i in range(len(nodes) - 1)])
     # parallel - simplified
     return ChainAgent(*nodes, name=name)
 

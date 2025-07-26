@@ -101,7 +101,10 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
 
     def setup_workflow(self) -> None:
         """Set up the workflow graph with specialized tool routing."""
-        logger.info(f"Setting up workflow for AdvancedReactAgent: {self.config.name}")
+        logger.info(
+            f"Setting up workflow for AdvancedReactAgent: {
+                self.config.name}"
+        )
 
         # Create a dynamic graph with the engine component
         gb = DynamicGraph(
@@ -205,11 +208,13 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
                 key="current_step",
                 value=self.config.max_iterations,
                 comparison=">=",
-                destinations={True: END, False: None},  # None allows falling through
+                # None allows falling through
+                destinations={True: END, False: None},
                 default=None,
             )
 
-            # Create a Branch for tool routing based on the tool name in the last message
+            # Create a Branch for tool routing based on the tool name in the
+            # last message
             def route_by_tool_name(state: dict[str, Any]):
                 """Route to the appropriate tool node based on the tool name."""
                 # Extract messages
@@ -254,7 +259,8 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
             tool_destinations = {node_name: node_name for node_name in self.tool_nodes}
             tool_destinations[END] = END  # Add END destination
 
-            # Create the main router function that combines max iterations check and tool routing
+            # Create the main router function that combines max iterations
+            # check and tool routing
             def agent_router(state: dict[str, Any]):
                 """Main router from agent node."""
                 # First check max iterations
@@ -288,7 +294,8 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
             self.visualize_graph()
 
         logger.info(
-            f"Workflow setup complete for AdvancedReactAgent: {self.config.name}"
+            f"Workflow setup complete for AdvancedReactAgent: {
+                self.config.name}"
         )
 
     def add_tool(

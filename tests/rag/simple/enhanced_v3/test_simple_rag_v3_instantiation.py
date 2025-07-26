@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Try to actually instantiate SimpleRAG V3 - does it work?"""
 
-import os
 import sys
 
 # Add source paths
@@ -19,7 +18,6 @@ def test_instantiation():
     try:
         from haive.core.engine.aug_llm import AugLLMConfig
         from haive.core.engine.vectorstore import VectorStoreConfig
-        from langchain_core.documents import Document
 
         print("✅ Core imports successful")
     except Exception as e:
@@ -117,7 +115,7 @@ def test_factory_methods():
 
         # Try from_documents
         print("\n   Testing from_documents...")
-        rag = SimpleRAGV3.from_documents(
+        SimpleRAGV3.from_documents(
             documents=docs,
             embedding_config=None,  # We'll see what it needs
             name="test_from_docs",

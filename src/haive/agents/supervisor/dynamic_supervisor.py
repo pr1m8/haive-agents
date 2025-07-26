@@ -153,7 +153,8 @@ class DynamicSupervisorAgent(ReactAgent):
         if hasattr(self.main_engine, "tools"):
             self.main_engine.tools = aggregated_tools
             logger.info(
-                f"Updated supervisor tools: {len(aggregated_tools)} total tools from registered agents"
+                f"Updated supervisor tools: {
+                    len(aggregated_tools)} total tools from registered agents"
             )
 
         # Update tool routes mapping
@@ -347,7 +348,8 @@ class DynamicSupervisorAgent(ReactAgent):
                 # Get aggregated tool information
                 tool_info = self._aggregate_agent_tools()
 
-                # Create enhanced prompt with reasoning including tool capabilities
+                # Create enhanced prompt with reasoning including tool
+                # capabilities
                 prompt = self._create_enhanced_decision_prompt(
                     state, input_analysis, available_agents, tool_info
                 )
@@ -687,7 +689,10 @@ class DynamicSupervisorAgent(ReactAgent):
                 ]
 
             tools_text = (
-                f"Tools: {', '.join(agent_tools)}" if agent_tools else "No tools"
+                f"Tools: {
+                    ', '.join(agent_tools)}"
+                if agent_tools
+                else "No tools"
             )
 
             description = f"""- {agent_name} (Priority: {priority}, {status})
@@ -719,7 +724,9 @@ class DynamicSupervisorAgent(ReactAgent):
         if recent_decisions:
             context_text = "\n\nRecent decisions:\n"
             for decision in recent_decisions:
-                context_text += f"- {decision.target_agent}: {decision.reasoning}\n"
+                context_text += f"- {
+                    decision.target_agent}: {
+                    decision.reasoning}\n"
 
         system_prompt = f"""You are an intelligent supervisor managing a dynamic team of AI agents.
 Your task is to analyze the user's request and select the most appropriate agent or end the conversation.
@@ -742,14 +749,13 @@ INSTRUCTIONS:
 
 RESPONSE FORMAT:
 Provide a JSON response with:
-{{
-  "target": "agent_name_or_END",
+{"target": "agent_name_or_END",
   "reasoning": "Detailed explanation of your choice",
   "confidence": 0.0-1.0,
   "alternatives": [
-    {{"agent": "alternative_name", "score": 0.0-1.0}}
+    {"agent": "alternative_name", "score": 0.0-1.0}
   ]
-}}
+}
 
 {context_text}"""
 
@@ -825,7 +831,10 @@ Provide a JSON response with:
                 return agent.state_schema(**state_data)
 
             except Exception as e:
-                logger.warning(f"Could not create specific state for {agent.name}: {e}")
+                logger.warning(
+                    f"Could not create specific state for {
+                        agent.name}: {e}"
+                )
 
         # Fallback to basic state
         return type("State", (), {"messages": supervisor_state.messages})()

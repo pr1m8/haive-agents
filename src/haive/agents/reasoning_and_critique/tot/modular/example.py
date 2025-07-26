@@ -4,14 +4,14 @@ import os
 import sys
 from typing import Any
 
-# Add the project root to the path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from agents.tot.modular.factory import (
     create_game24_tot_agent,
     create_math_tot_agent,
     create_tot_agent,
 )
+
+# Add the project root to the path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def print_state(state: dict[str, Any], detailed: bool = False) -> None:
@@ -19,12 +19,12 @@ def print_state(state: dict[str, Any], detailed: bool = False) -> None:
     if state.get("messages"):
         for msg in state["messages"]:
             if hasattr(msg, "content"):
-                role = getattr(msg, "type", "unknown")
+                getattr(msg, "type", "unknown")
 
     if state.get("answer"):
         pass
     if detailed and "candidates" in state and state["candidates"]:
-        for i, candidate in enumerate(state["candidates"]):
+        for _i, candidate in enumerate(state["candidates"]):
             if candidate.feedback:
                 pass
 
@@ -36,7 +36,6 @@ def print_state(state: dict[str, Any], detailed: bool = False) -> None:
 
 def run_tot_example():
     """Run a basic Tree of Thoughts agent example."""
-
     # Create the agent
     agent = create_tot_agent(
         name="reasoning_tot",
@@ -50,12 +49,11 @@ def run_tot_example():
     problem = "How can I calculate the probability of drawing exactly 2 aces from a standard deck of 52 cards if I draw 5 cards without replacement?"
 
     # Run the agent and stream results
-    events = agent.run(problem, debug=True)
+    agent.run(problem, debug=True)
 
 
 def run_game24_example():
     """Run a Game of 24 example using Tree of Thoughts."""
-
     # Create the Game of 24 agent
     agent = create_game24_tot_agent(name="game24_agent")
 
@@ -63,14 +61,13 @@ def run_game24_example():
     problem = "3 8 9 4"
 
     # Run the agent
-    final_state = agent.run(problem)
+    agent.run(problem)
 
     # Print the result
 
 
 def run_math_example():
     """Run a math problem example using Tree of Thoughts."""
-
     # Create the math-specialized agent
     agent = create_math_tot_agent(name="math_agent")
 
@@ -78,7 +75,7 @@ def run_math_example():
     problem = "Find the area of a circle that has the same perimeter as a square with an area of 64 square units."
 
     # Run the agent
-    final_state = agent.run(problem)
+    agent.run(problem)
 
     # Print the result
 

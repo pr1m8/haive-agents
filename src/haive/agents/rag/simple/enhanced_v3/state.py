@@ -4,44 +4,43 @@ This module provides enhanced state management for SimpleRAG using Enhanced Mult
 with performance tracking, debug information, and comprehensive metadata.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.documents import Document
-from langchain_core.messages import BaseMessage
 from pydantic import BaseModel, Field
 
 
 class RAGMetadata(BaseModel):
     """Metadata for RAG operations."""
 
-    query_analysis: Dict[str, Any] = Field(default_factory=dict)
-    retrieval_params: Dict[str, Any] = Field(default_factory=dict)
-    generation_params: Dict[str, Any] = Field(default_factory=dict)
-    timing_info: Dict[str, float] = Field(default_factory=dict)
-    quality_scores: Dict[str, float] = Field(default_factory=dict)
+    query_analysis: dict[str, Any] = Field(default_factory=dict)
+    retrieval_params: dict[str, Any] = Field(default_factory=dict)
+    generation_params: dict[str, Any] = Field(default_factory=dict)
+    timing_info: dict[str, float] = Field(default_factory=dict)
+    quality_scores: dict[str, float] = Field(default_factory=dict)
 
 
 class RetrievalDebugInfo(BaseModel):
     """Debug information for retrieval operations."""
 
-    query_vector_dim: Optional[int] = Field(default=None)
-    search_time: Optional[float] = Field(default=None)
-    total_documents: Optional[int] = Field(default=None)
-    similarity_scores: List[float] = Field(default_factory=list)
-    retrieval_strategy: Optional[str] = Field(default=None)
-    filtered_count: Optional[int] = Field(default=None)
+    query_vector_dim: int | None = Field(default=None)
+    search_time: float | None = Field(default=None)
+    total_documents: int | None = Field(default=None)
+    similarity_scores: list[float] = Field(default_factory=list)
+    retrieval_strategy: str | None = Field(default=None)
+    filtered_count: int | None = Field(default=None)
 
 
 class GenerationDebugInfo(BaseModel):
     """Debug information for generation operations."""
 
-    context_length: Optional[int] = Field(default=None)
-    prompt_tokens: Optional[int] = Field(default=None)
-    completion_tokens: Optional[int] = Field(default=None)
-    generation_time: Optional[float] = Field(default=None)
-    model_used: Optional[str] = Field(default=None)
-    temperature: Optional[float] = Field(default=None)
+    context_length: int | None = Field(default=None)
+    prompt_tokens: int | None = Field(default=None)
+    completion_tokens: int | None = Field(default=None)
+    generation_time: float | None = Field(default=None)
+    model_used: str | None = Field(default=None)
+    temperature: float | None = Field(default=None)
 
 
 class SimpleRAGState(StateSchema):
@@ -83,32 +82,32 @@ class SimpleRAGState(StateSchema):
     # Core RAG fields (always present)
     query: str = Field(default="", description="User query for RAG processing")
 
-    retrieved_documents: List[Document] = Field(
+    retrieved_documents: list[Document] = Field(
         default_factory=list, description="Documents retrieved from vector store"
     )
 
     generated_answer: str = Field(default="", description="Generated answer from LLM")
 
     # Enhanced tracking fields (populated when features enabled)
-    retrieval_metadata: Optional[RAGMetadata] = Field(
+    retrieval_metadata: RAGMetadata | None = Field(
         default=None, description="Metadata from retrieval operation"
     )
 
-    generation_metadata: Optional[RAGMetadata] = Field(
+    generation_metadata: RAGMetadata | None = Field(
         default=None, description="Metadata from generation operation"
     )
 
     # Performance tracking (when performance_mode=True)
-    performance_metrics: Dict[str, float] = Field(
+    performance_metrics: dict[str, float] = Field(
         default_factory=dict, description="Performance metrics for each stage"
     )
 
     # Debug information (when debug_mode=True)
-    retrieval_debug: Optional[RetrievalDebugInfo] = Field(
+    retrieval_debug: RetrievalDebugInfo | None = Field(
         default=None, description="Debug information for retrieval"
     )
 
-    generation_debug: Optional[GenerationDebugInfo] = Field(
+    generation_debug: GenerationDebugInfo | None = Field(
         default=None, description="Debug information for generation"
     )
 
@@ -117,16 +116,16 @@ class SimpleRAGState(StateSchema):
         default="ready", description="Current stage of RAG pipeline"
     )
 
-    stage_history: List[str] = Field(
+    stage_history: list[str] = Field(
         default_factory=list, description="History of pipeline stages"
     )
 
     # Source tracking
-    document_sources: List[str] = Field(
+    document_sources: list[str] = Field(
         default_factory=list, description="Sources of retrieved documents"
     )
 
-    citation_info: Dict[str, Any] = Field(
+    citation_info: dict[str, Any] = Field(
         default_factory=dict, description="Citation information for sources"
     )
 
@@ -137,11 +136,11 @@ class SimpleRAGState(StateSchema):
 
     def add_retrieval_debug(
         self,
-        query_vector_dim: Optional[int] = None,
-        search_time: Optional[float] = None,
-        total_documents: Optional[int] = None,
-        similarity_scores: Optional[List[float]] = None,
-        **kwargs
+        query_vector_dim: int | None = None,
+        search_time: float | None = None,
+        total_documents: int | None = None,
+        similarity_scores: list[float] | None = None,
+        **kwargs,
     ) -> None:
         """Add retrieval debug information."""
         if self.retrieval_debug is None:
@@ -163,11 +162,11 @@ class SimpleRAGState(StateSchema):
 
     def add_generation_debug(
         self,
-        context_length: Optional[int] = None,
-        prompt_tokens: Optional[int] = None,
-        completion_tokens: Optional[int] = None,
-        generation_time: Optional[float] = None,
-        **kwargs
+        context_length: int | None = None,
+        prompt_tokens: int | None = None,
+        completion_tokens: int | None = None,
+        generation_time: float | None = None,
+        **kwargs,
     ) -> None:
         """Add generation debug information."""
         if self.generation_debug is None:
@@ -191,7 +190,7 @@ class SimpleRAGState(StateSchema):
         """Update a performance metric."""
         self.performance_metrics[metric_name] = value
 
-    def get_pipeline_summary(self) -> Dict[str, Any]:
+    def get_pipeline_summary(self) -> dict[str, Any]:
         """Get comprehensive pipeline summary."""
         return {
             "current_stage": self.current_stage,
@@ -207,7 +206,7 @@ class SimpleRAGState(StateSchema):
             },
         }
 
-    def get_retrieval_summary(self) -> Dict[str, Any]:
+    def get_retrieval_summary(self) -> dict[str, Any]:
         """Get retrieval operation summary."""
         summary = {
             "documents_count": len(self.retrieved_documents),
@@ -234,7 +233,7 @@ class SimpleRAGState(StateSchema):
 
         return summary
 
-    def get_generation_summary(self) -> Dict[str, Any]:
+    def get_generation_summary(self) -> dict[str, Any]:
         """Get generation operation summary."""
         summary = {
             "answer_length": len(self.generated_answer),
@@ -262,9 +261,9 @@ class SimpleRAGState(StateSchema):
 BaseRAGState = SimpleRAGState
 
 __all__ = [
-    "SimpleRAGState",
+    "BaseRAGState",  # Legacy
+    "GenerationDebugInfo",
     "RAGMetadata",
     "RetrievalDebugInfo",
-    "GenerationDebugInfo",
-    "BaseRAGState",  # Legacy
+    "SimpleRAGState",
 ]

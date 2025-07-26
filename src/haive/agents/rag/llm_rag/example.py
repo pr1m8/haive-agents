@@ -157,7 +157,7 @@ def run_example_queries(agent: Any):
 
     # Run each query and collect results
     for i, query in enumerate(example_queries):
-        logger.info(f"\n\n--- Query {i+1}: '{query}' ---")
+        logger.info(f"\n\n--- Query {i + 1}: '{query}' ---")
 
         # Create input state with just the query
         input_state = {"query": query}

@@ -4,12 +4,11 @@ SequentialAgent = Agent[AugLLMConfig] + sequential execution of agents.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, START
 from pydantic import Field, field_validator
 
@@ -63,7 +62,7 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     """
 
     # Sequential specific fields
-    agents: List[Agent] = Field(
+    agents: list[Agent] = Field(
         default_factory=list, description="Ordered list of agents to execute"
     )
 
@@ -83,17 +82,17 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default=1, ge=1, le=3, description="Max retries for each step"
     )
 
-    step_timeout: Optional[float] = Field(
+    step_timeout: float | None = Field(
         default=None, gt=0, description="Timeout for each step in seconds"
     )
 
     # Convenience fields
     temperature: float = Field(default=0.3, ge=0.0, le=2.0)
-    system_message: Optional[str] = Field(default=None)
+    system_message: str | None = Field(default=None)
 
     @field_validator("agents")
     @classmethod
-    def validate_agents(cls, v: List[Agent]) -> List[Agent]:
+    def validate_agents(cls, v: list[Agent]) -> list[Agent]:
         """Validate agent list."""
         if not v:
             raise ValueError("SequentialAgent requires at least one agent")
@@ -123,7 +122,7 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         self.agents.insert(index, agent)
         logger.info(f"Inserted {type(agent).__name__} at position {index}")
 
-    def remove_agent(self, index: int) -> Optional[Agent]:
+    def remove_agent(self, index: int) -> Agent | None:
         """Remove agent at index.
 
         Args:
@@ -141,7 +140,7 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         steps = []
         for i, agent in enumerate(self.agents):
             agent_name = getattr(agent, "name", type(agent).__name__)
-            steps.append(f"{i+1}. {agent_name}")
+            steps.append(f"{i + 1}. {agent_name}")
 
         return " → ".join(steps)
 
@@ -213,7 +212,7 @@ Always preserve key information while improving clarity and structure."""
 
         return graph
 
-    async def execute_sequence(self, input_data: Any) -> Union[Any, List[Any]]:
+    async def execute_sequence(self, input_data: Any) -> Any | list[Any]:
         """Execute agents in sequence.
 
         Args:
@@ -229,7 +228,13 @@ Always preserve key information while improving clarity and structure."""
             try:
                 # Execute agent
                 logger.debug(
-                    f"Executing step {i+1}: {getattr(agent, 'name', f'agent_{i}')}"
+                    f"Executing step {
+                        i +
+                        1}: {
+                        getattr(
+                            agent,
+                            'name',
+                            f'agent_{i}')}"
                 )
 
                 if hasattr(agent, "arun"):
@@ -247,7 +252,7 @@ Always preserve key information while improving clarity and structure."""
                             {
                                 "previous_output": output,
                                 "next_agent": getattr(
-                                    self.agents[i + 1], "name", f"agent_{i+1}"
+                                    self.agents[i + 1], "name", f"agent_{i + 1}"
                                 ),
                                 "instruction": "Process this output for the next agent",
                             }
@@ -256,7 +261,7 @@ Always preserve key information while improving clarity and structure."""
                 current_input = output
 
             except Exception as e:
-                logger.error(f"Error in step {i+1}: {e}")
+                logger.exception(f"Error in step {i + 1}: {e}")
                 if not self.continue_on_error:
                     raise
                 outputs.append({"error": str(e)})
@@ -270,9 +275,8 @@ Always preserve key information while improving clarity and structure."""
         pipeline = " → ".join(
             [getattr(agent, "name", type(agent).__name__) for agent in self.agents]
         )
-        return (
-            f"SequentialAgent[{engine_type}](name='{self.name}', pipeline=[{pipeline}])"
-        )
+        return f"SequentialAgent[{engine_type}](name='{
+                self.name}', pipeline=[{pipeline}])"
 
 
 # Example usage
@@ -299,20 +303,10 @@ if __name__ == "__main__":
         return_all_outputs=True,
     )
 
-    print(f"Created: {pipeline}")
-    print(f"Pipeline: {pipeline.get_pipeline_description()}")
-
     # Add another step
     pipeline.add_agent(MockAgent("formatter", "FORMAT"))
-    print(f"Updated pipeline: {pipeline.get_pipeline_description()}")
 
     # Example execution flow
-    print("\nExample execution:")
-    print("Input: 'Raw text data'")
-    print("Step 1: cleaner: CLEAN(Raw text data)")
-    print("Step 2: analyzer: ANALYZE(cleaner: CLEAN(Raw text data))")
-    print("Step 3: summarizer: SUMMARIZE(analyzer: ANALYZE(...))")
-    print("Step 4: formatter: FORMAT(summarizer: SUMMARIZE(...))")
 
     # With intermediate processing
     pipeline_enhanced = SequentialAgent(
@@ -321,6 +315,3 @@ if __name__ == "__main__":
         process_between_steps=True,
         system_message="Enhance outputs between steps",
     )
-
-    print(f"\nEnhanced pipeline: {pipeline_enhanced}")
-    print("Coordinator processes and enhances data between each step")

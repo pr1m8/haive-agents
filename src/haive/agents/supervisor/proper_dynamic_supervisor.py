@@ -171,7 +171,8 @@ class ProperDynamicSupervisor(ReactAgent):
                         # Last message is from user, continue
                         pass
                     else:
-                        # Last message is from agent, check if we should continue
+                        # Last message is from agent, check if we should
+                        # continue
                         logger.info("Last message was from agent, ending")
                         return {"complete": True}
 

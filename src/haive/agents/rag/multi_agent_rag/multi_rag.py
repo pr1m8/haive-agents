@@ -392,7 +392,7 @@ def validate_multi_agent_compatibility(agents: list[Any]) -> dict[str, Any]:
     for i in range(len(agents) - 1):
         agent1, agent2 = agents[i], agents[i + 1]
         agent1_name = getattr(agent1, "name", f"Agent_{i}")
-        agent2_name = getattr(agent2, "name", f"Agent_{i+1}")
+        agent2_name = getattr(agent2, "name", f"Agent_{i + 1}")
 
         result = test_agent_compatibility(agent1, agent2)
         compatibility_results[f"{agent1_name} -> {agent2_name}"] = result

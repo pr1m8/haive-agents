@@ -92,8 +92,7 @@ class DebateConversation(BaseConversationAgent):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_debate_setup(cls) -> "DebateConversation":
+    def validate_debate_setup(self) -> "DebateConversation":
         """Validate debate configuration and participant setup."""
         # Ensure state schema is set
         if not self.state_schema or self.state_schema != DebateState:
@@ -114,7 +113,10 @@ class DebateConversation(BaseConversationAgent):
 
         # Validate judge setup
         if self.enable_judge and self.judge_name in self.debate_positions:
-            raise ValueError(f"Judge '{self.judge_name}' cannot have a debate position")
+            raise ValueError(
+                f"Judge '{
+                    self.judge_name}' cannot have a debate position"
+            )
 
         return self
 
@@ -130,7 +132,8 @@ class DebateConversation(BaseConversationAgent):
         super().setup_agent()
 
         logger.debug(
-            f"DebateConversation setup complete with state schema: {self.state_schema}"
+            f"DebateConversation setup complete with state schema: {
+                self.state_schema}"
         )
 
     def get_conversation_state_schema(self) -> type[DebateState]:
@@ -195,7 +198,8 @@ class DebateConversation(BaseConversationAgent):
             phase_num += 1
 
         structure.append(
-            f"{phase_num}. Main Arguments - Each participant makes {self.arguments_per_side} arguments"
+            f"{phase_num}. Main Arguments - Each participant makes {
+                self.arguments_per_side} arguments"
         )
         phase_num += 1
 
@@ -211,7 +215,10 @@ class DebateConversation(BaseConversationAgent):
             )
 
         if self.enable_judge:
-            structure.append(f"\nThe debate will be judged by: {self.judge_name}")
+            structure.append(
+                f"\nThe debate will be judged by: {
+                    self.judge_name}"
+            )
 
         structure_str = "\n".join(structure)
 
@@ -220,7 +227,10 @@ class DebateConversation(BaseConversationAgent):
         if self.require_evidence:
             rules.append("All claims must be supported with evidence")
         if self.time_limit_per_turn:
-            rules.append(f"Responses limited to {self.time_limit_per_turn} words")
+            rules.append(
+                f"Responses limited to {
+                    self.time_limit_per_turn} words"
+            )
         if self.enforce_position_consistency:
             rules.append("Participants must argue for their assigned position")
 
@@ -253,7 +263,9 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
 
         # Use computed properties instead of manual checks
         logger.debug(
-            f"select_speaker: phase={state.current_phase}, should_end_debate={state.should_end_debate}"
+            f"select_speaker: phase={
+                state.current_phase}, should_end_debate={
+                state.should_end_debate}"
         )
 
         # Check if debate should end using computed property
@@ -307,7 +319,8 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
 
         updates = {
             "current_phase": new_phase,
-            "phase_transitions": [(new_phase, state.turn_count)],  # Use reducer
+            # Use reducer
+            "phase_transitions": [(new_phase, state.turn_count)],
             "messages": [transition_msg],
         }
 
@@ -439,10 +452,15 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
 
         # Build context message
         context_parts = [
-            f"🎭 Debate Phase: {state.current_phase.title()}",
-            f"📌 Your Position: {participant_info['position']}",
-            f"📊 Your Progress: {participant_info['arguments_made']} arguments, {participant_info['rebuttals_made']} rebuttals",
-            f"📈 Completion: {participant_info['progress']:.0%}",
+            f"🎭 Debate Phase: {
+                state.current_phase.title()}",
+            f"📌 Your Position: {
+                participant_info['position']}",
+            f"📊 Your Progress: {
+                participant_info['arguments_made']} arguments, {
+                    participant_info['rebuttals_made']} rebuttals",
+            f"📈 Completion: {
+                        participant_info['progress']:.0%}",
         ]
 
         # Add phase-specific instructions
@@ -673,8 +691,12 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
         for speaker in state.debate_positions:
             summary = state.get_participant_summary(speaker)
             summary_parts.append(
-                f"  • {summary['name']} ({summary['position']}): "
-                f"{summary['arguments_made']} arguments, {summary['rebuttals_made']} rebuttals"
+                f"  • {
+                    summary['name']} ({
+                    summary['position']}): "
+                f"{
+                    summary['arguments_made']} arguments, {
+                    summary['rebuttals_made']} rebuttals"
             )
             if summary["score"] > 0:
                 summary_parts.append(f"    Score: {summary['score']:.2f}")

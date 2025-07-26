@@ -231,7 +231,8 @@ Process each query with thoroughness and attention to user context."""
             if memory_items:
                 insights.append(
                     ContextualInsight(
-                        insight=f"Found {len(memory_items)} related items in search history",
+                        insight=f"Found {
+                            len(memory_items)} related items in search history",
                         relevance_score=0.8,
                         source_type="memory",
                     )
@@ -243,7 +244,9 @@ Process each query with thoroughness and attention to user context."""
             if prefs:
                 insights.append(
                     ContextualInsight(
-                        insight=f"Applied user preferences: {', '.join(prefs.keys())}",
+                        insight=f"Applied user preferences: {
+                            ', '.join(
+                                prefs.keys())}",
                         relevance_score=0.9,
                         source_type="preferences",
                     )
@@ -285,7 +288,10 @@ Process each query with thoroughness and attention to user context."""
             steps.append("Applied user preferences to customize search approach")
 
         if context.get("domain"):
-            steps.append(f"Contextualized search for {context['domain']} domain")
+            steps.append(
+                f"Contextualized search for {
+                    context['domain']} domain"
+            )
 
         steps.append("Structured comprehensive response with evidence and examples")
 

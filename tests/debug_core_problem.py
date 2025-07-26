@@ -51,7 +51,7 @@ def debug_agent_node_call(original_call):
         # Call original
         try:
             result = original_call(state)
-            print("   ✅ Agent node completed successfully"y")
+            print("   ✅ Agent node completed successfullyy")
             return result
         except Exception as e:
             print(f"   ❌ Agent node failed: {e}")
@@ -71,7 +71,7 @@ AgentNodeV3Config.__call__ = debug_agent_node_call(original_call)
 # Also patch the set_active_agent method to see what's happening
 def debug_set_active_agent(original_method):
     def wrapper(self, agent_name):
-        print("\n🔍 SET_ACTIVE_AGENT DEBUG:"G:")
+        print("\n🔍 SET_ACTIVE_AGENT DEBUG:G:")
         print(f"   Setting active agent: {agent_name}")
         print(f"   Self type: {type(self)}")
         print(
@@ -99,7 +99,7 @@ MultiAgentState.set_active_agent = debug_set_active_agent(original_set_active)
 # Also patch the schema input preparation
 def debug_prepare_schema_input(original_method):
     def wrapper(self, input_data, input_schema):
-        print("\n🔍 PREPARE_SCHEMA_INPUT DEBUG:"G:")
+        print("\n🔍 PREPARE_SCHEMA_INPUT DEBUG:G:")
         print(f"   Input data type: {type(input_data)}")
         print(f"   Input schema: {input_schema}")
         print(
@@ -168,7 +168,7 @@ async def trace_execution():
     test_state = multi.state_schema(
         messages=[HumanMessage(content="Test")], agents=multi.agents  # Explicitly set
     )
-    print("   ✅ Manual state created"d")
+    print("   ✅ Manual state createdd")
     print(f"   Manual state.agents: {list(test_state.agents.keys())}")
 
     # Step 5: Test input preparation
@@ -177,14 +177,14 @@ async def trace_execution():
 
     # Call the input preparation method directly
     try:
-        prepared_input = multi._prepare_schema_input(test_input, multi.state_schema)
-        print("   ✅ Input prepared"d")
+        multi._prepare_schema_input(test_input, multi.state_schema)
+        print("   ✅ Input preparedd")
     except Exception as e:
         print(f"   ❌ Input preparation failed: {e}")
         # Try without the second parameter
         try:
-            prepared_input = multi._prepare_schema_input(test_input)
-            print("   ✅ Input prepared (without schema param)")")
+            multi._prepare_schema_input(test_input)
+            print("   ✅ Input prepared (without schema param))")
         except Exception as e2:
             print(f"   ❌ Input preparation failed again: {e2}")
 
@@ -199,7 +199,7 @@ async def trace_execution():
 
     try:
         result = await multi.ainvoke(test_input)
-        print("   ✅ Execution completed"d")
+        print("   ✅ Execution completedd")
         print(f"   Result type: {type(result)}")
 
     except Exception as e:
@@ -208,7 +208,7 @@ async def trace_execution():
         traceback.print_exc()
 
         # Try to get more info about the failure
-        print("\n📌 FAILURE ANALYSIS:"S:")
+        print("\n📌 FAILURE ANALYSIS:S:")
         print(f"   Error message: {str(e)}")
 
         if "not found in agents" in str(e):

@@ -1533,7 +1533,9 @@ def create_compatible_rag_workflow(
 
     if workflow_type not in pattern_map:
         raise ValueError(
-            f"Unknown workflow type: {workflow_type}. Available: {list(pattern_map.keys())}"
+            f"Unknown workflow type: {workflow_type}. Available: {
+                list(
+                    pattern_map.keys())}"
         )
 
     return factory.create_workflow(pattern_map[workflow_type], **kwargs)

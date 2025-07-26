@@ -361,7 +361,7 @@ class QueryAnalyzerAgent(Agent):
                 context_str = (
                     "\n".join(
                         [
-                            f"Doc {i+1}: {doc.page_content[:150]}..."
+                            f"Doc {i + 1}: {doc.page_content[:150]}..."
                             for i, doc in enumerate(context[:3])
                         ]
                     )

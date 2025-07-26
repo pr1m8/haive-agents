@@ -42,7 +42,6 @@ import uuid
 from typing import Any, Dict, List, Optional, Type
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
     EnhancedMultiAgentState,
@@ -120,7 +119,8 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
             )
     """
 
-    # No need to override agents field - MultiAgent handles list or dict automatically
+    # No need to override agents field - MultiAgent handles list or dict
+    # automatically
 
     # =============================
     # RAG Configuration Fields
@@ -200,7 +200,8 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
         """Validate citation style."""
         allowed_styles = {"inline", "footnote", "numbered"}
         if v not in allowed_styles:
-            raise ValueError(f"Citation style must be one of: {allowed_styles}")
+            raise ValueError(
+    f"Citation style must be one of: {allowed_styles}")
         return v
 
     @model_validator(mode="before")
@@ -257,7 +258,8 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
         # Setup state schema based on enabled features
         if self.state_schema is None:
             # Use SimpleRAGState for enhanced RAG-specific tracking
-            if any([self.performance_mode, self.debug_mode, self.advanced_routing]):
+            if any([self.performance_mode, self.debug_mode,
+                   self.advanced_routing]):
                 self.state_schema = SimpleRAGState
             else:
                 self.state_schema = EnhancedMultiAgentState  # Basic fallback
@@ -498,10 +500,13 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
         elif isinstance(input_data, dict) and "query" in input_data:
             query = input_data["query"]
         else:
-            raise ValueError("Input must be a string or dict with 'query' field")
+            raise ValueError(
+                "Input must be a string or dict with 'query' field")
 
         if debug or self.debug_mode:
-            logger.info(f"🚀 SimpleRAGV3 '{self.name}' processing query: {query}")
+            logger.info(
+    f"🚀 SimpleRAGV3 '{
+        self.name}' processing query: {query}")
             logger.info(f"🔧 Configuration: {self.get_rag_info()}")
 
         # Use Enhanced MultiAgent V3's sequential execution
@@ -514,12 +519,12 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
         result = await super().arun(input_data, debug=debug, **kwargs)
 
         if debug or self.debug_mode:
-            logger.info(f"✅ SimpleRAGV3 completed successfully")
+            logger.info("✅ SimpleRAGV3 completed successfully")
 
             # Display performance summary if enabled
             if self.performance_mode:
                 performance_summary = self.analyze_agent_performance()
-                logger.info(f"📊 Performance Summary:")
+                logger.info("📊 Performance Summary:")
                 for agent_name, metrics in performance_summary.get(
                     "agents", {}
                 ).items():

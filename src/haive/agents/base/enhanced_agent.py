@@ -17,13 +17,11 @@ Key features:
 import logging
 import re
 from abc import ABC, abstractmethod
-from collections.abc import Callable
 from typing import Any, Generic, Literal, TypeVar
 
 from haive.core.engine.base import Engine, EngineType, InvokableEngine
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.schema_composer import SchemaComposer
-from haive.core.schema.state_schema import StateSchema
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
 from pydantic import BaseModel, Field, PrivateAttr, model_validator
@@ -37,6 +35,9 @@ from haive.agents.base.hooks import HookContext, HookEvent, HookFunction
 from haive.agents.base.mixins.execution_mixin import ExecutionMixin
 from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
+
+# Import pre/post processing mixin
+from haive.agents.base.pre_post_agent_mixin import PrePostAgentMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
 
 logger = logging.getLogger(__name__)
@@ -115,12 +116,14 @@ class Workflow(BaseModel, ABC):
 
 
 class Agent(
-    TypedInvokableEngine[EngineT],  # Engine interface with our generic parameter
+    # Engine interface with our generic parameter
+    TypedInvokableEngine[EngineT],
     ExecutionMixin,  # Execution capabilities
     StateMixin,  # State management
     PersistenceMixin,  # Persistence capabilities
     SerializationMixin,  # Serialization support
     StructuredOutputMixin,  # Structured output support
+    PrePostAgentMixin,  # Pre/post processing capabilities
     ABC,  # Abstract base class (must be last)
 ):
     """Enhanced Agent with engine-focused generics and full backward compatibility.
@@ -309,6 +312,10 @@ class Agent(
 
             # STEP 2: Call subclass setup hook for field syncing
             self.setup_agent()
+            
+            # STEP 2.5: Set up pre/post processing transformers if mixin is available
+            if hasattr(self, 'setup_transformers'):
+                self.setup_transformers()
 
             # STEP 3: Generate schemas from engines
             self._setup_schemas()
@@ -325,7 +332,10 @@ class Agent(
                 logger.info(f"Enhanced Agent setup complete: {self.name}")
 
         except Exception as e:
-            logger.exception(f"Failed to setup agent {self.__class__.__name__}: {e}")
+            logger.exception(
+                f"Failed to setup agent {
+                    self.__class__.__name__}: {e}"
+            )
 
         return self
 
@@ -347,7 +357,6 @@ class Agent(
         Override this method in subclasses for custom setup logic.
         """
         # Default implementation does nothing - subclasses override
-        pass
 
     def _auto_derive_io_schemas(self) -> None:
         """Automatically derive input and output schemas with intelligent defaults.
@@ -368,7 +377,8 @@ class Agent(
                         name=f"{self.name}Input"
                     )
                     logger.debug(
-                        f"Derived input schema from state schema: {self.input_schema.__name__}"
+                        f"Derived input schema from state schema: {
+                            self.input_schema.__name__}"
                     )
                 except Exception as e:
                     logger.debug(f"Could not derive input schema from state: {e}")
@@ -434,7 +444,8 @@ class Agent(
         # Check if we should skip schema generation
         if self.state_schema and not self.use_prebuilt_base and not self.engines:
             logger.debug(
-                f"State schema already provided for {self.name}, no engines to integrate"
+                f"State schema already provided for {
+                    self.name}, no engines to integrate"
             )
             # Still derive I/O schemas if needed
             self._auto_derive_io_schemas()
@@ -449,7 +460,8 @@ class Agent(
             not in ["MessagesState", "SimpleAgentState", "ToolState"]
         ):
             logger.debug(
-                f"State schema already set by setup_agent() to {self.state_schema.__name__}, skipping regeneration"
+                f"State schema already set by setup_agent() to {
+                    self.state_schema.__name__}, skipping regeneration"
             )
             # Still derive I/O schemas if needed
             self._auto_derive_io_schemas()
@@ -474,21 +486,25 @@ class Agent(
                 engine_list.append(component)
 
         logger.debug(
-            f"Setting up schemas for {self.name} with {len(engine_list)} engines"
+            f"Setting up schemas for {
+                self.name} with {
+                len(engine_list)} engines"
         )
 
         try:
             # Handle case where we have a prebuilt base schema to extend
             if self.state_schema and self.use_prebuilt_base and engine_list:
                 logger.debug(
-                    f"Extending prebuilt schema {self.state_schema.__name__} with engine fields"
+                    f"Extending prebuilt schema {
+                        self.state_schema.__name__} with engine fields"
                 )
                 composer = SchemaComposer(name=f"{self.__class__.__name__}State")
 
                 # First add fields from the prebuilt schema
                 composer.add_fields_from_model(self.state_schema)
 
-                # Add all engines - composer will handle engine management and I/O
+                # Add all engines - composer will handle engine management and
+                # I/O
                 for engine in engine_list:
                     composer.add_engine(engine)
                     composer.add_fields_from_engine(engine)
@@ -497,11 +513,18 @@ class Agent(
                 self.state_schema = composer.build()
 
                 logger.debug(
-                    f"Extended schema built: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                    f"Extended schema built: {
+                        getattr(
+                            self.state_schema,
+                            '__name__',
+                            'Unknown')}"
                 )
             elif engine_list:
                 # Use SchemaComposer to create schema from engines
-                logger.debug(f"Creating schema from {len(engine_list)} engines")
+                logger.debug(
+                    f"Creating schema from {
+                        len(engine_list)} engines"
+                )
                 composer = SchemaComposer(name=f"{self.__class__.__name__}State")
 
                 # Add all engines - composer will handle engine management
@@ -513,7 +536,11 @@ class Agent(
                 self.state_schema = composer.build()
 
                 logger.debug(
-                    f"Built schema: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                    f"Built schema: {
+                        getattr(
+                            self.state_schema,
+                            '__name__',
+                            'Unknown')}"
                 )
             else:
                 logger.debug("No engines found, using default MessagesState")
@@ -525,7 +552,10 @@ class Agent(
             # Automatically derive input/output schemas if not provided
             self._auto_derive_io_schemas()
 
-            logger.debug(f"Schema setup complete. State schema: {self.state_schema}")
+            logger.debug(
+                f"Schema setup complete. State schema: {
+                    self.state_schema}"
+            )
 
         except Exception as e:
             logger.warning(f"Schema generation failed: {e}")
@@ -556,7 +586,7 @@ class Agent(
                 self.graph = self.build_graph()
                 self._graph_built = True
             except Exception as e:
-                logger.error(f"Failed to build graph for {self.name}: {e}")
+                logger.exception(f"Failed to build graph for {self.name}: {e}")
                 # Continue without graph for debugging
 
     @abstractmethod
@@ -690,6 +720,56 @@ class Agent(
         self.add_hook(HookEvent.AFTER_STATE_UPDATE, func)
         return func
 
+    def pre_process(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a pre_process hook."""
+        self.add_hook(HookEvent.PRE_PROCESS, func)
+        return func
+
+    def post_process(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a post_process hook."""
+        self.add_hook(HookEvent.POST_PROCESS, func)
+        return func
+
+    def before_message_transform(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a before_message_transform hook."""
+        self.add_hook(HookEvent.BEFORE_MESSAGE_TRANSFORM, func)
+        return func
+
+    def after_message_transform(self, func: HookFunction) -> HookFunction:
+        """Decorator to add an after_message_transform hook."""
+        self.add_hook(HookEvent.AFTER_MESSAGE_TRANSFORM, func)
+        return func
+
+    def before_reflection(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a before_reflection hook."""
+        self.add_hook(HookEvent.BEFORE_REFLECTION, func)
+        return func
+
+    def after_reflection(self, func: HookFunction) -> HookFunction:
+        """Decorator to add an after_reflection hook."""
+        self.add_hook(HookEvent.AFTER_REFLECTION, func)
+        return func
+
+    def before_grading(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a before_grading hook."""
+        self.add_hook(HookEvent.BEFORE_GRADING, func)
+        return func
+
+    def after_grading(self, func: HookFunction) -> HookFunction:
+        """Decorator to add an after_grading hook."""
+        self.add_hook(HookEvent.AFTER_GRADING, func)
+        return func
+
+    def before_structured_output(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a before_structured_output hook."""
+        self.add_hook(HookEvent.BEFORE_STRUCTURED_OUTPUT, func)
+        return func
+
+    def after_structured_output(self, func: HookFunction) -> HookFunction:
+        """Decorator to add an after_structured_output hook."""
+        self.add_hook(HookEvent.AFTER_STRUCTURED_OUTPUT, func)
+        return func
+
     # ========================================================================
     # RECOMPILATION MIXIN INTEGRATION
     # ========================================================================
@@ -728,7 +808,7 @@ class Agent(
                 )
 
         except Exception as e:
-            logger.error(f"Auto-recompile failed for agent '{self.name}': {e}")
+            logger.exception(f"Auto-recompile failed for agent '{self.name}': {e}")
             self.resolve_recompile(success=False)
 
             # Execute error hooks
@@ -744,3 +824,113 @@ class Agent(
             getattr(type(self.engine), "__name__", "None") if self.engine else "None"
         )
         return f"{self.__class__.__name__}[{engine_type}](name='{self.name}')"
+
+    # ========================================================================
+    # COMPILATION METHODS
+    # ========================================================================
+
+    def compile(self, **kwargs) -> Any:
+        """Compile the graph and cache the result.
+
+        Args:
+            **kwargs: Additional compilation arguments
+
+        Returns:
+            The compiled graph
+        """
+        if not self._is_compiled or kwargs:
+            # Build graph if not already built
+            if not hasattr(self, "graph") or self.graph is None:
+                logger.debug("Building graph before compilation")
+                self._build_initial_graph()
+
+            if not self.graph:
+                raise RuntimeError("No graph to compile")
+
+            try:
+                # Convert to LangGraph
+                lg_graph = self.graph.to_langgraph(state_schema=self.state_schema)
+
+                # Compile with checkpointer and store
+                self._app = lg_graph.compile(
+                    checkpointer=self.checkpointer,
+                    store=self.store,
+                    **kwargs
+                )
+                self._compiled_graph = self._app
+                self._is_compiled = True
+
+                logger.debug(f"Graph compiled for agent: {self.name}")
+                return self._compiled_graph
+
+            except Exception as e:
+                logger.exception(f"Graph compilation failed: {e}")
+                raise RuntimeError(f"Failed to compile graph: {e}") from e
+        else:
+            return self._compiled_graph or self._app
+
+    # ========================================================================
+    # REQUIRED ENGINE INTERFACE METHODS
+    # ========================================================================
+
+    def get_input_fields(self) -> dict[str, tuple[type, Any]]:
+        """Return input field definitions as field_name -> (type, default) pairs.
+
+        This implements the abstract method from Engine base class.
+        """
+        # Return from input schema if defined
+        if (
+            self.input_schema
+            and not isinstance(self.input_schema, dict)
+            and hasattr(self.input_schema, "model_fields")
+        ):
+            fields = {}
+            for field_name, field_info in self.input_schema.model_fields.items():
+                field_type = field_info.annotation
+                field_default = field_info.default
+                fields[field_name] = (field_type, field_default)
+            return fields
+
+        # Default to empty dict
+        return {}
+
+    def get_output_fields(self) -> dict[str, tuple[type, Any]]:
+        """Return output field definitions as field_name -> (type, default) pairs.
+
+        This implements the abstract method from Engine base class.
+        """
+        # Return from output schema if defined
+        if (
+            self.output_schema
+            and not isinstance(self.output_schema, dict)
+            and hasattr(self.output_schema, "model_fields")
+        ):
+            fields = {}
+            for field_name, field_info in self.output_schema.model_fields.items():
+                field_type = field_info.annotation
+                field_default = field_info.default
+                fields[field_name] = (field_type, field_default)
+            return fields
+
+        # Default to empty dict
+        return {}
+
+    def create_runnable(
+        self, runnable_config: dict[str, Any] | None = None
+    ) -> Any:
+        """Create and compile the runnable with proper schema kwargs.
+
+        This implements the abstract method from Engine base class.
+        """
+        if not self._setup_complete:
+            raise RuntimeError("Agent setup not complete")
+
+        if not self.graph:
+            raise RuntimeError("Graph not built")
+
+        # Compile the graph if not already compiled
+        if not self._is_compiled:
+            self.compile()
+
+        # Return the compiled app
+        return self._compiled_graph or self._app

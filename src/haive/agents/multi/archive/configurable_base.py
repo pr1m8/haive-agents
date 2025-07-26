@@ -116,8 +116,7 @@ class ConfigurableMultiAgent(Agent):
     _workflow_node_mapping: dict[str, str] = PrivateAttr(default_factory=dict)
 
     @model_validator(mode="after")
-    @classmethod
-    def setup_configurable_multi_agent(cls) -> "ConfigurableMultiAgent":
+    def setup_configurable_multi_agent(self) -> "ConfigurableMultiAgent":
         """Set up the configurable multi-agent system."""
         # Validate agents
         if not self.agents:
@@ -126,7 +125,10 @@ class ConfigurableMultiAgent(Agent):
         # Set up state schema
         if self.state_schema_override:
             self.state_schema = self.state_schema_override
-            logger.info(f"Using provided state schema: {self.state_schema.__name__}")
+            logger.info(
+                f"Using provided state schema: {
+                    self.state_schema.__name__}"
+            )
         else:
             # Compose schema from agents
             self.state_schema = AgentSchemaComposer.from_agents(

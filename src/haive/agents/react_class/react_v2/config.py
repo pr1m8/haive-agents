@@ -164,7 +164,9 @@ class ReactAgentConfig(SimpleAgentConfig):
 
         # Create config
         return cls(
-            name=name or f"react_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name
+            or f"react_agent_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}",
             **kwargs,
         )
 
@@ -213,7 +215,9 @@ class ReactAgentConfig(SimpleAgentConfig):
         config = cls.from_tools(
             tools=tools,
             system_prompt=system_prompt,
-            name=name or f"structured_react_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name
+            or f"structured_react_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}",
             **kwargs,
         )
 

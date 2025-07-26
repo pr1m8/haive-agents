@@ -44,7 +44,7 @@ async def main():
                 agent.persistence.connection_string
                 and "supabase.com" in agent.persistence.connection_string
             ):
-                print("✅ Agent is using Supabase for persistence!")")
+                print("✅ Agent is using Supabase for persistence!)")
 
         # Check recursion limit
         if hasattr(agent, "runnable_config"):

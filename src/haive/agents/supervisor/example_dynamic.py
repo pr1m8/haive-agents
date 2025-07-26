@@ -188,12 +188,23 @@ async def demonstrate_dynamic_supervisor():
     performance_summary = supervisor.get_performance_summary()
 
     console.print("\n[bold yellow]Performance Summary:[/bold yellow]")
-    console.print(f"Total Executions: {performance_summary.get('total_executions', 0)}")
     console.print(
-        f"Overall Success Rate: {performance_summary.get('success_rate', 0.0):.1%}"
+        f"Total Executions: {
+            performance_summary.get(
+                'total_executions',
+                0)}"
     )
     console.print(
-        f"Most Used Agent: {performance_summary.get('most_used_agent', 'None')}"
+        f"Overall Success Rate: {
+            performance_summary.get(
+                'success_rate',
+                0.0):.1%}"
+    )
+    console.print(
+        f"Most Used Agent: {
+            performance_summary.get(
+                'most_used_agent',
+                'None')}"
     )
 
     # Show final dashboard

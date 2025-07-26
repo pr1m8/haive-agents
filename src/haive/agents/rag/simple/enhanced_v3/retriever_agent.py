@@ -6,10 +6,8 @@ with enhanced features for use in Enhanced MultiAgent V3 workflows.
 
 import logging
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-from haive.core.engine.retriever import BaseRetrieverConfig
-from haive.core.engine.vectorstore import VectorStoreConfig
 from langchain_core.documents import Document
 from pydantic import Field
 
@@ -80,8 +78,8 @@ class RetrieverAgent(BaseRAGAgent):
     )
 
     async def arun(
-        self, input_data: str | Dict[str, Any], debug: bool = False, **kwargs
-    ) -> Dict[str, Any]:
+        self, input_data: str | dict[str, Any], debug: bool = False, **kwargs
+    ) -> dict[str, Any]:
         """Enhanced retrieval with performance tracking and debug info.
 
         Args:
@@ -105,7 +103,10 @@ class RetrieverAgent(BaseRAGAgent):
             raise ValueError("Input must be string or dict with 'query' field")
 
         if debug or self.debug_mode:
-            logger.info(f"🔍 RetrieverAgent '{self.name}' processing query: {query}")
+            logger.info(
+                f"🔍 RetrieverAgent '{
+                    self.name}' processing query: {query}"
+            )
 
         # Start timing
         start_time = time.time()
@@ -145,7 +146,9 @@ class RetrieverAgent(BaseRAGAgent):
                     filtered_documents, retrieval_time, query
                 )
                 logger.info(
-                    f"✅ Retrieved {len(filtered_documents)} documents in {retrieval_time:.3f}s"
+                    f"✅ Retrieved {
+                        len(filtered_documents)} documents in {
+                        retrieval_time:.3f}s"
                 )
 
             # Add metadata if enabled
@@ -157,7 +160,7 @@ class RetrieverAgent(BaseRAGAgent):
             return result
 
         except Exception as e:
-            logger.error(f"❌ RetrieverAgent error: {e}")
+            logger.exception(f"❌ RetrieverAgent error: {e}")
             return {
                 "documents": [],
                 "query": query,
@@ -166,7 +169,7 @@ class RetrieverAgent(BaseRAGAgent):
                 "document_count": 0,
             }
 
-    def _extract_documents(self, retrieval_result: Any) -> List[Document]:
+    def _extract_documents(self, retrieval_result: Any) -> list[Document]:
         """Extract documents from various result formats."""
         if isinstance(retrieval_result, list):
             # Direct list of documents
@@ -199,8 +202,8 @@ class RetrieverAgent(BaseRAGAgent):
         return []
 
     def _filter_and_score_documents(
-        self, documents: List[Document], query: str, debug: bool = False
-    ) -> List[Document]:
+        self, documents: list[Document], query: str, debug: bool = False
+    ) -> list[Document]:
         """Filter documents by score threshold and apply quality scoring."""
         if not documents:
             return documents
@@ -270,8 +273,8 @@ class RetrieverAgent(BaseRAGAgent):
         return round(quality_score, 3)
 
     def _calculate_performance_metrics(
-        self, documents: List[Document], retrieval_time: float, query: str
-    ) -> Dict[str, float]:
+        self, documents: list[Document], retrieval_time: float, query: str
+    ) -> dict[str, float]:
         """Calculate performance metrics for retrieval operation."""
         metrics = {
             "retrieval_time": retrieval_time,
@@ -311,8 +314,8 @@ class RetrieverAgent(BaseRAGAgent):
         return metrics
 
     def _collect_debug_info(
-        self, documents: List[Document], retrieval_time: float, query: str
-    ) -> Dict[str, Any]:
+        self, documents: list[Document], retrieval_time: float, query: str
+    ) -> dict[str, Any]:
         """Collect debug information for retrieval operation."""
         debug_info = {
             "agent_name": self.name,
@@ -350,8 +353,8 @@ class RetrieverAgent(BaseRAGAgent):
         return debug_info
 
     def _build_metadata(
-        self, documents: List[Document], query: str, retrieval_time: float
-    ) -> Dict[str, Any]:
+        self, documents: list[Document], query: str, retrieval_time: float
+    ) -> dict[str, Any]:
         """Build metadata for retrieval operation."""
         return {
             "retrieval_agent": self.name,
@@ -359,7 +362,7 @@ class RetrieverAgent(BaseRAGAgent):
             "retrieval_time": retrieval_time,
             "document_count": len(documents),
             "sources": list(
-                set(doc.metadata.get("source", "unknown") for doc in documents)
+                {doc.metadata.get("source", "unknown") for doc in documents}
             ),
             "retrieval_config": {
                 "top_k": self.top_k,
@@ -369,7 +372,7 @@ class RetrieverAgent(BaseRAGAgent):
             },
         }
 
-    def get_retrieval_summary(self) -> Dict[str, Any]:
+    def get_retrieval_summary(self) -> dict[str, Any]:
         """Get summary of retriever configuration."""
         return {
             "name": self.name,

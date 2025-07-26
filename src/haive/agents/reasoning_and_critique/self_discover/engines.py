@@ -16,7 +16,7 @@ def create_select_engine(
     model: str = "gpt-4o",
     temperature: float = 0.0,
     custom_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs
+    **kwargs,
 ) -> AugLLMConfig:
     """Create the engine for selecting reasoning modules with structured output.
 
@@ -74,7 +74,7 @@ def create_select_engine(
             prompt if isinstance(prompt, ChatPromptTemplate | PromptTemplate) else None
         ),
         structured_output_model=ModuleSelectionResult,
-        **kwargs
+        **kwargs,
     )
 
 
@@ -82,7 +82,7 @@ def create_adapt_engine(
     model: str = "gpt-4o",
     temperature: float = 0.0,
     custom_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs
+    **kwargs,
 ) -> AugLLMConfig:
     """Create the engine for adapting selected reasoning modules with structured output.
 
@@ -140,7 +140,7 @@ def create_adapt_engine(
             prompt if isinstance(prompt, ChatPromptTemplate | PromptTemplate) else None
         ),
         structured_output_model=ModuleAdaptationResult,
-        **kwargs
+        **kwargs,
     )
 
 
@@ -148,7 +148,7 @@ def create_structure_engine(
     model: str = "gpt-4o",
     temperature: float = 0.0,
     custom_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs
+    **kwargs,
 ) -> AugLLMConfig:
     """Create the engine for creating structured reasoning plans with structured output.
 
@@ -209,7 +209,7 @@ def create_structure_engine(
             prompt if isinstance(prompt, ChatPromptTemplate | PromptTemplate) else None
         ),
         structured_output_model=ReasoningStructure,
-        **kwargs
+        **kwargs,
     )
 
 
@@ -217,7 +217,7 @@ def create_reasoning_engine(
     model: str = "gpt-4o",
     temperature: float = 0.0,
     custom_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs
+    **kwargs,
 ) -> AugLLMConfig:
     """Create the engine for executing reasoning plans with structured output.
 
@@ -279,7 +279,7 @@ def create_reasoning_engine(
             prompt if isinstance(prompt, ChatPromptTemplate | PromptTemplate) else None
         ),
         structured_output_model=ReasoningOutput,
-        **kwargs
+        **kwargs,
     )
 
 
@@ -290,7 +290,7 @@ def create_selfdiscover_engines(
     adapt_prompt: str | ChatPromptTemplate | None = None,
     structure_prompt: str | ChatPromptTemplate | None = None,
     reasoning_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs
+    **kwargs,
 ) -> dict[str, AugLLMConfig]:
     """Create all engines for the SelfDiscover agent with structured output models.
 

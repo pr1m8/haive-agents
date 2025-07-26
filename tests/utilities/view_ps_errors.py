@@ -92,7 +92,7 @@ def view_ps_errors():
 
                         # Check for error at top level
                         if "error" in meta_dict:
-                            pass')
+                            pass
 
                     except Exception as e:
                         passe}")

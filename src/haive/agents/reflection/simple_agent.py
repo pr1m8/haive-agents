@@ -83,14 +83,16 @@ class ReflectionAgent(MultiAgent):
 
     async def _run_sequential(self, input_data, **kwargs):
         """Custom sequential execution with reflection loop."""
-        # Step 1: Critique - SimpleAgent will automatically map {content} from input_data
+        # Step 1: Critique - SimpleAgent will automatically map {content} from
+        # input_data
         critic = self.agents["critic"]
         critique_result = await critic.arun(input_data, **kwargs)
 
         # Step 2: Improve if needed
         if critique_result.needs_improvement:
             improver = self.agents["improver"]
-            # SimpleAgent will automatically map {content}, {strengths}, {weaknesses}
+            # SimpleAgent will automatically map {content}, {strengths},
+            # {weaknesses}
             improvement_result = await improver.arun(
                 {
                     "content": input_data,

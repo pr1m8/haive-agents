@@ -77,7 +77,8 @@ def crag_relevance_check(input_data: dict) -> dict:
     return {
         "quality": quality,
         "confidence": avg_score,
-        "reasoning": f"Average relevance score: {avg_score:.2f}",
+        "reasoning": f"Average relevance score: {
+            avg_score:.2f}",
         "needs_web_search": quality in [RAGQuality.INCORRECT, RAGQuality.AMBIGUOUS],
     }
 
@@ -125,7 +126,8 @@ def hallucination_detection(input_data: dict) -> dict:
     return {
         "has_hallucination": has_hallucination,
         "confidence": confidence,
-        "reasoning": f"Coverage ratio: {coverage_ratio:.2f}, indicators: {has_indicators}",
+        "reasoning": f"Coverage ratio: {
+            coverage_ratio:.2f}, indicators: {has_indicators}",
         "needs_regeneration": has_hallucination,
     }
 
@@ -717,7 +719,9 @@ def create_complete_rag_workflow(
 
     if workflow_type not in workflow_map:
         raise ValueError(
-            f"Unknown workflow type: {workflow_type}. Available: {list(workflow_map.keys())}"
+            f"Unknown workflow type: {workflow_type}. Available: {
+                list(
+                    workflow_map.keys())}"
         )
 
     return workflow_map[workflow_type](documents=documents, **kwargs)

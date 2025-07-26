@@ -872,7 +872,8 @@ Decompose the task now:""",
                 result = await self._execute_decomposed_task(task, routing_decision)
             else:
                 raise ValueError(
-                    f"Unknown routing decision: {routing_decision['routing_decision']}"
+                    f"Unknown routing decision: {
+                        routing_decision['routing_decision']}"
                 )
 
             # Step 3: Update task with result
@@ -945,7 +946,10 @@ Decompose the task now:""",
             # Prepare agent capabilities description
             capabilities_desc = []
             for agent_name, capabilities in self.agent_capabilities.items():
-                desc = f"- {agent_name}: {capabilities.agent_type} - {', '.join(capabilities.specialization)}"
+                desc = f"- {agent_name}: {
+                    capabilities.agent_type} - {
+                    ', '.join(
+                        capabilities.specialization)}"
                 capabilities_desc.append(desc)
 
             # Create routing prompt

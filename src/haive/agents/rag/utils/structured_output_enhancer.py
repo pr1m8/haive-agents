@@ -293,7 +293,8 @@ class RAGEnhancementFactory:
 
         enhancer = enhancer_map[enhancement_type]()
 
-        # Create base processing steps (these would be actual agents in practice)
+        # Create base processing steps (these would be actual agents in
+        # practice)
         base_agents = []  # Add your base RAG agents here
 
         # Enhance with structured output

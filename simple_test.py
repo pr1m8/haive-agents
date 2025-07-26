@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-r"""Simple test to check if RAG agents can be imported and\s+create\w+."""
+"""Simple test to check if RAG agents can be imported and created."""
 
 import os
 import sys
 
 # Add the source paths
-sys.path.insert(\d+, os.path.join(os.getcw\w+(),\s+"src"))
+sys.path.insert(0, os.path.join(os.getcwd(), "src"))
 
 
-def test_import\w+():
-   \s+"""Test if we can import the basic\s+classe\w+."""
+def test_import():
+    """Test if we can import the basic classes."""
     try:
         from langchain_core.documents import Document
 

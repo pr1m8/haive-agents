@@ -92,19 +92,27 @@ class NumericGrade(Grade):
         """
         if self.min_value >= self.max_value:
             raise ValueError(
-                f"min_value ({self.min_value}) must be less than max_value ({self.max_value})"
+                f"min_value ({
+                    self.min_value}) must be less than max_value ({
+                    self.max_value})"
             )
 
         if not (self.min_value <= self.value <= self.max_value):
             raise ValueError(
-                f"Score {self.value} is outside valid range [{self.min_value}, {self.max_value}]"
+                f"Score {
+                    self.value} is outside valid range [{
+                    self.min_value}, {
+                    self.max_value}]"
             )
 
         # Validate passing threshold if provided
         if self.passing_threshold is not None:
             if not (self.min_value <= self.passing_threshold <= self.max_value):
                 raise ValueError(
-                    f"Passing threshold {self.passing_threshold} is outside valid range [{self.min_value}, {self.max_value}]"
+                    f"Passing threshold {
+                        self.passing_threshold} is outside valid range [{
+                        self.min_value}, {
+                        self.max_value}]"
                 )
 
         return self
@@ -199,7 +207,12 @@ class NumericGrade(Grade):
         letter = self.get_letter_equivalent()
         passing_status = "✅" if self.is_passing() else "❌"
 
-        return f"{passing_status} {self.value}/{self.max_value} ({percentage:.1f}% | {letter}) | {self.justification[:30]}..."
+        return f"{passing_status} {
+            self.value}/{
+            self.max_value} ({
+            percentage:.1f}% | {letter}) | {
+                self.justification[
+                    :30]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a value is numeric and within range.

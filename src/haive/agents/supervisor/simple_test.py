@@ -52,7 +52,7 @@ class EchoAgent(SimpleAgent):
         if hasattr(state, "__class__"):
             try:
                 return state.__class__(messages=new_messages)
-            except:
+            except BaseException:
                 pass
 
         # Fallback to generic state

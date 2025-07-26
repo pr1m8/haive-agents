@@ -188,7 +188,10 @@ class SimpleAgent(Agent):
         if isinstance(v, dict):
             return AugLLMConfig(**v)
         if not isinstance(v, AugLLMConfig):
-            raise ValueError(f"SimpleAgent requires AugLLMConfig, got {type(v)}")
+            raise ValueError(
+                f"SimpleAgent requires AugLLMConfig, got {
+                    type(v)}"
+            )
         return v
 
     # ========================================================================

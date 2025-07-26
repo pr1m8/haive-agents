@@ -32,7 +32,7 @@ async def debug_execution():
 
     print("\n" + "=" * 80)
     print("🔍 DEBUG: ReactAgent → SimpleAgent Sequential Execution")
-    print("=" * 80 + "\n")
+    print("=" * 80 + \n")
 
     # Create ReactAgent with calculator tool
     print("📌 BREAKPOINT 1: Creating ReactAgent with calculator tool")
@@ -94,7 +94,7 @@ async def debug_execution():
     # Build the graph
     print("\n📌 BREAKPOINT 5: Building the graph")
     graph = multi_agent.graph
-    print("✅ Graph built"t")
+    print("✅ Graph builtt")
     print(f"   - Nodes: {list(graph.nodes.keys())}")
 
     # Check graph structure
@@ -148,13 +148,13 @@ async def debug_execution():
 
         # Check agent outputs if available
         if isinstance(result, dict) and "agent_outputs" in result:
-            print("\n🤖 Agent outputs:"s:")
+            print("\n🤖 Agent outputs:s:")
             for agent_name, output in result["agent_outputs"].items():
                 print(f"   - {agent_name}: {type(output).__name__}")
 
         # Check agent states if available
         if isinstance(result, dict) and "agent_states" in result:
-            print("\n📊 Agent states:"s:")
+            print("\n📊 Agent states:s:")
             for agent_name, state in result["agent_states"].items():
                 print(f"   - {agent_name}: {len(state)} fields")
 
@@ -206,7 +206,7 @@ async def inspect_intermediate_states():
     """Additional function to inspect intermediate states during execution."""
     print("\n" + "=" * 80)
     print("🔬 ADVANCED: Inspecting intermediate states")
-    print("=" * 80 + "\n")
+    print("=" * 80 + \n")
 
     # This would require modifying the graph nodes to add inspection points
     # For now, we'll use the simpler debug approach above

@@ -183,7 +183,10 @@ def save_structured_memories(
     # Add documents to vector store
     if documents:
         vector_store.add_documents(documents)
-        logger.info(f"Saved {len(documents)} structured memories for user {user_id}")
+        logger.info(
+            f"Saved {
+                len(documents)} structured memories for user {user_id}"
+        )
 
     return saved_triples
 
@@ -220,7 +223,10 @@ def retrieve_memories(
         # Extract memory strings
         memory_strings = [doc.page_content for doc in documents]
 
-        logger.info(f"Retrieved {len(memory_strings)} memories for user {user_id}")
+        logger.info(
+            f"Retrieved {
+                len(memory_strings)} memories for user {user_id}"
+        )
         return memory_strings
 
     except Exception as e:

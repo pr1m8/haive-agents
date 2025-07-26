@@ -4,8 +4,10 @@ from typing import Any
 
 # Fix forward references EARLY before importing MultiAgentState
 from haive.core.graph.node import agent_node_v3
+from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt import multi_agent_state
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.graph import END, START
 from pydantic import Field, model_validator
 
@@ -17,10 +19,9 @@ agent_node_v3.Agent = Agent
 multi_agent_state.Agent = Agent
 
 # Rebuild models that have forward references
-from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 
 # Now import MultiAgentState after fixing forward refs
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
+
 
 AgentNodeV3Config.model_rebuild()
 MultiAgentState.model_rebuild()
@@ -138,7 +139,8 @@ class ProperMultiAgent(Agent):
             self.state_schema = ComposedMultiAgentState
             self.use_prebuilt_base = True
 
-    # NOTE: No need to override run/arun anymore - agents are now part of state schema defaults
+    # NOTE: No need to override run/arun anymore - agents are now part of
+    # state schema defaults
 
     def build_graph(self) -> BaseGraph:
         """Build graph using AgentNodeV3 properly."""
@@ -199,7 +201,7 @@ class ProperMultiAgent(Agent):
 
         # Connect agents in sequence
         for i in range(len(agent_names) - 1):
-            graph.add_edge(f"agent_{agent_names[i]}", f"agent_{agent_names[i+1]}")
+            graph.add_edge(f"agent_{agent_names[i]}", f"agent_{agent_names[i + 1]}")
 
         # Connect last agent to END
         graph.add_edge(f"agent_{agent_names[-1]}", END)

@@ -325,7 +325,8 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
                             f"Find agent specifications or experts that can help with: {task_description}"
                         )
                         # Parse response for agent definitions
-                        # This is simplified - real implementation would parse structured output
+                        # This is simplified - real implementation would parse
+                        # structured output
                         if "agent:" in rag_response.lower():
                             discovered.append(
                                 "RAG: Found agent specifications in documents"
@@ -407,7 +408,8 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
                             next_agent=self.name,  # Route to self for discovery
                             reasoning="Task appears to require specialized agents. Discovering suitable agents first.",
                             confidence=0.9,
-                            suggested_prompt=f"discover_and_add_agents for: {last_message.content}",
+                            suggested_prompt=f"discover_and_add_agents for: {
+                                last_message.content}",
                         )
 
         # Standard routing decision
@@ -435,9 +437,15 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
                     else ""
                 )
                 tools = (
-                    f"Tools: {', '.join(capability.tools)}" if capability.tools else ""
+                    f"Tools: {
+                        ', '.join(
+                            capability.tools)}"
+                    if capability.tools
+                    else ""
                 )
-                info = f"- {name} ({capability.agent_type}): {capability.description}. {specialties} {tools}"
+                info = f"- {name} ({
+                    capability.agent_type}): {
+                    capability.description}. {specialties} {tools}"
             else:
                 info = f"- {name}: {agent.__class__.__name__}"
             agent_info.append(info)
@@ -485,7 +493,7 @@ Respond with:
             elif line.startswith("CONFIDENCE:"):
                 try:
                     confidence = float(line.replace("CONFIDENCE:", "").strip())
-                except:
+                except BaseException:
                     confidence = 0.8
             elif line.startswith("PROMPT:"):
                 prompt = line.replace("PROMPT:", "").strip()
@@ -666,7 +674,8 @@ Respond with:
             elif agent_type == "ReactAgent":
                 agent_class = ReactAgent
             # elif agent_type == "PerplexityStyleAgent":
-            #     agent_class = PerplexityStyleAgent  # Commented out due to import issues
+            # agent_class = PerplexityStyleAgent  # Commented out due to import
+            # issues
             else:
                 logger.warning(f"Unknown agent type: {agent_type}, using SimpleAgent")
                 agent_class = SimpleAgent

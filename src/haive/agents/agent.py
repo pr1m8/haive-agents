@@ -252,7 +252,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         step = 1
         if scratchpad:
             first_message = scratchpad[0]
-            # Check if the message is a dictionary or an object with content attribute
+            # Check if the message is a dictionary or an object with content
+            # attribute
             if isinstance(first_message, dict) and "content" in first_message:
                 content = first_message["content"]
             elif hasattr(first_message, "content"):
@@ -376,7 +377,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         else:
             try:
                 state_dict = dict(state)
-            except:
+            except BaseException:
                 state_dict = {"input": getattr(state, "input", "")}
 
         # Check if page is available
@@ -409,7 +410,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                     "x": bbox.get("x", 0),
                     "y": bbox.get("y", 0),
                     "width": bbox.get("width", 10),  # Default width if missing
-                    "height": bbox.get("height", 10),  # Default height if missing
+                    # Default height if missing
+                    "height": bbox.get("height", 10),
                     "text": bbox.get("text", ""),
                     "type": bbox.get("type", "element"),
                     "ariaLabel": bbox.get("ariaLabel", ""),
@@ -446,7 +448,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 **state_dict,
                 "img": screenshot or state_dict.get("img", ""),
                 "bboxes": state_dict.get("bboxes", []),
-                "observation": f"Error during page annotation: {e!s}",
+                "observation": f"Error during page annotation: {
+                    e!s}",
                 "page_url": (
                     self.page.url if self.page else state_dict.get("page_url", "")
                 ),
@@ -574,13 +577,15 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 bbox = bboxes[bbox_id]
 
                 # Use proper attribute access for BBox object
-                # Access x and y properly whether bbox is a dict or a BBox object
+                # Access x and y properly whether bbox is a dict or a BBox
+                # object
                 if hasattr(bbox, "x") and hasattr(bbox, "y"):
                     x, y = bbox.x, bbox.y
                 elif isinstance(bbox, dict):
                     x, y = bbox.get("x", 0), bbox.get("y", 0)
                 else:
-                    return f"Cannot extract coordinates from bbox type: {type(bbox)}"
+                    return f"Cannot extract coordinates from bbox type: {
+                        type(bbox)}"
 
                 # Click on element
                 await self.page.mouse.click(x, y)
@@ -728,7 +733,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
             # Display progress
             display.clear_output(wait=True)
-            step_str = f"{len(steps)+1}. {action}"
+            step_str = f"{len(steps) + 1}. {action}"
             if prediction and "args" in prediction:
                 step_str += f": {prediction['args']}"
             steps.append(step_str)

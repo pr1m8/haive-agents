@@ -246,20 +246,26 @@ def explore_database_schema(db: SQLDatabase) -> dict[str, Any]:
             samples = db.run(f"SELECT * FROM {table} LIMIT 3")
             schema_info["table_samples"][table] = samples
         except Exception as e:
-            schema_info["table_samples"][table] = f"Error fetching samples: {e!s}"
+            schema_info["table_samples"][
+                table
+            ] = f"Error fetching samples: {
+                e!s}"
 
     # Try to detect relationships between tables
     try:
         # This is a simplified approach - won't work for all DB types
-        # For a production system, this should be adapted to the specific DB dialect
+        # For a production system, this should be adapted to the specific DB
+        # dialect
         for table1 in schema_info["tables"]:
             for table2 in schema_info["tables"]:
                 if table1 != table2:
-                    # Look for potential foreign keys based on naming conventions
+                    # Look for potential foreign keys based on naming
+                    # conventions
                     t1_info = schema_info["table_info"][table1]
                     schema_info["table_info"][table2]
 
-                    # Look for columns with names like "{table}Id" in the other table
+                    # Look for columns with names like "{table}Id" in the other
+                    # table
                     for col_line in t1_info.split("\n"):
                         if (
                             f"{table2.lower()}id" in col_line.lower()

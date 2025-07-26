@@ -1,5 +1,11 @@
+from typing import Annotated, Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
+from langchain_community.document_loaders import WebBaseLoader
+from langchain_core.documents import Document
+from langchain_core.messages import BaseMessage
+from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent import SimpleAgentConfig
@@ -51,11 +57,7 @@ You are a highly intelligent AI assistant specializing in **retrieval-augmented 
   }}
 ]
 """
-from typing import Annotated, Any
 
-from langchain_core.documents import Document
-from langchain_core.messages import BaseMessage
-from langchain_core.prompts import ChatPromptTemplate
 
 # Define the union type for contents
 ContentType = Annotated[
@@ -104,7 +106,6 @@ qa_agent = qa_agent_config.build_agent()
 
 # Example usage
 
-from langchain_community.document_loaders import WebBaseLoader
 
 document = WebBaseLoader("https://en.wikipedia.org/wiki/Differential_geometry").load()
 

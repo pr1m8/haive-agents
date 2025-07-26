@@ -82,7 +82,9 @@ class ChainAgentConfig(SimpleAgentConfig):
         primary_engine = engines[0] if engines else AugLLMConfig()
 
         return cls(
-            name=name or f"chain_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name
+            or f"chain_agent_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}",
             engine=primary_engine,  # Use first engine as primary
             engines=engines,  # Store all engines
             system_prompt=system_prompt or "You are a helpful assistant.",
@@ -114,19 +116,24 @@ class ChainAgent(SimpleAgent):
 
         # Get or generate step names
         step_names = self.config.step_names or [
-            f"step_{i}_{engine.name}" for i, engine in enumerate(self.config.engines)
+            f"step_{i}_{
+                engine.name}"
+            for i, engine in enumerate(self.config.engines)
         ]
 
         # Ensure we have the right number of step names
         if len(step_names) != len(self.config.engines):
             logger.warning(
-                f"Number of step names ({len(step_names)}) does not match number of engines ({len(self.config.engines)})"
+                f"Number of step names ({
+                    len(step_names)}) does not match number of engines ({
+                    len(
+                        self.config.engines)})"
             )
             # Generate missing step names
             if len(step_names) < len(self.config.engines):
                 step_names.extend(
                     [
-                        f"step_{i+len(step_names)}_{engine.name}"
+                        f"step_{i + len(step_names)}_{engine.name}"
                         for i, engine in enumerate(
                             self.config.engines[len(step_names) :]
                         )
@@ -217,7 +224,8 @@ class ChainAgent(SimpleAgent):
 
                             # Map to the right variable name
                             if input_vars and len(input_vars) > 0:
-                                primary_var = input_vars[0]  # Use first variable
+                                # Use first variable
+                                primary_var = input_vars[0]
                                 step_data = {primary_var: input_text}
                             else:
                                 step_data = {"text": input_text}
@@ -243,7 +251,8 @@ class ChainAgent(SimpleAgent):
 
                             # Map to the right variable name
                             if input_vars and len(input_vars) > 0:
-                                primary_var = input_vars[0]  # Use first variable
+                                # Use first variable
+                                primary_var = input_vars[0]
                                 step_data = {primary_var: prev_result}
                             else:
                                 step_data = {"text": prev_result}
@@ -305,7 +314,8 @@ class ChainAgent(SimpleAgent):
                     "current_step": step_idx + 1,
                 }
 
-                # If this is the last step, also update output and add to messages
+                # If this is the last step, also update output and add to
+                # messages
                 if step_idx == len(self.config.engines) - 1:
                     updated_state["output"] = result_str
 
@@ -318,7 +328,10 @@ class ChainAgent(SimpleAgent):
                 return updated_state
 
             except Exception as e:
-                logger.exception(f"Error in step {step_idx} ({step_name}): {e!s}")
+                logger.exception(
+                    f"Error in step {step_idx} ({step_name}): {
+                        e!s}"
+                )
                 error_msg = f"Error in step {step_idx} ({step_name}): {e!s}"
 
                 # Add error as AI message if we have messages

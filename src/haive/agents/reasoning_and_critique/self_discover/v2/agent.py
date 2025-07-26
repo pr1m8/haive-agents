@@ -17,6 +17,9 @@ from haive.agents.reasoning_and_critique.self_discover.v2.prompts import (
     select_prompt,
     structured_prompt,
 )
+from haive.agents.reasoning_and_critique.self_discover.v2.state import (
+    SelfDiscoveryState,
+)
 from haive.agents.simple.agent import SimpleAgent
 
 # Default reasoning modules
@@ -58,14 +61,15 @@ default_reasoning_modules = [
     "39. Let's make a step by step plan and implement it with good notation and explanation.",
 ]
 
-# Create AugLLM configs for each step with reasoning_modules as partial variable
+# Create AugLLM configs for each step with reasoning_modules as partial
+# variable
 select_engine = AugLLMConfig(
     name="select_modules",
     structured_output_model=SelectedModules,
     structured_output_version="v2",
     prompt_template=select_prompt.partial(
         reasoning_modules="\n".join(
-            [f"{i+1}. {module}" for i, module in enumerate(default_reasoning_modules)]
+            [f"{i + 1}. {module}" for i, module in enumerate(default_reasoning_modules)]
         )
     ),
     temperature=0.7,
@@ -104,9 +108,7 @@ reason_agent = SimpleAgent(name="final_reasoning", engine=reason_engine)
 
 
 # Import our proper state schema
-from haive.agents.reasoning_and_critique.self_discover.v2.state import (
-    SelfDiscoveryState,
-)
+
 
 # Create the ProperMultiAgent with sequential execution and our state schema
 self_discovery = ProperMultiAgent(

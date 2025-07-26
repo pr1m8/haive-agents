@@ -145,7 +145,8 @@ class BaseSearchAgent(ReactAgent, ABC):
             memory_items.append(
                 {
                     "type": MemoryType.SEMANTIC,
-                    "content": response[:500],  # First 500 chars as semantic knowledge
+                    # First 500 chars as semantic knowledge
+                    "content": response[:500],
                     "metadata": {"source": "search_response", "query": query},
                 }
             )
@@ -208,7 +209,8 @@ class BaseSearchAgent(ReactAgent, ABC):
 
         # Save to memory if requested
         if save_to_memory:
-            # Note: Memory saving would be implemented when memory system is available
+            # Note: Memory saving would be implemented when memory system is
+            # available
             pass
 
         return structured_response

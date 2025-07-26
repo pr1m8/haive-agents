@@ -191,7 +191,8 @@ class SimpleAgentConfig(AgentConfig):
             structured_output_model=structured_output_model,
         )
 
-        # If structured output model is provided but no output schema, use the model
+        # If structured output model is provided but no output schema, use the
+        # model
         if structured_output_model is not None and output_schema is None:
             output_schema = structured_output_model
 

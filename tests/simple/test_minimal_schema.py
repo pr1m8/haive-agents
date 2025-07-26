@@ -38,7 +38,7 @@ def test_minimal_schema():
         print(f"✅ Schema built: {TestSchema.__name__}")
 
         # Try to instantiate
-        test_state = TestSchema()
+        TestSchema()
         print("✅ Schema instance created")
     except Exception as e:
         print(f"❌ SchemaComposer failed: {type(e).__name__}: {e}")

@@ -86,7 +86,8 @@ class PropertyFilter(BaseModel):
         valid_types = {"=", "!=", ">", "<", ">=", "<="}
         if v not in valid_types:
             raise ValueError(
-                f"Invalid filter type '{v}'. Must be one of: {', '.join(valid_types)}"
+                f"Invalid filter type '{v}'. Must be one of: {
+                    ', '.join(valid_types)}"
             )
         return v
 
@@ -154,7 +155,8 @@ class CypherQueryOutput(BaseModel):
 
         if not any(query_upper.startswith(kw) for kw in valid_keywords):
             raise ValueError(
-                f"Invalid Cypher query. Must start with one of: {', '.join(valid_keywords)}"
+                f"Invalid Cypher query. Must start with one of: {
+                    ', '.join(valid_keywords)}"
             )
         return query
 

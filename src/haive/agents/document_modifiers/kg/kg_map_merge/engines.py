@@ -107,7 +107,8 @@ def create_relationship_extraction_config(
         name="relationship_extractor",
         llm_config=llm_config,
         prompt_template=relationship_extraction_prompt,
-        structured_output_model=EntityRelationship,  # Structured output for relationships
+        # Structured output for relationships
+        structured_output_model=EntityRelationship,
     )
 
 

@@ -23,7 +23,7 @@ def example_math_problem():
         name="math_problem_solver", model="gpt-4o", temperature=0.0
     )
 
-    result = agent.run(problem)
+    agent.run(problem)
     # Print full reasoning process
 
 
@@ -54,15 +54,15 @@ def example_svg_interpretation():
         reasoning_modules=visual_reasoning_modules,
     )
 
-    result = agent.run(problem)
+    agent.run(problem)
 
     # Print full reasoning process
 
 
 def example_logical_reasoning():
     """Example using SelfDiscover for a logical reasoning problem."""
-    problem = """Four people (Alex, Blake, Casey, and Dana) each have a different favorite color 
-(red, blue, green, and yellow) and a different favorite fruit (apple, banana, cherry, and date). 
+    problem = """Four people (Alex, Blake, Casey, and Dana) each have a different favorite color
+(red, blue, green, and yellow) and a different favorite fruit (apple, banana, cherry, and date).
 Given the following clues, determine each person\'s favorite color and fruit:
 
 1. The person who likes red also likes dates.
@@ -93,7 +93,7 @@ Given the following clues, determine each person\'s favorite color and fruit:
         reasoning_modules=logical_reasoning_modules,
     )
 
-    result = agent.run(problem)
+    agent.run(problem)
 
     # Print full reasoning process
 
@@ -200,7 +200,7 @@ def run_batch_problems(
             # Print just the answer for progress tracking
 
         except Exception as e:
-            logger.exception(f"Error processing problem {i+1}: {e!s}")
+            logger.exception(f"Error processing problem {i + 1}: {e!s}")
             results.append({"problem": problem, "error": str(e)})
 
     # Save to file if requested
@@ -328,7 +328,7 @@ def example_advanced_configuration():
     )
 
     # Run the agent
-    result = agent.run(problem)
+    agent.run(problem)
 
     # Print results
 
@@ -369,7 +369,8 @@ def analyze_reasoning_process(
 
             # Analyze selected modules
             selected = result.get("selected_modules", "")
-            # Extract module numbers from text (assuming format like "1. Module name")
+            # Extract module numbers from text (assuming format like "1. Module
+            # name")
             import re
 
             module_numbers = re.findall(r"(\d+)\.", selected)
@@ -390,7 +391,7 @@ def analyze_reasoning_process(
 
     # Print analysis
 
-    for module, data in sorted_modules[:5]:
+    for module, _data in sorted_modules[:5]:
         pass
 
     if analysis["common_errors"]:

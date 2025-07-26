@@ -422,7 +422,10 @@ class CompositeGrade(Grade):
         grade_count = len(self.grades)
         method = self.combination_method.replace("_", " ").title()
 
-        return f"{passing_status}{consensus_status} Composite: {composite_score:.1f}% ({grade_count} grades | {method}) | {self.justification[:25]}..."
+        return f"{passing_status}{consensus_status} Composite: {
+            composite_score:.1f}% ({grade_count} grades | {method}) | {
+            self.justification[
+                :25]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a value represents valid composite grade data.

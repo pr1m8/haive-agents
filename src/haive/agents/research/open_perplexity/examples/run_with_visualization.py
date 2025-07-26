@@ -10,12 +10,13 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-# Add the parent directory to the path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent.parent))
-
 from agents.open_perplexity.agent import ResearchAgent
 from agents.open_perplexity.config import ResearchAgentConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
+
+# Add the parent directory to the path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent.parent))
+
 
 # Set up logging to both console and file
 log_file = "research_example_run.log"
@@ -93,7 +94,10 @@ def run_example() -> bool:
             final_state = agent.run({"input_context": research_question})
             logger.info("agent.run() completed successfully")
             logger.debug(
-                f"Final state keys: {final_state.keys() if isinstance(final_state, dict) else 'Not a dict'}"
+                f"Final state keys: {
+                    final_state.keys() if isinstance(
+                        final_state,
+                        dict) else 'Not a dict'}"
             )
         except Exception as e:
             logger.exception(f"Error running research agent: {e}")

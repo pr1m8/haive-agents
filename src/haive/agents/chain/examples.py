@@ -147,7 +147,8 @@ def create_query_planning_declarative(documents: list[Document]):
         """Synthesize all sub-query results."""
         sub_results = state.get("sub_results", [])
         return {
-            "final_response": f"Synthesized answer from {len(sub_results)} sub-queries"
+            "final_response": f"Synthesized answer from {
+                len(sub_results)} sub-queries"
         }
 
     # Build declaratively with a loop

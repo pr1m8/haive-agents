@@ -494,7 +494,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
                 logger.exception(
                     "Error processing chunk", extra={"chunk_index": i, "error": str(e)}
                 )
-                chunk_summaries.append(f"[Chunk {i+1} could not be summarized]")
+                chunk_summaries.append(f"[Chunk {i + 1} could not be summarized]")
 
         # Combine chunk summaries
         if not chunk_summaries:

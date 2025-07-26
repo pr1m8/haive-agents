@@ -85,27 +85,22 @@ See Also:
 """
 
 import logging
-from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any
 
-from haive.core.common.mixins.dynamic_tool_route_mixin import DynamicToolRouteMixin
-from haive.core.common.mixins.recompile_mixin import RecompileMixin
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.schema.prebuilt.llm_state import LLMState
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from langchain_core.output_parsers.base import BaseOutputParser
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.tools import BaseTool, tool
-from langgraph.graph import END, START
-from langgraph.types import Command
+from langgraph.graph import END
 from pydantic import BaseModel, Field, field_validator
 
-# Hooks system integration
-from haive.agents.base.hooks import HookContext, HookEvent
+# Import Agent for model_rebuild
+from haive.agents.base.enhanced_agent import Agent
 
-# Import enhanced SimpleAgentV3 as base class
+# Import SimpleAgentV3 as base class
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+
+# Hooks system integration
+
 
 logger = logging.getLogger(__name__)
 
@@ -306,7 +301,7 @@ class ReactAgentV3(SimpleAgentV3):
         description="Current iteration number (read-only, managed internally)",
     )
 
-    reasoning_trace: List[str] = Field(
+    reasoning_trace: list[str] = Field(
         default_factory=list,
         description="Step-by-step reasoning history (read-only, managed internally)",
     )
@@ -322,17 +317,18 @@ class ReactAgentV3(SimpleAgentV3):
     )
 
     # Internal state tracking (Pydantic fields cannot start with underscore)
-    current_reasoning_step: Optional[str] = Field(
+    current_reasoning_step: str | None = Field(
         default=None,
         description="Current reasoning step being executed (internal use)",
         exclude=True,  # Exclude from serialization
     )
 
-    tool_results_history: List[Dict[str, Any]] = Field(
+    tool_results_history: list[dict[str, Any]] = Field(
         default_factory=list,
         description="History of tool executions and results (internal use)",
         exclude=True,  # Exclude from serialization
     )
+
 
     @field_validator("max_iterations")
     @classmethod
@@ -367,9 +363,15 @@ class ReactAgentV3(SimpleAgentV3):
         super().setup_agent()
 
         if self.debug:
-            logger.debug(f"Setting up ReactAgent v3 features for '{self.name}'")
+            logger.debug(
+                f"Setting up ReactAgent v3 features for '{
+                    self.name}'"
+            )
             logger.debug(f"Max iterations: {self.max_iterations}")
-            logger.debug(f"Stop on first tool result: {self.stop_on_first_tool_result}")
+            logger.debug(
+                f"Stop on first tool result: {
+                    self.stop_on_first_tool_result}"
+            )
             logger.debug(f"Require final answer: {self.require_final_answer}")
 
         # Initialize reasoning state
@@ -377,6 +379,7 @@ class ReactAgentV3(SimpleAgentV3):
         self.reasoning_trace = []
         self.tool_results_history = []
         self.current_reasoning_step = None
+
 
         # Register ReAct-specific hook events if hooks are enabled
         if hasattr(self, "hooks_enabled") and self.hooks_enabled:
@@ -398,10 +401,10 @@ class ReactAgentV3(SimpleAgentV3):
         """
         try:
             # For now, use basic hook registration from SimpleAgentV3
-            # The specific ReAct hook events can be added later when HookEvent is extended
-            if hasattr(self, "hooks_enabled") and self.hooks_enabled:
-                if self.debug:
-                    logger.debug("ReAct hooks would be registered here (placeholder)")
+            # The specific ReAct hook events can be added later when HookEvent
+            # is extended
+            if hasattr(self, "hooks_enabled") and self.hooks_enabled and self.debug:
+                logger.debug("ReAct hooks would be registered here (placeholder)")
 
         except Exception as e:
             if self.debug:
@@ -474,7 +477,9 @@ class ReactAgentV3(SimpleAgentV3):
         """
         if self.debug:
             logger.debug(
-                f"Building ReAct graph for '{self.name}' with max_iterations={self.max_iterations}"
+                f"Building ReAct graph for '{
+                    self.name}' with max_iterations={
+                    self.max_iterations}"
             )
 
         # Start with SimpleAgentV3's enhanced graph
@@ -494,7 +499,9 @@ class ReactAgentV3(SimpleAgentV3):
 
         if self.debug:
             logger.debug(
-                f"ReAct graph build complete with nodes: {list(graph.nodes.keys())}"
+                f"ReAct graph build complete with nodes: {
+                    list(
+                        graph.nodes.keys())}"
             )
 
         return graph
@@ -502,25 +509,17 @@ class ReactAgentV3(SimpleAgentV3):
     def _modify_graph_for_react_loops(self, graph: BaseGraph) -> None:
         """Modify graph connections to implement ReAct reasoning loops.
 
-        Transforms the linear SimpleAgent graph into a ReAct reasoning loop by:
-        1. Redirecting tool node outputs back to agent_node for continued reasoning
-        2. Redirecting parser outputs back to agent_node for additional iterations
-        3. Adding iteration counting and limit enforcement
-        4. Preserving final output generation for structured output
-
-        Args:
-            graph: BaseGraph instance to modify for ReAct pattern
-
-        Note:
-            This method modifies the graph in-place to implement reasoning loops
-            while preserving all structured output and tool integration capabilities.
+        Simple ReAct pattern like original ReactAgent:
+        1. tool_node → agent_node (instead of END) for continued reasoning
+        2. parse_output → agent_node (instead of END) for more reasoning
+        
+        This allows the agent to see tool results and continue reasoning.
         """
-        # Check if we have tools that need looping behavior
-        if self._has_tools() and "tool_node" in graph.nodes:
-            if self.debug:
-                logger.debug("Modifying tool_node for ReAct looping")
+        if self.debug:
+            logger.debug("Setting up ReAct loops (simple pattern)")
 
-            # Remove direct tool_node → END connection
+        # Change tool_node to loop back to agent_node instead of END
+        if self._has_tools() and "tool_node" in graph.nodes:
             try:
                 graph.remove_edge("tool_node", END)
                 if self.debug:
@@ -529,18 +528,12 @@ class ReactAgentV3(SimpleAgentV3):
                 if self.debug:
                     logger.debug(f"No tool_node → END edge to remove: {e}")
 
-            # Add tool_node → agent_node loop for continued reasoning
             graph.add_edge("tool_node", "agent_node")
             if self.debug:
-                logger.debug("Added tool_node → agent_node reasoning loop")
+                logger.debug("Added tool_node → agent_node loop")
 
-        # Check if we have structured output that needs looping
+        # Change parse_output to loop back to agent_node instead of END
         if self._has_structured_output() and "parse_output" in graph.nodes:
-            if self.debug:
-                logger.debug("Modifying parse_output for ReAct looping")
-
-            # For structured output, we want to loop back for more reasoning
-            # but eventually output the structured result
             try:
                 graph.remove_edge("parse_output", END)
                 if self.debug:
@@ -549,18 +542,9 @@ class ReactAgentV3(SimpleAgentV3):
                 if self.debug:
                     logger.debug(f"No parse_output → END edge to remove: {e}")
 
-            # Add conditional: continue reasoning or output structured result
-            # This will be handled by the validation logic to determine
-            # when reasoning is complete vs. when to continue iterating
             graph.add_edge("parse_output", "agent_node")
             if self.debug:
-                logger.debug("Added parse_output → agent_node reasoning loop")
-
-        # The validation node will handle the logic of when to continue
-        # reasoning vs. when to end execution based on:
-        # - iteration_count vs max_iterations
-        # - presence of final answer
-        # - tool execution requirements
+                logger.debug("Added parse_output → agent_node loop")
 
     def _has_tools(self) -> bool:
         """Check if agent has tools configured for ReAct pattern execution.
@@ -581,7 +565,7 @@ class ReactAgentV3(SimpleAgentV3):
             or (self.engine and getattr(self.engine, "structured_output_model", None))
         )
 
-    def run(self, input_data: Any, debug: bool = None, **kwargs) -> Any:
+    def run(self, input_data: Any, debug: bool | None = None, **kwargs) -> Any:
         """Execute ReactAgent with iterative reasoning loops and structured output.
 
         Implements the full ReAct pattern with enhanced capabilities from SimpleAgentV3.
@@ -764,7 +748,7 @@ class ReactAgentV3(SimpleAgentV3):
         if self.debug:
             logger.debug(f"[{self.name}] Reasoning: {step}")
 
-    def get_reasoning_trace(self) -> List[str]:
+    def get_reasoning_trace(self) -> list[str]:
         """Get the complete reasoning trace from the current or last execution.
 
         Returns:
@@ -772,7 +756,7 @@ class ReactAgentV3(SimpleAgentV3):
         """
         return self.reasoning_trace.copy()
 
-    def get_tool_usage_history(self) -> List[Dict[str, Any]]:
+    def get_tool_usage_history(self) -> list[dict[str, Any]]:
         """Get the complete tool usage history from the current or last execution.
 
         Returns:
@@ -806,10 +790,15 @@ class ReactAgentV3(SimpleAgentV3):
 # ============================================================================
 
 
+# ============================================================================
+# FACTORY FUNCTIONS FOR CONVENIENT AGENT CREATION
+# ============================================================================
+
+
 def create_react_agent(
     name: str,
-    tools: List[BaseTool],
-    structured_output_model: Optional[type[BaseModel]] = None,
+    tools: list[BaseTool],
+    structured_output_model: type[BaseModel] | None = None,
     max_iterations: int = 10,
     temperature: float = 0.7,
     max_tokens: int = 1200,
@@ -903,8 +892,10 @@ def create_react_agent(
 
     if debug:
         logger.info(
-            f"Created ReactAgentV3 '{name}' with {len(tools)} tools, "
-            f"max_iterations={max_iterations}, structured_output={structured_output_model is not None}"
+            f"Created ReactAgentV3 '{name}' with {
+                len(tools)} tools, "
+            f"max_iterations={max_iterations}, structured_output={
+                structured_output_model is not None}"
         )
 
     return agent
@@ -912,8 +903,8 @@ def create_react_agent(
 
 def create_research_agent(
     name: str,
-    research_tools: List[BaseTool],
-    analysis_model: Optional[type[BaseModel]] = None,
+    research_tools: list[BaseTool],
+    analysis_model: type[BaseModel] | None = None,
     max_research_steps: int = 8,
     debug: bool = False,
 ) -> ReactAgentV3:
@@ -964,7 +955,6 @@ if __name__ == "__main__":
         debug=True,
     )
 
-    print("✅ ReactAgentV3 created successfully")
-    print(f"📊 Max iterations: {agent.max_iterations}")
-    print(f"🔧 Tools available: {len(agent.engine.tools) if agent.engine else 0}")
-    print("🚀 Ready for ReAct pattern execution!")
+
+# Rebuild Pydantic model to resolve forward references
+ReactAgentV3.model_rebuild()

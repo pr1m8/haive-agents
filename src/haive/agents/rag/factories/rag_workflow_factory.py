@@ -202,7 +202,8 @@ def create_self_rag_agent(
         "check_relevance": relevance_threshold_check,
         "generate_response": response_generator,
         "detect_hallucination": hallucination_detector,
-        "regenerate_response": response_generator,  # Same as generate but clears previous
+        # Same as generate but clears previous
+        "regenerate_response": response_generator,
     }
 
     self_rag_agent = ConditionalCallableAgent(

@@ -120,7 +120,8 @@ class BaseConversationAgent(Agent):
 
                 if connection_string:
                     # Use Supabase/environment connection string
-                    # Create unique pool per conversation to avoid prepared statement conflicts
+                    # Create unique pool per conversation to avoid prepared
+                    # statement conflicts
                     conversation_id = getattr(
                         values.get("agent"), "name", "conversation"
                     )
@@ -229,7 +230,9 @@ class BaseConversationAgent(Agent):
         """Create the default orchestrator engine."""
         return AugLLMConfig(
             name="conversation_orchestrator",
-            system_message=f"You are orchestrating a {self.mode} conversation about: {self.topic}",
+            system_message=f"You are orchestrating a {
+                self.mode} conversation about: {
+                self.topic}",
         )
 
     def _compile_participants(self):
@@ -347,7 +350,9 @@ class BaseConversationAgent(Agent):
         update.update(custom_init)
 
         logger.info(
-            f"Initialized conversation with {len(speaker_names)} participants, max_rounds={self.max_rounds}"
+            f"Initialized conversation with {
+                len(speaker_names)} participants, max_rounds={
+                self.max_rounds}"
         )
 
         return Command(update=update)
@@ -538,7 +543,9 @@ class BaseConversationAgent(Agent):
     def _create_initial_message(self) -> BaseMessage:
         """Create the initial conversation message."""
         return HumanMessage(
-            content=f"Topic: {self.topic}\nLet's begin our {self.mode} discussion."
+            content=f"Topic: {
+                self.topic}\nLet's begin our {
+                self.mode} discussion."
         )
 
     def _custom_initialization(self, state: Any) -> dict[str, Any]:

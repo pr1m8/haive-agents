@@ -237,7 +237,8 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
                         "confidence": 0.9,
                     }
                 else:
-                    # Create enhanced prompt with reasoning including tool capabilities
+                    # Create enhanced prompt with reasoning including tool
+                    # capabilities
                     prompt = self._create_enhanced_decision_prompt(
                         state, input_analysis, available_agents, tool_info
                     )

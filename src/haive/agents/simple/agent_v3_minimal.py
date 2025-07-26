@@ -1,6 +1,5 @@
 # SimpleAgent v3 - Minimal Import Path
-"""
-SimpleAgent v3 implementation with minimal import overhead.
+"""SimpleAgent v3 implementation with minimal import overhead.
 
 This implementation provides the same SimpleAgentV3 functionality but with
 lazy loading of all heavy dependencies to achieve sub-5 second import times.
@@ -14,7 +13,7 @@ Usage:
     result = await agent.arun("Hello")
 """
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     # Import types only for static analysis

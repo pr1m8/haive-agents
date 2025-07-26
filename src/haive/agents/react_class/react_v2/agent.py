@@ -51,9 +51,11 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     ),
                 )
             except Exception as e2:
-                # Last resort - use a minimal RetryPolicy with only required params
+                # Last resort - use a minimal RetryPolicy with only required
+                # params
                 logger.warning(
-                    f"Error creating RetryPolicy: {e2!s} - using minimal configuration"
+                    f"Error creating RetryPolicy: {
+                        e2!s} - using minimal configuration"
                 )
                 self.retry_policy = RetryPolicy(max_attempts=3)
         super().__init__(config)
@@ -93,7 +95,10 @@ class ReactAgent(Agent[ReactAgentConfig]):
             logger.error(f"Unsupported tools format: {type(tools_input)}")
 
         logger.info(
-            f"Prepared {sum(len(tools) for tools in tools_map.values())} tools across {len(tools_map)} nodes"
+            f"Prepared {
+                sum(
+                    len(tools) for tools in tools_map.values())} tools across {
+                len(tools_map)} nodes"
         )
         return tools_map
 
@@ -209,7 +214,10 @@ class ReactAgent(Agent[ReactAgentConfig]):
         self.graph = gb.build()
 
         logger.info(
-            f"Set up ReactAgent workflow for {self.config.name} with {len(self.tool_nodes)} tool nodes"
+            f"Set up ReactAgent workflow for {
+                self.config.name} with {
+                len(
+                    self.tool_nodes)} tool nodes"
         )
 
     def _route_agent_output(self, state: Any) -> str | list[Send]:
@@ -222,7 +230,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         4. Structured output (returns "structured_output")
         """
         # Early termination for completed tasks
-        # If the last message contains completion indicators, skip further processing
+        # If the last message contains completion indicators, skip further
+        # processing
         messages = getattr(state, "messages", [])
         if messages:
             last_message = messages[-1]
@@ -304,7 +313,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     tools_to_nodes[node_name] = []
                 tools_to_nodes[node_name].append(tool_call)
 
-        # If no valid tool calls found but the message has content, treat as a final answer
+        # If no valid tool calls found but the message has content, treat as a
+        # final answer
         if (
             not tools_to_nodes
             and isinstance(last_message, AIMessage)

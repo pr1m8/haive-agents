@@ -555,7 +555,8 @@ class QueryPlanningRAGAgent(Agent):
         )
 
         logger.info(
-            f"Query planning completed: Confidence={planning_result.answer_confidence}"
+            f"Query planning completed: Confidence={
+                planning_result.answer_confidence}"
         )
 
         return {

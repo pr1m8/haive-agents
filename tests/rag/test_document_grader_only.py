@@ -51,7 +51,7 @@ async def test_document_grader_simple():
                     f"  - {decision.document_id}: {decision.decision} (confidence: {decision.confidence})"
                 )
         else:
-            print("❌ No document_decisions found in result"t")
+            print("❌ No document_decisions found in resultt")
             print(
                 f"Result keys: {list(result.keys()) if hasattr(result, 'keys') else 'No keys'}"
             )
@@ -83,7 +83,7 @@ async def test_document_grader_simple():
             if hasattr(structured, "document_decisions"):
                 print(f"✅ Found decisions: {len(structured.document_decisions)}")
         else:
-            print("❌ No structured output found"d")
+            print("❌ No structured output foundd")
             if hasattr(direct_result, "keys"):
                 print(f"Available keys: {list(direct_result.keys())}")
 

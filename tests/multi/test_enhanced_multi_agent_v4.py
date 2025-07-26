@@ -1,6 +1,5 @@
 """Test Enhanced MultiAgent V4 - Enhanced base agent pattern."""
 
-import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 
@@ -208,7 +207,7 @@ class TestEnhancedMultiAgentV4:
         assert not hasattr(manual, "graph") or manual.graph is None
 
         # Auto mode - builds on init (via enhanced base agent)
-        auto = EnhancedMultiAgentV4(name="auto_test", agents=agents, build_mode="auto")
+        EnhancedMultiAgentV4(name="auto_test", agents=agents, build_mode="auto")
         # Enhanced base agent should build graph automatically
         # (This depends on enhanced base agent implementation)
 

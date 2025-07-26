@@ -8,10 +8,9 @@ graph integration, and advanced memory management.
 import logging
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field
 
 # Import original proven memory models
 from .memory_models_standalone import (
@@ -79,12 +78,12 @@ class EnhancedKnowledgeTriple(KnowledgeTriple):
     created_at: datetime = Field(default_factory=datetime.now)
 
     # Enhanced graph fields
-    supporting_evidence: Optional[str] = Field(default=None)
-    context: Optional[str] = Field(default=None)
+    supporting_evidence: str | None = Field(default=None)
+    context: str | None = Field(default=None)
 
     # Retrieval tracking
     access_count: int = Field(default=0)
-    last_accessed: Optional[datetime] = Field(default=None)
+    last_accessed: datetime | None = Field(default=None)
 
 
 # ============================================================================
@@ -100,10 +99,10 @@ class UnifiedMemoryEntry(BaseModel):
     entry_type: str = Field(...)  # "memory_item" or "knowledge_triple"
 
     # Memory item fields (when entry_type == "memory_item")
-    memory_item: Optional[EnhancedMemoryItem] = Field(default=None)
+    memory_item: EnhancedMemoryItem | None = Field(default=None)
 
     # Knowledge triple fields (when entry_type == "knowledge_triple")
-    knowledge_triple: Optional[EnhancedKnowledgeTriple] = Field(default=None)
+    knowledge_triple: EnhancedKnowledgeTriple | None = Field(default=None)
 
     # Common V2 fields
     memory_type: MemoryType = Field(default=MemoryType.CONVERSATIONAL)
@@ -115,8 +114,11 @@ class UnifiedMemoryEntry(BaseModel):
         """Get content regardless of entry type."""
         if self.entry_type == "memory_item" and self.memory_item:
             return self.memory_item.content
-        elif self.entry_type == "knowledge_triple" and self.knowledge_triple:
-            return f"{self.knowledge_triple.subject} {self.knowledge_triple.predicate} {self.knowledge_triple.object}"
+        if self.entry_type == "knowledge_triple" and self.knowledge_triple:
+            return f"{
+                self.knowledge_triple.subject} {
+                self.knowledge_triple.predicate} {
+                self.knowledge_triple.object}"
         return ""
 
     @classmethod
@@ -154,8 +156,8 @@ class MemoryStats(BaseModel):
     total_memory_items: int = Field(default=0)
     total_knowledge_triples: int = Field(default=0)
 
-    memories_by_type: Dict[MemoryType, int] = Field(default_factory=dict)
-    memories_by_importance: Dict[ImportanceLevel, int] = Field(default_factory=dict)
+    memories_by_type: dict[MemoryType, int] = Field(default_factory=dict)
+    memories_by_importance: dict[ImportanceLevel, int] = Field(default_factory=dict)
 
     # Usage stats
     total_retrievals: int = Field(default=0)
@@ -164,24 +166,24 @@ class MemoryStats(BaseModel):
 
     # Performance stats
     last_update: datetime = Field(default_factory=datetime.now)
-    processing_times: Dict[str, float] = Field(default_factory=dict)
+    processing_times: dict[str, float] = Field(default_factory=dict)
 
 
 class MemoryState(BaseModel):
     """Memory state using original models with V2 enhancements."""
 
     # Core memory storage using unified entries
-    memories: List[UnifiedMemoryEntry] = Field(default_factory=list)
+    memories: list[UnifiedMemoryEntry] = Field(default_factory=list)
 
     # Organizational fields
-    user_id: Optional[str] = Field(default=None)
-    session_id: Optional[str] = Field(default=None)
+    user_id: str | None = Field(default=None)
+    session_id: str | None = Field(default=None)
 
     # Stats and metadata
     stats: MemoryStats = Field(default_factory=MemoryStats)
 
     # Schema support
-    supported_schemas: List[type] = Field(default_factory=list)
+    supported_schemas: list[type] = Field(default_factory=list)
 
     # Configuration
     max_memories: int = Field(default=1000)
@@ -208,7 +210,7 @@ class MemoryState(BaseModel):
         )
         self.add_memory_item(enhanced_memory)
 
-    def get_memory_items(self) -> List[EnhancedMemoryItem]:
+    def get_memory_items(self) -> list[EnhancedMemoryItem]:
         """Get all memory items."""
         return [
             entry.memory_item
@@ -216,7 +218,7 @@ class MemoryState(BaseModel):
             if entry.entry_type == "memory_item" and entry.memory_item
         ]
 
-    def get_knowledge_triples(self) -> List[EnhancedKnowledgeTriple]:
+    def get_knowledge_triples(self) -> list[EnhancedKnowledgeTriple]:
         """Get all knowledge triples."""
         return [
             entry.knowledge_triple
@@ -224,11 +226,11 @@ class MemoryState(BaseModel):
             if entry.entry_type == "knowledge_triple" and entry.knowledge_triple
         ]
 
-    def get_memories_by_type(self, memory_type: MemoryType) -> List[UnifiedMemoryEntry]:
+    def get_memories_by_type(self, memory_type: MemoryType) -> list[UnifiedMemoryEntry]:
         """Get memories of specific type."""
         return [m for m in self.memories if m.memory_type == memory_type]
 
-    def search_memories(self, query: str, limit: int = 10) -> List[UnifiedMemoryEntry]:
+    def search_memories(self, query: str, limit: int = 10) -> list[UnifiedMemoryEntry]:
         """Simple text-based memory search."""
         results = []
         query_lower = query.lower()
@@ -276,19 +278,19 @@ class MemoryState(BaseModel):
 
 # Export original models for compatibility
 __all__ = [
-    # Original models
-    "MemoryItem",
-    "KnowledgeTriple",
+    "EnhancedKnowledgeTriple",
     # Commented out undefined models: "Memory", "UserPreference", "FactualMemory", "PersonalContext", "ConversationalMemory",
     # Enhanced V2 models
     "EnhancedMemoryItem",
-    "EnhancedKnowledgeTriple",
-    "UnifiedMemoryEntry",
+    "ImportanceLevel",
+    "KnowledgeTriple",
+    # Original models
+    "MemoryItem",
+    "MemoryState",
+    "MemoryStats",
     # V2 infrastructure
     "MemoryType",
-    "ImportanceLevel",
-    "MemoryStats",
-    "MemoryState",
+    "UnifiedMemoryEntry",
     # Schema collections removed as they're undefined
     # "DEFAULT_MEMORY_SCHEMAS", "EXTENDED_MEMORY_SCHEMAS", "MINIMAL_MEMORY_SCHEMAS"
 ]

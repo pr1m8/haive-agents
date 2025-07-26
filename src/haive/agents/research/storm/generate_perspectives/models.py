@@ -17,7 +17,11 @@ class Editor(BaseModel):
 
     @property
     def persona(self) -> str:
-        return f"Name: {self.name}\nRole: {self.role}\nAffiliation: {self.affiliation}\nDescription: {self.description}\n"
+        return f"Name: {
+            self.name}\nRole: {
+            self.role}\nAffiliation: {
+            self.affiliation}\nDescription: {
+                self.description}\n"
 
 
 class Perspectives(BaseModel):

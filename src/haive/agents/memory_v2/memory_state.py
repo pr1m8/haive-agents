@@ -6,26 +6,11 @@ graph integration, and advanced memory management.
 """
 
 import logging
-from datetime import datetime
-from enum import Enum
-from typing import Any, Dict, List, Optional, Union
-from uuid import uuid4
+from typing import Any
 
-from pydantic import BaseModel, Field, computed_field
-
-from haive.agents.ltm.memory_schemas import (
-    DEFAULT_MEMORY_SCHEMAS,
-    EXTENDED_MEMORY_SCHEMAS,
-    MINIMAL_MEMORY_SCHEMAS,
-    ConversationalMemory,
-    FactualMemory,
-    Memory,
-    PersonalContext,
-    UserPreference,
-)
+from pydantic import BaseModel, Field
 
 # Import original proven memory models
-from haive.agents.memory.models import KnowledgeTriple, MemoryItem
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +54,7 @@ class MemoryMetadata(BaseModel):
         description="Confidence score for the memory accuracy",
     )
 
-    timestamp: Optional[str] = Field(
+    timestamp: str | None = Field(
         default=None, description="ISO timestamp when memory was created"
     )
 
@@ -79,20 +64,20 @@ class MemoryMetadata(BaseModel):
         pattern="^(user_input|agent_inference|system|reflection|improvement)$",
     )
 
-    tags: List[str] = Field(
+    tags: list[str] = Field(
         default_factory=list, description="Tags for categorization and search"
     )
 
-    entities: List[str] = Field(
+    entities: list[str] = Field(
         default_factory=list, description="Named entities extracted from the memory"
     )
 
-    relationships: List[Dict[str, str]] = Field(
+    relationships: list[dict[str, str]] = Field(
         default_factory=list,
         description="Relationships in format [{'subject': 'A', 'predicate': 'relates_to', 'object': 'B'}]",
     )
 
-    context_id: Optional[str] = Field(
+    context_id: str | None = Field(
         default=None, description="ID linking related memories in the same context"
     )
 
@@ -100,7 +85,7 @@ class MemoryMetadata(BaseModel):
         default=0, ge=0, description="Number of times this memory has been retrieved"
     )
 
-    last_accessed: Optional[str] = Field(
+    last_accessed: str | None = Field(
         default=None, description="ISO timestamp when memory was last accessed"
     )
 
@@ -128,11 +113,11 @@ class MemoryEntry(BaseModel):
         description="Structured metadata about the memory",
     )
 
-    embedding: Optional[List[float]] = Field(
+    embedding: list[float] | None = Field(
         default=None, description="Vector embedding for similarity search"
     )
 
-    similarity_score: Optional[float] = Field(
+    similarity_score: float | None = Field(
         default=None,
         ge=0.0,
         le=1.0,
@@ -147,8 +132,8 @@ class MemoryStats(BaseModel):
     """
 
     total_memories: int = Field(default=0, ge=0)
-    memories_by_type: Dict[str, int] = Field(default_factory=dict)
-    memories_by_importance: Dict[str, int] = Field(default_factory=dict)
+    memories_by_type: dict[str, int] = Field(default_factory=dict)
+    memories_by_importance: dict[str, int] = Field(default_factory=dict)
 
     # Performance metrics
     avg_storage_time: float = Field(default=0.0, ge=0.0)
@@ -189,16 +174,16 @@ class MemoryState(MessagesState):
     """
 
     # Core memory data
-    current_memories: List[MemoryEntry] = Field(
+    current_memories: list[MemoryEntry] = Field(
         default_factory=list, description="Memory entries currently being processed"
     )
 
-    retrieved_memories: List[MemoryEntry] = Field(
+    retrieved_memories: list[MemoryEntry] = Field(
         default_factory=list, description="Memories retrieved in the last operation"
     )
 
     # Metadata and tracking
-    memory_metadata: Dict[str, Any] = Field(
+    memory_metadata: dict[str, Any] = Field(
         default_factory=dict, description="General metadata about the memory session"
     )
 
@@ -206,32 +191,32 @@ class MemoryState(MessagesState):
         default_factory=MemoryStats, description="Performance and usage statistics"
     )
 
-    token_usage: Dict[str, Any] = Field(
+    token_usage: dict[str, Any] = Field(
         default_factory=dict, description="Token usage tracking for memory operations"
     )
 
     # Operation tracking
-    last_operation: Dict[str, Any] = Field(
+    last_operation: dict[str, Any] = Field(
         default_factory=dict,
         description="Information about the last memory operation performed",
     )
 
-    memory_context: Dict[str, Any] = Field(
+    memory_context: dict[str, Any] = Field(
         default_factory=dict, description="Context information for memory operations"
     )
 
     # Search and filtering
-    active_filters: Dict[str, Any] = Field(
+    active_filters: dict[str, Any] = Field(
         default_factory=dict,
         description="Currently active filters for memory search/retrieval",
     )
 
     # Memory management
-    memory_storage_path: Optional[str] = Field(
+    memory_storage_path: str | None = Field(
         default=None, description="Path to persistent memory storage"
     )
 
-    memory_cache: Dict[str, Any] = Field(
+    memory_cache: dict[str, Any] = Field(
         default_factory=dict,
         description="In-memory cache for frequently accessed memories",
     )
@@ -255,7 +240,7 @@ class MemoryState(MessagesState):
             self.memory_stats.memories_by_importance[importance] = 1
 
     def update_retrieval_stats(
-        self, memories: List[MemoryEntry], retrieval_time: float
+        self, memories: list[MemoryEntry], retrieval_time: float
     ) -> None:
         """Update statistics after memory retrieval."""
         self.retrieved_memories = memories
@@ -275,7 +260,7 @@ class MemoryState(MessagesState):
         for memory in memories:
             memory.metadata.retrieval_count += 1
 
-    def get_memory_summary(self) -> Dict[str, Any]:
+    def get_memory_summary(self) -> dict[str, Any]:
         """Get a comprehensive summary of the current memory state."""
         return {
             "total_memories": len(self.current_memories),

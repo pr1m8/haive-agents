@@ -155,17 +155,26 @@ class ToTState(MessagesState):
         ]
 
         for i, candidate in enumerate(self.selected_candidates):
-            expansion_context.append(f"Parent {i+1} (Score: {candidate.score:.3f}):")
+            expansion_context.append(
+                f"Parent {
+                    i +
+                    1} (Score: {
+                    candidate.score:.3f}):"
+            )
             expansion_context.append(f"Content: {candidate.get_content_str()}")
             expansion_context.append(f"Feedback: {candidate.feedback}")
             if candidate.scoring_metadata:
                 if "strengths" in candidate.scoring_metadata:
                     expansion_context.append(
-                        f"Strengths: {', '.join(candidate.scoring_metadata['strengths'])}"
+                        f"Strengths: {
+                            ', '.join(
+                                candidate.scoring_metadata['strengths'])}"
                     )
                 if "weaknesses" in candidate.scoring_metadata:
                     expansion_context.append(
-                        f"Weaknesses: {', '.join(candidate.scoring_metadata['weaknesses'])}"
+                        f"Weaknesses: {
+                            ', '.join(
+                                candidate.scoring_metadata['weaknesses'])}"
                     )
             expansion_context.append("")
 
@@ -193,7 +202,9 @@ class ToTState(MessagesState):
             parent = self.get_candidate_by_id(candidate.parent_id)
             if parent:
                 scoring_context.append(
-                    f"\nDerived from parent: {parent.get_content_str()[:100]}..."
+                    f"\nDerived from parent: {
+                        parent.get_content_str()[
+                            :100]}..."
                 )
 
         return "\n".join(scoring_context)
@@ -213,7 +224,10 @@ class ToTState(MessagesState):
 
         for i, candidate in enumerate(sorted_scored):
             summary.append(
-                f"{i}. [Score: {candidate.score:.3f}] {candidate.get_content_str()[:100]}..."
+                f"{i}. [Score: {
+                    candidate.score:.3f}] {
+                    candidate.get_content_str()[
+                        :100]}..."
             )
             summary.append(f"   Feedback: {candidate.feedback}")
             if i < len(sorted_scored) - 1:
@@ -235,7 +249,7 @@ class ToTState(MessagesState):
         summary_parts = [f"Top {min(3, len(sorted_candidates))} candidates:"]
         for i, cand in enumerate(sorted_candidates[:3]):
             summary_parts.append(
-                f"  {i+1}. Score: {cand.score:.3f} - {cand.get_content_str()[:100]}..."
+                f"  {i + 1}. Score: {cand.score:.3f} - {cand.get_content_str()[:100]}..."
             )
 
         return "\n".join(summary_parts)

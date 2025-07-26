@@ -1,6 +1,7 @@
 from agents.lats.models import Reflection
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.output_parsers.openai_tools import (
+from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.output_parsers import (
     JsonOutputToolsParser,
     PydanticToolsParser,
 )
@@ -36,7 +37,7 @@ prompt_template = ChatPromptTemplate.from_messages(
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )
-from langchain.chat_models import BaseChatModel
+
 
 a = BaseChatModel
 parser = JsonOutputToolsParser(return_id=True)

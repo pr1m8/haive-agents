@@ -437,7 +437,10 @@ class SimpleRAG(BaseModel):
 
             if debug:
                 execution_time = time.time() - start_time
-                logger.info(f"✅ RAG pipeline completed in {execution_time:.2f}s")
+                logger.info(
+                    f"✅ RAG pipeline completed in {
+                        execution_time:.2f}s"
+                )
 
             return response
 
@@ -509,7 +512,7 @@ class SimpleRAG(BaseModel):
                 continue
 
             # Add source information if available
-            source = doc.metadata.get("source", f"Document {i+1}")
+            source = doc.metadata.get("source", f"Document {i + 1}")
             formatted_content = f"Source: {source}\n{content}"
             context_parts.append(formatted_content)
 

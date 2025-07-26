@@ -107,7 +107,8 @@ class SupervisorAgent(ReactAgent):
                 self.engines = {}
             self.engines[self.main_engine.name] = self.main_engine
             logger.debug(
-                f"Registered engine '{self.main_engine.name}' in agent engines dict"
+                f"Registered engine '{
+                    self.main_engine.name}' in agent engines dict"
             )
 
     def build_graph(self) -> BaseGraph:

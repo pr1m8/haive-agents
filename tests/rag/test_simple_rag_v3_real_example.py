@@ -1,12 +1,10 @@
 """Test SimpleRAG V3 with a real example."""
 
 import asyncio
-from typing import List
 
 from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
     HuggingFaceEmbeddingConfig,
 )
-from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
 from langchain_core.documents import Document
 
 from haive.agents.rag.simple.enhanced_v3.agent import SimpleRAGV3
@@ -87,7 +85,7 @@ async def test_real_rag_example():
                     f"Answer: {result.get('answer', result.get('content', str(result)))}"
                 )
                 if "sources" in result:
-                    print(f"\nSources:")
+                    print("\nSources:")
                     for source in result["sources"]:
                         print(f"  - {source}")
                 if "generation_time" in result:

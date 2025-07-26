@@ -24,7 +24,9 @@ class Section(BaseModel):
             f"### {subsection.subsection_title}\n\n{subsection.description}"
             for subsection in self.subsections or []
         )
-        return f"## {self.section_title}\n\n{self.description}\n\n{subsections}".strip()
+        return f"## {
+            self.section_title}\n\n{
+            self.description}\n\n{subsections}".strip()
 
 
 class Outline(BaseModel):

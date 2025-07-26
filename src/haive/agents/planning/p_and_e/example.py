@@ -1,6 +1,8 @@
 # src/haive/agents/plan_and_execute/example.py
 """Example usage of the Plan and Execute agent."""
 
+import contextlib
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
@@ -13,6 +15,7 @@ from haive.agents.planning.p_and_e.prompts import (
     replan_prompt,
 )
 from haive.agents.planning.p_and_e.state import PlanExecuteState
+from haive.agents.simple.agent import SimpleAgent
 
 
 # Example tools
@@ -58,9 +61,7 @@ agent_with_tools = PlanAndExecuteAgent(
 )
 
 # Use the agent
-import contextlib
 
-from haive.agents.simple.agent import SimpleAgent
 
 planner_simple_agent = SimpleAgent(
     engine=agent_with_tools.engines["planner"], state_schema=PlanExecuteState

@@ -65,7 +65,7 @@ def create_query_rewriter_agent(
             structured_output_model=QueryRefinementResponse,
             structured_output_version="v2",
         ),
-        **kwargs
+        **kwargs,
     )
 
 

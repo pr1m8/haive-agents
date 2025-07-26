@@ -262,4 +262,6 @@ class MetaAgent(Agent, Generic[TAgent]):
         wrapped_info = (
             f"{type(wrapped).__name__}({wrapped.name})" if wrapped else "None"
         )
-        return f"MetaAgent[{wrapped_info}](name={self.name}, executions={self.state.execution_count})"
+        return f"MetaAgent[{wrapped_info}](name={
+            self.name}, executions={
+            self.state.execution_count})"

@@ -28,7 +28,6 @@ class EnhancedAgentBase:
 
     def setup_agent(self) -> None:
         """Hook for subclass setup."""
-        pass
 
     def build_graph(self) -> Any:
         """Build the agent's graph."""
@@ -155,12 +154,9 @@ class SimpleAgent(EnhancedAgentBase):
 # Example usage
 if __name__ == "__main__":
     # This would work with proper imports
-    print("Enhanced SimpleAgent implementation")
-    print("SimpleAgent = Agent[AugLLMConfig]")
 
     # Minimal demo without full imports
     agent = SimpleAgent(name="demo", temperature=0.5)
-    print(f"\nCreated: {agent}")
 
     # In full implementation:
     # - SimpleAgent inherits from Agent[AugLLMConfig]

@@ -105,7 +105,7 @@ def test_with_original_validation():
             for field in structured_fields:
                 print(f"   {field}: {result[field]}")
         else:
-            print("❌ No structured fields found"d")
+            print("❌ No structured fields foundd")
 
         # Check if engine_name is in messages
         messages = result.get("messages", [])
@@ -154,7 +154,7 @@ def test_engine_name_in_message():
             if engine_name:
                 print(f"  ✅ Engine name found: {engine_name}")
             else:
-                print("  ❌ No engine_name in additional_kwargs"s")
+                print("  ❌ No engine_name in additional_kwargss")
                 print(f"  Available kwargs: {list(msg.additional_kwargs.keys())}")
 
 

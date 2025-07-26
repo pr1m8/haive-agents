@@ -33,6 +33,7 @@ Note:
 import asyncio
 import json
 import logging
+import sys
 import time
 
 from haive.agents.rag.db_rag.graph_db.agent import GraphDBRAGAgent
@@ -70,7 +71,6 @@ def basic_example():
         - Processing Time: 2.3 seconds
         - Steps: ['check_domain_relevance', 'generate_query', 'validate_query', 'execute_query', 'generate_answer']
     """
-
     try:
         # Create agent with default configuration
         agent = GraphDBRAGAgent(config=GraphDBRAGConfig())
@@ -125,7 +125,6 @@ def streaming_example():
 
          Final Answer: The Matrix was directed by Lana Wachowski and Lilly Wachowski.
     """
-
     try:
         # Create agent
         agent = GraphDBRAGAgent(config=GraphDBRAGConfig())
@@ -194,7 +193,6 @@ def custom_domain_example():
         Processing healthcare query...
         Answer: The following patients have been diagnosed with diabetes: John Smith, Mary Johnson, and Robert Williams.
     """
-
     try:
         # Configure for healthcare domain
 
@@ -290,7 +288,6 @@ def batch_processing_example():
         - Average Time: 1.7s
         - Total Time: 8.5s
     """
-
     try:
         # Create agent
         agent = GraphDBRAGAgent(config=GraphDBRAGConfig())
@@ -373,7 +370,6 @@ def error_handling_example():
         3. Complex nested query:
             Successfully validated and executed
     """
-
     try:
         # Create agent with debug configuration
         config = GraphDBRAGConfig(domain_name="movies")
@@ -445,7 +441,6 @@ def performance_monitoring_example():
         - Consider caching frequent queries
         - Use more specific examples for faster generation
     """
-
     try:
         # Create agent
         agent = GraphDBRAGAgent(config=GraphDBRAGConfig())
@@ -483,11 +478,11 @@ def performance_monitoring_example():
         # Identify bottlenecks
         bottleneck = max(step_times.items(), key=lambda x: x[1]["duration"] or 0)
 
-        if bottleneck[0] == "generate_query":
-            pass
-        elif bottleneck[0] == "execute_query":
-            pass
-        elif bottleneck[0] == "validate_query":
+        if (
+            bottleneck[0] == "generate_query"
+            or bottleneck[0] == "execute_query"
+            or bottleneck[0] == "validate_query"
+        ):
             pass
     except Exception as e:
         logger.exception(f"Error in performance monitoring: {e}")
@@ -512,7 +507,6 @@ async def async_example():
 
         Total time: 2.8s (vs ~7s sequential)
     """
-
     try:
         # Create agent
         agent = GraphDBRAGAgent(config=GraphDBRAGConfig())
@@ -597,7 +591,6 @@ def main():
 
             Enter your choice (0-8):
     """
-
     examples = {
         "1": basic_example,
         "2": streaming_example,
@@ -633,7 +626,6 @@ def run_all_examples():
     This function executes all example functions to demonstrate
     the full capabilities of the GraphDBRAGAgent.
     """
-
     examples = [
         ("Basic Usage", basic_example),
         ("Streaming Execution", streaming_example),
@@ -663,4 +655,4 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         logger.exception(f"Fatal error: {e}")
-        exit(1)
+        sys.exit(1)

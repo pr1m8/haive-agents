@@ -100,7 +100,6 @@ def example_quick_reasoning() -> Any:
 
 # Run examples
 if __name__ == "__main__":
-    pass
     # Run business example
     business_result = example_business_decision()
 

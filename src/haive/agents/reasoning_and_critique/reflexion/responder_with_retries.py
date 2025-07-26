@@ -48,7 +48,8 @@ class ResponderWithRetries:
                 response = [
                     response,
                     ToolMessage(
-                        content=f"{e!r}\n\nPay close attention to the function schema.\n\n"
+                        content=f"{
+                            e!r}\n\nPay close attention to the function schema.\n\n"
                         + json.dumps(self.validator.schema(), indent=2)
                         + "\nRespond by fixing all validation errors.",
                         tool_call_id=response.tool_calls[0]["id"],

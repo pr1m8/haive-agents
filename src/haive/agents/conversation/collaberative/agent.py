@@ -66,7 +66,8 @@ class CollaborativeConversation(BaseConversationAgent):
         elif self.output_format == "code":
             initial_doc = f"# {self.document_title}\n# Collaborative Code\n\n"
         elif self.output_format == "outline":
-            initial_doc = f"{self.document_title}\n{'=' * len(self.document_title)}\n\n"
+            initial_doc = f"{self.document_title}\n{'=' *
+                                                    len(self.document_title)}\n\n"
         else:  # report
             initial_doc = f"{self.document_title.upper()}\n\n"
 
@@ -140,7 +141,8 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
         # If everyone has contributed minimum, pick least active overall
         if min_count >= self.min_contributions_per_section:
             logger.debug(
-                f"Everyone has contributed minimum ({self.min_contributions_per_section})"
+                f"Everyone has contributed minimum ({
+                    self.min_contributions_per_section})"
             )
             return self._select_least_active_overall(state)
 
@@ -225,8 +227,11 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
         # Create context message
         context_parts = [
             f"Current Section: {current_section}",
-            f"Your total contributions: {state.contribution_count.get(agent_name, 0)}",
-            f"Format: {state.output_format}",
+            f"Your total contributions: {
+                state.contribution_count.get(
+                    agent_name, 0)}",
+            f"Format: {
+                state.output_format}",
         ]
 
         if section_content:
@@ -402,7 +407,8 @@ The final document has been compiled."""
             agents[name] = SimpleAgent(name=f"{name}_agent", engine=engine)
 
         # Calculate appropriate max_rounds
-        # Each participant needs to contribute min_contributions_per_section times per section
+        # Each participant needs to contribute min_contributions_per_section
+        # times per section
         min_contributions = kwargs.get("min_contributions_per_section", 1)
         total_contributions_needed = (
             len(participants) * len(sections) * min_contributions

@@ -17,7 +17,7 @@ ID_PATTERN = r"\$\{?(\d+)\}?"
 END_OF_PLAN = ""
 
 
-### Helper functions
+# Helper functions
 
 
 def _ast_parse(arg: str) -> Any:

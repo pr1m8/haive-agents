@@ -2,7 +2,6 @@
 """Test SimpleAgent v3 with tools integration - no mocks, real execution."""
 
 import logging
-from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
@@ -201,7 +200,7 @@ def test_tool_error_handling():
         debug=True,
     )
 
-    print(f"✅ Created agent for error testing")
+    print("✅ Created agent for error testing"g")
 
     # Test invalid expression that should cause tool error
     query = "Calculate this invalid expression: 15 + + 23"

@@ -202,7 +202,9 @@ Always give your reasoning before using a tool, explaining why you're choosing i
 
         # Create and return the config
         return cls(
-            name=name or f"react_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name
+            or f"react_agent_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}",
             engine=aug_llm,
             tools=tools,
             system_prompt=system_prompt,
@@ -264,7 +266,8 @@ class ReactAgent(SimpleAgent):
 
                 # If the destination doesn't exist yet as a node, create it
                 if destination not in custom_nodes and not gb.nodes.get(destination):
-                    # Create a specialized tool node that only processes this tool
+                    # Create a specialized tool node that only processes this
+                    # tool
                     for tool in self.config.tools:
                         tool_obj = tool
                         if hasattr(tool, "tool"):
@@ -441,7 +444,8 @@ class ReactAgent(SimpleAgent):
                     self.config.response_format
                 )
 
-                # Get messages (excluding the last one if it contains tool calls)
+                # Get messages (excluding the last one if it contains tool
+                # calls)
                 messages = state.get("messages", [])
                 if (
                     messages

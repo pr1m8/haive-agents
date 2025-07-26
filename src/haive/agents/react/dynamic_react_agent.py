@@ -512,10 +512,12 @@ class DynamicReactAgent(ReactAgent):
         for tool_data in tools:
             component = tool_data["component"]
             if isinstance(component, BaseTool):
-                # Use the engine's add_tool method to properly register the tool
+                # Use the engine's add_tool method to properly register the
+                # tool
                 self.engine.add_tool(component)
 
-        # Store tools for future state access (when state is available during runtime)
+        # Store tools for future state access (when state is available during
+        # runtime)
         if not hasattr(self, "_pending_tools"):
             self._pending_tools = []
         self._pending_tools.extend(tools)
@@ -605,7 +607,9 @@ class DynamicReactAgent(ReactAgent):
                             tool.name if hasattr(tool, "name") else str(tool)
                             for tool in tools
                         ]
-                        return f"Discovered and loaded {len(tools)} tools: {', '.join(tool_names)}"
+                        return f"Discovered and loaded {
+                            len(tools)} tools: {
+                            ', '.join(tool_names)}"
                     return "No suitable tools found for this task"
 
                 # Use RAG tool agent if available
@@ -689,7 +693,8 @@ class DynamicReactAgent(ReactAgent):
                 rag_result = await self.rag_tool_agent.arun(query)
 
                 # Parse RAG result to find tool suggestions
-                # This is a simplified approach - you might want more sophisticated parsing
+                # This is a simplified approach - you might want more
+                # sophisticated parsing
                 tool_suggestions = self._parse_rag_tool_suggestions(rag_result, task)
 
                 for suggestion in tool_suggestions:
@@ -716,7 +721,8 @@ class DynamicReactAgent(ReactAgent):
                     metadata={"source": "dynamic_discovery", "task": task},
                 )
 
-                # Add to registry (this will be available when state is accessible)
+                # Add to registry (this will be available when state is
+                # accessible)
                 if hasattr(self, "_pending_tools"):
                     self._pending_tools.append(
                         {
@@ -770,7 +776,8 @@ class DynamicReactAgent(ReactAgent):
         suggestions = []
 
         # Simple parsing - look for tool names and descriptions
-        # This is a basic implementation - you might want more sophisticated NLP
+        # This is a basic implementation - you might want more sophisticated
+        # NLP
         lines = rag_result.split("\n")
 
         for line in lines:

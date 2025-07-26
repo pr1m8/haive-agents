@@ -32,7 +32,10 @@ class InputState(BaseModel):
             elif isinstance(item, str):
                 normalized.append(item)
             else:
-                raise TypeError(f"Unsupported item type in contents: {type(item)}")
+                raise TypeError(
+                    f"Unsupported item type in contents: {
+                        type(item)}"
+                )
 
         return normalized
 

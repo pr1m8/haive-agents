@@ -25,7 +25,9 @@ class SelfHealingCodeAgent(AgentArchitecture):
         self.bug_report = bug_report
         return self
 
-    # Digest the bug report using the same template used when saving bug reports to increase the accuracy and relevance of results when querying the vector database.
+    # Digest the bug report using the same template used when saving bug
+    # reports to increase the accuracy and relevance of results when querying
+    # the vector database.
     def memory_search_node(self: SelfHealingCodeState):
         """Find memories relevant to the current bug report."""
         prompt = ChatPromptTemplate.from_template(
@@ -59,7 +61,8 @@ class SelfHealingCodeAgent(AgentArchitecture):
 
         return self
 
-    # Filter the top 30% of results to ensure the relevance of memories being updated.
+    # Filter the top 30% of results to ensure the relevance of memories being
+    # updated.
     def memory_filter_node(self: SelfHealingCodeState):
         for memory in self.memory_search_results:
             if memory["distance"] < 0.3:
@@ -97,7 +100,8 @@ class SelfHealingCodeAgent(AgentArchitecture):
         )
         return self
 
-    # Use the prior memory as well as the current bug report to generate an updated version of it.
+    # Use the prior memory as well as the current bug report to generate an
+    # updated version of it.
     def memory_modification_node(self: SelfHealingCodeState):
         """Modify relevant memories based on new interaction."""
         prompt = ChatPromptTemplate.from_template(

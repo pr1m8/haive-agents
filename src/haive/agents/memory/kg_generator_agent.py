@@ -817,7 +817,10 @@ Extract relationships now:""",
                     limit=1000,  # Large limit to get all
                 )
 
-            logger.info(f"Processing {len(memories)} memories for KG extraction")
+            logger.info(
+                f"Processing {
+                    len(memories)} memories for KG extraction"
+            )
 
             # Process memories in batches
             for i in range(0, len(memories), self.extract_batch_size):
@@ -835,7 +838,11 @@ Extract relationships now:""",
             )
 
             logger.info(
-                f"KG extraction complete: {len(self.knowledge_graph.nodes)} nodes, {len(self.knowledge_graph.relationships)} relationships"
+                f"KG extraction complete: {
+                    len(
+                        self.knowledge_graph.nodes)} nodes, {
+                    len(
+                        self.knowledge_graph.relationships)} relationships"
             )
 
             return self.knowledge_graph
@@ -853,7 +860,9 @@ Extract relationships now:""",
 
             except Exception as e:
                 logger.exception(
-                    f"Error processing memory {memory.get('id', 'unknown')}: {e}"
+                    f"Error processing memory {
+                        memory.get(
+                            'id', 'unknown')}: {e}"
                 )
                 continue
 
@@ -1177,7 +1186,11 @@ Extract relationships now:""",
             # Extract knowledge graph
             await self.extract_knowledge_graph_from_memories()
 
-            return f"Knowledge graph extracted successfully. Found {len(self.knowledge_graph.nodes)} entities and {len(self.knowledge_graph.relationships)} relationships."
+            return f"Knowledge graph extracted successfully. Found {
+                len(
+                    self.knowledge_graph.nodes)} entities and {
+                len(
+                    self.knowledge_graph.relationships)} relationships."
 
         if "explore" in user_input.lower() or "neighborhood" in user_input.lower():
             # Find entity to explore
@@ -1195,12 +1208,21 @@ Extract relationships now:""",
                 entity_id = self._find_entity_id(entity_name)
                 if entity_id:
                     neighborhood = await self.get_entity_neighborhood(entity_id)
-                    return f"Entity '{entity_name}' neighborhood: {neighborhood['total_nodes']} connected nodes, {neighborhood['total_relationships']} relationships"
+                    return f"Entity '{entity_name}' neighborhood: {
+                        neighborhood['total_nodes']} connected nodes, {
+                        neighborhood['total_relationships']} relationships"
 
             return "Please specify an entity to explore."
 
         if "stats" in user_input.lower() or "statistics" in user_input.lower():
             # Return graph statistics
-            return f"Knowledge Graph Statistics:\n- Nodes: {len(self.knowledge_graph.nodes)}\n- Relationships: {len(self.knowledge_graph.relationships)}\n- Last Updated: {self.knowledge_graph.metadata.get('last_updated', 'Never')}"
+            return f"Knowledge Graph Statistics:\n- Nodes: {
+                len(
+                    self.knowledge_graph.nodes)}\n- Relationships: {
+                len(
+                    self.knowledge_graph.relationships)}\n- Last Updated: {
+                self.knowledge_graph.metadata.get(
+                    'last_updated',
+                    'Never')}"
 
         return "I can help you extract knowledge graphs from memories, explore entity neighborhoods, or provide graph statistics. What would you like to do?"

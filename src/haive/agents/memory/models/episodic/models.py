@@ -63,7 +63,8 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
 
         for pattern in pii_patterns:
             if re.search(pattern, v):
-                # In production, you might want to mask or handle PII differently
+                # In production, you might want to mask or handle PII
+                # differently
                 pass  # For now, just detect
 
         return v.strip()

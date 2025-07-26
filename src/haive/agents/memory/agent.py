@@ -274,7 +274,10 @@ class MemoryAgent(ReactAgent):
 
                 # Add to result
                 result["recall_memories"] = memories
-                logger.info(f"Loaded {len(memories)} memories for user {user_id}")
+                logger.info(
+                    f"Loaded {
+                        len(memories)} memories for user {user_id}"
+                )
             else:
                 # No query, set empty memories
                 result["recall_memories"] = []
@@ -334,7 +337,8 @@ class MemoryAgent(ReactAgent):
 
         memory_type = state.get("memory_type", self.config.memory_type)
 
-        # Use the memory extraction engine if provided, otherwise use the main engine
+        # Use the memory extraction engine if provided, otherwise use the main
+        # engine
         extraction_engine = self.config.memory_extraction_engine or self.config.engine
 
         try:
@@ -365,7 +369,9 @@ class MemoryAgent(ReactAgent):
             # Create a complete prompt with conversation history
             conversation_str = "\n".join(
                 [
-                    f"{msg.type if hasattr(msg, 'type') else msg[0]}: {msg.content if hasattr(msg, 'content') else msg[1]}"
+                    f"{msg.type if hasattr(msg,
+                                                                 'type') else msg[0]}: {msg.content if hasattr(msg,
+                                                                                                               'content') else msg[1]}"
                     for msg in messages
                 ]
             )
@@ -475,7 +481,7 @@ class MemoryAgent(ReactAgent):
                                 for k in ["subject", "predicate", "object_"]
                             ):
                                 structured_memories.append(memory_dict)
-                        except:
+                        except BaseException:
                             # Skip invalid memories
                             pass
 
@@ -483,7 +489,10 @@ class MemoryAgent(ReactAgent):
                     save_structured_memories(
                         structured_memories, self.config.vector_store, user_id
                     )
-                    logger.info(f"Saved {len(structured_memories)} structured memories")
+                    logger.info(
+                        f"Saved {
+                            len(structured_memories)} structured memories"
+                    )
 
             else:  # unstructured
                 # Save as unstructured memories
@@ -500,7 +509,8 @@ class MemoryAgent(ReactAgent):
                         unstructured_memories, self.config.vector_store, user_id
                     )
                     logger.info(
-                        f"Saved {len(unstructured_memories)} unstructured memories"
+                        f"Saved {
+                            len(unstructured_memories)} unstructured memories"
                     )
 
         except Exception as e:

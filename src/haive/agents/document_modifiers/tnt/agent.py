@@ -108,7 +108,8 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         self.map_step = RunnableLambda(
             func=wrap_content
         ) | RunnablePassthrough.assign(  # Wraps content in a dictionary  # Assigns summaries key in dict
-            summaries=RunnableLambda(func=batch_summaries)  # Fix: Uses wrapped function
+            # Fix: Uses wrapped function
+            summaries=RunnableLambda(func=batch_summaries)
         )
 
         self.map_reduce_chain = self.map_step | self.reduce_summaries
@@ -128,7 +129,8 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             update={
                 "documents": [
                     {
-                        "id": doc.get("id", "UNKNOWN_ID"),  # Handle missing key
+                        # Handle missing key
+                        "id": doc.get("id", "UNKNOWN_ID"),
                         "content": doc.get(
                             "content", "UNKNOWN_CONTENT"
                         ),  # Handle missing key
@@ -253,7 +255,8 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         if not isinstance(state.clusters, list):
             state.clusters = []
         elif isinstance(state.clusters, dict):
-            state.clusters = [list(state.clusters.values())]  # Convert dict to list
+            # Convert dict to list
+            state.clusters = [list(state.clusters.values())]
 
         which_mb = len(state.clusters) % len(state.minibatches)
         return self.invoke_taxonomy_chain(

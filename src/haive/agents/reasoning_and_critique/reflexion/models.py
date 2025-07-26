@@ -8,9 +8,6 @@ class Reflection(BaseModel):
     superfluous: str = Field(description="Critique of what is superfluous")
 
 
-from pydantic import BaseModel, Field
-
-
 class AnswerQuestion(BaseModel):
     """Answer the question. Provide an answer, reflection, and follow up with search queries to improve the answer."""
 

@@ -26,7 +26,7 @@ def calculator(expression: str) -> float:
     """Calculate mathematical expression."""
     try:
         return eval(expression)
-    except:
+    except BaseException:
         return 0.0
 
 

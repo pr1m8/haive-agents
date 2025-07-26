@@ -1,6 +1,6 @@
-"""
-Tests for JoinStep - Auto DAG detection and parallelization
-"""
+"""Tests for JoinStep - Auto DAG detection and parallelization."""
+
+import contextlib
 
 from haive.agents.planning.rewoo.models.join_step import JoinStep, JoinStrategy
 from haive.agents.planning.rewoo.models.plans import ExecutionPlan
@@ -400,41 +400,21 @@ class TestJoinStepIntegration:
 
 if __name__ == "__main__":
     # Run basic tests without pytest
-    print("🧪 Testing JoinStep Auto-Detection")
-    print("=" * 50)
 
     # Test basic join creation
-    try:
+    with contextlib.suppress(Exception):
         join_step = JoinStep(
             description="Test join with auto-detection",
             depends_on=["step_1", "step_2", "step_3"],
         )
 
-        print(f"✅ JoinStep created: {join_step.description}")
-        print(f"   Is join point: {join_step.is_join_point}")
-        print(f"   Parallel branches: {join_step.parallel_branch_count}")
-        print(f"   Complexity: {join_step.join_complexity}")
-        print(f"   Suggested function: {join_step.join_function}")
-        print(f"   Estimated wait time: {join_step.estimated_wait_time:.2f}")
-        print(f"   Can optimize: {join_step.can_optimize_parallel}")
-
-    except Exception as e:
-        print(f"❌ JoinStep creation failed: {e}")
-
     # Test join strategies
-    try:
+    with contextlib.suppress(Exception):
         wait_any = JoinStep(
             description="Wait any strategy",
             depends_on=["step_1", "step_2"],
             join_strategy=JoinStrategy.WAIT_ANY,
         )
-
-        print("\n✅ WAIT_ANY strategy:")
-        print(f"   Can execute with step_1: {wait_any.can_execute({'step_1'})}")
-        print(f"   Can execute with both: {wait_any.can_execute({'step_1', 'step_2'})}")
-
-    except Exception as e:
-        print(f"❌ Join strategy test failed: {e}")
 
     # Test DAG analysis
     try:
@@ -445,13 +425,6 @@ if __name__ == "__main__":
         ]
 
         analysis = JoinStep.analyze_dag_structure(steps)
-        print("\n✅ DAG Analysis:")
-        print(f"   Total steps: {analysis['total_steps']}")
-        print(f"   Existing joins: {analysis['existing_join_points']}")
-        print(f"   DAG complexity: {analysis['dag_complexity']}")
-        print(f"   Parallelization score: {analysis['parallelization_score']:.2f}")
 
-    except Exception as e:
-        print(f"❌ DAG analysis failed: {e}")
-
-    print("\n✅ All manual tests completed!")
+    except Exception:
+        pass

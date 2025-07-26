@@ -192,7 +192,10 @@ class RegistrySupervisor(ReactAgent):
 
         for i, agent in enumerate(agents):
             capability = (
-                capabilities[i] if capabilities else f"General tasks for {agent.name}"
+                capabilities[i]
+                if capabilities
+                else f"General tasks for {
+                    agent.name}"
             )
             self._registry.register_agent(agent, capability)
 

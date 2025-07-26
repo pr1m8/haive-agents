@@ -2,7 +2,6 @@
 Tests for JoinStep - Auto DAG detection and parallelization
 """
 
-
 from haive.agents.planning.rewoo.models.join_step import JoinStep, JoinStrategy
 from haive.agents.planning.rewoo.models.plans import ExecutionPlan
 from haive.agents.planning.rewoo.models.steps import BasicStep
@@ -92,9 +91,7 @@ class TestJoinStep:
         )
         assert not wait_majority.can_execute(set())
         assert not wait_majority.can_execute({"step_1"})
-        assert (
-            wait_majority.can_execute({"step_1", "step_2"})
-        )  # 2/3 is majority
+        assert wait_majority.can_execute({"step_1", "step_2"})  # 2/3 is majority
         assert wait_majority.can_execute({"step_1", "step_2", "step_3"})
 
     def test_estimated_wait_time(self) -> None:
@@ -432,7 +429,7 @@ if __name__ == "__main__":
             join_strategy=JoinStrategy.WAIT_ANY,
         )
 
-        print("\n✅ WAIT_ANY strategy:":")
+        print("\n✅ WAIT_ANY strategy::")
         print(f"   Can execute with step_1: {wait_any.can_execute({'step_1'})}")
         print(f"   Can execute with both: {wait_any.can_execute({'step_1', 'step_2'})}")
 
@@ -448,7 +445,7 @@ if __name__ == "__main__":
         ]
 
         analysis = JoinStep.analyze_dag_structure(steps)
-        print("\n✅ DAG Analysis:":")
+        print("\n✅ DAG Analysis::")
         print(f"   Total steps: {analysis['total_steps']}")
         print(f"   Existing joins: {analysis['existing_join_points']}")
         print(f"   DAG complexity: {analysis['dag_complexity']}")

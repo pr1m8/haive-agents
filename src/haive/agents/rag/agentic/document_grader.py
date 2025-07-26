@@ -71,7 +71,7 @@ def create_document_grader_agent(
             structured_output_model=DocumentBinaryResponse,
             structured_output_version="v2",
         ),
-        **kwargs
+        **kwargs,
     )
 
 

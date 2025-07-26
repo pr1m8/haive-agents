@@ -1,13 +1,11 @@
 """Test to demonstrate document passing between agents in SimpleRAG V3."""
 
 import asyncio
-from typing import Any, Dict, List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document
 
 from haive.agents.rag.simple.enhanced_v3.answer_generator_agent import SimpleAnswerAgent
-from haive.agents.rag.simple.enhanced_v3.retriever_agent import RetrieverAgent
 
 
 async def demonstrate_document_passing():
@@ -83,11 +81,11 @@ async def demonstrate_document_passing():
         documents=documents, query=retriever_output["query"], debug=True
     )
 
-    print(f"\nBuilt context:")
+    print("\nBuilt context:")
     print(f"  - Total length: {context_info['total_length']} chars")
     print(f"  - Documents used: {context_info['document_count']}")
     print(f"  - Sources: {context_info['sources']}")
-    print(f"\nFormatted context preview:")
+    print("\nFormatted context preview:")
     print(context_info["formatted_context"][:500] + "...")
 
     # 4. Show the final prompt

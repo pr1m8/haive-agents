@@ -180,7 +180,8 @@ Determine:
             if len(content) > self.config.max_content_length:
                 content = content[: self.config.max_content_length] + "..."
                 logger.warning(
-                    f"Content truncated to {self.config.max_content_length} characters"
+                    f"Content truncated to {
+                        self.config.max_content_length} characters"
                 )
 
             # Prepare context strings

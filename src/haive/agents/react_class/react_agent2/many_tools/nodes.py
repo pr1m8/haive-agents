@@ -18,7 +18,8 @@ def select_tools_with_repeat(
     the LLM to generate tool suggestions.
     """
     last_message = state.messages[-1]
-    hack_remove_tool_condition = False  # Simulate an error in the first tool selection
+    # Simulate an error in the first tool selection
+    hack_remove_tool_condition = False
 
     if isinstance(last_message, HumanMessage):
         query = last_message.content
@@ -42,7 +43,8 @@ def select_tools_with_repeat(
     return Command(update={"selected_tools": selected_tools})
 
 
-# The select_tools function selects tools based on the user's last message content.
+# The select_tools function selects tools based on the user's last message
+# content.
 def select_tools(state: State, vs_config: VectorStoreConfig):
     last_user_message = state.messages[-1]
     query = last_user_message.content

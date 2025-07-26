@@ -58,13 +58,15 @@ class LLMRAGAgent(BaseRAGAgent):
         )
 
         # Use the base RAG agent as a subgraph
-        # This leverages the parent's create_runnable method to create the retrieval functionality
+        # This leverages the parent's create_runnable method to create the
+        # retrieval functionality
         base_rag_subgraph = super().create_runnable()
 
         # Define function to invoke the base RAG subgraph
         def retrieve_documents(state: dict[str, Any]):
             logger.info(
-                f"Invoking base RAG for document retrieval with query: '{state.query}'"
+                f"Invoking base RAG for document retrieval with query: '{
+                    state.query}'"
             )
             try:
                 # Invoke the base RAG agent as a subgraph
@@ -75,7 +77,8 @@ class LLMRAGAgent(BaseRAGAgent):
 
                 # Pass the result to the relevance checker
                 return Command(
-                    # No need to update state since the subgraph already did that
+                    # No need to update state since the subgraph already did
+                    # that
                     goto="check_relevance"
                 )
             except Exception as e:
@@ -122,7 +125,10 @@ class LLMRAGAgent(BaseRAGAgent):
 
         # Define a function to generate an answer
         def generate_answer(state: dict[str, Any]):
-            logger.info(f"Generating answer with relevance: {state.is_relevant}")
+            logger.info(
+                f"Generating answer with relevance: {
+                    state.is_relevant}"
+            )
 
             try:
                 # If documents aren't relevant, provide a standard response
@@ -207,7 +213,7 @@ def format_documents(documents: list[Any]) -> str:
 
         # Clean up the text
         text = text.replace("\n\n", " ").replace("  ", " ").strip()
-        formatted_texts.append(f"[{i+1}] {text}")
+        formatted_texts.append(f"[{i + 1}] {text}")
 
     return "\n\n".join(formatted_texts)
 

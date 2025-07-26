@@ -4,7 +4,7 @@ DynamicSupervisor = SupervisorAgent + dynamic worker management + adaptive strat
 """
 
 import logging
-from typing import Any, Dict, List, Literal, Optional, Set
+from typing import Any
 
 from pydantic import Field, field_validator
 
@@ -67,7 +67,7 @@ class DynamicSupervisor(SupervisorAgent):
         default=1, ge=0, le=10, description="Minimum number of workers to maintain"
     )
 
-    worker_performance: Dict[str, Dict[str, Any]] = Field(
+    worker_performance: dict[str, dict[str, Any]] = Field(
         default_factory=dict, description="Performance metrics for each worker"
     )
 
@@ -81,15 +81,15 @@ class DynamicSupervisor(SupervisorAgent):
         default=True, description="Enable recycling of idle workers"
     )
 
-    worker_templates: Dict[str, type] = Field(
+    worker_templates: dict[str, type] = Field(
         default_factory=dict, description="Templates for creating new workers"
     )
 
-    active_tasks: Dict[str, str] = Field(
+    active_tasks: dict[str, str] = Field(
         default_factory=dict, description="Map of task_id to worker_name"
     )
 
-    idle_workers: Set[str] = Field(
+    idle_workers: set[str] = Field(
         default_factory=set, description="Set of idle worker names"
     )
 
@@ -138,7 +138,10 @@ class DynamicSupervisor(SupervisorAgent):
             True if worker was added successfully
         """
         if not self.can_add_worker():
-            logger.warning(f"Cannot add worker: at max capacity ({self.max_workers})")
+            logger.warning(
+                f"Cannot add worker: at max capacity ({
+                    self.max_workers})"
+            )
             return False
 
         if template_name not in self.worker_templates:
@@ -166,10 +169,10 @@ class DynamicSupervisor(SupervisorAgent):
             return True
 
         except Exception as e:
-            logger.error(f"Failed to create worker from template: {e}")
+            logger.exception(f"Failed to create worker from template: {e}")
             return False
 
-    def remove_idle_worker(self) -> Optional[str]:
+    def remove_idle_worker(self) -> str | None:
         """Remove an idle worker.
 
         Returns:
@@ -190,9 +193,7 @@ class DynamicSupervisor(SupervisorAgent):
 
         return None
 
-    def assign_task(
-        self, task_id: str, worker_name: Optional[str] = None
-    ) -> Optional[str]:
+    def assign_task(self, task_id: str, worker_name: str | None = None) -> str | None:
         """Assign a task to a worker.
 
         Args:
@@ -204,7 +205,7 @@ class DynamicSupervisor(SupervisorAgent):
         """
         # Auto-scale if needed
         if self.should_scale_up() and self.worker_templates:
-            template_name = list(self.worker_templates.keys())[0]
+            template_name = next(iter(self.worker_templates.keys()))
             worker_name = f"dynamic_worker_{len(self.workers)}"
             self.add_worker_from_template(template_name, worker_name)
 
@@ -260,7 +261,7 @@ class DynamicSupervisor(SupervisorAgent):
         if self.should_scale_down():
             self.remove_idle_worker()
 
-    def get_worker_metrics(self) -> Dict[str, Dict[str, Any]]:
+    def get_worker_metrics(self) -> dict[str, dict[str, Any]]:
         """Get performance metrics for all workers."""
         return {
             name: {
@@ -275,7 +276,7 @@ class DynamicSupervisor(SupervisorAgent):
             for name, metrics in self.worker_performance.items()
         }
 
-    def get_best_worker(self) -> Optional[str]:
+    def get_best_worker(self) -> str | None:
         """Get the best performing idle worker."""
         if not self.idle_workers:
             return None
@@ -326,37 +327,24 @@ if __name__ == "__main__":
         },
     )
 
-    print(f"Created: {supervisor}")
-    print(f"Auto-scaling: {supervisor.auto_scale}")
-    print(f"Worker limits: {supervisor.min_workers}-{supervisor.max_workers}")
-
     # Simulate task assignment
-    print("\nSimulating task flow:")
 
     # Add initial workers
     supervisor.add_worker_from_template("analyst", "analyst_1")
     supervisor.add_worker_from_template("processor", "processor_1")
-    print(f"Initial state: {supervisor}")
 
     # Assign tasks
     task1 = supervisor.assign_task("task_001")
-    print(f"Assigned task_001 to: {task1}")
 
     task2 = supervisor.assign_task("task_002")
-    print(f"Assigned task_002 to: {task2}")
 
     # All workers busy, should trigger scale up
     task3 = supervisor.assign_task("task_003")
-    print(f"Assigned task_003 to: {task3}")
-    print(f"After scaling: {supervisor}")
 
     # Complete some tasks
     supervisor.complete_task("task_001", success=True, duration=5.0)
     supervisor.complete_task("task_002", success=False, duration=3.0)
 
     # Check metrics
-    print("\nWorker metrics:")
-    for name, metrics in supervisor.get_worker_metrics().items():
-        print(
-            f"  {name}: success_rate={metrics['success_rate']:.2f}, avg_time={metrics['average_time']:.2f}s"
-        )
+    for _name, _metrics in supervisor.get_worker_metrics().items():
+        pass

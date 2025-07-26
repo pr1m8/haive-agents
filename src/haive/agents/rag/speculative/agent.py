@@ -391,7 +391,7 @@ class HypothesisGeneratorAgent(Agent):
                 context_str = (
                     "\n".join(
                         [
-                            f"Doc {i+1}: {doc.page_content[:200]}..."
+                            f"Doc {i + 1}: {doc.page_content[:200]}..."
                             for i, doc in enumerate(context[:5])
                         ]
                     )
@@ -418,7 +418,7 @@ class HypothesisGeneratorAgent(Agent):
                 hypotheses = hypotheses[: self.num_hypotheses]
 
             for i, hypothesis in enumerate(hypotheses):
-                hypothesis.id = f"hyp_{i+1}"
+                hypothesis.id = f"hyp_{i + 1}"
                 hypothesis.generation_method = (
                     f"speculative_generation_{self.hypothesis_diversity}"
                 )
@@ -617,7 +617,7 @@ class ParallelVerificationAgent(Agent):
             evidence = (
                 "\n".join(
                     [
-                        f"Evidence {i+1}: {doc.page_content[:300]}..."
+                        f"Evidence {i + 1}: {doc.page_content[:300]}..."
                         for i, doc in enumerate(docs)
                     ]
                 )

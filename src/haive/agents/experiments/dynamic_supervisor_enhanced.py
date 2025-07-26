@@ -53,7 +53,9 @@ def create_agent_management_tools(supervisor_instance) -> Any:
             # Prepare config
             config = {
                 "name": name.replace("_", " ").title(),
-                "system_message": system_message or f"You are a {description.lower()}.",
+                "system_message": system_message
+                or f"You are a {
+                    description.lower()}.",
             }
 
             # Add agent to registry

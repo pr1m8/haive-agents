@@ -140,7 +140,10 @@ class CompiledAgent(
             engine_list.extend(self.engines.values())
 
             if engine_list:
-                logger.debug(f"Creating schema from {len(engine_list)} engines")
+                logger.debug(
+                    f"Creating schema from {
+                        len(engine_list)} engines"
+                )
                 self.state_schema = SchemaComposer.from_components(
                     components=engine_list, name=f"{self.__class__.__name__}State"
                 )

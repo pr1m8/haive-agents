@@ -6,8 +6,8 @@ with semantic search over conversation history and optional time-weighting.
 
 import asyncio
 import logging
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
 from uuid import uuid4
 
 from haive.core.engine.vectorstore import VectorStoreProvider
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class MessageDocumentConverter:
     """Convert messages to documents for RAG storage."""
 
-    def __init__(self, user_id: str = None, conversation_id: str = None):
+    def __init__(self, user_id: str | None = None, conversation_id: str | None = None):
         """Initialize converter."""
         self.user_id = user_id
         self.conversation_id = conversation_id or f"conv_{uuid4()}"
@@ -54,13 +54,13 @@ class MessageDocumentConverter:
                 "conversation_id": self.conversation_id,
                 "user_id": self.user_id,
                 "turn_number": self.turn_counter,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "content_length": len(content),
                 "source": "conversation",
             },
         )
 
-    def convert_messages(self, messages: List[BaseMessage]) -> List[Document]:
+    def convert_messages(self, messages: list[BaseMessage]) -> list[Document]:
         """Convert multiple messages to documents."""
         return [self.convert_message(msg) for msg in messages]
 
@@ -118,7 +118,7 @@ class ConversationMemoryAgent:
         self,
         config: ConversationMemoryConfig = None,
         name: str = "conversation_memory",
-        user_id: str = None,
+        user_id: str | None = None,
     ):
         """Initialize conversation memory agent."""
         self.config = config or ConversationMemoryConfig()
@@ -126,12 +126,13 @@ class ConversationMemoryAgent:
         self.user_id = user_id or f"user_{uuid4()}"
 
         self.message_converter = MessageDocumentConverter(user_id=self.user_id)
-        self._rag_agent: Optional[BaseRAGAgent] = None
-        self._documents: List[Document] = []
+        self._rag_agent: BaseRAGAgent | None = None
+        self._documents: list[Document] = []
         self._initialized = False
 
         logger.info(
-            f"Initialized ConversationMemoryAgent: {name} for user {self.user_id}"
+            f"Initialized ConversationMemoryAgent: {name} for user {
+                self.user_id}"
         )
 
     async def initialize(self) -> None:
@@ -146,7 +147,7 @@ class ConversationMemoryAgent:
                 metadata={
                     "message_type": "system",
                     "user_id": self.user_id,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                     "source": "system_initialization",
                 },
             )
@@ -163,7 +164,7 @@ class ConversationMemoryAgent:
         self._initialized = True
         logger.info(f"✅ Initialized BaseRAGAgent for {self.name}")
 
-    async def add_conversation(self, messages: List[BaseMessage]) -> None:
+    async def add_conversation(self, messages: list[BaseMessage]) -> None:
         """Add conversation messages to memory."""
         if not messages:
             return
@@ -178,7 +179,9 @@ class ConversationMemoryAgent:
 
         logger.info(f"Added {len(messages)} messages to conversation memory")
 
-    async def retrieve_context(self, query: str, k: int = None) -> List[Document]:
+    async def retrieve_context(
+        self, query: str, k: int | None = None
+    ) -> list[Document]:
         """Retrieve relevant conversation context using BaseRAGAgent.
 
         Args:
@@ -210,11 +213,12 @@ class ConversationMemoryAgent:
                 )
 
         logger.info(
-            f"Retrieved {len(documents)} conversation documents for query: {query}"
+            f"Retrieved {
+                len(documents)} conversation documents for query: {query}"
         )
         return documents
 
-    async def get_conversation_summary(self) -> Dict[str, Any]:
+    async def get_conversation_summary(self) -> dict[str, Any]:
         """Get summary of stored conversations."""
         return {
             "user_id": self.user_id,
@@ -227,11 +231,11 @@ class ConversationMemoryAgent:
                 ]
             ),
             "conversations": len(
-                set(
+                {
                     d.metadata.get("conversation_id")
                     for d in self._documents
                     if d.metadata.get("conversation_id")
-                )
+                }
             ),
             "storage_backend": self.config.vector_store_provider.value,
             "embedding_model": self.config.embedding_model.model,
@@ -253,20 +257,19 @@ class ConversationMemoryAgent:
                 f"Updated vector store with {len(self._documents)} total documents"
             )
         except Exception as e:
-            logger.error(f"Failed to update vector store: {e}")
+            logger.exception(f"Failed to update vector store: {e}")
             raise
 
     # Factory method for easy creation
     @classmethod
     def create(
         cls,
-        user_id: str = None,
+        user_id: str | None = None,
         vector_store_provider: VectorStoreProvider = VectorStoreProvider.FAISS,
         embedding_model: str = "sentence-transformers/all-mpnet-base-v2",
         name: str = "conversation_memory",
     ) -> "ConversationMemoryAgent":
         """Factory method to create ConversationMemoryAgent."""
-
         config = ConversationMemoryConfig(
             vector_store_provider=vector_store_provider,
             embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
@@ -278,9 +281,6 @@ class ConversationMemoryAgent:
 # Standalone demo function
 async def demo_conversation_memory():
     """Demo conversation memory agent functionality."""
-
-    print("🚀 Demo: ConversationMemoryAgent with BaseRAGAgent")
-
     # Create agent
     agent = ConversationMemoryAgent.create(
         user_id="demo_user", name="demo_conversation"
@@ -288,7 +288,6 @@ async def demo_conversation_memory():
 
     # Initialize
     await agent.initialize()
-    print("✅ Agent initialized")
 
     # Add conversation
     messages = [
@@ -300,7 +299,6 @@ async def demo_conversation_memory():
     ]
 
     await agent.add_conversation(messages)
-    print(f"✅ Added {len(messages)} messages")
 
     # Retrieve context
     queries = [
@@ -312,22 +310,16 @@ async def demo_conversation_memory():
     for query in queries:
         try:
             docs = await agent.retrieve_context(query, k=2)
-            print(f"\n🔍 Query: {query}")
-            print(f"📄 Found {len(docs)} relevant documents")
 
-            for i, doc in enumerate(docs, 1):
-                content = doc.page_content[:100]
-                msg_type = doc.metadata.get("message_type", "unknown")
-                print(f"   {i}. [{msg_type}] {content}...")
+            for _i, doc in enumerate(docs, 1):
+                doc.page_content[:100]
+                doc.metadata.get("message_type", "unknown")
 
-        except Exception as e:
-            print(f"⚠️  Query '{query}' failed: {str(e)[:100]}...")
+        except Exception:
+            pass
 
     # Get summary
-    summary = await agent.get_conversation_summary()
-    print(f"\n📊 Summary: {summary}")
-
-    print("\n✅ Demo completed!")
+    await agent.get_conversation_summary()
 
 
 if __name__ == "__main__":

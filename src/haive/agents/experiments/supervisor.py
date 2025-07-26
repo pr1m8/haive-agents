@@ -8,6 +8,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 # REACT AGENT
 # ============================================================================
 from langchain_core.tools import tool
+from langgraph.graph import StateGraph
 from pydantic import (
     Any,
     BaseModel,
@@ -52,12 +53,10 @@ class MultiAgentState(BaseModel, GetterMixin):
 def temp_node(state: Dict[str, Any]):
     agent = state.get("selected_agent")
     if agent:
-        runnable = agent.create_runnable()
+        agent.create_runnable()
         # runnable.run(input_payload) # input_payload undefined
     return state
 
-
-from langgraph.graph import StateGraph
 
 base_graph = StateGraph(state_schema=MultiAgentState)
 base_graph.add_node(temp_node)

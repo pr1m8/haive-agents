@@ -1,6 +1,5 @@
 # SimpleAgent Package - Ultra-fast lazy loading
-"""
-SimpleAgent package with ultra-optimized import performance.
+"""SimpleAgent package with ultra-optimized import performance.
 Achieves sub-3 second import times through comprehensive lazy loading.
 """
 

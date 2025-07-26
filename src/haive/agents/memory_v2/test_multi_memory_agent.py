@@ -20,7 +20,7 @@ def test_multi_memory_config():
 
     # Test default config
     config = MultiMemoryConfig()
-    print(f"✅ Default config created:")
+    print("✅ Default config created:")
     print(f"  - Name: {config.name}")
     print(f"  - Default strategy: {config.default_strategy}")
     print(f"  - Simple memory enabled: {config.enable_simple_memory}")
@@ -35,7 +35,7 @@ def test_multi_memory_config():
         enable_graph_memory=False,
         enable_rag_memory=False,
     )
-    print(f"\n✅ Custom config created:")
+    print("\n✅ Custom config created:")
     print(f"  - Name: {custom_config.name}")
     print(f"  - Strategy: {custom_config.default_strategy}")
     print(f"  - Graph enabled: {custom_config.enable_graph_memory}")
@@ -75,7 +75,7 @@ def test_multi_memory_agent_creation():
 
     try:
         agent = MultiMemoryAgent(config)
-        print(f"✅ MultiMemoryAgent created successfully:")
+        print("✅ MultiMemoryAgent created successfully:")
         print(f"  - Name: {agent.name}")
         print(f"  - State schema: {agent.state_schema.__name__}")
         print(f"  - Available memory agents: {list(agent.memory_agents.keys())}")

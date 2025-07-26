@@ -4,13 +4,11 @@ Note: These tests require a running Neo4j instance.
 """
 
 import asyncio
+import contextlib
 import json
-from datetime import datetime
-from typing import Any, Dict, List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_neo4j.graphs.graph_document import GraphDocument, Node, Relationship
 
 from haive.agents.memory_v2.graph_memory_agent import (
     GraphMemoryAgent,
@@ -48,22 +46,18 @@ async def graph_memory_agent(graph_memory_config):
     agent = GraphMemoryAgent(graph_memory_config)
 
     # Clean up test data before tests
-    try:
+    with contextlib.suppress(Exception):
         agent.graph.query(
             "MATCH (n {user_id: $user_id}) DETACH DELETE n", {"user_id": "test_user"}
         )
-    except:
-        pass
 
     yield agent
 
     # Clean up after tests
-    try:
+    with contextlib.suppress(Exception):
         agent.graph.query(
             "MATCH (n {user_id: $user_id}) DETACH DELETE n", {"user_id": "test_user"}
         )
-    except:
-        pass
 
 
 class TestGraphMemoryAgent:
@@ -283,7 +277,7 @@ class TestGraphMemoryAgent:
         """
 
         # Process text
-        result = await graph_memory_agent.run(text, auto_store=True)
+        await graph_memory_agent.run(text, auto_store=True)
 
         # Query relationships with properties
         rel_query = """
@@ -379,18 +373,12 @@ async def test_real_world_scenario():
         await agent.run(memory, auto_store=True)
 
     # End of day summary query
-    summary = await agent.query_graph(
+    await agent.query_graph(
         "What were the main topics discussed today?", query_type="natural"
     )
 
-    print(f"Daily summary: {json.dumps(summary, indent=2)}")
-
     # Find action items
-    actions = await agent.query_graph(
-        "What do I need to do or research?", query_type="natural"
-    )
-
-    print(f"Action items: {json.dumps(actions, indent=2)}")
+    await agent.query_graph("What do I need to do or research?", query_type="natural")
 
     # Clean up
     agent.graph.query(

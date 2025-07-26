@@ -99,7 +99,8 @@ def create_expert_prompt(expertise_config: dict) -> ChatPromptTemplate:
     # Build style instruction
     style_instruction = ""
     if expertise_config.get("style"):
-        style_instruction = f"Communicate in a {expertise_config['style']} style."
+        style_instruction = f"Communicate in a {
+            expertise_config['style']} style."
 
     # Format system prompt
     system_prompt = EXPERT_SYSTEM_TEMPLATE.format(

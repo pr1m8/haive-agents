@@ -44,17 +44,20 @@ async def demonstrate_integrated_supervisor():
 
     console.print("✅ Registered agent constructors")
 
-    # Phase 1: Start with empty supervisor and demonstrate tool-based agent addition
+    # Phase 1: Start with empty supervisor and demonstrate tool-based agent
+    # addition
     console.print("\n[bold cyan]Phase 1: Dynamic Agent Addition via Tools[/bold cyan]")
 
     supervisor.print_integrated_dashboard()
 
-    # Simulate tool calls for adding agents (in real usage, these would come from LLM tool calls)
+    # Simulate tool calls for adding agents (in real usage, these would come
+    # from LLM tool calls)
     console.print(
         "\n[yellow]Simulating: 'add a research agent that can search the web'[/yellow]"
     )
 
-    # Manually add agents to demonstrate the flow (normally done via tool calls)
+    # Manually add agents to demonstrate the flow (normally done via tool
+    # calls)
     research_agent = ReactAgent(
         name="research_agent",
         engine=AugLLMConfig(),
@@ -236,7 +239,10 @@ async def demonstrate_dynamic_choice_model_integration():
             # Test the model
             try:
                 test_instance = choice_model.current_model(choice=agent_name)
-                console.print(f"✅ Valid choice created: {test_instance.choice}")
+                console.print(
+                    f"✅ Valid choice created: {
+                        test_instance.choice}"
+                )
             except Exception as e:
                 console.print(f"❌ Choice validation failed: {e}")
 
@@ -246,7 +252,10 @@ async def demonstrate_dynamic_choice_model_integration():
 
     if supervisor.registry_manager:
         choice_model = supervisor.registry_manager.get_agent_choice_model()
-        console.print(f"Choice model after removal: {choice_model.option_names}")
+        console.print(
+            f"Choice model after removal: {
+                choice_model.option_names}"
+        )
 
     console.print(
         "\n[bold green]🎯 DynamicChoiceModel Integration Demo Complete![/bold green]"

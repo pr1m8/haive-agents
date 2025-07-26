@@ -334,7 +334,11 @@ class LetterGrade(Grade):
         quality = self.get_letter_quality_description()
         passing_status = "✅" if self.is_passing() else "❌"
 
-        return f"{passing_status} {self.value.value} ({gpa:.1f} GPA | {quality}) | {self.justification[:30]}..."
+        return f"{passing_status} {
+            self.value.value} ({
+            gpa:.1f} GPA | {quality}) | {
+            self.justification[
+                :30]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a value can be converted to a letter grade.

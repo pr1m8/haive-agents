@@ -1,6 +1,71 @@
-# SimpleAgent
+# SimpleAgent - Haive Framework
 
-The most basic agent implementation in the Haive framework - essentially just `Agent[AugLLMConfig]` with convenience fields.
+**Simple conversational agents for basic AI interactions**
+
+## 🎯 Quick Start - Which Version to Use?
+
+### ✅ **Default (Recommended)**: SimpleAgent → SimpleAgentV2
+
+```python
+from haive.agents.simple import SimpleAgent  # Gets SimpleAgentV2 automatically
+from haive.core.engine.aug_llm import AugLLMConfig
+
+# Create simple conversational agent
+agent = SimpleAgent(
+    name="assistant",
+    engine=AugLLMConfig(
+        system_message="You are a helpful assistant.",
+        temperature=0.7
+    )
+)
+
+# Use agent
+result = await agent.arun("Hello! How can you help me today?")
+print(result)
+```
+
+### 🚀 **Enhanced (Newer)**: SimpleAgentV3
+
+```python
+from haive.agents.simple import SimpleAgentV3  # Enhanced with hooks system
+from haive.core.engine.aug_llm import AugLLMConfig
+
+# Create enhanced agent with hooks and pre/post processing
+agent = SimpleAgentV3(
+    name="enhanced_assistant",
+    engine=AugLLMConfig(
+        system_message="You are an enhanced assistant.",
+        temperature=0.7,
+        structured_output_model=MyOutputModel  # Optional structured output
+    )
+)
+
+# Add hooks for monitoring
+@agent.before_run
+def log_start(context):
+    print(f"🚀 Starting {context.agent_name}")
+
+@agent.after_run
+def log_completion(context):
+    print(f"✅ Completed {context.agent_name}")
+
+# Execute with hooks
+result = await agent.arun("Analyze this topic for me")
+```
+
+## 📋 Version Comparison
+
+| Feature                 | SimpleAgent<br/>(Default V2)                  | SimpleAgentV3<br/>(Enhanced)                    | Original SimpleAgent<br/>(Legacy) |
+| ----------------------- | --------------------------------------------- | ----------------------------------------------- | --------------------------------- |
+| **Import**              | `from haive.agents.simple import SimpleAgent` | `from haive.agents.simple import SimpleAgentV3` | Manual import from agent.py       |
+| **Base Class**          | Enhanced Agent ✅                             | Enhanced Agent ✅                               | Enhanced Agent ✅                 |
+| **Structured Output**   | ✅ Built-in                                   | ✅ Advanced                                     | ✅ Basic                          |
+| **Hooks System**        | ✅ Basic                                      | ✅ **Full System**                              | ❌ None                           |
+| **Pre/Post Processing** | ❌ None                                       | ✅ **With Agents**                              | ❌ None                           |
+| **Validation**          | ✅ ValidationNodeV2                           | ✅ Advanced                                     | ✅ Basic                          |
+| **Recompilation**       | ✅ Auto                                       | ✅ **Hash-based**                               | ✅ Auto                           |
+| **Agent-as-Tool**       | ✅ Ready                                      | ✅ **Enhanced**                                 | ✅ Ready                          |
+| **Status**              | **Current Default**                           | **Latest Features**                             | Clean Legacy                      |
 
 ## Overview
 
@@ -10,30 +75,34 @@ SimpleAgent is designed to be the minimal functional agent that:
 - Provides convenience fields for common LLM parameters
 - Builds a simple graph for LLM + tools + parsing
 - Serves as the foundation for other agent types
+- **Default import gets you V2** (current stable)
+- **V3 available for enhanced features** (hooks, pre/post processing)
 
-## Installation
+## 🔧 Installation & Setup
 
 ```bash
-poetry add haive-agents
+# Install Haive framework
+poetry install
+
+# SimpleAgent is included in haive-agents package
+from haive.agents.simple import SimpleAgent, SimpleAgentV3
 ```
 
-## Quick Start
+## 🎯 Use Cases
 
-```python
-from haive.agents.simple import SimpleAgent
+### SimpleAgent (Default V2) - For Most Users
 
-# Create with defaults
-agent = SimpleAgent(name="assistant")
-response = agent.run("Hello, how are you?")
+- **General conversations**: Customer service, Q&A, chat
+- **Structured output**: Form filling, data extraction
+- **Basic workflows**: Simple task execution
+- **Production ready**: Stable, tested, well-documented
 
-# With configuration
-agent = SimpleAgent(
-    name="creative_writer",
-    temperature=0.9,
-    max_tokens=1000,
-    system_message="You are a creative writer."
-)
-```
+### SimpleAgentV3 (Enhanced) - For Advanced Users
+
+- **Complex workflows**: Multi-stage processing with hooks
+- **Agent composition**: Agents calling other agents
+- **Monitoring & debugging**: Full lifecycle tracking
+- **Research & experimentation**: Latest features and patterns
 
 ## Features
 

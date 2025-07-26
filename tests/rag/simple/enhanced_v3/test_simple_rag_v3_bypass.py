@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 """Test SimpleRAG V3 implementation bypassing broken import chains."""
 
-import os
 import sys
-from typing import Any, Dict, List
 from unittest.mock import MagicMock
-
-import pytest
 
 # Add source paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -76,8 +72,6 @@ def test_simple_rag_v3_pattern_compliance():
     print("🔍 Testing Pattern Compliance...")
 
     # Import agent type checking
-    import types
-    from typing import get_args, get_origin
 
     from haive.agents.rag.simple.enhanced_v3.agent import RAGAgentCollection
 
@@ -95,7 +89,7 @@ def test_simple_rag_v3_pattern_compliance():
         "agent_module",
         "/home/will/Projects/haive/backend/haive/packages/haive-agents/src/haive/agents/rag/simple/enhanced_v3/agent.py",
     )
-    agent_module = importlib.util.module_from_spec(spec)
+    importlib.util.module_from_spec(spec)
 
     # Check if our class is properly defined
     with open(
@@ -121,7 +115,7 @@ def test_simple_rag_v3_features():
     # Test state features
     from langchain_core.documents import Document
 
-    from haive.agents.rag.simple.enhanced_v3.state import RAGMetadata, SimpleRAGState
+    from haive.agents.rag.simple.enhanced_v3.state import SimpleRAGState
 
     state = SimpleRAGState(
         query="What is machine learning?", retrieved_documents=[], generated_answer=""
@@ -185,8 +179,6 @@ def test_simple_rag_v3_features():
 def test_file_organization():
     """Test that our file organization follows the requested structure."""
     print("🔍 Testing File Organization...")
-
-    import os
 
     base_path = "/home/will/Projects/haive/backend/haive/packages/haive-agents/src/haive/agents/rag/simple/enhanced_v3"
 

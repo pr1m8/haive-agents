@@ -95,7 +95,8 @@ class AgentRegistryManager:
         constructor = self.agent_constructors.get(descriptor.agent_type)
         if not constructor:
             logger.error(
-                f"No constructor registered for agent type: {descriptor.agent_type}"
+                f"No constructor registered for agent type: {
+                    descriptor.agent_type}"
             )
             return None
 
@@ -103,7 +104,11 @@ class AgentRegistryManager:
             # Create agent with descriptor config
             agent = constructor(name=descriptor.name, **descriptor.config)
 
-            logger.info(f"Created agent: {descriptor.name} ({descriptor.agent_type})")
+            logger.info(
+                f"Created agent: {
+                    descriptor.name} ({
+                    descriptor.agent_type})"
+            )
             return agent
 
         except Exception as e:
@@ -274,12 +279,17 @@ class ListAgentsTool(BaseTool):
                     performance = supervisor._state.get_agent_performance(agent_name)
                     if performance.get("executions", 0) > 0:
                         success_rate = performance.get("success_rate", 0.0) * 100
-                        info += f" (Success: {success_rate:.1f}%, Executions: {performance.get('executions', 0)})"
+                        info += f" (Success: {
+                            success_rate:.1f}%, Executions: {
+                            performance.get(
+                                'executions', 0)})"
 
                 agent_info.append(info)
 
-            return f"Available agents ({len(available_agents)}):\n" + "\n".join(
-                agent_info
+            return (
+                f"Available agents ({
+                len(available_agents)}):\n"
+                + "\n".join(agent_info)
             )
 
         except Exception as e:

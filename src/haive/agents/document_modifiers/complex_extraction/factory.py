@@ -39,7 +39,8 @@ def create_complex_extraction_agent(
     """
     # Set up default system prompt
     if system_prompt is None:
-        system_prompt = f"You are a precise data extraction assistant specialized in extracting {extraction_model.__name__} information from text. Extract all required fields accurately according to the schema."
+        system_prompt = f"You are a precise data extraction assistant specialized in extracting {
+            extraction_model.__name__} information from text. Extract all required fields accurately according to the schema."
 
     # Create prompt template with system prompt
     prompt_template = ChatPromptTemplate.from_messages(
@@ -48,7 +49,9 @@ def create_complex_extraction_agent(
 
     # Set up LLM config
     llm_config = AzureLLMConfig(
-        model=model, parameters={"temperature": 0.1}  # Lower temperature for extraction
+        # Lower temperature for extraction
+        model=model,
+        parameters={"temperature": 0.1},
     )
 
     # Create engine

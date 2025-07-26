@@ -132,7 +132,7 @@ class HyDERAGAgentV2(SequentialAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         embedding_model: str | None = None,
-        **kwargs
+        **kwargs,
     ):
         """Create HyDE RAG from documents.
 
@@ -184,5 +184,5 @@ class HyDERAGAgentV2(SequentialAgent):
         return cls(
             agents=[hyde_generator, hyde_retriever, answer_agent],
             name=kwargs.get("name", "HyDE RAG Agent V2"),
-            **kwargs
+            **kwargs,
         )

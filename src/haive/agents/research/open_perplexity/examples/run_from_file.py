@@ -12,12 +12,12 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-# Add the parent directory to the path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent.parent))
-
 from agents.open_perplexity.agent import ResearchAgent
 from agents.open_perplexity.config import ResearchAgentConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
+
+# Add the parent directory to the path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent.parent))
 
 
 def setup_logging(log_file="research_run.log") -> Any:

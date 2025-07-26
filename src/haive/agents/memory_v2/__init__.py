@@ -92,28 +92,28 @@ except ImportError:
 
 # Core exports (always available with BaseRAGAgent)
 __all__ = [
-    # RAG-based memory agents (working)
-    "UnifiedMemoryRAGAgent",
     "ConversationMemoryAgent",
     "FactualMemoryAgent",
-    "PreferencesMemoryAgent",
-    "StandaloneMemoryItem",
+    "ImportanceLevel",
     "MemoryRAGConfig",
     "MemoryType",
-    "ImportanceLevel",
+    "PreferencesMemoryAgent",
+    "StandaloneMemoryItem",
+    # RAG-based memory agents (working)
+    "UnifiedMemoryRAGAgent",
+    "create_conversation_memory_agent",
     # Factory functions
     "create_unified_memory_agent",
-    "create_conversation_memory_agent",
 ]
 
 # Add optional exports if available
 if TIME_RETRIEVER_AVAILABLE:
-    __all__.extend(["TimeWeightedRetriever", "TimeWeightConfig"])
+    __all__.extend(["TimeWeightConfig", "TimeWeightedRetriever"])
 
 if DOCUMENT_CONVERTER_AVAILABLE:
     __all__.extend(["MessageDocumentConverter", "TimestampedDocument"])
 
 if EXTRACTION_AVAILABLE:
     __all__.extend(
-        ["EXTRACTION_PROMPTS", "get_extraction_prompt", "get_all_extraction_types"]
+        ["EXTRACTION_PROMPTS", "get_all_extraction_types", "get_extraction_prompt"]
     )

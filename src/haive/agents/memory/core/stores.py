@@ -392,7 +392,8 @@ class MemoryStoreManager:
             )
 
             logger.info(
-                f"Consolidating {len(all_memories)} memories in namespace {namespace}"
+                f"Consolidating {
+                    len(all_memories)} memories in namespace {namespace}"
             )
 
             # Find and remove duplicates
@@ -442,7 +443,9 @@ class MemoryStoreManager:
 
             processing_time = (datetime.utcnow() - start_time).total_seconds()
             result.processing_time = processing_time
-            result.summary = f"Consolidation complete: {result.duplicates_removed} duplicates removed, {result.expired_removed} expired memories removed"
+            result.summary = f"Consolidation complete: {
+                result.duplicates_removed} duplicates removed, {
+                result.expired_removed} expired memories removed"
 
             if not dry_run:
                 self._last_consolidation = datetime.utcnow()
@@ -677,7 +680,8 @@ class MemoryStoreManager:
 
                 content2 = memory2.get("content", "").lower().strip()
 
-                # Simple similarity check (could be enhanced with more sophisticated algorithms)
+                # Simple similarity check (could be enhanced with more
+                # sophisticated algorithms)
                 if self._are_contents_similar(content1, content2):
                     duplicate_group.append(memory2["id"])
                     processed_ids.add(memory2["id"])

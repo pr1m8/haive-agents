@@ -1,7 +1,10 @@
+from typing import Any
+
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from langchain_community.graphs.graph_document import GraphDocument, Node, Relationship
 from langchain_core.documents import Document
 from langchain_neo4j.graphs.graph_document import GraphDocument
 
@@ -101,8 +104,6 @@ def visualize_graph(
     plt.close()
 
 
-from langchain_community.graphs.graph_document import GraphDocument, Node, Relationship
-
 a = GraphDocument(
     nodes=[
         Node(id="Pierre Curie", type="Person", properties={}),
@@ -143,8 +144,6 @@ a = GraphDocument(
     ),
 )
 visualize_graph(a)
-
-from typing import Any
 
 
 # Helper function to create and run the agent

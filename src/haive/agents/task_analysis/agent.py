@@ -320,7 +320,8 @@ class TaskAnalysisAgent(Agent):
     # ========================================================================
     # GRAPH BUILDING (same as before)
     # ========================================================================
-    # src/haive/agents/task_analysis/agent.py (only showing the build_graph method fix)
+    # src/haive/agents/task_analysis/agent.py (only showing the build_graph
+    # method fix)
 
     def build_graph(self) -> BaseGraph:
         """Build the task analysis workflow graph."""

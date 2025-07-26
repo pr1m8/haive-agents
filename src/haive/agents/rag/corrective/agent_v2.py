@@ -72,7 +72,7 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         relevance_threshold: float = 0.7,
-        **kwargs
+        **kwargs,
     ):
         """Create Corrective RAG from documents.
 
@@ -189,5 +189,5 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
             ],
             branches=branches,
             name=kwargs.get("name", "Corrective RAG Agent V2"),
-            **kwargs
+            **kwargs,
         )

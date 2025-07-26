@@ -74,7 +74,7 @@ class TypedRAGAgent(BaseRAGAgent):
                         category = parsed.get("category", "factoid").lower()
                         metadata = {k: v for k, v in parsed.items() if k != "category"}
                         return {"query_category": category, "query_metadata": metadata}
-                except:
+                except BaseException:
                     pass
 
                 # Default to factoid
@@ -119,7 +119,7 @@ class TypedRAGAgent(BaseRAGAgent):
                 # List of subqueries - create a mapping
                 subqueries = {}
                 for i, sq in enumerate(subquery_result):
-                    subqueries[f"{category}_{i+1}"] = sq
+                    subqueries[f"{category}_{i + 1}"] = sq
                 return {"subqueries": subqueries}
 
             if isinstance(subquery_result, dict):

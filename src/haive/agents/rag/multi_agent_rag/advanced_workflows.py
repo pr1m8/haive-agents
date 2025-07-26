@@ -109,7 +109,7 @@ class GraphRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=GraphRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -185,7 +185,7 @@ class AgenticGraphRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.CONDITIONAL,
             state_schema=AgenticRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -260,7 +260,7 @@ class AgenticRAGRouterAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=AgenticRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -320,7 +320,7 @@ class QueryPlanningAgenticRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=AgenticRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -398,7 +398,7 @@ class SelfReflectiveAgenticRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=AgenticRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -473,7 +473,7 @@ class SpeculativeRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.PARALLEL,
             state_schema=AgenticRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -542,7 +542,7 @@ class SelfRouteRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.CONDITIONAL,
             state_schema=AgenticRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:

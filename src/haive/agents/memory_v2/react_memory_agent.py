@@ -4,21 +4,16 @@ This implementation follows LangChain's long-term memory patterns but uses
 ReactAgent with tools for flexible memory operations.
 """
 
-import json
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.messages_state import MessagesState
-from langchain.storage import InMemoryStore
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
 
 from haive.agents.memory_v2.time_weighted_retriever import TimeWeightedRetriever
-from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.react.agent import ReactAgent
 
 
@@ -37,9 +32,9 @@ class ReactMemoryAgent:
     def __init__(
         self,
         name: str = "react_memory_agent",
-        engine: Optional[AugLLMConfig] = None,
-        user_id: Optional[str] = None,
-        memory_store_path: Optional[str] = None,
+        engine: AugLLMConfig | None = None,
+        user_id: str | None = None,
+        memory_store_path: str | None = None,
         k: int = 5,
         decay_rate: float = 0.01,
         use_time_weighting: bool = True,
@@ -62,7 +57,7 @@ class ReactMemoryAgent:
                     self.embeddings,
                     allow_dangerous_deserialization=True,
                 )
-            except:
+            except BaseException:
                 # Create new if doesn't exist
                 self.vector_store = FAISS.from_documents(
                     [
@@ -105,7 +100,8 @@ class ReactMemoryAgent:
 
     def _get_system_message(self) -> str:
         """Get system message that instructs agent on memory usage."""
-        return f"""You are an AI assistant with access to long-term memory for user {self.user_id}.
+        return f"""You are an AI assistant with access to long-term memory for user {
+            self.user_id}.
 
 IMPORTANT: For EVERY user query, you should:
 1. First use the 'search_memories' tool to find relevant past conversations and facts
@@ -124,11 +120,11 @@ Your memory tools allow you to:
 
 Always strive to use memories to provide more helpful, personalized responses."""
 
-    def _create_memory_tools(self) -> List[Any]:
+    def _create_memory_tools(self) -> list[Any]:
         """Create memory management tools."""
 
         @tool
-        def search_memories(query: str, k: Optional[int] = None) -> str:
+        def search_memories(query: str, k: int | None = None) -> str:
             """Search memories by semantic similarity.
 
             Args:
@@ -159,16 +155,17 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                     memories.append(
                         f"Memory {i} [{memory_type}] (from {timestamp}, importance: {importance}):\n"
-                        f"{doc.page_content}"
+                        f"{
+                            doc.page_content}"
                     )
 
                 return "\n\n".join(memories)
             except Exception as e:
-                return f"Error searching memories: {str(e)}"
+                return f"Error searching memories: {e!s}"
 
         @tool
         def search_memories_by_time(
-            start_date: str, end_date: Optional[str] = None, k: Optional[int] = None
+            start_date: str, end_date: str | None = None, k: int | None = None
         ) -> str:
             """Search memories within a time range.
 
@@ -206,7 +203,8 @@ Always strive to use memories to provide more helpful, personalized responses.""
                 filtered_docs = filtered_docs[:k]
 
                 if not filtered_docs:
-                    return f"No memories found between {start_date} and {end_date or 'now'}."
+                    return f"No memories found between {start_date} and {
+                        end_date or 'now'}."
 
                 # Format memories
                 memories = []
@@ -221,14 +219,14 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                 return "\n\n".join(memories)
             except Exception as e:
-                return f"Error searching memories by time: {str(e)}"
+                return f"Error searching memories by time: {e!s}"
 
         @tool
         def store_memory(
             content: str,
             memory_type: str = "conversation",
             importance: str = "normal",
-            tags: Optional[str] = None,
+            tags: str | None = None,
         ) -> str:
             """Store a new memory.
 
@@ -261,7 +259,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                 return f"Successfully stored {memory_type} memory with {importance} importance."
             except Exception as e:
-                return f"Error storing memory: {str(e)}"
+                return f"Error storing memory: {e!s}"
 
         @tool
         def update_memory(memory_id: str, new_content: str) -> str:
@@ -290,9 +288,9 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                 self.vector_store.add_documents([doc])
 
-                return f"Successfully updated memory. New version stored."
+                return "Successfully updated memory. New version stored."
             except Exception as e:
-                return f"Error updating memory: {str(e)}"
+                return f"Error updating memory: {e!s}"
 
         @tool
         def delete_memory(memory_id: str) -> str:
@@ -322,7 +320,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                 return f"Memory marked as deleted: {memory_id}"
             except Exception as e:
-                return f"Error deleting memory: {str(e)}"
+                return f"Error deleting memory: {e!s}"
 
         @tool
         def list_recent_memories(k: int = 10) -> str:
@@ -361,7 +359,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                 return "Recent memories:\n" + "\n".join(memories)
             except Exception as e:
-                return f"Error listing recent memories: {str(e)}"
+                return f"Error listing recent memories: {e!s}"
 
         return [
             search_memories,
@@ -374,7 +372,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
     async def arun(
         self, query: str, auto_save: bool = True, include_metadata: bool = False
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Run the ReactAgent with memory tools.
 
         Args:
@@ -420,8 +418,8 @@ Always strive to use memories to provide more helpful, personalized responses.""
     def create_with_custom_tools(
         cls,
         name: str = "custom_memory_agent",
-        engine: Optional[AugLLMConfig] = None,
-        custom_tools: Optional[List[Any]] = None,
+        engine: AugLLMConfig | None = None,
+        custom_tools: list[Any] | None = None,
         **kwargs,
     ) -> "ReactMemoryAgent":
         """Create ReactMemoryAgent with additional custom tools.
@@ -460,21 +458,16 @@ async def example_basic_usage():
     )
 
     # First conversation
-    response1 = await agent.arun(
+    await agent.arun(
         "Hi, I'm Alice. I work as a data scientist at TechCorp and I love hiking.",
         auto_save=True,
     )
-    print("Response 1:", response1)
 
     # Later conversation - agent should remember
-    response2 = await agent.arun("What do you remember about my job?", auto_save=True)
-    print("Response 2:", response2)
+    await agent.arun("What do you remember about my job?", auto_save=True)
 
     # Search specific memories
-    response3 = await agent.arun(
-        "Search my memories for information about hiking", auto_save=False
-    )
-    print("Response 3:", response3)
+    await agent.arun("Search my memories for information about hiking", auto_save=False)
 
     # Save vector store
     agent.save_vector_store("alice_memories")
@@ -493,7 +486,7 @@ async def example_with_custom_tools():
             past_date = datetime.fromisoformat(date_str)
             days = (datetime.now() - past_date).days
             return f"{days} days have passed since {date_str}"
-        except:
+        except BaseException:
             return "Invalid date format. Use YYYY-MM-DD"
 
     # Create agent with custom tool
@@ -504,11 +497,10 @@ async def example_with_custom_tools():
     )
 
     # Use both memory and custom tools
-    response = await agent.arun(
+    await agent.arun(
         "Store a memory that I started my new job on 2024-01-15, "
         "then calculate how many days I've been working there."
     )
-    print("Response:", response)
 
 
 if __name__ == "__main__":

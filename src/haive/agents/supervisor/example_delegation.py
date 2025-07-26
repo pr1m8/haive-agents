@@ -138,7 +138,8 @@ async def test_delegation_flow():
     # Run test cases
     for i, test_case in enumerate(test_cases, 1):
         console.print(
-            f"\n[bold green]🧪 Test Case {i}: {test_case['description']}[/bold green]"
+            f"\n[bold green]🧪 Test Case {i}: {
+                test_case['description']}[/bold green]"
         )
         console.print(f"[dim]Message: {test_case['message']}[/dim]")
 
@@ -168,7 +169,8 @@ async def test_delegation_flow():
                     console.print("[green]✅ Expected routing achieved![/green]")
                 else:
                     console.print(
-                        f"[yellow]⚠️  Expected {test_case['expected_agent']}, got {routing_decision}[/yellow]"
+                        f"[yellow]⚠️  Expected {
+                            test_case['expected_agent']}, got {routing_decision}[/yellow]"
                     )
 
             # Show final messages

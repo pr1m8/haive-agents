@@ -90,7 +90,7 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=MemoryRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -160,7 +160,7 @@ class SelfRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.CONDITIONAL,
             state_schema=SelfRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -226,7 +226,7 @@ class MultiQueryRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=MultiQueryRAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -298,7 +298,7 @@ class RAGFusionAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=MultiQueryRAGState,  # Reuse for similar structure
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -371,7 +371,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=RAGState,
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -439,7 +439,7 @@ class QueryDecompositionRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=MultiQueryRAGState,  # Reuse for similar structure
-            **kwargs
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:

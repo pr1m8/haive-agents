@@ -1,12 +1,10 @@
 """Test BaseRAGAgent with sample documents to understand its output schema."""
 
 import asyncio
-from typing import List
 
 from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
     HuggingFaceEmbeddingConfig,
 )
-from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
 from langchain_core.documents import Document
 
 from haive.agents.rag.base.agent import BaseRAGAgent
@@ -97,7 +95,7 @@ async def test_baserag_with_documents():
             result = await base_rag.arun(query, debug=True)
 
             # Analyze the result structure
-            print(f"\n📊 Result Analysis:")
+            print("\n📊 Result Analysis:"s:")
             print(f"   Type: {type(result)}")
 
             if isinstance(result, dict):
@@ -106,7 +104,7 @@ async def test_baserag_with_documents():
                 # Check for different possible output formats
                 if "documents" in result:
                     docs = result["documents"]
-                    print(f"\n   'documents' field:")
+                    print("\n   'documents' field:")
                     print(f"      - Count: {len(docs)}")
                     if docs:
                         print(f"      - First doc type: {type(docs[0])}")
@@ -117,7 +115,7 @@ async def test_baserag_with_documents():
 
                 if "retrieved_documents" in result:
                     docs = result["retrieved_documents"]
-                    print(f"\n   'retrieved_documents' field:")
+                    print("\n   'retrieved_documents' field:")
                     print(f"      - Count: {len(docs)}")
                     if docs:
                         print(f"      - First doc type: {type(docs[0])}")
@@ -126,16 +124,16 @@ async def test_baserag_with_documents():
                         )
 
                 if "output" in result:
-                    print(f"\n   'output' field:")
+                    print("\n   'output' field:")
                     print(f"      - Type: {type(result['output'])}")
                     print(f"      - Content: {str(result['output'])[:200]}...")
 
                 if "metadata" in result:
-                    print(f"\n   'metadata' field:")
+                    print("\n   'metadata' field:")
                     print(f"      - Content: {result['metadata']}")
 
                 # Show full result structure
-                print(f"\n   Full result structure:")
+                print("\n   Full result structure:")
                 import json
 
                 def serialize_result(obj):
@@ -160,7 +158,7 @@ async def test_baserag_with_documents():
             elif isinstance(result, list):
                 print(f"   Result is a list with {len(result)} items")
                 if result and isinstance(result[0], Document):
-                    print(f"   List contains Document objects")
+                    print("   List contains Document objects")
                     print(f"   First document: {result[0].page_content[:100]}...")
                     print(f"   First doc metadata: {result[0].metadata}")
 
@@ -178,14 +176,14 @@ async def test_baserag_with_documents():
             traceback.print_exc()
 
     # 6. Check if BaseRAGAgent has any output schema methods
-    print(f"\n\n6. Checking BaseRAGAgent methods and attributes...")
+    print("\n\n6. Checking BaseRAGAgent methods and attributes...")
     print(f"   Has 'output_schema': {'output_schema' in dir(base_rag)}")
     print(f"   Has 'get_output_schema': {'get_output_schema' in dir(base_rag)}")
     print(f"   Has 'schema': {'schema' in dir(base_rag)}")
 
     # Check retriever-specific attributes
     if hasattr(base_rag, "engine"):
-        print(f"\n   Engine attributes:")
+        print("\n   Engine attributes:")
         engine_attrs = [
             attr for attr in dir(base_rag.engine) if not attr.startswith("_")
         ]
@@ -194,7 +192,7 @@ async def test_baserag_with_documents():
                 print(f"      - {attr}: {getattr(base_rag.engine, attr, 'N/A')}")
 
     # 7. Try to understand the graph execution
-    print(f"\n7. Understanding graph execution...")
+    print("\n7. Understanding graph execution...")
     try:
         # Get the compiled graph
         compiled_graph = base_rag.graph

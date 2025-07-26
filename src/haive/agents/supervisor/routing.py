@@ -157,7 +157,10 @@ class LLMRoutingStrategy(BaseRoutingStrategy):
         # Create messages
         messages = [
             SystemMessage(content=prompt),
-            HumanMessage(content=f"Route this request: {context.last_message}"),
+            HumanMessage(
+                content=f"Route this request: {
+                    context.last_message}"
+            ),
         ]
 
         try:
@@ -380,7 +383,9 @@ class DynamicRoutingEngine:
 
             # Log decision
             logger.info(
-                f"Routing decision: {decision.choice} (reasoning: {decision.reasoning})"
+                f"Routing decision: {
+                    decision.choice} (reasoning: {
+                    decision.reasoning})"
             )
 
             # Create routing command

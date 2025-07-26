@@ -90,12 +90,20 @@ class LATSState(MessagesState):
                 trajectory.append(f"Step {node.depth}:")
                 for msg in node.messages:
                     trajectory.append(
-                        f"  {msg.get('role', 'unknown')}: {msg.get('content', '')}"
+                        f"  {
+                            msg.get(
+                                'role',
+                                'unknown')}: {
+                            msg.get(
+                                'content',
+                                '')}"
                     )
 
             if node.reflection_text:
                 trajectory.append(
-                    f"  Reflection (score: {node.reflection_score:.1f}): {node.reflection_text}"
+                    f"  Reflection (score: {
+                        node.reflection_score:.1f}): {
+                        node.reflection_text}"
                 )
 
             node_id = node.parent_id

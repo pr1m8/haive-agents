@@ -105,8 +105,6 @@ class AgenticRAGAgent[TInput: BaseModel, TOutput: BaseModel](
     )
 
     @model_validator(mode="after")
-
-
     @classmethod
     def setup_agentic_rag(cls) -> "AgenticRAGAgent":
         """Setup agentic RAG with multiple engines and tools.
@@ -183,11 +181,12 @@ class AgenticRAGAgent[TInput: BaseModel, TOutput: BaseModel](
                     # Combine document content
                     combined_content = "\\n\\n".join(
                         [
-                            f"Document {i+1}: {doc.page_content}"
+                            f"Document {i + 1}: {doc.page_content}"
                             for i, doc in enumerate(docs[:5])  # Limit to top 5
                         ]
                     )
-                    return f"Retrieved {len(docs)} documents:\\n{combined_content}"
+                    return f"Retrieved {
+                        len(docs)} documents:\\n{combined_content}"
                 return "No relevant documents found for the query."
 
             except Exception as e:
@@ -218,7 +217,9 @@ class AgenticRAGAgent[TInput: BaseModel, TOutput: BaseModel](
                 else:
                     return "Could not grade document relevance"
 
-                return f"Relevance: {grade.binary_score}. Reasoning: {grade.reasoning}"
+                return f"Relevance: {
+                    grade.binary_score}. Reasoning: {
+                    grade.reasoning}"
 
             except Exception as e:
                 return f"Error grading documents: {e!s}"
@@ -248,7 +249,9 @@ class AgenticRAGAgent[TInput: BaseModel, TOutput: BaseModel](
                 else:
                     return f"Could not rewrite query: {original_query}"
 
-                return f"Rewritten query: {rewrite.rewritten_query}\\nChanges: {rewrite.changes_made}"
+                return f"Rewritten query: {
+                    rewrite.rewritten_query}\\nChanges: {
+                    rewrite.changes_made}"
 
             except Exception as e:
                 return f"Error rewriting query: {e!s}"

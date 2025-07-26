@@ -238,7 +238,9 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
                 await self._update_usage_stats(query, tools, context)
 
             logger.info(
-                f"Selected {len(tools)} tools for query in {selection_result.selection_time_ms:.2f}ms"
+                f"Selected {
+                    len(tools)} tools for query in {
+                    selection_result.selection_time_ms:.2f}ms"
             )
             return selection_result
 
@@ -345,7 +347,8 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
             # Check if we've reached good enough quality
             if quality_score >= 0.9:
                 logger.info(
-                    f"High quality selection achieved in iteration {iteration + 1}"
+                    f"High quality selection achieved in iteration {
+                        iteration + 1}"
                 )
                 break
 
@@ -481,7 +484,8 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
                     tools.append(tool)
             except Exception as e:
                 logger.warning(
-                    f"Could not create tool from component {component.name}: {e}"
+                    f"Could not create tool from component {
+                        component.name}: {e}"
                 )
 
         return tools
@@ -500,7 +504,9 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
             tool = StructuredTool.from_function(
                 func=placeholder_function,
                 name=component.name.replace(" ", "_").lower(),
-                description=component.description or f"Tool for {component.name}",
+                description=component.description
+                or f"Tool for {
+                    component.name}",
             )
 
             return tool

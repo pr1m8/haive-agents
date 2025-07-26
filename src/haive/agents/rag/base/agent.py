@@ -1,3 +1,6 @@
+from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
+    HuggingFaceEmbeddingConfig,
+)
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.retriever.mixins import RetrieverMixin
 from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
@@ -19,8 +22,11 @@ class BaseRAGAgent(RetrieverMixin, Agent):
     Examples:
         .. code-block:: python
 
+            # Create with default generic retriever
+            agent = BaseRAGAgent(name="my_retriever")
+
             # Create from vector store config directly
-            agent = BaseRAGAgent(engine=vector_store_config)
+            agent = BaseRAGAgent(name="my_retriever", engine=vector_store_config)
 
             # Create from documents
             agent = BaseRAGAgent.from_documents(
@@ -29,17 +35,17 @@ class BaseRAGAgent(RetrieverMixin, Agent):
             name="my_rag_agent"
             )
 
-            # Create from existing vector store
-            agent = BaseRAGAgent.from_vectorstore(
-            vector_store_config=vs_config,
-            name="my_rag_agent"
-            )
-
     """
 
-    name: str = "Base RAG Agent"
+    # Use generic retriever by default with HuggingFace embeddings
     engine: BaseRetrieverConfig | VectorStoreConfig = Field(
-        ...,
+        default_factory=lambda: VectorStoreConfig(
+            name="default_vectorstore",
+            provider="InMemory",
+            embedding_config=HuggingFaceEmbeddingConfig(
+                model="sentence-transformers/all-MiniLM-L6-v2"
+            ),
+        ),
         description="Retriever Engine (accepts BaseRetrieverConfig or VectorStoreConfig)",
     )
 

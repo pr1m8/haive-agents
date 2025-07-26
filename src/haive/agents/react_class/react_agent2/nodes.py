@@ -157,13 +157,18 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
     for i, step in enumerate(intermediate_steps):
         if isinstance(step, tuple):
             action, observation = step
-            step_context.append(f"Step {i+1}:")
+            step_context.append(f"Step {i + 1}:")
             step_context.append(f"Action: {action}")
             step_context.append(f"Observation: {observation}")
         elif isinstance(step, dict):
-            step_context.append(f"Step {i+1}:")
+            step_context.append(f"Step {i + 1}:")
             step_context.append(f"Action: {step.get('action', 'unknown')}")
-            step_context.append(f"Observation: {step.get('observation', 'unknown')}")
+            step_context.append(
+                f"Observation: {
+                    step.get(
+                        'observation',
+                        'unknown')}"
+            )
 
     if step_context:
         prompt_input["steps"] = "\n".join(step_context)
@@ -327,9 +332,12 @@ def act_node(state: dict[str, Any]) -> Command:
         if tool:
             observation = execute_tool(tool, current_action.action_input)
         else:
-            observation = f"Error: Tool '{current_action.action_type}' not found."
+            observation = f"Error: Tool '{
+                current_action.action_type}' not found."
     except Exception as e:
-        observation = f"Error executing tool '{current_action.action_type}': {e!s}"
+        observation = f"Error executing tool '{
+            current_action.action_type}': {
+            e!s}"
 
         # Increment retry count
         current_attempts += 1

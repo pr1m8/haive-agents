@@ -111,7 +111,9 @@ class SelfDiscoverAgentConfig(AgentConfig):
 
         # Create the config
         return cls(
-            name=name or f"self_discover_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name
+            or f"self_discover_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}",
             select_engine=engines["select"],
             adapt_engine=engines["adapt"],
             structure_engine=engines["structure"],

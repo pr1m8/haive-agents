@@ -89,7 +89,8 @@ class SimpleAgent(Agent):
         elif "error_handler" in self.name.lower():
             result = f"ERROR_HANDLER: {input_data} -> Error handled and resolved"
         else:
-            result = f"{self.name.upper()}: {input_data} -> Processing completed"
+            result = f"{
+                self.name.upper()}: {input_data} -> Processing completed"
 
         if debug:
             pass
@@ -357,9 +358,8 @@ class MultiAgent(Agent, Generic[AgentsT]):
             else:
                 break
 
-        final_result = (
-            f"Conditional execution path: {' → '.join(execution_path)}. Final: {result}"
-        )
+        final_result = f"Conditional execution path: {
+                ' → '.join(execution_path)}. Final: {result}"
 
         if debug:
             pass

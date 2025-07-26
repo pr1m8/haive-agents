@@ -448,7 +448,8 @@ class SolvabilityAssessment(BaseModel):
         report_lines.append("SOLVABILITY ASSESSMENT")
         report_lines.append(f"Status: {self.solvability_status.value.title()}")
         report_lines.append(
-            f"Currently Solvable: {'Yes' if self.is_currently_solvable else 'No'}"
+            f"Currently Solvable: {
+                'Yes' if self.is_currently_solvable else 'No'}"
         )
         report_lines.append(f"Confidence: {self.confidence_level:.1%}")
         report_lines.append("")
@@ -457,13 +458,21 @@ class SolvabilityAssessment(BaseModel):
         if self.primary_barriers:
             report_lines.append("PRIMARY BARRIERS:")
             for barrier in self.primary_barriers:
-                report_lines.append(f"  • {barrier.value.replace('_', ' ').title()}")
+                report_lines.append(
+                    f"  • {
+                        barrier.value.replace(
+                            '_', ' ').title()}"
+                )
             report_lines.append("")
 
         if self.secondary_barriers:
             report_lines.append("SECONDARY BARRIERS:")
             for barrier in self.secondary_barriers:
-                report_lines.append(f"  • {barrier.value.replace('_', ' ').title()}")
+                report_lines.append(
+                    f"  • {
+                        barrier.value.replace(
+                            '_', ' ').title()}"
+                )
             report_lines.append("")
 
         # Enabling factors
@@ -477,7 +486,11 @@ class SolvabilityAssessment(BaseModel):
         if self.breakthrough_requirements:
             report_lines.append("BREAKTHROUGH REQUIREMENTS:")
             for requirement in self.breakthrough_requirements:
-                report_lines.append(f"  → {requirement.replace('_', ' ').title()}")
+                report_lines.append(
+                    f"  → {
+                        requirement.replace(
+                            '_', ' ').title()}"
+                )
             report_lines.append("")
 
         # Timeline
@@ -499,7 +512,10 @@ class SolvabilityAssessment(BaseModel):
         report_lines.append("")
 
         # Success probability
-        report_lines.append(f"Success Probability: {self.success_probability:.1%}")
+        report_lines.append(
+            f"Success Probability: {
+                self.success_probability:.1%}"
+        )
 
         # Immediate actions
         actions = self.get_immediate_actions()

@@ -12,15 +12,13 @@ memory system and can combine results from multiple systems.
 """
 
 import asyncio
-import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
 
 from haive.agents.memory_v2.advanced_rag_memory_agent import (
@@ -34,7 +32,6 @@ from haive.agents.memory_v2.graph_memory_agent import (
 from haive.agents.memory_v2.long_term_memory_agent import LongTermMemoryAgent
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
 from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent
-from haive.agents.multi.simple.agent import SimpleMultiAgent
 from haive.agents.react.agent import ReactAgent
 
 logger = logging.getLogger(__name__)
@@ -69,7 +66,7 @@ class MultiMemoryConfig:
     user_id: str = "default_user"
 
     # LLM configuration
-    engine: Optional[AugLLMConfig] = None
+    engine: AugLLMConfig | None = None
 
     # System enablement
     enable_simple: bool = True
@@ -84,14 +81,14 @@ class MultiMemoryConfig:
     consensus_threshold: int = 2  # Minimum systems for consensus
 
     # Memory system configurations
-    simple_config: Optional[Dict[str, Any]] = None
-    react_config: Optional[Dict[str, Any]] = None
-    longterm_config: Optional[Dict[str, Any]] = None
-    graph_config: Optional[GraphMemoryConfig] = None
-    rag_config: Optional[AdvancedRAGConfig] = None
+    simple_config: dict[str, Any] | None = None
+    react_config: dict[str, Any] | None = None
+    longterm_config: dict[str, Any] | None = None
+    graph_config: GraphMemoryConfig | None = None
+    rag_config: AdvancedRAGConfig | None = None
 
     # Storage paths
-    base_storage_path: Optional[str] = None
+    base_storage_path: str | None = None
 
     def __post_init__(self):
         if self.engine is None:
@@ -114,7 +111,7 @@ class MultiMemoryCoordinator:
         self.logger = logger
 
         # Initialize enabled memory systems
-        self.memory_systems: Dict[MemorySystemType, Any] = {}
+        self.memory_systems: dict[MemorySystemType, Any] = {}
         self._init_memory_systems()
 
         # Initialize coordination components
@@ -122,7 +119,7 @@ class MultiMemoryCoordinator:
         self.synthesizer = self._create_synthesizer()
 
         # Track operations
-        self.operation_history: List[Dict[str, Any]] = []
+        self.operation_history: list[dict[str, Any]] = []
 
     def _init_memory_systems(self):
         """Initialize all enabled memory systems."""
@@ -142,7 +139,11 @@ class MultiMemoryCoordinator:
             self._init_advanced_rag_memory()
 
         self.logger.info(
-            f"Initialized {len(self.memory_systems)} memory systems: {list(self.memory_systems.keys())}"
+            f"Initialized {
+                len(
+                    self.memory_systems)} memory systems: {
+                list(
+                    self.memory_systems.keys())}"
         )
 
     def _init_simple_memory(self):
@@ -158,7 +159,7 @@ class MultiMemoryCoordinator:
             self.memory_systems[MemorySystemType.SIMPLE] = agent
             self.logger.info("Simple memory system initialized")
         except Exception as e:
-            self.logger.error(f"Failed to initialize simple memory: {e}")
+            self.logger.exception(f"Failed to initialize simple memory: {e}")
 
     def _init_react_memory(self):
         """Initialize React memory agent."""
@@ -178,7 +179,7 @@ class MultiMemoryCoordinator:
             self.memory_systems[MemorySystemType.REACT] = agent
             self.logger.info("React memory system initialized")
         except Exception as e:
-            self.logger.error(f"Failed to initialize react memory: {e}")
+            self.logger.exception(f"Failed to initialize react memory: {e}")
 
     def _init_longterm_memory(self):
         """Initialize long-term memory agent."""
@@ -190,7 +191,7 @@ class MultiMemoryCoordinator:
             self.memory_systems[MemorySystemType.LONGTERM] = agent
             self.logger.info("Long-term memory system initialized")
         except Exception as e:
-            self.logger.error(f"Failed to initialize long-term memory: {e}")
+            self.logger.exception(f"Failed to initialize long-term memory: {e}")
 
     def _init_graph_memory(self):
         """Initialize graph memory agent."""
@@ -206,7 +207,7 @@ class MultiMemoryCoordinator:
             self.memory_systems[MemorySystemType.GRAPH] = agent
             self.logger.info("Graph memory system initialized")
         except Exception as e:
-            self.logger.error(f"Failed to initialize graph memory: {e}")
+            self.logger.exception(f"Failed to initialize graph memory: {e}")
 
     def _init_advanced_rag_memory(self):
         """Initialize advanced RAG memory agent."""
@@ -216,7 +217,8 @@ class MultiMemoryCoordinator:
             else:
                 storage_path = None
                 if self.config.base_storage_path:
-                    storage_path = f"{self.config.base_storage_path}/rag_memory"
+                    storage_path = f"{
+                        self.config.base_storage_path}/rag_memory"
 
                 rag_config = AdvancedRAGConfig(
                     user_id=self.config.user_id,
@@ -228,7 +230,7 @@ class MultiMemoryCoordinator:
             self.memory_systems[MemorySystemType.ADVANCED_RAG] = agent
             self.logger.info("Advanced RAG memory system initialized")
         except Exception as e:
-            self.logger.error(f"Failed to initialize advanced RAG memory: {e}")
+            self.logger.exception(f"Failed to initialize advanced RAG memory: {e}")
 
     def _create_router(self) -> ReactAgent:
         """Create intelligent memory system router."""
@@ -249,21 +251,23 @@ class MultiMemoryCoordinator:
             systems = []
 
             # Structured knowledge indicators → Graph
-            if any(
-                indicator in content_lower
-                for indicator in [
-                    "works at",
-                    "knows",
-                    "located in",
-                    "relationship",
-                    "connected to",
-                    "part of",
-                    "belongs to",
-                    "entity",
-                ]
+            if (
+                any(
+                    indicator in content_lower
+                    for indicator in [
+                        "works at",
+                        "knows",
+                        "located in",
+                        "relationship",
+                        "connected to",
+                        "part of",
+                        "belongs to",
+                        "entity",
+                    ]
+                )
+                and MemorySystemType.GRAPH in self.memory_systems
             ):
-                if MemorySystemType.GRAPH in self.memory_systems:
-                    systems.append("graph")
+                systems.append("graph")
 
             # Complex queries → Advanced RAG
             if operation_type == "query":
@@ -283,51 +287,57 @@ class MultiMemoryCoordinator:
                         systems.append("rag")
 
             # Tool-based operations → React
-            if any(
-                indicator in content_lower
-                for indicator in [
-                    "search",
-                    "find",
-                    "list",
-                    "update",
-                    "delete",
-                    "store",
-                    "remember",
-                    "forget",
-                ]
+            if (
+                any(
+                    indicator in content_lower
+                    for indicator in [
+                        "search",
+                        "find",
+                        "list",
+                        "update",
+                        "delete",
+                        "store",
+                        "remember",
+                        "forget",
+                    ]
+                )
+                and MemorySystemType.REACT in self.memory_systems
             ):
-                if MemorySystemType.REACT in self.memory_systems:
-                    systems.append("react")
+                systems.append("react")
 
             # Important/persistent content → Long-term
-            if any(
-                indicator in content_lower
-                for indicator in [
-                    "important",
-                    "critical",
-                    "always",
-                    "never forget",
-                    "permanent",
-                    "long-term",
-                    "persistent",
-                ]
+            if (
+                any(
+                    indicator in content_lower
+                    for indicator in [
+                        "important",
+                        "critical",
+                        "always",
+                        "never forget",
+                        "permanent",
+                        "long-term",
+                        "persistent",
+                    ]
+                )
+                and MemorySystemType.LONGTERM in self.memory_systems
             ):
-                if MemorySystemType.LONGTERM in self.memory_systems:
-                    systems.append("longterm")
+                systems.append("longterm")
 
             # Token management → Simple
-            if any(
-                indicator in content_lower
-                for indicator in [
-                    "summarize",
-                    "compress",
-                    "manage context",
-                    "token",
-                    "memory limit",
-                ]
+            if (
+                any(
+                    indicator in content_lower
+                    for indicator in [
+                        "summarize",
+                        "compress",
+                        "manage context",
+                        "token",
+                        "memory limit",
+                    ]
+                )
+                and MemorySystemType.SIMPLE in self.memory_systems
             ):
-                if MemorySystemType.SIMPLE in self.memory_systems:
-                    systems.append("simple")
+                systems.append("simple")
 
             # Default recommendations
             if not systems:
@@ -385,7 +395,7 @@ class MultiMemoryCoordinator:
             system_message=f"""You are an intelligent memory system router for user {self.config.user_id}.
 
 Available memory systems:
-{', '.join(str(s.value) for s in self.memory_systems.keys())}
+{', '.join(str(s.value) for s in self.memory_systems)}
 
 Your job is to:
 1. Analyze content to determine the best memory systems
@@ -408,7 +418,8 @@ System capabilities:
             name="memory_synthesizer",
             engine=self.config.engine,
             tools=[],
-            system_message=f"""You are a memory result synthesizer for user {self.config.user_id}.
+            system_message=f"""You are a memory result synthesizer for user {
+                self.config.user_id}.
 
 Your job is to:
 1. Combine results from multiple memory systems
@@ -428,11 +439,11 @@ When combining results:
     async def store_memory(
         self,
         content: str,
-        systems: Optional[List[MemorySystemType]] = None,
-        mode: Optional[CoordinationMode] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        systems: list[MemorySystemType] | None = None,
+        mode: CoordinationMode | None = None,
+        metadata: dict[str, Any] | None = None,
         importance: str = "normal",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Store memory across appropriate systems.
 
         Args:
@@ -512,9 +523,9 @@ When combining results:
                     results["results"][system_type.value] = system_result
 
             except Exception as e:
-                error_msg = f"Error storing in {system_type.value}: {str(e)}"
+                error_msg = f"Error storing in {system_type.value}: {e!s}"
                 results["errors"].append(error_msg)
-                self.logger.error(error_msg)
+                self.logger.exception(error_msg)
 
         # Calculate timing
         results["total_time"] = (datetime.now() - start_time).total_seconds()
@@ -535,10 +546,10 @@ When combining results:
     async def query_memory(
         self,
         query: str,
-        systems: Optional[List[MemorySystemType]] = None,
-        mode: Optional[CoordinationMode] = None,
+        systems: list[MemorySystemType] | None = None,
+        mode: CoordinationMode | None = None,
         combine_results: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Query memory across systems.
 
         Args:
@@ -606,15 +617,16 @@ When combining results:
                     system_type = systems[i]
                     if isinstance(system_result, Exception):
                         results["errors"].append(
-                            f"{system_type.value}: {str(system_result)}"
+                            f"{system_type.value}: {system_result!s}"
                         )
                     else:
                         results["systems_queried"].append(system_type.value)
                         results["individual_results"][system_type.value] = system_result
 
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 results["errors"].append(
-                    f"Parallel query timeout after {self.config.parallel_timeout}s"
+                    f"Parallel query timeout after {
+                        self.config.parallel_timeout}s"
                 )
 
         else:
@@ -630,9 +642,9 @@ When combining results:
                         break
 
                 except Exception as e:
-                    error_msg = f"Error querying {system_type.value}: {str(e)}"
+                    error_msg = f"Error querying {system_type.value}: {e!s}"
                     results["errors"].append(error_msg)
-                    self.logger.error(error_msg)
+                    self.logger.exception(error_msg)
 
         # Combine results if requested
         if combine_results and len(results["individual_results"]) > 1:
@@ -641,10 +653,12 @@ When combining results:
                     query, results["individual_results"]
                 )
             except Exception as e:
-                results["errors"].append(f"Error combining results: {str(e)}")
+                results["errors"].append(f"Error combining results: {e!s}")
         elif len(results["individual_results"]) == 1:
             # Single result, use as combined
-            results["combined_result"] = list(results["individual_results"].values())[0]
+            results["combined_result"] = next(
+                iter(results["individual_results"].values())
+            )
 
         # Calculate timing
         results["total_time"] = (datetime.now() - start_time).total_seconds()
@@ -671,25 +685,25 @@ When combining results:
         if system_type == MemorySystemType.SIMPLE:
             return await system.arun(query)
 
-        elif system_type == MemorySystemType.REACT:
+        if system_type == MemorySystemType.REACT:
             return await system.arun(f"Search memories: {query}", auto_save=False)
 
-        elif system_type == MemorySystemType.LONGTERM:
+        if system_type == MemorySystemType.LONGTERM:
             result = await system.run(query, extract_memories=False)
             return result.get("response", result)
 
-        elif system_type == MemorySystemType.GRAPH:
+        if system_type == MemorySystemType.GRAPH:
             result = await system.query_graph(query, query_type="natural")
             return result.get("answer", result)
 
-        elif system_type == MemorySystemType.ADVANCED_RAG:
+        if system_type == MemorySystemType.ADVANCED_RAG:
             result = await system.query_memory(query)
             return result.get("answer", result)
 
         return str(system)  # Fallback
 
     async def _combine_query_results(
-        self, query: str, individual_results: Dict[str, Any]
+        self, query: str, individual_results: dict[str, Any]
     ) -> str:
         """Combine results from multiple memory systems."""
         synthesis_prompt = f"""Query: {query}
@@ -709,7 +723,7 @@ If there are conflicts, highlight them. If results complement each other, combin
         combined_result = await self.synthesizer.arun(synthesis_prompt)
         return combined_result
 
-    async def get_system_analytics(self) -> Dict[str, Any]:
+    async def get_system_analytics(self) -> dict[str, Any]:
         """Get analytics across all memory systems."""
         analytics = {
             "coordinator": {
@@ -746,8 +760,8 @@ If there are conflicts, highlight them. If results complement each other, combin
         self,
         from_system: MemorySystemType,
         to_system: MemorySystemType,
-        filter_criteria: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        filter_criteria: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         """Migrate memories between systems."""
         if (
             from_system not in self.memory_systems
@@ -774,11 +788,10 @@ If there are conflicts, highlight them. If results complement each other, combin
         cls,
         user_id: str,
         enable_graph: bool = False,
-        neo4j_config: Optional[Dict[str, Any]] = None,
-        storage_path: Optional[str] = None,
+        neo4j_config: dict[str, Any] | None = None,
+        storage_path: str | None = None,
     ) -> "MultiMemoryCoordinator":
         """Create a comprehensive memory system with all components."""
-
         # Base configuration
         config = MultiMemoryConfig(
             user_id=user_id,
@@ -803,8 +816,6 @@ async def demo_multi_memory_coordinator():
         storage_path="./demo_memory_storage",
     )
 
-    print("=== Multi-Memory Coordinator Demo ===\n")
-
     # Store diverse memories
     memories = [
         ("Alice Johnson is the CEO of TechStartup Inc.", "high"),
@@ -817,13 +828,10 @@ async def demo_multi_memory_coordinator():
         ("Alice mentioned they're hiring 50 new engineers this quarter.", "normal"),
     ]
 
-    print("Storing memories across multiple systems...\n")
     for content, importance in memories:
-        result = await coordinator.store_memory(
+        await coordinator.store_memory(
             content, importance=importance, mode=CoordinationMode.INTELLIGENT
         )
-        print(f"Stored in: {result['systems_used']}")
-        print(f"Content: {content[:50]}...\n")
 
     # Query with different coordination modes
     queries = [
@@ -832,31 +840,11 @@ async def demo_multi_memory_coordinator():
         ("What's Alice's contact information?", CoordinationMode.CONSENSUS),
     ]
 
-    print("Querying memories with different coordination modes...\n")
     for query, mode in queries:
-        result = await coordinator.query_memory(query, mode=mode)
-        print(f"Query: {query}")
-        print(f"Mode: {mode.value}")
-        print(f"Systems used: {result['systems_queried']}")
-        print(f"Answer: {result.get('combined_result', 'No combined result')[:200]}...")
-        print(f"Time: {result['total_time']:.2f}s\n")
+        await coordinator.query_memory(query, mode=mode)
 
     # Get analytics
-    print("System Analytics:")
-    analytics = await coordinator.get_system_analytics()
-    print(
-        json.dumps(
-            {
-                "enabled_systems": analytics["coordinator"]["enabled_systems"],
-                "total_operations": analytics["coordinator"]["operation_history"],
-                "system_status": {
-                    k: v.get("status", "active")
-                    for k, v in analytics["systems"].items()
-                },
-            },
-            indent=2,
-        )
-    )
+    await coordinator.get_system_analytics()
 
 
 if __name__ == "__main__":

@@ -43,7 +43,10 @@ class ReflectionAgent(SimpleAgent):
 
     def setup_workflow(self) -> None:
         """Set up a workflow graph with reflection capabilities."""
-        logger.debug(f"Setting up workflow for ReflectionAgent {self.config.name}")
+        logger.debug(
+            f"Setting up workflow for ReflectionAgent {
+                self.config.name}"
+        )
 
         # Create DynamicGraph with proper component registration
         components = [self.config.engine]
@@ -94,7 +97,8 @@ class ReflectionAgent(SimpleAgent):
         # Add START edge
         gb.add_edge(START, self.config.initial_node_name)
 
-        # Add conditional edge from reflection to either search, improve, or end
+        # Add conditional edge from reflection to either search, improve, or
+        # end
         if self.config.reflection.use_search:
             # Route to search if search is enabled
             gb.add_conditional_edges(
@@ -216,7 +220,11 @@ class ReflectionAgent(SimpleAgent):
                 # Update state
                 state_update = {
                     **state.model_dump(),
-                    "feedback": f"Reflection: {reflection.reflection}\nMissing: {reflection.missing}\nSuperfluous: {reflection.superfluous}\nScore: {reflection.score}",
+                    "feedback": f"Reflection: {
+                        reflection.reflection}\nMissing: {
+                        reflection.missing}\nSuperfluous: {
+                        reflection.superfluous}\nScore: {
+                        reflection.score}",
                     "reflection_round": reflection_round,
                     "reflection_score": reflection.normalized_score,
                     "reflection_history": reflection_history,

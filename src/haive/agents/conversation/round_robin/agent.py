@@ -92,7 +92,10 @@ class RoundRobinConversation(BaseConversationAgent):
             from langchain_core.messages import SystemMessage
 
             round_msg = SystemMessage(
-                content=f"[Round {state.round_number + 1} of {state.max_rounds}]"
+                content=f"[Round {
+                    state.round_number +
+                    1} of {
+                    state.max_rounds}]"
             )
 
             # Insert at beginning of messages

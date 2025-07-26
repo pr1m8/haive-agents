@@ -75,7 +75,7 @@ def test_v2_workflows():
     # Test Fully Graded RAG V2
     try:
         agent = FullyGradedRAGAgentV2(name="graded_v2", relevance_threshold=0.8)
-        print("\n✓ FullyGradedRAGAgentV2 created"d")
+        print("\n✓ FullyGradedRAGAgentV2 createdd")
         print(f"  State schema: {agent.state_schema.__name__}")
         print(f"  Initial config: {agent._initial_config}")
         results.append(("✅", "FullyGradedRAGAgentV2"))
@@ -88,7 +88,7 @@ def test_v2_workflows():
             name="multi_criteria_v2",
             grading_criteria=["relevance", "authority", "recency"],
         )
-        print("\n✓ MultiCriteriaGradedRAGAgentV2 created"d")
+        print("\n✓ MultiCriteriaGradedRAGAgentV2 createdd")
         print(f"  Initial config: {agent._initial_config}")
         results.append(("✅", "MultiCriteriaGradedRAGAgentV2"))
     except Exception as e:
@@ -99,7 +99,7 @@ def test_v2_workflows():
         agent = FLAREAgentV2(
             name="flare_v2", uncertainty_threshold=0.25, max_retrieval_rounds=4
         )
-        print("\n✓ FLAREAgentV2 created"d")
+        print("\n✓ FLAREAgentV2 createdd")
         print(f"  Initial config: {agent._initial_config}")
         results.append(("✅", "FLAREAgentV2"))
     except Exception as e:
@@ -113,7 +113,7 @@ def test_v2_workflows():
             max_retrievers=6,
             performance_threshold=0.65,
         )
-        print("\n✓ DynamicRAGAgentV2 created"d")
+        print("\n✓ DynamicRAGAgentV2 createdd")
         print(f"  Initial config: {agent._initial_config}")
         results.append(("✅", "DynamicRAGAgentV2"))
     except Exception as e:
@@ -127,7 +127,7 @@ def test_v2_workflows():
             max_debate_rounds=2,
             enable_judge=True,
         )
-        print("\n✓ DebateRAGAgentV2 created"d")
+        print("\n✓ DebateRAGAgentV2 createdd")
         print(f"  Initial config: {agent._initial_config}")
         results.append(("✅", "DebateRAGAgentV2"))
     except Exception as e:
@@ -138,7 +138,7 @@ def test_v2_workflows():
         agent = AdaptiveThresholdRAGAgentV2(
             name="adaptive_v2", initial_threshold=0.6, threshold_step=0.05
         )
-        print("\n✓ AdaptiveThresholdRAGAgentV2 created"d")
+        print("\n✓ AdaptiveThresholdRAGAgentV2 createdd")
         print(f"  Initial config: {agent._initial_config}")
         results.append(("✅", "AdaptiveThresholdRAGAgentV2"))
     except Exception as e:

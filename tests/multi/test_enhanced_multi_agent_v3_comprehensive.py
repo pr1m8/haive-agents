@@ -5,12 +5,7 @@ Tests all execution patterns: sequential, parallel, conditional, and branch.
 Validates performance tracking, routing, and enhanced state management.
 """
 
-import asyncio
 import logging
-from typing import Any, Dict, List
-
-from langchain_core.tools import tool
-from pydantic import BaseModel, Field
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -77,7 +72,7 @@ def test_enhanced_multi_agent_v3_sequential_execution():
                 config={"configurable": {"thread_id": "test_sequential_thread"}},
             )
 
-            print(f"✅ Sequential execution successful")
+            print("✅ Sequential execution successful"l")
             print(f"✅ Result type: {type(result)}")
             if isinstance(result, dict) and "messages" in result:
                 print(f"✅ Message count: {len(result['messages'])}")
@@ -92,7 +87,7 @@ def test_enhanced_multi_agent_v3_sequential_execution():
                 f"⚠️ Execution had issues (may be expected due to LLM availability): {exec_error}"
             )
 
-        print(f"\n🎯 Sequential Execution Test: SUCCESS")
+        print("\n🎯 Sequential Execution Test: SUCCESS"SS")
         return True
 
     except Exception as e:
@@ -162,7 +157,7 @@ def test_enhanced_multi_agent_v3_parallel_execution():
                 config={"configurable": {"thread_id": "test_parallel_thread"}},
             )
 
-            print(f"✅ Parallel execution successful")
+            print("✅ Parallel execution successful"l")
             print(f"✅ Result type: {type(result)}")
             if isinstance(result, dict) and "messages" in result:
                 print(f"✅ Message count: {len(result['messages'])}")
@@ -172,7 +167,7 @@ def test_enhanced_multi_agent_v3_parallel_execution():
         except Exception as exec_error:
             print(f"⚠️ Execution had issues (may be expected): {exec_error}")
 
-        print(f"\n🎯 Parallel Execution Test: SUCCESS")
+        print("\n🎯 Parallel Execution Test: SUCCESS"SS")
         return True
 
     except Exception as e:
@@ -274,7 +269,7 @@ def test_enhanced_multi_agent_v3_conditional_execution():
         for i, (test_input, expected_route) in enumerate(test_cases):
             try:
                 print(f"\n📋 Test case {i+1}: {expected_route} routing")
-                result = compiled.invoke(
+                compiled.invoke(
                     {"messages": [{"role": "user", "content": test_input}]},
                     config={
                         "configurable": {"thread_id": f"test_conditional_thread_{i}"}
@@ -287,7 +282,7 @@ def test_enhanced_multi_agent_v3_conditional_execution():
             except Exception as exec_error:
                 print(f"⚠️ Execution {i+1} had issues: {exec_error}")
 
-        print(f"\n🎯 Conditional Execution Test: SUCCESS")
+        print("\n🎯 Conditional Execution Test: SUCCESS"SS")
         return True
 
     except Exception as e:
@@ -348,7 +343,7 @@ def test_enhanced_multi_agent_v3_branch_execution():
         )
 
         print(f"✅ Branch MultiAgent created: {branch_multi.name}")
-        print(f"✅ Workflow: validator -> (processor1, processor2) -> aggregator")
+        print("✅ Workflow: validator -> (processor1, processor2) -> aggregator"r")
         print(f"✅ Branches configured: {len(branch_multi.branches)}")
 
         # Compile and test
@@ -369,7 +364,7 @@ def test_enhanced_multi_agent_v3_branch_execution():
                 config={"configurable": {"thread_id": "test_branch_thread"}},
             )
 
-            print(f"✅ Branch execution successful")
+            print("✅ Branch execution successful"l")
             print(f"✅ Result type: {type(result)}")
             if isinstance(result, dict) and "messages" in result:
                 print(f"✅ Message count: {len(result['messages'])}")
@@ -377,7 +372,7 @@ def test_enhanced_multi_agent_v3_branch_execution():
         except Exception as exec_error:
             print(f"⚠️ Execution had issues: {exec_error}")
 
-        print(f"\n🎯 Branch Execution Test: SUCCESS")
+        print("\n🎯 Branch Execution Test: SUCCESS"SS")
         return True
 
     except Exception as e:
@@ -442,7 +437,7 @@ def test_enhanced_multi_agent_v3_performance_tracking():
         print("\n📋 Test 2: Performance analysis")
 
         analysis = adaptive_multi.analyze_agent_performance()
-        print(f"✅ Analysis completed")
+        print("✅ Analysis completed"d")
         print(f"✅ Agents analyzed: {len(analysis.get('agents', {}))}")
 
         for agent_name, metrics in analysis.get("agents", {}).items():
@@ -464,7 +459,7 @@ def test_enhanced_multi_agent_v3_performance_tracking():
             print(f"✅ Overall avg duration: {overall.get('average_duration', 0):.3f}s")
             print(f"✅ Total tasks: {overall.get('total_tasks', 0)}")
 
-        print(f"\n🎯 Performance Tracking Test: SUCCESS")
+        print("\n🎯 Performance Tracking Test: SUCCESS"SS")
         return True
 
     except Exception as e:
@@ -501,7 +496,7 @@ def test_enhanced_multi_agent_v3_state_management():
             name="state_test", agents=agents, performance_mode=True, debug_mode=True
         )
 
-        print(f"✅ MultiAgent with enhanced state created")
+        print("✅ MultiAgent with enhanced state created"d")
         print(f"✅ State schema: {state_multi.state_schema.__name__}")
 
         # Test state schema functionality
@@ -535,7 +530,7 @@ def test_enhanced_multi_agent_v3_state_management():
             )
             print(f"✅ Execution summary: {exec_summary.get('overall_success', False)}")
 
-        print(f"\n🎯 State Management Test: SUCCESS")
+        print("\n🎯 State Management Test: SUCCESS"SS")
         return True
 
     except Exception as e:

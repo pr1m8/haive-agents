@@ -35,7 +35,7 @@ def test_simple_rag_agent():
         rag_agent = SimpleRAGAgent.from_documents(
             documents=documents, name="Test RAG Agent"
         )
-        print("   ✅ SimpleRAGAgent created successfully"y")
+        print("   ✅ SimpleRAGAgent created successfullyy")
         print(f"   Agent name: {rag_agent.name}")
         print(f"   Execution mode: {rag_agent.execution_mode}")
         print(f"   Agents: {list(rag_agent.agents.keys())}")
@@ -54,7 +54,7 @@ def test_simple_rag_agent():
         state = rag_agent.state_schema(
             messages=[HumanMessage(content="What is the capital of France?")]
         )
-        print("   ✅ State created successfully"y")
+        print("   ✅ State created successfullyy")
         print(f"   State.agents: {list(state.agents.keys())}")
         print(f"   State.messages: {len(state.messages)}")
 
@@ -69,7 +69,7 @@ def test_simple_rag_agent():
     print("\n3. Testing graph construction:")
     try:
         graph = rag_agent.build_graph()
-        print("   ✅ Graph built successfully"y")
+        print("   ✅ Graph built successfullyy")
         print(f"   Graph nodes: {list(graph.nodes.keys())}")
         print(f"   Graph edges: {list(graph.edges)}")
 
@@ -87,13 +87,13 @@ def test_simple_rag_agent():
             "messages": [HumanMessage(content="What is the capital of France?")]
         }
         result = rag_agent.invoke(input_data)
-        print("   ✅ RAG execution completed"d")
+        print("   ✅ RAG execution completedd")
         print(f"   Result type: {type(result)}")
         if hasattr(result, "messages"):
             print(f"   Final messages: {len(result.messages)}")
             # Check if we got both retrieval and answer
             if len(result.messages) > 1:
-                print("   ✅ Both retrieval and answer agents executed"d")
+                print("   ✅ Both retrieval and answer agents executedd")
                 print(f"   Last message: {result.messages[-1].content[:100]}...")
 
     except Exception as e:

@@ -131,7 +131,10 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Get tools from config
         tools = self.config.engine.tools or []
         if not tools:
-            logger.warning(f"No tools provided for ReactAgent {self.config.name}")
+            logger.warning(
+                f"No tools provided for ReactAgent {
+                    self.config.name}"
+            )
 
         # Create DynamicGraph with proper component registration
         gb = DynamicGraph(
@@ -238,7 +241,10 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Build the graph
         self.graph = gb.build()
 
-        logger.info(f"Workflow setup complete for ReactAgent {self.config.name}")
+        logger.info(
+            f"Workflow setup complete for ReactAgent {
+                self.config.name}"
+        )
 
     def _create_structured_output_node_config(self) -> NodeConfig:
         """Create the configuration for the structured output node."""
@@ -259,7 +265,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
             # Create structured output version
             llm_with_structured_output = llm.with_structured_output(model_class)
 
-            # Process the messages (excluding the last message which may have tool calls)
+            # Process the messages (excluding the last message which may have
+            # tool calls)
             messages = list(state.messages)
 
             # Add a final instruction to format the response

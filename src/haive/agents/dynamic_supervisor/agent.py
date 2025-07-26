@@ -132,7 +132,10 @@ class DynamicSupervisorAgent(ReactAgent):
         # Use base ReactAgent graph - provides the looping behavior
         graph = super().build_graph()
 
-        logger.info(f"Built supervisor graph for '{self.name}' with ReAct loop")
+        logger.info(
+            f"Built supervisor graph for '{
+                self.name}' with ReAct loop"
+        )
 
         return graph
 

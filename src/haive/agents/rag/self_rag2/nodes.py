@@ -1,4 +1,4 @@
-### Nodes
+# Nodes
 
 from typing import Any
 
@@ -81,7 +81,7 @@ def transform_query(state: dict[str, Any]):
     return {"documents": documents, "question": better_question}
 
 
-### Edges
+# Edges
 
 
 def transform_query(

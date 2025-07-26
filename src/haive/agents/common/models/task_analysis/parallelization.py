@@ -720,7 +720,8 @@ class ParallelizationAnalyzer(BaseModel):
             # Find all tasks that can run in parallel with this one
             parallel_tasks = [task_id]
 
-            # Simple heuristic: tasks with the same predecessors can often run in parallel
+            # Simple heuristic: tasks with the same predecessors can often run
+            # in parallel
             predecessors = {pred_id for pred_id, _ in task_info["predecessors"]}
 
             for other_id, other_info in dependency_graph.items():
@@ -852,7 +853,8 @@ class ParallelizationAnalyzer(BaseModel):
 
             if total_duration > max_duration:
                 max_duration = total_duration
-                max_path = current_path + path[1:]  # Avoid duplicating current node
+                # Avoid duplicating current node
+                max_path = current_path + path[1:]
 
         return max_path, max_duration
 
@@ -1005,7 +1007,8 @@ class ParallelizationAnalyzer(BaseModel):
         )
         if max_parallelism > self.max_parallel_tasks:
             bottlenecks.append(
-                f"Parallelism limit: {max_parallelism} tasks exceed limit of {self.max_parallel_tasks}"
+                f"Parallelism limit: {max_parallelism} tasks exceed limit of {
+                    self.max_parallel_tasks}"
             )
 
         return bottlenecks

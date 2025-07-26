@@ -205,7 +205,8 @@ class StaticSupervisor(ReactAgent[SupervisorReactState]):
 
             # Reconnect edges (ReactAgent already sets these up)
             # The conditional edges from agent_node should already route here
-            # The edge from tool_node back to agent_node is already set by ReactAgent
+            # The edge from tool_node back to agent_node is already set by
+            # ReactAgent
 
         return graph
 

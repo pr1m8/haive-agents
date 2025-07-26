@@ -8,7 +8,9 @@ This implementation follows the LangGraph pattern using:
 - Existing models, prompts, and state from p_and_e folder
 """
 
-from haive.agents.multi.enhanced_base import BuildMode, MultiAgentBase
+from haive.core.schema.agent_schema_composer import BuildMode
+
+from haive.agents.multi.archive.enhanced_base import MultiAgentBase
 
 # Import existing p_and_e components
 from haive.agents.planning.p_and_e.models import Act, Plan, StepStatus

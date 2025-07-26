@@ -7,15 +7,15 @@ Based on: https://python.langchain.com/docs/versions/migrating_memory/long_term_
 """
 
 import logging
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import UTC, datetime
+from typing import Any
 from uuid import uuid4
 
 from langchain_core.documents import Document
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from pydantic import BaseModel, Field
 
-from .memory_state_original import EnhancedMemoryItem, ImportanceLevel, MemoryType
+from .memory_state_original import EnhancedMemoryItem, ImportanceLevel
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +26,12 @@ class MessageMetadata(BaseModel):
     # Core message info
     message_id: str = Field(default_factory=lambda: str(uuid4()))
     message_type: str = Field(...)  # "human", "ai", "system"
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     # Conversation context
-    conversation_id: Optional[str] = Field(default=None)
-    user_id: Optional[str] = Field(default=None)
-    session_id: Optional[str] = Field(default=None)
+    conversation_id: str | None = Field(default=None)
+    user_id: str | None = Field(default=None)
+    session_id: str | None = Field(default=None)
     turn_number: int = Field(default=0)
 
     # Content analysis
@@ -54,14 +54,14 @@ class MessageMetadata(BaseModel):
 class TimestampedDocument(Document):
     """Document with enhanced timestamp and metadata for memory retrieval."""
 
-    def __init__(self, page_content: str, metadata: Dict[str, Any] = None):
+    def __init__(self, page_content: str, metadata: dict[str, Any] | None = None):
         """Initialize with enhanced metadata."""
         if metadata is None:
             metadata = {}
 
         # Ensure timestamp exists
         if "timestamp" not in metadata:
-            metadata["timestamp"] = datetime.now(timezone.utc).isoformat()
+            metadata["timestamp"] = datetime.now(UTC).isoformat()
 
         # Ensure document ID exists
         if "doc_id" not in metadata:
@@ -75,15 +75,14 @@ class TimestampedDocument(Document):
         timestamp_str = self.metadata.get("timestamp")
         if isinstance(timestamp_str, str):
             return datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
-        elif isinstance(timestamp_str, datetime):
+        if isinstance(timestamp_str, datetime):
             return timestamp_str
-        else:
-            return datetime.now(timezone.utc)
+        return datetime.now(UTC)
 
     @property
     def age_hours(self) -> float:
         """Get document age in hours."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         return (now - self.timestamp).total_seconds() / 3600
 
     @property
@@ -97,9 +96,9 @@ class MessageDocumentConverter:
 
     def __init__(
         self,
-        conversation_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        session_id: Optional[str] = None,
+        conversation_id: str | None = None,
+        user_id: str | None = None,
+        session_id: str | None = None,
     ):
         """Initialize converter with context."""
         self.conversation_id = conversation_id or f"conv_{uuid4()}"
@@ -108,7 +107,8 @@ class MessageDocumentConverter:
         self.turn_counter = 0
 
         logger.info(
-            f"Initialized MessageDocumentConverter for conversation {self.conversation_id}"
+            f"Initialized MessageDocumentConverter for conversation {
+                self.conversation_id}"
         )
 
     def convert_message(self, message: BaseMessage) -> TimestampedDocument:
@@ -139,7 +139,8 @@ class MessageDocumentConverter:
             session_id=self.session_id,
             turn_number=self.turn_counter,
             content_length=len(content),
-            estimated_tokens=len(content.split()) * 1.3,  # Rough token estimate
+            estimated_tokens=len(content.split()) * 1.3,
+            # Rough token estimate
             **content_analysis,
         )
 
@@ -148,21 +149,25 @@ class MessageDocumentConverter:
             **message_metadata.model_dump(),
             "timestamp": message_metadata.timestamp.isoformat(),
             "source": "conversation_message",
-            "conversation_context": f"{self.conversation_id}:turn_{self.turn_counter}",
+            "conversation_context": f"{
+                self.conversation_id}:turn_{
+                self.turn_counter}",
         }
 
         # Create timestamped document
         doc = TimestampedDocument(page_content=content, metadata=doc_metadata)
 
         logger.debug(
-            f"Converted {message_type} message to document: {len(content)} chars, turn {self.turn_counter}"
+            f"Converted {message_type} message to document: {
+                len(content)} chars, turn {
+                self.turn_counter}"
         )
 
         return doc
 
     def convert_messages(
-        self, messages: List[BaseMessage]
-    ) -> List[TimestampedDocument]:
+        self, messages: list[BaseMessage]
+    ) -> list[TimestampedDocument]:
         """Convert multiple messages to timestamped documents.
 
         Args:
@@ -178,13 +183,15 @@ class MessageDocumentConverter:
             documents.append(doc)
 
         logger.info(
-            f"Converted {len(messages)} messages to {len(documents)} timestamped documents"
+            f"Converted {
+                len(messages)} messages to {
+                len(documents)} timestamped documents"
         )
 
         return documents
 
     def create_conversation_summary_document(
-        self, messages: List[BaseMessage], summary: str
+        self, messages: list[BaseMessage], summary: str
     ) -> TimestampedDocument:
         """Create summary document from conversation.
 
@@ -249,23 +256,21 @@ class MessageDocumentConverter:
         """Determine message type from LangChain message."""
         if isinstance(message, HumanMessage):
             return "human"
-        elif isinstance(message, AIMessage):
+        if isinstance(message, AIMessage):
             return "ai"
-        elif isinstance(message, SystemMessage):
+        if isinstance(message, SystemMessage):
             return "system"
-        else:
-            return "unknown"
+        return "unknown"
 
     def _extract_content(self, message: BaseMessage) -> str:
         """Extract content from message."""
         if hasattr(message, "content") and message.content:
             return str(message.content)
-        else:
-            return str(message)
+        return str(message)
 
-    def _analyze_content(self, content: str, message_type: str) -> Dict[str, Any]:
+    def _analyze_content(self, content: str, message_type: str) -> dict[str, Any]:
         """Analyze content for metadata extraction."""
-        content_lower = content.lower()
+        content.lower()
 
         analysis = {
             "contains_personal_info": self._contains_personal_info(content),
@@ -385,13 +390,13 @@ class MessageDocumentConverter:
         return ImportanceLevel.MEDIUM
 
     def _determine_summary_importance(
-        self, messages: List[BaseMessage], summary: str
+        self, messages: list[BaseMessage], summary: str
     ) -> ImportanceLevel:
         """Determine importance of conversation summary."""
         # Longer conversations tend to be more important
         if len(messages) > 20:
             return ImportanceLevel.HIGH
-        elif len(messages) > 10:
+        if len(messages) > 10:
             return ImportanceLevel.MEDIUM
 
         # Summary with key information is important
@@ -406,7 +411,7 @@ class MessageDocumentConverter:
 class ConversationDocumentBatch:
     """Batch processor for converting entire conversations to documents."""
 
-    def __init__(self, conversation_id: str = None, user_id: str = None):
+    def __init__(self, conversation_id: str | None = None, user_id: str | None = None):
         """Initialize batch processor."""
         self.conversation_id = conversation_id or f"batch_{uuid4()}"
         self.user_id = user_id
@@ -414,10 +419,10 @@ class ConversationDocumentBatch:
 
     def process_conversation(
         self,
-        messages: List[BaseMessage],
+        messages: list[BaseMessage],
         include_summary: bool = True,
         chunk_size: int = 5,
-    ) -> List[TimestampedDocument]:
+    ) -> list[TimestampedDocument]:
         """Process entire conversation into documents.
 
         Args:
@@ -449,13 +454,15 @@ class ConversationDocumentBatch:
                 all_documents.append(summary_doc)
 
         logger.info(
-            f"Processed conversation: {len(messages)} messages → {len(all_documents)} documents"
+            f"Processed conversation: {
+                len(messages)} messages → {
+                len(all_documents)} documents"
         )
 
         return all_documents
 
     def _create_chunk_summary(
-        self, messages: List[BaseMessage], chunk_num: int, total_chunks: int
+        self, messages: list[BaseMessage], chunk_num: int, total_chunks: int
     ) -> str:
         """Create summary for a chunk of messages."""
         # Simple extractive summary (in real implementation, use LLM)
@@ -480,8 +487,8 @@ class ConversationDocumentBatch:
 
 
 def extract_documents_by_timeframe(
-    documents: List[TimestampedDocument], hours_back: float = 24
-) -> List[TimestampedDocument]:
+    documents: list[TimestampedDocument], hours_back: float = 24
+) -> list[TimestampedDocument]:
     """Extract documents from specific timeframe.
 
     Args:
@@ -491,16 +498,16 @@ def extract_documents_by_timeframe(
     Returns:
         Filtered list of documents
     """
-    cutoff_time = datetime.now(timezone.utc) - pd.Timedelta(hours=hours_back)
+    cutoff_time = datetime.now(UTC) - pd.Timedelta(hours=hours_back)
 
     return [doc for doc in documents if doc.timestamp >= cutoff_time]
 
 
 def sort_documents_by_relevance_and_time(
-    documents: List[TimestampedDocument],
+    documents: list[TimestampedDocument],
     time_weight: float = 0.3,
     recency_decay: float = 0.1,
-) -> List[TimestampedDocument]:
+) -> list[TimestampedDocument]:
     """Sort documents by relevance and recency.
 
     Args:
@@ -530,7 +537,7 @@ def sort_documents_by_relevance_and_time(
     return sorted(documents, key=score_document, reverse=True)
 
 
-def create_document_index(documents: List[TimestampedDocument]) -> Dict[str, Any]:
+def create_document_index(documents: list[TimestampedDocument]) -> dict[str, Any]:
     """Create searchable index of documents.
 
     Args:

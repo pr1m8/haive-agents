@@ -262,7 +262,10 @@ class RebuildDynamicSupervisor(ReactAgent):
         """Prepare input for agent based on its state schema."""
         # If agent has state_schema, extract only needed fields
         if hasattr(agent, "state_schema") and agent.state_schema:
-            logger.info(f"Using agent state schema: {agent.state_schema.__name__}")
+            logger.info(
+                f"Using agent state schema: {
+                    agent.state_schema.__name__}"
+            )
 
             agent_input = {}
             for field_name in agent.state_schema.model_fields:
@@ -377,7 +380,10 @@ if __name__ == "__main__":
 
         async def ainvoke(self, state: dict[str, Any]) -> dict[str, Any]:
             messages = state.get("messages", [])
-            response = AIMessage(content=f"{self.name}: Processed your request")
+            response = AIMessage(
+                content=f"{
+                    self.name}: Processed your request"
+            )
             return {"messages": [*messages, response]}
 
     async def test_rebuild_supervisor():

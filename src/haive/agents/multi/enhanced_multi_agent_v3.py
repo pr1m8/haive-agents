@@ -15,11 +15,10 @@ Key Features:
 - Backward compatibility with existing patterns
 """
 
-import asyncio
 import logging
 import time
 from collections.abc import Callable
-from typing import Any, Generic, Literal, Optional, Type, TypeVar
+from typing import Any, Generic, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
@@ -28,8 +27,7 @@ from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
     EnhancedMultiAgentState,
 )
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-from langchain_core.messages import BaseMessage
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import Field, field_validator, model_validator
 from rich.console import Console
 from rich.table import Table
 
@@ -178,7 +176,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         description="Generic collection of agents this multi-agent coordinates",
     )
 
-    agent: Optional[Agent] = Field(
+    agent: Agent | None = Field(
         default=None,
         description="Main/default agent for this multi-agent (legacy support)",
     )
@@ -200,7 +198,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         description="Branch configurations for conditional and custom routing",
     )
 
-    entry_point: Optional[str] = Field(
+    entry_point: str | None = Field(
         default=None,
         description="Starting agent for execution (if not specified, uses first agent or infers)",
     )
@@ -226,7 +224,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         default=False, description="Enable rich debugging and observability"
     )
 
-    persistence_config: Optional[dict[str, Any]] = Field(
+    persistence_config: dict[str, Any] | None = Field(
         default=None, description="Advanced persistence configuration"
     )
 
@@ -272,13 +270,12 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 field_info = cls.model_fields["agents"]
 
                 # Check if the annotation is a List type
-                import typing
-                from typing import get_args, get_origin
+                from typing import get_origin
 
                 annotation = field_info.annotation
                 origin = get_origin(annotation)
 
-                if origin is list or origin is typing.List:
+                if origin is list or origin is list:
                     values["agents"] = []
                 else:
                     # Default to dict for backward compatibility
@@ -308,13 +305,12 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 field_info = cls.model_fields["agents"]
 
                 # Check if the annotation is a List type
-                import typing
-                from typing import get_args, get_origin
+                from typing import get_origin
 
                 annotation = field_info.annotation
                 origin = get_origin(annotation)
 
-                if origin is list or origin is typing.List:
+                if origin is list or origin is list:
                     should_keep_list = True
 
             if isinstance(agents, list):
@@ -340,11 +336,10 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 # Single agent not in dict form
                 if should_keep_list:
                     values["agents"] = [agents]
+                elif hasattr(agents, "name") and agents.name:
+                    values["agents"] = {agents.name: agents}
                 else:
-                    if hasattr(agents, "name") and agents.name:
-                        values["agents"] = {agents.name: agents}
-                    else:
-                        values["agents"] = {"main": agents}
+                    values["agents"] = {"main": agents}
 
         return values
 
@@ -353,7 +348,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
     def validate_agents(cls, v: AgentsT) -> AgentsT:
         """Validate agents collection."""
         if isinstance(v, dict):
-            # Allow empty dict during initialization - some subclasses populate later
+            # Allow empty dict during initialization - some subclasses populate
+            # later
             if v:
                 # Validate all values are agents
                 for name, agent in v.items():
@@ -366,7 +362,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                             f"Agent '{name}' must have run/arun/invoke method"
                         )
         elif isinstance(v, list):
-            # Allow empty list during initialization - some subclasses populate later
+            # Allow empty list during initialization - some subclasses populate
+            # later
             if v:
                 # Validate all items are agents
                 for i, agent in enumerate(v):
@@ -413,7 +410,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
         # Set default state schema if none provided
         if self.state_schema is None:
-            # Use enhanced state schema for V3 features, fallback to basic for compatibility
+            # Use enhanced state schema for V3 features, fallback to basic for
+            # compatibility
             if any([self.performance_mode, self.debug_mode, self.advanced_routing]):
                 self.state_schema = EnhancedMultiAgentState
                 logger.debug(f"Using EnhancedMultiAgentState for {self.name}")
@@ -480,7 +478,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         # For list, generate names
         return [f"agent_{i}" for i in range(len(self.agents))]
 
-    def get_agent(self, name: str) -> Optional[Agent]:
+    def get_agent(self, name: str) -> Agent | None:
         """Get agent by name."""
         if isinstance(self.agents, dict):
             return self.agents.get(name)
@@ -504,10 +502,17 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         Enhanced with V3 debugging and performance features.
         """
         if self.debug_mode:
-            logger.info(f"Building graph for EnhancedMultiAgent V3: {self.name}")
+            logger.info(
+                f"Building graph for EnhancedMultiAgent V3: {
+                    self.name}"
+            )
 
         # Create BaseGraph with state schema
-        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
+        graph = BaseGraph(
+            name=f"{
+                self.name}_graph",
+            state_schema=self.state_schema,
+        )
 
         # Store agents in graph metadata for AgentNodeV3Config to access
         graph.metadata["agents"] = self.agents
@@ -607,13 +612,15 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 agents = branch_config["agents"]
                 next_agent = branch_config.get("next")
 
-                # Add virtual nodes if they don't represent actual parallel groups
+                # Add virtual nodes if they don't represent actual parallel
+                # groups
                 if source.startswith("parallel_"):
                     # This is a parallel group configuration, not a real agent
                     # Create edges from START to each parallel agent
                     for agent_name in agents:
                         if agent_name in self.agents:
-                            # If this is the first set of edges, connect from START
+                            # If this is the first set of edges, connect from
+                            # START
                             if not has_entry_edges and self.entry_point is None:
                                 graph.add_edge("__start__", agent_name)
 
@@ -625,7 +632,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                                 graph.add_edge(agent_name, "__end__")
                     has_entry_edges = True
                 else:
-                    # Source is a real agent that branches to parallel execution
+                    # Source is a real agent that branches to parallel
+                    # execution
                     for agent_name in agents:
                         if agent_name in self.agents:
                             graph.add_edge(source, agent_name)
@@ -703,7 +711,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         }
 
     def add_parallel_group(
-        self, agent_names: list[str], next_agent: Optional[str] = None
+        self, agent_names: list[str], next_agent: str | None = None
     ) -> None:
         """Add a group of agents that run in parallel.
 
@@ -778,7 +786,9 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
         if self.debug_mode:
             logger.debug(
-                f"Updated performance for {agent_name}: success_rate={new_rate:.3f}, avg_duration={metrics['avg_duration']:.3f}s"
+                f"Updated performance for {agent_name}: success_rate={
+                    new_rate:.3f}, avg_duration={
+                    metrics['avg_duration']:.3f}s"
             )
 
     def get_best_agent_for_task(self, task_type: str = "general") -> str:
@@ -799,7 +809,10 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
         result = best_agent or next(iter(self.agents.keys()))
         if self.debug_mode:
-            logger.debug(f"Selected best agent: {result} (score: {best_score:.3f})")
+            logger.debug(
+                f"Selected best agent: {result} (score: {
+                    best_score:.3f})"
+            )
         return result
 
     # ========================================================================

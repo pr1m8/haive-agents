@@ -235,7 +235,11 @@ class MultiAgentV2(Agent):
 
     def build_graph(self) -> BaseGraph:
         """Build the multi-agent graph based on execution mode."""
-        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
+        graph = BaseGraph(
+            name=f"{
+                self.name}_graph",
+            state_schema=self.state_schema,
+        )
 
         if self.execution_mode == ExecutionMode.SEQUENCE:
             self._build_sequence_graph(graph)
@@ -273,7 +277,7 @@ class MultiAgentV2(Agent):
         graph.add_edge(START, f"agent_{agent_names[0]}")
 
         for i in range(len(agent_names) - 1):
-            graph.add_edge(f"agent_{agent_names[i]}", f"agent_{agent_names[i+1]}")
+            graph.add_edge(f"agent_{agent_names[i]}", f"agent_{agent_names[i + 1]}")
 
         graph.add_edge(f"agent_{agent_names[-1]}", END)
 

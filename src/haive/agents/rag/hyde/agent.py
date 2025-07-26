@@ -108,5 +108,5 @@ class HyDERAGAgent(MultiAgent):
             agents=[hyde_generator, retrieval_agent, answer_agent],
             name=agent_name,
             execution_mode="sequential",
-            **kwargs
+            **kwargs,
         )
