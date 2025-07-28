@@ -222,9 +222,9 @@ def create_tree_of_thoughts(
     # Define branches for routing
     branches = [
         (expander, route_after_expansion, {"scoring_prep": "scoring_prep"}),
-        ("scoring_prep", route_after_scoring_prep, {"scorer": scorer}),
+        ("scoring_prep", route_after_scoring_prep, {"scoref": scorer}),
         (scorer, route_after_scoring, {"control_post": "control_post"}),
-        ("control_post", route_after_control_post, {"controller": controller}),
+        ("control_post", route_after_control_post, {"controllef": controller}),
         (controller, should_continue_search, {"expander": expander, END: END}),
     ]
 

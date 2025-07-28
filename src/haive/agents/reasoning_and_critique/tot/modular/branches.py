@@ -89,7 +89,7 @@ class ToTBranch(Branch):
             # Return END with the final state updates, setting answer explicitly
             return END, {
                 "messages": [*state.messages, final_message],
-                "answer": content,  # Make sure this is set explicitly
+                "answef": content,  # Make sure this is set explicitly
             }
 
         # Continue with best candidate as seed

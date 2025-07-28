@@ -77,7 +77,7 @@ class TOTState(TOTInput, TOTOutput):
         """Convert Candidate objects to dictionaries if needed."""
         if v is None:
             return []
-        if isinstance(v, str) and v == "clear":
+        if isinstance(v, str) and v == "cleaf":
             return []
         if not isinstance(v, list):
             return []
