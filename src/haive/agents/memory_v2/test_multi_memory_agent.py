@@ -15,12 +15,11 @@ from haive.agents.memory_v2.multi_memory_agent import (
 
 def test_multi_memory_config():
     """Test MultiMemoryAgent configuration creation."""
-
     print("🔧 Testing MultiMemoryConfig...")
 
     # Test default config
     config = MultiMemoryConfig()
-    print(f"✅ Default config created:")
+    print("✅ Default config created:")
     print(f"  - Name: {config.name}")
     print(f"  - Default strategy: {config.default_strategy}")
     print(f"  - Simple memory enabled: {config.enable_simple_memory}")
@@ -35,7 +34,7 @@ def test_multi_memory_config():
         enable_graph_memory=False,
         enable_rag_memory=False,
     )
-    print(f"\n✅ Custom config created:")
+    print("\n✅ Custom config created:")
     print(f"  - Name: {custom_config.name}")
     print(f"  - Strategy: {custom_config.default_strategy}")
     print(f"  - Graph enabled: {custom_config.enable_graph_memory}")
@@ -43,7 +42,6 @@ def test_multi_memory_config():
 
 def test_memory_strategies():
     """Test memory strategy enums."""
-
     print("\n🎭 Testing Memory Strategies...")
 
     strategies = list(MemoryStrategy)
@@ -59,7 +57,6 @@ def test_memory_strategies():
 
 def test_multi_memory_agent_creation():
     """Test MultiMemoryAgent creation and initialization."""
-
     print("\n🤖 Testing MultiMemoryAgent creation...")
 
     # Create config with only SimpleMemoryAgent enabled (to avoid dependencies)
@@ -75,7 +72,7 @@ def test_multi_memory_agent_creation():
 
     try:
         agent = MultiMemoryAgent(config)
-        print(f"✅ MultiMemoryAgent created successfully:")
+        print("✅ MultiMemoryAgent created successfully:")
         print(f"  - Name: {agent.name}")
         print(f"  - State schema: {agent.state_schema.__name__}")
         print(f"  - Available memory agents: {list(agent.memory_agents.keys())}")
@@ -95,7 +92,6 @@ def test_multi_memory_agent_creation():
 
 async def test_query_classification():
     """Test query classification functionality."""
-
     print("\n🔍 Testing query classification...")
 
     # Try to create minimal agent
@@ -142,7 +138,6 @@ async def test_query_classification():
 
 def test_routing_rules():
     """Test routing rules configuration."""
-
     print("\n🚦 Testing routing rules...")
 
     config = MultiMemoryConfig()
@@ -166,7 +161,6 @@ def test_routing_rules():
 
 def comprehensive_test():
     """Run all tests in sequence."""
-
     print("🧪 Running comprehensive MultiMemoryAgent tests...\n")
 
     # Test configuration
