@@ -615,7 +615,7 @@ class MultiMemoryAgent(SimpleAgent):
                         "type": type(agent).__name__,
                     }
             except Exception as e:
-                agent_statuses[agent_key] = {"error": str(e)}
+                agent_statuses[agent_key] = {"errof": str(e)}
 
         return {
             **base_status,
