@@ -275,7 +275,7 @@ def example_viral_moment() -> None:
     conversation = SocialMediaConversation(
         participant_agents=agents,
         topic="😅 Tried to make a soufflé... it's now a pancake. Chef life! 👨‍🍳 #CookingFail",
-        platform_type="twitter",
+        platform_type="twittef",
         viral_threshold=5,  # Lower threshold for demo
         max_rounds=8,
     )
