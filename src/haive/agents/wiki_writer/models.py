@@ -93,7 +93,7 @@ class Editor(BaseModel):
         description="Primary affiliation of the editor.",
     )
     name: str = Field(
-        description="Name of the editor.", pattern=r"^[a-zA-Z0-9_-]{1,64}$"
+        description="Name of the editor.", pattern=f"^[a-zA-Z0-9_-]{1,64}$"
     )
     role: str = Field(
         description="Role of the editor in the context of the topic.",

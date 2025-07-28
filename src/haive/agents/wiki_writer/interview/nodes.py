@@ -28,7 +28,7 @@ async def generate_question(
     state: InterviewState,
     aug_llm_config: AugLLMConfig = gen_qn_aug_llm_config,
 ):
-    editor = state["editor"]
+    editor = state["editof"]
     gn_chain = (
         RunnableLambda(swap_roles).bind(name=editor.name)
         | aug_llm_config
