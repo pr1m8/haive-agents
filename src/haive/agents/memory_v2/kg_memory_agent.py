@@ -9,11 +9,10 @@ This agent extends the existing KG transformer capabilities with:
 Based on existing ParallelKGTransformer but optimized for memory workflows.
 """
 
-import asyncio
 import logging
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 from uuid import uuid4
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -31,13 +30,9 @@ from haive.agents.document_modifiers.kg.kg_map_merge.models import (
 
 # Import our memory components
 from .memory_state_original import (
-    EnhancedKnowledgeTriple,
     EnhancedMemoryItem,
-    ImportanceLevel,
-    MemoryType,
-    UnifiedMemoryEntry,
 )
-from .message_document_converter import MessageDocumentConverter, TimestampedDocument
+from .message_document_converter import MessageDocumentConverter
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +56,7 @@ class KGMemoryConfig(BaseModel):
     llm_config: AugLLMConfig = Field(default_factory=AugLLMConfig)
 
     # Memory-specific node types
-    memory_node_types: List[str] = Field(
+    memory_node_types: list[str] = Field(
         default=[
             "Person",
             "Organization",
@@ -78,7 +73,7 @@ class KGMemoryConfig(BaseModel):
     )
 
     # Memory-specific relationships
-    memory_relationships: List[Union[str, Tuple[str, str, str]]] = Field(
+    memory_relationships: list[str | tuple[str, str, str]] = Field(
         default=[
             ("Person", "WORKS_AT", "Organization"),
             ("Person", "KNOWS", "Person"),
@@ -100,13 +95,13 @@ class KGMemoryConfig(BaseModel):
     storage_backend: GraphStorageBackend = Field(default=GraphStorageBackend.MEMORY)
 
     # Neo4j connection settings
-    neo4j_uri: Optional[str] = Field(default=None)
-    neo4j_username: Optional[str] = Field(default=None)
-    neo4j_password: Optional[str] = Field(default=None)
+    neo4j_uri: str | None = Field(default=None)
+    neo4j_username: str | None = Field(default=None)
+    neo4j_password: str | None = Field(default=None)
     neo4j_database: str = Field(default="neo4j")
 
     # File storage settings
-    file_storage_path: Optional[str] = Field(default="./memory_graphs/")
+    file_storage_path: str | None = Field(default="./memory_graphs/")
 
     # Graph construction settings
     strict_mode: bool = Field(default=False)
@@ -188,7 +183,7 @@ class GraphDatabaseConnector:
         logger.info(f"Initialized file storage at {storage_path}")
 
     async def store_knowledge_graph(
-        self, graph: KnowledgeGraph, graph_id: str, metadata: Dict[str, Any] = None
+        self, graph: KnowledgeGraph, graph_id: str, metadata: dict[str, Any] = None
     ) -> bool:
         """Store knowledge graph in configured backend."""
         if not self._connection:
@@ -197,20 +192,19 @@ class GraphDatabaseConnector:
         try:
             if self._connection["type"] == "neo4j":
                 return await self._store_neo4j(graph, graph_id, metadata)
-            elif self._connection["type"] == "memory":
+            if self._connection["type"] == "memory":
                 return await self._store_memory(graph, graph_id, metadata)
-            elif self._connection["type"] == "file":
+            if self._connection["type"] == "file":
                 return await self._store_file(graph, graph_id, metadata)
-            else:
-                logger.error(f"Unknown connection type: {self._connection['type']}")
-                return False
+            logger.error(f"Unknown connection type: {self._connection['type']}")
+            return False
 
         except Exception as e:
             logger.error(f"Failed to store graph {graph_id}: {e}")
             return False
 
     async def _store_neo4j(
-        self, graph: KnowledgeGraph, graph_id: str, metadata: Dict[str, Any]
+        self, graph: KnowledgeGraph, graph_id: str, metadata: dict[str, Any]
     ) -> bool:
         """Store graph in Neo4j."""
         driver = self._connection["driver"]
@@ -274,7 +268,7 @@ class GraphDatabaseConnector:
         return True
 
     async def _store_memory(
-        self, graph: KnowledgeGraph, graph_id: str, metadata: Dict[str, Any]
+        self, graph: KnowledgeGraph, graph_id: str, metadata: dict[str, Any]
     ) -> bool:
         """Store graph in memory."""
         self._connection["graphs"][graph_id] = {
@@ -289,7 +283,7 @@ class GraphDatabaseConnector:
         return True
 
     async def _store_file(
-        self, graph: KnowledgeGraph, graph_id: str, metadata: Dict[str, Any]
+        self, graph: KnowledgeGraph, graph_id: str, metadata: dict[str, Any]
     ) -> bool:
         """Store graph in file."""
         import json
@@ -327,7 +321,7 @@ class GraphDatabaseConnector:
 
     async def retrieve_graph(
         self, graph_id: str
-    ) -> Optional[Tuple[KnowledgeGraph, Dict[str, Any]]]:
+    ) -> tuple[KnowledgeGraph, dict[str, Any]] | None:
         """Retrieve knowledge graph by ID."""
         if not self._connection:
             await self.connect()
@@ -344,7 +338,7 @@ class GraphDatabaseConnector:
 
                 file_path = os.path.join(self._connection["path"], f"{graph_id}.json")
                 if os.path.exists(file_path):
-                    with open(file_path, "r") as f:
+                    with open(file_path) as f:
                         graph_data = json.load(f)
 
                     # Reconstruct graph
@@ -403,8 +397,8 @@ class KGMemoryAgent:
         await self.db_connector.connect()
 
     async def process_memories_to_graph(
-        self, memories: List[EnhancedMemoryItem], graph_id: Optional[str] = None
-    ) -> Tuple[str, KnowledgeGraph]:
+        self, memories: list[EnhancedMemoryItem], graph_id: str | None = None
+    ) -> tuple[str, KnowledgeGraph]:
         """Process memories into knowledge graph and store.
 
         Args:
@@ -488,8 +482,8 @@ class KGMemoryAgent:
             raise
 
     async def process_conversation_to_graph(
-        self, messages: List[BaseMessage], graph_id: Optional[str] = None
-    ) -> Tuple[str, KnowledgeGraph]:
+        self, messages: list[BaseMessage], graph_id: str | None = None
+    ) -> tuple[str, KnowledgeGraph]:
         """Process conversation messages into knowledge graph.
 
         Args:
@@ -555,7 +549,7 @@ class KGMemoryAgent:
             logger.error(f"Failed to process conversation to graph: {e}")
             raise
 
-    async def retrieve_memory_graph(self, graph_id: str) -> Optional[KnowledgeGraph]:
+    async def retrieve_memory_graph(self, graph_id: str) -> KnowledgeGraph | None:
         """Retrieve stored knowledge graph.
 
         Args:
@@ -573,7 +567,7 @@ class KGMemoryAgent:
             return graph
         return None
 
-    async def query_graph_by_entity(self, entity_name: str) -> List[Dict[str, Any]]:
+    async def query_graph_by_entity(self, entity_name: str) -> list[dict[str, Any]]:
         """Query graph database for entity and its relationships.
 
         Args:
@@ -587,16 +581,15 @@ class KGMemoryAgent:
             and self.db_connector._connection["type"] == "neo4j"
         ):
             return await self._query_neo4j_entity(entity_name)
-        elif (
+        if (
             self.db_connector._connection
             and self.db_connector._connection["type"] == "memory"
         ):
             return await self._query_memory_entity(entity_name)
-        else:
-            logger.warning("Graph querying not implemented for current backend")
-            return []
+        logger.warning("Graph querying not implemented for current backend")
+        return []
 
-    async def _query_neo4j_entity(self, entity_name: str) -> List[Dict[str, Any]]:
+    async def _query_neo4j_entity(self, entity_name: str) -> list[dict[str, Any]]:
         """Query Neo4j for entity relationships."""
         driver = self.db_connector._connection["driver"]
         database = self.db_connector._connection["database"]
@@ -632,7 +625,7 @@ class KGMemoryAgent:
 
         return results
 
-    async def _query_memory_entity(self, entity_name: str) -> List[Dict[str, Any]]:
+    async def _query_memory_entity(self, entity_name: str) -> list[dict[str, Any]]:
         """Query memory storage for entity relationships."""
         results = []
 
