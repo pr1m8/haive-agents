@@ -15,7 +15,7 @@ Functions:
 
 import logging
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any
 
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage
@@ -29,7 +29,6 @@ from langgraph.graph import END
 from langgraph.prebuilt import ToolNode
 
 from haive.agents.base.agent import Agent
-from haive.agents.reasoning_and_critique.mcts.config import MCTSAgentConfig
 from haive.agents.reasoning_and_critique.mcts.models import Reflection, TreeNode
 from haive.agents.reasoning_and_critique.mcts.state import TreeState
 
@@ -122,7 +121,7 @@ class MCTSAgent(Agent):
         self.reflection_chain = reflection_chain
 
         # Expansion chain
-        def generate_candidates(messages: List[Dict[str, Any]], config: RunnableConfig):
+        def generate_candidates(messages: list[dict[str, Any]], config: RunnableConfig):
             n = config["configurable"].get("N", self.config.candidates_per_rollout)
             bound_kwargs = llm_with_tools.kwargs
             chat_result = llm.generate(
@@ -225,7 +224,7 @@ class MCTSAgent(Agent):
             best_node_id = nodes_store.select_best_node()
             if not best_node_id:
                 # No node to expand
-                return {"error": "No node found to expand", "status": "error"}
+                return {"error": "No node found to expand", "status": "errof"}
 
             best_node = nodes_store.get_node_by_id(best_node_id)
             if not best_node:
