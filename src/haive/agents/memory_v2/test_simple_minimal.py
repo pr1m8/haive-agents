@@ -12,7 +12,6 @@ from haive.agents.memory_v2.simple_memory_agent import (
 
 def test_minimal():
     """Minimal test to find the issue."""
-
     # Create agent with minimal config
     agent = SimpleMemoryAgent(
         name="test_minimal",
