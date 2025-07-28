@@ -120,9 +120,7 @@ class MetaAgent(Agent, Generic[TAgent]):
 
         The meta agent delegates to the wrapped agent's graph.
         """
-        # For meta agent, we can use a simple pass-through graph
-        # or delegate to wrapped agent's graph
-        wrapped = self.wrapped_agent
+        # For meta agent, we can use a simple pass
         if wrapped and hasattr(wrapped, "_app") and wrapped._app:
             return wrapped._app
         if wrapped and hasattr(wrapped, "build_graph"):
