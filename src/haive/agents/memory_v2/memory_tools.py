@@ -6,24 +6,22 @@ and composed together.
 """
 
 import json
-import time
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field, field_validator
 
 from .memory_state_original import EnhancedMemoryItem as MemoryEntry
-from .memory_state_original import MemoryType
 
 
 # Create MemoryMetadata as a simple class
 class MemoryMetadata(BaseModel):
     memory_type: str = Field(default="general")
     importance: float = Field(default=0.5)
-    tags: List[str] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=datetime.now)
 
 
@@ -52,7 +50,7 @@ class MemoryConfig(BaseModel):
         pattern="^(json_file|sqlite|neo4j|vector_db|in_memory)$",
     )
 
-    storage_path: Optional[str] = Field(
+    storage_path: str | None = Field(
         default=None, description="Path for file-based storage backends"
     )
 
@@ -105,8 +103,8 @@ class MemoryConfig(BaseModel):
 
 
 # Global memory storage for simple backends
-_MEMORY_STORAGE: Dict[str, List[MemoryEntry]] = {}
-_MEMORY_CONFIG: Optional[MemoryConfig] = None
+_MEMORY_STORAGE: dict[str, list[MemoryEntry]] = {}
+_MEMORY_CONFIG: MemoryConfig | None = None
 
 
 def _get_storage_key(namespace: str = "default") -> str:
@@ -116,14 +114,14 @@ def _get_storage_key(namespace: str = "default") -> str:
 
 def _load_memories_from_file(
     storage_path: str, namespace: str = "default"
-) -> List[MemoryEntry]:
+) -> list[MemoryEntry]:
     """Load memories from JSON file."""
     try:
         path = Path(storage_path)
         if not path.exists():
             return []
 
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             data = json.load(f)
 
         namespace_data = data.get(namespace, [])
@@ -134,7 +132,7 @@ def _load_memories_from_file(
 
 
 def _save_memories_to_file(
-    memories: List[MemoryEntry], storage_path: str, namespace: str = "default"
+    memories: list[MemoryEntry], storage_path: str, namespace: str = "default"
 ) -> None:
     """Save memories to JSON file."""
     try:
@@ -144,7 +142,7 @@ def _save_memories_to_file(
         # Load existing data
         data = {}
         if path.exists():
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 data = json.load(f)
 
         # Update namespace
@@ -162,10 +160,10 @@ def store_memory(
     content: str,
     memory_type: str = "semantic",
     importance: str = "medium",
-    tags: Optional[List[str]] = None,
-    context_id: Optional[str] = None,
+    tags: list[str] | None = None,
+    context_id: str | None = None,
     namespace: str = "default",
-    config: Optional[Dict[str, Any]] = None,
+    config: dict[str, Any] | None = None,
 ) -> str:
     """Store a memory with classification and metadata.
 
@@ -264,18 +262,18 @@ def store_memory(
         return f"Memory stored successfully with ID: {memory_id}"
 
     except Exception as e:
-        return f"Error storing memory: {str(e)}"
+        return f"Error storing memory: {e!s}"
 
 
 @tool
 def retrieve_memory(
     query: str,
-    memory_type: Optional[str] = None,
-    importance_filter: Optional[List[str]] = None,
+    memory_type: str | None = None,
+    importance_filter: list[str] | None = None,
     limit: int = 5,
     namespace: str = "default",
-    config: Optional[Dict[str, Any]] = None,
-) -> List[Dict[str, Any]]:
+    config: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
     """Retrieve memories based on query and filters.
 
     Searches for relevant memories using content similarity and metadata filters.
@@ -372,19 +370,19 @@ def retrieve_memory(
         return results[:limit]
 
     except Exception as e:
-        return [{"error": f"Error retrieving memories: {str(e)}"}]
+        return [{"error": f"Error retrieving memories: {e!s}"}]
 
 
 @tool
 def search_memory(
-    query: Optional[str] = None,
-    filters: Optional[Dict[str, Any]] = None,
+    query: str | None = None,
+    filters: dict[str, Any] | None = None,
     sort_by: str = "timestamp",
     sort_order: str = "desc",
     limit: int = 10,
     namespace: str = "default",
-    config: Optional[Dict[str, Any]] = None,
-) -> List[Dict[str, Any]]:
+    config: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
     """Search memories with flexible filtering and sorting options.
 
     Provides advanced search capabilities with multiple filter options
@@ -519,13 +517,13 @@ def search_memory(
         return result_dicts
 
     except Exception as e:
-        return [{"error": f"Error searching memories: {str(e)}"}]
+        return [{"error": f"Error searching memories: {e!s}"}]
 
 
 @tool
 def classify_memory(
-    content: str, context: Optional[str] = None, config: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    content: str, context: str | None = None, config: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Classify memory type and extract metadata.
 
     Analyzes memory content to automatically determine memory type,
@@ -575,7 +573,7 @@ def classify_memory(
             "meeting",
             "event",
         ]
-        if any(keyword in content_lower for keyword in episodic_keywords):
+        if any(key in content_lower for key in episodic_keywords):
             memory_type = "episodic"
 
         # Procedural indicators
@@ -590,7 +588,7 @@ def classify_memory(
             "workflow",
             "best practice",
         ]
-        if any(keyword in content_lower for keyword in procedural_keywords):
+        if any(key in content_lower for key in procedural_keywords):
             memory_type = "procedural"
 
         # Determine importance
@@ -609,7 +607,7 @@ def classify_memory(
             "work",
             "decision",
         ]
-        if any(keyword in content_lower for keyword in high_importance_keywords):
+        if any(key in content_lower for key in high_importance_keywords):
             importance = "high"
 
         low_importance_keywords = [
@@ -620,7 +618,7 @@ def classify_memory(
             "weather",
             "minor",
         ]
-        if any(keyword in content_lower for keyword in low_importance_keywords):
+        if any(key in content_lower for key in low_importance_keywords):
             importance = "low"
 
         # Extract simple entities (names - words that start with capital letters)
@@ -724,7 +722,7 @@ def classify_memory(
 
     except Exception as e:
         return {
-            "error": f"Error classifying memory: {str(e)}",
+            "error": f"Error classifying memory: {e!s}",
             "memory_type": "semantic",
             "importance": "medium",
             "confidence": 0.1,
@@ -735,8 +733,8 @@ def classify_memory(
 
 @tool
 def get_memory_stats(
-    namespace: str = "default", config: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    namespace: str = "default", config: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Get comprehensive statistics about stored memories.
 
     Provides detailed analytics about memory storage, including
@@ -841,4 +839,4 @@ def get_memory_stats(
         }
 
     except Exception as e:
-        return {"error": f"Error getting memory stats: {str(e)}"}
+        return {"error": f"Error getting memory stats: {e!s}"}
