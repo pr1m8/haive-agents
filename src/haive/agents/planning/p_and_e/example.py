@@ -75,7 +75,21 @@ input_data = {
     ]
 }
 
-# Note: This will fail due to the serialization issue
-# Messages are being converted to dicts somewhere in the persistence layer
-with contextlib.suppress(Exception):
-    result = planner_simple_agent.run(input_data=input_data, debug=False)
+
+# NOTE: NEVER run agents at module level! This causes import-time execution.
+# Moved to main function to prevent execution during imports.
+def run_example():
+    """Run the planning example (only when explicitly called)."""
+    # Note: This may fail due to the serialization issue
+    # Messages are being converted to dicts somewhere in the persistence layer
+    with contextlib.suppress(Exception):
+        result = planner_simple_agent.run(input_data=input_data, debug=False)
+        return result
+    return None
+
+
+# Only run if this file is executed directly, not imported
+if __name__ == "__main__":
+    print("Running planning example...")
+    result = run_example()
+    print(f"Result: {result}")

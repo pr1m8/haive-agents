@@ -6,7 +6,7 @@ This agent generates multiple candidate solutions for a given problem.
 from typing import List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PrivateAttr
 
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 
@@ -27,7 +27,7 @@ class CandidateGeneration(BaseModel):
     )
 
 
-class CandidateGenerator(SimpleAgentV3):
+class CandidateGenerator:
     """Agent that generates multiple candidate solutions."""
 
     def __init__(
@@ -45,6 +45,7 @@ class CandidateGenerator(SimpleAgentV3):
             temperature: Temperature for generation (higher = more creative)
             engine: Optional engine configuration
         """
+        self.name = name
         self.expansion_count = expansion_count
 
         if engine is None:
@@ -66,7 +67,8 @@ For logic problems: Try different reasoning paths, assumptions
 For planning problems: Try different sequences, priorities""",
             )
 
-        super().__init__(name=name, engine=engine)
+        # Create the underlying agent
+        self.agent = SimpleAgentV3(name=name, engine=engine)
 
     def create_prompt(self, problem: str, seed_solution: Optional[str] = None) -> str:
         """Create a prompt for candidate generation.

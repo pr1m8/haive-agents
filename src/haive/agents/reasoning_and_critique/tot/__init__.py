@@ -52,8 +52,6 @@ from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
 )
 from haive.agents.reasoning_and_critique.tot.config import (
     TOTAgentConfig,
-    create_for_problem_type,
-    get_engine,
 )
 from haive.agents.reasoning_and_critique.tot.models import (
     Candidate,
@@ -63,14 +61,7 @@ from haive.agents.reasoning_and_critique.tot.models import (
     EquationGeneration,
     Score,
     ScoredCandidate,
-    compute,
-    content,
-    feedback,
-    metadata,
-    to_candidates,
-    to_score,
     update_candidates,
-    value,
 )
 
 # Import the new multi-agent TOT implementation
@@ -83,8 +74,6 @@ from haive.agents.reasoning_and_critique.tot.state import (
     TOTInput,
     TOTOutput,
     TOTState,
-    convert_candidates,
-    convert_single_candidate,
 )
 
 # Build exports list dynamically
@@ -102,18 +91,7 @@ _exports = [
     "TOTOutput",
     "TOTState",
     "ToTAgent",
-    "compute",
-    "content",
-    "convert_candidates",
-    "convert_single_candidate",
-    "create_for_problem_type",
-    "feedback",
-    "get_engine",
-    "metadata",
-    "to_candidates",
-    "to_score",
     "update_candidates",
-    "value",
     # New multi-agent exports
     "TreeOfThoughtsOrchestrator",
     "TOTResult",
@@ -127,6 +105,6 @@ _exports = [
 
 # Add setup_workflow only if it exists
 if setup_workflow is not None:
-    _exports.insert(_exports.index("to_candidates"), "setup_workflow")
+    _exports.append("setup_workflow")
 
 __all__ = _exports
