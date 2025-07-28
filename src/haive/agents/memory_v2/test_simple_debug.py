@@ -3,7 +3,6 @@
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 
-from haive.agents.memory_v2.memory_state_with_tokens import MemoryStateWithTokens
 from haive.agents.memory_v2.simple_memory_agent import (
     SimpleMemoryAgent,
     TokenAwareMemoryConfig,
@@ -12,7 +11,6 @@ from haive.agents.memory_v2.simple_memory_agent import (
 
 def test_state_schema():
     """Test state schema is properly set."""
-
     # Create config
     deepseek_config = DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
 
