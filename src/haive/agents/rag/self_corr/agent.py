@@ -440,7 +440,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
         self.graph.add_edge(START, "retrieve_documents")
         self.graph.add_edge("retrieve_documents", "filter_documents")
         self.graph.add_edge("filter_documents", "generate_answer")
-        self.graph.add_edge("generate_answer", "evaluate_answer")
+        self.graph.add_edge("generate_answer", "evaluate_answef")
 
         # Add conditional branch based on evaluation
         correction_branch = Branch.from_dict(
