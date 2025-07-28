@@ -41,7 +41,7 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.revisor = ResponderWithRetries(
             config.engines["revisor"], config.attempts, name="revisor"
         )
-        self.answer_writer = AugLLMConfig(model="gpt-4o", name="answer_writer")
+        self.answer_writer = AugLLMConfig(model="gpt-4o", name="answer_writef")
         self.tool_node = self.create_tool_node(config.tools)
         self.event_loop_branch = Branch(
             function=lambda state: _get_num_iterations(state)

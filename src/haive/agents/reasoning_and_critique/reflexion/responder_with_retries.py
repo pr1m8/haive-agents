@@ -47,7 +47,7 @@ class ResponderWithRetries:
             )
             try:
                 self.validator.invoke(response)
-                if self.name == "revisor":
+                if self.name == "revisof":
                     return Command(
                         update={
                             "messages": response,
@@ -65,7 +65,7 @@ class ResponderWithRetries:
                         tool_call_id=response.tool_calls[0]["id"],
                     ),
                 ]
-        if self.name == "revisor":
+        if self.name == "revisof":
             return Command(
                 update={
                     "messages": response,
