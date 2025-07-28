@@ -4,12 +4,9 @@ This test runs all memory components together with real LLMs and databases.
 """
 
 import asyncio
-import json
 import shutil
 import tempfile
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -364,7 +361,7 @@ class TestCompleteMemorySystem:
 
         # Test analytics
         analytics = await agent.get_memory_analytics()
-        print(f"\nRAG Analytics:")
+        print("\nRAG Analytics:")
         print(f"  Total documents: {analytics['documents']['total_documents']}")
         print(
             f"  Query complexity distribution: {analytics['queries']['complexity_distribution']}"
