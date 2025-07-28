@@ -10,10 +10,8 @@ Main Agent → Response → Convert to prompt partial → Message Transform → 
 """
 
 import logging
-from typing import Any, Dict, List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.node.message_transformation_v2 import TransformationType
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import Tool
 from pydantic import BaseModel, Field
@@ -35,10 +33,10 @@ class ReflectionGrade(BaseModel):
     action_appropriateness: int = Field(
         ..., ge=1, le=10, description="How appropriate the actions taken were"
     )
-    improvements: List[str] = Field(
+    improvements: list[str] = Field(
         default_factory=list, description="Specific areas for improvement"
     )
-    strengths: List[str] = Field(default_factory=list, description="What was done well")
+    strengths: list[str] = Field(default_factory=list, description="What was done well")
     overall_assessment: str = Field(
         ..., description="Overall assessment of the performance"
     )
@@ -49,7 +47,7 @@ class ReflectionResult(BaseModel):
 
     initial_response: str = Field(..., description="Original agent response")
     reflection_grade: ReflectionGrade = Field(..., description="Graded reflection")
-    improved_response: Optional[str] = Field(
+    improved_response: str | None = Field(
         None, description="Optional improved response"
     )
     reflection_insights: str = Field(..., description="Key insights from reflection")
@@ -71,8 +69,8 @@ class MultiAgentReflection:
     def __init__(
         self,
         name: str = "reflection_system",
-        engine_config: Optional[AugLLMConfig] = None,
-        tools: Optional[List[Tool]] = None,
+        engine_config: AugLLMConfig | None = None,
+        tools: list[Tool] | None = None,
         include_improvement: bool = False,
         reflection_temperature: float = 0.3,
         main_temperature: float = 0.7,
@@ -119,7 +117,7 @@ class MultiAgentReflection:
         self.improvement_agent = None
         if include_improvement:
             self.improvement_agent = SimpleAgent(
-                name="response_improver", engine=main_config
+                name="response_improvef", engine=main_config
             )
 
         # Create the multi-agent coordinator using EnhancedMultiAgent V3
@@ -293,7 +291,7 @@ class MultiAgentReflection:
         self,
         original_task: str,
         agent_response: str,
-        transformed_conversation: List[BaseMessage],
+        transformed_conversation: list[BaseMessage],
     ) -> str:
         """Create the reflection prompt using transformed conversation context.
 
@@ -393,8 +391,8 @@ Please provide an improved response that addresses the identified improvements w
         return " | ".join(insights)
 
     def _transform_messages_for_reflection(
-        self, messages: List[BaseMessage]
-    ) -> List[BaseMessage]:
+        self, messages: list[BaseMessage]
+    ) -> list[BaseMessage]:
         """Simple message transformation for reflection analysis.
 
         Converts AI messages to human perspective for better reflection analysis.
@@ -416,7 +414,7 @@ Please provide an improved response that addresses the identified improvements w
 
 
 def create_simple_reflection_system(
-    tools: Optional[List[Tool]] = None, engine_config: Optional[AugLLMConfig] = None
+    tools: list[Tool] | None = None, engine_config: AugLLMConfig | None = None
 ) -> MultiAgentReflection:
     """Create a simple reflection system with ReactAgent + ReflectionAgent.
 
@@ -436,7 +434,7 @@ def create_simple_reflection_system(
 
 
 def create_full_reflection_system(
-    tools: Optional[List[Tool]] = None, engine_config: Optional[AugLLMConfig] = None
+    tools: list[Tool] | None = None, engine_config: AugLLMConfig | None = None
 ) -> MultiAgentReflection:
     """Create a full reflection system with ReactAgent + ReflectionAgent + ImprovementAgent.
 

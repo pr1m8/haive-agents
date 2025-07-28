@@ -11,7 +11,7 @@ reflection flows.
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
@@ -38,16 +38,13 @@ except (ImportError, AttributeError):
         CUSTOM = "custom"
 
 
-from .models import Critique, ReflectionResult
-
-
 class SimpleReflectionTransformer:
     """Simple reflection transformer for when message_transformation_v2 is not available."""
 
     def __init__(self, preserve_first_message: bool = True):
         self.preserve_first_message = preserve_first_message
 
-    def _apply_transformation(self, messages: List[BaseMessage]) -> List[BaseMessage]:
+    def _apply_transformation(self, messages: list[BaseMessage]) -> list[BaseMessage]:
         """Apply simple reflection transformation: swap AI ↔ Human roles."""
         if not messages:
             return []
@@ -149,8 +146,8 @@ Focus on the conversation dynamics and response quality.""",
         )
 
     async def reflect_on_conversation(
-        self, messages: List[BaseMessage], original_query: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self, messages: list[BaseMessage], original_query: str | None = None
+    ) -> dict[str, Any]:
         """Perform reflection analysis using message transformation.
 
         Args:
@@ -193,8 +190,8 @@ Focus on the conversation dynamics and response quality.""",
 
 
 def create_reflection_context_transformer(
-    messages: List[BaseMessage],
-) -> List[BaseMessage]:
+    messages: list[BaseMessage],
+) -> list[BaseMessage]:
     """Create a reflection context transformer function.
 
     This function adds reflection insights to conversation context,
@@ -271,8 +268,8 @@ class ConversationalReflectionAgent:
         )
 
     async def run_with_reflection(
-        self, input_data: Union[str, Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        self, input_data: str | dict[str, Any]
+    ) -> dict[str, Any]:
         """Run the base agent with reflection context injection.
 
         Args:
@@ -315,7 +312,7 @@ class ReflectionMessageFlow:
     def __init__(
         self,
         primary_agent: SimpleAgent,
-        reflection_agent: Optional[SimpleAgent] = None,
+        reflection_agent: SimpleAgent | None = None,
         name: str = "reflection_flow",
     ):
         """Initialize reflection message flow.
@@ -370,7 +367,7 @@ Keep reflections concise and conversational.""",
 
     async def run_primary_with_reflection(
         self, query: str, include_reflection: bool = True
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Run primary agent and optionally add reflection insights.
 
         Args:
@@ -453,7 +450,7 @@ def create_conversational_reflection_agent(
 
 def create_reflection_message_flow(
     primary_agent: SimpleAgent,
-    reflection_agent: Optional[SimpleAgent] = None,
+    reflection_agent: SimpleAgent | None = None,
     name: str = "reflection_flow",
 ) -> ReflectionMessageFlow:
     """Create a reflection message flow system."""
@@ -489,7 +486,7 @@ async def example_message_transformer_reflection():
         conversation, original_query="What is artificial intelligence?"
     )
 
-    print(f"\n✅ Reflection Analysis:")
+    print("\n✅ Reflection Analysis:")
     print(f"Transformation applied: {reflection_result['transformation_applied']}")
     print(f"Messages before: {reflection_result['message_count_before']}")
     print(f"Messages after: {reflection_result['message_count_after']}")
@@ -563,7 +560,7 @@ async def example_reflection_message_flow():
         query=query, include_reflection=True
     )
 
-    print(f"\n📊 Flow Results:")
+    print("\n📊 Flow Results:")
     print(f"Reflection included: {flow_result['reflection_included']}")
 
     if "transformation_steps" in flow_result:

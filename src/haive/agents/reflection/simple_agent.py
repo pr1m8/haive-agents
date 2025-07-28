@@ -89,7 +89,7 @@ class ReflectionAgent(MultiAgent):
 
         # Step 2: Improve if needed
         if critique_result.needs_improvement:
-            improver = self.agents["improver"]
+            improver = self.agents["improvef"]
             # SimpleAgent will automatically map {content}, {strengths}, {weaknesses}
             improvement_result = await improver.arun(
                 {

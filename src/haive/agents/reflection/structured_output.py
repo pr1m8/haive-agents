@@ -5,7 +5,7 @@ combined with a post-processing hook pattern for extracting results.
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional, Type, TypeVar
+from typing import Any, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -13,15 +13,15 @@ from pydantic import BaseModel
 
 from haive.agents.simple.agent import SimpleAgent
 
-from .models import Critique, ReflectionResult
+from .models import ReflectionResult
 
 # Type variable for any Pydantic model
 T = TypeVar("T", bound=BaseModel)
 
 
 def extract_structured_output(
-    agent_result: Dict[str, Any], model_class: Type[T]
-) -> Optional[T]:
+    agent_result: dict[str, Any], model_class: type[T]
+) -> T | None:
     """Generic post-processing hook to extract structured output from agent results.
 
     Args:
@@ -80,7 +80,7 @@ class StructuredReflectionAgent:
     def __init__(
         self,
         name: str = "reflection_agent",
-        system_prompt: Optional[str] = None,
+        system_prompt: str | None = None,
         temperature: float = 0.3,
     ):
         """Initialize the structured reflection agent.
@@ -131,7 +131,7 @@ Provide a comprehensive reflection on the quality, accuracy, and completeness of
             ),
         )
 
-    async def reflect(self, query: str, response: str) -> Optional[ReflectionResult]:
+    async def reflect(self, query: str, response: str) -> ReflectionResult | None:
         """Perform reflection analysis on a response.
 
         Args:
@@ -256,7 +256,7 @@ class ReflectionLoop:
         self.max_iterations = max_iterations
         self.quality_threshold = quality_threshold
 
-    async def iterate(self, query: str, initial_response: str) -> Dict[str, Any]:
+    async def iterate(self, query: str, initial_response: str) -> dict[str, Any]:
         """Run iterative reflection and improvement.
 
         Args:
@@ -369,25 +369,25 @@ async def example_basic_reflection():
     reflection = await reflector.reflect(query, response)
 
     if reflection:
-        print(f"\n✅ Reflection Analysis:")
+        print("\n✅ Reflection Analysis:")
         print(f"Summary: {reflection.summary}")
         print(f"Overall Quality: {reflection.critique.overall_quality:.2f}")
         print(f"Needs Revision: {reflection.critique.needs_revision}")
         print(f"Confidence: {reflection.confidence:.2f}")
 
-        print(f"\nStrengths:")
+        print("\nStrengths:")
         for strength in reflection.critique.strengths:
             print(f"  • {strength}")
 
-        print(f"\nWeaknesses:")
+        print("\nWeaknesses:")
         for weakness in reflection.critique.weaknesses:
             print(f"  • {weakness}")
 
-        print(f"\nSuggestions:")
+        print("\nSuggestions:")
         for suggestion in reflection.critique.suggestions:
             print(f"  • {suggestion}")
 
-        print(f"\nAction Items:")
+        print("\nAction Items:")
         for action in reflection.action_items:
             print(f"  • {action}")
     else:
@@ -416,7 +416,7 @@ async def example_reflection_with_improvement():
     reflection = await reflector.reflect(query, original_response)
 
     if reflection:
-        print(f"\n📊 Reflection Analysis:")
+        print("\n📊 Reflection Analysis:")
         print(f"Quality Score: {reflection.critique.overall_quality:.2f}")
         print(f"Needs Revision: {reflection.critique.needs_revision}")
 
@@ -428,11 +428,11 @@ async def example_reflection_with_improvement():
                 query, original_response, reflection
             )
 
-            print(f"\n✨ Improved Response:")
+            print("\n✨ Improved Response:")
             print(improved_response)
 
             # Optional: Reflect on the improvement
-            print(f"\n🔍 Re-analyzing improved response...")
+            print("\n🔍 Re-analyzing improved response.")
 
             second_reflection = await reflector.reflect(query, improved_response)
 
@@ -472,13 +472,13 @@ async def example_iterative_reflection():
     # Run iterative improvement
     result = await loop.iterate(query, initial_response)
 
-    print(f"\n📈 Final Results:")
+    print("\n📈 Final Results:")
     print(f"Iterations completed: {result['iterations']}")
     print(
         f"Quality progression: {' → '.join(f'{q:.2f}' for q in result['quality_scores'])}"
     )
     print(f"Improved: {result['improved']}")
-    print(f"\nFinal Response:")
+    print("\nFinal Response:")
     print(result["final_response"])
 
 

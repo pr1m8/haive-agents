@@ -14,10 +14,10 @@ This follows the pattern documented in:
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional, Type, TypeVar
+from typing import Any, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
@@ -40,8 +40,8 @@ except (ImportError, AttributeError):
             self.preserve_first_message = preserve_first
 
         def _apply_transformation(
-            self, messages: List[BaseMessage]
-        ) -> List[BaseMessage]:
+            self, messages: list[BaseMessage]
+        ) -> list[BaseMessage]:
             if not messages:
                 return []
             transformed = []
@@ -69,7 +69,7 @@ except (ImportError, AttributeError):
             return transformed
 
 
-from .models import Critique, ReflectionResult
+from .models import Critique
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -111,10 +111,10 @@ class MessageTransformerPostHook:
 
     async def __call__(
         self,
-        agent_result: Dict[str, Any],
+        agent_result: dict[str, Any],
         original_input: Any = None,
-        structured_data: Optional[BaseModel] = None,
-    ) -> Dict[str, Any]:
+        structured_data: BaseModel | None = None,
+    ) -> dict[str, Any]:
         """Apply message transformation and reflection.
 
         Args:
@@ -213,8 +213,8 @@ Provide an enhanced version that addresses any feedback.""",
         self.reflection_agent.engine.prompt_template = self.reflection_prompt
 
     async def __call__(
-        self, agent_result: Dict[str, Any], original_input: Any = None
-    ) -> Dict[str, Any]:
+        self, agent_result: dict[str, Any], original_input: Any = None
+    ) -> dict[str, Any]:
         """Apply grading → message transform → reflection with grade context.
 
         Args:
@@ -306,7 +306,7 @@ class AgentWithPostHook:
     def __init__(
         self,
         base_agent: SimpleAgent,
-        post_hooks: List[MessageTransformerPostHook] = None,
+        post_hooks: list[MessageTransformerPostHook] = None,
     ):
         """Initialize agent with post-hooks.
 
@@ -321,7 +321,7 @@ class AgentWithPostHook:
         """Add a post-hook."""
         self.post_hooks.append(hook)
 
-    async def arun(self, input_data: Any) -> Dict[str, Any]:
+    async def arun(self, input_data: Any) -> dict[str, Any]:
         """Run agent with post-hook processing.
 
         Args:
@@ -342,7 +342,7 @@ class AgentWithPostHook:
 
 # Factory functions for common patterns
 def create_reflection_post_hook(
-    reflection_prompt_template: Optional[ChatPromptTemplate] = None,
+    reflection_prompt_template: ChatPromptTemplate | None = None,
     temperature: float = 0.3,
 ) -> MessageTransformerPostHook:
     """Create a basic reflection post-hook."""
@@ -374,7 +374,7 @@ Analyze the conversation and provide constructive feedback on:
 
 
 def create_graded_reflection_post_hook(
-    grading_model: Type[BaseModel], temperature: float = 0.2
+    grading_model: type[BaseModel], temperature: float = 0.2
 ) -> ReflectionWithGradePostHook:
     """Create a graded reflection post-hook."""
     # Create grading agent with structured output
@@ -507,7 +507,7 @@ async def example_graded_reflection_post_hook():
 
     # Show grade context
     if "grade_context" in result:
-        print(f"\n📊 Grade Context:")
+        print("\n📊 Grade Context:")
         print(result["grade_context"])
 
     # Show reflection result
@@ -548,7 +548,7 @@ async def example_factory_pattern():
 
     query = f"Summarize this text: {long_text}"
 
-    print(f"Query: Summarize a long text about AI")
+    print("Query: Summarize a long text about AI")
 
     result = await enhanced_agent.arun(query)
 
