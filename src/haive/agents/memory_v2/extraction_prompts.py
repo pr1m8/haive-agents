@@ -5,7 +5,7 @@ different types of information from conversations and documents, specifically
 designed for memory-based agents with KG integration.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -613,7 +613,7 @@ def get_extraction_prompt(prompt_type: str) -> ChatPromptTemplate:
     return EXTRACTION_PROMPTS[prompt_type]
 
 
-def get_all_extraction_types() -> List[str]:
+def get_all_extraction_types() -> list[str]:
     """Get list of all available extraction types."""
     return list(EXTRACTION_PROMPTS.keys())
 
@@ -633,8 +633,8 @@ class ExtractionOrchestrator:
             self.llm = llm_config.instantiate()
 
     async def extract_all(
-        self, conversation_text: str, extraction_types: List[str] = None
-    ) -> Dict[str, Any]:
+        self, conversation_text: str, extraction_types: list[str] = None
+    ) -> dict[str, Any]:
         """Run multiple extractors on the same conversation.
 
         Args:
@@ -674,7 +674,7 @@ class ExtractionOrchestrator:
 
         return results
 
-    def get_focused_extractors(self, domain: str) -> List[str]:
+    def get_focused_extractors(self, domain: str) -> list[str]:
         """Get recommended extractors for a specific domain.
 
         Args:
