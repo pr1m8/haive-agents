@@ -11,7 +11,6 @@ from haive.agents.memory_v2.simple_memory_agent import (
 
 def test_memory_operations():
     """Test various memory operations."""
-
     # Create agent with DeepSeek
     agent = SimpleMemoryAgent(
         name="memory_test",
