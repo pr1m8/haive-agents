@@ -17,14 +17,9 @@ NO MOCKS - All tests use real components including:
 import asyncio
 import shutil
 import tempfile
-from pathlib import Path
-from typing import List
 
 import pytest
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
-
-from haive.agents.memory_v2.long_term_memory_agent import MemoryEntry
 
 # Import test components
 from haive.agents.memory_v2.react_memory_coordinator import (
@@ -322,7 +317,7 @@ async def test_complete_memory_workflow():
 
         # Step 3: Test memory analysis
         summary = await coordinator.get_comprehensive_memory_summary()
-        print(f"\n📊 Final Summary:")
+        print("\n📊 Final Summary:")
         print(
             f"   Long-term memories: {summary['memory_systems']['long_term']['total_memories']}"
         )
