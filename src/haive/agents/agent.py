@@ -67,7 +67,7 @@ class Prediction(BaseModel):
     action: str
     args: list[str] | None = None
 
-    @field_validatorensure_args
+    @field_validator("args")
     @classmethod
     def ensure_args(cls, v) -> Any:
         """Ensures args is a list."""
