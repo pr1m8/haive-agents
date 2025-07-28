@@ -13,8 +13,9 @@ Functions:
 
 # Example usage of ReactAgent with Human Interaction
 
-# 1. Define our tools
 import uuid
+
+# 1. Define our tools
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
