@@ -416,7 +416,7 @@ class ReactManyToolsAgent(ReactAgent):
             elif self.config.tool_categories:
                 strategy = "categorical"
             else:
-                strategy = "keyword"
+                strategy = "key"
         else:
             strategy = self.config.tool_selection_mode
 
@@ -425,8 +425,8 @@ class ReactManyToolsAgent(ReactAgent):
             filtered_tools = self._filter_tools_semantic(query)
         elif strategy == "categorical":
             filtered_tools = self._filter_tools_categorical(query)
-        else:  # keyword
-            filtered_tools = self._filter_tools_keyword(query)
+        else:  # key
+            filtered_tools = self._filter_tools_key(query)
 
         # Ensure we don't exceed the max tools limit
         if len(filtered_tools) > self.config.max_tools_per_request:
@@ -488,7 +488,7 @@ class ReactManyToolsAgent(ReactAgent):
         """
         if not hasattr(self, "tool_embeddings") or not self.config.embeddings_model:
             logger.warning("Semantic filtering requested but embeddings not available")
-            return self._filter_tools_keyword(query)
+            return self._filter_tools_key(query)
 
         try:
             # Generate query embedding
@@ -516,7 +516,7 @@ class ReactManyToolsAgent(ReactAgent):
 
         except Exception as e:
             logger.exception(f"Error in semantic tool filtering: {e}")
-            return self._filter_tools_keyword(query)
+            return self._filter_tools_key(query)
 
     def _filter_tools_categorical(self, query: str) -> list[str]:
         """Filter tools using category matching.
@@ -529,7 +529,7 @@ class ReactManyToolsAgent(ReactAgent):
         """
         if not self.config.tool_categories:
             logger.warning("Categorical filtering requested but no categories defined")
-            return self._filter_tools_keyword(query)
+            return self._filter_tools_key(query)
 
         # Try to match query to categories
         query_lower = query.lower()
@@ -540,10 +540,10 @@ class ReactManyToolsAgent(ReactAgent):
             if category_lower in query_lower:
                 matched_categories.append(category)
 
-        # If no categories matched, try keyword matching within categories
+        # If no categories matched, try key matching within categories
         if not matched_categories:
             for category, tools in self.config.tool_categories.items():
-                # Check if any tool in the category has a keyword match
+                # Check if any tool in the category has a key match
                 category_tools = [t for t in self.tools if t.name in tools]
                 for tool in category_tools:
                     if tool.name.lower() in query_lower or (
@@ -557,14 +557,14 @@ class ReactManyToolsAgent(ReactAgent):
         for category in matched_categories:
             matched_tools.update(self.config.tool_categories.get(category, []))
 
-        # If still no matches, fall back to keyword matching
+        # If still no matches, fall back to key matching
         if not matched_tools:
-            return self._filter_tools_keyword(query)
+            return self._filter_tools_key(query)
 
         return list(matched_tools)
 
-    def _filter_tools_keyword(self, query: str) -> list[str]:
-        """Filter tools using keyword matching.
+    def _filter_tools_key(self, query: str) -> list[str]:
+        """Filter tools using key matching.
 
         Args:
             query: User query
@@ -576,7 +576,7 @@ class ReactManyToolsAgent(ReactAgent):
         scored_tools = []
 
         for tool in self.tools:
-            # Score is based on keyword matches in name and description
+            # Score is based on key matches in name and description
             score = 0
 
             # Check name

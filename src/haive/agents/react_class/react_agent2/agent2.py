@@ -10,9 +10,10 @@ Functions:
     has_tool_calls: Has Tool Calls functionality.
 """
 
-# src/haive/agents/react_agent2/agent2.py
 import logging
 import uuid
+
+# src/haive/agents/react_agent2/agent2.py
 from collections.abc import Callable
 
 # Set up logging

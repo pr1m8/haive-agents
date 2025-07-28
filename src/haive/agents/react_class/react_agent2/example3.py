@@ -12,10 +12,11 @@ Functions:
     setup_workflow: Setup Workflow functionality.
 """
 
-# src/haive/agents/react/agent.py
 import logging
 import os
 import uuid
+
+# src/haive/agents/react/agent.py
 from collections.abc import Callable
 from datetime import datetime
 from typing import Any, Literal

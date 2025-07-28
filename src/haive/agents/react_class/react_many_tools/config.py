@@ -50,7 +50,7 @@ class ReactManyToolsConfig(ReactAgentConfig):
     )
 
     # Tool selection approach
-    tool_selection_mode: Literal["semantic", "categorical", "keyword", "auto"] = Field(
+    tool_selection_mode: Literal["semantic", "categorical", "key", "auto"] = Field(
         default="auto", description="Method for selecting relevant tools"
     )
 

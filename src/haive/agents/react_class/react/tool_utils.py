@@ -334,13 +334,13 @@ def filter_tools_for_query(tools: list[BaseTool], query: str) -> list[BaseTool]:
         Filtered list of relevant tools
     """
     # In a real implementation, this could use embeddings or an LLM
-    # For now, we'll just do simple keyword matching
+    # For now, we'll just do simple key matching
 
     query_terms = query.lower().split()
     scored_tools = []
 
     for tool in tools:
-        # Score is based on keyword matches in name and description
+        # Score is based on key matches in name and description
         score = 0
 
         # Check name
