@@ -1,0 +1,166 @@
+{
+  "analysis_date": "2025-07-28T09:40:11.231748",
+  "all_commits": [
+    {
+      "sha": "e62110d5a374bae95dd7b3f99ac37b60fbb3b312",
+      "parent_shas": ["c196df3ab9a0302f59ac73dcd4328d3ed2ea9db6"],
+      "tree_sha": "943c665f80c0ec18ae3b8e9f9133134cada438ef",
+      "author_name": "0rac130fD31phi",
+      "author_email": "william.astley@algebraicwealth.com",
+      "author_timestamp": 1753221152,
+      "committer_name": "0rac130fD31phi",
+      "committer_email": "william.astley@algebraicwealth.com",
+      "committer_timestamp": 1753221152,
+      "committer_date": "2025-07-22T17:52:32",
+      "subject": "COMPLETE RECOVERY: All comprehensive haive-agents content restored from July 22nd",
+      "body": "- Restored complete base agent system (21 files including README, agent.py, all mixins)\n- Recovered Enhanced MultiAgent V3 with AgentNodeV3Config integration\n- Restored planning system with llm_compiler_v3 imports and configuration\n- Applied comprehensive updates to RAG agents with EnhancedMultiAgent pattern\n- Restored reflection agents and structured output agents\n- Fixed all __init__.py files with comprehensive imports\n- Applied comprehensive document modifiers with KG support\n\nThis restores ALL the comprehensive content from the golden stash (15:52:41)\nright before the disaster happened at 16:08:04 on July 22nd.\nEverything comprehensive is now back!\n\n\ud83e\udd16 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>",
+      "changes": [
+        "src/haive/agents/document_modifiers/kg/kg_base/__init__.py",
+        "src/haive/agents/document_modifiers/kg/kg_map_merge/__init__.py",
+        "src/haive/agents/document_modifiers/kg/kg_map_merge/models.py",
+        "src/haive/agents/document_modifiers/kg/kg_map_merge/utils.py",
+        "src/haive/agents/multi/archive/base.py",
+        "src/haive/agents/multi/enhanced_multi_agent_v3.py",
+        "src/haive/agents/planning/__init__.py",
+        "src/haive/agents/rag/__init__.py",
+        "src/haive/agents/rag/db_rag/graph_db/__init__.py",
+        "src/haive/agents/rag/db_rag/graph_db/models.py",
+        "src/haive/agents/rag/simple/agent.py",
+        "src/haive/agents/reflection/__init__.py",
+        "src/haive/agents/reflection/agent.py",
+        "src/haive/agents/reflection/models.py",
+        "src/haive/agents/structured_output/__init__.py",
+        "src/haive/agents/structured_output/agent.py"
+      ]
+    },
+    {
+      "sha": "732ff104873262fc72634d00ac8eaf38e5d1df91",
+      "parent_shas": [
+        "c196df3ab9a0302f59ac73dcd4328d3ed2ea9db6",
+        "f0a171093674d6842fc7baaca1121df6b375c103"
+      ],
+      "tree_sha": "bd72df71d78878ff44101f095cb286519e4f26c2",
+      "author_name": "0rac130fD31phi",
+      "author_email": "william.astley@algebraicwealth.com",
+      "author_timestamp": 1753222499,
+      "committer_name": "0rac130fD31phi",
+      "committer_email": "william.astley@algebraicwealth.com",
+      "committer_timestamp": 1753222499,
+      "committer_date": "2025-07-22T18:14:59",
+      "subject": "WIP on recovery/combine-july-work: c196df3 fix: correct malformed import statements causing AutoAPI KeyError",
+      "body": "",
+      "changes": []
+    },
+    {
+      "sha": "9576cdb76777de3be21452a306e73166d5a3942f",
+      "parent_shas": [
+        "3041de79089836f88513701d93b32a5ab8d97043",
+        "77ba0f9b2fd6b2d27face5a7430b2ab039a20daa"
+      ],
+      "tree_sha": "50b4c1631259b07ffa7f8166ecb47165bdc6eb50",
+      "author_name": "0rac130fD31phi",
+      "author_email": "william.astley@algebraicwealth.com",
+      "author_timestamp": 1753050987,
+      "committer_name": "0rac130fD31phi",
+      "committer_email": "william.astley@algebraicwealth.com",
+      "committer_timestamp": 1753050987,
+      "committer_date": "2025-07-20T18:36:27",
+      "subject": "On feature/fix_everything: Save current broken state before reset",
+      "body": "",
+      "changes": []
+    },
+    {
+      "sha": "5cb3ff3590fb3fa1b1ef5a871966ce8b3554e6bf",
+      "parent_shas": [
+        "c196df3ab9a0302f59ac73dcd4328d3ed2ea9db6",
+        "eb567a1ddac556c625af90f4b32aacfac50e8127"
+      ],
+      "tree_sha": "f0e69a242cb979a6f6fae3211c0cc60da18c992e",
+      "author_name": "0rac130fD31phi",
+      "author_email": "william.astley@algebraicwealth.com",
+      "author_timestamp": 1753214881,
+      "committer_name": "0rac130fD31phi",
+      "committer_email": "william.astley@algebraicwealth.com",
+      "committer_timestamp": 1753214881,
+      "committer_date": "2025-07-22T16:08:01",
+      "subject": "On (no branch): Current work in detached HEAD",
+      "body": "",
+      "changes": []
+    },
+    {
+      "sha": "62bf01c7cb47426aeaf5406c98ea2b25568fa8de",
+      "parent_shas": [
+        "3041de79089836f88513701d93b32a5ab8d97043",
+        "95df245f80b9152bbdf031678bd6648e3e5326bc"
+      ],
+      "tree_sha": "7c1f27cc1f627b6f5e75373356d4d6e9379d41bb",
+      "author_name": "0rac130fD31phi",
+      "author_email": "william.astley@algebraicwealth.com",
+      "author_timestamp": 1753216482,
+      "committer_name": "0rac130fD31phi",
+      "committer_email": "william.astley@algebraicwealth.com",
+      "committer_timestamp": 1753216482,
+      "committer_date": "2025-07-22T16:34:42",
+      "subject": "On feature/fix_everything: Current broken state - before restoration",
+      "body": "",
+      "changes": []
+    },
+    {
+      "sha": "e9c6cbb9ce883514f8e60c01827d540e9c93ed03",
+      "parent_shas": [
+        "2e97a846da577a8904470f73a2f12d85992ee848",
+        "66b9f11b7c3b1af011994cb56fc0046f79e449ea"
+      ],
+      "tree_sha": "81ce3aaca674b093e8305573c01d874bf2067df9",
+      "author_name": "0rac130fD31phi",
+      "author_email": "william.astley@algebraicwealth.com",
+      "author_timestamp": 1753690214,
+      "committer_name": "0rac130fD31phi",
+      "committer_email": "william.astley@algebraicwealth.com",
+      "committer_timestamp": 1753690214,
+      "committer_date": "2025-07-28T04:10:14",
+      "subject": "On (no branch): temporary changes from import fixes",
+      "body": "",
+      "changes": []
+    },
+    {
+      "sha": "3ecc02710e41afae6bb1cac005fb375646ba2cff",
+      "parent_shas": [
+        "c196df3ab9a0302f59ac73dcd4328d3ed2ea9db6",
+        "47c80ebdef4ada6316948866309fbfb5f8efaf7f"
+      ],
+      "tree_sha": "6eb69f9ebee6fd7216059229179c6e1a5125a38b",
+      "author_name": "0rac130fD31phi",
+      "author_email": "william.astley@algebraicwealth.com",
+      "author_timestamp": 1753219638,
+      "committer_name": "0rac130fD31phi",
+      "committer_email": "william.astley@algebraicwealth.com",
+      "committer_timestamp": 1753219638,
+      "committer_date": "2025-07-22T17:27:18",
+      "subject": "WIP on (no branch): c196df3 fix: correct malformed import statements causing AutoAPI KeyError",
+      "body": "",
+      "changes": []
+    }
+  ],
+  "recent_commits": [
+    {
+      "sha": "e9c6cbb9ce883514f8e60c01827d540e9c93ed03",
+      "parent_shas": [
+        "2e97a846da577a8904470f73a2f12d85992ee848",
+        "66b9f11b7c3b1af011994cb56fc0046f79e449ea"
+      ],
+      "tree_sha": "81ce3aaca674b093e8305573c01d874bf2067df9",
+      "author_name": "0rac130fD31phi",
+      "author_email": "william.astley@algebraicwealth.com",
+      "author_timestamp": 1753690214,
+      "committer_name": "0rac130fD31phi",
+      "committer_email": "william.astley@algebraicwealth.com",
+      "committer_timestamp": 1753690214,
+      "committer_date": "2025-07-28T04:10:14",
+      "subject": "On (no branch): temporary changes from import fixes",
+      "body": "",
+      "changes": []
+    }
+  ],
+  "date_threshold": "2025-07-27T00:00:00"
+}
