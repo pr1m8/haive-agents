@@ -165,9 +165,109 @@ This module maintains backward compatibility with the original TOT implementatio
 - **Iterations**: More iterations allow deeper exploration but take more time
 - **Early Termination**: TOT terminates early if a solution scores >= 0.95
 
+## Examples
+
+See the [examples/](examples/) directory for detailed usage examples:
+
+- **Basic TOT**: Simple problem solving with default settings
+- **Game of 24**: Classic Tree of Thoughts problem
+- **Custom Configuration**: Advanced configuration options
+- **Integration Examples**: Using TOT with other agents
+
+## API Reference
+
+### TreeOfThoughtsAgent
+
+Main orchestrator for the Tree of Thoughts algorithm.
+
+```python
+class TreeOfThoughtsAgent:
+    def __init__(
+        self,
+        name: str = "tree_of_thoughts",
+        beam_size: int = 3,
+        max_iterations: int = 3,
+        generation_temperature: float = 0.7,
+        scoring_temperature: float = 0.3,
+        engine: Optional[AugLLMConfig] = None,
+    )
+
+    async def solve_problem(self, problem: str) -> Dict[str, Any]
+```
+
+### CandidateGenerator
+
+Generates diverse solution candidates.
+
+```python
+class CandidateGenerator:
+    def __init__(
+        self,
+        name: str = "candidate_generator",
+        expansion_count: int = 5,
+        temperature: float = 0.7,
+        engine: Optional[AugLLMConfig] = None,
+    )
+
+    async def generate_candidates(self, problem: str, num_candidates: Optional[int] = None) -> CandidateGeneration
+    async def expand_from_seed(self, problem: str, seed: str, num_candidates: Optional[int] = None) -> CandidateGeneration
+```
+
+### SolutionScorer
+
+Evaluates and scores candidate solutions.
+
+```python
+class SolutionScorer:
+    def __init__(
+        self,
+        name: str = "solution_scorer",
+        engine: AugLLMConfig | None = None,
+        temperature: float = 0.3,
+    )
+
+    async def score_solutions(self, problem: str, candidates: List[str]) -> SolutionScoring
+```
+
+## Structured Output Models
+
+### CandidateGeneration
+
+```python
+class CandidateGeneration(BaseModel):
+    reasoning: str = Field(description="Reasoning about different approaches")
+    candidates: List[str] = Field(description="List of candidate solutions", min_items=1, max_items=10)
+    diversity_check: str = Field(description="Explanation of how candidates differ")
+```
+
+### SolutionScoring
+
+```python
+class SolutionScoring(BaseModel):
+    scored_solutions: List[ScoredSolution] = Field(description="Evaluated solutions with scores")
+    ranking_rationale: str = Field(description="Explanation of ranking methodology")
+
+class ScoredSolution(BaseModel):
+    solution: str = Field(description="The candidate solution")
+    score: float = Field(description="Quality score (0.0-1.0)", ge=0.0, le=1.0)
+    reasoning: str = Field(description="Detailed evaluation reasoning")
+    is_complete: bool = Field(description="Whether solution appears complete")
+    has_errors: bool = Field(description="Whether solution contains obvious errors")
+```
+
 ## Future Enhancements
 
 - [ ] Parallel candidate evaluation for faster processing
 - [ ] Adaptive beam width based on problem complexity
 - [ ] Memory of previous solution attempts
 - [ ] Integration with other reasoning strategies
+- [ ] Dynamic iteration stopping based on solution quality
+- [ ] Support for multi-modal problems (text + images)
+
+## Contributing
+
+See [CONTRIBUTING.md](../../../../CONTRIBUTING.md) for guidelines on contributing to the TOT implementation.
+
+## License
+
+See [LICENSE](../../../../LICENSE) for licensing information.
