@@ -83,7 +83,7 @@ class TestDynamicAgentDiscoverySupervisor:
     def test_register_discovered_agent(self, base_config, initial_agents):
         """Test registering a discovered agent."""
         supervisor = DynamicAgentDiscoverySupervisor(
-            name="test_supervisor", agents=initial_agents, engine=base_config
+            name="test_supervisof", agents=initial_agents, engine=base_config
         )
 
         # Register new agent
@@ -231,7 +231,7 @@ class TestDynamicAgentDiscoverySupervisor:
                 )
 
             supervisor = DynamicAgentDiscoverySupervisor.create_with_discovery(
-                name="configured_supervisor",
+                name="configured_supervisof",
                 agents=initial_agents,
                 engine=base_config,
                 discovery_mode=AgentDiscoveryMode.HYBRID,
@@ -264,7 +264,7 @@ class TestDynamicAgentDiscoverySupervisor:
     def test_agent_capability_tracking(self, base_config, initial_agents):
         """Test that agent capabilities are properly tracked."""
         supervisor = DynamicAgentDiscoverySupervisor(
-            name="capability_supervisor", agents=initial_agents, engine=base_config
+            name="capability_supervisof", agents=initial_agents, engine=base_config
         )
 
         # Register multiple agents with different capabilities
@@ -302,7 +302,7 @@ class TestDynamicAgentDiscoverySupervisor:
     def test_duplicate_agent_prevention(self, base_config, initial_agents):
         """Test that duplicate agents are not registered."""
         supervisor = DynamicAgentDiscoverySupervisor(
-            name="duplicate_supervisor", agents=initial_agents, engine=base_config
+            name="duplicate_supervisof", agents=initial_agents, engine=base_config
         )
 
         agent_data = {

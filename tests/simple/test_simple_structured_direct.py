@@ -65,7 +65,7 @@ async def test_direct_structured():
                     # Create the structured object
                     task_list = TaskList(**args)
 
-                    print(f"\n✅ Structured Output Extracted:")
+                    print("\n✅ Structured Output Extracted:")
                     print(f"Tasks: {task_list.tasks}")
                     print(f"Priority: {task_list.priority}")
                     print(f"Total Hours: {task_list.total_hours}")

@@ -20,8 +20,8 @@ def test_conditional_routing_concept():
         return "default"
 
     # Test routing
-    assert router({"query": "analyze this"}) == "analyzer"
-    assert router({"query": "search for info"}) == "searcher"
+    assert router({"query": "analyze this"}) == "analyzef"
+    assert router({"query": "search for info"}) == "searchef"
     assert router({"query": "hello"}) == "default"
 
 
@@ -77,10 +77,10 @@ def test_schema_composition_concept():
 def test_multi_agent_coordination():
     """Test multi-agent coordination patterns."""
     # Mock agents
-    agent1 = Mock(name="processor")
+    agent1 = Mock(name="processof")
     agent1.process = Mock(return_value={"processed": True})
 
-    agent2 = Mock(name="analyzer")
+    agent2 = Mock(name="analyzef")
     agent2.process = Mock(return_value={"analyzed": True})
 
     # Coordinate agents

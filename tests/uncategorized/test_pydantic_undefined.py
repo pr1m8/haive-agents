@@ -23,7 +23,7 @@ class QueryRefinementResponse(BaseModel):
         default_factory=list,
     )
     search_strategy: str = Field(
-        description="Recommended search strategy (e.g., 'semantic', 'keyword', 'hybrid')",
+        description="Recommended search strategy (e.g., 'semantic', 'key', 'hybrid')",
         default="semantic",
     )
     confidence_score: float = Field(

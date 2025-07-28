@@ -52,14 +52,14 @@ def test_dynamic_rag_logic():
     state.active_retrievers = {
         "semantic_search": {"type": "dense", "model": "e5-base"},
         "keyword_search": {"type": "sparse", "algorithm": "bm25"},
-        "news_retriever": {"type": "api", "source": "news_api"},
+        "news_retrievef": {"type": "api", "source": "news_api"},
     }
 
     # Simulate retriever performance
     state.retriever_performance = {
         "semantic_search": 0.85,
         "keyword_search": 0.72,
-        "news_retriever": 0.91,
+        "news_retrievef": 0.91,
     }
 
     # Simulate document sources

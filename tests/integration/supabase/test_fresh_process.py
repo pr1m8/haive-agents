@@ -70,6 +70,7 @@ try:
 
 
     if result.stderr and "prepared statement" not in result.stderr:
+        pass
 
     # Clean up
     os.remove("_temp_test.py")

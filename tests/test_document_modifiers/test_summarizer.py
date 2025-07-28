@@ -20,7 +20,7 @@ class TestSummarizerAgent:
     def agent_config(self) -> SummarizerAgentConfig:
         """Create a test agent configuration."""
         return SummarizerAgentConfig(
-            name="test_summarizer",
+            name="test_summarizef",
             token_max=1000,
             engines={
                 "map_chain": AugLLMConfig(temperature=0.0),
@@ -172,7 +172,7 @@ class TestSummarizerAgent:
         """Test handling of general errors."""
         # Setup mock that raises non-token error
         mock_chain = AsyncMock()
-        mock_chain.ainvoke.side_effect = Exception("Network error")
+        mock_chain.ainvoke.side_effect = Exception("Network errof")
         summarizer_agent.map_chain = mock_chain
 
         state = {"content": "Test content"}
@@ -228,7 +228,7 @@ class TestSummarizerAgent:
         """Test final summary error handling."""
         # Setup mock that raises error
         mock_chain = AsyncMock()
-        mock_chain.ainvoke.side_effect = Exception("API error")
+        mock_chain.ainvoke.side_effect = Exception("API errof")
         summarizer_agent.reduce_chain = mock_chain
 
         state = {"collapsed_summaries": [Document(page_content="Summary")]}

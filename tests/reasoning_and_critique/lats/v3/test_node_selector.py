@@ -2,7 +2,6 @@
 
 import os
 import sys
-from typing import Dict
 
 import pytest
 
@@ -123,7 +122,6 @@ class TestNodeSelector:
 
         # Create nodes that have all been visited
         # Parent has 20 total visits across children
-        parent_visits = 20
 
         node1 = LATSNode(
             action="Option A: Direct approach",

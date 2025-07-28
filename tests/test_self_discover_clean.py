@@ -73,6 +73,5 @@ if __name__ == "__main__":
 
     if result:
         if isinstance(result, dict):
-            pass}")
-    else:
-        pass!")
+            pass
+        pass

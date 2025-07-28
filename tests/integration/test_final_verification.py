@@ -67,6 +67,7 @@ def main():
 
 
     if successful == total:
+        pass
 
     return successful == total
 

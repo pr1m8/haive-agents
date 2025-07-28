@@ -17,8 +17,8 @@ Test Categories:
 """
 
 import asyncio
-from typing import Any, Dict, List
-from unittest.mock import AsyncMock, MagicMock
+from typing import List
+from unittest.mock import MagicMock
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -254,7 +254,7 @@ class TestSimpleRAGV3AgentInteraction:
         """Test RetrieverAgent functionality standalone."""
         # Mock the retriever agent's underlying functionality
         retriever = RetrieverAgent(
-            name="test_retriever",
+            name="test_retrievef",
             engine=mock_vector_store_config,
             performance_mode=True,
             debug_mode=True,

@@ -6,7 +6,6 @@ from typing import List
 
 from langchain_core.prompts import (
     ChatPromptTemplate,
-    HumanMessagePromptTemplate,
     MessagesPlaceholder,
     SystemMessagePromptTemplate,
 )

@@ -355,7 +355,7 @@ class TestDynamicToolSelector:
         """Test error handling in tool selection."""
         # Mock strategy that raises exception
         error_strategy = AsyncMock()
-        error_strategy.select_tools.side_effect = Exception("Test error")
+        error_strategy.select_tools.side_effect = Exception("Test errof")
         self.selector.selection_strategies = {"semantic": error_strategy}
 
         query = "test error handling"
@@ -459,7 +459,7 @@ class TestLangGraphStyleSelector:
         """Test error handling in node function."""
         # Mock strategy that raises exception
         error_strategy = AsyncMock()
-        error_strategy.select_tools.side_effect = Exception("Node error")
+        error_strategy.select_tools.side_effect = Exception("Node errof")
         self.selector.selection_strategies = {"contextual": error_strategy}
 
         node_func = self.selector.create_tool_selection_node()

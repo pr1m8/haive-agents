@@ -220,7 +220,7 @@ class TestMetaStateWithAgents:
             agent=simple_agent,  # Coordinator
             agent_state={
                 "subordinates": {
-                    "calculator": MetaStateSchema(
+                    "calculatof": MetaStateSchema(
                         agent=react_agent_with_tools,
                         agent_state={"specialty": "math"},
                         meta_context={"tool_count": 2},
@@ -274,7 +274,7 @@ class TestMetaStatePostgresPersistence:
             db_port=5432,
             db_name="test_haive",
             db_user="postgres",
-            db_pass="test_password",  # This creates a SecretStr
+            db_pass="test_pass",  # This creates a SecretStr
             mode=CheckpointerMode.SYNC,
             storage_mode=CheckpointStorageMode.SHALLOW,
             setup_needed=True,

@@ -134,7 +134,7 @@ async def test_pro_search_basic():
         }
 
         refinement = agent.refine_query(test_query, test_context)
-        print("🔄 Query refinement:"t:")
+        print("🔄 Query refinement:")
         print(f"  Original: {refinement.original_query}")
         print(f"  Refined: {refinement.refined_query}")
         print(f"  Reason: {refinement.refinement_reason}")
@@ -209,7 +209,7 @@ async def test_deep_research_basic():
         research_query = await agent.execute_research_query(
             "electric vehicle environmental impact studies", "background"
         )
-        print("📊 Research query result:"t:")
+        print("📊 Research query result:")
         print(f"  Query: {research_query.query}")
         print(f"  Type: {research_query.query_type}")
         print(f"  Success: {research_query.success}")
@@ -263,7 +263,7 @@ async def test_labs_basic():
         # Test workflow step execution
         if workflow_plan:
             step_result = await agent.execute_workflow_step(workflow_plan[0], 0)
-            print("✅ Workflow step executed:":")
+            print("✅ Workflow step executed:")
             print(f"  Step: {step_result.name}")
             print(f"  Success: {step_result.success}")
             print(f"  Duration: {step_result.duration_seconds:.2f}s")
@@ -289,15 +289,15 @@ def print_summary(results):
     print(f"✅ Tests passed: {passed_tests}/{total_tests}")
     print(f"📈 Success rate: {success_rate:.1f}%")
 
-    print("\n📋 Individual Results:"s:")
+    print("\n📋 Individual Results:")
     for test_name, result in results.items():
         status = "✅ PASSED" if result else "❌ FAILED"
         print(f"  {test_name}: {status}")
 
     if passed_tests == total_tests:
-        print("\n🎉 ALL TESTS PASSED! Search agents are working correctly!"y!")
+        print("\n🎉 ALL TESTS PASSED! Search agents are working correctly!")
     else:
-        print("\n⚠️ Some tests failed. Check output above for details."ls.")
+        print("\n⚠️ Some tests failed. Check output above for details.")
 
 
 async def main():

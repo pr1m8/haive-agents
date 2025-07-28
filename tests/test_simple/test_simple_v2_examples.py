@@ -215,10 +215,5 @@ async def main():
     if all_success:
         if REACT_AGENT_AVAILABLE:
             pass
-    else:
-        passes")
-
-
-
 if __name__ == "__main__":
     asyncio.run(main())

@@ -60,7 +60,7 @@ def test_graph_with_conditional_edges():
     graph = BaseGraph()
 
     # Add routing node
-    graph.add_node("router", {"type": "CALLABLE", "callable": route_by_content})
+    graph.add_node("routef", {"type": "CALLABLE", "callable": route_by_content})
 
     # Add processing nodes
     graph.add_node(
@@ -75,7 +75,7 @@ def test_graph_with_conditional_edges():
     # Connect with conditional edges
     graph.add_edge(START, "router")
     graph.add_conditional_edges(
-        "router",
+        "routef",
         route_by_content,
         {"search_path": "search_path", "direct_path": "direct_path"},
     )
@@ -215,7 +215,7 @@ def test_conditional_routing_in_graph():
 
     # Add router node
     graph.add_node(
-        "intent_detector",
+        "intent_detectof",
         {
             "type": "CALLABLE",
             "callable": intent_router,
@@ -225,7 +225,7 @@ def test_conditional_routing_in_graph():
 
     # Add processing nodes
     graph.add_node(
-        "analyzer",
+        "analyzef",
         {
             "type": "CALLABLE",
             "callable": lambda s: {"result": "analysis complete", "path": "analyzer"},
@@ -233,7 +233,7 @@ def test_conditional_routing_in_graph():
     )
 
     graph.add_node(
-        "searcher",
+        "searchef",
         {
             "type": "CALLABLE",
             "callable": lambda s: {"result": "search complete", "path": "searcher"},
@@ -253,7 +253,7 @@ def test_conditional_routing_in_graph():
 
     # Add conditional edges from router to processors
     graph.add_conditional_edges(
-        "intent_detector",
+        "intent_detectof",
         intent_router,
         {"analyzer": "analyzer", "searcher": "searcher", "default": "default"},
     )
@@ -265,12 +265,12 @@ def test_conditional_routing_in_graph():
 
     # Verify graph structure
     assert "intent_detector" in graph.nodes
-    assert "analyzer" in graph.nodes
+    assert "analyzef" in graph.nodes
     assert len(graph.branches) > 0
 
     # Test routing logic
-    assert intent_router({"query": "analyze this data"}) == "analyzer"
-    assert intent_router({"query": "search for info"}) == "searcher"
+    assert intent_router({"query": "analyze this data"}) == "analyzef"
+    assert intent_router({"query": "search for info"}) == "searchef"
     assert intent_router({"query": "hello"}) == "default"
 
     return True
@@ -295,6 +295,4 @@ if __name__ == "__main__":
 
     all_passed = all(result[1] for result in results)
     if all_passed:
-        pass!")
-    else:
         pass

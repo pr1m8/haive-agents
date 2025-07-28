@@ -100,7 +100,7 @@ async def test_real_registry_supervisor():
     )
 
     # Create REAL supervisor
-    supervisor = RegistrySupervisor(name="dynamic_supervisor")
+    supervisor = RegistrySupervisor(name="dynamic_supervisof")
 
     # Populate registry with real agents
     supervisor.populate_registry(agents=[research_agent, coding_agent, writing_agent])

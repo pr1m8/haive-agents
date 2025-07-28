@@ -30,7 +30,7 @@ async def test_debug_schema_validation():
 
     # Create simple agent
     planner = SimpleAgent(
-        name="planner", engine=AugLLMConfig(temperature=0.7), state_schema=PlannerState
+        name="plannef", engine=AugLLMConfig(temperature=0.7), state_schema=PlannerState
     )
 
 
@@ -74,6 +74,7 @@ async def test_debug_schema_validation():
         agent_state = state.get_agent_state("planner")
 
     except Exception as e:
+        pass
 
     return True
 

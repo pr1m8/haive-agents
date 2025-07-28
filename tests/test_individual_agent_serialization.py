@@ -35,3 +35,4 @@ except Exception as e:
     pass
 
     if "msgpack" in str(e):
+        pass

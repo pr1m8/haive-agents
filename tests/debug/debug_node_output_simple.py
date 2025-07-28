@@ -46,11 +46,6 @@ def debug_agent_node_v3_output():
 
         if hasattr(result, "goto"):
             pass
-
-        # Test what LangGraph expects
-
-        # LangGraph expects the node function to return something that can be processed
-        # Let's see what happens if we extract the update
         if hasattr(result, "update"):
             update_part = result.update
 

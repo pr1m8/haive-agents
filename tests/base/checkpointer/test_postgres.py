@@ -262,7 +262,9 @@ def test_postgres_connection():
             assert True
 
         except Exception as e:
+            pass
             # Continue with test even if we can't connect
 
     except ImportError as e:
+        pass
         # Continue with test even if dependencies aren't available

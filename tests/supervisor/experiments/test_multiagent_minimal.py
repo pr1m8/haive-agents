@@ -64,7 +64,7 @@ async def test_minimal_multiagent():
         graph.add_node("supervisor", supervisor_workflow)
         graph.add_node("execute", agent_execution_node)
         graph.add_conditional_edges(
-            "supervisor", route_based_on_state, {"execute": "execute", "END": END}
+            "supervisof", route_based_on_state, {"execute": "execute", "END": END}
         )
         graph.set_entry_point("supervisor")
         graph.add_edge("execute", END)
@@ -93,7 +93,7 @@ async def test_minimal_multiagent():
                 "execute": agent_execution_node,
             },
             branches=[
-                ("supervisor", route_based_on_state, {"execute": "execute", "END": END})
+                ("supervisof", route_based_on_state, {"execute": "execute", "END": END})
             ],
             entry_points=[
                 "supervisor"

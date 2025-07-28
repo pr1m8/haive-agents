@@ -111,7 +111,7 @@ def debug_step(step_name: str, data: Any, file_location: str = "") -> None:
     if isinstance(data, dict):
         print(f"📋 Dict Keys: {list(data.keys())}")
 
-    print("📄 Data:"a:")
+    print("📄 Data:")
     try:
         pprint(data, width=100, depth=3)
     except Exception as e:
@@ -165,7 +165,7 @@ def test_debug_simple_agent_v2_validation():
         "langchain_core.prompts.ChatPromptTemplate",
     )
 
-    print("\n🔍 Prompt Template Details:"s:")
+    print("\n🔍 Prompt Template Details:")
     print(f"📋 Input Variables: {RAG_QUERY_REFINEMENT.input_variables}")
     print(
         f"📋 Partial Variables: {getattr(RAG_QUERY_REFINEMENT, 'partial_variables', {})}"
@@ -199,7 +199,7 @@ def test_debug_simple_agent_v2_validation():
     print("\n🔍 Testing AugLLMConfig._compute_input_fields():"):")
     try:
         input_fields = config._compute_input_fields()
-        print("✅ Input Fields:":")
+        print("✅ Input Fields:")
         for field_name, field_tuple in input_fields.items():
             print(f"  🔸 {field_name}: {field_tuple}")
 
@@ -213,21 +213,21 @@ def test_debug_simple_agent_v2_validation():
     print(f"\n{'='*20} STEP 3: SCHEMA CREATION & COMPOSITION TRACING {'='*20}")
 
     # Before creating the agent, let's trace schema composition
-    print("\n🔍 TRACING SCHEMA COMPOSITION PROCESS:"S:")
+    print("\n🔍 TRACING SCHEMA COMPOSITION PROCESS:")
 
     # Let's manually trace what happens during agent creation
     try:
-        print("\n📊 A. Pre-Creation Analysis:"s:")
+        print("\n📊 A. Pre-Creation Analysis:")
         print(f"   🔸 Engine Type: {type(config)}")
         print(f"   🔸 Engine Name: {getattr(config, 'name', 'NO_NAME')}")
 
         # Check if we can access the schema composer
         try:
 
-            print("   ✅ SchemaComposer imported successfully"y")
+            print("   ✅ SchemaComposer imported successfully")
 
             # Let's trace what base schemas are available
-            print("\n📊 B. Base Schemas Analysis:"s:")
+            print("\n📊 B. Base Schemas Analysis:")
 
             # Check MessagesState and other base schemas
             try:
@@ -258,13 +258,13 @@ def test_debug_simple_agent_v2_validation():
         except Exception as e:
             print(f"   ❌ Error importing SchemaComposer: {e}")
 
-        print("\n📊 C. Engine Schema Derivation:"n:")
+        print("\n📊 C. Engine Schema Derivation:")
 
         # Check what input/output schemas the engine will contribute
         if hasattr(config, "derive_input_schema"):
             try:
                 engine_input_schema = config.derive_input_schema()
-                print("   ✅ Engine Input Schema Derived:":")
+                print("   ✅ Engine Input Schema Derived:")
                 inspect_pydantic_model(engine_input_schema, "Engine Input Schema")
             except Exception as e:
                 print(f"   ❌ Error deriving engine input schema: {e}")
@@ -273,13 +273,13 @@ def test_debug_simple_agent_v2_validation():
         if hasattr(config, "derive_output_schema"):
             try:
                 engine_output_schema = config.derive_output_schema()
-                print("   ✅ Engine Output Schema Derived:":")
+                print("   ✅ Engine Output Schema Derived:")
                 inspect_pydantic_model(engine_output_schema, "Engine Output Schema")
             except Exception as e:
                 print(f"   ❌ Error deriving engine output schema: {e}")
                 traceback.print_exc()
 
-        print("\n📊 D. Creating SimpleAgentV2 with Schema Tracing:"g:")
+        print("\n📊 D. Creating SimpleAgentV2 with Schema Tracing:")
 
         # Now create the agent and trace the schema composition
         agent = SimpleAgentV2(engine=config)
@@ -290,7 +290,7 @@ def test_debug_simple_agent_v2_validation():
         )
 
         # Trace the schema that was actually created
-        print("\n📊 E. Post-Creation Schema Analysis:"s:")
+        print("\n📊 E. Post-Creation Schema Analysis:")
         if hasattr(agent, "state_schema"):
             print(f"   ✅ Agent has state_schema: {agent.state_schema}")
 
@@ -331,9 +331,9 @@ def test_debug_simple_agent_v2_validation():
                         composer.composed_schema, "Final Composed Schema"
                     )
             else:
-                print("   ❌ No _schema_composer found on agent"t")
+                print("   ❌ No _schema_composer found on agent")
         else:
-            print("   ❌ No state_schema found on agent"t")
+            print("   ❌ No state_schema found on agent")
 
     except Exception as e:
         print(f"❌ Error during schema creation tracing: {e}")
@@ -352,11 +352,11 @@ def test_debug_simple_agent_v2_validation():
     print(f"\n{'='*20} STEP 5: GRAPH BUILDING & COMPILATION TRACING {'='*20}")
 
     # Let's trace the graph building process
-    print("\n🔍 TRACING GRAPH BUILDING PROCESS:"S:")
+    print("\n🔍 TRACING GRAPH BUILDING PROCESS:")
 
     # Check if agent has build_graph method
     if hasattr(agent, "build_graph"):
-        print("\n📊 A. Agent Graph Building:"g:")
+        print("\n📊 A. Agent Graph Building:")
         try:
             # Get the graph before compilation
             graph = agent.build_graph()
@@ -380,7 +380,7 @@ def test_debug_simple_agent_v2_validation():
             print(f"   ❌ Error building graph: {e}")
             traceback.print_exc()
 
-    print("\n📊 B. LangGraph App Compilation:"n:")
+    print("\n📊 B. LangGraph App Compilation:")
 
     # Check the compiled app
     if hasattr(agent, "_app") and agent._app:
@@ -388,7 +388,7 @@ def test_debug_simple_agent_v2_validation():
         debug_step("LangGraph App", app, "langgraph.pregel")
 
         # Trace app creation properties
-        print("\n🔍 App Properties:"s:")
+        print("\n🔍 App Properties:")
         if hasattr(app, "channels"):
             print(f"   🔸 App Channels: {app.channels}")
 
@@ -400,11 +400,11 @@ def test_debug_simple_agent_v2_validation():
 
         # Check for input_model - THIS IS THE CRITICAL PART
         if hasattr(app, "input_model") and app.input_model:
-            print("\n🔍 LangGraph Input Model Found!"d!")
+            print("\n🔍 LangGraph Input Model Found!")
             inspect_pydantic_model(app.input_model, "LangGraph Input Model")
 
             # Trace where this input_model comes from
-            print("\n🔍 Input Model Source Analysis:"s:")
+            print("\n🔍 Input Model Source Analysis:")
             print(f"   🔸 Input Model Class: {app.input_model}")
             print(
                 f"   🔸 Input Model Module: {getattr(app.input_model, '__module__', 'UNKNOWN')}"
@@ -414,7 +414,7 @@ def test_debug_simple_agent_v2_validation():
             )
 
             # THIS IS LIKELY WHERE THE BUG IS
-            print("\n⚠️  CRITICAL: Comparing State Schema vs Input Model"del")
+            print("\n⚠️  CRITICAL: Comparing State Schema vs Input Model")
             state_fields = (
                 agent.state_schema.model_fields
                 if hasattr(agent, "state_schema")
@@ -440,7 +440,7 @@ def test_debug_simple_agent_v2_validation():
                         f"  📊 State Schema: required={state_required}, default={getattr(state_field, 'default', 'NO_DEFAULT')}"
                     )
                 else:
-                    print("  📊 State Schema: NOT PRESENT"NT")
+                    print("  📊 State Schema: NOT PRESENT")
 
                 if critical_field in input_fields:
                     input_field = input_fields[critical_field]
@@ -468,10 +468,10 @@ def test_debug_simple_agent_v2_validation():
                                 "      This is likely the source of the validation error!"
                             )
                 else:
-                    print("  📊 Input Model: NOT PRESENT"NT")
+                    print("  📊 Input Model: NOT PRESENT")
 
             # Check if we can trace the input model creation
-            print("\n🔍 Tracing Input Model Creation:"n:")
+            print("\n🔍 Tracing Input Model Creation:")
             print("   This input_model was likely created during graph.compile()")
             print("   Location: langgraph/pregel/__init__.py or BaseGraph.compile()")
 
@@ -488,7 +488,7 @@ def test_debug_simple_agent_v2_validation():
 
         registry = EngineRegistry.get_instance()
 
-        print("\n🔍 Engine Registry Analysis:"s:")
+        print("\n🔍 Engine Registry Analysis:")
         print(f"   🔸 Registry Type: {type(registry)}")
 
         if hasattr(registry, "engines"):
@@ -512,7 +512,7 @@ def test_debug_simple_agent_v2_validation():
             print(f"   🔸 Output Mappings: {registry.output_mappings}")
 
         # Check if the engine has field information
-        print("\n🔍 Engine Field Analysis:"s:")
+        print("\n🔍 Engine Field Analysis:")
         if hasattr(config, "input_fields"):
             print(f"   🔸 Engine Input Fields: {config.input_fields}")
 
@@ -538,17 +538,17 @@ def test_debug_simple_agent_v2_validation():
         result = agent.run(test_input, debug=True)
         print(f"✅ SUCCESS: {result}")
     except Exception as e:
-        print("❌ VALIDATION ERROR CAUGHT:":")
+        print("❌ VALIDATION ERROR CAUGHT:")
         print(f"📄 Error Type: {type(e)}")
         print(f"📄 Error Message: {str(e)}")
 
         # Get the full traceback
-        print("\n📚 Full Traceback:"k:")
+        print("\n📚 Full Traceback:")
         traceback.print_exc()
 
         # Analyze the validation error
         if "validation errors" in str(e):
-            print("\n🔍 VALIDATION ERROR ANALYSIS:"S:")
+            print("\n🔍 VALIDATION ERROR ANALYSIS:")
             print(
                 "This confirms the issue is in Pydantic validation during LangGraph execution."
             )

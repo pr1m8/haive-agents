@@ -37,7 +37,7 @@ async def test_with_traceback():
         print("\n🔍 Step 3: Testing state schema instantiation...")
         try:
             # Try creating with empty dict
-            state = agent.state_schema()
+            agent.state_schema()
             print("✅ State created with empty dict")
         except Exception as e:
             print(f"❌ State creation failed: {type(e).__name__}")

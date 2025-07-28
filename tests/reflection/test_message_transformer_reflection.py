@@ -7,12 +7,11 @@ message transformation system from haive-core.
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
 from haive.agents.reflection.message_transformer import (
     ConversationalReflectionAgent,
     MessageTransformerReflectionAgent,
-    ReflectionMessageFlow,
     create_conversational_reflection_agent,
     create_message_transformer_reflection_agent,
     create_reflection_context_transformer,
@@ -80,12 +79,12 @@ class TestMessageTransformerReflection:
         # Test first message (no reflection)
         result1 = await conv_reflector.run_with_reflection("Hello, how are you?")
         assert isinstance(result1, dict)
-        assert result1.get("reflection_applied", False) == False
+        assert not result1.get("reflection_applied", False)
 
         # Test second message (should trigger reflection)
         result2 = await conv_reflector.run_with_reflection("Tell me about AI")
         assert isinstance(result2, dict)
-        assert result2.get("reflection_applied", False) == True
+        assert result2.get("reflection_applied", False)
         assert result2.get("transformation_type") == "reflection_context"
 
         # Verify messages structure
@@ -121,7 +120,7 @@ class TestMessageTransformerReflection:
         assert isinstance(flow_result, dict)
         assert "primary_response" in flow_result
         assert "reflection_included" in flow_result
-        assert flow_result["reflection_included"] == True
+        assert flow_result["reflection_included"]
 
         # Check for reflection components
         if "reflection_response" in flow_result:
@@ -151,7 +150,7 @@ class TestMessageTransformerReflection:
         )
 
         # Verify no reflection was applied
-        assert result["reflection_included"] == False
+        assert not result["reflection_included"]
         assert "reflection_response" not in result
         assert "enhanced_messages" not in result
         assert "transformation_steps" not in result
@@ -197,7 +196,7 @@ class TestMessageTransformerReflection:
         )
 
         assert mt_agent.name == "custom_mt_agent"
-        assert mt_agent.preserve_first_message == False
+        assert not mt_agent.preserve_first_message
         assert mt_agent.analyzer.engine.temperature == 0.1
 
         # Test ConversationalReflectionAgent
@@ -257,7 +256,7 @@ class TestMessageTransformerIntegration:
 
         # Verify it's properly configured
         assert transformer.transformation_type == TransformationType.REFLECTION
-        assert transformer.preserve_first_message == True
+        assert transformer.preserve_first_message
 
         # Test with sample messages
         messages = [

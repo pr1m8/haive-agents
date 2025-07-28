@@ -104,7 +104,7 @@ class TestSelfDiscoverMultiAgent:
             return "continue"
 
         multi_agent.add_conditional_routing(
-            "planner",
+            "plannef",
             check_plan_validity,
             {"error": "error_handler", "continue": "reasoner"},
         )

@@ -94,7 +94,7 @@ async def debug_execution():
     # Build the graph
     print("\n📌 BREAKPOINT 5: Building the graph")
     graph = multi_agent.graph
-    print("✅ Graph built"t")
+    print("✅ Graph built")
     print(f"   - Nodes: {list(graph.nodes.keys())}")
 
     # Check graph structure
@@ -148,13 +148,13 @@ async def debug_execution():
 
         # Check agent outputs if available
         if isinstance(result, dict) and "agent_outputs" in result:
-            print("\n🤖 Agent outputs:"s:")
+            print("\n🤖 Agent outputs:")
             for agent_name, output in result["agent_outputs"].items():
                 print(f"   - {agent_name}: {type(output).__name__}")
 
         # Check agent states if available
         if isinstance(result, dict) and "agent_states" in result:
-            print("\n📊 Agent states:"s:")
+            print("\n📊 Agent states:")
             for agent_name, state in result["agent_states"].items():
                 print(f"   - {agent_name}: {len(state)} fields")
 

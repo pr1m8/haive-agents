@@ -317,7 +317,7 @@ class TestMultiAgentIntegration:
             return state.get("data_type", "default")
 
         multi_agent.add_conditional_routing(
-            "classifier",
+            "classifief",
             route_by_type,
             {"type_a": "processor_a", "type_b": "processor_b", "default": "validator"},
         )
@@ -406,7 +406,7 @@ class TestMultiAgentIntegration:
             return "processor_b"
 
         multi_agent.add_conditional_routing(
-            "classifier",
+            "classifief",
             route_by_content,
             {"processor_a": "processor_a", "processor_b": "processor_b"},
         )

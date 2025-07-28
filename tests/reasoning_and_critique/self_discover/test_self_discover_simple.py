@@ -130,7 +130,7 @@ def test_multiagent_with_conditional():
         return "continue"
 
     multi_agent.add_conditional_routing(
-        "planner",
+        "plannef",
         route_from_planner,
         {"error": "error_handler", "continue": "reasoner"},
     )

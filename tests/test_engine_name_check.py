@@ -55,7 +55,7 @@ def check_engine_name_in_messages():
             if "engine_name" in msg.additional_kwargs:
                 print(f"  ✅ Engine name found: {msg.additional_kwargs['engine_name']}")
             else:
-                print("  ❌ No engine_name in additional_kwargs"s")
+                print("  ❌ No engine_name in additional_kwargs")
 
             # Show all kwargs for analysis
             for key, value in msg.additional_kwargs.items():
@@ -119,7 +119,7 @@ def check_direct_engine_output():
                     f"✅ Engine name in direct result: {result.additional_kwargs['engine_name']}"
                 )
             else:
-                print("❌ No engine_name in direct result"t")
+                print("❌ No engine_name in direct result")
 
     except Exception as e:
         print(f"Direct engine error: {e}")

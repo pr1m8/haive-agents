@@ -57,12 +57,12 @@ class TestToolStep:
         """Test creating a valid ToolStep."""
         step = ToolStep(
             description="Calculate 2 + 2",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={"expression": "2 + 2"},
             available_tools=available_tools,
         )
 
-        assert step.tool_name == "calculator"
+        assert step.tool_name == "calculatof"
         assert step.tool_args == {"expression": "2 + 2"}
         assert step.is_tool_valid
         assert step.selected_tool == calculator
@@ -83,7 +83,7 @@ class TestToolStep:
         with pytest.raises(ValidationError, match="Missing required arguments"):
             ToolStep(
                 description="Calculator without expression",
-                tool_name="calculator",
+                tool_name="calculatof",
                 tool_args={},  # Missing required 'expression'
                 available_tools=available_tools,
             )
@@ -93,7 +93,7 @@ class TestToolStep:
         with pytest.raises(ValidationError, match="Invalid arguments"):
             ToolStep(
                 description="Calculator with invalid args",
-                tool_name="calculator",
+                tool_name="calculatof",
                 tool_args={"expression": "2 + 2", "invalid_arg": "should not exist"},
                 available_tools=available_tools,
             )
@@ -103,7 +103,7 @@ class TestToolStep:
         # With optional arg
         step1 = ToolStep(
             description="Analyze text with min length",
-            tool_name="text_analyzer",
+            tool_name="text_analyzef",
             tool_args={"text": "Hello world", "min_length": 10},
             available_tools=available_tools,
         )
@@ -112,7 +112,7 @@ class TestToolStep:
         # Without optional arg
         step2 = ToolStep(
             description="Analyze text default min length",
-            tool_name="text_analyzer",
+            tool_name="text_analyzef",
             tool_args={"text": "Hello world"},
             available_tools=available_tools,
         )
@@ -122,7 +122,7 @@ class TestToolStep:
         """Test computed fields are calculated correctly."""
         step = ToolStep(
             description="Test computed fields",
-            tool_name="text_analyzer",
+            tool_name="text_analyzef",
             tool_args={"text": "test"},
             available_tools=available_tools,
         )
@@ -140,7 +140,7 @@ class TestToolStep:
         """Test actual tool execution."""
         step = ToolStep(
             description="Calculate 15 * 8",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={"expression": "15 * 8"},
             available_tools=available_tools,
         )
@@ -157,14 +157,14 @@ class TestToolStep:
         """Test tool execution with dependencies."""
         step1 = ToolStep(
             description="First calculation",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={"expression": "10 + 5"},
             available_tools=available_tools,
         )
 
         step2 = ToolStep(
             description="Second calculation",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={"expression": "20 * 2"},
             depends_on=[step1.id],
             available_tools=available_tools,
@@ -183,7 +183,7 @@ class TestToolStep:
         """Test get_tool_info method."""
         step = ToolStep(
             description="Get tool info",
-            tool_name="text_analyzer",
+            tool_name="text_analyzef",
             tool_args={"text": "test"},
             available_tools=available_tools,
         )
@@ -201,7 +201,7 @@ class TestToolStep:
         """Test updating tool arguments."""
         step = ToolStep(
             description="Update args test",
-            tool_name="text_analyzer",
+            tool_name="text_analyzef",
             tool_args={"text": "original"},
             available_tools=available_tools,
         )
@@ -231,7 +231,7 @@ class TestToolStep:
         ):
             ToolStep(
                 description="No tools available",
-                tool_name="calculator",
+                tool_name="calculatof",
                 tool_args={"expression": "1 + 1"},
                 available_tools=[],
             )
@@ -244,7 +244,7 @@ class TestToolStep:
         with pytest.raises(ValidationError, match="Duplicate tool names"):
             ToolStep(
                 description="Duplicate tools",
-                tool_name="calculator",
+                tool_name="calculatof",
                 tool_args={"expression": "1 + 1"},
                 available_tools=duplicate_tools,
             )
@@ -327,14 +327,14 @@ class TestToolStepIntegration:
         """Test ToolSteps work in ExecutionPlan."""
         step1 = ToolStep(
             description="Calculate base value",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={"expression": "10 * 2"},
             available_tools=available_tools,
         )
 
         step2 = ToolStep(
             description="Analyze result",
-            tool_name="text_analyzer",
+            tool_name="text_analyzef",
             tool_args={"text": "Result is 20"},
             depends_on=[step1.id],
             available_tools=available_tools,
@@ -354,21 +354,21 @@ class TestToolStepIntegration:
         """Test parallel tool steps."""
         step1 = ToolStep(
             description="Calculate first",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={"expression": "5 + 5"},
             available_tools=available_tools,
         )
 
         step2 = ToolStep(
             description="Analyze text",
-            tool_name="text_analyzer",
+            tool_name="text_analyzef",
             tool_args={"text": "Independent analysis"},
             available_tools=available_tools,
         )
 
         step3 = ToolStep(
             description="Final calculation",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={"expression": "10 + 10"},
             depends_on=[step1.id, step2.id],
             available_tools=available_tools,
@@ -395,7 +395,7 @@ if __name__ == "__main__":
     with contextlib.suppress(Exception):
         step = ToolStep(
             description="Test calculation",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={"expression": "2 + 2"},
             available_tools=tools,
         )
@@ -413,7 +413,7 @@ if __name__ == "__main__":
     with contextlib.suppress(ValidationError):
         ToolStep(
             description="Missing args",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={},
             available_tools=tools,
         )
@@ -422,7 +422,7 @@ if __name__ == "__main__":
     try:
         step = ToolStep(
             description="Execute calculation",
-            tool_name="calculator",
+            tool_name="calculatof",
             tool_args={"expression": "15 * 8"},
             available_tools=tools,
         )

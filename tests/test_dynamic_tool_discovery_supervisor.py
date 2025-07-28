@@ -90,7 +90,7 @@ class TestDynamicToolDiscoverySupervisor:
     def test_factory_with_agents_and_tools(self, base_config, sample_tools):
         """Test factory method with agents and tools."""
         agent_configs = [
-            {"type": "SimpleAgent", "name": "simple_worker"},
+            {"type": "SimpleAgent", "name": "simple_workef"},
             {"type": "ReactAgent", "name": "react_worker"},
         ]
 
@@ -132,7 +132,7 @@ class TestDynamicToolDiscoverySupervisor:
     async def test_routing_decision_with_tools(self, base_config):
         """Test routing decisions considering available tools."""
         # Create agents with different capabilities
-        calc_tool = tool(lambda x: f"Calculated: {x}")("calculator")
+        calc_tool = tool(lambda x: f"Calculated: {x}")("calculatof")
 
         agents = {
             "math_agent": ReactAgent(
@@ -198,7 +198,7 @@ Description: Analyzes text for various metrics
                 )
 
             supervisor = DynamicToolDiscoverySupervisor.create_with_discovery(
-                name="configured_supervisor",
+                name="configured_supervisof",
                 agents=sample_agents,
                 engine=base_config,
                 discovery_mode=ToolDiscoveryMode.HYBRID,
@@ -239,12 +239,12 @@ Description: Analyzes text for various metrics
             return f"Processed: {input}"
 
         # Create ReactAgent that can accept tools
-        react_agent = ReactAgent(name="tool_user", engine=base_config, tools=[])
+        react_agent = ReactAgent(name="tool_usef", engine=base_config, tools=[])
 
         agents = {"tool_user": react_agent}
 
         supervisor = DynamicToolDiscoverySupervisor(
-            name="tool_supervisor",
+            name="tool_supervisof",
             agents=agents,
             engine=base_config,
             tools_to_register=[

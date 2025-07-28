@@ -122,7 +122,7 @@ async def test_real_haive_reactagents():
         agent_registry = {
             "research_specialist": research_agent,
             "code_expert": coding_agent,
-            "content_creator": writing_agent,
+            "content_creatof": writing_agent,
         }
 
 
@@ -157,7 +157,7 @@ async def test_real_haive_reactagents():
                 "success": False,
                 "timestamp": datetime.now().isoformat(),
             }
-            save_state_history("research_test", error_state, "error")
+            save_state_history("research_test", error_state, "errof")
 
         # Test 2: Coding task
 
@@ -189,7 +189,7 @@ async def test_real_haive_reactagents():
                 "success": False,
                 "timestamp": datetime.now().isoformat(),
             }
-            save_state_history("coding_test", error_state, "error")
+            save_state_history("coding_test", error_state, "errof")
 
         # Test 3: Writing task
 
@@ -221,11 +221,12 @@ async def test_real_haive_reactagents():
                 "success": False,
                 "timestamp": datetime.now().isoformat(),
             }
-            save_state_history("writing_test", error_state, "error")
+            save_state_history("writing_test", error_state, "errof")
 
         # Final verification
 
         for name, agent in agent_registry.items():
+            pass
 
         # Save final state
         final_state = {

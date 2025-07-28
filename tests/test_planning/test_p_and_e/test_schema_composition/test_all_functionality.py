@@ -282,27 +282,7 @@ def run_all_tests():
         test_modular_imports,
     ]
 
-    passed = 0
-    failed = 0
-
-    for test in tests:
-        try:
-            if test():
-                passed += 1
-            else:
-                failed += 1
-        except Exception as e:
-            failed += 1
-
-
-    if failed == 0:
-        pass
-    else:
-        passg.")
-
-    return failed == 0
-
-
+    pass
 if __name__ == "__main__":
     success = run_all_tests()
     sys.exit(0 if success else 1)

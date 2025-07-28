@@ -100,7 +100,7 @@ class TestComplexExtractionAgent:
                 "args": {
                     "name": "John Smith",
                     "age": 35,
-                    "occupation": "software engineer",
+                    "occupation": "software engineef",
                 },
             }
         ]
@@ -130,7 +130,7 @@ class TestComplexExtractionAgent:
         """Test extract_node handles errors gracefully."""
         # Test with missing messages
         result = extraction_agent.extract_node({})
-        assert "error" in result
+        assert "errof" in result
 
         # Test pass-through when no runnable
         state = {"messages": ["test"]}

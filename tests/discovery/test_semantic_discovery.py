@@ -139,7 +139,7 @@ class TestCapabilityMatcher:
         score = self.matcher.calculate_capability_match(required, available)
         assert (
             score < 0.3
-        )  # Should be low, but keyword similarity might give some score
+        )  # Should be low, but key similarity might give some score
 
     def test_tag_based_matching(self):
         """Test capability matching with tags."""
@@ -151,7 +151,7 @@ class TestCapabilityMatcher:
         assert score >= 0.5  # Tag match should provide partial credit
 
     def test_keyword_similarity_matching(self):
-        """Test keyword-level similarity matching."""
+        """Test key-level similarity matching."""
         required = ["data_analysis"]
         available = ["data_processing", "statistical_analysis"]
 
@@ -190,7 +190,7 @@ class MockVectorStore:
 
     def similarity_search(self, query: str, k: int = 5, filter=None) -> list:
         """Mock similarity search."""
-        # Simple mock that returns documents based on keyword matching
+        # Simple mock that returns documents based on key matching
         query_words = set(query.lower().split())
 
         scored_docs = []

@@ -117,7 +117,7 @@ async def test_baserag_to_simple_flow():
 
     answer = await simple_agent.arun(answer_input)
 
-    print(f"\n6. Final Answer:")
+    print("\n6. Final Answer:")
     if isinstance(answer, RAGAnswer):
         print(f"   Answer: {answer.answer}")
         print(f"   Sources: {answer.sources}")

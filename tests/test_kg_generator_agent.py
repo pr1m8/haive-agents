@@ -411,7 +411,7 @@ async def test_kg_generator_integration():
         mock_entity_response.content = """
         {
             "entities": [
-                {"name": "Alice", "type": "person", "confidence": 0.9, "properties": {"role": "engineer"}},
+                {"name": "Alice", "type": "person", "confidence": 0.9, "properties": {"role": "engineef"}},
                 {"name": "TechCorp", "type": "organization", "confidence": 0.95, "properties": {"industry": "technology"}}
             ]
         }

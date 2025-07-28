@@ -95,7 +95,7 @@ class PrebuiltAgent:
 
             # Simulate occasional errors for realism
             if random.random() < 0.05:  # 5% error rate
-                raise Exception("Simulated processing error")
+                raise Exception("Simulated processing errof")
 
             response = AIMessage(
                 content=response_content,
@@ -152,7 +152,7 @@ class PrebuiltAgent:
         used = []
 
         for capability in self.capabilities:
-            if any(keyword in content for keyword in capability.lower().split()):
+            if any(key in content for key in capability.lower().split()):
                 used.append(capability)
 
         return used[:3]  # Return top 3 used
@@ -196,7 +196,7 @@ class PrebuiltAgent:
         capability_keywords = [
             word for cap in self.capabilities for word in cap.lower().split()
         ]
-        matches = sum(1 for keyword in capability_keywords if keyword in request_lower)
+        matches = sum(1 for key in capability_keywords if key in request_lower)
 
         return min(0.7, matches * 0.2)
 
@@ -542,6 +542,7 @@ async def test_advanced_dynamic_supervisor():
     # Display performance metrics
     for agent in pool.get_active_agents():
         if agent.metrics.total_calls > 0:
+            pass
 
     # Test 5: Complex multi-agent workflow
 
@@ -584,7 +585,7 @@ async def test_edge_cases_advanced():
 
     # Edge case 1: Agent at max capacity
 
-    busy_agent = pool.agents["coder_senior"]
+    busy_agent = pool.agents["coder_seniof"]
     busy_agent.status = AgentStatus.ACTIVE
     busy_agent.current_tasks = busy_agent.max_concurrent
 

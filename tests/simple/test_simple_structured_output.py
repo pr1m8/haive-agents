@@ -1,7 +1,6 @@
 """Simple example of using SimpleAgent with structured output."""
 
 import asyncio
-from datetime import datetime
 from typing import List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -111,7 +110,7 @@ Consider:
         }
     )
 
-    print(f"📋 Project Plan Generated:")
+    print("📋 Project Plan Generated:")
     print(f"Project: {result.project_name}")
     print(f"Objective: {result.objective}")
     print(f"\nTasks ({len(result.tasks)}):")
@@ -124,11 +123,11 @@ Consider:
     print(f"\nTimeline: {result.timeline}")
     print(f"Total Hours: {result.total_hours}")
 
-    print(f"\nRisks:")
+    print("\nRisks:")
     for risk in result.risks:
         print(f"  • {risk}")
 
-    print(f"\nSuccess Criteria:")
+    print("\nSuccess Criteria:")
     for criteria in result.success_criteria:
         print(f"  ✓ {criteria}")
 
@@ -176,7 +175,7 @@ and customer support tickets about checkout issues have tripled."""
         }
     )
 
-    print(f"📊 Analysis Report:")
+    print("📊 Analysis Report:")
     print(f"Subject: {result.subject}")
     print(f"\nSummary: {result.summary}")
 
@@ -189,7 +188,7 @@ and customer support tickets about checkout issues have tripled."""
 
     print(f"\nConclusion: {result.conclusion}")
 
-    print(f"\nNext Steps:")
+    print("\nNext Steps:")
     for step in result.next_steps:
         print(f"  → {step}")
 

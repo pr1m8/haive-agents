@@ -39,9 +39,7 @@ async def test_rewoo():
     # Check if agents are callable
     print("=== Agent Callability Check ===")
     for name, sub_agent in agent.multi_agent.agents.items():
-        print(
-            f"{name}: callable={callable(sub_agent)}, has_call={hasattr(sub_agent, '__call__')}"
-        )
+        print(f"{name}: callable={callable(sub_agent)}, has_call={callable(sub_agent)}")
         if hasattr(sub_agent, "arun"):
             print(f"  - has arun: {hasattr(sub_agent, 'arun')}")
         if hasattr(sub_agent, "invoke"):

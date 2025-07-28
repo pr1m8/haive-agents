@@ -8,21 +8,21 @@ from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 
-from haive.agents.experiments.supervisor.agent_info import AgentInfo
-from haive.agents.experiments.supervisor.component_2_tools import (
+from haive.agent.experiments.supervisor.agent import AgentInfo
+from haive.agent.experiments.supervisor.component_2_tools import (
     SupervisorStateWithTools,
 )
-from haive.agents.experiments.supervisor.dynamic_supervisor_agent import (
-    DynamicSupervisorAgent,
+from haive.agent.experiments.supervisor.dyname import (
+    Dyname,
 )
-from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
+from haive.agent.react.agent import ReactAgent
+from haive.agent.simple.agent import SimpleAgent
 
-# We'll create agents without translation capability first
+# We'll create agent without translation capability first
 # When supervisor identifies need, we'll add a real agent that can handle it
 
 
-async def test_add_agent_flow():
+async def test_add_agent():
     """Test supervisor recognizing it needs a new agent."""
 
     # Create search agent only
@@ -41,10 +41,10 @@ async def test_add_agent_flow():
         llm_config=AzureLLMConfig(model="gpt-4o"),
         force_tool_use=True,
         tools=[],  # Tools come from state
-        system_message="""You are a task router that delegates work to specialist agents.
+        system_message="""You are a task router that delegates work to specialist agent.
 
-Available agents:
-{agent_list}
+Available agent:
+{agent}
 
 IMPORTANT:
 - Analyze each task to determine what capabilities are needed
@@ -58,7 +58,7 @@ When you identify a missing capability:
 3. Describe what the missing agent should be able to do""",
     )
 
-    supervisor = DynamicSupervisorAgent(
+    supervisor = Dyname(
         name="capability_supervisor", engine=supervisor_engine
     )
 
@@ -69,7 +69,7 @@ When you identify a missing capability:
             content="Find information about Paris and then translate it to French"
         )
     ]
-    state.agents = {
+    state.agent = {
         "search_agent": AgentInfo(
             agent=search_agent,
             name="search_agent",
@@ -77,8 +77,8 @@ When you identify a missing capability:
             active=True,
         )
     }
-    state.active_agents = ["search_agent"]
-    state.sync_agents()
+    state.active_agent = ["search_agent"]
+    state.sync_agent()
 
 
     # First run - supervisor should recognize it can search but not translate
@@ -93,7 +93,7 @@ When you identify a missing capability:
     ):
         pass
     else:
-        pass\n")
+        pass
 
     # Create a powerful agent that can translate using its LLM capabilities
     translation_engine = AugLLMConfig(
@@ -114,7 +114,7 @@ Always indicate the source and target languages in your response.""",
         "Translation specialist for multiple languages",
         active=True,
     )
-    state.sync_agents()
+    state.sync_agent()
 
 
     # Add a message acknowledging the addition
@@ -142,7 +142,7 @@ Show your work and explain the calculations step by step.""",
     state.add_agent(
         "math_agent", math_agent, "Mathematics and calculation specialist", active=True
     )
-    state.sync_agents()
+    state.sync_agent()
 
     # Complex task
     state.messages.append(
@@ -160,5 +160,5 @@ Show your work and explain the calculations step by step.""",
 
 
 
-if __name__ == "__main__":
-    asyncio.run(test_add_agent_flow())
+if __name == "__main__":
+    asyncio.run(test_add_agent())

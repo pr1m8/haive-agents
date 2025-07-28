@@ -97,6 +97,7 @@ async def test_agent_storage():
 
         # Check what's in the agents field
         for i, agent_data in enumerate(state_dict.get("agents", [])):
+            pass
     except Exception as e:
         pass
 

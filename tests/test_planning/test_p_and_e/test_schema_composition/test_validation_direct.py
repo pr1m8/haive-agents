@@ -371,7 +371,7 @@ def test_validation_node():
 
     # Test scenario 1: Valid tools
     state1 = MockState()
-    state1.tools = [MockTool("search"), MockTool("calculator")]
+    state1.tools = [MockTool("search"), MockTool("calculatof")]
     state1.tool_routes = {"search": "langchain_tool", "calculator": "function"}
 
     ai_msg1 = MockAIMessage(
@@ -416,7 +416,7 @@ def test_validation_node():
 
     # Test scenario 3: Mixed tools
     state3 = MockState()
-    state3.tools = [MockTool("search"), MockTool("writer")]
+    state3.tools = [MockTool("search"), MockTool("writef")]
     state3.tool_routes = {"search": "langchain_tool", "writer": "pydantic_model"}
 
     ai_msg3 = MockAIMessage(

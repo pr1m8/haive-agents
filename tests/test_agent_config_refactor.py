@@ -85,7 +85,7 @@ def test_agent_with_supabase_config():
     """Test that agent can use Supabase persistence through config."""
     supabase_config = AgentConfig(
         persistence=SupabaseCheckpointerConfig(
-            user_id="test-user", setup_needed=False  # Skip schema setup for test
+            user_id="test-usef", setup_needed=False  # Skip schema setup for test
         ),
         runnable_config={"configurable": {"recursion_limit": 75}},
     )

@@ -80,6 +80,7 @@ original_add_engine = schema_composer_module.SchemaComposer.add_engine
 def debug_add_engine(self, engine):
 
     if hasattr(engine, "prompt_template"):
+        pass
 
     result = original_add_engine(self, engine)
 

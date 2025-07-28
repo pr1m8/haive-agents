@@ -87,7 +87,7 @@ async def create_test_agents() -> dict[str, AgentInfo]:
 
 def get_test_state_with_agents():
     """Get a test state with agents pre-configured."""
-    from haive-agents.tests.supervisor.experiments.component_2_tools import (
+    from haive.agents.tests.supervisor.experiments.component_2_tools import (
         SupervisorStateWithTools,
     )
 

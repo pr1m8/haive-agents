@@ -95,6 +95,7 @@ async def test_mcp_rag():
             docs = result.retrieved_documents
 
             for i, doc in enumerate(docs[:3], 1):
+                pass
         else:
             pass
 

@@ -3,7 +3,6 @@
 
 import os
 import sys
-from typing import Any, Dict, List
 
 # Add source paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -18,9 +17,7 @@ def test_simple_rag_v3_state():
     from langchain_core.documents import Document
 
     from haive.agents.rag.simple.enhanced_v3.state import (
-        GenerationDebugInfo,
         RAGMetadata,
-        RetrievalDebugInfo,
         SimpleRAGState,
     )
 
@@ -114,8 +111,6 @@ def test_simple_rag_v3_state():
 def test_file_structure_and_patterns():
     """Test that our implementation follows the requested pattern and structure."""
     print("🔍 Testing File Structure and Pattern Compliance...")
-
-    import ast
 
     base_path = "/home/will/Projects/haive/backend/haive/packages/haive-agents/src/haive/agents/rag/simple/enhanced_v3"
 
@@ -227,7 +222,7 @@ def test_implementation_features():
 
     for feature_name, pattern in features:
         # Handle multiline patterns
-        search_pattern = pattern.replace("\n", "\\n") if "\n" in pattern else pattern
+        pattern.replace("\n", "\\n") if "\n" in pattern else pattern
         found = pattern in agent_content
         print(f"  {'✅' if found else '❌'} {feature_name}")
         assert found, f"Missing feature: {feature_name}"

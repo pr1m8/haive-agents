@@ -46,6 +46,7 @@ def test_pydantic_field_addition():
         updated = BasicModel(**{**instance.model_dump(), **update_data})
 
     except Exception as e:
+        pass
 
 
 def test_state_schema_requirements():
@@ -83,6 +84,7 @@ def test_state_schema_requirements():
         MinimalState(**{**minimal_state.model_dump(), **update_dict})
 
     except Exception as e:
+        pass
 
     # Scenario 2: Update pre-defined field in enhanced state
     enhanced_state = EnhancedState(messages=["test"])

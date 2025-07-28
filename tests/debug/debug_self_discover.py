@@ -30,12 +30,6 @@ def debug_project_state(self, state, agent):
     # Check what's in the state
     if hasattr(state, "agent_outputs"):
         pass
-
-    # Get the projected state
-    projected = original_project_state(self, state, agent)
-
-    # Check if this agent's required inputs are available
-    agent_name = self.agent_name
     if agent_name == "select_modules":
         required = ["reasoning_modules", "task_description"]
     elif agent_name == "adapt_modules":

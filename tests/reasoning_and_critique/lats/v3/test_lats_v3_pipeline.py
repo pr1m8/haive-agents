@@ -75,7 +75,7 @@ async def test_lats_v3_pipeline():
         selected_node, actions.candidate_actions, problem, goal
     )
 
-    print(f"✅ Evaluated actions:")
+    print("✅ Evaluated actions:")
     for i, scored in enumerate(evaluation.scored_actions[:3], 1):
         print(f"   {i}. {scored.action} - Score: {scored.score:.2f}")
 

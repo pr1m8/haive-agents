@@ -208,11 +208,11 @@ class TestIterativeDocumentGradingAgent:
         """Test iterative agent with custom grader."""
 
         def custom_grader(query: str, doc: Document) -> dict[str, Any]:
-            # Simple custom grader based on keyword matching
+            # Simple custom grader based on key matching
             content_lower = doc.page_content.lower()
             query_lower = query.lower()
 
-            # Count keyword matches
+            # Count key matches
             query_words = query_lower.split()
             matches = sum(1 for word in query_words if word in content_lower)
 
@@ -221,7 +221,7 @@ class TestIterativeDocumentGradingAgent:
             return {
                 "score": score,
                 "relevant": score >= 0.5,
-                "reason": f"Keyword matching: {matches}/{len(query_words)} words matched",
+                "reason": f"Key matching: {matches}/{len(query_words)} words matched",
             }
 
         agent = IterativeDocumentGradingAgent(
@@ -245,7 +245,7 @@ class TestIterativeDocumentGradingAgent:
 
         # Check that custom grader was used
         grading_results = result["graded_documents"]
-        assert any("Keyword matching" in gr.grading_reason for gr in grading_results)
+        assert any("Key matching" in gr.grading_reason for gr in grading_results)
 
     def test_iterative_workflow_steps(self):
         """Test that iterative grading adds workflow steps."""
@@ -362,8 +362,8 @@ class TestDocumentGradingWithRealDocuments:
             r
             for r in results
             if any(
-                keyword in r.document.page_content.lower()
-                for keyword in ["code", "programming", "software", "development"]
+                key in r.document.page_content.lower()
+                for key in ["code", "programming", "software", "development"]
             )
         ]
 

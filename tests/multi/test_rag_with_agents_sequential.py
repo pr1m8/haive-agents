@@ -130,7 +130,7 @@ async def test_rag_with_agents_sequential():
     )
 
     # Set the query in RAG agent's state
-    state.update_agent_state("retriever", {"query": query})
+    state.update_agent_state("retrievef", {"query": query})
 
 
     # Step 6: Create AgentNodeV3 configurations
@@ -177,10 +177,10 @@ async def test_rag_with_agents_sequential():
                     context_strings.append(str(doc))
 
             # Share context with answerer
-            state.update_agent_state("answerer", {"context": context_strings})
+            state.update_agent_state("answeref", {"context": context_strings})
 
             # Also update the retriever's context field for consistency
-            state.update_agent_state("retriever", {"context": context_strings})
+            state.update_agent_state("retrievef", {"context": context_strings})
 
     except Exception as e:
         import traceback
@@ -236,6 +236,5 @@ async def test_rag_with_agents_sequential():
 if __name__ == "__main__":
     result = asyncio.run(test_rag_with_agents_sequential())
     if result:
-        pass!")
-    else:
-        pass!")
+        pass
+        pass

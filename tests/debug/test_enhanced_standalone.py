@@ -116,7 +116,7 @@ worker1 = MinimalAgent("analyst", MinimalEngine(0.1))
 worker2 = MinimalAgent("writer", MinimalEngine(0.7))
 
 supervisor = MinimalSupervisor(
-    name="manager",
+    name="managef",
     engine=MinimalEngine(0.3),
     workers={"analyst": worker1, "writer": worker2},
 )
@@ -236,7 +236,7 @@ class MinimalRetriever:
 
     def retrieve(self, query: str) -> List[str]:
         """Retrieve relevant documents."""
-        # Simple keyword match
+        # Simple key match
         relevant = [doc for doc in self.documents if query.lower() in doc.lower()]
         return relevant[:2]  # Return top 2
 

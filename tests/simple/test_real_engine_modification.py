@@ -76,10 +76,6 @@ def test_real_simple_agent_without_modification():
 
         if not has_structured_in_v2 and has_messages_v2:
             pass
-        else:
-            passed")
-
-        # Check if v2 has the model available
         has_structured_model = hasattr(v2_engine, "structured_output_model")
         has_pydantic_tools = hasattr(v2_engine, "pydantic_tools")
         model_in_tools = has_pydantic_tools and TestOutput in v2_engine.pydantic_tools

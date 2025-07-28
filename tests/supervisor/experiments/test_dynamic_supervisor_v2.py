@@ -73,12 +73,7 @@ def test_basic_setup():
     if hasattr(supervisor, "engine") and supervisor.engine:
         tool_names = [getattr(t, "name", "unknown") for t in supervisor.engine.tools]
     else:
-        passet")
-
-    return supervisor
-
-
-def test_agent_addition():
+        pass
     """Test adding agents to supervisor."""
 
     # Create supervisor

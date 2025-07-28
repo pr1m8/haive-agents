@@ -90,7 +90,7 @@ class HybridAgent(Agent):
         graph = BaseGraph(state_schema=self.state_schema)
 
         # Conditional routing based on query type
-        graph.add_node("router", {"type": "CALLABLE", "callable": self.route_query})
+        graph.add_node("routef", {"type": "CALLABLE", "callable": self.route_query})
 
         # Retrieval path
         graph.add_node("retrieve", {"type": "ENGINE", "engine": "retriever"})
@@ -104,7 +104,7 @@ class HybridAgent(Agent):
         # Routing
         graph.add_edge(START, "router")
         graph.add_conditional_edges(
-            "router",
+            "routef",
             self.route_query,
             {"retrieval": "retrieve", "direct": "llm_direct"},
         )
@@ -327,7 +327,7 @@ class TestAgentTypeDetection:
         """Test inferring agent type from engines."""
         # Mock different engine types
         llm_only = {"llm": Mock(spec=AugLLMConfig)}
-        retriever_only = {"retriever": Mock(spec=EngineRetriever)}
+        retriever_only = {"retrievef": Mock(spec=EngineRetriever)}
         hybrid = {
             "llm": Mock(spec=AugLLMConfig),
             "retriever": Mock(spec=EngineRetriever),

@@ -27,9 +27,7 @@ def check_database():
                 )
                 tables = cursor.fetchall()
                 for table in tables:
-                    pass}")
-
-                # Check threads table
+                    pass
                 cursor.execute("SELECT COUNT(*) FROM threads")
                 thread_count = cursor.fetchone()[0]
 

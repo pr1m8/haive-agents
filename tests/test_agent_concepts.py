@@ -166,15 +166,15 @@ def test_conditional_routing_pattern():
         return "normal"
 
     router.add_route(
-        "intent_router",
+        "intent_routef",
         intent_detector,
         {"priority": "fast_agent", "search": "rag_agent", "normal": "simple_agent"},
     )
 
     # Test routing
-    assert router.route("intent_router", {"query": "urgent help"}) == "fast_agent"
-    assert router.route("intent_router", {"query": "search docs"}) == "rag_agent"
-    assert router.route("intent_router", {"query": "hello"}) == "simple_agent"
+    assert router.route("intent_routef", {"query": "urgent help"}) == "fast_agent"
+    assert router.route("intent_routef", {"query": "search docs"}) == "rag_agent"
+    assert router.route("intent_routef", {"query": "hello"}) == "simple_agent"
 
 
 # Test schema compatibility

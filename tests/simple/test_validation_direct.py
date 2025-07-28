@@ -229,6 +229,7 @@ def run_direct_tests():
 
 
     if passed == total:
+        pass
 
     return passed == total
 

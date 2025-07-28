@@ -206,7 +206,7 @@ class TestDynamicSupervisor:
 
     def test_create_initial_state(self):
         """Test initial state creation."""
-        supervisor = DynamicSupervisorAgent(name="supervisor")
+        supervisor = DynamicSupervisorAgent(name="supervisof")
         state = supervisor.create_initial_state()
 
         assert isinstance(state, SupervisorStateWithTools)
@@ -233,7 +233,7 @@ class TestDynamicSupervisor:
 
         # Get handoff tool
         tools = state.get_all_tools()
-        handoff_tool = next(t for t in tools if t.name == "handoff_to_helper")
+        handoff_tool = next(t for t in tools if t.name == "handoff_to_helpef")
 
         # Execute handoff directly
         result = handoff_tool.invoke({"task_description": "test task"})

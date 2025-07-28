@@ -32,6 +32,5 @@ async def test_simpleagent_v2():
 if __name__ == "__main__":
     success = asyncio.run(test_simpleagent_v2())
     if success:
-        pass!")
-    else:
-        passs")
+        pass
+        pass

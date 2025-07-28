@@ -8,16 +8,16 @@ sys.path.append("/home/will/Projects/haive/backend/haive/packages/haive-agents/s
 # Import our NodeSelector directly (avoiding broken __init__.py)
 import importlib.util
 
-# Direct imports to avoid the broken LATS __init__.py
-from haive.core.engine.aug_llm import AugLLMConfig
-
 from haive.agents.reasoning_and_critique.lats.v3.models.evaluation_models import (
     UCBSelection,
 )
 
 # Import our models directly
 from haive.agents.reasoning_and_critique.lats.v3.models.tree_models import LATSNode
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+
+# Direct imports to avoid the broken LATS __init__.py
+
+
 
 spec = importlib.util.spec_from_file_location(
     "node_selector",
@@ -165,7 +165,7 @@ async def test_real_selection():
     assert selection.ucb_score >= 0
     assert len(selection.strategy_notes) > 0
 
-    print(f"✅ Real selection test passed!")
+    print("✅ Real selection test passed!")
     print(f"Selected node: {selection.selected_node_id}")
     print(f"Selection reasoning: {selection.selection_reasoning[:100]}...")
     print(f"UCB score: {selection.ucb_score}")

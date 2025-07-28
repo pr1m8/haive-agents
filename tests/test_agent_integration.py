@@ -110,7 +110,7 @@ def test_multi_agent_schema_composition():
     """Test multi-agent with schema composition."""
     # Create two mock engines with compatible schemas
     engine1 = Mock(spec=AugLLMConfig)
-    engine1.name = "processor"
+    engine1.name = "processof"
     engine1.get_input_fields.return_value = {
         "messages": (list[BaseMessage], Field(default_factory=list)),
         "query": (str, Field(default="")),
@@ -121,7 +121,7 @@ def test_multi_agent_schema_composition():
     }
 
     engine2 = Mock(spec=AugLLMConfig)
-    engine2.name = "analyzer"
+    engine2.name = "analyzef"
     engine2.get_input_fields.return_value = {
         "processed_query": (str, Field()),
         "intent": (str, Field()),
@@ -201,7 +201,7 @@ def test_conditional_edges_concept():
     graph = BaseGraph()
 
     # Add nodes
-    graph.add_node("router", {"type": "CALLABLE", "callable": route_function})
+    graph.add_node("routef", {"type": "CALLABLE", "callable": route_function})
     graph.add_node(
         "fast_path", {"type": "CALLABLE", "callable": lambda x: {"result": "fast"}}
     )
@@ -212,7 +212,7 @@ def test_conditional_edges_concept():
     # Add conditional edges
     graph.add_edge(START, "router")
     graph.add_conditional_edges(
-        "router",
+        "routef",
         route_function,
         {"fast_path": "fast_path", "normal_path": "normal_path"},
     )

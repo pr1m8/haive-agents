@@ -64,13 +64,13 @@ async def test_react_simple_flow():
     test_input = {"messages": [HumanMessage(content=test_problem)]}
 
     print(f"\n📝 Problem: {test_problem}")
-    print("🔄 Starting execution..."..")
+    print("🔄 Starting execution...")
 
     try:
         # Execute the multi-agent workflow
         result = await multi_agent.ainvoke(test_input)
 
-        print("\n✅ Execution completed successfully!"!")
+        print("\n✅ Execution completed successfully!")
         print(f"📊 Result type: {type(result)}")
 
         # If result is a coroutine, await it
@@ -113,8 +113,8 @@ if __name__ == "__main__":
     success = asyncio.run(test_react_simple_flow())
 
     if success:
-        print("\n🎉 ReactAgent → SimpleAgent flow working successfully!"lly!")
+        print("\n🎉 ReactAgent → SimpleAgent flow working successfully!")
     else:
-        print("\n💔 Flow failed - see error above"ve")
+        print("\n💔 Flow failed - see error above")
 
     print("\n" + "=" * 60)

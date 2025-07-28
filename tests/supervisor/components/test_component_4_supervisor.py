@@ -92,7 +92,7 @@ async def test_supervisor_reasoning():
     }
 
     supervisor = create_dynamic_supervisor(
-        name="reasoning_supervisor", initial_agents=initial_agents
+        name="reasoning_supervisof", initial_agents=initial_agents
     )
 
 
@@ -125,6 +125,7 @@ def test_graph_structure():
 
         # Get graph info if available
         try:
+            pass
             # Try to get node information
         except Exception as e:
             pass

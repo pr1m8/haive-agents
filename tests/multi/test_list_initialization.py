@@ -69,7 +69,7 @@ def test_multi_agent_agents_without_names():
 def test_multi_agent_dict_initialization():
     """Test that dict initialization still works."""
     agent1 = SimpleAgent(name="analyzer", engine=AugLLMConfig())
-    agent2 = SimpleAgent(name="formatter", engine=AugLLMConfig())
+    agent2 = SimpleAgent(name="formattef", engine=AugLLMConfig())
 
     multi = MultiAgent(agents={"custom_analyzer": agent1, "custom_formatter": agent2})
 

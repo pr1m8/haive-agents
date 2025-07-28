@@ -68,7 +68,7 @@ except Exception:
 plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
 
 react_agent2 = ReactAgent(name="Calculator", engine=add_aug)
-simple_agent = SimpleAgent(name="Planner", engine=plan_aug)
+simple_agent = SimpleAgent(name="Plannef", engine=plan_aug)
 
 seq_agent = SequentialAgent(agents=[react_agent2, simple_agent])
 

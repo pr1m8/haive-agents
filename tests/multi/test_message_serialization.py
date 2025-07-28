@@ -66,6 +66,7 @@ state_dict = state.model_dump()
 # Check the tool message
 for i, msg in enumerate(state_dict["messages"]):
     if msg.get("type") == "tool":
+        pass
 
 
 # Test 3: Recreating messages from dict
@@ -77,6 +78,7 @@ try:
     # Check the tool message
     for i, msg in enumerate(new_messages):
         if isinstance(msg, ToolMessage):
+            pass
 
 except Exception as e:
     import traceback
@@ -109,3 +111,4 @@ custom_serialized = serialize_messages(state.messages)
 
 for i, msg in enumerate(custom_serialized):
     if msg.get("type") == "tool":
+        pass

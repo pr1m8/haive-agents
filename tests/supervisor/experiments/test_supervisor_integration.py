@@ -300,7 +300,7 @@ class TestBaseSupervisor:
 
     def test_execution_history_tracking(self, supervisor_engine):
         """Test execution history functionality."""
-        supervisor = BaseSupervisor(name="test_supervisor", engine=supervisor_engine)
+        supervisor = BaseSupervisor(name="test_supervisof", engine=supervisor_engine)
 
         # Initially empty
         history = supervisor.get_execution_history()
@@ -339,7 +339,7 @@ class TestDynamicSupervisor:
     def test_agent_template_management(self, supervisor_engine):
         """Test agent template functionality."""
         supervisor = DynamicSupervisor(
-            name="dynamic_supervisor", engine=supervisor_engine
+            name="dynamic_supervisof", engine=supervisor_engine
         )
 
         # Add template

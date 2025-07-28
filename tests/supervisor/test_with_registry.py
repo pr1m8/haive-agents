@@ -139,11 +139,11 @@ class TestAgentRegistry:
         """Get all test agents."""
         return self.test_agents.copy()
 
-    def get_agents_by_capability(self, capability_keyword: str) -> list[str]:
-        """Get agents that match a capability keyword."""
+    def get_agents_by_capability(self, capability_key: str) -> list[str]:
+        """Get agents that match a capability key."""
         matching = []
         for name, config in self.agent_configs.items():
-            if capability_keyword.lower() in config["capability"].lower():
+            if capability_key.lower() in config["capability"].lower():
                 matching.append(name)
         return matching
 
@@ -374,7 +374,7 @@ async def _simulate_routing_decision(
     supervisor, request: str, test_registry: TestAgentRegistry
 ) -> dict:
     """Simulate routing decision based on keywords (for testing without LLM)."""
-    # Simple keyword-based routing for testing
+    # Simple key-based routing for testing
     request_lower = request.lower()
 
     routing_rules = {
@@ -400,13 +400,13 @@ async def _simulate_routing_decision(
     }
 
     # Find matching agent
-    for keyword, agent_name in routing_rules.items():
-        if keyword in request_lower:
+    for key, agent_name in routing_rules.items():
+        if key in request_lower:
             # Check if agent is registered
             if supervisor.agent_registry.is_agent_registered(agent_name):
                 return {
                     "target": agent_name,
-                    "reasoning": f"Request contains '{keyword}' keyword, routing to {agent_name}",
+                    "reasoning": f"Request contains '{key}' key, routing to {agent_name}",
                     "confidence": 0.8,
                 }
 
@@ -415,7 +415,7 @@ async def _simulate_routing_decision(
     if available_agents:
         return {
             "target": available_agents[0],
-            "reasoning": "No specific keyword match, routing to first available agent",
+            "reasoning": "No specific key match, routing to first available agent",
             "confidence": 0.5,
         }
 

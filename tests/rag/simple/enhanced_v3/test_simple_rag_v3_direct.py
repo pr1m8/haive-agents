@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Direct test of SimpleRAG V3 implementation without import issues."""
 
-import os
 import sys
 
 # Add the source directories to Python path
@@ -12,8 +11,6 @@ sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/
 def test_imports():
     """Test that all our components can be imported."""
     print("🔍 Testing imports...")
-
-    from haive.agents.rag.simple.enhanced_v3.state import RAGMetadata, SimpleRAGState
 
     print("✅ SimpleRAGState imported")
 
@@ -29,7 +26,7 @@ def test_simple_rag_state():
 
     from langchain_core.documents import Document
 
-    from haive.agents.rag.simple.enhanced_v3.state import RAGMetadata, SimpleRAGState
+    from haive.agents.rag.simple.enhanced_v3.state import SimpleRAGState
 
     # Test basic creation
     state = SimpleRAGState(

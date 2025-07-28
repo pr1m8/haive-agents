@@ -147,7 +147,7 @@ def test_agent_execution(agent):
     from langchain_core.messages import HumanMessage
 
     result = agent.invoke({"messages": [HumanMessage(content="Hello, test message")]})
-    console.print("✅ Agent execution successful"l")
+    console.print("✅ Agent execution successful")
     console.print(f"Result type: {type(result)}")
 
     return result

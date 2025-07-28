@@ -66,6 +66,5 @@ async def test_execution():
 if __name__ == "__main__":
     success = asyncio.run(test_execution())
     if success:
-        pass!")
-    else:
-        pass!")
+        pass
+        pass

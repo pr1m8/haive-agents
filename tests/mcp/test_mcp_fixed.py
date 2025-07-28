@@ -42,6 +42,7 @@ async def test_mcp_rag_agent():
                     docs = result.retrieved_documents
 
                     if docs:
+                        pass
                     else:
 
                         # Try direct vector store test

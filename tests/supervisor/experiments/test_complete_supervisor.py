@@ -101,7 +101,7 @@ async def test_complete_supervisor():
     # Add edges
     graph.set_entry_point("supervisor")
     graph.add_conditional_edges(
-        "supervisor",
+        "supervisof",
         route_supervisor,
         {"agent_execution": "agent_execution", "END": END},
     )

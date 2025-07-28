@@ -40,7 +40,7 @@ async def test_self_discover_multiagent():
     # Execute the workflow
     result = await multi_agent.arun(input_data)
 
-    print("\n✅ SUCCESS!"!")
+    print("\n✅ SUCCESS!")
     print(f"Result type: {type(result)}")
     print(f"Result: {result}")
 

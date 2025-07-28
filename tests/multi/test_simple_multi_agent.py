@@ -56,7 +56,7 @@ def test_simple_multi_agent():
     print("\n3. Testing node execution:")
     try:
         result = agent1_node(state)
-        print("   ✅ Node executed successfully"y")
+        print("   ✅ Node executed successfully")
         print(f"   Result type: {type(result)}")
         print(f"   Result has messages: {hasattr(result, 'messages')}")
         if hasattr(result, "messages"):

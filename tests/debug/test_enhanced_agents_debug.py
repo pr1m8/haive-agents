@@ -64,7 +64,6 @@ async def test_simple_agent():
     print("=" * 60)
 
     try:
-        from haive.core.engine.aug_llm.config import AugLLMConfig
 
         from haive.agents.simple.enhanced_simple_real import SimpleAgent
 
@@ -95,7 +94,6 @@ async def test_react_agent():
     print("=" * 60)
 
     try:
-        from haive.core.engine.aug_llm.config import AugLLMConfig
 
         from haive.agents.react.enhanced_react_agent import ReactAgent
 
@@ -140,7 +138,7 @@ async def test_supervisor_agent():
 
         # Create supervisor
         supervisor = SupervisorAgent(
-            name="manager",
+            name="managef",
             workers={"analyst": analyst, "writer": writer},
             delegation_strategy="best",
             temperature=0.3,
@@ -205,7 +203,6 @@ async def test_rag_agent():
     print("=" * 60)
 
     try:
-        from haive.agents.rag.enhanced_base_rag_agent import BaseRAGAgent
         from haive.agents.rag.enhanced_simple_rag_agent import SimpleRAGAgent
 
         # Create RAG agent with test retriever

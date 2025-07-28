@@ -39,6 +39,7 @@ if hasattr(state_instance, "engine"):
     pass
 
 if hasattr(state_instance, "engines"):
+    pass
 
 # Check if schema has class-level engines
 if hasattr(simple_agent.state_schema, "engines"):

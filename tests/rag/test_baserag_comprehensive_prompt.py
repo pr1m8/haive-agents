@@ -293,12 +293,12 @@ async def test_comprehensive_rag_flow():
         try:
             answer = await simple_agent.arun(answer_input)
 
-            print(f"\n📊 Structured Answer:")
+            print("\n📊 Structured Answer:")
             if isinstance(answer, ComprehensiveRAGAnswer):
-                print(f"\n🎯 Direct Answer:")
+                print("\n🎯 Direct Answer:")
                 print(f"   {answer.direct_answer}")
 
-                print(f"\n📝 Detailed Explanation:")
+                print("\n📝 Detailed Explanation:")
                 print(
                     f"   {answer.detailed_explanation[:500]}..."
                     if len(answer.detailed_explanation) > 500
@@ -309,23 +309,23 @@ async def test_comprehensive_rag_flow():
                 for source in answer.all_sources_used:
                     print(f"   - {source}")
 
-                print(f"\n🔍 Key Findings:")
+                print("\n🔍 Key Findings:")
                 for finding in answer.key_findings[:3]:  # Show first 3
                     print(f"   • {finding}")
 
-                print(f"\n📊 Quality Metrics:")
+                print("\n📊 Quality Metrics:")
                 print(f"   - Confidence: {answer.confidence_score:.2f}")
                 print(f"   - Completeness: {answer.answer_completeness}")
                 print(f"   - Answer Type: {answer.answer_type}")
                 print(f"   - Synthesis Level: {answer.synthesis_level}")
 
                 if answer.information_gaps:
-                    print(f"\n⚠️ Information Gaps:")
+                    print("\n⚠️ Information Gaps:")
                     for gap in answer.information_gaps:
                         print(f"   - {gap}")
 
                 if answer.follow_up_questions:
-                    print(f"\n💡 Suggested Follow-up Questions:")
+                    print("\n💡 Suggested Follow-up Questions:")
                     for question in answer.follow_up_questions[:2]:  # Show first 2
                         print(f"   - {question}")
             else:

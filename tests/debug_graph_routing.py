@@ -29,7 +29,7 @@ def debug_graph_routing():
         debug=True,
     )
 
-    print("✅ Agent created"d")
+    print("✅ Agent created")
     print(f"   - Structured model: {agent.structured_output_model}")
     print(f"   - Force tool use check: {agent._has_force_tool_use()}")
     print(

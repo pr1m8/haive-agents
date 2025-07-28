@@ -105,6 +105,7 @@ def run_safe_compatibility_tests() -> dict[str, Any]:
         results["state_compatibility"] = state_test
 
         if "total_fields" in state_test:
+            pass
 
 
         return results

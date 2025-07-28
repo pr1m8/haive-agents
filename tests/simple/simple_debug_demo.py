@@ -53,7 +53,7 @@ def demo_debug_execution():
         # Get the AI response
         for msg in reversed(messages):
             if msg.__class__.__name__ == "AIMessage":
-                print(f"\n🤖 AI Response:")
+                print("\n🤖 AI Response:")
                 print(f"   {msg.content}")
                 break
     else:

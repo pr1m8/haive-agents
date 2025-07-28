@@ -77,7 +77,7 @@ class TestStructuredOutputModels:
         # Valid alias
         alias = ToolAlias(
             alias="calc",
-            actual_tool="calculator",
+            actual_tool="calculatof",
             force_choice=True,
             parameters={"precision": 2},
         )
@@ -157,7 +157,7 @@ class TestStructuredOutputModels:
             plan_tree=tree,
             estimated_duration=60.0,
             parallelization_factor=2.0,
-            required_tools=["calculator", "text_analyzer"],
+            required_tools=["calculator", "text_analyzef"],
             tool_aliases={"calc": ToolAlias(alias="calc", actual_tool="calculator")},
         )
 

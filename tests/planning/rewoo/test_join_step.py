@@ -432,7 +432,7 @@ if __name__ == "__main__":
             join_strategy=JoinStrategy.WAIT_ANY,
         )
 
-        print("\n✅ WAIT_ANY strategy:":")
+        print("\n✅ WAIT_ANY strategy:")
         print(f"   Can execute with step_1: {wait_any.can_execute({'step_1'})}")
         print(f"   Can execute with both: {wait_any.can_execute({'step_1', 'step_2'})}")
 
@@ -448,7 +448,7 @@ if __name__ == "__main__":
         ]
 
         analysis = JoinStep.analyze_dag_structure(steps)
-        print("\n✅ DAG Analysis:":")
+        print("\n✅ DAG Analysis:")
         print(f"   Total steps: {analysis['total_steps']}")
         print(f"   Existing joins: {analysis['existing_join_points']}")
         print(f"   DAG complexity: {analysis['dag_complexity']}")

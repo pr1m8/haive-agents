@@ -2,7 +2,6 @@
 """Test SimpleRAG V3 actual execution - does it actually work?"""
 
 import asyncio
-import os
 import sys
 
 # Add source paths
@@ -22,8 +21,6 @@ async def test_can_we_create_simple_rag_v3():
         # Try to import our SimpleRAG V3 components directly (bypassing __init__.py)
         import importlib.util
 
-        from haive.core.engine.aug_llm import AugLLMConfig
-        from haive.core.engine.vectorstore import VectorStoreConfig
         from langchain_core.documents import Document
 
         # Load agent.py directly
@@ -31,7 +28,7 @@ async def test_can_we_create_simple_rag_v3():
             "agent_module",
             "/home/will/Projects/haive/backend/haive/packages/haive-agents/src/haive/agents/rag/simple/enhanced_v3/agent.py",
         )
-        agent_module = importlib.util.module_from_spec(spec)
+        importlib.util.module_from_spec(spec)
 
         print("❌ Can't load agent.py directly due to its imports")
 
@@ -80,10 +77,6 @@ async def test_minimal_components():
 
     # Test 1: Can we import state?
     try:
-        from haive.agents.rag.simple.enhanced_v3.state import (
-            RAGMetadata,
-            SimpleRAGState,
-        )
 
         results["state"] = "✅ State imports and works"
     except Exception as e:
@@ -93,7 +86,7 @@ async def test_minimal_components():
     try:
         from haive.core.engine.aug_llm import AugLLMConfig
 
-        config = AugLLMConfig(temperature=0.7)
+        AugLLMConfig(temperature=0.7)
         results["aug_llm"] = "✅ AugLLMConfig works"
     except Exception as e:
         results["aug_llm"] = f"❌ AugLLMConfig failed: {e}"
@@ -102,7 +95,7 @@ async def test_minimal_components():
     try:
         from langchain_core.documents import Document
 
-        doc = Document(page_content="Test", metadata={"source": "test"})
+        Document(page_content="Test", metadata={"source": "test"})
         results["documents"] = "✅ Document creation works"
     except Exception as e:
         results["documents"] = f"❌ Documents failed: {e}"
@@ -110,23 +103,18 @@ async def test_minimal_components():
     # Test 4: Can we import the agents directly?
     try:
         # This will fail due to import chains
-        from haive.agents.rag.simple.enhanced_v3.retriever_agent import RetrieverAgent
 
         results["retriever"] = "✅ RetrieverAgent imports"
     except Exception as e:
         results["retriever"] = f"❌ RetrieverAgent failed: {str(e)[:50]}..."
 
     try:
-        from haive.agents.rag.simple.enhanced_v3.answer_generator_agent import (
-            SimpleAnswerAgent,
-        )
 
         results["answer_agent"] = "✅ SimpleAnswerAgent imports"
     except Exception as e:
         results["answer_agent"] = f"❌ SimpleAnswerAgent failed: {str(e)[:50]}..."
 
     try:
-        from haive.agents.rag.simple.enhanced_v3.agent import SimpleRAGV3
 
         results["simple_rag_v3"] = "✅ SimpleRAGV3 imports"
     except Exception as e:
@@ -168,12 +156,10 @@ def analyze_blockers():
 
     # Check if it's a case issue
     try:
-        from haive.core.graph.graph_builder import DynamicGraph
 
         print("✅ Found graph_builder (lowercase)!")
     except:
         try:
-            from haive.core.graph import GraphBuilder
 
             print("✅ Found GraphBuilder as module!")
         except:

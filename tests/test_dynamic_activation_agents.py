@@ -248,7 +248,7 @@ class TestDynamicActivationSupervisor:
     ):
         """Test supervisor component activation functionality."""
         supervisor = DynamicActivationSupervisor.create_with_discovery(
-            name="test_supervisor",
+            name="test_supervisof",
             document_path=temp_document_file,
             engine=aug_llm_config,
         )

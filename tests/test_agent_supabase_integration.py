@@ -143,7 +143,7 @@ class TestAgentSupabaseIntegration:
             {
                 "user_id": "sync-user",
                 "mode": CheckpointerMode.SYNC,
-                "expected_type": "PostgresSaver",
+                "expected_type": "PostgresSavef",
             },
             {
                 "user_id": "async-user",

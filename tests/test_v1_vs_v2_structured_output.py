@@ -29,7 +29,7 @@ def test_v1_structured_output():
         debug=True,
     )
 
-    print("✅ V1 Agent created"d")
+    print("✅ V1 Agent created")
     print(f"   - Structured model: {agent.structured_output_model}")
     print(f"   - Version: {agent.structured_output_version}")
     print(f"   - Force tool use: {agent._has_force_tool_use()}")
@@ -57,7 +57,7 @@ def test_v1_structured_output():
             for field in structured_fields:
                 print(f"   {field}: {result[field]}")
         else:
-            print("❌ V1 no structured fields found"d")
+            print("❌ V1 no structured fields found")
 
     except Exception as e:
         print(f"V1 execution error: {e}")
@@ -79,7 +79,7 @@ def test_v2_structured_output():
         debug=True,
     )
 
-    print("✅ V2 Agent created"d")
+    print("✅ V2 Agent created")
     print(f"   - Structured model: {agent.structured_output_model}")
     print(f"   - Version: {agent.structured_output_version}")
     print(f"   - Force tool use: {agent._has_force_tool_use()}")
@@ -107,7 +107,7 @@ def test_v2_structured_output():
             for field in structured_fields:
                 print(f"   {field}: {result[field]}")
         else:
-            print("❌ V2 no structured fields found"d")
+            print("❌ V2 no structured fields found")
 
     except Exception as e:
         print(f"V2 execution error: {e}")

@@ -177,7 +177,7 @@ def run_tournament_game(
                     "openai_player": openai_player,
                     "final_status": "recursion_limit",
                     "moves": 0,
-                    "error": str(e),
+                    "errof": str(e),
                 }
 
                 save_tournament_result(game_name, winner, details, matchup)
@@ -207,7 +207,7 @@ def main():
             "agent_module": "haive.games.tic_tac_toe.agent",
             "agent_class": "TicTacToeAgent",
             "claude_player": "X_player",
-            "openai_player": "O_player",
+            "openai_player": "O_playef",
         },
         {
             "name": "nim",
@@ -243,7 +243,7 @@ def main():
             "agent_module": "haive.games.connect4.agent",
             "agent_class": "Connect4Agent",
             "claude_player": "red_player",
-            "openai_player": "yellow_player",
+            "openai_player": "yellow_playef",
         },
         {
             "name": "reversi",
@@ -302,13 +302,8 @@ def main():
 
 
     if claude_wins > openai_wins:
-        pass)")
-    elif openai_wins > claude_wins:
-        pass)")
-    else:
-        pass)")
-
-
-
+        pass
+        pass
+        pass
 if __name__ == "__main__":
     main()

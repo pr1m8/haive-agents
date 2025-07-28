@@ -15,7 +15,6 @@ from haive.agents.patterns.sequential_with_structured_output import (
     create_analysis_to_report,
     create_react_to_structured,
 )
-from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
 
@@ -149,7 +148,7 @@ async def test_react_to_research_report():
         "Research the AI market opportunity for small businesses"
     )
 
-    print(f"\n📊 Research Report Generated:")
+    print("\n📊 Research Report Generated:")
     print(f"Topic: {result.topic}")
     print(f"Executive Summary: {result.executive_summary[:200]}...")
     print(f"Key Findings: {len(result.key_findings)} findings")
@@ -219,7 +218,7 @@ Ensure the report is professional, actionable, and includes all required section
         }
     )
 
-    print(f"\n📈 Business Report Generated:")
+    print("\n📈 Business Report Generated:")
     print(f"Title: {result.title}")
     print(f"Market Segment: {result.market_analysis.segment}")
     print(f"Market Size: {result.market_analysis.size}")
@@ -295,7 +294,7 @@ async def test_custom_sequential():
         }
     )
 
-    print(f"\n🔧 Technical Summary Generated:")
+    print("\n🔧 Technical Summary Generated:")
     print(f"Problem: {result.problem_statement}")
     print(f"Approach: {result.technical_approach[:200]}...")
     print(f"Steps: {len(result.implementation_steps)} steps")

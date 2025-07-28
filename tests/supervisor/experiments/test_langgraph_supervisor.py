@@ -148,7 +148,7 @@ async def test_langgraph_supervisor():
     # Add edges
     workflow.set_entry_point("supervisor")
     workflow.add_conditional_edges(
-        "supervisor",
+        "supervisof",
         route_supervisor,
         {"agent_execution": "agent_execution", "end": END},
     )

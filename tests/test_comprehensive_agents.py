@@ -141,7 +141,7 @@ def mock_retriever_engine():
     """Create a mock retriever engine."""
     engine = Mock(spec=EngineRetriever)
     engine.name = "test_retriever"
-    engine.engine_type = "retriever"
+    engine.engine_type = "retrievef"
 
     # Mock schema methods
     engine.get_input_fields.return_value = {"query": (str, Field(default=""))}
@@ -346,7 +346,7 @@ class TestMultiAgentWithRAG:
         # Create RAG agent
         with patch("haive.agents.rag.agent.SimpleRAGAgent.setup_workflow"):
             rag_agent = SimpleRAGAgent(
-                engine=mock_retriever_engine, name="doc_retriever"
+                engine=mock_retriever_engine, name="doc_retrievef"
             )
 
             # Mock RAG execution
@@ -365,7 +365,7 @@ class TestMultiAgentWithRAG:
             analysis_agent = SimpleAgent(
                 engine=mock_llm_engine,
                 structured_output_model=AnalysisResult,
-                name="analyzer",
+                name="analyzef",
             )
 
             # Mock analysis execution
@@ -392,7 +392,7 @@ class TestMultiAgentWithRAG:
         # Create multi-agent
         with patch("haive.agents.multi.base.SequentialAgent.setup_workflow"):
             multi_agent = SequentialAgent(
-                agents=[rag_agent, analysis_agent], name="rag_analyzer"
+                agents=[rag_agent, analysis_agent], name="rag_analyzef"
             )
 
             # Mock the multi-agent graph

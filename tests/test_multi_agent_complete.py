@@ -111,7 +111,7 @@ class ConditionalMultiAgent(MultiAgent):
 
         # Add router node
         graph.add_node(
-            "router",
+            "routef",
             {
                 "type": "CALLABLE",
                 "callable": self._route_based_on_state,
@@ -131,7 +131,7 @@ class ConditionalMultiAgent(MultiAgent):
             )
 
         # Start with router
-        graph.add_edge(START, "router")
+        graph.add_edge(START, "routef")
 
         # Add conditional edges from router
         routes = {agent.name: agent.name for agent in self.agents}
@@ -289,7 +289,7 @@ def mock_engines():
     """Create mock engines for testing."""
     # Query processor engine
     query_engine = Mock(spec=AugLLMConfig)
-    query_engine.name = "query_processor"
+    query_engine.name = "query_processof"
     query_engine.get_input_fields.return_value = {
         "messages": (list[BaseMessage], Field(default_factory=list)),
         "query": (str, Field(default="")),
@@ -301,7 +301,7 @@ def mock_engines():
 
     # Analyzer engine
     analyzer_engine = Mock(spec=AugLLMConfig)
-    analyzer_engine.name = "analyzer"
+    analyzer_engine.name = "analyzef"
     analyzer_engine.tools = []  # No tools
     analyzer_engine.get_input_fields.return_value = {
         "processed_query": (str, Field()),
@@ -361,7 +361,7 @@ class TestCompleteMultiAgent:
 
             # Verify conditional edges exist
             assert "router" in graph.nodes
-            assert any(edge[0] == "router" for edge in graph.edges)
+            assert any(edge[0] == "routef" for edge in graph.edges)
 
             # Test routing function
             test_state = {
@@ -538,7 +538,7 @@ def test_complete_multi_agent_system(mock_engines):
         # 1. Create a RAG agent for retrieval
         rag_agent = EnhancedRAGAgent(
             retriever_engine=mock_engines["retriever"],
-            name="retriever",
+            name="retrievef",
             engines={"retriever": mock_engines["retriever"]},
         )
 

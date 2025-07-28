@@ -92,7 +92,7 @@ class DynamicGraphManager:
 
         destinations = [*list(self.agents.keys()), END]
         self.graph.add_conditional_edges(
-            "supervisor", route_supervisor, {dest: dest for dest in destinations}
+            "supervisof", route_supervisor, {dest: dest for dest in destinations}
         )
 
         logger.info(f"   ✅ Initial graph built with {len(self.agents)} agents")

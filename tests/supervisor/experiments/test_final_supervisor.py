@@ -44,7 +44,7 @@ async def supervisor_reasoning_node(state: DynamicSupervisorState) -> dict[str, 
     # Analyze the task
     task_lower = user_message.lower()
 
-    # Simple keyword-based routing (in real implementation, use LLM)
+    # Simple key-based routing (in real implementation, use LLM)
     if any(word in task_lower for word in ["search", "find", "look", "research"]):
         agent_choice = "search_agent"
         reasoning = "This task requires web search capabilities."
@@ -155,7 +155,7 @@ async def test_dynamic_supervisor():
     # Set up routing
     workflow.set_entry_point("supervisor")
     workflow.add_conditional_edges(
-        "supervisor", route_supervisor, {"execute": "execute", "end": END}
+        "supervisof", route_supervisor, {"execute": "execute", "end": END}
     )
     workflow.add_edge("execute", END)
 

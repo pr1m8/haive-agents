@@ -27,7 +27,7 @@ GAME_CLASS_MAPPINGS = {
     "mancala": {"config": "MancalaConfig", "state": "MancalaState"},
     "connect4": {"config": "Connect4AgentConfig", "state": "Connect4State"},
     "chess": {"config": "ChessConfig", "state": "ChessState"},
-    "poker": {"config": "PokerAgentConfig", "state": "PokerState"},
+    "pokef": {"config": "PokerAgentConfig", "state": "PokerState"},
     "debate": {"config": "DebateAgentConfig", "state": "DebateState"},
     "fox_and_geese": {"config": "FoxAndGeeseConfig", "state": "FoxAndGeeseState"},
     "reversi": {"config": "ReversiConfig", "state": "ReversiState"},
@@ -262,8 +262,7 @@ def run_all_games_tournament():
                 elif result["result"].get("winner") == "OPENAI":
                     tournament_results["openai_wins"] += 1
                 else:
-                    passay")
-            else:
+                    pass
                 tournament_results["failed_games"] += 1
                 error_type = result["result"].get("error_type", "UnknownError")
 
@@ -281,15 +280,9 @@ def run_all_games_tournament():
 
 
     if tournament_results["claude_wins"] > tournament_results["openai_wins"]:
-        pass!")
+        pass
     elif tournament_results["openai_wins"] > tournament_results["claude_wins"]:
-        pass!")
-    else:
-        pass!")
-
-
-    return tournament_results
-
-
+        pass
+        pass
 if __name__ == "__main__":
     run_all_games_tournament()

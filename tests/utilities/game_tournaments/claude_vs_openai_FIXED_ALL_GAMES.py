@@ -41,13 +41,13 @@ CORRECTED_GAME_CLASS_MAPPINGS = {
     "cards/standard/bs": {"config": "BullshitAgentConfig", "state": "BullshitState"},
     "debate": {"config": "DebateAgentConfig", "state": "DebateState"},
     "dominoes": {"config": "DominoesAgentConfig", "state": "DominoesState"},
-    "framework/multi_player": {
+    "framework/multi_playef": {
         "config": "MultiPlayerGameConfig",
         "state": "MultiPlayerGameState",
     },
     "mafia": {"config": "MafiaAgentConfig", "state": "MafiaState"},
     "monopoly": {"config": "MonopolyGameAgentConfig", "state": "MonopolyState"},
-    "multi_player": {
+    "multi_playef": {
         "config": "MultiPlayerGameConfig",
         "state": "MultiPlayerGameState",
     },
@@ -55,11 +55,11 @@ CORRECTED_GAME_CLASS_MAPPINGS = {
         "config": "WordConnectionsAgentConfig",
         "state": "WordConnectionsState",
     },
-    "poker": {"config": "PokerAgentConfig", "state": "PokerState"},
+    "pokef": {"config": "PokerAgentConfig", "state": "PokerState"},
     # Known problematic games (will try anyway)
     "go": {"config": "GoAgentConfig", "state": "GoState"},
     "hold_em": {"config": "HoldemGameAgentConfig", "state": "HoldemState"},
-    "single_player": {
+    "single_playef": {
         "config": "SinglePlayerGameConfig",
         "state": "SinglePlayerGameState",
     },
@@ -309,8 +309,7 @@ def run_fixed_all_games_tournament():
                 elif result["result"].get("winner") == "OPENAI":
                     tournament_results["openai_wins"] += 1
                 else:
-                    passay")
-            else:
+                    pass
                 tournament_results["failed_games"] += 1
                 error_type = result["result"].get("error_type", "UnknownError")
 
@@ -331,15 +330,9 @@ def run_fixed_all_games_tournament():
     ) * 100
 
     if tournament_results["claude_wins"] > tournament_results["openai_wins"]:
-        pass!")
+        pass
     elif tournament_results["openai_wins"] > tournament_results["claude_wins"]:
-        pass!")
-    else:
-        pass!")
-
-
-    return tournament_results
-
-
+        pass
+        pass
 if __name__ == "__main__":
     run_fixed_all_games_tournament()

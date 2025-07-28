@@ -109,7 +109,7 @@ async def test_registry_supervisor_real_agents():
     )
 
     # Create supervisor and populate registry
-    supervisor = MockRegistrySupervisor(name="test_supervisor")
+    supervisor = MockRegistrySupervisor(name="test_supervisof")
     supervisor.populate_registry(agents=[research_agent, coding_agent, writing_agent])
 
     # Test 1: Research task

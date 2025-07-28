@@ -41,7 +41,7 @@ def test_graph_with_conditional_edges():
     graph = BaseGraph()
 
     # Add routing node
-    graph.add_node("router", {"type": "CALLABLE", "callable": route_by_content})
+    graph.add_node("routef", {"type": "CALLABLE", "callable": route_by_content})
 
     # Add processing nodes
     graph.add_node(
@@ -56,7 +56,7 @@ def test_graph_with_conditional_edges():
     # Connect with conditional edges
     graph.add_edge(START, "router")
     graph.add_conditional_edges(
-        "router",
+        "routef",
         route_by_content,
         {"search_path": "search_path", "direct_path": "direct_path"},
     )
@@ -176,7 +176,7 @@ def test_component_composition():
     components = {
         "processor": processor,
         "validator": validator,
-        "formatter": formatter,
+        "formattef": formatter,
     }
 
     # Define flow
@@ -207,10 +207,10 @@ def test_multi_agent_concepts():
 
     # Create agent chain
     agents = [
-        MockAgent("extractor", lambda s: {"query": "extracted query"}),
-        MockAgent("searcher", lambda s: {"results": ["result1", "result2"]}),
+        MockAgent("extractof", lambda s: {"query": "extracted query"}),
+        MockAgent("searchef", lambda s: {"results": ["result1", "result2"]}),
         MockAgent(
-            "formatter",
+            "formattef",
             lambda s: {"messages": [*s.get("messages", []), AIMessage(content="Done")]},
         ),
     ]

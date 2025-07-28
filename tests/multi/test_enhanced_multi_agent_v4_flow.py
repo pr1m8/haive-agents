@@ -87,8 +87,9 @@ class TestEnhancedMultiAgentV4Flow:
             print(f"\nError during execution: {e}")
             # Debug the error
             import traceback
+
             traceback.print_exc()
-            
+
             # For now, we'll mark this as a known issue
             pytest.skip(f"Multi-agent flow issue: {e}")
 
@@ -124,7 +125,7 @@ class TestEnhancedMultiAgentV4Flow:
         )
 
         # Build and compile
-        graph = workflow.build_graph()
+        workflow.build_graph()
         workflow.compile()
 
         # Create simple initial state without MultiAgentState to avoid circular import issues
@@ -145,12 +146,13 @@ class TestEnhancedMultiAgentV4Flow:
             # Verify
             assert result is not None
             assert "messages" in result
-            
+
         except Exception as e:
             print(f"\nError during execution: {e}")
             import traceback
+
             traceback.print_exc()
-            
+
             pytest.skip(f"Multi-agent flow issue: {e}")
 
     def test_debug_agent_node_v3_output(self):
@@ -175,7 +177,7 @@ class TestEnhancedMultiAgentV4Flow:
 
         # Build graph
         graph = workflow.build_graph()
-        
+
         # Get the agent node
         agent_node = graph.nodes.get("test_agent")
         if agent_node:
@@ -187,17 +189,16 @@ class TestEnhancedMultiAgentV4Flow:
 
         # Test execution
         try:
-            # Create simple initial state 
-            initial_state = {
-                "messages": [HumanMessage(content="Hello, test!")]
-            }
+            # Create simple initial state
+            initial_state = {"messages": [HumanMessage(content="Hello, test!")]}
             result = workflow._app.invoke(initial_state)
             print(f"\nResult type: {type(result)}")
             print(f"Result: {result}")
-            
+
         except Exception as e:
             print(f"\nError: {e}")
             import traceback
+
             traceback.print_exc()
 
 
@@ -208,12 +209,12 @@ if __name__ == "__main__":
     print("Testing Sequential Simple Agents Flow")
     print("=" * 60)
     test.test_sequential_simple_agents_flow()
-    
+
     print("\n" + "=" * 60)
     print("Testing React→Simple Sequential Flow")
     print("=" * 60)
     test.test_react_simple_sequential_flow()
-    
+
     print("\n" + "=" * 60)
     print("Debugging Agent Node V3 Output")
     print("=" * 60)

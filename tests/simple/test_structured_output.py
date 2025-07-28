@@ -250,7 +250,7 @@ def test_structured_output_validation():
     )
 
     print(f"✅ Created validation agent with: {SimpleResponse.__name__}")
-    print(f"   Required fields: summary, key_points, recommendation")
+    print("   Required fields: summary, key_points, recommendation")
 
     query = "Give me advice on learning Python programming"
     print(f"\n📨 Query: {query}")

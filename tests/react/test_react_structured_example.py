@@ -272,41 +272,41 @@ Ensure all findings are accurately represented and properly categorized.""",
     )
 
     # Display results
-    print(f"\n📊 Code Analysis Report")
+    print("\n📊 Code Analysis Report")
     print(f"{'='*60}")
     print(f"Project: {result.project_name}")
     print(f"Health Score: {result.overall_health_score:.1f}/10.0")
     print(f"\nSummary: {result.analysis_summary}")
 
-    print(f"\n🚨 Issues Found:")
+    print("\n🚨 Issues Found:")
     print(f"- Critical: {result.critical_issues_count}")
     print(f"- Total: {len(result.issues)}")
 
     if result.critical_issues_count > 0:
-        print(f"\nCritical Issues:")
+        print("\nCritical Issues:")
         for issue in [i for i in result.issues if i.severity == "critical"][:3]:
             print(f"  • {issue.category}: {issue.description}")
             print(f"    Fix: {issue.suggestion}")
 
-    print(f"\n📈 Code Metrics:")
+    print("\n📈 Code Metrics:")
     for metric, value in list(result.code_metrics.items())[:4]:
         print(f"  • {metric}: {value}")
 
     print(f"\n🔒 Security: {result.security_score}")
     if result.security_recommendations:
-        print(f"Security Recommendations:")
+        print("Security Recommendations:")
         for rec in result.security_recommendations[:2]:
             print(f"  • {rec}")
 
-    print(f"\n📦 Dependencies:")
+    print("\n📦 Dependencies:")
     print(f"  • Total: {len(result.dependencies_analyzed)}")
     print(f"  • Outdated: {result.outdated_dependencies}")
 
-    print(f"\n⚡ Immediate Actions:")
+    print("\n⚡ Immediate Actions:")
     for action in result.immediate_actions[:3]:
         print(f"  1. {action}")
 
-    print(f"\n🎯 Top Recommendations:")
+    print("\n🎯 Top Recommendations:")
     for i, rec in enumerate(result.top_recommendations[:3], 1):
         print(f"  {i}. {rec}")
 

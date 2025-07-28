@@ -11,9 +11,6 @@ This test suite validates:
 - Change detection and auto-recompilation
 """
 
-import asyncio
-from datetime import datetime
-from typing import Any, Dict
 
 import pytest
 
@@ -336,7 +333,6 @@ class TestSimpleAgentV3MetaIntegration:
         meta_agent = agent.as_meta_capable()
 
         # Check initial recompile state
-        initial_needs_recompile = agent.needs_recompile
 
         # Add tool to trigger recompilation
         agent.add_tool(calculator_tool)
@@ -450,7 +446,7 @@ class TestSimpleAgentV3RecompilationSystem:
 
         # Get initial hashes
         initial_engine_hash = agent._compute_engine_hash()
-        initial_tool_hash = agent._compute_tool_hash()
+        agent._compute_tool_hash()
         initial_schema_hash = agent._compute_schema_hash()
 
         # Change engine configuration
@@ -577,7 +573,7 @@ class TestSimpleAgentV3Integration:
         assert len(recompile_status["reasons"]) > 0
 
         # Verify change tracking worked
-        conditions = agent.check_recompile_conditions()
+        agent.check_recompile_conditions()
         # Should be empty if all changes were properly handled
 
         # Final verification - create tool from this agent

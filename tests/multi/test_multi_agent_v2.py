@@ -66,7 +66,7 @@ async def test_multi_agent_v2():
 
     # Update planner's isolated state
     state.update_agent_state(
-        "planner",
+        "plannef",
         {"plan": "Step 1: Analyze\nStep 2: Execute", "steps": ["analyze", "execute"]},
     )
 

@@ -160,7 +160,7 @@ async def test_real_haive_agents():
                 "success": False,
                 "timestamp": datetime.now().isoformat(),
             }
-            save_state_history("registry", error_state, "error")
+            save_state_history("registry", error_state, "errof")
 
     except Exception as e:
 

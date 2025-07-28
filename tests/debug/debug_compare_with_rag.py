@@ -101,9 +101,8 @@ try:
     # Get the base classes
     for i, cls in enumerate(SimpleAgentV2.__mro__):
         pass
-
-    # Try to access the composer's detected base class
     if hasattr(agent, "composer"):
+        pass
 
 except Exception as e:
     import traceback

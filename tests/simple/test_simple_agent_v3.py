@@ -63,7 +63,7 @@ async def test_agent_execution():
 
     # Try to execute - expecting failure due to remaining hook issues
     with pytest.raises(Exception) as exc_info:
-        result = await agent.arun("Say 'Hello World'")
+        await agent.arun("Say 'Hello World'")
 
     print(f"⚠️  Expected failure: {str(exc_info.value)[:100]}...")
     assert "HookContext" in str(exc_info.value), "Expected HookContext validation error"
