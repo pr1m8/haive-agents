@@ -1,15 +1,21 @@
-# Tree of Thoughts (TOT) Module
+# Tree of Thoughts (TOT) - Multi-Agent Implementation
 
-This module implements the Tree of Thoughts algorithm using a multi-agent approach with `EnhancedMultiAgentV4`.
+A complete implementation of the Tree of Thoughts algorithm using multi-agent coordination in the Haive framework.
 
-## Overview
+## 🌳 Overview
 
-Tree of Thoughts (TOT) is a reasoning algorithm that explores multiple solution paths simultaneously, using beam search to focus on the most promising candidates. Our implementation uses two specialized agents:
+Tree of Thoughts is a problem-solving algorithm that systematically explores solution candidates through iterative generation, scoring, and beam search. This implementation provides multiple approaches:
 
-1. **CandidateGenerator** - Generates diverse solution candidates at each step
-2. **SolutionScorer** - Evaluates and scores candidates to guide the search
+### New Implementation (Recommended)
 
-The `TreeOfThoughtsOrchestrator` coordinates these agents using `EnhancedMultiAgentV4` to perform systematic exploration of the solution space.
+- **TreeOfThoughtsAgent**: Main orchestrator using composition pattern
+- **CandidateGenerator**: Generates diverse solution candidates using creative reasoning
+- **SolutionScorer**: Evaluates and scores candidates to guide beam search
+
+### Legacy Implementation (Backward Compatible)
+
+- **TreeOfThoughtsOrchestrator**: Original implementation using `EnhancedMultiAgentV4`
+- Maintains compatibility with existing code
 
 ## Architecture
 

@@ -75,6 +75,12 @@ from haive.agents.reasoning_and_critique.tot.state import (
     TOTOutput,
     TOTState,
 )
+from haive.agents.reasoning_and_critique.tot.tree_of_thoughts_agent import (
+    TOTCommand,
+    TOTIteration,
+    TreeOfThoughtsAgent,
+    create_tree_of_thoughts_agent,
+)
 
 # Build exports list dynamically
 _exports = [
@@ -101,6 +107,11 @@ _exports = [
     "SolutionScorer",
     "SolutionScoring",
     "ScoredSolution",
+    # New EnhancedMultiAgentV4-based TOT
+    "TreeOfThoughtsAgent",
+    "TOTCommand",
+    "TOTIteration",
+    "create_tree_of_thoughts_agent",
 ]
 
 # Add setup_workflow only if it exists
