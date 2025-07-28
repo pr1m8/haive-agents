@@ -1,7 +1,6 @@
 """Test Memory V2 with free/local resources (no API keys needed)."""
 
 import asyncio
-import os
 import tempfile
 from pathlib import Path
 
@@ -107,7 +106,7 @@ async def test_memory_rag_with_free_resources():
 
     vector_store = await test_vector_store_with_free_embeddings()
     if not vector_store:
-        return
+        return None
 
     try:
         # Create a simple retriever
@@ -139,7 +138,7 @@ async def test_memory_rag_with_free_resources():
         print(f"\n✅ Saved vector store to: {save_path}")
 
         # Test loading
-        loaded_store = FAISS.load_local(
+        FAISS.load_local(
             str(save_path), embeddings, allow_dangerous_deserialization=True
         )
         print("✅ Successfully loaded vector store from disk")
@@ -160,7 +159,7 @@ async def test_memory_state_with_embeddings():
 
     embeddings = await test_with_huggingface_embeddings()
     if not embeddings:
-        return
+        return None
 
     try:
         from haive.agents.memory_v2.memory_state_original import (
