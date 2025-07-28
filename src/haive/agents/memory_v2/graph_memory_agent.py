@@ -11,16 +11,15 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.graphs import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
 from langchain_core.documents import Document
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_neo4j.chains.graph_qa.cypher import GraphCypherQAChain
-from langchain_neo4j.graphs.graph_document import GraphDocument, Node, Relationship
+from langchain_neo4j.graphs.graph_document import GraphDocument
 
 # Optional imports - GraphMemoryAgent will work with basic functionality even if these fail
 try:
@@ -42,10 +41,6 @@ except ImportError:
     GraphDBConfig = None
     HAS_GRAPH_DB_RAG = False
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.messages_state import MessagesState
-
-from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +66,7 @@ class GraphMemoryConfig:
     database_name: str = "neo4j"
 
     # Graph transformation settings
-    allowed_nodes: List[str] = field(
+    allowed_nodes: list[str] = field(
         default_factory=lambda: [
             "Person",
             "Organization",
@@ -85,7 +80,7 @@ class GraphMemoryConfig:
             "Topic",
         ]
     )
-    allowed_relationships: List[Tuple[str, str, str]] = field(
+    allowed_relationships: list[tuple[str, str, str]] = field(
         default_factory=lambda: [
             ("Person", "WORKS_FOR", "Organization"),
             ("Person", "KNOWS", "Person"),
@@ -102,7 +97,7 @@ class GraphMemoryConfig:
 
     # Extraction settings
     extract_properties: bool = True
-    node_properties: List[str] = field(
+    node_properties: list[str] = field(
         default_factory=lambda: [
             "role",
             "description",
@@ -111,7 +106,7 @@ class GraphMemoryConfig:
             "confidence",
         ]
     )
-    relationship_properties: List[str] = field(
+    relationship_properties: list[str] = field(
         default_factory=lambda: ["since", "until", "strength", "context"]
     )
 
@@ -120,7 +115,7 @@ class GraphMemoryConfig:
     mode: GraphMemoryMode = GraphMemoryMode.FULL
 
     # LLM settings
-    llm_config: Optional[AugLLMConfig] = None
+    llm_config: AugLLMConfig | None = None
 
     # RAG settings
     enable_vector_index: bool = True
@@ -299,8 +294,8 @@ class GraphMemoryAgent:
             self.config.enable_vector_index = False
 
     async def extract_graph_from_text(
-        self, text: str, metadata: Optional[Dict[str, Any]] = None
-    ) -> List[GraphDocument]:
+        self, text: str, metadata: dict[str, Any] | None = None
+    ) -> list[GraphDocument]:
         """Extract entities and relationships from text.
 
         Args:
@@ -339,8 +334,8 @@ class GraphMemoryAgent:
         return graph_docs
 
     async def store_graph_documents(
-        self, graph_documents: List[GraphDocument], merge_nodes: bool = True
-    ) -> Dict[str, Any]:
+        self, graph_documents: list[GraphDocument], merge_nodes: bool = True
+    ) -> dict[str, Any]:
         """Store graph documents in Neo4j (TNT - Text to Neo4j).
 
         Args:
@@ -469,7 +464,7 @@ class GraphMemoryAgent:
 
     async def query_graph(
         self, query: str, query_type: str = "natural", include_context: bool = True
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Query the graph using natural language or Cypher.
 
         Args:
@@ -491,18 +486,17 @@ class GraphMemoryAgent:
                     result["context"] = context
 
                 return result
-            else:
-                # Fall back to Cypher chain for natural language queries
-                try:
-                    result = self.cypher_chain.invoke({"query": query})
+            # Fall back to Cypher chain for natural language queries
+            try:
+                result = self.cypher_chain.invoke({"query": query})
 
-                    if include_context:
-                        context = self._get_query_context(query)
-                        result["context"] = context
+                if include_context:
+                    context = self._get_query_context(query)
+                    result["context"] = context
 
-                    return result
-                except Exception as e:
-                    return {"error": str(e), "query": query, "fallback_used": True}
+                return result
+            except Exception as e:
+                return {"error": str(e), "query": query, "fallback_used": True}
 
         elif query_type == "cypher":
             # Direct Cypher query
@@ -525,7 +519,7 @@ class GraphMemoryAgent:
         else:
             return {"error": f"Unknown query type: {query_type}"}
 
-    def _get_query_context(self, cypher_query: str) -> Dict[str, Any]:
+    def _get_query_context(self, cypher_query: str) -> dict[str, Any]:
         """Get additional context around query results."""
         # Extract node references from the query
         # This is a simplified version - could be enhanced with proper parsing
@@ -547,8 +541,8 @@ class GraphMemoryAgent:
         }
 
     async def search_similar_memories(
-        self, query: str, node_type: Optional[str] = None, k: int = 5
-    ) -> List[Dict[str, Any]]:
+        self, query: str, node_type: str | None = None, k: int = 5
+    ) -> list[dict[str, Any]]:
         """Search for similar memories using vector similarity.
 
         Args:
@@ -598,8 +592,8 @@ class GraphMemoryAgent:
         self,
         entity_name: str,
         max_depth: int = 2,
-        relationship_types: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        relationship_types: list[str] | None = None,
+    ) -> dict[str, Any]:
         """Get a subgraph centered around an entity.
 
         Args:
@@ -629,7 +623,7 @@ class GraphMemoryAgent:
         nodes = set()
         relationships = set()
 
-        for path in paths:
+        for _path in paths:
             # Process path to extract nodes and relationships
             # This would need proper path parsing based on Neo4j return format
             pass
@@ -642,8 +636,8 @@ class GraphMemoryAgent:
         }
 
     async def consolidate_memories(
-        self, time_window: Optional[str] = "1 day", min_connections: int = 2
-    ) -> Dict[str, Any]:
+        self, time_window: str | None = "1 day", min_connections: int = 2
+    ) -> dict[str, Any]:
         """Consolidate related memories into higher-level concepts.
 
         Args:
@@ -670,25 +664,8 @@ class GraphMemoryAgent:
 
         # Create concept nodes for highly connected entities
         concepts_created = 0
-        for candidate in candidates:
+        for _candidate in candidates:
             # Create a concept that represents the cluster
-            concept_query = """
-            MATCH (n {id: $node_id})-[r]-(m)
-            WHERE m.user_id = $user_id
-            WITH n, collect(DISTINCT m) as related
-            CREATE (c:Concept {
-                id: $concept_id,
-                user_id: $user_id,
-                name: $concept_name,
-                description: $description,
-                created_at: $timestamp,
-                source_entities: $source_entities
-            })
-            FOREACH (node IN related |
-                CREATE (c)-[:ENCOMPASSES]->(node)
-            )
-            RETURN c
-            """
 
             # Generate concept from candidate
             # This is simplified - would use LLM to generate meaningful concept
@@ -703,9 +680,9 @@ class GraphMemoryAgent:
     async def run(
         self,
         input_text: str,
-        mode: Optional[GraphMemoryMode] = None,
+        mode: GraphMemoryMode | None = None,
         auto_store: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Main entry point for the agent.
 
         Args:
