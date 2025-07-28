@@ -16,7 +16,6 @@ from haive.agents.memory_v2.graph_memory_agent import (
 
 def test_graph_memory_config():
     """Test GraphMemoryConfig validation and creation."""
-
     print("🔧 Testing GraphMemoryConfig...")
 
     # Test with DeepSeek to avoid quota issues
@@ -49,7 +48,6 @@ def test_graph_memory_config():
 
 def test_graph_memory_tool_creation():
     """Test tool creation from GraphMemoryAgent."""
-
     print("🛠️ Testing GraphMemoryAgent.as_tool()...")
 
     llm_config = AugLLMConfig(llm_config=DeepSeekLLMConfig(model="deepseek-chat"))
@@ -74,7 +72,6 @@ def test_graph_memory_tool_creation():
 
 def test_graph_transformer_integration():
     """Test integration with graph transformers."""
-
     print("🔄 Testing graph transformer imports...")
 
     try:
@@ -104,7 +101,6 @@ def test_graph_transformer_integration():
 
 def test_graph_db_rag_integration():
     """Test integration with GraphDB RAG components."""
-
     print("🔍 Testing GraphDB RAG integration...")
 
     try:
@@ -129,7 +125,6 @@ def test_graph_db_rag_integration():
 
 def comprehensive_test():
     """Run all tests in sequence."""
-
     print("🧪 Running comprehensive GraphMemoryAgent tests...\n")
 
     # Test basic configuration
