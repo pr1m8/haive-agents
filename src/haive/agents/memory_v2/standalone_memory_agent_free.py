@@ -8,13 +8,11 @@ import asyncio
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-import numpy as np
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
-from pydantic import BaseModel, Field
 
 from haive.agents.memory_v2.memory_state_original import (
     EnhancedMemoryItem,
@@ -37,7 +35,7 @@ class FreeMemoryAgent:
     def __init__(
         self,
         user_id: str,
-        storage_path: Optional[str] = None,
+        storage_path: str | None = None,
         embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
         k_memories: int = 5,
     ):
@@ -102,7 +100,7 @@ class FreeMemoryAgent:
         content: str,
         memory_type: MemoryType = MemoryType.CONVERSATIONAL,
         importance: ImportanceLevel = ImportanceLevel.MEDIUM,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> str:
         """Add a new memory.
 
@@ -152,10 +150,10 @@ class FreeMemoryAgent:
     def search_memories(
         self,
         query: str,
-        k: Optional[int] = None,
-        memory_type: Optional[MemoryType] = None,
-        importance: Optional[ImportanceLevel] = None,
-    ) -> List[Dict[str, Any]]:
+        k: int | None = None,
+        memory_type: MemoryType | None = None,
+        importance: ImportanceLevel | None = None,
+    ) -> list[dict[str, Any]]:
         """Search memories using similarity search.
 
         Args:
@@ -198,7 +196,7 @@ class FreeMemoryAgent:
 
         return formatted_results
 
-    def get_relevant_context(self, query: str, k: Optional[int] = None) -> str:
+    def get_relevant_context(self, query: str, k: int | None = None) -> str:
         """Get relevant context for a query.
 
         Args:
@@ -238,7 +236,7 @@ class FreeMemoryAgent:
         self.vector_store.save_local(str(self.vector_store_path))
         print(f"💾 Saved vector store to {self.vector_store_path}")
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get memory statistics."""
         return {
             "total_memories": self.memory_state.stats.total_memories,
@@ -286,30 +284,29 @@ class FreeMemoryAgent:
             # Retrieve relevant memories
             context = self.get_relevant_context(user_input)
             return f"Based on my memories:\n\n{context}"
-        else:
-            # Store as new memory
-            # Determine type and importance based on content
-            memory_type = MemoryType.CONVERSATIONAL
-            importance = ImportanceLevel.MEDIUM
+        # Store as new memory
+        # Determine type and importance based on content
+        memory_type = MemoryType.CONVERSATIONAL
+        importance = ImportanceLevel.MEDIUM
 
-            # Simple classification
-            if any(
-                word in user_input.lower()
-                for word in ["important", "critical", "urgent", "remember"]
-            ):
-                importance = ImportanceLevel.HIGH
+        # Simple classification
+        if any(
+            word in user_input.lower()
+            for word in ["important", "critical", "urgent", "remember"]
+        ):
+            importance = ImportanceLevel.HIGH
 
-            if any(
-                word in user_input.lower()
-                for word in ["fact", "is a", "are", "works", "located"]
-            ):
-                memory_type = MemoryType.FACTUAL
+        if any(
+            word in user_input.lower()
+            for word in ["fact", "is a", "are", "works", "located"]
+        ):
+            memory_type = MemoryType.FACTUAL
 
-            memory_id = self.add_memory(
-                user_input, memory_type=memory_type, importance=importance
-            )
+        memory_id = self.add_memory(
+            user_input, memory_type=memory_type, importance=importance
+        )
 
-            return f"I've stored that in my memory (ID: {memory_id}). Type: {memory_type.value}, Importance: {importance.value}"
+        return f"I've stored that in my memory (ID: {memory_id}). Type: {memory_type.value}, Importance: {importance.value}"
 
 
 async def test_free_memory_agent():
