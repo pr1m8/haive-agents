@@ -134,7 +134,7 @@ def test_basic_react_execution():
     reasoning_trace = agent.get_reasoning_trace()
     tool_history = agent.get_tool_usage_history()
 
-    print("\n📊 Execution Results:"s:")
+    print("\n📊 Execution Results:")
     print(f"   Iterations completed: {agent.iteration_count}")
     print(f"   Reasoning steps: {len(reasoning_trace)}")
     print(f"   Tools used: {len(tool_history)}")
