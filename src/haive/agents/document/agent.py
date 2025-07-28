@@ -507,7 +507,7 @@ class DocumentAgent(Agent):
 
         # Simple linear pipeline: START -> document_processor -> END
         graph.add_edge(START, "document_processor")
-        graph.add_edge("document_processor", END)
+        graph.add_edge("document_processof", END)
 
         # Store pipeline configuration in metadata
         graph.metadata.update(
