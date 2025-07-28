@@ -1,11 +1,13 @@
 """Configuration for Language Agent Tree Search (LATS) agent."""
 
-from agents.lats.state import TreeState
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.tools.search_tools import tavily_search_tool
+
+# from haive.tools.tools.search_tools import tavily_search_tool  # Commented out - import chain issue
 from langchain_core.tools import BaseTool, StructuredTool
 from pydantic import BaseModel, Field
+
+from haive.agents.reasoning_and_critique.lats.state import TreeState
 
 
 class LATSAgentConfig(AgentConfig):
@@ -37,7 +39,7 @@ class LATSAgentConfig(AgentConfig):
     )
 
     action_engine: AugLLMConfig = Field(
-        tools=[tavily_search_tool],
+        tools=[],  # tavily_search_tool commented out due to import issue
         description="Engine for generating candidate actions",
     )
 
