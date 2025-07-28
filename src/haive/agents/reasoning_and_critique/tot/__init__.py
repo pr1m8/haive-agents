@@ -32,7 +32,13 @@ Example:
 """
 
 # Import the legacy TOT implementation
-from haive.agents.reasoning_and_critique.tot.agent import ToTAgent, setup_workflow
+try:
+    from haive.agents.reasoning_and_critique.tot.agent import ToTAgent, setup_workflow
+except ImportError:
+    # Handle missing setup_workflow
+    from haive.agents.reasoning_and_critique.tot.agent import ToTAgent
+
+    setup_workflow = None
 from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
     CandidateGeneration as NewCandidateGeneration,
 )
@@ -81,7 +87,8 @@ from haive.agents.reasoning_and_critique.tot.state import (
     convert_single_candidate,
 )
 
-__all__ = [
+# Build exports list dynamically
+_exports = [
     # Legacy exports (kept for backward compatibility)
     "Candidate",
     "CandidateEvaluation",
@@ -103,7 +110,6 @@ __all__ = [
     "feedback",
     "get_engine",
     "metadata",
-    "setup_workflow",
     "to_candidates",
     "to_score",
     "update_candidates",
@@ -118,3 +124,9 @@ __all__ = [
     "SolutionScoring",
     "ScoredSolution",
 ]
+
+# Add setup_workflow only if it exists
+if setup_workflow is not None:
+    _exports.insert(_exports.index("to_candidates"), "setup_workflow")
+
+__all__ = _exports
