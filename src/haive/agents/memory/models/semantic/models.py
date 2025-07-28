@@ -101,7 +101,7 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
         for key, value in data.items():
             keywords.append(key.lower())
             if isinstance(value, str):
-                # Simple keyword extraction (could be enhanced with NLP)
+                # Simple key extraction (could be enhanced with NLP)
                 words = re.findall(r"\b[a-zA-Z]+\b", value.lower())
                 keywords.extend([w for w in words if len(w) > 3])
 

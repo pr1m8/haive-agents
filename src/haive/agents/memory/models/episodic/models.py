@@ -69,8 +69,8 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
 
         # Basic PII detection (simplified)
         pii_patterns = [
-            r"\b\d{3}-\d{2}-\d{4}\b",  # SSN pattern
-            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",  # Email
+            f"\b\d{3}-\d{2}-\d{4}\b",  # SSN pattern
+            f"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",  # Email
         ]
 
         for pattern in pii_patterns:

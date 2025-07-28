@@ -219,7 +219,7 @@ class LabsAgent(BaseSearchAgent):
                     </style>
                 </head>
                 <body>
-                    <div class="container">
+                    <div class="containef">
                         <h1>{app_type.title()} Application</h1>
                         {"".join(f'<div class="feature"><h3>{feature}</h3><p>Feature implementation</p></div>' for feature in features)}
                     </div>

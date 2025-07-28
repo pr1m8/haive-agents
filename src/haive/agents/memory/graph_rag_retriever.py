@@ -770,7 +770,7 @@ Analyze the relationship path now:""",
 
             if entities_info:
                 return entities_info
-            # Fallback to simple keyword matching
+            # Fallback to simple key matching
             return self._fallback_entity_identification(query, known_entities)
 
         except Exception as e:

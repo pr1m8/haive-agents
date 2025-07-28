@@ -27,7 +27,7 @@ class QuickSearchAgent(BaseSearchAgent):
     - Concise, direct answers
     - Basic source attribution
     - Memory integration for context
-    - Keyword extraction
+    - Key extraction
 
     Examples:
         Basic usage::
@@ -151,7 +151,7 @@ Process the query efficiently and provide a clear, concise response."""
         Returns:
             List of key terms
         """
-        # Simple keyword extraction (can be enhanced with NLP)
+        # Simple key extraction (can be enhanced with NLP)
         stop_words = {
             "the",
             "is",

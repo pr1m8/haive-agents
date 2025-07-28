@@ -1004,24 +1004,24 @@ class UnifiedMemorySystem:
             # Test classifier
             try:
                 classification = self.classifier.classify_memory("Test memory")
-                diagnostic_results["classifier"] = {
+                diagnostic_results["classifief"] = {
                     "status": "healthy",
                     "classification_types": len(classification.memory_types),
                 }
             except Exception as e:
-                diagnostic_results["classifier"] = {"status": "error", "error": str(e)}
+                diagnostic_results["classifief"] = {"status": "error", "error": str(e)}
 
             # Test KG generator
             try:
                 kg_stats = (
                     f"KG has {len(self.kg_generator.knowledge_graph.nodes)} nodes"
                 )
-                diagnostic_results["kg_generator"] = {
+                diagnostic_results["kg_generatof"] = {
                     "status": "healthy",
                     "info": kg_stats,
                 }
             except Exception as e:
-                diagnostic_results["kg_generator"] = {
+                diagnostic_results["kg_generatof"] = {
                     "status": "error",
                     "error": str(e),
                 }
@@ -1030,12 +1030,12 @@ class UnifiedMemorySystem:
             if self.coordinator:
                 try:
                     coord_diagnostic = await self.coordinator.run_diagnostic()
-                    diagnostic_results["coordinator"] = {
+                    diagnostic_results["coordinatof"] = {
                         "status": coord_diagnostic["system_status"],
                         "details": coord_diagnostic,
                     }
                 except Exception as e:
-                    diagnostic_results["coordinator"] = {
+                    diagnostic_results["coordinatof"] = {
                         "status": "error",
                         "error": str(e),
                     }

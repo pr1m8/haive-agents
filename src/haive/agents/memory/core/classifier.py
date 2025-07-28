@@ -459,7 +459,7 @@ Determine:
         entities.extend(capitalized)
 
         # Extract common entity patterns
-        email_pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+        email_pattern = f"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
         emails = re.findall(email_pattern, text)
         entities.extend(emails)
 
@@ -474,7 +474,7 @@ Determine:
         return unique_entities[:10]  # Limit to top 10
 
     def _extract_topics_simple(self, text: str) -> list[str]:
-        """Simple topic extraction using keyword analysis."""
+        """Simple topic extraction using key analysis."""
         # Common topic keywords
         topic_keywords = {
             "technology": ["computer", "software", "app", "website", "digital", "tech"],
@@ -512,7 +512,7 @@ Determine:
         detected_topics = []
 
         for topic, keywords in topic_keywords.items():
-            if any(keyword in text_lower for keyword in keywords):
+            if any(key in text_lower for key in keywords):
                 detected_topics.append(topic)
 
         return detected_topics
