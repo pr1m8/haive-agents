@@ -99,7 +99,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
 
         # Check if it's a memory storage request
         store_keywords = ["remember", "store", "save", "record", "note that"]
-        is_store = any(keyword in lower_input for keyword in store_keywords)
+        is_store = any(key in lower_input for key in store_keywords)
 
         # Check if it's a memory query
         query_keywords = [
@@ -110,8 +110,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
             "what is",
         ]
         is_query = (
-            any(keyword in lower_input for keyword in query_keywords)
-            or "?" in user_input
+            any(key in lower_input for key in query_keywords) or "?" in user_input
         )
 
         # Determine memory type
@@ -237,8 +236,8 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
             # Extract the content to remember
             # Simple extraction - remove "remember" type keywords
             content = user_input
-            for keyword in ["remember", "store", "save", "record", "note that"]:
-                content = content.lower().replace(keyword, "").strip()
+            for key in ["remember", "store", "save", "record", "note that"]:
+                content = content.lower().replace(key, "").strip()
                 content = content.replace(":", "").strip()
 
             # Store the memory
