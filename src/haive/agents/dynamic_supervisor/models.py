@@ -96,7 +96,7 @@ class AgentInfo(BaseModel):
 
         # Extract capabilities from description if not provided
         if not self.capabilities and self.description:
-            # Simple keyword extraction
+            # Simple key extraction
             keywords = [
                 "search",
                 "math",
@@ -141,7 +141,7 @@ class AgentInfo(BaseModel):
         """Check if agent has a required capability.
 
         Args:
-            required: Capability keyword to check
+            required: Capability key to check
 
         Returns:
             True if agent has the capability
