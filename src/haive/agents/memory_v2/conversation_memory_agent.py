@@ -6,8 +6,8 @@ with semantic search over conversation history and optional time-weighting.
 
 import asyncio
 import logging
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
 from uuid import uuid4
 
 from haive.core.engine.vectorstore import VectorStoreProvider
@@ -54,13 +54,13 @@ class MessageDocumentConverter:
                 "conversation_id": self.conversation_id,
                 "user_id": self.user_id,
                 "turn_number": self.turn_counter,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "content_length": len(content),
                 "source": "conversation",
             },
         )
 
-    def convert_messages(self, messages: List[BaseMessage]) -> List[Document]:
+    def convert_messages(self, messages: list[BaseMessage]) -> list[Document]:
         """Convert multiple messages to documents."""
         return [self.convert_message(msg) for msg in messages]
 
@@ -126,8 +126,8 @@ class ConversationMemoryAgent:
         self.user_id = user_id or f"user_{uuid4()}"
 
         self.message_converter = MessageDocumentConverter(user_id=self.user_id)
-        self._rag_agent: Optional[BaseRAGAgent] = None
-        self._documents: List[Document] = []
+        self._rag_agent: BaseRAGAgent | None = None
+        self._documents: list[Document] = []
         self._initialized = False
 
         logger.info(
@@ -142,11 +142,11 @@ class ConversationMemoryAgent:
         if not self._documents:
             # Create initial placeholder document
             placeholder_doc = Document(
-                page_content="Conversation memory initialized for user",
+                page_content="Conversation memory initialized for usef",
                 metadata={
                     "message_type": "system",
                     "user_id": self.user_id,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                     "source": "system_initialization",
                 },
             )
@@ -163,7 +163,7 @@ class ConversationMemoryAgent:
         self._initialized = True
         logger.info(f"✅ Initialized BaseRAGAgent for {self.name}")
 
-    async def add_conversation(self, messages: List[BaseMessage]) -> None:
+    async def add_conversation(self, messages: list[BaseMessage]) -> None:
         """Add conversation messages to memory."""
         if not messages:
             return
@@ -178,7 +178,7 @@ class ConversationMemoryAgent:
 
         logger.info(f"Added {len(messages)} messages to conversation memory")
 
-    async def retrieve_context(self, query: str, k: int = None) -> List[Document]:
+    async def retrieve_context(self, query: str, k: int = None) -> list[Document]:
         """Retrieve relevant conversation context using BaseRAGAgent.
 
         Args:
@@ -214,7 +214,7 @@ class ConversationMemoryAgent:
         )
         return documents
 
-    async def get_conversation_summary(self) -> Dict[str, Any]:
+    async def get_conversation_summary(self) -> dict[str, Any]:
         """Get summary of stored conversations."""
         return {
             "user_id": self.user_id,
@@ -266,7 +266,6 @@ class ConversationMemoryAgent:
         name: str = "conversation_memory",
     ) -> "ConversationMemoryAgent":
         """Factory method to create ConversationMemoryAgent."""
-
         config = ConversationMemoryConfig(
             vector_store_provider=vector_store_provider,
             embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
@@ -278,7 +277,6 @@ class ConversationMemoryAgent:
 # Standalone demo function
 async def demo_conversation_memory():
     """Demo conversation memory agent functionality."""
-
     print("🚀 Demo: ConversationMemoryAgent with BaseRAGAgent")
 
     # Create agent
