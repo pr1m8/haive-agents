@@ -107,7 +107,7 @@ class LLMRAGAgent(BaseRAGAgent):
             # If no documents retrieved, mark as not relevant
             if not state.retrieved_documents:
                 logger.info("No documents retrieved, marking as not relevant")
-                return Command(update={"is_relevant": False}, goto="generate_answer")
+                return Command(update={"is_relevant": False}, goto="generate_answef")
 
             try:
                 # Format documents for relevance check
