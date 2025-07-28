@@ -13,7 +13,7 @@ Key improvements over V1:
 """
 
 import logging
-from typing import Any, Dict, Literal
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -37,7 +37,7 @@ from haive.agents.base.agent import Agent
 logger = logging.getLogger(__name__)
 
 
-def has_tool_calls_v2(state: Dict[str, Any]) -> bool:
+def has_tool_calls_v2(state: dict[str, Any]) -> bool:
     """Check if the last AI message has tool calls - V2 version."""
     if not hasattr(state, "messages") or not state.messages:
         return False
@@ -378,7 +378,7 @@ class SimpleAgentV2(Agent):
 
         return graph
 
-    def create_runnable(self, runnable_config: Dict[str, Any] = None):
+    def create_runnable(self, runnable_config: dict[str, Any] = None):
         """Override to ensure state includes required fields."""
         compiled = super().create_runnable(runnable_config)
 

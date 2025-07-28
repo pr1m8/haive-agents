@@ -28,7 +28,7 @@ Usage:
     result = await agent.arun("Hello")
 """
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     # Import types only for static analysis

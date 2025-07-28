@@ -44,7 +44,6 @@ class Workflow(ABC):
     @abstractmethod
     async def execute(self, input_data: Any) -> Any:
         """Execute workflow logic."""
-        pass
 
 
 class Agent(Workflow, Generic[EngineT]):
@@ -76,8 +75,6 @@ class SimpleAgent(Agent[AugLLMConfig]):
 
     The engine type IS the primary differentiator between agent types.
     """
-
-    pass
 
 
 # Example usage

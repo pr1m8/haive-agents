@@ -30,8 +30,7 @@ This implementation follows the established Haive patterns:
 """
 
 import logging
-from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any
 
 # Use typing_extensions for TypeVar with default support
 try:
@@ -48,7 +47,6 @@ from haive.core.engine.base import InvokableEngine
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.engine_node_generic import (
     GenericEngineNodeConfig,
-    LLMNodeConfig,
 )
 from haive.core.graph.node.parser_node_config_v2 import ParserNodeConfigV2
 from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
@@ -57,12 +55,10 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.llm_state import LLMState
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.output_parsers.base import BaseOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.tools import BaseTool
 from langgraph.graph import END, START
-from langgraph.types import Command
 from pydantic import BaseModel, Field, field_validator
 
 # Use enhanced Agent base class with proper generic support
@@ -170,37 +166,37 @@ class SimpleAgentV3(
     # ENHANCED CONVENIENCE FIELDS - With hooks and change tracking
     # ========================================================================
 
-    temperature: Optional[float] = Field(
+    temperature: float | None = Field(
         default=None,
         description="Temperature for the LLM (syncs to engine, triggers recompile + hooks)",
     )
-    max_tokens: Optional[int] = Field(
+    max_tokens: int | None = Field(
         default=None,
         description="Max tokens for the LLM (syncs to engine, triggers recompile + hooks)",
     )
-    model_name: Optional[str] = Field(
+    model_name: str | None = Field(
         default=None,
         description="Model name for the LLM (syncs to engine.model, triggers recompile + hooks)",
     )
-    force_tool_use: Optional[bool] = Field(
+    force_tool_use: bool | None = Field(
         default=None,
         description="Force tool use (syncs to engine, triggers recompile + hooks)",
     )
-    structured_output_model: Optional[Type[BaseModel]] = Field(
+    structured_output_model: type[BaseModel] | None = Field(
         default=None,
         description="Structured output model (syncs to engine, triggers recompile + hooks)",
     )
-    system_message: Optional[str] = Field(
+    system_message: str | None = Field(
         default=None,
         description="System message (syncs to engine, triggers recompile + hooks)",
     )
 
     # SimpleAgent v3 enhanced fields
-    output_parser: Optional[BaseOutputParser] = Field(
+    output_parser: BaseOutputParser | None = Field(
         default=None,
         description="Optional output parser (triggers recompile + hooks on change)",
     )
-    prompt_template: Optional[Union[ChatPromptTemplate, PromptTemplate]] = Field(
+    prompt_template: ChatPromptTemplate | PromptTemplate | None = Field(
         default=None,
         description="Optional prompt template (triggers recompile + hooks on change)",
     )
@@ -231,7 +227,7 @@ class SimpleAgentV3(
         """Ensure engine is AugLLMConfig or create one with debug enabled."""
         if v is None:
             engine = AugLLMConfig()
-            logger.debug(f"Created default AugLLMConfig engine")
+            logger.debug("Created default AugLLMConfig engine")
             return engine
         if isinstance(v, dict):
             engine = AugLLMConfig(**v)
@@ -239,7 +235,7 @@ class SimpleAgentV3(
             return engine
         if not isinstance(v, AugLLMConfig):
             raise ValueError(f"SimpleAgentV3 requires AugLLMConfig, got {type(v)}")
-        logger.debug(f"Using provided AugLLMConfig engine")
+        logger.debug("Using provided AugLLMConfig engine")
         return v
 
     # ========================================================================
@@ -727,7 +723,7 @@ class SimpleAgentV3(
         if not needs_tools and not needs_parsing:
             graph.add_edge("agent_node", END)
             if self.debug:
-                logger.debug(f"Built simple graph: START -> agent_node -> END")
+                logger.debug("Built simple graph: START -> agent_node -> END")
             return graph
 
         # Add dynamic tool nodes if needed
@@ -838,7 +834,7 @@ class SimpleAgentV3(
             if self.debug:
                 logger.debug("Added conditional edges from agent_node")
 
-    def _routing_condition_with_hooks(self, state: Dict[str, Any]) -> str:
+    def _routing_condition_with_hooks(self, state: dict[str, Any]) -> str:
         """Determine routing based on state with hooks integration."""
         messages = state.get("messages", [])
         if not messages:
@@ -874,7 +870,7 @@ class SimpleAgentV3(
     def _register_graph_for_recompilation(self, graph: BaseGraph) -> None:
         """Register graph for automatic recompilation with hooks."""
         if self.debug:
-            logger.debug(f"Registering graph for recompilation")
+            logger.debug("Registering graph for recompilation")
 
         # Store reference for recompilation
         self._compiled_graph = graph
@@ -1227,8 +1223,8 @@ class SimpleAgentV3(
     @classmethod
     def as_tool(
         cls,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
+        name: str | None = None,
+        description: str | None = None,
         debug: bool = True,  # Enable debug by default
         **agent_kwargs,
     ) -> BaseTool:
@@ -1279,15 +1275,14 @@ class SimpleAgentV3(
     @classmethod
     def as_structured_tool(
         cls,
-        output_model: Type[BaseModel],
-        name: Optional[str] = None,
-        description: Optional[str] = None,
+        output_model: type[BaseModel],
+        name: str | None = None,
+        description: str | None = None,
         debug: bool = True,
         **agent_kwargs,
     ) -> BaseTool:
         """Convert SimpleAgentV3 to a structured output tool."""
         from langchain_core.tools import tool
-        from pydantic import create_model
 
         tool_name = name or f"structured_{output_model.__name__.lower()}_tool"
         tool_description = (
@@ -1329,7 +1324,7 @@ class SimpleAgentV3(
                         return parsed.model_dump()
 
                 # Try to parse from messages if no parsed_output
-                if "messages" in result and result["messages"]:
+                if result.get("messages"):
                     last_content = result["messages"][-1].content
                     try:
                         import json
@@ -1350,8 +1345,8 @@ class SimpleAgentV3(
 
     def as_meta_capable(
         self,
-        initial_state: Optional[Dict[str, Any]] = None,
-        graph_context: Optional[Dict[str, Any]] = None,
+        initial_state: dict[str, Any] | None = None,
+        graph_context: dict[str, Any] | None = None,
     ) -> MetaStateSchema:
         """Convert agent to meta-capable agent with hooks integration."""
         if self.debug:
@@ -1539,9 +1534,8 @@ class SimpleAgentV3(
                 "output": (self.structured_output_model, None),
                 "messages": (list, []),
             }
-        else:
-            # Default message-based output
-            return {"messages": (list, []), "response": (str, "")}
+        # Default message-based output
+        return {"messages": (list, []), "response": (str, "")}
 
     def create_runnable(self, runnable_config: Any = None) -> Any:
         """Create a runnable from this agent configuration.

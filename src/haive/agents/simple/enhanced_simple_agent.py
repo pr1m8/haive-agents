@@ -129,7 +129,7 @@ class EnhancedSimpleAgent(Agent[AugLLMConfig]):
             if "system_message" in values and values["system_message"] is not None:
                 config_kwargs["system_message"] = values["system_message"]
 
-            if "tools" in values and values["tools"]:
+            if values.get("tools"):
                 config_kwargs["tools"] = values["tools"]
 
             # Create the engine

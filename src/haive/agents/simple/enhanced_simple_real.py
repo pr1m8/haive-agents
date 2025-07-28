@@ -43,7 +43,6 @@ class EnhancedAgentBase:
 
     def setup_agent(self) -> None:
         """Hook for subclass setup."""
-        pass
 
     def build_graph(self) -> Any:
         """Build the agent's graph."""

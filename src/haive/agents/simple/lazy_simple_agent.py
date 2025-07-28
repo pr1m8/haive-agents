@@ -30,19 +30,17 @@ Usage:
 
 import importlib
 import logging
-import sys
 from datetime import datetime
-from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 # Global cache for imported modules and classes
-_MODULE_CACHE: Dict[str, Any] = {}
-_CLASS_CACHE: Dict[str, Any] = {}
+_MODULE_CACHE: dict[str, Any] = {}
+_CLASS_CACHE: dict[str, Any] = {}
 
 
-def cached_import(module_path: str, class_name: Optional[str] = None):
+def cached_import(module_path: str, class_name: str | None = None):
     """Cached import with intelligent loading."""
     cache_key = f"{module_path}{'.' + class_name if class_name else ''}"
 
@@ -59,8 +57,7 @@ def cached_import(module_path: str, class_name: Optional[str] = None):
         cls = getattr(module, class_name)
         _CLASS_CACHE[cache_key] = cls
         return cls
-    else:
-        return module
+    return module
 
 
 class LazyAugLLMConfig:
@@ -75,13 +72,13 @@ class LazyAugLLMConfig:
         # Basic defaults that don't require imports
         self.name = kwargs.get("name", "lazy_aug_llm")
         self.temperature = kwargs.get("temperature", 0.7)
-        self.max_tokens = kwargs.get("max_tokens", None)
+        self.max_tokens = kwargs.get("max_tokens")
         self.model = kwargs.get("model", "gpt-4")
 
     def _ensure_initialized(self):
         """Initialize the real AugLLMConfig only when needed."""
         if not self._is_initialized:
-            logger.debug(f"Lazy loading AugLLMConfig for first use")
+            logger.debug("Lazy loading AugLLMConfig for first use")
 
             # Import heavy dependencies only now
             AugLLMConfig = cached_import(
@@ -92,7 +89,7 @@ class LazyAugLLMConfig:
             self._real_instance = AugLLMConfig(**self._init_kwargs)
             self._is_initialized = True
 
-            logger.debug(f"AugLLMConfig initialized successfully")
+            logger.debug("AugLLMConfig initialized successfully")
 
     def __getattr__(self, name: str):
         """Proxy all attribute access to real instance."""
@@ -143,7 +140,7 @@ class LazyAgent:
     def _ensure_initialized(self):
         """Initialize real Agent only when needed."""
         if not self._is_initialized:
-            logger.debug(f"Lazy loading Agent base class")
+            logger.debug("Lazy loading Agent base class")
 
             # Import Agent class
             Agent = cached_import("haive.agents.base.enhanced_agent", "Agent")
@@ -157,7 +154,7 @@ class LazyAgent:
             self._real_instance = Agent(**self._init_kwargs)
             self._is_initialized = True
 
-            logger.debug(f"Agent initialized successfully")
+            logger.debug("Agent initialized successfully")
 
     def __getattr__(self, name: str):
         """Proxy all method calls to real instance."""
@@ -176,15 +173,14 @@ class LazySimpleAgent:
     def __init__(
         self,
         name: str = "LazySimpleAgent",
-        engine: Optional[Any] = None,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        model_name: Optional[str] = None,
+        engine: Any | None = None,
+        temperature: float | None = None,
+        max_tokens: int | None = None,
+        model_name: str | None = None,
         debug: bool = True,
         **kwargs,
     ):
         """Initialize with minimal overhead - no heavy imports."""
-
         # Store all initialization parameters
         self._init_time = datetime.now()
         self._name = name

@@ -18,8 +18,7 @@ This uses the most minimal possible imports and defers everything else.
 """
 
 # MINIMAL IMPORTS ONLY - no logging, no complex types, no frameworks
-import sys
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 class UltraLazyAgent:
@@ -43,7 +42,7 @@ class UltraLazyAgent:
             import importlib
 
             module = importlib.import_module("haive.agents.simple.agent_v3")
-            SimpleAgentV3 = getattr(module, "SimpleAgentV3")
+            SimpleAgentV3 = module.SimpleAgentV3
 
             # Create real instance
             self._real_agent = SimpleAgentV3(name=self._name, **self._kwargs)
@@ -85,7 +84,7 @@ class UltraLazyAgent:
         import importlib
 
         module = importlib.import_module("haive.agents.simple.agent_v3")
-        SimpleAgentV3 = getattr(module, "SimpleAgentV3")
+        SimpleAgentV3 = module.SimpleAgentV3
         return SimpleAgentV3.as_tool(**kwargs)
 
     @classmethod
@@ -94,7 +93,7 @@ class UltraLazyAgent:
         import importlib
 
         module = importlib.import_module("haive.agents.simple.agent_v3")
-        SimpleAgentV3 = getattr(module, "SimpleAgentV3")
+        SimpleAgentV3 = module.SimpleAgentV3
         return SimpleAgentV3.as_structured_tool(**kwargs)
 
     def __repr__(self) -> str:
