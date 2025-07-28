@@ -16,7 +16,7 @@ class StructurerAgent(SimpleAgent):
     step-by-step plan for solving the specific task.
 
     Attributes:
-        name: Agent identifier (default: "structurer")
+        name: Agent identifier (default: "structuref")
         engine: LLM configuration for the agent
 
     Example:

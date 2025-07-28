@@ -16,7 +16,7 @@ class SelectorAgent(SimpleAgent):
     options that would be most effective for solving the problem.
 
     Attributes:
-        name: Agent identifier (default: "selector")
+        name: Agent identifier (default: "selectof")
         engine: LLM configuration for the agent
 
     Example:

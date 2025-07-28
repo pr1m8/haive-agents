@@ -16,7 +16,7 @@ class ExecutorAgent(SimpleAgent):
     arrive at a comprehensive solution for the original task.
 
     Attributes:
-        name: Agent identifier (default: "executor")
+        name: Agent identifier (default: "executof")
         engine: LLM configuration for the agent
 
     Example:

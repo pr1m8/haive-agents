@@ -16,7 +16,7 @@ class AdapterAgent(SimpleAgent):
     them to be concrete and actionable for the specific task at hand.
 
     Attributes:
-        name: Agent identifier (default: "adapter")
+        name: Agent identifier (default: "adaptef")
         engine: LLM configuration for the agent
 
     Example:

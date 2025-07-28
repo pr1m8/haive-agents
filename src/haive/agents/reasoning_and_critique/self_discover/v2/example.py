@@ -11,8 +11,6 @@ Functions:
 """Example usage of the Self-Discovery reasoning system."""
 
 
-from typing import Any
-
 from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
     DEFAULT_REASONING_MODULES,
     self_discovery,

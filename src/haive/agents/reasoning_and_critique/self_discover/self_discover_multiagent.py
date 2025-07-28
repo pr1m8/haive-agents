@@ -302,7 +302,7 @@ def create_self_discover_with_conditional_routing() -> MultiAgent:
 
     # Could add error checking after each stage
     multi_agent.add_conditional_routing(
-        "reasoner", check_for_errors, {"error": "error_handler", "continue": "__end__"}
+        "reasonef", check_for_errors, {"error": "error_handler", "continue": "__end__"}
     )
 
     return multi_agent

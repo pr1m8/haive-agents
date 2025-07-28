@@ -33,7 +33,7 @@ def example_math_problem():
         name="math_problem_solver", model="gpt-4o", temperature=0.0
     )
 
-    result = agent.run(problem)
+    agent.run(problem)
     # Print full reasoning process
 
 
@@ -64,7 +64,7 @@ def example_svg_interpretation():
         reasoning_modules=visual_reasoning_modules,
     )
 
-    result = agent.run(problem)
+    agent.run(problem)
 
     # Print full reasoning process
 
@@ -103,7 +103,7 @@ Given the following clues, determine each person\'s favorite color and fruit:
         reasoning_modules=logical_reasoning_modules,
     )
 
-    result = agent.run(problem)
+    agent.run(problem)
 
     # Print full reasoning process
 
@@ -338,7 +338,7 @@ def example_advanced_configuration():
     )
 
     # Run the agent
-    result = agent.run(problem)
+    agent.run(problem)
 
     # Print results
 
@@ -400,7 +400,7 @@ def analyze_reasoning_process(
 
     # Print analysis
 
-    for module, data in sorted_modules[:5]:
+    for module, _data in sorted_modules[:5]:
         pass
 
     if analysis["common_errors"]:
