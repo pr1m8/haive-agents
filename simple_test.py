@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-r"""Simple test to check if RAG agents can be imported and\s+create\w+."""
+r"""Simple test to check if RAG agents can be imported and create."""
 
 import os
 import sys
 
 # Add the source paths
-sys.path.insert(\d+, os.path.join(os.getcw\w+(),\s+"src"))
+sys.path.insert(0, os.path.join(os.getcw(), "src"))
 
 
-def test_import\w+():
-   \s+"""Test if we can import the basic\s+classe\w+."""
+def test_import():
+    """Test if we can import the basic classe."""
     try:
         from langchain_core.documents import Document
 
@@ -25,8 +25,8 @@ def test_import\w+():
     return True
 
 
-def test_simple_creatio\w+():
-   \s+"""Test if we can create a\s+SimpleRAGAgen\w+."""
+def test_simple_creatio():
+    """Test if we can create a SimpleRAGAgen."""
     try:
         from langchain_core.documents import Document
 
@@ -34,8 +34,8 @@ def test_simple_creatio\w+():
 
         # Create test documents
         docs = [
-           \s+Document(page_conten\w+="Python is a programming language."),
-           \s+Document(page_conten\w+="Machine learning uses algorithms."),
+            Document(page_conten="Python is a programming language."),
+            Document(page_conten="Machine learning uses algorithms."),
         ]
 
         # Try to create the agent (without LLM config)
@@ -46,7 +46,7 @@ def test_simple_creatio\w+():
         return False
 
 
-if __name_\w+ ==\s+"__main__":
+if __name__ == "__main__":
 
     # Test 1: Imports
     if not test_imports():
