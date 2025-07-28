@@ -3,8 +3,6 @@
 This module defines configuration options for the Plan-and-Execute V3 agent.
 """
 
-from typing import Optional
-
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -72,14 +70,14 @@ class PlanExecuteV3Config(BaseModel):
     )
 
     # Planning-specific configuration
-    planning_temperature: Optional[float] = Field(
+    planning_temperature: float | None = Field(
         default=None,
         ge=0.0,
         le=2.0,
         description="Temperature for planning LLM (None uses engine default)",
     )
 
-    execution_temperature: Optional[float] = Field(
+    execution_temperature: float | None = Field(
         default=None,
         ge=0.0,
         le=2.0,
@@ -91,7 +89,7 @@ class PlanExecuteV3Config(BaseModel):
         default=True, description="Prefer parallel execution for independent tool calls"
     )
 
-    tool_timeout_override: Optional[float] = Field(
+    tool_timeout_override: float | None = Field(
         default=None, gt=0, description="Override timeout for tool execution"
     )
 

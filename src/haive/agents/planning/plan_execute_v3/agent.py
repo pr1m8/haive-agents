@@ -14,10 +14,10 @@ Key Features:
 
 import asyncio
 import time
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import Tool
 
 from haive.agents.multi.enhanced_multi_agent_v3 import EnhancedMultiAgent
@@ -59,8 +59,8 @@ class PlanExecuteV3Agent:
     def __init__(
         self,
         name: str = "plan_execute_v3",
-        config: Optional[AugLLMConfig] = None,
-        tools: Optional[List[Tool]] = None,
+        config: AugLLMConfig | None = None,
+        tools: list[Tool] | None = None,
         max_iterations: int = 5,
         max_steps_per_plan: int = 10,
     ):
@@ -115,7 +115,7 @@ class PlanExecuteV3Agent:
 
         # Create Enhanced MultiAgent V3 coordinator
         self.multi_agent = EnhancedMultiAgent(
-            name=f"{name}_coordinator",
+            name=f"{name}_coordinatof",
             agents={
                 "planner": self.planner,
                 "executor": self.executor,
@@ -131,7 +131,6 @@ class PlanExecuteV3Agent:
     def _setup_routing(self) -> None:
         """Set up conditional routing between sub-agents."""
         # Commented out for now - using sequential mode for testing
-        pass
 
         # TODO: Re-enable conditional routing once basic sequential flow works
         # # After planning: always go to executor
@@ -164,8 +163,8 @@ class PlanExecuteV3Agent:
 
     async def arun(
         self,
-        input_data: Union[str, Dict[str, Any], PlanExecuteInput],
-        state: Optional[PlanExecuteV3State] = None,
+        input_data: str | dict[str, Any] | PlanExecuteInput,
+        state: PlanExecuteV3State | None = None,
     ) -> PlanExecuteOutput:
         """Execute the Plan-and-Execute agent asynchronously.
 
@@ -201,7 +200,7 @@ class PlanExecuteV3Agent:
 
         # Execute with Enhanced MultiAgent V3
         try:
-            result = await self.multi_agent.arun(state)
+            await self.multi_agent.arun(state)
 
             # Extract final answer from state
             final_answer = (
@@ -242,20 +241,20 @@ class PlanExecuteV3Agent:
             # Handle execution errors
             return PlanExecuteOutput(
                 objective=objective,
-                final_answer=f"Execution failed: {str(e)}",
-                execution_summary=f"Error occurred during plan execution: {str(e)}",
+                final_answer=f"Execution failed: {e!s}",
+                execution_summary=f"Error occurred during plan execution: {e!s}",
                 steps_completed=0,
                 total_steps=0,
                 revisions_made=0,
                 total_execution_time=time.time() - start_time,
-                key_findings=[f"Error: {str(e)}"],
+                key_findings=[f"Error: {e!s}"],
                 confidence_score=0.0,
             )
 
     def run(
         self,
-        input_data: Union[str, Dict[str, Any], PlanExecuteInput],
-        state: Optional[PlanExecuteV3State] = None,
+        input_data: str | dict[str, Any] | PlanExecuteInput,
+        state: PlanExecuteV3State | None = None,
     ) -> PlanExecuteOutput:
         """Execute the Plan-and-Execute agent synchronously.
 
@@ -268,7 +267,7 @@ class PlanExecuteV3Agent:
         """
         return asyncio.run(self.arun(input_data, state))
 
-    def get_capabilities(self) -> Dict[str, Any]:
+    def get_capabilities(self) -> dict[str, Any]:
         """Get agent capabilities description."""
         return {
             "name": self.name,

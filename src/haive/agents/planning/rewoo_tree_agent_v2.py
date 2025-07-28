@@ -368,7 +368,7 @@ class ReWOOExecutorAgent(ReactAgent):
 
     def __init__(
         self,
-        name: str = "rewoo_executor",
+        name: str = "rewoo_executof",
         tools: list[BaseTool] | None = None,
         tool_aliases: dict[str, ToolAlias] | None = None,
         **kwargs,

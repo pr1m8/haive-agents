@@ -1,6 +1,4 @@
-"""
-Tests for JoinStep - Auto DAG detection and parallelization
-"""
+"""Tests for JoinStep - Auto DAG detection and parallelization"""
 
 from haive.agents.planning.rewoo.models.join_step import JoinStep, JoinStrategy
 from haive.agents.planning.rewoo.models.plans import ExecutionPlan

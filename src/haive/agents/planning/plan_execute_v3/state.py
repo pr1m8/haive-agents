@@ -5,7 +5,7 @@ extending MessagesState with computed fields for plan tracking.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import Field, computed_field
@@ -23,21 +23,21 @@ class PlanExecuteV3State(MessagesState):
     # Messages field is inherited from MessagesState
 
     # Current plan
-    plan: Optional[ExecutionPlan] = Field(
+    plan: ExecutionPlan | None = Field(
         default=None, description="The current execution plan"
     )
 
     # Execution tracking
-    current_step_id: Optional[int] = Field(
+    current_step_id: int | None = Field(
         default=None, description="ID of the step currently being executed"
     )
 
-    step_executions: List[StepExecution] = Field(
+    step_executions: list[StepExecution] = Field(
         default_factory=list, description="History of all step executions"
     )
 
     # Evaluation history
-    evaluations: List[PlanEvaluation] = Field(
+    evaluations: list[PlanEvaluation] = Field(
         default_factory=list, description="History of plan evaluations"
     )
 
@@ -46,12 +46,12 @@ class PlanExecuteV3State(MessagesState):
         default=0, description="Number of times the plan has been revised"
     )
 
-    plan_history: List[ExecutionPlan] = Field(
+    plan_history: list[ExecutionPlan] = Field(
         default_factory=list, description="History of all plans (original + revisions)"
     )
 
     # Final result
-    final_answer: Optional[str] = Field(
+    final_answer: str | None = Field(
         default=None, description="Final answer once execution is complete"
     )
 
@@ -60,17 +60,17 @@ class PlanExecuteV3State(MessagesState):
         default_factory=datetime.now, description="When execution started"
     )
 
-    completed_at: Optional[datetime] = Field(
+    completed_at: datetime | None = Field(
         default=None, description="When execution completed"
     )
 
     # Additional context
-    context: Dict[str, Any] = Field(
+    context: dict[str, Any] = Field(
         default_factory=dict, description="Additional context for execution"
     )
 
     # Error tracking
-    errors: List[Dict[str, Any]] = Field(
+    errors: list[dict[str, Any]] = Field(
         default_factory=list, description="Errors encountered during execution"
     )
 
@@ -85,14 +85,14 @@ class PlanExecuteV3State(MessagesState):
         for msg in self.messages:
             if hasattr(msg, "type") and msg.type == "human":
                 return msg.content.strip()
-            elif isinstance(msg, dict) and msg.get("type") == "human":
+            if isinstance(msg, dict) and msg.get("type") == "human":
                 return msg.get("content", "").strip()
 
         return "No objective specified"
 
     @computed_field
     @property
-    def current_step(self) -> Optional[str]:
+    def current_step(self) -> str | None:
         """Get the current step description for the executor."""
         if not self.plan or not self.current_step_id:
             return None
@@ -133,7 +133,7 @@ class PlanExecuteV3State(MessagesState):
             f"Objective: {self.plan.objective}",
             f"Total Steps: {self.plan.total_steps}",
             f"Progress: {self.plan.get_progress_percentage():.1f}%",
-            f"Status:",
+            "Status:",
         ]
 
         # Count step statuses
@@ -237,7 +237,7 @@ class PlanExecuteV3State(MessagesState):
 
     @computed_field
     @property
-    def key_findings(self) -> List[str]:
+    def key_findings(self) -> list[str]:
         """Extract key findings from executions."""
         findings = []
 
@@ -254,11 +254,11 @@ class PlanExecuteV3State(MessagesState):
 
     @computed_field
     @property
-    def execution_time(self) -> Optional[float]:
+    def execution_time(self) -> float | None:
         """Total execution time in seconds."""
         if self.started_at and self.completed_at:
             return (self.completed_at - self.started_at).total_seconds()
-        elif self.started_at:
+        if self.started_at:
             # Still running
             return (datetime.now() - self.started_at).total_seconds()
         return None

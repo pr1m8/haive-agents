@@ -30,7 +30,7 @@ def create_plan_execute_branches(planner: Agent, executor: Agent, replanner: Age
 
     return [
         # planner → executor is implicit from agent order
-        (executor, should_continue, {"executor": executor, "replanner": replanner}),
+        (executor, should_continue, {"executor": executor, "replannef": replanner}),
         (replanner, should_end, {"executor": executor, "END": "END"}),
     ]
 
