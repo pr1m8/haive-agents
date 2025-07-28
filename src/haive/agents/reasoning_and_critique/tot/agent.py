@@ -4,7 +4,7 @@ This module implements the Tree of Thoughts algorithm as a Haive agent.
 """
 
 import logging
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Union
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
@@ -514,7 +514,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         # Otherwise continue the search with the beam candidates
         return Command(update=updates)
 
-    def _should_continue_search(self, state: TOTState) -> str | END:
+    def _should_continue_search(self, state: TOTState) -> Union[str, END]:
         """Decide whether to continue the search.
 
         Args:
@@ -530,7 +530,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         # Continue to evaluation
         return self.config.evaluator_node
 
-    def _map_beam_expansion(self, state: TOTState) -> END | list[Send]:
+    def _map_beam_expansion(self, state: TOTState) -> Union[END, list[Send]]:
         """Map beam candidates to parallel expansion nodes.
 
         Args:
@@ -573,7 +573,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
 
         return sends if sends else END
 
-    def _should_expand_or_finish(self, state: TOTState) -> str | END:
+    def _should_expand_or_finish(self, state: TOTState) -> Union[str, END]:
         """Decide whether to expand candidates or finish.
 
         Args:
