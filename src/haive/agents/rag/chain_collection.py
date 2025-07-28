@@ -308,9 +308,9 @@ class RAGChainCollection:
             for hypothesis in hypotheses[:2]:  # Verify first 2
                 # Check if hypothesis is supported by documents (simplified)
                 if any(
-                    keyword in doc.page_content.lower()
+                    key in doc.page_content.lower()
                     for doc in documents
-                    for keyword in hypothesis.lower().split()[:3]
+                    for key in hypothesis.lower().split()[:3]
                 ):
                     verified.append(hypothesis)
 

@@ -168,7 +168,7 @@ class AdaptiveRAGAgent(ConditionalAgent):
 
         # Define routing branches
         branches = {
-            "analyzer": {
+            "analyzef": {
                 "condition": route_query,
                 "mapping": {
                     "direct": "direct",
