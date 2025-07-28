@@ -20,7 +20,7 @@ async def test_simple_memory_agent_with_deepseek():
     print("1. Creating DeepSeek LLM config...")
     try:
         deepseek_config = DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
-        print(f"   ✅ Created DeepSeekLLMConfig")
+        print("   ✅ Created DeepSeekLLMConfig")
     except Exception as e:
         print(f"   ❌ Failed to create DeepSeekLLMConfig: {e}")
         return
@@ -32,7 +32,7 @@ async def test_simple_memory_agent_with_deepseek():
             llm_config=deepseek_config,
             system_message="You are a helpful memory assistant.",
         )
-        print(f"   ✅ Created AugLLMConfig")
+        print("   ✅ Created AugLLMConfig")
     except Exception as e:
         print(f"   ❌ Failed to create AugLLMConfig: {e}")
         return
@@ -42,7 +42,7 @@ async def test_simple_memory_agent_with_deepseek():
     try:
         from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent
 
-        print(f"   ✅ Imported SimpleMemoryAgent")
+        print("   ✅ Imported SimpleMemoryAgent")
     except Exception as e:
         print(f"   ❌ Failed to import SimpleMemoryAgent: {e}")
         print("\n   Let's trace the import error...")
@@ -53,9 +53,6 @@ async def test_simple_memory_agent_with_deepseek():
         # Try to import the problematic module directly
         print("\n   Trying to import kg_map_merge models directly...")
         try:
-            from haive.agents.document_modifiers.kg.kg_map_merge.models import (
-                EntityNode,
-            )
 
             print("   ✅ Direct import worked!")
         except Exception as e2:
@@ -76,7 +73,7 @@ async def test_simple_memory_agent_with_deepseek():
         agent = SimpleMemoryAgent(
             name="test_deepseek_memory", engine=aug_config, user_id="test_user"
         )
-        print(f"   ✅ Created SimpleMemoryAgent!")
+        print("   ✅ Created SimpleMemoryAgent!")
     except Exception as e:
         print(f"   ❌ Failed to create SimpleMemoryAgent: {e}")
         import traceback
