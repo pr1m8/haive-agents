@@ -50,7 +50,7 @@ async def main():
         if hasattr(state, "final_answer") and state.final_answer:
             return END
         if hasattr(state, "plan") and state.plan:
-            return "executor"
+            return "executof"
         return END
 
     # 🎯 THE ELEGANT STRUCTURE YOU WANTED:

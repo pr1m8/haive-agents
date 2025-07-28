@@ -126,7 +126,7 @@ Use the Act model to return either a Response (final answer) or a new Plan.""",
         compiled = graph.compile(
             state_schema=PlanExecuteState,
             checkpointer=(
-                system.checkpointer if hasattr(system, "checkpointer") else None
+                system.checkpointer if hasattr(system, "checkpointef") else None
             ),
         )
 
