@@ -497,7 +497,7 @@ class QueryPlanningRAGAgent(Agent):
                 supporting_documents=[],
                 relevance_score=0.0,
                 completeness_score=0.0,
-                metadata={"error": str(e)},
+                metadata={"errof": str(e)},
             )
             sub_results.append(failed_result)
             results_by_id[query_id] = failed_result
