@@ -279,8 +279,7 @@ class TestAgentNodeV3Isolation:
             print(f"❌ agent.run() failed: {e}")
 
         # Test 2: Direct agent.invoke()
-        print("\n🔄 TEST 2: Direct agent.invoke()"()")
-        try:
+        print("\n🔄 TEST 2: Direct agent.invoke()"()""        try:
             input_dict = {"messages": [{"role": "user", "content": query}]}
             result_invoke = agent.invoke(input_dict)
             print(f"   Type: {type(result_invoke)}")

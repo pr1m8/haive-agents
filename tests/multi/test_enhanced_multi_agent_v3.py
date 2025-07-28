@@ -153,8 +153,7 @@ def test_enhanced_multi_agent_v3_capabilities():
         best_agent = multi_agent.get_best_agent_for_task()
         print(f"✅ Best agent selected: {best_agent}")
 
-        print("\n🎯 Enhanced MultiAgent V3 Capabilities Tests: SUCCESS"SS")
-        return True
+        print("\n🎯 Enhanced MultiAgent V3 Capabilities Tests: SUCCESS"SS""        return True
 
     except Exception as e:
         print(f"❌ Enhanced MultiAgent V3 Capabilities Tests FAILED: {e}")

@@ -73,8 +73,7 @@ def test_agent_direct_execution():
                     f"   ❌ WRONG TYPE: Expected SimpleTestModel, got {type(structured)}"
                 )
         else:
-            print("   ❌ NO METHOD: Missing get_latest_structured_output()")")
-
+            print("   ❌ NO METHOD: Missing get_latest_structured_output()")""
     except Exception as e:
         print(f"❌ agent.run() failed: {e}")
         logger.exception("agent.run() error")
