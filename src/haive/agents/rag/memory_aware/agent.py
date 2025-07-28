@@ -85,7 +85,7 @@ class MemoryRetrievalAgent(Agent):
             """Retrieve relevant memories for the current query."""
             query = getattr(state, "query", "")
 
-            # Simple memory retrieval based on keyword matching
+            # Simple memory retrieval based on key matching
             relevant_memories = []
             query_words = set(query.lower().split())
 
