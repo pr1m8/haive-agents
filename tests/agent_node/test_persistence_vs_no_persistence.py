@@ -270,7 +270,7 @@ def test_compare_agent_invoke_vs_node():
     print(f"📝 Query: {query}")
 
     # Test 1: Direct agent.invoke()
-    print("\n🔄 Step 1: Direct agent.invoke()"()")
+    print("\n🔄 Step 1: Direct agent.invoke()")
     input_dict = {"messages": [{"role": "user", "content": query}]}
     raw_result = agent.invoke(input_dict)
 

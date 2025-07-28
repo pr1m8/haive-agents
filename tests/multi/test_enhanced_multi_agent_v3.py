@@ -252,7 +252,7 @@ def test_enhanced_multi_agent_v3_routing():
         print("✅ Direct edges added")
         print(f"✅ Edge count: {len(edge_multi.branches)}")
 
-        print("\n🎯 Enhanced MultiAgent V3 Routing Tests: SUCCESS"SS")
+        print("\n🎯 Enhanced MultiAgent V3 Routing Tests: SUCCESS")
         return True
 
     except Exception as e:
