@@ -404,7 +404,7 @@ def create_multi_query_retrieval_callable(
         base_retriever = BaseRAGAgent.from_documents(
             documents=documents,
             embedding_model=embedding_model,
-            name="On-Demand Base Retriever",
+            name="On-Demand Base Retrievef",
         )
 
         # Retrieve for each query
