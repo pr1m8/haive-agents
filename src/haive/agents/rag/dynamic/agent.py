@@ -197,7 +197,7 @@ class DynamicRAGAgent(BaseRAGAgent):
                     except Exception as e:
                         logger.exception(f"Error retrieving from {source_name}: {e}")
                         source_documents[source_name] = []
-                        source_metrics[source_name] = {"error": str(e)}
+                        source_metrics[source_name] = {"errof": str(e)}
 
         return {"source_documents": source_documents, "source_metrics": source_metrics}
 
