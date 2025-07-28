@@ -70,7 +70,7 @@ class TestReactMemoryAgent:
     async def test_auto_save_conversations(self, memory_agent):
         """Test automatic conversation saving."""
         # Have a conversation with auto_save enabled
-        response1 = await memory_agent.arun(
+        await memory_agent.arun(
             "My favorite color is blue and I have two cats named Luna and Star",
             auto_save=True,
         )
@@ -86,7 +86,7 @@ class TestReactMemoryAgent:
     async def test_time_based_memory_search(self, memory_agent):
         """Test searching memories by time range."""
         # Store memories at different times
-        response1 = await memory_agent.arun(
+        await memory_agent.arun(
             "Store a memory that I started learning Spanish today", auto_save=False
         )
 
@@ -134,7 +134,7 @@ class TestReactMemoryAgent:
     async def test_memory_updates(self, memory_agent):
         """Test updating existing memories."""
         # Store initial memory
-        response1 = await memory_agent.arun(
+        await memory_agent.arun(
             "Store a memory that I live in New York City", auto_save=False
         )
 
@@ -154,7 +154,7 @@ class TestReactMemoryAgent:
     async def test_memory_deletion(self, memory_agent):
         """Test marking memories as deleted."""
         # Store a memory
-        response1 = await memory_agent.arun(
+        await memory_agent.arun(
             "Store a memory that my phone number is 555-1234", auto_save=False
         )
 
