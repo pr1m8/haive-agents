@@ -1,4 +1,5 @@
 """Clean_Simple_Rag core module.
+from __future__ import annotations
 
 This module provides clean simple rag functionality for the Haive framework.
 
@@ -72,7 +73,6 @@ Examples:
         )
 """
 
-from __future__ import annotations
 
 import logging
 from typing import Any
