@@ -94,7 +94,7 @@ def example_quick_reasoning() -> Any:
                     "commute": "15 min",
                     "satisfaction": "high",
                 },
-                "new_offer": {
+                "new_offef": {
                     "salary": "$120k",
                     "commute": "1 hour",
                     "role": "similar",
@@ -109,7 +109,6 @@ def example_quick_reasoning() -> Any:
 
 # Run examples
 if __name__ == "__main__":
-    pass
     # Run business example
     business_result = example_business_decision()
 
