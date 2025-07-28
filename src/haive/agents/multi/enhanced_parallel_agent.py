@@ -5,12 +5,11 @@ ParallelAgent = Agent[AugLLMConfig] + parallel execution of agents.
 
 import asyncio
 import logging
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, START
 from pydantic import Field, field_validator
 
@@ -65,7 +64,7 @@ class ParallelAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     """
 
     # Parallel specific fields
-    agents: List[Agent] = Field(
+    agents: list[Agent] = Field(
         default_factory=list, description="List of agents to execute in parallel"
     )
 
@@ -73,7 +72,7 @@ class ParallelAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default="all", description="Strategy for aggregating results"
     )
 
-    timeout_per_agent: Optional[float] = Field(
+    timeout_per_agent: float | None = Field(
         default=30.0, gt=0, description="Timeout for each agent in seconds"
     )
 
@@ -85,7 +84,7 @@ class ParallelAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default=2, ge=1, description="Minimum agents needed for consensus strategies"
     )
 
-    quality_scorer: Optional[Any] = Field(
+    quality_scorer: Any | None = Field(
         default=None, description="Function to score result quality for 'best' strategy"
     )
 
@@ -95,11 +94,11 @@ class ParallelAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
 
     # Convenience fields
     temperature: float = Field(default=0.3, ge=0.0, le=2.0)
-    system_message: Optional[str] = Field(default=None)
+    system_message: str | None = Field(default=None)
 
     @field_validator("agents")
     @classmethod
-    def validate_agents(cls, v: List[Agent]) -> List[Agent]:
+    def validate_agents(cls, v: list[Agent]) -> list[Agent]:
         """Validate agent list."""
         if not v:
             raise ValueError("ParallelAgent requires at least one agent")
@@ -204,7 +203,7 @@ Create a unified response that leverages all agent contributions."""
 
         return graph
 
-    async def execute_parallel(self, input_data: Any) -> Union[List[Any], Any]:
+    async def execute_parallel(self, input_data: Any) -> list[Any] | Any:
         """Execute all agents in parallel.
 
         Args:
@@ -255,8 +254,8 @@ Create a unified response that leverages all agent contributions."""
         return await self._aggregate_results(results, input_data)
 
     async def _aggregate_results(
-        self, results: List[tuple[int, Any]], original_input: Any
-    ) -> Union[List[Any], Any]:
+        self, results: list[tuple[int, Any]], original_input: Any
+    ) -> list[Any] | Any:
         """Aggregate results based on strategy.
 
         Args:
@@ -276,11 +275,11 @@ Create a unified response that leverages all agent contributions."""
                 for i, result in results
             ]
 
-        elif self.aggregation_strategy == "first":
+        if self.aggregation_strategy == "first":
             # Return first successful result
             return results[0][1] if results else None
 
-        elif self.aggregation_strategy == "best":
+        if self.aggregation_strategy == "best":
             # Score and return best result
             if self.quality_scorer:
                 scored = [
@@ -288,12 +287,11 @@ Create a unified response that leverages all agent contributions."""
                 ]
                 best = max(scored, key=lambda x: x[2])
                 return best[1]
-            else:
-                # Default to longest response
-                best = max(results, key=lambda x: len(str(x[1])))
-                return best[1]
+            # Default to longest response
+            best = max(results, key=lambda x: len(str(x[1])))
+            return best[1]
 
-        elif self.aggregation_strategy == "majority":
+        if self.aggregation_strategy == "majority":
             # Find consensus (simplified - real impl would be smarter)
             if len(results) < self.min_agents_for_consensus:
                 raise ValueError(
@@ -307,7 +305,7 @@ Create a unified response that leverages all agent contributions."""
             consensus = Counter(result_strs).most_common(1)[0]
 
             # Return the original result that matches consensus
-            for i, result in results:
+            for _i, result in results:
                 if str(result).lower().strip() == consensus[0]:
                     return result
 
@@ -326,23 +324,20 @@ Create a unified response that leverages all agent contributions."""
                     "instruction": "Merge these agent results into a comprehensive response",
                 }
                 return await self.arun(merge_input)
-            else:
-                # Simple concatenation
-                return "\n\n".join(
-                    [
-                        f"{getattr(self.agents[i], 'name', f'Agent {i}')}: {result}"
-                        for i, result in results
-                    ]
-                )
+            # Simple concatenation
+            return "\n\n".join(
+                [
+                    f"{getattr(self.agents[i], 'name', f'Agent {i}')}: {result}"
+                    for i, result in results
+                ]
+            )
 
         return results
 
     def __repr__(self) -> str:
         """String representation with parallel info."""
         engine_type = type(self.engine).__name__ if self.engine else "None"
-        agent_names = [
-            getattr(agent, "name", f"agent_{i}") for i, agent in enumerate(self.agents)
-        ]
+        [getattr(agent, "name", f"agent_{i}") for i, agent in enumerate(self.agents)]
         return (
             f"ParallelAgent[{engine_type}]("
             f"name='{self.name}', "

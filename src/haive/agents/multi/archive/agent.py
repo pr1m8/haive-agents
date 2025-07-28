@@ -173,7 +173,7 @@ class MultiAgent(Agent):
         self._agent_order = list(self.agents.keys())
 
         # Set up coordinator if needed
-        if self.coordination_mode == "supervisor":
+        if self.coordination_mode == "supervisof":
             self._setup_supervisor()
 
         # Ensure schema generation

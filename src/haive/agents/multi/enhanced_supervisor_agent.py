@@ -4,12 +4,12 @@ SupervisorAgent = Agent[AugLLMConfig] + worker management + delegation.
 """
 
 import logging
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
 from pydantic import Field, field_validator, model_validator
 
@@ -50,7 +50,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
 
             # Create supervisor
             supervisor = SupervisorAgent(
-                name="project_manager",
+                name="project_managef",
                 workers={
                     "analyst": analyst,
                     "researcher": researcher
@@ -70,7 +70,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     """
 
     # Supervisor specific fields
-    workers: Dict[str, Agent] = Field(
+    workers: dict[str, Agent] = Field(
         default_factory=dict, description="Dictionary of worker agents"
     )
 
@@ -82,7 +82,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default="best", description="Strategy for choosing workers"
     )
 
-    supervisor_prompt: Optional[str] = Field(
+    supervisor_prompt: str | None = Field(
         default=None, description="Custom supervisor prompt"
     )
 
@@ -92,11 +92,11 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
 
     # Convenience fields
     temperature: float = Field(default=0.3, ge=0.0, le=2.0)  # Lower temp for decisions
-    max_tokens: Optional[int] = Field(default=None, ge=1)
+    max_tokens: int | None = Field(default=None, ge=1)
 
     @field_validator("workers")
     @classmethod
-    def validate_workers(cls, v: Dict[str, Agent]) -> Dict[str, Agent]:
+    def validate_workers(cls, v: dict[str, Agent]) -> dict[str, Agent]:
         """Validate worker agents."""
         if not isinstance(v, dict):
             raise ValueError("Workers must be a dictionary")
@@ -109,7 +109,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
 
     @model_validator(mode="before")
     @classmethod
-    def ensure_aug_llm_config(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def ensure_aug_llm_config(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Ensure supervisor has AugLLMConfig engine."""
         if not isinstance(values, dict):
             return values
@@ -140,7 +140,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         self.workers[name] = agent
         logger.info(f"Added worker '{name}' to supervisor '{self.name}'")
 
-    def remove_worker(self, name: str) -> Optional[Agent]:
+    def remove_worker(self, name: str) -> Agent | None:
         """Remove a worker agent.
 
         Args:
@@ -151,11 +151,11 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         """
         return self.workers.pop(name, None)
 
-    def list_workers(self) -> List[str]:
+    def list_workers(self) -> list[str]:
         """List all worker names."""
         return list(self.workers.keys())
 
-    def get_worker(self, name: str) -> Optional[Agent]:
+    def get_worker(self, name: str) -> Agent | None:
         """Get a specific worker by name."""
         return self.workers.get(name)
 
@@ -223,7 +223,7 @@ For each request, think about:
             graph.add_node(f"worker_{worker_name}", worker_node)
 
         # Routing function
-        def route_supervisor(state: Dict[str, Any]) -> str:
+        def route_supervisor(state: dict[str, Any]) -> str:
             """Route based on supervisor decision."""
             messages = state.get("messages", [])
             if not messages:
@@ -261,7 +261,7 @@ For each request, think about:
                     return "end"
 
             # Default to end if no clear delegation
-            return "end" if self.allow_direct_response else "supervisor"
+            return "end" if self.allow_direct_response else "supervisof"
 
         # Add conditional routing
         routes = {f"worker_{name}": f"worker_{name}" for name in self.workers}

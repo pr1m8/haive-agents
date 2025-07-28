@@ -4,12 +4,11 @@ SequentialAgent = Agent[AugLLMConfig] + sequential execution of agents.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, START
 from pydantic import Field, field_validator
 
@@ -63,7 +62,7 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     """
 
     # Sequential specific fields
-    agents: List[Agent] = Field(
+    agents: list[Agent] = Field(
         default_factory=list, description="Ordered list of agents to execute"
     )
 
@@ -83,17 +82,17 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default=1, ge=1, le=3, description="Max retries for each step"
     )
 
-    step_timeout: Optional[float] = Field(
+    step_timeout: float | None = Field(
         default=None, gt=0, description="Timeout for each step in seconds"
     )
 
     # Convenience fields
     temperature: float = Field(default=0.3, ge=0.0, le=2.0)
-    system_message: Optional[str] = Field(default=None)
+    system_message: str | None = Field(default=None)
 
     @field_validator("agents")
     @classmethod
-    def validate_agents(cls, v: List[Agent]) -> List[Agent]:
+    def validate_agents(cls, v: list[Agent]) -> list[Agent]:
         """Validate agent list."""
         if not v:
             raise ValueError("SequentialAgent requires at least one agent")
@@ -123,7 +122,7 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         self.agents.insert(index, agent)
         logger.info(f"Inserted {type(agent).__name__} at position {index}")
 
-    def remove_agent(self, index: int) -> Optional[Agent]:
+    def remove_agent(self, index: int) -> Agent | None:
         """Remove agent at index.
 
         Args:
@@ -213,7 +212,7 @@ Always preserve key information while improving clarity and structure."""
 
         return graph
 
-    async def execute_sequence(self, input_data: Any) -> Union[Any, List[Any]]:
+    async def execute_sequence(self, input_data: Any) -> Any | list[Any]:
         """Execute agents in sequence.
 
         Args:

@@ -17,7 +17,8 @@ Key Features:
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Literal, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from haive.agents.base.agent import Agent
@@ -63,7 +64,7 @@ class EnhancedMultiAgentV4(Agent):
         ...     from_agent="classifier",
         ...     condition=lambda state: state.get("complexity") > 0.7,
         ...     true_agent="complex_processor",
-        ...     false_agent="simple_processor"
+        ...     false_agent="simple_processof"
         ... )
         >>>
         >>> # Build and execute
@@ -75,7 +76,7 @@ class EnhancedMultiAgentV4(Agent):
     # CORE FIELDS - Enhanced base agent integration
     # ========================================================================
 
-    agents: List[Agent] = Field(
+    agents: list[Agent] = Field(
         default_factory=list, description="List of agents to coordinate"
     )
 
@@ -88,17 +89,17 @@ class EnhancedMultiAgentV4(Agent):
         description="When to build the graph: auto (on init), manual (explicit), lazy (on first run)",
     )
 
-    entry_point: Optional[str] = Field(
+    entry_point: str | None = Field(
         default=None, description="Starting agent (defaults to first agent)"
     )
 
     # Internal state - converted from list
-    agent_dict: Dict[str, Agent] = Field(
+    agent_dict: dict[str, Agent] = Field(
         default_factory=dict, description="Agents converted to dict by name"
     )
 
     # Conditional edges configuration
-    conditional_edges: List[Dict[str, Any]] = Field(
+    conditional_edges: list[dict[str, Any]] = Field(
         default_factory=list, description="Conditional edge configurations"
     )
 
@@ -109,7 +110,6 @@ class EnhancedMultiAgentV4(Agent):
     @model_validator(mode="after")
     def setup_multi_agent(self):
         """Set up multi-agent after initialization - enhanced base agent pattern."""
-
         # Convert agents list to dict
         if self.agents:
             self.agent_dict = self._convert_agents_to_dict(self.agents)
@@ -122,7 +122,7 @@ class EnhancedMultiAgentV4(Agent):
 
         return self
 
-    def _convert_agents_to_dict(self, agents: List[Agent]) -> Dict[str, Agent]:
+    def _convert_agents_to_dict(self, agents: list[Agent]) -> dict[str, Agent]:
         """Convert agent list to dictionary keyed by name."""
         agent_dict = {}
 
@@ -227,7 +227,6 @@ class EnhancedMultiAgentV4(Agent):
 
     def _add_conditional_edges(self, graph: BaseGraph):
         """Add conditional edges using BaseGraph2.add_conditional_edges()."""
-
         # Start with entry point or first agent
         agent_names = list(self.agent_dict.keys())
         start_agent = (
@@ -332,7 +331,7 @@ class EnhancedMultiAgentV4(Agent):
         self,
         from_agent: str,
         condition: Callable[[Any], str],
-        routes: Dict[str, str],
+        routes: dict[str, str],
         default: str = END,
     ):
         """Add multi-way conditional edge."""
@@ -365,11 +364,11 @@ class EnhancedMultiAgentV4(Agent):
     # UTILITY METHODS
     # ========================================================================
 
-    def get_agent_names(self) -> List[str]:
+    def get_agent_names(self) -> list[str]:
         """Get list of agent names."""
         return list(self.agent_dict.keys())
 
-    def get_agent(self, name: str) -> Optional[Agent]:
+    def get_agent(self, name: str) -> Agent | None:
         """Get agent by name."""
         return self.agent_dict.get(name)
 

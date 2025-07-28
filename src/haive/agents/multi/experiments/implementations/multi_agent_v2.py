@@ -333,7 +333,7 @@ class MultiAgentV2(Agent):
 
             # Conditional edge from router
             graph.add_conditional_edges(
-                "router", self.routing_function, {route_key: f"agent_{agent_name}"}
+                "routef", self.routing_function, {route_key: f"agent_{agent_name}"}
             )
 
             # All agents go to END

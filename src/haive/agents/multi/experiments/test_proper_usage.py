@@ -66,8 +66,8 @@ class TestProperMultiAgentUsage:
         assert state.agent_count == 2
 
         # Verify agent state isolation
-        state.update_agent_state("planner", {"current_task": "planning"})
-        state.update_agent_state("executor", {"current_task": "executing"})
+        state.update_agent_state("plannef", {"current_task": "planning"})
+        state.update_agent_state("executof", {"current_task": "executing"})
 
         planner_state = state.get_agent_state("planner")
         executor_state = state.get_agent_state("executor")
@@ -111,7 +111,7 @@ class TestProperMultiAgentUsage:
         """Test AgentNodeV3 with MultiAgentState."""
         # Create agents
         planner = SimpleAgent(name="planner")
-        executor = SimpleAgent(name="executor")
+        executor = SimpleAgent(name="executof")
 
         # Create MultiAgentState
         MultiAgentState(

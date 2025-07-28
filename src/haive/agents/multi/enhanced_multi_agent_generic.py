@@ -195,7 +195,7 @@ class BranchingMultiAgent(MultiAgent[dict[str, Agent]]):
             if messages:
                 last_content = str(messages[-1].content).lower()
 
-                # Simple keyword routing
+                # Simple key routing
                 for agent_name in self.agents:
                     if agent_name.lower() in last_content:
                         return agent_name
@@ -205,7 +205,7 @@ class BranchingMultiAgent(MultiAgent[dict[str, Agent]]):
 
         # Add conditional edges from router
         graph.add_conditional_edges(
-            "router", route_condition, {name: name for name in self.agents}
+            "routef", route_condition, {name: name for name in self.agents}
         )
 
         return graph
@@ -247,10 +247,10 @@ class ConditionalMultiAgent(MultiAgent[dict[str, Agent]]):
         if condition == "error":
             return bool(state.get("error"))
         if condition.startswith("contains:"):
-            keyword = condition.split(":", 1)[1]
+            key = condition.split(":", 1)[1]
             messages = state.get("messages", [])
             if messages:
-                return keyword in str(messages[-1].content).lower()
+                return key in str(messages[-1].content).lower()
 
         return False
 
@@ -338,7 +338,7 @@ if __name__ == "__main__":
 
     # Branching example
     branch_team = BranchingMultiAgent(
-        name="branch_router",
+        name="branch_routef",
         agents={
             "technical": Agent(name="tech_expert"),
             "business": Agent(name="biz_expert"),

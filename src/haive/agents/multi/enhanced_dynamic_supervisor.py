@@ -4,7 +4,7 @@ DynamicSupervisor = SupervisorAgent + dynamic worker management + adaptive strat
 """
 
 import logging
-from typing import Any, Dict, List, Literal, Optional, Set
+from typing import Any
 
 from pydantic import Field, field_validator
 
@@ -67,7 +67,7 @@ class DynamicSupervisor(SupervisorAgent):
         default=1, ge=0, le=10, description="Minimum number of workers to maintain"
     )
 
-    worker_performance: Dict[str, Dict[str, Any]] = Field(
+    worker_performance: dict[str, dict[str, Any]] = Field(
         default_factory=dict, description="Performance metrics for each worker"
     )
 
@@ -81,15 +81,15 @@ class DynamicSupervisor(SupervisorAgent):
         default=True, description="Enable recycling of idle workers"
     )
 
-    worker_templates: Dict[str, type] = Field(
+    worker_templates: dict[str, type] = Field(
         default_factory=dict, description="Templates for creating new workers"
     )
 
-    active_tasks: Dict[str, str] = Field(
+    active_tasks: dict[str, str] = Field(
         default_factory=dict, description="Map of task_id to worker_name"
     )
 
-    idle_workers: Set[str] = Field(
+    idle_workers: set[str] = Field(
         default_factory=set, description="Set of idle worker names"
     )
 
@@ -169,7 +169,7 @@ class DynamicSupervisor(SupervisorAgent):
             logger.error(f"Failed to create worker from template: {e}")
             return False
 
-    def remove_idle_worker(self) -> Optional[str]:
+    def remove_idle_worker(self) -> str | None:
         """Remove an idle worker.
 
         Returns:
@@ -190,9 +190,7 @@ class DynamicSupervisor(SupervisorAgent):
 
         return None
 
-    def assign_task(
-        self, task_id: str, worker_name: Optional[str] = None
-    ) -> Optional[str]:
+    def assign_task(self, task_id: str, worker_name: str | None = None) -> str | None:
         """Assign a task to a worker.
 
         Args:
@@ -260,7 +258,7 @@ class DynamicSupervisor(SupervisorAgent):
         if self.should_scale_down():
             self.remove_idle_worker()
 
-    def get_worker_metrics(self) -> Dict[str, Dict[str, Any]]:
+    def get_worker_metrics(self) -> dict[str, dict[str, Any]]:
         """Get performance metrics for all workers."""
         return {
             name: {
@@ -275,7 +273,7 @@ class DynamicSupervisor(SupervisorAgent):
             for name, metrics in self.worker_performance.items()
         }
 
-    def get_best_worker(self) -> Optional[str]:
+    def get_best_worker(self) -> str | None:
         """Get the best performing idle worker."""
         if not self.idle_workers:
             return None
@@ -316,7 +314,7 @@ if __name__ == "__main__":
 
     # Create dynamic supervisor
     supervisor = DynamicSupervisor(
-        name="dynamic_manager",
+        name="dynamic_managef",
         min_workers=2,
         max_workers=5,
         auto_scale=True,

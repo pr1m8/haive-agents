@@ -15,11 +15,10 @@ Key Features:
 - Backward compatibility with existing patterns
 """
 
-import asyncio
 import logging
 import time
 from collections.abc import Callable
-from typing import Any, Generic, Literal, Optional, Type, TypeVar
+from typing import Any, Generic, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
@@ -28,8 +27,7 @@ from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
     EnhancedMultiAgentState,
 )
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-from langchain_core.messages import BaseMessage
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import Field, field_validator, model_validator
 from rich.console import Console
 from rich.table import Table
 
@@ -112,7 +110,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         Enhanced features with performance tracking::
 
             multi_agent = EnhancedMultiAgent(
-                name="adaptive_coordinator",
+                name="adaptive_coordinatof",
                 agents={"fast": fast_agent, "accurate": accurate_agent},
                 execution_mode="branch",
                 performance_mode=True,
@@ -147,7 +145,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
             multi_agent.add_parallel_group(
                 ["processor1", "processor2", "processor3"],
-                next_agent="aggregator"
+                next_agent="aggregatof"
             )
 
         Generic typing with specialized agents::
@@ -178,7 +176,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         description="Generic collection of agents this multi-agent coordinates",
     )
 
-    agent: Optional[Agent] = Field(
+    agent: Agent | None = Field(
         default=None,
         description="Main/default agent for this multi-agent (legacy support)",
     )
@@ -200,7 +198,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         description="Branch configurations for conditional and custom routing",
     )
 
-    entry_point: Optional[str] = Field(
+    entry_point: str | None = Field(
         default=None,
         description="Starting agent for execution (if not specified, uses first agent or infers)",
     )
@@ -226,7 +224,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         default=False, description="Enable rich debugging and observability"
     )
 
-    persistence_config: Optional[dict[str, Any]] = Field(
+    persistence_config: dict[str, Any] | None = Field(
         default=None, description="Advanced persistence configuration"
     )
 
@@ -272,13 +270,12 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 field_info = cls.model_fields["agents"]
 
                 # Check if the annotation is a List type
-                import typing
-                from typing import get_args, get_origin
+                from typing import get_origin
 
                 annotation = field_info.annotation
                 origin = get_origin(annotation)
 
-                if origin is list or origin is typing.List:
+                if origin is list or origin is list:
                     values["agents"] = []
                 else:
                     # Default to dict for backward compatibility
@@ -308,13 +305,12 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 field_info = cls.model_fields["agents"]
 
                 # Check if the annotation is a List type
-                import typing
-                from typing import get_args, get_origin
+                from typing import get_origin
 
                 annotation = field_info.annotation
                 origin = get_origin(annotation)
 
-                if origin is list or origin is typing.List:
+                if origin is list or origin is list:
                     should_keep_list = True
 
             if isinstance(agents, list):
@@ -340,11 +336,10 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 # Single agent not in dict form
                 if should_keep_list:
                     values["agents"] = [agents]
+                elif hasattr(agents, "name") and agents.name:
+                    values["agents"] = {agents.name: agents}
                 else:
-                    if hasattr(agents, "name") and agents.name:
-                        values["agents"] = {agents.name: agents}
-                    else:
-                        values["agents"] = {"main": agents}
+                    values["agents"] = {"main": agents}
 
         return values
 
@@ -480,7 +475,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         # For list, generate names
         return [f"agent_{i}" for i in range(len(self.agents))]
 
-    def get_agent(self, name: str) -> Optional[Agent]:
+    def get_agent(self, name: str) -> Agent | None:
         """Get agent by name."""
         if isinstance(self.agents, dict):
             return self.agents.get(name)
@@ -691,7 +686,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                     return "high" if state.get("priority", 0) > 5 else "normal"
 
                 multi_agent.add_conditional_routing(
-                    "classifier",
+                    "classifief",
                     route_by_priority,
                     {"high": "urgent_processor", "normal": "standard_processor"}
                 )
@@ -703,7 +698,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         }
 
     def add_parallel_group(
-        self, agent_names: list[str], next_agent: Optional[str] = None
+        self, agent_names: list[str], next_agent: str | None = None
     ) -> None:
         """Add a group of agents that run in parallel.
 
@@ -933,7 +928,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
             name: Name for the multi-agent instance.
             execution_mode: Execution pattern - "infer", "sequential", "parallel",
                 "conditional", or "branch".
-            **kwargs: Additional keyword arguments passed to the constructor.
+            **kwargs: Additional key arguments passed to the constructor.
 
         Returns:
             EnhancedMultiAgent: Configured enhanced multi-agent instance.

@@ -13,9 +13,8 @@ Start small, test incrementally, build up features.
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.graph import END, START, StateGraph
@@ -56,7 +55,7 @@ class MultiAgentV4(Agent):
     # CORE FIELDS - Start simple
     # ========================================================================
 
-    agents: List[Agent] = Field(
+    agents: list[Agent] = Field(
         default_factory=list,
         description="List of agents to coordinate (converted to dict internally)",
     )
@@ -70,12 +69,12 @@ class MultiAgentV4(Agent):
     )
 
     # Internal state - use PrivateAttr for internal fields
-    agent_dict: Dict[str, Agent] = Field(
+    agent_dict: dict[str, Agent] = Field(
         default_factory=dict,
         description="Internal agent dictionary (converted from list)",
     )
 
-    execution_graph: Optional[CompiledGraph] = Field(
+    execution_graph: CompiledGraph | None = Field(
         default=None, description="Compiled LangGraph for execution"
     )
 
@@ -90,7 +89,6 @@ class MultiAgentV4(Agent):
     @model_validator(mode="after")
     def setup_multi_agent(self):
         """Set up multi-agent system after initialization."""
-
         # Convert agent list to dict
         if self.agents:
             self.agent_dict = self._convert_agents_to_dict(self.agents)
@@ -105,7 +103,7 @@ class MultiAgentV4(Agent):
 
         return self
 
-    def _convert_agents_to_dict(self, agents: List[Agent]) -> Dict[str, Agent]:
+    def _convert_agents_to_dict(self, agents: list[Agent]) -> dict[str, Agent]:
         """Convert agent list to dictionary keyed by name."""
         agent_dict = {}
 
@@ -139,7 +137,7 @@ class MultiAgentV4(Agent):
         graph = StateGraph(self.state_schema)
 
         # Add agent nodes using AgentNodeV3
-        for agent_name, agent in self.agent_dict.items():
+        for agent_name, _agent in self.agent_dict.items():
             node_func = create_agent_node_v3(agent_name)
             graph.add_node(agent_name, node_func)
             logger.debug(f"Added node for agent: {agent_name}")
@@ -195,15 +193,13 @@ class MultiAgentV4(Agent):
 
     async def arun(self, input_data: Any, **kwargs) -> Any:
         """Execute the multi-agent workflow."""
-
         # Ensure graph is built
         if not self.execution_graph:
             if self.build_mode == "manual":
                 raise RuntimeError(
                     "Graph not built. Call build() first or use auto build mode."
                 )
-            else:
-                self._build_execution_graph()
+            self._build_execution_graph()
 
         # Create initial state
         initial_state = self._create_initial_state(input_data)
@@ -226,7 +222,6 @@ class MultiAgentV4(Agent):
 
     def _create_initial_state(self, input_data: Any) -> MultiAgentState:
         """Create initial MultiAgentState from input."""
-
         # Convert agents dict to the format expected by MultiAgentState
         agents_for_state = self.agent_dict
 
@@ -245,7 +240,6 @@ class MultiAgentV4(Agent):
 
     def _extract_result(self, final_state: MultiAgentState) -> Any:
         """Extract final result from state."""
-
         # Simple result extraction - can be enhanced later
         if (
             hasattr(final_state, "final_result")
@@ -285,11 +279,11 @@ class MultiAgentV4(Agent):
 
         logger.info(f"Added agent: {agent.name}")
 
-    def get_agent_names(self) -> List[str]:
+    def get_agent_names(self) -> list[str]:
         """Get list of agent names."""
         return list(self.agent_dict.keys())
 
-    def get_agent(self, name: str) -> Optional[Agent]:
+    def get_agent(self, name: str) -> Agent | None:
         """Get agent by name."""
         return self.agent_dict.get(name)
 

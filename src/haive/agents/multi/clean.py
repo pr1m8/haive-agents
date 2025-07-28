@@ -392,7 +392,7 @@ class MultiAgent(Agent):
             name: Name for the multi-agent instance.
             execution_mode: Execution pattern - "infer", "sequential", "parallel",
                 "conditional", or "branch".
-            **kwargs: Additional keyword arguments passed to the MultiAgent constructor.
+            **kwargs: Additional key arguments passed to the MultiAgent constructor.
 
         Returns:
             MultiAgent: Configured multi-agent instance.
@@ -454,7 +454,7 @@ class MultiAgent(Agent):
                     return "high" if state.get("priority", 0) > 5 else "normal"
 
                 multi_agent.add_conditional_routing(
-                    "classifier",
+                    "classifief",
                     route_by_priority,
                     {"high": "urgent_processor", "normal": "standard_processor"}
                 )
