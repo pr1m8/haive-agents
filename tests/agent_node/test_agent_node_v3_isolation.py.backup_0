@@ -261,7 +261,7 @@ class TestAgentNodeV3Isolation:
         print(f"🎯 Testing with query: {query}")
 
         # Test 1: Direct agent.run()
-        print("\n🔄 TEST 1: Direct agent.run()"()")"
+        print("\n🔄 TEST 1: Direct agent.run()"()")
         try:
             result_run = agent.run(query)
             print(f"   Type: {type(result_run)}")

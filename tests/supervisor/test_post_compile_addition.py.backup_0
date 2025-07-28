@@ -209,7 +209,7 @@ async def test_graph_rebuilding():
 
             # Simulate re-compilation
             logger.info("   Re-compiling graph with new structure...")
-            logger.info("   ✅ Graph rebuilt successfully"y")"
+            logger.info("   ✅ Graph rebuilt successfully"y")
 
     # Test the rebuilding
     supervisor = GraphRebuildingSupervisor()

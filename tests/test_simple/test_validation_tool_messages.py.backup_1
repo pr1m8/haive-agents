@@ -174,7 +174,7 @@ async def main():
     if not all(result for _, result in results):
         pass
     else:
-        pass!")"
+        pass!")
 
 
 if __name__ == "__main__":

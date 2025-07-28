@@ -127,7 +127,7 @@ def check_database_persistence():
                 print(f"      - State is being saved to Supabase database")
                 print(f"      - No manual thread_id configuration needed")
             else:
-                print("   ❌ No persistence data found")")"
+                print("   ❌ No persistence data found")")
 
     except Exception as e:
         pass

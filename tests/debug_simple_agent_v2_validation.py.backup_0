@@ -196,7 +196,7 @@ def test_debug_simple_agent_v2_validation():
         traceback.print_exc()
 
     # Test the _compute_input_fields method
-    print("\n🔍 Testing AugLLMConfig._compute_input_fields():"):")"
+    print("\n🔍 Testing AugLLMConfig._compute_input_fields():"):")
     try:
         input_fields = config._compute_input_fields()
         print("✅ Input Fields:")

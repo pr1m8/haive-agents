@@ -81,7 +81,7 @@ def test_enhanced_multi_agent_v3_creation():
             f"✅ Performance tracking initialized: {len(typed_multi.agent_performance)} agents"
         )
 
-        print("\n🎯 Enhanced MultiAgent V3 Creation Tests: SUCCESS"SS")"
+        print("\n🎯 Enhanced MultiAgent V3 Creation Tests: SUCCESS"SS")
         return True
 
     except Exception as e:

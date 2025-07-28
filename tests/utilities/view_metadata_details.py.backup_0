@@ -127,7 +127,6 @@ def view_metadata_details():
                                 pass
 
                         except Exception as e:
-                            pass
                     else:
                         print("Test passed")
 

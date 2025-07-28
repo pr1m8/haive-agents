@@ -137,7 +137,7 @@ def test_langmem_with_groq():
 
         if real_langmem:
             return memories
-        print("❌ Groq also fell back to simple extraction")")"
+        print("❌ Groq also fell back to simple extraction")")
 
     except Exception as e:
         return None

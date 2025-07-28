@@ -93,7 +93,7 @@ def check_ps_errors():
         if len(clean_threads) > 0:
             print(f"\n✅ SUCCESS: Recent test threads are clean!")
         else:
-            print(f"\n⚠️  WARNING: No clean test threads found")nd")"
+            print(f"\n⚠️  WARNING: No clean test threads found")nd")
 
 
 if __name__ == "__main__":

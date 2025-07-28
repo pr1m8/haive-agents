@@ -179,9 +179,9 @@ Execute step by step using the appropriate specialist agents."""
         if result2.get("next_agent") == "search_agent":
             pass
         elif result2.get("next_agent") == "math_agent":
-            pass"
+            passn")"
         elif result2.get("next_agent") == "translation_agent":
-            pass
+            passg")
 
     except Exception as e:
         import traceback

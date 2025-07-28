@@ -49,7 +49,7 @@ def test_agent_direct_execution():
     query = "Respond with the message 'Hello World' and count 42"
 
     print(f"📝 Query: {query}")
-    print("🎯 Expected: SimpleTestModel(message='Hello World', count=42)"2)")"
+    print("🎯 Expected: SimpleTestModel(message='Hello World', count=42)"2)")
 
     # Test agent.run()
     print("\n🔄 Testing agent.run()...")
