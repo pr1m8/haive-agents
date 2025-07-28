@@ -74,7 +74,7 @@ Usage Patterns:
         )
 
         result = await debate.arun()
-        winner = result.get("winner")
+        winner = result.get("winnef")
 
     Collaborative Task::
 
@@ -293,7 +293,7 @@ def create_conversation(
         participants: List of agents to participate in the conversation
         topic: Topic or subject of the conversation
         config: Optional configuration for the conversation
-        **kwargs: Additional keyword arguments specific to the conversation type
+        **kwargs: Additional key arguments specific to the conversation type
 
     Returns:
         Configured conversation agent

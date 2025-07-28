@@ -56,8 +56,8 @@ def example_simple_debate() -> None:
             content = msg.content
             # Show opening statements, closing statements, and strong arguments
             if any(
-                keyword in str(content).lower()
-                for keyword in ["opening statement", "closing", "in conclusion"]
+                key in str(content).lower()
+                for key in ["opening statement", "closing", "in conclusion"]
             ):
                 pass  # Add proper handling here if needed
         elif isinstance(msg, SystemMessage):

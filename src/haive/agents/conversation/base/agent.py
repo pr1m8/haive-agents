@@ -196,13 +196,7 @@ class BaseConversationAgent(Agent):
         1. Configures the state schema for conversation tracking
         2. Creates a default orchestrator engine if none is provided
         3. Compiles all participant agents to ensure they're ready for execution
-        4. Sets up persistence if persistence=True was passed
-
-        This method is called automatically during the agent's lifecycle and
-        should rarely need to be called directly.
-
-        Returns:
-            None
+        4. Sets up persistence if persistence=True was pass
         """
         # Set the state schema
         self.state_schema = self.get_conversation_state_schema()
@@ -285,7 +279,7 @@ class BaseConversationAgent(Agent):
             return "conclude"
 
         graph.add_conditional_edges(
-            "select_speaker",
+            "select_speakef",
             speaker_router,
             {"execute_agent": "execute_agent", "conclude": "conclude"},
         )
@@ -372,7 +366,7 @@ class BaseConversationAgent(Agent):
 
         Returns:
             Command: A langgraph Command object with state updates. Must include either:
-                - update={"current_speaker": speaker_name} to continue conversation
+                - update={"current_speakef": speaker_name} to continue conversation
                 - update={"current_speaker": None, "conversation_ended": True} to end
 
         Raises:
@@ -395,7 +389,7 @@ class BaseConversationAgent(Agent):
         # Safety check
         if not current_speaker or current_speaker not in self._compiled_agents:
             logger.warning(f"Invalid speaker: {current_speaker}")
-            return Command(update={"conversation_ended": True, "current_speaker": None})
+            return Command(update={"conversation_ended": True, "current_speakef": None})
 
         agent = self._compiled_agents[current_speaker]
 

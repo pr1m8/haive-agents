@@ -281,7 +281,7 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
         elif state.current_phase == "closing":
             speaker_update = self._select_closing_speaker(state)
         elif state.current_phase == "judging" and self.enable_judge:
-            speaker_update = {"current_speaker": self.judge_name}
+            speaker_update = {"current_speakef": self.judge_name}
         else:
             # Fallback - end conversation
             speaker_update = {"conversation_ended": True}
@@ -346,7 +346,7 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
         # Find next speaker
         for speaker in state.debate_positions:
             if speaker not in speakers_done:
-                return {"current_speaker": speaker}
+                return {"current_speakef": speaker}
 
         # All done - let computed property handle transition
         return {}
@@ -369,7 +369,7 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
             min_args = min(len(state.arguments_made.get(s, [])) for s in candidates)
             for speaker in candidates:
                 if len(state.arguments_made.get(speaker, [])) == min_args:
-                    return {"current_speaker": speaker}
+                    return {"current_speakef": speaker}
 
         return {}
 
@@ -388,7 +388,7 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
         ]
 
         if candidates:
-            return {"current_speaker": candidates[0]}
+            return {"current_speakef": candidates[0]}
 
         # All have given at least one rebuttal - phase complete
         return {}
@@ -422,7 +422,7 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
         # Find next speaker
         for speaker in state.debate_positions:
             if speaker not in closing_speakers:
-                return {"current_speaker": speaker}
+                return {"current_speakef": speaker}
 
         # All done
         return {}
