@@ -25,7 +25,6 @@ class PlanAndExecuteAgent(MultiAgent):
         cls, tools: list = None, name: str = "plan_and_execute", **kwargs
     ) -> "PlanAndExecuteAgent":
         """Create Plan and Execute agent with planner, executor, replanner."""
-
         # Create planner
         planner = SimpleAgent(
             name="planner",

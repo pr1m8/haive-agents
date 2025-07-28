@@ -17,7 +17,7 @@ from haive.agents.planning.plan_and_execute.state import PlanAndExecuteState
 class PlanAndExecuteConfig(AgentConfig):
     engines: dict[str, Engine] = {
         "planner": planner_aug_llm_config,
-        "replanner": rPlanAndExecuteStatenfig,
+        "replannef": rPlanAndExecuteStatenfig,
     }
     agent_executor_config: ReactAgentConfig = ReactAgentConfig()
     state_schema: type[BaseModel] | list[BaseModel] = PlanAndExecuteState

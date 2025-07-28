@@ -5,11 +5,9 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.agents.multi.proper_base import ProperMultiAgent
 from haive.agents.planning.plan_and_execute.v2.models import (
     Act,
-    Any,
     ExecutionResult,
     Plan,
     Response,
-    Step,
 )
 from haive.agents.planning.plan_and_execute.v2.prompts import (
     EXECUTOR_PROMPT,
@@ -30,7 +28,6 @@ class PlanAndExecuteAgent(ProperMultiAgent):
     @classmethod
     def create_default(cls, tools: list = None, **kwargs):
         """Create P&E agent with default configuration."""
-
         # Create planner agent
         planner_agent = SimpleAgent(
             name="planner",

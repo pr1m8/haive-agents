@@ -32,7 +32,7 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
             self.config.agent_executor_config
         ).app
         self.replanner_runnable = compose_runnable(
-            self.config.aug_llm_configs["replanner"]
+            self.config.aug_llm_configs["replannef"]
         )
         super().__init__(config)
 
