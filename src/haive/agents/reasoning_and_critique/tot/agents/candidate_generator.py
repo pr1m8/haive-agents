@@ -6,7 +6,7 @@ This agent generates multiple candidate solutions for a given problem.
 from typing import List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from pydantic import BaseModel, Field, PrivateAttr
+from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 
@@ -28,7 +28,7 @@ class CandidateGeneration(BaseModel):
 
 
 class CandidateGenerator:
-    """Agent that generates multiple candidate solutions."""
+    """Agent that generates multiple candidate solutions using composition."""
 
     def __init__(
         self,
@@ -67,8 +67,18 @@ For logic problems: Try different reasoning paths, assumptions
 For planning problems: Try different sequences, priorities""",
             )
 
-        # Create the underlying agent
+        # Use composition - create the underlying agent
         self.agent = SimpleAgentV3(name=name, engine=engine)
+
+    @classmethod
+    def create(
+        cls,
+        name: str = "candidate_generator",
+        expansion_count: int = 5,
+        temperature: float = 0.7,
+    ) -> "CandidateGenerator":
+        """Create a CandidateGenerator with proper configuration."""
+        return cls(name=name, expansion_count=expansion_count, temperature=temperature)
 
     def create_prompt(self, problem: str, seed_solution: Optional[str] = None) -> str:
         """Create a prompt for candidate generation.
@@ -92,6 +102,46 @@ For planning problems: Try different sequences, priorities""",
         )
 
         return "\n\n".join(prompt_parts)
+
+    async def generate_candidates(
+        self, problem: str, num_candidates: Optional[int] = None
+    ) -> CandidateGeneration:
+        """Generate candidate solutions for a problem.
+
+        Args:
+            problem: The problem to solve
+            num_candidates: Override the default number of candidates
+
+        Returns:
+            CandidateGeneration with structured output
+        """
+        prompt = self.create_prompt(problem)
+
+        # Use the composed agent's arun method
+        result = await self.agent.arun(prompt)
+
+        # The result should be a CandidateGeneration due to structured_output_model
+        return result
+
+    async def expand_from_seed(
+        self, problem: str, seed: str, num_candidates: Optional[int] = None
+    ) -> CandidateGeneration:
+        """Expand candidates from a seed solution.
+
+        Args:
+            problem: The problem to solve
+            seed: Seed solution to expand from
+            num_candidates: Override the default number of candidates
+
+        Returns:
+            CandidateGeneration with expanded solutions
+        """
+        prompt = self.create_prompt(problem, seed_solution=seed)
+
+        # Use the composed agent's arun method
+        result = await self.agent.arun(prompt)
+
+        return result
 
 
 # Convenience function
