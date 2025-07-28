@@ -27,7 +27,7 @@ async def main():
     if "supabase.com" in conn_string:
         pass
     else:
-        print("Test passed")
+        passon")
 
     # Create unique thread
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

@@ -187,7 +187,7 @@ def test_debug_simple_agent_v2_validation():
     )
 
     # Test the _get_input_variables method
-    print("\n🔍 Testing AugLLMConfig._get_input_variables(:"):")
+    print("\n🔍 Testing AugLLMConfig._get_input_variables(:")
     try:
         input_vars = config._get_input_variables()
         print(f"✅ Input Variables: {input_vars}")

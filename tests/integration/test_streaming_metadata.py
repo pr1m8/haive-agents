@@ -83,7 +83,7 @@ def test_streaming_metadata():
                     # Check for LangGraph streaming metadata
                     for key in chunk:
                         if "metadata" in key.lower():
-                            pass}")
+                            print("pass")
 
                 if chunk_count >= 3:
                     break
