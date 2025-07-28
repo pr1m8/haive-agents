@@ -32,13 +32,11 @@ Key features:
 import logging
 import re
 from abc import ABC, abstractmethod
-from collections.abc import Callable
 from typing import Any, Generic, Literal, TypeVar
 
 from haive.core.engine.base import Engine, EngineType, InvokableEngine
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.schema_composer import SchemaComposer
-from haive.core.schema.state_schema import StateSchema
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
 from pydantic import BaseModel, Field, PrivateAttr, model_validator
@@ -362,7 +360,6 @@ class Agent(
         Override this method in subclasses for custom setup logic.
         """
         # Default implementation does nothing - subclasses override
-        pass
 
     def _auto_derive_io_schemas(self) -> None:
         """Automatically derive input and output schemas with intelligent defaults.
