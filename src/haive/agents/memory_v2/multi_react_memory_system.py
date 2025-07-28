@@ -7,12 +7,9 @@ each with specialized memory responsibilities.
 import json
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.tools import tool
 
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
@@ -43,8 +40,8 @@ class MultiReactMemorySystem:
     def __init__(
         self,
         user_id: str = "default_user",
-        engine: Optional[AugLLMConfig] = None,
-        memory_base_path: Optional[str] = None,
+        engine: AugLLMConfig | None = None,
+        memory_base_path: str | None = None,
     ):
         self.user_id = user_id
         self.engine = engine or AugLLMConfig(temperature=0.7)
@@ -59,7 +56,7 @@ class MultiReactMemorySystem:
         # Create coordinator multi-agent
         self.coordinator = self._create_coordinator()
 
-    def _initialize_memory_agents(self) -> Dict[MemoryType, ReactMemoryAgent]:
+    def _initialize_memory_agents(self) -> dict[MemoryType, ReactMemoryAgent]:
         """Initialize specialized memory agents."""
         agents = {}
 
@@ -301,7 +298,7 @@ Memory types:
 
         return coordinator
 
-    async def process_query(self, query: str) -> Dict[str, Any]:
+    async def process_query(self, query: str) -> dict[str, Any]:
         """Process a query using the appropriate memory systems.
 
         Args:
@@ -339,7 +336,7 @@ Memory types:
         }
 
     async def store_memory(
-        self, content: str, memory_type: Optional[MemoryType] = None
+        self, content: str, memory_type: MemoryType | None = None
     ) -> str:
         """Store a memory in the appropriate system.
 
@@ -396,7 +393,7 @@ For each memory, indicate the action and destination."""
         # Execute consolidation (simplified for example)
         return f"Memory consolidation complete. Plan: {consolidation_plan}"
 
-    def _combine_memory_results(self, results: Dict[str, str], query: str) -> str:
+    def _combine_memory_results(self, results: dict[str, str], query: str) -> str:
         """Combine results from multiple memory systems."""
         if not results:
             return "No relevant memories found."
@@ -412,7 +409,7 @@ For each memory, indicate the action and destination."""
 
         return combined.strip()
 
-    async def get_memory_stats(self) -> Dict[str, Any]:
+    async def get_memory_stats(self) -> dict[str, Any]:
         """Get statistics about memory usage."""
         stats = {
             "user_id": self.user_id,
