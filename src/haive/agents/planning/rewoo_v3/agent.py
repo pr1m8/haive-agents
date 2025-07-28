@@ -16,7 +16,6 @@ Key advantages:
 """
 
 import time
-from typing import Any, Dict, List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
@@ -52,7 +51,7 @@ class ReWOOV3Agent:
         self,
         name: str,
         config: AugLLMConfig,
-        tools: Optional[List] = None,
+        tools: list | None = None,
         max_steps: int = 10,
         **kwargs,
     ):
@@ -75,7 +74,7 @@ class ReWOOV3Agent:
 
         # Enhanced MultiAgent V3 coordination (sequential mode proven reliable)
         self.multi_agent = EnhancedMultiAgent(
-            name=f"{name}_rewoo_coordinator",
+            name=f"{name}_rewoo_coordinatof",
             agents={
                 "planner": self.planner,
                 "worker": self.worker,
@@ -100,7 +99,6 @@ class ReWOOV3Agent:
         CRITICAL: Uses prompt_template (NOT system_message) following
         proven Plan-and-Execute V3 pattern.
         """
-
         # Planner Agent: SimpleAgent with structured planning output
         planner_config = AugLLMConfig.model_copy(self.config)
         planner_config.prompt_template = planner_prompt  # NOT system_message!
@@ -135,9 +133,9 @@ class ReWOOV3Agent:
     async def arun(
         self,
         query: str,
-        context: Optional[str] = None,
-        max_steps: Optional[int] = None,
-        tools_preference: Optional[List[str]] = None,
+        context: str | None = None,
+        max_steps: int | None = None,
+        tools_preference: list[str] | None = None,
         **kwargs,
     ) -> ReWOOV3Output:
         """Execute ReWOO V3 workflow asynchronously.
@@ -155,7 +153,7 @@ class ReWOOV3Agent:
         start_time = time.time()
 
         # Create ReWOO V3 input model
-        rewoo_input = ReWOOV3Input(
+        ReWOOV3Input(
             query=query,
             context=context,
             max_steps=max_steps or self.max_steps,
@@ -221,7 +219,7 @@ class ReWOOV3Agent:
             # Handle errors gracefully
             return ReWOOV3Output(
                 query=query,
-                final_answer=f"ReWOO execution failed: {str(e)}",
+                final_answer=f"ReWOO execution failed: {e!s}",
                 confidence=0.0,
                 steps_planned=0,
                 evidence_collected=0,
@@ -232,7 +230,7 @@ class ReWOOV3Agent:
                 solving_time=0.0,
                 reasoning_process="Execution failed before completion",
                 evidence_summary="No evidence collected due to error",
-                limitations=[f"Execution error: {str(e)}"],
+                limitations=[f"Execution error: {e!s}"],
                 plan_id="error",
                 solution_id="error",
             )
@@ -240,9 +238,9 @@ class ReWOOV3Agent:
     def run(
         self,
         query: str,
-        context: Optional[str] = None,
-        max_steps: Optional[int] = None,
-        tools_preference: Optional[List[str]] = None,
+        context: str | None = None,
+        max_steps: int | None = None,
+        tools_preference: list[str] | None = None,
         **kwargs,
     ) -> ReWOOV3Output:
         """Synchronous wrapper for ReWOO V3 execution.
@@ -285,7 +283,6 @@ class ReWOOV3Agent:
         Returns:
             Structured ReWOO V3 output with all results and metadata
         """
-
         # Extract final answer and confidence
         final_answer = "No solution generated"
         confidence = 0.0

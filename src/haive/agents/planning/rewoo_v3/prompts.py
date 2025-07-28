@@ -162,10 +162,10 @@ Generate structured solution output with reasoning and synthesis process.""",
 
 # Export all prompts
 __all__ = [
-    "planner_prompt",
-    "worker_prompt",
-    "solver_prompt",
     "PLANNER_SYSTEM_MESSAGE",
-    "WORKER_SYSTEM_MESSAGE",
     "SOLVER_SYSTEM_MESSAGE",
+    "WORKER_SYSTEM_MESSAGE",
+    "planner_prompt",
+    "solver_prompt",
+    "worker_prompt",
 ]

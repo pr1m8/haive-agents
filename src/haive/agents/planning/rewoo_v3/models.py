@@ -12,7 +12,7 @@ Key Models:
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -32,8 +32,8 @@ class PlanStep(BaseModel):
     step_id: str = Field(description="Unique step identifier (e.g., 'step_1')")
     description: str = Field(description="What this step accomplishes")
     evidence_id: str = Field(description="Evidence placeholder (e.g., '#E1')")
-    tool_call: Optional[str] = Field(default=None, description="Specific tool to use")
-    depends_on: List[str] = Field(
+    tool_call: str | None = Field(default=None, description="Specific tool to use")
+    depends_on: list[str] = Field(
         default_factory=list, description="Evidence IDs this step needs"
     )
 
@@ -49,10 +49,10 @@ class ReWOOPlan(BaseModel):
     objective: str = Field(description="Original query/objective")
     approach: str = Field(description="Overall approach to solve the problem")
 
-    steps: List[PlanStep] = Field(description="Complete execution plan")
+    steps: list[PlanStep] = Field(description="Complete execution plan")
 
     reasoning: str = Field(description="Why this plan will solve the objective")
-    expected_evidence: Dict[str, str] = Field(
+    expected_evidence: dict[str, str] = Field(
         default_factory=dict,
         description="Map of evidence_id to expected content description",
     )
@@ -70,7 +70,7 @@ class EvidenceItem(BaseModel):
     source: str = Field(description="Tool or source that provided this evidence")
     status: EvidenceStatus = Field(description="Collection status")
     timestamp: datetime = Field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional info"
     )
 
@@ -81,16 +81,16 @@ class EvidenceCollection(BaseModel):
     collection_id: str = Field(description="Unique collection identifier")
     plan_id: str = Field(description="Associated plan ID")
 
-    evidence_items: List[EvidenceItem] = Field(description="All collected evidence")
+    evidence_items: list[EvidenceItem] = Field(description="All collected evidence")
 
     summary: str = Field(description="Summary of evidence collection process")
     success_count: int = Field(description="Number of successful evidence items")
     failure_count: int = Field(description="Number of failed evidence items")
 
-    tools_used: List[str] = Field(
+    tools_used: list[str] = Field(
         default_factory=list, description="Tools that were invoked"
     )
-    execution_notes: List[str] = Field(
+    execution_notes: list[str] = Field(
         default_factory=list, description="Execution observations"
     )
 
@@ -106,13 +106,13 @@ class ReWOOSolution(BaseModel):
     final_answer: str = Field(description="Comprehensive final answer")
     reasoning: str = Field(description="How the evidence supports this answer")
 
-    evidence_used: List[str] = Field(
+    evidence_used: list[str] = Field(
         description="Evidence IDs that contributed to answer"
     )
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in solution")
 
     synthesis_process: str = Field(description="How evidence was combined")
-    limitations: List[str] = Field(
+    limitations: list[str] = Field(
         default_factory=list, description="Known limitations or gaps"
     )
 
@@ -126,11 +126,11 @@ class ReWOOV3Input(BaseModel):
     """Input model for ReWOO V3 agent."""
 
     query: str = Field(description="User query to solve")
-    context: Optional[str] = Field(default=None, description="Additional context")
-    max_steps: Optional[int] = Field(
+    context: str | None = Field(default=None, description="Additional context")
+    max_steps: int | None = Field(
         default=10, ge=1, le=20, description="Maximum planning steps"
     )
-    tools_preference: Optional[List[str]] = Field(
+    tools_preference: list[str] | None = Field(
         default=None, description="Preferred tools to use"
     )
 
@@ -145,7 +145,7 @@ class ReWOOV3Output(BaseModel):
     # Execution summary
     steps_planned: int = Field(description="Number of steps in plan")
     evidence_collected: int = Field(description="Successfully collected evidence items")
-    tools_used: List[str] = Field(description="Tools that were utilized")
+    tools_used: list[str] = Field(description="Tools that were utilized")
 
     # Timing
     total_execution_time: float = Field(description="Total time in seconds")
@@ -156,7 +156,7 @@ class ReWOOV3Output(BaseModel):
     # Detailed results
     reasoning_process: str = Field(description="How the solution was derived")
     evidence_summary: str = Field(description="Summary of evidence collected")
-    limitations: List[str] = Field(
+    limitations: list[str] = Field(
         default_factory=list, description="Known limitations"
     )
 
