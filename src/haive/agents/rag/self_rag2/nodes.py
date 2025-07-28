@@ -1,3 +1,13 @@
+"""Nodes core module.
+
+This module provides nodes functionality for the Haive framework.
+
+Functions:
+    retrieve: Retrieve functionality.
+    generate: Generate functionality.
+    grade_documents: Grade Documents functionality.
+"""
+
 ### Nodes
 
 from typing import Any

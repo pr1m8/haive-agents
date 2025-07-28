@@ -1,3 +1,11 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    RAGAnswer: RAGAnswer implementation.
+"""
+
 #!/usr/bin/env python3
 """Answer generator models for SimpleRAG."""
 

@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    TypedRAGAgent: TypedRAGAgent implementation.
+
+Functions:
+    classify_query: Classify Query functionality.
+"""
+
 import logging
 
 # Set up logging

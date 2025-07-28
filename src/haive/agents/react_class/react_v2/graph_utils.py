@@ -1,3 +1,15 @@
+"""Graph_Utils graph module.
+
+This module provides graph utils functionality for the Haive framework.
+
+Classes:
+    ReactGraphBuilder: ReactGraphBuilder implementation.
+
+Functions:
+    add_human_node: Add Human Node functionality.
+    add_tool_node: Add Tool Node functionality.
+"""
+
 # src/haive/agents/react/graph_utils.py
 
 import logging

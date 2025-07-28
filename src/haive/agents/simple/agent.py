@@ -1,3 +1,17 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    SimpleAgent: SimpleAgent implementation.
+    Story: Story implementation.
+
+Functions:
+    has_tool_calls: Has Tool Calls functionality.
+    check_if_should_use_tool: Check If Should Use Tool functionality.
+    placeholder_node: Placeholder Node functionality.
+"""
+
 # src/haive/agents/simple/clean_agent.py
 
 import logging

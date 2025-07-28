@@ -1,3 +1,17 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    for: for implementation.
+    MultiAgent: MultiAgent implementation.
+    enables: enables implementation.
+
+Functions:
+    normalize_agents: Normalize Agents functionality.
+    setup_agent: Setup Agent functionality.
+"""
+
 # haive/agents/multi/agent.py
 
 """Advanced multi-agent class for the Haive framework.

@@ -1,3 +1,18 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    EntityNode: EntityNode implementation.
+    with: with implementation.
+    EntityRelationship: EntityRelationship implementation.
+
+Functions:
+    validate_node: Validate Node functionality.
+    from_graph_node: From Graph Node functionality.
+    validate_relationship: Validate Relationship functionality.
+"""
+
 from typing import Any
 
 from langchain_community.graphs.graph_document import Node, Relationship

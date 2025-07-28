@@ -51,7 +51,6 @@ class TokenTrackingAgent(Agent):
             usage = agent.get_token_usage_summary()
             print(f"Total tokens: {usage['total_tokens']}")
             print(f"Total cost: ${usage['total_cost']:.4f}")
-
     """
 
     # Token tracking configuration

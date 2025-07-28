@@ -1,3 +1,11 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    PersonResearchAgentConfig: PersonResearchAgentConfig implementation.
+"""
+
 # src/haive/agents/person_research/config.py
 
 from typing import Any

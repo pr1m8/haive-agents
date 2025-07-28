@@ -1,3 +1,13 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    MemoryItem: MemoryItem implementation.
+    for: for implementation.
+    KnowledgeTriple: KnowledgeTriple implementation.
+"""
+
 from typing import Any
 
 from pydantic import BaseModel, Field

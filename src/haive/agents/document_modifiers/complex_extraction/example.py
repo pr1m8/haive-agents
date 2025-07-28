@@ -1,3 +1,11 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Classes:
+    PersonInfo: PersonInfo implementation.
+"""
+
 # Example usage
 
 from langchain_core.messages import HumanMessage

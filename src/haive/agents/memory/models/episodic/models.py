@@ -1,3 +1,15 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    EpisodicMemory: EpisodicMemory implementation.
+
+Functions:
+    validate_content_safety: Validate Content Safety functionality.
+    validate_episodic_consistency: Validate Episodic Consistency functionality.
+"""
+
 import re
 from typing import Any, Literal
 

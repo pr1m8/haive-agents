@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    SelfDiscoverState: SelfDiscoverState implementation.
+"""
+
 # src/haive/agents/selfdiscover/state.py
 
 from collections.abc import Sequence

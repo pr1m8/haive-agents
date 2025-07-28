@@ -1,3 +1,17 @@
+"""Base model module.
+
+This module provides base functionality for the Haive framework.
+
+Classes:
+    BaseMemoryModel: BaseMemoryModel implementation.
+    Config: Config implementation.
+
+Functions:
+    validate_tags: Validate Tags functionality.
+    validate_priority: Validate Priority functionality.
+    validate_lifecycle_consistency: Validate Lifecycle Consistency functionality.
+"""
+
 from datetime import datetime
 from typing import Literal
 from uuid import UUID, uuid4

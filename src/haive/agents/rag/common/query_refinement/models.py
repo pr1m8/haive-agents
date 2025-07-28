@@ -1,3 +1,12 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    QueryRefinementSuggestion: QueryRefinementSuggestion implementation.
+    QueryRefinementResponse: QueryRefinementResponse implementation.
+"""
+
 # ============================================================================
 # QUERY REFINEMENT MODELS
 # ============================================================================

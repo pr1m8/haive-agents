@@ -1,3 +1,8 @@
+"""Prompts core module.
+
+This module provides prompts functionality for the Haive framework.
+"""
+
 #!/usr/bin/env python3
 """Prompt templates for RAG answer generation."""
 

@@ -1,3 +1,18 @@
+"""Clean_Simple_Rag core module.
+
+This module provides clean simple rag functionality for the Haive framework.
+
+Classes:
+    QAResponse: QAResponse implementation.
+    SimpleRAG: SimpleRAG implementation.
+    QAResponse: QAResponse implementation.
+
+Functions:
+    validate_context_template: Validate Context Template functionality.
+    setup_rag_agents: Setup Rag Agents functionality.
+    from_documents: From Documents functionality.
+"""
+
 #!/usr/bin/env python3
 """SimpleRAG - Clean MultiAgent Implementation.
 

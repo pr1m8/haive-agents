@@ -1,3 +1,15 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    Editor: Editor implementation.
+    Perspectives: Perspectives implementation.
+
+Functions:
+    persona: Persona functionality.
+"""
+
 from pydantic import BaseModel, Field
 
 

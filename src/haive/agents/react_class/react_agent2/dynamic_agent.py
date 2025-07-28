@@ -1,3 +1,17 @@
+"""Dynamic_Agent core module.
+
+This module provides dynamic agent functionality for the Haive framework.
+
+Classes:
+    DynamicReactAgentState: DynamicReactAgentState implementation.
+    DynamicReactAgentConfig: DynamicReactAgentConfig implementation.
+    DynamicReactAgent: DynamicReactAgent implementation.
+
+Functions:
+    from_tools: From Tools functionality.
+    setup_workflow: Setup Workflow functionality.
+"""
+
 # src/haive/agents/react_agent2/dynamic_agent.py
 
 """Dynamic React Agent - an extension of React agent with tool selection capabilities."""

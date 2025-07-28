@@ -1,3 +1,11 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    main: Main functionality.
+"""
+
 import asyncio
 
 from langchain_core.documents import Document

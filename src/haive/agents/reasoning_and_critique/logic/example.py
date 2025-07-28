@@ -1,3 +1,12 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    example_business_decision: Example Business Decision functionality.
+    example_quick_reasoning: Example Quick Reasoning functionality.
+"""
+
 # src/haive/agents/reasoning/examples.py
 
 from typing import Any

@@ -1,3 +1,15 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    IterativeGraphTransformerState: IterativeGraphTransformerState implementation.
+
+Functions:
+    should_refine: Should Refine functionality.
+    normalize_contents: Normalize Contents functionality.
+"""
+
 from typing import Literal
 
 from langchain_community.graphs.graph_document import GraphDocument

@@ -1,3 +1,13 @@
+"""Run_From_File core module.
+
+This module provides run from file functionality for the Haive framework.
+
+Functions:
+    setup_logging: Setup Logging functionality.
+    load_research_question: Load Research Question functionality.
+    run_research: Run Research functionality.
+"""
+
 #!/usr/bin/env python3
 """Example script that demonstrates running the open_perplexity research agent
 from typing import Any

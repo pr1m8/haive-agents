@@ -1,3 +1,11 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    TypedRAGConfig: TypedRAGConfig implementation.
+"""
+
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig

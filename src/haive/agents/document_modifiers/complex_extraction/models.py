@@ -1,3 +1,13 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    RetryStrategy: RetryStrategy implementation.
+    JsonPatch: JsonPatch implementation.
+    PatchFunctionParameters: PatchFunctionParameters implementation.
+"""
+
 from collections.abc import Callable, Sequence
 from typing import Any, Literal, TypedDict
 

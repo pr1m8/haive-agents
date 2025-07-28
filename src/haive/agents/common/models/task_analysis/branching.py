@@ -81,7 +81,6 @@ class TaskBranch(BaseModel):
             prerequisites=["literature_review", "lab_setup"],
             resources_needed=["research_lab", "expert_oncologists", "funding"]
             )
-
     """
 
     model_config = ConfigDict(
@@ -316,7 +315,6 @@ class TaskDecomposition(BaseModel):
             print(f"Branches: {len(decomposition.branches)}")
             print(f"Critical path: {decomposition.critical_path}")
             print(f"Parallelizable: {decomposition.parallelization_opportunities}")
-
     """
 
     task_description: str = Field(

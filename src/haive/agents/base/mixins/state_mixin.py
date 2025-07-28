@@ -1,3 +1,15 @@
+"""State_Mixin core module.
+
+This module provides state mixin functionality for the Haive framework.
+
+Classes:
+    StateMixin: StateMixin implementation.
+
+Functions:
+    save_state_history: Save State History functionality.
+    save_state_history_async: Save State History Async functionality.
+"""
+
 # haive/core/engine/agent/mixins/state_mixin.py
 
 import json

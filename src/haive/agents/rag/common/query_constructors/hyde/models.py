@@ -1,3 +1,15 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    HypotheticalDocument: HypotheticalDocument implementation.
+    HyDEResponse: HyDEResponse implementation.
+
+Functions:
+    to_query: To Query functionality.
+"""
+
 from pydantic import BaseModel, Field
 
 

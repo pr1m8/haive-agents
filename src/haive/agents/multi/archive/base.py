@@ -1,3 +1,17 @@
+"""Base core module.
+
+This module provides base functionality for the Haive framework.
+
+Classes:
+    for: for implementation.
+    ExecutionMode: ExecutionMode implementation.
+    MultiAgent: MultiAgent implementation.
+
+Functions:
+    validate_agents: Validate Agents functionality.
+    setup_multi_agent: Setup Multi Agent functionality.
+"""
+
 # haive/agents/multi/base.py
 """Base multi-agent implementation with branching and conditional routing support.
 

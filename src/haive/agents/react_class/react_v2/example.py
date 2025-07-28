@@ -1,3 +1,16 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Classes:
+    TripPlan: TripPlan implementation.
+
+Functions:
+    get_weather: Get Weather functionality.
+    search_database: Search Database functionality.
+    calculate: Calculate functionality.
+"""
+
 # Example usage of ReactAgent with Human Interaction
 
 # 1. Define our tools

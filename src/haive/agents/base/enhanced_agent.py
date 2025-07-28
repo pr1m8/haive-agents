@@ -1,3 +1,18 @@
+"""Enhanced_Agent core module.
+
+This module provides enhanced agent functionality for the Haive framework.
+
+Classes:
+    TypedInvokableEngine: TypedInvokableEngine implementation.
+    Workflow: Workflow implementation.
+    DataProcessor: DataProcessor implementation.
+
+Functions:
+    execute: Execute functionality.
+    execute: Execute functionality.
+    auto_generate_name: Auto Generate Name functionality.
+"""
+
 # haive/agents/base/enhanced_agent.py
 
 """Enhanced Agent hierarchy with engine-focused generics and backward compatibility.

@@ -1,3 +1,13 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    LLMRAGInputState: LLMRAGInputState implementation.
+    LLMRAGOutputState: LLMRAGOutputState implementation.
+    LLMRAGState: LLMRAGState implementation.
+"""
+
 from pydantic import Field
 
 from haive.agents.rag.base.state import (

@@ -1,3 +1,8 @@
+"""Prompts core module.
+
+This module provides prompts functionality for the Haive framework.
+"""
+
 # src/haive/agents/person_research/prompts.py
 
 from langchain_core.prompts import ChatPromptTemplate

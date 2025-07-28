@@ -1,3 +1,17 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    ToTState: ToTState implementation.
+    ExpansionState: ExpansionState implementation.
+
+Functions:
+    update_candidates: Update Candidates functionality.
+    problem: Problem functionality.
+    convert_candidates: Convert Candidates functionality.
+"""
+
 import operator
 from typing import Annotated, Any, Literal
 

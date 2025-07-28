@@ -1,3 +1,17 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    TOTInput: TOTInput implementation.
+    TOTOutput: TOTOutput implementation.
+    TOTState: TOTState implementation.
+
+Functions:
+    convert_candidates: Convert Candidates functionality.
+    convert_single_candidate: Convert Single Candidate functionality.
+"""
+
 # src/haive/agents/tot/state.py
 
 from typing import Annotated, Any

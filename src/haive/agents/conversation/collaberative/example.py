@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    example_brainstorming_session: Example Brainstorming Session functionality.
+    example_code_review: Example Code Review functionality.
+    example_project_planning: Example Project Planning functionality.
+"""
+
 # examples/conversation/collaborative_example.py
 """Examples for collaborative conversation patterns where participants build shared content."""
 

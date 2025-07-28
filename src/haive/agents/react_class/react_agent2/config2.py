@@ -1,3 +1,16 @@
+"""Config2 configuration module.
+
+This module provides config2 functionality for the Haive framework.
+
+Classes:
+    ReactAgentConfig: ReactAgentConfig implementation.
+
+Functions:
+    ensure_tools_list: Ensure Tools List functionality.
+    align_output_format: Align Output Format functionality.
+    update_system_prompt: Update System Prompt functionality.
+"""
+
 import uuid
 from collections.abc import Callable
 from datetime import datetime

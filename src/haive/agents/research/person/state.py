@@ -1,3 +1,13 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    Person: Person implementation.
+    representing: representing implementation.
+    PersonResearchInputState: PersonResearchInputState implementation.
+"""
+
 # src/haive/agents/person_research/state.py
 
 import operator

@@ -1,3 +1,8 @@
+"""Prompts core module.
+
+This module provides prompts functionality for the Haive framework.
+"""
+
 from langchain_core.prompts import ChatPromptTemplate
 
 rag_base_prompt = """You are an assistant for question-answering tasks.

@@ -1,3 +1,18 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    ReactAgentConfig: ReactAgentConfig implementation.
+    of: of implementation.
+    ReactAgent: ReactAgent implementation.
+
+Functions:
+    should_continue: Should Continue functionality.
+    validate_engine: Validate Engine functionality.
+    ensure_list: Ensure List functionality.
+"""
+
 import uuid
 from collections.abc import Callable
 from typing import Any

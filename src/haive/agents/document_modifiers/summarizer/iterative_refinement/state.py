@@ -1,3 +1,17 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    IterativeSummarizerInput: IterativeSummarizerInput implementation.
+    IterativeSummarizerOutput: IterativeSummarizerOutput implementation.
+    IterativeSummarizerState: IterativeSummarizerState implementation.
+
+Functions:
+    normalize_contents: Normalize Contents functionality.
+    should_refine: Should Refine functionality.
+"""
+
 from typing import Any, Literal
 
 from langchain_core.documents import Document

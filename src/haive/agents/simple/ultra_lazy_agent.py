@@ -1,3 +1,14 @@
+"""Ultra_Lazy_Agent core module.
+
+This module provides ultra lazy agent functionality for the Haive framework.
+
+Classes:
+    UltraLazyAgent: UltraLazyAgent implementation.
+
+Functions:
+    name: Name functionality.
+"""
+
 # UltraLazyAgent - Sub-3 Second Import Target
 """
 Ultra-aggressive lazy loading implementation that defers ALL dependencies

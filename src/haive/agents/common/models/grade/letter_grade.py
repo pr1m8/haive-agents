@@ -80,7 +80,6 @@ class LetterGrade(Grade):
             passing_grade="C",  # C is passing instead of default C-
             justification="Meets basic requirements"
             )
-
     """
 
     grade_type: GradeType = Field(

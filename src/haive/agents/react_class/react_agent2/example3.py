@@ -1,3 +1,17 @@
+"""Example3 core module.
+
+This module provides example3 functionality for the Haive framework.
+
+Classes:
+    ReactAgentSchema: ReactAgentSchema implementation.
+    ReactAgentSchemaWithStructuredResponse: ReactAgentSchemaWithStructuredResponse implementation.
+    ReactAgentConfig: ReactAgentConfig implementation.
+
+Functions:
+    from_tools_and_llm: From Tools And Llm functionality.
+    setup_workflow: Setup Workflow functionality.
+"""
+
 # src/haive/agents/react/agent.py
 import logging
 import os

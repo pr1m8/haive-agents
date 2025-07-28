@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    FilteredRAGState: FilteredRAGState implementation.
+"""
+
 from langchain_core.documents import Document
 from pydantic import Field
 

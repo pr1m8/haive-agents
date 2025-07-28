@@ -1,3 +1,12 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    FLAREStep: FLAREStep implementation.
+    FLAREResponse: FLAREResponse implementation.
+"""
+
 # ============================================================================
 # FLARE MODELS
 # ============================================================================

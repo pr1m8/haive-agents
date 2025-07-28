@@ -1,3 +1,15 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    ResearchAgent: ResearchAgent implementation.
+
+Functions:
+    react_agent: React Agent functionality.
+    rag_agent: Rag Agent functionality.
+"""
+
 import importlib
 import inspect
 import json

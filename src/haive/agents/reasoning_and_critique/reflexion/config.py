@@ -1,3 +1,14 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    ReflexionConfig: ReflexionConfig implementation.
+
+Functions:
+    create_agent: Create Agent functionality.
+"""
+
 from collections.abc import Callable
 from typing import Any
 

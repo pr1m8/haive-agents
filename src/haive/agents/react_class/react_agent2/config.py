@@ -1,3 +1,14 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    ReactAgentConfig: ReactAgentConfig implementation.
+
+Functions:
+    from_scratch: From Scratch functionality.
+"""
+
 from typing import Any
 
 from agents.react_agent2.models import ReactState, Thought

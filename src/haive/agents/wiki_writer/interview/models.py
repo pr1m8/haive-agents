@@ -1,3 +1,14 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    AnswerWithCitations: AnswerWithCitations implementation.
+
+Functions:
+    as_str: As Str functionality.
+"""
+
 from pydantic import BaseModel, Field
 
 

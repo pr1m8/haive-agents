@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    ReactManyToolsAgent: ReactManyToolsAgent implementation.
+
+Functions:
+    retriever: Retriever functionality.
+"""
+
 import logging
 import time
 from typing import Any

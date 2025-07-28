@@ -1,3 +1,8 @@
+"""Prompt core module.
+
+This module provides prompt functionality for the Haive framework.
+"""
+
 writer_prompt = ChatPromptTemplate.from_messages(
     [
         (

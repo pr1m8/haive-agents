@@ -1,3 +1,15 @@
+"""Branches core module.
+
+This module provides branches functionality for the Haive framework.
+
+Classes:
+    ToTBranch: ToTBranch implementation.
+    for: for implementation.
+
+Functions:
+    evaluate: Evaluate functionality.
+"""
+
 from typing import Any
 
 from haive.core.graph.branches import Branch

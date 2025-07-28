@@ -1,3 +1,14 @@
+"""Debug_With_Logging core module.
+
+This module provides debug with logging functionality for the Haive framework.
+
+Classes:
+    Plan: Plan implementation.
+
+Functions:
+    add: Add functionality.
+"""
+
 #!/usr/bin/env python3
 
 import logging

@@ -1,3 +1,12 @@
+"""Tool_Handler core module.
+
+This module provides tool handler functionality for the Haive framework.
+
+Functions:
+    normalize_tool_message: Normalize Tool Message functionality.
+    process_messages: Process Messages functionality.
+"""
+
 # src/haive/agents/react/tool_handler.py
 
 from typing import Any

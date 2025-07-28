@@ -1,3 +1,14 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    ToTState: ToTState implementation.
+
+Functions:
+    update_candidates: Update Candidates functionality.
+"""
+
 from collections.abc import Sequence
 from typing import Annotated, Any
 

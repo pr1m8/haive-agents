@@ -1,3 +1,13 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    Query: Query implementation.
+    GradeHallucinations: GradeHallucinations implementation.
+    GradeAnswer: GradeAnswer implementation.
+"""
+
 from pydantic import BaseModel, Field
 
 

@@ -1,3 +1,13 @@
+"""Engines engine module.
+
+This module provides engines functionality for the Haive framework.
+
+Functions:
+    create_node_extraction_config: Create Node Extraction Config functionality.
+    create_relationship_extraction_config: Create Relationship Extraction Config functionality.
+    create_graph_extraction_config: Create Graph Extraction Config functionality.
+"""
+
 # Import the models
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig

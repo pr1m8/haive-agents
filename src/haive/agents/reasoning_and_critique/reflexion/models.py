@@ -1,3 +1,13 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    Reflection: Reflection implementation.
+    AnswerQuestion: AnswerQuestion implementation.
+    ReviseAnswer: ReviseAnswer implementation.
+"""
+
 from pydantic import BaseModel, Field
 
 

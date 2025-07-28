@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    example_classroom_discussion: Example Classroom Discussion functionality.
+    example_team_meeting: Example Team Meeting functionality.
+    example_customer_support: Example Customer Support functionality.
+"""
+
 # examples/conversation/directed_example.py
 """Examples for directed conversation patterns with mentions and targeted responses."""
 

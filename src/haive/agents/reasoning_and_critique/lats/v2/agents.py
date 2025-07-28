@@ -1,3 +1,13 @@
+"""Agents core module.
+
+This module provides agents functionality for the Haive framework.
+
+Functions:
+    process_initial_response: Process Initial Response functionality.
+    execute_tool_calls: Execute Tool Calls functionality.
+    process_expansion: Process Expansion functionality.
+"""
+
 import logging
 from typing import Any
 

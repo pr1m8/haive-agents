@@ -1,3 +1,17 @@
+"""Structured_Tools core module.
+
+This module provides structured tools functionality for the Haive framework.
+
+Classes:
+    return: return implementation.
+    EnhancedWebBaseLoader: EnhancedWebBaseLoader implementation.
+    EnhancedRecursiveUrlLoader: EnhancedRecursiveUrlLoader implementation.
+
+Functions:
+    register_document_loader: Register Document Loader functionality.
+    decorator: Decorator functionality.
+"""
+
 import os
 import re
 from datetime import datetime

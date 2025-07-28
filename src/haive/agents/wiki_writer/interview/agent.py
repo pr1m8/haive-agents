@@ -1,3 +1,15 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    InterviewAgentConfig: InterviewAgentConfig implementation.
+    InterviewAgent: InterviewAgent implementation.
+
+Functions:
+    setup_workflow: Setup Workflow functionality.
+"""
+
 from agents.wiki_writer.interview.aug_llms import (
     gen_answer_aug_llm_config,
     gen_qn_aug_llm_config,

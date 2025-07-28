@@ -1,3 +1,18 @@
+"""Chain_Agent core module.
+
+This module provides chain agent functionality for the Haive framework.
+
+Classes:
+    ChainAgentSchema: ChainAgentSchema implementation.
+    ChainAgentConfig: ChainAgentConfig implementation.
+    ChainAgent: ChainAgent implementation.
+
+Functions:
+    from_engines: From Engines functionality.
+    setup_workflow: Setup Workflow functionality.
+    init_node: Init Node functionality.
+"""
+
 # src/haive/agents/simple/chain_agent.py
 import json
 import logging

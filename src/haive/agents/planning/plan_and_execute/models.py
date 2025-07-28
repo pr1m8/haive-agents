@@ -1,3 +1,18 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    Step: Step implementation.
+    Plan: Plan implementation.
+    Response: Response implementation.
+
+Functions:
+    add_result: Add Result functionality.
+    is_complete: Is Complete functionality.
+    remove_completed_substeps: Remove Completed Substeps functionality.
+"""
+
 import operator
 from typing import Literal, Optional
 

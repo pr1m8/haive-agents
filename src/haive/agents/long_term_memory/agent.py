@@ -1,3 +1,16 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    LongTermMemoryAgentConfig: LongTermMemoryAgentConfig implementation.
+    LongTermMemoryAgent: LongTermMemoryAgent implementation.
+
+Functions:
+    load_memories: Load Memories functionality.
+    setup_workflow: Setup Workflow functionality.
+"""
+
 from agents.long_term_memory.aug_llm import lt_mem_agent_aug_llm
 from agents.long_term_memory.state import LongTermMemoryState
 from agents.long_term_memory.tools import (

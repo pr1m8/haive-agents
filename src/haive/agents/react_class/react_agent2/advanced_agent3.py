@@ -1,3 +1,15 @@
+"""Advanced_Agent3 core module.
+
+This module provides advanced agent3 functionality for the Haive framework.
+
+Classes:
+    AdvancedReactAgentConfig: AdvancedReactAgentConfig implementation.
+    AdvancedReactAgent: AdvancedReactAgent implementation.
+
+Functions:
+    setup_workflow: Setup Workflow functionality.
+"""
+
 import logging
 from collections.abc import Callable
 

@@ -1,3 +1,8 @@
+"""Engines engine module.
+
+This module provides engines functionality for the Haive framework.
+"""
+
 from langchain_core.prompts import PromptTemplate
 
 REWRITER_PROMPT = """

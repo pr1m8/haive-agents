@@ -60,7 +60,6 @@ class Grade(BaseModel, ABC):
             justification="Response meets all criteria",
             confidence=0.95
             )
-
     """
 
     model_config = ConfigDict(

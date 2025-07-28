@@ -1,3 +1,16 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    SimpleAgentState: SimpleAgentState implementation.
+
+Functions:
+    add_human_message: Add Human Message functionality.
+    add_ai_message: Add Ai Message functionality.
+    extract_last_message_content: Extract Last Message Content functionality.
+"""
+
 from collections.abc import Sequence
 from typing import Annotated
 

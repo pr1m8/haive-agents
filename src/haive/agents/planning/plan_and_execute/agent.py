@@ -1,3 +1,15 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    PlanAndExecuteAgent: PlanAndExecuteAgent implementation.
+
+Functions:
+    planner: Planner functionality.
+    setup_workflow: Setup Workflow functionality.
+"""
+
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.aug_llm import *
 from langgraph.graph import END

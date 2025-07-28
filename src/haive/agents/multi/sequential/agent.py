@@ -1,3 +1,15 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    SequentialMultiAgent: SequentialMultiAgent implementation.
+
+Functions:
+    placeholder_node: Placeholder Node functionality.
+    build_graph: Build Graph functionality.
+"""
+
 # haive/agents/multi/sequential.py
 
 """Sequential multi-agent implementation for the Haive framework."""

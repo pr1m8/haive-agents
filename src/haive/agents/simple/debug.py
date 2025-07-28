@@ -1,3 +1,8 @@
+"""Debug core module.
+
+This module provides debug functionality for the Haive framework.
+"""
+
 # Create a debug script to test input/output schema derivation
 
 import logging

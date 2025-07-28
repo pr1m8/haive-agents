@@ -1,3 +1,16 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    PlanAndExecuteState: PlanAndExecuteState implementation.
+
+Functions:
+    update_past_steps: Update Past Steps functionality.
+    get_next_step: Get Next Step functionality.
+    is_plan_complete: Is Plan Complete functionality.
+"""
+
 from haive.core.schema.state_schema import StateSchema
 from pydantic import Field
 

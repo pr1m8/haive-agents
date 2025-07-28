@@ -1,3 +1,13 @@
+"""Branches core module.
+
+This module provides branches functionality for the Haive framework.
+
+Functions:
+    error_router: Error Router functionality.
+    memory_filter_router: Memory Filter Router functionality.
+    memory_generation_router: Memory Generation Router functionality.
+"""
+
 from langgraph.graph import END
 
 from .state import SelfHealingCodeState

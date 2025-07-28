@@ -1,3 +1,11 @@
+"""Query_Types core module.
+
+This module provides query types functionality for the Haive framework.
+
+Classes:
+    QueryCategory: QueryCategory implementation.
+"""
+
 from enum import Enum
 
 

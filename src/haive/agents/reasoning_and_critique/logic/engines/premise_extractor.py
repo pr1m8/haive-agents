@@ -1,3 +1,11 @@
+"""Premise_Extractor engine module.
+
+This module provides premise extractor functionality for the Haive framework.
+
+Functions:
+    create_premise_extractor: Create Premise Extractor functionality.
+"""
+
 # src/haive/agents/reasoning/premise_extractor.py
 
 from typing import Any

@@ -1,3 +1,12 @@
+"""Qa_Agent core module.
+
+This module provides qa agent functionality for the Haive framework.
+
+Classes:
+    QA: QA implementation.
+    QAs: QAs implementation.
+"""
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from pydantic import BaseModel, Field

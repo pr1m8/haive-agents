@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    example_simple_debate: Example Simple Debate functionality.
+    example_panel_debate: Example Panel Debate functionality.
+    example_oxford_debate: Example Oxford Debate functionality.
+"""
+
 # examples/conversation/debate_example.py
 """Examples for structured debate conversations."""
 

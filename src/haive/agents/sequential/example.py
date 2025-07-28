@@ -1,3 +1,11 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    run_example: Run Example functionality.
+"""
+
 #!/usr/bin/env python3
 """Quick example of using SequentialAgent with imported AugLLMConfig components.
 

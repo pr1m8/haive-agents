@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    CollaborativeConversation: CollaborativeConversation implementation.
+
+Functions:
+    get_conversation_state_schema: Get Conversation State Schema functionality.
+"""
+
 # src/haive/agents/conversation/collaborative/agent.py
 """Collaborative conversation agent for building shared content."""
 

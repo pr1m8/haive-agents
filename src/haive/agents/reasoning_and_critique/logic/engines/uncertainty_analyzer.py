@@ -1,3 +1,11 @@
+"""Uncertainty_Analyzer engine module.
+
+This module provides uncertainty analyzer functionality for the Haive framework.
+
+Functions:
+    create_uncertainty_analyzer: Create Uncertainty Analyzer functionality.
+"""
+
 # src/haive/agents/reasoning/uncertainty_analyzer.py
 
 from typing import Any

@@ -1,3 +1,16 @@
+"""Mixins model module.
+
+This module provides mixins functionality for the Haive framework.
+
+Classes:
+    PerformanceMetrics: PerformanceMetrics implementation.
+    TaskExecution: TaskExecution implementation.
+
+Functions:
+    validate_performance_logic: Validate Performance Logic functionality.
+    validate_execution_steps: Validate Execution Steps functionality.
+"""
+
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator, model_validator

@@ -1,3 +1,18 @@
+"""Simple_Rag_State core module.
+
+This module provides simple rag state functionality for the Haive framework.
+
+Classes:
+    inheritance: inheritance implementation.
+    DocumentRetrieval: DocumentRetrieval implementation.
+    AnswerGeneration: AnswerGeneration implementation.
+
+Functions:
+    create_rag_agents: Create Rag Agents functionality.
+    create_simple_rag_workflow: Create Simple Rag Workflow functionality.
+    execute_simple_rag: Execute Simple Rag functionality.
+"""
+
 #!/usr/bin/env python3
 """SimpleRAG - Proper MultiAgentState Implementation.
 

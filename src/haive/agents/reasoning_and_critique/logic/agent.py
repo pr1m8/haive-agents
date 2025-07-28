@@ -1,3 +1,17 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    ReasoningSystemState: ReasoningSystemState implementation.
+    ReasoningSystem: ReasoningSystem implementation.
+
+Functions:
+    setup_agent: Setup Agent functionality.
+    build_graph: Build Graph functionality.
+    should_explore_alternatives: Should Explore Alternatives functionality.
+"""
+
 # src/haive/agents/reasoning/orchestrator.py
 
 from typing import Any

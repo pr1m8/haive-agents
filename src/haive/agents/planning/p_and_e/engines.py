@@ -1,3 +1,13 @@
+"""Engines engine module.
+
+This module provides engines functionality for the Haive framework.
+
+Functions:
+    create_planner_aug_llm_config: Create Planner Aug Llm Config functionality.
+    create_executor_aug_llm_config: Create Executor Aug Llm Config functionality.
+    create_replan_aug_llm_config: Create Replan Aug Llm Config functionality.
+"""
+
 # src/haive/agents/plan_and_execute/aug_llms.py
 """AugLLM configurations for Plan and Execute Agent System.
 

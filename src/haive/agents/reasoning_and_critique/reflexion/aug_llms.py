@@ -1,3 +1,8 @@
+"""Aug_Llms core module.
+
+This module provides aug llms functionality for the Haive framework.
+"""
+
 from agents.reflexion.models import AnswerQuestion, ReviseAnswer
 
 # from langchain_core.tools import PydanticToolsParser

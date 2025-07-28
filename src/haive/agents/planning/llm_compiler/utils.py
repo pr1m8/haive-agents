@@ -1,3 +1,12 @@
+"""Utils utility module.
+
+This module provides utils functionality for the Haive framework.
+
+Functions:
+    schedule_pending_task: Schedule Pending Task functionality.
+    schedule_tasks: Schedule Tasks functionality.
+"""
+
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, wait

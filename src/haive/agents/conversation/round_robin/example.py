@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    example_simple_round_robin: Example Simple Round Robin functionality.
+    example_custom_round_robin: Example Custom Round Robin functionality.
+    example_panel_discussion: Example Panel Discussion functionality.
+"""
+
 # examples/conversation/round_robin_example.py
 """Examples for round-robin conversation patterns."""
 

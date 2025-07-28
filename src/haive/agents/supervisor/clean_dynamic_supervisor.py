@@ -1,3 +1,16 @@
+"""Clean_Dynamic_Supervisor core module.
+
+This module provides clean dynamic supervisor functionality for the Haive framework.
+
+Classes:
+    DynamicSupervisorState: DynamicSupervisorState implementation.
+    DynamicSupervisor: DynamicSupervisor implementation.
+
+Functions:
+    setup_agent: Setup Agent functionality.
+    add_agent: Add Agent functionality.
+"""
+
 # src/haive/agents/supervisor/clean_dynamic_supervisor.py
 
 """Clean Dynamic Supervisor Implementation.

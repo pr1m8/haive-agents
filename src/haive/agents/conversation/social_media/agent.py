@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    SocialMediaConversation: SocialMediaConversation implementation.
+
+Functions:
+    get_conversation_state_schema: Get Conversation State Schema functionality.
+"""
+
 import logging
 import random
 from typing import Any, Literal

@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    ReactAgent: ReactAgent implementation.
+
+Functions:
+    build_graph: Build Graph functionality.
+"""
+
 # ============================================================================
 # REACT AGENT
 # ============================================================================

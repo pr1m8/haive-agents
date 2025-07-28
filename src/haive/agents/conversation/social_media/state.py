@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    SocialMediaState: SocialMediaState implementation.
+"""
+
 import logging
 from typing import Literal
 

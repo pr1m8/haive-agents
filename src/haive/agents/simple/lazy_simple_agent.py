@@ -1,3 +1,16 @@
+"""Lazy_Simple_Agent core module.
+
+This module provides lazy simple agent functionality for the Haive framework.
+
+Classes:
+    LazyAugLLMConfig: LazyAugLLMConfig implementation.
+    LazyAgent: LazyAgent implementation.
+    Agent: Agent implementation.
+
+Functions:
+    cached_import: Cached Import functionality.
+"""
+
 # LazySimpleAgent - Ultra-fast import with intelligent lazy loading
 """
 Ultra-optimized SimpleAgent implementation that achieves sub-3 second import times

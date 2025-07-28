@@ -1,3 +1,11 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Functions:
+    retrieve: Retrieve functionality.
+"""
+
 from haive.agents.research.storm.section_writer.models import WikiSection
 from haive.agents.research.storm.section_writer.prompt import section_writer_prompt
 

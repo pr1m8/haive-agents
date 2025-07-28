@@ -1,3 +1,17 @@
+"""Dynamic_Supervisor core module.
+
+This module provides dynamic supervisor functionality for the Haive framework.
+
+Classes:
+    SupervisorState: SupervisorState implementation.
+    AgentRegistryEntry: AgentRegistryEntry implementation.
+    to: to implementation.
+
+Functions:
+    available_agents: Available Agents functionality.
+    is_at_max_iterations: Is At Max Iterations functionality.
+"""
+
 # experiments/dynamic_supervisor.py
 
 """Dynamic Supervisor Agent Experiment.

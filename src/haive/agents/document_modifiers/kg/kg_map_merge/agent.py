@@ -1,3 +1,16 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    ParallelKGTransformerConfig: ParallelKGTransformerConfig implementation.
+    ParallelKGTransformer: ParallelKGTransformer implementation.
+
+Functions:
+    setup_workflow: Setup Workflow functionality.
+    map_graph_documents: Map Graph Documents functionality.
+"""
+
 import logging
 from typing import Any, Dict
 

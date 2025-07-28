@@ -1,3 +1,16 @@
+"""Agent2 core module.
+
+This module provides agent2 functionality for the Haive framework.
+
+Classes:
+    SelfDiscoverAgent: SelfDiscoverAgent implementation.
+
+Functions:
+    setup_workflow: Setup Workflow functionality.
+    select_modules: Select Modules functionality.
+    adapt_modules: Adapt Modules functionality.
+"""
+
 # src/haive/agents/selfdiscover/agent.py
 
 import logging

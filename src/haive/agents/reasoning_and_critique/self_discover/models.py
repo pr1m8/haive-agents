@@ -1,3 +1,18 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    SelectedModule: SelectedModule implementation.
+    ModuleSelectionResult: ModuleSelectionResult implementation.
+    AdaptedModule: AdaptedModule implementation.
+
+Functions:
+    format_for_next_stage: Format For Next Stage functionality.
+    validate_modules: Validate Modules functionality.
+    format_for_next_stage: Format For Next Stage functionality.
+"""
+
 # src/haive/agents/selfdiscover/models.py
 
 from typing import Any

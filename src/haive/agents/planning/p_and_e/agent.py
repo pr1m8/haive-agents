@@ -1,3 +1,16 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    PlanAndExecuteAgent: PlanAndExecuteAgent implementation.
+
+Functions:
+    check_plan_complete: Check Plan Complete functionality.
+    route_after_evaluation: Route After Evaluation functionality.
+    setup_agent: Setup Agent functionality.
+"""
+
 # src/haive/agents/plan_and_execute/agents.py
 """Plan and Execute Agent implementation."""
 

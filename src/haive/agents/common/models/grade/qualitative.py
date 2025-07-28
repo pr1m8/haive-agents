@@ -87,7 +87,6 @@ class QualitativeGrade(Grade):
             justification="Well-written piece with strong content but needs polish",
             detailed_feedback="This work demonstrates a solid understanding..."
             )
-
     """
 
     grade_type: GradeType = Field(

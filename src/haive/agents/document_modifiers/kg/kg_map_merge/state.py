@@ -1,3 +1,14 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    KnowledgeGraphState: KnowledgeGraphState implementation.
+
+Functions:
+    should_continue: Should Continue functionality.
+"""
+
 import operator
 from typing import Annotated, Literal
 

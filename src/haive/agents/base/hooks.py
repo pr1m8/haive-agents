@@ -1,3 +1,18 @@
+"""Hooks core module.
+
+This module provides hooks functionality for the Haive framework.
+
+Classes:
+    HookEvent: HookEvent implementation.
+    HookContext: HookContext implementation.
+    HooksMixin: HooksMixin implementation.
+
+Functions:
+    my_hook: My Hook functionality.
+    log_start: Log Start functionality.
+    log_end: Log End functionality.
+"""
+
 # src/haive/agents/base/hooks.py
 
 """Hook system for agent lifecycle events.

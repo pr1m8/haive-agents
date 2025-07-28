@@ -1,3 +1,16 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    TopicState: TopicState implementation.
+    ArticleState: ArticleState implementation.
+    ResearchState: ResearchState implementation.
+
+Functions:
+    draft: Draft functionality.
+"""
+
 from pydantic import BaseModel, Field, computed_field
 
 from haive.agents.research.storm.generate_perspectives.models import Editor

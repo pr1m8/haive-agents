@@ -1,3 +1,13 @@
+"""React_Agent_Config configuration module.
+
+This module provides react agent config functionality for the Haive framework.
+
+Functions:
+    create_research_react_agent_config: Create Research React Agent Config functionality.
+    create_research_rag_engine: Create Research Rag Engine functionality.
+    create_research_rag_agent_config: Create Research Rag Agent Config functionality.
+"""
+
 from datetime import datetime
 
 from haive.core.engine.aug_llm import AugLLMConfig

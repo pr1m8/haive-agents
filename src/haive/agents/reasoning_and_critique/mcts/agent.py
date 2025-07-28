@@ -1,3 +1,16 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    MCTSAgent: MCTSAgent implementation.
+    run: run implementation.
+
+Functions:
+    setup_workflow: Setup Workflow functionality.
+    reflection_chain: Reflection Chain functionality.
+"""
+
 # src/haive/agents/mcts/agent.py
 
 import logging

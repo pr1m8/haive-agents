@@ -1,3 +1,8 @@
+"""Engines engine module.
+
+This module provides engines functionality for the Haive framework.
+"""
+
 r"""LLM engine configurations for the Graph Database RAG Agent.
 
 This module defines the prompt templates and AugLLMConfig instances for each

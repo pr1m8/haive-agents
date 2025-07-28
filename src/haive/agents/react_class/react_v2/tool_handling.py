@@ -1,3 +1,14 @@
+"""Tool_Handling core module.
+
+This module provides tool handling functionality for the Haive framework.
+
+Classes:
+    GeneralizedToolNode: GeneralizedToolNode implementation.
+
+Functions:
+    human_input_node: Human Input Node functionality.
+"""
+
 # src/haive/agents/react/tool_handling.py
 
 import logging

@@ -1,3 +1,11 @@
+"""Run_With_Visualization core module.
+
+This module provides run with visualization functionality for the Haive framework.
+
+Functions:
+    run_example: Run Example functionality.
+"""
+
 #!/usr/bin/env python3
 """Example script that demonstrates running the open_perplexity research agent,
 saving state history, and visualizing results.

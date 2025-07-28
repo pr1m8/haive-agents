@@ -1,3 +1,16 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    Reflection: Reflection implementation.
+    TreeNode: TreeNode implementation.
+
+Functions:
+    as_message: As Message functionality.
+    normalized_score: Normalized Score functionality.
+"""
+
 from __future__ import annotations
 
 import math

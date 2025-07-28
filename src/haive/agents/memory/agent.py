@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    MemoryAgent: MemoryAgent implementation.
+
+Functions:
+    save_memory: Save Memory functionality.
+"""
+
 import json
 import logging
 from datetime import datetime

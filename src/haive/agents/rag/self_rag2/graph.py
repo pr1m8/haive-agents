@@ -1,3 +1,8 @@
+"""Graph graph module.
+
+This module provides graph functionality for the Haive framework.
+"""
+
 from langgraph.graph import END, START, StateGraph
 
 from haive.haive.self_rag.nodes import (

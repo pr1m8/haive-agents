@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    ReactAgent: ReactAgent implementation.
+
+Functions:
+    setup_workflow: Setup Workflow functionality.
+"""
+
 import logging
 from typing import Any
 

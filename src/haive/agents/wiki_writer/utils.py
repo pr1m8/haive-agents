@@ -1,3 +1,13 @@
+"""Utils utility module.
+
+This module provides utils functionality for the Haive framework.
+
+Functions:
+    update_references: Update References functionality.
+    update_editor: Update Editor functionality.
+    format_doc: Format Doc functionality.
+"""
+
 # from haive.core.utils.doc_utils import
 
 

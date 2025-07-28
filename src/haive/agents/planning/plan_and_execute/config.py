@@ -1,3 +1,11 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    PlanAndExecuteConfig: PlanAndExecuteConfig implementation.
+"""
+
 from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.agent.react import ReactAgentConfig
 from haive.core.engine.base import Engine

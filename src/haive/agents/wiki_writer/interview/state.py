@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    InterviewState: InterviewState implementation.
+"""
+
 from typing import Annotated, TypedDict
 
 from agents.wiki_writer.interview.models import Editor

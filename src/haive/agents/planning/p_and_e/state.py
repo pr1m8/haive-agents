@@ -1,3 +1,16 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    PlanExecuteState: PlanExecuteState implementation.
+
+Functions:
+    objective: Objective functionality.
+    execution_time: Execution Time functionality.
+    current_step: Current Step functionality.
+"""
+
 # src/haive/agents/plan_and_execute/state.py
 """State schemas for Plan and Execute Agent System.
 

@@ -1,3 +1,15 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    ReflexionAgent: ReflexionAgent implementation.
+
+Functions:
+    create_tool_node: Create Tool Node functionality.
+    final_answer: Final Answer functionality.
+"""
+
 from collections.abc import Callable
 
 from agents.reflexion.config import ReflexionConfig

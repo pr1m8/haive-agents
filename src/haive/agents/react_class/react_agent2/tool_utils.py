@@ -1,3 +1,13 @@
+"""Tool_Utils utility module.
+
+This module provides tool utils functionality for the Haive framework.
+
+Functions:
+    create_custom_tool_node: Create Custom Tool Node functionality.
+    extract_tool_calls: Extract Tool Calls functionality.
+    parse_tool_arguments: Parse Tool Arguments functionality.
+"""
+
 # src/haive/agents/react/tool_utils.py
 
 import json

@@ -1,3 +1,18 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    for: for implementation.
+    that: that implementation.
+    Agent: Agent implementation.
+
+Functions:
+    setup_agent: Setup Agent functionality.
+    build_graph: Build Graph functionality.
+    normalize_engines_and_name: Normalize Engines And Name functionality.
+"""
+
 # haive/core/engine/agent/base.py
 
 """Base Agent class for the Haive framework.

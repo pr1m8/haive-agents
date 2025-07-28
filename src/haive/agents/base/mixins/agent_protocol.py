@@ -1,3 +1,17 @@
+"""Agent_Protocol core module.
+
+This module provides agent protocol functionality for the Haive framework.
+
+Classes:
+    AgentProtocol: AgentProtocol implementation.
+    must: must implementation.
+    required: required implementation.
+
+Functions:
+    compile: Compile functionality.
+    save_state_history: Save State History functionality.
+"""
+
 from collections.abc import AsyncGenerator, Generator
 from typing import (
     TYPE_CHECKING,

@@ -1,3 +1,18 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    TaskType: TaskType implementation.
+    ActionType: ActionType implementation.
+    DependencyType: DependencyType implementation.
+
+Functions:
+    calculate_total_duration: Calculate Total Duration functionality.
+    get_all_steps: Get All Steps functionality.
+    add_subtask: Add Subtask functionality.
+"""
+
 # src/haive/agents/task_analysis/base/models.py
 
 import uuid

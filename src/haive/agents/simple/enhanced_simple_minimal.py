@@ -1,3 +1,17 @@
+"""Enhanced_Simple_Minimal core module.
+
+This module provides enhanced simple minimal functionality for the Haive framework.
+
+Classes:
+    Engine: Engine implementation.
+    AugLLMConfig: AugLLMConfig implementation.
+    Workflow: Workflow implementation.
+
+Functions:
+    execute: Execute functionality.
+    execute: Execute functionality.
+"""
+
 # src/haive/agents/simple/enhanced_simple_minimal.py
 
 """Minimal Enhanced SimpleAgent - showing the pattern in action.

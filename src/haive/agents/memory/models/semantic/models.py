@@ -1,3 +1,16 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    SemanticMemory: SemanticMemory implementation.
+
+Functions:
+    validate_user_id: Validate User Id functionality.
+    validate_concept_graph: Validate Concept Graph functionality.
+    validate_semantic_consistency: Validate Semantic Consistency functionality.
+"""
+
 import re
 from typing import Any
 

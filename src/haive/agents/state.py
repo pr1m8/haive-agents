@@ -1,3 +1,15 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    WebNavState: WebNavState implementation.
+
+Functions:
+    debug_print: Debug Print functionality.
+    ensure_prediction: Ensure Prediction functionality.
+"""
+
 import logging
 from typing import Any
 

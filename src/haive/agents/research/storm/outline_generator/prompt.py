@@ -1,3 +1,8 @@
+"""Prompt core module.
+
+This module provides prompt functionality for the Haive framework.
+"""
+
 from langchain_core.prompts import ChatPromptTemplate
 
 direct_gen_outline_prompt = ChatPromptTemplate.from_messages(

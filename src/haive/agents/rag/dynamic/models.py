@@ -1,3 +1,14 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    DataSourceConfig: DataSourceConfig implementation.
+
+Functions:
+    create_retriever: Create Retriever functionality.
+"""
+
 from haive.core.models.retriever.base import RetrieverConfig
 from pydantic import BaseModel, Field
 

@@ -1,3 +1,13 @@
+"""Execution_Mixin core module.
+
+This module provides execution mixin functionality for the Haive framework.
+
+Classes:
+    ExecutionMixin: ExecutionMixin implementation.
+
+Functions:
+"""
+
 # haive/core/engine/agent/mixins/execution_mixin.py
 
 import asyncio

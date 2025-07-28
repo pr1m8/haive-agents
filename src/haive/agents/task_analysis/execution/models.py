@@ -1,3 +1,18 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    ResourceType: ResourceType implementation.
+    ExecutionPhase: ExecutionPhase implementation.
+    JoinPoint: JoinPoint implementation.
+
+Functions:
+    add_task: Add Task functionality.
+    add_phase: Add Phase functionality.
+    calculate_critical_path: Calculate Critical Path functionality.
+"""
+
 # src/haive/agents/task_analysis/execution/models.py
 
 from enum import Enum

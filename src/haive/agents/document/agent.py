@@ -205,7 +205,6 @@ class DocumentAgent(Agent):
         "extract_metadata": True
         })
 
-
     ### Multi-Source Processing:
     .. code-block:: python
 
@@ -218,7 +217,6 @@ class DocumentAgent(Agent):
         "s3://bucket/documents/",  # Cloud storage
         "postgresql://db/documents"  # Database
         ])
-
 
     ### Custom Pipeline Configuration:
     .. code-block:: python
@@ -233,7 +231,6 @@ class DocumentAgent(Agent):
         normalize_content=True,
         detect_language=True
         )
-
 
     ## Document Source Types Supported:
 

@@ -1,3 +1,14 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    ReactAgentConfig: ReactAgentConfig implementation.
+
+Functions:
+    ensure_valid_configuration: Ensure Valid Configuration functionality.
+"""
+
 from typing import Any, Literal
 
 from langchain_core.tools import BaseTool

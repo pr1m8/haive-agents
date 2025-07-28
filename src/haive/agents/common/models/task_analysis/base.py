@@ -212,7 +212,6 @@ class TaskStep(BaseModel):
             required_resources=[ResourceType.NETWORK, ResourceType.DATA],
             can_be_automated=True
             )
-
     """
 
     model_config = ConfigDict(
@@ -362,7 +361,6 @@ class DependencyNode(BaseModel):
             weight=1.0,
             description="Must know winner before looking up their birthday"
             )
-
     """
 
     source_id: str = Field(
@@ -481,7 +479,6 @@ class Task(BaseModel):
             )
             ]
             )
-
     """
 
     model_config = ConfigDict(

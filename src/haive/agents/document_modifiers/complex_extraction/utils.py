@@ -1,3 +1,16 @@
+"""Utils utility module.
+
+This module provides utils functionality for the Haive framework.
+
+Classes:
+    RetryStrategy: RetryStrategy implementation.
+
+Functions:
+    encode: Encode functionality.
+    decode: Decode functionality.
+    default_aggregator: Default Aggregator functionality.
+"""
+
 import uuid
 from collections.abc import Callable, Sequence
 from typing import TypedDict

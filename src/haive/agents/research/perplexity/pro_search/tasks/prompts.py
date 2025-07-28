@@ -1,3 +1,13 @@
+"""Prompts core module.
+
+This module provides prompts functionality for the Haive framework.
+
+Functions:
+    create_decomposition_aug_llm: Create Decomposition Aug Llm functionality.
+    create_execution_planning_aug_llm: Create Execution Planning Aug Llm functionality.
+    create_replanning_analysis_aug_llm: Create Replanning Analysis Aug Llm functionality.
+"""
+
 # recursive_planning_prompts.py
 """Chat prompt templates for recursive conditional planning with tree-based decomposition.
 from typing import Any, Dict

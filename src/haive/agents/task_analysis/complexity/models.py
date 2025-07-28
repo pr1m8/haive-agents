@@ -1,3 +1,18 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    ComplexityLevel: ComplexityLevel implementation.
+    ComplexityVector: ComplexityVector implementation.
+    ComplexityFactors: ComplexityFactors implementation.
+
+Functions:
+    total_score: Total Score functionality.
+    determine_level: Determine Level functionality.
+    validate_scores: Validate Scores functionality.
+"""
+
 # src/haive/agents/task_analysis/complexity/models.py
 
 from enum import Enum

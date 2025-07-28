@@ -1,3 +1,18 @@
+"""Factory core module.
+
+This module provides factory functionality for the Haive framework.
+
+Classes:
+    Equation: Equation implementation.
+    EquationList: EquationList implementation.
+    ScoreResult: ScoreResult implementation.
+
+Functions:
+    create_tot_agent: Create Tot Agent functionality.
+    create_math_tot_agent: Create Math Tot Agent functionality.
+    score_math_solution: Score Math Solution functionality.
+"""
+
 # src/haive/agents/tot/factory.py
 
 from collections.abc import Callable

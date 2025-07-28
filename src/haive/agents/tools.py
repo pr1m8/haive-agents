@@ -1,3 +1,13 @@
+"""Tools core module.
+
+This module provides tools functionality for the Haive framework.
+
+Functions:
+    click: Click functionality.
+    type_text: Type Text functionality.
+    scroll: Scroll functionality.
+"""
+
 import asyncio
 import logging
 import platform

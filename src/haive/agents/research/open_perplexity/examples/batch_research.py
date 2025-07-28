@@ -1,3 +1,12 @@
+"""Batch_Research core module.
+
+This module provides batch research functionality for the Haive framework.
+
+Functions:
+    conduct_research: Conduct Research functionality.
+    main: Main functionality.
+"""
+
 #!/usr/bin/env python3
 """Batch research example demonstrating how to use the Open Perplexity research agent
 to process multiple research topics in sequence.

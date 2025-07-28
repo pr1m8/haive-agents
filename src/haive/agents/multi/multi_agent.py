@@ -1,3 +1,15 @@
+"""Multi_Agent core module.
+
+This module provides multi agent functionality for the Haive framework.
+
+Classes:
+    MultiAgent: MultiAgent implementation.
+
+Functions:
+    setup_agent: Setup Agent functionality.
+    build_graph: Build Graph functionality.
+"""
+
 # src/haive/agents/multi/multi_agent.py
 
 import logging

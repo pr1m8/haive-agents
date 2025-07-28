@@ -1,3 +1,12 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    setup_tavily_tool: Setup Tavily Tool functionality.
+    run_mcts_agent_example: Run Mcts Agent Example functionality.
+"""
+
 # src/haive/agents/mcts/example.py
 
 import logging

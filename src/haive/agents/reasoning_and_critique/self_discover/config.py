@@ -1,3 +1,14 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    SelfDiscoverAgentConfig: SelfDiscoverAgentConfig implementation.
+
+Functions:
+    from_defaults: From Defaults functionality.
+"""
+
 # src/haive/agents/selfdiscover/config.py
 
 from datetime import datetime

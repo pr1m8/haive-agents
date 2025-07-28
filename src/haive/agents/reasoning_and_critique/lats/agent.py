@@ -1,3 +1,17 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    LATSAgentConfig: LATSAgentConfig implementation.
+    LATSAgent: LATSAgent implementation.
+
+Functions:
+    from_scratch: From Scratch functionality.
+    setup_workflow: Setup Workflow functionality.
+    reflection_chain: Reflection Chain functionality.
+"""
+
 # src/haive/agents/lats/tree_agent.py
 
 import logging

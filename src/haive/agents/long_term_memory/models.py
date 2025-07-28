@@ -1,3 +1,11 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    KnowledgeTriple: KnowledgeTriple implementation.
+"""
+
 from pydantic import BaseModel, Field
 
 

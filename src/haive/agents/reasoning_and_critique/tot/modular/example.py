@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    print_state: Print State functionality.
+    run_tot_example: Run Tot Example functionality.
+    run_game24_example: Run Game24 Example functionality.
+"""
+
 # examples/tot_agent_example.py
 
 import os

@@ -1,3 +1,18 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    StepStatus: StepStatus implementation.
+    StepType: StepType implementation.
+    PlanStep: PlanStep implementation.
+
+Functions:
+    serialize_datetime: Serialize Datetime functionality.
+    is_ready: Is Ready functionality.
+    execution_time: Execution Time functionality.
+"""
+
 # src/haive/agents/plan_and_execute/models.py
 """Models for Plan and Execute Agent System.
 

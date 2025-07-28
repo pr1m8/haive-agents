@@ -1,3 +1,8 @@
+"""Aug_Llms core module.
+
+This module provides aug llms functionality for the Haive framework.
+"""
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 

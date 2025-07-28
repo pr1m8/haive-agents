@@ -60,7 +60,6 @@ class JoinPoint(BaseModel):
             output_task_ids=["final_report"],
             join_type="synchronous"
             )
-
     """
 
     model_config = ConfigDict(
@@ -177,7 +176,6 @@ class ParallelGroup(BaseModel):
             estimated_duration_minutes=120,
             resource_requirements={"researchers": 3, "internet": True}
             )
-
     """
 
     model_config = ConfigDict(
@@ -292,7 +290,6 @@ class ExecutionPhase(BaseModel):
             parallel_groups=[research_group, survey_group],
             estimated_duration_minutes=180
             )
-
     """
 
     model_config = ConfigDict(
@@ -406,7 +403,6 @@ class ParallelizationAnalysis(BaseModel):
             critical_path=["task_1", "task_3", "task_5"],
             estimated_speedup=2.5
             )
-
     """
 
     model_config = ConfigDict(
@@ -552,7 +548,6 @@ class ParallelizationAnalyzer(BaseModel):
 
             analysis = analyzer.analyze_task(complex_task)
             print(f"Recommended speedup: {analysis.estimated_speedup:.1f}x")
-
     """
 
     model_config = ConfigDict(

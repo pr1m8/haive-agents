@@ -1,3 +1,16 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Classes:
+    Calculator: Calculator implementation.
+
+Functions:
+    get_current_weather: Get Current Weather functionality.
+    calculate: Calculate functionality.
+    search_api: Search Api functionality.
+"""
+
 #!/usr/bin/env python3
 """Test script for ReactAgent demonstrating various usage patterns.
 

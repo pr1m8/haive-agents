@@ -1,3 +1,13 @@
+"""Utils utility module.
+
+This module provides utils functionality for the Haive framework.
+
+Functions:
+    create_mcts_agent: Create Mcts Agent functionality.
+    extract_best_solution: Extract Best Solution functionality.
+    print_tree_stats: Print Tree Stats functionality.
+"""
+
 # src/haive/agents/mcts/utils.py
 
 import logging

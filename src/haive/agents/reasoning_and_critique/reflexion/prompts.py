@@ -1,3 +1,8 @@
+"""Prompts core module.
+
+This module provides prompts functionality for the Haive framework.
+"""
+
 import datetime
 
 from agents.reflexion.models import AnswerQuestion, ReviseAnswer

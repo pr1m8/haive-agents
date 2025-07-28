@@ -1,3 +1,19 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    InstructionComponent: InstructionComponent implementation.
+    ReflectionCycle: ReflectionCycle implementation.
+    ProceduralMemory: ProceduralMemory implementation.
+
+Functions:
+    validate_instruction_clarity: Validate Instruction Clarity functionality.
+    validate_reflection_logic: Validate Reflection Logic functionality.
+    validate_instruction_set: Validate Instruction Set functionality.
+"""
+
+
 class InstructionComponent(BaseModel):
     """Individual instruction component with metadata."""
 

@@ -1,3 +1,13 @@
+"""Cli core module.
+
+This module provides cli functionality for the Haive framework.
+
+Functions:
+    run_research: Run Research functionality.
+    visualize_state: Visualize State functionality.
+    main: Main functionality.
+"""
+
 #!/usr/bin/env python
 """CLI tool for running the open_perplexity research agent.
 

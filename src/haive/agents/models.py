@@ -1,3 +1,12 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    BBox: BBox implementation.
+    Prediction: Prediction implementation.
+"""
+
 from pydantic import Field
 from typing_extensions import TypedDict
 

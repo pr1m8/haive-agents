@@ -1,3 +1,16 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    TaskAnalysisAgent: TaskAnalysisAgent implementation.
+
+Functions:
+    route_after_decomposition: Route After Decomposition functionality.
+    route_after_validation: Route After Validation functionality.
+    route_after_analysis: Route After Analysis functionality.
+"""
+
 # src/haive/agents/task_analysis/agent.py
 
 import logging

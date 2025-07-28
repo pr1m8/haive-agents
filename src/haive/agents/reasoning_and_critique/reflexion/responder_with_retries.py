@@ -1,3 +1,14 @@
+"""Responder_With_Retries core module.
+
+This module provides responder with retries functionality for the Haive framework.
+
+Classes:
+    ResponderWithRetries: ResponderWithRetries implementation.
+
+Functions:
+    respond: Respond functionality.
+"""
+
 import json
 
 from haive.core.engine.aug_llm import AugLLMConfig

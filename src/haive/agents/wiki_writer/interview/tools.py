@@ -1,3 +1,11 @@
+"""Tools core module.
+
+This module provides tools functionality for the Haive framework.
+
+Functions:
+    search_engine: Search Engine functionality.
+"""
+
 from haive.core.tools.search_tools import tavily_search
 from langchain_core.tools import tool
 

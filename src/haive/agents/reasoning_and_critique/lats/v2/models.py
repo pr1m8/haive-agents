@@ -1,3 +1,17 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    TreeNode: TreeNode implementation.
+    Config: Config implementation.
+    Reflection: Reflection implementation.
+
+Functions:
+    uct_score: Uct Score functionality.
+    normalized_score: Normalized Score functionality.
+"""
+
 import math
 import uuid
 from typing import Any

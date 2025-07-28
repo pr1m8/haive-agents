@@ -1,3 +1,15 @@
+"""Output_Parser core module.
+
+This module provides output parser functionality for the Haive framework.
+
+Classes:
+    Task: Task implementation.
+    LLMCompilerPlanParser: LLMCompilerPlanParser implementation.
+
+Functions:
+    default_dependency_rule: Default Dependency Rule functionality.
+"""
+
 import ast
 import re
 from collections.abc import Iterator, Sequence

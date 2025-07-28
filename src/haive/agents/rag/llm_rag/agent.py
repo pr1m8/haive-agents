@@ -1,3 +1,16 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    LLMRAGAgent: LLMRAGAgent implementation.
+
+Functions:
+    setup_workflow: Setup Workflow functionality.
+    retrieve_documents: Retrieve Documents functionality.
+    check_relevance: Check Relevance functionality.
+"""
+
 import logging
 
 # Set up logging

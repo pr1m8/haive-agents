@@ -1,3 +1,18 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    SelfHealingCodeAgentConfig: SelfHealingCodeAgentConfig implementation.
+    SelfHealingCodeAgent: SelfHealingCodeAgent implementation.
+
+Functions:
+    bug_report_node: Bug Report Node functionality.
+    memory_search_node: Memory Search Node functionality.
+    memory_filter_node: Memory Filter Node functionality.
+"""
+
+
 class SelfHealingCodeAgentConfig(AgentArchitectureConfig):
     state_schema: SelfHealingCodeState
 

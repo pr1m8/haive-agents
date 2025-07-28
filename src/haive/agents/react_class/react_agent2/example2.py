@@ -1,3 +1,16 @@
+"""Example2 core module.
+
+This module provides example2 functionality for the Haive framework.
+
+Classes:
+    MovieReview: MovieReview implementation.
+
+Functions:
+    print_latest_message: Print Latest Message functionality.
+    example_basic_react_agent: Example Basic React Agent functionality.
+    search: Search functionality.
+"""
+
 # src/haive/agents/react_agent2/examples.py
 import logging
 import uuid

@@ -34,7 +34,6 @@ class RubricCriterion(BaseModel):
             weight=0.4,
             justification="Strong content with minor gaps in coverage"
             )
-
     """
 
     name: str = Field(
@@ -191,7 +190,6 @@ class RubricGrade(Grade):
             criteria=criteria,
             justification="Overall strong performance with room for improvement in organization"
             )
-
     """
 
     grade_type: GradeType = Field(
@@ -430,7 +428,6 @@ class RubricGrade(Grade):
                 justification="Strong overall performance",
                 max_score=10
                 )
-
         """
         criteria = []
 

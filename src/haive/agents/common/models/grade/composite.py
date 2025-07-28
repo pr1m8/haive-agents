@@ -47,7 +47,6 @@ class CompositeGrade(Grade):
             combination_method="simple_average",
             justification="Balanced multi-perspective evaluation"
             )
-
     """
 
     grade_type: GradeType = Field(

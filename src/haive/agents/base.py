@@ -1,3 +1,16 @@
+"""Base core module.
+
+This module provides base functionality for the Haive framework.
+
+Classes:
+    ContentsState: ContentsState implementation.
+    DocumentAgentConfig: DocumentAgentConfig implementation.
+    DocumentAgent: DocumentAgent implementation.
+
+Functions:
+    run: Run functionality.
+"""
+
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document

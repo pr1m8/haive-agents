@@ -1,3 +1,18 @@
+"""Nodes core module.
+
+This module provides nodes functionality for the Haive framework.
+
+Classes:
+    with: with implementation.
+    variable: variable implementation.
+    with: with implementation.
+
+Functions:
+    get_tool_by_name: Get Tool By Name functionality.
+    get_tool_description: Get Tool Description functionality.
+    get_tool_name: Get Tool Name functionality.
+"""
+
 from collections.abc import Callable
 from typing import Any
 

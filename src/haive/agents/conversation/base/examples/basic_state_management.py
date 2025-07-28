@@ -1,3 +1,16 @@
+"""Basic_State_Management core module.
+
+This module provides basic state management functionality for the Haive framework.
+
+Classes:
+    ExtendedConversationState: ExtendedConversationState implementation.
+
+Functions:
+    demonstrate_basic_state_creation: Demonstrate Basic State Creation functionality.
+    demonstrate_state_updates: Demonstrate State Updates functionality.
+    demonstrate_computed_properties: Demonstrate Computed Properties functionality.
+"""
+
 #!/usr/bin/env python3
 """Basic State Management Example for Base Conversation Agents.
 

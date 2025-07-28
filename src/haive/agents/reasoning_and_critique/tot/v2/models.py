@@ -1,3 +1,17 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    Candidate: Candidate implementation.
+    ScoredCandidate: ScoredCandidate implementation.
+    CandidateGeneration: CandidateGeneration implementation.
+
+Functions:
+    validate_content: Validate Content functionality.
+    get_content_str: Get Content Str functionality.
+"""
+
 import json
 import uuid
 from datetime import datetime

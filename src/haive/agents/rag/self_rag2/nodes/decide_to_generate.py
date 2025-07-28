@@ -1,3 +1,11 @@
+"""Decide_To_Generate core module.
+
+This module provides decide to generate functionality for the Haive framework.
+
+Functions:
+    decide_to_generate: Decide To Generate functionality.
+"""
+
 from typing import Any
 
 

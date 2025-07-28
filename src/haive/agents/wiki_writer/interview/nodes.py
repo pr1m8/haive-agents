@@ -1,3 +1,12 @@
+"""Nodes core module.
+
+This module provides nodes functionality for the Haive framework.
+
+Functions:
+    generate_question: Generate Question functionality.
+    gen_answer: Gen Answer functionality.
+"""
+
 import json
 
 from agents.wiki_writer.interview.aug_llms import (

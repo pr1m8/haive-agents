@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    search_db: Search Db functionality.
+    search_web: Search Web functionality.
+    analyze_data: Analyze Data functionality.
+"""
+
 # examples/react_agent_custom_routing_example.py
 
 import logging

@@ -1,3 +1,13 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    LikePostInput: LikePostInput implementation.
+    ReplyPostInput: ReplyPostInput implementation.
+    SharePostInput: SharePostInput implementation.
+"""
+
 # src/haive/agents/conversation/social_media.py
 """Social media style conversation with likes, reactions, and viral mechanics."""
 

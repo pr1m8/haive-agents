@@ -1,3 +1,14 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    ToTAgentConfig: ToTAgentConfig implementation.
+
+Functions:
+    from_scratch: From Scratch functionality.
+"""
+
 from collections.abc import Callable
 from datetime import datetime
 

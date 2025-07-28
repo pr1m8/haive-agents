@@ -1,3 +1,13 @@
+"""Utils utility module.
+
+This module provides utils functionality for the Haive framework.
+
+Functions:
+    add_messages: Add Messages functionality.
+    update_references: Update References functionality.
+    update_editor: Update Editor functionality.
+"""
+
 from typing import Any
 
 

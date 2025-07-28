@@ -1,3 +1,18 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    Subsection: Subsection implementation.
+    Section: Section implementation.
+    WikiSection: WikiSection implementation.
+
+Functions:
+    as_str: As Str functionality.
+    as_str: As Str functionality.
+    as_str: As Str functionality.
+"""
+
 # Wiki Article Models:
 
 from pydantic import BaseModel, Field

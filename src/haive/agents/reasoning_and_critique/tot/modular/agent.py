@@ -1,3 +1,15 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    ToTAgent: ToTAgent implementation.
+
+Functions:
+    get_state_value: Get State Value functionality.
+    setup_workflow: Setup Workflow functionality.
+"""
+
 import logging
 from typing import Any
 

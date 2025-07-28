@@ -1,3 +1,8 @@
+"""Engines engine module.
+
+This module provides engines functionality for the Haive framework.
+"""
+
 from agents.long_term_memory.tools import (
     save_recall_memory,
     search_recall_memories,

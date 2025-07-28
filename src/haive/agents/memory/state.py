@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    MemoryAgentState: MemoryAgentState implementation.
+"""
+
 from agents.react.memory.models import KnowledgeTriple, MemoryItem
 from agents.react.react.state import ReactAgentState
 from pydantic import ConfigDict, Field

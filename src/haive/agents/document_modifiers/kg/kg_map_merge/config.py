@@ -1,3 +1,11 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    ParallelKGTransformerConfig: ParallelKGTransformerConfig implementation.
+"""
+
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document

@@ -1,3 +1,17 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    MentionType: MentionType implementation.
+    SpeakerMention: SpeakerMention implementation.
+    SpeakerSelectionResult: SpeakerSelectionResult implementation.
+
+Functions:
+    get_conversation_state_schema: Get Conversation State Schema functionality.
+    select_speaker: Select Speaker functionality.
+"""
+
 # src/haive/agents/conversation/directed/agent.py
 """Directed conversation agent where participants respond to mentions and direct questions.
 from typing import Any

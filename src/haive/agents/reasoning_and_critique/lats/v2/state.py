@@ -1,3 +1,16 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    LATSState: LATSState implementation.
+
+Functions:
+    update_nodes: Update Nodes functionality.
+    input_query: Input Query functionality.
+    current_trajectory: Current Trajectory functionality.
+"""
+
 import operator
 from typing import Annotated, Any
 

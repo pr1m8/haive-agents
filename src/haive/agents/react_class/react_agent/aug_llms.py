@@ -1,3 +1,8 @@
+"""Aug_Llms core module.
+
+This module provides aug llms functionality for the Haive framework.
+"""
+
 from datetime import datetime
 
 from haive.core.engine.aug_llm import AugLLMConfig

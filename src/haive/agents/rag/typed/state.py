@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    TypedRAGState: TypedRAGState implementation.
+"""
+
 from typing import Any
 
 from langchain.schema import Document

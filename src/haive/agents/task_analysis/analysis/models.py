@@ -1,3 +1,8 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+"""
+
 # Task Decomposition Template
 from langchain_core.prompts import ChatPromptTemplate
 

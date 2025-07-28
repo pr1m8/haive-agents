@@ -1,3 +1,11 @@
+"""Factory core module.
+
+This module provides factory functionality for the Haive framework.
+
+Functions:
+    create_complex_extraction_agent: Create Complex Extraction Agent functionality.
+"""
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder

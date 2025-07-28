@@ -1,3 +1,12 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    run_self_discovery_example: Run Self Discovery Example functionality.
+    run_custom_task: Run Custom Task functionality.
+"""
+
 # src/haive/agents/self_discovery/example.py
 """Example usage of the Self-Discovery reasoning system."""
 

@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    ReactAgentState: ReactAgentState implementation.
+"""
+
 # src/haive/agents/react/state.py
 
 from collections.abc import Sequence

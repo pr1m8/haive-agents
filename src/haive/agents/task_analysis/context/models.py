@@ -1,3 +1,16 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    ContextSize: ContextSize implementation.
+    ContextFreshness: ContextFreshness implementation.
+    ContextDomain: ContextDomain implementation.
+
+Functions:
+    merge_with: Merge With functionality.
+"""
+
 # src/haive/agents/task_analysis/context/models.py
 
 from enum import Enum

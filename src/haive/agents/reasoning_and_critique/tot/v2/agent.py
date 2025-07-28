@@ -1,3 +1,13 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Functions:
+    expansion_workflow: Expansion Workflow functionality.
+    scoring_workflow: Scoring Workflow functionality.
+    control_workflow: Control Workflow functionality.
+"""
+
 import logging
 from typing import Any
 

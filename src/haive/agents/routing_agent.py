@@ -1,3 +1,18 @@
+"""Routing_Agent core module.
+
+This module provides routing agent functionality for the Haive framework.
+
+Classes:
+    RoutingAgentSchema: RoutingAgentSchema implementation.
+    RoutingAgentConfig: RoutingAgentConfig implementation.
+    RoutingAgent: RoutingAgent implementation.
+
+Functions:
+    setup_workflow: Setup Workflow functionality.
+    route_function: Route Function functionality.
+    create_routing_agent: Create Routing Agent functionality.
+"""
+
 # src/haive/agents/simple/routing_agent.py
 
 import logging

@@ -1,3 +1,13 @@
+"""Engines engine module.
+
+This module provides engines functionality for the Haive framework.
+
+Functions:
+    create_select_engine: Create Select Engine functionality.
+    create_adapt_engine: Create Adapt Engine functionality.
+    create_structure_engine: Create Structure Engine functionality.
+"""
+
 # src/haive/agents/selfdiscover/engines.py
 
 from haive.core.engine.aug_llm import AugLLMConfig

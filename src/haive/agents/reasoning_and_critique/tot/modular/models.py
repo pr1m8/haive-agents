@@ -1,3 +1,15 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    Candidate: Candidate implementation.
+    CandidateContent: CandidateContent implementation.
+    CandidateList: CandidateList implementation.
+
+Functions:
+"""
+
 from typing import Any
 
 from pydantic import BaseModel, Field

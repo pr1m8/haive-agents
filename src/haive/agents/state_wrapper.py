@@ -1,3 +1,15 @@
+"""State_Wrapper core module.
+
+This module provides state wrapper functionality for the Haive framework.
+
+Classes:
+    StateWrapper: StateWrapper implementation.
+
+Functions:
+    set_page: Set Page functionality.
+    get_page: Get Page functionality.
+"""
+
 import logging
 from typing import Any
 

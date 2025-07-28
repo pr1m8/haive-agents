@@ -1,3 +1,13 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    BaseRAGInputState: BaseRAGInputState implementation.
+    BaseRAGOutputState: BaseRAGOutputState implementation.
+    BaseRAGState: BaseRAGState implementation.
+"""
+
 from langchain.schema import Document
 from pydantic import BaseModel, Field
 

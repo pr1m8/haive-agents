@@ -1,3 +1,18 @@
+"""Enhanced_Multi_Agent_Standalone core module.
+
+This module provides enhanced multi agent standalone functionality for the Haive framework.
+
+Classes:
+    MinimalEngine: MinimalEngine implementation.
+    Agent: Agent implementation.
+    SimpleAgent: SimpleAgent implementation.
+
+Functions:
+    arun: Arun functionality.
+    run: Run functionality.
+    arun: Arun functionality.
+"""
+
 #!/usr/bin/env python3
 """Standalone Enhanced MultiAgent Implementation - Fully Working.
 

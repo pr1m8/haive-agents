@@ -1,3 +1,13 @@
+"""Tools core module.
+
+This module provides tools functionality for the Haive framework.
+
+Functions:
+    save_recall_memory: Save Recall Memory functionality.
+    save_structured_recall_memory: Save Structured Recall Memory functionality.
+    search_recall_memories: Search Recall Memories functionality.
+"""
+
 import uuid
 
 from agents.long_term_memory.models import KnowledgeTriple

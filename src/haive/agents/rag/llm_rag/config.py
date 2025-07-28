@@ -1,3 +1,15 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    LLMRAGConfig: LLMRAGConfig implementation.
+    attributes: attributes implementation.
+
+Functions:
+    setup_engines: Setup Engines functionality.
+"""
+
 import uuid
 
 from haive.core.engine.aug_llm import AugLLMConfig

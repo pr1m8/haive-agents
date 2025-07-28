@@ -1,3 +1,13 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    MultiStrategyRAGAgent: MultiStrategyRAGAgent implementation.
+
+Functions:
+"""
+
 from typing import Any
 
 from haive.core.engine.agent.agent import register_agent

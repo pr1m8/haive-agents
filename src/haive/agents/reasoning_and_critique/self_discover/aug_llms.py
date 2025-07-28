@@ -1,3 +1,8 @@
+"""Aug_Llms core module.
+
+This module provides aug llms functionality for the Haive framework.
+"""
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.utils.parser_utils import parse_reasoning_modules_to_string
 from langchain_core.output_parsers import StrOutputParser

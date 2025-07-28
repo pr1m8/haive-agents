@@ -1,3 +1,8 @@
+"""Prompts core module.
+
+This module provides prompts functionality for the Haive framework.
+"""
+
 # src/haive/agents/plan_and_execute/prompts.py
 """Prompt templates for Plan and Execute Agent System.
 

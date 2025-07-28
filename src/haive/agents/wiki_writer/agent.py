@@ -1,3 +1,15 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    WikiWriterAgentConfig: WikiWriterAgentConfig implementation.
+    WikiWriterAgent: WikiWriterAgent implementation.
+
+Functions:
+    call_agent: Call Agent functionality.
+"""
+
 from haive.core.engine.agent.agent import AgentArchitecture, AgentArchitectureConfig
 
 

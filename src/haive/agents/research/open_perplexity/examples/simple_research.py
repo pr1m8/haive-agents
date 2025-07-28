@@ -1,3 +1,11 @@
+"""Simple_Research core module.
+
+This module provides simple research functionality for the Haive framework.
+
+Functions:
+    main: Main functionality.
+"""
+
 #!/usr/bin/env python3
 """Simple example demonstrating how to use the Open Perplexity research agent
 for a specific research topic.

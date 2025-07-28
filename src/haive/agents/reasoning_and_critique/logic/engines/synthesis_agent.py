@@ -1,3 +1,11 @@
+"""Synthesis_Agent engine module.
+
+This module provides synthesis agent functionality for the Haive framework.
+
+Functions:
+    create_synthesis_agent: Create Synthesis Agent functionality.
+"""
+
 # src/haive/agents/reasoning/synthesis_agent.py
 
 from typing import Any

@@ -1,3 +1,13 @@
+"""Memory_Utils utility module.
+
+This module provides memory utils functionality for the Haive framework.
+
+Functions:
+    get_user_id_from_state: Get User Id From State functionality.
+    create_memory_vectorstore: Create Memory Vectorstore functionality.
+    save_unstructured_memories: Save Unstructured Memories functionality.
+"""
+
 import datetime
 import logging
 import uuid

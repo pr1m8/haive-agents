@@ -1,3 +1,16 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    CompilerState: CompilerState implementation.
+
+Functions:
+    get_highest_step_id: Get Highest Step Id functionality.
+    get_executable_steps: Get Executable Steps functionality.
+    all_steps_complete: All Steps Complete functionality.
+"""
+
 from typing import Any
 
 from agents.llm_compiler.models import CompilerPlan, CompilerStep

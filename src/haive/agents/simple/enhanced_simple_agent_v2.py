@@ -1,3 +1,17 @@
+"""Enhanced_Simple_Agent_V2 core module.
+
+This module provides enhanced simple agent v2 functionality for the Haive framework.
+
+Classes:
+    directly: directly implementation.
+    SimpleAgentV2: SimpleAgentV2 implementation.
+
+Functions:
+    ensure_engine: Ensure Engine functionality.
+    setup_agent: Setup Agent functionality.
+    build_graph: Build Graph functionality.
+"""
+
 # src/haive/agents/simple/enhanced_simple_agent_v2.py
 
 """Enhanced SimpleAgent V2 - Using the enhanced Agent pattern directly.

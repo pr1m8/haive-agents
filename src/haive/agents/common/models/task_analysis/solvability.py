@@ -92,7 +92,6 @@ class SolvabilityAssessment(BaseModel):
             ],
             estimated_time_to_solvable=timedelta(days=7300)  # ~20 years
             )
-
     """
 
     model_config = ConfigDict(

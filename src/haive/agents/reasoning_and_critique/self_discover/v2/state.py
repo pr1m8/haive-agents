@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    SelfDiscoveryState: SelfDiscoveryState implementation.
+"""
+
 # src/haive/agents/self_discovery/state.py
 """State schema for Self-Discovery reasoning system."""
 

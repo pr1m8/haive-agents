@@ -1,3 +1,18 @@
+"""Sequential_Agent core module.
+
+This module provides sequential agent functionality for the Haive framework.
+
+Classes:
+    QAResponse: QAResponse implementation.
+    RAGResponse: RAGResponse implementation.
+    SimpleRAG: SimpleRAG implementation.
+
+Functions:
+    validate_context_template: Validate Context Template functionality.
+    setup_agents: Setup Agents functionality.
+    from_documents: From Documents functionality.
+"""
+
 #!/usr/bin/env python3
 """SimpleRAG - Sequential MultiAgent Implementation (BaseRAG → SimpleAgent).
 

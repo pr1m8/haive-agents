@@ -1,3 +1,8 @@
+"""Prompts core module.
+
+This module provides prompts functionality for the Haive framework.
+"""
+
 # src/haive/agents/self_discovery/prompts.py
 """Prompt templates for Self-Discovery reasoning system."""
 

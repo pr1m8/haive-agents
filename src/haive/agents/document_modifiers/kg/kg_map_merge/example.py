@@ -1,3 +1,11 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    main: Main functionality.
+"""
+
 import asyncio
 
 from haive.agents.document_modifiers.kg.kg_map_merge.utils import (

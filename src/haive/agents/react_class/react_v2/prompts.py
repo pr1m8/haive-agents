@@ -1,3 +1,8 @@
+"""Prompts core module.
+
+This module provides prompts functionality for the Haive framework.
+"""
+
 REACT_SYSTEM_PROMPT = """You are an expert problem-solving assistant that follows the ReAct (Reasoning + Acting) methodology.
 
 APPROACH:

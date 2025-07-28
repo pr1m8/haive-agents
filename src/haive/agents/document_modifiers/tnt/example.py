@@ -1,3 +1,8 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+"""
+
 from haive.agents.document_modifiers.tnt.agent import TaxonomyAgent, TaxonomyAgentConfig
 from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 

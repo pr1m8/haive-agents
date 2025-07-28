@@ -1,3 +1,13 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    ComplexExtractionInput: ComplexExtractionInput implementation.
+    ComplexExtractionOutput: ComplexExtractionOutput implementation.
+    ComplexExtractionState: ComplexExtractionState implementation.
+"""
+
 import operator
 from typing import Annotated, Literal
 

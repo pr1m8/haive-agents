@@ -75,7 +75,6 @@ class ExecutionStrategy(BaseModel):
             risk_mitigation=["backup_data_sources", "expert_consultation", "iterative_validation"],
             success_factors=["clear_requirements", "adequate_resources", "expert_oversight"]
             )
-
     """
 
     model_config = ConfigDict(
@@ -241,7 +240,6 @@ class TaskAnalysis(BaseModel):
             print(f"Complexity: {analysis.complexity.overall_complexity}")
             print(f"Solvable: {analysis.solvability.is_currently_solvable}")
             print(f"Strategy: {analysis.execution_strategy.strategy_type}")
-
     """
 
     model_config = ConfigDict(

@@ -1,3 +1,18 @@
+"""Enhanced_Simple_Real core module.
+
+This module provides enhanced simple real functionality for the Haive framework.
+
+Classes:
+    EnhancedAgentBase: EnhancedAgentBase implementation.
+    setup: setup implementation.
+    SimpleAgent: SimpleAgent implementation.
+
+Functions:
+    setup_agent: Setup Agent functionality.
+    build_graph: Build Graph functionality.
+    arun: Arun functionality.
+"""
+
 # src/haive/agents/simple/enhanced_simple_real.py
 
 """Enhanced SimpleAgent - Real implementation using Agent[AugLLMConfig].

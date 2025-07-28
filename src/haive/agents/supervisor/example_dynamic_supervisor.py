@@ -1,3 +1,16 @@
+"""Example_Dynamic_Supervisor core module.
+
+This module provides example dynamic supervisor functionality for the Haive framework.
+
+Classes:
+    MockTool: MockTool implementation.
+
+Functions:
+    create_dynamic_supervisor_system: Create Dynamic Supervisor System functionality.
+    demonstrate_dynamic_capabilities: Demonstrate Dynamic Capabilities functionality.
+    demonstrate_complex_workflow: Demonstrate Complex Workflow functionality.
+"""
+
 #!/usr/bin/env python
 """Example of using DynamicMultiAgent with real haive agents.
 

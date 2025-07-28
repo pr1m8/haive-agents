@@ -1,3 +1,16 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    DebateState: DebateState implementation.
+
+Functions:
+    in_rebuttal_phase: In Rebuttal Phase functionality.
+    all_arguments_complete: All Arguments Complete functionality.
+    debate_progress: Debate Progress functionality.
+"""
+
 # src/haive/agents/conversation/debate/state.py
 """State schema for structured debate conversations with automatic tracking."""
 

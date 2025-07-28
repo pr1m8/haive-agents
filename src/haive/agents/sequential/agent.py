@@ -1,3 +1,16 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    SequentialAgent: SequentialAgent implementation.
+
+Functions:
+    validate_agents: Validate Agents functionality.
+    set_state_schema: Set State Schema functionality.
+    validate_non_empty_agents: Validate Non Empty Agents functionality.
+"""
+
 # SEQUENTIAL AGENT
 # ============================================================================
 

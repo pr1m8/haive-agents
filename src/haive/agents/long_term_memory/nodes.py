@@ -1,3 +1,11 @@
+"""Nodes core module.
+
+This module provides nodes functionality for the Haive framework.
+
+Functions:
+    load_memories: Load Memories functionality.
+"""
+
 import tiktoken
 from agents.long_term_memory.state import LongTermMemoryState
 from agents.long_term_memory.tools import search_recall_memories

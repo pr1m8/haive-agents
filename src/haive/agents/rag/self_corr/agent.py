@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    SelfCorrectiveRAGAgent: SelfCorrectiveRAGAgent implementation.
+
+Functions:
+    retriever: Retriever functionality.
+"""
+
 import logging
 from typing import Any
 

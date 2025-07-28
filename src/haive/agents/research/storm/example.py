@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    setup_environment: Setup Environment functionality.
+    run_storm_agent: Run Storm Agent functionality.
+    main: Main functionality.
+"""
+
 # examples/storm_agent_example.py
 
 """Example demonstrating how to use the STORM agent to generate

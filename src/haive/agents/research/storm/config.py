@@ -1,3 +1,18 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    SequenceAgentConfig: SequenceAgentConfig implementation.
+    ResearchAgentConfig: ResearchAgentConfig implementation.
+    InterviewAgentConfig: InterviewAgentConfig implementation.
+
+Functions:
+    build_agent: Build Agent functionality.
+    build_agent: Build Agent functionality.
+    build_agent: Build Agent functionality.
+"""
+
 # src/haive/agents/research/storm/config.py
 
 # NOTE: The following imports are placeholders - these modules are not yet implemented

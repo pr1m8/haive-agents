@@ -1,3 +1,11 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    ComplexExtractionAgentConfig: ComplexExtractionAgentConfig implementation.
+"""
+
 import uuid
 
 from haive.core.engine.agent.agent import AgentConfig, RunnableConfig

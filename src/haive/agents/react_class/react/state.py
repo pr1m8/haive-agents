@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    ReactAgentState: ReactAgentState implementation.
+"""
+
 from typing import Any
 
 from pydantic import ConfigDict, Field

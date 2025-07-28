@@ -1,3 +1,18 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    TaskStatus: TaskStatus implementation.
+    TaskPriority: TaskPriority implementation.
+    TaskDependency: TaskDependency implementation.
+
+Functions:
+    resource_key: Resource Key functionality.
+    can_retry: Can Retry functionality.
+    efficiency_ratio: Efficiency Ratio functionality.
+"""
+
 # recursive_planning_models.py
 """Pydantic models for recursive conditional planning with tree-based task decomposition.
 Supports dynamic planning, parallel execution, and adaptive replanning.

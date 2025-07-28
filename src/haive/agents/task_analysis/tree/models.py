@@ -1,3 +1,13 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    TaskTree: TaskTree implementation.
+
+Functions:
+"""
+
 # src/haive/agents/task_analysis/tree/models.py
 
 from collections.abc import Callable

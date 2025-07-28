@@ -1,3 +1,13 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    DynamicRAGAgent: DynamicRAGAgent implementation.
+
+Functions:
+"""
+
 import logging
 import time
 from typing import Any

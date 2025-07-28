@@ -1,3 +1,17 @@
+"""Supervisor core module.
+
+This module provides supervisor functionality for the Haive framework.
+
+Classes:
+    Plan: Plan implementation.
+    MultiAgentState: MultiAgentState implementation.
+
+Functions:
+    add: Add functionality.
+    selected_agent: Selected Agent functionality.
+    temp_node: Temp Node functionality.
+"""
+
 import operator
 from typing import Annotated
 

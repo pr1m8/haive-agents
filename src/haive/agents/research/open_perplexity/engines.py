@@ -1,3 +1,11 @@
+"""Engines engine module.
+
+This module provides engines functionality for the Haive framework.
+
+Functions:
+    create_research_engines: Create Research Engines functionality.
+"""
+
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig

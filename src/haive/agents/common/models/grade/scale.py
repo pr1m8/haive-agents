@@ -86,7 +86,6 @@ class ScaleGrade(Grade):
             scale_type="quality_5",
             justification="Quality meets expectations"
             )
-
     """
 
     grade_type: GradeType = Field(

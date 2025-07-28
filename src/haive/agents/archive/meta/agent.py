@@ -60,7 +60,6 @@ class MetaAgent(Agent, Generic[TAgent]):
             # Check recompilation
             if meta_simple.needs_recompilation():
             meta_simple.recompile()
-
     """
 
     def __init__(

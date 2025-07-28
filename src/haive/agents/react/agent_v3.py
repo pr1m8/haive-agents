@@ -1,3 +1,18 @@
+"""Agent_V3 core module.
+
+This module provides agent v3 functionality for the Haive framework.
+
+Classes:
+    with: with implementation.
+    ResearchAnalysis: ResearchAnalysis implementation.
+    haive: haive implementation.
+
+Functions:
+    calculator: Calculator functionality.
+    web_search: Web Search functionality.
+    search_engine: Search Engine functionality.
+"""
+
 #!/usr/bin/env python3
 """ReactAgent v3 - Enhanced ReAct Pattern with Structured Output Support.
 

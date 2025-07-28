@@ -1,3 +1,13 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    SelectedModules: SelectedModules implementation.
+    AdaptedModules: AdaptedModules implementation.
+    Config: Config implementation.
+"""
+
 # src/haive/agents/self_discovery/models.py
 """Structured output models for Self-Discovery reasoning system."""
 

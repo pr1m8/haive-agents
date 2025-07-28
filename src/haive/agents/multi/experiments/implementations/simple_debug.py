@@ -1,3 +1,14 @@
+"""Simple_Debug core module.
+
+This module provides simple debug functionality for the Haive framework.
+
+Classes:
+    Plan: Plan implementation.
+
+Functions:
+    add: Add functionality.
+"""
+
 #!/usr/bin/env python3
 
 import logging

@@ -1,3 +1,15 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    IterativeSummarizer: IterativeSummarizer implementation.
+
+Functions:
+    generate_initial_summary: Generate Initial Summary functionality.
+    refine_summary: Refine Summary functionality.
+"""
+
 # Initial summary
 from haive.core.engine.agent.agent import Agent, register_agent
 from langchain_core.runnables import RunnableConfig

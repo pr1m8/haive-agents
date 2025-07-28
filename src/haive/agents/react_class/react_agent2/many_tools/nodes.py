@@ -1,3 +1,12 @@
+"""Nodes core module.
+
+This module provides nodes functionality for the Haive framework.
+
+Functions:
+    select_tools_with_repeat: Select Tools With Repeat functionality.
+    select_tools: Select Tools functionality.
+"""
+
 from agents.react_agent2.many_tools.engines import query_builder_aug_llm_config
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.messages import HumanMessage

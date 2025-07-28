@@ -1,3 +1,13 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Functions:
+    create_reasoning_aug_llm: Create Reasoning Aug Llm functionality.
+    create_query_generation_aug_llm: Create Query Generation Aug Llm functionality.
+    create_synthesis_aug_llm: Create Synthesis Aug Llm functionality.
+"""
+
 # perplexity_search_prompts.py
 """Chat prompt templates for Perplexity-style search workflow.
 from typing import Any, Dict

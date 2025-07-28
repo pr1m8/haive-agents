@@ -1,3 +1,13 @@
+"""Mixins model module.
+
+This module provides mixins functionality for the Haive framework.
+
+Classes:
+    Reasoning: Reasoning implementation.
+
+Functions:
+"""
+
 from pydantic import RootModel
 
 

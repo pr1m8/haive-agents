@@ -1,3 +1,16 @@
+"""Base_Agent core module.
+
+This module provides base agent functionality for the Haive framework.
+
+Classes:
+    BaseRAGAgent: BaseRAGAgent implementation.
+
+Functions:
+    retrieve: Retrieve functionality.
+    generate_answer: Generate Answer functionality.
+    setup_workflow: Setup Workflow functionality.
+"""
+
 import logging
 from typing import Any
 

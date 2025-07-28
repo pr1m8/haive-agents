@@ -1,3 +1,17 @@
+"""Agent_V3_Minimal core module.
+
+This module provides agent v3 minimal functionality for the Haive framework.
+
+Classes:
+    SimpleAgentV3Minimal: SimpleAgentV3Minimal implementation.
+    is: is implementation.
+    return: return implementation.
+
+Functions:
+    as_tool: As Tool functionality.
+    as_structured_tool: As Structured Tool functionality.
+"""
+
 # SimpleAgent v3 - Minimal Import Path
 """
 SimpleAgent v3 implementation with minimal import overhead.

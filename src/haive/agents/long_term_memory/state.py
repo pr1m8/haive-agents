@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    LongTermMemoryState: LongTermMemoryState implementation.
+"""
+
 from agents.long_term_memory.models import KnowledgeTriple
 from agents.react_agent.state import AgentState
 from pydantic import BaseModel, Field

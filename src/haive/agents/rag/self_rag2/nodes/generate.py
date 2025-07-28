@@ -1,3 +1,11 @@
+"""Generate core module.
+
+This module provides generate functionality for the Haive framework.
+
+Functions:
+    generate: Generate functionality.
+"""
+
 from typing import Any
 
 

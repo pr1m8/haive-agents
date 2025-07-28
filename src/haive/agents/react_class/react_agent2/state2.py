@@ -1,3 +1,17 @@
+"""State2 core module.
+
+This module provides state2 functionality for the Haive framework.
+
+Classes:
+    ReactAgentState: ReactAgentState implementation.
+    with: with implementation.
+
+Functions:
+    get: Get functionality.
+    has_tool_calls: Has Tool Calls functionality.
+    should_continue: Should Continue functionality.
+"""
+
 # =============================================
 # React Agent State
 # =============================================

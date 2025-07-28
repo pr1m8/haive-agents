@@ -1,3 +1,14 @@
+"""Hooks_Mixin core module.
+
+This module provides hooks mixin functionality for the Haive framework.
+
+Classes:
+    HooksMixin: HooksMixin implementation.
+
+Functions:
+    register_hook: Register Hook functionality.
+"""
+
 # haive/agents/base/mixins/hooks_mixin.py
 
 """Enhanced hooks mixin for the Haive framework.

@@ -1,3 +1,10 @@
+"""Utils utility module.
+
+This module provides utils functionality for the Haive framework.
+
+Functions:
+"""
+
 from pydantic import BaseModel
 
 

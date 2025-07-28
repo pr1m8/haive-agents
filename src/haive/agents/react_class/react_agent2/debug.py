@@ -1,3 +1,13 @@
+"""Debug core module.
+
+This module provides debug functionality for the Haive framework.
+
+Functions:
+    debug_print_state: Debug Print State functionality.
+    fix_tool_messages: Fix Tool Messages functionality.
+    create_debug_tool_node: Create Debug Tool Node functionality.
+"""
+
 # src/haive/agents/react/debug.py
 
 import json

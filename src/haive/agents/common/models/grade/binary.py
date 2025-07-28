@@ -43,7 +43,6 @@ class BinaryGrade(Grade):
             value="pass",  # Converted to True
             justification="Meets minimum requirements"
             )
-
     """
 
     grade_type: GradeType = Field(

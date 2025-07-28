@@ -1,3 +1,15 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    ReactionData: ReactionData implementation.
+    ActionType: ActionType implementation.
+    Action: Action implementation.
+
+Functions:
+"""
+
 from enum import Enum
 from typing import Any
 

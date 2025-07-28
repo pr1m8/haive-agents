@@ -1,3 +1,11 @@
+"""Factory core module.
+
+This module provides factory functionality for the Haive framework.
+
+Functions:
+    create_simple_agent: Create Simple Agent functionality.
+"""
+
 from typing import Any
 
 from agents.simple.config import SimpleAgentConfig

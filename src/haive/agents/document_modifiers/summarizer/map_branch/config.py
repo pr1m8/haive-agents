@@ -1,3 +1,14 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    SummarizerAgentConfig: SummarizerAgentConfig implementation.
+
+Functions:
+    build_agent: Build Agent functionality.
+"""
+
 from typing import Any
 
 from haive.core.engine.agent.agent import AgentConfig

@@ -1,3 +1,11 @@
+"""Tools core module.
+
+This module provides tools functionality for the Haive framework.
+
+Functions:
+    run_queries: Run Queries functionality.
+"""
+
 # from haive_agents.reflexion.models import ReviseAnswer,
 
 from langchain_community.tools import TavilySearchResults

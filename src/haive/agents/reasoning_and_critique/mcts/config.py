@@ -1,3 +1,14 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    MCTSAgentConfig: MCTSAgentConfig implementation.
+
+Functions:
+    from_llm_and_tools: From Llm And Tools functionality.
+"""
+
 # src/haive/agents/mcts/config.py
 
 from haive.core.engine.agent.agent import AgentConfig

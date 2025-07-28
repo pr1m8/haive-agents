@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    basic_example: Basic Example functionality.
+    advanced_example: Advanced Example functionality.
+    schema_validation_example: Schema Validation Example functionality.
+"""
+
 #!/usr/bin/env python3
 """Example usage of the GraphTransformer class.
 

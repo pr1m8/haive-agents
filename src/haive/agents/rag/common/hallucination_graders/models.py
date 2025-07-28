@@ -1,3 +1,13 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    HallucinationType: HallucinationType implementation.
+    HallucinationClaim: HallucinationClaim implementation.
+    HallucinationDetectionResponse: HallucinationDetectionResponse implementation.
+"""
+
 # ============================================================================
 # HALLUCINATION DETECTION MODELS
 # ============================================================================

@@ -1,3 +1,18 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    BBox: BBox implementation.
+    Prediction: Prediction implementation.
+    WebNavState: WebNavState implementation.
+
+Functions:
+    debug_print: Debug Print functionality.
+    ensure_args: Ensure Args functionality.
+    ensure_prediction: Ensure Prediction functionality.
+"""
+
 import asyncio
 import base64
 import contextlib

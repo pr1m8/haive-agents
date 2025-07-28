@@ -1,3 +1,15 @@
+"""Meta model module.
+
+This module provides meta functionality for the Haive framework.
+
+Classes:
+    MemoryValidationMeta: MemoryValidationMeta implementation.
+    for: for implementation.
+    in: in implementation.
+
+Functions:
+"""
+
 import threading
 from abc import ABCMeta
 from collections import defaultdict

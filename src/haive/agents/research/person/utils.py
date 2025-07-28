@@ -1,3 +1,13 @@
+"""Utils utility module.
+
+This module provides utils functionality for the Haive framework.
+
+Functions:
+    deduplicate_and_format_sources: Deduplicate And Format Sources functionality.
+    format_all_notes: Format All Notes functionality.
+    get_config_from_runnable_config: Get Config From Runnable Config functionality.
+"""
+
 # src/haive/agents/person_research/utils.py
 
 from typing import Any

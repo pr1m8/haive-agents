@@ -1,3 +1,12 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    search: Search functionality.
+    calculate: Calculate functionality.
+"""
+
 # src/haive/agents/plan_and_execute/example.py
 """Example usage of the Plan and Execute agent."""
 

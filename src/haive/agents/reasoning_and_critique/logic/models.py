@@ -1,3 +1,17 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    ReasoningType: ReasoningType implementation.
+    EvidenceType: EvidenceType implementation.
+    ArgumentStrength: ArgumentStrength implementation.
+
+Functions:
+    num_steps: Num Steps functionality.
+    max_inference_chain: Max Inference Chain functionality.
+"""
+
 # src/haive/agents/reasoning/models.py
 
 from datetime import datetime

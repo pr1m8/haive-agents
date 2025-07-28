@@ -1,3 +1,11 @@
+"""Logical_Reasoner engine module.
+
+This module provides logical reasoner functionality for the Haive framework.
+
+Functions:
+    create_logical_reasoner: Create Logical Reasoner functionality.
+"""
+
 # src/haive/agents/reasoning/logical_reasoner.py
 
 from typing import Any

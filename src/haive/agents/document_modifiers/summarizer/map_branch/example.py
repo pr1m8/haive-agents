@@ -1,3 +1,11 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    main: Main functionality.
+"""
+
 import asyncio
 
 from haive.core.utils.doc_utils import clean_and_format_text

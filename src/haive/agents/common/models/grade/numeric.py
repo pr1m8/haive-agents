@@ -50,7 +50,6 @@ class NumericGrade(Grade):
             max_value=800,  # This will raise an error - value exceeds max
             justification="SAT score"
             )
-
     """
 
     grade_type: GradeType = Field(
@@ -243,7 +242,6 @@ class PercentageGrade(NumericGrade):
             value=105,  # This will raise an error
             justification="Invalid percentage"
             )
-
     """
 
     grade_type: GradeType = Field(

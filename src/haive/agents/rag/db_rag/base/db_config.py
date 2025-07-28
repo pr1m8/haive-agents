@@ -1,3 +1,17 @@
+"""Db_Config configuration module.
+
+This module provides db config functionality for the Haive framework.
+
+Classes:
+    BaseDBConfig: BaseDBConfig implementation.
+    defines: defines implementation.
+
+Functions:
+    get_connection_string: Get Connection String functionality.
+    get_db: Get Db functionality.
+    get_db_schema: Get Db Schema functionality.
+"""
+
 from abc import ABC, abstractmethod
 from typing import Any, Generic, TypeVar
 

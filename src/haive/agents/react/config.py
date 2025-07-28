@@ -1,3 +1,11 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    ReactAgentConfig: ReactAgentConfig implementation.
+"""
+
 from haive.core.graph.branches.branch import Branch
 from haive.core.types import Tool_Type
 from langgraph.types import RetryPolicy

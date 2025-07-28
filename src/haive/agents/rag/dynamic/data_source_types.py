@@ -1,3 +1,11 @@
+"""Data_Source_Types core module.
+
+This module provides data source types functionality for the Haive framework.
+
+Classes:
+    DataSourceType: DataSourceType implementation.
+"""
+
 from enum import Enum
 
 

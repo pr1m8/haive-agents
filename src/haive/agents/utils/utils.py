@@ -1,3 +1,12 @@
+"""Utils utility module.
+
+This module provides utils functionality for the Haive framework.
+
+Functions:
+    mark_page: Mark Page functionality.
+    parse: Parse functionality.
+"""
+
 import asyncio
 import base64
 

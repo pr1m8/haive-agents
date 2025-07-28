@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    SelfHealingCodeState: SelfHealingCodeState implementation.
+"""
+
 from collections.abc import Callable
 
 from pydantic import BaseModel, Field

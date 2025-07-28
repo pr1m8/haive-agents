@@ -1,3 +1,15 @@
+"""Agent2 core module.
+
+This module provides agent2 functionality for the Haive framework.
+
+Classes:
+    MessageNormalizingToolNode: MessageNormalizingToolNode implementation.
+    ReactAgent: ReactAgent implementation.
+
+Functions:
+    has_tool_calls: Has Tool Calls functionality.
+"""
+
 # src/haive/agents/react_agent2/agent2.py
 import logging
 import uuid

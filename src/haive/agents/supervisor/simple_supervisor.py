@@ -1,3 +1,18 @@
+"""Simple_Supervisor core module.
+
+This module provides simple supervisor functionality for the Haive framework.
+
+Classes:
+    AgentInfo: AgentInfo implementation.
+    SimpleSupervisor: SimpleSupervisor implementation.
+    self: self implementation.
+
+Functions:
+    setup_agent: Setup Agent functionality.
+    register_agent: Register Agent functionality.
+    build_graph: Build Graph functionality.
+"""
+
 # src/haive/agents/supervisor/simple_supervisor.py
 
 """Simple Supervisor Agent - Clean implementation for agent coordination.

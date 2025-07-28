@@ -1,3 +1,13 @@
+"""Tool_Utils utility module.
+
+This module provides tool utils functionality for the Haive framework.
+
+Functions:
+    prepare_tools: Prepare Tools functionality.
+    tools_router: Tools Router functionality.
+    tools_router_v2: Tools Router V2 functionality.
+"""
+
 # src/haive/agents/react/tool_utils.py
 
 import inspect

@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    BaseRAGAgent: BaseRAGAgent implementation.
+
+Functions:
+    build_graph: Build Graph functionality.
+"""
+
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.retriever.mixins import RetrieverMixin
 from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig

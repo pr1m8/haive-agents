@@ -1,3 +1,11 @@
+"""Bias_Detector engine module.
+
+This module provides bias detector functionality for the Haive framework.
+
+Functions:
+    create_bias_detector: Create Bias Detector functionality.
+"""
+
 # src/haive/agents/reasoning/bias_detector.py
 
 from haive.core.engine.aug_llm import AugLLMConfig

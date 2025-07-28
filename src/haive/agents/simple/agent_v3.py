@@ -1,3 +1,18 @@
+"""Agent_V3 core module.
+
+This module provides agent v3 functionality for the Haive framework.
+
+Classes:
+    with: with implementation.
+    SimpleAgentV3: SimpleAgentV3 implementation.
+    with: with implementation.
+
+Functions:
+    log_execution_start: Log Execution Start functionality.
+    log_execution_complete: Log Execution Complete functionality.
+    ensure_aug_llm_config_with_debug: Ensure Aug Llm Config With Debug functionality.
+"""
+
 # SimpleAgent v3 - Enhanced Dynamic Architecture Implementation
 """
 SimpleAgent v3 implementation using proper dynamic architecture patterns.

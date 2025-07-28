@@ -1,3 +1,15 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    CollaborativeState: CollaborativeState implementation.
+
+Functions:
+    merge_document_sections: Merge Document Sections functionality.
+    merge_contribution_counts: Merge Contribution Counts functionality.
+"""
+
 # src/haive/agents/conversation/collaborative/state.py
 """State for collaborative conversation agents."""
 

@@ -1,3 +1,17 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    SubSection: SubSection implementation.
+    WikiSection: WikiSection implementation.
+
+Functions:
+    as_str: As Str functionality.
+    as_str: As Str functionality.
+"""
+
+
 class SubSection(BaseModel):
     subsection_title: str = Field(..., title="Title of the subsection")
     content: str = Field(

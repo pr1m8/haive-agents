@@ -1,3 +1,17 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    SearchContext: SearchContext implementation.
+    QueryIntent: QueryIntent implementation.
+    QueryReasoning: QueryReasoning implementation.
+
+Functions:
+    temporal_context: Temporal Context functionality.
+    adjust_sources_by_complexity: Adjust Sources By Complexity functionality.
+"""
+
 # perplexity_search_models.py
 """Pydantic models for Perplexity-style quick search workflow.
 from typing import Any

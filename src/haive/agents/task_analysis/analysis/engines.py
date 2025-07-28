@@ -1,3 +1,8 @@
+"""Engines engine module.
+
+This module provides engines functionality for the Haive framework.
+"""
+
 # src/haive/agents/task_analysis/analysis/engine.py
 
 from haive.core.engine.aug_llm import AugLLMConfig

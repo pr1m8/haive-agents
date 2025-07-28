@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    ReactManyToolsState: ReactManyToolsState implementation.
+"""
+
 from typing import Any
 
 from agents.react.react.state import ReactAgentState

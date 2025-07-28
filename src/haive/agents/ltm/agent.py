@@ -1,3 +1,17 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    LTMState: LTMState implementation.
+    LTMAgent: LTMAgent implementation.
+
+Functions:
+    extraction_succeeded: Extraction Succeeded functionality.
+    has_processing_errors: Has Processing Errors functionality.
+    needs_kg_processing: Needs Kg Processing functionality.
+"""
+
 # ============================================================================
 # LTM AGENT - Long-Term Memory Agent
 # ============================================================================

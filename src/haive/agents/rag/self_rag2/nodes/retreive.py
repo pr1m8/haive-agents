@@ -1,3 +1,11 @@
+"""Retreive core module.
+
+This module provides retreive functionality for the Haive framework.
+
+Functions:
+    retrieve: Retrieve functionality.
+"""
+
 from typing import Any
 
 

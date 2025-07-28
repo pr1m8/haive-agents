@@ -1,3 +1,8 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+"""
+
 # src/haive/agents/self_discovery/agents.py
 """Self-Discovery agent implementation using SimpleAgent and ProperMultiAgent."""
 

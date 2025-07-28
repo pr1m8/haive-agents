@@ -1,3 +1,11 @@
+"""Transform_Query core module.
+
+This module provides transform query functionality for the Haive framework.
+
+Functions:
+    transform_query: Transform Query functionality.
+"""
+
 from typing import Any
 
 

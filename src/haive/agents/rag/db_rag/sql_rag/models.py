@@ -1,3 +1,16 @@
+"""Models model module.
+
+This module provides models functionality for the Haive framework.
+
+Classes:
+    Query: Query implementation.
+    SQLQueryOutput: SQLQueryOutput implementation.
+    SQLValidationOutput: SQLValidationOutput implementation.
+
+Functions:
+    validate_sql_syntax: Validate Sql Syntax functionality.
+"""
+
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field

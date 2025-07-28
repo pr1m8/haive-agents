@@ -1,3 +1,11 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    DirectedState: DirectedState implementation.
+"""
+
 # src/haive/agents/conversation/directed.py
 """Directed conversation agent where participants respond to mentions and direct questions."""
 

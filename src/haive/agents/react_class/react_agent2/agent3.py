@@ -1,3 +1,17 @@
+"""Agent3 core module.
+
+This module provides agent3 functionality for the Haive framework.
+
+Classes:
+    ReactAgentState: ReactAgentState implementation.
+    ReactAgentConfig: ReactAgentConfig implementation.
+    ReactAgent: ReactAgent implementation.
+
+Functions:
+    from_tools: From Tools functionality.
+    setup_workflow: Setup Workflow functionality.
+"""
+
 import logging
 import uuid
 from collections.abc import Sequence

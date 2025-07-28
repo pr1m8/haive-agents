@@ -1,3 +1,14 @@
+"""Agent core module.
+
+This module provides agent functionality for the Haive framework.
+
+Classes:
+    RoundRobinConversation: RoundRobinConversation implementation.
+
+Functions:
+    select_speaker: Select Speaker functionality.
+"""
+
 # src/haive/agents/conversation/round_robin.py
 """Round-robin conversation agent where each participant speaks in turn."""
 

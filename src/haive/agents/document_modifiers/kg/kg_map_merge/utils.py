@@ -1,3 +1,12 @@
+"""Utils utility module.
+
+This module provides utils functionality for the Haive framework.
+
+Functions:
+    visualize_graph: Visualize Graph functionality.
+    create_knowledge_graph: Create Knowledge Graph functionality.
+"""
+
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np

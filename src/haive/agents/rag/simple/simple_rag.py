@@ -1,3 +1,14 @@
+"""Simple_Rag core module.
+
+This module provides simple rag functionality for the Haive framework.
+
+Classes:
+    SimpleRAG: SimpleRAG implementation.
+
+Functions:
+    create_agents: Create Agents functionality.
+"""
+
 #!/usr/bin/env python3
 """SimpleRAG - Class inheriting from MultiAgent."""
 

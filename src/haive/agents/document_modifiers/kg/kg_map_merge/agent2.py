@@ -1,3 +1,15 @@
+"""Agent2 core module.
+
+This module provides agent2 functionality for the Haive framework.
+
+Classes:
+    StructuredKGAgent: StructuredKGAgent implementation.
+
+Functions:
+    initialize_workflow: Initialize Workflow functionality.
+    extract_schema: Extract Schema functionality.
+"""
+
 from typing import Any
 
 from haive.core.engine.agent.agent import Agent, register_agent

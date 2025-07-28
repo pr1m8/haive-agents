@@ -1,3 +1,8 @@
+"""Prompts core module.
+
+This module provides prompts functionality for the Haive framework.
+"""
+
 from langchain_core.prompts import ChatPromptTemplate
 
 # Expansion prompts - all fields must exist in ToTState

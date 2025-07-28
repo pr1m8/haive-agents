@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    example_math_problem: Example Math Problem functionality.
+    example_svg_interpretation: Example Svg Interpretation functionality.
+    example_logical_reasoning: Example Logical Reasoning functionality.
+"""
+
 # src/haive/agents/selfdiscover/examples.py
 
 import json

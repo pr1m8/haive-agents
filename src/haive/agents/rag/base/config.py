@@ -1,3 +1,16 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    BaseRAGConfig: BaseRAGConfig implementation.
+    attributes: attributes implementation.
+
+Functions:
+    convert_vector_store_to_retriever: Convert Vector Store To Retriever functionality.
+    setup_engine: Setup Engine functionality.
+"""
+
 import uuid
 from typing import Any
 

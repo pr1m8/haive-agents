@@ -1,3 +1,11 @@
+"""Config configuration module.
+
+This module provides config functionality for the Haive framework.
+
+Classes:
+    IterativeGraphTransformerConfig: IterativeGraphTransformerConfig implementation.
+"""
+
 # Initial summary
 
 from haive.core.engine.agent.agent import AgentConfig

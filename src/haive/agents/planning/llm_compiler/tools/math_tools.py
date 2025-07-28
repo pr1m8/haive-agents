@@ -1,3 +1,12 @@
+"""Math_Tools core module.
+
+This module provides math tools functionality for the Haive framework.
+
+Functions:
+    get_math_tool: Get Math Tool functionality.
+    calculate_expression: Calculate Expression functionality.
+"""
+
 import math
 import re
 

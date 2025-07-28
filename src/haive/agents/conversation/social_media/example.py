@@ -1,3 +1,13 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Functions:
+    example_twitter_thread: Example Twitter Thread functionality.
+    example_instagram_discussion: Example Instagram Discussion functionality.
+    example_tiktok_comments: Example Tiktok Comments functionality.
+"""
+
 # examples/conversation/social_media_example.py
 """Examples for social media style conversations with engagement mechanics."""
 

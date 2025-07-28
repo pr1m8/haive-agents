@@ -1,3 +1,16 @@
+"""State core module.
+
+This module provides state functionality for the Haive framework.
+
+Classes:
+    ConversationState: ConversationState implementation.
+
+Functions:
+    round_number: Round Number functionality.
+    current_round_speakers: Current Round Speakers functionality.
+    remaining_speakers_this_round: Remaining Speakers This Round functionality.
+"""
+
 r"""Base conversation state with automatic round tracking via reducers.
 
 This module defines the ConversationState class, which is the foundational state schema

@@ -1,3 +1,17 @@
+"""Example core module.
+
+This module provides example functionality for the Haive framework.
+
+Classes:
+    and: and implementation.
+    CustomConversationState: CustomConversationState implementation.
+    CustomConversationAgent: CustomConversationAgent implementation.
+
+Functions:
+    average_quality: Average Quality functionality.
+    select_next_speaker: Select Next Speaker functionality.
+"""
+
 #!/usr/bin/env python3
 """Base Conversation Agent Example.
 

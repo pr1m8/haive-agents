@@ -1,3 +1,13 @@
+"""Memory_Schemas schema module.
+
+This module provides memory schemas functionality for the Haive framework.
+
+Classes:
+    Memory: Memory implementation.
+    UserPreference: UserPreference implementation.
+    FactualMemory: FactualMemory implementation.
+"""
+
 # ============================================================================
 # LTM MEMORY SCHEMAS
 # ============================================================================

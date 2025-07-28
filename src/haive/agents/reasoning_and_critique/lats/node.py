@@ -1,3 +1,17 @@
+"""Node core module.
+
+This module provides node functionality for the Haive framework.
+
+Classes:
+    Node: Node implementation.
+    for: for implementation.
+    NodeManager: NodeManager implementation.
+
+Functions:
+    serialize_parent: Serialize Parent functionality.
+    serialize_children: Serialize Children functionality.
+"""
+
 from typing import Any, Optional
 
 from langchain_core.messages import BaseMessage
