@@ -121,6 +121,6 @@ else:
 # Try to create instance
 try:
     instance = SimulatedSchema(engine="test_engine")
-    logger.info("✓ Created instance with inherited engine field")
+    logger.info("✓ Created instance with inherited engine field"d")"
 except Exception as e:
     logger.exception(f"✗ Failed to create instance: {e}")
