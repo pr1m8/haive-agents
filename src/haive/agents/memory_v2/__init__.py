@@ -60,7 +60,7 @@ from haive.agents.memory_v2.standalone_rag_memory import (
 
 # Optional components that may have import issues - try to import gracefully
 try:
-    from haive.agents.memory_v2.time_weighted_retriever import (
+    from haive.agents.memory_v2.time_weighted_retriever import (  # noqa: F401
         TimeWeightConfig,
         TimeWeightedRetriever,
     )
@@ -70,7 +70,7 @@ except ImportError:
     TIME_RETRIEVER_AVAILABLE = False
 
 try:
-    from haive.agents.memory_v2.message_document_converter import (
+    from haive.agents.memory_v2.message_document_converter import (  # noqa: F401
         MessageDocumentConverter,
         TimestampedDocument,
     )
@@ -80,7 +80,7 @@ except ImportError:
     DOCUMENT_CONVERTER_AVAILABLE = False
 
 try:
-    from haive.agents.memory_v2.extraction_prompts import (
+    from haive.agents.memory_v2.extraction_prompts import (  # noqa: F401
         EXTRACTION_PROMPTS,
         get_all_extraction_types,
         get_extraction_prompt,
