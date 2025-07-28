@@ -109,7 +109,7 @@ async def main():
         # Add delay between tasks
         await asyncio.sleep(2)
 
-    print("\n🎉 All tasks completed!"d!")
+    print("\n🎉 All tasks completed!")
     print(
         f"Agent '{agent.name}' successfully used tools to solve {len(tasks)} problems."
     )

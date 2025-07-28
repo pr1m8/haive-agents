@@ -49,9 +49,9 @@ def web_search(query: str) -> str:
         "climate change": "Climate change refers to long-term shifts in global temperatures and weather patterns.",
     }
 
-    # Simple keyword matching for simulation
-    for keyword, result in search_results.items():
-        if keyword in query.lower():
+    # Simple key matching for simulation
+    for key, result in search_results.items():
+        if key in query.lower():
             return result
 
     return f"Search results for '{query}': [Simulated results - detailed information about {query}]"
@@ -159,7 +159,7 @@ available tools effectively to complete each step.""",
         # The agent will first create a plan
         response = await agent.arun(task)
 
-        print("\n📝 Final result:"t:")
+        print("\n📝 Final result:")
         print(response)
 
         # Small pause between tasks

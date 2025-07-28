@@ -409,7 +409,7 @@ async def example_2_mcp_integration():
     try:
         # Create MCP server with dynamic activation
         mcp_server = DynamicActivationMCPServer(
-            name="advanced_mcp_server",
+            name="advanced_mcp_servef",
             discovery_source=temp_file,
             discovery_config={
                 "auto_discover": True,
