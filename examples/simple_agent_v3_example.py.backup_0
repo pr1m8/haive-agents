@@ -546,7 +546,7 @@ def example_recompilation_system() -> None:
 
     # Test new capabilities
     print(
-        "\n📨 Post-recompilation test: 'Count words in: Hello world from recompiled agent'"
+        "\n📨 Post-recompilation test: 'Count words in: Hello world from recompiled agent'"t'"
     )
     result2 = agent.run(
         "Count the words in this text: 'Hello world from recompiled agent'", debug=True
