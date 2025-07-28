@@ -4,7 +4,6 @@ Tests multi-stage retrieval, reranking, and advanced RAG capabilities.
 """
 
 import asyncio
-import json
 import shutil
 import tempfile
 from datetime import datetime, timedelta
@@ -66,13 +65,13 @@ class TestAdvancedRAGMemoryAgent:
     async def basic_agent(self, basic_config):
         """Create basic Advanced RAG agent for testing."""
         agent = AdvancedRAGMemoryAgent(basic_config)
-        yield agent
+        return agent
 
     @pytest.fixture
     async def advanced_agent(self, advanced_config):
         """Create advanced RAG agent for testing."""
         agent = AdvancedRAGMemoryAgent(advanced_config)
-        yield agent
+        return agent
 
     @pytest.mark.asyncio
     async def test_agent_initialization(self, basic_agent):
