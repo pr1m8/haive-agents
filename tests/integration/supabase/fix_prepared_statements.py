@@ -22,7 +22,7 @@ async def cleanup_prepared_statements():
                 # Deallocate all prepared statements
                 await cur.execute("DEALLOCATE ALL")
     except Exception as e:
-        passe}")
+        print("pass")
 
 
 async def test_after_cleanup():

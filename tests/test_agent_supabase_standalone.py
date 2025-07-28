@@ -254,7 +254,7 @@ def main():
 
 
     if passed == total:
-        pass!")
+        print("pass!")
     else:
         passed")
 

@@ -75,7 +75,7 @@ class SimpleDynamicSupervisor:
             option_names=["END"], option_descriptions=["End the conversation"]
         )
         self.compiled = False
-        self.graph_nodes = set(["supervisor", "END"}
+        self.graph_nodes = set(["supervisor", "END"])
 
     def register_agent(self, agent: MockAgent) -> bool:
         """Register an agent."""
@@ -239,4 +239,3 @@ if __name__ == "__main__":
     # Run tests
     asyncio.run(test_post_compile_agent_addition())
     asyncio.run(test_graph_rebuilding())
-

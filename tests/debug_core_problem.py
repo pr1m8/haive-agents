@@ -184,7 +184,7 @@ async def trace_execution():
         # Try without the second parameter
         try:
             prepared_input = multi._prepare_schema_input(test_input)
-            print("   ✅ Input prepared (without schema param)")")
+            print("   ✅ Input prepared (without schema param)")
         except Exception as e2:
             print(f"   ❌ Input preparation failed again: {e2}")
 
