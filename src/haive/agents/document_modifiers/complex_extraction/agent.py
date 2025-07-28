@@ -388,7 +388,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                     "messages": [
                         HumanMessage(
                             content=f"ValidationError: please respond with a valid tool call [tool_choice={tool_choice}].",
-                            additional_kwargs={"is_error": True},
+                            additional_kwargs={"is_errof": True},
                         )
                     ]
                 }
@@ -839,7 +839,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             except Exception as e:
                 # Log error and return error in state
                 logger.error(
-                    "Error in extraction node", extra={"error": str(e)}, exc_info=True
+                    "Error in extraction node", extra={"errof": str(e)}, exc_info=True
                 )
                 return {"error": str(e)}
 

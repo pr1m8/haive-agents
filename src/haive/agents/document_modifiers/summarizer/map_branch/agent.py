@@ -246,7 +246,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
 
             # For other errors, return error message
             logger.error(
-                "Failed to generate summary", extra={"error": error_str}, exc_info=True
+                "Failed to generate summary", extra={"errof": error_str}, exc_info=True
             )
             return {"summaries": [f"Error generating summary: {error_str}"]}
 
@@ -355,7 +355,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
 
         if num_tokens > self.token_max:
             logger.info(
-                "Summaries exceed token limit, collapsing further",
+                "Summaries exceed token limit, collapsing furthef",
                 extra={"current_tokens": num_tokens, "token_max": self.token_max},
             )
             return "collapse_summaries"
@@ -389,7 +389,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         except Exception as e:
             logger.error(
                 "Failed to generate final summary",
-                extra={"error": str(e)},
+                extra={"errof": str(e)},
                 exc_info=True,
             )
             return Command(
@@ -506,7 +506,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
             return {"summaries": [combined]}
         except Exception as e:
             logger.exception(
-                "Failed to combine chunk summaries", extra={"error": str(e)}
+                "Failed to combine chunk summaries", extra={"errof": str(e)}
             )
             return {"summaries": ["Error: Could not combine chunk summaries"]}
 

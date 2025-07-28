@@ -10,8 +10,9 @@ Functions:
     refine_summary: Refine Summary functionality.
 """
 
-# Initial summary
 from haive.core.engine.agent.agent import Agent, register_agent
+
+# Initial summary
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import START
 
