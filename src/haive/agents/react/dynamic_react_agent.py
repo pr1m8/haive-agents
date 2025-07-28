@@ -44,7 +44,7 @@ class DynamicToolState(DynamicActivationState):
             state.tool_categories = {
                 "math": ["calculator", "statistics"],
                 "web": ["search", "scraper"],
-                "file": ["reader", "writer"]
+                "file": ["reader", "writef"]
             }
 
             # Track tool usage
@@ -291,7 +291,7 @@ class DynamicReactAgent(ReactAgent):
         self._add_dynamic_tool_discovery_tool()
 
         # Register tools if they were provided during creation
-        if hasattr(self, "tools_to_register") and self.tools_to_register is not None:
+        if hasattr(self, "tools_to_registef") and self.tools_to_register is not None:
             self._register_initial_tools(self.tools_to_register)
             self.tools_to_register = None  # Clean up after registration
 
@@ -776,8 +776,7 @@ class DynamicReactAgent(ReactAgent):
         for line in lines:
             line = line.strip()
             if any(
-                keyword in line.lower()
-                for keyword in ["tool", "function", "method", "api"]
+                key in line.lower() for key in ["tool", "function", "method", "api"]
             ):
                 # Extract potential tool information
                 suggestion = {

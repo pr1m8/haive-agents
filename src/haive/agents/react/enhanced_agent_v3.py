@@ -12,10 +12,9 @@ Key Features:
 """
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.tools import BaseTool
 from langgraph.graph import END
 from pydantic import Field
 
@@ -169,7 +168,7 @@ class EnhancedReactAgent(EnhancedSimpleAgent):
     # ADVANCED REACT CONFIGURATION
     # ========================================================================
 
-    iteration_timeout: Optional[float] = Field(
+    iteration_timeout: float | None = Field(
         default=None, ge=1.0, description="Timeout per iteration in seconds"
     )
 
@@ -177,14 +176,14 @@ class EnhancedReactAgent(EnhancedSimpleAgent):
         default=False, description="Enable tool usage caching and optimization"
     )
 
-    reasoning_quality_threshold: Optional[float] = Field(
+    reasoning_quality_threshold: float | None = Field(
         default=None,
         ge=0.0,
         le=1.0,
         description="Minimum reasoning quality score (0.0-1.0)",
     )
 
-    early_termination_conditions: Optional[list[str]] = Field(
+    early_termination_conditions: list[str] | None = Field(
         default=None, description="Custom early termination conditions"
     )
 

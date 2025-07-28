@@ -100,27 +100,19 @@ See Also:
 """
 
 import logging
-from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any
 
-from haive.core.common.mixins.dynamic_tool_route_mixin import DynamicToolRouteMixin
-from haive.core.common.mixins.recompile_mixin import RecompileMixin
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.schema.prebuilt.llm_state import LLMState
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from langchain_core.output_parsers.base import BaseOutputParser
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.tools import BaseTool, tool
-from langgraph.graph import END, START
-from langgraph.types import Command
+from langgraph.graph import END
 from pydantic import BaseModel, Field, field_validator
-
-# Hooks system integration
-from haive.agents.base.hooks import HookContext, HookEvent
 
 # Import enhanced SimpleAgentV3 as base class
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+
+# Hooks system integration
+
 
 logger = logging.getLogger(__name__)
 
@@ -321,7 +313,7 @@ class ReactAgentV3(SimpleAgentV3):
         description="Current iteration number (read-only, managed internally)",
     )
 
-    reasoning_trace: List[str] = Field(
+    reasoning_trace: list[str] = Field(
         default_factory=list,
         description="Step-by-step reasoning history (read-only, managed internally)",
     )
@@ -337,13 +329,13 @@ class ReactAgentV3(SimpleAgentV3):
     )
 
     # Internal state tracking (Pydantic fields cannot start with underscore)
-    current_reasoning_step: Optional[str] = Field(
+    current_reasoning_step: str | None = Field(
         default=None,
         description="Current reasoning step being executed (internal use)",
         exclude=True,  # Exclude from serialization
     )
 
-    tool_results_history: List[Dict[str, Any]] = Field(
+    tool_results_history: list[dict[str, Any]] = Field(
         default_factory=list,
         description="History of tool executions and results (internal use)",
         exclude=True,  # Exclude from serialization
@@ -779,7 +771,7 @@ class ReactAgentV3(SimpleAgentV3):
         if self.debug:
             logger.debug(f"[{self.name}] Reasoning: {step}")
 
-    def get_reasoning_trace(self) -> List[str]:
+    def get_reasoning_trace(self) -> list[str]:
         """Get the complete reasoning trace from the current or last execution.
 
         Returns:
@@ -787,7 +779,7 @@ class ReactAgentV3(SimpleAgentV3):
         """
         return self.reasoning_trace.copy()
 
-    def get_tool_usage_history(self) -> List[Dict[str, Any]]:
+    def get_tool_usage_history(self) -> list[dict[str, Any]]:
         """Get the complete tool usage history from the current or last execution.
 
         Returns:
@@ -823,8 +815,8 @@ class ReactAgentV3(SimpleAgentV3):
 
 def create_react_agent(
     name: str,
-    tools: List[BaseTool],
-    structured_output_model: Optional[type[BaseModel]] = None,
+    tools: list[BaseTool],
+    structured_output_model: type[BaseModel] | None = None,
     max_iterations: int = 10,
     temperature: float = 0.7,
     max_tokens: int = 1200,
@@ -927,8 +919,8 @@ def create_react_agent(
 
 def create_research_agent(
     name: str,
-    research_tools: List[BaseTool],
-    analysis_model: Optional[type[BaseModel]] = None,
+    research_tools: list[BaseTool],
+    analysis_model: type[BaseModel] | None = None,
     max_research_steps: int = 8,
     debug: bool = False,
 ) -> ReactAgentV3:

@@ -9,10 +9,11 @@ Functions:
     build_graph: Build Graph functionality.
 """
 
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+
 # ============================================================================
 # REACT AGENT
 # ============================================================================
-from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END
 
 from haive.agents.simple import SimpleAgent

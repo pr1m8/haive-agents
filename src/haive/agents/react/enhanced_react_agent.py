@@ -4,7 +4,7 @@ ReactAgent = Agent[AugLLMConfig] + reasoning loop with tools.
 """
 
 import logging
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
@@ -68,7 +68,7 @@ class ReactAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     """
 
     # Tool configuration
-    tools: List[BaseTool] = Field(
+    tools: list[BaseTool] = Field(
         default_factory=list, description="List of tools available to the agent"
     )
 
@@ -78,7 +78,7 @@ class ReactAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     )
 
     # Prompting
-    react_prompt: Optional[str] = Field(
+    react_prompt: str | None = Field(
         default=None, description="Custom prompt for ReAct pattern"
     )
 
@@ -88,7 +88,7 @@ class ReactAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     )
 
     # Tracking
-    reasoning_history: List[Dict[str, Any]] = Field(
+    reasoning_history: list[dict[str, Any]] = Field(
         default_factory=list, description="History of reasoning steps"
     )
 
@@ -140,7 +140,7 @@ class ReactAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         graph.set_entry_point("reason")
 
         # Reasoning can go to action or end
-        def should_act(state: Dict[str, Any]) -> str:
+        def should_act(state: dict[str, Any]) -> str:
             """Decide whether to use a tool or finish."""
             messages = state.get("messages", [])
             if not messages:
@@ -175,7 +175,7 @@ class ReactAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
             graph.add_edge("act", "observe")
 
         # Observation goes back to reasoning or ends
-        def should_continue(state: Dict[str, Any]) -> str:
+        def should_continue(state: dict[str, Any]) -> str:
             """Decide whether to continue reasoning."""
             # Check iteration limit
             if len(self.reasoning_history) >= self.max_iterations:
@@ -247,15 +247,15 @@ Maximum iterations: {self.max_iterations}
                 return True
         return False
 
-    def get_tool_names(self) -> List[str]:
+    def get_tool_names(self) -> list[str]:
         """Get list of available tool names."""
         return [tool.name for tool in self.tools]
 
     def record_reasoning_step(
         self,
         thought: str,
-        action: Optional[str] = None,
-        observation: Optional[str] = None,
+        action: str | None = None,
+        observation: str | None = None,
     ) -> None:
         """Record a reasoning step.
 
