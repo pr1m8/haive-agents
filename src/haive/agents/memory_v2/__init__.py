@@ -108,12 +108,12 @@ __all__ = [
 
 # Add optional exports if available
 if TIME_RETRIEVER_AVAILABLE:
-    __all__.extend(["TimeWeightedRetriever", "TimeWeightConfig"])
+    __all__.extend(["TimeWeightConfig", "TimeWeightedRetriever"])
 
 if DOCUMENT_CONVERTER_AVAILABLE:
     __all__.extend(["MessageDocumentConverter", "TimestampedDocument"])
 
 if EXTRACTION_AVAILABLE:
     __all__.extend(
-        ["EXTRACTION_PROMPTS", "get_extraction_prompt", "get_all_extraction_types"]
+        ["EXTRACTION_PROMPTS", "get_all_extraction_types", "get_extraction_prompt"]
     )
