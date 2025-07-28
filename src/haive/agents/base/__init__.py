@@ -50,22 +50,24 @@ See Also:
 from haive.agents.base.agent import Agent
 
 # Enhanced agent classes available separately
-from haive.agents.base.enhanced_agent import Agent as EnhancedAgent, Workflow
+from haive.agents.base.enhanced_agent import Agent as EnhancedAgent
+from haive.agents.base.enhanced_agent import Workflow
+
+# Re-export hook system
+from haive.agents.base.hooks import HookContext, HookEvent, HookFunction
 
 # Re-export mixins for convenience
 from haive.agents.base.mixins import ExecutionMixin, PersistenceMixin, StateMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
 from haive.agents.base.types import AgentInput, AgentOutput, AgentState
 
-# Re-export hook system
-from haive.agents.base.hooks import HookEvent, HookContext, HookFunction
-from haive.agents.base.pre_post_agent_mixin import PrePostAgentMixin
+# from haive.agents.base.pre_post_agent_mixin import PrePostAgentMixin  # Temporarily commented out
 
 
 __all__ = [
     "Agent",
     "EnhancedAgent",
-    "Workflow", 
+    "Workflow",
     "AgentInput",
     "AgentOutput",
     "AgentState",
@@ -74,7 +76,7 @@ __all__ = [
     "SerializationMixin",
     "StateMixin",
     "HookEvent",
-    "HookContext", 
+    "HookContext",
     "HookFunction",
-    "PrePostAgentMixin",
+    # "PrePostAgentMixin",  # Temporarily commented out
 ]

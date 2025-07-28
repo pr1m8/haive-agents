@@ -4,8 +4,6 @@ import logging
 from datetime import datetime
 from typing import Any
 
-from agents.lats.models import Node, Reflection
-from agents.lats.state import TreeState
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
@@ -19,6 +17,9 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.runnables import chain as as_runnable
 from langgraph.graph import END
 from pydantic import BaseModel, Field
+
+from haive.agents.reasoning_and_critique.lats.models import Node, Reflection
+from haive.agents.reasoning_and_critique.lats.state import TreeState
 
 # Set up logging
 logger = logging.getLogger(__name__)
