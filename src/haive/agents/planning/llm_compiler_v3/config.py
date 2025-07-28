@@ -1,6 +1,6 @@
 """Configuration models for LLM Compiler V3 Agent."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, ConfigDict, Field
@@ -98,16 +98,16 @@ class LLMCompilerV3Config(BaseModel):
     )
 
     # Tool management
-    tool_names: List[str] = Field(
+    tool_names: list[str] = Field(
         default_factory=list, description="Names of tools available to the compiler"
     )
 
-    tool_priorities: Dict[str, int] = Field(
+    tool_priorities: dict[str, int] = Field(
         default_factory=dict,
         description="Priority mapping for tools (higher number = higher priority)",
     )
 
-    exclude_tools: List[str] = Field(
+    exclude_tools: list[str] = Field(
         default_factory=list, description="Tools to exclude from planning"
     )
 
@@ -141,7 +141,7 @@ class LLMCompilerV3Config(BaseModel):
     )
 
     # Custom settings
-    custom_settings: Dict[str, Any] = Field(
+    custom_settings: dict[str, Any] = Field(
         default_factory=dict, description="Custom configuration settings"
     )
 
@@ -170,7 +170,7 @@ class LLMCompilerV3Config(BaseModel):
         """Get priority for a tool (higher = more preferred)."""
         return self.tool_priorities.get(tool_name, 1)
 
-    def create_execution_config(self) -> Dict[str, Any]:
+    def create_execution_config(self) -> dict[str, Any]:
         """Create configuration dictionary for execution."""
         return {
             "execution_mode": self.execution_mode,
@@ -211,6 +211,6 @@ class ToolExecutionConfig(BaseModel):
         default=True, description="Whether to cache results for this tool"
     )
 
-    custom_args: Dict[str, Any] = Field(
+    custom_args: dict[str, Any] = Field(
         default_factory=dict, description="Tool-specific configuration arguments"
     )

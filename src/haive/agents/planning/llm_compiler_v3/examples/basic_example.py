@@ -5,9 +5,7 @@ with simple tools and a straightforward query.
 """
 
 import asyncio
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 
 from haive.agents.planning.llm_compiler_v3 import LLMCompilerV3Agent

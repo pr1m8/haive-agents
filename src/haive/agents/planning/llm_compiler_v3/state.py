@@ -1,13 +1,12 @@
 """State schema for LLM Compiler V3 Agent."""
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import Field
 
 from haive.agents.planning.llm_compiler_v3.models import (
-    CompilerInput,
     CompilerPlan,
     CompilerTask,
     ParallelExecutionResult,
@@ -21,24 +20,24 @@ class LLMCompilerStateSchema(MessagesState):
     # Core compiler state
     original_query: str = Field(default="", description="The original user query")
 
-    current_plan: Optional[CompilerPlan] = Field(
+    current_plan: CompilerPlan | None = Field(
         default=None, description="Current execution plan"
     )
 
-    execution_results: List[ParallelExecutionResult] = Field(
+    execution_results: list[ParallelExecutionResult] = Field(
         default_factory=list, description="Results from executed tasks"
     )
 
     # Execution tracking
-    completed_task_ids: List[str] = Field(
+    completed_task_ids: list[str] = Field(
         default_factory=list, description="IDs of completed tasks"
     )
 
-    failed_task_ids: List[str] = Field(
+    failed_task_ids: list[str] = Field(
         default_factory=list, description="IDs of failed tasks"
     )
 
-    currently_executing: List[str] = Field(
+    currently_executing: list[str] = Field(
         default_factory=list, description="IDs of tasks currently being executed"
     )
 
@@ -47,22 +46,22 @@ class LLMCompilerStateSchema(MessagesState):
         default=3, ge=1, le=10, description="Maximum number of parallel tasks"
     )
 
-    execution_start_time: Optional[datetime] = Field(
+    execution_start_time: datetime | None = Field(
         default=None, description="When execution started"
     )
 
     # Task coordination state
-    ready_tasks: List[CompilerTask] = Field(
+    ready_tasks: list[CompilerTask] = Field(
         default_factory=list,
         description="Tasks ready for execution (dependencies satisfied)",
     )
 
-    blocked_tasks: List[CompilerTask] = Field(
+    blocked_tasks: list[CompilerTask] = Field(
         default_factory=list, description="Tasks blocked by dependencies"
     )
 
     # Results storage for dependency resolution
-    task_results: Dict[str, Any] = Field(
+    task_results: dict[str, Any] = Field(
         default_factory=dict,
         description="Results indexed by task_id for dependency resolution",
     )
@@ -72,21 +71,21 @@ class LLMCompilerStateSchema(MessagesState):
         default=0, ge=0, description="Number of times replanning has occurred"
     )
 
-    replan_requests: List[ReplanRequest] = Field(
+    replan_requests: list[ReplanRequest] = Field(
         default_factory=list, description="History of replanning requests"
     )
 
     # Agent coordination
     current_agent: str = Field(default="planner", description="Currently active agent")
 
-    next_agent: Optional[str] = Field(default=None, description="Next agent to execute")
+    next_agent: str | None = Field(default=None, description="Next agent to execute")
 
     # Execution metadata
-    execution_metadata: Dict[str, Any] = Field(
+    execution_metadata: dict[str, Any] = Field(
         default_factory=dict, description="Metadata about execution progress"
     )
 
-    compiler_context: Dict[str, Any] = Field(
+    compiler_context: dict[str, Any] = Field(
         default_factory=dict, description="Compiler-specific context and configuration"
     )
 
@@ -95,7 +94,7 @@ class LLMCompilerStateSchema(MessagesState):
         default=0.0, ge=0.0, description="Total execution time so far"
     )
 
-    parallel_efficiency_score: Optional[float] = Field(
+    parallel_efficiency_score: float | None = Field(
         default=None, ge=0.0, le=1.0, description="Efficiency of parallel execution"
     )
 
@@ -118,11 +117,11 @@ class LLMCompilerStateSchema(MessagesState):
         if task_id not in self.currently_executing:
             self.currently_executing.append(task_id)
 
-    def get_successful_results(self) -> List[ParallelExecutionResult]:
+    def get_successful_results(self) -> list[ParallelExecutionResult]:
         """Get all successful execution results."""
         return [result for result in self.execution_results if result.success]
 
-    def get_failed_results(self) -> List[ParallelExecutionResult]:
+    def get_failed_results(self) -> list[ParallelExecutionResult]:
         """Get all failed execution results."""
         return [result for result in self.execution_results if not result.success]
 
@@ -161,7 +160,7 @@ class LLMCompilerStateSchema(MessagesState):
         """Check if more tasks can be executed in parallel."""
         return len(self.currently_executing) < self.max_parallel_tasks
 
-    def get_next_executable_tasks(self, count: int = None) -> List[CompilerTask]:
+    def get_next_executable_tasks(self, count: int = None) -> list[CompilerTask]:
         """Get the next tasks to execute, respecting parallel limits."""
         if count is None:
             count = self.max_parallel_tasks - len(self.currently_executing)
@@ -173,7 +172,7 @@ class LLMCompilerStateSchema(MessagesState):
 
         return sorted_ready[:count]
 
-    def resolve_task_arguments(self, task: CompilerTask) -> Dict[str, Any]:
+    def resolve_task_arguments(self, task: CompilerTask) -> dict[str, Any]:
         """Resolve task arguments by substituting dependency references."""
         resolved_args = {}
 
@@ -231,7 +230,7 @@ class LLMCompilerStateSchema(MessagesState):
 
         return False
 
-    def get_execution_summary(self) -> Dict[str, Any]:
+    def get_execution_summary(self) -> dict[str, Any]:
         """Get comprehensive execution summary."""
         return {
             "original_query": self.original_query,

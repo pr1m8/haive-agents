@@ -6,7 +6,7 @@ optimized for Enhanced MultiAgent V3 architecture.
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -32,7 +32,7 @@ class TaskDependency(BaseModel):
         examples=["task_1", "search_task", "analysis_step"],
     )
 
-    output_key: Optional[str] = Field(
+    output_key: str | None = Field(
         default=None,
         description="Specific output key to reference (optional)",
         examples=["result", "data", "summary"],
@@ -70,13 +70,13 @@ class CompilerTask(BaseModel):
         examples=["Search for recent AI developments", "Calculate the sum"],
     )
 
-    arguments: Dict[str, Any] = Field(
+    arguments: dict[str, Any] = Field(
         default_factory=dict,
         description="Arguments to pass to the tool",
         examples=[{"query": "latest AI news"}, {"expression": "15 + 27"}],
     )
 
-    dependencies: List[TaskDependency] = Field(
+    dependencies: list[TaskDependency] = Field(
         default_factory=list, description="Tasks this task depends on"
     )
 
@@ -84,7 +84,7 @@ class CompilerTask(BaseModel):
         default=1, ge=1, le=10, description="Task priority (1=highest, 10=lowest)"
     )
 
-    estimated_duration: Optional[float] = Field(
+    estimated_duration: float | None = Field(
         default=None, ge=0.0, description="Estimated execution time in seconds"
     )
 
@@ -94,7 +94,7 @@ class CompilerTask(BaseModel):
         return self.tool_name.lower() == "join"
 
     @property
-    def dependency_ids(self) -> List[str]:
+    def dependency_ids(self) -> list[str]:
         """Get list of task IDs this task depends on."""
         return [dep.task_id for dep in self.dependencies]
 
@@ -102,7 +102,7 @@ class CompilerTask(BaseModel):
         """Check if this task has any dependencies."""
         return len(self.dependencies) > 0
 
-    def can_execute_with_results(self, completed_tasks: List[str]) -> bool:
+    def can_execute_with_results(self, completed_tasks: list[str]) -> bool:
         """Check if all dependencies are satisfied."""
         return all(dep.task_id in completed_tasks for dep in self.dependencies)
 
@@ -124,7 +124,7 @@ class CompilerPlan(BaseModel):
         ..., description="High-level description of what this plan accomplishes"
     )
 
-    tasks: List[CompilerTask] = Field(
+    tasks: list[CompilerTask] = Field(
         default_factory=list, description="Tasks in execution order"
     )
 
@@ -140,7 +140,7 @@ class CompilerPlan(BaseModel):
         default_factory=datetime.now, description="When this plan was created"
     )
 
-    def get_executable_tasks(self, completed_task_ids: List[str]) -> List[CompilerTask]:
+    def get_executable_tasks(self, completed_task_ids: list[str]) -> list[CompilerTask]:
         """Get tasks that can be executed now (dependencies satisfied)."""
         return [
             task
@@ -149,21 +149,21 @@ class CompilerPlan(BaseModel):
             and task.can_execute_with_results(completed_task_ids)
         ]
 
-    def get_join_task(self) -> Optional[CompilerTask]:
+    def get_join_task(self) -> CompilerTask | None:
         """Get the final join task if it exists."""
         for task in self.tasks:
             if task.is_join_task:
                 return task
         return None
 
-    def get_task_by_id(self, task_id: str) -> Optional[CompilerTask]:
+    def get_task_by_id(self, task_id: str) -> CompilerTask | None:
         """Find task by ID."""
         for task in self.tasks:
             if task.task_id == task_id:
                 return task
         return None
 
-    def validate_dependencies(self) -> List[str]:
+    def validate_dependencies(self) -> list[str]:
         """Validate that all dependencies reference existing tasks."""
         errors = []
         task_ids = {task.task_id for task in self.tasks}
@@ -191,7 +191,7 @@ class ParallelExecutionResult(BaseModel):
 
     result: Any = Field(..., description="Task execution result")
 
-    error_message: Optional[str] = Field(
+    error_message: str | None = Field(
         default=None, description="Error message if execution failed"
     )
 
@@ -201,7 +201,7 @@ class ParallelExecutionResult(BaseModel):
 
     tool_name: str = Field(..., description="Name of tool that was executed")
 
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional execution metadata"
     )
 
@@ -220,17 +220,17 @@ class CompilerInput(BaseModel):
         examples=["Find recent AI papers and summarize key findings"],
     )
 
-    context: Optional[Dict[str, Any]] = Field(
+    context: dict[str, Any] | None = Field(
         default=None, description="Additional context for the task"
     )
 
-    execution_preferences: Optional[Dict[str, Any]] = Field(
+    execution_preferences: dict[str, Any] | None = Field(
         default=None,
         description="Preferences for how to execute the plan",
         examples=[{"max_parallel": 5, "timeout": 300}],
     )
 
-    available_tools: Optional[List[str]] = Field(
+    available_tools: list[str] | None = Field(
         default=None, description="Specific tools to use (if None, uses all available)"
     )
 
@@ -246,7 +246,7 @@ class CompilerOutput(BaseModel):
 
     execution_plan: CompilerPlan = Field(..., description="The plan that was executed")
 
-    execution_results: List[ParallelExecutionResult] = Field(
+    execution_results: list[ParallelExecutionResult] = Field(
         default_factory=list, description="Results from all executed tasks"
     )
 
@@ -258,26 +258,26 @@ class CompilerOutput(BaseModel):
         ..., ge=0, description="Number of tasks that were executed"
     )
 
-    parallel_efficiency: Optional[float] = Field(
+    parallel_efficiency: float | None = Field(
         default=None,
         ge=0.0,
         le=1.0,
         description="Efficiency score for parallel execution (0-1)",
     )
 
-    reasoning_trace: List[str] = Field(
+    reasoning_trace: list[str] = Field(
         default_factory=list, description="Step-by-step reasoning trace"
     )
 
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata about execution"
     )
 
-    def get_successful_tasks(self) -> List[ParallelExecutionResult]:
+    def get_successful_tasks(self) -> list[ParallelExecutionResult]:
         """Get only the successfully executed tasks."""
         return [result for result in self.execution_results if result.success]
 
-    def get_failed_tasks(self) -> List[ParallelExecutionResult]:
+    def get_failed_tasks(self) -> list[ParallelExecutionResult]:
         """Get only the failed tasks."""
         return [result for result in self.execution_results if not result.success]
 
@@ -299,14 +299,14 @@ class ReplanRequest(BaseModel):
 
     feedback: str = Field(..., description="Analysis of why replanning is needed")
 
-    failed_tasks: List[str] = Field(
+    failed_tasks: list[str] = Field(
         default_factory=list, description="IDs of tasks that failed"
     )
 
-    partial_results: Dict[str, Any] = Field(
+    partial_results: dict[str, Any] = Field(
         default_factory=dict, description="Results from tasks that succeeded"
     )
 
-    suggested_changes: Optional[List[str]] = Field(
+    suggested_changes: list[str] | None = Field(
         default=None, description="Specific suggestions for the new plan"
     )
