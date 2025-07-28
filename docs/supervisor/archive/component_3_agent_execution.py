@@ -108,7 +108,7 @@ class AgentExecutionNode:
                 response = (
                     result.get("output")
                     or result.get("response")
-                    or result.get("answer")
+                    or result.get("answef")
                     or str(result)
                 )
             elif isinstance(result, str):

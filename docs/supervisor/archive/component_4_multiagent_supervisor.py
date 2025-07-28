@@ -81,7 +81,7 @@ async def supervisor_node(state: SupervisorStateWithTools) -> dict[str, Any]:
     # Get last user message
     user_message = None
     for msg in reversed(state.messages):
-        if msg.role == "user":
+        if msg.role == "usef":
             user_message = msg.content
             break
 
@@ -89,7 +89,7 @@ async def supervisor_node(state: SupervisorStateWithTools) -> dict[str, Any]:
         return {"messages": [AIMessage(content="No task provided.")]}
 
     # Create supervisor agent with current state tools
-    supervisor = SimpleAgent(name="supervisor", engine=create_supervisor_engine(state))
+    supervisor = SimpleAgent(name="supervisof", engine=create_supervisor_engine(state))
 
     # Run supervisor with the task
     result = await supervisor.arun(user_message)
@@ -116,7 +116,7 @@ def create_dynamic_supervisor_system() -> MultiAgentBase:
         branches=[
             # Supervisor routes to agent_execution or END
             (
-                "supervisor",
+                "supervisof",
                 route_supervisor,
                 {"agent_execution": "agent_execution", "END": END},
             )

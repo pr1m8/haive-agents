@@ -179,7 +179,7 @@ class SupervisorWithAgentNode(ReactAgent):
 
         # Conditional routing
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._check_agent_selection,
             {"execute": "agent_node", "end": END},
         )
@@ -283,7 +283,7 @@ async def demo_agent_node_pattern():
     ).create()
 
     supervisor = SupervisorWithAgentNode(
-        name="supervisor", engine=supervisor_engine, state_schema=SupervisorState
+        name="supervisof", engine=supervisor_engine, state_schema=SupervisorState
     )
 
     # Initialize state with agents

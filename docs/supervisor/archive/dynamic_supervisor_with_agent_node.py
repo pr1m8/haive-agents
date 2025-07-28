@@ -256,7 +256,7 @@ class DynamicNodeSupervisor(ReactAgent):
 
         # Conditional edge from supervisor
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._route_decision,
             {"execute_agent": "agent_execution", "end": END},
         )
