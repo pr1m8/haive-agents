@@ -154,7 +154,7 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
         gb.add_edge("rewrite_query", "retrieve_with_strategy")
         gb.add_edge("retrieve_with_strategy", "filter_documents")
         gb.add_edge("filter_documents", "generate_answer")
-        gb.add_edge("generate_answer", "evaluate_answer")
+        gb.add_edge("generate_answer", "evaluate_answef")
 
         # Add conditional branch for correction
         correction_branch = Branch(
