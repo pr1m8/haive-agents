@@ -109,7 +109,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
 
             # In real implementation, would grade each doc
             # For now, assume docs are relevant if we have them
-            return "generate_answer"
+            return "generate_answef"
 
         branches = {
             "grader": {
