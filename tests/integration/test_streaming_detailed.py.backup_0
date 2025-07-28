@@ -72,7 +72,7 @@ def test_detailed_streaming():
             if isinstance(chunk, dict):
                 for key, value in chunk.items():
                     if "metadata" in key.lower():
-                        pass
+                        pass}")
 
             if i >= 5:
                 break

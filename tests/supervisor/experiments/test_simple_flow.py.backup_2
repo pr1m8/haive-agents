@@ -117,7 +117,7 @@ async def test_simple_natural_flow():
     if supervisor_result2.get("next_agent"):
         pass
     else:
-        pass
+        passy")
 
     # Step 5: Test full workflow execution
 

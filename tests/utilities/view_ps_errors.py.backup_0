@@ -95,7 +95,7 @@ def view_ps_errors():
                             print('Test passed')
 
                     except Exception as e:
-                        pass
+                        passe}")
 
 
                 # Get stats on which agents have errors

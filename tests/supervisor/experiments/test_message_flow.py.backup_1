@@ -83,7 +83,7 @@ You are a routing system - always use tools, never provide text responses.""",
         if isinstance(result2, dict) and "agents" in result2:
             pass
         else:
-            pass
+            passlt")
     except Exception as e:
         import traceback
 

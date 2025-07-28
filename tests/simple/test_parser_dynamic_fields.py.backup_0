@@ -116,7 +116,7 @@ def test_parser_node_dynamic_field_addition():
             if "testresult" in result_command.update:
                 pass
             else:
-                pass
+                passld")
         else:
             pass
 

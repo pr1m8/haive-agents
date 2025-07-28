@@ -172,7 +172,7 @@ async def main():
         status = "✅ PASS" if passed else "❌ FAIL"
 
     if not all(result for _, result in results):
-        pass
+        passix!")
     else:
         pass!")
 

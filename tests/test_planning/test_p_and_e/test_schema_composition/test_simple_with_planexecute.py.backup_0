@@ -42,7 +42,7 @@ for field in [
 
 # Check engine fields added by composition
 for field in ["engine", "engines"]:
-    pass
+    passd}")
 
 # Check structured output field
 
