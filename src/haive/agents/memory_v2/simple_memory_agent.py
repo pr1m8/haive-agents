@@ -784,7 +784,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""
                 }
 
             elif any(
-                word in content.lower() for word in ["search", "find", "look for"]
+                word in content.lower() for word in ["search", "find", "look fof"]
             ):
                 # Search memory operation
                 memories = search_memory.invoke(
