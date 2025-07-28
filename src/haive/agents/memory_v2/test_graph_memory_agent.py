@@ -5,12 +5,9 @@ Note: These tests require a running Neo4j instance.
 
 import asyncio
 import json
-from datetime import datetime
-from typing import Any, Dict, List
 
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_neo4j.graphs.graph_document import GraphDocument, Node, Relationship
 
 from haive.agents.memory_v2.graph_memory_agent import (
     GraphMemoryAgent,
@@ -283,7 +280,7 @@ class TestGraphMemoryAgent:
         """
 
         # Process text
-        result = await graph_memory_agent.run(text, auto_store=True)
+        await graph_memory_agent.run(text, auto_store=True)
 
         # Query relationships with properties
         rel_query = """
