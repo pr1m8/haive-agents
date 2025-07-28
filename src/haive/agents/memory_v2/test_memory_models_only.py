@@ -1,7 +1,5 @@
 """Test only the memory models without requiring LLMs or embeddings."""
 
-from datetime import datetime
-
 from haive.agents.memory_v2.memory_state_original import (
     EnhancedKnowledgeTriple,
     EnhancedMemoryItem,
@@ -9,7 +7,6 @@ from haive.agents.memory_v2.memory_state_original import (
     KnowledgeTriple,
     MemoryItem,
     MemoryState,
-    MemoryStats,
     MemoryType,
     UnifiedMemoryEntry,
 )
