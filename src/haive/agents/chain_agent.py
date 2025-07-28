@@ -13,9 +13,10 @@ Functions:
     init_node: Init Node functionality.
 """
 
-# src/haive/agents/simple/chain_agent.py
 import json
 import logging
+
+# src/haive/agents/simple/chain_agent.py
 from datetime import datetime
 
 # Set up logging
