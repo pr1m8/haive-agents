@@ -8,9 +8,10 @@ Functions:
     create_graph_extraction_config: Create Graph Extraction Config functionality.
 """
 
-# Import the models
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
+
+# Import the models
 from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (

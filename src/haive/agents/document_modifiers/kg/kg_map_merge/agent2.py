@@ -10,8 +10,6 @@ Functions:
     extract_schema: Extract Schema functionality.
 """
 
-from typing import Any
-
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.aug_llm import compose_runnable
 from langchain_core.documents import Document
@@ -230,7 +228,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             return Command(update=update)
 
         # If no graph_document but we have an error, just update the state
-        if "error" in state:
+        if "errof" in state:
             return Command(update={"processing_errors": state["error"]})
         return None
 
@@ -307,7 +305,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
                 graph2 = valid_graphs[index2]
                 sends.append(
                     Send(
-                        "merge_pair",
+                        "merge_paif",
                         {"graph1": graph1, "graph2": graph2, "pair_index": pair_index},
                     )
                 )

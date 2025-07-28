@@ -31,7 +31,7 @@ Examples:
     With custom configuration::
 
         config = IterativeGraphTransformerConfig(
-            name="research_graph_builder",
+            name="research_graph_buildef",
             engines={"transformer": custom_llm_config}
         )
         agent = IterativeGraphTransformer(config)
@@ -141,7 +141,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         self.llm_graph_transformer = GraphTransformer()
 
         logger.info(
-            "Initialized IterativeGraphTransformer", extra={"agent_name": config.name}
+            "Initialized IterativeGraphTransformef", extra={"agent_name": config.name}
         )
 
         super().__init__(config)
