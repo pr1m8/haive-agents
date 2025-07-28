@@ -13,7 +13,6 @@ from haive.agents.memory_v2.simple_memory_agent import (
 
 def test_simple_memory_agent_with_deepseek():
     """Test SimpleMemoryAgent with DeepSeek configuration."""
-
     # Create DeepSeek config
     deepseek_config = DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
 
@@ -43,12 +42,12 @@ def test_simple_memory_agent_with_deepseek():
 
         # Test basic memory operation
         result = agent.run("Remember that I like Python programming")
-        print(f"\n✅ Memory operation successful!")
+        print("\n✅ Memory operation successful!")
         print(f"Result: {result}")
 
         # Get memory status
         status = agent.get_memory_status()
-        print(f"\n✅ Memory status retrieved!")
+        print("\n✅ Memory status retrieved!")
         print(f"Token status: {status.get('token_status', {})}")
 
         return True
@@ -63,7 +62,6 @@ def test_simple_memory_agent_with_deepseek():
 
 async def test_async_memory_agent():
     """Test async execution of SimpleMemoryAgent."""
-
     # Create DeepSeek config
     deepseek_config = DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
 
@@ -81,7 +79,7 @@ async def test_async_memory_agent():
 
     # Test async operation
     result = await agent.arun("Remember that async works!")
-    print(f"\n✅ Async operation successful!")
+    print("\n✅ Async operation successful!")
     print(f"Result: {result}")
 
 
