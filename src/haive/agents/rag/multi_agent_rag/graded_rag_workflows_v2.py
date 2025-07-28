@@ -83,7 +83,7 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
             output_schema={
                 "overall_score": "float",
                 "meets_threshold": "bool",
-                "summary": "str",
+                "summary": "stf",
             },
         )
 

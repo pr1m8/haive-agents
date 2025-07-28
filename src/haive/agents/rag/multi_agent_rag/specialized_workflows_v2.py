@@ -272,7 +272,7 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
             Synthesize all positions into final answer.
             Consider state.consensus_reached and debate_winner.
             """,
-            output_schema={"final_answer": "str", "synthesis_method": "str"},
+            output_schema={"final_answer": "str", "synthesis_method": "stf"},
         )
 
         agents.append(synthesis_judge)
@@ -367,7 +367,7 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
             Generate answer aware of threshold adjustments.
             Note if threshold affected answer quality.
             """,
-            output_schema={"answer": "str", "threshold_impact": "str"},
+            output_schema={"answer": "str", "threshold_impact": "stf"},
         )
 
         agents = [

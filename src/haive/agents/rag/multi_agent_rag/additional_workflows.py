@@ -246,7 +246,7 @@ class RAGFusionAgent(MultiAgent):
             instructions="""
             Apply multiple retrieval strategies:
             1. Semantic similarity search
-            2. Keyword-based search
+            2. Key-based search
             3. Question-based retrieval
             4. Context-aware retrieval
 
