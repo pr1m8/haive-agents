@@ -483,9 +483,7 @@ class ComponentDiscoveryAgent(BaseModel):
 
         # Check for common keywords
         keywords = ["tool", "agent", "component", "function", "class"]
-        return any(
-            keyword in doc_text and keyword in output_text for keyword in keywords
-        )
+        return any(key in doc_text and key in output_text for key in keywords)
 
     def _extract_description(self, doc: Document) -> str:
         """Extract description from document content.

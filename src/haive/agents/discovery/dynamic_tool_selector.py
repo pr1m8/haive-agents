@@ -748,7 +748,7 @@ class ContextAwareSelector(DynamicToolSelector):
             topics = []
             for msg in history:
                 if hasattr(msg, "content") and msg.content:
-                    # Simple keyword extraction for topic analysis
+                    # Simple key extraction for topic analysis
                     words = msg.content.lower().split()
                     topics.extend([w for w in words if len(w) > 3])
 

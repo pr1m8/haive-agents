@@ -313,7 +313,7 @@ class QueryAnalyzer(BaseModel):
         # Infer capabilities
         inferred_capabilities = []
         for capability, keywords in self.capability_keywords.items():
-            if any(keyword in query_lower for keyword in keywords):
+            if any(key in query_lower for key in keywords):
                 inferred_capabilities.append(capability)
 
         # Extract domain tags
@@ -346,7 +346,7 @@ class QueryAnalyzer(BaseModel):
 
         tags = []
         for domain, keywords in domains.items():
-            if any(keyword in query for keyword in keywords):
+            if any(key in query for key in keywords):
                 tags.append(domain)
 
         return tags

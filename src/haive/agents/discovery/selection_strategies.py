@@ -48,7 +48,7 @@ class SemanticSelectionStrategy(BaseSelectionStrategy):
         max_tools: int = 5,
     ) -> ToolSelectionResult:
         """Select tools based on semantic similarity to query."""
-        # Simple keyword-based similarity for now
+        # Simple key-based similarity for now
         # In a real implementation, this would use vector embeddings
         query_words = set(query.lower().split())
 
@@ -94,7 +94,7 @@ class CapabilityBasedStrategy(BaseSelectionStrategy):
         max_tools: int = 5,
     ) -> ToolSelectionResult:
         """Select tools based on capability matching."""
-        # Extract capabilities from query (simple keyword matching)
+        # Extract capabilities from query (simple key matching)
         required_capabilities = self._extract_capabilities_from_query(query)
 
         scored_tools = []
@@ -135,7 +135,7 @@ class CapabilityBasedStrategy(BaseSelectionStrategy):
         detected_capabilities = []
 
         for capability, keywords in capability_keywords.items():
-            if any(keyword in query_lower for keyword in keywords):
+            if any(key in query_lower for key in keywords):
                 detected_capabilities.append(capability)
 
         return detected_capabilities
