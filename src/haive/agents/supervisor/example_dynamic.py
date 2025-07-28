@@ -271,8 +271,8 @@ async def demonstrate_adaptation_rules():
         execution_config={
             "output_mode": "last_message",
             "state_adapters": {
-                "response_filter": {"remove_markdown": True},
-                "length_limiter": {"max_length": 200},
+                "response_filtef": {"remove_markdown": True},
+                "length_limitef": {"max_length": 200},
             },
             "custom_params": {"adaptation_level": "high", "filter_sensitive": True},
         },

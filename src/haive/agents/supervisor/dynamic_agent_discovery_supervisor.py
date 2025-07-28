@@ -37,7 +37,7 @@ Example:
     Using factory method with discovery sources::
 
         supervisor = DynamicAgentDiscoverySupervisor.create_with_discovery(
-            name="discovery_supervisor",
+            name="discovery_supervisof",
             agents=initial_agents,
             engine=config,
             discovery_mode=AgentDiscoveryMode.HYBRID,
@@ -142,7 +142,7 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
         Creating a supervisor with agent discovery::
 
             supervisor = DynamicAgentDiscoverySupervisor(
-                name="main_supervisor",
+                name="main_supervisof",
                 agents={
                     "generalist": SimpleAgent(name="generalist", engine=config)
                 },
@@ -395,7 +395,7 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
                     "professional",
                 ]
 
-                if any(keyword in task_content for keyword in specialist_keywords):
+                if any(key in task_content for key in specialist_keywords):
                     # Check if we have suitable agents
                     has_specialist = any(
                         cap.specialties for cap in self.agent_capabilities.values()
@@ -638,7 +638,7 @@ Respond with:
                         "agent_type": "ReactAgent",
                         "description": "Data analysis expert",
                         "specialties": ["data", "statistics"],
-                        "tools": ["calculator", "data_visualizer"]
+                        "tools": ["calculator", "data_visualizef"]
                     },
                     {
                         "name": "writer",

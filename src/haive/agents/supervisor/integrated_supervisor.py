@@ -410,7 +410,7 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
             "register agent",
         ]
 
-        return any(keyword in content for keyword in management_keywords)
+        return any(key in content for key in management_keywords)
 
     def _setup_integrated_conditional_routing(self, graph: BaseGraph) -> None:
         """Setup enhanced conditional routing with agent management."""

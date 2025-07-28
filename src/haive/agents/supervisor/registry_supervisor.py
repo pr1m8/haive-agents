@@ -52,7 +52,7 @@ class AgentRegistry:
         for agent_name, capability in self.agent_capabilities.items():
             capability_lower = capability.lower()
 
-            # Simple keyword matching
+            # Simple key matching
             if any(word in capability_lower for word in task_lower.split()):
                 matches.append(agent_name)
 
@@ -248,7 +248,7 @@ class RegistrySupervisor(ReactAgent):
 
         # Routing
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._route_from_supervisor,
             {"executor": "executor", "END": "__end__"},
         )

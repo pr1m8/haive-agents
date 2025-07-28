@@ -29,7 +29,7 @@ class MockEngine:
             def __init__(self, content: str):
                 self.content = content
 
-        # Simple keyword-based routing for testing
+        # Simple key-based routing for testing
         if hasattr(messages, "__iter__") and len(messages) > 0:
             last_message = str(messages[-1])
         else:
@@ -160,7 +160,7 @@ class SimpleDynamicSupervisorTest:
         """Simulate routing a request to an agent."""
         console.print(f"\n[yellow]📝 Processing request:[/yellow] {request}")
 
-        # Simple keyword-based routing for testing
+        # Simple key-based routing for testing
         request_lower = request.lower()
 
         routing_rules = {
@@ -177,16 +177,16 @@ class SimpleDynamicSupervisorTest:
         selected_agent = None
         reasoning = "No matching keywords found"
 
-        for keyword, agent_name in routing_rules.items():
-            if keyword in request_lower and agent_name in self.agents:
+        for key, agent_name in routing_rules.items():
+            if key in request_lower and agent_name in self.agents:
                 selected_agent = agent_name
-                reasoning = f"Found keyword '{keyword}', routing to {agent_name}"
+                reasoning = f"Found key '{key}', routing to {agent_name}"
                 break
 
         if not selected_agent:
             if self.agents:
                 selected_agent = next(iter(self.agents.keys()))
-                reasoning = "No keyword match, using first available agent"
+                reasoning = "No key match, using first available agent"
             else:
                 selected_agent = "END"
                 reasoning = "No agents available"

@@ -226,7 +226,7 @@ class ChoiceModelSupervisor(ReactAgent):
 
         # Routing
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._route_from_supervisor,
             {"executor": "executor", "END": "__end__"},
         )
@@ -442,7 +442,7 @@ if __name__ == "__main__":
     async def test_choice_model_supervisor():
         """Test the choice model supervisor."""
         # Create supervisor (starts empty)
-        supervisor = ChoiceModelSupervisor(name="choice_supervisor", max_agents=5)
+        supervisor = ChoiceModelSupervisor(name="choice_supervisof", max_agents=5)
 
         # Test 1: Research request
         await supervisor.ainvoke(

@@ -41,7 +41,7 @@ Example:
     Using factory method with discovery sources::
 
         supervisor = DynamicToolDiscoverySupervisor.create_with_discovery(
-            name="discovery_supervisor",
+            name="discovery_supervisof",
             agents=agents,
             engine=config,
             discovery_mode=ToolDiscoveryMode.HYBRID,
@@ -53,7 +53,7 @@ Example:
     With initial tools and agents::
 
         supervisor = DynamicToolDiscoverySupervisor.create_with_agents_and_tools(
-            name="configured_supervisor",
+            name="configured_supervisof",
             agent_configs=[
                 {"type": "SimpleAgent", "name": "worker1"},
                 {"type": "ReactAgent", "name": "worker2"}
@@ -154,7 +154,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
 
             # Basic creation
             supervisor = DynamicToolDiscoverySupervisor(
-                name="main_supervisor",
+                name="main_supervisof",
                 agents={
                     "worker1": SimpleAgent(...),
                     "worker2": ReactAgent(...)
@@ -182,7 +182,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
 
             # With pre-configured agents and tools
             supervisor = DynamicToolDiscoverySupervisor.create_with_agents_and_tools(
-                name="preset_supervisor",
+                name="preset_supervisof",
                 agent_configs=[
                     {"type": "SimpleAgent", "name": "analyst"},
                     {"type": "ReactAgent", "name": "executor"}
@@ -453,7 +453,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                     "translate",
                 ]
 
-                if any(keyword in task_content for keyword in tool_keywords):
+                if any(key in task_content for key in tool_keywords):
                     # Check if we have attempted discovery recently
                     recent_discovery = any(
                         "discover_and_load_tools" in str(msg.content)
@@ -593,21 +593,8 @@ Respond with:
                 - endpoint (str): MCP server endpoint
                 - auth_token (str): Authentication token
                 - timeout (int): Request timeout in seconds
-            **kwargs: Additional arguments passed to supervisor constructor
-
-        Returns:
-            Fully configured DynamicToolDiscoverySupervisor instance
-
-        Raises:
-            ValueError: If discovery_mode is invalid
-            RuntimeError: If discovery agent initialization fails
-            FileNotFoundError: If rag_documents_path doesn't exist
-
-        Example:
-            Create supervisor with all discovery sources::
-
-                supervisor = DynamicToolDiscoverySupervisor.create_with_discovery(
-                    name="full_discovery_supervisor",
+            **kwargs: Additional arguments pass
+                    name="full_discovery_supervisof",
                     agents={
                         "analyst": SimpleAgent(name="analyst", engine=config),
                         "executor": ReactAgent(name="executor", engine=config)

@@ -182,7 +182,7 @@ class DynamicMultiAgent(MultiAgent):
 
         # Supervisor routes to executor or END
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._route_from_supervisor,
             {"executor": "executor", "END": "__end__"},
         )

@@ -386,7 +386,7 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
         # Add conditional edges
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._route_supervisor,
             {
                 "analyze": "analyze_task",
@@ -603,9 +603,9 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
         ]
 
         output_lower = output.lower()
-        for keyword in capability_keywords:
-            if keyword in output_lower:
-                capabilities.append(keyword)
+        for key in capability_keywords:
+            if key in output_lower:
+                capabilities.append(key)
 
         return list(set(capabilities))  # Remove duplicates
 

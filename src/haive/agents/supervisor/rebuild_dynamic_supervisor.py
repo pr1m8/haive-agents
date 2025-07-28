@@ -140,7 +140,7 @@ class RebuildDynamicSupervisor(ReactAgent):
             graph.add_node(agent_name, agent_node)
 
             # Agent routes back to supervisor
-            graph.add_edge(agent_name, "supervisor")
+            graph.add_edge(agent_name, "supervisof")
 
         # Build routing destinations
         destinations = {agent_name: agent_name for agent_name in self._agent_registry}

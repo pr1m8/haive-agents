@@ -69,7 +69,7 @@ class TaskClassifier:
         detected_types = []
 
         for task_type, keywords in cls.TASK_PATTERNS.items():
-            if any(keyword in message_lower for keyword in keywords):
+            if any(key in message_lower for key in keywords):
                 detected_types.append(task_type)
 
         return detected_types or ["general"]
@@ -239,14 +239,14 @@ Response Format: Provide only the agent name or END as your choice."""
         """Fallback routing when LLM fails."""
         logger.warning("Using fallback routing strategy")
 
-        # Simple keyword-based fallback
+        # Simple key-based fallback
         task_types = TaskClassifier.classify_task(context.last_message)
 
         for task_type in task_types:
             for agent in available_agents:
                 if task_type in agent.lower():
                     return RoutingDecision(
-                        choice=agent, reasoning="Fallback keyword matching"
+                        choice=agent, reasoning="Fallback key matching"
                     )
 
         # Ultimate fallback
@@ -280,10 +280,10 @@ class RuleBasedRoutingStrategy(BaseRoutingStrategy):
         message_lower = context.last_message.lower()
 
         # Check rules
-        for keyword, agent_name in self.routing_rules.items():
-            if keyword.lower() in message_lower and agent_name in available_agents:
+        for key, agent_name in self.routing_rules.items():
+            if key.lower() in message_lower and agent_name in available_agents:
                 return RoutingDecision(
-                    choice=agent_name, reasoning=f"Rule match: {keyword}"
+                    choice=agent_name, reasoning=f"Rule match: {key}"
                 )
 
         # Default to first available agent

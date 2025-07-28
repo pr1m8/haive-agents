@@ -127,7 +127,7 @@ class DynamicSupervisorFixed(ReactAgent):
 
         # Supervisor routes to executor or END
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._route_supervisor,
             {
                 "executor": "executor",
@@ -138,7 +138,7 @@ class DynamicSupervisorFixed(ReactAgent):
 
         # Executor routes to specific agents
         graph.add_conditional_edges(
-            "executor",
+            "executof",
             self._route_to_agent,
             {
                 **{name: name for name in self._agent_registry},

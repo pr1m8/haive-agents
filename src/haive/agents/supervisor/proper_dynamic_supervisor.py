@@ -109,7 +109,7 @@ class ProperDynamicSupervisor(ReactAgent):
 
         # Supervisor conditionally routes
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._route_supervisor,
             {"executor": "executor", "END": "__end__"},
         )
@@ -198,7 +198,7 @@ class ProperDynamicSupervisor(ReactAgent):
         """
         content_lower = content.lower()
 
-        # Simple keyword-based routing for demo
+        # Simple key-based routing for demo
         routing_rules = {
             "research": ["research", "find", "search", "investigate"],
             "writing": ["write", "draft", "compose", "create"],
@@ -216,7 +216,7 @@ class ProperDynamicSupervisor(ReactAgent):
             # Direct name match
             for category, keywords in routing_rules.items():
                 if category in agent_lower:
-                    if any(keyword in content_lower for keyword in keywords):
+                    if any(key in content_lower for key in keywords):
                         return agent_name
 
             # Check capability description

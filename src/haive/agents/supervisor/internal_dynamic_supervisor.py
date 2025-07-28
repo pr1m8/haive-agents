@@ -146,7 +146,7 @@ class InternalDynamicSupervisor(MultiAgent):
 
         # Routing logic
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._route_from_supervisor,
             {
                 "agent_creator": "agent_creator",
@@ -338,16 +338,14 @@ class InternalDynamicSupervisor(MultiAgent):
 
         # Check each existing agent
         for agent_name in self.agents:
-            # Simple keyword matching for now
+            # Simple key matching for now
             # In real implementation, this could use embeddings or LLM classification
 
             # Check against agent templates to see what this agent was designed for
             for template_type, template in self._agent_templates.items():
                 if f"{template_type}_agent" == agent_name:
                     # Check if any template keywords match the content
-                    if any(
-                        keyword in content_lower for keyword in template["keywords"]
-                    ):
+                    if any(key in content_lower for key in template["keywords"]):
                         return agent_name
 
         return None
@@ -363,9 +361,9 @@ class InternalDynamicSupervisor(MultiAgent):
         for template_type, template in self._agent_templates.items():
             score = 0
 
-            # Count keyword matches
-            for keyword in template["keywords"]:
-                if keyword in content_lower:
+            # Count key matches
+            for key in template["keywords"]:
+                if key in content_lower:
                     score += 1
 
             # Direct type mention
