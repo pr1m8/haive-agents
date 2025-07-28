@@ -66,7 +66,7 @@ class MultiAgentState(BaseModel, GetterMixin):
 def temp_node(state: Dict[str, Any]):
     agent = state.get("selected_agent")
     if agent:
-        runnable = agent.create_runnable()
+        agent.create_runnable()
         # runnable.run(input_payload) # input_payload undefined
     return state
 
