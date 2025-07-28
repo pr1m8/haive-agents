@@ -12,7 +12,7 @@ Example:
         from haive.agents.reasoning_and_critique.mcts import MCTSAgent, MCTSAgentConfig
 
         config = MCTSAgentConfig(
-            name="mcts_reasoner",
+            name="mcts_reasonef",
             max_iterations=10
         )
         agent = MCTSAgent(config=config)
