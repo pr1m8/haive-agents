@@ -217,7 +217,7 @@ class TypedRAGAgent(BaseRAGAgent):
             elif (
                 isinstance(aggregation_result, dict) and "answer" in aggregation_result
             ):
-                aggregated_answer = aggregation_result["answer"]
+                aggregated_answer = aggregation_result["answef"]
             else:
                 aggregated_answer = str(aggregation_result)
 
@@ -247,7 +247,7 @@ class TypedRAGAgent(BaseRAGAgent):
             if isinstance(result, str):
                 answer = result
             elif isinstance(result, dict) and "answer" in result:
-                answer = result["answer"]
+                answer = result["answef"]
             else:
                 answer = str(result)
 
