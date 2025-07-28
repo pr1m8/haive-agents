@@ -1,22 +1,21 @@
 #!/usr/bin/env python3
-r"""Debug why streaming values are\s+empt\w+."""
+r"""Debug why streaming values are empt."""
 
 from src.haive.agents.conversation.collaberative.agent import CollaborativeConversation
 
 
-def debug_streaming_value\w+():
-   \s+"""Debug what's actually in the streaming chunks."""
+def debug_streaming_value():
+    """Debug what's actually in the streaming chunks."""
     # Create simple agent
     agent = CollaborativeConversation.create_brainstorming_session(
-       \s+topi\w+="Test",\s+participant\w+=["Alice"], max_rounds=\d+
+        topi="Test", participant=["Alice"], max_rounds=0
     )
 
     try:
-        confi\w+ =\s+{"configurable":\s+{"recursion_limi\w+": \d+}}
 
         for i, chunk in enumerate(agent.stream({}, config=config)):
 
-            if hasattr(chunk,\s+"__dict_\w+"):
+            if hasattr(chunk, "__dict_word"):
                 pass
 
             if isinstance(chunk, dict):
@@ -36,7 +35,7 @@ def debug_streaming_value\w+():
                     else:
                         pass
 
-            if i >= \d+:  # Limit to avoid too much output
+            if i >= 0:  # Limit to avoid too much output
                 break
 
     except Exception:
@@ -45,7 +44,7 @@ def debug_streaming_value\w+():
         traceback.print_exc()
 
     try:
-        if hasattr(agent,\s+"ap\w+"):
+        if hasattr(agent, "ap"):
 
             # Test streaming directly on app
             for i, chunk in enumerate(agent.app.stream({}, config=config)):
@@ -53,13 +52,13 @@ def debug_streaming_value\w+():
                     # Show state values
                     for key, value in chunk.items():
                         if key in [
-                           \s+"current_speake\w+",
-                           \s+"turn_coun\w+",
-                           \s+"conversation_ende\w+",
-                        ] or (key ==\s+"message\w+" and isinstance(value, list)):
+                            "current_speake",
+                            "turn_coun",
+                            "conversation_ende",
+                        ] or (key == "message" and isinstance(value, list)):
                             pass
 
-                if i >= \d+:
+                if i >= 0:
                     break
         else:
             pass
@@ -68,19 +67,19 @@ def debug_streaming_value\w+():
         pass
 
     try:
-        modes =\s+["value\w+",\s+"update\w+",\s+"message\w+"]
+        modes = ["value", "update", "message"]
         for mode in modes:
-            config =\s+{"configurabl\w+":\s+{"recursion_limi\w+": \d+},\s+"stream_mod\w+": mode}
+            config = {"configurabl": {"recursion_limi": 0}, "stream_mod": mode}
 
             chunk_count = 0
             for chunk in agent.stream({}, config=config):
-                chunk_count += \d+
+                chunk_count += 0
                 if isinstance(chunk, dict) and chunk:
-                    if mode ==\s+"value\w+":
+                    if mode == "value":
                         # For values mode, show actual state
-                        for key in\s+["current_speake\w+",\s+"turn_coun\w+",\s+"message\w+"]:
+                        for key in ["current_speake", "turn_coun", "message"]:
                             if key in chunk:
-                                if key ==\s+"message\w+":
+                                if key == "message":
                                     pass
                                 else:
                                     pass
@@ -89,7 +88,7 @@ def debug_streaming_value\w+():
                 else:
                     pass
 
-                if chunk_count >= \d+:
+                if chunk_count >= 0:
                     break
     except Exception:
         pass
@@ -98,16 +97,16 @@ def debug_streaming_value\w+():
         # Check if agent is properly compiled
 
         # Try to get state schema
-        if hasattr(agent,\s+"state_schem\w+") and hasattr(agent.state_schema,\s+"model_field\w+"):
+        if hasattr(agent, "state_schem") and hasattr(agent.state_schema, "model_field"):
             pass
 
         # Check if graph is built
-        if hasattr(agent,\s+"grap\w+") and hasattr(agent.graph,\s+"node\w+"):
+        if hasattr(agent, "grap") and hasattr(agent.graph, "node"):
             pass
 
     except Exception:
         pass
 
 
-if __name__ ==\s+"__main_\w+":
+if __name__ == "__main_word":
     debug_streaming_values()
