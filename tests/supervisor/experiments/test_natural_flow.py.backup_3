@@ -179,7 +179,7 @@ Execute step by step using the appropriate specialist agents."""
         if result2.get("next_agent") == "search_agent":
             pass
         elif result2.get("next_agent") == "math_agent":
-            pass
+            pass"
         elif result2.get("next_agent") == "translation_agent":
             pass
 

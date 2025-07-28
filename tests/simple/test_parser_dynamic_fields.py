@@ -157,7 +157,7 @@ def test_state_update_mechanics():
         new_state = BasicState(**{**state.model_dump(), **update_dict})
 
     except Exception as e:
-
+        pass
 
 
 if __name__ == "__main__":

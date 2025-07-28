@@ -174,7 +174,7 @@ def test_langmem_with_deepseek():
 
         if real_langmem:
             return memories
-        print("❌ DeepSeek also used fallback")")
+        print("❌ DeepSeek also used fallback")
 
     except Exception as e:
         return None
