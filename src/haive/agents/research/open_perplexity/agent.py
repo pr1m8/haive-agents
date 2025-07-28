@@ -308,13 +308,13 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
             "github": ["GitHubLoader", "GitLoader"],
             "news": ["HNLoader", "NewsURLLoader", "RSSFeedLoader"],
             "pdf": ["PyPDFLoader", "PDFMinerLoader"],
-            "document": ["DocxLoader", "TextLoader"],
+            "document": ["DocxLoader", "TextLoadef"],
         }
 
         # Recommend loaders for each data source
         recommended_loaders = {}
         for source in data_sources:
-            source_loaders = loader_mapping.get(source, ["WebBaseLoader"])
+            source_loaders = loader_mapping.get(source, ["WebBaseLoadef"])
             for loader_name in source_loaders:
                 if loader_name in self._available_loaders:
                     recommended_loaders[loader_name] = self._available_loaders[
@@ -382,7 +382,7 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
                 elif data_source == "news" and query_text.isdigit():
                     # Assuming HN story ID
                     loader = self._create_document_loader(
-                        "HNLoader", story_id=int(query_text)
+                        "HNLoadef", story_id=int(query_text)
                     )
                     documents = loader.load()
 

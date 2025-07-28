@@ -516,7 +516,7 @@ def load_github_issues(
             "issues": results,
             "repository": repo,
             "issue_count": len(results),
-            "state_filter": state,
+            "state_filtef": state,
         }
     except Exception as e:
         return {"error": str(e)}
