@@ -55,12 +55,12 @@ License:
 import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import List, Union
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -291,7 +291,7 @@ def example_basic_agent() -> None:
                 print(f"🤖 AI: {msg.content}")
                 break
 
-    print(f"\n✅ Basic agent example complete!")
+    print("\n✅ Basic agent example complete!")
 
 
 def example_agent_with_tools() -> None:
@@ -379,7 +379,7 @@ def example_structured_output() -> None:
         verbose=True,
     )
 
-    logger.info(f"Created structured output agent")
+    logger.info("Created structured output agent")
     logger.info(f"Output model: {TaskAnalysis.__name__}")
     logger.info(f"Model fields: {list(TaskAnalysis.model_fields.keys())}")
 
@@ -389,7 +389,7 @@ def example_structured_output() -> None:
     and displays amortization schedules with interactive charts'
     """
 
-    print(f"\n📨 Task Analysis Request:")
+    print("\n📨 Task Analysis Request:")
     print(f"   {task_query.strip()}")
     print("\n" + "-" * 60)
 
@@ -401,18 +401,18 @@ def example_structured_output() -> None:
     if hasattr(result, "messages"):
         for msg in reversed(result.messages):
             if isinstance(msg, AIMessage):
-                print(f"🤖 Structured Analysis:")
+                print("🤖 Structured Analysis:")
                 print(f"   Raw response: {msg.content[:100]}...")
 
                 # In a real implementation, the structured output would be
                 # automatically parsed into the TaskAnalysis model
                 # For demonstration, we show what the structure would look like
-                print(f"\n📊 Expected Structure (TaskAnalysis):")
-                print(f"   - task_type: Web application development")
-                print(f"   - complexity: 7-8")
-                print(f"   - steps_required: [Design, Backend, Frontend, Testing]")
-                print(f"   - estimated_time: 120-240 minutes")
-                print(f"   - confidence: 0.8-0.9")
+                print("\n📊 Expected Structure (TaskAnalysis):"):")
+                print("   - task_type: Web application development")
+                print("   - complexity: 7-8")
+                print("   - steps_required: [Design, Backend, Frontend, Testing]")
+                print("   - estimated_time: 120-240 minutes")
+                print("   - confidence: 0.8-0.9")
                 break
 
     print("\n✅ Structured output example complete!")
@@ -454,7 +454,7 @@ def example_meta_state_integration() -> None:
         graph_context={"purpose": "demonstration", "version": "3.0"},
     )
 
-    logger.info(f"Embedded agent in MetaStateSchema")
+    logger.info("Embedded agent in MetaStateSchema")
     logger.info(f"Agent type: {meta_state.agent_type}")
     logger.info(f"Execution status: {meta_state.execution_status}")
 
@@ -475,7 +475,7 @@ def example_meta_state_integration() -> None:
         # Run async execution
         meta_result = asyncio.run(run_meta_query())
 
-        print(f"🧠 Meta-execution complete")
+        print("🧠 Meta-execution complete")
         print(f"   Status: {meta_result.get('status', 'unknown')}")
         print(f"   Execution count: {meta_state.execution_count}")
 
@@ -520,7 +520,7 @@ def example_recompilation_system() -> None:
     logger.info(f"Initial tools: {', '.join(initial_tools)}")
 
     # Test initial capabilities
-    print(f"\n📨 Initial test: 'What's 10 * 5 and what time is it?'")
+    print("\n📨 Initial test: 'What's 10 * 5 and what time is it?'")
     result1 = agent.run("What's 10 * 5 and what time is it?", debug=True)
 
     # Extract response
@@ -530,7 +530,7 @@ def example_recompilation_system() -> None:
                 print(f"🤖 Initial response: {msg.content}")
                 break
 
-    print(f"\n🔄 Adding word_counter tool and triggering recompilation...")
+    print("\n🔄 Adding word_counter tool and triggering recompilation...")
 
     # Add new tool (this should trigger recompilation)
     agent.engine.tools.append(word_counter)
@@ -546,7 +546,7 @@ def example_recompilation_system() -> None:
 
     # Test new capabilities
     print(
-        f"\n📨 Post-recompilation test: 'Count words in: Hello world from recompiled agent'"
+        "\n📨 Post-recompilation test: 'Count words in: Hello world from recompiled agent'"t'"
     )
     result2 = agent.run(
         "Count the words in this text: 'Hello world from recompiled agent'", debug=True
@@ -561,7 +561,7 @@ def example_recompilation_system() -> None:
 
     # Show recompilation status
     if hasattr(agent, "needs_recompile"):
-        print(f"\n📊 Recompilation Status:")
+        print("\n📊 Recompilation Status:")
         print(f"   Needs recompile: {getattr(agent, 'needs_recompile', 'N/A')}")
         print(
             f"   Last recompile reason: {getattr(agent, 'last_recompile_reason', 'N/A')}"

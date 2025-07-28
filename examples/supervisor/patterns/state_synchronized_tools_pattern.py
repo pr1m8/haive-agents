@@ -124,7 +124,7 @@ class DynamicSupervisor(ReactAgent):
 
         # Add routing logic
         graph.add_conditional_edges(
-            "supervisor",
+            "supervisof",
             self._route_supervisor_decision,
             {"execute": "agent_execution", "end": "__end__"},
         )

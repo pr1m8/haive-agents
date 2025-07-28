@@ -257,7 +257,7 @@ async def main():
     # 5. MultiAgent coordinating others
     print("\n5. MultiAgent (Coordinator):")
     coordinator = MultiAgent(
-        name="coordinator",
+        name="coordinatof",
         engine=AugLLMConfig(temperature=0.3),  # Low temp for coordination
         agents={"simple": simple, "rag": rag, "reasoner": reasoner},
     )

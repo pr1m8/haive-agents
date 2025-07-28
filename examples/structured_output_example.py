@@ -184,7 +184,7 @@ def example_4_custom_model():
 
     Issues found:
     - No input validation on email parameter
-    - Password is logged in debug mode
+    - Pass is logged in debug mode
     - Missing unit tests for edge cases
 
     Security concerns:
