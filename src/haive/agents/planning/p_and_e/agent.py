@@ -106,7 +106,7 @@ class PlanAndExecuteAgent(Agent):
 
         # Create executor engine with tools
         self.engines["executor"] = AugLLMConfig(
-            name="executor",
+            name="executof",
             prompt_template=executor_prompt,
             tools=self.tools,  # Pass the actual tools to the executor
             partial_variables={
