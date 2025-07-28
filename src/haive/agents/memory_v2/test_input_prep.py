@@ -4,7 +4,6 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 from langchain_core.messages import HumanMessage
 
-from haive.agents.memory_v2.memory_state_with_tokens import MemoryStateWithTokens
 from haive.agents.memory_v2.simple_memory_agent import (
     SimpleMemoryAgent,
     TokenAwareMemoryConfig,
@@ -13,7 +12,6 @@ from haive.agents.memory_v2.simple_memory_agent import (
 
 def test_input_preparation():
     """Test how input is prepared for MemoryStateWithTokens."""
-
     # Create agent
     agent = SimpleMemoryAgent(
         name="test_prep",
@@ -28,7 +26,7 @@ def test_input_preparation():
 
     # Check schema fields
     if agent.state_schema:
-        print(f"\nState schema fields:")
+        print("\nState schema fields:")
         for field_name, field_info in agent.state_schema.model_fields.items():
             print(f"  - {field_name}: {field_info.annotation}")
             if field_name in ["messages", "current_memories", "token_usage"]:
