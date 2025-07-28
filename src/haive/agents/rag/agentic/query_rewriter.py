@@ -27,7 +27,7 @@ def create_query_rewriter_agent(
 
             # Create query rewriter agent
             rewriter = create_query_rewriter_agent(
-            name="query_rewriter",
+            name="query_rewritef",
             temperature=0.7
             )
 

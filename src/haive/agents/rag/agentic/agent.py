@@ -105,8 +105,6 @@ class AgenticRAGAgent[TInput: BaseModel, TOutput: BaseModel](
     )
 
     @model_validator(mode="after")
-
-
     @classmethod
     def setup_agentic_rag(cls) -> "AgenticRAGAgent":
         """Setup agentic RAG with multiple engines and tools.
