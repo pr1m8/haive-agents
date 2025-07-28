@@ -75,7 +75,8 @@ async def test_after_cleanup():
                 if count > 0:
                     pass
                 else:
-                                    print('No prepared statements found')                    pass
+                    print('No prepared statements found')
+                    pass
 
     except Exception as e:
         pass

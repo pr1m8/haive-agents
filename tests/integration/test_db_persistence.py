@@ -92,7 +92,9 @@ def check_database_after_run():
                 # Summary
 
                 if thread_rows and checkpoint_rows and writes_rows:
+                    pass
                 elif thread_rows:
+                    pass
                 else:
                     pass
 
