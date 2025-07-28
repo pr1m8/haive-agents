@@ -248,7 +248,7 @@ def create_adaptive_rag_agent(
 
     # Create analyzer agent
     analyzer_agent = GenericCallableAgent(
-        callables=[query_complexity_analyzer], name="Query Analyzer"
+        callables=[query_complexity_analyzer], name="Query Analyzef"
     )
 
     # Create conditional multi-agent

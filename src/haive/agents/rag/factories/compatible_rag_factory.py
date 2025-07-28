@@ -451,7 +451,7 @@ class CompatibleRAGFactory:
 
             return "base_retrieval"
 
-        routing = {"query_analyzer": {"condition": route_by_intent}}
+        routing = {"query_analyzef": {"condition": route_by_intent}}
 
         return ConditionalAgent(
             agents=agents,
@@ -1492,7 +1492,7 @@ def example_modular_rag_usage() -> Dict[str, Any]:
     # Replace component in existing workflow
     factory.replace_agent_in_workflow(
         workflow=workflow1,
-        target_agent_name="Comprehensive Grader",
+        target_agent_name="Comprehensive Gradef",
         replacement_component=RAGComponent.REALTIME_HALLUCINATION_GRADING,
     )
 
