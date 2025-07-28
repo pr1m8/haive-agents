@@ -6,7 +6,7 @@ summarization or rewriting when approaching context limits.
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -19,7 +19,7 @@ class TokenUsageEntry(BaseModel):
     operation: str = Field(..., description="Operation name")
     tokens: int = Field(..., ge=0, description="Number of tokens used")
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat())
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class TokenThresholds(BaseModel):
@@ -33,9 +33,9 @@ class TokenThresholds(BaseModel):
         """Get status based on usage ratio."""
         if usage_ratio >= self.emergency:
             return "EMERGENCY"
-        elif usage_ratio >= self.critical:
+        if usage_ratio >= self.critical:
             return "CRITICAL"
-        elif usage_ratio >= self.warning:
+        if usage_ratio >= self.warning:
             return "WARNING"
         return "OK"
 
@@ -52,8 +52,8 @@ class TokenTracker(BaseModel):
 
     # Core tracking
     total_tokens: int = Field(default=0, ge=0)
-    tokens_by_operation: Dict[str, int] = Field(default_factory=dict)
-    usage_history: List[TokenUsageEntry] = Field(default_factory=list)
+    tokens_by_operation: dict[str, int] = Field(default_factory=dict)
+    usage_history: list[TokenUsageEntry] = Field(default_factory=list)
 
     # Configuration
     max_context_tokens: int = Field(default=8000, ge=1000)
@@ -63,11 +63,11 @@ class TokenTracker(BaseModel):
     window_size: int = Field(default=100, description="Number of operations to track")
 
     # Analytics
-    operation_averages: Dict[str, float] = Field(default_factory=dict)
+    operation_averages: dict[str, float] = Field(default_factory=dict)
     peak_usage: int = Field(default=0, ge=0)
 
     def track(
-        self, operation: str, tokens: int, metadata: Optional[Dict[str, Any]] = None
+        self, operation: str, tokens: int, metadata: dict[str, Any] | None = None
     ) -> None:
         """Track tokens for an operation.
 
@@ -83,8 +83,7 @@ class TokenTracker(BaseModel):
         )
 
         # Update peak
-        if self.total_tokens > self.peak_usage:
-            self.peak_usage = self.total_tokens
+        self.peak_usage = max(self.peak_usage, self.total_tokens)
 
         # Add to history
         entry = TokenUsageEntry(
@@ -152,14 +151,14 @@ class TokenTracker(BaseModel):
         """
         return (self.total_tokens + estimated_tokens) <= self.max_context_tokens
 
-    def get_recommendations(self) -> List[str]:
+    def get_recommendations(self) -> list[str]:
         """Get recommendations based on usage patterns.
 
         Returns:
             List of recommendation strings
         """
         recommendations = []
-        usage_ratio = self.get_usage_ratio()
+        self.get_usage_ratio()
         status = self.get_status()
 
         if status == "EMERGENCY":
@@ -186,7 +185,7 @@ class TokenTracker(BaseModel):
 
         return recommendations
 
-    def get_usage_summary(self) -> Dict[str, Any]:
+    def get_usage_summary(self) -> dict[str, Any]:
         """Get comprehensive usage summary.
 
         Returns:
@@ -234,7 +233,7 @@ class TokenTracker(BaseModel):
 
     def suggest_compression_targets(
         self, target_reduction: float = 0.3
-    ) -> List[Tuple[str, int]]:
+    ) -> list[tuple[str, int]]:
         """Suggest operations to target for compression.
 
         Args:
