@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -33,7 +33,7 @@ class MemoryItem(BaseModel):
     memory_type: MemoryType = MemoryType.SEMANTIC
     timestamp: datetime = Field(default_factory=datetime.now)
     importance: float = Field(default=0.5, ge=0.0, le=1.0)
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class KnowledgeTriple(BaseModel):
@@ -43,23 +43,23 @@ class KnowledgeTriple(BaseModel):
     predicate: str
     object: str
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class EnhancedMemoryItem(MemoryItem):
     """Enhanced memory item with V2 features."""
 
     id: str = Field(default_factory=lambda: str(datetime.now().timestamp()))
-    tags: List[str] = Field(default_factory=list)
-    embedding: Optional[List[float]] = None
-    source: Optional[str] = None
-    user_id: Optional[str] = None
+    tags: list[str] = Field(default_factory=list)
+    embedding: list[float] | None = None
+    source: str | None = None
+    user_id: str | None = None
     access_count: int = 0
-    last_accessed: Optional[datetime] = None
+    last_accessed: datetime | None = None
     confidence: float = Field(default=0.8, ge=0.0, le=1.0)
     created_at: datetime = Field(default_factory=datetime.now)
-    relevance_scores: Dict[str, float] = Field(default_factory=dict)
-    vector_id: Optional[str] = None
+    relevance_scores: dict[str, float] = Field(default_factory=dict)
+    vector_id: str | None = None
 
     # Override importance to use ImportanceLevel enum
     importance: ImportanceLevel = Field(default=ImportanceLevel.MEDIUM)
