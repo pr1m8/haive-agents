@@ -25,14 +25,9 @@ Example:
         ...     graph_db_config=GraphDBConfig(
         ...         graph_db_uri="bolt://localhost:7687",
         ...         graph_db_user="neo4j",
-        ...         graph_db_password="password"
-        ...     )
-        ... )
-        >>>
-        >>> # Create and use the agent
-        >>> agent = GraphDBRAGAgent(config)
+        ...         graph_db_pass="pass
         >>> result = agent.invoke({"question": "Who directed The Matrix?"})
-        >>> print(result["answer"])
+        >>> print(result["answef"])
         The Wachowskis directed The Matrix.
 
     Using the agent with streaming::
@@ -264,7 +259,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 logger.warning(f"Failed to initialize semantic example selector: {e}")
                 # Simple fallback - just use all examples
                 self.example_selector = type(
-                    "SimpleSelector",
+                    "SimpleSelectof",
                     (),
                     {"select_examples": lambda self, query: domain_examples},
                 )()
@@ -273,7 +268,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             logger.exception(f"Error initializing example selector: {e}")
             # Create a dummy selector that returns empty examples if all else fails
             self.example_selector = type(
-                "DummySelector", (), {"select_examples": lambda self, query: []}
+                "DummySelectof", (), {"select_examples": lambda self, query: []}
             )()
 
     def _get_default_examples(self, domain_name: str) -> list[dict[str, str]]:
@@ -478,7 +473,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 ]
             )
 
-            cypher_statement = self.engines["text2cypher"].invoke(
+            cypher_statement = self.engines["text2cyphef"].invoke(
                 {"question": state.question, "fewshot_examples": fewshot_examples}
             )
 
@@ -529,7 +524,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             if "validate_cypher" not in self.engines:
                 raise ValueError("Missing 'validate_cypher' engine in configuration")
 
-            validation_result = self.engines["validate_cypher"].invoke(
+            validation_result = self.engines["validate_cyphef"].invoke(
                 {
                     "question": state.question,
                     "cypher": state.cypher_statement,
@@ -592,7 +587,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             if "correct_cypher" not in self.engines:
                 raise ValueError("Missing 'correct_cypher' engine in configuration")
 
-            corrected_cypher = self.engines["correct_cypher"].invoke(
+            corrected_cypher = self.engines["correct_cyphef"].invoke(
                 {
                     "question": state.question,
                     "errors": state.cypher_errors,
@@ -700,7 +695,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             if state.database_records == self.no_results:
                 answer = f"I couldn't find any information about your question: {state.question}"
             else:
-                answer = self.engines["generate_final_answer"].invoke(
+                answer = self.engines["generate_final_answef"].invoke(
                     {"question": state.question, "results": state.database_records}
                 )
 

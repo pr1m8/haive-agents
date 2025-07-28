@@ -36,7 +36,7 @@ class SQLQueryOutput(BaseModel):
     @field_validatorvalidate_sql_syntax
     @classmethod
     def validate_sql_syntax(cls, query: str) -> str:
-        """Ensure the query starts with a valid SQL keyword."""
+        """Ensure the query starts with a valid SQL key."""
         valid_keywords = ["SELECT", "WITH"]
         if not any(query.strip().upper().startswith(kw) for kw in valid_keywords):
             raise ValueError("Invalid SQL query. Must start with SELECT or WITH")

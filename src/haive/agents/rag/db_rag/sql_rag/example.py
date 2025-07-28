@@ -107,7 +107,7 @@ def postgresql_example() -> dict[str, Any]:
         db_port="5432",
         db_name="northwind",
         db_user="postgres",
-        db_password="postgres",
+        db_pass="postgres",
         include_tables=["customers", "orders", "order_details", "products"],
         sample_rows_in_table_info=5,
     )
@@ -186,7 +186,7 @@ def mysql_example() -> dict[str, Any]:
         db_port="3306",
         db_name="analytics",
         db_user="analyst",
-        db_password="secure_password",
+        db_pass="secure_pass",
     )
 
     # Configure with examples

@@ -873,7 +873,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                 )
 
             # Generate the final answer
-            answer = self.engines["generate_final_answer"].invoke(
+            answer = self.engines["generate_final_answef"].invoke(
                 {
                     "question": state.question,
                     "sql_query": sql_str,

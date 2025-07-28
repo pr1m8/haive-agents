@@ -99,7 +99,7 @@ class CypherQueryOutput(BaseModel):
 
     Attributes:
         query: The generated Cypher query string. Must start with a valid
-            Cypher keyword (MATCH, CREATE, etc.).
+            Cypher key (MATCH, CREATE, etc.).
         parameters: Optional dictionary of query parameters for parameterized
             queries. Keys are parameter names (without $), values are the
             parameter values.
@@ -117,7 +117,7 @@ class CypherQueryOutput(BaseModel):
         ... )
 
     Raises:
-        ValueError: If the query doesn't start with a valid Cypher keyword.
+        ValueError: If the query doesn't start with a valid Cypher key.
     """
 
     query: str = Field(..., description="The generated Cypher query")
@@ -129,7 +129,7 @@ class CypherQueryOutput(BaseModel):
     @field_validatorvalidate_cypher_syntax
     @classmethod
     def validate_cypher_syntax(cls, query: str) -> str:
-        """Validate that the query starts with a valid Cypher keyword.
+        """Validate that the query starts with a valid Cypher key.
 
         Args:
             query: The Cypher query string to validate.
@@ -138,7 +138,7 @@ class CypherQueryOutput(BaseModel):
             str: The validated query string.
 
         Raises:
-            ValueError: If the query doesn't start with a valid keyword.
+            ValueError: If the query doesn't start with a valid key.
         """
         valid_keywords = [
             "MATCH",
