@@ -19,7 +19,7 @@ async def demonstrate_tot():
     print("🌳 Tree of Thoughts Demonstration\n")
 
     # Initialize agents
-    generator = CandidateGenerator(name="tot_generator", temperature=0.7)
+    generator = CandidateGenerator.create(name="tot_generator", temperature=0.7)
     scorer = SolutionScorer(name="tot_scorer", temperature=0.3)
 
     # Example 1: Simple Math Problem
