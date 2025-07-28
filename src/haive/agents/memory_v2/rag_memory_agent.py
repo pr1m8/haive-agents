@@ -12,19 +12,15 @@ All built using BaseRAGAgent as the foundation with custom retrievers.
 
 import asyncio
 import logging
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from datetime import UTC, datetime
+from typing import Any
 from uuid import uuid4
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.vectorstore import VectorStoreConfig, VectorStoreProvider
+from haive.core.engine.vectorstore import VectorStoreProvider
 from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from langchain_core.retrievers import BaseRetriever
-from langchain_core.vectorstores import VectorStore
 from pydantic import BaseModel, ConfigDict, Field
 
 # Import BaseRAGAgent and related components
@@ -32,15 +28,13 @@ from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 
 from .memory_state_original import (
-    EnhancedKnowledgeTriple,
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryType,
-    UnifiedMemoryEntry,
 )
 
 # Import our memory components
-from .message_document_converter import MessageDocumentConverter, TimestampedDocument
+from .message_document_converter import MessageDocumentConverter
 from .time_weighted_retriever import TimeWeightConfig, TimeWeightedRetriever
 
 # Import KG components if available
@@ -94,11 +88,11 @@ class MemoryRAGConfig(BaseModel):
 
     # Memory persistence settings
     persistent_storage: bool = Field(default=True)
-    storage_path: Optional[str] = Field(default="./memory_store/")
+    storage_path: str | None = Field(default="./memory_store/")
 
     # Knowledge graph enhancement
     enable_kg_enhancement: bool = Field(default=KG_AVAILABLE)
-    kg_node_types: List[str] = Field(
+    kg_node_types: list[str] = Field(
         default=["Person", "Organization", "Concept", "Event", "Location", "Technology"]
     )
 
@@ -115,8 +109,8 @@ class ConversationMemoryAgent:
         self.config = config
         self.name = name
         self.message_converter = MessageDocumentConverter()
-        self._rag_agent: Optional[BaseRAGAgent] = None
-        self._documents: List[Document] = []
+        self._rag_agent: BaseRAGAgent | None = None
+        self._documents: list[Document] = []
         self._initialized = False
 
         logger.info(f"Initialized ConversationMemoryAgent: {name}")
@@ -132,7 +126,7 @@ class ConversationMemoryAgent:
                 page_content="Initial conversation memory store",
                 metadata={
                     "type": "system",
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                     "importance": "low",
                 },
             )
@@ -167,7 +161,7 @@ class ConversationMemoryAgent:
         self._initialized = True
         logger.info(f"Initialized RAG agent for {self.name}")
 
-    async def add_conversation(self, messages: List[BaseMessage]) -> None:
+    async def add_conversation(self, messages: list[BaseMessage]) -> None:
         """Add conversation messages to memory."""
         # Convert messages to timestamped documents
         new_documents = self.message_converter.convert_messages(messages)
@@ -189,7 +183,7 @@ class ConversationMemoryAgent:
 
     async def retrieve_conversation_context(
         self, query: str, k: int = None
-    ) -> List[Document]:
+    ) -> list[Document]:
         """Retrieve relevant conversation context."""
         await self.initialize()
 
@@ -213,7 +207,7 @@ class ConversationMemoryAgent:
         )
         return documents
 
-    async def _update_vector_store(self, new_documents: List[Document]) -> None:
+    async def _update_vector_store(self, new_documents: list[Document]) -> None:
         """Update vector store with new documents."""
         try:
             # For now, we recreate the RAG agent with all documents
@@ -236,8 +230,8 @@ class FactualMemoryAgent:
         """Initialize factual memory agent."""
         self.config = config
         self.name = name
-        self._rag_agent: Optional[BaseRAGAgent] = None
-        self._memories: List[EnhancedMemoryItem] = []
+        self._rag_agent: BaseRAGAgent | None = None
+        self._memories: list[EnhancedMemoryItem] = []
         self._initialized = False
 
         logger.info(f"Initialized FactualMemoryAgent: {name}")
@@ -286,7 +280,7 @@ class FactualMemoryAgent:
 
         logger.info(f"Added factual memory: {memory.content[:50]}...")
 
-    async def add_memories(self, memories: List[EnhancedMemoryItem]) -> None:
+    async def add_memories(self, memories: list[EnhancedMemoryItem]) -> None:
         """Add multiple factual memories."""
         self._memories.extend(memories)
 
@@ -296,7 +290,7 @@ class FactualMemoryAgent:
 
         logger.info(f"Added {len(memories)} factual memories")
 
-    async def retrieve_facts(self, query: str, k: int = None) -> List[Dict[str, Any]]:
+    async def retrieve_facts(self, query: str, k: int = None) -> list[dict[str, Any]]:
         """Retrieve relevant factual memories."""
         await self.initialize()
 
@@ -340,12 +334,12 @@ class FactualMemoryAgent:
         )
 
     def _memories_to_documents(
-        self, memories: List[EnhancedMemoryItem]
-    ) -> List[Document]:
+        self, memories: list[EnhancedMemoryItem]
+    ) -> list[Document]:
         """Convert multiple memories to documents."""
         return [self._memory_to_document(mem) for mem in memories]
 
-    async def _update_vector_store(self, new_documents: List[Document]) -> None:
+    async def _update_vector_store(self, new_documents: list[Document]) -> None:
         """Update vector store with new documents."""
         try:
             # Recreate with all documents
@@ -356,7 +350,7 @@ class FactualMemoryAgent:
                 vector_store_provider=self.config.vector_store_provider,
                 name=self.name,
             )
-            logger.info(f"Updated factual memory store")
+            logger.info("Updated factual memory store")
         except Exception as e:
             logger.error(f"Failed to update factual memory store: {e}")
 
@@ -368,10 +362,10 @@ class PreferencesMemoryAgent:
         """Initialize preferences memory agent."""
         self.config = config
         self.name = name
-        self._rag_agent: Optional[SimpleRAGAgent] = (
+        self._rag_agent: SimpleRAGAgent | None = (
             None  # Use SimpleRAGAgent for generation
         )
-        self._preferences: List[EnhancedMemoryItem] = []
+        self._preferences: list[EnhancedMemoryItem] = []
         self._initialized = False
 
         logger.info(f"Initialized PreferencesMemoryAgent: {name}")
@@ -439,7 +433,7 @@ class PreferencesMemoryAgent:
         )
         return answer
 
-    async def check_preference_conflict(self, new_preference: str) -> Dict[str, Any]:
+    async def check_preference_conflict(self, new_preference: str) -> dict[str, Any]:
         """Check if new preference conflicts with existing ones."""
         await self.initialize()
 
@@ -454,8 +448,8 @@ class PreferencesMemoryAgent:
         }
 
     def _preferences_to_documents(
-        self, preferences: List[EnhancedMemoryItem]
-    ) -> List[Document]:
+        self, preferences: list[EnhancedMemoryItem]
+    ) -> list[Document]:
         """Convert preferences to documents."""
         documents = []
         for pref in preferences:
@@ -520,7 +514,7 @@ class UnifiedMemoryRAGAgent:
         )
         logger.info("Initialized all memory agents")
 
-    async def process_conversation(self, messages: List[BaseMessage]) -> Dict[str, Any]:
+    async def process_conversation(self, messages: list[BaseMessage]) -> dict[str, Any]:
         """Process conversation and extract memories."""
         # Add to conversation memory
         await self.conversation_memory.add_conversation(messages)
@@ -581,8 +575,8 @@ class UnifiedMemoryRAGAgent:
         }
 
     async def retrieve_context(
-        self, query: str, memory_types: List[str] = None
-    ) -> Dict[str, Any]:
+        self, query: str, memory_types: list[str] = None
+    ) -> dict[str, Any]:
         """Retrieve relevant context from all memory types."""
         if memory_types is None:
             memory_types = ["conversation", "factual", "preferences"]
@@ -616,7 +610,7 @@ class UnifiedMemoryRAGAgent:
 
         return results
 
-    async def get_memory_summary(self) -> Dict[str, Any]:
+    async def get_memory_summary(self) -> dict[str, Any]:
         """Get summary of all stored memories."""
         return {
             "user_id": self.user_id,
@@ -689,7 +683,6 @@ def create_conversation_memory_agent(
     name: str = "conversation_memory",
 ) -> ConversationMemoryAgent:
     """Factory function to create conversation memory agent."""
-
     config = MemoryRAGConfig(
         vector_store_provider=vector_store_provider,
         embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
@@ -706,7 +699,6 @@ def create_factual_memory_agent(
     name: str = "factual_memory",
 ) -> FactualMemoryAgent:
     """Factory function to create factual memory agent."""
-
     config = MemoryRAGConfig(
         vector_store_provider=vector_store_provider,
         embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
@@ -723,7 +715,6 @@ def create_unified_memory_agent(
     embedding_model: str = "sentence-transformers/all-mpnet-base-v2",
 ) -> UnifiedMemoryRAGAgent:
     """Factory function to create unified memory agent."""
-
     if llm_config is None:
         llm_config = AugLLMConfig()
 
@@ -745,11 +736,6 @@ def create_postgresql_memory_agent(
     connection_string: str, user_id: str = None, table_name: str = "user_memories"
 ) -> UnifiedMemoryRAGAgent:
     """Create memory agent with PostgreSQL persistence."""
-
-    from haive.core.engine.vectorstore.providers.PGVectorStoreConfig import (
-        PGVectorStoreConfig,
-    )
-
     # Note: This would need proper PGVectorStoreConfig integration
     config = MemoryRAGConfig(
         vector_store_provider=VectorStoreProvider.POSTGRESQL, persistent_storage=True
@@ -762,7 +748,6 @@ def create_supabase_memory_agent(
     supabase_url: str, supabase_key: str, user_id: str = None
 ) -> UnifiedMemoryRAGAgent:
     """Create memory agent with Supabase persistence."""
-
     config = MemoryRAGConfig(
         vector_store_provider=VectorStoreProvider.SUPABASE, persistent_storage=True
     )
