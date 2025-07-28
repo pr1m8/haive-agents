@@ -2,7 +2,6 @@
 
 import asyncio
 import os
-from pathlib import Path
 
 # Set DeepSeek API key if available
 if not os.getenv("DEEPSEEK_API_KEY"):
@@ -27,7 +26,7 @@ async def test_deepseek_config():
             llm_config=deepseek_config,
             system_message="You are a helpful memory assistant.",
         )
-        print(f"✅ Created AugLLMConfig with DeepSeek")
+        print("✅ Created AugLLMConfig with DeepSeek")
 
         return aug_config
 
@@ -85,7 +84,7 @@ async def test_react_memory_with_deepseek():
         from langchain_community.embeddings import HuggingFaceEmbeddings
 
         print("Creating HuggingFace embeddings (free, no API key needed)...")
-        embeddings = HuggingFaceEmbeddings(
+        HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": "cpu"},
             encode_kwargs={"normalize_embeddings": False},
@@ -93,7 +92,6 @@ async def test_react_memory_with_deepseek():
         print("✅ Created HuggingFace embeddings")
 
         # Now create ReactMemoryAgent with custom embeddings
-        from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
 
         # We'll need to modify the agent to accept custom embeddings
         # For now, let's see if we can at least import it
@@ -154,7 +152,7 @@ async def test_models_only():
         print(f"   {i+1}. {result.content}")
 
     # Check stats
-    print(f"\n📊 Memory Statistics:")
+    print("\n📊 Memory Statistics:")
     print(f"   Total memories: {state.stats.total_memories}")
     print(f"   By type: {dict(state.stats.memories_by_type)}")
     print(f"   By importance: {dict(state.stats.memories_by_importance)}")
