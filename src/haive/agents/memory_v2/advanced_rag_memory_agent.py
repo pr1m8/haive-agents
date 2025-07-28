@@ -2,7 +2,7 @@
 
 This implementation provides state-of-the-art RAG capabilities:
 1. Multi-stage retrieval: dense → sparse → reranking
-2. Hybrid search combining vector, keyword, and graph
+2. Hybrid search combining vector, key, and graph
 3. Query decomposition for complex questions
 4. Memory-augmented generation with citations
 5. Adaptive retrieval based on query complexity
@@ -41,7 +41,7 @@ class RetrievalStrategy(str, Enum):
     """Different retrieval strategies available."""
 
     DENSE_ONLY = "dense_only"  # Vector similarity only
-    SPARSE_ONLY = "sparse_only"  # BM25 keyword only
+    SPARSE_ONLY = "sparse_only"  # BM25 key only
     HYBRID = "hybrid"  # Dense + sparse ensemble
     MULTI_QUERY = "multi_query"  # Query decomposition
     CONTEXTUAL = "contextual"  # With compression
@@ -354,7 +354,7 @@ class AdvancedRAGMemoryAgent:
         if complexity == QueryComplexity.MEDIUM:
             return RetrievalStrategy.MULTI_QUERY
 
-        # Use hybrid for keyword-heavy queries
+        # Use hybrid for key-heavy queries
         if any(word in query_lower for word in ["specific", "exact", "name", "title"]):
             return RetrievalStrategy.HYBRID
 
@@ -603,7 +603,7 @@ Answer:"""
         doc_stats = {
             "total_documents": len(self.documents),
             "by_importance": {},
-            "by_user": {},
+            "by_usef": {},
             "recent_additions": 0,
         }
 
