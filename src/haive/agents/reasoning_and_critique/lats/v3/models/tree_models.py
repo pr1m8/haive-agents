@@ -2,7 +2,6 @@
 
 import math
 import uuid
-from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -21,7 +20,7 @@ class LATSNode(BaseModel):
     node_id: str = Field(
         default_factory=lambda: str(uuid.uuid4()), description="Unique node identifier"
     )
-    parent_id: Optional[str] = Field(default=None, description="Parent node ID")
+    parent_id: str | None = Field(default=None, description="Parent node ID")
     depth: int = Field(default=0, description="Depth in the tree")
 
     # Action and state
@@ -35,7 +34,7 @@ class LATSNode(BaseModel):
     )
 
     # Tree structure (stored as IDs to avoid circular references)
-    children_ids: List[str] = Field(default_factory=list, description="Child node IDs")
+    children_ids: list[str] = Field(default_factory=list, description="Child node IDs")
 
     # Solution status
     is_terminal: bool = Field(
@@ -109,7 +108,7 @@ class TreeStatistics(BaseModel):
     solutions_found: int = Field(description="Number of solution nodes found")
 
     # Per-depth statistics
-    nodes_per_depth: Dict[int, int] = Field(
+    nodes_per_depth: dict[int, int] = Field(
         default_factory=dict, description="Number of nodes at each depth"
     )
 
@@ -133,5 +132,4 @@ class TreeStatistics(BaseModel):
             self.nodes_per_depth[depth] = 0
         self.nodes_per_depth[depth] += 1
 
-        if depth > self.max_depth:
-            self.max_depth = depth
+        self.max_depth = max(self.max_depth, depth)

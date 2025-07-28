@@ -5,9 +5,7 @@ multi-agent pattern as TOT and Self-Discover implementations.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
-
-from haive.core.engine.aug_llm import AugLLMConfig
+from typing import Any
 
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.reasoning_and_critique.lats.v3.agents.action_generator import (
@@ -99,7 +97,7 @@ class LATSOrchestrator(EnhancedMultiAgentV4):
             **kwargs,
         )
 
-    async def run_mcts_iteration(self, iteration: int) -> Dict[str, Any]:
+    async def run_mcts_iteration(self, iteration: int) -> dict[str, Any]:
         """Run one iteration of Monte Carlo Tree Search.
 
         Args:
@@ -136,7 +134,7 @@ class LATSOrchestrator(EnhancedMultiAgentV4):
 
         return result
 
-    async def solve(self) -> Dict[str, Any]:
+    async def solve(self) -> dict[str, Any]:
         """Run the complete LATS algorithm to solve the problem.
 
         Returns:
@@ -175,7 +173,7 @@ class LATSOrchestrator(EnhancedMultiAgentV4):
             "max_depth_reached": self.tree_manager.get_max_depth(),
         }
 
-    def _is_solution(self, result: Dict[str, Any]) -> bool:
+    def _is_solution(self, result: dict[str, Any]) -> bool:
         """Check if the result contains a valid solution.
 
         Args:

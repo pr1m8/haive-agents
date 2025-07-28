@@ -1,7 +1,5 @@
 """Evaluation and reflection models for LATS algorithm."""
 
-from typing import List
-
 from pydantic import BaseModel, Field
 
 
@@ -39,7 +37,7 @@ class ReflectionEvaluation(BaseModel):
         description="Context and criteria used for evaluation"
     )
 
-    scored_actions: List[ScoredAction] = Field(
+    scored_actions: list[ScoredAction] = Field(
         description="Actions with their scores and reasoning", min_items=1
     )
 
@@ -73,7 +71,7 @@ class UCBSelection(BaseModel):
     exploration_component: float = Field(description="Exploration part of UCB score")
 
     # Alternative nodes considered
-    alternative_nodes: List[dict] = Field(
+    alternative_nodes: list[dict] = Field(
         default_factory=list,
         description="Other nodes that were considered with their UCB scores",
     )

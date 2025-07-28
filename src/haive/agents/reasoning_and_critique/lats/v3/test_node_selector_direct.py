@@ -10,9 +10,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
 from haive.agents.reasoning_and_critique.lats.v3.agents.node_selector import (
     NodeSelector,
 )
-from haive.agents.reasoning_and_critique.lats.v3.models.evaluation_models import (
-    UCBSelection,
-)
 from haive.agents.reasoning_and_critique.lats.v3.models.tree_models import LATSNode
 
 
@@ -107,7 +104,7 @@ async def test_node_selector():
 
     # Show all UCB scores for comparison
     print("\n📊 UCB Score Comparison:")
-    for node_id, node in nodes.items():
+    for _node_id, node in nodes.items():
         ucb = node.ucb_score(exploration_weight=1.4, parent_visits=18)  # Total visits
         print(
             f"   - {node.action}: UCB={ucb:.3f} (avg_reward={node.average_reward():.2f})"

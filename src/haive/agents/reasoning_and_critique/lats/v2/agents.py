@@ -318,7 +318,7 @@ def create_lats(
             lambda s: "process_initial",
             {"process_initial": "process_initial"},
         ),
-        ("process_initial", lambda s: "reflector", {"reflector": reflection_agent}),
+        ("process_initial", lambda s: "reflectof", {"reflector": reflection_agent}),
         # After reflection of initial response
         (
             reflection_agent,
@@ -330,7 +330,7 @@ def create_lats(
         # Selection leads to expansion
         (
             selection_agent,
-            lambda s: "expander" if not s.should_terminate else END,
+            lambda s: "expandef" if not s.should_terminate else END,
             {"expander": expansion_agent, END: END},
         ),
         # Expansion leads to processing
@@ -350,14 +350,14 @@ def create_lats(
         # Evaluation sends to reflection
         (
             "evaluate",
-            lambda s: sends if (sends := evaluate_candidates(s)) else "selector",
+            lambda s: sends if (sends := evaluate_candidates(s)) else "selectof",
             {"reflector": reflection_agent, "selector": selection_agent},
         ),
         # After processing reflections
         (
             "process_reflection",
             should_continue_search,
-            {"selector": selection_agent, END: END},
+            {"selectof": selection_agent, END: END},
         ),
     ]
 

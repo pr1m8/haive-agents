@@ -15,15 +15,9 @@ try:
 
     print("✅ Tree models imported")
 
-    from models.action_models import ActionGeneration, CandidateAction
+    from models.action_models import CandidateAction
 
     print("✅ Action models imported")
-
-    from models.evaluation_models import (
-        ReflectionEvaluation,
-        ScoredAction,
-        UCBSelection,
-    )
 
     print("✅ Evaluation models imported")
 
@@ -65,7 +59,7 @@ async def quick_test():
 
     # Test NodeSelector
     print("\n1️⃣ Testing NodeSelector...")
-    selector = NodeSelector(name="test_selector")
+    selector = NodeSelector(name="test_selectof")
     nodes = {node.node_id: node}
 
     # Create selection prompt (test without calling LLM)

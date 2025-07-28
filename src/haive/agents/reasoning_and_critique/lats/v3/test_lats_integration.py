@@ -1,15 +1,12 @@
 """Integration test for all LATS v3 components."""
 
 import asyncio
-from typing import Dict, List
 
 from agents.action_generator import ActionGenerator
 
 # Direct imports to avoid parent module issues
 from agents.node_selector import NodeSelector
 from agents.reflection_evaluator import ReflectionEvaluator
-from models.action_models import CandidateAction
-from models.evaluation_models import ReflectionEvaluation, UCBSelection
 from models.tree_models import LATSNode
 
 
@@ -144,11 +141,11 @@ async def test_full_lats_workflow():
             reflection_history,
         )
 
-        print(f"\n✅ Evaluation Complete:")
+        print("\n✅ Evaluation Complete:")
         print(f"   Overall Reflection: {eval_result.overall_reflection[:150]}...")
 
         if eval_result.scored_actions:
-            print(f"\n📊 Action Scores:")
+            print("\n📊 Action Scores:")
             for i, scored in enumerate(eval_result.scored_actions, 1):
                 print(f"   {i}. {scored.action}")
                 print(f"      Score: {scored.score:.2f}")

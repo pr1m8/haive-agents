@@ -1,7 +1,5 @@
 """Action Generator Agent for LATS v3 - Generates candidate actions."""
 
-from typing import Dict, List, Optional
-
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.reasoning_and_critique.lats.v3.models.action_models import (
@@ -70,7 +68,7 @@ Diversity is crucial - avoid generating similar actions."""
         self,
         current_node: LATSNode,
         problem_description: str,
-        search_history: Optional[List[str]] = None,
+        search_history: list[str] | None = None,
     ) -> str:
         """Create a prompt for action generation.
 
@@ -113,7 +111,7 @@ Diversity is crucial - avoid generating similar actions."""
         self,
         current_node: LATSNode,
         problem_description: str,
-        search_history: Optional[List[str]] = None,
+        search_history: list[str] | None = None,
     ) -> ActionGeneration:
         """Generate candidate actions for a node.
 
@@ -147,7 +145,7 @@ Diversity is crucial - avoid generating similar actions."""
 
         return result
 
-    def rank_actions(self, actions: List[CandidateAction]) -> List[CandidateAction]:
+    def rank_actions(self, actions: list[CandidateAction]) -> list[CandidateAction]:
         """Rank actions by confidence score.
 
         Args:
@@ -160,9 +158,9 @@ Diversity is crucial - avoid generating similar actions."""
 
     def filter_actions(
         self,
-        actions: List[CandidateAction],
+        actions: list[CandidateAction],
         min_confidence: float = 0.3,
-    ) -> List[CandidateAction]:
+    ) -> list[CandidateAction]:
         """Filter actions by minimum confidence threshold.
 
         Args:
@@ -174,7 +172,7 @@ Diversity is crucial - avoid generating similar actions."""
         """
         return [a for a in actions if a.confidence >= min_confidence]
 
-    def get_action_diversity_score(self, actions: List[CandidateAction]) -> float:
+    def get_action_diversity_score(self, actions: list[CandidateAction]) -> float:
         """Calculate diversity score for a set of actions.
 
         Args:

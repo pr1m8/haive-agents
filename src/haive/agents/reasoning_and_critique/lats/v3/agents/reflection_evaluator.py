@@ -1,7 +1,5 @@
 """Reflection Evaluator Agent for LATS v3 - Evaluates and scores actions."""
 
-from typing import List, Optional
-
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.reasoning_and_critique.lats.v3.models.action_models import (
@@ -77,10 +75,10 @@ Consider:
     def create_evaluation_prompt(
         self,
         current_node: LATSNode,
-        candidate_actions: List[CandidateAction],
+        candidate_actions: list[CandidateAction],
         problem_description: str,
         goal_description: str,
-        reflection_history: Optional[List[str]] = None,
+        reflection_history: list[str] | None = None,
     ) -> str:
         """Create a prompt for action evaluation.
 
@@ -136,10 +134,10 @@ Consider:
     async def evaluate_actions(
         self,
         current_node: LATSNode,
-        candidate_actions: List[CandidateAction],
+        candidate_actions: list[CandidateAction],
         problem_description: str,
         goal_description: str,
-        reflection_history: Optional[List[str]] = None,
+        reflection_history: list[str] | None = None,
     ) -> ReflectionEvaluation:
         """Evaluate and score candidate actions.
 
@@ -166,9 +164,7 @@ Consider:
 
         return result
 
-    def get_best_action(
-        self, evaluation: ReflectionEvaluation
-    ) -> Optional[ScoredAction]:
+    def get_best_action(self, evaluation: ReflectionEvaluation) -> ScoredAction | None:
         """Get the highest-scored action from an evaluation.
 
         Args:
@@ -186,7 +182,7 @@ Consider:
         self,
         evaluation: ReflectionEvaluation,
         threshold: float = 0.6,
-    ) -> List[ScoredAction]:
+    ) -> list[ScoredAction]:
         """Get all actions scoring above a threshold.
 
         Args:

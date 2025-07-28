@@ -5,7 +5,6 @@ patterns as TOT v2 and Self-Discover v2.
 """
 
 import asyncio
-from typing import Dict, List
 
 from haive.agents.reasoning_and_critique.lats.v3.lats_orchestrator import (
     create_lats_orchestrator,
@@ -15,7 +14,6 @@ from haive.agents.reasoning_and_critique.lats.v3.models.tree_models import LATSN
 
 async def solve_maze_problem():
     """Example: Solve a maze navigation problem using LATS."""
-
     problem = "Navigate through a complex maze to find the treasure chest"
     goal = "Find the optimal path to the treasure while avoiding traps"
 
@@ -57,7 +55,6 @@ async def solve_maze_problem():
 
 async def solve_math_problem():
     """Example: Solve a complex math problem using LATS."""
-
     problem = """
     A farmer has chickens and cows. The total number of animals is 35.
     The total number of legs is 94. How many chickens and cows does the farmer have?
@@ -95,7 +92,7 @@ async def solve_math_problem():
             if "evaluation" in step:
                 print(f"   - Score: {step['evaluation']}")
 
-    print(f"\n📈 Final Statistics:")
+    print("\n📈 Final Statistics:")
     print(f"   Total iterations: {solution['iterations']}")
     print(f"   Tree size: {solution['tree_size']}")
 

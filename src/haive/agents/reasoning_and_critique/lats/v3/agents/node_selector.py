@@ -4,8 +4,6 @@ This agent implements Upper Confidence Bound (UCB) selection logic to choose
 the best node for expansion in the Monte Carlo Tree Search.
 """
 
-from typing import Dict, List, Optional
-
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.reasoning_and_critique.lats.v3.models.evaluation_models import (
@@ -23,7 +21,7 @@ class NodeSelector:
         name: str = "node_selector",
         exploration_weight: float = 1.4,
         temperature: float = 0.3,
-        engine: Optional[AugLLMConfig] = None,
+        engine: AugLLMConfig | None = None,
     ):
         """Initialize the node selector.
 
@@ -77,7 +75,7 @@ You will receive node information and must select the best one to expand.""",
 
     def create_selection_prompt(
         self,
-        nodes: Dict[str, LATSNode],
+        nodes: dict[str, LATSNode],
         current_problem: str,
         search_context: str = "",
     ) -> str:
@@ -134,7 +132,7 @@ Select the best node to expand next. Consider:
 
     async def select_node(
         self,
-        nodes: Dict[str, LATSNode],
+        nodes: dict[str, LATSNode],
         current_problem: str,
         search_context: str = "",
     ) -> UCBSelection:
@@ -156,8 +154,8 @@ Select the best node to expand next. Consider:
         return result
 
     def calculate_ucb_scores(
-        self, nodes: Dict[str, LATSNode], parent_visits: Optional[int] = None
-    ) -> Dict[str, float]:
+        self, nodes: dict[str, LATSNode], parent_visits: int | None = None
+    ) -> dict[str, float]:
         """Calculate UCB scores for all nodes (utility method).
 
         Args:

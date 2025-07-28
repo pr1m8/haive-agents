@@ -64,7 +64,7 @@ async def test_lats_components():
     evaluation = await evaluator.evaluate_actions(
         selected_node, actions.candidate_actions, problem, goal
     )
-    print(f"✅ Evaluated actions")
+    print("✅ Evaluated actions")
     best = evaluator.get_best_action(evaluation)
     if best:
         print(f"   Best: {best.action} (score: {best.score:.2f})")

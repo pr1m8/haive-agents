@@ -5,7 +5,6 @@ node relationships, path finding, and tree statistics.
 """
 
 import logging
-from typing import Dict, List, Optional, Tuple
 
 from haive.agents.reasoning_and_critique.lats.v3.models.tree_models import LATSNode
 
@@ -17,10 +16,10 @@ class TreeManager:
 
     def __init__(self):
         """Initialize the tree manager."""
-        self.nodes: Dict[str, LATSNode] = {}
-        self.root_id: Optional[str] = None
+        self.nodes: dict[str, LATSNode] = {}
+        self.root_id: str | None = None
 
-    def add_node(self, node: LATSNode, parent_id: Optional[str] = None) -> None:
+    def add_node(self, node: LATSNode, parent_id: str | None = None) -> None:
         """Add a node to the tree.
 
         Args:
@@ -34,17 +33,16 @@ class TreeManager:
             if self.root_id is None:
                 self.root_id = node.node_id
                 logger.info(f"Set root node: {node.node_id}")
+        # Add as child of parent
+        elif parent_id in self.nodes:
+            parent = self.nodes[parent_id]
+            parent.children.append(node.node_id)
+            node.parent_id = parent_id
+            logger.debug(f"Added node {node.node_id} as child of {parent_id}")
         else:
-            # Add as child of parent
-            if parent_id in self.nodes:
-                parent = self.nodes[parent_id]
-                parent.children.append(node.node_id)
-                node.parent_id = parent_id
-                logger.debug(f"Added node {node.node_id} as child of {parent_id}")
-            else:
-                logger.error(f"Parent node {parent_id} not found")
+            logger.error(f"Parent node {parent_id} not found")
 
-    def get_node(self, node_id: str) -> Optional[LATSNode]:
+    def get_node(self, node_id: str) -> LATSNode | None:
         """Get a node by ID.
 
         Args:
@@ -55,7 +53,7 @@ class TreeManager:
         """
         return self.nodes.get(node_id)
 
-    def get_leaf_nodes(self) -> Dict[str, LATSNode]:
+    def get_leaf_nodes(self) -> dict[str, LATSNode]:
         """Get all leaf nodes (nodes with no children).
 
         Returns:
@@ -67,7 +65,7 @@ class TreeManager:
                 leaves[node_id] = node
         return leaves
 
-    def get_children(self, node_id: str) -> List[LATSNode]:
+    def get_children(self, node_id: str) -> list[LATSNode]:
         """Get children of a node.
 
         Args:
@@ -87,7 +85,7 @@ class TreeManager:
                 children.append(child)
         return children
 
-    def get_path_to_node(self, node_id: str) -> List[LATSNode]:
+    def get_path_to_node(self, node_id: str) -> list[LATSNode]:
         """Get path from root to a node.
 
         Args:
@@ -109,7 +107,7 @@ class TreeManager:
         path.reverse()  # Root to leaf order
         return path
 
-    def get_best_path(self) -> List[LATSNode]:
+    def get_best_path(self) -> list[LATSNode]:
         """Get the best path based on average rewards.
 
         Returns:
@@ -182,7 +180,7 @@ class TreeManager:
             max_depth = max(max_depth, node.depth)
         return max_depth
 
-    def get_tree_statistics(self) -> Dict[str, Any]:
+    def get_tree_statistics(self) -> dict[str, Any]:
         """Get comprehensive tree statistics.
 
         Returns:
@@ -248,7 +246,7 @@ class TreeManager:
         logger.info(f"Pruned {len(nodes_to_remove)} nodes")
         return len(nodes_to_remove)
 
-    def visualize_tree(self, max_depth: Optional[int] = None) -> str:
+    def visualize_tree(self, max_depth: int | None = None) -> str:
         """Create a text visualization of the tree.
 
         Args:
@@ -267,10 +265,10 @@ class TreeManager:
     def _visualize_node(
         self,
         node_id: str,
-        lines: List[str],
+        lines: list[str],
         prefix: str,
         is_last: bool,
-        max_depth: Optional[int],
+        max_depth: int | None,
         current_depth: int,
     ) -> None:
         """Recursively visualize a node and its children.

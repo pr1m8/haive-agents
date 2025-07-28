@@ -1,7 +1,5 @@
 """Action generation models for LATS algorithm."""
 
-from typing import List
-
 from pydantic import BaseModel, Field
 
 
@@ -25,7 +23,7 @@ class ActionGeneration(BaseModel):
         description="Analysis of the current situation and context"
     )
 
-    candidate_actions: List[CandidateAction] = Field(
+    candidate_actions: list[CandidateAction] = Field(
         description="List of candidate actions to consider", min_items=1, max_items=10
     )
 

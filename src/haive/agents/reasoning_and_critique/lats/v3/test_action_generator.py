@@ -3,7 +3,6 @@
 import asyncio
 
 from agents.action_generator import ActionGenerator
-from models.action_models import ActionGeneration, CandidateAction
 from models.tree_models import LATSNode
 
 
@@ -37,7 +36,7 @@ async def test_action_generator():
         "Observed three paths: left (dark), center (lit), right (narrow)",
     ]
 
-    print(f"\n📍 Current Node:")
+    print("\n📍 Current Node:")
     print(f"   - Action: {current_node.action}")
     print(f"   - State: {current_node.state_description}")
     print(f"   - Depth: {current_node.depth}")
@@ -55,25 +54,25 @@ async def test_action_generator():
         )
 
         print(f"\n✅ Generated {len(result.candidate_actions)} actions:")
-        print(f"\n📊 Situation Analysis:")
+        print("\n📊 Situation Analysis:")
         print(f"   {result.situation_analysis}")
 
-        print(f"\n🎬 Candidate Actions:")
+        print("\n🎬 Candidate Actions:")
         for i, action in enumerate(result.candidate_actions, 1):
             print(f"\n{i}. {action.action}")
             print(f"   Reasoning: {action.reasoning}")
             print(f"   Expected: {action.expected_outcome}")
             print(f"   Confidence: {action.confidence:.2f}")
 
-        print(f"\n📋 Selection Criteria:")
+        print("\n📋 Selection Criteria:")
         print(f"   {result.selection_criteria}")
 
-        print(f"\n🌟 Diversity Check:")
+        print("\n🌟 Diversity Check:")
         print(f"   {result.diversity_check}")
 
         # Test ranking
         ranked = generator.rank_actions(result.candidate_actions)
-        print(f"\n🏆 Actions Ranked by Confidence:")
+        print("\n🏆 Actions Ranked by Confidence:")
         for i, action in enumerate(ranked[:3], 1):
             print(f"   {i}. {action.action} (confidence: {action.confidence:.2f})")
 
