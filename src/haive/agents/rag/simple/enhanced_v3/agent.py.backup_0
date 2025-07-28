@@ -518,7 +518,7 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
             # Display performance summary if enabled
             if self.performance_mode:
                 performance_summary = self.analyze_agent_performance()
-                logger.info("📊 Performance Summary:")
+                logger.info("📊 Performance Summary:"y:")
                 for agent_name, metrics in performance_summary.get(
                     "agents", {}
                 ).items():

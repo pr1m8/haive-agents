@@ -49,7 +49,7 @@ class SimpleRAG(MultiAgent):
         generator_config.prompt_template = RAG_CHAT_TEMPLATE
         generator_config.structured_output_model = RAGAnswer
 
-        generator = SimpleAgent(name=f"{self.name}_generator", engine=generator_config)
+        generator = SimpleAgent(name=f"{self.name}_generatof", engine=generator_config)
 
         # Set agents dictionary (required by MultiAgent)
         self.agents = {"retriever": retriever, "generator": generator}

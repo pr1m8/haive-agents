@@ -6,13 +6,11 @@ with enhanced features for generating answers from retrieved documents.
 
 import logging
 import time
-from typing import Any, Dict, List, Optional, Type
+from typing import Any
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document
-from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from haive.agents.simple.agent import SimpleAgent
 
@@ -144,8 +142,8 @@ class SimpleAnswerAgent(SimpleAgent):
     )
 
     async def arun(
-        self, input_data: str | Dict[str, Any], debug: bool = False, **kwargs
-    ) -> Dict[str, Any] | str:
+        self, input_data: str | dict[str, Any], debug: bool = False, **kwargs
+    ) -> dict[str, Any] | str:
         """Enhanced answer generation with document processing.
 
         Args:
@@ -206,7 +204,7 @@ class SimpleAnswerAgent(SimpleAgent):
         except Exception as e:
             logger.error(f"❌ SimpleAnswerAgent error: {e}")
             error_result = {
-                "answer": f"I apologize, but I encountered an error while generating the answer: {str(e)}",
+                "answer": f"I apologize, but I encountered an error while generating the answer: {e!s}",
                 "error": str(e),
                 "query": query,
                 "generation_time": time.time() - start_time,
@@ -218,7 +216,7 @@ class SimpleAnswerAgent(SimpleAgent):
                 return error_result
             return error_result["answer"]
 
-    def _parse_retriever_input(self, input_data: Any) -> Dict[str, Any]:
+    def _parse_retriever_input(self, input_data: Any) -> dict[str, Any]:
         """Parse input from RetrieverAgent, BaseRAGAgent, or direct query.
 
         Handles multiple input formats:
@@ -257,8 +255,8 @@ class SimpleAnswerAgent(SimpleAgent):
         }
 
     def _build_context_from_documents(
-        self, documents: List[Document], query: str, debug: bool = False
-    ) -> Dict[str, Any]:
+        self, documents: list[Document], query: str, debug: bool = False
+    ) -> dict[str, Any]:
         """Build formatted context from retrieved documents."""
         if not documents:
             return {
@@ -321,7 +319,7 @@ class SimpleAnswerAgent(SimpleAgent):
         }
 
     def _format_prompt_with_context(
-        self, query: str, context_info: Dict[str, Any], debug: bool = False
+        self, query: str, context_info: dict[str, Any], debug: bool = False
     ) -> str:
         """Format the prompt with context and query."""
         formatted_prompt = self.context_template.format(
@@ -336,13 +334,13 @@ class SimpleAnswerAgent(SimpleAgent):
     def _enhance_generation_result(
         self,
         generation_result: Any,
-        context_info: Dict[str, Any],
+        context_info: dict[str, Any],
         query: str,
-        documents: List[Document],
+        documents: list[Document],
         generation_time: float,
-        retrieval_metadata: Dict[str, Any],
+        retrieval_metadata: dict[str, Any],
         debug: bool = False,
-    ) -> Dict[str, Any] | str:
+    ) -> dict[str, Any] | str:
         """Enhance generation result with metadata and citations."""
         # Extract the answer text
         if isinstance(generation_result, str):
@@ -405,11 +403,10 @@ class SimpleAnswerAgent(SimpleAgent):
         if self.structured_output_model:
             # For structured output, return the dict (will be processed by SimpleAgent)
             return enhanced_result
-        else:
-            # For simple text output, return just the answer
-            return enhanced_result["answer"]
+        # For simple text output, return just the answer
+        return enhanced_result["answer"]
 
-    def get_generation_summary(self) -> Dict[str, Any]:
+    def get_generation_summary(self) -> dict[str, Any]:
         """Get summary of answer generator configuration."""
         return {
             "name": self.name,

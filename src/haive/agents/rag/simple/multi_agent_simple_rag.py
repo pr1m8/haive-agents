@@ -206,7 +206,7 @@ class SimpleRAG(MultiAgent):
             generator_config.system_message = self.system_prompt_template
 
         generator_agent = SimpleAgent(
-            name=f"{self.name}_generator",
+            name=f"{self.name}_generatof",
             engine=generator_config,
             structured_output_model=self.structured_output_model,
         )
