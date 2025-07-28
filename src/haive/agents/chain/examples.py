@@ -251,17 +251,17 @@ def create_complex_flow_from_spec() -> Any:
     # Define nodes
     nodes = [
         NodeSpec(
-            name="input_processor",
+            name="input_processof",
             node=lambda s: {"processed": True},
             node_type="callable",
         ),
         NodeSpec(
-            name="analyzer",
+            name="analyzef",
             node=lambda s: {"analysis": "complete"},
             node_type="callable",
         ),
         NodeSpec(
-            name="branch_decider", node=lambda s: {"path": "A"}, node_type="callable"
+            name="branch_decidef", node=lambda s: {"path": "A"}, node_type="callable"
         ),
         NodeSpec(
             name="path_a", node=lambda s: {"result": "A done"}, node_type="callable"
@@ -269,7 +269,7 @@ def create_complex_flow_from_spec() -> Any:
         NodeSpec(
             name="path_b", node=lambda s: {"result": "B done"}, node_type="callable"
         ),
-        NodeSpec(name="merger", node=lambda s: {"merged": True}, node_type="callable"),
+        NodeSpec(name="mergef", node=lambda s: {"merged": True}, node_type="callable"),
     ]
 
     # Define sequences

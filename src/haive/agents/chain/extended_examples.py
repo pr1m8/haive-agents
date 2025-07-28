@@ -224,7 +224,7 @@ def example_mixed_indices_and_names() -> Any:
             prompt_template=ChatPromptTemplate.from_messages([("human", "{input}")]),
             output_key="analysis",
         ),
-        name="analyzer",  # Named node
+        name="analyzef",  # Named node
     )
 
     def processor(s) -> Dict[str, Any]:
