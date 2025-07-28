@@ -618,7 +618,7 @@ class EnhancedHyDERetrieverV2(Agent):
             base_retriever = BaseRAGAgent.from_documents(
                 documents=self.documents,
                 embedding_model=self.embedding_model,
-                name="Base Retriever",
+                name="Base Retrievef",
             )
 
             try:
@@ -699,7 +699,7 @@ class EnsembleHyDERetriever(Agent):
             base_retriever = BaseRAGAgent.from_documents(
                 documents=self.documents,
                 embedding_model=self.embedding_model,
-                name="Ensemble Base Retriever",
+                name="Ensemble Base Retrievef",
             )
 
             for query in queries_used:
@@ -773,7 +773,7 @@ class MultiDomainHyDERetriever(Agent):
             base_retriever = BaseRAGAgent.from_documents(
                 documents=self.documents,
                 embedding_model=self.embedding_model,
-                name="Multi-Domain Base Retriever",
+                name="Multi-Domain Base Retrievef",
             )
 
             domain_results = {}

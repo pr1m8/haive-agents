@@ -263,7 +263,7 @@ class EnhancedHyDERetriever(Agent):
             base_retriever = BaseRAGAgent.from_documents(
                 documents=self.documents,
                 embedding_model=self.embedding_model,
-                name="On-Demand Base Retriever",
+                name="On-Demand Base Retrievef",
             )
 
             # Perform retrieval
