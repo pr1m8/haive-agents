@@ -1,6 +1,5 @@
 """Configuration for SimpleAgent with comprehensive schema handling.
 
-from typing import Any
 This module defines the configuration class for SimpleAgent with explicit
 input/output schema support, schema composition integration, and improved
 mapping capabilities.
@@ -9,6 +8,7 @@ mapping capabilities.
 import logging
 import uuid
 from datetime import datetime
+from typing import Any
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -16,7 +16,7 @@ from haive.core.models.llm.base import AzureLLMConfig
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -72,7 +72,7 @@ class SimpleAgentConfig(AgentConfig):
 
     model_config = {"arbitrary_types_allowed": True}
 
-    @field_validatorvalidate_engine
+    @field_validator("engine")
     @classmethod
     def validate_engine(cls, v) -> Any:
         """Ensure engine is an AugLLMConfig instance."""
@@ -80,7 +80,7 @@ class SimpleAgentConfig(AgentConfig):
             raise TypeError(f"Engine must be AugLLMConfig, got {type(v)}")
         return v
 
-    @field_validatorvalidate_mappings
+    @field_validator("input_mapping", "output_mapping")
     @classmethod
     def validate_mappings(cls, v, info) -> Any:
         """Validate mappings if provided."""
