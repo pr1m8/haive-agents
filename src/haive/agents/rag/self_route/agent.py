@@ -406,7 +406,7 @@ class QueryAnalyzerAgent(Agent):
 
     def _extract_domain_info(self, query: str) -> str:
         """Extract domain information from query."""
-        # Simple domain keyword detection
+        # Simple domain key detection
         domain_keywords = {
             "ai": [
                 "artificial intelligence",
@@ -424,7 +424,7 @@ class QueryAnalyzerAgent(Agent):
         detected_domains = []
 
         for domain, keywords in domain_keywords.items():
-            if any(keyword in query_lower for keyword in keywords):
+            if any(key in query_lower for key in keywords):
                 detected_domains.append(domain)
 
         return (
