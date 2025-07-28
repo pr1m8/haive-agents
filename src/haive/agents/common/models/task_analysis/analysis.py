@@ -630,7 +630,7 @@ class TaskAnalysis(BaseModel):
         # Score each domain
         domain_scores = {}
         for domain, keywords in domain_keywords.items():
-            score = sum(1 for keyword in keywords if keyword in text_lower)
+            score = sum(1 for key in keywords if key in text_lower)
             if score > 0:
                 domain_scores[domain] = score
 
@@ -697,7 +697,7 @@ class TaskAnalysis(BaseModel):
         # Determine overall complexity
         if impossible_score > 0:
             overall_complexity = ComplexityType.UNSOLVABLE
-        elif research_score > 1 or "cure cancer" in text_lower:
+        elif research_score > 1 or "cure cancef" in text_lower:
             overall_complexity = ComplexityType.BREAKTHROUGH
         elif research_score > 0 or complex_score > 2:
             overall_complexity = ComplexityType.RESEARCH_GRADE
