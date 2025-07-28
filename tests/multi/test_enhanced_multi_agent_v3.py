@@ -81,7 +81,7 @@ def test_enhanced_multi_agent_v3_creation():
             f"✅ Performance tracking initialized: {len(typed_multi.agent_performance)} agents"
         )
 
-        print("\n🎯 Enhanced MultiAgent V3 Creation Tests: SUCCESS"SS")"
+        print("\n🎯 Enhanced MultiAgent V3 Creation Tests: SUCCESS")
         return True
 
     except Exception as e:
@@ -153,7 +153,8 @@ def test_enhanced_multi_agent_v3_capabilities():
         best_agent = multi_agent.get_best_agent_for_task()
         print(f"✅ Best agent selected: {best_agent}")
 
-        print("\n🎯 Enhanced MultiAgent V3 Capabilities Tests: SUCCESS"SS""        return True
+        print("\n🎯 Enhanced MultiAgent V3 Capabilities Tests: SUCCESS")
+        return True
 
     except Exception as e:
         print(f"❌ Enhanced MultiAgent V3 Capabilities Tests FAILED: {e}")
@@ -303,7 +304,7 @@ def test_enhanced_multi_agent_v3_execution():
                 config={"configurable": {"thread_id": "test_multi_thread"}},
             )
 
-            print("✅ Execution successful"l")
+            print("✅ Execution successful")
             print(f"✅ Result type: {type(result)}")
             if isinstance(result, dict) and "messages" in result:
                 print(f"✅ Messages in result: {len(result['messages'])}")
@@ -330,7 +331,7 @@ def test_enhanced_multi_agent_v3_execution():
 
         # Check performance analysis
         analysis = perf_multi.analyze_agent_performance()
-        print("✅ Performance tracking working"g")
+        print("✅ Performance tracking working")
         print(
             f"✅ Fast agent success rate: {analysis['agents']['fast']['success_rate']}"
         )
@@ -341,7 +342,7 @@ def test_enhanced_multi_agent_v3_execution():
         best_agent = perf_multi.get_best_agent_for_task()
         print(f"✅ Best performing agent: {best_agent}")
 
-        print("\n🎯 Enhanced MultiAgent V3 Execution Tests: SUCCESS"SS")
+        print("\n🎯 Enhanced MultiAgent V3 Execution Tests: SUCCESS")
         return True
 
     except Exception as e:
@@ -414,7 +415,7 @@ def test_enhanced_multi_agent_v3_factory():
         assert "factory_workflow" in repr_str
         print("✅ String representation format correct")
 
-        print("\n🎯 Enhanced MultiAgent V3 Factory Tests: SUCCESS"SS")
+        print("\n🎯 Enhanced MultiAgent V3 Factory Tests: SUCCESS")
         return True
 
     except Exception as e:
