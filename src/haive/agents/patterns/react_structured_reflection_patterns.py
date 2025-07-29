@@ -11,14 +11,14 @@ Each pattern showcases the generalized hook system and different architectural a
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Type
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
-from haive.agents.base.hooks import HookContext, HookEvent
+from haive.agents.base.hooks import HookContext
 from haive.agents.base.pre_post_agent_mixin import (
     create_graded_reflection_agent,
     create_reflection_agent,

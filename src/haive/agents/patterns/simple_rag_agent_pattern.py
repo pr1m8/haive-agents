@@ -11,7 +11,7 @@ The pattern shows:
 4. Structured output for answers
 """
 
-from typing import Any, List, Optional
+from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.messages_state import MessagesState
