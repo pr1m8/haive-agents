@@ -19,6 +19,13 @@ Example:
             def setup_agent(self):
                 # Custom setup logic
                 pass
+
+            def build_graph(self) -> BaseGraph:
+                # Build and return the agent's workflow graph
+                return my_graph
+
+        # Create agent with configuration
+        agent = MyAgent(
             name="my_agent",
             engine=my_llm_engine,
             config=AgentConfig(
@@ -51,21 +58,23 @@ from haive.agents.base.hooks import HookContext, HookEvent, HookFunction
 
 # Re-export mixins for convenience
 from haive.agents.base.mixins import ExecutionMixin, PersistenceMixin, StateMixin
+from haive.agents.base.pre_post_agent_mixin import PrePostAgentMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
 from haive.agents.base.types import AgentInput, AgentOutput, AgentState
 
 __all__ = [
     "Agent",
+    "EnhancedAgent",
+    "Workflow",
     "AgentInput",
     "AgentOutput",
     "AgentState",
-    "EnhancedAgent",
     "ExecutionMixin",
-    "HookContext",
-    "HookEvent",
-    "HookFunction",
     "PersistenceMixin",
     "SerializationMixin",
     "StateMixin",
-    "Workflow",
+    "HookEvent",
+    "HookContext",
+    "HookFunction",
+    "PrePostAgentMixin",
 ]

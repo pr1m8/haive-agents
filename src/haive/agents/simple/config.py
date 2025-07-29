@@ -1,14 +1,14 @@
 """Configuration for SimpleAgent with comprehensive schema handling.
 
-from typing import Any This module defines the configuration class for SimpleAgent with
-from typing import Optional
-explicit input/output schema support, schema composition integration, and improved
+This module defines the configuration class for SimpleAgent with explicit
+input/output schema support, schema composition integration, and improved
 mapping capabilities.
 """
 
 import logging
 import uuid
 from datetime import datetime
+from typing import Any
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -16,7 +16,7 @@ from haive.core.models.llm.base import AzureLLMConfig
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -72,7 +72,7 @@ class SimpleAgentConfig(AgentConfig):
 
     model_config = {"arbitrary_types_allowed": True}
 
-    @field_validatorvalidate_engine
+    @field_validator("engine")
     @classmethod
     def validate_engine(cls, v) -> Any:
         """Ensure engine is an AugLLMConfig instance."""
@@ -80,7 +80,7 @@ class SimpleAgentConfig(AgentConfig):
             raise TypeError(f"Engine must be AugLLMConfig, got {type(v)}")
         return v
 
-    @field_validatorvalidate_mappings
+    @field_validator("input_mapping", "output_mapping")
     @classmethod
     def validate_mappings(cls, v, info) -> Any:
         """Validate mappings if provided."""
@@ -103,8 +103,8 @@ class SimpleAgentConfig(AgentConfig):
     def from_aug_llm(
         cls,
         aug_llm: AugLLMConfig,
-        name: Optional[str] = None,
-        id: Optional[str] = None,
+        name: str | None = None,
+        id: str | None = None,
         input_schema: type[BaseModel] | None = None,
         output_schema: type[BaseModel] | None = None,
         state_schema: type[StateSchema] | None = None,
@@ -146,8 +146,8 @@ class SimpleAgentConfig(AgentConfig):
         model: str = "gpt-4o",
         temperature: float = 0.7,
         structured_output_model: type[BaseModel] | None = None,
-        name: Optional[str] = None,
-        id: Optional[str] = None,
+        name: str | None = None,
+        id: str | None = None,
         input_schema: type[BaseModel] | None = None,
         output_schema: type[BaseModel] | None = None,
         state_schema: type[StateSchema] | None = None,
@@ -191,7 +191,8 @@ class SimpleAgentConfig(AgentConfig):
             structured_output_model=structured_output_model,
         )
 
-        # If structured output model is provided but no output schema, use the model
+        # If structured output model is provided but no output schema, use the
+        # model
         if structured_output_model is not None and output_schema is None:
             output_schema = structured_output_model
 
@@ -210,10 +211,10 @@ class SimpleAgentConfig(AgentConfig):
     def with_structured_output(
         cls,
         output_model: type[BaseModel],
-        system_prompt: Optional[str] = None,
+        system_prompt: str | None = None,
         model: str = "gpt-4o",
         temperature: float = 0.2,
-        name: Optional[str] = None,
+        name: str | None = None,
         **kwargs,
     ) -> "SimpleAgentConfig":
         """Create a SimpleAgentConfig with structured output capabilities.

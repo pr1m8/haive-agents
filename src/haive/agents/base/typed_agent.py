@@ -1,18 +1,16 @@
-from __future__ import annotations
-
 """Typed agent base classes with clear separation of concerns.
 
-This module provides a cleaner agent hierarchy that matches the state schema hierarchy,
-with better separation between different types of agents.
+This module provides a cleaner agent hierarchy that matches the state schema
+hierarchy, with better separation between different types of agents.
 """
 
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -41,9 +39,9 @@ TState = TypeVar("TState", bound=EngineState)
 class BaseExecutor(ABC, Generic[TState]):
     """Base class for all executors (not necessarily agents).
 
-    Executors are components that process state but don't necessarily have LLM
-    capabilities. This includes tool executors, data processors, routers, validators,
-    etc.
+    Executors are components that process state but don't necessarily
+    have LLM capabilities. This includes tool executors, data processors,
+    routers, validators, etc.
     """
 
     def __init__(self, name: str, state_schema: type[TState], **kwargs):
@@ -97,7 +95,7 @@ class ToolExecutor(BaseExecutor[ToolExecutorState]):
 
         return state
 
-    def _find_tool(self, state: ToolExecutorState, tool_name: str) -> Optional[Any]:
+    def _find_tool(self, state: ToolExecutorState, tool_name: str) -> Any | None:
         """Find a tool by name."""
         for tool in state.tools:
             if hasattr(tool, "name") and tool.name == tool_name:
@@ -162,13 +160,14 @@ class DataProcessor(BaseExecutor[DataProcessingState]):
 class BaseAgent(BaseExecutor[AgentState]):
     """Base class for agents with primary decision-making engine.
 
-    Agents are executors that have a primary engine (usually LLM) for making decisions.
+    Agents are executors that have a primary engine (usually LLM)
+    for making decisions.
     """
 
     def __init__(
         self,
         name: str,
-        primary_engine: Optional[Engine] = None,
+        primary_engine: Engine | None = None,
         state_schema: type[AgentState] = AgentState,
         **kwargs,
     ):
@@ -184,7 +183,10 @@ class BaseAgent(BaseExecutor[AgentState]):
         # Get the engine
         engine = state.primary_engine
         if not engine:
-            raise ValueError(f"No primary engine available for agent {self.name}")
+            raise ValueError(
+                f"No primary engine available for agent {
+                    self.name}"
+            )
 
         # Execute main agent logic
         result = await self.run_engine(engine, state)
@@ -235,13 +237,14 @@ class LLMAgent(BaseAgent):
 class WorkflowAgent(BaseAgent):
     """Agent that can modify its own workflow graph.
 
-    This agent can inspect results and dynamically modify its execution graph.
+    This agent can inspect results and dynamically modify its
+    execution graph.
     """
 
     def __init__(
         self,
         name: str,
-        primary_engine: Optional[Engine] = None,
+        primary_engine: Engine | None = None,
         initial_graph: dict[str, Any] | None = None,
         **kwargs,
     ):
@@ -280,14 +283,14 @@ class WorkflowAgent(BaseAgent):
 class MetaAgent(WorkflowAgent):
     """Agent that can spawn and manage other agents.
 
-    This is for advanced scenarios where agents need to dynamically create and
-    coordinate other agents.
+    This is for advanced scenarios where agents need to dynamically
+    create and coordinate other agents.
     """
 
     def __init__(
         self,
         name: str,
-        primary_engine: Optional[Engine] = None,
+        primary_engine: Engine | None = None,
         agent_factory: dict[str, type[BaseAgent]] | None = None,
         **kwargs,
     ):
@@ -476,7 +479,7 @@ def create_executor(executor_type: str, name: str, **kwargs) -> BaseExecutor:
 
 
 def create_agent(
-    agent_type: str, name: str, engine: Optional[Engine] = None, **kwargs
+    agent_type: str, name: str, engine: Engine | None = None, **kwargs
 ) -> BaseAgent:
     """Factory to create appropriate agent.
 

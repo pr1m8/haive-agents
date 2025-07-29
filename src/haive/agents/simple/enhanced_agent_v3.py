@@ -59,10 +59,9 @@ def should_continue(state: dict[str, Any]) -> bool:
         return True
 
     # Check for structured output needs
-    if hasattr(state, "structured_output_model") and state.structured_output_model:
-        return True
-
-    return False
+    return bool(
+        hasattr(state, "structured_output_model") and state.structured_output_model
+    )
 
 
 # ========================================================================
@@ -341,7 +340,8 @@ class EnhancedSimpleAgent(Agent):
         if self.structured_output_model is not None:
             self.engine.structured_output_model = self.structured_output_model
             logger.debug(
-                f"Synced structured_output_model: {self.structured_output_model.__name__}"
+                f"Synced structured_output_model: {
+                    self.structured_output_model.__name__}"
             )
 
         if self.system_message is not None:
@@ -595,7 +595,13 @@ class EnhancedSimpleAgent(Agent):
 
     def __repr__(self) -> str:
         """Enhanced string representation."""
-        engine_info = f"{type(self.engine).__name__}" if self.engine else "None"
+        engine_info = (
+            f"{
+            type(
+                self.engine).__name__}"
+            if self.engine
+            else "None"
+        )
         features = []
         if self.multi_engine_mode:
             features.append("multi-engine")
@@ -607,4 +613,5 @@ class EnhancedSimpleAgent(Agent):
             features.append("debug")
 
         feature_str = f" ({', '.join(features)})" if features else ""
-        return f"EnhancedSimpleAgent(name='{self.name}', engine={engine_info}{feature_str})"
+        return f"EnhancedSimpleAgent(name='{
+            self.name}', engine={engine_info}{feature_str})"

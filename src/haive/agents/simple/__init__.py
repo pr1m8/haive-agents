@@ -1,22 +1,5 @@
-"""Simple package.
-
-This package provides simple functionality for the Haive framework.
-
-Modules:
-    agent: Agent implementation.
-    agent_v2: Agent V2 implementation.
-    agent_v3: Agent V3 implementation.
-    agent_v3_minimal: Agent V3 Minimal implementation.
-    agent_with_validation: Agent With Validation implementation.
-
-Subpackages:
-    structured: Structured functionality.
-    v2: V2 functionality.
-"""
-
 # SimpleAgent Package - Ultra-fast lazy loading
-"""
-SimpleAgent package with ultra-optimized import performance.
+"""SimpleAgent package with ultra-optimized import performance.
 Achieves sub-3 second import times through comprehensive lazy loading.
 """
 

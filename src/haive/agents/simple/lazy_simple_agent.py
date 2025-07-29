@@ -1,19 +1,5 @@
-"""Lazy_Simple_Agent core module.
-
-This module provides lazy simple agent functionality for the Haive framework.
-
-Classes:
-    LazyAugLLMConfig: LazyAugLLMConfig implementation.
-    LazyAgent: LazyAgent implementation.
-    Agent: Agent implementation.
-
-Functions:
-    cached_import: Cached Import functionality.
-"""
-
 # LazySimpleAgent - Ultra-fast import with intelligent lazy loading
-"""
-Ultra-optimized SimpleAgent implementation that achieves sub-3 second import times
+"""Ultra-optimized SimpleAgent implementation that achieves sub-3 second import times
 through comprehensive lazy loading and intelligent caching.
 
 This approach uses proxy objects and deferred imports to avoid loading any heavy
@@ -221,7 +207,8 @@ class LazySimpleAgent:
 
             if self._debug:
                 logger.info(
-                    f"Initializing real SimpleAgentV3 for '{self._name}' (lazy loading triggered)"
+                    f"Initializing real SimpleAgentV3 for '{
+                        self._name}' (lazy loading triggered)"
                 )
 
             # Now import the real SimpleAgentV3
@@ -238,7 +225,9 @@ class LazySimpleAgent:
             if self._debug:
                 total_time = (datetime.now() - self._init_time).total_seconds()
                 logger.info(
-                    f"Real SimpleAgentV3 initialized in {init_time:.2f}s (total: {total_time:.2f}s)"
+                    f"Real SimpleAgentV3 initialized in {
+                        init_time:.2f}s (total: {
+                        total_time:.2f}s)"
                 )
 
     # Essential properties that can be handled without initialization

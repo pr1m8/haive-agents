@@ -20,15 +20,15 @@ from haive.agents.base.types import AgentInput, AgentOutput, AgentState
 __all__ = [
     # Enhanced classes
     "Agent",
-    "Workflow",
-    "EngineT",
-    "TypedInvokableEngine",
     # Regular mixins and types
     "AgentInput",
     "AgentOutput",
     "AgentState",
+    "EngineT",
     "ExecutionMixin",
     "PersistenceMixin",
     "SerializationMixin",
     "StateMixin",
+    "TypedInvokableEngine",
+    "Workflow",
 ]

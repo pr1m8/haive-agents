@@ -1,13 +1,3 @@
-"""Execution_Mixin core module.
-
-This module provides execution mixin functionality for the Haive framework.
-
-Classes:
-    ExecutionMixin: ExecutionMixin implementation.
-
-Functions:
-"""
-
 # haive/core/engine/agent/mixins/execution_mixin.py
 
 import asyncio
@@ -982,9 +972,9 @@ class ExecutionMixin:
     ) -> AsyncGenerator[dict[str, Any], None]:
         """Asynchronously stream agent execution with input data.
 
-        This implementation wraps the synchronous generator in an async one by running
-        the sync generator's iteration in a separate thread to avoid blocking the event
-        loop.
+        This implementation wraps the synchronous generator in an async one
+        by running the sync generator's iteration in a separate thread to avoid
+        blocking the event loop.
         """
         loop = asyncio.get_event_loop()
         sync_gen = self.stream(

@@ -1,17 +1,5 @@
-"""Enhanced_Simple_Agent core module.
-
-This module provides enhanced simple agent functionality for the Haive framework.
-
-Classes:
-    EnhancedSimpleAgent: EnhancedSimpleAgent implementation.
-
-Functions:
-    calculator: Calculator functionality.
-    create_default_engine: Create Default Engine functionality.
-    setup_agent: Setup Agent functionality.
-"""
-
 # src/haive/agents/simple/enhanced_simple_agent.py
+
 """Enhanced SimpleAgent with engine-focused generics.
 
 This implements SimpleAgent using the enhanced agent pattern with engine generics.

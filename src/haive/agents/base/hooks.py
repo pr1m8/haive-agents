@@ -1,19 +1,5 @@
-"""Hooks core module.
-
-This module provides hooks functionality for the Haive framework.
-
-Classes:
-    HookEvent: HookEvent implementation.
-    HookContext: HookContext implementation.
-    HooksMixin: HooksMixin implementation.
-
-Functions:
-    my_hook: My Hook functionality.
-    log_start: Log Start functionality.
-    log_end: Log End functionality.
-"""
-
 # src/haive/agents/base/hooks.py
+
 """Hook system for agent lifecycle events.
 
 This module provides a flexible hook system that allows users to inject
@@ -105,6 +91,24 @@ class HookEvent(str, Enum):
     BEFORE_STATE_UPDATE = "before_state_update"
     AFTER_STATE_UPDATE = "after_state_update"
 
+    # Pre/Post processing hooks
+    PRE_PROCESS = "pre_process"
+    POST_PROCESS = "post_process"
+    
+    # Message transformation hooks
+    BEFORE_MESSAGE_TRANSFORM = "before_message_transform"
+    AFTER_MESSAGE_TRANSFORM = "after_message_transform"
+    
+    # Reflection and critique hooks
+    BEFORE_REFLECTION = "before_reflection"
+    AFTER_REFLECTION = "after_reflection"
+    BEFORE_GRADING = "before_grading"
+    AFTER_GRADING = "after_grading"
+    
+    # Structured output hooks
+    BEFORE_STRUCTURED_OUTPUT = "before_structured_output"
+    AFTER_STRUCTURED_OUTPUT = "after_structured_output"
+
 
 class HookContext(BaseModel):
     """Context passed to hook functions."""
@@ -124,6 +128,17 @@ class HookContext(BaseModel):
     metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata"
     )
+    
+    # Additional fields for enhanced hook patterns
+    messages: list[Any] | None = Field(default=None, description="Messages being processed")
+    transformed_messages: list[Any] | None = Field(default=None, description="Transformed messages")
+    original_messages: list[Any] | None = Field(default=None, description="Original messages before transformation")
+    structured_data: Any | None = Field(default=None, description="Structured data from processing")
+    grade_data: dict[str, Any] | None = Field(default=None, description="Grading results")
+    reflection_data: dict[str, Any] | None = Field(default=None, description="Reflection results")
+    transformation_type: str | None = Field(default=None, description="Type of message transformation applied")
+    pre_agent_result: Any | None = Field(default=None, description="Result from pre-processing agent")
+    post_agent_result: Any | None = Field(default=None, description="Result from post-processing agent")
 
 
 # Hook function type
@@ -150,7 +165,13 @@ class HooksMixin:
         if event not in self._hooks:
             self._hooks[event] = []
         self._hooks[event].append(hook)
-        logger.debug(f"Added hook for {event} on {getattr(self, 'name', 'agent')}")
+        logger.debug(
+            f"Added hook for {event} on {
+                getattr(
+                    self,
+                    'name',
+                    'agent')}"
+        )
 
     def remove_hook(self, event: HookEvent, hook: HookFunction) -> None:
         """Remove a hook function.
@@ -174,11 +195,21 @@ class HooksMixin:
         if event:
             self._hooks[event] = []
             logger.debug(
-                f"Cleared hooks for {event} on {getattr(self, 'name', 'agent')}"
+                f"Cleared hooks for {event} on {
+                    getattr(
+                        self,
+                        'name',
+                        'agent')}"
             )
         else:
             self._hooks.clear()
-            logger.debug(f"Cleared all hooks on {getattr(self, 'name', 'agent')}")
+            logger.debug(
+                f"Cleared all hooks on {
+                    getattr(
+                        self,
+                        'name',
+                        'agent')}"
+            )
 
     def _execute_hooks(self, event: HookEvent, **context_kwargs) -> list[Any]:
         """Execute all hooks for an event.
@@ -241,6 +272,56 @@ class HooksMixin:
     def on_error(self, func: HookFunction) -> HookFunction:
         """Decorator to add an on_error hook."""
         self.add_hook(HookEvent.ON_ERROR, func)
+        return func
+
+    def pre_process(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a pre_process hook."""
+        self.add_hook(HookEvent.PRE_PROCESS, func)
+        return func
+
+    def post_process(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a post_process hook."""
+        self.add_hook(HookEvent.POST_PROCESS, func)
+        return func
+
+    def before_message_transform(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a before_message_transform hook."""
+        self.add_hook(HookEvent.BEFORE_MESSAGE_TRANSFORM, func)
+        return func
+
+    def after_message_transform(self, func: HookFunction) -> HookFunction:
+        """Decorator to add an after_message_transform hook."""
+        self.add_hook(HookEvent.AFTER_MESSAGE_TRANSFORM, func)
+        return func
+
+    def before_reflection(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a before_reflection hook."""
+        self.add_hook(HookEvent.BEFORE_REFLECTION, func)
+        return func
+
+    def after_reflection(self, func: HookFunction) -> HookFunction:
+        """Decorator to add an after_reflection hook."""
+        self.add_hook(HookEvent.AFTER_REFLECTION, func)
+        return func
+
+    def before_grading(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a before_grading hook."""
+        self.add_hook(HookEvent.BEFORE_GRADING, func)
+        return func
+
+    def after_grading(self, func: HookFunction) -> HookFunction:
+        """Decorator to add an after_grading hook."""
+        self.add_hook(HookEvent.AFTER_GRADING, func)
+        return func
+
+    def before_structured_output(self, func: HookFunction) -> HookFunction:
+        """Decorator to add a before_structured_output hook."""
+        self.add_hook(HookEvent.BEFORE_STRUCTURED_OUTPUT, func)
+        return func
+
+    def after_structured_output(self, func: HookFunction) -> HookFunction:
+        """Decorator to add an after_structured_output hook."""
+        self.add_hook(HookEvent.AFTER_STRUCTURED_OUTPUT, func)
         return func
 
 
@@ -330,4 +411,215 @@ def retry_limit_hook(max_retries: int = 3) -> HookFunction:
             if retry_count[key] > max_retries:
                 raise Exception(f"Max retries ({max_retries}) exceeded for {key}")
 
+    return hook
+
+
+def message_transformation_hook(context: HookContext) -> None:
+    """Log message transformation events.
+    
+    Logs details about message transformations including the transformation type
+    and number of messages processed.
+    
+    Args:
+        context: Hook context with transformation details.
+    """
+    if context.event == HookEvent.BEFORE_MESSAGE_TRANSFORM:
+        logger.info(f"Starting message transformation for {context.agent_name}")
+        if context.messages:
+            logger.debug(f"Input messages: {len(context.messages)} messages")
+        if context.transformation_type:
+            logger.debug(f"Transformation type: {context.transformation_type}")
+    
+    elif context.event == HookEvent.AFTER_MESSAGE_TRANSFORM:
+        logger.info(f"Message transformation completed for {context.agent_name}")
+        if context.transformed_messages:
+            logger.debug(f"Output messages: {len(context.transformed_messages)} messages")
+        if context.original_messages and context.transformed_messages:
+            logger.debug(
+                f"Messages transformed: {len(context.original_messages)} -> "
+                f"{len(context.transformed_messages)}"
+            )
+
+
+def reflection_hook(context: HookContext) -> None:
+    """Log reflection events and provide insights.
+    
+    Tracks reflection processing including grading and improvement suggestions.
+    
+    Args:
+        context: Hook context with reflection details.
+    """
+    if context.event == HookEvent.BEFORE_REFLECTION:
+        logger.info(f"Starting reflection for {context.agent_name}")
+        if context.grade_data:
+            logger.debug(f"Using grade data for reflection context")
+    
+    elif context.event == HookEvent.AFTER_REFLECTION:
+        logger.info(f"Reflection completed for {context.agent_name}")
+        if context.reflection_data:
+            logger.debug(f"Reflection insights generated")
+
+
+def grading_hook(context: HookContext) -> None:
+    """Log grading events and track quality metrics.
+    
+    Monitors grading processes and logs quality assessment results.
+    
+    Args:
+        context: Hook context with grading details.
+    """
+    if context.event == HookEvent.BEFORE_GRADING:
+        logger.info(f"Starting grading for {context.agent_name}")
+    
+    elif context.event == HookEvent.AFTER_GRADING:
+        logger.info(f"Grading completed for {context.agent_name}")
+        if context.grade_data and isinstance(context.grade_data, dict):
+            score = context.grade_data.get("score")
+            if score is not None:
+                logger.info(f"Grade score: {score}")
+
+
+def structured_output_hook(context: HookContext) -> None:
+    """Log structured output processing events.
+    
+    Tracks structural output parsing and validation.
+    
+    Args:
+        context: Hook context with structured output details.
+    """
+    if context.event == HookEvent.BEFORE_STRUCTURED_OUTPUT:
+        logger.info(f"Starting structured output processing for {context.agent_name}")
+        if context.input_data:
+            logger.debug("Input data available for structuring")
+    
+    elif context.event == HookEvent.AFTER_STRUCTURED_OUTPUT:
+        logger.info(f"Structured output processing completed for {context.agent_name}")
+        if context.structured_data:
+            data_type = type(context.structured_data).__name__
+            logger.debug(f"Structured output type: {data_type}")
+
+
+def pre_post_processing_hook(context: HookContext) -> None:
+    """Log pre/post processing events.
+    
+    Monitors pre and post processing stages in multi-agent workflows.
+    
+    Args:
+        context: Hook context with processing details.
+    """
+    if context.event == HookEvent.PRE_PROCESS:
+        logger.info(f"Pre-processing started for {context.agent_name}")
+        if context.input_data:
+            logger.debug("Input data received for pre-processing")
+    
+    elif context.event == HookEvent.POST_PROCESS:
+        logger.info(f"Post-processing completed for {context.agent_name}")
+        if context.output_data:
+            logger.debug("Output data processed")
+        if context.pre_agent_result and context.post_agent_result:
+            logger.debug("Both pre and post agent results available")
+
+
+def comprehensive_workflow_hook(context: HookContext) -> None:
+    """Comprehensive hook that logs all workflow events.
+    
+    A single hook that can handle all types of workflow events for complete
+    monitoring and debugging of agent execution.
+    
+    Args:
+        context: Hook context with event details.
+    """
+    event_type = context.event.value
+    
+    # Core execution events
+    if context.event in (HookEvent.BEFORE_RUN, HookEvent.BEFORE_ARUN):
+        logger.info(f"🚀 Starting execution: {context.agent_name}")
+        if context.input_data:
+            logger.debug(f"Input: {str(context.input_data)[:100]}...")
+    
+    elif context.event in (HookEvent.AFTER_RUN, HookEvent.AFTER_ARUN):
+        logger.info(f"✅ Execution completed: {context.agent_name}")
+        if context.output_data:
+            logger.debug(f"Output: {str(context.output_data)[:100]}...")
+    
+    # Message processing events
+    elif "message" in event_type:
+        message_transformation_hook(context)
+    
+    # Reflection and grading events
+    elif "reflection" in event_type:
+        reflection_hook(context)
+    elif "grading" in event_type:
+        grading_hook(context)
+    
+    # Structured output events
+    elif "structured_output" in event_type:
+        structured_output_hook(context)
+    
+    # Pre/post processing events
+    elif context.event in (HookEvent.PRE_PROCESS, HookEvent.POST_PROCESS):
+        pre_post_processing_hook(context)
+    
+    # Error events
+    elif context.event == HookEvent.ON_ERROR:
+        logger.error(f"❌ Error in {context.agent_name}: {context.error}")
+    
+    # General events
+    else:
+        logger.debug(f"Hook event: {event_type} for {context.agent_name}")
+
+
+def create_multi_stage_hook(stages: list[str]) -> HookFunction:
+    """Create a hook that tracks multi-stage agent workflows.
+    
+    Factory function for creating hooks that monitor complex workflows
+    like reflection, grading, and structured output processing.
+    
+    Args:
+        stages: List of stage names to track (e.g., ["grading", "reflection", "improvement"])
+        
+    Returns:
+        A hook function that tracks multi-stage workflows.
+        
+    Example:
+        hook = create_multi_stage_hook(["grading", "reflection", "improvement"])
+        agent.add_hook(HookEvent.PRE_PROCESS, hook)
+        agent.add_hook(HookEvent.POST_PROCESS, hook)
+    """
+    stage_data = {}
+    
+    def hook(context: HookContext) -> None:
+        agent_key = context.agent_name
+        
+        if context.event == HookEvent.PRE_PROCESS:
+            stage_data[agent_key] = {
+                "stages": stages,
+                "current_stage": 0,
+                "start_time": __import__("time").time(),
+                "stage_results": {}
+            }
+            logger.info(f"🔄 Multi-stage workflow started for {agent_key}: {' → '.join(stages)}")
+        
+        elif context.event == HookEvent.POST_PROCESS:
+            if agent_key in stage_data:
+                workflow_data = stage_data[agent_key]
+                elapsed = __import__("time").time() - workflow_data["start_time"]
+                logger.info(f"✅ Multi-stage workflow completed for {agent_key} in {elapsed:.2f}s")
+                
+                # Log stage results
+                for stage, result in workflow_data["stage_results"].items():
+                    logger.debug(f"  Stage '{stage}': {result}")
+                
+                # Clean up
+                del stage_data[agent_key]
+        
+        # Track individual stages
+        elif context.event in (HookEvent.AFTER_GRADING, HookEvent.AFTER_REFLECTION, 
+                              HookEvent.AFTER_STRUCTURED_OUTPUT):
+            if agent_key in stage_data:
+                stage_name = context.event.value.replace("after_", "")
+                if stage_name in stages:
+                    stage_data[agent_key]["stage_results"][stage_name] = "completed"
+                    logger.debug(f"  ✓ Stage '{stage_name}' completed for {agent_key}")
+    
     return hook

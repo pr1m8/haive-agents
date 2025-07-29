@@ -1,19 +1,8 @@
-"""Hooks_Mixin core module.
-
-This module provides hooks mixin functionality for the Haive framework.
-
-Classes:
-    HooksMixin: HooksMixin implementation.
-
-Functions:
-    register_hook: Register Hook functionality.
-"""
-
 # haive/agents/base/mixins/hooks_mixin.py
+
 """Enhanced hooks mixin for the Haive framework.
 
 from typing import Any
-from typing import Optional
 Provides a flexible hooks system that can be used by both single and multi agents,
 with support for different hook points and graph-aware modifications.
 """
@@ -35,8 +24,8 @@ T = TypeVar("T")
 class HooksMixin(Generic[TState]):
     """Mixin that provides comprehensive hooks functionality.
 
-    This mixin is generic over the state type, allowing hooks to be type-safe with
-    respect to the agent's state schema.
+    This mixin is generic over the state type, allowing hooks to be
+    type-safe with respect to the agent's state schema.
     """
 
     # Private storage for hooks
@@ -79,7 +68,7 @@ class HooksMixin(Generic[TState]):
         point: HookPoint,
         hook: Callable,
         priority: int = 0,
-        name: Optional[str] = None,
+        name: str | None = None,
         graph_aware: bool = False,
         condition: Callable[["HooksMixin", HookContext[TState]], bool] | None = None,
     ) -> None:
@@ -237,9 +226,9 @@ class HooksMixin(Generic[TState]):
 def hook(
     point: HookPoint,
     priority: int = 0,
-    name: Optional[str] = None,
+    name: str | None = None,
     graph_aware: bool = False,
-    condition: Optional[Callable] = None,
+    condition: Callable | None = None,
 ):
     """Decorator for marking methods as hooks.
 

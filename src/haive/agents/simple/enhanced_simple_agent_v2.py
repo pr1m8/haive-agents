@@ -1,18 +1,5 @@
-"""Enhanced_Simple_Agent_V2 core module.
-
-This module provides enhanced simple agent v2 functionality for the Haive framework.
-
-Classes:
-    directly: directly implementation.
-    SimpleAgentV2: SimpleAgentV2 implementation.
-
-Functions:
-    ensure_engine: Ensure Engine functionality.
-    setup_agent: Setup Agent functionality.
-    build_graph: Build Graph functionality.
-"""
-
 # src/haive/agents/simple/enhanced_simple_agent_v2.py
+
 """Enhanced SimpleAgent V2 - Using the enhanced Agent pattern directly.
 
 This version imports the enhanced Agent class directly to avoid conflicts
@@ -26,6 +13,11 @@ import os
 import sys
 from typing import Any, Literal
 
+from base.enhanced_agent import Agent as EnhancedAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.node.engine_node import EngineNodeConfig
+from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
 from pydantic import Field, model_validator
@@ -35,13 +27,9 @@ sys.path.insert(
 )
 
 # Now import the enhanced Agent directly
-from base.enhanced_agent import Agent as EnhancedAgent
 
 # Import other dependencies normally
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.node.engine_node import EngineNodeConfig
-from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
-from haive.core.graph.state_graph.base_graph2 import BaseGraph
+
 
 logger = logging.getLogger(__name__)
 

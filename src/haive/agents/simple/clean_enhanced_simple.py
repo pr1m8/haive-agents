@@ -1,16 +1,5 @@
-"""Clean_Enhanced_Simple core module.
-
-This module provides clean enhanced simple functionality for the Haive framework.
-
-Classes:
-    SimpleAgent: SimpleAgent implementation.
-
-Functions:
-    setup_agent: Setup Agent functionality.
-    build_graph: Build Graph functionality.
-"""
-
 # src/haive/agents/simple/clean_enhanced_simple.py
+
 """Clean Enhanced SimpleAgent - SimpleAgent as Agent[AugLLMConfig].
 
 This is the cleanest implementation showing SimpleAgent is just Agent[AugLLMConfig].

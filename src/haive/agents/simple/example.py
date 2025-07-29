@@ -1,32 +1,34 @@
 """Example usage of SimpleAgent implementation with enhanced debugging.
 
-from typing import Any This script demonstrates how to create and use SimpleAgent with
-custom state schema.
+This script demonstrates how to create and use SimpleAgent with custom state schema.
 """
 
+import asyncio
 import logging
-import uuid
+from typing import Any
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from langchain_core.messages import BaseMessage
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import PromptTemplate
-from pydantic import BaseModel, Field
+try:
+    from haive.core.engine.aug_llm import AugLLMConfig
 
-# Setup enhanced logging with rich
-from rich.console import Console
-from rich.logging import RichHandler
-from rich.panel import Panel
-from rich.traceback import install as install_rich_traceback
+    from haive.agents.simple import SimpleAgent
 
-from haive.agents.simple import (
-    SimpleAgent,
-    SimpleAgentConfig,
-)
+    # Setup basic logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
 
-# Install rich traceback for better error display
-install_rich_traceback(show_locals=True, width=120, suppress=[])
+except ImportError as e:
+    print(f"Import error: {e}")
+    print("Some dependencies may not be available")
+    logger = logging.getLogger(__name__)
+
+# Install rich traceback for better error display (optional)
+try:
+    from rich.traceback import install as install_rich_traceback
+
+    install_rich_traceback(show_locals=True, width=120, suppress=[])
+except ImportError:
+    # Rich not available, continue without it
+    pass
 
 # Create console
 console = Console()

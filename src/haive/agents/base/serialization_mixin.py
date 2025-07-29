@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 class SerializationMixin:
     """Mixin for serializing and deserializing Agent instances.
 
-    This mixin provides methods for handling serialization with both pickle and msgpack,
-    focusing on addressing the specific needs of agents within LangGraph.
+    This mixin provides methods for handling serialization with both pickle and
+    msgpack, focusing on addressing the specific needs of agents within LangGraph.
 
-    LangGraph uses msgpack under the hood for serialization during graph execution. This
-    mixin ensures agents can be properly serialized without errors.
+    LangGraph uses msgpack under the hood for serialization during graph execution.
+    This mixin ensures agents can be properly serialized without errors.
     """
 
     def __getstate__(self) -> dict[str, Any]:
@@ -45,7 +45,8 @@ class SerializationMixin:
             if exclude_key in state:
                 state.pop(exclude_key)
 
-        # Handle dynamically created schemas (which are picklable but cause issues with msgpack)
+        # Handle dynamically created schemas (which are picklable but cause
+        # issues with msgpack)
         for schema_key in ["input_schema", "output_schema", "config_schema"]:
             if schema_key in state and state[schema_key] is not None:
                 # Store schema name and module for reconstruction

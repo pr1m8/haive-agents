@@ -27,7 +27,8 @@ from haive.core.models.llm.base import LLMConfig
 from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.messages import AIMessage
 
-# Import BaseOutputParser to ensure it's available for LangGraph type evaluation
+# Import BaseOutputParser to ensure it's available for LangGraph type
+# evaluation
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langgraph.graph import END, START
 from pydantic import BaseModel, Field, field_validator
@@ -81,7 +82,8 @@ class SimpleAgentV2(Agent):
     model_name: str | None = Field(default=None, description="Model name")
 
     # Tool configuration
-    # Note: tools field is inherited from ToolRouteMixin with default_factory=list
+    # Note: tools field is inherited from ToolRouteMixin with
+    # default_factory=list
     force_tool_use: bool | None = Field(default=None, description="Force tool use")
 
     # Structured output - THIS IS THE KEY FIELD
@@ -164,10 +166,14 @@ class SimpleAgentV2(Agent):
             # Check if engine is already registered
             if not registry.find(self.engine.name):
                 registry.register(self.engine)
-                logger.info(f"Registered engine '{self.engine.name}' in EngineRegistry")
+                logger.info(
+                    f"Registered engine '{
+                        self.engine.name}' in EngineRegistry"
+                )
             else:
                 logger.debug(
-                    f"Engine '{self.engine.name}' already registered in EngineRegistry"
+                    f"Engine '{
+                        self.engine.name}' already registered in EngineRegistry"
                 )
 
         except ImportError:
@@ -208,7 +214,8 @@ class SimpleAgentV2(Agent):
             return
 
         logger.info(
-            f"Modifying engine schema to include {self.structured_output_model.__name__}"
+            f"Modifying engine schema to include {
+                self.structured_output_model.__name__}"
         )
 
         # Get the engine's current output schema
@@ -339,7 +346,8 @@ class SimpleAgentV2(Agent):
                     safety_net_mode=self.parser_safety_net_mode,
                 )
                 logger.info(
-                    f"Using V2 parser with safety net mode: {self.parser_safety_net_mode}"
+                    f"Using V2 parser with safety net mode: {
+                        self.parser_safety_net_mode}"
                 )
             else:
                 # Use V1 parser (original behavior)
@@ -378,11 +386,12 @@ class SimpleAgentV2(Agent):
 
         return graph
 
-    def create_runnable(self, runnable_config: dict[str, Any] = None):
+    def create_runnable(self, runnable_config: dict[str, Any] | None = None):
         """Override to ensure state includes required fields."""
         compiled = super().create_runnable(runnable_config)
 
-        # Wrap to inject additional state fields (engine is now handled in _prepare_input)
+        # Wrap to inject additional state fields (engine is now handled in
+        # _prepare_input)
         original_ainvoke = compiled.ainvoke
 
         async def wrapped_ainvoke(input_data, config=None):
@@ -510,7 +519,9 @@ class SimpleAgentV2(Agent):
         self.set_schema = True
 
         logger.info(
-            f"Set structured output to {model.__name__} (version {version}) for agent '{self.name}'"
+            f"Set structured output to {
+                model.__name__} (version {version}) for agent '{
+                self.name}'"
         )
 
     def clear_structured_output(self) -> None:
@@ -576,5 +587,7 @@ class SimpleAgentV2(Agent):
 
     def __repr__(self) -> str:
         engine_info = f"model={getattr(self.engine, 'model', 'unknown')}"
-        schema_info = f"structured_output={self.structured_output_model.__name__ if self.structured_output_model else 'None'}"
-        return f"SimpleAgentV2(name='{self.name}', {engine_info}, {schema_info})"
+        schema_info = f"structured_output={
+            self.structured_output_model.__name__ if self.structured_output_model else 'None'}"
+        return f"SimpleAgentV2(name='{
+            self.name}', {engine_info}, {schema_info})"

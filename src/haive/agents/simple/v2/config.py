@@ -1,7 +1,7 @@
 """Simple agent implementation with comprehensive schema handling.
 
-This module defines a basic single-node agent that uses AugLLMConfig for reasoning, with
-support for structured outputs, schema composition, and explicit input/output schemas.
+This module defines a basic single-node agent that uses AugLLMConfig for reasoning,
+with support for structured outputs, schema composition, and explicit input/output schemas.
 """
 
 import logging

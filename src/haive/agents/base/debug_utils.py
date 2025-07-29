@@ -73,26 +73,41 @@ class AgentDebugger:
                         if isinstance(config_value, dict):
                             for engine_id, engine_config in config_value.items():
                                 engine_tree.add(
-                                    f"[white]{engine_id}: {len(engine_config)} params[/white]"
+                                    f"[white]{engine_id}: {
+                                        len(engine_config)} params[/white]"
                                 )
                         else:
                             engine_tree.add(
-                                f"[red]Invalid engine_configs: {type(config_value)}[/red]"
+                                f"[red]Invalid engine_configs: {
+                                    type(config_value)}[/red]"
                             )
                     else:
                         configurable_tree.add(
-                            f"[white]{config_key}: {str(config_value)[:50]}{'...' if len(str(config_value)) > 50 else ''}[/white]"
+                            f"[white]{config_key}: {
+                                str(config_value)[
+                                    :50]}{
+                                '...' if len(
+                                    str(config_value)) > 50 else ''}[/white]"
                         )
             elif key == "recursion_limit":
                 color = "green" if value and value > 0 else "red"
                 tree.add(f"[{color}]TOP-LEVEL recursion_limit: {value}[/{color}]")
             else:
                 tree.add(
-                    f"[white]{key}: {str(value)[:50]}{'...' if len(str(value)) > 50 else ''}[/white]"
+                    f"[white]{key}: {
+                        str(value)[
+                            :50]}{
+                        '...' if len(
+                            str(value)) > 50 else ''}[/white]"
                 )
 
         self.console.print(
-            Panel(tree, title=f"[bold]{self.agent_name}[/bold]", border_style="blue")
+            Panel(
+                tree,
+                title=f"[bold]{
+                    self.agent_name}[/bold]",
+                border_style="blue",
+            )
         )
 
     def log_recursion_limit_flow(
@@ -206,7 +221,11 @@ class AgentDebugger:
         if hasattr(input_data, "messages"):
             panel_content.append(f"📨 Messages: {len(input_data.messages)}")
         elif isinstance(input_data, dict):
-            panel_content.append(f"📦 Dict with keys: {list(input_data.keys())}")
+            panel_content.append(
+                f"📦 Dict with keys: {
+                    list(
+                        input_data.keys())}"
+            )
         else:
             panel_content.append(f"📄 Input type: {type(input_data).__name__}")
 
@@ -225,7 +244,8 @@ class AgentDebugger:
         self.console.print(
             Panel(
                 content,
-                title=f"[bold green]🚀 Starting {self.agent_name} Execution[/bold green]",
+                title=f"[bold green]🚀 Starting {
+                    self.agent_name} Execution[/bold green]",
                 border_style="green",
             )
         )

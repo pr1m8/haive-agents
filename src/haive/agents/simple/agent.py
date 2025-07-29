@@ -1,17 +1,3 @@
-"""Agent core module.
-
-This module provides agent functionality for the Haive framework.
-
-Classes:
-    SimpleAgent: SimpleAgent implementation.
-    Story: Story implementation.
-
-Functions:
-    has_tool_calls: Has Tool Calls functionality.
-    check_if_should_use_tool: Check If Should Use Tool functionality.
-    placeholder_node: Placeholder Node functionality.
-"""
-
 # src/haive/agents/simple/clean_agent.py
 
 import logging
@@ -202,7 +188,10 @@ class SimpleAgent(Agent):
         if isinstance(v, dict):
             return AugLLMConfig(**v)
         if not isinstance(v, AugLLMConfig):
-            raise ValueError(f"SimpleAgent requires AugLLMConfig, got {type(v)}")
+            raise ValueError(
+                f"SimpleAgent requires AugLLMConfig, got {
+                    type(v)}"
+            )
         return v
 
     # ========================================================================

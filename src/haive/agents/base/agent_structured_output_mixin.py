@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """Mixin for adding structured output capabilities to agents.
 
-This mixin provides class methods for creating agents with structured output, enabling
-any agent to be composed with a StructuredOutputAgent for type-safe output conversion.
+This mixin provides class methods for creating agents with structured output,
+enabling any agent to be composed with a StructuredOutputAgent for type-safe
+output conversion.
 """
 
+from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -238,7 +238,7 @@ class StructuredOutputMixin:
                 # Try direct model construction first
                 try:
                     return output_model(**output)
-                except:
+                except BaseException:
                     # Fall back to string conversion
                     content = output.get("output", output.get("content", str(output)))
             elif isinstance(output, list):
@@ -262,7 +262,10 @@ class StructuredOutputMixin:
 
             if handle_errors:
                 return None
-            raise ValueError(f"Could not convert output to {output_model.__name__}")
+            raise ValueError(
+                f"Could not convert output to {
+                    output_model.__name__}"
+            )
 
         except Exception:
             if handle_errors:

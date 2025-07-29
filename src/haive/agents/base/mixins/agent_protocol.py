@@ -1,17 +1,3 @@
-"""Agent_Protocol core module.
-
-This module provides agent protocol functionality for the Haive framework.
-
-Classes:
-    AgentProtocol: AgentProtocol implementation.
-    must: must implementation.
-    required: required implementation.
-
-Functions:
-    compile: Compile functionality.
-    save_state_history: Save State History functionality.
-"""
-
 from collections.abc import AsyncGenerator, Generator
 from typing import (
     TYPE_CHECKING,
@@ -63,8 +49,8 @@ class AgentProtocol(Protocol):
 
     def _prepare_runnable_config(
         self,
-        thread_id: Optional[str] = None,
-        config: Optional[RunnableConfig] = None,
+        thread_id: str | None = None,
+        config: RunnableConfig | None = None,
         **kwargs,
     ) -> RunnableConfig: ...
 
@@ -73,38 +59,38 @@ class AgentProtocol(Protocol):
     def run(
         self,
         input_data: Any,
-        thread_id: Optional[str] = None,
-        debug: Optional[bool] = None,
-        config: Optional[RunnableConfig] = None,
+        thread_id: str | None = None,
+        debug: bool | None = None,
+        config: RunnableConfig | None = None,
         **kwargs,
     ) -> Any: ...
 
     async def arun(
         self,
         input_data: Any,
-        thread_id: Optional[str] = None,
-        config: Optional[RunnableConfig] = None,
-        debug: Optional[bool] = None,
+        thread_id: str | None = None,
+        config: RunnableConfig | None = None,
+        debug: bool | None = None,
         **kwargs,
     ) -> Any: ...
 
     def stream(
         self,
         input_data: Any,
-        thread_id: Optional[str] = None,
+        thread_id: str | None = None,
         stream_mode: str = "values",
-        config: Optional[RunnableConfig] = None,
-        debug: Optional[bool] = None,
+        config: RunnableConfig | None = None,
+        debug: bool | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]: ...
 
     async def astream(
         self,
         input_data: Any,
-        thread_id: Optional[str] = None,
+        thread_id: str | None = None,
         stream_mode: str = "values",
-        config: Optional[RunnableConfig] = None,
-        debug: Optional[bool] = None,
+        config: RunnableConfig | None = None,
+        debug: bool | None = None,
         **kwargs,
     ) -> AsyncGenerator[dict[str, Any], None]: ...
 

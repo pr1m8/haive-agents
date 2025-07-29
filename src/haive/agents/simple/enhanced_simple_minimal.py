@@ -1,18 +1,5 @@
-"""Enhanced_Simple_Minimal core module.
-
-This module provides enhanced simple minimal functionality for the Haive framework.
-
-Classes:
-    Engine: Engine implementation.
-    AugLLMConfig: AugLLMConfig implementation.
-    Workflow: Workflow implementation.
-
-Functions:
-    execute: Execute functionality.
-    execute: Execute functionality.
-"""
-
 # src/haive/agents/simple/enhanced_simple_minimal.py
+
 """Minimal Enhanced SimpleAgent - showing the pattern in action.
 
 This is the absolute minimal version showing SimpleAgent as Agent[AugLLMConfig].
@@ -55,7 +42,10 @@ class Agent(Workflow, Generic[EngineT]):
     async def execute(self, input_data: Any) -> Any:
         """Execute using the engine."""
         # In real implementation, this would use the engine
-        return f"Agent {self.name} executed with engine {type(self.engine).__name__}"
+        return f"Agent {
+            self.name} executed with engine {
+            type(
+                self.engine).__name__}"
 
     def __repr__(self) -> str:
         engine_type = type(self.engine).__name__
@@ -84,13 +74,10 @@ if __name__ == "__main__":
     config = AugLLMConfig()
     agent = SimpleAgent(name="demo", engine=config)
 
-    print(f"Created: {agent}")
-    print(f"Engine type: {type(agent.engine).__name__}")
-
     # Execute
+
     async def demo():
-        result = await agent.execute("Hello world")
-        print(f"Result: {result}")
+        await agent.execute("Hello world")
 
     asyncio.run(demo())
 

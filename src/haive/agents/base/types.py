@@ -1,24 +1,11 @@
-"""Types core module.
-
-This module provides types functionality for the Haive framework.
-
-Classes:
-    GraphProvider: GraphProvider implementation.
-    StateProvider: StateProvider implementation.
-    Invokable: Invokable implementation.
-
-Functions:
-    build_graph: Build Graph functionality.
-    state_schema: State Schema functionality.
-    invoke: Invoke functionality.
-"""
-
 # haive/agents/base/types.py
+
 """Core type system for the Haive agent framework.
 
 Defines type variables, constraints, and base protocols for type-safe agent design.
 """
 
+from enum import Enum
 from typing import (
     Any,
     Generic,
@@ -151,8 +138,6 @@ class GraphSegment(BaseModel, Generic[TState]):
 # HOOK TYPES
 # ============================================================================
 
-from enum import Enum
-
 
 class HookPoint(str, Enum):
     """Standard hook points in agent lifecycle."""
@@ -199,7 +184,8 @@ class HookContext(BaseModel, Generic[TState]):
 
 
 # Type for hook functions
-HookFunction = TypeVar("HookFunction", bound=Any)  # Callable[[Any, HookContext], Any]
+# Callable[[Any, HookContext], Any]
+HookFunction = TypeVar("HookFunction", bound=Any)
 
 
 # ============================================================================
