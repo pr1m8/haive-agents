@@ -7,10 +7,9 @@ This implementation follows the exact pattern from the tutorial with proper
 state management and structured output parsing.
 """
 
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, Optional, TypedDict
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 

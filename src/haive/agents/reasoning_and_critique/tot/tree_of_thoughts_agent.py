@@ -4,23 +4,18 @@ This implements the complete Tree of Thoughts algorithm using EnhancedMultiAgent
 with proper LangGraph routing, conditional edges, and send-based branching.
 """
 
-import asyncio
 from typing import Any, Dict, List, Literal, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-from langchain_core.messages import HumanMessage
 from langgraph.constants import Send
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
-    CandidateGeneration,
     CandidateGenerator,
 )
 from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
     SolutionScorer,
-    SolutionScoring,
 )
 
 

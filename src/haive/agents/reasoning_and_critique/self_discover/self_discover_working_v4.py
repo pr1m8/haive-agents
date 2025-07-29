@@ -4,8 +4,6 @@ This version creates a working self-discover implementation using the patterns
 that are known to work in the codebase.
 """
 
-from typing import Any, Dict, List
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field

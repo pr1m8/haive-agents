@@ -1,10 +1,9 @@
 """Fixed SelfDiscoverSelector that properly handles prompt template variables."""
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
 
