@@ -1,9 +1,9 @@
 """HyDE (Hypothetical Document Embeddings) RAG Agent.
 
-from typing import Any
-Bridges query-document semantic gap by generating hypothetical documents.
-Implements architecture from rag-architectures-flows.md:
-Query -> Generate Hypothetical Doc -> Embed -> Retrieve Real Docs -> Generate
+from typing import Any Bridges query-document semantic gap by generating hypothetical
+from typing import Optional
+documents. Implements architecture from rag-architectures-flows.md: Query -> Generate
+Hypothetical Doc -> Embed -> Retrieve Real Docs -> Generate
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -59,7 +59,7 @@ class HyDERAGAgent(MultiAgent):
 
     @classmethod
     def from_documents(
-        cls, documents: list[Document], llm_config: LLMConfig | None = None, **kwargs
+        cls, documents: list[Document], llm_config: Optional[LLMConfig] = None, **kwargs
     ):
         """Create HyDE RAG from documents.
 

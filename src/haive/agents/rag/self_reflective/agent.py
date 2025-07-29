@@ -1,8 +1,8 @@
 """Self-Reflective Agentic RAG Agent.
 
-from typing import Any
-Implementation of self-reflective RAG with critique and iterative improvement.
-Uses reflection loops to assess and enhance answer quality.
+from typing import Any Implementation of self-reflective RAG with critique and iterative
+from typing import Optional
+improvement. Uses reflection loops to assess and enhance answer quality.
 """
 
 import logging
@@ -313,19 +313,19 @@ class SelfReflectiveRAGAgent(Agent):
     )
 
     # Engines for different stages (initialized in setup_agent)
-    initial_answer_engine: AugLLMConfig | None = Field(
+    initial_answer_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for initial answer"
     )
-    critique_engine: AugLLMConfig | None = Field(
+    critique_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for reflection critique"
     )
-    planning_engine: AugLLMConfig | None = Field(
+    planning_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for improvement planning"
     )
-    improvement_engine: AugLLMConfig | None = Field(
+    improvement_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for answer improvement"
     )
-    synthesis_engine: AugLLMConfig | None = Field(
+    synthesis_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for result synthesis"
     )
 
@@ -386,7 +386,7 @@ class SelfReflectiveRAGAgent(Agent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         max_iterations: int = 3,
         quality_threshold: float = 0.85,
         **kwargs,
@@ -607,7 +607,7 @@ class SelfReflectiveRAGAgent(Agent):
 # Factory function
 def create_self_reflective_rag_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     reflection_mode: str = "thorough",
     **kwargs,
 ) -> SelfReflectiveRAGAgent:

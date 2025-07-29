@@ -25,8 +25,8 @@ from pydantic import BaseModel, Field, model_validator
 class ReactManyToolsConfig(ReactAgentConfig):
     """Configuration for React Agent with many tools.
 
-    Extends ReactAgentConfig with features for handling large numbers of tools
-    and integrates with RAG capabilities.
+    Extends ReactAgentConfig with features for handling large numbers of tools and
+    integrates with RAG capabilities.
     """
 
     # Override state schema

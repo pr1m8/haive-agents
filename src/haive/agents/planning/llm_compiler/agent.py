@@ -1,8 +1,9 @@
 """LLM Compiler Agent Implementation.
 
-from typing import Any, Dict
-This implementation follows the LLM Compiler architecture from the paper by Kim et al.,
-focusing on parallelizable task execution through a DAG structure.
+from typing import Any, Dict This implementation follows the LLM Compiler architecture
+from the paper by Kim et al., focusing on parallelizable task execution through a DAG
+from typing import Optional
+structure.
 """
 
 from concurrent.futures import ThreadPoolExecutor

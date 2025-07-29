@@ -1,5 +1,4 @@
-"""Clean_Simple_Rag core module.
-from __future__ import annotations
+"""Clean_Simple_Rag core module. from __future__ import annotations.
 
 This module provides clean simple rag functionality for the Haive framework.
 

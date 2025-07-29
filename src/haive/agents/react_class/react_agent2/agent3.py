@@ -17,7 +17,7 @@ import uuid
 from collections.abc import Sequence
 
 # Set up logging
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Optional, Union
 
 from haive.core.config.runnable import RunnableConfigManager
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
@@ -41,7 +41,8 @@ logger = logging.getLogger(__name__)
 
 # Define our state schema with messages and step tracking
 class ReactAgentState(BaseModel):
-    """State schema for ReAct agent."""
+    """State schema for ReAct agent.
+    """
 
     messages: Annotated[Sequence[BaseMessage], add_messages] = Field(
         default_factory=list, description="Messages in the conversation"
@@ -49,16 +50,20 @@ class ReactAgentState(BaseModel):
     remaining_iterations: int = Field(
         default=5, description="Number of remaining iterations"
     )
-    iteration_count: int = Field(default=0, description="Current iteration count")
+    iteration_count: int = Field(
+    default=0, description="Current iteration count")
     tools_used: list[str] = Field(
         default_factory=list, description="List of tools used in this session"
     )
-    status: str = Field(default="initialized", description="Current agent status")
+    status: str = Field(
+    default="initialized",
+     description="Current agent status")
 
 
 # Define our agent configuration
 class ReactAgentConfig(AgentConfig):
-    """Configuration for the ReAct agent."""
+    """Configuration for the ReAct agent.
+    """
 
     system_prompt: str = Field(
         default="You are a helpful assistant that can use tools to answer user questions.",
@@ -97,7 +102,8 @@ class ReactAgentConfig(AgentConfig):
         structured_output_model: type[BaseModel] | None = None,
         **kwargs,
     ) -> "ReactAgentConfig":
-        """Create a ReactAgentConfig from a list of tools."""
+        """Create a ReactAgentConfig from a list of tools.
+        """
         tool_names = [tool.name for tool in tools]
 
         llm_config = AugLLMConfig(
@@ -136,16 +142,20 @@ class ReactAgentConfig(AgentConfig):
 # Implement our ReAct agent
 @register_agent(ReactAgentConfig)
 class ReactAgent(Agent[ReactAgentConfig]):
-    """ReAct agent implementation with tool usage and routing capabilities."""
+    """ReAct agent implementation with tool usage and routing capabilities.
+    """
 
     def setup_workflow(self) -> None:
-        """Set up the agent workflow with nodes and edges."""
+        """Set up the agent workflow with nodes and edges.
+        """
         logger.debug(f"Setting up workflow for ReactAgent {self.config.name}")
 
         # Get tools from config
         tools = self.config.engine.tools or []
         if not tools:
-            logger.warning(f"No tools provided for ReactAgent {self.config.name}")
+            logger.warning(
+    f"No tools provided for ReactAgent {
+        self.config.name}")
 
         # Create DynamicGraph with proper component registration
         gb = DynamicGraph(
@@ -214,7 +224,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Create the router function based on our configuration
         if self.config.tool_routing:
             # Use a router that can route to specific tool nodes
-            router_destinations = {node_name: node_name for node_name in tool_groups}
+            router_destinations = {
+    node_name: node_name for node_name in tool_groups}
 
             # Add structured output or END as destinations
             if self.config.structured_output_model is not None:
@@ -252,13 +263,17 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Build the graph
         self.graph = gb.build()
 
-        logger.info(f"Workflow setup complete for ReactAgent {self.config.name}")
+        logger.info(
+    f"Workflow setup complete for ReactAgent {
+        self.config.name}")
 
     def _create_structured_output_node_config(self) -> NodeConfig:
-        """Create the configuration for the structured output node."""
+        """Create the configuration for the structured output node.
+        """
 
         def structured_output_node(state: ReactAgentState):
-            """Generate structured output from the conversation."""
+            """Generate structured output from the conversation.
+            """
             # Get the model for structured output
             model_class = self.config.structured_output_model
 
@@ -271,9 +286,11 @@ class ReactAgent(Agent[ReactAgentConfig]):
             llm = llm_config.instantiate()
 
             # Create structured output version
-            llm_with_structured_output = llm.with_structured_output(model_class)
+            llm_with_structured_output = llm.with_structured_output(
+                model_class)
 
-            # Process the messages (excluding the last message which may have tool calls)
+            # Process the messages (excluding the last message which may have
+            # tool calls)
             messages = list(state.messages)
 
             # Add a final instruction to format the response
@@ -288,7 +305,9 @@ class ReactAgent(Agent[ReactAgentConfig]):
             structured_response = llm_with_structured_output.invoke(messages)
 
             # Return the structured output
-            return {"structured_response": structured_response, "status": "completed"}
+            return {
+    "structured_response": structured_response,
+     "status": "completed"}
 
         # Create a NodeConfig for the structured output node
         return NodeConfig(
@@ -299,8 +318,9 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
     def _should_continue(
         self, state: ReactAgentState
-    ) -> str | list[Send] | Literal["END"]:
-        """Determine if we should continue to tools or end."""
+     -> Union[str, list[Send] | Literal["END"]]:
+        """Determine if we should continue to tools or end.
+        """
         # Check if we're out of iterations
         if state.remaining_iterations <= 0:
             return END
@@ -340,8 +360,9 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
     def _route_to_specific_tools(
         self, state: ReactAgentState
-    ) -> str | list[Send] | Literal["END"]:
-        """Route to specific tool nodes based on tool calls."""
+     -> Union[str, list[Send] | Literal["END"]]:
+        """Route to specific tool nodes based on tool calls.
+        """
         # Check if we're out of iterations
         if state.remaining_iterations <= 0:
             return END
@@ -350,7 +371,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         if not state.messages:
             return END
 
-        last_message = state.messages[-1]
+        last_message=state.messages[-1]
 
         # Check for tool calls
         if (
@@ -359,31 +380,31 @@ class ReactAgent(Agent[ReactAgentConfig]):
             and last_message.tool_calls
         ):
             # Track tools used
-            tool_names = [call.get("name") for call in last_message.tool_calls]
+            tool_names=[call.get("name") for call in last_message.tool_calls]
             for tool in tool_names:
                 if tool not in state.tools_used:
                     state.tools_used.append(tool)
 
             # Group tools by their destination nodes
-            sends_by_node = {}
+            sends_by_node={}
 
             for tool_call in last_message.tool_calls:
-                tool_name = tool_call.get("name", "")
+                tool_name=tool_call.get("name", "")
                 # Determine which node should handle this tool
-                node_name = self.config.tool_routing.get(tool_name)
+                node_name=self.config.tool_routing.get(tool_name)
 
                 if not node_name:
                     # Fall back to default tools node
-                    node_name = "tools"
+                    node_name="tools"
 
                 # Add to the sends for this node
                 if node_name not in sends_by_node:
-                    sends_by_node[node_name] = []
+                    sends_by_node[node_name]=[]
                 sends_by_node[node_name].append(tool_call)
 
             # Create Send objects for each node
             if self.config.parallel_tool_execution:
-                sends = []
+                sends=[]
                 for node_name, tool_calls in sends_by_node.items():
                     for tool_call in tool_calls:
                         sends.append(Send(node_name, [tool_call]))
@@ -396,13 +417,14 @@ class ReactAgent(Agent[ReactAgentConfig]):
         return END
 
     def run(self, input_text: str | dict | ReactAgentState):
-        """Run the agent with the given input."""
+        """Run the agent with the given input.
+        """
         logger.debug(f"Running ReactAgent with input: {input_text}")
 
         # Process the input
         if isinstance(input_text, str):
             # Create a state from a simple text input
-            initial_state = ReactAgentState(
+            initial_state=ReactAgentState(
                 messages=[HumanMessage(content=input_text)],
                 remaining_iterations=self.config.max_iterations,
                 iteration_count=0,
@@ -411,10 +433,11 @@ class ReactAgent(Agent[ReactAgentConfig]):
             )
         elif isinstance(input_text, dict):
             # Convert dict to state
-            if "messages" in input_text and isinstance(input_text["messages"], list):
+            if "messages" in input_text and isinstance(
+                input_text["messages"], list):
                 # If messages are provided as tuples, convert them
                 if all(isinstance(m, tuple) for m in input_text["messages"]):
-                    messages = [
+                    messages=[
                         (
                             HumanMessage(content=content)
                             if role in ("human", "user")
@@ -422,10 +445,10 @@ class ReactAgent(Agent[ReactAgentConfig]):
                         )
                         for role, content in input_text["messages"]
                     ]
-                    input_text["messages"] = messages
+                    input_text["messages"]=messages
 
             # Create state from dict with defaults for missing fields
-            state_data = {
+            state_data={
                 "messages": input_text.get("messages", []),
                 "remaining_iterations": input_text.get(
                     "remaining_iterations", self.config.max_iterations
@@ -434,26 +457,28 @@ class ReactAgent(Agent[ReactAgentConfig]):
                 "tools_used": input_text.get("tools_used", []),
                 "status": input_text.get("status", "initialized"),
             }
-            initial_state = ReactAgentState(**state_data)
+            initial_state=ReactAgentState(**state_data)
         else:
             # Use provided state
-            initial_state = input_text
+            initial_state=input_text
 
         # Set default values if needed
         if initial_state.remaining_iterations == 0:
-            initial_state.remaining_iterations = self.config.max_iterations
+            initial_state.remaining_iterations=self.config.max_iterations
 
         # Create a unique thread ID for this run
-        thread_id = str(uuid.uuid4())
-        config = RunnableConfigManager.create(thread_id=thread_id)
+        thread_id=str(uuid.uuid4())
+        config=RunnableConfigManager.create(thread_id=thread_id)
 
         # Run the agent
-        result = self.app.invoke(initial_state, config)
+        result=self.app.invoke(initial_state, config)
 
         # Log results
         logger.debug(f"Agent completed with status: {result.get('status')}")
         logger.debug(
-            f"Iterations used: {result.get('iteration_count')}/{self.config.max_iterations}"
+            f"Iterations used: {
+    result.get('iteration_count')}/{
+        self.config.max_iterations}"
         )
 
         return result
@@ -462,17 +487,18 @@ class ReactAgent(Agent[ReactAgentConfig]):
 # Convenience function to create a ReAct agent
 def create_react_agent(
     tools: list[BaseTool],
-    system_prompt: str = "You are a helpful assistant with access to tools.",
-    max_iterations: int = 5,
-    model: str = "gpt-4o",
-    temperature: float = 0.7,
-    parallel_tool_execution: bool = True,
-    tool_routing: dict[str, str] | None = None,
-    structured_output_model: type[BaseModel] | None = None,
-    name: str | None = None,
+    system_prompt: str="You are a helpful assistant with access to tools.",
+    max_iterations: int=5,
+    model: str="gpt-4o",
+    temperature: float=0.7,
+    parallel_tool_execution: bool=True,
+    tool_routing: dict[str, str] | None=None,
+    structured_output_model: type[BaseModel] | None=None,
+    name: Optional[str]=None,
 ) -> ReactAgent:
-    """Create a ReAct agent with the specified configuration."""
-    config = ReactAgentConfig.from_tools(
+    """Create a ReAct agent with the specified configuration.
+    """
+    config=ReactAgentConfig.from_tools(
         tools=tools,
         system_prompt=system_prompt,
         max_iterations=max_iterations,
@@ -492,20 +518,21 @@ if __name__ == "__main__":
     # Create a simple test tool
     from langchain_core.tools import tool
 
-    @tool
+    @ tool
     def search(query: str) -> str:
-        """Search for information about a topic."""
+        """Search for information about a topic.
+        """
         # This is a mock implementation
         if "france" in query.lower() or "paris" in query.lower():
             return "Paris is the capital of France."
         return "No information found."
 
     # Create a React agent with the tool
-    agent = create_react_agent(
+    agent=create_react_agent(
         tools=[search],
         system_prompt="You are a helpful assistant that can search for information.",
         max_iterations=3,
     )
 
     # Run the agent
-    result = agent.run("What is the capital of France?")
+    result=agent.run("What is the capital of France?")

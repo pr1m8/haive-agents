@@ -1,6 +1,7 @@
 """Clean Multi-Agent Implementation using AgentNodeV3.
 
 from typing import Any, Dict
+from typing import Optional
 This module provides a clean multi-agent system that:
 - Uses AgentNodeV3 for proper state projection
 - Emulates the engines dict pattern from base Agent
@@ -42,10 +43,10 @@ class ContainerMultiAgentState(StateSchema):
     shared_context: dict[str, Any] = Field(default_factory=dict)
 
     # Coordination fields
-    current_agent: str | None = Field(default=None)
+    current_agent: Optional[str] = Field(default=None)
     completed_agents: list[str] = Field(default_factory=list)
-    final_result: Any | None = Field(default=None)
-    error: str | None = Field(default=None)
+    final_result: Optional[Any] = Field(default=None)
+    error: Optional[str] = Field(default=None)
 
 
 class MultiAgent(Agent):
@@ -102,7 +103,7 @@ class MultiAgent(Agent):
     )
 
     # For conditional routing
-    routing_function: Any | None = Field(
+    routing_function: Optional[Any] = Field(
         default=None, description="Function for conditional routing"
     )
 

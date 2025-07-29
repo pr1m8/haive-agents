@@ -1,9 +1,9 @@
 """Models for the open_perplexity research agent.
 
-from typing import Any
-This module defines data models used for representing, tracking, and evaluating
-research sources, findings, and summaries. It includes enumerations for categorizing
-data source types, content reliability, freshness, and research depth.
+from typing import Any This module defines data models used for representing, tracking,
+from typing import Optional
+and evaluating research sources, findings, and summaries. It includes enumerations for
+categorizing data source types, content reliability, freshness, and research depth.
 """
 
 from enum import Enum
@@ -112,12 +112,12 @@ class ResearchSource(BaseModel):
         access_timestamp: When the source was accessed
     """
 
-    url: str | None = Field(default=None, description="URL of the source")
-    title: str | None = Field(default=None, description="Title of the source")
+    url: Optional[str] = Field(default=None, description="URL of the source")
+    title: Optional[str] = Field(default=None, description="Title of the source")
     source_type: DataSourceType = Field(
         default=DataSourceType.WEB, description="Type of data source"
     )
-    content_snippet: str | None = Field(
+    content_snippet: Optional[str] = Field(
         default=None, description="Snippet of relevant content"
     )
     reliability: ContentReliability = Field(
@@ -129,10 +129,10 @@ class ResearchSource(BaseModel):
     relevance_score: float = Field(
         default=0.0, ge=0.0, le=1.0, description="Relevance score (0.0 - 1.0)"
     )
-    citation: str | None = Field(
+    citation: Optional[str] = Field(
         default=None, description="Formatted citation for the source"
     )
-    access_timestamp: str | None = Field(
+    access_timestamp: Optional[str] = Field(
         default=None, description="When the source was accessed"
     )
 
@@ -174,7 +174,7 @@ class ResearchFinding(BaseModel):
     sources: list[ResearchSource] = Field(
         default_factory=list, description="Sources supporting this finding"
     )
-    explanation: str | None = Field(
+    explanation: Optional[str] = Field(
         default=None, description="Explanation of the finding's significance"
     )
     related_findings: list[str] = Field(
@@ -215,7 +215,9 @@ class ResearchSummary(BaseModel):
     """
 
     topic: str = Field(description="Research topic")
-    question: str | None = Field(default=None, description="Specific research question")
+    question: Optional[str] = Field(
+        default=None, description="Specific research question"
+    )
     key_findings: list[ResearchFinding] = Field(
         default_factory=list, description="Key findings from research"
     )
@@ -292,7 +294,7 @@ class DataSourceConfig(BaseModel):
     priority: int = Field(
         default=5, ge=1, le=10, description="Priority (1-10, higher = more important)"
     )
-    api_key: str | None = Field(
+    api_key: Optional[str] = Field(
         default=None, description="API key for the data source if required"
     )
     max_results: int = Field(

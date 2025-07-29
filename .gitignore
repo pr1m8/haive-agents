@@ -156,4 +156,9 @@ __pycache__/
 .cache/trunk/
 # ignore your project venv
 .venv/
-poetry.lock
+poetry.lockpoetry.lock
+
+# Temporary files
+1
+e
+oo

@@ -71,7 +71,8 @@ def create_structured_react_agent(
     retry_delay: float = 0.5,
     **kwargs,
 ) -> ReactAgent:
-    """Create a ReactAgent that produces structured output according to the specified model.
+    """Create a ReactAgent that produces structured output according to the specified
+    model.
 
     Args:
         output_model: Pydantic model for structured output

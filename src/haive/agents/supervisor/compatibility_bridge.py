@@ -1,12 +1,12 @@
 """Compatibility Bridge for Dynamic Supervisor with Existing Multi-Agent Architecture.
 
-This module provides integration between the new dynamic supervisor system
-and the existing multi-agent base classes, ensuring seamless interoperability.
+This module provides integration between the new dynamic supervisor system and the
+existing multi-agent base classes, ensuring seamless interoperability.
 """
 
 import logging
 from collections.abc import Sequence
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer
@@ -36,7 +36,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
         default=True, description="Enable dynamic agent addition/removal"
     )
 
-    supervisor_engine: Any | None = Field(
+    supervisor_engine: Optional[Any] = Field(
         default=None, description="Engine for supervisor decision making"
     )
 
@@ -45,12 +45,13 @@ class DynamicMultiAgentSupervisor(MultiAgent):
     )
 
     # Private dynamic supervisor instance
-    _dynamic_supervisor: IntegratedDynamicSupervisor | None = None
+    _dynamic_supervisor: Optional[IntegratedDynamicSupervisor] = None
 
     @model_validator(mode="after")
     @classmethod
     def setup_dynamic_supervisor(cls) -> "DynamicMultiAgentSupervisor":
-        """Set up the dynamic supervisor if needed."""
+        """Set up the dynamic supervisor if needed.
+        """
         if (
             self.execution_mode == ExecutionMode.HIERARCHICAL
             and self.enable_dynamic_management
@@ -67,13 +68,17 @@ class DynamicMultiAgentSupervisor(MultiAgent):
             # Register existing agents with supervisor
             for agent in self.agents:
                 if hasattr(agent, "name"):
-                    # Use asyncio.create_task or run in executor for async registration
-                    logger.info(f"Will register {agent.name} with dynamic supervisor")
+                    # Use asyncio.create_task or run in executor for async
+                    # registration
+                    logger.info(
+    f"Will register {
+        agent.name} with dynamic supervisor")
 
         return self
 
     def setup_agent(self) -> None:
-        """Enhanced setup with dynamic supervisor integration."""
+        """Enhanced setup with dynamic supervisor integration.
+        """
         # Call parent setup
         super().setup_agent()
 
@@ -82,7 +87,8 @@ class DynamicMultiAgentSupervisor(MultiAgent):
             logger.info("Setting up dynamic supervisor integration")
 
     def _setup_schemas(self) -> None:
-        """Enhanced schema setup that integrates dynamic supervisor state."""
+        """Enhanced schema setup that integrates dynamic supervisor state.
+        """
         if (
             self.enable_dynamic_management
             and self.execution_mode == ExecutionMode.HIERARCHICAL
@@ -94,7 +100,8 @@ class DynamicMultiAgentSupervisor(MultiAgent):
             super()._setup_schemas()
 
     def _setup_hybrid_schema(self) -> None:
-        """Set up hybrid schema combining AgentSchemaComposer and dynamic state."""
+        """Set up hybrid schema combining AgentSchemaComposer and dynamic state.
+        """
         # Get list of agents for schema composition
         agent_list = list(self.agents)
 
@@ -111,7 +118,8 @@ class DynamicMultiAgentSupervisor(MultiAgent):
         # Enhance with dynamic supervisor capabilities
         from haive.core.schema.schema_composer import SchemaComposer
 
-        enhanced_composer = SchemaComposer(name=f"{self.__class__.__name__}State")
+        enhanced_composer = SchemaComposer(
+            name=f"{self.__class__.__name__}State")
 
         # Add all fields from composed schema
         enhanced_composer.add_fields_from_model(composed_schema)
@@ -144,7 +152,8 @@ class DynamicMultiAgentSupervisor(MultiAgent):
         logger.info(f"Created hybrid schema: {self.state_schema.__name__}")
 
     def build_graph(self) -> BaseGraph:
-        """Build graph with dynamic supervisor integration."""
+        """Build graph with dynamic supervisor integration.
+        """
         if (
             self.enable_dynamic_management
             and self.execution_mode == ExecutionMode.HIERARCHICAL
@@ -154,8 +163,10 @@ class DynamicMultiAgentSupervisor(MultiAgent):
         return super().build_graph()
 
     def _build_dynamic_supervisor_graph(self) -> BaseGraph:
-        """Build graph with integrated dynamic supervisor."""
-        # Create hybrid graph that combines multi-agent patterns with dynamic supervision
+        """Build graph with integrated dynamic supervisor.
+        """
+        # Create hybrid graph that combines multi-agent patterns with dynamic
+        # supervision
         graph = BaseGraph(name=f"{self.name}DynamicGraph")
 
         # Add supervisor node
@@ -181,10 +192,12 @@ class DynamicMultiAgentSupervisor(MultiAgent):
         return graph
 
     def _create_dynamic_supervisor_node(self) -> Any:
-        """Create supervisor node that integrates with multi-agent state."""
+        """Create supervisor node that integrates with multi-agent state.
+        """
 
         async def supervisor_node(state: Any, config=None) -> dict[str, Any]:
-            """Supervisor node with multi-agent state integration."""
+            """Supervisor node with multi-agent state integration.
+            """
             # Extract multi-agent state
             if hasattr(state, "messages"):
                 messages = state.messages
@@ -222,10 +235,13 @@ class DynamicMultiAgentSupervisor(MultiAgent):
         return supervisor_node
 
     def _create_managed_agent_node(self, agent: Agent) -> Any:
-        """Create node for an agent managed by dynamic supervisor."""
+        """Create node for an agent managed by dynamic supervisor.
+        """
 
-        async def managed_agent_node(state: Any, config=None) -> dict[str, Any]:
-            """Execute agent within multi-agent context."""
+        async def managed_agent_node(
+            state: Any, config=None) -> dict[str, Any]:
+            """Execute agent within multi-agent context.
+            """
             # Extract input for agent using existing multi-agent patterns
             agent_input = self._extract_agent_input(agent.name, agent, state)
 
@@ -234,17 +250,20 @@ class DynamicMultiAgentSupervisor(MultiAgent):
             result = await agent.ainvoke(agent_input, config)
 
             # Create update using existing patterns
-            update = self._create_agent_output(agent.name, agent, result, state)
+            update = self._create_agent_output(
+                agent.name, agent, result, state)
 
             return update
 
         return managed_agent_node
 
     def _create_dynamic_management_node(self) -> Any:
-        """Create node for dynamic agent management operations."""
+        """Create node for dynamic agent management operations.
+        """
 
         async def management_node(state: Any, config=None) -> dict[str, Any]:
-            """Handle dynamic agent management requests."""
+            """Handle dynamic agent management requests.
+            """
             # Check for management requests in messages
             messages = getattr(state, "messages", [])
 
@@ -256,7 +275,8 @@ class DynamicMultiAgentSupervisor(MultiAgent):
                 if "add agent" in content:
                     # Simulate agent addition
                     registry = getattr(state, "dynamic_agent_registry", {})
-                    registry["new_agent"] = {"added_at": "now", "capability": "dynamic"}
+                    registry["new_agent"] = {
+    "added_at": "now", "capability": "dynamic"}
                     return {"dynamic_agent_registry": registry}
 
                 if "remove agent" in content:
@@ -271,25 +291,30 @@ class DynamicMultiAgentSupervisor(MultiAgent):
         return management_node
 
     async def register_agent_dynamically(
-        self, agent: Agent, capability: str | None = None
+        self, agent: Agent, capability: Optional[str] = None
     ) -> bool:
-        """Register an agent dynamically at runtime."""
+        """Register an agent dynamically at runtime.
+        """
         if not self._dynamic_supervisor:
-            logger.warning("Dynamic supervisor not available for agent registration")
+            logger.warning(
+                "Dynamic supervisor not available for agent registration")
             return False
 
         try:
             # Register with dynamic supervisor
             success = await self._dynamic_supervisor.register_agent(
                 agent,
-                capability_description=capability or f"Dynamically added {agent.name}",
+                capability_description=capability or f"Dynamically added {
+    agent.name}",
                 rebuild_graph=True,
             )
 
             if success:
                 # Add to multi-agent agents list
                 self.agents = [*list(self.agents), agent]
-                logger.info(f"Successfully registered {agent.name} dynamically")
+                logger.info(
+    f"Successfully registered {
+        agent.name} dynamically")
 
             return success
 
@@ -298,9 +323,11 @@ class DynamicMultiAgentSupervisor(MultiAgent):
             return False
 
     async def unregister_agent_dynamically(self, agent_name: str) -> bool:
-        """Unregister an agent dynamically at runtime."""
+        """Unregister an agent dynamically at runtime.
+        """
         if not self._dynamic_supervisor:
-            logger.warning("Dynamic supervisor not available for agent removal")
+            logger.warning(
+                "Dynamic supervisor not available for agent removal")
             return False
 
         try:
@@ -312,7 +339,8 @@ class DynamicMultiAgentSupervisor(MultiAgent):
                 self.agents = [
                     agent for agent in self.agents if agent.name != agent_name
                 ]
-                logger.info(f"Successfully unregistered {agent_name} dynamically")
+                logger.info(
+    f"Successfully unregistered {agent_name} dynamically")
 
             return success
 
@@ -321,7 +349,8 @@ class DynamicMultiAgentSupervisor(MultiAgent):
             return False
 
     def get_dynamic_status(self) -> dict[str, Any]:
-        """Get status of dynamic supervisor capabilities."""
+        """Get status of dynamic supervisor capabilities.
+        """
         status = {
             "dynamic_management_enabled": self.enable_dynamic_management,
             "execution_mode": self.execution_mode,
@@ -343,15 +372,16 @@ class DynamicMultiAgentSupervisor(MultiAgent):
 class ReactMultiAgentSupervisor(DynamicMultiAgentSupervisor):
     """Multi-agent supervisor with ReactAgent-style capabilities.
 
-    Combines ReactAgent looping behavior with multi-agent coordination
-    and dynamic supervisor capabilities.
+    Combines ReactAgent looping behavior with multi-agent coordination and dynamic
+    supervisor capabilities.
     """
 
     # Force hierarchical execution for supervisor pattern
     execution_mode: ExecutionMode = Field(default=ExecutionMode.HIERARCHICAL)
 
     def build_graph(self) -> BaseGraph:
-        """Build graph with React-style looping and multi-agent coordination."""
+        """Build graph with React-style looping and multi-agent coordination.
+        """
         # Get base dynamic supervisor graph
         graph = super().build_graph()
 
@@ -375,7 +405,7 @@ def create_compatible_supervisor(
     name: str = "Compatible Supervisor",
     enable_dynamic: bool = True,
     supervisor_engine: Any = None,
-) -> DynamicMultiAgentSupervisor | MultiAgent:
+ -> Union[DynamicMultiAgentSupervisor, MultiAgent]:
     """Factory function to create compatible supervisor based on requirements.
 
     Args:
@@ -396,10 +426,14 @@ def create_compatible_supervisor(
             supervisor_engine=supervisor_engine,
             use_choice_model=True,
         )
-    return MultiAgent(name=name, agents=agents, execution_mode=ExecutionMode.SEQUENCE)
+    return MultiAgent(
+    name=name,
+    agents=agents,
+     execution_mode=ExecutionMode.SEQUENCE)
 
 
-def migrate_from_multi_agent(multi_agent: MultiAgent) -> DynamicMultiAgentSupervisor:
+def migrate_from_multi_agent(
+    multi_agent: MultiAgent) -> DynamicMultiAgentSupervisor:
     """Migrate existing MultiAgent to dynamic supervisor version.
 
     Args:

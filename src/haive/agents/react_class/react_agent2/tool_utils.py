@@ -14,7 +14,7 @@ import json
 import logging
 import uuid
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Optional
 
 from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.tools import BaseTool
@@ -38,8 +38,10 @@ def create_custom_tool_node(tools: list[BaseTool]) -> Callable:
     # Create a mapping of tool names to tool objects
     tool_map = {tool.name: tool for tool in tools}
 
-    def extract_tool_calls(message: dict[str, Any] | AIMessage) -> list[dict[str, Any]]:
-        """Extract tool calls from either an AIMessage or dict representation."""
+    def extract_tool_calls(
+        message: dict[str, Any] | AIMessage) -> list[dict[str, Any]]:
+        """Extract tool calls from either an AIMessage or dict representation.
+        """
         if isinstance(message, AIMessage):
             # Check direct tool_calls attribute
             if hasattr(message, "tool_calls") and message.tool_calls:
@@ -60,7 +62,8 @@ def create_custom_tool_node(tools: list[BaseTool]) -> Callable:
         return []
 
     def parse_tool_arguments(tool_call: dict[str, Any]) -> dict[str, Any]:
-        """Parse tool arguments from various formats."""
+        """Parse tool arguments from various formats.
+        """
         # Direct args key
         if "args" in tool_call and isinstance(tool_call["args"], dict):
             return tool_call["args"]
@@ -78,8 +81,9 @@ def create_custom_tool_node(tools: list[BaseTool]) -> Callable:
 
         return {}
 
-    def get_tool_name(tool_call: dict[str, Any]) -> str | None:
-        """Extract tool name from various formats."""
+    def get_tool_name(tool_call: dict[str, Any] -> Optional[str]:
+        """Extract tool name from various formats.
+        """
         # Direct name field
         if "name" in tool_call:
             return tool_call["name"]
@@ -91,11 +95,13 @@ def create_custom_tool_node(tools: list[BaseTool]) -> Callable:
         return None
 
     def tool_node(state: dict[str, Any]) -> dict[str, Any]:
-        """Execute tools based on the messages in the state."""
+        """Execute tools based on the messages in the state.
+        """
         logger.debug("Custom tool node called")
 
         # Convert state to dict if needed
-        state_dict = state.model_dump() if hasattr(state, "model_dump") else dict(state)
+        state_dict = state.model_dump() if hasattr(
+            state, "model_dump") else dict(state)
 
         # Create a fresh copy to avoid mutation issues
         updated_state = state_dict.copy()
@@ -161,7 +167,8 @@ def create_custom_tool_node(tools: list[BaseTool]) -> Callable:
 
             # Execute the tool
             try:
-                logger.debug(f"Executing tool {tool_name} with args: {tool_args}")
+                logger.debug(
+    f"Executing tool {tool_name} with args: {tool_args}")
                 result = tool(**tool_args)
 
                 # Create tool message
@@ -238,7 +245,9 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
 
             # Handle dict format
             elif isinstance(msg, dict):
-                tool_calls = msg.get("additional_kwargs", {}).get("tool_calls", [])
+                tool_calls = msg.get(
+    "additional_kwargs", {}).get(
+        "tool_calls", [])
 
             # Extract IDs
             for call in tool_calls:

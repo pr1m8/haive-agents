@@ -13,9 +13,9 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class ActionGenerator:
     """Agent that generates candidate actions for a given node in LATS.
 
-    This agent analyzes the current state and generates multiple candidate
-    actions that could be taken, each with confidence scores and reasoning.
-    Uses composition pattern to avoid Pydantic inheritance issues.
+    This agent analyzes the current state and generates multiple candidate actions that
+    could be taken, each with confidence scores and reasoning. Uses composition pattern
+    to avoid Pydantic inheritance issues.
     """
 
     def __init__(

@@ -1,8 +1,8 @@
 """Document Grading RAG Agent.
 
-from typing import Any
-Iterative document grading with structured output.
-Uses CallableNodeConfig to iterate over retrieved documents.
+from typing import Any Iterative document grading with structured output. Uses
+from typing import Optional
+CallableNodeConfig to iterate over retrieved documents.
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -62,9 +62,9 @@ class DocumentGradingAgent(Agent):
 
     name: str = "Document Grader"
     relevance_threshold: float = 0.7
-    llm_config: LLMConfig | None = None
+    llm_config: Optional[LLMConfig] = None
 
-    def __init__(self, llm_config: LLMConfig | None = None, **kwargs):
+    def __init__(self, llm_config: Optional[LLMConfig] = None, **kwargs):
         """Initialize with LLM config."""
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
@@ -125,7 +125,7 @@ class DocumentGradingRAGAgent(SequentialAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         relevance_threshold: float = 0.7,
         **kwargs,
     ):

@@ -26,7 +26,6 @@ from haive.agents.simple.agent import SimpleAgent
 # Import message transformation safely
 try:
     from haive.core.graph.node.message_transformation_v2 import (
-        TransformationType,
         create_reflection_transformer,
     )
 

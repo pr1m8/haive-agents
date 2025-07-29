@@ -57,7 +57,8 @@ Provide a detailed analysis of what's needed to answer this question with SQL.
 ANALYZE_QUERY_PROMPT = ChatPromptTemplate.from_messages(
     [("system", ANALYZE_QUERY_SYSTEM_PROMPT), ("human", ANALYZE_QUERY_USER_PROMPT)]
 )
-"""Prompt for analyzing natural language queries.
+"""
+Prompt for analyzing natural language queries.
 
 This prompt guides the LLM to break down user questions into SQL components
 without generating the actual query. It helps identify:
@@ -109,7 +110,8 @@ Please generate a SQL query to answer this question:
 GENERATE_SQL_PROMPT = ChatPromptTemplate.from_messages(
     [("system", GENERATE_SQL_SYSTEM_PROMPT), ("human", GENERATE_SQL_USER_PROMPT)]
 )
-"""Prompt for generating SQL queries.
+"""
+Prompt for generating SQL queries.
 
 This prompt converts natural language questions into executable SQL queries
 based on the analysis and schema information. It ensures:
@@ -165,7 +167,8 @@ Please validate this SQL query and identify any issues.
 VALIDATE_SQL_PROMPT = ChatPromptTemplate.from_messages(
     [("system", VALIDATE_SQL_SYSTEM_PROMPT), ("human", VALIDATE_SQL_USER_PROMPT)]
 )
-"""Prompt for validating SQL queries.
+"""
+Prompt for validating SQL queries.
 
 This prompt performs comprehensive validation including:
 - Syntax correctness
@@ -211,7 +214,8 @@ Is this question about querying the database?
 GUARDRAILS_PROMPT = ChatPromptTemplate.from_messages(
     [("system", GUARDRAILS_SYSTEM_PROMPT), ("human", GUARDRAILS_USER_PROMPT)]
 )
-"""Prompt for domain relevance checking (guardrails).
+"""
+Prompt for domain relevance checking (guardrails).
 
 This prompt filters out irrelevant questions that aren't about
 database queries, preventing the agent from attempting to answer
@@ -257,7 +261,8 @@ GENERATE_FINAL_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
         ("human", GENERATE_FINAL_ANSWER_USER_PROMPT),
     ]
 )
-"""Prompt for generating natural language answers.
+"""
+Prompt for generating natural language answers.
 
 This prompt converts raw SQL query results into user-friendly
 answers that directly address the original question.
@@ -298,7 +303,8 @@ HALLUCINATION_CHECK_PROMPT = ChatPromptTemplate.from_messages(
         ("human", HALLUCINATION_CHECK_USER_PROMPT),
     ]
 )
-"""Prompt for detecting hallucinations in answers.
+"""
+Prompt for detecting hallucinations in answers.
 
 This prompt ensures answers are grounded in actual query results
 and don't include fabricated information.
@@ -334,7 +340,8 @@ Answer with 'yes' or 'no'.
 ANSWER_GRADING_PROMPT = ChatPromptTemplate.from_messages(
     [("system", ANSWER_GRADING_SYSTEM_PROMPT), ("human", ANSWER_GRADING_USER_PROMPT)]
 )
-"""Prompt for grading answer relevance.
+"""
+Prompt for grading answer relevance.
 
 This prompt evaluates whether the generated answer actually
 addresses what the user asked, ensuring quality responses.

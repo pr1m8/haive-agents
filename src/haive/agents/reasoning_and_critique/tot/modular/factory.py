@@ -118,7 +118,10 @@ def create_tot_agent(
 
 
 def create_math_tot_agent(
-    model: str = "gpt-4o", temperature: float = 0.7, name: str | None = None, **kwargs
+    model: str = "gpt-4o",
+    temperature: float = 0.7,
+    name: str | None = None,
+    **kwargs,
 ) -> ToTAgent:
     """Create a Tree of Thoughts agent specifically for math problems.
 
@@ -201,7 +204,10 @@ def create_math_tot_agent(
 
 
 def create_game24_tot_agent(
-    model: str = "gpt-4o", temperature: float = 0.7, name: str | None = None, **kwargs
+    model: str = "gpt-4o",
+    temperature: float = 0.7,
+    name: str | None = None,
+    **kwargs,
 ) -> ToTAgent:
     """Create a Tree of Thoughts agent specifically for "Game of 24" problems.
 

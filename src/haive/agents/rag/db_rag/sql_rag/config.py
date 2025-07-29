@@ -34,7 +34,7 @@ Note:
 
 import inspect
 import os
-from typing import Any
+from typing import Any, Optional
 
 from dotenv import load_dotenv
 from haive.core.engine.agent.agent import AgentConfig
@@ -113,7 +113,7 @@ class SQLDatabaseConfig(BaseModel):
         default=os.getenv("SQL_DB_TYPE", "postgresql"),
         description="Type of SQL database (postgresql, mysql, sqlite, etc.)",
     )
-    db_uri: str | None = Field(
+    db_uri: Optional[str] = Field(
         default=None, description="The database connection URI (if provided directly)"
     )
     db_user: str = Field(
@@ -152,7 +152,7 @@ class SQLDatabaseConfig(BaseModel):
     sample_rows_in_table_info: int = Field(
         default=3, description="Number of sample rows to include in table info"
     )
-    custom_query: str | None = Field(
+    custom_query: Optional[str] = Field(
         default=None, description="Custom query to execute for schema info"
     )
 
@@ -181,17 +181,32 @@ class SQLDatabaseConfig(BaseModel):
             return self.db_uri
 
         if self.db_type == "postgresql":
-            return f"postgresql+psycopg2://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
+            return f"postgresql+psycopg2://{
+    self.db_user}:{
+        self.db_password}@{
+            self.db_host}:{
+                self.db_port}/{
+                    self.db_name}"
         if self.db_type == "mysql":
-            return f"mysql+pymysql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
+            return f"mysql+pymysql://{
+    self.db_user}:{
+        self.db_password}@{
+            self.db_host}:{
+                self.db_port}/{
+                    self.db_name}"
         if self.db_type == "sqlite":
             # For SQLite, the db_name is the path to the file
             return f"sqlite:///{self.db_name}"
         if self.db_type == "mssql":
-            return f"mssql+pyodbc://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
+            return f"mssql+pyodbc://{
+    self.db_user}:{
+        self.db_password}@{
+            self.db_host}:{
+                self.db_port}/{
+                    self.db_name}"
         raise ValueError(f"Unsupported database type: {self.db_type}")
 
-    def get_sql_db(self) -> SQLDatabase | None:
+    def get_sql_db(self -> Optional[SQLDatabase]:
         """Create and return a SQLDatabase object for interacting with the database.
 
         Returns:
@@ -212,7 +227,8 @@ class SQLDatabaseConfig(BaseModel):
         try:
             connection_string = self.get_connection_string()
 
-            # Create kwargs dictionary with only the parameters that are supported
+            # Create kwargs dictionary with only the parameters that are
+            # supported
             db_kwargs = {
                 "include_tables": self.include_tables,
                 "sample_rows_in_table_info": self.sample_rows_in_table_info,
@@ -220,7 +236,7 @@ class SQLDatabaseConfig(BaseModel):
 
             # Older versions might not support exclude_tables
             # Check if the class accepts this parameter first
-            sig = inspect.signature(SQLDatabase.from_uri)
+            sig=inspect.signature(SQLDatabase.from_uri)
             if "exclude_tables" in sig.parameters:
                 db_kwargs["exclude_tables"] = self.exclude_tables
 
@@ -376,7 +392,7 @@ class SQLRAGConfig(AgentConfig):
         description="Whether to grade the answer for relevance to the question",
     )
 
-    examples_path: str | None = Field(
+    examples_path: Optional[str] = Field(
         default=None, description="Path to examples JSON file"
     )
 
@@ -389,7 +405,7 @@ class SQLRAGConfig(AgentConfig):
         default=5, description="Maximum number of iterations for retrying SQL queries"
     )
 
-    @field_validator("engines")
+    @ field_validator("engines")
     def check_required_engines(
         self, v: dict[str, AugLLMConfig]
     ) -> dict[str, AugLLMConfig]:

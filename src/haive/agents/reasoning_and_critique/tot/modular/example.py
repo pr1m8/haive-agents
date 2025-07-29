@@ -10,14 +10,10 @@ Functions:
 
 # examples/tot_agent_example.py
 
-import os
-import sys
 from typing import Any
 
 # Add the project root to the path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from agents.tot.modular.factory import (
+from haive.agents.reasoning_and_critique.tot.modular.factory import (
     create_game24_tot_agent,
     create_math_tot_agent,
     create_tot_agent,

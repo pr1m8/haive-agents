@@ -1,18 +1,19 @@
 """Pydantic models for LLM Compiler V3 Agent.
 
-This module defines structured data models for the LLM Compiler pattern
-optimized for Enhanced MultiAgent V3 architecture.
+This module defines structured data models for the LLM Compiler pattern optimized for
+Enhanced MultiAgent V3 architecture.
 """
 
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class ExecutionMode(str, Enum):
-    """Execution mode for tasks."""
+    """Execution mode for tasks.
+    """
 
     PARALLEL = "parallel"
     SEQUENTIAL = "sequential"
@@ -20,7 +21,8 @@ class ExecutionMode(str, Enum):
 
 
 class TaskDependency(BaseModel):
-    """Represents a dependency between tasks."""
+    """Represents a dependency between tasks.
+    """
 
     model_config = ConfigDict(
         str_strip_whitespace=True, validate_assignment=True, extra="forbid"
@@ -32,21 +34,23 @@ class TaskDependency(BaseModel):
         examples=["task_1", "search_task", "analysis_step"],
     )
 
-    output_key: str | None = Field(
+    output_key: Optional[str] = Field(
         default=None,
         description="Specific output key to reference (optional)",
         examples=["result", "data", "summary"],
     )
 
     def resolve_reference(self) -> str:
-        """Generate reference string for task dependency."""
+        """Generate reference string for task dependency.
+        """
         if self.output_key:
             return f"${{{self.task_id}.{self.output_key}}}"
         return f"${{{self.task_id}}}"
 
 
 class CompilerTask(BaseModel):
-    """Individual task in the LLM Compiler execution DAG."""
+    """Individual task in the LLM Compiler execution DAG.
+    """
 
     model_config = ConfigDict(
         str_strip_whitespace=True, validate_assignment=True, extra="forbid"
@@ -84,31 +88,36 @@ class CompilerTask(BaseModel):
         default=1, ge=1, le=10, description="Task priority (1=highest, 10=lowest)"
     )
 
-    estimated_duration: float | None = Field(
+    estimated_duration: Optional[float] = Field(
         default=None, ge=0.0, description="Estimated execution time in seconds"
     )
 
     @property
     def is_join_task(self) -> bool:
-        """Check if this is the final join task."""
+        """Check if this is the final join task.
+        """
         return self.tool_name.lower() == "join"
 
     @property
     def dependency_ids(self) -> list[str]:
-        """Get list of task IDs this task depends on."""
+        """Get list of task IDs this task depends on.
+        """
         return [dep.task_id for dep in self.dependencies]
 
     def has_dependencies(self) -> bool:
-        """Check if this task has any dependencies."""
+        """Check if this task has any dependencies.
+        """
         return len(self.dependencies) > 0
 
     def can_execute_with_results(self, completed_tasks: list[str]) -> bool:
-        """Check if all dependencies are satisfied."""
+        """Check if all dependencies are satisfied.
+        """
         return all(dep.task_id in completed_tasks for dep in self.dependencies)
 
 
 class CompilerPlan(BaseModel):
-    """Execution plan containing tasks and their dependencies."""
+    """Execution plan containing tasks and their dependencies.
+    """
 
     model_config = ConfigDict(
         str_strip_whitespace=True, validate_assignment=True, extra="forbid"
@@ -140,8 +149,11 @@ class CompilerPlan(BaseModel):
         default_factory=datetime.now, description="When this plan was created"
     )
 
-    def get_executable_tasks(self, completed_task_ids: list[str]) -> list[CompilerTask]:
-        """Get tasks that can be executed now (dependencies satisfied)."""
+    def get_executable_tasks(
+    self,
+     completed_task_ids: list[str]) -> list[CompilerTask]:
+        """Get tasks that can be executed now (dependencies satisfied).
+        """
         return [
             task
             for task in self.tasks
@@ -149,24 +161,27 @@ class CompilerPlan(BaseModel):
             and task.can_execute_with_results(completed_task_ids)
         ]
 
-    def get_join_task(self) -> CompilerTask | None:
-        """Get the final join task if it exists."""
+    def get_join_task(self -> Optional[CompilerTask]:
+        """Get the final join task if it exists.
+        """
         for task in self.tasks:
             if task.is_join_task:
                 return task
         return None
 
-    def get_task_by_id(self, task_id: str) -> CompilerTask | None:
-        """Find task by ID."""
+    def get_task_by_id(self, task_id: str -> Optional[CompilerTask]:
+        """Find task by ID.
+        """
         for task in self.tasks:
             if task.task_id == task_id:
                 return task
         return None
 
     def validate_dependencies(self) -> list[str]:
-        """Validate that all dependencies reference existing tasks."""
-        errors = []
-        task_ids = {task.task_id for task in self.tasks}
+        """Validate that all dependencies reference existing tasks.
+        """
+        errors=[]
+        task_ids={task.task_id for task in self.tasks}
 
         for task in self.tasks:
             for dep in task.dependencies:
@@ -179,134 +194,145 @@ class CompilerPlan(BaseModel):
 
 
 class ParallelExecutionResult(BaseModel):
-    """Result from executing a task."""
+    """Result from executing a task.
+    """
 
-    model_config = ConfigDict(
+    model_config=ConfigDict(
         str_strip_whitespace=True, validate_assignment=True, extra="forbid"
     )
 
-    task_id: str = Field(..., description="ID of the executed task")
+    task_id: str=Field(..., description="ID of the executed task")
 
-    success: bool = Field(..., description="Whether the task executed successfully")
+    success: bool=Field(...,
+     description="Whether the task executed successfully")
 
-    result: Any = Field(..., description="Task execution result")
+    result: Any=Field(..., description="Task execution result")
 
-    error_message: str | None = Field(
+    error_message: Optional[str]=Field(
         default=None, description="Error message if execution failed"
     )
 
-    execution_time: float = Field(
+    execution_time: float=Field(
         ..., ge=0.0, description="Time taken to execute in seconds"
     )
 
-    tool_name: str = Field(..., description="Name of tool that was executed")
+    tool_name: str=Field(..., description="Name of tool that was executed")
 
-    metadata: dict[str, Any] = Field(
+    metadata: dict[str, Any]=Field(
         default_factory=dict, description="Additional execution metadata"
     )
 
 
 class CompilerInput(BaseModel):
-    """Input to the LLM Compiler V3 Agent."""
+    """Input to the LLM Compiler V3 Agent.
+    """
 
-    model_config = ConfigDict(
+    model_config=ConfigDict(
         str_strip_whitespace=True, validate_assignment=True, extra="forbid"
     )
 
-    query: str = Field(
+    query: str=Field(
         ...,
         min_length=1,
         description="The user's query or task to accomplish",
         examples=["Find recent AI papers and summarize key findings"],
     )
 
-    context: dict[str, Any] | None = Field(
+    context: dict[str, Any] | None=Field(
         default=None, description="Additional context for the task"
     )
 
-    execution_preferences: dict[str, Any] | None = Field(
+    execution_preferences: dict[str, Any] | None=Field(
         default=None,
         description="Preferences for how to execute the plan",
         examples=[{"max_parallel": 5, "timeout": 300}],
     )
 
-    available_tools: list[str] | None = Field(
+    available_tools: list[str] | None=Field(
         default=None, description="Specific tools to use (if None, uses all available)"
     )
 
 
 class CompilerOutput(BaseModel):
-    """Final output from the LLM Compiler V3 Agent."""
+    """Final output from the LLM Compiler V3 Agent.
+    """
 
-    model_config = ConfigDict(
+    model_config=ConfigDict(
         str_strip_whitespace=True, validate_assignment=True, extra="forbid"
     )
 
-    final_answer: str = Field(..., description="The final answer to the user's query")
+    final_answer: str=Field(...,
+     description="The final answer to the user's query")
 
-    execution_plan: CompilerPlan = Field(..., description="The plan that was executed")
+    execution_plan: CompilerPlan=Field(...,
+     description="The plan that was executed")
 
-    execution_results: list[ParallelExecutionResult] = Field(
+    execution_results: list[ParallelExecutionResult]=Field(
         default_factory=list, description="Results from all executed tasks"
     )
 
-    total_execution_time: float = Field(
+    total_execution_time: float=Field(
         ..., ge=0.0, description="Total time for entire execution"
     )
 
-    tasks_executed: int = Field(
+    tasks_executed: int=Field(
         ..., ge=0, description="Number of tasks that were executed"
     )
 
-    parallel_efficiency: float | None = Field(
+    parallel_efficiency: Optional[float]=Field(
         default=None,
         ge=0.0,
         le=1.0,
         description="Efficiency score for parallel execution (0-1)",
     )
 
-    reasoning_trace: list[str] = Field(
+    reasoning_trace: list[str]=Field(
         default_factory=list, description="Step-by-step reasoning trace"
     )
 
-    metadata: dict[str, Any] = Field(
+    metadata: dict[str, Any]=Field(
         default_factory=dict, description="Additional metadata about execution"
     )
 
     def get_successful_tasks(self) -> list[ParallelExecutionResult]:
-        """Get only the successfully executed tasks."""
+        """Get only the successfully executed tasks.
+        """
         return [result for result in self.execution_results if result.success]
 
     def get_failed_tasks(self) -> list[ParallelExecutionResult]:
-        """Get only the failed tasks."""
+        """Get only the failed tasks.
+        """
         return [result for result in self.execution_results if not result.success]
 
-    @property
+    @ property
     def success_rate(self) -> float:
-        """Calculate the success rate of task execution."""
+        """Calculate the success rate of task execution.
+        """
         if not self.execution_results:
             return 0.0
-        successful = len(self.get_successful_tasks())
+        successful=len(self.get_successful_tasks())
         return successful / len(self.execution_results)
 
 
 class ReplanRequest(BaseModel):
-    """Request for replanning when initial plan fails."""
+    """Request for replanning when initial plan fails.
+    """
 
-    model_config = ConfigDict(
+    model_config=ConfigDict(
         str_strip_whitespace=True, validate_assignment=True, extra="forbid"
     )
 
-    feedback: str = Field(..., description="Analysis of why replanning is needed")
+    feedback: str=Field(...,
+     description="Analysis of why replanning is needed")
 
-    failed_tasks: list[str] = Field(
+    failed_tasks: list[str]=Field(
         default_factory=list, description="IDs of tasks that failed"
     )
 
-    partial_results: dict[str, Any] = Field(
+    partial_results: dict[str, Any]=Field(
         default_factory=dict, description="Results from tasks that succeeded"
     )
 
-    suggested_changes: list[str] | None = Field(
+    suggested_changes: list[str] | None=Field(
         default=None, description="Specific suggestions for the new plan"
     )

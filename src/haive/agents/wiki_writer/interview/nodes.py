@@ -10,8 +10,13 @@ Functions:
 import json
 
 from agents.wiki_writer.interview.aug_llms import (
+    Optional,
+    Union,
+    from,
     gen_qn_aug_llm_config,
     gen_queries_chain,
+    import,
+    typing,
 )
 from agents.wiki_writer.interview.state import InterviewState
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -40,10 +45,10 @@ async def generate_question(
 
 async def gen_answer(
     state: InterviewState,
-    config: RunnableConfig | None = None,
+    config: Optional[RunnableConfig] = None,
     name: str = "Subject_Matter_Expert",
     max_str_len: int = 15000,
-    search_engine: BaseTool | StructuredTool = tavily_search_tool,
+    search_engine: Union[BaseTool, StructuredTool] = tavily_search_tool,
 ):
     swapped_state = swap_roles(state, name)  # Convert all other AI messages
     queries = await gen_queries_chain.ainvoke(swapped_state)
@@ -55,10 +60,10 @@ async def gen_answer(
     successful_results = [
         res for res in query_results if not isinstance(res, Exception)
     ]
-    all_query_results = {
-        res["url"]: res["content"] for results in successful_results for res in results
-    }
-    # We could be more precise about handling max token length if we wanted to here
+    all_query_results = {res["url"]: res["content"]
+                         for results in successful_results for res in results}
+    # We could be more precise about handling max token length if we wanted to
+    # here
     dumped = json.dumps(all_query_results)[:max_str_len]
     ai_message: AIMessage = queries["raw"]
     tool_call = queries["raw"].tool_calls[0]
@@ -70,6 +75,9 @@ async def gen_answer(
     generated = await gen_answer_chain.ainvoke(swapped_state)
     cited_urls = set(generated["parsed"].cited_urls)
     # Save the retrieved information to a the shared state for future reference
-    cited_references = {k: v for k, v in all_query_results.items() if k in cited_urls}
-    formatted_message = AIMessage(name=name, content=generated["parsed"].as_str)
+    cited_references = {
+        k: v for k,
+        v in all_query_results.items() if k in cited_urls}
+    formatted_message = AIMessage(
+        name=name, content=generated["parsed"].as_str)
     return {"messages": [formatted_message], "references": cited_references}

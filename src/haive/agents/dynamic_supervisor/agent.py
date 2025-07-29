@@ -104,8 +104,8 @@ class DynamicSupervisorAgent(ReactAgent):
     def setup_agent(self) -> None:
         """Setup the supervisor with custom state schema.
 
-        Overrides SimpleAgent setup to use SupervisorStateWithTools
-        and configure the supervisor-specific settings.
+        Overrides SimpleAgent setup to use SupervisorStateWithTools and configure the
+        supervisor-specific settings.
         """
         # Call parent setup first
         super().setup_agent()

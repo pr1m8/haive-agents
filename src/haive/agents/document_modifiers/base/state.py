@@ -1,8 +1,8 @@
 """Base state schema for document modification agents.
 
-from typing import Any
-This module defines the DocumentModifierState class which serves as the
-foundation for all document processing agents in the haive framework.
+from typing import Any This module defines the DocumentModifierState class which serves
+from typing import Optional
+as the foundation for all document processing agents in the haive framework.
 """
 
 from haive.core.schema import StateSchema
@@ -58,10 +58,10 @@ class DocumentModifierState(StateSchema):
         is present to prevent processing empty collections.
     """
 
-    name: str | None = Field(
+    name: Optional[str] = Field(
         default=None, description="The name of the document modifier."
     )
-    description: str | None = Field(
+    description: Optional[str] = Field(
         default=None, description="The description of the document modifier."
     )
     documents: list[Document] = Field(

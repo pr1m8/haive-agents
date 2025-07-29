@@ -41,7 +41,9 @@ logger = logging.getLogger(__name__)
 
 @register_agent(ResearchAgentConfig)
 class ResearchAgent(Agent[ResearchAgentConfig]):
-    """Agent for performing deep research on any topic with dynamic document loader selection."""
+    """Agent for performing deep research on any topic with dynamic document loader
+    selection.
+    """
 
     def __init__(self, config: ResearchAgentConfig):
         """Initialize the research agent."""

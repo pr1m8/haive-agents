@@ -26,11 +26,15 @@ from pydantic import Field
 from haive.agents.base.agent import Agent
 from haive.agents.reasoning_and_critique.logic.engines import (
     Dict,
+    Optional,
     create_bias_detector,
     create_logical_reasoner,
     create_premise_extractor,
     create_synthesis_agent,
     create_uncertainty_analyzer,
+    from,
+    import,
+    typing,
 )
 from haive.agents.reasoning_and_critique.logic.models import (
     Evidence,
@@ -42,7 +46,8 @@ from haive.agents.reasoning_and_critique.logic.models import (
 
 # Define the actual state we want
 class ReasoningSystemState(StateSchema):
-    """State for the reasoning system."""
+    """State for the reasoning system.
+    """
 
     # Input fields
     messages: list[BaseMessage] = Field(default_factory=list)
@@ -54,25 +59,28 @@ class ReasoningSystemState(StateSchema):
     explore_alternatives: bool = Field(default=True)
 
     # Working fields
-    initial_premises: ReasoningChain | None = None
-    primary_reasoning: ReasoningChain | None = None
+    initial_premises: Optional[ReasoningChain] = None
+    primary_reasoning: Optional[ReasoningChain] = None
     alternative_reasoning: list[ReasoningChain] | None = None
-    bias_analysis: ReasoningAnalysis | None = None
-    uncertainty_analysis: Any | None = None
+    bias_analysis: Optional[ReasoningAnalysis] = None
+    uncertainty_analysis: Optional[Any] = None
 
     # Output
-    final_report: ReasoningReport | None = None
+    final_report: Optional[ReasoningReport] = None
 
 
 class ReasoningSystem(Agent):
-    """Orchestrator agent for comprehensive reasoning analysis."""
+    """Orchestrator agent for comprehensive reasoning analysis.
+    """
 
     # Explicitly set our state schema
     state_schema: Any = Field(default=ReasoningSystemState)
 
     # Define engines
-    premise_extractor: AugLLMConfig = Field(default_factory=create_premise_extractor)
-    logical_reasoner: AugLLMConfig = Field(default_factory=create_logical_reasoner)
+    premise_extractor: AugLLMConfig = Field(
+        default_factory=create_premise_extractor)
+    logical_reasoner: AugLLMConfig = Field(
+        default_factory=create_logical_reasoner)
     bias_detector: AugLLMConfig = Field(default_factory=create_bias_detector)
     uncertainty_analyzer: AugLLMConfig = Field(
         default_factory=create_uncertainty_analyzer
@@ -80,7 +88,8 @@ class ReasoningSystem(Agent):
     synthesizer: AugLLMConfig = Field(default_factory=create_synthesis_agent)
 
     def setup_agent(self) -> None:
-        """Sync engines to the engines dict."""
+        """Sync engines to the engines dict.
+        """
         self.engines = {
             "premise_extractor": self.premise_extractor,
             "logical_reasoner": self.logical_reasoner,
@@ -95,7 +104,8 @@ class ReasoningSystem(Agent):
         super().setup_agent()
 
     def build_graph(self) -> BaseGraph:
-        """Build the reasoning analysis workflow graph."""
+        """Build the reasoning analysis workflow graph.
+        """
         graph = BaseGraph(name="reasoning_system")
 
         # Add all nodes

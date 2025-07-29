@@ -1,9 +1,9 @@
 """Corrective RAG (CRAG) Agent V2.
 
-from typing import Any
-Self-correcting retrieval with proper quality assessment.
-Implements architecture from rag-architectures-flows.md:
-Retrieval → Relevance Check → Knowledge Refinement/Web Search/Combine
+from typing import Any Self-correcting retrieval with proper quality assessment.
+from typing import Optional
+Implements architecture from rag-architectures-flows.md: Retrieval → Relevance Check →
+Knowledge Refinement/Web Search/Combine
 """
 
 from typing import Any
@@ -70,7 +70,7 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         relevance_threshold: float = 0.7,
         **kwargs
     ):

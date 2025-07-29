@@ -288,7 +288,8 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
 
 
 async def test_with_deepseek():
-    """Test the agent with DeepSeek configuration."""
+    """Test the agent with DeepSeek configuration.
+    """
     # Create DeepSeek configuration
     from haive.core.models.llm.base import DeepSeekLLMConfig
 

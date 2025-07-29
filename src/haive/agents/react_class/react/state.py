@@ -16,8 +16,7 @@ from haive.agents.simple.state import SimpleAgentState
 class ReactAgentState(SimpleAgentState):
     """State for React Agent, extending SimpleAgentState.
 
-    Adds fields for tool results, intermediate reasoning,
-    and structured output.
+    Adds fields for tool results, intermediate reasoning, and structured output.
     """
 
     # Inherit messages field from SimpleAgentState

@@ -1,10 +1,11 @@
 """Tree Manager for LATS algorithm.
 
-Manages the Monte Carlo Tree Search tree structure, including
-node relationships, path finding, and tree statistics.
+Manages the Monte Carlo Tree Search tree structure, including node relationships, path
+finding, and tree statistics.
 """
 
 import logging
+from typing import Optional
 
 from haive.agents.reasoning_and_critique.lats.v3.models.tree_models import LATSNode
 
@@ -12,14 +13,19 @@ logger = logging.getLogger(__name__)
 
 
 class TreeManager:
-    """Manages the LATS tree structure and operations."""
+    """Manages the LATS tree structure and operations.
+    """
 
     def __init__(self):
-        """Initialize the tree manager."""
+        """Initialize the tree manager.
+        """
         self.nodes: dict[str, LATSNode] = {}
-        self.root_id: str | None = None
+        self.root_id: Optional[str] = None
 
-    def add_node(self, node: LATSNode, parent_id: str | None = None) -> None:
+    def add_node(
+    self,
+    node: LATSNode,
+     parent_id: Optional[str] = None) -> None:
         """Add a node to the tree.
 
         Args:
@@ -42,7 +48,7 @@ class TreeManager:
         else:
             logger.error(f"Parent node {parent_id} not found")
 
-    def get_node(self, node_id: str) -> LATSNode | None:
+    def get_node(self, node_id: str -> Optional[LATSNode]:
         """Get a node by ID.
 
         Args:
@@ -196,19 +202,20 @@ class TreeManager:
             }
 
         # Calculate statistics
-        num_leaves = len(self.get_leaf_nodes())
-        total_children = sum(len(node.children) for node in self.nodes.values())
-        num_internal = len(self.nodes) - num_leaves
-        avg_branching = total_children / max(num_internal, 1)
+        num_leaves=len(self.get_leaf_nodes())
+        total_children=sum(len(node.children) for node in self.nodes.values())
+        num_internal=len(self.nodes) - num_leaves
+        avg_branching=total_children / max(num_internal, 1)
 
         # Find most visited path
-        most_visited_leaf = max(
+        most_visited_leaf=max(
             self.get_leaf_nodes().values(), key=lambda n: n.visits, default=None
         )
 
-        most_visited_path = []
+        most_visited_path=[]
         if most_visited_leaf:
-            most_visited_path = self.get_path_to_node(most_visited_leaf.node_id)
+            most_visited_path = self.get_path_to_node(
+                most_visited_leaf.node_id)
 
         return {
             "size": self.get_tree_size(),
@@ -246,7 +253,7 @@ class TreeManager:
         logger.info(f"Pruned {len(nodes_to_remove)} nodes")
         return len(nodes_to_remove)
 
-    def visualize_tree(self, max_depth: int | None = None) -> str:
+    def visualize_tree(self, max_depth: Optional[int]=None) -> str:
         """Create a text visualization of the tree.
 
         Args:
@@ -268,7 +275,7 @@ class TreeManager:
         lines: list[str],
         prefix: str,
         is_last: bool,
-        max_depth: int | None,
+        max_depth: Optional[int],
         current_depth: int,
     ) -> None:
         """Recursively visualize a node and its children.

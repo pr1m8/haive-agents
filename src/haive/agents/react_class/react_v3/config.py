@@ -1,6 +1,7 @@
 """Configuration for the ReactAgent - a tool-using agent with ReAct pattern.
 
 from typing import Any
+from typing import Optional
 This module defines the configuration class for ReactAgent, which implements the
 ReAct (Reasoning and Acting) pattern for tool-using agents.
 """
@@ -62,11 +63,11 @@ class ReactAgentConfig(AgentConfig):
     )
 
     # Retry policies
-    reasoning_retry: RetryPolicy | None = Field(
+    reasoning_retry: Optional[RetryPolicy] = Field(
         default=None, description="Retry policy for reasoning node"
     )
 
-    tool_retry: RetryPolicy | None = Field(
+    tool_retry: Optional[RetryPolicy] = Field(
         default=None, description="Retry policy for tool execution node"
     )
 

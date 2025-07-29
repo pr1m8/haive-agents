@@ -1,7 +1,7 @@
 """ReWOO V3 State Schema with computed fields for dynamic prompts.
 
-This module defines the state schema for ReWOO V3 Agent using our proven
-MessagesState + computed fields pattern from Plan-and-Execute V3 success.
+This module defines the state schema for ReWOO V3 Agent using our proven MessagesState +
+computed fields pattern from Plan-and-Execute V3 success.
 """
 
 from datetime import datetime

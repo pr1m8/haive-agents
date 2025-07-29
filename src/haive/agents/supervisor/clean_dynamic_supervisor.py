@@ -12,7 +12,6 @@ Functions:
 """
 
 # src/haive/agents/supervisor/clean_dynamic_supervisor.py
-
 """Clean Dynamic Supervisor Implementation.
 
 A dynamic supervisor that can add/remove agents at runtime and

@@ -1,8 +1,9 @@
 """Adaptive RAG with Tools Integration Agents.
 
-from typing import Any
-Implementation of adaptive RAG with tool integration and ReAct patterns.
-Includes Google Search integration, tool selection, and dynamic routing based on query needs.
+from typing import Any Implementation of adaptive RAG with tool integration and ReAct
+from typing import Optional
+patterns. Includes Google Search integration, tool selection, and dynamic routing based
+on query needs.
 """
 
 import logging
@@ -506,7 +507,7 @@ class AdaptiveToolsRAGAgent(SequentialAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         enable_google_search: bool = True,
         enable_local_retrieval: bool = True,
         **kwargs,
@@ -571,7 +572,7 @@ class AdaptiveToolsRAGAgent(SequentialAgent):
 # Factory function
 def create_adaptive_tools_rag_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     tools_mode: str = "full",
     **kwargs,
 ) -> AdaptiveToolsRAGAgent:

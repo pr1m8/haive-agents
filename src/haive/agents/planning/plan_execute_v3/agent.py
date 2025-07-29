@@ -26,11 +26,15 @@ from haive.agents.simple.agent import SimpleAgent
 
 from .models import (
     ExecutionPlan,
+    Optional,
     PlanEvaluation,
     PlanExecuteInput,
     PlanExecuteOutput,
     RevisedPlan,
     StepExecution,
+    from,
+    import,
+    typing,
 )
 from .prompts import evaluator_prompt, executor_prompt, planner_prompt, replanner_prompt
 from .state import PlanExecuteV3State
@@ -59,7 +63,7 @@ class PlanExecuteV3Agent:
     def __init__(
         self,
         name: str = "plan_execute_v3",
-        config: AugLLMConfig | None = None,
+        config: Optional[AugLLMConfig] = None,
         tools: list[Tool] | None = None,
         max_iterations: int = 5,
         max_steps_per_plan: int = 10,
@@ -129,7 +133,8 @@ class PlanExecuteV3Agent:
         )
 
     def _setup_routing(self) -> None:
-        """Set up conditional routing between sub-agents."""
+        """Set up conditional routing between sub-agents.
+        """
         # Commented out for now - using sequential mode for testing
 
         # TODO: Re-enable conditional routing once basic sequential flow works
@@ -164,7 +169,7 @@ class PlanExecuteV3Agent:
     async def arun(
         self,
         input_data: str | dict[str, Any] | PlanExecuteInput,
-        state: PlanExecuteV3State | None = None,
+        state: Optional[PlanExecuteV3State] = None,
     ) -> PlanExecuteOutput:
         """Execute the Plan-and-Execute agent asynchronously.
 
@@ -193,7 +198,8 @@ class PlanExecuteV3Agent:
 
         # Initialize or update state
         if state is None:
-            state = PlanExecuteV3State(messages=[HumanMessage(content=objective)])
+            state = PlanExecuteV3State(
+                messages=[HumanMessage(content=objective)])
 
         if context:
             state.context["user_context"] = context
@@ -241,20 +247,25 @@ class PlanExecuteV3Agent:
             # Handle execution errors
             return PlanExecuteOutput(
                 objective=objective,
-                final_answer=f"Execution failed: {e!s}",
-                execution_summary=f"Error occurred during plan execution: {e!s}",
+                final_answer=f"Execution failed: {
+                    e!s}",
+                execution_summary=f"Error occurred during plan execution: {
+                    e!s}",
                 steps_completed=0,
                 total_steps=0,
                 revisions_made=0,
-                total_execution_time=time.time() - start_time,
-                key_findings=[f"Error: {e!s}"],
+                total_execution_time=time.time() -
+                start_time,
+                key_findings=[
+                    f"Error: {
+                        e!s}"],
                 confidence_score=0.0,
             )
 
     def run(
         self,
         input_data: str | dict[str, Any] | PlanExecuteInput,
-        state: PlanExecuteV3State | None = None,
+        state: Optional[PlanExecuteV3State] = None,
     ) -> PlanExecuteOutput:
         """Execute the Plan-and-Execute agent synchronously.
 
@@ -268,7 +279,8 @@ class PlanExecuteV3Agent:
         return asyncio.run(self.arun(input_data, state))
 
     def get_capabilities(self) -> dict[str, Any]:
-        """Get agent capabilities description."""
+        """Get agent capabilities description.
+        """
         return {
             "name": self.name,
             "type": "Plan-and-Execute V3",
@@ -287,7 +299,8 @@ class PlanExecuteV3Agent:
                 "Real component testing",
                 "Enhanced MultiAgent V3 coordination",
             ],
-            "tools_available": len(self.tools),
+            "tools_available": len(
+                self.tools),
             "max_iterations": self.max_iterations,
             "max_steps_per_plan": self.max_steps_per_plan,
         }

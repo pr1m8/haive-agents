@@ -1,7 +1,7 @@
 """Multi-agent V2 with proper state management and rebuilding support.
 
-This module provides a rebuilt MultiAgent that uses MultiAgentState without
-schema flattening, maintaining type safety and hierarchical access.
+This module provides a rebuilt MultiAgent that uses MultiAgentState without schema
+flattening, maintaining type safety and hierarchical access.
 """
 
 import logging
@@ -11,6 +11,7 @@ from collections.abc import Callable
 from enum import Enum
 from typing import (
     Any,
+    Optional,
 )
 
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
@@ -26,7 +27,8 @@ logger = logging.getLogger(__name__)
 
 
 class ExecutionMode(str, Enum):
-    """Execution modes for multi-agent systems."""
+    """Execution modes for multi-agent systems.
+    """
 
     SEQUENCE = "sequence"
     PARALLEL = "parallel"
@@ -64,7 +66,7 @@ class MultiAgentV2(Agent):
     )
 
     # Routing configuration (for conditional mode)
-    routing_function: Callable | None = Field(
+    routing_function: Optional[Callable] = Field(
         default=None, description="Function for conditional routing"
     )
 
@@ -75,7 +77,8 @@ class MultiAgentV2(Agent):
     @model_validator(mode="before")
     @classmethod
     def validate_agents(cls, values: dict[str, Any]) -> dict[str, Any]:
-        """Ensure agents are provided."""
+        """Ensure agents are provided.
+        """
         agents = values.get("agents", [])
         if not agents:
             raise ValueError("MultiAgent requires at least one agent")
@@ -89,7 +92,8 @@ class MultiAgentV2(Agent):
     @model_validator(mode="after")
     @classmethod
     def setup_multi_agent(cls) -> "MultiAgentV2":
-        """Set up the multi-agent system."""
+        """Set up the multi-agent system.
+        """
         # Create custom state schema if needed
         if self.state_schema == MultiAgentState:
             # Use default MultiAgentState
@@ -110,7 +114,7 @@ class MultiAgentV2(Agent):
     def from_agents(
         cls,
         agents: list[Agent] | dict[str, Agent],
-        name: str | None = None,
+        name: Optional[str] = None,
         execution_mode: ExecutionMode = ExecutionMode.SEQUENCE,
         **kwargs,
     ) -> "MultiAgentV2":
@@ -204,7 +208,10 @@ class MultiAgentV2(Agent):
         self.agents = new_agents
         return self
 
-    def remove_agent(self, agent_name: str, rebuild: bool = True) -> "MultiAgentV2":
+    def remove_agent(
+    self,
+    agent_name: str,
+     rebuild: bool = True) -> "MultiAgentV2":
         """Remove an agent and optionally rebuild.
 
         Args:
@@ -215,7 +222,9 @@ class MultiAgentV2(Agent):
             Self or new instance if rebuilt
         """
         if isinstance(self.agents, dict):
-            new_agents = {k: v for k, v in self.agents.items() if k != agent_name}
+            new_agents = {
+    k: v for k,
+     v in self.agents.items() if k != agent_name}
         else:
             new_agents = [a for a in self.agents if a.name != agent_name]
 
@@ -224,8 +233,9 @@ class MultiAgentV2(Agent):
         self.agents = new_agents
         return self
 
-    def get_agent(self, agent_name: str) -> Agent | None:
-        """Get an agent by name."""
+    def get_agent(self, agent_name: str -> Optional[Agent]:
+        """Get an agent by name.
+        """
         if isinstance(self.agents, dict):
             return self.agents.get(agent_name)
         for agent in self.agents:
@@ -234,8 +244,12 @@ class MultiAgentV2(Agent):
         return None
 
     def build_graph(self) -> BaseGraph:
-        """Build the multi-agent graph based on execution mode."""
-        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
+        """Build the multi-agent graph based on execution mode.
+        """
+        graph = BaseGraph(
+    name=f"{
+        self.name}_graph",
+         state_schema=self.state_schema)
 
         if self.execution_mode == ExecutionMode.SEQUENCE:
             self._build_sequence_graph(graph)
@@ -251,7 +265,8 @@ class MultiAgentV2(Agent):
         return graph
 
     def _build_sequence_graph(self, graph: BaseGraph) -> None:
-        """Build sequential execution graph."""
+        """Build sequential execution graph.
+        """
         agent_names = (
             list(self.agents.keys())
             if isinstance(self.agents, dict)
@@ -273,12 +288,14 @@ class MultiAgentV2(Agent):
         graph.add_edge(START, f"agent_{agent_names[0]}")
 
         for i in range(len(agent_names) - 1):
-            graph.add_edge(f"agent_{agent_names[i]}", f"agent_{agent_names[i+1]}")
+            graph.add_edge(
+                f"agent_{agent_names[i]}", f"agent_{agent_names[i + 1]}")
 
         graph.add_edge(f"agent_{agent_names[-1]}", END)
 
     def _build_parallel_graph(self, graph: BaseGraph) -> None:
-        """Build parallel execution graph."""
+        """Build parallel execution graph.
+        """
         agent_names = (
             list(self.agents.keys())
             if isinstance(self.agents, dict)
@@ -312,9 +329,11 @@ class MultiAgentV2(Agent):
         graph.add_edge("aggregator", END)
 
     def _build_conditional_graph(self, graph: BaseGraph) -> None:
-        """Build conditional execution graph."""
+        """Build conditional execution graph.
+        """
         if not self.routing_function or not self.route_map:
-            raise ValueError("Conditional mode requires routing_function and route_map")
+            raise ValueError(
+                "Conditional mode requires routing_function and route_map")
 
         # Add router node
         graph.add_node("router", self._route_conditionally)
@@ -333,29 +352,34 @@ class MultiAgentV2(Agent):
 
             # Conditional edge from router
             graph.add_conditional_edges(
-                "routef", self.routing_function, {route_key: f"agent_{agent_name}"}
+                "routef", self.routing_function, {
+                    route_key: f"agent_{agent_name}"}
             )
 
             # All agents go to END
             graph.add_edge(f"agent_{agent_name}", END)
 
     def _build_hierarchical_graph(self, graph: BaseGraph) -> None:
-        """Build hierarchical execution graph."""
+        """Build hierarchical execution graph.
+        """
         # This is a simplified version - can be extended
         self._build_sequence_graph(graph)
 
     def _coordinate_parallel(self, state: MultiAgentState) -> dict[str, Any]:
-        """Coordinate parallel execution."""
+        """Coordinate parallel execution.
+        """
         # Mark all agents for execution
         return {"execution_stage": "parallel_start"}
 
     def _aggregate_results(self, state: MultiAgentState) -> dict[str, Any]:
-        """Aggregate results from parallel execution."""
+        """Aggregate results from parallel execution.
+        """
         # Results are already in agent_outputs
         return {"execution_stage": "parallel_complete"}
 
     def _route_conditionally(self, state: MultiAgentState) -> str:
-        """Route based on condition."""
+        """Route based on condition.
+        """
         if self.routing_function:
             return self.routing_function(state)
         return "END"

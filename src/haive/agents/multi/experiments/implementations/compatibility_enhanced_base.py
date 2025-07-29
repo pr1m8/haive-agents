@@ -1,9 +1,9 @@
 """Compatibility-Enhanced Multi-Agent Base.
 
-from typing import Any
-This module extends the multi-agent base with built-in compatibility checking,
-ensuring agents are compatible before building workflows and providing
-automatic adaptation when possible.
+from typing import Any This module extends the multi-agent base with built-in
+from typing import Optional
+compatibility checking, ensuring agents are compatible before building workflows and
+providing automatic adaptation when possible.
 """
 
 import logging
@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 
 
 class CompatibilityMode(str, Enum):
-    """Modes for handling compatibility issues."""
+    """Modes for handling compatibility issues.
+    """
 
     STRICT = "strict"  # Fail if any incompatibilities
     ADAPTIVE = "adaptive"  # Try to adapt incompatible agents
@@ -35,7 +36,8 @@ class CompatibilityMode(str, Enum):
 
 @dataclass
 class CompatibilityResult:
-    """Result of compatibility checking."""
+    """Result of compatibility checking.
+    """
 
     is_compatible: bool
     compatibility_score: float
@@ -84,7 +86,10 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
         super().__init__(**kwargs)
 
-    def add_agent(self, agent: Agent, check_compatibility: bool | None = None) -> None:
+    def add_agent(
+    self,
+    agent: Agent,
+     check_compatibility: Optional[bool] = None) -> None:
         """Add an agent to the multi-agent system with automatic compatibility checking.
 
         Args:
@@ -104,11 +109,13 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
             if not compatibility_result.is_compatible:
                 if self.compatibility_mode == CompatibilityMode.STRICT:
                     raise ValueError(
-                        f"Agent {agent.name} is incompatible with existing agents: "
+                        f"Agent {
+    agent.name} is incompatible with existing agents: "
                         f"{'; '.join(compatibility_result.issues)}"
                     )
                 if self.compatibility_mode == CompatibilityMode.ADAPTIVE:
-                    self._adapt_agent_for_compatibility(agent, compatibility_result)
+                    self._adapt_agent_for_compatibility(
+                        agent, compatibility_result)
                 elif self.compatibility_mode == CompatibilityMode.AUTO_FIX:
                     self._auto_fix_compatibility(agent, compatibility_result)
                 elif self.compatibility_mode == CompatibilityMode.PERMISSIVE:
@@ -126,19 +133,24 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
         logger.info(f"Added agent {agent.name} to multi-agent system")
 
-    def _check_agent_compatibility(self, new_agent: Agent) -> CompatibilityResult:
-        """Check compatibility of a new agent with existing agents."""
+    def _check_agent_compatibility(
+    self, new_agent: Agent) -> CompatibilityResult:
+        """Check compatibility of a new agent with existing agents.
+        """
         issues = []
         warnings = []
         suggested_adapters = []
         auto_fixes_applied = []
         min_score = 1.0
 
-        # Check compatibility with each existing agent (for sequential workflows)
+        # Check compatibility with each existing agent (for sequential
+        # workflows)
         for existing_agent in self.agents:
             if self.execution_mode == ExecutionMode.SEQUENCE:
-                # Check if existing agent output is compatible with new agent input
-                result = self._check_agent_pair_compatibility(existing_agent, new_agent)
+                # Check if existing agent output is compatible with new agent
+                # input
+                result = self._check_agent_pair_compatibility(
+                    existing_agent, new_agent)
 
                 if not result["compatible"]:
                     issues.extend(result["issues"])
@@ -149,10 +161,12 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
         # For the new agent, check if it can work with the shared state schema
         if self.state_schema:
-            state_compatibility = self._check_state_schema_compatibility(new_agent)
+            state_compatibility = self._check_state_schema_compatibility(
+                new_agent)
             if not state_compatibility["compatible"]:
                 issues.extend(state_compatibility["issues"])
-                suggested_adapters.extend(state_compatibility["suggested_adapters"])
+                suggested_adapters.extend(
+    state_compatibility["suggested_adapters"])
                 min_score = min(min_score, state_compatibility["score"])
 
         return CompatibilityResult(
@@ -167,7 +181,8 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
     def _check_agent_pair_compatibility(
         self, source_agent: Agent, target_agent: Agent
     ) -> dict[str, Any]:
-        """Check compatibility between two specific agents."""
+        """Check compatibility between two specific agents.
+        """
         try:
             # Get schemas safely
             source_schema = self._get_agent_output_schema(source_agent)
@@ -195,7 +210,9 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
         except Exception as e:
             logger.exception(
-                f"Error checking compatibility between {source_agent.name} and {target_agent.name}: {e}"
+                f"Error checking compatibility between {
+    source_agent.name} and {
+        target_agent.name}: {e}"
             )
             return {
                 "compatible": False,
@@ -205,8 +222,10 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
                 "suggested_adapters": [],
             }
 
-    def _check_state_schema_compatibility(self, agent: Agent) -> dict[str, Any]:
-        """Check if agent is compatible with the shared state schema."""
+    def _check_state_schema_compatibility(
+        self, agent: Agent) -> dict[str, Any]:
+        """Check if agent is compatible with the shared state schema.
+        """
         try:
             agent_schema = self._get_agent_state_schema(agent)
 
@@ -219,7 +238,8 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
                 }
 
             # Check compatibility with multi-agent state schema
-            compat_result = check_compatibility(self.state_schema, agent_schema)
+            compat_result = check_compatibility(
+                self.state_schema, agent_schema)
 
             return {
                 "compatible": getattr(compat_result, "is_compatible", False),
@@ -230,7 +250,8 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
         except Exception as e:
             logger.exception(
-                f"Error checking state schema compatibility for {agent.name}: {e}"
+                f"Error checking state schema compatibility for {
+    agent.name}: {e}"
             )
             return {
                 "compatible": False,
@@ -239,8 +260,9 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
                 "suggested_adapters": [],
             }
 
-    def _get_agent_output_schema(self, agent: Agent) -> type | None:
-        """Safely extract agent output schema."""
+    def _get_agent_output_schema(self, agent: Agent -> Optional[type]:
+        """Safely extract agent output schema.
+        """
         try:
             if hasattr(agent, "output_schema") and agent.output_schema:
                 return agent.output_schema
@@ -255,8 +277,9 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
         except Exception:
             return None
 
-    def _get_agent_input_schema(self, agent: Agent) -> type | None:
-        """Safely extract agent input schema."""
+    def _get_agent_input_schema(self, agent: Agent -> Optional[type]:
+        """Safely extract agent input schema.
+        """
         try:
             if hasattr(agent, "input_schema") and agent.input_schema:
                 return agent.input_schema
@@ -271,8 +294,9 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
         except Exception:
             return None
 
-    def _get_agent_state_schema(self, agent: Agent) -> type | None:
-        """Safely extract agent state schema."""
+    def _get_agent_state_schema(self, agent: Agent -> Optional[type]:
+        """Safely extract agent state schema.
+        """
         try:
             if hasattr(agent, "state_schema") and agent.state_schema:
                 return agent.state_schema
@@ -280,11 +304,13 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
         except Exception:
             return None
 
-    def _extract_adapter_suggestions(self, compat_result) -> list[dict[str, Any]]:
-        """Extract adapter suggestions from compatibility result."""
-        adapters = []
+    def _extract_adapter_suggestions(
+        self, compat_result) -> list[dict[str, Any]]:
+        """Extract adapter suggestions from compatibility result.
+        """
+        adapters=[]
 
-        missing_fields = getattr(compat_result, "missing_required_fields", [])
+        missing_fields=getattr(compat_result, "missing_required_fields", [])
         if missing_fields:
             adapters.append(
                 {
@@ -294,7 +320,7 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
                 }
             )
 
-        suggested_mappings = getattr(compat_result, "suggested_mappings", {})
+        suggested_mappings=getattr(compat_result, "suggested_mappings", {})
         if suggested_mappings:
             adapters.append(
                 {
@@ -309,7 +335,8 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
     def _adapt_agent_for_compatibility(
         self, agent: Agent, compatibility_result: CompatibilityResult
     ) -> None:
-        """Adapt an agent to improve compatibility."""
+        """Adapt an agent to improve compatibility.
+        """
         logger.info(f"Adapting agent {agent.name} for compatibility...")
 
         for adapter_spec in compatibility_result.suggested_adapters:
@@ -320,17 +347,21 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
             except Exception as e:
                 logger.exception(
-                    f"Failed to apply adapter {adapter_spec['type']} to {agent.name}: {e}"
+                    f"Failed to apply adapter {
+    adapter_spec['type']} to {
+        agent.name}: {e}"
                 )
 
     def _apply_field_mapping_adapter(
         self, agent: Agent, adapter_spec: dict[str, Any]
     ) -> None:
-        """Apply a field mapping adapter to an agent."""
+        """Apply a field mapping adapter to an agent.
+        """
         # This is a simplified implementation
-        # In practice, you might create wrapper classes or modify agent behavior
+        # In practice, you might create wrapper classes or modify agent
+        # behavior
 
-        mapper = FieldMapper()
+        mapper=FieldMapper()
 
         if "mappings" in adapter_spec:
             for source_field, target_field in adapter_spec["mappings"].items():
@@ -351,8 +382,10 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
     def _auto_fix_compatibility(
         self, agent: Agent, compatibility_result: CompatibilityResult
     ) -> None:
-        """Automatically fix compatibility issues where possible."""
-        logger.info(f"Auto-fixing compatibility issues for agent {agent.name}...")
+        """Automatically fix compatibility issues where possible.
+        """
+        logger.info(
+            f"Auto-fixing compatibility issues for agent {agent.name}...")
 
         # Start with adaptive approach
         self._adapt_agent_for_compatibility(agent, compatibility_result)
@@ -361,25 +394,27 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
         # For example, automatic schema updates, field transformations, etc.
 
     def build_graph(self) -> Any:
-        """Build graph with pre-build compatibility validation."""
+        """Build graph with pre-build compatibility validation.
+        """
         if self.auto_check_compatibility:
             self._validate_workflow_compatibility()
 
         return super().build_graph()
 
     def _validate_workflow_compatibility(self) -> None:
-        """Validate compatibility of the entire workflow before building."""
+        """Validate compatibility of the entire workflow before building.
+        """
         logger.info("Validating workflow compatibility...")
 
-        incompatible_pairs = []
+        incompatible_pairs=[]
 
         if self.execution_mode == ExecutionMode.SEQUENCE:
             # Check sequential compatibility
             for i in range(len(self.agents) - 1):
-                source_agent = self.agents[i]
-                target_agent = self.agents[i + 1]
+                source_agent=self.agents[i]
+                target_agent=self.agents[i + 1]
 
-                result = self._check_agent_pair_compatibility(
+                result=self._check_agent_pair_compatibility(
                     source_agent, target_agent
                 )
 
@@ -392,25 +427,30 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
                     )
 
         if incompatible_pairs and self.compatibility_mode == CompatibilityMode.STRICT:
-            issues = [
+            issues=[
                 f"{pair[0]} -> {pair[1]}: {'; '.join(pair[2]['issues'])}"
                 for pair in incompatible_pairs
             ]
-            raise ValueError(f"Workflow has compatibility issues: {'; '.join(issues)}")
+            raise ValueError(
+    f"Workflow has compatibility issues: {
+        '; '.join(issues)}")
 
         if incompatible_pairs:
             logger.warning(
                 f"Workflow has {len(incompatible_pairs)} compatibility issues"
             )
             for source, target, result in incompatible_pairs:
-                logger.warning(f"  {source} -> {target}: score {result['score']:.2f}")
+                logger.warning(
+                    f"  {source} -> {target}: score {result['score']:.2f}")
 
-    def get_compatibility_report(self, detailed: bool | None = None) -> dict[str, Any]:
-        """Generate a comprehensive compatibility report."""
+    def get_compatibility_report(
+        self, detailed: Optional[bool]=None) -> dict[str, Any]:
+        """Generate a comprehensive compatibility report.
+        """
         if detailed is None:
-            detailed = self.compatibility_report_level == "detailed"
+            detailed=self.compatibility_report_level == "detailed"
 
-        report = {
+        report={
             "workflow_name": self.name,
             "execution_mode": self.execution_mode.value,
             "compatibility_mode": self.compatibility_mode.value,
@@ -444,19 +484,22 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
         return report
 
     def _generate_compatibility_recommendations(self) -> list[str]:
-        """Generate recommendations for improving compatibility."""
-        recommendations = []
+        """Generate recommendations for improving compatibility.
+        """
+        recommendations=[]
 
         if not self._compatibility_results:
-            recommendations.append("No compatibility checks have been performed yet")
+            recommendations.append(
+                "No compatibility checks have been performed yet")
             return recommendations
 
-        incompatible_count = sum(
+        incompatible_count=sum(
             1 for result in self._compatibility_results if not result.is_compatible
         )
 
         if incompatible_count == 0:
-            recommendations.append("All agents are compatible - no action needed")
+            recommendations.append(
+                "All agents are compatible - no action needed")
         else:
             recommendations.append(
                 f"{incompatible_count} agents have compatibility issues"
@@ -475,29 +518,30 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
         return recommendations
 
     def visualize_compatibility(self) -> None:
-        """Visualize the compatibility status of the multi-agent system."""
+        """Visualize the compatibility status of the multi-agent system.
+        """
         from rich.console import Console
         from rich.table import Table
         from rich.tree import Tree
 
-        console = Console()
+        console=Console()
 
         # Create compatibility tree
-        tree = Tree(f"[bold blue]{self.name}[/bold blue] - Compatibility Status")
+        tree=Tree(f"[bold blue]{self.name}[/bold blue] - Compatibility Status")
 
         # Add overall status
-        overall_compatible = all(
+        overall_compatible=all(
             result.is_compatible for result in self._compatibility_results
         )
-        status_color = "green" if overall_compatible else "red"
-        status_text = "✅ Compatible" if overall_compatible else "❌ Has Issues"
+        status_color="green" if overall_compatible else "red"
+        status_text="✅ Compatible" if overall_compatible else "❌ Has Issues"
 
         tree.add(f"[{status_color}]{status_text}[/{status_color}]")
 
         # Add agent details
-        agents_branch = tree.add("[cyan]Agents[/cyan]")
+        agents_branch=tree.add("[cyan]Agents[/cyan]")
         for i, agent in enumerate(self.agents):
-            agent_status = (
+            agent_status=(
                 "✅"
                 if i < len(self._compatibility_results)
                 and self._compatibility_results[i].is_compatible
@@ -507,7 +551,7 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
         # Add adapter information
         if self._applied_adapters:
-            adapters_branch = tree.add("[yellow]Applied Adapters[/yellow]")
+            adapters_branch=tree.add("[yellow]Applied Adapters[/yellow]")
             for adapter in self._applied_adapters:
                 adapters_branch.add(
                     f"🔧 {adapter['adapter_type']} for {adapter['agent']}"
@@ -517,15 +561,16 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
         # Add detailed table if there are issues
         if not overall_compatible:
-            table = Table(title="Compatibility Issues")
+            table=Table(title="Compatibility Issues")
             table.add_column("Agent", style="cyan")
             table.add_column("Score", style="magenta")
             table.add_column("Issues", style="red")
 
             for i, result in enumerate(self._compatibility_results):
                 if not result.is_compatible:
-                    agent_name = (
-                        self.agents[i].name if i < len(self.agents) else f"Agent {i}"
+                    agent_name=(
+                        self.agents[i].name if i < len(
+                            self.agents) else f"Agent {i}"
                     )
                     table.add_row(
                         agent_name,
@@ -542,26 +587,29 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
 
 class CompatibilityEnhancedSequentialAgent(CompatibilityEnhancedMultiAgent):
-    """Sequential agent with built-in compatibility checking."""
+    """Sequential agent with built-in compatibility checking.
+    """
 
     def __init__(self, **kwargs) -> None:
-        kwargs["execution_mode"] = ExecutionMode.SEQUENCE
+        kwargs["execution_mode"]=ExecutionMode.SEQUENCE
         super().__init__(**kwargs)
 
 
 class CompatibilityEnhancedConditionalAgent(CompatibilityEnhancedMultiAgent):
-    """Conditional agent with built-in compatibility checking."""
+    """Conditional agent with built-in compatibility checking.
+    """
 
     def __init__(self, **kwargs) -> None:
-        kwargs["execution_mode"] = ExecutionMode.CONDITIONAL
+        kwargs["execution_mode"]=ExecutionMode.CONDITIONAL
         super().__init__(**kwargs)
 
 
 class CompatibilityEnhancedParallelAgent(CompatibilityEnhancedMultiAgent):
-    """Parallel agent with built-in compatibility checking."""
+    """Parallel agent with built-in compatibility checking.
+    """
 
     def __init__(self, **kwargs) -> None:
-        kwargs["execution_mode"] = ExecutionMode.PARALLEL
+        kwargs["execution_mode"]=ExecutionMode.PARALLEL
         super().__init__(**kwargs)
 
 
@@ -572,8 +620,8 @@ class CompatibilityEnhancedParallelAgent(CompatibilityEnhancedMultiAgent):
 
 def create_compatible_multi_agent(
     agents: list[Agent],
-    execution_mode: ExecutionMode = ExecutionMode.SEQUENCE,
-    compatibility_mode: CompatibilityMode = CompatibilityMode.ADAPTIVE,
+    execution_mode: ExecutionMode=ExecutionMode.SEQUENCE,
+    compatibility_mode: CompatibilityMode=CompatibilityMode.ADAPTIVE,
     **kwargs,
 ) -> CompatibilityEnhancedMultiAgent:
     """Create a multi-agent system with automatic compatibility checking.
@@ -581,7 +629,7 @@ def create_compatible_multi_agent(
     This function creates a multi-agent system and automatically checks and fixes
     compatibility issues based on the specified compatibility mode.
     """
-    system = CompatibilityEnhancedMultiAgent(
+    system=CompatibilityEnhancedMultiAgent(
         execution_mode=execution_mode, compatibility_mode=compatibility_mode, **kwargs
     )
 

@@ -41,8 +41,8 @@ class LLMRAGAgent(BaseRAGAgent):
     def setup_workflow(self) -> None:
         """Set up the dynamic workflow for the LLM RAG agent.
 
-        Creates a graph that extends the base RAG workflow with additional
-        functionality for checking relevance and generating answers.
+        Creates a graph that extends the base RAG workflow with additional functionality
+        for checking relevance and generating answers.
         """
         # Get engines from the config
         retriever_engine = self.config.retriever_config
@@ -203,6 +203,7 @@ class LLMRAGAgent(BaseRAGAgent):
 
 def format_documents(documents: list[Any]) -> str:
     """Format a list of documents into a text string for LLM input.
+
     Handles both Document objects and strings.
     """
     formatted_texts = []

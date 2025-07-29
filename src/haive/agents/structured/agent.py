@@ -1,7 +1,7 @@
 """Structured output agent implementation.
 
-This module provides the StructuredOutputAgent that converts any agent's output
-into structured formats using Pydantic models and tool-based extraction.
+This module provides the StructuredOutputAgent that converts any agent's output into
+structured formats using Pydantic models and tool-based extraction.
 """
 
 from typing import Any

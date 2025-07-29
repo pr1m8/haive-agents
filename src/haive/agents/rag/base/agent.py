@@ -45,7 +45,6 @@ class BaseRAGAgent(RetrieverMixin, Agent):
             vector_store_config=vs_config,
             name="my_rag_agent"
             )
-
     """
 
     name: str = "Base RAG Agent"

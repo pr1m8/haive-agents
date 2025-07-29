@@ -1,7 +1,7 @@
 """Task solvability and readiness assessment.
 
-This module analyzes whether tasks are currently solvable, what barriers exist,
-and what would be required to make unsolvable tasks solvable.
+This module analyzes whether tasks are currently solvable, what barriers exist, and what
+would be required to make unsolvable tasks solvable.
 """
 
 from datetime import timedelta

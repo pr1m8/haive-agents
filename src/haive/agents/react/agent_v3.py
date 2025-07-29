@@ -13,7 +13,6 @@ Functions:
     search_engine: Search Engine functionality.
 """
 
-#!/usr/bin/env python3
 """ReactAgent v3 - Enhanced ReAct Pattern with Structured Output Support.
 
 This module provides ReactAgent v3, an enhanced implementation of the ReAct (Reasoning and Acting)
@@ -355,7 +354,8 @@ class ReactAgentV3(SimpleAgentV3):
         return v
 
     def setup_agent(self) -> None:
-        """Setup ReactAgent v3 with enhanced ReAct pattern and reasoning loop configuration.
+        """Setup ReactAgent v3 with enhanced ReAct pattern and reasoning loop
+        configuration.
 
         Extends SimpleAgentV3.setup_agent() with ReactAgent-specific initialization
         including reasoning loop configuration, iteration tracking setup, and

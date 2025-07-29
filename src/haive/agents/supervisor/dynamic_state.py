@@ -1,8 +1,8 @@
 """Enhanced state schema for dynamic supervisor operations.
 
-This module provides an enhanced state management system for dynamic supervisor
-agents that can add/remove agents at runtime and adapt their responses based
-on agent configuration and execution context.
+This module provides an enhanced state management system for dynamic supervisor agents
+that can add/remove agents at runtime and adapt their responses based on agent
+configuration and execution context.
 """
 
 import time
@@ -126,8 +126,8 @@ class SupervisorDecision(BaseModel):
 class DynamicSupervisorState(StateSchema):
     """Enhanced state schema for dynamic supervisor operations.
 
-    This state schema provides comprehensive tracking of agent execution,
-    dynamic configuration, and adaptive response handling for supervisor agents.
+    This state schema provides comprehensive tracking of agent execution, dynamic
+    configuration, and adaptive response handling for supervisor agents.
     """
 
     # Core messaging (inherited from StateSchema)

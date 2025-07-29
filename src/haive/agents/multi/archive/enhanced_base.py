@@ -1,6 +1,7 @@
 """Enhanced Multi-Agent Base for flexible agent orchestration.
 
 from typing import Any, Dict
+from typing import Optional, Union
 This module provides an improved multi-agent base that leverages the advanced
 conditional edges functionality from base_graph2.py while keeping the API simple
 and similar to how it works in simple agents.
@@ -264,7 +265,7 @@ class MultiAgentBase(Agent):
 
     def add_conditional_edges(
         self,
-        source_agent: str | Agent,
+        source_agent: Union[str, Agent],
         condition: Callable[[Any], Any],
         destinations: str | list[str] | dict[Any, str | Agent],
         default: str | Agent | None = END,
@@ -314,7 +315,9 @@ class MultiAgentBase(Agent):
             }
         )
 
-    def add_edge(self, source_agent: str | Agent, target_agent: str | Agent) -> None:
+    def add_edge(
+        self, source_agent: Union[str, Agent], target_agent: Union[str, Agent]
+    ) -> None:
         """Add a simple edge between agents.
 
         Args:
@@ -330,7 +333,7 @@ class MultiAgentBase(Agent):
             }
         )
 
-    def _get_agent_node_name(self, agent: str | Agent) -> str:
+    def _get_agent_node_name(self, agent: Union[str, Agent]) -> str:
         """Get the node name for an agent."""
         if isinstance(agent, str):
             if agent in [START, END, "START", "END"]:
@@ -360,7 +363,7 @@ class MultiAgentBase(Agent):
 
         return self.agent_node_mapping[base_name]
 
-    def _normalize_destination(self, dest: str | Agent) -> str:
+    def _normalize_destination(self, dest: Union[str, Agent]) -> str:
         """Normalize destination to node name."""
         if dest in (END, "END"):
             return END
@@ -369,7 +372,8 @@ class MultiAgentBase(Agent):
         return self._get_agent_node_name(dest)
 
     def _serialize_engine_for_state(self, engine: Any) -> dict[str, Any]:
-        """Serialize an engine to a dict that can be stored in state and serialized by msgpack.
+        """Serialize an engine to a dict that can be stored in state and serialized by
+        msgpack.
 
         The agent node can model validate this dict back to an engine if needed.
         """
@@ -438,8 +442,8 @@ class MultiAgentBase(Agent):
     def _prepare_input(self, input_data: Any) -> Any:
         """Prepare input data for the multi-agent system.
 
-        For PARALLEL mode, we don't pass engines through state to avoid
-        serialization issues. Each agent will use its own engines.
+        For PARALLEL mode, we don't pass engines through state to avoid serialization
+        issues. Each agent will use its own engines.
         """
         # Call parent's _prepare_input first
         prepared = super()._prepare_input(input_data)

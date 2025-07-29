@@ -4,7 +4,7 @@ MultiAgent[AgentsT] where AgentsT represents the agents it contains.
 """
 
 import logging
-from typing import Any, Generic, Literal, TypeVar
+from typing import Any, Generic, Literal, Optional, TypeVar
 
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -77,7 +77,8 @@ class MultiAgent(Agent, Generic[AgentsT]):
     """
 
     # The agents this MultiAgent coordinates (generic)
-    agents: AgentsT = Field(..., description="Agents to coordinate - generic type")
+    agents: AgentsT = Field(...,
+     description="Agents to coordinate - generic type")
 
     # Execution mode
     mode: Literal["sequential", "parallel", "conditional", "branch"] = Field(
@@ -85,7 +86,7 @@ class MultiAgent(Agent, Generic[AgentsT]):
     )
 
     # Branching configuration
-    branch_condition: Any | None = Field(
+    branch_condition: Optional[Any] = Field(
         default=None, description="Condition function for branching"
     )
 
@@ -101,35 +102,40 @@ class MultiAgent(Agent, Generic[AgentsT]):
     @field_validator("agents")
     @classmethod
     def validate_agents(cls, v: AgentsT) -> AgentsT:
-        """Validate agents based on type."""
+        """Validate agents based on type.
+        """
         if isinstance(v, dict):
             if not v:
                 raise ValueError("Agent dict cannot be empty")
             # Validate all values are agents
             for name, agent in v.items():
                 if not hasattr(agent, "run") and not hasattr(agent, "arun"):
-                    raise ValueError(f"Agent '{name}' must have run/arun method")
+                    raise ValueError(
+    f"Agent '{name}' must have run/arun method")
         elif isinstance(v, list):
             if not v:
                 raise ValueError("Agent list cannot be empty")
             # Validate all items are agents
             for i, agent in enumerate(v):
                 if not hasattr(agent, "run") and not hasattr(agent, "arun"):
-                    raise ValueError(f"Agent at index {i} must have run/arun method")
+                    raise ValueError(
+    f"Agent at index {i} must have run/arun method")
         else:
             raise ValueError("Agents must be dict or list")
 
         return v
 
     def get_agent_names(self) -> list[str]:
-        """Get list of agent names."""
+        """Get list of agent names.
+        """
         if isinstance(self.agents, dict):
             return list(self.agents.keys())
         # For list, generate names
         return [f"agent_{i}" for i in range(len(self.agents))]
 
-    def get_agent(self, name: str) -> Agent | None:
-        """Get agent by name."""
+    def get_agent(self, name: str -> Optional[Agent]:
+        """Get agent by name.
+        """
         if isinstance(self.agents, dict):
             return self.agents.get(name)
         # Handle list case
@@ -142,7 +148,8 @@ class MultiAgent(Agent, Generic[AgentsT]):
         return None
 
     def __repr__(self) -> str:
-        """String representation."""
+        """String representation.
+        """
         engine_type = type(self.engine).__name__ if self.engine else "None"
         agent_count = len(self.agents)
         agents_type = type(self.agents).__name__
@@ -165,10 +172,13 @@ class BranchingMultiAgent(MultiAgent[dict[str, Agent]]):
     Routes to different agents based on conditions.
     """
 
-    mode: Literal["branch"] = Field(default="branch", description="Always branch mode")
+    mode: Literal["branch"] = Field(
+    default="branch",
+     description="Always branch mode")
 
     def build_graph(self) -> BaseGraph:
-        """Build branching execution graph."""
+        """Build branching execution graph.
+        """
         graph = BaseGraph(name=f"{self.name}_branching_graph")
 
         # Add router node (uses the MultiAgent's engine)
@@ -184,7 +194,8 @@ class BranchingMultiAgent(MultiAgent[dict[str, Agent]]):
 
         # Branching logic
         def route_condition(state: dict[str, Any]) -> str:
-            """Route based on state or condition."""
+            """Route based on state or condition.
+            """
             if self.branch_condition:
                 result = self.branch_condition(state)
                 if result in self.branch_map:
@@ -226,11 +237,12 @@ class ConditionalMultiAgent(MultiAgent[dict[str, Agent]]):
         default_factory=dict, description="Rules for conditional execution"
     )
 
-    def should_continue(self, state: dict[str, Any], current_agent: str) -> str | None:
-        """Determine next agent based on conditions."""
+    def should_continue(self, state: dict[str, Any], current_agent: str -> Optional[str]:
+        """Determine next agent based on conditions.
+        """
         # Check rules for current agent
         if current_agent in self.condition_rules:
-            rules = self.condition_rules[current_agent]
+            rules=self.condition_rules[current_agent]
 
             # Evaluate conditions
             for condition, next_agent in rules.items():
@@ -239,16 +251,18 @@ class ConditionalMultiAgent(MultiAgent[dict[str, Agent]]):
 
         return None
 
-    def _evaluate_condition(self, condition: str, state: dict[str, Any]) -> bool:
-        """Evaluate a condition against state."""
+    def _evaluate_condition(self, condition: str,
+                            state: dict[str, Any]) -> bool:
+        """Evaluate a condition against state.
+        """
         # Simple implementation - can be enhanced
         if condition == "success":
             return not state.get("error")
         if condition == "error":
             return bool(state.get("error"))
         if condition.startswith("contains:"):
-            key = condition.split(":", 1)[1]
-            messages = state.get("messages", [])
+            key=condition.split(":", 1)[1]
+            messages=state.get("messages", [])
             if messages:
                 return key in str(messages[-1].content).lower()
 
@@ -262,52 +276,54 @@ class AdaptiveBranchingMultiAgent(BranchingMultiAgent):
     """
 
     # Performance tracking
-    agent_performance: dict[str, dict[str, float]] = Field(
+    agent_performance: dict[str, dict[str, float]]=Field(
         default_factory=dict, description="Performance metrics per agent"
     )
 
-    adaptation_rate: float = Field(
+    adaptation_rate: float=Field(
         default=0.1, ge=0.0, le=1.0, description="How quickly to adapt routing"
     )
 
     def update_performance(
         self, agent_name: str, success: bool, duration: float
     ) -> None:
-        """Update agent performance metrics."""
+        """Update agent performance metrics.
+        """
         if agent_name not in self.agent_performance:
-            self.agent_performance[agent_name] = {
+            self.agent_performance[agent_name]={
                 "success_rate": 0.5,
                 "avg_duration": duration,
                 "task_count": 0,
             }
 
-        metrics = self.agent_performance[agent_name]
+        metrics=self.agent_performance[agent_name]
         metrics["task_count"] += 1
 
         # Update success rate with exponential moving average
-        current_rate = metrics["success_rate"]
-        new_rate = (
+        current_rate=metrics["success_rate"]
+        new_rate=(
             current_rate * (1 - self.adaptation_rate)
             + (1.0 if success else 0.0) * self.adaptation_rate
         )
-        metrics["success_rate"] = new_rate
+        metrics["success_rate"]=new_rate
 
         # Update average duration
-        metrics["avg_duration"] = (
+        metrics["avg_duration"]=(
             metrics["avg_duration"] * (metrics["task_count"] - 1) + duration
         ) / metrics["task_count"]
 
     def get_best_agent_for_task(self, task_type: str) -> str:
-        """Get best performing agent for task type."""
-        best_agent = None
-        best_score = 0.0
+        """Get best performing agent for task type.
+        """
+        best_agent=None
+        best_score=0.0
 
         for agent_name, metrics in self.agent_performance.items():
             # Simple scoring: success_rate / avg_duration
-            score = metrics["success_rate"] / max(metrics["avg_duration"], 0.1)
+            score=metrics["success_rate"] / max(metrics["avg_duration"], 0.1)
             if score > best_score:
-                best_score = score
-                best_agent = agent_name
+                best_score=score
+                best_agent=agent_name
 
         return best_agent or next(iter(self.agents.keys()))
 
@@ -318,26 +334,27 @@ if __name__ == "__main__":
     from typing import TypedDict
 
     class ReportTeamAgents(TypedDict):
-        """Typed dict for report team agents."""
+        """Typed dict for report team agents.
+        """
 
         researcher: Agent
         analyst: Agent
         writer: Agent
 
     # Create typed agents dict
-    agents = ReportTeamAgents(
+    agents=ReportTeamAgents(
         researcher=Agent(name="researcher"),
         analyst=Agent(name="analyst"),
         writer=Agent(name="writer"),
     )
 
     # Create MultiAgent with proper typing
-    report_team: MultiAgent[ReportTeamAgents] = MultiAgent(
+    report_team: MultiAgent[ReportTeamAgents]=MultiAgent(
         name="report_team", agents=agents, mode="sequential"
     )
 
     # Branching example
-    branch_team = BranchingMultiAgent(
+    branch_team=BranchingMultiAgent(
         name="branch_routef",
         agents={
             "technical": Agent(name="tech_expert"),
@@ -352,7 +369,7 @@ if __name__ == "__main__":
     )
 
     # Adaptive branching
-    adaptive = AdaptiveBranchingMultiAgent(
+    adaptive=AdaptiveBranchingMultiAgent(
         name="adaptive_router",
         agents={
             "fast": Agent(name="fast_agent"),

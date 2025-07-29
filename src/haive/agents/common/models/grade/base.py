@@ -1,7 +1,7 @@
 """Base classes for grade models.
 
-This module defines the fundamental abstractions for all grading models
-including the grade type enumeration and abstract base class.
+This module defines the fundamental abstractions for all grading models including the
+grade type enumeration and abstract base class.
 """
 
 from abc import ABC, abstractmethod

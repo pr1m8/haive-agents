@@ -1,8 +1,8 @@
 """Routing patterns for multi-agent systems.
 
-from typing import Any
-Experiments with conditional routing, branching, and dynamic paths.
-Uses BaseGraph's add_conditional_edges for sophisticated routing.
+from typing import Any Experiments with conditional routing, branching, and dynamic
+from typing import Optional, Union
+paths. Uses BaseGraph's add_conditional_edges for sophisticated routing.
 """
 
 import logging
@@ -46,7 +46,6 @@ class RoutingMultiAgent(ListMultiAgent):
             "general": "GeneralAgent"
             }
             )
-
     """
 
     # Routing configuration
@@ -62,10 +61,10 @@ class RoutingMultiAgent(ListMultiAgent):
 
     def add_route(
         self,
-        source: str | Agent,
+        source: Union[str, Agent],
         condition: Callable[[Any], str | bool],
         routes: dict[str | bool, str | Agent],
-        default: str | None = None,
+        default: Optional[str] = None,
     ) -> "RoutingMultiAgent":
         """Add routing rule for an agent.
 
@@ -99,10 +98,10 @@ class RoutingMultiAgent(ListMultiAgent):
 
     def add_boolean_route(
         self,
-        source: str | Agent,
+        source: Union[str, Agent],
         condition: Callable[[Any], bool],
-        true_dest: str | Agent,
-        false_dest: str | Agent = END,
+        true_dest: Union[str, Agent],
+        false_dest: Union[str, Agent] = END,
     ) -> "RoutingMultiAgent":
         """Add simple boolean routing.
 
@@ -120,9 +119,9 @@ class RoutingMultiAgent(ListMultiAgent):
 
     def add_multi_route(
         self,
-        source: str | Agent,
+        source: Union[str, Agent],
         condition: Callable[[Any], str],
-        **routes: str | Agent,
+        **routes: Union[str, Agent],
     ) -> "RoutingMultiAgent":
         """Add multi-way routing with keyword arguments.
 
@@ -250,7 +249,6 @@ class BranchingMultiAgent(RoutingMultiAgent):
             },
             merge_to=OutputFormatter()
             )
-
     """
 
     # Track branches for merging
@@ -264,10 +262,10 @@ class BranchingMultiAgent(RoutingMultiAgent):
 
     def branch_on(
         self,
-        source: str | Agent,
+        source: Union[str, Agent],
         condition: Callable[[Any], str],
         branches: dict[str, list[Agent]],
-        merge_to: Agent | None = None,
+        merge_to: Optional[Agent] = None,
     ) -> "BranchingMultiAgent":
         """Create branching paths that merge back.
 

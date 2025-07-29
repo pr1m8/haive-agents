@@ -1,7 +1,8 @@
-"""ReactAgent implementation that extends SimpleAgent with tool usage capabilities."""
+"""ReactAgent implementation that extends SimpleAgent with tool usage capabilities.
+"""
 
 import logging
-from typing import Any
+from typing import Any, Optional, Union
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
@@ -23,8 +24,8 @@ logger = logging.getLogger(__name__)
 class ReactAgent(Agent[ReactAgentConfig]):
     """A React agent that enhances SimpleAgent with tool-using capabilities.
 
-    This agent implements the ReAct (Reasoning + Acting) pattern which allows
-    multi-step reasoning and tool usage for complex tasks.
+    This agent implements the ReAct (Reasoning + Acting) pattern which allows multi-step
+    reasoning and tool usage for complex tasks.
     """
 
     def __init__(self, config: ReactAgentConfig):
@@ -37,7 +38,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
                 max_attempts=config.max_retries,  # Use max_attempts instead of max_retries
                 backoff_factor=2.0,
                 initial_interval=(
-                    config.retry_delay if hasattr(config, "retry_delay") else 0.5
+                    config.retry_delay if hasattr(
+                        config, "retry_delay") else 0.5
                 ),
             )
         except TypeError:
@@ -47,19 +49,23 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     max_retries=config.max_retries,
                     retry_on_error=True,
                     retry_delay=(
-                        config.retry_delay if hasattr(config, "retry_delay") else 0.5
+                        config.retry_delay if hasattr(
+                            config, "retry_delay") else 0.5
                     ),
                 )
             except Exception as e2:
-                # Last resort - use a minimal RetryPolicy with only required params
+                # Last resort - use a minimal RetryPolicy with only required
+                # params
                 logger.warning(
-                    f"Error creating RetryPolicy: {e2!s} - using minimal configuration"
+                    f"Error creating RetryPolicy: {
+    e2!s} - using minimal configuration"
                 )
                 self.retry_policy = RetryPolicy(max_attempts=3)
         super().__init__(config)
 
     def _prepare_tools(self, tools_input):
-        """Convert various tool formats to LangChain tools."""
+        """Convert various tool formats to LangChain tools.
+        """
         from langchain_core.tools import tool
 
         tools_map = {}
@@ -93,12 +99,16 @@ class ReactAgent(Agent[ReactAgentConfig]):
             logger.error(f"Unsupported tools format: {type(tools_input)}")
 
         logger.info(
-            f"Prepared {sum(len(tools) for tools in tools_map.values())} tools across {len(tools_map)} nodes"
+            f"Prepared {
+    sum(
+        len(tools) for tools in tools_map.values())} tools across {
+            len(tools_map)} nodes"
         )
         return tools_map
 
     def _convert_tools_list(self, tools_list):
-        """Convert a list of mixed tool formats to LangChain tools."""
+        """Convert a list of mixed tool formats to LangChain tools.
+        """
         from langchain_core.tools import tool
 
         converted_tools = []
@@ -127,7 +137,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         return converted_tools
 
     def _create_tool_nodes(self):
-        """Create ToolNodes from the prepared tools map."""
+        """Create ToolNodes from the prepared tools map.
+        """
         if not self.tools_map:
             logger.warning("No tools available to create ToolNodes")
             return {}
@@ -140,11 +151,14 @@ class ReactAgent(Agent[ReactAgentConfig]):
         return tool_nodes
 
     def setup_workflow(self) -> None:
-        """Set up the React agent workflow with tool support."""
+        """Set up the React agent workflow with tool support.
+        """
         logger.debug(f"Setting up workflow for ReactAgent {self.config.name}")
 
         # Update the engine to use all tools if needed
-        if hasattr(self.config.engine, "tools") and not self.config.engine.tools:
+        if hasattr(
+    self.config.engine,
+     "tools") and not self.config.engine.tools:
             all_tools = []
             for tools_list in self.tools_map.values():
                 all_tools.extend(tools_list)
@@ -172,7 +186,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         use_structured_output = getattr(
             self.config, "use_structured_output_node", False
         )
-        structured_output_model = getattr(self.config, "structured_output_model", None)
+        structured_output_model = getattr(
+    self.config, "structured_output_model", None)
 
         if use_structured_output and structured_output_model:
             gb.add_structured_output_node(
@@ -196,7 +211,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
             gb.add_conditional_edges(
                 from_node="agent",
                 condition_or_branch=self._route_agent_output,
-                routes={"end": END, **{name: name for name in self.tool_nodes}},
+                routes={"end": END,
+     **{name: name for name in self.tool_nodes}},
             )
         else:
             # No tools, just add edge to END
@@ -209,10 +225,13 @@ class ReactAgent(Agent[ReactAgentConfig]):
         self.graph = gb.build()
 
         logger.info(
-            f"Set up ReactAgent workflow for {self.config.name} with {len(self.tool_nodes)} tool nodes"
+            f"Set up ReactAgent workflow for {
+    self.config.name} with {
+        len(
+            self.tool_nodes)} tool nodes"
         )
 
-    def _route_agent_output(self, state: Any) -> str | list[Send]:
+    def _route_agent_output(self, state: Any -> Union[str, list[Send]]:
         """Route output from agent to appropriate next node(s).
 
         This function implements complex routing, supporting:
@@ -222,7 +241,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         4. Structured output (returns "structured_output")
         """
         # Early termination for completed tasks
-        # If the last message contains completion indicators, skip further processing
+        # If the last message contains completion indicators, skip further
+        # processing
         messages = getattr(state, "messages", [])
         if messages:
             last_message = messages[-1]
@@ -304,7 +324,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     tools_to_nodes[node_name] = []
                 tools_to_nodes[node_name].append(tool_call)
 
-        # If no valid tool calls found but the message has content, treat as a final answer
+        # If no valid tool calls found but the message has content, treat as a
+        # final answer
         if (
             not tools_to_nodes
             and isinstance(last_message, AIMessage)
@@ -330,11 +351,14 @@ class ReactAgent(Agent[ReactAgentConfig]):
             return "structured_output"
         return "end"
 
-    def run(self, input_data, thread_id: str | None = None, **kwargs):
-        """Override run to handle tool-based workflows and proper state preparation."""
+    def run(self, input_data, thread_id: Optional[str]=None, **kwargs):
+        """Override run to handle tool-based workflows and proper state preparation.
+        """
         # Add remaining_steps to input if not present but in our schema
         if hasattr(self.state_schema, "remaining_steps"):
-            if isinstance(input_data, dict) and "remaining_steps" not in input_data:
+            if isinstance(
+    input_data,
+     dict) and "remaining_steps" not in input_data:
                 input_data["remaining_steps"] = getattr(
                     self.config, "max_iterations", 10
                 )

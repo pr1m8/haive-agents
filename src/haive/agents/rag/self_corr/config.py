@@ -14,7 +14,8 @@ from haive.agents.rag.self_corr.state import SelfCorrectiveRAGState
 
 
 class SelfCorrectiveRAGConfig(BaseRAGConfig):
-    """Configuration for self-corrective RAG agents that can evaluate and improve their answers.
+    """Configuration for self-corrective RAG agents that can evaluate and improve their
+    answers.
 
     This RAG implementation extends the base RAG with:
     1. Answer evaluation to detect hallucinations

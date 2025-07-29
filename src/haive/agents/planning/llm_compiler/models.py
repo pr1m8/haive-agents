@@ -1,10 +1,10 @@
 """Models for the LLM Compiler agent.
 
-This module defines the pydantic models specific to the LLM Compiler agent,
-integrating with the base Step and Plan models from the plan_and_execute agent.
+This module defines the pydantic models specific to the LLM Compiler agent, integrating
+with the base Step and Plan models from the plan_and_execute agent.
 """
 
-from typing import Any
+from typing import Any, Optional, Union
 
 from agents.plan_and_execute.models import Plan, Step
 from langchain_core.tools import BaseTool
@@ -18,18 +18,20 @@ class TaskDependency(BaseModel):
     """
 
     step_id: int = Field(description="ID of the step that outputs needed data")
-    output_key: str | None = Field(
+    output_key: Optional[str] = Field(
         default=None, description="Specific key in the output (if needed)"
     )
 
     def resolve(self, results: dict[int, Any]) -> Any:
-        """Resolve the dependency to the actual value."""
+        """Resolve the dependency to the actual value.
+        """
         if self.step_id not in results:
             return f"${{{self.step_id}}}"  # Unresolved dependency
 
         result = results[self.step_id]
         if self.output_key and isinstance(result, dict):
-            return result.get(self.output_key, f"${{{self.step_id}.{self.output_key}}}")
+            return result.get(self.output_key,
+     f"${{{self.step_id}.{self.output_key}}}")
 
         return result
 
@@ -40,7 +42,8 @@ class CompilerTask(BaseModel):
     Tasks define what tools to run and their dependencies on other tasks.
     """
 
-    tool_name: str = Field(description="Name of the tool to execute (or 'join')")
+    tool_name: str = Field(
+    description="Name of the tool to execute (or 'join')")
     arguments: dict[str, Any] = Field(
         default_factory=dict, description="Arguments for the tool"
     )
@@ -50,7 +53,8 @@ class CompilerTask(BaseModel):
 
     @property
     def is_join(self) -> bool:
-        """Check if this is a join (final) task."""
+        """Check if this is a join (final) task.
+        """
         return self.tool_name.lower() == "join"
 
     def resolve_arguments(self, results: dict[int, Any]) -> dict[str, Any]:
@@ -96,7 +100,8 @@ class CompilerStep(Step):
 
     @property
     def dependencies(self) -> list[int]:
-        """Get IDs of steps this step depends on."""
+        """Get IDs of steps this step depends on.
+        """
         dep_ids = []
         # Extract step IDs from TaskDependency objects
         for dep in self.task.dependencies:
@@ -124,7 +129,8 @@ class CompilerStep(Step):
         """
         return all(dep_id in results for dep_id in self.dependencies)
 
-    def execute(self, tool_map: dict[str, BaseTool], results: dict[int, Any]) -> Any:
+    def execute(self, tool_map: dict[str, BaseTool],
+                results: dict[int, Any]) -> Any:
         """Execute this step's task with the given tools.
 
         Args:
@@ -164,7 +170,8 @@ class CompilerPlan(Plan):
         default_factory=list, description="Steps in the plan"
     )
 
-    def get_executable_steps(self, results: dict[int, Any]) -> list[CompilerStep]:
+    def get_executable_steps(
+        self, results: dict[int, Any]) -> list[CompilerStep]:
         """Get steps that can be executed (all dependencies satisfied).
 
         Args:
@@ -179,15 +186,17 @@ class CompilerPlan(Plan):
             if not step.is_complete() and step.can_execute(results)
         ]
 
-    def get_join_step(self) -> CompilerStep | None:
-        """Get the join step (final step) if present."""
+    def get_join_step(self -> Optional[CompilerStep]:
+        """Get the join step (final step) if present.
+        """
         for step in self.steps:
             if step.task.is_join:
                 return step
         return None
 
-    def get_step_by_id(self, step_id: int) -> CompilerStep | None:
-        """Find a step by its ID."""
+    def get_step_by_id(self, step_id: int -> Optional[CompilerStep]:
+        """Find a step by its ID.
+        """
         for step in self.steps:
             if step.id == step_id:
                 return step
@@ -199,7 +208,7 @@ class CompilerPlan(Plan):
         description: str,
         tool_name: str,
         arguments: dict[str, Any],
-        dependencies: list[int | TaskDependency] | None = None,
+        dependencies: list[int | TaskDependency] | None=None,
     ) -> CompilerStep:
         """Add a new compiler step to the plan.
 
@@ -214,7 +223,7 @@ class CompilerPlan(Plan):
             The newly created step
         """
         # Convert simple int dependencies to TaskDependency objects
-        task_dependencies = []
+        task_dependencies=[]
         if dependencies:
             for dep in dependencies:
                 if isinstance(dep, int):
@@ -223,12 +232,12 @@ class CompilerPlan(Plan):
                     task_dependencies.append(dep)
 
         # Create the task
-        task = CompilerTask(
+        task=CompilerTask(
             tool_name=tool_name, arguments=arguments, dependencies=task_dependencies
         )
 
         # Create the step
-        step = CompilerStep(
+        step=CompilerStep(
             id=step_id, description=description, task=task, status="not_started"
         )
 
@@ -241,25 +250,28 @@ class CompilerPlan(Plan):
 
 
 class FinalResponse(BaseModel):
-    """The final response/answer to return to the user."""
+    """The final response/answer to return to the user.
+    """
 
     response: str
 
 
 class Replan(BaseModel):
-    """Feedback for replanning when the current plan wasn't sufficient."""
+    """Feedback for replanning when the current plan wasn't sufficient.
+    """
 
-    feedback: str = Field(
+    feedback: str=Field(
         description="Analysis of the previous attempts and recommendations on what needs to be fixed."
     )
 
 
 class JoinerOutput(BaseModel):
-    """The joiner's decision: either provide a final response or request replanning."""
+    """The joiner's decision: either provide a final response or request replanning.
+    """
 
-    thought: str = Field(
+    thought: str=Field(
         description="The chain of thought reasoning for the selected action"
     )
-    action: FinalResponse | Replan = Field(
+    action: Union[FinalResponse, Replan]=Field(
         description="The action to take: either provide a final response or replan"
     )

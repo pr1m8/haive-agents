@@ -1,7 +1,7 @@
 """Hallucination Grading Agents.
 
-Modular agents for detecting and grading hallucinations in RAG responses.
-Can be plugged into any workflow with compatible I/O schemas.
+Modular agents for detecting and grading hallucinations in RAG responses. Can be plugged
+into any workflow with compatible I/O schemas.
 """
 
 import logging

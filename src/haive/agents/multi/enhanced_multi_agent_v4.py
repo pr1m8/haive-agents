@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Enhanced MultiAgent V4 - Using enhanced base agent pattern.
 
 This implementation follows the enhanced base agent pattern by extending Agent
@@ -14,11 +16,10 @@ Key Features:
 - Uses BaseGraph2.add_conditional_edges()
 """
 
-from __future__ import annotations
 
 import logging
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 if TYPE_CHECKING:
     from haive.agents.base.agent import Agent
@@ -89,7 +90,7 @@ class EnhancedMultiAgentV4(Agent):
         description="When to build the graph: auto (on init), manual (explicit), lazy (on first run)",
     )
 
-    entry_point: str | None = Field(
+    entry_point: Optional[str] = Field(
         default=None, description="Starting agent (defaults to first agent)"
     )
 
@@ -123,7 +124,8 @@ class EnhancedMultiAgentV4(Agent):
         return self
 
     def _convert_agents_to_dict(self, agents: list[Agent]) -> dict[str, Agent]:
-        """Convert agent list to dictionary keyed by name."""
+        """Convert agent list to dictionary keyed by name.
+        """
         agent_dict = {}
 
         for i, agent in enumerate(agents):
@@ -134,7 +136,9 @@ class EnhancedMultiAgentV4(Agent):
                 # Handle duplicates by adding index
                 agent_dict[f"{agent.name}_{i}"] = agent
                 logger.warning(
-                    f"Duplicate agent name '{agent.name}', using '{agent.name}_{i}'"
+                    f"Duplicate agent name '{
+    agent.name}', using '{
+        agent.name}_{i}'"
                 )
             else:
                 agent_dict[agent.name] = agent
@@ -155,7 +159,10 @@ class EnhancedMultiAgentV4(Agent):
             raise ValueError("No agents to build graph with")
 
         logger.info(
-            f"Building {self.execution_mode} graph with {len(self.agent_dict)} agents"
+            f"Building {
+    self.execution_mode} graph with {
+        len(
+            self.agent_dict)} agents"
         )
 
         # Create BaseGraph with MultiAgentState
@@ -181,10 +188,12 @@ class EnhancedMultiAgentV4(Agent):
         return graph
 
     def _add_agent_nodes(self, graph: BaseGraph):
-        """Add all agents as nodes using AgentNodeV3."""
+        """Add all agents as nodes using AgentNodeV3.
+        """
         for agent_name, agent in self.agent_dict.items():
             # Create AgentNodeV3 for proper state projection
-            node_config = create_agent_node_v3(agent_name=agent_name, agent=agent)
+            node_config = create_agent_node_v3(
+                agent_name=agent_name, agent=agent)
             graph.add_node(agent_name, node_config)
             logger.debug(f"Added AgentNodeV3 for: {agent_name}")
 
@@ -226,7 +235,8 @@ class EnhancedMultiAgentV4(Agent):
         logger.info(f"Added parallel edges for {len(agent_names)} agents")
 
     def _add_conditional_edges(self, graph: BaseGraph):
-        """Add conditional edges using BaseGraph2.add_conditional_edges()."""
+        """Add conditional edges using BaseGraph2.add_conditional_edges().
+        """
         # Start with entry point or first agent
         agent_names = list(self.agent_dict.keys())
         start_agent = (
@@ -280,7 +290,8 @@ class EnhancedMultiAgentV4(Agent):
     # ========================================================================
 
     def add_edge(self, from_agent: str, to_agent: str):
-        """Add direct edge between agents."""
+        """Add direct edge between agents.
+        """
         if from_agent not in self.agent_dict:
             raise ValueError(f"Agent '{from_agent}' not found")
         if to_agent not in self.agent_dict and to_agent != END:
@@ -300,7 +311,8 @@ class EnhancedMultiAgentV4(Agent):
         true_agent: str,
         false_agent: str = END,
     ):
-        """Add conditional edge with boolean condition."""
+        """Add conditional edge with boolean condition.
+        """
         if from_agent not in self.agent_dict:
             raise ValueError(f"Agent '{from_agent}' not found")
 
@@ -334,7 +346,8 @@ class EnhancedMultiAgentV4(Agent):
         routes: dict[str, str],
         default: str = END,
     ):
-        """Add multi-way conditional edge."""
+        """Add multi-way conditional edge.
+        """
         if from_agent not in self.agent_dict:
             raise ValueError(f"Agent '{from_agent}' not found")
 
@@ -357,7 +370,8 @@ class EnhancedMultiAgentV4(Agent):
             )
 
         logger.info(
-            f"Configured multi-conditional edge from {from_agent} with {len(routes)} routes"
+            f"Configured multi-conditional edge from {from_agent} with {
+    len(routes)} routes"
         )
 
     # ========================================================================
@@ -365,15 +379,18 @@ class EnhancedMultiAgentV4(Agent):
     # ========================================================================
 
     def get_agent_names(self) -> list[str]:
-        """Get list of agent names."""
+        """Get list of agent names.
+        """
         return list(self.agent_dict.keys())
 
-    def get_agent(self, name: str) -> Agent | None:
-        """Get agent by name."""
+    def get_agent(self, name: str -> Optional[Agent]:
+        """Get agent by name.
+        """
         return self.agent_dict.get(name)
 
     def add_agent(self, agent: Agent):
-        """Add agent dynamically."""
+        """Add agent dynamically.
+        """
         if not agent.name:
             raise ValueError("Agent must have a name")
 
@@ -390,7 +407,8 @@ class EnhancedMultiAgentV4(Agent):
         logger.info(f"Added agent: {agent.name}")
 
     def display_info(self):
-        """Display workflow information."""
+        """Display workflow information.
+        """
         print(f"\n=== Enhanced MultiAgent V4: {self.name} ===")
         print(f"Execution Mode: {self.execution_mode}")
         print(f"Build Mode: {self.build_mode}")
@@ -403,7 +421,9 @@ class EnhancedMultiAgentV4(Agent):
 
         print(f"Conditional Edges: {len(self.conditional_edges)}")
         print(
-            f"Graph Built: {'Yes' if hasattr(self, 'graph') and self.graph else 'No'}"
+            f"Graph Built: {
+    'Yes' if hasattr(
+        self, 'graph') and self.graph else 'No'}"
         )
         print()
 
@@ -418,4 +438,5 @@ class EnhancedMultiAgentV4(Agent):
     # - Standard run/arun interface
     # - All mixin functionality (execution, state, persistence, etc.)
 
-    # We just implement build_graph() and the enhanced base agent handles the rest!
+    # We just implement build_graph() and the enhanced base agent handles the
+    # rest!

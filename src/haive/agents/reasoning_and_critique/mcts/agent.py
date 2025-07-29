@@ -39,8 +39,8 @@ logger = logging.getLogger(__name__)
 class MCTSAgent(Agent):
     """Monte Carlo Tree Search Agent implementation.
 
-    This agent uses a Monte Carlo Tree Search approach to iteratively explore
-    and find the best solution path.
+    This agent uses a Monte Carlo Tree Search approach to iteratively explore and find
+    the best solution path.
     """
 
     def setup_workflow(self) -> None:

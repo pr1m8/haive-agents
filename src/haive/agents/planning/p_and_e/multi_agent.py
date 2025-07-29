@@ -1,8 +1,7 @@
 """Plan and Execute Multi-Agent System using Configurable Base.
 
-from typing import Any
-This module demonstrates how to use the configurable multi-agent base
-for building Plan and Execute workflows with branches.
+from typing import Any This module demonstrates how to use the configurable multi-agent
+base for building Plan and Execute workflows with branches.
 """
 
 import logging

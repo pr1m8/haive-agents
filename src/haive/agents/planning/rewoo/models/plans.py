@@ -10,16 +10,21 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
+    Optional,
     computed_field,
     field_validator,
+    from,
+    import,
     model_validator,
+    typing,
 )
 
 from .steps import AbstractStep
 
 
 class ExecutionPlan(BaseModel):
-    """A plan that works with any AbstractStep implementation."""
+    """A plan that works with any AbstractStep implementation.
+    """
 
     model_config = ConfigDict(
         str_strip_whitespace=True, validate_assignment=True, extra="forbid"
@@ -56,25 +61,29 @@ class ExecutionPlan(BaseModel):
     @computed_field
     @property
     def step_count(self) -> int:
-        """Total number of steps."""
+        """Total number of steps.
+        """
         return len(self.steps)
 
     @computed_field
     @property
     def step_ids(self) -> list[str]:
-        """List of all step IDs."""
+        """List of all step IDs.
+        """
         return [step.id for step in self.steps]
 
     @computed_field
     @property
     def has_dependencies(self) -> bool:
-        """Whether any step has dependencies."""
+        """Whether any step has dependencies.
+        """
         return any(step.has_dependencies for step in self.steps)
 
     @computed_field
     @property
     def execution_levels(self) -> list[list[str]]:
-        """Steps organized by execution level for parallelization."""
+        """Steps organized by execution level for parallelization.
+        """
         if not self.steps:
             return []
 
@@ -111,7 +120,8 @@ class ExecutionPlan(BaseModel):
     @computed_field
     @property
     def max_parallelism(self) -> int:
-        """Maximum number of steps that can run in parallel."""
+        """Maximum number of steps that can run in parallel.
+        """
         return (
             max(len(level) for level in self.execution_levels)
             if self.execution_levels
@@ -122,7 +132,8 @@ class ExecutionPlan(BaseModel):
     @field_validator("steps")
     @classmethod
     def validate_steps(cls, v: list[AbstractStep]) -> list[AbstractStep]:
-        """Validate steps and check for duplicate IDs."""
+        """Validate steps and check for duplicate IDs.
+        """
         if not v:
             return v
 
@@ -144,7 +155,8 @@ class ExecutionPlan(BaseModel):
     @model_validator(mode="after")
     @classmethod
     def validate_no_circular_dependencies(cls) -> "ExecutionPlan":
-        """Validate no circular dependencies exist."""
+        """Validate no circular dependencies exist.
+        """
         if not self.steps:
             return self
 
@@ -179,14 +191,18 @@ class ExecutionPlan(BaseModel):
 
     # Utility methods
     def add_step(self, step: AbstractStep):
-        """Add a step to the plan."""
+        """Add a step to the plan.
+        """
         self.steps.append(step)
         # Computed fields will automatically recalculate
 
-    def get_step_by_id(self, step_id: str) -> AbstractStep | None:
-        """Get step by ID."""
+    def get_step_by_id(self, step_id: str -> Optional[AbstractStep]:
+        """Get step by ID.
+        """
         return next((step for step in self.steps if step.id == step_id), None)
 
     def get_ready_steps(self, completed_steps: set[str]) -> list[AbstractStep]:
-        """Get steps that are ready to execute."""
-        return [step for step in self.steps if step.can_execute(completed_steps)]
+        """Get steps that are ready to execute.
+        """
+        return [
+    step for step in self.steps if step.can_execute(completed_steps)]

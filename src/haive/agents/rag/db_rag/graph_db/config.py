@@ -37,10 +37,14 @@ from langchain_neo4j import Neo4jGraph
 from pydantic import BaseModel, Field, field_validator
 
 from haive.agents.rag.db_rag.graph_db.engines import (
+    Optional,
     correct_cypher_aug_llm_config,
+    from,
     generate_final_aug_llm_config,
     guardrails_aug_llm_config,
+    import,
     text2cypher_aug_llm_config,
+    typing,
     validate_cypher_aug_llm_config,
 )
 from haive.agents.rag.db_rag.graph_db.state import InputState, OutputState, OverallState
@@ -102,7 +106,7 @@ class GraphDBConfig(BaseModel):
         default=True, description="Enable enhanced schema scanning for better detection"
     )
 
-    def get_graph_db(self) -> Neo4jGraph | None:
+    def get_graph_db(self -> Optional[Neo4jGraph]:
         """Create and return a Neo4jGraph connection object.
 
         Establishes a secure connection to the Neo4j database with proper
@@ -135,7 +139,7 @@ class GraphDBConfig(BaseModel):
         except Exception:
             return None
 
-    def get_graph_db_schema(self) -> dict | None:
+    def get_graph_db_schema(self -> Optional[dict]:
         """Retrieve the graph schema from the Neo4j database.
 
         Gets the complete schema including node labels, relationship types,
@@ -158,7 +162,7 @@ class GraphDBConfig(BaseModel):
             ...     print(f"Node labels: {list(schema['node_props'].keys())}")
             ...     print(f"Relationship types: {list(schema['rel_props'].keys())}")
         """
-        graph_db = self.get_graph_db()
+        graph_db=self.get_graph_db()
         if graph_db:
             return graph_db.get_schema()  # type: ignore
         return None
@@ -201,14 +205,14 @@ class ExampleConfig(BaseModel):
         ... )
     """
 
-    examples_path: str | None = Field(
+    examples_path: Optional[str]=Field(
         default=None, description="Path to JSON file containing Cypher query examples"
     )
-    examples: list[dict[str, str]] | None = Field(
+    examples: list[dict[str, str]] | None=Field(
         default=None,
         description="Direct list of examples with 'question' and 'query' keys",
     )
-    k: int = Field(
+    k: int=Field(
         default=2, description="Number of examples to retrieve for few-shot prompting"
     )
 
@@ -261,7 +265,7 @@ class GraphDBRAGConfig(AgentConfig):
         if any are missing.
     """
 
-    engines: dict[str, AugLLMConfig] = Field(
+    engines: dict[str, AugLLMConfig]=Field(
         description="LLM engine configurations for each workflow step",
         default={
             "correct_cypher": correct_cypher_aug_llm_config,
@@ -272,43 +276,43 @@ class GraphDBRAGConfig(AgentConfig):
         },
     )
 
-    domain_name: str = Field(
+    domain_name: str=Field(
         default="general",
         description="Domain specialization (e.g., 'movies', 'healthcare', 'finance')",
     )
 
-    domain_categories: list[str] = Field(
+    domain_categories: list[str]=Field(
         default_factory=list,
         description="Valid categories for routing within the domain",
     )
 
-    example_config: ExampleConfig | None = Field(
+    example_config: Optional[ExampleConfig]=Field(
         default=None, description="Configuration for Cypher query examples"
     )
 
-    state_schema: Any = Field(
+    state_schema: Any=Field(
         default=OverallState, description="Pydantic model for workflow state management"
     )
 
-    graph_db_config: GraphDBConfig = Field(
+    graph_db_config: GraphDBConfig=Field(
         default_factory=GraphDBConfig,
         description="Neo4j database connection configuration",
     )
 
-    input_schema: Any = Field(
+    input_schema: Any=Field(
         default=InputState, description="Schema for validating agent inputs"
     )
 
-    output_schema: Any = Field(
+    output_schema: Any=Field(
         default=OutputState, description="Schema for structuring agent outputs"
     )
 
-    domain_examples: dict[str, list[dict[str, str]]] = Field(
+    domain_examples: dict[str, list[dict[str, str]]]=Field(
         default_factory=dict,
         description="Domain-specific example queries for few-shot learning",
     )
 
-    @field_validator("engines")
+    @ field_validator("engines")
     def validate_engines(
         self, engines: dict[str, AugLLMConfig]
     ) -> dict[str, AugLLMConfig]:
@@ -326,7 +330,7 @@ class GraphDBRAGConfig(AgentConfig):
         Raises:
             ValueError: If any required engine is missing.
         """
-        required_engines = [
+        required_engines=[
             "correct_cypher",
             "validate_cypher",
             "text2cypher",
@@ -338,7 +342,7 @@ class GraphDBRAGConfig(AgentConfig):
             if engine_name not in engines:
                 # Handle potential naming mismatch
                 if engine_name == "text2cypher" and "generate_cypher" in engines:
-                    engines["text2cypher"] = engines["generate_cypher"]
+                    engines["text2cypher"]=engines["generate_cypher"]
                 else:
                     raise ValueError(
                         f"Missing required engine: {engine_name}. "
@@ -349,5 +353,7 @@ class GraphDBRAGConfig(AgentConfig):
 
 
 # For backward compatibility
-GraphDBAgentConfig = GraphDBRAGConfig
-"""Alias for backward compatibility with older code."""
+GraphDBAgentConfig=GraphDBRAGConfig
+"""
+Alias for backward compatibility with older code.
+"""

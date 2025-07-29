@@ -1,7 +1,7 @@
 """HyDE (Hypothetical Document Embeddings) RAG Agent V2.
 
-Bridges query-document semantic gap by generating hypothetical documents.
-This version properly embeds the hypothetical document for retrieval.
+Bridges query-document semantic gap by generating hypothetical documents. This version
+properly embeds the hypothetical document for retrieval.
 """
 
 from typing import Any

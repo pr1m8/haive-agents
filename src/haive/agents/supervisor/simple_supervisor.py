@@ -14,7 +14,6 @@ Functions:
 """
 
 # src/haive/agents/supervisor/simple_supervisor.py
-
 """Simple Supervisor Agent - Clean implementation for agent coordination.
 
 This supervisor uses an LLM to route between multiple agents based on

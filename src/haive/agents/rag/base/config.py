@@ -50,6 +50,7 @@ class BaseRAGConfig(AgentConfig):
     @classmethod
     def convert_vector_store_to_retriever(cls, data: dict[str, Any]) -> dict[str, Any]:
         """Pre-validation converter from VectorStoreConfig to RetrieverConfig.
+
         This runs before Pydantic validation, ensuring the type checking works.
         """
         if isinstance(data, dict) and "retriever_config" in data:
@@ -64,6 +65,7 @@ class BaseRAGConfig(AgentConfig):
     @model_validator(mode="after")
     def setup_engine(self) -> "BaseRAGConfig":
         """After validation, set the engine property to the retriever_config.
+
         This ensures the agent can use the retriever directly.
         """
         self.engine = self.retriever_config

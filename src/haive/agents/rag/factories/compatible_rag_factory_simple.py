@@ -5,6 +5,7 @@ Simplified version without legacy functions that have import issues.
 
 import logging
 from enum import Enum
+from typing import Optional, Union
 
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import Document
@@ -13,7 +14,8 @@ from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
 
-# from haive.agents.rag.document_grading.agent import DocumentGradingAgent  # Temporarily disabled - missing callable_node
+# from haive.agents.rag.document_grading.agent import DocumentGradingAgent
+# # Temporarily disabled - missing callable_node
 from haive.agents.rag.hallucination_grading.agent import (
     AdvancedHallucinationGraderAgent,
     HallucinationGraderAgent,
@@ -34,7 +36,8 @@ logger = logging.getLogger(__name__)
 
 
 class RAGComponent(Enum):
-    """Available RAG component types for plug-and-play composition."""
+    """Available RAG component types for plug-and-play composition.
+    """
 
     # Core retrieval
     SIMPLE_RETRIEVAL = "simple_retrieval"
@@ -63,7 +66,8 @@ class RAGComponent(Enum):
 
 
 class WorkflowPattern(Enum):
-    """Pre-defined workflow patterns."""
+    """Pre-defined workflow patterns.
+    """
 
     SIMPLE = "simple"
     GRADED_HYDE = "graded_hyde"
@@ -73,15 +77,17 @@ class WorkflowPattern(Enum):
 
 
 class CompatibleRAGFactory:
-    """Factory for building RAG workflows with I/O schema compatibility."""
+    """Factory for building RAG workflows with I/O schema compatibility.
+    """
 
     def __init__(
         self,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         name: str = "Compatible RAG Workflow",
     ):
-        """Initialize factory with documents and configuration."""
+        """Initialize factory with documents and configuration.
+        """
         self.documents = documents
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
@@ -92,9 +98,10 @@ class CompatibleRAGFactory:
 
     @classmethod
     def create_simple_workflow(
-        cls, documents: list[Document], llm_config: LLMConfig | None = None, **kwargs
+        cls, documents: list[Document], llm_config: Optional[LLMConfig] = None, **kwargs
     ) -> SequentialAgent:
-        """Create simple RAG workflow."""
+        """Create simple RAG workflow.
+        """
         return SimpleRAGAgent.from_documents(
             documents=documents, llm_config=llm_config, **kwargs
         )
@@ -103,11 +110,12 @@ class CompatibleRAGFactory:
     def create_graded_hyde_workflow(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         enable_search_tools: bool = False,
         **kwargs,
     ) -> SequentialAgent:
-        """Create workflow with HyDE and document grading."""
+        """Create workflow with HyDE and document grading.
+        """
         if not llm_config:
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
@@ -120,7 +128,8 @@ class CompatibleRAGFactory:
             documents=documents, llm_config=llm_config, name="HyDE RAG"
         )
 
-        # grading_agent = DocumentGradingAgent(  # Temporarily disabled - missing callable_node
+        # grading_agent = DocumentGradingAgent(  # Temporarily disabled -
+        # missing callable_node
         grading_agent = None  # Placeholder until DocumentGradingAgent is fixed
 
         corrective_agent = CorrectiveRAGAgentV2.from_documents(
@@ -137,10 +146,11 @@ class CompatibleRAGFactory:
 def create_plug_and_play_component(
     component_type: RAGComponent,
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     **kwargs,
-) -> SimpleAgent | BaseRAGAgent:
-    """Create any RAG component as a standalone agent."""
+ -> Union[SimpleAgent, BaseRAGAgent]:
+    """Create any RAG component as a standalone agent.
+    """
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
@@ -152,7 +162,8 @@ def create_plug_and_play_component(
     if component_type == RAGComponent.QUERY_DECOMPOSITION:
         return QueryDecomposerAgent(llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.HIERARCHICAL_DECOMPOSITION:
-        return HierarchicalQueryDecomposerAgent(llm_config=llm_config, **kwargs)
+        return HierarchicalQueryDecomposerAgent(
+            llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.CONTEXTUAL_DECOMPOSITION:
         return ContextualQueryDecomposerAgent(llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.ADAPTIVE_DECOMPOSITION:
@@ -162,9 +173,11 @@ def create_plug_and_play_component(
     if component_type == RAGComponent.HALLUCINATION_GRADING:
         return HallucinationGraderAgent(llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.ADVANCED_HALLUCINATION_GRADING:
-        return AdvancedHallucinationGraderAgent(llm_config=llm_config, **kwargs)
+        return AdvancedHallucinationGraderAgent(
+            llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.REALTIME_HALLUCINATION_GRADING:
-        return RealtimeHallucinationGraderAgent(llm_config=llm_config, **kwargs)
+        return RealtimeHallucinationGraderAgent(
+            llm_config=llm_config, **kwargs)
 
     # Document processing components
     if component_type == RAGComponent.DOCUMENT_GRADING:
@@ -194,7 +207,8 @@ def create_plug_and_play_component(
 def get_component_compatibility_info(
     component_type: RAGComponent,
 ) -> dict[str, list[str]]:
-    """Get I/O schema information for a component type."""
+    """Get I/O schema information for a component type.
+    """
     # Simplified I/O schemas for compatibility checking
     schemas = {
         RAGComponent.QUERY_DECOMPOSITION: {
@@ -215,4 +229,6 @@ def get_component_compatibility_info(
         },
     }
 
-    return schemas.get(component_type, {"inputs": ["query"], "outputs": ["response"]})
+    return schemas.get(
+    component_type, {
+        "inputs": ["query"], "outputs": ["response"]})

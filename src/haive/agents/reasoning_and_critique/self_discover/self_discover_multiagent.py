@@ -265,8 +265,8 @@ async def run_self_discover_example():
 def create_self_discover_with_conditional_routing() -> MultiAgent:
     """Create Self-Discover with conditional routing for demonstration.
 
-    This shows how you could add conditional logic if needed, though
-    sequential execution is sufficient for Self-Discover.
+    This shows how you could add conditional logic if needed, though sequential
+    execution is sufficient for Self-Discover.
     """
     # Create agents
     selector = create_selector_agent()

@@ -1,7 +1,7 @@
 """Composite grading model for combining multiple grade types.
 
-This module implements a composite grading system that combines multiple
-different grade types into a single comprehensive evaluation.
+This module implements a composite grading system that combines multiple different grade
+types into a single comprehensive evaluation.
 """
 
 from typing import Any

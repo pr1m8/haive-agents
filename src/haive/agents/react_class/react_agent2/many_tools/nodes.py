@@ -22,9 +22,9 @@ def select_tools_with_repeat(
 ):
     """Selects tools based on the last message in the conversation state.
 
-    If the last message is from a human, directly uses the content of the message
-    as the query. Otherwise, constructs a query using a system message and invokes
-    the LLM to generate tool suggestions.
+    If the last message is from a human, directly uses the content of the message as the
+    query. Otherwise, constructs a query using a system message and invokes the LLM to
+    generate tool suggestions.
     """
     last_message = state.messages[-1]
     hack_remove_tool_condition = False  # Simulate an error in the first tool selection

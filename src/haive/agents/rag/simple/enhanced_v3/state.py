@@ -1,7 +1,7 @@
 """Enhanced RAG State Schema for SimpleRAG V3.
 
-This module provides enhanced state management for SimpleRAG using Enhanced MultiAgent V3
-with performance tracking, debug information, and comprehensive metadata.
+This module provides enhanced state management for SimpleRAG using Enhanced MultiAgent
+V3 with performance tracking, debug information, and comprehensive metadata.
 """
 
 from typing import Any

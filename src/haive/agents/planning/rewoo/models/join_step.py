@@ -28,8 +28,8 @@ class JoinStrategy(str, Enum):
 class JoinStep(AbstractStep):
     """A step that automatically creates join points for parallel execution.
 
-    Like AutoTree automatically detects BaseModel relationships, JoinStep
-    automatically detects dependency patterns and creates optimal join points.
+    Like AutoTree automatically detects BaseModel relationships, JoinStep automatically
+    detects dependency patterns and creates optimal join points.
 
     This enables automatic DAG creation where parallel branches are automatically
     detected and joined at the optimal points.
@@ -190,8 +190,8 @@ class JoinStep(AbstractStep):
     ) -> dict[str, Any]:
         """Analyze dependency patterns across all steps to detect DAG structure.
 
-        Similar to how AutoTree analyzes type relationships, this analyzes
-        step dependency relationships to detect optimal parallelization.
+        Similar to how AutoTree analyzes type relationships, this analyzes step
+        dependency relationships to detect optimal parallelization.
         """
         step_map = {step.id: step for step in all_steps}
 

@@ -1,8 +1,9 @@
 """Self-Route RAG Agents.
 
-from typing import Any
-Implementation of self-routing RAG with dynamic strategy selection and iterative planning.
-Uses structured output models for complex routing decisions and preprocessing.
+from typing import Any Implementation of self-routing RAG with dynamic strategy
+from typing import Optional
+selection and iterative planning. Uses structured output models for complex routing
+decisions and preprocessing.
 """
 
 import logging
@@ -129,7 +130,7 @@ class IterativePlan(BaseModel):
     iteration_results: dict[str, str] = Field(description="Results from each iteration")
     should_continue: bool = Field(description="Whether to continue iterations")
 
-    completion_reason: str | None = Field(description="Why iteration completed")
+    completion_reason: Optional[str] = Field(description="Why iteration completed")
 
 
 class RoutingDecision(BaseModel):
@@ -151,7 +152,7 @@ class RoutingDecision(BaseModel):
 
     # Fallback planning
     fallback_enabled: bool = Field(description="Whether fallback is configured")
-    fallback_trigger: str | None = Field(
+    fallback_trigger: Optional[str] = Field(
         description="Conditions for fallback activation"
     )
 
@@ -318,7 +319,7 @@ class QueryAnalyzerAgent(Agent):
 
     def __init__(
         self,
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         analysis_depth: str = "comprehensive",
         **kwargs,
     ):
@@ -440,7 +441,7 @@ class IterativePlannerAgent(Agent):
     name: str = "Iterative Planner"
 
     def __init__(
-        self, llm_config: LLMConfig | None = None, max_iterations: int = 3, **kwargs
+        self, llm_config: Optional[LLMConfig] = None, max_iterations: int = 3, **kwargs
     ):
         """Initialize iterative planner.
 
@@ -545,7 +546,7 @@ class RoutingDecisionAgent(Agent):
 
     def __init__(
         self,
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         enable_fallback: bool = True,
         **kwargs,
     ):
@@ -636,7 +637,7 @@ class SelfRouteRAGAgent(SequentialAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         analysis_depth: str = "comprehensive",
         max_iterations: int = 3,
         enable_fallback: bool = True,
@@ -716,7 +717,7 @@ class SelfRouteRAGAgent(SequentialAgent):
 # Factory function
 def create_self_route_rag_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     routing_mode: str = "adaptive",
     **kwargs,
 ) -> SelfRouteRAGAgent:

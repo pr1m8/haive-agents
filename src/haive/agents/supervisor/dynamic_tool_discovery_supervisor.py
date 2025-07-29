@@ -92,8 +92,12 @@ from haive.agents.react.dynamic_activation_supervisor import ComponentDiscoveryA
 from haive.agents.simple.agent import SimpleAgent
 from haive.agents.supervisor.base_supervisor import BaseSupervisor
 from haive.agents.supervisor.types import (
+    Optional,
     SupervisorDecision,
     SupervisorState,
+    from,
+    import,
+    typing,
 )
 
 
@@ -218,8 +222,10 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
     )
 
     # Discovery agents (excluded from serialization)
-    discovery_agent: ComponentDiscoveryAgent | None = Field(default=None, exclude=True)
-    rag_tool_agent: Any | None = Field(default=None, exclude=True)  # BaseRAGAgent
+    discovery_agent: Optional[ComponentDiscoveryAgent] = Field(
+        default=None, exclude=True)
+    rag_tool_agent: Optional[Any] = Field(
+        default=None, exclude=True)  # BaseRAGAgent
     mcp_framework: dict[str, Any] | None = Field(default=None, exclude=True)
 
     # Tool management
@@ -230,12 +236,14 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
     max_discovery_attempts: int = Field(default=3, ge=1, le=10)
 
     # Initial tools to register (used during factory creation)
-    tools_to_register: list[dict[str, Any]] | None = Field(default=None, exclude=True)
+    tools_to_register: list[dict[str, Any]] | None = Field(
+        default=None, exclude=True)
 
     @field_validator("discovery_mode")
     @classmethod
     def validate_discovery_mode(cls, v: str) -> str:
-        """Validate discovery mode."""
+        """Validate discovery mode.
+        """
         if v not in ToolDiscoveryMode.__members__.values():
             raise ValueError(f"Invalid discovery mode: {v}")
         return v
@@ -243,7 +251,8 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
     @model_validator(mode="after")
     @classmethod
     def setup_supervisor(cls) -> "DynamicToolDiscoverySupervisor":
-        """Set up supervisor after initialization."""
+        """Set up supervisor after initialization.
+        """
         # Register initial tools if provided
         if self.tools_to_register:
             for tool_data in self.tools_to_register:
@@ -307,7 +316,8 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                     agent.add_tool(tool_instance)
 
     def _add_discovery_tool(self) -> None:
-        """Add the dynamic tool discovery tool."""
+        """Add the dynamic tool discovery tool.
+        """
 
         @tool
         def discover_and_load_tools(task_description: str) -> str:
@@ -357,12 +367,13 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                 try:
                     # Query RAG agent for tools
                     rag_response = self.rag_tool_agent.run(
-                        f"Find tools or functions that can help with: {task_description}"
-                    )
+                        f"Find tools or functions that can help with: {task_description}")
                     # Parse response for tool definitions
-                    # This is simplified - real implementation would parse structured output
+                    # This is simplified - real implementation would parse
+                    # structured output
                     if "tool:" in rag_response.lower():
-                        discovered.append("RAG: Found tool definitions in documents")
+                        discovered.append(
+                            "RAG: Found tool definitions in documents")
                 except Exception as e:
                     discovered.append(f"RAG discovery error: {e!s}")
 
@@ -377,9 +388,8 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
             ):
                 try:
                     # Query MCP framework
-                    mcp_tools = self.mcp_framework.get("discover_tools", lambda x: [])(
-                        task_description
-                    )
+                    mcp_tools = self.mcp_framework.get(
+                        "discover_tools", lambda x: [])(task_description)
                     for tool_def in mcp_tools:
                         if tool_def["name"] not in self.discovered_tools:
                             self._register_tool(tool_def)
@@ -397,10 +407,11 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                 "name": "discover_and_load_tools",
                 "description": "Discover and load tools needed for a specific task",
                 "func": discover_and_load_tools,
-            }
-        )
+            })
 
-    async def _make_decision(self, state: SupervisorState) -> SupervisorDecision:
+    async def _make_decision(
+            self,
+            state: SupervisorState) -> SupervisorDecision:
         """Make routing decision with tool discovery awareness.
 
         This method extends the base supervisor's decision-making to consider tool
@@ -461,13 +472,15 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                         if hasattr(msg, "content")
                     )
 
-                    if not recent_discovery and len(self.discovered_tools) < 10:
+                    if not recent_discovery and len(
+                            self.discovered_tools) < 10:
                         # Suggest tool discovery first
                         return SupervisorDecision(
                             next_agent=self.name,  # Route to self for tool discovery
                             reasoning="Task appears to require tools. Discovering available tools first.",
                             confidence=0.9,
-                            suggested_prompt=f"discover_and_load_tools for: {last_message.content}",
+                            suggested_prompt=f"discover_and_load_tools for: {
+                                last_message.content}",
                         )
 
         # Standard routing decision
@@ -480,7 +493,8 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
         return self._parse_decision_response(response.content, state)
 
     def _create_decision_prompt(self, state: SupervisorState) -> str:
-        """Create prompt for routing decision."""
+        """Create prompt for routing decision.
+        """
         # Get conversation context
         context = self._format_conversation_history(state.messages[-10:])
 
@@ -498,7 +512,9 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
             )
 
         # Get discovered tools
-        tool_info = f"Discovered tools: {', '.join(self.discovered_tools) or 'none'}"
+        tool_info = f"Discovered tools: {
+            ', '.join(
+                self.discovered_tools) or 'none'}"
 
         prompt = f"""As a supervisor, analyze the conversation and decide which agent should handle the next step.
 
@@ -526,7 +542,8 @@ Respond with:
     def _parse_decision_response(
         self, response: str, state: SupervisorState
     ) -> SupervisorDecision:
-        """Parse LLM response into routing decision."""
+        """Parse LLM response into routing decision.
+        """
         lines = response.strip().split("\n")
 
         agent = None
@@ -543,14 +560,15 @@ Respond with:
             elif line.startswith("CONFIDENCE:"):
                 try:
                     confidence = float(line.replace("CONFIDENCE:", "").strip())
-                except:
+                except BaseException:
                     confidence = 0.8
             elif line.startswith("PROMPT:"):
                 prompt = line.replace("PROMPT:", "").strip()
 
         # Default to first agent if parsing fails
         if not agent or agent not in self.agents:
-            agent = next(iter(self.agents.keys())) if self.agents else self.name
+            agent = next(iter(self.agents.keys())
+                         ) if self.agents else self.name
 
         return SupervisorDecision(
             next_agent=agent,
@@ -569,7 +587,7 @@ Respond with:
         engine: AugLLMConfig,
         discovery_mode: ToolDiscoveryMode = ToolDiscoveryMode.HYBRID,
         component_discovery_config: dict[str, Any] | None = None,
-        rag_documents_path: str | None = None,
+        rag_documents_path: Optional[str] = None,
         mcp_config: dict[str, Any] | None = None,
         **kwargs,
     ) -> "DynamicToolDiscoverySupervisor":
@@ -637,7 +655,8 @@ Respond with:
             ]
             and component_discovery_config
         ):
-            discovery_agent = ComponentDiscoveryAgent(**component_discovery_config)
+            discovery_agent = ComponentDiscoveryAgent(
+                **component_discovery_config)
 
         # Create RAG agent if needed
         rag_tool_agent = None
@@ -670,8 +689,9 @@ Respond with:
 
             # Create RAG agent
             rag_tool_agent = ReactAgent(
-                name="rag_tool_discovery", engine=engine, tools=[retriever_tool]
-            )
+                name="rag_tool_discovery",
+                engine=engine,
+                tools=[retriever_tool])
 
         # Create supervisor
         return cls(

@@ -13,7 +13,6 @@ Functions:
 """
 
 # src/haive/agents/simple/enhanced_simple_minimal.py
-
 """Minimal Enhanced SimpleAgent - showing the pattern in action.
 
 This is the absolute minimal version showing SimpleAgent as Agent[AugLLMConfig].

@@ -28,6 +28,10 @@ from haive.agents.task_analysis.analysis.engines import (
     FeasibilityAssessorEngine,
     IntegratedAnalyzerEngine,
     OptimizationRecommenderEngine,
+    Optional,
+    from,
+    import,
+    typing,
 )
 
 # Import models
@@ -65,7 +69,8 @@ logger = logging.getLogger(__name__)
 
 
 def route_after_decomposition(state: dict[str, Any]) -> str:
-    """Route after initial decomposition."""
+    """Route after initial decomposition.
+    """
     task_node = state.get("task_node")
 
     if not task_node:
@@ -78,7 +83,11 @@ def route_after_decomposition(state: dict[str, Any]) -> str:
         if hasattr(subtask, "can_expand")
     )
 
-    if needs_expansion and state.get("current_depth", 0) < state.get("max_depth", 3):
+    if needs_expansion and state.get(
+    "current_depth",
+    0) < state.get(
+        "max_depth",
+         3):
         return "recursive_decompose"
 
     # Validate first
@@ -90,7 +99,8 @@ def route_after_decomposition(state: dict[str, Any]) -> str:
 
 
 def route_after_validation(state: dict[str, Any]) -> str:
-    """Route after validation."""
+    """Route after validation.
+    """
     validation_result = state.get("validation_result", {})
 
     if validation_result.get("needs_redecomposition"):
@@ -103,7 +113,8 @@ def route_after_validation(state: dict[str, Any]) -> str:
 
 
 def route_after_analysis(state: dict[str, Any]) -> str:
-    """Route after parallel analysis completes."""
+    """Route after parallel analysis completes.
+    """
     # Check if all analyses are complete
     has_complexity = state.get("complexity_vector") is not None
     has_context = state.get("context_requirement") is not None
@@ -122,7 +133,8 @@ def route_after_analysis(state: dict[str, Any]) -> str:
 
 
 def route_final_decision(state: dict[str, Any]) -> str:
-    """Make final routing decision."""
+    """Make final routing decision.
+    """
     execution_plan = state.get("execution_plan")
     state.get("integrated_analysis")
 
@@ -148,7 +160,8 @@ def route_final_decision(state: dict[str, Any]) -> str:
 def parallel_analysis_orchestrator(
     state: dict[str, Any],
 ) -> Command[Literal["complexity_assessment", "context_analysis", "tree_analysis"]]:
-    """Orchestrate parallel analysis using Send."""
+    """Orchestrate parallel analysis using Send.
+    """
     task_node = state["task_node"]
     task_tree = TaskTree(task_node)
 
@@ -217,16 +230,19 @@ def parallel_analysis_orchestrator(
 def join_analyses(
     state: dict[str, Any],
 ) -> Command[Literal["execution_planning", "optimization", "integrate_analysis"]]:
-    """Join parallel analyses and route next."""
+    """Join parallel analyses and route next.
+    """
     # All analyses should be complete at this point
     next_node = route_after_analysis(state)
-    return Command(update={"analyses_complete": True}, goto=next_node)  # type: ignore
+    return Command(update={"analyses_complete": True},
+                   goto=next_node)  # type: ignore
 
 
 def recursive_expansion_orchestrator(
     state: dict[str, Any],
 ) -> Command[Literal["recursive_decompose", "validate_decomposition"]]:
-    """Orchestrate recursive decomposition."""
+    """Orchestrate recursive decomposition.
+    """
     task_node = state["task_node"]
 
     # Find expandable subtasks
@@ -288,7 +304,8 @@ class TaskAnalysisAgent(Agent):
     # ========================================================================
 
     def __init__(self, **kwargs) -> None:
-        """Initialize with engines properly set up."""
+        """Initialize with engines properly set up.
+        """
         # Initialize engines dict before calling super().__init__
         if "engines" not in kwargs:
             kwargs["engines"] = {
@@ -317,7 +334,8 @@ class TaskAnalysisAgent(Agent):
     # ========================================================================
 
     def setup_agent(self) -> None:
-        """Set up the agent with schema derived from engines."""
+        """Set up the agent with schema derived from engines.
+        """
         # Get all engine instances
         engine_instances = list(self.engines.values())
 
@@ -333,10 +351,12 @@ class TaskAnalysisAgent(Agent):
     # ========================================================================
     # GRAPH BUILDING (same as before)
     # ========================================================================
-    # src/haive/agents/task_analysis/agent.py (only showing the build_graph method fix)
+    # src/haive/agents/task_analysis/agent.py (only showing the build_graph
+    # method fix)
 
     def build_graph(self) -> BaseGraph:
-        """Build the task analysis workflow graph."""
+        """Build the task analysis workflow graph.
+        """
         graph = BaseGraph(name="Task Analysis Workflow")
 
         # ====================================================================
@@ -369,7 +389,9 @@ class TaskAnalysisAgent(Agent):
                     engine=self.engines["recursive_decomposer"],
                 ),
             )
-            graph.add_node("recursive_orchestrator", recursive_expansion_orchestrator)
+            graph.add_node(
+    "recursive_orchestrator",
+     recursive_expansion_orchestrator)
             # Add edges for recursive flow
             graph.add_edge("recursive_orchestrator", "recursive_decompose")
             graph.add_edge("recursive_decompose", "validate_decomposition")
@@ -449,7 +471,9 @@ class TaskAnalysisAgent(Agent):
 
         graph.add_node(
             "optimization",
-            EngineNodeConfig(name="optimization", engine=self.engines["optimizer"]),
+            EngineNodeConfig(
+    name="optimization",
+     engine=self.engines["optimizer"]),
         )
 
         # ====================================================================
@@ -528,7 +552,7 @@ class TaskAnalysisAgent(Agent):
         task_description: str,
         domain: str = "general",
         additional_context: str = "",
-        max_depth: int | None = None,
+        max_depth: Optional[int] = None,
     ) -> dict[str, Any]:
         """Analyze a task comprehensively.
 
@@ -552,16 +576,20 @@ class TaskAnalysisAgent(Agent):
 
     def get_execution_plan(
         self, analysis_result: dict[str, Any]
-    ) -> ExecutionPlan | None:
-        """Extract execution plan from analysis results."""
+     -> Optional[ExecutionPlan]:
+        """Extract execution plan from analysis results.
+        """
         return analysis_result.get("execution_plan")
 
     def get_complexity_assessment(
         self, analysis_result: dict[str, Any]
-    ) -> ComplexityVector | None:
-        """Extract complexity assessment from analysis results."""
+     -> Optional[ComplexityVector]:
+        """Extract complexity assessment from analysis results.
+        """
         return analysis_result.get("complexity_vector")
 
-    def get_recommendations(self, analysis_result: dict[str, Any]) -> list[str]:
-        """Extract recommendations from analysis results."""
+    def get_recommendations(
+        self, analysis_result: dict[str, Any]) -> list[str]:
+        """Extract recommendations from analysis results.
+        """
         return analysis_result.get("recommendations", [])

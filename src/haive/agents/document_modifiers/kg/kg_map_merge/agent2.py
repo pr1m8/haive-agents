@@ -73,6 +73,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
     def initialize_workflow(self, state: ParallelKGState):
         """Initial node that determines whether schema extraction is needed.
+
         Returns a Command directing to the appropriate next node.
         """
         # Check if schema is already defined
@@ -131,6 +132,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
     def map_documents(self, state: ParallelKGState):
         """Map function that creates Send commands for each document to be processed.
+
         Returns a list of Send objects - one for each document.
         """
         # Create a Send object for each document - using DICTIONARY, not state object
@@ -156,6 +158,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
     async def process_document(self, state: dict):
         """Process a single document to extract a knowledge graph fragment.
+
         Uses structured output model to directly get KGExtraction object.
         """
         try:
@@ -181,6 +184,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
     def distribute_graph_document_pairs(self, state: ParallelKGState):
         """Collect results from the parallel document processing.
+
         Updates the main state with the processed graph documents.
         """
         # Check if we have a processed document result
@@ -236,6 +240,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
     def route_after_collection(self, state: ParallelKGState):
         """Determine next steps after document collection.
+
         Returns the appropriate node name for routing.
         """
         if not state.processing_complete:
@@ -255,6 +260,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
     def map_merge_pairs(self, state: ParallelKGState):
         """Map function for merge pairs, creating Send commands for each pair.
+
         Returns a list of Send objects for parallel merging.
         """
         # Get valid graph documents
@@ -439,6 +445,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
     def collect_merged(self, state: dict):
         """Collect a merged graph result.
+
         Updates the main state with the latest merge result.
         """
         # Extract the merged graph and pair index from the state dict
@@ -458,6 +465,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
     def continue_merging(self, state: ParallelKGState):
         """Update merged results list with latest merge result.
+
         Decide whether to continue merging or finalize.
         """
         update = {}

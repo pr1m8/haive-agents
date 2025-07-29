@@ -1,10 +1,16 @@
-"""Reflection agents using generic pre/post hook pattern."""
+"""Reflection agents using generic pre/post hook pattern.
+"""
 
 from typing import Any, Generic, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.message_transformation_v2 import (
+    Optional,
     TransformationType,
+    Union,
+    from,
+    import,
+    typing,
 )
 from pydantic import BaseModel, Field
 
@@ -26,7 +32,8 @@ TPreAgent = TypeVar("TPreAgent", bound=Agent)
 TPostAgent = TypeVar("TPostAgent", bound=Agent)
 
 
-class PrePostMultiAgent(MultiAgent, Generic[TPreAgent, TMainAgent, TPostAgent]):
+class PrePostMultiAgent(
+    MultiAgent, Generic[TPreAgent, TMainAgent, TPostAgent]):
     """Generic pre/post hook multi-agent pattern.
 
     This provides a general pattern for:
@@ -38,11 +45,11 @@ class PrePostMultiAgent(MultiAgent, Generic[TPreAgent, TMainAgent, TPostAgent]):
     """
 
     # Agent configuration
-    pre_agent: TPreAgent | None = Field(
+    pre_agent: Optional[TPreAgent] = Field(
         default=None, description="Pre-processing agent"
     )
     main_agent: TMainAgent = Field(..., description="Main processing agent")
-    post_agent: TPostAgent | None = Field(
+    post_agent: Optional[TPostAgent] = Field(
         default=None, description="Post-processing agent"
     )
 
@@ -69,7 +76,8 @@ class PrePostMultiAgent(MultiAgent, Generic[TPreAgent, TMainAgent, TPostAgent]):
     )
 
     def model_post_init(self, __context: Any) -> None:
-        """Set up the agents list."""
+        """Set up the agents list.
+        """
         super().model_post_init(__context)
 
         # Build agents list
@@ -109,10 +117,11 @@ class StructuredOutputMultiAgent(
         cls,
         main_agent: TMainAgent,
         output_model: type[BaseModel],
-        name: str | None = None,
+        name: Optional[str] = None,
         **kwargs,
     ) -> "StructuredOutputMultiAgent":
-        """Create with main agent and output model."""
+        """Create with main agent and output model.
+        """
         name = name or f"{main_agent.name}_structured"
 
         # Create structured output agent
@@ -122,7 +131,11 @@ class StructuredOutputMultiAgent(
             engine=main_agent.engine,  # Use same engine config
         )
 
-        return cls(name=name, main_agent=main_agent, post_agent=structurer, **kwargs)
+        return cls(
+    name=name,
+    main_agent=main_agent,
+    post_agent=structurer,
+     **kwargs)
 
 
 class ReflectionMultiAgent(PrePostMultiAgent[None, TMainAgent, SimpleAgent]):
@@ -144,17 +157,19 @@ class ReflectionMultiAgent(PrePostMultiAgent[None, TMainAgent, SimpleAgent]):
     )
 
     # Reflection config
-    reflection_config: ReflectionConfig = Field(default_factory=ReflectionConfig)
+    reflection_config: ReflectionConfig = Field(
+        default_factory=ReflectionConfig)
 
     @classmethod
     def create(
         cls,
         main_agent: TMainAgent,
-        name: str | None = None,
+        name: Optional[str] = None,
         reflection_system_prompt: str = REFLECTION_SYSTEM_PROMPT,
         **kwargs,
     ) -> "ReflectionMultiAgent":
-        """Create reflection multi-agent."""
+        """Create reflection multi-agent.
+        """
         name = name or f"{main_agent.name}_with_reflection"
 
         # Create reflection agent
@@ -166,7 +181,11 @@ class ReflectionMultiAgent(PrePostMultiAgent[None, TMainAgent, SimpleAgent]):
             ),
         )
 
-        return cls(name=name, main_agent=main_agent, post_agent=reflector, **kwargs)
+        return cls(
+    name=name,
+    main_agent=main_agent,
+    post_agent=reflector,
+     **kwargs)
 
 
 class GradedReflectionMultiAgent(
@@ -200,12 +219,13 @@ class GradedReflectionMultiAgent(
     def create(
         cls,
         main_agent: TMainAgent,
-        name: str | None = None,
+        name: Optional[str] = None,
         grading_system_prompt: str = GRADING_SYSTEM_PROMPT,
         reflection_system_prompt: str = REFLECTION_SYSTEM_PROMPT,
         **kwargs,
     ) -> "GradedReflectionMultiAgent":
-        """Create graded reflection multi-agent."""
+        """Create graded reflection multi-agent.
+        """
         name = name or f"{main_agent.name}_graded_reflection"
 
         # Create grading agent with structured output
@@ -239,14 +259,16 @@ class GradedReflectionMultiAgent(
 
 
 class ReflectionAgent(SimpleAgent):
-    """Simple reflection agent for improving responses."""
+    """Simple reflection agent for improving responses.
+    """
 
     reflection_mode: str = Field(
         default="improve", description="Mode: improve, critique, or both"
     )
 
     def model_post_init(self, __context: Any) -> None:
-        """Set up reflection prompt."""
+        """Set up reflection prompt.
+        """
         super().model_post_init(__context)
 
         if not self.engine.system_message:
@@ -254,13 +276,15 @@ class ReflectionAgent(SimpleAgent):
 
 
 class GradingAgent(SimpleAgent):
-    """Agent that grades responses with structured output."""
+    """Agent that grades responses with structured output.
+    """
 
     structured_output_model: type[BaseModel] = Field(default=GradingResult)
     structured_output_version: str = Field(default="v2")
 
     def model_post_init(self, __context: Any) -> None:
-        """Set up grading configuration."""
+        """Set up grading configuration.
+        """
         super().model_post_init(__context)
 
         if not self.engine.system_message:
@@ -268,12 +292,15 @@ class GradingAgent(SimpleAgent):
 
 
 class ExpertAgent(SimpleAgent):
-    """Agent with configurable expertise."""
+    """Agent with configurable expertise.
+    """
 
-    expertise_config: ExpertiseConfig = Field(..., description="Expert configuration")
+    expertise_config: ExpertiseConfig = Field(...,
+     description="Expert configuration")
 
     def model_post_init(self, __context: Any) -> None:
-        """Set up expert prompt from config."""
+        """Set up expert prompt from config.
+        """
         super().model_post_init(__context)
 
         # Build system prompt from expertise config
@@ -290,7 +317,8 @@ class ToolBasedReflectionAgent(ReactAgent):
     require_citations: bool = Field(default=True)
 
     def model_post_init(self, __context: Any) -> None:
-        """Set up tool-based reflection."""
+        """Set up tool-based reflection.
+        """
         super().model_post_init(__context)
 
         if not self.engine.system_message:
@@ -305,19 +333,23 @@ class ToolBasedReflectionAgent(ReactAgent):
 
 
 def create_reflection_agent(
-    name: str = "reflector", engine: AugLLMConfig | None = None, **kwargs
+    name: str = "reflector", engine: Optional[AugLLMConfig] = None, **kwargs
 ) -> ReflectionAgent:
-    """Create a simple reflection agent."""
+    """Create a simple reflection agent.
+    """
     if not engine:
-        engine = AugLLMConfig(system_message=REFLECTION_SYSTEM_PROMPT, temperature=0.3)
+        engine = AugLLMConfig(
+    system_message=REFLECTION_SYSTEM_PROMPT,
+     temperature=0.3)
 
     return ReflectionAgent(name=name, engine=engine, **kwargs)
 
 
 def create_graded_reflection_agent(
-    name: str = "graded_reflector", main_agent: Agent | None = None, **kwargs
-) -> GradingAgent | GradedReflectionMultiAgent:
-    """Create grading agent or full graded reflection system."""
+    name: str = "graded_reflector", main_agent: Optional[Agent] = None, **kwargs
+ -> Union[GradingAgent, GradedReflectionMultiAgent]:
+    """Create grading agent or full graded reflection system.
+    """
     if main_agent:
         return GradedReflectionMultiAgent.create(
             main_agent=main_agent, name=name, **kwargs
@@ -325,15 +357,18 @@ def create_graded_reflection_agent(
     # Just return grading agent
     return GradingAgent(
         name=name,
-        engine=AugLLMConfig(system_message=GRADING_SYSTEM_PROMPT, temperature=0.1),
+        engine=AugLLMConfig(
+    system_message=GRADING_SYSTEM_PROMPT,
+     temperature=0.1),
         **kwargs,
     )
 
 
 def create_expert_agent(
-    name: str, domain: str, expertise_level: str = "expert", **kwargs
+    name: str, domain: str, expertise_level: str="expert", **kwargs
 ) -> ExpertAgent:
-    """Create an expert agent."""
+    """Create an expert agent.
+    """
     expertise_config = ExpertiseConfig(
         domain=domain, expertise_level=expertise_level, **kwargs
     )
@@ -346,9 +381,10 @@ def create_expert_agent(
 
 
 def create_tool_based_reflection_agent(
-    name: str = "tool_reflector", tools: list | None = None, **kwargs
+    name: str="tool_reflector", tools: Optional[list]=None, **kwargs
 ) -> ToolBasedReflectionAgent:
-    """Create tool-based reflection agent."""
+    """Create tool-based reflection agent.
+    """
     return ToolBasedReflectionAgent(
         name=name, engine=AugLLMConfig(temperature=0.3), tools=tools or [], **kwargs
     )

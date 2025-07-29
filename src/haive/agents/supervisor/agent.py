@@ -1,7 +1,7 @@
 """Haive Supervisor Agent Implementation.
 
-A clean supervisor that manages multiple specialized agents using
-LLM-based routing decisions.
+A clean supervisor that manages multiple specialized agents using LLM-based routing
+decisions.
 """
 
 import logging
@@ -53,8 +53,8 @@ Decision:""",
 class SupervisorAgent(ReactAgent):
     """Supervisor agent that routes between multiple specialized agents.
 
-    Extends ReactAgent to leverage its looping behavior for continuous
-    routing decisions based on conversation context.
+    Extends ReactAgent to leverage its looping behavior for continuous routing decisions
+    based on conversation context.
     """
 
     # ========================================================================

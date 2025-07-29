@@ -1,7 +1,7 @@
 """LATS Orchestrator using EnhancedMultiAgentV4.
 
-This orchestrator coordinates the LATS algorithm components using the same
-multi-agent pattern as TOT and Self-Discover implementations.
+This orchestrator coordinates the LATS algorithm components using the same multi-agent
+pattern as TOT and Self-Discover implementations.
 """
 
 import logging

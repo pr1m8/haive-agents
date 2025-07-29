@@ -21,8 +21,13 @@ from haive.agents.reasoning_and_critique.tot.v2.models import (
     Candidate,
     CandidateEvaluation,
     CandidateGeneration,
+    Optional,
     ScoredCandidate,
     SearchControl,
+    Union,
+    from,
+    import,
+    typing,
 )
 from haive.agents.reasoning_and_critique.tot.v2.prompts import (
     control_prompt,
@@ -68,7 +73,8 @@ controller = SimpleAgent(name="controller", engine=control_engine)
 
 # Custom workflow nodes for ToT-specific logic
 def expansion_workflow(state: ToTState) -> dict[str, Any]:
-    """Process expansion results and create candidates."""
+    """Process expansion results and create candidates.
+    """
     # This is called after the expansion agent runs
     # The expansion agent's result should be in the last message
     if state.messages and hasattr(state.messages[-1], "content"):
@@ -80,7 +86,8 @@ def expansion_workflow(state: ToTState) -> dict[str, Any]:
                     content=candidate_data,
                     depth=state.depth,
                     parent_id=(
-                        state.seed.id if hasattr(state, "seed") and state.seed else None
+                        state.seed.id if hasattr(
+    state, "seed") and state.seed else None
                     ),
                     expansion_index=i,
                 )
@@ -94,7 +101,8 @@ def expansion_workflow(state: ToTState) -> dict[str, Any]:
 
 
 def scoring_workflow(state: ToTState) -> dict[str, Any]:
-    """Process all candidates for scoring."""
+    """Process all candidates for scoring.
+    """
     # Score all candidates
     scored = []
     for candidate in state.candidates:
@@ -108,7 +116,11 @@ def scoring_workflow(state: ToTState) -> dict[str, Any]:
 
         if hasattr(result, "messages") and result.messages:
             last_msg = result.messages[-1]
-            if hasattr(last_msg, "content") and isinstance(last_msg.content, dict):
+            if hasattr(
+    last_msg,
+    "content") and isinstance(
+        last_msg.content,
+         dict):
                 eval_result = last_msg.content
                 scored_candidate = ScoredCandidate.from_candidate(
                     candidate,
@@ -127,7 +139,8 @@ def scoring_workflow(state: ToTState) -> dict[str, Any]:
 
 
 def control_workflow(state: ToTState) -> dict[str, Any]:
-    """Process control results and update state."""
+    """Process control results and update state.
+    """
     # This is called after the control agent runs
     if state.messages and hasattr(state.messages[-1], "content"):
         result = state.messages[-1].content
@@ -166,27 +179,32 @@ def control_workflow(state: ToTState) -> dict[str, Any]:
 
 # Routing functions
 def route_after_expansion(state: ToTState) -> str:
-    """After expansion, go to scoring workflow."""
+    """After expansion, go to scoring workflow.
+    """
     return "scoring_prep"
 
 
 def route_after_scoring_prep(state: ToTState) -> str:
-    """After scoring prep, go to scorer."""
+    """After scoring prep, go to scorer.
+    """
     return "scorer"
 
 
 def route_after_scoring(state: ToTState) -> str:
-    """After scoring, go to control workflow."""
+    """After scoring, go to control workflow.
+    """
     return "control_post"
 
 
 def route_after_control_post(state: ToTState) -> str:
-    """After control post-processing, go to controller."""
+    """After control post-processing, go to controller.
+    """
     return "controller"
 
 
-def should_continue_search(state: ToTState) -> str | list[Send]:
-    """After control, decide whether to continue search."""
+def should_continue_search(state: ToTState -> Union[str, list[Send]]:
+    """After control, decide whether to continue search.
+    """
     if state.should_terminate:
         return END
 
@@ -211,14 +229,15 @@ def should_continue_search(state: ToTState) -> str | list[Send]:
 
 # Create function for Tree of Thoughts
 def create_tree_of_thoughts(
-    name: str = "TreeOfThoughts",
-    max_depth: int = 10,
-    beam_size: int = 3,
-    expansion_factor: int = 5,
-    threshold: float = 0.9,
+    name: str="TreeOfThoughts",
+    max_depth: int=10,
+    beam_size: int=3,
+    expansion_factor: int=5,
+    threshold: float=0.9,
     **kwargs
 ) -> MultiAgentBase:
-    """Create a Tree of Thoughts multi-agent system."""
+    """Create a Tree of Thoughts multi-agent system.
+    """
     # Define branches for routing
     branches = [
         (expander, route_after_expansion, {"scoring_prep": "scoring_prep"}),
@@ -236,7 +255,7 @@ def create_tree_of_thoughts(
     }
 
     # Create the multi-agent system
-    system = MultiAgentBase(
+    system=MultiAgentBase(
         name=name,
         agents=[expander, scorer, controller],
         branches=branches,
@@ -247,7 +266,7 @@ def create_tree_of_thoughts(
     )
 
     # Set initial state values
-    system.initial_state = {
+    system.initial_state={
         "max_depth": max_depth,
         "beam_size": beam_size,
         "expansion_factor": expansion_factor,
@@ -260,13 +279,15 @@ def create_tree_of_thoughts(
 # Convenience function for common use case
 def solve_with_tot(
     problem: str,
-    problem_type: str | None = None,
-    max_depth: int = 5,
-    beam_size: int = 3,
+    problem_type: Optional[str]=None,
+    max_depth: int=5,
+    beam_size: int=3,
     **kwargs
 ) -> dict[str, Any]:
-    """Solve a problem using Tree of Thoughts."""
-    system = create_tree_of_thoughts(max_depth=max_depth, beam_size=beam_size, **kwargs)
+    """Solve a problem using Tree of Thoughts.
+    """
+    system = create_tree_of_thoughts(
+    max_depth=max_depth, beam_size=beam_size, **kwargs)
 
     # Build and compile the graph
     graph = system.build_graph()
@@ -279,6 +300,6 @@ def solve_with_tot(
     }
 
     # Run the system
-    result = compiled.invoke(initial_state)
+    result=compiled.invoke(initial_state)
 
     return result

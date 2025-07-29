@@ -5,7 +5,7 @@ following the Agent base class patterns.
 """
 
 import logging
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
@@ -37,7 +37,7 @@ class RebuildDynamicSupervisor(ReactAgent):
     _needs_rebuild: bool = PrivateAttr(default=False)
 
     def register_agent(
-        self, agent: Any, capability: str | None = None, agent_name: str | None = None
+        self, agent: Any, capability: Optional[str] = None, agent_name: Optional[str] = None
     ) -> bool:
         """Register an agent and mark for rebuild.
 
@@ -69,7 +69,8 @@ class RebuildDynamicSupervisor(ReactAgent):
         return True
 
     def unregister_agent(self, agent_name: str) -> bool:
-        """Unregister an agent and mark for rebuild."""
+        """Unregister an agent and mark for rebuild.
+        """
         if agent_name not in self._agent_registry:
             return False
 
@@ -157,10 +158,12 @@ class RebuildDynamicSupervisor(ReactAgent):
         return graph
 
     def _create_supervisor_node(self):
-        """Create supervisor decision node."""
+        """Create supervisor decision node.
+        """
 
         async def supervisor_node(state: Any) -> dict[str, Any]:
-            """Make routing decision based on current state."""
+            """Make routing decision based on current state.
+            """
             logger.info("=" * 60)
             logger.info("SUPERVISOR DECISION NODE")
             logger.info("=" * 60)
@@ -211,10 +214,12 @@ class RebuildDynamicSupervisor(ReactAgent):
         return supervisor_node
 
     def _create_agent_node(self, agent_name: str, agent: Any):
-        """Create node for a specific agent with proper state handling."""
+        """Create node for a specific agent with proper state handling.
+        """
 
         async def agent_node(state: Any) -> dict[str, Any]:
-            """Execute agent with proper state extraction."""
+            """Execute agent with proper state extraction.
+            """
             logger.info("=" * 60)
             logger.info(f"AGENT NODE: {agent_name}")
             logger.info("=" * 60)
@@ -259,7 +264,8 @@ class RebuildDynamicSupervisor(ReactAgent):
         return agent_node
 
     def _prepare_agent_input(self, agent: Any, state: dict[str, Any]) -> dict[str, Any]:
-        """Prepare input for agent based on its state schema."""
+        """Prepare input for agent based on its state schema.
+        """
         # If agent has state_schema, extract only needed fields
         if hasattr(agent, "state_schema") and agent.state_schema:
             logger.info(f"Using agent state schema: {agent.state_schema.__name__}")
@@ -295,7 +301,8 @@ class RebuildDynamicSupervisor(ReactAgent):
     def _process_agent_result(
         self, result: Any, state: dict[str, Any], agent_name: str
     ) -> dict[str, Any]:
-        """Process agent result into state update."""
+        """Process agent result into state update.
+        """
         update = {"last_agent": agent_name, "last_agent_success": True}
 
         # Handle different result types
@@ -314,8 +321,9 @@ class RebuildDynamicSupervisor(ReactAgent):
 
         return update
 
-    def _select_best_agent(self, content: str) -> str | None:
-        """Select best agent for the given content."""
+    def _select_best_agent(self, content: str -> Optional[str]:
+        """Select best agent for the given content.
+        """
         if not self._agent_registry:
             return None
 
@@ -335,7 +343,8 @@ class RebuildDynamicSupervisor(ReactAgent):
         return next(iter(self._agent_registry.keys()))
 
     def _route_from_supervisor(self, state: Any) -> str:
-        """Routing function from supervisor."""
+        """Routing function from supervisor.
+        """
         if hasattr(state, "model_dump"):
             state_dict = state.model_dump()
         else:
@@ -350,16 +359,18 @@ class RebuildDynamicSupervisor(ReactAgent):
 
         return next_agent
 
-    async def ainvoke(self, input: Any, config: Any | None = None, **kwargs) -> Any:
-        """Override to check for rebuild before invocation."""
+    async def ainvoke(self, input: Any, config: Optional[Any] = None, **kwargs) -> Any:
+        """Override to check for rebuild before invocation.
+        """
         if self._needs_rebuild and self.auto_rebuild:
             logger.info("Rebuilding graph before invocation...")
             self._trigger_rebuild()
 
         return await super().ainvoke(input, config, **kwargs)
 
-    def invoke(self, input: Any, config: Any | None = None, **kwargs) -> Any:
-        """Override to check for rebuild before invocation."""
+    def invoke(self, input: Any, config: Optional[Any] = None, **kwargs) -> Any:
+        """Override to check for rebuild before invocation.
+        """
         if self._needs_rebuild and self.auto_rebuild:
             logger.info("Rebuilding graph before invocation...")
             self._trigger_rebuild()

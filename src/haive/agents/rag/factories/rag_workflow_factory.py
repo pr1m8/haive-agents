@@ -1,9 +1,8 @@
 """RAG Workflow Factory.
 
-from typing import Any, Dict
-Generic factory for creating RAG workflows by composing callable functions
-into different agent patterns. This provides a clean, modular approach to
-building complex RAG systems.
+from typing import Any, Dict Generic factory for creating RAG workflows by composing
+callable functions into different agent patterns. This provides a clean, modular
+approach to building complex RAG systems.
 """
 
 from collections.abc import Callable

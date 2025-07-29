@@ -1,8 +1,8 @@
 """Configuration for the open_perplexity research agent.
 
-from typing import Any
-This module defines the configuration class and factory methods for creating
-research agent configurations. It includes settings for LLM engines, tools,
+from typing import Any This module defines the configuration class and factory methods
+from typing import Optional
+for creating research agent configurations. It includes settings for LLM engines, tools,
 vector stores, and research parameters.
 """
 
@@ -83,16 +83,16 @@ class ResearchAgentConfig(AgentConfig):
     )
 
     # Vector store configuration
-    vectorstore_config: VectorStoreConfig | None = Field(
+    vectorstore_config: Optional[VectorStoreConfig] = Field(
         default=None, description="Vector store configuration for document storage"
     )
 
     # Agent configurations
-    react_agent_name: str | None = Field(
+    react_agent_name: Optional[str] = Field(
         default=None, description="Name of the configured ReAct agent"
     )
 
-    rag_agent_name: str | None = Field(
+    rag_agent_name: Optional[str] = Field(
         default=None, description="Name of the configured RAG agent"
     )
 
@@ -162,7 +162,9 @@ class ResearchAgentConfig(AgentConfig):
     )
 
     @classmethod
-    def from_scratch(cls, name: str | None = None, llm_model: str = "gpt-4o", **kwargs):
+    def from_scratch(
+        cls, name: Optional[str] = None, llm_model: str = "gpt-4o", **kwargs
+    ):
         """Create a research agent configuration from scratch.
 
         Factory method to create a fully configured research agent with all

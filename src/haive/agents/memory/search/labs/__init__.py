@@ -1,6 +1,6 @@
 """Module exports."""
 
-from labs.agent import (
+from haive.agents.memory.search.labs.agent import (
     LabsAgent,
     create_interactive_app,
     create_interactive_apps,
@@ -13,7 +13,7 @@ from labs.agent import (
     plan_project_workflow,
     process_data_file,
 )
-from labs.models import (
+from haive.agents.memory.search.labs.models import (
     AssetType,
     Config,
     InteractiveApp,

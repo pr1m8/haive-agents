@@ -82,8 +82,11 @@ def has_tool_calls(state: dict[str, Any]):
 
 # Custom wrapper for ToolNode to ensure proper message normalization
 class MessageNormalizingToolNode:
-    """A wrapper around ToolNode that ensures proper serialization and message type compatibility.
-    This fixes the Pydantic serialization warnings by properly normalizing message objects.
+    """A wrapper around ToolNode that ensures proper serialization and message type
+    compatibility.
+
+    This fixes the Pydantic serialization warnings by properly normalizing message
+    objects.
     """
 
     def __init__(self, tools: list[str]):
@@ -162,8 +165,8 @@ class MessageNormalizingToolNode:
 class ReactAgent(Agent[ReactAgentConfig]):
     """A React agent implementation using LangGraph.
 
-    This agent implements the ReAct pattern (Reasoning, Action, Observation)
-    to solve complex tasks using language models and tools.
+    This agent implements the ReAct pattern (Reasoning, Action, Observation) to solve
+    complex tasks using language models and tools.
     """
 
     def __init__(self, config: ReactAgentConfig):
@@ -323,7 +326,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
     def _prepare_input(
         self, input_data: str | list[str] | dict[str, Any] | BaseModel
     ) -> dict[str, Any]:
-        """Prepare input for the agent, ensuring proper initialization and message normalization.
+        """Prepare input for the agent, ensuring proper initialization and message
+        normalization.
 
         Args:
             input_data: Input in various formats

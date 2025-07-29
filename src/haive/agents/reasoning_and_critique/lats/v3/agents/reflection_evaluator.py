@@ -4,6 +4,10 @@ from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.reasoning_and_critique.lats.v3.models.action_models import (
     CandidateAction,
+    Optional,
+    from,
+    import,
+    typing,
 )
 from haive.agents.reasoning_and_critique.lats.v3.models.evaluation_models import (
     ReflectionEvaluation,
@@ -16,9 +20,9 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class ReflectionEvaluator:
     """Agent that reflects on and evaluates candidate actions.
 
-    This agent analyzes candidate actions and provides scores based on
-    their likelihood of success, strategic value, and problem-solving potential.
-    Uses composition pattern to avoid Pydantic inheritance issues.
+    This agent analyzes candidate actions and provides scores based on their likelihood
+    of success, strategic value, and problem-solving potential. Uses composition pattern
+    to avoid Pydantic inheritance issues.
     """
 
     def __init__(
@@ -48,7 +52,8 @@ class ReflectionEvaluator:
         )
 
     def _create_system_message(self) -> str:
-        """Create the system message for reflection and evaluation."""
+        """Create the system message for reflection and evaluation.
+        """
         return """You are an expert evaluator for Monte Carlo Tree Search actions.
 
 Your task is to reflect on and evaluate candidate actions, scoring them based on:
@@ -101,13 +106,15 @@ Consider:
 
         if current_node.visits > 0:
             prompt_parts.append(
-                f"This node has been visited {current_node.visits} times with average reward {current_node.average_reward():.2f}"
+                f"This node has been visited {
+    current_node.visits} times with average reward {
+        current_node.average_reward():.2f}"
             )
 
         if reflection_history:
             prompt_parts.append("\nPrevious reflections:")
             for i, reflection in enumerate(reflection_history[-3:]):  # Last 3
-                prompt_parts.append(f"  {i+1}. {reflection}")
+                prompt_parts.append(f"  {i + 1}. {reflection}")
 
         prompt_parts.append("\nCandidate actions to evaluate:")
         for i, action in enumerate(candidate_actions, 1):
@@ -164,7 +171,7 @@ Consider:
 
         return result
 
-    def get_best_action(self, evaluation: ReflectionEvaluation) -> ScoredAction | None:
+    def get_best_action(self, evaluation: ReflectionEvaluation -> Optional[ScoredAction]:
         """Get the highest-scored action from an evaluation.
 
         Args:
@@ -181,7 +188,7 @@ Consider:
     def get_actions_above_threshold(
         self,
         evaluation: ReflectionEvaluation,
-        threshold: float = 0.6,
+        threshold: float=0.6,
     ) -> list[ScoredAction]:
         """Get all actions scoring above a threshold.
 
@@ -199,7 +206,7 @@ Consider:
     def should_backtrack(
         self,
         evaluation: ReflectionEvaluation,
-        backtrack_threshold: float = 0.3,
+        backtrack_threshold: float=0.3,
     ) -> bool:
         """Determine if we should backtrack based on action scores.
 
@@ -232,5 +239,7 @@ Consider:
         best_action = self.get_best_action(evaluation)
         return (
             f"{evaluation.overall_reflection} "
-            f"Best action: '{best_action.action}' (score: {best_action.score:.2f})"
+            f"Best action: '{
+    best_action.action}' (score: {
+        best_action.score:.2f})"
         )

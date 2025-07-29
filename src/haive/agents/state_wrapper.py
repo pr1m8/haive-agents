@@ -11,7 +11,7 @@ Functions:
 """
 
 import logging
-from typing import Any
+from typing import Any, Optional
 
 from playwright.async_api import Page
 
@@ -21,29 +21,34 @@ logger = logging.getLogger(__name__)
 
 class StateWrapper:
     """A wrapper for state dictionaries that stores Page objects separately.
-    This avoids serialization issues by keeping non-serializable objects
-    outside the state dictionary.
+
+    This avoids serialization issues by keeping non-serializable objects outside the
+    state dictionary.
     """
 
     def __init__(self) -> None:
         # Store global instances of non-serializable objects
-        self._page_instance: Page | None = None
+        self._page_instance: Optional[Page] = None
         self._other_objects: dict[str, Any] = {}
 
     def set_page(self, page: Page) -> None:
-        """Store the Page object."""
+        """Store the Page object.
+        """
         self._page_instance = page
 
-    def get_page(self) -> Page | None:
-        """Retrieve the stored Page object."""
+    def get_page(self -> Optional[Page]:
+        """Retrieve the stored Page object.
+        """
         return self._page_instance
 
     def store_object(self, key: str, obj: Any) -> None:
-        """Store any other non-serializable object."""
+        """Store any other non-serializable object.
+        """
         self._other_objects[key] = obj
 
     def get_object(self, key: str) -> Any:
-        """Retrieve a stored non-serializable object."""
+        """Retrieve a stored non-serializable object.
+        """
         return self._other_objects.get(key)
 
     def prepare_input(self, state: dict[str, Any]) -> dict[str, Any]:

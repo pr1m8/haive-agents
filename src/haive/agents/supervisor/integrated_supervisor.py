@@ -30,7 +30,8 @@ console = Console()
 
 
 class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
-    """Integrated supervisor combining dynamic agent management and multi-agent coordination.
+    """Integrated supervisor combining dynamic agent management and multi-agent
+    coordination.
 
     This supervisor provides:
     - Dynamic agent addition/removal through tools

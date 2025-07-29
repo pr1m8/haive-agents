@@ -1,7 +1,7 @@
 """Plan and Execute Agent Implementation.
 
-from typing import Any, Dict
-Simple Plan and Execute agent using MultiAgentBase with proper configuration.
+from typing import Any, Dict Simple Plan and Execute agent using MultiAgentBase with
+proper configuration.
 """
 
 from haive.agents.base.agent import Agent

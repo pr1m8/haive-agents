@@ -11,7 +11,6 @@ Functions:
 """
 
 # src/haive/agents/simple/clean_enhanced_simple.py
-
 """Clean Enhanced SimpleAgent - SimpleAgent as Agent[AugLLMConfig].
 
 This is the cleanest implementation showing SimpleAgent is just Agent[AugLLMConfig].

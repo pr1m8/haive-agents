@@ -80,6 +80,7 @@ class TaskDependency(BaseModel):
 
 class ActionStep(BaseModel):
     """Atomic action that cannot be decomposed further.
+
     This is a leaf node in the task tree.
     """
 
@@ -114,6 +115,7 @@ class ActionStep(BaseModel):
 
 class TaskNode(BaseModel):
     """A task that may contain subtasks or action steps.
+
     Designed to work perfectly with AutoTree.
     """
 
@@ -205,6 +207,7 @@ class TaskNode(BaseModel):
 
 class TaskPlan(BaseModel):
     """Root object representing a complete task plan.
+
     This is what we'll create from a task description.
     """
 

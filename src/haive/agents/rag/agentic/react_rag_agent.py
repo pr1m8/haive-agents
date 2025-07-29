@@ -1,7 +1,7 @@
 """Enhanced ReactAgent with Retriever Node and Routing for Agentic RAG.
 
-This agent extends ReactAgent to add a dedicated retrieval node to the graph,
-with intelligent routing between tool calls and retrieval based on the query.
+This agent extends ReactAgent to add a dedicated retrieval node to the graph, with
+intelligent routing between tool calls and retrieval based on the query.
 """
 
 import contextlib
@@ -50,7 +50,6 @@ class ReactRAGAgent(ReactAgent):
             result = await agent.arun("What is the capital of France?")  # Uses retriever
             result = await agent.arun("Calculate 15 * 23")  # Uses calculator tool
             result = await agent.arun("Search for Python tutorials")  # Uses web search
-
     """
 
     # Retriever configuration

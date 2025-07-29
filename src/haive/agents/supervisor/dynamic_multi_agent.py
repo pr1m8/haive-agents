@@ -1,7 +1,7 @@
 """Dynamic Multi-Agent Supervisor with Dynamic Execution Pattern.
 
-This implementation integrates with the MultiAgent base class and uses
-dynamic agent execution without graph rebuilding.
+This implementation integrates with the MultiAgent base class and uses dynamic agent
+execution without graph rebuilding.
 """
 
 import logging
@@ -93,7 +93,10 @@ class DynamicMultiAgent(MultiAgent):
         logger.info(f"Registered capability for {agent_name}: {capability}")
 
     def register_agent_dynamically(
-        self, agent: Agent, capability: str | None = None, agent_name: str | None = None
+        self,
+        agent: Agent,
+        capability: str | None = None,
+        agent_name: str | None = None,
     ) -> bool:
         """Register a new agent dynamically at runtime.
 

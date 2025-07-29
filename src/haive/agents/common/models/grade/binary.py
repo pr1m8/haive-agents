@@ -1,7 +1,7 @@
 """Binary grading model for pass/fail evaluations.
 
-This module implements a binary grading system suitable for pass/fail,
-yes/no, correct/incorrect, and similar binary evaluations.
+This module implements a binary grading system suitable for pass/fail, yes/no,
+correct/incorrect, and similar binary evaluations.
 """
 
 from typing import Any

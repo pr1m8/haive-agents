@@ -27,7 +27,7 @@ class SubSection(BaseModel):
 class WikiSection(BaseModel):
     section_title: str = Field(..., title="Title of the section")
     content: str = Field(..., title="Full content of the section")
-    subsections: Optional[List[Subsection]] = Field(
+    subsections: List[Subsection] | None = Field(
         default=None,
         title="Titles and descriptions for each subsection of the Wikipedia page.",
     )

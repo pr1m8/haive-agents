@@ -92,7 +92,10 @@ class Node:
         return 1
 
     def upper_confidence_bound(self, exploration_weight=1.0) -> Any:
-        """Return the UCT score. This helps balance exploration vs. exploitation of a branch."""
+        """Return the UCT score.
+
+        This helps balance exploration vs. exploitation of a branch.
+        """
         if self.parent is None:
             raise ValueError("Cannot obtain UCT from root node")
         if self.visits == 0:

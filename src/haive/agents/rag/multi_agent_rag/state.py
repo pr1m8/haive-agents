@@ -6,7 +6,7 @@ supporting document processing, grading, multi-step retrieval, and conditional r
 
 import operator
 from enum import Enum
-from typing import Annotated, Any
+from typing import Annotated, Any, Optional
 
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.documents import Document
@@ -15,7 +15,8 @@ from pydantic import BaseModel, Field
 
 
 class RAGOperationType(str, Enum):
-    """Types of RAG operations that can be performed."""
+    """Types of RAG operations that can be performed.
+    """
 
     RETRIEVE = "retrieve"
     GRADE = "grade"
@@ -26,7 +27,8 @@ class RAGOperationType(str, Enum):
 
 
 class QueryStatus(str, Enum):
-    """Status of query processing."""
+    """Status of query processing.
+    """
 
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
@@ -36,31 +38,37 @@ class QueryStatus(str, Enum):
 
 
 class DocumentGradingResult(BaseModel):
-    """Result of document grading process."""
+    """Result of document grading process.
+    """
 
     document_id: str = Field(description="Document identifier")
     document: Document = Field(description="The original document")
-    relevance_score: float = Field(ge=0.0, le=1.0, description="Relevance score")
-    is_relevant: bool = Field(description="Whether document passed relevance check")
+    relevance_score: float = Field(
+    ge=0.0, le=1.0, description="Relevance score")
+    is_relevant: bool = Field(
+    description="Whether document passed relevance check")
     grading_reason: str = Field(description="Reason for grading decision")
-    grader_type: str = Field(description="Type of grader used (binary, numeric, etc.)")
+    grader_type: str = Field(
+    description="Type of grader used (binary, numeric, etc.)")
 
 
 class RAGStep(BaseModel):
-    """Represents a single step in the RAG workflow."""
+    """Represents a single step in the RAG workflow.
+    """
 
     step_id: str = Field(description="Unique identifier for this step")
-    operation_type: RAGOperationType = Field(description="Type of operation performed")
+    operation_type: RAGOperationType = Field(
+    description="Type of operation performed")
     input_data: dict[str, Any] = Field(
         default_factory=dict, description="Input data for this step"
     )
     output_data: dict[str, Any] = Field(
         default_factory=dict, description="Output data from this step"
     )
-    timestamp: str | None = Field(
+    timestamp: Optional[str] = Field(
         default=None, description="When this step was executed"
     )
-    agent_name: str | None = Field(
+    agent_name: Optional[str] = Field(
         default=None, description="Which agent performed this step"
     )
 
@@ -107,10 +115,10 @@ class MultiAgentRAGState(StateSchema):
     query_status: QueryStatus = Field(
         default=QueryStatus.PENDING, description="Current status of query processing"
     )
-    current_operation: RAGOperationType | None = Field(
+    current_operation: Optional[RAGOperationType] = Field(
         default=None, description="Currently executing operation"
     )
-    next_operation: RAGOperationType | None = Field(
+    next_operation: Optional[RAGOperationType] = Field(
         default=None, description="Next planned operation"
     )
 
@@ -140,7 +148,7 @@ class MultiAgentRAGState(StateSchema):
     )
 
     # Agent Coordination
-    active_agent: str | None = Field(
+    active_agent: Optional[str] = Field(
         default=None, description="Currently active agent name"
     )
     agent_decisions: Annotated[dict[str, Any], operator.add] = Field(
@@ -212,7 +220,8 @@ class MultiAgentRAGState(StateSchema):
         input_data: dict[str, Any] | None = None,
         output_data: dict[str, Any] | None = None,
     ) -> str:
-        """Add a new workflow step."""
+        """Add a new workflow step.
+        """
         import uuid
         from datetime import datetime
 
@@ -229,7 +238,8 @@ class MultiAgentRAGState(StateSchema):
         return step_id
 
     def get_relevant_documents(self, min_score: float = 0.5) -> list[Document]:
-        """Get documents that passed relevance threshold."""
+        """Get documents that passed relevance threshold.
+        """
         return [
             result.document
             for result in self.graded_documents
@@ -237,11 +247,14 @@ class MultiAgentRAGState(StateSchema):
         ]
 
     def update_quality_metrics(self) -> None:
-        """Update quality metrics based on current state."""
+        """Update quality metrics based on current state.
+        """
         if self.graded_documents:
             # Calculate retrieval confidence based on graded documents
-            relevant_count = sum(1 for doc in self.graded_documents if doc.is_relevant)
-            self.retrieval_confidence = relevant_count / len(self.graded_documents)
+            relevant_count = sum(
+    1 for doc in self.graded_documents if doc.is_relevant)
+            self.retrieval_confidence = relevant_count / \
+                len(self.graded_documents)
 
         # Overall quality is average of retrieval and generation confidence
         if self.retrieval_confidence > 0 and self.generation_confidence > 0:
@@ -250,7 +263,8 @@ class MultiAgentRAGState(StateSchema):
             ) / 2
 
     def should_refine_query(self) -> bool:
-        """Determine if query should be refined based on state."""
+        """Determine if query should be refined based on state.
+        """
         return (
             self.retrieval_confidence < 0.3
             or len(self.get_relevant_documents()) == 0
@@ -258,12 +272,14 @@ class MultiAgentRAGState(StateSchema):
         )
 
     def get_latest_step(
-        self, operation_type: RAGOperationType | None = None
-    ) -> RAGStep | None:
-        """Get the most recent workflow step, optionally filtered by operation type."""
+        self, operation_type: Optional[RAGOperationType] = None
+     -> Optional[RAGStep]:
+        """Get the most recent workflow step, optionally filtered by operation type.
+        """
         steps = self.workflow_steps
         if operation_type:
-            steps = [step for step in steps if step.operation_type == operation_type]
+            steps = [
+    step for step in steps if step.operation_type == operation_type]
 
         return steps[-1] if steps else None
 

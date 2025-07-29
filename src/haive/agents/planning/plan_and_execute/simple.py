@@ -1,5 +1,7 @@
 """Simple Plan and Execute Agent - clean and proper."""
 
+from typing import Dict
+
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.multi.clean import MultiAgent

@@ -1,7 +1,7 @@
 """Utility functions for creating and using SimpleAgent.
 
-This module provides helper functions for easily creating SimpleAgent instances
-with various configurations.
+This module provides helper functions for easily creating SimpleAgent instances with
+various configurations.
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig

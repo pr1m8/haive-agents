@@ -25,10 +25,14 @@ from haive.agents.simple.agent import SimpleAgent
 
 from .models import (
     EvidenceCollection,
+    Optional,
     ReWOOPlan,
     ReWOOSolution,
     ReWOOV3Input,
     ReWOOV3Output,
+    from,
+    import,
+    typing,
 )
 from .prompts import planner_prompt, solver_prompt, worker_prompt
 from .state import ReWOOV3State
@@ -51,7 +55,7 @@ class ReWOOV3Agent:
         self,
         name: str,
         config: AugLLMConfig,
-        tools: list | None = None,
+        tools: Optional[list] = None,
         max_steps: int = 10,
         **kwargs,
     ):
@@ -133,8 +137,8 @@ class ReWOOV3Agent:
     async def arun(
         self,
         query: str,
-        context: str | None = None,
-        max_steps: int | None = None,
+        context: Optional[str] = None,
+        max_steps: Optional[int] = None,
         tools_preference: list[str] | None = None,
         **kwargs,
     ) -> ReWOOV3Output:
@@ -202,18 +206,24 @@ class ReWOOV3Agent:
                 and result.execution_completed_at
             ):
                 execution_time = (
-                    result.execution_completed_at - result.planning_completed_at
-                ).total_seconds()
+                    result.execution_completed_at -
+                    result.planning_completed_at).total_seconds()
 
-            if hasattr(result, "solving_completed_at") and result.solving_completed_at:
+            if hasattr(
+                    result,
+                    "solving_completed_at") and result.solving_completed_at:
                 solving_time = (
                     result.solving_completed_at - result.execution_completed_at
                 ).total_seconds()
 
             # Format structured output
             return self._format_output(
-                result, query, total_time, planning_time, execution_time, solving_time
-            )
+                result,
+                query,
+                total_time,
+                planning_time,
+                execution_time,
+                solving_time)
 
         except Exception as e:
             # Handle errors gracefully
@@ -238,8 +248,8 @@ class ReWOOV3Agent:
     def run(
         self,
         query: str,
-        context: str | None = None,
-        max_steps: int | None = None,
+        context: Optional[str] = None,
+        max_steps: Optional[int] = None,
         tools_preference: list[str] | None = None,
         **kwargs,
     ) -> ReWOOV3Output:
@@ -315,7 +325,9 @@ class ReWOOV3Agent:
         tools_used = []
         evidence_summary = "No evidence collected"
 
-        if hasattr(result, "evidence_collection") and result.evidence_collection:
+        if hasattr(
+                result,
+                "evidence_collection") and result.evidence_collection:
             try:
                 collection = EvidenceCollection(**result.evidence_collection)
                 evidence_collected = collection.success_count

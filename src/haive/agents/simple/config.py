@@ -1,8 +1,8 @@
 """Configuration for SimpleAgent with comprehensive schema handling.
 
-from typing import Any
-This module defines the configuration class for SimpleAgent with explicit
-input/output schema support, schema composition integration, and improved
+from typing import Any This module defines the configuration class for SimpleAgent with
+from typing import Optional
+explicit input/output schema support, schema composition integration, and improved
 mapping capabilities.
 """
 
@@ -103,8 +103,8 @@ class SimpleAgentConfig(AgentConfig):
     def from_aug_llm(
         cls,
         aug_llm: AugLLMConfig,
-        name: str | None = None,
-        id: str | None = None,
+        name: Optional[str] = None,
+        id: Optional[str] = None,
         input_schema: type[BaseModel] | None = None,
         output_schema: type[BaseModel] | None = None,
         state_schema: type[StateSchema] | None = None,
@@ -146,8 +146,8 @@ class SimpleAgentConfig(AgentConfig):
         model: str = "gpt-4o",
         temperature: float = 0.7,
         structured_output_model: type[BaseModel] | None = None,
-        name: str | None = None,
-        id: str | None = None,
+        name: Optional[str] = None,
+        id: Optional[str] = None,
         input_schema: type[BaseModel] | None = None,
         output_schema: type[BaseModel] | None = None,
         state_schema: type[StateSchema] | None = None,
@@ -210,10 +210,10 @@ class SimpleAgentConfig(AgentConfig):
     def with_structured_output(
         cls,
         output_model: type[BaseModel],
-        system_prompt: str | None = None,
+        system_prompt: Optional[str] = None,
         model: str = "gpt-4o",
         temperature: float = 0.2,
-        name: str | None = None,
+        name: Optional[str] = None,
         **kwargs,
     ) -> "SimpleAgentConfig":
         """Create a SimpleAgentConfig with structured output capabilities.

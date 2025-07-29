@@ -1,7 +1,7 @@
 """Example demonstrating the use of the Tree of Thoughts agent.
 
-This example shows how to instantiate and run the ToT agent
-with different problem types.
+This example shows how to instantiate and run the ToT agent with different problem
+types.
 """
 
 import asyncio

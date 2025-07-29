@@ -1,4 +1,5 @@
-"""State schema for LLM Compiler V3 Agent."""
+"""State schema for LLM Compiler V3 Agent.
+"""
 
 from datetime import datetime
 from typing import Any
@@ -9,18 +10,24 @@ from pydantic import Field
 from haive.agents.planning.llm_compiler_v3.models import (
     CompilerPlan,
     CompilerTask,
+    Optional,
     ParallelExecutionResult,
     ReplanRequest,
+    from,
+    import,
+    typing,
 )
 
 
 class LLMCompilerStateSchema(MessagesState):
-    """State schema for LLM Compiler V3 Agent using Enhanced MultiAgent V3."""
+    """State schema for LLM Compiler V3 Agent using Enhanced MultiAgent V3.
+    """
 
     # Core compiler state
-    original_query: str = Field(default="", description="The original user query")
+    original_query: str = Field(default="",
+                                description="The original user query")
 
-    current_plan: CompilerPlan | None = Field(
+    current_plan: Optional[CompilerPlan] = Field(
         default=None, description="Current execution plan"
     )
 
@@ -38,15 +45,15 @@ class LLMCompilerStateSchema(MessagesState):
     )
 
     currently_executing: list[str] = Field(
-        default_factory=list, description="IDs of tasks currently being executed"
-    )
+        default_factory=list,
+        description="IDs of tasks currently being executed")
 
     # Parallel execution management
     max_parallel_tasks: int = Field(
         default=3, ge=1, le=10, description="Maximum number of parallel tasks"
     )
 
-    execution_start_time: datetime | None = Field(
+    execution_start_time: Optional[datetime] = Field(
         default=None, description="When execution started"
     )
 
@@ -76,9 +83,12 @@ class LLMCompilerStateSchema(MessagesState):
     )
 
     # Agent coordination
-    current_agent: str = Field(default="planner", description="Currently active agent")
+    current_agent: str = Field(
+        default="planner",
+        description="Currently active agent")
 
-    next_agent: str | None = Field(default=None, description="Next agent to execute")
+    next_agent: Optional[str] = Field(
+        default=None, description="Next agent to execute")
 
     # Execution metadata
     execution_metadata: dict[str, Any] = Field(
@@ -94,12 +104,12 @@ class LLMCompilerStateSchema(MessagesState):
         default=0.0, ge=0.0, description="Total execution time so far"
     )
 
-    parallel_efficiency_score: float | None = Field(
-        default=None, ge=0.0, le=1.0, description="Efficiency of parallel execution"
-    )
+    parallel_efficiency_score: Optional[float] = Field(
+        default=None, ge=0.0, le=1.0, description="Efficiency of parallel execution")
 
     def add_execution_result(self, result: ParallelExecutionResult) -> None:
-        """Add a task execution result to state."""
+        """Add a task execution result to state.
+        """
         self.execution_results.append(result)
 
         if result.success:
@@ -113,20 +123,24 @@ class LLMCompilerStateSchema(MessagesState):
             self.currently_executing.remove(result.task_id)
 
     def mark_task_executing(self, task_id: str) -> None:
-        """Mark a task as currently executing."""
+        """Mark a task as currently executing.
+        """
         if task_id not in self.currently_executing:
             self.currently_executing.append(task_id)
 
     def get_successful_results(self) -> list[ParallelExecutionResult]:
-        """Get all successful execution results."""
+        """Get all successful execution results.
+        """
         return [result for result in self.execution_results if result.success]
 
     def get_failed_results(self) -> list[ParallelExecutionResult]:
-        """Get all failed execution results."""
+        """Get all failed execution results.
+        """
         return [result for result in self.execution_results if not result.success]
 
     def update_ready_tasks(self) -> None:
-        """Update lists of ready and blocked tasks based on current state."""
+        """Update lists of ready and blocked tasks based on current state.
+        """
         if not self.current_plan:
             self.ready_tasks = []
             self.blocked_tasks = []
@@ -157,11 +171,14 @@ class LLMCompilerStateSchema(MessagesState):
         self.blocked_tasks = blocked
 
     def can_execute_more_tasks(self) -> bool:
-        """Check if more tasks can be executed in parallel."""
+        """Check if more tasks can be executed in parallel.
+        """
         return len(self.currently_executing) < self.max_parallel_tasks
 
-    def get_next_executable_tasks(self, count: int = None) -> list[CompilerTask]:
-        """Get the next tasks to execute, respecting parallel limits."""
+    def get_next_executable_tasks(
+            self, count: int = None) -> list[CompilerTask]:
+        """Get the next tasks to execute, respecting parallel limits.
+        """
         if count is None:
             count = self.max_parallel_tasks - len(self.currently_executing)
 
@@ -173,12 +190,14 @@ class LLMCompilerStateSchema(MessagesState):
         return sorted_ready[:count]
 
     def resolve_task_arguments(self, task: CompilerTask) -> dict[str, Any]:
-        """Resolve task arguments by substituting dependency references."""
+        """Resolve task arguments by substituting dependency references.
+        """
         resolved_args = {}
 
         for key, value in task.arguments.items():
             if isinstance(value, str) and value.startswith("${"):
-                # This is a dependency reference like ${task_1} or ${task_1.result}
+                # This is a dependency reference like ${task_1} or
+                # ${task_1.result}
                 import re
 
                 match = re.match(r"\\$\\{([^.}]+)(?:\\.([^}]+))?\\}", value)
@@ -205,17 +224,20 @@ class LLMCompilerStateSchema(MessagesState):
         return resolved_args
 
     def is_execution_complete(self) -> bool:
-        """Check if all tasks in the plan have been executed or failed."""
+        """Check if all tasks in the plan have been executed or failed.
+        """
         if not self.current_plan:
             return False
 
         total_tasks = len(self.current_plan.tasks)
-        finished_tasks = len(self.completed_task_ids) + len(self.failed_task_ids)
+        finished_tasks = len(self.completed_task_ids) + \
+            len(self.failed_task_ids)
 
         return finished_tasks >= total_tasks
 
     def should_replan(self) -> bool:
-        """Determine if replanning is needed based on execution state."""
+        """Determine if replanning is needed based on execution state.
+        """
         # Replan if critical tasks failed and we can't proceed
         if (
             self.failed_task_ids
@@ -231,22 +253,22 @@ class LLMCompilerStateSchema(MessagesState):
         return False
 
     def get_execution_summary(self) -> dict[str, Any]:
-        """Get comprehensive execution summary."""
-        return {
-            "original_query": self.original_query,
-            "total_tasks": len(self.current_plan.tasks) if self.current_plan else 0,
-            "completed_tasks": len(self.completed_task_ids),
-            "failed_tasks": len(self.failed_task_ids),
-            "currently_executing": len(self.currently_executing),
-            "ready_tasks": len(self.ready_tasks),
-            "blocked_tasks": len(self.blocked_tasks),
-            "execution_complete": self.is_execution_complete(),
-            "should_replan": self.should_replan(),
-            "replan_count": self.replan_count,
-            "total_execution_time": self.total_execution_time,
-            "parallel_efficiency": self.parallel_efficiency_score,
-            "success_rate": len(self.completed_task_ids)
-            / max(1, len(self.execution_results)),
-            "current_agent": self.current_agent,
-            "next_agent": self.next_agent,
-        }
+        """Get comprehensive execution summary.
+        """
+        return {"original_query": self.original_query,
+                "total_tasks": len(self.current_plan.tasks) if self.current_plan else 0,
+                "completed_tasks": len(self.completed_task_ids),
+                "failed_tasks": len(self.failed_task_ids),
+                "currently_executing": len(self.currently_executing),
+                "ready_tasks": len(self.ready_tasks),
+                "blocked_tasks": len(self.blocked_tasks),
+                "execution_complete": self.is_execution_complete(),
+                "should_replan": self.should_replan(),
+                "replan_count": self.replan_count,
+                "total_execution_time": self.total_execution_time,
+                "parallel_efficiency": self.parallel_efficiency_score,
+                "success_rate": len(self.completed_task_ids) / max(1,
+                                                                   len(self.execution_results)),
+                "current_agent": self.current_agent,
+                "next_agent": self.next_agent,
+                }

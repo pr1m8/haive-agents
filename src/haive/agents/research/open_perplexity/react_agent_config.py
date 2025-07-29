@@ -118,8 +118,8 @@ def create_research_rag_agent_config(
     llm_model: str = "gpt-4o",
     temperature: float = 0.2,
 ) -> BaseRAGConfig:
-    """Create a BaseRAGConfig for research document retrieval tasks.
-    This function requires a vectorstore_config with loaded documents.
+    """Create a BaseRAGConfig for research document retrieval tasks. This function requires
+    a vectorstore_config with loaded documents.
 
     Args:
         vectorstore_config: Vector store configuration with loaded documents

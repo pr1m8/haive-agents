@@ -1,7 +1,7 @@
 """Static supervisor inheriting from ReactAgent with tool node modifications.
 
-This supervisor uses ReactAgent's looping behavior but modifies the tool node
-to execute agent handoffs stored in state.
+This supervisor uses ReactAgent's looping behavior but modifies the tool node to execute
+agent handoffs stored in state.
 """
 
 import logging
@@ -12,10 +12,15 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool, tool
-from langgraph_supervisor import create_forward_message_tool, create_handoff_tool
 from pydantic import BaseModel, Field, model_validator
 
 from haive.agents.base.agent import Agent
+
+# Import our own tool creators instead of external langgraph_supervisor
+from haive.agents.experiments.dynamic_supervisor import (
+    create_dynamic_handoff_tool,
+    create_forward_message_tool,
+)
 from haive.agents.react.agent import ReactAgent
 
 logger = logging.getLogger(__name__)
@@ -68,20 +73,19 @@ class SupervisorReactState(StateSchema):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def sync_tools_with_agents(cls) -> "SupervisorReactState":
+    def sync_tools_with_agents(self) -> "SupervisorReactState":
         """Ensure handoff tools are synchronized with registered agents.
 
-        This validator runs after field assignment to ensure tools
-        always match the registered agents.
+        This validator runs after field assignment to ensure tools always match the
+        registered agents.
         """
         # Create handoff tools for any agents missing them
         for agent_name, agent_entry in self.registered_agents.items():
             if agent_name not in self.handoff_tools:
                 # Create handoff tool for this agent
-                tool = create_handoff_tool(
-                    agent_name=agent_name, description=agent_entry.description
-                )
+                # Note: We need a supervisor instance to create the tool
+                # This will need to be refactored
+                tool = create_dynamic_handoff_tool(None, agent_name)
                 self.handoff_tools[agent_name] = tool
                 logger.info(f"Created handoff tool for agent: {agent_name}")
 
@@ -101,8 +105,8 @@ class SupervisorReactState(StateSchema):
 class StaticSupervisor(ReactAgent[SupervisorReactState]):
     """Supervisor that inherits ReactAgent behavior with modified tool node.
 
-    This supervisor uses ReactAgent's looping behavior but overrides the tool
-    node to execute agent handoffs from state instead of regular tools.
+    This supervisor uses ReactAgent's looping behavior but overrides the tool node to
+    execute agent handoffs from state instead of regular tools.
     """
 
     def __init__(self, **kwargs) -> None:
@@ -212,8 +216,8 @@ class StaticSupervisor(ReactAgent[SupervisorReactState]):
     def _execute_tool_or_agent(self, state: SupervisorReactState) -> dict[str, Any]:
         """Execute tools or agent handoffs based on the tool call.
 
-        This replaces the standard tool node behavior to handle agent handoffs
-        from state instead of just executing tools.
+        This replaces the standard tool node behavior to handle agent handoffs from
+        state instead of just executing tools.
         """
         messages = state.messages
         if not messages:

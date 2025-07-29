@@ -41,7 +41,6 @@ def create_query_rewriter_agent(
             print(f"Best rewrite: {result.best_refined_query}")
             for suggestion in result.refinement_suggestions:
             print(f"- {suggestion.refined_query} ({suggestion.improvement_type})")
-
     """
     prompt_template = (
         "You are a query optimization specialist for RAG systems. "

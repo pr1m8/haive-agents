@@ -22,7 +22,11 @@ from pydantic import BaseModel, Field
 
 
 class AnswerQuestion(BaseModel):
-    """Answer the question. Provide an answer, reflection, and follow up with search queries to improve the answer."""
+    """Answer the question.
+
+    Provide an answer, reflection, and follow up with search queries to improve the
+    answer.
+    """
 
     answer: str = Field(description="~250 word detailed answer to the question.")
     reflection: Reflection = Field(description="Your reflection on the initial answer.")
@@ -35,8 +39,8 @@ class AnswerQuestion(BaseModel):
 class ReviseAnswer(AnswerQuestion):
     """Revise your original answer to your question. Provide an answer, reflection,.
 
-    cite your reflection with references, and finally
-    add search queries to improve the answer.
+    cite your reflection with references, and finally add search queries to improve the
+    answer.
     """
 
     references: list[str] = Field(

@@ -1,8 +1,7 @@
 """Task branching and decomposition analysis.
 
-This module analyzes how tasks can be broken down into subtasks, identifying
-parallel execution opportunities, sequential dependencies, and optimal
-decomposition strategies.
+This module analyzes how tasks can be broken down into subtasks, identifying parallel
+execution opportunities, sequential dependencies, and optimal decomposition strategies.
 """
 
 from datetime import timedelta

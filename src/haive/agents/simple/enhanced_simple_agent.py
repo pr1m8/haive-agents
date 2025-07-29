@@ -12,7 +12,6 @@ Functions:
 """
 
 # src/haive/agents/simple/enhanced_simple_agent.py
-
 """Enhanced SimpleAgent with engine-focused generics.
 
 This implements SimpleAgent using the enhanced agent pattern with engine generics.

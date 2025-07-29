@@ -1,8 +1,8 @@
 """ReactAgent implementation with tool usage and ReAct pattern.
 
-from typing import Any, Dict
-This module implements a tool-using agent that follows the ReAct pattern
-(Reasoning, Acting, and Observing) for solving tasks.
+from typing import Any, Dict This module implements a tool-using agent that follows the
+from typing import Optional
+ReAct pattern (Reasoning, Acting, and Observing) for solving tasks.
 """
 
 import logging
@@ -259,8 +259,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
     def from_tools(
         cls,
         tools: list[Any],
-        llm: AugLLMConfig | None = None,
-        system_prompt: str | None = None,
+        llm: Optional[AugLLMConfig] = None,
+        system_prompt: Optional[str] = None,
         **kwargs,
     ) -> "ReactAgent":
         """Create a ReactAgent from a list of tools.

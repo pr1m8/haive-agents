@@ -205,7 +205,8 @@ TokenType = Union[float, OperatorType]
 
 
 class Equation(BaseModel):
-    """An equation in reverse-polish notation that combines numbers to reach a target value.
+    """An equation in reverse-polish notation that combines numbers to reach a target
+    value.
 
     This is one possible implementation of a solution type for mathematical problems.
     """

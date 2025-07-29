@@ -1,7 +1,7 @@
 """Multi-ReactAgent Memory System with specialized agents.
 
-This advanced example shows how to coordinate multiple ReactAgents,
-each with specialized memory responsibilities.
+This advanced example shows how to coordinate multiple ReactAgents, each with
+specialized memory responsibilities.
 """
 
 import json

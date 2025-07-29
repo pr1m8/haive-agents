@@ -1,10 +1,10 @@
 """Rubric grading model for multi-criteria evaluations.
 
-This module implements a rubric-based grading system that evaluates
-multiple criteria with individual scores and weights.
+This module implements a rubric-based grading system that evaluates multiple criteria
+with individual scores and weights.
 """
 
-from typing import Any
+from typing import Any, Optional, Union
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -44,11 +44,11 @@ class RubricCriterion(BaseModel):
         examples=["Content Quality", "Organization", "Grammar & Style", "Originality"],
     )
 
-    score: int | float = Field(
+    score: Union[int, float] = Field(
         ..., description="Score achieved for this criterion", examples=[8.5, 7, 4.2, 9]
     )
 
-    max_score: int | float = Field(
+    max_score: Union[int, float] = Field(
         ...,
         description="Maximum possible score for this criterion",
         gt=0,
@@ -76,7 +76,7 @@ class RubricCriterion(BaseModel):
 
     @field_validator("score")
     @classmethod
-    def validate_score_range(cls, v: int | float, info) -> int | float:
+    def validate_score_range(cls, v: Union[int, float], info) -> Union[int, float]:
         """Validate that score is within valid range.
 
         Args:
@@ -262,7 +262,7 @@ class RubricGrade(Grade):
         """
         return sum(criterion.get_weighted_max_score() for criterion in self.criteria)
 
-    def is_passing(self, threshold: float | None = None) -> bool:
+    def is_passing(self, threshold: Optional[float] = None) -> bool:
         """Determine if the rubric grade represents a passing score.
 
         Args:
@@ -277,7 +277,7 @@ class RubricGrade(Grade):
 
         return self.get_normalized_score() >= threshold
 
-    def get_criterion_by_name(self, name: str) -> RubricCriterion | None:
+    def get_criterion_by_name(self, name: str) -> Optional[RubricCriterion]:
         """Get a specific criterion by name.
 
         Args:

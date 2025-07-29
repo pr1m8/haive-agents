@@ -20,7 +20,11 @@ from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.reasoning_and_critique.self_discover.engines import (
+    Optional,
     create_selfdiscover_engines,
+    from,
+    import,
+    typing,
 )
 from haive.agents.reasoning_and_critique.self_discover.state import SelfDiscoverState
 
@@ -43,7 +47,10 @@ class SelfDiscoverAgentConfig(AgentConfig):
     select_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_select_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
+            llm_config=AzureLLMConfig(
+                model="gpt-4o",
+                parameters={
+                    "temperature": 0.0}),
         ),
         description="Engine for the module selection stage",
     )
@@ -51,7 +58,10 @@ class SelfDiscoverAgentConfig(AgentConfig):
     adapt_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_adapt_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
+            llm_config=AzureLLMConfig(
+                model="gpt-4o",
+                parameters={
+                    "temperature": 0.0}),
         ),
         description="Engine for the module adaptation stage",
     )
@@ -59,7 +69,10 @@ class SelfDiscoverAgentConfig(AgentConfig):
     structure_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_structure_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
+            llm_config=AzureLLMConfig(
+                model="gpt-4o",
+                parameters={
+                    "temperature": 0.0}),
         ),
         description="Engine for the reasoning structure stage",
     )
@@ -67,22 +80,25 @@ class SelfDiscoverAgentConfig(AgentConfig):
     reasoning_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_reasoning_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
+            llm_config=AzureLLMConfig(
+                model="gpt-4o",
+                parameters={
+                    "temperature": 0.0}),
         ),
         description="Engine for the reasoning execution stage",
     )
 
     # Reasoning modules library
     reasoning_modules: list[str] = Field(
-        default_factory=list, description="Library of reasoning modules to select from"
-    )
+        default_factory=list,
+        description="Library of reasoning modules to select from")
 
     @classmethod
     def from_defaults(
         cls,
         model: str = "gpt-4o",
         temperature: float = 0.0,
-        name: str | None = None,
+        name: Optional[str] = None,
         reasoning_modules: list[str] | None = None,
         select_prompt: str | ChatPromptTemplate | None = None,
         adapt_prompt: str | ChatPromptTemplate | None = None,
@@ -122,7 +138,8 @@ class SelfDiscoverAgentConfig(AgentConfig):
 
         # Create the config
         return cls(
-            name=name or f"self_discover_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name or f"self_discover_{
+                datetime.now().strftime('%Y%m%d_%H%M%S')}",
             select_engine=engines["select"],
             adapt_engine=engines["adapt"],
             structure_engine=engines["structure"],
@@ -133,7 +150,8 @@ class SelfDiscoverAgentConfig(AgentConfig):
 
     @staticmethod
     def _get_default_reasoning_modules() -> list[str]:
-        """Return a default list of reasoning modules."""
+        """Return a default list of reasoning modules.
+        """
         return [
             "1. How could I devise an experiment to help solve that problem?",
             "2. Make a list of ideas for solving this problem, and apply them one by one to the problem to see if any progress can be made.",

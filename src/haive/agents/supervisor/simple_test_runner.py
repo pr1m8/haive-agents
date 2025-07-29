@@ -1,8 +1,8 @@
 """Simple Test Runner for Dynamic Supervisor.
 
-from typing import Any, Dict, List
-This demonstrates the core flow of how dynamic agent addition/removal works
-and how it would integrate with eventual agent building capabilities.
+from typing import Any, Dict, List This demonstrates the core flow of how dynamic agent
+addition/removal works and how it would integrate with eventual agent building
+capabilities.
 """
 
 import asyncio

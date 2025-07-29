@@ -44,7 +44,9 @@ def get_user_id_from_state(state: dict[str, Any]) -> str:
     return user_id
 
 
-def create_memory_vectorstore(embedding_model: Embeddings | None = None) -> VectorStore:
+def create_memory_vectorstore(
+    embedding_model: Embeddings | None = None,
+) -> VectorStore:
     """Create a vector store for storing memories.
 
     Args:

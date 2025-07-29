@@ -1,7 +1,7 @@
 """Scale grading model for Likert-style evaluations.
 
-This module implements scale-based grading systems including Likert scales,
-satisfaction ratings, and custom ordinal scales.
+This module implements scale-based grading systems including Likert scales, satisfaction
+ratings, and custom ordinal scales.
 """
 
 from enum import Enum

@@ -1,6 +1,7 @@
 """State schemas for dynamic supervisor agent.
 
 from typing import Any
+from typing import Optional
 This module defines the state management for the dynamic supervisor, including
 agent registry, routing control, and tool generation. Two versions are provided:
 - SupervisorState: Uses exclude=True for agent serialization (v1)
@@ -67,10 +68,10 @@ class SupervisorState(MessagesStateWithTokenUsage):
     )
 
     # Execution tracking
-    last_executed_agent: str | None = Field(
+    last_executed_agent: Optional[str] = Field(
         default=None, description="Name of the last executed agent"
     )
-    agent_response: str | None = Field(
+    agent_response: Optional[str] = Field(
         default=None, description="Response from the last executed agent"
     )
     execution_success: bool = Field(
@@ -102,7 +103,11 @@ class SupervisorState(MessagesStateWithTokenUsage):
             active: Whether agent should be immediately active
 
         Example:
-            state.add_agent("search", search_agent, "Web search expert", active=True)
+            state.add_agent(
+    "search",
+    search_agent,
+    "Web search expert",
+     active=True)
         """
         agent_info = AgentInfo(
             agent=agent, name=name, description=description, active=active
@@ -161,7 +166,7 @@ class SupervisorState(MessagesStateWithTokenUsage):
             return True
         return False
 
-    def get_agent(self, name: str) -> Any | None:
+    def get_agent(self, name: str -> Optional[Any]:
         """Get agent instance by name.
 
         Args:
@@ -195,7 +200,8 @@ class SupervisorState(MessagesStateWithTokenUsage):
         return {name: info.description for name, info in self.agents.items()}
 
     def clear_execution_state(self) -> None:
-        """Clear execution state after completion."""
+        """Clear execution state after completion.
+        """
         self.last_executed_agent = None
         self.agent_response = None
         self.execution_success = True
@@ -234,10 +240,11 @@ class SupervisorStateWithTools(SupervisorState):
         default_factory=list, description="Names of tools generated from agents"
     )
 
-    @model_validator(mode="after")
-    @classmethod
+    @ model_validator(mode="after")
+    @ classmethod
     def sync_on_init(cls) -> Any:
-        """Sync tools and choice model after initialization."""
+        """Sync tools and choice model after initialization.
+        """
         self._sync_internal()
         return self
 
@@ -249,12 +256,14 @@ class SupervisorStateWithTools(SupervisorState):
         self._sync_internal()
 
     def _sync_internal(self) -> None:
-        """Internal sync method."""
+        """Internal sync method.
+        """
         self._update_choice_model()
         self._generate_tools_from_agents()
 
     def _update_choice_model(self) -> None:
-        """Update choice model with current agents."""
+        """Update choice model with current agents.
+        """
         # Get current options (excluding END)
         current_options = [
             opt for opt in self.agent_choice_model.option_names if opt != "END"
@@ -271,7 +280,8 @@ class SupervisorStateWithTools(SupervisorState):
                 self.agent_choice_model.add_option(agent_name)
 
     def _generate_tools_from_agents(self) -> None:
-        """Generate tools from current agents."""
+        """Generate tools from current agents.
+        """
         self.generated_tools.clear()
 
         # Create handoff tools for each agent
@@ -291,28 +301,32 @@ class SupervisorStateWithTools(SupervisorState):
         return create_agent_tools(self)
 
     def add_agent(
-        self, name: str, agent: Any, description: str, active: bool = True
+        self, name: str, agent: Any, description: str, active: bool=True
     ) -> None:
-        """Override to trigger tool regeneration."""
+        """Override to trigger tool regeneration.
+        """
         super().add_agent(name, agent, description, active)
         self._sync_internal()
 
     def remove_agent(self, name: str) -> bool:
-        """Override to trigger tool regeneration."""
+        """Override to trigger tool regeneration.
+        """
         result = super().remove_agent(name)
         if result:
             self._sync_internal()
         return result
 
     def activate_agent(self, name: str) -> bool:
-        """Override to trigger tool regeneration."""
+        """Override to trigger tool regeneration.
+        """
         result = super().activate_agent(name)
         if result:
             self._sync_internal()
         return result
 
     def deactivate_agent(self, name: str) -> bool:
-        """Override to trigger tool regeneration."""
+        """Override to trigger tool regeneration.
+        """
         result = super().deactivate_agent(name)
         if result:
             self._sync_internal()

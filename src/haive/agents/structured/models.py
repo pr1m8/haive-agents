@@ -1,7 +1,7 @@
 """Pydantic models for structured output agents.
 
-This module defines the common output models used by structured agents
-for converting unstructured text into organized data.
+This module defines the common output models used by structured agents for converting
+unstructured text into organized data.
 """
 
 from typing import Any
@@ -12,8 +12,8 @@ from pydantic import BaseModel, Field
 class GenericStructuredOutput(BaseModel):
     """Generic structured output model for any content.
 
-    This model provides a flexible structure that can capture
-    the essence of most text outputs in an organized way.
+    This model provides a flexible structure that can capture the essence of most text
+    outputs in an organized way.
     """
 
     main_content: str = Field(

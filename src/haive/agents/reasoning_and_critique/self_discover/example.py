@@ -16,8 +16,12 @@ import logging
 from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.reasoning_and_critique.self_discover.agent2 import (
+    Optional,
     SelfDiscoverAgent,
     create_self_discover_agent,
+    from,
+    import,
+    typing,
 )
 
 # Set up logging
@@ -26,7 +30,8 @@ logger = logging.getLogger(__name__)
 
 
 def example_math_problem():
-    """Example using SelfDiscover on a math problem."""
+    """Example using SelfDiscover on a math problem.
+    """
     problem = "Lisa has 10 apples. She gives 3 apples to her friend and then buys 5 more apples from the store. How many apples does Lisa have now?"
 
     agent = create_self_discover_agent(
@@ -38,7 +43,8 @@ def example_math_problem():
 
 
 def example_svg_interpretation():
-    """Example using SelfDiscover to interpret an SVG path."""
+    """Example using SelfDiscover to interpret an SVG path.
+    """
     problem = """This SVG path element <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L
 45.58,47.78 M 45.58,47.78 L 53.25,36.07 L 66.29,48.90 L 78.69,61.09 L 55.57,80.69"/> draws a:
 (A) circle (B) heptagon (C) hexagon (D) kite (E) line (F) octagon (G) pentagon (H) rectangle (I) sector (J) triangle"""
@@ -70,9 +76,10 @@ def example_svg_interpretation():
 
 
 def example_logical_reasoning():
-    """Example using SelfDiscover for a logical reasoning problem."""
-    problem = """Four people (Alex, Blake, Casey, and Dana) each have a different favorite color 
-(red, blue, green, and yellow) and a different favorite fruit (apple, banana, cherry, and date). 
+    """Example using SelfDiscover for a logical reasoning problem.
+    """
+    problem = """Four people (Alex, Blake, Casey, and Dana) each have a different favorite color
+(red, blue, green, and yellow) and a different favorite fruit (apple, banana, cherry, and date).
 Given the following clues, determine each person\'s favorite color and fruit:
 
 1. The person who likes red also likes dates.
@@ -179,8 +186,9 @@ def create_custom_domain_agent(
 
 
 def run_batch_problems(
-    agent: SelfDiscoverAgent, problems: list[str], output_file: str | None = None
-):
+        agent: SelfDiscoverAgent,
+        problems: list[str],
+        output_file: Optional[str] = None):
     """Run a batch of problems through a SelfDiscover agent and optionally save results.
 
     Args:
@@ -210,7 +218,7 @@ def run_batch_problems(
             # Print just the answer for progress tracking
 
         except Exception as e:
-            logger.exception(f"Error processing problem {i+1}: {e!s}")
+            logger.exception(f"Error processing problem {i + 1}: {e!s}")
             results.append({"problem": problem, "error": str(e)})
 
     # Save to file if requested
@@ -225,14 +233,15 @@ def run_batch_problems(
 
 
 def example_advanced_configuration():
-    """Example showing advanced configuration of the SelfDiscover agent."""
+    """Example showing advanced configuration of the SelfDiscover agent.
+    """
     # Custom prompts for each stage
     select_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", "You are an expert problem solver."),
-            (
-                "human",
-                """Look at the problem below and select the 3-5 most appropriate reasoning techniques from the available options.
+            ("system",
+             "You are an expert problem solver."),
+            ("human",
+             """Look at the problem below and select the 3-5 most appropriate reasoning techniques from the available options.
         Choose only techniques that will directly contribute to solving this specific problem.
 
         Available reasoning techniques:
@@ -243,16 +252,15 @@ def example_advanced_configuration():
 
         Selected reasoning techniques (list only the numbers of your chosen techniques):
         """,
-            ),
-        ]
-    )
+             ),
+        ])
 
     adapt_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", "You are an expert problem solver."),
-            (
-                "human",
-                """Customize these selected reasoning techniques specifically for the problem at hand:
+            ("system",
+             "You are an expert problem solver."),
+            ("human",
+             """Customize these selected reasoning techniques specifically for the problem at hand:
 
         Selected techniques:
         {selected_modules}
@@ -262,9 +270,8 @@ def example_advanced_configuration():
 
         For each technique, provide a customized version that addresses the specific challenges of this problem:
         """,
-            ),
-        ]
-    )
+             ),
+        ])
 
     structure_prompt = ChatPromptTemplate.from_messages(
         [
@@ -344,7 +351,7 @@ def example_advanced_configuration():
 
 
 def analyze_reasoning_process(
-    agent_results: list[dict], output_file: str | None = None
+    agent_results: list[dict], output_file: Optional[str] = None
 ):
     """Analyze the reasoning process across multiple problems to identify patterns.
 
@@ -379,24 +386,26 @@ def analyze_reasoning_process(
 
             # Analyze selected modules
             selected = result.get("selected_modules", "")
-            # Extract module numbers from text (assuming format like "1. Module name")
+            # Extract module numbers from text (assuming format like "1. Module
+            # name")
             import re
 
             module_numbers = re.findall(r"(\d+)\.", selected)
             for num in module_numbers:
-                analysis["module_usage"][num] = analysis["module_usage"].get(num, 0) + 1
+                analysis["module_usage"][num] = analysis["module_usage"].get(
+                    num, 0) + 1
 
     # Calculate module usage percentages
     for module, count in analysis["module_usage"].items():
         analysis["module_usage"][module] = {
-            "count": count,
-            "percentage": round((count / analysis["successful_problems"]) * 100, 2),
-        }
+            "count": count, "percentage": round(
+                (count / analysis["successful_problems"]) * 100, 2), }
 
     # Sort modules by usage
     sorted_modules = sorted(
-        analysis["module_usage"].items(), key=lambda x: x[1]["count"], reverse=True
-    )
+        analysis["module_usage"].items(),
+        key=lambda x: x[1]["count"],
+        reverse=True)
 
     # Print analysis
 
@@ -421,7 +430,8 @@ def analyze_reasoning_process(
 
 
 def example_compare_models():
-    """Example comparing different models on the same problem."""
+    """Example comparing different models on the same problem.
+    """
     problem = """If a sequence follows the pattern: 2, 6, 12, 20, 30, ..., what is the next number in the sequence?"""
 
     models = ["gpt-4o", "gpt-3.5-turbo"]

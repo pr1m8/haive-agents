@@ -1,9 +1,9 @@
 """Corrective RAG (CRAG) Agent.
 
-from typing import Any, Dict
-Self-correcting retrieval with quality assessment.
-Implements architecture from rag-architectures-flows.md:
-Retrieval → Relevance Check → Knowledge Refinement/Web Search/Combine
+from typing import Any, Dict Self-correcting retrieval with quality assessment.
+from typing import Optional
+Implements architecture from rag-architectures-flows.md: Retrieval → Relevance Check →
+Knowledge Refinement/Web Search/Combine
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -59,7 +59,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         relevance_threshold: float = 0.7,
         **kwargs
     ):

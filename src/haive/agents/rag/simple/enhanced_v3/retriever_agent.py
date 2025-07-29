@@ -1,7 +1,7 @@
 """Specialized Retriever Agent for SimpleRAG V3.
 
-This module provides a specialized retriever agent that extends BaseRAGAgent
-with enhanced features for use in Enhanced MultiAgent V3 workflows.
+This module provides a specialized retriever agent that extends BaseRAGAgent with
+enhanced features for use in Enhanced MultiAgent V3 workflows.
 """
 
 import logging
@@ -357,7 +357,7 @@ class RetrieverAgent(BaseRAGAgent):
             "retrieval_time": retrieval_time,
             "document_count": len(documents),
             "sources": list(
-                set(doc.metadata.get("source", "unknown") for doc in documents)
+                {doc.metadata.get("source", "unknown") for doc in documents}
             ),
             "retrieval_config": {
                 "top_k": self.top_k,

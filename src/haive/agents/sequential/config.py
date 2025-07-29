@@ -1,8 +1,8 @@
 """Configuration for SequentialAgent that connects components in a linear workflow.
 
-from typing import Any
-This module defines the configuration class for SequentialAgent, which
-automates the process of connecting multiple engine components in a sequence.
+from typing import Any This module defines the configuration class for SequentialAgent,
+from typing import Optional
+which automates the process of connecting multiple engine components in a sequence.
 """
 
 import logging
@@ -18,7 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 class StepConfig(BaseModel):
-    """Configuration for a single step in a sequential workflow."""
+    """Configuration for a single step in a sequential workflow.
+    """
 
     # Step identification
     name: str = Field(description="Name for this step")
@@ -38,7 +39,7 @@ class StepConfig(BaseModel):
     )
 
     # Optional description for visualization
-    description: str | None = Field(
+    description: Optional[str] = Field(
         default=None, description="Description of this step for documentation"
     )
 
@@ -51,8 +52,8 @@ class SequentialAgentConfig(AgentConfig):
     This agent automates the process of connecting engine components in a sequence,
     handling the data flow between them through the state schema.
 
-    Components can be any engine types, particularly AugLLMConfig instances
-    for chaining language model steps.
+    Components can be any engine types, particularly AugLLMConfig instances for chaining
+    language model steps.
     """
 
     # Sequential workflow steps
@@ -61,13 +62,15 @@ class SequentialAgentConfig(AgentConfig):
     )
 
     # Optional initial step
-    entry_point: str | None = Field(
+    entry_point: Optional[str] = Field(
         default=None,
         description="Name of the entry point step (defaults to first step)",
     )
 
     # Visualization settings
-    visualize: bool = Field(default=True, description="Whether to visualize the graph")
+    visualize: bool = Field(
+    default=True,
+     description="Whether to visualize the graph")
 
     # Schema definitions
     state_schema: type[StateSchema] | None = Field(
@@ -92,7 +95,8 @@ class SequentialAgentConfig(AgentConfig):
     @field_validatorvalidate_steps
     @classmethod
     def validate_steps(cls, v) -> Any:
-        """Ensure we have at least one step."""
+        """Ensure we have at least one step.
+        """
         if not v or len(v) == 0:
             raise ValueError("SequentialAgent must have at least one step")
         return v
@@ -100,7 +104,8 @@ class SequentialAgentConfig(AgentConfig):
     @model_validator(mode="after")
     @classmethod
     def setup_components(cls) -> Any:
-        """Collect all step components into the components list for schema derivation."""
+        """Collect all step components into the components list for schema derivation.
+        """
         # Collect step components
         step_components = [step.component for step in self.steps]
 
@@ -114,31 +119,35 @@ class SequentialAgentConfig(AgentConfig):
             # Check that entry point exists in steps
             step_names = [step.name for step in self.steps]
             if self.entry_point not in step_names:
-                raise ValueError(f"Entry point '{self.entry_point}' not found in steps")
+                raise ValueError(
+    f"Entry point '{
+        self.entry_point}' not found in steps")
 
         return self
 
-    def get_step_by_name(self, name: str) -> StepConfig | None:
-        """Get a step configuration by name."""
+    def get_step_by_name(self, name: str -> Optional[StepConfig]:
+        """Get a step configuration by name.
+        """
         for step in self.steps:
             if step.name == name:
                 return step
         return None
 
     def build_agent(self) -> Any:
-        """Build and return a SequentialAgent instance."""
+        """Build and return a SequentialAgent instance.
+        """
         from haive.agents.sequential.agent import SequentialAgent
 
         return SequentialAgent(self)
 
-    @classmethod
+    @ classmethod
     def from_steps(
         cls,
         steps: list[StepConfig],
-        name: str | None = None,
-        id: str | None = None,
-        entry_point: str | None = None,
-        state_schema: type[StateSchema] | None = None,
+        name: Optional[str]=None,
+        id: Optional[str]=None,
+        entry_point: Optional[str]=None,
+        state_schema: type[StateSchema] | None=None,
         **kwargs,
     ) -> "SequentialAgentConfig":
         """Create a SequentialAgentConfig from a list of steps.
@@ -171,14 +180,14 @@ class SequentialAgentConfig(AgentConfig):
             **kwargs,
         )
 
-    @classmethod
+    @ classmethod
     def from_components(
         cls,
         components: list[Any],
-        name: str | None = None,
-        id: str | None = None,
-        state_schema: type[StateSchema] | None = None,
-        step_names: list[str] | None = None,
+        name: Optional[str]=None,
+        id: Optional[str]=None,
+        state_schema: type[StateSchema] | None=None,
+        step_names: list[str] | None=None,
         **kwargs,
     ) -> "SequentialAgentConfig":
         """Create a SequentialAgentConfig from a list of components.
@@ -208,11 +217,12 @@ class SequentialAgentConfig(AgentConfig):
                 if hasattr(component, "name"):
                     step_names.append(f"step_{component.name}")
                 else:
-                    step_names.append(f"step_{i+1}")
+                    step_names.append(f"step_{i + 1}")
 
         # Validate step names length
         if len(step_names) != len(components):
-            raise ValueError("Number of step names must match number of components")
+            raise ValueError(
+                "Number of step names must match number of components")
 
         # Create step configs
         steps = []
@@ -230,13 +240,13 @@ class SequentialAgentConfig(AgentConfig):
             steps=steps, name=name, id=id, state_schema=state_schema, **kwargs
         )
 
-    @classmethod
+    @ classmethod
     def from_aug_llms(
         cls,
         aug_llms: list[AugLLMConfig],
-        name: str | None = None,
-        id: str | None = None,
-        state_schema: type[StateSchema] | None = None,
+        name: Optional[str]=None,
+        id: Optional[str]=None,
+        state_schema: type[StateSchema] | None=None,
         **kwargs,
     ) -> "SequentialAgentConfig":
         """Create a SequentialAgentConfig from a list of AugLLMConfig instances.

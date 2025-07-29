@@ -1,8 +1,9 @@
 """FLARE (Forward-Looking Active REtrieval) RAG Agents.
 
-from typing import Any
-Implementation of FLARE RAG with forward-looking retrieval and iterative generation.
-Uses structured output models for planning and managing active retrieval decisions.
+from typing import Any Implementation of FLARE RAG with forward-looking retrieval and
+from typing import Optional
+iterative generation. Uses structured output models for planning and managing active
+retrieval decisions.
 """
 
 import logging
@@ -301,7 +302,7 @@ def create_flare_planner_callable(llm_config: LLMConfig):
 
 
 def create_active_retrieval_callable(
-    documents: list[Document], embedding_model: str | None = None
+    documents: list[Document], embedding_model: Optional[str] = None
 ):
     """Create callable function for active retrieval."""
 
@@ -386,7 +387,7 @@ class ActiveRetrievalAgent(Agent):
 
     name: str = "Active Retrieval"
     documents: list[Document] = Field(description="Documents for retrieval")
-    embedding_model: str | None = Field(default=None, description="Embedding model")
+    embedding_model: Optional[str] = Field(default=None, description="Embedding model")
 
     def build_graph(self) -> BaseGraph:
         """Build active retrieval graph."""
@@ -412,7 +413,7 @@ class FLARERAGAgent(SequentialAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         max_iterations: int = 5,
         confidence_threshold: float = 0.7,
         **kwargs,
@@ -492,7 +493,7 @@ class FLARERAGAgent(SequentialAgent):
 # Factory function
 def create_flare_rag_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     flare_mode: str = "adaptive",
     **kwargs,
 ) -> FLARERAGAgent:

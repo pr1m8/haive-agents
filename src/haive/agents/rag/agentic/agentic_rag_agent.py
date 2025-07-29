@@ -1,7 +1,7 @@
 """Agentic RAG Multi-Agent System.
 
-This implements an advanced RAG system with document grading, query rewriting,
-and conditional routing between retrieval and web search.
+This implements an advanced RAG system with document grading, query rewriting, and
+conditional routing between retrieval and web search.
 """
 
 from typing import Any
@@ -90,7 +90,6 @@ class AgenticRAGAgent(SimpleAgent):
             # 3. Rewrite query if needed
             # 4. Use web search if local docs aren't sufficient
             # 5. Generate comprehensive answer
-
     """
 
     # Component configurations

@@ -1,7 +1,7 @@
 """Conversation Memory Agent using BaseRAGAgent.
 
-This module provides conversation memory storage and retrieval using BaseRAGAgent
-with semantic search over conversation history and optional time-weighting.
+This module provides conversation memory storage and retrieval using BaseRAGAgent with
+semantic search over conversation history and optional time-weighting.
 """
 
 import asyncio
@@ -227,11 +227,11 @@ class ConversationMemoryAgent:
                 ]
             ),
             "conversations": len(
-                set(
+                {
                     d.metadata.get("conversation_id")
                     for d in self._documents
                     if d.metadata.get("conversation_id")
-                )
+                }
             ),
             "storage_backend": self.config.vector_store_provider.value,
             "embedding_model": self.config.embedding_model.model,

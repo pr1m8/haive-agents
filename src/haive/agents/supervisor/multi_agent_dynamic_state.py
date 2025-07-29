@@ -14,11 +14,16 @@ from pydantic import BaseModel, Field, computed_field
 
 from haive.agents.supervisor.dynamic_state import (
     DynamicSupervisorState,
+    Optional,
+    from,
+    import,
+    typing,
 )
 
 
 class AgentRegistryState(BaseModel):
-    """State for dynamic agent registry management."""
+    """State for dynamic agent registry management.
+    """
 
     # Registry management
     available_agents: dict[str, str] = Field(
@@ -57,7 +62,7 @@ class AgentRegistryState(BaseModel):
     agent_change_requests: list[dict[str, Any]] = Field(
         default_factory=list, description="History of agent change requests"
     )
-    last_agent_change: float | None = Field(
+    last_agent_change: Optional[float] = Field(
         default=None, description="Timestamp of last agent registry change"
     )
 
@@ -68,7 +73,8 @@ class AgentRegistryState(BaseModel):
         capability: str,
         tools: list[str] | None = None,
     ) -> None:
-        """Add agent to registry state."""
+        """Add agent to registry state.
+        """
         self.available_agents[agent_name] = agent_type
         self.agent_capabilities[agent_name] = capability
         if tools:
@@ -81,7 +87,8 @@ class AgentRegistryState(BaseModel):
         self._update_choice_model_options()
 
     def remove_agent_from_registry(self, agent_name: str) -> bool:
-        """Remove agent from registry state."""
+        """Remove agent from registry state.
+        """
         if agent_name not in self.available_agents:
             return False
 
@@ -100,22 +107,26 @@ class AgentRegistryState(BaseModel):
         return True
 
     def _update_choice_model_options(self) -> None:
-        """Update choice model options based on current agents."""
+        """Update choice model options based on current agents.
+        """
         self.choice_model_options = list(self.available_agents.keys())
         self.choice_model_version += 1
 
-    def get_agent_for_tool(self, tool_name: str) -> str | None:
-        """Get the agent that owns a specific tool."""
+    def get_agent_for_tool(self, tool_name: str -> Optional[str]:
+        """Get the agent that owns a specific tool.
+        """
         return self.tool_to_agent_mapping.get(tool_name)
 
     def get_tools_for_agent(self, agent_name: str) -> list[str]:
-        """Get tools owned by a specific agent."""
+        """Get tools owned by a specific agent.
+        """
         return self.agent_tools.get(agent_name, [])
 
     def add_agent_change_request(
-        self, request_type: str, agent_name: str, details: dict[str, Any] | None = None
+        self, request_type: str, agent_name: str, details: dict[str, Any] | None=None
     ) -> None:
-        """Track agent change requests."""
+        """Track agent change requests.
+        """
         request = {
             "type": request_type,  # "add", "remove", "update"
             "agent_name": agent_name,
@@ -126,7 +137,8 @@ class AgentRegistryState(BaseModel):
 
 
 class MultiAgentCoordinationState(BaseModel):
-    """State for multi-agent coordination patterns."""
+    """State for multi-agent coordination patterns.
+    """
 
     # Coordination mode
     coordination_mode: str = Field(
@@ -167,14 +179,15 @@ class MultiAgentCoordinationState(BaseModel):
         default_factory=list, description="History of agent-to-agent handoffs"
     )
 
-    current_active_agent: str | None = Field(
+    current_active_agent: Optional[str] = Field(
         default=None, description="Currently active agent in coordination"
     )
 
     def add_to_execution_queue(
-        self, agent_name: str, task: dict[str, Any], priority: int = 1
+        self, agent_name: str, task: dict[str, Any], priority: int=1
     ) -> None:
-        """Add agent execution to queue."""
+        """Add agent execution to queue.
+        """
         execution = {
             "agent_name": agent_name,
             "task": task,
@@ -186,18 +199,23 @@ class MultiAgentCoordinationState(BaseModel):
         # Sort by priority (higher first)
         self.execution_queue.sort(key=lambda x: x["priority"], reverse=True)
 
-    def start_agent_execution(self, agent_name: str, execution_id: str) -> None:
-        """Mark agent execution as started."""
+    def start_agent_execution(
+    self,
+    agent_name: str,
+     execution_id: str) -> None:
+        """Mark agent execution as started.
+        """
         execution_info = {
             "started_at": time.time(),
             "status": "active",
             "execution_id": execution_id,
         }
-        self.active_executions[agent_name] = execution_info
-        self.current_active_agent = agent_name
+        self.active_executions[agent_name]=execution_info
+        self.current_active_agent=agent_name
 
     def complete_agent_execution(self, agent_name: str) -> None:
-        """Mark agent execution as completed."""
+        """Mark agent execution as completed.
+        """
         if agent_name in self.active_executions:
             self.active_executions[agent_name]["status"] = "completed"
             self.active_executions[agent_name]["completed_at"] = time.time()
@@ -215,9 +233,10 @@ class MultiAgentCoordinationState(BaseModel):
         from_agent: str,
         to_agent: str,
         reason: str,
-        context: dict[str, Any] | None = None,
+        context: dict[str, Any] | None=None,
     ) -> None:
-        """Record agent handoff."""
+        """Record agent handoff.
+        """
         handoff = {
             "from_agent": from_agent,
             "to_agent": to_agent,
@@ -229,7 +248,8 @@ class MultiAgentCoordinationState(BaseModel):
 
 
 class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
-    """Enhanced state combining dynamic supervisor and multi-agent capabilities."""
+    """Enhanced state combining dynamic supervisor and multi-agent capabilities.
+    """
 
     # Agent registry management
     agent_registry: AgentRegistryState = Field(
@@ -269,22 +289,25 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
         default=True, description="Whether dynamic routing is enabled"
     )
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def total_registered_agents(self) -> int:
-        """Total number of registered agents."""
+        """Total number of registered agents.
+        """
         return len(self.agent_registry.available_agents)
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def total_available_tools(self) -> int:
-        """Total number of available tools across all agents."""
+        """Total number of available tools across all agents.
+        """
         return len(self.agent_registry.tool_to_agent_mapping)
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def active_coordination_sessions(self) -> int:
-        """Number of active coordination sessions."""
+        """Number of active coordination sessions.
+        """
         return len(
             [
                 info
@@ -298,10 +321,11 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
         agent_name: str,
         agent_type: str,
         capability: str,
-        tools: list[str] | None = None,
-        config: dict[str, Any] | None = None,
+        tools: list[str] | None=None,
+        config: dict[str, Any] | None=None,
     ) -> str:
-        """Request addition of a new agent."""
+        """Request addition of a new agent.
+        """
         request_id = str(uuid4())
 
         agent_request = {
@@ -315,13 +339,15 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
         }
 
         self.agent_registry.pending_agent_additions.append(agent_request)
-        self.agent_registry.add_agent_change_request("add", agent_name, agent_request)
-        self.registry_needs_sync = True
+        self.agent_registry.add_agent_change_request(
+            "add", agent_name, agent_request)
+        self.registry_needs_sync=True
 
         return request_id
 
     def request_agent_removal(self, agent_name: str) -> str:
-        """Request removal of an agent."""
+        """Request removal of an agent.
+        """
         request_id = str(uuid4())
 
         self.agent_registry.pending_agent_removals.append(agent_name)
@@ -335,7 +361,8 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
         return request_id
 
     def process_pending_agent_changes(self) -> dict[str, list[str]]:
-        """Process all pending agent additions and removals."""
+        """Process all pending agent additions and removals.
+        """
         results = {"added": [], "removed": [], "failed": []}
 
         # Process additions
@@ -368,13 +395,14 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
 
         return results
 
-    def route_tool_to_agent(self, tool_name: str) -> str | None:
-        """Route a tool call to the appropriate agent."""
-        agent_name = self.agent_registry.get_agent_for_tool(tool_name)
+    def route_tool_to_agent(self, tool_name: str -> Optional[str]:
+        """Route a tool call to the appropriate agent.
+        """
+        agent_name=self.agent_registry.get_agent_for_tool(tool_name)
 
         if agent_name:
             # Record tool usage
-            usage_record = {
+            usage_record={
                 "tool_name": tool_name,
                 "agent_name": agent_name,
                 "timestamp": time.time(),
@@ -384,20 +412,22 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
 
         return agent_name
 
-    def start_coordination_session(self, mode: str = "supervisor") -> str:
-        """Start a new multi-agent coordination session."""
-        self.coordination.coordination_mode = mode
-        self.coordination.coordination_session_id = str(uuid4())
-        self.coordination.coordination_start_time = time.time()
-        self.coordination_active = True
+    def start_coordination_session(self, mode: str="supervisor") -> str:
+        """Start a new multi-agent coordination session.
+        """
+        self.coordination.coordination_mode=mode
+        self.coordination.coordination_session_id=str(uuid4())
+        self.coordination.coordination_start_time=time.time()
+        self.coordination_active=True
 
         return self.coordination.coordination_session_id
 
     def end_coordination_session(self) -> dict[str, Any]:
-        """End the current coordination session and return summary."""
-        session_duration = time.time() - self.coordination.coordination_start_time
+        """End the current coordination session and return summary.
+        """
+        session_duration=time.time() - self.coordination.coordination_start_time
 
-        summary = {
+        summary={
             "session_id": self.coordination.coordination_session_id,
             "duration": session_duration,
             "agents_used": list(self.coordination.active_executions.keys()),
@@ -405,11 +435,12 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
             "mode": self.coordination.coordination_mode,
         }
 
-        self.coordination_active = False
+        self.coordination_active=False
         return summary
 
     def get_coordination_status(self) -> dict[str, Any]:
-        """Get current coordination status."""
+        """Get current coordination status.
+        """
         return {
             "active": self.coordination_active,
             "mode": self.coordination.coordination_mode,
@@ -426,36 +457,38 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
         }
 
     def sync_with_choice_model(self, choice_model: DynamicChoiceModel) -> None:
-        """Synchronize state with a DynamicChoiceModel."""
-        current_options = list(self.agent_registry.available_agents.keys())
+        """Synchronize state with a DynamicChoiceModel.
+        """
+        current_options=list(self.agent_registry.available_agents.keys())
 
         # Update choice model with current agents
-        choice_model.options = current_options
+        choice_model.options=current_options
         choice_model._regenerate_model()
 
         # Cache choice model state
-        self.choice_model_cache = {
+        self.choice_model_cache={
             "options": current_options,
             "version": self.agent_registry.choice_model_version,
             "model_name": choice_model.model_name,
             "synced_at": time.time(),
         }
 
-    def cleanup_old_coordination_data(self, max_history: int = 100) -> None:
-        """Clean up old coordination data to prevent memory bloat."""
+    def cleanup_old_coordination_data(self, max_history: int=100) -> None:
+        """Clean up old coordination data to prevent memory bloat.
+        """
         # Limit agent handoffs
         if len(self.coordination.agent_handoffs) > max_history:
-            self.coordination.agent_handoffs = self.coordination.agent_handoffs[
+            self.coordination.agent_handoffs=self.coordination.agent_handoffs[
                 -max_history:
             ]
 
         # Limit tool usage history
         if len(self.tool_usage_history) > max_history:
-            self.tool_usage_history = self.tool_usage_history[-max_history:]
+            self.tool_usage_history=self.tool_usage_history[-max_history:]
 
         # Limit agent change requests
         if len(self.agent_registry.agent_change_requests) > max_history:
-            self.agent_registry.agent_change_requests = (
+            self.agent_registry.agent_change_requests=(
                 self.agent_registry.agent_change_requests[-max_history:]
             )
 

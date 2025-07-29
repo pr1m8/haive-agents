@@ -1,3 +1,18 @@
+from __future__ import annotations
+
+import logging
+from typing import Any
+
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.vectorstore import VectorStoreConfig
+from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
+from langchain_core.documents import Document
+from pydantic import BaseModel, Field
+
+from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.simple.agent import SimpleAgent
+
 """Simple_Rag_State core module.
 
 This module provides simple rag state functionality for the Haive framework.
@@ -48,20 +63,6 @@ Examples:
         print(f"Sources: {result.sources}")
 """
 
-from __future__ import annotations
-
-import logging
-from typing import Any
-
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.vectorstore import VectorStoreConfig
-from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-from langchain_core.documents import Document
-from pydantic import BaseModel, Field
-
-from haive.agents.rag.base.agent import BaseRAGAgent
-from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 

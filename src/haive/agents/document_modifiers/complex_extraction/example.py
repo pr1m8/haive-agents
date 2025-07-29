@@ -11,7 +11,11 @@ Classes:
 from langchain_core.messages import HumanMessage
 
 from haive.agents.document_modifiers.complex_extraction.factory import (
+    Optional,
     create_complex_extraction_agent,
+    from,
+    import,
+    typing,
 )
 
 if __name__ == "__main__":
@@ -21,7 +25,7 @@ if __name__ == "__main__":
     class PersonInfo(BaseModel):
         name: str = Field(description="The person's full name")
         age: int = Field(description="The person's age in years")
-        occupation: str | None = Field(
+        occupation: Optional[str] = Field(
             default=None, description="The person's job or profession"
         )
 

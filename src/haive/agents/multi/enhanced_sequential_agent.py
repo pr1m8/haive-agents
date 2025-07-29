@@ -4,7 +4,7 @@ SequentialAgent = Agent[AugLLMConfig] + sequential execution of agents.
 """
 
 import logging
-from typing import Any
+from typing import Any, Optional, Union
 
 from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -47,7 +47,8 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
             )
 
             result = pipeline.run("Create report on AI trends")
-            # Researcher finds data -> Analyst processes -> Writer creates report
+            # Researcher finds data -> Analyst processes -> Writer creates
+            # report
 
         With intermediate processing::
 
@@ -82,18 +83,19 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default=1, ge=1, le=3, description="Max retries for each step"
     )
 
-    step_timeout: float | None = Field(
+    step_timeout: Optional[float] = Field(
         default=None, gt=0, description="Timeout for each step in seconds"
     )
 
     # Convenience fields
     temperature: float = Field(default=0.3, ge=0.0, le=2.0)
-    system_message: str | None = Field(default=None)
+    system_message: Optional[str] = Field(default=None)
 
     @field_validator("agents")
     @classmethod
     def validate_agents(cls, v: list[Agent]) -> list[Agent]:
-        """Validate agent list."""
+        """Validate agent list.
+        """
         if not v:
             raise ValueError("SequentialAgent requires at least one agent")
 
@@ -122,7 +124,7 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         self.agents.insert(index, agent)
         logger.info(f"Inserted {type(agent).__name__} at position {index}")
 
-    def remove_agent(self, index: int) -> Agent | None:
+    def remove_agent(self, index: int -> Optional[Agent]:
         """Remove agent at index.
 
         Args:
@@ -136,16 +138,18 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         return None
 
     def get_pipeline_description(self) -> str:
-        """Get human-readable pipeline description."""
+        """Get human-readable pipeline description.
+        """
         steps = []
         for i, agent in enumerate(self.agents):
             agent_name = getattr(agent, "name", type(agent).__name__)
-            steps.append(f"{i+1}. {agent_name}")
+            steps.append(f"{i + 1}. {agent_name}")
 
         return " → ".join(steps)
 
     def setup_agent(self) -> None:
-        """Setup sequential coordinator."""
+        """Setup sequential coordinator.
+        """
         if isinstance(self.engine, AugLLMConfig):
             self.engine.temperature = self.temperature
 
@@ -158,7 +162,8 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
                     )
 
     def _get_coordinator_prompt(self) -> str:
-        """Get coordinator prompt for processing between steps."""
+        """Get coordinator prompt for processing between steps.
+        """
         pipeline_desc = self.get_pipeline_description()
 
         return f"""You are coordinating a sequential pipeline of agents:
@@ -175,14 +180,16 @@ Your role when processing between steps:
 Always preserve key information while improving clarity and structure."""
 
     def build_graph(self) -> BaseGraph:
-        """Build sequential execution graph."""
+        """Build sequential execution graph.
+        """
         graph = BaseGraph(name=f"{self.name}_sequential_graph")
 
         prev_node = START
 
         # Add coordinator node if processing between steps
         if self.process_between_steps:
-            coordinator_node = EngineNodeConfig(name="coordinator", engine=self.engine)
+            coordinator_node = EngineNodeConfig(
+    name="coordinator", engine=self.engine)
             graph.add_node("coordinator", coordinator_node)
 
         # Add each agent as a node
@@ -212,7 +219,7 @@ Always preserve key information while improving clarity and structure."""
 
         return graph
 
-    async def execute_sequence(self, input_data: Any) -> Any | list[Any]:
+    async def execute_sequence(self, input_data: Any -> Union[Any, list[Any]]:
         """Execute agents in sequence.
 
         Args:
@@ -221,41 +228,48 @@ Always preserve key information while improving clarity and structure."""
         Returns:
             Final output or list of all outputs
         """
-        current_input = input_data
-        outputs = []
+        current_input=input_data
+        outputs=[]
 
         for i, agent in enumerate(self.agents):
             try:
                 # Execute agent
                 logger.debug(
-                    f"Executing step {i+1}: {getattr(agent, 'name', f'agent_{i}')}"
+                    f"Executing step {
+    i +
+    1}: {
+        getattr(
+            agent,
+            'name',
+             f'agent_{i}')}"
                 )
 
                 if hasattr(agent, "arun"):
-                    output = await agent.arun(current_input)
+                    output=await agent.arun(current_input)
                 else:
                     # Fallback to sync
-                    output = agent.run(current_input)
+                    output=agent.run(current_input)
 
                 outputs.append(output)
 
                 # Process between steps if enabled
                 if self.process_between_steps and i < len(self.agents) - 1:
                     if hasattr(self, "arun"):
-                        output = await self.arun(
+                        output=await self.arun(
                             {
                                 "previous_output": output,
                                 "next_agent": getattr(
-                                    self.agents[i + 1], "name", f"agent_{i+1}"
+                                    self.agents[i +
+                                        1], "name", f"agent_{i + 1}"
                                 ),
                                 "instruction": "Process this output for the next agent",
                             }
                         )
 
-                current_input = output
+                current_input=output
 
             except Exception as e:
-                logger.error(f"Error in step {i+1}: {e}")
+                logger.error(f"Error in step {i + 1}: {e}")
                 if not self.continue_on_error:
                     raise
                 outputs.append({"error": str(e)})
@@ -264,13 +278,16 @@ Always preserve key information while improving clarity and structure."""
         return outputs if self.return_all_outputs else current_input
 
     def __repr__(self) -> str:
-        """String representation with pipeline info."""
-        engine_type = type(self.engine).__name__ if self.engine else "None"
-        pipeline = " → ".join(
-            [getattr(agent, "name", type(agent).__name__) for agent in self.agents]
+        """String representation with pipeline info.
+        """
+        engine_type=type(self.engine).__name__ if self.engine else "None"
+        pipeline=" → ".join(
+            [getattr(agent, "name", type(agent).__name__)
+                     for agent in self.agents]
         )
         return (
-            f"SequentialAgent[{engine_type}](name='{self.name}', pipeline=[{pipeline}])"
+            f"SequentialAgent[{engine_type}](name='{
+    self.name}', pipeline=[{pipeline}])"
         )
 
 
@@ -279,15 +296,15 @@ if __name__ == "__main__":
     # Mock agents for demo
     class MockAgent:
         def __init__(self, name: str, transform: str):
-            self.name = name
-            self.transform = transform
-            self.engine = AugLLMConfig()
+            self.name=name
+            self.transform=transform
+            self.engine=AugLLMConfig()
 
         async def arun(self, input_data: str) -> str:
             return f"{self.name}: {self.transform}({input_data})"
 
     # Create sequential pipeline
-    pipeline = SequentialAgent(
+    pipeline=SequentialAgent(
         name="text_processing_pipeline",
         agents=[
             MockAgent("cleaner", "CLEAN"),
@@ -314,9 +331,12 @@ if __name__ == "__main__":
     print("Step 4: formatter: FORMAT(summarizer: SUMMARIZE(...))")
 
     # With intermediate processing
-    pipeline_enhanced = SequentialAgent(
+    pipeline_enhanced=SequentialAgent(
         name="enhanced_pipeline",
-        agents=[MockAgent("researcher", "RESEARCH"), MockAgent("writer", "WRITE")],
+        agents=[
+    MockAgent(
+        "researcher", "RESEARCH"), MockAgent(
+            "writer", "WRITE")],
         process_between_steps=True,
         system_message="Enhance outputs between steps",
     )

@@ -1,4 +1,6 @@
-"""Generalized Structured Output Agent for enhancing any agent with structured output parsing."""
+"""Generalized Structured Output Agent for enhancing any agent with structured output
+parsing.
+"""
 
 from typing import Any, Optional
 
@@ -42,7 +44,6 @@ class StructuredOutputAgent(SimpleAgent):
             output_models=[ResultModel],
             include_original_input=True
             )
-
     """
 
     # Configuration

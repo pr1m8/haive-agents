@@ -74,7 +74,8 @@ correct_cypher_aug_llm_config = AugLLMConfig(
     prompt_template=CORRECT_CYPHER_PROMPT_TEMPLATE,
     structured_output_model=CypherQueryOutput,
 )
-"""Engine for correcting Cypher queries based on validation errors.
+"""
+Engine for correcting Cypher queries based on validation errors.
 
 This engine takes a Cypher statement with identified errors and produces
 a corrected version that should be valid against the schema.
@@ -132,7 +133,8 @@ validate_cypher_prompt = ChatPromptTemplate.from_messages(
 validate_cypher_aug_llm_config = AugLLMConfig(
     prompt_template=validate_cypher_prompt, structured_output_model=ValidateCypherOutput
 )
-"""Engine for validating Cypher queries against the database schema.
+"""
+Engine for validating Cypher queries against the database schema.
 
 This engine checks for syntax errors, schema mismatches, and logical issues
 in generated Cypher queries.
@@ -171,7 +173,8 @@ TEXT2CYPHER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 text2cypher_aug_llm_config = AugLLMConfig(
     prompt_template=TEXT2CYPHER_PROMPT_TEMPLATE, output_parser=StrOutputParser()
 )
-"""Engine for converting natural language questions to Cypher queries.
+"""
+Engine for converting natural language questions to Cypher queries.
 
 Uses few-shot examples to learn the mapping between questions and Cypher
 for the specific domain and schema.
@@ -204,7 +207,8 @@ GUARDRAILS_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 guardrails_aug_llm_config = AugLLMConfig(
     prompt_template=GUARDRAILS_PROMPT_TEMPLATE, structured_output_model=GuardrailsOutput
 )
-"""Engine for checking domain relevance of user questions.
+"""
+Engine for checking domain relevance of user questions.
 
 This engine acts as a guardrail to ensure questions are within the
 configured domain before attempting to generate Cypher queries.
@@ -241,7 +245,8 @@ GENERATE_FINAL_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 generate_final_aug_llm_config = AugLLMConfig(
     prompt_template=GENERATE_FINAL_PROMPT_TEMPLATE, output_parser=StrOutputParser()
 )
-"""Engine for generating natural language answers from query results.
+"""
+Engine for generating natural language answers from query results.
 
 Takes raw database results and converts them into a human-friendly
 response that directly answers the user's question.

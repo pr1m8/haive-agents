@@ -175,9 +175,9 @@ class MultiMemoryState(MemoryStateWithTokens):
 class MultiMemoryAgent(SimpleAgent):
     """Agent that coordinates multiple memory strategies.
 
-    This agent acts as a smart router and coordinator for different memory
-    approaches, automatically selecting the best strategy based on query
-    analysis and combining responses when appropriate.
+    This agent acts as a smart router and coordinator for different memory approaches,
+    automatically selecting the best strategy based on query analysis and combining
+    responses when appropriate.
     """
 
     def __init__(self, config: MultiMemoryConfig):

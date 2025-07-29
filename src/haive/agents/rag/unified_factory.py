@@ -1,8 +1,8 @@
 """Unified RAG Factory.
 
-from typing import Any, Dict
-Create any RAG agent using either traditional or ChainAgent approach.
-Integrates with multi-agent system.
+from typing import Any, Dict Create any RAG agent using either traditional or ChainAgent
+from typing import Optional, Union
+approach. Integrates with multi-agent system.
 """
 
 import logging
@@ -18,7 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 class RAGType(str, Enum):
-    """Available RAG types."""
+    """Available RAG types.
+    """
 
     SIMPLE = "simple"
     MULTI_QUERY = "multi_query"
@@ -37,7 +38,8 @@ class RAGType(str, Enum):
 
 
 class RAGStyle(str, Enum):
-    """Implementation style."""
+    """Implementation style.
+    """
 
     TRADITIONAL = "traditional"  # Original implementation
     CHAIN = "chain"  # ChainAgent implementation
@@ -45,17 +47,18 @@ class RAGStyle(str, Enum):
 
 
 class RAGFactory:
-    """Unified factory for creating RAG agents."""
+    """Unified factory for creating RAG agents.
+    """
 
     @staticmethod
     def create(
         rag_type: RAGType,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         style: RAGStyle = RAGStyle.CHAIN,
-        name: str | None = None,
+        name: Optional[str] = None,
         **kwargs,
-    ) -> Agent | ChainAgent:
+     -> Union[Agent, ChainAgent]:
         """Create any RAG agent.
 
         Args:
@@ -92,7 +95,7 @@ class RAGFactory:
             rag_type, documents, llm_config, agent_name, **kwargs
         )
 
-    @staticmethod
+    @ staticmethod
     def _create_chain(
         rag_type: RAGType,
         documents: list[Document],
@@ -100,7 +103,8 @@ class RAGFactory:
         name: str,
         **kwargs,
     ) -> ChainAgent:
-        """Create ChainAgent implementation."""
+        """Create ChainAgent implementation.
+        """
         if rag_type == RAGType.AGENTIC_ROUTER:
             from haive.agents.rag.agentic_router.agent_chain import (
                 create_agentic_rag_router_chain,
@@ -137,7 +141,7 @@ class RAGFactory:
 
         return flow(traditional, name=name)
 
-    @staticmethod
+    @ staticmethod
     def _create_multi(
         rag_type: RAGType,
         documents: list[Document],
@@ -145,7 +149,8 @@ class RAGFactory:
         name: str,
         **kwargs,
     ) -> "ChainMultiAgent":
-        """Create MultiAgent implementation."""
+        """Create MultiAgent implementation.
+        """
         from haive.agents.chain.multi_integration import ChainMultiAgent
 
         # Create chain version first
@@ -156,7 +161,7 @@ class RAGFactory:
         # Convert to multi-agent
         return ChainMultiAgent.from_chain(chain, name=name)
 
-    @staticmethod
+    @ staticmethod
     def _create_traditional(
         rag_type: RAGType,
         documents: list[Document],
@@ -164,7 +169,8 @@ class RAGFactory:
         name: str,
         **kwargs,
     ) -> Agent:
-        """Create traditional implementation."""
+        """Create traditional implementation.
+        """
         # Remove name from kwargs to avoid conflicts
         filtered_kwargs = {k: v for k, v in kwargs.items() if k != "name"}
 
@@ -250,42 +256,47 @@ class RAGFactory:
 
 # Convenience functions
 def create_rag(
-    rag_type: str | RAGType,
+    rag_type: Union[str, RAGType],
     documents: list[Document],
-    style: str | RAGStyle = "chain",
+    style: Union[str, RAGStyle]="chain",
     **kwargs,
-) -> Agent | ChainAgent:
-    """Simple function to create any RAG agent."""
+ -> Union[Agent, ChainAgent]:
+    """Simple function to create any RAG agent.
+    """
     if isinstance(rag_type, str):
-        rag_type = RAGType(rag_type)
+        rag_type=RAGType(rag_type)
     if isinstance(style, str):
-        style = RAGStyle(style)
+        style=RAGStyle(style)
 
     return RAGFactory.create(rag_type, documents, style=style, **kwargs)
 
 
 def create_rag_chain(
-    rag_type: str | RAGType, documents: list[Document], **kwargs
+    rag_type: Union[str, RAGType], documents: list[Document], **kwargs
 ) -> ChainAgent:
-    """Create a RAG agent as a ChainAgent."""
+    """Create a RAG agent as a ChainAgent.
+    """
     return create_rag(rag_type, documents, style="chain", **kwargs)
 
 
-def create_rag_multi(rag_type: str | RAGType, documents: list[Document], **kwargs):
-    """Create a RAG agent as a MultiAgent."""
+def create_rag_multi(
+    rag_type: Union[str, RAGType], documents: list[Document], **kwargs):
+    """Create a RAG agent as a MultiAgent.
+    """
     return create_rag(rag_type, documents, style="multi", **kwargs)
 
 
 def create_rag_pipeline(
     rag_types: list[str | RAGType],
     documents: list[Document],
-    style: RAGStyle = RAGStyle.CHAIN,
+    style: RAGStyle=RAGStyle.CHAIN,
     **kwargs,
 ) -> ChainAgent:
-    """Create a pipeline of RAG agents."""
-    agents = []
+    """Create a pipeline of RAG agents.
+    """
+    agents=[]
     for rag_type in rag_types:
-        agent = create_rag(rag_type, documents, style=style, **kwargs)
+        agent=create_rag(rag_type, documents, style=style, **kwargs)
         agents.append(agent)
 
     return ChainAgent(*agents, name="RAG Pipeline")
@@ -293,23 +304,25 @@ def create_rag_pipeline(
 
 # Examples of easy usage
 def example_usage() -> Dict[str, Any]:
-    """Examples of how to use the unified factory."""
-    docs = [Document(page_content="Test document")]
+    """Examples of how to use the unified factory.
+    """
+    docs=[Document(page_content="Test document")]
 
     # Simple creation
-    simple_rag = create_rag("simple", docs)
+    simple_rag=create_rag("simple", docs)
 
     # Chain version
-    router_chain = create_rag_chain("agentic_router", docs)
+    router_chain=create_rag_chain("agentic_router", docs)
 
     # Multi-agent version
-    planning_multi = create_rag_multi("query_planning", docs)
+    planning_multi=create_rag_multi("query_planning", docs)
 
     # Pipeline of multiple RAG types
-    pipeline = create_rag_pipeline(["simple", "fusion", "flare"], docs, style="chain")
+    pipeline=create_rag_pipeline(
+        ["simple", "fusion", "flare"], docs, style="chain")
 
     # Traditional implementation
-    traditional = create_rag("hyde", docs, style="traditional")
+    traditional=create_rag("hyde", docs, style="traditional")
 
     return {
         "simple": simple_rag,

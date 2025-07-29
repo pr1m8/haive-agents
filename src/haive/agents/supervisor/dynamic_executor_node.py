@@ -1,7 +1,7 @@
 """Dynamic Executor Node for Dynamic Supervisor.
 
-This node dynamically executes agents by name, properly handling state extraction
-and merging based on the EngineNode/AgentNode patterns.
+This node dynamically executes agents by name, properly handling state extraction and
+merging based on the EngineNode/AgentNode patterns.
 """
 
 import logging

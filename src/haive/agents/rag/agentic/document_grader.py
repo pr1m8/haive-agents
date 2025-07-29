@@ -1,6 +1,7 @@
 """Document Grading Agent for Agentic RAG.
 
-This agent evaluates retrieved documents for relevance using existing models from common.
+This agent evaluates retrieved documents for relevance using existing models from
+common.
 """
 
 from typing import Any
@@ -48,7 +49,6 @@ def create_document_grader_agent(
             for decision in result.document_decisions:
             print(f"Document {decision.document_id}: {decision.decision}")
             print(f"Reason: {decision.justification}")
-
     """
     prompt_template = (
         "You are a document relevance grader. Evaluate whether documents are relevant to a given query.\n\n"

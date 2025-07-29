@@ -88,8 +88,8 @@ class EnhancedMultiAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fix
                 agents=[planner, executor, reviewer],
                 mode="sequential",
                 state_transfer_map={
-                    ("planner", "executof"): {"plan": "task_plan"},
-                    ("executor", "reviewef"): {"result": "execution_result"}
+                    ("planner", "executor"): {"plan": "task_plan"},
+                    ("executor", "reviewer"): {"result": "execution_result"}
                 }
             )
 
@@ -99,7 +99,7 @@ class EnhancedMultiAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fix
                 name="ensemble",
                 agents={"expert1": agent1, "expert2": agent2},
                 mode="parallel",
-                state_strategy="containef"
+                state_strategy="container"
             )
 
         With MetaStateSchema::
@@ -244,7 +244,7 @@ Make decisions based on the current state and task requirements."""
         # Add coordinator node
         coord_node = EngineNodeConfig(name="coordinator", engine=self.engine)
         graph.add_node("coordinator", coord_node)
-        graph.add_edge(START, "coordinatof")
+        graph.add_edge(START, "coordinator")
 
         # Get agents dict
         agents_dict = (
@@ -363,8 +363,8 @@ if __name__ == "__main__":
         agents=[planner, executor, reviewer],
         mode="sequential",
         state_transfer_map={
-            ("planner", "executof"): {"plan": "task_list"},
-            ("executor", "reviewef"): {"result": "execution_output"},
+            ("planner", "executor"): {"plan": "task_list"},
+            ("executor", "reviewer"): {"result": "execution_output"},
         },
     )
 

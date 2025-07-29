@@ -31,7 +31,7 @@ class ProperMultiAgent(Agent):
 
     Emulates the engines/engine pattern:
     - agents: Dict[str, Agent] = Field(default_factory=dict)
-    - agent: Agent | None = Field(default=None)
+    - agent: Optional[Agent] = Field(default=None)
     - Same normalization logic as engines
     """
 

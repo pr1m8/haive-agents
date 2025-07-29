@@ -1,8 +1,8 @@
 """RAG Fusion Agents.
 
-from typing import Any
-Implementation of RAG Fusion with reciprocal rank fusion for enhanced retrieval.
-Based on the architecture pattern from rag-architectures-flows.md.
+from typing import Any Implementation of RAG Fusion with reciprocal rank fusion for
+from typing import Optional
+enhanced retrieval. Based on the architecture pattern from rag-architectures-flows.md.
 """
 
 import logging
@@ -303,8 +303,8 @@ class RAGFusionAgent(SequentialAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
-        embedding_model: str | None = None,
+        llm_config: Optional[LLMConfig] = None,
+        embedding_model: Optional[str] = None,
         num_variations: int = 3,
         k_parameter: float = 60.0,
         **kwargs,
@@ -373,10 +373,12 @@ class RAGFusionAgent(SequentialAgent):
 
 def create_multi_query_retrieval_callable(
     documents: list[Document],
-    embedding_model: str | None = None,
+    embedding_model: Optional[str] = None,
     max_docs_per_query: int = 10,
 ):
-    """Create a callable function for multi-query retrieval that can be used as a graph node."""
+    """Create a callable function for multi-query retrieval that can be used as a graph
+    node.
+    """
 
     def multi_query_retrieve(state: dict[str, Any]) -> dict[str, Any]:
         """Retrieve documents for multiple query variations using callable node pattern."""
@@ -456,7 +458,7 @@ class MultiQueryRetrievalAgent(Agent):
     name: str = "Multi-Query Retrieval"
     # Define Pydantic fields properly
     documents: list[Document] = Field(description="Documents for retrieval")
-    embedding_model: str | None = Field(default=None, description="Embedding model")
+    embedding_model: Optional[str] = Field(default=None, description="Embedding model")
     max_docs_per_query: int = Field(default=10, description="Max docs per query")
 
     def build_graph(self) -> BaseGraph:
@@ -481,7 +483,7 @@ class MultiQueryRetrievalAgent(Agent):
 # Factory function for easy creation
 def create_rag_fusion_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     fusion_type: str = "standard",
     **kwargs,
 ) -> RAGFusionAgent:

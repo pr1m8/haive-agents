@@ -1,7 +1,7 @@
 """Step-Back Prompting RAG Agents.
 
-from typing import Any
-Implementation of step-back prompting for abstract reasoning.
+from typing import Any Implementation of step-back prompting for abstract reasoning.
+from typing import Optional
 Generates broader conceptual queries for enhanced context retrieval.
 """
 
@@ -156,7 +156,7 @@ class StepBackQueryGeneratorAgent(Agent):
 
     def __init__(
         self,
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         abstraction_level: str = "moderate",
         **kwargs,
     ):
@@ -243,7 +243,7 @@ class DualRetrievalAgent(Agent):
     def __init__(
         self,
         documents: list[Document],
-        embedding_model: str | None = None,
+        embedding_model: Optional[str] = None,
         max_docs_each: int = 5,
         **kwargs,
     ):
@@ -361,8 +361,8 @@ class StepBackRAGAgent(SequentialAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
-        embedding_model: str | None = None,
+        llm_config: Optional[LLMConfig] = None,
+        embedding_model: Optional[str] = None,
         abstraction_level: str = "moderate",
         max_docs_each: int = 5,
         **kwargs,
@@ -420,7 +420,7 @@ class StepBackRAGAgent(SequentialAgent):
 # Factory function
 def create_step_back_rag_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     reasoning_depth: str = "moderate",
     **kwargs,
 ) -> StepBackRAGAgent:

@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 class ReflectionAgent(SimpleAgent):
     """An agent with self-reflection capabilities that can improve its responses.
 
-    This agent extends SimpleAgent by adding reflection and improvement steps
-    to iteratively refine responses based on self-critique.
+    This agent extends SimpleAgent by adding reflection and improvement steps to
+    iteratively refine responses based on self-critique.
     """
 
     def __init__(self, config: ReflectionAgentConfig):

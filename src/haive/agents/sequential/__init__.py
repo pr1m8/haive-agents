@@ -1,7 +1,5 @@
 """Module exports."""
 
-from sequential.example import run_example
-
 from haive.agents.sequential.agent import (
     SequentialAgent,
     build_graph,

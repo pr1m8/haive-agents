@@ -1,6 +1,7 @@
 """Complete Collection of RAG Agents using ChainAgent.
 
 from typing import Any, Dict
+from typing import Optional
 This module provides a comprehensive collection of Retrieval-Augmented Generation (RAG)
 agents implemented using the ChainAgent framework. Each agent represents a different
 RAG strategy or pattern, optimized for specific use cases.
@@ -471,7 +472,7 @@ class RAGChainCollection:
 def create_rag_chain(
     rag_type: str,
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     **kwargs,
 ) -> ChainAgent:
     """Create any RAG chain by type."""
@@ -506,7 +507,7 @@ def create_rag_pipeline(
     rag_types: list[str],
     documents: list[Document],
     combination_strategy: str = "sequential",
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
 ) -> ChainAgent:
     """Create a pipeline of multiple RAG approaches."""
     chains = [

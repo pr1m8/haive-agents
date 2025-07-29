@@ -1,7 +1,7 @@
 """Engines for Plan-and-Execute V3 Agent.
 
-This module contains the specialized engines used by the Plan-and-Execute V3 agent
-for planning, validation, execution, and monitoring.
+This module contains the specialized engines used by the Plan-and-Execute V3 agent for
+planning, validation, execution, and monitoring.
 """
 
 import json

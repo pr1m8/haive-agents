@@ -32,7 +32,9 @@ ToolsInput = Union[
 
 
 class ReactAgentConfig(SimpleAgentConfig):
-    """Configuration for a React agent that can use tools and follow ReAct reasoning pattern."""
+    """Configuration for a React agent that can use tools and follow ReAct reasoning
+    pattern.
+    """
 
     tools: ToolsInput = Field(
         default_factory=list,

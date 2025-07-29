@@ -1,8 +1,9 @@
 """Multi-Agent RAG System Implementation.
 
-from typing import Any
-This module provides complete multi-agent RAG workflows using the multi-agent framework
-with conditional routing, sequential processing, and parallel execution patterns.
+from typing import Any This module provides complete multi-agent RAG workflows using the
+from typing import Optional
+multi-agent framework with conditional routing, sequential processing, and parallel
+execution patterns.
 """
 
 from collections.abc import Callable
@@ -107,9 +108,9 @@ class BaseRAGMultiAgent(SequentialAgent):
 
     def __init__(
         self,
-        retrieval_agent: SimpleRAGAgent | None = None,
-        grading_agent: DocumentGradingAgent | None = None,
-        answer_agent: SimpleRAGAnswerAgent | None = None,
+        retrieval_agent: Optional[SimpleRAGAgent] = None,
+        grading_agent: Optional[DocumentGradingAgent] = None,
+        answer_agent: Optional[SimpleRAGAnswerAgent] = None,
         **kwargs,
     ):
         # Use default agents if none provided
@@ -133,16 +134,16 @@ class BaseRAGMultiAgent(SequentialAgent):
 class ConditionalRAGMultiAgent(ConditionalAgent):
     """Conditional multi-agent RAG system with smart routing based on document quality.
 
-    This system uses conditional routing to decide whether to grade documents,
-    refine queries, or generate answers based on the current state.
+    This system uses conditional routing to decide whether to grade documents, refine
+    queries, or generate answers based on the current state.
     """
 
     def __init__(
         self,
-        retrieval_agent: SimpleRAGAgent | None = None,
-        grading_agent: DocumentGradingAgent | None = None,
-        answer_agent: SimpleRAGAnswerAgent | None = None,
-        query_refiner: Any | None = None,  # Could be another agent
+        retrieval_agent: Optional[SimpleRAGAgent] = None,
+        grading_agent: Optional[DocumentGradingAgent] = None,
+        answer_agent: Optional[SimpleRAGAnswerAgent] = None,
+        query_refiner: Optional[Any] = None,  # Could be another agent
         **kwargs,
     ):
         # Create agents
@@ -201,16 +202,16 @@ class ConditionalRAGMultiAgent(ConditionalAgent):
 class IterativeRAGMultiAgent(SequentialAgent):
     """Multi-agent RAG system with iterative document processing.
 
-    This system demonstrates iterating over retrieved documents and processing
-    each one individually, as mentioned in the user prompt.
+    This system demonstrates iterating over retrieved documents and processing each one
+    individually, as mentioned in the user prompt.
     """
 
     def __init__(
         self,
-        retrieval_agent: SimpleRAGAgent | None = None,
-        iterative_grader: IterativeDocumentGradingAgent | None = None,
-        answer_agent: SimpleRAGAnswerAgent | None = None,
-        custom_grader_callable: Callable | None = None,
+        retrieval_agent: Optional[SimpleRAGAgent] = None,
+        iterative_grader: Optional[IterativeDocumentGradingAgent] = None,
+        answer_agent: Optional[SimpleRAGAnswerAgent] = None,
+        custom_grader_callable: Optional[Callable] = None,
         **kwargs,
     ):
         # Create iterative grading agent with custom callable if provided
@@ -270,15 +271,15 @@ class ParallelRAGMultiAgent(ParallelAgent):
 class AdaptiveRAGMultiAgent(ConditionalAgent):
     """Advanced RAG system that adapts its strategy based on query complexity and results.
 
-    This system demonstrates sophisticated conditional routing with multiple
-    decision points and fallback strategies.
+    This system demonstrates sophisticated conditional routing with multiple decision
+    points and fallback strategies.
     """
 
     def __init__(
         self,
-        simple_rag: BaseRAGMultiAgent | None = None,
-        complex_rag: IterativeRAGMultiAgent | None = None,
-        consensus_rag: ParallelRAGMultiAgent | None = None,
+        simple_rag: Optional[BaseRAGMultiAgent] = None,
+        complex_rag: Optional[IterativeRAGMultiAgent] = None,
+        consensus_rag: Optional[ParallelRAGMultiAgent] = None,
         **kwargs,
     ):
         self.simple_rag = simple_rag or BaseRAGMultiAgent(name="Simple RAG")
@@ -359,8 +360,8 @@ class AdaptiveRAGMultiAgent(ConditionalAgent):
 def test_agent_compatibility(agent1: Any, agent2: Any) -> dict[str, Any]:
     """Test compatibility between two agents using the compatibility module.
 
-    This demonstrates using the compatibility module to test if agents
-    can work together as mentioned in the user prompt.
+    This demonstrates using the compatibility module to test if agents can work together
+    as mentioned in the user prompt.
     """
     try:
         # Check if agents have compatible schemas
@@ -458,7 +459,7 @@ def create_sequential_rag_system(
 
 
 def create_conditional_rag_system(
-    documents: list[Document] | None = None, custom_grader: Callable | None = None
+    documents: list[Document] | None = None, custom_grader: Optional[Callable] = None
 ) -> ConditionalRAGMultiAgent:
     """Create a conditional RAG system with smart routing."""
     retrieval_agent = SimpleRAGAgent.from_documents(documents or conversation_documents)
@@ -470,7 +471,7 @@ def create_conditional_rag_system(
 
 
 def create_iterative_rag_system(
-    documents: list[Document] | None = None, custom_grader: Callable | None = None
+    documents: list[Document] | None = None, custom_grader: Optional[Callable] = None
 ) -> IterativeRAGMultiAgent:
     """Create an iterative RAG system with document-by-document processing."""
     retrieval_agent = SimpleRAGAgent.from_documents(documents or conversation_documents)

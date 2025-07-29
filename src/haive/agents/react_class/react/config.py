@@ -21,8 +21,8 @@ from haive.agents.simple.config import SimpleAgentConfig
 class ReactAgentConfig(SimpleAgentConfig):
     """Configuration for React Agent, extending SimpleAgentConfig.
 
-    React Agent routes between an LLM and tools to perform multi-step
-    reasoning and action to accomplish tasks.
+    React Agent routes between an LLM and tools to perform multi-step reasoning and
+    action to accomplish tasks.
     """
 
     # Override state schema with ReactAgentState

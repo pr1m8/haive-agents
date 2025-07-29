@@ -1,8 +1,8 @@
 """List-based multi-agent implementation.
 
-from typing import Any
-A clean, simple multi-agent that acts like a Python list of agents.
-Focus on composition and orchestration, not complex state management.
+from typing import Any A clean, simple multi-agent that acts like a Python list of
+from typing import Optional, Union
+agents. Focus on composition and orchestration, not complex state management.
 """
 
 import logging
@@ -37,8 +37,8 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             multi.append(ResearchAgent())
             multi.append(WriterAgent())
 
-            result = multi.invoke({"messages": [HumanMessage("Write about AI")]})
-
+            result = multi.invoke(
+                {"messages": [HumanMessage("Write about AI")]})
     """
 
     # The list of agents
@@ -53,7 +53,7 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
 
     # ========== List Interface ==========
 
-    def __getitem__(self, index: int | slice) -> Agent | list[Agent]:
+    def __getitem__(self, index: Union[int, slice] -> Union[Agent, list[Agent]]:
         return self.agents[index]
 
     def __len__(self) -> int:
@@ -63,21 +63,24 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         return iter(self.agents)
 
     def append(self, agent: Agent) -> "ListMultiAgent":
-        """Add agent to end of list."""
+        """Add agent to end of list.
+        """
         self.agents.append(agent)
         self._update_index()
         self.mark_for_recompile(f"Added agent: {agent.name}")
         return self
 
     def insert(self, index: int, agent: Agent) -> "ListMultiAgent":
-        """Insert agent at specific position."""
+        """Insert agent at specific position.
+        """
         self.agents.insert(index, agent)
         self._update_index()
         self.mark_for_recompile(f"Inserted agent: {agent.name} at {index}")
         return self
 
-    def remove(self, agent: Agent | str) -> "ListMultiAgent":
-        """Remove agent by instance or name."""
+    def remove(self, agent: Union[Agent, str]) -> "ListMultiAgent":
+        """Remove agent by instance or name.
+        """
         if isinstance(agent, str):
             # Remove by name
             for i, a in enumerate(self.agents):
@@ -94,15 +97,17 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         )
         return self
 
-    def pop(self, index: int = -1) -> Agent:
-        """Remove and return agent at index."""
+    def pop(self, index: int=-1) -> Agent:
+        """Remove and return agent at index.
+        """
         agent = self.agents.pop(index)
         self._update_index()
         self.mark_for_recompile(f"Popped agent: {agent.name}")
         return agent
 
     def clear(self) -> "ListMultiAgent":
-        """Remove all agents."""
+        """Remove all agents.
+        """
         self.agents.clear()
         self._update_index()
         self.mark_for_recompile("Cleared all agents")
@@ -111,17 +116,20 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     # ========== Builder Methods ==========
 
     def then(self, agent: Agent) -> "ListMultiAgent":
-        """Add next agent in chain (alias for append)."""
+        """Add next agent in chain (alias for append).
+        """
         return self.append(agent)
 
     def __rshift__(self, agent: Agent) -> "ListMultiAgent":
-        """Support >> operator for chaining."""
+        """Support >> operator for chaining.
+        """
         return self.append(agent)
 
     # ========== Graph Building ==========
 
     def build_graph(self) -> BaseGraph:
-        """Build simple sequential graph."""
+        """Build simple sequential graph.
+        """
         graph = BaseGraph(state_schema=self.state_schema)
 
         if not self.agents:
@@ -138,7 +146,8 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             node_name = f"{agent.name}_{i}"
 
             # Each agent processes the full state but we only pass messages
-            # This keeps it simple - agents already have their tools in their engine/state
+            # This keeps it simple - agents already have their tools in their
+            # engine/state
             def make_agent_node(agent_instance: Any):
                 def agent_node(state: dict[str, Any]) -> dict[str, Any]:
                     # Extract messages
@@ -184,45 +193,59 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         return graph.compile()
 
     def setup_agent(self) -> None:
-        """Setup the multi-agent system."""
+        """Setup the multi-agent system.
+        """
         self._update_index()
 
     def _update_index(self) -> None:
-        """Update agent name to index mapping."""
-        self._agent_index = {agent.name: i for i, agent in enumerate(self.agents)}
+        """Update agent name to index mapping.
+        """
+        self._agent_index = {
+    agent.name: i for i,
+    agent in enumerate(
+        self.agents)}
 
-    def get_agent_by_name(self, name: str) -> Agent | None:
-        """Get agent by name."""
-        index = self._agent_index.get(name)
+    def get_agent_by_name(self, name: str -> Optional[Agent]:
+        """Get agent by name.
+        """
+        index=self._agent_index.get(name)
         return self.agents[index] if index is not None else None
 
     def get_agent_names(self) -> list[str]:
-        """Get list of agent names in order."""
+        """Get list of agent names in order.
+        """
         return [agent.name for agent in self.agents]
 
     # ========== String Representation ==========
 
     def __str__(self) -> str:
-        """String representation."""
-        agent_names = ", ".join(agent.name for agent in self.agents)
+        """String representation.
+        """
+        agent_names=", ".join(agent.name for agent in self.agents)
         return f"ListMultiAgent([{agent_names}])"
 
     def __repr__(self) -> str:
-        """Detailed representation."""
-        return f"ListMultiAgent(name='{self.name}', agents={len(self.agents)}, mode=sequential)"
+        """Detailed representation.
+        """
+        return f"ListMultiAgent(name='{
+    self.name}', agents={
+        len(
+            self.agents)}, mode=sequential)"
 
 
 # Convenience factory functions
 
 
-def sequential(*agents: Agent, name: str = "sequential_multi") -> ListMultiAgent:
-    """Create a sequential multi-agent from agents."""
-    multi = ListMultiAgent(name=name)
+def sequential(*agents: Agent, name: str="sequential_multi") -> ListMultiAgent:
+    """Create a sequential multi-agent from agents.
+    """
+    multi=ListMultiAgent(name=name)
     for agent in agents:
         multi.append(agent)
     return multi
 
 
-def pipeline(*agents: Agent, name: str = "pipeline") -> ListMultiAgent:
-    """Create a pipeline of agents (alias for sequential)."""
+def pipeline(*agents: Agent, name: str="pipeline") -> ListMultiAgent:
+    """Create a pipeline of agents (alias for sequential).
+    """
     return sequential(*agents, name=name)

@@ -1,8 +1,9 @@
 """Agentic RAG Router with ReAct Pattern Agents.
 
-from typing import Any
-Implementation of autonomous RAG routing using ReAct (Reason + Act) patterns.
-Provides intelligent agent selection, strategy planning, and execution coordination.
+from typing import Any Implementation of autonomous RAG routing using ReAct (Reason +
+from typing import Optional
+Act) patterns. Provides intelligent agent selection, strategy planning, and execution
+coordination.
 """
 
 import logging
@@ -356,10 +357,10 @@ class AgenticRAGRouterAgent(Agent):
     autonomy_level: str = Field(default="high", description="Autonomy level")
 
     # Engines for different stages (initialized in setup_agent)
-    planning_engine: AugLLMConfig | None = Field(
+    planning_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for ReAct planning"
     )
-    synthesis_engine: AugLLMConfig | None = Field(
+    synthesis_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for result synthesis"
     )
     strategy_agents: dict[RAGStrategy, Agent] | None = Field(
@@ -600,7 +601,7 @@ class AgenticRAGRouterAgent(Agent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         autonomy_level: str = "high",
         **kwargs,
     ):
@@ -633,7 +634,7 @@ class AgenticRAGRouterAgent(Agent):
 # Factory function
 def create_agentic_rag_router_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     routing_mode: str = "autonomous",
     **kwargs,
 ) -> AgenticRAGRouterAgent:

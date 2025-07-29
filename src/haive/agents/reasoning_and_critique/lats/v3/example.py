@@ -1,7 +1,7 @@
 """Example of using LATS v3 with EnhancedMultiAgentV4 orchestration.
 
-This example demonstrates the complete LATS implementation using the same
-patterns as TOT v2 and Self-Discover v2.
+This example demonstrates the complete LATS implementation using the same patterns as
+TOT v2 and Self-Discover v2.
 """
 
 import asyncio

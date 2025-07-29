@@ -1,7 +1,7 @@
 """Standalone memory agent using only free resources (no API keys required).
 
-This implementation shows how to build a functional memory agent without
-relying on paid APIs like OpenAI or Anthropic.
+This implementation shows how to build a functional memory agent without relying on paid
+APIs like OpenAI or Anthropic.
 """
 
 import asyncio
@@ -19,6 +19,10 @@ from haive.agents.memory_v2.memory_state_original import (
     ImportanceLevel,
     MemoryState,
     MemoryType,
+    Optional,
+    from,
+    import,
+    typing,
 )
 
 
@@ -35,7 +39,7 @@ class FreeMemoryAgent:
     def __init__(
         self,
         user_id: str,
-        storage_path: str | None = None,
+        storage_path: Optional[str] = None,
         embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
         k_memories: int = 5,
     ):
@@ -75,10 +79,13 @@ class FreeMemoryAgent:
         print(f"✅ FreeMemoryAgent initialized for user: {user_id}")
 
     def _initialize_vector_store(self) -> FAISS:
-        """Initialize or load the vector store."""
+        """Initialize or load the vector store.
+        """
         if self.vector_store_path.exists():
             try:
-                print(f"Loading existing vector store from {self.vector_store_path}")
+                print(
+                    f"Loading existing vector store from {
+                        self.vector_store_path}")
                 return FAISS.load_local(
                     str(self.vector_store_path),
                     self.embeddings,
@@ -150,9 +157,9 @@ class FreeMemoryAgent:
     def search_memories(
         self,
         query: str,
-        k: int | None = None,
-        memory_type: MemoryType | None = None,
-        importance: ImportanceLevel | None = None,
+        k: Optional[int] = None,
+        memory_type: Optional[MemoryType] = None,
+        importance: Optional[ImportanceLevel] = None,
     ) -> list[dict[str, Any]]:
         """Search memories using similarity search.
 
@@ -196,7 +203,7 @@ class FreeMemoryAgent:
 
         return formatted_results
 
-    def get_relevant_context(self, query: str, k: int | None = None) -> str:
+    def get_relevant_context(self, query: str, k: Optional[int] = None) -> str:
         """Get relevant context for a query.
 
         Args:
@@ -219,7 +226,7 @@ class FreeMemoryAgent:
                 try:
                     dt = datetime.fromisoformat(timestamp)
                     timestamp = dt.strftime("%Y-%m-%d %H:%M")
-                except:
+                except BaseException:
                     pass
 
             context_parts.append(
@@ -232,12 +239,14 @@ class FreeMemoryAgent:
         return "\n".join(context_parts)
 
     def save(self):
-        """Save the vector store to disk."""
+        """Save the vector store to disk.
+        """
         self.vector_store.save_local(str(self.vector_store_path))
         print(f"💾 Saved vector store to {self.vector_store_path}")
 
     def get_stats(self) -> dict[str, Any]:
-        """Get memory statistics."""
+        """Get memory statistics.
+        """
         return {
             "total_memories": self.memory_state.stats.total_memories,
             "memories_by_type": dict(self.memory_state.stats.memories_by_type),
@@ -306,11 +315,14 @@ class FreeMemoryAgent:
             user_input, memory_type=memory_type, importance=importance
         )
 
-        return f"I've stored that in my memory (ID: {memory_id}). Type: {memory_type.value}, Importance: {importance.value}"
+        return f"I've stored that in my memory (ID: {memory_id}). Type: {
+            memory_type.value}, Importance: {
+            importance.value}"
 
 
 async def test_free_memory_agent():
-    """Test the free memory agent."""
+    """Test the free memory agent.
+    """
     print("\n🚀 Testing FreeMemoryAgent 🚀\n")
 
     # Create agent
@@ -335,24 +347,25 @@ async def test_free_memory_agent():
 
     # Process each input
     for user_input in test_inputs:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"User: {user_input}")
         response = await agent.process_input(user_input)
         print(f"Agent: {response}")
 
     # Show statistics
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Memory Statistics:")
     stats = agent.get_stats()
     for key, value in stats.items():
         print(f"  {key}: {value}")
 
     # Test direct search
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Direct search test - 'AI researcher':")
     results = agent.search_memories("AI researcher", k=3)
     for i, result in enumerate(results, 1):
-        print(f"  {i}. Score: {result['score']:.3f} - {result['content'][:60]}...")
+        print(
+            f"  {i}. Score: {result['score']:.3f} - {result['content'][:60]}...")
 
     print("\n✅ FreeMemoryAgent test completed!")
 

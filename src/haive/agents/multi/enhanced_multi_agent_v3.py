@@ -25,6 +25,10 @@ from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
     EnhancedMultiAgentState,
+    Optional,
+    from,
+    import,
+    typing,
 )
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from pydantic import Field, field_validator, model_validator
@@ -176,7 +180,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         description="Generic collection of agents this multi-agent coordinates",
     )
 
-    agent: Agent | None = Field(
+    agent: Optional[Agent] = Field(
         default=None,
         description="Main/default agent for this multi-agent (legacy support)",
     )
@@ -198,7 +202,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         description="Branch configurations for conditional and custom routing",
     )
 
-    entry_point: str | None = Field(
+    entry_point: Optional[str] = Field(
         default=None,
         description="Starting agent for execution (if not specified, uses first agent or infers)",
     )
@@ -257,7 +261,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
     @model_validator(mode="before")
     @classmethod
-    def normalize_agents_and_name(cls, values: dict[str, Any]) -> dict[str, Any]:
+    def normalize_agents_and_name(
+        cls, values: dict[str, Any]) -> dict[str, Any]:
         """Normalize agents dict and auto-generate name - follows engines pattern."""
         if not isinstance(values, dict):
             return values
@@ -346,9 +351,11 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
     @field_validator("agents")
     @classmethod
     def validate_agents(cls, v: AgentsT) -> AgentsT:
-        """Validate agents collection."""
+        """Validate agents collection.
+        """
         if isinstance(v, dict):
-            # Allow empty dict during initialization - some subclasses populate later
+            # Allow empty dict during initialization - some subclasses populate
+            # later
             if v:
                 # Validate all values are agents
                 for name, agent in v.items():
@@ -361,7 +368,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                             f"Agent '{name}' must have run/arun/invoke method"
                         )
         elif isinstance(v, list):
-            # Allow empty list during initialization - some subclasses populate later
+            # Allow empty list during initialization - some subclasses populate
+            # later
             if v:
                 # Validate all items are agents
                 for i, agent in enumerate(v):
@@ -380,7 +388,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
     @field_validator("adaptation_rate")
     @classmethod
     def validate_adaptation_rate(cls, v):
-        """Validate adaptation rate range."""
+        """Validate adaptation rate range.
+        """
         if not (0.0 <= v <= 1.0):
             raise ValueError("Adaptation rate must be between 0.0 and 1.0")
         return v
@@ -408,8 +417,10 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
         # Set default state schema if none provided
         if self.state_schema is None:
-            # Use enhanced state schema for V3 features, fallback to basic for compatibility
-            if any([self.performance_mode, self.debug_mode, self.advanced_routing]):
+            # Use enhanced state schema for V3 features, fallback to basic for
+            # compatibility
+            if any([self.performance_mode, self.debug_mode,
+                   self.advanced_routing]):
                 self.state_schema = EnhancedMultiAgentState
                 logger.debug(f"Using EnhancedMultiAgentState for {self.name}")
             else:
@@ -434,7 +445,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         logger.debug(f"EnhancedMultiAgent V3 setup complete: {self.name}")
 
     def _initialize_performance_tracking(self) -> None:
-        """Initialize performance tracking for all agents."""
+        """Initialize performance tracking for all agents.
+        """
         for agent_name in self.get_agent_names():
             if agent_name not in self.agent_performance:
                 self.agent_performance[agent_name] = {
@@ -445,11 +457,14 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                     "total_duration": 0.0,
                 }
         logger.debug(
-            f"Initialized performance tracking for {len(self.agent_performance)} agents"
+            f"Initialized performance tracking for {
+    len(
+        self.agent_performance)} agents"
         )
 
     def _setup_multi_engine_mode(self) -> None:
-        """Configure multi-engine support."""
+        """Configure multi-engine support.
+        """
         # Create coordination engine if none exists
         if not self.engine:
             self.engine = AugLLMConfig(
@@ -460,7 +475,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         logger.debug("Multi-engine mode configured")
 
     def _setup_advanced_routing(self) -> None:
-        """Configure advanced routing capabilities."""
+        """Configure advanced routing capabilities.
+        """
         # Advanced routing setup - framework for future expansion
         logger.debug("Advanced routing configured")
 
@@ -469,14 +485,16 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
     # ========================================================================
 
     def get_agent_names(self) -> list[str]:
-        """Get list of agent names."""
+        """Get list of agent names.
+        """
         if isinstance(self.agents, dict):
             return list(self.agents.keys())
         # For list, generate names
         return [f"agent_{i}" for i in range(len(self.agents))]
 
-    def get_agent(self, name: str) -> Agent | None:
-        """Get agent by name."""
+    def get_agent(self, name: str -> Optional[Agent]:
+        """Get agent by name.
+        """
         if isinstance(self.agents, dict):
             return self.agents.get(name)
         # Handle list case
@@ -499,10 +517,15 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         Enhanced with V3 debugging and performance features.
         """
         if self.debug_mode:
-            logger.info(f"Building graph for EnhancedMultiAgent V3: {self.name}")
+            logger.info(
+    f"Building graph for EnhancedMultiAgent V3: {
+        self.name}")
 
         # Create BaseGraph with state schema
-        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
+        graph = BaseGraph(
+    name=f"{
+        self.name}_graph",
+         state_schema=self.state_schema)
 
         # Store agents in graph metadata for AgentNodeV3Config to access
         graph.metadata["agents"] = self.agents
@@ -541,12 +564,14 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
             )
 
         if self.debug_mode:
-            logger.info(f"Graph built successfully with {len(self.agents)} agents")
+            logger.info(
+                f"Graph built successfully with {len(self.agents)} agents")
 
         return graph
 
     def _build_custom_routing(self, graph: BaseGraph):
-        """Build custom routing based on enhanced branch configurations."""
+        """Build custom routing based on enhanced branch configurations.
+        """
         # Add all agents as nodes first, wrapped in AgentNodeV3Config
         for agent_name, agent in self.agents.items():
             # Create AgentNodeV3Config to make agent callable
@@ -573,7 +598,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 def make_condition_fn(fn, route_map) -> Any:
                     def condition_wrapper(state: dict[str, Any]):
                         route_key = fn(state)
-                        return route_map.get(route_key, next(iter(route_map.values())))
+                        return route_map.get(
+                            route_key, next(iter(route_map.values())))
 
                     return condition_wrapper
 
@@ -602,13 +628,15 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 agents = branch_config["agents"]
                 next_agent = branch_config.get("next")
 
-                # Add virtual nodes if they don't represent actual parallel groups
+                # Add virtual nodes if they don't represent actual parallel
+                # groups
                 if source.startswith("parallel_"):
                     # This is a parallel group configuration, not a real agent
                     # Create edges from START to each parallel agent
                     for agent_name in agents:
                         if agent_name in self.agents:
-                            # If this is the first set of edges, connect from START
+                            # If this is the first set of edges, connect from
+                            # START
                             if not has_entry_edges and self.entry_point is None:
                                 graph.add_edge("__start__", agent_name)
 
@@ -620,7 +648,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                                 graph.add_edge(agent_name, "__end__")
                     has_entry_edges = True
                 else:
-                    # Source is a real agent that branches to parallel execution
+                    # Source is a real agent that branches to parallel
+                    # execution
                     for agent_name in agents:
                         if agent_name in self.agents:
                             graph.add_edge(source, agent_name)
@@ -643,14 +672,16 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
             graph.add_edge("__start__", self.entry_point)
         elif not has_entry_edges:
             # No explicit routing, connect first agent to start
-            first_agent = next(iter(self.agents.keys())) if self.agents else None
+            first_agent = next(iter(self.agents.keys())
+                               ) if self.agents else None
             if first_agent:
                 graph.add_edge("__start__", first_agent)
 
         # Ensure all terminal nodes connect to END
         for agent_name in self.agents:
             # Check if this node has any outgoing edges
-            has_outgoing = any(source == agent_name for source in self.branches)
+            has_outgoing = any(
+    source == agent_name for source in self.branches)
             if not has_outgoing and agent_name not in processed_sources:
                 # This is a terminal node
                 graph.add_edge(agent_name, "__end__")
@@ -698,7 +729,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         }
 
     def add_parallel_group(
-        self, agent_names: list[str], next_agent: str | None = None
+        self, agent_names: list[str], next_agent: Optional[str]=None
     ) -> None:
         """Add a group of agents that run in parallel.
 
@@ -742,7 +773,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 multi_agent.add_edge("preprocessor", "analyzer")
                 multi_agent.add_edge("analyzer", "postprocessor")
         """
-        self.branches[source_agent] = {"type": "direct", "target": target_agent}
+        self.branches[source_agent] = {
+    "type": "direct", "target": target_agent}
 
     # ========================================================================
     # PERFORMANCE TRACKING (from standalone)
@@ -751,7 +783,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
     def update_performance(
         self, agent_name: str, success: bool, duration: float
     ) -> None:
-        """Update agent performance metrics."""
+        """Update agent performance metrics.
+        """
         if not self.performance_mode or agent_name not in self.agent_performance:
             return
 
@@ -769,15 +802,19 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         metrics["success_rate"] = new_rate
 
         # Update average duration
-        metrics["avg_duration"] = metrics["total_duration"] / metrics["task_count"]
+        metrics["avg_duration"] = metrics["total_duration"] /
+            metrics["task_count"]
 
         if self.debug_mode:
             logger.debug(
-                f"Updated performance for {agent_name}: success_rate={new_rate:.3f}, avg_duration={metrics['avg_duration']:.3f}s"
+                f"Updated performance for {agent_name}: success_rate={
+    new_rate:.3f}, avg_duration={
+        metrics['avg_duration']:.3f}s"
             )
 
-    def get_best_agent_for_task(self, task_type: str = "general") -> str:
-        """Get best performing agent based on metrics."""
+    def get_best_agent_for_task(self, task_type: str="general") -> str:
+        """Get best performing agent based on metrics.
+        """
         if not self.performance_mode or not self.agent_performance:
             # Fallback to first agent
             return next(iter(self.agents.keys())) if self.agents else ""
@@ -794,7 +831,9 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
         result = best_agent or next(iter(self.agents.keys()))
         if self.debug_mode:
-            logger.debug(f"Selected best agent: {result} (score: {best_score:.3f})")
+            logger.debug(
+    f"Selected best agent: {result} (score: {
+        best_score:.3f})")
         return result
 
     # ========================================================================
@@ -802,7 +841,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
     # ========================================================================
 
     def display_capabilities(self) -> None:
-        """Display comprehensive multi-agent capabilities."""
+        """Display comprehensive multi-agent capabilities.
+        """
         table = Table(title=f"Enhanced MultiAgent Capabilities: {self.name}")
         table.add_column("Category", style="cyan")
         table.add_column("Details", style="green")
@@ -814,8 +854,12 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
 
         # Enhanced features
         table.add_row("Multi-Engine", "✅" if self.multi_engine_mode else "❌")
-        table.add_row("Advanced Routing", "✅" if self.advanced_routing else "❌")
-        table.add_row("Performance Mode", "✅" if self.performance_mode else "❌")
+        table.add_row(
+    "Advanced Routing",
+     "✅" if self.advanced_routing else "❌")
+        table.add_row(
+    "Performance Mode",
+     "✅" if self.performance_mode else "❌")
         table.add_row("Debug Mode", "✅" if self.debug_mode else "❌")
 
         # Agent details
@@ -832,7 +876,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         console.print(table)
 
     def get_capabilities_summary(self) -> dict[str, Any]:
-        """Get comprehensive capabilities summary."""
+        """Get comprehensive capabilities summary.
+        """
         return {
             "agent_type": "EnhancedMultiAgent",
             "agent_count": len(self.agents),
@@ -864,14 +909,15 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         }
 
     def analyze_agent_performance(self) -> dict[str, Any]:
-        """Analyze agent performance metrics."""
+        """Analyze agent performance metrics.
+        """
         if not self.performance_mode:
             return {
                 "performance_mode": False,
                 "message": "Performance tracking disabled",
             }
 
-        analysis = {
+        analysis={
             "performance_mode": True,
             "adaptation_rate": self.adaptation_rate,
             "agents": {},
@@ -883,7 +929,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 "avg_duration": round(metrics["avg_duration"], 3),
                 "task_count": metrics["task_count"],
                 "efficiency_score": round(
-                    metrics["success_rate"] / max(metrics["avg_duration"], 0.1), 3
+                    metrics["success_rate"] /
+                        max(metrics["avg_duration"], 0.1), 3
                 ),
             }
 
@@ -895,7 +942,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
             avg_duration = sum(
                 m["avg_duration"] for m in self.agent_performance.values()
             ) / len(self.agent_performance)
-            total_tasks = sum(m["task_count"] for m in self.agent_performance.values())
+            total_tasks = sum(m["task_count"]
+                              for m in self.agent_performance.values())
 
             analysis["overall"] = {
                 "average_success_rate": round(avg_success, 3),
@@ -910,12 +958,12 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
     # FACTORY METHODS
     # ========================================================================
 
-    @classmethod
+    @ classmethod
     def create(
         cls,
         agents: list[Agent] | dict[str, Agent],
-        name: str = "multi_agent",
-        execution_mode: str = "infer",
+        name: str="multi_agent",
+        execution_mode: str="infer",
         **kwargs,
     ) -> "EnhancedMultiAgent":
         """Create an enhanced multi-agent from a collection of agents.
@@ -937,7 +985,8 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
             Basic creation::
 
                 agents = [SimpleAgent(name="a"), SimpleAgent(name="b")]
-                multi_agent = EnhancedMultiAgent.create(agents, name="my_workflow")
+                multi_agent = EnhancedMultiAgent.create(
+                    agents, name="my_workflow")
 
             With enhanced features::
 
@@ -949,14 +998,19 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                     debug_mode=True
                 )
         """
-        return cls(name=name, agents=agents, execution_mode=execution_mode, **kwargs)
+        return cls(
+    name=name,
+    agents=agents,
+    execution_mode=execution_mode,
+     **kwargs)
 
     # ========================================================================
     # STRING REPRESENTATION
     # ========================================================================
 
     def __repr__(self) -> str:
-        """Enhanced string representation."""
+        """Enhanced string representation.
+        """
         agent_count = len(self.agents)
         agents_type = type(self.agents).__name__
         features = []

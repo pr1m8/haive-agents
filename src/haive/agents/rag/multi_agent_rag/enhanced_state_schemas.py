@@ -1,7 +1,7 @@
 """Enhanced State Schemas with Configuration Support.
 
-This module provides state schemas that include configuration fields,
-solving the issue of storing agent-specific configuration in a clean way.
+This module provides state schemas that include configuration fields, solving the issue
+of storing agent-specific configuration in a clean way.
 """
 
 from typing import Any
@@ -13,11 +13,16 @@ from haive.agents.rag.multi_agent_rag.grading_components import (
     AnswerGrade,
     DocumentGrade,
     HallucinationGrade,
+    Optional,
+    from,
+    import,
+    typing,
 )
 
 
 class ConfigurableRAGState(RAGState):
-    """Base RAG state with configuration support."""
+    """Base RAG state with configuration support.
+    """
 
     # Configuration fields
     config: dict[str, Any] = Field(
@@ -42,7 +47,8 @@ class ConfigurableRAGState(RAGState):
 
 
 class GradedRAGState(ConfigurableRAGState):
-    """RAG state with grading information and configuration."""
+    """RAG state with grading information and configuration.
+    """
 
     # Query analysis
     query_type: str = ""
@@ -55,8 +61,8 @@ class GradedRAGState(ConfigurableRAGState):
     filtered_documents: list[str] = []
 
     # Answer grading
-    answer_grade: AnswerGrade | None = None
-    hallucination_grade: HallucinationGrade | None = None
+    answer_grade: Optional[AnswerGrade] = None
+    hallucination_grade: Optional[HallucinationGrade] = None
 
     # Pipeline metrics
     overall_score: float = 0.0
@@ -73,7 +79,8 @@ class GradedRAGState(ConfigurableRAGState):
 
 
 class FLAREState(ConfigurableRAGState):
-    """FLARE state with configuration support."""
+    """FLARE state with configuration support.
+    """
 
     current_generation: str = ""
     uncertainty_tokens: list[str] = []
@@ -92,7 +99,8 @@ class FLAREState(ConfigurableRAGState):
 
 
 class DynamicRAGState(ConfigurableRAGState):
-    """Dynamic RAG state with configuration support."""
+    """Dynamic RAG state with configuration support.
+    """
 
     active_retrievers: dict[str, dict[str, Any]] = {}
     retriever_performance: dict[str, float] = {}
@@ -113,7 +121,8 @@ class DynamicRAGState(ConfigurableRAGState):
 
 
 class DebateRAGState(ConfigurableRAGState):
-    """Debate RAG state with configuration support."""
+    """Debate RAG state with configuration support.
+    """
 
     debate_positions: dict[str, str] = {}
     arguments_by_position: dict[str, list[str]] = {}
@@ -122,23 +131,25 @@ class DebateRAGState(ConfigurableRAGState):
     synthesis_attempts: list[str] = []
     consensus_reached: bool = False
     final_answer: str = ""
-    debate_winner: str | None = None
+    debate_winner: Optional[str] = None
 
     # Debate configuration
     position_names: list[str] = Field(
         default_factory=list, description="Names of debate positions"
     )
-    max_debate_rounds: int = Field(default=3, description="Maximum rounds of debate")
+    max_debate_rounds: int = Field(
+        default=3, description="Maximum rounds of debate")
     require_consensus: bool = Field(
-        default=False, description="Whether consensus is required to end debate"
-    )
+        default=False,
+        description="Whether consensus is required to end debate")
     enable_judge: bool = Field(
         default=False, description="Whether to include a judge for the debate"
     )
 
 
 class AdaptiveThresholdRAGState(DynamicRAGState):
-    """Adaptive threshold state extending Dynamic RAG state."""
+    """Adaptive threshold state extending Dynamic RAG state.
+    """
 
     # Additional fields specific to adaptive threshold
     query_complexity_score: float = 0.0
@@ -152,8 +163,10 @@ class AdaptiveThresholdRAGState(DynamicRAGState):
     threshold_step: float = Field(
         default=0.1, description="Amount to adjust threshold by"
     )
-    min_threshold: float = Field(default=0.3, description="Minimum allowed threshold")
-    max_threshold: float = Field(default=0.95, description="Maximum allowed threshold")
+    min_threshold: float = Field(default=0.3,
+                                 description="Minimum allowed threshold")
+    max_threshold: float = Field(default=0.95,
+                                 description="Maximum allowed threshold")
 
 
 # Helper function to create state with configuration
@@ -163,7 +176,8 @@ def create_configured_state(
     workflow_type: str,
     **config_kwargs
 ) -> ConfigurableRAGState:
-    """Create a state instance with configuration."""
+    """Create a state instance with configuration.
+    """
     # Extract fields that belong to the state class
     state_fields = {}
     config_fields = {}
@@ -187,21 +201,30 @@ def create_configured_state(
 
 # Example usage in MultiAgent classes
 class StateConfigMixin:
-    """Mixin to help MultiAgent classes work with configured states."""
+    """Mixin to help MultiAgent classes work with configured states.
+    """
 
     def get_state_config(self, state: ConfigurableRAGState) -> dict[str, Any]:
-        """Extract configuration from state."""
+        """Extract configuration from state.
+        """
         config = state.config.copy()
 
         # Add standard fields if they exist
-        for field in ["relevance_threshold", "max_documents", "grading_criteria"]:
+        for field in [
+            "relevance_threshold",
+            "max_documents",
+                "grading_criteria"]:
             if hasattr(state, field):
                 config[field] = getattr(state, field)
 
         return config
 
-    def update_state_config(self, state: ConfigurableRAGState, **updates) -> None:
-        """Update configuration in state."""
+    def update_state_config(
+            self,
+            state: ConfigurableRAGState,
+            **updates) -> None:
+        """Update configuration in state.
+        """
         for key, value in updates.items():
             if hasattr(state, key):
                 setattr(state, key, value)

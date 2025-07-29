@@ -17,8 +17,8 @@ from haive.agents.rag.base.config import BaseRAGState
 class SelfCorrectiveRAGState(BaseRAGState):
     """State schema for self-corrective RAG agents.
 
-    Extends the base RAG state with fields for tracking answer quality,
-    correction iterations, and assessment of hallucinations.
+    Extends the base RAG state with fields for tracking answer quality, correction
+    iterations, and assessment of hallucinations.
     """
 
     # Document filtering fields

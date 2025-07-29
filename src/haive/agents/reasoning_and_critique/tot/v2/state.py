@@ -13,7 +13,7 @@ Functions:
 """
 
 import operator
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, Optional, Union
 
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from langchain_core.messages import HumanMessage
@@ -23,10 +23,11 @@ from haive.agents.reasoning_and_critique.tot.v2.models import Candidate, ScoredC
 
 
 def update_candidates(
-    existing: list | None = None,
+    existing: Optional[list] = None,
     updates: list | Literal["clear"] | None = None,
 ) -> list:
-    """Custom reducer for candidates."""
+    """Custom reducer for candidates.
+    """
     if existing is None:
         existing = []
     if updates is None:
@@ -38,10 +39,11 @@ def update_candidates(
 
 
 class ToTState(MessagesState):
-    """Base Tree of Thoughts state."""
+    """Base Tree of Thoughts state.
+    """
 
     # Problem is derived from messages
-    problem_type: str | None = Field(
+    problem_type: Optional[str] = Field(
         default=None, description="Type/category of problem"
     )
     problem_context: dict[str, Any] = Field(
@@ -63,7 +65,8 @@ class ToTState(MessagesState):
     ] = Field(default_factory=list, description="All candidates ever generated")
 
     # Search parameters
-    depth: Annotated[int, operator.add] = Field(default=0, description="Current depth")
+    depth: Annotated[int, operator.add] = Field(
+        default=0, description="Current depth")
     max_depth: int = Field(default=10, description="Maximum search depth")
     beam_size: int = Field(
         default=3, description="Number of candidates to keep after pruning"
@@ -79,10 +82,10 @@ class ToTState(MessagesState):
     should_terminate: bool = Field(
         default=False, description="Whether to terminate search"
     )
-    termination_reason: str | None = Field(
+    termination_reason: Optional[str] = Field(
         default=None, description="Why search was terminated"
     )
-    best_solution: ScoredCandidate | None = Field(
+    best_solution: Optional[ScoredCandidate] = Field(
         default=None, description="Best solution found so far"
     )
 
@@ -92,7 +95,7 @@ class ToTState(MessagesState):
     )
 
     # Current candidate being processed (for scoring phase)
-    current_candidate_id: str | None = Field(
+    current_candidate_id: Optional[str] = Field(
         default=None, description="ID of candidate being scored"
     )
 
@@ -100,7 +103,8 @@ class ToTState(MessagesState):
     @computed_field
     @property
     def problem(self) -> str:
-        """Extract the problem from the first human message."""
+        """Extract the problem from the first human message.
+        """
         for msg in self.messages:
             if isinstance(msg, HumanMessage):
                 return msg.content
@@ -110,7 +114,8 @@ class ToTState(MessagesState):
     @model_validator(mode="before")
     @classmethod
     def convert_candidates(cls, data: dict[str, Any]) -> dict[str, Any]:
-        """Convert raw candidate data to proper Candidate/ScoredCandidate objects."""
+        """Convert raw candidate data to proper Candidate/ScoredCandidate objects.
+        """
         # Convert candidates
         if "candidates" in data and isinstance(data["candidates"], list):
             converted = []
@@ -159,7 +164,8 @@ class ToTState(MessagesState):
     @computed_field
     @property
     def candidates_for_expansion(self) -> str:
-        """Format selected candidates for expansion prompts."""
+        """Format selected candidates for expansion prompts.
+        """
         if not self.selected_candidates:
             return "No parent candidates - starting fresh generation."
 
@@ -169,17 +175,25 @@ class ToTState(MessagesState):
         ]
 
         for i, candidate in enumerate(self.selected_candidates):
-            expansion_context.append(f"Parent {i+1} (Score: {candidate.score:.3f}):")
+            expansion_context.append(
+    f"Parent {
+        i +
+        1} (Score: {
+            candidate.score:.3f}):")
             expansion_context.append(f"Content: {candidate.get_content_str()}")
             expansion_context.append(f"Feedback: {candidate.feedback}")
             if candidate.scoring_metadata:
                 if "strengths" in candidate.scoring_metadata:
                     expansion_context.append(
-                        f"Strengths: {', '.join(candidate.scoring_metadata['strengths'])}"
+                        f"Strengths: {
+    ', '.join(
+        candidate.scoring_metadata['strengths'])}"
                     )
                 if "weaknesses" in candidate.scoring_metadata:
                     expansion_context.append(
-                        f"Weaknesses: {', '.join(candidate.scoring_metadata['weaknesses'])}"
+                        f"Weaknesses: {
+    ', '.join(
+        candidate.scoring_metadata['weaknesses'])}"
                     )
             expansion_context.append("")
 
@@ -188,7 +202,8 @@ class ToTState(MessagesState):
     @computed_field
     @property
     def candidate_for_scoring(self) -> str:
-        """Format current candidate for scoring prompt."""
+        """Format current candidate for scoring prompt.
+        """
         if not self.current_candidate_id:
             return "No candidate to score."
 
@@ -207,7 +222,9 @@ class ToTState(MessagesState):
             parent = self.get_candidate_by_id(candidate.parent_id)
             if parent:
                 scoring_context.append(
-                    f"\nDerived from parent: {parent.get_content_str()[:100]}..."
+                    f"\nDerived from parent: {
+    parent.get_content_str()[
+        :100]}..."
                 )
 
         return "\n".join(scoring_context)
@@ -215,7 +232,8 @@ class ToTState(MessagesState):
     @computed_field
     @property
     def scored_candidates_summary(self) -> str:
-        """Summary of scored candidates for pruning decisions."""
+        """Summary of scored candidates for pruning decisions.
+        """
         if not self.scored_candidates:
             return "No candidates have been scored yet."
 
@@ -227,7 +245,10 @@ class ToTState(MessagesState):
 
         for i, candidate in enumerate(sorted_scored):
             summary.append(
-                f"{i}. [Score: {candidate.score:.3f}] {candidate.get_content_str()[:100]}..."
+                f"{i}. [Score: {
+    candidate.score:.3f}] {
+        candidate.get_content_str()[
+            :100]}..."
             )
             summary.append(f"   Feedback: {candidate.feedback}")
             if i < len(sorted_scored) - 1:
@@ -238,7 +259,8 @@ class ToTState(MessagesState):
     @computed_field
     @property
     def best_candidates_summary(self) -> str:
-        """Summary of best candidates found so far."""
+        """Summary of best candidates found so far.
+        """
         if not self.selected_candidates:
             return "No candidates selected yet."
 
@@ -249,7 +271,12 @@ class ToTState(MessagesState):
         summary_parts = [f"Top {min(3, len(sorted_candidates))} candidates:"]
         for i, cand in enumerate(sorted_candidates[:3]):
             summary_parts.append(
-                f"  {i+1}. Score: {cand.score:.3f} - {cand.get_content_str()[:100]}..."
+                f"  {
+    i +
+    1}. Score: {
+        cand.score:.3f} - {
+            cand.get_content_str()[
+                :100]}..."
             )
 
         return "\n".join(summary_parts)
@@ -257,7 +284,8 @@ class ToTState(MessagesState):
     @computed_field
     @property
     def search_progress(self) -> str:
-        """Current search progress description."""
+        """Current search progress description.
+        """
         progress_parts = [
             "Search Progress:",
             f"  - Depth: {self.depth}/{self.max_depth}",
@@ -275,7 +303,8 @@ class ToTState(MessagesState):
     @computed_field
     @property
     def best_score(self) -> float:
-        """Best score found so far."""
+        """Best score found so far.
+        """
         if self.best_solution:
             return self.best_solution.score
         return 0.0
@@ -283,8 +312,9 @@ class ToTState(MessagesState):
     # Helper methods
     def get_candidate_by_id(
         self, candidate_id: str
-    ) -> Candidate | ScoredCandidate | None:
-        """Find a candidate by ID in any list."""
+     -> Union[Candidate, ScoredCandidate | None]:
+        """Find a candidate by ID in any list.
+        """
         # Check all lists
         for c in self.candidates:
             if c.id == candidate_id:
@@ -302,8 +332,9 @@ class ToTState(MessagesState):
 
 
 class ExpansionState(ToTState):
-    """State for expansion with seed candidate."""
+    """State for expansion with seed candidate.
+    """
 
-    seed: ScoredCandidate | None = Field(
+    seed: Optional[ScoredCandidate] = Field(
         default=None, description="Parent candidate to expand from"
     )

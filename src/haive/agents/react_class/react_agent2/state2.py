@@ -26,8 +26,8 @@ from pydantic import BaseModel, Field
 class ReactAgentState(BaseModel):
     """State for React agents with tool usage.
 
-    This state schema handles proper message normalization
-    and tracking for ReAct agents.
+    This state schema handles proper message normalization and tracking for ReAct
+    agents.
     """
 
     # Base message tracking with add_messages reducer

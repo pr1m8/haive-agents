@@ -1,7 +1,7 @@
 """Prompt templates for structured output agents.
 
-This module provides prompt templates used by structured agents
-to guide the conversion of unstructured text into structured formats.
+This module provides prompt templates used by structured agents to guide the conversion
+of unstructured text into structured formats.
 """
 
 from langchain_core.prompts import ChatPromptTemplate

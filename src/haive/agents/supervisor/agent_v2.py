@@ -1,6 +1,7 @@
 """Haive Supervisor Agent - ReactAgent with Dynamic Routing and Agent Registry.
 
 from typing import Any, Dict
+from typing import Optional
 ReactAgent-based supervisor with:
 1. Agent registry with add_agent tool
 2. Dynamic routing tool that creates base model with agents in state
@@ -43,12 +44,14 @@ class SupervisorState(MessagesState):
     )
 
     # Routing information
-    next_agent: str | None = Field(None, description="Next agent to route to")
-    routing_decision: str | None = Field(None, description="Routing reasoning")
+    next_agent: Optional[str] = Field(None, description="Next agent to route to")
+    routing_decision: Optional[str] = Field(None, description="Routing reasoning")
 
     # Execution metadata
-    last_agent: str | None = Field(None, description="Previously active agent")
-    routing_timestamp: float | None = Field(None, description="When routing occurred")
+    last_agent: Optional[str] = Field(None, description="Previously active agent")
+    routing_timestamp: Optional[float] = Field(
+        None, description="When routing occurred"
+    )
 
 
 class SupervisorAgent(ReactAgent):
@@ -62,7 +65,7 @@ class SupervisorAgent(ReactAgent):
     """
 
     def __init__(
-        self, name: str = "supervisor", engine: AugLLMConfig | None = None, **kwargs
+        self, name: str = "supervisor", engine: Optional[AugLLMConfig] = None, **kwargs
     ):
         """Initialize supervisor agent.
 
@@ -227,7 +230,7 @@ If no suitable agent exists, use add_agent to create one first.
 """
 
     def add_worker_agent(
-        self, agent: Agent, capability_description: str | None = None
+        self, agent: Agent, capability_description: Optional[str] = None
     ) -> bool:
         """Add a worker agent to the supervisor registry.
 
@@ -274,7 +277,9 @@ If no suitable agent exists, use add_agent to create one first.
         return list(self._agent_registry.keys())
 
     def create_generic_agent_execution_node(self) -> Any:
-        """Create generic agent execution node that takes routing output and runs selected agent."""
+        """Create generic agent execution node that takes routing output and runs selected
+        agent.
+        """
 
         async def generic_agent_node(state, config=None):
             """Generic node that executes the selected agent."""

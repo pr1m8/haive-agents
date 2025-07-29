@@ -13,7 +13,7 @@ Functions:
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
@@ -24,8 +24,8 @@ T = TypeVar("T")
 class BaseDBConfig(ABC, BaseModel, Generic[T]):
     """Abstract base configuration model for database connections.
 
-    This class defines the common interface that all database
-    configurations should implement, regardless of database type.
+    This class defines the common interface that all database configurations should
+    implement, regardless of database type.
     """
 
     db_type: str = Field(
@@ -34,12 +34,15 @@ class BaseDBConfig(ABC, BaseModel, Generic[T]):
 
     @abstractmethod
     def get_connection_string(self) -> str:
-        """Generate a connection string for the database."""
+        """Generate a connection string for the database.
+        """
 
     @abstractmethod
-    def get_db(self) -> T | None:
-        """Creates and returns a database connection object."""
+    def get_db(self -> Optional[T]:
+        """Creates and returns a database connection object.
+        """
 
-    @abstractmethod
+    @ abstractmethod
     def get_db_schema(self) -> dict[str, Any] | None:
-        """Retrieves the schema information from the database."""
+        """Retrieves the schema information from the database.
+        """

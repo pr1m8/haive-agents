@@ -13,7 +13,6 @@ Functions:
 """
 
 # src/haive/agents/simple/enhanced_simple_agent_v2.py
-
 """Enhanced SimpleAgent V2 - Using the enhanced Agent pattern directly.
 
 This version imports the enhanced Agent class directly to avoid conflicts

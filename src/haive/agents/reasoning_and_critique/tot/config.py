@@ -1,7 +1,7 @@
 """Configuration for the Tree of Thoughts agent.
 
-This module defines the configuration schema for the ToT agent,
-including engine configurations, algorithm parameters, and state schema.
+This module defines the configuration schema for the ToT agent, including engine
+configurations, algorithm parameters, and state schema.
 """
 
 from typing import TypeVar
@@ -20,8 +20,8 @@ T = TypeVar("T")
 class TOTAgentConfig(AgentConfig):
     """Configuration for the Tree of Thoughts agent.
 
-    This configuration specifies the LLM engines used for generation and scoring,
-    as well as the parameters for the search algorithm.
+    This configuration specifies the LLM engines used for generation and scoring, as
+    well as the parameters for the search algorithm.
     """
 
     # Engine configurations

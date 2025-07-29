@@ -62,7 +62,8 @@ analyze_query_aug_llm_config = AugLLMConfig(
     prompt_template=ANALYZE_QUERY_PROMPT,
     structured_output_model=SQLAnalysisOutput,
 )
-"""Engine for analyzing natural language queries.
+"""
+Engine for analyzing natural language queries.
 
 This engine breaks down user questions to identify:
 - Relevant database tables
@@ -91,7 +92,8 @@ generate_sql_aug_llm_config = AugLLMConfig(
     prompt_template=GENERATE_SQL_PROMPT,
     structured_output_model=SQLQueryOutput,
 )
-"""Engine for generating SQL queries from natural language.
+"""
+Engine for generating SQL queries from natural language.
 
 This engine converts analyzed queries into syntactically correct SQL,
 considering the database dialect and schema constraints.
@@ -117,7 +119,8 @@ validate_sql_aug_llm_config = AugLLMConfig(
     prompt_template=VALIDATE_SQL_PROMPT,
     structured_output_model=SQLValidationOutput,
 )
-"""Engine for validating generated SQL queries.
+"""
+Engine for validating generated SQL queries.
 
 This engine checks SQL queries for:
 - Syntax errors
@@ -146,7 +149,8 @@ guardrails_aug_llm_config = AugLLMConfig(
     prompt_template=GUARDRAILS_PROMPT,
     structured_output_model=GuardrailsOutput,
 )
-"""Engine for domain relevance checking (guardrails).
+"""
+Engine for domain relevance checking (guardrails).
 
 This engine determines if a user's question is about querying
 the database or something unrelated that should be rejected.
@@ -173,7 +177,8 @@ generate_final_answer_aug_llm_config = AugLLMConfig(
     prompt_template=GENERATE_FINAL_ANSWER_PROMPT,
     output_parser=StrOutputParser(),
 )
-"""Engine for generating natural language answers.
+"""
+Engine for generating natural language answers.
 
 This engine converts SQL query results into clear, comprehensive
 answers that directly address the user's question.
@@ -198,7 +203,8 @@ hallucination_check_aug_llm_config = AugLLMConfig(
     prompt_template=HALLUCINATION_CHECK_PROMPT,
     structured_output_model=GradeHallucinations,
 )
-"""Engine for detecting hallucinations in answers.
+"""
+Engine for detecting hallucinations in answers.
 
 This engine verifies that generated answers only contain
 information supported by the actual query results.
@@ -223,7 +229,8 @@ answer_grading_aug_llm_config = AugLLMConfig(
     prompt_template=ANSWER_GRADING_PROMPT,
     structured_output_model=GradeAnswer,
 )
-"""Engine for grading answer relevance.
+"""
+Engine for grading answer relevance.
 
 This engine evaluates whether the generated answer actually
 addresses the user's original question.
@@ -251,7 +258,8 @@ default_sql_engines = {
     "hallucination_check": hallucination_check_aug_llm_config,
     "answer_grading": answer_grading_aug_llm_config,
 }
-"""Default engine configuration dictionary.
+"""
+Default engine configuration dictionary.
 
 This dictionary contains all the pre-configured engines needed
 for the SQL RAG workflow. It can be used as-is or customized

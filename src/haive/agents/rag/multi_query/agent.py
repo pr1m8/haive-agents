@@ -1,7 +1,7 @@
 """Multi-Query RAG Agent.
 
-Improves recall through query diversification.
-Generates multiple query variations and retrieves from all.
+Improves recall through query diversification. Generates multiple query variations and
+retrieves from all.
 """
 
 from typing import Any

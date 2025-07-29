@@ -1,7 +1,7 @@
 """Example of using ListIterationNode with RAG agents.
 
-Shows how to use the list iteration pattern for processing multiple queries
-or documents through RAG agents.
+Shows how to use the list iteration pattern for processing multiple queries or documents
+through RAG agents.
 """
 
 from typing import Any

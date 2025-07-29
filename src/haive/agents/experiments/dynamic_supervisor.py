@@ -13,10 +13,8 @@ Functions:
 """
 
 # experiments/dynamic_supervisor.py
-
 """Dynamic Supervisor Agent Experiment.
 
-from typing import Any
 This module contains experimental implementation of a dynamic supervisor
 that can select and execute agents based on runtime decisions.
 """
@@ -360,9 +358,9 @@ def create_list_agents_tool(supervisor_instance) -> Any:
 class DynamicSupervisorAgent(ReactAgent):
     """Dynamic supervisor that selects and executes agents at runtime.
 
-    This agent inherits from ReactAgent to get the looping behavior needed
-    for continuous agent selection and execution. It dynamically creates
-    handoff tools for each agent in the registry.
+    This agent inherits from ReactAgent to get the looping behavior needed for
+    continuous agent selection and execution. It dynamically creates handoff tools for
+    each agent in the registry.
     """
 
     # Override state schema
@@ -370,6 +368,9 @@ class DynamicSupervisorAgent(ReactAgent):
 
     # Agent registry
     agent_registry: AgentRegistry = Field(default_factory=AgentRegistry)
+
+    # Add tools field since ReactAgent expects it
+    tools: list[Any] = Field(default_factory=list)
 
     def setup_agent(self) -> None:
         """Setup supervisor with dynamic agent tools."""

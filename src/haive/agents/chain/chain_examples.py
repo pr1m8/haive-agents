@@ -1,7 +1,7 @@
 """Examples of using the flexible ChainAgent.
 
-from typing import Any, Dict
-Shows different ways to create chains from various node types.
+from typing import Any, Dict Shows different ways to create chains from various node
+types.
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig

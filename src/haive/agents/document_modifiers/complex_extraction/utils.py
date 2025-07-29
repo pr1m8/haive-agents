@@ -24,18 +24,28 @@ from langgraph.types import Command
 from pydantic import BaseModel
 
 from haive.agents.document_modifiers.complex_extraction.models import (
+    Optional,
     PatchFunctionParameters,
+    Union,
+    from,
+    import,
+    typing,
 )
 
 
 def encode(state: BaseModel) -> dict:
-    """Ensure the input is the correct format."""
+    """Ensure the input is the correct format.
+    """
     if isinstance(state.messages, PromptValue):
         return Command(
-            update={"messages": state.messages.to_messages(), "input_format": "list"}
-        )
+            update={
+                "messages": state.messages.to_messages(),
+                "input_format": "list"})
     if isinstance(state.messages, list):
-        return Command(update={"messages": state.messages, "input_format": "list"})
+        return Command(
+            update={
+                "messages": state.messages,
+                "input_format": "list"})
     raise ValueError(f"Unexpected input type: {type(state.messages)}")
 
 
@@ -63,7 +73,8 @@ def decode(state: BaseModel) -> dict:
             ):
                 # Extract data from tool calls
                 for tool_call in message.tool_calls:
-                    # If we have a tool call with args, use that as extracted data
+                    # If we have a tool call with args, use that as extracted
+                    # data
                     if "args" in tool_call:
                         extracted_data = tool_call.get("args", {})
                         break
@@ -85,7 +96,8 @@ def decode(state: BaseModel) -> dict:
             except Exception as e:
                 import logging
 
-                logging.exception(f"Error parsing data into Pydantic model: {e}")
+                logging.exception(
+                    f"Error parsing data into Pydantic model: {e}")
                 # Fall back to returning the raw data
 
     # Return the extracted data or empty dict
@@ -93,7 +105,8 @@ def decode(state: BaseModel) -> dict:
 
 
 def default_aggregator(messages: Sequence[AnyMessage]) -> AIMessage:
-    """Aggregates a sequence of messages into a single AI message."""
+    """Aggregates a sequence of messages into a single AI message.
+    """
     for m in messages[::-1]:
         if m.type == "ai":
             return m
@@ -104,7 +117,7 @@ def aggregate_messages(
     messages: Sequence[AnyMessage],
 ) -> AIMessage:
     # Get all the AI messages and apply json patches
-    resolved_tool_calls: dict[str | None, ToolCall] = {}
+    resolved_tool_calls: dict[Optional[str], ToolCall] = {}
     content: str | list[str | dict] = ""
     for m in messages:
         if m.type != "ai":
@@ -134,8 +147,9 @@ def aggregate_messages(
     )
 
 
-def add_or_overwrite_messages(left: list, right: list | dict) -> list:
-    """Append or replace messages depending on format."""
+def add_or_overwrite_messages(left: list, right: Union[list, dict]) -> list:
+    """Append or replace messages depending on format.
+    """
     if isinstance(right, dict) and "finalize" in right:
         finalized = right["finalize"]
         if not isinstance(finalized, list):
@@ -151,22 +165,28 @@ def add_or_overwrite_messages(left: list, right: list | dict) -> list:
 
 
 def dedict(x: BaseModel) -> list:
-    """Get the messages from the state."""
+    """Get the messages from the state.
+    """
     return x.messages
 
 
 class RetryStrategy(TypedDict, total=False):
-    """The retry strategy for a tool call."""
+    """The retry strategy for a tool call.
+    """
 
     max_attempts: int
-    """The maximum number of attempts to make."""
+    """
+    The maximum number of attempts to make.
+    """
     fallback: (
         Runnable[Sequence[AnyMessage], AIMessage]
         | Runnable[Sequence[AnyMessage], BaseMessage]
         | Callable[[Sequence[AnyMessage]], AIMessage]
         | None
     )
-    """The function to use once validation fails."""
+    """
+    The function to use once validation fails.
+    """
     aggregate_messages: Callable[[Sequence[AnyMessage]], AIMessage] | None = (
         default_aggregator
     )

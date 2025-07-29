@@ -1,8 +1,9 @@
 """Speculative RAG Agents.
 
-from typing import Any
-Implementation of speculative RAG with parallel hypothesis generation and verification.
-Uses structured output models for hypothesis planning and iterative refinement.
+from typing import Any Implementation of speculative RAG with parallel hypothesis
+from typing import Optional
+generation and verification. Uses structured output models for hypothesis planning and
+iterative refinement.
 """
 
 import logging
@@ -77,9 +78,9 @@ class Hypothesis(BaseModel):
 
     # Verification results (updated during verification)
     verification_status: VerificationStatus = Field(default=VerificationStatus.PENDING)
-    verification_score: float | None = Field(default=None, ge=0.0, le=1.0)
+    verification_score: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     verification_evidence: list[str] = Field(default_factory=list)
-    verification_reasoning: str | None = Field(default=None)
+    verification_reasoning: Optional[str] = Field(default=None)
 
 
 class SpeculativeExecutionPlan(BaseModel):
@@ -345,7 +346,7 @@ class HypothesisGeneratorAgent(Agent):
 
     def __init__(
         self,
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         num_hypotheses: int = 5,
         hypothesis_diversity: str = "high",
         **kwargs,
@@ -468,7 +469,7 @@ class ParallelVerificationAgent(Agent):
     def __init__(
         self,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         verification_depth: str = "thorough",
         **kwargs,
     ):
@@ -678,7 +679,7 @@ class SpeculativeRAGAgent(SequentialAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         num_hypotheses: int = 5,
         verification_depth: str = "thorough",
         **kwargs,
@@ -738,7 +739,7 @@ class SpeculativeRAGAgent(SequentialAgent):
 # Factory function
 def create_speculative_rag_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     speculation_mode: str = "balanced",
     **kwargs,
 ) -> SpeculativeRAGAgent:

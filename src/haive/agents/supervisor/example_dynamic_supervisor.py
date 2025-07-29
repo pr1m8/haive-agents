@@ -38,7 +38,6 @@ async def create_dynamic_supervisor_system():
     try:
         from dynamic_multi_agent import DynamicMultiAgent
 
-        from haive.agents.react.agent import ReactAgent
         from haive.agents.simple.agent import SimpleAgent
     except ImportError:
         return None

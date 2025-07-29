@@ -1,5 +1,7 @@
 """Examples using ExtendedChainAgent for super easy chain building."""
 
+from typing import Dict
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document

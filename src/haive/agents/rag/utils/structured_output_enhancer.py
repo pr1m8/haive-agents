@@ -1,9 +1,10 @@
 """Structured Output Enhancer for RAG Agents.
 
-from typing import Any, Dict
-This utility enables any agent to be enhanced with structured output by appending
-a SimpleAgent with the appropriate prompt template and Pydantic model. This follows
-the pattern of keeping prompts focused on generation while parsers handle structure.
+from typing import Any, Dict This utility enables any agent to be enhanced with
+from typing import Optional
+structured output by appending a SimpleAgent with the appropriate prompt template and
+Pydantic model. This follows the pattern of keeping prompts focused on generation while
+parsers handle structure.
 """
 
 from typing import Any
@@ -111,7 +112,7 @@ Please provide your structured analysis.""",
         self,
         llm_config: LLMConfig,
         context_prompt: str,
-        agent_name: str | None = None,
+        agent_name: Optional[str] = None,
         include_state_context: bool = True,
         **engine_kwargs,
     ) -> SimpleAgent:
@@ -149,7 +150,7 @@ Please provide your structured analysis.""",
         self,
         agents: list[Any],
         llm_config: LLMConfig,
-        context_prompt: str | None = None,
+        context_prompt: Optional[str] = None,
         **kwargs,
     ) -> list[Any]:
         """Enhance a sequence of agents by appending structured output processing.

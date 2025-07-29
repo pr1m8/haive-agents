@@ -1,7 +1,7 @@
 """Dynamic Supervisor using DynamicChoiceModel for agent selection.
 
-The supervisor uses DynamicChoiceModel as a tool to select from available agents,
-and creates new ReactAgents when needed.
+The supervisor uses DynamicChoiceModel as a tool to select from available agents, and
+creates new ReactAgents when needed.
 """
 
 import logging

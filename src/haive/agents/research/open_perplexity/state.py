@@ -1,8 +1,8 @@
 """State schemas for the open_perplexity research agent.
 
-This module defines the state schemas used by the research agent to track
-the progress of research, manage search queries, store sources, and generate
-reports. It includes schemas for input, processing state, and output.
+This module defines the state schemas used by the research agent to track the progress
+of research, manage search queries, store sources, and generate reports. It includes
+schemas for input, processing state, and output.
 """
 
 from collections.abc import Sequence

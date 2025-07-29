@@ -14,42 +14,50 @@ Functions:
 """
 
 import operator
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, Field
 
 
 class Step(BaseModel):
-    """Represents a step that can recursively contain nested steps."""
+    """Represents a step that can recursively contain nested steps.
+    """
 
     id: int
     description: str
     status: Literal["not_started", "in_progress", "complete"] = Field(
         default="not_started"
     )
-    steps: list["Step"] | None = Field(default_factory=list)  # ✅ Use `default_factory`
-    result: str | None = None  # ✅ No `default` Field
+    steps: list["Step"] | None = Field(
+    default_factory=list)  # ✅ Use `default_factory`
+    result: Optional[str] = None  # ✅ No `default` Field
 
     def add_result(self, result: str):
-        """Marks the step as complete and stores the result."""
+        """Marks the step as complete and stores the result.
+        """
         self.result = result
         self.status = "complete"
 
     def is_complete(self) -> bool:
-        """Check if the step and all its nested steps are complete."""
+        """Check if the step and all its nested steps are complete.
+        """
         return self.status == "complete" and all(
             step.is_complete() for step in self.steps or []
         )
 
     def remove_completed_substeps(self) -> None:
-        """Removes substeps that have been marked as complete."""
+        """Removes substeps that have been marked as complete.
+        """
         self.steps = list(
-            filter(operator.not_, map(operator.attrgetter("is_complete"), self.steps))
+            filter(
+    operator.not_, map(
+        operator.attrgetter("is_complete"), self.steps))
         )
 
     @classmethod
     def get_last_incomplete_step(cls, steps: list["Step"]) -> Optional["Step"]:
         """Retrieves the last step that is either 'in_progress' or 'not_started'.
+
         Prioritizes 'in_progress' steps to ensure they get completed first.
         """
         sorted_steps = sorted(
@@ -62,7 +70,8 @@ class Step(BaseModel):
 
 
 class Plan(BaseModel):
-    """Represents a plan containing a recursive structure of steps."""
+    """Represents a plan containing a recursive structure of steps.
+    """
 
     description: str = Field(
         ..., description="Description of the plan"
@@ -73,7 +82,8 @@ class Plan(BaseModel):
     )  # ✅ Use `default_factory` instead of `default=[]`
 
     def update_status(self) -> None:
-        """Updates the overall status of the plan based on step completion."""
+        """Updates the overall status of the plan based on step completion.
+        """
         if all(step.is_complete() for step in self.steps):
             self.status = "complete"
         elif any(step.status == "in_progress" for step in self.steps):
@@ -82,30 +92,37 @@ class Plan(BaseModel):
             self.status = "not_started"
 
     def add_step(self, step: Step):
-        """Adds a new step to the plan."""
+        """Adds a new step to the plan.
+        """
         self.steps = operator.add(self.steps, [step])  # ✅ Using `operator.add`
 
     def remove_completed_steps(self) -> None:
-        """Removes steps that have been completed."""
+        """Removes steps that have been completed.
+        """
         self.steps = list(
-            filter(operator.not_, map(operator.attrgetter("is_complete"), self.steps))
+            filter(
+    operator.not_, map(
+        operator.attrgetter("is_complete"), self.steps))
         )
 
-    def get_last_incomplete_step(self) -> Step | None:
-        """Retrieves the last incomplete step (either 'in_progress' or 'not_started')."""
+    def get_last_incomplete_step(self -> Optional[Step]:
+        """Retrieves the last incomplete step (either 'in_progress' or 'not_started').
+        """
         return Step.get_last_incomplete_step(self.steps)
 
 
 class Response(BaseModel):
-    """Response to user."""
+    """Response to user.
+    """
 
     response: str
 
 
 class Act(BaseModel):
-    """Action to perform."""
+    """Action to perform.
+    """
 
-    action: Response | Plan = Field(
+    action: Union[Response, Plan] = Field(
         description="Action to perform. If you want to respond to user, use Response. "
         "If you need to further use tools to get the answer, use Plan."
     )

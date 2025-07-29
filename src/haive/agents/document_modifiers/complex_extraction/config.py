@@ -17,17 +17,21 @@ from haive.agents.document_modifiers.complex_extraction.state import (
     ComplexExtractionInput,
     ComplexExtractionOutput,
     ComplexExtractionState,
+    Optional,
+    from,
+    import,
+    typing,
 )
 
 
 class ComplexExtractionAgentConfig(AgentConfig):
     """Configuration for the complex extraction agent.
 
-    This agent handles the extraction of complex structured data from text
-    using a validation and retry mechanism with optional JSONPatch corrections.
+    This agent handles the extraction of complex structured data from text using a
+    validation and retry mechanism with optional JSONPatch corrections.
     """
 
-    llm_config: AugLLMConfig | None = Field(
+    llm_config: Optional[AugLLMConfig] = Field(
         default=AzureLLMConfig(model="gpt-4o"),
         description="The LLM configuration to use for the agent",
     )
@@ -42,15 +46,15 @@ class ComplexExtractionAgentConfig(AgentConfig):
         description="Whether to force the tool choice to use the extraction model",
     )
     state_schema: type[BaseModel] = Field(
-        default=ComplexExtractionState, description="State schema for the agent"
-    )
+        default=ComplexExtractionState,
+        description="State schema for the agent")
     system_prompt: str = Field(
         default="You are a precise data extraction assistant. Extract the requested information accurately from the provided text.",
         description="System prompt for extraction",
     )
     use_jsonpatch: bool = Field(
-        default=True, description="Whether to use JSONPatch retries for validation"
-    )
+        default=True,
+        description="Whether to use JSONPatch retries for validation")
     parse_pydantic: bool = Field(
         default=False,
         description="Whether to parse the extracted data into a Pydantic object based on the extraction_model",
@@ -63,8 +67,8 @@ class ComplexExtractionAgentConfig(AgentConfig):
     )
 
     input_schema: type[BaseModel] = Field(
-        default=ComplexExtractionInput, description="The input schema for the agent"
-    )
+        default=ComplexExtractionInput,
+        description="The input schema for the agent")
     output_schema: type[BaseModel] = Field(
-        default=ComplexExtractionOutput, description="The output schema for the agent"
-    )
+        default=ComplexExtractionOutput,
+        description="The output schema for the agent")

@@ -12,7 +12,11 @@ from haive.agents.rag.multi_agent_rag.enhanced_state_schemas import (
     DebateRAGState,
     DynamicRAGState,
     FLAREState,
+    Optional,
     StateConfigMixin,
+    from,
+    import,
+    typing,
 )
 from haive.agents.simple import SimpleAgent
 
@@ -67,13 +71,11 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
         )
 
         synthesis_agent = SimpleAgent(
-            name="synthesis_agent",
-            instructions="""
+            name="synthesis_agent", instructions="""
             Synthesize all segments into final response.
             Use state.generation_segments and confidence_scores.
-            """,
-            output_schema={"final_response": "str", "overall_confidence": "float"},
-        )
+            """, output_schema={
+                "final_response": "str", "overall_confidence": "float"}, )
 
         agents = [
             generation_monitor,
@@ -96,14 +98,16 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
         }
 
     async def ainvoke(self, inputs: dict[str, Any]) -> dict[str, Any]:
-        """Inject configuration into state."""
+        """Inject configuration into state.
+        """
         for key, value in self._initial_config.items():
             if key not in inputs:
                 inputs[key] = value
         return await super().ainvoke(inputs)
 
     def build_custom_graph(self) -> Any:
-        """Build the custom graph for this workflow."""
+        """Build the custom graph for this workflow.
+        """
         return  # Use default graph structure
 
 
@@ -189,14 +193,16 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
         }
 
     async def ainvoke(self, inputs: dict[str, Any]) -> dict[str, Any]:
-        """Inject configuration."""
+        """Inject configuration.
+        """
         for key, value in self._initial_config.items():
             if key not in inputs:
                 inputs[key] = value
         return await super().ainvoke(inputs)
 
     def build_custom_graph(self) -> Any:
-        """Build the custom graph for this workflow."""
+        """Build the custom graph for this workflow.
+        """
         return  # Use default graph structure
 
 
@@ -293,7 +299,8 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
         }
 
     async def ainvoke(self, inputs: dict[str, Any]) -> dict[str, Any]:
-        """Inject configuration and initialize debate positions."""
+        """Inject configuration and initialize debate positions.
+        """
         for key, value in self._initial_config.items():
             if key not in inputs:
                 inputs[key] = value
@@ -308,7 +315,8 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
         return await super().ainvoke(inputs)
 
     def build_custom_graph(self) -> Any:
-        """Build the custom graph for this workflow."""
+        """Build the custom graph for this workflow.
+        """
         return  # Use default graph structure
 
 
@@ -324,14 +332,12 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
         **kwargs,
     ):
         query_analyzer = SimpleAgent(
-            name="query_analyzer",
-            instructions="""
+            name="query_analyzer", instructions="""
             Analyze query complexity and set initial threshold.
             Use state.initial_threshold as starting point.
             Store complexity in state.query_complexity_score.
-            """,
-            output_schema={"complexity_score": "float", "suggested_threshold": "float"},
-        )
+            """, output_schema={
+                "complexity_score": "float", "suggested_threshold": "float"}, )
 
         adaptive_retriever = SimpleAgent(
             name="adaptive_retriever",
@@ -394,12 +400,14 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
         }
 
     async def ainvoke(self, inputs: dict[str, Any]) -> dict[str, Any]:
-        """Inject configuration."""
+        """Inject configuration.
+        """
         for key, value in self._initial_config.items():
             if key not in inputs:
                 inputs[key] = value
         return await super().ainvoke(inputs)
 
     def build_custom_graph(self) -> Any:
-        """Build the custom graph for this workflow."""
+        """Build the custom graph for this workflow.
+        """
         return  # Use default graph structure

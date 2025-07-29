@@ -31,21 +31,28 @@ from langgraph.types import Command
 from pydantic import BaseModel, Field, field_validator
 
 from haive.agents.react_class.react_agent.aug_llms import (
+    Optional,
     default_react_llm_runnable_config,
+    from,
+    import,
+    typing,
 )
 from haive.agents.react_class.react_agent.state import ReactAgentState
 
 
 # Utility function to determine whether to continue execution
 def should_continue(state: ReactAgentState) -> str:
-    messages = filter_messages(state["messages"], exclude_types=[SystemMessage])
+    messages = filter_messages(
+        state["messages"],
+        exclude_types=[SystemMessage])
     last_message = messages[-1]
     if last_message.tool_calls:
         return "continue"
     return "end"
 
 
-default_react_should_continue_output_dict = {"continue": "tool_node", "end": END}
+default_react_should_continue_output_dict = {
+    "continue": "tool_node", "end": END}
 
 
 # ==============================
@@ -53,7 +60,9 @@ default_react_should_continue_output_dict = {"continue": "tool_node", "end": END
 # ==============================
 class ReactAgentConfig(AgentConfig):
     engine: AugLLMConfig = Field(
-        default_factory=lambda: AugLLMConfig(llm_config=AzureLLMConfig(model="gpt-4o")),
+        default_factory=lambda: AugLLMConfig(
+            llm_config=AzureLLMConfig(
+                model="gpt-4o")),
         description="LLM configuration for the ReactAgent.",
     )
     aug_llm_config: AugLLMConfig = Field(
@@ -65,7 +74,10 @@ class ReactAgentConfig(AgentConfig):
         description="The tools available to the agent.",
     )
     runnable_config: RunnableConfig = Field(
-        default_factory=lambda: {"configurable": {"thread_id": str(uuid.uuid4())}},
+        default_factory=lambda: {
+            "configurable": {
+                "thread_id": str(
+                    uuid.uuid4())}},
         description="Configuration for the agent's runnable execution.",
     )
     tool_node_tools: list[Tool | BaseTool | StructuredTool] = Field(
@@ -95,13 +107,13 @@ class ReactAgentConfig(AgentConfig):
     should_visualize_graph: bool = Field(
         default=False, description="Whether to visualize the graph."
     )
-    visualize_graph_output_name: str | None = Field(
+    visualize_graph_output_name: Optional[str] = Field(
         default=None, description="Output file for graph visualization."
     )
-    structured_output_model: BaseModel | None = Field(
+    structured_output_model: Optional[BaseModel] = Field(
         default=None, description="Schema for structured output."
     )
-    default_agent_node: Callable | None = Field(
+    default_agent_node: Optional[Callable] = Field(
         default=None, description="The default agent node function."
     )
 
@@ -112,7 +124,8 @@ class ReactAgentConfig(AgentConfig):
     @field_validator("engine", mode="after")
     @classmethod
     def validate_engine(cls, v) -> Any:
-        """Ensure `engine` is always provided and valid."""
+        """Ensure `engine` is always provided and valid.
+        """
         if not v:
             raise ValueError(
                 "An 'engine' must be provided (AugLLMConfig or another AgentArchitectureConfig)."
@@ -122,7 +135,8 @@ class ReactAgentConfig(AgentConfig):
     @field_validator("tools", "tool_node_tools", mode="before")
     @classmethod
     def ensure_list(cls, v) -> Any:
-        """Ensure tools are always a list."""
+        """Ensure tools are always a list.
+        """
         if v is None:
             return []
         if not isinstance(v, list):
@@ -132,8 +146,11 @@ class ReactAgentConfig(AgentConfig):
     @field_validatorensure_serializable
     @classmethod
     def ensure_serializable(cls, v) -> Any:
-        """Ensure structured output schema is serializable."""
-        if v is not None and not isinstance(v, type) and not issubclass(v, BaseModel):
+        """Ensure structured output schema is serializable.
+        """
+        if v is not None and not isinstance(
+                v, type) and not issubclass(
+                v, BaseModel):
             raise TypeError(
                 "structured_output_model must be a subclass of Pydantic BaseModel."
             )
@@ -171,38 +188,45 @@ class ReactAgent(Agent[ReactAgentConfig]):
         super().__init__(config)
 
     def _initialize_tool_node(self):
-        """Initialize ToolNode if required."""
+        """Initialize ToolNode if required.
+        """
         if self.create_tool_node:
             self.tool_node = ToolNode(self.tool_node_tools)
 
     def default_agent_node(self, state: ReactAgentState) -> Command:
-        """Default implementation of the agent node."""
+        """Default implementation of the agent node.
+        """
         response = self.aug_llm_model.invoke(
             {"messages": state["messages"]}, config=self.runnable_config
         )
         return Command(update={"messages": state["messages"] + [response]})
 
-    def default_agent_node_without_tool_node(self, state: ReactAgentState) -> Command:
-        """Agent node implementation when ToolNode is not used."""
+    def default_agent_node_without_tool_node(
+            self, state: ReactAgentState) -> Command:
+        """Agent node implementation when ToolNode is not used.
+        """
         response = self.aug_llm_model.invoke(state["messages"])
         return Command(update={"messages": state["messages"] + [response]})
 
     def replace_agent_node(self, new_agent_node: Callable):
-        """Replace the agent node function."""
+        """Replace the agent node function.
+        """
         self.agent_node_fn = new_agent_node
         if self.graph:
             self.graph.remove_node(self.node_name)
             self.graph.add_node(self.node_name, new_agent_node)
 
     def structured_output_agent_node(self, state: ReactAgentState) -> Command:
-        """Agent node implementation when structured output is required."""
+        """Agent node implementation when structured output is required.
+        """
         response = self.aug_llm_model.invoke(
             {"messages": state["messages"]}, config=self.runnable_config
         )
         return Command(update={"messages": state["messages"] + [response]})
 
     def setup_workflow(self) -> None:
-        """Configure the workflow graph."""
+        """Configure the workflow graph.
+        """
         if self.create_tool_node:
             self.graph.add_node("tool_node", self.tool_node)
         self.graph.add_node(self.node_name, self.agent_node_fn)
@@ -220,12 +244,14 @@ class ReactAgent(Agent[ReactAgentConfig]):
             self.graph.add_edge(self.node_name, END)
 
     def visualize_graph(self, output_name: str = "react_agent_graph.png"):
-        """Visualize the workflow graph."""
+        """Visualize the workflow graph.
+        """
         if self.graph and self.app:
             render_and_display_graph(self.app, output_name=output_name)
 
     def run(self, input_text: str):
-        """Run the agent."""
+        """Run the agent.
+        """
         if not self.graph:
             raise RuntimeError("Workflow graph is not set up.")
         if not self.app:
@@ -237,7 +263,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
             output["messages"][-1]
 
     def chat(self) -> None:
-        """Interactive chat loop."""
+        """Interactive chat loop.
+        """
         while True:
             try:
                 user_input = input("User: ")
@@ -253,23 +280,31 @@ class ReactAgent(Agent[ReactAgentConfig]):
 # ============================
 # 🚀 Factory Methods for Usage
 # ============================
-def create_react_agent(config: ReactAgentConfig = ReactAgentConfig()) -> ReactAgent:
-    """Factory function to create a ReactAgent."""
+def create_react_agent(
+        config: ReactAgentConfig = ReactAgentConfig()) -> ReactAgent:
+    """Factory function to create a ReactAgent.
+    """
     return ReactAgent(config=config)
 
 
-def run_react_agent(input_text: str, config: ReactAgentConfig = ReactAgentConfig()):
-    """Execute ReactAgent with a given input."""
+def run_react_agent(
+        input_text: str,
+        config: ReactAgentConfig = ReactAgentConfig()):
+    """Execute ReactAgent with a given input.
+    """
     return create_react_agent(config).app.invoke(
         {"messages": [("user", input_text)]}, config=config.runnable_config
     )
 
 
 def chat_react_agent(config: ReactAgentConfig = ReactAgentConfig()):
-    """Start a chat session with ReactAgent."""
+    """Start a chat session with ReactAgent.
+    """
     return create_react_agent(config).chat()
 
 
-def chat_react_agent_with_tool_node(config: ReactAgentConfig = ReactAgentConfig()):
-    """Start a chat session with ReactAgent."""
+def chat_react_agent_with_tool_node(
+        config: ReactAgentConfig = ReactAgentConfig()):
+    """Start a chat session with ReactAgent.
+    """
     return create_react_agent(config).chat()

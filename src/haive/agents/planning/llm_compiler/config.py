@@ -186,8 +186,8 @@ default_joiner_config = AugLLMConfig(
 class LLMCompilerAgentConfig(AgentArchitectureConfig):
     """Configuration for the LLM Compiler Agent using AugLLMConfig system.
 
-    The LLM Compiler agent creates a directed acyclic graph (DAG) of tasks
-    and executes them in parallel when dependencies are satisfied.
+    The LLM Compiler agent creates a directed acyclic graph (DAG) of tasks and executes
+    them in parallel when dependencies are satisfied.
     """
 
     planner_config: AugLLMConfig = Field(

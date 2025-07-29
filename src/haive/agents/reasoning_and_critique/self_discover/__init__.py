@@ -1,7 +1,5 @@
 """Module exports."""
 
-from self_discover.state import SelfDiscoverState
-
 from haive.agents.reasoning_and_critique.self_discover.agent import (
     create_self_discover_agent,
     get_default_modules,
@@ -40,7 +38,7 @@ from haive.agents.reasoning_and_critique.self_discover.models import (
     validate_modules,
     validate_steps,
 )
-from haive.agents.reasoning_and_critique.sself_discover.self_discover_multiagent import (
+from haive.agents.reasoning_and_critique.self_discover.self_discover_multiagent import (
     SelfDiscoverMultiAgentState,
     check_for_errors,
     create_adapter_agent,
@@ -51,6 +49,8 @@ from haive.agents.reasoning_and_critique.sself_discover.self_discover_multiagent
     create_structurer_agent,
     get_default_reasoning_modules,
 )
+
+from .state import SelfDiscoverState
 
 __all__ = [
     "AdaptedModule",

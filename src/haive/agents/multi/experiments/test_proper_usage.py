@@ -1,7 +1,7 @@
 """Test cases showing proper usage of MultiAgentState, MetaStateSchema, and AgentNodeV3.
 
-These tests demonstrate the key differences and proper patterns for using
-the existing infrastructure correctly.
+These tests demonstrate the key differences and proper patterns for using the existing
+infrastructure correctly.
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig

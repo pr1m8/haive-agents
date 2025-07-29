@@ -95,7 +95,8 @@ try:
     TAVILY_AVAILABLE = True
 except ImportError:
     TAVILY_AVAILABLE = False
-    logger.warning("Tavily is not available. Install with 'pip install tavily'")
+    logger.warning(
+        "Tavily is not available. Install with 'pip install tavily'")
 
 
 @register_agent(PersonResearchAgentConfig)
@@ -172,8 +173,11 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         super().__init__(config)
 
     def setup_workflow(self) -> None:
-        """Set up the workflow graph for this agent."""
-        logger.debug(f"Setting up workflow for PersonResearchAgent {self.config.name}")
+        """Set up the workflow graph for this agent.
+        """
+        logger.debug(
+    f"Setting up workflow for PersonResearchAgent {
+        self.config.name}")
 
         # Create state schema if not provided
         if not hasattr(self, "state_schema") or self.state_schema is None:
@@ -356,7 +360,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
 
         return {"completed_notes": [notes_content]}
 
-    def gather_notes_extract_schema(self, state: PersonResearchState) -> dict[str, Any]:
+    def gather_notes_extract_schema(
+        self, state: PersonResearchState) -> dict[str, Any]:
         """Gather notes from the web search and extract the schema fields.
 
         Args:
@@ -417,7 +422,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         if dynamic_model:
             try:
                 # Use structured output with dynamic model
-                structured_llm = extractor.with_structured_output(dynamic_model)
+                structured_llm = extractor.with_structured_output(
+                    dynamic_model)
                 result = structured_llm.invoke(
                     [
                         {"role": "system", "content": system_prompt.template},
@@ -498,14 +504,15 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         if state.is_satisfactory:
             return END
 
-        # If results aren't satisfactory but we haven't hit max steps, continue research
+        # If results aren't satisfactory but we haven't hit max steps, continue
+        # research
         if state.reflection_steps_taken <= max_reflection_steps:
             return "research_person"
 
         # If we've exceeded max steps, end even if not satisfactory
         return END
 
-    def _extract_json_from_text(self, text: str) -> str | None:
+    def _extract_json_from_text(self, text: str -> Optional[str]:
         """Extract a JSON object from text.
 
         Args:
@@ -517,7 +524,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         import re
 
         # Try to find JSON within code blocks
-        json_match = re.search(r"```(?:json)?\s*\n(.*?)\n\s*```", text, re.DOTALL)
+        json_match = re.search(
+    r"```(?:json)?\s*\n(.*?)\n\s*```", text, re.DOTALL)
         if json_match:
             return json_match.group(1)
 
@@ -536,7 +544,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         return None
 
     def reflection(self, state: PersonResearchState) -> dict[str, Any]:
-        """Reflect on the extracted information and generate search queries to find missing information.
+        """Reflect on the extracted information and generate search queries to find missing
+        information.
 
         Args:
             state: Current state
@@ -548,7 +557,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         reflection_engine = self.engines.get("reflection", self.engine)
 
         # Create structured LLM with reflection output
-        structured_llm = reflection_engine.with_structured_output(ReflectionOutput)
+        structured_llm = reflection_engine.with_structured_output(
+            ReflectionOutput)
 
         # Format reflection prompt
         system_prompt = REFLECTION_PROMPT.format(

@@ -395,8 +395,8 @@ Please provide an improved response that addresses the identified improvements w
     ) -> list[BaseMessage]:
         """Simple message transformation for reflection analysis.
 
-        Converts AI messages to human perspective for better reflection analysis.
-        This implements a simplified version of the AI_TO_HUMAN transformation.
+        Converts AI messages to human perspective for better reflection analysis. This
+        implements a simplified version of the AI_TO_HUMAN transformation.
         """
         transformed = []
         for msg in messages:
@@ -436,7 +436,8 @@ def create_simple_reflection_system(
 def create_full_reflection_system(
     tools: list[Tool] | None = None, engine_config: AugLLMConfig | None = None
 ) -> MultiAgentReflection:
-    """Create a full reflection system with ReactAgent + ReflectionAgent + ImprovementAgent.
+    """Create a full reflection system with ReactAgent + ReflectionAgent +
+    ImprovementAgent.
 
     Args:
         tools: Tools for the ReactAgent

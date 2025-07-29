@@ -20,14 +20,18 @@ class RetryStrategy(TypedDict, total=False):
     """The retry strategy for a tool call."""
 
     max_attempts: int
-    """The maximum number of attempts to make."""
+    """
+    The maximum number of attempts to make.
+    """
     fallback: (
         Runnable[Sequence[AnyMessage], AIMessage]
         | Runnable[Sequence[AnyMessage], BaseMessage]
         | Callable[[Sequence[AnyMessage]], AIMessage]
         | None
     )
-    """The function to use once validation fails."""
+    """
+    The function to use once validation fails.
+    """
     aggregate_messages: Callable[[Sequence[AnyMessage]], AIMessage] | None
 
 
@@ -59,7 +63,9 @@ class JsonPatch(BaseModel):
 
 
 class PatchFunctionParameters(BaseModel):
-    """Respond with all JSONPatch operation to correct validation errors caused by passing in incorrect or incomplete parameters in a previous tool call."""
+    """Respond with all JSONPatch operation to correct validation errors caused by passing
+    in incorrect or incomplete parameters in a previous tool call.
+    """
 
     tool_call_id: str = Field(
         ...,

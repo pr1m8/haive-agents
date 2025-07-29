@@ -1,7 +1,7 @@
 """Core models for knowledge graph document transformation.
 
-This module provides the fundamental GraphTransformer class for converting
-documents into knowledge graphs using LLM-based extraction techniques.
+This module provides the fundamental GraphTransformer class for converting documents
+into knowledge graphs using LLM-based extraction techniques.
 """
 
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig

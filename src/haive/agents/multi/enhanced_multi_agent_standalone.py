@@ -33,7 +33,7 @@ import asyncio
 import logging
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Literal, TypeVar
+from typing import Any, Generic, Literal, Optional, TypeVar
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -45,10 +45,11 @@ AgentsT = TypeVar("AgentsT", bound=dict[str, "Agent"] | list["Agent"])
 
 # Minimal base classes to avoid import issues
 class MinimalEngine(BaseModel):
-    """Minimal engine for demonstration."""
+    """Minimal engine for demonstration.
+    """
 
     temperature: float = Field(default=0.7, ge=0.0, le=2.0)
-    system_message: str | None = Field(default=None)
+    system_message: Optional[str] = Field(default=None)
 
 
 class Agent(BaseModel, ABC):
@@ -59,10 +60,12 @@ class Agent(BaseModel, ABC):
 
     @abstractmethod
     async def arun(self, input_data: str, debug: bool = False) -> str:
-        """Async execution method."""
+        """Async execution method.
+        """
 
     def run(self, input_data: str, debug: bool = False) -> str:
-        """Sync execution method."""
+        """Sync execution method.
+        """
         return asyncio.run(self.arun(input_data, debug))
 
 
@@ -70,7 +73,8 @@ class SimpleAgent(Agent):
     """SimpleAgent = Agent[AugLLMConfig] - minimal working implementation."""
 
     async def arun(self, input_data: str, debug: bool = False) -> str:
-        """Async run with realistic simulation."""
+        """Async run with realistic simulation.
+        """
         if debug:
             pass
 
@@ -104,7 +108,8 @@ class SimpleAgent(Agent):
         elif "error_handler" in self.name.lower():
             result = f"ERROR_HANDLER: {input_data} -> Error handled and resolved"
         else:
-            result = f"{self.name.upper()}: {input_data} -> Processing completed"
+            result = f"{
+    self.name.upper()}: {input_data} -> Processing completed"
 
         if debug:
             pass
@@ -142,7 +147,8 @@ class MultiAgent(Agent, Generic[AgentsT]):
     """
 
     # The agents this MultiAgent coordinates (generic)
-    agents: AgentsT = Field(..., description="Agents to coordinate - generic type")
+    agents: AgentsT = Field(...,
+     description="Agents to coordinate - generic type")
 
     # Execution mode
     mode: Literal["sequential", "parallel", "conditional", "branch"] = Field(
@@ -156,7 +162,8 @@ class MultiAgent(Agent, Generic[AgentsT]):
     @field_validator("agents")
     @classmethod
     def validate_agents(cls, v: AgentsT) -> AgentsT:
-        """Validate agents based on type."""
+        """Validate agents based on type.
+        """
         if isinstance(v, dict):
             if not v:
                 raise ValueError("Agent dict cannot be empty")
@@ -168,13 +175,15 @@ class MultiAgent(Agent, Generic[AgentsT]):
         return v
 
     def get_agent_names(self) -> list[str]:
-        """Get list of agent names."""
+        """Get list of agent names.
+        """
         if isinstance(self.agents, dict):
             return list(self.agents.keys())
         return [f"agent_{i}" for i in range(len(self.agents))]
 
-    def get_agent(self, name: str) -> Agent | None:
-        """Get agent by name."""
+    def get_agent(self, name: str -> Optional[Agent]:
+        """Get agent by name.
+        """
         if isinstance(self.agents, dict):
             return self.agents.get(name)
         # Handle list case
@@ -186,8 +195,9 @@ class MultiAgent(Agent, Generic[AgentsT]):
                 return None
         return None
 
-    async def arun(self, input_data: str, debug: bool = False) -> str:
-        """Execute based on mode."""
+    async def arun(self, input_data: str, debug: bool=False) -> str:
+        """Execute based on mode.
+        """
         if self.mode == "sequential":
             return await self._execute_sequential(input_data, debug)
         if self.mode == "parallel":
@@ -198,8 +208,12 @@ class MultiAgent(Agent, Generic[AgentsT]):
             return await self._execute_conditional(input_data, debug)
         raise ValueError(f"Unsupported mode: {self.mode}")
 
-    async def _execute_sequential(self, input_data: str, debug: bool = False) -> str:
-        """Execute agents in sequence."""
+    async def _execute_sequential(
+    self,
+    input_data: str,
+     debug: bool=False) -> str:
+        """Execute agents in sequence.
+        """
         if debug:
             pass
 
@@ -230,8 +244,12 @@ class MultiAgent(Agent, Generic[AgentsT]):
 
         return final_result
 
-    async def _execute_parallel(self, input_data: str, debug: bool = False) -> str:
-        """Execute all agents in parallel."""
+    async def _execute_parallel(
+    self,
+    input_data: str,
+     debug: bool=False) -> str:
+        """Execute all agents in parallel.
+        """
         if debug:
             pass
 
@@ -253,8 +271,12 @@ class MultiAgent(Agent, Generic[AgentsT]):
 
         return f"Parallel execution complete. {len(results)} agents executed."
 
-    async def _execute_branching(self, input_data: str, debug: bool = False) -> str:
-        """Execute with intelligent routing."""
+    async def _execute_branching(
+    self,
+    input_data: str,
+     debug: bool=False) -> str:
+        """Execute with intelligent routing.
+        """
         if debug:
             pass
 
@@ -279,7 +301,8 @@ class MultiAgent(Agent, Generic[AgentsT]):
         return final_result
 
     def _route_request(self, input_data: str) -> str:
-        """Route request to appropriate agent based on content."""
+        """Route request to appropriate agent based on content.
+        """
         content = input_data.lower()
 
         if not isinstance(self.agents, dict):
@@ -304,16 +327,25 @@ class MultiAgent(Agent, Generic[AgentsT]):
                 if "business" in self.agents
                 else next(iter(self.agents.keys()))
             )
-        if any(keyword in content for keyword in ["validate", "check", "verify"]):
+        if any(
+    keyword in content for keyword in [
+        "validate",
+        "check",
+         "verify"]):
             return (
                 "validator"
                 if "validator" in self.agents
                 else next(iter(self.agents.keys()))
             )
-        return "general" if "general" in self.agents else next(iter(self.agents.keys()))
+        return "general" if "general" in self.agents else next(
+            iter(self.agents.keys()))
 
-    async def _execute_conditional(self, input_data: str, debug: bool = False) -> str:
-        """Execute with conditional flow."""
+    async def _execute_conditional(
+    self,
+    input_data: str,
+     debug: bool=False) -> str:
+        """Execute with conditional flow.
+        """
         if debug:
             pass
 
@@ -365,7 +397,9 @@ class MultiAgent(Agent, Generic[AgentsT]):
                 break
 
             # Get next agent
-            if isinstance(self.agents, dict) and next_agent_name in self.agents:
+            if isinstance(
+    self.agents,
+     dict) and next_agent_name in self.agents:
                 current_agent = self.agents[next_agent_name]
                 current_agent_name = next_agent_name
                 current_input = result
@@ -373,7 +407,8 @@ class MultiAgent(Agent, Generic[AgentsT]):
                 break
 
         final_result = (
-            f"Conditional execution path: {' → '.join(execution_path)}. Final: {result}"
+            f"Conditional execution path: {
+    ' → '.join(execution_path)}. Final: {result}"
         )
 
         if debug:
@@ -382,7 +417,8 @@ class MultiAgent(Agent, Generic[AgentsT]):
         return final_result
 
     def __repr__(self) -> str:
-        """String representation."""
+        """String representation.
+        """
         agent_count = len(self.agents)
         agents_type = type(self.agents).__name__
 
@@ -398,7 +434,8 @@ class MultiAgent(Agent, Generic[AgentsT]):
 
 
 class BranchingMultiAgent(MultiAgent[dict[str, Agent]]):
-    """MultiAgent specialized for branching execution."""
+    """MultiAgent specialized for branching execution.
+    """
 
     mode: Literal["branch"] = Field(default="branch")
 
@@ -407,10 +444,12 @@ class BranchingMultiAgent(MultiAgent[dict[str, Agent]]):
 
 
 class AdaptiveBranchingMultiAgent(BranchingMultiAgent):
-    """Branching MultiAgent that adapts routing based on performance."""
+    """Branching MultiAgent that adapts routing based on performance.
+    """
 
     # Performance tracking
-    agent_performance: dict[str, dict[str, float]] = Field(default_factory=dict)
+    agent_performance: dict[str, dict[str, float]
+        ] = Field(default_factory=dict)
     adaptation_rate: float = Field(default=0.1, ge=0.0, le=1.0)
 
     def __init__(self, name: str, agents: dict[str, Agent], **kwargs):
@@ -427,7 +466,8 @@ class AdaptiveBranchingMultiAgent(BranchingMultiAgent):
     def update_performance(
         self, agent_name: str, success: bool, duration: float
     ) -> None:
-        """Update agent performance metrics."""
+        """Update agent performance metrics.
+        """
         if agent_name not in self.agent_performance:
             return
 
@@ -447,8 +487,9 @@ class AdaptiveBranchingMultiAgent(BranchingMultiAgent):
             metrics["avg_duration"] * (metrics["task_count"] - 1) + duration
         ) / metrics["task_count"]
 
-    def get_best_agent_for_task(self, task_type: str = "general") -> str:
-        """Get best performing agent."""
+    def get_best_agent_for_task(self, task_type: str="general") -> str:
+        """Get best performing agent.
+        """
         best_agent = None
         best_score = 0.0
 
@@ -461,8 +502,12 @@ class AdaptiveBranchingMultiAgent(BranchingMultiAgent):
 
         return best_agent or next(iter(self.agents.keys()))
 
-    async def _execute_branching(self, input_data: str, debug: bool = False) -> str:
-        """Execute with adaptive agent selection."""
+    async def _execute_branching(
+    self,
+    input_data: str,
+     debug: bool=False) -> str:
+        """Execute with adaptive agent selection.
+        """
         if debug:
             pass
 
@@ -497,12 +542,22 @@ class AdaptiveBranchingMultiAgent(BranchingMultiAgent):
 
 # Demonstration and testing
 async def demo_enhanced_multi_agent():
-    """Demonstrate all enhanced multi-agent patterns."""
+    """Demonstrate all enhanced multi-agent patterns.
+    """
     # 1. Sequential Pattern
 
-    planner = SimpleAgent(name="planner", engine=MinimalEngine(temperature=0.3))
-    executor = SimpleAgent(name="executor", engine=MinimalEngine(temperature=0.5))
-    reviewer = SimpleAgent(name="reviewer", engine=MinimalEngine(temperature=0.1))
+    planner = SimpleAgent(
+    name="planner",
+    engine=MinimalEngine(
+        temperature=0.3))
+    executor = SimpleAgent(
+    name="executor",
+    engine=MinimalEngine(
+        temperature=0.5))
+    reviewer = SimpleAgent(
+    name="reviewer",
+    engine=MinimalEngine(
+        temperature=0.1))
 
     sequential: MultiAgent[list[SimpleAgent]] = MultiAgent(
         name="project_pipeline", agents=[planner, executor, reviewer], mode="sequential"
@@ -518,7 +573,10 @@ async def demo_enhanced_multi_agent():
     biz_expert = SimpleAgent(
         name="business_expert", engine=MinimalEngine(temperature=0.7)
     )
-    user_expert = SimpleAgent(name="user_expert", engine=MinimalEngine(temperature=0.5))
+    user_expert = SimpleAgent(
+    name="user_expert",
+    engine=MinimalEngine(
+        temperature=0.5))
 
     parallel: MultiAgent[list[SimpleAgent]] = MultiAgent(
         name="expert_panel",
@@ -598,8 +656,14 @@ async def demo_enhanced_multi_agent():
 
     # 5. Conditional Pattern
 
-    validator = SimpleAgent(name="validator", engine=MinimalEngine(temperature=0.1))
-    processor = SimpleAgent(name="processor", engine=MinimalEngine(temperature=0.5))
+    validator = SimpleAgent(
+    name="validator",
+    engine=MinimalEngine(
+        temperature=0.1))
+    processor = SimpleAgent(
+    name="processor",
+    engine=MinimalEngine(
+        temperature=0.5))
     error_handler = SimpleAgent(
         name="error_handler", engine=MinimalEngine(temperature=0.7)
     )

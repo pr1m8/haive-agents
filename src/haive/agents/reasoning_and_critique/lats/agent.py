@@ -12,9 +12,9 @@ Functions:
     reflection_chain: Reflection Chain functionality.
 """
 
-# src/haive/agents/lats/tree_agent.py
-
 import logging
+
+# src/haive/agents/lats/tree_agent.py
 from datetime import datetime
 from typing import Any
 
@@ -45,8 +45,9 @@ logger = logging.getLogger(__name__)
 
 class LATSAgentConfig(AgentConfig):
     """Configuration for a Look-Ahead Tree Search (LATS) agent.
-    This agent uses tree search to explore multiple response candidates
-    and select the best one based on reflections.
+
+    This agent uses tree search to explore multiple response candidates and select the
+    best one based on reflections.
     """
 
     # LLM settings
@@ -136,11 +137,11 @@ class LATSAgentConfig(AgentConfig):
 
 @register_agent(LATSAgentConfig)
 class LATSAgent(Agent[LATSAgentConfig]):
-    """A Look-Ahead Tree Search (LATS) agent that uses tree search to
-    explore multiple response candidates and find optimal solutions.
+    """A Look-Ahead Tree Search (LATS) agent that uses tree search to explore multiple
+    response candidates and find optimal solutions.
 
-    This agent builds a tree of possible responses and evaluates them
-    using reflection to select the best path.
+    This agent builds a tree of possible responses and evaluates them using reflection
+    to select the best path.
     """
 
     def setup_workflow(self) -> None:

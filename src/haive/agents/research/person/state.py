@@ -50,15 +50,25 @@ class Person(BaseModel):
     """A class representing a person to research."""
 
     name: str | None = None
-    """The name of the person."""
+    """
+    The name of the person.
+    """
     company: str | None = None
-    """The current company of the person."""
+    """
+    The current company of the person.
+    """
     linkedin: str | None = None
-    """The Linkedin URL of the person."""
+    """
+    The Linkedin URL of the person.
+    """
     email: str
-    """The email of the person."""
+    """
+    The email of the person.
+    """
     role: str | None = None
-    """The current title of the person."""
+    """
+    The current title of the person.
+    """
 
 
 # Input state

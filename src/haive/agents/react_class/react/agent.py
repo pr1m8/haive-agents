@@ -36,8 +36,8 @@ logger = logging.getLogger(__name__)
 class ReactAgent(Agent[ReactAgentConfig]):
     """React Agent implementation that extends SimpleAgent.
 
-    Enables multi-step reasoning and tool usage by routing between
-    an LLM and tool execution nodes.
+    Enables multi-step reasoning and tool usage by routing between an LLM and tool
+    execution nodes.
     """
 
     def __init__(self, config: ReactAgentConfig):

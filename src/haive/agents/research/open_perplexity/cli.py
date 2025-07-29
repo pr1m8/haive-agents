@@ -14,6 +14,7 @@ Functions:
 This module provides command-line utilities for running research tasks
 and visualizing research states. It supports loading research questions
 from text files, configuring research parameters, and generating reports.
+from typing import Optional
 """
 
 import argparse
@@ -95,7 +96,7 @@ def run_research(text_path: str, **kwargs) -> None:
 
 
 def visualize_state(
-    state_path: str, step: int | None = None, output_md: str | None = None
+    state_path: str, step: Optional[int] = None, output_md: Optional[str] = None
 ) -> None:
     """Visualize a specific state from a saved state history file.
 
@@ -154,8 +155,8 @@ def visualize_state(
 def main() -> None:
     """CLI entry point for the research tool.
 
-    Parses command-line arguments and executes the appropriate command
-    based on user input.
+    Parses command-line arguments and executes the appropriate command based on user
+    input.
     """
     # Create the argument parser
     parser = argparse.ArgumentParser(description="Open Perplexity Research Agent")

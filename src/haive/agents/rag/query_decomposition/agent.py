@@ -1,7 +1,7 @@
 """Query Decomposition Agents.
 
-Modular agents for breaking down complex queries into manageable sub-queries.
-Can be plugged into any workflow with compatible I/O schemas.
+Modular agents for breaking down complex queries into manageable sub-queries. Can be
+plugged into any workflow with compatible I/O schemas.
 """
 
 import logging

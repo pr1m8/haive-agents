@@ -24,17 +24,12 @@ from typing import Any
 from haive.core.schema.prebuilt.messages.messages_state import MessagesState
 from pydantic import Field, computed_field
 
-from haive.agents.planning.p_and_e.models import (
-    ExecutionResult,
-    Plan,
-)
-
 
 class PlanExecuteState(MessagesState):
     """Main state schema for the Plan and Execute agent system.
 
-    This state is shared across planning, execution, and replanning agents
-    to maintain the full context of the operation.
+    This state is shared across planning, execution, and replanning agents to maintain
+    the full context of the operation.
     """
 
     # Messages field is inherited from MessagesState
@@ -42,7 +37,8 @@ class PlanExecuteState(MessagesState):
     @computed_field
     @property
     def objective(self) -> str:
-        """Get the objective from the plan or messages."""
+        """Get the objective from the plan or messages.
+        """
         if self.plan and self.plan.objective:
             return self.plan.objective
 
@@ -65,15 +61,16 @@ class PlanExecuteState(MessagesState):
         return "No objective specified"
 
     # Additional context
-    context: str | None = Field(
+    context: Optional[str] = Field(
         default=None, description="Additional context or requirements for the objective"
     )
 
     # Current plan
-    plan: Plan | None = Field(default=None, description="The current execution plan")
+    plan: Optional[Plan] = Field(default=None,
+     description="The current execution plan")
 
     # Execution tracking
-    current_step_id: int | None = Field(
+    current_step_id: Optional[int] = Field(
         default=None, description="ID of the step currently being executed"
     )
 
@@ -91,7 +88,7 @@ class PlanExecuteState(MessagesState):
     )
 
     # Final answer
-    final_answer: str | None = Field(
+    final_answer: Optional[str] = Field(
         default=None, description="Final answer once execution is complete"
     )
 
@@ -105,42 +102,46 @@ class PlanExecuteState(MessagesState):
         default_factory=datetime.now, description="When the execution started"
     )
 
-    completed_at: datetime | None = Field(
+    completed_at: Optional[datetime] = Field(
         default=None, description="When the execution completed"
     )
 
     @computed_field
     @property
-    def execution_time(self) -> float | None:
-        """Total execution time in seconds."""
-        # Use getattr with defaults to avoid AttributeError during initialization
+    def execution_time(self -> Optional[float]:
+        """Total execution time in seconds.
+        """
+        # Use getattr with defaults to avoid AttributeError during
+        # initialization
         started_at = getattr(self, "started_at", None)
         completed_at = getattr(self, "completed_at", None)
         if started_at and completed_at:
             return (completed_at - started_at).total_seconds()
         return None
 
-    @computed_field
-    @property
-    def current_step(self) -> str | None:
-        """Get the current step formatted for the executor."""
+    @ computed_field
+    @ property
+    def current_step(self -> Optional[str]:
+        """Get the current step formatted for the executor.
+        """
         if not self.plan or not self.current_step_id:
             return None
 
-        step = self.plan.get_step(self.current_step_id)
+        step=self.plan.get_step(self.current_step_id)
         if not step:
             return None
 
         return step.to_prompt_format()
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def plan_status(self) -> str:
-        """Get the plan status formatted for the executor."""
+        """Get the plan status formatted for the executor.
+        """
         if not self.plan:
             return "No plan available"
 
-        lines = [
+        lines=[
             f"Objective: {self.plan.objective}",
             f"Total Steps: {self.plan.total_steps}",
             f"Progress: {self.plan.progress_percentage:.1f}%",
@@ -154,23 +155,25 @@ class PlanExecuteState(MessagesState):
 
         return "\n".join(lines)
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def previous_results(self) -> str:
-        """Get previous execution results formatted for the executor."""
+        """Get previous execution results formatted for the executor.
+        """
         if not self.execution_results:
             return "No previous results"
 
-        lines = []
+        lines=[]
         for result in self.execution_results[-5:]:  # Last 5 results
             lines.append(result.to_prompt_format())
 
         return "\n\n".join(lines)
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def should_replan(self) -> bool:
-        """Determine if replanning is needed."""
+        """Determine if replanning is needed.
+        """
         if not self.plan:
             return True
 
@@ -179,11 +182,12 @@ class PlanExecuteState(MessagesState):
             return True
 
         # Replan after every 3 completed steps for review
-        completed_count = len(self.plan.completed_steps)
+        completed_count=len(self.plan.completed_steps)
         return bool(completed_count > 0 and completed_count % 3 == 0)
 
-    # Configuration for LangGraph - messages is already shared from MessagesState
-    __shared_fields__ = [
+    # Configuration for LangGraph - messages is already shared from
+    # MessagesState
+    __shared_fields__=[
         "messages",
         "objective",
         "plan",

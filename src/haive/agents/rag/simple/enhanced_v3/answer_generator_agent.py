@@ -1,7 +1,7 @@
 """Specialized Answer Generator Agent for SimpleRAG V3.
 
-This module provides a specialized answer generation agent that extends SimpleAgent
-with enhanced features for generating answers from retrieved documents.
+This module provides a specialized answer generation agent that extends SimpleAgent with
+enhanced features for generating answers from retrieved documents.
 """
 
 import logging

@@ -16,8 +16,8 @@ from typing import Any
 def deduplicate_and_format_sources(
     search_response: Any, max_tokens_per_source: int, include_raw_content: bool = True
 ) -> str:
-    """Takes either a single search response or list of responses from Tavily API and formats them.
-    Limits the raw_content to approximately max_tokens_per_source.
+    """Takes either a single search response or list of responses from Tavily API and
+    formats them. Limits the raw_content to approximately max_tokens_per_source.
 
     Args:
         search_response: Either:

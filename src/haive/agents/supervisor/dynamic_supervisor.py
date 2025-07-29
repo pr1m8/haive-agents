@@ -1,8 +1,8 @@
 """Dynamic LangGraph-style Supervisor Implementation.
 
 This module provides a dynamic supervisor agent that can add/remove agents at runtime,
-adapt agent responses, and handle complex multi-agent coordination patterns similar
-to LangGraph's supervisor package but with enhanced Haive-specific functionality.
+adapt agent responses, and handle complex multi-agent coordination patterns similar to
+LangGraph's supervisor package but with enhanced Haive-specific functionality.
 """
 
 import asyncio

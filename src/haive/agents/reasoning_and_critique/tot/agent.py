@@ -39,6 +39,10 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
     The implementation supports parallel processing of candidates through beam search.
     """
 
+    def _get_end_node(self):
+        """Helper method to get the END node."""
+        return END
+
     def __init__(self, config: TOTAgentConfig):
         """Initialize the ToT agent.
 

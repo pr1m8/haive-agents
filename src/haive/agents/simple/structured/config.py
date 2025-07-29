@@ -23,8 +23,8 @@ from haive.agents.simple.config import SimpleAgentConfig
 class StructuredOutputAgentConfig(SimpleAgentConfig):
     """Configuration for a structured output agent.
 
-    Automatically sets up a single StructuredOutputTool for the provided model
-    and configures the engine to always use this tool.
+    Automatically sets up a single StructuredOutputTool for the provided model and
+    configures the engine to always use this tool.
     """
 
     structured_output_model: type[BaseModel]

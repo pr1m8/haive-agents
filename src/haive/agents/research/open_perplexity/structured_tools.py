@@ -33,7 +33,6 @@ from pydantic import BaseModel, Field
 
 # Import search tools
 try:
-    from langchain_community.tools.tavily_search import TavilySearchResults
     from tavily import TavilyClient
 except ImportError:
     # Provide fallbacks if Tavily not available

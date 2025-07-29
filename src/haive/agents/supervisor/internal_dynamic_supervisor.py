@@ -5,7 +5,7 @@ not external management calls.
 """
 
 import logging
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import HumanMessage
@@ -40,11 +40,13 @@ class InternalDynamicSupervisor(MultiAgent):
     )
 
     # Private attributes
-    _agent_templates: dict[str, dict[str, Any]] = PrivateAttr(default_factory=dict)
+    _agent_templates: dict[str, dict[str, Any]
+        ] = PrivateAttr(default_factory=dict)
     _creation_history: list[dict[str, Any]] = PrivateAttr(default_factory=list)
 
     def setup_agent(self) -> None:
-        """Set up with agent creation templates."""
+        """Set up with agent creation templates.
+        """
         super().setup_agent()
 
         # Define templates for agents the supervisor can create
@@ -52,7 +54,8 @@ class InternalDynamicSupervisor(MultiAgent):
         self._creation_history = []
 
     def _setup_agent_templates(self):
-        """Set up templates for agents the supervisor can create."""
+        """Set up templates for agents the supervisor can create.
+        """
         self._agent_templates = {
             "research": {
                 "type": "SimpleAgent",
@@ -124,7 +127,8 @@ class InternalDynamicSupervisor(MultiAgent):
         logger.info(f"Set up {len(self._agent_templates)} agent templates")
 
     def build_graph(self) -> BaseGraph:
-        """Build supervisor graph with internal decision making."""
+        """Build supervisor graph with internal decision making.
+        """
         logger.info("Building internal dynamic supervisor graph")
 
         graph = BaseGraph(name=f"{self.name}Graph")
@@ -165,10 +169,12 @@ class InternalDynamicSupervisor(MultiAgent):
         return graph
 
     def _create_internal_supervisor_node(self):
-        """Create supervisor that makes internal decisions about agent management."""
+        """Create supervisor that makes internal decisions about agent management.
+        """
 
         async def supervisor_node(state: Any) -> dict[str, Any]:
-            """Make decisions about agent creation and routing."""
+            """Make decisions about agent creation and routing.
+            """
             logger.info("=" * 60)
             logger.info("INTERNAL DYNAMIC SUPERVISOR")
             logger.info("=" * 60)
@@ -210,7 +216,8 @@ class InternalDynamicSupervisor(MultiAgent):
                 needed_agent_type = self._determine_needed_agent_type(content)
 
                 if needed_agent_type:
-                    logger.info(f"Need to create agent of type: {needed_agent_type}")
+                    logger.info(
+    f"Need to create agent of type: {needed_agent_type}")
                     return {
                         "agent_type_to_create": needed_agent_type,
                         "original_request": content,
@@ -234,10 +241,12 @@ class InternalDynamicSupervisor(MultiAgent):
         return supervisor_node
 
     def _create_agent_creator_node(self):
-        """Create node that actually creates new agents."""
+        """Create node that actually creates new agents.
+        """
 
         async def agent_creator_node(state: Any) -> dict[str, Any]:
-            """Create a new agent based on supervisor decision."""
+            """Create a new agent based on supervisor decision.
+            """
             logger.info("=" * 60)
             logger.info("AGENT CREATOR NODE")
             logger.info("=" * 60)
@@ -284,10 +293,12 @@ class InternalDynamicSupervisor(MultiAgent):
         return agent_creator_node
 
     def _create_dynamic_executor_node(self):
-        """Create executor that runs the selected agent."""
+        """Create executor that runs the selected agent.
+        """
 
         async def executor_node(state: Any) -> dict[str, Any]:
-            """Execute the target agent."""
+            """Execute the target agent.
+            """
             logger.info("=" * 60)
             logger.info("DYNAMIC EXECUTOR")
             logger.info("=" * 60)
@@ -308,7 +319,8 @@ class InternalDynamicSupervisor(MultiAgent):
 
             try:
                 # Prepare input
-                agent_input = self._extract_agent_input(target_agent, agent, state_dict)
+                agent_input = self._extract_agent_input(
+                    target_agent, agent, state_dict)
 
                 # Execute
                 if hasattr(agent, "ainvoke"):
@@ -332,34 +344,39 @@ class InternalDynamicSupervisor(MultiAgent):
 
         return executor_node
 
-    def _find_suitable_existing_agent(self, content: str) -> str | None:
-        """Find if we have an existing agent that can handle the request."""
+    def _find_suitable_existing_agent(self, content: str -> Optional[str]:
+        """Find if we have an existing agent that can handle the request.
+        """
         content_lower = content.lower()
 
         # Check each existing agent
         for agent_name in self.agents:
             # Simple key matching for now
-            # In real implementation, this could use embeddings or LLM classification
+            # In real implementation, this could use embeddings or LLM
+            # classification
 
-            # Check against agent templates to see what this agent was designed for
+            # Check against agent templates to see what this agent was designed
+            # for
             for template_type, template in self._agent_templates.items():
                 if f"{template_type}_agent" == agent_name:
                     # Check if any template keywords match the content
-                    if any(key in content_lower for key in template["keywords"]):
+                    if any(
+    key in content_lower for key in template["keywords"]):
                         return agent_name
 
         return None
 
-    def _determine_needed_agent_type(self, content: str) -> str | None:
-        """Determine what type of agent is needed for this request."""
-        content_lower = content.lower()
+    def _determine_needed_agent_type(self, content: str -> Optional[str]:
+        """Determine what type of agent is needed for this request.
+        """
+        content_lower=content.lower()
 
         # Score each template
-        best_score = 0
-        best_type = None
+        best_score=0
+        best_type=None
 
         for template_type, template in self._agent_templates.items():
-            score = 0
+            score=0
 
             # Count key matches
             for key in template["keywords"]:
@@ -371,8 +388,8 @@ class InternalDynamicSupervisor(MultiAgent):
                 score += 2
 
             if score > best_score:
-                best_score = score
-                best_type = template_type
+                best_score=score
+                best_type=template_type
 
         # Only create if we have reasonable confidence
         if best_score >= 1:
@@ -380,13 +397,15 @@ class InternalDynamicSupervisor(MultiAgent):
 
         return None
 
-    async def _create_agent_from_template(self, agent_type: str, request: str) -> bool:
-        """Actually create an agent from a template."""
+    async def _create_agent_from_template(
+    self, agent_type: str, request: str) -> bool:
+        """Actually create an agent from a template.
+        """
         if agent_type not in self._agent_templates:
             return False
 
-        template = self._agent_templates[agent_type]
-        agent_name = f"{agent_type}_agent"
+        template=self._agent_templates[agent_type]
+        agent_name=f"{agent_type}_agent"
 
         # Check if agent already exists
         if agent_name in self.agents:
@@ -397,7 +416,7 @@ class InternalDynamicSupervisor(MultiAgent):
             # Create engine
             from haive.core.engine.aug_llm import AugLLMConfig
 
-            engine = AugLLMConfig(
+            engine=AugLLMConfig(
                 name=f"{agent_name}_engine",
                 system_message=template["system_message"],
                 temperature=0.3 if template["type"] == "SimpleAgent" else 0.4,
@@ -407,11 +426,11 @@ class InternalDynamicSupervisor(MultiAgent):
             if template["type"] == "SimpleAgent":
                 from haive.agents.simple.agent import SimpleAgent
 
-                agent = SimpleAgent(name=agent_name, engine=engine)
+                agent=SimpleAgent(name=agent_name, engine=engine)
             elif template["type"] == "ReactAgent":
                 from haive.agents.react.agent import ReactAgent
 
-                agent = ReactAgent(
+                agent=ReactAgent(
                     name=agent_name,
                     engine=engine,
                     tools=[],  # Could add tools based on agent type
@@ -420,7 +439,7 @@ class InternalDynamicSupervisor(MultiAgent):
                 return False
 
             # Add to agents dict
-            self.agents[agent_name] = agent
+            self.agents[agent_name]=agent
 
             # Update agent order if it exists
             if hasattr(self, "_agent_order"):
@@ -434,27 +453,29 @@ class InternalDynamicSupervisor(MultiAgent):
             return False
 
     def _extract_state_dict(self, state: Any) -> dict[str, Any]:
-        """Extract state dict preserving messages."""
+        """Extract state dict preserving messages.
+        """
         if isinstance(state, dict):
             return state
 
-        state_dict = state.model_dump()
+        state_dict=state.model_dump()
 
         # Preserve BaseMessage objects
         if hasattr(state, "messages"):
-            messages = getattr(state, "messages", [])
+            messages=getattr(state, "messages", [])
             if hasattr(messages, "root"):
-                state_dict["messages"] = messages.root
+                state_dict["messages"]=messages.root
             else:
-                state_dict["messages"] = list(messages)
+                state_dict["messages"]=list(messages)
 
         return state_dict
 
     def _route_from_supervisor(self, state: Any) -> str:
-        """Route from supervisor based on action decided."""
-        state_dict = self._extract_state_dict(state)
+        """Route from supervisor based on action decided.
+        """
+        state_dict=self._extract_state_dict(state)
 
-        action = state_dict.get("action", "")
+        action=state_dict.get("action", "")
 
         if action == "create_agent":
             return "agent_creator"
@@ -466,11 +487,13 @@ class InternalDynamicSupervisor(MultiAgent):
         return "END"
 
     def get_creation_history(self) -> list[dict[str, Any]]:
-        """Get history of agents created by supervisor."""
+        """Get history of agents created by supervisor.
+        """
         return self._creation_history.copy()
 
     def get_available_templates(self) -> dict[str, dict[str, Any]]:
-        """Get available agent templates."""
+        """Get available agent templates.
+        """
         return self._agent_templates.copy()
 
 
@@ -479,9 +502,10 @@ if __name__ == "__main__":
     import asyncio
 
     async def test_internal_dynamic():
-        """Test the internal dynamic supervisor."""
+        """Test the internal dynamic supervisor.
+        """
         # Create supervisor with no initial agents
-        supervisor = InternalDynamicSupervisor(
+        supervisor=InternalDynamicSupervisor(
             name="internal_dynamic",
             agents=[],  # Start empty!
             enable_internal_agent_creation=True,
@@ -490,14 +514,16 @@ if __name__ == "__main__":
 
         # Test 1: Research request (should create research agent)
         await supervisor.ainvoke(
-            {"messages": [HumanMessage(content="Research the latest AI trends")]}
+            {"messages": [HumanMessage(
+                content="Research the latest AI trends")]}
         )
 
         # Test 2: Coding request (should create coding agent)
         await supervisor.ainvoke(
             {
                 "messages": [
-                    HumanMessage(content="Write code to implement a binary search")
+                    HumanMessage(
+    content="Write code to implement a binary search")
                 ]
             }
         )
@@ -511,7 +537,8 @@ if __name__ == "__main__":
         await supervisor.ainvoke(
             {
                 "messages": [
-                    HumanMessage(content="Find information about quantum computing")
+                    HumanMessage(
+    content="Find information about quantum computing")
                 ]
             }
         )

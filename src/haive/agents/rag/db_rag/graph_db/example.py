@@ -617,8 +617,8 @@ def main():
 def run_all_examples():
     """Run all examples in sequence.
 
-    This function executes all example functions to demonstrate
-    the full capabilities of the GraphDBRAGAgent.
+    This function executes all example functions to demonstrate the full capabilities of
+    the GraphDBRAGAgent.
     """
     examples = [
         ("Basic Usage", basic_example),
@@ -641,7 +641,8 @@ def run_all_examples():
 
 
 if __name__ == "__main__":
-    """Entry point for the example script.
+    """
+    Entry point for the example script.
 
     Runs the main menu when executed directly.
     """

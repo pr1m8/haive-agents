@@ -1,6 +1,6 @@
 """Module exports."""
 
-from planning.clean_plan_execute import (
+from haive.agents.planning.clean_plan_execute import (
     Act,
     Plan,
     PlanExecuteState,
@@ -9,7 +9,7 @@ from planning.clean_plan_execute import (
     route_after_replan,
     should_continue,
 )
-from planning.langgraph_plan_execute import (
+from haive.agents.planning.langgraph_plan_execute import (
     Act,
     Plan,
     PlanExecuteState,
@@ -19,13 +19,13 @@ from planning.langgraph_plan_execute import (
     route_replan,
     should_continue,
 )
-from planning.plan_and_execute_multi import (
+from haive.agents.planning.plan_and_execute_multi import (
     PlanAndExecuteAgent,
     create_plan_execute_branches,
     should_continue,
     should_end,
 )
-from planning.proper_plan_execute import (
+from haive.agents.planning.proper_plan_execute import (
     create_plan_execute_with_search,
     create_proper_plan_execute,
     process_executor_output,
@@ -34,7 +34,7 @@ from planning.proper_plan_execute import (
     route_after_replan,
     should_continue,
 )
-from planning.rewoo_tree_agent_v2 import (
+from haive.agents.planning.rewoo_tree_agent_v2 import (
     ParallelReWOOAgent,
     PlanTask,
     ReWOOExecutorAgent,
@@ -55,7 +55,7 @@ from planning.rewoo_tree_agent_v2 import (
     validate_alias,
     validate_id,
 )
-from planning.rewoo_tree_agent_v3 import (
+from haive.agents.planning.rewoo_tree_agent_v3 import (
     ParallelReWOOAgent,
     ReWOOPlan,
     ReWOOTreeAgent,

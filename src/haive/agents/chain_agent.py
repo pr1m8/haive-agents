@@ -64,7 +64,9 @@ class ChainAgentSchema(SimpleAgentStateSchema):
 
 
 class ChainAgentConfig(SimpleAgentConfig):
-    """Configuration for a chain agent that processes input through multiple engines in sequence.
+    """Configuration for a chain agent that processes input through multiple engines in
+    sequence.
+
     Extends SimpleAgentConfig to inherit its capabilities.
     """
 
@@ -114,6 +116,7 @@ class ChainAgentConfig(SimpleAgentConfig):
 @register_agent(ChainAgentConfig)
 class ChainAgent(SimpleAgent):
     """An agent that chains multiple engines together, passing output from one to the next.
+
     Extends SimpleAgent to inherit its base functionality.
     """
 

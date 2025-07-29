@@ -1,7 +1,7 @@
 """Letter grading model for traditional A-F evaluations.
 
-This module implements a traditional letter grading system with support
-for plus/minus modifiers and customizable grading scales.
+This module implements a traditional letter grading system with support for plus/minus
+modifiers and customizable grading scales.
 """
 
 from enum import Enum

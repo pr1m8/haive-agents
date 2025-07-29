@@ -1,6 +1,7 @@
 """Graded RAG Workflows - RAG with comprehensive grading and evaluation.
 
 from typing import Any
+from typing import Optional
 This module implements RAG workflows with integrated document grading,
 answer quality assessment, and hallucination detection.
 """
@@ -35,8 +36,8 @@ class GradedRAGState(RAGState):
     filtered_documents: list[str] = []
 
     # Answer grading
-    answer_grade: AnswerGrade | None = None
-    hallucination_grade: HallucinationGrade | None = None
+    answer_grade: Optional[AnswerGrade] = None
+    hallucination_grade: Optional[HallucinationGrade] = None
 
     # Pipeline metrics
     overall_score: float = 0.0

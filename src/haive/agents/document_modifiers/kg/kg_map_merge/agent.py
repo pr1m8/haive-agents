@@ -24,7 +24,11 @@ from pydantic import BaseModel, Field
 
 from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.engines import (
+    Optional,
     create_parallel_kg_transformer_configs,
+    from,
+    import,
+    typing,
 )
 
 # Import models and engines
@@ -39,7 +43,8 @@ logger = logging.getLogger(__name__)
 
 
 class ParallelKGTransformerConfig(AgentConfig):
-    """Configuration for the Parallel Knowledge Graph Transformer."""
+    """Configuration for the Parallel Knowledge Graph Transformer.
+    """
 
     name: str = "ParallelKGTransformer"
     contents: list[Document]
@@ -52,14 +57,14 @@ class ParallelKGTransformerConfig(AgentConfig):
         description="Configurations for different stages of graph transformation",
     )
     checkpoint_mode: str = Field(
-        default="async", description="The checkpoint mode for the iterative summarizer."
-    )
+        default="async",
+        description="The checkpoint mode for the iterative summarizer.")
 
 
 @register_agent(ParallelKGTransformerConfig)
 class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
-    """An agent that builds a knowledge graph by extracting
-    nodes and relationships in parallel across multiple documents.
+    """An agent that builds a knowledge graph by extracting nodes and relationships in
+    parallel across multiple documents.
     """
 
     def __init__(self, config: ParallelKGTransformerConfig):
@@ -67,7 +72,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         config.engines.get("graph_transformer")
         self.llm_graph_transformer = GraphTransformer()
         # Prepare extractors from engines
-        self.node_extractor = config.engines["node_extractor"].create_runnable()
+        self.node_extractor = config.engines["node_extractor"].create_runnable(
+        )
         self.relationship_extractor = config.engines[
             "relationship_extractor"
         ].create_runnable()
@@ -77,11 +83,15 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
 
     def setup_workflow(self) -> None:
         self.graph.add_node("map_graph_documents", self.map_graph_documents)
-        self.graph.add_node("collect_graph_documents", self.collect_graph_documents)
+        self.graph.add_node(
+            "collect_graph_documents",
+            self.collect_graph_documents)
         self.graph.add_node("map_nodes", self.map_nodes)
         self.graph.add_node("collect_nodes", self.collect_nodes)
         self.graph.add_node("map_relationships", self.map_relationships)
-        self.graph.add_node("collect_relationships", self.collect_relationships)
+        self.graph.add_node(
+            "collect_relationships",
+            self.collect_relationships)
         self.graph.add_node("merge_graphs", self.merge_graphs)
 
         # ✅ Replace this line:
@@ -129,8 +139,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             context = str(content)
         else:
             logger.error(
-                f"Invalid content type for graph document extraction: {type(content)}"
-            )
+                f"Invalid content type for graph document extraction: {
+                    type(content)}")
             return {}
 
         if not context:
@@ -146,7 +156,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         return {"graph_documents": graph_docs}
 
     def map_nodes(self, state: KnowledgeGraphState):
-        """Map node extraction across documents."""
+        """Map node extraction across documents.
+        """
         if state.index >= len(state.contents):
             return {"index": state.index}
 
@@ -165,7 +176,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         self,
         state: KnowledgeGraphState,
         content: Document | dict | BaseModel | None = None,
-        index: int | None = None,
+        index: Optional[int] = None,
     ):
         try:
             if isinstance(content, Document):
@@ -176,8 +187,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
                 context = str(content)
             else:
                 logger.warning(
-                    f"Invalid content type for node extraction: {type(content)}"
-                )
+                    f"Invalid content type for node extraction: {
+                        type(content)}")
                 return {"index": 1}
 
             nodes = await self.node_extractor.ainvoke({"context": context})
@@ -192,7 +203,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             return {"index": 1}
 
     def map_relationships(self, state: KnowledgeGraphState):
-        """Map relationship extraction across documents and nodes."""
+        """Map relationship extraction across documents and nodes.
+        """
         # If no documents or nodes left, proceed to next stage
         if not state.contents and not state.nodes:
             return {"sends": [Send("merge_graphs", {})]}
@@ -229,7 +241,7 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         state: KnowledgeGraphState,
         content: Document | dict | BaseModel | None = None,
         nodes: list[EntityNode] | None = None,
-        index: int | None = None,
+        index: Optional[int] = None,
         context_type: str = "document",
     ):
         try:
@@ -242,23 +254,24 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
                     context = str(content)
                 else:
                     logger.warning(
-                        f"Invalid content type for relationship extraction: {type(content)}"
-                    )
+                        f"Invalid content type for relationship extraction: {
+                            type(content)}")
                     return {"index": 1}
 
                 extractor_input = {"context": context}
 
             elif context_type == "nodes":
                 if not nodes:
-                    logger.warning("No nodes provided for relationship extraction")
+                    logger.warning(
+                        "No nodes provided for relationship extraction")
                     return {"index": 1}
 
                 context = "\n".join(
                     [
-                        f"Entity {node.id}: {node.type} with properties {node.properties}"
-                        for node in nodes
-                    ]
-                )
+                        f"Entity {
+                            node.id}: {
+                            node.type} with properties {
+                            node.properties}" for node in nodes])
                 extractor_input = {"context": context}
 
             else:
@@ -281,7 +294,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             return {"index": 1}
 
     def merge_graphs(self, state: KnowledgeGraphState):
-        """Merge extracted graph documents, nodes, and relationships."""
+        """Merge extracted graph documents, nodes, and relationships.
+        """
         try:
             # Create a KnowledgeGraph from extracted components
             kg = KnowledgeGraph()
@@ -298,7 +312,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             # Add relationships from graph documents
             for graph_doc in state.graph_documents:
                 for rel in graph_doc.relationships:
-                    kg.add_relationship(EntityRelationship.from_graph_relationship(rel))
+                    kg.add_relationship(
+                        EntityRelationship.from_graph_relationship(rel))
 
             for doc in state.graph_documents:
                 for rel in doc.relationships:
@@ -307,9 +322,11 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
                             source=rel.source.id,
                             target=rel.target.id,
                             type=rel.type,
-                            confidence_score=getattr(rel, "confidence_score", None),
-                        )
-                    )
+                            confidence_score=getattr(
+                                rel,
+                                "confidence_score",
+                                None),
+                        ))
 
             # Prepare context for graph merger
             graph_context = (
@@ -325,7 +342,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             )
 
             # Refine the graph using graph merger
-            refined_graph = self.graph_merger.invoke({"graph_contexts": graph_context})
+            refined_graph = self.graph_merger.invoke(
+                {"graph_contexts": graph_context})
 
             return {
                 "final_knowledge_graph": refined_graph,

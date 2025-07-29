@@ -1,8 +1,8 @@
 """Main task analysis model combining all analysis components.
 
-This module provides the comprehensive TaskAnalysis model that combines
-complexity assessment, solvability analysis, task decomposition, and
-execution strategy recommendations.
+This module provides the comprehensive TaskAnalysis model that combines complexity
+assessment, solvability analysis, task decomposition, and execution strategy
+recommendations.
 """
 
 from datetime import datetime, timedelta
@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 from haive.agents.common.models.task_analysis.base import (
     ComplexityType,
+    Optional,
     PlanningRequirement,
     TaskComplexity,
     TaskDimension,
@@ -70,10 +71,19 @@ class ExecutionStrategy(BaseModel):
             strategy_type="parallel_execution",
             priority_level="high",
             recommended_approach="Execute independent branches in parallel while managing dependencies",
-            resource_allocation={"computational": 0.4, "human_expert": 0.3, "time": 0.3},
+            resource_allocation={
+    "computational": 0.4,
+    "human_expert": 0.3,
+     "time": 0.3},
             timeline_strategy="front_load_critical_path",
-            risk_mitigation=["backup_data_sources", "expert_consultation", "iterative_validation"],
-            success_factors=["clear_requirements", "adequate_resources", "expert_oversight"]
+            risk_mitigation=[
+    "backup_data_sources",
+    "expert_consultation",
+     "iterative_validation"],
+            success_factors=[
+    "clear_requirements",
+    "adequate_resources",
+     "expert_oversight"]
             )
     """
 
@@ -278,7 +288,7 @@ class TaskAnalysis(BaseModel):
         ],
     )
 
-    context: str | None = Field(
+    context: Optional[str] = Field(
         default=None,
         description="Additional context about the task",
         max_length=1000,
@@ -300,7 +310,7 @@ class TaskAnalysis(BaseModel):
         ..., description="Solvability assessment results"
     )
 
-    decomposition: TaskDecomposition | None = Field(
+    decomposition: Optional[TaskDecomposition] = Field(
         default=None, description="Task decomposition (if applicable)"
     )
 
@@ -504,8 +514,8 @@ class TaskAnalysis(BaseModel):
     def analyze_task(
         cls,
         task_description: str,
-        domain: str | None = None,
-        context: str | None = None,
+        domain: Optional[str] = None,
+        context: Optional[str] = None,
         analysis_method: AnalysisMethod = AnalysisMethod.HYBRID,
     ) -> "TaskAnalysis":
         """Analyze a task and return comprehensive analysis.
@@ -641,7 +651,7 @@ class TaskAnalysis(BaseModel):
 
     @classmethod
     def _analyze_complexity(
-        cls, task_description: str, domain: str, context: str | None
+        cls, task_description: str, domain: str, context: Optional[str]
     ) -> TaskComplexity:
         """Analyze task complexity using heuristics."""
         text_lower = task_description.lower()
@@ -884,7 +894,7 @@ class TaskAnalysis(BaseModel):
     @classmethod
     def _generate_decomposition(
         cls, task_description: str, complexity: TaskComplexity
-    ) -> TaskDecomposition | None:
+    ) -> Optional[TaskDecomposition]:
         """Generate basic task decomposition."""
         if complexity.overall_complexity in [
             ComplexityType.TRIVIAL,

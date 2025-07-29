@@ -37,8 +37,8 @@ Architecture:
     - ChatPromptTemplates: Dynamic prompts with state field placeholders
 """
 
-from .agent import ReWOOV3Agent
-from .models import (
+from haive.agents.planning.rewoo_v3.agent import ReWOOV3Agent
+from haive.agents.planning.rewoo_v3.models import (
     EvidenceCollection,
     EvidenceItem,
     EvidenceStatus,
@@ -48,7 +48,7 @@ from .models import (
     ReWOOV3Input,
     ReWOOV3Output,
 )
-from .state import ReWOOV3State
+from haive.agents.planning.rewoo_v3.state import ReWOOV3State
 
 __all__ = [
     # Main agent

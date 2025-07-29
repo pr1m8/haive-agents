@@ -16,6 +16,7 @@ class InputState(BaseModel):
     @classmethod
     def normalize_contents(cls, v) -> Any:
         """Normalize inputs to strings.
+
         Accepts:
         - List[str]
         - List[Document]

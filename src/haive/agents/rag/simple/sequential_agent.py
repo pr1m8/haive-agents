@@ -1,3 +1,18 @@
+from __future__ import annotations
+
+import asyncio
+import logging
+from typing import Any, Optional, Union
+
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.retriever import BaseRetrieverConfig
+from haive.core.engine.vectorstore import VectorStoreConfig
+from langchain_core.documents import Document
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.simple.agent import SimpleAgent
+
 """Sequential_Agent core module.
 
 This module provides sequential agent functionality for the Haive framework.
@@ -69,21 +84,8 @@ Examples:
         )
 """
 
-from __future__ import annotations
-
-import asyncio
-import logging
-from typing import Any
-
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.retriever import BaseRetrieverConfig
-from haive.core.engine.vectorstore import VectorStoreConfig
-from langchain_core.documents import Document
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 # Import existing agents for composition
-from haive.agents.rag.base.agent import BaseRAGAgent
-from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 
@@ -96,9 +98,8 @@ logger = logging.getLogger(__name__)
 class RAGResponse(BaseModel):
     """Comprehensive RAG response model.
 
-    Contains the generated answer along with comprehensive metadata about
-    the retrieval and generation process, including sources, confidence
-    scores, and execution metrics.
+    Contains the generated answer along with comprehensive metadata about the retrieval
+    and generation process, including sources, confidence scores, and execution metrics.
     """
 
     model_config = ConfigDict(
@@ -201,7 +202,7 @@ class SimpleRAG(BaseModel):
         description="Agent identifier",
     )
 
-    retriever_config: BaseRetrieverConfig | VectorStoreConfig = Field(
+    retriever_config: Union[BaseRetrieverConfig, VectorStoreConfig] = Field(
         ...,
         description="Configuration for document retrieval (vector store or retriever)",
     )
@@ -256,11 +257,11 @@ class SimpleRAG(BaseModel):
     # Agent Instances (Private)
     # =============================
 
-    _retriever_agent: BaseRAGAgent | None = Field(
+    _retriever_agent: Optional[BaseRAGAgent] = Field(
         default=None, exclude=True, description="Internal BaseRAGAgent instance"
     )
 
-    _generator_agent: SimpleAgent | None = Field(
+    _generator_agent: Optional[SimpleAgent] = Field(
         default=None, exclude=True, description="Internal SimpleAgent instance"
     )
 
@@ -271,7 +272,8 @@ class SimpleRAG(BaseModel):
     @field_validator("context_template")
     @classmethod
     def validate_context_template(cls, v: str) -> str:
-        """Validate context template has required placeholders."""
+        """Validate context template has required placeholders.
+        """
         required_placeholders = {"{context}", "{query}"}
         missing = required_placeholders - {
             ph for ph in required_placeholders if ph in v
@@ -284,7 +286,8 @@ class SimpleRAG(BaseModel):
 
     @model_validator(mode="after")
     def setup_agents(self) -> SimpleRAG:
-        """Setup internal agent instances after validation."""
+        """Setup internal agent instances after validation.
+        """
         # Create retriever agent
         self._retriever_agent = BaseRAGAgent(
             name=f"{self.name}_retriever", engine=self.retriever_config
@@ -374,7 +377,7 @@ class SimpleRAG(BaseModel):
 
     async def arun(
         self, input_data: str | dict[str, Any], debug: bool = False, **kwargs
-    ) -> str | RAGResponse | BaseModel:
+     -> Union[str, RAGResponse | BaseModel]:
         """Execute RAG pipeline with sequential agent composition.
 
         Flow:
@@ -419,10 +422,10 @@ class SimpleRAG(BaseModel):
                 "score_threshold": self.similarity_threshold,
             }
 
-            retrieval_result = await self._retriever_agent.arun(
+            retrieval_result=await self._retriever_agent.arun(
                 retrieval_input, debug=debug
             )
-            documents = self._extract_documents(retrieval_result)
+            documents=self._extract_documents(retrieval_result)
 
             if debug:
                 logger.info(f"📄 Retrieved {len(documents)} documents")
@@ -452,7 +455,9 @@ class SimpleRAG(BaseModel):
 
             if debug:
                 execution_time = time.time() - start_time
-                logger.info(f"✅ RAG pipeline completed in {execution_time:.2f}s")
+                logger.info(
+    f"✅ RAG pipeline completed in {
+        execution_time:.2f}s")
 
             return response
 
@@ -461,9 +466,10 @@ class SimpleRAG(BaseModel):
             raise RuntimeError(f"RAG execution failed: {e}")
 
     def run(
-        self, input_data: str | dict[str, Any], debug: bool = False, **kwargs
-    ) -> str | RAGResponse | BaseModel:
-        """Synchronous execution wrapper."""
+        self, input_data: str | dict[str, Any], debug: bool=False, **kwargs
+     -> Union[str, RAGResponse | BaseModel]:
+        """Synchronous execution wrapper.
+        """
         return asyncio.run(self.arun(input_data, debug=debug, **kwargs))
 
     # =============================
@@ -471,7 +477,8 @@ class SimpleRAG(BaseModel):
     # =============================
 
     def _extract_query(self, input_data: str | dict[str, Any]) -> str:
-        """Extract query string from input data."""
+        """Extract query string from input data.
+        """
         if isinstance(input_data, str):
             if not input_data.strip():
                 raise ValueError("Query cannot be empty")
@@ -480,7 +487,7 @@ class SimpleRAG(BaseModel):
         if isinstance(input_data, dict):
             if "query" not in input_data:
                 raise ValueError("Dict input must contain 'query' field")
-            query = input_data["query"]
+            query=input_data["query"]
             if not isinstance(query, str) or not query.strip():
                 raise ValueError("Query must be a non-empty string")
             return query.strip()
@@ -488,16 +495,19 @@ class SimpleRAG(BaseModel):
         raise ValueError(f"Unsupported input type: {type(input_data)}")
 
     def _extract_documents(self, retrieval_result: Any) -> list[Document]:
-        """Extract documents from retrieval result."""
+        """Extract documents from retrieval result.
+        """
         if isinstance(retrieval_result, list):
-            return [doc for doc in retrieval_result if isinstance(doc, Document)]
+            return [
+    doc for doc in retrieval_result if isinstance(
+        doc, Document)]
 
         if isinstance(retrieval_result, dict):
             if "documents" in retrieval_result:
-                docs = retrieval_result["documents"]
+                docs=retrieval_result["documents"]
                 return [doc for doc in docs if isinstance(doc, Document)]
             if "retrieved_documents" in retrieval_result:
-                docs = retrieval_result["retrieved_documents"]
+                docs=retrieval_result["retrieved_documents"]
                 return [doc for doc in docs if isinstance(doc, Document)]
 
         # If result has documents attribute
@@ -508,30 +518,36 @@ class SimpleRAG(BaseModel):
         logger.warning(
             "Could not extract documents from retrieval result, using fallback"
         )
-        content = str(retrieval_result)
-        return [Document(page_content=content, metadata={"source": "retrieval_result"})]
+        content=str(retrieval_result)
+        return [
+    Document(
+        page_content=content,
+        metadata={
+            "source": "retrieval_result"})]
 
     def _prepare_context(self, documents: list[Document], query: str) -> str:
-        """Prepare context from retrieved documents."""
+        """Prepare context from retrieved documents.
+        """
         if not documents:
             return "No relevant documents found."
 
         # Combine document content
-        context_parts = []
+        context_parts=[]
         for i, doc in enumerate(documents):
-            content = doc.page_content.strip()
+            content=doc.page_content.strip()
             if not content:
                 continue
 
             # Add source information if available
-            source = doc.metadata.get("source", f"Document {i+1}")
-            formatted_content = f"Source: {source}\n{content}"
+            source=doc.metadata.get("source", f"Document {i + 1}")
+            formatted_content=f"Source: {source}\n{content}"
             context_parts.append(formatted_content)
 
-        context = "\n\n".join(context_parts)
+        context="\n\n".join(context_parts)
 
         # Format with template
-        formatted_context = self.context_template.format(context=context, query=query)
+        formatted_context=self.context_template.format(
+            context=context, query=query)
 
         return formatted_context
 
@@ -541,31 +557,33 @@ class SimpleRAG(BaseModel):
         answer: Any,
         documents: list[Document],
         execution_time: float,
-        debug: bool = False,
-    ) -> str | RAGResponse | BaseModel:
-        """Format the final response."""
+        debug: bool=False,
+     -> Union[str, RAGResponse | BaseModel]:
+        """Format the final response.
+        """
         # Extract answer string
-        answer_text = str(answer)
+        answer_text=str(answer)
         if hasattr(answer, "content"):
-            answer_text = answer.content
+            answer_text=answer.content
         elif isinstance(answer, BaseModel):
-            answer_text = answer.answer if hasattr(answer, "answer") else str(answer)
+            answer_text=answer.answer if hasattr(
+                answer, "answer") else str(answer)
 
         # Extract sources
-        sources = []
+        sources=[]
         for doc in documents:
-            source = doc.metadata.get("source", "Unknown")
+            source=doc.metadata.get("source", "Unknown")
             if source not in sources:
                 sources.append(source)
 
         # Calculate confidence (simple heuristic)
-        confidence = min(len(documents) / max(self.top_k, 1), 1.0)
+        confidence=min(len(documents) / max(self.top_k, 1), 1.0)
         if len(answer_text) > 50:
             confidence *= 1.1
-        confidence = min(confidence, 1.0)
+        confidence=min(confidence, 1.0)
 
         # Create response metadata
-        retrieval_metadata = {
+        retrieval_metadata={
             "execution_time": execution_time,
             "documents_retrieved": len(documents),
             "sources_used": len(sources),
@@ -578,7 +596,7 @@ class SimpleRAG(BaseModel):
         }
 
         # Create full response object
-        rag_response = RAGResponse(
+        rag_response=RAGResponse(
             query=query,
             answer=answer_text,
             sources=sources,
@@ -601,7 +619,8 @@ class SimpleRAG(BaseModel):
     # =============================
 
     def get_agent_info(self) -> dict[str, Any]:
-        """Get information about the composed agents."""
+        """Get information about the composed agents.
+        """
         return {
             "name": self.name,
             "retriever_agent": {
@@ -628,12 +647,17 @@ class SimpleRAG(BaseModel):
         }
 
     def __repr__(self) -> str:
-        """String representation showing composition."""
+        """String representation showing composition.
+        """
         return (
             f"SimpleRAG("
             f"name='{self.name}', "
-            f"retriever={type(self._retriever_agent).__name__ if self._retriever_agent else 'None'}, "
-            f"generator={type(self._generator_agent).__name__ if self._generator_agent else 'None'}, "
+            f"retriever={
+    type(
+        self._retriever_agent).__name__ if self._retriever_agent else 'None'}, "
+            f"generator={
+    type(
+        self._generator_agent).__name__ if self._generator_agent else 'None'}, "
             f"top_k={self.top_k}"
             f")"
         )
@@ -644,14 +668,14 @@ class SimpleRAG(BaseModel):
 # ================================
 
 # Alias for backward compatibility
-SimpleRAGAgent = SimpleRAG
+SimpleRAGAgent=SimpleRAG
 
 
 # ================================
 # Export for Easy Import
 # ================================
 
-__all__ = ["RAGResponse", "SimpleRAG", "SimpleRAGAgent"]  # Legacy alias
+__all__=["RAGResponse", "SimpleRAG", "SimpleRAGAgent"]  # Legacy alias
 
 
 # ================================
@@ -666,7 +690,7 @@ if __name__ == "__main__":
     from langchain_core.documents import Document
 
     # Example documents
-    example_docs = [
+    example_docs=[
         Document(
             page_content="Machine learning is a subset of artificial intelligence that enables computers to learn without being explicitly programmed.",
             metadata={"source": "ml_basics.pdf"},
@@ -678,7 +702,8 @@ if __name__ == "__main__":
     ]
 
     async def demo():
-        """Demonstrate SimpleRAG usage."""
+        """Demonstrate SimpleRAG usage.
+        """
         # Create from documents (this would use real vector store in practice)
 
         # In a real implementation, you'd have proper embedding and vector store configs

@@ -1,8 +1,8 @@
 """Advanced extraction prompt templates for Memory V2 system.
 
-This module provides sophisticated, focused prompt templates for extracting
-different types of information from conversations and documents, specifically
-designed for memory-based agents with KG integration.
+This module provides sophisticated, focused prompt templates for extracting different
+types of information from conversations and documents, specifically designed for memory-
+based agents with KG integration.
 """
 
 from typing import Any

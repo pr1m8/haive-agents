@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """MultiAgent V4 - Clean implementation using enhanced base agent.
 
 This implementation follows the V4 pattern with:
@@ -10,10 +12,9 @@ This implementation follows the V4 pattern with:
 Start small, test incrementally, build up features.
 """
 
-from __future__ import annotations
 
 import logging
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
@@ -74,7 +75,7 @@ class MultiAgentV4(Agent):
         description="Internal agent dictionary (converted from list)",
     )
 
-    execution_graph: CompiledGraph | None = Field(
+    execution_graph: Optional[CompiledGraph] = Field(
         default=None, description="Compiled LangGraph for execution"
     )
 
@@ -88,12 +89,17 @@ class MultiAgentV4(Agent):
 
     @model_validator(mode="after")
     def setup_multi_agent(self):
-        """Set up multi-agent system after initialization."""
+        """Set up multi-agent system after initialization.
+        """
         # Convert agent list to dict
         if self.agents:
             self.agent_dict = self._convert_agents_to_dict(self.agents)
             logger.info(
-                f"Converted {len(self.agents)} agents to dict: {list(self.agent_dict.keys())}"
+                f"Converted {
+    len(
+        self.agents)} agents to dict: {
+            list(
+                self.agent_dict.keys())}"
             )
 
         # Handle build mode
@@ -104,13 +110,15 @@ class MultiAgentV4(Agent):
         return self
 
     def _convert_agents_to_dict(self, agents: list[Agent]) -> dict[str, Agent]:
-        """Convert agent list to dictionary keyed by name."""
+        """Convert agent list to dictionary keyed by name.
+        """
         agent_dict = {}
 
         for i, agent in enumerate(agents):
             # Ensure agent has name
             if not hasattr(agent, "name") or not agent.name:
-                raise ValueError(f"Agent at index {i} must have a name: {agent}")
+                raise ValueError(
+    f"Agent at index {i} must have a name: {agent}")
 
             # Check for duplicates
             if agent.name in agent_dict:
@@ -125,12 +133,16 @@ class MultiAgentV4(Agent):
     # ========================================================================
 
     def _build_execution_graph(self) -> CompiledGraph:
-        """Build LangGraph for agent execution."""
+        """Build LangGraph for agent execution.
+        """
         if not self.agent_dict:
             raise ValueError("No agents to build graph with")
 
         logger.info(
-            f"Building {self.execution_mode} execution graph for {len(self.agent_dict)} agents"
+            f"Building {
+    self.execution_mode} execution graph for {
+        len(
+            self.agent_dict)} agents"
         )
 
         # Create state graph with MultiAgentState
@@ -192,7 +204,8 @@ class MultiAgentV4(Agent):
     # ========================================================================
 
     async def arun(self, input_data: Any, **kwargs) -> Any:
-        """Execute the multi-agent workflow."""
+        """Execute the multi-agent workflow.
+        """
         # Ensure graph is built
         if not self.execution_graph:
             if self.build_mode == "manual":
@@ -205,9 +218,15 @@ class MultiAgentV4(Agent):
         initial_state = self._create_initial_state(input_data)
 
         logger.info(
-            f"Executing {self.execution_mode} workflow with {len(self.agent_dict)} agents"
+            f"Executing {
+    self.execution_mode} workflow with {
+        len(
+            self.agent_dict)} agents"
         )
-        logger.debug(f"Initial state keys: {list(initial_state.__dict__.keys())}")
+        logger.debug(
+    f"Initial state keys: {
+        list(
+            initial_state.__dict__.keys())}")
 
         # Execute graph
         try:
@@ -221,7 +240,8 @@ class MultiAgentV4(Agent):
             raise
 
     def _create_initial_state(self, input_data: Any) -> MultiAgentState:
-        """Create initial MultiAgentState from input."""
+        """Create initial MultiAgentState from input.
+        """
         # Convert agents dict to the format expected by MultiAgentState
         agents_for_state = self.agent_dict
 
@@ -235,11 +255,14 @@ class MultiAgentV4(Agent):
 
         initial_state = self.state_schema(**state_data)
 
-        logger.debug(f"Created initial state with {initial_state.agent_count} agents")
+        logger.debug(
+    f"Created initial state with {
+        initial_state.agent_count} agents")
         return initial_state
 
     def _extract_result(self, final_state: MultiAgentState) -> Any:
-        """Extract final result from state."""
+        """Extract final result from state.
+        """
         # Simple result extraction - can be enhanced later
         if (
             hasattr(final_state, "final_result")
@@ -259,11 +282,13 @@ class MultiAgentV4(Agent):
     # ========================================================================
 
     def build(self) -> CompiledGraph:
-        """Manually build the execution graph."""
+        """Manually build the execution graph.
+        """
         return self._build_execution_graph()
 
     def add_agent(self, agent: Agent) -> None:
-        """Add an agent to the workflow."""
+        """Add an agent to the workflow.
+        """
         if not agent.name:
             raise ValueError("Agent must have a name")
 
@@ -280,11 +305,13 @@ class MultiAgentV4(Agent):
         logger.info(f"Added agent: {agent.name}")
 
     def get_agent_names(self) -> list[str]:
-        """Get list of agent names."""
+        """Get list of agent names.
+        """
         return list(self.agent_dict.keys())
 
-    def get_agent(self, name: str) -> Agent | None:
-        """Get agent by name."""
+    def get_agent(self, name: str -> Optional[Agent]:
+        """Get agent by name.
+        """
         return self.agent_dict.get(name)
 
     # ========================================================================
@@ -292,7 +319,8 @@ class MultiAgentV4(Agent):
     # ========================================================================
 
     def display_workflow_info(self) -> None:
-        """Display workflow information."""
+        """Display workflow information.
+        """
         print(f"\n=== MultiAgent V4: {self.name} ===")
         print(f"Execution Mode: {self.execution_mode}")
         print(f"Build Mode: {self.build_mode}")

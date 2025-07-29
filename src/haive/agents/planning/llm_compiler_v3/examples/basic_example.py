@@ -1,7 +1,7 @@
 """Basic example of LLM Compiler V3 Agent usage.
 
-This example demonstrates the core functionality of the LLM Compiler V3 Agent
-with simple tools and a straightforward query.
+This example demonstrates the core functionality of the LLM Compiler V3 Agent with
+simple tools and a straightforward query.
 """
 
 import asyncio

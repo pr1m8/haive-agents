@@ -93,6 +93,7 @@ class LLMRAGConfig(BaseRAGConfig):
     @classmethod
     def setup_engines(cls) -> "LLMRAGConfig":
         """After validation, register all engines needed by the agent.
+
         This ensures the agent workflow can access all the necessary components.
         """
         # Ensure the retriever is set as the primary engine

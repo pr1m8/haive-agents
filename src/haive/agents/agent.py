@@ -24,7 +24,7 @@ import uuid
 # -----------------------------------------------------------------------------
 # Debugging Utility
 # -----------------------------------------------------------------------------
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.engine.agent.agent import Agent, AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig, compose_runnable
@@ -41,7 +41,8 @@ logger = logging.getLogger(__name__)
 
 
 def debug_print(message: str):
-    """Helper function to print and log debug messages."""
+    """Helper function to print and log debug messages.
+    """
     logger.debug(message)
 
 
@@ -49,19 +50,21 @@ def debug_print(message: str):
 # Models
 # -----------------------------------------------------------------------------
 class BBox(BaseModel):
-    """Bounding box for web elements."""
+    """Bounding box for web elements.
+    """
 
     x: float
     y: float
     width: float
     height: float
-    ariaLabel: str | None = None
-    text: str | None = None
+    ariaLabel: Optional[str] = None
+    text: Optional[str] = None
     type: str
 
 
 class Prediction(BaseModel):
-    """Agent prediction model."""
+    """Agent prediction model.
+    """
 
     thought: str
     action: str
@@ -70,7 +73,8 @@ class Prediction(BaseModel):
     @field_validator("args")
     @classmethod
     def ensure_args(cls, v) -> Any:
-        """Ensures args is a list."""
+        """Ensures args is a list.
+        """
         if v is None:
             return []
         return v
@@ -80,26 +84,29 @@ class Prediction(BaseModel):
 # WebNavState Class
 # -----------------------------------------------------------------------------
 class WebNavState(BaseModel):
-    """Web Navigation State Model with Playwright Support."""
+    """Web Navigation State Model with Playwright Support.
+    """
 
-    page_url: str | None = Field(
+    page_url: Optional[str] = Field(
         default=None, description="URL of the Playwright page."
     )
     input: str = Field(..., description="User request.")
-    img: str | None = Field(
+    img: Optional[str] = Field(
         default=None, description="Base64 encoded screenshot (plain, no prefix)."
     )
     bboxes: list[BBox] = Field(
         default_factory=list, description="Bounding boxes from annotation."
     )
-    prediction: Prediction | None = Field(
+    prediction: Optional[Prediction] = Field(
         default=None, description="The agent's output."
     )
     scratchpad: list[BaseMessage] = Field(
         default_factory=list, description="Intermediate system messages."
     )
-    observation: str = Field(default="", description="The most recent tool response.")
-    bbox_descriptions: str | None = Field(
+    observation: str = Field(
+    default="",
+     description="The most recent tool response.")
+    bbox_descriptions: Optional[str] = Field(
         default=None, description="Formatted bounding box descriptions."
     )
 
@@ -110,7 +117,8 @@ class WebNavState(BaseModel):
     @field_validatorensure_prediction
     @classmethod
     def ensure_prediction(cls, v) -> Any:
-        """Ensures prediction is either None or a valid object."""
+        """Ensures prediction is either None or a valid object.
+        """
         debug_print(f"Validating prediction: {v}")
         if isinstance(v, list) and len(v) == 0:
             debug_print("Prediction was an empty list. Converting to None.")
@@ -122,12 +130,15 @@ class WebNavState(BaseModel):
 # WebNavAgentConfig
 # -----------------------------------------------------------------------------
 class WebNavAgentConfig(AgentConfig):
-    """Configuration for the Web Navigator Agent."""
+    """Configuration for the Web Navigator Agent.
+    """
 
     aug_llm_config: AugLLMConfig = Field(
         ..., description="LLM config for Web Navigator"
     )
-    headless: bool = Field(default=False, description="Run browser in headless mode")
+    headless: bool = Field(
+    default=False,
+     description="Run browser in headless mode")
     max_steps: int = Field(default=3, description="Maximum steps")
     state_schema: type[BaseModel] = Field(
         default=WebNavState, description="State schema for the agent"
@@ -138,16 +149,18 @@ class WebNavAgentConfig(AgentConfig):
 # WebNavAgent Implementation
 # -----------------------------------------------------------------------------
 class WebNavAgent(Agent[WebNavAgentConfig]):
-    """An interactive web navigation agent using Playwright & LangGraph with integrated tools."""
+    """An interactive web navigation agent using Playwright & LangGraph with integrated
+    tools.
+    """
 
     def __init__(self, config: WebNavAgentConfig):
         self.config = config
         self.headless = config.headless
         self.max_steps = config.max_steps
         self.screenshots = []
-        self.browser: Browser | None = None
-        self.page: Page | None = None
-        self.state: WebNavState | None = None
+        self.browser: Optional[Browser] = None
+        self.page: Optional[Page] = None
+        self.state: Optional[WebNavState] = None
         # self.st
         # Initialize LLM
         self.llm = compose_runnable(config.aug_llm_config)
@@ -183,7 +196,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
     # Core Agent Functions
     # -------------------------------------------------------------------------
     def setup_workflow(self) -> None:
-        """Sets up the workflow graph for the agent."""
+        """Sets up the workflow graph for the agent.
+        """
         # Add agent node
         self.graph.add_node("agent", self.agent)
         self.graph.add_edge(START, "agent")
@@ -215,20 +229,28 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         self.graph.add_conditional_edges("agent", self.select_tool)
 
     def select_tool(self, state: dict[str, Any]) -> str:
-        """Routes the agent's prediction to the correct tool."""
+        """Routes the agent's prediction to the correct tool.
+        """
         prediction = state.prediction
         if prediction:
             action = prediction.action
             if action == "ANSWER":
                 return "ANSWER"
-            if action in ["Click", "Type", "Scroll", "Wait", "GoBack", "Google"]:
+            if action in [
+    "Click",
+    "Type",
+    "Scroll",
+    "Wait",
+    "GoBack",
+     "Google"]:
                 return action
             if action == "retry":
                 return "agent"
         return "agent"
 
     def update_scratchpad(self, state: dict[str, Any]):
-        """Updates the scratchpad with the latest observation and agent's reasoning."""
+        """Updates the scratchpad with the latest observation and agent's reasoning.
+        """
         debug_print("Updating scratchpad")
 
         # Extract scratchpad
@@ -267,7 +289,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         step = 1
         if scratchpad:
             first_message = scratchpad[0]
-            # Check if the message is a dictionary or an object with content attribute
+            # Check if the message is a dictionary or an object with content
+            # attribute
             if isinstance(first_message, dict) and "content" in first_message:
                 content = first_message["content"]
             elif hasattr(first_message, "content"):
@@ -305,21 +328,29 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
         # Return updated state
         if isinstance(state, dict):
-            return {**state, "scratchpad": new_scratchpad, "observation": observation}
+            return {
+    **state,
+    "scratchpad": new_scratchpad,
+     "observation": observation}
         # Create a dictionary with the same fields as the input state
         state_dict = {}
         for field in dir(state):
-            if not field.startswith("_") and field not in {"scratchpad", "observation"}:
+            if not field.startswith("_") and field not in {
+                                    "scratchpad", "observation"}:
                 with contextlib.suppress(Exception):
                     state_dict[field] = getattr(state, field)
 
-        return {**state_dict, "scratchpad": new_scratchpad, "observation": observation}
+        return {
+    **state_dict,
+    "scratchpad": new_scratchpad,
+     "observation": observation}
 
     # -------------------------------------------------------------------------
     # Browser Management Functions
     # -------------------------------------------------------------------------
     async def start_browser(self):
-        """Launch the browser and navigate to Google."""
+        """Launch the browser and navigate to Google.
+        """
         playwright = await async_playwright().start()
         self.browser = await playwright.chromium.launch(
             headless=True,
@@ -329,11 +360,13 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 "--disable-gpu",  # WSL doesn't support GPU acceleration properly
                 # "--disable-dev-shm-usage",  # Avoid crashes due to limited /dev/shm
                 "--disable-software-rasterizer",  # Prevent software rendering crashes
-                # 3"--disable-background-networking",  # Reduce Brave network calls
+                # 3"--disable-background-networking",  # Reduce Brave network
+                # calls
                 "--disable-default-apps",  # Start with a blank slate
                 # "--disable-extensions",  # Ensure no extension interference
                 # "--disable-hang-monitor",  # Avoid Playwright thinking Brave has hung
-                "--disable-popup-blocking",  # Allow all popups (for automation)
+                "--disable-popup-blocking",
+      # Allow all popups (for automation)
                 "--disable-renderer-backgrounding",  # Keep tabs active
                 # "--disable-background-timer-throttling",  # Prevent timeouts
                 # "--disable-backgrounding-occluded-windows",  # Keep processes alive
@@ -359,14 +392,16 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         )
 
     async def stop_browser(self):
-        """Closes the browser instance."""
+        """Closes the browser instance.
+        """
         if self.browser:
             await self.browser.close()
             self.browser = None
             self.page = None
 
     async def capture_screenshot(self) -> str:
-        """Captures a screenshot and returns a base64 string."""
+        """Captures a screenshot and returns a base64 string.
+        """
         if not self.page:
             return ""
 
@@ -382,7 +417,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
     # Page Annotation and Formatting
     # -------------------------------------------------------------------------
     async def annotate_page(self, state: dict[str, Any]) -> dict[str, Any]:
-        """Annotates the page with bounding boxes."""
+        """Annotates the page with bounding boxes.
+        """
         # Convert state to dict if needed
         if hasattr(state, "model_dump"):
             state_dict = state.model_dump()
@@ -424,7 +460,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                     "x": bbox.get("x", 0),
                     "y": bbox.get("y", 0),
                     "width": bbox.get("width", 10),  # Default width if missing
-                    "height": bbox.get("height", 10),  # Default height if missing
+                    # Default height if missing
+                    "height": bbox.get("height", 10),
                     "text": bbox.get("text", ""),
                     "type": bbox.get("type", "element"),
                     "ariaLabel": bbox.get("ariaLabel", ""),
@@ -463,12 +500,14 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 "bboxes": state_dict.get("bboxes", []),
                 "observation": f"Error during page annotation: {e!s}",
                 "page_url": (
-                    self.page.url if self.page else state_dict.get("page_url", "")
+                    self.page.url if self.page else state_dict.get(
+                        "page_url", "")
                 ),
             }
 
     def format_descriptions(self, state: dict[str, Any]) -> str:
-        """Formats bounding boxes into readable descriptions."""
+        """Formats bounding boxes into readable descriptions.
+        """
         bboxes = state.get("bboxes", [])
         labels = []
 
@@ -480,7 +519,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         return "\nValid Bounding Boxes:\n" + "\n".join(labels)
 
     def parse_prediction(self, text: str) -> dict[str, Any]:
-        """Parses LLM output into a structured prediction."""
+        """Parses LLM output into a structured prediction.
+        """
         # Find the action line
         action_prefix = "Action: "
         action_line = None
@@ -502,7 +542,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
         # Extract action and args
         thought = "\n".join(thought_lines)
-        action_str = action_line[len(action_prefix) :].strip()
+        action_str = action_line[len(action_prefix):].strip()
         split_output = action_str.split(" ", 1)
 
         if len(split_output) == 1:
@@ -513,13 +553,17 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 inp.strip().strip("[]") for inp in action_input_str.strip().split(";")
             ]
 
-        return {"thought": thought, "action": action.strip(), "args": action_input}
+        return {
+    "thought": thought,
+    "action": action.strip(),
+     "args": action_input}
 
     # -------------------------------------------------------------------------
     # Integrated Tool Functions (Avoids Serialization Issues)
     # -------------------------------------------------------------------------
     async def tool_click(self, state: dict[str, Any]) -> str:
-        """Clicks on an element identified by its bounding box index."""
+        """Clicks on an element identified by its bounding box index.
+        """
         if not self.page:
             return "No live page available."
 
@@ -549,7 +593,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             return f"Error clicking element: {e}"
 
     async def tool_type(self, state: dict[str, Any]) -> str:
-        """Types text into an identified bounding box."""
+        """Types text into an identified bounding box.
+        """
         if not self.page:
             return "No live page available."
 
@@ -589,13 +634,15 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 bbox = bboxes[bbox_id]
 
                 # Use proper attribute access for BBox object
-                # Access x and y properly whether bbox is a dict or a BBox object
+                # Access x and y properly whether bbox is a dict or a BBox
+                # object
                 if hasattr(bbox, "x") and hasattr(bbox, "y"):
                     x, y = bbox.x, bbox.y
                 elif isinstance(bbox, dict):
                     x, y = bbox.get("x", 0), bbox.get("y", 0)
                 else:
-                    return f"Cannot extract coordinates from bbox type: {type(bbox)}"
+                    return f"Cannot extract coordinates from bbox type: {
+    type(bbox)}"
 
                 # Click on element
                 await self.page.mouse.click(x, y)
@@ -625,7 +672,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             return f"Unexpected error in tool_type: {e!s}"
 
     async def tool_scroll(self, state: dict[str, Any]) -> str:
-        """Scrolls either the window or a specific element."""
+        """Scrolls either the window or a specific element.
+        """
         if not self.page:
             return "No live page available."
 
@@ -663,13 +711,15 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             return f"Error scrolling: {e}"
 
     async def tool_wait(self, state: dict[str, Any]) -> str:
-        """Waits for a fixed period (3s)."""
+        """Waits for a fixed period (3s).
+        """
         sleep_time = 3
         await asyncio.sleep(sleep_time)
         return f"Waited for {sleep_time} seconds"
 
     async def tool_go_back(self, state: dict[str, Any]) -> str:
-        """Navigates back in browser history."""
+        """Navigates back in browser history.
+        """
         if not self.page:
             return "No live page available."
 
@@ -682,7 +732,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             return f"Error navigating back: {e}"
 
     async def tool_to_google(self, state: dict[str, Any]) -> str:
-        """Navigates to Google homepage."""
+        """Navigates to Google homepage.
+        """
         if not self.page:
             return "No live page available."
 
@@ -695,7 +746,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             return f"Error navigating to Google: {e}"
 
     async def tool_answer(self, state: dict[str, Any]) -> str:
-        """Returns final answer to user query."""
+        """Returns final answer to user query.
+        """
         prediction = state.prediction
         args = prediction.args
 
@@ -707,8 +759,9 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
     # -------------------------------------------------------------------------
     # Public API Methods
     # -------------------------------------------------------------------------
-    async def run(self, question: str, show_images: bool = False) -> str | None:
-        """Run the agent on a given question and return the final answer."""
+    async def run(self, question: str, show_images: bool = False -> Optional[str]:
+        """Run the agent on a given question and return the final answer.
+        """
         # Start browser if needed
         if not self.page:
             await self.start_browser()
@@ -722,7 +775,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         }
 
         # Set runtime config
-        runtime_config = {
+        runtime_config={
             "configurable": {
                 "thread_id": str(uuid.uuid4()),
                 "recursion_limit": self.max_steps,
@@ -730,11 +783,12 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         }
 
         # Run agent
-        final_answer = None
-        steps = []
+        final_answer=None
+        steps=[]
 
         # Stream results
-        event_stream = self.app.astream(input_state, config=runtime_config, debug=True)
+        event_stream=self.app.astream(
+    input_state, config=runtime_config, debug=True)
 
         async for event in event_stream:
             prediction = event.get("prediction", {})
@@ -743,7 +797,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
             # Display progress
             display.clear_output(wait=True)
-            step_str = f"{len(steps)+1}. {action}"
+            step_str = f"{len(steps) + 1}. {action}"
             if prediction and "args" in prediction:
                 step_str += f": {prediction['args']}"
             steps.append(step_str)
@@ -760,7 +814,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         return final_answer
 
     async def close(self):
-        """Clean up resources."""
+        """Clean up resources.
+        """
         await self.stop_browser()
 
 

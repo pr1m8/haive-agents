@@ -109,8 +109,8 @@ class AgenticRAGAgent[TInput: BaseModel, TOutput: BaseModel](
     def setup_agentic_rag(cls) -> "AgenticRAGAgent":
         """Setup agentic RAG with multiple engines and tools.
 
-        This follows proper Pydantic patterns using model_validator
-        instead of __init__ for post-initialization setup.
+        This follows proper Pydantic patterns using model_validator instead of __init__
+        for post-initialization setup.
         """
         # Add all engines to engines dict
         self.engines["llm"] = self.llm_engine
@@ -308,8 +308,8 @@ class AgenticRAGAgent[TInput: BaseModel, TOutput: BaseModel](
     ) -> "AgenticRAGAgent":
         """Create agentic RAG agent from documents using proper factory pattern.
 
-        This follows Pydantic best practices by using a classmethod factory
-        instead of complex __init__ logic.
+        This follows Pydantic best practices by using a classmethod factory instead of
+        complex __init__ logic.
         """
         # Create retriever engine from documents
         retriever_engine = BaseRetrieverConfig.from_documents(

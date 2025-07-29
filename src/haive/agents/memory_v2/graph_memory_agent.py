@@ -738,7 +738,10 @@ class GraphMemoryAgent:
 
         @tool
         async def graph_memory_tool(text: str, operation: str = "full") -> str:
-            """Process text with graph memory. Operations: extract, store, query, full."""
+            """Process text with graph memory.
+
+            Operations: extract, store, query, full.
+            """
             mode_map = {
                 "extract": GraphMemoryMode.EXTRACT_ONLY,
                 "store": GraphMemoryMode.STORE_ONLY,

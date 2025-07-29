@@ -207,8 +207,8 @@ class DocumentProcessingResult(BaseModel):
 class DocumentProcessingState(MessagesState):
     """State for document processing operations.
 
-    Extends MessagesState with document-specific fields for tracking
-    document processing workflows.
+    Extends MessagesState with document-specific fields for tracking document processing
+    workflows.
     """
 
     # Document State

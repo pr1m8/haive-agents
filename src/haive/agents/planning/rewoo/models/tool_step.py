@@ -6,7 +6,7 @@ A concrete step implementation that works with LangChain tools and validates:
 - Tool can be executed with given parameters
 """
 
-from typing import Any
+from typing import Any, Optional
 
 from langchain_core.tools import BaseTool
 from pydantic import Field, computed_field, field_validator, model_validator
@@ -15,7 +15,8 @@ from .steps import AbstractStep
 
 
 class ToolStep(AbstractStep):
-    """A step that executes a specific tool with validated arguments."""
+    """A step that executes a specific tool with validated arguments.
+    """
 
     # Tool execution fields
     tool_name: str = Field(..., description="Name of the tool to execute")
@@ -30,27 +31,31 @@ class ToolStep(AbstractStep):
     )
 
     # Execution result storage
-    result: Any | None = Field(default=None, description="Result from tool execution")
+    result: Optional[Any] = Field(default=None,
+     description="Result from tool execution")
 
     # Computed fields
     @computed_field
     @property
     def tool_names(self) -> list[str]:
-        """List of available tool names."""
+        """List of available tool names.
+        """
         return [tool.name for tool in self.available_tools]
 
     @computed_field
     @property
-    def selected_tool(self) -> BaseTool | None:
-        """The selected tool instance."""
+    def selected_tool(self -> Optional[BaseTool]:
+        """The selected tool instance.
+        """
         return next(
             (tool for tool in self.available_tools if tool.name == self.tool_name), None
         )
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def tool_schema(self) -> dict[str, Any] | None:
-        """Schema of the selected tool."""
+        """Schema of the selected tool.
+        """
         if self.selected_tool:
             return (
                 self.selected_tool.args_schema.model_json_schema()
@@ -59,10 +64,11 @@ class ToolStep(AbstractStep):
             )
         return None
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def required_args(self) -> list[str]:
-        """Required arguments for the selected tool."""
+        """Required arguments for the selected tool.
+        """
         if not self.tool_schema:
             return []
 
@@ -70,10 +76,11 @@ class ToolStep(AbstractStep):
         required = self.tool_schema.get("required", [])
         return required
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def optional_args(self) -> list[str]:
-        """Optional arguments for the selected tool."""
+        """Optional arguments for the selected tool.
+        """
         if not self.tool_schema:
             return []
 
@@ -81,26 +88,30 @@ class ToolStep(AbstractStep):
         required = self.tool_schema.get("required", [])
         return [arg for arg in properties if arg not in required]
 
-    @computed_field
-    @property
+    @ computed_field
+    @ property
     def is_tool_valid(self) -> bool:
-        """Whether the tool setup is valid."""
+        """Whether the tool setup is valid.
+        """
         return self.tool_name in self.tool_names and self._are_args_valid()
 
     # Validators
-    @field_validator("tool_name")
-    @classmethod
+    @ field_validator("tool_name")
+    @ classmethod
     def validate_tool_name(cls, v: str, info) -> str:
-        """Validate tool name exists in available tools."""
-        # Note: We can't access other fields here, so this will be checked in model_validator
+        """Validate tool name exists in available tools.
+        """
+        # Note: We can't access other fields here, so this will be checked in
+        # model_validator
         if not v:
             raise ValueError("Tool name cannot be empty")
         return v
 
-    @field_validator("available_tools")
-    @classmethod
+    @ field_validator("available_tools")
+    @ classmethod
     def validate_tools_not_empty(cls, v: list[BaseTool]) -> list[BaseTool]:
-        """Validate tools list is not empty."""
+        """Validate tools list is not empty.
+        """
         if not v:
             raise ValueError("Available tools list cannot be empty")
 
@@ -111,14 +122,18 @@ class ToolStep(AbstractStep):
 
         return v
 
-    @model_validator(mode="after")
-    @classmethod
+    @ model_validator(mode="after")
+    @ classmethod
     def validate_tool_exists_and_args(cls) -> "ToolStep":
-        """Validate tool exists and arguments are correct."""
+        """Validate tool exists and arguments are correct.
+        """
         # Check tool exists
         if self.tool_name not in self.tool_names:
             raise ValueError(
-                f"Tool '{self.tool_name}' not found. Available tools: {', '.join(self.tool_names)}"
+                f"Tool '{
+    self.tool_name}' not found. Available tools: {
+        ', '.join(
+            self.tool_names)}"
             )
 
         # Validate arguments
@@ -126,7 +141,9 @@ class ToolStep(AbstractStep):
             missing_args = set(self.required_args) - set(self.tool_args.keys())
             if missing_args:
                 raise ValueError(
-                    f"Missing required arguments for tool '{self.tool_name}': {', '.join(missing_args)}"
+                    f"Missing required arguments for tool '{
+    self.tool_name}': {
+        ', '.join(missing_args)}"
                 )
 
             # Check for invalid arguments
@@ -134,14 +151,17 @@ class ToolStep(AbstractStep):
             invalid_args = set(self.tool_args.keys()) - valid_args
             if invalid_args:
                 raise ValueError(
-                    f"Invalid arguments for tool '{self.tool_name}': {', '.join(invalid_args)}"
+                    f"Invalid arguments for tool '{
+    self.tool_name}': {
+        ', '.join(invalid_args)}"
                 )
 
         return self
 
     # Helper methods
     def _are_args_valid(self) -> bool:
-        """Check if tool arguments are valid."""
+        """Check if tool arguments are valid.
+        """
         if not self.selected_tool:
             return False
 
@@ -157,14 +177,16 @@ class ToolStep(AbstractStep):
 
     # Abstract method implementations
     def can_execute(self, completed_steps: set[str]) -> bool:
-        """Check if this step can execute."""
+        """Check if this step can execute.
+        """
         return (
             all(dep in completed_steps for dep in self.depends_on)
             and self.is_tool_valid
         )
 
     def execute(self, context: dict[str, Any]) -> Any:
-        """Execute the tool with the provided arguments."""
+        """Execute the tool with the provided arguments.
+        """
         if not self.can_execute(context.get("completed_steps", set())):
             raise ValueError(
                 "Step cannot be executed - dependencies not met or tool invalid"
@@ -186,7 +208,8 @@ class ToolStep(AbstractStep):
 
     # Utility methods
     def get_tool_info(self) -> dict[str, Any]:
-        """Get comprehensive tool information."""
+        """Get comprehensive tool information.
+        """
         if not self.selected_tool:
             return {"error": "Tool not found"}
 
@@ -202,24 +225,27 @@ class ToolStep(AbstractStep):
         }
 
     def update_tool_args(self, **kwargs) -> None:
-        """Update tool arguments and revalidate."""
+        """Update tool arguments and revalidate.
+        """
         self.tool_args.update(kwargs)
         # Pydantic will automatically revalidate
 
     def clear_tool_args(self) -> None:
-        """Clear all tool arguments."""
+        """Clear all tool arguments.
+        """
         self.tool_args = {}
 
-    @classmethod
+    @ classmethod
     def create_from_tool(
         cls,
         tool: BaseTool,
         tool_args: dict[str, Any],
         available_tools: list[BaseTool],
-        description: str | None = None,
+        description: Optional[str]=None,
         **kwargs,
     ) -> "ToolStep":
-        """Factory method to create ToolStep from a tool instance."""
+        """Factory method to create ToolStep from a tool instance.
+        """
         return cls(
             description=description or f"Execute {tool.name} tool",
             tool_name=tool.name,
@@ -233,12 +259,13 @@ class ToolStep(AbstractStep):
 def create_tool_steps_from_plan(
     tool_plan: list[dict[str, Any]], available_tools: list[BaseTool]
 ) -> list[ToolStep]:
-    """Create a list of ToolSteps from a plan description."""
+    """Create a list of ToolSteps from a plan description.
+    """
     steps = []
 
     for i, step_info in enumerate(tool_plan):
         step = ToolStep(
-            description=step_info.get("description", f"Step {i+1}"),
+            description=step_info.get("description", f"Step {i + 1}"),
             tool_name=step_info["tool_name"],
             tool_args=step_info.get("tool_args", {}),
             depends_on=step_info.get("depends_on", []),
@@ -250,7 +277,8 @@ def create_tool_steps_from_plan(
 
 
 def validate_tool_compatibility(tools: list[BaseTool]) -> dict[str, Any]:
-    """Validate a list of tools for compatibility issues."""
+    """Validate a list of tools for compatibility issues.
+    """
     tool_names = [tool.name for tool in tools]
 
     issues = {
@@ -261,7 +289,7 @@ def validate_tool_compatibility(tools: list[BaseTool]) -> dict[str, Any]:
     }
 
     # Check for duplicates
-    seen_names = set()
+    seen_names=set()
     for name in tool_names:
         if name in seen_names:
             issues["duplicate_names"].append(name)

@@ -14,7 +14,6 @@ Functions:
 """
 
 # src/haive/agents/simple/enhanced_simple_real.py
-
 """Enhanced SimpleAgent - Real implementation using Agent[AugLLMConfig].
 
 This is the real SimpleAgent implementation showing it as Agent[AugLLMConfig].

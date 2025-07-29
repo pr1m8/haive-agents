@@ -1,7 +1,7 @@
 """Memory-Aware RAG Agents.
 
-from typing import Any
-Memory-aware RAG with persistent context and iterative learning.
+from typing import Any Memory-aware RAG with persistent context and iterative learning.
+from typing import Optional
 Uses structured output models for memory management.
 """
 
@@ -65,7 +65,7 @@ class MemoryRetrievalAgent(Agent):
     name: str = "Memory Retrieval"
 
     def __init__(
-        self, llm_config: LLMConfig | None = None, max_memories: int = 10, **kwargs
+        self, llm_config: Optional[LLMConfig] = None, max_memories: int = 10, **kwargs
     ):
         """Initialize memory retrieval agent."""
         self.llm_config = llm_config or AzureLLMConfig(
@@ -135,7 +135,7 @@ class MemoryAwareRAGAgent(SequentialAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         max_memories: int = 100,
         **kwargs,
     ):
@@ -186,7 +186,7 @@ class MemoryAwareRAGAgent(SequentialAgent):
 
 def create_memory_aware_rag_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     memory_mode: str = "adaptive",
     **kwargs,
 ) -> MemoryAwareRAGAgent:

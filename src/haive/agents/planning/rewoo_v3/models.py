@@ -41,8 +41,8 @@ class PlanStep(BaseModel):
 class ReWOOPlan(BaseModel):
     """Structured planning output from Planner agent.
 
-    The plan contains all steps upfront without seeing any tool results.
-    Each step has an evidence placeholder that will be filled by the Worker.
+    The plan contains all steps upfront without seeing any tool results. Each step has
+    an evidence placeholder that will be filled by the Worker.
     """
 
     plan_id: str = Field(description="Unique plan identifier")

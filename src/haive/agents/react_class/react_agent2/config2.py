@@ -271,8 +271,8 @@ class ReactAgentConfig(AgentConfig):
         system_prompt: str | None = None,
         additional_input_vars: list[str] | None = None,
     ) -> ChatPromptTemplate:
-        """Create a flexible prompt template that supports system prompt
-        and additional input variables.
+        """Create a flexible prompt template that supports system prompt and additional
+        input variables.
 
         Args:
             system_prompt: Custom system prompt

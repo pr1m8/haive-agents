@@ -33,8 +33,8 @@ logger = logging.getLogger(__name__)
 class ReactManyToolsAgent(ReactAgent):
     """React Agent implementation that can handle many tools efficiently.
 
-    Extends ReactAgent with advanced tool filtering and selection
-    to manage large numbers of tools, and integrates RAG capabilities.
+    Extends ReactAgent with advanced tool filtering and selection to manage large
+    numbers of tools, and integrates RAG capabilities.
     """
 
     def __init__(self, config: ReactManyToolsConfig):
@@ -633,7 +633,9 @@ class ReactManyToolsAgent(ReactAgent):
         """Add a node for adding a system message to the state."""
 
         def add_system_message(state: dict[str, Any]) -> dict[str, Any]:
-            """Add system message if none exists yet, with context from retrieved documents."""
+            """Add system message if none exists yet, with context from retrieved
+            documents.
+            """
             messages = state.get("messages", [])
 
             # Check if we already have a system message

@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 """Clean MultiAgent implementation - unified multi-agent coordination system.
 
 from typing import Any, Dict
+from typing import Optional
 This module provides the single, comprehensive multi-agent coordination system for
 the Haive framework. It supports simple sequential execution, complex routing patterns,
 parallel execution, and conditional workflows - all in one unified implementation.
@@ -82,7 +85,6 @@ See Also:
     README.md: Comprehensive documentation and examples
 """
 
-from __future__ import annotations
 
 from collections.abc import Callable
 from typing import Any
@@ -154,7 +156,7 @@ class MultiAgent(Agent):
         description="Dictionary of agents this multi-agent coordinates",
     )
 
-    agent: Agent | None = Field(
+    agent: Optional[Agent] = Field(
         default=None, description="Main/default agent for this multi-agent"
     )
 
@@ -177,7 +179,7 @@ class MultiAgent(Agent):
     )
 
     # Entry point for execution
-    entry_point: str | None = Field(
+    entry_point: Optional[str] = Field(
         default=None,
         description="Starting agent for execution (if not specified, uses first agent or infers)",
     )
@@ -482,7 +484,7 @@ class MultiAgent(Agent):
         }
 
     def add_parallel_group(
-        self, agent_names: list[str], next_agent: str | None = None
+        self, agent_names: list[str], next_agent: Optional[str] = None
     ) -> None:
         """Add a group of agents that run in parallel.
 

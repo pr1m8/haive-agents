@@ -11,7 +11,6 @@ Functions:
 """
 
 # haive/agents/multi/sequential.py
-
 """Sequential multi-agent implementation for the Haive framework."""
 
 import logging

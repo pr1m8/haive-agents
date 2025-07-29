@@ -1,8 +1,9 @@
 """Query Planning Agentic RAG Agent.
 
-from typing import Any
-Implementation of query planning RAG with structured decomposition and execution.
-Provides intelligent query analysis, planning, and multi-stage retrieval strategies.
+from typing import Any Implementation of query planning RAG with structured
+from typing import Optional
+decomposition and execution. Provides intelligent query analysis, planning, and multi-
+stage retrieval strategies.
 """
 
 import logging
@@ -340,13 +341,13 @@ class QueryPlanningRAGAgent(Agent):
     )
 
     # Engines for different stages (initialized in setup_agent)
-    planning_engine: AugLLMConfig | None = Field(
+    planning_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for query planning"
     )
-    execution_engine: AugLLMConfig | None = Field(
+    execution_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for sub-query execution"
     )
-    synthesis_engine: AugLLMConfig | None = Field(
+    synthesis_engine: Optional[AugLLMConfig] = Field(
         default=None, description="Engine for result synthesis"
     )
 
@@ -385,7 +386,7 @@ class QueryPlanningRAGAgent(Agent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
         planning_depth: int = 3,
         **kwargs,
     ):
@@ -599,7 +600,7 @@ class QueryPlanningRAGAgent(Agent):
 # Factory function
 def create_query_planning_rag_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     planning_mode: str = "comprehensive",
     **kwargs,
 ) -> QueryPlanningRAGAgent:

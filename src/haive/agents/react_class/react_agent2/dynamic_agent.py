@@ -13,7 +13,6 @@ Functions:
 """
 
 # src/haive/agents/react_agent2/dynamic_agent.py
-
 """Dynamic React Agent - an extension of React agent with tool selection capabilities."""
 import logging
 import uuid
@@ -59,8 +58,8 @@ class DynamicReactAgentState(ReactAgentState):
 class DynamicReactAgentConfig(ReactAgentConfig):
     """Configuration for a React agent with dynamic tool selection.
 
-    This agent can handle a large number of tools by dynamically selecting
-    which tools to make available to the LLM based on the context.
+    This agent can handle a large number of tools by dynamically selecting which tools
+    to make available to the LLM based on the context.
     """
 
     # Node configuration - Define our additional node
@@ -172,8 +171,8 @@ class DynamicReactAgentConfig(ReactAgentConfig):
 class DynamicReactAgent(ReactAgent):
     """A React agent with dynamic tool selection.
 
-    This agent extends the React pattern with dynamic tool selection,
-    making it efficient when dealing with a large number of tools.
+    This agent extends the React pattern with dynamic tool selection, making it
+    efficient when dealing with a large number of tools.
     """
 
     def __init__(self, config: DynamicReactAgentConfig):

@@ -1,7 +1,7 @@
 """Prompts for Plan-and-Execute V3 Agent.
 
-This module contains the proper ChatPromptTemplate prompts for each
-sub-agent in the Plan-and-Execute V3 architecture, using state computed fields.
+This module contains the proper ChatPromptTemplate prompts for each sub-agent in the
+Plan-and-Execute V3 architecture, using state computed fields.
 """
 
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder

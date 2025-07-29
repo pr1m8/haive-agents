@@ -111,8 +111,8 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
     def setup_agent(self) -> None:
         """Setup the dynamic activation supervisor.
 
-        This method is called during agent initialization to set up
-        the supervisor's internal state and components.
+        This method is called during agent initialization to set up the supervisor's
+        internal state and components.
         """
         # Call parent setup
         super().setup_agent()
@@ -235,8 +235,8 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
     def _setup_supervisor_tools(self) -> None:
         """Set up default tools for the supervisor.
 
-        This method adds core supervisor tools to the engine for
-        component management and task routing.
+        This method adds core supervisor tools to the engine for component management
+        and task routing.
         """
 
         # Tool for analyzing task requirements
@@ -333,7 +333,9 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
 
         # Tool for checking component status
         @tool
-        def check_component_status(component_id: str | None = None) -> dict[str, Any]:
+        def check_component_status(
+            component_id: str | None = None,
+        ) -> dict[str, Any]:
             """Check status of components."""
             if component_id:
                 # Check specific component

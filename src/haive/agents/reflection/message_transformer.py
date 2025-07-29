@@ -86,9 +86,9 @@ class SimpleReflectionTransformer:
 class MessageTransformerReflectionAgent:
     """Reflection agent using message transformer v2 pattern.
 
-    Instead of structured output extraction, this uses message transformation
-    to add reflection context directly to conversations, following the
-    pattern from reflection_agent_pattern.md lines 565-594.
+    Instead of structured output extraction, this uses message transformation to add
+    reflection context directly to conversations, following the pattern from
+    reflection_agent_pattern.md lines 565-594.
     """
 
     def __init__(
@@ -240,8 +240,8 @@ Previous response reflection:
 class ConversationalReflectionAgent:
     """Reflection agent that maintains conversational flow with reflection context.
 
-    This integrates message transformation to create natural reflection
-    patterns within conversations, rather than separate analysis steps.
+    This integrates message transformation to create natural reflection patterns within
+    conversations, rather than separate analysis steps.
     """
 
     def __init__(
@@ -305,8 +305,8 @@ class ConversationalReflectionAgent:
 class ReflectionMessageFlow:
     """Manages reflection flow using message transformations.
 
-    This creates a workflow where reflection insights are naturally
-    integrated into message flows rather than separate analysis steps.
+    This creates a workflow where reflection insights are naturally integrated into
+    message flows rather than separate analysis steps.
     """
 
     def __init__(

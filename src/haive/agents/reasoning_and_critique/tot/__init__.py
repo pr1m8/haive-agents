@@ -1,6 +1,6 @@
 """Module exports."""
 
-from haive.agents.reasoning_and_critique.tot.agent import ToTAgent, setup_workflow
+from haive.agents.reasoning_and_critique.tot.agent import ToTAgent
 from haive.agents.reasoning_and_critique.tot.config import (
     TOTAgentConfig,
     create_for_problem_type,
@@ -52,7 +52,6 @@ __all__ = [
     "feedback",
     "get_engine",
     "metadata",
-    "setup_workflow",
     "to_candidates",
     "to_score",
     "update_candidates",

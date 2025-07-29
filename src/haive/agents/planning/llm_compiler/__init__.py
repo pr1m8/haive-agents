@@ -1,6 +1,6 @@
 """Module exports."""
 
-from llm_compiler.agent import (
+from haive.agents.planning.llm_compiler.agent import (
     LLMCompilerAgent,
     execute_tasks,
     join,
@@ -12,8 +12,11 @@ from llm_compiler.agent import (
     should_replan,
     stream,
 )
-from llm_compiler.config import LLMCompilerAgentConfig, validate_configs
-from llm_compiler.models import (
+from haive.agents.planning.llm_compiler.config import (
+    LLMCompilerAgentConfig,
+    validate_configs,
+)
+from haive.agents.planning.llm_compiler.models import (
     CompilerPlan,
     CompilerStep,
     CompilerTask,
@@ -32,14 +35,14 @@ from llm_compiler.models import (
     resolve,
     resolve_arguments,
 )
-from llm_compiler.state import (
+from haive.agents.planning.llm_compiler.state import (
     CompilerState,
     all_steps_complete,
     get_executable_steps,
     get_highest_step_id,
     has_join_result,
 )
-from llm_compiler.utils import (
+from haive.agents.planning.llm_compiler.utils import (
     replace_match,
     schedule_pending_task,
     schedule_task,

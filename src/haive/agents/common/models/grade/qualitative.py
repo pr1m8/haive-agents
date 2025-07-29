@@ -1,7 +1,7 @@
 """Qualitative grading model for text-based evaluations.
 
-This module implements a qualitative grading system that provides
-text-based assessments with sentiment analysis and quality indicators.
+This module implements a qualitative grading system that provides text-based assessments
+with sentiment analysis and quality indicators.
 """
 
 from enum import Enum

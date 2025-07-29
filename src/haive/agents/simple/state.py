@@ -12,7 +12,7 @@ Functions:
 """
 
 from collections.abc import Sequence
-from typing import Annotated
+from typing import Annotated, Optional
 
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
@@ -23,8 +23,8 @@ from pydantic import Field
 class SimpleAgentState(StateSchema):
     """Base state for simple agents.
 
-    This provides a standard chat-based state with a messages field that
-    supports proper message history management through the add_messages reducer.
+    This provides a standard chat-based state with a messages field that supports proper
+    message history management through the add_messages reducer.
     """
 
     messages: Annotated[Sequence[BaseMessage], add_messages] = Field(
@@ -63,7 +63,7 @@ class SimpleAgentState(StateSchema):
         self.messages = add_messages(self.messages, [message])
         return self
 
-    def extract_last_message_content(self) -> str | None:
+    def extract_last_message_content(self -> Optional[str]:
         """Extract the content of the last message in the state.
 
         Returns:
@@ -73,9 +73,10 @@ class SimpleAgentState(StateSchema):
             return None
 
         last_message = self.messages[-1]
-        return last_message.content if hasattr(last_message, "content") else None
+        return last_message.content if hasattr(
+            last_message, "content") else None
 
-    @classmethod
+    @ classmethod
     def with_messages(cls, messages: list[BaseMessage]) -> "SimpleAgentState":
         """Create a new instance with the given messages.
 

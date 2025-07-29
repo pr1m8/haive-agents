@@ -10,9 +10,9 @@ Functions:
     evaluate: Evaluate functionality.
 """
 
-from typing import Any
+from typing import Any, Union
 
-from haive.core.graph.branches import Branch
+from haive.core.graph.node.branch import Branch
 from langchain_core.messages import AIMessage
 from langgraph.graph import END
 from langgraph.types import Command, Send
@@ -21,21 +21,25 @@ from langgraph.types import Command, Send
 class ToTBranch(Branch):
     """Branch class for Tree of Thoughts routing logic.
 
-    Handles the logic of deciding whether to continue exploration or
-    terminate the search and return the best solution found.
+    Handles the logic of deciding whether to continue exploration or terminate the
+    search and return the best solution found.
     """
 
     def __init__(self, agent: Any):
-        """Initialize with reference to parent agent for config access."""
+        """Initialize with reference to parent agent for config access.
+        """
         self.agent = agent
 
-    def evaluate(self, state: dict[str, Any]) -> str | tuple | list[Send] | Command:
-        """Evaluate the current state and determine the next steps."""
+    def evaluate(self, state: dict[str, Any] -> Union[str, tuple | list[Send] | Command]:
+        """Evaluate the current state and determine the next steps.
+        """
         # Check termination conditions
         if hasattr(state, "depth") and hasattr(state, "max_depth"):
             max_depth_reached = state.depth >= state.max_depth
         else:
-            max_depth_reached = state.get("depth", 0) >= state.get("max_depth", 3)
+            max_depth_reached = state.get(
+    "depth", 0) >= state.get(
+        "max_depth", 3)
 
         # Get candidates
         if hasattr(state, "candidates"):
@@ -86,14 +90,17 @@ class ToTBranch(Branch):
             # Create a final message with the solution
             final_message = AIMessage(content=message_text)
 
-            # Return END with the final state updates, setting answer explicitly
+            # Return END with the final state updates, setting answer
+            # explicitly
             return END, {
                 "messages": [*state.messages, final_message],
                 "answef": content,  # Make sure this is set explicitly
             }
 
         # Continue with best candidate as seed
-        return self.agent.config.expand_node_name, {"current_seed": best_candidate}
+        return self.agent.config.expand_node_name, {
+            "current_seed": best_candidate}
 
         # Continue with best candidate as seed
-        return self.agent.config.expand_node_name, {"current_seed": candidates[0]}
+        return self.agent.config.expand_node_name, {
+            "current_seed": candidates[0]}

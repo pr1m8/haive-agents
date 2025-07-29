@@ -28,6 +28,11 @@ from enum import Enum
 from typing import (
     Any,
     Literal,
+    Optional,
+    Union,
+    from,
+    import,
+    typing,
 )
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -44,7 +49,8 @@ console = Console()
 
 
 class ExecutionMode(str, Enum):
-    """Execution modes for multi-agent systems."""
+    """Execution modes for multi-agent systems.
+    """
 
     SEQUENCE = "sequence"  # Execute agents in order
     PARALLEL = "parallel"  # Execute agents in parallel
@@ -97,7 +103,8 @@ class MultiAgent(Agent):
     @model_validator(mode="before")
     @classmethod
     def validate_agents(cls, values: dict[str, Any]) -> dict[str, Any]:
-        """Ensure agents list is not empty."""
+        """Ensure agents list is not empty.
+        """
         if isinstance(values, dict):
             agents = values.get("agents", [])
             if not agents:
@@ -106,7 +113,8 @@ class MultiAgent(Agent):
 
     @model_validator(mode="after")
     def setup_multi_agent(self) -> "MultiAgent":
-        """Set up the multi-agent system after initialization."""
+        """Set up the multi-agent system after initialization.
+        """
         # Generate schema based on execution mode
         build_mode = self._get_build_mode()
 
@@ -131,7 +139,8 @@ class MultiAgent(Agent):
         return self
 
     def _get_build_mode(self) -> BuildMode:
-        """Map execution mode to build mode."""
+        """Map execution mode to build mode.
+        """
         mode_mapping = {
             ExecutionMode.SEQUENCE: BuildMode.SEQUENCE,
             ExecutionMode.PARALLEL: BuildMode.PARALLEL,
@@ -141,7 +150,8 @@ class MultiAgent(Agent):
         return mode_mapping.get(self.execution_mode, BuildMode.CUSTOM)
 
     def _setup_io_schemas(self) -> None:
-        """Set up input and output schemas based on execution mode."""
+        """Set up input and output schemas based on execution mode.
+        """
         if self.execution_mode == ExecutionMode.SEQUENCE:
             # Input from first agent, output from last
             if self.agents:
@@ -166,7 +176,7 @@ class MultiAgent(Agent):
 
     def add_conditional_edge(
         self,
-        source_agent: str | Agent,
+        source_agent: Union[str, Agent],
         condition: Callable[[Any], str | bool],
         destinations: dict[str | bool, str | Agent],
         default: str | Agent | None = None,
@@ -197,8 +207,9 @@ class MultiAgent(Agent):
             ),
         }
 
-    def _get_node_name(self, agent: str | Agent) -> str:
-        """Get the node name for an agent."""
+    def _get_node_name(self, agent: Union[str, Agent]) -> str:
+        """Get the node name for an agent.
+        """
         if isinstance(agent, str):
             # Could be agent name or id
             for a in self.agents:
@@ -210,7 +221,8 @@ class MultiAgent(Agent):
         raise ValueError(f"Invalid agent reference: {agent}")
 
     def _get_agent_node_name(self, agent: Agent) -> str:
-        """Get the unique node name for an agent."""
+        """Get the unique node name for an agent.
+        """
         base_name = getattr(agent, "name", agent.__class__.__name__)
         agent_id = getattr(agent, "id", base_name)
 
@@ -228,7 +240,8 @@ class MultiAgent(Agent):
         return self._agent_node_mapping[agent_id]
 
     def build_graph(self) -> BaseGraph:
-        """Build the graph based on execution mode."""
+        """Build the graph based on execution mode.
+        """
         graph = BaseGraph(name=self.name)
 
         # Build based on execution mode
@@ -247,7 +260,8 @@ class MultiAgent(Agent):
         return graph
 
     def _build_sequence_graph(self, graph: BaseGraph) -> None:
-        """Build a sequential execution graph."""
+        """Build a sequential execution graph.
+        """
         node_names = []
 
         # Add all agents as nodes
@@ -290,7 +304,8 @@ class MultiAgent(Agent):
                 graph.add_edge(node_name, node_names[i + 1])
 
     def _build_parallel_graph(self, graph: BaseGraph) -> None:
-        """Build a parallel execution graph."""
+        """Build a parallel execution graph.
+        """
         # Create a coordinator node
         coordinator_name = f"{self.name}_coordinator"
 
@@ -335,13 +350,15 @@ class MultiAgent(Agent):
         graph.add_edge(aggregator_name, END)
 
     def _build_conditional_graph(self, graph: BaseGraph) -> None:
-        """Build a conditional execution graph."""
+        """Build a conditional execution graph.
+        """
         # Start with sequence and add conditional edges
         self._build_sequence_graph(graph)
         # Conditional edges are already added in sequence building
 
     def _build_hierarchical_graph(self, graph: BaseGraph) -> None:
-        """Build a hierarchical execution graph."""
+        """Build a hierarchical execution graph.
+        """
         # Default implementation - can be overridden
         logger.warning("Hierarchical mode not fully implemented, using sequence")
         self._build_sequence_graph(graph)
@@ -360,8 +377,9 @@ class MultiAgent(Agent):
             "Subclasses must implement build_custom_graph for CUSTOM mode"
         )
 
-    def get_agent_by_name(self, name: str) -> Agent | None:
-        """Get an agent by name or id."""
+    def get_agent_by_name(self, name: str -> Optional[Agent]:
+        """Get an agent by name or id.
+        """
         for agent in self.agents:
             if (
                 getattr(agent, "name", None) == name
@@ -371,7 +389,8 @@ class MultiAgent(Agent):
         return None
 
     def visualize_structure(self) -> None:
-        """Visualize the multi-agent structure."""
+        """Visualize the multi-agent structure.
+        """
         tree = Tree(f"[bold blue]{self.name}[/bold blue] ({self.execution_mode.value})")
 
         # Add agents
@@ -414,36 +433,42 @@ class MultiAgent(Agent):
 
 
 class SequentialAgent(MultiAgent):
-    """Pre-configured sequential multi-agent."""
+    """Pre-configured sequential multi-agent.
+    """
 
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.SEQUENCE, description="Sequential execution mode"
     )
 
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:
-        """Not needed for sequential mode."""
+        """Not needed for sequential mode.
+        """
         return graph
 
 
 class ParallelAgent(MultiAgent):
-    """Pre-configured parallel multi-agent."""
+    """Pre-configured parallel multi-agent.
+    """
 
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.PARALLEL, description="Parallel execution mode"
     )
 
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:
-        """Not needed for parallel mode."""
+        """Not needed for parallel mode.
+        """
         return graph
 
 
 class ConditionalAgent(MultiAgent):
-    """Pre-configured conditional multi-agent with branching."""
+    """Pre-configured conditional multi-agent with branching.
+    """
 
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.CONDITIONAL, description="Conditional execution mode"
     )
 
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:
-        """Not needed for conditional mode."""
+        """Not needed for conditional mode.
+        """
         return graph

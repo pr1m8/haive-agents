@@ -1,7 +1,7 @@
 """Fixed Dynamic Supervisor with Proper Graph Rebuilding.
 
-This implementation correctly handles dynamic agent addition after compilation
-based on BaseGraph2 limitations and requirements.
+This implementation correctly handles dynamic agent addition after compilation based on
+BaseGraph2 limitations and requirements.
 """
 
 import asyncio

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Models model module.
 
 This module provides models functionality for the Haive framework.
@@ -11,7 +13,6 @@ Functions:
     normalized_score: Normalized Score functionality.
 """
 
-from __future__ import annotations
 
 import math
 from collections import deque

@@ -19,7 +19,7 @@ import uuid
 # src/haive/agents/react/agent.py
 from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Literal
+from typing import Any, Literal, Optional, Union
 
 from haive.core.config.runnable import RunnableConfigManager
 from haive.core.engine.agent.agent import register_agent
@@ -49,7 +49,8 @@ logger = logging.getLogger(__name__)
 
 
 class ReactAgentSchema(SimpleAgentState):
-    """Schema for React Agent State, extending SimpleAgentSchema."""
+    """Schema for React Agent State, extending SimpleAgentSchema.
+    """
 
     # Inherit messages field from SimpleAgentSchema
 
@@ -58,7 +59,8 @@ class ReactAgentSchema(SimpleAgentState):
         default_factory=list, description="Results from tool executions"
     )
 
-    current_step: int = Field(default=0, description="Current step in the execution")
+    current_step: int = Field(
+    default=0, description="Current step in the execution")
 
     remaining_steps: int = Field(
         default=10, description="Number of remaining steps in the execution"
@@ -71,7 +73,8 @@ class ReactAgentSchema(SimpleAgentState):
 
 # Optional schema for structured output
 class ReactAgentSchemaWithStructuredResponse(ReactAgentSchema):
-    """Schema for React Agent with structured response."""
+    """Schema for React Agent with structured response.
+    """
 
     structured_response: Any = Field(
         default=None, description="Structured response from the agent"
@@ -154,8 +157,8 @@ class ReactAgentConfig(SimpleAgentConfig):
         tools: list[BaseTool | StructuredTool | Callable],
         model: str = "gpt-4o",
         temperature: float = 0.7,
-        system_prompt: str | None = None,
-        name: str | None = None,
+        system_prompt: Optional[str] = None,
+        name: Optional[str] = None,
         response_format: type[BaseModel] | dict[str, Any] | None = None,
         **kwargs,
     ) -> "ReactAgentConfig":
@@ -219,7 +222,8 @@ Always give your reasoning before using a tool, explaining why you're choosing i
 
         # Create and return the config
         return cls(
-            name=name or f"react_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name or f"react_agent_{
+    datetime.now().strftime('%Y%m%d_%H%M%S')}",
             engine=aug_llm,
             tools=tools,
             system_prompt=system_prompt,
@@ -245,7 +249,8 @@ class ReactAgent(SimpleAgent):
     """
 
     def setup_workflow(self) -> None:
-        """Set up the React agent workflow graph."""
+        """Set up the React agent workflow graph.
+        """
         logger.debug(f"Setting up workflow for ReactAgent {self.config.name}")
 
         # Create DynamicGraph with proper component registration
@@ -259,7 +264,11 @@ class ReactAgent(SimpleAgent):
         agent_node_config = NodeConfig(
             name=self.config.node_name,
             engine=self.config.engine,
-            config_overrides={"temperature": getattr(self.config, "temperature", 0.7)},
+            config_overrides={
+    "temperature": getattr(
+        self.config,
+        "temperature",
+         0.7)},
         )
 
         gb.add_node(
@@ -273,7 +282,9 @@ class ReactAgent(SimpleAgent):
             name=self.config.router_node_name, engine=self._create_router_function()
         )
 
-        gb.add_node(name=self.config.router_node_name, config=router_node_config)
+        gb.add_node(
+    name=self.config.router_node_name,
+     config=router_node_config)
 
         # Add the tool execution node
         if self.config.version == "v1":
@@ -325,7 +336,9 @@ class ReactAgent(SimpleAgent):
             self._route_based_on_messages, destinations=route_destinations
         )
 
-        gb.add_conditional_edges(self.config.router_node_name, router_branch.evaluator)
+        gb.add_conditional_edges(
+    self.config.router_node_name,
+     router_branch.evaluator)
 
         # Set entry point
         gb.set_entry_point(self.config.node_name)
@@ -363,7 +376,8 @@ class ReactAgent(SimpleAgent):
         logger.info(f"Set up React workflow for {self.config.name}")
 
     def _setup_tool_nodes(self, gb: DynamicGraph) -> None:
-        """Set up individual tool nodes for the v2 graph version."""
+        """Set up individual tool nodes for the v2 graph version.
+        """
         # Track tool groupings for custom routing
         tool_groups = {}
 
@@ -410,10 +424,12 @@ class ReactAgent(SimpleAgent):
             gb.add_edge(self.config.tool_node_name, self.config.node_name)
 
     def _create_router_function(self) -> Callable:
-        """Create the router function for determining next steps."""
+        """Create the router function for determining next steps.
+        """
 
         def router_function(state: ReactAgentSchema) -> Command:
-            """Router function to decide next steps."""
+            """Router function to decide next steps.
+            """
             # Increment step counter
             current_step = state.current_step
             remaining_steps = self.config.max_iterations - (current_step + 1)
@@ -432,7 +448,7 @@ class ReactAgent(SimpleAgent):
 
     def _route_based_on_messages(
         self, state: ReactAgentSchema
-    ) -> str | Send | list[Send]:
+     -> Union[str, Send | list[Send]]:
         """Determine the routing based on message content.
 
         Args:
@@ -503,10 +519,13 @@ class ReactAgent(SimpleAgent):
         return "end"
 
     def _create_structured_output_node(self) -> Callable:
-        """Create a node that generates structured output."""
+        """Create a node that generates structured output.
+        """
 
-        def generate_structured_response(state: ReactAgentSchema) -> dict[str, Any]:
-            """Generate structured response from the conversation."""
+        def generate_structured_response(
+            state: ReactAgentSchema) -> dict[str, Any]:
+            """Generate structured response from the conversation.
+            """
             try:
                 # Get the LLM from the engine
                 llm = None
@@ -517,7 +536,8 @@ class ReactAgent(SimpleAgent):
                     llm = self.config.engine.llm_config.instantiate()
 
                 if not llm:
-                    logger.error("Could not get LLM for structured output generation")
+                    logger.error(
+                        "Could not get LLM for structured output generation")
                     return {
                         "structured_response": {
                             "error": "Could not generate structured response"
@@ -529,7 +549,8 @@ class ReactAgent(SimpleAgent):
                     self.config.response_format
                 )
 
-                # Get messages (excluding the last one if it contains tool calls)
+                # Get messages (excluding the last one if it contains tool
+                # calls)
                 messages = list(state.messages)
                 if (
                     messages
@@ -562,7 +583,8 @@ class ReactAgent(SimpleAgent):
         return generate_structured_response
 
     def run(self, input_data: Any) -> dict[str, Any]:
-        """Run the agent with the given input."""
+        """Run the agent with the given input.
+        """
         logger.debug(f"Running ReactAgent with input: {input_data}")
 
         # Prepare the input
@@ -588,7 +610,8 @@ class ReactAgent(SimpleAgent):
                 temperature=getattr(self.config, "temperature", 0.7),
             )
 
-        result = self.app.invoke(inputs, config=config, debug=self.config.debug)
+        result = self.app.invoke(
+    inputs, config=config, debug=self.config.debug)
 
         # Save state history if configured
         if self.config.save_history:
@@ -615,7 +638,10 @@ class ReactAgent(SimpleAgent):
                     logger.debug(f"Output: {last_message.content[:100]}...")
 
         # Apply post-processing if configured
-        if hasattr(self.config, "postprocess") and callable(self.config.postprocess):
+        if hasattr(
+    self.config,
+    "postprocess") and callable(
+        self.config.postprocess):
             try:
                 result = self.config.postprocess(result)
             except Exception as e:
@@ -624,7 +650,8 @@ class ReactAgent(SimpleAgent):
         return result
 
     def _prepare_input(self, input_data: Any) -> dict[str, Any]:
-        """Prepare input data for the agent."""
+        """Prepare input data for the agent.
+        """
         # Use parent's method as base
         state = super()._prepare_input(input_data)
 
@@ -651,22 +678,22 @@ class ReactAgent(SimpleAgent):
 
 def create_react_agent(
     tools: list[BaseTool | StructuredTool | Callable],
-    model: str = "gpt-4o",
-    temperature: float = 0.7,
-    system_prompt: str | None = None,
-    name: str | None = None,
-    response_format: type[BaseModel] | dict[str, Any] | None = None,
-    max_iterations: int = 10,
-    checkpointer: Checkpointer | None = None,
-    store: BaseStore | None = None,
-    interrupt_before: list[str] | None = None,
-    interrupt_after: list[str] | None = None,
-    debug: bool = False,
-    version: Literal["v1", "v2"] = "v1",
-    visualize: bool = True,
-    tool_routing: dict[str, str] | None = None,
-    save_history: bool = True,
-    output_dir: str | None = None,
+    model: str="gpt-4o",
+    temperature: float=0.7,
+    system_prompt: Optional[str]=None,
+    name: Optional[str]=None,
+    response_format: type[BaseModel] | dict[str, Any] | None=None,
+    max_iterations: int=10,
+    checkpointer: Optional[Checkpointer]=None,
+    store: Optional[BaseStore]=None,
+    interrupt_before: list[str] | None=None,
+    interrupt_after: list[str] | None=None,
+    debug: bool=False,
+    version: Literal["v1", "v2"]="v1",
+    visualize: bool=True,
+    tool_routing: dict[str, str] | None=None,
+    save_history: bool=True,
+    output_dir: Optional[str]=None,
     **kwargs,
 ) -> ReactAgent:
     """Create a React agent that follows the reasoning-action-observation pattern.
@@ -732,7 +759,7 @@ def create_react_agent(
 
 
 def tools_condition(
-    state: dict[str, Any], messages_key: str = "messages"
+    state: dict[str, Any], messages_key: str="messages"
 ) -> Literal["tools", "end"]:
     """Determine if the state should route to tools or end based on the last message.
 

@@ -1,7 +1,7 @@
 """Grading Components for RAG Workflows.
 
-This module provides reusable grading agents for document relevance,
-answer quality, and hallucination detection.
+This module provides reusable grading agents for document relevance, answer quality, and
+hallucination detection.
 """
 
 from typing import Any

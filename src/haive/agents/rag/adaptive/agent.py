@@ -1,7 +1,7 @@
 """Adaptive RAG Agent.
 
-Dynamic strategy selection based on query complexity.
-Routes queries to appropriate RAG strategies.
+Dynamic strategy selection based on query complexity. Routes queries to appropriate RAG
+strategies.
 """
 
 from typing import Any, Literal

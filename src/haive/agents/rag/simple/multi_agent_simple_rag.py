@@ -1,3 +1,18 @@
+from __future__ import annotations
+
+import logging
+from typing import Any
+
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.retriever import BaseRetrieverConfig
+from haive.core.engine.vectorstore import VectorStoreConfig
+from langchain_core.documents import Document
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+from haive.agents.multi.multi_agent import MultiAgent
+from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.simple.agent import SimpleAgent
+
 """Multi_Agent_Simple_Rag core module.
 
 This module provides multi agent simple rag functionality for the Haive framework.
@@ -48,21 +63,8 @@ Examples:
         )
 """
 
-from __future__ import annotations
-
-import logging
-from typing import Any
-
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.retriever import BaseRetrieverConfig
-from haive.core.engine.vectorstore import VectorStoreConfig
-from langchain_core.documents import Document
-from pydantic import BaseModel, Field, field_validator, model_validator
 
 # Import the proper MultiAgent base
-from haive.agents.multi.multi_agent import MultiAgent
-from haive.agents.rag.base.agent import BaseRAGAgent
-from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 
@@ -218,7 +220,8 @@ class SimpleRAG(MultiAgent):
         self.execution_mode = "sequence"
 
         # Set up coordinator config (inherited from MultiAgent)
-        # For sequential mode, we don't need coordinator but MultiAgent expects it
+        # For sequential mode, we don't need coordinator but MultiAgent expects
+        # it
         if not hasattr(self, "coordinator_config") or self.coordinator_config is None:
             self.coordinator_config = self.llm_config
 
@@ -359,7 +362,7 @@ class SimpleRAG(MultiAgent):
         for i, doc in enumerate(documents):
             content = doc.page_content.strip()
             if content:
-                source = doc.metadata.get("source", f"Document {i+1}")
+                source = doc.metadata.get("source", f"Document {i + 1}")
                 context_parts.append(f"Source: {source}\n{content}")
 
         context = "\n\n".join(context_parts)

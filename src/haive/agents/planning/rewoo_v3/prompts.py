@@ -1,8 +1,8 @@
 """ChatPromptTemplates for ReWOO V3 Agent using proven patterns.
 
 This module defines prompt templates for all ReWOO V3 sub-agents using
-ChatPromptTemplate with state field placeholders, following our successful
-Plan-and-Execute V3 implementation pattern.
+ChatPromptTemplate with state field placeholders, following our successful Plan-and-
+Execute V3 implementation pattern.
 """
 
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder

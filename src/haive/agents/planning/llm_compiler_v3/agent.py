@@ -15,8 +15,12 @@ from haive.agents.planning.llm_compiler_v3.models import (
     CompilerOutput,
     CompilerPlan,
     CompilerTask,
+    Optional,
     ParallelExecutionResult,
     ReplanRequest,
+    from,
+    import,
+    typing,
 )
 from haive.agents.planning.llm_compiler_v3.prompts import (
     LLM_COMPILER_V3_PROMPTS,
@@ -42,8 +46,8 @@ class LLMCompilerV3Agent:
     def __init__(
         self,
         name: str = "llm_compiler_v3",
-        config: LLMCompilerV3Config | None = None,
-        tools: list | None = None,
+        config: Optional[LLMCompilerV3Config] = None,
+        tools: Optional[list] = None,
         **kwargs,
     ):
         """Initialize LLM Compiler V3 Agent.
@@ -72,7 +76,8 @@ class LLMCompilerV3Agent:
         )
 
     def _setup_agents(self):
-        """Setup specialized sub-agents for the LLM Compiler pattern."""
+        """Setup specialized sub-agents for the LLM Compiler pattern.
+        """
         # Planner Agent - Creates execution DAG
         self.planner = SimpleAgent(
             name=f"{self.name}_planner",
@@ -160,13 +165,15 @@ class LLMCompilerV3Agent:
     def run(
         self, query: str, context: dict[str, Any] | None = None, **kwargs
     ) -> CompilerOutput:
-        """Execute LLM Compiler pattern synchronously."""
+        """Execute LLM Compiler pattern synchronously.
+        """
         return asyncio.run(self.arun(query, context, **kwargs))
 
     async def _planning_phase(
         self, state: LLMCompilerStateSchema, compiler_input: CompilerInput
     ) -> LLMCompilerStateSchema:
-        """Execute planning phase to create task DAG."""
+        """Execute planning phase to create task DAG.
+        """
         # Generate contextual planner prompt
         planner_prompt = get_planner_prompt(
             query=compiler_input.query,
@@ -199,7 +206,8 @@ class LLMCompilerV3Agent:
     async def _execution_phase(
         self, state: LLMCompilerStateSchema
     ) -> LLMCompilerStateSchema:
-        """Execute tasks with parallel coordination."""
+        """Execute tasks with parallel coordination.
+        """
         max_iterations = 20  # Prevent infinite loops
         iteration = 0
 
@@ -237,7 +245,8 @@ class LLMCompilerV3Agent:
     async def _execute_parallel_tasks(
         self, state: LLMCompilerStateSchema, tasks: list[CompilerTask]
     ) -> None:
-        """Execute multiple tasks in parallel."""
+        """Execute multiple tasks in parallel.
+        """
         # Limit tasks based on configuration
         tasks_to_execute = tasks[
             : state.max_parallel_tasks - len(state.currently_executing)
@@ -278,7 +287,8 @@ class LLMCompilerV3Agent:
     async def _execute_single_task(
         self, state: LLMCompilerStateSchema, task: CompilerTask
     ) -> ParallelExecutionResult:
-        """Execute a single task with timing and error handling."""
+        """Execute a single task with timing and error handling.
+        """
         start_time = time.time()
 
         try:
@@ -334,7 +344,8 @@ class LLMCompilerV3Agent:
             )
 
     async def _execute_tool(self, tool, arguments: dict[str, Any]) -> Any:
-        """Execute a tool with given arguments."""
+        """Execute a tool with given arguments.
+        """
         # Handle both sync and async tools
         if hasattr(tool, "ainvoke"):
             return await tool.ainvoke(arguments)
@@ -342,21 +353,22 @@ class LLMCompilerV3Agent:
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, tool.invoke, arguments)
 
-    async def _synthesis_phase(self, state: LLMCompilerStateSchema) -> CompilerOutput:
-        """Synthesize final results using joiner agent."""
+    async def _synthesis_phase(
+            self,
+            state: LLMCompilerStateSchema) -> CompilerOutput:
+        """Synthesize final results using joiner agent.
+        """
         # Calculate total execution time
-        total_time = time.time() - (
-            state.execution_start_time.timestamp() if state.execution_start_time else 0
-        )
+        total_time = time.time() - (state.execution_start_time.timestamp()
+                                    if state.execution_start_time else 0)
         state.total_execution_time = total_time
 
         # Generate joiner prompt with all execution context
         joiner_prompt = get_joiner_prompt(
-            original_query=state.original_query,
-            execution_results=[r.model_dump() for r in state.execution_results],
-            successful_tasks=[r.task_id for r in state.get_successful_results()],
-            failed_tasks=[r.task_id for r in state.get_failed_results()],
-        )
+            original_query=state.original_query, execution_results=[
+                r.model_dump() for r in state.execution_results], successful_tasks=[
+                r.task_id for r in state.get_successful_results()], failed_tasks=[
+                r.task_id for r in state.get_failed_results()], )
 
         # Execute joiner agent
         try:
@@ -370,10 +382,12 @@ class LLMCompilerV3Agent:
                 execution_plan=state.current_plan,
                 execution_results=state.execution_results,
                 total_execution_time=total_time,
-                tasks_executed=len(state.execution_results),
+                tasks_executed=len(
+                    state.execution_results),
                 reasoning_trace=[
-                    f"Task {r.task_id}: {r.tool_name}" for r in state.execution_results
-                ],
+                    f"Task {
+                        r.task_id}: {
+                        r.tool_name}" for r in state.execution_results],
                 metadata=state.execution_metadata,
             )
 
@@ -384,10 +398,12 @@ class LLMCompilerV3Agent:
     async def _replan_phase(
         self, state: LLMCompilerStateSchema
     ) -> LLMCompilerStateSchema:
-        """Execute replanning when execution encounters issues."""
+        """Execute replanning when execution encounters issues.
+        """
         # Create replan request
         replan_request = ReplanRequest(
-            feedback=f"Replanning needed due to failed tasks: {state.failed_task_ids}",
+            feedback=f"Replanning needed due to failed tasks: {
+                state.failed_task_ids}",
             failed_tasks=state.failed_task_ids,
             partial_results=state.task_results,
         )
@@ -400,12 +416,10 @@ class LLMCompilerV3Agent:
             query=state.original_query,
             context={
                 "previous_plan": (
-                    state.current_plan.model_dump() if state.current_plan else None
-                ),
+                    state.current_plan.model_dump() if state.current_plan else None),
                 "failed_tasks": state.failed_task_ids,
                 "successful_results": {
-                    r.task_id: r.result for r in state.get_successful_results()
-                },
+                    r.task_id: r.result for r in state.get_successful_results()},
                 "replan_feedback": replan_request.feedback,
             },
         )
@@ -421,7 +435,8 @@ class LLMCompilerV3Agent:
         return state
 
     def _parse_plan_from_result(self, result: Any) -> CompilerPlan:
-        """Fallback parsing of plan from agent result."""
+        """Fallback parsing of plan from agent result.
+        """
         # Implementation depends on how the agent returns results
         # This is a simplified version
         return CompilerPlan(
@@ -433,21 +448,26 @@ class LLMCompilerV3Agent:
     def _create_error_output(
         self, error_message: str, state: LLMCompilerStateSchema
     ) -> CompilerOutput:
-        """Create error output when execution fails."""
+        """Create error output when execution fails.
+        """
         return CompilerOutput(
             final_answer=f"Execution failed: {error_message}",
-            execution_plan=state.current_plan
-            or CompilerPlan(plan_id="error_plan", description="Error plan", tasks=[]),
+            execution_plan=state.current_plan or CompilerPlan(
+                plan_id="error_plan",
+                description="Error plan",
+                tasks=[]),
             execution_results=[],
             total_execution_time=0.0,
             tasks_executed=0,
-            metadata={"error": error_message},
+            metadata={
+                "error": error_message},
         )
 
     def _create_fallback_output(
         self, state: LLMCompilerStateSchema, error_message: str
     ) -> CompilerOutput:
-        """Create fallback output when synthesis fails."""
+        """Create fallback output when synthesis fails.
+        """
         # Synthesize basic answer from successful results
         successful_results = state.get_successful_results()
 
@@ -458,14 +478,16 @@ class LLMCompilerV3Agent:
             final_answer = "\\n".join(answer_parts)
         else:
             final_answer = (
-                f"Unable to complete task due to synthesis error: {error_message}"
-            )
+                f"Unable to complete task due to synthesis error: {error_message}")
 
         return CompilerOutput(
             final_answer=final_answer,
             execution_plan=state.current_plan,
             execution_results=state.execution_results,
             total_execution_time=state.total_execution_time,
-            tasks_executed=len(state.execution_results),
-            metadata={"synthesis_error": error_message, "fallback_synthesis": True},
+            tasks_executed=len(
+                state.execution_results),
+            metadata={
+                "synthesis_error": error_message,
+                "fallback_synthesis": True},
         )

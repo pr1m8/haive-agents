@@ -1,9 +1,9 @@
 """Enhanced HyDE RAG Agent using Structured Output Pattern.
 
-from typing import Any, Dict
-This demonstrates the new pattern where any agent can be enhanced with structured
-output by appending a SimpleAgent. This approach is more modular and follows the
-principle of separation of concerns.
+from typing import Any, Dict This demonstrates the new pattern where any agent can be
+from typing import Optional
+enhanced with structured output by appending a SimpleAgent. This approach is more
+modular and follows the principle of separation of concerns.
 """
 
 from typing import Any
@@ -78,8 +78,8 @@ class EnhancedHyDERAGAgent(SequentialAgent):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
-        embedding_model: str | None = None,
+        llm_config: Optional[LLMConfig] = None,
+        embedding_model: Optional[str] = None,
         use_enhancement_pattern: bool = True,
         **kwargs
     ):
@@ -115,7 +115,7 @@ class EnhancedHyDERAGAgent(SequentialAgent):
         cls,
         documents: list[Document],
         llm_config: LLMConfig,
-        embedding_model: str | None = None,
+        embedding_model: Optional[str] = None,
         **kwargs
     ):
         """Create using the new structured output enhancement pattern."""
@@ -176,7 +176,7 @@ Consider how well the hypothetical document would serve for semantic retrieval."
         cls,
         documents: list[Document],
         llm_config: LLMConfig,
-        embedding_model: str | None = None,
+        embedding_model: Optional[str] = None,
         **kwargs
     ):
         """Create using traditional pattern for comparison."""
@@ -221,12 +221,12 @@ class EnhancedHyDERetriever(Agent):
     documents: list[Document] = Field(
         default_factory=list, description="Documents for retrieval"
     )
-    embedding_model: str | None = Field(
+    embedding_model: Optional[str] = Field(
         default=None, description="Embedding model to use"
     )
 
     def __init__(
-        self, documents: list[Document], embedding_model: str | None = None, **kwargs
+        self, documents: list[Document], embedding_model: Optional[str] = None, **kwargs
     ):
         super().__init__(documents=documents, embedding_model=embedding_model, **kwargs)
 
@@ -311,7 +311,7 @@ class EnhancedHyDERetriever(Agent):
 # Factory functions for easy creation
 def create_enhanced_hyde_agent(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     use_enhancement_pattern: bool = True,
     **kwargs
 ) -> EnhancedHyDERAGAgent:

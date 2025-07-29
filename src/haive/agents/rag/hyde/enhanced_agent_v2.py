@@ -1,6 +1,7 @@
 """Enhanced HyDE RAG Agent v2 with Advanced Prompt Selection and Multi-Document Generation.
 
 from typing import Any
+from typing import Optional
 This version integrates the new enhanced prompt system with:
 - Automatic prompt type selection based on query analysis
 - Multi-document generation from different perspectives
@@ -82,7 +83,8 @@ class HyDEAgentConfig(BaseModel):
 
 
 class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
-    """Enhanced HyDE RAG Agent with advanced prompt selection and multi-document generation.
+    """Enhanced HyDE RAG Agent with advanced prompt selection and multi-document
+    generation.
 
     Key Features:
     - Automatic prompt type selection based on query analysis
@@ -110,9 +112,9 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
     def from_documents(
         cls,
         documents: list[Document],
-        llm_config: LLMConfig | None = None,
-        embedding_model: str | None = None,
-        config: HyDEAgentConfig | None = None,
+        llm_config: Optional[LLMConfig] = None,
+        embedding_model: Optional[str] = None,
+        config: Optional[HyDEAgentConfig] = None,
         **kwargs,
     ) -> "EnhancedHyDERAGAgentV2":
         """Create Enhanced HyDE RAG Agent v2 from documents.
@@ -174,7 +176,7 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         cls,
         documents: list[Document],
         llm_config: LLMConfig,
-        embedding_model: str | None,
+        embedding_model: Optional[str],
         config: HyDEAgentConfig,
     ) -> list[Agent]:
         """Create pipeline for single document generation."""
@@ -232,7 +234,7 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         cls,
         documents: list[Document],
         llm_config: LLMConfig,
-        embedding_model: str | None,
+        embedding_model: Optional[str],
         config: HyDEAgentConfig,
     ) -> list[Agent]:
         """Create pipeline for multi-perspective document generation."""
@@ -281,7 +283,7 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         cls,
         documents: list[Document],
         llm_config: LLMConfig,
-        embedding_model: str | None,
+        embedding_model: Optional[str],
         config: HyDEAgentConfig,
     ) -> list[Agent]:
         """Create pipeline for multi-domain document generation."""
@@ -342,7 +344,7 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         cls,
         documents: list[Document],
         llm_config: LLMConfig,
-        embedding_model: str | None,
+        embedding_model: Optional[str],
         config: HyDEAgentConfig,
     ) -> list[Agent]:
         """Create pipeline for ensemble document generation."""
@@ -586,7 +588,7 @@ class EnhancedHyDERetrieverV2(Agent):
     """Enhanced retriever with better state handling and fallback mechanisms."""
 
     documents: list[Document] = Field(default_factory=list)
-    embedding_model: str | None = Field(default=None)
+    embedding_model: Optional[str] = Field(default=None)
 
     def build_graph(self) -> Any:
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -657,7 +659,7 @@ class EnsembleHyDERetriever(Agent):
     """Retriever that handles multiple documents for ensemble retrieval."""
 
     documents: list[Document] = Field(default_factory=list)
-    embedding_model: str | None = Field(default=None)
+    embedding_model: Optional[str] = Field(default=None)
     perspectives: list[str] = Field(default_factory=list)
     ensemble_mode: bool = Field(default=False)
 
@@ -749,7 +751,7 @@ class MultiDomainHyDERetriever(Agent):
     """Retriever that handles documents from multiple domains."""
 
     documents: list[Document] = Field(default_factory=list)
-    embedding_model: str | None = Field(default=None)
+    embedding_model: Optional[str] = Field(default=None)
     domain_types: list[str] = Field(default_factory=list)
 
     def build_graph(self) -> Any:
@@ -828,7 +830,7 @@ class MultiDomainHyDERetriever(Agent):
 
 def create_enhanced_hyde_v2(
     documents: list[Document],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     generation_mode: HyDEGenerationMode = HyDEGenerationMode.SINGLE,
     auto_select_prompt: bool = True,
     **kwargs,
@@ -857,7 +859,7 @@ def create_enhanced_hyde_v2(
 def create_multi_perspective_hyde(
     documents: list[Document],
     perspectives: list[HyDEPerspective],
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     **kwargs,
 ) -> EnhancedHyDERAGAgentV2:
     """Create HyDE agent with multi-perspective generation.
@@ -883,7 +885,7 @@ def create_multi_perspective_hyde(
 def create_ensemble_hyde(
     documents: list[Document],
     num_docs: int = 3,
-    llm_config: LLMConfig | None = None,
+    llm_config: Optional[LLMConfig] = None,
     **kwargs,
 ) -> EnhancedHyDERAGAgentV2:
     """Create HyDE agent with ensemble document generation.

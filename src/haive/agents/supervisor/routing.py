@@ -296,8 +296,8 @@ class RuleBasedRoutingStrategy(BaseRoutingStrategy):
 class DynamicRoutingEngine:
     """Main routing engine that orchestrates routing decisions.
 
-    Handles context extraction, strategy selection, and routing execution
-    with comprehensive error handling and fallback mechanisms.
+    Handles context extraction, strategy selection, and routing execution with
+    comprehensive error handling and fallback mechanisms.
     """
 
     def __init__(

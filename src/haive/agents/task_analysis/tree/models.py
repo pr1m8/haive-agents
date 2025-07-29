@@ -18,11 +18,16 @@ from haive.core.common.structures.tree import AutoTree
 from haive.agents.task_analysis.base.models import (
     ActionStep,
     TaskNode,
+    Union,
+    from,
+    import,
+    typing,
 )
 
 
 class TaskTree(AutoTree[TaskNode]):
     """Enhanced AutoTree specifically for task analysis.
+
     Adds task-specific functionality while leveraging AutoTree's auto-building.
     """
 
@@ -35,30 +40,35 @@ class TaskTree(AutoTree[TaskNode]):
         self._analyze_structure()
 
     def _analyze_structure(self):
-        """Analyze task structure after tree is built."""
+        """Analyze task structure after tree is built.
+        """
         self._identify_join_points()
         self._identify_parallel_groups()
         self._calculate_critical_path()
 
     def _identify_join_points(self):
-        """Find all join points in the task tree."""
+        """Find all join points in the task tree.
+        """
         # Look for tasks marked as join points
         for node in self.traverse_depth_first(lambda n: n):  # type: ignore
-            if hasattr(node.content, "is_join_point") and node.content.is_join_point:
+            if hasattr(
+                    node.content,
+                    "is_join_point") and node.content.is_join_point:
                 # Find incoming dependencies
                 incoming = self._find_incoming_tasks(node.content.task_id)
                 if len(incoming) > 1:
                     self._join_points.append(
                         {
-                            "join_id": f"join_{node.content.task_id}",
+                            "join_id": f"join_{
+                                node.content.task_id}",
                             "task_id": node.content.task_id,
                             "incoming_tasks": incoming,
                             "join_strategy": node.content.join_strategy or "merge",
-                        }
-                    )
+                        })
 
     def _identify_parallel_groups(self):
-        """Identify groups of tasks that can run in parallel."""
+        """Identify groups of tasks that can run in parallel.
+        """
         # Group tasks by their dependencies
         dependency_map = self._build_dependency_map()
 
@@ -67,15 +77,17 @@ class TaskTree(AutoTree[TaskNode]):
 
         for i, task_id1 in enumerate(all_task_ids):
             group = [task_id1]
-            for task_id2 in all_task_ids[i + 1 :]:
-                if not self._has_path_between(task_id1, task_id2, dependency_map):
+            for task_id2 in all_task_ids[i + 1:]:
+                if not self._has_path_between(
+                        task_id1, task_id2, dependency_map):
                     group.append(task_id2)
 
             if len(group) > 1:
                 self._parallel_groups.append(group)
 
     def _calculate_critical_path(self):
-        """Calculate the critical path through the task tree."""
+        """Calculate the critical path through the task tree.
+        """
         # Simplified - would use proper CPM algorithm
         path = []
 
@@ -107,7 +119,8 @@ class TaskTree(AutoTree[TaskNode]):
         self._critical_path = path
 
     def _build_dependency_map(self) -> dict[str, list[str]]:
-        """Build a map of dependencies."""
+        """Build a map of dependencies.
+        """
         dep_map = {}
 
         for node in self.traverse_depth_first(lambda n: n):  # type: ignore
@@ -120,7 +133,8 @@ class TaskTree(AutoTree[TaskNode]):
         return dep_map
 
     def _get_all_task_ids(self) -> list[str]:
-        """Get all task and step IDs."""
+        """Get all task and step IDs.
+        """
         ids = []
         for node in self.traverse_depth_first(lambda n: n):  # type: ignore
             if hasattr(node.content, "task_id"):
@@ -132,7 +146,8 @@ class TaskTree(AutoTree[TaskNode]):
     def _has_path_between(
         self, id1: str, id2: str, dep_map: dict[str, list[str]]
     ) -> bool:
-        """Check if there's a dependency path between two tasks."""
+        """Check if there's a dependency path between two tasks.
+        """
         # BFS to find path
         visited = set()
         queue = [id1]
@@ -153,7 +168,8 @@ class TaskTree(AutoTree[TaskNode]):
         return False
 
     def _find_incoming_tasks(self, task_id: str) -> list[str]:
-        """Find all tasks that have dependencies pointing to this task."""
+        """Find all tasks that have dependencies pointing to this task.
+        """
         incoming = []
 
         for node in self.traverse_depth_first(lambda n: n):  # type: ignore
@@ -164,8 +180,10 @@ class TaskTree(AutoTree[TaskNode]):
 
         return incoming
 
-    def _get_subtask_duration(self, subtask: TaskNode | ActionStep) -> float:
-        """Get duration of a subtask."""
+    def _get_subtask_duration(
+            self, subtask: Union[TaskNode, ActionStep]) -> float:
+        """Get duration of a subtask.
+        """
         if isinstance(subtask, ActionStep):
             return subtask.estimated_duration_minutes
         if isinstance(subtask, TaskNode):
@@ -177,19 +195,23 @@ class TaskTree(AutoTree[TaskNode]):
     # ========================================================================
 
     def get_join_points(self) -> list[dict[str, Any]]:
-        """Get all join points in the tree."""
+        """Get all join points in the tree.
+        """
         return self._join_points
 
     def get_parallel_groups(self) -> list[list[str]]:
-        """Get groups of tasks that can run in parallel."""
+        """Get groups of tasks that can run in parallel.
+        """
         return self._parallel_groups
 
     def get_critical_path(self) -> list[str]:
-        """Get the critical path."""
+        """Get the critical path.
+        """
         return self._critical_path
 
     def get_execution_phases(self) -> list[dict[str, Any]]:
         """Organize tasks into execution phases.
+
         Tasks in the same phase can run in parallel.
         """
         phases = []
@@ -235,12 +257,15 @@ class TaskTree(AutoTree[TaskNode]):
         expansion_fn: Callable[[TaskNode], list[TaskNode | ActionStep]],
     ) -> bool:
         """Expand a specific node using the provided expansion function.
+
         Returns True if expansion was successful.
         """
         # Find the node
         target_node = None
         for node in self.traverse_depth_first(lambda n: n):  # type: ignore
-            if hasattr(node.content, "task_id") and node.content.task_id == node_id:
+            if hasattr(
+                    node.content,
+                    "task_id") and node.content.task_id == node_id:
                 target_node = node
                 break
 
@@ -266,7 +291,8 @@ class TaskTree(AutoTree[TaskNode]):
         return True
 
     def get_analysis_summary(self) -> dict[str, Any]:
-        """Get a summary of the task tree analysis."""
+        """Get a summary of the task tree analysis.
+        """
         all_steps = self.content.get_all_steps()
 
         return {
@@ -281,7 +307,8 @@ class TaskTree(AutoTree[TaskNode]):
         }
 
     def _calculate_max_depth(self, current_depth: int) -> int:
-        """Calculate maximum depth from this node."""
+        """Calculate maximum depth from this node.
+        """
         if not self.children:
             return current_depth
 

@@ -13,7 +13,6 @@ Functions:
 """
 
 # haive/agents/multi/agent.py
-
 """Advanced multi-agent class for the Haive framework.
 
 This module provides a comprehensive implementation of multi-agent systems,
@@ -21,7 +20,7 @@ enabling seamless composition of multiple agents with various coordination patte
 """
 
 import logging
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.graph.state_graph.components.node import Node
@@ -62,7 +61,6 @@ class MultiAgent(Agent):
 
             # Run the multi-agent system
             result = multi.run({"messages": [HumanMessage(content="Hello")]})
-
     """
 
     # Multi-agent specific fields
@@ -110,11 +108,12 @@ class MultiAgent(Agent):
 
     # Private tracking
     _agent_order: list[str] = PrivateAttr(default_factory=list)
-    _coordinator_agent: str | None = PrivateAttr(default=None)
+    _coordinator_agent: Optional[str] = PrivateAttr(default=None)
     _agent_nodes: dict[str, Node] = PrivateAttr(default_factory=dict)
 
     def __reduce__(self):
-        """Make MultiAgent picklable."""
+        """Make MultiAgent picklable.
+        """
         state_dict = self.model_dump(
             exclude={
                 "_state_instance",
@@ -140,7 +139,8 @@ class MultiAgent(Agent):
     @model_validator(mode="before")
     @classmethod
     def normalize_agents(cls, values: dict[str, Any]) -> dict[str, Any]:
-        """Normalize agents into engines dict."""
+        """Normalize agents into engines dict.
+        """
         # Handle list of agents - convert to dict
         if "agents" in values and isinstance(values["agents"], list):
             agent_dict = {}
@@ -164,7 +164,8 @@ class MultiAgent(Agent):
         return values
 
     def setup_agent(self) -> None:
-        """Set up the multi-agent system."""
+        """Set up the multi-agent system.
+        """
         # Validate we have agents
         if not self.agents:
             raise ValueError(f"{self.__class__.__name__} requires at least one agent")
@@ -183,7 +184,8 @@ class MultiAgent(Agent):
         self._agent_nodes = {}
 
     def _setup_schemas(self) -> None:
-        """Generate schemas using AgentSchemaComposer."""
+        """Generate schemas using AgentSchemaComposer.
+        """
         # Don't regenerate if we already have schemas
         if self.state_schema:
             logger.debug(f"Using existing schema: {self.state_schema.__name__}")
@@ -220,7 +222,8 @@ class MultiAgent(Agent):
         super()._auto_derive_io_schemas()
 
     def build_graph(self) -> BaseGraph:
-        """Build the multi-agent graph based on coordination mode."""
+        """Build the multi-agent graph based on coordination mode.
+        """
         # Create the graph
         graph = BaseGraph(name=f"{self.name}Graph")
 
@@ -248,7 +251,8 @@ class MultiAgent(Agent):
         return graph
 
     def _build_sequential_graph(self, graph: BaseGraph) -> None:
-        """Build a sequential execution graph."""
+        """Build a sequential execution graph.
+        """
         logger.info(f"Building sequential graph with {len(self._agent_order)} agents")
 
         # Connect agents in sequence
@@ -264,7 +268,8 @@ class MultiAgent(Agent):
             graph.add_edge(f"{last_agent}_node", END)
 
     def _build_parallel_graph(self, graph: BaseGraph) -> None:
-        """Build a parallel execution graph with aggregation."""
+        """Build a parallel execution graph with aggregation.
+        """
         logger.info(f"Building parallel graph with {len(self._agent_order)} agents")
 
         # Create a special router node that decides which agent to execute
@@ -290,7 +295,8 @@ class MultiAgent(Agent):
         graph.add_conditional_edge("aggregator", "router", self.should_continue)
 
     def _build_supervisor_graph(self, graph: BaseGraph) -> None:
-        """Build a supervisor-based execution graph."""
+        """Build a supervisor-based execution graph.
+        """
         logger.info(
             f"Building supervisor graph with coordinator: {self._coordinator_agent}"
         )
@@ -332,7 +338,8 @@ class MultiAgent(Agent):
         )
 
     def _build_swarm_graph(self, graph: BaseGraph) -> None:
-        """Build a swarm execution graph where any agent can call any other."""
+        """Build a swarm execution graph where any agent can call any other.
+        """
         logger.info(f"Building swarm graph with {len(self._agent_order)} agents")
 
         # Every agent can potentially call any other agent
@@ -354,7 +361,8 @@ class MultiAgent(Agent):
             graph.add_conditional_edge(f"{from_agent}_node", END, self.is_complete)
 
     def _build_custom_graph(self, graph: BaseGraph) -> None:
-        """Build a custom graph defined by overriding this method."""
+        """Build a custom graph defined by overriding this method.
+        """
         logger.warning(
             "Using default custom graph implementation - subclasses should override this"
         )
@@ -363,7 +371,8 @@ class MultiAgent(Agent):
         self._build_sequential_graph(graph)
 
     def _create_agent_node(self, agent_name: str, agent: Agent) -> Node:
-        """Create a node for an agent with proper configuration."""
+        """Create a node for an agent with proper configuration.
+        """
         node_name = f"{agent_name}_node"
 
         # For now, always use standard Node with function wrapper
@@ -379,7 +388,8 @@ class MultiAgent(Agent):
         return node
 
     def _create_agent_executor(self, agent_name: str, agent: Agent):
-        """Create a function that executes an agent and handles state updates."""
+        """Create a function that executes an agent and handles state updates.
+        """
 
         def _execute(state: Any) -> Any:
             # Extract relevant fields based on mapping
@@ -401,7 +411,8 @@ class MultiAgent(Agent):
         return _execute
 
     def _extract_agent_input(self, agent_name: str, agent: Agent, state: Any) -> Any:
-        """Extract input for an agent from the state."""
+        """Extract input for an agent from the state.
+        """
         # If using engine IO mappings and state schema has them
         if self.use_engine_io_mappings and hasattr(
             self.state_schema, "__engine_io_mappings__"
@@ -457,7 +468,8 @@ class MultiAgent(Agent):
     def _create_agent_output(
         self, agent_name: str, agent: Agent, result: Any, state: Any
     ) -> dict[str, Any]:
-        """Create state update from agent result."""
+        """Create state update from agent result.
+        """
         update = {}
 
         # Track current and completed agents
@@ -513,8 +525,9 @@ class MultiAgent(Agent):
 
     def _determine_next_node(
         self, agent_name: str, result: Any, state: Any
-    ) -> str | None:
-        """Determine the next node based on agent result and coordination mode."""
+     -> Optional[str]:
+        """Determine the next node based on agent result and coordination mode.
+        """
         # Check if result explicitly specifies next_agent
         if isinstance(result, dict) and "next_agent" in result:
             next_agent = result["next_agent"]
@@ -565,7 +578,8 @@ class MultiAgent(Agent):
         return END
 
     def _should_route_to(self, agent_name: str):
-        """Create a condition function that checks if we should route to a specific agent."""
+        """Create a condition function that checks if we should route to a specific agent.
+        """
 
         def _condition(state: Any) -> bool:
             # Check for explicit next_agent
@@ -581,7 +595,9 @@ class MultiAgent(Agent):
         return _condition
 
     def _should_route_from_to(self, from_agent: str, to_agent: str):
-        """Create a condition function that checks if we should route from one agent to another."""
+        """Create a condition function that checks if we should route from one agent to
+        another.
+        """
 
         def _condition(state: Any) -> bool:
             # Check for explicit next_agent
@@ -594,7 +610,8 @@ class MultiAgent(Agent):
         return _condition
 
     def _should_loop_coordinator(self, state: Any) -> bool:
-        """Check if coordinator should loop back to itself."""
+        """Check if coordinator should loop back to itself.
+        """
         # Check for explicit next_agent = self
         if hasattr(state, "next_agent"):
             return state.next_agent == self._coordinator_agent
@@ -606,7 +623,8 @@ class MultiAgent(Agent):
         return False
 
     def is_complete(self, state: Any) -> bool:
-        """Check if execution is complete."""
+        """Check if execution is complete.
+        """
         # Check for explicit is_complete flag
         if hasattr(state, "is_complete"):
             return state.is_complete
@@ -622,7 +640,8 @@ class MultiAgent(Agent):
         return False
 
     def should_continue(self, state: Any) -> bool:
-        """Check if execution should continue."""
+        """Check if execution should continue.
+        """
         return not self.is_complete(state)
 
     def aggregate_results(self, state: Any) -> Any:
@@ -651,7 +670,8 @@ class MultiAgent(Agent):
         return Command(update=updates, goto=goto)
 
     def _setup_supervisor(self) -> None:
-        """Set up a supervisor agent if needed."""
+        """Set up a supervisor agent if needed.
+        """
         # Select coordinator agent - by default, use first agent
         if self._agent_order:
             self._coordinator_agent = self._agent_order[0]
@@ -661,11 +681,12 @@ class MultiAgent(Agent):
     def from_agents(
         cls,
         agents: list[Agent] | dict[str, Agent],
-        name: str | None = None,
+        name: Optional[str] = None,
         coordination_mode: str = "sequential",
         **kwargs,
     ) -> "MultiAgent":
-        """Create a multi-agent system from a list or dict of agents."""
+        """Create a multi-agent system from a list or dict of agents.
+        """
         # Convert list to dict if needed
         if isinstance(agents, list):
             agent_dict = {}
@@ -691,9 +712,10 @@ class MultiAgent(Agent):
 
     @classmethod
     def sequential(
-        cls, agents: list[Agent], name: str | None = None, **kwargs
+        cls, agents: list[Agent], name: Optional[str] = None, **kwargs
     ) -> "MultiAgent":
-        """Create a sequential multi-agent system."""
+        """Create a sequential multi-agent system.
+        """
         return cls.from_agents(
             agents=agents,
             name=name or "SequentialMultiAgent",
@@ -703,9 +725,10 @@ class MultiAgent(Agent):
 
     @classmethod
     def parallel(
-        cls, agents: list[Agent], name: str | None = None, **kwargs
+        cls, agents: list[Agent], name: Optional[str] = None, **kwargs
     ) -> "MultiAgent":
-        """Create a parallel multi-agent system."""
+        """Create a parallel multi-agent system.
+        """
         return cls.from_agents(
             agents=agents,
             name=name or "ParallelMultiAgent",
@@ -717,11 +740,12 @@ class MultiAgent(Agent):
     def supervised(
         cls,
         agents: list[Agent],
-        coordinator: Agent | None = None,
-        name: str | None = None,
+        coordinator: Optional[Agent] = None,
+        name: Optional[str] = None,
         **kwargs,
     ) -> "MultiAgent":
-        """Create a supervised multi-agent system with a coordinator."""
+        """Create a supervised multi-agent system with a coordinator.
+        """
         agent_list = list(agents)
 
         # Add coordinator as first agent if provided
@@ -740,8 +764,8 @@ class MultiAgent(Agent):
     ) -> CompiledGraph:
         """Create and compile the runnable with proper schema kwargs.
 
-        This overrides the base Agent implementation to handle our multi-agent
-        state schema correctly.
+        This overrides the base Agent implementation to handle our multi-agent state
+        schema correctly.
         """
         if not self._setup_complete:
             raise RuntimeError("Agent setup not complete")

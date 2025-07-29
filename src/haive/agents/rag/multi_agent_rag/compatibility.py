@@ -11,7 +11,11 @@ from typing import Any
 
 from haive.core.schema.compatibility import (
     ConverterRegistry,
+    Optional,
     TypeAnalyzer,
+    from,
+    import,
+    typing,
 )
 from haive.core.schema.compatibility.reports import generate_report
 
@@ -23,7 +27,8 @@ logger = logging.getLogger(__name__)
 
 
 class CompatibilityLevel(str, Enum):
-    """Levels of compatibility between agents."""
+    """Levels of compatibility between agents.
+    """
 
     PERFECT = "perfect"  # Fully compatible, no issues
     COMPATIBLE = "compatible"  # Compatible with minor issues
@@ -34,7 +39,8 @@ class CompatibilityLevel(str, Enum):
 
 @dataclass
 class AgentCompatibilityReport:
-    """Comprehensive compatibility report for agent pairs."""
+    """Comprehensive compatibility report for agent pairs.
+    """
 
     source_agent: str
     target_agent: str
@@ -52,7 +58,8 @@ class AgentCompatibilityReport:
 
 @dataclass
 class MultiAgentCompatibilityReport:
-    """Compatibility report for multiple agents in a workflow."""
+    """Compatibility report for multiple agents in a workflow.
+    """
 
     workflow_name: str
     overall_compatible: bool
@@ -68,8 +75,8 @@ class MultiAgentCompatibilityReport:
 class SafeCompatibilityTester:
     """Safe compatibility testing that doesn't modify original agents.
 
-    This class provides comprehensive compatibility analysis between agents
-    without risking damage to existing systems.
+    This class provides comprehensive compatibility analysis between agents without
+    risking damage to existing systems.
     """
 
     def __init__(self) -> None:
@@ -90,8 +97,14 @@ class SafeCompatibilityTester:
         Returns:
             Detailed compatibility report
         """
-        source_name = getattr(source_agent, "name", source_agent.__class__.__name__)
-        target_name = getattr(target_agent, "name", target_agent.__class__.__name__)
+        source_name = getattr(
+    source_agent,
+    "name",
+     source_agent.__class__.__name__)
+        target_name = getattr(
+    target_agent,
+    "name",
+     target_agent.__class__.__name__)
 
         # Create cache key for this test
         cache_key = f"{source_name}_{target_name}"
@@ -121,16 +134,19 @@ class SafeCompatibilityTester:
             detailed_report = generate_report(source_schema, target_schema)
 
             # Assess compatibility level
-            level = self._assess_compatibility_level(compat_result, detailed_report)
+            level = self._assess_compatibility_level(
+                compat_result, detailed_report)
 
             # Create comprehensive report
             report = AgentCompatibilityReport(
                 source_agent=source_name,
                 target_agent=target_name,
                 compatibility_level=level,
-                compatibility_score=self._calculate_compatibility_score(compat_result),
+                compatibility_score=self._calculate_compatibility_score(
+                    compat_result),
                 issues=self._extract_issues(compat_result, detailed_report),
-                missing_fields=getattr(compat_result, "missing_required_fields", []),
+                missing_fields=getattr(
+    compat_result, "missing_required_fields", []),
                 conflicting_fields=self._find_conflicting_fields(
                     source_analysis, target_analysis
                 ),
@@ -160,7 +176,8 @@ class SafeCompatibilityTester:
 
         except Exception as e:
             logger.exception(
-                f"Error testing compatibility between {source_name} and {target_name}: {e!s}"
+                f"Error testing compatibility between {source_name} and {target_name}: {
+    e!s}"
             )
             return self._create_error_report(
                 source_name, target_name, f"Compatibility test failed: {e!s}"
@@ -202,7 +219,8 @@ class SafeCompatibilityTester:
             source_agent = agents[i]
             target_agent = agents[i + 1]
 
-            report = self.test_agent_pair_compatibility(source_agent, target_agent)
+            report = self.test_agent_pair_compatibility(
+                source_agent, target_agent)
 
             key = (report.source_agent, report.target_agent)
             compatibility_matrix[key] = report
@@ -219,7 +237,8 @@ class SafeCompatibilityTester:
         )
 
         # Identify required adapters
-        required_adapters = self._identify_required_adapters(compatibility_matrix)
+        required_adapters = self._identify_required_adapters(
+            compatibility_matrix)
 
         # Assess risk
         risk_assessment = self._assess_workflow_risk(compatibility_matrix)
@@ -280,8 +299,9 @@ class SafeCompatibilityTester:
                 "recommendation": "Check agent imports and schema definitions",
             }
 
-    def _safe_extract_output_schema(self, agent: Agent) -> type | None:
-        """Safely extract output schema without modifying agent."""
+    def _safe_extract_output_schema(self, agent: Agent -> Optional[type]:
+        """Safely extract output schema without modifying agent.
+        """
         try:
             if hasattr(agent, "output_schema") and agent.output_schema:
                 return agent.output_schema
@@ -294,11 +314,14 @@ class SafeCompatibilityTester:
                     return agent.engine.derive_output_schema()
             return None
         except Exception as e:
-            logger.warning(f"Could not extract output schema from {agent}: {e!s}")
+            logger.warning(
+    f"Could not extract output schema from {agent}: {
+        e!s}")
             return None
 
-    def _safe_extract_input_schema(self, agent: Agent) -> type | None:
-        """Safely extract input schema without modifying agent."""
+    def _safe_extract_input_schema(self, agent: Agent -> Optional[type]:
+        """Safely extract input schema without modifying agent.
+        """
         try:
             if hasattr(agent, "input_schema") and agent.input_schema:
                 return agent.input_schema
@@ -311,18 +334,25 @@ class SafeCompatibilityTester:
                     return agent.engine.derive_input_schema()
             return None
         except Exception as e:
-            logger.warning(f"Could not extract input schema from {agent}: {e!s}")
+            logger.warning(
+    f"Could not extract input schema from {agent}: {
+        e!s}")
             return None
 
     def _assess_compatibility_level(
         self, compat_result, detailed_report
     ) -> CompatibilityLevel:
-        """Assess the compatibility level based on results."""
+        """Assess the compatibility level based on results.
+        """
         if getattr(compat_result, "is_compatible", False):
             if not getattr(compat_result, "missing_required_fields", []):
                 return CompatibilityLevel.PERFECT
             return CompatibilityLevel.COMPATIBLE
-        missing_count = len(getattr(compat_result, "missing_required_fields", []))
+        missing_count=len(
+    getattr(
+        compat_result,
+        "missing_required_fields",
+         []))
         if missing_count <= 2:
             return CompatibilityLevel.ADAPTABLE
         if missing_count <= 5:
@@ -330,37 +360,53 @@ class SafeCompatibilityTester:
         return CompatibilityLevel.INCOMPATIBLE
 
     def _calculate_compatibility_score(self, compat_result) -> float:
-        """Calculate a numeric compatibility score."""
+        """Calculate a numeric compatibility score.
+        """
         if getattr(compat_result, "is_compatible", False):
-            base_score = 0.8
-            missing_fields = len(getattr(compat_result, "missing_required_fields", []))
-            penalty = min(0.3, missing_fields * 0.1)
+            base_score=0.8
+            missing_fields=len(
+    getattr(
+        compat_result,
+        "missing_required_fields",
+         []))
+            penalty=min(0.3, missing_fields * 0.1)
             return max(0.0, base_score - penalty)
         # Partial compatibility based on what can be adapted
-        missing_fields = len(getattr(compat_result, "missing_required_fields", []))
+        missing_fields=len(
+    getattr(
+        compat_result,
+        "missing_required_fields",
+         []))
         return max(0.0, 0.5 - (missing_fields * 0.05))
 
     def _extract_issues(self, compat_result, detailed_report) -> list[str]:
-        """Extract compatibility issues from results."""
-        issues = []
+        """Extract compatibility issues from results.
+        """
+        issues=[]
 
         if hasattr(compat_result, "issues"):
             issues.extend(compat_result.issues)
 
-        missing_fields = getattr(compat_result, "missing_required_fields", [])
+        missing_fields=getattr(compat_result, "missing_required_fields", [])
         if missing_fields:
-            issues.append(f"Missing required fields: {', '.join(missing_fields)}")
+            issues.append(
+    f"Missing required fields: {
+        ', '.join(missing_fields)}")
 
         return issues
 
-    def _find_conflicting_fields(self, source_analysis, target_analysis) -> list[str]:
-        """Find fields that exist in both schemas but with different types."""
-        conflicts = []
+    def _find_conflicting_fields(
+    self,
+    source_analysis,
+     target_analysis) -> list[str]:
+        """Find fields that exist in both schemas but with different types.
+        """
+        conflicts=[]
 
         for field_name in source_analysis.fields:
             if field_name in target_analysis.fields:
-                source_field = source_analysis.fields[field_name]
-                target_field = target_analysis.fields[field_name]
+                source_field=source_analysis.fields[field_name]
+                target_field=target_analysis.fields[field_name]
 
                 # Check for type conflicts
                 if getattr(source_field, "type", None) != getattr(
@@ -373,28 +419,30 @@ class SafeCompatibilityTester:
     def _generate_field_mappings(
         self, source_analysis, target_analysis
     ) -> dict[str, str]:
-        """Generate suggested field mappings between schemas."""
-        mappings = {}
+        """Generate suggested field mappings between schemas.
+        """
+        mappings={}
 
-        source_fields = set(source_analysis.fields.keys())
-        target_fields = set(target_analysis.fields.keys())
+        source_fields=set(source_analysis.fields.keys())
+        target_fields=set(target_analysis.fields.keys())
 
         # Find similar field names
         for source_field in source_fields:
             for target_field in target_fields:
                 if self._fields_similar(source_field, target_field):
-                    mappings[source_field] = target_field
+                    mappings[source_field]=target_field
 
         return mappings
 
     def _fields_similar(self, field1: str, field2: str) -> bool:
-        """Check if two field names are similar enough to suggest mapping."""
+        """Check if two field names are similar enough to suggest mapping.
+        """
         # Simple similarity check
         if field1 == field2:
             return True
 
         # Check for common synonyms
-        synonyms = {
+        synonyms={
             "query": ["question", "q", "search"],
             "documents": ["docs", "results", "data"],
             "answer": ["response", "result", "output"],
@@ -409,10 +457,11 @@ class SafeCompatibilityTester:
         return False
 
     def _recommend_adapters(self, compat_result) -> list[str]:
-        """Recommend adapter strategies for compatibility issues."""
-        adapters = []
+        """Recommend adapter strategies for compatibility issues.
+        """
+        adapters=[]
 
-        missing_fields = getattr(compat_result, "missing_required_fields", [])
+        missing_fields=getattr(compat_result, "missing_required_fields", [])
         if missing_fields:
             adapters.append("FieldMappingAdapter")
 
@@ -422,9 +471,14 @@ class SafeCompatibilityTester:
         return adapters
 
     def _assess_quality(self, compat_result) -> str:
-        """Assess the quality of the compatibility."""
+        """Assess the quality of the compatibility.
+        """
         if getattr(compat_result, "is_compatible", False):
-            missing_count = len(getattr(compat_result, "missing_required_fields", []))
+            missing_count=len(
+    getattr(
+        compat_result,
+        "missing_required_fields",
+         []))
             if missing_count == 0:
                 return "Excellent - Perfect compatibility"
             if missing_count <= 2:
@@ -432,18 +486,24 @@ class SafeCompatibilityTester:
             return "Fair - Some compatibility concerns"
         return "Poor - Significant compatibility issues"
 
-    def _find_conversion_paths(self, source_schema, target_schema) -> list[str]:
-        """Find possible conversion paths between schemas."""
-        paths = []
+    def _find_conversion_paths(
+    self,
+    source_schema,
+     target_schema) -> list[str]:
+        """Find possible conversion paths between schemas.
+        """
+        paths=[]
 
         try:
             # Check if direct conversion is possible
-            if self.converter_registry.can_convert(source_schema, target_schema):
+            if self.converter_registry.can_convert(
+                source_schema, target_schema):
                 paths.append("Direct conversion available")
 
             # Check for multi-step conversions
-            # This is a simplified check - real implementation would be more sophisticated
-            common_types = [str, int, float, dict, list]
+            # This is a simplified check - real implementation would be more
+            # sophisticated
+            common_types=[str, int, float, dict, list]
             for intermediate in common_types:
                 if self.converter_registry.can_convert(
                     source_schema, intermediate
@@ -457,32 +517,40 @@ class SafeCompatibilityTester:
     def _generate_workflow_recommendations(
         self, compatibility_matrix, agents
     ) -> list[str]:
-        """Generate recommendations for improving workflow compatibility."""
-        recommendations = []
+        """Generate recommendations for improving workflow compatibility.
+        """
+        recommendations=[]
 
         for _key, report in compatibility_matrix.items():
             if not report.safe_to_chain:
                 recommendations.append(
-                    f"Add adapter between {report.source_agent} and {report.target_agent}"
+                    f"Add adapter between {
+    report.source_agent} and {
+        report.target_agent}"
                 )
 
                 if report.recommended_adapters:
                     recommendations.append(
-                        f"Consider using: {', '.join(report.recommended_adapters)}"
+                        f"Consider using: {
+    ', '.join(
+        report.recommended_adapters)}"
                     )
 
         if not recommendations:
-            recommendations.append("Workflow is fully compatible - no changes needed")
+            recommendations.append(
+                "Workflow is fully compatible - no changes needed")
 
         return recommendations
 
-    def _identify_required_adapters(self, compatibility_matrix) -> list[dict[str, Any]]:
-        """Identify specific adapters needed for workflow compatibility."""
-        adapters = []
+    def _identify_required_adapters(
+        self, compatibility_matrix) -> list[dict[str, Any]]:
+        """Identify specific adapters needed for workflow compatibility.
+        """
+        adapters=[]
 
         for _key, report in compatibility_matrix.items():
             if not report.safe_to_chain:
-                adapter_spec = {
+                adapter_spec={
                     "source": report.source_agent,
                     "target": report.target_agent,
                     "type": "FieldMappingAdapter",
@@ -494,12 +562,13 @@ class SafeCompatibilityTester:
         return adapters
 
     def _assess_workflow_risk(self, compatibility_matrix) -> str:
-        """Assess the risk level of the workflow."""
-        incompatible_count = sum(
+        """Assess the risk level of the workflow.
+        """
+        incompatible_count=sum(
             1 for report in compatibility_matrix.values() if not report.safe_to_chain
         )
 
-        total_connections = len(compatibility_matrix)
+        total_connections=len(compatibility_matrix)
 
         if incompatible_count == 0:
             return "Low - All agents are compatible"
@@ -508,9 +577,10 @@ class SafeCompatibilityTester:
         return "High - Significant compatibility problems"
 
     def _test_state_compatibility(self) -> dict[str, Any]:
-        """Test compatibility with the RAG state schema."""
+        """Test compatibility with the RAG state schema.
+        """
         try:
-            state_analysis = self.analyzer.analyze_schema(MultiAgentRAGState)
+            state_analysis=self.analyzer.analyze_schema(MultiAgentRAGState)
 
             return {
                 "state_schema": "MultiAgentRAGState",
@@ -520,12 +590,15 @@ class SafeCompatibilityTester:
                 "compatibility_status": "Schema analysis successful",
             }
         except Exception as e:
-            return {"error": str(e), "compatibility_status": "Schema analysis failed"}
+            return {
+    "error": str(e),
+     "compatibility_status": "Schema analysis failed"}
 
     def _create_error_report(
         self, source_name: str, target_name: str, error_msg: str
     ) -> AgentCompatibilityReport:
-        """Create an error report for failed compatibility tests."""
+        """Create an error report for failed compatibility tests.
+        """
         return AgentCompatibilityReport(
             source_agent=source_name,
             target_agent=target_name,
@@ -542,38 +615,42 @@ class SafeCompatibilityTester:
         )
 
     def _basic_schema_compatibility_check(self, source_schema, target_schema):
-        """Basic schema compatibility check without CompatibilityChecker."""
+        """Basic schema compatibility check without CompatibilityChecker.
+        """
 
         class BasicResult:
             def __init__(self) -> None:
-                self.is_compatible = True
-                self.missing_required_fields = []
-                self.issues = []
+                self.is_compatible=True
+                self.missing_required_fields=[]
+                self.issues=[]
 
-        result = BasicResult()
+        result=BasicResult()
 
         try:
             # Simple field-based compatibility check
             if hasattr(source_schema, "__fields__") and hasattr(
                 target_schema, "__fields__"
             ):
-                source_fields = set(source_schema.__fields__.keys())
-                target_fields = set(target_schema.__fields__.keys())
+                source_fields=set(source_schema.__fields__.keys())
+                target_fields=set(target_schema.__fields__.keys())
 
-                missing = target_fields - source_fields
+                missing=target_fields - source_fields
                 if missing:
-                    result.missing_required_fields = list(missing)
-                    result.is_compatible = False
-                    result.issues.append(f"Missing fields: {', '.join(missing)}")
+                    result.missing_required_fields=list(missing)
+                    result.is_compatible=False
+                    result.issues.append(
+    f"Missing fields: {
+        ', '.join(missing)}")
 
         except Exception as e:
-            result.is_compatible = False
+            result.is_compatible=False
             result.issues.append(f"Schema analysis failed: {e}")
 
         return result
 
     def _get_timestamp(self) -> str:
-        """Get current timestamp for reports."""
+        """Get current timestamp for reports.
+        """
         from datetime import datetime
 
         return datetime.now().isoformat()
@@ -589,7 +666,7 @@ def safe_test_rag_compatibility() -> dict[str, Any]:
 
     This is the main function to use for testing RAG agent compatibility.
     """
-    tester = SafeCompatibilityTester()
+    tester=SafeCompatibilityTester()
     return tester.test_rag_agents_safely()
 
 
@@ -605,7 +682,7 @@ def test_custom_agent_workflow(
     Returns:
         Comprehensive compatibility report
     """
-    tester = SafeCompatibilityTester()
+    tester=SafeCompatibilityTester()
     return tester.test_workflow_compatibility(agents, workflow_name)
 
 
@@ -615,6 +692,6 @@ def quick_agent_compatibility_check(agent1: Agent, agent2: Agent) -> bool:
     Returns:
         True if agents are safe to chain, False otherwise
     """
-    tester = SafeCompatibilityTester()
-    report = tester.test_agent_pair_compatibility(agent1, agent2)
+    tester=SafeCompatibilityTester()
+    report=tester.test_agent_pair_compatibility(agent1, agent2)
     return report.safe_to_chain

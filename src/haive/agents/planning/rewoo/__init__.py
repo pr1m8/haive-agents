@@ -1,6 +1,7 @@
 """ReWOO Planning System.
 
-A comprehensive planning system based on ReWOO (Reasoning without Observation) methodology.
+A comprehensive planning system based on ReWOO (Reasoning without Observation)
+methodology.
 """
 
 from .models.plans import ExecutionPlan

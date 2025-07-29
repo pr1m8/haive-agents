@@ -1,6 +1,7 @@
 """Pydantic models for structured outputs in the Graph DB RAG Agent.
 
 from typing import Any
+from typing import Optional
 This module defines the structured output models used by various LLM engines
 in the Graph DB RAG workflow. These models ensure type safety and validation
 for LLM responses.
@@ -62,7 +63,7 @@ class PropertyFilter(BaseModel):
         description="The label of the node to which this property belongs"
     )
     property_key: str = Field(description="The key of the property being filtered")
-    property_value: Any | None = Field(
+    property_value: Optional[Any] = Field(
         description="The value that the property is being matched against"
     )
     filter_type: Literal["=", "!=", ">", "<", ">=", "<="] | None = Field(

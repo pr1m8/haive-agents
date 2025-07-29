@@ -21,6 +21,7 @@ from pydantic import BaseModel, Field, model_validator
 
 class EntityNode(BaseModel):
     """Represents an entity node in the knowledge graph.
+
     Extends the basic Node class with additional metadata and validation.
     """
 
@@ -59,6 +60,7 @@ class EntityNode(BaseModel):
 
 class EntityRelationship(BaseModel):
     """Represents a relationship between two entities in a knowledge graph.
+
     Extends the basic Relationship class with additional metadata and validation.
     """
 
