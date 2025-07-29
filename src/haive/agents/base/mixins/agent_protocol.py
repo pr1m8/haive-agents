@@ -63,8 +63,8 @@ class AgentProtocol(Protocol):
 
     def _prepare_runnable_config(
         self,
-        thread_id: str | None = None,
-        config: RunnableConfig | None = None,
+        thread_id: Optional[str] = None,
+        config: Optional[RunnableConfig] = None,
         **kwargs,
     ) -> RunnableConfig: ...
 
@@ -73,38 +73,38 @@ class AgentProtocol(Protocol):
     def run(
         self,
         input_data: Any,
-        thread_id: str | None = None,
-        debug: bool | None = None,
-        config: RunnableConfig | None = None,
+        thread_id: Optional[str] = None,
+        debug: Optional[bool] = None,
+        config: Optional[RunnableConfig] = None,
         **kwargs,
     ) -> Any: ...
 
     async def arun(
         self,
         input_data: Any,
-        thread_id: str | None = None,
-        config: RunnableConfig | None = None,
-        debug: bool | None = None,
+        thread_id: Optional[str] = None,
+        config: Optional[RunnableConfig] = None,
+        debug: Optional[bool] = None,
         **kwargs,
     ) -> Any: ...
 
     def stream(
         self,
         input_data: Any,
-        thread_id: str | None = None,
+        thread_id: Optional[str] = None,
         stream_mode: str = "values",
-        config: RunnableConfig | None = None,
-        debug: bool | None = None,
+        config: Optional[RunnableConfig] = None,
+        debug: Optional[bool] = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]: ...
 
     async def astream(
         self,
         input_data: Any,
-        thread_id: str | None = None,
+        thread_id: Optional[str] = None,
         stream_mode: str = "values",
-        config: RunnableConfig | None = None,
-        debug: bool | None = None,
+        config: Optional[RunnableConfig] = None,
+        debug: Optional[bool] = None,
         **kwargs,
     ) -> AsyncGenerator[dict[str, Any], None]: ...
 
