@@ -982,9 +982,9 @@ class ExecutionMixin:
     ) -> AsyncGenerator[dict[str, Any], None]:
         """Asynchronously stream agent execution with input data.
 
-        This implementation wraps the synchronous generator in an async one
-        by running the sync generator's iteration in a separate thread to avoid
-        blocking the event loop.
+        This implementation wraps the synchronous generator in an async one by running
+        the sync generator's iteration in a separate thread to avoid blocking the event
+        loop.
         """
         loop = asyncio.get_event_loop()
         sync_gen = self.stream(

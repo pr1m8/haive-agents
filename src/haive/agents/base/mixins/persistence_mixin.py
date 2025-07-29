@@ -1,8 +1,8 @@
 """Persistence Mixin for Agent classes.
 
-This mixin provides persistence functionality including checkpointer setup,
-store management, and configuration handling. It separates persistence
-concerns from the main Agent class while ensuring proper serialization.
+This mixin provides persistence functionality including checkpointer setup, store
+management, and configuration handling. It separates persistence concerns from the main
+Agent class while ensuring proper serialization.
 """
 
 import logging
@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 class PersistenceMixin:
     """Mixin for agent persistence functionality.
 
-    Provides methods for setting up checkpointers, stores, and managing
-    persistence configuration in a serializable way.
+    Provides methods for setting up checkpointers, stores, and managing persistence
+    configuration in a serializable way.
     """
 
     def _setup_persistence_from_config(self) -> None:
@@ -116,9 +116,9 @@ class PersistenceMixin:
     def _setup_default_persistence(self) -> None:
         """Set up default persistence configuration.
 
-        Creates default PostgreSQL persistence with recursion limit 100,
-        using Supabase connection string from environment if available,
-        falling back to memory persistence if PostgreSQL unavailable.
+        Creates default PostgreSQL persistence with recursion limit 100, using Supabase
+        connection string from environment if available, falling back to memory
+        persistence if PostgreSQL unavailable.
         """
         # Set up default runnable config with recursion limit 100
         if not self.runnable_config:
