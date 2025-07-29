@@ -63,13 +63,13 @@ from typing import TYPE_CHECKING, Any, Literal
 try:
     from typing import Self
 except ImportError:
-    from typing_extensions import Self
+    pass
 
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.graph import END, START
-from pydantic import Field, model_validator
+from pydantic import Field
 
 from haive.agents.base.enhanced_agent import Agent
 
