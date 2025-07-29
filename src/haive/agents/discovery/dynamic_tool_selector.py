@@ -21,6 +21,7 @@ from typing import Any, Protocol
 from haive.core.common.mixins.tool_route_mixin import ToolRouteMixin
 from haive.core.registry import (
     ComponentMetadata,
+    Optional,
 )
 from langchain_core.messages import BaseMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool, StructuredTool
@@ -59,7 +60,7 @@ class ToolSelectionResult(BaseModel):
 
     selected_tools: list[BaseTool] = Field(default_factory=list)
     selection_metadata: dict[str, Any] = Field(default_factory=dict)
-    query_analysis: QueryAnalysis | None = None
+    query_analysis: Optional[QueryAnalysis] = None
     selection_confidence: float = Field(default=0.0)
     fallback_used: bool = Field(default=False)
     selection_time_ms: float = Field(default=0.0)
@@ -74,7 +75,7 @@ class ToolUsageStats(BaseModel):
     avg_execution_time: float = 0.0
     error_count: int = 0
     contexts_used: list[str] = Field(default_factory=list)
-    last_used: str | None = None
+    last_used: Optional[str] = None
 
 
 class ContextAwareState(BaseModel):
@@ -105,9 +106,9 @@ class ToolSelectionStrategy(Protocol):
 class DynamicToolSelector(BaseModel, ToolRouteMixin):
     """Dynamic tool selector implementing LangGraph-style patterns.
 
-    This class provides sophisticated tool selection capabilities that adapt
-    to query content, context, and usage patterns, similar to LangGraph's
-    approach to handling many tools.
+    This class provides sophisticated tool selection capabilities that adapt to query
+    content, context, and usage patterns, similar to LangGraph's approach to handling
+    many tools.
     """
 
     # Core configuration
@@ -121,7 +122,7 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
     )
 
     # Discovery and selection components
-    semantic_discovery: SemanticDiscoveryEngine | None = Field(
+    semantic_discovery: Optional[SemanticDiscoveryEngine] = Field(
         default=None, exclude=True
     )
     selection_strategies: dict[str, ToolSelectionStrategy] = Field(
@@ -180,9 +181,9 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
     ) -> ToolSelectionResult:
         """Select optimal tools for a given query using LangGraph-style selection.
 
-        This is the main entry point for tool selection, implementing the
-        LangGraph pattern of dynamically selecting relevant tools based on
-        query content and context.
+        This is the main entry point for tool selection, implementing the LangGraph
+        pattern of dynamically selecting relevant tools based on query content and
+        context.
         """
         start_time = asyncio.get_event_loop().time()
 
@@ -259,8 +260,8 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
     ) -> Any:
         """Bind selected tools to LLM instance using specified strategy.
 
-        This implements the LangGraph pattern of dynamically binding tools
-        to the language model based on the current query context.
+        This implements the LangGraph pattern of dynamically binding tools to the
+        language model based on the current query context.
         """
         binding_strategy = strategy or self.binding_strategy
 
@@ -306,9 +307,9 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
     ) -> ToolSelectionResult:
         """Iteratively refine tool selection based on execution feedback.
 
-        This implements an advanced pattern where tool selection is refined
-        based on the results of previous tool executions, similar to
-        LangGraph's iterative approaches.
+        This implements an advanced pattern where tool selection is refined based on the
+        results of previous tool executions, similar to LangGraph's iterative
+        approaches.
         """
         current_query = initial_query
         iteration = 0
@@ -488,7 +489,7 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
 
     async def _create_tool_from_component(
         self, component: ComponentMetadata
-    ) -> BaseTool | None:
+    ) -> Optional[BaseTool]:
         """Create a BaseTool from ComponentMetadata."""
         try:
             # This would need to be implemented based on component type
@@ -642,8 +643,8 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
 class LangGraphStyleSelector(DynamicToolSelector):
     """LangGraph-style tool selector with state-based selection.
 
-    This class specifically implements the LangGraph pattern of using
-    state to determine tool selection and binding.
+    This class specifically implements the LangGraph pattern of using state to determine
+    tool selection and binding.
     """
 
     async def select_tools_with_state(
@@ -651,8 +652,8 @@ class LangGraphStyleSelector(DynamicToolSelector):
     ) -> ToolSelectionResult:
         """Select tools based on LangGraph-style state.
 
-        This method implements the LangGraph pattern where tool selection
-        is based on the current state of the conversation/workflow.
+        This method implements the LangGraph pattern where tool selection is based on
+        the current state of the conversation/workflow.
         """
         # Extract query from state
         messages = state.get("messages", [])
@@ -675,8 +676,8 @@ class LangGraphStyleSelector(DynamicToolSelector):
     def create_tool_selection_node(self) -> Callable:
         """Create a node function for LangGraph that selects tools.
 
-        This returns a function that can be used as a node in a LangGraph
-        workflow for dynamic tool selection.
+        This returns a function that can be used as a node in a LangGraph workflow for
+        dynamic tool selection.
         """
 
         async def select_tools_node(state: dict[str, Any]) -> dict[str, Any]:
@@ -778,7 +779,7 @@ class ContextAwareSelector(DynamicToolSelector):
 def create_dynamic_tool_selector(
     selection_mode: SelectionMode = SelectionMode.DYNAMIC,
     max_tools: int = 5,
-    semantic_discovery: SemanticDiscoveryEngine | None = None,
+    semantic_discovery: Optional[SemanticDiscoveryEngine] = None,
 ) -> DynamicToolSelector:
     """Create a dynamic tool selector with sensible defaults."""
     return DynamicToolSelector(

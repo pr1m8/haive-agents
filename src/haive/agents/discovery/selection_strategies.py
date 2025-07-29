@@ -1,8 +1,8 @@
 """Tool selection strategies for dynamic tool selection.
 
-This module implements various strategies for selecting tools based on
-different criteria and approaches, providing flexibility in how tools
-are chosen for different contexts and use cases.
+This module implements various strategies for selecting tools based on different
+criteria and approaches, providing flexibility in how tools are chosen for different
+contexts and use cases.
 """
 
 import logging

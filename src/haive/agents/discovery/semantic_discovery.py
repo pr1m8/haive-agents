@@ -21,6 +21,8 @@ from haive.core.registry import (
     ComponentMetadata,
     ComponentType,
     EnhancedComponentRegistry,
+    Optional,
+    Union,
     create_component_registry,
 )
 from haive.core.utils.haive_discovery import (
@@ -98,7 +100,7 @@ class VectorBasedToolSelector(BaseModel):
         default_factory=lambda: OpenAIEmbeddings(),
         description="Embedding provider for vectorization",
     )
-    vector_store: VectorStore | None = Field(
+    vector_store: Optional[VectorStore] = Field(
         default=None, description="Vector store for tool embeddings"
     )
     similarity_threshold: float = Field(
@@ -107,7 +109,7 @@ class VectorBasedToolSelector(BaseModel):
     max_tools: int = Field(default=5, description="Maximum number of tools to select")
 
     # Component registry for enhanced capabilities
-    component_registry: EnhancedComponentRegistry | None = Field(
+    component_registry: Optional[EnhancedComponentRegistry] = Field(
         default=None, description="Enhanced component registry"
     )
 
@@ -400,7 +402,7 @@ class CapabilityMatcher(BaseModel):
         default_factory=dict, description="Matrix mapping tools to capabilities"
     )
 
-    component_registry: EnhancedComponentRegistry | None = Field(
+    component_registry: Optional[EnhancedComponentRegistry] = Field(
         default=None, description="Component registry for capability lookup"
     )
 
@@ -500,7 +502,7 @@ class SemanticDiscoveryEngine(BaseModel):
     )
 
     # Enhanced component registry
-    component_registry: EnhancedComponentRegistry | None = Field(
+    component_registry: Optional[EnhancedComponentRegistry] = Field(
         default=None, description="Shared component registry"
     )
 
@@ -518,7 +520,7 @@ class SemanticDiscoveryEngine(BaseModel):
         return self
 
     async def discover_tools(
-        self, tools: list[Any] | None = None, haive_root: str | None = None
+        self, tools: list[Any] | None = None, haive_root: Optional[str] = None
     ) -> list[ComponentMetadata]:
         """Discover available tools."""
         if tools is None:
@@ -643,7 +645,9 @@ class SemanticDiscoveryEngine(BaseModel):
 
         return results
 
-    def update_selection_strategy(self, strategy: BaseSelectionStrategy | str) -> None:
+    def update_selection_strategy(
+        self, strategy: Union[BaseSelectionStrategy, str]
+    ) -> None:
         """Update the selection strategy."""
         if isinstance(strategy, str):
             # Create strategy from string

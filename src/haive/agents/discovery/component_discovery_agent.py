@@ -9,7 +9,7 @@ Based on: @project_docs/active/patterns/dynamic_activation_pattern.md
 
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
@@ -103,11 +103,11 @@ class ComponentDiscoveryAgent(BaseModel):
     )
 
     # Component instances (initialized via model_validator)
-    discovery_agent: BaseRAGAgent | None = Field(
+    discovery_agent: Optional[BaseRAGAgent] = Field(
         default=None, description="BaseRAGAgent for performing retrieval"
     )
 
-    meta_state: MetaStateSchema | None = Field(
+    meta_state: Optional[MetaStateSchema] = Field(
         default=None, description="MetaStateSchema wrapper for the discovery agent"
     )
 
@@ -122,7 +122,7 @@ class ComponentDiscoveryAgent(BaseModel):
 
     # Internal state (private attributes)
     _documents: list[Document] | None = PrivateAttr(default=None)
-    _haive_discovery: HaiveComponentDiscovery | None = PrivateAttr(default=None)
+    _haive_discovery: Optional[HaiveComponentDiscovery] = PrivateAttr(default=None)
 
     @model_validator(mode="after")
     def setup_discovery_agent(self) -> "ComponentDiscoveryAgent":
@@ -520,7 +520,7 @@ class ComponentDiscoveryAgent(BaseModel):
 
     async def load_component_from_doc(
         self, component_doc: dict[str, Any]
-    ) -> Any | None:
+    ) -> Optional[Any]:
         """Load actual component instance from component document.
 
         Args:
