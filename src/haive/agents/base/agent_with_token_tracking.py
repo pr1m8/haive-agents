@@ -1,8 +1,7 @@
 """Agent base class with integrated token usage tracking.
 
-This module provides an enhanced Agent base class that automatically tracks
-token usage for all LLM interactions, providing cost analysis and capacity
-monitoring capabilities.
+This module provides an enhanced Agent base class that automatically tracks token usage
+for all LLM interactions, providing cost analysis and capacity monitoring capabilities.
 """
 
 import logging

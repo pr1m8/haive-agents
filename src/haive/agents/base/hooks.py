@@ -14,7 +14,6 @@ Functions:
 """
 
 # src/haive/agents/base/hooks.py
-
 """Hook system for agent lifecycle events.
 
 This module provides a flexible hook system that allows users to inject

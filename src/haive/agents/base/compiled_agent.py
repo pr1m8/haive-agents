@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """CompiledAgent - Agent class based on CompiledStateGraph architecture.
 
 This module provides the new CompiledAgent class that inherits from CompiledStateGraph
@@ -5,7 +7,6 @@ while maintaining compatibility with the existing Agent interface. This class re
 the future direction for agent architecture in the Haive framework.
 """
 
-from __future__ import annotations
 
 import logging
 from abc import abstractmethod
@@ -97,8 +98,8 @@ class CompiledAgent(
     def validate_agent_requirements(cls) -> CompiledAgent:
         """Validate that agent has required LLM capabilities.
 
-        Agents must have an LLM engine for reasoning. This validator ensures
-        that the agent is properly configured with reasoning capabilities.
+        Agents must have an LLM engine for reasoning. This validator ensures that the
+        agent is properly configured with reasoning capabilities.
         """
         if not self.engine:
             if not self.engines:
@@ -129,9 +130,9 @@ class CompiledAgent(
     def _setup_schemas(self) -> None:
         """Generate schemas from available engines.
 
-        This method creates state, input, and output schemas based on the
-        engines available to this agent. It uses SchemaComposer for basic
-        composition (agents with sub-agents should use AgentSchemaComposer).
+        This method creates state, input, and output schemas based on the engines
+        available to this agent. It uses SchemaComposer for basic composition (agents
+        with sub-agents should use AgentSchemaComposer).
         """
         if not self.state_schema:
             engine_list = []
@@ -244,9 +245,9 @@ class CompiledAgent(
     def setup_agent(self) -> None:
         """Hook for subclass-specific setup logic.
 
-        This method is called during initialization and can be overridden
-        by subclasses for custom setup logic. Maintained for backward
-        compatibility with existing Agent interface.
+        This method is called during initialization and can be overridden by subclasses
+        for custom setup logic. Maintained for backward compatibility with existing
+        Agent interface.
         """
 
     def invoke(self, input_data: Any, config: dict[str, Any] | None = None) -> Any:

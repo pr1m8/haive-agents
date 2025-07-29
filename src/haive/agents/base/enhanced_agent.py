@@ -14,7 +14,6 @@ Functions:
 """
 
 # haive/agents/base/enhanced_agent.py
-
 """Enhanced Agent hierarchy with engine-focused generics and backward compatibility.
 
 This module provides the enhanced agent architecture:
@@ -354,8 +353,8 @@ class Agent(
     def setup_agent(self) -> None:
         """Hook for subclasses to perform field syncing and custom setup.
 
-        This method is called BEFORE schema generation and graph building,
-        allowing subclasses to sync fields to engines properly.
+        This method is called BEFORE schema generation and graph building, allowing
+        subclasses to sync fields to engines properly.
 
         Override this method in subclasses for custom setup logic.
         """

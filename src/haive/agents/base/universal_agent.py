@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Universal Agent - Simplified base class for all agent types.
 
 This module provides a simplified Agent base class that maintains familiar
@@ -5,7 +7,6 @@ naming while providing clear type-based capabilities and proper separation
 of concerns through agent types rather than complex inheritance hierarchies.
 """
 
-from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
@@ -163,8 +164,8 @@ class Agent(BaseModel, ABC):
     def __getattr__(self, name: str) -> Any:
         """Route method calls based on agent capabilities.
 
-        This allows agents to have type-specific methods that are only
-        available when the agent type supports those capabilities.
+        This allows agents to have type-specific methods that are only available when
+        the agent type supports those capabilities.
         """
         capabilities = self.get_capabilities()
 

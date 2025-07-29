@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 class SerializationMixin:
     """Mixin for serializing and deserializing Agent instances.
 
-    This mixin provides methods for handling serialization with both pickle and
-    msgpack, focusing on addressing the specific needs of agents within LangGraph.
+    This mixin provides methods for handling serialization with both pickle and msgpack,
+    focusing on addressing the specific needs of agents within LangGraph.
 
-    LangGraph uses msgpack under the hood for serialization during graph execution.
-    This mixin ensures agents can be properly serialized without errors.
+    LangGraph uses msgpack under the hood for serialization during graph execution. This
+    mixin ensures agents can be properly serialized without errors.
     """
 
     def __getstate__(self) -> dict[str, Any]:

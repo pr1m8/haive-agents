@@ -1,11 +1,11 @@
+from __future__ import annotations
+
 """Mixin for adding structured output capabilities to agents.
 
-This mixin provides class methods for creating agents with structured output,
-enabling any agent to be composed with a StructuredOutputAgent for type-safe
-output conversion.
+This mixin provides class methods for creating agents with structured output, enabling
+any agent to be composed with a StructuredOutputAgent for type-safe output conversion.
 """
 
-from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, TypeVar
 

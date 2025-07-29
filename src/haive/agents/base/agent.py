@@ -14,7 +14,6 @@ Functions:
 """
 
 # haive/core/engine/agent/base.py
-
 """Base Agent class for the Haive framework.
 
 This module provides the abstract base agent class that all agents inherit from,
@@ -69,7 +68,8 @@ class Agent(
     StructuredOutputMixin,
     ABC,
 ):
-    """Abstract base agent class that extends InvokableEngine with execution and state management.
+    """Abstract base agent class that extends InvokableEngine with execution and state
+    management.
 
     This class provides the foundation for all agent implementations in the Haive framework,
     combining the Engine interface with execution and state management capabilities through mixins.
@@ -776,7 +776,8 @@ class Agent(
     def _build_initial_graph(self) -> None:
         """Build the initial graph.
 
-        This calls the abstract build_graph method that must be implemented by subclasses.
+        This calls the abstract build_graph method that must be implemented by
+        subclasses.
         """
         try:
             self.graph = self.build_graph()
@@ -934,7 +935,10 @@ class Agent(
         self._compiled_graph = None
 
     def _ensure_graph_built(self) -> None:
-        """Ensure the graph is built. Rebuild if needed."""
+        """Ensure the graph is built.
+
+        Rebuild if needed.
+        """
         if not self._graph_built or self.graph is None:
             self.graph = self.build_graph()
             self._graph_built = True
@@ -1483,7 +1487,9 @@ class Agent(
         return info
 
     def display_schema_info(self) -> None:
-        """Display comprehensive information about the agent's schema system using rich formatting."""
+        """Display comprehensive information about the agent's schema system using rich
+        formatting.
+        """
         info = self.get_schema_info()
 
         # Create a table for schema information
@@ -1600,8 +1606,8 @@ class Agent(
     def auto_derive_schemas(self) -> None:
         """Automatically derive and set input and output schemas from the state schema.
 
-        This convenience method will derive input and output schemas from the state schema
-        and set them on the agent if they haven't been explicitly set.
+        This convenience method will derive input and output schemas from the state
+        schema and set them on the agent if they haven't been explicitly set.
         """
         # Only derive if not already set
         if not self.input_schema:
@@ -1634,7 +1640,7 @@ class Agent(
 
     # @classmethod
     # def as_tool(
-    #     cls, name: str | None = None, description: str | None = None, **agent_kwargs
+    #     cls, name: Optional[str] = None, description: Optional[str] = None, **agent_kwargs
     # ):
     #     """Convert this agent class to a LangChain tool.
     #

@@ -14,7 +14,6 @@ Functions:
 """
 
 # haive/agents/base/types.py
-
 """Core type system for the Haive agent framework.
 
 Defines type variables, constraints, and base protocols for type-safe agent design.
