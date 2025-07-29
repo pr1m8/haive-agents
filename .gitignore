@@ -158,3 +158,10 @@ __pycache__/
 .venv/
 poetry.lock
 poetry.lock
+
+# Lock files should not be tracked
+poetry.lock
+
+# Temporary v2 comparison files (DO NOT COMMIT)
+*.v2.py
+**/*.v2.py

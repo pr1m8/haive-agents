@@ -14,7 +14,7 @@ This implementation follows the established Haive patterns:
 """
 
 import logging
-from typing import Any, Literal, Optional
+from typing import Any, Optional
 
 # Use typing_extensions for TypeVar with default support
 try:
@@ -29,9 +29,6 @@ from haive.core.common.mixins.recompile_mixin import RecompileMixin
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.base import InvokableEngine
 from haive.core.graph.node.engine_node import EngineNodeConfig
-from haive.core.graph.node.engine_node_generic import (
-    GenericEngineNodeConfig,
-)
 from haive.core.graph.node.parser_node_config_v2 import ParserNodeConfigV2
 from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
 from haive.core.graph.node.validation_node_config_v2 import ValidationNodeConfigV2
@@ -72,7 +69,6 @@ def has_tool_calls(state: dict[str, Any]) -> bool:
     return False
 
 
-
 # Default TypeVar to AugLLMConfig for SimpleAgent
 EngineT = TypeVar("EngineT", bound=InvokableEngine, default=AugLLMConfig)
 TInput = TypeVar("TInput", bound=BaseModel)
@@ -84,11 +80,10 @@ TOutput = TypeVar("TOutput", bound=BaseModel)
 
 
 class SimpleAgentV3(
-    Agent[AugLLMConfig],  # Use enhanced generic Agent with AugLLMConfig default
+    Agent[AugLLMConfig],  # Use enhanced generic Agent with AugLLMConfig type parameter
     RecompileMixin,
     DynamicToolRouteMixin,
-    # Note: Removed HooksMixin to avoid conflicts - enhanced Agent has its own
-    # hook system
+    # Note: model_rebuild() at end of file resolves the Pydantic forward reference issues
 ):
     """SimpleAgent v3 with enhanced dynamic architecture and hooks system.
 
@@ -221,7 +216,7 @@ class SimpleAgentV3(
     structured_output_compatible: bool = Field(
         default=True, description="Enable cross-agent structured output compatibility"
     )
-    
+
     # V2 Parser configuration options (copied from SimpleAgentV2)
     use_parser_safety_net: bool = Field(
         default=True, description="Use V2 parser with ToolMessage safety net"
@@ -788,7 +783,7 @@ class SimpleAgentV3(
         # Create tool node config using existing ToolNodeConfig
         tool_node_config = ToolNodeConfig(name="tool_node", engine_name=engine_name)
         graph.add_node("tool_node", tool_node_config)
-        
+
         # Tool results go back to agent node
         graph.add_edge("tool_node", "agent_node")
 
@@ -841,6 +836,7 @@ class SimpleAgentV3(
         else:
             # Use V1 parser (original behavior)
             from haive.core.graph.node.parser_node_config import ParserNodeConfig
+
             parser_node_config = ParserNodeConfig(
                 name="parse_output",
                 engine_name=engine_name,
@@ -871,15 +867,15 @@ class SimpleAgentV3(
         # Create validation node with routing - use the node function
         validation_config = ValidationNodeWithRouting(**validation_kwargs)
         validation_function = validation_config.create_node_function()
-        
+
         # Wrap validation function to handle Pydantic state objects
         def validation_wrapper(state):
             """Wrapper to convert Pydantic state to dict for ValidationNodeWithRouting."""
-            if hasattr(state, 'model_dump'):
+            if hasattr(state, "model_dump"):
                 # Convert Pydantic state to dict
                 state_dict = state.model_dump()
                 result = validation_function(state_dict)
-                
+
                 # Update the original state with routing data
                 if isinstance(result, dict):
                     for key, value in result.items():
@@ -889,29 +885,31 @@ class SimpleAgentV3(
             else:
                 # Already a dict
                 return validation_function(state)
-        
+
         # Add validation node to graph using the wrapper
         graph.add_node("validation", validation_wrapper)
-        
-        # Add conditional edges from agent_node 
+
+        # Add conditional edges from agent_node
         # When tools are present, ALWAYS go to validation first
         graph.add_conditional_edges(
             "agent_node",
             has_tool_calls,
             {
-                True: "validation",   # Tools present -> validation (ALWAYS)
-                False: END,           # No tools -> end
+                True: "validation",  # Tools present -> validation (ALWAYS)
+                False: END,  # No tools -> end
             },
         )
-        
+
         if self.debug:
-            logger.debug("Added conditional edges from agent_node -> validation (has_tool_calls)")
-            
+            logger.debug(
+                "Added conditional edges from agent_node -> validation (has_tool_calls)"
+            )
+
         # ValidationNodeWithRouting uses routing_data to determine next step
         def routing_condition(state: dict[str, Any]) -> str:
             """Route based on validation results."""
             routing_data = state.get("routing_data", {})
-            
+
             if routing_data.get("should_end", False):
                 return "end"
             elif routing_data.get("should_return_to_agent", False):
@@ -920,17 +918,17 @@ class SimpleAgentV3(
                 target_nodes = routing_data.get("target_nodes", [])
                 if target_nodes:
                     return target_nodes[0]  # Route to first target
-            
+
             # Default fallback
             return "end"
-        
+
         # Route from validation node based on routing_data
         routing_map = {"end": END, "agent_node": "agent_node"}
         if needs_tools:
             routing_map["tool_node"] = "tool_node"
         if needs_parsing:
             routing_map["parse_output"] = "parse_output"
-            
+
         graph.add_conditional_edges("validation", routing_condition, routing_map)
 
     def _routing_condition_with_hooks(self, state: dict[str, Any]) -> str:
@@ -1511,15 +1509,15 @@ class SimpleAgentV3(
         # Ensure we have a dict
         if not isinstance(input_data, dict):
             input_data = {"messages": [input_data]} if input_data else {}
-        
+
         # Add tool_routes if not present
         if "tool_routes" not in input_data:
             input_data["tool_routes"] = self.get_tool_routes()
-            
+
         # Add engine_name if not present
         if "engine_name" not in input_data and self.engine:
             input_data["engine_name"] = getattr(self.engine, "name", "default")
-            
+
         return input_data
 
     async def ainvoke(self, input_data: Any, config: Optional[Any] = None) -> Any:
@@ -1585,7 +1583,7 @@ class SimpleAgentV3(
         if needs_tools or needs_parsing:
             # Get engine name
             engine_name = getattr(self.engine, "name", "main")
-            
+
             # Build validation config kwargs
             validation_kwargs = {
                 "name": "validation",
@@ -1595,14 +1593,14 @@ class SimpleAgentV3(
                 validation_kwargs["tool_node"] = "tool_node"
             if needs_parsing:
                 validation_kwargs["parser_node"] = "parse_output"
-                
+
             # Create validation node - use ValidationNodeConfigV2 like SimpleAgent
             validation_config = ValidationNodeConfigV2(**validation_kwargs)
             graph.add_node("validation", validation_config)
-            
+
             # Connect agent to validation
             graph.add_edge("agent_node", "validation")
-            
+
             # Validation routes to tools, parser, or end
             # (ValidationNodeConfigV2 handles the routing internally)
             if needs_tools:
@@ -1611,7 +1609,6 @@ class SimpleAgentV3(
                 graph.add_edge("parse_output", END)  # Parser goes to end
 
         return graph
-
 
     def _add_complex_routing(
         self, graph: BaseGraph, engine_name: str, needs_tools: bool, needs_parsing: bool
@@ -1715,3 +1712,10 @@ class SimpleAgentV3(
             self._app = self.create_runnable()
             self._compiled_graph = self._app
         return self._app
+
+
+# Rebuild Pydantic models to resolve forward references from complex inheritance
+try:
+    SimpleAgentV3.model_rebuild()
+except Exception as e:
+    logger.warning(f"Failed to rebuild SimpleAgentV3 model: {e}")

@@ -173,9 +173,9 @@ class PrePostAgentMixin:
         default=True, description="Preserve original messages in result"
     )
 
-    def __init__(self, *args, **kwargs):
-        """Initialize the mixin."""
-        super().__init__(*args, **kwargs)
+    def model_post_init(self, __context: Any) -> None:
+        """Initialize the mixin after Pydantic validation."""
+        super().model_post_init(__context)
 
         # Initialize transformers
         self._pre_transformer = None
