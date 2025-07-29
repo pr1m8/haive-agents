@@ -48,9 +48,8 @@ async def main():
 
         # Check recursion limit
         if hasattr(agent, "runnable_config"):
-            recursion_limit = agent.runnable_config.get("configurable", {}).get(
-                "recursion_limit"
-            )
+            recursion_limit = agent.runnable_config.get(
+                "configurable", {}).get("recursion_limit")
     except Exception as e:
         return False
 
@@ -62,10 +61,8 @@ async def main():
             )
         ]
 
-        result = agent.run(
-            {"messages": messages}, config={"configurable": {"thread_id": thread_id}}
-        )
-
+        result = agent.run({"messages": messages},
+                           config={"configurable": {"thread_id": thread_id}})
 
         # Show response
         if "messages" in result and len(result["messages"]) > len(messages):
@@ -105,7 +102,6 @@ async def main():
                 )
                 blob_count = (await cur.fetchone())[0]
 
-
                 success = write_count > 0 or checkpoint_count > 0
 
                 if success:
@@ -126,7 +122,6 @@ async def main():
                     if writes:
                         for channel, write_type, idx in writes:
                             pass
-
 
                 else:
                     pass

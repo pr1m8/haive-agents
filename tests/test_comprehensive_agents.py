@@ -8,6 +8,7 @@ This test suite validates:
 5. Tool usage and routing
 """
 
+from typing import Optional
 from unittest.mock import Mock, patch
 
 import pytest

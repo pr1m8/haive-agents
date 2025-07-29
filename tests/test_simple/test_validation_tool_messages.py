@@ -16,7 +16,8 @@ from haive.agents.simple import SimpleAgent
 class Plan(BaseModel):
     """A plan with steps."""
 
-    steps: list[str] = Field(description="A list of steps to complete the task")
+    steps: list[str] = Field(
+        description="A list of steps to complete the task")
 
 
 # Test tools
@@ -83,8 +84,10 @@ async def test_pydantic_tool_message_creation():
     for i, msg in enumerate(result["messages"]):
         if isinstance(msg, ToolMessage):
 
-    # Check if ToolMessage was created
-    tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
+            # Check if ToolMessage was created
+    tool_messages = [
+        msg for msg in result["messages"] if isinstance(
+            msg, ToolMessage)]
 
     # This is what we want to verify - currently it might fail
     if len(tool_messages) == 0:
@@ -137,8 +140,10 @@ async def test_regular_tool_message_creation():
     for i, msg in enumerate(result["messages"]):
         if isinstance(msg, ToolMessage):
 
-    # Check if ToolMessage was created
-    tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
+            # Check if ToolMessage was created
+    tool_messages = [
+        msg for msg in result["messages"] if isinstance(
+            msg, ToolMessage)]
 
     if len(tool_messages) == 0:
         return False
@@ -174,7 +179,7 @@ async def main():
     if not all(result for _, result in results):
         pass
     else:
-        pass!")"
+        pass !")"
 
 
 if __name__ == "__main__":

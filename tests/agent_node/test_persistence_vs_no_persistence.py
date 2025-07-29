@@ -58,8 +58,10 @@ def test_agent_direct_execution():
         print("✅ agent.run() completed")
         print(f"   Type: {type(result_run)}")
         print(
-            f"   Has get_latest_structured_output: {hasattr(result_run, 'get_latest_structured_output')}"
-        )
+            f"   Has get_latest_structured_output: {
+                hasattr(
+                    result_run,
+                    'get_latest_structured_output')}")
 
         if hasattr(result_run, "get_latest_structured_output"):
             structured = result_run.get_latest_structured_output()
@@ -70,8 +72,8 @@ def test_agent_direct_execution():
                 print(f"      count: {structured.count}")
             else:
                 print(
-                    f"   ❌ WRONG TYPE: Expected SimpleTestModel, got {type(structured)}"
-                )
+                    f"   ❌ WRONG TYPE: Expected SimpleTestModel, got {
+                        type(structured)}")
         else:
             print("   ❌ NO METHOD: Missing get_latest_structured_output()")""
     except Exception as e:
@@ -102,8 +104,9 @@ def test_agent_direct_execution():
                             )
                             for j, tool_call in enumerate(msg.tool_calls):
                                 print(
-                                    f"       Tool call {j}: {tool_call.name} = {tool_call.args}"
-                                )
+                                    f"       Tool call {j}: {
+                                        tool_call.name} = {
+                                        tool_call.args}")
                         else:
                             print(f"     Message {i}: {type(msg).__name__}")
 
@@ -133,8 +136,18 @@ def test_agent_node_v3_without_persistence():
     )
 
     print("✅ Created agent WITHOUT persistence")
-    print(f"   Agent persistence config: {getattr(agent, 'persistence', 'None')}")
-    print(f"   Agent state persistence: {getattr(agent, 'state_persistence', 'None')}")
+    print(
+        f"   Agent persistence config: {
+            getattr(
+                agent,
+                'persistence',
+                'None')}")
+    print(
+        f"   Agent state persistence: {
+            getattr(
+                agent,
+                'state_persistence',
+                'None')}")
 
     # Create AgentNodeV3
     node = create_agent_node_v3(agent_name="no_persist_test", agent=agent)
@@ -162,8 +175,12 @@ def test_agent_node_v3_without_persistence():
 
             # Look for structured output fields
             for key, value in result.update.items():
-                if key in ["message", "count"]:  # Our expected structured fields
-                    print(f"   ✅ DIRECT FIELD: {key} = {value} ({type(value)})")
+                if key in [
+                    "message",
+                        "count"]:  # Our expected structured fields
+                    print(
+                        f"   ✅ DIRECT FIELD: {key} = {value} ({
+                            type(value)})")
                 elif key == "simple_test_model":  # Field name from model
                     print(f"   📦 MODEL FIELD: {key} = {value}")
                 elif isinstance(value, dict) and "content" in value:
@@ -200,8 +217,18 @@ def test_agent_node_v3_with_persistence():
     )
 
     print("✅ Created agent WITH persistence")
-    print(f"   Agent persistence config: {getattr(agent, 'persistence', 'None')}")
-    print(f"   Agent state persistence: {getattr(agent, 'state_persistence', 'None')}")
+    print(
+        f"   Agent persistence config: {
+            getattr(
+                agent,
+                'persistence',
+                'None')}")
+    print(
+        f"   Agent state persistence: {
+            getattr(
+                agent,
+                'state_persistence',
+                'None')}")
     print(f"   Agent has checkpointer: {hasattr(agent, 'checkpointer')}")
 
     # Create AgentNodeV3
@@ -230,8 +257,12 @@ def test_agent_node_v3_with_persistence():
 
             # Look for structured output fields
             for key, value in result.update.items():
-                if key in ["message", "count"]:  # Our expected structured fields
-                    print(f"   ✅ DIRECT FIELD: {key} = {value} ({type(value)})")
+                if key in [
+                    "message",
+                        "count"]:  # Our expected structured fields
+                    print(
+                        f"   ✅ DIRECT FIELD: {key} = {value} ({
+                            type(value)})")
                 elif key == "simple_test_model":  # Field name from model
                     print(f"   📦 MODEL FIELD: {key} = {value}")
                 elif isinstance(value, dict) and "content" in value:
@@ -276,8 +307,11 @@ def test_compare_agent_invoke_vs_node():
 
     print(f"   Raw result type: {type(raw_result)}")
     print(
-        f"   Raw result keys: {list(raw_result.keys()) if isinstance(raw_result, dict) else 'Not dict'}"
-    )
+        f"   Raw result keys: {
+            list(
+                raw_result.keys()) if isinstance(
+                raw_result,
+                dict) else 'Not dict'}")
 
     # Analyze the raw result in detail
     if isinstance(raw_result, dict):
@@ -288,12 +322,13 @@ def test_compare_agent_invoke_vs_node():
                     print(f"     Message {i}: {type(msg).__name__}")
                     if hasattr(msg, "tool_calls") and msg.tool_calls:
                         for j, tc in enumerate(msg.tool_calls):
-                            print(f"       Tool call {j}: {tc.name} -> {tc.args}")
+                            print(
+                                f"       Tool call {j}: {tc.name} -> {tc.args}")
             elif isinstance(value, dict):
                 print(f"     Dict contents: {value}")
 
     # Test 2: AgentNodeV3._process_agent_output() simulation
-    print("\n🔄 Step 2: Simulate AgentNodeV3._process_agent_output()"()")
+    print("\n🔄 Step 2: Simulate AgentNodeV3._process_agent_output()")
 
     # Check what _process_agent_output would do
     has_output_schema = hasattr(agent, "output_schema") and agent.output_schema
@@ -302,7 +337,7 @@ def test_compare_agent_invoke_vs_node():
 
     if has_output_schema:
         if isinstance(raw_result, BaseModel):
-            print("   ✅ Result is BaseModel - would use result.model_dump()")")
+            print("   ✅ Result is BaseModel - would use result.model_dump()")
             state_update = raw_result.model_dump()
         elif isinstance(raw_result, dict):
             print("   ⚠️  Result is dict - would use result directly")
@@ -331,9 +366,8 @@ def test_compare_agent_invoke_vs_node():
     print("\n🔄 Step 3: Actual AgentNodeV3 execution")
 
     node = create_agent_node_v3(agent_name="compare_test", agent=agent)
-    state = MultiAgentState(
-        agents={"compare_test": agent}, messages=[{"role": "user", "content": query}]
-    )
+    state = MultiAgentState(agents={"compare_test": agent}, messages=[
+        {"role": "user", "content": query}])
 
     try:
         node_result = node(state)
@@ -346,8 +380,11 @@ def test_compare_agent_invoke_vs_node():
             # Compare with our simulation
             print("\n📊 COMPARISON:")
             print(
-                f"   Raw result keys: {list(raw_result.keys()) if isinstance(raw_result, dict) else 'Not dict'}"
-            )
+                f"   Raw result keys: {
+                    list(
+                        raw_result.keys()) if isinstance(
+                        raw_result,
+                        dict) else 'Not dict'}")
             print(f"   Node update keys: {list(update_dict.keys())}")
 
             # Check if they match

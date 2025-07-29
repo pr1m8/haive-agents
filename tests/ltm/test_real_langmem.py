@@ -26,9 +26,10 @@ def test_langmem_with_anthropic():
             provider="anthropic", model="claude-3-haiku-20240307"
         )
 
-        agent = LTMAgent(name="Anthropic LTM Agent", llm_config=anthropic_config)
+        agent = LTMAgent(
+            name="Anthropic LTM Agent",
+            llm_config=anthropic_config)
         agent.setup_agent()
-
 
         # Create test conversation
         state = LTMState(
@@ -61,10 +62,11 @@ def test_langmem_with_anthropic():
         assert "extracted_memories" in result
         memories = result["extracted_memories"]
 
-
         # Verify we got real LangMem extraction (not fallback)
-        real_langmem = any(m["source"] == "langmem_extraction" for m in memories)
-        fallback_used = any(m["source"] == "fallback_extraction" for m in memories)
+        real_langmem = any(
+            m["source"] == "langmem_extraction" for m in memories)
+        fallback_used = any(
+            m["source"] == "fallback_extraction" for m in memories)
 
         if real_langmem:
 
@@ -107,7 +109,6 @@ def test_langmem_with_groq():
         agent = LTMAgent(name="Groq LTM Agent", llm_config=groq_config)
         agent.setup_agent()
 
-
         # Create different test conversation
         state = LTMState(
             messages=[
@@ -133,7 +134,8 @@ def test_langmem_with_groq():
         memories = result["extracted_memories"]
 
         # Check if real LangMem worked
-        real_langmem = any(m["source"] == "langmem_extraction" for m in memories)
+        real_langmem = any(
+            m["source"] == "langmem_extraction" for m in memories)
 
         if real_langmem:
             return memories
@@ -153,7 +155,6 @@ def test_langmem_with_deepseek():
         agent = LTMAgent(name="DeepSeek LTM Agent", llm_config=deepseek_config)
         agent.setup_agent()
 
-
         # Simple test
         state = LTMState(
             messages=[
@@ -170,7 +171,8 @@ def test_langmem_with_deepseek():
 
         memories = result["extracted_memories"]
 
-        real_langmem = any(m["source"] == "langmem_extraction" for m in memories)
+        real_langmem = any(
+            m["source"] == "langmem_extraction" for m in memories)
 
         if real_langmem:
             return memories
@@ -223,7 +225,6 @@ if __name__ == "__main__":
     anthropic_result = test_langmem_with_anthropic()
     groq_result = test_langmem_with_groq()
     deepseek_result = test_langmem_with_deepseek()
-
 
     if anthropic_result:
         pass

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Test SimpleRAG V3 implementation bypassing broken import chains."""
 
+from typing import List
 import sys
 from unittest.mock import MagicMock
 

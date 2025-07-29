@@ -37,12 +37,14 @@ def add_comprehensive_debugging():
 
         def debug_derive_input_schema(self, *args, **kwargs):
             console.print(
-                f"[yellow]🔍 derive_input_schema called on {type(self).__name__}[/yellow]"
+                f"[yellow]🔍 derive_input_schema called on {
+    type(self).__name__}[/yellow]"
             )
             try:
                 result = original_derive(self, *args, **kwargs)
                 console.print(
-                    f"[green]✅ derive_input_schema success: {result.__name__}[/green]"
+                    f"[green]✅ derive_input_schema success: {
+    result.__name__}[/green]"
                 )
                 return result
             except Exception as e:

@@ -4,6 +4,7 @@ Tests RAG agents with actual execution using real document processing
 and LLM interactions (without mocks).
 """
 
+from typing import List, Dict
 import pytest
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document

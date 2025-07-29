@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Test SimpleRAG V3 implementation without mocks - architecture validation only."""
 
+from typing import List, Optional
 import os
 import sys
 

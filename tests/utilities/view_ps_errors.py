@@ -47,7 +47,8 @@ def view_ps_errors():
 
                         # Extract prepared statement errors
                         if "writes" in meta_dict:
-                            for node_name, node_data in meta_dict["writes"].items():
+                            for node_name, node_data in meta_dict["writes"].items(
+                            ):
                                 if isinstance(node_data, dict):
                                     # Check process_response
                                     if "process_response" in node_data:
@@ -71,11 +72,11 @@ def view_ps_errors():
                                                         in content.lower()
                                                     ):
 
-                                    # Check error field
+                                                        # Check error field
                                     if "error" in node_data:
                                         pass
                                     pass
-                                        pass
+                                    pass
 
                                     # Check messages for errors
                                     if "messages" in node_data:
@@ -86,10 +87,8 @@ def view_ps_errors():
                                                     isinstance(msg, dict)
                                                     and "content" in msg
                                                 ):
-                                                    if (
-                                                        "prepared statement"
-                                                        in str(msg["content"]).lower()
-                                                    ):
+                                                    if ("prepared statement" in str(
+                                                            msg["content"]).lower()):
                                                         pass
 
                         # Check for error at top level
@@ -98,7 +97,6 @@ def view_ps_errors():
 
                     except Exception as e:
                         pass
-
 
                 # Get stats on which agents have errors
                 cur.execute(

@@ -63,11 +63,16 @@ class TestAgentNodeV3Isolation:
         print(f"   Has output_schema: {hasattr(agent, 'output_schema')}")
         print(f"   output_schema: {getattr(agent, 'output_schema', None)}")
         print(
-            f"   engine.structured_output_model: {getattr(agent.engine, 'structured_output_model', None)}"
+            f"   engine.structured_output_model: {
+    getattr(
+        agent.engine,
+        'structured_output_model',
+         None)}"
         )
 
         # Create AgentNodeV3
-        node = create_agent_node_v3(agent_name="structured_simple", agent=agent)
+        node = create_agent_node_v3(
+    agent_name="structured_simple", agent=agent)
         print(f"✅ Created AgentNodeV3: {type(node)}")
 
         # Create test state
@@ -123,11 +128,16 @@ class TestAgentNodeV3Isolation:
         print(f"   Has output_schema: {hasattr(agent, 'output_schema')}")
         print(f"   output_schema: {getattr(agent, 'output_schema', None)}")
         print(
-            f"   engine.structured_output_model: {getattr(agent.engine, 'structured_output_model', None)}"
+            f"   engine.structured_output_model: {
+    getattr(
+        agent.engine,
+        'structured_output_model',
+         None)}"
         )
 
         # Create AgentNodeV3
-        node = create_agent_node_v3(agent_name="unstructured_simple", agent=agent)
+        node = create_agent_node_v3(
+    agent_name="unstructured_simple", agent=agent)
         print(f"✅ Created AgentNodeV3: {type(node)}")
 
         # Create test state
@@ -198,7 +208,11 @@ class TestAgentNodeV3Isolation:
         print(f"   Has output_schema: {hasattr(agent, 'output_schema')}")
         print(f"   output_schema: {getattr(agent, 'output_schema', None)}")
         print(
-            f"   engine.structured_output_model: {getattr(agent.engine, 'structured_output_model', None)}"
+            f"   engine.structured_output_model: {
+    getattr(
+        agent.engine,
+        'structured_output_model',
+         None)}"
         )
         print(f"   Tools: {[tool.name for tool in agent.tools]}")
 
@@ -263,15 +277,20 @@ class TestAgentNodeV3Isolation:
         # Test 1: Direct agent.run()
         print("\n🔄 TEST 1: Direct agent.run()"()")"
         try:
-            result_run = agent.run(query)
+            result_run=agent.run(query)
             print(f"   Type: {type(result_run)}")
             print(
-                f"   Has get_latest_structured_output: {hasattr(result_run, 'get_latest_structured_output')}"
+                f"   Has get_latest_structured_output: {
+    hasattr(
+        result_run,
+         'get_latest_structured_output')}"
             )
 
             if hasattr(result_run, "get_latest_structured_output"):
-                structured = result_run.get_latest_structured_output()
-                print(f"   Structured output: {type(structured)} = {structured}")
+                structured=result_run.get_latest_structured_output()
+                print(
+    f"   Structured output: {
+        type(structured)} = {structured}")
             else:
                 print(f"   Raw result: {result_run}")
 
@@ -279,17 +298,22 @@ class TestAgentNodeV3Isolation:
             print(f"❌ agent.run() failed: {e}")
 
         # Test 2: Direct agent.invoke()
-        print("\n🔄 TEST 2: Direct agent.invoke()"()""        try:
-            input_dict = {"messages": [{"role": "user", "content": query}]}
-            result_invoke = agent.invoke(input_dict)
+        print("\n🔄 TEST 2: Direct agent.invoke()"()"" try:
+            input_dict={"messages": [{"role": "user", "content": query}]}
+            result_invoke=agent.invoke(input_dict)
             print(f"   Type: {type(result_invoke)}")
             print(
-                f"   Has get_latest_structured_output: {hasattr(result_invoke, 'get_latest_structured_output')}"
+                f"   Has get_latest_structured_output: {
+    hasattr(
+        result_invoke,
+         'get_latest_structured_output')}"
             )
 
             if hasattr(result_invoke, "get_latest_structured_output"):
-                structured = result_invoke.get_latest_structured_output()
-                print(f"   Structured output: {type(structured)} = {structured}")
+                structured=result_invoke.get_latest_structured_output()
+                print(
+    f"   Structured output: {
+        type(structured)} = {structured}")
             else:
                 print(f"   Raw result: {result_invoke}")
                 if isinstance(result_invoke, dict):
@@ -301,13 +325,14 @@ class TestAgentNodeV3Isolation:
         # Test 3: AgentNodeV3 execution
         print("\n🔄 TEST 3: AgentNodeV3 execution")
         try:
-            node = create_agent_node_v3(agent_name="comparison_agent", agent=agent)
-            state = MultiAgentState(
+            node=create_agent_node_v3(
+    agent_name="comparison_agent", agent=agent)
+            state=MultiAgentState(
                 agents={"comparison_agent": agent},
                 messages=[{"role": "user", "content": query}],
             )
 
-            result_node = node(state)
+            result_node=node(state)
             print(f"   Type: {type(result_node)}")
             print(f"   Result: {result_node}")
 
@@ -329,7 +354,7 @@ def main():
     print("to understand why complex output processing is needed.")
     print("=" * 80)
 
-    test_suite = TestAgentNodeV3Isolation()
+    test_suite=TestAgentNodeV3Isolation()
 
     # Run all tests
     test_suite.test_simple_agent_v3_with_structured_output()

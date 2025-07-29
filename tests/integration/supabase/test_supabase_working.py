@@ -83,8 +83,7 @@ async def main():
             print("\n✅ SUCCESS! Data is being saved to Supabase!")
             print(f"\n🔗 View your data in Supabase:")
             print(
-                f"   https://supabase.com/dashboard/project/zkssazqhwcetsnbiuqik/editor/45942"
-            )
+                f"   https://supabase.com/dashboard/project/zkssazqhwcetsnbiuqik/editor/45942")
             print(
                 f"   SQL Query: SELECT * FROM checkpoint_writes WHERE thread_id = '{thread_id}';"
             )
@@ -96,7 +95,6 @@ async def main():
 
 if __name__ == "__main__":
     success = asyncio.run(main())
-
 
     if not success:
         exit(1)
