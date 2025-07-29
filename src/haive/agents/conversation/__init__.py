@@ -131,21 +131,14 @@ __version__ = "1.0.0"
 __author__ = "Haive Team"
 __license__ = "MIT"
 
-from collections.abc import Callable
-
 # Type imports for better IDE support
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Literal,
     NotRequired,
     Optional,
     Protocol,
-    Type,
-    TypeAlias,
-    Union,
     runtime_checkable,
 )
 
@@ -154,9 +147,8 @@ from typing_extensions import (
 )
 
 if TYPE_CHECKING:
-    from haive.core.schema import StateSchema
+    pass
 
-    from haive.agents.base.agent import Agent
 
 # Core conversation agent imports
 from haive.agents.conversation.base.agent import BaseConversationAgent
@@ -268,9 +260,8 @@ def _initialize_conversation_module() -> None:
 
     # Validate critical dependencies
     try:
-        from haive.core.schema import StateSchema
+        pass
 
-        from haive.agents.base.agent import Agent
     except ImportError as e:
         raise ImportError(
             f"Critical conversation dependencies missing: {e.name}. "

@@ -7,10 +7,6 @@ from haive.agents.conversation.directed.agent import (
     MentionType,
     SpeakerMention,
     SpeakerSelectionResult,
-    create_classroom,
-    get_conversation_state_schema,
-    process_response,
-    select_speaker,
 )
 from haive.agents.conversation.directed.example import (
     example_classroom_discussion,
@@ -28,12 +24,8 @@ __all__ = [
     "MentionType",
     "SpeakerMention",
     "SpeakerSelectionResult",
-    "create_classroom",
     "example_classroom_discussion",
     "example_customer_support",
     "example_interactive_story",
     "example_team_meeting",
-    "get_conversation_state_schema",
-    "process_response",
-    "select_speaker",
 ]

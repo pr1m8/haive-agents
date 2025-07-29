@@ -279,7 +279,7 @@ class BaseConversationAgent(Agent):
             return "conclude"
 
         graph.add_conditional_edges(
-            "select_speakef",
+            "select_speaker",
             speaker_router,
             {"execute_agent": "execute_agent", "conclude": "conclude"},
         )
@@ -366,7 +366,7 @@ class BaseConversationAgent(Agent):
 
         Returns:
             Command: A langgraph Command object with state updates. Must include either:
-                - update={"current_speakef": speaker_name} to continue conversation
+                - update={"current_speaker": speaker_name} to continue conversation
                 - update={"current_speaker": None, "conversation_ended": True} to end
 
         Raises:
@@ -389,7 +389,7 @@ class BaseConversationAgent(Agent):
         # Safety check
         if not current_speaker or current_speaker not in self._compiled_agents:
             logger.warning(f"Invalid speaker: {current_speaker}")
-            return Command(update={"conversation_ended": True, "current_speakef": None})
+            return Command(update={"conversation_ended": True, "current_speaker": None})
 
         agent = self._compiled_agents[current_speaker]
 
@@ -536,11 +536,17 @@ class BaseConversationAgent(Agent):
         )
 
     def _custom_initialization(self, state: Any) -> dict[str, Any]:
-        """Hook for custom initialization. Override in subclasses."""
+        """Hook for custom initialization.
+
+        Override in subclasses.
+        """
         return {}
 
     def _prepare_agent_input(self, state: Any, agent_name: str) -> dict[str, Any]:
-        """Prepare input for an agent. Override for custom behavior."""
+        """Prepare input for an agent.
+
+        Override for custom behavior.
+        """
         if isinstance(state, dict):
             messages = state.get("messages", [])
         else:
@@ -579,7 +585,10 @@ class BaseConversationAgent(Agent):
         )
 
     def _check_custom_end_conditions(self, state: Any) -> dict[str, Any] | None:
-        """Check custom end conditions. Override in subclasses."""
+        """Check custom end conditions.
+
+        Override in subclasses.
+        """
         return None
 
     def get_input_fields(self) -> dict[str, tuple[type, Any]]:

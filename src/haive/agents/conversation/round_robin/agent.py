@@ -16,7 +16,7 @@ import logging
 from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.base.state import ConversationState
@@ -29,11 +29,17 @@ logger.setLevel(logging.WARNING)
 class RoundRobinConversation(BaseConversationAgent):
     """Round-robin conversation where each agent speaks in a fixed order.
 
-    Each participant gets exactly one turn per round, with the order
-    maintained throughout the conversation.
+    Each participant gets exactly one turn per round, with the order maintained
+    throughout the conversation.
     """
 
     mode: Literal["round_robin"] = Field(default="round_robin")
+
+    # CRITICAL: Explicitly declare state schema type
+    state_schema: type[BaseModel] = Field(
+        default=ConversationState,
+        description="State schema class to use for this agent",
+    )
 
     # Round-robin specific settings
     skip_unavailable: bool = Field(
@@ -42,6 +48,10 @@ class RoundRobinConversation(BaseConversationAgent):
     announce_speaker: bool = Field(
         default=False, description="Announce who is speaking next"
     )
+
+    def get_conversation_state_schema(self) -> type:
+        """Use the standard ConversationState schema."""
+        return ConversationState
 
     def select_speaker(self, state: ConversationState) -> dict[str, Any]:
         """Select the next speaker in round-robin order."""

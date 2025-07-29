@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """State core module.
 
 This module provides state functionality for the Haive framework.
@@ -69,8 +71,6 @@ Version: 1.0.0
 Author: Haive Team
 License: MIT
 """
-
-from __future__ import annotations
 
 import logging
 import operator

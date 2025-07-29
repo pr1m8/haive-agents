@@ -25,8 +25,8 @@ from haive.agents.conversation.base.state import ConversationState
 class DebateState(ConversationState):
     """Extended state schema for debate conversations with automatic tracking.
 
-    Extends ConversationState with debate-specific fields and automatic
-    computation of debate progress and statistics.
+    Extends ConversationState with debate-specific fields and automatic computation of
+    debate progress and statistics.
     """
 
     # Debate positions and tracking
