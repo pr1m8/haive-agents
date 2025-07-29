@@ -3,7 +3,6 @@
 This script demonstrates how to create and use SimpleAgent with custom state schema.
 """
 
-import asyncio
 import logging
 from typing import Any
 

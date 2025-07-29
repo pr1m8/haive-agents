@@ -1,15 +1,15 @@
 """Haive Supervisor Agent - ReactAgent with Dynamic Routing and Agent Registry.
 
-from typing import Any, Dict
+
 ReactAgent-based supervisor with:
 1. Agent registry with add_agent tool
 2. Dynamic routing tool that creates base model with agents in state
 3. Prompt template showing available agents
 4. Generic agent execution node for running selected agents
 """
-
 import logging
 import time
+from typing import Any, Dict
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.base.base import Engine

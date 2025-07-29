@@ -90,7 +90,12 @@ def __getattr__(name: str):
 # Import submodules for documentation
 try:
     # These imports allow sphinx to find the submodules
-    from haive.agents import conversation, planning, research, sequential, supervisor
+    from haive.agents import (  # , planning
+        conversation,
+        research,
+        sequential,
+        supervisor,
+    )
 except ImportError as e:
     # Log but don't fail if submodules aren't available
     import warnings

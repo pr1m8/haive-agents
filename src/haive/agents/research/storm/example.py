@@ -10,11 +10,12 @@ import logging
 import os
 import sys
 
-from agents.sequence.storm import STORMAgentConfig
 from haive.core.engine.retriever import VectorStoreRetrieverConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from haive.core.models.embeddings.base import OpenAIEmbeddingConfig
 from haive.core.models.llm.base import AzureLLMConfig
+
+from haive.agents.research.storm import STORMAgentConfig
 
 # Set up logging
 logging.basicConfig(

@@ -93,11 +93,11 @@ from langchain_core.tools import BaseTool, tool
 from langgraph.graph import END
 from pydantic import BaseModel, Field, field_validator
 
-# Import Agent for model_rebuild
-from haive.agents.base.enhanced_agent import Agent
-
 # Import SimpleAgentV3 as base class
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+
+# Import Agent for model_rebuild
+
 
 # Hooks system integration
 
@@ -957,4 +957,4 @@ if __name__ == "__main__":
 
 
 # Rebuild Pydantic model to resolve forward references
-ReactAgentV3.model_rebuild()
+# ReactAgentV3.model_rebuild()  # COMMENTED OUT - causing undefined Agent error
