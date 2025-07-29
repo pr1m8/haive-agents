@@ -1,6 +1,7 @@
 """Document Agent for comprehensive document processing pipeline.
 
 from typing import Any
+from typing import Optional
 This module provides the DocumentAgent class which implements the full document processing
 pipeline: FETCH -> LOAD -> TRANSFORM -> SPLIT -> ANNOTATE -> EMBED -> STORE -> RETRIEVE.
 
@@ -303,7 +304,7 @@ class DocumentAgent(Agent):
         default=True, description="Whether to auto-detect source types"
     )
 
-    max_sources: int | None = Field(
+    max_sources: Optional[int] = Field(
         default=None, description="Maximum number of sources to process"
     )
 
