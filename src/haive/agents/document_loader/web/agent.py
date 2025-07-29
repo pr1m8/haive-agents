@@ -1,7 +1,7 @@
 """Web-specific Document Loader Agent.
 
-This module provides a specialized document loader agent for loading
-documents from web URLs.
+This module provides a specialized document loader agent for loading documents from web
+URLs.
 """
 
 from haive.core.engine.document_loader import create_web_loader_engine

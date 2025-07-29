@@ -19,6 +19,7 @@ from typing import Any
 from haive.core.engine.document_loader import (
     DocumentLoaderEngine,
     DocumentLoaderOutput,
+    Optional,
     create_document_loader_engine,
 )
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -30,7 +31,8 @@ from haive.agents.base.agent import Agent
 
 
 class DocumentLoaderAgent(Agent):
-    """Document Loader Agent that integrates the document loader engine with the agent framework.
+    """Document Loader Agent that integrates the document loader engine with the agent
+    framework.
 
     This agent provides a simple interface for loading documents from various sources
     through the agent framework. It can be used as a standalone agent or as part of
@@ -69,7 +71,7 @@ class DocumentLoaderAgent(Agent):
         default=True, description="Whether to include document metadata in the output"
     )
 
-    max_documents: int | None = Field(
+    max_documents: Optional[int] = Field(
         default=None,
         description="Maximum number of documents to load (None for unlimited)",
     )
@@ -81,8 +83,8 @@ class DocumentLoaderAgent(Agent):
     def setup_agent(self) -> None:
         """Set up the agent by configuring the document loader engine.
 
-        This method is called during agent initialization to set up the engine
-        with the agent's configuration parameters.
+        This method is called during agent initialization to set up the engine with the
+        agent's configuration parameters.
         """
         # Ensure we have a document loader engine
         if not isinstance(self.engine, DocumentLoaderEngine):

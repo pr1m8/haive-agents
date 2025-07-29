@@ -1,7 +1,7 @@
 """Directory-specific Document Loader Agent.
 
-This module provides a specialized document loader agent for loading
-documents from local directories.
+This module provides a specialized document loader agent for loading documents from
+local directories.
 """
 
 from pathlib import Path

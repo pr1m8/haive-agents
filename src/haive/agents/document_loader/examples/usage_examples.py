@@ -1,7 +1,7 @@
 """Document Loader Agent Usage Examples.
 
-from typing import Any
-This module demonstrates how to use the document loader agents in various scenarios.
+from typing import Any This module demonstrates how to use the document loader agents in
+various scenarios.
 """
 
 import asyncio
