@@ -43,13 +43,15 @@ Examples:
         )
 """
 
+from __future__ import annotations
+
 import logging
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Dict, List, Optional, TypeVar
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from pydantic import BaseModel, Field
 
-from haive.agents.base.hooks import HookContext, HookEvent
+from haive.agents.base.hooks import HookEvent
 
 logger = logging.getLogger(__name__)
 
