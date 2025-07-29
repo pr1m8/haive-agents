@@ -149,16 +149,16 @@ def test_basic_react_execution():
                 # Check if response contains expected calculation
                 if "40.075" in response or "40075" in response:
                     print("✅ SUCCESS: Found expected calculation result")
-                    return True
+                    assert True  # Test passed
                 else:
                     print(
                         "❌ PARTIAL: Response generated but calculation not clearly found"
                     )
-                    return False
-                break
+                    assert False, f"Expected calculation result not found in response: {response[:100]}..."
+                return
 
     print("❌ FAILURE: No AI response found")
-    return False
+    assert False, "No AI response found in result messages"
 
 
 def test_structured_output_react():
@@ -212,11 +212,11 @@ def test_structured_output_react():
                             f"   Final answer: {args.get('final_answer', 'N/A')[:50]}..."
                         )
                         print(f"   Confidence: {args.get('confidence', 'N/A')}")
-                        return True
-                break
+                        assert True  # Test passed
+                        return
 
     print("❌ FAILURE: No structured output found")
-    return False
+    assert False, "No structured output found in result"
 
 
 def test_research_agent_factory():
@@ -262,11 +262,11 @@ def test_research_agent_factory():
                         print(f"   Approach steps: {len(args.get('approach', []))}")
                         print(f"   Key findings: {len(args.get('key_findings', []))}")
                         print(f"   Sources used: {args.get('sources_used', 0)}")
-                        return True
-                break
+                        assert True  # Test passed
+                        return
 
     print("❌ FAILURE: No ResearchResult structured output found")
-    return False
+    assert False, "No ResearchResult structured output found"
 
 
 def test_react_vs_simple_comparison():
@@ -316,10 +316,10 @@ def test_react_vs_simple_comparison():
     if simple_found_500 and react_found_500:
         print("✅ SUCCESS: Both agents found correct answer (500)")
         print("   ReactAgent shows enhanced reasoning process")
-        return True
+        assert True  # Test passed
     else:
         print(f"❌ MIXED RESULTS: Simple={simple_found_500}, React={react_found_500}")
-        return False
+        assert False, f"Expected both agents to find correct answer: Simple={simple_found_500}, React={react_found_500}"
 
 
 def run_all_react_tests():
