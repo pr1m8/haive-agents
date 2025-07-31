@@ -287,6 +287,7 @@ class DocumentProcessingAgent:
         logger.info(
             f"DocumentProcessingAgent '{name}' initialized with {
                 self.config.rag_strategy} strategy"
+        )
 
     def _init_components(self):
         """Initialize all agent components."""
@@ -295,6 +296,7 @@ class DocumentProcessingAgent:
             max_concurrency=self.config.max_concurrent_loads,
             enable_caching=self.config.enable_caching,
             cache_ttl=self.config.cache_ttl,
+        )
         self.auto_loader = AutoLoader(config=auto_loader_config)
         # self.universal_loader = UniversalDocumentLoader()
 
@@ -329,6 +331,7 @@ class DocumentProcessingAgent:
                 except ImportError:
                     logger.warning(
                         "AdaptiveRAGAgent not available, falling back to BaseRAGAgent"
+                    )
 
             elif self.config.rag_strategy == "self_rag":
                 try:
@@ -358,7 +361,6 @@ class DocumentProcessingAgent:
 
             elif self.config.rag_strategy == "multi_strategy":
                 try:
-                    )
 
                     return MultiStrategyRAGAgent(
                         name=f"{self.name}_rag", engine=self.engine
@@ -637,7 +639,6 @@ class DocumentProcessingAgent:
     ) -> DocumentProcessingState:
         """Summarize documents using map-branch summarization."""
         # This would integrate with existing summarization agents
-        )
 
         try:
             MapBranchSummarizerAgent(
@@ -660,7 +661,7 @@ class DocumentProcessingAgent:
     ) -> DocumentProcessingState:
         """Extract knowledge graph from documents."""
         # This would integrate with existing KG extraction agents
-        )
+        pass
 
         try:
             StructuredKGAgent(name=f"{self.name}_kg", engine=self.engine)
