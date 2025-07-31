@@ -47,6 +47,7 @@ def check_database_after_run():
                 thread_rows = cur.fetchall()
 
                 if thread_rows:
+                    pass
                 else:
                     pass
 
