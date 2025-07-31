@@ -43,8 +43,7 @@ config = AugLLMConfig(
 agent = SimpleAgentV2(engine=config)
 
 for engine_name, mapping in agent.composer.engine_io_mappings.items():
-
-for engine_name, mapping in agent.composer.engine_io_mappings.items():
+    pass
     if "context" in mapping["inputs"]:
         pass
     else:
