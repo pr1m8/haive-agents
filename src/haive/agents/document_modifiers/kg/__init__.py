@@ -13,17 +13,21 @@ try:
         IterativeGraphTransformer,
         StructuredKGAgent,
     )
-    from haive.agents.document_modifiers.kg.kg_map_merge.structured_kg_agent import StructuredKGAgent as MapMergeStructuredKGAgent
+    from haive.agents.document_modifiers.kg.kg_map_merge.structured_kg_agent import (
+        StructuredKGAgent as MapMergeStructuredKGAgent,
+    )
 
 
 except ImportError:
     ParallelKGTransformer = None
 
 try:
+    pass
 except ImportError:
     IterativeGraphTransformer = None
 
 try:
+    pass
 except ImportError:
     StructuredKGAgent = None
 

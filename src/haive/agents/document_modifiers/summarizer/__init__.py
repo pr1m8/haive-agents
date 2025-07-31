@@ -16,6 +16,7 @@ except ImportError:
     SummarizerAgent = None
 
 try:
+    pass
 except ImportError:
     IterativeSummarizer = None
 
