@@ -45,6 +45,7 @@ schema_class = agent.composer.build()
 
 for field_name, field_info in schema_class.model_fields.items():
     if field_name in ["query", "context", "engine"]:
+        pass
 
 try:
     test_data = {"query": "test"}

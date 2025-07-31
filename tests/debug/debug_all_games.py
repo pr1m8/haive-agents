@@ -238,6 +238,7 @@ def main():
 
 
             if "error_file" in analysis:
+                pass
 
             # Show import chain
             chain = find_import_chain(tb)
