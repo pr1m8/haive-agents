@@ -93,7 +93,7 @@ When you identify a missing capability:
     ):
         pass
     else:
-        pass\n")
+        pass
 
     # Create a powerful agent that can translate using its LLM capabilities
     translation_engine = AugLLMConfig(
