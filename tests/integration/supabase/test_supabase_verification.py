@@ -139,6 +139,7 @@ async def test_and_verify():
                 # Summary
                 success = write_count > 0 or len(checkpoints) > 0
                 if success:
+                    pass
                 else:
                     pass
 
