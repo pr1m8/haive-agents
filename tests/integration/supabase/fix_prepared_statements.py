@@ -73,6 +73,7 @@ async def test_after_cleanup():
                 count = (await cur.fetchone())[0]
 
                 if count > 0:
+                    pass
                 else:
                     pass
 
