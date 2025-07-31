@@ -82,6 +82,7 @@ async def test_pydantic_tool_message_creation():
 
     for i, msg in enumerate(result["messages"]):
         if isinstance(msg, ToolMessage):
+            pass
 
     # Check if ToolMessage was created
     tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
@@ -136,6 +137,7 @@ async def test_regular_tool_message_creation():
 
     for i, msg in enumerate(result["messages"]):
         if isinstance(msg, ToolMessage):
+            pass
 
     # Check if ToolMessage was created
     tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
