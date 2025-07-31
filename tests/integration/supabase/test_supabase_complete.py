@@ -73,6 +73,7 @@ async def main():
 
     except Exception as e:
         if "prepared statement" in str(e):
+            pass
         else:
             return False
 
