@@ -206,7 +206,7 @@ async def inspect_intermediate_states():
     """Additional function to inspect intermediate states during execution."""
     print("\n" + "=" * 80)
     print("🔬 ADVANCED: Inspecting intermediate states")
-    print("=" * 80 + \n")
+    print("=" * 80 + "\n")
 
     # This would require modifying the graph nodes to add inspection points
     # For now, we'll use the simpler debug approach above
