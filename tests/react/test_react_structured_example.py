@@ -298,15 +298,15 @@ Ensure all findings are accurately represented and properly categorized.""",
         for rec in result.security_recommendations[:2]:
             print(f"  • {rec}")
 
-    print("\n📦 Dependencies:"s:")
+    print("\n📦 Dependencies:")
     print(f"  • Total: {len(result.dependencies_analyzed)}")
     print(f"  • Outdated: {result.outdated_dependencies}")
 
-    print("\n⚡ Immediate Actions:":")
+    print("\n⚡ Immediate Actions:")
     for action in result.immediate_actions[:3]:
         print(f"  1. {action}")
 
-    print("\n🎯 Top Recommendations:"s:")
+    print("\n🎯 Top Recommendations:")
     for i, rec in enumerate(result.top_recommendations[:3], 1):
         print(f"  {i}. {rec}")
 
