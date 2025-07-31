@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import Any
 
@@ -13,14 +14,14 @@ from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.engines import (
     create_parallel_kg_transformer_configs,
 )
-
-# Import models and engines
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
     KnowledgeGraph,
 )
 from haive.agents.document_modifiers.kg.kg_map_merge.state import KnowledgeGraphState
+
+# Import models and engines
 
 logger = logging.getLogger(__name__)
 
@@ -399,6 +400,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    import asyncio
 
     asyncio.run(main())

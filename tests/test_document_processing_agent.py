@@ -18,7 +18,6 @@ Version: 1.0.0
 import asyncio
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.document_processing import (
     DocumentProcessingAgent,
@@ -26,6 +25,7 @@ from haive.agents.document_processing import (
     DocumentProcessingResult,
     DocumentProcessingState,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestDocumentProcessingAgent:

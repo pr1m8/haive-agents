@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Literal
 
 from agents.rag.base.config import BaseRAGConfig
@@ -83,7 +84,6 @@ class ReactManyToolsConfig(ReactAgentConfig):
             for category, tools in self.tool_categories.items():
                 unknown_tools = [t for t in tools if t not in tool_names]
                 if unknown_tools:
-                    import logging
 
                     logging.warning(
                         f"Unknown tools in category {category}: {unknown_tools}"
@@ -105,7 +105,6 @@ Selected tools (tool names only, one per line):"""
         # Validate RAG configuration
         if self.use_rag:
             if not self.rag_config and not self.retriever_config:
-                import logging
 
                 logging.warning(
                     "RAG is enabled but no retriever_config or rag_config provided"

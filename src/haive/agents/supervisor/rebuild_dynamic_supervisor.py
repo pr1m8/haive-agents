@@ -4,6 +4,7 @@ This implementation correctly rebuilds the graph when agents are added/removed,
 following the Agent base class patterns.
 """
 
+import asyncio
 import logging
 from typing import Any
 
@@ -310,7 +311,6 @@ class RebuildDynamicSupervisor(ReactAgent):
             current_messages = state.get("messages", [])
             update["messages"] = [*current_messages, result]
         elif isinstance(result, str):
-            from langchain_core.messages import AIMessage
 
             current_messages = state.get("messages", [])
             update["messages"] = [*current_messages, AIMessage(content=result)]
@@ -372,7 +372,6 @@ class RebuildDynamicSupervisor(ReactAgent):
 
 # Test it
 if __name__ == "__main__":
-    import asyncio
 
     class TestAgent:
         def __init__(self, name: str):

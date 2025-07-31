@@ -4,6 +4,8 @@ from typing import Any, Dict
 Simple Plan and Execute agent using MultiAgentBase with proper configuration.
 """
 
+from typing import Any
+
 from haive.core.schema.agent_schema_composer import BuildMode
 
 from haive.agents.base.agent import Agent
@@ -14,7 +16,7 @@ from haive.agents.planning.p_and_e.state import PlanExecuteState
 def create_plan_execute_branches(planner: Agent, executor: Agent, replanner: Agent):
     """Create default Plan & Execute branches."""
 
-    def should_continue(state: Dict[str, Any]) -> str:
+    def should_continue(state: dict[str, Any]) -> str:
         if not hasattr(state, "plan") or not state.plan:
             return "replanner"
         if state.plan.is_complete:
@@ -23,7 +25,7 @@ def create_plan_execute_branches(planner: Agent, executor: Agent, replanner: Age
             return "replanner"
         return "executor"
 
-    def should_end(state: Dict[str, Any]) -> str:
+    def should_end(state: dict[str, Any]) -> str:
         if hasattr(state, "final_answer") and state.final_answer:
             return "END"
         if hasattr(state, "plan") and state.plan and state.plan.next_step:

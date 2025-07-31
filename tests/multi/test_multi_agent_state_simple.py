@@ -1,7 +1,9 @@
 """Test MultiAgentState without circular imports."""
 
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langchain_core.messages import AIMessage, HumanMessage
+
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
+
 
 # Fix the forward reference issue
 MultiAgentState.model_rebuild()

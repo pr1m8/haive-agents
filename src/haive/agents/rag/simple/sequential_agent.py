@@ -58,6 +58,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -66,9 +67,10 @@ from haive.core.engine.vectorstore import VectorStoreConfig
 from langchain_core.documents import Document
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-# Import existing agents for composition
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.simple.agent import SimpleAgent
+
+# Import existing agents for composition
 
 logger = logging.getLogger(__name__)
 
@@ -384,8 +386,6 @@ class SimpleRAG(BaseModel):
             ValueError: If input validation fails
             RuntimeError: If critical pipeline components fail
         """
-        import time
-
         start_time = time.time()
 
         try:
@@ -473,7 +473,7 @@ class SimpleRAG(BaseModel):
                 raise ValueError("Query must be a non-empty string")
             return query.strip()
 
-        raise ValueError(f"Unsupported input type: {type(input_data)}")
+        raise TypeError(f"Unsupported input type: {type(input_data)}")
 
     def _extract_documents(self, retrieval_result: Any) -> list[Document]:
         """Extract documents from retrieval result."""
@@ -647,11 +647,6 @@ __all__ = ["RAGResponse", "SimpleRAG", "SimpleRAGAgent"]  # Legacy alias
 # ================================
 
 if __name__ == "__main__":
-    import asyncio
-
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from haive.core.engine.vectorstore import VectorStoreConfig
-    from langchain_core.documents import Document
 
     # Example documents
     example_docs = [

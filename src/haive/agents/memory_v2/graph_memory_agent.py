@@ -6,6 +6,7 @@ This implementation combines:
 3. Graph RAG for intelligent querying of the knowledge graph
 """
 
+import asyncio
 import json
 import logging
 from dataclasses import dataclass, field
@@ -13,18 +14,23 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.graphs import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
 from langchain_core.documents import Document
+from langchain_core.tools import tool
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_neo4j.chains.graph_qa.cypher import GraphCypherQAChain
 from langchain_neo4j.graphs.graph_document import GraphDocument
 
+from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
+from haive.agents.rag.db_rag.graph_db.agent import GraphDBRAGAgent
+from haive.agents.rag.db_rag.graph_db.config import GraphDBConfig, GraphDBRAGConfig
+
 # Optional imports - GraphMemoryAgent will work with basic functionality
 # even if these fail
 try:
-    from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 
     HAS_GRAPH_TRANSFORMER = True
 except ImportError:
@@ -32,8 +38,6 @@ except ImportError:
     HAS_GRAPH_TRANSFORMER = False
 
 try:
-    from haive.agents.rag.db_rag.graph_db.agent import GraphDBRAGAgent
-    from haive.agents.rag.db_rag.graph_db.config import GraphDBConfig, GraphDBRAGConfig
 
     HAS_GRAPH_DB_RAG = True
 except ImportError:
@@ -41,7 +45,6 @@ except ImportError:
     GraphDBRAGConfig = None
     GraphDBConfig = None
     HAS_GRAPH_DB_RAG = False
-from haive.core.engine.aug_llm import AugLLMConfig
 
 logger = logging.getLogger(__name__)
 
@@ -734,8 +737,6 @@ class GraphMemoryAgent:
     @classmethod
     def as_tool(cls, config: GraphMemoryConfig):
         """Convert to a LangChain tool for use in other agents."""
-        from langchain_core.tools import tool
-
         instance = cls(config)
 
         @tool
@@ -789,6 +790,5 @@ async def example_graph_memory():
 
 
 if __name__ == "__main__":
-    import asyncio
 
     asyncio.run(example_graph_memory())

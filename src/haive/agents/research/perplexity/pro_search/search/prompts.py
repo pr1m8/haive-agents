@@ -4,7 +4,11 @@ from typing import Any, Dict
 These prompts guide the LLM through reasoning, query generation, and synthesis.
 """
 
+from typing import Any
+
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from perplexity_search_models import QueryBatch, QueryReasoning, SearchSynthesis
 
 # ============================================================================
 # Query Understanding and Reasoning Prompt
@@ -257,11 +261,8 @@ error_recovery_prompt = ChatPromptTemplate.from_messages(
 # ============================================================================
 
 
-def create_reasoning_aug_llm(llm_config: Dict[str, Any]):
+def create_reasoning_aug_llm(llm_config: dict[str, Any]):
     """Create AugLLMConfig for query reasoning step."""
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from perplexity_search_models import QueryReasoning
-
     return AugLLMConfig(
         llm_config=llm_config,
         prompt_template=query_reasoning_prompt,
@@ -279,11 +280,8 @@ def create_reasoning_aug_llm(llm_config: Dict[str, Any]):
     )
 
 
-def create_query_generation_aug_llm(llm_config: Dict[str, Any]):
+def create_query_generation_aug_llm(llm_config: dict[str, Any]):
     """Create AugLLMConfig for query generation step."""
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from perplexity_search_models import QueryBatch
-
     return AugLLMConfig(
         llm_config=llm_config,
         prompt_template=query_generation_prompt,
@@ -294,11 +292,8 @@ def create_query_generation_aug_llm(llm_config: Dict[str, Any]):
     )
 
 
-def create_synthesis_aug_llm(llm_config: Dict[str, Any]):
+def create_synthesis_aug_llm(llm_config: dict[str, Any]):
     """Create AugLLMConfig for synthesis step."""
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from perplexity_search_models import SearchSynthesis
-
     return AugLLMConfig(
         llm_config=llm_config,
         prompt_template=synthesis_prompt,

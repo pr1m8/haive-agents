@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Test script for MCP RAG Agent."""
 import asyncio
-import sys
 from pathlib import Path
+import sys
+
 
 # Add to path
 sys.path.insert(0, str(Path(__file__).parent / "packages" / "haive-mcp" / "src"))

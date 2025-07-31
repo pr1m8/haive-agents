@@ -15,6 +15,7 @@ from ltm.test_fallback_only import (
     test_quality_calculation_standalone,
 )
 
+
 __all__ = [
     "test_condition_functions",
     "test_error_handling",

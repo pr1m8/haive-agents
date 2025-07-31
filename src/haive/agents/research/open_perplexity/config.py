@@ -24,14 +24,14 @@ from haive.agents.research.open_perplexity.react_agent_config import (
     create_research_rag_engine,
     create_research_react_agent_config,
 )
-
-# Import agent-specific modules
 from haive.agents.research.open_perplexity.state import (
     ResearchInputState,
     ResearchOutputState,
     ResearchState,
 )
 from haive.agents.research.open_perplexity.structured_tools import RESEARCH_TOOLS
+
+# Import agent-specific modules
 
 
 class ResearchAgentConfig(AgentConfig):

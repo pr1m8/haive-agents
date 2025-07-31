@@ -11,7 +11,6 @@ SimpleAgentV3, and EnhancedMultiAgentV4 as foundations. It demonstrates:
 """
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -22,19 +21,13 @@ from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 
 # Import the pattern implementations we created
 from haive.agents.patterns.react_structured_agent_variants import (
-    AnalysisResult,
     StructuredSolution,
-    create_multi_stage_reasoning_agent,
     create_react_structured_agent,
 )
 from haive.agents.patterns.sequential_workflow_agent import (
-    FinalReport,
-    ResearchBrief,
-    ResearchFindings,
     create_research_workflow,
 )
 from haive.agents.patterns.simple_rag_agent_pattern import (
-    AnswerWithSources,
     create_simple_rag_agent,
 )
 from haive.agents.react.agent import ReactAgent
@@ -51,9 +44,9 @@ class ProblemAnalysis(BaseModel):
         description="Type of problem: technical, business, or research"
     )
     complexity_level: str = Field(description="Complexity: simple, medium, or complex")
-    key_challenges: List[str] = Field(description="Main challenges identified")
+    key_challenges: list[str] = Field(description="Main challenges identified")
     recommended_approach: str = Field(description="Recommended solution approach")
-    required_resources: List[str] = Field(description="Resources needed")
+    required_resources: list[str] = Field(description="Resources needed")
 
 
 class FormattedSolution(BaseModel):
@@ -62,16 +55,15 @@ class FormattedSolution(BaseModel):
     title: str = Field(description="Solution title")
     executive_summary: str = Field(description="Brief summary for executives")
     detailed_solution: str = Field(description="Comprehensive solution details")
-    implementation_timeline: List[str] = Field(
+    implementation_timeline: list[str] = Field(
         description="Implementation steps with timeline"
     )
-    success_metrics: List[str] = Field(description="How to measure success")
-    risk_mitigation: List[str] = Field(description="Risk mitigation strategies")
+    success_metrics: list[str] = Field(description="How to measure success")
+    risk_mitigation: list[str] = Field(description="Risk mitigation strategies")
 
 
 async def demo_react_to_simple_structured():
     """Demo 1: ReactAgent → SimpleAgent with structured output."""
-    print("\n=== Demo 1: React → Simple with Structured Output ===\n")
 
     # Create tools for ReactAgent
     @tool
@@ -131,31 +123,23 @@ Create a comprehensive, formatted solution document.""",
     # Add hook to see intermediate results
     @workflow.after_agent_execution
     def log_agent_result(agent_name: str, result: any):
-        print(f"\n[Hook] Agent '{agent_name}' completed:")
         if isinstance(result, dict):
-            for key, value in result.items():
-                print(f"  - {key}: {value}")
+            for _key, _value in result.items():
+                pass
         else:
-            print(f"  Result: {result}")
+            pass
 
     # Execute workflow
     problem = "Design a scalable microservices architecture for an e-commerce platform"
-    print(f"Problem: {problem}\n")
 
     result = await workflow.arun({"messages": [{"role": "user", "content": problem}]})
 
-    print("\n=== Final Formatted Solution ===")
     if isinstance(result, dict) and "formatter" in result:
-        solution = result["formatter"]
-        print(f"Title: {solution.get('title', 'N/A')}")
-        print(f"Executive Summary: {solution.get('executive_summary', 'N/A')}")
-        print(f"Implementation Timeline: {solution.get('implementation_timeline', [])}")
+        result["formatter"]
 
 
 async def demo_research_workflow():
     """Demo 2: Research workflow with multiple stages."""
-    print("\n\n=== Demo 2: Multi-Stage Research Workflow ===\n")
-
     # Create research workflow with structured outputs
     research_flow = create_research_workflow(
         name="ai_research", stages=["analyze", "research", "synthesize", "format"]
@@ -164,15 +148,14 @@ async def demo_research_workflow():
     # Add pre/post processing hooks
     @research_flow.before_agent_execution
     def pre_process(agent_name: str, state: dict):
-        print(f"\n[Pre-Hook] Starting {agent_name} agent...")
+        pass
 
     @research_flow.after_agent_execution
     def post_process(agent_name: str, result: any):
-        print(f"[Post-Hook] {agent_name} completed successfully")
+        pass
 
     # Execute research
     topic = "The impact of generative AI on software development practices"
-    print(f"Research Topic: {topic}\n")
 
     result = await research_flow.arun(
         {
@@ -182,19 +165,15 @@ async def demo_research_workflow():
         }
     )
 
-    print("\n=== Research Results ===")
     # The workflow returns results from each stage
-    for stage_name, stage_result in result.items():
-        print(f"\n{stage_name.upper()}:")
+    for _stage_name, stage_result in result.items():
         if isinstance(stage_result, dict):
-            for key, value in stage_result.items():
-                print(f"  {key}: {value}")
+            for _key, _value in stage_result.items():
+                pass
 
 
 async def demo_custom_sequential_with_hooks():
     """Demo 3: Custom sequential workflow with advanced hooks."""
-    print("\n\n=== Demo 3: Custom Sequential with Advanced Hooks ===\n")
-
     # Create agents with specific prompt templates
     idea_generator = SimpleAgentV3(
         name="idea_generator",
@@ -259,25 +238,20 @@ async def demo_custom_sequential_with_hooks():
     @workflow.before_workflow
     def start_workflow(state):
         execution_log.append("=== Workflow Started ===")
-        print("\n[Workflow Hook] Starting innovation pipeline...")
 
     @workflow.before_agent_execution
     def before_agent(agent_name, state):
         execution_log.append(f"→ {agent_name} starting")
-        print(f"\n[Agent Hook] {agent_name} is processing...")
 
     @workflow.after_agent_execution
     def after_agent(agent_name, result):
         execution_log.append(f"✓ {agent_name} completed")
-        print(f"[Agent Hook] {agent_name} finished successfully")
 
     @workflow.after_workflow
     def end_workflow(final_result):
         execution_log.append("=== Workflow Completed ===")
-        print("\n[Workflow Hook] Innovation pipeline completed!")
-        print("\nExecution Log:")
-        for entry in execution_log:
-            print(f"  {entry}")
+        for _entry in execution_log:
+            pass
 
     # Execute with input variables
     result = await workflow.arun(
@@ -290,17 +264,12 @@ async def demo_custom_sequential_with_hooks():
         }
     )
 
-    print("\n=== Final Implementation Plan ===")
     if "implementation_planner" in result:
-        plan = result["implementation_planner"]
-        print(f"Solution Summary: {plan.get('solution_summary', 'N/A')}")
-        print(f"Success Metrics: {plan.get('success_metrics', [])}")
+        result["implementation_planner"]
 
 
 async def demo_react_structured_pattern():
     """Demo 4: Using the ReactToStructuredAgent pattern directly."""
-    print("\n\n=== Demo 4: React → Structured Pattern ===\n")
-
     # Use the pattern we created
     agent = create_react_structured_agent(
         name="problem_solver", output_model=StructuredSolution
@@ -309,33 +278,23 @@ async def demo_react_structured_pattern():
     # Add monitoring hooks
     @agent.on_reasoning_complete
     def log_reasoning(reasoning_output):
-        print(
-            f"\n[Reasoning Complete] Found {len(reasoning_output.get('key_factors', []))} key factors"
-        )
+        pass
 
     @agent.on_structuring_complete
     def log_structuring(structured_output):
-        print(
-            f"[Structuring Complete] Generated solution with {len(structured_output.get('implementation_steps', []))} steps"
-        )
+        pass
 
     # Execute
     problem = "How can we reduce technical debt in a large legacy codebase?"
-    print(f"Problem: {problem}\n")
 
     result = await agent.arun(problem)
 
-    print("\n=== Structured Solution ===")
     if isinstance(result, dict):
-        print(f"Title: {result.get('solution_summary', 'N/A')}")
-        print(f"Implementation Steps: {result.get('implementation_steps', [])}")
-        print(f"Risk Mitigation: {result.get('risks', [])}")
+        pass
 
 
 async def demo_rag_with_structured_output():
     """Demo 5: RAG agent with structured output."""
-    print("\n\n=== Demo 5: RAG Agent with Structured Output ===\n")
-
     # Create RAG agent with structured output
     rag_agent = create_simple_rag_agent(
         name="knowledge_assistant", temperature=0.3, include_sources=True
@@ -344,45 +303,29 @@ async def demo_rag_with_structured_output():
     # Add retrieval monitoring
     @rag_agent.on_retrieval
     def log_retrieval(query, documents):
-        print(f"\n[Retrieval] Found {len(documents)} documents for: '{query}'")
+        pass
 
     @rag_agent.on_answer_generation
     def log_answer(answer):
-        print(
-            f"[Generation] Created answer with confidence: {answer.get('confidence', 0)}"
-        )
+        pass
 
     # Ask question
     question = "What are the best practices for implementing microservices?"
-    print(f"Question: {question}\n")
 
     result = await rag_agent.arun(question)
 
-    print("\n=== RAG Answer with Sources ===")
     if isinstance(result, dict):
-        print(f"Answer: {result.get('answer', 'N/A')}")
-        print(f"Confidence: {result.get('confidence', 0)}")
-        print(f"Sources: {result.get('sources', [])}")
-        print(f"Follow-up Questions: {result.get('follow_up_questions', [])}")
+        pass
 
 
 async def main():
     """Run all demos."""
-    print("=" * 80)
-    print("SEQUENTIAL MULTI-AGENT DEMOS")
-    print("Using patterns built on agent.py, SimpleAgentV3, and EnhancedMultiAgentV4")
-    print("=" * 80)
-
     # Run demos
     await demo_react_to_simple_structured()
     await demo_research_workflow()
     await demo_custom_sequential_with_hooks()
     await demo_react_structured_pattern()
     await demo_rag_with_structured_output()
-
-    print("\n" + "=" * 80)
-    print("ALL DEMOS COMPLETED!")
-    print("=" * 80)
 
 
 if __name__ == "__main__":

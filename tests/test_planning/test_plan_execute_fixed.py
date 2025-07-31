@@ -42,8 +42,9 @@ def test_plan_execute_with_simple_agents():
 
 def test_messagelist_serialization():
     """Test MessageList serialization independently."""
-    from haive.core.schema.prebuilt.messages.messages_state import MessageList
     from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+
+    from haive.core.schema.prebuilt.messages.messages_state import MessageList
 
     # Create test messages
     messages = MessageList(

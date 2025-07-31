@@ -14,6 +14,8 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.state_schema import StateSchema
 from pydantic import BaseModel, Field, model_validator
 
+from haive.agents.sequential.agent import SequentialAgent
+
 logger = logging.getLogger(__name__)
 
 
@@ -130,8 +132,6 @@ class SequentialAgentConfig(AgentConfig):
 
     def build_agent(self) -> Any:
         """Build and return a SequentialAgent instance."""
-        from haive.agents.sequential.agent import SequentialAgent
-
         return SequentialAgent(self)
 
     @classmethod

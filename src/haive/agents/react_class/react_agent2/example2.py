@@ -1,14 +1,16 @@
 # src/haive/agents/react_agent2/examples.py
+
 import logging
 import uuid
-
-# Set up logging
 from typing import Any
 
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.react_class.react_agent2.agent2 import create_react_agent
+
+# Set up logging
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

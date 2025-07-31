@@ -1,10 +1,10 @@
 """Test MultiAgent list initialization patterns."""
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.multi import MultiAgent
 from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 def test_multi_agent_list_initialization():

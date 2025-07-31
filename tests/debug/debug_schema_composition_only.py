@@ -7,10 +7,12 @@ and why engine/context fields are marked as required.
 import contextlib
 import logging
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
+
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.schema.schema_composer import SchemaComposer
+
 
 # Enable debug logging for schema composer
 logging.basicConfig(level=logging.DEBUG)

@@ -1,5 +1,7 @@
 """Test only the memory models without requiring LLMs or embeddings."""
 
+import traceback
+
 from haive.agents.memory_v2.memory_state_original import (
     EnhancedKnowledgeTriple,
     EnhancedMemoryItem,
@@ -162,7 +164,6 @@ def main():
         test_memory_search()
 
     except Exception:
-        import traceback
 
         traceback.print_exc()
 

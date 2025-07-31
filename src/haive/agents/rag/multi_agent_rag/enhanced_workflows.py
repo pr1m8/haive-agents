@@ -5,6 +5,7 @@ using the new multi-agent base with compatibility and enhanced state management.
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.fixtures.documents import conversation_documents
 from haive.core.graph.node.callable_node import (
     CallableNodeConfig,
     create_document_grader,
@@ -14,6 +15,7 @@ from haive.core.graph.node.callable_node import (
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
 from langchain_core.documents import Document
+from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
 
 from haive.agents.base.agent import Agent
@@ -86,7 +88,6 @@ class CorrectiveRAGAgent(ConditionalAgent):
     ):
         # Create default agents if not provided
         if not retrieval_agent:
-            from haive.core.fixtures.documents import conversation_documents
 
             retrieval_agent = SimpleRAGAgent.from_documents(
                 documents or conversation_documents, name="CRAG Retrieval Agent"
@@ -173,7 +174,6 @@ class HYDERAGAgent(SequentialAgent):
     ):
         # Create hypothesis generator
         if not hypothesis_agent:
-            from langchain_core.prompts import ChatPromptTemplate
 
             hyde_prompt = ChatPromptTemplate.from_messages(
                 [
@@ -192,7 +192,6 @@ class HYDERAGAgent(SequentialAgent):
 
         # Create retrieval agent that will use hypothesis for similarity search
         if not retrieval_agent:
-            from haive.core.fixtures.documents import conversation_documents
 
             retrieval_agent = SimpleRAGAgent.from_documents(
                 documents or conversation_documents, name="HYDE Retrieval Agent"
@@ -223,7 +222,6 @@ class SelfRAGAgent(ConditionalAgent):
     ):
         # Create retrieval decision agent
         if not retrieval_decision_agent:
-            from langchain_core.prompts import ChatPromptTemplate
 
             retrieval_prompt = ChatPromptTemplate.from_messages(
                 [
@@ -245,7 +243,6 @@ class SelfRAGAgent(ConditionalAgent):
 
         # Create other agents with default configurations
         if not retrieval_agent:
-            from haive.core.fixtures.documents import conversation_documents
 
             retrieval_agent = SimpleRAGAgent.from_documents(
                 documents or conversation_documents, name="Self-RAG Retrieval Agent"
@@ -335,7 +332,7 @@ def create_enhanced_rag_workflow(
         return HYDERAGAgent(documents=documents, **kwargs)
     if workflow_type.lower() == "self_rag":
         return SelfRAGAgent(documents=documents, **kwargs)
-    raise ValueError(f"Unknown workflow type: {workflow_type}")
+    raise TypeError(f"Unknown workflow type: {workflow_type}")
 
 
 __all__ = [

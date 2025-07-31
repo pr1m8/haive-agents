@@ -6,12 +6,13 @@ from haive.core.engine.retriever import BaseRetrieverConfig, VectorStoreRetrieve
 from haive.core.engine.vectorstore import VectorStoreConfig
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-# Import state models
 from haive.agents.rag.base.state import (
     BaseRAGInputState,
     BaseRAGOutputState,
     BaseRAGState,
 )
+
+# Import state models
 
 
 class BaseRAGConfig(AgentConfig):

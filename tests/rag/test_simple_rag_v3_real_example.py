@@ -2,18 +2,16 @@
 
 import asyncio
 
-from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
-    HuggingFaceEmbeddingConfig,
-)
 from langchain_core.documents import Document
 
 from haive.agents.rag.simple.enhanced_v3.agent import SimpleRAGV3
+from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
+    HuggingFaceEmbeddingConfig,
+)
 
 
 async def test_real_rag_example():
     """Test SimpleRAG V3 with real documents and queries."""
-    print("\n=== SimpleRAG V3 Real Example Test ===\n")
-
     # 1. Create sample documents about AI topics
     documents = [
         Document(
@@ -45,7 +43,6 @@ async def test_real_rag_example():
     )
 
     # 3. Create SimpleRAG V3 from documents
-    print("Creating SimpleRAG V3 from documents...")
     rag = SimpleRAGV3.from_documents(
         documents=documents,
         embedding_config=embedding_config,
@@ -58,10 +55,6 @@ async def test_real_rag_example():
         performance_mode=True,  # Track performance
     )
 
-    print(f"✅ Created: {rag}")
-    print(f"   - Agents: {[agent.name for agent in rag.agents]}")
-    print(f"   - Execution mode: {rag.execution_mode}")
-
     # 4. Test queries
     test_queries = [
         "What is deep learning and how does it relate to machine learning?",
@@ -70,10 +63,7 @@ async def test_real_rag_example():
         "What are the applications of NLP?",
     ]
 
-    for i, query in enumerate(test_queries, 1):
-        print(f"\n{'='*60}")
-        print(f"Query {i}: {query}")
-        print(f"{'='*60}\n")
+    for _i, query in enumerate(test_queries, 1):
 
         try:
             # Execute the RAG pipeline
@@ -81,66 +71,43 @@ async def test_real_rag_example():
 
             # Handle different result formats
             if isinstance(result, dict):
-                print(
-                    f"Answer: {result.get('answer', result.get('content', str(result)))}"
-                )
                 if "sources" in result:
-                    print("\nSources:")
-                    for source in result["sources"]:
-                        print(f"  - {source}")
+                    for _source in result["sources"]:
+                        pass
                 if "generation_time" in result:
-                    print(f"\nGeneration time: {result['generation_time']:.3f}s")
+                    pass
             else:
-                print(f"Answer: {result}")
+                pass
 
-        except Exception as e:
-            print(f"Error: {e}")
+        except Exception:
             import traceback
 
             traceback.print_exc()
 
     # 5. Test the intermediate steps
-    print(f"\n{'='*60}")
-    print("Testing intermediate steps")
-    print(f"{'='*60}\n")
 
     # Test retrieval directly
-    print("1. Testing RetrieverAgent directly:")
     retriever = rag.get_retriever_agent()
     retrieval_result = await retriever.arun(
         {"query": "What is machine learning?", "k": 2}
     )
-    print(f"   Retrieved {len(retrieval_result.get('documents', []))} documents")
 
     # Test answer generation with retrieved docs
-    print("\n2. Testing SimpleAnswerAgent with retrieved documents:")
     answer_agent = rag.get_answer_agent()
-    answer_result = await answer_agent.arun(
+    await answer_agent.arun(
         {
             "query": "What is machine learning?",
             "documents": retrieval_result.get("documents", []),
         }
     )
-    print(
-        f"   Generated answer: {answer_result[:200]}..."
-        if isinstance(answer_result, str)
-        else f"   Result type: {type(answer_result)}"
-    )
 
     # 6. Check performance metrics
     if rag.performance_mode:
-        print(f"\n{'='*60}")
-        print("Performance Analysis")
-        print(f"{'='*60}\n")
 
         perf_analysis = rag.analyze_agent_performance()
-        print(f"Performance tracking enabled: {perf_analysis.get('performance_mode')}")
         if "agents" in perf_analysis:
-            for agent_name, metrics in perf_analysis["agents"].items():
-                print(f"\n{agent_name}:")
-                print(f"  - Success rate: {metrics.get('success_rate', 0):.1%}")
-                print(f"  - Avg duration: {metrics.get('avg_duration', 0):.3f}s")
-                print(f"  - Task count: {metrics.get('task_count', 0)}")
+            for _agent_name, _metrics in perf_analysis["agents"].items():
+                pass
 
 
 if __name__ == "__main__":

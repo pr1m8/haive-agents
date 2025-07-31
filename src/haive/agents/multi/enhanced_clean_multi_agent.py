@@ -22,9 +22,14 @@ from langgraph.graph import END, START
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import TypedDict
 
+from haive.agents.react.enhanced_react_agent import ReactAgent
+from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
+from haive.agents.simple.enhanced_simple_real import (
+    SimpleAgent,
+)
+
 # Import base enhanced agent when available
 # from haive.agents.base.enhanced_agent import Agent
-from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 logger = logging.getLogger(__name__)
 
@@ -349,8 +354,6 @@ Make decisions based on the current state and task requirements."""
 
 # Example usage
 if __name__ == "__main__":
-    from haive.agents.react.enhanced_react_agent import ReactAgent
-    from haive.agents.simple.enhanced_simple_real import SimpleAgent
 
     # Create example agents
     planner = ReactAgent(name="planner", temperature=0.3)

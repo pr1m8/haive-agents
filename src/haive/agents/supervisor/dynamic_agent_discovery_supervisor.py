@@ -66,15 +66,16 @@ from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-# Using standard typing instead of Name type
 from haive.agents.base.agent import Agent
-
-# from haive.agents.research.perplexity_agent import PerplexityStyleAgent
 from haive.agents.discovery.component_discovery_agent import ComponentDiscoveryAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 from haive.agents.supervisor.agent import SupervisorState
 from haive.agents.supervisor.dynamic_state import SupervisorDecision
+
+# Using standard typing instead of Name type
+
+# from haive.agents.research.perplexity_agent import PerplexityStyleAgent
 
 # from haive.tools.utility.document_loaders import DirectoryLoader
 # from haive.core.models.vectorstore import InMemoryVectorStore

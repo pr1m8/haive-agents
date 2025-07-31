@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Answer generator models for SimpleRAG."""
 
-
 from pydantic import BaseModel, Field
 
 

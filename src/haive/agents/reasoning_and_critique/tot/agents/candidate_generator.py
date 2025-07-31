@@ -3,8 +3,6 @@
 This agent generates multiple candidate solutions for a given problem.
 """
 
-from typing import List, Optional
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
@@ -18,7 +16,7 @@ class CandidateGeneration(BaseModel):
         description="Reasoning about different approaches to solve the problem"
     )
 
-    candidates: List[str] = Field(
+    candidates: list[str] = Field(
         description="List of candidate solutions", min_items=1, max_items=10
     )
 
@@ -35,7 +33,7 @@ class CandidateGenerator:
         name: str = "candidate_generator",
         expansion_count: int = 5,
         temperature: float = 0.7,
-        engine: Optional[AugLLMConfig] = None,
+        engine: AugLLMConfig | None = None,
     ):
         """Initialize the candidate generator.
 
@@ -80,7 +78,7 @@ For planning problems: Try different sequences, priorities""",
         """Create a CandidateGenerator with proper configuration."""
         return cls(name=name, expansion_count=expansion_count, temperature=temperature)
 
-    def create_prompt(self, problem: str, seed_solution: Optional[str] = None) -> str:
+    def create_prompt(self, problem: str, seed_solution: str | None = None) -> str:
         """Create a prompt for candidate generation.
 
         Args:
@@ -104,7 +102,7 @@ For planning problems: Try different sequences, priorities""",
         return "\n\n".join(prompt_parts)
 
     async def generate_candidates(
-        self, problem: str, num_candidates: Optional[int] = None
+        self, problem: str, num_candidates: int | None = None
     ) -> CandidateGeneration:
         """Generate candidate solutions for a problem.
 
@@ -124,7 +122,7 @@ For planning problems: Try different sequences, priorities""",
         return result
 
     async def expand_from_seed(
-        self, problem: str, seed: str, num_candidates: Optional[int] = None
+        self, problem: str, seed: str, num_candidates: int | None = None
     ) -> CandidateGeneration:
         """Expand candidates from a seed solution.
 

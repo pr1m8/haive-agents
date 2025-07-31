@@ -1,5 +1,4 @@
-"""
-Test ReactAgent → SimpleAgent with Structured Output
+"""Test ReactAgent → SimpleAgent with Structured Output.
 
 This test demonstrates:
 1. ReactAgent with tools performing analysis
@@ -9,9 +8,7 @@ This test demonstrates:
 """
 
 import asyncio
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
@@ -20,6 +17,8 @@ from pydantic import BaseModel, Field
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent_v3 import ReactAgentV3
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # ============================================================================
 # STRUCTURED OUTPUT MODEL
@@ -30,9 +29,9 @@ class AnalysisReport(BaseModel):
     """Structured analysis report."""
 
     topic: str = Field(description="Topic analyzed")
-    key_findings: List[str] = Field(description="Key findings from analysis")
-    calculations: List[str] = Field(description="Calculations performed")
-    recommendations: List[str] = Field(description="Recommendations based on analysis")
+    key_findings: list[str] = Field(description="Key findings from analysis")
+    calculations: list[str] = Field(description="Calculations performed")
+    recommendations: list[str] = Field(description="Recommendations based on analysis")
     confidence_score: float = Field(
         ge=0.0, le=1.0, description="Confidence in analysis"
     )
@@ -51,7 +50,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Calculation result: {result}"
     except Exception as e:
-        return f"Calculation error: {str(e)}"
+        return f"Calculation error: {e!s}"
 
 
 @tool
@@ -151,10 +150,6 @@ Format this into a comprehensive structured report.""",
 
 async def test_react_to_simple_structured():
     """Test ReactAgent → SimpleAgent with structured output."""
-    print("\n" + "=" * 60)
-    print("Testing ReactAgent → SimpleAgent with Structured Output")
-    print("=" * 60)
-
     # Create agents
     analyst = create_analysis_agent()
     reporter = create_report_agent()
@@ -179,22 +174,18 @@ async def test_react_to_simple_structured():
         "analysis_results": "",  # Will be filled by analyst
     }
 
-    print("\n📊 Starting Analysis...")
-
     # Execute workflow
     result = await workflow.arun(initial_state)
 
     # Print results
-    print("\n📈 Analysis Results:")
     if "messages" in result:
-        for i, msg in enumerate(result["messages"]):
+        for _i, msg in enumerate(result["messages"]):
             if hasattr(msg, "content"):
-                print(f"\n{'🤖' if i % 2 == 1 else '👤'} Message {i+1}:")
                 content = msg.content
                 if len(content) > 300:
-                    print(content[:300] + "...")
+                    pass
                 else:
-                    print(content)
+                    pass
 
     # Check for structured output
     if "messages" in result and len(result["messages"]) > 0:
@@ -205,21 +196,16 @@ async def test_react_to_simple_structured():
 
                 # Try to parse as JSON (structured output)
                 structured_data = json.loads(last_message.content)
-                print("\n✅ Structured Output Detected:")
-                for key, value in structured_data.items():
-                    print(f"  - {key}: {value}")
+                for _key, _value in structured_data.items():
+                    pass
             except:
-                print("\n📄 Output is in text format")
+                pass
 
     return result
 
 
 async def test_with_reflection():
     """Test with reflection pattern."""
-    print("\n" + "=" * 60)
-    print("Testing with Reflection Pattern")
-    print("=" * 60)
-
     # Import reflection utilities
     from haive.agents.base.pre_post_agent_mixin import create_reflection_agent
 
@@ -249,14 +235,11 @@ async def test_with_reflection():
         "system_message": "Create a comprehensive report.",
     }
 
-    print("\n📝 Creating Report with Reflection...")
-
     # Execute with reflection
     result = await reflective_reporter.arun(test_state)
 
-    print("\n✨ Report with Reflection Complete")
     if isinstance(result, dict) and "messages" in result:
-        print(f"Total messages: {len(result['messages'])}")
+        pass
 
     return result
 
@@ -268,29 +251,13 @@ async def test_with_reflection():
 
 async def main():
     """Run the tests."""
-
     # Test 1: Basic ReactAgent → SimpleAgent flow
-    print("\n🧪 Test 1: ReactAgent → SimpleAgent with Structured Output")
-    result1 = await test_react_to_simple_structured()
+    await test_react_to_simple_structured()
 
     # Test 2: With reflection
-    print("\n🧪 Test 2: SimpleAgent with Reflection")
-    result2 = await test_with_reflection()
-
-    print("\n" + "=" * 60)
-    print("All Tests Complete!")
-    print("=" * 60)
+    await test_with_reflection()
 
     # Summary
-    print("\n📊 Summary:")
-    print("  1. ReactAgent with tools → SimpleAgent with structured output: ✅")
-    print("  2. SimpleAgent with reflection pattern: ✅")
-    print("\nKey features demonstrated:")
-    print("  - Prompt templates with input variables")
-    print("  - Tool usage in ReactAgent")
-    print("  - Structured output with Pydantic models")
-    print("  - Cross-agent data flow")
-    print("  - Reflection patterns")
 
 
 if __name__ == "__main__":

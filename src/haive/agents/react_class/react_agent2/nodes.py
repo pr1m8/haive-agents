@@ -1,3 +1,4 @@
+import re
 from collections.abc import Callable
 from typing import Any
 
@@ -231,7 +232,6 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                 content = str(thought_result)
 
             # Try to extract action using regex
-            import re
 
             action_type = ActionType.FINAL_ANSWER
             action_input = content

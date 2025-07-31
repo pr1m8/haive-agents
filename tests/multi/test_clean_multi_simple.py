@@ -3,11 +3,10 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
-
 # Direct imports to avoid the broken agent module
 from haive.agents.multi.clean import MultiAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 async def test_clean_multi_agent():

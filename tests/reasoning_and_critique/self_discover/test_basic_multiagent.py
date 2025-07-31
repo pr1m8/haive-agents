@@ -2,10 +2,9 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
-
 from haive.agents.multi.clean import MultiAgent
 from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 async def test_basic_multiagent():

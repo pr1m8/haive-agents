@@ -6,14 +6,20 @@ This is the real SimpleAgent implementation showing it as Agent[AugLLMConfig].
 It carefully imports only what's needed to avoid circular imports.
 """
 
+import asyncio
 import logging
 from typing import TYPE_CHECKING, Any, Literal
 
+from haive.core.engine.aug_llm.config import AugLLMConfig
+from haive.core.graph.node.engine_node import EngineNodeConfig
+from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from langchain_core.messages import AIMessage
+from langgraph.graph import END, START
 from pydantic import Field, model_validator
 
 # Carefully import to avoid cycles
 if TYPE_CHECKING:
-    from haive.core.graph.state_graph.base_graph2 import BaseGraph
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +46,6 @@ class EnhancedAgentBase:
 
     def run(self, input_data: Any) -> Any:
         """Sync run method."""
-        import asyncio
 
         return asyncio.run(self.arun(input_data))
 
@@ -75,7 +80,6 @@ class SimpleAgent(EnhancedAgentBase):
             return values
 
         # Import here to avoid circular imports
-        from haive.core.engine.aug_llm.config import AugLLMConfig
 
         # Create engine from fields if not provided
         if "engine" not in values or values["engine"] is None:
@@ -95,7 +99,6 @@ class SimpleAgent(EnhancedAgentBase):
     def setup_agent(self) -> None:
         """Sync convenience fields to the AugLLMConfig engine."""
         # Import here to avoid circular imports
-        from haive.core.engine.aug_llm.config import AugLLMConfig
 
         if isinstance(self.engine, AugLLMConfig):
             # Sync fields to engine
@@ -110,11 +113,6 @@ class SimpleAgent(EnhancedAgentBase):
     def build_graph(self) -> "BaseGraph":
         """Build minimal graph for SimpleAgent."""
         # Import here to avoid circular imports
-        from haive.core.graph.node.engine_node import EngineNodeConfig
-        from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
-        from haive.core.graph.state_graph.base_graph2 import BaseGraph
-        from langchain_core.messages import AIMessage
-        from langgraph.graph import END, START
 
         graph = BaseGraph(name=self.name)
 

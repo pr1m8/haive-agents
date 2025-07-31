@@ -1,7 +1,5 @@
 import logging
 from collections.abc import Callable
-
-# Set up logging
 from typing import Any
 
 from agents.react_agent2.config2 import ReactAgentConfig
@@ -13,6 +11,9 @@ from langchain_core.tools import BaseTool
 from langgraph.graph import END
 from langgraph.prebuilt import ToolNode
 from pydantic import BaseModel, Field
+
+# Set up logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -135,7 +136,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
                 # Check if we have a custom processor
                 custom_processor = self.config.tool_processors.get(node_name)
 
-                def execute_tool(state: dict[str, Any]):
+                def execute_tool(_state: dict[str, Any]):
                     """Execute the tool and update state."""
                     # Convert to dictionary if needed
                     state_dict = (
@@ -215,7 +216,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
 
             # Create a Branch for tool routing based on the tool name in the
             # last message
-            def route_by_tool_name(state: dict[str, Any]):
+            def route_by_tool_name(_state: dict[str, Any]):
                 """Route to the appropriate tool node based on the tool name."""
                 # Extract messages
                 messages = (
@@ -261,7 +262,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
 
             # Create the main router function that combines max iterations
             # check and tool routing
-            def agent_router(state: dict[str, Any]):
+            def agent_router(_state: dict[str, Any]):
                 """Main router from agent node."""
                 # First check max iterations
                 max_iter_result = max_iterations_branch.evaluate(state)

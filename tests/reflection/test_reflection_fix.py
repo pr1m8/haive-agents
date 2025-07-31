@@ -3,9 +3,9 @@
 
 import os
 
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 
-from haive.agents.simple.agent import SimpleAgent
 
 # Set the PostgreSQL connection string
 os.environ["POSTGRES_CONNECTION_STRING"] = (
@@ -15,9 +15,6 @@ os.environ["POSTGRES_CONNECTION_STRING"] = (
 
 def test_reflection_agent_with_real_persistence():
     """Test reflection agent with PostgreSQL persistence."""
-    print("🧪 Testing reflection agent with PostgreSQL persistence...")
-    print("=" * 60)
-
     try:
         # Create agent with persistence enabled
         agent = SimpleAgent(
@@ -26,11 +23,8 @@ def test_reflection_agent_with_real_persistence():
             persistence=True,  # This should now work without errors
         )
 
-        print("✅ Agent created successfully with persistence enabled")
-
         # Generate a thread ID to test the fix
         thread_id = agent._generate_default_thread_id()
-        print(f"📋 Generated thread_id: {thread_id}")
 
         # Test that it starts with agent name + UUID format
         assert thread_id.startswith(
@@ -42,8 +36,6 @@ def test_reflection_agent_with_real_persistence():
         assert len(uuid_part) == 36, "UUID part should be 36 characters"
         assert uuid_part.count("-") == 4, "UUID should have 4 hyphens"
 
-        print("✅ Thread ID generation working correctly")
-
         # Test with multiple instances to ensure uniqueness
         agent2 = SimpleAgent(
             name="reflection_analyzer",  # Same name
@@ -52,18 +44,13 @@ def test_reflection_agent_with_real_persistence():
         )
 
         thread_id2 = agent2._generate_default_thread_id()
-        print(f"📋 Second thread_id: {thread_id2}")
 
         # Ensure they're different
         assert (
             thread_id != thread_id2
         ), "Thread IDs should be unique even with same agent name"
 
-        print("✅ Thread ID uniqueness working correctly")
-        print("🎉 All tests passed! PostgreSQL reflection issue should be fixed.")
-
-    except Exception as e:
-        print(f"❌ Test failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

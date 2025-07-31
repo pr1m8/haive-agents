@@ -7,6 +7,7 @@ import logging
 
 from haive.agents.conversation.collaberative.agent import CollaborativeConversation
 
+
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

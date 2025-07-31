@@ -17,14 +17,15 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.simple.agent import SimpleAgent
 
+from .graph_memory_agent import GraphMemoryAgent, GraphMemoryConfig
 from .memory_state_with_tokens import MemoryStateWithTokens
+from .rag_memory_agent import MemoryRAGConfig
+from .simple_memory_agent import SimpleMemoryAgent, TokenAwareMemoryConfig
 
 # Import memory agents
-from .simple_memory_agent import SimpleMemoryAgent, TokenAwareMemoryConfig
 
 # Optional imports with graceful fallback
 try:
-    from .graph_memory_agent import GraphMemoryAgent, GraphMemoryConfig
 
     HAS_GRAPH_MEMORY = True
 except ImportError:
@@ -33,7 +34,6 @@ except ImportError:
     HAS_GRAPH_MEMORY = False
 
 try:
-    from .rag_memory_agent import MemoryRAGConfig
 
     HAS_RAG_MEMORY = True
 except ImportError:

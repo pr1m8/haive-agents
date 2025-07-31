@@ -13,7 +13,14 @@ This test validates:
 
 import logging
 
+from langchain_core.messages import HumanMessage
+from langchain_core.tools import tool
+from pydantic import BaseModel, Field
 import pytest
+
+from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent import SimpleAgent
+from haive.agents.simple.agent_v2 import SimpleAgentV2
 from haive.core.common.mixins.dynamic_tool_route_mixin import DynamicToolRouteMixin
 from haive.core.common.mixins.recompile_mixin import RecompileMixin
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -21,13 +28,7 @@ from haive.core.persistence.memory import MemoryCheckpointerConfig
 from haive.core.persistence.postgres_config import PostgresCheckpointerConfig
 from haive.core.persistence.types import CheckpointerMode, CheckpointStorageMode
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from langchain_core.messages import HumanMessage
-from langchain_core.tools import tool
-from pydantic import BaseModel, Field
 
-from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
-from haive.agents.simple.agent_v2 import SimpleAgentV2
 
 logger = logging.getLogger(__name__)
 

@@ -9,6 +9,7 @@ This test demonstrates:
 
 import sys
 
+
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive")
 
 from typing import Any
@@ -22,6 +23,7 @@ from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 # Import agents
 from haive.agents.simple.agent import SimpleAgent
+
 
 # Skip LLM for now, focus on state issues
 

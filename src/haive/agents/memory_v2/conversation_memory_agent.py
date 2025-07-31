@@ -16,8 +16,9 @@ from langchain_core.documents import Document
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from pydantic import BaseModel, ConfigDict, Field
 
-# Import BaseRAGAgent components
 from haive.agents.rag.base.agent import BaseRAGAgent
+
+# Import BaseRAGAgent components
 
 logger = logging.getLogger(__name__)
 

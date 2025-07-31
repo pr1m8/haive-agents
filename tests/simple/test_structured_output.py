@@ -2,13 +2,13 @@
 """Test SimpleAgent v3 with structured output models - no mocks, real execution."""
 
 import logging
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import DeepSeekLLMConfig
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import DeepSeekLLMConfig
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,7 +25,7 @@ class TaskAnalysis(BaseModel):
 
     task_type: str = Field(description="Type of task (e.g., 'analysis', 'calculation')")
     complexity: int = Field(ge=1, le=10, description="Task complexity on scale of 1-10")
-    steps_required: List[str] = Field(description="List of steps needed")
+    steps_required: list[str] = Field(description="List of steps needed")
     estimated_time: int = Field(ge=1, description="Estimated time in minutes")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in analysis")
 
@@ -46,15 +46,11 @@ class ProgrammingAdvice(BaseModel):
     topic: str = Field(description="Main topic or concept")
     explanation: str = Field(description="Clear explanation of the concept")
     example_code: str = Field(description="Simple code example")
-    best_practices: List[str] = Field(description="List of best practices")
+    best_practices: list[str] = Field(description="List of best practices")
 
 
 def test_basic_structured_output():
     """Test agent with basic structured output model."""
-    print("\n" + "=" * 70)
-    print("📋 TEST 1: Basic Structured Output (TaskAnalysis)")
-    print("=" * 70)
-
     # Create agent with structured output
     agent = SimpleAgentV3(
         name="structured_agent",
@@ -67,23 +63,15 @@ def test_basic_structured_output():
         debug=True,
     )
 
-    print(f"✅ Created agent with structured output: {TaskAnalysis.__name__}")
-    print(f"   Fields: {list(TaskAnalysis.model_fields.keys())}")
-
     # Test structured output
     query = "Analyze this task: Build a web application that displays real-time weather data"
-    print(f"\n📨 Query: {query}")
-    print("\n" + "-" * 50)
 
     result = agent.run(query, debug=True)
-
-    print("-" * 50)
 
     # Extract and verify structured output
     if hasattr(result, "messages"):
         for msg in reversed(result.messages):
             if msg.__class__.__name__ == "AIMessage":
-                print(f"🤖 Raw Response: {msg.content[:200]}...")
 
                 # Check if response contains structured fields
                 response = msg.content
@@ -98,29 +86,14 @@ def test_basic_structured_output():
                     ]
                 )
 
-                if has_structured_fields:
-                    print("✅ SUCCESS: Response contains structured output fields")
-                    print(
-                        f"   Contains task analysis structure: {has_structured_fields}"
-                    )
-                    return True
-                else:
-                    print(
-                        "❌ FAILURE: Response doesn't contain expected structured fields"
-                    )
-                    return False
+                return bool(has_structured_fields)
                 break
 
-    print("❌ FAILURE: No AI response found")
     return False
 
 
 def test_question_answer_structure():
     """Test agent with question-answer structured output."""
-    print("\n" + "=" * 70)
-    print("❓ TEST 2: Question-Answer Structure")
-    print("=" * 70)
-
     agent = SimpleAgentV3(
         name="qa_agent",
         engine=AugLLMConfig(
@@ -132,23 +105,15 @@ def test_question_answer_structure():
         debug=True,
     )
 
-    print(f"✅ Created Q&A agent with structure: {QuestionAnswer.__name__}")
-    print(f"   Fields: {list(QuestionAnswer.model_fields.keys())}")
-
     query = "What is the capital of France and why is it important?"
-    print(f"\n📨 Query: {query}")
-    print("\n" + "-" * 50)
 
     result = agent.run(query, debug=True)
-
-    print("-" * 50)
 
     # Verify Q&A structure
     if hasattr(result, "messages"):
         for msg in reversed(result.messages):
             if msg.__class__.__name__ == "AIMessage":
                 response = msg.content
-                print(f"🤖 Response: {response[:150]}...")
 
                 # Check for Q&A structure
                 has_qa_structure = all(
@@ -156,12 +121,7 @@ def test_question_answer_structure():
                     for field in ["question", "answer", "reasoning", "certainty"]
                 )
 
-                if has_qa_structure:
-                    print("✅ SUCCESS: Response has Q&A structure")
-                    return True
-                else:
-                    print("❌ FAILURE: Missing Q&A structure elements")
-                    return False
+                return bool(has_qa_structure)
                 break
 
     return False
@@ -169,10 +129,6 @@ def test_question_answer_structure():
 
 def test_programming_advice_structure():
     """Test agent with programming advice structured output."""
-    print("\n" + "=" * 70)
-    print("💻 TEST 3: Programming Advice Structure")
-    print("=" * 70)
-
     agent = SimpleAgentV3(
         name="programming_agent",
         engine=AugLLMConfig(
@@ -184,23 +140,15 @@ def test_programming_advice_structure():
         debug=True,
     )
 
-    print(f"✅ Created programming agent with structure: {ProgrammingAdvice.__name__}")
-    print(f"   Fields: {list(ProgrammingAdvice.model_fields.keys())}")
-
     query = "Explain Python list comprehensions with an example"
-    print(f"\n📨 Query: {query}")
-    print("\n" + "-" * 50)
 
     result = agent.run(query, debug=True)
-
-    print("-" * 50)
 
     # Verify programming advice structure
     if hasattr(result, "messages"):
         for msg in reversed(result.messages):
             if msg.__class__.__name__ == "AIMessage":
                 response = msg.content
-                print(f"🤖 Response: {response[:200]}...")
 
                 # Check for programming advice structure
                 programming_fields = [
@@ -214,13 +162,7 @@ def test_programming_advice_structure():
                     field in response.lower() for field in programming_fields
                 )
 
-                if has_programming_structure and "python" in response.lower():
-                    print("✅ SUCCESS: Response has programming advice structure")
-                    print("   Contains language, explanation, and example elements")
-                    return True
-                else:
-                    print("❌ FAILURE: Missing programming advice structure")
-                    return False
+                return bool(has_programming_structure and "python" in response.lower())
                 break
 
     return False
@@ -228,14 +170,11 @@ def test_programming_advice_structure():
 
 def test_structured_output_validation():
     """Test that structured output follows the expected schema."""
-    print("\n" + "=" * 70)
-    print("🔍 TEST 4: Structured Output Schema Validation")
-    print("=" * 70)
 
     # Simple model for testing validation
     class SimpleResponse(BaseModel):
         summary: str = Field(description="Brief summary of the response")
-        key_points: List[str] = Field(description="List of key points (2-3 items)")
+        key_points: list[str] = Field(description="List of key points (2-3 items)")
         recommendation: str = Field(description="Final recommendation or conclusion")
 
     agent = SimpleAgentV3(
@@ -249,23 +188,15 @@ def test_structured_output_validation():
         debug=True,
     )
 
-    print(f"✅ Created validation agent with: {SimpleResponse.__name__}")
-    print("   Required fields: summary, key_points, recommendation")
-
     query = "Give me advice on learning Python programming"
-    print(f"\n📨 Query: {query}")
-    print("\n" + "-" * 50)
 
     result = agent.run(query, debug=True)
-
-    print("-" * 50)
 
     # Check for all required fields
     if hasattr(result, "messages"):
         for msg in reversed(result.messages):
             if msg.__class__.__name__ == "AIMessage":
                 response = msg.content.lower()
-                print(f"🤖 Response: {msg.content[:150]}...")
 
                 # Check for all required fields
                 required_fields = ["summary", "key_points", "recommendation"]
@@ -274,17 +205,8 @@ def test_structured_output_validation():
                 ]
 
                 if len(fields_present) >= 2:  # Allow some flexibility
-                    print(
-                        f"✅ SUCCESS: Found {len(fields_present)}/{len(required_fields)} required fields"
-                    )
-                    print(f"   Present fields: {fields_present}")
                     return True
-                else:
-                    print(
-                        f"❌ FAILURE: Only found {len(fields_present)} required fields"
-                    )
-                    print(f"   Present fields: {fields_present}")
-                    return False
+                return False
                 break
 
     return False
@@ -292,11 +214,6 @@ def test_structured_output_validation():
 
 def run_all_structured_output_tests():
     """Run all structured output tests."""
-    print("🧪 SIMPLEAGENT V3 - STRUCTURED OUTPUT TESTS")
-    print("=" * 70)
-    print("Testing real structured output with no mocks")
-    print("=" * 70)
-
     test_results = []
 
     try:
@@ -310,24 +227,12 @@ def run_all_structured_output_tests():
         passed = sum(test_results)
         total = len(test_results)
 
-        print("\n" + "=" * 70)
-        print("📊 STRUCTURED OUTPUT TEST RESULTS")
-        print("=" * 70)
-        print(f"Tests passed: {passed}/{total}")
-
         if passed == total:
-            print("🎉 ALL STRUCTURED OUTPUT TESTS PASSED! ✅")
-            print("\nKey achievements:")
-            print("✅ TaskAnalysis structured output working")
-            print("✅ QuestionAnswer structured output working")
-            print("✅ ProgrammingAdvice structured output working")
-            print("✅ Schema validation working")
-            print("✅ Real LLM + structured output execution")
+            pass
         else:
-            print("⚠️  Some tests failed - check output above")
+            pass
 
-    except Exception as e:
-        print(f"\n❌ Test execution failed: {e}")
+    except Exception:
         logger.exception("Structured output test execution error")
 
 

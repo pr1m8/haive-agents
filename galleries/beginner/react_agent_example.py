@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-ReactAgent Example - Agent with reasoning and tool usage.
+"""ReactAgent Example - Agent with reasoning and tool usage.
 
 This example demonstrates how to create a ReactAgent that can use tools
 to solve problems through reasoning and action.
@@ -67,9 +66,6 @@ def word_counter(text: str) -> str:
 
 async def main():
     """Run the ReactAgent example."""
-    print("🧠 Haive ReactAgent Example")
-    print("=" * 40)
-
     # Create agent configuration
     config = AugLLMConfig(
         model="gpt-4",
@@ -91,28 +87,16 @@ async def main():
         "Count the words in this sentence and then calculate what 10% of that number would be",
     ]
 
-    print("\n🔧 Available tools:")
-    for tool in tools:
-        print(f"  • {tool.name}: {tool.description}")
+    for _tool in tools:
+        pass
 
-    print("\n🎯 Starting tasks...")
-    print("-" * 40)
-
-    for i, task in enumerate(tasks, 1):
-        print(f"\n📋 Task {i}: {task}")
-        print("🤔 Agent thinking...")
+    for _i, task in enumerate(tasks, 1):
 
         # Get agent response with reasoning
-        response = await agent.arun(task, debug=True)
-        print(f"✅ Result: {response}")
+        await agent.arun(task, debug=True)
 
         # Add delay between tasks
         await asyncio.sleep(2)
-
-    print("\n🎉 All tasks completed!d!")
-    print(
-        f"Agent '{agent.name}' successfully used tools to solve {len(tasks)} problems."
-    )
 
 
 if __name__ == "__main__":

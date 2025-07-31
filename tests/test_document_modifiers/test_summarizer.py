@@ -2,15 +2,15 @@
 
 from unittest.mock import AsyncMock, Mock, patch
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document
+import pytest
 
 from haive.agents.document_modifiers.summarizer.map_branch.agent import SummarizerAgent
 from haive.agents.document_modifiers.summarizer.map_branch.config import (
     SummarizerAgentConfig,
 )
 from haive.agents.document_modifiers.summarizer.map_branch.state import SummaryState
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestSummarizerAgent:

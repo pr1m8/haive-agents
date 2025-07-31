@@ -4,10 +4,12 @@ The supervisor uses DynamicChoiceModel as a tool to select from available agents
 and creates new ReactAgents when needed.
 """
 
+import asyncio
 import logging
 from typing import Any
 
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
+from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool
@@ -114,7 +116,6 @@ class AgentCreationTool(BaseTool):
 
         try:
             # Create engine
-            from haive.core.engine.aug_llm import AugLLMConfig
 
             engine = AugLLMConfig(
                 name=f"{agent_name}_engine",
@@ -437,7 +438,6 @@ class ChoiceModelSupervisor(ReactAgent):
 
 # Test the choice model supervisor
 if __name__ == "__main__":
-    import asyncio
 
     async def test_choice_model_supervisor():
         """Test the choice model supervisor."""

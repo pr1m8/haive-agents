@@ -10,7 +10,6 @@ With structured output and prompt templates as requested.
 """
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -31,9 +30,9 @@ class MarketAnalysis(BaseModel):
     growth_rate: float = Field(
         description="Annual growth rate percentage", ge=0, le=100
     )
-    key_players: List[str] = Field(description="Major companies in the market")
-    opportunities: List[str] = Field(description="Market opportunities identified")
-    challenges: List[str] = Field(description="Market challenges identified")
+    key_players: list[str] = Field(description="Major companies in the market")
+    opportunities: list[str] = Field(description="Market opportunities identified")
+    challenges: list[str] = Field(description="Market challenges identified")
 
 
 class ExecutiveSummary(BaseModel):
@@ -41,14 +40,13 @@ class ExecutiveSummary(BaseModel):
 
     title: str = Field(description="Report title")
     executive_summary: str = Field(description="Brief executive summary")
-    key_findings: List[str] = Field(description="Top 3-5 key findings")
-    recommendations: List[str] = Field(description="Strategic recommendations")
-    next_steps: List[str] = Field(description="Immediate next steps")
+    key_findings: list[str] = Field(description="Top 3-5 key findings")
+    recommendations: list[str] = Field(description="Strategic recommendations")
+    next_steps: list[str] = Field(description="Immediate next steps")
 
 
 async def demo_react_to_simple():
     """Demo: ReactAgent with tools → SimpleAgent with structured output."""
-    print("\n=== ReactAgent → SimpleAgent Sequential Demo ===\n")
 
     # Create tools for ReactAgent
     @tool
@@ -109,7 +107,6 @@ Target audience: C-level executives""",
 
     # Execute workflow
     task = "Analyze the AI assistant market for enterprise customers"
-    print(f"Task: {task}\n")
 
     try:
         # Run the workflow
@@ -120,42 +117,24 @@ Target audience: C-level executives""",
             }
         )
 
-        print("\n--- Workflow Results ---")
-
         # Check if we have results from both agents
         if isinstance(result, dict):
             # ReactAgent results
             if "market_analyst" in result:
-                print("\n[ReactAgent Output]")
                 analyst_result = result["market_analyst"]
-                print(f"Type: {type(analyst_result)}")
                 if isinstance(analyst_result, dict):
-                    for key, value in analyst_result.items():
-                        print(f"  {key}: {value}")
+                    for _key, _value in analyst_result.items():
+                        pass
                 else:
-                    print(f"  Content: {str(analyst_result)[:200]}...")
+                    pass
 
             # SimpleAgent structured output
             if "report_writer" in result:
-                print("\n[SimpleAgent Structured Output]")
                 report = result["report_writer"]
-                if isinstance(report, dict):
-                    print(f"  Title: {report.get('title', 'N/A')}")
-                    print(
-                        f"  Executive Summary: {report.get('executive_summary', 'N/A')}"
-                    )
-                    print(f"  Key Findings: {report.get('key_findings', [])}")
-                    print(f"  Recommendations: {report.get('recommendations', [])}")
-                    print(f"  Next Steps: {report.get('next_steps', [])}")
-                elif isinstance(report, ExecutiveSummary):
-                    print(f"  Title: {report.title}")
-                    print(f"  Executive Summary: {report.executive_summary}")
-                    print(f"  Key Findings: {report.key_findings}")
-                    print(f"  Recommendations: {report.recommendations}")
-                    print(f"  Next Steps: {report.next_steps}")
+                if isinstance(report, dict | ExecutiveSummary):
+                    pass
 
-    except Exception as e:
-        print(f"Error in workflow: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -163,8 +142,6 @@ Target audience: C-level executives""",
 
 async def demo_with_hooks():
     """Demo: Multi-agent workflow with hooks for monitoring."""
-    print("\n\n=== Multi-Agent Workflow with Hooks ===\n")
-
     # Create agents
     analyzer = SimpleAgentV3(
         name="analyzer",
@@ -218,16 +195,14 @@ async def demo_with_hooks():
     def log_pre_execution(agent_name: str, state: dict):
         """Pre-execution hook."""
         execution_log.append(f"[PRE] Starting {agent_name}")
-        print(f"\n🔄 [Pre-Hook] Starting {agent_name}...")
 
     def log_post_execution(agent_name: str, result: any):
         """Post-execution hook."""
         execution_log.append(f"[POST] Completed {agent_name}")
-        print(f"✅ [Post-Hook] {agent_name} completed")
         if isinstance(result, dict):
-            print(f"   Result type: dict with keys: {list(result.keys())[:3]}")
+            pass
         else:
-            print(f"   Result type: {type(result).__name__}")
+            pass
 
     # Note: Hook registration would typically be done through the agent's hook system
     # For this demo, we'll show the concept
@@ -243,23 +218,18 @@ async def demo_with_hooks():
             }
         )
 
-        print("\n--- Execution Summary ---")
-        print(f"Agents executed: {len(execution_log) // 2}")
-        for log_entry in execution_log:
-            print(f"  {log_entry}")
+        for _log_entry in execution_log:
+            pass
 
-        print("\n--- Final Results ---")
         if isinstance(result, dict):
-            for agent_name, agent_result in result.items():
-                print(f"\n[{agent_name}]")
+            for _agent_name, agent_result in result.items():
                 if isinstance(agent_result, dict):
-                    for key, value in list(agent_result.items())[:3]:
-                        print(f"  {key}: {str(value)[:100]}...")
+                    for _key, _value in list(agent_result.items())[:3]:
+                        pass
                 else:
-                    print(f"  Result: {str(agent_result)[:200]}...")
+                    pass
 
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -267,20 +237,19 @@ async def demo_with_hooks():
 
 async def demo_structured_output_chain():
     """Demo: Chain of agents with structured output at each stage."""
-    print("\n\n=== Structured Output Chain Demo ===\n")
 
     # Define structured models for each stage
     class ProblemDefinition(BaseModel):
         problem_statement: str = Field(description="Clear problem statement")
-        stakeholders: List[str] = Field(description="Affected stakeholders")
-        constraints: List[str] = Field(description="Known constraints")
-        success_criteria: List[str] = Field(description="Success criteria")
+        stakeholders: list[str] = Field(description="Affected stakeholders")
+        constraints: list[str] = Field(description="Known constraints")
+        success_criteria: list[str] = Field(description="Success criteria")
 
     class Solution(BaseModel):
         solution_name: str = Field(description="Name of the solution")
         description: str = Field(description="Solution description")
-        implementation_steps: List[str] = Field(description="Implementation steps")
-        required_resources: List[str] = Field(description="Required resources")
+        implementation_steps: list[str] = Field(description="Implementation steps")
+        required_resources: list[str] = Field(description="Required resources")
         timeline_weeks: int = Field(description="Timeline in weeks", ge=1, le=52)
 
     # Create agents with structured output
@@ -337,31 +306,20 @@ Create a practical, implementable solution.""",
             }
         )
 
-        print("\n--- Structured Output Results ---")
-
         if isinstance(result, dict):
             # Problem Definition
             if "problem_definer" in result:
-                print("\n[Problem Definition]")
                 problem = result["problem_definer"]
                 if isinstance(problem, dict):
-                    print(f"  Problem: {problem.get('problem_statement', 'N/A')}")
-                    print(f"  Stakeholders: {problem.get('stakeholders', [])}")
-                    print(f"  Constraints: {problem.get('constraints', [])}")
-                    print(f"  Success Criteria: {problem.get('success_criteria', [])}")
+                    pass
 
             # Solution
             if "solution_designer" in result:
-                print("\n[Solution Design]")
                 solution = result["solution_designer"]
                 if isinstance(solution, dict):
-                    print(f"  Solution: {solution.get('solution_name', 'N/A')}")
-                    print(f"  Description: {solution.get('description', 'N/A')}")
-                    print(f"  Timeline: {solution.get('timeline_weeks', 'N/A')} weeks")
-                    print(f"  Steps: {solution.get('implementation_steps', [])}")
+                    pass
 
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -369,19 +327,10 @@ Create a practical, implementable solution.""",
 
 async def main():
     """Run all demos."""
-    print("=" * 60)
-    print("SIMPLE SEQUENTIAL MULTI-AGENT DEMOS")
-    print("Direct usage of SimpleAgentV3, ReactAgent, and EnhancedMultiAgentV4")
-    print("=" * 60)
-
     # Run demos
     await demo_react_to_simple()
     await demo_with_hooks()
     await demo_structured_output_chain()
-
-    print("\n" + "=" * 60)
-    print("ALL DEMOS COMPLETED!")
-    print("=" * 60)
 
 
 if __name__ == "__main__":

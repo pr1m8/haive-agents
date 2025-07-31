@@ -6,8 +6,8 @@ This demonstrates the key concepts we've discussed.
 from typing import Any, Optional
 from unittest.mock import Mock
 
-import pytest
 from pydantic import BaseModel, Field, field_validator
+import pytest
 
 
 # Test structured output and schema modification concept

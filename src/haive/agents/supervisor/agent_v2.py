@@ -1,19 +1,22 @@
 """Haive Supervisor Agent - ReactAgent with Dynamic Routing and Agent Registry.
 
-
 ReactAgent-based supervisor with:
 1. Agent registry with add_agent tool
 2. Dynamic routing tool that creates base model with agents in state
 3. Prompt template showing available agents
 4. Generic agent execution node for running selected agents
 """
+
 import logging
 import time
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.base.base import Engine
+from haive.core.graph.node.engine_node import EngineNodeConfig
+from haive.core.graph.node.tool_node_config import ToolNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.models.llm.base import LLMConfig
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from langchain_core.messages import AIMessage
 from langchain_core.tools import tool
@@ -78,7 +81,6 @@ class SupervisorAgent(ReactAgent):
         if engine:
             engine.tools = (engine.tools or []) + tools
         else:
-            from haive.core.models.llm.base import LLMConfig
 
             engine = AugLLMConfig(
                 llm_config=LLMConfig(provider="openai", model="gpt-4o-mini"),
@@ -117,7 +119,6 @@ class SupervisorAgent(ReactAgent):
         graph = BaseGraph(name="SupervisorGraph", state_schema=self.state_schema)
 
         # Add agent node (standard ReactAgent functionality)
-        from haive.core.graph.node.engine_node import EngineNodeConfig
 
         agent_node = EngineNodeConfig(
             name="agent_node",
@@ -127,7 +128,6 @@ class SupervisorAgent(ReactAgent):
 
         # Add tool node if we have tools
         if self.main_engine and self.main_engine.tools:
-            from haive.core.graph.node.tool_node_config import ToolNodeConfig
 
             tool_node = ToolNodeConfig(
                 name="tool_node",
@@ -136,7 +136,7 @@ class SupervisorAgent(ReactAgent):
             graph.add_node("tool_node", tool_node)
 
             # Add conditional edges for tool routing
-            def should_continue(state: Dict[str, Any]):
+            def should_continue(state: dict[str, Any]):
                 last_message = (
                     getattr(state, "messages", [])[-1]
                     if hasattr(state, "messages") and state.messages

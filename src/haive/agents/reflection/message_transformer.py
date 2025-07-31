@@ -11,9 +11,15 @@ reflection flows.
 """
 
 import asyncio
+import json
+from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.node.message_transformation_v2 import (
+    TransformationType,
+    create_reflection_transformer,
+)
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -21,16 +27,11 @@ from haive.agents.simple.agent import SimpleAgent
 
 # Import what we can, but handle the missing MESSAGE_TRANSFORMER gracefully
 try:
-    from haive.core.graph.node.message_transformation_v2 import (
-        TransformationType,
-        create_reflection_transformer,
-    )
 
     MESSAGE_TRANSFORMER_AVAILABLE = True
 except (ImportError, AttributeError):
     MESSAGE_TRANSFORMER_AVAILABLE = False
     # Create basic enum for our use
-    from enum import Enum
 
     class TransformationType(str, Enum):
         REFLECTION = "reflection"
@@ -218,7 +219,6 @@ def create_reflection_context_transformer(
                 ]:
 
                     try:
-                        import json
 
                         reflection_data = json.loads(messages[j].content)
 
@@ -468,7 +468,6 @@ async def example_message_transformer_reflection():
     mt_reflector = create_message_transformer_reflection_agent()
 
     # Create sample conversation messages
-    from langchain_core.messages import AIMessage, HumanMessage
 
     conversation = [
         HumanMessage(content="What is artificial intelligence?"),

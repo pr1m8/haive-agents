@@ -22,13 +22,21 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.tools import ArxivTool, DuckDuckGoSearchTool, GoogleSearchTool
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.base.agent import Agent
 from haive.agents.multi.base import ConditionalAgent, ParallelAgent, SequentialAgent
-from haive.agents.rag.adaptive.agent import AdaptiveRAGAgent
+from haive.agents.rag.adaptive.agent import (
+    QUERY_ANALYZER_PROMPT,
+    AdaptiveRAGAgent,
+    QueryAnalysis,
+)
 from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.rag.common.answer_generators.prompts import (
+    RAG_ANSWER_STANDARD,
+)
 from haive.agents.rag.common.document_graders.comprehensive_grader import (
     COMPREHENSIVE_DOCUMENT_GRADING_PROMPT,
     HALLUCINATION_DETECTION_PROMPT,
@@ -41,14 +49,20 @@ from haive.agents.rag.hallucination_grading.agent import (
     AdvancedHallucinationGraderAgent,
     HallucinationGraderAgent,
     RealtimeHallucinationGraderAgent,
+    get_hallucination_grader_io_schema,
 )
 from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
-from haive.agents.rag.multi_query.agent import MultiQueryRAGAgent
+from haive.agents.rag.multi_query.agent import (
+    QUERY_EXPANSION_PROMPT,
+    MultiQueryRAGAgent,
+    QueryVariations,
+)
 from haive.agents.rag.query_decomposition.agent import (
     AdaptiveQueryDecomposerAgent,
     ContextualQueryDecomposerAgent,
     HierarchicalQueryDecomposerAgent,
     QueryDecomposerAgent,
+    get_query_decomposer_io_schema,
 )
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.simple.agent import SimpleAgent
@@ -151,7 +165,6 @@ class CompatibleRAGFactory:
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",
-        )
         self.enable_search_tools = enable_search_tools
         self.default_embedding_model = default_embedding_model
 
@@ -220,7 +233,6 @@ class CompatibleRAGFactory:
             components=components or [],
             routing_conditions=routing_conditions,
             **kwargs,
-        )
 
     def create_from_schema_compatibility(
         self,
@@ -587,9 +599,6 @@ class CompatibleRAGFactory:
 
     def _build_query_expansion(self, **kwargs) -> SimpleAgent:
         """Build query expansion agent."""
-        from haive.agents.rag.multi_query.agent import (
-            QUERY_EXPANSION_PROMPT,
-            QueryVariations,
         )
 
         return SimpleAgent(
@@ -604,7 +613,6 @@ class CompatibleRAGFactory:
 
     def _build_query_analysis(self, **kwargs) -> SimpleAgent:
         """Build query analysis agent."""
-        from haive.agents.rag.adaptive.agent import QUERY_ANALYZER_PROMPT, QueryAnalysis
 
         return SimpleAgent(
             engine=AugLLMConfig(
@@ -643,7 +651,6 @@ class CompatibleRAGFactory:
 
         # This would integrate with haive.tools
         try:
-            from haive.tools import DuckDuckGoSearchTool, GoogleSearchTool
 
             # Create tool-enabled agent
             search_prompt = ChatPromptTemplate.from_messages(
@@ -687,7 +694,6 @@ class CompatibleRAGFactory:
             raise ValueError("Search tools not enabled")
 
         try:
-            from haive.tools import ArxivTool
 
             arxiv_prompt = ChatPromptTemplate.from_messages(
                 [
@@ -725,8 +731,6 @@ class CompatibleRAGFactory:
 
     def _build_answer_generation(self, **kwargs) -> SimpleAgent:
         """Build answer generation agent."""
-        from haive.agents.rag.common.answer_generators.prompts import (
-            RAG_ANSWER_STANDARD,
         )
 
         return SimpleAgent(
@@ -998,10 +1002,9 @@ def create_plug_and_play_component(
         documents=documents,
         llm_config=llm_config,
         enable_search_tools=kwargs.get("enable_search_tools", False),
-    )
 
     if component_type not in factory._component_builders:
-        raise ValueError(f"Unknown component type: {component_type}")
+        raise TypeError(f"Unknown component type: {component_type}")
 
     return factory._component_builders[component_type](**kwargs)
 
@@ -1018,11 +1021,6 @@ def get_component_compatibility_info(
         Dict with 'inputs' and 'outputs' lists
     """
     # Import schema functions
-    from haive.agents.rag.hallucination_grading.agent import (
-        get_hallucination_grader_io_schema,
-    )
-    from haive.agents.rag.query_decomposition.agent import (
-        get_query_decomposer_io_schema,
     )
 
     # Component schema mappings
@@ -1449,7 +1447,6 @@ def example_modular_rag_usage() -> Dict[str, Any]:
 
     This demonstrates the plug-and-play nature of the system.
     """
-    from langchain_core.documents import Document
 
     # Sample documents
     docs = [Document(page_content="AI is transformative technology")]
@@ -1479,7 +1476,6 @@ def example_modular_rag_usage() -> Dict[str, Any]:
     )
 
     # Combine with any other agents
-    from haive.agents.multi.base import SequentialAgent
 
     workflow3 = SequentialAgent(
         agents=[decomposer, workflow1.agents[1], hallucination_grader],

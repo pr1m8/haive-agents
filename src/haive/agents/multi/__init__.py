@@ -24,6 +24,7 @@ Example:
 """
 
 # Import clean multi-agent implementation
+
 from haive.agents.multi.clean import MultiAgent
 
 __all__ = [

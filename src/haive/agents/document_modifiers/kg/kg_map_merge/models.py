@@ -24,7 +24,7 @@ class EntityNode(BaseModel):
 
         # Ensure type is not empty
         if not self.type or not isinstance(self.type, str):
-            raise ValueError("Node type must be a non-empty string")
+            raise TypeError("Node type must be a non-empty string")
 
         return self
 
@@ -72,7 +72,7 @@ class EntityRelationship(BaseModel):
             raise ValueError("Target must be a non-empty string")
 
         if not self.type or not isinstance(self.type, str):
-            raise ValueError("Relationship type must be a non-empty string")
+            raise TypeError("Relationship type must be a non-empty string")
 
         return self
 

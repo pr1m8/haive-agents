@@ -5,8 +5,9 @@ This script validates the test structure and provides information about
 what would be tested without actually running the tests.
 """
 
-import sys
 from pathlib import Path
+import sys
+
 
 # Add the project root to the Python path
 project_root = Path(__file__).parent.parent.parent.parent.parent
@@ -58,10 +59,9 @@ def validate_convenience_functions():
         # Test function signature
         import inspect
 
-        from haive.core.engines.llm.config import AugLLMConfig
-
         from haive.agents.multi.enhanced_base import create_plan_execute_multi_agent
         from haive.agents.simple.agent import SimpleAgent
+        from haive.core.engines.llm.config import AugLLMConfig
 
         inspect.signature(create_plan_execute_multi_agent)
 

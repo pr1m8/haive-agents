@@ -9,11 +9,13 @@ import re
 from enum import Enum
 from typing import Any, Literal
 
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, SystemMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.directed.state import DirectedState
+from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
@@ -474,10 +476,6 @@ class DirectedConversation(BaseConversationAgent):
         """
         if student_names is None:
             student_names = ["Alice", "Bob", "Charlie"]
-
-        from haive.core.engine.aug_llm import AugLLMConfig
-
-        from haive.agents.simple.agent import SimpleAgent
 
         # Sanitize all names for OpenAI API
         teacher_name_sanitized = cls._sanitize_name_for_openai(teacher_name)

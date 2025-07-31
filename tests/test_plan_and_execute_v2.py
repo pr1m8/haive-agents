@@ -1,9 +1,9 @@
 """Test Plan and Execute Agent v2 with real components."""
 
 import pytest
-from haive.tools.math.calculator import Calculator
 
 from haive.agents.planning.plan_and_execute.v2.agent import PlanAndExecuteAgent
+from haive.tools.math.calculator import Calculator
 
 
 def test_plan_and_execute_agent_creation():

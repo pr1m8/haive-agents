@@ -10,6 +10,7 @@ This demonstrates:
 import os
 import sys
 
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
 sys.path.insert(
     0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
@@ -17,8 +18,6 @@ sys.path.insert(
 
 from typing import Any
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.fixtures.documents import conversation_documents
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
@@ -28,6 +27,9 @@ from haive.agents.multi.base import ConditionalAgent, ParallelAgent, SequentialA
 from haive.agents.rag.base.agent import SimpleRAGAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.fixtures.documents import conversation_documents
+
 
 # Define prompts
 RAG_ANSWER_SYSTEM_PROMPT = """

@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 from pydantic import BaseModel, Field
 
+
 # Add the packages to path to avoid import issues
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
 
@@ -13,11 +14,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
 def test_real_simple_agent_without_modification():
     """Test real SimpleAgent with engine modification disabled."""
     try:
+        from haive.agents.simple.agent import SimpleAgent
         from haive.core.engine.aug_llm import AugLLMConfig
 
-        from haive.agents.simple.agent import SimpleAgent
-
-    except Exception as e:
+    except Exception:
         return
 
     # Test model
@@ -45,15 +45,13 @@ def test_real_simple_agent_without_modification():
         # V1 should naturally include structured fields
         has_summary = "summary" in v1_fields
         has_completed = "completed" in v1_fields
-        has_messages = "messages" in v1_fields
-
 
         if has_summary and has_completed:
             pass
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         return
 
     try:
@@ -73,19 +71,16 @@ def test_real_simple_agent_without_modification():
         has_structured_in_v2 = "summary" in v2_fields or "completed" in v2_fields
         has_messages_v2 = "messages" in v2_fields
 
-
         if not has_structured_in_v2 and has_messages_v2:
             pass
         else:
-            passed")
+            pass
 
         # Check if v2 has the model available
-        has_structured_model = hasattr(v2_engine, "structured_output_model")
-        has_pydantic_tools = hasattr(v2_engine, "pydantic_tools")
-        model_in_tools = has_pydantic_tools and TestOutput in v2_engine.pydantic_tools
+        hasattr(v2_engine, "structured_output_model")
+        hasattr(v2_engine, "pydantic_tools")
 
-
-    except Exception as e:
+    except Exception:
         return
 
     # Test SimpleAgent creation with modification disabled
@@ -99,24 +94,23 @@ def test_real_simple_agent_without_modification():
                 structured_output_model=TestOutput,
             )
 
-
             # Verify modification was called but disabled
             assert mock_modify.called, "Modification method should have been called"
 
             # Check if agent can determine it needs parser
-            needs_parser = agent_v1._needs_parser_node()
+            agent_v1._needs_parser_node()
 
             # Try to build graph
             try:
                 graph = agent_v1.build_graph()
 
                 # Check if parser node exists
-                has_parser = any("parse" in name.lower() for name in graph.nodes)
+                any("parse" in name.lower() for name in graph.nodes)
 
-            except Exception as e:
+            except Exception:
                 pass
 
-    except Exception as e:
+    except Exception:
         return
 
     # Test with v2 engine
@@ -128,7 +122,6 @@ def test_real_simple_agent_without_modification():
                 structured_output_model=TestOutput,
             )
 
-
             # Check engine still has structured model available
             engine_has_model = hasattr(agent_v2.engine, "structured_output_model")
             model_matches = (
@@ -136,13 +129,11 @@ def test_real_simple_agent_without_modification():
                 and agent_v2.engine.structured_output_model == TestOutput
             )
 
-
             if model_matches:
                 pass
 
-    except Exception as e:
+    except Exception:
         pass
-
 
 
 if __name__ == "__main__":

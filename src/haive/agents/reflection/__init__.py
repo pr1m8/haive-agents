@@ -1,6 +1,5 @@
 """Module exports."""
 
-# Existing reflection patterns
 from haive.agents.reflection.agent import (
     ExpertAgent,
     GradedReflectionMultiAgent,
@@ -17,8 +16,6 @@ from haive.agents.reflection.agent import (
     create_tool_based_reflection_agent,
     model_post_init,
 )
-
-# New message transformer reflection patterns
 from haive.agents.reflection.message_transformer import (
     ConversationalReflectionAgent,
     MessageTransformerReflectionAgent,
@@ -41,8 +38,6 @@ from haive.agents.reflection.state import (
     finalize,
     should_continue,
 )
-
-# New structured output reflection patterns
 from haive.agents.reflection.structured_output import (
     ReflectionLoop,
     StructuredImprovementAgent,
@@ -70,6 +65,13 @@ from .models import (  # Add new models
     to_prompt,
     validate_grade_matches_score,
 )
+
+# Existing reflection patterns
+
+# New message transformer reflection patterns
+
+# New structured output reflection patterns
+
 
 # Models already imported above
 

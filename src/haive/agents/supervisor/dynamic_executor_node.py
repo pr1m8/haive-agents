@@ -5,9 +5,10 @@ and merging based on the EngineNode/AgentNode patterns.
 """
 
 import logging
+import traceback
 from typing import Any
 
-from langchain_core.messages import BaseMessage
+from langchain_core.messages import AIMessage, BaseMessage
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -98,7 +99,6 @@ class DynamicExecutorNode:
 
         except Exception as e:
             logger.exception(f"Error executing agent {target_agent_name}: {e}")
-            import traceback
 
             traceback.print_exc()
 
@@ -209,7 +209,6 @@ class DynamicExecutorNode:
         # If result is a string (raw response)
         elif isinstance(result, str):
             logger.info("Result is string, creating AIMessage")
-            from langchain_core.messages import AIMessage
 
             current_messages = state.get("messages", [])
             update["messages"] = [*current_messages, AIMessage(content=result)]

@@ -2,17 +2,16 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.messages_state import MessagesState
 from langchain_core.messages import HumanMessage
 
 from haive.agents.multi.enhanced_multi_agent_v3 import EnhancedMultiAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.schema.prebuilt.messages_state import MessagesState
 
 
 async def test_simple_multiagent():
     """Test basic Enhanced MultiAgent V3 functionality."""
-
     # Create simple agents
     config = AugLLMConfig(temperature=0.1)
 
@@ -34,7 +33,6 @@ async def test_simple_multiagent():
     )
 
     # Test execution
-    print("=== Testing Enhanced MultiAgent V3 ===")
 
     # Create initial state
     initial_state = MessagesState(messages=[HumanMessage(content="Hello")])
@@ -42,15 +40,12 @@ async def test_simple_multiagent():
     try:
         # Execute
         result = await multi_agent.arun(initial_state)
-        print(f"Result type: {type(result)}")
-        print(f"Result: {result}")
 
         # Check result attributes
         if hasattr(result, "__dict__"):
-            print(f"Result attributes: {result.__dict__.keys()}")
+            pass
 
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

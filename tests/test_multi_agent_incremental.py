@@ -6,7 +6,6 @@ Start simple and build up complexity.
 import asyncio
 import logging
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
@@ -15,6 +14,8 @@ from rich.logging import RichHandler
 
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Configure logging
 logging.basicConfig(

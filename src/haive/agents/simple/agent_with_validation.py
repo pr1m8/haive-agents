@@ -4,6 +4,7 @@ import logging
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.base import EngineRegistry
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.parser_node_config import ParserNodeConfig
 from haive.core.graph.node.state_updating_validation_node import (
@@ -127,7 +128,6 @@ class SimpleAgentWithValidation(Agent):
             return
 
         try:
-            from haive.core.engine.base import EngineRegistry
 
             registry = EngineRegistry.get_instance()
 

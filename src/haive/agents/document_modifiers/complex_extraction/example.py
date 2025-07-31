@@ -1,13 +1,13 @@
 # Example usage
 
 from langchain_core.messages import HumanMessage
+from pydantic import BaseModel, Field
 
 from haive.agents.document_modifiers.complex_extraction.factory import (
     create_complex_extraction_agent,
 )
 
 if __name__ == "__main__":
-    from pydantic import BaseModel, Field
 
     # Define an extraction model
     class PersonInfo(BaseModel):

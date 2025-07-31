@@ -1,4 +1,5 @@
 import logging
+import random
 from typing import Any
 
 from agents.tot.modular.branches import ToTBranch
@@ -129,7 +130,6 @@ class ToTAgent(Agent[ToTAgentConfig]):
                     )
 
             else:
-                import random
 
                 for c in candidates:
                     content = c["content"] if isinstance(c, dict) else c.content

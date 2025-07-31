@@ -40,7 +40,8 @@ See Also:
 import logging
 from typing import Any
 
-from haive.core.engine.document import DocumentEngineConfig
+from haive.core.engine.base import EngineRegistry
+from haive.core.engine.document import DocumentEngine, DocumentEngineConfig
 from haive.core.engine.document.config import (
     ChunkingStrategy,
     DocumentInput,
@@ -425,7 +426,6 @@ class DocumentAgent(Agent):
         """Configure the document engine with agent settings."""
         if self.engine:
             # Create actual engine instance from config
-            from haive.core.engine.document import DocumentEngine
 
             actual_engine = DocumentEngine(config=self.engine)
 
@@ -448,7 +448,6 @@ class DocumentAgent(Agent):
             return
 
         try:
-            from haive.core.engine.base import EngineRegistry
 
             registry = EngineRegistry.get_instance()
 

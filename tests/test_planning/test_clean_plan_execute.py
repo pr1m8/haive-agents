@@ -1,8 +1,7 @@
 """Test Clean Plan & Execute implementation following LangGraph patterns."""
 
-from haive.tools import duckduckgo_search_tool
-
 from haive.agents.planning.clean_plan_execute import create_simple_plan_execute
+from haive.tools import duckduckgo_search_tool
 
 
 def test_clean_plan_execute():

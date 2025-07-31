@@ -18,6 +18,7 @@ Reference:
 """
 
 import logging
+import uuid
 from datetime import datetime
 from enum import Enum
 from typing import Any
@@ -339,8 +340,6 @@ class ReWOOPlannerAgent(SimpleAgent):
 
     def _create_fallback_plan(self, problem: str) -> ReWOOPlan:
         """Create a simple fallback plan."""
-        import uuid
-
         task = PlanTask(
             id=f"task_{uuid.uuid4().hex[:8]}",
             name="Execute Request",

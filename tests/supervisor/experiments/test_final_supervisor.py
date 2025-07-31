@@ -1,16 +1,17 @@
 """Final test of dynamic supervisor with minimal imports."""
 
 import asyncio
+from collections.abc import Sequence
 import operator
+from pathlib import Path
 
 # Direct imports to avoid haive module chain
 import sys
-from collections.abc import Sequence
-from pathlib import Path
 from typing import Annotated, Any, Literal, TypedDict
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, StateGraph
+
 
 sys.path.insert(0, str(Path(__file__).parent))
 

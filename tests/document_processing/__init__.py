@@ -30,6 +30,7 @@ from document_processing.test_detailed_functionality import (
     test_state_management,
 )
 
+
 __all__ = [
     "DocumentProcessingTestSuite",
     "log_test",

@@ -498,7 +498,7 @@ def create_rag_chain(
         return collection.create_memory_aware_rag(documents, llm_config)
     if rag_type == "flare":
         return collection.create_flare_rag(documents, llm_config)
-    raise ValueError(f"Unknown RAG type: {rag_type}")
+    raise TypeError(f"Unknown RAG type: {rag_type}")
 
 
 # Multi-RAG pipeline
@@ -518,7 +518,7 @@ def create_rag_pipeline(
         return ChainAgent(*chains, name="RAG Pipeline")
     if combination_strategy == "parallel":
         # All run in parallel then combine (simplified)
-        def combiner(state: Dict[str, Any]):
+        def combiner(state: dict[str, Any]):
             return {"combined_responses": [state.get("response", "")]}
 
         return flow_with_edges(

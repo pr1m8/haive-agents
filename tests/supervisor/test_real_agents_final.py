@@ -1,8 +1,8 @@
 """Test with REAL haive ReactAgents and save proper state history."""
 
 import asyncio
-import json
 from datetime import datetime
+import json
 from pathlib import Path
 
 

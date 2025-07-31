@@ -5,6 +5,8 @@ This module defines the DocumentModifierState class which serves as the
 foundation for all document processing agents in the haive framework.
 """
 
+from typing import Any
+
 from haive.core.schema import StateSchema
 from langchain_core.documents import Document
 from pydantic import Field, computed_field, model_validator

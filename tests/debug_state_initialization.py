@@ -2,13 +2,14 @@
 
 import sys
 
+
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 
-from haive.core.engine.aug_llm import AugLLMConfig
-
 from haive.agents.multi.proper_base import ProperMultiAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Create agents
 agent1 = SimpleAgent(

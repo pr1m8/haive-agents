@@ -2,13 +2,12 @@ import importlib
 import inspect
 import json
 import logging
-
-# Import document loader utilities
 import pkgutil
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import langchain_community.document_loaders as base_loader_pkg
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.retriever import create_retriever_from_vectorstore
 from haive.core.graph.branches import Branch
@@ -17,12 +16,16 @@ from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.graph import END, START
 from langgraph.types import Command
 
-# Import custom modules
 from haive.agents.research.open_perplexity.config import ResearchAgentConfig
 from haive.agents.research.open_perplexity.state import (
     ReportSection,
     ResearchState,
 )
+
+# Import document loader utilities
+
+
+# Import custom modules
 
 logger = logging.getLogger(__name__)
 
@@ -89,8 +92,6 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
 
     def _discover_document_loaders(self) -> dict[str, Any]:
         """Discover available document loaders."""
-        import langchain_community.document_loaders as base_loader_pkg
-
         loader_classes = {}
         for _, module_name, _ in pkgutil.walk_packages(
             base_loader_pkg.__path__, base_loader_pkg.__name__ + "."

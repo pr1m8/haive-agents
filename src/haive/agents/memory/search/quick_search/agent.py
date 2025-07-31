@@ -4,7 +4,9 @@ Provides fast, basic search responses optimized for speed and concise answers.
 Similar to Perplexity's Quick Search feature.
 """
 
+import asyncio
 import logging
+import time
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -230,8 +232,6 @@ Process the query efficiently and provide a clear, concise response."""
         Returns:
             Quick search response
         """
-        import time
-
         start_time = time.time()
 
         logger.info(f"Processing quick search: {query}")
@@ -272,8 +272,6 @@ Process the query efficiently and provide a clear, concise response."""
         Returns:
             List of quick search responses
         """
-        import asyncio
-
         logger.info(f"Processing batch of {len(queries)} quick searches")
 
         # Process queries concurrently for speed

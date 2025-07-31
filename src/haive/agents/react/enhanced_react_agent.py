@@ -14,10 +14,11 @@ from langchain_core.tools import BaseTool
 from langgraph.graph import END
 from pydantic import Field, model_validator
 
+from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
+
 # Import base enhanced agent when available
 # from haive.agents.base.enhanced_agent import Agent
 # For now, using a minimal base
-from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 logger = logging.getLogger(__name__)
 

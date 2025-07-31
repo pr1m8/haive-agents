@@ -1,8 +1,7 @@
 """Test that persistence can be properly disabled with persistence=False."""
 
-from haive.core.engine.aug_llm import AugLLMConfig
-
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 def test_persistence_explicitly_disabled():

@@ -1,4 +1,6 @@
+import copy
 import logging
+import random
 import time
 from typing import Any
 
@@ -439,7 +441,6 @@ class ReactManyToolsAgent(ReactAgent):
                 filtered_tools = [tool.name for tool in self.tools]
             else:
                 # Take a sample of tools
-                import random
 
                 sample_size = min(5, len(self.tools))
                 sampled_tools = random.sample(self.tools, sample_size)
@@ -615,7 +616,6 @@ class ReactManyToolsAgent(ReactAgent):
 
             # If still too few, add some random tools
             if len(sorted_tools) < 3 and len(self.tools) > 3:
-                import random
 
                 remaining_tools = [
                     t.name for t in self.tools if t.name not in sorted_tools
@@ -693,14 +693,12 @@ class ReactManyToolsAgent(ReactAgent):
                     filtered_tools = self.tools
                 else:
                     # Take a sample
-                    import random
 
                     filtered_tools = random.sample(self.tools, 5)
 
             # Create a copy of the engine with the filtered tools
             if isinstance(llm_engine, AugLLMConfig):
                 # Create a copy of the config
-                import copy
 
                 modified_engine = copy.deepcopy(llm_engine)
 

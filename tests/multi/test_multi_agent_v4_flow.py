@@ -1,13 +1,12 @@
 """Test EnhancedMultiAgentV4 with SimpleAgentV3 and ReactAgentV3."""
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent_v3 import ReactAgentV3
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define test tools
@@ -18,7 +17,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 @tool
@@ -26,12 +25,11 @@ def text_formatter(text: str, format_type: str = "uppercase") -> str:
     """Format text in various ways."""
     if format_type == "uppercase":
         return text.upper()
-    elif format_type == "lowercase":
+    if format_type == "lowercase":
         return text.lower()
-    elif format_type == "title":
+    if format_type == "title":
         return text.title()
-    else:
-        return text
+    return text
 
 
 @tool
@@ -64,10 +62,6 @@ class TaskResult(BaseModel):
 
 def test_sequential_flow_simple_to_react():
     """Test sequential flow from SimpleAgentV3 to ReactAgentV3."""
-    print("\n" + "=" * 80)
-    print("TEST: Sequential Flow - SimpleAgentV3 → ReactAgentV3")
-    print("=" * 80)
-
     # Create SimpleAgentV3 for initial processing
     simple_agent = SimpleAgentV3(
         name="preprocessor", engine=AugLLMConfig(temperature=0.1), debug=True
@@ -96,18 +90,12 @@ def test_sequential_flow_simple_to_react():
         "Then use the calculator to solve it."
     )
 
-    print(f"\nWorkflow Result: {result}")
     assert result is not None
     assert "450" in str(result)  # 25 * 18 = 450
-    print("✅ Sequential flow test passed!")
 
 
 def test_parallel_execution():
     """Test parallel execution of multiple agents."""
-    print("\n" + "=" * 80)
-    print("TEST: Parallel Execution - Multiple Agents")
-    print("=" * 80)
-
     # Create multiple SimpleAgentV3 instances
     analyzer1 = SimpleAgentV3(
         name="analyzer1",
@@ -138,17 +126,11 @@ def test_parallel_execution():
     # Test execution
     result = workflow.run("Analyze this text in multiple ways")
 
-    print(f"\nParallel Result: {result}")
     assert result is not None
-    print("✅ Parallel execution test passed!")
 
 
 def test_structured_output_flow():
     """Test flow with structured output across agents."""
-    print("\n" + "=" * 80)
-    print("TEST: Structured Output Flow")
-    print("=" * 80)
-
     # Create planning agent with structured output
     planner = SimpleAgentV3(
         name="planner",
@@ -186,17 +168,11 @@ def test_structured_output_flow():
         "and we need 8 items, then format the result nicely"
     )
 
-    print(f"\nStructured Output Result: {result}")
     assert result is not None
-    print("✅ Structured output flow test passed!")
 
 
 def test_react_to_simple_flow():
     """Test flow from ReactAgentV3 to SimpleAgentV3."""
-    print("\n" + "=" * 80)
-    print("TEST: ReactAgentV3 → SimpleAgentV3 Flow")
-    print("=" * 80)
-
     # Create ReactAgentV3 for data gathering
     data_gatherer = ReactAgentV3(
         name="gatherer",
@@ -225,18 +201,12 @@ def test_react_to_simple_flow():
         "then format it as a professional report"
     )
 
-    print(f"\nResult: {result}")
     assert result is not None
     assert "144" in str(result)  # 12 * 12 = 144
-    print("✅ React to Simple flow test passed!")
 
 
 def test_conditional_routing():
     """Test conditional routing between agents."""
-    print("\n" + "=" * 80)
-    print("TEST: Conditional Routing")
-    print("=" * 80)
-
     # Create classifier agent
     classifier = SimpleAgentV3(
         name="classifier", engine=AugLLMConfig(temperature=0.1), debug=True
@@ -285,15 +255,11 @@ def test_conditional_routing():
 
     # Test math routing
     result1 = workflow.run("Please calculate 15 * 20")
-    print(f"\nMath Route Result: {result1}")
     assert "300" in str(result1)
 
     # Test text routing
     result2 = workflow.run("Format this text nicely")
-    print(f"\nText Route Result: {result2}")
     assert result2 is not None
-
-    print("✅ Conditional routing test passed!")
 
 
 if __name__ == "__main__":
@@ -302,7 +268,3 @@ if __name__ == "__main__":
     test_structured_output_flow()
     test_react_to_simple_flow()
     test_conditional_routing()
-
-    print("\n" + "=" * 80)
-    print("ALL MULTI-AGENT V4 TESTS COMPLETED!")
-    print("=" * 80)

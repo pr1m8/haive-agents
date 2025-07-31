@@ -13,10 +13,11 @@ from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
 from pydantic import Field, field_validator, model_validator
 
+from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
+
 # Import base enhanced agent when available
 # from haive.agents.base.enhanced_agent import Agent
 # For now, using minimal base
-from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 logger = logging.getLogger(__name__)
 

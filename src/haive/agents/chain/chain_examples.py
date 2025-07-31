@@ -4,6 +4,8 @@ from typing import Any, Dict
 Shows different ways to create chains from various node types.
 """
 
+from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
@@ -38,7 +40,7 @@ def example_sequential_mixed() -> Any:
     )
 
     # 2. A callable function
-    def process_summary(state: Dict[str, Any]):
+    def process_summary(state: dict[str, Any]):
         summary = state.get("summary", "")
         return {"processed_summary": f"[PROCESSED] {summary}"}
 
@@ -167,7 +169,7 @@ def example_rag_router_simplified() -> Any:
     simple_rag = SimpleRAGAgent.from_documents(docs, llm_config)
 
     # Create complex RAG (mock)
-    def complex_rag(s) -> Dict[str, Any]:
+    def complex_rag(s) -> dict[str, Any]:
         return {"response": "Complex RAG response"}
 
     # Use conditional_chain helper

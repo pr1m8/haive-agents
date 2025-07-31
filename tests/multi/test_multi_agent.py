@@ -9,13 +9,14 @@ using the MultiAgent class with the enhanced AgentSchemaComposer.
 
 import logging
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.multi.agent import MultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Configure logger
 logger = logging.getLogger("test_multi_agent")

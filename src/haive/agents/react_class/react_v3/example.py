@@ -12,6 +12,7 @@ This script shows how to:
 import logging
 import sys
 import time
+from typing import Any
 
 import httpx
 from haive.core.schema.schema_composer import SchemaComposer

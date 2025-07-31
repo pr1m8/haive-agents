@@ -1,21 +1,35 @@
 """Test Memory V2 with free/local resources (no API keys needed)."""
 
 import asyncio
+import subprocess
 import tempfile
+import traceback
 from pathlib import Path
+
+import sentence_transformers
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_core.documents import Document
+from numpy import dot
+from numpy.linalg import norm
+
+from haive.agents.memory_v2.memory_state_original import (
+    EnhancedMemoryItem,
+    ImportanceLevel,
+    MemoryState,
+    MemoryType,
+)
 
 
 async def test_with_huggingface_embeddings():
     """Test memory system with free HuggingFace embeddings."""
     try:
         # Use HuggingFace embeddings (free, no API key)
-        from langchain_community.embeddings import HuggingFaceEmbeddings
 
         embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": "cpu"},
             encode_kwargs={"normalize_embeddings": False},
-        )
 
         # Test embedding some text
         test_texts = [
@@ -29,7 +43,6 @@ async def test_with_huggingface_embeddings():
         return embeddings
 
     except Exception:
-        import traceback
 
         traceback.print_exc()
         return None
@@ -42,8 +55,6 @@ async def test_vector_store_with_free_embeddings():
         return None
 
     try:
-        from langchain_community.vectorstores import FAISS
-        from langchain_core.documents import Document
 
         # Create some test documents
         documents = [
@@ -72,12 +83,10 @@ async def test_vector_store_with_free_embeddings():
         results = vector_store.similarity_search(query, k=2)
 
         for _i, _doc in enumerate(results):
-            pass
 
         return vector_store
 
     except Exception:
-        import traceback
 
         traceback.print_exc()
         return None
@@ -106,7 +115,6 @@ async def test_memory_rag_with_free_resources():
         for query in test_queries:
             docs = retriever.invoke(query)
             for _i, _doc in enumerate(docs):
-                pass
 
         # Save the vector store for later use
         temp_dir = tempfile.mkdtemp()
@@ -121,7 +129,6 @@ async def test_memory_rag_with_free_resources():
         return retriever
 
     except Exception:
-        import traceback
 
         traceback.print_exc()
         return None
@@ -134,11 +141,6 @@ async def test_memory_state_with_embeddings():
         return None
 
     try:
-        from haive.agents.memory_v2.memory_state_original import (
-            EnhancedMemoryItem,
-            ImportanceLevel,
-            MemoryState,
-            MemoryType,
         )
 
         # Create memory state
@@ -192,8 +194,6 @@ async def test_memory_state_with_embeddings():
         query_embedding = embeddings.embed_query(query)
 
         # Simple cosine similarity search
-        from numpy import dot
-        from numpy.linalg import norm
 
         def cosine_similarity(a, b):
             return dot(a, b) / (norm(a) * norm(b))
@@ -217,7 +217,6 @@ async def test_memory_state_with_embeddings():
         return state
 
     except Exception:
-        import traceback
 
         traceback.print_exc()
         return None
@@ -235,9 +234,7 @@ async def main():
 if __name__ == "__main__":
     # Install sentence-transformers if needed
     try:
-        import sentence_transformers
     except ImportError:
-        import subprocess
 
         subprocess.check_call(["poetry", "add", "sentence-transformers"])
 

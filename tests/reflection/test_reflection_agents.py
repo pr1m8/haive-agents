@@ -1,6 +1,5 @@
 """Test reflection agents with real LLMs - NO MOCKS."""
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -15,6 +14,7 @@ from haive.agents.reflection import (
     create_tool_based_reflection_agent,
 )
 from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestReflectionAgents:
@@ -259,8 +259,9 @@ class TestReflectionWithMessageTransform:
         # 3. Response is transformed to human message
         # 4. Reflection agent sees it and improves
 
-        from haive.core.schema.prebuilt.messages_state import MessagesState
         from langchain_core.messages import AIMessage, HumanMessage
+
+        from haive.core.schema.prebuilt.messages_state import MessagesState
 
         # Create state with conversation
         state = MessagesState()

@@ -4,10 +4,12 @@ The supervisor gets agents from an agent registry instead of creating them.
 Uses DynamicChoiceModel for selection and all agents are ReactAgents.
 """
 
+import asyncio
 import logging
 from typing import Any
 
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
+from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool
@@ -458,12 +460,10 @@ Available in registry: {list(self._registry.get_available_agents().keys())}"""
 
 # Example usage
 if __name__ == "__main__":
-    import asyncio
 
     async def test_registry_supervisor():
         """Test the registry supervisor."""
         # Create some ReactAgents for the registry
-        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Research agent
         research_engine = AugLLMConfig(

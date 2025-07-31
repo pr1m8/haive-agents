@@ -1,8 +1,6 @@
 import logging
 import uuid
 from collections.abc import Sequence
-
-# Set up logging
 from typing import Annotated, Literal
 
 from haive.core.config.runnable import RunnableConfigManager
@@ -14,13 +12,16 @@ from haive.core.graph.node.config import NodeConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.tools import BaseTool
+from langchain_core.tools import BaseTool, tool
 from langgraph.graph import END, add_messages
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 from pydantic import BaseModel, Field
 
 from haive.agents.react_class.react_agent2.state2 import ReactAgentState
+
+# Set up logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -483,7 +484,6 @@ def create_react_agent(
 # Example usage
 if __name__ == "__main__":
     # Create a simple test tool
-    from langchain_core.tools import tool
 
     @tool
     def search(query: str) -> str:

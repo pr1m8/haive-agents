@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Your prompt template
 RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
@@ -117,29 +118,15 @@ if __name__ == "__main__":
     )
 
     # Run with debug to see graph execution
-    print("Testing SimpleAgentV3 with structured output...")
     result = test_agent.run({"query": "what is the tallest building in france"})
-
-    print("\n" + "=" * 80)
-    print("RESULT TYPE:", type(result))
-    print("=" * 80)
 
     # Check if we have state and try to get the structured output
     if hasattr(result, "get_latest_structured_output"):
         structured_output = result.get_latest_structured_output()
-        print("STRUCTURED OUTPUT:", structured_output)
-        print("STRUCTURED OUTPUT TYPE:", type(structured_output))
 
         if structured_output and hasattr(structured_output, "model_dump"):
-            print("\n✅ Successfully got structured output!")
-            print("Original query:", structured_output.original_query)
-            print("Query type:", structured_output.query_type)
-            print("Best refined query:", structured_output.best_refined_query)
-            print(
-                "Number of suggestions:", len(structured_output.refinement_suggestions)
-            )
+            pass
         else:
-            print("❌ No structured output found")
+            pass
     else:
-        print("❌ Result doesn't have get_latest_structured_output method")
-        print("Result:", result)
+        pass

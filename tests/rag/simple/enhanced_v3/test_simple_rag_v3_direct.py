@@ -3,6 +3,7 @@
 
 import sys
 
+
 # Add the source directories to Python path
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
@@ -10,10 +11,6 @@ sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/
 
 def test_imports():
     """Test that all our components can be imported."""
-    print("🔍 Testing imports...")
-
-    print("✅ SimpleRAGState imported")
-
     # For now, let's just test state since other components depend on base classes
     # that have import issues in the current setup
 
@@ -22,8 +19,6 @@ def test_imports():
 
 def test_simple_rag_state():
     """Test SimpleRAGState functionality."""
-    print("🔍 Testing SimpleRAGState...")
-
     from langchain_core.documents import Document
 
     from haive.agents.rag.simple.enhanced_v3.state import SimpleRAGState
@@ -33,7 +28,6 @@ def test_simple_rag_state():
         query="What is machine learning?", retrieved_documents=[], generated_answer=""
     )
 
-    print(f"✅ State created with query: '{state.query}'")
     assert state.query == "What is machine learning?"
     assert state.current_stage == "ready"
     assert len(state.stage_history) == 0
@@ -43,7 +37,6 @@ def test_simple_rag_state():
     state.update_stage("generation")
     state.update_stage("completed")
 
-    print(f"✅ Stage tracking: {state.stage_history}")
     assert state.current_stage == "completed"
     assert state.stage_history == ["retrieval", "generation", "completed"]
 
@@ -52,7 +45,6 @@ def test_simple_rag_state():
     state.update_performance_metric("generation_time", 1.2)
     state.update_performance_metric("total_time", 1.7)
 
-    print(f"✅ Performance metrics: {state.performance_metrics}")
     assert state.performance_metrics["total_time"] == 1.7
 
     # Test debug information
@@ -67,7 +59,6 @@ def test_simple_rag_state():
         completion_tokens=50,
     )
 
-    print("✅ Debug information added")
     assert state.retrieval_debug is not None
     assert state.retrieval_debug.search_time == 0.45
     assert state.generation_debug is not None
@@ -94,10 +85,6 @@ def test_simple_rag_state():
     retrieval_summary = state.get_retrieval_summary()
     generation_summary = state.get_generation_summary()
 
-    print(f"✅ Pipeline summary: {list(pipeline_summary.keys())}")
-    print(f"✅ Retrieval summary: {list(retrieval_summary.keys())}")
-    print(f"✅ Generation summary: {list(generation_summary.keys())}")
-
     assert pipeline_summary["documents_retrieved"] == 2
     assert pipeline_summary["answer_generated"] is True
     assert retrieval_summary["documents_count"] == 2
@@ -108,8 +95,6 @@ def test_simple_rag_state():
 
 def test_rag_metadata():
     """Test RAG metadata model."""
-    print("🔍 Testing RAGMetadata...")
-
     from haive.agents.rag.simple.enhanced_v3.state import RAGMetadata
 
     metadata = RAGMetadata(
@@ -119,7 +104,6 @@ def test_rag_metadata():
         quality_scores={"relevance": 0.9, "coherence": 0.85},
     )
 
-    print(f"✅ RAGMetadata created with {len(metadata.model_dump())} fields")
     assert metadata.query_analysis["intent"] == "factual"
     assert metadata.timing_info["retrieval"] == 0.5
 
@@ -128,29 +112,17 @@ def test_rag_metadata():
 
 def main():
     """Run all tests."""
-    print("🚀 Starting SimpleRAG V3 Direct Tests")
-    print("=" * 50)
-
     try:
         # Test imports
         test_imports()
-        print()
 
         # Test state functionality
         test_simple_rag_state()
-        print()
 
         # Test metadata
         test_rag_metadata()
-        print()
 
-        print("🎉 ALL TESTS PASSED!")
-        print("✅ SimpleRAG V3 state management is working correctly")
-        print("✅ Enhanced features (performance, debug) are functional")
-        print("✅ State tracking and summaries work as expected")
-
-    except Exception as e:
-        print(f"❌ Test failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

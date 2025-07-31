@@ -2,7 +2,7 @@
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field
 
@@ -68,7 +68,6 @@ class MCTSAgentConfig(AgentConfig):
         system_prompt = system_prompt or "You are an AI assistant."
 
         # Create default prompt templates if not in kwargs
-        from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
         if "initial_prompt_template" not in kwargs:
             initial_prompt = ChatPromptTemplate.from_messages(

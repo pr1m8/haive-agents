@@ -51,6 +51,7 @@ import logging
 from collections.abc import Callable, Sequence
 from typing import Any
 
+import jsonpatch
 from haive.core.engine.agent.agent import Agent, register_agent
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import (
@@ -184,7 +185,6 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         # Try importing jsonpatch if needed
         if self.use_jsonpatch:
             try:
-                import jsonpatch
 
                 self.jsonpatch = jsonpatch
             except ImportError:
@@ -309,7 +309,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                 return x["messages"]
             if hasattr(x, "messages"):
                 return x.messages
-            raise ValueError(f"Cannot extract messages from {type(x)}")
+            raise TypeError(f"Cannot extract messages from {type(x)}")
 
         # Define model and fallback nodes
         model = dedict | llm | (lambda msg: {"messages": [msg], "attempt_number": 1})

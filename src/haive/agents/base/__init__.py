@@ -47,34 +47,36 @@ See Also:
 """
 
 # Re-export the original Agent class as the default for backward compatibility
+
 from haive.agents.base.agent import Agent
-
-# Enhanced agent classes available separately
-from haive.agents.base.enhanced_agent import Agent as EnhancedAgent, Workflow
-
-# Re-export mixins for convenience
+from haive.agents.base.enhanced_agent import Agent as EnhancedAgent
+from haive.agents.base.enhanced_agent import Workflow
+from haive.agents.base.hooks import HookContext, HookEvent, HookFunction
 from haive.agents.base.mixins import ExecutionMixin, PersistenceMixin, StateMixin
+from haive.agents.base.pre_post_agent_mixin import PrePostAgentMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
 from haive.agents.base.types import AgentInput, AgentOutput, AgentState
 
+# Enhanced agent classes available separately
+
+# Re-export mixins for convenience
+
 # Re-export hook system
-from haive.agents.base.hooks import HookEvent, HookContext, HookFunction
-from haive.agents.base.pre_post_agent_mixin import PrePostAgentMixin
 
 
 __all__ = [
     "Agent",
-    "EnhancedAgent",
-    "Workflow", 
     "AgentInput",
     "AgentOutput",
     "AgentState",
+    "EnhancedAgent",
     "ExecutionMixin",
+    "HookContext",
+    "HookEvent",
+    "HookFunction",
     "PersistenceMixin",
+    "PrePostAgentMixin",
     "SerializationMixin",
     "StateMixin",
-    "HookEvent",
-    "HookContext", 
-    "HookFunction",
-    "PrePostAgentMixin",
+    "Workflow",
 ]

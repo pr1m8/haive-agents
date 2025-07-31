@@ -13,7 +13,6 @@ def main():
     conn = psycopg2.connect(conn_str)
     cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-
     # Look for records with step 72 (from your example)
     cursor.execute(
         """
@@ -47,7 +46,7 @@ def main():
                             if "prepared statement" in content:
                                 pass
                             elif "Error" in content:
-                                pass..")
+                                pass
 
     # Also look for any records with "prepared statement" in text
     cursor.execute(

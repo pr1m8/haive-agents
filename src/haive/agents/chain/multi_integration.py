@@ -8,6 +8,7 @@ from collections.abc import Callable
 from typing import Any
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from langgraph.graph import END, START
 from pydantic import Field
 
 from haive.agents.base.agent import Agent
@@ -75,8 +76,6 @@ class ChainNodeWrapper(Agent):
 
     def build_graph(self) -> BaseGraph:
         """Build a simple graph with just this node."""
-        from langgraph.graph import END, START
-
         graph = BaseGraph(name=self.name.replace(" ", ""))
 
         # Add the node

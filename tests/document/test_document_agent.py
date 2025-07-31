@@ -4,17 +4,17 @@ Tests the complete document processing agent that implements:
 FETCH -> LOAD -> TRANSFORM -> SPLIT -> ANNOTATE -> EMBED -> STORE -> RETRIEVE
 """
 
-import tempfile
 from pathlib import Path
+import tempfile
 
 import pytest
+
+from haive.agents.document.agent import DocumentAgent, DocumentProcessingResult
 from haive.core.engine.document.config import (
     ChunkingStrategy,
     DocumentSourceType,
     ProcessingStrategy,
 )
-
-from haive.agents.document.agent import DocumentAgent, DocumentProcessingResult
 
 
 class TestDocumentAgent:

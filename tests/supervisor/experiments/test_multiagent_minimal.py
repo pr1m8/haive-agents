@@ -3,9 +3,6 @@
 import asyncio
 from typing import Literal
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.schema.agent_schema_composer import BuildMode
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.graph import END
 
@@ -19,6 +16,9 @@ from haive.agents.experiments.supervisor.component_3_agent_execution import (
 from haive.agents.experiments.supervisor.test_utils import create_test_agents
 from haive.agents.multi.enhanced_base import MultiAgentBase
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.schema.agent_schema_composer import BuildMode
 
 
 async def test_minimal_multiagent():

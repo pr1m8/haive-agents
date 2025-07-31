@@ -4,6 +4,7 @@ import logging
 import os
 import sys
 
+from agents.lats.models import SerializedMessage
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
 
@@ -92,7 +93,6 @@ def main():
             # Try to reconstruct messages for more details
             messages = []
             if "messages" in final_state:
-                from agents.lats.models import SerializedMessage
 
                 for msg_data in final_state["messages"]:
                     try:

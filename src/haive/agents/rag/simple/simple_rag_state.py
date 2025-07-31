@@ -35,6 +35,7 @@ Examples:
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import Any
 
@@ -324,8 +325,6 @@ def run_simple_rag(
     Returns:
         Completed SimpleRAGState with results
     """
-    import asyncio
-
     # Create workflow
     state = create_simple_rag_workflow(
         query=query,
@@ -399,7 +398,6 @@ __all__ = [
 # ================================
 
 if __name__ == "__main__":
-    from langchain_core.documents import Document
 
     async def demo():
         """Demonstrate SimpleRAG using the correct MultiAgentState pattern."""

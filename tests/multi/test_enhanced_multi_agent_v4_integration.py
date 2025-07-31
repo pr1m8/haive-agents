@@ -4,16 +4,14 @@ These tests demonstrate real multi-agent workflows with actual LLM calls.
 They follow the NO MOCKS testing philosophy.
 """
 
-from typing import List
-
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
+import pytest
 
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Test data structures
@@ -21,8 +19,8 @@ class TaskBreakdown(BaseModel):
     """Structured task breakdown."""
 
     main_goal: str = Field(..., description="Main goal to achieve")
-    subtasks: List[str] = Field(..., description="List of subtasks")
-    priority_order: List[int] = Field(
+    subtasks: list[str] = Field(..., description="List of subtasks")
+    priority_order: list[int] = Field(
         ..., description="Priority order of subtasks (indices)"
     )
 
@@ -30,7 +28,7 @@ class TaskBreakdown(BaseModel):
 class TaskResult(BaseModel):
     """Structured task execution result."""
 
-    completed_tasks: List[str] = Field(..., description="Completed tasks")
+    completed_tasks: list[str] = Field(..., description="Completed tasks")
     summary: str = Field(..., description="Summary of results")
     success_rate: float = Field(..., description="Success rate 0-1")
 
@@ -49,14 +47,13 @@ def string_manipulator(text: str, operation: str) -> str:
     """
     if operation == "upper":
         return text.upper()
-    elif operation == "lower":
+    if operation == "lower":
         return text.lower()
-    elif operation == "reverse":
+    if operation == "reverse":
         return text[::-1]
-    elif operation == "count":
+    if operation == "count":
         return f"The text has {len(text)} characters"
-    else:
-        return f"Unknown operation: {operation}"
+    return f"Unknown operation: {operation}"
 
 
 @tool

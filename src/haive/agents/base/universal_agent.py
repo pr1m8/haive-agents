@@ -11,7 +11,13 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any
 
-from haive.core.engine.base.agent_types import AgentType, get_agent_capabilities
+from haive.core.engine.base.agent_types import (
+    AgentType,
+    get_agent_capabilities,
+    is_orchestration_agent,
+    is_processing_agent,
+    is_reasoning_agent,
+)
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.runnables import RunnableConfig
@@ -127,20 +133,14 @@ class Agent(BaseModel, ABC):
     # Type checking methods
     def is_reasoning_agent(self) -> bool:
         """Check if this agent has reasoning capabilities."""
-        from haive.core.engine.base.agent_types import is_reasoning_agent
-
         return is_reasoning_agent(self.agent_type)
 
     def is_processing_agent(self) -> bool:
         """Check if this agent is for deterministic processing."""
-        from haive.core.engine.base.agent_types import is_processing_agent
-
         return is_processing_agent(self.agent_type)
 
     def is_orchestration_agent(self) -> bool:
         """Check if this agent orchestrates other agents."""
-        from haive.core.engine.base.agent_types import is_orchestration_agent
-
         return is_orchestration_agent(self.agent_type)
 
     def get_capabilities(self) -> dict[str, bool]:

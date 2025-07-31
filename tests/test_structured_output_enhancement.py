@@ -4,9 +4,8 @@ Tests the new modular approach where any agent can be enhanced with structured
 output by appending a SimpleAgent with appropriate Pydantic models.
 """
 
-import pytest
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
+import pytest
 
 from haive.agents.rag.hyde.enhanced_agent import (
     EnhancedHyDERAGAgent,
@@ -20,6 +19,7 @@ from haive.agents.rag.utils.structured_output_enhancer import (
     create_fusion_enhancer,
     create_hyde_enhancer,
 )
+from haive.core.models.llm.base import AzureLLMConfig
 
 
 class TestStructuredOutputEnhancer:

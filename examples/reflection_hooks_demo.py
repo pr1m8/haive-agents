@@ -9,14 +9,13 @@ This demo showcases:
 """
 
 import asyncio
-from typing import Any, Dict, List
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
-from haive.agents.base.hooks import HookContext, HookEvent
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent_v3 import SimpleAgentV3
@@ -30,8 +29,8 @@ class ContentQuality(BaseModel):
     completeness_score: float = Field(ge=0.0, le=1.0, description="Completeness rating")
     accuracy_score: float = Field(ge=0.0, le=1.0, description="Accuracy rating")
     overall_score: float = Field(ge=0.0, le=1.0, description="Overall quality score")
-    improvement_areas: List[str] = Field(description="Areas needing improvement")
-    strengths: List[str] = Field(description="Strong points in the content")
+    improvement_areas: list[str] = Field(description="Areas needing improvement")
+    strengths: list[str] = Field(description="Strong points in the content")
 
 
 class ReflectionResult(BaseModel):
@@ -39,7 +38,7 @@ class ReflectionResult(BaseModel):
 
     original_content: str = Field(description="Original content analyzed")
     quality_assessment: ContentQuality = Field(description="Quality scores")
-    suggested_improvements: List[str] = Field(description="Specific improvements")
+    suggested_improvements: list[str] = Field(description="Specific improvements")
     revised_content: str = Field(description="Improved version of content")
 
 
@@ -48,15 +47,13 @@ class FinalOutput(BaseModel):
 
     title: str = Field(description="Content title")
     content: str = Field(description="Final polished content")
-    metadata: Dict[str, Any] = Field(description="Additional metadata")
+    metadata: dict[str, Any] = Field(description="Additional metadata")
     quality_metrics: ContentQuality = Field(description="Final quality scores")
-    revision_history: List[str] = Field(description="History of revisions")
+    revision_history: list[str] = Field(description="History of revisions")
 
 
 async def demo_reflection_workflow():
     """Demo 1: Content creation with reflection and improvement."""
-    print("\n=== Demo 1: Reflection-Enhanced Content Creation ===\n")
-
     # Create content generator
     content_creator = SimpleAgentV3(
         name="content_creator",
@@ -107,7 +104,7 @@ async def demo_reflection_workflow():
                 (
                     "human",
                     """Original content: {original_content}
-            
+
 Quality Assessment:
 - Clarity: {clarity_score}
 - Completeness: {completeness_score}
@@ -149,20 +146,15 @@ Please create an improved version addressing all feedback.""",
     @workflow.before_agent_execution
     def track_execution(agent_name: str, state: dict):
         execution_metrics["iterations"] += 1
-        print(
-            f"\n[Pre-Hook] {agent_name} starting (iteration {execution_metrics['iterations']})"
-        )
 
     @workflow.after_agent_execution
     def track_results(agent_name: str, result: Any):
-        print(f"[Post-Hook] {agent_name} completed")
 
         # Track quality improvements
         if agent_name == "reflection_agent" and isinstance(result, dict):
             quality = result.get("quality_assessment", {})
             overall = quality.get("overall_score", 0)
             execution_metrics["quality_improvements"].append(overall)
-            print(f"  Quality Score: {overall:.2f}")
 
     # Execute workflow
     result = await workflow.arun(
@@ -174,21 +166,12 @@ Please create an improved version addressing all feedback.""",
         }
     )
 
-    print("\n=== Reflection Workflow Results ===")
-    print(f"Total iterations: {execution_metrics['iterations']}")
-    print(f"Quality progression: {execution_metrics['quality_improvements']}")
-
     if "final_formatter" in result:
-        final = result["final_formatter"]
-        print(f"\nFinal Title: {final.get('title', 'N/A')}")
-        print(f"Quality Metrics: {final.get('quality_metrics', {})}")
-        print(f"Revision History: {len(final.get('revision_history', []))} revisions")
+        result["final_formatter"]
 
 
 async def demo_pre_post_processing():
     """Demo 2: Pre and post processing pattern."""
-    print("\n\n=== Demo 2: Pre/Post Processing Pattern ===\n")
-
     # Pre-processor: Analyze and prepare input
     preprocessor = SimpleAgentV3(
         name="preprocessor",
@@ -202,7 +185,7 @@ async def demo_pre_post_processing():
                 (
                     "human",
                     """Raw input: {raw_input}
-            
+
 Analyze this input and prepare:
 1. Clean and normalized version
 2. Key entities and concepts
@@ -222,7 +205,7 @@ Analyze this input and prepare:
     @tool
     def sentiment_analyzer(text: str) -> str:
         """Analyze sentiment of text."""
-        return f"Sentiment analysis: Positive (0.8), Professional tone, Constructive feedback"
+        return "Sentiment analysis: Positive (0.8), Professional tone, Constructive feedback"
 
     main_processor = ReactAgent(
         name="main_processor",
@@ -247,7 +230,7 @@ Analyze this input and prepare:
                 (
                     "human",
                     """Processing results: {processing_results}
-            
+
 Create final polished output with:
 1. Clear structure
 2. Enhanced formatting
@@ -271,21 +254,20 @@ Create final polished output with:
     @workflow.after_agent_execution
     def capture_stage_output(agent_name: str, result: Any):
         stage_outputs[agent_name] = result
-        print(f"\n[Stage Output - {agent_name}]")
         if isinstance(result, dict):
-            for key in list(result.keys())[:3]:  # Show first 3 keys
-                print(f"  {key}: {str(result[key])[:100]}...")
+            for _key in list(result.keys())[:3]:  # Show first 3 keys
+                pass
 
     # Execute
     raw_input = """
     Subject: Quarterly Review Meeting
     From: John Smith (TechCorp)
     Date: March 15, 2024
-    
-    I wanted to share some thoughts on our Q1 performance. Overall, I'm pleased with 
-    the progress we've made, particularly in the AI integration project. The team has 
+
+    I wanted to share some thoughts on our Q1 performance. Overall, I'm pleased with
+    the progress we've made, particularly in the AI integration project. The team has
     shown exceptional dedication, and our metrics are trending positively.
-    
+
     However, we need to address some challenges in the deployment pipeline...
     """
 
@@ -296,19 +278,12 @@ Create final polished output with:
         }
     )
 
-    print("\n=== Pre/Post Processing Results ===")
-    print(f"Stages completed: {list(stage_outputs.keys())}")
-
     if "postprocessor" in result:
-        final = result["postprocessor"]
-        print(f"\nFinal Title: {final.get('title', 'N/A')}")
-        print(f"Metadata: {final.get('metadata', {})}")
+        result["postprocessor"]
 
 
 async def demo_multi_stage_reflection():
     """Demo 3: Multi-stage reflection with conditional improvement."""
-    print("\n\n=== Demo 3: Multi-Stage Reflection with Quality Gates ===\n")
-
     # Quality threshold for acceptance
     QUALITY_THRESHOLD = 0.85
 
@@ -343,7 +318,7 @@ async def demo_multi_stage_reflection():
                 (
                     "human",
                     """Current content: {content}
-            
+
 Quality Scores:
 - Clarity: {clarity_score}
 - Completeness: {completeness_score}
@@ -379,7 +354,7 @@ Improve the content to achieve a quality score above {threshold}.""",
     workflow.build()
 
     # Add conditional routing based on quality
-    def check_quality(state: Dict[str, Any]) -> str:
+    def check_quality(state: dict[str, Any]) -> str:
         """Route based on quality score."""
         # Get quality score from evaluator output
         eval_result = state.get("evaluator", {})
@@ -388,8 +363,7 @@ Improve the content to achieve a quality score above {threshold}.""",
 
         if overall_score >= QUALITY_THRESHOLD:
             return "polisher"  # Quality is good, go to final polish
-        else:
-            return "improver"  # Need improvement
+        return "improver"  # Need improvement
 
     # Add edges
     workflow.add_edge("creator", "evaluator")
@@ -409,7 +383,6 @@ Improve the content to achieve a quality score above {threshold}.""",
     def track_iterations(agent_name: str, state: dict):
         if agent_name == "evaluator":
             iteration_count["count"] += 1
-            print(f"\n[Quality Gate] Evaluation iteration {iteration_count['count']}")
 
     @workflow.after_agent_execution
     def track_quality(agent_name: str, result: Any):
@@ -417,10 +390,9 @@ Improve the content to achieve a quality score above {threshold}.""",
             quality = result.get("quality_assessment", {})
             score = quality.get("overall_score", 0)
             iteration_count["scores"].append(score)
-            print(f"[Quality Gate] Score: {score:.2f} (Threshold: {QUALITY_THRESHOLD})")
 
     # Execute
-    result = await workflow.arun(
+    await workflow.arun(
         {
             "messages": [
                 {
@@ -432,18 +404,9 @@ Improve the content to achieve a quality score above {threshold}.""",
         }
     )
 
-    print("\n=== Quality Gate Results ===")
-    print(f"Total iterations: {iteration_count['count']}")
-    print(f"Quality progression: {[f'{s:.2f}' for s in iteration_count['scores']]}")
-    print(
-        f"Final quality achieved: {iteration_count['scores'][-1] if iteration_count['scores'] else 'N/A'}"
-    )
-
 
 async def demo_hook_monitoring_system():
     """Demo 4: Comprehensive hook monitoring system."""
-    print("\n\n=== Demo 4: Comprehensive Hook Monitoring System ===\n")
-
     # Create a simple workflow
     analyzer = SimpleAgentV3(name="analyzer", engine=AugLLMConfig(temperature=0.4))
 
@@ -465,7 +428,7 @@ async def demo_hook_monitoring_system():
             self.state_snapshots = {}
             self.errors = []
 
-        def log_event(self, event_type: str, details: Dict[str, Any]):
+        def log_event(self, event_type: str, details: dict[str, Any]):
             self.events.append(
                 {
                     "type": event_type,
@@ -475,8 +438,6 @@ async def demo_hook_monitoring_system():
             )
 
         def print_summary(self):
-            print("\n=== Workflow Monitoring Summary ===")
-            print(f"Total events: {len(self.events)}")
 
             # Event type breakdown
             event_types = {}
@@ -484,19 +445,16 @@ async def demo_hook_monitoring_system():
                 event_type = event["type"]
                 event_types[event_type] = event_types.get(event_type, 0) + 1
 
-            print("\nEvent breakdown:")
-            for event_type, count in event_types.items():
-                print(f"  {event_type}: {count}")
+            for event_type, _count in event_types.items():
+                pass
 
-            print("\nAgent execution order:")
             agent_events = [e for e in self.events if e["type"] == "agent_start"]
-            for i, event in enumerate(agent_events, 1):
-                print(f"  {i}. {event['details']['agent_name']}")
+            for _i, event in enumerate(agent_events, 1):
+                pass
 
             if self.errors:
-                print(f"\nErrors encountered: {len(self.errors)}")
-                for error in self.errors:
-                    print(f"  - {error}")
+                for _error in self.errors:
+                    pass
 
     monitor = WorkflowMonitor()
 
@@ -532,7 +490,7 @@ async def demo_hook_monitoring_system():
         monitor.log_event("error", {"error": str(error), "context": context})
 
     # Execute
-    result = await workflow.arun(
+    await workflow.arun(
         {"messages": [{"role": "user", "content": "Analyze market trends in AI"}]}
     )
 
@@ -542,19 +500,10 @@ async def demo_hook_monitoring_system():
 
 async def main():
     """Run all reflection and hook demos."""
-    print("=" * 80)
-    print("REFLECTION AND HOOKS DEMONSTRATION")
-    print("Advanced patterns with pre/post processing and monitoring")
-    print("=" * 80)
-
     await demo_reflection_workflow()
     await demo_pre_post_processing()
     await demo_multi_stage_reflection()
     await demo_hook_monitoring_system()
-
-    print("\n" + "=" * 80)
-    print("ALL DEMOS COMPLETED!")
-    print("=" * 80)
 
 
 if __name__ == "__main__":

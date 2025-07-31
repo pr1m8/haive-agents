@@ -1,3 +1,9 @@
+from datetime import datetime
+from typing import Any
+
+from pydantic import BaseModel, Field
+
+
 class InstructionComponent(BaseModel):
     """Individual instruction component with metadata."""
 
@@ -38,9 +44,9 @@ class ReflectionCycle(BaseModel):
 
     cycle_id: UUID = Field(default_factory=uuid4)
     trigger_event: str = Field(..., description="What triggered this reflection")
-    current_performance: Dict[str, float] = Field(default_factory=dict)
-    identified_issues: List[str] = Field(default_factory=list)
-    proposed_changes: List[str] = Field(default_factory=list)
+    current_performance: dict[str, float] = Field(default_factory=dict)
+    identified_issues: list[str] = Field(default_factory=list)
+    proposed_changes: list[str] = Field(default_factory=list)
     change_rationale: str = Field(..., description="Why these changes are needed")
     confidence_score: float = Field(default=0.5, ge=0.0, le=1.0)
 
@@ -67,28 +73,28 @@ class ProceduralMemory(BaseMemoryModel, TemporalMixin):
     instruction_set_name: str = Field(..., description="Instruction set identifier")
 
     # Core instructions
-    core_instructions: List[InstructionComponent] = Field(default_factory=list)
-    contextual_modifiers: Dict[str, List[str]] = Field(default_factory=dict)
+    core_instructions: list[InstructionComponent] = Field(default_factory=list)
+    contextual_modifiers: dict[str, list[str]] = Field(default_factory=dict)
 
     # Performance tracking
     overall_effectiveness: float = Field(default=0.5, ge=0.0, le=1.0)
-    usage_statistics: Dict[str, int] = Field(default_factory=dict)
-    performance_trends: List[Dict[str, Any]] = Field(default_factory=list)
+    usage_statistics: dict[str, int] = Field(default_factory=dict)
+    performance_trends: list[dict[str, Any]] = Field(default_factory=list)
 
     # Reflection and adaptation
-    reflection_cycles: List[ReflectionCycle] = Field(default_factory=list)
-    last_reflection: Optional[datetime] = Field(None)
+    reflection_cycles: list[ReflectionCycle] = Field(default_factory=list)
+    last_reflection: datetime | None = Field(None)
     adaptation_threshold: float = Field(default=0.3, ge=0.0, le=1.0)
 
     # Version control
     version: int = Field(default=1, ge=1)
-    change_log: List[Dict[str, Any]] = Field(default_factory=list)
+    change_log: list[dict[str, Any]] = Field(default_factory=list)
 
     @field_validator("core_instructions")
     @classmethod
     def validate_instruction_set(
-        cls, v: List[InstructionComponent]
-    ) -> List[InstructionComponent]:
+        cls, v: list[InstructionComponent]
+    ) -> list[InstructionComponent]:
         """Validate instruction set consistency."""
         if len(v) == 0:
             raise ValueError("At least one core instruction required")

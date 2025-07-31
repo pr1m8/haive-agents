@@ -23,6 +23,7 @@ from integration.test_workflow_outputs import (
     test_flare,
 )
 
+
 __all__ = [
     "main",
     "pretty_print_agent_info",

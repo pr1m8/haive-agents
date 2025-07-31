@@ -2,12 +2,12 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 
 from haive.agents.meta import MetaAgent
 from haive.agents.react import ReactAgent
 from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 @tool

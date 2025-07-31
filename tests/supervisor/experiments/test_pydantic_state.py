@@ -61,9 +61,9 @@ async def test_pydantic_state():
     # Test with different checkpointers
     import os
 
-    import psycopg
     from langgraph.checkpoint.memory import MemorySaver
     from langgraph.checkpoint.postgres import PostgresSaver
+    import psycopg
 
     # In-memory checkpointer (should work)
     graph.compile(checkpointer=MemorySaver())

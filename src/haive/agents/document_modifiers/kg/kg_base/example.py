@@ -5,7 +5,6 @@ This script demonstrates how to use the GraphTransformer to extract
 knowledge graphs from documents with various configurations.
 """
 
-
 from langchain_core.documents import Document
 
 from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer

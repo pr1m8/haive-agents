@@ -7,7 +7,9 @@ Clean implementation following CLAUDE.md patterns:
 - Proper state handling
 """
 
-from typing import Any, Dict, List
+import asyncio
+import traceback
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -34,7 +36,7 @@ class SelectedModule(BaseModel):
 class ModuleSelection(BaseModel):
     """Result from the selector agent."""
 
-    selected_modules: List[SelectedModule] = Field(
+    selected_modules: list[SelectedModule] = Field(
         description="3-5 selected modules", min_length=3, max_length=5
     )
 
@@ -57,7 +59,7 @@ class AdaptedModule(BaseModel):
 class AdaptationResult(BaseModel):
     """Result from the adapter agent."""
 
-    adapted_modules: List[AdaptedModule] = Field(description="Adapted modules")
+    adapted_modules: list[AdaptedModule] = Field(description="Adapted modules")
 
     def to_string(self) -> str:
         """Convert to string for next agent."""
@@ -73,13 +75,13 @@ class ReasoningStep(BaseModel):
 
     step: int = Field(description="Step number", ge=1)
     action: str = Field(description="What to do in this step")
-    modules: List[int] = Field(description="Module numbers to use")
+    modules: list[int] = Field(description="Module numbers to use")
 
 
 class ReasoningPlan(BaseModel):
     """Result from the structurer agent."""
 
-    steps: List[ReasoningStep] = Field(description="Reasoning steps")
+    steps: list[ReasoningStep] = Field(description="Reasoning steps")
 
     def to_string(self) -> str:
         """Convert to string for executor."""
@@ -262,7 +264,9 @@ class SelfDiscoverV4(EnhancedMultiAgentV4):
             agents=agents, execution_mode="sequential", name=name, **kwargs
         )
 
-    def prepare_initial_state(self, task: str, modules: str = None) -> Dict[str, Any]:
+    def prepare_initial_state(
+        self, task: str, modules: str | None = None
+    ) -> dict[str, Any]:
         """Prepare the initial state for execution.
 
         Args:
@@ -284,7 +288,7 @@ class SelfDiscoverV4(EnhancedMultiAgentV4):
             "system_message": "You are a helpful assistant.",
         }
 
-    async def solve(self, task: str, modules: str = None) -> FinalAnswer:
+    async def solve(self, task: str, modules: str | None = None) -> FinalAnswer:
         """Convenience method to solve a task.
 
         Args:
@@ -327,7 +331,6 @@ def create_self_discover_v4() -> SelfDiscoverV4:
 # ==========================
 
 if __name__ == "__main__":
-    import asyncio
 
     async def main():
         """Example of using Self-Discover V4."""
@@ -339,26 +342,14 @@ if __name__ == "__main__":
 <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L
 45.58,47.78 M 45.58,47.78 L 53.25,36.07 L 66.29,48.90 L 78.69,61.09 L 55.57,80.69"/>
 
-Options: (A) circle (B) heptagon (C) hexagon (D) kite (E) line (F) octagon 
+Options: (A) circle (B) heptagon (C) hexagon (D) kite (E) line (F) octagon
 (G) pentagon (H) rectangle (I) sector (J) triangle"""
-
-        print("Self-Discover V4 Agent")
-        print("=" * 50)
-        print(f"Task: {task[:100]}...\n")
 
         try:
             # Solve the task
-            answer = await agent.solve(task)
+            await agent.solve(task)
 
-            print("\nFINAL ANSWER:")
-            print("-" * 30)
-            print(f"Answer: {answer.answer}")
-            print(f"Confidence: {answer.confidence}")
-            print(f"\nReasoning:\n{answer.reasoning_process[:500]}...")
-
-        except Exception as e:
-            print(f"Error: {e}")
-            import traceback
+        except Exception:
 
             traceback.print_exc()
 

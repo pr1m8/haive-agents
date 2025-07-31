@@ -6,10 +6,10 @@ and reads hundreds of sources.
 """
 
 import logging
+import time
 from datetime import datetime
 from typing import Any
 
-# from haive.agents.memory.document_modifiers.kg.kg_iterative_refinement import IterativeGraphTransformer
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import Tool
 
@@ -19,6 +19,9 @@ from haive.agents.memory.search.deep_research.models import (
     ResearchQuery,
     ResearchSection,
 )
+
+# from haive.agents.memory.document_modifiers.kg.kg_iterative_refinement import IterativeGraphTransformer
+
 
 logger = logging.getLogger(__name__)
 
@@ -239,8 +242,6 @@ Process each research query with systematic thoroughness and analytical rigor.""
         Returns:
             Research query result with metadata
         """
-        import time
-
         start_time = time.time()
 
         try:
@@ -418,8 +419,6 @@ Process each research query with systematic thoroughness and analytical rigor.""
         Returns:
             Deep research response
         """
-        import time
-
         start_time = time.time()
 
         logger.info(f"Starting deep research: {query} (depth={research_depth})")

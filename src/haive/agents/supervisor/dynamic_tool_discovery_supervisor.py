@@ -80,6 +80,7 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.embeddings import OpenAIEmbeddings
 from haive.core.models.vectorstore import InMemoryVectorStore
+from haive.core.tools import create_retriever_tool
 from haive.core.types import Name
 from haive.tools.utility.document_loaders import DirectoryLoader
 from langchain_core.messages import HumanMessage
@@ -667,7 +668,6 @@ Respond with:
             and rag_documents_path
         ):
             # Create simple RAG agent for tool discovery
-            from haive.core.tools import create_retriever_tool
 
             # Load documents
             loader = DirectoryLoader(rag_documents_path)
@@ -736,7 +736,7 @@ Respond with:
             elif agent_type == "ReactAgent":
                 agent = ReactAgent(name=agent_name, engine=engine, **config)
             else:
-                raise ValueError(f"Unknown agent type: {agent_type}")
+                raise TypeError(f"Unknown agent type: {agent_type}")
 
             agents[agent_name] = agent
 

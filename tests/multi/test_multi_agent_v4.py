@@ -1,11 +1,11 @@
 """Test MultiAgent V4 - Start small and build incrementally."""
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 
 from haive.agents.multi.multi_agent_v4 import MultiAgentV4
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 
 
 class TestMultiAgentV4:

@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 
+
 # Set up logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -15,8 +16,9 @@ logger = logging.getLogger(__name__)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # Import agent
 from agents.react_agent2.agent2 import create_react_agent
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.tools import tool
+
+from haive.core.models.llm.base import AzureLLMConfig
 
 
 # Simple tools for testing

@@ -76,10 +76,9 @@ def test_agent_creation(configure_logging):
     """Test that we can create a simple agent that works."""
     # Import inside the test to avoid module-level issues
 
-    from haive.core.engine.aug_llm import AugLLMConfig
-
     from haive.agents.simple.agent import SimpleAgent
     from haive.agents.simple.config import SimpleAgentConfig
+    from haive.core.engine.aug_llm import AugLLMConfig
 
     # Create a simple agent config with default memory persistence
     agent_config = SimpleAgentConfig(
@@ -114,10 +113,9 @@ def test_agent_creation(configure_logging):
 def test_agent_streaming(configure_logging):
     """Test that streaming works."""
     # Import inside the test to avoid module-level issues
-    from haive.core.engine.aug_llm import AugLLMConfig
-
     from haive.agents.simple.agent import SimpleAgent
     from haive.agents.simple.config import SimpleAgentConfig
+    from haive.core.engine.aug_llm import AugLLMConfig
 
     # Create a simple agent config
     agent_config = SimpleAgentConfig(
@@ -148,10 +146,9 @@ def test_agent_streaming(configure_logging):
 async def test_async_agent(configure_logging):
     """Test async agent operations."""
     # Import inside the test to avoid module-level issues
-    from haive.core.engine.aug_llm import AugLLMConfig
-
     from haive.agents.simple.agent import SimpleAgent
     from haive.agents.simple.config import SimpleAgentConfig
+    from haive.core.engine.aug_llm import AugLLMConfig
 
     # Create a simple agent config
     agent_config = SimpleAgentConfig(
@@ -196,11 +193,11 @@ async def test_async_agent(configure_logging):
 def test_memory_between_runs(configure_logging):
     """Test basic memory/state persistence between runs."""
     # Import inside the test to avoid module-level issues
-    from haive.core.engine.aug_llm import AugLLMConfig
     from langchain_core.messages import AIMessage, HumanMessage
 
     from haive.agents.simple.agent import SimpleAgent
     from haive.agents.simple.config import SimpleAgentConfig
+    from haive.core.engine.aug_llm import AugLLMConfig
 
     # Create a consistent thread ID for persistence
     thread_id = "memory-test-thread"
@@ -256,7 +253,7 @@ def test_postgres_connection():
             ) as conn:
                 with conn.cursor() as cursor:
                     cursor.execute("SELECT version()")
-                    version = cursor.fetchone()[0]
+                    cursor.fetchone()[0]
 
             # If we get here, connection worked
             assert True

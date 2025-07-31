@@ -21,15 +21,24 @@ try:
         MemoryType,
     )
     from .memory_state_with_tokens import MemoryStateWithTokens
-except ImportError:
-    # For standalone execution
     from memory_state_original import (
         EnhancedMemoryItem,
         ImportanceLevel,
         MemoryState,
         MemoryType,
-    )
-    from memory_state_with_tokens import MemoryStateWithTokens
+)
+
+import asyncio
+import os
+
+from haive.core.models.llm.base import DeepSeekLLMConfig
+from memory_state_original import UnifiedMemoryEntry
+from memory_state_with_tokens import MemoryStateWithTokens
+
+from .memory_state_original import UnifiedMemoryEntry
+
+except ImportError:
+    # For standalone execution
 
 logger = logging.getLogger(__name__)
 
@@ -161,9 +170,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
 
         # Also add to token state
         try:
-            from .memory_state_original import UnifiedMemoryEntry
         except ImportError:
-            from memory_state_original import UnifiedMemoryEntry
         entry = UnifiedMemoryEntry.from_memory_item(memory)
         self.token_state.current_memories.append(entry)
 
@@ -291,7 +298,6 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
 async def test_with_deepseek():
     """Test the agent with DeepSeek configuration."""
     # Create DeepSeek configuration
-    from haive.core.models.llm.base import DeepSeekLLMConfig
 
     deepseek_config = DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
 
@@ -325,8 +331,6 @@ async def test_with_deepseek():
 
 
 if __name__ == "__main__":
-    import asyncio
-    import os
 
     # Set DeepSeek API key if needed
     if not os.getenv("DEEPSEEK_API_KEY"):

@@ -15,7 +15,9 @@ Reference:
 - LLM Compiler: https://langchain-ai.github.io/langgraph/tutorials/llm-compiler/LLMCompiler/
 """
 
+import asyncio
 import logging
+import uuid
 from datetime import datetime
 from enum import Enum
 from typing import Any
@@ -29,6 +31,8 @@ from langgraph.types import Command
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from haive.agents.base.agent import Agent
+from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 
@@ -654,8 +658,6 @@ class ReWOOTreeAgent(Agent):
 
     def _create_planner_agent(self) -> Agent:
         """Create specialized planning agent."""
-        from haive.agents.simple.agent import SimpleAgent
-
         planner_prompt = """
         You are a ReWOO Tree Planner. Your task is to analyze a problem and create a detailed execution plan.
 
@@ -697,8 +699,6 @@ class ReWOOTreeAgent(Agent):
 
     def _create_executor_agent(self) -> Agent:
         """Create specialized execution agent."""
-        from haive.agents.react.agent import ReactAgent
-
         executor_prompt = """
         You are a ReWOO Tree Executor. Your task is to execute plan nodes efficiently and in parallel.
 
@@ -853,8 +853,6 @@ class ReWOOTreeAgent(Agent):
         self, error_or_result: str, user_input: str
     ) -> ReWOOTreePlannerOutput:
         """Create a fallback plan when planning fails."""
-        import uuid
-
         plan_id = f"fallback_{uuid.uuid4().hex[:8]}"
 
         # Create a simple single-node plan
@@ -1022,8 +1020,6 @@ class ReWOOTreeAgent(Agent):
         self, nodes: list[PlanNode], state: ReWOOTreeAgentState
     ) -> dict[str, Any]:
         """Execute nodes in parallel with proper coordination."""
-        import asyncio
-
         # Create execution tasks
         tasks = []
         for node in nodes:

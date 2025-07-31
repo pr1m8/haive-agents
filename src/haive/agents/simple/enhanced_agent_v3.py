@@ -23,9 +23,12 @@ from langchain_core.output_parsers.base import BaseOutputParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langgraph.graph import END, START
 from pydantic import BaseModel, Field, field_validator
+from rich.console import Console
+from rich.table import Table
+
+from haive.agents.base.agent import Agent
 
 # Import the enhanced base Agent
-from haive.agents.base.agent import Agent
 
 logger = logging.getLogger(__name__)
 
@@ -553,9 +556,6 @@ class EnhancedSimpleAgent(Agent):
     def display_capabilities(self) -> None:
         """Display comprehensive capabilities summary."""
         summary = self.get_capabilities_summary()
-
-        from rich.console import Console
-        from rich.table import Table
 
         console = Console()
 

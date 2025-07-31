@@ -14,7 +14,7 @@ from haive.agents.multi.base import MultiAgent
 logger = logging.getLogger(__name__)
 
 
-def placeholder_node(state: dict[str, Any]):
+def placeholder_node(_state: dict[str, Any]):
     """Placeholder node that does nothing."""
     return Command(update={})
 

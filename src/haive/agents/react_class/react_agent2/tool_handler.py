@@ -1,5 +1,6 @@
 # src/haive/agents/react/tool_handler.py
 
+import uuid
 from typing import Any
 
 
@@ -21,7 +22,6 @@ def normalize_tool_message(message: dict[str, Any]) -> dict[str, Any]:
         message["tool_call_id"] = message["id"]
     elif "tool_call_id" not in message and "name" in message:
         # If no ID but has name, create a placeholder ID
-        import uuid
 
         message["tool_call_id"] = f"call_{uuid.uuid4().hex[:12]}"
 
@@ -45,7 +45,6 @@ def process_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             tool_calls = msg["additional_kwargs"]["tool_calls"]
             for tool_call in tool_calls:
                 if "id" not in tool_call:
-                    import uuid
 
                     tool_call["id"] = f"call_{uuid.uuid4().hex[:12]}"
         processed.append(msg)
@@ -70,7 +69,6 @@ def process_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
             # If still no tool_call_id, create one
             if "tool_call_id" not in msg:
-                import uuid
 
                 msg["tool_call_id"] = f"call_{uuid.uuid4().hex[:12]}"
 

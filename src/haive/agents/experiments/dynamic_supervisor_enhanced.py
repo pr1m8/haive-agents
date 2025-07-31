@@ -1,5 +1,6 @@
 """Enhanced Dynamic Supervisor with self-modification capabilities."""
 
+import asyncio
 import logging
 from typing import Any
 
@@ -264,7 +265,6 @@ Always think step-by-step about the best approach before acting."""
 
 # Example usage
 if __name__ == "__main__":
-    import asyncio
 
     async def demo_self_modifying_supervisor():
         # Create self-modifying supervisor

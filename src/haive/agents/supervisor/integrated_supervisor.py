@@ -9,16 +9,23 @@ This module provides a complete integration of:
 """
 
 import logging
+import time
 from typing import Any
+from uuid import uuid4
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import AIMessage
 from langgraph.graph import START
 from rich.console import Console
+from rich.table import Table
 
 from haive.agents.supervisor.dynamic_agent_tools import (
     create_agent_management_tools,
+)
+from haive.agents.supervisor.dynamic_state import (
+    AgentExecutionResult,
+    SupervisorDecision,
 )
 from haive.agents.supervisor.dynamic_supervisor import DynamicSupervisorAgent
 from haive.agents.supervisor.multi_agent_dynamic_state import (
@@ -256,7 +263,6 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
                         }
 
                 # Create decision record
-                from haive.agents.supervisor.dynamic_state import SupervisorDecision
 
                 decision = SupervisorDecision(
                     target_agent=decision_data["target"],
@@ -289,8 +295,6 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
             except Exception as e:
                 logger.exception(f"Integrated supervisor decision failed: {e}")
                 self._performance_monitor.end_decision("ERROR")
-
-                from haive.agents.supervisor.dynamic_state import SupervisorDecision
 
                 error_decision = SupervisorDecision(
                     target_agent="END",
@@ -364,10 +368,6 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
             )
 
             # Prepare execution context
-            import time
-            from uuid import uuid4
-
-            from haive.agents.supervisor.dynamic_state import AgentExecutionResult
 
             execution_id = str(uuid4())
             start_time = time.time()
@@ -485,7 +485,6 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
         state = self._state
 
         # Multi-agent coordination status
-        from rich.table import Table
 
         coord_table = Table(title="🤝 Multi-Agent Coordination Status")
         coord_table.add_column("Metric", style="cyan")

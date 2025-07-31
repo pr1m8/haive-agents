@@ -7,7 +7,8 @@ This implementation follows the exact pattern from the tutorial with proper
 state management and structured output parsing.
 """
 
-from typing import Any, Dict, Optional, TypedDict
+import asyncio
+from typing import Any, TypedDict
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -25,10 +26,10 @@ class SelfDiscoverState(TypedDict):
 
     reasoning_modules: str
     task_description: str
-    selected_modules: Optional[str]
-    adapted_modules: Optional[str]
-    reasoning_structure: Optional[str]
-    answer: Optional[str]
+    selected_modules: str | None
+    adapted_modules: str | None
+    reasoning_structure: str | None
+    answer: str | None
 
 
 # ==========================
@@ -195,8 +196,8 @@ class SelfDiscoverExecutor(SimpleAgentV3):
 
 
 async def run_self_discover_workflow(
-    task: str, modules: Optional[str] = None
-) -> Dict[str, Any]:
+    task: str, modules: str | None = None
+) -> dict[str, Any]:
     """Run the Self-Discover workflow sequentially.
 
     Args:
@@ -216,7 +217,6 @@ async def run_self_discover_workflow(
     executor = SelfDiscoverExecutor()
 
     # Step 1: Select modules
-    print("Step 1: Selecting relevant modules...")
     selector_input = {"available_modules": modules, "task_description": task}
 
     selector_result = await selector.arun(selector_input)
@@ -234,7 +234,6 @@ async def run_self_discover_workflow(
         selected_modules_text = str(selector_result)
 
     # Step 2: Adapt modules
-    print("Step 2: Adapting modules to task...")
     adapter_input = {
         "task_description": task,
         "selected_modules": selected_modules_text,
@@ -253,7 +252,6 @@ async def run_self_discover_workflow(
         adapted_modules_text = str(adapter_result)
 
     # Step 3: Create reasoning plan
-    print("Step 3: Creating reasoning plan...")
     structurer_input = {
         "task_description": task,
         "adapted_modules": adapted_modules_text,
@@ -272,7 +270,6 @@ async def run_self_discover_workflow(
         reasoning_plan_text = str(structurer_result)
 
     # Step 4: Execute plan
-    print("Step 4: Executing plan to solve task...")
     executor_input = {
         "task_description": task,
         "reasoning_structure": reasoning_plan_text,
@@ -283,14 +280,13 @@ async def run_self_discover_workflow(
     # Extract final answer
     if isinstance(executor_result, dict):
         return executor_result
-    elif hasattr(executor_result, "answer"):
+    if hasattr(executor_result, "answer"):
         return {
             "answer": executor_result.answer,
             "reasoning_process": executor_result.reasoning_process,
             "confidence": executor_result.confidence,
         }
-    else:
-        return {"answer": str(executor_result)}
+    return {"answer": str(executor_result)}
 
 
 # ==========================
@@ -298,63 +294,40 @@ async def run_self_discover_workflow(
 # ==========================
 
 if __name__ == "__main__":
-    import asyncio
 
     async def main():
         """Example of using Self-Discover Enhanced V4."""
-
-        print("=" * 70)
-        print("Self-Discover Enhanced V4 - Using Enhanced Base Agent")
-        print("=" * 70)
-
         # Example 1: Shape recognition
         task1 = """Analyze this SVG path and determine what shape it draws:
 <path d="M 10,10 L 40,10 L 40,40 L 10,40 Z"/>
 
 The path uses these commands:
 - M 10,10 (Move to point 10,10)
-- L 40,10 (Line to point 40,10)  
+- L 40,10 (Line to point 40,10)
 - L 40,40 (Line to point 40,40)
 - L 10,40 (Line to point 10,40)
 - Z (Close path back to start)
 
 Options: circle, triangle, square, pentagon, hexagon"""
 
-        print(f"\nTask 1: Shape Recognition")
-        print("-" * 50)
-        print(task1[:100] + "...")
-        print("\nRunning Self-Discover workflow...\n")
-
         result1 = await run_self_discover_workflow(task1)
 
-        print("\n" + "=" * 50)
-        print("RESULT:")
-        print("=" * 50)
         if "answer" in result1:
-            print(f"Answer: {result1['answer']}")
+            pass
         if "confidence" in result1:
-            print(f"Confidence: {result1['confidence']}")
+            pass
         if "reasoning_process" in result1:
-            print(f"\nReasoning:\n{result1['reasoning_process'][:500]}...")
+            pass
 
         # Example 2: Problem solving
-        print("\n\n" + "=" * 70)
-        print("Example 2: Problem Solving")
-        print("=" * 70)
 
         task2 = "How can I improve team productivity in a remote work environment?"
 
-        print(f"\nTask 2: {task2}")
-        print("\nRunning Self-Discover workflow...\n")
-
         result2 = await run_self_discover_workflow(task2)
 
-        print("\n" + "=" * 50)
-        print("RESULT:")
-        print("=" * 50)
         if "answer" in result2:
-            print(f"Answer: {result2['answer'][:500]}...")
+            pass
         if "confidence" in result2:
-            print(f"\nConfidence: {result2['confidence']}")
+            pass
 
     asyncio.run(main())

@@ -7,6 +7,8 @@ This version:
 - Clear, simple flow
 """
 
+import asyncio
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -56,7 +58,6 @@ MODULES = """1. Pattern Analysis - Identify patterns and structures
 
 def create_agents():
     """Create the four agents for Self-Discover."""
-
     # 1. Selector - picks relevant modules
     selector = SimpleAgentV3(
         name="selector",
@@ -155,7 +156,7 @@ def create_self_discover_simple():
     return multi_agent
 
 
-async def run_self_discover(task: str, modules: str = None):
+async def run_self_discover(task: str, modules: str | None = None):
     """Run Self-Discover on a task.
 
     Args:
@@ -189,27 +190,20 @@ async def run_self_discover(task: str, modules: str = None):
 
 # Example usage
 if __name__ == "__main__":
-    import asyncio
 
     async def main():
         task = """What shape does this SVG path draw?
 <path d="M 10,10 L 40,10 L 40,40 L 10,40 Z"/>
 Options: circle, square, triangle, pentagon"""
 
-        print("Self-Discover Simple V4")
-        print("=" * 50)
-        print(f"Task: {task}\n")
-
         result = await run_self_discover(task)
 
-        print("\nRESULT:")
-        print("-" * 50)
         if isinstance(result, dict):
             if "answer" in result:
-                print(f"Answer: {result['answer']}")
+                pass
             if "reasoning" in result:
-                print(f"\nReasoning: {result['reasoning'][:200]}...")
+                pass
         else:
-            print(result)
+            pass
 
     asyncio.run(main())

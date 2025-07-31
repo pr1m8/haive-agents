@@ -2,14 +2,24 @@
 
 import asyncio
 import os
+import traceback
+
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import DeepSeekLLMConfig
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+from haive.agents.memory_v2.memory_state_original import (
+    EnhancedMemoryItem,
+    ImportanceLevel,
+    MemoryState,
+    MemoryType,
+)
+from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent
 
 # Set DeepSeek API key if available
 if not os.getenv("DEEPSEEK_API_KEY"):
     print("⚠️  DEEPSEEK_API_KEY not set. Setting a test key...")
     os.environ["DEEPSEEK_API_KEY"] = "test-key-replace-with-real"
-
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import DeepSeekLLMConfig
 
 
 async def test_deepseek_config():
@@ -32,7 +42,6 @@ async def test_deepseek_config():
 
     except Exception as e:
         print(f"❌ Failed to create DeepSeek config: {e}")
-        import traceback
 
         traceback.print_exc()
         return None
@@ -47,7 +56,6 @@ async def test_simple_memory_with_deepseek():
         return
 
     try:
-        from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent
 
         agent = SimpleMemoryAgent(
             name="test_deepseek", engine=aug_config, user_id="test_user"
@@ -66,7 +74,6 @@ async def test_simple_memory_with_deepseek():
 
     except Exception as e:
         print(f"❌ SimpleMemoryAgent test failed: {e}")
-        import traceback
 
         traceback.print_exc()
 
@@ -81,7 +88,6 @@ async def test_react_memory_with_deepseek():
 
     try:
         # First, let's try creating embeddings without OpenAI
-        from langchain_community.embeddings import HuggingFaceEmbeddings
 
         print("Creating HuggingFace embeddings (free, no API key needed)...")
         HuggingFaceEmbeddings(
@@ -99,7 +105,6 @@ async def test_react_memory_with_deepseek():
 
     except Exception as e:
         print(f"❌ ReactMemoryAgent test failed: {e}")
-        import traceback
 
         traceback.print_exc()
 
@@ -107,13 +112,6 @@ async def test_react_memory_with_deepseek():
 async def test_models_only():
     """Test just the memory models without LLMs."""
     print("\n=== Testing Memory Models (No LLM Required) ===\n")
-
-    from haive.agents.memory_v2.memory_state_original import (
-        EnhancedMemoryItem,
-        ImportanceLevel,
-        MemoryState,
-        MemoryType,
-    )
 
     # Create a memory state
     state = MemoryState(user_id="test_user")

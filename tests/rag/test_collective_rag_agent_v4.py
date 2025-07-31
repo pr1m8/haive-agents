@@ -1,22 +1,20 @@
 """Tests for CollectiveRAGAgentV4 - Multi-source RAG orchestration."""
 
-from typing import List
-
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document
+import pytest
 
 from haive.agents.rag.collective_rag_agent_v4 import (
     CollectiveAnswer,
     CollectiveRAGAgentV4,
 )
 from haive.agents.rag.simple_rag_agent_v4 import SimpleRAGAgentV4
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class MockVectorStoreConfig:
     """Mock vector store for testing."""
 
-    def __init__(self, name: str, documents: List[Document]):
+    def __init__(self, name: str, documents: list[Document]):
         self.name = name
         self.documents = documents
 

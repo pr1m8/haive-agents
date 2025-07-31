@@ -16,6 +16,7 @@ from typing import (
     Literal,
 )
 
+from haive.core.graph.node.agent_node import AgentNodeConfig, CoordinatorNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer, BuildMode
 from langgraph.graph import END, START
@@ -242,7 +243,6 @@ class MultiAgent(Agent):
             node_names.append(node_name)
 
             # Create agent node config
-            from haive.core.graph.node.agent_node import AgentNodeConfig
 
             agent_node = AgentNodeConfig(
                 name=node_name,
@@ -281,7 +281,6 @@ class MultiAgent(Agent):
         coordinator_name = f"{self.name}_coordinator"
 
         # Add coordinator that fans out
-        from haive.core.graph.node.agent_node import CoordinatorNodeConfig
 
         coordinator = CoordinatorNodeConfig(
             name=coordinator_name, agents=list(self.agents), mode="fanout"
@@ -294,8 +293,6 @@ class MultiAgent(Agent):
         for agent in self.agents:
             node_name = self._get_agent_node_name(agent)
             agent_nodes.append(node_name)
-
-            from haive.core.graph.node.agent_node import AgentNodeConfig
 
             agent_node = AgentNodeConfig(
                 name=node_name,

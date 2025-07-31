@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 
+
 # Add packages to path
 sys.path.insert(0, "packages/haive-core/src")
 sys.path.insert(0, "packages/haive-agents/src")
@@ -17,8 +18,6 @@ logger = logging.getLogger(__name__)
 def create_multiple_simple_agents():
     """Test creating multiple SimpleAgent instances."""
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.reasoning_and_critique.self_discover.v2.models import (
             AdaptedModules,
             FinalAnswer,
@@ -32,6 +31,7 @@ def create_multiple_simple_agents():
             structured_prompt,
         )
         from haive.agents.simple.agent import SimpleAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create AugLLM configs for each step
         select_engine = AugLLMConfig(

@@ -7,16 +7,24 @@ from collections.abc import AsyncGenerator, Generator
 from typing import TYPE_CHECKING, Any, cast
 
 from haive.core.config.runnable import RunnableConfigManager
-from haive.core.persistence.handlers import prepare_merged_input
+from haive.core.persistence.handlers import (
+    close_async_pool_if_needed,
+    close_pool_if_needed,
+    ensure_async_pool_open,
+    ensure_pool_open,
+    prepare_merged_input,
+    register_async_thread_if_needed,
+)
 from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel
 
-# Import debug utilities
 from haive.agents.base.debug_utils import debug_logger, get_agent_debugger
+from haive.agents.base.mixins.agent_protocol import AgentProtocol
+
+# Import debug utilities
 
 if TYPE_CHECKING:
-    from haive.agents.base.mixins.agent_protocol import AgentProtocol
 
 
 logger = logging.getLogger(__name__)
@@ -130,7 +138,6 @@ class ExecutionMixin:
                     field_type = str(
                         getattr(
                             field_info, "annotation", getattr(field_info, "type_", "")
-                        )
                     )
                     if (
                         "list" in field_type.lower()
@@ -362,7 +369,6 @@ class ExecutionMixin:
             if base_config:
                 runtime_config = RunnableConfigManager.merge(
                     base_config, runtime_config
-                )
 
             if config:
                 runtime_config = RunnableConfigManager.merge(runtime_config, config)
@@ -578,7 +584,6 @@ class ExecutionMixin:
         try:
             # Ensure PostgreSQL connection pool is properly opened if needed
             if active_checkpointer and hasattr(active_checkpointer, "conn"):
-                from haive.core.persistence.handlers import ensure_pool_open
 
                 pool_to_cleanup = ensure_pool_open(active_checkpointer)
 
@@ -611,7 +616,6 @@ class ExecutionMixin:
             # Clean up connection pool if we opened it
             if pool_to_cleanup:
                 try:
-                    from haive.core.persistence.handlers import close_pool_if_needed
 
                     close_pool_if_needed(active_checkpointer, pool_to_cleanup)
                 except Exception as cleanup_error:
@@ -664,8 +668,6 @@ class ExecutionMixin:
 
             # Register thread if needed with async checkpointer
             if async_checkpointer and thread_id:
-                from haive.core.persistence.handlers import (
-                    register_async_thread_if_needed,
                 )
 
                 agent_name = getattr(self, "name", "Unknown Agent")
@@ -713,7 +715,6 @@ class ExecutionMixin:
                 # Ensure async PostgreSQL connection pool is properly opened if
                 # needed
                 if async_checkpointer and hasattr(async_checkpointer, "conn"):
-                    from haive.core.persistence.handlers import ensure_async_pool_open
 
                     pool_to_cleanup = await ensure_async_pool_open(async_checkpointer)
 
@@ -748,8 +749,6 @@ class ExecutionMixin:
                 # Clean up async connection pool if we opened it
                 if pool_to_cleanup:
                     try:
-                        from haive.core.persistence.handlers import (
-                            close_async_pool_if_needed,
                         )
 
                         await close_async_pool_if_needed(

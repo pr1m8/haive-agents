@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-ReactAgentV3 - Comprehensive Documentation and Examples
+"""ReactAgentV3 - Comprehensive Documentation and Examples.
 
 This module provides complete documentation and working examples for ReactAgentV3,
 the enhanced ReAct (Reasoning and Acting) pattern implementation that extends
@@ -33,7 +32,6 @@ Purpose: Complete ReactAgentV3 documentation for Sphinx AutoAPI
 
 import logging
 from datetime import datetime
-from typing import Dict, List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
@@ -111,7 +109,7 @@ class ReasoningAnalysis(BaseModel):
         ],
     )
 
-    iteration_steps: List[str] = Field(
+    iteration_steps: list[str] = Field(
         description="Detailed log of each reasoning iteration with thinking process",
         examples=[
             [
@@ -122,12 +120,12 @@ class ReasoningAnalysis(BaseModel):
         ],
     )
 
-    tools_utilized: List[str] = Field(
+    tools_utilized: list[str] = Field(
         description="Names of tools used during the reasoning process",
         examples=[["web_search", "calculator", "database_query"]],
     )
 
-    intermediate_findings: List[str] = Field(
+    intermediate_findings: list[str] = Field(
         description="Key discoveries and insights from each reasoning iteration",
         examples=[
             [
@@ -157,7 +155,7 @@ class ReasoningAnalysis(BaseModel):
         examples=[6, 8, 12],
     )
 
-    execution_time_seconds: Optional[float] = Field(
+    execution_time_seconds: float | None = Field(
         default=None,
         ge=0.0,
         description="Estimated total execution time for the reasoning process",
@@ -217,35 +215,35 @@ class TechnicalProblemSolution(BaseModel):
         description="Technical category (structural, electrical, software, mechanical, etc.)"
     )
 
-    research_methodology: List[str] = Field(
+    research_methodology: list[str] = Field(
         description="Systematic steps taken to research and understand the problem"
     )
 
-    technical_analysis: List[str] = Field(
+    technical_analysis: list[str] = Field(
         description="Detailed technical findings, calculations, and engineering analysis"
     )
 
-    solution_components: List[str] = Field(
+    solution_components: list[str] = Field(
         description="Individual technical components that make up the complete solution"
     )
 
-    implementation_steps: List[str] = Field(
+    implementation_steps: list[str] = Field(
         description="Ordered, actionable steps for implementing the technical solution"
     )
 
-    technical_requirements: Dict[str, str] = Field(
+    technical_requirements: dict[str, str] = Field(
         description="System requirements, materials, tools, or resources needed"
     )
 
-    risk_assessment: List[str] = Field(
+    risk_assessment: list[str] = Field(
         description="Potential technical risks, failure modes, and mitigation strategies"
     )
 
-    validation_approach: List[str] = Field(
+    validation_approach: list[str] = Field(
         description="Methods for testing and validating the solution effectiveness"
     )
 
-    alternative_solutions: List[str] = Field(
+    alternative_solutions: list[str] = Field(
         description="Other technical approaches considered during the reasoning process"
     )
 
@@ -299,35 +297,35 @@ class ResearchInvestigation(BaseModel):
         description="Defined boundaries, timeframe, and focus areas of the research"
     )
 
-    research_strategy: List[str] = Field(
+    research_strategy: list[str] = Field(
         description="Overall methodology and systematic approach used for investigation"
     )
 
-    source_evaluation: List[str] = Field(
+    source_evaluation: list[str] = Field(
         description="Assessment of information sources for credibility and relevance"
     )
 
-    data_collection_methods: List[str] = Field(
+    data_collection_methods: list[str] = Field(
         description="Specific methods used to gather and verify information"
     )
 
-    key_findings: List[str] = Field(
+    key_findings: list[str] = Field(
         description="Most significant discoveries and insights from the research"
     )
 
-    supporting_evidence: List[str] = Field(
+    supporting_evidence: list[str] = Field(
         description="Specific evidence, data, or citations supporting each key finding"
     )
 
-    contradictory_information: List[str] = Field(
+    contradictory_information: list[str] = Field(
         description="Conflicting data or alternative viewpoints discovered during research"
     )
 
-    research_limitations: List[str] = Field(
+    research_limitations: list[str] = Field(
         description="Acknowledged constraints, gaps, or limitations in the investigation"
     )
 
-    future_research_directions: List[str] = Field(
+    future_research_directions: list[str] = Field(
         description="Suggested areas for additional investigation or follow-up studies"
     )
 
@@ -384,8 +382,7 @@ def advanced_calculator(expression: str) -> str:
         if isinstance(result, float):
             if result.is_integer():
                 return str(int(result))
-            else:
-                return f"{result:.6f}".rstrip("0").rstrip(".")
+            return f"{result:.6f}".rstrip("0").rstrip(".")
 
         return str(result)
 
@@ -394,7 +391,7 @@ def advanced_calculator(expression: str) -> str:
     except ValueError as e:
         return f"Error: Invalid mathematical operation in '{expression}': {e}"
     except Exception as e:
-        return f"Error calculating '{expression}': {str(e)}"
+        return f"Error calculating '{expression}': {e!s}"
 
 
 @tool
@@ -503,7 +500,7 @@ Summary: Comprehensive research completed on the requested topic. Multiple autho
 
 Key Findings:
 • Topic shows significant growth and development trends
-• Multiple industry applications and use cases identified  
+• Multiple industry applications and use cases identified
 • Strong evidence base supporting current understanding
 • Active research and development ongoing in this area
 
@@ -685,7 +682,7 @@ Specification Overview: Technical documentation retrieved for the requested topi
 
 Key Technical Details:
 • Industry standard specifications and requirements
-• Material properties and performance characteristics  
+• Material properties and performance characteristics
 • Design guidelines and best practices
 • Compliance requirements and regulatory standards
 
@@ -1366,7 +1363,7 @@ def demonstrate_hooks_integration():
             f"🔧 Tool '{tool_name}' executed in {execution_time:.2f}s: {result_preview}"
         )
 
-    def reasoning_quality_monitor(reasoning_trace: List[str], confidence: float):
+    def reasoning_quality_monitor(reasoning_trace: list[str], confidence: float):
         """Assess reasoning quality and completeness."""
         if len(reasoning_trace) < 3:
             logger.warning("⚠️  Reasoning may be incomplete - consider more iterations")
@@ -1430,121 +1427,42 @@ def run_comprehensive_react_documentation():
             # - Hooks system integration patterns
             # - Comparison with SimpleAgentV3
     """
-    print("🚀 REACTAGENT V3 - COMPREHENSIVE DOCUMENTATION SUITE")
-    print("=" * 80)
-    print("Demonstrating all ReactAgentV3 features with real LLM execution")
-    print("=" * 80)
-
     try:
         # 1. Basic ReAct Pattern
-        print("\n🔄 1. BASIC REACT PATTERN DEMONSTRATION")
-        print("-" * 50)
-        basic_agent = demonstrate_basic_react_pattern()
-        print(f"✅ Basic ReactAgent created: {basic_agent.name}")
-        print(f"   Max iterations: {basic_agent.max_iterations}")
-        print(f"   Tools available: {len(basic_agent.engine.tools)}")
+        demonstrate_basic_react_pattern()
 
         # 2. Structured Output
-        print("\n📋 2. STRUCTURED OUTPUT DEMONSTRATION")
-        print("-" * 50)
         structured_agent = demonstrate_structured_output_react()
-        print(f"✅ Structured ReactAgent created: {structured_agent.name}")
-        print(f"   Output model: {ReasoningAnalysis.__name__}")
-        print(f"   Model fields: {len(ReasoningAnalysis.model_fields)}")
 
         # 3. Technical Problem Solving
-        print("\n🔧 3. TECHNICAL PROBLEM SOLVING DEMONSTRATION")
-        print("-" * 50)
         technical_agent = demonstrate_technical_problem_solving()
-        print(f"✅ Technical ReactAgent created: {technical_agent.name}")
-        print(f"   Technical model: {TechnicalProblemSolution.__name__}")
-        print(f"   Specialized tools: {len(technical_agent.engine.tools)}")
 
         # 4. Factory Functions
-        print("\n🏭 4. FACTORY FUNCTIONS DEMONSTRATION")
-        print("-" * 50)
         research_agent, structured_agent, technical_agent = (
             demonstrate_create_react_agent_factory()
         )
-        print("✅ Factory agents created:")
-        print(f"   • Research: {research_agent.name}")
-        print(f"   • Structured: {structured_agent.name}")
-        print(f"   • Technical: {technical_agent.name}")
 
         # 5. Research Factory
-        print("\n🔬 5. RESEARCH FACTORY DEMONSTRATION")
-        print("-" * 50)
-        research_specialist = demonstrate_create_research_agent_factory()
-        print(f"✅ Research specialist created: {research_specialist.name}")
-        print(f"   Analysis model: {ResearchInvestigation.__name__}")
+        demonstrate_create_research_agent_factory()
 
         # 6. Performance Comparison
-        print("\n⚖️  6. PERFORMANCE COMPARISON DEMONSTRATION")
-        print("-" * 50)
         simple_agent, react_agent = demonstrate_react_vs_simple_comparison()
-        print("✅ Comparison agents created:")
-        print(f"   • SimpleAgentV3: {simple_agent.name} (linear)")
-        print(f"   • ReactAgentV3: {react_agent.name} (iterative)")
 
         # 7. Performance Optimization
-        print("\n⚡ 7. PERFORMANCE OPTIMIZATION DEMONSTRATION")
-        print("-" * 50)
         fast_agent, thorough_agent, production_agent = (
             demonstrate_performance_considerations()
         )
-        print("✅ Performance variants created:")
-        print(f"   • Fast: {fast_agent.max_iterations} iterations")
-        print(f"   • Thorough: {thorough_agent.max_iterations} iterations")
-        print(f"   • Production: {production_agent.max_iterations} iterations")
 
         # 8. Dynamic Tool Addition
-        print("\n🔄 8. DYNAMIC TOOL ADDITION DEMONSTRATION")
-        print("-" * 50)
         adaptive_agent, additional_tools = demonstrate_dynamic_tool_addition()
-        print(f"✅ Adaptive agent created: {adaptive_agent.name}")
-        print(f"   Initial tools: {len(adaptive_agent.engine.tools)}")
-        print(f"   Available for addition: {len(additional_tools)} tools")
 
         # 9. Hooks Integration
-        print("\n📊 9. HOOKS SYSTEM INTEGRATION DEMONSTRATION")
-        print("-" * 50)
         monitored_agent, monitoring_functions = demonstrate_hooks_integration()
-        print(f"✅ Monitored agent created: {monitored_agent.name}")
-        print(f"   Monitoring functions: {len(monitoring_functions)}")
 
         # Summary
-        print("\n" + "=" * 80)
-        print("🎉 REACTAGENT V3 DOCUMENTATION COMPLETE")
-        print("=" * 80)
-        print("✅ All ReactAgentV3 features demonstrated successfully:")
-        print("   • Basic ReAct pattern with iterative reasoning")
-        print("   • Structured output with comprehensive documentation")
-        print("   • Technical problem solving capabilities")
-        print("   • Factory functions for quick agent creation")
-        print("   • Research-optimized agent configurations")
-        print("   • Performance optimization strategies")
-        print("   • Dynamic tool addition and adaptation")
-        print("   • Hooks system for monitoring and intervention")
-        print("   • Comparison with SimpleAgentV3 patterns")
-        print()
-        print("🔧 Key ReactAgentV3 advantages:")
-        print("   • Iterative reasoning loops for complex problems")
-        print("   • Full structured output support with tracing")
-        print("   • Enhanced debugging and observability")
-        print("   • Dynamic tool management and recompilation")
-        print("   • Production-ready performance optimization")
-        print("   • Complete inheritance from SimpleAgentV3 features")
-        print()
-        print("📚 Documentation files created:")
-        print("   • react_agent_v3_comprehensive.py - Complete documentation")
-        print("   • All examples include Google-style docstrings")
-        print("   • Sphinx AutoAPI compatible documentation")
-        print("   • Real LLM execution examples (no mocks)")
 
-    except Exception as e:
+    except Exception:
         logger.exception("Documentation suite execution failed")
-        print(f"\n❌ Documentation suite failed: {e}")
-        print("Check logs for detailed error information")
 
 
 # ============================================================================
@@ -1554,34 +1472,3 @@ def run_comprehensive_react_documentation():
 if __name__ == "__main__":
     # Run the comprehensive documentation suite
     run_comprehensive_react_documentation()
-
-    print("\n" + "=" * 80)
-    print("📖 DOCUMENTATION USAGE EXAMPLES")
-    print("=" * 80)
-    print()
-    print("To use ReactAgentV3 in your projects:")
-    print()
-    print("1. Basic Usage:")
-    print("   from haive.agents.react.agent_v3 import ReactAgentV3")
-    print("   agent = ReactAgentV3(name='my_agent', engine=AugLLMConfig(tools=[...]))")
-    print("   result = agent.run('Your reasoning task here')")
-    print()
-    print("2. Factory Functions:")
-    print("   from haive.agents.react.agent_v3 import create_react_agent")
-    print(
-        "   agent = create_react_agent('research_bot', tools=[...], max_iterations=8)"
-    )
-    print()
-    print("3. Structured Output:")
-    print(
-        "   agent = ReactAgentV3(engine=AugLLMConfig(structured_output_model=YourModel))"
-    )
-    print("   result = agent.run('Complex analysis task')")
-    print("   # result is now an instance of YourModel with full validation")
-    print()
-    print("4. Performance Optimization:")
-    print("   # Fast: max_iterations=3, minimal tools")
-    print("   # Thorough: max_iterations=12, comprehensive tools")
-    print("   # Production: max_iterations=6, essential tools, debug=False")
-    print()
-    print("🚀 ReactAgentV3 is ready for production use!")

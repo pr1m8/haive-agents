@@ -7,7 +7,6 @@ These schemas define the structure of memories that will be extracted
 and managed by the LTM agent.
 """
 
-
 from pydantic import BaseModel, Field
 
 # ============================================================================

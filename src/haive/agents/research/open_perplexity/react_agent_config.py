@@ -9,10 +9,10 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from haive.agents.rag.base.config import BaseRAGConfig
 from haive.agents.react.config import ReactAgentConfig
-
-# Import agent-specific modules
 from haive.agents.research.open_perplexity.prompts import RESEARCH_SYSTEM_PROMPT
 from haive.agents.research.open_perplexity.structured_tools import RESEARCH_TOOLS
+
+# Import agent-specific modules
 
 
 def create_research_react_agent_config(

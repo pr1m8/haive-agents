@@ -1,10 +1,9 @@
 """Test Enhanced MultiAgent V4 - Enhanced base agent pattern."""
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 
 
 class TestEnhancedMultiAgentV4:
@@ -295,4 +294,3 @@ class TestEnhancedMultiAgentV4Integration:
         assert hasattr(workflow, "run")
 
         # Structure looks good for real execution when LLM available
-        print("✅ Structure ready for real execution with LLM")

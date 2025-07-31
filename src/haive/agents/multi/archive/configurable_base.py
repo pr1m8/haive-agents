@@ -11,6 +11,7 @@ import logging
 from collections.abc import Callable
 from typing import Any
 
+from haive.core.graph.node.agent_node import AgentNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer, BuildMode
 from haive.core.schema.state_schema import StateSchema
@@ -207,7 +208,6 @@ class ConfigurableMultiAgent(Agent):
         graph = BaseGraph(name=self.name)
 
         # Add all agents as nodes
-        from haive.core.graph.node.agent_node import AgentNodeConfig
 
         for agent in self.agents:
             node_name = self._get_agent_node_name(agent)

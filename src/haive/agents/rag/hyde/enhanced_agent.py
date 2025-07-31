@@ -9,14 +9,19 @@ principle of separation of concerns.
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
+from langgraph.graph import END, START
 from pydantic import Field
 
 from haive.agents.base.agent import Agent
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.rag.common.answer_generators.prompts import (
+    RAG_ANSWER_STANDARD,
+)
 from haive.agents.rag.models import HyDEResult
 from haive.agents.rag.utils.structured_output_enhancer import create_hyde_enhancer
 from haive.agents.simple.agent import SimpleAgent
@@ -108,7 +113,6 @@ class EnhancedHyDERAGAgent(SequentialAgent):
             )
         return cls._create_traditional_pattern(
             documents, llm_config, embedding_model, **kwargs
-        )
 
     @classmethod
     def _create_with_enhancement_pattern(
@@ -127,7 +131,6 @@ class EnhancedHyDERAGAgent(SequentialAgent):
                 output_key="hypothetical_content",  # Raw content output
             ),
             name="Base HyDE Generator",
-        )
 
         # Step 2: Create structured output enhancement
         hyde_enhancer = create_hyde_enhancer()
@@ -149,8 +152,6 @@ Consider how well the hypothetical document would serve for semantic retrieval."
         )
 
         # Step 4: Final answer generation
-        from haive.agents.rag.common.answer_generators.prompts import (
-            RAG_ANSWER_STANDARD,
         )
 
         answer_agent = SimpleAgent(
@@ -196,8 +197,6 @@ Consider how well the hypothetical document would serve for semantic retrieval."
             documents=documents, embedding_model=embedding_model, name="HyDE Retriever"
         )
 
-        from haive.agents.rag.common.answer_generators.prompts import (
-            RAG_ANSWER_STANDARD,
         )
 
         answer_agent = SimpleAgent(
@@ -232,8 +231,6 @@ class EnhancedHyDERetriever(Agent):
 
     def build_graph(self) -> Any:
         """Build graph that adapts to both enhancement and traditional patterns."""
-        from haive.core.graph.state_graph.base_graph2 import BaseGraph
-        from langgraph.graph import END, START
 
         graph = BaseGraph(name="EnhancedHyDERetriever")
 
@@ -337,7 +334,6 @@ def create_enhanced_hyde_agent(
 # Demonstration of the pattern
 def demonstrate_enhancement_vs_traditional() -> Dict[str, Any]:
     """Demonstrate the difference between enhancement and traditional patterns."""
-    from langchain_core.documents import Document
 
     # Sample documents
     docs = [

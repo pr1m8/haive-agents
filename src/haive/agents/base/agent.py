@@ -7,17 +7,25 @@ including execution, state management, and persistence functionality through mix
 """
 
 import logging
+import os
 import re
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Any, Literal
 
 from haive.core.engine.base import Engine, EngineType, InvokableEngine
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.persistence.handlers import ensure_pool_open
+from haive.core.schema.agent_schema_composer import (
+    AgentSchemaComposer,
+)
+from haive.core.schema.field_utils import (
+    get_field_info_from_model,
+)
+from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.schema_composer import SchemaComposer
 from haive.core.schema.state_schema import StateSchema
-
-# Import BaseOutputParser to ensure it's available for LangGraph type
-# evaluation
+from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
 from pydantic import BaseModel, Field, PrivateAttr, create_model, model_validator
@@ -27,12 +35,16 @@ from rich.table import Table
 from rich.tree import Tree
 
 from haive.agents.base.agent_structured_output_mixin import StructuredOutputMixin
-
-# Import mixins
 from haive.agents.base.mixins.execution_mixin import ExecutionMixin
 from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
+
+# Import BaseOutputParser to ensure it's available for LangGraph type
+# evaluation
+
+
+# Import mixins
 
 # Configure rich logging
 logging.basicConfig(
@@ -343,14 +355,10 @@ class Agent(
             )
             try:
                 # Try to import prebuilt MessagesState
-                from haive.core.schema.prebuilt.messages_state import MessagesState
 
                 self.state_schema = MessagesState
             except ImportError:
                 # Create a very basic state schema as last resort
-
-                from langchain_core.messages import BaseMessage
-                from pydantic import BaseModel
 
                 class BasicMessagesState(BaseModel):
                     """Fallback state schema with messages field."""
@@ -484,9 +492,6 @@ class Agent(
                         len(agent_list)} sub-agents"
                 )
                 try:
-                    from haive.core.schema.agent_schema_composer import (
-                        AgentSchemaComposer,
-                    )
 
                     self.state_schema = AgentSchemaComposer.from_agents(
                         agents=agent_list,
@@ -530,7 +535,6 @@ class Agent(
             else:
                 logger.debug("No engines or agents found, using default MessagesState")
                 # Use prebuilt MessagesState
-                from haive.core.schema.prebuilt.messages_state import MessagesState
 
                 self.state_schema = MessagesState
 
@@ -592,8 +596,6 @@ class Agent(
             # Final fallback - messages input
             if not self.input_schema:
 
-                from langchain_core.messages import BaseMessage
-
                 self.input_schema = create_model(
                     f"{self.name}Input",
                     messages=(list[BaseMessage], Field(default_factory=list)),
@@ -647,9 +649,6 @@ class Agent(
                     if output_version in {"v2", 2}:
                         # For v2, we need to create a schema that includes the parsed output field
                         # Use proper field naming utilities
-                        from haive.core.schema.field_utils import (
-                            get_field_info_from_model,
-                        )
 
                         field_info = get_field_info_from_model(structured_output)
                         field_name = field_info["field_name"]
@@ -751,8 +750,6 @@ class Agent(
 
                                 # Otherwise just use messages
 
-                                from langchain_core.messages import BaseMessage
-
                                 self.output_schema = create_model(
                                     f"{self.name}Output",
                                     messages=(
@@ -790,8 +787,6 @@ class Agent(
             # Final fallback - messages output
             if not self.output_schema:
 
-                from langchain_core.messages import BaseMessage
-
                 self.output_schema = create_model(
                     f"{self.name}Output",
                     messages=(list[BaseMessage], Field(default_factory=list)),
@@ -801,15 +796,11 @@ class Agent(
     def _create_basic_message_state(self) -> None:
         """Create a basic message state schema as fallback."""
         try:
-            from haive.core.schema.prebuilt.messages_state import MessagesState
 
             self.state_schema = MessagesState
             logger.debug("Using MessagesState fallback")
         except ImportError:
             # Create basic state schema
-
-            from langchain_core.messages import BaseMessage
-            from pydantic import BaseModel
 
             class FallbackMessagesState(BaseModel):
                 """Fallback state schema with messages field."""
@@ -1064,7 +1055,6 @@ class Agent(
             # Make sure checkpointer tables are set up if needed
             if self.checkpointer and hasattr(self.checkpointer, "setup"):
                 try:
-                    from haive.core.persistence.handlers import ensure_pool_open
 
                     ensure_pool_open(self.checkpointer)
                     self.checkpointer.setup()
@@ -1273,8 +1263,6 @@ class Agent(
             return
 
         try:
-            import os
-            from datetime import datetime
 
             if not output_path:
                 # Use default path

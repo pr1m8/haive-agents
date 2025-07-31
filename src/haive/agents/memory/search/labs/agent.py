@@ -5,6 +5,7 @@ Similar to Perplexity's Labs feature that creates apps, dashboards, and automate
 """
 
 import logging
+import time
 import uuid
 from datetime import datetime
 from typing import Any
@@ -476,8 +477,6 @@ Execute each project with professional standards and comprehensive automation.""
         Returns:
             Executed workflow step
         """
-        import time
-
         start_time = time.time()
 
         step_id = f"step_{step_index:02d}"
@@ -704,8 +703,6 @@ Execute each project with professional standards and comprehensive automation.""
         Returns:
             Labs response with project results
         """
-        import time
-
         start_time = time.time()
 
         logger.info(f"Starting Labs project: {query}")

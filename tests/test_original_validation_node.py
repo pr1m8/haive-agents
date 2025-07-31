@@ -1,14 +1,14 @@
 """Test SimpleAgent with original ValidationNodeConfig instead of V2."""
 
+from langchain_core.messages import HumanMessage
+from pydantic import BaseModel, Field
+
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 
 # Temporarily patch SimpleAgent to use original validation node
 from haive.core.graph.node.validation_node_config import ValidationNodeConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from langchain_core.messages import HumanMessage
-from pydantic import BaseModel, Field
-
-from haive.agents.simple.agent import SimpleAgent
 
 
 class TestResponse(BaseModel):
@@ -20,9 +20,6 @@ class TestResponse(BaseModel):
 
 def test_with_original_validation():
     """Test with original ValidationNodeConfig."""
-    print("🔍 TESTING WITH ORIGINAL VALIDATION NODE")
-    print("=" * 60)
-
     # Create agent
     agent = SimpleAgent(
         name="original_validation_test",
@@ -32,16 +29,15 @@ def test_with_original_validation():
         debug=True,
     )
 
-    print(f"✅ Agent created with structured model: {TestResponse}")
-
     # Manually patch the build_graph method to use original ValidationNodeConfig
 
     def patched_build_graph():
         """Build graph with original ValidationNodeConfig."""
+        from langgraph.graph import END, START
+
         from haive.core.graph.node.engine_node import EngineNodeConfig
         from haive.core.graph.node.parser_node_config_v2 import ParserNodeConfigV2
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
-        from langgraph.graph import END, START
 
         graph = BaseGraph(name=agent.name)
         available_nodes = []
@@ -85,39 +81,30 @@ def test_with_original_validation():
     # Compile
     agent.compile()
 
-    print(f"Graph nodes: {list(agent.graph.nodes.keys())}")
-    print(f"Graph edges: {list(agent.graph.edges)}")
-
     # Test execution
     test_input = {"messages": [HumanMessage(content="What is 2+2?")]}
     config = {"configurable": {"thread_id": None}}
 
-    print("\n--- EXECUTION WITH ORIGINAL VALIDATION ---")
     try:
         result = agent._app.invoke(test_input, config=config)
-        print(f"Result keys: {list(result.keys())}")
-        print(f"Result: {result}")
 
         # Check for structured output
-        structured_fields = [k for k in result.keys() if k != "messages"]
+        structured_fields = [k for k in result if k != "messages"]
         if structured_fields:
-            print(f"✅ Found structured fields: {structured_fields}")
-            for field in structured_fields:
-                print(f"   {field}: {result[field]}")
+            for _field in structured_fields:
+                pass
         else:
-            print("❌ No structured fields foundd")
+            pass
 
         # Check if engine_name is in messages
         messages = result.get("messages", [])
-        for i, msg in enumerate(messages):
-            print(f"Message {i}: {type(msg).__name__}")
+        for _i, msg in enumerate(messages):
             if hasattr(msg, "additional_kwargs"):
-                print(f"  Additional kwargs: {msg.additional_kwargs}")
+                pass
             if hasattr(msg, "response_metadata"):
-                print(f"  Response metadata: {msg.response_metadata}")
+                pass
 
-    except Exception as e:
-        print(f"Execution error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -125,9 +112,6 @@ def test_with_original_validation():
 
 def test_engine_name_in_message():
     """Test if engine node adds engine_name to AIMessage."""
-    print("\n🔍 TESTING ENGINE NAME IN AIMESSAGE")
-    print("=" * 60)
-
     # Create minimal agent
     agent = SimpleAgent(
         name="engine_name_test",
@@ -145,17 +129,14 @@ def test_engine_name_in_message():
 
     # Check messages for engine name
     messages = result.get("messages", [])
-    print(f"Found {len(messages)} messages")
 
-    for i, msg in enumerate(messages):
-        print(f"Message {i}: {type(msg).__name__}")
+    for _i, msg in enumerate(messages):
         if hasattr(msg, "additional_kwargs"):
             engine_name = msg.additional_kwargs.get("engine_name")
             if engine_name:
-                print(f"  ✅ Engine name found: {engine_name}")
+                pass
             else:
-                print("  ❌ No engine_name in additional_kwargss")
-                print(f"  Available kwargs: {list(msg.additional_kwargs.keys())}")
+                pass
 
 
 if __name__ == "__main__":

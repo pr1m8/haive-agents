@@ -848,6 +848,5 @@ async def demo_multi_memory_coordinator():
 
 
 if __name__ == "__main__":
-    import asyncio
 
     asyncio.run(demo_multi_memory_coordinator())

@@ -2,7 +2,9 @@
 """Test SimpleRAG V3 actual execution - does it actually work?"""
 
 import asyncio
+import contextlib
 import sys
+
 
 # Add source paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -11,8 +13,6 @@ sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/
 
 async def test_can_we_create_simple_rag_v3():
     """Try to actually create and run SimpleRAG V3."""
-    print("🔍 Testing if we can actually create SimpleRAG V3...")
-
     try:
         # Let's try to import and create the components directly
         # First, let's see if we can import the individual components
@@ -29,8 +29,6 @@ async def test_can_we_create_simple_rag_v3():
             "/home/will/Projects/haive/backend/haive/packages/haive-agents/src/haive/agents/rag/simple/enhanced_v3/agent.py",
         )
         importlib.util.module_from_spec(spec)
-
-        print("❌ Can't load agent.py directly due to its imports")
 
         # Let's at least test the state functionality which we know works
         from haive.agents.rag.simple.enhanced_v3.state import SimpleRAGState
@@ -54,15 +52,11 @@ async def test_can_we_create_simple_rag_v3():
         state.update_performance_metric("generation_time", 1.2)
         state.update_stage("completed")
 
-        summary = state.get_pipeline_summary()
-        print(
-            f"✅ State works! Pipeline summary: {summary['current_stage']}, docs: {summary['documents_retrieved']}"
-        )
+        state.get_pipeline_summary()
 
         return True
 
-    except Exception as e:
-        print(f"❌ Error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -71,8 +65,6 @@ async def test_can_we_create_simple_rag_v3():
 
 async def test_minimal_components():
     """Test what components we can actually use."""
-    print("\n🔍 Testing what components are actually usable...")
-
     results = {}
 
     # Test 1: Can we import state?
@@ -121,56 +113,32 @@ async def test_minimal_components():
         results["simple_rag_v3"] = f"❌ SimpleRAGV3 failed: {str(e)[:50]}..."
 
     # Print results
-    print("\n📊 Component Status:")
-    for component, status in results.items():
-        print(f"  {component}: {status}")
+    for _component, _status in results.items():
+        pass
 
     return results
 
 
 def analyze_blockers():
     """Analyze what's blocking SimpleRAG V3 from running."""
-    print("\n🔍 Analyzing blockers...")
-
     # Check the import chain
-    print("\n🔗 Import Chain Analysis:")
-    print("  SimpleRAGV3 → imports RetrieverAgent")
-    print("  RetrieverAgent → imports BaseRAGAgent")
-    print("  BaseRAGAgent → imports haive.core.graph.GraphBuilder (❌ MISSING)")
-    print("")
-    print("  SimpleRAGV3 → imports SimpleAnswerAgent")
-    print("  SimpleAnswerAgent → imports SimpleAgent")
-    print("  SimpleAgent → (✅ We fixed the syntax)")
-    print("")
-    print("  SimpleRAGV3 → imports EnhancedMultiAgent")
-    print("  EnhancedMultiAgent → (❓ Unknown status)")
 
     # Check for the missing module
-    try:
-        from haive.core.graph.GraphBuilder import DynamicGraph
-
-        print("\n✅ GraphBuilder found!")
-    except ImportError as e:
-        print(f"\n❌ Critical missing import: {e}")
-        print("  This is blocking BaseRAGAgent from loading")
+    with contextlib.suppress(ImportError):
+        pass
 
     # Check if it's a case issue
     try:
 
-        print("✅ Found graph_builder (lowercase)!")
+        pass
     except:
-        try:
+        with contextlib.suppress(Exception):
 
-            print("✅ Found GraphBuilder as module!")
-        except:
-            print("❌ Can't find GraphBuilder in any form")
+            pass
 
 
 async def main():
     """Run all tests."""
-    print("🚀 Testing SimpleRAG V3 Execution (Does it actually work?)")
-    print("=" * 70)
-
     # Test creating SimpleRAG V3
     await test_can_we_create_simple_rag_v3()
 
@@ -179,16 +147,6 @@ async def main():
 
     # Analyze blockers
     analyze_blockers()
-
-    print("\n📝 Summary:")
-    print("  ✅ SimpleRAGState: WORKS perfectly")
-    print("  ✅ Architecture: CORRECT (validated by code analysis)")
-    print("  ❌ Execution: BLOCKED by import chain issues")
-    print("  ❌ Main Blocker: haive.core.graph.GraphBuilder missing")
-    print("\n🎯 To make it work:")
-    print("  1. Fix the GraphBuilder import (probably case sensitive issue)")
-    print("  2. Fix any other import chains")
-    print("  3. Then SimpleRAG V3 should run!")
 
 
 if __name__ == "__main__":

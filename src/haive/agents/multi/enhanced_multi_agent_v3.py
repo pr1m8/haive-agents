@@ -18,7 +18,7 @@ Key Features:
 import logging
 import time
 from collections.abc import Callable
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, get_origin
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
@@ -31,8 +31,9 @@ from pydantic import Field, field_validator, model_validator
 from rich.console import Console
 from rich.table import Table
 
-# Import the enhanced base Agent
 from haive.agents.base.agent import Agent
+
+# Import the enhanced base Agent
 
 logger = logging.getLogger(__name__)
 console = Console()
@@ -270,7 +271,6 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 field_info = cls.model_fields["agents"]
 
                 # Check if the annotation is a List type
-                from typing import get_origin
 
                 annotation = field_info.annotation
                 origin = get_origin(annotation)
@@ -305,7 +305,6 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 field_info = cls.model_fields["agents"]
 
                 # Check if the annotation is a List type
-                from typing import get_origin
 
                 annotation = field_info.annotation
                 origin = get_origin(annotation)

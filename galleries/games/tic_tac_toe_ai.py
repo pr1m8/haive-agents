@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
-"""
-Tic-Tac-Toe Game Example - AI vs AI gameplay demonstration.
+"""Tic-Tac-Toe Game Example - AI vs AI gameplay demonstration.
 
 This example shows how to create and run a Tic-Tac-Toe game with
 AI agents playing against each other.
 """
 
 import asyncio
-from typing import Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
@@ -23,16 +21,6 @@ class TicTacToeGame:
 
     def display_board(self):
         """Display the current board state."""
-        print("\n   |   |   ")
-        print(f" {self.board[0]} | {self.board[1]} | {self.board[2]} ")
-        print("___|___|___")
-        print("   |   |   ")
-        print(f" {self.board[3]} | {self.board[4]} | {self.board[5]} ")
-        print("___|___|___")
-        print("   |   |   ")
-        print(f" {self.board[6]} | {self.board[7]} | {self.board[8]} ")
-        print("   |   |   ")
-        print("\nPositions: 1-9 (left to right, top to bottom)")
 
     def make_move(self, position: int, player: str) -> bool:
         """Make a move on the board."""
@@ -41,7 +29,7 @@ class TicTacToeGame:
             return True
         return False
 
-    def check_winner(self) -> Optional[str]:
+    def check_winner(self) -> str | None:
         """Check if there's a winner."""
         # Winning combinations
         lines = [
@@ -74,10 +62,9 @@ async def create_game_agent(
     name: str, symbol: str, strategy: str = "smart"
 ) -> SimpleAgent:
     """Create a game-playing agent."""
-
     if strategy == "smart":
         system_message = f"""You are an expert Tic-Tac-Toe player using symbol '{symbol}'.
-        
+
 Rules:
 - The board has positions 1-9 (left to right, top to bottom)
 - You must choose an available position (1-9)
@@ -138,10 +125,6 @@ Choose your move (1-9):"""
 
 async def main():
     """Run the Tic-Tac-Toe game example."""
-    print("🎮 Haive Tic-Tac-Toe Game Example")
-    print("=" * 40)
-    print("Watch two AI agents play against each other!")
-
     # Create the game
     game = TicTacToeGame()
 
@@ -149,27 +132,19 @@ async def main():
     player_x = await create_game_agent("Strategic Player", "X", "smart")
     player_o = await create_game_agent("Creative Player", "O", "creative")
 
-    print("\n🤖 Players:s:")
-    print(f"   X: {player_x.name} (Strategic)")
-    print(f"   O: {player_o.name} (Creative)")
-
     # Game loop
     current_agent = player_x
     current_symbol = "X"
     move_count = 0
 
-    print("\n🎯 Game Start!t!")
     game.display_board()
 
     while True:
         move_count += 1
-        print(f"\n--- Move {move_count} ---")
-        print(f"🎲 {current_agent.name}'s turn ({current_symbol})")
 
         # Get move from current agent
         try:
             position = await get_agent_move(current_agent, game, current_symbol)
-            print(f"📍 Chosen position: {position}")
 
             # Make the move
             if game.make_move(position, current_symbol):
@@ -179,10 +154,9 @@ async def main():
                 winner = game.check_winner()
                 if winner:
                     if winner == "TIE":
-                        print("\n🤝 Game ended in a tie!e!")
+                        pass
                     else:
-                        winning_agent = player_x if winner == "X" else player_o
-                        print(f"\n🏆 {winning_agent.name} ({winner}) wins!")
+                        pass
                     break
 
                 # Switch players
@@ -194,23 +168,17 @@ async def main():
                     current_symbol = "X"
 
             else:
-                print(f"❌ Invalid move! Position {position} is not available.")
                 break
 
-        except Exception as e:
-            print(f"❌ Error getting move: {e}")
+        except Exception:
             break
 
         # Safety check
         if move_count > 20:
-            print("⚠️ Game taking too long, ending.")
             break
 
         # Small delay for readability
         await asyncio.sleep(1)
-
-    print(f"\n✅ Game completed in {move_count} moves!")
-    print("🎮 Thanks for watching the AI vs AI demonstration!")
 
 
 if __name__ == "__main__":

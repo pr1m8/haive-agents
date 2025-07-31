@@ -1,13 +1,13 @@
 """Test EnhancedMultiAgentV4 flow with SimpleAgentV3 and ReactAgentV3."""
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
+import pytest
 
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent_v3 import ReactAgentV3
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Test tools
@@ -18,7 +18,7 @@ def calculator(expression: str) -> str:
         result = eval(expression, {"__builtins__": {}}, {})
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 @tool
@@ -75,8 +75,6 @@ class TestEnhancedMultiAgentV4Flow:
         # Execute the workflow with proper state
         try:
             result = workflow._app.invoke(initial_state)
-            print("\nSequential workflow result:")
-            print(result)
 
             # Verify execution
             assert result is not None
@@ -84,11 +82,11 @@ class TestEnhancedMultiAgentV4Flow:
             assert len(result["messages"]) > 1  # Should have multiple messages
 
         except Exception as e:
-            print(f"\nError during execution: {e}")
             # Debug the error
             import traceback
+
             traceback.print_exc()
-            
+
             # For now, we'll mark this as a known issue
             pytest.skip(f"Multi-agent flow issue: {e}")
 
@@ -124,7 +122,7 @@ class TestEnhancedMultiAgentV4Flow:
         )
 
         # Build and compile
-        graph = workflow.build_graph()
+        workflow.build_graph()
         workflow.compile()
 
         # Create simple initial state without MultiAgentState to avoid circular import issues
@@ -139,18 +137,16 @@ class TestEnhancedMultiAgentV4Flow:
         # Execute
         try:
             result = workflow._app.invoke(initial_state)
-            print("\nReact→Simple workflow result:")
-            print(result)
 
             # Verify
             assert result is not None
             assert "messages" in result
-            
+
         except Exception as e:
-            print(f"\nError during execution: {e}")
             import traceback
+
             traceback.print_exc()
-            
+
             pytest.skip(f"Multi-agent flow issue: {e}")
 
     def test_debug_agent_node_v3_output(self):
@@ -175,46 +171,32 @@ class TestEnhancedMultiAgentV4Flow:
 
         # Build graph
         graph = workflow.build_graph()
-        
+
         # Get the agent node
         agent_node = graph.nodes.get("test_agent")
         if agent_node:
-            print(f"\nAgent node type: {type(agent_node)}")
-            print(f"Agent node: {agent_node}")
+            pass
 
         # Compile
         workflow.compile()
 
         # Test execution
         try:
-            # Create simple initial state 
-            initial_state = {
-                "messages": [HumanMessage(content="Hello, test!")]
-            }
-            result = workflow._app.invoke(initial_state)
-            print(f"\nResult type: {type(result)}")
-            print(f"Result: {result}")
-            
-        except Exception as e:
-            print(f"\nError: {e}")
+            # Create simple initial state
+            initial_state = {"messages": [HumanMessage(content="Hello, test!")]}
+            workflow._app.invoke(initial_state)
+
+        except Exception:
             import traceback
+
             traceback.print_exc()
 
 
 if __name__ == "__main__":
     # Run the tests directly
     test = TestEnhancedMultiAgentV4Flow()
-    print("=" * 60)
-    print("Testing Sequential Simple Agents Flow")
-    print("=" * 60)
     test.test_sequential_simple_agents_flow()
-    
-    print("\n" + "=" * 60)
-    print("Testing React→Simple Sequential Flow")
-    print("=" * 60)
+
     test.test_react_simple_sequential_flow()
-    
-    print("\n" + "=" * 60)
-    print("Debugging Agent Node V3 Output")
-    print("=" * 60)
+
     test.test_debug_agent_node_v3_output()

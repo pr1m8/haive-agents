@@ -12,9 +12,10 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
 from pydantic import Field, field_validator
 
+from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
+
 # Import base enhanced agent when available
 # from haive.agents.base.enhanced_agent import Agent
-from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 logger = logging.getLogger(__name__)
 

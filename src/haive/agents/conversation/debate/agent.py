@@ -8,12 +8,14 @@ optional judging/scoring capabilities.
 import logging
 from typing import Any, Literal
 
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.types import Command
 from pydantic import BaseModel, Field, model_validator
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.debate.state import DebateState
+from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -749,10 +751,6 @@ Let us begin! {next(iter(positions.keys())) if positions else 'Participants'}, p
         **kwargs,
     ) -> "DebateConversation":
         """Create a simple two-sided debate conversation."""
-        from haive.core.engine.aug_llm import AugLLMConfig
-
-        from haive.agents.simple.agent import SimpleAgent
-
         name_a, pos_a = position_a
         name_b, pos_b = position_b
 

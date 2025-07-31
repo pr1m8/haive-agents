@@ -12,7 +12,25 @@ from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import Document
 
 from haive.agents.base.agent import Agent
-from haive.agents.chain import ChainAgent
+from haive.agents.chain import ChainAgent, flow
+from haive.agents.chain.multi_integration import ChainMultiAgent
+from haive.agents.rag.adaptive_tools.agent import AdaptiveToolsRAGAgent
+from haive.agents.rag.agentic_router.agent_chain import (
+    create_agentic_rag_router_chain,
+)
+from haive.agents.rag.corrective.agent import CorrectiveRAGAgent
+from haive.agents.rag.flare.agent import FLARERAGAgent
+from haive.agents.rag.fusion.agent import RAGFusionAgent
+from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
+from haive.agents.rag.memory_aware.agent import MemoryAwareRAGAgent
+from haive.agents.rag.multi_query.agent import MultiQueryRAGAgent
+from haive.agents.rag.query_planning.agent_chain import (
+    create_query_planning_chain,
+)
+from haive.agents.rag.self_route.agent import SelfRouteRAGAgent
+from haive.agents.rag.simple.agent import SimpleRAGAgent
+from haive.agents.rag.speculative.agent import SpeculativeRAGAgent
+from haive.agents.rag.step_back.agent import StepBackRAGAgent
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +92,6 @@ class RAGFactory:
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
                 api_key="${AZURE_OPENAI_API_KEY}",
-            )
 
         agent_name = name or f"{rag_type.title()} RAG"
 
@@ -82,7 +99,6 @@ class RAGFactory:
         if style == RAGStyle.CHAIN:
             return RAGFactory._create_chain(
                 rag_type, documents, llm_config, agent_name, **kwargs
-            )
         if style == RAGStyle.MULTI:
             return RAGFactory._create_multi(
                 rag_type, documents, llm_config, agent_name, **kwargs
@@ -102,29 +118,21 @@ class RAGFactory:
     ) -> ChainAgent:
         """Create ChainAgent implementation."""
         if rag_type == RAGType.AGENTIC_ROUTER:
-            from haive.agents.rag.agentic_router.agent_chain import (
-                create_agentic_rag_router_chain,
             )
 
             return create_agentic_rag_router_chain(documents, llm_config, name)
 
         if rag_type == RAGType.QUERY_PLANNING:
-            from haive.agents.rag.query_planning.agent_chain import (
-                create_query_planning_chain,
             )
 
             return create_query_planning_chain(documents, llm_config, name)
 
         if rag_type == RAGType.SIMPLE:
-            from haive.agents.chain import flow
-            from haive.agents.rag.simple.agent import SimpleRAGAgent
 
             agent = SimpleRAGAgent.from_documents(documents, llm_config)
             return flow(agent, name=name)
 
         if rag_type == RAGType.FUSION:
-            from haive.agents.chain import flow
-            from haive.agents.rag.fusion.agent import RAGFusionAgent
 
             agent = RAGFusionAgent.from_documents(documents, llm_config)
             return flow(agent, name=name)
@@ -133,7 +141,6 @@ class RAGFactory:
         traditional = RAGFactory._create_traditional(
             rag_type, documents, llm_config, name, **kwargs
         )
-        from haive.agents.chain import flow
 
         return flow(traditional, name=name)
 
@@ -146,7 +153,6 @@ class RAGFactory:
         **kwargs,
     ) -> "ChainMultiAgent":
         """Create MultiAgent implementation."""
-        from haive.agents.chain.multi_integration import ChainMultiAgent
 
         # Create chain version first
         chain = RAGFactory._create_chain(
@@ -169,83 +175,72 @@ class RAGFactory:
         filtered_kwargs = {k: v for k, v in kwargs.items() if k != "name"}
 
         if rag_type == RAGType.SIMPLE:
-            from haive.agents.rag.simple.agent import SimpleRAGAgent
 
             return SimpleRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.MULTI_QUERY:
-            from haive.agents.rag.multi_query.agent import MultiQueryRAGAgent
 
             return MultiQueryRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.HYDE:
-            from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
 
             return HyDERAGAgentV2.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.FUSION:
-            from haive.agents.rag.fusion.agent import RAGFusionAgent
 
             return RAGFusionAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.FLARE:
-            from haive.agents.rag.flare.agent import FLARERAGAgent
 
             return FLARERAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.SPECULATIVE:
-            from haive.agents.rag.speculative.agent import SpeculativeRAGAgent
 
             return SpeculativeRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.MEMORY_AWARE:
-            from haive.agents.rag.memory_aware.agent import MemoryAwareRAGAgent
 
             return MemoryAwareRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.STEP_BACK:
-            from haive.agents.rag.step_back.agent import StepBackRAGAgent
 
             return StepBackRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.SELF_ROUTE:
-            from haive.agents.rag.self_route.agent import SelfRouteRAGAgent
 
             return SelfRouteRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.ADAPTIVE_TOOLS:
-            from haive.agents.rag.adaptive_tools.agent import AdaptiveToolsRAGAgent
 
             return AdaptiveToolsRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
         if rag_type == RAGType.CORRECTIVE:
-            from haive.agents.rag.corrective.agent import CorrectiveRAGAgent
 
             return CorrectiveRAGAgent.from_documents(
                 documents, llm_config, name=name, **filtered_kwargs
             )
 
-        raise ValueError(f"Unknown RAG type: {rag_type}")
+        raise TypeError(f"Unknown RAG type: {rag_type}")
 
 
 # Convenience functions

@@ -4,15 +4,15 @@ This module tests the PlanAndExecuteAgent that uses MultiAgentBase with proper
 field configuration and tool routing capabilities.
 """
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
+import pytest
 
 from haive.agents.planning import PlanAndExecuteAgent
 from haive.agents.planning.p_and_e.models import Act
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 from haive.agents.react import ReactAgent
 from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Test tools without mocks

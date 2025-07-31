@@ -9,6 +9,10 @@ reducer-based state updates.
 
 import asyncio
 import contextlib
+import operator
+from typing import Any
+
+from pydantic import Field
 
 from haive.agents.conversation.base import (
     ConversationState,
@@ -122,9 +126,6 @@ def demonstrate_participant_validation() -> None:
 
 def demonstrate_custom_state_fields() -> Any:
     """Demonstrate extending ConversationState with custom fields."""
-    import operator
-
-    from pydantic import Field
 
     class ExtendedConversationState(ConversationState):
         """Extended conversation state with custom fields."""

@@ -26,11 +26,13 @@ from haive.core.engine.vectorstore import VectorStoreProvider
 from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
 from langchain_core.documents import Document
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.tools import tool
 from pydantic import BaseModel, ConfigDict, Field
 
-# Import BaseRAGAgent and related components
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
+
+# Import BaseRAGAgent and related components
 
 logger = logging.getLogger(__name__)
 
@@ -673,8 +675,6 @@ class UnifiedMemoryRAGAgent:
         cls, name: str | None = None, description: str | None = None, **config_kwargs
     ):
         """Convert this agent to a tool for use in other agents."""
-        from langchain_core.tools import tool
-
         if name is None:
             name = "unified_memory"
         if description is None:

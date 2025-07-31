@@ -1,8 +1,8 @@
 """Test supervisor using LangGraph directly (avoiding Haive BaseGraph bug)."""
 
 import asyncio
-import operator
 from collections.abc import Sequence
+import operator
 from typing import Annotated, Any, Literal, TypedDict
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage

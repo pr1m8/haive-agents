@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import os
-import re
 
 # Pattern to fix various string literal issues
 files_to_check = [
@@ -24,7 +23,7 @@ patterns = [
 
 for filepath in files_to_check:
     if os.path.exists(filepath):
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             content = f.read()
 
         original_content = content
@@ -34,10 +33,9 @@ for filepath in files_to_check:
         if content != original_content:
             with open(filepath, "w") as f:
                 f.write(content)
-            print(f"Fixed patterns in {filepath}")
         else:
             # Check for syntax errors manually
             lines = content.split("\n")
-            for i, line in enumerate(lines, 1):
+            for _i, line in enumerate(lines, 1):
                 if '"' in line and line.count('"') % 2 != 0:
-                    print(f"Potential issue in {filepath} line {i}: {line.strip()}")
+                    pass

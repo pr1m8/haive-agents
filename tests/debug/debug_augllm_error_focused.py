@@ -11,6 +11,7 @@ import logging
 from rich.console import Console
 from rich.logging import RichHandler
 
+
 console = Console()
 logging.basicConfig(
     level=logging.DEBUG,
@@ -147,9 +148,8 @@ def test_simple_agent_creation():
     console.print("[bold green]Testing SimpleAgent V2 creation...[/bold green]")
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.simple.agent_v2 import SimpleAgentV2
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         console.print("✅ Imports successful")
 

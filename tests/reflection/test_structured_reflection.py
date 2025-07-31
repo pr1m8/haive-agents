@@ -1,7 +1,6 @@
 """Test structured output reflection agents - NO MOCKS."""
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.reflection.models import Critique, ReflectionResult
 from haive.agents.reflection.structured_output import (
@@ -12,6 +11,7 @@ from haive.agents.reflection.structured_output import (
     create_reflection_agent,
     create_reflection_loop,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestStructuredReflectionAgents:
@@ -279,7 +279,7 @@ class TestReflectionIntegration:
         # Create specialized reflection agents
         technical_reflector = StructuredReflectionAgent(
             name="technical_reflector",
-            system_prompt="""You are a technical expert who focuses on accuracy, 
+            system_prompt="""You are a technical expert who focuses on accuracy,
             precision, and technical correctness in responses.""",
         )
 
@@ -316,16 +316,13 @@ if __name__ == "__main__":
         await test_basic.test_structured_reflection_agent_basic()
         await test_basic.test_structured_improvement_agent()
         await test_basic.test_reflection_loop_iterative_improvement()
-        print("✅ All basic tests passed")
 
         test_edge = TestReflectionEdgeCases()
         await test_edge.test_empty_response_reflection()
         await test_edge.test_very_long_response()
-        print("✅ All edge case tests passed")
 
         test_integration = TestReflectionIntegration()
         await test_integration.test_sequential_agent_pattern()
         await test_integration.test_multi_perspective_reflection()
-        print("✅ All integration tests passed")
 
     asyncio.run(run_tests())

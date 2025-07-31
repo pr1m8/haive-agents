@@ -17,6 +17,9 @@ from pydantic import BaseModel, Field
 from haive.agents.base.agent import Agent
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.rag.common.answer_generators.prompts import (
+    RAG_ANSWER_STANDARD,
+)
 from haive.agents.simple.agent import SimpleAgent
 
 
@@ -163,7 +166,6 @@ class MultiQueryRAGAgent(SequentialAgent):
                 output_key="query_variations",
             ),
             name="Query Expander",
-        )
 
         # Step 2: Create base retriever
         base_retriever = BaseRAGAgent.from_documents(
@@ -176,8 +178,6 @@ class MultiQueryRAGAgent(SequentialAgent):
         )
 
         # Step 4: Answer generation
-        from haive.agents.rag.common.answer_generators.prompts import (
-            RAG_ANSWER_STANDARD,
         )
 
         answer_agent = SimpleAgent(

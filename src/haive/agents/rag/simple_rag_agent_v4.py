@@ -10,7 +10,7 @@ from haive.agents.rag.base.agent import BaseRAGAgent
 
 
 class SimpleRAGAgentV4(EnhancedMultiAgentV4):
-    """Simple RAG = MultiAgent([BaseRAGAgent, AnswerAgent], mode="sequential")"""
+    """Simple RAG = MultiAgent([BaseRAGAgent, AnswerAgent], mode="sequential")."""
 
     vector_store_config: VectorStoreConfig = Field(
         ..., description="Vector store config for retrieval"

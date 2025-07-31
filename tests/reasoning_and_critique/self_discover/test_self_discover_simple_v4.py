@@ -94,4 +94,3 @@ class TestSelfDiscoverSimpleV4:
         # At minimum, task should still be there
         if "task" in result:
             assert result["task"] == "Test task"
-

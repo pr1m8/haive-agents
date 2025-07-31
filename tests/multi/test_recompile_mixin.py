@@ -5,8 +5,9 @@ This follows the pattern of MetaStateSchema but adds recompilation tracking.
 
 from typing import Any
 
-from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 from pydantic import Field, model_validator
+
+from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 
 
 class RecompileMixin:
@@ -106,9 +107,8 @@ class RecompileMetaState(MetaStateSchema, RecompileMixin):
 
 def test_recompile_mixin():
     """Test the RecompileMixin with any generic agent."""
-    from haive.core.engine.aug_llm import AugLLMConfig
-
     from haive.agents.simple.agent import SimpleAgent
+    from haive.core.engine.aug_llm import AugLLMConfig
 
     # Create any agent - don't define model in AugLLMConfig
     config = AugLLMConfig()  # Use defaults

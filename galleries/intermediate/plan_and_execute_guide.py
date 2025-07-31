@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Plan and Execute Guide - Strategic Multi-Step Problem Solving
+"""Plan and Execute Guide - Strategic Multi-Step Problem Solving.
 
 Difficulty: ⭐⭐⭐ Intermediate
 Estimated Time: 15 minutes
@@ -108,28 +107,23 @@ Generated on: {asyncio.get_event_loop().time()}"""
 
 async def main():
     """Run the Plan and Execute guide."""
-    print("🤖 Haive Plan and Execute Guide")
-    print("=" * 40)
-
     # Step 1: Create specialized configurations
-    print("\n📝 Step 1: Creating specialized configurations...")
 
     # Planner config - focused on strategic thinking
     planner_config = AugLLMConfig(
         temperature=0.7,
-        system_message="""You are a strategic planner. Create detailed, actionable plans 
+        system_message="""You are a strategic planner. Create detailed, actionable plans
 for complex tasks. Break down problems into logical steps.""",
     )
 
     # Executor config - focused on execution
     executor_config = AugLLMConfig(
         temperature=0.3,
-        system_message="""You are a task executor. Follow plans precisely and use 
+        system_message="""You are a task executor. Follow plans precisely and use
 available tools effectively to complete each step.""",
     )
 
     # Step 2: Create the Plan and Execute agent
-    print("\n🏗️  Step 2: Creating Plan and Execute agent...")
 
     # Method 1: Using the factory function (recommended)
     agent = create_plan_and_execute_agent(
@@ -139,10 +133,7 @@ available tools effectively to complete each step.""",
         tools=[web_search, data_analyzer, report_generator],
     )
 
-    print(f"\n🔧 Available tools: {[tool.name for tool in agent.tools]}")
-
     # Step 3: Run complex planning examples
-    print("\n💬 Step 3: Running complex planning examples...")
 
     # Example tasks that require strategic planning
     complex_tasks = [
@@ -151,31 +142,13 @@ available tools effectively to complete each step.""",
         "Create a learning plan for someone who wants to become a Python developer",
     ]
 
-    for i, task in enumerate(complex_tasks, 1):
-        print(f"\n--- Complex Task {i} ---")
-        print(f"User: {task}")
+    for _i, task in enumerate(complex_tasks, 1):
 
-        print("\n📊 Planning phase...")
         # The agent will first create a plan
-        response = await agent.arun(task)
-
-        print("\n📝 Final result:t:")
-        print(response)
+        await agent.arun(task)
 
         # Small pause between tasks
         await asyncio.sleep(1)
-
-    print("\n✅ Guide completed successfully!")
-    print("\n🎓 What you learned:")
-    print("   • How to create specialized planner and executor configurations")
-    print("   • How to use create_plan_and_execute_agent factory function")
-    print("   • How agents break down complex tasks into manageable steps")
-    print("   • How planning and execution work together in workflows")
-
-    print("\n🚀 Next steps:")
-    print("   • Try multi_agent_coordination.py for team-based problem solving")
-    print("   • Explore research_workflow_patterns.py for advanced research")
-    print("   • Check out supervisor_patterns.py for complex orchestration")
 
 
 if __name__ == "__main__":

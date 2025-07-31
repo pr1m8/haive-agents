@@ -5,8 +5,6 @@ from typing import Any
 
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-
-# Import LangChain document loaders
 from langchain_community.document_loaders import (
     ArxivLoader,
     GitHubIssuesLoader,
@@ -14,13 +12,15 @@ from langchain_community.document_loaders import (
     RecursiveUrlLoader,
     WebBaseLoader,
 )
+from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
+from tavily import TavilyClient
+
+# Import LangChain document loaders
 
 # Import search tools
 try:
-    from langchain_community.tools.tavily_search import TavilySearchResults
-    from tavily import TavilyClient
 except ImportError:
     # Provide fallbacks if Tavily not available
     pass

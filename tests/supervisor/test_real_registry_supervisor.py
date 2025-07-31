@@ -1,10 +1,11 @@
 """Test registry supervisor with REAL ReactAgents - NO MOCKS."""
 
 import asyncio
-import os
-import sys
 from datetime import datetime
+import os
 from pathlib import Path
+import sys
+
 
 # Add the source path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../src"))

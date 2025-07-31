@@ -24,9 +24,8 @@ replacement = r'print("\1")'
 
 for filepath, line_num in fixes:
     if os.path.exists(filepath):
-        print(f"Checking {filepath} line {line_num}")
 
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             lines = f.readlines()
 
         # Check the specific line
@@ -39,10 +38,9 @@ for filepath, line_num in fixes:
                 fixed_line = pattern.sub(replacement, line)
                 if fixed_line != line:
                     lines[line_num - 1] = fixed_line
-                    print(f"  Fixed line {line_num}")
 
                     with open(filepath, "w") as f:
                         f.writelines(lines)
             elif line.count('"') % 2 != 0:
                 # Odd number of quotes - likely unterminated string
-                print(f"  Line {line_num} has unterminated string: {line.strip()}")
+                pass

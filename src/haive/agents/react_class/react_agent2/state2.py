@@ -1,12 +1,13 @@
 # =============================================
 # React Agent State
 # =============================================
+
 from collections.abc import Sequence
 from typing import Any, Optional
 
 from haive.core.utils.message_utils import has_tool_calls
 from langchain_core.messages import BaseMessage
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, create_model
 
 
 class ReactAgentState(BaseModel):
@@ -109,8 +110,6 @@ class ReactAgentState(BaseModel):
         Returns:
             A new state class with the specified structured output type
         """
-        from pydantic import create_model
-
         return create_model(
             f"ReactAgentState[{
                 output_model_type.__name__}]",

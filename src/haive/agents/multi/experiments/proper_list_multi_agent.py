@@ -18,7 +18,7 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.graph import END, START
-from pydantic import Field, PrivateAttr
+from pydantic import Field, PrivateAttr, create_model
 
 from haive.agents.base.agent import Agent
 
@@ -171,7 +171,6 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         self.state_schema = MultiAgentState
 
         # Input schema - just messages by default
-        from pydantic import create_model
 
         self.input_schema = create_model(
             f"{self.name}Input",
@@ -430,7 +429,6 @@ class MetaListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         self.state_schema = MetaStateSchema
 
         # Input and output schemas
-        from pydantic import create_model
 
         self.input_schema = create_model(
             f"{self.name}Input",

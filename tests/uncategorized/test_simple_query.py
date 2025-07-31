@@ -2,6 +2,7 @@
 
 from haive.agents.simple.agent_v2 import SimpleAgentV2
 
+
 try:
     # Create a simple agent without complex models
     agent = SimpleAgentV2(name="test_agent")

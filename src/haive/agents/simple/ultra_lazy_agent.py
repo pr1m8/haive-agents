@@ -6,6 +6,8 @@ This uses the most minimal possible imports and defers everything else.
 """
 
 # MINIMAL IMPORTS ONLY - no logging, no complex types, no frameworks
+
+import importlib
 from typing import Any
 
 
@@ -27,7 +29,6 @@ class UltraLazyAgent:
         """Load the real SimpleAgentV3 only when absolutely necessary."""
         if self._real_agent is None:
             # Import and create real agent only now
-            import importlib
 
             module = importlib.import_module("haive.agents.simple.agent_v3")
             SimpleAgentV3 = module.SimpleAgentV3
@@ -69,8 +70,6 @@ class UltraLazyAgent:
     @classmethod
     def as_tool(cls, **kwargs):
         """Class method - triggers loading."""
-        import importlib
-
         module = importlib.import_module("haive.agents.simple.agent_v3")
         SimpleAgentV3 = module.SimpleAgentV3
         return SimpleAgentV3.as_tool(**kwargs)
@@ -78,8 +77,6 @@ class UltraLazyAgent:
     @classmethod
     def as_structured_tool(cls, **kwargs):
         """Class method - triggers loading."""
-        import importlib
-
         module = importlib.import_module("haive.agents.simple.agent_v3")
         SimpleAgentV3 = module.SimpleAgentV3
         return SimpleAgentV3.as_structured_tool(**kwargs)

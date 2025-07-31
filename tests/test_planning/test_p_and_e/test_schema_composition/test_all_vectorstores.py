@@ -6,6 +6,7 @@ This script tests the registration and basic configuration of all vector stores.
 
 import sys
 
+
 # Add the package path
 sys.path.insert(0, "packages/haive-core/src")
 

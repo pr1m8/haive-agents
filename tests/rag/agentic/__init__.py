@@ -18,6 +18,7 @@ from agentic.test_react_rag_agent import (
     web_search,
 )
 
+
 __all__ = [
     "MockState",
     "TestAgenticRAGAgent",

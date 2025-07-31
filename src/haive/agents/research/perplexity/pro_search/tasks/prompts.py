@@ -4,7 +4,15 @@ from typing import Any, Dict
 These prompts guide task decomposition, execution planning, and adaptive replanning.
 """
 
+from typing import Any
+
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
+from recursive_planning_models import (
+    ExecutionPlan,
+    ReplanningAnalysis,
+    TaskDecomposition,
+)
 
 # ============================================================================
 # Initial Task Decomposition Prompt
@@ -350,11 +358,8 @@ loop_condition_prompt = ChatPromptTemplate.from_messages(
 # ============================================================================
 
 
-def create_decomposition_aug_llm(llm_config: Dict[str, Any]):
+def create_decomposition_aug_llm(llm_config: dict[str, Any]):
     """Create AugLLMConfig for task decomposition."""
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from recursive_planning_models import TaskDecomposition
-
     return AugLLMConfig(
         llm_config=llm_config,
         prompt_template=task_decomposition_prompt,
@@ -372,11 +377,8 @@ def create_decomposition_aug_llm(llm_config: Dict[str, Any]):
     )
 
 
-def create_execution_planning_aug_llm(llm_config: Dict[str, Any]):
+def create_execution_planning_aug_llm(llm_config: dict[str, Any]):
     """Create AugLLMConfig for execution planning."""
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from recursive_planning_models import ExecutionPlan
-
     return AugLLMConfig(
         llm_config=llm_config,
         prompt_template=execution_planning_prompt,
@@ -395,11 +397,8 @@ def create_execution_planning_aug_llm(llm_config: Dict[str, Any]):
     )
 
 
-def create_replanning_analysis_aug_llm(llm_config: Dict[str, Any]):
+def create_replanning_analysis_aug_llm(llm_config: dict[str, Any]):
     """Create AugLLMConfig for replanning analysis."""
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from recursive_planning_models import ReplanningAnalysis
-
     return AugLLMConfig(
         llm_config=llm_config,
         prompt_template=replanning_analysis_prompt,

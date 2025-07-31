@@ -5,6 +5,8 @@ ParallelAgent = Agent[AugLLMConfig] + parallel execution of agents.
 
 import asyncio
 import logging
+import random
+from collections import Counter
 from typing import Any, Literal
 
 from haive.core.engine.aug_llm.config import AugLLMConfig
@@ -13,9 +15,10 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
 from pydantic import Field, field_validator
 
+from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
+
 # Import base enhanced agent when available
 # from haive.agents.base.enhanced_agent import Agent
-from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 logger = logging.getLogger(__name__)
 
@@ -300,7 +303,6 @@ Create a unified response that leverages all agent contributions."""
                 )
 
             # Group similar results (simplified)
-            from collections import Counter
 
             result_strs = [str(r[1]).lower().strip() for r in results]
             consensus = Counter(result_strs).most_common(1)[0]
@@ -358,7 +360,6 @@ if __name__ == "__main__":
 
         async def arun(self, input_data: str) -> str:
             # Simulate different processing times
-            import random
 
             await asyncio.sleep(random.uniform(0.1, 0.5))
             return f"{

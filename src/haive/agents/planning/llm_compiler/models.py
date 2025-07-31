@@ -4,6 +4,8 @@ This module defines the pydantic models specific to the LLM Compiler agent,
 integrating with the base Step and Plan models from the plan_and_execute agent.
 """
 
+import re
+import traceback
 from typing import Any
 
 from agents.plan_and_execute.models import Plan, Step
@@ -68,7 +70,6 @@ class CompilerTask(BaseModel):
             if isinstance(value, str) and value.startswith("$"):
                 # This is a reference to another step's output
                 # Extract the step ID from the format ${1} or $1
-                import re
 
                 match = re.match(r"\$\{?(\d+)\}?", value)
                 if match:
@@ -105,7 +106,6 @@ class CompilerStep(Step):
         # Also check for string references in arguments
         for arg_value in self.task.arguments.values():
             if isinstance(arg_value, str) and arg_value.startswith("$"):
-                import re
 
                 match = re.match(r"\$\{?(\d+)\}?", arg_value)
                 if match:
@@ -149,7 +149,6 @@ class CompilerStep(Step):
         try:
             return tool.invoke(resolved_args)
         except Exception as e:
-            import traceback
 
             return f"ERROR: {e!s}\n{traceback.format_exc()}"
 

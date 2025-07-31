@@ -1,5 +1,6 @@
 # haive/core/engine/agent/mixins/state_mixin.py
 
+import asyncio
 import json
 import logging
 import os
@@ -96,8 +97,6 @@ class StateMixin:
         Returns:
             True if successful, False otherwise
         """
-        import asyncio
-
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
             None, lambda: self.save_state_history(runnable_config)
@@ -169,8 +168,6 @@ class StateMixin:
             thread_id: Optional thread ID for persistence
             config: Optional runtime configuration
         """
-        import asyncio
-
         loop = asyncio.get_event_loop()
         await loop.run_in_executor(None, lambda: self.inspect_state(thread_id, config))
 
@@ -241,8 +238,6 @@ class StateMixin:
         Returns:
             True if successful, False otherwise
         """
-        import asyncio
-
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
             None, lambda: self.reset_state(thread_id, config)
@@ -325,8 +320,6 @@ class StateMixin:
         Returns:
             True if successful, False otherwise
         """
-        import asyncio
-
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(
             None, lambda: self.load_from_state(state_data, thread_id)

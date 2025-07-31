@@ -11,6 +11,7 @@ from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
 
+import pandas as pd
 from langchain_core.documents import Document
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from pydantic import BaseModel, Field

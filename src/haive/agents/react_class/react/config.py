@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Literal
 
 from langchain_core.tools import BaseTool
@@ -53,7 +54,6 @@ class ReactAgentConfig(SimpleAgentConfig):
         """Validate the configuration."""
         if not self.tools and not hasattr(self, "tool_node"):
             # Warning rather than error to allow dynamic tool loading
-            import logging
 
             logging.warning("No tools provided for React Agent")
 

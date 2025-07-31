@@ -11,7 +11,8 @@ Patterns include:
 4. Dynamic agent composition
 """
 
-from typing import Any, Callable, Dict, List, Optional
+from collections.abc import Callable
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
@@ -34,17 +35,17 @@ class TaskClassification(BaseModel):
         description="Type of task: simple, complex, research, creative"
     )
     complexity_score: float = Field(ge=0.0, le=1.0, description="Task complexity")
-    required_capabilities: List[str] = Field(description="Required agent capabilities")
+    required_capabilities: list[str] = Field(description="Required agent capabilities")
     recommended_approach: str = Field(description="Recommended processing approach")
 
 
 class ParallelResults(BaseModel):
     """Results from parallel agent execution."""
 
-    agent_outputs: Dict[str, Any] = Field(description="Outputs from each agent")
-    consensus_points: List[str] = Field(description="Points of agreement")
-    divergent_points: List[str] = Field(description="Points of disagreement")
-    confidence_scores: Dict[str, float] = Field(
+    agent_outputs: dict[str, Any] = Field(description="Outputs from each agent")
+    consensus_points: list[str] = Field(description="Points of agreement")
+    divergent_points: list[str] = Field(description="Points of disagreement")
+    confidence_scores: dict[str, float] = Field(
         description="Confidence from each agent"
     )
 
@@ -66,13 +67,13 @@ class HybridMultiAgent(Agent):
     """
 
     # Agent groups
-    initial_agents: List[Agent] = Field(
+    initial_agents: list[Agent] = Field(
         default_factory=list, description="Initial processing agents"
     )
-    processing_agents: List[Agent] = Field(
+    processing_agents: list[Agent] = Field(
         default_factory=list, description="Main processing agents"
     )
-    synthesis_agents: List[Agent] = Field(
+    synthesis_agents: list[Agent] = Field(
         default_factory=list, description="Synthesis/output agents"
     )
 
@@ -82,7 +83,7 @@ class HybridMultiAgent(Agent):
         description="Execution pattern: parallel_then_sequential, classify_then_process, hierarchical",
     )
 
-    routing_function: Optional[Callable] = Field(
+    routing_function: Callable | None = Field(
         None, description="Custom routing function"
     )
 
@@ -251,19 +252,18 @@ class HybridMultiAgent(Agent):
             graph.add_node(agent.name, create_agent_node_v3(agent.name, agent))
 
         # Add routing condition
-        def route_by_classification(state: Dict[str, Any]) -> str:
+        def route_by_classification(state: dict[str, Any]) -> str:
             """Route based on task classification."""
             # Get classification from state
             classification = state.get("task_type", "simple")
 
             if classification == "simple":
                 return "simple_processor"
-            elif classification == "complex":
+            if classification == "complex":
                 return "complex_processor"
-            elif classification == "research":
+            if classification == "research":
                 return "research_processor"
-            else:
-                return "simple_processor"  # default
+            return "simple_processor"  # default
 
         # Add conditional routing
         routes = {
@@ -303,7 +303,7 @@ class AdaptiveMultiAgent(EnhancedMultiAgentV4):
     input characteristics and intermediate results.
     """
 
-    adaptation_rules: Dict[str, Callable] = Field(
+    adaptation_rules: dict[str, Callable] = Field(
         default_factory=dict, description="Rules for adapting execution"
     )
 
@@ -379,7 +379,7 @@ class CollaborativeMultiAgent(EnhancedMultiAgentV4):
         agents = []
 
         # Expert agents with different perspectives
-        for i, perspective in enumerate(["technical", "business", "user"]):
+        for _i, perspective in enumerate(["technical", "business", "user"]):
             agent = SimpleAgentV3(
                 name=f"{perspective}_expert",
                 engine=AugLLMConfig(

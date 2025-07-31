@@ -12,6 +12,9 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.graph.tool_config import ToolConfig
 from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.utils.visualize_graph_utils import (
+    render_and_display_graph,
+)
 from langchain_core.messages import AIMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig
@@ -324,9 +327,6 @@ class ReactAgent(SimpleAgent):
                 graph_filename = f"{self.config.name}_{timestamp}.png"
                 graph_path = os.path.join(output_dir, graph_filename)
 
-                from haive.core.utils.visualize_graph_utils import (
-                    render_and_display_graph,
-                )
 
                 render_and_display_graph(self.app, output_name=graph_path)
                 logger.info(f"Graph visualization saved to {graph_path}")

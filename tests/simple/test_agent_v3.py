@@ -1,6 +1,5 @@
 # Test SimpleAgent v3 - Dynamic Architecture Validation
-"""
-Test suite for SimpleAgent v3 with dynamic architecture patterns.
+"""Test suite for SimpleAgent v3 with dynamic architecture patterns.
 
 This test suite validates:
 - Real LLM execution (no mocks)
@@ -12,16 +11,17 @@ This test suite validates:
 """
 
 
+from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.tools import tool
+from pydantic import BaseModel, Field
 import pytest
+
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 # Core Haive imports
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from langchain_core.messages import AIMessage, HumanMessage
-from langchain_core.tools import tool
-from pydantic import BaseModel, Field
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 # ========================================================================
 # TEST FIXTURES - Real component setup
@@ -52,7 +52,7 @@ def calculator_tool():
             result = eval(expression)
             return str(result)
         except Exception as e:
-            return f"Error: {str(e)}"
+            return f"Error: {e!s}"
 
     return calculator
 

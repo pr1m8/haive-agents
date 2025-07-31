@@ -3,10 +3,11 @@
 Uses the existing working API system to run all games.
 """
 
-import json
 from datetime import datetime
+import json
 from pathlib import Path
 from typing import Any
+
 
 # Tournament results directory
 TOURNAMENT_DIR = Path("claude_vs_openai_api_results")
@@ -43,6 +44,7 @@ def test_general_api():
     """Test the General Games API to discover available games."""
     try:
         from fastapi import FastAPI
+
         from haive.dataflow.api.general_games_api import GeneralGameAPI
 
         app = FastAPI()

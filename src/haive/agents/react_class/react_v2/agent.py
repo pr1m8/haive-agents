@@ -6,7 +6,7 @@ from typing import Any
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage
-from langchain_core.tools import BaseTool, StructuredTool, Tool
+from langchain_core.tools import BaseTool, StructuredTool, Tool, tool
 from langgraph.graph import END
 from langgraph.prebuilt.tool_node import ToolNode
 from langgraph.pregel import RetryPolicy
@@ -62,8 +62,6 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
     def _prepare_tools(self, tools_input):
         """Convert various tool formats to LangChain tools."""
-        from langchain_core.tools import tool
-
         tools_map = {}
 
         # Handle different input formats
@@ -104,8 +102,6 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
     def _convert_tools_list(self, tools_list):
         """Convert a list of mixed tool formats to LangChain tools."""
-        from langchain_core.tools import tool
-
         converted_tools = []
 
         for t in tools_list:

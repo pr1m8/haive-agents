@@ -1,11 +1,11 @@
 """Tests for ReactRAGAgent - real component testing with retriever node."""
 
-import pytest
-from haive.core.engine.vectorstore import VectorStoreConfig
-from haive.core.models.embeddings import EmbeddingConfig
 from langchain_core.tools import tool
+import pytest
 
 from haive.agents.rag.agentic import ReactRAGAgent
+from haive.core.engine.vectorstore import VectorStoreConfig
+from haive.core.models.embeddings import EmbeddingConfig
 
 
 class TestReactRAGAgent:

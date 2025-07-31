@@ -6,8 +6,6 @@ from haive.agents.document_modifiers.complex_extraction.agent import (  # Finali
 from haive.agents.document_modifiers.complex_extraction.config import (
     ComplexExtractionAgentConfig,
 )
-
-# from haive.agents.document_modifiers.complex_extraction.example import PersonInfo
 from haive.agents.document_modifiers.complex_extraction.factory import (
     create_complex_extraction_agent,
 )
@@ -30,6 +28,8 @@ from haive.agents.document_modifiers.complex_extraction.utils import (
     default_aggregator,
     encode,
 )
+
+# from haive.agents.document_modifiers.complex_extraction.example import PersonInfo
 
 __all__ = [
     "ComplexExtractionAgent",

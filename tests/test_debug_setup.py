@@ -2,11 +2,12 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from rich.console import Console
 
 from haive.agents.multi.proper_base import ProperMultiAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 console = Console()
 

@@ -17,9 +17,13 @@ from typing import Any
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END
 from pydantic import Field
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+
+from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
 
 # Import the enhanced SimpleAgent as our base
-from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
 
 logger = logging.getLogger(__name__)
 
@@ -407,10 +411,6 @@ class EnhancedReactAgent(EnhancedSimpleAgent):
     def display_react_capabilities(self) -> None:
         """Display comprehensive ReAct capabilities."""
         summary = self.get_react_summary()
-
-        from rich.console import Console
-        from rich.panel import Panel
-        from rich.table import Table
 
         console = Console()
 

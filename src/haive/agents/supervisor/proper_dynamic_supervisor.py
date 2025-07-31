@@ -4,6 +4,7 @@ This implementation follows the EngineNode/AgentNode patterns for proper
 state handling and dynamic agent execution without graph rebuilding.
 """
 
+import asyncio
 import logging
 from typing import Any
 
@@ -255,7 +256,6 @@ class ProperDynamicSupervisor(ReactAgent):
 
 # Example usage
 if __name__ == "__main__":
-    import asyncio
 
     class MockAgent:
         """Simple mock agent for testing."""

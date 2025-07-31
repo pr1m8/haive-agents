@@ -5,9 +5,12 @@ from collections.abc import Callable
 from typing import Any
 
 from agents.react.memory.state import KnowledgeTriple, MemoryItem
+from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
+from langchain_core.tools import tool
 from langchain_core.vectorstores import VectorStore
+from langchain_openai import OpenAIEmbeddings
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +46,6 @@ def create_memory_vectorstore(embedding_model: Embeddings | None = None) -> Vect
     Returns:
         Vector store instance
     """
-    from langchain_community.vectorstores import FAISS
-    from langchain_openai import OpenAIEmbeddings
-
     # Use provided embedding model or create a new one
     embeddings = embedding_model or OpenAIEmbeddings()
 
@@ -243,7 +243,6 @@ def create_memory_tools(vector_store: VectorStore):
     Returns:
         Dictionary of memory tool functions
     """
-    from langchain_core.tools import tool
 
     @tool
     def save_memory(memory: str, user_id: str) -> str:

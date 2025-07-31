@@ -17,7 +17,6 @@ import logging
 import time
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.base.hooks import (
     HookContext,
@@ -28,6 +27,8 @@ from haive.agents.base.hooks import (
     timing_hook,
 )
 from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 logger = logging.getLogger(__name__)
 

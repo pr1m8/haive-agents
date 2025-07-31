@@ -2,9 +2,6 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from haive.core.registry import EngineRegistry
 from langchain_core.messages import HumanMessage
 
 from haive.agents.experiments.supervisor.agent_info import AgentInfo
@@ -15,6 +12,9 @@ from haive.agents.experiments.supervisor.dynamic_supervisor_agent import (
     create_supervisor_agent,
 )
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.registry import EngineRegistry
 
 
 async def create_new_agent_from_registry(

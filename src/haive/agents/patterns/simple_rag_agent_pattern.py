@@ -11,8 +11,6 @@ The pattern shows:
 4. Structured output for answers
 """
 
-from typing import List
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from langchain_core.prompts import ChatPromptTemplate
@@ -27,8 +25,8 @@ class RetrievalResult(BaseModel):
     """Structured retrieval result."""
 
     query: str = Field(description="Original search query")
-    documents: List[str] = Field(description="Retrieved documents")
-    relevance_scores: List[float] = Field(
+    documents: list[str] = Field(description="Retrieved documents")
+    relevance_scores: list[float] = Field(
         description="Relevance scores for each document"
     )
     total_results: int = Field(description="Total number of results found")
@@ -38,9 +36,9 @@ class AnswerWithSources(BaseModel):
     """Structured answer with source citations."""
 
     answer: str = Field(description="The generated answer")
-    sources: List[str] = Field(description="Sources used for the answer")
+    sources: list[str] = Field(description="Sources used for the answer")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in the answer")
-    follow_up_questions: List[str] = Field(description="Suggested follow-up questions")
+    follow_up_questions: list[str] = Field(description="Suggested follow-up questions")
 
 
 # Create retrieval tool
@@ -50,7 +48,7 @@ def retrieve_documents(query: str, top_k: int = 5) -> str:
     # This would connect to your actual vector store
     # For demo, return mock results
     return f"""Retrieved {top_k} documents for query: "{query}"
-    
+
     Document 1: Overview of the topic discussing {query} in detail...
     Document 2: Technical specifications related to {query}...
     Document 3: Best practices and guidelines for {query}...
@@ -240,7 +238,7 @@ def create_iterative_rag_agent(
 
 
 def create_hybrid_rag_agent(
-    name: str = "hybrid_rag", retrieval_strategies: List[str] = None, **kwargs
+    name: str = "hybrid_rag", retrieval_strategies: list[str] | None = None, **kwargs
 ) -> HybridRAGAgent:
     """Create a hybrid RAG agent with multiple retrieval strategies."""
     if retrieval_strategies is None:
@@ -268,9 +266,7 @@ async def example_simple_rag():
 
     # Access structured output
     if isinstance(result, dict) and "answer" in result:
-        print(f"Answer: {result['answer']}")
-        print(f"Confidence: {result['confidence']}")
-        print(f"Sources: {result['sources']}")
+        pass
 
 
 async def example_iterative_rag():

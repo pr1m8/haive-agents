@@ -21,11 +21,12 @@ import tempfile
 import pytest
 from langchain_core.messages import AIMessage, HumanMessage
 
-# Import test components
 from haive.agents.memory_v2.react_memory_coordinator import (
     MemoryCoordinatorConfig,
     ReactMemoryCoordinator,
 )
+
+# Import test components
 
 
 class TestReactMemoryCoordinator:
@@ -112,7 +113,6 @@ class TestReactMemoryCoordinator:
 
         # Check that ReactAgent used tools (indicated by structured reasoning)
         # ReactAgent responses typically contain tool usage patterns
-        print(f"Response: {response_text[:200]}...")
 
     @pytest.mark.asyncio
     async def test_memory_tool_integration(self, coordinator):
@@ -130,7 +130,6 @@ class TestReactMemoryCoordinator:
 
         # Response should reference the stored preference
         assert len(response_text) > 0
-        print(f"Search result: {response_text[:150]}...")
 
     @pytest.mark.asyncio
     async def test_cross_memory_coordination(self, coordinator):
@@ -154,7 +153,6 @@ class TestReactMemoryCoordinator:
         assert len(response_text) > 0
 
         # ReactAgent should coordinate between memory sources
-        print(f"Cross-memory response: {response_text[:200]}...")
 
     @pytest.mark.asyncio
     async def test_memory_analysis_tool(self, coordinator):
@@ -179,7 +177,6 @@ class TestReactMemoryCoordinator:
         assert len(response_text) > 0
 
         # Analysis should contain insights about stored memories
-        print(f"Memory analysis: {response_text[:200]}...")
 
     @pytest.mark.asyncio
     async def test_comprehensive_memory_summary(self, coordinator):
@@ -216,8 +213,6 @@ class TestReactMemoryCoordinator:
         assert "total_memories" in ltm_summary
         assert "total_messages" in conv_summary
 
-        print(f"Summary: {summary}")
-
     @pytest.mark.asyncio
     async def test_factory_methods(self, temp_storage):
         """Test factory methods for creating coordinators."""
@@ -252,15 +247,12 @@ class TestReactMemoryCoordinator:
         assert "response" in result
 
         # Should handle gracefully without crashing
-        print("✅ Error handling tests passed")
 
 
 # Integration test with real workflow
 @pytest.mark.asyncio
 async def test_complete_memory_workflow():
     """Test complete memory workflow with ReactAgent coordination."""
-    print("\n🧪 Integration Test: Complete Memory Workflow")
-
     # Create temporary storage
     temp_dir = tempfile.mkdtemp(prefix="integration_test_")
 
@@ -277,7 +269,6 @@ async def test_complete_memory_workflow():
         )
 
         await coordinator.initialize()
-        print("✅ Coordinator initialized")
 
         # Step 1: Build up memory context
         profile_messages = [
@@ -292,7 +283,6 @@ async def test_complete_memory_workflow():
         ]
 
         await coordinator.add_conversation_batch(profile_messages)
-        print("✅ Added profile information")
 
         # Step 2: Test memory-enhanced conversations
         queries = [
@@ -302,30 +292,18 @@ async def test_complete_memory_workflow():
             "Based on my preferences, how should I approach team collaboration?",
         ]
 
-        for i, query in enumerate(queries, 1):
+        for _i, query in enumerate(queries, 1):
             try:
                 result = await coordinator.run(query)
                 response_text = str(result["response"])
 
-                print(f"\n{i}. Query: {query}")
-                print(f"   Response: {response_text[:150]}...")
-
                 assert len(response_text) > 0
 
-            except Exception as e:
-                print(f"   ⚠️ Query failed: {str(e)[:100]}...")
+            except Exception:
+                pass
 
         # Step 3: Test memory analysis
-        summary = await coordinator.get_comprehensive_memory_summary()
-        print("\n📊 Final Summary:")
-        print(
-            f"   Long-term memories: {summary['memory_systems']['long_term']['total_memories']}"
-        )
-        print(
-            f"   Conversation messages: {summary['memory_systems']['conversation']['total_messages']}"
-        )
-
-        print("\n✅ Integration test completed successfully!")
+        await coordinator.get_comprehensive_memory_summary()
 
     finally:
         # Cleanup

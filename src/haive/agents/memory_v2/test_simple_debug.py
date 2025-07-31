@@ -1,5 +1,7 @@
 """Debug test for SimpleMemoryAgent state issues."""
 
+import traceback
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 
@@ -41,7 +43,6 @@ def test_state_schema():
         # Just test the graph building, not full execution
         agent.build_graph()
     except Exception:
-        import traceback
 
         traceback.print_exc()
 

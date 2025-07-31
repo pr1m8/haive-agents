@@ -1,5 +1,6 @@
 from langchain_core.prompts import ChatPromptTemplate
 
+
 RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
     [
         (
@@ -92,9 +93,8 @@ class QueryRefinementResponse(BaseModel):
     )
 
 
-from haive.core.engine.aug_llm import AugLLMConfig
-
 from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 def agent_test(prompt, model, test_prompt):

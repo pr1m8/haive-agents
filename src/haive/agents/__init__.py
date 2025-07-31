@@ -94,7 +94,7 @@ try:
     pass  # Submodule imports would go here
 except ImportError as e:
     # Log but don't fail if submodules aren't available
-    warnings.warn(f"Failed to import agent submodules: {e}")
+    warnings.warn(f"Failed to import agent submodules: {e}", stacklevel=2)
 
 # Planning agents
 # from haive.agents.planning import (

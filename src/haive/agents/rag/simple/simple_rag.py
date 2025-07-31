@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """SimpleRAG - Class inheriting from MultiAgent."""
 
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.vectorstore import VectorStoreConfig

@@ -13,6 +13,7 @@ Key Features:
 """
 
 import asyncio
+import hashlib
 import logging
 from collections.abc import Callable
 from enum import Enum
@@ -26,10 +27,17 @@ from langchain_core.messages import BaseMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool, StructuredTool
 from pydantic import BaseModel, Field, model_validator
 
+from haive.agents.discovery.selection_strategies import (
+    AdaptiveSelectionStrategy,
+    CapabilityBasedStrategy,
+    ContextualSelectionStrategy,
+    SemanticSelectionStrategy,
+)
 from haive.agents.discovery.semantic_discovery import (
     QueryAnalysis,
     SemanticDiscoveryEngine,
     ToolSelectionStrategy,
+    create_semantic_discovery,
 )
 
 logger = logging.getLogger(__name__)
@@ -143,9 +151,6 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
         """Setup the tool selector with default components."""
         # Initialize semantic discovery if not provided
         if not self.semantic_discovery:
-            from haive.agents.discovery.semantic_discovery import (
-                create_semantic_discovery,
-            )
 
             self.semantic_discovery = create_semantic_discovery()
 
@@ -157,12 +162,6 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
 
     def _setup_default_strategies(self) -> None:
         """Setup default tool selection strategies."""
-        from haive.agents.discovery.selection_strategies import (
-            AdaptiveSelectionStrategy,
-            CapabilityBasedStrategy,
-            ContextualSelectionStrategy,
-            SemanticSelectionStrategy,
-        )
 
         self.selection_strategies = {
             "semantic": SemanticSelectionStrategy(),
@@ -429,7 +428,6 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
 
     def _generate_cache_key(self, query: str, context: dict[str, Any]) -> str:
         """Generate cache key for tool selection."""
-        import hashlib
 
         key_components = [
             query,

@@ -1,5 +1,4 @@
-"""
-Multi-Agent Structured Output Demo
+"""Multi-Agent Structured Output Demo.
 
 This example demonstrates:
 1. ReactAgent with tools → SimpleAgent with structured output
@@ -9,7 +8,6 @@ This example demonstrates:
 """
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -34,9 +32,9 @@ class MarketAnalysis(BaseModel):
     market_name: str = Field(description="Name of the market analyzed")
     market_size: str = Field(description="Current market size")
     growth_rate: float = Field(description="Annual growth rate percentage")
-    key_players: List[str] = Field(description="Major companies in the market")
-    opportunities: List[str] = Field(description="Market opportunities")
-    risks: List[str] = Field(description="Market risks")
+    key_players: list[str] = Field(description="Major companies in the market")
+    opportunities: list[str] = Field(description="Market opportunities")
+    risks: list[str] = Field(description="Market risks")
     recommendation: str = Field(description="Investment recommendation")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in analysis")
 
@@ -162,15 +160,13 @@ class WorkflowMonitor:
             }
 
             # Capture agent outputs
-            if context.event == HookEvent.AFTER_RUN:
-                if hasattr(context, "result"):
-                    self.agent_outputs[context.agent_name] = {
-                        "completed": True,
-                        "has_output": bool(context.result),
-                    }
+            if context.event == HookEvent.AFTER_RUN and hasattr(context, "result"):
+                self.agent_outputs[context.agent_name] = {
+                    "completed": True,
+                    "has_output": bool(context.result),
+                }
 
             self.events.append(event)
-            print(f"⚡ {context.event.value}: {context.agent_name}")
 
         return monitor
 
@@ -182,10 +178,6 @@ class WorkflowMonitor:
 
 async def demo_basic_flow():
     """Demonstrate basic ReactAgent → SimpleAgent flow."""
-    print("\n" + "=" * 60)
-    print("Demo 1: Basic Market Analysis Flow")
-    print("=" * 60)
-
     # Create agents
     analyst = create_market_analyst()
     writer = create_report_writer()
@@ -209,25 +201,20 @@ async def demo_basic_flow():
     if "messages" in result and len(result["messages"]) > 0:
         last_msg = result["messages"][-1]
         if hasattr(last_msg, "content"):
-            print("\n📊 Structured Output:")
             try:
                 import json
 
                 data = json.loads(last_msg.content)
-                for key, value in data.items():
-                    print(f"  • {key}: {value}")
+                for _key, _value in data.items():
+                    pass
             except:
-                print(last_msg.content[:300] + "...")
+                pass
 
     return result
 
 
 async def demo_with_hooks():
     """Demonstrate workflow with comprehensive hook monitoring."""
-    print("\n" + "=" * 60)
-    print("Demo 2: Workflow with Hook Monitoring")
-    print("=" * 60)
-
     # Create monitor
     monitor = WorkflowMonitor()
 
@@ -255,21 +242,14 @@ async def demo_with_hooks():
     result = await workflow.arun(initial_state)
 
     # Display monitoring results
-    print("\n📊 Execution Monitor Summary:")
-    print(f"  • Total events: {len(monitor.events)}")
-    print(f"  • Agents executed: {list(monitor.agent_outputs.keys())}")
-    for agent, status in monitor.agent_outputs.items():
-        print(f"  • {agent}: {'✅' if status['completed'] else '❌'}")
+    for agent, _status in monitor.agent_outputs.items():
+        pass
 
     return result
 
 
 async def demo_with_reflection():
     """Demonstrate report writing with reflection."""
-    print("\n" + "=" * 60)
-    print("Demo 3: Report Writing with Reflection")
-    print("=" * 60)
-
     # Create base writer
     writer = create_report_writer()
 
@@ -298,12 +278,10 @@ async def demo_with_reflection():
     }
 
     # Execute with reflection
-    print("\n✍️ Writing initial report...")
     result = await reflective_writer.arun(test_state)
 
-    print("\n🔄 Reflection complete!")
     if isinstance(result, dict) and "messages" in result:
-        print(f"Total messages after reflection: {len(result['messages'])}")
+        pass
 
     return result
 
@@ -315,27 +293,14 @@ async def demo_with_reflection():
 
 async def main():
     """Run all demos."""
-    print("\n🚀 Multi-Agent Structured Output Demo")
-    print("=" * 70)
-
     # Demo 1: Basic flow
-    result1 = await demo_basic_flow()
+    await demo_basic_flow()
 
     # Demo 2: With hooks
-    result2 = await demo_with_hooks()
+    await demo_with_hooks()
 
     # Demo 3: With reflection
-    result3 = await demo_with_reflection()
-
-    print("\n" + "=" * 70)
-    print("✅ All Demos Complete!")
-    print("\nKey Patterns Demonstrated:")
-    print("  • ReactAgent with tools for research")
-    print("  • SimpleAgent with structured output (Pydantic models)")
-    print("  • Prompt templates with input variables")
-    print("  • Sequential multi-agent workflows")
-    print("  • Hook monitoring for execution tracking")
-    print("  • Reflection patterns for output improvement")
+    await demo_with_reflection()
 
 
 if __name__ == "__main__":

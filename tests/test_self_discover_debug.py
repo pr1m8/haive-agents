@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 
+
 # Add packages to path
 sys.path.insert(0, "packages/haive-core/src")
 sys.path.insert(0, "packages/haive-agents/src")
@@ -28,14 +29,13 @@ def test_basic_imports():
 def test_engine_creation():
     """Test creating AugLLM engines without agents."""
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.reasoning_and_critique.self_discover.v2.models import (
             SelectedModules,
         )
         from haive.agents.reasoning_and_critique.self_discover.v2.prompts import (
             select_prompt,
         )
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create a simple engine config
         AugLLMConfig(
@@ -53,8 +53,6 @@ def test_engine_creation():
 def test_simple_agent_creation():
     """Test creating a single SimpleAgent."""
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.reasoning_and_critique.self_discover.v2.models import (
             SelectedModules,
         )
@@ -62,6 +60,7 @@ def test_simple_agent_creation():
             select_prompt,
         )
         from haive.agents.simple.agent import SimpleAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create engine config
         engine_config = AugLLMConfig(

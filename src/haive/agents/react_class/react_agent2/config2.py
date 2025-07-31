@@ -188,8 +188,6 @@ class ReactAgentConfig(AgentConfig):
             ReactAgentConfig instance
         """
         # Import required classes
-        from haive.core.models.llm.base import AzureLLMConfig
-        from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
         # Create LLM config
         llm_config = AzureLLMConfig(
@@ -244,8 +242,6 @@ class ReactAgentConfig(AgentConfig):
         Returns:
             ReactAgentConfig instance
         """
-        from datetime import datetime
-
         return cls(
             name=name
             or f"react_agent_{

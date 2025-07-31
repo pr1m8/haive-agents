@@ -2,10 +2,12 @@
 
 import sys
 
+
 # Add the package to Python path
 sys.path.insert(0, "packages/haive-core/src")
 
 from enum import Enum
+
 
 # Direct imports of only what we need
 

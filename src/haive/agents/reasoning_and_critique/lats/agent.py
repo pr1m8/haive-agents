@@ -1,6 +1,7 @@
 # src/haive/agents/lats/tree_agent.py
 
 import logging
+from collections import defaultdict
 from datetime import datetime
 from typing import Any
 
@@ -15,7 +16,8 @@ from langchain_core.prompt_values import ChatPromptValue
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig
 from langchain_core.runnables import chain as as_runnable
-from langgraph.graph import END
+from langgraph.graph import END, START, StateGraph
+from langgraph.prebuilt import ToolNode
 from pydantic import BaseModel, Field
 
 from haive.agents.reasoning_and_critique.lats.models import Node, Reflection
@@ -160,7 +162,6 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         # Create tool node if tools are provided
         if self.config.tools:
-            from langgraph.prebuilt import ToolNode
 
             self.tool_node = ToolNode(tools=self.config.tools)
         else:
@@ -336,7 +337,6 @@ class LATSAgent(Agent[LATSAgentConfig]):
                         )
 
                 # Collect tool responses by candidate index
-                from collections import defaultdict
 
                 collected_responses = defaultdict(list)
                 for i, resp in tool_responses:
@@ -416,7 +416,6 @@ class LATSAgent(Agent[LATSAgentConfig]):
             return updated_state
 
         # Build the graph
-        from langgraph.graph import START, StateGraph
 
         graph = StateGraph(TreeState)
 

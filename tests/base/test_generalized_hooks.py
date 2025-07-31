@@ -1,10 +1,8 @@
 """Test the generalized hook system in the enhanced base agent."""
 
-from typing import Any, Dict
 from unittest.mock import AsyncMock
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.base.hooks import (
     HookContext,
@@ -15,6 +13,7 @@ from haive.agents.base.hooks import (
     reflection_hook,
 )
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestGeneralizedHooks:
@@ -231,7 +230,7 @@ class TestGeneralizedHooks:
 
         try:
             # Run the agent
-            result = await agent.arun("test input")
+            await agent.arun("test input")
 
             # Verify hooks were executed
             assert "before_arun" in hook_executions

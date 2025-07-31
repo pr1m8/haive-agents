@@ -2,10 +2,10 @@
 """Test SimpleRAG with REAL components - NO MOCKS."""
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.vectorstore import VectorStoreConfig
 
 from haive.agents.rag.simple.simple_rag import SimpleRAG
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.vectorstore import VectorStoreConfig
 
 
 class TestSimpleRAGMultiAgent:
@@ -13,7 +13,6 @@ class TestSimpleRAGMultiAgent:
 
     def test_simple_rag_creation(self):
         """Test SimpleRAG can be created with real configs."""
-
         # Create real configs
         llm_config = AugLLMConfig(temperature=0.1)
 

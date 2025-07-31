@@ -662,7 +662,7 @@ def create_query_decomposer(
         return ContextualQueryDecomposerAgent(llm_config=llm_config, **kwargs)
     if decomposer_type == "adaptive":
         return AdaptiveQueryDecomposerAgent(llm_config=llm_config, **kwargs)
-    raise ValueError(f"Unknown decomposer type: {decomposer_type}")
+    raise TypeError(f"Unknown decomposer type: {decomposer_type}")
 
 
 # I/O schema for compatibility checking

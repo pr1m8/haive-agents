@@ -2,11 +2,11 @@
 
 import uuid
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Test schemas

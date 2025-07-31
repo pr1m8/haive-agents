@@ -5,12 +5,9 @@ import logging
 import platform
 import re
 import uuid
-
-# -----------------------------------------------------------------------------
-# Debugging Utility
-# -----------------------------------------------------------------------------
 from typing import Any
 
+from agents.web_nav.aug_llms import web_nav_aug_llm
 from haive.core.engine.agent.agent import Agent, AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig, compose_runnable
 from IPython import display
@@ -20,6 +17,11 @@ from langgraph.graph import START
 from playwright.async_api import Browser, Page, async_playwright
 from playwright_stealth import stealth_async
 from pydantic import BaseModel, ConfigDict, Field
+
+# -----------------------------------------------------------------------------
+# Debugging Utility
+# -----------------------------------------------------------------------------
+
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -757,7 +759,6 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 # Example usage
 async def run_web_navigator():
     # Import web_nav_aug_llm from your module
-    from agents.web_nav.aug_llms import web_nav_aug_llm
 
     config = WebNavAgentConfig(
         aug_llm_config=web_nav_aug_llm,

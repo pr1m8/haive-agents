@@ -14,6 +14,12 @@ from haive.core.schema.prebuilt.messages.messages_with_token_usage import (
 from langchain_core.messages import AnyMessage
 from pydantic import ConfigDict, Field, computed_field
 
+from haive.agents.document_modifiers.kg.kg_map_merge.models import (
+    EntityNode,
+    EntityRelationship,
+    KnowledgeGraph,
+)
+
 from .memory_state_original import (
     MemoryStats,
     UnifiedMemoryEntry,
@@ -23,11 +29,6 @@ logger = logging.getLogger(__name__)
 
 # Graph transformer imports
 try:
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
-        EntityNode,
-        EntityRelationship,
-        KnowledgeGraph,
-    )
 
     GRAPH_AVAILABLE = True
 except ImportError:

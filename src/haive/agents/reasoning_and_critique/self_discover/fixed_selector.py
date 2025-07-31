@@ -68,6 +68,5 @@ Select 3-5 most relevant modules for solving this task. For each module, provide
 
             # Return as messages for the graph
             return {"messages": formatted_messages}
-        else:
-            # Fall back to parent implementation
-            return super()._prepare_input(input_data)
+        # Fall back to parent implementation
+        return super()._prepare_input(input_data)

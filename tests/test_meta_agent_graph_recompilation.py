@@ -13,13 +13,13 @@ Key Focus:
 from datetime import datetime
 from typing import Any
 
+from pydantic import Field
+
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.common.mixins.recompile_mixin import RecompileMixin
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from pydantic import Field
-
-from haive.agents.simple.agent import SimpleAgent
 
 
 class GraphRecompilableSimpleAgent(RecompileMixin, SimpleAgent):

@@ -5,6 +5,8 @@ supporting document processing, grading, multi-step retrieval, and conditional r
 """
 
 import operator
+import uuid
+from datetime import datetime
 from enum import Enum
 from typing import Annotated, Any
 
@@ -213,9 +215,6 @@ class MultiAgentRAGState(StateSchema):
         output_data: dict[str, Any] | None = None,
     ) -> str:
         """Add a new workflow step."""
-        import uuid
-        from datetime import datetime
-
         step_id = str(uuid.uuid4())[:8]
         step = RAGStep(
             step_id=step_id,

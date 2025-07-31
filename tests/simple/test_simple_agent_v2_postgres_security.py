@@ -4,17 +4,17 @@ import asyncio
 import os
 from unittest.mock import patch
 
+from pydantic import SecretStr
+from pydantic_core import PydanticUndefined
 import pytest
+
+from haive.agents.simple.agent_v2 import SimpleAgentV2
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.persistence.serializers import (
     SecureSecretStrSerializer,
     create_encrypted_serializer_for_postgres,
     create_production_serializer,
 )
-from pydantic import SecretStr
-from pydantic_core import PydanticUndefined
-
-from haive.agents.simple.agent_v2 import SimpleAgentV2
 
 
 class TestPostgreSQLSecurity:

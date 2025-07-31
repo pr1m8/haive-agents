@@ -5,7 +5,7 @@ Each stage of the TOT algorithm is handled by a specialized agent.
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
@@ -23,16 +23,16 @@ class ProblemAnalysis(BaseModel):
     problem_type: str = Field(
         description="Type of problem (math, logic, planning, etc.)"
     )
-    key_constraints: List[str] = Field(description="Important constraints to consider")
+    key_constraints: list[str] = Field(description="Important constraints to consider")
     success_criteria: str = Field(description="What constitutes a valid solution")
-    approach_hints: List[str] = Field(description="Suggested approaches to try")
+    approach_hints: list[str] = Field(description="Suggested approaches to try")
 
 
 class CandidateGeneration(BaseModel):
     """Multiple candidate solutions."""
 
     reasoning: str = Field(description="Reasoning behind the candidates")
-    candidates: List[str] = Field(
+    candidates: list[str] = Field(
         description="List of candidate solutions", min_items=3, max_items=10
     )
 
@@ -42,15 +42,15 @@ class CandidateEvaluation(BaseModel):
 
     candidate: str = Field(description="The candidate being evaluated")
     score: float = Field(description="Score between 0 and 1", ge=0, le=1)
-    strengths: List[str] = Field(description="What's good about this solution")
-    weaknesses: List[str] = Field(description="What could be improved")
+    strengths: list[str] = Field(description="What's good about this solution")
+    weaknesses: list[str] = Field(description="What could be improved")
     feedback: str = Field(description="Overall evaluation feedback")
 
 
 class BeamSelection(BaseModel):
     """Selection of best candidates for next iteration."""
 
-    selected_candidates: List[Dict[str, Any]] = Field(
+    selected_candidates: list[dict[str, Any]] = Field(
         description="Top candidates with scores"
     )
     should_continue: bool = Field(description="Whether to continue searching")
@@ -80,7 +80,7 @@ class TreeOfThoughtsMultiAgent:
         beam_width: int = 3,
         threshold: float = 0.8,
         expansion_count: int = 5,
-        temperature_config: Optional[Dict[str, float]] = None,
+        temperature_config: dict[str, float] | None = None,
     ):
         """Initialize the TOT multi-agent system.
 
@@ -174,7 +174,7 @@ class TreeOfThoughtsMultiAgent:
         self.best_solution = None
         self.problem_analysis = None
 
-    async def solve(self, problem: str) -> Dict[str, Any]:
+    async def solve(self, problem: str) -> dict[str, Any]:
         """Solve a problem using Tree of Thoughts multi-agent approach.
 
         Args:
@@ -183,17 +183,8 @@ class TreeOfThoughtsMultiAgent:
         Returns:
             Dictionary containing solution and search metadata
         """
-        print(f"\n🌳 Starting Tree of Thoughts Multi-Agent Search")
-        print(
-            f"Configuration: depth={self.max_depth}, beam={self.beam_width}, threshold={self.threshold}"
-        )
-        print("=" * 80)
-
         # Step 1: Analyze the problem
-        print("\n📊 Step 1: Analyzing Problem...")
         self.problem_analysis = await self.problem_analyzer.arun(problem)
-        print(f"Problem Type: {self.problem_analysis.problem_type}")
-        print(f"Success Criteria: {self.problem_analysis.success_criteria}")
 
         # Initialize search with the problem as the first "candidate"
         current_candidates = [
@@ -202,32 +193,27 @@ class TreeOfThoughtsMultiAgent:
 
         # Search loop
         for depth in range(self.max_depth):
-            print(f"\n🔄 Search Depth {depth + 1}/{self.max_depth}")
-            print("-" * 40)
 
             # Store candidates for this depth
             depth_candidates = []
 
             # Step 2: Generate candidates from each beam candidate
             for i, seed in enumerate(current_candidates[: self.beam_width]):
-                print(
-                    f"\n🌱 Expanding from candidate {i+1} (score: {seed['score']:.2f})"
-                )
 
                 # Create generation prompt with context
                 generation_prompt = f"""
                 Problem: {problem}
-                
+
                 Problem Analysis:
                 - Type: {self.problem_analysis.problem_type}
                 - Success Criteria: {self.problem_analysis.success_criteria}
                 - Constraints: {', '.join(self.problem_analysis.key_constraints)}
-                
+
                 Current Seed Solution (score: {seed['score']}):
                 {seed['content']}
-                
+
                 Feedback: {seed.get('feedback', 'N/A')}
-                
+
                 Generate {self.expansion_count} new candidate solutions that improve upon or explore different approaches from the seed.
                 """
 
@@ -236,20 +222,17 @@ class TreeOfThoughtsMultiAgent:
                 )
 
                 # Step 3: Evaluate each generated candidate
-                print(
-                    f"Generated {len(generation_result.candidates)} candidates, evaluating..."
-                )
 
-                for j, candidate in enumerate(generation_result.candidates):
+                for _j, candidate in enumerate(generation_result.candidates):
                     eval_prompt = f"""
                     Problem: {problem}
-                    
+
                     Success Criteria: {self.problem_analysis.success_criteria}
                     Constraints: {', '.join(self.problem_analysis.key_constraints)}
-                    
+
                     Candidate Solution:
                     {candidate}
-                    
+
                     Evaluate this solution thoroughly.
                     """
 
@@ -267,20 +250,15 @@ class TreeOfThoughtsMultiAgent:
                         }
                     )
 
-                    print(f"  Candidate {j+1}: Score = {evaluation.score:.2f}")
-
             # Step 4: Select best candidates for beam search
-            print(
-                f"\n🎯 Selecting top {self.beam_width} candidates from {len(depth_candidates)} total"
-            )
 
             selection_prompt = f"""
             Current search depth: {depth + 1}/{self.max_depth}
             Score threshold: {self.threshold}
-            
+
             Candidates to consider:
             {self._format_candidates_for_selection(depth_candidates)}
-            
+
             Select the top {self.beam_width} candidates for the next iteration.
             """
 
@@ -298,29 +276,24 @@ class TreeOfThoughtsMultiAgent:
 
             # Check if we should stop
             if not selection.should_continue:
-                print(f"\n✅ Search complete: {selection.reasoning}")
                 break
 
             # Check if best score exceeds threshold
             best_score = max(c["score"] for c in current_candidates)
             if best_score >= self.threshold:
-                print(
-                    f"\n✅ Found solution exceeding threshold ({best_score:.2f} >= {self.threshold})"
-                )
                 break
 
         # Step 5: Synthesize final solution
-        print("\n🎯 Step 5: Synthesizing Final Solution...")
 
         synthesis_prompt = f"""
         Problem: {problem}
-        
+
         Search Summary:
         - Total candidates explored: {sum(len(d['candidates']) for d in self.search_history)}
         - Search depth reached: {len(self.search_history)}
         - Best candidates found:
         {self._format_best_candidates()}
-        
+
         Create the final solution based on the search results.
         """
 
@@ -341,7 +314,7 @@ class TreeOfThoughtsMultiAgent:
         self.best_solution = result
         return result
 
-    def _format_candidates_for_selection(self, candidates: List[Dict]) -> str:
+    def _format_candidates_for_selection(self, candidates: list[dict]) -> str:
         """Format candidates for the selector agent."""
         formatted = []
         for i, c in enumerate(candidates):
@@ -406,7 +379,7 @@ Candidate {i+1}:
 
 async def solve_with_tot_multi_agent(
     problem: str, max_depth: int = 3, beam_width: int = 3, threshold: float = 0.8
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Convenience function to solve a problem with TOT multi-agent.
 
     Args:
@@ -435,19 +408,7 @@ if __name__ == "__main__":
         problem1 = "Using the numbers 4, 9, 10, 13 and basic operations (+, -, *, /), create an expression that equals 24. Each number must be used exactly once."
 
         tot = TreeOfThoughtsMultiAgent(max_depth=3, beam_width=3, threshold=0.9)
-        result = await tot.solve(problem1)
-
-        print("\n" + "=" * 80)
-        print("📊 FINAL RESULT")
-        print("=" * 80)
-        print(f"Solution: {result['solution']}")
-        print(f"Confidence: {result['confidence']:.2f}")
-        print(f"Explanation: {result['explanation']}")
-        print(f"\nSearch Statistics:")
-        print(f"- Total candidates explored: {result['total_candidates']}")
-        print(f"- Search depth: {result['search_depth']}")
-
-        print("\n" + tot.visualize_search_tree())
+        await tot.solve(problem1)
 
         # Example 2: Logic puzzle
         problem2 = """
@@ -459,9 +420,6 @@ if __name__ == "__main__":
         """
 
         tot2 = TreeOfThoughtsMultiAgent(max_depth=2, beam_width=4, threshold=0.85)
-        result2 = await tot2.solve(problem2)
-
-        print(f"\n\nLogic Puzzle Solution: {result2['solution']}")
-        print(f"Confidence: {result2['confidence']:.2f}")
+        await tot2.solve(problem2)
 
     asyncio.run(main())

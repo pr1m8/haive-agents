@@ -12,6 +12,7 @@ import logging
 
 from rich.console import Console
 
+
 # Mock classes for testing without full haive setup
 console = Console()
 logging.basicConfig(level=logging.INFO)

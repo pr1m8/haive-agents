@@ -4,6 +4,7 @@ This agent specializes in extracting and maintaining knowledge graphs from memor
 building entity relationships and semantic connections across the memory system.
 """
 
+import json
 import logging
 from datetime import datetime
 from typing import Any
@@ -1007,7 +1008,6 @@ Extract relationships now:""",
     def _parse_json_response(self, response: str) -> dict[str, Any] | None:
         """Parse JSON response from LLM."""
         try:
-            import json
 
             # Try to find JSON in response
             start_idx = response.find("{")

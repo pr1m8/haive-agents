@@ -8,15 +8,15 @@ This test demonstrates the exact usage patterns you requested:
 
 import asyncio
 import uuid
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 # Import agents
 from haive.agents.simple.agent_v2 import SimpleAgentV2  # V2 with safety nets
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Try to import ReactAgent
 try:
@@ -42,7 +42,6 @@ class Plan(BaseModel):
 
 async def example_simple_agent_v2_with_plan():
     """Example: SimpleAgent V2 with Plan model - your exact pattern."""
-
     # Create engine configurations exactly as you specified
     plan_aug = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -62,13 +61,11 @@ async def example_simple_agent_v2_with_plan():
         parser_safety_net_mode="create",
     )
 
-
     # Test with a simple request
     try:
         result = await simple_agent.ainvoke(
             {"messages": [HumanMessage(content="Create a plan for making coffee")]}
         )
-
 
         # Show any Plan results
         for key, value in result.items():
@@ -77,7 +74,7 @@ async def example_simple_agent_v2_with_plan():
 
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -85,7 +82,6 @@ async def example_react_agent_with_add():
     """Example: ReactAgent with add tool - your exact pattern."""
     if not REACT_AGENT_AVAILABLE:
         return True
-
 
     # Create engine configurations exactly as you specified
     add_aug = AugLLMConfig(
@@ -100,27 +96,24 @@ async def example_react_agent_with_add():
         name="math_agent", engine=add_aug, enable_persistence=False  # For testing
     )
 
-
     # Test with a simple math request
     try:
         result = await react_agent.ainvoke(
             {"messages": [HumanMessage(content="What is 5 + 3?")]}
         )
 
-
         # Show the conversation
-        for i, msg in enumerate(result.get("messages", [])):
+        for _i, _msg in enumerate(result.get("messages", [])):
             pass
 
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 async def example_simple_agent_v2_configurations():
     """Example: Different V2 configuration options."""
-
     add_aug = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
         name="config_engine",
@@ -129,7 +122,7 @@ async def example_simple_agent_v2_configurations():
     )
 
     # Example 1: Full V2 with all safety nets
-    agent_full_v2 = SimpleAgentV2(
+    SimpleAgentV2(
         name="full_v2",
         engine=add_aug,
         enable_persistence=False,
@@ -138,7 +131,7 @@ async def example_simple_agent_v2_configurations():
     )
 
     # Example 2: V2 with warnings only
-    agent_warn_only = SimpleAgentV2(
+    SimpleAgentV2(
         name="warn_only",
         engine=add_aug,
         enable_persistence=False,
@@ -147,13 +140,12 @@ async def example_simple_agent_v2_configurations():
     )
 
     # Example 3: V2 with V1 parser behavior
-    agent_v1_parser = SimpleAgentV2(
+    SimpleAgentV2(
         name="v1_parser",
         engine=add_aug,
         enable_persistence=False,
         use_parser_safety_net=False,
     )
-
 
     return True
 
@@ -177,20 +169,18 @@ async def example_direct_usage_pattern():
     )
 
     # Create agents
-    simple_agent = SimpleAgentV2(engine=plan_aug)
+    SimpleAgentV2(engine=plan_aug)
 
     if REACT_AGENT_AVAILABLE:
-        react_agent = ReactAgent(engine=add_aug)
+        ReactAgent(engine=add_aug)
     else:
         pass
-
 
     return True
 
 
 async def main():
     """Run all examples."""
-
     examples = [
         ("SimpleAgent V2 + Plan", example_simple_agent_v2_with_plan),
         ("ReactAgent + Add Tool", example_react_agent_with_add),
@@ -204,20 +194,18 @@ async def main():
         try:
             result = await example_func()
             results.append((name, result))
-        except Exception as e:
+        except Exception:
             results.append((name, False))
 
-
-    for name, success in results:
-        status = "✅ SUCCESS" if success else "❌ FAILED"
+    for name, _success in results:
+        pass
 
     all_success = all(result for _, result in results)
     if all_success:
         if REACT_AGENT_AVAILABLE:
             pass
     else:
-        passes")
-
+        pass
 
 
 if __name__ == "__main__":

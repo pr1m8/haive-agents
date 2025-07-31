@@ -13,9 +13,8 @@ This test suite validates all aspects of the ReWOO Tree Agent:
 
 import asyncio
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
+import pytest
 
 from haive.agents.planning.rewoo_tree_agent import (
     PlanNode,
@@ -29,6 +28,7 @@ from haive.agents.planning.rewoo_tree_agent import (
     TaskType,
     ToolAlias,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Test Tools

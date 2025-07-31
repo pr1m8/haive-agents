@@ -10,6 +10,7 @@ from utilities.supabase_metadata_viewer import (
 )
 from utilities.test_verbose_debug import TestResponse, test_verbose_debug
 
+
 __all__ = [
     "TestResponse",
     "get_database_connection",

@@ -1,10 +1,10 @@
 """Tests for DocumentGraderAgent - real component testing, no mocks."""
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.rag.agentic import DocumentGraderAgent
 from haive.agents.rag.common.document_graders.models import DocumentBinaryResponse
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestDocumentGraderAgent:

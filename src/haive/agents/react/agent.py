@@ -1,6 +1,7 @@
 # ============================================================================
 # REACT AGENT
 # ============================================================================
+
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END
 

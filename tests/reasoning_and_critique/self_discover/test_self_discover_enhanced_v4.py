@@ -63,7 +63,7 @@ class TestSelfDiscoverAgents:
 1. Pattern Recognition
    Reason: Helps identify memory patterns
 
-2. Systems Analysis  
+2. Systems Analysis
    Reason: Break down memory systems
 
 3. Optimization
@@ -103,7 +103,7 @@ class TestSelfDiscoverAgents:
 2. Systems Analysis
    Strategy: Analyze your current study system and memory techniques
 
-3. Optimization  
+3. Optimization
    Strategy: Optimize study schedule and memory techniques"""
 
         # Run structurer
@@ -139,7 +139,7 @@ Step 1: Analyze current memory techniques
 
 Step 2: Identify memory patterns
    Using modules: [1]
-   
+
 Step 3: Develop optimized techniques
    Using modules: [3]"""
 

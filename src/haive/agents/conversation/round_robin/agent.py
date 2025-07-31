@@ -5,6 +5,7 @@ import logging
 from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from langchain_core.messages import SystemMessage
 from pydantic import Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
@@ -67,7 +68,6 @@ class RoundRobinConversation(BaseConversationAgent):
 
         # Add announcement if enabled
         if self.announce_speaker and next_speaker:
-            from langchain_core.messages import SystemMessage
 
             announcement = SystemMessage(content=f"[Now speaking: {next_speaker}]")
             update["messages"] = [announcement]
@@ -89,7 +89,6 @@ class RoundRobinConversation(BaseConversationAgent):
 
         # Add round information to the context
         if state.round_number > 0:
-            from langchain_core.messages import SystemMessage
 
             round_msg = SystemMessage(
                 content=f"[Round {

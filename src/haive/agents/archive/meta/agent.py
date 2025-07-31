@@ -1,8 +1,10 @@
 """Generic MetaAgent class for agent composition and recompilation management."""
 
+import asyncio
 from typing import Any, Generic, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph import BaseGraph
 from haive.core.schema import StateSchema
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 from pydantic import Field
@@ -129,7 +131,6 @@ class MetaAgent(Agent, Generic[TAgent]):
         if wrapped and hasattr(wrapped, "build_graph"):
             return wrapped.build_graph()
         # Build a minimal graph that executes through meta state
-        from haive.core.graph import BaseGraph
 
         graph = BaseGraph()
 
@@ -221,8 +222,6 @@ class MetaAgent(Agent, Generic[TAgent]):
 
     def run(self, *args, **kwargs) -> Any:
         """Sync version of arun."""
-        import asyncio
-
         return asyncio.run(self.arun(*args, **kwargs))
 
     def update_wrapped_agent(self, new_agent: TAgent) -> None:

@@ -19,6 +19,7 @@ from supabase.test_supabase_integration import (
     test_recursion_limit_configuration,
 )
 
+
 __all__ = [
     "TestSecretStrErrorHandling",
     "TestSecretStrSerialization",

@@ -3,11 +3,11 @@
 import os
 
 import pytest
+
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.persistence.postgres_config import PostgresCheckpointerConfig
 from haive.core.persistence.types import CheckpointerMode, CheckpointStorageMode
-
-from haive.agents.simple.agent import SimpleAgent
 
 
 def test_postgres_persistence_with_true():

@@ -6,6 +6,7 @@ compatibility module without modifying or breaking existing agents.
 
 import logging
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 from typing import Any
 
@@ -16,7 +17,11 @@ from haive.core.schema.compatibility import (
 from haive.core.schema.compatibility.reports import generate_report
 
 from haive.agents.base.agent import Agent
-from haive.agents.rag.multi_agent_rag.agents import DocumentGradingAgent
+from haive.agents.rag.multi_agent_rag.agents import (
+    SIMPLE_RAG_AGENT,
+    SIMPLE_RAG_ANSWER_AGENT,
+    DocumentGradingAgent,
+)
 from haive.agents.rag.multi_agent_rag.state import MultiAgentRAGState
 
 logger = logging.getLogger(__name__)
@@ -111,7 +116,6 @@ class SafeCompatibilityTester:
             # Perform basic compatibility check
             compat_result = self._basic_schema_compatibility_check(
                 source_schema, target_schema
-            )
 
             # Analyze schemas in detail
             source_analysis = self.analyzer.analyze_schema(source_schema)
@@ -245,9 +249,6 @@ class SafeCompatibilityTester:
         """
         # Import agents safely
         try:
-            from haive.agents.rag.multi_agent_rag.agents import (
-                SIMPLE_RAG_AGENT,
-                SIMPLE_RAG_ANSWER_AGENT,
             )
 
             # Test basic RAG chain
@@ -592,7 +593,6 @@ class SafeCompatibilityTester:
 
     def _get_timestamp(self) -> str:
         """Get current timestamp for reports."""
-        from datetime import datetime
 
         return datetime.now().isoformat()
 

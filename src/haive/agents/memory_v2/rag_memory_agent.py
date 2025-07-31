@@ -21,9 +21,15 @@ from haive.core.engine.vectorstore import VectorStoreProvider
 from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
 from langchain_core.documents import Document
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.tools import tool
 from pydantic import BaseModel, ConfigDict, Field
 
-# Import BaseRAGAgent and related components
+from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
+from haive.agents.document_modifiers.kg.kg_map_merge.models import (
+    EntityNode,
+    EntityRelationship,
+    KnowledgeGraph,
+)
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 
@@ -32,19 +38,16 @@ from .memory_state_original import (
     ImportanceLevel,
     MemoryType,
 )
-
-# Import our memory components
 from .message_document_converter import MessageDocumentConverter
 from .time_weighted_retriever import TimeWeightConfig, TimeWeightedRetriever
 
+# Import BaseRAGAgent and related components
+
+
+# Import our memory components
+
 # Import KG components if available
 try:
-    from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
-        EntityNode,
-        EntityRelationship,
-        KnowledgeGraph,
-    )
 
     KG_AVAILABLE = True
 except ImportError:
@@ -637,7 +640,6 @@ class UnifiedMemoryRAGAgent:
         cls, name: str | None = None, description: str | None = None, **config_kwargs
     ):
         """Convert this agent to a tool for use in other agents."""
-        from langchain_core.tools import tool
 
         if name is None:
             name = "unified_memory"

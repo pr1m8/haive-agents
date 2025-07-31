@@ -2,8 +2,8 @@
 
 from unittest.mock import Mock
 
-import pytest
 from pydantic import BaseModel, Field
+import pytest
 
 
 # Test conditional routing concept

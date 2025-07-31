@@ -10,6 +10,7 @@ from typing import Any, Optional
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer
+from haive.core.schema.schema_composer import SchemaComposer
 from pydantic import Field, model_validator
 
 from haive.agents.base.agent import Agent
@@ -113,7 +114,6 @@ class DynamicMultiAgentSupervisor(MultiAgent):
         )
 
         # Enhance with dynamic supervisor capabilities
-        from haive.core.schema.schema_composer import SchemaComposer
 
         enhanced_composer = SchemaComposer(name=f"{self.__class__.__name__}State")
 

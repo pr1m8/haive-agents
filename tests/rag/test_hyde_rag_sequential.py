@@ -17,18 +17,18 @@ HyDE Process:
 4. Generate final answer from retrieved real documents
 """
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.vectorstore import VectorStoreConfig, VectorStoreProvider
-from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
+import pytest
 
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.vectorstore import VectorStoreConfig, VectorStoreProvider
+from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
+from haive.core.models.llm.base import AzureLLMConfig
 
 
 # Structured output models

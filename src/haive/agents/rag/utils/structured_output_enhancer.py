@@ -9,7 +9,7 @@ the pattern of keeping prompts focused on generation while parsers handle struct
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import LLMConfig
+from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from haive.core.utils.pydantic_utils.base_model_to_prompt import (
     PromptGenerator,
     PromptStyle,
@@ -17,6 +17,12 @@ from haive.core.utils.pydantic_utils.base_model_to_prompt import (
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
+from haive.agents.rag.models import (
+    FusionResult,
+    HyDEResult,
+    MemoryAnalysis,
+    SpeculativeResult,
+)
 from haive.agents.simple.agent import SimpleAgent
 
 
@@ -179,8 +185,6 @@ Please provide your structured analysis.""",
 # Convenience functions for common RAG patterns
 def create_hyde_enhancer() -> StructuredOutputEnhancer:
     """Create an enhancer for HyDE structured output."""
-    from haive.agents.rag.models import HyDEResult
-
     return StructuredOutputEnhancer(
         output_model=HyDEResult, prompt_style=PromptStyle.DESCRIPTIVE
     )
@@ -188,8 +192,6 @@ def create_hyde_enhancer() -> StructuredOutputEnhancer:
 
 def create_fusion_enhancer() -> StructuredOutputEnhancer:
     """Create an enhancer for Fusion RAG structured output."""
-    from haive.agents.rag.models import FusionResult
-
     return StructuredOutputEnhancer(
         output_model=FusionResult, prompt_style=PromptStyle.STRUCTURED
     )
@@ -197,8 +199,6 @@ def create_fusion_enhancer() -> StructuredOutputEnhancer:
 
 def create_speculative_enhancer() -> StructuredOutputEnhancer:
     """Create an enhancer for Speculative RAG structured output."""
-    from haive.agents.rag.models import SpeculativeResult
-
     return StructuredOutputEnhancer(
         output_model=SpeculativeResult, prompt_style=PromptStyle.CONVERSATIONAL
     )
@@ -206,18 +206,14 @@ def create_speculative_enhancer() -> StructuredOutputEnhancer:
 
 def create_memory_enhancer() -> StructuredOutputEnhancer:
     """Create an enhancer for Memory-aware RAG structured output."""
-    from haive.agents.rag.models import MemoryAnalysis
-
     return StructuredOutputEnhancer(
         output_model=MemoryAnalysis, prompt_style=PromptStyle.DESCRIPTIVE
     )
 
 
 # Example usage patterns
-def demonstrate_enhancement_patterns() -> Dict[str, Any]:
+def demonstrate_enhancement_patterns() -> dict[str, Any]:
     """Demonstrate various enhancement patterns."""
-    from haive.core.models.llm.base import AzureLLMConfig
-
     # Example LLM config
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
@@ -289,7 +285,7 @@ class RAGEnhancementFactory:
         }
 
         if enhancement_type not in enhancer_map:
-            raise ValueError(f"Unknown enhancement type: {enhancement_type}")
+            raise TypeError(f"Unknown enhancement type: {enhancement_type}")
 
         enhancer = enhancer_map[enhancement_type]()
 

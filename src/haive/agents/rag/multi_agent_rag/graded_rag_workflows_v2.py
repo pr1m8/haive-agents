@@ -8,6 +8,7 @@ from typing import Any
 
 from haive.agents.multi.base import ExecutionMode, MultiAgent
 from haive.agents.rag.multi_agent_rag.enhanced_state_schemas import (
+    FLAREState,
     GradedRAGState,
     StateConfigMixin,
 )
@@ -210,7 +211,6 @@ class FLAREAgentV2Example(MultiAgent, StateConfigMixin):
         max_retrieval_rounds: int = 3,
         **kwargs,
     ):
-        from haive.agents.rag.multi_agent_rag.enhanced_state_schemas import FLAREState
 
         # Create a simple agent for example
         monitor = SimpleAgent(
@@ -251,7 +251,7 @@ def create_graded_rag_agent(
         return MultiCriteriaGradedRAGAgentV2(
             grading_criteria=grading_criteria, **kwargs
         )
-    raise ValueError(f"Unknown workflow type: {workflow_type}")
+    raise TypeError(f"Unknown workflow type: {workflow_type}")
 
 
 # Example usage showing the clean interface

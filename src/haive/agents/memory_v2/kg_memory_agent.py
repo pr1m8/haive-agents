@@ -9,7 +9,9 @@ This agent extends the existing KG transformer capabilities with:
 Based on existing ParallelKGTransformer but optimized for memory workflows.
 """
 
+import json
 import logging
+import os
 from datetime import datetime
 from enum import Enum
 from typing import Any
@@ -18,9 +20,9 @@ from uuid import uuid4
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage
+from neo4j import AsyncGraphDatabase
 from pydantic import BaseModel, ConfigDict, Field
 
-# Import existing KG components
 from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
@@ -28,11 +30,14 @@ from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     KnowledgeGraph,
 )
 
-# Import our memory components
 from .memory_state_original import (
     EnhancedMemoryItem,
 )
 from .message_document_converter import MessageDocumentConverter
+
+# Import existing KG components
+
+# Import our memory components
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +146,6 @@ class GraphDatabaseConnector:
     async def _connect_neo4j(self) -> None:
         """Connect to Neo4j database."""
         try:
-            from neo4j import AsyncGraphDatabase
 
             if not all(
                 [
@@ -179,8 +183,6 @@ class GraphDatabaseConnector:
 
     async def _connect_file_storage(self) -> None:
         """Initialize file-based storage."""
-        import os
-
         storage_path = self.config.file_storage_path or "./memory_graphs/"
         os.makedirs(storage_path, exist_ok=True)
 
@@ -297,9 +299,6 @@ class GraphDatabaseConnector:
         self, graph: KnowledgeGraph, graph_id: str, metadata: dict[str, Any]
     ) -> bool:
         """Store graph in file."""
-        import json
-        import os
-
         file_path = os.path.join(self._connection["path"], f"{graph_id}.json")
 
         # Convert graph to serializable format
@@ -344,8 +343,6 @@ class GraphDatabaseConnector:
                     return graph_data["graph"], graph_data["metadata"]
 
             elif self._connection["type"] == "file":
-                import json
-                import os
 
                 file_path = os.path.join(self._connection["path"], f"{graph_id}.json")
                 if os.path.exists(file_path):

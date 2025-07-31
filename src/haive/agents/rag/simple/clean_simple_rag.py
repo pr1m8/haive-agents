@@ -68,10 +68,11 @@ from haive.core.engine.vectorstore import VectorStoreConfig
 from langchain_core.documents import Document
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-# Import the CLEAN MultiAgent implementation
 from haive.agents.multi.clean import MultiAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.simple.agent import SimpleAgent
+
+# Import the CLEAN MultiAgent implementation
 
 logger = logging.getLogger(__name__)
 
@@ -495,8 +496,6 @@ __all__ = ["SimpleRAG", "SimpleRAGAgent"]  # Legacy alias
 # ================================
 
 if __name__ == "__main__":
-
-    from langchain_core.documents import Document
 
     async def demo():
         """Demonstrate proper clean MultiAgent SimpleRAG usage."""

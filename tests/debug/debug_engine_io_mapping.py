@@ -81,7 +81,7 @@ def debug_add_engine(self, engine):
 
     if hasattr(engine, "prompt_template"):
 
-    result = original_add_engine(self, engine)
+    results = original_add_engine(self, engine)
 
     if hasattr(self, "input_fields"):
         pass

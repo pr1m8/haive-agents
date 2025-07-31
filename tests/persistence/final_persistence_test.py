@@ -6,6 +6,7 @@ import sys
 
 import psycopg
 
+
 # Add paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -58,11 +59,10 @@ def test_persistence_fixes():
 
     # Test 2: Conversation agent
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.conversation.collaberative.agent import (
             CollaborativeConversation,
         )
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         participants = {
             "TestA": AugLLMConfig(name="TestA", system_message="Test A"),

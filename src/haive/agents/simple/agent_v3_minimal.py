@@ -15,9 +15,13 @@ Usage:
 
 from typing import TYPE_CHECKING
 
+from haive.agents.simple.agent_v3 import SimpleAgentV3
+
 if TYPE_CHECKING:
     # Import types only for static analysis
     from haive.agents.simple.agent_v3 import SimpleAgentV3 as _SimpleAgentV3
+
+
 else:
     _SimpleAgentV3 = None
 
@@ -30,7 +34,6 @@ class SimpleAgentV3Minimal:
     def __new__(cls, *args, **kwargs):
         """Dynamically import and create the real SimpleAgentV3 instance."""
         if cls._real_class is None:
-            from haive.agents.simple.agent_v3 import SimpleAgentV3
 
             cls._real_class = SimpleAgentV3
 
@@ -41,7 +44,6 @@ class SimpleAgentV3Minimal:
     def as_tool(cls, *args, **kwargs):
         """Lazy loading for as_tool class method."""
         if cls._real_class is None:
-            from haive.agents.simple.agent_v3 import SimpleAgentV3
 
             cls._real_class = SimpleAgentV3
         return cls._real_class.as_tool(*args, **kwargs)
@@ -50,7 +52,6 @@ class SimpleAgentV3Minimal:
     def as_structured_tool(cls, *args, **kwargs):
         """Lazy loading for as_structured_tool class method."""
         if cls._real_class is None:
-            from haive.agents.simple.agent_v3 import SimpleAgentV3
 
             cls._real_class = SimpleAgentV3
         return cls._real_class.as_structured_tool(*args, **kwargs)

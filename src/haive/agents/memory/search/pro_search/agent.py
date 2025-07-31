@@ -5,6 +5,7 @@ Similar to Perplexity's Pro Search feature that goes deeper and considers user c
 """
 
 import logging
+import time
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -368,8 +369,6 @@ Process each query with thoroughness and attention to user context."""
         Returns:
             Pro search response
         """
-        import time
-
         start_time = time.time()
 
         logger.info(f"Processing pro search: {query} (depth={depth_level})")

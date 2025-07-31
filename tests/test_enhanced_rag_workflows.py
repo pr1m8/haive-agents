@@ -4,10 +4,8 @@ Tests the new multi-agent RAG workflows with state management,
 callable nodes, and compatibility features.
 """
 
-import pytest
-from haive.core.fixtures.documents import conversation_documents
-from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
 from langchain_core.messages import HumanMessage
+import pytest
 
 from haive.agents.rag.multi_agent_rag.enhanced_workflows import (
     CorrectiveRAGAgent,
@@ -16,6 +14,8 @@ from haive.agents.rag.multi_agent_rag.enhanced_workflows import (
     SelfRAGAgent,
     create_enhanced_rag_workflow,
 )
+from haive.core.fixtures.documents import conversation_documents
+from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
 
 
 class TestRAGState:

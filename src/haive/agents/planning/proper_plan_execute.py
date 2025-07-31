@@ -9,11 +9,10 @@ This implementation follows the LangGraph pattern using:
 """
 
 from haive.core.schema.agent_schema_composer import BuildMode
+from haive.tools import duckduckgo_search_tool
 
 from haive.agents.multi.archive.enhanced_base import MultiAgentBase
-
-# Import existing p_and_e components
-from haive.agents.planning.p_and_e.models import Act, Plan, StepStatus
+from haive.agents.planning.p_and_e.models import Act, ExecutionResult, Plan, StepStatus
 from haive.agents.planning.p_and_e.prompts import (
     EXECUTOR_SYSTEM_MESSAGE,
     PLANNER_SYSTEM_MESSAGE,
@@ -22,6 +21,8 @@ from haive.agents.planning.p_and_e.prompts import (
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+
+# Import existing p_and_e components
 
 # ============================================================================
 # ROUTING FUNCTIONS (LangGraph Pattern)
@@ -108,7 +109,6 @@ def process_executor_output(state: PlanExecuteState, executor_result) -> dict:
             )
 
             # Add to execution results
-            from haive.agents.planning.p_and_e.models import ExecutionResult
 
             exec_result = ExecutionResult(
                 step_id=state.current_step_id, success=True, output=result_text
@@ -230,7 +230,6 @@ def create_proper_plan_execute(
 def create_plan_execute_with_search(tools: list | None = None) -> MultiAgentBase:
     """Create Plan & Execute agent with search tools."""
     if tools is None:
-        from haive.tools import duckduckgo_search_tool
 
         tools = [duckduckgo_search_tool]
 

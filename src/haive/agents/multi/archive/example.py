@@ -5,6 +5,7 @@ This example shows how to create and use a multi-agent system
 with different agent types and coordination strategies.
 """
 
+import json
 import logging
 from typing import Any
 
@@ -245,7 +246,6 @@ def save_and_load_demo() -> None:
                 simple_messages.append({"type": msg.type, "content": msg.content})
 
         # Convert to JSON
-        import json
 
         messages_json = json.dumps(simple_messages)
         logger.info(f"Serialized messages (length: {len(messages_json)})")

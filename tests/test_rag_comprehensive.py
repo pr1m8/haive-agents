@@ -4,9 +4,11 @@ Tests all RAG implementations including ChainAgent versions, traditional agents,
 and multi-agent integrations.
 """
 
-import pytest
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
+import pytest
+
+from haive.core.models.llm.base import AzureLLMConfig
+
 
 # Test documents
 TEST_DOCUMENTS = [

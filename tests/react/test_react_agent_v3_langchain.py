@@ -1,10 +1,9 @@
 """Test ReactAgentV3 with LangChain tools."""
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 
 from haive.agents.react.agent_v3 import ReactAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define test tools
@@ -15,7 +14,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 @tool
@@ -57,10 +56,6 @@ def word_analyzer(text: str) -> str:
 
 def test_react_agent_v3_with_single_tool():
     """Test ReactAgentV3 with a single calculator tool."""
-    print("\n" + "=" * 60)
-    print("TEST: ReactAgentV3 with Single Tool")
-    print("=" * 60)
-
     # Create agent with tool
     agent = ReactAgentV3(
         name="react_calc",
@@ -72,19 +67,13 @@ def test_react_agent_v3_with_single_tool():
 
     # Test calculation
     result = agent.run("Calculate 15 * 23 + 47")
-    print(f"\nResult: {result}")
 
     # Check result contains correct calculation
     assert "392" in str(result) or "345" in str(result)  # 15*23=345, 345+47=392
-    print("✅ Single tool test passed!")
 
 
 def test_react_agent_v3_with_multiple_tools():
     """Test ReactAgentV3 with multiple tools for complex reasoning."""
-    print("\n" + "=" * 60)
-    print("TEST: ReactAgentV3 with Multiple Tools")
-    print("=" * 60)
-
     # Create agent with multiple tools
     agent = ReactAgentV3(
         name="react_multi",
@@ -99,19 +88,13 @@ def test_react_agent_v3_with_multiple_tools():
         "Search for the population of Tokyo, then calculate how many Tokyo Domes "
         "would be needed to fit that population (search for Tokyo Dome capacity too)"
     )
-    print(f"\nResult: {result}")
 
     # Agent should use search_tool and calculator
     assert result is not None
-    print("✅ Multiple tools test passed!")
 
 
 def test_react_agent_v3_reasoning_loop():
     """Test ReactAgentV3's iterative reasoning capability."""
-    print("\n" + "=" * 60)
-    print("TEST: ReactAgentV3 Reasoning Loop")
-    print("=" * 60)
-
     # Create agent with tools
     agent = ReactAgentV3(
         name="react_reasoner",
@@ -126,19 +109,13 @@ def test_react_agent_v3_reasoning_loop():
         "First analyze this text: 'The quick brown fox jumps over the lazy dog'. "
         "Then calculate the square of the word count."
     )
-    print(f"\nResult: {result}")
 
     # Should use word_analyzer then calculator
     assert result is not None
-    print("✅ Reasoning loop test passed!")
 
 
 def test_react_agent_v3_error_handling():
     """Test ReactAgentV3 error handling with invalid tool calls."""
-    print("\n" + "=" * 60)
-    print("TEST: ReactAgentV3 Error Handling")
-    print("=" * 60)
-
     # Create agent
     agent = ReactAgentV3(
         name="react_error",
@@ -150,11 +127,9 @@ def test_react_agent_v3_error_handling():
 
     # Test with request that might cause errors
     result = agent.run("Calculate the result of dividing by zero: 10/0")
-    print(f"\nResult: {result}")
 
     # Should handle error gracefully
     assert result is not None
-    print("✅ Error handling test passed!")
 
 
 if __name__ == "__main__":
@@ -162,7 +137,3 @@ if __name__ == "__main__":
     test_react_agent_v3_with_multiple_tools()
     test_react_agent_v3_reasoning_loop()
     test_react_agent_v3_error_handling()
-
-    print("\n" + "=" * 60)
-    print("ALL REACT AGENT V3 TESTS COMPLETED!")
-    print("=" * 60)

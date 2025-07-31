@@ -110,7 +110,7 @@ def check_ssl_connection_issue():
 
                 if sslmode == "require":
         else:
-            passed")
+            pass
 
     # Check connection pool settings
 

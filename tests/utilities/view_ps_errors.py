@@ -70,6 +70,7 @@ def view_ps_errors():
                                                         "prepared statement"
                                                         in content.lower()
                                                     ):
+                                                        pass
 
                                     # Check error field
                                     if "error" in node_data:
@@ -95,8 +96,7 @@ def view_ps_errors():
                             pass
 
                     except Exception as e:
-                        passe}")
-
+                        pass
 
                 # Get stats on which agents have errors
                 cur.execute(

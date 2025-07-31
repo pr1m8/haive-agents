@@ -8,15 +8,18 @@ Let's trace exactly where this input_model comes from.
 
 import sys
 
+
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 
 # Direct imports to avoid syntax error issues
 import contextlib
 
-from haive.core.engine.aug_llm.config import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
+
+from haive.core.engine.aug_llm.config import AugLLMConfig
+
 
 # Replicate the exact notebook setup
 RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(

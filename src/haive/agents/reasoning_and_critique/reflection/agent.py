@@ -247,8 +247,6 @@ class ReflectionAgent(SimpleAgent):
 
     def _create_search_function(self):
         """Create a function for the search node."""
-        from langchain_core.prompts import ChatPromptTemplate
-
         # Create prompt template for generating search queries
         search_query_prompt = ChatPromptTemplate.from_template(
             self.config.reflection.search_query_prompt_template
@@ -304,8 +302,6 @@ class ReflectionAgent(SimpleAgent):
 
     def _create_improvement_function(self):
         """Create a function for the improvement node."""
-        from langchain_core.prompts import ChatPromptTemplate
-
         # Create prompt template for improvement
         improvement_prompt = ChatPromptTemplate.from_template(
             self.config.reflection.improvement_prompt_template

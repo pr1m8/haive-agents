@@ -90,6 +90,4 @@ def run_example():
 
 # Only run if this file is executed directly, not imported
 if __name__ == "__main__":
-    print("Running planning example...")
     result = run_example()
-    print(f"Result: {result}")

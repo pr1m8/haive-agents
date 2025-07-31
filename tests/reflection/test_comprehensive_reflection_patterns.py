@@ -1,5 +1,4 @@
-"""
-Comprehensive Reflection Pattern Tests
+"""Comprehensive Reflection Pattern Tests.
 
 This test demonstrates all reflection patterns available in haive-agents:
 1. Simple reflection with message transformation
@@ -10,10 +9,9 @@ This test demonstrates all reflection patterns available in haive-agents:
 
 import asyncio
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import AIMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
@@ -29,10 +27,10 @@ from haive.agents.base.pre_post_agent_mixin import (
     PrePostAgentMixin,
     create_graded_reflection_agent,
     create_reflection_agent,
-    create_structured_output_agent,
 )
-from haive.agents.react.agent_v3 import ReactAgentV3
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # ============================================================================
 # STRUCTURED OUTPUT MODELS FOR REFLECTION
@@ -42,9 +40,9 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class ContentAnalysis(BaseModel):
     """Analysis of content quality."""
 
-    strengths: List[str] = Field(description="Strong points in the content")
-    weaknesses: List[str] = Field(description="Areas needing improvement")
-    suggestions: List[str] = Field(description="Specific improvement suggestions")
+    strengths: list[str] = Field(description="Strong points in the content")
+    weaknesses: list[str] = Field(description="Areas needing improvement")
+    suggestions: list[str] = Field(description="Specific improvement suggestions")
     overall_quality: float = Field(ge=0.0, le=10.0, description="Overall quality score")
 
 
@@ -52,8 +50,8 @@ class ReflectionResult(BaseModel):
     """Result of reflection process."""
 
     original_summary: str = Field(description="Summary of original content")
-    key_insights: List[str] = Field(description="Key insights from reflection")
-    improvements_made: List[str] = Field(description="Specific improvements")
+    key_insights: list[str] = Field(description="Key insights from reflection")
+    improvements_made: list[str] = Field(description="Specific improvements")
     revised_content: str = Field(description="Improved version of content")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in improvements")
 
@@ -78,9 +76,9 @@ class ReflectionMonitor:
     """Monitor reflection processes with detailed tracking."""
 
     def __init__(self):
-        self.events: List[Dict[str, Any]] = []
+        self.events: list[dict[str, Any]] = []
         self.reflection_count = 0
-        self.improvement_scores: List[float] = []
+        self.improvement_scores: list[float] = []
         self.start_time = None
         self.end_time = None
 
@@ -123,13 +121,11 @@ class ReflectionMonitor:
                 HookEvent.BEFORE_REFLECTION,
                 HookEvent.AFTER_REFLECTION,
             ]:
-                print(
-                    f"🔄 Reflection Event: {context.event.value} - Agent: {context.agent_name}"
-                )
+                pass
 
         return monitor_hook
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get summary of reflection monitoring."""
         duration = None
         if self.start_time and self.end_time:
@@ -144,7 +140,7 @@ class ReflectionMonitor:
                 else 0
             ),
             "duration_seconds": duration,
-            "event_types": list(set(e["event"] for e in self.events)),
+            "event_types": list({e["event"] for e in self.events}),
         }
 
 
@@ -238,7 +234,7 @@ def create_grading_agent() -> SimpleAgentV3:
 
 Grading criteria:
 - Content quality and accuracy
-- Structure and organization  
+- Structure and organization
 - Clarity and readability
 - Overall effectiveness
 
@@ -259,10 +255,6 @@ class TestComprehensiveReflectionPatterns:
 
     async def test_simple_reflection_pattern(self):
         """Test basic reflection pattern with message transformation."""
-        print("\n" + "=" * 60)
-        print("Testing Simple Reflection Pattern")
-        print("=" * 60)
-
         # Create base writer
         writer = create_content_writer()
 
@@ -289,18 +281,13 @@ class TestComprehensiveReflectionPatterns:
             }
         )
 
-        print("\n📝 Reflection Complete")
         if isinstance(result, dict) and "messages" in result:
-            print(f"Total messages: {len(result['messages'])}")
+            pass
 
         return result
 
     async def test_multi_stage_reflection_workflow(self):
         """Test multi-stage reflection with analysis and improvement."""
-        print("\n" + "=" * 60)
-        print("Testing Multi-Stage Reflection Workflow")
-        print("=" * 60)
-
         # Create monitoring
         monitor = ReflectionMonitor()
 
@@ -315,7 +302,6 @@ class TestComprehensiveReflectionPatterns:
             agent.add_hook(HookEvent.AFTER_RUN, monitor.create_hook())
 
         # Stage 1: Initial writing
-        print("\n📝 Stage 1: Initial Writing")
         content = await writer.arun(
             {
                 "topic": "Artificial Intelligence in Education",
@@ -326,7 +312,6 @@ class TestComprehensiveReflectionPatterns:
         )
 
         # Stage 2: Analysis
-        print("\n🔍 Stage 2: Content Analysis")
         analysis = await analyzer.arun(
             {
                 "content": (
@@ -339,7 +324,6 @@ class TestComprehensiveReflectionPatterns:
         )
 
         # Stage 3: Reflection and improvement
-        print("\n✨ Stage 3: Reflection and Improvement")
 
         # Set up improver with reflection hooks
         improver.add_hook(HookEvent.BEFORE_REFLECTION, monitor.create_hook())
@@ -359,9 +343,8 @@ class TestComprehensiveReflectionPatterns:
 
         # Print monitoring summary
         summary = monitor.get_summary()
-        print("\n📊 Reflection Monitoring Summary:")
-        for key, value in summary.items():
-            print(f"  - {key}: {value}")
+        for _key, _value in summary.items():
+            pass
 
         return {
             "original": content,
@@ -372,10 +355,6 @@ class TestComprehensiveReflectionPatterns:
 
     async def test_graded_reflection_pattern(self):
         """Test graded reflection with pass/fail criteria."""
-        print("\n" + "=" * 60)
-        print("Testing Graded Reflection Pattern")
-        print("=" * 60)
-
         # Create writer
         writer = create_content_writer()
 
@@ -410,24 +389,17 @@ class TestComprehensiveReflectionPatterns:
             }
         )
 
-        print("\n✅ Graded Reflection Complete")
         return result
 
     async def test_custom_reflection_with_hooks(self):
         """Test custom reflection implementation with all hooks."""
-        print("\n" + "=" * 60)
-        print("Testing Custom Reflection with All Hooks")
-        print("=" * 60)
-
         # Create agents
-        writer = create_content_writer()
+        create_content_writer()
         grader = create_grading_agent()
 
         # Manually implement pre/post pattern
         class CustomReflectionAgent(PrePostAgentMixin, SimpleAgentV3):
             """Custom agent with reflection capabilities."""
-
-            pass
 
         # Create custom reflection agent
         custom_agent = CustomReflectionAgent(
@@ -470,15 +442,10 @@ class TestComprehensiveReflectionPatterns:
             {"topic": "The Future of Sustainable Energy", "content": ""}  # For grader
         )
 
-        print("\n🎯 Custom Reflection Complete")
         return result
 
     async def test_iterative_reflection(self):
         """Test iterative reflection until quality threshold is met."""
-        print("\n" + "=" * 60)
-        print("Testing Iterative Reflection Pattern")
-        print("=" * 60)
-
         # Create agents
         writer = create_content_writer()
         grader = create_grading_agent()
@@ -506,7 +473,6 @@ class TestComprehensiveReflectionPatterns:
         quality_threshold = 75.0
 
         for i in range(max_iterations):
-            print(f"\n🔄 Iteration {i+1}")
 
             # Grade current content
             grade_result = await grader.arun(
@@ -527,11 +493,8 @@ class TestComprehensiveReflectionPatterns:
             else:
                 current_grade = 0.0
 
-            print(f"  Current grade: {current_grade}/100")
-
             # Check if threshold met
             if current_grade >= quality_threshold:
-                print(f"  ✅ Quality threshold met!")
                 break
 
             # Improve content
@@ -556,7 +519,6 @@ class TestComprehensiveReflectionPatterns:
                 if msgs:
                     current_content = msgs[-1].content
 
-        print("\n✨ Iterative Reflection Complete")
         return {
             "final_content": current_content,
             "iterations": i + 1,
@@ -574,36 +536,21 @@ async def main():
     test = TestComprehensiveReflectionPatterns()
 
     # Test 1: Simple reflection
-    print("\n🧪 Running Test 1: Simple Reflection")
-    result1 = await test.test_simple_reflection_pattern()
+    await test.test_simple_reflection_pattern()
 
     # Test 2: Multi-stage workflow
-    print("\n🧪 Running Test 2: Multi-Stage Reflection")
-    result2 = await test.test_multi_stage_reflection_workflow()
+    await test.test_multi_stage_reflection_workflow()
 
     # Test 3: Graded reflection
-    print("\n🧪 Running Test 3: Graded Reflection")
-    result3 = await test.test_graded_reflection_pattern()
+    await test.test_graded_reflection_pattern()
 
     # Test 4: Custom reflection with hooks
-    print("\n🧪 Running Test 4: Custom Reflection")
-    result4 = await test.test_custom_reflection_with_hooks()
+    await test.test_custom_reflection_with_hooks()
 
     # Test 5: Iterative reflection
-    print("\n🧪 Running Test 5: Iterative Reflection")
-    result5 = await test.test_iterative_reflection()
-
-    print("\n" + "=" * 60)
-    print("All Reflection Pattern Tests Complete!")
-    print("=" * 60)
+    await test.test_iterative_reflection()
 
     # Summary
-    print("\n📊 Test Summary:")
-    print("  1. Simple Reflection: ✅")
-    print("  2. Multi-Stage Workflow: ✅")
-    print("  3. Graded Reflection: ✅")
-    print("  4. Custom with Hooks: ✅")
-    print("  5. Iterative Reflection: ✅")
 
 
 if __name__ == "__main__":

@@ -1,9 +1,11 @@
 import logging
 
+
 logging.basicConfig(level=logging.DEBUG)
 
 
 from haive.core.schema.field_definition import FieldDefinition
+
 
 # Test a simple field creation
 field_def = FieldDefinition(

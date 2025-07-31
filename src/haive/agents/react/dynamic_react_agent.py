@@ -10,16 +10,24 @@ Based on:
 - @packages/haive-agents/examples/supervisor/advanced/dynamic_activation_example.py
 """
 
+import asyncio
+import logging
+import re
+from datetime import datetime
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.registry import RegistryItem
 from haive.core.schema.prebuilt.dynamic_activation_state import DynamicActivationState
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-from langchain_core.tools import BaseTool
+from haive.core.utils.haive_discovery import HaiveComponentDiscovery
+from langchain_core.documents import Document
+from langchain_core.tools import BaseTool, tool
 from pydantic import Field, PrivateAttr
 
 from haive.agents.discovery.component_discovery_agent import ComponentDiscoveryAgent
+from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.react.agent import ReactAgent
 
 
@@ -477,7 +485,6 @@ class DynamicReactAgent(ReactAgent):
         """
         try:
             # Import tool loading functionality
-            from haive.core.utils.haive_discovery import HaiveComponentDiscovery
 
             # Setup tool loader if discovery agent is available
             if self.discovery_agent and hasattr(
@@ -506,8 +513,6 @@ class DynamicReactAgent(ReactAgent):
         Args:
             tools: List of tool dictionaries to register
         """
-        from langchain_core.tools import BaseTool
-
         # Add tools to the engine using the proper method
         for tool_data in tools:
             component = tool_data["component"]
@@ -529,10 +534,6 @@ class DynamicReactAgent(ReactAgent):
         to find and suggest appropriate tools for tasks.
         """
         try:
-            from haive.core.engine.retriever import BaseRetrieverConfig
-            from langchain_core.documents import Document
-
-            from haive.agents.rag.base.agent import BaseRAGAgent
 
             # Get configuration
             rag_config = self._rag_config
@@ -573,7 +574,6 @@ class DynamicReactAgent(ReactAgent):
         This tool allows the agent to search for and request new tools
         dynamically based on task requirements.
         """
-        from langchain_core.tools import tool
 
         @tool
         def discover_and_load_tools(task_description: str) -> str:
@@ -589,7 +589,6 @@ class DynamicReactAgent(ReactAgent):
                 # Use discovery agent if available
                 if self.discovery_agent:
                     # Use the existing discover_and_load_tools method
-                    import asyncio
 
                     async def _discover():
                         return await self.discover_and_load_tools(task_description)
@@ -616,8 +615,6 @@ class DynamicReactAgent(ReactAgent):
                 if self.rag_tool_agent:
                     # Query RAG agent for tool suggestions
                     query = f"What tools are available for: {task_description}"
-
-                    import asyncio
 
                     async def _rag_discover():
                         return await self.rag_tool_agent.arun(query)
@@ -680,7 +677,6 @@ class DynamicReactAgent(ReactAgent):
                         loaded_tools.append(tool)
 
             except Exception as e:
-                import logging
 
                 logger = logging.getLogger(__name__)
                 logger.exception(f"Discovery agent failed for task '{task}': {e}")
@@ -704,7 +700,6 @@ class DynamicReactAgent(ReactAgent):
                         loaded_tools.append(tool)
 
             except Exception as e:
-                import logging
 
                 logger = logging.getLogger(__name__)
                 logger.exception(f"RAG tool agent failed for task '{task}': {e}")
@@ -745,7 +740,6 @@ class DynamicReactAgent(ReactAgent):
                     self.state.categorize_tool(item.name, category)
 
             except Exception as e:
-                import logging
 
                 logger = logging.getLogger(__name__)
                 logger.exception(f"Failed to register tool {tool}: {e}")
@@ -808,7 +802,6 @@ class DynamicReactAgent(ReactAgent):
             Extracted tool name or empty string
         """
         # Simple extraction - look for patterns like "tool_name" or "ToolName"
-        import re
 
         # Look for quoted strings
         quoted_match = re.search(r'"([^"]+)"', line)
@@ -844,7 +837,6 @@ class DynamicReactAgent(ReactAgent):
             description = suggestion.get("description", "")
 
             # For now, create a simple placeholder tool
-            from langchain_core.tools import tool
 
             @tool
             def suggested_tool(input_text: str) -> str:
@@ -860,7 +852,6 @@ class DynamicReactAgent(ReactAgent):
             return suggested_tool
 
         except Exception as e:
-            import logging
 
             logger = logging.getLogger(__name__)
             logger.exception(f"Failed to load tool from suggestion {suggestion}: {e}")
@@ -906,7 +897,6 @@ class DynamicReactAgent(ReactAgent):
                             self.state.categorize_tool(item.name, category)
 
             # Update discovery timestamp
-            from datetime import datetime
 
             self.state.last_tool_discovery = str(datetime.now())
 
@@ -920,7 +910,6 @@ class DynamicReactAgent(ReactAgent):
                 await self._recompile_with_new_tools(loaded_tools)
 
         except Exception as e:
-            import logging
 
             logger = logging.getLogger(__name__)
             logger.exception(
@@ -956,7 +945,6 @@ class DynamicReactAgent(ReactAgent):
             return tool_doc.get("component")
 
         except Exception as e:
-            import logging
 
             logger = logging.getLogger(__name__)
             logger.exception(f"Failed to load tool from document: {e}")
@@ -1024,7 +1012,6 @@ class DynamicReactAgent(ReactAgent):
                 await self.recompile()
 
         except Exception as e:
-            import logging
 
             logger = logging.getLogger(__name__)
             logger.exception(f"Failed to recompile with new tools: {e}")

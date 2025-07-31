@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from datetime import datetime
 from typing import Any
 
@@ -16,6 +17,7 @@ from haive.core.engine.agent.agent import register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
+from langchain_core.tools import StructuredTool
 from langgraph.graph import END
 
 logger = logging.getLogger(__name__)
@@ -44,7 +46,6 @@ class MemoryAgent(ReactAgent):
     def _init_memory_tools(self):
         """Initialize memory-related tools."""
         # Add memory tools to the existing tools
-        from langchain_core.tools import StructuredTool
 
         def save_memory(memory: str) -> str:
             """Tool to save a memory."""
@@ -398,7 +399,6 @@ class MemoryAgent(ReactAgent):
                 # Try to parse as JSON
                 try:
                     # Look for JSON array in the output
-                    import re
 
                     json_match = re.search(r"\[.*\]", extracted_content, re.DOTALL)
                     if json_match:

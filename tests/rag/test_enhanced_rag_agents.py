@@ -6,9 +6,9 @@ All tests use REAL components - NO MOCKS.
 
 import asyncio
 
-import pytest
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
+import pytest
 
 from haive.agents.rag.enhanced_base_rag_agent import (
     BaseRAGAgent,

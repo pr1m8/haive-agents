@@ -7,6 +7,7 @@ from langchain_core.output_parsers.base import BaseOutputParser
 from langgraph.graph import StateGraph
 from pydantic import BaseModel, ConfigDict, Field
 
+
 logging.basicConfig(level=logging.INFO)
 
 

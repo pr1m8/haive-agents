@@ -8,8 +8,6 @@ from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.tools.store_tools import StoreManager
 
 from haive.agents.memory.core.classifier import MemoryClassifier, MemoryClassifierConfig
 from haive.agents.memory.core.stores import MemoryStoreConfig, MemoryStoreManager
@@ -21,6 +19,8 @@ from haive.agents.memory.kg_generator_agent import (
     KnowledgeGraphRelationship,
     MemoryKnowledgeGraph,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.tools.store_tools import StoreManager
 
 
 class TestKnowledgeGraphStructures:
@@ -358,8 +358,6 @@ async def test_kg_generator_integration():
     """Integration test for KG Generator Agent with real components."""
     # Create real components (but we'll mock the LLM responses)
     try:
-        from haive.core.tools.store_tools import StoreManager
-
         from haive.agents.memory.core.classifier import (
             MemoryClassifier,
             MemoryClassifierConfig,
@@ -368,6 +366,7 @@ async def test_kg_generator_integration():
             MemoryStoreConfig,
             MemoryStoreManager,
         )
+        from haive.core.tools.store_tools import StoreManager
 
         # Create store manager (in-memory for testing)
         store_manager = StoreManager(

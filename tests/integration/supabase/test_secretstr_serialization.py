@@ -1,11 +1,15 @@
 """Test SecretStr serialization with real Supabase database."""
 
 import asyncio
-import os
 from datetime import datetime
+import os
 
 import psycopg
+from pydantic import SecretStr
+from pydantic_core import PydanticUndefined
 import pytest
+
+from haive.agents.simple.agent_v2 import SimpleAgentV2
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.persistence.postgres_config import PostgresCheckpointerConfig
 from haive.core.persistence.serializers import (
@@ -13,10 +17,6 @@ from haive.core.persistence.serializers import (
     create_encrypted_serializer_for_postgres,
     create_production_serializer,
 )
-from pydantic import SecretStr
-from pydantic_core import PydanticUndefined
-
-from haive.agents.simple.agent_v2 import SimpleAgentV2
 
 
 class TestSecretStrSerialization:

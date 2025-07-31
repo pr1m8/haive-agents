@@ -4,6 +4,7 @@ This implementation follows LangChain's long-term memory patterns but uses
 ReactAgent with tools for flexible memory operations.
 """
 
+import asyncio
 from datetime import datetime
 from typing import Any
 
@@ -179,7 +180,6 @@ Always strive to use memories to provide more helpful, personalized responses.""
             """
             k = k or self.k
             try:
-                from datetime import datetime
 
                 start = datetime.fromisoformat(start_date)
                 end = datetime.fromisoformat(end_date) if end_date else datetime.now()
@@ -480,8 +480,6 @@ async def example_with_custom_tools():
     @tool
     def calculate_days_since(date_str: str) -> str:
         """Calculate days since a given date."""
-        from datetime import datetime
-
         try:
             past_date = datetime.fromisoformat(date_str)
             days = (datetime.now() - past_date).days
@@ -504,7 +502,6 @@ async def example_with_custom_tools():
 
 
 if __name__ == "__main__":
-    import asyncio
 
     # Run examples
     asyncio.run(example_basic_usage())

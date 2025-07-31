@@ -10,7 +10,7 @@ Shows various sequential patterns:
 4. Pipeline-style processing
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
@@ -24,19 +24,19 @@ class ResearchBrief(BaseModel):
     """Research brief from analyzer."""
 
     topic: str = Field(description="Research topic")
-    key_questions: List[str] = Field(description="Key questions to address")
+    key_questions: list[str] = Field(description="Key questions to address")
     scope: str = Field(description="Scope and boundaries")
-    priority_areas: List[str] = Field(description="Priority areas to focus on")
+    priority_areas: list[str] = Field(description="Priority areas to focus on")
 
 
 class ResearchFindings(BaseModel):
     """Detailed research findings."""
 
     topic: str = Field(description="Research topic")
-    main_findings: List[str] = Field(description="Key findings")
-    evidence: Dict[str, List[str]] = Field(description="Evidence for each finding")
-    gaps: List[str] = Field(description="Identified knowledge gaps")
-    confidence_scores: Dict[str, float] = Field(
+    main_findings: list[str] = Field(description="Key findings")
+    evidence: dict[str, list[str]] = Field(description="Evidence for each finding")
+    gaps: list[str] = Field(description="Identified knowledge gaps")
+    confidence_scores: dict[str, float] = Field(
         description="Confidence in each finding"
     )
 
@@ -46,9 +46,9 @@ class FinalReport(BaseModel):
 
     title: str = Field(description="Report title")
     executive_summary: str = Field(description="Executive summary")
-    sections: List[Dict[str, str]] = Field(description="Report sections")
-    conclusions: List[str] = Field(description="Key conclusions")
-    recommendations: List[str] = Field(description="Actionable recommendations")
+    sections: list[dict[str, str]] = Field(description="Report sections")
+    conclusions: list[str] = Field(description="Key conclusions")
+    recommendations: list[str] = Field(description="Actionable recommendations")
 
 
 class SequentialWorkflowAgent(EnhancedMultiAgentV4):
@@ -67,12 +67,12 @@ class SequentialWorkflowAgent(EnhancedMultiAgentV4):
     """
 
     # Workflow configuration
-    stages: List[str] = Field(
+    stages: list[str] = Field(
         default_factory=lambda: ["analyze", "process", "output"],
         description="Ordered list of workflow stages",
     )
 
-    stage_configs: Dict[str, Dict[str, Any]] = Field(
+    stage_configs: dict[str, dict[str, Any]] = Field(
         default_factory=dict, description="Configuration for each stage"
     )
 
@@ -126,7 +126,7 @@ class ConditionalWorkflowAgent(SequentialWorkflowAgent):
     intermediate results.
     """
 
-    routing_conditions: Dict[str, callable] = Field(
+    routing_conditions: dict[str, callable] = Field(
         default_factory=dict, description="Conditions for routing between stages"
     )
 
@@ -161,7 +161,7 @@ class PipelineAgent(EnhancedMultiAgentV4):
 
         super().__init__(**kwargs)
 
-    def _create_pipeline_stages(self) -> List[SimpleAgentV3]:
+    def _create_pipeline_stages(self) -> list[SimpleAgentV3]:
         """Create standard pipeline stages."""
         stages = []
 
@@ -276,15 +276,15 @@ class QualityAssessment(BaseModel):
     """Quality assessment for iterative refinement."""
 
     quality_score: float = Field(ge=0.0, le=1.0, description="Overall quality score")
-    strengths: List[str] = Field(description="Identified strengths")
-    weaknesses: List[str] = Field(description="Areas for improvement")
-    specific_feedback: List[str] = Field(description="Specific improvement suggestions")
+    strengths: list[str] = Field(description="Identified strengths")
+    weaknesses: list[str] = Field(description="Areas for improvement")
+    specific_feedback: list[str] = Field(description="Specific improvement suggestions")
     meets_threshold: bool = Field(description="Whether quality threshold is met")
 
 
 # Factory functions
 def create_research_workflow(
-    name: str = "research_workflow", stages: List[str] = None, debug: bool = True
+    name: str = "research_workflow", stages: list[str] | None = None, debug: bool = True
 ) -> SequentialWorkflowAgent:
     """Create a research workflow with default stages."""
     if stages is None:
@@ -295,7 +295,7 @@ def create_research_workflow(
 
 def create_conditional_workflow(
     name: str = "conditional_workflow",
-    routing_conditions: Dict[str, callable] = None,
+    routing_conditions: dict[str, callable] | None = None,
     debug: bool = True,
 ) -> ConditionalWorkflowAgent:
     """Create a conditional workflow with branching."""

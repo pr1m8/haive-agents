@@ -1,4 +1,5 @@
 # src/haive/agents/react/agent.py
+
 import logging
 import os
 import uuid
@@ -14,6 +15,9 @@ from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from haive.core.graph.node.config import NodeConfig
 from haive.core.graph.tool_config import ToolConfig
 from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.utils.visualize_graph_utils import (
+    render_and_display_graph,
+)
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import BaseTool, StructuredTool
@@ -338,9 +342,6 @@ class ReactAgent(SimpleAgent):
                 graph_filename = f"{self.config.name}_{timestamp}.png"
                 graph_path = os.path.join(output_dir, graph_filename)
 
-                from haive.core.utils.visualize_graph_utils import (
-                    render_and_display_graph,
-                )
 
                 render_and_display_graph(self.app, output_name=graph_path)
                 logger.info(f"Graph visualization saved to: {graph_path}")

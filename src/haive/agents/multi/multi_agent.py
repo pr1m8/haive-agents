@@ -5,6 +5,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
+from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
 from pydantic import Field
@@ -191,7 +192,6 @@ class MultiAgent(Agent):
             raise ValueError("Conditional mode requires coordinator_config")
 
         # Add coordinator node
-        from haive.core.graph.node.engine_node import EngineNodeConfig
 
         coordinator_node = EngineNodeConfig(
             name="coordinator", engine=self.coordinator_config

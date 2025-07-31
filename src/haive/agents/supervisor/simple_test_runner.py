@@ -6,6 +6,8 @@ and how it would integrate with eventual agent building capabilities.
 """
 
 import asyncio
+import traceback
+from typing import Any
 
 from rich.console import Console
 from rich.table import Table
@@ -62,7 +64,7 @@ class MockAgent:
     """Mock agent for testing."""
 
     def __init__(
-        self, name: str, agent_type: Any = "MockAgent", tools: List[str] = None
+        self, name: str, agent_type: Any = "MockAgent", tools: list[str] | None = None
     ):
         self.name = name
         self.agent_type = agent_type
@@ -78,7 +80,7 @@ class MockAgent:
         """Mock agent execution."""
 
         class MockResult:
-            def __init__(self, messages: List[Dict[str, Any]]):
+            def __init__(self, messages: list[dict[str, Any]]):
                 self.messages = messages
 
         # Simulate agent response
@@ -478,7 +480,6 @@ async def main():
         console.print("\n[yellow]Test interrupted by user[/yellow]")
     except Exception as e:
         console.print(f"\n[red]Test failed: {e}[/red]")
-        import traceback
 
         traceback.print_exc()
 

@@ -12,15 +12,15 @@ The key insight: Hypothetical documents bridge the semantic gap between queries 
 
 import contextlib
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.vectorstore import VectorStoreConfig, VectorStoreProvider
-from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.vectorstore import VectorStoreConfig, VectorStoreProvider
+from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
 
 
 # HyDE Result Model

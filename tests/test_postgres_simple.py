@@ -3,9 +3,9 @@
 import os
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 def test_postgres_setup_works():

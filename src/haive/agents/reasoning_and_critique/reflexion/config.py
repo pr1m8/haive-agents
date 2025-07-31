@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from typing import Any
 
+from agents.reflexion.agent import ReflexionAgent
 from agents.reflexion.aug_llms import initial_answer_chain_config, revision_chain_config
 from agents.reflexion.models import AnswerQuestion, ReviseAnswer
 from agents.reflexion.state import ReflexionState
@@ -26,6 +27,5 @@ class ReflexionConfig(AgentConfig):
 
     @classmethod
     def create_agent(cls) -> Any:
-        from agents.reflexion.agent import ReflexionAgent
 
         return ReflexionAgent(config=cls())

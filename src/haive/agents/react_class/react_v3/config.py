@@ -15,6 +15,8 @@ from langchain_core.tools import BaseTool
 from langgraph.pregel import RetryPolicy
 from pydantic import Field, model_validator
 
+from haive.agents.react_class.react_v3.agent import ReactAgent
+
 # Setup logging
 logger = logging.getLogger(__name__)
 
@@ -155,6 +157,4 @@ class ReactAgentConfig(AgentConfig):
         Returns:
             Configured ReactAgent
         """
-        from haive.agents.react_class.react_v3.agent import ReactAgent
-
         return ReactAgent(self)

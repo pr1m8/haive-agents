@@ -4,6 +4,7 @@ import uuid
 from enum import Enum
 from typing import Any, Union
 
+from haive.core.common.structures.tree import AutoTree
 from pydantic import BaseModel, Field
 
 # ============================================================================
@@ -214,8 +215,6 @@ class TaskPlan(BaseModel):
 
     def calculate_stats(self) -> None:
         """Calculate plan statistics."""
-        from haive.core.common.structures.tree import AutoTree
-
         tree = AutoTree(self.root_task)
         all_nodes = tree.traverse_depth_first(lambda n: n)
 

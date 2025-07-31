@@ -9,7 +9,6 @@ This demo shows how branching and structured output models work together:
 """
 
 import asyncio
-from typing import List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -38,32 +37,32 @@ class CreativeResult(BaseModel):
     """Result from creative processing."""
 
     creative_output: str = Field(description="Creative work produced")
-    inspiration_sources: List[str] = Field(description="Sources of inspiration used")
+    inspiration_sources: list[str] = Field(description="Sources of inspiration used")
     creativity_score: float = Field(
         ge=0.0, le=1.0, description="Self-assessed creativity"
     )
-    additional_ideas: List[str] = Field(description="Additional creative ideas")
+    additional_ideas: list[str] = Field(description="Additional creative ideas")
 
 
 class AnalyticalResult(BaseModel):
     """Result from analytical processing."""
 
     analysis: str = Field(description="Detailed analysis")
-    key_findings: List[str] = Field(description="Main findings from analysis")
+    key_findings: list[str] = Field(description="Main findings from analysis")
     confidence_level: float = Field(
         ge=0.0, le=1.0, description="Confidence in analysis"
     )
-    recommendations: List[str] = Field(description="Actionable recommendations")
-    data_sources: List[str] = Field(description="Sources used in analysis")
+    recommendations: list[str] = Field(description="Actionable recommendations")
+    data_sources: list[str] = Field(description="Sources used in analysis")
 
 
 class TechnicalResult(BaseModel):
     """Result from technical processing."""
 
     solution: str = Field(description="Technical solution provided")
-    implementation_steps: List[str] = Field(description="Steps to implement")
+    implementation_steps: list[str] = Field(description="Steps to implement")
     complexity_assessment: str = Field(description="Technical complexity assessment")
-    required_skills: List[str] = Field(description="Skills needed for implementation")
+    required_skills: list[str] = Field(description="Skills needed for implementation")
     estimated_effort: str = Field(description="Effort estimate")
 
 
@@ -75,8 +74,8 @@ class FinalSummary(BaseModel):
     quality_score: float = Field(
         ge=0.0, le=1.0, description="Overall quality assessment"
     )
-    key_outputs: List[str] = Field(description="Main outputs produced")
-    next_steps: Optional[List[str]] = Field(description="Suggested next steps")
+    key_outputs: list[str] = Field(description="Main outputs produced")
+    next_steps: list[str] | None = Field(description="Suggested next steps")
 
 
 # ========================================================================
@@ -90,20 +89,16 @@ def route_by_task_type(state) -> str:
     task_type = classification.get("task_type", "analytical")
     complexity = classification.get("complexity_score", 0.5)
 
-    print(f"🔀 Routing decision: task_type='{task_type}', complexity={complexity}")
-
     # Route based on task type and complexity
     if task_type == "creative":
         return "creative_processor"
-    elif task_type == "technical":
+    if task_type == "technical":
         return "technical_processor"
-    elif task_type == "analytical":
+    if task_type == "analytical":
         if complexity > 0.7:
             return "complex_analytical_processor"
-        else:
-            return "simple_analytical_processor"
-    else:
-        return "simple_analytical_processor"  # Default fallback
+        return "simple_analytical_processor"
+    return "simple_analytical_processor"  # Default fallback
 
 
 def route_to_summary(state) -> str:
@@ -118,11 +113,6 @@ def route_to_summary(state) -> str:
 
 async def main():
     """Demonstrate branching with structured output."""
-    print("🌳 BRANCHING & STRUCTURED OUTPUT DEMO")
-    print("=" * 80)
-    print("Flow: Classifier → [Creative|Analytical|Technical] → Summarizer")
-    print("=" * 80)
-
     # Step 1: Create classifier agent
     classifier = SimpleAgentV3(
         name="classifier",
@@ -192,7 +182,7 @@ Create innovative creative work with inspiration sources and additional ideas.""
                     """Analyze this task:
 
 Task Type: {task_type}
-Category: {category}  
+Category: {category}
 Complexity: {complexity_score}
 Original Task: {task_description}
 
@@ -280,7 +270,6 @@ Create a final summary with quality assessment and next steps.""",
     )
 
     # Step 4: Create branching workflow
-    print("✅ Creating agents...")
     workflow = EnhancedMultiAgentV4(
         name="branching_workflow",
         agents=[
@@ -294,10 +283,7 @@ Create a final summary with quality assessment and next steps.""",
         execution_mode="manual",  # Manual mode for custom routing
     )
 
-    print(f"✅ Created workflow with {len(workflow.agents)} agents")
-
     # Step 5: Add conditional routing
-    print("🔗 Setting up branching logic...")
 
     # First branch: Classifier → Specialized processors
     workflow.add_multi_conditional_edge(
@@ -323,8 +309,6 @@ Create a final summary with quality assessment and next steps.""",
             from_agent=processor, condition=route_to_summary, true_agent="summarizer"
         )
 
-    print("✅ Branching logic configured")
-
     # Step 6: Test different task types
     test_tasks = [
         {
@@ -346,11 +330,7 @@ Create a final summary with quality assessment and next steps.""",
     ]
 
     # Step 7: Execute tests
-    for i, test_case in enumerate(test_tasks, 1):
-        print(f"\n{'='*80}")
-        print(f"TEST {i}: {test_case['description'][:60]}...")
-        print(f"Expected: {test_case['expected_path']}")
-        print("=" * 80)
+    for _i, test_case in enumerate(test_tasks, 1):
 
         # Create proper state for workflow
         initial_state = {
@@ -364,19 +344,9 @@ Create a final summary with quality assessment and next steps.""",
         try:
             result = await workflow.arun(initial_state)
 
-            print(f"\n🎯 RESULTS FOR TEST {i}:")
-            print("-" * 40)
-
             # Show classification results
             if hasattr(result, "task_classification"):
-                classification = result.task_classification
-                print(f"📊 Classification:")
-                print(f"   Task Type: {classification.get('task_type', 'N/A')}")
-                print(f"   Complexity: {classification.get('complexity_score', 0):.2f}")
-                print(f"   Category: {classification.get('category', 'N/A')}")
-                print(
-                    f"   Requires Tools: {classification.get('requires_tools', False)}"
-                )
+                pass
 
             # Show processing results
             processing_results = []
@@ -389,33 +359,16 @@ Create a final summary with quality assessment and next steps.""",
                     processing_results.append(field_name)
 
             if processing_results:
-                print(f"🛠️  Processing Results: {', '.join(processing_results)}")
+                pass
 
             # Show final summary
             if hasattr(result, "final_summary"):
-                summary = result.final_summary
-                print(f"📋 Final Summary:")
-                print(f"   Processing Path: {summary.get('processing_path', 'N/A')}")
-                print(f"   Quality Score: {summary.get('quality_score', 0):.2f}")
-                print(f"   Key Outputs: {len(summary.get('key_outputs', []))} items")
+                pass
 
-            print(f"✅ Test {i} completed successfully!")
-
-        except Exception as e:
-            print(f"❌ Test {i} failed: {e}")
+        except Exception:
             import traceback
 
             traceback.print_exc()
-
-    print(f"\n{'='*80}")
-    print("🌳 BRANCHING DEMO COMPLETED")
-    print("Key Features Demonstrated:")
-    print("✅ Structured output drives routing decisions")
-    print("✅ Different agents handle different task types")
-    print("✅ State flows consistently across all branches")
-    print("✅ Branches reconverge for final processing")
-    print("✅ Complex conditional routing with fallbacks")
-    print("=" * 80)
 
 
 if __name__ == "__main__":

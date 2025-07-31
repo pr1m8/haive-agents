@@ -40,7 +40,7 @@ User Question: {query}
 
 Instructions:
 1. Carefully analyze all retrieved documents
-2. Identify the most relevant information for answering the question  
+2. Identify the most relevant information for answering the question
 3. Provide a detailed, comprehensive answer based on the documents
 4. Quote directly from the documents when appropriate
 5. If the documents don't contain enough information, say so clearly

@@ -6,9 +6,9 @@ system with challenging scenarios, LangGraph-style patterns, and edge cases.
 
 from unittest.mock import AsyncMock, MagicMock
 
-import pytest
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool
+import pytest
 
 from haive.agents.discovery.dynamic_tool_selector import (
     ContextAwareSelector,

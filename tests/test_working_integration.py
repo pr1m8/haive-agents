@@ -5,11 +5,12 @@ Tests core functionality without mocking internal methods.
 
 from unittest.mock import MagicMock
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.base_graph import END, START, BaseGraph
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
+
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.base_graph import END, START, BaseGraph
 
 
 # Test tools

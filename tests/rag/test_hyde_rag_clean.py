@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Test HyDE RAG with clean MultiAgent implementation."""
 
-import pytest
 from langchain_core.documents import Document
+import pytest
 
 from haive.agents.rag.hyde.agent import HyDERAGAgent
 

@@ -7,6 +7,7 @@ import os
 
 from langchain_core.messages import AIMessage, HumanMessage
 
+
 # Configure logging to see what's happening
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -17,9 +18,8 @@ logger = logging.getLogger(__name__)
 async def create_real_agents():
     """Create real ReactAgents for testing."""
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.react.agent import ReactAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create research agent
         research_engine = AugLLMConfig(

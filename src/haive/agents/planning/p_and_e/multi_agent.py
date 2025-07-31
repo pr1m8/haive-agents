@@ -17,6 +17,10 @@ from haive.agents.multi.archive.configurable_base import (
     ConfigurableMultiAgent,
     WorkflowStep,
 )
+from haive.agents.multi.configurable_base import (
+    create_branching_multi_agent,
+    create_sequential_multi_agent,
+)
 from haive.agents.planning.p_and_e.models import Act, ExecutionResult, Plan, Response
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 
@@ -265,15 +269,11 @@ def create_custom_plan_execute_system(
 
 def create_simple_sequential_system(agents: Any):
     """Create simple sequential multi-agent system."""
-    from haive.agents.multi.configurable_base import create_sequential_multi_agent
-
     return create_sequential_multi_agent(agents=agents, name="Sequential Agent System")
 
 
 def create_custom_branching_system(agents: Any, branches):
     """Create custom branching multi-agent system."""
-    from haive.agents.multi.configurable_base import create_branching_multi_agent
-
     return create_branching_multi_agent(
         agents=agents, branches=branches, name="Custom Branching System"
     )

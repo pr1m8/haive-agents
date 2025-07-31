@@ -32,13 +32,11 @@ Example:
 """
 
 # Import the legacy TOT implementation
+
 try:
     from haive.agents.reasoning_and_critique.tot.agent import ToTAgent, setup_workflow
-except ImportError:
-    # Handle missing setup_workflow
-    from haive.agents.reasoning_and_critique.tot.agent import ToTAgent
 
-    setup_workflow = None
+from haive.agents.reasoning_and_critique.tot.agent import ToTAgent
 from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
     CandidateGeneration as NewCandidateGeneration,
 )
@@ -63,8 +61,6 @@ from haive.agents.reasoning_and_critique.tot.models import (
     ScoredCandidate,
     update_candidates,
 )
-
-# Import the new multi-agent TOT implementation
 from haive.agents.reasoning_and_critique.tot.orchestrator import (
     TOTResult,
     TreeOfThoughtsOrchestrator,
@@ -81,6 +77,13 @@ from haive.agents.reasoning_and_critique.tot.tree_of_thoughts_agent import (
     TreeOfThoughtsAgent,
     create_tree_of_thoughts_agent,
 )
+
+except ImportError:
+    # Handle missing setup_workflow
+
+    setup_workflow = None
+
+# Import the new multi-agent TOT implementation
 
 # Build exports list dynamically
 _exports = [

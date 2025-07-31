@@ -34,8 +34,6 @@ from langchain_core.runnables import (
     RunnableLambda,
     RunnablePassthrough,
 )
-
-# from haive_agents.tnt.utils import invoke_taxonomy_chain
 from langgraph.graph import END, START
 from langgraph.types import Command
 from pydantic import Field
@@ -49,6 +47,8 @@ from haive.agents.document_modifiers.tnt.engines import (
 )
 from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 from haive.agents.document_modifiers.tnt.utils import format_docs, format_taxonomy
+
+# from haive_agents.tnt.utils import invoke_taxonomy_chain
 
 
 # FR

@@ -57,15 +57,15 @@ import asyncio
 import json
 import logging
 import os
+import re
 from typing import Any, Literal, Optional, cast
 
-# Import agent base classes
 from haive.core.engine.agent.agent import Agent, register_agent
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
 from pydantic import create_model
+from tavily import AsyncTavilyClient
 
-# Import agent specific modules
 from haive.agents.research.person.config import PersonResearchAgentConfig
 from haive.agents.research.person.models import Queries, ReflectionOutput
 from haive.agents.research.person.prompts import (
@@ -85,12 +85,15 @@ from haive.agents.research.person.utils import (
     get_config_from_runnable_config,
 )
 
+# Import agent base classes
+
+# Import agent specific modules
+
 # Set up logging
 logger = logging.getLogger(__name__)
 
 # Try to import Tavily client
 try:
-    from tavily import AsyncTavilyClient
 
     TAVILY_AVAILABLE = True
 except ImportError:
@@ -518,8 +521,6 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         Returns:
             JSON string or None if not found
         """
-        import re
-
         # Try to find JSON within code blocks
         json_match = re.search(r"```(?:json)?\s*\n(.*?)\n\s*```", text, re.DOTALL)
         if json_match:

@@ -475,7 +475,7 @@ def create_executor(executor_type: str, name: str, **kwargs) -> BaseExecutor:
         return ToolExecutor(name, **kwargs)
     if executor_type == "data":
         return DataProcessor(name, **kwargs)
-    raise ValueError(f"Unknown executor type: {executor_type}")
+    raise TypeError(f"Unknown executor type: {executor_type}")
 
 
 def create_agent(

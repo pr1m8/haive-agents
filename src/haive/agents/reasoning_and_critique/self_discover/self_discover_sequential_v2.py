@@ -8,7 +8,7 @@ This implementation:
 5. Follows "no mocks" testing philosophy
 """
 
-from typing import List
+import asyncio
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -38,7 +38,7 @@ class ModuleSelectionResult(BaseModel):
     """Result of the module selection stage."""
 
     task_summary: str = Field(description="Brief summary of the task being analyzed")
-    selected_modules: List[SelectedModule] = Field(
+    selected_modules: list[SelectedModule] = Field(
         description="List of selected reasoning modules (3-5 modules)"
     )
     selection_rationale: str = Field(
@@ -47,7 +47,7 @@ class ModuleSelectionResult(BaseModel):
 
     @field_validator("selected_modules")
     @classmethod
-    def validate_modules(cls, modules: List[SelectedModule]) -> List[SelectedModule]:
+    def validate_modules(cls, modules: list[SelectedModule]) -> list[SelectedModule]:
         """Ensure we have 3-5 modules."""
         if len(modules) < 3:
             raise ValueError("At least 3 modules must be selected")
@@ -82,7 +82,7 @@ class AdaptedModule(BaseModel):
 class ModuleAdaptationResult(BaseModel):
     """Result of the module adaptation stage."""
 
-    adapted_modules: List[AdaptedModule] = Field(
+    adapted_modules: list[AdaptedModule] = Field(
         description="List of adapted reasoning modules"
     )
 
@@ -101,7 +101,7 @@ class ReasoningStep(BaseModel):
 
     step_number: int = Field(description="Sequential step number")
     description: str = Field(description="What to determine or analyze in this step")
-    modules_used: List[int] = Field(
+    modules_used: list[int] = Field(
         default_factory=list, description="Module numbers used in this step"
     )
     expected_output: str = Field(description="What this step should produce")
@@ -110,13 +110,13 @@ class ReasoningStep(BaseModel):
 class ReasoningStructure(BaseModel):
     """A structured reasoning plan."""
 
-    steps: List[ReasoningStep] = Field(
+    steps: list[ReasoningStep] = Field(
         description="Sequential steps in the reasoning plan"
     )
 
     @field_validator("steps")
     @classmethod
-    def validate_steps(cls, steps: List[ReasoningStep]) -> List[ReasoningStep]:
+    def validate_steps(cls, steps: list[ReasoningStep]) -> list[ReasoningStep]:
         """Ensure steps are properly numbered."""
         for i, step in enumerate(steps, 1):
             if step.step_number != i:
@@ -146,7 +146,7 @@ class ExecutionStep(BaseModel):
 class ReasoningExecution(BaseModel):
     """Complete reasoning execution with all steps and final answer."""
 
-    completed_steps: List[ExecutionStep] = Field(
+    completed_steps: list[ExecutionStep] = Field(
         description="List of completed reasoning steps"
     )
     final_answer: str = Field(description="Final answer to the problem")
@@ -320,7 +320,6 @@ def create_self_discover_sequential() -> EnhancedMultiAgentV4:
 
 # Example usage
 if __name__ == "__main__":
-    import asyncio
 
     async def main():
         """Example of using the Self-Discover sequential agent."""
@@ -342,11 +341,9 @@ if __name__ == "__main__":
         }
 
         # Execute the workflow
-        result = await self_discover.arun(initial_state)
+        await self_discover.arun(initial_state)
 
         # The result will contain the final execution from all four agents
-        print("Self-Discover Result:")
-        print(result)
 
     # Run the example
     asyncio.run(main())

@@ -18,6 +18,10 @@ from pydantic import Field
 from haive.agents.base.agent import Agent
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.rag.common.answer_generators.prompts import (
+    RAG_ANSWER_STANDARD,
+)
+from haive.agents.rag.models import HyDEResult
 from haive.agents.simple.agent import SimpleAgent
 
 HYDE_GENERATION_PROMPT = ChatPromptTemplate.from_messages(
@@ -109,7 +113,6 @@ class HyDERetrieverAgent(Agent):
         # Add the base retriever's graph as a subgraph
         retriever_node = EngineNodeConfig(
             engine=self.base_retriever.engine, name="retriever"
-        )
         graph.add_node("retriever", retriever_node)
 
         # Connect: START -> transform -> retriever -> END
@@ -146,7 +149,6 @@ class HyDERAGAgentV2(SequentialAgent):
             HyDERAGAgentV2 instance
         """
         # Step 1: Generate hypothetical document with structured output
-        from haive.agents.rag.models import HyDEResult
 
         hyde_generator = SimpleAgent(
             engine=AugLLMConfig(
@@ -170,8 +172,6 @@ class HyDERAGAgentV2(SequentialAgent):
         )
 
         # Step 4: Generate final answer using standard RAG prompt
-        from haive.agents.rag.common.answer_generators.prompts import (
-            RAG_ANSWER_STANDARD,
         )
 
         answer_agent = SimpleAgent(

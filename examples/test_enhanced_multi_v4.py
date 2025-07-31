@@ -12,7 +12,6 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 async def main():
-    print("Testing EnhancedMultiAgentV4 with V3 agents...")
 
     # Create SimpleAgentV3
     simple = SimpleAgentV3(
@@ -21,7 +20,6 @@ async def main():
             temperature=0.3, system_message="You are a helpful assistant."
         ),
     )
-    print(f"✅ Created SimpleAgentV3: {simple.name}")
 
     # Create ReactAgentV3
     @tool
@@ -35,15 +33,12 @@ async def main():
             system_message="You are a helpful assistant with tools.", tools=[test_tool]
         ),
     )
-    print(f"✅ Created ReactAgentV3: {react.name}")
 
     # Try to create EnhancedMultiAgentV4
     try:
         workflow = EnhancedMultiAgentV4(
             name="test_workflow", agents=[simple, react], execution_mode="sequential"
         )
-        print(f"✅ Created EnhancedMultiAgentV4: {workflow.name}")
-        print(f"   Agents: {workflow.get_agent_names()}")
 
         # Try to execute with proper state format
         from langchain_core.messages import HumanMessage
@@ -56,17 +51,10 @@ async def main():
         }
 
         result = await workflow.arun(test_state)
-        print(f"✅ Workflow executed successfully!")
-        print(f"   Result type: {type(result)}")
-        print(
-            f"   Messages count: {len(result.messages) if hasattr(result, 'messages') else 'N/A'}"
-        )
         if hasattr(result, "messages") and result.messages:
-            print(f"   Last message: {result.messages[-1].content[:100]}...")
+            pass
 
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        print(f"   Error type: {type(e).__name__}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

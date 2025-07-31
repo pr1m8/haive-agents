@@ -4,9 +4,9 @@ from .candidate_generator import CandidateGeneration, CandidateGenerator
 from .solution_scorer import ScoredSolution, SolutionScorer, SolutionScoring
 
 __all__ = [
-    "CandidateGenerator",
     "CandidateGeneration",
+    "CandidateGenerator",
+    "ScoredSolution",
     "SolutionScorer",
     "SolutionScoring",
-    "ScoredSolution",
 ]

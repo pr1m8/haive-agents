@@ -6,8 +6,6 @@ using the class method approach with future annotations.
 
 from __future__ import annotations
 
-from typing import Dict, List
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
@@ -24,10 +22,10 @@ class ResearchResult(BaseModel):
 
     topic: str = Field(description="Research topic")
     summary: str = Field(description="Executive summary")
-    key_findings: List[str] = Field(description="Key findings")
-    sources: List[str] = Field(description="Information sources")
+    key_findings: list[str] = Field(description="Key findings")
+    sources: list[str] = Field(description="Information sources")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence level")
-    next_steps: List[str] = Field(default_factory=list)
+    next_steps: list[str] = Field(default_factory=list)
 
 
 class PlanningResult(BaseModel):
@@ -35,17 +33,15 @@ class PlanningResult(BaseModel):
 
     objective: str = Field(description="Main objective")
     strategy: str = Field(description="Overall strategy")
-    phases: List[Dict[str, str]] = Field(description="Implementation phases")
+    phases: list[dict[str, str]] = Field(description="Implementation phases")
     timeline: str = Field(description="Expected timeline")
-    resources: List[str] = Field(description="Required resources")
-    risks: List[str] = Field(default_factory=list)
-    success_metrics: List[str] = Field(default_factory=list)
+    resources: list[str] = Field(description="Required resources")
+    risks: list[str] = Field(default_factory=list)
+    success_metrics: list[str] = Field(default_factory=list)
 
 
 def example_1_class_method_usage():
     """Example 1: Using with_structured_output class method."""
-    print("=== Example 1: Class Method Usage ===\n")
-
     # Create ReactAgent with structured output in one step
     researcher, research_structurer = ReactAgent.with_structured_output(
         output_model=ResearchResult,
@@ -73,19 +69,19 @@ def example_1_class_method_usage():
 
         # Research output fields
         summary: str = ""
-        key_findings: List[str] = Field(default_factory=list)
-        sources: List[str] = Field(default_factory=list)
+        key_findings: list[str] = Field(default_factory=list)
+        sources: list[str] = Field(default_factory=list)
         confidence: float = 0.0
-        next_steps: List[str] = Field(default_factory=list)
+        next_steps: list[str] = Field(default_factory=list)
 
         # Planning output fields
         objective: str = ""
         strategy: str = ""
-        phases: List[Dict[str, str]] = Field(default_factory=list)
+        phases: list[dict[str, str]] = Field(default_factory=list)
         timeline: str = ""
-        resources: List[str] = Field(default_factory=list)
-        risks: List[str] = Field(default_factory=list)
-        success_metrics: List[str] = Field(default_factory=list)
+        resources: list[str] = Field(default_factory=list)
+        risks: list[str] = Field(default_factory=list)
+        success_metrics: list[str] = Field(default_factory=list)
 
     # Initialize workflow
     state = ResearchPlanningState(
@@ -96,37 +92,21 @@ def example_1_class_method_usage():
     config = {"configurable": {"thread_id": "research_planning"}}
 
     # Execute workflow
-    print("Step 1: Research the topic...")
     researcher_node = create_agent_node_v3("researcher")
     researcher_node(state, config)
 
-    print("Step 2: Structure research output...")
     research_struct_node = create_agent_node_v3("researcher_structured")
     research_struct_node(state, config)
 
-    print(f"Research Summary: {state.summary[:100]}...")
-    print(f"Key Findings: {len(state.key_findings)} findings")
-    print(f"Confidence: {state.confidence}\n")
-
-    print("Step 3: Create implementation plan...")
     planner_node = create_agent_node_v3("planner")
     planner_node(state, config)
 
-    print("Step 4: Structure planning output...")
     plan_struct_node = create_agent_node_v3("planner_structured")
     plan_struct_node(state, config)
-
-    print(f"Objective: {state.objective}")
-    print(f"Strategy: {state.strategy}")
-    print(f"Phases: {len(state.phases)} phases")
-    print(f"Timeline: {state.timeline}")
-    print("\n" + "=" * 60 + "\n")
 
 
 def example_2_structured_tool():
     """Example 2: Using as_structured_tool class method."""
-    print("=== Example 2: Structured Tool Creation ===\n")
-
     # Create a structured research tool
     research_tool = ReactAgent.as_structured_tool(
         output_model=ResearchResult,
@@ -147,14 +127,11 @@ def example_2_structured_tool():
     )
 
     # Run coordinator
-    result = coordinator.run("Research the latest advances in quantum computing")
-    print(f"Coordinator used research tool: {result}")
-    print("\n" + "=" * 60 + "\n")
+    coordinator.run("Research the latest advances in quantum computing")
 
 
 def example_3_ensure_structured_output():
     """Example 3: Using ensure_structured_output instance method."""
-    print("=== Example 3: Ensure Structured Output ===\n")
 
     # Create a custom agent that uses ensure_structured_output
     class SmartAgent(SimpleAgent):
@@ -184,18 +161,11 @@ def example_3_ensure_structured_output():
     # Use the smart agent
     agent = SmartAgent(name="smart_researcher", engine=AugLLMConfig())
 
-    result = agent.run("Tell me about machine learning")
-    print(f"Result type: {type(result)}")
-    print(f"Topic: {result.topic}")
-    print(f"Summary: {result.summary[:100]}...")
-    print(f"Confidence: {result.confidence}")
-    print("\n" + "=" * 60 + "\n")
+    agent.run("Tell me about machine learning")
 
 
 def example_4_handling_different_formats():
     """Example 4: Handling various output formats."""
-    print("=== Example 4: Handling Different Output Formats ===\n")
-
     # Create agent with structured output
     agent, structurer = SimpleAgent.with_structured_output(
         output_model=ResearchResult, name="format_handler"
@@ -243,8 +213,7 @@ def example_4_handling_different_formats():
         ),
     ]
 
-    for i, output in enumerate(test_outputs):
-        print(f"Test {i+1}: {type(output).__name__}")
+    for _i, output in enumerate(test_outputs):
 
         # Use ensure_structured_output
         structured = agent.ensure_structured_output(
@@ -252,28 +221,22 @@ def example_4_handling_different_formats():
         )
 
         if structured:
-            print("  ✅ Successfully converted")
-            print(f"  Topic: {structured.topic}")
-            print(f"  Confidence: {structured.confidence}")
+            pass
         else:
-            print("  ❌ Conversion failed")
-        print()
-
-    print("\n" + "=" * 60 + "\n")
+            pass
 
 
 def example_5_multi_agent_with_fallback():
     """Example 5: Multi-agent with structured output and fallback."""
-    print("=== Example 5: Multi-Agent with Fallback ===\n")
 
     # Define a complex output model
     class ComplexAnalysis(BaseModel):
         executive_summary: str
-        quantitative_metrics: Dict[str, float]
-        qualitative_insights: List[str]
-        recommendations: List[Dict[str, str]]
-        confidence_scores: Dict[str, float]
-        limitations: List[str] = Field(default_factory=list)
+        quantitative_metrics: dict[str, float]
+        qualitative_insights: list[str]
+        recommendations: list[dict[str, str]]
+        confidence_scores: dict[str, float]
+        limitations: list[str] = Field(default_factory=list)
 
     # Create analyzer with structured output
     analyzer, structurer = ReactAgent.with_structured_output(
@@ -288,11 +251,11 @@ def example_5_multi_agent_with_fallback():
 
         # Complex analysis fields
         executive_summary: str = ""
-        quantitative_metrics: Dict[str, float] = Field(default_factory=dict)
-        qualitative_insights: List[str] = Field(default_factory=list)
-        recommendations: List[Dict[str, str]] = Field(default_factory=list)
-        confidence_scores: Dict[str, float] = Field(default_factory=dict)
-        limitations: List[str] = Field(default_factory=list)
+        quantitative_metrics: dict[str, float] = Field(default_factory=dict)
+        qualitative_insights: list[str] = Field(default_factory=list)
+        recommendations: list[dict[str, str]] = Field(default_factory=list)
+        confidence_scores: dict[str, float] = Field(default_factory=dict)
+        limitations: list[str] = Field(default_factory=list)
 
     state = AnalysisState(
         agents=[analyzer, structurer],
@@ -308,18 +271,8 @@ def example_5_multi_agent_with_fallback():
     analyzer_node(state, config)
     structurer_node(state, config)
 
-    print(f"Executive Summary: {state.executive_summary[:100]}...")
-    print(f"Metrics: {list(state.quantitative_metrics.keys())}")
-    print(f"Insights: {len(state.qualitative_insights)} insights")
-    print(f"Recommendations: {len(state.recommendations)} recommendations")
-    print(f"Confidence Scores: {state.confidence_scores}")
-
-    print("\n" + "=" * 60 + "\n")
-
 
 if __name__ == "__main__":
-    print("🚀 Agent with Structured Output Examples\n")
-    print("This demonstrates the power of adding structured output to any agent\n")
 
     # Run all examples
     example_1_class_method_usage()
@@ -327,11 +280,3 @@ if __name__ == "__main__":
     example_3_ensure_structured_output()
     example_4_handling_different_formats()
     example_5_multi_agent_with_fallback()
-
-    print("✅ All examples completed!")
-    print("\nKey Takeaways:")
-    print("1. Any agent can have structured output with .with_structured_output()")
-    print("2. Creates a two-agent pattern: original + structurer")
-    print("3. Handles various output formats (str, AIMessage, dict, etc.)")
-    print("4. Tool calls are automatically parsed if present")
-    print("5. Always uses tool-based extraction (v2) for reliability")

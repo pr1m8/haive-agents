@@ -78,7 +78,7 @@ def test_streaming_metadata():
                 if isinstance(chunk, dict):
                     # Look specifically for streaming metadata
                     if "__metadata__" in chunk:
-                        pass}")
+                        pass
 
                     # Check for LangGraph streaming metadata
                     for key in chunk:

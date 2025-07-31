@@ -2,17 +2,19 @@
 
 from typing import Any
 
-# Fix forward references EARLY before importing MultiAgentState
 from haive.core.graph.node import agent_node_v3
-from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
+from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config, create_agent_node_v3
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt import multi_agent_state
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.graph import END, START
 from pydantic import Field, model_validator
 
-# Import Agent normally - circular import should be OK at runtime
 from haive.agents.base.agent import Agent
+
+# Fix forward references EARLY before importing MultiAgentState
+
+# Import Agent normally - circular import should be OK at runtime
 
 # Add Agent to modules that need it for forward references
 agent_node_v3.Agent = Agent
@@ -114,10 +116,6 @@ class ProperMultiAgent(Agent):
         if self.state_schema is None:
             # Create a simple schema that inherits from MultiAgentState
             # but requires agents to be provided
-            from typing import Any
-
-            from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-            from pydantic import model_validator
 
             # Store reference to the multi-agent instance for closure
             multi_agent_instance = self
@@ -151,7 +149,6 @@ class ProperMultiAgent(Agent):
             raise ValueError("Agents must be normalized to dict")
 
         # Use the create function - forward refs already fixed at import time
-        from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
 
         # Use create_agent_node_v3 factory function
         for agent_name, agent in self.agents.items():
@@ -216,7 +213,7 @@ class ProperMultiAgent(Agent):
 
         if self.parallel_wait_for_all:
             # Add a gather node to wait for all agents
-            def gather_results(state: dict[str, Any]):
+            def gather_results(___state: dict[str, Any]):
                 """Gather results from all parallel agents."""
                 return state
 
@@ -248,7 +245,7 @@ class ProperMultiAgent(Agent):
         graph.add_edge(START, f"agent_{decision_agent}")
 
         # Add branch router node
-        def branch_router(state: dict[str, Any]):
+        def branch_router(___state: dict[str, Any]):
             """Route to appropriate branch based on condition."""
             # Simple condition evaluation - can be enhanced
             if self.branch_condition:

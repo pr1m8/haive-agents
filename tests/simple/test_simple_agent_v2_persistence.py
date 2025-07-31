@@ -3,11 +3,11 @@
 import asyncio
 import contextlib
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic_core import PydanticUndefined
+import pytest
 
 from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestSimpleAgentV2Persistence:

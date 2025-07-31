@@ -2,10 +2,7 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from haive.tools.tools.search_tools import tavily_search_tool
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 
 from haive.agents.experiments.supervisor.agent_info import AgentInfo
 from haive.agents.experiments.supervisor.component_2_tools import (
@@ -16,12 +13,13 @@ from haive.agents.experiments.supervisor.dynamic_supervisor_agent import (
 )
 from haive.agents.experiments.supervisor.test_utils import add, multiply
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
+from haive.tools.tools.search_tools import tavily_search_tool
 
 
 async def test_simple_natural_flow():
     """Test the natural flow: start with 2 agents, need 3rd, add it, use it."""
-
-
     # Create search agent
     search_engine = AugLLMConfig(
         name="search_engine",
@@ -47,7 +45,6 @@ async def test_simple_natural_flow():
         system_message="You are a translation specialist.",
     )
     translation_agent = SimpleAgent(name="translation_agent", engine=translation_engine)
-
 
     # Step 1: Create supervisor with only 2 agents
     supervisor = create_supervisor_agent("simple_supervisor")
@@ -78,12 +75,10 @@ async def test_simple_natural_flow():
     state.active_agents = {"search_agent", "math_agent"}
     state.sync_agents()  # Generate tools
 
-
     # Step 2: Test supervisor recognizes missing capability
 
     # Call supervisor node directly to see its decision
     supervisor_result = supervisor.supervisor_node(state)
-
 
     if supervisor_result.get("need_new_agent"):
         pass
@@ -101,7 +96,6 @@ async def test_simple_natural_flow():
     state.active_agents.add("translation_agent")
     state.sync_agents()  # Regenerate tools
 
-
     # Step 4: Test supervisor now has all capabilities
 
     # Update message for retry
@@ -113,26 +107,23 @@ async def test_simple_natural_flow():
 
     supervisor_result2 = supervisor.supervisor_node(state)
 
-
     if supervisor_result2.get("next_agent"):
         pass
     else:
-        passy")
+        pass
 
     # Step 5: Test full workflow execution
 
     try:
         # Use the supervisor's arun with the complete state
-        final_result = await supervisor.arun(
+        await supervisor.arun(
             state, debug=True  # Pass state object directly, not model_dump()
         )
 
-
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
-
 
 
 if __name__ == "__main__":

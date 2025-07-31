@@ -11,11 +11,6 @@ Tests for:
 from typing import Any
 from unittest.mock import Mock, patch
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.base import Engine, EngineRetriever
-from haive.core.schema.auto_compatibility import AutoCompatibilitySystem
-from haive.core.schema.composer import SchemaComposer
-from haive.core.schema.state import MessagesState, StateSchema
 from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage, HumanMessage
 from pydantic import BaseModel, Field
@@ -23,6 +18,11 @@ from pydantic import BaseModel, Field
 from haive.agents.base import Agent
 from haive.agents.rag.agent import SimpleRAGAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.base import Engine, EngineRetriever
+from haive.core.schema.auto_compatibility import AutoCompatibilitySystem
+from haive.core.schema.composer import SchemaComposer
+from haive.core.schema.state import MessagesState, StateSchema
 
 
 # Custom Agent Types for Testing

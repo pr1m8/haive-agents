@@ -4,6 +4,7 @@ This advanced example shows how to coordinate multiple ReactAgents,
 each with specialized memory responsibilities.
 """
 
+import asyncio
 from datetime import datetime
 from enum import Enum
 from typing import Any
@@ -493,7 +494,6 @@ async def example_advanced_memory_operations():
 
 
 if __name__ == "__main__":
-    import asyncio
 
     # Run examples
     asyncio.run(example_multi_memory_system())

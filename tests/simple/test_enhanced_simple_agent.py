@@ -7,14 +7,14 @@ with proper type safety and clean design.
 """
 
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
+import pytest
 
 from haive.agents.simple.enhanced_simple_agent import (
     EnhancedSimpleAgent,
     create_simple_agent,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestEnhancedSimpleAgent:

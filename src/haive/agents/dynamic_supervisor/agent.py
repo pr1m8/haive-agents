@@ -31,20 +31,23 @@ Example:
         )
 """
 
+import asyncio
 import logging
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import BaseMessage
+from haive.core.models.llm.base import AzureLLMConfig
+from langchain_core.messages import BaseMessage, HumanMessage
 from pydantic import Field
 
-# Tools handle agent execution directly - no separate node needed
 from haive.agents.dynamic_supervisor.prompts import format_supervisor_prompt
 from haive.agents.dynamic_supervisor.state import (
     SupervisorStateWithTools,
 )
 from haive.agents.react.agent import ReactAgent
+
+# Tools handle agent execution directly - no separate node needed
 
 logger = logging.getLogger(__name__)
 
@@ -212,7 +215,6 @@ class DynamicSupervisorAgent(ReactAgent):
         # Prepare input
         if isinstance(input_data, str):
             # Convert string to state with message
-            from langchain_core.messages import HumanMessage
 
             state.messages.append(HumanMessage(content=input_data))
             input_data = state
@@ -251,7 +253,6 @@ class DynamicSupervisorAgent(ReactAgent):
             Execution result with updated state
         """
         # Create async coroutine and run it
-        import asyncio
 
         return asyncio.run(self.arun(input_data, state, **kwargs))
 
@@ -307,8 +308,6 @@ def create_dynamic_supervisor(
                 enable_agent_builder=True
             )
     """
-    from haive.core.models.llm.base import AzureLLMConfig
-
     # Create engine configuration
     engine = AugLLMConfig(
         name=f"{name}_engine",

@@ -17,6 +17,9 @@ from haive.core.schema.compatibility import (
     TypeAnalyzer,
     check_compatibility,
 )
+from rich.console import Console
+from rich.table import Table
+from rich.tree import Tree
 
 from haive.agents.base.agent import Agent
 from haive.agents.multi.base import ExecutionMode, MultiAgent
@@ -490,10 +493,6 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
 
     def visualize_compatibility(self) -> None:
         """Visualize the compatibility status of the multi-agent system."""
-        from rich.console import Console
-        from rich.table import Table
-        from rich.tree import Tree
-
         console = Console()
 
         # Create compatibility tree

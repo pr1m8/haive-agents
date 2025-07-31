@@ -10,12 +10,19 @@ from typing import Any
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema import StateSchema
+from langchain_core.documents import Document
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
 from langgraph.types import Command
 from pydantic import BaseModel, Field
 
+from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
+from haive.agents.document_modifiers.kg.kg_map_merge.models import (
+    EntityNode,
+    EntityRelationship,
+    KnowledgeGraph,
+)
 from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
 
 from .memory_state_original import (  # Import original models for compatibility
@@ -37,12 +44,6 @@ from .token_tracker import TokenThresholds, TokenTracker
 
 # Graph transformer imports - optional
 try:
-    from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
-        EntityNode,
-        EntityRelationship,
-        KnowledgeGraph,
-    )
 
     HAS_GRAPH_MODELS = True
 except ImportError:
@@ -64,7 +65,6 @@ except ImportError:
     GraphTransformer = None
     HAS_GRAPH_MODELS = False
 
-from langchain_core.documents import Document
 
 logger = logging.getLogger(__name__)
 
@@ -318,7 +318,6 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
 
         Override parent to ensure proper message format for our state schema.
         """
-        from langchain_core.messages import HumanMessage
 
         # Handle string input
         if isinstance(input_data, str):

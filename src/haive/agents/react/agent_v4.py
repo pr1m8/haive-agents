@@ -6,8 +6,9 @@ Minimal ReactAgent that:
 3. No fancy features, just the core pattern
 """
 
+import contextlib
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END
@@ -15,7 +16,8 @@ from langgraph.graph import END
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 if TYPE_CHECKING:
-    from haive.agents.base.enhanced_agent import Agent
+    pass
+
 
 logger = logging.getLogger(__name__)
 
@@ -40,19 +42,15 @@ class ReactAgentV4(SimpleAgentV3):
 
         # Modify edges for looping
         if "tool_node" in graph.nodes:
-            try:
+            with contextlib.suppress(Exception):
                 graph.remove_edge("tool_node", END)
-            except:
-                pass
             graph.add_edge("tool_node", "agent_node")
             if self.debug:
                 logger.debug("Added tool_node to agent_node loop")
 
         if "parse_output" in graph.nodes:
-            try:
+            with contextlib.suppress(Exception):
                 graph.remove_edge("parse_output", END)
-            except:
-                pass
             graph.add_edge("parse_output", "agent_node")
             if self.debug:
                 logger.debug("Added parse_output to agent_node loop")
@@ -61,7 +59,6 @@ class ReactAgentV4(SimpleAgentV3):
 
 
 # Import Agent for model_rebuild
-from haive.agents.base.enhanced_agent import Agent
 
 # Rebuild model to resolve forward references
 ReactAgentV4.model_rebuild()

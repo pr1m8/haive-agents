@@ -93,8 +93,9 @@ from langchain_core.tools import BaseTool, tool
 from langgraph.graph import END
 from pydantic import BaseModel, Field, field_validator
 
-# Import SimpleAgentV3 as base class
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+
+# Import SimpleAgentV3 as base class
 
 # Import Agent for model_rebuild
 
@@ -329,7 +330,6 @@ class ReactAgentV3(SimpleAgentV3):
         exclude=True,  # Exclude from serialization
     )
 
-
     @field_validator("max_iterations")
     @classmethod
     def validate_max_iterations(cls, v: int) -> int:
@@ -379,7 +379,6 @@ class ReactAgentV3(SimpleAgentV3):
         self.reasoning_trace = []
         self.tool_results_history = []
         self.current_reasoning_step = None
-
 
         # Register ReAct-specific hook events if hooks are enabled
         if hasattr(self, "hooks_enabled") and self.hooks_enabled:
@@ -512,7 +511,7 @@ class ReactAgentV3(SimpleAgentV3):
         Simple ReAct pattern like original ReactAgent:
         1. tool_node → agent_node (instead of END) for continued reasoning
         2. parse_output → agent_node (instead of END) for more reasoning
-        
+
         This allows the agent to see tool results and continue reasoning.
         """
         if self.debug:
@@ -937,7 +936,6 @@ def create_research_agent(
 
 if __name__ == "__main__":
     # Example usage and testing
-    from langchain_core.tools import tool
 
     @tool
     def example_calculator(expression: str) -> str:

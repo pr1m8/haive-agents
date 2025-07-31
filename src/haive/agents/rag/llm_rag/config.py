@@ -4,15 +4,16 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-# Import from base RAG
 from haive.agents.rag.base.config import BaseRAGConfig
-
-# Import state models
 from haive.agents.rag.llm_rag.state import (
     LLMRAGInputState,
     LLMRAGOutputState,
     LLMRAGState,
 )
+
+# Import from base RAG
+
+# Import state models
 
 # Define the prompt template for the LLM
 RAG_BASE_PROMPT = """You are an assistant for question-answering tasks.

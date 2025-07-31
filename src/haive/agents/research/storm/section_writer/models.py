@@ -1,3 +1,6 @@
+from pydantic import BaseModel, Field
+
+
 class SubSection(BaseModel):
     subsection_title: str = Field(..., title="Title of the subsection")
     content: str = Field(
@@ -13,11 +16,11 @@ class SubSection(BaseModel):
 class WikiSection(BaseModel):
     section_title: str = Field(..., title="Title of the section")
     content: str = Field(..., title="Full content of the section")
-    subsections: Optional[List[Subsection]] = Field(
+    subsections: list[Subsection] | None = Field(
         default=None,
         title="Titles and descriptions for each subsection of the Wikipedia page.",
     )
-    citations: List[str] = Field(default_factory=list)
+    citations: list[str] = Field(default_factory=list)
 
     @property
     def as_str(self) -> str:

@@ -1,3 +1,6 @@
+import uuid
+
+
 class SelfHealingCodeAgentConfig(AgentArchitectureConfig):
     state_schema: SelfHealingCodeState
 

@@ -1,5 +1,6 @@
 """State schema for self-discover multi-agent system."""
 
+import json
 from typing import Any
 
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
@@ -91,7 +92,6 @@ class SelfDiscoverState(MultiAgentState):
             raise ValueError("reasoning_structure not available for reason_agent")
 
         # Format reasoning structure for the prompt
-        import json
 
         reasoning_structure_str = json.dumps(
             self.reasoning_structure.reasoning_structure, indent=2

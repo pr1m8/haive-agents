@@ -2,11 +2,12 @@
 
 import logging
 
-from haive.core.engine.aug_llm.config import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.core.engine.aug_llm.config import AugLLMConfig
+
 
 # Set up logging to see details
 logging.basicConfig(level=logging.DEBUG)

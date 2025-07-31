@@ -23,6 +23,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import LLMConfig
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
+from langchain_core.messages import ToolMessage
 from langchain_core.runnables import RunnableLambda, RunnableWithFallbacks
 from langchain_core.tools import BaseTool
 from langchain_openai import AzureChatOpenAI
@@ -173,7 +174,6 @@ def handle_tool_error(state: dict[str, Any]) -> dict[str, Any]:
 
     # If we have tool calls, create tool messages for each
     if tool_calls:
-        from langchain_core.messages import ToolMessage
 
         return {
             "messages": [

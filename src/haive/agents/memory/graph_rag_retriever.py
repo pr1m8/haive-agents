@@ -5,6 +5,7 @@ traversal with vector similarity search to provide comprehensive memory retrieva
 with relationship context and semantic understanding.
 """
 
+import json
 import logging
 from datetime import datetime
 from typing import Any
@@ -1070,7 +1071,6 @@ Analyze the relationship path now:""",
     def _parse_json_response(self, response: str) -> dict[str, Any] | None:
         """Parse JSON response from LLM."""
         try:
-            import json
 
             # Try to find JSON in response
             start_idx = response.find("{")

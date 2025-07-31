@@ -608,7 +608,7 @@ def get_extraction_prompt(prompt_type: str) -> ChatPromptTemplate:
     """
     if prompt_type not in EXTRACTION_PROMPTS:
         available = ", ".join(EXTRACTION_PROMPTS.keys())
-        raise ValueError(f"Unknown prompt type '{prompt_type}'. Available: {available}")
+        raise TypeError(f"Unknown prompt type '{prompt_type}'. Available: {available}")
 
     return EXTRACTION_PROMPTS[prompt_type]
 

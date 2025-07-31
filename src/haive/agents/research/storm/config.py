@@ -5,6 +5,7 @@
 
 from typing import Any
 
+from haive.core.models.embeddings.base import OpenAIEmbeddingConfig
 from pydantic import BaseModel, Field
 
 
@@ -174,8 +175,6 @@ class STORMAgentConfig(SequenceAgentConfig):
 
     def _create_default_vector_store_config(self):
         """Create the default vector store configuration."""
-        from haive.core.models.embeddings.base import OpenAIEmbeddingConfig
-
         self.vector_store_config = VectorStoreConfig(
             name="storm_references",
             vector_store_provider="InMemory",

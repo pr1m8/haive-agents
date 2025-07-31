@@ -11,7 +11,10 @@ try:
 
     from haive.agents.simple import SimpleAgent
 
-    # Setup basic logging
+from rich.pretty import Pretty
+from rich.traceback import install as install_rich_traceback
+
+# Setup basic logging
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
@@ -22,7 +25,6 @@ except ImportError as e:
 
 # Install rich traceback for better error display (optional)
 try:
-    from rich.traceback import install as install_rich_traceback
 
     install_rich_traceback(show_locals=True, width=120, suppress=[])
 except ImportError:
@@ -46,7 +48,6 @@ logger = logging.getLogger("SimpleAgentDebug")
 def debug_print(title, obj, expand=False) -> None:
     """Print debugging information in a rich panel."""
     if isinstance(obj, dict):
-        from rich.pretty import Pretty
 
         console.print(
             Panel(Pretty(obj, expand_all=expand), title=title, border_style="cyan")

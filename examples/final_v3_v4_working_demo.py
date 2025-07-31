@@ -9,7 +9,6 @@ This demo shows that:
 """
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -29,20 +28,13 @@ class MarketAnalysis(BaseModel):
     """Market analysis output."""
 
     market_name: str = Field(description="Name of the market analyzed")
-    key_findings: List[str] = Field(description="Top 3-5 key findings")
+    key_findings: list[str] = Field(description="Top 3-5 key findings")
     growth_rate: str = Field(description="Estimated growth rate")
     confidence_score: float = Field(ge=0.0, le=1.0, description="Analysis confidence")
 
 
 async def main():
     """Demonstrate complete V3/V4 consistency."""
-    print("🎯 FINAL V3/V4 CONSISTENCY DEMO")
-    print("=" * 80)
-    print("Testing Complete Integration:")
-    print("- SimpleAgentV3 (enhanced base)")
-    print("- ReactAgentV3 (enhanced base)")
-    print("- EnhancedMultiAgentV4 (enhanced orchestration)")
-    print("=" * 80)
 
     # Step 1: Create research tools
     @tool
@@ -64,9 +56,6 @@ async def main():
             tools=[market_research, competitor_analysis],
         ),
     )
-
-    print(f"✅ Created ReactAgentV3: {research_agent.name}")
-    print(f"   Tools: {[t.name for t in research_agent.engine.tools]}")
 
     # Step 3: Create SimpleAgentV3 for structured analysis
     analysis_agent = SimpleAgentV3(
@@ -95,35 +84,20 @@ Create a structured market analysis with:
         ),
     )
 
-    print(f"✅ Created SimpleAgentV3: {analysis_agent.name}")
-    print(f"   Structured output: {MarketAnalysis.__name__}")
-
     # Step 4: Test individual agents first
-    print(f"\n{'='*80}")
-    print("STEP 1: TESTING INDIVIDUAL AGENTS")
-    print("=" * 80)
 
     # Test ReactAgentV3
-    print(f"\n🔍 Testing ReactAgentV3...")
     research_task = "Analyze the enterprise AI automation market"
     research_result = await research_agent.arun(research_task)
-    print(f"✅ ReactAgentV3 completed research")
-    print(f"   Response length: {len(str(research_result))} chars")
 
     # Test SimpleAgentV3
-    print(f"\n🔍 Testing SimpleAgentV3...")
     analysis_input = {
         "research_data": str(research_result),
         "messages": [HumanMessage(content="Create analysis")],
     }
-    analysis_result = await analysis_agent.arun(analysis_input)
-    print(f"✅ SimpleAgentV3 completed analysis")
-    print(f"   Result type: {type(analysis_result)}")
+    await analysis_agent.arun(analysis_input)
 
     # Step 5: Test EnhancedMultiAgentV4 integration
-    print(f"\n{'='*80}")
-    print("STEP 2: TESTING ENHANCED MULTI-AGENT V4")
-    print("=" * 80)
 
     # Create multi-agent workflow
     workflow = EnhancedMultiAgentV4(
@@ -132,12 +106,7 @@ Create a structured market analysis with:
         execution_mode="sequential",
     )
 
-    print(f"✅ Created EnhancedMultiAgentV4: {workflow.name}")
-    print(f"   Agents: {workflow.get_agent_names()}")
-    print(f"   Mode: {workflow.execution_mode}")
-
     # Execute multi-agent workflow with proper state
-    print(f"\n🚀 Executing multi-agent workflow...")
 
     # Create proper state format for multi-agent
     workflow_state = {
@@ -152,34 +121,16 @@ Create a structured market analysis with:
 
     try:
         workflow_result = await workflow.arun(workflow_state)
-        print(f"✅ Multi-agent workflow completed successfully!")
-        print(f"   Result type: {type(workflow_result)}")
-        print(f"   Messages processed: {len(workflow_result.messages)}")
 
         # Show workflow results
-        print(f"\n{'='*80}")
-        print("WORKFLOW RESULTS")
-        print("=" * 80)
 
         if hasattr(workflow_result, "messages") and len(workflow_result.messages) >= 2:
-            last_message = workflow_result.messages[-1]
-            print(f"Final message: {str(last_message)[:200]}...")
+            workflow_result.messages[-1]
 
-        print(f"\n✅ COMPLETE SUCCESS!")
-        print(f"   - ReactAgentV3: ✅ Working")
-        print(f"   - SimpleAgentV3: ✅ Working")
-        print(f"   - EnhancedMultiAgentV4: ✅ Working")
-        print(f"   - V3/V4 Integration: ✅ Consistent")
-
-    except Exception as e:
-        print(f"❌ Multi-agent workflow failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
-
-    print(f"\n{'='*80}")
-    print("DEMO COMPLETED - V3/V4 CONSISTENCY VERIFIED")
-    print("=" * 80)
 
 
 if __name__ == "__main__":

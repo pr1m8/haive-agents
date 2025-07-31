@@ -1,8 +1,9 @@
 """Test the new Self-Discover MultiAgent implementation."""
 
 import asyncio
-import sys
 from pathlib import Path
+import sys
+
 
 # Add the project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

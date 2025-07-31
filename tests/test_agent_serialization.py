@@ -12,13 +12,13 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+
 # Set up logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 
 from haive.agents.multi.agent import MultiAgent, MultiAgentState
@@ -26,6 +26,7 @@ from haive.agents.react.agent import ReactAgent
 
 # Import necessary components
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define a test tool and model for structured output

@@ -5,9 +5,8 @@ just structured output extraction. Tests the integration with the
 message transformation system from haive-core.
 """
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+import pytest
 
 from haive.agents.reflection.message_transformer import (
     ConversationalReflectionAgent,
@@ -18,6 +17,7 @@ from haive.agents.reflection.message_transformer import (
     create_reflection_message_flow,
 )
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestMessageTransformerReflection:
@@ -386,17 +386,14 @@ if __name__ == "__main__":
         await test_basic.test_message_transformer_reflection_agent_basic()
         await test_basic.test_conversational_reflection_agent()
         await test_basic.test_reflection_message_flow()
-        print("✅ All basic message transformer tests passed")
 
         test_integration = TestMessageTransformerIntegration()
         await test_integration.test_transformation_type_integration()
         await test_integration.test_ai_to_human_transformation_integration()
-        print("✅ All integration tests passed")
 
         test_edge = TestReflectionEdgeCases()
         await test_edge.test_malformed_tool_messages()
         await test_edge.test_very_long_conversation()
         await test_edge.test_mixed_message_types()
-        print("✅ All edge case tests passed")
 
     asyncio.run(run_tests())

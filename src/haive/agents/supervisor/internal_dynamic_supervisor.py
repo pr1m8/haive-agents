@@ -4,14 +4,18 @@ The supervisor itself decides when to add/remove agents based on requests,
 not external management calls.
 """
 
+import asyncio
 import logging
 from typing import Any, Literal
 
+from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import HumanMessage
 from pydantic import Field, PrivateAttr
 
 from haive.agents.multi.agent import MultiAgent
+from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 
@@ -399,7 +403,6 @@ class InternalDynamicSupervisor(MultiAgent):
 
         try:
             # Create engine
-            from haive.core.engine.aug_llm import AugLLMConfig
 
             engine = AugLLMConfig(
                 name=f"{agent_name}_engine",
@@ -409,11 +412,9 @@ class InternalDynamicSupervisor(MultiAgent):
 
             # Create agent based on type
             if template["type"] == "SimpleAgent":
-                from haive.agents.simple.agent import SimpleAgent
 
                 agent = SimpleAgent(name=agent_name, engine=engine)
             elif template["type"] == "ReactAgent":
-                from haive.agents.react.agent import ReactAgent
 
                 agent = ReactAgent(
                     name=agent_name,
@@ -480,7 +481,6 @@ class InternalDynamicSupervisor(MultiAgent):
 
 # Test the internal dynamic supervisor
 if __name__ == "__main__":
-    import asyncio
 
     async def test_internal_dynamic():
         """Test the internal dynamic supervisor."""

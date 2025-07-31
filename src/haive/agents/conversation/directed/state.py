@@ -1,7 +1,6 @@
 # src/haive/agents/conversation/directed.py
 """Directed conversation agent where participants respond to mentions and direct questions."""
 
-
 import logging
 
 from pydantic import Field

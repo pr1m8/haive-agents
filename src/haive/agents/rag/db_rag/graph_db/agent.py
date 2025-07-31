@@ -407,7 +407,6 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             elif hasattr(guardrails_output, "content"):
                 # It's an AIMessage - try to parse the content
                 try:
-                    import json
 
                     content = guardrails_output.content
                     if isinstance(content, str):

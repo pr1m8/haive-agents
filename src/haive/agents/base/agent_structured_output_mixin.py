@@ -9,12 +9,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, TypeVar
 
+from langchain_core.messages import BaseMessage
+from langchain_core.output_parsers import PydanticToolsParser
+from langchain_core.tools import Tool
 from pydantic import BaseModel
+
+from haive.agents.structured import StructuredOutputAgent
 
 if TYPE_CHECKING:
     from langchain_core.prompts import ChatPromptTemplate
 
     from haive.agents.base.agent import Agent
+
 
 T = TypeVar("T", bound=BaseModel)
 TAgent = TypeVar("TAgent", bound="Agent")
@@ -80,7 +86,6 @@ class StructuredOutputMixin:
                     confidence: float = 0.0
         """
         # Avoid circular import
-        from haive.agents.structured import StructuredOutputAgent
 
         # Create the original agent
         agent_name = name or cls.__name__.lower()
@@ -138,10 +143,6 @@ class StructuredOutputMixin:
                     tools=[research_tool]
                 )
         """
-        from langchain_core.tools import Tool
-
-        from haive.agents.structured import StructuredOutputAgent
-
         tool_name = name or f"{cls.__name__.lower()}_structured_tool"
         tool_description = (
             description or f"Run {cls.__name__} and return structured output"
@@ -210,11 +211,6 @@ class StructuredOutputMixin:
                         self.output_schema
                     )
         """
-        from langchain_core.messages import BaseMessage
-        from langchain_core.output_parsers import PydanticToolsParser
-
-        from haive.agents.structured import StructuredOutputAgent
-
         try:
             # If already the right type, return it
             if isinstance(output, output_model):

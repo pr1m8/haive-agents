@@ -5,8 +5,8 @@ Run with: poetry run pytest packages/haive-agents/tests/rag/multi_agent_rag/test
 
 from typing import Any
 
-import pytest
 from langchain_core.documents import Document
+import pytest
 
 from haive.agents.rag.common.hallucination_graders.models import *
 from haive.agents.rag.common.hallucination_graders.prompts import *

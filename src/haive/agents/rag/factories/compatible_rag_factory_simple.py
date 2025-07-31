@@ -12,9 +12,6 @@ from langchain_core.documents import Document
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
-
-# from haive.agents.rag.document_grading.agent import DocumentGradingAgent
-# # Temporarily disabled - missing callable_node
 from haive.agents.rag.hallucination_grading.agent import (
     AdvancedHallucinationGraderAgent,
     HallucinationGraderAgent,
@@ -30,6 +27,9 @@ from haive.agents.rag.query_decomposition.agent import (
 )
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.simple.agent import SimpleAgent
+
+# from haive.agents.rag.document_grading.agent import DocumentGradingAgent
+# # Temporarily disabled - missing callable_node
 
 logger = logging.getLogger(__name__)
 
@@ -190,7 +190,7 @@ def create_plug_and_play_component(
             documents=documents, llm_config=llm_config, **kwargs
         )
 
-    raise ValueError(f"Unknown component type: {component_type}")
+    raise TypeError(f"Unknown component type: {component_type}")
 
 
 def get_component_compatibility_info(

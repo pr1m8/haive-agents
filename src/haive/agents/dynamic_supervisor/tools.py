@@ -18,8 +18,10 @@ Example:
         # Returns: [handoff_to_search, choose_agent]
 """
 
+import asyncio
 from typing import TYPE_CHECKING, Any
 
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 
 if TYPE_CHECKING:
@@ -101,7 +103,6 @@ def create_handoff_tool(state: "SupervisorStateWithTools", agent_name: str) -> A
             # Execute agent directly (following experimental pattern)
             try:
                 # Prepare input with current messages + task
-                from langchain_core.messages import HumanMessage
 
                 agent_input = {
                     "messages": [
@@ -119,7 +120,6 @@ def create_handoff_tool(state: "SupervisorStateWithTools", agent_name: str) -> A
                     result = agent.invoke(agent_input)
                 elif hasattr(agent, "arun"):
                     # Async agent - use sync wrapper if available
-                    import asyncio
 
                     result = asyncio.run(agent.arun(task_description))
                 else:

@@ -1,6 +1,6 @@
 """Component 4: Dynamic Supervisor using ReactAgent with state-based tools."""
 
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine import AugLLMConfig
 from haive.core.graph import BaseGraph
@@ -68,7 +68,6 @@ class DynamicSupervisor(ReactAgent):
     @classmethod
     def setup_dynamic_supervisor(cls):
         """Setup supervisor with dynamic tool integration."""
-
         # Sync tools from state to engine
         self._sync_tools_from_state()
 
@@ -81,7 +80,6 @@ class DynamicSupervisor(ReactAgent):
 
     def _sync_tools_from_state(self):
         """Sync tools from state.agents to engine (key dynamic behavior)."""
-
         # Get current state
         if hasattr(self, "_current_state") and self._current_state:
             state = self._current_state
@@ -113,7 +111,6 @@ class DynamicSupervisor(ReactAgent):
         The supervisor uses dynamic tools to make routing decisions,
         then the agent_execution node handles the actual execution.
         """
-
         graph = BaseGraph()
 
         # Add supervisor reasoning node
@@ -173,7 +170,6 @@ class DynamicSupervisor(ReactAgent):
         """Route based on supervisor's decision in state."""
         if state.next_agent and state.next_agent != "END":
             return "execute"
-        print("Routing to end")
         return "end"
 
     # Convenience methods for agent management
@@ -211,7 +207,7 @@ class DynamicSupervisor(ReactAgent):
 def create_dynamic_supervisor(
     name: str = "dynamic_supervisor",
     engine: AugLLMConfig | None = None,
-    initial_agents: Dict[str, Any] | None = None,
+    initial_agents: dict[str, Any] | None = None,
 ) -> DynamicSupervisor:
     """Create a dynamic supervisor with optional initial agents.
 

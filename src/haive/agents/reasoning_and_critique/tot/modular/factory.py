@@ -1,11 +1,14 @@
 # src/haive/agents/tot/factory.py
 
+import math
+import re
 from collections.abc import Callable
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel, Field, field_validator
 
 from haive.agents.reasoning_and_critique.tot.modular.agent import ToTAgent
 from haive.agents.reasoning_and_critique.tot.modular.config import ToTAgentConfig
@@ -135,7 +138,6 @@ def create_math_tot_agent(
 
     # Function to score math solutions
     def score_math_solution(problem: str, solution: str) -> tuple:
-        import re
 
         # Calculate length-normalized score based on:
         # 1. Presence of equations/numbers/calculations
@@ -207,7 +209,6 @@ def create_game24_tot_agent(
     """
 
     # Define structured output models for Game of 24
-    from pydantic import BaseModel, Field, field_validator
 
     class Equation(BaseModel):
         """An equation attempting to reach 24 using the provided numbers."""
@@ -263,7 +264,6 @@ def create_game24_tot_agent(
 
     # Define a function to score Game of 24 solutions
     def score_equation(problem: str, solution: str) -> tuple:
-        import re
 
         # Extract the numbers from the problem
         input_numbers = [int(n) for n in problem.split() if n.isdigit()]
@@ -292,7 +292,6 @@ def create_game24_tot_agent(
                 formula = formula.split("=")[0].strip()
 
             # Import specific math functions instead of using wildcard import
-            import math
 
             # Create a safe evaluation environment with math functions
             safe_dict = {
@@ -342,7 +341,6 @@ def create_game24_tot_agent(
     )
 
     # Create score LLM with structured output
-    from pydantic import BaseModel, Field
 
     class ScoreResult(BaseModel):
         """Score for a Game of 24 solution."""

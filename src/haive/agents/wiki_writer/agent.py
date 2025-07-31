@@ -1,4 +1,7 @@
+import uuid
+
 from haive.core.engine.agent.agent import AgentArchitecture, AgentArchitectureConfig
+from pydantic import Field
 
 
 class WikiWriterAgentConfig(AgentArchitectureConfig):
@@ -22,5 +25,5 @@ class WikiWriterAgent(AgentArchitecture):
     def __init__(self, config: WikiWriterAgentConfig = WikiWriterAgentConfig()):
         super().__init__(config)
 
-    async def call_agent(self, question: str) -> Optional[str]:
+    async def call_agent(self, question: str) -> str | None:
         return await super().call_agent(question)

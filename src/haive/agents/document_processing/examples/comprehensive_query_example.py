@@ -18,6 +18,7 @@ Version: 1.0.0
 """
 
 import asyncio
+import traceback
 from datetime import datetime, timedelta
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -385,7 +386,6 @@ async def main():
         await comprehensive_workflow_example()
 
     except Exception:
-        import traceback
 
         traceback.print_exc()
 

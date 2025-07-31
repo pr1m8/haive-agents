@@ -17,8 +17,10 @@ from langgraph.graph import END, START
 from langgraph.types import Command
 from pydantic import BaseModel, Field, field_validator
 
-# Import the base Agent from the correct location
 from haive.agents.base import Agent
+
+# Import the base Agent from the correct location
+
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +52,7 @@ def check_if_should_use_tool(state: dict[str, Any]) -> bool:
     return bool(tool_calls)
 
 
-def placeholder_node(state: dict[str, Any]):
+def placeholder_node(_state: dict[str, Any]):
     """Placeholder node that does nothing."""
     return Command(update={})
 
@@ -188,10 +190,7 @@ class SimpleAgent(Agent):
         if isinstance(v, dict):
             return AugLLMConfig(**v)
         if not isinstance(v, AugLLMConfig):
-            raise ValueError(
-                f"SimpleAgent requires AugLLMConfig, got {
-                    type(v)}"
-            )
+            raise TypeError(f"SimpleAgent requires AugLLMConfig, got {type(v)}")
         return v
 
     # ========================================================================

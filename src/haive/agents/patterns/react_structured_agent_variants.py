@@ -11,7 +11,7 @@ Variants include:
 4. Reflection-enabled variants
 """
 
-from typing import Any, Dict, List, Type
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
@@ -31,9 +31,9 @@ class AnalysisResult(BaseModel):
     """Structured analysis from reasoning."""
 
     problem_statement: str = Field(description="Clear problem statement")
-    key_factors: List[str] = Field(description="Key factors identified")
+    key_factors: list[str] = Field(description="Key factors identified")
     analysis_approach: str = Field(description="Approach taken for analysis")
-    findings: Dict[str, Any] = Field(description="Detailed findings")
+    findings: dict[str, Any] = Field(description="Detailed findings")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in analysis")
 
 
@@ -41,10 +41,10 @@ class StructuredSolution(BaseModel):
     """Structured solution output."""
 
     solution_summary: str = Field(description="Brief solution summary")
-    implementation_steps: List[str] = Field(description="Step-by-step implementation")
-    requirements: List[str] = Field(description="Requirements for implementation")
-    risks: List[str] = Field(description="Potential risks and mitigation")
-    success_metrics: List[str] = Field(description="How to measure success")
+    implementation_steps: list[str] = Field(description="Step-by-step implementation")
+    requirements: list[str] = Field(description="Requirements for implementation")
+    risks: list[str] = Field(description="Potential risks and mitigation")
+    success_metrics: list[str] = Field(description="How to measure success")
 
 
 class ReactToStructuredAgent(Agent):
@@ -74,10 +74,10 @@ class ReactToStructuredAgent(Agent):
     structuring_temperature: float = Field(
         default=0.3, description="Temperature for structuring"
     )
-    output_model: Type[BaseModel] = Field(
+    output_model: type[BaseModel] = Field(
         default=StructuredSolution, description="Output structure"
     )
-    tools: List[Any] = Field(default_factory=list, description="Tools for reasoning")
+    tools: list[Any] = Field(default_factory=list, description="Tools for reasoning")
 
     def setup_agent(self) -> None:
         """Setup React and Simple agents."""
@@ -147,7 +147,7 @@ class MultiStageReasoningAgent(Agent):
     structured outputs that feed into the next stage.
     """
 
-    stages: List[Dict[str, Any]] = Field(
+    stages: list[dict[str, Any]] = Field(
         default_factory=list, description="Configuration for each reasoning stage"
     )
 
@@ -208,7 +208,7 @@ class MultiStageReasoningAgent(Agent):
         @tool
         def validate_solution(solution: str) -> str:
             """Validate a proposed solution."""
-            return f"Validation result: Solution appears feasible with minor adjustments needed."
+            return "Validation result: Solution appears feasible with minor adjustments needed."
 
         return validate_solution
 
@@ -284,7 +284,7 @@ class ReflectiveStructuredAgent(Agent):
     include_reflection: bool = Field(
         default=True, description="Include reflection stage"
     )
-    output_model: Type[BaseModel] = Field(default=StructuredSolution)
+    output_model: type[BaseModel] = Field(default=StructuredSolution)
 
     def setup_agent(self) -> None:
         """Setup reasoning, structuring, and reflection agents."""
@@ -353,8 +353,8 @@ class ReflectiveStructuredAgent(Agent):
 # Factory functions
 def create_react_structured_agent(
     name: str = "react_structured",
-    tools: List[Any] = None,
-    output_model: Type[BaseModel] = StructuredSolution,
+    tools: list[Any] | None = None,
+    output_model: type[BaseModel] = StructuredSolution,
     debug: bool = True,
 ) -> ReactToStructuredAgent:
     """Create a React → Structured agent."""
@@ -364,7 +364,9 @@ def create_react_structured_agent(
 
 
 def create_multi_stage_reasoning_agent(
-    name: str = "multi_stage", stages: List[Dict[str, Any]] = None, debug: bool = True
+    name: str = "multi_stage",
+    stages: list[dict[str, Any]] | None = None,
+    debug: bool = True,
 ) -> MultiStageReasoningAgent:
     """Create a multi-stage reasoning agent."""
     return MultiStageReasoningAgent(name=name, stages=stages or [], debug=debug)
@@ -372,7 +374,7 @@ def create_multi_stage_reasoning_agent(
 
 def create_tool_enhanced_agent(
     name: str = "tool_enhanced",
-    output_model: Type[BaseModel] = AnalysisResult,
+    output_model: type[BaseModel] = AnalysisResult,
     debug: bool = True,
 ) -> ToolEnhancedStructuredAgent:
     """Create a tool-enhanced structured agent."""
@@ -384,7 +386,7 @@ def create_tool_enhanced_agent(
 def create_reflective_structured_agent(
     name: str = "reflective",
     include_reflection: bool = True,
-    output_model: Type[BaseModel] = StructuredSolution,
+    output_model: type[BaseModel] = StructuredSolution,
     debug: bool = True,
 ) -> ReflectiveStructuredAgent:
     """Create a reflective structured agent."""

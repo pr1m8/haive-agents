@@ -21,32 +21,33 @@ from typing import Any, Generic, Literal, TypeVar
 
 from haive.core.engine.base import Engine, EngineType, InvokableEngine
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.schema_composer import SchemaComposer
+from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
-from pydantic import BaseModel, Field, PrivateAttr, model_validator
+from pydantic import BaseModel, Field, PrivateAttr, create_model, model_validator
+from typing_extensions import TypeVar
 
 from haive.agents.base.agent_structured_output_mixin import StructuredOutputMixin
-
-# Import hooks system
 from haive.agents.base.hooks import HookContext, HookEvent, HookFunction
-
-# Import mixins from existing agent
 from haive.agents.base.mixins.execution_mixin import ExecutionMixin
 from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
-
-# Import pre/post processing mixin
 from haive.agents.base.pre_post_agent_mixin import PrePostAgentMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
+
+# Import hooks system
+
+# Import mixins from existing agent
+
+# Import pre/post processing mixin
 
 logger = logging.getLogger(__name__)
 
 # Generic type variables with defaults (PEP 696)
 try:
-    from typing_extensions import TypeVar
 except ImportError:
-    from typing import TypeVar
 
 # ENGINE FOCUSED with defaults
 EngineT = TypeVar("EngineT", bound=InvokableEngine)
@@ -390,7 +391,6 @@ class Agent(
                     try:
                         fields = first_engine.get_input_fields()
                         if fields:
-                            from pydantic import create_model
 
                             self.input_schema = create_model(
                                 f"{self.name}Input", **fields
@@ -545,7 +545,6 @@ class Agent(
             else:
                 logger.debug("No engines found, using default MessagesState")
                 # Use prebuilt MessagesState
-                from haive.core.schema.prebuilt.messages_state import MessagesState
 
                 self.state_schema = MessagesState
 
@@ -561,8 +560,6 @@ class Agent(
             logger.warning(f"Schema generation failed: {e}")
             # Ensure we have at least a basic schema
             if not self.state_schema:
-                from langchain_core.messages import BaseMessage
-                from pydantic import BaseModel
 
                 class BasicMessagesState(BaseModel):
                     """Fallback state schema with messages field."""

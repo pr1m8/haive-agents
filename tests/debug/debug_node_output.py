@@ -3,6 +3,7 @@
 
 import sys
 
+
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 
@@ -10,11 +11,10 @@ sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/
 def debug_node_actual_output():
     """Show exactly what the node outputs."""
     try:
-        from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
-
         from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
             self_discovery,
         )
+        from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
 
         # Get the first agent
         first_agent_name = next(iter(self_discovery.agents.keys()))

@@ -102,7 +102,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Get tools indexed by name
         tools_by_name = self.config.get_tools_by_name()
 
-        def execute_tool(state: Dict[str, Any]):
+        def execute_tool(state: dict[str, Any]):
             """Execute the appropriate tool based on the last AI message."""
             # Get messages
             messages = state.get("messages", [])
@@ -275,8 +275,6 @@ class ReactAgent(Agent[ReactAgentConfig]):
         Returns:
             Configured ReactAgent instance
         """
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         # Create LLM if not provided
         if llm is None:
             llm = AugLLMConfig(
@@ -314,8 +312,6 @@ class ReactAgent(Agent[ReactAgentConfig]):
         Returns:
             ReactAgent instance wrapping the provided StateGraph
         """
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         # Create minimal config
         config = ReactAgentConfig(
             name=kwargs.pop("name", "langgraph_react_agent"),

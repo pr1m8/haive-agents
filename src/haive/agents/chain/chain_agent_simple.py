@@ -10,6 +10,7 @@ from typing import Any, Union
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.base import Engine
 from haive.core.graph.node.base_config import NodeConfig
+from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
 from pydantic import Field
@@ -72,7 +73,6 @@ class ChainAgent(Agent):
                 graph.add_node(node_name, SimpleAgent(engine=node, name=node_name))
             elif isinstance(node, Engine):
                 # Other engines - create wrapper
-                from haive.core.graph.node.engine_node import EngineNodeConfig
 
                 graph.add_node(node_name, EngineNodeConfig(name=node_name, engine=node))
             elif callable(node):

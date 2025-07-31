@@ -36,17 +36,17 @@ This test suite validates:
 
 import json
 import logging
-import pytest
-from typing import List, Optional
 
-from langchain_core.messages import AIMessage, ToolMessage, HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from langgraph.types import Command
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field
+import pytest
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.validation_node_v2 import ValidationNodeV2
 from haive.core.schema.prebuilt.messages_state import MessagesState
+
 
 logger = logging.getLogger(__name__)
 
@@ -54,13 +54,15 @@ logger = logging.getLogger(__name__)
 # Test Pydantic models
 class TaskAnalysis(BaseModel):
     """Structured task analysis model."""
+
     task_type: str = Field(description="Type of task")
     complexity: int = Field(ge=1, le=10, description="Complexity score")
-    requirements: List[str] = Field(description="Task requirements")
+    requirements: list[str] = Field(description="Task requirements")
 
 
 class InvalidModel(BaseModel):
     """Model that will fail validation."""
+
     required_field: str = Field(description="This is required")
     must_be_positive: int = Field(gt=0, description="Must be positive")
 
@@ -73,7 +75,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 @tool
@@ -92,9 +94,9 @@ class TestValidationNodeV2Comprehensive:
             model="gpt-4",
             temperature=0.7,
             structured_output_model=TaskAnalysis,
-            tools=[calculator, search_tool]
+            tools=[calculator, search_tool],
         )
-        
+
         # Set up tool routes - AugLLMConfig should do this automatically
         # but we'll ensure they're set correctly
         engine.tool_routes = {
@@ -102,32 +104,27 @@ class TestValidationNodeV2Comprehensive:
             "InvalidModel": "pydantic_model",
             "calculator": "langchain_tool",
             "search_tool": "langchain_tool",
-            "unknown_tool": "unknown"
+            "unknown_tool": "unknown",
         }
-        
+
         # Add schemas for validation
         engine.schemas = [TaskAnalysis, InvalidModel]
-        
+
         return engine
 
     @pytest.fixture
     def validation_node(self):
         """Create ValidationNodeV2 instance."""
-        return ValidationNodeV2(
-            name="test_validation",
-            router_node="validation_router"
-        )
+        return ValidationNodeV2(name="test_validation", router_node="validation_router")
 
     @pytest.fixture
     def base_state(self, real_engine):
         """Create base state with real engine."""
         return MessagesState(
-            messages=[
-                HumanMessage(content="Test the validation")
-            ],
+            messages=[HumanMessage(content="Test the validation")],
             engines={"test_engine": real_engine},
             tool_routes=real_engine.tool_routes,
-            engine_name="test_engine"
+            engine_name="test_engine",
         )
 
     def test_pydantic_model_validation_success(self, validation_node, base_state):
@@ -135,16 +132,18 @@ class TestValidationNodeV2Comprehensive:
         # Create AIMessage with tool call for TaskAnalysis
         ai_message = AIMessage(
             content="I'll analyze this task",
-            tool_calls=[{
-                "id": "call_123",
-                "name": "TaskAnalysis",
-                "args": {
-                    "task_type": "coding",
-                    "complexity": 7,
-                    "requirements": ["Python", "Testing", "Documentation"]
+            tool_calls=[
+                {
+                    "id": "call_123",
+                    "name": "TaskAnalysis",
+                    "args": {
+                        "task_type": "coding",
+                        "complexity": 7,
+                        "requirements": ["Python", "Testing", "Documentation"],
+                    },
                 }
-            }],
-            additional_kwargs={"engine_name": "test_engine"}
+            ],
+            additional_kwargs={"engine_name": "test_engine"},
         )
         base_state.messages.append(ai_message)
 
@@ -159,13 +158,13 @@ class TestValidationNodeV2Comprehensive:
         # Check the ToolMessage was created
         updated_messages = result.update["messages"]
         assert len(updated_messages) > len(base_state.messages)
-        
+
         tool_message = updated_messages[-1]
-        
+
         assert isinstance(tool_message, ToolMessage)
         assert tool_message.tool_call_id == "call_123"
         assert tool_message.name == "TaskAnalysis"
-        
+
         # Parse content
         content = json.loads(tool_message.content)
         assert content["success"] is True
@@ -173,7 +172,7 @@ class TestValidationNodeV2Comprehensive:
         assert content["validated"] is True
         assert content["data"]["task_type"] == "coding"
         assert content["data"]["complexity"] == 7
-        
+
         # Check additional kwargs
         assert tool_message.additional_kwargs["is_error"] is False
         assert tool_message.additional_kwargs["validation_passed"] is True
@@ -184,15 +183,17 @@ class TestValidationNodeV2Comprehensive:
         # Create AIMessage with invalid data
         ai_message = AIMessage(
             content="Testing invalid data",
-            tool_calls=[{
-                "id": "call_456",
-                "name": "TaskAnalysis",
-                "args": {
-                    "task_type": "coding",
-                    "complexity": 15,  # Invalid: > 10
-                    "requirements": []  # This is ok, empty list is valid
+            tool_calls=[
+                {
+                    "id": "call_456",
+                    "name": "TaskAnalysis",
+                    "args": {
+                        "task_type": "coding",
+                        "complexity": 15,  # Invalid: > 10
+                        "requirements": [],  # This is ok, empty list is valid
+                    },
                 }
-            }]
+            ],
         )
         base_state.messages.append(ai_message)
 
@@ -203,12 +204,12 @@ class TestValidationNodeV2Comprehensive:
         tool_message = result.update["messages"][-1]
         assert isinstance(tool_message, ToolMessage)
         assert tool_message.tool_call_id == "call_456"
-        
+
         content = json.loads(tool_message.content)
         assert content["success"] is False
         assert content["error"] == "ValidationError"
         assert "complexity" in content["details"]
-        
+
         # Check error flags
         assert tool_message.additional_kwargs["is_error"] is True
         assert tool_message.additional_kwargs["validation_passed"] is False
@@ -218,12 +219,14 @@ class TestValidationNodeV2Comprehensive:
         # Create AIMessage with calculator tool call
         ai_message = AIMessage(
             content="Let me calculate that",
-            tool_calls=[{
-                "id": "call_789",
-                "name": "calculator",
-                "args": {"expression": "15 * 23"}
-            }],
-            additional_kwargs={"engine_name": "test_engine"}
+            tool_calls=[
+                {
+                    "id": "call_789",
+                    "name": "calculator",
+                    "args": {"expression": "15 * 23"},
+                }
+            ],
+            additional_kwargs={"engine_name": "test_engine"},
         )
         base_state.messages.append(ai_message)
 
@@ -232,12 +235,12 @@ class TestValidationNodeV2Comprehensive:
 
         # Should route to validation_router
         assert result.goto == "validation_router"
-        
+
         # Should NOT create a ToolMessage for langchain tools
         # The original messages + AI message should be there, but no new ToolMessage
         updated_messages = result.update["messages"]
         assert len(updated_messages) == len(base_state.messages)
-        
+
         # Last message should still be the AIMessage
         assert isinstance(updated_messages[-1], AIMessage)
 
@@ -253,20 +256,20 @@ class TestValidationNodeV2Comprehensive:
                     "args": {
                         "task_type": "analysis",
                         "complexity": 5,
-                        "requirements": ["Data", "Statistics"]
-                    }
+                        "requirements": ["Data", "Statistics"],
+                    },
                 },
                 {
                     "id": "call_002",
                     "name": "calculator",
-                    "args": {"expression": "100 / 5"}
+                    "args": {"expression": "100 / 5"},
                 },
                 {
                     "id": "call_003",
                     "name": "search_tool",
-                    "args": {"query": "Python best practices"}
-                }
-            ]
+                    "args": {"query": "Python best practices"},
+                },
+            ],
         )
         base_state.messages.append(ai_message)
 
@@ -275,8 +278,8 @@ class TestValidationNodeV2Comprehensive:
 
         # Should have created exactly 1 new ToolMessage (for TaskAnalysis only)
         updated_messages = result.update["messages"]
-        new_messages = updated_messages[len(base_state.messages):]
-        
+        new_messages = updated_messages[len(base_state.messages) :]
+
         assert len(new_messages) == 1
         assert isinstance(new_messages[0], ToolMessage)
         assert new_messages[0].name == "TaskAnalysis"
@@ -287,11 +290,13 @@ class TestValidationNodeV2Comprehensive:
         # Create AIMessage with unknown tool
         ai_message = AIMessage(
             content="Using unknown tool",
-            tool_calls=[{
-                "id": "call_unknown",
-                "name": "unknown_tool",
-                "args": {"param": "value"}
-            }]
+            tool_calls=[
+                {
+                    "id": "call_unknown",
+                    "name": "unknown_tool",
+                    "args": {"param": "value"},
+                }
+            ],
         )
         base_state.messages.append(ai_message)
 
@@ -301,7 +306,7 @@ class TestValidationNodeV2Comprehensive:
         # Should create error ToolMessage for unknown tool
         tool_message = result.update["messages"][-1]
         assert isinstance(tool_message, ToolMessage)
-        
+
         content = json.loads(tool_message.content)
         assert content["success"] is False
         assert "Unknown tool" in content["error"]
@@ -311,14 +316,16 @@ class TestValidationNodeV2Comprehensive:
         # Create AIMessage with InvalidModel missing required fields
         ai_message = AIMessage(
             content="Testing invalid model",
-            tool_calls=[{
-                "id": "call_invalid",
-                "name": "InvalidModel",
-                "args": {
-                    "must_be_positive": -5  # Invalid: must be > 0
-                    # Missing required_field
+            tool_calls=[
+                {
+                    "id": "call_invalid",
+                    "name": "InvalidModel",
+                    "args": {
+                        "must_be_positive": -5  # Invalid: must be > 0
+                        # Missing required_field
+                    },
                 }
-            }]
+            ],
         )
         base_state.messages.append(ai_message)
 
@@ -328,7 +335,7 @@ class TestValidationNodeV2Comprehensive:
         # Should create error ToolMessage
         tool_message = result.update["messages"][-1]
         content = json.loads(tool_message.content)
-        
+
         assert content["success"] is False
         assert content["error"] == "ValidationError"
         assert len(content["errors"]) >= 2  # At least 2 validation errors
@@ -336,28 +343,25 @@ class TestValidationNodeV2Comprehensive:
     def test_dynamic_engine_attribution(self, validation_node, base_state):
         """Test that engine_name is extracted from AIMessage additional_kwargs."""
         # Create another engine with different routes
-        alternate_engine = AugLLMConfig(
-            model="gpt-3.5-turbo",
-            temperature=0.5
-        )
-        alternate_engine.tool_routes = {
-            "TaskAnalysis": "alternate_route"
-        }
+        alternate_engine = AugLLMConfig(model="gpt-3.5-turbo", temperature=0.5)
+        alternate_engine.tool_routes = {"TaskAnalysis": "alternate_route"}
         base_state.engines["alternate_engine"] = alternate_engine
 
         # Create AIMessage with engine attribution
         ai_message = AIMessage(
             content="Using alternate engine",
-            tool_calls=[{
-                "id": "call_alt",
-                "name": "TaskAnalysis",
-                "args": {
-                    "task_type": "testing",
-                    "complexity": 3,
-                    "requirements": ["Unit tests"]
+            tool_calls=[
+                {
+                    "id": "call_alt",
+                    "name": "TaskAnalysis",
+                    "args": {
+                        "task_type": "testing",
+                        "complexity": 3,
+                        "requirements": ["Unit tests"],
+                    },
                 }
-            }],
-            additional_kwargs={"engine_name": "alternate_engine"}
+            ],
+            additional_kwargs={"engine_name": "alternate_engine"},
         )
         base_state.messages.append(ai_message)
 
@@ -372,9 +376,7 @@ class TestValidationNodeV2Comprehensive:
     def test_no_tool_calls_passthrough(self, validation_node, base_state):
         """Test that messages without tool calls pass through."""
         # Create AIMessage without tool calls
-        ai_message = AIMessage(
-            content="Just a regular response with no tool calls"
-        )
+        ai_message = AIMessage(content="Just a regular response with no tool calls")
         base_state.messages.append(ai_message)
 
         # Execute validation node
@@ -389,11 +391,13 @@ class TestValidationNodeV2Comprehensive:
         # Create AIMessage with malformed tool call (missing id)
         ai_message = AIMessage(
             content="Malformed tool call",
-            tool_calls=[{
-                # Missing "id" field
-                "name": "TaskAnalysis",
-                "args": {"task_type": "test"}
-            }]
+            tool_calls=[
+                {
+                    # Missing "id" field
+                    "name": "TaskAnalysis",
+                    "args": {"task_type": "test"},
+                }
+            ],
         )
         base_state.messages.append(ai_message)
 

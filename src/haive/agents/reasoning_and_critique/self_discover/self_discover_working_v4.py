@@ -4,6 +4,8 @@ This version creates a working self-discover implementation using the patterns
 that are known to work in the codebase.
 """
 
+import asyncio
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -53,7 +55,6 @@ DEFAULT_MODULES = """1. Pattern Recognition - Identify patterns and structures
 
 def create_self_discover_agents():
     """Create the four agents for Self-Discover workflow."""
-
     # 1. Module Selector Agent
     selector = SimpleAgent(
         name="module_selector",
@@ -169,7 +170,7 @@ def create_self_discover_workflow():
     return workflow
 
 
-async def solve_with_self_discover(task: str, modules: str = None):
+async def solve_with_self_discover(task: str, modules: str | None = None):
     """Solve a task using Self-Discover workflow.
 
     Args:
@@ -201,8 +202,7 @@ async def solve_with_self_discover(task: str, modules: str = None):
         # Extract the answer
         if isinstance(result, dict):
             return result
-        else:
-            return {"answer": str(result)}
+        return {"answer": str(result)}
 
     except Exception as e:
         return {"error": str(e)}
@@ -210,50 +210,34 @@ async def solve_with_self_discover(task: str, modules: str = None):
 
 # Example usage
 if __name__ == "__main__":
-    import asyncio
 
     async def main():
         """Example of using Self-Discover workflow."""
-
         # Test case 1: Shape recognition
-        print("=" * 60)
-        print("Self-Discover Working V4 - Shape Recognition")
-        print("=" * 60)
 
         task1 = """What shape does this SVG path draw?
 <path d="M 10,10 L 50,10 L 50,50 L 10,50 Z"/>
 The path starts at (10,10), goes to (50,10), then to (50,50), then to (10,50), and closes.
 Options: circle, triangle, square, pentagon, hexagon"""
 
-        print(f"\nTask: {task1}")
-        print("\nRunning Self-Discover workflow...")
-
         result1 = await solve_with_self_discover(task1)
 
-        print("\nResult:")
         if "answer" in result1:
-            print(f"Answer: {result1['answer']}")
+            pass
         if "explanation" in result1:
-            print(f"Explanation: {result1['explanation']}")
+            pass
         if "error" in result1:
-            print(f"Error: {result1['error']}")
+            pass
 
         # Test case 2: Problem solving
-        print("\n" + "=" * 60)
-        print("Self-Discover Working V4 - Problem Solving")
-        print("=" * 60)
 
         task2 = "How can I reduce plastic waste in my daily life?"
 
-        print(f"\nTask: {task2}")
-        print("\nRunning Self-Discover workflow...")
-
         result2 = await solve_with_self_discover(task2)
 
-        print("\nResult:")
         if "answer" in result2:
-            print(f"Answer: {result2['answer'][:300]}...")
+            pass
         if "error" in result2:
-            print(f"Error: {result2['error']}")
+            pass
 
     asyncio.run(main())

@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 """Simple test of schema composition with direct run() call."""
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 
 from haive.agents.planning.p_and_e.models import Plan
 from haive.agents.planning.p_and_e.prompts import planner_prompt
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Create planner engine
 planner_aug = AugLLMConfig(

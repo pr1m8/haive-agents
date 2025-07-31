@@ -4,6 +4,7 @@
 import os
 import sys
 
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
 sys.path.insert(
     0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
@@ -88,12 +89,12 @@ if __name__ == "__main__":
     apply_state_serialization_fix()
 
     # Test with actual agents
-    from haive.core.engine.aug_llm import AugLLMConfig
     from langchain_core.tools import tool
 
     from haive.agents.multi.base import SequentialAgent
     from haive.agents.react.agent import ReactAgent
     from haive.agents.simple.agent import SimpleAgent
+    from haive.core.engine.aug_llm import AugLLMConfig
 
     @tool
     def add(a: int, b: int) -> int:

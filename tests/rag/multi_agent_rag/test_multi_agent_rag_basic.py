@@ -3,8 +3,8 @@
 Run with: poetry run pytest packages/haive-agents/tests/rag/multi_agent_rag/test_multi_agent_rag_basic.py -v
 """
 
-import pytest
 from langchain_core.documents import Document
+import pytest
 
 from haive.agents.rag.multi_agent_rag import (
     SIMPLE_RAG_AGENT,

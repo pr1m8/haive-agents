@@ -1,9 +1,8 @@
 """Simple test of generic MetaAgent to show output."""
 
-from haive.core.engine.aug_llm import AugLLMConfig
-
 from haive.agents.meta import MetaAgent
 from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 def main():

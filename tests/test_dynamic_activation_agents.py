@@ -12,16 +12,16 @@ Based on:
 import asyncio
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.registry import DynamicRegistry
-from haive.core.schema.prebuilt.dynamic_activation_state import DynamicActivationState
-from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 
 from haive.agents.discovery.component_discovery_agent import ComponentDiscoveryAgent
 from haive.agents.react.dynamic_react_agent import DynamicReactAgent, DynamicToolState
 from haive.agents.supervisor.dynamic_activation_supervisor import (
     DynamicActivationSupervisor,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.registry import DynamicRegistry
+from haive.core.schema.prebuilt.dynamic_activation_state import DynamicActivationState
+from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 
 
 class TestComponentDiscoveryAgent:

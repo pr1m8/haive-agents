@@ -1,5 +1,6 @@
 import re
 import time
+import traceback
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import Any
 
@@ -149,7 +150,6 @@ def schedule_task(task_inputs, config: dict[str, Any]):
     try:
         observation = _execute_task(task, observations, config)
     except Exception:
-        import traceback
 
         observation = traceback.format_exception()  # repr(e) +
     observations[task["idx"]] = observation

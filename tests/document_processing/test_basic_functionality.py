@@ -2,8 +2,9 @@
 """Simple test to verify everything is working correctly."""
 
 import logging
-import sys
 from pathlib import Path
+import sys
+
 
 # Suppress all logging output
 logging.getLogger().setLevel(logging.CRITICAL)
@@ -13,11 +14,11 @@ project_root = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 try:
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from haive.core.schema.prebuilt.query_state import QueryState, QueryType
     from langchain_core.documents import Document
 
     from haive.agents.document_processing import DocumentProcessingAgent
+    from haive.core.engine.aug_llm import AugLLMConfig
+    from haive.core.schema.prebuilt.query_state import QueryState, QueryType
 
     # Test 1: Basic agent creation
     config = AugLLMConfig()

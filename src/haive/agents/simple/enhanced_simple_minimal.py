@@ -6,6 +6,7 @@ This is the absolute minimal version showing SimpleAgent as Agent[AugLLMConfig].
 It's self-contained to avoid import issues.
 """
 
+import asyncio
 from abc import ABC, abstractmethod
 from typing import Any, Generic, TypeVar
 
@@ -68,7 +69,6 @@ class SimpleAgent(Agent[AugLLMConfig]):
 
 # Example usage
 if __name__ == "__main__":
-    import asyncio
 
     # Create a SimpleAgent (which is Agent[AugLLMConfig])
     config = AugLLMConfig()

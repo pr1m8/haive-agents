@@ -11,7 +11,9 @@ Use Cases:
 - Tool-based workflows with typed outputs
 """
 
-from typing import Any, Dict, List, Optional, Type
+import asyncio
+import traceback
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -29,12 +31,12 @@ class AnalysisResult(BaseModel):
     """Structured analysis result."""
 
     summary: str = Field(description="Brief summary of analysis")
-    key_findings: List[str] = Field(description="Main findings from analysis")
+    key_findings: list[str] = Field(description="Main findings from analysis")
     confidence_score: float = Field(
         ge=0.0, le=1.0, description="Confidence in analysis"
     )
-    recommendations: List[str] = Field(description="Recommended actions")
-    supporting_evidence: List[str] = Field(
+    recommendations: list[str] = Field(description="Recommended actions")
+    supporting_evidence: list[str] = Field(
         default_factory=list, description="Evidence supporting findings"
     )
 
@@ -45,9 +47,9 @@ class ResearchReport(BaseModel):
     title: str = Field(description="Report title")
     executive_summary: str = Field(description="Executive summary")
     methodology: str = Field(description="Research methodology used")
-    findings: List[Dict[str, Any]] = Field(description="Detailed findings")
-    conclusions: List[str] = Field(description="Main conclusions")
-    sources: List[str] = Field(description="Sources consulted")
+    findings: list[dict[str, Any]] = Field(description="Detailed findings")
+    conclusions: list[str] = Field(description="Main conclusions")
+    sources: list[str] = Field(description="Sources consulted")
     confidence_level: str = Field(description="High/Medium/Low confidence")
 
 
@@ -55,13 +57,13 @@ class ProblemSolution(BaseModel):
     """Structured problem solution."""
 
     problem_statement: str = Field(description="Clear problem statement")
-    root_causes: List[str] = Field(description="Identified root causes")
-    proposed_solutions: List[Dict[str, Any]] = Field(
+    root_causes: list[str] = Field(description="Identified root causes")
+    proposed_solutions: list[dict[str, Any]] = Field(
         description="Proposed solutions with details"
     )
-    implementation_steps: List[str] = Field(description="Step-by-step implementation")
-    success_metrics: List[str] = Field(description="How to measure success")
-    risks_and_mitigation: List[Dict[str, str]] = Field(
+    implementation_steps: list[str] = Field(description="Step-by-step implementation")
+    success_metrics: list[str] = Field(description="How to measure success")
+    risks_and_mitigation: list[dict[str, str]] = Field(
         description="Risks and mitigation strategies"
     )
 
@@ -80,7 +82,7 @@ class ReactWithStructuredOutput(EnhancedMultiAgentV4):
     structuring_agent: SimpleAgentV3 = Field(
         ..., description="Agent for structured output"
     )
-    structured_output_model: Type[BaseModel] = Field(
+    structured_output_model: type[BaseModel] = Field(
         ..., description="Pydantic model for output structure"
     )
 
@@ -114,41 +116,35 @@ class ReactWithStructuredOutput(EnhancedMultiAgentV4):
 
         @self.before_run
         def log_pattern_start(context: HookContext):
-            print(f"🎯 ReactAgent → StructuredOutput pattern starting: {self.name}")
-            print(f"   Reasoning agent: {self.reasoning_agent.name}")
-            print(f"   Structuring agent: {self.structuring_agent.name}")
-            print(f"   Output model: {self.structured_output_model.__name__}")
+            pass
 
         @self.after_run
         def log_pattern_completion(context: HookContext):
-            print(f"✅ ReactAgent → StructuredOutput pattern completed: {self.name}")
+            pass
 
         # Hook into the reasoning agent
         @self.reasoning_agent.after_run
         def track_reasoning_completion(context: HookContext):
-            print(f"🧠 Reasoning completed by {context.agent_name}")
             if context.output_data and isinstance(context.output_data, dict):
-                messages = context.output_data.get("messages", [])
-                print(f"   Generated {len(messages)} messages")
+                context.output_data.get("messages", [])
 
         # Hook into the structuring agent
         @self.structuring_agent.before_structured_output
         def track_structuring_start(context: HookContext):
-            print(f"📊 Starting structured output generation")
+            pass
 
         @self.structuring_agent.after_structured_output
         def track_structuring_completion(context: HookContext):
-            print(f"📋 Structured output generation completed")
             if context.structured_data:
-                print(f"   Output type: {type(context.structured_data).__name__}")
+                pass
 
     @classmethod
     def create_analysis_pattern(
         cls,
         name: str = "analysis_workflow",
-        tools: Optional[List] = None,
-        reasoning_config: Optional[AugLLMConfig] = None,
-        structuring_config: Optional[AugLLMConfig] = None,
+        tools: list | None = None,
+        reasoning_config: AugLLMConfig | None = None,
+        structuring_config: AugLLMConfig | None = None,
     ) -> "ReactWithStructuredOutput":
         """Create a ReactAgent → StructuredOutput pattern for analysis tasks.
 
@@ -196,7 +192,7 @@ Convert this analysis into a structured format with:
 - Summary of the analysis
 - Key findings (as a list)
 - Confidence score (0.0 to 1.0)
-- Recommendations (as a list)  
+- Recommendations (as a list)
 - Supporting evidence (as a list)
 
 Ensure all fields are properly filled based on the analysis.""",
@@ -216,9 +212,9 @@ Ensure all fields are properly filled based on the analysis.""",
     def create_research_pattern(
         cls,
         name: str = "research_workflow",
-        tools: Optional[List] = None,
-        reasoning_config: Optional[AugLLMConfig] = None,
-        structuring_config: Optional[AugLLMConfig] = None,
+        tools: list | None = None,
+        reasoning_config: AugLLMConfig | None = None,
+        structuring_config: AugLLMConfig | None = None,
     ) -> "ReactWithStructuredOutput":
         """Create a ReactAgent → StructuredOutput pattern for research tasks."""
         if not reasoning_config:
@@ -275,9 +271,9 @@ Ensure the report is professional and well-structured.""",
     def create_problem_solving_pattern(
         cls,
         name: str = "problem_solving_workflow",
-        tools: Optional[List] = None,
-        reasoning_config: Optional[AugLLMConfig] = None,
-        structuring_config: Optional[AugLLMConfig] = None,
+        tools: list | None = None,
+        reasoning_config: AugLLMConfig | None = None,
+        structuring_config: AugLLMConfig | None = None,
     ) -> "ReactWithStructuredOutput":
         """Create a ReactAgent → StructuredOutput pattern for problem-solving tasks."""
         if not reasoning_config:
@@ -337,7 +333,7 @@ Make the solution actionable and comprehensive.""",
 
 
 def create_react_analysis_workflow(
-    name: str = "react_analysis", tools: Optional[List] = None
+    name: str = "react_analysis", tools: list | None = None
 ) -> ReactWithStructuredOutput:
     """Create a ReactAgent analysis workflow with structured output.
 
@@ -352,7 +348,7 @@ def create_react_analysis_workflow(
 
 
 def create_react_research_workflow(
-    name: str = "react_research", tools: Optional[List] = None
+    name: str = "react_research", tools: list | None = None
 ) -> ReactWithStructuredOutput:
     """Create a ReactAgent research workflow with structured output.
 
@@ -367,7 +363,7 @@ def create_react_research_workflow(
 
 
 def create_react_problem_solving_workflow(
-    name: str = "react_problem_solver", tools: Optional[List] = None
+    name: str = "react_problem_solver", tools: list | None = None
 ) -> ReactWithStructuredOutput:
     """Create a ReactAgent problem-solving workflow with structured output.
 
@@ -409,9 +405,6 @@ def data_analyzer(data: str) -> str:
 # Example usage patterns
 async def example_analysis_workflow():
     """Example: ReactAgent analysis with structured output."""
-    print("\n🔍 Analysis Workflow Example")
-    print("=" * 40)
-
     # Create analysis workflow
     workflow = create_react_analysis_workflow(
         name="market_analysis", tools=[web_search, calculator, data_analyzer]
@@ -422,21 +415,14 @@ async def example_analysis_workflow():
         "Analyze the current AI market trends and provide structured insights"
     )
 
-    print(f"\n📊 Analysis Result Type: {type(result)}")
     if isinstance(result, AnalysisResult):
-        print(f"Summary: {result.summary}")
-        print(f"Key Findings: {len(result.key_findings)} findings")
-        print(f"Confidence: {result.confidence_score}")
-        print(f"Recommendations: {len(result.recommendations)} recommendations")
+        pass
 
     return result
 
 
 async def example_research_workflow():
     """Example: ReactAgent research with structured report."""
-    print("\n📚 Research Workflow Example")
-    print("=" * 40)
-
     # Create research workflow
     workflow = create_react_research_workflow(
         name="ai_safety_research", tools=[web_search, data_analyzer]
@@ -447,21 +433,14 @@ async def example_research_workflow():
         "Research the latest developments in AI safety and create a comprehensive report"
     )
 
-    print(f"\n📋 Research Result Type: {type(result)}")
     if isinstance(result, ResearchReport):
-        print(f"Title: {result.title}")
-        print(f"Executive Summary: {result.executive_summary[:100]}...")
-        print(f"Findings: {len(result.findings)} detailed findings")
-        print(f"Confidence: {result.confidence_level}")
+        pass
 
     return result
 
 
 async def example_problem_solving_workflow():
     """Example: ReactAgent problem-solving with structured solution."""
-    print("\n🧩 Problem-Solving Workflow Example")
-    print("=" * 40)
-
     # Create problem-solving workflow
     workflow = create_react_problem_solving_workflow(
         name="efficiency_optimizer", tools=[calculator, data_analyzer]
@@ -472,34 +451,22 @@ async def example_problem_solving_workflow():
         "How can we improve the efficiency of our customer service process by 30%?"
     )
 
-    print(f"\n🎯 Solution Result Type: {type(result)}")
     if isinstance(result, ProblemSolution):
-        print(f"Problem: {result.problem_statement}")
-        print(f"Root Causes: {len(result.root_causes)} identified")
-        print(f"Solutions: {len(result.proposed_solutions)} proposed")
-        print(f"Implementation Steps: {len(result.implementation_steps)} steps")
+        pass
 
     return result
 
 
 if __name__ == "__main__":
-    import asyncio
 
     async def main():
         """Run all workflow examples."""
-        print("🎯 ReactAgent → StructuredOutput Pattern Examples")
-        print("=" * 60)
-
         try:
             await example_analysis_workflow()
             await example_research_workflow()
             await example_problem_solving_workflow()
 
-            print("\n🎉 All workflow examples completed!")
-
-        except Exception as e:
-            print(f"❌ Example execution failed: {e}")
-            import traceback
+        except Exception:
 
             traceback.print_exc()
 

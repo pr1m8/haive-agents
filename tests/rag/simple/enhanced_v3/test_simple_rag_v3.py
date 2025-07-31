@@ -1,13 +1,13 @@
 """Tests for SimpleRAG V3 implementation."""
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
 from langchain_core.documents import Document
+import pytest
 
 from haive.agents.rag.simple.enhanced_v3.agent import SimpleRAGV3
 from haive.agents.rag.simple.enhanced_v3.answer_generator_agent import SimpleAnswerAgent
 from haive.agents.rag.simple.enhanced_v3.retriever_agent import RetrieverAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
 
 
 @pytest.fixture

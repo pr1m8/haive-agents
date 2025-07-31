@@ -6,15 +6,18 @@ This demonstrates how to easily chain together pre-configured components
 for a sequential reasoning workflow.
 """
 
+from typing import Any
+
 from haive.core.utils.pydantic_utils import pretty_print
 
-# Import the pre-configured AugLLMConfigs directly
 from haive.agents.reasoning_and_critique.self_discover.aug_llms import (
     adapt_chain,
     select_chain,
     structured_chain,
 )
 from haive.agents.sequential.config import SequentialAgentConfig
+
+# Import the pre-configured AugLLMConfigs directly
 
 # Create the sequential agent with the imported components
 agent = SequentialAgentConfig.from_components(

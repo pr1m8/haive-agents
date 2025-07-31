@@ -15,6 +15,7 @@ Key advantages:
 - Fine-tuning friendly modular design
 """
 
+import asyncio
 import time
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -255,8 +256,6 @@ class ReWOOV3Agent:
         Returns:
             Structured output with ReWOO results
         """
-        import asyncio
-
         return asyncio.run(
             self.arun(query, context, max_steps, tools_preference, **kwargs)
         )

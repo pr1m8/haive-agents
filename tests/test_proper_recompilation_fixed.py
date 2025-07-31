@@ -4,12 +4,12 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Any
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.node.validation import ValidationNodeConfigV2
 from pydantic import Field
 
 from haive.agents.simple import SimpleAgent
 from haive.agents.simple.state import SimpleAgentState
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.node.validation import ValidationNodeConfigV2
 
 
 class RecompilationMixin:

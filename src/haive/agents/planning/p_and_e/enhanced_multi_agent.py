@@ -7,10 +7,14 @@ configuration with agents, state schema, and branches passed directly.
 import logging
 from typing import Any
 
+from haive.core.graph.node.agent_node import AgentNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.schema.agent_schema_composer import AgentSchemaComposer
 from haive.core.schema.state_schema import StateSchema
+from langgraph.graph import START
 
 from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 logger = logging.getLogger(__name__)
 
@@ -63,8 +67,6 @@ class EnhancedMultiAgent(MultiAgent):
             # Use parent's schema composition
             build_mode = self._get_build_mode()
 
-            from haive.core.schema.agent_schema_composer import AgentSchemaComposer
-
             self.state_schema = AgentSchemaComposer.from_agents(
                 agents=list(self.agents),
                 name=f"{self.__class__.__name__}State",
@@ -104,7 +106,6 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
         """
         # Default state schema
         if state_schema is None:
-            from haive.agents.planning.p_and_e.state import PlanExecuteState
 
             state_schema = PlanExecuteState
 
@@ -152,7 +153,6 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
         replanner_node = self._get_agent_node_name(self.agents[2])
 
         # Add agents as nodes
-        from haive.core.graph.node.agent_node import AgentNodeConfig
 
         for agent in self.agents:
             node_name = self._get_agent_node_name(agent)
@@ -165,7 +165,6 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
         graph.add_node("process_replan", self._process_replan_decision)
 
         # Define the workflow
-        from langgraph.graph import START
 
         graph.add_edge(START, planner_node)
         graph.add_edge(planner_node, "prepare_execution")

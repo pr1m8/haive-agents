@@ -11,9 +11,12 @@ from haive.core.graph.node.list_iteration_node import (
     create_engine_callable,
     create_list_iteration_node,
 )
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
+from langgraph.graph import END, START
+from pydantic import BaseModel, Field
 
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 
@@ -94,7 +97,6 @@ def create_document_summarizer() -> Any:
 # Example 3: Batch entity extraction
 def create_entity_extractor() -> Any:
     """Create a list iteration node for entity extraction."""
-    from pydantic import BaseModel, Field
 
     class ExtractedEntities(BaseModel):
         """Entities extracted from text."""
@@ -160,9 +162,6 @@ def create_parallel_document_grader() -> Any:
 # Example usage in a graph
 def example_graph_usage() -> Any:
     """Example of how to use list iteration nodes in a graph."""
-    from haive.core.graph.state_graph.base_graph2 import BaseGraph
-    from langgraph.graph import END, START
-
     # Create graph
     graph = BaseGraph(name="ListIterationExample")
 

@@ -199,7 +199,7 @@ class TestAllRAGWorkflows:
             agent1 = SimpleRAGAgent.from_documents(empty_docs, llm_config)
             agent1.run({"query": "test"})
         except Exception as e:
-            passe}")
+            pass
 
         try:
             agent2 = SimpleRAGAgent.from_documents(single_doc, llm_config)

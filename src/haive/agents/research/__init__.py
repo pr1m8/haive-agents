@@ -25,12 +25,12 @@ from haive.agents.research.open_perplexity import ResearchAgent as OpenPerplexit
 from haive.agents.research.open_perplexity import (
     ResearchAgentConfig as OpenPerplexityConfig,
 )
+from haive.agents.research.person import PersonResearchAgent
+from haive.agents.research.storm import STORMAgentConfig
 
 # Import available research agents
-from haive.agents.research.person import PersonResearchAgent
 
 # Import STORM config (agent implementation is still in development)
-from haive.agents.research.storm import STORMAgentConfig
 
 __all__ = [
     "OpenPerplexityAgent",

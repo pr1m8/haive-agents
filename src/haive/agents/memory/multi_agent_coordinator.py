@@ -6,6 +6,7 @@ and agent composition.
 """
 
 import asyncio
+import json
 import logging
 from datetime import datetime
 from typing import Any
@@ -1144,7 +1145,6 @@ Decompose the task now:""",
     def _parse_json_response(self, response: str) -> dict[str, Any] | None:
         """Parse JSON response from LLM."""
         try:
-            import json
 
             # Try to find JSON in response
             start_idx = response.find("{")

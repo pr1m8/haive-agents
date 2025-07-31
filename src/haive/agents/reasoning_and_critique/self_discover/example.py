@@ -2,6 +2,8 @@
 
 import json
 import logging
+import re
+import sys
 
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -371,7 +373,6 @@ def analyze_reasoning_process(
             selected = result.get("selected_modules", "")
             # Extract module numbers from text (assuming format like "1. Module
             # name")
-            import re
 
             module_numbers = re.findall(r"(\d+)\.", selected)
             for num in module_numbers:
@@ -441,7 +442,6 @@ def example_compare_models():
 
 if __name__ == "__main__":
     # Run different examples based on command line arguments
-    import sys
 
     if len(sys.argv) == 1 or sys.argv[1] == "math":
         example_math_problem()

@@ -538,7 +538,7 @@ def create_hallucination_grader(
         return AdvancedHallucinationGraderAgent(llm_config=llm_config, **kwargs)
     if grader_type == "realtime":
         return RealtimeHallucinationGraderAgent(llm_config=llm_config, **kwargs)
-    raise ValueError(f"Unknown grader type: {grader_type}")
+    raise TypeError(f"Unknown grader type: {grader_type}")
 
 
 # Example usage and I/O compatibility

@@ -1,11 +1,11 @@
 """Tests for AgenticRAGAgent - complete multi-agent RAG system."""
 
 import pytest
+
+from haive.agents.rag.agentic import AgenticRAGAgent, AgenticRAGState
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from haive.core.models.embeddings import EmbeddingConfig
-
-from haive.agents.rag.agentic import AgenticRAGAgent, AgenticRAGState
 
 
 class TestAgenticRAGAgent:

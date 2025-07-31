@@ -65,7 +65,7 @@ def test_detailed_streaming():
 
                 # Look for metadata specifically
                 if hasattr(chunk, "metadata"):
-                    pass}")
+                    pass
                 if hasattr(chunk, "additional_kwargs"):
                     pass}")
 

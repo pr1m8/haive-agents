@@ -3,6 +3,7 @@
 import asyncio
 import sys
 
+
 # Add direct paths to avoid import issues
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
@@ -17,10 +18,12 @@ from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
     self_discovery,
 )
 
+
 logging.basicConfig(level=logging.DEBUG)
 
 # Patch the agent node v3 to add debug prints
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3
+
 
 original_project_state = AgentNodeV3._project_state_for_agent
 

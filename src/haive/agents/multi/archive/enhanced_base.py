@@ -57,6 +57,7 @@ from langgraph.graph import END, START
 from pydantic import Field, field_validator
 
 from haive.agents.base.agent import Agent
+from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 logger = logging.getLogger(__name__)
 
@@ -693,13 +694,12 @@ def create_plan_execute_multi_agent(
 ) -> MultiAgentBase:
     """Create a Plan and Execute multi-agent system with proper routing."""
     # Import PlanExecuteState here to avoid circular imports
-    from haive.agents.planning.p_and_e.state import PlanExecuteState
 
     # Default to PlanExecuteState if no schema provided
     if state_schema is None:
         state_schema = PlanExecuteState
 
-    def route_after_execution(state: Dict[str, Any]) -> str:
+    def route_after_execution(state: dict[str, Any]) -> str:
         """Route after execution based on plan status."""
         if hasattr(state, "plan") and state.plan:
             if state.plan.is_complete:
@@ -707,7 +707,7 @@ def create_plan_execute_multi_agent(
             return "executor"
         return "replanner"
 
-    def route_after_replan(state: Dict[str, Any]) -> str:
+    def route_after_replan(state: dict[str, Any]) -> str:
         """Route after replanning decision."""
         if hasattr(state, "final_answer") and state.final_answer:
             return END

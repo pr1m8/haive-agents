@@ -5,13 +5,21 @@ This test validates core functionality without external dependencies
 like real LLM calls or external services.
 """
 
-import sys
 from pathlib import Path
+import sys
+
 
 # Add the project root to the Python path
 project_root = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
+from langchain_core.documents import Document
+
+from haive.agents.document_processing import (
+    DocumentProcessingAgent,
+    DocumentProcessingConfig,
+    DocumentProcessingResult,
+)
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.query_state import (
     QueryComplexity,
@@ -19,13 +27,6 @@ from haive.core.schema.prebuilt.query_state import (
     QueryState,
     QueryType,
     RetrievalStrategy,
-)
-from langchain_core.documents import Document
-
-from haive.agents.document_processing import (
-    DocumentProcessingAgent,
-    DocumentProcessingConfig,
-    DocumentProcessingResult,
 )
 
 

@@ -157,9 +157,9 @@ class TaskAnalysis(BaseModel):
             ValueError: If task type is empty or too long
         """
         if not v or not v.strip():
-            raise ValueError("Task type cannot be empty")
+            raise TypeError("Task type cannot be empty")
         if len(v.strip()) > 50:
-            raise ValueError("Task type must be 50 characters or less")
+            raise TypeError("Task type must be 50 characters or less")
         return v.strip().lower()
 
     @field_validator("steps_required")

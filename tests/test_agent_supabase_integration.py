@@ -2,14 +2,15 @@
 
 import os
 
-import pytest
 from dotenv import load_dotenv
+from langgraph.graph import END
+import pytest
+
+from haive.agents.base import Agent
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.persistence.supabase_config import SupabaseCheckpointerConfig
 from haive.core.persistence.types import CheckpointerMode
-from langgraph.graph import END
 
-from haive.agents.base import Agent
 
 # Load environment variables
 load_dotenv()

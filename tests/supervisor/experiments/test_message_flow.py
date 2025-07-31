@@ -2,9 +2,6 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.messages import HumanMessage
 
 from haive.agents.experiments.supervisor.agent_info import AgentInfo
@@ -14,13 +11,14 @@ from haive.agents.experiments.supervisor.component_2_tools import (
 from haive.agents.experiments.supervisor.dynamic_supervisor_agent import (
     DynamicSupervisorAgent,
 )
-from haive.agents.experiments.supervisor.test_utils import add, multiply
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
+from haive.tools.tools.search_tools import tavily_search_tool
 
 
 async def test_message_based_flow():
     """Test the fixed message-based supervisor flow."""
-
     # Create a simple search agent
     search_engine = AugLLMConfig(
         name="search_engine",
@@ -74,7 +72,6 @@ You are a routing system - always use tools, never provide text responses.""",
     state.active_agents = {"search_agent"}
     state.sync_agents()
 
-
     # Test 1: Check supervisor setup
 
     # Test 2: Full workflow via arun with just message
@@ -83,12 +80,11 @@ You are a routing system - always use tools, never provide text responses.""",
         if isinstance(result2, dict) and "agents" in result2:
             pass
         else:
-            passlt")
-    except Exception as e:
+            pass
+    except Exception:
         import traceback
 
         traceback.print_exc()
-
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ from typing import Any, Dict
 Shows how easy it is to build chains.
 """
 
+from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
@@ -48,7 +50,7 @@ def example_mixed() -> Any:
     rag = SimpleRAGAgent.from_documents(docs, llm_config)
 
     # A function
-    def formatter(s) -> Dict[str, Any]:
+    def formatter(s) -> dict[str, Any]:
         return {"output": f"Summary: {s.get('summary', '')}"}
 
     # Just chain them!

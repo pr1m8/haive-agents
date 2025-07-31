@@ -2,7 +2,6 @@
 # QUERY REFINEMENT MODELS
 # ============================================================================
 
-
 from pydantic import BaseModel, Field
 
 

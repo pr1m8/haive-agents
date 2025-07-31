@@ -1,5 +1,7 @@
 """Test input preparation with MemoryStateWithTokens."""
 
+import traceback
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 from langchain_core.messages import HumanMessage
@@ -37,7 +39,6 @@ def test_input_preparation():
         agent._prepare_input(dict_input)
 
     except Exception:
-        import traceback
 
         traceback.print_exc()
 

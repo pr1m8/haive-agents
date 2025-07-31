@@ -31,7 +31,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"The result of {expression} is {result}"
     except Exception as e:
-        return f"Error calculating {expression}: {str(e)}"
+        return f"Error calculating {expression}: {e!s}"
 
 
 @tool
@@ -43,7 +43,6 @@ def word_counter(text: str) -> str:
 
 async def main():
     """Run the enhanced multi-agent example."""
-
     # Configure LLMs (low temperature for consistency)
     react_config = AugLLMConfig(
         temperature=0.1,
@@ -102,7 +101,7 @@ async def main():
                 logger.info(f"{i+1}. [{msg.type}]: {msg.content[:100]}...")
 
     except Exception as e:
-        logger.error(f"Error running workflow: {e}")
+        logger.exception(f"Error running workflow: {e}")
         raise
 
 
@@ -119,8 +118,7 @@ def run_simple_example():
     )
 
     # Run synchronously
-    result = workflow.run("Analyze the benefits of renewable energy.")
-    print(f"Result: {result}")
+    workflow.run("Analyze the benefits of renewable energy.")
 
 
 if __name__ == "__main__":

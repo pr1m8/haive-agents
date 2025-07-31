@@ -10,6 +10,7 @@ from fixtures.documents import (
 )
 from fixtures.tools import add, subtract
 
+
 __all__ = [
     "Plan",
     "TestState",

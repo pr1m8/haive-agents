@@ -127,7 +127,7 @@ Please complete all three steps."""
         ):
             pass
         else:
-            passd")
+            pass
 
     except Exception as e:
         import traceback

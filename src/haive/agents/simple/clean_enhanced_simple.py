@@ -16,8 +16,9 @@ from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
 from pydantic import Field
 
-# Import from enhanced base module
 from haive.agents.base.enhanced_agent import Agent
+
+# Import from enhanced base module
 
 logger = logging.getLogger(__name__)
 

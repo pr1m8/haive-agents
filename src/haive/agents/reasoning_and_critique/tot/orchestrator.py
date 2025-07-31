@@ -6,7 +6,7 @@ and Solution Scorer agents.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
@@ -29,7 +29,7 @@ class TOTResult(BaseModel):
     score: float = Field(description="Score of the best solution", ge=0.0, le=1.0)
     reasoning: str = Field(description="Explanation of why this is the best solution")
     iterations: int = Field(description="Number of iterations performed")
-    all_solutions: List[Dict[str, Any]] = Field(
+    all_solutions: list[dict[str, Any]] = Field(
         description="All solutions explored with scores", default_factory=list
     )
 
@@ -77,7 +77,7 @@ class TreeOfThoughtsOrchestrator:
             agents={"generator": self.generator.agent, "scorer": self.scorer.agent},
             flow_type="sequential",  # Generator → Scorer flow
             system_message="""You are coordinating a Tree of Thoughts search.
-            
+
 Your role is to:
 1. Use the generator to create candidate solutions
 2. Use the scorer to evaluate them
@@ -90,7 +90,7 @@ The flow is: Generate candidates → Score them → Select best → Repeat or fi
     async def solve(
         self,
         problem: str,
-        initial_seed: Optional[str] = None,
+        initial_seed: str | None = None,
         context: str = "",
     ) -> TOTResult:
         """Solve a problem using Tree of Thoughts.
@@ -210,7 +210,7 @@ Evaluate each one carefully."""
             all_solutions=all_solutions,
         )
 
-    def _extract_candidates(self, generation_result: Any) -> List[str]:
+    def _extract_candidates(self, generation_result: Any) -> list[str]:
         """Extract candidate solutions from generator output."""
         candidates = []
 
@@ -243,8 +243,8 @@ Evaluate each one carefully."""
         return candidates
 
     def _extract_scores(
-        self, scoring_result: Any, candidates: List[str]
-    ) -> List[tuple[str, float, str]]:
+        self, scoring_result: Any, candidates: list[str]
+    ) -> list[tuple[str, float, str]]:
         """Extract scores from scorer output."""
         scored = []
 

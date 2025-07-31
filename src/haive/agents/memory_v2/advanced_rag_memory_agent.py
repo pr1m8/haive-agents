@@ -765,6 +765,5 @@ async def example_advanced_rag_usage():
 
 
 if __name__ == "__main__":
-    import asyncio
 
     asyncio.run(example_advanced_rag_usage())

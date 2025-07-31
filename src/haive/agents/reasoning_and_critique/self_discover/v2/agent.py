@@ -1,7 +1,6 @@
 # src/haive/agents/self_discovery/agents.py
 """Self-Discovery agent implementation using SimpleAgent and ProperMultiAgent."""
 
-
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.multi.proper_base import ProperMultiAgent

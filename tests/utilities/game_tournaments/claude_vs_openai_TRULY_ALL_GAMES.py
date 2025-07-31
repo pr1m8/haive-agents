@@ -299,7 +299,7 @@ def run_truly_all_games_tournament():
                 elif result["result"].get("winner") == "OPENAI":
                     tournament_results["openai_wins"] += 1
                 else:
-                    passay")
+                    pass
             else:
                 tournament_results["failed_games"] += 1
                 error_type = result["result"].get("error_type", "UnknownError")

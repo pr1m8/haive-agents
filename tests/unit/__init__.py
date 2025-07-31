@@ -19,6 +19,7 @@ from unit.test_simple_agent import (
     test_simple_agent_schema_validation,
 )
 
+
 __all__ = [
     "DocumentLoaderAgentTest",
     "PersonInfo",

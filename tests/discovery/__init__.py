@@ -58,6 +58,7 @@ from discovery.test_semantic_discovery import (
     test_tool_selection_top_k,
 )
 
+
 __all__ = [
     "MockEmbeddingProvider",
     "MockTool",

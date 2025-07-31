@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Bulk fix unterminated string literals"""
+"""Bulk fix unterminated string literals."""
 import os
-import re
 
 # All the files with errors from black output
 error_fixes = [
@@ -67,15 +66,14 @@ error_fixes = [
     ),
 ]
 
-for filepath, line_num, old_str, new_str in error_fixes:
+for filepath, _line_num, old_str, new_str in error_fixes:
     if os.path.exists(filepath):
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             content = f.read()
 
         if old_str in content:
             content = content.replace(old_str, new_str)
             with open(filepath, "w") as f:
                 f.write(content)
-            print(f"Fixed {filepath}")
         else:
-            print(f"Pattern not found in {filepath}")
+            pass

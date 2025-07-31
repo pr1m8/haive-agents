@@ -7,7 +7,6 @@ testing actual agent registration, tool synchronization, and execution.
 from datetime import datetime
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.experiments.supervisor import (
     AgentMetadata,
@@ -19,6 +18,7 @@ from haive.agents.experiments.supervisor import (
 )
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Test fixtures for real engines

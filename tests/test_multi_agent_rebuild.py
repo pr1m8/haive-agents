@@ -10,21 +10,22 @@ This test validates:
 import asyncio
 import logging
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
-from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from langgraph.graph import END, START
 from pydantic import BaseModel, Field
+import pytest
 from rich.console import Console
 from rich.logging import RichHandler
 
 from haive.agents.multi.multi_agent_v2 import ExecutionMode, MultiAgentV2
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
+
 
 # Configure logging
 logging.basicConfig(

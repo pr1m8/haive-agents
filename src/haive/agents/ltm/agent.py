@@ -16,9 +16,11 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import LLMConfig
 from langchain_core.messages import AnyMessage
 from langgraph.graph import END, START
+from langmem import create_memory_manager
 from pydantic import BaseModel, Field
 
 from haive.agents.base.agent import Agent
+from haive.agents.ltm.memory_schemas import DEFAULT_MEMORY_SCHEMAS
 
 logger = logging.getLogger(__name__)
 
@@ -317,9 +319,6 @@ class LTMAgent(Agent):
 
         try:
             # Import LangMem components
-            from langmem import create_memory_manager
-
-            from haive.agents.ltm.memory_schemas import DEFAULT_MEMORY_SCHEMAS
 
             if not state.messages:
                 return {

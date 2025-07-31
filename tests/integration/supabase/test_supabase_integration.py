@@ -3,12 +3,12 @@
 import asyncio
 import os
 
+from langchain_core.messages import HumanMessage
 import psycopg
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import HumanMessage
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestSupabaseIntegration:

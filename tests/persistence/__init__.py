@@ -12,6 +12,7 @@ from persistence.verify_persistence_content import (
     verify_checkpoint_content,
 )
 
+
 __all__ = [
     "check_prepared_statements",
     "main",

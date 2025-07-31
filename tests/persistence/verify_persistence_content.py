@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Verify that persistence is working correctly with proper content."""
 
+from datetime import datetime
 import json
 import os
 import sys
-from datetime import datetime
 
 import psycopg
+
 
 # Add paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")

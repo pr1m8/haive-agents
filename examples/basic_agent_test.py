@@ -2,7 +2,6 @@
 """Basic Agent Test - Test individual agents with structured output."""
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -18,15 +17,13 @@ class AnalysisResult(BaseModel):
     """Structured analysis output."""
 
     topic: str = Field(description="Topic analyzed")
-    key_points: List[str] = Field(description="Key points identified")
+    key_points: list[str] = Field(description="Key points identified")
     summary: str = Field(description="Brief summary")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
 
 
 async def test_simple_agent_v3():
     """Test SimpleAgentV3 with structured output."""
-    print("\n=== Testing SimpleAgentV3 ===\n")
-
     # Create agent with structured output
     agent = SimpleAgentV3(
         name="analyzer",
@@ -44,10 +41,6 @@ async def test_simple_agent_v3():
         debug=True,
     )
 
-    print(f"Agent created: {agent.name}")
-    print(f"Engine type: {type(agent.engine)}")
-    print(f"Has structured output: {agent.engine.structured_output_model is not None}")
-
     # Test execution
     try:
         result = await agent.arun(
@@ -58,24 +51,15 @@ async def test_simple_agent_v3():
             }
         )
 
-        print("\n--- Results ---")
-        print(f"Result type: {type(result)}")
-
         if isinstance(result, dict):
-            print("Result is a dictionary:")
-            for key, value in result.items():
-                print(f"  {key}: {value}")
+            for _key, _value in result.items():
+                pass
         elif isinstance(result, AnalysisResult):
-            print("Result is AnalysisResult model:")
-            print(f"  Topic: {result.topic}")
-            print(f"  Key Points: {result.key_points}")
-            print(f"  Summary: {result.summary}")
-            print(f"  Confidence: {result.confidence}")
+            pass
         else:
-            print(f"Result: {result}")
+            pass
 
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -83,7 +67,6 @@ async def test_simple_agent_v3():
 
 async def test_react_agent():
     """Test ReactAgent with tools."""
-    print("\n\n=== Testing ReactAgent ===\n")
 
     # Create tools
     @tool
@@ -115,23 +98,15 @@ async def test_react_agent():
         ),
     )
 
-    print(f"Agent created: {agent.name}")
-    print(f"Tools available: {[t.name for t in agent.engine.tools]}")
-
     # Test execution
     try:
         # Test 1: Math calculation
-        print("\nTest 1: Math calculation")
-        result = await agent.arun("What is 25 * 4 + 10?")
-        print(f"Result: {result}")
+        await agent.arun("What is 25 * 4 + 10?")
 
         # Test 2: Information retrieval
-        print("\nTest 2: Information retrieval")
-        result = await agent.arun("Tell me about Python")
-        print(f"Result: {result}")
+        await agent.arun("Tell me about Python")
 
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -139,8 +114,6 @@ async def test_react_agent():
 
 async def test_sequential_manual():
     """Test sequential execution manually (without MultiAgent)."""
-    print("\n\n=== Testing Manual Sequential Execution ===\n")
-
     # Agent 1: Analyzer
     analyzer = SimpleAgentV3(
         name="analyzer",
@@ -159,8 +132,8 @@ async def test_sequential_manual():
     # Agent 2: Solution Designer with structured output
     class Solution(BaseModel):
         approach: str = Field(description="Solution approach")
-        steps: List[str] = Field(description="Implementation steps")
-        benefits: List[str] = Field(description="Expected benefits")
+        steps: list[str] = Field(description="Implementation steps")
+        benefits: list[str] = Field(description="Expected benefits")
 
     designer = SimpleAgentV3(
         name="designer",
@@ -180,17 +153,13 @@ async def test_sequential_manual():
     # Execute sequentially
     try:
         problem = "How to improve code review efficiency in large teams"
-        print(f"Problem: {problem}\n")
 
         # Step 1: Analyze
-        print("Step 1: Analysis")
         analysis_result = await analyzer.arun(
             {"problem": problem, "messages": [{"role": "user", "content": problem}]}
         )
-        print(f"Analysis: {analysis_result}\n")
 
         # Step 2: Design solution
-        print("Step 2: Solution Design")
         solution_result = await designer.arun(
             {
                 "analysis": str(analysis_result),
@@ -198,16 +167,12 @@ async def test_sequential_manual():
             }
         )
 
-        print("Solution:")
         if isinstance(solution_result, dict):
-            print(f"  Approach: {solution_result.get('approach', 'N/A')}")
-            print(f"  Steps: {solution_result.get('steps', [])}")
-            print(f"  Benefits: {solution_result.get('benefits', [])}")
+            pass
         else:
-            print(f"  {solution_result}")
+            pass
 
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -215,18 +180,9 @@ async def test_sequential_manual():
 
 async def main():
     """Run all tests."""
-    print("=" * 60)
-    print("BASIC AGENT TESTS")
-    print("Testing SimpleAgentV3 and ReactAgent individually")
-    print("=" * 60)
-
     await test_simple_agent_v3()
     await test_react_agent()
     await test_sequential_manual()
-
-    print("\n" + "=" * 60)
-    print("ALL TESTS COMPLETED!")
-    print("=" * 60)
 
 
 if __name__ == "__main__":

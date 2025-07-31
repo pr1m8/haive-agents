@@ -3,10 +3,6 @@ from typing import Annotated
 
 from haive.core.common.mixins.getter_mixin import GetterMixin
 from haive.core.engine.aug_llm import AugLLMConfig
-
-# ============================================================================
-# REACT AGENT
-# ============================================================================
 from langchain_core.tools import tool
 from langgraph.graph import StateGraph
 from pydantic import (
@@ -19,9 +15,14 @@ from pydantic import (
 
 from haive.agents.base.agent import Agent
 from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent import SimpleAgent
+
+# ============================================================================
+# REACT AGENT
+# ============================================================================
+
 
 # from haive.agents.rag.base.agent import SimpleRAGAgent
-from haive.agents.simple.agent import SimpleAgent
 
 
 @tool

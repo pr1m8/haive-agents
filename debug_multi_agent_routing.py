@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-r"""Debug script to demonstrate the multi-agent routing issue and\s+fi\w+."""
+r"""Debug script to demonstrate the multi-agent routing issue and fix."""
 
 import sys
 
-sys.path.inser\w+(\d+,\s+"packages/haive-agents/src")
-sys.path.inser\w+(\d+,\s+"packages/haive-core/src")
+sys.path.insert(0, "packages/haive-agents/src")
+sys.path.insert(0, "packages/haive-core/src")
 
 import contextlib
 

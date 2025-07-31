@@ -10,8 +10,6 @@ Test Classes:
 """
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
 
 from haive.agents.dynamic_supervisor import (
     AgentInfo,
@@ -19,6 +17,8 @@ from haive.agents.dynamic_supervisor import (
     SupervisorState,
     SupervisorStateWithTools,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
 
 
 class MockAgent:

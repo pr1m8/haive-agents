@@ -11,7 +11,7 @@ from langchain_core.tools import BaseTool
 from typing_extensions import TypedDict
 
 THOUGHT_PATTERN = r"Thought: ([^\n]*)"
-ACTION_PATTERN = r"\n*(\d+)\. (\w+)\((.*)\)(\s*#\w+\n)?"
+ACTION_PATTERN = r"\n*(\d+)\. ()\((.*)\)(\s*#\n)?"
 # $1 or ${1} -> 1
 ID_PATTERN = r"\$\{?(\d+)\}?"
 END_OF_PLAN = ""

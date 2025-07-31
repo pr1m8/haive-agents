@@ -4,17 +4,17 @@ These tests demonstrate how to use StructuredOutputAgent in various scenarios,
 including multi-agent workflows and different output models.
 """
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from pydantic import BaseModel, Field
+import pytest
 
 from haive.agents.react import ReactAgent
 from haive.agents.simple import SimpleAgent
 from haive.agents.structured import GenericStructuredOutput, StructuredOutputAgent
 from haive.agents.structured.agent import create_structured_agent
 from haive.agents.structured.models import AnalysisOutput, DecisionOutput, TaskOutput
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 
 
 class TestStructuredOutputAgent:

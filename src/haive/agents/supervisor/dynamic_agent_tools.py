@@ -15,6 +15,8 @@ from pydantic import BaseModel, Field
 from rich.console import Console
 
 from haive.agents.base.agent import Agent
+from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 console = Console()
@@ -350,8 +352,6 @@ def create_agent_management_tools(supervisor_agent: Any) -> list[BaseTool]:
 
     # Register some basic agent constructors for testing
     try:
-        from haive.agents.react.agent import ReactAgent
-        from haive.agents.simple.agent import SimpleAgent
 
         registry_manager.register_agent_constructor("SimpleAgent", SimpleAgent)
         registry_manager.register_agent_constructor("ReactAgent", ReactAgent)

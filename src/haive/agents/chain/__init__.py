@@ -1,12 +1,9 @@
 """Module exports."""
 
-# TEMPORARILY DISABLED - ignoring chain agent imports to focus on other issues
-# from haive.agents.chain.chain_agent_simple import (
-#     ChainAgent,
-#     FlowBuilder,
-#     flow,
-#     flow_with_edges,
-# )
+from operator import add
+
+import build
+
 from haive.agents.chain.chain_examples import (
     complex_rag,
     example_engines_as_nodes,
@@ -53,6 +50,14 @@ from haive.agents.chain.multi_integration import (
     multi_to_chain,
     sequential_multi,
 )
+
+# TEMPORARILY DISABLED - ignoring chain agent imports to focus on other issues
+# from haive.agents.chain.chain_agent_simple import (
+#     ChainAgent,
+#     FlowBuilder,
+#     flow,
+#     flow_with_edges,
+# )
 
 __all__ = [
     "ChainAgent",

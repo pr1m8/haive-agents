@@ -10,8 +10,11 @@ This script tests the enhanced agents with:
 import asyncio
 import sys
 
+
 sys.path.insert(0, "packages/haive-agents/src")
 sys.path.insert(0, "packages/haive-core/src")
+
+import contextlib
 
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
@@ -59,10 +62,6 @@ class TestRetriever(BaseRetriever):
 
 async def test_simple_agent():
     """Test SimpleAgent with debug=True."""
-    print("\n" + "=" * 60)
-    print("Testing SimpleAgent with debug=True")
-    print("=" * 60)
-
     try:
 
         from haive.agents.simple.enhanced_simple_real import SimpleAgent
@@ -74,14 +73,10 @@ async def test_simple_agent():
             system_message="You are a helpful assistant. Keep responses brief.",
         )
 
-        print(f"Created: {agent}")
-
         # Test with debug
-        result = await agent.arun("What is 2+2?", debug=True)
-        print(f"\nResult: {result}")
+        await agent.arun("What is 2+2?", debug=True)
 
-    except Exception as e:
-        print(f"Error testing SimpleAgent: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -89,10 +84,6 @@ async def test_simple_agent():
 
 async def test_react_agent():
     """Test ReactAgent with tools and debug=True."""
-    print("\n" + "=" * 60)
-    print("Testing ReactAgent with tools and debug=True")
-    print("=" * 60)
-
     try:
 
         from haive.agents.react.enhanced_react_agent import ReactAgent
@@ -105,18 +96,13 @@ async def test_react_agent():
             max_iterations=3,
         )
 
-        print(f"Created: {agent}")
-        print(f"Tools: {[t.name for t in agent.tools]}")
-
         # Test with debug - should use calculator tool
-        result = await agent.arun(
+        await agent.arun(
             "Calculate 15 * 23 and tell me how many words are in your response",
             debug=True,
         )
-        print(f"\nResult: {result}")
 
-    except Exception as e:
-        print(f"Error testing ReactAgent: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -124,10 +110,6 @@ async def test_react_agent():
 
 async def test_supervisor_agent():
     """Test SupervisorAgent with workers and debug=True."""
-    print("\n" + "=" * 60)
-    print("Testing SupervisorAgent with debug=True")
-    print("=" * 60)
-
     try:
         from haive.agents.multi.enhanced_supervisor_agent import SupervisorAgent
         from haive.agents.simple.enhanced_simple_real import SimpleAgent
@@ -144,17 +126,12 @@ async def test_supervisor_agent():
             temperature=0.3,
         )
 
-        print(f"Created: {supervisor}")
-        print(f"Workers: {supervisor.list_workers()}")
-
         # Test with debug
-        result = await supervisor.arun(
+        await supervisor.arun(
             "Analyze the benefits of Python and write a short summary", debug=True
         )
-        print(f"\nResult: {result}")
 
-    except Exception as e:
-        print(f"Error testing SupervisorAgent: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -162,10 +139,6 @@ async def test_supervisor_agent():
 
 async def test_sequential_agent():
     """Test SequentialAgent pipeline with debug=True."""
-    print("\n" + "=" * 60)
-    print("Testing SequentialAgent with debug=True")
-    print("=" * 60)
-
     try:
         from haive.agents.multi.enhanced_sequential_agent import SequentialAgent
         from haive.agents.simple.enhanced_simple_real import SimpleAgent
@@ -182,15 +155,10 @@ async def test_sequential_agent():
             return_all_outputs=True,
         )
 
-        print(f"Created: {pipeline}")
-        print(f"Pipeline: {pipeline.get_pipeline_description()}")
-
         # Test with debug
-        outputs = await pipeline.execute_sequence("Explain machine learning")
-        print(f"\nAll outputs: {outputs}")
+        await pipeline.execute_sequence("Explain machine learning")
 
-    except Exception as e:
-        print(f"Error testing SequentialAgent: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -198,10 +166,6 @@ async def test_sequential_agent():
 
 async def test_rag_agent():
     """Test RAG agent with debug=True."""
-    print("\n" + "=" * 60)
-    print("Testing RAG Agent with debug=True")
-    print("=" * 60)
-
     try:
         from haive.agents.rag.enhanced_simple_rag_agent import SimpleRAGAgent
 
@@ -210,22 +174,16 @@ async def test_rag_agent():
             name="test_rag", retriever=TestRetriever(), k=2, include_sources=True
         )
 
-        print(f"Created: {rag}")
-
         # Test retrieval
         docs = await rag.retrieve("Python programming")
-        print(f"\nRetrieved {len(docs)} documents")
 
         # Format context
-        context = rag.format_context(docs)
-        print(f"\nFormatted context:\n{context}")
+        rag.format_context(docs)
 
         # Test quick answer
-        answer = await rag.quick_answer("What is Python?")
-        print(f"\nQuick answer: {answer}")
+        await rag.quick_answer("What is Python?")
 
-    except Exception as e:
-        print(f"Error testing RAG agent: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -233,10 +191,6 @@ async def test_rag_agent():
 
 async def test_parallel_agent():
     """Test ParallelAgent with debug=True."""
-    print("\n" + "=" * 60)
-    print("Testing ParallelAgent with debug=True")
-    print("=" * 60)
-
     try:
         from haive.agents.multi.enhanced_parallel_agent import ParallelAgent
         from haive.agents.simple.enhanced_simple_real import SimpleAgent
@@ -252,18 +206,14 @@ async def test_parallel_agent():
             timeout_per_agent=10.0,
         )
 
-        print(f"Created: {ensemble}")
-
         # Test with debug
         results = await ensemble.execute_parallel(
             "What are the key features of Python?"
         )
-        print(f"\nParallel results ({len(results)} agents):")
-        for i, result in enumerate(results):
-            print(f"  Agent {i}: {result}")
+        for _i, _result in enumerate(results):
+            pass
 
-    except Exception as e:
-        print(f"Error testing ParallelAgent: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -271,10 +221,6 @@ async def test_parallel_agent():
 
 async def main():
     """Run all tests with debug=True."""
-    print("Enhanced Agents Testing with debug=True")
-    print("Using REAL components - NO MOCKS")
-    print("This will show actual execution details")
-
     # Run tests
     await test_simple_agent()
     await test_react_agent()
@@ -283,21 +229,11 @@ async def main():
     await test_rag_agent()
     await test_parallel_agent()
 
-    print("\n" + "=" * 60)
-    print("Testing Complete")
-    print("=" * 60)
-
 
 if __name__ == "__main__":
     # Check if we have proper environment
-    print("Checking environment...")
-    try:
-        from haive.core.engine.aug_llm.config import AugLLMConfig
-
-        print("✓ Core imports working")
-    except ImportError as e:
-        print(f"✗ Import error: {e}")
-        print("Make sure to run with: poetry run python test_enhanced_agents_debug.py")
+    with contextlib.suppress(ImportError):
+        pass
 
     # Run tests
     asyncio.run(main())

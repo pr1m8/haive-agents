@@ -16,8 +16,6 @@ from haive.agents.task_analysis.analysis.engines import (
     IntegratedAnalyzerEngine,
     OptimizationRecommenderEngine,
 )
-
-# Import models
 from haive.agents.task_analysis.base.models import TaskNode
 from haive.agents.task_analysis.complexity.engines import (
     ComplexityAssessorEngine,
@@ -27,8 +25,6 @@ from haive.agents.task_analysis.complexity.models import ComplexityVector
 from haive.agents.task_analysis.context.engines import (
     ContextAnalyzerEngine,
 )
-
-# Import all engines
 from haive.agents.task_analysis.decomposer.engines import (
     RecursiveDecomposerEngine,
     TaskDecomposerEngine,
@@ -43,6 +39,10 @@ from haive.agents.task_analysis.tree.engines import (
     TreeStructureAnalyzerEngine,
 )
 from haive.agents.task_analysis.tree.models import TaskTree
+
+# Import models
+
+# Import all engines
 
 logger = logging.getLogger(__name__)
 

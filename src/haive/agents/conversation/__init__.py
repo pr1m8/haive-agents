@@ -127,13 +127,9 @@ License: MIT
 """
 
 # Version information
-__version__ = "1.0.0"
-__author__ = "Haive Team"
-__license__ = "MIT"
 
+import logging
 from collections.abc import Callable
-
-# Type imports for better IDE support
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -149,22 +145,31 @@ from typing import (
     runtime_checkable,
 )
 
+from haive.core.schema import StateSchema
 from typing_extensions import (
     TypedDict,
 )
 
-if TYPE_CHECKING:
-    from haive.core.schema import StateSchema
-
-    from haive.agents.base.agent import Agent
-
-# Core conversation agent imports
+from haive.agents.base.agent import Agent
 from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.collaberative.agent import CollaborativeConversation
 from haive.agents.conversation.debate.agent import DebateConversation
 from haive.agents.conversation.directed.agent import DirectedConversation
 from haive.agents.conversation.round_robin.agent import RoundRobinConversation
 from haive.agents.conversation.social_media.agent import SocialMediaConversation
+
+__version__ = "1.0.0"
+__author__ = "Haive Team"
+__license__ = "MIT"
+
+
+# Type imports for better IDE support
+
+
+if TYPE_CHECKING:
+
+
+# Core conversation agent imports
 
 # Type aliases for better API clarity
 type ConversationType = Literal[
@@ -260,7 +265,6 @@ __all__ = [
 # Module initialization
 def _initialize_conversation_module() -> None:
     """Initialize the conversation module with default configurations."""
-    import logging
 
     # Set up logging for conversation operations
     logger = logging.getLogger(__name__)
@@ -268,9 +272,7 @@ def _initialize_conversation_module() -> None:
 
     # Validate critical dependencies
     try:
-        from haive.core.schema import StateSchema
 
-        from haive.agents.base.agent import Agent
     except ImportError as e:
         raise ImportError(
             f"Critical conversation dependencies missing: {e.name}. "
@@ -338,7 +340,7 @@ def create_conversation(
         return SocialMediaConversation(
             participants=participants, topic=topic, **config, **kwargs
         )
-    raise ValueError(f"Unknown conversation type: {conversation_type}")
+    raise TypeError(f"Unknown conversation type: {conversation_type}")
 
 
 def create_debate(

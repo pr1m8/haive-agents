@@ -6,12 +6,12 @@ that they work correctly both with and without the engine schema modification.
 
 from unittest.mock import patch
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
 from pydantic import BaseModel, Field
+import pytest
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
 
 
 # Test models for structured output

@@ -37,7 +37,6 @@ def view_metadata_details():
 
                 checkpoints = cur.fetchall()
 
-
                 for cp in checkpoints:
                     thread_id = cp[0]
                     checkpoint_ns = cp[1]
@@ -46,7 +45,6 @@ def view_metadata_details():
                     cp_type = cp[4]
                     cp[5]
                     metadata = cp[6]
-
 
                     # Parse and display metadata
                     if metadata:
@@ -127,9 +125,9 @@ def view_metadata_details():
                                 pass
 
                         except Exception as e:
+                            pass
                     else:
-                        passa")
-
+                        pass
 
                 # Get summary stats
                 cur.execute(
@@ -145,7 +143,6 @@ def view_metadata_details():
                 )
 
                 stats = cur.fetchone()
-
 
     except Exception as e:
         pass

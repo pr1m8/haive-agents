@@ -7,16 +7,12 @@ import pytest
 
 from haive.agents.reasoning_and_critique.self_discover.self_discover_sequential_v2 import (
     DEFAULT_REASONING_MODULES,
-    ModuleAdaptationResult,
     ModuleSelectionResult,
-    ReasoningExecution,
     ReasoningStructure,
     SelectedModule,
     create_adapter_agent,
-    create_executor_agent,
     create_selector_agent,
     create_self_discover_sequential,
-    create_structurer_agent,
 )
 
 
@@ -132,7 +128,7 @@ class TestSelfDiscoverAgents:
             possible_keys = ["final_answer", "answer", "output", "execution_result"]
             found_answer = False
             for key in possible_keys:
-                if key in result and result[key]:
+                if result.get(key):
                     found_answer = True
                     break
 

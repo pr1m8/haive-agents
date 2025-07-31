@@ -9,14 +9,12 @@ This simplified demo shows the core branching concepts:
 """
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
@@ -38,9 +36,6 @@ class ProcessingResult(BaseModel):
 
 async def main():
     """Demonstrate simple branching with structured output."""
-    print("🌲 SIMPLE BRANCHING DEMO")
-    print("=" * 60)
-
     # Step 1: Create classifier
     classifier = SimpleAgentV3(
         name="classifier",
@@ -91,8 +86,6 @@ async def main():
         ),
     )
 
-    print("✅ Created 4 specialized agents")
-
     # Step 3: Test individual components first
     test_tasks = [
         "Write a poem about robots",
@@ -100,9 +93,7 @@ async def main():
         "Explain quantum computing",
     ]
 
-    for i, task in enumerate(test_tasks, 1):
-        print(f"\n📋 TEST {i}: {task}")
-        print("-" * 40)
+    for _i, task in enumerate(test_tasks, 1):
 
         # Test classifier
         classification_input = {
@@ -118,8 +109,7 @@ async def main():
                 and "category" in classification_result
             ):
                 category = classification_result["category"]
-                confidence = classification_result.get("confidence", 0.0)
-                print(f"🏷️  Classification: {category} (confidence: {confidence:.2f})")
+                classification_result.get("confidence", 0.0)
 
                 # Route to appropriate processor
                 if category == "creative":
@@ -128,8 +118,6 @@ async def main():
                     processor = technical_agent
                 else:
                     processor = general_agent
-
-                print(f"🔀 Routing to: {processor.name}")
 
                 # Process with selected agent
                 processing_input = {
@@ -140,29 +128,15 @@ async def main():
                 processing_result = await processor.arun(processing_input)
 
                 if isinstance(processing_result, dict):
-                    approach = processing_result.get("approach", "N/A")
-                    quality = processing_result.get("quality_score", 0.0)
-                    output_preview = processing_result.get("output", "")[:100]
-
-                    print(f"⚙️  Approach: {approach}")
-                    print(f"📊 Quality: {quality:.2f}")
-                    print(f"📄 Output: {output_preview}...")
-                    print("✅ Processing completed!")
+                    processing_result.get("approach", "N/A")
+                    processing_result.get("quality_score", 0.0)
+                    processing_result.get("output", "")[:100]
 
             else:
-                print(f"❌ Classification failed: {classification_result}")
+                pass
 
-        except Exception as e:
-            print(f"❌ Error in test {i}: {e}")
-
-    print(f"\n{'='*60}")
-    print("🎯 KEY FINDINGS:")
-    print("✅ Structured output models work consistently")
-    print("✅ Classification drives routing decisions")
-    print("✅ Different agents handle different task types")
-    print("✅ V3 agents produce structured output reliably")
-    print("✅ Manual branching logic works correctly")
-    print("=" * 60)
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":

@@ -165,7 +165,7 @@ class LetterGrade(Grade):
 
             raise ValueError(f"Invalid letter grade: '{v}'. Must be A+ through F")
 
-        raise ValueError(f"Cannot convert {type(v)} to letter grade")
+        raise TypeError(f"Cannot convert {type(v)} to letter grade")
 
     @field_validator("gpa_scale")
     @classmethod

@@ -11,6 +11,10 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from pydantic import BaseModel, ConfigDict, Field, create_model
 
+from haive.agents.reasoning_and_critique.tot.models import (
+    Equation,
+    EquationGeneration,
+)
 from haive.agents.reasoning_and_critique.tot.state import TOTInput, TOTOutput, TOTState
 
 # Generic type variable for solution content
@@ -159,10 +163,6 @@ class TOTAgentConfig(AgentConfig):
         # Set up custom schemas based on content type
         if content_type == "equation":
             # Import here to avoid circular imports
-            from haive.agents.reasoning_and_critique.tot.models import (
-                Equation,
-                EquationGeneration,
-            )
 
             # Custom state schemas for equations
             config.generator_output_model = EquationGeneration

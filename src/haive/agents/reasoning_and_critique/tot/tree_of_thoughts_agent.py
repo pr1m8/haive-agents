@@ -4,7 +4,7 @@ This implements the complete Tree of Thoughts algorithm using EnhancedMultiAgent
 with proper LangGraph routing, conditional edges, and send-based branching.
 """
 
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
@@ -25,11 +25,11 @@ class TOTCommand(BaseModel):
     action: Literal["generate", "score", "expand", "select_best", "finish"] = Field(
         description="Action to take in TOT workflow"
     )
-    target_node: Optional[str] = Field(
+    target_node: str | None = Field(
         default=None,
         description="Target node to route to (generate_candidates, score_solutions, etc.)",
     )
-    data: Dict[str, Any] = Field(
+    data: dict[str, Any] = Field(
         default_factory=dict, description="Data to pass to the target node"
     )
     beam_size: int = Field(
@@ -41,9 +41,9 @@ class TOTIteration(BaseModel):
     """State for a single TOT iteration."""
 
     iteration_number: int = Field(description="Current iteration number")
-    candidates: List[str] = Field(description="Current candidate solutions")
-    scores: List[float] = Field(description="Scores for current candidates")
-    best_candidates: List[str] = Field(description="Top candidates from beam search")
+    candidates: list[str] = Field(description="Current candidate solutions")
+    scores: list[float] = Field(description="Scores for current candidates")
+    best_candidates: list[str] = Field(description="Top candidates from beam search")
     problem: str = Field(description="Original problem statement")
     max_iterations: int = Field(default=3, description="Maximum iterations to run")
     beam_size: int = Field(default=3, description="Beam search size")
@@ -59,7 +59,7 @@ class TreeOfThoughtsAgent:
         max_iterations: int = 3,
         generation_temperature: float = 0.7,
         scoring_temperature: float = 0.3,
-        engine: Optional[AugLLMConfig] = None,
+        engine: AugLLMConfig | None = None,
     ):
         """Initialize Tree of Thoughts agent.
 
@@ -112,7 +112,7 @@ class TreeOfThoughtsAgent:
 
         return "continue"
 
-    def route_tot_action(self, state: MultiAgentState) -> List[Send]:
+    def route_tot_action(self, state: MultiAgentState) -> list[Send]:
         """Route TOT actions using Send for parallel processing."""
         iteration_data = state.get("tot_iteration", {})
         current_iter = iteration_data.get("iteration_number", 0)
@@ -120,21 +120,20 @@ class TreeOfThoughtsAgent:
         if current_iter == 0:
             # First iteration: generate initial candidates
             return [Send("generate_candidates", state)]
-        else:
-            # Subsequent iterations: expand from best candidates
-            best_candidates = iteration_data.get("best_candidates", [])
-            sends = []
+        # Subsequent iterations: expand from best candidates
+        best_candidates = iteration_data.get("best_candidates", [])
+        sends = []
 
-            # Create parallel expansion tasks
-            for i, candidate in enumerate(best_candidates[:2]):  # Top 2 for expansion
-                expansion_state = state.copy()
-                expansion_state["expansion_seed"] = candidate
-                expansion_state["expansion_id"] = i
-                sends.append(Send("expand_candidates", expansion_state))
+        # Create parallel expansion tasks
+        for i, candidate in enumerate(best_candidates[:2]):  # Top 2 for expansion
+            expansion_state = state.copy()
+            expansion_state["expansion_seed"] = candidate
+            expansion_state["expansion_id"] = i
+            sends.append(Send("expand_candidates", expansion_state))
 
-            return sends
+        return sends
 
-    async def generate_candidates_node(self, state: MultiAgentState) -> Dict[str, Any]:
+    async def generate_candidates_node(self, state: MultiAgentState) -> dict[str, Any]:
         """Generate initial candidate solutions."""
         problem = state.get("problem", "")
 
@@ -150,7 +149,7 @@ class TreeOfThoughtsAgent:
             "diversity_check": result.diversity_check,
         }
 
-    async def expand_candidates_node(self, state: MultiAgentState) -> Dict[str, Any]:
+    async def expand_candidates_node(self, state: MultiAgentState) -> dict[str, Any]:
         """Expand candidates from a seed solution."""
         problem = state.get("problem", "")
         seed = state.get("expansion_seed", "")
@@ -166,7 +165,7 @@ class TreeOfThoughtsAgent:
             f"expansion_reasoning_{expansion_id}": result.reasoning,
         }
 
-    async def score_solutions_node(self, state: MultiAgentState) -> Dict[str, Any]:
+    async def score_solutions_node(self, state: MultiAgentState) -> dict[str, Any]:
         """Score all candidate solutions."""
         problem = state.get("problem", "")
         candidates = state.get("candidates", [])
@@ -197,7 +196,7 @@ class TreeOfThoughtsAgent:
             "scoring_rationale": result.ranking_rationale,
         }
 
-    async def update_iteration_node(self, state: MultiAgentState) -> Dict[str, Any]:
+    async def update_iteration_node(self, state: MultiAgentState) -> dict[str, Any]:
         """Update iteration state and prepare for next iteration."""
         iteration_data = state.get("tot_iteration", {})
         current_iter = iteration_data.get("iteration_number", 0)
@@ -217,7 +216,7 @@ class TreeOfThoughtsAgent:
             "tot_iteration": new_iteration,
         }
 
-    async def finalize_result_node(self, state: MultiAgentState) -> Dict[str, Any]:
+    async def finalize_result_node(self, state: MultiAgentState) -> dict[str, Any]:
         """Finalize the TOT result with the best solution."""
         best_candidates = state.get("best_candidates", [])
         best_scores = state.get("best_scores", [])
@@ -254,7 +253,7 @@ class TreeOfThoughtsAgent:
             "tot_completed": True,
         }
 
-    def build_graph_config(self) -> Dict[str, Any]:
+    def build_graph_config(self) -> dict[str, Any]:
         """Build the graph configuration with conditional edges and routing."""
         return {
             "nodes": {
@@ -285,7 +284,7 @@ class TreeOfThoughtsAgent:
             "finish_point": "finalize_result",
         }
 
-    async def start_node(self, state: MultiAgentState) -> Dict[str, Any]:
+    async def start_node(self, state: MultiAgentState) -> dict[str, Any]:
         """Initialize TOT state."""
         return {
             "tot_iteration": {
@@ -299,7 +298,7 @@ class TreeOfThoughtsAgent:
             }
         }
 
-    async def solve_problem(self, problem: str) -> Dict[str, Any]:
+    async def solve_problem(self, problem: str) -> dict[str, Any]:
         """Solve a problem using Tree of Thoughts algorithm.
 
         Args:
@@ -308,22 +307,17 @@ class TreeOfThoughtsAgent:
         Returns:
             Dictionary with the best solution and metadata
         """
-        print(f"🌳 Starting Tree of Thoughts for: {problem}")
-
         # Implementation: Direct orchestration of TOT algorithm
         results = {}
 
         # Phase 1: Generate initial candidates
-        print("📝 Phase 1: Generating initial candidates...")
         initial_candidates = await self.candidate_generator.generate_candidates(
             problem=problem, num_candidates=5
         )
 
         candidates = initial_candidates.candidates
-        print(f"Generated {len(candidates)} candidates")
 
         # Phase 2: Score initial candidates
-        print("📊 Phase 2: Scoring candidates...")
         initial_scores = await self.solution_scorer.score_solutions(
             problem=problem, candidates=candidates
         )
@@ -337,20 +331,16 @@ class TreeOfThoughtsAgent:
         best_candidates = [sol for sol, _ in scored_solutions[: self.beam_size]]
         best_scores = [score for _, score in scored_solutions[: self.beam_size]]
 
-        print(f"Selected top {len(best_candidates)} candidates for beam search")
-
         # Phase 3: Iterative expansion (if multiple iterations)
         for iteration in range(1, self.max_iterations):
-            print(f"🔄 Phase 3.{iteration}: Expanding from best candidates...")
 
             # Check if we have a perfect solution
             if best_scores and max(best_scores) >= 0.95:
-                print("Found high-scoring solution, stopping early")
                 break
 
             # Expand from top 2 candidates
             expanded_candidates = []
-            for i, seed_candidate in enumerate(best_candidates[:2]):
+            for _i, seed_candidate in enumerate(best_candidates[:2]):
                 expansion = await self.candidate_generator.expand_from_seed(
                     problem=problem, seed=seed_candidate, num_candidates=3
                 )
@@ -372,8 +362,6 @@ class TreeOfThoughtsAgent:
 
             best_candidates = [sol for sol, _ in scored_solutions[: self.beam_size]]
             best_scores = [score for _, score in scored_solutions[: self.beam_size]]
-
-            print(f"Updated beam with {len(best_candidates)} candidates")
 
         # Phase 4: Return best solution
         if not best_candidates:
@@ -405,9 +393,6 @@ class TreeOfThoughtsAgent:
                 else 1
             ),
         }
-
-        print(f"🎯 Best solution found: {best_solution[:100]}...")
-        print(f"📊 Final score: {best_score:.2f}")
 
         return result
 

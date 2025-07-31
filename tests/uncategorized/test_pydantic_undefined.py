@@ -1,12 +1,13 @@
 """Test for PydanticUndefined issues in SchemaComposer and AugLLMConfig integration."""
 
-import pytest
-from haive.core.engine.aug_llm.config import AugLLMConfig
-from haive.core.schema.composer import SchemaComposer
-from haive.core.schema.prebuilt.llm_state import LLMState
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
+import pytest
+
+from haive.core.engine.aug_llm.config import AugLLMConfig
+from haive.core.schema.composer import SchemaComposer
+from haive.core.schema.prebuilt.llm_state import LLMState
 
 
 class QueryRefinementResponse(BaseModel):

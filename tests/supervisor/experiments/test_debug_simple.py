@@ -2,9 +2,6 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.messages import HumanMessage
 
 from haive.agents.experiments.supervisor.agent_info import AgentInfo
@@ -15,12 +12,13 @@ from haive.agents.experiments.supervisor.dynamic_supervisor_agent import (
     DynamicSupervisorAgent,
 )
 from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
+from haive.tools.tools.search_tools import tavily_search_tool
 
 
 async def test_debug_simple():
     """Debug supervisor that delegates to ReactAgent with search tool."""
-
     # Create ReactAgent with tavily search tool
     search_engine = AugLLMConfig(
         name="search_engine",
@@ -58,7 +56,6 @@ async def test_debug_simple():
         name="debug_supervisor", engine=supervisor_engine
     )
 
-
     # Test the full workflow
     try:
         # The state has the agents and generates tools dynamically
@@ -72,15 +69,14 @@ async def test_debug_simple():
             if hasattr(last_msg, "content") and "France" in str(last_msg.content):
                 pass
             else:
-                passse")
+                pass
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
-
 
 
 if __name__ == "__main__":

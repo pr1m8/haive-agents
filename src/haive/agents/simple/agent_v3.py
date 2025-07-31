@@ -610,11 +610,10 @@ class SimpleAgentV3(
         @self.after_run
         def handle_structured_output(context: HookContext):
             """Post-process output for structured format if needed."""
-            if self.structured_output_model and context.output_data:
-                if self.debug:
-                    logger.debug(
-                        f"Processing structured output for model: {self.structured_output_model}"
-                    )
+            if self.structured_output_model and context.output_data and self.debug:
+                logger.debug(
+                    f"Processing structured output for model: {self.structured_output_model}"
+                )
                 # Additional structured output processing can be added here
 
     def _trigger_initial_compilation(self) -> None:
@@ -647,7 +646,7 @@ class SimpleAgentV3(
                 )
 
         except Exception as e:
-            logger.error(f"Failed to compile initial graph: {e}")
+            logger.exception(f"Failed to compile initial graph: {e}")
             self.mark_for_recompile(f"Initial compilation failed: {e}")
 
             # Execute error hook
@@ -912,7 +911,7 @@ class SimpleAgentV3(
                 )
 
         except Exception as e:
-            logger.error(f"Graph recompilation failed: {e}")
+            logger.exception(f"Graph recompilation failed: {e}")
             self.resolve_recompile(success=False)
 
             # Execute error hook
@@ -929,7 +928,7 @@ class SimpleAgentV3(
     # ENHANCED EXECUTION METHODS - With debug=True and hooks
     # ========================================================================
 
-    async def arun(self, input_data: Any, debug: bool = None, **kwargs) -> Any:
+    async def arun(self, input_data: Any, debug: bool | None = None, **kwargs) -> Any:
         """Enhanced async run with debug=True default and hooks integration."""
         # Use debug=True by default, or override with parameter
         run_debug = debug if debug is not None else self.debug
@@ -961,7 +960,7 @@ class SimpleAgentV3(
 
         except Exception as e:
             if run_debug:
-                logger.error(f"[{self.name}] Async execution failed: {e}")
+                logger.exception(f"[{self.name}] Async execution failed: {e}")
 
             # Execute error hook
             if self.hooks_enabled:
@@ -971,7 +970,7 @@ class SimpleAgentV3(
 
             raise
 
-    def run(self, input_data: Any, debug: bool = None, **kwargs) -> Any:
+    def run(self, input_data: Any, debug: bool | None = None, **kwargs) -> Any:
         """Execute the agent with synchronous processing and structured output support.
 
         This method runs the agent synchronously using the configured LLM engine with
@@ -1164,7 +1163,7 @@ class SimpleAgentV3(
 
         except Exception as e:
             if run_debug:
-                logger.error(f"[{self.name}] Sync execution failed: {e}")
+                logger.exception(f"[{self.name}] Sync execution failed: {e}")
 
             # Execute error hook
             if self.hooks_enabled:
@@ -1223,7 +1222,6 @@ class SimpleAgentV3(
         **agent_kwargs,
     ) -> BaseTool:
         """Convert SimpleAgentV3 to a LangChain tool with debug support."""
-
         tool_name = name or "simple_agent_v3_tool"
         tool_description = (
             description or "SimpleAgent v3 with enhanced dynamic architecture"
@@ -1274,7 +1272,6 @@ class SimpleAgentV3(
         **agent_kwargs,
     ) -> BaseTool:
         """Convert SimpleAgentV3 to a structured output tool."""
-
         tool_name = name or f"structured_{output_model.__name__.lower()}_tool"
         tool_description = (
             description or f"Generate structured {output_model.__name__} output"

@@ -6,6 +6,7 @@ focusing on parallelizable task execution through a DAG structure.
 """
 
 import asyncio
+import traceback
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
@@ -293,7 +294,6 @@ class LLMCompilerAgent(AgentArchitecture):
         try:
             return step.execute(tool_map, results)
         except Exception as e:
-            import traceback
 
             return f"ERROR: {e!s}\n{traceback.format_exc()}"
 
@@ -365,7 +365,7 @@ class LLMCompilerAgent(AgentArchitecture):
         return f"Execution failed. Join step: {join_step}"
 
     def should_execute_more(
-        self, state: CompilerState, config: Dict[str, Any] = None
+        self, state: CompilerState, config: dict[str, Any] | None = None
     ) -> str:
         """Determine the next execution step.
 
@@ -412,7 +412,9 @@ class LLMCompilerAgent(AgentArchitecture):
             {"planner": "planner", "execute_tasks": "execute_tasks", "join": "join"},
         )
 
-        def should_replan(state: CompilerState, config: Dict[str, Any] = None) -> bool:
+        def should_replan(
+            state: CompilerState, config: dict[str, Any] | None = None
+        ) -> bool:
             """Determines whether the agent should replan based on execution results.
 
             Args:

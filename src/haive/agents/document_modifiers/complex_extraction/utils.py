@@ -1,3 +1,4 @@
+import logging
 import uuid
 from collections.abc import Callable, Sequence
 from typing import TypedDict
@@ -23,7 +24,7 @@ def encode(state: BaseModel) -> dict:
         )
     if isinstance(state.messages, list):
         return Command(update={"messages": state.messages, "input_format": "list"})
-    raise ValueError(f"Unexpected input type: {type(state.messages)}")
+    raise TypeError(f"Unexpected input type: {type(state.messages)}")
 
 
 def decode(state: BaseModel) -> dict:
@@ -71,7 +72,6 @@ def decode(state: BaseModel) -> dict:
                 parsed_data = extraction_model(**extracted_data)
                 return {"extracted_data": parsed_data}
             except Exception as e:
-                import logging
 
                 logging.exception(f"Error parsing data into Pydantic model: {e}")
                 # Fall back to returning the raw data

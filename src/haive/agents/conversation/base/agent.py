@@ -21,11 +21,20 @@ particularly the `select_speaker` method that defines the conversation pattern.
 """
 
 import logging
+import os
 from abc import abstractmethod
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.persistence.memory import MemoryCheckpointerConfig
+from haive.core.persistence.postgres_config import (
+    PostgresCheckpointerConfig,
+)
+from haive.core.persistence.types import (
+    CheckpointerMode,
+    CheckpointStorageMode,
+)
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.graph import END, START
 from langgraph.types import Command
@@ -105,15 +114,7 @@ class BaseConversationAgent(Agent):
             )
 
             try:
-                import os
 
-                from haive.core.persistence.postgres_config import (
-                    PostgresCheckpointerConfig,
-                )
-                from haive.core.persistence.types import (
-                    CheckpointerMode,
-                    CheckpointStorageMode,
-                )
 
                 # Use environment connection string if available (Supabase)
                 connection_string = os.getenv("POSTGRES_CONNECTION_STRING")
@@ -176,7 +177,6 @@ class BaseConversationAgent(Agent):
                 logger.warning(f"PostgreSQL dependencies not available: {e}")
                 # Fall back to memory persistence
                 try:
-                    from haive.core.persistence.memory import MemoryCheckpointerConfig
 
                     values["persistence"] = MemoryCheckpointerConfig()
                     logger.info("Using memory persistence fallback")

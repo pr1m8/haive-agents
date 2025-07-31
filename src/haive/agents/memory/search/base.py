@@ -4,6 +4,7 @@ This module provides the foundation for all search agents in the memory system,
 with common functionality for memory integration, tool management, and structured outputs.
 """
 
+import time
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -169,8 +170,6 @@ class BaseSearchAgent(ReactAgent, ABC):
         Returns:
             Structured search response
         """
-        import time
-
         start_time = time.time()
 
         # Get relevant memory context

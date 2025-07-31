@@ -1,11 +1,10 @@
 """Focused test for SimpleAgentV3 with tools and structured output."""
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define a simple tool
@@ -16,7 +15,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"Result: {result}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 # Define structured output model
@@ -30,10 +29,6 @@ class MathResult(BaseModel):
 
 def test_simple_agent_v3_with_tool():
     """Test SimpleAgentV3 with a calculator tool."""
-    print("\n" + "=" * 60)
-    print("TEST: SimpleAgentV3 with Calculator Tool")
-    print("=" * 60)
-
     # Create agent with tool
     agent = SimpleAgentV3(
         name="calc_agent",
@@ -44,27 +39,18 @@ def test_simple_agent_v3_with_tool():
 
     # Test calculation
     result = agent.run("Please calculate 25 * 34")
-    print(f"\nResult type: {type(result)}")
-    print(f"Result: {result}")
 
     # Check if result contains the calculation
     if hasattr(result, "messages"):
-        print(f"Number of messages: {len(result.messages)}")
-        for i, msg in enumerate(result.messages):
-            print(f"Message {i}: {type(msg).__name__}")
+        for _i, msg in enumerate(result.messages):
             if hasattr(msg, "tool_calls"):
-                print(f"  Tool calls: {msg.tool_calls}")
+                pass
 
     assert "850" in str(result)
-    print("✅ Tool test passed!")
 
 
 def test_simple_agent_v3_with_structured_output():
     """Test SimpleAgentV3 with structured output."""
-    print("\n" + "=" * 60)
-    print("TEST: SimpleAgentV3 with Structured Output")
-    print("=" * 60)
-
     # Create agent with structured output
     agent = SimpleAgentV3(
         name="struct_agent",
@@ -74,28 +60,16 @@ def test_simple_agent_v3_with_structured_output():
 
     # Test structured output
     result = agent.run("Calculate 15 * 8 and explain the steps")
-    print(f"\nResult type: {type(result)}")
-    print(f"Result: {result}")
 
     # Check if result is the expected type
     if isinstance(result, MathResult):
-        print(f"\n✅ Got MathResult!")
-        print(f"  Expression: {result.expression}")
-        print(f"  Result: {result.result}")
-        print(f"  Explanation: {result.explanation}")
         assert result.result == 120
     else:
-        print(f"❌ Got unexpected type: {type(result)}")
-
-    print("✅ Structured output test passed!")
+        pass
 
 
 def test_simple_agent_v3_with_tool_and_structured_output():
     """Test SimpleAgentV3 with both tool and structured output."""
-    print("\n" + "=" * 60)
-    print("TEST: SimpleAgentV3 with Tool + Structured Output")
-    print("=" * 60)
-
     # Create agent with tool AND structured output
     agent = SimpleAgentV3(
         name="combo_agent",
@@ -108,27 +82,15 @@ def test_simple_agent_v3_with_tool_and_structured_output():
     result = agent.run(
         "Use the calculator to compute 12 * 12, then provide the result as MathResult"
     )
-    print(f"\nResult type: {type(result)}")
-    print(f"Result: {result}")
 
     # Check result
     if isinstance(result, MathResult):
-        print(f"\n✅ Got MathResult!")
-        print(f"  Expression: {result.expression}")
-        print(f"  Result: {result.result}")
-        print(f"  Explanation: {result.explanation}")
         assert result.result == 144
     else:
-        print(f"Note: Got {type(result)} instead of MathResult")
-
-    print("✅ Tool + Structured output test completed!")
+        pass
 
 
 if __name__ == "__main__":
     test_simple_agent_v3_with_tool()
     test_simple_agent_v3_with_structured_output()
     test_simple_agent_v3_with_tool_and_structured_output()
-
-    print("\n" + "=" * 60)
-    print("ALL TESTS COMPLETED!")
-    print("=" * 60)

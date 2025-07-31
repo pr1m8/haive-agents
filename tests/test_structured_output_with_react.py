@@ -1,9 +1,8 @@
 """Test StructuredOutputAgent with ReactAgent using sequential multi-agent pattern."""
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
+import pytest
 
 from haive.agents.react.agent import ReactAgent
 from haive.agents.structured_output.agent import StructuredOutputAgent
@@ -13,6 +12,7 @@ from haive.agents.structured_output.models import (
     SearchResult,
     TaskResult,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define test models for structured output

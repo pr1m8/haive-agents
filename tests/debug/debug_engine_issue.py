@@ -6,6 +6,7 @@ import logging
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
+
 # Disable noisy logs
 logging.getLogger("haive.dataflow.registry.core").setLevel(logging.WARNING)
 logging.getLogger("hpack").setLevel(logging.WARNING)
@@ -50,10 +51,9 @@ RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
 ).partial(context="")
 
 try:
+    from haive.agents.simple.agent_v2 import SimpleAgentV2
     from haive.core.engine.aug_llm import AugLLMConfig
     from haive.core.schema.prebuilt.llm_state import LLMState
-
-    from haive.agents.simple.agent_v2 import SimpleAgentV2
 
     # Let's look at LLMState
     logger.info("=== Examining LLMState ===")

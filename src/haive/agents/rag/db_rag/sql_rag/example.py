@@ -37,6 +37,7 @@ import argparse
 import contextlib
 import json
 import logging
+import os
 import sys
 from datetime import datetime
 from typing import Any
@@ -380,7 +381,6 @@ def interactive_mode() -> None:
             if question.lower() == "help":
                 continue
             if question.lower() == "clear":
-                import os
 
                 os.system("clear" if os.name == "posix" else "cls")
                 continue
@@ -402,7 +402,7 @@ def interactive_mode() -> None:
             pass
 
 
-def main() -> Union[int, float]:
+def main() -> int | float:
     """Main function to run examples.
 
     This function provides a command-line interface for running

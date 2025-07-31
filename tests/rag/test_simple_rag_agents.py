@@ -1,7 +1,5 @@
 """Test Simple RAG and Collective RAG agents - NO MOCKS."""
 
-import pytest
-
 from haive.agents.rag.collective_rag_agent_v4 import CollectiveRAGAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 
@@ -83,4 +81,3 @@ if __name__ == "__main__":
     test_collective_rag_agent_composition()
     test_simple_rag_agent_real_execution()
     test_collective_rag_agent_real_execution()
-    print("✅ All RAG agent tests passed!")

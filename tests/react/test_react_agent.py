@@ -1,12 +1,11 @@
 # tests/agents/react/test_react_agent.py
 
 
-from haive.core.engine.aug_llm import AugLLMConfig
-
 # rom haive.agents.react.config import ReactAgentConfig
 from langchain_core.tools import tool
 
 from haive.agents.react.agent import ReactAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define tool functions (outside of test class to avoid fixture errors)

@@ -118,6 +118,7 @@ from experiments.test_supervisor_simple import (
 )
 from experiments.test_type_serialization import MyModel, test_type_serialization
 
+
 __all__ = [
     "AgentRegistry",
     "BasicSupervisor",

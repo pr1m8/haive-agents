@@ -11,8 +11,9 @@ Tests all multi-agent patterns with real components and debug output:
 
 import asyncio
 
-import pytest
 from langchain_core.tools import tool
+import pytest
+
 
 # Test configuration
 TEST_WITH_REAL_LLMS = False  # Set to True for real LLM testing
@@ -663,9 +664,8 @@ class TestMultiAgentGenericPatterns:
 
         # This would use real AugLLMConfig when enabled
         try:
-            from haive.core.engine.aug_llm.config import AugLLMConfig
-
             from haive.agents.simple.enhanced_simple_real import SimpleAgent
+            from haive.core.engine.aug_llm.config import AugLLMConfig
 
             # Create real agents with LLM
             real_config = AugLLMConfig(temperature=0.1)

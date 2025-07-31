@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Verify messages are actually stored and retrievable."""
 
+from datetime import datetime
 import json
 import os
 import sys
-from datetime import datetime
 
 import psycopg
+
 
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -14,7 +15,6 @@ sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agent
 
 def test_message_persistence():
     """Test that messages are actually persisted and retrievable."""
-
     from langchain_core.messages import HumanMessage
 
     from haive.agents.simple.agent import SimpleAgent
@@ -38,9 +38,7 @@ def test_message_persistence():
         {"messages": [HumanMessage(content="Hello, this is message one")]}, config
     )
 
-    msg1_response = (
-        result1.messages[-1].content if hasattr(result1, "messages") else "No response"
-    )
+    (result1.messages[-1].content if hasattr(result1, "messages") else "No response")
 
     # Second message
 
@@ -53,9 +51,7 @@ def test_message_persistence():
     )
 
     # Check if agent remembers
-    remembers = (
-        "message one" in msg2_response.lower() or "hello" in msg2_response.lower()
-    )
+    ("message one" in msg2_response.lower() or "hello" in msg2_response.lower())
 
     # Verify in database
 
@@ -68,7 +64,7 @@ def test_message_persistence():
             # Get checkpoints for this thread
             cur.execute(
                 """
-                    SELECT 
+                    SELECT
                         checkpoint_id,
                         checkpoint
                     FROM public.checkpoints
@@ -79,20 +75,14 @@ def test_message_persistence():
             )
 
             checkpoints = cur.fetchall()
-            print(
-                f"\n📊 Found {len(checkpoints)} checkpoints for thread {thread_id}"
-            )
 
             # Check latest checkpoint
             if checkpoints:
                 latest_cp_id, latest_cp = checkpoints[0]
-                print(f"\n📋 Latest checkpoint: {latest_cp_id}")
 
                 # Parse checkpoint
                 cp_data = (
-                    json.loads(latest_cp)
-                    if isinstance(latest_cp, str)
-                    else latest_cp
+                    json.loads(latest_cp) if isinstance(latest_cp, str) else latest_cp
                 )
 
                 # Check messages
@@ -101,41 +91,36 @@ def test_message_persistence():
                     and "messages" in cp_data["channel_values"]
                 ):
                     messages = cp_data["channel_values"]["messages"]
-                    print(f"✅ Found {len(messages)} messages in checkpoint")
 
-                    print("\n📝 Stored messages:")
                     for i, msg in enumerate(messages):
                         msg_type = msg.get("type", "unknown")
-                        content = msg.get("content", "")[:80]
-                        print(f"   {i+1}. [{msg_type}]: {content}...")
+                        msg.get("content", "")[:80]
 
                         # Verify our messages are there
                         if (
-                            i == 0
-                            and msg_type == "human"
-                            and "message one" in msg.get("content", "")
-                        ):
-                            print("      ✅ First message correctly stored")
-                        elif (
-                            i == 2
-                            and msg_type == "human"
-                            and "first message" in msg.get("content", "")
-                        ):
-                            print("      ✅ Second message correctly stored")
-                        elif msg_type == "ai" and "PERSISTENCE" in msg.get(
-                            "content", ""
-                        ):
-                            print(
-                                "      ✅ AI response includes PERSISTENCE keyword"
+                            (
+                                i == 0
+                                and msg_type == "human"
+                                and "message one" in msg.get("content", "")
                             )
+                            or (
+                                i == 2
+                                and msg_type == "human"
+                                and "first message" in msg.get("content", "")
+                            )
+                            or (
+                                msg_type == "ai"
+                                and "PERSISTENCE" in msg.get("content", "")
+                            )
+                        ):
+                            pass
                 else:
-                    print("❌ No messages found in checkpoint")
+                    pass
 
             # Check checkpoint_blobs for actual message storage
-            print("\n🔍 Checking checkpoint_blobs table...")
             cur.execute(
                 """
-                    SELECT 
+                    SELECT
                         channel,
                         type,
                         length(blob) as blob_size
@@ -148,11 +133,10 @@ def test_message_persistence():
 
             blobs = cur.fetchall()
             if blobs:
-                print(f"✅ Found {len(blobs)} blobs")
-                for channel, blob_type, size in blobs:
-                    print(f"   - {channel}: {blob_type} ({size} bytes)")
+                for _channel, _blob_type, _size in blobs:
+                    pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -160,7 +144,6 @@ def test_message_persistence():
 
 def check_store_persistence_link():
     """Check if store persistence is properly linked."""
-
     # Check if stores use the ConnectionManager
 
     store_files = [
@@ -186,9 +169,9 @@ def check_store_persistence_link():
 
                 # Check for prepare_threshold
                 if "prepare_threshold" in content:
-                    passon")
+                    pass
 
-            except Exception as e:
+            except Exception:
                 pass
         else:
             pass
@@ -205,7 +188,7 @@ def check_store_persistence_link():
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         pass
 
 
@@ -216,7 +199,6 @@ def main():
 
     # Check store integration
     check_store_persistence_link()
-
 
 
 if __name__ == "__main__":

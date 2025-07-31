@@ -9,13 +9,13 @@ This script tests that:
 """
 
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 import logging
 import time
-from concurrent.futures import ThreadPoolExecutor
-
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Set up logging
 logging.basicConfig(
@@ -256,19 +256,8 @@ def main():
             "🎉 All tests passed! The PostgreSQL thread duplicate key fix is working correctly."
         )
 
-        print("\n" + "=" * 80)
-        print("SUMMARY: PostgreSQL Thread Duplicate Key Fix")
-        print("=" * 80)
-        print("✅ Thread ID generation now uses UUIDs (no more collisions)")
-        print("✅ Concurrent agents get unique thread IDs")
-        print("✅ User assignment is now explicit (no hardcoded values)")
-        print("✅ Thread isolation is maintained")
-        print("✅ Both sync and async operations work correctly")
-        print("\nThe root cause has been fixed, not just the symptom!")
-        print("=" * 80)
-
     except Exception as e:
-        logger.error(f"❌ Test failed: {e}")
+        logger.exception(f"❌ Test failed: {e}")
         raise
 
 

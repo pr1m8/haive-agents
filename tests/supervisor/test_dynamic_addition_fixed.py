@@ -92,7 +92,7 @@ async def test_dynamic_addition_with_fixed_supervisor():
         if "Calculator" in last_message:
             pass
         else:
-            passnt")
+            pass
 
     except Exception as e:
         return False

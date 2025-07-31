@@ -48,8 +48,6 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.document.loaders.auto_loader import AutoLoader, AutoLoaderConfig
-
-# from haive.core.engine.document.universal_loader import UniversalDocumentLoader
 from haive.core.schema.prebuilt.document_state import (
     DocumentState,
 )
@@ -63,9 +61,24 @@ from langchain_core.documents import Document
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
+from haive.agents.document_modifiers.kg.kg_map_merge.agent import (
+    StructuredKGAgent,
+)
+from haive.agents.document_modifiers.summarizer.map_branch.agent import (
+    MapBranchSummarizerAgent,
+)
+from haive.agents.rag.adaptive_rag.agent import AdaptiveRAGAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.rag.hyde.enhanced_agent_v2 import HyDEAgent
+from haive.agents.rag.multi_strategy.agent import (
+    MultiStrategyRAGAgent,
+)
+from haive.agents.rag.self_rag2.agent import SelfRAGAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+
+# from haive.core.engine.document.universal_loader import UniversalDocumentLoader
+
 
 logger = logging.getLogger(__name__)
 
@@ -274,7 +287,6 @@ class DocumentProcessingAgent:
         logger.info(
             f"DocumentProcessingAgent '{name}' initialized with {
                 self.config.rag_strategy} strategy"
-        )
 
     def _init_components(self):
         """Initialize all agent components."""
@@ -283,7 +295,6 @@ class DocumentProcessingAgent:
             max_concurrency=self.config.max_concurrent_loads,
             enable_caching=self.config.enable_caching,
             cache_ttl=self.config.cache_ttl,
-        )
         self.auto_loader = AutoLoader(config=auto_loader_config)
         # self.universal_loader = UniversalDocumentLoader()
 
@@ -313,17 +324,14 @@ class DocumentProcessingAgent:
         try:
             if self.config.rag_strategy == "adaptive":
                 try:
-                    from haive.agents.rag.adaptive_rag.agent import AdaptiveRAGAgent
 
                     return AdaptiveRAGAgent(name=f"{self.name}_rag", engine=self.engine)
                 except ImportError:
                     logger.warning(
                         "AdaptiveRAGAgent not available, falling back to BaseRAGAgent"
-                    )
 
             elif self.config.rag_strategy == "self_rag":
                 try:
-                    from haive.agents.rag.self_rag2.agent import SelfRAGAgent
 
                     return SelfRAGAgent(
                         name=f"{
@@ -337,7 +345,6 @@ class DocumentProcessingAgent:
 
             elif self.config.rag_strategy == "hyde":
                 try:
-                    from haive.agents.rag.hyde.enhanced_agent_v2 import HyDEAgent
 
                     return HyDEAgent(
                         name=f"{
@@ -351,8 +358,6 @@ class DocumentProcessingAgent:
 
             elif self.config.rag_strategy == "multi_strategy":
                 try:
-                    from haive.agents.rag.multi_strategy.agent import (
-                        MultiStrategyRAGAgent,
                     )
 
                     return MultiStrategyRAGAgent(
@@ -632,8 +637,6 @@ class DocumentProcessingAgent:
     ) -> DocumentProcessingState:
         """Summarize documents using map-branch summarization."""
         # This would integrate with existing summarization agents
-        from haive.agents.document_modifiers.summarizer.map_branch.agent import (
-            MapBranchSummarizerAgent,
         )
 
         try:
@@ -657,8 +660,6 @@ class DocumentProcessingAgent:
     ) -> DocumentProcessingState:
         """Extract knowledge graph from documents."""
         # This would integrate with existing KG extraction agents
-        from haive.agents.document_modifiers.kg.kg_map_merge.agent import (
-            StructuredKGAgent,
         )
 
         try:

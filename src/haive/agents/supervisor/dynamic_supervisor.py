@@ -6,12 +6,14 @@ to LangGraph's supervisor package but with enhanced Haive-specific functionality
 """
 
 import asyncio
+import json
 import logging
 import time
 from collections.abc import Callable
 from typing import Any
 from uuid import uuid4
 
+from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.prompts import ChatPromptTemplate
@@ -87,7 +89,6 @@ class DynamicSupervisorAgent(ReactAgent):
         self._performance_monitor = PerformanceMonitor()
 
         # Initialize agent registry with enhanced capabilities
-        from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 
         routing_model = DynamicChoiceModel[str](
             options=[], model_name="DynamicSupervisorChoice", include_end=True
@@ -770,7 +771,6 @@ Provide a JSON response with:
         content = getattr(response, "content", str(response))
 
         try:
-            import json
 
             # Try to parse as JSON first
             if "{" in content and "}" in content:

@@ -10,7 +10,7 @@ All components use the consistent enhanced architecture.
 """
 
 import asyncio
-from typing import List
+import contextlib
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -29,8 +29,8 @@ class ResearchAnalysis(BaseModel):
     """Research analysis from ReactAgent."""
 
     topic: str = Field(description="Research topic")
-    key_findings: List[str] = Field(description="Important findings")
-    data_points: List[str] = Field(description="Supporting data")
+    key_findings: list[str] = Field(description="Important findings")
+    data_points: list[str] = Field(description="Supporting data")
     confidence_level: float = Field(
         ge=0.0, le=1.0, description="Confidence in findings"
     )
@@ -41,18 +41,14 @@ class ExecutiveReport(BaseModel):
 
     title: str = Field(description="Report title")
     executive_summary: str = Field(description="Executive summary (2-3 sentences)")
-    strategic_insights: List[str] = Field(description="Key strategic insights")
-    recommendations: List[str] = Field(description="Actionable recommendations")
-    next_steps: List[str] = Field(description="Immediate next steps")
+    strategic_insights: list[str] = Field(description="Key strategic insights")
+    recommendations: list[str] = Field(description="Actionable recommendations")
+    next_steps: list[str] = Field(description="Immediate next steps")
     confidence_score: float = Field(ge=0.0, le=1.0, description="Overall confidence")
 
 
 async def demo_enhanced_multi_agent_v4():
     """Demo using EnhancedMultiAgentV4 with SimpleAgentV3 and ReactAgent."""
-    print("=" * 80)
-    print("CONSISTENT V3/V4 ARCHITECTURE DEMO")
-    print("Using Enhanced Base Agent Throughout")
-    print("=" * 80)
 
     # Step 1: Create tools for ReactAgent
     @tool
@@ -80,11 +76,6 @@ async def demo_enhanced_multi_agent_v4():
         ),
     )
 
-    print(
-        "\n✅ Created ReactAgentV3 with tools:",
-        [t.name for t in research_agent.engine.tools],
-    )
-
     # Step 3: Create SimpleAgentV3 for analysis with structured output
     analysis_agent = SimpleAgentV3(
         name="analyst",
@@ -110,11 +101,6 @@ Provide structured analysis with:
                 ),
             ]
         ),
-    )
-
-    print(
-        "✅ Created SimpleAgentV3 (analyst) with structured output:",
-        ResearchAnalysis.__name__,
     )
 
     # Step 4: Create SimpleAgentV3 for final report
@@ -148,20 +134,12 @@ Create an executive report with:
         ),
     )
 
-    print(
-        "✅ Created SimpleAgentV3 (report_writer) with structured output:",
-        ExecutiveReport.__name__,
-    )
-
     # Step 5: Create EnhancedMultiAgentV4 workflow
     workflow = EnhancedMultiAgentV4(
         name="research_pipeline",
         agents=[research_agent, analysis_agent, report_agent],
         execution_mode="sequential",
     )
-
-    print("\n✅ Created EnhancedMultiAgentV4 with sequential execution")
-    print(f"   Agents: {workflow.get_agent_names()}")
 
     # Step 6: Add hooks for monitoring
     execution_trace = []
@@ -175,20 +153,15 @@ Create an executive report with:
                 "timestamp": asyncio.get_event_loop().time(),
             }
         )
-        print(f"\n🔍 [{event}] {details.get('agent_name', 'system')}")
 
     # Note: Hook registration would be done through the agent's hook system
     # For this demo, we'll track manually in the execution
 
     # Step 7: Execute the workflow
-    print("\n" + "-" * 80)
-    print("EXECUTING MULTI-AGENT WORKFLOW")
-    print("-" * 80)
 
     try:
         # Initial task
         task = "Analyze the enterprise AI automation market and provide strategic recommendations"
-        print(f"\n📋 Task: {task}")
 
         trace_execution("workflow_start", {"task": task})
 
@@ -207,77 +180,43 @@ Create an executive report with:
         trace_execution("workflow_complete", {"status": "success"})
 
         # Display results
-        print("\n" + "=" * 80)
-        print("WORKFLOW RESULTS")
-        print("=" * 80)
 
         if isinstance(result, dict):
             # Research results
             if "researcher" in result:
-                print("\n📊 Research Phase:")
-                research_output = result["researcher"]
-                print(f"   Output type: {type(research_output)}")
-                print(f"   Content preview: {str(research_output)[:200]}...")
+                result["researcher"]
 
             # Analysis results
             if "analyst" in result:
-                print("\n🔍 Analysis Phase:")
                 analysis = result["analyst"]
                 if isinstance(analysis, dict):
-                    print(f"   Topic: {analysis.get('topic', 'N/A')}")
-                    print(
-                        f"   Key Findings: {len(analysis.get('key_findings', []))} findings"
-                    )
-                    print(f"   Confidence: {analysis.get('confidence_level', 0):.2f}")
+                    pass
 
             # Final report
             if "report_writer" in result:
-                print("\n📄 Final Report:")
                 report = result["report_writer"]
                 if isinstance(report, dict):
-                    print(f"   Title: {report.get('title', 'N/A')}")
-                    print(
-                        f"   Executive Summary: {report.get('executive_summary', 'N/A')}"
-                    )
-                    print(f"   Strategic Insights:")
-                    for i, insight in enumerate(
+                    for _i, _insight in enumerate(
                         report.get("strategic_insights", [])[:3], 1
                     ):
-                        print(f"      {i}. {insight}")
-                    print(f"   Recommendations:")
-                    for i, rec in enumerate(report.get("recommendations", [])[:3], 1):
-                        print(f"      {i}. {rec}")
-                    print(
-                        f"   Confidence Score: {report.get('confidence_score', 0):.2f}"
-                    )
+                        pass
+                    for _i, _rec in enumerate(report.get("recommendations", [])[:3], 1):
+                        pass
 
         # Show execution trace
-        print("\n" + "-" * 80)
-        print("EXECUTION TRACE")
-        print("-" * 80)
-        for i, event in enumerate(execution_trace, 1):
-            print(f"{i}. [{event['event']}] {event['agent']}")
+        for _i, _event in enumerate(execution_trace, 1):
+            pass
 
     except Exception as e:
         trace_execution("workflow_error", {"error": str(e)})
-        print(f"\n❌ Error: {e}")
         import traceback
 
         traceback.print_exc()
 
-    print("\n" + "=" * 80)
-    print("DEMO COMPLETED!")
-    print("=" * 80)
-
 
 async def test_individual_agents():
     """Test agents individually to ensure they work."""
-    print("\n" + "=" * 80)
-    print("TESTING INDIVIDUAL AGENTS")
-    print("=" * 80)
-
     # Test SimpleAgentV3
-    print("\n1. Testing SimpleAgentV3...")
     simple = SimpleAgentV3(
         name="test_simple",
         engine=AugLLMConfig(
@@ -285,14 +224,10 @@ async def test_individual_agents():
         ),
     )
 
-    try:
-        result = await simple.arun("Hello, how are you?")
-        print(f"   ✅ SimpleAgentV3 works! Response: {str(result)[:100]}...")
-    except Exception as e:
-        print(f"   ❌ SimpleAgentV3 error: {e}")
+    with contextlib.suppress(Exception):
+        await simple.arun("Hello, how are you?")
 
     # Test ReactAgentV3
-    print("\n2. Testing ReactAgentV3...")
 
     @tool
     def test_tool(input: str) -> str:
@@ -306,11 +241,8 @@ async def test_individual_agents():
         ),
     )
 
-    try:
-        result = await react.arun("Use the test tool with 'hello'")
-        print(f"   ✅ ReactAgentV3 works! Response: {str(result)[:100]}...")
-    except Exception as e:
-        print(f"   ❌ ReactAgentV3 error: {e}")
+    with contextlib.suppress(Exception):
+        await react.arun("Use the test tool with 'hello'")
 
 
 async def main():

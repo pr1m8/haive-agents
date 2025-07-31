@@ -8,6 +8,7 @@ from typing import Any
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from pydantic import BaseModel, Field
 
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

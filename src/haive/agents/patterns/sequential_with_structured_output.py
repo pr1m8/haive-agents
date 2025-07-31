@@ -10,7 +10,10 @@ Examples:
     AnalysisAgent → ReportAgent
 """
 
-from typing import Any, Callable, Dict, Generic, List, Optional, Type, TypeVar
+import contextlib
+import json
+from collections.abc import Callable
+from typing import Any, Generic, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import BaseMessage
@@ -28,20 +31,20 @@ OutputT = TypeVar("OutputT", bound=BaseModel)
 class SequentialHooks(BaseModel):
     """Hooks for customizing sequential agent behavior."""
 
-    pre_process: Optional[Callable[[Dict[str, Any]], Dict[str, Any]]] = Field(
+    pre_process: Callable[[dict[str, Any]], dict[str, Any]] | None = Field(
         default=None, description="Function to preprocess input before first agent"
     )
 
-    intermediate_transform: Optional[Callable[[Any], Dict[str, Any]]] = Field(
+    intermediate_transform: Callable[[Any], dict[str, Any]] | None = Field(
         default=None,
         description="Function to transform output from first agent for second agent",
     )
 
-    post_process: Optional[Callable[[Any], Any]] = Field(
+    post_process: Callable[[Any], Any] | None = Field(
         default=None, description="Function to post-process final output"
     )
 
-    error_handler: Optional[Callable[[Exception], Any]] = Field(
+    error_handler: Callable[[Exception], Any] | None = Field(
         default=None, description="Function to handle errors in the pipeline"
     )
 
@@ -62,10 +65,10 @@ class SequentialAgentWithStructuredOutput(Generic[OutputT]):
     def __init__(
         self,
         first_agent: Agent,
-        structured_output_model: Type[OutputT],
-        structured_output_prompt: Optional[ChatPromptTemplate] = None,
-        second_agent: Optional[Agent] = None,
-        hooks: Optional[SequentialHooks] = None,
+        structured_output_model: type[OutputT],
+        structured_output_prompt: ChatPromptTemplate | None = None,
+        second_agent: Agent | None = None,
+        hooks: SequentialHooks | None = None,
         name: str = "sequential_structured",
         debug: bool = False,
     ):
@@ -96,10 +99,9 @@ class SequentialAgentWithStructuredOutput(Generic[OutputT]):
             )
 
     def _create_structured_output_agent(
-        self, custom_prompt: Optional[ChatPromptTemplate] = None
+        self, custom_prompt: ChatPromptTemplate | None = None
     ) -> SimpleAgent:
         """Create default agent for structured output."""
-
         # Default structured output prompt if none provided
         if custom_prompt is None:
             custom_prompt = ChatPromptTemplate.from_messages(
@@ -145,7 +147,7 @@ Provide the structured output now:""",
         )
 
     async def arun(
-        self, input_data: Any, context: Optional[Dict[str, Any]] = None, **kwargs
+        self, input_data: Any, context: dict[str, Any] | None = None, **kwargs
     ) -> OutputT:
         """Run the sequential agent pipeline asynchronously.
 
@@ -163,19 +165,16 @@ Provide the structured output now:""",
                 input_data = self.hooks.pre_process(input_data)
 
             if self.debug:
-                print(f"\n🔄 Sequential Pattern: {self.name}")
-                print(f"   First Agent: {self.first_agent.name}")
-                print(f"   Second Agent: {self.second_agent.name}")
+                pass
 
             # Step 1: Run first agent
             if self.debug:
-                print(f"\n📍 Step 1: Running {self.first_agent.name}...")
+                pass
 
             first_result = await self.first_agent.arun(input_data, **kwargs)
 
             if self.debug:
-                print("   ✅ First agent completed")
-                print(f"   Result type: {type(first_result)}")
+                pass
 
             # Transform intermediate result if hook provided
             if self.hooks.intermediate_transform:
@@ -188,15 +187,12 @@ Provide the structured output now:""",
 
             # Step 2: Run structured output agent
             if self.debug:
-                print(
-                    f"\n📍 Step 2: Structuring output with {self.second_agent.name}..."
-                )
+                pass
 
             structured_result = await self.second_agent.arun(structured_input, **kwargs)
 
             if self.debug:
-                print("   ✅ Structured output completed")
-                print(f"   Output type: {type(structured_result)}")
+                pass
 
             # Extract the actual structured output from the result
             if hasattr(structured_result, "messages") and structured_result.messages:
@@ -212,14 +208,13 @@ Provide the structured output now:""",
                             == self.structured_output_model.__name__
                         ):
                             # Parse the structured output
-                            import json
 
                             args = tool_call.get("args", {})
                             if isinstance(args, str):
                                 args = json.loads(args)
                             structured_result = self.structured_output_model(**args)
                             break
-                        elif "function" in tool_call:
+                        if "function" in tool_call:
                             # Handle OpenAI format
                             func = tool_call["function"]
                             if (
@@ -242,12 +237,10 @@ Provide the structured output now:""",
 
                 # Try to parse as the model if it's a dict
                 if isinstance(structured_result, dict):
-                    try:
+                    with contextlib.suppress(Exception):
                         structured_result = self.structured_output_model(
                             **structured_result
                         )
-                    except:
-                        pass
 
             # Post-process if hook provided
             if self.hooks.post_process:
@@ -264,8 +257,8 @@ Provide the structured output now:""",
         self,
         first_result: Any,
         original_input: Any,
-        context: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        context: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         """Default transformation of first agent output for second agent."""
         # Handle different output types
         if isinstance(first_result, dict):
@@ -301,12 +294,12 @@ Provide the structured output now:""",
 
 
 def create_react_to_structured(
-    tools: List[Any],
-    structured_output_model: Type[OutputT],
+    tools: list[Any],
+    structured_output_model: type[OutputT],
     name: str = "react_structured",
-    react_config: Optional[Dict[str, Any]] = None,
-    structured_prompt: Optional[ChatPromptTemplate] = None,
-    hooks: Optional[SequentialHooks] = None,
+    react_config: dict[str, Any] | None = None,
+    structured_prompt: ChatPromptTemplate | None = None,
+    hooks: SequentialHooks | None = None,
     debug: bool = False,
 ) -> SequentialAgentWithStructuredOutput[OutputT]:
     """Create a ReactAgent → StructuredOutput pipeline.
@@ -341,11 +334,11 @@ def create_react_to_structured(
 
 def create_analysis_to_report(
     analysis_prompt: ChatPromptTemplate,
-    report_model: Type[OutputT],
+    report_model: type[OutputT],
     name: str = "analysis_report",
-    analysis_config: Optional[Dict[str, Any]] = None,
-    report_prompt: Optional[ChatPromptTemplate] = None,
-    hooks: Optional[SequentialHooks] = None,
+    analysis_config: dict[str, Any] | None = None,
+    report_prompt: ChatPromptTemplate | None = None,
+    hooks: SequentialHooks | None = None,
     debug: bool = False,
 ) -> SequentialAgentWithStructuredOutput[OutputT]:
     """Create an Analysis → Report pipeline.
@@ -382,6 +375,6 @@ def create_analysis_to_report(
 __all__ = [
     "SequentialAgentWithStructuredOutput",
     "SequentialHooks",
-    "create_react_to_structured",
     "create_analysis_to_report",
+    "create_react_to_structured",
 ]

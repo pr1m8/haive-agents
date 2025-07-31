@@ -14,9 +14,11 @@ from typing import Any
 
 from haive.core.common.mixins.tool_route_mixin import ToolRouteMixin
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
+from langgraph.graph import END, START
 from pydantic import BaseModel, Field, model_validator
 
 from haive.agents.base.agent import Agent
@@ -27,6 +29,9 @@ from haive.agents.common.utils.pydantic_prompt_utils import (
 )
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.rag.common.answer_generators.prompts import (
+    RAG_ANSWER_STANDARD,
+)
 from haive.agents.rag.common.query_constructors.hyde.enhanced_prompts import (
     HYDE_ANALYSIS_PROMPT,
     HyDEPerspective,
@@ -167,7 +172,6 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
                 "name", f"Enhanced HyDE RAG v2 ({config.generation_mode.value})"
             ),
             **kwargs,
-        )
 
     @classmethod
     def _create_single_document_pipeline(
@@ -184,14 +188,12 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
             auto_select=config.auto_select_prompt,
             default_prompt_type=config.prompt_type,
             name="Query Analyzer",
-        )
 
         # Step 2: Document generation using selected prompt
         doc_generator = AdaptiveHyDEGenerator(
             llm_config=llm_config,
             target_length=config.target_length,
             name="Adaptive HyDE Generator",
-        )
 
         # Step 3: Optional structured analysis
         agents = [query_analyzer, doc_generator]
@@ -209,12 +211,9 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
             documents=documents,
             embedding_model=embedding_model,
             name="Enhanced HyDE Retriever v2",
-        )
         agents.append(retriever)
 
         # Step 5: Answer generation
-        from haive.agents.rag.common.answer_generators.prompts import (
-            RAG_ANSWER_STANDARD,
         )
 
         answer_agent = SimpleAgent(
@@ -262,8 +261,6 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         agents.append(retriever)
 
         # Answer generation
-        from haive.agents.rag.common.answer_generators.prompts import (
-            RAG_ANSWER_STANDARD,
         )
 
         answer_agent = SimpleAgent(
@@ -323,8 +320,6 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         agents.append(retriever)
 
         # Answer generation
-        from haive.agents.rag.common.answer_generators.prompts import (
-            RAG_ANSWER_STANDARD,
         )
 
         answer_agent = SimpleAgent(
@@ -372,8 +367,6 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         )
 
         # Answer generation
-        from haive.agents.rag.common.answer_generators.prompts import (
-            RAG_ANSWER_STANDARD,
         )
 
         answer_agent = SimpleAgent(
@@ -589,8 +582,6 @@ class EnhancedHyDERetrieverV2(Agent):
     embedding_model: str | None = Field(default=None)
 
     def build_graph(self) -> Any:
-        from haive.core.graph.state_graph.base_graph2 import BaseGraph
-        from langgraph.graph import END, START
 
         graph = BaseGraph(name="EnhancedHyDERetrieverV2")
 
@@ -662,8 +653,6 @@ class EnsembleHyDERetriever(Agent):
     ensemble_mode: bool = Field(default=False)
 
     def build_graph(self) -> Any:
-        from haive.core.graph.state_graph.base_graph2 import BaseGraph
-        from langgraph.graph import END, START
 
         graph = BaseGraph(name="EnsembleHyDERetriever")
 
@@ -753,8 +742,6 @@ class MultiDomainHyDERetriever(Agent):
     domain_types: list[str] = Field(default_factory=list)
 
     def build_graph(self) -> Any:
-        from haive.core.graph.state_graph.base_graph2 import BaseGraph
-        from langgraph.graph import END, START
 
         graph = BaseGraph(name="MultiDomainHyDERetriever")
 

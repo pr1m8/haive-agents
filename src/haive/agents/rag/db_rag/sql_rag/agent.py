@@ -36,6 +36,7 @@ Note:
     to be configured either through environment variables or explicit configuration.
 """
 
+import json
 import logging
 
 import sqlparse
@@ -257,7 +258,6 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                 # It's an AIMessage - try to parse the content
                 try:
                     # If it's JSON content, parse it
-                    import json
 
                     content = guardrails_output.content
                     if isinstance(content, str):

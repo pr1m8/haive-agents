@@ -1,5 +1,6 @@
 """State schema for LLM Compiler V3 Agent."""
 
+import re
 from datetime import datetime
 from typing import Any
 
@@ -180,7 +181,6 @@ class LLMCompilerStateSchema(MessagesState):
             if isinstance(value, str) and value.startswith("${"):
                 # This is a dependency reference like ${task_1} or
                 # ${task_1.result}
-                import re
 
                 match = re.match(r"\\$\\{([^.}]+)(?:\\.([^}]+))?\\}", value)
 

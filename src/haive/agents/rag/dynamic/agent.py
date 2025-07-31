@@ -1,3 +1,5 @@
+import concurrent.futures
+import json
 import logging
 import time
 from typing import Any
@@ -83,7 +85,6 @@ class DynamicRAGAgent(BaseRAGAgent):
             else:
                 # Try to parse from string
                 try:
-                    import json
 
                     selected_sources = json.loads(router_result)
                     if not isinstance(selected_sources, list):
@@ -133,7 +134,6 @@ class DynamicRAGAgent(BaseRAGAgent):
 
         if self.config.enable_parallel_retrieval:
             # Implement parallel retrieval with concurrent.futures or asyncio
-            import concurrent.futures
 
             def retrieve_from_source(source_name) -> Any:
                 try:

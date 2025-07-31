@@ -1,14 +1,15 @@
 """Test the dynamic supervisor v2 with basic setup."""
 
-from haive.core.engine import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from langchain_core.messages import HumanMessage
+import contextlib
+
 from langchain_core.tools import tool
 
 from haive.agents.experiments.supervisor.dynamic_supervisor_v2 import (
     DynamicSupervisorV2,
 )
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
 
 
 # Create basic test tools
@@ -26,7 +27,6 @@ def multiply(a: int, b: int) -> int:
 
 def create_test_agents():
     """Create simple test agents."""
-
     # Math agent with calculation tools
     math_engine = AugLLMConfig(
         name="math_engine",
@@ -52,7 +52,6 @@ def create_test_agents():
 
 def test_basic_setup():
     """Test basic supervisor setup without execution."""
-
     # Create supervisor
     supervisor = DynamicSupervisorV2(
         name="test_supervisor", state_schema=None  # Will use default SupervisorState
@@ -65,22 +64,21 @@ def test_basic_setup():
 
     # Test choice model
     if supervisor.agent_choice_model:
-        options = supervisor.agent_choice_model.option_names
+        pass
     else:
         pass
 
     # Test initial tools (should be minimal)
     if hasattr(supervisor, "engine") and supervisor.engine:
-        tool_names = [getattr(t, "name", "unknown") for t in supervisor.engine.tools]
+        [getattr(t, "name", "unknown") for t in supervisor.engine.tools]
     else:
-        passet")
+        pass
 
     return supervisor
 
 
 def test_agent_addition():
     """Test adding agents to supervisor."""
-
     # Create supervisor
     supervisor = DynamicSupervisorV2(name="test_supervisor")
 
@@ -92,11 +90,11 @@ def test_agent_addition():
     )
 
     # Check registry
-    available = supervisor.agent_registry.list_available()
+    supervisor.agent_registry.list_available()
 
     # Check choice model
     if supervisor.agent_choice_model:
-        options = supervisor.agent_choice_model.option_names
+        pass
 
     supervisor.add_agent(
         "planning_agent",
@@ -105,11 +103,11 @@ def test_agent_addition():
     )
 
     # Check registry again
-    available = supervisor.agent_registry.list_available()
+    supervisor.agent_registry.list_available()
 
     # Check choice model again
     if supervisor.agent_choice_model:
-        options = supervisor.agent_choice_model.option_names
+        pass
 
     # Check tools
     if hasattr(supervisor, "engine") and supervisor.engine:
@@ -137,7 +135,6 @@ def test_agent_addition():
 
 def test_choice_model_validation():
     """Test choice model validation."""
-
     # Create supervisor with agents
     supervisor = DynamicSupervisorV2(name="test_supervisor")
     agents = create_test_agents()
@@ -151,32 +148,23 @@ def test_choice_model_validation():
     if supervisor.agent_choice_model:
         ChoiceModel = supervisor.agent_choice_model.current_model
 
-        try:
-            choice1 = ChoiceModel(choice="math_agent")
-        except Exception as e:
-            pass
+        with contextlib.suppress(Exception):
+            ChoiceModel(choice="math_agent")
 
-        try:
-            choice2 = ChoiceModel(choice="planning_agent")
-        except Exception as e:
-            pass
+        with contextlib.suppress(Exception):
+            ChoiceModel(choice="planning_agent")
 
-        try:
-            choice3 = ChoiceModel(choice="END")
-        except Exception as e:
-            pass
+        with contextlib.suppress(Exception):
+            ChoiceModel(choice="END")
 
-        try:
-            invalid_choice = ChoiceModel(choice="nonexistent_agent")
-        except Exception as e:
-            pass
+        with contextlib.suppress(Exception):
+            ChoiceModel(choice="nonexistent_agent")
 
     return supervisor
 
 
 def test_tool_execution():
     """Test basic tool execution."""
-
     # Create supervisor with agents
     supervisor = DynamicSupervisorV2(name="test_supervisor")
     agents = create_test_agents()
@@ -192,10 +180,8 @@ def test_tool_execution():
                 break
 
         if list_tool:
-            try:
-                result = list_tool.invoke({})
-            except Exception as e:
-                pass
+            with contextlib.suppress(Exception):
+                list_tool.invoke({})
         else:
             pass
 
@@ -204,7 +190,6 @@ def test_tool_execution():
 
 def run_all_tests():
     """Run all tests."""
-
     try:
         # Test 1: Basic setup
         test_basic_setup()
@@ -220,7 +205,7 @@ def run_all_tests():
 
         return supervisor4  # Return the fully configured supervisor
 
-    except Exception as e:
+    except Exception:
         raise
 
 

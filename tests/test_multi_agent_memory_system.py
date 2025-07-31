@@ -8,7 +8,6 @@ from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from haive.core.tools.store_tools import StoreManager
 
 from haive.agents.memory.agentic_rag_coordinator import AgenticRAGCoordinatorConfig
 from haive.agents.memory.core.classifier import MemoryClassifier, MemoryClassifierConfig
@@ -21,6 +20,7 @@ from haive.agents.memory.multi_agent_coordinator import (
     MultiAgentCoordinatorConfig,
     MultiAgentMemoryCoordinator,
 )
+from haive.core.tools.store_tools import StoreManager
 
 
 class TestMemoryTask:
@@ -395,8 +395,6 @@ async def test_multi_agent_integration():
     """Integration test for the complete multi-agent memory system."""
     try:
         # Skip if dependencies not available
-        from haive.core.tools.store_tools import StoreManager
-
         from haive.agents.memory.core.classifier import (
             MemoryClassifier,
             MemoryClassifierConfig,
@@ -405,6 +403,7 @@ async def test_multi_agent_integration():
             MemoryStoreConfig,
             MemoryStoreManager,
         )
+        from haive.core.tools.store_tools import StoreManager
 
         # Create real store manager (in-memory for testing)
         store_manager = StoreManager(

@@ -5,8 +5,6 @@ It provides numerical scores and reasoning for each candidate to guide
 the beam search process.
 """
 
-from typing import List
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
@@ -29,7 +27,7 @@ class SolutionScoring(BaseModel):
     problem_understanding: str = Field(
         description="Brief understanding of what makes a good solution"
     )
-    scored_solutions: List[ScoredSolution] = Field(
+    scored_solutions: list[ScoredSolution] = Field(
         description="List of scored solutions", min_items=1
     )
     ranking_rationale: str = Field(description="Overall explanation of the ranking")
@@ -81,7 +79,7 @@ For each solution:
     async def score_solutions(
         self,
         problem: str,
-        candidates: List[str],
+        candidates: list[str],
         context: str = "",
     ) -> SolutionScoring:
         """Score a list of candidate solutions.
@@ -116,19 +114,18 @@ Evaluate each candidate carefully and provide scores with clear reasoning."""
         # Extract structured output
         if hasattr(result, "output") and isinstance(result.output, SolutionScoring):
             return result.output
-        elif isinstance(result, SolutionScoring):
+        if isinstance(result, SolutionScoring):
             return result
-        else:
-            # Fallback parsing if needed
-            return self._parse_scoring_output(str(result), candidates)
+        # Fallback parsing if needed
+        return self._parse_scoring_output(str(result), candidates)
 
     def _parse_scoring_output(
-        self, output: str, candidates: List[str]
+        self, output: str, candidates: list[str]
     ) -> SolutionScoring:
         """Parse scoring output as fallback."""
         # Simple fallback - assign default scores
         scored_solutions = []
-        for i, candidate in enumerate(candidates):
+        for _i, candidate in enumerate(candidates):
             scored_solutions.append(
                 ScoredSolution(
                     solution=candidate,
@@ -148,10 +145,10 @@ Evaluate each candidate carefully and provide scores with clear reasoning."""
     async def get_best_solutions(
         self,
         problem: str,
-        candidates: List[str],
+        candidates: list[str],
         top_k: int = 3,
         context: str = "",
-    ) -> List[tuple[str, float]]:
+    ) -> list[tuple[str, float]]:
         """Get the top-k best solutions with their scores.
 
         Args:

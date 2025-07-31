@@ -3,14 +3,16 @@
 
 import sys
 
+
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 
 
 def debug_agent_node_v3_output():
     """Show exactly what AgentNodeV3 outputs."""
     try:
-        from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
         from langgraph.types import Command
+
+        from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 
         # Create a mock agent for testing
         class MockAgent:

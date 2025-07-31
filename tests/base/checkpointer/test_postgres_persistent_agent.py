@@ -6,8 +6,9 @@ Save as tests/agents/base/checkpointer/test_postgres_persistent_agent.py
 import logging
 import sys
 import time
-import uuid
 from typing import Any
+import uuid
+
 
 # Set up logging
 logging.basicConfig(
@@ -26,9 +27,9 @@ def print_step(message):
 
 # Check for PostgreSQL dependencies
 try:
-    import psycopg
     from langgraph.checkpoint.memory import MemorySaver
     from langgraph.checkpoint.postgres import PostgresSaver
+    import psycopg
     from psycopg_pool import ConnectionPool
 
     POSTGRES_AVAILABLE = True
@@ -37,6 +38,7 @@ except ImportError:
 
 
 from haive.agents.simple.factory import create_simple_agent
+
 
 # Database connection parameters
 DB_URI = "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
@@ -118,8 +120,7 @@ def test_postgres_connection():
     try:
         with psycopg.connect(DB_URI) as conn, conn.cursor() as cursor:
             cursor.execute("SELECT version()")
-            version = cursor.fetchone()[0]
-            print(f"✅ Connected to PostgreSQL: {version})")
+            cursor.fetchone()[0]
         assert True, "PostgreSQL connection successful"
     except Exception as e:
         raise AssertionError(f"PostgreSQL connection failed: {e}")
@@ -184,11 +185,11 @@ def test_memory_persistence():
             memory_success = False
 
             # Option 1: More messages than first response (retained history)
-            if len(messages2) > len(messages1):
-                memory_success = True
-
-            # Option 2: Name is mentioned in response (context awareness)
-            elif "testuser" in content.lower() or "test user" in content.lower():
+            if (
+                len(messages2) > len(messages1)
+                or "testuser" in content.lower()
+                or "test user" in content.lower()
+            ):
                 memory_success = True
 
             # Assertion
@@ -235,8 +236,7 @@ def test_postgres_persistence():
             cursor.execute(
                 "SELECT column_name FROM information_schema.columns WHERE table_name='threads'"
             )
-            columns = [row[0] for row in cursor.fetchall()]
-            print(f"Threads table columns: {columns}")
+            [row[0] for row in cursor.fetchall()]
 
             # Insert using only the thread_id column
             cursor.execute(
@@ -300,11 +300,7 @@ def test_postgres_persistence():
             memory_success = False
 
             # Option 1: More messages than first response (retained history)
-            if len(messages2) > len(messages1):
-                memory_success = True
-
-            # Option 2: Name is mentioned in response (context awareness)
-            elif (
+            if len(messages2) > len(messages1) or (
                 "postgresuser" in content.lower() or "postgres user" in content.lower()
             ):
                 memory_success = True
@@ -393,11 +389,11 @@ def test_memory_persistence():
             memory_success = False
 
             # Option 1: More messages than first response (retained history)
-            if len(messages2) > len(messages1):
-                memory_success = True
-
-            # Option 2: Name is mentioned in response (context awareness)
-            elif "testuser" in content.lower() or "test user" in content.lower():
+            if (
+                len(messages2) > len(messages1)
+                or "testuser" in content.lower()
+                or "test user" in content.lower()
+            ):
                 memory_success = True
 
             # Assertion

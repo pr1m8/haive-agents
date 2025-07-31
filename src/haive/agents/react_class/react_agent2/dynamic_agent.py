@@ -1,10 +1,9 @@
 # src/haive/agents/react_agent2/dynamic_agent.py
 
 """Dynamic React Agent - an extension of React agent with tool selection capabilities."""
+
 import logging
 import uuid
-
-# Set up logging
 from typing import Any
 
 from agents.react_agent2.agent2 import ReactAgent
@@ -14,13 +13,18 @@ from haive.core.engine.agent.agent import register_agent
 from haive.core.graph.branches import Branch
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from haive.core.models.vectorstore.base import VectorStoreConfig
+from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool
+from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_openai import AzureOpenAIEmbeddings, OpenAIEmbeddings
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END
 from pydantic import BaseModel, Field
+
+# Set up logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -346,7 +350,6 @@ class DynamicReactAgent(ReactAgent):
                     )
 
                 # Create a new in-memory vector store with the embeddings
-                from langchain_community.vectorstores import Chroma
 
                 self._vector_store = Chroma.from_documents(
                     documents=tool_documents,
@@ -369,8 +372,6 @@ class DynamicReactAgent(ReactAgent):
 
     def _initialize_in_memory_vector_store(self, tool_documents: list[Document]):
         """Initialize an in-memory vector store with the tool documents."""
-        from langchain_core.vectorstores import InMemoryVectorStore
-
         # Create embeddings if needed
         if not self.embeddings:
             self.embeddings = OpenAIEmbeddings()

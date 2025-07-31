@@ -18,6 +18,8 @@ Each prompt is designed for a specific task in the research workflow:
 """
 
 # System prompts for different components
+
+
 MAIN_SYSTEM_PROMPT = """
 You are an advanced research agent capable of performing in-depth research on any topic. Your goal is to gather information, analyze it critically, and generate comprehensive research reports.
 

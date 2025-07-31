@@ -4,7 +4,7 @@ import logging
 import traceback
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -40,8 +40,6 @@ try:
     structured_react.compile()
 
     result = structured_react.run({"messages": [HumanMessage(content="Hello")]})
-
-    from langchain_core.messages import ToolMessage
 
     # Try with a ToolMessage to see if that's the issue
     tool_msg = ToolMessage(content="8", name="add", tool_call_id="test_call_123")

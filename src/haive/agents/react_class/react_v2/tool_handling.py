@@ -4,7 +4,7 @@ import logging
 from typing import Any
 
 from langchain_core.messages import AIMessage, ToolMessage
-from langchain_core.tools import BaseTool
+from langchain_core.tools import BaseTool, Tool
 from langgraph.prebuilt.tool_node import ToolNode as LangGraphToolNode
 from langgraph.types import Command
 
@@ -152,8 +152,6 @@ def human_input_node(state: dict[str, Any]) -> Command:
     Returns:
         Command to interrupt the graph and wait for human input
     """
-    from langgraph.types import Command
-
     # Get the human request message
     human_request = state.get("human_request", "The assistant needs your input.")
 
@@ -176,7 +174,6 @@ def create_human_assistance_tool(name: str = "request_human_assistance") -> Base
     Returns:
         A BaseTool that can be added to the agent's toolkit
     """
-    from langchain_core.tools import Tool
 
     def _request_human_assistance(query: str) -> str:
         """Request assistance from a human.

@@ -1,10 +1,10 @@
 """Simple Plan and Execute Agent - clean and proper."""
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from langgraph.graph import END, START
 
 from haive.agents.multi.clean import MultiAgent
-
-# Import existing models, prompts, and state
 from haive.agents.planning.plan_and_execute.v2.models import Act, ExecutionResult, Plan
 from haive.agents.planning.plan_and_execute.v2.prompts import (
     EXECUTOR_PROMPT,
@@ -15,6 +15,8 @@ from haive.agents.planning.plan_and_execute.v2.prompts import (
 )
 from haive.agents.planning.plan_and_execute.v2.state import PlanAndExecuteState
 from haive.agents.simple.agent import SimpleAgent
+
+# Import existing models, prompts, and state
 
 
 class PlanAndExecuteAgent(MultiAgent):
@@ -68,8 +70,6 @@ class PlanAndExecuteAgent(MultiAgent):
 
     def build_graph(self) -> Any:
         """Build the plan-execute-replan graph using BaseGraph."""
-        from haive.core.graph.state_graph.base_graph2 import BaseGraph
-
         # Create BaseGraph with state schema
         graph = BaseGraph(
             name=f"{
@@ -82,7 +82,6 @@ class PlanAndExecuteAgent(MultiAgent):
             graph.add_node(agent_name, agent)
 
         # Plan and Execute flow
-        from langgraph.graph import END, START
 
         graph.add_edge(START, "planner")
         graph.add_edge("planner", "executor")

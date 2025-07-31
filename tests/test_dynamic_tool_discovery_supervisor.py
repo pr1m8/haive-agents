@@ -3,10 +3,9 @@
 import os
 import tempfile
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
+import pytest
 
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
@@ -14,6 +13,7 @@ from haive.agents.supervisor.dynamic_tool_discovery_supervisor import (
     DynamicToolDiscoverySupervisor,
     ToolDiscoveryMode,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestDynamicToolDiscoverySupervisor:

@@ -2,8 +2,9 @@
 """Debug the failing tests to understand the issues."""
 
 import logging
-import sys
 from pathlib import Path
+import sys
+
 
 # Suppress all logging output
 logging.getLogger().setLevel(logging.CRITICAL)
@@ -12,18 +13,18 @@ logging.getLogger().setLevel(logging.CRITICAL)
 project_root = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
+from langchain_core.documents import Document
+
+from haive.agents.document_processing import (
+    DocumentProcessingAgent,
+    DocumentProcessingConfig,
+)
 from haive.core.schema.prebuilt.query_state import (
     QueryComplexity,
     QueryIntent,
     QueryState,
     QueryType,
     RetrievalStrategy,
-)
-from langchain_core.documents import Document
-
-from haive.agents.document_processing import (
-    DocumentProcessingAgent,
-    DocumentProcessingConfig,
 )
 
 

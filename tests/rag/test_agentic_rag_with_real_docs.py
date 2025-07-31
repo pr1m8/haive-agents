@@ -3,11 +3,10 @@
 import asyncio
 import sys
 
+
 sys.path.insert(0, "packages/haive-agents/src")
 sys.path.insert(0, "packages/haive-core/src")
 
-from haive.core.engine.vectorstore import VectorStoreConfig
-from haive.core.models.embeddings import BaseEmbeddingConfig as EmbeddingConfig
 from langchain_core.documents import Document
 
 from haive.agents.rag.agentic import (
@@ -16,6 +15,9 @@ from haive.agents.rag.agentic import (
     QueryRewriterAgent,
     ReactRAGAgent,
 )
+from haive.core.engine.vectorstore import VectorStoreConfig
+from haive.core.models.embeddings import BaseEmbeddingConfig as EmbeddingConfig
+
 
 # Sample real documents for testing
 SAMPLE_DOCUMENTS = [

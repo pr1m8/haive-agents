@@ -5,8 +5,6 @@ schema flattening, maintaining type safety and hierarchical access.
 """
 
 import logging
-
-# abstractmethod removed - not needed
 from collections.abc import Callable
 from enum import Enum
 from typing import (
@@ -21,6 +19,9 @@ from langgraph.graph import END, START
 from pydantic import Field, model_validator
 
 from haive.agents.base.agent import Agent
+
+# abstractmethod removed - not needed
+
 
 logger = logging.getLogger(__name__)
 

@@ -1,10 +1,10 @@
 """Tests for QueryRewriterAgent - real component testing, no mocks."""
 
 import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.rag.agentic import QueryRewriterAgent
 from haive.agents.rag.common.query_refinement.models import QueryRefinementResponse
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class TestQueryRewriterAgent:

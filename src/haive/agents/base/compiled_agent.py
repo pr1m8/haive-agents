@@ -13,15 +13,17 @@ from typing import Any, Literal
 
 from haive.core.engine.base import Engine, EngineType
 from haive.core.graph.state_graph.compiled_state_graph import CompiledStateGraph
+from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.tools import BaseTool
 from pydantic import Field, model_validator
 
-# Import mixins for compatibility
 from haive.agents.base.mixins.execution_mixin import ExecutionMixin
 from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
+
+# Import mixins for compatibility
 
 logger = logging.getLogger(__name__)
 
@@ -100,8 +102,8 @@ class CompiledAgent(
         Agents must have an LLM engine for reasoning. This validator ensures
         that the agent is properly configured with reasoning capabilities.
         """
-        if not self.engine:
-            if not self.engines:
+        if not cls.engine:
+            if not cls.engines:
                 raise ValueError(
                     "Agents must have at least one engine. "
                     "Provide either 'engine' or 'engines' parameter."
@@ -109,22 +111,22 @@ class CompiledAgent(
             # If no primary engine, try to find an LLM engine in engines dict
             llm_engines = [
                 eng
-                for eng in self.engines.values()
+                for eng in cls.engines.values()
                 if hasattr(eng, "engine_type") and eng.engine_type == EngineType.LLM
             ]
             if llm_engines:
-                self.engine = llm_engines[0]
+                cls.engine = llm_engines[0]
             else:
                 logger.warning(
-                    f"Agent {self.name} has no LLM engine. "
+                    f"Agent {cls.name} has no LLM engine. "
                     "Agents should have reasoning capabilities."
                 )
 
         # Set up schemas if requested
-        if self.set_schema:
-            self._setup_schemas()
+        if cls.set_schema:
+            cls._setup_schemas()
 
-        return self
+        return cls
 
     def _setup_schemas(self) -> None:
         """Generate schemas from available engines.
@@ -149,7 +151,6 @@ class CompiledAgent(
                 )
             else:
                 logger.debug("No engines found, using basic state schema")
-                from haive.core.schema.prebuilt.messages_state import MessagesState
 
                 self.state_schema = MessagesState
 

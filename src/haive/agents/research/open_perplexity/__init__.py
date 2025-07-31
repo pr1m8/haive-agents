@@ -1,5 +1,8 @@
 """Module exports."""
 
+import decorator
+import vectorstore
+
 from haive.agents.research.open_perplexity.agent import ResearchAgent
 from haive.agents.research.open_perplexity.cli import (
     main,

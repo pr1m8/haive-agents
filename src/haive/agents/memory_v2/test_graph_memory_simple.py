@@ -6,11 +6,23 @@ without needing a running Neo4j instance.
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
+from langchain_experimental.graph_transformers import LLMGraphTransformer
 
+from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
+from haive.agents.document_modifiers.kg.kg_map_merge.models import (
+    EntityNode,
+    EntityRelationship,
+    KnowledgeGraph,
+)
 from haive.agents.memory_v2.graph_memory_agent import (
     GraphMemoryAgent,
     GraphMemoryConfig,
     GraphMemoryMode,
+)
+from haive.agents.rag.db_rag.graph_db.agent import GraphDBRAGAgent
+from haive.agents.rag.db_rag.graph_db.config import (
+    GraphDBConfig,
+    GraphDBRAGConfig,
 )
 
 
@@ -78,14 +90,6 @@ def test_graph_transformer_integration():
     print("🔄 Testing graph transformer imports...")
 
     try:
-        from langchain_experimental.graph_transformers import LLMGraphTransformer
-
-        from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
-        from haive.agents.document_modifiers.kg.kg_map_merge.models import (
-            EntityNode,
-            EntityRelationship,
-            KnowledgeGraph,
-        )
 
         print("✅ All graph transformer imports successful:")
         print(f"  - Haive GraphTransformer: {GraphTransformer.__name__}")
@@ -108,11 +112,6 @@ def test_graph_db_rag_integration():
     print("🔍 Testing GraphDB RAG integration...")
 
     try:
-        from haive.agents.rag.db_rag.graph_db.agent import GraphDBRAGAgent
-        from haive.agents.rag.db_rag.graph_db.config import (
-            GraphDBConfig,
-            GraphDBRAGConfig,
-        )
 
         print("✅ GraphDB RAG imports successful:")
         print(f"  - GraphDBRAGAgent: {GraphDBRAGAgent.__name__}")

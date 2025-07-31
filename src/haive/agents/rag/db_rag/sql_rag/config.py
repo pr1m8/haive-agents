@@ -204,7 +204,7 @@ class SQLDatabaseConfig(BaseModel):
                 self.db_host}:{
                 self.db_port}/{
                     self.db_name}"
-        raise ValueError(f"Unsupported database type: {self.db_type}")
+        raise TypeError(f"Unsupported database type: {self.db_type}")
 
     def get_sql_db(self) -> SQLDatabase | None:
         """Create and return a SQLDatabase object for interacting with the database.

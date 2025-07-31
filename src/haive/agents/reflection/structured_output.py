@@ -5,7 +5,8 @@ combined with a post-processing hook pattern for extracting results.
 """
 
 import asyncio
-from typing import Any, Dict, Optional, Type, TypeVar
+import json
+from typing import Any, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -20,8 +21,8 @@ T = TypeVar("T", bound=BaseModel)
 
 
 def extract_structured_output(
-    agent_result: Dict[str, Any], model_class: Type[T]
-) -> Optional[T]:
+    agent_result: dict[str, Any], model_class: type[T]
+) -> T | None:
     """Generic post-processing hook to extract structured output from agent results.
 
     Args:
@@ -45,7 +46,6 @@ def extract_structured_output(
                 if isinstance(tool_call, dict):
                     # Check if this tool call matches our model
                     if tool_call.get("name") == model_class.__name__:
-                        import json
 
                         # Extract and parse the arguments
                         args = tool_call.get("args", {})
@@ -80,7 +80,7 @@ class StructuredReflectionAgent:
     def __init__(
         self,
         name: str = "reflection_agent",
-        system_prompt: Optional[str] = None,
+        system_prompt: str | None = None,
         temperature: float = 0.3,
     ):
         """Initialize the structured reflection agent.
@@ -131,7 +131,7 @@ Provide a comprehensive reflection on the quality, accuracy, and completeness of
             ),
         )
 
-    async def reflect(self, query: str, response: str) -> Optional[ReflectionResult]:
+    async def reflect(self, query: str, response: str) -> ReflectionResult | None:
         """Perform reflection analysis on a response.
 
         Args:
@@ -256,7 +256,7 @@ class ReflectionLoop:
         self.max_iterations = max_iterations
         self.quality_threshold = quality_threshold
 
-    async def iterate(self, query: str, initial_response: str) -> Dict[str, Any]:
+    async def iterate(self, query: str, initial_response: str) -> dict[str, Any]:
         """Run iterative reflection and improvement.
 
         Args:
@@ -349,8 +349,6 @@ def create_reflection_loop(
 # Example usage functions
 async def example_basic_reflection():
     """Example: Basic response reflection with structured analysis."""
-    print("\n=== Basic Reflection Example ===\n")
-
     # Create reflection agent
     reflector = create_reflection_agent()
 
@@ -362,42 +360,28 @@ async def example_basic_reflection():
     This makes it good for solving complex problems.
     """
 
-    print(f"Query: {query}")
-    print(f"Response: {response}")
-
     # Run reflection analysis
     reflection = await reflector.reflect(query, response)
 
     if reflection:
-        print("\n✅ Reflection Analysis:")
-        print(f"Summary: {reflection.summary}")
-        print(f"Overall Quality: {reflection.critique.overall_quality:.2f}")
-        print(f"Needs Revision: {reflection.critique.needs_revision}")
-        print(f"Confidence: {reflection.confidence:.2f}")
 
-        print("\nStrengths:")
-        for strength in reflection.critique.strengths:
-            print(f"  • {strength}")
+        for _strength in reflection.critique.strengths:
+            pass
 
-        print("\nWeaknesses:")
-        for weakness in reflection.critique.weaknesses:
-            print(f"  • {weakness}")
+        for _weakness in reflection.critique.weaknesses:
+            pass
 
-        print("\nSuggestions:")
-        for suggestion in reflection.critique.suggestions:
-            print(f"  • {suggestion}")
+        for _suggestion in reflection.critique.suggestions:
+            pass
 
-        print("\nAction Items:")
-        for action in reflection.action_items:
-            print(f"  • {action}")
+        for _action in reflection.action_items:
+            pass
     else:
-        print("❌ Failed to extract reflection analysis")
+        pass
 
 
 async def example_reflection_with_improvement():
     """Example: Full reflection loop with improvement."""
-    print("\n\n=== Reflection + Improvement Example ===\n")
-
     # Create agents
     reflector = create_reflection_agent()
     improver = create_improvement_agent()
@@ -409,54 +393,34 @@ async def example_reflection_with_improvement():
     like solar and wind that don't run out. It's clean and helps reduce pollution.
     """
 
-    print(f"Query: {query}")
-    print(f"Original Response: {original_response}")
-
     # Step 1: Reflect on original response
     reflection = await reflector.reflect(query, original_response)
 
     if reflection:
-        print("\n📊 Reflection Analysis:")
-        print(f"Quality Score: {reflection.critique.overall_quality:.2f}")
-        print(f"Needs Revision: {reflection.critique.needs_revision}")
 
         # Step 2: Apply improvements if needed
         if reflection.critique.needs_revision:
-            print("\n🔧 Applying improvements...")
 
             improved_response = await improver.improve(
                 query, original_response, reflection
             )
 
-            print("\n✨ Improved Response:")
-            print(improved_response)
-
             # Optional: Reflect on the improvement
-            print("\n🔍 Re-analyzing improved response...")
 
             second_reflection = await reflector.reflect(query, improved_response)
 
             if second_reflection:
-                print(
-                    f"New Quality Score: {second_reflection.critique.overall_quality:.2f}"
-                )
-                print(
-                    f"Still Needs Revision: {second_reflection.critique.needs_revision}"
-                )
 
-                improvement = (
+                (
                     second_reflection.critique.overall_quality
                     - reflection.critique.overall_quality
                 )
-                print(f"Quality Improvement: {improvement:+.2f}")
         else:
-            print("\n✅ No revision needed - original response is good!")
+            pass
 
 
 async def example_iterative_reflection():
     """Example: Iterative reflection until quality threshold is met."""
-    print("\n\n=== Iterative Reflection Example ===\n")
-
     # Create reflection loop
     loop = create_reflection_loop(max_iterations=3, quality_threshold=0.8)
 
@@ -464,22 +428,8 @@ async def example_iterative_reflection():
     query = "Explain machine learning algorithms"
     initial_response = "Machine learning is when computers learn from data."
 
-    print(f"Query: {query}")
-    print(f"Starting Response: {initial_response}")
-    print(f"Target Quality: {loop.quality_threshold}")
-    print(f"Max Iterations: {loop.max_iterations}")
-
     # Run iterative improvement
-    result = await loop.iterate(query, initial_response)
-
-    print("\n📈 Final Results:")
-    print(f"Iterations completed: {result['iterations']}")
-    print(
-        f"Quality progression: {' → '.join(f'{q:.2f}' for q in result['quality_scores'])}"
-    )
-    print(f"Improved: {result['improved']}")
-    print("\nFinal Response:")
-    print(result["final_response"])
+    await loop.iterate(query, initial_response)
 
 
 async def main():

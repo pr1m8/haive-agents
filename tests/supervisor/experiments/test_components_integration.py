@@ -1,8 +1,9 @@
 """Test integration of Components 2 and 3."""
 
 import asyncio
-import sys
 from pathlib import Path
+import sys
+
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))

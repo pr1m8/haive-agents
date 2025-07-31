@@ -3,6 +3,17 @@
 import asyncio
 import os
 
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import DeepSeekLLMConfig
+
+from haive.agents.memory_v2.memory_state_original import (
+    EnhancedMemoryItem,
+    ImportanceLevel,
+    MemoryState,
+    MemoryType,
+)
+from haive.agents.simple import SimpleAgent
+
 # Set up DeepSeek API key
 if not os.getenv("DEEPSEEK_API_KEY"):
     print("Setting test DeepSeek API key...")
@@ -14,8 +25,6 @@ async def test_deepseek_setup():
     print("\n=== Testing DeepSeek Configuration ===\n")
 
     # Import DeepSeek config
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from haive.core.models.llm.base import DeepSeekLLMConfig
 
     # Create DeepSeek config
     deepseek_config = DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
@@ -24,7 +33,6 @@ async def test_deepseek_setup():
     # Create AugLLMConfig
     aug_config = AugLLMConfig(
         llm_config=deepseek_config, system_message="You are a helpful memory assistant."
-    )
     print("✅ Created AugLLMConfig with DeepSeek")
 
     return aug_config
@@ -37,7 +45,6 @@ async def test_simple_agent_with_deepseek():
     aug_config = await test_deepseek_setup()
 
     # Import SimpleAgent
-    from haive.agents.simple import SimpleAgent
 
     # Create agent
     agent = SimpleAgent(name="test_deepseek", engine=aug_config)
@@ -64,12 +71,6 @@ async def test_memory_with_deepseek():
     print("\n=== Testing Memory Integration with DeepSeek ===\n")
 
     # Import memory components that work
-    from haive.agents.memory_v2.memory_state_original import (
-        EnhancedMemoryItem,
-        ImportanceLevel,
-        MemoryState,
-        MemoryType,
-    )
 
     # Create memory state
     memory_state = MemoryState(user_id="test_user")
@@ -114,16 +115,8 @@ async def test_custom_memory_agent():
     """Test a custom memory-aware agent with DeepSeek."""
     print("\n=== Testing Custom Memory Agent ===\n")
 
-    from haive.core.engine.aug_llm import AugLLMConfig
-    from haive.core.models.llm.base import DeepSeekLLMConfig
 
-    from haive.agents.memory_v2.memory_state_original import (
-        EnhancedMemoryItem,
-        ImportanceLevel,
-        MemoryState,
-        MemoryType,
     )
-    from haive.agents.simple import SimpleAgent
 
     class MemoryAgent(SimpleAgent):
         """Simple agent with memory capabilities."""

@@ -17,14 +17,11 @@ Test Categories:
 """
 
 import asyncio
-from typing import List
 from unittest.mock import MagicMock
 
-import pytest
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.vectorstore import VectorStoreConfig
 from langchain_core.documents import Document
 from pydantic import BaseModel, Field
+import pytest
 
 from haive.agents.rag.simple.enhanced_v3 import (
     RetrieverAgent,
@@ -32,11 +29,13 @@ from haive.agents.rag.simple.enhanced_v3 import (
     SimpleRAGState,
     SimpleRAGV3,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.vectorstore import VectorStoreConfig
 
 
 # Test fixtures and sample data
 @pytest.fixture
-def sample_documents() -> List[Document]:
+def sample_documents() -> list[Document]:
     """Sample documents for testing."""
     return [
         Document(
@@ -83,7 +82,7 @@ def structured_output_model():
 
     class QAResponse(BaseModel):
         answer: str = Field(..., description="The generated answer")
-        sources: List[str] = Field(
+        sources: list[str] = Field(
             default_factory=list, description="Source references"
         )
         confidence: float = Field(
@@ -241,7 +240,6 @@ class TestSimpleRAGV3FactoryMethods:
         """Test from_documents factory method with real components."""
         # This would require real embedding configuration
         # Placeholder for future integration tests
-        pass
 
 
 class TestSimpleRAGV3AgentInteraction:
@@ -468,7 +466,6 @@ class TestSimpleRAGV3Integration:
         """Test full RAG pipeline with real components."""
         # This would be a full integration test with real LLM and vector store
         # Placeholder for future implementation when we have proper test infrastructure
-        pass
 
     def test_repr_and_string_representation(
         self, mock_vector_store_config, test_llm_config

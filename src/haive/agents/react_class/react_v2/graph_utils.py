@@ -6,6 +6,11 @@ from collections.abc import Callable
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.tools import BaseTool
 
+from haive.agents.react_class.react_v2.tool_handling import (
+    GeneralizedToolNode,
+    human_input_node,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -54,10 +59,6 @@ class ReactGraphBuilder(DynamicGraph):
         Returns:
             Self for chaining
         """
-        from haive.agents.react_class.react_v2.tool_handling import (
-            GeneralizedToolNode,
-            human_input_node,
-        )
 
         # Create the generalized tool node
         tool_node = GeneralizedToolNode(tools, parallel=parallel_tools)

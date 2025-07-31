@@ -1,5 +1,6 @@
 # examples/tot_agent_example.py
 
+import argparse
 import os
 import sys
 from typing import Any
@@ -81,7 +82,6 @@ def run_math_example():
 
 
 if __name__ == "__main__":
-    import argparse
 
     parser = argparse.ArgumentParser(description="Run Tree of Thoughts agent examples")
     parser.add_argument(

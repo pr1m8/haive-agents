@@ -3,6 +3,7 @@ Tests for ToolStep - Tool validation and execution.
 """
 
 import contextlib
+from typing import Any
 
 import pytest
 from langchain_core.tools import tool
@@ -49,7 +50,7 @@ class TestToolStep:
     """Test suite for ToolStep functionality."""
 
     @pytest.fixture
-    def available_tools(self) -> List[Any]:
+    def available_tools(self) -> list[Any]:
         """Fixture providing test tools."""
         return [calculator, text_analyzer, file_reader]
 
@@ -254,7 +255,7 @@ class TestToolStepFactories:
     """Test factory functions for ToolStep."""
 
     @pytest.fixture
-    def available_tools(self) -> List[Any]:
+    def available_tools(self) -> list[Any]:
         return [calculator, text_analyzer, file_reader]
 
     def test_create_tool_steps_from_plan(self, available_tools) -> None:
@@ -321,7 +322,7 @@ class TestToolStepIntegration:
     """Test ToolStep integration with ExecutionPlan."""
 
     @pytest.fixture
-    def available_tools(self) -> List[Any]:
+    def available_tools(self) -> list[Any]:
         return [calculator, text_analyzer, file_reader]
 
     def test_tool_steps_in_execution_plan(self, available_tools) -> None:

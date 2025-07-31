@@ -16,6 +16,7 @@ Implementation Notes:
 - Proper Pydantic patterns throughout
 """
 
+import asyncio
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -302,7 +303,6 @@ class DynamicActivationSupervisor(Agent[DynamicActivationState]):
             """Discover components that match a query."""
             if self._discovery_agent:
                 # Use discovery agent if available
-                import asyncio
 
                 try:
                     loop = asyncio.get_event_loop()

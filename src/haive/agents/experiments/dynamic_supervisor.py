@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field, computed_field
 
 from haive.agents.base.agent import Agent
 from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 
@@ -497,7 +498,6 @@ def create_test_registry() -> AgentRegistry:
     registry = AgentRegistry()
 
     # We'll use SimpleAgent as a base for testing
-    from haive.agents.simple.agent import SimpleAgent
 
     registry.register(
         name="research_agent",
@@ -543,7 +543,6 @@ def test_dynamic_tools() -> Any:
     list_tool.invoke({})
 
     # Test adding a new agent dynamically
-    from haive.agents.simple.agent import SimpleAgent
 
     supervisor.add_agent_to_registry(
         name="calculator_agent",

@@ -6,10 +6,26 @@ concerns from the main Agent class while ensuring proper serialization.
 """
 
 import logging
+import os
+import uuid
 from typing import Any
 
-from haive.core.persistence.types import CheckpointerMode
+from haive.core.engine.agent.config import POSTGRES_AVAILABLE
+from haive.core.persistence.handlers import setup_async_checkpointer, setup_checkpointer
+from haive.core.persistence.memory import MemoryCheckpointerConfig
+from haive.core.persistence.postgres_config import (
+    PostgresCheckpointerConfig,
+)
+from haive.core.persistence.store.factory import create_store
+from haive.core.persistence.store.types import StoreType
+from haive.core.persistence.types import (
+    CheckpointerMode,
+    CheckpointStorageMode,
+)
 from langchain_core.runnables import RunnableConfig
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.store.base import BaseStore
+from langgraph.store.memory import InMemoryStore
 
 logger = logging.getLogger(__name__)
 
@@ -64,13 +80,11 @@ class PersistenceMixin:
                         'Agent')} (persistence=None)"
             )
             try:
-                from haive.core.persistence.memory import MemoryCheckpointerConfig
 
                 self.persistence = MemoryCheckpointerConfig()
             except ImportError:
                 logger.warning(
                     "Could not import MemoryCheckpointerConfig, persistence disabled"
-                )
                 self.checkpointer = None
                 self.store = None
                 return
@@ -103,7 +117,6 @@ class PersistenceMixin:
             if hasattr(mode, "value"):
                 self.checkpoint_mode = (
                     "async" if mode == CheckpointerMode.ASYNC else "sync"
-                )
             else:
                 self.checkpoint_mode = "async" if mode == "async" else "sync"
 
@@ -144,17 +157,10 @@ class PersistenceMixin:
 
         # Try to set up default PostgreSQL persistence
         try:
-            from haive.core.engine.agent.config import POSTGRES_AVAILABLE
 
             if POSTGRES_AVAILABLE:
-                import os
 
-                from haive.core.persistence.postgres_config import (
-                    PostgresCheckpointerConfig,
                 )
-                from haive.core.persistence.types import (
-                    CheckpointerMode,
-                    CheckpointStorageMode,
                 )
 
                 # Check for connection string from environment
@@ -204,7 +210,6 @@ class PersistenceMixin:
                         f"Set up default PostgreSQL persistence for {app_name} (prepared statements disabled)"
                     )
             else:
-                from haive.core.persistence.memory import MemoryCheckpointerConfig
 
                 self.persistence = MemoryCheckpointerConfig()
                 logger.debug(
@@ -217,7 +222,6 @@ class PersistenceMixin:
             logger.warning(f"Failed to set up default persistence: {e}")
             # Fallback to memory
             try:
-                from haive.core.persistence.memory import MemoryCheckpointerConfig
 
                 self.persistence = MemoryCheckpointerConfig()
                 logger.debug(
@@ -242,7 +246,6 @@ class PersistenceMixin:
             return
 
         try:
-            from haive.core.persistence.handlers import setup_checkpointer
 
             # Create a minimal config-like object for the handler
             class PersistenceConfig:
@@ -265,7 +268,6 @@ class PersistenceMixin:
             logger.exception(f"Failed to set up checkpointer: {e}")
             # Set up memory fallback
             try:
-                from langgraph.checkpoint.memory import MemorySaver
 
                 self.checkpointer = MemorySaver()
                 logger.debug("Using MemorySaver fallback")
@@ -320,8 +322,6 @@ class PersistenceMixin:
             ):
                 # Try to use PostgreSQL store if available
                 try:
-                    from haive.core.persistence.store.factory import create_store
-                    from haive.core.persistence.store.types import StoreType
 
                     # Get connection info from persistence config if available
                     if hasattr(self, "persistence") and hasattr(
@@ -346,7 +346,6 @@ class PersistenceMixin:
                         )
                     else:
                         # Fall back to memory store if no connection info
-                        from langgraph.store.memory import InMemoryStore
 
                         self.store = InMemoryStore()
                         logger.debug(
@@ -355,26 +354,22 @@ class PersistenceMixin:
 
                 except ImportError:
                     # PostgreSQL store not available, use memory store
-                    from langgraph.store.memory import InMemoryStore
 
                     self.store = InMemoryStore()
                     logger.debug("InMemoryStore added (PostgreSQL store not available)")
                 except Exception as e:
                     logger.warning(f"Failed to create PostgreSQL store: {e}")
-                    from langgraph.store.memory import InMemoryStore
 
                     self.store = InMemoryStore()
                     logger.debug("InMemoryStore added (fallback from PostgreSQL error)")
             else:
                 # Use InMemoryStore for other checkpointer types
-                from langgraph.store.memory import InMemoryStore
 
                 self.store = InMemoryStore()
                 logger.debug("InMemoryStore added")
 
         except ImportError:
             try:
-                from langgraph.store.base import BaseStore
 
                 self.store = BaseStore()
                 logger.debug("BaseStore added")
@@ -396,7 +391,6 @@ class PersistenceMixin:
             return
 
         try:
-            from haive.core.persistence.handlers import setup_async_checkpointer
 
             # Create a minimal config-like object for the handler
             class PersistenceConfig:
@@ -487,7 +481,6 @@ class PersistenceMixin:
         For cases where you need consistent thread IDs (e.g., resuming conversations),
         explicitly pass a thread_id to the run() method.
         """
-        import uuid
 
         # Generate a unique UUID for this agent instance
         unique_id = str(uuid.uuid4())

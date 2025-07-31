@@ -2,10 +2,9 @@
 
 import asyncio
 
+from haive.agents.simple import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
-
-from haive.agents.simple import SimpleAgent
 
 
 async def main():

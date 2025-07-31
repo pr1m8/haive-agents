@@ -6,6 +6,7 @@ the BaseConversationAgent class and implementing core conversation patterns.
 """
 
 import asyncio
+import logging
 import operator
 from typing import Any
 

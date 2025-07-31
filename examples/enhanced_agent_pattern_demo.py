@@ -10,7 +10,7 @@ This example demonstrates:
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, Generic, List, TypeVar
+from typing import Any, Generic, TypeVar
 
 # ========================================================================
 # MOCK ENGINE TYPES (in real code, import from haive.core.engine)
@@ -19,8 +19,6 @@ from typing import Any, Dict, Generic, List, TypeVar
 
 class Engine:
     """Base engine type."""
-
-    pass
 
 
 class AugLLMConfig(Engine):
@@ -47,7 +45,7 @@ class ReasoningEngine(Engine):
 class MultiModalEngine(Engine):
     """Engine that handles text, images, audio."""
 
-    def __init__(self, modalities: List[str]):
+    def __init__(self, modalities: list[str]):
         self.modalities = modalities
 
 
@@ -69,7 +67,6 @@ class Workflow(ABC):
     @abstractmethod
     async def execute(self, input_data: Any) -> Any:
         """Execute the workflow logic."""
-        pass
 
 
 class Agent(Workflow, Generic[EngineT]):
@@ -87,7 +84,7 @@ class Agent(Workflow, Generic[EngineT]):
     def __init__(self, name: str, engine: EngineT):
         self.name = name
         self.engine = engine
-        self.history: List[Dict[str, Any]] = []
+        self.history: list[dict[str, Any]] = []
 
     async def execute(self, input_data: Any) -> Any:
         """Execute using the engine."""
@@ -126,8 +123,6 @@ class SimpleAgent(Agent[AugLLMConfig]):
     and the engine type.
     """
 
-    pass
-
 
 class RAGAgent(Agent[RetrieverEngine]):
     """RAGAgent is just Agent[RetrieverEngine].
@@ -135,7 +130,7 @@ class RAGAgent(Agent[RetrieverEngine]):
     The RetrieverEngine type provides retrieval capabilities.
     """
 
-    async def retrieve(self, query: str) -> List[str]:
+    async def retrieve(self, query: str) -> list[str]:
         """Retrieve relevant documents - available because engine is RetrieverEngine."""
         # Type-safe access to retriever-specific features
         return [f"Retrieved from {self.engine.index_name}: Doc about {query}"]
@@ -161,7 +156,7 @@ class MultiModalAgent(Agent[MultiModalEngine]):
     Handles multiple modalities based on engine capabilities.
     """
 
-    def supported_modalities(self) -> List[str]:
+    def supported_modalities(self) -> list[str]:
         """Get supported modalities from engine."""
         return self.engine.modalities
 
@@ -186,7 +181,7 @@ class MultiAgent(Agent[AugLLMConfig]):
     an LLM to coordinate. The agents it coordinates can be any type.
     """
 
-    def __init__(self, name: str, engine: AugLLMConfig, agents: Dict[str, Agent[Any]]):
+    def __init__(self, name: str, engine: AugLLMConfig, agents: dict[str, Agent[Any]]):
         super().__init__(name, engine)
         self.agents = agents
 
@@ -202,7 +197,7 @@ class MultiAgent(Agent[AugLLMConfig]):
 
         return {"coordinator": self.name, "decision": decision, "results": results}
 
-    def list_agents(self) -> List[AgentRef]:
+    def list_agents(self) -> list[AgentRef]:
         """List all coordinated agents with their types."""
         return [
             AgentRef(name=name, agent_type=repr(agent))
@@ -217,76 +212,40 @@ class MultiAgent(Agent[AugLLMConfig]):
 
 async def main():
     """Demonstrate the enhanced agent pattern."""
-
-    print("🚀 Enhanced Agent Pattern Demo\n")
-    print("=" * 60)
-
     # 1. SimpleAgent = Agent[AugLLMConfig]
-    print("\n1. SimpleAgent (Agent[AugLLMConfig]):")
     simple = SimpleAgent(name="assistant", engine=AugLLMConfig(temperature=0.7))
-    print(f"   Created: {simple}")
     result = await simple.execute("Hello world")
-    print(f"   Result: {result}")
 
     # 2. RAGAgent = Agent[RetrieverEngine]
-    print("\n2. RAGAgent (Agent[RetrieverEngine]):")
     rag = RAGAgent(
         name="researcher", engine=RetrieverEngine(index_name="knowledge_base")
     )
-    print(f"   Created: {rag}")
-    docs = await rag.retrieve("Python programming")
-    print(f"   Retrieved: {docs}")
+    await rag.retrieve("Python programming")
     result = await rag.execute("Find information about Python")
-    print(f"   Result: {result}")
 
     # 3. ReasoningAgent = Agent[ReasoningEngine]
-    print("\n3. ReasoningAgent (Agent[ReasoningEngine]):")
     reasoner = ReasoningAgent(name="thinker", engine=ReasoningEngine(max_iterations=3))
-    print(f"   Created: {reasoner}")
-    reasoning = await reasoner.reason("How to solve world hunger")
-    print(f"   Reasoning: {reasoning}")
+    await reasoner.reason("How to solve world hunger")
 
     # 4. MultiModalAgent = Agent[MultiModalEngine]
-    print("\n4. MultiModalAgent (Agent[MultiModalEngine]):")
-    multimodal = MultiModalAgent(
+    MultiModalAgent(
         name="vision", engine=MultiModalEngine(modalities=["text", "image", "audio"])
     )
-    print(f"   Created: {multimodal}")
-    print(f"   Modalities: {multimodal.supported_modalities()}")
 
     # 5. MultiAgent coordinating others
-    print("\n5. MultiAgent (Coordinator):")
     coordinator = MultiAgent(
         name="coordinator",
         engine=AugLLMConfig(temperature=0.3),  # Low temp for coordination
         agents={"simple": simple, "rag": rag, "reasoner": reasoner},
     )
-    print(f"   Created: {coordinator}")
-    print("   Coordinating agents:")
-    for agent_ref in coordinator.list_agents():
-        print(f"     - {agent_ref.name}: {agent_ref.agent_type}")
+    for _agent_ref in coordinator.list_agents():
+        pass
 
     result = await coordinator.execute("Explain quantum computing")
-    print("\n   Coordination result:")
-    for agent_name, agent_result in result["results"].items():
-        print(f"     {agent_name}: {agent_result}")
+    for _agent_name, _agent_result in result["results"].items():
+        pass
 
     # 6. Type safety demonstration
-    print("\n6. Type Safety Benefits:")
-    print("   - simple.engine is typed as AugLLMConfig")
-    print(f"     Temperature: {simple.engine.temperature}")
-    print("   - rag.engine is typed as RetrieverEngine")
-    print(f"     Index: {rag.engine.index_name}")
-    print("   - reasoner.engine is typed as ReasoningEngine")
-    print(f"     Max iterations: {reasoner.engine.max_iterations}")
-
-    print("\n" + "=" * 60)
-    print("\n✅ Key Insights:")
-    print("1. SimpleAgent is literally just Agent[AugLLMConfig]")
-    print("2. The engine type determines the agent's capabilities")
-    print("3. Clean, type-safe, minimal implementation")
-    print("4. Each agent type is defined by its engine type")
-    print("5. MultiAgent coordinates using an LLM engine")
 
 
 if __name__ == "__main__":

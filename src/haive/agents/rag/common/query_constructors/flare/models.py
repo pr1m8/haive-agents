@@ -2,7 +2,6 @@
 # FLARE MODELS
 # ============================================================================
 
-
 from pydantic import BaseModel, Field
 
 

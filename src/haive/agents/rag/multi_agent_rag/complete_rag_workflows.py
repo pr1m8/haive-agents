@@ -13,7 +13,11 @@ from enum import Enum
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.fixtures.documents import conversation_documents
-from haive.core.graph.node.callable_node import CallableNodeConfig
+from haive.core.graph.node.callable_node import (
+    CallableNodeConfig,
+    create_document_grader,
+    simple_document_grader,
+)
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
 from langchain_core.documents import Document
@@ -288,7 +292,6 @@ class CorrectiveRAGAgent(ConditionalAgent):
         # Create retrieval agent
         retrieval_agent = SimpleRAGAgent.from_documents(
             documents or conversation_documents, name="CRAG Retrieval Agent"
-        )
 
         # Create relevance checking agent
         relevance_agent = Agent()
@@ -308,7 +311,6 @@ class CorrectiveRAGAgent(ConditionalAgent):
             agents=[retrieval_agent, relevance_agent, web_search_agent, answer_agent],
             state_schema=MultiAgentRAGState,
             **kwargs,
-        )
 
         self.retrieval_agent = retrieval_agent
         self.relevance_agent = relevance_agent
@@ -321,9 +323,6 @@ class CorrectiveRAGAgent(ConditionalAgent):
         graph = BaseGraph(name="CRAGRelevanceChecker")
 
         # Document grading
-        from haive.core.graph.node.callable_node import (
-            create_document_grader,
-            simple_document_grader,
         )
 
         grader_node = create_document_grader(simple_document_grader, "grade_docs")
@@ -455,9 +454,6 @@ class SelfRAGAgent(ConditionalAgent):
     def _build_relevance_graph(self) -> BaseGraph:
         graph = BaseGraph(name="SelfRAGRelevance")
 
-        from haive.core.graph.node.callable_node import (
-            create_document_grader,
-            simple_document_grader,
         )
 
         relevance_node = create_document_grader(

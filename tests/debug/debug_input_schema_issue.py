@@ -6,6 +6,7 @@ import logging
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
+
 logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -27,9 +28,8 @@ class QueryRefinementResponse(BaseModel):
 
 
 try:
-    from haive.core.engine.aug_llm import AugLLMConfig
-
     from haive.agents.simple.agent_v2 import SimpleAgentV2
+    from haive.core.engine.aug_llm import AugLLMConfig
 
     # Create the engine
     engine = AugLLMConfig(

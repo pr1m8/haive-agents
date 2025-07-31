@@ -8,8 +8,10 @@ This script demonstrates how to:
 """
 
 import logging
+import shutil
 import uuid
 from pathlib import Path
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.retriever import VectorStoreRetrieverConfig
@@ -236,7 +238,6 @@ def main() -> None:
     # Clean up temporary files
     # Note: In a real application, you might want to keep these files
     try:
-        import shutil
 
         for path in Path(".").glob("example_vectorstore_*"):
             if path.is_dir():

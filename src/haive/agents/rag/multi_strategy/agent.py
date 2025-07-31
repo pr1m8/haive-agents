@@ -2,6 +2,7 @@ from typing import Any
 
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph import DynamicGraph
+from haive.core.graph.branches import Branch
 from langgraph.graph import END, START
 
 from haive.agents.rag.multi_strategy.config import MultiStrategyRAGConfig
@@ -124,8 +125,6 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
 
     def setup_workflow(self) -> None:
         """Set up the multi-strategy RAG workflow."""
-        from haive.core.graph.branches import Branch
-
         gb = DynamicGraph(state_schema=self.state_schema)
 
         # Add nodes

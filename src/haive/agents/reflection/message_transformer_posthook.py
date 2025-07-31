@@ -17,18 +17,20 @@ import asyncio
 from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.node.message_transformation_v2 import (
+    TransformationType,
+    create_reflection_transformer,
+)
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
 from haive.agents.simple.agent import SimpleAgent
 
+from .models import Critique  # Use existing Critique model
+
 # Import message transformation safely
 try:
-    from haive.core.graph.node.message_transformation_v2 import (
-        TransformationType,
-        create_reflection_transformer,
-    )
 
     MESSAGE_TRANSFORMER_AVAILABLE = True
 except (ImportError, AttributeError):
@@ -68,8 +70,6 @@ except (ImportError, AttributeError):
                     transformed.append(msg)
             return transformed
 
-
-from .models import Critique
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -427,11 +427,10 @@ def create_agent_with_reflection(
         post_hook = create_reflection_post_hook()
     elif reflection_type == "graded":
         # Need to import a grading model
-        from .models import Critique  # Use existing Critique model
 
         post_hook = create_graded_reflection_post_hook(Critique)
     else:
-        raise ValueError(f"Unknown reflection type: {reflection_type}")
+        raise TypeError(f"Unknown reflection type: {reflection_type}")
 
     return AgentWithPostHook(base_agent, [post_hook])
 

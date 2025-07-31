@@ -1,5 +1,4 @@
-"""
-Advanced Multi-Agent Pattern Tests
+"""Advanced Multi-Agent Pattern Tests.
 
 This test demonstrates:
 1. Sequential multi-agent flow with prompt templates and input variables
@@ -9,22 +8,20 @@ This test demonstrates:
 """
 
 import asyncio
-from typing import List, Optional
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.base.hooks import HookContext, HookEvent
 from haive.agents.base.pre_post_agent_mixin import (
-    PrePostAgentMixin,
-    create_graded_reflection_agent,
     create_reflection_agent,
 )
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent_v3 import ReactAgentV3
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # ============================================================================
 # STRUCTURED OUTPUT MODELS
@@ -34,9 +31,9 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class ResearchFindings(BaseModel):
     """Structured output for research agent."""
 
-    topics: List[str] = Field(description="Main topics discovered")
-    key_facts: List[str] = Field(description="Key facts found")
-    sources: List[str] = Field(description="Information sources referenced")
+    topics: list[str] = Field(description="Main topics discovered")
+    key_facts: list[str] = Field(description="Key facts found")
+    sources: list[str] = Field(description="Information sources referenced")
     confidence_score: float = Field(
         ge=0.0, le=1.0, description="Confidence in findings"
     )
@@ -47,8 +44,8 @@ class ArticleOutline(BaseModel):
 
     title: str = Field(description="Article title")
     introduction: str = Field(description="Introduction paragraph")
-    sections: List[str] = Field(description="Main section headings")
-    key_points: List[str] = Field(description="Key points to cover")
+    sections: list[str] = Field(description="Main section headings")
+    key_points: list[str] = Field(description="Key points to cover")
     conclusion_focus: str = Field(description="Main conclusion focus")
 
 
@@ -104,7 +101,6 @@ def create_monitoring_hooks():
                 event_info["post_agent"] = context.post_agent.name
 
         execution_log.append(event_info)
-        print(f"🪝 {context.event.value}: {context.agent_name}")
 
     return log_event, execution_log
 
@@ -256,10 +252,6 @@ class TestAdvancedMultiAgentPatterns:
 
     async def test_sequential_with_structured_output(self):
         """Test ReactAgent → SimpleAgent flow with structured outputs."""
-        print("\n" + "=" * 60)
-        print("Testing Sequential Flow with Structured Output")
-        print("=" * 60)
-
         # Create agents
         researcher = create_research_agent()
         outliner = create_outline_agent()
@@ -271,12 +263,11 @@ class TestAdvancedMultiAgentPatterns:
         )
 
         # Create initial state with messages
-        from langchain_core.messages import HumanMessage
 
         initial_state = {
             "messages": [
                 HumanMessage(
-                    content=f"""Research the following:
+                    content="""Research the following:
 Topic: The Future of AI in Healthcare
 Focus: diagnostic tools and patient care
 Depth: comprehensive
@@ -298,25 +289,15 @@ Please provide structured findings."""
         result = await workflow.arun(initial_state)
 
         # Print results
-        print("\n📊 Workflow Results:")
         if "messages" in result:
             for msg in result["messages"]:
                 if isinstance(msg, AIMessage):
-                    print(f"\n🤖 {msg.additional_kwargs.get('name', 'Agent')}:")
-                    print(
-                        msg.content[:200] + "..."
-                        if len(msg.content) > 200
-                        else msg.content
-                    )
+                    pass
 
         return result
 
     async def test_reflection_pattern_with_hooks(self):
         """Test reflection pattern with comprehensive hooks."""
-        print("\n" + "=" * 60)
-        print("Testing Reflection Pattern with Hooks")
-        print("=" * 60)
-
         # Create monitoring hooks
         log_hook, execution_log = create_monitoring_hooks()
 
@@ -357,18 +338,13 @@ Please provide structured findings."""
         result = await enhanced_writer.arun(inputs)
 
         # Print hook execution log
-        print("\n🪝 Hook Execution Log:")
-        for event in execution_log:
-            print(f"  - {event['event']} ({event['agent']})")
+        for _event in execution_log:
+            pass
 
         return result, execution_log
 
     async def test_graded_reflection_pattern(self):
         """Test graded reflection with critic feedback."""
-        print("\n" + "=" * 60)
-        print("Testing Graded Reflection Pattern")
-        print("=" * 60)
-
         # Create agents
         researcher = create_research_agent()
         writer = create_writer_agent()
@@ -395,34 +371,28 @@ Please provide structured findings."""
         result = await workflow.arun(initial_state)
 
         # Extract structured outputs
-        print("\n📊 Structured Outputs:")
 
         # Check for research findings
         if "messages" in result:
             for msg in result["messages"]:
                 if isinstance(msg, AIMessage) and hasattr(msg, "additional_kwargs"):
                     if "name" in msg.additional_kwargs:
-                        agent_name = msg.additional_kwargs["name"]
-                        print(f"\n🤖 {agent_name} Output:")
+                        msg.additional_kwargs["name"]
 
                         # Try to parse structured content
                         try:
                             import json
 
                             content = json.loads(msg.content)
-                            for key, value in content.items():
-                                print(f"  - {key}: {value}")
+                            for _key, _value in content.items():
+                                pass
                         except:
-                            print(f"  {msg.content[:200]}...")
+                            pass
 
         return result
 
     async def test_pre_post_processing_pattern(self):
         """Test pre and post processing with custom transformations."""
-        print("\n" + "=" * 60)
-        print("Testing Pre/Post Processing Pattern")
-        print("=" * 60)
-
         # Create main agent
         main_agent = SimpleAgentV3(
             name="main_processor",
@@ -482,7 +452,6 @@ Please provide structured findings."""
             }
         )
 
-        print("\n✅ Pre/Post Processing Complete")
         return result
 
 
@@ -496,24 +465,16 @@ async def main():
     test = TestAdvancedMultiAgentPatterns()
 
     # Test 1: Sequential with structured output
-    result1 = await test.test_sequential_with_structured_output()
-    print(f"\n✅ Test 1 Complete - Messages: {len(result1.get('messages', []))}")
+    await test.test_sequential_with_structured_output()
 
     # Test 2: Reflection with hooks
     result2, hook_log = await test.test_reflection_pattern_with_hooks()
-    print(f"\n✅ Test 2 Complete - Hook events: {len(hook_log)}")
 
     # Test 3: Graded reflection
-    result3 = await test.test_graded_reflection_pattern()
-    print(f"\n✅ Test 3 Complete - Messages: {len(result3.get('messages', []))}")
+    await test.test_graded_reflection_pattern()
 
     # Test 4: Pre/post processing
-    result4 = await test.test_pre_post_processing_pattern()
-    print(f"\n✅ Test 4 Complete")
-
-    print("\n" + "=" * 60)
-    print("All Advanced Pattern Tests Complete!")
-    print("=" * 60)
+    await test.test_pre_post_processing_pattern()
 
 
 if __name__ == "__main__":

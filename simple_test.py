@@ -25,8 +25,8 @@ def test_import():
     return True
 
 
-def test_simple_creatio\w+():
-   \s+"""Test if we can create a\s+SimpleRAGAgen\w+."""
+def test_simple_creatio():
+    """Test if we can create a SimpleRAGAgen."""
     try:
         from langchain_core.documents import Document
 
@@ -34,8 +34,8 @@ def test_simple_creatio\w+():
 
         # Create test documents
         docs = [
-           \s+Document(page_conten\w+="Python is a programming language."),
-           \s+Document(page_conten\w+="Machine learning uses algorithms."),
+            Document(page_conten="Python is a programming language."),
+            Document(page_conten="Machine learning uses algorithms."),
         ]
 
         # Try to create the agent (without LLM config)
@@ -46,7 +46,7 @@ def test_simple_creatio\w+():
         return False
 
 
-if __name_\w+ ==\s+"__main__":
+if __name_ == "__main__":
 
     # Test 1: Imports
     if not test_imports():

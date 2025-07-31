@@ -8,8 +8,6 @@ with the regular Agent class.
 
 import logging
 import os
-
-# Import enhanced Agent directly - bypassing base/__init__.py
 import sys
 from typing import Any, Literal
 
@@ -21,6 +19,9 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
 from pydantic import Field, model_validator
+
+# Import enhanced Agent directly - bypassing base/__init__.py
+
 
 sys.path.insert(
     0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

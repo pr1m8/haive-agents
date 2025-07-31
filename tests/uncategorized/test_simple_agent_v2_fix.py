@@ -2,10 +2,10 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 async def test_simple_agent_v2_fix():

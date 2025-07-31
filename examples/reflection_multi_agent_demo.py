@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Reflection Multi-Agent Demo - Working Example
+"""Reflection Multi-Agent Demo - Working Example.
 
 This demo shows how to create a reflection-like pattern using working agents:
 1. SimpleAgentV3 for initial response
@@ -48,7 +47,6 @@ class ReflectionMultiAgentSystem:
 
     def __init__(self):
         """Initialize the reflection multi-agent system."""
-
         # Agent 1: Initial Response Generator (ReactAgent with tools)
         self.initial_responder = ReactAgentV3(
             name="initial_responder",
@@ -70,7 +68,7 @@ class ReflectionMultiAgentSystem:
                 system_message="""You are a critical but constructive reviewer. Your task is to analyze responses and provide specific feedback.
 
                 For each response you review, provide feedback in this format:
-                
+
                 REFLECTION ANALYSIS:
                 - Quality Score (1-10): [Your assessment of overall quality]
                 - Missing Information: [What important details are missing]
@@ -78,7 +76,7 @@ class ReflectionMultiAgentSystem:
                 - Strengths: [What the response does well]
                 - Improvement Suggestions: [Specific actionable recommendations]
                 - Overall Assessment: [Whether the response adequately addresses the original question]
-                
+
                 Be thorough but concise in your analysis.""",
             ),
         )
@@ -88,9 +86,9 @@ class ReflectionMultiAgentSystem:
             name="response_improver",
             engine=AugLLMConfig(
                 temperature=0.6,
-                system_message="""You are a response improvement specialist. Your job is to take an original response 
+                system_message="""You are a response improvement specialist. Your job is to take an original response
                 and critique feedback, then produce an improved version.
-                
+
                 Guidelines for improvement:
                 - Address all missing information identified in the critique
                 - Remove or simplify superfluous content
@@ -113,12 +111,6 @@ class ReflectionMultiAgentSystem:
 
     async def run_reflection_process(self, user_question: str):
         """Run the complete reflection process: respond → reflect → improve."""
-
-        print("🔄 Starting Reflection Multi-Agent Process")
-        print("=" * 80)
-        print(f"📥 User Question: {user_question}")
-        print("=" * 80)
-
         # Execute the sequential workflow
         result = await self.reflection_workflow.arun(
             {
@@ -126,14 +118,14 @@ class ReflectionMultiAgentSystem:
                     HumanMessage(
                         content=f"""
             REFLECTION WORKFLOW INSTRUCTION:
-            
+
             Original Question: {user_question}
-            
+
             WORKFLOW STAGES:
             1. Initial Response: Provide a comprehensive initial answer to the question above
             2. Reflection Analysis: Critically analyze the initial response for quality, completeness, and areas for improvement
             3. Improved Response: Create an enhanced version based on the reflection feedback
-            
+
             Please proceed through all three stages sequentially.
             """
                     )
@@ -145,12 +137,7 @@ class ReflectionMultiAgentSystem:
 
     def analyze_workflow_result(self, result):
         """Analyze and display the results of the reflection workflow."""
-
-        print("\n📊 REFLECTION WORKFLOW ANALYSIS")
-        print("=" * 80)
-
         if hasattr(result, "messages"):
-            print(f"Total messages in conversation: {len(result.messages)}")
 
             # Track the progression through agents
             agent_messages = []
@@ -163,9 +150,8 @@ class ReflectionMultiAgentSystem:
                 msg_type = type(msg).__name__
                 agent_messages.append(f"  {i+1}. {msg_type}: {msg_content}")
 
-            print("\n💬 Message Flow:")
             for msg in agent_messages:
-                print(msg)
+                pass
 
             # Look for reflection patterns
             content = str(result).lower()
@@ -177,31 +163,21 @@ class ReflectionMultiAgentSystem:
                 "critique": "critique" in content or "critical" in content,
             }
 
-            print(f"\n🎯 Reflection Quality Indicators:")
-            for indicator, present in reflection_indicators.items():
-                status = "✅" if present else "❌"
-                print(
-                    f"   {status} {indicator.replace('_', ' ').title()}: {'Present' if present else 'Missing'}"
-                )
+            for _indicator, _present in reflection_indicators.items():
+                pass
 
             success_score = sum(reflection_indicators.values())
-            print(f"\n📈 Reflection Quality Score: {success_score}/5")
 
-            if success_score >= 4:
-                print("🎉 EXCELLENT: High-quality reflection process completed!")
-            elif success_score >= 3:
-                print("✅ GOOD: Solid reflection process with minor gaps")
+            if success_score >= 4 or success_score >= 3:
+                pass
             else:
-                print("⚠️ PARTIAL: Reflection process needs improvement")
+                pass
 
         return result
 
 
 async def demo_basic_reflection():
     """Demo basic reflection workflow."""
-    print("\n🧪 DEMO 1: Basic Reflection Workflow")
-    print("=" * 100)
-
     reflection_system = ReflectionMultiAgentSystem()
 
     question = (
@@ -216,12 +192,9 @@ async def demo_basic_reflection():
 
 async def demo_complex_reasoning_reflection():
     """Demo reflection on complex reasoning task."""
-    print("\n🧪 DEMO 2: Complex Reasoning with Reflection")
-    print("=" * 100)
-
     reflection_system = ReflectionMultiAgentSystem()
 
-    question = """Analyze the ethical implications of AI in healthcare decision-making. 
+    question = """Analyze the ethical implications of AI in healthcare decision-making.
     Consider patient autonomy, algorithmic bias, transparency, and accountability."""
 
     result = await reflection_system.run_reflection_process(question)
@@ -232,12 +205,9 @@ async def demo_complex_reasoning_reflection():
 
 async def demo_research_intensive_reflection():
     """Demo reflection on research-intensive questions."""
-    print("\n🧪 DEMO 3: Research-Intensive Reflection")
-    print("=" * 100)
-
     reflection_system = ReflectionMultiAgentSystem()
 
-    question = """How might quantum computing impact climate change research and modeling? 
+    question = """How might quantum computing impact climate change research and modeling?
     Include current limitations and future potential."""
 
     result = await reflection_system.run_reflection_process(question)
@@ -248,30 +218,20 @@ async def demo_research_intensive_reflection():
 
 async def demo_comparison_with_single_agent():
     """Compare reflection workflow with single agent response."""
-    print("\n🧪 DEMO 4: Comparison - Reflection vs Single Agent")
-    print("=" * 100)
-
     question = "Explain the benefits and risks of artificial intelligence in education."
 
     # Single agent response
-    print("\n🤖 Single Agent Response:")
-    print("-" * 50)
 
     single_agent = SimpleAgentV3(
         name="single_responder", engine=AugLLMConfig(temperature=0.7)
     )
 
     single_result = await single_agent.arun(question)
-    print(f"Single agent result length: {len(str(single_result))} characters")
 
     # Reflection system response
-    print("\n🔄 Reflection Multi-Agent Response:")
-    print("-" * 50)
 
     reflection_system = ReflectionMultiAgentSystem()
     reflection_result = await reflection_system.run_reflection_process(question)
-
-    print(f"Reflection system result length: {len(str(reflection_result))} characters")
 
     # Compare complexity and depth
     single_content = str(single_result).lower()
@@ -286,33 +246,14 @@ async def demo_comparison_with_single_agent():
         "perspective",
     ]
 
-    single_depth = sum(
-        1 for indicator in depth_indicators if indicator in single_content
-    )
-    reflection_depth = sum(
-        1 for indicator in depth_indicators if indicator in reflection_content
-    )
-
-    print(f"\n📊 Depth Comparison:")
-    print(f"   Single Agent Depth Score: {single_depth}")
-    print(f"   Reflection System Depth Score: {reflection_depth}")
-    print(
-        f"   Improvement Factor: {reflection_depth/single_depth if single_depth > 0 else 'N/A'}"
-    )
+    sum(1 for indicator in depth_indicators if indicator in single_content)
+    sum(1 for indicator in depth_indicators if indicator in reflection_content)
 
     return single_result, reflection_result
 
 
 async def main():
     """Run all reflection demos."""
-    print("🚀 REFLECTION MULTI-AGENT DEMONSTRATION SUITE")
-    print("=" * 100)
-    print("Testing reflection patterns with EnhancedMultiAgentV4 and working agents")
-    print(
-        "This demonstrates reasoning_and_critique concepts using production-ready components"
-    )
-    print("=" * 100)
-
     # Run all demos
     demo_results = {}
 
@@ -322,38 +263,13 @@ async def main():
         demo_results["research"] = await demo_research_intensive_reflection()
         demo_results["comparison"] = await demo_comparison_with_single_agent()
 
-        print("\n" + "=" * 100)
-        print("📋 DEMONSTRATION SUMMARY")
-        print("=" * 100)
-
         for demo_name, result in demo_results.items():
             if demo_name != "comparison":  # Handle comparison separately
-                status = "✅ COMPLETED" if result else "❌ FAILED"
-                print(f"   {demo_name.title()} Demo: {status}")
+                pass
             else:
                 single_result, reflection_result = result
-                status = (
-                    "✅ COMPLETED"
-                    if single_result and reflection_result
-                    else "❌ FAILED"
-                )
-                print(f"   {demo_name.title()} Demo: {status}")
 
-        print("\n🎯 KEY FINDINGS:")
-        print("   • Multi-agent reflection provides more thorough analysis")
-        print("   • Sequential critique and improvement enhances response quality")
-        print("   • EnhancedMultiAgentV4 successfully coordinates reflection workflows")
-        print("   • Real LLM execution validates production readiness")
-
-        print("\n🔗 RELATED PATTERNS:")
-        print("   • This pattern can be applied to reasoning_and_critique modules")
-        print("   • Reflection agents can be combined with self_discover workflows")
-        print("   • Multiple reasoning approaches can be chained together")
-
-        print("\n✅ REFLECTION MULTI-AGENT SYSTEM: PRODUCTION READY")
-
-    except Exception as e:
-        print(f"\n❌ Demo failed with error: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

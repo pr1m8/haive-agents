@@ -4,6 +4,7 @@ Clean implementation of advanced RAG patterns without complex dependencies.
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.fixtures.documents import conversation_documents
 from haive.core.graph.node.callable_node import (
     CallableNodeConfig,
     create_document_grader,
@@ -13,6 +14,7 @@ from haive.core.graph.node.callable_node import (
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
 from langchain_core.documents import Document
+from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
 
 from haive.agents.base.agent import Agent
@@ -69,7 +71,6 @@ class SimpleCorrectiveRAGAgent(SequentialAgent):
 
     def __init__(self, documents: list[Document] | None = None, **kwargs):
         # Create retrieval agent
-        from haive.core.fixtures.documents import conversation_documents
 
         retrieval_agent = SimpleRAGAgent.from_documents(
             documents or conversation_documents, name="CRAG Retrieval Agent"
@@ -94,7 +95,6 @@ class SimpleHYDERAGAgent(SequentialAgent):
 
     def __init__(self, documents: list[Document] | None = None, **kwargs):
         # Create hypothesis generator
-        from langchain_core.prompts import ChatPromptTemplate
 
         hyde_prompt = ChatPromptTemplate.from_messages(
             [
@@ -112,7 +112,6 @@ class SimpleHYDERAGAgent(SequentialAgent):
         )
 
         # Create retrieval agent
-        from haive.core.fixtures.documents import conversation_documents
 
         retrieval_agent = SimpleRAGAgent.from_documents(
             documents or conversation_documents, name="HYDE Retrieval Agent"
@@ -146,7 +145,7 @@ def create_simple_rag_workflow(
         return SimpleCorrectiveRAGAgent(documents=documents, **kwargs)
     if workflow_type.lower() == "hyde":
         return SimpleHYDERAGAgent(documents=documents, **kwargs)
-    raise ValueError(f"Unknown workflow type: {workflow_type}")
+    raise TypeError(f"Unknown workflow type: {workflow_type}")
 
 
 __all__ = [

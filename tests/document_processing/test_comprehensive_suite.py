@@ -7,8 +7,9 @@ advanced configurations.
 """
 
 import logging
-import sys
 from pathlib import Path
+import sys
+
 
 # Suppress all logging output
 logging.getLogger().setLevel(logging.CRITICAL)
@@ -17,6 +18,15 @@ logging.getLogger().setLevel(logging.CRITICAL)
 project_root = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
+from langchain_core.documents import Document
+from langchain_core.messages import HumanMessage
+
+from haive.agents.document_processing import (
+    DocumentProcessingAgent,
+    DocumentProcessingConfig,
+    DocumentProcessingResult,
+    DocumentProcessingState,
+)
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.query_state import (
     QueryComplexity,
@@ -27,15 +37,6 @@ from haive.core.schema.prebuilt.query_state import (
     QueryState,
     QueryType,
     RetrievalStrategy,
-)
-from langchain_core.documents import Document
-from langchain_core.messages import HumanMessage
-
-from haive.agents.document_processing import (
-    DocumentProcessingAgent,
-    DocumentProcessingConfig,
-    DocumentProcessingResult,
-    DocumentProcessingState,
 )
 
 

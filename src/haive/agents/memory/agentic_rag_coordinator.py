@@ -5,6 +5,7 @@ multiple retrieval strategies based on query analysis and context.
 """
 
 import asyncio
+import json
 import logging
 from datetime import datetime
 from typing import Any
@@ -17,7 +18,10 @@ from pydantic import BaseModel, ConfigDict, Field
 from haive.agents.memory.core.classifier import MemoryClassifier
 from haive.agents.memory.core.stores import MemoryStoreManager
 from haive.agents.memory.core.types import MemoryType
-from haive.agents.memory.enhanced_retriever import EnhancedRetrieverConfig
+from haive.agents.memory.enhanced_retriever import (
+    EnhancedRetriever,
+    EnhancedRetrieverConfig,
+)
 from haive.agents.memory.graph_rag_retriever import (
     GraphRAGRetriever,
     GraphRAGRetrieverConfig,
@@ -592,7 +596,6 @@ class AgenticRAGCoordinator(SimpleAgent):
         """Setup individual retrievers."""
         # Enhanced retriever (vector similarity with memory types)
         if self.enhanced_retriever_config:
-            from haive.agents.memory.enhanced_retriever import EnhancedRetriever
 
             self.retrievers["enhanced"] = EnhancedRetriever(
                 self.enhanced_retriever_config
@@ -1388,7 +1391,6 @@ Fuse and rank results now:""",
     def _parse_json_response(self, response: str) -> dict[str, Any] | None:
         """Parse JSON response from LLM."""
         try:
-            import json
 
             # Try to find JSON in response
             start_idx = response.find("{")

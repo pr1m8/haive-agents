@@ -4,6 +4,7 @@
 import os
 import sys
 
+
 # Add source paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
@@ -11,8 +12,6 @@ sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/
 
 def test_simple_rag_v3_state():
     """Test SimpleRAG V3 state functionality - this works without imports."""
-    print("🔍 Testing SimpleRAG V3 State...")
-
     # Import state directly - this has no problematic dependencies
     from langchain_core.documents import Document
 
@@ -29,7 +28,6 @@ def test_simple_rag_v3_state():
     assert state.query == "What is machine learning?"
     assert state.current_stage == "ready"
     assert len(state.stage_history) == 0
-    print("✅ State creation working")
 
     # Test stage tracking
     state.update_stage("retrieval")
@@ -38,7 +36,6 @@ def test_simple_rag_v3_state():
 
     assert state.current_stage == "completed"
     assert state.stage_history == ["retrieval", "generation", "completed"]
-    print("✅ Stage tracking working")
 
     # Test performance metrics
     state.update_performance_metric("retrieval_time", 0.5)
@@ -46,7 +43,6 @@ def test_simple_rag_v3_state():
     state.update_performance_metric("total_time", 1.7)
 
     assert state.performance_metrics["total_time"] == 1.7
-    print("✅ Performance tracking working")
 
     # Test debug information
     state.add_retrieval_debug(
@@ -64,7 +60,6 @@ def test_simple_rag_v3_state():
     assert state.retrieval_debug.search_time == 0.45
     assert state.generation_debug is not None
     assert state.generation_debug.context_length == 500
-    print("✅ Debug information working")
 
     # Test with documents
     docs = [
@@ -91,7 +86,6 @@ def test_simple_rag_v3_state():
     assert pipeline_summary["answer_generated"] is True
     assert retrieval_summary["documents_count"] == 2
     assert generation_summary["answer_length"] > 0
-    print("✅ Summary generation working")
 
     # Test RAG metadata
     metadata = RAGMetadata(
@@ -103,15 +97,12 @@ def test_simple_rag_v3_state():
 
     assert metadata.query_analysis["intent"] == "factual"
     assert metadata.timing_info["retrieval"] == 0.5
-    print("✅ RAG metadata working")
 
     return True
 
 
 def test_file_structure_and_patterns():
     """Test that our implementation follows the requested pattern and structure."""
-    print("🔍 Testing File Structure and Pattern Compliance...")
-
     base_path = "/home/will/Projects/haive/backend/haive/packages/haive-agents/src/haive/agents/rag/simple/enhanced_v3"
 
     # Check file organization as requested
@@ -123,18 +114,15 @@ def test_file_structure_and_patterns():
         "agent.py": "SimpleRAGV3 main implementation",
     }
 
-    print("\n📁 File Organization (as requested: separate folder/submodules):")
-    for file, description in required_files.items():
+    for file, _description in required_files.items():
         file_path = os.path.join(base_path, file)
         exists = os.path.exists(file_path)
-        print(f"  {'✅' if exists else '❌'} {file} - {description}")
         assert exists, f"Missing required file: {file}"
 
     # Verify pattern compliance by analyzing source code
-    print("\n📋 Pattern Compliance Check:")
 
     # Check agent.py for MultiAgent pattern
-    with open(os.path.join(base_path, "agent.py"), "r") as f:
+    with open(os.path.join(base_path, "agent.py")) as f:
         agent_content = f.read()
 
     # Pattern 1: MultiAgent[Rag,simpleanswer] as requested
@@ -155,12 +143,10 @@ def test_file_structure_and_patterns():
 
     for check_name, pattern in pattern_checks:
         found = pattern in agent_content
-        print(f"  {'✅' if found else '❌'} {check_name}: {pattern[:50]}...")
         assert found, f"Missing pattern: {check_name}"
 
     # Check retriever_agent.py
-    print("\n📋 RetrieverAgent Checks:")
-    with open(os.path.join(base_path, "retriever_agent.py"), "r") as f:
+    with open(os.path.join(base_path, "retriever_agent.py")) as f:
         retriever_content = f.read()
 
     retriever_checks = [
@@ -172,12 +158,10 @@ def test_file_structure_and_patterns():
 
     for check_name, pattern in retriever_checks:
         found = pattern in retriever_content
-        print(f"  {'✅' if found else '❌'} {check_name}")
         assert found, f"Missing: {check_name}"
 
     # Check answer_generator_agent.py for document prompt template
-    print("\n📋 SimpleAnswerAgent Checks (document prompt template as requested):")
-    with open(os.path.join(base_path, "answer_generator_agent.py"), "r") as f:
+    with open(os.path.join(base_path, "answer_generator_agent.py")) as f:
         answer_content = f.read()
 
     answer_checks = [
@@ -190,7 +174,6 @@ def test_file_structure_and_patterns():
 
     for check_name, pattern in answer_checks:
         found = pattern in answer_content
-        print(f"  {'✅' if found else '❌'} {check_name}")
         assert found, f"Missing: {check_name}"
 
     return True
@@ -198,15 +181,12 @@ def test_file_structure_and_patterns():
 
 def test_implementation_features():
     """Test that all requested features are implemented."""
-    print("🔍 Testing Implementation Features...")
-
     base_path = "/home/will/Projects/haive/backend/haive/packages/haive-agents/src/haive/agents/rag/simple/enhanced_v3"
 
     # Read agent.py to check features
-    with open(os.path.join(base_path, "agent.py"), "r") as f:
+    with open(os.path.join(base_path, "agent.py")) as f:
         agent_content = f.read()
 
-    print("\n✨ Enhanced Features Check:")
     features = [
         ("Performance tracking", "performance_mode: bool = Field("),
         ("Debug support", "debug_mode: bool = Field("),
@@ -224,7 +204,6 @@ def test_implementation_features():
         # Handle multiline patterns
         pattern.replace("\n", "\\n") if "\n" in pattern else pattern
         found = pattern in agent_content
-        print(f"  {'✅' if found else '❌'} {feature_name}")
         assert found, f"Missing feature: {feature_name}"
 
     return True
@@ -232,10 +211,6 @@ def test_implementation_features():
 
 def test_user_requirements():
     """Verify all user requirements were met."""
-    print("🔍 Verifying User Requirements...")
-
-    print("\n📌 User Requirement Checklist:")
-
     requirements = [
         (
             "Use base rag and simple agent v3 generically",
@@ -255,47 +230,30 @@ def test_user_requirements():
         ),
     ]
 
-    for requirement, status in requirements:
-        print(f"  {status}")
-        print(f"    Requirement: {requirement}")
+    for _requirement, _status in requirements:
+        pass
 
     return True
 
 
 def main():
     """Run all tests."""
-    print("🚀 Testing SimpleRAG V3 Implementation (NO MOCKS)")
-    print("=" * 70)
-
     try:
         # Test state functionality (no import issues)
         test_simple_rag_v3_state()
-        print()
 
         # Test file structure and patterns
         test_file_structure_and_patterns()
-        print()
 
         # Test implementation features
         test_implementation_features()
-        print()
 
         # Verify user requirements
         test_user_requirements()
-        print()
-
-        print("🎉 ALL TESTS PASSED - NO MOCKS USED!")
-        print("✅ SimpleRAGState fully functional")
-        print("✅ File structure follows requested organization")
-        print("✅ Pattern matches MultiAgent[RetrieverAgent, SimpleAnswerAgent]")
-        print("✅ Document prompt templates implemented as requested")
-        print("✅ All enhanced features present")
-        print("\n📝 Note: Full integration testing awaits import chain fixes")
 
         return True
 
-    except Exception as e:
-        print(f"❌ Test failed: {e}")
+    except Exception:
         import traceback
 
         traceback.print_exc()

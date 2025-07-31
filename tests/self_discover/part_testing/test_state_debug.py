@@ -4,6 +4,7 @@ import asyncio
 import logging
 import sys
 
+
 # Suppress all logging except errors
 logging.getLogger().setLevel(logging.ERROR)
 

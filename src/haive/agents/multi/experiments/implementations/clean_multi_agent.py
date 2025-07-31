@@ -231,7 +231,7 @@ class MultiAgent(Agent):
         """Build parallel execution edges."""
 
         # Add aggregator node
-        def aggregate_results(state: dict[str, Any]):
+        def aggregate_results(_state: dict[str, Any]):
             """Aggregate results from parallel agents."""
             return {"final_result": "Aggregated results"}
 

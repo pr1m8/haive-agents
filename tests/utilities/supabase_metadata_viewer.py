@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Supabase metadata viewer utility for monitoring conversation agent errors."""
 
+from datetime import datetime
 import os
 import sys
-from datetime import datetime
 from typing import Any
 
 import psycopg2
@@ -244,11 +244,10 @@ def test_conversation_agent_with_new_id():
     )
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.conversation.collaberative.agent import (
             CollaborativeConversation,
         )
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create fresh participant agents with unique names
         timestamp = datetime.now().strftime("%H%M%S")

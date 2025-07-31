@@ -12,6 +12,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.chain import ChainAgent, flow_with_edges
+from haive.agents.chain.multi_integration import ChainMultiAgent
 from haive.agents.rag.flare.agent import FLARERAGAgent
 from haive.agents.rag.fusion.agent import RAGFusionAgent
 from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
@@ -169,8 +170,6 @@ def create_agentic_router_multi_agent(
     documents: list[Document], llm_config: LLMConfig | None = None
 ) -> "ChainMultiAgent":
     """Create as a multi-agent system."""
-    from haive.agents.chain.multi_integration import ChainMultiAgent
-
     # Create the chain
     chain = create_agentic_rag_router_chain(documents, llm_config)
 

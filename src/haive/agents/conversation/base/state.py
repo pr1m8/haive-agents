@@ -1,3 +1,12 @@
+from __future__ import annotations
+
+import logging
+import operator
+from typing import TYPE_CHECKING, Any
+
+from haive.core.schema.prebuilt.messages_state import MessagesState
+from pydantic import Field, computed_field
+
 r"""Base conversation state with automatic round tracking via reducers.
 
 This module defines the ConversationState class, which is the foundational state schema
@@ -57,14 +66,6 @@ Author: Haive Team
 License: MIT
 """
 
-from __future__ import annotations
-
-import logging
-import operator
-from typing import TYPE_CHECKING, Any
-
-from haive.core.schema.prebuilt.messages_state import MessagesState
-from pydantic import Field, computed_field
 
 if TYPE_CHECKING:
     pass
