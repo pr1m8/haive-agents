@@ -3,9 +3,16 @@
 This module provides various agent implementations for the Haive framework.
 """
 
+import importlib
 import os
 import sys
+import warnings
 from typing import TYPE_CHECKING
+
+from haive.agents.base import Agent
+from haive.agents.multi import MultiAgent
+from haive.agents.react import ReactAgent
+from haive.agents.simple import SimpleAgent
 
 # Lazy loading for performance - defer all agent imports until needed
 _AGENT_IMPORTS = {
@@ -25,10 +32,7 @@ _DOCUMENTATION_MODE = (
 
 # Type checking imports (for linters and IDE support)
 if TYPE_CHECKING:
-    from haive.agents.base import Agent
-    from haive.agents.multi import MultiAgent
-    from haive.agents.react import ReactAgent
-    from haive.agents.simple import SimpleAgent
+    pass  # Type checking imports would go here
 else:
     # Forward declarations for linters when not type checking
     Agent = None  # type: ignore
@@ -40,8 +44,6 @@ else:
 # This ensures Sphinx/autoapi can find them during static analysis
 if _DOCUMENTATION_MODE:
     try:
-        import importlib
-
         for name, (module_path, class_name) in _AGENT_IMPORTS.items():
             module = importlib.import_module(module_path)
             agent_class = getattr(module, class_name)
@@ -57,7 +59,6 @@ def __getattr__(name: str):
         module_path, class_name = _AGENT_IMPORTS[name]
 
         # Import module and get class
-        import importlib
 
         module = importlib.import_module(module_path)
         agent_class = getattr(module, class_name)
@@ -90,16 +91,9 @@ def __getattr__(name: str):
 # Import submodules for documentation
 try:
     # These imports allow sphinx to find the submodules
-    from haive.agents import (  # , planning
-        conversation,
-        research,
-        sequential,
-        supervisor,
-    )
+    pass  # Submodule imports would go here
 except ImportError as e:
     # Log but don't fail if submodules aren't available
-    import warnings
-
     warnings.warn(f"Failed to import agent submodules: {e}")
 
 # Planning agents
