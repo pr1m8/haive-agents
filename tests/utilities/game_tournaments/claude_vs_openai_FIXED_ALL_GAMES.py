@@ -331,11 +331,11 @@ def run_fixed_all_games_tournament():
     ) * 100
 
     if tournament_results["claude_wins"] > tournament_results["openai_wins"]:
-        pass!")
+        pass
     elif tournament_results["openai_wins"] > tournament_results["claude_wins"]:
-        pass!")
+        pass
     else:
-        pass!")
+        pass
 
 
     return tournament_results

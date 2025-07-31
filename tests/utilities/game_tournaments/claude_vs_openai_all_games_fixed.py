@@ -281,11 +281,11 @@ def run_all_games_tournament():
 
 
     if tournament_results["claude_wins"] > tournament_results["openai_wins"]:
-        pass!")
+        pass
     elif tournament_results["openai_wins"] > tournament_results["claude_wins"]:
-        pass!")
+        pass
     else:
-        pass!")
+        pass
 
 
     return tournament_results
