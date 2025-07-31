@@ -84,7 +84,7 @@ async def debug_result():
                                 args = json.loads(args)
 
                             todo_list = TodoList(**args)
-                            print("\n✅ Successfully extracted TodoList:":")
+                            print("\n✅ Successfully extracted TodoList:")
                             print(f"   Title: {todo_list.title}")
                             print(f"   Priority: {todo_list.priority}")
                             print(f"   Hours: {todo_list.estimated_hours}")
