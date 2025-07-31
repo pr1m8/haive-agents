@@ -413,7 +413,9 @@ async def main():
             all_passed = False
 
     if all_passed:
+        pass
     else:
+        pass
 
 
 if __name__ == "__main__":
