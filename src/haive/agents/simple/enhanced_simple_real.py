@@ -20,6 +20,7 @@ from pydantic import Field, model_validator
 
 # Carefully import to avoid cycles
 if TYPE_CHECKING:
+    from typing import Any  # Import something to avoid empty block
 
 logger = logging.getLogger(__name__)
 

@@ -312,6 +312,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
             agents=[retrieval_agent, relevance_agent, web_search_agent, answer_agent],
             state_schema=MultiAgentRAGState,
             **kwargs,
+        )
 
         self.retrieval_agent = retrieval_agent
         self.relevance_agent = relevance_agent
@@ -324,8 +325,6 @@ class CorrectiveRAGAgent(ConditionalAgent):
         graph = BaseGraph(name="CRAGRelevanceChecker")
 
         # Document grading
-        )
-
         grader_node = create_document_grader(simple_document_grader, "grade_docs")
         graph.add_node("grade_docs", grader_node)
 
@@ -454,8 +453,6 @@ class SelfRAGAgent(ConditionalAgent):
 
     def _build_relevance_graph(self) -> BaseGraph:
         graph = BaseGraph(name="SelfRAGRelevance")
-
-        )
 
         relevance_node = create_document_grader(
             simple_document_grader, "check_relevance"

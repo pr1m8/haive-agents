@@ -273,7 +273,13 @@ def _initialize_conversation_module() -> None:
 
     # Validate critical dependencies
     try:
-
+        # Check that all required conversation modules can be imported
+        import haive.agents.conversation.base.agent
+        import haive.agents.conversation.collaberative.agent
+        import haive.agents.conversation.debate.agent
+        import haive.agents.conversation.directed.agent
+        import haive.agents.conversation.round_robin.agent
+        import haive.agents.conversation.social_media.agent
     except ImportError as e:
         raise ImportError(
             f"Critical conversation dependencies missing: {e.name}. "

@@ -1,6 +1,5 @@
 """Enhanced HyDE RAG Agent v2 with Advanced Prompt Selection and Multi-Document Generation.
 
-from typing import Any
 This version integrates the new enhanced prompt system with:
 - Automatic prompt type selection based on query analysis
 - Multi-document generation from different perspectives
@@ -103,8 +102,7 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def setup_hyde_agent(cls) -> "EnhancedHyDERAGAgentV2":
+    def setup_hyde_agent(self) -> "EnhancedHyDERAGAgentV2":
         """Setup HyDE agent with enhanced prompts."""
         # Set up tool routing for any additional tools
         if hasattr(self, "tools") and self.tools:
@@ -189,12 +187,14 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
             auto_select=config.auto_select_prompt,
             default_prompt_type=config.prompt_type,
             name="Query Analyzer",
+        )
 
         # Step 2: Document generation using selected prompt
         doc_generator = AdaptiveHyDEGenerator(
             llm_config=llm_config,
             target_length=config.target_length,
             name="Adaptive HyDE Generator",
+        )
 
         # Step 3: Optional structured analysis
         agents = [query_analyzer, doc_generator]
@@ -212,11 +212,10 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
             documents=documents,
             embedding_model=embedding_model,
             name="Enhanced HyDE Retriever v2",
+        )
         agents.append(retriever)
 
         # Step 5: Answer generation
-        )
-
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
@@ -262,8 +261,6 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         agents.append(retriever)
 
         # Answer generation
-        )
-
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
@@ -321,8 +318,6 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         agents.append(retriever)
 
         # Answer generation
-        )
-
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
@@ -368,8 +363,6 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
         )
 
         # Answer generation
-        )
-
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD

@@ -11,14 +11,8 @@ This example shows how to create a dynamic supervisor system that can:
 import asyncio
 import logging
 
-from dynamic_multi_agent import DynamicMultiAgent
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.tools.math import calculator
-from haive.tools.web import web_search
-from langchain_core.messages import HumanMessage, SystemMessage
-
-from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
+import langchain_core.messages
+from langchain_core.tools import tool
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -29,9 +23,14 @@ async def create_dynamic_supervisor_system():
     """Create a dynamic supervisor system with real agents."""
     # Import required components
     try:
+        from haive.core.engine.aug_llm import AugLLMConfig
 
+        from haive.agents.react.agent import ReactAgent
+        from haive.agents.simple.agent import SimpleAgent
+        from haive.agents.supervisor.dynamic_multi_agent import DynamicMultiAgent
     except ImportError:
-        return None
+        logger.warning("Failed to import required components")
+        return None, None
 
     # Create engines for different agents
 
@@ -87,7 +86,7 @@ async def demonstrate_dynamic_capabilities(supervisor, analysis_engine):
     result1 = await supervisor.ainvoke(
         {
             "messages": [
-                HumanMessage(
+                langchain_core.messages.HumanMessage(
                     content="Research the latest developments in quantum computing"
                 )
             ]
@@ -101,7 +100,7 @@ async def demonstrate_dynamic_capabilities(supervisor, analysis_engine):
     await supervisor.ainvoke(
         {
             "messages": [
-                HumanMessage(
+                langchain_core.messages.HumanMessage(
                     content="Write a blog post introduction about the future of AI"
                 )
             ]
@@ -113,13 +112,14 @@ async def demonstrate_dynamic_capabilities(supervisor, analysis_engine):
     await supervisor.ainvoke(
         {
             "messages": [
-                HumanMessage(content="Analyze the trends in the research findings")
+                langchain_core.messages.HumanMessage(
+                    content="Analyze the trends in the research findings"
+                )
             ]
         }
     )
 
     # Add analysis agent dynamically
-
 
     analysis_agent = SimpleAgent(name="data_analyst", engine=analysis_engine)
     analysis_agent.capability = (
@@ -136,7 +136,9 @@ async def demonstrate_dynamic_capabilities(supervisor, analysis_engine):
     await supervisor.ainvoke(
         {
             "messages": [
-                HumanMessage(content="Analyze the market trends for AI adoption")
+                langchain_core.messages.HumanMessage(
+                    content="Analyze the market trends for AI adoption"
+                )
             ]
         }
     )
@@ -151,8 +153,10 @@ async def demonstrate_complex_workflow(supervisor):
     """Demonstrate a complex multi-step workflow."""
     # Initialize conversation
     messages = [
-        SystemMessage(content="You are part of a research project team."),
-        HumanMessage(
+        langchain_core.messages.SystemMessage(
+            content="You are part of a research project team."
+        ),
+        langchain_core.messages.HumanMessage(
             content="Let's research and write about the impact of AI on healthcare"
         ),
     ]
@@ -163,7 +167,7 @@ async def demonstrate_complex_workflow(supervisor):
 
     # Step 2: Analysis
     messages.append(
-        HumanMessage(
+        langchain_core.messages.HumanMessage(
             content="Now analyze the key findings and identify the main trends"
         )
     )
@@ -172,7 +176,7 @@ async def demonstrate_complex_workflow(supervisor):
 
     # Step 3: Writing
     messages.append(
-        HumanMessage(
+        langchain_core.messages.HumanMessage(
             content="Write a comprehensive report based on the research and analysis"
         )
     )
@@ -189,18 +193,35 @@ async def demonstrate_complex_workflow(supervisor):
 
 async def demonstrate_react_agent_integration(supervisor):
     """Show how to add a ReactAgent with tools."""
-    try:
 
-    except ImportError:
+    # Create simple tools for demo
+    @tool
+    def calculator(expression: str) -> str:
+        """Perform basic math calculations.
 
-        # Create mock tools for demo
-        class MockTool:
-            def __init__(self, name: str, description):
-                self.name = name
-                self.description = description
+        Args:
+            expression: A mathematical expression to evaluate (e.g., '2 + 2', '10 * 5')
 
-        calculator = MockTool("calculator", "Perform calculations")
-        web_search = MockTool("web_search", "Search the web")
+        Returns:
+            The result of the calculation as a string
+        """
+        try:
+            result = eval(expression)
+            return str(result)
+        except Exception as e:
+            return f"Error calculating: {str(e)}"
+
+    @tool
+    def web_search(query: str) -> str:
+        """Simulate web search functionality.
+
+        Args:
+            query: The search query
+
+        Returns:
+            Simulated search results
+        """
+        return f"Search results for '{query}': [Result 1: Example content], [Result 2: More content]"
 
     # Create engine for ReactAgent
     react_engine = AugLLMConfig(
@@ -213,7 +234,7 @@ async def demonstrate_react_agent_integration(supervisor):
     react_agent = ReactAgent(
         name="tool_specialist",
         engine=react_engine,
-        tools=[calculator, web_search] if "calculator" in locals() else [],
+        tools=[calculator, web_search],
     )
     react_agent.capability = "tool usage, calculations, web search, problem solving"
 
@@ -228,7 +249,7 @@ async def demonstrate_react_agent_integration(supervisor):
     result = await supervisor.ainvoke(
         {
             "messages": [
-                HumanMessage(
+                langchain_core.messages.HumanMessage(
                     content="Calculate the compound interest on $10,000 at 5% for 10 years"
                 )
             ]

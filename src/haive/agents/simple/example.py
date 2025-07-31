@@ -8,6 +8,7 @@ from typing import Any
 
 try:
     from haive.core.engine.aug_llm import AugLLMConfig
+
     from haive.agents.simple import SimpleAgent
 except ImportError as e:
     print(f"Import error: {e}")
@@ -17,9 +18,9 @@ from rich.pretty import Pretty
 from rich.traceback import install as install_rich_traceback
 
 # Setup basic logging
+try:
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
-
 except ImportError as e:
     print(f"Import error: {e}")
     print("Some dependencies may not be available")
