@@ -96,7 +96,9 @@ async def main():
     success = await test_self_discover_agent()
 
     if success:
+        pass
     else:
+        pass
 
 
 if __name__ == "__main__":

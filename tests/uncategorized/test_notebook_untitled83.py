@@ -51,7 +51,7 @@ def add_comprehensive_debugging():
                 )
                 if "AugLLMConfig" in str(e):
                     console.print(
-                        "[bold red]🎯 FOUND AugLLMConfig ERROR in derive_input_schema![/bold red]"d]"
+                        "[bold red]🎯 FOUND AugLLMConfig ERROR in derive_input_schema![/bold red]"
                     )
                 raise
 

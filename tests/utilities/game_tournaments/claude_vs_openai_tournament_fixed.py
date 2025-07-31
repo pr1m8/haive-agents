@@ -342,11 +342,11 @@ def main():
 
 
     if claude_wins > openai_wins:
-        pass)")
+        pass
     elif openai_wins > claude_wins:
-        pass)")
+        pass
     else:
-        pass)")
+        pass
 
 
 

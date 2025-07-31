@@ -23,7 +23,7 @@ if hasattr(react_agent, "engines") and "main" in react_agent.engines:
     if hasattr(main_engine, "add_tool"):
         main_engine.add_tool(add)
     else:
-react_agent.compile()
+        pass
 
 try:
     # Check state

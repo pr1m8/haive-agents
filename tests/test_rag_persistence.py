@@ -189,9 +189,9 @@ def main():
         status = "✅ PASSED" if passed else "❌ FAILED"
 
     if all(results.values()):
-        pass!")
+        pass
     else:
-        passed")
+        pass
 
 
 if __name__ == "__main__":

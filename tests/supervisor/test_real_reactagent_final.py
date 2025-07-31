@@ -226,6 +226,7 @@ async def test_real_haive_reactagents():
         # Final verification
 
         for name, agent in agent_registry.items():
+            pass
 
         # Save final state
         final_state = {

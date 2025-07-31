@@ -75,7 +75,7 @@ def test_initial_version():
                     pass
 
     # Verify schema diversity
-    schemas = set(m["schema"] for m in memories}
+    schemas = set(m["schema"] for m in memories)
 
     return True
 

@@ -38,6 +38,7 @@ agent = SimpleAgentV2(
 # Check the engine field
 engine_field = agent.state_schema.model_fields.get("engine")
 if engine_field:
+    pass
 
 # The key issue: when LangGraph compiles the graph, it evaluates type hints
 

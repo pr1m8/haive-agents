@@ -41,3 +41,4 @@ except Exception as e:
 
     # Check if it's the msgpack error
     if "msgpack" in str(e):
+        pass

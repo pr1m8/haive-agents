@@ -67,7 +67,7 @@ def test_detailed_streaming():
                 if hasattr(chunk, "metadata"):
                     pass
                 if hasattr(chunk, "additional_kwargs"):
-                    pass}")
+(                    pass}")
 
             if isinstance(chunk, dict):
                 for key, value in chunk.items():

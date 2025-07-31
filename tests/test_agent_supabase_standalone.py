@@ -254,9 +254,9 @@ def main():
 
 
     if passed == total:
-        pass!")
+        pass
     else:
-        passed")
+        pass
 
     return passed == total
 

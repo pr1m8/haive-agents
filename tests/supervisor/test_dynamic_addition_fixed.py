@@ -157,8 +157,8 @@ async def test_edge_cases():
     # Test 3: Remove non-existent agent
     success = supervisor.unregister_agent("non_existent")
 
-    print("\n✅ Edge cases handled correctly!
-    return None")
+    print("\n✅ Edge cases handled correctly!")
+    return None
 
 
 if __name__ == "__main__":

@@ -205,7 +205,7 @@ class TestAllRAGWorkflows:
             agent2 = SimpleRAGAgent.from_documents(single_doc, llm_config)
             agent2.run({"query": "test"})
         except Exception as e:
-            passe}")
+(            passe}")
 
 
 if __name__ == "__main__":

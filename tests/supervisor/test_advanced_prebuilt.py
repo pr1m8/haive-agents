@@ -542,6 +542,7 @@ async def test_advanced_dynamic_supervisor():
     # Display performance metrics
     for agent in pool.get_active_agents():
         if agent.metrics.total_calls > 0:
+            pass
 
     # Test 5: Complex multi-agent workflow
 

@@ -295,6 +295,6 @@ if __name__ == "__main__":
 
     all_passed = all(result[1] for result in results)
     if all_passed:
-        pass!")
+        pass
     else:
         pass

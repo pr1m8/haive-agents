@@ -465,7 +465,7 @@ def print_performance_summary(test_results: Dict[str, bool], start_time: datetim
 
     if passed_tests == total_tests:
         print(
-            "\n🎉 ALL TESTS PASSED! Perplexity-style agents are ready for production!"n!"
+            "\n🎉 ALL TESTS PASSED! Perplexity-style agents are ready for production!"
         )
     else:
         print("\n⚠️ Some tests failed. Review the output above for details.ls.")

@@ -75,7 +75,7 @@ class SimpleDynamicSupervisor:
             option_names=["END"], option_descriptions=["End the conversation"]
         )
         self.compiled = False
-        self.graph_nodes = set(["supervisor", "END"}
+        self.graph_nodes = set(["supervisor", "END"])
 
     def register_agent(self, agent: MockAgent) -> bool:
         """Register an agent."""
@@ -209,7 +209,7 @@ async def test_graph_rebuilding():
 
             # Simulate re-compilation
             logger.info("   Re-compiling graph with new structure...")
-            logger.info("   ✅ Graph rebuilt successfully"y")
+            logger.info("   ✅ Graph rebuilt successfully")
 
     # Test the rebuilding
     supervisor = GraphRebuildingSupervisor()

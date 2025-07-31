@@ -319,7 +319,7 @@ def main():
                 "BasePromptTemplate" in str(frame_info.line)
                 or "prompt_template" in str(frame_info.filename).lower()
             ):
-                logger.exception("📍 CRITICAL FRAME:"E:")
+                logger.exception("📍 CRITICAL FRAME:")
                 logger.exception(f"   File: {frame_info.filename}")
                 logger.exception(f"   Line: {frame_info.lineno}")
                 logger.exception(f"   Function: {frame_info.name}")
