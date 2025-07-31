@@ -196,5 +196,6 @@ if __name__ == "__main__":
     asyncio.run(check_database_status())
 
     if success:
+        pass
     else:
         pass
