@@ -364,7 +364,7 @@ def test_enhanced_multi_agent_v3_branch_execution():
                 config={"configurable": {"thread_id": "test_branch_thread"}},
             )
 
-            print("✅ Branch execution successful"l")
+            print("✅ Branch execution successful")
             print(f"✅ Result type: {type(result)}")
             if isinstance(result, dict) and "messages" in result:
                 print(f"✅ Message count: {len(result['messages'])}")
@@ -372,7 +372,7 @@ def test_enhanced_multi_agent_v3_branch_execution():
         except Exception as exec_error:
             print(f"⚠️ Execution had issues: {exec_error}")
 
-        print("\n🎯 Branch Execution Test: SUCCESS"SS")
+        print("\n🎯 Branch Execution Test: SUCCESS")
         return True
 
     except Exception as e:
