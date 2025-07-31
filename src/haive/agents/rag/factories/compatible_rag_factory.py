@@ -165,6 +165,7 @@ class CompatibleRAGFactory:
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",
+        )
         self.enable_search_tools = enable_search_tools
         self.default_embedding_model = default_embedding_model
 
@@ -233,6 +234,7 @@ class CompatibleRAGFactory:
             components=components or [],
             routing_conditions=routing_conditions,
             **kwargs,
+        )
 
     def create_from_schema_compatibility(
         self,
@@ -731,7 +733,6 @@ class CompatibleRAGFactory:
 
     def _build_answer_generation(self, **kwargs) -> SimpleAgent:
         """Build answer generation agent."""
-        )
 
         return SimpleAgent(
             engine=AugLLMConfig(

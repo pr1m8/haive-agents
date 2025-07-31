@@ -172,6 +172,7 @@ class EnhancedHyDERAGAgentV2(SequentialAgent, ToolRouteMixin):
                 "name", f"Enhanced HyDE RAG v2 ({config.generation_mode.value})"
             ),
             **kwargs,
+        )
 
     @classmethod
     def _create_single_document_pipeline(

@@ -35,8 +35,9 @@ Example:
 
 try:
     from haive.agents.reasoning_and_critique.tot.agent import ToTAgent, setup_workflow
-
-from haive.agents.reasoning_and_critique.tot.agent import ToTAgent
+except ImportError:
+    ToTAgent = None
+    setup_workflow = None
 from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
     CandidateGeneration as NewCandidateGeneration,
 )

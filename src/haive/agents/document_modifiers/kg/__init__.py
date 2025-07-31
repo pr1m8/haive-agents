@@ -12,10 +12,8 @@ try:
     from haive.agents.document_modifiers.kg.kg_iterative_refinement.iterative_graph_transformer import (
         IterativeGraphTransformer,
         StructuredKGAgent,
-        from,
-        haive.agents.document_modifiers.kg.kg_map_merge.structured_kg_agent,
-        import,
     )
+    from haive.agents.document_modifiers.kg.kg_map_merge.structured_kg_agent import StructuredKGAgent as MapMergeStructuredKGAgent
 
 
 except ImportError:
