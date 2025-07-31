@@ -36,6 +36,7 @@ def debug_schema_composition():
 
     # Debug engine input fields access
     if hasattr(engine, "prompt_template") and engine.prompt_template:
+        pass
 
     # Check if engine can be called to get input fields some other way
     engine_attrs = [

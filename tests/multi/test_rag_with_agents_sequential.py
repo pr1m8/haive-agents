@@ -236,6 +236,6 @@ async def test_rag_with_agents_sequential():
 if __name__ == "__main__":
     result = asyncio.run(test_rag_with_agents_sequential())
     if result:
-        pass!")
+        pass
     else:
-        pass!")
+        pass
