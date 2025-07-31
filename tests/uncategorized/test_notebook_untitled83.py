@@ -107,7 +107,7 @@ def add_comprehensive_debugging():
                 console.print(f"[bold red]💥 Agent.compile FAILED: {e}[/bold red]")
                 if "AugLLMConfig" in str(e):
                     console.print(
-                        "[bold red]🎯 FOUND AugLLMConfig ERROR in Agent.compile![/bold red]"d]"
+                        "[bold red]🎯 FOUND AugLLMConfig ERROR in Agent.compile![/bold red]"
                     )
                 raise
 
