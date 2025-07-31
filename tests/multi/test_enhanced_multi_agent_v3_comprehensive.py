@@ -459,7 +459,7 @@ def test_enhanced_multi_agent_v3_performance_tracking():
             print(f"✅ Overall avg duration: {overall.get('average_duration', 0):.3f}s")
             print(f"✅ Total tasks: {overall.get('total_tasks', 0)}")
 
-        print("\n🎯 Performance Tracking Test: SUCCESS"SS")
+        print("\n🎯 Performance Tracking Test: SUCCESS")
         return True
 
     except Exception as e:
@@ -496,7 +496,7 @@ def test_enhanced_multi_agent_v3_state_management():
             name="state_test", agents=agents, performance_mode=True, debug_mode=True
         )
 
-        print("✅ MultiAgent with enhanced state created"d")
+        print("✅ MultiAgent with enhanced state created")
         print(f"✅ State schema: {state_multi.state_schema.__name__}")
 
         # Test state schema functionality
@@ -530,7 +530,7 @@ def test_enhanced_multi_agent_v3_state_management():
             )
             print(f"✅ Execution summary: {exec_summary.get('overall_success', False)}")
 
-        print("\n🎯 State Management Test: SUCCESS"SS")
+        print("\n🎯 State Management Test: SUCCESS")
         return True
 
     except Exception as e:
