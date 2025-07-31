@@ -25,7 +25,7 @@ def check_ps_errors():
 
         threads_with_errors, total_errors = cur.fetchone()
 
-        print("\n📊 Overall Statistics:"s:")
+        print("\n📊 Overall Statistics:")
         print(f"   Threads with PS errors: {threads_with_errors}")
         print(f"   Total error checkpoints: {total_errors}")
 
