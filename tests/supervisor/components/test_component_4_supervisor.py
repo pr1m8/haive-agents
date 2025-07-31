@@ -126,6 +126,7 @@ def test_graph_structure():
         # Get graph info if available
         try:
             # Try to get node information
+            pass
         except Exception as e:
             pass
     else:

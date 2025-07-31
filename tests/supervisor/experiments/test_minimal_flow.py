@@ -40,6 +40,7 @@ async def test_minimal_flow():
 
                 # Check if it contains search results about France
                 if "France" in content and len(content) > 50:
+                    pass
                 else:
                     pass
             else:

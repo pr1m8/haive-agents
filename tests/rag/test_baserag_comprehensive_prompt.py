@@ -293,12 +293,12 @@ async def test_comprehensive_rag_flow():
         try:
             answer = await simple_agent.arun(answer_input)
 
-            print("\n📊 Structured Answer:"r:")
+            print("\n📊 Structured Answer:")
             if isinstance(answer, ComprehensiveRAGAnswer):
-                print("\n🎯 Direct Answer:"r:")
+                print("\n🎯 Direct Answer:")
                 print(f"   {answer.direct_answer}")
 
-                print("\n📝 Detailed Explanation:"n:")
+                print("\n📝 Detailed Explanation:")
                 print(
                     f"   {answer.detailed_explanation[:500]}..."
                     if len(answer.detailed_explanation) > 500

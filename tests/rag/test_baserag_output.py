@@ -95,7 +95,7 @@ async def test_baserag_with_documents():
             result = await base_rag.arun(query, debug=True)
 
             # Analyze the result structure
-            print("\n📊 Result Analysis:"s:")
+            print("\n📊 Result Analysis:")
             print(f"   Type: {type(result)}")
 
             if isinstance(result, dict):
