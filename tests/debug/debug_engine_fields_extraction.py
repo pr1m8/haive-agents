@@ -41,6 +41,7 @@ input_fields = config.get_input_fields()
 for field_name, field_def in input_fields.items():
     field_type, field_info = field_def
     if hasattr(field_info, "default"):
+        pass
     if hasattr(field_info, "default_factory"):
         pass
 

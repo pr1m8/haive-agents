@@ -34,6 +34,7 @@ class QueryRefinementResponse(BaseModel):
 
 for i, msg in enumerate(RAG_QUERY_REFINEMENT.messages):
     if hasattr(msg, "prompt"):
+        pass
 
 config = AugLLMConfig(
     prompt_template=RAG_QUERY_REFINEMENT,
