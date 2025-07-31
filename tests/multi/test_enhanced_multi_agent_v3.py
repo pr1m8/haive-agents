@@ -415,7 +415,7 @@ def test_enhanced_multi_agent_v3_factory():
         assert "factory_workflow" in repr_str
         print("✅ String representation format correct")
 
-        print("\n🎯 Enhanced MultiAgent V3 Factory Tests: SUCCESS"SS")
+        print("\n🎯 Enhanced MultiAgent V3 Factory Tests: SUCCESS")
         return True
 
     except Exception as e:
