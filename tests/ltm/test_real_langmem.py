@@ -137,7 +137,7 @@ def test_langmem_with_groq():
 
         if real_langmem:
             return memories
-        print("❌ Groq also fell back to simple extraction")")
+        print("❌ Groq also fell back to simple extraction")
 
     except Exception as e:
         return None
@@ -174,7 +174,7 @@ def test_langmem_with_deepseek():
 
         if real_langmem:
             return memories
-        print("❌ DeepSeek also used fallback")")
+        print("❌ DeepSeek also used fallback")
 
     except Exception as e:
         return None
@@ -241,4 +241,6 @@ if __name__ == "__main__":
         pass
 
     if any([anthropic_result, groq_result, deepseek_result]):
+        pass
     else:
+        pass
