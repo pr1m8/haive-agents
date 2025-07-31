@@ -52,6 +52,7 @@ async def main():
     except Exception as e:
         if "prepared statement" in str(e):
             # Check if data was saved anyway
+            pass
         else:
             pass
 
