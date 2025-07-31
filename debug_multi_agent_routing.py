@@ -22,20 +22,19 @@ from haive.agents.simple.agent import SimpleAgent
 
 multi_agent_state.Agent = Agent
 MultiAgentState.model_rebuild()
-agent_node_v\d+.Agent = Agent
+agent_node_v2.Agent = Agent
 
 
-def test_current_broken_implementatio\w+():
-   \s+"""Test the current broken\s+implementatio\w+."""
+def test_current_broken_implementation():
+    """Test the current broken implementation."""
     # Create simple agents
-    agent\d+ =\s+SimpleAgent(nam\w+="agent1", engine=AugLLMConfig())
-    agent\d+ =\s+SimpleAgent(nam\w+="agent2", engine=AugLLMConfig())
+    agent1 = SimpleAgent(name="agent1", engine=AugLLMConfig())
+    agent2 = SimpleAgent(name="agent2", engine=AugLLMConfig())
 
     # Create MultiAgent with agents
     multi_agent = MultiAgent(
-       \s+nam\w+="test_multi", agents=[agent1, agent\d+],\s+execution_mod\w+="sequential"
+        name="test_multi", agents=[agent1, agent2], execution_mode="sequential"
     )
-
 
     # Build the graph
     graph = multi_agent.build_graph()
@@ -48,7 +47,7 @@ def test_current_broken_implementatio\w+():
         compiled = lg_graph.compile()
 
         # Try to invoke
-       \s+compiled.invok\w+({"messages":\s+[HumanMessage(conten\w+="What is 2+\d+?")]})
+        compiled.invoke({"messages": [HumanMessage(content="What is 2+2?")]})
 
     except Exception:
         import traceback
@@ -56,35 +55,34 @@ def test_current_broken_implementatio\w+():
         traceback.print_exc()
 
 
-def test_fixed_implementatio\w+():
-   \s+"""Test a fixed implementation using agent node\s+config\w+."""
+def test_fixed_implementation():
+    """Test a fixed implementation using agent node config."""
     # Create simple agents
-    agent\d+ =\s+SimpleAgent(nam\w+="agent1", engine=AugLLMConfig())
-    agent\d+ =\s+SimpleAgent(nam\w+="agent2", engine=AugLLMConfig())
+    agent1 = SimpleAgent(name="agent1", engine=AugLLMConfig())
+    agent2 = SimpleAgent(name="agent2", engine=AugLLMConfig())
 
     # Create a custom graph with proper agent node configs
-    from haive.core.graph.state_graph.base_graphd+ import BaseGraph
+    from haive.core.graph.state_graph.base_graph import BaseGraph
 
-    graph =\s+BaseGraph(nam\w+="fixed_multi_agent", state_schema=MultiAgentState)
+    graph = BaseGraph(name="fixed_multi_agent", state_schema=MultiAgentState)
 
     # Add agents as proper node configs, not raw agents
-    agent1_node = create_agent_node_v\d+(
-       \s+agent_nam\w+="agent1", agent=agent\d+,\s+nam\w+="agent1_node"
+    agent1_node = create_agent_node_v3(
+        agent_name="agent1", agent=agent1, name="agent1_node"
     )
 
-    agent2_node = create_agent_node_v\d+(
-       \s+agent_nam\w+="agent2", agent=agent\d+,\s+nam\w+="agent2_node"
+    agent2_node = create_agent_node_v3(
+        agent_name="agent2", agent=agent2, name="agent2_node"
     )
 
     # Add nodes to graph
-   \s+graph.add_nod\w+("agent\d+_node", agent1_node)
-   \s+graph.add_nod\w+("agent\d+_node", agent2_node)
+    graph.add_node("agent1_node", agent1_node)
+    graph.add_node("agent2_node", agent2_node)
 
     # Add sequential edges
-   \s+graph.add_edg\w+("__start__",\s+"agent\d+_nod\w+")
-   \s+graph.add_edge("agent\d+_nod\w+",\s+"agent\d+_nod\w+")
-   \s+graph.add_edge("agent\d+_nod\w+",\s+"__end_\w+")
-
+    graph.add_edge("__start__", "agent1_node")
+    graph.add_edge("agent1_node", "agent2_node")
+    graph.add_edge("agent2_node", "__end__")
 
     # Try to convert to LangGraph
     try:
@@ -95,8 +93,8 @@ def test_fixed_implementatio\w+():
 
         # Try to invoke with proper state
         initial_state = MultiAgentState(
-           \s+messages=[HumanMessage(content="What is \w++\d+?")],
-           \s+agents={"agen\w+\d+": agent1,\s+"agen\w+\d+": agent2},
+            messages=[HumanMessage(content="What is 2+2?")],
+            agents={"agent1": agent1, "agent2": agent2},
         )
 
         compiled.invoke(initial_state.model_dump())
@@ -108,21 +106,20 @@ def test_fixed_implementatio\w+():
 
 
 def show_agent_inspection():
-   \s+"""Show what happens when we inspect an agent\s+objec\w+."""
-    agent =\s+SimpleAgent(nam\w+="test_agent", engine=AugLLMConfig())
+    """Show what happens when we inspect an agent object."""
+    agent = SimpleAgent(name="test_agent", engine=AugLLMConfig())
 
-
-    if hasattr(agen\w+,\s+"metadata"):
+    if hasattr(agent, "metadata"):
         pass
 
     # Check if it has create_runnable
 
     # Try calling the agent directly
     with contextlib.suppress(Exception):
-       \s+agent.invok\w+({"messages":\s+[HumanMessage(conten\w+="Hello")]})
+        agent.invoke({"messages": [HumanMessage(content="Hello")]})
 
 
-if __name_\w+ ==\s+"__main__":
+if __name__ == "__main__":
     show_agent_inspection()
     test_current_broken_implementation()
     test_fixed_implementation()
