@@ -124,7 +124,7 @@ def add_comprehensive_debugging():
         original_to_langgraph = graph_mod.BaseGraph.to_langgraph
 
         def debug_to_langgraph(self, *args, **kwargs):
-            console.print("[yellow]🔍 BaseGraph.to_langgraph called[/yellow]"w]")
+            console.print("[yellow]🔍 BaseGraph.to_langgraph called[/yellow]")
             try:
                 result = original_to_langgraph(self, *args, **kwargs)
                 console.print("[green]✅ BaseGraph.to_langgraph success[/green]")
