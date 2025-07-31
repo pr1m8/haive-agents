@@ -76,12 +76,12 @@ def test_enhanced_multi_agent_v3_creation():
         )
 
         print(f"✅ Typed MultiAgent created: {typed_multi.name}")
-        print("✅ Type validation passed for Dict[str, EnhancedSimpleAgent]"]")
+        print("✅ Type validation passed for Dict[str, EnhancedSimpleAgent]")
         print(
             f"✅ Performance tracking initialized: {len(typed_multi.agent_performance)} agents"
         )
 
-        print("\n🎯 Enhanced MultiAgent V3 Creation Tests: SUCCESS"SS")
+        print("\n🎯 Enhanced MultiAgent V3 Creation Tests: SUCCESS")
         return True
 
     except Exception as e:
