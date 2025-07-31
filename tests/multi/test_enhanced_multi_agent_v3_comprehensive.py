@@ -282,7 +282,7 @@ def test_enhanced_multi_agent_v3_conditional_execution():
             except Exception as exec_error:
                 print(f"⚠️ Execution {i+1} had issues: {exec_error}")
 
-        print("\n🎯 Conditional Execution Test: SUCCESS"SS")
+        print("\n🎯 Conditional Execution Test: SUCCESS")
         return True
 
     except Exception as e:
