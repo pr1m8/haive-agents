@@ -272,7 +272,7 @@ Ensure all findings are accurately represented and properly categorized.""",
     )
 
     # Display results
-    print("\n📊 Code Analysis Report"rt")
+    print("\n📊 Code Analysis Report")
     print(f"{'='*60}")
     print(f"Project: {result.project_name}")
     print(f"Health Score: {result.overall_health_score:.1f}/10.0")
