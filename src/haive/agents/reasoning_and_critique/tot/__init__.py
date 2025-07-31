@@ -72,13 +72,14 @@ from haive.agents.reasoning_and_critique.tot.state import (
     TOTOutput,
     TOTState,
 )
-from haive.agents.reasoning_and_critique.tot.tree_of_thoughts_agent import (
-    TOTCommand,
-    TOTIteration,
-    TreeOfThoughtsAgent,
-    create_tree_of_thoughts_agent,
-)
 
+try:
+    from haive.agents.reasoning_and_critique.tot.tree_of_thoughts_agent import (
+        TOTCommand,
+        TOTIteration,
+        TreeOfThoughtsAgent,
+        create_tree_of_thoughts_agent,
+    )
 except ImportError:
     # Handle missing setup_workflow
 
