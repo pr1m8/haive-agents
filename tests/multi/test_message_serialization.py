@@ -111,3 +111,4 @@ custom_serialized = serialize_messages(state.messages)
 
 for i, msg in enumerate(custom_serialized):
     if msg.get("type") == "tool":
+        pass
