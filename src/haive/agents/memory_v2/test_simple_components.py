@@ -22,6 +22,7 @@ async def test_simple_memory():
             name="test_simple",
             engine=AugLLMConfig(temperature=0.1),
             user_id="test_user",
+        )
 
         # Store memory
         await agent.arun("Remember: Alice works at TechCorp")
@@ -77,8 +78,6 @@ async def test_longterm_memory():
 async def test_advanced_rag():
     """Test AdvancedRAGMemoryAgent alone."""
     try:
-        )
-
         config = AdvancedRAGConfig(
             user_id="test_user",
             llm_config=AugLLMConfig(temperature=0.1),

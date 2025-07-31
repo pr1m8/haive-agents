@@ -30,6 +30,7 @@ async def test_with_huggingface_embeddings():
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": "cpu"},
             encode_kwargs={"normalize_embeddings": False},
+        )
 
         # Test embedding some text
         test_texts = [
@@ -83,8 +84,8 @@ async def test_vector_store_with_free_embeddings():
         results = vector_store.similarity_search(query, k=2)
 
         for _i, _doc in enumerate(results):
-
-        return vector_store
+            print(_doc)
+        return results
 
     except Exception:
 
@@ -100,9 +101,7 @@ async def test_memory_rag_with_free_resources():
 
     try:
         # Create a simple retriever
-        retriever = vector_store.as_retriever(
-            search_type="similarity", search_kwargs={"k": 3}
-        )
+        retriever = vector_store.as_retriever()
 
         # Test queries
         test_queries = [
@@ -115,16 +114,17 @@ async def test_memory_rag_with_free_resources():
         for query in test_queries:
             docs = retriever.invoke(query)
             for _i, _doc in enumerate(docs):
+                pass
 
         # Save the vector store for later use
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = tempfile.mkdtemp()  # type: ignore
         save_path = Path(temp_dir) / "memory_store"
         vector_store.save_local(str(save_path))
 
         # Test loading
-        FAISS.load_local(
-            str(save_path), embeddings, allow_dangerous_deserialization=True
-        )
+        retriever = FAISS.load_local(
+            str(save_path), embeddings, allow_dangerous_deserialization=True  # type: ignore
+        ).as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
         return retriever
 
@@ -141,7 +141,7 @@ async def test_memory_state_with_embeddings():
         return None
 
     try:
-        )
+        # Create a simple retriever
 
         # Create memory state
         state = MemoryState(user_id="test_user")
@@ -178,11 +178,11 @@ async def test_memory_state_with_embeddings():
         for content, mem_type, importance in memories_data:
             # Create embedding
             embedding_vector = embeddings.embed_query(content)
-
+            print(embedding_vector)
             # Create enhanced memory with embedding
             memory = EnhancedMemoryItem(
                 content=content,
-                memory_type=mem_type,
+                memory_type=mem_type,  # type: ignore
                 importance=importance,
                 embedding=embedding_vector,
                 user_id="test_user",
@@ -234,8 +234,10 @@ async def main():
 if __name__ == "__main__":
     # Install sentence-transformers if needed
     try:
+        import sentence_transformers
     except ImportError:
 
         subprocess.check_call(["poetry", "add", "sentence-transformers"])
 
     asyncio.run(main())
+    print("Done")
