@@ -218,7 +218,7 @@ Ensure the report is professional, actionable, and includes all required section
         }
     )
 
-    print("\n📈 Business Report Generated:"d:")
+    print("\n📈 Business Report Generated:")
     print(f"Title: {result.title}")
     print(f"Market Segment: {result.market_analysis.segment}")
     print(f"Market Size: {result.market_analysis.size}")
