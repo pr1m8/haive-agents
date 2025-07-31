@@ -1466,7 +1466,7 @@ def run_comprehensive_react_documentation():
         research_agent, structured_agent, technical_agent = (
             demonstrate_create_react_agent_factory()
         )
-        print("✅ Factory agents created:":")
+        print("✅ Factory agents created:")
         print(f"   • Research: {research_agent.name}")
         print(f"   • Structured: {structured_agent.name}")
         print(f"   • Technical: {technical_agent.name}")
@@ -1482,7 +1482,7 @@ def run_comprehensive_react_documentation():
         print("\n⚖️  6. PERFORMANCE COMPARISON DEMONSTRATION")
         print("-" * 50)
         simple_agent, react_agent = demonstrate_react_vs_simple_comparison()
-        print("✅ Comparison agents created:":")
+        print("✅ Comparison agents created:")
         print(f"   • SimpleAgentV3: {simple_agent.name} (linear)")
         print(f"   • ReactAgentV3: {react_agent.name} (iterative)")
 
@@ -1492,7 +1492,7 @@ def run_comprehensive_react_documentation():
         fast_agent, thorough_agent, production_agent = (
             demonstrate_performance_considerations()
         )
-        print("✅ Performance variants created:":")
+        print("✅ Performance variants created:")
         print(f"   • Fast: {fast_agent.max_iterations} iterations")
         print(f"   • Thorough: {thorough_agent.max_iterations} iterations")
         print(f"   • Production: {production_agent.max_iterations} iterations")

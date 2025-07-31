@@ -927,7 +927,7 @@ def demonstrate_programming_advice():
         print(f"   Language: {advice.language}")
         print(f"   Topic: {advice.topic}")
         print(f"   Explanation: {advice.explanation}")
-        print("\n📝 Example Code:"e:")
+        print("\n📝 Example Code:")
         print(f"   {advice.example_code}")
         print(f"\n⭐ Best Practices ({len(advice.best_practices)}):")
         for i, practice in enumerate(advice.best_practices, 1):
@@ -980,7 +980,7 @@ def run_all_demonstrations():
         successful_demos = sum(1 for result in results.values() if result is not None)
         total_demos = len(results)
 
-        print("\n🎉 DEMONSTRATION SUMMARY"RY")
+        print("\n🎉 DEMONSTRATION SUMMARY")
         print("=" * 40)
         print(f"Successful demonstrations: {successful_demos}/{total_demos}")
 
