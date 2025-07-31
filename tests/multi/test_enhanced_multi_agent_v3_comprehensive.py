@@ -343,7 +343,7 @@ def test_enhanced_multi_agent_v3_branch_execution():
         )
 
         print(f"✅ Branch MultiAgent created: {branch_multi.name}")
-        print("✅ Workflow: validator -> (processor1, processor2) -> aggregator"r")
+        print("✅ Workflow: validator -> (processor1, processor2) -> aggregator")
         print(f"✅ Branches configured: {len(branch_multi.branches)}")
 
         # Compile and test
