@@ -65,7 +65,7 @@ async def test_structured_output_extraction():
                     data = structured_msg.content
 
                 todo_list = TodoList(**data)
-                print("\n✅ Successfully extracted TodoList:":")
+                print("\n✅ Successfully extracted TodoList:")
                 print(f"   Title: {todo_list.title}")
                 print(f"   Priority: {todo_list.priority}")
                 print(f"   Hours: {todo_list.estimated_hours}")
@@ -95,7 +95,7 @@ async def test_structured_output_extraction():
                             args = json.loads(args)
 
                         todo_list = TodoList(**args)
-                        print("\n✅ Extracted from tool call:":")
+                        print("\n✅ Extracted from tool call:")
                         print(f"   Title: {todo_list.title}")
                         print(f"   Items: {todo_list.items}")
                         break

@@ -68,7 +68,7 @@ def test_with_debug():
                     print(f"\n🎯 AI Response: {msg.content}")
                     break
             else:
-                print("\n⚠️  No AIMessage found in messages"ges")
+                print("\n⚠️  No AIMessage found in messages")
         else:
             print(f"\nUnexpected result type: {type(result)}")
 

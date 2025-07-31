@@ -52,6 +52,7 @@ for i, msg in enumerate(messages):
 
     if isinstance(msg, dict):
         if msg.get("type") == "tool":
+            pass
     else:
         pass
 

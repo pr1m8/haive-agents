@@ -74,6 +74,7 @@ state_dict = state.model_dump()
 # Check the tool message
 for i, msg in enumerate(state_dict["messages"]):
     if msg.get("type") == "tool":
+        pass
 
 
 # Test 2: Apply fix to actual agent state

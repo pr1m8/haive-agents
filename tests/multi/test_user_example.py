@@ -86,6 +86,7 @@ def test_user_example():
                 for agent_id, output in result["agent_outputs"].items():
                     pass
         else:
+            pass
 
     except Exception as e:
         import traceback
@@ -147,6 +148,7 @@ def test_with_different_tools():
         if isinstance(result, dict) and "messages" in result:
             # Show last few messages
             for msg in result["messages"][-3:]:
+                pass
 
     except Exception as e:
         import traceback

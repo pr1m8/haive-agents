@@ -40,6 +40,7 @@ try:
 
         for i, msg in enumerate(messages):
             if isinstance(msg, ToolMessage):
+                pass
 
 except Exception as e:
     import traceback

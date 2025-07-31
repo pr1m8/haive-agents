@@ -200,7 +200,7 @@ def test_tool_error_handling():
         debug=True,
     )
 
-    print("✅ Created agent for error testing"g")
+    print("✅ Created agent for error testing")
 
     # Test invalid expression that should cause tool error
     query = "Calculate this invalid expression: 15 + + 23"
