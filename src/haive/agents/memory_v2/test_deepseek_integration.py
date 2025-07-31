@@ -27,12 +27,13 @@ async def test_deepseek_setup():
     # Import DeepSeek config
 
     # Create DeepSeek config
-    deepseek_config = DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
+    deepseek_config = DeepSeekLLMConfig(model="deepseek-chat")
     print(f"✅ Created DeepSeekLLMConfig: {deepseek_config.model}")
 
     # Create AugLLMConfig
     aug_config = AugLLMConfig(
         llm_config=deepseek_config, system_message="You are a helpful memory assistant."
+    )
     print("✅ Created AugLLMConfig with DeepSeek")
 
     return aug_config
@@ -94,7 +95,7 @@ async def test_memory_with_deepseek():
     for content, mem_type, importance in memories:
         memory = EnhancedMemoryItem(
             content=content,
-            memory_type=mem_type,
+            memory_type=mem_type,  # type: ignore
             importance=importance,
             user_id="test_user",
         )
@@ -115,9 +116,6 @@ async def test_custom_memory_agent():
     """Test a custom memory-aware agent with DeepSeek."""
     print("\n=== Testing Custom Memory Agent ===\n")
 
-
-    )
-
     class MemoryAgent(SimpleAgent):
         """Simple agent with memory capabilities."""
 
@@ -133,7 +131,7 @@ async def test_custom_memory_agent():
                 content = user_input[9:].strip()
                 memory = EnhancedMemoryItem(
                     content=content,
-                    memory_type=MemoryType.FACTUAL,
+                    memory_type=MemoryType.FACTUAL,  # type: ignore
                     importance=ImportanceLevel.MEDIUM,
                 )
                 self.memory_state.add_memory_item(memory)
@@ -156,7 +154,7 @@ async def test_custom_memory_agent():
             return await super().arun(user_input, **kwargs)
 
     # Create DeepSeek config
-    deepseek_config = DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
+    deepseek_config = DeepSeekLLMConfig(model="deepseek-chat")
 
     aug_config = AugLLMConfig(
         llm_config=deepseek_config,
