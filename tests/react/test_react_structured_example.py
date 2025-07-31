@@ -288,7 +288,7 @@ Ensure all findings are accurately represented and properly categorized.""",
             print(f"  • {issue.category}: {issue.description}")
             print(f"    Fix: {issue.suggestion}")
 
-    print("\n📈 Code Metrics:"s:")
+    print("\n📈 Code Metrics:")
     for metric, value in list(result.code_metrics.items())[:4]:
         print(f"  • {metric}: {value}")
 

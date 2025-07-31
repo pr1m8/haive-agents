@@ -87,7 +87,7 @@ def test_enhanced_multi_agent_v3_sequential_execution():
                 f"⚠️ Execution had issues (may be expected due to LLM availability): {exec_error}"
             )
 
-        print("\n🎯 Sequential Execution Test: SUCCESS"SS")
+        print("\n🎯 Sequential Execution Test: SUCCESS")
         return True
 
     except Exception as e:
@@ -157,7 +157,7 @@ def test_enhanced_multi_agent_v3_parallel_execution():
                 config={"configurable": {"thread_id": "test_parallel_thread"}},
             )
 
-            print("✅ Parallel execution successful"l")
+            print("✅ Parallel execution successful")
             print(f"✅ Result type: {type(result)}")
             if isinstance(result, dict) and "messages" in result:
                 print(f"✅ Message count: {len(result['messages'])}")
@@ -167,7 +167,7 @@ def test_enhanced_multi_agent_v3_parallel_execution():
         except Exception as exec_error:
             print(f"⚠️ Execution had issues (may be expected): {exec_error}")
 
-        print("\n🎯 Parallel Execution Test: SUCCESS"SS")
+        print("\n🎯 Parallel Execution Test: SUCCESS")
         return True
 
     except Exception as e:

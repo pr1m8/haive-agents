@@ -314,7 +314,7 @@ async def main():
     )
 
     if not all(results.values()):
-        passs")
+        pass
 
 
 if __name__ == "__main__":

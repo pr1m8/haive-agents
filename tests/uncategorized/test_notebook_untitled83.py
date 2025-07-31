@@ -135,7 +135,7 @@ def add_comprehensive_debugging():
                 )
                 if "AugLLMConfig" in str(e):
                     console.print(
-                        "[bold red]🎯 FOUND AugLLMConfig ERROR in BaseGraph.to_langgraph![/bold red]"d]"
+                        "[bold red]🎯 FOUND AugLLMConfig ERROR in BaseGraph.to_langgraph![/bold red]"
                     )
                     console.print(
                         "[bold red]THIS IS LIKELY THE MAIN ERROR LOCATION![/bold red]"

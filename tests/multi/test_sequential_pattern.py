@@ -294,7 +294,7 @@ async def test_custom_sequential():
         }
     )
 
-    print("\n🔧 Technical Summary Generated:"d:")
+    print("\n🔧 Technical Summary Generated:")
     print(f"Problem: {result.problem_statement}")
     print(f"Approach: {result.technical_approach[:200]}...")
     print(f"Steps: {len(result.implementation_steps)} steps")
