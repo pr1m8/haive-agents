@@ -46,6 +46,7 @@ def test_pydantic_field_addition():
         updated = BasicModel(**{**instance.model_dump(), **update_data})
 
     except Exception as e:
+        pass
 
 
 def test_state_schema_requirements():

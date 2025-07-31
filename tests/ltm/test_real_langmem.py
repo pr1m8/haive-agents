@@ -77,7 +77,7 @@ def test_langmem_with_anthropic():
                     pass
 
             # Verify schema diversity
-            schemas = set(m["schema"] for m in memories}
+            schemas = set(m["schema"] for m in memories)
 
             return memories
 

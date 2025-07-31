@@ -32,7 +32,7 @@ async def debug_execution():
 
     print("\n" + "=" * 80)
     print("🔍 DEBUG: ReactAgent → SimpleAgent Sequential Execution")
-    print("=" * 80 + \n")
+    print("=" * 80 + "\n")
 
     # Create ReactAgent with calculator tool
     print("📌 STEP 1: Creating ReactAgent with calculator tool")

@@ -73,6 +73,7 @@ try:
     localns = {state_schema.__name__: state_schema}
     hints = get_type_hints(state_schema, localns=localns)
 except NameError as e:
+    pass
 
 # Test if we can make BaseOutputParser available
 try:

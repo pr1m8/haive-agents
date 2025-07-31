@@ -86,6 +86,7 @@ def test_parser_node_dynamic_field_addition():
             if "testresult" in result_command.update:
                 structured_result = result_command.update["testresult"]
             else:
+                pass
         else:
             pass
 
