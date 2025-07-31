@@ -27,7 +27,7 @@ def check_database_after_run():
         actual_thread_id = agent.runnable_config["configurable"]["thread_id"]
 
     except Exception as e:
-        pass..")
+        pass
         # Continue with database check anyway
 
     # Check database for persisted data
