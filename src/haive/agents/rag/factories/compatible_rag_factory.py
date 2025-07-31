@@ -1,6 +1,5 @@
 """Compatible RAG Workflow Factory.
 
-from typing import Any, Dict
 Generic factory for building composable RAG workflows based on I/O schema compatibility.
 Uses the enhanced multi-agent base with automatic compatibility checking, agent replacement,
 and workflow optimization. Allows replacing agents by compatible I/O schemas.
@@ -601,7 +600,7 @@ class CompatibleRAGFactory:
 
     def _build_query_expansion(self, **kwargs) -> SimpleAgent:
         """Build query expansion agent."""
-        )
+        pass
 
         return SimpleAgent(
             engine=AugLLMConfig(
@@ -1003,6 +1002,7 @@ def create_plug_and_play_component(
         documents=documents,
         llm_config=llm_config,
         enable_search_tools=kwargs.get("enable_search_tools", False),
+    )
 
     if component_type not in factory._component_builders:
         raise TypeError(f"Unknown component type: {component_type}")
@@ -1022,7 +1022,6 @@ def get_component_compatibility_info(
         Dict with 'inputs' and 'outputs' lists
     """
     # Import schema functions
-    )
 
     # Component schema mappings
     schema_map = {
