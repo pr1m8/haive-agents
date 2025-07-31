@@ -175,7 +175,7 @@ and customer support tickets about checkout issues have tripled."""
         }
     )
 
-    print("📊 Analysis Report:"t:")
+    print("📊 Analysis Report:")
     print(f"Subject: {result.subject}")
     print(f"\nSummary: {result.summary}")
 
