@@ -386,8 +386,8 @@ if __name__ == "__main__":
             status = "✅ PASS" if passed else "❌ FAIL"
 
         if all(result for _, result in results):
-            pass!")
+            pass
         else:
-            passs")
+            pass
 
     asyncio.run(main())
