@@ -115,6 +115,6 @@ if __name__ == "__main__":
     multi_agent = test_proper_multi_agent()
 
     if married_schema and multi_agent:
-        pass!")
+        pass
     else:
-        passe")
+        pass
