@@ -45,6 +45,7 @@ try:
 
     for name, field_info in SimpleAgentV2.model_fields.items():
         if name in ["engine", "structured_output_model", "prompt_template"]:
+            pass
 
     agent = SimpleAgentV2(engine=config)
 
