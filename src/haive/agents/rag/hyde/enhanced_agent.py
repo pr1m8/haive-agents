@@ -113,6 +113,7 @@ class EnhancedHyDERAGAgent(SequentialAgent):
             )
         return cls._create_traditional_pattern(
             documents, llm_config, embedding_model, **kwargs
+        )
 
     @classmethod
     def _create_with_enhancement_pattern(
@@ -131,6 +132,7 @@ class EnhancedHyDERAGAgent(SequentialAgent):
                 output_key="hypothetical_content",  # Raw content output
             ),
             name="Base HyDE Generator",
+        )
 
         # Step 2: Create structured output enhancement
         hyde_enhancer = create_hyde_enhancer()
@@ -152,8 +154,6 @@ Consider how well the hypothetical document would serve for semantic retrieval."
         )
 
         # Step 4: Final answer generation
-        )
-
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
@@ -195,8 +195,6 @@ Consider how well the hypothetical document would serve for semantic retrieval."
 
         retriever = EnhancedHyDERetriever(
             documents=documents, embedding_model=embedding_model, name="HyDE Retriever"
-        )
-
         )
 
         answer_agent = SimpleAgent(

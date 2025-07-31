@@ -116,6 +116,7 @@ class SafeCompatibilityTester:
             # Perform basic compatibility check
             compat_result = self._basic_schema_compatibility_check(
                 source_schema, target_schema
+            )
 
             # Analyze schemas in detail
             source_analysis = self.analyzer.analyze_schema(source_schema)
@@ -249,8 +250,6 @@ class SafeCompatibilityTester:
         """
         # Import agents safely
         try:
-            )
-
             # Test basic RAG chain
             basic_chain_report = self.test_agent_pair_compatibility(
                 SIMPLE_RAG_AGENT, SIMPLE_RAG_ANSWER_AGENT

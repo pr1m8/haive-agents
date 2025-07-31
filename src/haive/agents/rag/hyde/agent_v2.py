@@ -113,6 +113,7 @@ class HyDERetrieverAgent(Agent):
         # Add the base retriever's graph as a subgraph
         retriever_node = EngineNodeConfig(
             engine=self.base_retriever.engine, name="retriever"
+        )
         graph.add_node("retriever", retriever_node)
 
         # Connect: START -> transform -> retriever -> END
@@ -172,8 +173,6 @@ class HyDERAGAgentV2(SequentialAgent):
         )
 
         # Step 4: Generate final answer using standard RAG prompt
-        )
-
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
