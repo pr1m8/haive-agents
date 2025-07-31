@@ -278,7 +278,7 @@ Ensure all findings are accurately represented and properly categorized.""",
     print(f"Health Score: {result.overall_health_score:.1f}/10.0")
     print(f"\nSummary: {result.analysis_summary}")
 
-    print("\n🚨 Issues Found:"d:")
+    print("\n🚨 Issues Found:")
     print(f"- Critical: {result.critical_issues_count}")
     print(f"- Total: {len(result.issues)}")
 
