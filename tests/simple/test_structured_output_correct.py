@@ -155,7 +155,7 @@ async def test_with_helper():
     todo_list = extract_structured_output(result, TodoList)
 
     if todo_list:
-        print("✅ Extracted TodoList using helper:":")
+        print("✅ Extracted TodoList using helper:")
         print(f"   Title: {todo_list.title}")
         print(f"   Priority: {todo_list.priority}")
         print(f"   Total Hours: {todo_list.estimated_hours}")
