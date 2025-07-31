@@ -305,7 +305,7 @@ def test_react_vs_simple_comparison():
     print("\n🔄 ReactAgentV3 execution:")
     react_result = react_agent.run(query)
 
-    print("\n📊 Comparison Results:"s:")
+    print("\n📊 Comparison Results:")
     print("   Simple iterations: 1 (linear execution)")
     print(f"   React iterations: {react_agent.iteration_count} (reasoning loops)")
 
