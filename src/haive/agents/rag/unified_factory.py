@@ -92,6 +92,7 @@ class RAGFactory:
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
                 api_key="${AZURE_OPENAI_API_KEY}",
+            )
 
         agent_name = name or f"{rag_type.title()} RAG"
 
@@ -99,6 +100,7 @@ class RAGFactory:
         if style == RAGStyle.CHAIN:
             return RAGFactory._create_chain(
                 rag_type, documents, llm_config, agent_name, **kwargs
+            )
         if style == RAGStyle.MULTI:
             return RAGFactory._create_multi(
                 rag_type, documents, llm_config, agent_name, **kwargs
@@ -118,12 +120,11 @@ class RAGFactory:
     ) -> ChainAgent:
         """Create ChainAgent implementation."""
         if rag_type == RAGType.AGENTIC_ROUTER:
-            )
 
             return create_agentic_rag_router_chain(documents, llm_config, name)
 
         if rag_type == RAGType.QUERY_PLANNING:
-            )
+            pass
 
             return create_query_planning_chain(documents, llm_config, name)
 
