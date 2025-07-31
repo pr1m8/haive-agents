@@ -142,6 +142,6 @@ async def test_agent_node_v3_sequential():
 if __name__ == "__main__":
     result = asyncio.run(test_agent_node_v3_sequential())
     if result:
-        pass!")
+        pass
     else:
-        pass!")
+        pass

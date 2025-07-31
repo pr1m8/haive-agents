@@ -148,7 +148,7 @@ async def test_react_to_research_report():
         "Research the AI market opportunity for small businesses"
     )
 
-    print("\n📊 Research Report Generated:"d:")
+    print("\n📊 Research Report Generated:")
     print(f"Topic: {result.topic}")
     print(f"Executive Summary: {result.executive_summary[:200]}...")
     print(f"Key Findings: {len(result.key_findings)} findings")
