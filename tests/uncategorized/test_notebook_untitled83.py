@@ -68,7 +68,7 @@ def add_comprehensive_debugging():
         original_build = composer_mod.SchemaComposer.build
 
         def debug_build(self, *args, **kwargs):
-            console.print("[yellow]🔍 SchemaComposer.build called[/yellow]"w]")
+            console.print("[yellow]🔍 SchemaComposer.build called[/yellow]")
             try:
                 result = original_build(self, *args, **kwargs)
                 console.print("[green]✅ SchemaComposer.build success[/green]")
