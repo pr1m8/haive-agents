@@ -172,9 +172,9 @@ async def main():
         status = "✅ PASS" if passed else "❌ FAIL"
 
     if not all(result for _, result in results):
-        passix!")
+        pass
     else:
-        pass!")
+        pass
 
 
 if __name__ == "__main__":

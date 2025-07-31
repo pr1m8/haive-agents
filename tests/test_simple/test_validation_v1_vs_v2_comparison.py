@@ -99,6 +99,7 @@ async def test_simple_agent_v1_with_plan():
         for i, msg in enumerate(result["messages"]):
             if isinstance(msg, ToolMessage):
                 pass
+                pass
 
         # Check for ToolMessages
         tool_messages = [
@@ -164,6 +165,7 @@ async def test_simple_agent_v2_with_plan():
 
         for i, msg in enumerate(result["messages"]):
             if isinstance(msg, ToolMessage):
+                pass
 
         # Check for ToolMessages
         tool_messages = [
@@ -221,6 +223,7 @@ async def test_simple_agent_v1_with_add_tool():
 
         for i, msg in enumerate(result["messages"]):
             if isinstance(msg, ToolMessage):
+                pass
 
         # Check for ToolMessages
         tool_messages = [
@@ -278,6 +281,7 @@ async def test_simple_agent_v2_with_add_tool():
 
         for i, msg in enumerate(result["messages"]):
             if isinstance(msg, ToolMessage):
+                pass
 
         # Check for ToolMessages
         tool_messages = [
@@ -340,6 +344,7 @@ async def test_react_agent_with_add_tool():
 
         for i, msg in enumerate(result["messages"]):
             if isinstance(msg, ToolMessage):
+                pass
 
         # Check for ToolMessages
         tool_messages = [
