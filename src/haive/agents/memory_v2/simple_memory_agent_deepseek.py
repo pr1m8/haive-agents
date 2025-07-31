@@ -14,6 +14,13 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.agents.simple.agent import SimpleAgent
 
 try:
+    from memory_state_original import (
+        EnhancedMemoryItem,
+        ImportanceLevel,
+        MemoryState,
+        MemoryType,
+    )
+
     from .memory_state_original import (
         EnhancedMemoryItem,
         ImportanceLevel,
@@ -21,24 +28,23 @@ try:
         MemoryType,
     )
     from .memory_state_with_tokens import MemoryStateWithTokens
-    from memory_state_original import (
-        EnhancedMemoryItem,
-        ImportanceLevel,
-        MemoryState,
-        MemoryType,
-)
+except ImportError:
+    pass
 
 import asyncio
 import os
 
 from haive.core.models.llm.base import DeepSeekLLMConfig
-from memory_state_original import UnifiedMemoryEntry
-from memory_state_with_tokens import MemoryStateWithTokens
 
-from .memory_state_original import UnifiedMemoryEntry
+try:
+    from memory_state_original import UnifiedMemoryEntry
+    from memory_state_with_tokens import MemoryStateWithTokens
+
+    from .memory_state_original import UnifiedMemoryEntry
 
 except ImportError:
     # For standalone execution
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -170,14 +176,12 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
 
         # Also add to token state
         try:
+            entry = UnifiedMemoryEntry.from_memory_item(memory)
         except ImportError:
-        entry = UnifiedMemoryEntry.from_memory_item(memory)
+            pass
         self.token_state.current_memories.append(entry)
 
-        return f"I've stored that in my memory (ID: {
-            memory.id}). Type: {
-            memory_type.value}, Importance: {
-            importance.value}"
+        return f"I've stored that in my memory (ID: {memory.id}). Type: {memory_type.value}, Importance: {importance.value}"
 
     def _search_memories(self, query: str, k: int = 5) -> list[EnhancedMemoryItem]:
         """Search for relevant memories.
