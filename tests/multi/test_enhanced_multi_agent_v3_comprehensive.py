@@ -72,7 +72,7 @@ def test_enhanced_multi_agent_v3_sequential_execution():
                 config={"configurable": {"thread_id": "test_sequential_thread"}},
             )
 
-            print("✅ Sequential execution successful"l")
+            print("✅ Sequential execution successful")
             print(f"✅ Result type: {type(result)}")
             if isinstance(result, dict) and "messages" in result:
                 print(f"✅ Message count: {len(result['messages'])}")
