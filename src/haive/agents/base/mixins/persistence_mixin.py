@@ -85,6 +85,7 @@ class PersistenceMixin:
             except ImportError:
                 logger.warning(
                     "Could not import MemoryCheckpointerConfig, persistence disabled"
+                )
                 self.checkpointer = None
                 self.store = None
                 return
@@ -117,6 +118,7 @@ class PersistenceMixin:
             if hasattr(mode, "value"):
                 self.checkpoint_mode = (
                     "async" if mode == CheckpointerMode.ASYNC else "sync"
+                )
             else:
                 self.checkpoint_mode = "async" if mode == "async" else "sync"
 
@@ -159,10 +161,6 @@ class PersistenceMixin:
         try:
 
             if POSTGRES_AVAILABLE:
-
-                )
-                )
-
                 # Check for connection string from environment
                 connection_string = os.getenv("POSTGRES_CONNECTION_STRING")
 

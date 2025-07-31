@@ -16,7 +16,7 @@ from langchain_core.runnables import RunnableLambda
 from langgraph.graph import START
 from playwright.async_api import Browser, Page, async_playwright
 from playwright_stealth import stealth_async
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 # -----------------------------------------------------------------------------
 # Debugging Utility
@@ -54,7 +54,7 @@ class Prediction(BaseModel):
     action: str
     args: list[str] | None = None
 
-    @field_validatorensure_args
+    @field_validator("args")
     @classmethod
     def ensure_args(cls, v) -> Any:
         """Ensures args is a list."""
@@ -94,7 +94,7 @@ class WebNavState(BaseModel):
         arbitrary_types_allowed=True,
     )
 
-    @field_validatorensure_prediction
+    @field_validator("prediction")
     @classmethod
     def ensure_prediction(cls, v) -> Any:
         """Ensures prediction is either None or a valid object."""

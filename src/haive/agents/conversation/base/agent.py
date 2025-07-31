@@ -115,7 +115,6 @@ class BaseConversationAgent(Agent):
 
             try:
 
-
                 # Use environment connection string if available (Supabase)
                 connection_string = os.getenv("POSTGRES_CONNECTION_STRING")
 

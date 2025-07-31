@@ -46,7 +46,9 @@ Examples:
 from __future__ import annotations
 
 import logging
-from typing import Any, TypeVar
+
+# Forward reference - Agent will be imported by the mixin user
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
@@ -55,6 +57,9 @@ from pydantic import BaseModel, Field
 from haive.agents.base.hooks import HookEvent
 from haive.agents.simple.agent import SimpleAgent
 from haive.agents.structured_output.agent import StructuredOutputAgent
+
+if TYPE_CHECKING:
+    from haive.agents.base.agent import Agent
 
 logger = logging.getLogger(__name__)
 

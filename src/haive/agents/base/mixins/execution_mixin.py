@@ -25,7 +25,7 @@ from haive.agents.base.mixins.agent_protocol import AgentProtocol
 # Import debug utilities
 
 if TYPE_CHECKING:
-
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -138,6 +138,7 @@ class ExecutionMixin:
                     field_type = str(
                         getattr(
                             field_info, "annotation", getattr(field_info, "type_", "")
+                        )
                     )
                     if (
                         "list" in field_type.lower()
@@ -369,7 +370,8 @@ class ExecutionMixin:
             if base_config:
                 runtime_config = RunnableConfigManager.merge(
                     base_config, runtime_config
-
+                )
+            
             if config:
                 runtime_config = RunnableConfigManager.merge(runtime_config, config)
         elif config:
@@ -668,8 +670,6 @@ class ExecutionMixin:
 
             # Register thread if needed with async checkpointer
             if async_checkpointer and thread_id:
-                )
-
                 agent_name = getattr(self, "name", "Unknown Agent")
                 metadata = {"thread_name": agent_name}
                 await register_async_thread_if_needed(
@@ -749,8 +749,6 @@ class ExecutionMixin:
                 # Clean up async connection pool if we opened it
                 if pool_to_cleanup:
                     try:
-                        )
-
                         await close_async_pool_if_needed(
                             async_checkpointer, pool_to_cleanup
                         )

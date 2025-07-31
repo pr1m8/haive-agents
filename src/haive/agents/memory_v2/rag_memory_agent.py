@@ -640,7 +640,6 @@ class UnifiedMemoryRAGAgent:
         cls, name: str | None = None, description: str | None = None, **config_kwargs
     ):
         """Convert this agent to a tool for use in other agents."""
-
         if name is None:
             name = "unified_memory"
         if description is None:

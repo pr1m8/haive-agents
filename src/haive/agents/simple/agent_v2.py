@@ -12,6 +12,8 @@ Key improvements over V1:
 - Better error handling and routing
 """
 
+from __future__ import annotations
+
 import logging
 from typing import Any, Literal
 

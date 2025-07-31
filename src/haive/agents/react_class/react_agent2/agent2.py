@@ -25,7 +25,6 @@ from haive.agents.react_class.react_agent2.config2 import ReactAgentConfig
 # Set up logging
 
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -318,7 +318,6 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
 
         Override parent to ensure proper message format for our state schema.
         """
-
         # Handle string input
         if isinstance(input_data, str):
             return {"messages": [HumanMessage(content=input_data)]}

@@ -342,7 +342,6 @@ class ReactAgent(SimpleAgent):
                 graph_filename = f"{self.config.name}_{timestamp}.png"
                 graph_path = os.path.join(output_dir, graph_filename)
 
-
                 render_and_display_graph(self.app, output_name=graph_path)
                 logger.info(f"Graph visualization saved to: {graph_path}")
             except Exception as e:

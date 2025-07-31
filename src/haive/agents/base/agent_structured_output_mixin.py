@@ -14,8 +14,6 @@ from langchain_core.output_parsers import PydanticToolsParser
 from langchain_core.tools import Tool
 from pydantic import BaseModel
 
-from haive.agents.structured import StructuredOutputAgent
-
 if TYPE_CHECKING:
     from langchain_core.prompts import ChatPromptTemplate
 
@@ -91,6 +89,9 @@ class StructuredOutputMixin:
         agent_name = name or cls.__name__.lower()
         original_agent = cls(name=agent_name, **agent_kwargs)
 
+        # Delay import to avoid circular dependency
+        from haive.agents.structured import StructuredOutputAgent
+
         # Create the structured output agent
         structurer_name = f"{agent_name}_structured"
         structured_agent = StructuredOutputAgent(
@@ -155,6 +156,9 @@ class StructuredOutputMixin:
 
             # Run agent
             result = agent.run(input_text)
+
+            # Delay import to avoid circular dependency
+            from haive.agents.structured import StructuredOutputAgent
 
             # Convert to structured output
             structurer = StructuredOutputAgent(
@@ -249,6 +253,9 @@ class StructuredOutputMixin:
 
             # Use StructuredOutputAgent for conversion
             if content:
+                # Delay import to avoid circular dependency
+                from haive.agents.structured import StructuredOutputAgent
+                
                 structurer = StructuredOutputAgent(
                     name="temp_structurer",
                     output_model=output_model,

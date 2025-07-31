@@ -62,6 +62,8 @@ from typing import TYPE_CHECKING, Any, Literal
 
 try:
     from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -71,12 +73,10 @@ from pydantic import Field
 
 from haive.agents.base.enhanced_agent import Agent
 
-except ImportError:
-    pass
-
 
 
 if TYPE_CHECKING:
+    pass
 
 logger = logging.getLogger(__name__)
 

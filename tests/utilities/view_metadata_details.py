@@ -3,7 +3,6 @@
 
 import json
 import os
-from datetime import datetime
 
 import psycopg
 
@@ -38,11 +37,11 @@ def view_metadata_details():
                 checkpoints = cur.fetchall()
 
                 for cp in checkpoints:
-                    thread_id = cp[0]
-                    checkpoint_ns = cp[1]
-                    checkpoint_id = cp[2]
-                    parent_id = cp[3]
-                    cp_type = cp[4]
+                    cp[0]
+                    cp[1]
+                    cp[2]
+                    cp[3]
+                    cp[4]
                     cp[5]
                     metadata = cp[6]
 
@@ -72,7 +71,7 @@ def view_metadata_details():
                                 writes = meta_dict["writes"]
 
                                 # Look for process_response in writes
-                                for node_name, node_data in writes.items():
+                                for _node_name, node_data in writes.items():
                                     if (
                                         isinstance(node_data, dict)
                                         and "process_response" in node_data
@@ -95,9 +94,7 @@ def view_metadata_details():
                                                     if (
                                                         "prepared statement"
                                                         in content.lower()
-                                                    ):
-                                                        error_count += 1
-                                                    elif "error" in content.lower():
+                                                    ) or "error" in content.lower():
                                                         error_count += 1
 
                                             if error_count == 0:
@@ -124,7 +121,7 @@ def view_metadata_details():
                             if other_keys:
                                 pass
 
-                        except Exception as e:
+                        except Exception:
                             pass
                     else:
                         pass
@@ -142,9 +139,9 @@ def view_metadata_details():
                 """
                 )
 
-                stats = cur.fetchone()
+                cur.fetchone()
 
-    except Exception as e:
+    except Exception:
         pass
 
 

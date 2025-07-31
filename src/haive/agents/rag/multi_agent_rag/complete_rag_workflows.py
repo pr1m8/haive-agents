@@ -292,6 +292,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
         # Create retrieval agent
         retrieval_agent = SimpleRAGAgent.from_documents(
             documents or conversation_documents, name="CRAG Retrieval Agent"
+        )
 
         # Create relevance checking agent
         relevance_agent = Agent()

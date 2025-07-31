@@ -10,7 +10,7 @@ from langchain_core.output_parsers import PydanticToolsParser
 from pydantic import BaseModel, Field
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.proper_base import ProperMultiAgent
+from haive.agents.multi.experiments.implementations.proper_base import ProperMultiAgent
 from haive.agents.simple.agent import SimpleAgent
 
 

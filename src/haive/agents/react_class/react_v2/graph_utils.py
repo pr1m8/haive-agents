@@ -59,7 +59,6 @@ class ReactGraphBuilder(DynamicGraph):
         Returns:
             Self for chaining
         """
-
         # Create the generalized tool node
         tool_node = GeneralizedToolNode(tools, parallel=parallel_tools)
 

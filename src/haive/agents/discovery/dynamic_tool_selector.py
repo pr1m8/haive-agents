@@ -162,7 +162,6 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
 
     def _setup_default_strategies(self) -> None:
         """Setup default tool selection strategies."""
-
         self.selection_strategies = {
             "semantic": SemanticSelectionStrategy(),
             "capability": CapabilityBasedStrategy(),
@@ -428,7 +427,6 @@ class DynamicToolSelector(BaseModel, ToolRouteMixin):
 
     def _generate_cache_key(self, query: str, context: dict[str, Any]) -> str:
         """Generate cache key for tool selection."""
-
         key_components = [
             query,
             str(sorted(context.items())),

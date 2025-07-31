@@ -84,12 +84,11 @@ try:
             if not hasattr(result_msg, "tool_calls") or not result_msg.tool_calls:
                 pass
 
-        if hasattr(ai_msg, "response_metadata") and ai_msg.response_metadata:
-            if (
-                not hasattr(result_msg, "response_metadata")
-                or not result_msg.response_metadata
-            ):
-                pass
+        if hasattr(ai_msg, "response_metadata") and ai_msg.response_metadata and (
+            not hasattr(result_msg, "response_metadata")
+            or not result_msg.response_metadata
+        ):
+            pass
 
 except Exception:
     import traceback

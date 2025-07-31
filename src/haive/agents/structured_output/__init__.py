@@ -1,14 +1,6 @@
 """Module exports."""
 
-from haive.agents.structured_output.agent import (
-    StructuredOutputAgent,
-    create_processor,
-    create_reflection_processor,
-    create_validation_processor,
-    enhance_agent,
-    process_with_context,
-    setup_agent,
-)
+from haive.agents.structured_output.agent import StructuredOutputAgent
 from haive.agents.structured_output.models import (
     Analysis,
     Critique,
@@ -42,10 +34,4 @@ __all__ = [
     "Summary",
     "TaskResult",
     "ValidationResult",
-    "create_processor",
-    "create_reflection_processor",
-    "create_validation_processor",
-    "enhance_agent",
-    "process_with_context",
-    "setup_agent",
 ]

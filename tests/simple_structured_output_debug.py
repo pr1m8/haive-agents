@@ -53,11 +53,10 @@ def test_simple_structured_output():
         # Check for structured output fields
         structured_output_found = False
         for key, value in result.items():
-            if key != "messages":
-                if isinstance(value, SimpleResponse) or (
-                    hasattr(value, "answer") and hasattr(value, "confidence")
-                ):
-                    structured_output_found = True
+            if key != "messages" and (isinstance(value, SimpleResponse) or (
+                hasattr(value, "answer") and hasattr(value, "confidence")
+            )):
+                structured_output_found = True
 
         if not structured_output_found:
             pass

@@ -14,11 +14,10 @@ This follows the pattern documented in:
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional, Type, TypeVar
+from typing import Any, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.message_transformation_v2 import (
-    TransformationType,
     create_reflection_transformer,
 )
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
@@ -42,8 +41,8 @@ except (ImportError, AttributeError):
             self.preserve_first_message = preserve_first
 
         def _apply_transformation(
-            self, messages: List[BaseMessage]
-        ) -> List[BaseMessage]:
+            self, messages: list[BaseMessage]
+        ) -> list[BaseMessage]:
             if not messages:
                 return []
             transformed = []
@@ -111,10 +110,10 @@ class MessageTransformerPostHook:
 
     async def __call__(
         self,
-        agent_result: Dict[str, Any],
+        agent_result: dict[str, Any],
         original_input: Any = None,
-        structured_data: Optional[BaseModel] = None,
-    ) -> Dict[str, Any]:
+        structured_data: BaseModel | None = None,
+    ) -> dict[str, Any]:
         """Apply message transformation and reflection.
 
         Args:
@@ -213,8 +212,8 @@ Provide an enhanced version that addresses any feedback.""",
         self.reflection_agent.engine.prompt_template = self.reflection_prompt
 
     async def __call__(
-        self, agent_result: Dict[str, Any], original_input: Any = None
-    ) -> Dict[str, Any]:
+        self, agent_result: dict[str, Any], original_input: Any = None
+    ) -> dict[str, Any]:
         """Apply grading → message transform → reflection with grade context.
 
         Args:
@@ -306,7 +305,7 @@ class AgentWithPostHook:
     def __init__(
         self,
         base_agent: SimpleAgent,
-        post_hooks: List[MessageTransformerPostHook] = None,
+        post_hooks: list[MessageTransformerPostHook] | None = None,
     ):
         """Initialize agent with post-hooks.
 
@@ -321,7 +320,7 @@ class AgentWithPostHook:
         """Add a post-hook."""
         self.post_hooks.append(hook)
 
-    async def arun(self, input_data: Any) -> Dict[str, Any]:
+    async def arun(self, input_data: Any) -> dict[str, Any]:
         """Run agent with post-hook processing.
 
         Args:
@@ -342,7 +341,7 @@ class AgentWithPostHook:
 
 # Factory functions for common patterns
 def create_reflection_post_hook(
-    reflection_prompt_template: Optional[ChatPromptTemplate] = None,
+    reflection_prompt_template: ChatPromptTemplate | None = None,
     temperature: float = 0.3,
 ) -> MessageTransformerPostHook:
     """Create a basic reflection post-hook."""
@@ -374,7 +373,7 @@ Analyze the conversation and provide constructive feedback on:
 
 
 def create_graded_reflection_post_hook(
-    grading_model: Type[BaseModel], temperature: float = 0.2
+    grading_model: type[BaseModel], temperature: float = 0.2
 ) -> ReflectionWithGradePostHook:
     """Create a graded reflection post-hook."""
     # Create grading agent with structured output
@@ -438,8 +437,6 @@ def create_agent_with_reflection(
 # Example usage functions
 async def example_basic_post_hook():
     """Example: Basic message transformer post-hook."""
-    print("\n=== Basic Message Transformer Post-Hook Example ===\n")
-
     # Create base agent
     base_agent = SimpleAgent(
         name="writer",
@@ -457,27 +454,19 @@ async def example_basic_post_hook():
     # Test query
     query = "Write a brief explanation of quantum computing"
 
-    print(f"Query: {query}")
-
     # Run with post-hook reflection
     result = await enhanced_agent.arun(query)
-
-    print(f"\n✅ Post-Hook Applied: {result.get('post_hook_applied', False)}")
-    print(f"Transformation: {result.get('transformation_applied', 'None')}")
 
     if "reflection_result" in result:
         refl_result = result["reflection_result"]
         if isinstance(refl_result, dict) and "messages" in refl_result:
             for msg in reversed(refl_result["messages"]):
                 if hasattr(msg, "content") and msg.content:
-                    print(f"\nReflection Analysis: {msg.content[:200]}...")
                     break
 
 
 async def example_graded_reflection_post_hook():
     """Example: Graded reflection with message transformation."""
-    print("\n\n=== Graded Reflection Post-Hook Example ===\n")
-
     # Create base agent
     base_agent = SimpleAgent(
         name="explainer",
@@ -496,18 +485,12 @@ async def example_graded_reflection_post_hook():
     # Test query
     query = "Explain machine learning in simple terms"
 
-    print(f"Query: {query}")
-
     # Run with graded reflection
     result = await enhanced_agent.arun(query)
 
-    print(f"\n✅ Post-Hook Applied: {result.get('post_hook_applied', False)}")
-    print(f"Transformation: {result.get('transformation_applied', 'None')}")
-
     # Show grade context
     if "grade_context" in result:
-        print("\n📊 Grade Context:")
-        print(result["grade_context"])
+        pass
 
     # Show reflection result
     if "reflection_result" in result:
@@ -515,14 +498,11 @@ async def example_graded_reflection_post_hook():
         if isinstance(refl_result, dict) and "messages" in refl_result:
             for msg in reversed(refl_result["messages"]):
                 if hasattr(msg, "content") and msg.content:
-                    print(f"\nReflection with Grade Context: {msg.content[:300]}...")
                     break
 
 
 async def example_factory_pattern():
     """Example: Using factory function for quick setup."""
-    print("\n\n=== Factory Pattern Example ===\n")
-
     # Create base agent
     base_agent = SimpleAgent(
         name="summarizer",
@@ -536,28 +516,23 @@ async def example_factory_pattern():
 
     # Test
     long_text = """
-    Artificial intelligence (AI) is a broad field of computer science focused on 
-    creating systems capable of performing tasks that typically require human 
-    intelligence. This includes learning, reasoning, problem-solving, perception, 
-    and language understanding. AI systems can be narrow (designed for specific 
-    tasks) or general (capable of performing any intellectual task). Machine 
-    learning, a subset of AI, enables systems to learn and improve from experience 
+    Artificial intelligence (AI) is a broad field of computer science focused on
+    creating systems capable of performing tasks that typically require human
+    intelligence. This includes learning, reasoning, problem-solving, perception,
+    and language understanding. AI systems can be narrow (designed for specific
+    tasks) or general (capable of performing any intellectual task). Machine
+    learning, a subset of AI, enables systems to learn and improve from experience
     without being explicitly programmed for every scenario.
     """
 
     query = f"Summarize this text: {long_text}"
 
-    print("Query: Summarize a long text about AI")
-
     result = await enhanced_agent.arun(query)
-
-    print(f"\n✅ Enhanced with Reflection: {result.get('post_hook_applied', False)}")
 
     # Show original response
     if "messages" in result:
         for msg in reversed(result["messages"]):
             if hasattr(msg, "content") and msg.content:
-                print(f"\nOriginal Summary: {msg.content}")
                 break
 
     # Show reflection
@@ -566,7 +541,6 @@ async def example_factory_pattern():
         if isinstance(refl_result, dict) and "messages" in refl_result:
             for msg in reversed(refl_result["messages"]):
                 if hasattr(msg, "content") and msg.content:
-                    print(f"\nReflection Analysis: {msg.content[:250]}...")
                     break
 
 
