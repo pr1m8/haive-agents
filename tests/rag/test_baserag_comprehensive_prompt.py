@@ -309,23 +309,23 @@ async def test_comprehensive_rag_flow():
                 for source in answer.all_sources_used:
                     print(f"   - {source}")
 
-                print("\n🔍 Key Findings:"s:")
+                print("\n🔍 Key Findings:")
                 for finding in answer.key_findings[:3]:  # Show first 3
                     print(f"   • {finding}")
 
-                print("\n📊 Quality Metrics:"s:")
+                print("\n📊 Quality Metrics:")
                 print(f"   - Confidence: {answer.confidence_score:.2f}")
                 print(f"   - Completeness: {answer.answer_completeness}")
                 print(f"   - Answer Type: {answer.answer_type}")
                 print(f"   - Synthesis Level: {answer.synthesis_level}")
 
                 if answer.information_gaps:
-                    print("\n⚠️ Information Gaps:"ps:")
+                    print("\n⚠️ Information Gaps:")
                     for gap in answer.information_gaps:
                         print(f"   - {gap}")
 
                 if answer.follow_up_questions:
-                    print("\n💡 Suggested Follow-up Questions:"s:")
+                    print("\n💡 Suggested Follow-up Questions:")
                     for question in answer.follow_up_questions[:2]:  # Show first 2
                         print(f"   - {question}")
             else:
