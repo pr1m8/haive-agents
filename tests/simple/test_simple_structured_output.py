@@ -110,7 +110,7 @@ Consider:
         }
     )
 
-    print("📋 Project Plan Generated:"d:")
+    print("📋 Project Plan Generated:")
     print(f"Project: {result.project_name}")
     print(f"Objective: {result.objective}")
     print(f"\nTasks ({len(result.tasks)}):")

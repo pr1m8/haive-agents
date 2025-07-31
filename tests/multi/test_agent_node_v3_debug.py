@@ -74,6 +74,7 @@ async def test_debug_schema_validation():
         agent_state = state.get_agent_state("planner")
 
     except Exception as e:
+        pass
 
     return True
 

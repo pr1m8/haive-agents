@@ -78,6 +78,7 @@ try:
     # Check the tool message
     for i, msg in enumerate(new_messages):
         if isinstance(msg, ToolMessage):
+            pass
 
 except Exception as e:
     import traceback
