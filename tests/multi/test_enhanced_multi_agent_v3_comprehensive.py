@@ -437,7 +437,7 @@ def test_enhanced_multi_agent_v3_performance_tracking():
         print("\n📋 Test 2: Performance analysis")
 
         analysis = adaptive_multi.analyze_agent_performance()
-        print("✅ Analysis completed"d")
+        print("✅ Analysis completed")
         print(f"✅ Agents analyzed: {len(analysis.get('agents', {}))}")
 
         for agent_name, metrics in analysis.get("agents", {}).items():
