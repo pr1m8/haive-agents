@@ -166,6 +166,7 @@ class MultiQueryRAGAgent(SequentialAgent):
                 output_key="query_variations",
             ),
             name="Query Expander",
+        )
 
         # Step 2: Create base retriever
         base_retriever = BaseRAGAgent.from_documents(
@@ -178,8 +179,6 @@ class MultiQueryRAGAgent(SequentialAgent):
         )
 
         # Step 4: Answer generation
-        )
-
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
