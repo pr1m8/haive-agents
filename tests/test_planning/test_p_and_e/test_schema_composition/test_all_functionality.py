@@ -298,7 +298,7 @@ def run_all_tests():
     if failed == 0:
         pass
     else:
-        passg.")
+        pass
 
     return failed == 0
 
