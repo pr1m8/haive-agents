@@ -9,7 +9,6 @@ sys.path.insert(0, "packages/haive-core/src")
 import contextlib
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.node import agent_node_v3
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
 from haive.core.schema.prebuilt import multi_agent_state
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
