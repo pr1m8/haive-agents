@@ -69,9 +69,9 @@ class PropertyFilter(BaseModel):
         default="=", description="Type of filter operation used in the Cypher query"
     )
 
-    @field_validatorvalidate_filter_type
+    @field_validator("filter_type")
     @classmethod
-    def validate_filter_type(cls, v) -> Any:
+    def validate_filter_type(cls, v) -> Literal["=", "!=", ">", "<", ">=", "<="] | None:
         """Validate that the filter type is a supported operator.
 
         Args:

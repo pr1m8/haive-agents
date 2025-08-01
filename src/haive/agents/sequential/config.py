@@ -12,7 +12,7 @@ from typing import Any
 from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.state_schema import StateSchema
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from haive.agents.sequential.agent import SequentialAgent
 
@@ -91,7 +91,7 @@ class SequentialAgentConfig(AgentConfig):
 
     model_config = {"arbitrary_types_allowed": True}
 
-    @field_validatorvalidate_steps
+    @field_validator("steps")
     @classmethod
     def validate_steps(cls, v) -> Any:
         """Ensure we have at least one step."""
@@ -100,8 +100,7 @@ class SequentialAgentConfig(AgentConfig):
         return v
 
     @model_validator(mode="after")
-    @classmethod
-    def setup_components(cls) -> Any:
+    def setup_components(self) -> "SequentialAgentConfig":
         """Collect all step components into the components list for schema derivation."""
         # Collect step components
         step_components = [step.component for step in self.steps]
@@ -264,3 +263,65 @@ class SequentialAgentConfig(AgentConfig):
             state_schema=state_schema,
             **kwargs,
         )
+
+
+# Standalone functions for compatibility with __init__.py
+def build_agent(config: SequentialAgentConfig) -> SequentialAgent:
+    """Build a SequentialAgent from configuration."""
+    return config.build_agent()
+
+
+def from_aug_llms(
+    aug_llms: list[AugLLMConfig],
+    name: str | None = None,
+    id: str | None = None,
+    state_schema: type[StateSchema] | None = None,
+    **kwargs,
+) -> SequentialAgentConfig:
+    """Create a SequentialAgentConfig from a list of AugLLMConfig instances."""
+    return SequentialAgentConfig.from_aug_llms(
+        aug_llms, name, id, state_schema, **kwargs
+    )
+
+
+def from_components(
+    components: list[Any],
+    name: str | None = None,
+    id: str | None = None,
+    state_schema: type[StateSchema] | None = None,
+    **kwargs,
+) -> SequentialAgentConfig:
+    """Create a SequentialAgentConfig from a list of components."""
+    return SequentialAgentConfig.from_components(
+        components, name, id, state_schema, **kwargs
+    )
+
+
+def from_steps(
+    steps: list[StepConfig],
+    name: str | None = None,
+    id: str | None = None,
+    entry_point: str | None = None,
+    state_schema: type[StateSchema] | None = None,
+    **kwargs,
+) -> SequentialAgentConfig:
+    """Create a SequentialAgentConfig from a list of steps."""
+    return SequentialAgentConfig.from_steps(
+        steps, name, id, entry_point, state_schema, **kwargs
+    )
+
+
+def get_step_by_name(config: SequentialAgentConfig, name: str) -> StepConfig | None:
+    """Get a step configuration by name."""
+    return config.get_step_by_name(name)
+
+
+def setup_components(config: SequentialAgentConfig) -> SequentialAgentConfig:
+    """Setup components for a configuration."""
+    # The setup is done automatically via model_validator
+    return config
+
+
+def validate_steps(steps: list[StepConfig]) -> bool:
+    """Validate that steps list is not empty."""
+    return bool(steps)

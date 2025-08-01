@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class Query(BaseModel):
@@ -20,7 +20,7 @@ class SQLQueryOutput(BaseModel):
         description="Query parameters if placeholders are used (e.g., ?1, ?2).",
     )
 
-    @field_validatorvalidate_sql_syntax
+    @field_validator("query")
     @classmethod
     def validate_sql_syntax(cls, query: str) -> str:
         """Ensure the query starts with a valid SQL keyword."""

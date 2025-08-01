@@ -1,9 +1,8 @@
 # src/haive/agents/task_analysis/complexity/models.py
 
 from enum import Enum
-from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class ComplexityLevel(str, Enum):
@@ -78,9 +77,9 @@ class ComplexityVector(BaseModel):
             return ComplexityLevel.HIGHLY_COMPLEX
         return ComplexityLevel.EXTREME
 
-    @field_validatorvalidate_scores
+    @field_validator("scores")
     @classmethod
-    def validate_scores(cls, v) -> Any:
+    def validate_scores(cls, v) -> float:
         """Ensure scores are within valid range."""
         return round(v, 1)
 
