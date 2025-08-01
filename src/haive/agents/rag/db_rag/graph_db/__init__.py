@@ -1,6 +1,6 @@
 """Module exports."""
 
-from graph_db.agent import (
+from .agent import (
     GraphDBRAGAgent,
     check_domain_relevance,
     correct_query,
@@ -12,7 +12,7 @@ from graph_db.agent import (
     validate_query,
     validation_router,
 )
-from graph_db.config import (
+from .config import (
     ExampleConfig,
     GraphDBConfig,
     GraphDBRAGConfig,
@@ -20,7 +20,7 @@ from graph_db.config import (
     get_graph_db_schema,
     validate_engines,
 )
-from graph_db.example import (
+from .example import (
     basic_example,
     batch_processing_example,
     custom_domain_example,
@@ -30,7 +30,7 @@ from graph_db.example import (
     run_all_examples,
     streaming_example,
 )
-from graph_db.models import (
+from .models import (
     Config,
     CypherQueryOutput,
     GuardrailsOutput,
@@ -40,7 +40,7 @@ from graph_db.models import (
     validate_decision,
     validate_filter_type,
 )
-from graph_db.state import InputState, OutputState, OverallState
+from .state import InputState, OutputState, OverallState
 
 __all__ = [
     "Config",
