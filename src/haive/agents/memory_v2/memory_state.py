@@ -8,6 +8,7 @@ graph integration, and advanced memory management.
 import logging
 from typing import Any
 
+from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import BaseModel, Field
 
 # Import original proven memory models

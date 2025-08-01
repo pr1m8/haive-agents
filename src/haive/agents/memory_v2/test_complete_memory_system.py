@@ -11,16 +11,6 @@ from pathlib import Path
 import pytest
 from haive.core.engine.aug_llm import AugLLMConfig
 
-from haive.agents.memory_v2.advanced_rag_memory_agent import (
-    AdvancedRAGConfig,
-    AdvancedRAGMemoryAgent,
-    RetrievalStrategy,
-)
-from haive.agents.memory_v2.graph_memory_agent import (
-    GraphMemoryAgent,
-    GraphMemoryConfig,
-    GraphMemoryMode,
-)
 from haive.agents.memory_v2.long_term_memory_agent import LongTermMemoryAgent
 from haive.agents.memory_v2.multi_memory_coordinator import (
     CoordinationMode,
@@ -28,6 +18,35 @@ from haive.agents.memory_v2.multi_memory_coordinator import (
     MultiMemoryConfig,
     MultiMemoryCoordinator,
 )
+
+# Optional imports with graceful fallback
+try:
+    from haive.agents.memory_v2.advanced_rag_memory_agent import (
+        AdvancedRAGConfig,
+        AdvancedRAGMemoryAgent,
+        RetrievalStrategy,
+    )
+
+    HAS_ADVANCED_RAG = True
+except ImportError:
+    HAS_ADVANCED_RAG = False
+    AdvancedRAGConfig = None
+    AdvancedRAGMemoryAgent = None
+    RetrievalStrategy = None
+
+try:
+    from haive.agents.memory_v2.graph_memory_agent import (
+        GraphMemoryAgent,
+        GraphMemoryConfig,
+        GraphMemoryMode,
+    )
+
+    HAS_GRAPH_MEMORY = True
+except ImportError:
+    HAS_GRAPH_MEMORY = False
+    GraphMemoryAgent = None
+    GraphMemoryConfig = None
+    GraphMemoryMode = None
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
 from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent
 

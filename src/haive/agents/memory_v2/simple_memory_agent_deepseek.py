@@ -6,45 +6,25 @@ This is a working version of SimpleMemoryAgent that:
 3. Implements core memory functionality
 """
 
+import asyncio
 import logging
+import os
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import DeepSeekLLMConfig
 
 from haive.agents.simple.agent import SimpleAgent
 
-try:
-    from memory_state_original import (
-        EnhancedMemoryItem,
-        ImportanceLevel,
-        MemoryState,
-        MemoryType,
-    )
-
-    from .memory_state_original import (
-        EnhancedMemoryItem,
-        ImportanceLevel,
-        MemoryState,
-        MemoryType,
-    )
-    from .memory_state_with_tokens import MemoryStateWithTokens
-except ImportError:
-    pass
-
-import asyncio
-import os
-
-from haive.core.models.llm.base import DeepSeekLLMConfig
-
-try:
-    from memory_state_original import UnifiedMemoryEntry
-    from memory_state_with_tokens import MemoryStateWithTokens
-
-    from .memory_state_original import UnifiedMemoryEntry
-
-except ImportError:
-    # For standalone execution
-    pass
+# Import memory types and classes directly
+from .memory_state_original import (
+    EnhancedMemoryItem,
+    ImportanceLevel,
+    MemoryState,
+    MemoryType,
+    UnifiedMemoryEntry,
+)
+from .memory_state_with_tokens import MemoryStateWithTokens
 
 logger = logging.getLogger(__name__)
 
@@ -175,10 +155,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
         self.memory_state.add_memory_item(memory)
 
         # Also add to token state
-        try:
-            entry = UnifiedMemoryEntry.from_memory_item(memory)
-        except ImportError:
-            pass
+        entry = UnifiedMemoryEntry.from_memory_item(memory)
         self.token_state.current_memories.append(entry)
 
         return f"I've stored that in my memory (ID: {memory.id}). Type: {memory_type.value}, Importance: {importance.value}"

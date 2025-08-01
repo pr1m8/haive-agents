@@ -21,18 +21,36 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 
-from haive.agents.memory_v2.advanced_rag_memory_agent import (
-    AdvancedRAGConfig,
-    AdvancedRAGMemoryAgent,
-)
-from haive.agents.memory_v2.graph_memory_agent import (
-    GraphMemoryAgent,
-    GraphMemoryConfig,
-)
+from haive.agents.react.agent import ReactAgent
+
+# Import with graceful fallback for optional components
+try:
+    from haive.agents.memory_v2.advanced_rag_memory_agent import (
+        AdvancedRAGConfig,
+        AdvancedRAGMemoryAgent,
+    )
+
+    HAS_ADVANCED_RAG = True
+except ImportError:
+    AdvancedRAGConfig = None
+    AdvancedRAGMemoryAgent = None
+    HAS_ADVANCED_RAG = False
+
+try:
+    from haive.agents.memory_v2.graph_memory_agent import (
+        GraphMemoryAgent,
+        GraphMemoryConfig,
+    )
+
+    HAS_GRAPH_MEMORY = True
+except ImportError:
+    GraphMemoryAgent = None
+    GraphMemoryConfig = None
+    HAS_GRAPH_MEMORY = False
+
 from haive.agents.memory_v2.long_term_memory_agent import LongTermMemoryAgent
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
 from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent
-from haive.agents.react.agent import ReactAgent
 
 logger = logging.getLogger(__name__)
 
@@ -195,6 +213,10 @@ class MultiMemoryCoordinator:
 
     def _init_graph_memory(self):
         """Initialize graph memory agent."""
+        if not HAS_GRAPH_MEMORY:
+            self.logger.warning("Graph memory system not available (import failed)")
+            return
+
         try:
             if self.config.graph_config:
                 graph_config = self.config.graph_config
@@ -211,6 +233,12 @@ class MultiMemoryCoordinator:
 
     def _init_advanced_rag_memory(self):
         """Initialize advanced RAG memory agent."""
+        if not HAS_ADVANCED_RAG:
+            self.logger.warning(
+                "Advanced RAG memory system not available (import failed)"
+            )
+            return
+
         try:
             if self.config.rag_config:
                 rag_config = self.config.rag_config

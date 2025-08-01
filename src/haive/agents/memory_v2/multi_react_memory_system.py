@@ -13,7 +13,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
-from haive.agents.multi.simple.agent import SimpleMultiAgent
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
 
 
@@ -278,9 +278,9 @@ Memory types:
 
         return router_agent
 
-    def _create_coordinator(self) -> SimpleMultiAgent:
+    def _create_coordinator(self) -> EnhancedMultiAgentV4:
         """Create coordinator multi-agent."""
-        # Convert memory agents to dict for SimpleMultiAgent
+        # Convert memory agents to dict for EnhancedMultiAgentV4
         agents_dict = {
             memory_type.value: agent.agent  # Use the underlying ReactAgent
             for memory_type, agent in self.memory_agents.items()
@@ -289,7 +289,7 @@ Memory types:
         # Add router agent
         agents_dict["router"] = self.router_agent
 
-        coordinator = SimpleMultiAgent(
+        coordinator = EnhancedMultiAgentV4(
             name="memory_coordinator",
             engine=self.engine,
             agents=agents_dict,
