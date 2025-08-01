@@ -62,18 +62,20 @@ from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.document_modifiers.kg.kg_map_merge.agent import (
-    StructuredKGAgent,
+    ParallelKGTransformer,
 )
-from haive.agents.document_modifiers.summarizer.map_branch.agent import (
-    MapBranchSummarizerAgent,
+from haive.agents.document_modifiers.summarizer.map_branch import (
+    SummarizerAgent as MapBranchSummarizerAgent,
 )
-from haive.agents.rag.adaptive_rag.agent import AdaptiveRAGAgent
+
+# from haive.agents.rag.adaptive_rag.agent import AdaptiveRAGAgent  # Empty module
 from haive.agents.rag.base.agent import BaseRAGAgent
-from haive.agents.rag.hyde.enhanced_agent_v2 import HyDEAgent
-from haive.agents.rag.multi_strategy.agent import (
-    MultiStrategyRAGAgent,
-)
-from haive.agents.rag.self_rag2.agent import SelfRAGAgent
+
+# from haive.agents.rag.hyde.enhanced_agent_v2 import HyDEAgent  # Class doesn't exist
+# from haive.agents.rag.multi_strategy.agent import (  # May not exist
+#     MultiStrategyRAGAgent,
+# )
+# from haive.agents.rag.self_rag2.agent import SelfRAGAgent  # May not exist
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -327,7 +329,8 @@ class DocumentProcessingAgent:
             if self.config.rag_strategy == "adaptive":
                 try:
 
-                    return AdaptiveRAGAgent(name=f"{self.name}_rag", engine=self.engine)
+                    # return AdaptiveRAGAgent(name=f"{self.name}_rag", engine=self.engine)
+                    raise ImportError("AdaptiveRAGAgent not available")
                 except ImportError:
                     logger.warning(
                         "AdaptiveRAGAgent not available, falling back to BaseRAGAgent"
@@ -336,11 +339,12 @@ class DocumentProcessingAgent:
             elif self.config.rag_strategy == "self_rag":
                 try:
 
-                    return SelfRAGAgent(
-                        name=f"{
-                            self.name}_rag",
-                        engine=self.engine,
-                    )
+                    # return SelfRAGAgent(
+                    #     name=f"{
+                    #         self.name}_rag",
+                    #     engine=self.engine,
+                    # )
+                    raise ImportError("SelfRAGAgent not available")
                 except ImportError:
                     logger.warning(
                         "SelfRAGAgent not available, falling back to BaseRAGAgent"
@@ -349,11 +353,12 @@ class DocumentProcessingAgent:
             elif self.config.rag_strategy == "hyde":
                 try:
 
-                    return HyDEAgent(
-                        name=f"{
-                            self.name}_rag",
-                        engine=self.engine,
-                    )
+                    # return HyDEAgent(
+                    #     name=f"{
+                    #         self.name}_rag",
+                    #     engine=self.engine,
+                    # )
+                    raise ImportError("HyDEAgent not available")
                 except ImportError:
                     logger.warning(
                         "HyDEAgent not available, falling back to BaseRAGAgent"
@@ -362,9 +367,10 @@ class DocumentProcessingAgent:
             elif self.config.rag_strategy == "multi_strategy":
                 try:
 
-                    return MultiStrategyRAGAgent(
-                        name=f"{self.name}_rag", engine=self.engine
-                    )
+                    # return MultiStrategyRAGAgent(
+                    #     name=f"{self.name}_rag", engine=self.engine
+                    # )
+                    raise ImportError("MultiStrategyRAGAgent not available")
                 except ImportError:
                     logger.warning(
                         "MultiStrategyRAGAgent not available, falling back to BaseRAGAgent"
@@ -664,7 +670,7 @@ class DocumentProcessingAgent:
         pass
 
         try:
-            StructuredKGAgent(name=f"{self.name}_kg", engine=self.engine)
+            ParallelKGTransformer(name=f"{self.name}_kg", engine=self.engine)
 
             # Create KG extraction state and process
             # This would need to be implemented based on the KG agent's
