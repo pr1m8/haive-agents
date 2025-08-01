@@ -1,6 +1,5 @@
 """Pydantic models for structured outputs in the Graph DB RAG Agent.
 
-from typing import Any
 This module defines the structured output models used by various LLM engines
 in the Graph DB RAG workflow. These models ensure type safety and validation
 for LLM responses.
@@ -21,7 +20,7 @@ Example:
 
 from typing import Any, Literal, TypeVar
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 T = TypeVar("T", bound=str)  # Used for dynamic literals
 
@@ -127,7 +126,7 @@ class CypherQueryOutput(BaseModel):
         description="Query parameters if placeholders are used (e.g., $name)",
     )
 
-    @field_validatorvalidate_cypher_syntax
+    @field_validator("cypher_query")
     @classmethod
     def validate_cypher_syntax(cls, query: str) -> str:
         """Validate that the query starts with a valid Cypher keyword.

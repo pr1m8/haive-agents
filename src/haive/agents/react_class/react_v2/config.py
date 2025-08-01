@@ -223,7 +223,7 @@ class ReactAgentConfig(SimpleAgentConfig):
 
         return config
 
-    @field_validatorvalidate_tools
+    @field_validator("tools")
     @classmethod
     def validate_tools(cls, v) -> Any:
         """Validate that tools are properly configured."""

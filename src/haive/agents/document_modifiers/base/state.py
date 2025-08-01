@@ -145,7 +145,7 @@ class DocumentModifierState(StateSchema):
             raise ValueError("At least one document is required.")
         return self
 
-    @field_validatorvalidate_documents_field
+    @field_validator("documents")
     @classmethod
     def validate_documents_field(cls, v) -> Any:
         """Validate the documents field during assignment.
