@@ -156,7 +156,7 @@ class ComponentAgent(Agent):
     components: dict[str, Any] = Field(default_factory=dict)
     component_config: dict[str, Any] = Field(default_factory=dict)
 
-    @field_validatorvalidate_components
+    @field_validator("components")
     @classmethod
     def validate_components(cls, v):
         """Validate that required components are present."""
