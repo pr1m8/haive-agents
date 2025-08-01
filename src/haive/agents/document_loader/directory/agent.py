@@ -6,7 +6,9 @@ documents from local directories.
 
 from pathlib import Path
 
-from haive.core.engine.document_loader import create_directory_loader_engine
+from haive.core.engine.document import (
+    create_directory_document_engine as create_directory_loader_engine,
+)
 from pydantic import Field
 
 from haive.agents.document_loader.base.agent import DocumentLoaderAgent

@@ -9,7 +9,7 @@ from typing import Any
 
 from haive.core.schema import StateSchema
 from langchain_core.documents import Document
-from pydantic import Field, computed_field, model_validator
+from pydantic import Field, computed_field, field_validator, model_validator
 
 
 class DocumentModifierState(StateSchema):

@@ -16,10 +16,10 @@ synchronous and asynchronous operation modes.
 
 from typing import Any
 
-from haive.core.engine.document_loader import (
-    DocumentLoaderEngine,
-    DocumentLoaderOutput,
-    create_document_loader_engine,
+from haive.core.engine.document import DocumentEngine as DocumentLoaderEngine
+from haive.core.engine.document import DocumentOutput as DocumentLoaderOutput
+from haive.core.engine.document import (
+    create_file_document_engine as create_document_loader_engine,
 )
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
