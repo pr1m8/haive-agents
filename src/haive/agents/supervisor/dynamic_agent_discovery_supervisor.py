@@ -196,8 +196,7 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
     agents_to_register: list[dict[str, Any]] | None = Field(default=None, exclude=True)
 
     @model_validator(mode="after")
-    @classmethod
-    def setup_supervisor(cls) -> "DynamicAgentDiscoverySupervisor":
+    def setup_supervisor(self) -> "DynamicAgentDiscoverySupervisor":
         """Set up supervisor after initialization."""
         # Register default agent types
         self.agent_factory = {
