@@ -31,8 +31,7 @@ class CleanMultiAgent(Agent):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def normalize_agents(cls) -> "CleanMultiAgent":
+    def normalize_agents(self) -> "CleanMultiAgent":
         """Normalize agents similar to how base Agent normalizes engines."""
         if isinstance(self.agents, list):
             # Convert list to dict using agent names - similar to engine

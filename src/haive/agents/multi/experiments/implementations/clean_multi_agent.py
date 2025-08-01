@@ -111,8 +111,7 @@ class MultiAgent(Agent):
     _agent_order: list[str] = PrivateAttr(default_factory=list)
 
     @model_validator(mode="after")
-    @classmethod
-    def normalize_agents(cls) -> "MultiAgent":
+    def normalize_agents(self) -> "MultiAgent":
         """Normalize agents into registry dict, similar to engines normalization."""
         # Clear registries
         self._agent_registry.clear()
