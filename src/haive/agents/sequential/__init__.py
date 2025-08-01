@@ -18,7 +18,8 @@ from haive.agents.sequential.config import (
     setup_components,
     validate_steps,
 )
-from haive.agents.sequential.example import run_example
+
+# from haive.agents.sequential.example import run_example  # Temporarily disabled due to dependencies
 
 __all__ = [
     "SequentialAgent",
@@ -30,7 +31,7 @@ __all__ = [
     "from_components",
     "from_steps",
     "get_step_by_name",
-    "run_example",
+    # "run_example",  # Temporarily disabled
     "set_state_schema",
     "setup_components",
     "validate_agents",

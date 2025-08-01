@@ -8,7 +8,13 @@ for a sequential reasoning workflow.
 
 from typing import Any
 
-from haive.core.utils.pydantic_utils import pretty_print
+# from haive.core.utils.pydantic_utils import pretty_print
+
+
+def pretty_print(obj: Any) -> None:
+    """Simple pretty print replacement."""
+    print(obj)
+
 
 from haive.agents.reasoning_and_critique.self_discover.aug_llms import (
     adapt_chain,

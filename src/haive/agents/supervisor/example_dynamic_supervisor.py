@@ -246,7 +246,7 @@ async def demonstrate_react_agent_integration(supervisor):
 
     # Test tool usage
 
-    result = await supervisor.ainvoke(
+    await supervisor.ainvoke(
         {
             "messages": [
                 langchain_core.messages.HumanMessage(
