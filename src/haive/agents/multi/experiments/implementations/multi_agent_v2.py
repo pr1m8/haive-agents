@@ -88,8 +88,7 @@ class MultiAgentV2(Agent):
         return values
 
     @model_validator(mode="after")
-    @classmethod
-    def setup_multi_agent(cls) -> "MultiAgentV2":
+    def setup_multi_agent(self) -> "MultiAgentV2":
         """Set up the multi-agent system."""
         # Create custom state schema if needed
         if self.state_schema == MultiAgentState:
