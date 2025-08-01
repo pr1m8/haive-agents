@@ -131,6 +131,10 @@ class KnowledgeComplexity(str, Enum):
     UNKNOWN = "unknown"
 
 
+# Alias for backward compatibility
+ComplexityType = ComplexityLevel
+
+
 class TimeComplexity(str, Enum):
     """Time complexity categories for task completion.
 

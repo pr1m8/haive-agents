@@ -12,6 +12,9 @@ from haive.agents.common.models.task_analysis.analysis import (
     validate_resource_allocation,
 )
 from haive.agents.common.models.task_analysis.base import (
+    ComplexityType,  # Alias for ComplexityLevel
+)
+from haive.agents.common.models.task_analysis.base import (
     ComplexityLevel,
     ComputationalComplexity,
     DependencyNode,
@@ -22,18 +25,6 @@ from haive.agents.common.models.task_analysis.base import (
     TaskStep,
     TaskType,
     TimeComplexity,
-    allows_parallelization,
-    calculate_total_duration,
-    create_auto_tree,
-    creates_join_point,
-    get_all_steps,
-    get_all_tasks,
-    get_breadth,
-    get_complexity_score,
-    get_duration_hours,
-    get_max_depth,
-    has_parallel_opportunities,
-    is_blocking,
 )
 from haive.agents.common.models.task_analysis.branching import (
     BranchType,
@@ -96,6 +87,7 @@ __all__ = [
     "AnalysisMethod",
     "BranchType",
     "ComplexityLevel",
+    "ComplexityType",
     "ComputationalComplexity",
     "DependencyNode",
     "DependencyType",
