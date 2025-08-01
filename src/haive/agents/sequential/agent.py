@@ -50,8 +50,7 @@ class SequentialAgent(Agent):
         return values
 
     @model_validator(mode="after")
-    @classmethod
-    def set_state_schema(cls) -> Any:
+    def set_state_schema(self) -> "SequentialAgent":
         self.input_schema = SchemaComposer.from_components(
             [self.agents[0].engine]
         ).derive_input_schema()
@@ -61,8 +60,7 @@ class SequentialAgent(Agent):
         return self
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_non_empty_agents(cls) -> Any:
+    def validate_non_empty_agents(self) -> "SequentialAgent":
         """Ensure we have at least one agent."""
         if not self.agents or len(self.agents) == 0:
             raise ValueError("SequentialAgent requires at least one agent")
@@ -112,3 +110,30 @@ class SequentialAgent(Agent):
                 graph.add_edge(node_names[i], node_names[i + 1])
 
         return graph
+
+
+# Standalone functions for compatibility with __init__.py
+def build_graph(agents: Sequence[Agent]) -> BaseGraph:
+    """Build a sequential graph from a list of agents."""
+    sequential_agent = SequentialAgent(agents=agents)
+    return sequential_agent.build_graph()
+
+
+def set_state_schema(agents: Sequence[Agent]) -> type[BaseModel] | None:
+    """Set state schema for a list of agents."""
+    sequential_agent = SequentialAgent(agents=agents)
+    return sequential_agent.state_schema
+
+
+def validate_agents(agents: Sequence[Agent]) -> bool:
+    """Validate that all items are valid agents."""
+    try:
+        SequentialAgent(agents=agents)
+        return True
+    except ValueError:
+        return False
+
+
+def validate_non_empty_agents(agents: Sequence[Agent]) -> bool:
+    """Validate that agents list is not empty."""
+    return bool(agents)
