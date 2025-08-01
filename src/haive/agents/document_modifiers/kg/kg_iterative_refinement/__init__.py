@@ -2,10 +2,6 @@
 
 from haive.agents.document_modifiers.kg.kg_iterative_refinement.agent import (
     IterativeGraphTransformer,
-    build_agent,
-    generate_initial_summary,
-    refine_summary,
-    setup_workflow,
 )
 from haive.agents.document_modifiers.kg.kg_iterative_refinement.config import (
     IterativeGraphTransformerConfig,
@@ -23,11 +19,7 @@ __all__ = [
     "IterativeGraphTransformer",
     "IterativeGraphTransformerConfig",
     "IterativeGraphTransformerState",
-    "build_agent",
-    "generate_initial_summary",
     "normalize_contents",
-    "refine_summary",
     "replace_empty_placeholders",
-    "setup_workflow",
     "should_refine",
 ]

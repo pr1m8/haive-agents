@@ -4,22 +4,32 @@ from haive.agents.document_modifiers.tnt.agent import TaxonomyAgent, TaxonomyAge
 from haive.agents.document_modifiers.tnt.models import Doc
 from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 
-# Instantiate and visualize
-agent = TaxonomyAgent(TaxonomyAgentConfig())
-agent.visualize_graph()
+
+def run_example():
+    """Run the TNT example."""
+    # Instantiate and visualize
+    agent = TaxonomyAgent(TaxonomyAgentConfig())
+    agent.visualize_graph()
+
+    tutorial_doc = WebBaseLoader(
+        "https://langchain-ai.github.io/langgraph/tutorials/tnt-llm/tnt-llm/"
+    ).load()
+    tutorial_2_doc = WebBaseLoader(
+        "https://langchain-ai.github.io/langgraph/tutorials/reflection/reflection/"
+    ).load()
+    test_docs = [
+        Doc(id=tutorial_doc[0].metadata["source"], content=tutorial_doc[0].page_content)
+    ]
+    test_docs.append(
+        Doc(
+            id=tutorial_2_doc[0].metadata["source"],
+            content=tutorial_2_doc[0].page_content,
+        )
+    )
+    state = TaxonomyGenerationState(documents=test_docs)
+    result = agent.app.invoke(state, debug=True, config=agent.config.runtime_config)
+    return result
 
 
-tutorial_doc = WebBaseLoader(
-    "https://langchain-ai.github.io/langgraph/tutorials/tnt-llm/tnt-llm/"
-).load()
-tutorial_2_doc = WebBaseLoader(
-    "https://langchain-ai.github.io/langgraph/tutorials/reflection/reflection/"
-).load()
-test_docs = [
-    Doc(id=tutorial_doc[0].metadata["source"], content=tutorial_doc[0].page_content)
-]
-test_docs.append(
-    Doc(id=tutorial_2_doc[0].metadata["source"], content=tutorial_2_doc[0].page_content)
-)
-state = TaxonomyGenerationState(documents=test_docs)
-result = agent.app.invoke(state, debug=True, config=agent.config.runtime_config)
+if __name__ == "__main__":
+    run_example()

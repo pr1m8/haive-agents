@@ -8,8 +8,10 @@ from langchain_community.graphs.graph_document import GraphDocument, Node, Relat
 from langchain_core.documents import Document
 from langchain_neo4j.graphs.graph_document import GraphDocument
 
-from haive.agents.document_modifiers.kg.kg_map_merge.agent import StructuredKGAgent
-from haive.agents.document_modifiers.kg.kg_map_merge.config import ParallelKGAgentConfig
+from haive.agents.document_modifiers.kg.kg_map_merge.agent import ParallelKGTransformer
+from haive.agents.document_modifiers.kg.kg_map_merge.config import (
+    ParallelKGTransformerConfig,
+)
 
 
 def visualize_graph(
@@ -104,48 +106,6 @@ def visualize_graph(
     plt.close()
 
 
-a = GraphDocument(
-    nodes=[
-        Node(id="Pierre Curie", type="Person", properties={}),
-        Node(id="magnetism", type="Field", properties={}),
-        Node(id="crystallography", type="Field", properties={}),
-        Node(id="radioactivity", type="Field", properties={}),
-        Node(id="France", type="Country", properties={}),
-    ],
-    relationships=[
-        Relationship(
-            source=Node(id="Pierre Curie", type="Person", properties={}),
-            target=Node(id="France", type="Country", properties={}),
-            type="HAS_NATIONALITY",
-            properties={},
-        ),
-        Relationship(
-            source=Node(id="Pierre Curie", type="Person", properties={}),
-            target=Node(id="crystallography", type="Field", properties={}),
-            type="MADE_CONTRIBUTIONS_TO",
-            properties={},
-        ),
-        Relationship(
-            source=Node(id="Pierre Curie", type="Person", properties={}),
-            target=Node(id="magnetism", type="Field", properties={}),
-            type="MADE_CONTRIBUTIONS_TO",
-            properties={},
-        ),
-        Relationship(
-            source=Node(id="Pierre Curie", type="Person", properties={}),
-            target=Node(id="radioactivity", type="Field", properties={}),
-            type="MADE_CONTRIBUTIONS_TO",
-            properties={},
-        ),
-    ],
-    source=Document(
-        metadata={},
-        page_content="Pierre Curie was a French physicist who made pioneering contributions to crystallography, magnetism, and radioactivity.",
-    ),
-)
-visualize_graph(a)
-
-
 # Helper function to create and run the agent
 async def create_knowledge_graph(
     documents: list[str | Document],
@@ -179,7 +139,7 @@ async def create_knowledge_graph(
     additional_transformer_args = additional_transformer_args or {}
 
     # Create agent config
-    config = ParallelKGAgentConfig(
+    config = ParallelKGTransformerConfig(
         llm_config=llm_config,
         allowed_nodes=allowed_nodes,
         allowed_relationships=allowed_relationships,
@@ -190,7 +150,7 @@ async def create_knowledge_graph(
     )
 
     # Create and initialize the agent
-    agent = StructuredKGAgent(config)
+    agent = ParallelKGTransformer(config)
 
     # Run the agent
     result = await agent.arun({"contents": documents})

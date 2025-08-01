@@ -128,8 +128,7 @@ class DocumentModifierState(StateSchema):
         return len(self.documents)
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_documents(cls) -> Any:
+    def validate_documents(self) -> "DocumentModifierState":
         """Validate that at least one document is present.
 
         This validator runs after model initialization to ensure
