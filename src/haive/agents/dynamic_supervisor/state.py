@@ -235,8 +235,7 @@ class SupervisorStateWithTools(SupervisorState):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def sync_on_init(cls) -> Any:
+    def sync_on_init(self) -> "SupervisorStateWithTools":
         """Sync tools and choice model after initialization."""
         self._sync_internal()
         return self
