@@ -32,7 +32,7 @@ from haive.agents.base.agent import Agent
 from haive.agents.discovery.component_discovery_agent import ComponentDiscoveryAgent
 
 
-class DynamicActivationSupervisor(Agent[DynamicActivationState]):
+class DynamicActivationSupervisor(Agent):
     """Supervisor agent that can dynamically activate components.
 
     This supervisor extends the basic Agent class with dynamic activation
