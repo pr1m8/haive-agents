@@ -6,14 +6,14 @@ and creates new ReactAgents when needed.
 
 import asyncio
 import logging
-from typing import Any
+from typing import Any, Optional, Type
 
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool
-from pydantic import Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 from haive.agents.react.agent import ReactAgent
 
@@ -26,6 +26,7 @@ class AgentSelectionTool(BaseTool):
     name: str = "select_agent"
     description: str = """Select the best agent for the current task.
     Use this tool to determine which agent should handle the request."""
+    args_schema: Optional[Type[BaseModel]] = Field(default=None)
 
     def __init__(self, choice_model: DynamicChoiceModel, **kwargs):
         super().__init__(**kwargs)
@@ -68,6 +69,7 @@ class AgentCreationTool(BaseTool):
     name: str = "create_agent"
     description: str = """Create a new ReactAgent when no suitable agent exists.
     Specify the agent type and capability needed."""
+    args_schema: Optional[Type[BaseModel]] = Field(default=None)
 
     def __init__(self, supervisor, **kwargs) -> None:
         super().__init__(**kwargs)

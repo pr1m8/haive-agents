@@ -7,7 +7,7 @@ for routing and state management.
 """
 
 import logging
-from typing import Any
+from typing import Any, Optional, Type
 
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from langchain_core.tools import BaseTool
@@ -135,7 +135,7 @@ class AddAgentTool(BaseTool):
     name: str = "add_agent"
     description: str = """Add a new agent to the supervisor's registry.
     This allows the supervisor to route requests to the new agent."""
-    args_schema = AddAgentInput
+    args_schema: Optional[Type[BaseModel]] = Field(default=AddAgentInput)
 
     def __init__(self, registry_manager: AgentRegistryManager):
         super().__init__()
@@ -187,7 +187,7 @@ class RemoveAgentTool(BaseTool):
     name: str = "remove_agent"
     description: str = """Remove an agent from the supervisor's registry.
     The agent will no longer be available for routing."""
-    args_schema = RemoveAgentInput
+    args_schema: Optional[Type[BaseModel]] = Field(default=RemoveAgentInput)
 
     def __init__(self, registry_manager: AgentRegistryManager):
         super().__init__()
@@ -221,7 +221,7 @@ class ChangeAgentTool(BaseTool):
     name: str = "change_agent"
     description: str = """Update configuration of an existing agent.
     Can modify priority, timeout, and other execution parameters."""
-    args_schema = ChangeAgentInput
+    args_schema: Optional[Type[BaseModel]] = Field(default=ChangeAgentInput)
 
     def __init__(self, registry_manager: AgentRegistryManager):
         super().__init__()
@@ -253,7 +253,7 @@ class ListAgentsTool(BaseTool):
     name: str = "list_agents"
     description: str = """List all available agents in the supervisor registry
     with their capabilities and performance metrics."""
-    args_schema = ListAgentsInput
+    args_schema: Optional[Type[BaseModel]] = Field(default=ListAgentsInput)
 
     def __init__(self, registry_manager: AgentRegistryManager):
         super().__init__()
@@ -309,6 +309,7 @@ class AgentSelectorTool(BaseTool):
     name: str = "select_agent"
     description: str = """Select a specific agent to handle the next user request.
     Use this when you want to explicitly route to a particular agent."""
+    args_schema: Optional[Type[BaseModel]] = Field(default=None)
 
     def __init__(self, registry_manager: AgentRegistryManager):
         super().__init__()

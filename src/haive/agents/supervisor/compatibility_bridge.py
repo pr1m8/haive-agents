@@ -49,8 +49,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
     _dynamic_supervisor: IntegratedDynamicSupervisor | None = None
 
     @model_validator(mode="after")
-    @classmethod
-    def setup_dynamic_supervisor(cls) -> "DynamicMultiAgentSupervisor":
+    def setup_dynamic_supervisor(self) -> "DynamicMultiAgentSupervisor":
         """Set up the dynamic supervisor if needed."""
         if (
             self.execution_mode == ExecutionMode.HIERARCHICAL
