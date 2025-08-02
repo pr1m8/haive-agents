@@ -10,15 +10,15 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
-from agents.llm_compiler.config import LLMCompilerAgentConfig
-from agents.llm_compiler.models import (  # CompilerState,
+from .config import LLMCompilerAgentConfig
+from .models import (  # CompilerState,
     CompilerPlan,
     CompilerStep,
     FinalResponse,
     JoinerOutput,
 )
-from agents.llm_compiler.output_parser import LLMCompilerPlanParser
-from agents.llm_compiler.state import CompilerState
+from .output_parser import LLMCompilerPlanParser
+from .state import CompilerState
 from haive.core.engine.agent.agent import AgentArchitecture
 from haive.core.engine.aug_llm import compose_runnable
 from langchain_core.messages import AIMessage, SystemMessage

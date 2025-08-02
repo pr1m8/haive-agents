@@ -5,7 +5,7 @@ import os
 import sys
 from typing import Any
 
-from agents.tot.modular.factory import (
+from haive.agents.tot.modular.factory import (
     create_game24_tot_agent,
     create_math_tot_agent,
     create_tot_agent,

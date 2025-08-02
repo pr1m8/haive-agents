@@ -126,7 +126,7 @@ class CypherQueryOutput(BaseModel):
         description="Query parameters if placeholders are used (e.g., $name)",
     )
 
-    @field_validator("cypher_query")
+    @field_validator("query")
     @classmethod
     def validate_cypher_syntax(cls, query: str) -> str:
         """Validate that the query starts with a valid Cypher keyword.

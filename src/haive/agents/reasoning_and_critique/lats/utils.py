@@ -1,7 +1,7 @@
 from typing import Any
 
-from agents.lats.config import LATSAgentConfig
-from agents.lats.models import Reflection
+from haive.agents.lats.config import LATSAgentConfig
+from haive.agents.lats.models import Reflection
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from haive.core.tools.search_tools import tavily_search_tool

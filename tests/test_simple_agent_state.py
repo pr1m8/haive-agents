@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 # Try to import SimpleAgentState
 try:
-    from agents.simple.state import SimpleAgentState
+    from haive.agents.simple.state import SimpleAgentState
 
     logger.info(f"Successfully imported SimpleAgentState: {SimpleAgentState}")
 

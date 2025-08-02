@@ -2,9 +2,9 @@
 
 import logging
 
-from agents.reflection.models import ReflectionOutput, ReflectionResult
-from agents.reflection.state import ReflectionAgentState
-from agents.simple.config import SimpleAgentConfig
+from haive.agents.reflection.models import ReflectionOutput, ReflectionResult
+from haive.agents.reflection.state import ReflectionAgentState
+from haive.agents.simple.config import SimpleAgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 

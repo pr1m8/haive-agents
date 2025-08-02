@@ -1,6 +1,6 @@
 """Module exports."""
 
-from models.base import (
+from haive.agents.memory.models.base import (
     BaseMemoryModel,
     Config,
     mark_accessed,
@@ -8,7 +8,7 @@ from models.base import (
     validate_priority,
     validate_tags,
 )
-from models.meta import MemoryValidationMeta
+from haive.agents.memory.models.meta import MemoryValidationMeta
 
 __all__ = [
     "BaseMemoryModel",

@@ -1,4 +1,4 @@
-from agents.lats.models import Reflection
+from haive.agents.lats.models import Reflection
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.output_parsers import (

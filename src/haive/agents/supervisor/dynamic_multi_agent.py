@@ -13,7 +13,7 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from pydantic import Field, PrivateAttr
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.agent import MultiAgent
+from haive.agents.multi.base_multi_agent import BaseMultiAgent as MultiAgent
 
 logger = logging.getLogger(__name__)
 

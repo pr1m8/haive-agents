@@ -4,7 +4,7 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import Any
 
-from agents.llm_compiler.models import SchedulerInput, Task
+from .models import SchedulerInput, Task
 from langchain_core.messages import BaseMessage, FunctionMessage
 
 

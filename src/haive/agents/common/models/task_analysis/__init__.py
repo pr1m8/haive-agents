@@ -4,12 +4,6 @@ from haive.agents.common.models.task_analysis.analysis import (
     AnalysisMethod,
     ExecutionStrategy,
     TaskAnalysis,
-    analyze_task,
-    generate_executive_summary,
-    get_execution_recommendations,
-    get_overall_assessment,
-    validate_analysis_consistency,
-    validate_resource_allocation,
 )
 from haive.agents.common.models.task_analysis.base import (
     ComplexityType,  # Alias for ComplexityLevel
@@ -30,21 +24,6 @@ from haive.agents.common.models.task_analysis.branching import (
     BranchType,
     TaskBranch,
     TaskDecomposition,
-    calculate_parallelization_speedup,
-    create_simple_sequential,
-    find_independent_branches,
-    find_terminal_branches,
-    get_complexity_metrics,
-    get_dependency_graph,
-    get_duration_category,
-    get_effort_category,
-    get_enables_graph,
-    get_execution_recommendations,
-    has_dependencies,
-    is_enabling,
-    is_high_risk,
-    is_likely_to_succeed,
-    validate_decomposition_consistency,
 )
 from haive.agents.common.models.task_analysis.parallelization import (
     ExecutionPhase,
@@ -53,34 +32,10 @@ from haive.agents.common.models.task_analysis.parallelization import (
     ParallelGroup,
     ParallelizationAnalysis,
     ParallelizationAnalyzer,
-    analyze_task,
-    calculate_actual_duration,
-    calculate_sequential_duration,
-    calculate_time_savings,
-    get_critical_path_duration,
-    get_efficiency_percentage,
-    get_input_count,
-    get_max_parallelism,
-    get_output_count,
-    get_parallelization_benefit,
-    get_task_count,
-    get_theoretical_speedup,
-    get_total_phases,
-    get_total_task_count,
-    is_merge_point,
-    is_split_point,
-    is_worth_parallelizing,
 )
 from haive.agents.common.models.task_analysis.solvability import (
     SolvabilityAssessment,
     SolvabilityBarrier,
-    estimate_breakthrough_timeline,
-    generate_solvability_report,
-    get_addressable_barriers,
-    get_immediate_actions,
-    get_solvability_score,
-    has_showstopper_barriers,
-    validate_solvability_consistency,
 )
 
 __all__ = [
@@ -160,7 +115,6 @@ __all__ = [
     "is_split_point",
     "is_worth_parallelizing",
     "validate_analysis_consistency",
-    "validate_decomposition_consistency",
     "validate_resource_allocation",
     "validate_solvability_consistency",
 ]

@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # Add src to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # Import agent
-from agents.react_agent2.agent2 import create_react_agent
+from haive.agents.react_agent2.agent2 import create_react_agent
 from langchain_core.tools import tool
 
 from haive.core.models.llm.base import AzureLLMConfig

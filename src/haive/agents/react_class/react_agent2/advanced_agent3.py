@@ -2,7 +2,7 @@ import logging
 from collections.abc import Callable
 from typing import Any
 
-from agents.react_agent2.config2 import ReactAgentConfig
+from haive.agents.react_agent2.config2 import ReactAgentConfig
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.branches import Branch
 from haive.core.graph.dynamic_graph_builder import DynamicGraph

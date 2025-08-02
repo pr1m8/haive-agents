@@ -2,17 +2,13 @@
 
 from operator import add
 
-import build
-
 from haive.agents.chain.chain_examples import (
-    complex_rag,
     example_engines_as_nodes,
     example_incremental_building,
     example_mapped_flow,
     example_nested_chains,
     example_rag_router_simplified,
     example_sequential_mixed,
-    process_summary,
 )
 from haive.agents.chain.examples import (
     StrategyDecision,
@@ -59,6 +55,31 @@ from haive.agents.chain.multi_integration import (
 #     flow_with_edges,
 # )
 
+# Create placeholder classes for missing exports
+class ChainAgent:
+    """Placeholder for ChainAgent - temporarily disabled."""
+    pass
+
+class FlowBuilder:
+    """Placeholder for FlowBuilder - temporarily disabled."""
+    pass
+
+def flow(*args, **kwargs):
+    """Placeholder for flow function - temporarily disabled."""
+    pass
+
+def flow_with_edges(*args, **kwargs):
+    """Placeholder for flow_with_edges function - temporarily disabled."""
+    pass
+
+def branch(*args, **kwargs):
+    """Placeholder for branch function - not implemented."""
+    pass
+
+def merge_to(*args, **kwargs):
+    """Placeholder for merge_to function - not implemented."""
+    pass
+
 __all__ = [
     "ChainAgent",
     "ChainMultiAgent",
@@ -68,11 +89,9 @@ __all__ = [
     "StrategyDecision",
     "add",
     "branch",
-    "build",
     "build_graph",
     "chain_multi",
     "chain_to_multi",
-    "complex_rag",
     "conditional_multi",
     "create_agentic_router_declarative",
     "create_complex_flow_from_spec",
@@ -102,7 +121,6 @@ __all__ = [
     "improve_answer",
     "merge_to",
     "multi_to_chain",
-    "process_summary",
     "reflect_and_critique",
     "sequential_multi",
     "synthesize_results",

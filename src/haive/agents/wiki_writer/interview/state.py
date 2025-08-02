@@ -1,7 +1,7 @@
 from typing import Annotated, TypedDict
 
-from agents.wiki_writer.interview.models import Editor
-from agents.wiki_writer.interview.utils import (
+from haive.agents.wiki_writer.interview.models import Editor
+from haive.agents.wiki_writer.interview.utils import (
     add_messages,
     update_editor,
     update_references,

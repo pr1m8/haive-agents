@@ -309,8 +309,9 @@ class GraphDBRAGConfig(AgentConfig):
     )
 
     @field_validator("engines")
+    @classmethod
     def validate_engines(
-        self, engines: dict[str, AugLLMConfig]
+        cls, engines: dict[str, AugLLMConfig]
     ) -> dict[str, AugLLMConfig]:
         """Validate that all required engines are present.
 

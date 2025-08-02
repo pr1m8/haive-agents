@@ -7,8 +7,8 @@ import logging
 import sys
 from pathlib import Path
 
-from agents.open_perplexity.agent import ResearchAgent
-from agents.open_perplexity.config import ResearchAgentConfig
+from haive.agents.open_perplexity.agent import ResearchAgent
+from haive.agents.open_perplexity.config import ResearchAgentConfig
 
 # Add the parent directory to the path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent.parent))

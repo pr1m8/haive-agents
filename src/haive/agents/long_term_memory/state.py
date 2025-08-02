@@ -1,5 +1,5 @@
-from agents.long_term_memory.models import KnowledgeTriple
-from agents.react_agent.state import AgentState
+from haive.agents.long_term_memory.models import KnowledgeTriple
+from haive.agents.react_agent.state import AgentState
 from pydantic import BaseModel, Field
 
 

@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from typing import Annotated, Any
 
-from agents.tot.modular.models import Candidate
+from haive.agents.tot.modular.models import Candidate
 from langchain_core.messages import BaseMessage
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field

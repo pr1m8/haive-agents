@@ -21,8 +21,7 @@ class BasicSupervisor(ReactAgent):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def setup_supervisor_engine(cls) -> "BasicSupervisor":
+    def setup_supervisor_engine(self) -> "BasicSupervisor":
         """Setup supervisor engine with registry tools using model validator."""
         # Create tools from registry
         route_tools = create_route_tools(self.agent_registry)

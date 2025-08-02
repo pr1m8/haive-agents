@@ -4,9 +4,9 @@ import logging
 from datetime import datetime
 from typing import Any
 
-from agents.reflection.config import ReflectionAgentConfig
-from agents.reflection.state import ReflectionAgentState
-from agents.simple.agent import SimpleAgent
+from haive.agents.reflection.config import ReflectionAgentConfig
+from haive.agents.reflection.state import ReflectionAgentState
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage

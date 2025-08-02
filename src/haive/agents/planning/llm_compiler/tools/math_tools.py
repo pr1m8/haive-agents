@@ -2,7 +2,7 @@ import math
 import re
 
 import numexpr
-from agents.llm_compiler.models import ExecuteCode
+from haive.agents.planning.llm_compiler.models import ExecuteCode
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig

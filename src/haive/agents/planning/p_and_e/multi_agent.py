@@ -16,8 +16,6 @@ from haive.agents.multi.archive.configurable_base import (
     AgentBranch,
     ConfigurableMultiAgent,
     WorkflowStep,
-)
-from haive.agents.multi.configurable_base import (
     create_branching_multi_agent,
     create_sequential_multi_agent,
 )

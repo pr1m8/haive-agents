@@ -1,6 +1,6 @@
 """Module exports."""
 
-from react_agent2.advanced_agent3 import (
+from haive.agents.react_class.react_agent2.advanced_agent3 import (
     AdvancedReactAgent,
     AdvancedReactAgentConfig,
     add_tool,
@@ -12,7 +12,7 @@ from react_agent2.advanced_agent3 import (
     route_by_tool_name,
     setup_workflow,
 )
-from react_agent2.agent import (
+from haive.agents.react_class.react_agent2.agent import (
     ReactAgent,
     ReactAgentConfig,
     ReactAgentSchema,
@@ -25,7 +25,7 @@ from react_agent2.agent import (
     setup_workflow,
     tools_condition,
 )
-from react_agent2.agent2 import (
+from haive.agents.react_class.react_agent2.agent2 import (
     MessageNormalizingToolNode,
     ReactAgent,
     chat,
@@ -37,7 +37,7 @@ from react_agent2.agent2 import (
     stream,
     structured_output_node,
 )
-from react_agent2.agent3 import (
+from haive.agents.react_class.react_agent2.agent3 import (
     ReactAgent,
     ReactAgentConfig,
     ReactAgentState,
@@ -48,8 +48,8 @@ from react_agent2.agent3 import (
     setup_workflow,
     structured_output_node,
 )
-from react_agent2.config import ReactAgentConfig, from_scratch
-from react_agent2.config2 import (
+from haive.agents.react_class.react_agent2.config import ReactAgentConfig, from_scratch
+from haive.agents.react_class.react_agent2.config2 import (
     ReactAgentConfig,
     align_output_format,
     create_prompt_template,
@@ -59,13 +59,13 @@ from react_agent2.config2 import (
     from_tools,
     update_system_prompt,
 )
-from react_agent2.debug import (
+from haive.agents.react_class.react_agent2.debug import (
     create_debug_tool_node,
     debug_print_state,
     debug_tool_node,
     fix_tool_messages,
 )
-from react_agent2.dynamic_agent import (
+from haive.agents.react_class.react_agent2.dynamic_agent import (
     DynamicReactAgent,
     DynamicReactAgentConfig,
     DynamicReactAgentState,
@@ -78,7 +78,7 @@ from react_agent2.dynamic_agent import (
     setup_workflow,
     vector_store,
 )
-from react_agent2.example2 import (
+from haive.agents.react_class.react_agent2.example2 import (
     MovieReview,
     analyze_data,
     calculator,
@@ -96,7 +96,7 @@ from react_agent2.example2 import (
     search_movie,
     search_web,
 )
-from react_agent2.example3 import (
+from haive.agents.react_class.react_agent2.example3 import (
     ReactAgent,
     ReactAgentConfig,
     ReactAgentSchema,
@@ -109,8 +109,8 @@ from react_agent2.example3 import (
     setup_workflow,
     tools_condition,
 )
-from react_agent2.models import Action, ActionType, ReactionData, ReactState, Thought
-from react_agent2.nodes import (
+from haive.agents.react_class.react_agent2.models import Action, ActionType, ReactionData, ReactState, Thought
+from haive.agents.react_class.react_agent2.nodes import (
     act_node,
     create_tool_node,
     execute_tool,
@@ -122,7 +122,7 @@ from react_agent2.nodes import (
     think_node,
     tool_node,
 )
-from react_agent2.state2 import (
+from haive.agents.react_class.react_agent2.state2 import (
     ReactAgentState,
     get,
     has_tool_calls,
@@ -131,8 +131,8 @@ from react_agent2.state2 import (
     update_tool_usage_stats,
     with_structured_output,
 )
-from react_agent2.tool_handler import normalize_tool_message, process_messages
-from react_agent2.tool_utils import (
+from haive.agents.react_class.react_agent2.tool_handler import normalize_tool_message, process_messages
+from haive.agents.react_class.react_agent2.tool_utils import (
     create_custom_tool_node,
     extract_tool_calls,
     fix_tool_messages,

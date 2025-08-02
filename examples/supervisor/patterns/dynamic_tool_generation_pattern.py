@@ -8,32 +8,21 @@ This implementation focuses on:
 
 No fancy features - just the core dynamic tooling pattern.
 """
-
 from typing import Any
-
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.schema import StateSchema
 from langchain_core.tools import tool
 from pydantic import Field, model_validator
-
 from haive.agents.react.agent import ReactAgent
-
 
 class SupervisorState(StateSchema):
     """State for dynamic supervisor with agent registry."""
-
-    # Core state
-    current_task: str = Field(default="")
+    current_task: str = Field(default='')
     agent_to_execute: str | None = Field(default=None)
-    agent_task: str = Field(default="")
+    agent_task: str = Field(default='')
     agent_response: str | None = Field(default=None)
-
-    # Registry tracking
-    available_agents: dict[str, str] = Field(
-        default_factory=dict
-    )  # name -> description
+    available_agents: dict[str, str] = Field(default_factory=dict)
     execution_history: list[dict[str, Any]] = Field(default_factory=list)
-
 
 class AgentRegistry:
     """Simple registry for holding agents."""
@@ -63,82 +52,43 @@ class AgentRegistry:
             return True
         return False
 
-
 class DynamicSupervisorV2(ReactAgent):
     """Dynamic supervisor with tool creation from agents and choice model."""
-
-    # Core components
     agent_registry: AgentRegistry = Field(default_factory=AgentRegistry)
     agent_choice_model: DynamicChoiceModel | None = Field(default=None)
 
-    @model_validator(mode="after")
-    @classmethod
-    def setup_dynamic_supervisor(cls):
+    @model_validator(mode='after')
+    def setup_dynamic_supervisor(self):
         """Set up supervisor with dynamic tool creation."""
-        # Initialize choice model
-        self.agent_choice_model = DynamicChoiceModel(
-            model_name="AgentChoice", include_end=True
-        )
-
-        # Build initial tools (will be updated when agents are added)
+        self.agent_choice_model = DynamicChoiceModel(model_name='AgentChoice', include_end=True)
         self._rebuild_tools()
-
         return self
 
     def _rebuild_tools(self):
         """Rebuild all tools based on current registry state."""
-        # Get available agents
         available_agents = self.agent_registry.list_available()
-
-        # Update choice model with available agents
-        # Remove existing options first
         for existing_name in self.agent_choice_model.option_names:
-            if existing_name != "END":  # Don't remove END
+            if existing_name != 'END':
                 self.agent_choice_model.remove_option_by_name(existing_name)
-
-        # Add new agents
         for agent_name in available_agents:
             self.agent_choice_model.add_option(agent_name)
-
-        # Create dynamic tools
         tools = []
-
-        # 1. List agents tool
         tools.append(self._create_list_agents_tool())
-
-        # 2. Choose agent tool (using dynamic choice model)
         tools.append(self._create_choose_agent_tool())
-
-        # 3. Handoff tools for each agent
         for agent_name, description in available_agents.items():
             tools.append(self._create_handoff_tool(agent_name, description))
             tools.append(self._create_forward_tool(agent_name, description))
-
-        # 4. Execution status tool
         tools.append(self._create_execution_status_tool())
-
         for _tool in tools:
             pass
-
-        # Update engine tools if we have an engine
-        if hasattr(self, "engine") and self.engine:
-            # Clear existing dynamic tools
-            self.engine.tools = [
-                t for t in self.engine.tools if not self._is_dynamic_tool(t)
-            ]
-            # Add new dynamic tools
+        if hasattr(self, 'engine') and self.engine:
+            self.engine.tools = [t for t in self.engine.tools if not self._is_dynamic_tool(t)]
             self.engine.tools.extend(tools)
 
     def _is_dynamic_tool(self, tool) -> bool:
         """Check if a tool is dynamically created by supervisor."""
-        dynamic_prefixes = [
-            "list_agents",
-            "choose_agent",
-            "handoff_to_",
-            "forward_to_",
-            "execution_status",
-        ]
-        return any(tool.name.startswith(prefix) for prefix in dynamic_prefixes)
+        dynamic_prefixes = ['list_agents', 'choose_agent', 'handoff_to_', 'forward_to_', 'execution_status']
+        return any((tool.name.startswith(prefix) for prefix in dynamic_prefixes))
 
     def _create_list_agents_tool(self):
         """Create tool to list available agents."""
@@ -148,20 +98,18 @@ class DynamicSupervisorV2(ReactAgent):
             """List all available agents and their capabilities."""
             available = self.agent_registry.list_available()
             if not available:
-                return "No agents currently available"
-
-            result = "Available agents:\n"
+                return 'No agents currently available'
+            result = 'Available agents:\n'
             for name, description in available.items():
-                result += f"- {name}: {description}\n"
+                result += f'- {name}: {description}\n'
             return result.strip()
-
         return list_agents
 
     def _create_choose_agent_tool(self):
         """Create tool that uses dynamic choice model for agent selection."""
 
         @tool
-        def choose_agent(task_description: str, reasoning: str = "") -> str:
+        def choose_agent(task_description: str, reasoning: str='') -> str:
             """Make a validated choice about which agent to use for a task.
 
             Args:
@@ -172,45 +120,26 @@ class DynamicSupervisorV2(ReactAgent):
                 The chosen agent name and next steps
             """
             try:
-
-                # Get current choice model
                 if not self.agent_choice_model:
-                    return "Error: No choice model available"
-
+                    return 'Error: No choice model available'
                 ChoiceModel = self.agent_choice_model.current_model
                 available_options = self.agent_choice_model.option_names
-
-                # Simple heuristic-based selection
                 task_lower = task_description.lower()
-                chosen_agent = "END"  # Default
-
-                # Basic keyword matching
-                if any(
-                    word in task_lower
-                    for word in ["math", "calculate", "add", "multiply", "number"]
-                ):
-                    if "math_agent" in available_options:
-                        chosen_agent = "math_agent"
-                elif any(
-                    word in task_lower
-                    for word in ["plan", "schedule", "organize", "steps"]
-                ):
-                    if "planning_agent" in available_options:
-                        chosen_agent = "planning_agent"
-                elif available_options and available_options[0] != "END":
-                    # Fallback to first available agent
+                chosen_agent = 'END'
+                if any((word in task_lower for word in ['math', 'calculate', 'add', 'multiply', 'number'])):
+                    if 'math_agent' in available_options:
+                        chosen_agent = 'math_agent'
+                elif any((word in task_lower for word in ['plan', 'schedule', 'organize', 'steps'])):
+                    if 'planning_agent' in available_options:
+                        chosen_agent = 'planning_agent'
+                elif available_options and available_options[0] != 'END':
                     chosen_agent = available_options[0]
-
-                # Validate choice
                 validated_choice = ChoiceModel(choice=chosen_agent)
-
-                if validated_choice.choice == "END":
-                    return f"Task complete or no suitable agent found. Chosen: {validated_choice.choice}"
-                return f"Chosen agent: {validated_choice.choice}. Use handoff_to_{validated_choice.choice} to execute."
-
+                if validated_choice.choice == 'END':
+                    return f'Task complete or no suitable agent found. Chosen: {validated_choice.choice}'
+                return f'Chosen agent: {validated_choice.choice}. Use handoff_to_{validated_choice.choice} to execute.'
             except Exception as e:
-                return f"Error choosing agent: {e!s}"
-
+                return f'Error choosing agent: {e!s}'
         return choose_agent
 
     def _create_handoff_tool(self, agent_name: str, description: str):
@@ -226,60 +155,29 @@ class DynamicSupervisorV2(ReactAgent):
                 Result from the agent execution
             """
             try:
-
-                # Get the agent
                 agent = self.agent_registry.get(agent_name)
                 if not agent:
                     return f"Error: Agent '{agent_name}' not found in registry"
-
-                # Execute the agent
-                result = agent.invoke(
-                    {"messages": [{"role": "user", "content": task_description}]}
-                )
-
-                # Extract response
-                if isinstance(result, dict) and "messages" in result:
-                    response = result["messages"][-1].get("content", str(result))
+                result = agent.invoke({'messages': [{'role': 'user', 'content': task_description}]})
+                if isinstance(result, dict) and 'messages' in result:
+                    response = result['messages'][-1].get('content', str(result))
                 else:
                     response = str(result)
-
-                # Record execution
-                self.state.execution_history.append(
-                    {
-                        "agent": agent_name,
-                        "task": task_description,
-                        "success": True,
-                        "response_length": len(response),
-                    }
-                )
-
-                return f"{agent_name} response: {response}"
-
+                self.state.execution_history.append({'agent': agent_name, 'task': task_description, 'success': True, 'response_length': len(response)})
+                return f'{agent_name} response: {response}'
             except Exception as e:
-
-                # Record failure
-                self.state.execution_history.append(
-                    {
-                        "agent": agent_name,
-                        "task": task_description,
-                        "success": False,
-                        "error": str(e),
-                    }
-                )
-
-                return f"Error executing {agent_name}: {e!s}"
-
-        # Set dynamic name and use tool decorator
-        handoff_tool.__name__ = f"handoff_to_{agent_name}"
+                self.state.execution_history.append({'agent': agent_name, 'task': task_description, 'success': False, 'error': str(e)})
+                return f'Error executing {agent_name}: {e!s}'
+        handoff_tool.__name__ = f'handoff_to_{agent_name}'
         decorated_tool = tool(handoff_tool)
-        decorated_tool.name = f"handoff_to_{agent_name}"
-        decorated_tool.description = f"Hand off a task to {agent_name}. {description}"
+        decorated_tool.name = f'handoff_to_{agent_name}'
+        decorated_tool.description = f'Hand off a task to {agent_name}. {description}'
         return decorated_tool
 
     def _create_forward_tool(self, agent_name: str, description: str):
         """Create forward tool for specific agent."""
 
-        def forward_tool(message: str, context: str = "") -> str:
+        def forward_tool(message: str, context: str='') -> str:
             """Forward a message to agent for processing.
 
             Args:
@@ -290,41 +188,22 @@ class DynamicSupervisorV2(ReactAgent):
                 Formatted response from the agent
             """
             try:
-
-                # Get the agent
                 agent = self.agent_registry.get(agent_name)
                 if not agent:
                     return f"Error: Agent '{agent_name}' not found in registry"
-
-                # Prepare input with context
-                full_message = f"{message}"
+                full_message = f'{message}'
                 if context:
-                    full_message = f"Context: {context}\n\nMessage: {message}"
-
-                # Execute the agent
-                result = agent.invoke(
-                    {"messages": [{"role": "user", "content": full_message}]}
-                )
-
-                # Extract response
-                if isinstance(result, dict) and "messages" in result:
-                    response = result["messages"][-1].get("content", str(result))
+                    full_message = f'Context: {context}\n\nMessage: {message}'
+                result = agent.invoke({'messages': [{'role': 'user', 'content': full_message}]})
+                if isinstance(result, dict) and 'messages' in result:
+                    response = result['messages'][-1].get('content', str(result))
                 else:
                     response = str(result)
-
-                return f"Forwarded to {agent_name}: {response}"
-
+                return f'Forwarded to {agent_name}: {response}'
             except Exception as e:
-                return f"Error forwarding to {agent_name}: {e!s}"
-
-        # Set dynamic name
-        forward_tool.__name__ = f"forward_to_{agent_name}"
-
-        # Use tool decorator with explicit description
-        return tool(
-            name=f"forward_to_{agent_name}",
-            description=f"Forward a message to {agent_name} for processing. {description}",
-        )(forward_tool)
+                return f'Error forwarding to {agent_name}: {e!s}'
+        forward_tool.__name__ = f'forward_to_{agent_name}'
+        return tool(name=f'forward_to_{agent_name}', description=f'Forward a message to {agent_name} for processing. {description}')(forward_tool)
 
     def _create_execution_status_tool(self):
         """Create tool for checking execution status."""
@@ -333,38 +212,25 @@ class DynamicSupervisorV2(ReactAgent):
         def execution_status() -> str:
             """Get current execution status and history."""
             if not self.state.execution_history:
-                return "No execution history available"
-
-            status_lines = ["Execution History:"]
+                return 'No execution history available'
+            status_lines = ['Execution History:']
             for i, record in enumerate(self.state.execution_history[-5:], 1):
-                agent = record.get("agent", "unknown")
-                success = "✅" if record.get("success", False) else "❌"
-                status_lines.append(f"{i}. {success} {agent}")
-
-            return "\n".join(status_lines)
-
+                agent = record.get('agent', 'unknown')
+                success = '✅' if record.get('success', False) else '❌'
+                status_lines.append(f'{i}. {success} {agent}')
+            return '\n'.join(status_lines)
         return execution_status
 
     def add_agent(self, name: str, agent: Any, description: str):
         """Add agent to registry and rebuild tools."""
-        # Register the agent
         self.agent_registry.register(name, agent, description)
-
-        # Rebuild tools to include new agent
         self._rebuild_tools()
-
-        # Update state
         self.state.available_agents = self.agent_registry.list_available()
 
     def remove_agent(self, name: str) -> bool:
         """Remove agent from registry and rebuild tools."""
-        # Remove from registry
         if self.agent_registry.remove(name):
-            # Rebuild tools without the removed agent
             self._rebuild_tools()
-
-            # Update state
             self.state.available_agents = self.agent_registry.list_available()
-
             return True
         return False

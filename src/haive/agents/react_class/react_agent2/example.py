@@ -4,7 +4,7 @@ import logging
 from datetime import datetime
 from typing import Any
 
-from agents.react_agent2.agent import create_react_agent
+from haive.agents.react_agent2.agent import create_react_agent
 from haive.core.graph.tool_config import ToolConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool

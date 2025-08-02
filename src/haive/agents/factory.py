@@ -1,7 +1,7 @@
 from typing import Any
 
-from agents.simple.config import SimpleAgentConfig
-from agents.simple.state import SimpleAgentState
+from haive.agents.simple.config import SimpleAgentConfig
+from haive.agents.simple.state import SimpleAgentState
 from haive.core.engine.agent.persistence.base import MemoryCheckpointerConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import SystemMessage

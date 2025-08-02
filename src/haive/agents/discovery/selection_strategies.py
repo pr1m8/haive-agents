@@ -7,15 +7,28 @@ are chosen for different contexts and use cases.
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
-from haive.agents.discovery.dynamic_tool_selector import (
-    ContextAwareState,
-    ToolSelectionResult,
-)
+if TYPE_CHECKING:
+    from haive.agents.discovery.dynamic_tool_selector import (
+        ContextAwareState,
+        ToolSelectionResult,
+    )
+
 from haive.agents.discovery.semantic_discovery import (
     ComponentMetadata,
 )
+
+# Lazy import to avoid circular dependency
+ToolSelectionResult = None
+
+def _get_tool_selection_result():
+    """Lazy import of ToolSelectionResult to avoid circular imports."""
+    global ToolSelectionResult
+    if ToolSelectionResult is None:
+        from haive.agents.discovery.dynamic_tool_selector import ToolSelectionResult as TSR
+        ToolSelectionResult = TSR
+    return ToolSelectionResult
 
 logger = logging.getLogger(__name__)
 
@@ -28,9 +41,9 @@ class BaseSelectionStrategy(ABC):
         self,
         query: str,
         available_tools: list[ComponentMetadata],
-        context: ContextAwareState,
+        context: "ContextAwareState",
         max_tools: int = 5,
-    ) -> ToolSelectionResult:
+    ) -> "ToolSelectionResult":
         """Select tools based on strategy."""
 
 
@@ -44,9 +57,9 @@ class SemanticSelectionStrategy(BaseSelectionStrategy):
         self,
         query: str,
         available_tools: list[ComponentMetadata],
-        context: ContextAwareState,
+        context: "ContextAwareState",
         max_tools: int = 5,
-    ) -> ToolSelectionResult:
+    ) -> "ToolSelectionResult":
         """Select tools based on semantic similarity to query."""
         # Simple keyword-based similarity for now
         # In a real implementation, this would use vector embeddings
@@ -69,7 +82,8 @@ class SemanticSelectionStrategy(BaseSelectionStrategy):
         scored_tools.sort(key=lambda t: t.similarity_score, reverse=True)
         selected = scored_tools[:max_tools]
 
-        return ToolSelectionResult(
+        TSR = _get_tool_selection_result()
+        return TSR(
             selected_tools=selected,
             selection_metadata={
                 "strategy": "semantic",
@@ -90,9 +104,9 @@ class CapabilityBasedStrategy(BaseSelectionStrategy):
         self,
         query: str,
         available_tools: list[ComponentMetadata],
-        context: ContextAwareState,
+        context: "ContextAwareState",
         max_tools: int = 5,
-    ) -> ToolSelectionResult:
+    ) -> "ToolSelectionResult":
         """Select tools based on capability matching."""
         # Extract capabilities from query (simple keyword matching)
         required_capabilities = self._extract_capabilities_from_query(query)
@@ -111,7 +125,8 @@ class CapabilityBasedStrategy(BaseSelectionStrategy):
         scored_tools.sort(key=lambda t: t.capability_match_score, reverse=True)
         selected = scored_tools[:max_tools]
 
-        return ToolSelectionResult(
+        TSR = _get_tool_selection_result()
+        return TSR(
             selected_tools=selected,
             selection_metadata={
                 "strategy": "capability",
@@ -165,9 +180,9 @@ class AdaptiveSelectionStrategy(BaseSelectionStrategy):
         self,
         query: str,
         available_tools: list[ComponentMetadata],
-        context: ContextAwareState,
+        context: "ContextAwareState",
         max_tools: int = 5,
-    ) -> ToolSelectionResult:
+    ) -> "ToolSelectionResult":
         """Select tools using adaptive learning."""
         # Combine semantic similarity with learned performance
         scored_tools = []
@@ -189,7 +204,8 @@ class AdaptiveSelectionStrategy(BaseSelectionStrategy):
         scored_tools.sort(key=lambda t: t.composite_score, reverse=True)
         selected = scored_tools[:max_tools]
 
-        return ToolSelectionResult(
+        TSR = _get_tool_selection_result()
+        return TSR(
             selected_tools=selected,
             selection_metadata={
                 "strategy": "adaptive",
@@ -230,9 +246,9 @@ class ContextualSelectionStrategy(BaseSelectionStrategy):
         self,
         query: str,
         available_tools: list[ComponentMetadata],
-        context: ContextAwareState,
+        context: "ContextAwareState",
         max_tools: int = 5,
-    ) -> ToolSelectionResult:
+    ) -> "ToolSelectionResult":
         """Select tools considering full context."""
         scored_tools = []
         for tool in available_tools:
@@ -258,7 +274,8 @@ class ContextualSelectionStrategy(BaseSelectionStrategy):
         scored_tools.sort(key=lambda t: t.composite_score, reverse=True)
         selected = scored_tools[:max_tools]
 
-        return ToolSelectionResult(
+        TSR = _get_tool_selection_result()
+        return TSR(
             selected_tools=selected,
             selection_metadata={
                 "strategy": "contextual",
@@ -281,7 +298,7 @@ class ContextualSelectionStrategy(BaseSelectionStrategy):
         return len(common_words) / max(len(query_words), len(tool_words))
 
     def _calculate_context_relevance(
-        self, tool: ComponentMetadata, context: ContextAwareState
+        self, tool: ComponentMetadata, context: "ContextAwareState"
     ) -> float:
         """Calculate how relevant tool is to current context."""
         relevance_score = 0.0
@@ -306,7 +323,7 @@ class ContextualSelectionStrategy(BaseSelectionStrategy):
         return min(1.0, relevance_score)
 
     def _calculate_history_relevance(
-        self, tool: ComponentMetadata, context: ContextAwareState
+        self, tool: ComponentMetadata, context: "ContextAwareState"
     ) -> float:
         """Calculate tool relevance based on conversation history."""
         if not context.conversation_history:
@@ -356,9 +373,9 @@ class EnsembleSelectionStrategy(BaseSelectionStrategy):
         self,
         query: str,
         available_tools: list[ComponentMetadata],
-        context: ContextAwareState,
+        context: "ContextAwareState",
         max_tools: int = 5,
-    ) -> ToolSelectionResult:
+    ) -> "ToolSelectionResult":
         """Select tools using ensemble of strategies."""
         # Get results from all strategies
         strategy_results = []
@@ -373,7 +390,8 @@ class EnsembleSelectionStrategy(BaseSelectionStrategy):
                     f"Strategy {
                         type(strategy).__name__} failed: {e}"
                 )
-                strategy_results.append(ToolSelectionResult())
+                TSR = _get_tool_selection_result()
+                strategy_results.append(TSR())
 
         # Combine results using weighted voting
         tool_scores = {}
@@ -403,7 +421,8 @@ class EnsembleSelectionStrategy(BaseSelectionStrategy):
 
         selected_tools = [item["tool"] for item in ranked_tools[:max_tools]]
 
-        return ToolSelectionResult(
+        TSR = _get_tool_selection_result()
+        return TSR(
             selected_tools=selected_tools,
             selection_metadata={
                 "strategy": "ensemble",
@@ -428,9 +447,9 @@ class LearningSelectionStrategy(BaseSelectionStrategy):
         self,
         query: str,
         available_tools: list[ComponentMetadata],
-        context: ContextAwareState,
+        context: "ContextAwareState",
         max_tools: int = 5,
-    ) -> ToolSelectionResult:
+    ) -> "ToolSelectionResult":
         """Select tools using learned patterns and feedback."""
         scored_tools = []
         for tool in available_tools:
@@ -456,7 +475,8 @@ class LearningSelectionStrategy(BaseSelectionStrategy):
         scored_tools.sort(key=lambda t: t.composite_score, reverse=True)
         selected = scored_tools[:max_tools]
 
-        return ToolSelectionResult(
+        TSR = _get_tool_selection_result()
+        return TSR(
             selected_tools=selected,
             selection_metadata={
                 "strategy": "learning",
@@ -509,7 +529,7 @@ class LearningSelectionStrategy(BaseSelectionStrategy):
         return sum(ratings) / len(ratings)
 
     def _get_context_learning_score(
-        self, tool_name: str, context: ContextAwareState
+        self, tool_name: str, context: "ContextAwareState"
     ) -> float:
         """Get context-based learning score."""
         # Extract context key

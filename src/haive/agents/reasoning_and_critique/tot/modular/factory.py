@@ -311,7 +311,7 @@ def create_game24_tot_agent(
                 "floor": math.floor,
                 "ceil": math.ceil,
                 "pi": math.pi,
-                "e": math.e,
+                "e": math.e
             }
             # Add all numeric operators
             safe_dict.update({str(i): i for i in range(10)})

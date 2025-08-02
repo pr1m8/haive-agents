@@ -10,7 +10,11 @@ import logging
 import operator
 from typing import Any
 
-from haive.core.exceptions import ConversationError
+# TODO: Fix when exceptions module is available
+# from haive.core.exceptions import ConversationError
+class ConversationError(Exception):
+    """Placeholder for conversation errors."""
+    pass
 from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import Field
 

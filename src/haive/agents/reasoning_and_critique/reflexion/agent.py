@@ -1,8 +1,8 @@
 from collections.abc import Callable
 
-from agents.reflexion.config import ReflexionConfig
-from agents.reflexion.responder_with_retries import ResponderWithRetries
-from agents.reflexion.utils import _get_num_iterations
+from haive.agents.reflexion.config import ReflexionConfig
+from haive.agents.reflexion.responder_with_retries import ResponderWithRetries
+from haive.agents.reflexion.utils import _get_num_iterations
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.branches import Branch

@@ -58,7 +58,7 @@ import os
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.branches import Branch
-from langchain.vectorstores.chroma import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector

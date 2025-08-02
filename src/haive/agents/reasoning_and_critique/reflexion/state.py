@@ -1,4 +1,4 @@
-from agents.simple.state import SimpleAgentState
+from haive.agents.simple.state import SimpleAgentState
 
 
 class ReflexionState(SimpleAgentState):

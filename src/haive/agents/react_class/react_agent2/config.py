@@ -1,6 +1,6 @@
 from typing import Any
 
-from agents.react_agent2.models import ReactState, Thought
+from haive.agents.react_agent2.models import ReactState, Thought
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig

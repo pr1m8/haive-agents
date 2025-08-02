@@ -1,6 +1,6 @@
 import tiktoken
-from agents.long_term_memory.state import LongTermMemoryState
-from agents.long_term_memory.tools import search_recall_memories
+from haive.agents.long_term_memory.state import LongTermMemoryState
+from haive.agents.long_term_memory.tools import search_recall_memories
 from langchain_core.messages import get_buffer_string
 from langchain_core.runnables import RunnableConfig
 

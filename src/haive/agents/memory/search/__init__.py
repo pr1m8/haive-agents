@@ -1,6 +1,6 @@
 """Module exports."""
 
-from search.base import (
+from .base import (
     BaseSearchAgent,
     SearchResponse,
     extract_memory_items,

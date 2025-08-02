@@ -4,8 +4,8 @@ import json
 import logging
 from typing import Any
 
-from agents.simple.agent import SimpleAgent
-from agents.simple.chain_agent import ChainAgentSchema
+from haive.agents.simple.agent import SimpleAgent
+from haive.agents.simple.chain_agent import ChainAgentSchema
 from langchain_core.messages import AIMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -687,7 +687,7 @@ class BranchingDocumentAnalyzer:
                 self.app = self.graph.compile(checkpointer=self.memory)
 
         # Create agent config
-        from agents.simple.chain_agent import ChainAgentConfig
+        from haive.agents.simple.chain_agent import ChainAgentConfig
 
         # Create agent config
         config = ChainAgentConfig(

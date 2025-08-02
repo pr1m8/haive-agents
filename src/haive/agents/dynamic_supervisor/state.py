@@ -21,18 +21,12 @@ Example:
         # List active agents
         active = state.list_active_agents()
 """
-
 from typing import Any
-
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
-from haive.core.schema.prebuilt.messages.messages_with_token_usage import (
-    MessagesStateWithTokenUsage,
-)
+from haive.core.schema.prebuilt.messages.messages_with_token_usage import MessagesStateWithTokenUsage
 from pydantic import Field, field_validator, model_validator
-
 from haive.agents.dynamic_supervisor.models import AgentInfo, AgentInfoV2
 from haive.agents.dynamic_supervisor.tools import create_agent_tools
-
 
 class SupervisorState(MessagesStateWithTokenUsage):
     """Base state for dynamic supervisor with agent registry.
@@ -54,30 +48,14 @@ class SupervisorState(MessagesStateWithTokenUsage):
             state.add_agent("math", math_agent, "Math specialist")
             state.set_routing("math", "Calculate 2+2")
     """
+    model_config = {'arbitrary_types_allowed': True}
+    agents: dict[str, AgentInfo] = Field(default_factory=dict, description='Registry of available agents by name')
+    active_agents: list[str] = Field(default_factory=list, description='List of currently active agent names (unique)')
+    last_executed_agent: str | None = Field(default=None, description='Name of the last executed agent')
+    agent_response: str | None = Field(default=None, description='Response from the last executed agent')
+    execution_success: bool = Field(default=True, description='Whether the last agent execution was successful')
 
-    model_config = {"arbitrary_types_allowed": True}
-
-    # Agent registry
-    agents: dict[str, AgentInfo] = Field(
-        default_factory=dict, description="Registry of available agents by name"
-    )
-    active_agents: list[str] = Field(
-        default_factory=list,
-        description="List of currently active agent names (unique)",
-    )
-
-    # Execution tracking
-    last_executed_agent: str | None = Field(
-        default=None, description="Name of the last executed agent"
-    )
-    agent_response: str | None = Field(
-        default=None, description="Response from the last executed agent"
-    )
-    execution_success: bool = Field(
-        default=True, description="Whether the last agent execution was successful"
-    )
-
-    @field_validator("active_agents")
+    @field_validator('active_agents')
     @classmethod
     def ensure_unique_agents(cls, v: list[str]) -> list[str]:
         """Ensure active agents list contains unique values.
@@ -90,9 +68,7 @@ class SupervisorState(MessagesStateWithTokenUsage):
         """
         return list(dict.fromkeys(v)) if v else []
 
-    def add_agent(
-        self, name: str, agent: Any, description: str, active: bool = True
-    ) -> None:
+    def add_agent(self, name: str, agent: Any, description: str, active: bool=True) -> None:
         """Add an agent to the registry.
 
         Args:
@@ -104,12 +80,8 @@ class SupervisorState(MessagesStateWithTokenUsage):
         Example:
             state.add_agent("search", search_agent, "Web search expert", active=True)
         """
-        agent_info = AgentInfo(
-            agent=agent, name=name, description=description, active=active
-        )
-
+        agent_info = AgentInfo(agent=agent, name=name, description=description, active=active)
         self.agents[name] = agent_info
-
         if active and name not in self.active_agents:
             self.active_agents.append(name)
 
@@ -180,11 +152,7 @@ class SupervisorState(MessagesStateWithTokenUsage):
         Returns:
             Dict mapping agent names to descriptions
         """
-        return {
-            name: info.description
-            for name, info in self.agents.items()
-            if info.is_active()
-        }
+        return {name: info.description for name, info in self.agents.items() if info.is_active()}
 
     def list_all_agents(self) -> dict[str, str]:
         """List all agents (active and inactive) with descriptions.
@@ -199,7 +167,6 @@ class SupervisorState(MessagesStateWithTokenUsage):
         self.last_executed_agent = None
         self.agent_response = None
         self.execution_success = True
-
 
 class SupervisorStateWithTools(SupervisorState):
     """Supervisor state with dynamic tool generation.
@@ -220,22 +187,11 @@ class SupervisorStateWithTools(SupervisorState):
 
             tools = state.get_all_tools()  # Get tool instances
     """
+    agent_choice_model: DynamicChoiceModel = Field(default_factory=lambda: DynamicChoiceModel(model_name='AgentChoice', include_end=True), description='Dynamic choice model for agent selection validation')
+    generated_tools: list[str] = Field(default_factory=list, description='Names of tools generated from agents')
 
-    # Choice model for validation
-    agent_choice_model: DynamicChoiceModel = Field(
-        default_factory=lambda: DynamicChoiceModel(
-            model_name="AgentChoice", include_end=True
-        ),
-        description="Dynamic choice model for agent selection validation",
-    )
-
-    # Generated tools tracking
-    generated_tools: list[str] = Field(
-        default_factory=list, description="Names of tools generated from agents"
-    )
-
-    @model_validator(mode="after")
-    def sync_on_init(self) -> "SupervisorStateWithTools":
+    @model_validator(mode='after')
+    def sync_on_init(self) -> 'SupervisorStateWithTools':
         """Sync tools and choice model after initialization."""
         self._sync_internal()
         return self
@@ -254,17 +210,10 @@ class SupervisorStateWithTools(SupervisorState):
 
     def _update_choice_model(self) -> None:
         """Update choice model with current agents."""
-        # Get current options (excluding END)
-        current_options = [
-            opt for opt in self.agent_choice_model.option_names if opt != "END"
-        ]
-
-        # Remove options that are no longer in agents
+        current_options = [opt for opt in self.agent_choice_model.option_names if opt != 'END']
         for option in current_options:
             if option not in self.agents:
                 self.agent_choice_model.remove_option_by_name(option)
-
-        # Add new agents
         for agent_name in self.agents:
             if agent_name not in self.agent_choice_model.option_names:
                 self.agent_choice_model.add_option(agent_name)
@@ -272,14 +221,10 @@ class SupervisorStateWithTools(SupervisorState):
     def _generate_tools_from_agents(self) -> None:
         """Generate tools from current agents."""
         self.generated_tools.clear()
-
-        # Create handoff tools for each agent
         for agent_name, _agent_info in self.agents.items():
-            tool_name = f"handoff_to_{agent_name}"
+            tool_name = f'handoff_to_{agent_name}'
             self.generated_tools.append(tool_name)
-
-        # Add choice validation tool
-        self.generated_tools.append("choose_agent")
+        self.generated_tools.append('choose_agent')
 
     def get_all_tools(self) -> list[Any]:
         """Get all generated tools as callable instances.
@@ -289,9 +234,7 @@ class SupervisorStateWithTools(SupervisorState):
         """
         return create_agent_tools(self)
 
-    def add_agent(
-        self, name: str, agent: Any, description: str, active: bool = True
-    ) -> None:
+    def add_agent(self, name: str, agent: Any, description: str, active: bool=True) -> None:
         """Override to trigger tool regeneration."""
         super().add_agent(name, agent, description, active)
         self._sync_internal()
@@ -317,8 +260,6 @@ class SupervisorStateWithTools(SupervisorState):
             self._sync_internal()
         return result
 
-
-# Version 2: Experimental full serialization
 class SupervisorStateV2(MessagesStateWithTokenUsage):
     """Experimental supervisor state with full agent serialization.
 
@@ -329,14 +270,5 @@ class SupervisorStateV2(MessagesStateWithTokenUsage):
         This is experimental and may not work with all agent types or
         checkpointing systems. Use SupervisorState for production.
     """
-
-    model_config = {"arbitrary_types_allowed": True}
-
-    # Using V2 agent info that doesn't exclude agents
-    agents: dict[str, AgentInfoV2] = Field(
-        default_factory=dict,
-        description="Registry of available agents (serializable version)",
-    )
-
-    # Rest of the implementation would be similar to SupervisorState
-    # but with custom serialization handling...
+    model_config = {'arbitrary_types_allowed': True}
+    agents: dict[str, AgentInfoV2] = Field(default_factory=dict, description='Registry of available agents (serializable version)')

@@ -135,6 +135,30 @@ class KnowledgeComplexity(str, Enum):
 ComplexityType = ComplexityLevel
 
 
+class SolvabilityStatus(str, Enum):
+    """Current solvability status of a task.
+    
+    Attributes:
+        TRIVIAL: Task is trivially solvable with basic knowledge/tools
+        READY: Task is immediately solvable with available resources
+        FEASIBLE: Task is solvable with some effort or resource acquisition
+        CHALLENGING: Task is solvable but requires significant effort
+        THEORETICAL: Task is theoretically solvable but practically difficult
+        RESEARCH: Task requires research or unknown solution paths
+        IMPOSSIBLE: Task is currently impossible given constraints
+        UNDEFINED: Solvability cannot be determined
+    """
+    
+    TRIVIAL = "trivial"
+    READY = "ready"
+    FEASIBLE = "feasible"
+    CHALLENGING = "challenging"
+    THEORETICAL = "theoretical"
+    RESEARCH = "research"
+    IMPOSSIBLE = "impossible"
+    UNDEFINED = "undefined"
+
+
 class TimeComplexity(str, Enum):
     """Time complexity categories for task completion.
 

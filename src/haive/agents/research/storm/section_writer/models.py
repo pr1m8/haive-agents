@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from haive.agents.research.storm.outline_generator.models import Subsection
 
 
 class SubSection(BaseModel):

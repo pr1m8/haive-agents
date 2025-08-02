@@ -11,11 +11,15 @@ from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
-from haive.agents.chain.chain_agent import (
-    ChainAgent,
-    conditional_chain,
-    sequential_chain,
-)
+# TODO: Fix import when chain_agent module is implemented
+# from haive.agents.chain.chain_agent import (
+#     ChainAgent,
+#     conditional_chain,
+#     sequential_chain,
+# )
+ChainAgent = None
+conditional_chain = None
+sequential_chain = None
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 
 

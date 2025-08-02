@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from datetime import datetime
 
-from agents.tot.modular.state import ToTState
+from haive.agents.tot.modular.state import ToTState
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig

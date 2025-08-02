@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 
-from agents.lats.models import SerializedMessage
+from haive.agents.lats.models import SerializedMessage
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
 

@@ -16,6 +16,32 @@ from haive.agents.memory.core.types import MemoryType
 from haive.agents.react.agent import ReactAgent
 
 
+def extract_memory_items(memory_data: Any) -> list[str]:
+    """Extract memory items from memory data structure.
+    
+    Args:
+        memory_data: Raw memory data from various sources
+        
+    Returns:
+        List of formatted memory items as strings
+    """
+    if not memory_data:
+        return []
+    
+    # Handle different memory data formats
+    if isinstance(memory_data, list):
+        return [str(item) for item in memory_data]
+    elif isinstance(memory_data, dict):
+        if "items" in memory_data:
+            return [str(item) for item in memory_data["items"]]
+        elif "memories" in memory_data:
+            return [str(item) for item in memory_data["memories"]]
+        else:
+            return [f"{key}: {value}" for key, value in memory_data.items()]
+    else:
+        return [str(memory_data)]
+
+
 class SearchResponse(BaseModel):
     """Base response model for all search agents."""
 

@@ -16,9 +16,6 @@ from haive.agents.discovery.dynamic_tool_selector import (
     create_context_aware_selector,
     create_dynamic_tool_selector,
     create_langgraph_style_selector,
-    create_tool_selection_node,
-    placeholder_function,
-    setup_selector,
 )
 from haive.agents.discovery.selection_strategies import (
     AdaptiveSelectionStrategy,
@@ -28,28 +25,17 @@ from haive.agents.discovery.selection_strategies import (
     EnsembleSelectionStrategy,
     LearningSelectionStrategy,
     SemanticSelectionStrategy,
-    add_feedback,
     create_selection_strategy,
-    update_performance,
 )
 from haive.agents.discovery.semantic_discovery import (
     CapabilityMatcher,
     DiscoveryMode,
-    EmbeddingProvider,
     QueryAnalysis,
     QueryAnalyzer,
     SemanticDiscoveryEngine,
     ToolSelectionStrategy,
     VectorBasedToolSelector,
-    analyze_query,
-    build_capability_matrix,
-    embed_documents,
-    embed_query,
-    index_tools,
-    match_tools,
-    setup_registry,
-    setup_vector_store,
-    update_selection_strategy,
+    create_semantic_discovery,
 )
 
 __all__ = [
@@ -63,7 +49,6 @@ __all__ = [
     "ContextualSelectionStrategy",
     "DiscoveryMode",
     "DynamicToolSelector",
-    "EmbeddingProvider",
     "EnsembleSelectionStrategy",
     "LangGraphStyleSelector",
     "LearningSelectionStrategy",
@@ -77,25 +62,12 @@ __all__ = [
     "ToolSelectionStrategy",
     "ToolUsageStats",
     "VectorBasedToolSelector",
-    "add_feedback",
-    "analyze_query",
-    "build_capability_matrix",
     # "clear_cache",  # Instance method
     "create_context_aware_selector",
     "create_dynamic_tool_selector",
     "create_langgraph_style_selector",
     "create_selection_strategy",
-    "create_tool_selection_node",
-    "embed_documents",
-    "embed_query",
     # "get_cache_stats",  # Instance method
-    "index_tools",
-    "match_tools",
-    "placeholder_function",
     # "setup_discovery_agent",  # Instance method
-    "setup_registry",
-    "setup_selector",
-    "setup_vector_store",
-    "update_performance",
-    "update_selection_strategy",
+    "create_semantic_discovery",
 ]

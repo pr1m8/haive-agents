@@ -2,10 +2,10 @@ import logging
 import random
 from typing import Any
 
-from agents.tot.modular.branches import ToTBranch
-from agents.tot.modular.config import ToTAgentConfig
-from agents.tot.modular.models import Candidate, CandidateList, CandidateScore
-from agents.tot.modular.state import ToTState
+from haive.agents.tot.modular.branches import ToTBranch
+from haive.agents.tot.modular.config import ToTAgentConfig
+from haive.agents.tot.modular.models import Candidate, CandidateList, CandidateScore
+from haive.agents.tot.modular.state import ToTState
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage, HumanMessage

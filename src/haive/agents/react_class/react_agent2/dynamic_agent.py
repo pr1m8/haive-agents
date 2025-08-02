@@ -6,9 +6,9 @@ import logging
 import uuid
 from typing import Any
 
-from agents.react_agent2.agent2 import ReactAgent
-from agents.react_agent2.config2 import ReactAgentConfig
-from agents.react_agent2.state2 import ReactAgentState
+from haive.agents.react_agent2.agent2 import ReactAgent
+from haive.agents.react_agent2.config2 import ReactAgentConfig
+from haive.agents.react_agent2.state2 import ReactAgentState
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph.branches import Branch
 from haive.core.graph.dynamic_graph_builder import DynamicGraph

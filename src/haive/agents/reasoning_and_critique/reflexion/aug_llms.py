@@ -1,5 +1,5 @@
-from agents.reflexion.models import AnswerQuestion, ReviseAnswer
-from agents.reflexion.prompts import actor_prompt_template
+from haive.agents.reflexion.models import AnswerQuestion, ReviseAnswer
+from haive.agents.reflexion.prompts import actor_prompt_template
 from haive.core.engine.aug_llm import AugLLMConfig
 
 # from langchain_core.tools import PydanticToolsParser

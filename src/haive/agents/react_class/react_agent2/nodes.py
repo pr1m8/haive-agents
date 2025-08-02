@@ -2,7 +2,7 @@ import re
 from collections.abc import Callable
 from typing import Any
 
-from agents.react_agent2.models import Action, ActionType, Thought
+from haive.agents.react_agent2.models import Action, ActionType, Thought
 from haive.core.engine.aug_llm import AugLLMConfig, compose_runnable
 from langchain_core.messages import AIMessage
 from langgraph.graph import END

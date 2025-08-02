@@ -19,7 +19,7 @@ from haive.agents.memory.core.classifier import MemoryClassifier
 from haive.agents.memory.core.stores import MemoryStoreManager
 from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.enhanced_retriever import (
-    EnhancedRetriever,
+    EnhancedMemoryRetriever as EnhancedRetriever,
     EnhancedRetrieverConfig,
 )
 from haive.agents.memory.graph_rag_retriever import (

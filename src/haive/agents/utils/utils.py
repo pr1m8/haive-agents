@@ -6,8 +6,19 @@ from langchain_core.runnables import chain
 # Some javascript we will run on each step
 # to take a screenshot of the page, select the
 # elements to annotate, and add bounding boxes
-with open("src/haive/agents/web_nav/utils/mark.js") as f:
-    mark_page_script = f.read()
+import os
+from pathlib import Path
+
+# Find the mark.js file relative to this module
+current_dir = Path(__file__).parent
+mark_js_path = current_dir.parent / "web_nav" / "utils" / "mark.js"
+
+if mark_js_path.exists():
+    with open(mark_js_path) as f:
+        mark_page_script = f.read()
+else:
+    # Fallback if file doesn't exist
+    mark_page_script = "// mark.js not found"
 
 
 @chain

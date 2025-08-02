@@ -1,8 +1,8 @@
 """Module exports."""
 
-from iterative_refinement.agent import IterativeSummarizer, setup_workflow
-from iterative_refinement.config import IterativeSummarizerConfig
-from iterative_refinement.state import (
+from .agent import IterativeSummarizer
+from .config import IterativeSummarizerConfig
+from .state import (
     IterativeSummarizerInput,
     IterativeSummarizerOutput,
     IterativeSummarizerState,
@@ -17,6 +17,5 @@ __all__ = [
     "IterativeSummarizerOutput",
     "IterativeSummarizerState",
     "normalize_contents",
-    "setup_workflow",
     "should_refine",
 ]

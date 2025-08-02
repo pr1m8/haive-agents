@@ -1,10 +1,10 @@
-from agents.react.memory.models import KnowledgeTriple, MemoryItem
-from agents.react.react.state import ReactAgentState
+from haive.agents.memory.models import KnowledgeTriple, MemoryItem
+from haive.core.schema.prebuilt.messages_state import MessagesState
 from pydantic import ConfigDict, Field
 
 
-class MemoryAgentState(ReactAgentState):
-    """State for Memory Agent, extending ReactAgentState.
+class MemoryAgentState(MessagesState):
+    """State for Memory Agent, extending MessagesState.
 
     Adds fields for storing and retrieving memories.
     """
