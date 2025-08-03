@@ -1,11 +1,72 @@
 """Clean Plan and Execute Implementation following LangGraph patterns.
 
-This implementation follows the standard LangGraph Plan and Execute pattern with:
-- Simple models (not overcomplicated)
-- MultiAgentBase for orchestration
-- React agent for execution
-- Simple agent for planning
-- Clean routing logic
+This module provides the **recommended** implementation for simple sequential planning tasks.
+It follows the standard LangGraph Plan and Execute pattern with minimal complexity and
+clear, understandable routing logic.
+
+## Key Features
+
+- **Simple Models**: Clean Plan and Act models without overcomplication
+- **MultiAgentBase**: Leverages multi-agent orchestration for clean separation
+- **React Agent**: Uses ReactAgent for tool-based step execution
+- **Simple Agent**: Uses SimpleAgent for planning and replanning
+- **Clean Routing**: Straightforward routing logic with clear decision points
+
+## Architecture
+
+```
+Planner (SimpleAgent)
+    ↓
+Executor (ReactAgent) ←─┐
+    ↓                   │
+Route Decision ─────────┘
+    ↓
+Replanner (SimpleAgent)
+    ↓
+END or back to Executor
+```
+
+## Usage
+
+### Basic Example
+```python
+from haive.agents.planning import create_simple_plan_execute
+from haive.tools import calculator_tool
+
+agent = create_simple_plan_execute(tools=[calculator_tool])
+result = agent.run("Calculate the compound interest on $1000 at 5% for 10 years")
+```
+
+### Advanced Example
+```python
+from haive.agents.planning import create_clean_plan_execute_agent
+
+agent = create_clean_plan_execute_agent(
+    name="MyPlanner",
+    planner_model="gpt-4",
+    executor_model="gpt-3.5-turbo",
+    tools=[web_search, calculator, file_reader]
+)
+
+result = agent.run("Research tech stocks and calculate potential returns")
+```
+
+## When to Use
+
+✅ **Use this implementation when**:
+- You need simple, sequential planning
+- Tasks have clear step-by-step execution
+- You want minimal complexity
+- You're starting with planning agents
+
+❌ **Consider alternatives when**:
+- You need parallel execution (use ReWOO)
+- You need complex replanning logic (use proper_plan_execute)
+- You need DAG-based planning (use llm_compiler)
+
+## Status: Recommended for Simple Planning Tasks
+
+This is the go-to implementation for straightforward planning needs.
 """
 
 from typing import Literal

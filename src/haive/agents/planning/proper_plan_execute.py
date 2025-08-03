@@ -1,11 +1,98 @@
-"""Proper Plan & Execute Implementation using existing p_and_e components.
+"""Proper Plan & Execute Implementation - Full-Featured Planning with Advanced Routing.
 
-This implementation follows the LangGraph pattern using:
-- SimpleAgent for planning
-- ReactAgent for execution
-- SimpleAgent for replanning with branching
-- MultiAgentBase for orchestration
-- Existing models, prompts, and state from p_and_e folder
+This module provides the **advanced** implementation for complex planning tasks that
+require sophisticated routing, state management, and search integration. It builds
+on the clean implementation with additional capabilities.
+
+## Key Features
+
+- **Advanced State Management**: Rich state tracking with PlanExecuteState
+- **Search Integration**: Built-in web search capabilities via duckduckgo
+- **Complex Routing**: Sophisticated decision logic for replanning
+- **Execution Tracking**: Detailed tracking of step execution and results
+- **Reusable Components**: Leverages existing p_and_e models and prompts
+
+## Architecture
+
+```
+Planner (SimpleAgent with Plan model)
+    ↓
+Executor (ReactAgent with tools + ExecutionResult)
+    ↓
+Routing Decision (should_continue)
+    ├──→ Continue: back to Executor
+    ├──→ Replan: to Replanner
+    └──→ End: final answer
+         ↓
+Replanner (SimpleAgent with Act model)
+    ↓
+Routing Decision (route_after_replan)
+    ├──→ Execute: back to Executor
+    └──→ End: final answer
+```
+
+## Usage
+
+### With Search Integration
+```python
+from haive.agents.planning import create_plan_execute_with_search
+
+agent = create_plan_execute_with_search(
+    name="research_planner",
+    planner_model="gpt-4",
+    executor_model="gpt-3.5-turbo"
+)
+
+result = agent.run(
+    "Research the latest AI developments and create a summary report"
+)
+```
+
+### Custom Configuration
+```python
+from haive.agents.planning import create_proper_plan_execute
+from haive.tools import custom_api_tool, database_tool
+
+agent = create_proper_plan_execute(
+    name="data_planner",
+    planner_model="gpt-4",
+    executor_model="gpt-4",
+    tools=[custom_api_tool, database_tool],
+    max_replanning_steps=5,
+    allow_parallel_execution=True
+)
+
+result = agent.run("Analyze customer data and generate insights")
+```
+
+## Advanced Features
+
+### State Processing Functions
+- `process_planner_output`: Extracts and validates plans
+- `process_executor_output`: Tracks execution results
+- `process_replanner_output`: Handles replanning decisions
+
+### Routing Logic
+- `should_continue`: Determines next step after execution
+- `route_after_replan`: Routes after replanning decision
+
+## When to Use
+
+✅ **Use this implementation when**:
+- You need sophisticated planning with search
+- Complex routing logic is required
+- Detailed execution tracking is important
+- You need production-ready error handling
+
+❌ **Consider alternatives when**:
+- Simple sequential planning suffices (use clean_plan_execute)
+- You need evidence-based planning (use ReWOO)
+- Tasks are very straightforward (use ReactAgent directly)
+
+## Status: Recommended for Complex Planning Tasks
+
+This is the go-to implementation for production systems requiring robust
+planning capabilities with search integration and advanced state management.
 """
 
 from haive.core.schema.agent_schema_composer import BuildMode

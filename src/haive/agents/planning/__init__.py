@@ -1,4 +1,124 @@
-"""Module exports."""
+"""Planning Agents - Strategic task decomposition and execution patterns.
+
+The planning module provides various planning agent implementations following different
+architectural patterns for task decomposition, execution, and adaptation. These agents
+excel at breaking down complex objectives into manageable steps and executing them
+systematically.
+
+## Key Planning Patterns
+
+### 1. Plan & Execute (Sequential Planning)
+- **Clean Plan Execute**: Simple, clean implementation following LangGraph patterns
+- **Proper Plan Execute**: Full-featured with search integration
+- **LangGraph Plan Execute**: Direct LangGraph compatibility
+
+### 2. ReWOO (Evidence-Based Planning)
+- **ReWOO Tree Agent V3**: Pure agent composition (recommended)
+- **ReWOO Tree Agent V2**: Enhanced with parallel execution
+- **Parallel ReWOO**: Optimized for concurrent evidence gathering
+
+### 3. Multi-Agent Planning
+- **Plan and Execute Multi**: Multi-agent orchestration for planning
+
+## Quick Start
+
+### Simple Plan & Execute
+```python
+from haive.agents.planning import create_simple_plan_execute
+from haive.tools import calculator_tool, web_search_tool
+
+# Create a planning agent with tools
+agent = create_simple_plan_execute(
+    tools=[calculator_tool, web_search_tool]
+)
+
+# Execute a complex task
+result = agent.run("Research the GDP of France and calculate 15% of it")
+```
+
+### ReWOO Evidence-Based Planning
+```python
+from haive.agents.planning import create_rewoo_agent_with_tools_v3
+from haive.tools import web_search_tool, document_reader
+
+# Create ReWOO agent for research tasks
+agent = create_rewoo_agent_with_tools_v3(
+    name="researcher",
+    tools=[web_search_tool, document_reader],
+    model="gpt-4"
+)
+
+# Execute research with evidence gathering
+result = agent.run("What are the main causes of climate change?")
+```
+
+### Advanced Plan & Execute with Search
+```python
+from haive.agents.planning import create_plan_execute_with_search
+
+# Create planning agent with integrated search
+agent = create_plan_execute_with_search(
+    name="research_planner",
+    planner_model="gpt-4",
+    executor_model="gpt-4"
+)
+
+result = agent.run("Plan a sustainable city development project")
+```
+
+## Planning Patterns Guide
+
+For comprehensive planning patterns and implementation details, see:
+`PLANNING_AGENT_MEMORY_GUIDE.md`
+
+## Version Guidance
+
+### Recommended Implementations
+- **Simple Tasks**: Use `create_simple_plan_execute()` - clean and straightforward
+- **Research Tasks**: Use `create_rewoo_agent_with_tools_v3()` - evidence-based
+- **Complex Tasks**: Use `create_proper_plan_execute()` - full-featured
+
+### Pattern Selection
+1. **Sequential Planning**: When tasks have clear dependencies
+2. **Parallel Planning**: When tasks can be executed concurrently
+3. **Evidence-Based**: When decisions require research and validation
+4. **Adaptive Planning**: When plans need runtime adjustment
+
+## Module Organization
+
+### Core Implementations
+- `clean_plan_execute.py` - Clean, simple Plan & Execute pattern
+- `proper_plan_execute.py` - Full-featured with advanced routing
+- `langgraph_plan_execute.py` - LangGraph-compatible implementation
+
+### ReWOO Implementations
+- `rewoo_tree_agent_v3.py` - Latest pure agent composition (recommended)
+- `rewoo_tree_agent_v2.py` - Enhanced with task management
+- `rewoo/` - ReWOO-specific components and models
+
+### Supporting Components
+- `models/` - Pydantic models for plans and steps
+- `llm_compiler/` - LLM Compiler pattern implementation
+- `plan_and_execute/` - Additional P&E components
+
+## Integration with Other Agents
+
+Planning agents work well with:
+- **SimpleAgent**: For plan generation and replanning
+- **ReactAgent**: For step execution with tools
+- **MultiAgent**: For complex orchestration
+- **RAG Agents**: For knowledge-augmented planning
+
+## Best Practices
+
+1. **Start Simple**: Use clean_plan_execute for straightforward tasks
+2. **Add Tools Gradually**: Test with basic tools before adding complexity
+3. **Monitor Execution**: Track step completion and handle failures
+4. **Use Structured Output**: Leverage Pydantic models for plans
+5. **Consider Parallelism**: Use ReWOO for parallelizable tasks
+
+See PLANNING_AGENT_MEMORY_GUIDE.md for detailed patterns and examples.
+"""
 
 from haive.agents.planning.clean_plan_execute import (
     Act,
