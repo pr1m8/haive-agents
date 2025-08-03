@@ -348,7 +348,7 @@ poetry run pytest packages/haive-agents/tests/ -v
 
 ## 📚 **Documentation**
 
-- **[Current Status](CURRENT_STATUS_2025.md)** - Detailed status report
+- **[Current Status](project_docs/CURRENT_STATUS_2025.md)** - Detailed status report
 - **[Architecture](../../../project_docs/active/architecture/)** - System design
 - **[Testing Philosophy](../../../project_docs/active/standards/testing/philosophy.md)** - No-mocks approach
 
