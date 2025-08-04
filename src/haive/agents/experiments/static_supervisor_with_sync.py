@@ -61,7 +61,7 @@ class SupervisorReactState(StateSchema):
             logger.info(f'Removed handoff tool for unregistered agent: {tool_name}')
         return self
 
-class StaticSupervisor(ReactAgent[SupervisorReactState]):
+class StaticSupervisor(ReactAgent):
     """Supervisor that inherits ReactAgent behavior with modified tool node.
 
     This supervisor uses ReactAgent's looping behavior but overrides the tool

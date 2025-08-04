@@ -6,8 +6,8 @@ from .state import (
     IterativeSummarizerInput,
     IterativeSummarizerOutput,
     IterativeSummarizerState,
-    normalize_contents,
     should_refine)
+from haive.agents.document_modifiers.base.utils import normalize_contents
 
 __all__ = [
     "IterativeSummarizer",

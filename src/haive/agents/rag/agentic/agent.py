@@ -38,7 +38,7 @@ class AgenticRAGState(BaseModel):
     retrieval_attempts: int = Field(default=0, description='Number of retrieval attempts')
     max_retrieval_attempts: int = Field(default=3, description='Maximum retrieval attempts')
 
-class AgenticRAGAgent[TInput: BaseModel, TOutput: BaseModel](ReactAgent[TInput, TOutput], ToolRouteMixin):
+class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
     """Agentic RAG agent combining ReAct reasoning with intelligent retrieval.
 
     This agent can:

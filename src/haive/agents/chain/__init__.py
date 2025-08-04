@@ -2,6 +2,16 @@
 
 from operator import add
 
+from haive.agents.chain.declarative_chain import (
+    BranchSpec,
+    ChainBuilder,
+    ChainSpec,
+    DeclarativeChainAgent,
+    LoopSpec,
+    NodeSpec,
+    SequenceSpec,
+    complex_rag,
+)
 from haive.agents.chain.chain_examples import (
     example_engines_as_nodes,
     example_incremental_building,
@@ -77,15 +87,23 @@ def merge_to(*args, **kwargs):
     pass
 
 __all__ = [
+    "BranchSpec",
     "ChainAgent",
+    "ChainBuilder",
     "ChainMultiAgent",
     "ChainNodeWrapper",
+    "ChainSpec",
+    "DeclarativeChainAgent",
     "ExtendedExecutionMode",
     "FlowBuilder",
+    "LoopSpec",
+    "NodeSpec",
+    "SequenceSpec",
     "StrategyDecision",
     "add",
     "branch",
     "build_graph",
+    "complex_rag",
     "chain_multi",
     "chain_to_multi",
     "conditional_multi",
