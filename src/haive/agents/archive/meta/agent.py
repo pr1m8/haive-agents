@@ -21,8 +21,7 @@ class MetaAgentState(StateSchema):
     # Meta state for embedded agent
     meta_state: MetaStateSchema = Field(
         default_factory=MetaStateSchema,
-        description="Meta state managing embedded agent",
-    )
+        description="Meta state managing embedded agent")
 
     # Tracking
     execution_count: int = Field(default=0)
@@ -70,8 +69,7 @@ class MetaAgent(Agent, Generic[TAgent]):
         wrapped_agent: TAgent,
         name: str | None = None,
         engine: AugLLMConfig | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize meta agent with wrapped agent.
 
         Args:
@@ -115,8 +113,7 @@ class MetaAgent(Agent, Generic[TAgent]):
                 graph_context={
                     "wrapper_type": "MetaAgent",
                     "wrapped_type": type(wrapped).__name__,
-                },
-            )
+                })
 
     def build_graph(self) -> Any:
         """Build graph for meta agent execution.
