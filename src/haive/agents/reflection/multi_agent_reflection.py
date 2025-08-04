@@ -73,8 +73,7 @@ class MultiAgentReflection:
         tools: list[Tool] | None = None,
         include_improvement: bool = False,
         reflection_temperature: float = 0.3,
-        main_temperature: float = 0.7,
-    ):
+        main_temperature: float = 0.7):
         """Initialize the multi-agent reflection system.
 
         Args:
@@ -110,8 +109,7 @@ class MultiAgentReflection:
         self.reflection_agent = SimpleAgent(
             name="reflection_grader",
             engine=reflection_config,
-            structured_output_model=ReflectionGrade,
-        )
+            structured_output_model=ReflectionGrade)
 
         # Optional improvement agent
         self.improvement_agent = None
@@ -174,8 +172,7 @@ class MultiAgentReflection:
         reflection_prompt = self._create_reflection_prompt(
             original_task=task,
             agent_response=str(main_result),
-            transformed_conversation=transformed_messages,
-        )
+            transformed_conversation=transformed_messages)
 
         if debug:
             logger.info("Step 2: Reflection agent analyzing...")
@@ -219,8 +216,7 @@ class MultiAgentReflection:
                             action_appropriateness=7,
                             improvements=["More detailed analysis needed"],
                             strengths=["Provided response"],
-                            overall_assessment=f"Analysis: {reflection_content[:200]}...",
-                        )
+                            overall_assessment=f"Analysis: {reflection_content[:200]}...")
                 else:
                     # Fallback grade
                     reflection_grade = ReflectionGrade(
@@ -229,8 +225,7 @@ class MultiAgentReflection:
                         action_appropriateness=6,
                         improvements=["Unable to analyze properly"],
                         strengths=["Attempted response"],
-                        overall_assessment="Unable to properly analyze the response",
-                    )
+                        overall_assessment="Unable to properly analyze the response")
             else:
                 # Fallback grade for unexpected dict structure
                 reflection_grade = ReflectionGrade(
@@ -239,8 +234,7 @@ class MultiAgentReflection:
                     action_appropriateness=5,
                     improvements=["Response structure unclear"],
                     strengths=["Provided some output"],
-                    overall_assessment="Unexpected response format",
-                )
+                    overall_assessment="Unexpected response format")
         elif isinstance(reflection_result, ReflectionGrade):
             # Perfect - already structured
             reflection_grade = reflection_result
@@ -254,8 +248,7 @@ class MultiAgentReflection:
                 strengths=["Provided response"],
                 overall_assessment=f"Raw response: {
                     str(reflection_result)[
-                        :200]}...",
-            )
+                        :200]}...")
 
         if debug:
             logger.info(f"Final reflection grade: {reflection_grade}")
@@ -271,8 +264,7 @@ class MultiAgentReflection:
                 improvement_prompt = self._create_improvement_prompt(
                     original_task=task,
                     original_response=str(main_result),
-                    reflection_grade=reflection_grade,
-                )
+                    reflection_grade=reflection_grade)
 
                 improved_response = await self.improvement_agent.arun(
                     improvement_prompt, debug=debug
@@ -288,15 +280,13 @@ class MultiAgentReflection:
             initial_response=str(main_result),
             reflection_grade=reflection_grade,
             improved_response=str(improved_response) if improved_response else None,
-            reflection_insights=insights,
-        )
+            reflection_insights=insights)
 
     def _create_reflection_prompt(
         self,
         original_task: str,
         agent_response: str,
-        transformed_conversation: list[BaseMessage],
-    ) -> str:
+        transformed_conversation: list[BaseMessage]) -> str:
         """Create the reflection prompt using transformed conversation context.
 
         This follows the pattern: structured data flows through prompt configuration,
@@ -337,8 +327,7 @@ Focus on constructive analysis that can help improve future performance."""
         self,
         original_task: str,
         original_response: str,
-        reflection_grade: ReflectionGrade,
-    ) -> str:
+        reflection_grade: ReflectionGrade) -> str:
         """Create prompt for improvement based on reflection."""
         improvements_text = "\n".join(
             [f"- {imp}" for imp in reflection_grade.improvements]
@@ -442,8 +431,7 @@ def create_simple_reflection_system(
         name="simple_reflection",
         engine_config=engine_config,
         tools=tools,
-        include_improvement=False,
-    )
+        include_improvement=False)
 
 
 def create_full_reflection_system(
@@ -462,5 +450,4 @@ def create_full_reflection_system(
         name="full_reflection",
         engine_config=engine_config,
         tools=tools,
-        include_improvement=True,
-    )
+        include_improvement=True)

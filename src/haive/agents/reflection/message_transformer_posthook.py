@@ -18,8 +18,7 @@ from typing import Any, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.message_transformation_v2 import (
-    create_reflection_transformer,
-)
+    create_reflection_transformer)
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
@@ -55,15 +54,13 @@ except (ImportError, AttributeError):
                     transformed.append(
                         HumanMessage(
                             content=msg.content,
-                            additional_kwargs=getattr(msg, "additional_kwargs", {}),
-                        )
+                            additional_kwargs=getattr(msg, "additional_kwargs", {}))
                     )
                 elif isinstance(msg, HumanMessage):
                     transformed.append(
                         AIMessage(
                             content=msg.content,
-                            additional_kwargs=getattr(msg, "additional_kwargs", {}),
-                        )
+                            additional_kwargs=getattr(msg, "additional_kwargs", {}))
                     )
                 else:
                     transformed.append(msg)
@@ -88,8 +85,7 @@ class MessageTransformerPostHook:
         self,
         reflection_agent: SimpleAgent,
         transform_type: str = "reflection",
-        preserve_first_message: bool = True,
-    ):
+        preserve_first_message: bool = True):
         """Initialize the post-hook.
 
         Args:
@@ -112,8 +108,7 @@ class MessageTransformerPostHook:
         self,
         agent_result: dict[str, Any],
         original_input: Any = None,
-        structured_data: BaseModel | None = None,
-    ) -> dict[str, Any]:
+        structured_data: BaseModel | None = None) -> dict[str, Any]:
         """Apply message transformation and reflection.
 
         Args:
@@ -179,8 +174,7 @@ class ReflectionWithGradePostHook(MessageTransformerPostHook):
         self,
         grading_agent: SimpleAgent,
         reflection_agent: SimpleAgent,
-        preserve_first_message: bool = True,
-    ):
+        preserve_first_message: bool = True):
         """Initialize graded reflection post-hook.
 
         Args:
@@ -203,8 +197,7 @@ class ReflectionWithGradePostHook(MessageTransformerPostHook):
 
 {grade_context}
 
-Provide an enhanced version that addresses any feedback.""",
-                ),
+Provide an enhanced version that addresses any feedback."""),
             ]
         )
 
@@ -305,8 +298,7 @@ class AgentWithPostHook:
     def __init__(
         self,
         base_agent: SimpleAgent,
-        post_hooks: list[MessageTransformerPostHook] | None = None,
-    ):
+        post_hooks: list[MessageTransformerPostHook] | None = None):
         """Initialize agent with post-hooks.
 
         Args:
@@ -342,8 +334,7 @@ class AgentWithPostHook:
 # Factory functions for common patterns
 def create_reflection_post_hook(
     reflection_prompt_template: ChatPromptTemplate | None = None,
-    temperature: float = 0.3,
-) -> MessageTransformerPostHook:
+    temperature: float = 0.3) -> MessageTransformerPostHook:
     """Create a basic reflection post-hook."""
     if not reflection_prompt_template:
         reflection_prompt_template = ChatPromptTemplate.from_messages(
@@ -356,8 +347,7 @@ Analyze the conversation and provide constructive feedback on:
 1. Quality and accuracy
 2. Completeness
 3. Clarity and communication
-4. Areas for improvement""",
-                ),
+4. Areas for improvement"""),
                 ("human", "Analyze this conversation and provide reflection insights."),
             ]
         )
@@ -366,8 +356,7 @@ Analyze the conversation and provide constructive feedback on:
         name="reflection_agent",
         engine=AugLLMConfig(
             prompt_template=reflection_prompt_template, temperature=temperature
-        ),
-    )
+        ))
 
     return MessageTransformerPostHook(reflection_agent)
 
@@ -387,8 +376,7 @@ def create_graded_reflection_post_hook(
 Query: {original_query}
 Response: {response}
 
-Provide a detailed grade with score, strengths, weaknesses, and suggestions.""",
-            ),
+Provide a detailed grade with score, strengths, weaknesses, and suggestions."""),
         ]
     )
 
@@ -398,9 +386,7 @@ Provide a detailed grade with score, strengths, weaknesses, and suggestions.""",
             prompt_template=grading_prompt,
             structured_output_model=grading_model,
             structured_output_version="v2",
-            temperature=temperature,
-        ),
-    )
+            temperature=temperature))
 
     # Create reflection agent (will be updated with proper prompt in post-hook)
     reflection_agent = SimpleAgent(
@@ -442,8 +428,7 @@ async def example_basic_post_hook():
         name="writer",
         engine=AugLLMConfig(
             system_message="You are a helpful writing assistant.", temperature=0.7
-        ),
-    )
+        ))
 
     # Create reflection post-hook
     reflection_hook = create_reflection_post_hook()
@@ -472,9 +457,7 @@ async def example_graded_reflection_post_hook():
         name="explainer",
         engine=AugLLMConfig(
             system_message="You are an educational assistant that explains concepts.",
-            temperature=0.6,
-        ),
-    )
+            temperature=0.6))
 
     # Create graded reflection post-hook
     graded_hook = create_graded_reflection_post_hook(Critique)
@@ -508,8 +491,7 @@ async def example_factory_pattern():
         name="summarizer",
         engine=AugLLMConfig(
             system_message="You are a text summarization expert.", temperature=0.4
-        ),
-    )
+        ))
 
     # Use factory to create enhanced agent
     enhanced_agent = create_agent_with_reflection(base_agent, "basic")

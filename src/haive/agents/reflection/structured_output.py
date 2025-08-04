@@ -81,8 +81,7 @@ class StructuredReflectionAgent:
         self,
         name: str = "reflection_agent",
         system_prompt: str | None = None,
-        temperature: float = 0.3,
-    ):
+        temperature: float = 0.3):
         """Initialize the structured reflection agent.
 
         Args:
@@ -115,8 +114,7 @@ Be constructive and specific in your feedback."""
 Original Query: {query}
 Response to Analyze: {response}
 
-Provide a comprehensive reflection on the quality, accuracy, and completeness of this response.""",
-                ),
+Provide a comprehensive reflection on the quality, accuracy, and completeness of this response."""),
             ]
         )
 
@@ -127,9 +125,7 @@ Provide a comprehensive reflection on the quality, accuracy, and completeness of
                 prompt_template=self.prompt_template,
                 structured_output_model=ReflectionResult,
                 structured_output_version="v2",
-                temperature=temperature,
-            ),
-        )
+                temperature=temperature))
 
     async def reflect(self, query: str, response: str) -> ReflectionResult | None:
         """Perform reflection analysis on a response.
@@ -173,8 +169,7 @@ You will receive:
 3. Structured feedback about the response
 
 Your task is to create an improved version that addresses the feedback while
-maintaining the strengths identified.""",
-                ),
+maintaining the strengths identified."""),
                 (
                     "human",
                     """Please improve this response based on the feedback provided:
@@ -186,8 +181,7 @@ Feedback Summary: {feedback_summary}
 Identified Weaknesses: {weaknesses}
 Improvement Suggestions: {suggestions}
 
-Provide an improved version of the response that addresses these issues.""",
-                ),
+Provide an improved version of the response that addresses these issues."""),
             ]
         )
 
@@ -196,8 +190,7 @@ Provide an improved version of the response that addresses these issues.""",
             name=name,
             engine=AugLLMConfig(
                 prompt_template=improvement_prompt, temperature=temperature
-            ),
-        )
+            ))
 
     async def improve(
         self, query: str, response: str, reflection: ReflectionResult
@@ -241,8 +234,7 @@ class ReflectionLoop:
         reflector: StructuredReflectionAgent,
         improver: StructuredImprovementAgent,
         max_iterations: int = 3,
-        quality_threshold: float = 0.8,
-    ):
+        quality_threshold: float = 0.8):
         """Initialize the reflection loop.
 
         Args:
@@ -332,8 +324,7 @@ def create_reflection_loop(
     max_iterations: int = 3,
     quality_threshold: float = 0.8,
     reflector_name: str = "reflector",
-    improver_name: str = "improver",
-) -> ReflectionLoop:
+    improver_name: str = "improver") -> ReflectionLoop:
     """Create a complete reflection loop system."""
     reflector = create_reflection_agent(name=reflector_name)
     improver = create_improvement_agent(name=improver_name)
@@ -342,8 +333,7 @@ def create_reflection_loop(
         reflector=reflector,
         improver=improver,
         max_iterations=max_iterations,
-        quality_threshold=quality_threshold,
-    )
+        quality_threshold=quality_threshold)
 
 
 # Example usage functions

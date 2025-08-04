@@ -18,8 +18,7 @@ class ReflectionAgent(MultiAgent):
         name: str = "reflection_agent",
         max_iterations: int = 2,
         quality_threshold: float = 0.8,
-        **kwargs,
-    ) -> "ReflectionAgent":
+        **kwargs) -> "ReflectionAgent":
         """Create a simple reflection agent."""
         # Create critic
         critic = SimpleAgent(
@@ -38,9 +37,7 @@ class ReflectionAgent(MultiAgent):
                 """,
                 structured_output_model=Critique,
                 structured_output_version="v2",
-                temperature=0.2,
-            ),
-        )
+                temperature=0.2))
 
         # Create improver
         improver = SimpleAgent(
@@ -56,9 +53,7 @@ class ReflectionAgent(MultiAgent):
                 """,
                 structured_output_model=Improvement,
                 structured_output_version="v2",
-                temperature=0.5,
-            ),
-        )
+                temperature=0.5))
 
         return cls(
             name=name, agents=[critic, improver], execution_mode="sequential", **kwargs
@@ -78,8 +73,7 @@ class ReflectionAgent(MultiAgent):
         return MultiAgent.create(
             agents=[base_agent, reflection_agent],
             name=enhanced_name,
-            execution_mode="sequential",
-        )
+            execution_mode="sequential")
 
     async def _run_sequential(self, input_data, **kwargs):
         """Custom sequential execution with reflection loop."""
@@ -99,8 +93,7 @@ class ReflectionAgent(MultiAgent):
                     "strengths": critique_result.strengths,
                     "weaknesses": critique_result.weaknesses,
                 },
-                **kwargs,
-            )
+                **kwargs)
 
             return improvement_result.improved_content
 

@@ -143,8 +143,7 @@ class ExpertiseConfig(BaseModel):
 
     style: str | None = Field(
         default=None,
-        description="Communication style (formal, casual, technical, etc.)",
-    )
+        description="Communication style (formal, casual, technical, etc.)")
 
     additional_context: str | None = Field(
         default=None, description="Additional context about the expert role"
@@ -178,8 +177,7 @@ class ReflectionConfig(BaseModel):
         default=0.9,
         ge=0.0,
         le=1.0,
-        description="Confidence threshold to stop reflecting",
-    )
+        description="Confidence threshold to stop reflecting")
 
     reflection_mode: Literal["improve", "critique", "both"] = Field(
         default="both", description="Mode of reflection"

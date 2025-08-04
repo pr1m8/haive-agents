@@ -4,8 +4,7 @@ from typing import Any, Generic, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.message_transformation_v2 import (
-    TransformationType,
-)
+    TransformationType)
 from pydantic import BaseModel, Field
 
 from haive.agents.base.agent import Agent
@@ -17,8 +16,7 @@ from haive.agents.structured import StructuredOutputAgent
 from .models import ExpertiseConfig, GradingResult, ReflectionConfig
 from .prompts import (
     GRADING_SYSTEM_PROMPT,
-    REFLECTION_SYSTEM_PROMPT,
-)
+    REFLECTION_SYSTEM_PROMPT)
 
 # Generic type variables for agents
 TMainAgent = TypeVar("TMainAgent", bound=Agent)
@@ -110,8 +108,7 @@ class StructuredOutputMultiAgent(
         main_agent: TMainAgent,
         output_model: type[BaseModel],
         name: str | None = None,
-        **kwargs,
-    ) -> "StructuredOutputMultiAgent":
+        **kwargs) -> "StructuredOutputMultiAgent":
         """Create with main agent and output model."""
         name = name or f"{main_agent.name}_structured"
 
@@ -152,8 +149,7 @@ class ReflectionMultiAgent(PrePostMultiAgent[None, TMainAgent, SimpleAgent]):
         main_agent: TMainAgent,
         name: str | None = None,
         reflection_system_prompt: str = REFLECTION_SYSTEM_PROMPT,
-        **kwargs,
-    ) -> "ReflectionMultiAgent":
+        **kwargs) -> "ReflectionMultiAgent":
         """Create reflection multi-agent."""
         name = name or f"{main_agent.name}_with_reflection"
 
@@ -163,8 +159,7 @@ class ReflectionMultiAgent(PrePostMultiAgent[None, TMainAgent, SimpleAgent]):
             engine=AugLLMConfig(
                 system_message=reflection_system_prompt,
                 temperature=0.3,  # Lower temp for consistent improvement
-            ),
-        )
+            ))
 
         return cls(name=name, main_agent=main_agent, post_agent=reflector, **kwargs)
 
@@ -203,8 +198,7 @@ class GradedReflectionMultiAgent(
         name: str | None = None,
         grading_system_prompt: str = GRADING_SYSTEM_PROMPT,
         reflection_system_prompt: str = REFLECTION_SYSTEM_PROMPT,
-        **kwargs,
-    ) -> "GradedReflectionMultiAgent":
+        **kwargs) -> "GradedReflectionMultiAgent":
         """Create graded reflection multi-agent."""
         name = name or f"{main_agent.name}_graded_reflection"
 
@@ -215,24 +209,21 @@ class GradedReflectionMultiAgent(
                 system_message=grading_system_prompt,
                 temperature=0.1,  # Very low for consistent grading
             ),
-            structured_output_model=GradingResult,
-        )
+            structured_output_model=GradingResult)
 
         # Create reflection agent
         reflector = SimpleAgent(
             name=f"{main_agent.name}_reflector",
             engine=AugLLMConfig(
                 system_message=reflection_system_prompt, temperature=0.3
-            ),
-        )
+            ))
 
         return cls(
             name=name,
             pre_agent=grader,
             main_agent=main_agent,
             post_agent=reflector,
-            **kwargs,
-        )
+            **kwargs)
 
 
 # Specific agent implementations
@@ -326,8 +317,7 @@ def create_graded_reflection_agent(
     return GradingAgent(
         name=name,
         engine=AugLLMConfig(system_message=GRADING_SYSTEM_PROMPT, temperature=0.1),
-        **kwargs,
-    )
+        **kwargs)
 
 
 def create_expert_agent(
@@ -341,8 +331,7 @@ def create_expert_agent(
     return ExpertAgent(
         name=name,
         expertise_config=expertise_config,
-        engine=AugLLMConfig(temperature=0.7),
-    )
+        engine=AugLLMConfig(temperature=0.7))
 
 
 def create_tool_based_reflection_agent(

@@ -3,8 +3,7 @@
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
-    SystemMessagePromptTemplate,
-)
+    SystemMessagePromptTemplate)
 
 # Simple reflection prompt
 REFLECTION_SYSTEM_PROMPT = """You are a helpful assistant that reflects on responses to improve them.
@@ -107,8 +106,7 @@ def create_expert_prompt(expertise_config: dict) -> ChatPromptTemplate:
         expertise_level=expertise_config.get("expertise_level", "expert"),
         domain=expertise_config["domain"],
         additional_context=expertise_config.get("additional_context", ""),
-        style_instruction=style_instruction,
-    )
+        style_instruction=style_instruction)
 
     return ChatPromptTemplate.from_messages(
         [

@@ -14,8 +14,7 @@ from haive.agents.reflection.agent import (
     create_graded_reflection_agent,
     create_reflection_agent,
     create_tool_based_reflection_agent,
-    model_post_init,
-)
+    model_post_init)
 from haive.agents.reflection.message_transformer import (
     ConversationalReflectionAgent,
     MessageTransformerReflectionAgent,
@@ -23,34 +22,28 @@ from haive.agents.reflection.message_transformer import (
     create_conversational_reflection_agent,
     create_message_transformer_reflection_agent,
     create_reflection_context_transformer,
-    create_reflection_message_flow,
-)
+    create_reflection_message_flow)
 from haive.agents.reflection.prompts import (
     create_expert_prompt,
     create_grading_prompt,
     create_improvement_prompt,
-    create_reflection_prompt,
-)
+    create_reflection_prompt)
 from haive.agents.reflection.simple_agent import ReflectionAgent, create, enhance_agent
 from haive.agents.reflection.state import (
     ReflectionState,
     add_improvement,
     finalize,
-    should_continue,
-)
+    should_continue)
 from haive.agents.reflection.structured_output import (
     ReflectionLoop,
     StructuredImprovementAgent,
     StructuredReflectionAgent,
-    create_improvement_agent,
-)
+    create_improvement_agent)
 from haive.agents.reflection.structured_output import (
-    create_reflection_agent as create_structured_reflection_agent,
-)
+    create_reflection_agent as create_structured_reflection_agent)
 from haive.agents.reflection.structured_output import (
     create_reflection_loop,
-    extract_structured_output,
-)
+    extract_structured_output)
 
 from .models import (  # Add new models
     Critique,
@@ -63,8 +56,7 @@ from .models import (  # Add new models
     ReflectionOutput,
     ReflectionResult,
     to_prompt,
-    validate_grade_matches_score,
-)
+    validate_grade_matches_score)
 
 # Existing reflection patterns
 

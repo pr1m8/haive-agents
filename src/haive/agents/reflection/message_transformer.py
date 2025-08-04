@@ -18,8 +18,7 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.message_transformation_v2 import (
     TransformationType,
-    create_reflection_transformer,
-)
+    create_reflection_transformer)
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -66,16 +65,14 @@ class SimpleReflectionTransformer:
                 transformed.append(
                     HumanMessage(
                         content=msg.content,
-                        additional_kwargs=getattr(msg, "additional_kwargs", {}),
-                    )
+                        additional_kwargs=getattr(msg, "additional_kwargs", {}))
                 )
             elif isinstance(msg, HumanMessage):
                 # Human → AI
                 transformed.append(
                     AIMessage(
                         content=msg.content,
-                        additional_kwargs=getattr(msg, "additional_kwargs", {}),
-                    )
+                        additional_kwargs=getattr(msg, "additional_kwargs", {}))
                 )
             else:
                 # Keep other message types unchanged
@@ -96,8 +93,7 @@ class MessageTransformerReflectionAgent:
         self,
         name: str = "transformer_reflection_agent",
         temperature: float = 0.3,
-        preserve_first_message: bool = True,
-    ):
+        preserve_first_message: bool = True):
         """Initialize message transformer reflection agent.
 
         Args:
@@ -112,8 +108,7 @@ class MessageTransformerReflectionAgent:
         if MESSAGE_TRANSFORMER_AVAILABLE:
             self.reflection_transformer = create_reflection_transformer(
                 name=f"{name}_transformer",
-                preserve_first_message=preserve_first_message,
-            )
+                preserve_first_message=preserve_first_message)
         else:
             # Create a simple reflection transformer function
             self.reflection_transformer = SimpleReflectionTransformer(
@@ -133,8 +128,7 @@ Your role is to:
 3. Provide actionable feedback for future interactions
 4. Consider the context and transformation applied to messages
 
-Focus on the conversation dynamics and response quality.""",
-                ),
+Focus on the conversation dynamics and response quality."""),
                 ("human", "Analyze this conversation and provide reflection insights."),
             ]
         )
@@ -143,8 +137,7 @@ Focus on the conversation dynamics and response quality.""",
             name=f"{name}_analyzer",
             engine=AugLLMConfig(
                 prompt_template=reflection_prompt, temperature=temperature
-            ),
-        )
+            ))
 
     async def reflect_on_conversation(
         self, messages: list[BaseMessage], original_query: str | None = None
@@ -191,8 +184,7 @@ Focus on the conversation dynamics and response quality.""",
 
 
 def create_reflection_context_transformer(
-    messages: list[BaseMessage],
-) -> list[BaseMessage]:
+    messages: list[BaseMessage]) -> list[BaseMessage]:
     """Create a reflection context transformer function.
 
     This function adds reflection insights to conversation context,
@@ -313,8 +305,7 @@ class ReflectionMessageFlow:
         self,
         primary_agent: SimpleAgent,
         reflection_agent: SimpleAgent | None = None,
-        name: str = "reflection_flow",
-    ):
+        name: str = "reflection_flow"):
         """Initialize reflection message flow.
 
         Args:
@@ -341,16 +332,14 @@ ongoing conversation. Focus on:
 2. What could be clearer or more helpful
 3. Opportunities for better engagement
 
-Keep reflections concise and conversational.""",
-                    ),
+Keep reflections concise and conversational."""),
                     ("human", "Please reflect on this conversation flow."),
                 ]
             )
 
             self.reflection_agent = SimpleAgent(
                 name=f"{name}_reflector",
-                engine=AugLLMConfig(prompt_template=reflection_prompt, temperature=0.4),
-            )
+                engine=AugLLMConfig(prompt_template=reflection_prompt, temperature=0.4))
         else:
             self.reflection_agent = reflection_agent
 
@@ -358,8 +347,7 @@ Keep reflections concise and conversational.""",
         self.ai_to_human_transformer = MessageTransformationNodeConfig(
             name=f"{name}_ai_to_human",
             transformation_type=TransformationType.AI_TO_HUMAN,
-            preserve_metadata=True,
-        )
+            preserve_metadata=True)
 
         self.reflection_transformer = create_reflection_transformer(
             name=f"{name}_reflection", preserve_first_message=True
@@ -451,8 +439,7 @@ def create_conversational_reflection_agent(
 def create_reflection_message_flow(
     primary_agent: SimpleAgent,
     reflection_agent: SimpleAgent | None = None,
-    name: str = "reflection_flow",
-) -> ReflectionMessageFlow:
+    name: str = "reflection_flow") -> ReflectionMessageFlow:
     """Create a reflection message flow system."""
     return ReflectionMessageFlow(
         primary_agent=primary_agent, reflection_agent=reflection_agent, name=name
@@ -489,9 +476,7 @@ async def example_conversational_reflection():
         name="chat_assistant",
         engine=AugLLMConfig(
             system_message="You are a helpful assistant engaging in conversation.",
-            temperature=0.7,
-        ),
-    )
+            temperature=0.7))
 
     # Wrap with conversational reflection
     conv_reflector = create_conversational_reflection_agent(
@@ -524,9 +509,7 @@ async def example_reflection_message_flow():
         name="knowledge_assistant",
         engine=AugLLMConfig(
             system_message="You are a knowledgeable assistant providing informative responses.",
-            temperature=0.6,
-        ),
-    )
+            temperature=0.6))
 
     # Create reflection flow system
     reflection_flow = create_reflection_message_flow(
