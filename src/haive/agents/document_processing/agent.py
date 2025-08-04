@@ -49,24 +49,20 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.document.loaders.auto_loader import AutoLoader, AutoLoaderConfig
 from haive.core.schema.prebuilt.document_state import (
-    DocumentState,
-)
+    DocumentState)
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.tools.tools.search_tools import (
     scrape_webpages,
     tavily_search_context,
-    tavily_search_tool,
-)
+    tavily_search_tool)
 from langchain_core.documents import Document
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.document_modifiers.kg.kg_map_merge.agent import (
-    ParallelKGTransformer,
-)
+    ParallelKGTransformer)
 from haive.agents.document_modifiers.summarizer.map_branch import (
-    SummarizerAgent as MapBranchSummarizerAgent,
-)
+    SummarizerAgent as MapBranchSummarizerAgent)
 
 # from haive.agents.rag.adaptive_rag.agent import AdaptiveRAGAgent  # Empty module
 from haive.agents.rag.base.agent import BaseRAGAgent
@@ -142,8 +138,7 @@ class DocumentProcessingConfig(BaseModel):
     search_depth: str = Field(default="advanced", pattern="^(basic|advanced)$")
     retrieval_strategy: str = Field(
         default="adaptive",
-        pattern="^(basic|adaptive|self_query|parent_document|multi_query|ensemble)$",
-    )
+        pattern="^(basic|adaptive|self_query|parent_document|multi_query|ensemble)$")
     retrieval_config: dict[str, Any] = Field(default_factory=dict)
 
     # Query Processing
@@ -270,8 +265,7 @@ class DocumentProcessingAgent:
         self,
         config: DocumentProcessingConfig | None = None,
         engine: AugLLMConfig | None = None,
-        name: str = "document_processor",
-    ):
+        name: str = "document_processor"):
         """Initialize the document processing agent.
 
         Args:
@@ -297,8 +291,7 @@ class DocumentProcessingAgent:
         auto_loader_config = self.config.auto_loader_config or AutoLoaderConfig(
             max_concurrency=self.config.max_concurrent_loads,
             enable_caching=self.config.enable_caching,
-            cache_ttl=self.config.cache_ttl,
-        )
+            cache_ttl=self.config.cache_ttl)
         self.auto_loader = AutoLoader(config=auto_loader_config)
         # self.universal_loader = UniversalDocumentLoader()
 
@@ -404,8 +397,7 @@ class DocumentProcessingAgent:
             messages=[HumanMessage(content=query)],
             original_query=query,
             current_sources=sources or [],
-            processing_stage="query_processing",
-        )
+            processing_stage="query_processing")
 
         try:
             # Step 1: Document Discovery & Fetching
@@ -448,8 +440,7 @@ class DocumentProcessingAgent:
                     "documents_processed": len(state.processed_documents),
                     "sources_used": len(state.current_sources),
                     "context_documents": len(state.context_documents),
-                },
-            )
+                })
 
         except Exception as e:
             logger.exception(f"Error in document processing: {e}")
@@ -522,8 +513,7 @@ class DocumentProcessingAgent:
                 bulk_result = self.auto_loader.load_bulk(
                     state.current_sources,
                     chunk_size=self.config.chunk_size,
-                    chunk_overlap=self.config.chunk_overlap,
-                )
+                    chunk_overlap=self.config.chunk_overlap)
 
                 # Extract documents from bulk result
                 documents = []
@@ -650,8 +640,7 @@ class DocumentProcessingAgent:
             MapBranchSummarizerAgent(
                 name=f"{
                     self.name}_summarizer",
-                engine=self.engine,
-            )
+                engine=self.engine)
 
             # Create summarization state and process
             # This would need to be implemented based on the summarizer's
