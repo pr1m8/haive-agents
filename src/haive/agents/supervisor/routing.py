@@ -124,8 +124,7 @@ class BaseRoutingStrategy(ABC):
         context: RoutingContext,
         available_agents: list[str],
         agent_capabilities: dict[str, str],
-        config: RunnableConfig | None = None,
-    ) -> RoutingDecision:
+        config: RunnableConfig | None = None) -> RoutingDecision:
         """Make routing decision based on context."""
 
 
@@ -143,8 +142,7 @@ class LLMRoutingStrategy(BaseRoutingStrategy):
         context: RoutingContext,
         available_agents: list[str],
         agent_capabilities: dict[str, str],
-        config: RunnableConfig | None = None,
-    ) -> RoutingDecision:
+        config: RunnableConfig | None = None) -> RoutingDecision:
         """Make LLM-based routing decision."""
         # Build routing prompt
         prompt = self._build_routing_prompt(
@@ -184,8 +182,7 @@ class LLMRoutingStrategy(BaseRoutingStrategy):
         self,
         context: RoutingContext,
         available_agents: list[str],
-        agent_capabilities: dict[str, str],
-    ) -> str:
+        agent_capabilities: dict[str, str]) -> str:
         """Build context-aware routing prompt."""
         # Format agent capabilities
         agent_info = []
@@ -277,8 +274,7 @@ class RuleBasedRoutingStrategy(BaseRoutingStrategy):
         context: RoutingContext,
         available_agents: list[str],
         agent_capabilities: dict[str, str],
-        config: RunnableConfig | None = None,
-    ) -> RoutingDecision:
+        config: RunnableConfig | None = None) -> RoutingDecision:
         """Make rule-based routing decision."""
         message_lower = context.last_message.lower()
 
@@ -308,8 +304,7 @@ class DynamicRoutingEngine:
         routing_model: DynamicChoiceModel[str],
         routing_engine: InvokableEngine | None = None,
         routing_strategy: BaseRoutingStrategy | None = None,
-        enable_context_analysis: bool = True,
-    ):
+        enable_context_analysis: bool = True):
         """Initialize routing engine.
 
         Args:
@@ -344,8 +339,7 @@ class DynamicRoutingEngine:
         self,
         state: Any,
         agent_capabilities: dict[str, str],
-        config: RunnableConfig | None = None,
-    ) -> Command:
+        config: RunnableConfig | None = None) -> Command:
         """Main routing method.
 
         Args:
@@ -404,8 +398,7 @@ class DynamicRoutingEngine:
                 last_message="",
                 message_type="empty",
                 conversation_length=0,
-                task_complexity="Simple",
-            )
+                task_complexity="Simple")
 
         last_message = messages[-1]
         last_content = ""
@@ -432,8 +425,7 @@ class DynamicRoutingEngine:
             task_keywords=task_keywords,
             conversation_length=len(messages),
             previous_agent=previous_agent,
-            task_complexity=complexity,
-        )
+            task_complexity=complexity)
 
     def _create_routing_command(
         self, decision: RoutingDecision, state: Any, context: RoutingContext

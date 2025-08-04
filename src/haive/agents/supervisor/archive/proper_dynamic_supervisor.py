@@ -112,8 +112,7 @@ class ProperDynamicSupervisor(ReactAgent):
         graph.add_conditional_edges(
             "supervisor",
             self._route_supervisor,
-            {"executor": "executor", "END": "__end__"},
-        )
+            {"executor": "executor", "END": "__end__"})
 
         # Executor always returns to supervisor
         graph.add_edge("executor", "supervisor")
@@ -279,8 +278,7 @@ if __name__ == "__main__":
         # Register some agents
         supervisor.register_agent(
             MockAgent("research_agent", "🔍 Research"),
-            "Research and information gathering",
-        )
+            "Research and information gathering")
 
         supervisor.register_agent(
             MockAgent("writing_agent", "✍️ Writing"), "Content creation and writing"

@@ -28,8 +28,7 @@ class DynamicExecutorNode:
     async def __call__(
         self,
         state: dict[str, Any] | BaseModel,
-        config: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
+        config: dict[str, Any] | None = None) -> dict[str, Any]:
         """Execute the targeted agent with proper state extraction.
 
         This follows the pattern from AgentNode:

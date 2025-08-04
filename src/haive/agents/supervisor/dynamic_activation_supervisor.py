@@ -132,8 +132,7 @@ class DynamicActivationSupervisor(Agent):
                 "role": "supervisor",
                 "activation_support": True,
                 "discovery_enabled": self._discovery_agent is not None,
-            },
-        )
+            })
 
         # Set up default tools for the supervisor
         self._setup_supervisor_tools()
@@ -227,8 +226,7 @@ class DynamicActivationSupervisor(Agent):
                 name=comp_data["name"],
                 description=comp_data["description"],
                 component=comp_data["component"],
-                metadata=comp_data.get("metadata", {}),
-            )
+                metadata=comp_data.get("metadata", {}))
             supervisor.state.registry.register(item)
 
         return supervisor
@@ -394,8 +392,7 @@ class DynamicActivationSupervisor(Agent):
                 "activate": "activate_components",
                 "execute": "execute_task",
                 "end": END,
-            },
-        )
+            })
 
         # Connect other nodes
         graph.add_edge("analyze_task", "supervisor")

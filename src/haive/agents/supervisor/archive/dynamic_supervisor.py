@@ -27,8 +27,7 @@ from haive.agents.supervisor.dynamic_state import (
     AgentExecutionConfig,
     AgentExecutionResult,
     DynamicSupervisorState,
-    SupervisorDecision,
-)
+    SupervisorDecision)
 from haive.agents.supervisor.registry import AgentRegistry
 
 logger = logging.getLogger(__name__)
@@ -60,8 +59,7 @@ class DynamicSupervisorAgent(ReactAgent):
         auto_rebuild_graph: bool = True,
         max_execution_history: int = 100,
         enable_parallel_execution: bool = False,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize dynamic supervisor agent.
 
         Args:
@@ -170,8 +168,7 @@ class DynamicSupervisorAgent(ReactAgent):
         agent: Agent,
         capability_description: str | None = None,
         execution_config: dict[str, Any] | None = None,
-        rebuild_graph: bool | None = None,
-    ) -> bool:
+        rebuild_graph: bool | None = None) -> bool:
         """Register an agent with enhanced configuration.
 
         Args:
@@ -189,8 +186,7 @@ class DynamicSupervisorAgent(ReactAgent):
             capability_description=capability_description
             or f"Handles {agent.name} tasks",
             agent_type=agent.__class__.__name__,
-            **(execution_config or {}),
-        )
+            **(execution_config or {}))
 
         # Register with base registry
         success = self.agent_registry.register(agent, capability_description)
@@ -374,8 +370,7 @@ class DynamicSupervisorAgent(ReactAgent):
                     confidence=decision_data.get("confidence", 0.5),
                     available_agents=list(available_agents.keys()),
                     input_analysis=input_analysis,
-                    alternatives=decision_data.get("alternatives", []),
-                )
+                    alternatives=decision_data.get("alternatives", []))
 
                 # Update state
                 updates = {
@@ -403,8 +398,7 @@ class DynamicSupervisorAgent(ReactAgent):
                 error_decision = SupervisorDecision(
                     target_agent="END",
                     reasoning=f"Error in decision making: {e!s}",
-                    confidence=0.0,
-                )
+                    confidence=0.0)
 
                 return {
                     "current_decision": error_decision,
@@ -435,8 +429,7 @@ class DynamicSupervisorAgent(ReactAgent):
                 execution_id=execution_id,
                 agent_name=target_agent,
                 success=False,
-                start_time=start_time,
-            )
+                start_time=start_time)
 
             return {
                 "current_execution": execution_result,
@@ -518,8 +511,7 @@ class DynamicSupervisorAgent(ReactAgent):
                     error_result = AgentExecutionResult(
                         agent_name=agent_name,
                         success=False,
-                        error=f"Agent {agent_name} not found",
-                    )
+                        error=f"Agent {agent_name} not found")
                     return {"current_execution": error_result}
 
                 # Get agent configuration
@@ -556,8 +548,7 @@ class DynamicSupervisorAgent(ReactAgent):
                         end_time=end_time,
                         duration=duration,
                         messages=result_messages,
-                        output=result,
-                    )
+                        output=result)
 
                     # Track tool calls if available
                     if hasattr(result, "tool_calls"):
@@ -579,8 +570,7 @@ class DynamicSupervisorAgent(ReactAgent):
                         success=False,
                         start_time=start_time,
                         end_time=time.time(),
-                        error=f"Agent execution timed out after {execution_timeout}s",
-                    )
+                        error=f"Agent execution timed out after {execution_timeout}s")
 
                     state.add_execution_result(error_result)
                     state.increment_retry_count(agent_name)
@@ -593,8 +583,7 @@ class DynamicSupervisorAgent(ReactAgent):
                         success=False,
                         start_time=start_time,
                         end_time=time.time(),
-                        error=str(e),
-                    )
+                        error=str(e))
 
                     state.add_execution_result(error_result)
                     state.increment_retry_count(agent_name)
@@ -666,8 +655,7 @@ class DynamicSupervisorAgent(ReactAgent):
         state: DynamicSupervisorState,
         input_analysis: dict[str, Any],
         available_agents: dict[str, dict[str, Any]],
-        tool_info: dict[str, Any] | None = None,
-    ) -> ChatPromptTemplate:
+        tool_info: dict[str, Any] | None = None) -> ChatPromptTemplate:
         """Create enhanced prompt with reasoning and context."""
         # Build agent descriptions with performance data and tool information
         agent_descriptions = []
@@ -904,8 +892,7 @@ Provide a JSON response with:
                     str(performance["executions"]),
                     f"{performance['success_rate']:.1%}",
                     f"{performance['average_duration']:.2f}s",
-                    str(config.priority if config else 1),
-                )
+                    str(config.priority if config else 1))
 
             console.print(perf_table)
 
@@ -927,8 +914,7 @@ Provide a JSON response with:
                         else decision.reasoning
                     ),
                     f"{decision.confidence:.1%}",
-                    time.strftime("%H:%M:%S", time.localtime(decision.timestamp)),
-                )
+                    time.strftime("%H:%M:%S", time.localtime(decision.timestamp)))
 
             console.print(decisions_table)
 
@@ -942,11 +928,9 @@ class PerformanceMonitor:
         self.total_decision_time = 0.0
 
     def start_decision(self) -> None:
-        """Start Decision implementation."""
         self.decision_start_time = time.time()
 
     def end_decision(self, target: str):
-        """End Decision implementation."""
         if self.decision_start_time:
             duration = time.time() - self.decision_start_time
             self.total_decision_time += duration
@@ -954,7 +938,6 @@ class PerformanceMonitor:
             logger.debug(f"Decision to {target} took {duration:.3f}s")
 
     def get_average_decision_time(self) -> float:
-        """Get Average Decision Time implementation."""
         return (
             self.total_decision_time / self.decision_count
             if self.decision_count > 0

@@ -31,8 +31,7 @@ class DynamicSupervisorFixed(ReactAgent):
     # Configuration
     auto_rebuild_graph: bool = Field(
         default=True,
-        description="Whether to automatically rebuild graph on agent changes",
-    )
+        description="Whether to automatically rebuild graph on agent changes")
 
     # Private state
     _agent_registry: dict[str, Any] = {}
@@ -49,8 +48,7 @@ class DynamicSupervisorFixed(ReactAgent):
         self,
         agent: Any,
         capability: str | None = None,
-        rebuild_immediately: bool = False,
-    ) -> bool:
+        rebuild_immediately: bool = False) -> bool:
         """Register an agent for dynamic routing.
 
         Args:
@@ -133,8 +131,7 @@ class DynamicSupervisorFixed(ReactAgent):
                 "executor": "executor",
                 "END": "__end__",
                 **{name: name for name in self._agent_registry},
-            },
-        )
+            })
 
         # Executor routes to specific agents
         graph.add_conditional_edges(
@@ -143,8 +140,7 @@ class DynamicSupervisorFixed(ReactAgent):
             {
                 **{name: name for name in self._agent_registry},
                 "supervisor": "supervisor",
-            },
-        )
+            })
 
         # Set entry point
         graph.set_entry_point("supervisor")

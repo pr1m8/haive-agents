@@ -225,8 +225,7 @@ Tests:
 3. Complete routing flow with real agents
     """,
             title="ReactAgent Supervisor Tests",
-            style="bold blue",
-        )
+            style="bold blue")
     )
 
     async def run_all_tests():

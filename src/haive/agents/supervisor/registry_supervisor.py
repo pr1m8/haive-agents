@@ -255,8 +255,7 @@ class RegistrySupervisor(ReactAgent):
         graph.add_conditional_edges(
             "supervisor",
             self._route_from_supervisor,
-            {"executor": "executor", "END": "__end__"},
-        )
+            {"executor": "executor", "END": "__end__"})
 
         # Executor loops back
         graph.add_edge("executor", "supervisor")
@@ -469,8 +468,7 @@ if __name__ == "__main__":
         research_engine = AugLLMConfig(
             name="research_engine",
             system_message="You are a research specialist. Find and analyze information.",
-            temperature=0.3,
-        )
+            temperature=0.3)
         research_agent = ReactAgent(
             name="research_agent", engine=research_engine, tools=[]
         )
@@ -479,8 +477,7 @@ if __name__ == "__main__":
         coding_engine = AugLLMConfig(
             name="coding_engine",
             system_message="You are a software developer. Write clean, efficient code.",
-            temperature=0.4,
-        )
+            temperature=0.4)
         coding_agent = ReactAgent(name="coding_agent", engine=coding_engine, tools=[])
 
         # Create supervisor
@@ -492,8 +489,7 @@ if __name__ == "__main__":
             capabilities=[
                 "research, information gathering, analysis",
                 "coding, programming, software development",
-            ],
-        )
+            ])
 
         # Test 1: Research request
         await supervisor.ainvoke(

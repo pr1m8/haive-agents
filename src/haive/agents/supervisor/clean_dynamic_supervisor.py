@@ -312,8 +312,7 @@ class DynamicSupervisor(ReactAgent):
         cls,
         agents: list[tuple[str, Agent, str]],
         name: str = "dynamic_supervisor",
-        **kwargs,
-    ) -> "DynamicSupervisor":
+        **kwargs) -> "DynamicSupervisor":
         """Create dynamic supervisor with initial agents.
 
         Args:

@@ -43,8 +43,7 @@ Instructions:
 2. Determine which agent is best suited
 3. Respond with ONLY the agent name or "END" if complete
 
-Decision:""",
-        ),
+Decision:"""),
         ("placeholder", "{messages}"),
     ]
 )
@@ -239,8 +238,7 @@ class SupervisorAgent(ReactAgent):
         agents: list[tuple[str, Agent, str]],
         name: str = "supervisor",
         engine: AugLLMConfig | None = None,
-        **kwargs,
-    ) -> "SupervisorAgent":
+        **kwargs) -> "SupervisorAgent":
         """Create supervisor with pre-registered agents.
 
         Args:

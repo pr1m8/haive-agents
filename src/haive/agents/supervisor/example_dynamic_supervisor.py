@@ -52,8 +52,7 @@ async def create_dynamic_supervisor_system():
     analysis_engine = AugLLMConfig(
         name="analysis_engine",
         system_message="You are a data analyst. Analyze information, identify patterns, and provide insights. Be precise and data-driven.",
-        temperature=0.4,
-    )
+        temperature=0.4)
 
     # Create initial agents
 
@@ -227,15 +226,13 @@ async def demonstrate_react_agent_integration(supervisor):
     react_engine = AugLLMConfig(
         name="react_engine",
         system_message="You are a helpful assistant with access to tools. Use them to solve problems step by step.",
-        temperature=0.3,
-    )
+        temperature=0.3)
 
     # Create ReactAgent
     react_agent = ReactAgent(
         name="tool_specialist",
         engine=react_engine,
-        tools=[calculator, web_search],
-    )
+        tools=[calculator, web_search])
     react_agent.capability = "tool usage, calculations, web search, problem solving"
 
     # Add to supervisor

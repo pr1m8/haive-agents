@@ -176,8 +176,7 @@ class DynamicSupervisorState(StateSchema):
             "average_response_time": 0.0,
             "session_start": time.time(),
         },
-        description="Session-level performance statistics",
-    )
+        description="Session-level performance statistics")
 
     # Task and conversation management
     task_context: dict[str, Any] = Field(

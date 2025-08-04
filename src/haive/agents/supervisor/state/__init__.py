@@ -2,7 +2,6 @@
 
 from haive.agents.supervisor.state.dynamic_state import (
     DynamicSupervisorState,
-    SupervisorDecision,
-)
+    SupervisorDecision)
 
 __all__ = ["DynamicSupervisorState", "SupervisorDecision"]

@@ -33,8 +33,7 @@ async def demonstrate_integrated_supervisor():
         engine=AugLLMConfig(),
         enable_agent_management_tools=True,
         coordination_mode="supervisor",
-        auto_rebuild_graph=True,
-    )
+        auto_rebuild_graph=True)
 
     console.print("✅ Created integrated supervisor with full capabilities")
 
@@ -67,22 +66,19 @@ async def demonstrate_integrated_supervisor():
     await supervisor.register_agent(
         research_agent,
         capability_description="Handles research tasks, web searches, and fact-finding",
-        execution_config={"priority": 3, "execution_timeout": 180.0, "max_retries": 2},
-    )
+        execution_config={"priority": 3, "execution_timeout": 180.0, "max_retries": 2})
 
     console.print("✅ Added research agent dynamically")
 
     # Add writing agent
     writing_agent = SimpleAgent(
         name="writing_agent",
-        engine=AugLLMConfig(),
-    )
+        engine=AugLLMConfig())
 
     await supervisor.register_agent(
         writing_agent,
         capability_description="Handles writing, editing, and content creation",
-        execution_config={"priority": 2, "output_mode": "last_message"},
-    )
+        execution_config={"priority": 2, "output_mode": "last_message"})
 
     console.print("✅ Added writing agent dynamically")
     supervisor.print_integrated_dashboard()
@@ -161,14 +157,12 @@ async def demonstrate_integrated_supervisor():
             elif "add a math agent" in request.lower():
                 math_agent = SimpleAgent(
                     name="math_agent",
-                    engine=AugLLMConfig(),
-                )
+                    engine=AugLLMConfig())
 
                 await supervisor.register_agent(
                     math_agent,
                     capability_description="Handles mathematical calculations and computations",
-                    execution_config={"priority": 2},
-                )
+                    execution_config={"priority": 2})
                 console.print("✅ Added math agent")
 
             elif "remove" in request.lower() and "writing" in request.lower():
@@ -209,8 +203,7 @@ async def demonstrate_dynamic_choice_model_integration():
     supervisor = IntegratedDynamicSupervisor(
         name="choice_model_supervisor",
         engine=AugLLMConfig(),
-        enable_agent_management_tools=True,
-    )
+        enable_agent_management_tools=True)
 
     # Add agents one by one and show choice model updates
     agents_to_add = [

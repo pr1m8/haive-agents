@@ -85,8 +85,7 @@ class SupervisorAgent(ReactAgent):
             engine = AugLLMConfig(
                 llm_config=LLMConfig(provider="openai", model="gpt-4o-mini"),
                 system_message=self._create_supervisor_prompt(),
-                tools=tools,
-            )
+                tools=tools)
 
         # Set state schema
         kwargs.setdefault("state_schema", SupervisorState)
@@ -137,7 +136,6 @@ class SupervisorAgent(ReactAgent):
 
             # Add conditional edges for tool routing
             def should_continue(state: dict[str, Any]):
-                """Should Continue implementation."""
                 last_message = (
                     getattr(state, "messages", [])[-1]
                     if hasattr(state, "messages") and state.messages

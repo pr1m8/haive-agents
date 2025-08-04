@@ -161,8 +161,7 @@ class AddAgentTool(BaseTool):
                 agent,
                 capability_description=agent_descriptor.capability_description,
                 execution_config=execution_config,
-                rebuild_graph=rebuild_graph,
-            )
+                rebuild_graph=rebuild_graph)
 
             if success:
                 # Update choice model

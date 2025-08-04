@@ -29,14 +29,12 @@ def create_mock_research_agent() -> SimpleAgent:
 
     engine_config = AugLLMConfig(
         llm=llm_config,
-        system_prompt="You are a research specialist. You excel at finding information, analyzing data, and providing comprehensive research results.",
-    )
+        system_prompt="You are a research specialist. You excel at finding information, analyzing data, and providing comprehensive research results.")
 
     return SimpleAgent(
         name="research_agent",
         engine=engine_config,
-        description="Specializes in research, information gathering, and data analysis",
-    )
+        description="Specializes in research, information gathering, and data analysis")
 
 
 def create_mock_math_agent() -> SimpleAgent:
@@ -45,14 +43,12 @@ def create_mock_math_agent() -> SimpleAgent:
 
     engine_config = AugLLMConfig(
         llm=llm_config,
-        system_prompt="You are a mathematics specialist. You excel at solving mathematical problems, performing calculations, and explaining mathematical concepts.",
-    )
+        system_prompt="You are a mathematics specialist. You excel at solving mathematical problems, performing calculations, and explaining mathematical concepts.")
 
     return SimpleAgent(
         name="math_agent",
         engine=engine_config,
-        description="Specializes in mathematics, calculations, and quantitative analysis",
-    )
+        description="Specializes in mathematics, calculations, and quantitative analysis")
 
 
 def create_mock_writing_agent() -> SimpleAgent:
@@ -61,14 +57,12 @@ def create_mock_writing_agent() -> SimpleAgent:
 
     engine_config = AugLLMConfig(
         llm=llm_config,
-        system_prompt="You are a writing specialist. You excel at creating clear, engaging content, editing text, and various forms of written communication.",
-    )
+        system_prompt="You are a writing specialist. You excel at creating clear, engaging content, editing text, and various forms of written communication.")
 
     return SimpleAgent(
         name="writing_agent",
         engine=engine_config,
-        description="Specializes in writing, editing, and content creation",
-    )
+        description="Specializes in writing, editing, and content creation")
 
 
 def create_supervisor_agent() -> SupervisorAgent:
@@ -77,8 +71,7 @@ def create_supervisor_agent() -> SupervisorAgent:
 
     supervisor_engine = AugLLMConfig(
         llm=llm_config,
-        system_prompt="You are a task supervisor. Analyze requests and delegate to the most appropriate specialist agent.",
-    )
+        system_prompt="You are a task supervisor. Analyze requests and delegate to the most appropriate specialist agent.")
 
     return SupervisorAgent(name="task_supervisor", engine=supervisor_engine)
 
@@ -253,8 +246,7 @@ Based on LangGraph tutorial patterns but implemented
 with Haive's ReactAgent architecture.
     """,
             title="Supervisor Test Suite",
-            style="bold blue",
-        )
+            style="bold blue")
     )
 
     try:

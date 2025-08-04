@@ -65,8 +65,7 @@ class SimpleSupervisor(MultiAgent):
 
     supervisor_llm: AugLLMConfig | None = Field(
         default=None,
-        description="LLM for routing decisions (uses default if not provided)",
-    )
+        description="LLM for routing decisions (uses default if not provided)")
 
     supervisor_prompt: ChatPromptTemplate | None = Field(
         default=None, description="Prompt template for routing decisions"
@@ -193,8 +192,7 @@ class SimpleSupervisor(MultiAgent):
         agents: list[tuple[str, Agent, str]],
         name: str = "supervisor",
         supervisor_llm: AugLLMConfig | None = None,
-        **kwargs,
-    ) -> "SimpleSupervisor":
+        **kwargs) -> "SimpleSupervisor":
         """Create supervisor with a list of agents.
 
         Args:

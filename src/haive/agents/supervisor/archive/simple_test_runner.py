@@ -256,8 +256,7 @@ class SimpleDynamicSupervisorTest:
                     config["capability"][:50] + "..."
                     if len(config["capability"]) > 50
                     else config["capability"]
-                ),
-            )
+                ))
 
         console.print(table)
 
@@ -305,32 +304,27 @@ async def run_simple_test():
     research_agent = MockAgent(
         name="research_agent",
         agent_type="ReactAgent",
-        tools=["web_search", "wikipedia_search", "academic_search"],
-    )
+        tools=["web_search", "wikipedia_search", "academic_search"])
 
     await supervisor.register_agent(
         research_agent,
-        "Handles research tasks, web searches, and information gathering",
-    )
+        "Handles research tasks, web searches, and information gathering")
 
     # Add math agent
     math_agent = MockAgent(
         name="math_agent",
         agent_type="SimpleAgent",
-        tools=["calculator", "equation_solver", "plot_generator"],
-    )
+        tools=["calculator", "equation_solver", "plot_generator"])
 
     await supervisor.register_agent(
         math_agent,
-        "Mathematical calculations, equation solving, and data visualization",
-    )
+        "Mathematical calculations, equation solving, and data visualization")
 
     # Add writing agent
     writing_agent = MockAgent(
         name="writing_agent",
         agent_type="SimpleAgent",
-        tools=["grammar_check", "style_editor", "content_generator"],
-    )
+        tools=["grammar_check", "style_editor", "content_generator"])
 
     await supervisor.register_agent(
         writing_agent, "Content creation, writing, editing, and proofreading"
@@ -360,8 +354,7 @@ async def run_simple_test():
     code_agent = MockAgent(
         name="code_agent",
         agent_type="ReactAgent",
-        tools=["code_executor", "syntax_checker", "debugger"],
-    )
+        tools=["code_executor", "syntax_checker", "debugger"])
 
     await supervisor.register_agent(
         code_agent, "Code generation, debugging, testing, and execution"

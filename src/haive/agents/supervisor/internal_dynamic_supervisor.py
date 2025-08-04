@@ -156,8 +156,7 @@ class InternalDynamicSupervisor(MultiAgent):
                 "agent_creator": "agent_creator",
                 "executor": "executor",
                 "END": "__end__",
-            },
-        )
+            })
 
         # Creator routes back to supervisor
         graph.add_edge("agent_creator", "supervisor")
@@ -407,8 +406,7 @@ class InternalDynamicSupervisor(MultiAgent):
             engine = AugLLMConfig(
                 name=f"{agent_name}_engine",
                 system_message=template["system_message"],
-                temperature=0.3 if template["type"] == "SimpleAgent" else 0.4,
-            )
+                temperature=0.3 if template["type"] == "SimpleAgent" else 0.4)
 
             # Create agent based on type
             if template["type"] == "SimpleAgent":
@@ -489,8 +487,7 @@ if __name__ == "__main__":
             name="internal_dynamic",
             agents=[],  # Start empty!
             enable_internal_agent_creation=True,
-            max_agents=5,
-        )
+            max_agents=5)
 
         # Test 1: Research request (should create research agent)
         await supervisor.ainvoke(

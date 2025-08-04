@@ -85,8 +85,7 @@ class SupervisorAgent(ReactAgent):
             engine = AugLLMConfig(
                 llm_config=LLMConfig(provider="openai", model="gpt-4o-mini"),
                 system_message=self._create_supervisor_prompt(),
-                tools=tools,
-            )
+                tools=tools)
 
         # Set state schema
         kwargs.setdefault("state_schema", SupervisorState)

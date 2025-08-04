@@ -184,8 +184,7 @@ class DynamicMultiAgent(MultiAgent):
         graph.add_conditional_edges(
             "supervisor",
             self._route_from_supervisor,
-            {"executor": "executor", "END": "__end__"},
-        )
+            {"executor": "executor", "END": "__end__"})
 
         # Executor always returns to supervisor
         graph.add_edge("executor", "supervisor")
@@ -291,8 +290,7 @@ class DynamicMultiAgent(MultiAgent):
                     self._update_performance_metrics(
                         target_agent,
                         success=True,
-                        execution_time=(datetime.now() - start_time).total_seconds(),
-                    )
+                        execution_time=(datetime.now() - start_time).total_seconds())
 
                 # Add to execution history
                 self._execution_history.append(

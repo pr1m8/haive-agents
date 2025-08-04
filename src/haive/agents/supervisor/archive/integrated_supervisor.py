@@ -21,16 +21,13 @@ from rich.console import Console
 from rich.table import Table
 
 from haive.agents.supervisor.dynamic_agent_tools import (
-    create_agent_management_tools,
-)
+    create_agent_management_tools)
 from haive.agents.supervisor.dynamic_state import (
     AgentExecutionResult,
-    SupervisorDecision,
-)
+    SupervisorDecision)
 from haive.agents.supervisor.dynamic_supervisor import DynamicSupervisorAgent
 from haive.agents.supervisor.multi_agent_dynamic_state import (
-    MultiAgentDynamicSupervisorState,
-)
+    MultiAgentDynamicSupervisorState)
 
 logger = logging.getLogger(__name__)
 console = Console()
@@ -53,8 +50,7 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
         engine: AugLLMConfig | None = None,
         enable_agent_management_tools: bool = True,
         coordination_mode: str = "supervisor",
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize integrated supervisor.
 
         Args:
@@ -119,8 +115,7 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
         agent: Any,
         capability_description: str | None = None,
         execution_config: dict[str, Any] | None = None,
-        rebuild_graph: bool | None = None,
-    ) -> bool:
+        rebuild_graph: bool | None = None) -> bool:
         """Enhanced agent registration with multi-agent state integration."""
         # Call parent registration
         success = await super().register_agent(
@@ -145,8 +140,7 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
                 agent.name,
                 agent.__class__.__name__,
                 capability_description or f"Handles {agent.name} tasks",
-                agent_tools,
-            )
+                agent_tools)
 
             # Sync with choice model if available
             if self.registry_manager:
@@ -270,8 +264,7 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
                     confidence=decision_data.get("confidence", 0.5),
                     available_agents=list(available_agents.keys()),
                     input_analysis=input_analysis,
-                    alternatives=decision_data.get("alternatives", []),
-                )
+                    alternatives=decision_data.get("alternatives", []))
 
                 # Update state
                 updates = {
@@ -299,8 +292,7 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
                 error_decision = SupervisorDecision(
                     target_agent="END",
                     reasoning=f"Error in decision making: {e!s}",
-                    confidence=0.0,
-                )
+                    confidence=0.0)
 
                 return {
                     "current_decision": error_decision,
@@ -364,8 +356,7 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
                     state.get_agent_config(target_agent).priority
                     if state.get_agent_config(target_agent)
                     else 1
-                ),
-            )
+                ))
 
             # Prepare execution context
 
@@ -376,8 +367,7 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
                 execution_id=execution_id,
                 agent_name=target_agent,
                 success=False,
-                start_time=start_time,
-            )
+                start_time=start_time)
 
             # Start agent execution tracking
             state.coordination.start_agent_execution(target_agent, execution_id)
@@ -444,8 +434,7 @@ class IntegratedDynamicSupervisor(DynamicSupervisorAgent):
         graph.add_conditional_edges(
             "supervisor",
             routing_condition,
-            ["coordinator", "agent_management", "__end__"],
-        )
+            ["coordinator", "agent_management", "__end__"])
 
         # Set up routing from coordinator
         graph.add_conditional_edges(

@@ -4,35 +4,28 @@ import invoke
 
 from haive.agents.supervisor.agent import (  # build_graph,; create_with_agents,; ensure_supervisor_engine,; register_agent,; route_to_agent,; setup_agent,; unregister_agent,
     SupervisorAgent,
-    SupervisorState,
-)
+    SupervisorState)
 from haive.agents.supervisor.agent_v2 import (  # add_agent_impl,; add_worker_agent,; build_graph,; create_generic_agent_execution_node,; get_dynamic_routing_model,; get_worker_agents,; print_supervisor_status,; remove_worker_agent,; setup_agent,; should_continue,
     SupervisorAgent,
-    SupervisorState,
-)
+    SupervisorState)
 from haive.agents.supervisor.choice_model_supervisor import (  # agents,; build_graph,; get_available_agents,; get_choice_model_status,; setup_agent,
     AgentCreationTool,
     AgentSelectionTool,
-    ChoiceModelSupervisor,
-)
+    ChoiceModelSupervisor)
 from haive.agents.supervisor.clean_dynamic_supervisor import (  # add_agent,; build_graph,; create_with_agents,; list_agents,; register_agent,; remove_agent,; route_to_agent,; setup_agent,; unregister_agent,
     DynamicSupervisor,
-    DynamicSupervisorState,
-)
+    DynamicSupervisorState)
 from haive.agents.supervisor.compatibility_bridge import (  # build_graph,; get_dynamic_status,; setup_agent,; setup_dynamic_supervisor,
     DynamicMultiAgentSupervisor,
     ReactMultiAgentSupervisor,
     create_compatible_supervisor,
-    migrate_from_multi_agent,
-)
+    migrate_from_multi_agent)
 from haive.agents.supervisor.dynamic_activation_supervisor import (
-    DynamicActivationSupervisor,
-)
+    DynamicActivationSupervisor)
 from haive.agents.supervisor.dynamic_agent_discovery_supervisor import (
     AgentCapability,
     AgentDiscoveryMode,
-    DynamicAgentDiscoverySupervisor,
-)
+    DynamicAgentDiscoverySupervisor)
 from haive.agents.supervisor.dynamic_agent_tools import (
     AddAgentInput,
     AddAgentTool,
@@ -46,68 +39,53 @@ from haive.agents.supervisor.dynamic_agent_tools import (
     RemoveAgentInput,
     RemoveAgentTool,
     create_agent_management_tools,
-    register_agent_constructor,
-)
+    register_agent_constructor)
 from haive.agents.supervisor.dynamic_executor_node import (
     DynamicExecutorNode,
-    create_dynamic_executor_node,
-)
+    create_dynamic_executor_node)
 from haive.agents.supervisor.dynamic_multi_agent import (  # build_graph,; get_agent_capabilities,; get_agent_performance,; get_execution_history,; register_agent_dynamically,; setup_agent,; unregister_agent_dynamically,
     DynamicMultiAgent,
-    create_dynamic_multi_agent,
-)
+    create_dynamic_multi_agent)
 from haive.agents.supervisor.dynamic_state import (
     AgentExecutionConfig,
     AgentExecutionResult,
     DynamicSupervisorState,
-    SupervisorDecision,
-)
+    SupervisorDecision)
 from haive.agents.supervisor.dynamic_supervisor import (
     DynamicSupervisorAgent,
-    PerformanceMonitor,
-)
+    PerformanceMonitor)
 from haive.agents.supervisor.dynamic_supervisor_fixed import (
-    DynamicSupervisorFixed,
-)
+    DynamicSupervisorFixed)
 from haive.agents.supervisor.dynamic_tool_discovery_supervisor import (
     DynamicToolDiscoverySupervisor,
-    ToolDiscoveryMode,
-)
+    ToolDiscoveryMode)
 from haive.agents.supervisor.example_delegation import (
     create_mock_math_agent,
     create_mock_research_agent,
     create_mock_writing_agent,
     create_supervisor_agent,
-    main,
-)
+    main)
 from haive.agents.supervisor.integrated_supervisor import (
-    IntegratedDynamicSupervisor,
-)
+    IntegratedDynamicSupervisor)
 from haive.agents.supervisor.internal_dynamic_supervisor import (
-    InternalDynamicSupervisor,
-)
+    InternalDynamicSupervisor)
 from haive.agents.supervisor.multi_agent_dynamic_state import (
     AgentRegistryState,
     MultiAgentCoordinationState,
-    MultiAgentDynamicSupervisorState,
-)
+    MultiAgentDynamicSupervisorState)
 from haive.agents.supervisor.proper_dynamic_supervisor import (
     MockAgent,
-    ProperDynamicSupervisor,
-)
+    ProperDynamicSupervisor)
 from haive.agents.supervisor.rebuild_dynamic_supervisor import (
     RebuildDynamicSupervisor,
-    TestAgent,
-)
+    TestAgent)
 from haive.agents.supervisor.registry import (
-    AgentRegistry,
-)
+    AgentRegistry)
 from haive.agents.supervisor.registry_supervisor import (
     AgentRegistry,
     AgentRetrievalTool,
     AgentSelectionTool,
-    RegistrySupervisor,
-)
+    RegistrySupervisor)
 from haive.agents.supervisor.routing import (
     BaseRoutingStrategy,
     DynamicRoutingEngine,
@@ -115,19 +93,16 @@ from haive.agents.supervisor.routing import (
     RoutingContext,
     RoutingDecision,
     RuleBasedRoutingStrategy,
-    TaskClassifier,
-)
+    TaskClassifier)
 from haive.agents.supervisor.simple_supervisor import (
     AgentInfo,
     SimpleSupervisor,
-    build_graph,
-)
+    build_graph)
 from haive.agents.supervisor.simple_test import EchoAgent, main
 from haive.agents.supervisor.simple_test_runner import (
     MockAgent,
     MockEngine,
-    SimpleDynamicSupervisorTest,
-)
+    SimpleDynamicSupervisorTest)
 
 __all__ = [
     "AddAgentInput",

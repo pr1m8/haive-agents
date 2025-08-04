@@ -122,8 +122,7 @@ class AgentCreationTool(BaseTool):
             engine = AugLLMConfig(
                 name=f"{agent_name}_engine",
                 system_message=template["system_message"],
-                temperature=0.4,
-            )
+                temperature=0.4)
 
             # Create ReactAgent
             new_agent = ReactAgent(
@@ -231,8 +230,7 @@ class ChoiceModelSupervisor(ReactAgent):
         graph.add_conditional_edges(
             "supervisor",
             self._route_from_supervisor,
-            {"executor": "executor", "END": "__end__"},
-        )
+            {"executor": "executor", "END": "__end__"})
 
         # Executor loops back to supervisor
         graph.add_edge("executor", "supervisor")
