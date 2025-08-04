@@ -38,8 +38,7 @@ class JoinStep(AbstractStep):
     # Core join configuration
     join_strategy: JoinStrategy = Field(
         default=JoinStrategy.WAIT_ALL,
-        description="Strategy for joining parallel inputs",
-    )
+        description="Strategy for joining parallel inputs")
 
     # Auto-detected parallel inputs (computed automatically)
     parallel_inputs: list[str] = Field(
@@ -270,8 +269,7 @@ class JoinStep(AbstractStep):
         self,
         from_step: AbstractStep,
         to_step: AbstractStep,
-        step_map: dict[str, AbstractStep],
-    ) -> bool:
+        step_map: dict[str, AbstractStep]) -> bool:
         """Check if there's a dependency path from one step to another."""
 
         def dfs(current_id: str, target_id: str, visited: set[str]) -> bool:
@@ -440,15 +438,13 @@ class JoinStep(AbstractStep):
         description: str,
         dependencies: list[str],
         strategy: JoinStrategy = JoinStrategy.WAIT_ALL,
-        **kwargs,
-    ) -> "JoinStep":
+        **kwargs) -> "JoinStep":
         """Factory method to create a JoinStep with automatic detection."""
         return cls(
             description=description,
             depends_on=dependencies,
             join_strategy=strategy,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def analyze_dag_structure(cls, steps: list[AbstractStep]) -> dict[str, Any]:

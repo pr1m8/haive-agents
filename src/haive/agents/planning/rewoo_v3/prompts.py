@@ -102,8 +102,7 @@ Plan the ENTIRE solution upfront with evidence placeholders (#E1, #E2, etc.).
 Design comprehensive steps that will enable complete problem solving.
 Map each evidence placeholder to expected content.
 
-Generate structured planning output with clear reasoning and approach.""",
-        ),
+Generate structured planning output with clear reasoning and approach."""),
     ]
 )
 
@@ -125,8 +124,7 @@ Collect evidence for each evidence placeholder.
 Document all results, successes, and failures.
 Work through the complete plan without additional reasoning.
 
-Generate structured evidence collection output mapping results to evidence IDs.""",
-        ),
+Generate structured evidence collection output mapping results to evidence IDs."""),
     ]
 )
 
@@ -155,8 +153,7 @@ Address the original query completely using the collected evidence.
 Handle any gaps or failures in evidence collection gracefully.
 Provide confidence assessment and identify any limitations.
 
-Generate structured solution output with reasoning and synthesis process.""",
-        ),
+Generate structured solution output with reasoning and synthesis process."""),
     ]
 )
 

@@ -82,8 +82,7 @@ def instantiate_task(
     idx: int,
     tool_name: str,
     args: str | Any,
-    thought: str | None = None,
-) -> Task:
+    thought: str | None = None) -> Task:
     if tool_name == "join":
         tool = "join"
     else:
@@ -126,8 +125,7 @@ class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
         self,
         input: str | BaseMessage,
         config: RunnableConfig | None = None,
-        **kwargs: Any | None,
-    ) -> Iterator[Task]:
+        **kwargs: Any | None) -> Iterator[Task]:
         yield from self.transform([input], config, **kwargs)
 
     def ingest_token(
@@ -158,8 +156,7 @@ class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
                 idx=idx,
                 tool_name=tool_name,
                 args=args,
-                thought=thought,
-            )
+                thought=thought)
             thought = None
         # Else it is just dropped
         return task, thought

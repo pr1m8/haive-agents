@@ -20,8 +20,7 @@ class AbstractStep(BaseModel, ABC):
     # Core identity - every step needs these
     id: str = Field(
         default_factory=lambda: f"step_{uuid4().hex[:8]}",
-        description="Unique step identifier",
-    )
+        description="Unique step identifier")
 
     description: str = Field(
         ..., min_length=1, max_length=1000, description="What this step does"

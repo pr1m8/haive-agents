@@ -18,8 +18,7 @@ from .prompts import (
     format_monitor_prompt,
     format_planner_prompt,
     format_replanner_prompt,
-    format_validator_prompt,
-)
+    format_validator_prompt)
 
 
 class PlannerEngine:
@@ -367,8 +366,7 @@ class ReplannerEngine:
                     id=f"step_{step_count}",
                     type=StepType.TOOL if "tool:" in line.lower() else StepType.THINK,
                     description=line.strip(),
-                    dependencies=[],
-                )
+                    dependencies=[])
                 plan.steps.append(step)
 
         return plan

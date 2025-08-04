@@ -1,6 +1,4 @@
 # src/haive/agents/plan_and_execute/agents.py
-"""Plan and Execute Agent implementation."""
-
 import logging
 from datetime import datetime
 
@@ -16,8 +14,7 @@ from haive.agents.planning.p_and_e.models import Act, Plan, Response
 from haive.agents.planning.p_and_e.prompts import (
     executor_prompt,
     planner_prompt,
-    replan_prompt,
-)
+    replan_prompt)
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 logger = logging.getLogger(__name__)
@@ -88,8 +85,7 @@ class PlanAndExecuteAgent(Agent):
             structured_output_model=Plan,
             structured_output_version="v2",
             prompt_template=planner_prompt,
-            partial_variables={"context": ""},
-        )
+            partial_variables={"context": ""})
 
         # Create executor engine with tools
         self.engines["executor"] = AugLLMConfig(
@@ -100,8 +96,7 @@ class PlanAndExecuteAgent(Agent):
                 "plan_status": "",
                 "current_step": "",
                 "previous_results": "",
-            },
-        )
+            })
 
         # Create replanner engine
         self.engines["replanner"] = AugLLMConfig(
@@ -113,8 +108,7 @@ class PlanAndExecuteAgent(Agent):
                 "objective": "",
                 "plan_progress": "",
                 "execution_results": "",
-            },
-        )
+            })
 
     def build_graph(self) -> BaseGraph:
         """Build the plan-execute-replan graph."""
@@ -150,14 +144,12 @@ class PlanAndExecuteAgent(Agent):
                 "execute_step": "execute_step",
                 "evaluate_progress": "evaluate_progress",
                 "create_plan": "create_plan",
-            },
-        )
+            })
 
         # Conditional routing after evaluation
         graph.add_conditional_edges(
             "evaluate_progress",
             route_after_evaluation,
-            {"execute_step": "execute_step", "create_plan": "create_plan", END: END},
-        )
+            {"execute_step": "execute_step", "create_plan": "create_plan", END: END})
 
         return graph

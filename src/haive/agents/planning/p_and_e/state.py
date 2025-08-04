@@ -13,8 +13,7 @@ from pydantic import Field, computed_field
 
 from haive.agents.planning.p_and_e.models import (
     ExecutionResult,
-    Plan,
-)
+    Plan)
 
 
 class PlanExecuteState(MessagesState):

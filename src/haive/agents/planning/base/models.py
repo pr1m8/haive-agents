@@ -852,7 +852,6 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         }
         
         def get_priority(item):
-            """Get Priority implementation."""
             if hasattr(item, 'priority'):
                 return priority_order.get(item.priority, 3)
             return 3

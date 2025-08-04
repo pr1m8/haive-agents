@@ -74,15 +74,13 @@ class PlanExecuteV3Config(BaseModel):
         default=None,
         ge=0.0,
         le=2.0,
-        description="Temperature for planning LLM (None uses engine default)",
-    )
+        description="Temperature for planning LLM (None uses engine default)")
 
     execution_temperature: float | None = Field(
         default=None,
         ge=0.0,
         le=2.0,
-        description="Temperature for execution LLM (None uses engine default)",
-    )
+        description="Temperature for execution LLM (None uses engine default)")
 
     # Tool-specific configuration
     prefer_parallel_tools: bool = Field(

@@ -66,7 +66,6 @@ agent = create_enhanced_plan_execute_v6(
 # Add custom hooks
 @agent.before_run
 def track_execution(context):
-    """Track Execution implementation."""
     print(f"Starting planning workflow: {context.agent_name}")
 
 result = await agent.arun("Complex multi-step research task")
@@ -303,8 +302,7 @@ def create_enhanced_plan_execute_v6(
     executor_config: Optional[AugLLMConfig] = None,
     executor_tools: Optional[list] = None,
     max_iterations: int = 20,
-    enable_hooks: bool = True,
-) -> EnhancedMultiAgentV4:
+    enable_hooks: bool = True) -> EnhancedMultiAgentV4:
     """Create enhanced Plan & Execute V6 using modern Haive patterns.
     
     Args:
@@ -424,14 +422,12 @@ def _add_monitoring_hooks_v6(workflow: EnhancedMultiAgentV4) -> None:
     # Workflow-level monitoring hooks
     @workflow.before_run
     def log_workflow_start(context):
-        """Log Workflow Start implementation."""
         logger.info(f"🚀 Starting enhanced planning workflow V6: {context.agent_name}")
         if hasattr(context, 'metadata'):
             context.metadata['workflow_start_time'] = time.time()
     
     @workflow.after_run
     def log_workflow_complete(context):
-        """Log Workflow Complete implementation."""
         duration = ""
         if hasattr(context, 'metadata') and 'workflow_start_time' in context.metadata:
             duration = f" in {time.time() - context.metadata['workflow_start_time']:.2f}s"
@@ -439,7 +435,6 @@ def _add_monitoring_hooks_v6(workflow: EnhancedMultiAgentV4) -> None:
     
     @workflow.on_error
     def log_workflow_error(context):
-        """Log Workflow Error implementation."""
         logger.error(f"❌ Planning workflow V6 error: {context.error}")
         if hasattr(context, 'metadata'):
             context.metadata['error_occurred'] = True
@@ -451,9 +446,7 @@ def _add_monitoring_hooks_v6(workflow: EnhancedMultiAgentV4) -> None:
             from haive.agents.base.hooks import HookEvent
             
             def create_agent_hook(agent_name: str):
-                """Create Agent Hook implementation."""
                 def agent_execution_hook(context):
-                    """Agent Execution Hook implementation."""
                     if context.event == HookEvent.BEFORE_RUN:
                         logger.debug(f"  ▶ Agent starting: {agent_name}")
                     elif context.event == HookEvent.AFTER_RUN:

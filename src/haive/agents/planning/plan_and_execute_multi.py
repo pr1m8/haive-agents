@@ -44,8 +44,7 @@ def PlanAndExecuteAgent(
     executor: Agent,
     replanner: Agent,
     name: str = "Plan and Execute Agent",
-    **kwargs,
-) -> MultiAgentBase:
+    **kwargs) -> MultiAgentBase:
     """Create a Plan and Execute multi-agent system.
 
     Args:
@@ -73,5 +72,4 @@ def PlanAndExecuteAgent(
         state_schema_override=PlanExecuteState,
         schema_build_mode=BuildMode.PARALLEL,
         # Engine serialization is now handled by field validators
-        **kwargs,
-    )
+        **kwargs)

@@ -15,8 +15,7 @@ from models.join_step import (
     get_join_info,
     is_join_point,
     join_complexity,
-    parallel_branch_count,
-)
+    parallel_branch_count)
 from models.plans import (
     ExecutionPlan,
     add_step,
@@ -29,8 +28,7 @@ from models.plans import (
     step_count,
     step_ids,
     validate_no_circular_dependencies,
-    validate_steps,
-)
+    validate_steps)
 from models.steps import (
     AbstractStep,
     BasicStep,
@@ -39,8 +37,7 @@ from models.steps import (
     execute,
     has_dependencies,
     validate_dependencies,
-    validate_id,
-)
+    validate_id)
 from models.tool_step import (
     ToolStep,
     can_execute,
@@ -59,8 +56,7 @@ from models.tool_step import (
     validate_tool_compatibility,
     validate_tool_exists_and_args,
     validate_tool_name,
-    validate_tools_not_empty,
-)
+    validate_tools_not_empty)
 
 __all__ = [
     "AbstractStep",

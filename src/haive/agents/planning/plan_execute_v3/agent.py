@@ -30,8 +30,7 @@ from .models import (
     PlanExecuteInput,
     PlanExecuteOutput,
     RevisedPlan,
-    StepExecution,
-)
+    StepExecution)
 from .prompts import evaluator_prompt, executor_prompt, planner_prompt, replanner_prompt
 from .state import PlanExecuteV3State
 
@@ -62,8 +61,7 @@ class PlanExecuteV3Agent:
         config: AugLLMConfig | None = None,
         tools: list[Tool] | None = None,
         max_iterations: int = 5,
-        max_steps_per_plan: int = 10,
-    ):
+        max_steps_per_plan: int = 10):
         """Initialize Plan-and-Execute V3 agent.
 
         Args:
@@ -85,8 +83,7 @@ class PlanExecuteV3Agent:
         self.planner = SimpleAgent(
             name=f"{name}_planner",
             engine=planner_config,
-            structured_output_model=ExecutionPlan,
-        )
+            structured_output_model=ExecutionPlan)
 
         executor_config = AugLLMConfig.model_copy(self.config)
         executor_config.prompt_template = executor_prompt
@@ -94,24 +91,21 @@ class PlanExecuteV3Agent:
             name=f"{name}_executor",
             engine=executor_config,
             tools=self.tools,
-            structured_output_model=StepExecution,
-        )
+            structured_output_model=StepExecution)
 
         evaluator_config = AugLLMConfig.model_copy(self.config)
         evaluator_config.prompt_template = evaluator_prompt
         self.evaluator = SimpleAgent(
             name=f"{name}_evaluator",
             engine=evaluator_config,
-            structured_output_model=PlanEvaluation,
-        )
+            structured_output_model=PlanEvaluation)
 
         replanner_config = AugLLMConfig.model_copy(self.config)
         replanner_config.prompt_template = replanner_prompt
         self.replanner = SimpleAgent(
             name=f"{name}_replanner",
             engine=replanner_config,
-            structured_output_model=RevisedPlan,
-        )
+            structured_output_model=RevisedPlan)
 
         # Create Enhanced MultiAgent V3 coordinator
         self.multi_agent = EnhancedMultiAgent(
@@ -125,8 +119,7 @@ class PlanExecuteV3Agent:
             entry_point="planner",
             performance_mode=True,
             debug_mode=True,
-            state_schema=PlanExecuteV3State,
-        )
+            state_schema=PlanExecuteV3State)
 
     def _setup_routing(self) -> None:
         """Set up conditional routing between sub-agents."""
@@ -164,8 +157,7 @@ class PlanExecuteV3Agent:
     async def arun(
         self,
         input_data: str | dict[str, Any] | PlanExecuteInput,
-        state: PlanExecuteV3State | None = None,
-    ) -> PlanExecuteOutput:
+        state: PlanExecuteV3State | None = None) -> PlanExecuteOutput:
         """Execute the Plan-and-Execute agent asynchronously.
 
         Args:
@@ -253,14 +245,12 @@ class PlanExecuteV3Agent:
                     f"Error: {
                         e!s}"
                 ],
-                confidence_score=0.0,
-            )
+                confidence_score=0.0)
 
     def run(
         self,
         input_data: str | dict[str, Any] | PlanExecuteInput,
-        state: PlanExecuteV3State | None = None,
-    ) -> PlanExecuteOutput:
+        state: PlanExecuteV3State | None = None) -> PlanExecuteOutput:
         """Execute the Plan-and-Execute agent synchronously.
 
         Args:

@@ -29,14 +29,12 @@ class TaskDependency(BaseModel):
     task_id: str = Field(
         ...,
         description="ID of the task this depends on",
-        examples=["task_1", "search_task", "analysis_step"],
-    )
+        examples=["task_1", "search_task", "analysis_step"])
 
     output_key: str | None = Field(
         default=None,
         description="Specific output key to reference (optional)",
-        examples=["result", "data", "summary"],
-    )
+        examples=["result", "data", "summary"])
 
     def resolve_reference(self) -> str:
         """Generate reference string for task dependency."""
@@ -55,26 +53,22 @@ class CompilerTask(BaseModel):
     task_id: str = Field(
         ...,
         description="Unique identifier for this task",
-        examples=["search_web", "analyze_data", "summarize_results"],
-    )
+        examples=["search_web", "analyze_data", "summarize_results"])
 
     tool_name: str = Field(
         ...,
         description="Name of the tool to execute",
-        examples=["web_search", "calculator", "code_executor", "join"],
-    )
+        examples=["web_search", "calculator", "code_executor", "join"])
 
     description: str = Field(
         ...,
         description="Human-readable description of the task",
-        examples=["Search for recent AI developments", "Calculate the sum"],
-    )
+        examples=["Search for recent AI developments", "Calculate the sum"])
 
     arguments: dict[str, Any] = Field(
         default_factory=dict,
         description="Arguments to pass to the tool",
-        examples=[{"query": "latest AI news"}, {"expression": "15 + 27"}],
-    )
+        examples=[{"query": "latest AI news"}, {"expression": "15 + 27"}])
 
     dependencies: list[TaskDependency] = Field(
         default_factory=list, description="Tasks this task depends on"
@@ -117,8 +111,7 @@ class CompilerPlan(BaseModel):
     plan_id: str = Field(
         ...,
         description="Unique identifier for this plan",
-        examples=["plan_20250121_001", "research_plan"],
-    )
+        examples=["plan_20250121_001", "research_plan"])
 
     description: str = Field(
         ..., description="High-level description of what this plan accomplishes"
@@ -217,8 +210,7 @@ class CompilerInput(BaseModel):
         ...,
         min_length=1,
         description="The user's query or task to accomplish",
-        examples=["Find recent AI papers and summarize key findings"],
-    )
+        examples=["Find recent AI papers and summarize key findings"])
 
     context: dict[str, Any] | None = Field(
         default=None, description="Additional context for the task"
@@ -227,8 +219,7 @@ class CompilerInput(BaseModel):
     execution_preferences: dict[str, Any] | None = Field(
         default=None,
         description="Preferences for how to execute the plan",
-        examples=[{"max_parallel": 5, "timeout": 300}],
-    )
+        examples=[{"max_parallel": 5, "timeout": 300}])
 
     available_tools: list[str] | None = Field(
         default=None, description="Specific tools to use (if None, uses all available)"
@@ -262,8 +253,7 @@ class CompilerOutput(BaseModel):
         default=None,
         ge=0.0,
         le=1.0,
-        description="Efficiency score for parallel execution (0-1)",
-    )
+        description="Efficiency score for parallel execution (0-1)")
 
     reasoning_trace: list[str] = Field(
         default_factory=list, description="Step-by-step reasoning trace"

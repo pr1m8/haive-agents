@@ -114,8 +114,7 @@ class PlanTask(BaseModel):
         ...,
         description="Human-readable name for the task",
         min_length=1,
-        max_length=200,
-    )
+        max_length=200)
 
     task_type: TaskType = Field(default=TaskType.EXECUTION, description="Type of task")
 
@@ -123,8 +122,7 @@ class PlanTask(BaseModel):
         ...,
         description="Detailed description of the task",
         min_length=1,
-        max_length=1000,
-    )
+        max_length=1000)
 
     # Agent assignment
     agent_name: str = Field(..., description="Name of the agent to execute this task")
@@ -173,8 +171,7 @@ class ReWOOPlan(BaseModel):
         ...,
         description="Human-readable name for the plan",
         min_length=1,
-        max_length=200,
-    )
+        max_length=200)
 
     problem_analysis: str = Field(
         ..., description="Analysis of the problem", min_length=10, max_length=2000
@@ -282,8 +279,7 @@ class ReWOOPlannerAgent(SimpleAgent):
         self,
         name: str = "rewoo_planner",
         available_tools: list[BaseTool] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         # Create planning-specific prompt
         prompt_template = """
         You are a ReWOO Planner that creates detailed execution plans.
@@ -313,9 +309,7 @@ class ReWOOPlannerAgent(SimpleAgent):
             AugLLMConfig(
                 prompt_template=prompt_template,
                 temperature=0.3,  # Lower for consistent planning
-                structured_output_model=ReWOOPlan,
-            ),
-        )
+                structured_output_model=ReWOOPlan))
 
         super().__init__(
             name=name, engine=engine, available_tools=available_tools or [], **kwargs
@@ -345,16 +339,14 @@ class ReWOOPlannerAgent(SimpleAgent):
             name="Execute Request",
             task_type=TaskType.EXECUTION,
             description=problem,
-            agent_name="executor",
-        )
+            agent_name="executor")
 
         plan = ReWOOPlan(
             plan_id=f"plan_{uuid.uuid4().hex[:8]}",
             name="Fallback Plan",
             problem_analysis="Direct execution of request",
             tasks=[task],
-            execution_levels=[[task.id]],
-        )
+            execution_levels=[[task.id]])
 
         return plan
 
@@ -370,8 +362,7 @@ class ReWOOExecutorAgent(ReactAgent):
         name: str = "rewoo_executor",
         tools: list[BaseTool] | None = None,
         tool_aliases: dict[str, ToolAlias] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         super().__init__(
             name=name, tools=tools or [], tool_aliases=tool_aliases or {}, **kwargs
         )
@@ -420,8 +411,7 @@ class ReWOOTreeAgent(MultiAgent):
         tool_aliases: dict[str, ToolAlias] | None = None,
         max_planning_depth: int = 3,
         max_parallelism: int = 4,
-        **kwargs,
-    ):
+        **kwargs):
 
         # Create planner agent
         planner = ReWOOPlannerAgent(
@@ -434,8 +424,7 @@ class ReWOOTreeAgent(MultiAgent):
             executor = ReWOOExecutorAgent(
                 name=f"{name}_executor_{i}",
                 tools=available_tools,
-                tool_aliases=tool_aliases,
-            )
+                tool_aliases=tool_aliases)
             executors.append(executor)
 
         # Create coordinator agent
@@ -456,8 +445,7 @@ class ReWOOTreeAgent(MultiAgent):
 
                 Respond with task assignments.
                 """
-            ),
-        )
+            ))
 
         # Create validator agent
         validator = SimpleAgent(
@@ -473,8 +461,7 @@ class ReWOOTreeAgent(MultiAgent):
                 Validate if the result meets requirements.
                 Provide validation status and any issues found.
                 """
-            ),
-        )
+            ))
 
         # Initialize MultiAgent with all agents
         all_agents = [planner, coordinator, validator, *executors]
@@ -487,8 +474,7 @@ class ReWOOTreeAgent(MultiAgent):
             agents=all_agents,
             name=name,
             execution_mode="infer",  # Will use intelligent routing
-            **kwargs,
-        )
+            **kwargs)
 
         # Store agent references using object.__setattr__ to bypass Pydantic
         object.__setattr__(self, "planner", planner)
@@ -516,15 +502,13 @@ class ReWOOTreeAgent(MultiAgent):
         self.add_branch(
             source_agent=self.coordinator.name,
             condition="task_assignment",
-            target_agents=list(self.executors.keys()),
-        )
+            target_agents=list(self.executors.keys()))
 
         # Add branch from validator back to coordinator or end
         self.add_branch(
             source_agent=self.validator.name,
             condition="validation_result",
-            target_agents=[self.coordinator.name, "__end__"],
-        )
+            target_agents=[self.coordinator.name, "__end__"])
 
     def add_tool_alias(
         self, alias: str, actual_tool: str, force_choice: bool = True, **params
@@ -534,8 +518,7 @@ class ReWOOTreeAgent(MultiAgent):
             alias=alias,
             actual_tool=actual_tool,
             force_choice=force_choice,
-            parameters=params,
-        )
+            parameters=params)
 
         # Update tool_aliases dict
         if hasattr(self, "tool_aliases"):
@@ -617,8 +600,7 @@ class ParallelReWOOAgent(ReWOOTreeAgent):
 def create_rewoo_agent_with_tools(
     tools: list[BaseTool],
     tool_aliases: dict[str, str] | None = None,
-    max_parallelism: int = 4,
-) -> ReWOOTreeAgent:
+    max_parallelism: int = 4) -> ReWOOTreeAgent:
     """Factory function to create a ReWOO agent with tools.
 
     Args:

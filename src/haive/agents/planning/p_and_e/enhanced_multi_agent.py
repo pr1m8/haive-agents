@@ -29,8 +29,7 @@ class EnhancedMultiAgent(MultiAgent):
         branches: dict[str, dict[str, Any]] | None = None,
         schema_composition_method: str = "smart",
         execution_mode: ExecutionMode = ExecutionMode.CONDITIONAL,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize enhanced multi-agent with direct configuration.
 
         Args:
@@ -72,8 +71,7 @@ class EnhancedMultiAgent(MultiAgent):
                 name=f"{self.__class__.__name__}State",
                 include_meta=self.include_meta,
                 separation=self.schema_separation,
-                build_mode=build_mode,
-            )
+                build_mode=build_mode)
             logger.info(f"Composed state schema: {self.state_schema.__name__}")
 
         # Store private schemas for each agent
@@ -95,8 +93,7 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
         self,
         agents: list[Any],
         state_schema: type[StateSchema] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize Plan and Execute multi-agent.
 
         Args:
@@ -136,8 +133,7 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
             state_schema=state_schema,
             branches=branches,
             execution_mode=ExecutionMode.CONDITIONAL,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:
         """Build the Plan and Execute workflow graph."""
@@ -176,8 +172,7 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
         graph.add_conditional_edges(
             "process_execution",
             branch_config["condition"],
-            branch_config["destinations"],
-        )
+            branch_config["destinations"])
 
         # Replan workflow
         graph.add_edge("prepare_replan", replanner_node)

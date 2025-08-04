@@ -5,8 +5,7 @@ from tests.test_basic import (
     test_circular_dependency_detection,
     test_execution_plan,
     test_parallel_execution,
-    test_step_with_dependencies,
-)
+    test_step_with_dependencies)
 from tests.test_tool_step import (
     TestToolStep,
     TestToolStepFactories,
@@ -34,8 +33,7 @@ from tests.test_tool_step import (
     test_valid_tool_step_creation,
     test_validate_problematic_tools,
     test_validate_tool_compatibility,
-    text_analyzer,
-)
+    text_analyzer)
 
 __all__ = [
     "TestToolStep",

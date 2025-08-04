@@ -23,8 +23,7 @@ from pydantic import (
     ConfigDict,
     Field,
     computed_field,
-    field_validator,
-)
+    field_validator)
 
 # ============================================================================
 # ENUMS
@@ -181,8 +180,7 @@ class BaseStep(BaseModel):
 
     id: str = Field(
         default_factory=lambda: f"step_{uuid.uuid4().hex[:8]}",
-        description="Unique identifier",
-    )
+        description="Unique identifier")
 
     name: str = Field(
         ..., description="Human-readable name", min_length=1, max_length=200
@@ -260,15 +258,13 @@ class BaseStep(BaseModel):
         step_id: str,
         dependency_type: DependencyType = DependencyType.HARD,
         condition: str | None = None,
-        required_output: str | None = None,
-    ) -> None:
+        required_output: str | None = None) -> None:
         """Add a dependency to this step."""
         dep = Dependency(
             step_id=step_id,
             dependency_type=dependency_type,
             condition=condition,
-            required_output=required_output,
-        )
+            required_output=required_output)
         self.dependencies.append(dep)
 
     def is_ready(self, completed_steps: dict[str, Any]) -> bool:
@@ -441,8 +437,7 @@ class BasePlan(BaseModel):
 
     id: str = Field(
         default_factory=lambda: f"plan_{uuid.uuid4().hex[:8]}",
-        description="Unique plan identifier",
-    )
+        description="Unique plan identifier")
 
     name: str = Field(..., description="Plan name")
 

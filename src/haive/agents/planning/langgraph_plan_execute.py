@@ -130,8 +130,7 @@ def create_langgraph_plan_execute(
         name="planner",
         model=model,
         system_message=PLANNER_PROMPT,
-        structured_output_model=Plan,
-    )
+        structured_output_model=Plan)
 
     # Create executor agent (executes individual steps)
     executor = ReactAgent(
@@ -143,8 +142,7 @@ def create_langgraph_plan_execute(
         name="replan",
         model=model,
         system_message=REPLANNER_PROMPT,
-        structured_output_model=Act,
-    )
+        structured_output_model=Act)
 
     # Define conditional branches following LangGraph pattern
     branches = [
@@ -161,8 +159,7 @@ def create_langgraph_plan_execute(
         entry_points=[planner],  # Start with planning
         name=name,
         state_schema_override=PlanExecuteState,
-        schema_build_mode=BuildMode.PARALLEL,
-    )
+        schema_build_mode=BuildMode.PARALLEL)
 
 
 # ============================================================================

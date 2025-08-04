@@ -15,8 +15,7 @@ from .models import (  # CompilerState,
     CompilerPlan,
     CompilerStep,
     FinalResponse,
-    JoinerOutput,
-)
+    JoinerOutput)
 from .output_parser import LLMCompilerPlanParser
 from .state import CompilerState
 from haive.core.engine.agent.agent import AgentArchitecture
@@ -200,8 +199,7 @@ class LLMCompilerAgent(AgentArchitecture):
                 step_id=1,
                 description=f"Search for information about: {query}",
                 tool_name=search_tool,
-                arguments={"query": query},
-            )
+                arguments={"query": query})
 
             # Add join step
             plan.add_compiler_step(
@@ -209,16 +207,14 @@ class LLMCompilerAgent(AgentArchitecture):
                 description="Combine results and generate final answer",
                 tool_name="join",
                 arguments={},
-                dependencies=[1],
-            )
+                dependencies=[1])
         else:
             # Just add a join step
             plan.add_compiler_step(
                 step_id=1,
                 description="Generate final answer",
                 tool_name="join",
-                arguments={},
-            )
+                arguments={})
 
         return plan
 
@@ -409,8 +405,7 @@ class LLMCompilerAgent(AgentArchitecture):
         self.graph.add_conditional_edges(
             "execute_tasks",
             self.should_execute_more,
-            {"planner": "planner", "execute_tasks": "execute_tasks", "join": "join"},
-        )
+            {"planner": "planner", "execute_tasks": "execute_tasks", "join": "join"})
 
         def should_replan(
             state: CompilerState, config: dict[str, Any] | None = None
@@ -440,8 +435,7 @@ class LLMCompilerAgent(AgentArchitecture):
             {
                 True: "planner",  # If replanning needed, go back to planning
                 False: END,  # Otherwise, terminate execution
-            },
-        )
+            })
 
         # Add start edge
         self.graph.add_edge(START, "planner")

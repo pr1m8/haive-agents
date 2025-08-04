@@ -11,8 +11,7 @@ from haive.agents.planning.llm_compiler_v3.models import (
     CompilerPlan,
     CompilerTask,
     ParallelExecutionResult,
-    ReplanRequest,
-)
+    ReplanRequest)
 
 
 class LLMCompilerStateSchema(MessagesState):
@@ -54,8 +53,7 @@ class LLMCompilerStateSchema(MessagesState):
     # Task coordination state
     ready_tasks: list[CompilerTask] = Field(
         default_factory=list,
-        description="Tasks ready for execution (dependencies satisfied)",
-    )
+        description="Tasks ready for execution (dependencies satisfied)")
 
     blocked_tasks: list[CompilerTask] = Field(
         default_factory=list, description="Tasks blocked by dependencies"
@@ -64,8 +62,7 @@ class LLMCompilerStateSchema(MessagesState):
     # Results storage for dependency resolution
     task_results: dict[str, Any] = Field(
         default_factory=dict,
-        description="Results indexed by task_id for dependency resolution",
-    )
+        description="Results indexed by task_id for dependency resolution")
 
     # Replanning state
     replan_count: int = Field(

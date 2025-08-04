@@ -25,37 +25,29 @@ class LLMCompilerV3Config(BaseModel):
         default_factory=lambda: AugLLMConfig(
             temperature=0.3,  # Lower temperature for consistent planning
             max_tokens=2000,
-            system_message="You are an expert task planner specializing in parallel execution optimization.",
-        ),
-        description="Configuration for the planner agent",
-    )
+            system_message="You are an expert task planner specializing in parallel execution optimization."),
+        description="Configuration for the planner agent")
 
     task_fetcher_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             temperature=0.1,  # Very low temperature for consistent coordination
             max_tokens=1000,
-            system_message="You are a task coordination specialist managing parallel execution.",
-        ),
-        description="Configuration for the task fetcher agent",
-    )
+            system_message="You are a task coordination specialist managing parallel execution."),
+        description="Configuration for the task fetcher agent")
 
     executor_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             temperature=0.2,  # Low temperature for consistent execution
             max_tokens=1500,
-            system_message="You are a tool execution specialist focused on reliable task completion.",
-        ),
-        description="Configuration for the parallel executor agent",
-    )
+            system_message="You are a tool execution specialist focused on reliable task completion."),
+        description="Configuration for the parallel executor agent")
 
     joiner_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             temperature=0.4,  # Slightly higher for creative synthesis
             max_tokens=2000,
-            system_message="You are a results synthesis expert creating comprehensive final answers.",
-        ),
-        description="Configuration for the joiner agent",
-    )
+            system_message="You are a results synthesis expert creating comprehensive final answers."),
+        description="Configuration for the joiner agent")
 
     # Execution settings
     execution_mode: ExecutionMode = Field(
@@ -66,20 +58,17 @@ class LLMCompilerV3Config(BaseModel):
         default=3,
         ge=1,
         le=10,
-        description="Maximum number of tasks to execute in parallel",
-    )
+        description="Maximum number of tasks to execute in parallel")
 
     task_timeout: float = Field(
         default=120.0,
         gt=0.0,
-        description="Timeout for individual task execution in seconds",
-    )
+        description="Timeout for individual task execution in seconds")
 
     total_timeout: float = Field(
         default=600.0,
         gt=0.0,
-        description="Total timeout for entire plan execution in seconds",
-    )
+        description="Total timeout for entire plan execution in seconds")
 
     # Replanning settings
     max_replan_attempts: int = Field(
@@ -90,8 +79,7 @@ class LLMCompilerV3Config(BaseModel):
         default=0.5,
         ge=0.0,
         le=1.0,
-        description="Failure rate threshold that triggers replanning",
-    )
+        description="Failure rate threshold that triggers replanning")
 
     enable_auto_replan: bool = Field(
         default=True, description="Whether to automatically replan on failures"
@@ -104,8 +92,7 @@ class LLMCompilerV3Config(BaseModel):
 
     tool_priorities: dict[str, int] = Field(
         default_factory=dict,
-        description="Priority mapping for tools (higher number = higher priority)",
-    )
+        description="Priority mapping for tools (higher number = higher priority)")
 
     exclude_tools: list[str] = Field(
         default_factory=list, description="Tools to exclude from planning"
@@ -124,8 +111,7 @@ class LLMCompilerV3Config(BaseModel):
         default=0.8,
         ge=0.0,
         le=1.0,
-        description="Target efficiency score for parallel execution",
-    )
+        description="Target efficiency score for parallel execution")
 
     # Debugging and monitoring
     enable_detailed_logging: bool = Field(

@@ -16,8 +16,7 @@ from haive.agents.base.smart_output_parsing import (
     create_smart_parsing_callable,
     detect_content_type,
     parse_json_content,
-    parse_structured_content,
-)
+    parse_structured_content)
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.planning.base.agents.executor import BaseExecutorAgent
 from haive.agents.planning.base.agents.planner import BasePlannerAgent

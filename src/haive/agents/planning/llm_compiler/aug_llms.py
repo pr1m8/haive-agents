@@ -42,8 +42,7 @@ Thought: Now I need to find population data
 ```
 
 Your plan should accomplish the user's goal efficiently in as few steps as possible.
-""",
-        ),
+"""),
         ("user", "{query}"),
     ]
 )
@@ -88,8 +87,7 @@ Thought: The previous plan found GDP and population data but failed to calculate
 ```
 
 Your plan should efficiently solve the remaining parts of the user's query.
-""",
-        ),
+"""),
         ("user", "{query}"),
         ("system", "{feedback}"),
     ]
@@ -121,8 +119,7 @@ When providing a final answer:
 - Address all parts of the user's original query
 
 Be decisive - either provide a complete answer or explicitly request additional specific information.
-""",
-        ),
+"""),
         (
             "user",
             """
@@ -135,8 +132,7 @@ Results:
 {results}
 
 Based on these results, can I provide a complete answer or do I need more information?
-""",
-        ),
+"""),
     ]
 )
 
@@ -168,5 +164,4 @@ default_joiner_config = AugLLMConfig(
     ),
     prompt_template=joiner_prompt,
     structured_output_model=None,  # Will be set in agent
-    structured_output_params={"method": "function_calling"},
-)
+    structured_output_params={"method": "function_calling"})

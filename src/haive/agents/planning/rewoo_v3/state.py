@@ -33,8 +33,7 @@ class ReWOOV3State(MessagesState):
     # models)
     reasoning_plan: dict[str, Any] | None = Field(
         default=None,
-        description="Planner agent structured output with evidence placeholders",
-    )
+        description="Planner agent structured output with evidence placeholders")
     evidence_collection: dict[str, Any] | None = Field(
         default=None, description="Worker agent evidence collection results"
     )

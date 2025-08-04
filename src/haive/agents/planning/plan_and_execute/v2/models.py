@@ -66,8 +66,7 @@ class Act(BaseModel):
 
     action: Response | Plan = Field(
         ...,
-        description="Action to perform. Use Response for final answer, Plan for more steps.",
-    )
+        description="Action to perform. Use Response for final answer, Plan for more steps.")
 
 
 class ExecutionResult(BaseModel):

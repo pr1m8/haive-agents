@@ -13,8 +13,7 @@ from haive.agents.planning.rewoo.models.plans import ExecutionPlan
 from haive.agents.planning.rewoo.models.tool_step import (
     ToolStep,
     create_tool_steps_from_plan,
-    validate_tool_compatibility,
-)
+    validate_tool_compatibility)
 
 
 # Test tools
@@ -60,8 +59,7 @@ class TestToolStep:
             description="Calculate 2 + 2",
             tool_name="calculator",
             tool_args={"expression": "2 + 2"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         assert step.tool_name == "calculator"
         assert step.tool_args == {"expression": "2 + 2"}
@@ -76,8 +74,7 @@ class TestToolStep:
                 description="Invalid tool",
                 tool_name="nonexistent",
                 tool_args={},
-                available_tools=available_tools,
-            )
+                available_tools=available_tools)
 
     def test_missing_required_args(self, available_tools) -> None:
         """Test validation fails for missing required arguments."""
@@ -86,8 +83,7 @@ class TestToolStep:
                 description="Calculator without expression",
                 tool_name="calculator",
                 tool_args={},  # Missing required 'expression'
-                available_tools=available_tools,
-            )
+                available_tools=available_tools)
 
     def test_invalid_args(self, available_tools) -> None:
         """Test validation fails for invalid arguments."""
@@ -96,8 +92,7 @@ class TestToolStep:
                 description="Calculator with invalid args",
                 tool_name="calculator",
                 tool_args={"expression": "2 + 2", "invalid_arg": "should not exist"},
-                available_tools=available_tools,
-            )
+                available_tools=available_tools)
 
     def test_optional_args(self, available_tools) -> None:
         """Test tool with optional arguments."""
@@ -106,8 +101,7 @@ class TestToolStep:
             description="Analyze text with min length",
             tool_name="text_analyzer",
             tool_args={"text": "Hello world", "min_length": 10},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
         assert step1.is_tool_valid
 
         # Without optional arg
@@ -115,8 +109,7 @@ class TestToolStep:
             description="Analyze text default min length",
             tool_name="text_analyzer",
             tool_args={"text": "Hello world"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
         assert step2.is_tool_valid
 
     def test_computed_fields(self, available_tools) -> None:
@@ -125,8 +118,7 @@ class TestToolStep:
             description="Test computed fields",
             tool_name="text_analyzer",
             tool_args={"text": "test"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         assert "calculator" in step.tool_names
         assert "text_analyzer" in step.tool_names
@@ -143,8 +135,7 @@ class TestToolStep:
             description="Calculate 15 * 8",
             tool_name="calculator",
             tool_args={"expression": "15 * 8"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         # Should be able to execute
         assert step.can_execute(set())
@@ -160,16 +151,14 @@ class TestToolStep:
             description="First calculation",
             tool_name="calculator",
             tool_args={"expression": "10 + 5"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         step2 = ToolStep(
             description="Second calculation",
             tool_name="calculator",
             tool_args={"expression": "20 * 2"},
             depends_on=[step1.id],
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         # Step 1 can execute
         assert step1.can_execute(set())
@@ -186,8 +175,7 @@ class TestToolStep:
             description="Get tool info",
             tool_name="text_analyzer",
             tool_args={"text": "test"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         info = step.get_tool_info()
         assert info["name"] == "text_analyzer"
@@ -204,8 +192,7 @@ class TestToolStep:
             description="Update args test",
             tool_name="text_analyzer",
             tool_args={"text": "original"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         # Update args
         step.update_tool_args(text="updated", min_length=20)
@@ -218,8 +205,7 @@ class TestToolStep:
             tool=calculator,
             tool_args={"expression": "5 * 5"},
             available_tools=available_tools,
-            description="Factory created step",
-        )
+            description="Factory created step")
 
         assert step.tool_name == "calculator"
         assert step.description == "Factory created step"
@@ -234,8 +220,7 @@ class TestToolStep:
                 description="No tools available",
                 tool_name="calculator",
                 tool_args={"expression": "1 + 1"},
-                available_tools=[],
-            )
+                available_tools=[])
 
     def test_duplicate_tool_names(self, available_tools) -> None:
         """Test validation fails for duplicate tool names."""
@@ -247,8 +232,7 @@ class TestToolStep:
                 description="Duplicate tools",
                 tool_name="calculator",
                 tool_args={"expression": "1 + 1"},
-                available_tools=duplicate_tools,
-            )
+                available_tools=duplicate_tools)
 
 
 class TestToolStepFactories:
@@ -331,22 +315,19 @@ class TestToolStepIntegration:
             description="Calculate base value",
             tool_name="calculator",
             tool_args={"expression": "10 * 2"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         step2 = ToolStep(
             description="Analyze result",
             tool_name="text_analyzer",
             tool_args={"text": "Result is 20"},
             depends_on=[step1.id],
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         plan = ExecutionPlan(
             name="Tool Step Plan",
             description="Plan using tool steps",
-            steps=[step1, step2],
-        )
+            steps=[step1, step2])
 
         assert plan.step_count == 2
         assert plan.max_parallelism == 1
@@ -358,29 +339,25 @@ class TestToolStepIntegration:
             description="Calculate first",
             tool_name="calculator",
             tool_args={"expression": "5 + 5"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         step2 = ToolStep(
             description="Analyze text",
             tool_name="text_analyzer",
             tool_args={"text": "Independent analysis"},
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         step3 = ToolStep(
             description="Final calculation",
             tool_name="calculator",
             tool_args={"expression": "10 + 10"},
             depends_on=[step1.id, step2.id],
-            available_tools=available_tools,
-        )
+            available_tools=available_tools)
 
         plan = ExecutionPlan(
             name="Parallel Tool Plan",
             description="Plan with parallel tool steps",
-            steps=[step1, step2, step3],
-        )
+            steps=[step1, step2, step3])
 
         assert plan.max_parallelism == 2  # step1 and step2 can run in parallel
         assert len(plan.execution_levels) == 2
@@ -399,8 +376,7 @@ if __name__ == "__main__":
             description="Test calculation",
             tool_name="calculator",
             tool_args={"expression": "2 + 2"},
-            available_tools=tools,
-        )
+            available_tools=tools)
 
     # Test invalid tool name
     with contextlib.suppress(ValidationError):
@@ -408,8 +384,7 @@ if __name__ == "__main__":
             description="Invalid tool",
             tool_name="nonexistent",
             tool_args={},
-            available_tools=tools,
-        )
+            available_tools=tools)
 
     # Test missing args
     with contextlib.suppress(ValidationError):
@@ -417,8 +392,7 @@ if __name__ == "__main__":
             description="Missing args",
             tool_name="calculator",
             tool_args={},
-            available_tools=tools,
-        )
+            available_tools=tools)
 
     # Test execution
     try:
@@ -426,8 +400,7 @@ if __name__ == "__main__":
             description="Execute calculation",
             tool_name="calculator",
             tool_args={"expression": "15 * 8"},
-            available_tools=tools,
-        )
+            available_tools=tools)
         result = step.execute({"completed_steps": set()})
     except Exception:
         pass

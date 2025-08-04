@@ -184,8 +184,7 @@ class ReWOOTreeAgent(MultiAgent):
         tool_aliases: dict[str, ToolAlias] | None = None,
         max_planning_depth: int = 3,
         max_parallelism: int = 4,
-        **kwargs,
-    ):
+        **kwargs):
         # Create planner agent
         planner = SimpleAgent(
             name=f"{name}_planner",
@@ -203,9 +202,7 @@ class ReWOOTreeAgent(MultiAgent):
                 - Risk assessment
                 """,
                 temperature=0.3,
-                structured_output_model=ReWOOPlan,
-            ),
-        )
+                structured_output_model=ReWOOPlan))
 
         # Create executor agents for parallelization
         executors = []
@@ -222,10 +219,8 @@ class ReWOOTreeAgent(MultiAgent):
 
                     Execute the task and return results.
                     """,
-                    temperature=0.5,
-                ),
-                tools=available_tools or [],
-            )
+                    temperature=0.5),
+                tools=available_tools or [])
             executors.append(executor)
 
         # Create coordinator
@@ -241,9 +236,7 @@ class ReWOOTreeAgent(MultiAgent):
 
                 Coordinate the next phase of execution.
                 """,
-                temperature=0.3,
-            ),
-        )
+                temperature=0.3))
 
         # Create validator
         validator = SimpleAgent(
@@ -257,9 +250,7 @@ class ReWOOTreeAgent(MultiAgent):
 
                 Validate the result and provide feedback.
                 """,
-                temperature=0.1,
-            ),
-        )
+                temperature=0.1))
 
         # Collect all agents
         all_agents = [planner, coordinator, validator, *executors]
@@ -274,8 +265,7 @@ class ReWOOTreeAgent(MultiAgent):
             max_parallelism=max_parallelism,
             execution_mode="infer",
             state_schema=ReWOOTreeState,
-            **kwargs,
-        )
+            **kwargs)
 
         # Configure execution flow using MultiAgent patterns
         self._configure_execution_flow()
@@ -286,8 +276,7 @@ class ReWOOTreeAgent(MultiAgent):
         self.add_branch(
             source_agent=f"{self.name}_planner",
             condition="plan_created",
-            target_agents=[f"{self.name}_coordinator"],
-        )
+            target_agents=[f"{self.name}_coordinator"])
 
         # Set up branching from coordinator to executors
         executor_names = [
@@ -296,23 +285,20 @@ class ReWOOTreeAgent(MultiAgent):
         self.add_branch(
             source_agent=f"{self.name}_coordinator",
             condition="tasks_assigned",
-            target_agents=executor_names,
-        )
+            target_agents=executor_names)
 
         # Set up branching from executors to validator
         for executor_name in executor_names:
             self.add_branch(
                 source_agent=executor_name,
                 condition="task_completed",
-                target_agents=[f"{self.name}_validator"],
-            )
+                target_agents=[f"{self.name}_validator"])
 
         # Set up completion or recursive planning
         self.add_branch(
             source_agent=f"{self.name}_validator",
             condition="validation_complete",
-            target_agents=[f"{self.name}_coordinator", "__end__"],
-        )
+            target_agents=[f"{self.name}_coordinator", "__end__"])
 
     def add_tool_alias(
         self, alias: str, actual_tool: str, force_choice: bool = True, **params
@@ -322,8 +308,7 @@ class ReWOOTreeAgent(MultiAgent):
             alias=alias,
             actual_tool=actual_tool,
             force_choice=force_choice,
-            parameters=params,
-        )
+            parameters=params)
         self.tool_aliases[alias] = tool_alias
 
         # Update executor agents with new alias
@@ -361,8 +346,7 @@ class ParallelReWOOAgent(ReWOOTreeAgent):
 def create_rewoo_agent_with_tools(
     tools: list[BaseTool],
     tool_aliases: dict[str, str] | None = None,
-    max_parallelism: int = 4,
-) -> ReWOOTreeAgent:
+    max_parallelism: int = 4) -> ReWOOTreeAgent:
     """Factory function to create ReWOO agent with tools."""
     # Convert tool aliases to ToolAlias objects
     alias_objects = {}
@@ -376,5 +360,4 @@ def create_rewoo_agent_with_tools(
         name="rewoo_agent",
         available_tools=tools,
         tool_aliases=alias_objects,
-        max_parallelism=max_parallelism,
-    )
+        max_parallelism=max_parallelism)

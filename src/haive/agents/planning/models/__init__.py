@@ -44,8 +44,7 @@ from models.base import (
     total_steps,
     update_ready_steps,
     validate_dag,
-    validate_unique_dependencies,
-)
+    validate_unique_dependencies)
 
 __all__ = [
     "ActionStep",

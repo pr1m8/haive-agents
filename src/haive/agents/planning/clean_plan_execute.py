@@ -142,8 +142,7 @@ def create_clean_plan_execute_agent(
     name: str = "PlanExecute",
     planner_model: str = "gpt-4o-mini",
     executor_model: str = "gpt-4o-mini",
-    tools: list | None = None,
-) -> MultiAgentBase:
+    tools: list | None = None) -> MultiAgentBase:
     """Create a clean Plan and Execute agent following LangGraph patterns.
 
     Args:
@@ -166,8 +165,7 @@ def create_clean_plan_execute_agent(
 This plan should involve individual tasks, that if executed correctly will yield the correct answer.
 Do not add any superfluous steps. The result of the final step should be the final answer.
 Make sure that each step has all the information needed - do not skip steps.""",
-        structured_output_model=Plan,
-    )
+        structured_output_model=Plan)
 
     # Create execution agent (React agent for tool usage)
     executor = ReactAgent(
@@ -175,8 +173,7 @@ Make sure that each step has all the information needed - do not skip steps.""",
         model=executor_model,
         system_message="""Execute the given step in the plan. Use tools as needed.
 When you have completed the step, provide a clear result.""",
-        tools=tools,
-    )
+        tools=tools)
 
     # Create replanning agent (Simple agent for decision making)
     replanner = SimpleAgent(
@@ -198,8 +195,7 @@ You have currently done the follow steps:
 
 Update your plan accordingly. If no more steps are needed and you can return to the user, then respond with that.
 Otherwise, fill out the plan. Only add steps to the plan that still NEED to be done. Do not return previously done steps as part of the plan.""",
-        structured_output_model=Act,
-    )
+        structured_output_model=Act)
 
     # Define branches for routing
     branches = [
@@ -207,8 +203,7 @@ Otherwise, fill out the plan. Only add steps to the plan that still NEED to be d
         (
             executor,
             should_continue,
-            {"agent": executor, "replan": replanner, "END": "END"},
-        ),
+            {"agent": executor, "replan": replanner, "END": "END"}),
         # After replanning, decide next action
         (replanner, route_after_replan, {"agent": executor, "END": "END"}),
     ]
@@ -220,8 +215,7 @@ Otherwise, fill out the plan. Only add steps to the plan that still NEED to be d
         entry_points=[planner],  # Start with planner
         name=name,
         state_schema_override=PlanExecuteState,
-        schema_build_mode=BuildMode.PARALLEL,
-    )
+        schema_build_mode=BuildMode.PARALLEL)
 
 
 # ============================================================================

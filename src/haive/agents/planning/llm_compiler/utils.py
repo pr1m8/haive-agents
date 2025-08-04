@@ -77,8 +77,7 @@ def schedule_tasks(scheduler_input: SchedulerInput) -> list[FunctionMessage]:
             name=name,
             content=str(obs),
             additional_kwargs={"idx": k, "args": task_args},
-            tool_call_id=k,
-        )
+            tool_call_id=k)
         for k, (name, task_args, obs) in new_observations.items()
     ]
     return tool_messages

@@ -54,8 +54,7 @@ class ReWOOPlan(BaseModel):
     reasoning: str = Field(description="Why this plan will solve the objective")
     expected_evidence: dict[str, str] = Field(
         default_factory=dict,
-        description="Map of evidence_id to expected content description",
-    )
+        description="Map of evidence_id to expected content description")
 
     total_steps: int = Field(description="Total number of steps")
     created_at: datetime = Field(default_factory=datetime.now)

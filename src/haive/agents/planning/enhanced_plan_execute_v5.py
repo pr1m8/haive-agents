@@ -67,7 +67,6 @@ agent = create_enhanced_plan_execute_v5(
 # Add custom hooks
 @agent.before_run
 def track_execution(context):
-    """Track Execution implementation."""
     print(f"Starting planning workflow: {context.agent_name}")
 
 result = await agent.arun("Complex multi-step research task")
@@ -407,8 +406,7 @@ def create_enhanced_plan_execute_v5(
     replanner_config: Optional[AugLLMConfig] = None,
     tools: Optional[list] = None,
     max_iterations: int = 20,
-    enable_hooks: bool = True,
-) -> EnhancedMultiAgentV4:
+    enable_hooks: bool = True) -> EnhancedMultiAgentV4:
     """Create enhanced Plan & Execute agent using modern Haive patterns.
     
     Args:
@@ -553,17 +551,14 @@ def _add_monitoring_hooks(workflow: EnhancedMultiAgentV4) -> None:
     
     @workflow.before_run
     def log_workflow_start(context):
-        """Log Workflow Start implementation."""
         logger.info(f"🚀 Starting enhanced planning workflow: {context.agent_name}")
     
     @workflow.after_run  
     def log_workflow_complete(context):
-        """Log Workflow Complete implementation."""
         logger.info(f"✅ Planning workflow completed: {context.agent_name}")
     
     @workflow.on_error
     def log_workflow_error(context):
-        """Log Workflow Error implementation."""
         logger.error(f"❌ Planning workflow error: {context.error}")
 
 

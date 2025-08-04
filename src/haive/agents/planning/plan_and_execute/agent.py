@@ -45,8 +45,7 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
             # Next, we pass in the function that will determine which node is
             # called next.
             self.should_end,
-            ["execute_step", END],
-        )
+            ["execute_step", END])
 
     async def execute_step(self, state: PlanAndExecuteState):
         """Executes the next step in the plan."""
@@ -98,8 +97,7 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
                 "plan": state.plan,
                 "response": response_content,
             },
-            goto="replan_step",
-        )
+            goto="replan_step")
 
     async def replan_step(self, state: PlanAndExecuteState):
         """Replans the steps based on completed progress."""

@@ -56,8 +56,7 @@ def test_parallel_execution() -> None:
     plan = ExecutionPlan(
         name="Parallel Plan",
         description="A plan with parallel steps",
-        steps=[step1, step2, step3],
-    )
+        steps=[step1, step2, step3])
 
     assert plan.max_parallelism == 2
     assert len(plan.execution_levels) == 2

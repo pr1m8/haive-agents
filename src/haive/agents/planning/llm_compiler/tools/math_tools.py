@@ -107,8 +107,7 @@ def get_math_tool(llm: ChatOpenAI):
     def calculate_expression(
         problem: str,
         context: list[str] | None = None,
-        config: RunnableConfig | None = None,
-    ):
+        config: RunnableConfig | None = None):
         chain_input = {"problem": problem}
         if context:
             context_str = "\n".join(context)
@@ -126,5 +125,4 @@ def get_math_tool(llm: ChatOpenAI):
     return StructuredTool.from_function(
         name="math",
         func=calculate_expression,
-        description=_MATH_DESCRIPTION,
-    )
+        description=_MATH_DESCRIPTION)

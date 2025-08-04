@@ -8,7 +8,6 @@ from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validat
 from .steps import AbstractStep
 
 class ExecutionPlan(BaseModel):
-    """A plan that works with any AbstractStep implementation."""
     model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra='forbid')
     id: str = Field(default_factory=lambda: f'plan_{uuid4().hex[:8]}', description='Unique plan identifier')
     name: str = Field(..., min_length=1, max_length=200, description='Human-readable plan name')

@@ -46,8 +46,7 @@ from .models import (
     ReWOOPlan,
     ReWOOSolution,
     ReWOOV3Input,
-    ReWOOV3Output,
-)
+    ReWOOV3Output)
 from .state import ReWOOV3State
 
 __all__ = [
