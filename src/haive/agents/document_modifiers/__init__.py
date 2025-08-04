@@ -57,4 +57,20 @@ Note:
     appropriate async/await patterns when integrating with your application.
 """
 
-__all__ = []
+from haive.agents.document_modifiers.base import (
+    normalize_contents,
+    documents_to_strings, 
+    strings_to_documents
+)
+from haive.agents.document_modifiers.kg.kg_map_merge.config import (
+    ParallelKGAgentConfig,
+    ParallelKGTransformerConfig
+)
+
+__all__ = [
+    "normalize_contents",
+    "documents_to_strings",
+    "strings_to_documents", 
+    "ParallelKGAgentConfig",
+    "ParallelKGTransformerConfig"
+]
