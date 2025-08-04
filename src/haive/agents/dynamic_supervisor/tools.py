@@ -177,8 +177,7 @@ def create_handoff_tool(state: "SupervisorStateWithTools", agent_name: str) -> A
                         "agent_name": agent_name,
                         "engine_name": engine_name,
                         "source": "agent_execution",
-                    },
-                )
+                    })
                 state.messages.append(human_msg)
 
                 return f"Agent {agent_name} completed: {response}"

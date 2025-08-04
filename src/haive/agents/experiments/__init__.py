@@ -4,14 +4,12 @@ from haive.agents.experiments.dynamic_supervisor import (
     AgentRegistry,
     AgentRegistryEntry,
     DynamicSupervisorAgent,
-    SupervisorState,
-)
+    SupervisorState)
 from haive.agents.experiments.dynamic_supervisor_enhanced import SelfModifyingSupervisor
 from haive.agents.experiments.static_supervisor_with_sync import (
     AgentEntry,
     StaticSupervisor,
-    SupervisorReactState,
-)
+    SupervisorReactState)
 
 __all__ = [
     "AgentEntry",

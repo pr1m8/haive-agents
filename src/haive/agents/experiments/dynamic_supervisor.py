@@ -34,8 +34,7 @@ class SupervisorState(MessagesState):
     # Agent registry information
     agent_registry: dict[str, dict[str, Any]] = Field(
         default_factory=dict,
-        description="Registry of available agents with their metadata",
-    )
+        description="Registry of available agents with their metadata")
 
     # Current execution state
     current_agent_name: str | None = Field(
@@ -113,16 +112,14 @@ class AgentRegistry:
         description: str,
         agent_class: type[Agent],
         config: dict[str, Any] | None = None,
-        capabilities: list[str] | None = None,
-    ) -> None:
+        capabilities: list[str] | None = None) -> None:
         """Register an agent with the registry."""
         entry = AgentRegistryEntry(
             name=name,
             description=description,
             agent_class=agent_class,
             config=config or {},
-            capabilities=capabilities or [],
-        )
+            capabilities=capabilities or [])
         self._registry[name] = entry
         logger.info(f"Registered agent: {name}")
 
@@ -445,8 +442,7 @@ Available tools:
         name: str,
         description: str,
         agent_class: type[Agent],
-        config: dict[str, Any] | None = None,
-    ):
+        config: dict[str, Any] | None = None):
         """Dynamically add an agent to the registry and update tools."""
         self.agent_registry.register(name, description, agent_class, config)
 
@@ -503,15 +499,13 @@ def create_test_registry() -> AgentRegistry:
         name="research_agent",
         description="Searches for information and conducts research",
         agent_class=SimpleAgent,
-        capabilities=["web_search", "analysis", "summarization"],
-    )
+        capabilities=["web_search", "analysis", "summarization"])
 
     registry.register(
         name="math_agent",
         description="Performs mathematical calculations and analysis",
         agent_class=SimpleAgent,
-        capabilities=["arithmetic", "algebra", "statistics"],
-    )
+        capabilities=["arithmetic", "algebra", "statistics"])
 
     return registry
 
@@ -548,8 +542,7 @@ def test_dynamic_tools() -> Any:
         name="calculator_agent",
         description="Performs complex mathematical calculations",
         agent_class=SimpleAgent,
-        config={"name": "Calculator Agent"},
-    )
+        config={"name": "Calculator Agent"})
 
     # Verify handoff tool was created
     [t for t in supervisor.tools if t.name.startswith("handoff_to_")]

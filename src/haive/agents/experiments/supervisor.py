@@ -10,8 +10,7 @@ from pydantic import (
     BaseModel,
     Dict,
     Field,
-    computed_field,
-)
+    computed_field)
 
 from haive.agents.base.agent import Agent
 from haive.agents.react.agent import ReactAgent

@@ -43,8 +43,7 @@ from pydantic import Field
 
 from haive.agents.dynamic_supervisor.prompts import format_supervisor_prompt
 from haive.agents.dynamic_supervisor.state import (
-    SupervisorStateWithTools,
-)
+    SupervisorStateWithTools)
 from haive.agents.react.agent import ReactAgent
 
 # Tools handle agent execution directly - no separate node needed
@@ -97,8 +96,7 @@ class DynamicSupervisorAgent(ReactAgent):
 
     state_schema_override: type = Field(
         default=SupervisorStateWithTools,
-        description="Use supervisor state schema with dynamic agent management",
-    )
+        description="Use supervisor state schema with dynamic agent management")
 
     auto_sync_tools: bool = Field(
         default=True, description="Automatically sync tools when state changes"
@@ -170,8 +168,7 @@ class DynamicSupervisorAgent(ReactAgent):
         self,
         input_data: str | dict[str, Any] | list[BaseMessage],
         state: SupervisorStateWithTools | None = None,
-        **kwargs,
-    ) -> Any:
+        **kwargs) -> Any:
         """Run the supervisor asynchronously.
 
         Extends SimpleAgent.arun to handle supervisor state and
@@ -238,8 +235,7 @@ class DynamicSupervisorAgent(ReactAgent):
         self,
         input_data: str | dict[str, Any] | list[BaseMessage],
         state: SupervisorStateWithTools | None = None,
-        **kwargs,
-    ) -> Any:
+        **kwargs) -> Any:
         """Run the supervisor synchronously.
 
         Synchronous version of arun.
@@ -284,8 +280,7 @@ def create_dynamic_supervisor(
     temperature: float = 0.0,
     force_tool_use: bool = True,
     enable_agent_builder: bool = False,
-    **kwargs,
-) -> DynamicSupervisorAgent:
+    **kwargs) -> DynamicSupervisorAgent:
     """Factory function to create a configured dynamic supervisor.
 
     Args:

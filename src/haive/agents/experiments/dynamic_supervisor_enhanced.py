@@ -22,8 +22,7 @@ def create_agent_management_tools(supervisor_instance) -> Any:
         description: str,
         agent_type: str = "simple",
         system_message: str = "",
-        capabilities: str | None = None,
-    ) -> str:
+        capabilities: str | None = None) -> str:
         """Create and register a new agent in the supervisor's registry.
 
         Args:
@@ -64,8 +63,7 @@ def create_agent_management_tools(supervisor_instance) -> Any:
                 name=name,
                 description=description,
                 agent_class=agent_class,
-                config=config,
-            )
+                config=config)
 
             # Store capabilities if provided
             if capabilities and hasattr(supervisor_instance.agent_registry, "_agents"):
@@ -103,8 +101,7 @@ def create_agent_management_tools(supervisor_instance) -> Any:
     def modify_agent(
         name: str,
         description: str | None = None,
-        system_message: str | None = None,
-    ) -> str:
+        system_message: str | None = None) -> str:
         """Modify an existing agent's configuration.
 
         Args:
@@ -280,8 +277,7 @@ if __name__ == "__main__":
             {
                 "name": "General Assistant",
                 "system_message": "You are a helpful assistant.",
-            },
-        )
+            })
 
         # Simulate a task that requires a specialized agent
 
