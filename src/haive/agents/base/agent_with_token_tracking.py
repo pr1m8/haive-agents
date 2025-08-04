@@ -110,9 +110,8 @@ class TokenTrackingAgent(Agent):
                 # Use MessagesStateWithTokenUsage directly
                 self.state_schema = type(
                     f"{self.__class__.__name__}StateWithTokens",
-                    (MessagesStateWithTokenUsage,),
-                    {},
-                )
+                    (MessagesStateWithTokenUsage),
+                    {})
                 logger.debug("Using MessagesStateWithTokenUsage for token tracking")
             else:
                 # Use the regular schema
@@ -141,5 +140,4 @@ class TokenTrackingAgent(Agent):
             self._state.calculate_costs(
                 input_cost_per_1k=self.input_cost_per_1k,
                 output_cost_per_1k=self.output_cost_per_1k,
-                cached_input_cost_per_1k=self.cached_input_cost_per_1k,
-            )
+                cached_input_cost_per_1k=self.cached_input_cost_per_1k)

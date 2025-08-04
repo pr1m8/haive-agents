@@ -216,7 +216,7 @@ class StateMixin:
                 conn = checkpointer.conn
                 with conn.connection() as db_conn, db_conn.cursor() as cursor:
                     cursor.execute(
-                        "DELETE FROM checkpoints WHERE thread_id = %s", (thread_id,)
+                        "DELETE FROM checkpoints WHERE thread_id = %s", (thread_id)
                     )
 
             logger.info(f"State reset successfully for thread {thread_id}")

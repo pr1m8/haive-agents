@@ -111,8 +111,7 @@ class MessageTransformer:
                     transformed.append(
                         HumanMessage(
                             content=msg.content,
-                            additional_kwargs=getattr(msg, "additional_kwargs", {}),
-                        )
+                            additional_kwargs=getattr(msg, "additional_kwargs", {}))
                     )
                 else:
                     transformed.append(msg)
@@ -218,8 +217,7 @@ class PrePostAgentMixin:
             self.execute_hooks(
                 HookEvent.PRE_PROCESS,
                 input_data=input_data,
-                metadata={"stage": "pre_processing"},
-            )
+                metadata={"stage": "pre_processing"})
 
         # Stage 1: Pre-processing (optional)
         pre_result = None
@@ -237,8 +235,7 @@ class PrePostAgentMixin:
                         else HookEvent.BEFORE_NODE
                     ),
                     input_data=current_input,
-                    agent_name=self.pre_agent.name,
-                )
+                    agent_name=self.pre_agent.name)
 
             pre_result = await self.pre_agent.arun(current_input)
 
@@ -251,8 +248,7 @@ class PrePostAgentMixin:
                         else HookEvent.AFTER_NODE
                     ),
                     output_data=pre_result,
-                    agent_name=self.pre_agent.name,
-                )
+                    agent_name=self.pre_agent.name)
 
             # Transform messages if needed
             if self.use_pre_transform and self._pre_transformer:
@@ -264,8 +260,7 @@ class PrePostAgentMixin:
                         self.execute_hooks(
                             HookEvent.BEFORE_MESSAGE_TRANSFORM,
                             messages=original_messages,
-                            transformation_type=self.pre_transform_type,
-                        )
+                            transformation_type=self.pre_transform_type)
 
                     transformed_messages = self._pre_transformer.transform_messages(
                         original_messages
@@ -277,8 +272,7 @@ class PrePostAgentMixin:
                             HookEvent.AFTER_MESSAGE_TRANSFORM,
                             original_messages=original_messages,
                             transformed_messages=transformed_messages,
-                            transformation_type=self.pre_transform_type,
-                        )
+                            transformation_type=self.pre_transform_type)
 
         # Stage 2: Main processing (this agent)
         logger.debug(
@@ -311,8 +305,7 @@ class PrePostAgentMixin:
                         self.execute_hooks(
                             HookEvent.BEFORE_MESSAGE_TRANSFORM,
                             messages=original_messages,
-                            transformation_type=self.post_transform_type,
-                        )
+                            transformation_type=self.post_transform_type)
 
                     transformed_messages = self._post_transformer.transform_messages(
                         original_messages
@@ -324,8 +317,7 @@ class PrePostAgentMixin:
                             HookEvent.AFTER_MESSAGE_TRANSFORM,
                             original_messages=original_messages,
                             transformed_messages=transformed_messages,
-                            transformation_type=self.post_transform_type,
-                        )
+                            transformation_type=self.post_transform_type)
 
             # Execute post-processing hooks
             if hasattr(self, "execute_hooks"):
@@ -336,8 +328,7 @@ class PrePostAgentMixin:
                         else HookEvent.BEFORE_NODE
                     ),
                     input_data=current_post_input,
-                    agent_name=self.post_agent.name,
-                )
+                    agent_name=self.post_agent.name)
 
             post_result = await self.post_agent.arun(current_post_input)
 
@@ -349,8 +340,7 @@ class PrePostAgentMixin:
                         else HookEvent.AFTER_NODE
                     ),
                     output_data=post_result,
-                    agent_name=self.post_agent.name,
-                )
+                    agent_name=self.post_agent.name)
 
         # Stage 4: Combine results
         if self.combine_results:
@@ -399,8 +389,7 @@ class PrePostAgentMixin:
                 output_data=final_result,
                 pre_agent_result=pre_result,
                 post_agent_result=post_result,
-                metadata={"stage": "post_processing"},
-            )
+                metadata={"stage": "post_processing"})
 
         return final_result
 
@@ -429,8 +418,7 @@ def create_reflection_agent(
     main_agent: Agent,
     reflection_agent: Agent | None = None,
     name: str | None = None,
-    **kwargs,
-) -> Agent:
+    **kwargs) -> Agent:
     """Create an agent with reflection post-processing.
 
     Args:
@@ -450,9 +438,7 @@ def create_reflection_agent(
             name=f"{main_agent.name}_reflector",
             engine=AugLLMConfig(
                 system_message="You are a reflection agent that analyzes and improves responses.",
-                temperature=0.3,
-            ),
-        )
+                temperature=0.3))
 
     # Add pre/post processing to main agent
     if hasattr(main_agent, "__dict__"):
@@ -471,8 +457,7 @@ def create_graded_reflection_agent(
     grading_agent: Agent | None = None,
     reflection_agent: Agent | None = None,
     name: str | None = None,
-    **kwargs,
-) -> Agent:
+    **kwargs) -> Agent:
     """Create an agent with grading and reflection processing.
 
     Args:
@@ -493,9 +478,7 @@ def create_graded_reflection_agent(
             name=f"{main_agent.name}_grader",
             engine=AugLLMConfig(
                 system_message="You are a grading agent that evaluates response quality.",
-                temperature=0.1,
-            ),
-        )
+                temperature=0.1))
 
     if not reflection_agent:
 
@@ -505,9 +488,7 @@ def create_graded_reflection_agent(
             name=f"{main_agent.name}_reflector",
             engine=AugLLMConfig(
                 system_message="You are a reflection agent that improves responses based on grades.",
-                temperature=0.3,
-            ),
-        )
+                temperature=0.3))
 
     # Add pre/post processing to main agent
     if hasattr(main_agent, "__dict__"):
@@ -527,8 +508,7 @@ def create_structured_output_agent(
     main_agent: Agent,
     output_model: type[BaseModel],
     name: str | None = None,
-    **kwargs,
-) -> Agent:
+    **kwargs) -> Agent:
     """Create an agent with structured output post-processing.
 
     Args:
@@ -546,8 +526,7 @@ def create_structured_output_agent(
         engine=AugLLMConfig(
             system_message="You are a structured output processor.", temperature=0.1
         ),
-        output_models=[output_model],
-    )
+        output_models=[output_model])
 
     # Add post-processing to main agent
     if hasattr(main_agent, "__dict__"):

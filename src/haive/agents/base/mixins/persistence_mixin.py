@@ -14,14 +14,12 @@ from haive.core.engine.agent.config import POSTGRES_AVAILABLE
 from haive.core.persistence.handlers import setup_async_checkpointer, setup_checkpointer
 from haive.core.persistence.memory import MemoryCheckpointerConfig
 from haive.core.persistence.postgres_config import (
-    PostgresCheckpointerConfig,
-)
+    PostgresCheckpointerConfig)
 from haive.core.persistence.store.factory import create_store
 from haive.core.persistence.store.types import StoreType
 from haive.core.persistence.types import (
     CheckpointerMode,
-    CheckpointStorageMode,
-)
+    CheckpointStorageMode)
 from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.store.base import BaseStore
@@ -182,8 +180,7 @@ class PersistenceMixin:
                         connection_kwargs={
                             "prepare_threshold": None,  # Extra explicit disable
                             "application_name": app_name,  # Unique app name for identification
-                        },
-                    )
+                        })
                     logger.info(
                         f"Set up PostgreSQL persistence for {app_name} (prepared statements disabled)"
                     )
@@ -202,8 +199,7 @@ class PersistenceMixin:
                         connection_kwargs={
                             "prepare_threshold": None,  # Extra explicit disable
                             "application_name": app_name,  # Unique app name for identification
-                        },
-                    )
+                        })
                     logger.info(
                         f"Set up default PostgreSQL persistence for {app_name} (prepared statements disabled)"
                     )

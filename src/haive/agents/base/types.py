@@ -11,8 +11,7 @@ from typing import (
     Generic,
     Protocol,
     TypeVar,
-    runtime_checkable,
-)
+    runtime_checkable)
 
 from haive.core.engine.base import Engine, InvokableEngine
 from haive.core.schema.state_schema import StateSchema
@@ -105,8 +104,7 @@ class Agent(
     StateProvider[TState],
     Invokable[TInput, TOutput],
     EngineProvider[TEngine],
-    Protocol[TEngine, TInput, TOutput, TState],
-):
+    Protocol[TEngine, TInput, TOutput, TState]):
     """Complete agent protocol combining all capabilities."""
 
 

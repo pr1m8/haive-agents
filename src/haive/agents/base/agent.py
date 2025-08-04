@@ -1,7 +1,6 @@
 """Base Agent class for the Haive framework.
 
-This module provides the abstract base agent class that all agents inherit from,
-including execution, state management, and persistence functionality through mixins.
+This module provides the abstract base agent class that all agents inheritincluding execution, state management, and persistence functionality through mixins.
 """
 import logging
 import os

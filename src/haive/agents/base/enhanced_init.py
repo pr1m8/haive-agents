@@ -10,8 +10,7 @@ from haive.agents.base.enhanced_agent import (
     Agent,
     EngineT,
     TypedInvokableEngine,
-    Workflow,
-)
+    Workflow)
 from haive.agents.base.mixins import ExecutionMixin, PersistenceMixin, StateMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
 from haive.agents.base.types import AgentInput, AgentOutput, AgentState

@@ -13,8 +13,7 @@ from haive.core.persistence.handlers import (
     ensure_async_pool_open,
     ensure_pool_open,
     prepare_merged_input,
-    register_async_thread_if_needed,
-)
+    register_async_thread_if_needed)
 from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel
@@ -321,8 +320,7 @@ class ExecutionMixin:
         self: "AgentProtocol",
         thread_id: str | None = None,
         config: RunnableConfig | None = None,
-        **kwargs,
-    ) -> RunnableConfig:
+        **kwargs) -> RunnableConfig:
         """Prepare a runnable config with thread ID and other parameters.
 
         Args:
@@ -358,8 +356,7 @@ class ExecutionMixin:
                 if base_config
                 else None
             ),
-            "agent.runnable_config or agent.config.runnable_config",
-        )
+            "agent.runnable_config or agent.config.runnable_config")
 
         # Create new config with thread_id if provided
         if thread_id:
@@ -489,8 +486,7 @@ class ExecutionMixin:
         thread_id: str | None = None,
         debug: bool | None = None,
         config: RunnableConfig | None = None,
-        **kwargs,
-    ) -> Any:
+        **kwargs) -> Any:
         """Synchronously run the agent with input data."""
         # Ensure we have compiled app
         if not hasattr(self, "_app") or self._app is None:
@@ -574,8 +570,7 @@ class ExecutionMixin:
                     previous_state,
                     cast(dict, runtime_config),
                     input_schema,
-                    state_schema,
-                )
+                    state_schema)
                 logger.debug("Merged input with previous state")
                 processed_input = full_input
             except Exception as e:
@@ -629,8 +624,7 @@ class ExecutionMixin:
         thread_id: str | None = None,
         config: RunnableConfig | None = None,
         debug: bool | None = None,
-        **kwargs,
-    ) -> Any:
+        **kwargs) -> Any:
         """Asynchronously run the agent with input data.
 
         Args:
@@ -702,8 +696,7 @@ class ExecutionMixin:
                         previous_state,
                         cast(dict, runtime_config),
                         input_schema,
-                        state_schema,
-                    )
+                        state_schema)
                     logger.debug("Merged input with previous state")
                     processed_input = full_input
                 except Exception as e:
@@ -766,9 +759,7 @@ class ExecutionMixin:
                     thread_id=thread_id,
                     config=config,
                     debug=debug,
-                    **kwargs,
-                ),
-            )
+                    **kwargs))
 
     def stream(
         self: "AgentProtocol",
@@ -777,8 +768,7 @@ class ExecutionMixin:
         stream_mode: str = "values",
         config: RunnableConfig | None = None,
         debug: bool | None = None,
-        **kwargs,
-    ) -> Generator[dict[str, Any], None, None]:
+        **kwargs) -> Generator[dict[str, Any], None, None]:
         """Stream agent execution with input data.
 
         Args:
@@ -877,8 +867,7 @@ class ExecutionMixin:
                     previous_state,
                     cast(dict, runtime_config),
                     input_schema,
-                    state_schema,
-                )
+                    state_schema)
                 logger.debug("Merged input with previous state")
                 processed_input = full_input
             except Exception as e:
@@ -965,8 +954,7 @@ class ExecutionMixin:
         stream_mode: str = "values",
         config: RunnableConfig | None = None,
         debug: bool | None = None,
-        **kwargs,
-    ) -> AsyncGenerator[dict[str, Any], None]:
+        **kwargs) -> AsyncGenerator[dict[str, Any], None]:
         """Asynchronously stream agent execution with input data.
 
         This implementation wraps the synchronous generator in an async one
@@ -980,8 +968,7 @@ class ExecutionMixin:
             stream_mode=stream_mode,
             config=config,
             debug=debug,
-            **kwargs,
-        )
+            **kwargs)
 
         it = iter(sync_gen)
         while True:

@@ -16,8 +16,7 @@ from haive.core.engine.base.agent_types import (
     get_agent_capabilities,
     is_orchestration_agent,
     is_processing_agent,
-    is_reasoning_agent,
-)
+    is_reasoning_agent)
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.runnables import RunnableConfig

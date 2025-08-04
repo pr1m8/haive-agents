@@ -248,8 +248,7 @@ class HooksMixin:
             event=event,
             agent_name=getattr(self, "name", "unknown"),
             agent_type=self.__class__.__name__,
-            **context_kwargs,
-        )
+            **context_kwargs)
 
         results = []
         for hook in self._hooks[event]:
@@ -640,8 +639,7 @@ def create_multi_stage_hook(stages: list[str]) -> HookFunction:
         elif context.event in (
             HookEvent.AFTER_GRADING,
             HookEvent.AFTER_REFLECTION,
-            HookEvent.AFTER_STRUCTURED_OUTPUT,
-        ):
+            HookEvent.AFTER_STRUCTURED_OUTPUT):
             if agent_key in stage_data:
                 stage_name = context.event.value.replace("after_", "")
                 if stage_name in stages:

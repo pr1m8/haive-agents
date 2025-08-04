@@ -106,8 +106,7 @@ class AgentDebugger:
                 tree,
                 title=f"[bold]{
                     self.agent_name}[/bold]",
-                border_style="blue",
-            )
+                border_style="blue")
         )
 
     def log_recursion_limit_flow(
@@ -130,8 +129,7 @@ class AgentDebugger:
             Panel(
                 text,
                 title=f"[bold]{self.agent_name} - Recursion Limit Flow[/bold]",
-                border_style="yellow",
-            )
+                border_style="yellow")
         )
 
     def log_config_preparation(
@@ -139,8 +137,7 @@ class AgentDebugger:
         base_config: RunnableConfig | None,
         runtime_config: RunnableConfig,
         thread_id: str | None,
-        kwargs: dict[str, Any],
-    ):
+        kwargs: dict[str, Any]):
         """Log the config preparation process."""
         if not self.enabled:
             return
@@ -148,8 +145,7 @@ class AgentDebugger:
         table = Table(
             title=f"{self.agent_name} - Config Preparation",
             show_header=True,
-            header_style="bold magenta",
-        )
+            header_style="bold magenta")
         table.add_column("Source", style="cyan")
         table.add_column("recursion_limit", justify="center")
         table.add_column("thread_id", style="dim")
@@ -172,8 +168,7 @@ class AgentDebugger:
             "base_config",
             base_recursion,
             base_thread[:8] + "..." if len(base_thread) > 8 else base_thread,
-            base_keys,
-        )
+            base_keys)
 
         # Runtime config
         runtime_recursion = str(runtime_config.get("recursion_limit", "None"))
@@ -187,8 +182,7 @@ class AgentDebugger:
             "runtime_config",
             runtime_recursion,
             runtime_thread[:8] + "..." if len(runtime_thread) > 8 else runtime_thread,
-            runtime_keys,
-        )
+            runtime_keys)
 
         # Configurable recursion limit
         configurable_recursion = str(
@@ -246,8 +240,7 @@ class AgentDebugger:
                 content,
                 title=f"[bold green]🚀 Starting {
                     self.agent_name} Execution[/bold green]",
-                border_style="green",
-            )
+                border_style="green")
         )
 
 

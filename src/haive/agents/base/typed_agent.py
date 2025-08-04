@@ -11,8 +11,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
-    TypeVar,
-)
+    TypeVar)
 
 from haive.core.schema.base_state_schemas import (
     AgentState,
@@ -20,8 +19,7 @@ from haive.core.schema.base_state_schemas import (
     EngineState,
     MetaAgentState,
     ToolExecutorState,
-    WorkflowState,
-)
+    WorkflowState)
 
 if TYPE_CHECKING:
     from haive.core.engine.base import Engine
@@ -169,8 +167,7 @@ class BaseAgent(BaseExecutor[AgentState]):
         name: str,
         primary_engine: Engine | None = None,
         state_schema: type[AgentState] = AgentState,
-        **kwargs,
-    ):
+        **kwargs):
         super().__init__(name, state_schema, **kwargs)
         self.primary_engine = primary_engine
 
@@ -246,8 +243,7 @@ class WorkflowAgent(BaseAgent):
         name: str,
         primary_engine: Engine | None = None,
         initial_graph: dict[str, Any] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         super().__init__(name, primary_engine, WorkflowState, **kwargs)
         self.initial_graph = initial_graph
 
@@ -292,8 +288,7 @@ class MetaAgent(WorkflowAgent):
         name: str,
         primary_engine: Engine | None = None,
         agent_factory: dict[str, type[BaseAgent]] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         super().__init__(name, primary_engine, **kwargs)
         self.agent_factory = agent_factory or {}
         self.state_schema = MetaAgentState
@@ -417,8 +412,7 @@ class AdaptiveAgent(WorkflowAgent):
         name: str,
         performance_metrics: list[str],
         adaptation_threshold: float = 0.7,
-        **kwargs,
-    ):
+        **kwargs):
         super().__init__(name, **kwargs)
         self.performance_metrics = performance_metrics
         self.adaptation_threshold = adaptation_threshold

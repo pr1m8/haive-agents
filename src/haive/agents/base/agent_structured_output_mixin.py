@@ -34,8 +34,7 @@ class StructuredOutputMixin:
         name: str | None = None,
         custom_context: str | None = None,
         custom_prompt: ChatPromptTemplate | None = None,
-        **agent_kwargs,
-    ) -> tuple[TAgent, Agent]:
+        **agent_kwargs) -> tuple[TAgent, Agent]:
         """Create an agent paired with a StructuredOutputAgent for structured output.
 
         This method creates a two-agent workflow where:
@@ -100,8 +99,7 @@ class StructuredOutputMixin:
             custom_context=custom_context,
             custom_prompt=custom_prompt,
             # Use low temperature for consistent extraction
-            engine=agent_kwargs.get("engine"),
-        )
+            engine=agent_kwargs.get("engine"))
 
         return original_agent, structured_agent
 
@@ -111,8 +109,7 @@ class StructuredOutputMixin:
         output_model: type[T],
         name: str | None = None,
         description: str | None = None,
-        **agent_kwargs,
-    ) -> Any:
+        **agent_kwargs) -> Any:
         """Convert agent to a tool that returns structured output.
 
         This creates a tool that:
@@ -164,8 +161,7 @@ class StructuredOutputMixin:
             structurer = StructuredOutputAgent(
                 name=f"{agent.name}_structurer",
                 output_model=output_model,
-                engine=agent_kwargs.get("engine"),
-            )
+                engine=agent_kwargs.get("engine"))
 
             # Handle different result types
             if isinstance(result, str):
@@ -183,8 +179,7 @@ class StructuredOutputMixin:
             name=tool_name,
             description=tool_description,
             func=run_with_structured_output,
-            args_schema=agent_kwargs.get("input_schema"),
-        )
+            args_schema=agent_kwargs.get("input_schema"))
 
     def ensure_structured_output(
         self, output: Any, output_model: type[T], handle_errors: bool = True
@@ -259,8 +254,7 @@ class StructuredOutputMixin:
                 structurer = StructuredOutputAgent(
                     name="temp_structurer",
                     output_model=output_model,
-                    engine=getattr(self, "engine", None),
-                )
+                    engine=getattr(self, "engine", None))
                 return structurer.run(content)
 
             if handle_errors:
