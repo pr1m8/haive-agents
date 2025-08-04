@@ -19,8 +19,7 @@ def pretty_print(obj: Any) -> None:
 from haive.agents.reasoning_and_critique.self_discover.aug_llms import (
     adapt_chain,
     select_chain,
-    structured_chain,
-)
+    structured_chain)
 from haive.agents.sequential.config import SequentialAgentConfig
 
 # Import the pre-configured AugLLMConfigs directly
@@ -30,8 +29,7 @@ agent = SequentialAgentConfig.from_components(
     components=[select_chain, adapt_chain, structured_chain],
     name="reasoning_workflow_agent",
     # Optionally provide custom step names
-    step_names=["select_modules", "adapt_modules", "create_plan"],
-).build_agent()
+    step_names=["select_modules", "adapt_modules", "create_plan"]).build_agent()
 
 # Print the workflow
 
