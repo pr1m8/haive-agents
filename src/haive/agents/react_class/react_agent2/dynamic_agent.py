@@ -6,9 +6,9 @@ import logging
 import uuid
 from typing import Any
 
-from haive.agents.react_agent2.agent2 import ReactAgent
-from haive.agents.react_agent2.config2 import ReactAgentConfig
-from haive.agents.react_agent2.state2 import ReactAgentState
+from haive.agents.react_class.react_agent2.agent2 import ReactAgent
+from haive.agents.react_class.react_agent2.config2 import ReactAgentConfig
+from haive.agents.react_class.react_agent2.state2 import ReactAgentState
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph.branches import Branch
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
@@ -35,8 +35,7 @@ class DynamicReactAgentState(ReactAgentState):
 
     selected_tools: list[str] = Field(
         default_factory=list,
-        description="IDs of tools selected for the current interaction",
-    )
+        description="IDs of tools selected for the current interaction")
     tool_registry: dict[str, Any] = Field(
         default_factory=dict, description="Registry of all available tools"
     )
@@ -61,8 +60,7 @@ class DynamicReactAgentConfig(ReactAgentConfig):
     # Tool selection configuration
     tool_embedding_model: str = Field(
         default="text-embedding-ada-002",
-        description="Embedding model for tool descriptions.",
-    )
+        description="Embedding model for tool descriptions.")
 
     max_tools_per_turn: int = Field(
         default=5, description="Maximum number of tools to select per interaction."
@@ -76,8 +74,7 @@ class DynamicReactAgentConfig(ReactAgentConfig):
     # Repeat tool selection behavior
     repeat_selection: bool = Field(
         default=True,
-        description="Whether to repeat tool selection after getting tool results.",
-    )
+        description="Whether to repeat tool selection after getting tool results.")
 
     # Vector store configuration
     vector_store_config: VectorStoreConfig | None = Field(
@@ -88,8 +85,7 @@ class DynamicReactAgentConfig(ReactAgentConfig):
     # validation issues)
     tool_documents: list[Document] | None = Field(
         default=None,
-        description="Documents for tool descriptions to be stored in vector store.",
-    )
+        description="Documents for tool descriptions to be stored in vector store.")
 
     # Model config to allow arbitrary types
     model_config = {"arbitrary_types_allowed": True}
@@ -108,8 +104,7 @@ class DynamicReactAgentConfig(ReactAgentConfig):
         use_memory: bool = True,
         visualize: bool = True,
         repeat_selection: bool = True,
-        **kwargs,
-    ) -> "DynamicReactAgentConfig":
+        **kwargs) -> "DynamicReactAgentConfig":
         """Create a DynamicReactAgentConfig from a list of tools.
 
         Args:
@@ -140,8 +135,7 @@ class DynamicReactAgentConfig(ReactAgentConfig):
             response_format=response_format,
             use_memory=use_memory,
             visualize=visualize,
-            **kwargs,
-        )
+            **kwargs)
 
         # Convert to our config type by using the dict
         config_dict = base_config.model_dump()
@@ -204,8 +198,7 @@ class DynamicReactAgent(ReactAgent):
         graph_builder.add_node(
             name=self.config.tool_selection_node_name,
             config=self._create_tool_selection_function,
-            command_goto=self.config.agent_node_name,
-        )
+            command_goto=self.config.agent_node_name)
 
         # 2. Add agent node (LLM reasoning)
         graph_builder.add_node(
@@ -271,8 +264,7 @@ class DynamicReactAgent(ReactAgent):
                 ),
                 END: END,
             },
-            default=END,
-        )
+            default=END)
 
         # 6. Add conditional edge from agent to tools or end
         graph_builder.add_conditional_edges(self.config.agent_node_name, branch)
@@ -342,8 +334,7 @@ class DynamicReactAgent(ReactAgent):
                         model=embedding_model.model,
                         api_key=embedding_model.api_key,
                         azure_endpoint=embedding_model.api_base,
-                        api_version=embedding_model.api_version,
-                    )
+                        api_version=embedding_model.api_version)
                     logger.info(
                         f"Created Azure OpenAI embeddings with model {
                             embedding_model.model}"
@@ -354,8 +345,7 @@ class DynamicReactAgent(ReactAgent):
                 self._vector_store = Chroma.from_documents(
                     documents=tool_documents,
                     embedding=self.embeddings,
-                    collection_name="dynamic_react_agent_tools",
-                )
+                    collection_name="dynamic_react_agent_tools")
                 logger.info(
                     "Created vector store for tool selection using provided config"
                 )
@@ -387,8 +377,7 @@ class DynamicReactAgent(ReactAgent):
                 texts=[document.page_content],
                 metadatas=[
                     {"tool_id": tool_id, "tool_name": document.metadata["tool_name"]}
-                ],
-            )
+                ])
 
         logger.info("Initialized in-memory vector store for tool selection")
 
@@ -532,8 +521,7 @@ class DynamicReactAgent(ReactAgent):
                         tool_message = ToolMessage(
                             content=str(tool_result),
                             name=tool_name,
-                            tool_call_id=tool_call_id,
-                        )
+                            tool_call_id=tool_call_id)
 
                         # Add to results
                         results.append(tool_message)
@@ -602,8 +590,7 @@ def create_dynamic_react_agent(
     repeat_selection: bool = True,
     vector_store_config: VectorStoreConfig | None = None,
     tool_documents: list[Document] | None = None,
-    **kwargs,
-) -> DynamicReactAgent:
+    **kwargs) -> DynamicReactAgent:
     """Create a dynamic react agent with minimal configuration.
 
     Args:
@@ -638,8 +625,7 @@ def create_dynamic_react_agent(
         use_memory=use_memory,
         visualize=visualize,
         repeat_selection=repeat_selection,
-        **kwargs,
-    )
+        **kwargs)
 
     # Add vector store config if provided
     if vector_store_config:

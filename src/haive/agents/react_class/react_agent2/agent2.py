@@ -12,8 +12,7 @@ from langchain_core.messages import (
     AIMessage,
     HumanMessage,
     SystemMessage,
-    ToolMessage,
-)
+    ToolMessage)
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import BaseTool, StructuredTool, Tool
 from langgraph.graph import END
@@ -209,8 +208,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         graph_builder = DynamicGraph(
             name=self.config.name,
             components=[self.config.engine],
-            state_schema=self.state_schema,
-        )
+            state_schema=self.state_schema)
 
         # 1. Add agent node (LLM reasoning)
         graph_builder.add_node(
@@ -245,15 +243,13 @@ class ReactAgent(Agent[ReactAgentConfig]):
             graph_builder.add_conditional_edges(
                 self.config.agent_node_name,
                 should_use_tools,
-                {True: self.config.tool_node_name, False: "structured_output_node"},
-            )
+                {True: self.config.tool_node_name, False: "structured_output_node"})
         else:
             # Without structured output: Agent → (Tools or END)
             graph_builder.add_conditional_edges(
                 self.config.agent_node_name,
                 should_use_tools,
-                {True: self.config.tool_node_name, False: END},
-            )
+                {True: self.config.tool_node_name, False: END})
 
         # 6. Always route tools back to agent for the next reasoning step
         graph_builder.add_edge(self.config.tool_node_name, self.config.agent_node_name)
@@ -497,8 +493,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                 processed_input,
                 config=config,
                 stream_mode="values",
-                debug=self.config.debug,
-            )
+                debug=self.config.debug)
 
             # Save state history if requested
             if self.config.save_history:
@@ -538,8 +533,7 @@ def create_react_agent(
     debug: bool = False,
     structured_output_model: type[BaseModel] | dict[str, Any] | None = None,
     additional_input_vars: list[str] | None = None,
-    **kwargs,
-) -> ReactAgent:
+    **kwargs) -> ReactAgent:
     """Create a React agent with the specified configuration.
 
     Args:
@@ -574,8 +568,7 @@ def create_react_agent(
         debug=debug,
         structured_output_model=structured_output_model,
         additional_input_vars=additional_input_vars,
-        **kwargs,
-    )
+        **kwargs)
 
     # Build and return agent
     return config.build_agent()

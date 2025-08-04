@@ -59,8 +59,7 @@ def example_basic_react_agent() -> Any:
         tools=[search, calculator],
         name="basic_react_agent",
         model="gpt-4o",
-        temperature=0.7,
-    )
+        temperature=0.7)
 
     # Run the agent with a question
     result = agent.run("Who was Albert Einstein and what is 2023 minus his birth year?")
@@ -111,8 +110,7 @@ def example_structured_output_agent() -> Any:
         name="movie_review_agent",
         model="gpt-4o",
         temperature=0.7,
-        response_format=MovieReview,
-    )
+        response_format=MovieReview)
 
     # Run the agent with a question
     result = agent.run("Can you provide a review of the movie Inception?")
@@ -149,8 +147,7 @@ def example_memory_agent() -> Any:
         name="memory_agent",
         model="gpt-4o",
         temperature=0.7,
-        use_memory=True,
-    )
+        use_memory=True)
 
     # Create a thread ID for this conversation
     thread_id = str(uuid.uuid4())
@@ -220,8 +217,7 @@ def example_business_intelligence_agent() -> Any:
         name="BusinessIntelligenceAgent",
         model="gpt-4o",
         temperature=0.7,
-        system_prompt=system_prompt,
-    )
+        system_prompt=system_prompt)
 
     # Run tests
     result1 = agent.run("Can you analyze our sales data in detail?")
@@ -265,8 +261,7 @@ def interactive_chat() -> Any:
         model="gpt-4o",
         temperature=0.7,
         use_memory=True,
-        system_prompt="You are a helpful assistant who can search for information and perform calculations.",
-    )
+        system_prompt="You are a helpful assistant who can search for information and perform calculations.")
 
     # Start interactive chat
     agent.chat()

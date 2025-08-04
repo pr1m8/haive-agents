@@ -260,8 +260,7 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
                     fixed_msg = ToolMessage(
                         content=msg.content,
                         name=tool_name,
-                        tool_call_id=tool_call_ids[tool_name],
-                    )
+                        tool_call_id=tool_call_ids[tool_name])
                     fixed_messages.append(fixed_msg)
                 else:
                     # Fix dict message

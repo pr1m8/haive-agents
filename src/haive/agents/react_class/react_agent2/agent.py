@@ -13,8 +13,7 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.graph.tool_config import ToolConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from haive.core.utils.visualize_graph_utils import (
-    render_and_display_graph,
-)
+    render_and_display_graph)
 from langchain_core.messages import AIMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig
@@ -115,20 +114,17 @@ class ReactAgentConfig(SimpleAgentConfig):
     # Graph version
     version: Literal["v1", "v2"] = Field(
         default="v1",
-        description="Graph version: v1 (single tool node) or v2 (distributed tool execution)",
-    )
+        description="Graph version: v1 (single tool node) or v2 (distributed tool execution)")
 
     # Visualization
     visualize: bool = Field(
         default=True,
-        description="Whether to generate a visualization of the agent graph",
-    )
+        description="Whether to generate a visualization of the agent graph")
 
     # Custom tool routing
     tool_routing: dict[str, str] | None = Field(
         default=None,
-        description="Custom tool routing: map from tool name to destination node",
-    )
+        description="Custom tool routing: map from tool name to destination node")
 
     # Override state_schema with ReAct-specific schema
     state_schema: type[BaseModel] = Field(
@@ -144,8 +140,7 @@ class ReactAgentConfig(SimpleAgentConfig):
         system_prompt: str | None = None,
         name: str | None = None,
         response_format: type[BaseModel] | dict[str, Any] | None = None,
-        **kwargs,
-    ) -> "ReactAgentConfig":
+        **kwargs) -> "ReactAgentConfig":
         """Create a ReactAgentConfig from tools and an LLM.
 
         Args:
@@ -193,8 +188,7 @@ Always give your reasoning before using a tool, explaining why you're choosing i
             llm_config=llm_config,
             prompt_template=prompt_template,
             tools=tools,
-            system_prompt=system_prompt,
-        )
+            system_prompt=system_prompt)
 
         # Determine which state schema to use
         state_schema = (
@@ -213,8 +207,7 @@ Always give your reasoning before using a tool, explaining why you're choosing i
             system_prompt=system_prompt,
             state_schema=state_schema,
             response_format=response_format,
-            **kwargs,
-        )
+            **kwargs)
 
 
 # =============================================
@@ -239,8 +232,7 @@ class ReactAgent(SimpleAgent):
         # Create BaseGraph with proper component registration
         gb = BaseGraph(
             name=f"{self.config.name}_react_agent",
-            state_schema=self.state_schema,
-        )
+            state_schema=self.state_schema)
 
         # Add the main agent/LLM node
         gb.add_node(self.config.node_name, self.config.engine)
@@ -256,8 +248,7 @@ class ReactAgent(SimpleAgent):
         if self.config.response_format:
             gb.add_node(
                 "generate_structured_response",
-                self._create_structured_output_node(),
-            )
+                self._create_structured_output_node())
 
         # Add any custom tool-specific nodes
         custom_nodes = {}
@@ -307,8 +298,7 @@ class ReactAgent(SimpleAgent):
         gb.add_conditional_edges(
             source_node=self.config.router_node_name,
             condition=self._route_based_on_messages,
-            destinations=route_map,
-        )
+            destinations=route_map)
 
         # Set entry point
         gb.set_entry_point(self.config.node_name)
@@ -480,8 +470,7 @@ class ReactAgent(SimpleAgent):
         result = self.app.invoke(
             inputs,
             config={"configurable": {"thread_id": thread_id}},
-            debug=self.config.debug,
-        )
+            debug=self.config.debug)
 
         # Log results
         if "messages" in result:
@@ -535,8 +524,7 @@ def create_react_agent(
     version: Literal["v1", "v2"] = "v1",
     visualize: bool = True,
     tool_routing: dict[str, str] | None = None,
-    **kwargs,
-) -> ReactAgent:
+    **kwargs) -> ReactAgent:
     """Create a React agent that follows the reasoning-action-observation pattern.
 
     Args:
@@ -573,8 +561,7 @@ def create_react_agent(
         version=version,
         visualize=visualize,
         tool_routing=tool_routing,
-        **kwargs,
-    )
+        **kwargs)
 
     # Build the agent
     agent = config.build_agent()

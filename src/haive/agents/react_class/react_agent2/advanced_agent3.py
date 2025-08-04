@@ -2,7 +2,7 @@ import logging
 from collections.abc import Callable
 from typing import Any
 
-from haive.agents.react_agent2.config2 import ReactAgentConfig
+from haive.agents.react_class.react_agent2.config2 import ReactAgentConfig
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.branches import Branch
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
@@ -24,8 +24,7 @@ class AdvancedReactAgentConfig(ReactAgentConfig):
     # Tool-specific routing configuration
     tool_routing: dict[str, str] = Field(
         default_factory=dict,
-        description="Mapping from tool names to node names for custom routing",
-    )
+        description="Mapping from tool names to node names for custom routing")
 
     # Node names
     agent_node_name: str = Field(
@@ -40,8 +39,7 @@ class AdvancedReactAgentConfig(ReactAgentConfig):
     # Custom processing functions for different tool types
     tool_processors: dict[str, Callable] = Field(
         default_factory=dict,
-        description="Custom processing functions for different tool nodes",
-    )
+        description="Custom processing functions for different tool nodes")
 
     # Whether to capture and analyze tool calls for improvement
     analyze_tool_usage: bool = Field(
@@ -211,8 +209,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
                 comparison=">=",
                 # None allows falling through
                 destinations={True: END, False: None},
-                default=None,
-            )
+                default=None)
 
             # Create a Branch for tool routing based on the tool name in the
             # last message
@@ -353,8 +350,7 @@ def create_advanced_react_agent(
     tool_routing: dict[str, str] | None = None,
     name: str | None = None,
     structured_output_model: type[BaseModel] | None = None,
-    **kwargs,
-) -> AdvancedReactAgent:
+    **kwargs) -> AdvancedReactAgent:
     """Create an advanced React agent with tool-specific routing.
 
     Args:
@@ -378,8 +374,7 @@ def create_advanced_react_agent(
         tools=tools or [],
         name=name,
         structured_output_model=structured_output_model,
-        **kwargs,
-    )
+        **kwargs)
 
     # Add tool routing if provided
     if tool_routing:

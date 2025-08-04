@@ -114,5 +114,4 @@ class ReactAgentState(BaseModel):
             f"ReactAgentState[{
                 output_model_type.__name__}]",
             structured_output=(Optional[output_model_type], Field(default=None)),
-            __base__=cls,
-        )
+            __base__=cls)

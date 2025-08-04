@@ -2,7 +2,7 @@ import re
 from collections.abc import Callable
 from typing import Any
 
-from haive.agents.react_agent2.models import Action, ActionType, Thought
+from haive.agents.react_class.react_agent2.models import Action, ActionType, Thought
 from haive.core.engine.aug_llm import AugLLMConfig, compose_runnable
 from langchain_core.messages import AIMessage
 from langgraph.graph import END
@@ -124,8 +124,7 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                 ],
                 "status": "done",
             },
-            goto="observe",
-        )
+            goto="observe")
 
     # Prepare input for thinking
     messages = state_dict.get("messages", [])
@@ -183,8 +182,7 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                 "final_answer": "Error: Thinking LLM not configured properly.",
                 "status": "done",
             },
-            goto="observe",
-        )
+            goto="observe")
 
     # Call thinking LLM
     try:
@@ -221,13 +219,11 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                             {
                                 "action_type": "final_answer",
                                 "action_input": "I couldn't determine what to do.",
-                            },
-                        ),
+                            }),
                         "iteration_count": iteration_count,
                         "status": "acting",
                     },
-                    goto="act",
-                )
+                    goto="act")
             else:
                 content = str(thought_result)
 
@@ -260,8 +256,7 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
             # Create a Thought object
             thought = Thought(
                 thought=content,
-                action=Action(action_type=action_type, action_input=action_input),
-            )
+                action=Action(action_type=action_type, action_input=action_input))
 
         # Update state with new thought
         thoughts = state_dict.get("thoughts", [])
@@ -286,8 +281,7 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                 "final_answer": f"Error in thinking process: {e!s}",
                 "status": "done",
             },
-            goto="observe",
-        )
+            goto="observe")
 
 
 def act_node(state: dict[str, Any]) -> Command:
@@ -311,8 +305,7 @@ def act_node(state: dict[str, Any]) -> Command:
                 ],
                 "status": "done",
             },
-            goto="observe",
-        )
+            goto="observe")
 
     # Get tools
     tools = state_dict.get("tools", {})
@@ -385,8 +378,7 @@ def act_node(state: dict[str, Any]) -> Command:
             "retry_attempts": retry_attempts,
             "status": "observing",
         },
-        goto="observe",
-    )
+        goto="observe")
 
 
 def observe_node(state: dict[str, Any]) -> Command:
@@ -484,7 +476,6 @@ def create_tool_node(tool_name: str) -> Callable:
                 "intermediate_steps": intermediate_steps,
                 "status": "observing",
             },
-            goto="observe",
-        )
+            goto="observe")
 
     return tool_node

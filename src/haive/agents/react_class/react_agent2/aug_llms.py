@@ -44,5 +44,4 @@ think_prompt = ChatPromptTemplate.from_messages(
 think_llm = AugLLMConfig(
     name="think_llm",
     prompt_template=think_prompt,
-    structured_output_model=Thought,
-)
+    structured_output_model=Thought)

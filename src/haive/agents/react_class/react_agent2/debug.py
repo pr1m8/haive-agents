@@ -141,8 +141,7 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
                     fixed_msg = ToolMessage(
                         content=content,
                         name=tool_name,
-                        tool_call_id=tool_calls_map[tool_name],
-                    )
+                        tool_call_id=tool_calls_map[tool_name])
                     fixed_messages.append(fixed_msg)
                 elif isinstance(msg, dict):
                     fixed_msg = msg.copy()

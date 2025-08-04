@@ -16,8 +16,7 @@ from haive.core.graph.node.config import NodeConfig
 from haive.core.graph.tool_config import ToolConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from haive.core.utils.visualize_graph_utils import (
-    render_and_display_graph,
-)
+    render_and_display_graph)
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import BaseTool, StructuredTool
@@ -117,20 +116,17 @@ class ReactAgentConfig(SimpleAgentConfig):
     # Graph version
     version: Literal["v1", "v2"] = Field(
         default="v1",
-        description="Graph version: v1 (single tool node) or v2 (distributed tool execution)",
-    )
+        description="Graph version: v1 (single tool node) or v2 (distributed tool execution)")
 
     # Visualization
     visualize: bool = Field(
         default=True,
-        description="Whether to generate a visualization of the agent graph",
-    )
+        description="Whether to generate a visualization of the agent graph")
 
     # Custom tool routing
     tool_routing: dict[str, str] | None = Field(
         default=None,
-        description="Custom tool routing: map from tool name to destination node",
-    )
+        description="Custom tool routing: map from tool name to destination node")
 
     # Override state_schema with ReAct-specific schema
     state_schema: type[BaseModel] = Field(
@@ -146,8 +142,7 @@ class ReactAgentConfig(SimpleAgentConfig):
         system_prompt: str | None = None,
         name: str | None = None,
         response_format: type[BaseModel] | dict[str, Any] | None = None,
-        **kwargs,
-    ) -> "ReactAgentConfig":
+        **kwargs) -> "ReactAgentConfig":
         """Create a ReactAgentConfig from tools and an LLM.
 
         Args:
@@ -196,8 +191,7 @@ Always give your reasoning before using a tool, explaining why you're choosing i
             llm_config=llm_config,
             prompt_template=prompt_template,
             tools=tools,
-            system_prompt=system_prompt,
-        )
+            system_prompt=system_prompt)
 
         # Determine which state schema to use
         state_schema = (
@@ -216,8 +210,7 @@ Always give your reasoning before using a tool, explaining why you're choosing i
             system_prompt=system_prompt,
             state_schema=state_schema,
             response_format=response_format,
-            **kwargs,
-        )
+            **kwargs)
 
 
 # =============================================
@@ -243,21 +236,18 @@ class ReactAgent(SimpleAgent):
         gb = DynamicGraph(
             name=f"{self.config.name}_graph",
             components=[self.config.engine, *self.config.tools],
-            state_schema=self.config.state_schema,
-        )
+            state_schema=self.config.state_schema)
 
         # Add the main agent/LLM node
         agent_node_config = NodeConfig(
             name=self.config.node_name,
             engine=self.config.engine,
-            config_overrides={"temperature": getattr(self.config, "temperature", 0.7)},
-        )
+            config_overrides={"temperature": getattr(self.config, "temperature", 0.7)})
 
         gb.add_node(
             name=self.config.node_name,
             config=agent_node_config,
-            input_mapping={"messages": "messages"},
-        )
+            input_mapping={"messages": "messages"})
 
         # Add the router node
         router_node_config = NodeConfig(
@@ -284,13 +274,11 @@ class ReactAgent(SimpleAgent):
             structured_output_node_config = NodeConfig(
                 name="generate_structured_response",
                 engine=self._create_structured_output_node(),
-                command_goto=END,
-            )
+                command_goto=END)
 
             gb.add_node(
                 name="generate_structured_response",
-                config=structured_output_node_config,
-            )
+                config=structured_output_node_config)
 
         # Add edge from agent to router
         gb.add_edge(self.config.node_name, self.config.router_node_name)
@@ -324,8 +312,7 @@ class ReactAgent(SimpleAgent):
         # Set default runnable config
         default_config = RunnableConfigManager.create(
             temperature=getattr(self.config, "temperature", 0.7),
-            model=getattr(self.config, "model", "gpt-4o"),
-        )
+            model=getattr(self.config, "model", "gpt-4o"))
         gb.set_default_runnable_config(default_config)
 
         # Build the graph
@@ -565,16 +552,14 @@ class ReactAgent(SimpleAgent):
         config = RunnableConfigManager.create(
             thread_id=thread_id,
             temperature=getattr(self.config, "temperature", 0.7),
-            model=getattr(self.config, "model", "gpt-4o"),
-        )
+            model=getattr(self.config, "model", "gpt-4o"))
 
         # Apply agent-specific config if needed
         if hasattr(self.config.engine, "id"):
             config = RunnableConfigManager.add_engine_config(
                 config,
                 self.config.engine.id,
-                temperature=getattr(self.config, "temperature", 0.7),
-            )
+                temperature=getattr(self.config, "temperature", 0.7))
 
         result = self.app.invoke(inputs, config=config, debug=self.config.debug)
 
@@ -655,8 +640,7 @@ def create_react_agent(
     tool_routing: dict[str, str] | None = None,
     save_history: bool = True,
     output_dir: str | None = None,
-    **kwargs,
-) -> ReactAgent:
+    **kwargs) -> ReactAgent:
     """Create a React agent that follows the reasoning-action-observation pattern.
 
     Args:
@@ -699,8 +683,7 @@ def create_react_agent(
         tool_routing=tool_routing,
         save_history=save_history,
         output_dir=output_dir,
-        **kwargs,
-    )
+        **kwargs)
 
     # Build the agent
     agent = config.build_agent()
