@@ -48,7 +48,7 @@ class CustomConversationState(ConversationState):
         return sum(self.quality_scores) / len(self.quality_scores)
 
 
-class CustomConversationAgent(BaseConversationAgent[CustomConversationState]):
+class CustomConversationAgent(BaseConversationAgent):
     """Custom conversation agent demonstrating extension patterns.
 
     This example shows how to:
