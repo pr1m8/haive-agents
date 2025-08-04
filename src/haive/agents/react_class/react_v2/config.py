@@ -10,7 +10,7 @@ from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import BaseTool, StructuredTool, Tool
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from haive.agents.react_class.react_v2.state import ReactAgentState
 from haive.agents.simple.config import SimpleAgentConfig

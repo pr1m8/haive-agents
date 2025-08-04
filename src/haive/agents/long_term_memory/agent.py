@@ -2,6 +2,7 @@ from haive.agents.long_term_memory.aug_llm import lt_mem_agent_aug_llm
 from haive.agents.long_term_memory.state import LongTermMemoryState
 from haive.agents.long_term_memory.tools import (
     search_recall_memories)
+from haive.agents.react.agent import ReactAgent
 from haive.agents.react.config import ReactAgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.vectorstore.base import VectorStoreConfig
