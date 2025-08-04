@@ -22,13 +22,11 @@ from haive.agents.research.open_perplexity.engines import create_research_engine
 from haive.agents.research.open_perplexity.prompts import MAIN_SYSTEM_PROMPT
 from haive.agents.research.open_perplexity.react_agent_config import (
     create_research_rag_engine,
-    create_research_react_agent_config,
-)
+    create_research_react_agent_config)
 from haive.agents.research.open_perplexity.state import (
     ResearchInputState,
     ResearchOutputState,
-    ResearchState,
-)
+    ResearchState)
 from haive.agents.research.open_perplexity.structured_tools import RESEARCH_TOOLS
 
 # Import agent-specific modules
@@ -73,14 +71,12 @@ class ResearchAgentConfig(AgentConfig):
     # Engines dictionary
     engines: dict[str, AugLLMConfig] = Field(
         default_factory=dict,
-        description="Dictionary of AugLLM engines for different tasks",
-    )
+        description="Dictionary of AugLLM engines for different tasks")
 
     # Tool configurations
     tools: list[BaseTool] = Field(
         default_factory=lambda: RESEARCH_TOOLS,
-        description="Tools for research and analysis",
-    )
+        description="Tools for research and analysis")
 
     # Vector store configuration
     vectorstore_config: VectorStoreConfig | None = Field(
@@ -99,8 +95,7 @@ class ResearchAgentConfig(AgentConfig):
     # Report generation settings
     report_format: str = Field(
         default="markdown",
-        description="Format for the final report (markdown, html, etc.)",
-    )
+        description="Format for the final report (markdown, html, etc.)")
 
     # Research parameters
     research_depth: int = Field(
@@ -158,8 +153,7 @@ class ResearchAgentConfig(AgentConfig):
                 "requires_research": False,
             },
         ],
-        description="Default report sections",
-    )
+        description="Default report sections")
 
     @classmethod
     def from_scratch(cls, name: str | None = None, llm_model: str = "gpt-4o", **kwargs):
@@ -198,8 +192,7 @@ class ResearchAgentConfig(AgentConfig):
                     SystemMessage(content=MAIN_SYSTEM_PROMPT),
                     MessagesPlaceholder(variable_name="messages"),
                 ]
-            ),
-        )
+            ))
 
         # Get all specialized engines
         engines = create_research_engines(llm_model)
@@ -235,5 +228,4 @@ class ResearchAgentConfig(AgentConfig):
             rag_agent_name=rag_agent_name,
             # This will be set later after documents are loaded
             tools=RESEARCH_TOOLS,
-            **kwargs,
-        )
+            **kwargs)

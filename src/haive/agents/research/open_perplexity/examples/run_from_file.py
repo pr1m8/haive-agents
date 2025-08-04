@@ -30,8 +30,7 @@ def setup_logging(log_file="research_run.log") -> Any:
         handlers=[
             logging.StreamHandler(sys.stdout),
             logging.FileHandler(log_file, mode="w"),  # Overwrite the log file
-        ],
-    )
+        ])
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     return logger
@@ -100,9 +99,7 @@ def run_research(
             vectorstore_config=VectorStoreConfig(
                 name=f"{question_name}_vectorstore",
                 vector_store_type="FAISS",
-                persist_directory=vectorstore_path,
-            ),
-        )
+                persist_directory=vectorstore_path))
 
         # Create and run agent
         logger.info("Creating research agent...")
@@ -151,8 +148,7 @@ def parse_arguments() -> Any:
         "-o",
         "--output-dir",
         help="Directory for outputs (default: ./outputs)",
-        default=None,
-    )
+        default=None)
 
     parser.add_argument(
         "-d",
@@ -160,16 +156,14 @@ def parse_arguments() -> Any:
         type=int,
         choices=[1, 2, 3],
         default=2,
-        help="Research depth: 1=superficial, 2=medium, 3=deep (default: 2)",
-    )
+        help="Research depth: 1=superficial, 2=medium, 3=deep (default: 2)")
 
     parser.add_argument(
         "-s",
         "--max-sources",
         type=int,
         default=5,
-        help="Maximum number of sources per query (default: 5)",
-    )
+        help="Maximum number of sources per query (default: 5)")
 
     return parser.parse_args()
 
@@ -181,7 +175,6 @@ if __name__ == "__main__":
         question_file=args.question_file,
         output_dir=args.output_dir,
         research_depth=args.depth,
-        max_sources=args.max_sources,
-    )
+        max_sources=args.max_sources)
 
     sys.exit(0 if success else 1)

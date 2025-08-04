@@ -169,8 +169,7 @@ class ResearchFinding(BaseModel):
         default=0.5,
         ge=0.0,
         le=1.0,
-        description="Confidence in this finding (0.0 - 1.0)",
-    )
+        description="Confidence in this finding (0.0 - 1.0)")
     sources: list[ResearchSource] = Field(
         default_factory=list, description="Sources supporting this finding"
     )

@@ -83,8 +83,7 @@ class ResearchState(BaseModel):
 
     search_parameters: dict[str, Any] = Field(
         default_factory=dict,
-        description="Parameters for search and research customization",
-    )
+        description="Parameters for search and research customization")
 
     # Report sections and organization
     report_sections: list[dict[str, Any]] = Field(
@@ -169,8 +168,7 @@ class ResearchInputState(BaseModel):
     )
     research_parameters: dict[str, Any] | None = Field(
         default=None,
-        description="Optional parameters to customize the research process",
-    )
+        description="Optional parameters to customize the research process")
 
 
 class ResearchOutputState(BaseModel):
@@ -195,8 +193,7 @@ class ResearchOutputState(BaseModel):
     )
     messages: Annotated[Sequence[BaseMessage], add_messages] = Field(
         default_factory=list,
-        description="Conversation history including the assistant's final response",
-    )
+        description="Conversation history including the assistant's final response")
 
 
 class WebSearchQuery(BaseModel):
@@ -253,5 +250,4 @@ class ReportSection(BaseModel):
     )
     status: str = Field(
         default="pending",
-        description="Section status (pending, in_progress, completed)",
-    )
+        description="Section status (pending, in_progress, completed)")

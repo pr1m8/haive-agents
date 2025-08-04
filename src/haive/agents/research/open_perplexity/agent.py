@@ -19,8 +19,7 @@ from langgraph.types import Command
 from haive.agents.research.open_perplexity.config import ResearchAgentConfig
 from haive.agents.research.open_perplexity.state import (
     ReportSection,
-    ResearchState,
-)
+    ResearchState)
 
 # Import document loader utilities
 
@@ -227,8 +226,7 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
                     name=section_data.get("name", "Untitled Section"),
                     description=section_data.get("description", ""),
                     requires_research=section_data.get("requires_research", True),
-                    status="pending",
-                )
+                    status="pending")
                 state.report_sections.append(section)
 
         # Set first research section as active

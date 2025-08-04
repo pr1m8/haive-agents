@@ -10,8 +10,7 @@ from langchain_community.document_loaders import (
     GitHubIssuesLoader,
     HNLoader,
     RecursiveUrlLoader,
-    WebBaseLoader,
-)
+    WebBaseLoader)
 from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
 
@@ -105,8 +104,7 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
             extractor=extractor,
             prevent_outside=prevent_outside,
             check_response_status=True,
-            continue_on_failure=True,
-        )
+            continue_on_failure=True)
         self.root_url = url
 
     @staticmethod
@@ -327,8 +325,7 @@ def describe_document_loader(loader_type: str) -> dict[str, Any]:
 def recommend_document_loaders(
     research_topic: str,
     research_question: str | None = None,
-    data_types: list[str] | None = None,
-) -> list[dict[str, Any]]:
+    data_types: list[str] | None = None) -> list[dict[str, Any]]:
     """Recommend document loaders based on research topic and question."""
     # Get all available loaders
     loaders = get_available_loaders()
@@ -430,8 +427,7 @@ def load_arxiv_papers(
         loader = EnhancedArxivLoader(
             query=query,
             load_all_available_meta=load_all_available_meta,
-            max_results=max_results,
-        )
+            max_results=max_results)
         docs = loader.load()
 
         # Convert to serializable format
@@ -555,50 +551,43 @@ document_loader_description_tool = StructuredTool.from_function(
     func=describe_document_loader,
     name="document_loader_description",
     description="Get detailed information about a specific document loader",
-    args_schema=DocumentLoaderDescriptionInput,
-)
+    args_schema=DocumentLoaderDescriptionInput)
 
 recommend_document_loaders_tool = StructuredTool.from_function(
     func=recommend_document_loaders,
     name="recommend_document_loaders",
     description="Recommend document loaders based on research topic and question",
-    args_schema=DocumentLoaderRecommendationInput,
-)
+    args_schema=DocumentLoaderRecommendationInput)
 
 web_loader_tool = StructuredTool.from_function(
     func=load_web_page,
     name="web_loader",
     description="Load and extract content from a web page",
-    args_schema=WebLoaderInput,
-)
+    args_schema=WebLoaderInput)
 
 recursive_web_loader_tool = StructuredTool.from_function(
     func=load_recursive_web,
     name="recursive_web_loader",
     description="Recursively crawl a website to extract content from multiple pages",
-    args_schema=RecursiveWebLoaderInput,
-)
+    args_schema=RecursiveWebLoaderInput)
 
 arxiv_loader_tool = StructuredTool.from_function(
     func=load_arxiv_papers,
     name="arxiv_loader",
     description="Search and load academic papers from ArXiv repository",
-    args_schema=ArxivLoaderInput,
-)
+    args_schema=ArxivLoaderInput)
 
 github_issues_loader_tool = StructuredTool.from_function(
     func=load_github_issues,
     name="github_issues_loader",
     description="Load issues from a GitHub repository",
-    args_schema=GitHubIssuesLoaderInput,
-)
+    args_schema=GitHubIssuesLoaderInput)
 
 hackernews_loader_tool = StructuredTool.from_function(
     func=load_hackernews_thread,
     name="hackernews_loader",
     description="Load a discussion thread from Hacker News",
-    args_schema=HackerNewsLoaderInput,
-)
+    args_schema=HackerNewsLoaderInput)
 
 # Tavily search tools (if available)
 try:
@@ -631,8 +620,7 @@ try:
         func=tavily_search,
         name="tavily_search",
         description="Search the web for information on research topics",
-        args_schema=TavilySearchInput,
-    )
+        args_schema=TavilySearchInput)
 
     SEARCH_TOOLS = [tavily_search_tool]
 except (ImportError, NameError):

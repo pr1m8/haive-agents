@@ -27,8 +27,7 @@ logging.basicConfig(
     handlers=[
         logging.StreamHandler(sys.stdout),
         logging.FileHandler(log_file, mode="w"),  # Overwrite the log file
-    ],
-)
+    ])
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -69,9 +68,7 @@ def run_example() -> bool:
                 vectorstore_config=VectorStoreConfig(
                     name="research_vectorstore",
                     vector_store_type="FAISS",
-                    persist_directory=str(output_dir / "vectorstore"),
-                ),
-            )
+                    persist_directory=str(output_dir / "vectorstore")))
             agent = ResearchAgent(config=config)
             logger.debug("Research agent created successfully")
         except Exception as e:
