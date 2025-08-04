@@ -20,8 +20,7 @@ from pydantic import Field
 
 from haive.agents.conversation.base import (
     BaseConversationAgent,
-    ConversationState,
-    get_conversation_progress)
+    ConversationState)
 from haive.agents.simple import SimpleAgent
 
 logger = logging.getLogger(__name__)

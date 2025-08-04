@@ -14,11 +14,8 @@ from typing import Any
 
 from pydantic import Field
 
-from haive.agents.conversation.base import (
-    ConversationState,
-    create_conversation_state,
-    get_conversation_progress,
-    validate_conversation_participants)
+from haive.agents.conversation.base import ConversationState
+# Functions not available: create_conversation_state, get_conversation_progress, validate_conversation_participants
 from haive.agents.simple import SimpleAgent
 
 
