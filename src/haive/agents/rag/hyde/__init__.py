@@ -1,11 +1,10 @@
 """Module exports."""
 
-from haive.agents.rag.hyde.agent import HyDERAGAgent, from_documents
+from haive.agents.rag.hyde.agent import HyDERAGAgent
 from haive.agents.rag.hyde.agent_v2 import (
     HyDERAGAgentV2,
     HyDERetrieverAgent,
     build_graph,
-    from_documents,
     transform_to_query)
 from haive.agents.rag.hyde.enhanced_agent import (
     EnhancedHyDERAGAgent,
@@ -13,8 +12,7 @@ from haive.agents.rag.hyde.enhanced_agent import (
     adaptive_retrieval,
     build_graph,
     create_enhanced_hyde_agent,
-    demonstrate_enhancement_vs_traditional,
-    from_documents)
+    demonstrate_enhancement_vs_traditional)
 from haive.agents.rag.hyde.enhanced_agent_v2 import (
     AdaptiveHyDEGenerator,
     DomainAnalysisAgent,
@@ -32,7 +30,6 @@ from haive.agents.rag.hyde.enhanced_agent_v2 import (
     create_ensemble_hyde,
     create_multi_perspective_hyde,
     ensemble_retrieval,
-    from_documents,
     multi_domain_retrieval,
     run,
     setup_hyde_agent,
@@ -63,7 +60,6 @@ __all__ = [
     "create_multi_perspective_hyde",
     "demonstrate_enhancement_vs_traditional",
     "ensemble_retrieval",
-    "from_documents",
     "multi_domain_retrieval",
     "run",
     "setup_hyde_agent",
