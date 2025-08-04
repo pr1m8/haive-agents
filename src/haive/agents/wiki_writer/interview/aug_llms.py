@@ -18,8 +18,7 @@ Be comprehensive and curious, gaining as much unique insight from the expert as 
 
 Stay true to your specific perspective:
 
-{persona}""",
-        ),
+{persona}"""),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )
@@ -31,16 +30,14 @@ GEN_QUERIES_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are a helpful research assistant. Query the search engine to answer the user's questions.",
-        ),
+            "You are a helpful research assistant. Query the search engine to answer the user's questions."),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )
 gen_queries_aug_llm_config = AugLLMConfig(
     prompt_template=GEN_QUERIES_PROMPT,
     structured_output_model=Queries,
-    structured_output_params={"include_raw": True},
-)
+    structured_output_params={"include_raw": True})
 
 
 GEN_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
@@ -51,8 +48,7 @@ GEN_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
  to write a Wikipedia page on the topic you know. You have gathered the related information and will now use the information to form a response.
 
 Make your response as informative as possible and make sure every sentence is supported by the gathered information.
-Each response must be backed up by a citation from a reliable source, formatted as a footnote, reproducing the URLS after your response.""",
-        ),
+Each response must be backed up by a citation from a reliable source, formatted as a footnote, reproducing the URLS after your response."""),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )
@@ -60,5 +56,4 @@ Each response must be backed up by a citation from a reliable source, formatted 
 gen_answer_aug_llm_config = AugLLMConfig(
     prompt_template=GEN_ANSWER_PROMPT,
     structured_output_model=AnswerWithCitations,
-    structured_output_params={"include_raw": True},
-)
+    structured_output_params={"include_raw": True})

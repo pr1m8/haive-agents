@@ -1,8 +1,7 @@
 from haive.agents.wiki_writer.interview.aug_llms import (
     gen_answer_aug_llm_config,
     gen_qn_aug_llm_config,
-    gen_queries_aug_llm_config,
-)
+    gen_queries_aug_llm_config)
 from haive.agents.wiki_writer.interview.nodes import gen_answer, generate_question
 from haive.agents.wiki_writer.interview.state import InterviewState
 from haive.core.engine.agent.agent import AgentArchitecture, AgentArchitectureConfig
@@ -22,8 +21,7 @@ class InterviewAgentConfig(AgentArchitectureConfig):
             "gen_queries": gen_queries_aug_llm_config,
             "gen_answer": gen_answer_aug_llm_config,
         },
-        description="LLM config for Interview",
-    )
+        description="LLM config for Interview")
 
     state_schema: InterviewState = Field(
         default=InterviewState, description="State schema for the agent"

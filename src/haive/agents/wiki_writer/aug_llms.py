@@ -6,8 +6,7 @@ DIRECT_GEN_OUTLINE_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are a Wikipedia writer. Write an outline for a Wikipedia page about a user-provided topic. Be comprehensive and specific.",
-        ),
+            "You are a Wikipedia writer. Write an outline for a Wikipedia page about a user-provided topic. Be comprehensive and specific."),
         ("user", "{topic}"),
     ]
 )
@@ -15,8 +14,7 @@ DIRECT_GEN_OUTLINE_PROMPT = ChatPromptTemplate.from_messages(
 # Add option for fast llm here ?
 direct_gen_outline_aug_llm_config = AugLLMConfig(
     prompt=DIRECT_GEN_OUTLINE_PROMPT,
-    output_parser=Outline,
-)
+    output_parser=Outline)
 
 GEN_RELATED_TOPICS_PROMPT = ChatPromptTemplate.from_template(
     """I'm writing a Wikipedia page for a topic mentioned below. Please identify and recommend some Wikipedia pages on closely related subjects. I'm looking for examples that provide insights into interesting aspects commonly associated with this topic, or examples that help me understand the typical content and structure included in Wikipedia pages for similar topics.
@@ -30,8 +28,7 @@ Topic of interest: {topic}
 
 gen_related_topics_aug_llm_config = AugLLMConfig(
     prompt=GEN_RELATED_TOPICS_PROMPT,
-    output_parser=RelatedSubjects,
-)
+    output_parser=RelatedSubjects)
 
 
 GEN_PERSPECTIVES_PROMPT = ChatPromptTemplate.from_messages(
@@ -42,12 +39,10 @@ GEN_PERSPECTIVES_PROMPT = ChatPromptTemplate.from_messages(
     You can use other Wikipedia pages of related topics for inspiration. For each editor, add a description of what they will focus on.
 
     Wiki page outlines of related topics for inspiration:
-    {examples}""",
-        ),
+    {examples}"""),
         ("user", "Topic of interest: {topic}"),
     ]
 )
 gen_perspectives_aug_llm_config = AugLLMConfig(
     prompt=GEN_PERSPECTIVES_PROMPT,
-    output_parser=Perspectives,
-)
+    output_parser=Perspectives)

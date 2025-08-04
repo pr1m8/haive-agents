@@ -10,8 +10,7 @@ from wiki_writer.models import (
     Subsection,
     WikiSection,
     as_str,
-    persona,
-)
+    persona)
 from wiki_writer.state import InterviewState
 from wiki_writer.utils import format_doc, update_editor, update_references
 

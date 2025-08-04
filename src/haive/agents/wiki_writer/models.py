@@ -17,8 +17,7 @@ class Section(BaseModel):
     description: str = Field(..., title="Content of the section")
     subsections: list[Subsection] | None = Field(
         default=None,
-        title="Titles and descriptions for each subsection of the Wikipedia page.",
-    )
+        title="Titles and descriptions for each subsection of the Wikipedia page.")
 
     @property
     def as_str(self) -> str:
@@ -36,8 +35,7 @@ class WikiSection(BaseModel):
     content: str = Field(..., title="Full content of the section")
     subsections: list[Subsection] | None = Field(
         default=None,
-        title="Titles and descriptions for each subsection of the Wikipedia page.",
-    )
+        title="Titles and descriptions for each subsection of the Wikipedia page.")
     citations: list[str] = Field(default_factory=list)
 
     @property
@@ -58,8 +56,7 @@ class Outline(BaseModel):
     page_title: str = Field(..., title="Title of the Wikipedia page")
     sections: list[Section] = Field(
         default_factory=list,
-        title="Titles and descriptions for each section of the Wikipedia page.",
-    )
+        title="Titles and descriptions for each section of the Wikipedia page.")
 
     @property
     def as_str(self) -> str:
@@ -70,8 +67,7 @@ class Outline(BaseModel):
 # Related Subjects Model
 class RelatedSubjects(BaseModel):
     topics: list[str] = Field(
-        description="Comprehensive list of related subjects as background research.",
-    )
+        description="Comprehensive list of related subjects as background research.")
 
 
 # Perspectives
@@ -79,17 +75,14 @@ class RelatedSubjects(BaseModel):
 
 class Editor(BaseModel):
     affiliation: str = Field(
-        description="Primary affiliation of the editor.",
-    )
+        description="Primary affiliation of the editor.")
     name: str = Field(
         description="Name of the editor.", pattern=r"^[a-zA-Z0-9_-]{1,64}$"
     )
     role: str = Field(
-        description="Role of the editor in the context of the topic.",
-    )
+        description="Role of the editor in the context of the topic.")
     description: str = Field(
-        description="Description of the editor's focus, concerns, and motives.",
-    )
+        description="Description of the editor's focus, concerns, and motives.")
 
     @property
     def persona(self) -> str:
