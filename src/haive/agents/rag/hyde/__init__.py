@@ -1,13 +1,13 @@
 """Module exports."""
 
-from hyde.agent import HyDERAGAgent, from_documents
-from hyde.agent_v2 import (
+from haive.agents.rag.hyde.agent import HyDERAGAgent, from_documents
+from haive.agents.rag.hyde.agent_v2 import (
     HyDERAGAgentV2,
     HyDERetrieverAgent,
     build_graph,
     from_documents,
     transform_to_query)
-from hyde.enhanced_agent import (
+from haive.agents.rag.hyde.enhanced_agent import (
     EnhancedHyDERAGAgent,
     EnhancedHyDERetriever,
     adaptive_retrieval,
@@ -15,7 +15,7 @@ from hyde.enhanced_agent import (
     create_enhanced_hyde_agent,
     demonstrate_enhancement_vs_traditional,
     from_documents)
-from hyde.enhanced_agent_v2 import (
+from haive.agents.rag.hyde.enhanced_agent_v2 import (
     AdaptiveHyDEGenerator,
     DomainAnalysisAgent,
     EnhancedHyDERAGAgentV2,
