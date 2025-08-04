@@ -58,8 +58,7 @@ class MessageDocumentConverter:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "content_length": len(content),
                 "source": "conversation",
-            },
-        )
+            })
 
     def convert_messages(self, messages: list[BaseMessage]) -> list[Document]:
         """Convert multiple messages to documents."""
@@ -119,8 +118,7 @@ class ConversationMemoryAgent:
         self,
         config: ConversationMemoryConfig = None,
         name: str = "conversation_memory",
-        user_id: str | None = None,
-    ):
+        user_id: str | None = None):
         """Initialize conversation memory agent."""
         self.config = config or ConversationMemoryConfig()
         self.name = name
@@ -150,8 +148,7 @@ class ConversationMemoryAgent:
                     "user_id": self.user_id,
                     "timestamp": datetime.now(UTC).isoformat(),
                     "source": "system_initialization",
-                },
-            )
+                })
             self._documents.append(placeholder_doc)
 
         # Create BaseRAGAgent from documents - NO LLM CONFIG NEEDED!
@@ -159,8 +156,7 @@ class ConversationMemoryAgent:
             documents=self._documents,
             embedding_model=self.config.embedding_model,
             vector_store_provider=self.config.vector_store_provider,
-            name=self.name,
-        )
+            name=self.name)
 
         self._initialized = True
         logger.info(f"✅ Initialized BaseRAGAgent for {self.name}")
@@ -252,8 +248,7 @@ class ConversationMemoryAgent:
                 documents=self._documents,
                 embedding_model=self.config.embedding_model,
                 vector_store_provider=self.config.vector_store_provider,
-                name=self.name,
-            )
+                name=self.name)
             logger.info(
                 f"Updated vector store with {len(self._documents)} total documents"
             )
@@ -268,13 +263,11 @@ class ConversationMemoryAgent:
         user_id: str | None = None,
         vector_store_provider: VectorStoreProvider = VectorStoreProvider.FAISS,
         embedding_model: str = "sentence-transformers/all-mpnet-base-v2",
-        name: str = "conversation_memory",
-    ) -> "ConversationMemoryAgent":
+        name: str = "conversation_memory") -> "ConversationMemoryAgent":
         """Factory method to create ConversationMemoryAgent."""
         config = ConversationMemoryConfig(
             vector_store_provider=vector_store_provider,
-            embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
-        )
+            embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model))
 
         return cls(config=config, name=name, user_id=user_id)
 

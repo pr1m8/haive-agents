@@ -10,8 +10,7 @@ from typing import Any
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
-    SystemMessagePromptTemplate,
-)
+    SystemMessagePromptTemplate)
 
 # ============================================================================
 # CORE MEMORY EXTRACTION PROMPTS

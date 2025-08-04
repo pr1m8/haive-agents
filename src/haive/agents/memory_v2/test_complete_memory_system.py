@@ -16,16 +16,14 @@ from haive.agents.memory_v2.multi_memory_coordinator import (
     CoordinationMode,
     MemorySystemType,
     MultiMemoryConfig,
-    MultiMemoryCoordinator,
-)
+    MultiMemoryCoordinator)
 
 # Optional imports with graceful fallback
 try:
     from haive.agents.memory_v2.advanced_rag_memory_agent import (
         AdvancedRAGConfig,
         AdvancedRAGMemoryAgent,
-        RetrievalStrategy,
-    )
+        RetrievalStrategy)
 
     HAS_ADVANCED_RAG = True
 except ImportError:
@@ -38,8 +36,7 @@ try:
     from haive.agents.memory_v2.graph_memory_agent import (
         GraphMemoryAgent,
         GraphMemoryConfig,
-        GraphMemoryMode,
-    )
+        GraphMemoryMode)
 
     HAS_GRAPH_MEMORY = True
 except ImportError:
@@ -86,8 +83,7 @@ class TestCompleteMemorySystem:
         simple_agent = SimpleMemoryAgent(
             name="test_simple",
             engine=test_config["engine"],
-            user_id=test_config["user_id"],
-        )
+            user_id=test_config["user_id"])
         await simple_agent.arun(f"Remember: {test_memory}")
         await simple_agent.arun(test_query)
 
@@ -96,8 +92,7 @@ class TestCompleteMemorySystem:
             name="test_react",
             engine=test_config["engine"],
             user_id=test_config["user_id"],
-            memory_store_path=str(Path(temp_dir) / "react_memory"),
-        )
+            memory_store_path=str(Path(temp_dir) / "react_memory"))
         await react_agent.arun(f"Store this memory: {test_memory}", auto_save=True)
         await react_agent.arun(f"Search memories for: {test_query}", auto_save=False)
 
@@ -113,8 +108,7 @@ class TestCompleteMemorySystem:
             user_id=test_config["user_id"],
             memory_store_path=str(Path(temp_dir) / "rag_memory"),
             llm_config=test_config["engine"],
-            strategy=RetrievalStrategy.HYBRID,
-        )
+            strategy=RetrievalStrategy.HYBRID)
         rag_agent = AdvancedRAGMemoryAgent(rag_config)
         await rag_agent.add_memory(test_memory, importance="high")
         await rag_agent.query_memory(test_query)
@@ -128,8 +122,7 @@ class TestCompleteMemorySystem:
             engine=test_config["engine"],
             base_storage_path=str(temp_dir),
             enable_graph=False,  # Disable graph to avoid Neo4j dependency
-            default_mode=CoordinationMode.INTELLIGENT,
-        )
+            default_mode=CoordinationMode.INTELLIGENT)
 
         coordinator = MultiMemoryCoordinator(config)
 
@@ -137,12 +130,10 @@ class TestCompleteMemorySystem:
         memories = [
             (
                 "Bob Smith works as CTO at DataCorp and specializes in distributed systems.",
-                "high",
-            ),
+                "high"),
             (
                 "I had lunch with Bob yesterday where we discussed scalability challenges.",
-                "normal",
-            ),
+                "normal"),
             ("Important: Bob's email is bob.smith@datacorp.com", "critical"),
             ("DataCorp is planning to expand to Europe next year.", "normal"),
         ]
@@ -172,8 +163,7 @@ class TestCompleteMemorySystem:
         coordinator = MultiMemoryCoordinator.create_comprehensive_system(
             user_id=test_config["user_id"],
             enable_graph=False,
-            storage_path=str(temp_dir),
-        )
+            storage_path=str(temp_dir))
 
         # Simulate a day of interactions
 
@@ -189,8 +179,7 @@ class TestCompleteMemorySystem:
             await coordinator.store_memory(
                 memory,
                 importance="high",
-                metadata={"time": "morning", "category": "project"},
-            )
+                metadata={"time": "morning", "category": "project"})
 
         # Afternoon: Technical discussions
         afternoon_memories = [
@@ -251,8 +240,7 @@ class TestCompleteMemorySystem:
             include_citations=True,
             enable_query_expansion=True,
             k_initial=10,
-            k_final=3,
-        )
+            k_final=3)
 
         agent = AdvancedRAGMemoryAgent(config)
 
@@ -260,25 +248,20 @@ class TestCompleteMemorySystem:
         technical_memories = [
             (
                 "BERT revolutionized NLP by introducing bidirectional pre-training of transformers.",
-                "critical",
-            ),
+                "critical"),
             (
                 "GPT models use autoregressive training with causal attention masks.",
-                "high",
-            ),
+                "high"),
             ("T5 treats all NLP tasks as text-to-text problems.", "high"),
             (
                 "RoBERTa improved BERT by removing NSP and training on more data.",
-                "normal",
-            ),
+                "normal"),
             (
                 "ELECTRA uses discriminative pre-training instead of masked language modeling.",
-                "normal",
-            ),
+                "normal"),
             (
                 "DeBERTa adds disentangled attention and enhanced mask decoder.",
-                "normal",
-            ),
+                "normal"),
         ]
 
         for content, importance in technical_memories:
@@ -293,8 +276,7 @@ class TestCompleteMemorySystem:
             # Complex query
             (
                 "Compare the architectural innovations in BERT, RoBERTa, and DeBERTa, and explain how each improved upon its predecessors.",
-                "complex",
-            ),
+                "complex"),
         ]
 
         for query, _expected_complexity in test_queries:
@@ -326,8 +308,7 @@ class TestCompleteMemorySystem:
         coordinator1 = MultiMemoryCoordinator.create_comprehensive_system(
             user_id=test_config["user_id"],
             enable_graph=False,
-            storage_path=storage_path,
-        )
+            storage_path=storage_path)
 
         memories = [
             "Project deadline is December 15th, 2024.",
@@ -351,8 +332,7 @@ class TestCompleteMemorySystem:
         coordinator2 = MultiMemoryCoordinator.create_comprehensive_system(
             user_id=test_config["user_id"],
             enable_graph=False,
-            storage_path=storage_path,
-        )
+            storage_path=storage_path)
 
         # Query previous session's memories
         queries = [
@@ -384,32 +364,26 @@ class TestCompleteMemorySystem:
         papers = [
             (
                 "'Attention is All You Need' (2017) introduced the transformer architecture, eliminating recurrence and convolutions.",
-                "critical",
-            ),
+                "critical"),
             (
                 "BERT (2018) demonstrated that bidirectional pre-training significantly improves downstream task performance.",
-                "critical",
-            ),
+                "critical"),
             (
                 "GPT-3 (2020) showed that scale alone can enable few-shot learning without task-specific fine-tuning.",
-                "high",
-            ),
+                "high"),
             (
                 "Chain-of-Thought Prompting (2022) enables complex reasoning by encouraging step-by-step thinking.",
-                "high",
-            ),
+                "high"),
             (
                 "Constitutional AI (2023) introduces methods for training harmless and helpful AI assistants.",
-                "normal",
-            ),
+                "normal"),
         ]
 
         for content, importance in papers:
             await coordinator.store_memory(
                 f"Research paper: {content}",
                 importance=importance,
-                metadata={"type": "literature", "source": "academic"},
-            )
+                metadata={"type": "literature", "source": "academic"})
 
         # Phase 2: Research meetings
         meetings = [
@@ -424,8 +398,7 @@ class TestCompleteMemorySystem:
             await coordinator.store_memory(
                 meeting,
                 importance=importance,
-                metadata={"type": "meeting", "source": "collaboration"},
-            )
+                metadata={"type": "meeting", "source": "collaboration"})
 
         # Phase 3: Technical implementation notes
         implementation = [
@@ -439,8 +412,7 @@ class TestCompleteMemorySystem:
             await coordinator.store_memory(
                 note,
                 importance="normal",
-                metadata={"type": "implementation", "source": "development"},
-            )
+                metadata={"type": "implementation", "source": "development"})
 
         # Phase 4: Complex queries spanning all phases
 
@@ -456,8 +428,7 @@ class TestCompleteMemorySystem:
             result = await coordinator.query_memory(
                 query,
                 mode=CoordinationMode.PARALLEL,  # Use all systems
-                combine_results=True,
-            )
+                combine_results=True)
 
             answer = result.get("combined_result", "No answer")
 
@@ -496,8 +467,7 @@ async def test_graph_memory_with_neo4j():
         neo4j_username="neo4j",
         neo4j_password="password",
         user_id="graph_test_user",
-        mode=GraphMemoryMode.FULL,
-    )
+        mode=GraphMemoryMode.FULL)
 
     try:
         agent = GraphMemoryAgent(config)
@@ -506,8 +476,7 @@ async def test_graph_memory_with_neo4j():
         await agent.run(
             "John Smith is the CEO of TechCorp. He knows Sarah Johnson who works as CTO. "
             "TechCorp is located in San Francisco and was founded in 2015.",
-            auto_store=True,
-        )
+            auto_store=True)
 
         # Query the graph
         await agent.query_graph(
@@ -517,8 +486,7 @@ async def test_graph_memory_with_neo4j():
         # Cleanup
         agent.graph.query(
             "MATCH (n {user_id: $user_id}) DETACH DELETE n",
-            {"user_id": "graph_test_user"},
-        )
+            {"user_id": "graph_test_user"})
 
     except Exception:
         pass

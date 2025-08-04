@@ -49,12 +49,10 @@ This package provides memory-capable agents built on BaseRAGAgent as requested:
 from haive.agents.memory_v2.extraction_prompts import (
     EXTRACTION_PROMPTS,
     get_all_extraction_types,
-    get_extraction_prompt,
-)
+    get_extraction_prompt)
 from haive.agents.memory_v2.message_document_converter import (
     MessageDocumentConverter,
-    TimestampedDocument,
-)
+    TimestampedDocument)
 from haive.agents.memory_v2.standalone_rag_memory import (
     ConversationMemoryAgent,
     FactualMemoryAgent,
@@ -65,12 +63,10 @@ from haive.agents.memory_v2.standalone_rag_memory import (
     StandaloneMemoryItem,
     UnifiedMemoryRAGAgent,
     create_conversation_memory_agent,
-    create_unified_memory_agent,
-)
+    create_unified_memory_agent)
 from haive.agents.memory_v2.time_weighted_retriever import (
     TimeWeightConfig,
-    TimeWeightedRetriever,
-)
+    TimeWeightedRetriever)
 
 # Optional components that may have import issues - try to import gracefully
 try:

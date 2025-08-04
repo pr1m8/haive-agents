@@ -44,8 +44,7 @@ class TimeWeightConfig(BaseModel):
     # Importance boosting
     importance_boost: dict[str, float] = Field(
         default={"critical": 1.5, "high": 1.2, "medium": 1.0, "low": 0.8},
-        description="Score multipliers by importance level",
-    )
+        description="Score multipliers by importance level")
 
     # Document type preferences
     type_preferences: dict[str, float] = Field(
@@ -56,8 +55,7 @@ class TimeWeightConfig(BaseModel):
             "ai": 0.9,
             "extracted_memory": 1.2,
         },
-        description="Preference weights by document type",
-    )
+        description="Preference weights by document type")
 
 
 class TimeWeightedRetriever(BaseRetriever):
@@ -127,8 +125,7 @@ class TimeWeightedRetriever(BaseRetriever):
                 similarity_score=similarity_score,
                 time_score=time_score,
                 importance_score=importance_score,
-                type_score=type_score,
-            )
+                type_score=type_score)
 
             # Apply threshold filter
             if final_score >= self.config.score_threshold:
@@ -205,8 +202,7 @@ class TimeWeightedRetriever(BaseRetriever):
         similarity_score: float,
         time_score: float,
         importance_score: float,
-        type_score: float,
-    ) -> float:
+        type_score: float) -> float:
         """Combine all scoring components into final score."""
         # Normalize similarity score (vector stores return different ranges)
         normalized_similarity = max(0.0, min(1.0, similarity_score))
@@ -276,8 +272,7 @@ class MemoryRetrievalSession:
         self,
         retriever: TimeWeightedRetriever,
         session_id: str | None = None,
-        user_id: str | None = None,
-    ):
+        user_id: str | None = None):
         """Initialize retrieval session."""
         self.retriever = retriever
         self.session_id = session_id or f"session_{uuid4()}"
@@ -383,8 +378,7 @@ def create_time_weighted_retriever(
     vectorstore: VectorStore,
     decay_rate: float = 0.01,
     recency_weight: float = 0.3,
-    k: int = 5,
-) -> TimeWeightedRetriever:
+    k: int = 5) -> TimeWeightedRetriever:
     """Factory function to create configured time-weighted retriever.
 
     Args:
@@ -426,8 +420,7 @@ def create_memory_focused_retriever(vectorstore: VectorStore) -> TimeWeightedRet
             "conversation_summary": 1.2,
             "human": 1.0,
             "ai": 0.8,
-        },
-    )
+        })
 
     return TimeWeightedRetriever(vectorstore=vectorstore, config=config)
 
@@ -438,8 +431,7 @@ def create_memory_focused_retriever(vectorstore: VectorStore) -> TimeWeightedRet
 
 
 def prepare_documents_for_time_retrieval(
-    documents: list[TimestampedDocument],
-) -> list[Document]:
+    documents: list[TimestampedDocument]) -> list[Document]:
     """Prepare timestamped documents for time-weighted retrieval.
 
     Args:

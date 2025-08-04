@@ -23,8 +23,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 
 from haive.agents.memory_v2.react_memory_coordinator import (
     MemoryCoordinatorConfig,
-    ReactMemoryCoordinator,
-)
+    ReactMemoryCoordinator)
 
 # Import test components
 
@@ -261,8 +260,7 @@ async def test_complete_memory_workflow():
         config = MemoryCoordinatorConfig(
             long_term_memory_path=f"{temp_dir}/ltm",
             conversation_memory_path=f"{temp_dir}/conv",
-            temperature=0.1,
-        )
+            temperature=0.1)
 
         coordinator = ReactMemoryCoordinator(
             user_id="integration_user", config=config, name="integration_test"

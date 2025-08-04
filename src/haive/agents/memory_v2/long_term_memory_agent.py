@@ -94,8 +94,7 @@ class MemoryEntry(BaseModel):
                 "user_id": self.user_id,
                 "access_count": self.access_count,
                 **self.metadata,
-            },
-        )
+            })
 
 
 class KnowledgeTriple(BaseModel):
@@ -121,8 +120,7 @@ class KnowledgeTriple(BaseModel):
                 "source": self.source,
             },
             importance=self.confidence,
-            **kwargs,
-        )
+            **kwargs)
 
 
 class LongTermMemoryStore:
@@ -238,8 +236,7 @@ class LongTermMemoryAgent:
         storage_path: str = "./memory_store",
         embedding_model: str = "sentence-transformers/all-mpnet-base-v2",
         vector_store_provider: VectorStoreProvider = VectorStoreProvider.FAISS,
-        name: str = "long_term_memory_agent",
-    ):
+        name: str = "long_term_memory_agent"):
         """Initialize long-term memory agent."""
         self.user_id = user_id
         self.name = name
@@ -279,8 +276,7 @@ class LongTermMemoryAgent:
         if not memory_documents:
             placeholder = Document(
                 page_content="No previous memories stored for this user.",
-                metadata={"memory_type": "system", "user_id": self.user_id},
-            )
+                metadata={"memory_type": "system", "user_id": self.user_id})
             memory_documents.append(placeholder)
 
         # Step 3: Create memory retriever using BaseRAGAgent
@@ -288,16 +284,14 @@ class LongTermMemoryAgent:
             documents=memory_documents,
             embedding_model=self.embedding_model,
             vector_store_provider=self.vector_store_provider,
-            name=f"{self.name}_retriever",
-        )
+            name=f"{self.name}_retriever")
 
         # Step 4: Create memory-enhanced response agent using fixed
         # SimpleRAGAgent
         self.memory_enhanced_agent = SimpleRAGAgent.from_documents(
             documents=memory_documents,
             llm_config=self.llm_config,
-            name=f"{self.name}_enhanced",
-        )
+            name=f"{self.name}_enhanced")
 
         self._initialized = True
         logger.info(
@@ -360,8 +354,7 @@ class LongTermMemoryAgent:
                     importance=memory_data["importance"],
                     user_id=self.user_id,
                     conversation_id=str(uuid4()),
-                    tags=memory_data.get("tags", []),
-                )
+                    tags=memory_data.get("tags", []))
 
                 self.memory_store.add_memory(memory)
                 extracted_memories.append(memory)
@@ -436,8 +429,7 @@ class LongTermMemoryAgent:
                 memory_type=memory_data["type"],
                 importance=memory_data["importance"],
                 user_id=self.user_id,
-                tags=memory_data.get("tags", []),
-            )
+                tags=memory_data.get("tags", []))
             self.memory_store.add_memory(memory)
 
     async def _refresh_agents(self) -> None:
@@ -451,14 +443,12 @@ class LongTermMemoryAgent:
             documents=memory_documents,
             embedding_model=self.embedding_model,
             vector_store_provider=self.vector_store_provider,
-            name=f"{self.name}_retriever",
-        )
+            name=f"{self.name}_retriever")
 
         self.memory_enhanced_agent = SimpleRAGAgent.from_documents(
             documents=memory_documents,
             llm_config=self.llm_config,
-            name=f"{self.name}_enhanced",
-        )
+            name=f"{self.name}_enhanced")
 
     def get_memory_summary(self) -> dict[str, Any]:
         """Get summary of stored memories."""
@@ -506,8 +496,7 @@ class LongTermMemoryAgent:
 def create_long_term_memory_agent(
     user_id: str,
     llm_config: LLMConfig | None = None,
-    storage_path: str = "./memory_store",
-) -> LongTermMemoryAgent:
+    storage_path: str = "./memory_store") -> LongTermMemoryAgent:
     """Factory function to create long-term memory agent."""
     return LongTermMemoryAgent(
         user_id=user_id, llm_config=llm_config, storage_path=storage_path

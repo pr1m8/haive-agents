@@ -119,18 +119,15 @@ class MultiMemoryConfig(BaseModel):
             MemoryRoutingRule(
                 QueryType.FACTUAL,
                 MemoryStrategy.RAG,
-                fallback_strategy=MemoryStrategy.SIMPLE,
-            ),
+                fallback_strategy=MemoryStrategy.SIMPLE),
             MemoryRoutingRule(
                 QueryType.RELATIONSHIP,
                 MemoryStrategy.GRAPH,
-                fallback_strategy=MemoryStrategy.SIMPLE,
-            ),
+                fallback_strategy=MemoryStrategy.SIMPLE),
             MemoryRoutingRule(
                 QueryType.TEMPORAL,
                 MemoryStrategy.RAG,
-                fallback_strategy=MemoryStrategy.SIMPLE,
-            ),
+                fallback_strategy=MemoryStrategy.SIMPLE),
             MemoryRoutingRule(QueryType.PREFERENCE, MemoryStrategy.SIMPLE),
             MemoryRoutingRule(QueryType.MEMORY_RETRIEVAL, MemoryStrategy.HYBRID),
             MemoryRoutingRule(QueryType.MIXED, MemoryStrategy.ADAPTIVE),
@@ -188,8 +185,7 @@ class MultiMemoryAgent(SimpleAgent):
             name=config.name,
             engine=config.llm_config,
             state_schema=MultiMemoryState,
-            use_prebuilt_base=True,
-        )
+            use_prebuilt_base=True)
 
         # Initialize specialized memory agents
         self._init_memory_agents()
@@ -218,8 +214,7 @@ class MultiMemoryAgent(SimpleAgent):
                 self.memory_agents["simple"] = SimpleMemoryAgent(
                     name=f"{self.multi_config.name}_simple",
                     engine=self.multi_config.llm_config,
-                    memory_config=self.multi_config.simple_memory_config,
-                )
+                    memory_config=self.multi_config.simple_memory_config)
                 logger.info("Initialized SimpleMemoryAgent")
             except Exception as e:
                 logger.exception(f"Failed to initialize SimpleMemoryAgent: {e}")
@@ -229,8 +224,7 @@ class MultiMemoryAgent(SimpleAgent):
             try:
                 graph_config = GraphMemoryConfig(
                     llm_config=self.multi_config.llm_config,
-                    **self.multi_config.graph_memory_config,
-                )
+                    **self.multi_config.graph_memory_config)
                 self.memory_agents["graph"] = GraphMemoryAgent(graph_config)
                 logger.info("Initialized GraphMemoryAgent")
             except Exception as e:
@@ -271,8 +265,7 @@ class MultiMemoryAgent(SimpleAgent):
         self,
         query_type: QueryType,
         confidence: float,
-        context: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
+        context: dict[str, Any] | None = None) -> dict[str, Any]:
         """Route query to appropriate memory strategy based on classification."""
         # Find matching routing rule
         selected_rule = None
@@ -390,8 +383,7 @@ class MultiMemoryAgent(SimpleAgent):
         self,
         strategy: MemoryStrategy,
         query: str,
-        context: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
+        context: dict[str, Any] | None = None) -> dict[str, Any]:
         """Execute the selected memory strategy."""
         if strategy == MemoryStrategy.SIMPLE:
             return await self.query_memory_agent("simple", query, context)
@@ -538,8 +530,7 @@ class MultiMemoryAgent(SimpleAgent):
         routing_result = self.route_query(
             classification_result["query_type"],
             classification_result["confidence"],
-            classification_result.get("context"),
-        )
+            classification_result.get("context"))
 
         # Execute selected strategy
         execution_result = await self.execute_strategy(
@@ -776,14 +767,12 @@ def create_multi_memory_agent(
     name: str = "multi_memory_coordinator",
     enable_graph: bool = HAS_GRAPH_MEMORY,
     enable_rag: bool = HAS_RAG_MEMORY,
-    **kwargs,
-) -> MultiMemoryAgent:
+    **kwargs) -> MultiMemoryAgent:
     """Factory function to create a MultiMemoryAgent with sensible defaults."""
     config = MultiMemoryConfig(
         name=name,
         enable_graph_memory=enable_graph,
         enable_rag_memory=enable_rag,
-        **kwargs,
-    )
+        **kwargs)
 
     return MultiMemoryAgent(config)

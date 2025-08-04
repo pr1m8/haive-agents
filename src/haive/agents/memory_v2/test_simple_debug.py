@@ -7,8 +7,7 @@ from haive.core.models.llm.base import DeepSeekLLMConfig
 
 from haive.agents.memory_v2.simple_memory_agent import (
     SimpleMemoryAgent,
-    TokenAwareMemoryConfig,
-)
+    TokenAwareMemoryConfig)
 
 
 def test_state_schema():

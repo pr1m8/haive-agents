@@ -10,8 +10,7 @@ from haive.agents.memory_v2.multi_memory_agent import (
     MemoryStrategy,
     MultiMemoryAgent,
     MultiMemoryConfig,
-    QueryType,
-)
+    QueryType)
 
 
 def test_multi_memory_config():
@@ -24,8 +23,7 @@ def test_multi_memory_config():
         name="custom_coordinator",
         default_strategy=MemoryStrategy.HYBRID,
         enable_graph_memory=False,
-        enable_rag_memory=False,
-    )
+        enable_rag_memory=False)
 
 
 def test_memory_strategies():
@@ -49,8 +47,7 @@ def test_multi_memory_agent_creation():
         enable_rag_memory=False,  # Disable to avoid complex dependencies
         llm_config=AugLLMConfig(
             llm_config=DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
-        ),
-    )
+        ))
 
     try:
         agent = MultiMemoryAgent(config)
@@ -70,8 +67,7 @@ async def test_query_classification():
     config = MultiMemoryConfig(
         enable_simple_memory=False,  # Disable all memory agents for minimal test
         enable_graph_memory=False,
-        enable_rag_memory=False,
-    )
+        enable_rag_memory=False)
 
     try:
         agent = MultiMemoryAgent(config)
@@ -92,8 +88,7 @@ async def test_query_classification():
                 # Test routing
                 agent.route_query(
                     classification.get("query_type", QueryType.CONVERSATIONAL),
-                    classification.get("confidence", 0.5),
-                )
+                    classification.get("confidence", 0.5))
 
             except Exception:
                 pass

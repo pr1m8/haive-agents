@@ -18,8 +18,7 @@ from haive.agents.memory_v2.memory_state_original import (
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryState,
-    MemoryType,
-)
+    MemoryType)
 
 
 class FreeMemoryAgent:
@@ -37,8 +36,7 @@ class FreeMemoryAgent:
         user_id: str,
         storage_path: str | None = None,
         embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
-        k_memories: int = 5,
-    ):
+        k_memories: int = 5):
         """Initialize the free memory agent.
 
         Args:
@@ -61,8 +59,7 @@ class FreeMemoryAgent:
         self.embeddings = HuggingFaceEmbeddings(
             model_name=embedding_model,
             model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": False},
-        )
+            encode_kwargs={"normalize_embeddings": False})
 
         # Initialize or load vector store
         self.vector_store_path = self.storage_path / "vector_store"
@@ -78,16 +75,14 @@ class FreeMemoryAgent:
                 return FAISS.load_local(
                     str(self.vector_store_path),
                     self.embeddings,
-                    allow_dangerous_deserialization=True,
-                )
+                    allow_dangerous_deserialization=True)
             except Exception:
                 pass
 
         # Create new vector store with initial document
         initial_doc = Document(
             page_content="Memory system initialized",
-            metadata={"type": "system", "timestamp": datetime.now().isoformat()},
-        )
+            metadata={"type": "system", "timestamp": datetime.now().isoformat()})
         return FAISS.from_documents([initial_doc], self.embeddings)
 
     def add_memory(
@@ -95,8 +90,7 @@ class FreeMemoryAgent:
         content: str,
         memory_type: MemoryType = MemoryType.CONVERSATIONAL,
         importance: ImportanceLevel = ImportanceLevel.MEDIUM,
-        metadata: dict[str, Any] | None = None,
-    ) -> str:
+        metadata: dict[str, Any] | None = None) -> str:
         """Add a new memory.
 
         Args:
@@ -114,8 +108,7 @@ class FreeMemoryAgent:
             memory_type=memory_type,
             importance=importance,
             user_id=self.user_id,
-            metadata=metadata or {},
-        )
+            metadata=metadata or {})
 
         # Add to memory state
         self.memory_state.add_memory_item(memory)
@@ -146,8 +139,7 @@ class FreeMemoryAgent:
         query: str,
         k: int | None = None,
         memory_type: MemoryType | None = None,
-        importance: ImportanceLevel | None = None,
-    ) -> list[dict[str, Any]]:
+        importance: ImportanceLevel | None = None) -> list[dict[str, Any]]:
         """Search memories using similarity search.
 
         Args:

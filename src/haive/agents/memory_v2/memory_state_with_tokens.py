@@ -9,21 +9,18 @@ from datetime import datetime
 from typing import Any
 
 from haive.core.schema.prebuilt.messages.messages_with_token_usage import (
-    MessagesStateWithTokenUsage,
-)
+    MessagesStateWithTokenUsage)
 from langchain_core.messages import AnyMessage
 from pydantic import ConfigDict, Field, computed_field
 
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
-    KnowledgeGraph,
-)
+    KnowledgeGraph)
 
 from .memory_state_original import (
     MemoryStats,
-    UnifiedMemoryEntry,
-)
+    UnifiedMemoryEntry)
 
 logger = logging.getLogger(__name__)
 
@@ -131,8 +128,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
     # Graph transformation state
     knowledge_graph: KnowledgeGraph | None = Field(
         default=None,
-        description="Current knowledge graph extracted from memories and conversations",
-    )
+        description="Current knowledge graph extracted from memories and conversations")
 
     graph_nodes: list[EntityNode] = Field(
         default_factory=list, description="Extracted entity nodes from content"
@@ -420,8 +416,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         self,
         summary: str,
         summarized_message_ids: list[str],
-        summarized_memory_ids: list[str],
-    ) -> None:
+        summarized_memory_ids: list[str]) -> None:
         """Apply results of summarization operation.
 
         Args:
@@ -456,9 +451,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
                     importance="high",
                     source="summarization",
                     tags=["summary", "compressed"],
-                    confidence=0.9,
-                ),
-            )
+                    confidence=0.9))
             self.current_memories.insert(0, summary_memory)
 
         # Record summarization details

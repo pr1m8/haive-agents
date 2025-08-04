@@ -7,8 +7,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.memory_v2.advanced_rag_memory_agent import (
     AdvancedRAGConfig,
-    AdvancedRAGMemoryAgent,
-)
+    AdvancedRAGMemoryAgent)
 from haive.agents.memory_v2.long_term_memory_agent import LongTermMemoryAgent
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
 from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent
@@ -21,8 +20,7 @@ async def test_simple_memory():
         agent = SimpleMemoryAgent(
             name="test_simple",
             engine=AugLLMConfig(temperature=0.1),
-            user_id="test_user",
-        )
+            user_id="test_user")
 
         # Store memory
         await agent.arun("Remember: Alice works at TechCorp")

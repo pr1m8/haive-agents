@@ -26,8 +26,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from haive.agents.memory_v2.conversation_memory_agent import ConversationMemoryAgent
 from haive.agents.memory_v2.long_term_memory_agent import (
     LongTermMemoryAgent,
-    MemoryEntry,
-)
+    MemoryEntry)
 from haive.agents.react.agent import ReactAgent
 
 # Import our memory agents
@@ -100,8 +99,7 @@ class ReactMemoryCoordinator:
         self,
         user_id: str,
         config: MemoryCoordinatorConfig | None = None,
-        name: str = "react_memory_coordinator",
-    ):
+        name: str = "react_memory_coordinator"):
         """Initialize ReactMemoryCoordinator."""
         self.user_id = user_id
         self.name = name
@@ -128,8 +126,7 @@ class ReactMemoryCoordinator:
                 user_id=self.user_id,
                 llm_config=self.config.llm_config,
                 storage_path=self.config.long_term_memory_path,
-                name=f"{self.name}_ltm",
-            )
+                name=f"{self.name}_ltm")
             await self.long_term_memory.initialize()
             logger.info("✅ Long-term memory agent initialized")
 
@@ -149,14 +146,12 @@ class ReactMemoryCoordinator:
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         aug_llm_config = AugLLMConfig(
             llm_config=llm_config,
             temperature=self.config.temperature,
-            system_message=self._get_system_message(),
-        )
+            system_message=self._get_system_message())
 
         self.react_agent = ReactAgent(
             name=self.name, engine=aug_llm_config, tools=memory_tools
@@ -232,8 +227,7 @@ class ReactMemoryCoordinator:
                         memory_type=memory_type,
                         importance=min(max(importance, 0.0), 1.0),  # Clamp to [0,1]
                         user_id=self.user_id,
-                        tags=[memory_type],
-                    )
+                        tags=[memory_type])
                     self.long_term_memory.memory_store.add_memory(memory)
                     return (
                         f"✅ Stored {memory_type} memory with importance {importance}"
@@ -388,14 +382,12 @@ Be helpful, insightful, and proactive about memory management."""
         user_id: str,
         llm_config: LLMConfig | None = None,
         enable_all_memory: bool = True,
-        name: str = "react_memory_coordinator",
-    ) -> "ReactMemoryCoordinator":
+        name: str = "react_memory_coordinator") -> "ReactMemoryCoordinator":
         """Factory method to create ReactMemoryCoordinator."""
         config = MemoryCoordinatorConfig(
             llm_config=llm_config,
             enable_conversation_memory=enable_all_memory,
-            enable_long_term_memory=enable_all_memory,
-        )
+            enable_long_term_memory=enable_all_memory)
 
         return cls(user_id=user_id, config=config, name=name)
 
@@ -404,8 +396,7 @@ Be helpful, insightful, and proactive about memory management."""
         cls,
         user_id: str,
         llm_config: LLMConfig | None = None,
-        name: str = "focused_memory_coordinator",
-    ) -> "ReactMemoryCoordinator":
+        name: str = "focused_memory_coordinator") -> "ReactMemoryCoordinator":
         """Create coordinator optimized for focused reasoning."""
         config = MemoryCoordinatorConfig(
             llm_config=llm_config,

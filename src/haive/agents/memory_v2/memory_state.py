@@ -39,21 +39,18 @@ class MemoryMetadata(BaseModel):
     memory_type: str = Field(
         default="semantic",
         description="Type of memory: semantic, episodic, procedural",
-        pattern="^(semantic|episodic|procedural|contextual|preference|meta|emotional|temporal|error|feedback|system)$",
-    )
+        pattern="^(semantic|episodic|procedural|contextual|preference|meta|emotional|temporal|error|feedback|system)$")
 
     importance: str = Field(
         default="medium",
         description="Importance level: critical, high, medium, low, transient",
-        pattern="^(critical|high|medium|low|transient)$",
-    )
+        pattern="^(critical|high|medium|low|transient)$")
 
     confidence: float = Field(
         default=0.5,
         ge=0.0,
         le=1.0,
-        description="Confidence score for the memory accuracy",
-    )
+        description="Confidence score for the memory accuracy")
 
     timestamp: str | None = Field(
         default=None, description="ISO timestamp when memory was created"
@@ -62,8 +59,7 @@ class MemoryMetadata(BaseModel):
     source: str = Field(
         default="user_input",
         description="Source of the memory",
-        pattern="^(user_input|agent_inference|system|reflection|improvement)$",
-    )
+        pattern="^(user_input|agent_inference|system|reflection|improvement)$")
 
     tags: list[str] = Field(
         default_factory=list, description="Tags for categorization and search"
@@ -75,8 +71,7 @@ class MemoryMetadata(BaseModel):
 
     relationships: list[dict[str, str]] = Field(
         default_factory=list,
-        description="Relationships in format [{'subject': 'A', 'predicate': 'relates_to', 'object': 'B'}]",
-    )
+        description="Relationships in format [{'subject': 'A', 'predicate': 'relates_to', 'object': 'B'}]")
 
     context_id: str | None = Field(
         default=None, description="ID linking related memories in the same context"
@@ -111,8 +106,7 @@ class MemoryEntry(BaseModel):
 
     metadata: MemoryMetadata = Field(
         default_factory=MemoryMetadata,
-        description="Structured metadata about the memory",
-    )
+        description="Structured metadata about the memory")
 
     embedding: list[float] | None = Field(
         default=None, description="Vector embedding for similarity search"
@@ -122,8 +116,7 @@ class MemoryEntry(BaseModel):
         default=None,
         ge=0.0,
         le=1.0,
-        description="Similarity score when retrieved (populated during retrieval)",
-    )
+        description="Similarity score when retrieved (populated during retrieval)")
 
 
 class MemoryStats(BaseModel):
@@ -199,8 +192,7 @@ class MemoryState(MessagesState):
     # Operation tracking
     last_operation: dict[str, Any] = Field(
         default_factory=dict,
-        description="Information about the last memory operation performed",
-    )
+        description="Information about the last memory operation performed")
 
     memory_context: dict[str, Any] = Field(
         default_factory=dict, description="Context information for memory operations"
@@ -209,8 +201,7 @@ class MemoryState(MessagesState):
     # Search and filtering
     active_filters: dict[str, Any] = Field(
         default_factory=dict,
-        description="Currently active filters for memory search/retrieval",
-    )
+        description="Currently active filters for memory search/retrieval")
 
     # Memory management
     memory_storage_path: str | None = Field(
@@ -219,8 +210,7 @@ class MemoryState(MessagesState):
 
     memory_cache: dict[str, Any] = Field(
         default_factory=dict,
-        description="In-memory cache for frequently accessed memories",
-    )
+        description="In-memory cache for frequently accessed memories")
 
     def add_memory(self, memory: MemoryEntry) -> None:
         """Add a memory entry to current memories."""

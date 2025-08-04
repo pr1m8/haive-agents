@@ -99,8 +99,7 @@ class MessageDocumentConverter:
         self,
         conversation_id: str | None = None,
         user_id: str | None = None,
-        session_id: str | None = None,
-    ):
+        session_id: str | None = None):
         """Initialize converter with context."""
         self.conversation_id = conversation_id or f"conv_{uuid4()}"
         self.user_id = user_id
@@ -142,8 +141,7 @@ class MessageDocumentConverter:
             content_length=len(content),
             estimated_tokens=len(content.split()) * 1.3,
             # Rough token estimate
-            **content_analysis,
-        )
+            **content_analysis)
 
         # Create document metadata
         doc_metadata = {
@@ -422,8 +420,7 @@ class ConversationDocumentBatch:
         self,
         messages: list[BaseMessage],
         include_summary: bool = True,
-        chunk_size: int = 5,
-    ) -> list[TimestampedDocument]:
+        chunk_size: int = 5) -> list[TimestampedDocument]:
         """Process entire conversation into documents.
 
         Args:
@@ -507,8 +504,7 @@ def extract_documents_by_timeframe(
 def sort_documents_by_relevance_and_time(
     documents: list[TimestampedDocument],
     time_weight: float = 0.3,
-    recency_decay: float = 0.1,
-) -> list[TimestampedDocument]:
+    recency_decay: float = 0.1) -> list[TimestampedDocument]:
     """Sort documents by relevance and recency.
 
     Args:

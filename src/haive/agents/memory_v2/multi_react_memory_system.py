@@ -41,8 +41,7 @@ class MultiReactMemorySystem:
         self,
         user_id: str = "default_user",
         engine: AugLLMConfig | None = None,
-        memory_base_path: str | None = None,
-    ):
+        memory_base_path: str | None = None):
         self.user_id = user_id
         self.engine = engine or AugLLMConfig(temperature=0.7)
         self.memory_base_path = memory_base_path or f"./memories/{user_id}"
@@ -273,8 +272,7 @@ Memory types:
 - episodic: Personal experiences, events, conversations
 - semantic: Facts, definitions, general knowledge
 - procedural: Skills, procedures, how-to knowledge
-- working: Current context, active tasks, temporary information""",
-        )
+- working: Current context, active tasks, temporary information""")
 
         return router_agent
 

@@ -47,8 +47,7 @@ class MemoryConfig(BaseModel):
     storage_backend: str = Field(
         default="json_file",
         description="Backend for memory storage",
-        pattern="^(json_file|sqlite|neo4j|vector_db|in_memory)$",
-    )
+        pattern="^(json_file|sqlite|neo4j|vector_db|in_memory)$")
 
     storage_path: str | None = Field(
         default=None, description="Path for file-based storage backends"
@@ -60,8 +59,7 @@ class MemoryConfig(BaseModel):
 
     memory_ttl: int = Field(
         default=-1,
-        description="Time-to-live for memories in seconds (-1 for permanent)",
-    )
+        description="Time-to-live for memories in seconds (-1 for permanent)")
 
     enable_embedding: bool = Field(
         default=True, description="Whether to generate embeddings for similarity search"
@@ -75,8 +73,7 @@ class MemoryConfig(BaseModel):
         default=0.7,
         ge=0.0,
         le=1.0,
-        description="Minimum similarity score for retrieval",
-    )
+        description="Minimum similarity score for retrieval")
 
     classification_enabled: bool = Field(
         default=True, description="Whether to automatically classify memories"
@@ -84,14 +81,12 @@ class MemoryConfig(BaseModel):
 
     auto_cleanup: bool = Field(
         default=False,
-        description="Whether to automatically clean up old/low-importance memories",
-    )
+        description="Whether to automatically clean up old/low-importance memories")
 
     cache_size: int = Field(
         default=1000,
         ge=0,
-        description="Size of in-memory cache for frequently accessed memories",
-    )
+        description="Size of in-memory cache for frequently accessed memories")
 
     @field_validator("storage_path")
     @classmethod
@@ -162,8 +157,7 @@ def store_memory(
     tags: list[str] | None = None,
     context_id: str | None = None,
     namespace: str = "default",
-    config: dict[str, Any] | None = None,
-) -> str:
+    config: dict[str, Any] | None = None) -> str:
     """Store a memory with classification and metadata.
 
     Stores a memory entry with automatic classification, metadata extraction,
@@ -214,8 +208,7 @@ def store_memory(
             timestamp=timestamp,
             source="user_input",
             tags=tags or [],
-            context_id=context_id,
-        )
+            context_id=context_id)
 
         memory = MemoryEntry(id=memory_id, content=content, metadata=metadata)
 
@@ -271,8 +264,7 @@ def retrieve_memory(
     importance_filter: list[str] | None = None,
     limit: int = 5,
     namespace: str = "default",
-    config: dict[str, Any] | None = None,
-) -> list[dict[str, Any]]:
+    config: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Retrieve memories based on query and filters.
 
     Searches for relevant memories using content similarity and metadata filters.
@@ -380,8 +372,7 @@ def search_memory(
     sort_order: str = "desc",
     limit: int = 10,
     namespace: str = "default",
-    config: dict[str, Any] | None = None,
-) -> list[dict[str, Any]]:
+    config: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Search memories with flexible filtering and sorting options.
 
     Provides advanced search capabilities with multiple filter options
@@ -501,8 +492,7 @@ def search_memory(
             }
             results.sort(
                 key=lambda x: importance_order.get(x.metadata.importance, 0),
-                reverse=reverse_order,
-            )
+                reverse=reverse_order)
         elif sort_by == "retrieval_count":
             results.sort(
                 key=lambda x: x.metadata.retrieval_count, reverse=reverse_order

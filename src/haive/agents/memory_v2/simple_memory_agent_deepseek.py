@@ -22,8 +22,7 @@ from .memory_state_original import (
     ImportanceLevel,
     MemoryState,
     MemoryType,
-    UnifiedMemoryEntry,
-)
+    UnifiedMemoryEntry)
 from .memory_state_with_tokens import MemoryStateWithTokens
 
 logger = logging.getLogger(__name__)
@@ -45,8 +44,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
         engine: AugLLMConfig | None = None,
         user_id: str = "default_user",
         max_memories: int = 100,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize the memory agent.
 
         Args:
@@ -149,8 +147,7 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
             content=content,
             memory_type=memory_type,
             importance=importance,
-            user_id=self.user_id,
-        )
+            user_id=self.user_id)
 
         self.memory_state.add_memory_item(memory)
 
@@ -284,8 +281,7 @@ async def test_with_deepseek():
 
     aug_config = AugLLMConfig(
         llm_config=deepseek_config,
-        system_message="You are a helpful assistant with memory capabilities.",
-    )
+        system_message="You are a helpful assistant with memory capabilities.")
 
     # Create agent
     agent = SimpleMemoryAgentDeepSeek(

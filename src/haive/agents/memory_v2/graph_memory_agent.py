@@ -166,8 +166,7 @@ class GraphMemoryAgent:
                 url=self.config.neo4j_uri,
                 username=self.config.neo4j_username,
                 password=self.config.neo4j_password,
-                database=self.config.database_name,
-            )
+                database=self.config.database_name)
 
             # Create constraints for better performance
             self._create_graph_constraints()
@@ -222,8 +221,7 @@ class GraphMemoryAgent:
                 if self.config.extract_properties
                 else False
             ),
-            strict_mode=False,
-        )
+            strict_mode=False)
 
     def _init_rag_components(self):
         """Initialize Graph RAG components."""
@@ -233,15 +231,13 @@ class GraphMemoryAgent:
                 graph_db_uri=self.config.neo4j_uri,
                 graph_db_user=self.config.neo4j_username,
                 graph_db_password=self.config.neo4j_password,
-                graph_db_database=self.config.database_name,
-            )
+                graph_db_database=self.config.database_name)
 
             rag_config = GraphDBRAGConfig(
                 domain_name="memory",
                 domain_categories=["personal", "knowledge", "events"],
                 graph_db_config=graph_db_config,
-                llm_config=self.config.llm_config,
-            )
+                llm_config=self.config.llm_config)
 
             # Create Graph RAG agent
             self.graph_rag_agent = GraphDBRAGAgent(rag_config)
@@ -258,8 +254,7 @@ class GraphMemoryAgent:
             graph=self.graph,
             verbose=True,
             validate_cypher=True,
-            return_intermediate_steps=True,
-        )
+            return_intermediate_steps=True)
 
     def _init_vector_index(self):
         """Initialize vector index for semantic search on graph."""
@@ -276,8 +271,7 @@ class GraphMemoryAgent:
                 index_name="person_embeddings",
                 node_label="Person",
                 text_node_properties=["name", "description"],
-                embedding_node_property="embedding",
-            )
+                embedding_node_property="embedding")
 
             # Create vector index on Concept nodes
             self.concept_vector_index = Neo4jVector.from_existing_graph(
@@ -289,8 +283,7 @@ class GraphMemoryAgent:
                 index_name="concept_embeddings",
                 node_label="Concept",
                 text_node_properties=["name", "description"],
-                embedding_node_property="embedding",
-            )
+                embedding_node_property="embedding")
 
             self.logger.info("Vector indexes created successfully")
         except Exception as e:
@@ -317,8 +310,7 @@ class GraphMemoryAgent:
                 "user_id": self.config.user_id,
                 "timestamp": datetime.now().isoformat(),
                 "source": "memory_extraction",
-            },
-        )
+            })
 
         # Use Haive's GraphTransformer if available, otherwise fall back to
         # LangChain
@@ -330,8 +322,7 @@ class GraphMemoryAgent:
                 allowed_relationships=self.config.allowed_relationships,
                 node_properties=self.config.node_properties,
                 relationship_properties=self.config.relationship_properties,
-                additional_instructions="Extract all entities and relationships that represent memories, facts, and connections.",
-            )
+                additional_instructions="Extract all entities and relationships that represent memories, facts, and connections.")
         else:
             # Fall back to LangChain LLMGraphTransformer
             graph_docs = self.llm_graph_transformer.convert_to_graph_documents([doc])
@@ -390,8 +381,7 @@ class GraphMemoryAgent:
                             "id": node_props["id"],
                             "name": node.id,
                             "properties": node_props,
-                        },
-                    )
+                        })
                     nodes_created += 1
 
                 # Store relationships
@@ -425,8 +415,7 @@ class GraphMemoryAgent:
                             "source_id": source_id,
                             "target_id": target_id,
                             "properties": rel_props,
-                        },
-                    )
+                        })
                     relationships_created += 1
 
             except Exception as e:
@@ -457,8 +446,7 @@ class GraphMemoryAgent:
                 "timestamp": datetime.now().isoformat(),
                 "nodes_created": nodes_created,
                 "relationships_created": relationships_created,
-            },
-        )
+            })
 
         return {
             "nodes_created": nodes_created,
@@ -597,8 +585,7 @@ class GraphMemoryAgent:
         self,
         entity_name: str,
         max_depth: int = 2,
-        relationship_types: list[str] | None = None,
-    ) -> dict[str, Any]:
+        relationship_types: list[str] | None = None) -> dict[str, Any]:
         """Get a subgraph centered around an entity.
 
         Args:
@@ -686,8 +673,7 @@ class GraphMemoryAgent:
         self,
         input_text: str,
         mode: GraphMemoryMode | None = None,
-        auto_store: bool = True,
-    ) -> dict[str, Any]:
+        auto_store: bool = True) -> dict[str, Any]:
         """Main entry point for the agent.
 
         Args:
@@ -765,8 +751,7 @@ async def example_graph_memory():
         neo4j_username="neo4j",
         neo4j_password="password",
         user_id="alice_smith",
-        mode=GraphMemoryMode.FULL,
-    )
+        mode=GraphMemoryMode.FULL)
 
     agent = GraphMemoryAgent(config)
 

@@ -28,16 +28,14 @@ from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
-    KnowledgeGraph,
-)
+    KnowledgeGraph)
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 
 from .memory_state_original import (
     EnhancedMemoryItem,
     ImportanceLevel,
-    MemoryType,
-)
+    MemoryType)
 from .message_document_converter import MessageDocumentConverter
 from .time_weighted_retriever import TimeWeightConfig, TimeWeightedRetriever
 
@@ -131,8 +129,7 @@ class ConversationMemoryAgent:
                     "type": "system",
                     "timestamp": datetime.now(UTC).isoformat(),
                     "importance": "low",
-                },
-            )
+                })
             self._documents.append(placeholder_doc)
 
         # Create BaseRAGAgent from documents
@@ -140,8 +137,7 @@ class ConversationMemoryAgent:
             documents=self._documents,
             embedding_model=self.config.embedding_model,
             vector_store_provider=self.config.vector_store_provider,
-            name=self.name,
-        )
+            name=self.name)
 
         # Replace with time-weighted retriever if enabled
         if self.config.enable_time_weighting:
@@ -149,8 +145,7 @@ class ConversationMemoryAgent:
                 decay_rate=self.config.time_decay_rate,
                 recency_weight=self.config.recency_weight,
                 k=self.config.max_memories_per_query,
-                score_threshold=self.config.similarity_threshold,
-            )
+                score_threshold=self.config.similarity_threshold)
 
             # Get the vector store from the RAG agent
             vector_store = self._rag_agent.retriever_config.vectorstore
@@ -220,8 +215,7 @@ class ConversationMemoryAgent:
                 documents=self._documents,
                 embedding_model=self.config.embedding_model,
                 vector_store_provider=self.config.vector_store_provider,
-                name=self.name,
-            )
+                name=self.name)
             logger.info(
                 f"Updated vector store with {
                     len(new_documents)} new documents"
@@ -256,8 +250,7 @@ class FactualMemoryAgent:
                 memory_type=MemoryType.FACTUAL,
                 importance=ImportanceLevel.LOW,
                 tags=["system", "initialization"],
-                confidence=1.0,
-            )
+                confidence=1.0)
             self._memories.append(placeholder_memory)
 
         # Convert memories to documents
@@ -268,8 +261,7 @@ class FactualMemoryAgent:
             documents=documents,
             embedding_model=self.config.embedding_model,
             vector_store_provider=self.config.vector_store_provider,
-            name=self.name,
-        )
+            name=self.name)
 
         self._initialized = True
         logger.info(
@@ -339,8 +331,7 @@ class FactualMemoryAgent:
                 "source": memory.source,
                 "timestamp": memory.created_at.isoformat(),
                 "access_count": memory.access_count,
-            },
-        )
+            })
 
     def _memories_to_documents(
         self, memories: list[EnhancedMemoryItem]
@@ -357,8 +348,7 @@ class FactualMemoryAgent:
                 documents=all_documents,
                 embedding_model=self.config.embedding_model,
                 vector_store_provider=self.config.vector_store_provider,
-                name=self.name,
-            )
+                name=self.name)
             logger.info("Updated factual memory store")
         except Exception as e:
             logger.exception(f"Failed to update factual memory store: {e}")
@@ -392,8 +382,7 @@ class PreferencesMemoryAgent:
                 memory_type=MemoryType.PREFERENCE,
                 importance=ImportanceLevel.LOW,
                 tags=["system"],
-                confidence=1.0,
-            )
+                confidence=1.0)
             self._preferences.append(placeholder)
 
         # Convert to documents
@@ -405,8 +394,7 @@ class PreferencesMemoryAgent:
             llm_config=self.config.llm_config,
             embedding_model=self.config.embedding_model,
             vector_store_provider=self.config.vector_store_provider,
-            name=self.name,
-        )
+            name=self.name)
 
         self._initialized = True
         logger.info(
@@ -472,8 +460,7 @@ class PreferencesMemoryAgent:
                     "confidence": pref.confidence,
                     "tags": pref.tags,
                     "timestamp": pref.created_at.isoformat(),
-                },
-            )
+                })
             documents.append(doc)
         return documents
 
@@ -486,8 +473,7 @@ class PreferencesMemoryAgent:
                 llm_config=self.config.llm_config,
                 embedding_model=self.config.embedding_model,
                 vector_store_provider=self.config.vector_store_provider,
-                name=self.name,
-            )
+                name=self.name)
             logger.info("Updated preferences RAG agent")
         except Exception as e:
             logger.exception(f"Failed to update preferences agent: {e}")
@@ -523,8 +509,7 @@ class UnifiedMemoryRAGAgent:
         await asyncio.gather(
             self.conversation_memory.initialize(),
             self.factual_memory.initialize(),
-            self.preferences_memory.initialize(),
-        )
+            self.preferences_memory.initialize())
         logger.info("Initialized all memory agents")
 
     async def process_conversation(self, messages: list[BaseMessage]) -> dict[str, Any]:
@@ -553,8 +538,7 @@ class UnifiedMemoryRAGAgent:
                     memory_type=MemoryType.FACTUAL,
                     importance=ImportanceLevel.HIGH,
                     tags=["personal", "factual"],
-                    confidence=0.8,
-                )
+                    confidence=0.8)
                 extracted_memories.append(memory)
 
             elif any(
@@ -568,8 +552,7 @@ class UnifiedMemoryRAGAgent:
                     memory_type=MemoryType.PREFERENCE,
                     importance=ImportanceLevel.MEDIUM,
                     tags=["preference"],
-                    confidence=0.7,
-                )
+                    confidence=0.7)
                 extracted_preferences.append(preference)
 
         # Add extracted memories
@@ -602,8 +585,7 @@ class UnifiedMemoryRAGAgent:
             tasks.append(
                 (
                     "conversation",
-                    self.conversation_memory.retrieve_conversation_context(query),
-                )
+                    self.conversation_memory.retrieve_conversation_context(query))
             )
         if "factual" in memory_types:
             tasks.append(("factual", self.factual_memory.retrieve_facts(query)))
@@ -697,14 +679,12 @@ def create_conversation_memory_agent(
     vector_store_provider: VectorStoreProvider = VectorStoreProvider.FAISS,
     embedding_model: str = "sentence-transformers/all-mpnet-base-v2",
     enable_time_weighting: bool = True,
-    name: str = "conversation_memory",
-) -> ConversationMemoryAgent:
+    name: str = "conversation_memory") -> ConversationMemoryAgent:
     """Factory function to create conversation memory agent."""
     config = MemoryRAGConfig(
         vector_store_provider=vector_store_provider,
         embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
-        enable_time_weighting=enable_time_weighting,
-    )
+        enable_time_weighting=enable_time_weighting)
 
     return ConversationMemoryAgent(config, name)
 
@@ -713,14 +693,12 @@ def create_factual_memory_agent(
     vector_store_provider: VectorStoreProvider = VectorStoreProvider.FAISS,
     embedding_model: str = "sentence-transformers/all-mpnet-base-v2",
     similarity_threshold: float = 0.7,
-    name: str = "factual_memory",
-) -> FactualMemoryAgent:
+    name: str = "factual_memory") -> FactualMemoryAgent:
     """Factory function to create factual memory agent."""
     config = MemoryRAGConfig(
         vector_store_provider=vector_store_provider,
         embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
-        similarity_threshold=similarity_threshold,
-    )
+        similarity_threshold=similarity_threshold)
 
     return FactualMemoryAgent(config, name)
 
@@ -729,8 +707,7 @@ def create_unified_memory_agent(
     user_id: str | None = None,
     llm_config: AugLLMConfig = None,
     vector_store_provider: VectorStoreProvider = VectorStoreProvider.FAISS,
-    embedding_model: str = "sentence-transformers/all-mpnet-base-v2",
-) -> UnifiedMemoryRAGAgent:
+    embedding_model: str = "sentence-transformers/all-mpnet-base-v2") -> UnifiedMemoryRAGAgent:
     """Factory function to create unified memory agent."""
     if llm_config is None:
         llm_config = AugLLMConfig()
@@ -738,8 +715,7 @@ def create_unified_memory_agent(
     config = MemoryRAGConfig(
         llm_config=llm_config,
         vector_store_provider=vector_store_provider,
-        embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
-    )
+        embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model))
 
     return UnifiedMemoryRAGAgent(config, user_id)
 
@@ -752,8 +728,7 @@ def create_unified_memory_agent(
 def create_postgresql_memory_agent(
     connection_string: str,
     user_id: str | None = None,
-    table_name: str = "user_memories",
-) -> UnifiedMemoryRAGAgent:
+    table_name: str = "user_memories") -> UnifiedMemoryRAGAgent:
     """Create memory agent with PostgreSQL persistence."""
     # Note: This would need proper PGVectorStoreConfig integration
     config = MemoryRAGConfig(

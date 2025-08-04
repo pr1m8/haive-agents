@@ -8,8 +8,7 @@ from langchain_core.messages import HumanMessage
 
 from haive.agents.memory_v2.simple_memory_agent import (
     SimpleMemoryAgent,
-    TokenAwareMemoryConfig,
-)
+    TokenAwareMemoryConfig)
 
 
 def test_minimal():

@@ -21,8 +21,7 @@ from langchain.retrievers import EnsembleRetriever
 from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import (
     CrossEncoderReranker,
-    LLMChainExtractor,
-)
+    LLMChainExtractor)
 from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain_community.cross_encoders import HuggingFaceCrossEncoder
 from langchain_community.embeddings import OpenAIEmbeddings
@@ -143,13 +142,11 @@ class AdvancedRAGMemoryAgent:
                     self.vector_store = FAISS.load_local(
                         self.config.memory_store_path,
                         embeddings,
-                        allow_dangerous_deserialization=True,
-                    )
+                        allow_dangerous_deserialization=True)
                 elif self.config.vector_store_type == "chroma":
                     self.vector_store = Chroma(
                         persist_directory=self.config.memory_store_path,
-                        embedding_function=embeddings,
-                    )
+                        embedding_function=embeddings)
                 self.logger.info(
                     f"Loaded existing vector store from {
                         self.config.memory_store_path}"
@@ -172,8 +169,7 @@ class AdvancedRAGMemoryAgent:
                 "user_id": self.config.user_id,
                 "doc_id": "init_0",
                 "importance": "low",
-            },
-        )
+            })
 
         if self.config.vector_store_type == "faiss":
             self.vector_store = FAISS.from_documents([initial_doc], embeddings)
@@ -194,8 +190,7 @@ class AdvancedRAGMemoryAgent:
             self.time_weighted_retriever = TimeWeightedRetriever(
                 vectorstore=self.vector_store,
                 decay_rate=self.config.recency_decay,
-                k=self.config.k_initial,
-            )
+                k=self.config.k_initial)
 
         # Sparse retriever (BM25)
         if self.config.enable_bm25 and self.documents:
@@ -214,8 +209,7 @@ class AdvancedRAGMemoryAgent:
         if self.sparse_retriever:
             self.ensemble_retriever = EnsembleRetriever(
                 retrievers=[self.dense_retriever, self.sparse_retriever],
-                weights=[self.config.dense_weight, self.config.sparse_weight],
-            )
+                weights=[self.config.dense_weight, self.config.sparse_weight])
         else:
             self.ensemble_retriever = self.dense_retriever
 
@@ -274,8 +268,7 @@ class AdvancedRAGMemoryAgent:
             self.memory_agent = SimpleRAGAgent.from_retriever(
                 retriever=self.reranking_retriever,
                 llm=self.config.llm_config.instantiate(),
-                name="advanced_rag_memory",
-            )
+                name="advanced_rag_memory")
         except Exception as e:
             # Fallback to basic agent
             self.logger.warning(f"Could not create SimpleRAGAgent: {e}")
@@ -365,8 +358,7 @@ class AdvancedRAGMemoryAgent:
         self,
         query: str,
         strategy: RetrievalStrategy | None = None,
-        k: int | None = None,
-    ) -> list[Document]:
+        k: int | None = None) -> list[Document]:
         """Retrieve documents using specified strategy."""
         if strategy is None:
             complexity = self.analyze_query_complexity(query)
@@ -440,8 +432,7 @@ class AdvancedRAGMemoryAgent:
         self,
         query: str,
         retrieved_docs: list[Document],
-        include_citations: bool | None = None,
-    ) -> dict[str, Any]:
+        include_citations: bool | None = None) -> dict[str, Any]:
         """Generate response with citations."""
         include_citations = include_citations or self.config.include_citations
 
@@ -503,8 +494,7 @@ Answer:"""
         self,
         content: str,
         metadata: dict[str, Any] | None = None,
-        importance: str = "normal",
-    ) -> dict[str, Any]:
+        importance: str = "normal") -> dict[str, Any]:
         """Add new memory to the system."""
         # Prepare metadata
         doc_metadata = {
@@ -535,8 +525,7 @@ Answer:"""
                 # Update ensemble retriever
                 self.ensemble_retriever = EnsembleRetriever(
                     retrievers=[self.dense_retriever, self.sparse_retriever],
-                    weights=[self.config.dense_weight, self.config.sparse_weight],
-                )
+                    weights=[self.config.dense_weight, self.config.sparse_weight])
             except Exception as e:
                 self.logger.warning(f"Could not reinitialize BM25: {e}")
 
@@ -550,8 +539,7 @@ Answer:"""
         self,
         query: str,
         strategy: RetrievalStrategy | None = None,
-        include_analysis: bool = True,
-    ) -> dict[str, Any]:
+        include_analysis: bool = True) -> dict[str, Any]:
         """Query memory with advanced RAG capabilities."""
         start_time = datetime.now()
 
@@ -699,8 +687,7 @@ async def create_research_memory_agent() -> AdvancedRAGMemoryAgent:
         enable_reranking=True,
         enable_query_expansion=True,
         include_citations=True,
-        importance_boost=1.3,
-    )
+        importance_boost=1.3)
 
     return AdvancedRAGMemoryAgent(config)
 
@@ -714,8 +701,7 @@ async def create_conversational_memory_agent() -> AdvancedRAGMemoryAgent:
         recency_decay=0.02,  # Faster decay for conversations
         k_final=3,
         include_citations=False,  # Less formal for conversation
-        importance_boost=1.1,
-    )
+        importance_boost=1.1)
 
     return AdvancedRAGMemoryAgent(config)
 
@@ -729,21 +715,17 @@ async def example_advanced_rag_usage():
     memories = [
         (
             "Dr. Sarah Chen published a groundbreaking paper on Graph Neural Networks in Nature 2023.",
-            "high",
-        ),
+            "high"),
         (
             "The paper introduces a new attention mechanism for graph-structured data.",
-            "high",
-        ),
+            "high"),
         (
             "Sarah works at Stanford AI Lab and collaborates with Google Research.",
-            "normal",
-        ),
+            "normal"),
         ("Her previous work on knowledge graphs was cited over 1000 times.", "high"),
         (
             "I met Sarah at NeurIPS 2023 where she presented her latest findings.",
-            "normal",
-        ),
+            "normal"),
         ("She mentioned that graph transformers could revolutionize NLP.", "critical"),
     ]
 

@@ -8,8 +8,7 @@ from haive.core.models.llm.base import DeepSeekLLMConfig
 
 from haive.agents.memory_v2.simple_memory_agent import (
     SimpleMemoryAgent,
-    TokenAwareMemoryConfig,
-)
+    TokenAwareMemoryConfig)
 
 
 def test_simple_memory_agent_with_deepseek():
@@ -27,8 +26,7 @@ def test_simple_memory_agent_with_deepseek():
         max_context_tokens=2000,
         warning_threshold=0.7,
         critical_threshold=0.85,
-        storage_backend="in_memory",
-    )
+        storage_backend="in_memory")
 
     try:
         # Create SimpleMemoryAgent

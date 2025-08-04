@@ -27,8 +27,7 @@ from haive.agents.react.agent import ReactAgent
 try:
     from haive.agents.memory_v2.advanced_rag_memory_agent import (
         AdvancedRAGConfig,
-        AdvancedRAGMemoryAgent,
-    )
+        AdvancedRAGMemoryAgent)
 
     HAS_ADVANCED_RAG = True
 except ImportError:
@@ -39,8 +38,7 @@ except ImportError:
 try:
     from haive.agents.memory_v2.graph_memory_agent import (
         GraphMemoryAgent,
-        GraphMemoryConfig,
-    )
+        GraphMemoryConfig)
 
     HAS_GRAPH_MEMORY = True
 except ImportError:
@@ -172,8 +170,7 @@ class MultiMemoryCoordinator:
                 name="simple_memory",
                 engine=self.config.engine,
                 user_id=self.config.user_id,
-                **config,
-            )
+                **config)
             self.memory_systems[MemorySystemType.SIMPLE] = agent
             self.logger.info("Simple memory system initialized")
         except Exception as e:
@@ -192,8 +189,7 @@ class MultiMemoryCoordinator:
                 engine=self.config.engine,
                 user_id=self.config.user_id,
                 memory_store_path=storage_path,
-                **config,
-            )
+                **config)
             self.memory_systems[MemorySystemType.REACT] = agent
             self.logger.info("React memory system initialized")
         except Exception as e:
@@ -251,8 +247,7 @@ class MultiMemoryCoordinator:
                 rag_config = AdvancedRAGConfig(
                     user_id=self.config.user_id,
                     memory_store_path=storage_path,
-                    llm_config=self.config.engine,
-                )
+                    llm_config=self.config.engine)
 
             agent = AdvancedRAGMemoryAgent(rag_config)
             self.memory_systems[MemorySystemType.ADVANCED_RAG] = agent
@@ -435,8 +430,7 @@ System capabilities:
 - react: Tool-based flexible memory operations
 - longterm: Cross-conversation persistent memory
 - graph: Structured knowledge with entities/relationships
-- rag: Advanced retrieval with multi-stage processing""",
-        )
+- rag: Advanced retrieval with multi-stage processing""")
 
         return router
 
@@ -459,8 +453,7 @@ When combining results:
 - Prioritize more recent information
 - Weight results by system reliability
 - Highlight conflicting information
-- Provide source attribution when helpful""",
-        )
+- Provide source attribution when helpful""")
 
         return synthesizer
 
@@ -470,8 +463,7 @@ When combining results:
         systems: list[MemorySystemType] | None = None,
         mode: CoordinationMode | None = None,
         metadata: dict[str, Any] | None = None,
-        importance: str = "normal",
-    ) -> dict[str, Any]:
+        importance: str = "normal") -> dict[str, Any]:
         """Store memory across appropriate systems.
 
         Args:
@@ -532,8 +524,7 @@ When combining results:
                 elif system_type == MemorySystemType.REACT:
                     system_result = await system.arun(
                         f"Store this memory with {importance} importance: {content}",
-                        auto_save=True,
-                    )
+                        auto_save=True)
 
                 elif system_type == MemorySystemType.LONGTERM:
                     system_result = await system.run(content, extract_memories=True)
@@ -576,8 +567,7 @@ When combining results:
         query: str,
         systems: list[MemorySystemType] | None = None,
         mode: CoordinationMode | None = None,
-        combine_results: bool = True,
-    ) -> dict[str, Any]:
+        combine_results: bool = True) -> dict[str, Any]:
         """Query memory across systems.
 
         Args:
@@ -638,8 +628,7 @@ When combining results:
             try:
                 system_results = await asyncio.wait_for(
                     asyncio.gather(*tasks, return_exceptions=True),
-                    timeout=self.config.parallel_timeout,
-                )
+                    timeout=self.config.parallel_timeout)
 
                 for i, system_result in enumerate(system_results):
                     system_type = systems[i]
@@ -788,8 +777,7 @@ If there are conflicts, highlight them. If results complement each other, combin
         self,
         from_system: MemorySystemType,
         to_system: MemorySystemType,
-        filter_criteria: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
+        filter_criteria: dict[str, Any] | None = None) -> dict[str, Any]:
         """Migrate memories between systems."""
         if (
             from_system not in self.memory_systems
@@ -817,16 +805,14 @@ If there are conflicts, highlight them. If results complement each other, combin
         user_id: str,
         enable_graph: bool = False,
         neo4j_config: dict[str, Any] | None = None,
-        storage_path: str | None = None,
-    ) -> "MultiMemoryCoordinator":
+        storage_path: str | None = None) -> "MultiMemoryCoordinator":
         """Create a comprehensive memory system with all components."""
         # Base configuration
         config = MultiMemoryConfig(
             user_id=user_id,
             enable_graph=enable_graph,
             base_storage_path=storage_path,
-            default_mode=CoordinationMode.INTELLIGENT,
-        )
+            default_mode=CoordinationMode.INTELLIGENT)
 
         # Add graph config if enabled
         if enable_graph and neo4j_config:
@@ -841,8 +827,7 @@ async def demo_multi_memory_coordinator():
     coordinator = MultiMemoryCoordinator.create_comprehensive_system(
         user_id="demo_user",
         enable_graph=False,  # Set to True if Neo4j available
-        storage_path="./demo_memory_storage",
-    )
+        storage_path="./demo_memory_storage")
 
     # Store diverse memories
     memories = [
@@ -851,8 +836,7 @@ async def demo_multi_memory_coordinator():
         ("Important: Alice's direct phone number is 555-0123.", "critical"),
         (
             "TechStartup Inc. was founded in 2019 and specializes in machine learning.",
-            "high",
-        ),
+            "high"),
         ("Alice mentioned they're hiring 50 new engineers this quarter.", "normal"),
     ]
 

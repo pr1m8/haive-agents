@@ -16,8 +16,7 @@ from .memory_models_standalone import (
     EnhancedMemoryItem,
     ImportanceLevel,
     KnowledgeTriple,
-    MemoryItem,
-)
+    MemoryItem)
 
 # Import original proven memory models
 
@@ -129,8 +128,7 @@ class UnifiedMemoryEntry(BaseModel):
             entry_type="memory_item",
             memory_item=memory_item,
             memory_type=memory_item.memory_type,
-            importance=memory_item.importance,
-        )
+            importance=memory_item.importance)
 
     @classmethod
     def from_knowledge_triple(
@@ -141,8 +139,7 @@ class UnifiedMemoryEntry(BaseModel):
             entry_type="knowledge_triple",
             knowledge_triple=triple,
             memory_type=MemoryType.GRAPH_TRIPLE,
-            importance=triple.importance,
-        )
+            importance=triple.importance)
 
 
 # ============================================================================

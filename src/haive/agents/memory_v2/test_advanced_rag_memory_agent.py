@@ -16,8 +16,7 @@ from haive.agents.memory_v2.advanced_rag_memory_agent import (
     AdvancedRAGConfig,
     AdvancedRAGMemoryAgent,
     QueryComplexity,
-    RetrievalStrategy,
-)
+    RetrievalStrategy)
 
 
 class TestAdvancedRAGMemoryAgent:
@@ -41,8 +40,7 @@ class TestAdvancedRAGMemoryAgent:
             k_initial=10,
             k_final=3,
             enable_reranking=False,  # Disable for basic tests
-            enable_bm25=True,
-        )
+            enable_bm25=True)
 
     @pytest.fixture
     def advanced_config(self, temp_dir):
@@ -58,8 +56,7 @@ class TestAdvancedRAGMemoryAgent:
             enable_bm25=True,
             enable_query_expansion=True,
             include_citations=True,
-            importance_boost=1.2,
-        )
+            importance_boost=1.2)
 
     @pytest.fixture
     async def basic_agent(self, basic_config):
@@ -96,8 +93,7 @@ class TestAdvancedRAGMemoryAgent:
         # Add an important memory
         result2 = await basic_agent.add_memory(
             "Critical: Alice has access to the production database passwords.",
-            importance="critical",
-        )
+            importance="critical")
 
         assert result2["importance"] == "critical"
         assert result2["total_documents"] >= 3
@@ -157,12 +153,10 @@ class TestAdvancedRAGMemoryAgent:
             ("Sarah Lee is the CTO of InnovateTech.", {"source": "company_directory"}),
             (
                 "InnovateTech develops AI-powered healthcare solutions.",
-                {"source": "company_website"},
-            ),
+                {"source": "company_website"}),
             (
                 "Sarah has a PhD in Computer Science from MIT.",
-                {"source": "linkedin_profile"},
-            ),
+                {"source": "linkedin_profile"}),
         ]
 
         for content, metadata in memories:
@@ -192,8 +186,7 @@ class TestAdvancedRAGMemoryAgent:
 
         await basic_agent.add_memory(
             "Critical security vulnerability found in authentication system.",
-            importance="critical",
-        )
+            importance="critical")
 
         await basic_agent.add_memory(
             "Regular team meeting scheduled for next Tuesday.", importance="normal"
@@ -216,16 +209,14 @@ class TestAdvancedRAGMemoryAgent:
         await basic_agent.add_memory(
             "Project Alpha launched successfully today.",
             metadata={"timestamp": datetime.now().isoformat()},
-            importance="high",
-        )
+            importance="high")
 
         # Add older memory
         old_time = datetime.now() - timedelta(days=30)
         await basic_agent.add_memory(
             "Project Beta was cancelled last month.",
             metadata={"timestamp": old_time.isoformat()},
-            importance="normal",
-        )
+            importance="normal")
 
         # Enable time weighting and query
         basic_agent.config.enable_time_weighting = True
@@ -233,8 +224,7 @@ class TestAdvancedRAGMemoryAgent:
 
         result = await basic_agent.query_memory(
             "What are the latest project updates?",
-            strategy=RetrievalStrategy.DENSE_ONLY,
-        )
+            strategy=RetrievalStrategy.DENSE_ONLY)
 
         # Recent project should be prioritized
         assert "alpha" in result["answer"].lower()
@@ -246,21 +236,17 @@ class TestAdvancedRAGMemoryAgent:
         technical_memories = [
             (
                 "Graph Neural Networks use message passing for node representation learning.",
-                "high",
-            ),
+                "high"),
             (
                 "Attention mechanisms in transformers compute weighted averages of input sequences.",
-                "high",
-            ),
+                "high"),
             ("BERT uses bidirectional attention for contextual embeddings.", "high"),
             (
                 "GPT models employ causal attention masks for autoregressive generation.",
-                "normal",
-            ),
+                "normal"),
             (
                 "Graph attention networks combine GNNs with attention mechanisms.",
-                "critical",
-            ),
+                "critical"),
         ]
 
         for content, importance in technical_memories:
@@ -269,8 +255,7 @@ class TestAdvancedRAGMemoryAgent:
         # Complex technical query
         result = await advanced_agent.query_memory(
             "How do attention mechanisms work in graph neural networks and transformers?",
-            include_analysis=True,
-        )
+            include_analysis=True)
 
         assert result["analysis"]["complexity"] == "complex"
         assert "attention" in result["answer"].lower()
@@ -330,8 +315,7 @@ class TestAdvancedRAGMemoryAgent:
         # Complex query should use more advanced strategy
         complex_result = await basic_agent.query_memory(
             "What is the relationship between John Doe's role and the founding of Acme Corporation, and how might this impact the company's leadership structure?",
-            include_analysis=True,
-        )
+            include_analysis=True)
 
         complex_strategy = complex_result["analysis"]["strategy_used"]
         # Complex queries should prefer more sophisticated strategies
@@ -359,8 +343,7 @@ class TestAdvancedRAGMemoryAgent:
         new_config = AdvancedRAGConfig(
             user_id="test_user",
             memory_store_path=save_path,
-            llm_config=AugLLMConfig(temperature=0.1),
-        )
+            llm_config=AugLLMConfig(temperature=0.1))
 
         new_agent = AdvancedRAGMemoryAgent(new_config)
 
@@ -392,8 +375,7 @@ async def test_research_workflow():
         user_id="researcher",
         strategy=RetrievalStrategy.ADAPTIVE,
         include_citations=True,
-        enable_reranking=True,
-    )
+        enable_reranking=True)
 
     agent = AdvancedRAGMemoryAgent(config)
 
@@ -401,24 +383,19 @@ async def test_research_workflow():
     papers = [
         (
             "'Attention is All You Need' by Vaswani et al. introduced the Transformer architecture.",
-            "critical",
-        ),
+            "critical"),
         (
             "BERT uses bidirectional training to achieve state-of-the-art results on NLP tasks.",
-            "high",
-        ),
+            "high"),
         (
             "GPT-3 demonstrates few-shot learning capabilities with 175 billion parameters.",
-            "high",
-        ),
+            "high"),
         (
             "Vision Transformers apply transformer architecture to image classification.",
-            "normal",
-        ),
+            "normal"),
         (
             "The paper was published in NeurIPS 2017 and has over 50,000 citations.",
-            "normal",
-        ),
+            "normal"),
     ]
 
     for content, importance in papers:

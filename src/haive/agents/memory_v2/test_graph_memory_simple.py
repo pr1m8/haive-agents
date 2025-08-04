@@ -15,8 +15,7 @@ try:
     from haive.agents.memory_v2.graph_memory_agent import (
         GraphMemoryAgent,
         GraphMemoryConfig,
-        GraphMemoryMode,
-    )
+        GraphMemoryMode)
 
     HAS_GRAPH_MEMORY = True
 except ImportError:
@@ -50,8 +49,7 @@ def test_graph_memory_tool_creation():
     config = GraphMemoryConfig(
         mode=GraphMemoryMode.EXTRACT_ONLY,
         llm_config=llm_config,
-        enable_vector_index=False,
-    )
+        enable_vector_index=False)
 
     # This will fail due to Neo4j connection, but we can test config
     with contextlib.suppress(Exception):

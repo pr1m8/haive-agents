@@ -10,8 +10,7 @@ from haive.agents.memory_v2.memory_state_original import (
     MemoryItem,
     MemoryState,
     MemoryType,
-    UnifiedMemoryEntry,
-)
+    UnifiedMemoryEntry)
 from haive.agents.memory_v2.memory_state_with_tokens import MemoryStateWithTokens
 
 
@@ -27,8 +26,7 @@ def test_memory_models():
         tags=["executive", "technology"],
         user_id="test_user",
         confidence=0.9,
-        importance=ImportanceLevel.HIGH,
-    )
+        importance=ImportanceLevel.HIGH)
 
     # Test KnowledgeTriple
     KnowledgeTriple(
@@ -41,8 +39,7 @@ def test_memory_models():
         predicate="has_cto",
         object="Bob",
         importance=ImportanceLevel.HIGH,
-        supporting_evidence="From company website",
-    )
+        supporting_evidence="From company website")
 
     # Test UnifiedMemoryEntry
     entry1 = UnifiedMemoryEntry.from_memory_item(enhanced_memory)

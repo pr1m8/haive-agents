@@ -27,12 +27,10 @@ from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
-    KnowledgeGraph,
-)
+    KnowledgeGraph)
 
 from .memory_state_original import (
-    EnhancedMemoryItem,
-)
+    EnhancedMemoryItem)
 from .message_document_converter import MessageDocumentConverter
 
 # Import existing KG components
@@ -158,8 +156,7 @@ class GraphDatabaseConnector:
 
             driver = AsyncGraphDatabase.driver(
                 self.config.neo4j_uri,
-                auth=(self.config.neo4j_username, self.config.neo4j_password),
-            )
+                auth=(self.config.neo4j_username, self.config.neo4j_password))
 
             # Test connection
             async with driver.session(database=self.config.neo4j_database) as session:
@@ -193,8 +190,7 @@ class GraphDatabaseConnector:
         self,
         graph: KnowledgeGraph,
         graph_id: str,
-        metadata: dict[str, Any] | None = None,
-    ) -> bool:
+        metadata: dict[str, Any] | None = None) -> bool:
         """Store knowledge graph in configured backend."""
         if not self._connection:
             await self.connect()
@@ -241,8 +237,7 @@ class GraphDatabaseConnector:
                         "type": node.type,
                         "graph_id": graph_id,
                         "properties": node.properties,
-                    },
-                )
+                    })
 
             # Create relationships
             for rel in graph.relationships:
@@ -264,8 +259,7 @@ class GraphDatabaseConnector:
                         "graph_id": graph_id,
                         "confidence": rel.confidence_score,
                         "properties": rel.properties,
-                    },
-                )
+                    })
 
             # Store graph metadata
             if metadata:
@@ -356,8 +350,7 @@ class GraphDatabaseConnector:
                         node = EntityNode(
                             id=node_data["id"],
                             type=node_data["type"],
-                            properties=node_data["properties"],
-                        )
+                            properties=node_data["properties"])
                         graph.add_node(node)
 
                     for rel_data in graph_data["relationships"]:
@@ -367,8 +360,7 @@ class GraphDatabaseConnector:
                             type=rel_data["type"],
                             confidence_score=rel_data["confidence"],
                             properties=rel_data["properties"],
-                            supporting_evidence=rel_data.get("supporting_evidence"),
-                        )
+                            supporting_evidence=rel_data.get("supporting_evidence"))
                         graph.add_relationship(rel)
 
                     return graph, graph_data["metadata"]
@@ -435,8 +427,7 @@ class KGMemoryAgent:
                     "tags": memory.tags,
                     "created_at": memory.created_at.isoformat(),
                     "source": memory.source,
-                },
-            )
+                })
             documents.append(doc)
 
         # Transform to knowledge graph
@@ -447,8 +438,7 @@ class KGMemoryAgent:
                 allowed_relationships=self.config.memory_relationships,
                 strict_mode=self.config.strict_mode,
                 node_properties=self.config.extract_properties,
-                relationship_properties=self.config.extract_properties,
-            )
+                relationship_properties=self.config.extract_properties)
 
             # Build unified knowledge graph
             unified_graph = KnowledgeGraph()
@@ -523,8 +513,7 @@ class KGMemoryAgent:
                 documents=documents,
                 allowed_nodes=self.config.memory_node_types,
                 allowed_relationships=self.config.memory_relationships,
-                strict_mode=self.config.strict_mode,
-            )
+                strict_mode=self.config.strict_mode)
 
             # Build unified graph
             unified_graph = KnowledgeGraph()
@@ -706,8 +695,7 @@ def create_memory_kg_agent(
     config = KGMemoryConfig(
         llm_config=llm_config,
         storage_backend=GraphStorageBackend(storage_backend),
-        **storage_kwargs,
-    )
+        **storage_kwargs)
 
     return KGMemoryAgent(config)
 
@@ -717,8 +705,7 @@ def create_neo4j_memory_agent(
     username: str,
     password: str,
     database: str = "neo4j",
-    llm_config: AugLLMConfig = None,
-) -> KGMemoryAgent:
+    llm_config: AugLLMConfig = None) -> KGMemoryAgent:
     """Create KG Memory Agent with Neo4j backend.
 
     Args:
@@ -737,7 +724,6 @@ def create_neo4j_memory_agent(
         neo4j_uri=uri,
         neo4j_username=username,
         neo4j_password=password,
-        neo4j_database=database,
-    )
+        neo4j_database=database)
 
     return KGMemoryAgent(config)

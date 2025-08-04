@@ -16,8 +16,7 @@ try:
     from haive.agents.memory_v2.graph_memory_agent import (
         GraphMemoryAgent,
         GraphMemoryConfig,
-        GraphMemoryMode,
-    )
+        GraphMemoryMode)
 
     HAS_GRAPH_MEMORY = True
 except ImportError:
@@ -44,8 +43,7 @@ def graph_memory_config(neo4j_config):
         user_id="test_user",
         llm_config=AugLLMConfig(temperature=0.1),
         mode=GraphMemoryMode.FULL,
-        enable_vector_index=True,
-    )
+        enable_vector_index=True)
 
 
 @pytest.fixture
@@ -131,8 +129,7 @@ class TestGraphMemoryAgent:
         # Direct Cypher query to verify
         cypher_result = await graph_memory_agent.query_graph(
             "MATCH (p:Person {user_id: 'test_user'})-[:WORKS_FOR]->(o:Organization) RETURN p.name, o.name",
-            query_type="cypher",
-        )
+            query_type="cypher")
 
         assert "results" in cypher_result
 
@@ -360,8 +357,7 @@ async def test_real_world_scenario():
         neo4j_username="neo4j",
         neo4j_password="password",
         user_id="integration_test_user",
-        mode=GraphMemoryMode.FULL,
-    )
+        mode=GraphMemoryMode.FULL)
 
     agent = GraphMemoryAgent(config)
 
@@ -391,8 +387,7 @@ async def test_real_world_scenario():
     # Clean up
     agent.graph.query(
         "MATCH (n {user_id: $user_id}) DETACH DELETE n",
-        {"user_id": "integration_test_user"},
-    )
+        {"user_id": "integration_test_user"})
 
 
 if __name__ == "__main__":

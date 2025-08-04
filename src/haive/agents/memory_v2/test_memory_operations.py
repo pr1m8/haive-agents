@@ -5,8 +5,7 @@ from haive.core.models.llm.base import DeepSeekLLMConfig
 
 from haive.agents.memory_v2.simple_memory_agent import (
     SimpleMemoryAgent,
-    TokenAwareMemoryConfig,
-)
+    TokenAwareMemoryConfig)
 
 
 def test_memory_operations():
@@ -19,8 +18,7 @@ def test_memory_operations():
         ),
         memory_config=TokenAwareMemoryConfig(
             max_context_tokens=2000, storage_backend="in_memory"
-        ),
-    )
+        ))
 
     # Test 1: Store memories
     agent.run("Remember that I'm a software engineer working on AI projects")
