@@ -78,8 +78,7 @@ def save_unstructured_memories(
                 content=memory,
                 source="conversation",
                 timestamp=timestamp,
-                metadata={"user_id": user_id},
-            )
+                metadata={"user_id": user_id})
             content = memory
         elif isinstance(memory, MemoryItem):
             memory_item = memory
@@ -101,8 +100,7 @@ def save_unstructured_memories(
                 "timestamp": memory_item.timestamp,
                 "source": memory_item.source,
                 **memory_item.metadata,
-            },
-        )
+            })
         documents.append(document)
         saved_memories.append(content)
 
@@ -117,8 +115,7 @@ def save_unstructured_memories(
 def save_structured_memories(
     memories: list[dict[str, Any] | KnowledgeTriple],
     vector_store: VectorStore,
-    user_id: str,
-) -> list[dict[str, Any]]:
+    user_id: str) -> list[dict[str, Any]]:
     """Save structured memories (knowledge triples) to vector store.
 
     Args:
@@ -147,8 +144,7 @@ def save_structured_memories(
                 confidence=triple_dict.get("confidence", 1.0),
                 source=triple_dict.get("source", "conversation"),
                 timestamp=triple_dict.get("timestamp", timestamp),
-                metadata=triple_dict.get("metadata", {"user_id": user_id}),
-            )
+                metadata=triple_dict.get("metadata", {"user_id": user_id}))
         elif isinstance(memory, KnowledgeTriple):
             triple = memory
             if not triple.timestamp:
@@ -175,8 +171,7 @@ def save_structured_memories(
                 "object": triple.object_,  # Use object instead of object_ for compatibility
                 "confidence": triple.confidence,
                 **triple.metadata,
-            },
-        )
+            })
         documents.append(document)
         saved_triples.append(triple.dict())
 
@@ -196,8 +191,7 @@ def retrieve_memories(
     vector_store: VectorStore,
     user_id: str,
     limit: int = 5,
-    filter_fn: Callable[[Document], bool] | None = None,
-) -> list[str]:
+    filter_fn: Callable[[Document], bool] | None = None) -> list[str]:
     """Retrieve relevant memories from vector store.
 
     Args:

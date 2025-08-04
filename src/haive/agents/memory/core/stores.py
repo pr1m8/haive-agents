@@ -17,8 +17,7 @@ from haive.agents.memory.core.types import (
     MemoryConsolidationResult,
     MemoryEntry,
     MemoryQueryIntent,
-    MemoryType,
-)
+    MemoryType)
 
 logger = logging.getLogger(__name__)
 
@@ -91,8 +90,7 @@ class MemoryStoreManager:
         user_context: dict[str, Any] | None = None,
         conversation_context: dict[str, Any] | None = None,
         force_classification: MemoryType | None = None,
-        importance_override: float | None = None,
-    ) -> str:
+        importance_override: float | None = None) -> str:
         """Store a memory with automatic classification and metadata extraction.
 
         Args:
@@ -115,8 +113,7 @@ class MemoryStoreManager:
                     content=content,
                     user_context=user_context,
                     conversation_context=conversation_context,
-                    namespace="/".join(namespace),
-                )
+                    namespace="/".join(namespace))
             else:
                 # Manual memory entry
                 memory_entry = MemoryEntry(
@@ -128,8 +125,7 @@ class MemoryStoreManager:
                     ),
                     user_context=user_context or {},
                     session_context=conversation_context or {},
-                    namespace="/".join(namespace),
-                )
+                    namespace="/".join(namespace))
 
             # Override importance if specified
             if importance_override is not None:
@@ -162,8 +158,7 @@ class MemoryStoreManager:
                     "tags": memory_entry.tags,
                     "user_context": memory_entry.user_context,
                     "session_context": memory_entry.session_context,
-                },
-            )
+                })
 
             logger.info(
                 f"Stored memory {memory_id} with types: {[mt.value for mt in memory_entry.memory_types]}"
@@ -186,8 +181,7 @@ class MemoryStoreManager:
         memory_types: list[MemoryType] | None = None,
         limit: int | None = None,
         time_range: tuple[datetime, datetime] | None = None,
-        importance_threshold: float | None = None,
-    ) -> list[dict[str, Any]]:
+        importance_threshold: float | None = None) -> list[dict[str, Any]]:
         """Retrieve memories using intelligent query analysis and ranking.
 
         Args:
@@ -296,8 +290,7 @@ class MemoryStoreManager:
         memory_id: str,
         content: str | None = None,
         additional_metadata: dict[str, Any] | None = None,
-        reclassify: bool = False,
-    ) -> bool:
+        reclassify: bool = False) -> bool:
         """Update an existing memory with new content or metadata.
 
         Args:
@@ -366,8 +359,7 @@ class MemoryStoreManager:
         self,
         namespace: tuple[str, ...] | None = None,
         max_age_hours: int | None = None,
-        dry_run: bool = False,
-    ) -> MemoryConsolidationResult:
+        dry_run: bool = False) -> MemoryConsolidationResult:
         """Consolidate memories by removing duplicates, summarizing old memories, and cleaning up.
 
         Args:
@@ -574,8 +566,7 @@ class MemoryStoreManager:
                 metadata={
                     "last_accessed": datetime.utcnow().isoformat(),
                     "access_count": "increment",  # Special value to increment
-                },
-            )
+                })
         except Exception as e:
             logger.exception(f"Error updating access metadata for {memory_id}: {e}")
 

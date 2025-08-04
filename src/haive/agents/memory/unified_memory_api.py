@@ -17,24 +17,20 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.memory.agentic_rag_coordinator import (
     AgenticRAGCoordinator,
-    AgenticRAGCoordinatorConfig,
-)
+    AgenticRAGCoordinatorConfig)
 from haive.agents.memory.core.classifier import MemoryClassifier, MemoryClassifierConfig
 from haive.agents.memory.core.stores import MemoryStoreConfig, MemoryStoreManager
 from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.enhanced_retriever import EnhancedRetrieverConfig
 from haive.agents.memory.graph_rag_retriever import (
     GraphRAGRetriever,
-    GraphRAGRetrieverConfig,
-)
+    GraphRAGRetrieverConfig)
 from haive.agents.memory.kg_generator_agent import (
     KGGeneratorAgent,
-    KGGeneratorAgentConfig,
-)
+    KGGeneratorAgentConfig)
 from haive.agents.memory.multi_agent_coordinator import (
     MultiAgentCoordinatorConfig,
-    MultiAgentMemoryCoordinator,
-)
+    MultiAgentMemoryCoordinator)
 
 logger = logging.getLogger(__name__)
 
@@ -471,15 +467,13 @@ class UnifiedMemorySystem:
         # Create store manager
         store_manager = StoreManager(
             store_config={"type": StoreType.MEMORY},
-            default_namespace=self.config.default_namespace,
-        )
+            default_namespace=self.config.default_namespace)
 
         # Create memory store config
         store_config = MemoryStoreConfig(
             store_manager=store_manager,
             default_namespace=self.config.default_namespace,
-            auto_classify=self.config.enable_auto_classification,
-        )
+            auto_classify=self.config.enable_auto_classification)
 
         # Create memory store manager
         self.memory_store = MemoryStoreManager(store_config)
@@ -488,8 +482,7 @@ class UnifiedMemorySystem:
         """Initialize the memory classifier."""
         classifier_config = MemoryClassifierConfig(
             llm_config=self.config.llm_config,
-            confidence_threshold=self.config.classification_confidence_threshold,
-        )
+            confidence_threshold=self.config.classification_confidence_threshold)
 
         self.classifier = MemoryClassifier(classifier_config)
 
@@ -500,8 +493,7 @@ class UnifiedMemorySystem:
             name="memory_kg_generator",
             engine=self.config.llm_config,
             memory_store=self.memory_store,
-            classifier=self.classifier,
-        )
+            classifier=self.classifier)
 
     def _initialize_retrievers(self) -> None:
         """Initialize the retrieval systems."""
@@ -511,8 +503,7 @@ class UnifiedMemorySystem:
         if self.config.enable_enhanced_retrieval:
             EnhancedRetrieverConfig(
                 memory_store_manager=self.memory_store,
-                memory_classifier=self.classifier,
-            )
+                memory_classifier=self.classifier)
             # Note: We'll need to create EnhancedRetriever class
             # self.retrievers["enhanced"] = EnhancedRetriever(enhanced_config)
 
@@ -521,16 +512,14 @@ class UnifiedMemorySystem:
             graph_rag_config = GraphRAGRetrieverConfig(
                 memory_store_manager=self.memory_store,
                 memory_classifier=self.classifier,
-                kg_generator=self.kg_generator,
-            )
+                kg_generator=self.kg_generator)
             self.retrievers["graph_rag"] = GraphRAGRetriever(graph_rag_config)
 
         # Agentic RAG coordinator
         agentic_rag_config = AgenticRAGCoordinatorConfig(
             memory_store_manager=self.memory_store,
             memory_classifier=self.classifier,
-            kg_generator=self.kg_generator,
-        )
+            kg_generator=self.kg_generator)
         self.agentic_rag = AgenticRAGCoordinator(agentic_rag_config)
 
     def _initialize_coordinator(self) -> None:
@@ -542,14 +531,11 @@ class UnifiedMemorySystem:
                 memory_classifier=self.classifier,
                 kg_generator_config=KGGeneratorAgentConfig(
                     memory_store_manager=self.memory_store,
-                    memory_classifier=self.classifier,
-                ),
+                    memory_classifier=self.classifier),
                 agentic_rag_config=AgenticRAGCoordinatorConfig(
                     memory_store_manager=self.memory_store,
                     memory_classifier=self.classifier,
-                    kg_generator=self.kg_generator,
-                ),
-            )
+                    kg_generator=self.kg_generator))
 
             self.coordinator = MultiAgentMemoryCoordinator(coordinator_config)
         else:
@@ -561,8 +547,7 @@ class UnifiedMemorySystem:
         namespace: tuple[str, ...] | None = None,
         memory_type: MemoryType | None = None,
         importance: float | None = None,
-        metadata: dict[str, Any] | None = None,
-    ) -> MemorySystemResult:
+        metadata: dict[str, Any] | None = None) -> MemorySystemResult:
         """Store a memory in the system.
 
         Args:
@@ -590,8 +575,7 @@ class UnifiedMemorySystem:
                     content=content,
                     namespace=namespace,
                     force_classification=memory_type,
-                    importance_override=importance,
-                )
+                    importance_override=importance)
 
             # Update stats
             self._stats["total_memories_stored"] += 1
@@ -604,8 +588,7 @@ class UnifiedMemorySystem:
                 execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
                 agent_used="coordinator" if self.coordinator else "direct",
                 confidence_score=1.0,
-                completeness_score=1.0,
-            )
+                completeness_score=1.0)
 
         except Exception as e:
             logger.exception(f"Error storing memory: {e}")
@@ -615,8 +598,7 @@ class UnifiedMemorySystem:
                 success=False,
                 operation="store_memory",
                 error=str(e),
-                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
-            )
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000)
 
     async def retrieve_memories(
         self,
@@ -625,8 +607,7 @@ class UnifiedMemorySystem:
         namespace: tuple[str, ...] | None = None,
         memory_types: list[MemoryType] | None = None,
         use_graph_rag: bool = True,
-        use_multi_agent: bool = True,
-    ) -> MemorySystemResult:
+        use_multi_agent: bool = True) -> MemorySystemResult:
         """Retrieve memories from the system.
 
         Args:
@@ -649,8 +630,7 @@ class UnifiedMemorySystem:
                     query=query,
                     limit=limit,
                     memory_types=memory_types,
-                    namespace=namespace,
-                )
+                    namespace=namespace)
                 agent_used = "multi_agent_coordinator"
 
             # Use graph RAG if available and requested
@@ -659,8 +639,7 @@ class UnifiedMemorySystem:
                     query=query,
                     limit=limit,
                     memory_types=memory_types,
-                    namespace=namespace,
-                )
+                    namespace=namespace)
                 memories = result.memories
                 agent_used = "graph_rag"
 
@@ -670,8 +649,7 @@ class UnifiedMemorySystem:
                     query=query,
                     limit=limit,
                     memory_types=memory_types,
-                    namespace=namespace,
-                )
+                    namespace=namespace)
                 memories = result.final_memories
                 agent_used = "agentic_rag"
 
@@ -681,8 +659,7 @@ class UnifiedMemorySystem:
                     query=query,
                     limit=limit,
                     namespace=namespace,
-                    memory_types=memory_types,
-                )
+                    memory_types=memory_types)
                 agent_used = "direct_store"
 
             # Update stats
@@ -696,8 +673,7 @@ class UnifiedMemorySystem:
                 execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
                 agent_used=agent_used,
                 confidence_score=0.8,  # Default confidence
-                completeness_score=min(len(memories) / limit, 1.0),
-            )
+                completeness_score=min(len(memories) / limit, 1.0))
 
         except Exception as e:
             logger.exception(f"Error retrieving memories: {e}")
@@ -707,8 +683,7 @@ class UnifiedMemorySystem:
                 success=False,
                 operation="retrieve_memories",
                 error=str(e),
-                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
-            )
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000)
 
     async def classify_memory(
         self, content: str, user_context: dict[str, Any] | None = None
@@ -746,8 +721,7 @@ class UnifiedMemorySystem:
                 result={"classification": classification, "content": content},
                 execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
                 agent_used="coordinator" if self.coordinator else "direct",
-                confidence_score=getattr(classification, "confidence", 0.8),
-            )
+                confidence_score=getattr(classification, "confidence", 0.8))
 
         except Exception as e:
             logger.exception(f"Error classifying memory: {e}")
@@ -757,14 +731,12 @@ class UnifiedMemorySystem:
                 success=False,
                 operation="classify_memory",
                 error=str(e),
-                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
-            )
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000)
 
     async def generate_knowledge_graph(
         self,
         namespace: tuple[str, ...] | None = None,
-        force_regeneration: bool = False,
-    ) -> MemorySystemResult:
+        force_regeneration: bool = False) -> MemorySystemResult:
         """Generate knowledge graph from memories.
 
         Args:
@@ -801,8 +773,7 @@ class UnifiedMemorySystem:
                 execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
                 agent_used="coordinator" if self.coordinator else "direct",
                 confidence_score=0.8,
-                completeness_score=1.0,
-            )
+                completeness_score=1.0)
 
         except Exception as e:
             logger.exception(f"Error generating knowledge graph: {e}")
@@ -812,8 +783,7 @@ class UnifiedMemorySystem:
                 success=False,
                 operation="generate_knowledge_graph",
                 error=str(e),
-                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
-            )
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000)
 
     async def consolidate_memories(
         self, namespace: tuple[str, ...] | None = None, dry_run: bool = False
@@ -848,8 +818,7 @@ class UnifiedMemorySystem:
                 execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
                 agent_used="memory_store",
                 confidence_score=1.0,
-                completeness_score=1.0,
-            )
+                completeness_score=1.0)
 
         except Exception as e:
             logger.exception(f"Error consolidating memories: {e}")
@@ -859,8 +828,7 @@ class UnifiedMemorySystem:
                 success=False,
                 operation="consolidate_memories",
                 error=str(e),
-                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
-            )
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000)
 
     async def get_memory_statistics(
         self, namespace: tuple[str, ...] | None = None
@@ -902,8 +870,7 @@ class UnifiedMemorySystem:
                 execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
                 agent_used="system",
                 confidence_score=1.0,
-                completeness_score=1.0,
-            )
+                completeness_score=1.0)
 
         except Exception as e:
             logger.exception(f"Error getting memory statistics: {e}")
@@ -913,8 +880,7 @@ class UnifiedMemorySystem:
                 success=False,
                 operation="get_memory_statistics",
                 error=str(e),
-                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
-            )
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000)
 
     async def search_entities(
         self, entity_name: str, namespace: tuple[str, ...] | None = None
@@ -944,8 +910,7 @@ class UnifiedMemorySystem:
                     query=entity_name,
                     limit=10,
                     namespace=namespace,
-                    enable_graph_traversal=True,
-                )
+                    enable_graph_traversal=True)
                 related_memories = result.memories
 
             combined_result = {
@@ -963,8 +928,7 @@ class UnifiedMemorySystem:
                 execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
                 agent_used="kg_generator",
                 confidence_score=0.8,
-                completeness_score=1.0,
-            )
+                completeness_score=1.0)
 
         except Exception as e:
             logger.exception(f"Error searching entities: {e}")
@@ -974,8 +938,7 @@ class UnifiedMemorySystem:
                 success=False,
                 operation="search_entities",
                 error=str(e),
-                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
-            )
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000)
 
     async def run_system_diagnostic(self) -> MemorySystemResult:
         """Run comprehensive system diagnostic.
@@ -1060,8 +1023,7 @@ class UnifiedMemorySystem:
                 execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
                 agent_used="system",
                 confidence_score=1.0,
-                completeness_score=1.0,
-            )
+                completeness_score=1.0)
 
         except Exception as e:
             logger.exception(f"Error running system diagnostic: {e}")
@@ -1071,8 +1033,7 @@ class UnifiedMemorySystem:
                 success=False,
                 operation="run_system_diagnostic",
                 error=str(e),
-                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
-            )
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000)
 
     def _update_operation_stats(self, start_time: datetime, success: bool) -> None:
         """Update operation statistics."""
@@ -1121,8 +1082,7 @@ class UnifiedMemorySystem:
 async def create_memory_system(
     store_type: str = "memory",
     collection_name: str = "haive_memories",
-    enable_all_features: bool = True,
-) -> UnifiedMemorySystem:
+    enable_all_features: bool = True) -> UnifiedMemorySystem:
     """Create a unified memory system with sensible default configuration.
 
     This convenience function creates a UnifiedMemorySystem with commonly used
@@ -1187,8 +1147,7 @@ async def create_memory_system(
         enable_auto_classification=enable_all_features,
         enable_enhanced_retrieval=enable_all_features,
         enable_graph_rag=enable_all_features,
-        enable_multi_agent_coordination=enable_all_features,
-    )
+        enable_multi_agent_coordination=enable_all_features)
 
     return UnifiedMemorySystem(config)
 
@@ -1274,8 +1233,7 @@ async def quick_memory_demo():
                 query,
                 limit=2,
                 use_multi_agent=use_multi_agent,
-                use_graph_rag=use_graph_rag,
-            )
+                use_graph_rag=use_graph_rag)
 
             if result.success:
                 memories = result.result["memories"]

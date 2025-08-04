@@ -11,8 +11,7 @@ from labs.agent import (
     get_search_instructions,
     get_system_prompt,
     plan_project_workflow,
-    process_data_file,
-)
+    process_data_file)
 from labs.models import (
     AssetType,
     Config,
@@ -20,8 +19,7 @@ from labs.models import (
     LabsRequest,
     LabsResponse,
     ProjectAsset,
-    WorkflowStep,
-)
+    WorkflowStep)
 
 __all__ = [
     "AssetType",

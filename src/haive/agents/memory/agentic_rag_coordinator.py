@@ -20,12 +20,10 @@ from haive.agents.memory.core.stores import MemoryStoreManager
 from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.enhanced_retriever import (
     EnhancedMemoryRetriever as EnhancedRetriever,
-    EnhancedRetrieverConfig,
-)
+    EnhancedRetrieverConfig)
 from haive.agents.memory.graph_rag_retriever import (
     GraphRAGRetriever,
-    GraphRAGRetrieverConfig,
-)
+    GraphRAGRetrieverConfig)
 from haive.agents.memory.kg_generator_agent import KGGeneratorAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -577,8 +575,7 @@ class AgenticRAGCoordinator(SimpleAgent):
             fusion_method=config.fusion_method,
             diversity_weight=config.diversity_weight,
             coverage_weight=config.coverage_weight,
-            relevance_weight=config.relevance_weight,
-        )
+            relevance_weight=config.relevance_weight)
 
         # Setup LLM for coordination
         self.coordinator_llm = config.coordinator_llm.create_runnable()
@@ -625,8 +622,7 @@ class AgenticRAGCoordinator(SimpleAgent):
             confidence_threshold=0.6,
             typical_latency_ms=300,
             max_results=15,
-            parameters={"enable_query_expansion": True, "importance_boost": 0.2},
-        )
+            parameters={"enable_query_expansion": True, "importance_boost": 0.2})
 
         # Graph traversal strategy
         strategies["graph_traversal"] = RetrievalStrategy(
@@ -645,8 +641,7 @@ class AgenticRAGCoordinator(SimpleAgent):
             confidence_threshold=0.7,
             typical_latency_ms=800,
             max_results=12,
-            parameters={"max_depth": 3, "min_confidence": 0.6},
-        )
+            parameters={"max_depth": 3, "min_confidence": 0.6})
 
         # Procedural knowledge strategy
         strategies["procedural_search"] = RetrievalStrategy(
@@ -657,8 +652,7 @@ class AgenticRAGCoordinator(SimpleAgent):
             confidence_threshold=0.6,
             typical_latency_ms=400,
             max_results=8,
-            parameters={"focus_on_steps": True, "sequential_ordering": True},
-        )
+            parameters={"focus_on_steps": True, "sequential_ordering": True})
 
         # Temporal search strategy
         strategies["temporal_search"] = RetrievalStrategy(
@@ -669,8 +663,7 @@ class AgenticRAGCoordinator(SimpleAgent):
             confidence_threshold=0.5,
             typical_latency_ms=350,
             max_results=10,
-            parameters={"recency_boost": 0.4, "temporal_ordering": True},
-        )
+            parameters={"recency_boost": 0.4, "temporal_ordering": True})
 
         # Error and feedback strategy
         strategies["error_feedback_search"] = RetrievalStrategy(
@@ -681,8 +674,7 @@ class AgenticRAGCoordinator(SimpleAgent):
             confidence_threshold=0.8,
             typical_latency_ms=250,
             max_results=6,
-            parameters={"boost_recent_errors": True, "include_corrections": True},
-        )
+            parameters={"boost_recent_errors": True, "include_corrections": True})
 
         return strategies
 
@@ -736,8 +728,7 @@ Select strategies now:""",
                 "strategies_description",
                 "max_strategies",
                 "min_confidence",
-            ],
-        )
+            ])
 
         self.result_fusion_prompt = PromptTemplate(
             template="""You are an expert at fusing results from multiple retrieval strategies. Analyze and rank the combined results.
@@ -777,8 +768,7 @@ Fuse and rank results now:""",
                 "relevance_weight",
                 "diversity_weight",
                 "coverage_weight",
-            ],
-        )
+            ])
 
     async def retrieve_memories(
         self,
@@ -786,8 +776,7 @@ Fuse and rank results now:""",
         limit: int | None = None,
         memory_types: list[MemoryType] | None = None,
         namespace: tuple[str, ...] | None = None,
-        force_strategies: list[str] | None = None,
-    ) -> AgenticRAGResult:
+        force_strategies: list[str] | None = None) -> AgenticRAGResult:
         """Retrieve memories using intelligent strategy coordination and result fusion.
 
         This method is the core of the agentic RAG coordinator. It analyzes the query,
@@ -969,8 +958,7 @@ Fuse and rank results now:""",
         self,
         query: str,
         query_analysis: dict[str, Any],
-        memory_types: list[MemoryType] | None = None,
-    ) -> tuple[list[str], str]:
+        memory_types: list[MemoryType] | None = None) -> tuple[list[str], str]:
         """Select appropriate strategies for the query."""
         try:
             # Prepare strategies description
@@ -993,8 +981,7 @@ Fuse and rank results now:""",
                 topics=", ".join(query_analysis.get("topics", [])),
                 strategies_description="\n".join(strategies_desc),
                 max_strategies=self.max_strategies,
-                min_confidence=self.min_confidence_threshold,
-            )
+                min_confidence=self.min_confidence_threshold)
 
             # Get LLM response
             response = await self.coordinator_llm.ainvoke(
@@ -1031,8 +1018,7 @@ Fuse and rank results now:""",
     def _fallback_strategy_selection(
         self,
         query_analysis: dict[str, Any],
-        memory_types: list[MemoryType] | None = None,
-    ) -> tuple[list[str], str]:
+        memory_types: list[MemoryType] | None = None) -> tuple[list[str], str]:
         """Fallback strategy selection using rules."""
         complexity = query_analysis.get("complexity", "simple")
         memory_types_needed = query_analysis.get("memory_types", [])
@@ -1079,8 +1065,7 @@ Fuse and rank results now:""",
         query: str,
         limit: int | None,
         memory_types: list[MemoryType] | None,
-        namespace: tuple[str, ...] | None,
-    ) -> dict[str, Any]:
+        namespace: tuple[str, ...] | None) -> dict[str, Any]:
         """Execute selected strategies in parallel."""
         # Create tasks for parallel execution
         tasks = []
@@ -1124,8 +1109,7 @@ Fuse and rank results now:""",
         query: str,
         limit: int | None,
         memory_types: list[MemoryType] | None,
-        namespace: tuple[str, ...] | None,
-    ) -> dict[str, Any]:
+        namespace: tuple[str, ...] | None) -> dict[str, Any]:
         """Execute a single retrieval strategy."""
         start_time = datetime.now()
 
@@ -1162,8 +1146,7 @@ Fuse and rank results now:""",
                     query=query,
                     namespace=namespace,
                     memory_types=memory_types,
-                    limit=strategy_limit,
-                )
+                    limit=strategy_limit)
 
             # Extract scores
             scores = [mem.get("similarity_score", 0.5) for mem in memories]
@@ -1194,8 +1177,7 @@ Fuse and rank results now:""",
         limit: int,
         memory_types: list[MemoryType] | None,
         namespace: tuple[str, ...] | None,
-        parameters: dict[str, Any],
-    ) -> list[dict[str, Any]]:
+        parameters: dict[str, Any]) -> list[dict[str, Any]]:
         """Execute enhanced similarity strategy."""
         if "enhanced" in self.retrievers:
             retriever = self.retrievers["enhanced"]
@@ -1214,8 +1196,7 @@ Fuse and rank results now:""",
         limit: int,
         memory_types: list[MemoryType] | None,
         namespace: tuple[str, ...] | None,
-        parameters: dict[str, Any],
-    ) -> list[dict[str, Any]]:
+        parameters: dict[str, Any]) -> list[dict[str, Any]]:
         """Execute graph traversal strategy."""
         if "graph_rag" in self.retrievers:
             retriever = self.retrievers["graph_rag"]
@@ -1224,8 +1205,7 @@ Fuse and rank results now:""",
                 limit=limit,
                 memory_types=memory_types,
                 namespace=namespace,
-                enable_graph_traversal=True,
-            )
+                enable_graph_traversal=True)
             return result.memories if hasattr(result, "memories") else result
         # Fallback to basic retrieval
         return await self.memory_store.retrieve_memories(
@@ -1238,8 +1218,7 @@ Fuse and rank results now:""",
         limit: int,
         memory_types: list[MemoryType] | None,
         namespace: tuple[str, ...] | None,
-        parameters: dict[str, Any],
-    ) -> list[dict[str, Any]]:
+        parameters: dict[str, Any]) -> list[dict[str, Any]]:
         """Execute procedural search strategy."""
         # Focus on procedural memories
         procedural_types = [MemoryType.PROCEDURAL, MemoryType.SEMANTIC]
@@ -1254,8 +1233,7 @@ Fuse and rank results now:""",
         limit: int,
         memory_types: list[MemoryType] | None,
         namespace: tuple[str, ...] | None,
-        parameters: dict[str, Any],
-    ) -> list[dict[str, Any]]:
+        parameters: dict[str, Any]) -> list[dict[str, Any]]:
         """Execute temporal search strategy."""
         # Focus on temporal and episodic memories
         temporal_types = [MemoryType.TEMPORAL, MemoryType.EPISODIC]
@@ -1270,8 +1248,7 @@ Fuse and rank results now:""",
         limit: int,
         memory_types: list[MemoryType] | None,
         namespace: tuple[str, ...] | None,
-        parameters: dict[str, Any],
-    ) -> list[dict[str, Any]]:
+        parameters: dict[str, Any]) -> list[dict[str, Any]]:
         """Execute error/feedback search strategy."""
         # Focus on error and feedback memories
         error_types = [MemoryType.ERROR, MemoryType.FEEDBACK]
@@ -1301,8 +1278,7 @@ Fuse and rank results now:""",
                 strategy_results=str(results_summary),
                 relevance_weight=self.relevance_weight,
                 diversity_weight=self.diversity_weight,
-                coverage_weight=self.coverage_weight,
-            )
+                coverage_weight=self.coverage_weight)
 
             response = await self.coordinator_llm.ainvoke(
                 [

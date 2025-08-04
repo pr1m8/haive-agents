@@ -6,8 +6,7 @@ from quick_search.agent import (
     extract_keywords,
     get_response_model,
     get_search_instructions,
-    get_system_prompt,
-)
+    get_system_prompt)
 from quick_search.models import Config, QuickSearchRequest, QuickSearchResponse
 
 __all__ = [

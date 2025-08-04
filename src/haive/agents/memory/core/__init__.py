@@ -2,8 +2,7 @@
 
 from haive.agents.memory.core.classifier import (
     MemoryClassifier,
-    MemoryClassifierConfig,
-)
+    MemoryClassifierConfig)
 from haive.agents.memory.core.stores import MemoryStoreConfig, MemoryStoreManager
 from haive.agents.memory.core.types import (
     MemoryClassificationResult,
@@ -11,8 +10,7 @@ from haive.agents.memory.core.types import (
     MemoryEntry,
     MemoryImportance,
     MemoryQueryIntent,
-    MemoryType,
-)
+    MemoryType)
 
 __all__ = [
     "MemoryClassificationResult",

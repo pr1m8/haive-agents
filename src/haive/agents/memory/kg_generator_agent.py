@@ -459,8 +459,7 @@ class KGGeneratorAgentConfig(BaseModel):
             "document",
             "project",
         ],
-        description="Types of entities to extract",
-    )
+        description="Types of entities to extract")
 
     # Relationship types
     relationship_types: list[str] = Field(
@@ -483,8 +482,7 @@ class KGGeneratorAgentConfig(BaseModel):
             "prevents",
             "enables",
         ],
-        description="Types of relationships to extract",
-    )
+        description="Types of relationships to extract")
 
 
 class KGGeneratorAgent(SimpleAgent):
@@ -606,8 +604,7 @@ class KGGeneratorAgent(SimpleAgent):
             "document",
             "project",
         ],
-        description="Types of entities to extract",
-    )
+        description="Types of entities to extract")
     relationship_types: list[str] = Field(
         default_factory=lambda: [
             "knows",
@@ -628,8 +625,7 @@ class KGGeneratorAgent(SimpleAgent):
             "prevents",
             "enables",
         ],
-        description="Types of relationships to extract",
-    )
+        description="Types of relationships to extract")
 
     # Prompt fields
     entity_extraction_prompt: PromptTemplate = Field(
@@ -693,8 +689,7 @@ Extract entities now:""",
                 "topics",
                 "existing_entities",
                 "entity_types",
-            ],
-        )
+            ])
 
         self.relationship_extraction_prompt = PromptTemplate(
             template="""You are an expert knowledge graph relationship extractor. Extract relationships between entities from the given memory content.
@@ -737,15 +732,13 @@ Extract relationships now:""",
                 "known_entities",
                 "existing_relationships",
                 "relationship_types",
-            ],
-        )
+            ])
 
     async def extract_knowledge_graph_from_memories(
         self,
         memory_ids: list[str] | None = None,
         namespace: tuple[str, ...] | None = None,
-        memory_types: list[MemoryType] | None = None,
-    ) -> MemoryKnowledgeGraph:
+        memory_types: list[MemoryType] | None = None) -> MemoryKnowledgeGraph:
         """Extract knowledge graph from specified memories.
 
         Processes memories to extract entities and relationships, building a comprehensive
@@ -911,8 +904,7 @@ Extract relationships now:""",
                         name=entity_data["name"],
                         properties=entity_data.get("properties", {}),
                         memory_references=[memory_id],
-                        confidence=entity_data.get("confidence", 0.8),
-                    )
+                        confidence=entity_data.get("confidence", 0.8))
 
                     # Add to graph
                     self.knowledge_graph.add_node(entity_node)
@@ -976,8 +968,7 @@ Extract relationships now:""",
                             relationship_type=rel_data["relationship_type"],
                             properties=rel_data.get("properties", {}),
                             memory_references=[memory_id],
-                            confidence=rel_data.get("confidence", 0.8),
-                        )
+                            confidence=rel_data.get("confidence", 0.8))
 
                         # Add to graph
                         self.knowledge_graph.add_relationship(relationship)

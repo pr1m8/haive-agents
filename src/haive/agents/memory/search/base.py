@@ -74,8 +74,7 @@ class BaseSearchAgent(ReactAgent, ABC):
         name: str,
         engine: AugLLMConfig,
         search_tools: list[Tool] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize the search agent.
 
         Args:
@@ -184,8 +183,7 @@ class BaseSearchAgent(ReactAgent, ABC):
         self,
         query: str,
         context: dict[str, Any] | None = None,
-        save_to_memory: bool = True,
-    ) -> SearchResponse:
+        save_to_memory: bool = True) -> SearchResponse:
         """Process a search query with memory integration.
 
         Args:
@@ -229,8 +227,7 @@ class BaseSearchAgent(ReactAgent, ABC):
             confidence=0.8,  # Default confidence
             search_type=self.__class__.__name__,
             processing_time=processing_time,
-            metadata=context,
-        )
+            metadata=context)
 
         # Save to memory if requested
         if save_to_memory:

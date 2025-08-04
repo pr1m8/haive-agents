@@ -17,8 +17,7 @@ from haive.agents.memory.search.base import BaseSearchAgent, SearchResponse
 from haive.agents.memory.search.deep_research.models import (
     DeepResearchResponse,
     ResearchQuery,
-    ResearchSection,
-)
+    ResearchSection)
 
 # from haive.agents.memory.document_modifiers.kg.kg_iterative_refinement import IterativeGraphTransformer
 
@@ -82,8 +81,7 @@ class DeepResearchAgent(BaseSearchAgent):
         search_tools: list[Tool] | None = None,
         enable_kg: bool = False,
         kg_transformer: Any | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize the Deep Research Agent.
 
         Args:
@@ -99,8 +97,7 @@ class DeepResearchAgent(BaseSearchAgent):
             engine = AugLLMConfig(
                 temperature=0.2,  # Lower temperature for factual accuracy
                 max_tokens=1500,  # Longer responses for comprehensive analysis
-                system_message=self.get_system_prompt(),
-            )
+                system_message=self.get_system_prompt())
 
         super().__init__(name=name, engine=engine, search_tools=search_tools, **kwargs)
 
@@ -255,8 +252,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
                 query_type=query_type,
                 results_found=len(result.sources),
                 processing_time=processing_time,
-                success=True,
-            )
+                success=True)
 
         except Exception as e:
             processing_time = time.time() - start_time
@@ -267,8 +263,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
                 query_type=query_type,
                 results_found=0,
                 processing_time=processing_time,
-                success=False,
-            )
+                success=False)
 
     def evaluate_source_credibility(self, source: dict[str, Any]) -> float:
         """Evaluate the credibility of a source.
@@ -404,8 +399,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
         focus_areas: list[str] | None = None,
         max_sources: int = 50,
         include_fact_checking: bool = True,
-        save_to_memory: bool = True,
-    ) -> DeepResearchResponse:
+        save_to_memory: bool = True) -> DeepResearchResponse:
         """Process a deep research query with comprehensive analysis.
 
         Args:
@@ -534,8 +528,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
             limitations=limitations,
             related_topics=related_topics,
             fact_checks=[],  # Would be populated from fact checking
-            metadata={"focus_areas": focus_areas or []},
-        )
+            metadata={"focus_areas": focus_areas or []})
 
         # Save to memory if requested
         if save_to_memory:
@@ -551,8 +544,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
         self,
         query: str,
         context: dict[str, Any] | None = None,
-        save_to_memory: bool = True,
-    ) -> DeepResearchResponse:
+        save_to_memory: bool = True) -> DeepResearchResponse:
         """Process a search query with default deep research settings.
 
         Args:
@@ -571,5 +563,4 @@ Process each research query with systematic thoroughness and analytical rigor.""
             query=query,
             research_depth=research_depth,
             focus_areas=focus_areas,
-            save_to_memory=save_to_memory,
-        )
+            save_to_memory=save_to_memory)

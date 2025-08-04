@@ -7,8 +7,7 @@ from .base import (
     format_search_context,
     get_response_model,
     get_search_instructions,
-    get_system_prompt,
-)
+    get_system_prompt)
 
 __all__ = [
     "BaseSearchAgent",

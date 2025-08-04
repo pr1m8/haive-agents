@@ -8,15 +8,13 @@ from pro_search.agent import (
     get_response_model,
     get_search_instructions,
     get_system_prompt,
-    refine_query,
-)
+    refine_query)
 from pro_search.models import (
     Config,
     ContextualInsight,
     ProSearchRequest,
     ProSearchResponse,
-    SearchRefinement,
-)
+    SearchRefinement)
 
 __all__ = [
     "Config",
