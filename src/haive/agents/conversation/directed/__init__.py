@@ -6,14 +6,12 @@ from haive.agents.conversation.directed.agent import (
     InteractionPattern,
     MentionType,
     SpeakerMention,
-    SpeakerSelectionResult,
-)
+    SpeakerSelectionResult)
 from haive.agents.conversation.directed.example import (
     example_classroom_discussion,
     example_customer_support,
     example_interactive_story,
-    example_team_meeting,
-)
+    example_team_meeting)
 from haive.agents.conversation.directed.state import DirectedState
 
 __all__ = [

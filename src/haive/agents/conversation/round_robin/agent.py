@@ -110,8 +110,7 @@ class RoundRobinConversation(BaseConversationAgent):
         topic: str = "General discussion",
         max_rounds: int = 3,
         system_message_template: str | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Create a simple round-robin conversation with auto-generated agents.
 
         Args:
@@ -136,8 +135,7 @@ class RoundRobinConversation(BaseConversationAgent):
             engine = AugLLMConfig(
                 name=f"{name.lower()}_engine",
                 system_message=system_message_template.format(name=name),
-                temperature=0.7,
-            )
+                temperature=0.7)
             agents[name] = SimpleAgent(name=f"{name}_agent", engine=engine)
 
         return cls(

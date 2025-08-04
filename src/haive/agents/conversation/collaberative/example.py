@@ -26,8 +26,7 @@ def example_brainstorming_session() -> None:
             "Next Steps",
         ],
         min_contributions_per_section=1,
-        max_rounds=2,
-    )
+        max_rounds=2)
 
     # Run session
     result = session.run(
@@ -54,8 +53,7 @@ def example_code_review() -> None:
             "DevOpsEngineer": "deployment and infrastructure specialist",
         },
         min_contributions_per_section=1,
-        max_rounds=3,
-    )
+        max_rounds=3)
 
     # Run review
     result = review.run(
@@ -79,9 +77,7 @@ def example_project_planning() -> None:
                     "You are the project manager. Focus on timelines, deliverables, and coordination. "
                     "Be specific about milestones and dependencies."
                 ),
-                temperature=0.6,
-            ),
-        ),
+                temperature=0.6)),
         "TechLead": SimpleAgent(
             name="TechLead",
             engine=AugLLMConfig(
@@ -90,9 +86,7 @@ def example_project_planning() -> None:
                     "You are the technical lead. Focus on technical requirements, architecture, and risks. "
                     "Provide realistic estimates and identify technical challenges."
                 ),
-                temperature=0.6,
-            ),
-        ),
+                temperature=0.6)),
         "UXDesigner": SimpleAgent(
             name="UXDesigner",
             engine=AugLLMConfig(
@@ -101,9 +95,7 @@ def example_project_planning() -> None:
                     "You are the UX designer. Focus on user experience, design requirements, and user research needs. "
                     "Think about user journeys and interface design."
                 ),
-                temperature=0.7,
-            ),
-        ),
+                temperature=0.7)),
         "QALead": SimpleAgent(
             name="QALead",
             engine=AugLLMConfig(
@@ -112,9 +104,7 @@ def example_project_planning() -> None:
                     "You are the QA lead. Focus on testing strategy, quality metrics, and acceptance criteria. "
                     "Consider edge cases and testing timelines."
                 ),
-                temperature=0.6,
-            ),
-        ),
+                temperature=0.6)),
     }
 
     planning = CollaborativeConversation(
@@ -132,8 +122,7 @@ def example_project_planning() -> None:
         output_format="report",
         min_contributions_per_section=1,
         include_attribution=True,
-        max_rounds=3,
-    )
+        max_rounds=3)
 
     result = planning.run(
         {}, config={"configurable": {"recursion_limit": 100}}, debug=True
@@ -157,9 +146,7 @@ def example_research_paper() -> None:
                     "Focus on the main thesis and overall narrative. "
                     "Ensure academic rigor and clarity."
                 ),
-                temperature=0.6,
-            ),
-        ),
+                temperature=0.6)),
         "DataScientist": SimpleAgent(
             name="DataScientist",
             engine=AugLLMConfig(
@@ -169,9 +156,7 @@ def example_research_paper() -> None:
                     "Provide empirical evidence, statistics, and data analysis. "
                     "Focus on methodology and results."
                 ),
-                temperature=0.5,
-            ),
-        ),
+                temperature=0.5)),
         "EthicsExpert": SimpleAgent(
             name="EthicsExpert",
             engine=AugLLMConfig(
@@ -181,9 +166,7 @@ def example_research_paper() -> None:
                     "Provide ethical frameworks and philosophical perspectives. "
                     "Consider implications and moral dimensions."
                 ),
-                temperature=0.7,
-            ),
-        ),
+                temperature=0.7)),
     }
 
     paper = CollaborativeConversation(
@@ -204,8 +187,7 @@ def example_research_paper() -> None:
         min_contributions_per_section=1,
         allow_revisions=True,
         include_attribution=False,  # Clean output for paper
-        max_rounds=3,
-    )
+        max_rounds=3)
 
     result = paper.invoke({}, config={"configurable": {"recursion_limit": 50}})
 
@@ -231,9 +213,7 @@ def example_creative_writing() -> None:
                     "You are a narrative writer focusing on plot and story structure. "
                     "Create engaging storylines and ensure narrative coherence."
                 ),
-                temperature=0.8,
-            ),
-        ),
+                temperature=0.8)),
         "CharacterWriter": SimpleAgent(
             name="CharacterWriter",
             engine=AugLLMConfig(
@@ -242,9 +222,7 @@ def example_creative_writing() -> None:
                     "You are a character development specialist. "
                     "Create vivid characters with depth and compelling dialogue."
                 ),
-                temperature=0.8,
-            ),
-        ),
+                temperature=0.8)),
         "WorldBuilder": SimpleAgent(
             name="WorldBuilder",
             engine=AugLLMConfig(
@@ -253,9 +231,7 @@ def example_creative_writing() -> None:
                     "You are a world-building expert. "
                     "Create rich settings and atmospheric descriptions."
                 ),
-                temperature=0.9,
-            ),
-        ),
+                temperature=0.9)),
     }
 
     story = CollaborativeConversation(
@@ -275,8 +251,7 @@ def example_creative_writing() -> None:
         output_format="markdown",
         min_contributions_per_section=1,
         include_attribution=True,  # See who wrote what
-        max_rounds=3,
-    )
+        max_rounds=3)
 
     result = story.invoke({}, config={"configurable": {"recursion_limit": 50}})
 

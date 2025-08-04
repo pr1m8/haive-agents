@@ -19,8 +19,7 @@ class DebateState(ConversationState):
     # Debate positions and tracking
     debate_positions: dict[str, str] = Field(
         default_factory=dict,
-        description="Mapping of participant names to their debate positions",
-    )
+        description="Mapping of participant names to their debate positions")
 
     # Use reducers for automatic counting
     arguments_made: dict[str, list[str]] = Field(
@@ -29,8 +28,7 @@ class DebateState(ConversationState):
 
     rebuttals: dict[str, list[tuple[str, str]]] = Field(
         default_factory=dict,
-        description="Rebuttals as (target_name, rebuttal_summary) tuples",
-    )
+        description="Rebuttals as (target_name, rebuttal_summary) tuples")
 
     # Debate flow control
     opening_statements_complete: bool = Field(
@@ -45,8 +43,7 @@ class DebateState(ConversationState):
 
     phase_transitions: list[tuple[str, int]] = Field(
         default_factory=list,
-        description="History of phase transitions as (phase_name, turn_number)",
-    )
+        description="History of phase transitions as (phase_name, turn_number)")
 
     # Counters with reducers
     total_arguments: int = Field(

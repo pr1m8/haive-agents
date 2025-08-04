@@ -29,12 +29,10 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.persistence.memory import MemoryCheckpointerConfig
 from haive.core.persistence.postgres_config import (
-    PostgresCheckpointerConfig,
-)
+    PostgresCheckpointerConfig)
 from haive.core.persistence.types import (
     CheckpointerMode,
-    CheckpointStorageMode,
-)
+    CheckpointStorageMode)
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.graph import END, START
 from langgraph.types import Command
@@ -142,8 +140,7 @@ class BaseConversationAgent(Agent):
                             "keepalives_idle": 600,  # Keep connection alive for 10 minutes
                             "keepalives_interval": 30,  # Send keepalive every 30 seconds
                             "keepalives_count": 3,  # 3 failed keepalives before disconnect
-                        },
-                    )
+                        })
                     logger.info(
                         f"Set up PostgreSQL persistence for {app_name} (prepared statements disabled)"
                     )
@@ -168,8 +165,7 @@ class BaseConversationAgent(Agent):
                             "keepalives_idle": 600,  # Keep connection alive for 10 minutes
                             "keepalives_interval": 30,  # Send keepalive every 30 seconds
                             "keepalives_count": 3,  # 3 failed keepalives before disconnect
-                        },
-                    )
+                        })
                     logger.info("Set up default PostgreSQL persistence")
 
             except ImportError as e:
@@ -231,8 +227,7 @@ class BaseConversationAgent(Agent):
             name="conversation_orchestrator",
             system_message=f"You are orchestrating a {
                 self.mode} conversation about: {
-                self.topic}",
-        )
+                self.topic}")
 
     def _compile_participants(self):
         """Compile all participant agents."""
@@ -253,8 +248,7 @@ class BaseConversationAgent(Agent):
         """Build the conversation graph."""
         graph = BaseGraph(
             name=f"{self.name}_conversation",
-            state_schema=self.get_conversation_state_schema(),
-        )
+            state_schema=self.get_conversation_state_schema())
 
         # Core nodes
         graph.add_node("initialize", self.initialize_conversation)
@@ -289,8 +283,7 @@ class BaseConversationAgent(Agent):
         graph.add_conditional_edges(
             "select_speaker",
             speaker_router,
-            {"execute_agent": "execute_agent", "conclude": "conclude"},
-        )
+            {"execute_agent": "execute_agent", "conclude": "conclude"})
 
         # Check end decides if we go back to select_speaker or conclude
         def end_router(state: Any) -> str:
@@ -308,8 +301,7 @@ class BaseConversationAgent(Agent):
         graph.add_conditional_edges(
             "check_end",
             end_router,
-            {"select_speaker": "select_speaker", "conclude": "conclude"},
-        )
+            {"select_speaker": "select_speaker", "conclude": "conclude"})
 
         # Add custom nodes and edges
         self._add_custom_graph_elements(graph)

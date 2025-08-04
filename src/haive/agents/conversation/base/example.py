@@ -21,8 +21,7 @@ from pydantic import Field
 from haive.agents.conversation.base import (
     BaseConversationAgent,
     ConversationState,
-    get_conversation_progress,
-)
+    get_conversation_progress)
 from haive.agents.simple import SimpleAgent
 
 logger = logging.getLogger(__name__)
@@ -256,20 +255,17 @@ async def main():
     alice = SimpleAgent(
         name="Alice",
         model="gpt-4o-mini",
-        instructions="You are Alice, a friendly AI assistant interested in technology.",
-    )
+        instructions="You are Alice, a friendly AI assistant interested in technology.")
 
     bob = SimpleAgent(
         name="Bob",
         model="gpt-4o-mini",
-        instructions="You are Bob, a curious learner who asks thoughtful questions.",
-    )
+        instructions="You are Bob, a curious learner who asks thoughtful questions.")
 
     charlie = SimpleAgent(
         name="Charlie",
         model="gpt-4o-mini",
-        instructions="You are Charlie, an expert who provides detailed explanations.",
-    )
+        instructions="You are Charlie, an expert who provides detailed explanations.")
 
     # Create initial state
     initial_state = CustomConversationState(
@@ -283,8 +279,7 @@ async def main():
     conversation = CustomConversationAgent(
         name="education_discussion",
         participants=[alice, bob, charlie],
-        initial_state=initial_state,
-    )
+        initial_state=initial_state)
 
     # Run the conversation
     try:

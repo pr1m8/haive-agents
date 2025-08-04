@@ -46,8 +46,7 @@ class CollaborativeState(ConversationState):
     # Contribution tracking
     contributions: list[tuple[str, str, str]] = Field(
         default_factory=list,
-        description="List of (contributor, section, content) tuples",
-    )
+        description="List of (contributor, section, content) tuples")
     contribution_count: dict[str, int] = Field(default_factory=dict)
 
     # Collaboration flow

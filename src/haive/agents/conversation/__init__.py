@@ -137,18 +137,15 @@ from typing import (
     List,
     Literal,
     NotRequired,
-    Optional,
     Protocol,
     Type,
     TypeAlias,
     Union,
-    runtime_checkable,
-)
+    runtime_checkable)
 
 from haive.core.schema import StateSchema
 from typing_extensions import (
-    TypedDict,
-)
+    TypedDict)
 
 from haive.agents.base.agent import Agent
 from haive.agents.conversation.base.agent import BaseConversationAgent
@@ -293,8 +290,7 @@ def create_conversation(
     participants: list[ConversationParticipant],
     topic: str,
     config: ConversationConfig | None = None,
-    **kwargs: Any,
-) -> BaseConversationAgent:
+    **kwargs: Any) -> BaseConversationAgent:
     """Create a conversation agent of the specified type.
 
     Args:
@@ -356,8 +352,7 @@ def create_debate(
     con_agents: list[ConversationParticipant],
     judge_agent: ConversationParticipant | None = None,
     rounds: int = 3,
-    config: DebateConfig | None = None,
-) -> DebateConversation:
+    config: DebateConfig | None = None) -> DebateConversation:
     """Create a structured debate conversation.
 
     Args:
@@ -399,16 +394,14 @@ def create_debate(
         con_agents=con_agents,
         judge_agent=judge_agent,
         rounds=rounds,
-        **config,
-    )
+        **config)
 
 
 def create_collaboration(
     task: str,
     participants: dict[str, ConversationParticipant],
     deliverables: list[str] | None = None,
-    config: CollaborativeConfig | None = None,
-) -> CollaborativeConversation:
+    config: CollaborativeConfig | None = None) -> CollaborativeConversation:
     """Create a collaborative conversation for team tasks.
 
     Args:
@@ -455,8 +448,7 @@ def create_collaboration(
 def validate_participants(
     participants: list[ConversationParticipant],
     min_participants: int = 2,
-    max_participants: int | None = None,
-) -> bool:
+    max_participants: int | None = None) -> bool:
     """Validate that participants meet conversation requirements.
 
     Args:

@@ -73,8 +73,7 @@ class DirectedConversationConfig(BaseModel):
 
     mention_patterns: list[str] = Field(
         default_factory=lambda: ["@{name}", "{name},", "{name}:", "ask {name}"],
-        description="Patterns to detect mentions (use {name} as placeholder)",
-    )
+        description="Patterns to detect mentions (use {name} as placeholder)")
     fallback_to_round_robin: bool = Field(
         default=True, description="Use round-robin if no one is mentioned"
     )
@@ -86,8 +85,7 @@ class DirectedConversationConfig(BaseModel):
     )
     avoid_self_mentions: bool = Field(
         default=True,
-        description="Prevent speakers from being selected based on self-mentions",
-    )
+        description="Prevent speakers from being selected based on self-mentions")
     prioritize_least_active: bool = Field(
         default=True, description="Prioritize speakers who haven't spoken recently"
     )
@@ -108,8 +106,7 @@ class DirectedConversation(BaseConversationAgent):
     # Configuration
     config: DirectedConversationConfig = Field(
         default_factory=DirectedConversationConfig,
-        description="Configuration for directed conversation behavior",
-    )
+        description="Configuration for directed conversation behavior")
 
     # Internal tracking
     _interaction_history: list[InteractionPattern] = []
@@ -150,8 +147,7 @@ class DirectedConversation(BaseConversationAgent):
             return SpeakerSelectionResult(
                 next_speaker=state.pending_speakers[0],
                 pending_speakers=state.pending_speakers[1:],
-                selection_reason="Selected from pending queue",
-            )
+                selection_reason="Selected from pending queue")
 
         # Extract mentions using structured model
         mentions = self._extract_structured_mentions(state)
@@ -168,10 +164,8 @@ class DirectedConversation(BaseConversationAgent):
                 mentions,
                 key=lambda m: (
                     m.confidence,
-                    self._get_mention_priority(m.mention_type),
-                ),
-                reverse=True,
-            )
+                    self._get_mention_priority(m.mention_type)),
+                reverse=True)
 
             # Extract unique speaker names in priority order
             mentioned_names = []
@@ -189,8 +183,7 @@ class DirectedConversation(BaseConversationAgent):
                     ),
                     mentioned_speakers=mentioned_names,
                     selection_reason=f"Mentioned via {sorted_mentions[0].mention_type.value}",
-                    confidence=sorted_mentions[0].confidence,
-                )
+                    confidence=sorted_mentions[0].confidence)
 
         # No mentions - use fallback strategy
         if self.config.fallback_to_round_robin:
@@ -222,8 +215,7 @@ class DirectedConversation(BaseConversationAgent):
                         speaker_name=speaker,
                         mention_type=MentionType.DIRECT_MENTION,
                         confidence=1.0,
-                        context=self._extract_context(content, f"@{speaker}"),
-                    )
+                        context=self._extract_context(content, f"@{speaker}"))
                 )
                 continue
 
@@ -235,8 +227,7 @@ class DirectedConversation(BaseConversationAgent):
                             speaker_name=speaker,
                             mention_type=MentionType.NAME_REFERENCE,
                             confidence=0.9,
-                            context=self._extract_context(content, pattern),
-                        )
+                            context=self._extract_context(content, pattern))
                     )
                     break
 
@@ -256,8 +247,7 @@ class DirectedConversation(BaseConversationAgent):
                                 speaker_name=speaker,
                                 mention_type=MentionType.QUESTION_TARGET,
                                 confidence=0.95,
-                                context=self._extract_context(content, speaker),
-                            )
+                                context=self._extract_context(content, speaker))
                         )
                         break
 
@@ -328,13 +318,11 @@ class DirectedConversation(BaseConversationAgent):
             next_idx = (current_idx + 1) % len(speakers)
             return SpeakerSelectionResult(
                 next_speaker=speakers[next_idx],
-                selection_reason="Round-robin selection",
-            )
+                selection_reason="Round-robin selection")
         except ValueError:
             return SpeakerSelectionResult(
                 next_speaker=speakers[0],
-                selection_reason="Current speaker not found, restarting",
-            )
+                selection_reason="Current speaker not found, restarting")
 
     def _select_least_active_structured(
         self, state: DirectedState
@@ -355,13 +343,11 @@ class DirectedConversation(BaseConversationAgent):
                 next_speaker=least_active[0],
                 selection_reason=f"Least active speaker (spoke {
                     least_active[1]} times)",
-                confidence=0.8,
-            )
+                confidence=0.8)
 
         return SpeakerSelectionResult(
             next_speaker=state.speakers[0] if state.speakers else None,
-            selection_reason="Defaulting to first speaker",
-        )
+            selection_reason="Defaulting to first speaker")
 
     def process_response(self, state: DirectedState) -> dict[str, Any]:
         """Track interaction patterns using structured models."""
@@ -463,8 +449,7 @@ class DirectedConversation(BaseConversationAgent):
         student_names: list[str] | None = None,
         topic: str = "Today's lesson",
         config: DirectedConversationConfig | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Create a classroom-style directed conversation.
 
         Args:
@@ -489,8 +474,7 @@ class DirectedConversation(BaseConversationAgent):
                 "Provide feedback and guide the discussion. "
                 "Make sure to mention student names when asking them questions."
             ),
-            temperature=0.6,
-        )
+            temperature=0.6)
 
         agents = {
             teacher_name_sanitized: SimpleAgent(
@@ -509,8 +493,7 @@ class DirectedConversation(BaseConversationAgent):
                     "You can also ask questions or respond to other students. "
                     "Be engaged and thoughtful in your responses."
                 ),
-                temperature=0.7,
-            )
+                temperature=0.7)
             agents[student_sanitized] = SimpleAgent(
                 name=f"{student_sanitized}_agent", engine=student_engine
             )
@@ -527,15 +510,13 @@ class DirectedConversation(BaseConversationAgent):
                 ],
                 fallback_to_round_robin=True,
                 avoid_self_mentions=True,
-                prioritize_least_active=True,
-            )
+                prioritize_least_active=True)
 
         return cls(
             participant_agents=agents,
             topic=topic,
             config=config,
-            **kwargs,
-        )
+            **kwargs)
 
     def _check_custom_end_conditions(
         self, state: DirectedState

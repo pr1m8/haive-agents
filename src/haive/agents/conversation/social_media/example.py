@@ -25,8 +25,7 @@ def example_twitter_thread() -> None:
             "StartupFounder": "fellow startup founder interested in the tech stack",
         },
         viral_threshold=8,
-        max_rounds=10,
-    )
+        max_rounds=10)
 
     # Run thread
     result = thread.invoke({})
@@ -82,17 +81,14 @@ def example_instagram_discussion() -> None:
                     "Engage with others' posts."
                 ),
                 temperature=0.8,
-                max_tokens=150,
-            ),
-        )
+                max_tokens=150))
 
     conversation = SocialMediaConversation(
         participant_agents=agents,
         topic="💪 30-Day Fitness Challenge - Who's in? Drop your goals below! 👇",
         platform_type="instagram",
         viral_threshold=15,
-        max_rounds=8,
-    )
+        max_rounds=8)
 
     result = conversation.invoke({})
 
@@ -133,9 +129,7 @@ def example_tiktok_comments() -> None:
                     "Can reply to others with @mentions."
                 ),
                 temperature=0.9,
-                max_tokens=50,
-            ),
-        )
+                max_tokens=50))
 
     conversation = SocialMediaConversation(
         participant_agents=agents,
@@ -143,8 +137,7 @@ def example_tiktok_comments() -> None:
         platform_type="tiktok",
         viral_threshold=20,
         max_rounds=10,
-        max_posts_per_round=2,
-    )
+        max_posts_per_round=2)
 
     result = conversation.invoke({})
 
@@ -171,9 +164,7 @@ def example_linkedin_professional() -> None:
                     "You are a LinkedIn thought leader. Post insights about leadership and innovation. "
                     "Use professional tone with some emojis. Share actionable advice."
                 ),
-                temperature=0.7,
-            ),
-        ),
+                temperature=0.7)),
         "Recruiter": SimpleAgent(
             name="Recruiter",
             engine=AugLLMConfig(
@@ -182,9 +173,7 @@ def example_linkedin_professional() -> None:
                     "You are a tech recruiter. Engage about hiring trends and talent. "
                     "Professional but approachable. Can mention job opportunities."
                 ),
-                temperature=0.7,
-            ),
-        ),
+                temperature=0.7)),
         "Engineer": SimpleAgent(
             name="Engineer",
             engine=AugLLMConfig(
@@ -193,9 +182,7 @@ def example_linkedin_professional() -> None:
                     "You are a senior engineer. Share technical insights and career advice. "
                     "Be helpful and mentor-like in responses."
                 ),
-                temperature=0.6,
-            ),
-        ),
+                temperature=0.6)),
         "Student": SimpleAgent(
             name="Student",
             engine=AugLLMConfig(
@@ -204,9 +191,7 @@ def example_linkedin_professional() -> None:
                     "You are a CS student looking for opportunities. "
                     "Ask questions and engage genuinely. Show enthusiasm."
                 ),
-                temperature=0.8,
-            ),
-        ),
+                temperature=0.8)),
     }
 
     conversation = SocialMediaConversation(
@@ -215,8 +200,7 @@ def example_linkedin_professional() -> None:
         platform_type="generic",  # LinkedIn-style
         viral_threshold=12,
         max_rounds=6,
-        enable_shares=True,
-    )
+        enable_shares=True)
 
     result = conversation.invoke({})
 
@@ -258,17 +242,14 @@ def example_viral_moment() -> None:
                     "React to the cooking fail with humor and personality. "
                     "Use emojis and be entertaining. Can like and share posts."
                 ),
-                temperature=0.9,
-            ),
-        )
+                temperature=0.9))
 
     conversation = SocialMediaConversation(
         participant_agents=agents,
         topic="😅 Tried to make a soufflé... it's now a pancake. Chef life! 👨‍🍳 #CookingFail",
         platform_type="twitter",
         viral_threshold=5,  # Lower threshold for demo
-        max_rounds=8,
-    )
+        max_rounds=8)
 
     result = conversation.run({}, debug=True)
 

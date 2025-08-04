@@ -19,8 +19,7 @@ def example_classroom_discussion() -> None:
         teacher_name="Ms. Johnson",
         student_names=["Alex", "Sarah", "Mike", "Emma"],
         topic="The Water Cycle and Climate Change",
-        max_rounds=3,
-    )
+        max_rounds=3)
 
     result = classroom.run(
         {}, debug=True, config={"configurable": {"recursion_limit": 50}}
@@ -42,9 +41,7 @@ def example_team_meeting() -> None:
                     "You are the team manager. Ask specific team members about their progress. "
                     "Use @mentions to direct questions. Keep it professional and brief."
                 ),
-                temperature=0.6,
-            ),
-        ),
+                temperature=0.6)),
         "Developer": SimpleAgent(
             name="Developer",
             engine=AugLLMConfig(
@@ -52,9 +49,7 @@ def example_team_meeting() -> None:
                     "You are a software developer. Answer questions about technical progress. "
                     "You can ask the Designer about UI/UX needs."
                 ),
-                temperature=0.7,
-            ),
-        ),
+                temperature=0.7)),
         "Designer": SimpleAgent(
             name="Designer",
             engine=AugLLMConfig(
@@ -62,9 +57,7 @@ def example_team_meeting() -> None:
                     "You are the UI/UX designer. Discuss design progress and needs. "
                     "You can ask the Developer about technical constraints."
                 ),
-                temperature=0.7,
-            ),
-        ),
+                temperature=0.7)),
         "QA": SimpleAgent(
             name="QA",
             engine=AugLLMConfig(
@@ -72,9 +65,7 @@ def example_team_meeting() -> None:
                     "You are the QA engineer. Report on testing status and issues found. "
                     "Ask team members about specific features when needed."
                 ),
-                temperature=0.7,
-            ),
-        ),
+                temperature=0.7)),
     }
 
     meeting = DirectedConversation(
@@ -82,8 +73,7 @@ def example_team_meeting() -> None:
         topic="Sprint Progress Update",
         max_rounds=3,
         fallback_to_round_robin=True,
-        max_silence_turns=2,
-    )
+        max_silence_turns=2)
 
     result = meeting.run(
         {
@@ -93,8 +83,7 @@ def example_team_meeting() -> None:
                 )
             ]
         },
-        debug=True,
-    )
+        debug=True)
 
     # Display key interactions
     for msg in result.get("messages", []):
@@ -118,9 +107,7 @@ def example_customer_support() -> None:
                     "You are a customer support bot. Try to help with basic issues. "
                     "If the issue is complex, mention @Agent for human support."
                 ),
-                temperature=0.5,
-            ),
-        ),
+                temperature=0.5)),
         "Agent": SimpleAgent(
             name="Agent",
             engine=AugLLMConfig(
@@ -128,9 +115,7 @@ def example_customer_support() -> None:
                     "You are a human support agent. Handle escalated issues. "
                     "If technical, mention @TechLead for expertise."
                 ),
-                temperature=0.6,
-            ),
-        ),
+                temperature=0.6)),
         "TechLead": SimpleAgent(
             name="TechLead",
             engine=AugLLMConfig(
@@ -138,9 +123,7 @@ def example_customer_support() -> None:
                     "You are the technical lead. Provide expert technical solutions. "
                     "Work with @Agent to resolve complex issues."
                 ),
-                temperature=0.6,
-            ),
-        ),
+                temperature=0.6)),
     }
 
     support_conv = DirectedConversation(
@@ -148,8 +131,7 @@ def example_customer_support() -> None:
         topic="Customer Issue: Application Crashing",
         max_rounds=3,
         mention_patterns=["@{name}", "escalate to {name}", "transfer to {name}"],
-        fallback_to_round_robin=False,
-    )
+        fallback_to_round_robin=False)
 
     result = support_conv.run(
         {
@@ -159,12 +141,10 @@ def example_customer_support() -> None:
                 ),
                 AIMessage(
                     content="I'll help you with that. Let me check...",
-                    name="SupportBot",
-                ),
+                    name="SupportBot"),
             ]
         },
-        debug=True,
-    )
+        debug=True)
 
     # Display support flow
     for msg in result.get("messages", []):
@@ -182,9 +162,7 @@ def example_interactive_story() -> None:
                     "You are the story narrator. Set scenes and direct characters to interact. "
                     "Use @mentions to prompt specific characters to speak or act."
                 ),
-                temperature=0.8,
-            ),
-        ),
+                temperature=0.8)),
         "Hero": SimpleAgent(
             name="Hero",
             engine=AugLLMConfig(
@@ -192,9 +170,7 @@ def example_interactive_story() -> None:
                     "You are the brave hero of the story. Respond when addressed or when "
                     "the situation calls for heroic action. You can interact with other characters."
                 ),
-                temperature=0.7,
-            ),
-        ),
+                temperature=0.7)),
         "Wizard": SimpleAgent(
             name="Wizard",
             engine=AugLLMConfig(
@@ -202,9 +178,7 @@ def example_interactive_story() -> None:
                     "You are a wise wizard. Offer magical solutions and ancient knowledge. "
                     "Respond to requests for help or when magic is needed."
                 ),
-                temperature=0.8,
-            ),
-        ),
+                temperature=0.8)),
         "Villain": SimpleAgent(
             name="Villain",
             engine=AugLLMConfig(
@@ -212,9 +186,7 @@ def example_interactive_story() -> None:
                     "You are the cunning villain. Create conflict and challenge the heroes. "
                     "Respond to confrontations and taunt the @Hero."
                 ),
-                temperature=0.8,
-            ),
-        ),
+                temperature=0.8)),
     }
 
     story = DirectedConversation(
@@ -222,8 +194,7 @@ def example_interactive_story() -> None:
         topic="The Quest for the Crystal of Power",
         max_rounds=3,
         mention_patterns=["@{name}", "{name} speaks:", "turning to {name}"],
-        allow_self_selection=True,
-    )
+        allow_self_selection=True)
 
     result = story.run({}, debug=True)
 

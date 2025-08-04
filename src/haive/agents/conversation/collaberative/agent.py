@@ -34,8 +34,7 @@ class CollaborativeConversation(BaseConversationAgent):
     document_title: str = Field(default="Collaborative Document")
     sections: list[str] = Field(
         default_factory=lambda: ["Introduction", "Main Content", "Conclusion"],
-        description="Sections to collaborate on",
-    )
+        description="Sections to collaborate on")
 
     # Collaboration settings
     require_approval: bool = Field(
@@ -378,8 +377,7 @@ The final document has been compiled."""
         topic: str,
         participants: list[str],
         sections: list[str] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Create a brainstorming/ideation session.
 
         Args:
@@ -400,8 +398,7 @@ The final document has been compiled."""
                     "Be creative, build on others' ideas, and think outside the box. "
                     "Keep contributions focused and constructive."
                 ),
-                temperature=0.8,
-            )
+                temperature=0.8)
             agents[name] = SimpleAgent(name=f"{name}_agent", engine=engine)
 
         # Calculate appropriate max_rounds
@@ -425,16 +422,14 @@ The final document has been compiled."""
             document_title=f"Brainstorming: {topic}",
             sections=sections,
             output_format="outline",
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def create_code_review(
         cls,
         code_description: str,
         reviewers: dict[str, str],  # name -> expertise
-        **kwargs,
-    ):
+        **kwargs):
         """Create a collaborative code review session.
 
         Args:
@@ -451,8 +446,7 @@ The final document has been compiled."""
                     "Provide constructive feedback on code quality, design, "
                     "performance, and best practices. Be specific and helpful."
                 ),
-                temperature=0.6,
-            )
+                temperature=0.6)
             agents[name] = SimpleAgent(name=f"{name}_agent", engine=engine)
 
         # Calculate appropriate max_rounds
@@ -470,5 +464,4 @@ The final document has been compiled."""
             document_title="Code Review",
             sections=sections,
             output_format="markdown",
-            **kwargs,
-        )
+            **kwargs)

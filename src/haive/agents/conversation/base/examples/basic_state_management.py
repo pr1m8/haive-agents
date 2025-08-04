@@ -18,8 +18,7 @@ from haive.agents.conversation.base import (
     ConversationState,
     create_conversation_state,
     get_conversation_progress,
-    validate_conversation_participants,
-)
+    validate_conversation_participants)
 from haive.agents.simple import SimpleAgent
 
 
@@ -34,8 +33,7 @@ def demonstrate_basic_state_creation() -> Any:
     state = create_conversation_state(
         participants=[alice, bob, charlie],
         topic="Future of Artificial Intelligence",
-        max_rounds=5,
-    )
+        max_rounds=5)
 
     return state, [alice, bob, charlie]
 

@@ -1,11 +1,9 @@
 """Module exports."""
 
 from haive.agents.conversation.base.agent import (
-    BaseConversationAgent,
-)
+    BaseConversationAgent)
 from haive.agents.conversation.base.state import (
-    ConversationState,
-)
+    ConversationState)
 
 __all__ = [
     "BaseConversationAgent",

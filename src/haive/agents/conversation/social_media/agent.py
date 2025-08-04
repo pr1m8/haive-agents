@@ -11,8 +11,7 @@ from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.social_media.models import (
     LikePostInput,
     ReplyPostInput,
-    SharePostInput,
-)
+    SharePostInput)
 from haive.agents.conversation.social_media.state import SocialMediaState
 from haive.agents.simple.agent import SimpleAgent
 
@@ -66,8 +65,7 @@ class SocialMediaConversation(BaseConversationAgent):
             system_message=(
                 f"You are orchestrating a {self.platform_type} conversation. "
                 f"Topic: {self.topic}. Encourage engagement and viral content."
-            ),
-        )
+            ))
 
     def _compile_participants(self):
         """Compile participants with social media tools."""
@@ -88,16 +86,14 @@ class SocialMediaConversation(BaseConversationAgent):
                 name="like_post",
                 description="Like another user's post",
                 func=self._like_post_handler,
-                args_schema=LikePostInput,
-            )
+                args_schema=LikePostInput)
             tools.append(like_tool)
 
         reply_tool = StructuredTool(
             name="reply_to_post",
             description="Reply to another user's post",
             func=self._reply_post_handler,
-            args_schema=ReplyPostInput,
-        )
+            args_schema=ReplyPostInput)
         tools.append(reply_tool)
 
         if self.enable_shares:
@@ -105,8 +101,7 @@ class SocialMediaConversation(BaseConversationAgent):
                 name="share_post",
                 description="Share/retweet another user's post",
                 func=self._share_post_handler,
-                args_schema=SharePostInput,
-            )
+                args_schema=SharePostInput)
             tools.append(share_tool)
 
         # Add tools to each agent's engine
@@ -395,5 +390,4 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
             topic=topic,
             platform_type="twitter",
             viral_threshold=viral_threshold,
-            **kwargs,
-        )
+            **kwargs)

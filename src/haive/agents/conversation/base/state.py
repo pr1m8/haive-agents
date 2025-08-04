@@ -160,8 +160,7 @@ class ConversationState(MessagesState):
     # Use reducer for automatic round counting
     turn_count: TurnCount = Field(
         default=0,
-        description="Total number of turns taken (auto-incremented via reducer)",
-    )
+        description="Total number of turns taken (auto-incremented via reducer)")
 
     max_rounds: int = Field(
         default=10, description="Maximum number of conversation rounds allowed", gt=0
@@ -176,14 +175,12 @@ class ConversationState(MessagesState):
     )
     mode: ConversationMode = Field(
         default="round_robin",
-        description="Conversation mode identifier (e.g., 'round_robin', 'debate')",
-    )
+        description="Conversation mode identifier (e.g., 'round_robin', 'debate')")
 
     # Speaker history for tracking with type hints
     speaker_history: SpeakerList = Field(
         default_factory=list,
-        description="Chronological history of speakers in order (auto-appended)",
-    )
+        description="Chronological history of speakers in order (auto-appended)")
 
     # Add reducers for automatic tracking with proper type annotations
     __reducer_fields__: dict[str, Any] = {
