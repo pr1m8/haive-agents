@@ -171,6 +171,7 @@ class RAGFactory:
         name: str,
         **kwargs,
     ) -> Agent:
+        """Create traditional implementation."""
         # Remove name from kwargs to avoid conflicts
         filtered_kwargs = {k: v for k, v in kwargs.items() if k != "name"}
 
