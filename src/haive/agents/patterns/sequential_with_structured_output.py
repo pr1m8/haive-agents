@@ -5,9 +5,11 @@ where the first agent performs some task and the second agent structures
 the output into a specific format.
 
 Examples:
-    ReactAgent → StructuredOutputAgent
-    ResearchAgent → SummaryAgent
-    AnalysisAgent → ReportAgent
+    Common sequential patterns::
+
+        ReactAgent → StructuredOutputAgent
+        ResearchAgent → SummaryAgent
+        AnalysisAgent → ReportAgent
 """
 
 import contextlib
@@ -37,8 +39,7 @@ class SequentialHooks(BaseModel):
 
     intermediate_transform: Callable[[Any], dict[str, Any]] | None = Field(
         default=None,
-        description="Function to transform output from first agent for second agent",
-    )
+        description="Function to transform output from first agent for second agent")
 
     post_process: Callable[[Any], Any] | None = Field(
         default=None, description="Function to post-process final output"
@@ -70,8 +71,7 @@ class SequentialAgentWithStructuredOutput(Generic[OutputT]):
         second_agent: Agent | None = None,
         hooks: SequentialHooks | None = None,
         name: str = "sequential_structured",
-        debug: bool = False,
-    ):
+        debug: bool = False):
         """Initialize sequential agent with structured output.
 
         Args:
@@ -113,8 +113,7 @@ information and organize it into the requested structured format.
 
 Ensure all required fields are populated accurately based on the input data.
 If certain information is not available, use reasonable defaults or indicate
-that the information is missing.""",
-                    ),
+that the information is missing."""),
                     (
                         "human",
                         """Please structure the following information into the required format.
@@ -131,8 +130,7 @@ Requirements:
 - Ensure accuracy and completeness
 - Flag any missing or uncertain information
 
-Provide the structured output now:""",
-                    ),
+Provide the structured output now:"""),
                 ]
             ).partial(context="")
 
@@ -143,8 +141,7 @@ Provide the structured output now:""",
                 structured_output_model=self.structured_output_model,
                 structured_output_version="v2",
                 temperature=0.3,  # Lower temperature for consistent structuring
-            ),
-        )
+            ))
 
     async def arun(
         self, input_data: Any, context: dict[str, Any] | None = None, **kwargs
@@ -257,8 +254,7 @@ Provide the structured output now:""",
         self,
         first_result: Any,
         original_input: Any,
-        context: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
+        context: dict[str, Any] | None = None) -> dict[str, Any]:
         """Default transformation of first agent output for second agent."""
         # Handle different output types
         if isinstance(first_result, dict):
@@ -300,8 +296,7 @@ def create_react_to_structured(
     react_config: dict[str, Any] | None = None,
     structured_prompt: ChatPromptTemplate | None = None,
     hooks: SequentialHooks | None = None,
-    debug: bool = False,
-) -> SequentialAgentWithStructuredOutput[OutputT]:
+    debug: bool = False) -> SequentialAgentWithStructuredOutput[OutputT]:
     """Create a ReactAgent → StructuredOutput pipeline.
 
     Args:
@@ -328,8 +323,7 @@ def create_react_to_structured(
         structured_output_prompt=structured_prompt,
         hooks=hooks,
         name=name,
-        debug=debug,
-    )
+        debug=debug)
 
 
 def create_analysis_to_report(
@@ -339,8 +333,7 @@ def create_analysis_to_report(
     analysis_config: dict[str, Any] | None = None,
     report_prompt: ChatPromptTemplate | None = None,
     hooks: SequentialHooks | None = None,
-    debug: bool = False,
-) -> SequentialAgentWithStructuredOutput[OutputT]:
+    debug: bool = False) -> SequentialAgentWithStructuredOutput[OutputT]:
     """Create an Analysis → Report pipeline.
 
     Args:
@@ -359,8 +352,7 @@ def create_analysis_to_report(
 
     analysis_agent = SimpleAgent(
         name=f"{name}_analyzer",
-        engine=AugLLMConfig(prompt_template=analysis_prompt, **analysis_config),
-    )
+        engine=AugLLMConfig(prompt_template=analysis_prompt, **analysis_config))
 
     return SequentialAgentWithStructuredOutput(
         first_agent=analysis_agent,
@@ -368,8 +360,7 @@ def create_analysis_to_report(
         structured_output_prompt=report_prompt,
         hooks=hooks,
         name=name,
-        debug=debug,
-    )
+        debug=debug)
 
 
 __all__ = [

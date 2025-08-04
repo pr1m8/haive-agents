@@ -88,9 +88,7 @@ class ReactToStructuredAgent(Agent):
                 engine=AugLLMConfig(
                     temperature=self.reasoning_temperature,
                     system_message="You are a reasoning agent. Use tools to gather information and analyze problems thoroughly.",
-                    tools=self.tools,
-                ),
-            )
+                    tools=self.tools))
 
         # Create SimpleAgentV3 for structured output
         if not self.structure_agent:
@@ -99,8 +97,7 @@ class ReactToStructuredAgent(Agent):
                 engine=AugLLMConfig(
                     temperature=self.structuring_temperature,
                     system_message="You are a structured output specialist. Convert analysis into well-formatted structured data.",
-                    structured_output_model=self.output_model,
-                ),
+                    structured_output_model=self.output_model),
                 prompt_template=ChatPromptTemplate.from_messages(
                     [
                         ("system", "{system_message}"),
@@ -109,11 +106,9 @@ class ReactToStructuredAgent(Agent):
                             """Based on this analysis:
 {reasoning_output}
 
-Create a structured output with all required fields properly filled.""",
-                        ),
+Create a structured output with all required fields properly filled."""),
                     ]
-                ),
-            )
+                ))
 
         # Add agents to engines
         self.engines = {
@@ -186,18 +181,14 @@ class MultiStageReasoningAgent(Agent):
                         temperature=0.5,
                         system_message=stage.get("system_message", ""),
                         tools=stage.get("tools", []),
-                        structured_output_model=stage.get("output_model"),
-                    ),
-                )
+                        structured_output_model=stage.get("output_model")))
             else:  # simple
                 agent = SimpleAgentV3(
                     name=stage["name"],
                     engine=AugLLMConfig(
                         temperature=0.3,
                         system_message=stage.get("system_message", ""),
-                        structured_output_model=stage.get("output_model"),
-                    ),
-                )
+                        structured_output_model=stage.get("output_model")))
 
             self.stage_agents[stage["name"]] = agent
             self.engines[stage["name"]] = agent
@@ -293,9 +284,7 @@ class ReflectiveStructuredAgent(Agent):
             name=f"{self.name}_reasoner",
             engine=AugLLMConfig(
                 temperature=0.5,
-                system_message="Analyze problems using reasoning and available tools.",
-            ),
-        )
+                system_message="Analyze problems using reasoning and available tools."))
 
         # Structuring agent
         self.structurer = SimpleAgentV3(
@@ -303,9 +292,7 @@ class ReflectiveStructuredAgent(Agent):
             engine=AugLLMConfig(
                 temperature=0.3,
                 system_message="Convert analysis into structured format.",
-                structured_output_model=self.output_model,
-            ),
-        )
+                structured_output_model=self.output_model))
 
         # Reflection agent
         if self.include_reflection:
@@ -313,9 +300,7 @@ class ReflectiveStructuredAgent(Agent):
                 name=f"{self.name}_reflector",
                 engine=AugLLMConfig(
                     temperature=0.4,
-                    system_message="Review and improve the structured output for clarity and completeness.",
-                ),
-            )
+                    system_message="Review and improve the structured output for clarity and completeness."))
 
         # Register engines
         self.engines = {"reasoner": self.reasoner, "structurer": self.structurer}
@@ -355,8 +340,7 @@ def create_react_structured_agent(
     name: str = "react_structured",
     tools: list[Any] | None = None,
     output_model: type[BaseModel] = StructuredSolution,
-    debug: bool = True,
-) -> ReactToStructuredAgent:
+    debug: bool = True) -> ReactToStructuredAgent:
     """Create a React → Structured agent."""
     return ReactToStructuredAgent(
         name=name, tools=tools or [], output_model=output_model, debug=debug
@@ -366,8 +350,7 @@ def create_react_structured_agent(
 def create_multi_stage_reasoning_agent(
     name: str = "multi_stage",
     stages: list[dict[str, Any]] | None = None,
-    debug: bool = True,
-) -> MultiStageReasoningAgent:
+    debug: bool = True) -> MultiStageReasoningAgent:
     """Create a multi-stage reasoning agent."""
     return MultiStageReasoningAgent(name=name, stages=stages or [], debug=debug)
 
@@ -375,8 +358,7 @@ def create_multi_stage_reasoning_agent(
 def create_tool_enhanced_agent(
     name: str = "tool_enhanced",
     output_model: type[BaseModel] = AnalysisResult,
-    debug: bool = True,
-) -> ToolEnhancedStructuredAgent:
+    debug: bool = True) -> ToolEnhancedStructuredAgent:
     """Create a tool-enhanced structured agent."""
     return ToolEnhancedStructuredAgent(
         name=name, output_model=output_model, debug=debug
@@ -387,15 +369,13 @@ def create_reflective_structured_agent(
     name: str = "reflective",
     include_reflection: bool = True,
     output_model: type[BaseModel] = StructuredSolution,
-    debug: bool = True,
-) -> ReflectiveStructuredAgent:
+    debug: bool = True) -> ReflectiveStructuredAgent:
     """Create a reflective structured agent."""
     return ReflectiveStructuredAgent(
         name=name,
         include_reflection=include_reflection,
         output_model=output_model,
-        debug=debug,
-    )
+        debug=debug)
 
 
 # Example usage

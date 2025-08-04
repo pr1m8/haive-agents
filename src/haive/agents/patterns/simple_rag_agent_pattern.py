@@ -100,8 +100,7 @@ If information is not available in the documents, say so clearly.""",
                 tools=[retrieve_documents],
                 structured_output_model=(
                     AnswerWithSources if self.include_sources else None
-                ),
-            )
+                ))
 
         # Set up RAG-specific prompt template
         self.prompt_template = ChatPromptTemplate.from_messages(
@@ -115,8 +114,7 @@ Retrieved Documents:
 {retrieved_documents}
 
 Please provide a comprehensive answer based on the retrieved documents.
-Include source citations and suggest follow-up questions.""",
-                ),
+Include source citations and suggest follow-up questions."""),
             ]
         )
 
@@ -154,8 +152,7 @@ class IterativeRAGAgent(SimpleRAGAgent):
             [
                 (
                     "system",
-                    "You are refining a previous answer with additional context.",
-                ),
+                    "You are refining a previous answer with additional context."),
                 (
                     "human",
                     """Previous Answer: {previous_answer}
@@ -164,8 +161,7 @@ Confidence: {confidence}
 Additional Retrieved Documents:
 {additional_documents}
 
-Please refine the answer with this new information, improving clarity and completeness.""",
-                ),
+Please refine the answer with this new information, improving clarity and completeness."""),
             ]
         )
 
@@ -214,8 +210,7 @@ class HybridRAGAgent(SimpleRAGAgent):
                 temperature=self.temperature or 0.3,
                 system_message="You are a hybrid RAG assistant using multiple retrieval strategies.",
                 tools=tools,
-                structured_output_model=AnswerWithSources,
-            )
+                structured_output_model=AnswerWithSources)
 
         super().setup_agent()
 
@@ -251,8 +246,7 @@ def create_hybrid_rag_agent(
         use_knowledge_graph="graph" in retrieval_strategies,
         temperature=0.3,
         debug=True,
-        **kwargs,
-    )
+        **kwargs)
 
 
 # Example usage patterns
@@ -289,8 +283,7 @@ async def example_hybrid_rag():
     # Create hybrid agent with all strategies
     rag = create_hybrid_rag_agent(
         name="comprehensive_assistant",
-        retrieval_strategies=["semantic", "keyword", "graph"],
-    )
+        retrieval_strategies=["semantic", "keyword", "graph"])
 
     # Query that benefits from multiple retrieval types
     result = await rag.arun(

@@ -144,8 +144,7 @@ class ReactWithStructuredOutput(EnhancedMultiAgentV4):
         name: str = "analysis_workflow",
         tools: list | None = None,
         reasoning_config: AugLLMConfig | None = None,
-        structuring_config: AugLLMConfig | None = None,
-    ) -> "ReactWithStructuredOutput":
+        structuring_config: AugLLMConfig | None = None) -> "ReactWithStructuredOutput":
         """Create a ReactAgent → StructuredOutput pattern for analysis tasks.
 
         Args:
@@ -160,15 +159,13 @@ class ReactWithStructuredOutput(EnhancedMultiAgentV4):
         if not reasoning_config:
             reasoning_config = AugLLMConfig(
                 system_message="You are an expert analyst. Use available tools to gather information and perform thorough analysis.",
-                temperature=0.3,
-            )
+                temperature=0.3)
 
         if not structuring_config:
             structuring_config = AugLLMConfig(
                 system_message="You are a structured output specialist. Convert analysis results into well-formatted structured data.",
                 structured_output_model=AnalysisResult,
-                temperature=0.1,
-            )
+                temperature=0.1)
 
         reasoning_agent = ReactAgent(
             name=f"{name}_reasoner", engine=reasoning_config, tools=tools or []
@@ -181,8 +178,7 @@ class ReactWithStructuredOutput(EnhancedMultiAgentV4):
                 [
                     (
                         "system",
-                        "Convert the following analysis into structured format.",
-                    ),
+                        "Convert the following analysis into structured format."),
                     (
                         "human",
                         """Analysis Results:
@@ -195,18 +191,15 @@ Convert this analysis into a structured format with:
 - Recommendations (as a list)
 - Supporting evidence (as a list)
 
-Ensure all fields are properly filled based on the analysis.""",
-                    ),
+Ensure all fields are properly filled based on the analysis."""),
                 ]
-            ),
-        )
+            ))
 
         return cls(
             name=name,
             reasoning_agent=reasoning_agent,
             structuring_agent=structuring_agent,
-            structured_output_model=AnalysisResult,
-        )
+            structured_output_model=AnalysisResult)
 
     @classmethod
     def create_research_pattern(
@@ -214,21 +207,18 @@ Ensure all fields are properly filled based on the analysis.""",
         name: str = "research_workflow",
         tools: list | None = None,
         reasoning_config: AugLLMConfig | None = None,
-        structuring_config: AugLLMConfig | None = None,
-    ) -> "ReactWithStructuredOutput":
+        structuring_config: AugLLMConfig | None = None) -> "ReactWithStructuredOutput":
         """Create a ReactAgent → StructuredOutput pattern for research tasks."""
         if not reasoning_config:
             reasoning_config = AugLLMConfig(
                 system_message="You are a thorough researcher. Use available tools to gather comprehensive information on the topic.",
-                temperature=0.4,
-            )
+                temperature=0.4)
 
         if not structuring_config:
             structuring_config = AugLLMConfig(
                 system_message="You are a research report specialist. Format research findings into professional reports.",
                 structured_output_model=ResearchReport,
-                temperature=0.2,
-            )
+                temperature=0.2)
 
         reasoning_agent = ReactAgent(
             name=f"{name}_researcher", engine=reasoning_config, tools=tools or []
@@ -254,18 +244,15 @@ Create a comprehensive research report with:
 - Sources consulted
 - Confidence level assessment
 
-Ensure the report is professional and well-structured.""",
-                    ),
+Ensure the report is professional and well-structured."""),
                 ]
-            ),
-        )
+            ))
 
         return cls(
             name=name,
             reasoning_agent=reasoning_agent,
             structuring_agent=structuring_agent,
-            structured_output_model=ResearchReport,
-        )
+            structured_output_model=ResearchReport)
 
     @classmethod
     def create_problem_solving_pattern(
@@ -273,21 +260,18 @@ Ensure the report is professional and well-structured.""",
         name: str = "problem_solving_workflow",
         tools: list | None = None,
         reasoning_config: AugLLMConfig | None = None,
-        structuring_config: AugLLMConfig | None = None,
-    ) -> "ReactWithStructuredOutput":
+        structuring_config: AugLLMConfig | None = None) -> "ReactWithStructuredOutput":
         """Create a ReactAgent → StructuredOutput pattern for problem-solving tasks."""
         if not reasoning_config:
             reasoning_config = AugLLMConfig(
                 system_message="You are an expert problem solver. Analyze problems systematically and develop comprehensive solutions.",
-                temperature=0.3,
-            )
+                temperature=0.3)
 
         if not structuring_config:
             structuring_config = AugLLMConfig(
                 system_message="You are a solution architect. Structure problem-solving results into actionable plans.",
                 structured_output_model=ProblemSolution,
-                temperature=0.1,
-            )
+                temperature=0.1)
 
         reasoning_agent = ReactAgent(
             name=f"{name}_solver", engine=reasoning_config, tools=tools or []
@@ -300,8 +284,7 @@ Ensure the report is professional and well-structured.""",
                 [
                     (
                         "system",
-                        "Structure problem-solving results into actionable solutions.",
-                    ),
+                        "Structure problem-solving results into actionable solutions."),
                     (
                         "human",
                         """Problem Analysis:
@@ -315,18 +298,15 @@ Create a structured solution with:
 - Success metrics
 - Risks and mitigation strategies
 
-Make the solution actionable and comprehensive.""",
-                    ),
+Make the solution actionable and comprehensive."""),
                 ]
-            ),
-        )
+            ))
 
         return cls(
             name=name,
             reasoning_agent=reasoning_agent,
             structuring_agent=structuring_agent,
-            structured_output_model=ProblemSolution,
-        )
+            structured_output_model=ProblemSolution)
 
 
 # Factory functions for common patterns

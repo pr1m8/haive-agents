@@ -22,8 +22,7 @@ from pydantic import BaseModel, Field
 from haive.agents.base.hooks import HookContext
 from haive.agents.base.pre_post_agent_mixin import (
     create_graded_reflection_agent,
-    create_reflection_agent,
-)
+    create_reflection_agent)
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent_v3 import SimpleAgentV3
@@ -97,8 +96,7 @@ class ReactToStructuredV3:
         tools: list | None = None,
         structured_output_model: type[BaseModel] = TaskAnalysis,
         reasoning_config: AugLLMConfig = None,
-        structuring_config: AugLLMConfig = None,
-    ):
+        structuring_config: AugLLMConfig = None):
         self.name = name
         self.structured_output_model = structured_output_model
 
@@ -108,10 +106,8 @@ class ReactToStructuredV3:
             engine=reasoning_config
             or AugLLMConfig(
                 system_message="You are an expert analyst. Use tools to gather information and provide thorough analysis.",
-                temperature=0.3,
-            ),
-            tools=tools or [],
-        )
+                temperature=0.3),
+            tools=tools or [])
 
         # Create SimpleAgentV3 for structured output
         self.structuring_agent = SimpleAgentV3(
@@ -120,24 +116,20 @@ class ReactToStructuredV3:
             or AugLLMConfig(
                 system_message="You are a structured output specialist. Convert analysis into well-formatted structured data.",
                 structured_output_model=structured_output_model,
-                temperature=0.1,
-            ),
+                temperature=0.1),
             prompt_template=ChatPromptTemplate.from_messages(
                 [
                     (
                         "system",
-                        "Convert the following analysis into structured format.",
-                    ),
+                        "Convert the following analysis into structured format."),
                     (
                         "human",
                         """Analysis from reasoning agent:
 {reasoning_output}
 
-Convert this into the required structured format. Ensure all fields are properly filled based on the analysis provided.""",
-                    ),
+Convert this into the required structured format. Ensure all fields are properly filled based on the analysis provided."""),
                 ]
-            ),
-        )
+            ))
 
         # Set up hooks for monitoring
         self._setup_v3_hooks()
@@ -230,33 +222,27 @@ class ReactToStructuredV4(EnhancedMultiAgentV4):
         cls,
         name: str = "v4_analysis",
         tools: list | None = None,
-        structured_output_model: type[BaseModel] = TaskAnalysis,
-    ) -> "ReactToStructuredV4":
+        structured_output_model: type[BaseModel] = TaskAnalysis) -> "ReactToStructuredV4":
         """Create V4 analysis workflow."""
         reasoning_agent = ReactAgent(
             name=f"{name}_reasoner",
             engine=AugLLMConfig(
                 system_message="You are an expert analyst. Use available tools for comprehensive analysis.",
-                temperature=0.3,
-            ),
-            tools=tools or [],
-        )
+                temperature=0.3),
+            tools=tools or [])
 
         structuring_agent = SimpleAgentV3(
             name=f"{name}_structurer",
             engine=AugLLMConfig(
                 system_message="Convert analysis results into structured format.",
                 structured_output_model=structured_output_model,
-                temperature=0.1,
-            ),
-        )
+                temperature=0.1))
 
         return cls(
             name=name,
             reasoning_agent=reasoning_agent,
             structuring_agent=structuring_agent,
-            structured_output_model=structured_output_model,
-        )
+            structured_output_model=structured_output_model)
 
 
 # =============================================================================
@@ -273,8 +259,7 @@ class ReactWithReflection:
         tools: list | None = None,
         structured_output_model: type[BaseModel] = TaskAnalysis,
         reasoning_config: AugLLMConfig = None,
-        structuring_config: AugLLMConfig = None,
-    ):
+        structuring_config: AugLLMConfig = None):
         self.name = name
         self.structured_output_model = structured_output_model
 
@@ -284,10 +269,8 @@ class ReactWithReflection:
             engine=reasoning_config
             or AugLLMConfig(
                 system_message="You are a thorough analyst. Use tools and provide detailed reasoning.",
-                temperature=0.4,
-            ),
-            tools=tools or [],
-        )
+                temperature=0.4),
+            tools=tools or [])
 
         # Create SimpleAgentV3 with structured output
         base_structuring_agent = SimpleAgentV3(
@@ -296,9 +279,7 @@ class ReactWithReflection:
             or AugLLMConfig(
                 system_message="Convert analysis into structured format with attention to detail.",
                 structured_output_model=structured_output_model,
-                temperature=0.2,
-            ),
-        )
+                temperature=0.2))
 
         # Add reflection capabilities using factory pattern
         self.structuring_agent = create_reflection_agent(base_structuring_agent)
@@ -349,8 +330,7 @@ class ReactWithGradedReflection:
         self,
         name: str,
         tools: list | None = None,
-        structured_output_model: type[BaseModel] = TaskAnalysis,
-    ):
+        structured_output_model: type[BaseModel] = TaskAnalysis):
         self.name = name
         self.structured_output_model = structured_output_model
 
@@ -359,10 +339,8 @@ class ReactWithGradedReflection:
             name=f"{name}_reasoner",
             engine=AugLLMConfig(
                 system_message="You are an expert analyst. Provide comprehensive analysis using available tools.",
-                temperature=0.4,
-            ),
-            tools=tools or [],
-        )
+                temperature=0.4),
+            tools=tools or [])
 
         # Create base structuring agent
         base_structuring_agent = SimpleAgentV3(
@@ -370,9 +348,7 @@ class ReactWithGradedReflection:
             engine=AugLLMConfig(
                 system_message="Convert analysis into high-quality structured format.",
                 structured_output_model=structured_output_model,
-                temperature=0.2,
-            ),
-        )
+                temperature=0.2))
 
         # Add graded reflection capabilities
         self.structuring_agent = create_graded_reflection_agent(base_structuring_agent)
@@ -419,8 +395,7 @@ class ReactWithGradedReflection:
 def create_v3_pattern(
     name: str = "react_structured_v3",
     tools: list | None = None,
-    structured_output_model: type[BaseModel] = TaskAnalysis,
-) -> ReactToStructuredV3:
+    structured_output_model: type[BaseModel] = TaskAnalysis) -> ReactToStructuredV3:
     """Create V3 pattern: ReactAgent → SimpleAgentV3."""
     return ReactToStructuredV3(
         name=name, tools=tools, structured_output_model=structured_output_model
@@ -430,8 +405,7 @@ def create_v3_pattern(
 def create_v4_pattern(
     name: str = "react_structured_v4",
     tools: list | None = None,
-    structured_output_model: type[BaseModel] = TaskAnalysis,
-) -> ReactToStructuredV4:
+    structured_output_model: type[BaseModel] = TaskAnalysis) -> ReactToStructuredV4:
     """Create V4 pattern: EnhancedMultiAgentV4 composition."""
     return ReactToStructuredV4.create_analysis_workflow(
         name=name, tools=tools, structured_output_model=structured_output_model
@@ -441,8 +415,7 @@ def create_v4_pattern(
 def create_reflection_pattern(
     name: str = "react_with_reflection",
     tools: list | None = None,
-    structured_output_model: type[BaseModel] = TaskAnalysis,
-) -> ReactWithReflection:
+    structured_output_model: type[BaseModel] = TaskAnalysis) -> ReactWithReflection:
     """Create Enhanced Base Agent pattern with reflection."""
     return ReactWithReflection(
         name=name, tools=tools, structured_output_model=structured_output_model
@@ -452,8 +425,7 @@ def create_reflection_pattern(
 def create_graded_reflection_pattern(
     name: str = "react_graded_reflection",
     tools: list | None = None,
-    structured_output_model: type[BaseModel] = TaskAnalysis,
-) -> ReactWithGradedReflection:
+    structured_output_model: type[BaseModel] = TaskAnalysis) -> ReactWithGradedReflection:
     """Create graded reflection pattern."""
     return ReactWithGradedReflection(
         name=name, tools=tools, structured_output_model=structured_output_model
@@ -470,8 +442,7 @@ async def example_v3_pattern():
     workflow = create_v3_pattern(
         name="market_research_v3",
         tools=[web_research, data_analysis],
-        structured_output_model=ResearchFindings,
-    )
+        structured_output_model=ResearchFindings)
 
     result = await workflow.arun(
         "Research the impact of AI on small businesses and provide structured findings"
@@ -485,8 +456,7 @@ async def example_v4_pattern():
     workflow = create_v4_pattern(
         name="problem_analysis_v4",
         tools=[stakeholder_analysis, data_analysis],
-        structured_output_model=ProblemAnalysis,
-    )
+        structured_output_model=ProblemAnalysis)
 
     result = await workflow.arun(
         "Analyze the problem of customer service delays in our company"
@@ -500,8 +470,7 @@ async def example_reflection_pattern():
     workflow = create_reflection_pattern(
         name="task_analysis_reflection",
         tools=[web_research, stakeholder_analysis],
-        structured_output_model=TaskAnalysis,
-    )
+        structured_output_model=TaskAnalysis)
 
     result = await workflow.arun(
         "Analyze the task of implementing a new customer feedback system"
@@ -517,8 +486,7 @@ async def example_graded_reflection_pattern():
     workflow = create_graded_reflection_pattern(
         name="comprehensive_analysis",
         tools=[web_research, data_analysis, stakeholder_analysis],
-        structured_output_model=ResearchFindings,
-    )
+        structured_output_model=ResearchFindings)
 
     result = await workflow.arun(
         "Conduct comprehensive research on sustainable energy adoption in urban areas"

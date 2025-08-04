@@ -69,8 +69,7 @@ class SequentialWorkflowAgent(EnhancedMultiAgentV4):
     # Workflow configuration
     stages: list[str] = Field(
         default_factory=lambda: ["analyze", "process", "output"],
-        description="Ordered list of workflow stages",
-    )
+        description="Ordered list of workflow stages")
 
     stage_configs: dict[str, dict[str, Any]] = Field(
         default_factory=dict, description="Configuration for each stage"
@@ -170,10 +169,8 @@ class PipelineAgent(EnhancedMultiAgentV4):
             name="extractor",
             engine=AugLLMConfig(
                 temperature=0.1,
-                system_message="Extract key information from input data.",
-            ),
-            debug=True,
-        )
+                system_message="Extract key information from input data."),
+            debug=True)
         stages.append(extractor)
 
         # Data transformation stage
@@ -182,8 +179,7 @@ class PipelineAgent(EnhancedMultiAgentV4):
             engine=AugLLMConfig(
                 temperature=0.3, system_message="Transform and enrich extracted data."
             ),
-            debug=True,
-        )
+            debug=True)
         stages.append(transformer)
 
         # Data validation stage
@@ -192,8 +188,7 @@ class PipelineAgent(EnhancedMultiAgentV4):
             engine=AugLLMConfig(
                 temperature=0.1, system_message="Validate and ensure data quality."
             ),
-            debug=True,
-        )
+            debug=True)
         stages.append(validator)
 
         # Data loading stage
@@ -202,8 +197,7 @@ class PipelineAgent(EnhancedMultiAgentV4):
             engine=AugLLMConfig(
                 temperature=0.1, system_message="Format data for final output."
             ),
-            debug=True,
-        )
+            debug=True)
         stages.append(loader)
 
         return stages
@@ -233,10 +227,8 @@ class IterativeRefinementAgent(EnhancedMultiAgentV4):
             name="creator",
             engine=AugLLMConfig(
                 temperature=0.7,
-                system_message="Create initial content based on requirements.",
-            ),
-            debug=True,
-        )
+                system_message="Create initial content based on requirements."),
+            debug=True)
         agents.append(creator)
 
         # Quality evaluator
@@ -245,10 +237,8 @@ class IterativeRefinementAgent(EnhancedMultiAgentV4):
             engine=AugLLMConfig(
                 temperature=0.3,
                 system_message="Evaluate content quality and provide specific feedback.",
-                structured_output_model=QualityAssessment,
-            ),
-            debug=True,
-        )
+                structured_output_model=QualityAssessment),
+            debug=True)
         agents.append(evaluator)
 
         # Content refiner
@@ -256,10 +246,8 @@ class IterativeRefinementAgent(EnhancedMultiAgentV4):
             name="refiner",
             engine=AugLLMConfig(
                 temperature=0.5,
-                system_message="Refine content based on evaluation feedback.",
-            ),
-            debug=True,
-        )
+                system_message="Refine content based on evaluation feedback."),
+            debug=True)
         agents.append(refiner)
 
         kwargs["agents"] = agents
@@ -296,8 +284,7 @@ def create_research_workflow(
 def create_conditional_workflow(
     name: str = "conditional_workflow",
     routing_conditions: dict[str, callable] | None = None,
-    debug: bool = True,
-) -> ConditionalWorkflowAgent:
+    debug: bool = True) -> ConditionalWorkflowAgent:
     """Create a conditional workflow with branching."""
     return ConditionalWorkflowAgent(
         name=name, routing_conditions=routing_conditions or {}, debug=debug
@@ -313,15 +300,13 @@ def create_iterative_workflow(
     name: str = "iterative_workflow",
     max_iterations: int = 3,
     quality_threshold: float = 0.85,
-    debug: bool = True,
-) -> IterativeRefinementAgent:
+    debug: bool = True) -> IterativeRefinementAgent:
     """Create an iterative refinement workflow."""
     return IterativeRefinementAgent(
         name=name,
         max_iterations=max_iterations,
         quality_threshold=quality_threshold,
-        debug=debug,
-    )
+        debug=debug)
 
 
 # Example usage patterns
@@ -355,16 +340,14 @@ async def example_conditional_workflow():
         routing_conditions={
             "expert_review": needs_expert_review,
             "simplification": needs_simplification,
-        },
-    )
+        })
 
     # Add conditional routing
     workflow.add_conditional_edge(
         from_agent="analyze_agent",
         condition=needs_expert_review,
         true_agent="expert_agent",
-        false_agent="research_agent",
-    )
+        false_agent="research_agent")
 
     result = await workflow.arun(
         {
