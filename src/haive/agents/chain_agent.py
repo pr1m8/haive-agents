@@ -60,14 +60,12 @@ class ChainAgentConfig(SimpleAgentConfig):
     # Chain configuration
     engines: list[AugLLMConfig] = Field(
         default_factory=list,
-        description="List of AugLLMConfig engines to chain together",
-    )
+        description="List of AugLLMConfig engines to chain together")
 
     # Step configuration
     step_names: list[str] | None = Field(
         default=None,
-        description="Optional names for each step (defaults to engine names)",
-    )
+        description="Optional names for each step (defaults to engine names)")
 
     # Override state schema with chain-specific schema
     state_schema: type[BaseModel] = Field(
@@ -80,8 +78,7 @@ class ChainAgentConfig(SimpleAgentConfig):
         engines: list[AugLLMConfig],
         name: str | None = None,
         system_prompt: str | None = None,
-        **kwargs,
-    ) -> "ChainAgentConfig":
+        **kwargs) -> "ChainAgentConfig":
         """Create a ChainAgentConfig from a list of AugLLMConfig engines."""
         # Set first engine as the primary engine
         primary_engine = engines[0] if engines else AugLLMConfig()
@@ -93,8 +90,7 @@ class ChainAgentConfig(SimpleAgentConfig):
             engine=primary_engine,  # Use first engine as primary
             engines=engines,  # Store all engines
             system_prompt=system_prompt or "You are a helpful assistant.",
-            **kwargs,
-        )
+            **kwargs)
 
 
 # =============================================
@@ -364,8 +360,7 @@ class ChainAgent(SimpleAgent):
             return self.state_schema(
                 messages=[HumanMessage(content=input_data)],
                 current_step=0,
-                chain_data={"input_text": input_data},
-            )
+                chain_data={"input_text": input_data})
         if isinstance(input_data, list) and all(
             isinstance(item, str) for item in input_data
         ):
@@ -375,8 +370,7 @@ class ChainAgent(SimpleAgent):
             return self.state_schema(
                 messages=messages,
                 current_step=0,
-                chain_data={"input_text": combined_text},
-            )
+                chain_data={"input_text": combined_text})
         if isinstance(input_data, dict):
             # Make sure current_step and chain_data are set
             input_data_copy = dict(input_data)
@@ -411,8 +405,7 @@ def create_chain_agent(
     system_prompt: str | None = None,
     step_names: list[str] | None = None,
     visualize: bool = True,
-    **kwargs,
-) -> ChainAgent:
+    **kwargs) -> ChainAgent:
     """Create a chain agent from a list of engines.
 
     Args:
@@ -433,8 +426,7 @@ def create_chain_agent(
         system_prompt=system_prompt,
         step_names=step_names,
         visualize=visualize,
-        **kwargs,
-    )
+        **kwargs)
 
     # Build and return the agent
     return config.build_agent()
@@ -456,8 +448,7 @@ if __name__ == "__main__":
         name="translator",
         llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.3}),
         prompt_template=translator_prompt,
-        output_parser=StrOutputParser(),
-    )
+        output_parser=StrOutputParser())
 
     summarizer_prompt = ChatPromptTemplate.from_messages(
         [("human", "Summarize the following text in one sentence:\n\n{text}")]
@@ -467,15 +458,13 @@ if __name__ == "__main__":
         name="summarizer",
         llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.4}),
         prompt_template=summarizer_prompt,
-        output_parser=StrOutputParser(),
-    )
+        output_parser=StrOutputParser())
 
     # Create a chain agent that translates and then summarizes
     chain_agent = create_chain_agent(
         engines=[translator_engine, summarizer_engine],
         name="translate_then_summarize",
-        step_names=["translate", "summarize"],
-    )
+        step_names=["translate", "summarize"])
 
     # Run the agent
     result = chain_agent.run(

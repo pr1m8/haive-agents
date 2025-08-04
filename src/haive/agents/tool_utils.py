@@ -43,8 +43,7 @@ def prepare_tools(tools: list[BaseTool | dict[str, Any] | Callable]) -> list[Bas
                             ),
                             return_direct=tool.get("return_direct", False),
                             args_schema=tool.get("args_schema", None),
-                            coroutine=inspect.iscoroutinefunction(tool["func"]),
-                        )
+                            coroutine=inspect.iscoroutinefunction(tool["func"]))
                     )
             except Exception as e:
                 logger.exception(f"Error creating tool from dictionary: {e}")
@@ -55,8 +54,7 @@ def prepare_tools(tools: list[BaseTool | dict[str, Any] | Callable]) -> list[Bas
                     StructuredTool.from_function(
                         func=tool,
                         name=getattr(tool, "__name__", f"tool_{uuid.uuid4().hex[:8]}"),
-                        description=tool.__doc__ or "A tool with no description.",
-                    )
+                        description=tool.__doc__ or "A tool with no description.")
                 )
             except Exception as e:
                 logger.exception(f"Error creating tool from callable: {e}")

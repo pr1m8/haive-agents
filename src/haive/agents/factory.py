@@ -2,7 +2,7 @@ from typing import Any
 
 from haive.agents.simple.config import SimpleAgentConfig
 from haive.agents.simple.state import SimpleAgentState
-from haive.core.engine.agent.persistence.base import MemoryCheckpointerConfig
+from haive.core.persistence.memory import MemoryCheckpointerConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -14,8 +14,7 @@ def create_simple_agent(
     model: str = "gpt-4o",
     use_chat_history: bool = True,
     persistence_config: Any | None = None,
-    **kwargs,
-) -> SimpleAgentConfig:
+    **kwargs) -> SimpleAgentConfig:
     """Factory function to create a SimpleAgent configuration.
 
     Args:
@@ -42,8 +41,7 @@ def create_simple_agent(
         name=f"{name}_llm",
         model=model,
         system_message=system_message,
-        prompt_template=prompt,
-    )
+        prompt_template=prompt)
 
     # Set up default persistence if not provided
     if persistence_config is None:
@@ -56,5 +54,4 @@ def create_simple_agent(
         state_schema=SimpleAgentState,
         use_chat_history=use_chat_history,
         persistence=persistence_config,
-        **kwargs,
-    ).build_agent()
+        **kwargs).build_agent()

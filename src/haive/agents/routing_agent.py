@@ -62,8 +62,7 @@ class RoutingAgent(SimpleAgent):
         # Use DynamicGraph to build the workflow
         gb = DynamicGraph(
             components=[self.config.engine, *list(self.config.handlers.values())],
-            state_schema=self.state_schema,
-        )
+            state_schema=self.state_schema)
 
         # Add the main node (from SimpleAgent)
         gb.add_node(name=self.config.node_name, config=self.config.engine)
@@ -76,8 +75,7 @@ class RoutingAgent(SimpleAgent):
             gb.add_node(
                 name=name,
                 config=handler,
-                command_goto=self.config.default_routes.get(name, END),
-            )
+                command_goto=self.config.default_routes.get(name, END))
 
         # Add routing conditions
         for source, conditions in self.config.conditions.items():
@@ -134,8 +132,7 @@ def create_routing_agent(
     conditions: dict[str, list[Callable]],
     default_routes: dict[str, str],
     system_prompt: str = "You are a helpful assistant.",
-    name: str | None = None,
-) -> RoutingAgent:
+    name: str | None = None) -> RoutingAgent:
     """Create a routing agent with the specified components.
 
     Args:
@@ -156,8 +153,7 @@ def create_routing_agent(
         conditions=conditions,
         default_routes=default_routes,
         system_prompt=system_prompt,
-        name=name or "routing_agent",
-    )
+        name=name or "routing_agent")
 
     # Build and return agent
     return config.build_agent()
@@ -181,8 +177,7 @@ if __name__ == "__main__":
                     ("system", "You answer questions concisely with facts only."),
                     ("human", "{input}"),
                 ]
-            ),
-        ),
+            )),
         "task_handler": AugLLMConfig(
             name="task_handler",
             llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7}),
@@ -191,8 +186,7 @@ if __name__ == "__main__":
                     ("system", "You help complete tasks step by step."),
                     ("human", "{input}"),
                 ]
-            ),
-        ),
+            )),
     }
 
     # Routing conditions
@@ -228,8 +222,7 @@ if __name__ == "__main__":
         main_engine=main_engine,
         handlers=handlers,
         conditions=conditions,
-        default_routes=default_routes,
-    )
+        default_routes=default_routes)
 
     # Run with a question
     result = agent.run("What is the capital of France?")

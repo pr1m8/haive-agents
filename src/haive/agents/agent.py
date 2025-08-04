@@ -91,8 +91,7 @@ class WebNavState(BaseModel):
     )
 
     model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
+        arbitrary_types_allowed=True)
 
     @field_validator("prediction")
     @classmethod
@@ -194,8 +193,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             self.graph.add_node(
                 node_name,
                 RunnableLambda(tool_func)
-                | RunnableLambda(lambda observation: {"observation": observation}),
-            )
+                | RunnableLambda(lambda observation: {"observation": observation}))
             self.graph.add_edge(node_name, "update_scratchpad")
 
         # Add conditional routing
@@ -331,8 +329,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 # "--enable-automation",  # Ensure Playwright isn't blocked
                 # "--use-mock-keychain",  # Prevent keychain authentication popups
                 "--ignore-certificate-errors",  # Bypass SSL issues
-            ],
-        )
+            ])
 
         self.page = await self.browser.new_page()
         await stealth_async(self.page)

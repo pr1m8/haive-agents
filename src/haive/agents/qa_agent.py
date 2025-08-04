@@ -98,8 +98,7 @@ class QAs(BaseModel):
 qa_aug_llm_config = AugLLMConfig(
     llm=AzureLLMConfig(model="gpt-4o"),
     structured_output_model=QAs,
-    prompt_template=qa_prompt_template,
-)
+    prompt_template=qa_prompt_template)
 
 qa_agent_config = SimpleAgentConfig.from_aug_llm(aug_llm=qa_aug_llm_config)
 qa_agent = qa_agent_config.build_agent()
