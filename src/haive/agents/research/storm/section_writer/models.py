@@ -6,8 +6,7 @@ class SubSection(BaseModel):
     subsection_title: str = Field(..., title="Title of the subsection")
     content: str = Field(
         ...,
-        title="Full content of the subsection. Include [#] citations to the cited sources where relevant.",
-    )
+        title="Full content of the subsection. Include [#] citations to the cited sources where relevant.")
 
     @property
     def as_str(self) -> str:
@@ -19,8 +18,7 @@ class WikiSection(BaseModel):
     content: str = Field(..., title="Full content of the section")
     subsections: list[Subsection] | None = Field(
         default=None,
-        title="Titles and descriptions for each subsection of the Wikipedia page.",
-    )
+        title="Titles and descriptions for each subsection of the Wikipedia page.")
     citations: list[str] = Field(default_factory=list)
 
     @property

@@ -72,18 +72,15 @@ from haive.agents.research.person.prompts import (
     EXTRACTION_PROMPT,
     INFO_PROMPT,
     QUERY_WRITER_PROMPT,
-    REFLECTION_PROMPT,
-)
+    REFLECTION_PROMPT)
 from haive.agents.research.person.state import (
     PersonResearchInputState,
     PersonResearchOutputState,
-    PersonResearchState,
-)
+    PersonResearchState)
 from haive.agents.research.person.utils import (
     deduplicate_and_format_sources,
     format_all_notes,
-    get_config_from_runnable_config,
-)
+    get_config_from_runnable_config)
 
 # Import agent base classes
 
@@ -233,8 +230,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         agent_config = get_config_from_runnable_config(config)
         max_search_queries = agent_config.get(
             "max_search_queries",
-            self.config.agent_settings.get("max_search_queries", 3),
-        )
+            self.config.agent_settings.get("max_search_queries", 3))
 
         # Get query generator engine
         query_generator = self.engines.get("query_generator", self.engine)
@@ -255,8 +251,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
             person=person_str,
             info=json.dumps(state.extraction_schema, indent=2),
             user_notes=state.user_notes or "",
-            max_search_queries=max_search_queries,
-        )
+            max_search_queries=max_search_queries)
 
         # Create structured LLM for queries
         structured_llm = query_generator.with_structured_output(Queries)
@@ -272,8 +267,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
                         "content": "Please generate a list of search queries related to the schema that you want to populate.",
                     },
                 ]
-            ),
-        )
+            ))
 
         # Return queries
         query_list = list(results.queries)
@@ -295,8 +289,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         agent_config = get_config_from_runnable_config(config)
         max_search_results = agent_config.get(
             "max_search_results",
-            self.config.agent_settings.get("max_search_results", 3),
-        )
+            self.config.agent_settings.get("max_search_results", 3))
 
         # Check if Tavily client is available
         if not self.tavily_client:
@@ -320,8 +313,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
                     days=360,
                     max_results=max_search_results,
                     include_raw_content=True,
-                    topic="general",
-                )
+                    topic="general")
             )
 
         # Execute all searches concurrently
@@ -346,8 +338,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
             info=json.dumps(state.extraction_schema, indent=2),
             content=source_str,
             people=person_str,
-            user_notes=state.user_notes or "",
-        )
+            user_notes=state.user_notes or "")
 
         # Invoke the LLM
         result = await researcher.ainvoke(p)
@@ -497,8 +488,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         agent_config = get_config_from_runnable_config(config)
         max_reflection_steps = agent_config.get(
             "max_reflection_steps",
-            self.config.agent_settings.get("max_reflection_steps", 0),
-        )
+            self.config.agent_settings.get("max_reflection_steps", 0))
 
         # If we have satisfactory results, end the process
         if state.is_satisfactory:
@@ -558,8 +548,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         # Format reflection prompt
         system_prompt = REFLECTION_PROMPT.format(
             schema=json.dumps(state.extraction_schema, indent=2),
-            info=json.dumps(state.info, indent=2),
-        )
+            info=json.dumps(state.info, indent=2))
 
         # Invoke the model
         result = cast(
@@ -572,8 +561,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
                         "content": "Produce a structured reflection output.",
                     },
                 ]
-            ),
-        )
+            ))
 
         # Return results
         if result.is_satisfactory:

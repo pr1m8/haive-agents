@@ -2,7 +2,6 @@
 
 from haive.agents.research.storm.generate_perspectives.models import (
     Editor,
-    Perspectives,
-)
+    Perspectives)
 
 __all__ = ["Editor", "Perspectives"]

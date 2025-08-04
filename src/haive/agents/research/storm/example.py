@@ -53,8 +53,7 @@ async def run_storm_agent(
     output_file: str | None = None,
     num_perspectives: int = 3,
     max_turns: int = 5,
-    verbose: bool = False,
-):
+    verbose: bool = False):
     """Run the STORM agent on a given topic.
 
     Args:
@@ -75,15 +74,13 @@ async def run_storm_agent(
         model="gpt-4o-mini",
         api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
         api_version=os.environ.get("AZURE_OPENAI_API_VERSION"),
-        api_base=os.environ.get("AZURE_OPENAI_API_BASE"),
-    )
+        api_base=os.environ.get("AZURE_OPENAI_API_BASE"))
 
     long_context_llm = AzureLLMConfig(
         model="gpt-4o",
         api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
         api_version=os.environ.get("AZURE_OPENAI_API_VERSION"),
-        api_base=os.environ.get("AZURE_OPENAI_API_BASE"),
-    )
+        api_base=os.environ.get("AZURE_OPENAI_API_BASE"))
 
     # Configure embeddings
     embedding_model = OpenAIEmbeddingConfig(
@@ -94,16 +91,14 @@ async def run_storm_agent(
     vector_store_config = VectorStoreConfig(
         name="storm_references",
         vector_store_provider="InMemory",
-        embedding_model=embedding_model,
-    )
+        embedding_model=embedding_model)
 
     # Configure retriever
     retriever_config = VectorStoreRetrieverConfig(
         name="storm_retriever",
         vector_store_config=vector_store_config,
         k=4,
-        search_type="similarity",
-    )
+        search_type="similarity")
 
     # Create the STORM agent config
     storm_config = STORMAgentConfig(
@@ -114,8 +109,7 @@ async def run_storm_agent(
         fast_llm_config=fast_llm,
         long_context_llm_config=long_context_llm,
         vector_store_config=vector_store_config,
-        retriever_config=retriever_config,
-    )
+        retriever_config=retriever_config)
 
     # Build the agent
     storm_agent = storm_config.build_agent()
@@ -178,8 +172,7 @@ def main() -> None:
         "-p",
         type=int,
         default=3,
-        help="Number of perspectives (default: 3)",
-    )
+        help="Number of perspectives (default: 3)")
     parser.add_argument(
         "--turns", "-t", type=int, default=5, help="Max conversation turns (default: 5)"
     )
@@ -199,8 +192,7 @@ def main() -> None:
             output_file=args.output,
             num_perspectives=args.perspectives,
             max_turns=args.turns,
-            verbose=args.verbose,
-        )
+            verbose=args.verbose)
     )
 
 

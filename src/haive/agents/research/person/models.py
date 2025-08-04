@@ -5,8 +5,7 @@ class Queries(BaseModel):
     """Structure for search queries."""
 
     queries: list[str] = Field(
-        description="List of search queries.",
-    )
+        description="List of search queries.")
 
 
 class ReflectionOutput(BaseModel):

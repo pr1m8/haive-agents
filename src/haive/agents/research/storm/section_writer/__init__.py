@@ -2,7 +2,6 @@
 
 from haive.agents.research.storm.section_writer.models import (
     SubSection,
-    WikiSection,
-)
+    WikiSection)
 
 __all__ = ["SubSection", "WikiSection"]

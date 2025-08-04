@@ -15,8 +15,7 @@ class Section(BaseModel):
     description: str = Field(..., title="Content of the section")
     subsections: list[Subsection] | None = Field(
         default=None,
-        title="Titles and descriptions for each subsection of the Wikipedia page.",
-    )
+        title="Titles and descriptions for each subsection of the Wikipedia page.")
 
     @property
     def as_str(self) -> str:
@@ -33,8 +32,7 @@ class Outline(BaseModel):
     page_title: str = Field(..., title="Title of the Wikipedia page")
     sections: list[Section] = Field(
         default_factory=list,
-        title="Titles and descriptions for each section of the Wikipedia page.",
-    )
+        title="Titles and descriptions for each section of the Wikipedia page.")
 
     @property
     def as_str(self) -> str:

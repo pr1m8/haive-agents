@@ -1,8 +1,7 @@
 """Module exports."""
 
 from haive.agents.research.person.agent import (
-    PersonResearchAgent,
-)
+    PersonResearchAgent)
 from haive.agents.research.person.config import PersonResearchAgentConfig
 from haive.agents.research.person.models import Queries, ReflectionOutput
 from haive.agents.research.person.state import (
@@ -10,13 +9,11 @@ from haive.agents.research.person.state import (
     PersonResearchAgentConfig,
     PersonResearchInputState,
     PersonResearchOutputState,
-    PersonResearchState,
-)
+    PersonResearchState)
 from haive.agents.research.person.utils import (
     deduplicate_and_format_sources,
     format_all_notes,
-    get_config_from_runnable_config,
-)
+    get_config_from_runnable_config)
 
 __all__ = [
     "Person",

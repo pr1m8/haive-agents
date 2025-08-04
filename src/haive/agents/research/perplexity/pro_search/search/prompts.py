@@ -276,8 +276,7 @@ def create_reasoning_aug_llm(llm_config: dict[str, Any]):
             "day_of_week",
             "user_location",
             "search_history",
-        ],
-    )
+        ])
 
 
 def create_query_generation_aug_llm(llm_config: dict[str, Any]):
@@ -288,8 +287,7 @@ def create_query_generation_aug_llm(llm_config: dict[str, Any]):
         structured_output_model=QueryBatch,
         structured_output_version="v2",
         temperature=0.7,  # Higher temperature for query diversity
-        input_variables=["reasoning", "original_query", "num_queries"],
-    )
+        input_variables=["reasoning", "original_query", "num_queries"])
 
 
 def create_synthesis_aug_llm(llm_config: dict[str, Any]):
@@ -300,5 +298,4 @@ def create_synthesis_aug_llm(llm_config: dict[str, Any]):
         structured_output_model=SearchSynthesis,
         structured_output_version="v2",
         temperature=0.4,  # Balanced temperature for synthesis
-        input_variables=["original_query", "reasoning", "analysis", "search_results"],
-    )
+        input_variables=["original_query", "reasoning", "analysis", "search_results"])

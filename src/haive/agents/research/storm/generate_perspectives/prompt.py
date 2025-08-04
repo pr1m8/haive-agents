@@ -8,8 +8,7 @@ gen_perspectives_prompt = ChatPromptTemplate.from_messages(
     You can use other Wikipedia pages of related topics for inspiration. For each editor, add a description of what they will focus on.
 
     Wiki page outlines of related topics for inspiration:
-    {examples}""",
-        ),
+    {examples}"""),
         ("user", "Topic of interest: {topic}"),
     ]
 )

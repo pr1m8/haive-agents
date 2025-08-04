@@ -11,8 +11,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from haive.agents.research.perplexity.pro_search.tasks.models import (
     ExecutionPlan,
     ReplanningAnalysis,
-    TaskDecomposition,
-)
+    TaskDecomposition)
 
 # ============================================================================
 # Initial Task Decomposition Prompt
@@ -373,8 +372,7 @@ def create_decomposition_aug_llm(llm_config: dict[str, Any]):
             "max_depth",
             "max_width",
             "optimization_goals",
-        ],
-    )
+        ])
 
 
 def create_execution_planning_aug_llm(llm_config: dict[str, Any]):
@@ -393,8 +391,7 @@ def create_execution_planning_aug_llm(llm_config: dict[str, Any]):
             "resource_usage",
             "resource_constraints",
             "optimization_goals",
-        ],
-    )
+        ])
 
 
 def create_replanning_analysis_aug_llm(llm_config: dict[str, Any]):
@@ -414,5 +411,4 @@ def create_replanning_analysis_aug_llm(llm_config: dict[str, Any]):
             "failure_details",
             "recent_discoveries",
             "resource_status",
-        ],
-    )
+        ])
