@@ -4,8 +4,7 @@ from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.messages.messages_with_token_usage import (
-    MessagesStateWithTokenUsage,
-)
+    MessagesStateWithTokenUsage)
 from langchain_core.output_parsers import PydanticToolsParser
 from pydantic import BaseModel, Field
 
@@ -52,8 +51,7 @@ class StructuredOutputAgent(SimpleAgent):
 
     include_original_input: bool = Field(
         default=True,
-        description="Include original task/input in processing for context",
-    )
+        description="Include original task/input in processing for context")
 
     fallback_on_error: bool = Field(
         default=True, description="Return original content if parsing fails"
@@ -66,8 +64,7 @@ class StructuredOutputAgent(SimpleAgent):
         output_models: list[type[BaseModel]],
         name: str | None = None,
         include_original_input: bool = True,
-        **kwargs,
-    ) -> ProperMultiAgent:
+        **kwargs) -> ProperMultiAgent:
         """Enhance any agent with structured output capabilities.
 
         Creates a sequential multi-agent that runs:
@@ -89,8 +86,7 @@ class StructuredOutputAgent(SimpleAgent):
             output_models=output_models,
             include_original_input=include_original_input,
             name=f"{base_agent.name}_structured_output",
-            **kwargs,
-        )
+            **kwargs)
 
         # Create sequential multi-agent
         enhanced_name = name or f"{base_agent.name}_with_structured_output"
@@ -107,15 +103,14 @@ class StructuredOutputAgent(SimpleAgent):
         }
 
         enhanced_state_class = type(
-            "EnhancedState", (MessagesStateWithTokenUsage,), enhanced_state_attrs
+            "EnhancedState", (MessagesStateWithTokenUsage), enhanced_state_attrs
         )
 
         return ProperMultiAgent(
             name=enhanced_name,
             agents=[base_agent, structured_agent],
             execution_mode="sequential",
-            state_schema=enhanced_state_class,
-        )
+            state_schema=enhanced_state_class)
 
     @classmethod
     def create_processor(
@@ -124,8 +119,7 @@ class StructuredOutputAgent(SimpleAgent):
         name: str = "structured_output_processor",
         include_original_input: bool = True,
         system_message: str | None = None,
-        **kwargs,
-    ) -> "StructuredOutputAgent":
+        **kwargs) -> "StructuredOutputAgent":
         """Create a standalone structured output processor.
 
         Args:
@@ -169,8 +163,7 @@ Remember: Output must be valid JSON matching one of the provided schemas."""
             name=f"{name}_engine",
             system_message=system_message,
             temperature=0.1,  # Low temperature for consistent parsing
-            structured_output_version="v2",
-        )
+            structured_output_version="v2")
 
         # Create the agent
         return cls(
@@ -178,8 +171,7 @@ Remember: Output must be valid JSON matching one of the provided schemas."""
             engine=engine,
             output_models=output_models,
             include_original_input=include_original_input,
-            **kwargs,
-        )
+            **kwargs)
 
     def process_with_context(
         self, content: str, original_input: str | None = None
@@ -213,8 +205,7 @@ Remember: Output must be valid JSON matching one of the provided schemas."""
         cls,
         reflection_models: list[type[BaseModel]],
         name: str = "reflection_processor",
-        **kwargs,
-    ) -> "StructuredOutputAgent":
+        **kwargs) -> "StructuredOutputAgent":
         """Create a processor specifically for reflection patterns.
 
         This is optimized for reflection/reflexion agents that need to
@@ -246,16 +237,14 @@ Output must be valid JSON matching one of the reflection schemas."""
             name=name,
             system_message=system_message,
             temperature=0.3,  # Slightly higher for creative reflection
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def create_validation_processor(
         cls,
         validation_models: list[type[BaseModel]],
         name: str = "validation_processor",
-        **kwargs,
-    ) -> "StructuredOutputAgent":
+        **kwargs) -> "StructuredOutputAgent":
         """Create a processor for validation patterns.
 
         Args:
@@ -284,8 +273,7 @@ Output must be valid JSON matching one of the validation schemas."""
             name=name,
             system_message=system_message,
             temperature=0.0,  # Deterministic for validation
-            **kwargs,
-        )
+            **kwargs)
 
     def setup_agent(self) -> None:
         """Setup hook to configure structured output state."""
