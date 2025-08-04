@@ -114,8 +114,7 @@ class TaskNode(BaseModel):
     # CRITICAL: Union type for AutoTree to detect and handle
     subtasks: list[Union["TaskNode", ActionStep]] = Field(
         default_factory=list,
-        description="Child tasks or action steps - AutoTree will handle this!",
-    )
+        description="Child tasks or action steps - AutoTree will handle this!")
 
     # Dependencies (between children)
     dependencies: list[TaskDependency] = Field(default_factory=list)
@@ -175,8 +174,7 @@ class TaskNode(BaseModel):
         self,
         source_id: str,
         target_id: str,
-        dep_type: DependencyType = DependencyType.SEQUENTIAL,
-    ) -> None:
+        dep_type: DependencyType = DependencyType.SEQUENTIAL) -> None:
         """Add a dependency between child tasks."""
         dep = TaskDependency(
             source_id=source_id, target_id=target_id, dependency_type=dep_type

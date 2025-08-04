@@ -14,8 +14,7 @@ from task_analysis.agent import (
     route_after_decomposition,
     route_after_validation,
     route_final_decision,
-    setup_agent,
-)
+    setup_agent)
 
 __all__ = [
     "TaskAnalysisAgent",

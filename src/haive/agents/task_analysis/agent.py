@@ -14,30 +14,24 @@ from haive.agents.base.agent import Agent
 from haive.agents.task_analysis.analysis.engines import (
     FeasibilityAssessorEngine,
     IntegratedAnalyzerEngine,
-    OptimizationRecommenderEngine,
-)
+    OptimizationRecommenderEngine)
 from haive.agents.task_analysis.base.models import TaskNode
 from haive.agents.task_analysis.complexity.engines import (
     ComplexityAssessorEngine,
-    ComplexityFactorsEngine,
-)
+    ComplexityFactorsEngine)
 from haive.agents.task_analysis.complexity.models import ComplexityVector
 from haive.agents.task_analysis.context.engines import (
-    ContextAnalyzerEngine,
-)
+    ContextAnalyzerEngine)
 from haive.agents.task_analysis.decomposer.engines import (
     RecursiveDecomposerEngine,
     TaskDecomposerEngine,
-    TaskValidationEngine,
-)
+    TaskValidationEngine)
 from haive.agents.task_analysis.execution.engines import (
     ExecutionPlannerEngine,
-    JoinPointStrategyEngine,
-)
+    JoinPointStrategyEngine)
 from haive.agents.task_analysis.execution.models import ExecutionPlan
 from haive.agents.task_analysis.tree.engines import (
-    TreeStructureAnalyzerEngine,
-)
+    TreeStructureAnalyzerEngine)
 from haive.agents.task_analysis.tree.models import TaskTree
 
 # Import models
@@ -133,8 +127,7 @@ def route_final_decision(state: dict[str, Any]) -> str:
 
 
 def parallel_analysis_orchestrator(
-    state: dict[str, Any],
-) -> Command[Literal["complexity_assessment", "context_analysis", "tree_analysis"]]:
+    state: dict[str, Any]) -> Command[Literal["complexity_assessment", "context_analysis", "tree_analysis"]]:
     """Orchestrate parallel analysis using Send."""
     task_node = state["task_node"]
     task_tree = TaskTree(task_node)
@@ -161,8 +154,7 @@ def parallel_analysis_orchestrator(
                 "parallel_count": len(task_tree.get_parallel_groups()),
                 "join_points": tree_summary["join_points"],
                 "critical_path_length": tree_summary["critical_path_length"],
-            },
-        )
+            })
     )
 
     # Send to context analysis
@@ -178,8 +170,7 @@ def parallel_analysis_orchestrator(
                     [f"- {st.name}" for st in task_node.subtasks]
                 ),
                 "dependencies": str(task_node.dependencies),
-            },
-        )
+            })
     )
 
     # Send to tree structure analysis
@@ -194,16 +185,14 @@ def parallel_analysis_orchestrator(
                 "total_nodes": tree_summary["total_tasks"],
                 "leaf_nodes": len(list(task_node.get_all_steps())),
                 "balance_factor": 0.8,  # Simplified
-            },
-        )
+            })
     )
 
     return Command(goto=sends)
 
 
 def join_analyses(
-    state: dict[str, Any],
-) -> Command[Literal["execution_planning", "optimization", "integrate_analysis"]]:
+    state: dict[str, Any]) -> Command[Literal["execution_planning", "optimization", "integrate_analysis"]]:
     """Join parallel analyses and route next."""
     # All analyses should be complete at this point
     next_node = route_after_analysis(state)
@@ -211,8 +200,7 @@ def join_analyses(
 
 
 def recursive_expansion_orchestrator(
-    state: dict[str, Any],
-) -> Command[Literal["recursive_decompose", "validate_decomposition"]]:
+    state: dict[str, Any]) -> Command[Literal["recursive_decompose", "validate_decomposition"]]:
     """Orchestrate recursive decomposition."""
     task_node = state["task_node"]
 
@@ -239,8 +227,7 @@ def recursive_expansion_orchestrator(
             "current_depth": state.get("current_depth", 0) + 1,
             "inherited_constraints": [],
         },
-        goto="recursive_decompose",
-    )
+        goto="recursive_decompose")
 
 
 # ============================================================================
@@ -311,8 +298,7 @@ class TaskAnalysisAgent(Agent):
         # Use SchemaComposer.from_components to derive schema automatically
         self.state_schema = SchemaComposer.from_components(
             components=engine_instances,
-            name="TaskAnalysisState",
-        )
+            name="TaskAnalysisState")
 
         # Enable schema generation
         self.set_schema = True
@@ -336,8 +322,7 @@ class TaskAnalysisAgent(Agent):
             "decompose_task",
             EngineNodeConfig(
                 name="decompose_task", engine=self.engines["task_decomposer"]
-            ),
-        )
+            ))
         graph.add_edge(START, "decompose_task")
 
         # Validation
@@ -345,8 +330,7 @@ class TaskAnalysisAgent(Agent):
             "validate_decomposition",
             EngineNodeConfig(
                 name="validate_decomposition", engine=self.engines["task_validator"]
-            ),
-        )
+            ))
 
         # Recursive decomposition
         if self.enable_recursive_decomposition:
@@ -354,9 +338,7 @@ class TaskAnalysisAgent(Agent):
                 "recursive_decompose",
                 EngineNodeConfig(
                     name="recursive_decompose",
-                    engine=self.engines["recursive_decomposer"],
-                ),
-            )
+                    engine=self.engines["recursive_decomposer"]))
             graph.add_node("recursive_orchestrator", recursive_expansion_orchestrator)
             # Add edges for recursive flow
             graph.add_edge("recursive_orchestrator", "recursive_decompose")
@@ -374,22 +356,19 @@ class TaskAnalysisAgent(Agent):
             "complexity_assessment",
             EngineNodeConfig(
                 name="complexity_assessment", engine=self.engines["complexity_assessor"]
-            ),
-        )
+            ))
 
         graph.add_node(
             "context_analysis",
             EngineNodeConfig(
                 name="context_analysis", engine=self.engines["context_analyzer"]
-            ),
-        )
+            ))
 
         graph.add_node(
             "tree_analysis",
             EngineNodeConfig(
                 name="tree_analysis", engine=self.engines["tree_analyzer"]
-            ),
-        )
+            ))
 
         # Join node
         graph.add_node("join_analyses", join_analyses)
@@ -413,8 +392,7 @@ class TaskAnalysisAgent(Agent):
             "execution_planning",
             EngineNodeConfig(
                 name="execution_planning", engine=self.engines["execution_planner"]
-            ),
-        )
+            ))
 
         # ====================================================================
         # INTEGRATION PHASE
@@ -424,21 +402,17 @@ class TaskAnalysisAgent(Agent):
             "integrate_analysis",
             EngineNodeConfig(
                 name="integrate_analysis", engine=self.engines["integrated_analyzer"]
-            ),
-        )
+            ))
 
         graph.add_node(
             "feasibility_assessment",
             EngineNodeConfig(
                 name="feasibility_assessment",
-                engine=self.engines["feasibility_assessor"],
-            ),
-        )
+                engine=self.engines["feasibility_assessor"]))
 
         graph.add_node(
             "optimization",
-            EngineNodeConfig(name="optimization", engine=self.engines["optimizer"]),
-        )
+            EngineNodeConfig(name="optimization", engine=self.engines["optimizer"]))
 
         # ====================================================================
         # EDGES AND ROUTING
@@ -456,8 +430,7 @@ class TaskAnalysisAgent(Agent):
                     else "validate_decomposition"
                 ),
                 "parallel_analysis": "parallel_analysis",
-            },
-        )
+            })
 
         # From validation - conditional routing
         graph.add_conditional_edges(
@@ -471,8 +444,7 @@ class TaskAnalysisAgent(Agent):
                     else "parallel_analysis"
                 ),
                 "parallel_analysis": "parallel_analysis",
-            },
-        )
+            })
 
         # From join to next phase - conditional routing
         graph.add_conditional_edges(
@@ -482,8 +454,7 @@ class TaskAnalysisAgent(Agent):
                 "execution_planning": "execution_planning",
                 "optimization": "optimization",
                 "integrate_analysis": "integrate_analysis",
-            },
-        )
+            })
 
         # From execution planning to integration
         graph.add_edge("execution_planning", "integrate_analysis")
@@ -496,8 +467,7 @@ class TaskAnalysisAgent(Agent):
                 "feasibility_assessment": "feasibility_assessment",
                 "optimization": "optimization",
                 "__end__": END,
-            },
-        )
+            })
 
         # From feasibility to END
         graph.add_edge("feasibility_assessment", END)
@@ -516,8 +486,7 @@ class TaskAnalysisAgent(Agent):
         task_description: str,
         domain: str = "general",
         additional_context: str = "",
-        max_depth: int | None = None,
-    ) -> dict[str, Any]:
+        max_depth: int | None = None) -> dict[str, Any]:
         """Analyze a task comprehensively.
 
         Args:

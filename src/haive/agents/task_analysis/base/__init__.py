@@ -12,8 +12,7 @@ from base.models import (
     add_subtask,
     calculate_stats,
     calculate_total_duration,
-    get_all_steps,
-)
+    get_all_steps)
 
 __all__ = [
     "ActionStep",

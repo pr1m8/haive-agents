@@ -137,8 +137,7 @@ class ContextRequirement(BaseModel):
             must_exclude=list(set(self.must_exclude + other.must_exclude)),
             quality_requirements=list(
                 set(self.quality_requirements + other.quality_requirements)
-            ),
-        )
+            ))
 
 
 class ContextAnalysis(BaseModel):

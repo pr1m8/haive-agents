@@ -36,8 +36,7 @@ Phase Design Principles:
 - Minimize inter-phase dependencies
 - Balance phase durations
 - Consider resource availability
-- Plan for phase overlap where possible""",
-        ),
+- Plan for phase overlap where possible"""),
         (
             "human",
             """Create an execution plan for this task analysis:
@@ -103,8 +102,7 @@ Design an ExecutionPlan with:
    - Plan for status reporting
    - Enable early warning systems
 
-Return a complete ExecutionPlan object.""",
-        ),
+Return a complete ExecutionPlan object."""),
     ]
 )
 
@@ -112,8 +110,7 @@ PHASE_OPTIMIZATION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are optimizing execution phases for maximum efficiency while respecting constraints.""",
-        ),
+            """You are optimizing execution phases for maximum efficiency while respecting constraints."""),
         (
             "human",
             """Optimize these execution phases:
@@ -133,8 +130,7 @@ Optimize for:
 3. Minimum idle time
 4. Risk reduction
 
-Provide optimized phase arrangement.""",
-        ),
+Provide optimized phase arrangement."""),
     ]
 )
 
@@ -154,8 +150,7 @@ Considerations:
 - Data compatibility
 - Partial result handling
 - Error propagation
-- Performance impact""",
-        ),
+- Performance impact"""),
         (
             "human",
             """Design join strategy for:
@@ -176,8 +171,7 @@ Design:
 5. Error handling
 6. Validation rules
 
-Return JoinPoint object with complete strategy.""",
-        ),
+Return JoinPoint object with complete strategy."""),
     ]
 )
 
@@ -185,8 +179,7 @@ RESOURCE_ALLOCATION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are a resource allocation specialist optimizing resource usage across task execution phases.""",
-        ),
+            """You are a resource allocation specialist optimizing resource usage across task execution phases."""),
         (
             "human",
             """Plan resource allocation for:
@@ -203,7 +196,6 @@ Create allocation plan that:
 4. Enables scaling
 5. Handles failures
 
-Return ResourceAllocation timeline.""",
-        ),
+Return ResourceAllocation timeline."""),
     ]
 )

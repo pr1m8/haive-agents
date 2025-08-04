@@ -7,8 +7,7 @@ from haive.core.common.structures.tree import AutoTree
 
 from haive.agents.task_analysis.base.models import (
     ActionStep,
-    TaskNode,
-)
+    TaskNode)
 
 
 class TaskTree(AutoTree[TaskNode]):
@@ -223,8 +222,7 @@ class TaskTree(AutoTree[TaskNode]):
     def expand_node(
         self,
         node_id: str,
-        expansion_fn: Callable[[TaskNode], list[TaskNode | ActionStep]],
-    ) -> bool:
+        expansion_fn: Callable[[TaskNode], list[TaskNode | ActionStep]]) -> bool:
         """Expand a specific node using the provided expansion function.
         Returns True if expansion was successful.
         """

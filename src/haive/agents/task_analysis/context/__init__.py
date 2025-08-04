@@ -7,8 +7,7 @@ from context.models import (
     ContextFreshness,
     ContextRequirement,
     ContextSize,
-    merge_with,
-)
+    merge_with)
 
 __all__ = [
     "ContextAnalysis",

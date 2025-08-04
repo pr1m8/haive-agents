@@ -24,8 +24,7 @@ Key focus areas:
 4. Minimize total execution time
 5. Handle partial failures gracefully
 
-Output: Return a complete ExecutionPlan with phases, join points, and resource allocation.""",
-        ),
+Output: Return a complete ExecutionPlan with phases, join points, and resource allocation."""),
         (
             "human",
             """Analyze this task structure and create an optimal execution plan:
@@ -54,8 +53,7 @@ Consider:
 - Which tasks can truly run in parallel?
 - Where are the synchronization points?
 - How to handle partial failures?
-- What's the optimal resource distribution?""",
-        ),
+- What's the optimal resource distribution?"""),
     ]
 )
 
@@ -80,8 +78,7 @@ Rating guidelines:
 - 7-8: Complex (weeks to complete)
 - 9-10: Extremely complex (months/years)
 
-Output: Return a ComplexityVector with detailed scoring and factors.""",
-        ),
+Output: Return a ComplexityVector with detailed scoring and factors."""),
         (
             "human",
             """Assess the complexity of this task:
@@ -106,8 +103,7 @@ Provide:
 - Detailed scores for each dimension
 - Contributing factors for each score
 - Overall confidence in assessment
-- Key complexity drivers""",
-        ),
+- Key complexity drivers"""),
     ]
 )
 
@@ -132,8 +128,7 @@ Context size categories:
 - Large: 100-1000 pages, books/codebases
 - Massive: 1000+ pages, entire domains
 
-Output: Return a ContextRequirement object with detailed specifications.""",
-        ),
+Output: Return a ContextRequirement object with detailed specifications."""),
         (
             "human",
             """Analyze context requirements for this task:
@@ -159,8 +154,7 @@ Determine:
    - Where are integration points?
    - What transformations are needed?
 
-Consider accuracy, completeness, and format requirements.""",
-        ),
+Consider accuracy, completeness, and format requirements."""),
     ]
 )
 
@@ -184,8 +178,7 @@ Key considerations:
 4. Validation requirements
 5. Performance optimization
 
-Output: Return a JoinPoint object with complete specifications.""",
-        ),
+Output: Return a JoinPoint object with complete specifications."""),
         (
             "human",
             """Design a join strategy for these parallel tasks:
@@ -211,8 +204,7 @@ Consider:
 - Can we proceed with partial results?
 - What's the timeout strategy?
 - How to handle type mismatches?
-- What validation is needed?""",
-        ),
+- What validation is needed?"""),
     ]
 )
 
@@ -237,8 +229,7 @@ Key deliverables:
 4. Risk mitigation plan
 5. Success criteria
 
-Output: Return a comprehensive ExecutionPlan object.""",
-        ),
+Output: Return a comprehensive ExecutionPlan object."""),
         (
             "human",
             """Create an execution plan for this analyzed task:
@@ -261,7 +252,6 @@ Design an ExecutionPlan including:
 6. Risk mitigation strategies
 7. Monitoring and adaptation triggers
 
-Optimize for efficiency while maintaining robustness.""",
-        ),
+Optimize for efficiency while maintaining robustness."""),
     ]
 )
