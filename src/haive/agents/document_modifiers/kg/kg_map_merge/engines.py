@@ -7,8 +7,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
-    KnowledgeGraph,
-)
+    KnowledgeGraph)
 
 
 def create_node_extraction_config(
@@ -43,8 +42,7 @@ def create_node_extraction_config(
         Output Format:
         - Each entity should have a unique ID
         - Types should be descriptive but concise
-        - Include important contextual properties""",
-            ),
+        - Include important contextual properties"""),
             ("human", "Extract entities from this text:\n{context}"),
         ]
     )
@@ -92,14 +90,12 @@ def create_relationship_extraction_config(
         - Source and target entities must be well-defined
         - Relationship type should be specific and meaningful
         - Include a confidence score (0-1)
-        - Provide brief supporting evidence""",
-            ),
+        - Provide brief supporting evidence"""),
             (
                 "human",
                 """Extract relationships from this text.
         Consider the context and connections between entities:
-        {context}""",
-            ),
+        {context}"""),
         ]
     )
 
@@ -109,8 +105,7 @@ def create_relationship_extraction_config(
         llm_config=llm_config,
         prompt_template=relationship_extraction_prompt,
         # Structured output for relationships
-        structured_output_model=EntityRelationship,
-    )
+        structured_output_model=EntityRelationship)
 
 
 def create_graph_extraction_config(
@@ -146,12 +141,10 @@ def create_graph_extraction_config(
         1. Identify unique entities with their types and properties
         2. Discover relationships between these entities
         3. Assess and score relationship confidence
-        4. Provide supporting evidence for relationships""",
-            ),
+        4. Provide supporting evidence for relationships"""),
             (
                 "human",
-                "Extract a comprehensive knowledge graph from this text:\n{context}",
-            ),
+                "Extract a comprehensive knowledge graph from this text:\n{context}"),
         ]
     )
 
@@ -198,15 +191,13 @@ def create_graph_merger_config(
         1. Compare entities across graphs
         2. Reconcile conflicting entity properties
         3. Merge relationships with careful confidence scoring
-        4. Create a unified, comprehensive knowledge graph""",
-            ),
+        4. Create a unified, comprehensive knowledge graph"""),
             (
                 "human",
                 """Merge these knowledge graphs with precision:
         {graph_contexts}
 
-        Provide a unified, comprehensive knowledge graph.""",
-            ),
+        Provide a unified, comprehensive knowledge graph."""),
         ]
     )
 

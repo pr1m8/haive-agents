@@ -10,8 +10,7 @@ summarize_prompt = ChatPromptTemplate(
 )
 initial_summary_aug_llm = AugLLMConfig(
     prompt_template=summarize_prompt,
-    output_parser=StrOutputParser(),
-)
+    output_parser=StrOutputParser())
 
 # Refining the summary with new docs
 refine_template = """
@@ -31,5 +30,4 @@ refine_prompt = ChatPromptTemplate([("human", refine_template)])
 
 refine_summary_aug_llm = AugLLMConfig(
     prompt_template=refine_prompt,
-    output_parser=StrOutputParser(),
-)
+    output_parser=StrOutputParser())

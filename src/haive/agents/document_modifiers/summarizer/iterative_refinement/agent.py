@@ -6,11 +6,9 @@ from langgraph.graph import START
 from langgraph.types import Command
 
 from haive.agents.document_modifiers.summarizer.iterative_refinement.config import (
-    IterativeSummarizerConfig,
-)
+    IterativeSummarizerConfig)
 from haive.agents.document_modifiers.summarizer.iterative_refinement.state import (
-    IterativeSummarizerState,
-)
+    IterativeSummarizerState)
 
 # from haive.core.engine.agent.agent import AgentConfig
 
@@ -29,8 +27,7 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
     ):
         summary = await self.engines["initial_summary"].ainvoke(
             state.contents[0],
-            config,
-        )
+            config)
         return Command(update={"summary": summary, "index": 1})
 
     # And a node that refines the summary based on the next document
@@ -40,8 +37,7 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
         content = state.contents[state.index]
         summary = await self.engines["refine_summary"].ainvoke(
             {"existing_answer": state.summary, "context": content},
-            config,
-        )
+            config)
 
         return Command(update={"summary": summary, "index": state.index + 1})
 

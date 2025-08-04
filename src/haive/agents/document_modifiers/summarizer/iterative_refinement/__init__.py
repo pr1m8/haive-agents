@@ -7,8 +7,7 @@ from .state import (
     IterativeSummarizerOutput,
     IterativeSummarizerState,
     normalize_contents,
-    should_refine,
-)
+    should_refine)
 
 __all__ = [
     "IterativeSummarizer",

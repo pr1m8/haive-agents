@@ -51,14 +51,11 @@ from langgraph.types import Command
 
 from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_iterative_refinement.config import (
-    IterativeGraphTransformerConfig,
-)
+    IterativeGraphTransformerConfig)
 from haive.agents.document_modifiers.kg.kg_iterative_refinement.state import (
-    IterativeGraphTransformerState,
-)
+    IterativeGraphTransformerState)
 from haive.agents.document_modifiers.kg.kg_iterative_refinement.utils import (
-    replace_empty_placeholders,
-)
+    replace_empty_placeholders)
 
 logger = logging.getLogger(__name__)
 
@@ -127,8 +124,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
 
     def __init__(
         self,
-        config: IterativeGraphTransformerConfig = IterativeGraphTransformerConfig(),
-    ) -> None:
+        config: IterativeGraphTransformerConfig = IterativeGraphTransformerConfig()) -> None:
         """Initialize the iterative graph transformer.
 
         Sets up the graph transformer instance that will be used to
@@ -180,15 +176,13 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
                 "document_length": (
                     len(doc.page_content) if hasattr(doc, "page_content") else 0
                 )
-            },
-        )
+            })
 
         # Transform first document to graph
         graph_docs = self.llm_graph_transformer.transform_documents(
             documents=[doc],
             strict_mode=True,
-            ignore_tool_usage=True,
-        )
+            ignore_tool_usage=True)
 
         if not graph_docs:
             logger.warning("No graph generated from initial document")
@@ -206,8 +200,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
                     if hasattr(graph_doc, "relationships")
                     else 0
                 ),
-            },
-        )
+            })
 
         return Command(update={"graph_doc": graph_doc, "index": 1})
 
@@ -236,8 +229,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         if state.index >= len(state.contents):
             logger.error(
                 "Index out of bounds",
-                extra={"index": state.index, "content_length": len(state.contents)},
-            )
+                extra={"index": state.index, "content_length": len(state.contents)})
             raise IndexError(f"Index {state.index} out of bounds")
 
         content = state.contents[state.index]
@@ -251,8 +243,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
                     if state.graph_doc and hasattr(state.graph_doc, "nodes")
                     else 0
                 ),
-            },
-        )
+            })
 
         # Create refinement prompt
         refine_template = PromptTemplate.from_template(
@@ -272,8 +263,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         """
         ).format(
             existing_answer=str(state.graph_doc) if state.graph_doc else "Empty graph",
-            context=content.page_content,
-        )
+            context=content.page_content)
 
         # Clean up template
         refine_template = replace_empty_placeholders(refine_template)
@@ -284,14 +274,12 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
                 documents=[content],
                 strict_mode=True,
                 ignore_tool_usage=True,
-                additional_instructions=refine_template,
-            )
+                additional_instructions=refine_template)
 
             if not graph_docs:
                 logger.warning(
                     "No graph generated during refinement",
-                    extra={"document_index": state.index},
-                )
+                    extra={"document_index": state.index})
                 # Keep existing graph and move to next document
                 return Command(update={"index": state.index + 1})
 
@@ -309,8 +297,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
                         if hasattr(refined_graph, "relationships")
                         else 0
                     ),
-                },
-            )
+                })
 
             return Command(
                 update={"graph_doc": refined_graph, "index": state.index + 1}
@@ -320,8 +307,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
             logger.error(
                 "Failed to refine graph",
                 extra={"error": str(e), "document_index": state.index},
-                exc_info=True,
-            )
+                exc_info=True)
             # Keep existing graph and move to next document
             return Command(update={"index": state.index + 1})
 
@@ -342,8 +328,7 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         """
         logger.info(
             "Setting up iterative graph transformer workflow",
-            extra={"agent_name": self.config.name},
-        )
+            extra={"agent_name": self.config.name})
 
         # Add workflow nodes
         self.graph.add_node("generate_initial_summary", self.generate_initial_summary)

@@ -8,8 +8,7 @@ from pydantic import BaseModel, Field
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
-    KnowledgeGraph,
-)
+    KnowledgeGraph)
 
 # Import models
 
@@ -36,8 +35,7 @@ class KnowledgeGraphState(BaseModel):
     index: int = Field(default=0)
 
     def should_continue(
-        self,
-    ) -> Literal[
+        self) -> Literal[
         "map_graph_documents", "map_nodes", "map_relationships", "merge_graphs", "end"
     ]:
         """Determine the next step in the graph creation process."""

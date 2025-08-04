@@ -12,8 +12,7 @@ from langgraph.types import Command
 from pydantic import BaseModel
 
 from haive.agents.document_modifiers.complex_extraction.models import (
-    PatchFunctionParameters,
-)
+    PatchFunctionParameters)
 
 
 def encode(state: BaseModel) -> dict:
@@ -89,8 +88,7 @@ def default_aggregator(messages: Sequence[AnyMessage]) -> AIMessage:
 
 
 def aggregate_messages(
-    messages: Sequence[AnyMessage],
-) -> AIMessage:
+    messages: Sequence[AnyMessage]) -> AIMessage:
     # Get all the AI messages and apply json patches
     resolved_tool_calls: dict[str | None, ToolCall] = {}
     content: str | list[str | dict] = ""
@@ -111,15 +109,13 @@ def aggregate_messages(
                 patches = tc["args"].get("patches") or []
                 orig_tool_call["args"] = jsonpatch.apply_patch(
                     current_args,
-                    patches,
-                )
+                    patches)
                 orig_tool_call["id"] = tc["id"]
             else:
                 resolved_tool_calls[tc["id"]] = tc.copy()
     return AIMessage(
         content=content,
-        tool_calls=list(resolved_tool_calls.values()),
-    )
+        tool_calls=list(resolved_tool_calls.values()))
 
 
 def add_or_overwrite_messages(left: list, right: list | dict) -> list:

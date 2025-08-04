@@ -58,8 +58,7 @@ from langchain_core.messages import (
     AIMessage,
     AnyMessage,
     BaseMessage,
-    HumanMessage,
-)
+    HumanMessage)
 from langchain_core.runnables import Runnable, RunnableLambda
 from langchain_core.tools import Tool
 from langgraph.graph import END, START, StateGraph
@@ -68,17 +67,14 @@ from langgraph.types import Command
 from pydantic import BaseModel
 
 from haive.agents.document_modifiers.complex_extraction.config import (
-    ComplexExtractionAgentConfig,
-)
+    ComplexExtractionAgentConfig)
 from haive.agents.document_modifiers.complex_extraction.models import (
     PatchFunctionParameters,
-    RetryStrategy,
-)
+    RetryStrategy)
 from haive.agents.document_modifiers.complex_extraction.utils import (
     decode,
     default_aggregator,
-    encode,
-)
+    encode)
 
 logger = logging.getLogger(__name__)
 
@@ -239,8 +235,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             name=extract_name,
             description=f"Extract {
                 self.extraction_model.__name__} data from text",
-            args_schema=self.extraction_model,
-        )
+            args_schema=self.extraction_model)
 
         # Store the tool
         self.extraction_tool = extract_data
@@ -255,8 +250,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         *,
         validator: ValidationNode,
         retry_strategy: RetryStrategy,
-        tool_choice: str | None = None,
-    ) -> StateGraph:
+        tool_choice: str | None = None) -> StateGraph:
         """Bind a tool validator with retry logic and return the graph builder.
 
         Creates a StateGraph that implements validation with retry logic for
@@ -389,8 +383,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                     "messages": [
                         HumanMessage(
                             content=f"ValidationError: please respond with a valid tool call [tool_choice={tool_choice}].",
-                            additional_kwargs={"is_error": True},
-                        )
+                            additional_kwargs={"is_error": True})
                     ]
                 }
             return {"messages": x}
@@ -517,8 +510,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         *,
         tools: list[Tool],
         tool_choice: str | None = None,
-        max_attempts: int = 3,
-    ) -> StateGraph:
+        max_attempts: int = 3) -> StateGraph:
         """Bind a validator with JSONPatch-based retries.
 
         Creates an advanced validation workflow that uses JSONPatch operations
@@ -599,8 +591,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                                 extra={
                                     "tool_call_id": tcid,
                                     "valid_ids": list(resolved_tool_calls.keys()),
-                                },
-                            )
+                                })
                             # Fallback to first available tool call
                             tcid = next(iter(resolved_tool_calls.keys()), None)
                             if not tcid:
@@ -615,16 +606,14 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                             # Apply JSON patches
                             orig_tool_call["args"] = self.jsonpatch.apply_patch(
                                 current_args,
-                                patches,
-                            )
+                                patches)
                             # Update ID to latest
                             orig_tool_call["id"] = tc["id"]
                         except Exception as e:
                             logger.error(
                                 "Error applying JSONPatch",
                                 extra={"error": str(e)},
-                                exc_info=True,
-                            )
+                                exc_info=True)
                     else:
                         # Regular tool call - add to resolved list
                         resolved_tool_calls[tc["id"]] = tc.copy()
@@ -632,8 +621,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             # Create final AI message with resolved tool calls
             return AIMessage(
                 content=content,
-                tool_calls=list(resolved_tool_calls.values()),
-            )
+                tool_calls=list(resolved_tool_calls.values()))
 
         # Create format error function
         def format_exception(
@@ -664,22 +652,19 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         # Create validator and retry strategy
         validator = ValidationNode(
             [*tools, PatchFunctionParameters],
-            format_error=format_exception,
-        )
+            format_error=format_exception)
 
         retry_strategy = RetryStrategy(
             max_attempts=max_attempts,
             fallback=fallback_llm,
-            aggregate_messages=aggregate_messages,
-        )
+            aggregate_messages=aggregate_messages)
 
         # Return the graph builder
         return self._bind_validator_with_retries(
             bound_llm,
             validator=validator,
             retry_strategy=retry_strategy,
-            tool_choice=tool_choice,
-        )
+            tool_choice=tool_choice)
 
     def bind_validator_with_retries(
         self,
@@ -687,8 +672,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         *,
         tools: list[Tool],
         tool_choice: str | None = None,
-        max_attempts: int = 3,
-    ) -> StateGraph:
+        max_attempts: int = 3) -> StateGraph:
         """Bind a validator with standard retries (no JSONPatch).
 
         Creates a basic validation workflow with simple retry logic. When
@@ -721,8 +705,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             bound_llm,
             validator=validator,
             tool_choice=tool_choice,
-            retry_strategy=retry_strategy,
-        )
+            retry_strategy=retry_strategy)
 
     def setup_workflow(self) -> None:
         """Set up the agent workflow.
@@ -741,8 +724,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         """
         logger.info(
             "Setting up workflow for ComplexExtractionAgent",
-            extra={"agent_name": self.config.name},
-        )
+            extra={"agent_name": self.config.name})
 
         # Create a state wrapper to pass configuration to the decoder
         def state_wrapper(state: Any) -> Any:

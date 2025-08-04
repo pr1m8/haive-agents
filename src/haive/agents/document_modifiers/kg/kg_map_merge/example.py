@@ -2,8 +2,7 @@ import asyncio
 
 from haive.agents.document_modifiers.kg.kg_map_merge.utils import (
     create_knowledge_graph,
-    visualize_graph,
-)
+    visualize_graph)
 
 if __name__ == "__main__":
 
@@ -33,8 +32,7 @@ if __name__ == "__main__":
                 "NAMED_AFTER",
                 "CONTRIBUTED_TO",
                 "MARRIED_TO",
-            ],
-        )
+            ])
 
         # Print the result
         if graph:

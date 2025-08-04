@@ -50,8 +50,7 @@ from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.aug_llm import compose_runnable
 from langchain.chains.combine_documents.reduce import (
     acollapse_docs,
-    split_list_of_docs,
-)
+    split_list_of_docs)
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langgraph.constants import Send
@@ -59,12 +58,10 @@ from langgraph.graph import END, START
 from langgraph.types import Command, Send
 
 from haive.agents.document_modifiers.summarizer.map_branch.config import (
-    SummarizerAgentConfig,
-)
+    SummarizerAgentConfig)
 from haive.agents.document_modifiers.summarizer.map_branch.engines import (
     map_aug_llm_config,
-    reduce_augllm_config,
-)
+    reduce_augllm_config)
 from haive.agents.document_modifiers.summarizer.map_branch.state import SummaryState
 
 logger = logging.getLogger(__name__)
@@ -163,8 +160,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
 
         logger.info(
             "Initialized SummarizerAgent",
-            extra={"agent_name": config.name, "token_max": self.token_max},
-        )
+            extra={"agent_name": config.name, "token_max": self.token_max})
 
         super().__init__(config)
 
@@ -237,8 +233,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
             error_str = str(e)
             logger.warning(
                 "Error generating summary",
-                extra={"error": error_str, "content_length": len(content)},
-            )
+                extra={"error": error_str, "content_length": len(content)})
 
             # Handle token limit errors
             if self._is_token_limit_error(error_str):
@@ -314,8 +309,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
             extra={
                 "document_count": len(collapsed_summaries),
                 "total_tokens": self.length_function(collapsed_summaries),
-            },
-        )
+            })
 
         # Split documents into groups that fit within token limit
         doc_lists = split_list_of_docs(
@@ -327,8 +321,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         for i, doc_list in enumerate(doc_lists):
             logger.debug(
                 "Processing document group",
-                extra={"group_index": i, "group_size": len(doc_list)},
-            )
+                extra={"group_index": i, "group_size": len(doc_list)})
             collapsed = await acollapse_docs(doc_list, self.reduce_chain.ainvoke)
             results.append(collapsed)
 
@@ -356,8 +349,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         if num_tokens > self.token_max:
             logger.info(
                 "Summaries exceed token limit, collapsing further",
-                extra={"current_tokens": num_tokens, "token_max": self.token_max},
-            )
+                extra={"current_tokens": num_tokens, "token_max": self.token_max})
             return "collapse_summaries"
 
         logger.info("Proceeding to final summary", extra={"total_tokens": num_tokens})
@@ -390,8 +382,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
             logger.error(
                 "Failed to generate final summary",
                 extra={"error": str(e)},
-                exc_info=True,
-            )
+                exc_info=True)
             return Command(
                 update={"final_summary": "Error: Failed to generate final summary"}
             )
@@ -416,8 +407,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
 
         logger.debug(
             "Calculated token count",
-            extra={"document_count": len(documents), "total_tokens": total_tokens},
-        )
+            extra={"document_count": len(documents), "total_tokens": total_tokens})
 
         return total_tokens
 
@@ -486,8 +476,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
             try:
                 logger.debug(
                     "Processing chunk",
-                    extra={"chunk_index": i, "chunk_size": len(chunk)},
-                )
+                    extra={"chunk_index": i, "chunk_size": len(chunk)})
                 chunk_summary = await self.map_chain.ainvoke(chunk)
                 chunk_summaries.append(chunk_summary)
             except Exception as e:

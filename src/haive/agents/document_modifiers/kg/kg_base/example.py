@@ -99,8 +99,7 @@ def type_hints_example() -> None:
     def extract_knowledge_graph(
         text_content: str,
         entity_types: list[str],
-        relation_types: list[tuple[str, str, str]],
-    ) -> list[str]:
+        relation_types: list[tuple[str, str, str]]) -> list[str]:
         """Extract knowledge graph and return entity names.
 
         Args:
@@ -124,8 +123,7 @@ def type_hints_example() -> None:
     extract_knowledge_graph(
         text_content="Sample text about companies and people",
         entity_types=["Person", "Company"],
-        relation_types=[("Person", "WORKS_FOR", "Company")],
-    )
+        relation_types=[("Person", "WORKS_FOR", "Company")])
 
 
 if __name__ == "__main__":

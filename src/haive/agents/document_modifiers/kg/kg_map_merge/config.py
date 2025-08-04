@@ -18,12 +18,10 @@ class ParallelKGTransformerConfig(AgentConfig):
                         "system",
                         """Extract and refine the knowledge graph from the given text.
                 Focus on identifying key entities and their relationships.
-                Provide a comprehensive and accurate representation.""",
-                    ),
+                Provide a comprehensive and accurate representation."""),
                     ("human", "Extract knowledge graph from this text:\n{context}"),
                 ]
-            ),
-        )
+            ))
     )
     graph_merge_config: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
@@ -34,18 +32,15 @@ class ParallelKGTransformerConfig(AgentConfig):
                         "system",
                         """Merge and reconcile multiple knowledge graphs.
                 Identify consistent relationships, resolve conflicts,
-                and create a comprehensive knowledge representation.""",
-                    ),
+                and create a comprehensive knowledge representation."""),
                     (
                         "human",
                         """Merge these knowledge graphs:
                 {graph_contexts}
 
-                Provide a unified and refined knowledge graph.""",
-                    ),
+                Provide a unified and refined knowledge graph."""),
                 ]
-            ),
-        )
+            ))
     )
     checkpoint_mode: str = Field(
         default="async", description="The checkpoint mode for the iterative summarizer."

@@ -95,8 +95,7 @@ def parse_taxonomy(output_text: str) -> dict:
     cluster_matches = re.findall(
         r"\s*<id>(.*?)</id>\s*<name>(.*?)</name>\s*<description>(.*?)</description>\s*",
         output_text,
-        re.DOTALL,
-    )
+        re.DOTALL)
     clusters = [
         {"id": id.strip(), "name": name.strip(), "description": description.strip()}
         for id, name, description in cluster_matches
@@ -133,8 +132,7 @@ def parse_labels(output_text: str) -> dict:
     category_matches = re.findall(
         r"\s*<category>(.*?)</category>.*",
         output_text,
-        re.DOTALL,
-    )
+        re.DOTALL)
     categories = [{"category": category.strip()} for category in category_matches]
     if len(categories) > 1:
         logger.warning(f"Multiple selected categories: {categories}")

@@ -70,8 +70,7 @@ class GraphTransformer(BaseDocumentTransformer):
         node_properties: bool | list[str] = False,
         relationship_properties: bool | list[str] = False,
         ignore_tool_usage: bool = True,
-        additional_instructions: str = "",
-    ) -> list[GraphDocument]:
+        additional_instructions: str = "") -> list[GraphDocument]:
         """Transform documents into knowledge graphs using LLM-based extraction.
 
         Processes a list of documents and extracts entities, relationships, and

@@ -10,8 +10,7 @@ from langchain_neo4j.graphs.graph_document import GraphDocument
 
 from haive.agents.document_modifiers.kg.kg_map_merge.agent import ParallelKGTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.config import (
-    ParallelKGTransformerConfig,
-)
+    ParallelKGTransformerConfig)
 
 
 def visualize_graph(
@@ -58,8 +57,7 @@ def visualize_graph(
             node_color=[color],
             node_size=2000,
             alpha=0.8,
-            label=node_type,
-        )
+            label=node_type)
 
     # Draw edges by type with different colors and line styles
     edge_types = set(nx.get_edge_attributes(G, "type").values())
@@ -79,8 +77,7 @@ def visualize_graph(
             edge_color=[color],
             connectionstyle="arc3,rad=0.1",
             arrowsize=15,
-            label=edge_type,
-        )
+            label=edge_type)
 
     # Add node labels
     nx.draw_networkx_labels(G, pos, font_size=10, font_family="sans-serif")
@@ -93,8 +90,7 @@ def visualize_graph(
         edge_labels=edge_labels,
         font_color="black",
         font_size=8,
-        font_family="sans-serif",
-    )
+        font_family="sans-serif")
 
     # Add legend
     plt.legend(loc="upper right", scatterpoints=1, title="Node Types")
@@ -115,8 +111,7 @@ async def create_knowledge_graph(
     node_properties: bool | list[str] = False,
     relationship_properties: bool | list[str] = False,
     additional_transformer_args: dict[str, Any] | None = None,
-    custom_system_prompt: str | None = None,
-) -> GraphDocument:
+    custom_system_prompt: str | None = None) -> GraphDocument:
     """Create a knowledge graph from multiple documents using parallel processing.
 
     Args:
@@ -146,8 +141,7 @@ async def create_knowledge_graph(
         node_properties=node_properties,
         relationship_properties=relationship_properties,
         graph_transformer_args=additional_transformer_args,
-        custom_system_prompt=custom_system_prompt,
-    )
+        custom_system_prompt=custom_system_prompt)
 
     # Create and initialize the agent
     agent = ParallelKGTransformer(config)

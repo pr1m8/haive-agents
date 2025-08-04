@@ -32,8 +32,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.runnables import (
     RunnableConfig,
     RunnableLambda,
-    RunnablePassthrough,
-)
+    RunnablePassthrough)
 from langgraph.graph import END, START
 from langgraph.types import Command
 from pydantic import Field
@@ -43,8 +42,7 @@ from haive.agents.document_modifiers.tnt.engines import (
     summary_aug_llm_config,
     taxonomy_generation_aug_llm_config,
     taxonomy_review_aug_llm_config,
-    taxonomy_update_aug_llm_config,
-)
+    taxonomy_update_aug_llm_config)
 from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 from haive.agents.document_modifiers.tnt.utils import format_docs, format_taxonomy
 
@@ -57,8 +55,7 @@ class TaxonomyAgentConfig(AgentConfig):
 
     state_schema: TaxonomyGenerationState = Field(
         default=TaxonomyGenerationState,
-        description="The state of the taxonomy generation.",
-    )
+        description="The state of the taxonomy generation.")
     visualize: bool = Field(default=True, description="Whether to visualize the agent.")
     name: str = Field(default="TaxonomyAgent", description="The name of the agent.")
     # TODO: This should be a RunnableConfig
@@ -80,8 +77,7 @@ class TaxonomyAgentConfig(AgentConfig):
             },
             "max_concurrency": 2,
         },
-        description="The runtime configuration of the agent.",
-    )
+        description="The runtime configuration of the agent.")
 
 
 @register_agent(TaxonomyAgentConfig)
@@ -147,8 +143,7 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         chain_config: AugLLMConfig,
         state: TaxonomyGenerationState,
         config: RunnableConfig,
-        mb_indices: list[int],
-    ) -> TaxonomyGenerationState:
+        mb_indices: list[int]) -> TaxonomyGenerationState:
         """Invokes the taxonomy LLM to generate or refine taxonomies.
 
         Args:
@@ -296,7 +291,6 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             {
                 "update_taxonomy": "update_taxonomy",
                 "review_taxonomy": "review_taxonomy",
-            },
-        )
+            })
         self.graph.add_edge("review_taxonomy", END)
         self.graph.add_edge(START, "summarize")

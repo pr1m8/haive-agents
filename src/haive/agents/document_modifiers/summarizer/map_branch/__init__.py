@@ -4,8 +4,7 @@ from haive.agents.document_modifiers.summarizer.map_branch.agent import Summariz
 from haive.agents.document_modifiers.summarizer.map_branch.state import (
     InputState,
     OutputState,
-    SummaryState,
-)
+    SummaryState)
 
 __all__ = [
     "InputState",

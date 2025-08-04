@@ -23,8 +23,7 @@ def run_example():
     test_docs.append(
         Doc(
             id=tutorial_2_doc[0].metadata["source"],
-            content=tutorial_2_doc[0].page_content,
-        )
+            content=tutorial_2_doc[0].page_content)
     )
     state = TaxonomyGenerationState(documents=test_docs)
     result = agent.app.invoke(state, debug=True, config=agent.config.runtime_config)
