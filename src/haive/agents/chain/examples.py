@@ -15,6 +15,7 @@ from haive.agents.chain.declarative_chain import (
     BranchSpec,
     ChainBuilder,
     ChainSpec,
+    DeclarativeChainAgent,
     NodeSpec,
     SequenceSpec)
 from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
