@@ -261,3 +261,49 @@ class MetaAgent(Agent, Generic[TAgent]):
         return f"MetaAgent[{wrapped_info}](name={
             self.name}, executions={
             self.state.execution_count})"
+
+
+# Module-level convenience functions
+def wrap(agent: TAgent, **kwargs) -> MetaAgent[TAgent]:
+    """Convenience function to wrap an agent with meta capabilities."""
+    return MetaAgent.wrap(agent, **kwargs)
+
+
+def get_summary(meta_agent: MetaAgent) -> dict[str, Any]:
+    """Get summary of meta agent execution and recompilation."""
+    return meta_agent.get_summary()
+
+
+def needs_recompilation(meta_agent: MetaAgent) -> bool:
+    """Check if meta agent needs recompilation."""
+    return meta_agent.needs_recompilation()
+
+
+def recompile(meta_agent: MetaAgent, reason: str = "Manual recompilation") -> dict[str, Any]:
+    """Recompile a meta agent."""
+    return meta_agent.recompile(reason)
+
+
+def setup_agent(meta_agent: MetaAgent) -> None:
+    """Setup a meta agent."""
+    meta_agent.setup_agent()
+
+
+def update_wrapped_agent(meta_agent: MetaAgent, new_agent: TAgent) -> None:
+    """Update the wrapped agent in a meta agent."""
+    meta_agent.update_wrapped_agent(new_agent)
+
+
+def run(meta_agent: MetaAgent, *args, **kwargs) -> Any:
+    """Run a meta agent."""
+    return meta_agent.run(*args, **kwargs)
+
+
+async def meta_execute(meta_agent: MetaAgent, *args, **kwargs) -> Any:
+    """Execute a meta agent asynchronously."""
+    return await meta_agent.arun(*args, **kwargs)
+
+
+def wrapped_agent(meta_agent: MetaAgent) -> Any:
+    """Get the wrapped agent from a meta agent."""
+    return meta_agent.wrapped_agent
