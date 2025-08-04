@@ -49,8 +49,7 @@ class ChainMultiAgent(MultiAgent):
             name=name or chain.name,
             agents=agents,
             chain_config={"edges": chain.edges, "original_nodes": chain.nodes},
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def from_nodes(
@@ -58,8 +57,7 @@ class ChainMultiAgent(MultiAgent):
         nodes: list[NodeLike],
         edges: list | None = None,
         name: str = "Chain Multi Agent",
-        **kwargs,
-    ) -> "ChainMultiAgent":
+        **kwargs) -> "ChainMultiAgent":
         """Create directly from nodes and edges."""
         # Create a ChainAgent first
         chain = ChainAgent(*nodes, edges=edges or [], name=name)
@@ -131,8 +129,7 @@ def sequential_multi(*agents: Agent, name: str = "Sequential Multi") -> ChainMul
 def conditional_multi(
     agents: list[Agent],
     conditions: dict[str, Callable],
-    name: str = "Conditional Multi",
-) -> ChainMultiAgent:
+    name: str = "Conditional Multi") -> ChainMultiAgent:
     """Create a conditional multi-agent system."""
     # Convert conditions to ChainAgent edges format
     edges = []

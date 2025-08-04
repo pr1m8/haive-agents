@@ -136,8 +136,7 @@ class ChainAgent(Agent):
                     # condition function
                     node_names[from_idx],
                     edge[2],
-                    branches,
-                )
+                    branches)
 
     # Convenience methods
     def add(self, node: NodeLike) -> "ChainAgent":

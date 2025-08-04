@@ -8,8 +8,7 @@ from haive.agents.chain.chain_examples import (
     example_mapped_flow,
     example_nested_chains,
     example_rag_router_simplified,
-    example_sequential_mixed,
-)
+    example_sequential_mixed)
 from haive.agents.chain.examples import (
     StrategyDecision,
     create_agentic_router_declarative,
@@ -22,8 +21,7 @@ from haive.agents.chain.examples import (
     finalize_answer,
     improve_answer,
     reflect_and_critique,
-    synthesize_results,
-)
+    synthesize_results)
 from haive.agents.chain.examples_simple import (
     example_basic,
     example_direct,
@@ -31,8 +29,7 @@ from haive.agents.chain.examples_simple import (
     example_mixed,
     example_rag_router,
     example_routing,
-    formatter,
-)
+    formatter)
 from haive.agents.chain.multi_integration import (
     ChainMultiAgent,
     ChainNodeWrapper,
@@ -44,8 +41,7 @@ from haive.agents.chain.multi_integration import (
     from_chain,
     from_nodes,
     multi_to_chain,
-    sequential_multi,
-)
+    sequential_multi)
 
 # TEMPORARILY DISABLED - ignoring chain agent imports to focus on other issues
 # from haive.agents.chain.chain_agent_simple import (

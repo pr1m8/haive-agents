@@ -21,8 +21,7 @@ def example_basic() -> Any:
     chain = flow(
         lambda s: {"step": 1},
         lambda s: {"step": s.get("step", 0) + 1},
-        lambda s: {"result": f"Final: {s.get('step')}"},
-    )
+        lambda s: {"result": f"Final: {s.get('step')}"})
 
     return chain
 
@@ -33,8 +32,7 @@ def example_mixed() -> Any:
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}",
-    )
+        api_key="${AZURE_OPENAI_API_KEY}")
 
     # An engine
     summarizer = AugLLMConfig(
@@ -42,8 +40,7 @@ def example_mixed() -> Any:
         prompt_template=ChatPromptTemplate.from_messages(
             [("system", "Summarize the text"), ("human", "{text}")]
         ),
-        output_key="summary",
-    )
+        output_key="summary")
 
     # An agent
     docs = [Document(page_content="Test document")]
@@ -89,8 +86,7 @@ def example_direct() -> Any:
     chain = ChainAgent(
         lambda s: {"value": 1},
         lambda s: {"value": s.get("value", 0) * 2},
-        lambda s: {"value": s.get("value", 0) + 10},
-    )
+        lambda s: {"value": s.get("value", 0) + 10})
     # Auto-creates edges: 0->1->2
 
     return chain
@@ -109,8 +105,7 @@ def example_incremental() -> Any:
     chain.branch(
         lambda s: "high" if s.get("count", 0) > 5 else "low",
         high=lambda s: {"result": "Count is high"},
-        low=lambda s: {"result": "Count is low"},
-    )
+        low=lambda s: {"result": "Count is low"})
 
     return chain
 
@@ -121,8 +116,7 @@ def example_rag_router() -> Any:
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}",
-    )
+        api_key="${AZURE_OPENAI_API_KEY}")
 
     docs = [Document(page_content="Test document")]
 
@@ -138,15 +132,13 @@ def example_rag_router() -> Any:
                         ("human", "{query}"),
                     ]
                 ),
-                output_key="type",
-            ),
+                output_key="type"),
             # 1: Simple RAG
             SimpleRAGAgent.from_documents(docs, llm_config),
             # 2: Complex processing (mock)
             lambda s: {"response": "Complex processing done"},
         ],
         # Route based on classification
-        (0, {"simple": 1, "complex": 2}, lambda s: s.get("type", "simple")),
-    )
+        (0, {"simple": 1, "complex": 2}, lambda s: s.get("type", "simple")))
 
     return router

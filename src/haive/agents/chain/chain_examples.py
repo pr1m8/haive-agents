@@ -29,8 +29,7 @@ def example_sequential_mixed() -> Any:
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}",
-    )
+        api_key="${AZURE_OPENAI_API_KEY}")
 
     # Different types of nodes
 
@@ -40,8 +39,7 @@ def example_sequential_mixed() -> Any:
         prompt_template=ChatPromptTemplate.from_messages(
             [("system", "Summarize the following"), ("human", "{text}")]
         ),
-        output_key="summary",
-    )
+        output_key="summary")
 
     # 2. A callable function
     def process_summary(state: dict[str, Any]):
@@ -57,8 +55,7 @@ def example_sequential_mixed() -> Any:
         summarizer_engine,  # Engine -> wrapped in SimpleAgent
         process_summary,  # Callable -> used directly
         rag_agent,  # Agent -> used directly
-        name="Mixed Sequential Chain",
-    )
+        name="Mixed Sequential Chain")
 
     return chain
 
@@ -83,8 +80,7 @@ def example_mapped_flow() -> Any:
         (
             "analyze",
             {"low": "simple_process", "high": "complex_process"},
-            lambda s: s.get("complexity", "low"),
-        ),  # Tuple syntax for conditional
+            lambda s: s.get("complexity", "low")),  # Tuple syntax for conditional
         ("simple_process", "finalize"),  # Tuple syntax for sequential
         ("complex_process", "finalize"),
     ]
@@ -113,8 +109,7 @@ def example_incremental_building() -> Any:
     chain.add_conditional(
         "middle",
         {"a": "branch_a", "b": "branch_b"},
-        lambda s: "a" if s.get("step", 0) % 2 == 0 else "b",
-    )
+        lambda s: "a" if s.get("step", 0) % 2 == 0 else "b")
 
     chain.add_link("branch_a", "end")
     chain.add_link("branch_b", "end")
@@ -132,8 +127,7 @@ def example_nested_chains() -> Any:
     processing_chain = sequential_chain(
         lambda s: {"preprocessed": True},
         lambda s: {"validated": True},
-        name="Processing Sub-chain",
-    )
+        name="Processing Sub-chain")
 
     # Create main chain that uses the sub-chain
     main_chain = ChainAgent.from_mapping(
@@ -143,8 +137,7 @@ def example_nested_chains() -> Any:
             "output": lambda s: {"result": "Done"},
         },
         flow=["input->process", "process->output"],
-        name="Main Chain with Nested Chain",
-    )
+        name="Main Chain with Nested Chain")
 
     return main_chain
 
@@ -155,8 +148,7 @@ def example_rag_router_simplified() -> Any:
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}",
-    )
+        api_key="${AZURE_OPENAI_API_KEY}")
 
     docs = [Document(page_content="Test document")]
 
@@ -166,8 +158,7 @@ def example_rag_router_simplified() -> Any:
         prompt_template=ChatPromptTemplate.from_messages(
             [("system", "Analyze query complexity"), ("human", "{query}")]
         ),
-        output_key="strategy",
-    )
+        output_key="strategy")
 
     # Create RAG agents
     simple_rag = SimpleRAGAgent.from_documents(docs, llm_config)
@@ -181,8 +172,7 @@ def example_rag_router_simplified() -> Any:
         decider=strategy_selector,
         branches={"simple": simple_rag, "complex": complex_rag},
         condition=lambda s: s.get("strategy", "simple"),
-        name="RAG Router",
-    )
+        name="RAG Router")
 
     return router
 
@@ -193,8 +183,7 @@ def example_engines_as_nodes() -> Any:
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}",
-    )
+        api_key="${AZURE_OPENAI_API_KEY}")
 
     # Create multiple engines
     analyzer = AugLLMConfig(
@@ -202,16 +191,14 @@ def example_engines_as_nodes() -> Any:
         prompt_template=ChatPromptTemplate.from_messages(
             [("system", "Analyze the input"), ("human", "{input}")]
         ),
-        output_key="analysis",
-    )
+        output_key="analysis")
 
     generator = AugLLMConfig(
         llm_config=llm_config,
         prompt_template=ChatPromptTemplate.from_messages(
             [("system", "Generate response based on analysis"), ("human", "{analysis}")]
         ),
-        output_key="response",
-    )
+        output_key="response")
 
     # ChainAgent will automatically wrap these engines
     chain = sequential_chain(analyzer, generator, name="Engine Chain")
