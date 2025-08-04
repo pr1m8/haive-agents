@@ -293,29 +293,24 @@ class ReactAgentV3(SimpleAgentV3):
         default=10,
         ge=1,
         le=50,
-        description="Maximum reasoning iterations before stopping (1-50)",
-    )
+        description="Maximum reasoning iterations before stopping (1-50)")
 
     iteration_count: int = Field(
         default=0,
         ge=0,
-        description="Current iteration number (read-only, managed internally)",
-    )
+        description="Current iteration number (read-only, managed internally)")
 
     reasoning_trace: list[str] = Field(
         default_factory=list,
-        description="Step-by-step reasoning history (read-only, managed internally)",
-    )
+        description="Step-by-step reasoning history (read-only, managed internally)")
 
     stop_on_first_tool_result: bool = Field(
         default=False,
-        description="Stop after first successful tool execution (vs. continuing reasoning)",
-    )
+        description="Stop after first successful tool execution (vs. continuing reasoning)")
 
     require_final_answer: bool = Field(
         default=True,
-        description="Require a final non-tool response summarizing the solution",
-    )
+        description="Require a final non-tool response summarizing the solution")
 
     # Internal state tracking (Pydantic fields cannot start with underscore)
     current_reasoning_step: str | None = Field(
@@ -418,17 +413,19 @@ class ReactAgentV3(SimpleAgentV3):
         until the problem is solved or max_iterations is reached.
 
         **Graph Structure:**
-        ```
-        START → agent_node → validation_node
-                    ↑             ↓
-                    ←─── tool_node (loops back for continued reasoning)
-                    ↑             ↓
-                    ←─── parse_output (for structured output, then loops back)
-                                  ↓
-                               END (when reasoning complete or max iterations)
-        ```
+
+        .. code-block:: text
+
+            START → agent_node → validation_node
+                        ↑             ↓
+                        ←─── tool_node (loops back for continued reasoning)
+                        ↑             ↓
+                        ←─── parse_output (for structured output, then loops back)
+                                      ↓
+                                   END (when reasoning complete or max iterations)
 
         **Key Differences from SimpleAgent:**
+
         - Tool executions loop back to agent_node for continued reasoning
         - Parser output loops back for additional reasoning iterations
         - Iteration counting and limiting built into the graph flow
@@ -802,8 +799,7 @@ def create_react_agent(
     temperature: float = 0.7,
     max_tokens: int = 1200,
     debug: bool = False,
-    **engine_kwargs,
-) -> ReactAgentV3:
+    **engine_kwargs) -> ReactAgentV3:
     """Create a ReactAgentV3 with standard configuration for ReAct pattern execution.
 
     This factory function simplifies ReactAgent creation with sensible defaults
@@ -881,8 +877,7 @@ def create_react_agent(
         structured_output_model=structured_output_model,
         temperature=temperature,
         max_tokens=max_tokens,
-        **engine_kwargs,
-    )
+        **engine_kwargs)
 
     # Create ReactAgent
     agent = ReactAgentV3(
@@ -905,8 +900,7 @@ def create_research_agent(
     research_tools: list[BaseTool],
     analysis_model: type[BaseModel] | None = None,
     max_research_steps: int = 8,
-    debug: bool = False,
-) -> ReactAgentV3:
+    debug: bool = False) -> ReactAgentV3:
     """Create a ReactAgentV3 optimized for research and analysis tasks.
 
     Pre-configured for research workflows with appropriate iteration limits,
@@ -930,8 +924,7 @@ def create_research_agent(
         temperature=0.3,  # Focused for research accuracy
         max_tokens=1500,  # Allow comprehensive research documentation
         debug=debug,
-        system_message="You are a thorough research assistant. Take systematic steps to gather information, analyze findings, and provide comprehensive conclusions.",
-    )
+        system_message="You are a thorough research assistant. Take systematic steps to gather information, analyze findings, and provide comprehensive conclusions.")
 
 
 if __name__ == "__main__":
@@ -950,8 +943,7 @@ if __name__ == "__main__":
         name="example_react_agent",
         tools=[example_calculator],
         max_iterations=5,
-        debug=True,
-    )
+        debug=True)
 
 
 # Rebuild Pydantic model to resolve forward references

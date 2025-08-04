@@ -147,14 +147,12 @@ class EnhancedReactAgent(EnhancedSimpleAgent):
     reasoning_mode: str = Field(
         default="efficient",
         pattern="^(thorough|efficient|creative)$",
-        description="Reasoning strategy: thorough, efficient, or creative",
-    )
+        description="Reasoning strategy: thorough, efficient, or creative")
 
     tool_selection_strategy: str = Field(
         default="auto",
         pattern="^(auto|explicit|learned)$",
-        description="Tool selection strategy: auto, explicit, or learned",
-    )
+        description="Tool selection strategy: auto, explicit, or learned")
 
     loop_detection: bool = Field(
         default=True, description="Enable infinite loop detection and prevention"
@@ -184,8 +182,7 @@ class EnhancedReactAgent(EnhancedSimpleAgent):
         default=None,
         ge=0.0,
         le=1.0,
-        description="Minimum reasoning quality score (0.0-1.0)",
-    )
+        description="Minimum reasoning quality score (0.0-1.0)")
 
     early_termination_conditions: list[str] | None = Field(
         default=None, description="Custom early termination conditions"
@@ -428,36 +425,30 @@ class EnhancedReactAgent(EnhancedSimpleAgent):
         table.add_row(
             "Loop Detection",
             str(react_features["loop_detection"]),
-            "✅" if react_features["loop_detection"] else "❌",
-        )
+            "✅" if react_features["loop_detection"] else "❌")
         table.add_row(
             "Reasoning Trace",
             str(react_features["reasoning_trace"]),
-            "✅" if react_features["reasoning_trace"] else "❌",
-        )
+            "✅" if react_features["reasoning_trace"] else "❌")
         table.add_row(
             "Performance Tracking",
             str(react_features["performance_tracking"]),
-            "✅" if react_features["performance_tracking"] else "❌",
-        )
+            "✅" if react_features["performance_tracking"] else "❌")
 
         # Advanced features
         table.add_section()
         table.add_row(
             "Iteration Timeout",
             str(react_features["iteration_timeout"]),
-            "✅" if react_features["iteration_timeout"] else "❌",
-        )
+            "✅" if react_features["iteration_timeout"] else "❌")
         table.add_row(
             "Tool Optimization",
             str(react_features["tool_usage_optimization"]),
-            "✅" if react_features["tool_usage_optimization"] else "❌",
-        )
+            "✅" if react_features["tool_usage_optimization"] else "❌")
         table.add_row(
             "Quality Threshold",
             str(react_features["reasoning_quality_threshold"]),
-            "✅" if react_features["reasoning_quality_threshold"] else "❌",
-        )
+            "✅" if react_features["reasoning_quality_threshold"] else "❌")
 
         console.print(table)
 
@@ -470,8 +461,7 @@ class EnhancedReactAgent(EnhancedSimpleAgent):
                 f"Avg Time: {stats['avg_iteration_time']:.2f}s | "
                 f"Quality: {stats['reasoning_quality_score']:.2f}",
                 title="Execution Statistics",
-                style="blue",
-            )
+                style="blue")
             console.print(stats_panel)
 
     def get_reasoning_trace(self) -> list[dict[str, Any]]:

@@ -311,8 +311,7 @@ class DynamicReactAgent(ReactAgent):
                 "recompilation_enabled": True,
                 "tool_discovery": True,
                 "agent_type": "dynamic_react",
-            },
-        )
+            })
 
     @classmethod
     def create_with_discovery(
@@ -321,8 +320,7 @@ class DynamicReactAgent(ReactAgent):
         document_path: str,
         engine: AugLLMConfig,
         use_mcp: bool = False,
-        **kwargs,
-    ) -> "DynamicReactAgent":
+        **kwargs) -> "DynamicReactAgent":
         """Factory method to create agent with discovery capabilities.
 
         Args:
@@ -369,8 +367,7 @@ class DynamicReactAgent(ReactAgent):
         rag_documents: list[str],
         tool_documents: list[str] | None = None,
         use_mcp: bool = False,
-        **kwargs,
-    ) -> "DynamicReactAgent":
+        **kwargs) -> "DynamicReactAgent":
         """Factory method to create agent with RAG-based tool discovery.
 
         This creates a DynamicReactAgent that can request tools from a RAG agent
@@ -549,8 +546,7 @@ class DynamicReactAgent(ReactAgent):
                             metadata={
                                 "source": "tool_docs",
                                 "type": "tool_documentation",
-                            },
-                        )
+                            })
                     )
                 else:
                     documents.append(doc)
@@ -713,8 +709,7 @@ class DynamicReactAgent(ReactAgent):
                     name=getattr(tool, "name", "Unknown Tool"),
                     description=getattr(tool, "description", ""),
                     component=tool,
-                    metadata={"source": "dynamic_discovery", "task": task},
-                )
+                    metadata={"source": "dynamic_discovery", "task": task})
 
                 # Add to registry (this will be available when state is
                 # accessible)
@@ -882,8 +877,7 @@ class DynamicReactAgent(ReactAgent):
                         name=doc.get("name", "Unknown Tool"),
                         description=doc.get("description", ""),
                         component=tool,
-                        metadata=doc.get("metadata", {}),
-                    )
+                        metadata=doc.get("metadata", {}))
                     self.state.registry.register(item)
 
                     # Activate tool

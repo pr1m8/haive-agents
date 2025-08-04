@@ -57,7 +57,6 @@ from haive.agents.react.agent import ReactAgent
 from haive.agents.react.agent_v3 import (
     ReactAgentV3,
     create_react_agent,
-    create_research_agent,
-)
+    create_research_agent)
 
 __all__ = ["ReactAgent", "ReactAgentV3", "create_react_agent", "create_research_agent"]
