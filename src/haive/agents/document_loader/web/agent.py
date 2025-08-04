@@ -5,8 +5,7 @@ documents from web URLs.
 """
 
 from haive.core.engine.document import (
-    create_web_document_engine as create_web_loader_engine,
-)
+    create_web_document_engine as create_web_loader_engine)
 from pydantic import Field
 
 from haive.agents.document_loader.base.agent import DocumentLoaderAgent
@@ -34,8 +33,7 @@ class WebLoaderAgent(DocumentLoaderAgent):
 
     dynamic_loading: bool = Field(
         default=False,
-        description="Whether to use a dynamic loading strategy (e.g., Playwright)",
-    )
+        description="Whether to use a dynamic loading strategy (e.g., Playwright)")
 
     recursive: bool = Field(
         default=False, description="Whether to recursively crawl links"
@@ -57,8 +55,7 @@ class WebLoaderAgent(DocumentLoaderAgent):
             dynamic_loading=self.dynamic_loading,
             recursive=self.recursive,
             max_depth=self.max_depth,
-            headers=self.headers,
-        )
+            headers=self.headers)
 
         # Apply agent configuration
         if self.max_documents is not None:

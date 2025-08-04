@@ -7,8 +7,7 @@ documents from local files.
 from pathlib import Path
 
 from haive.core.engine.document import (
-    create_file_document_engine as create_file_loader_engine,
-)
+    create_file_document_engine as create_file_loader_engine)
 from pydantic import Field
 
 from haive.agents.document_loader.base.agent import DocumentLoaderAgent
@@ -48,8 +47,7 @@ class FileLoaderAgent(DocumentLoaderAgent):
         self.engine = create_file_loader_engine(
             file_path=self.file_path,
             file_extension=self.file_extension,
-            loader_name=self.loader_name,
-        )
+            loader_name=self.loader_name)
 
         # Apply agent configuration
         if self.max_documents is not None:
