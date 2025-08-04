@@ -59,16 +59,14 @@ class SimpleAgent(Agent[SimpleAgentConfig]):
             name=self.config.name,
             components=[self.config.engine],
             state_schema=self.config.state_schema,
-            visualize=self.config.visualize,
-        )
+            visualize=self.config.visualize)
 
         # Get mappings from config (handles auto-derivation)
 
         # Add the processing node
         gb.add_node(
             name=self.config.node_name,
-            config=node_config,
-        )
+            config=node_config)
 
         # Set entry point
         gb.set_entry_point(self.config.node_name)
