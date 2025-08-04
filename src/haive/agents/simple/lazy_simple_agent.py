@@ -164,8 +164,7 @@ class LazySimpleAgent:
         max_tokens: int | None = None,
         model_name: str | None = None,
         debug: bool = True,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize with minimal overhead - no heavy imports."""
         # Store all initialization parameters
         self._init_time = datetime.now()

@@ -178,8 +178,7 @@ class EnhancedSimpleAgent(Agent):
         default=None,
         ge=0.0,
         le=2.0,
-        description="Temperature for the LLM (syncs to engine)",
-    )
+        description="Temperature for the LLM (syncs to engine)")
 
     max_tokens: int | None = Field(
         default=None, ge=1, description="Max tokens for the LLM (syncs to engine)"
@@ -461,8 +460,7 @@ class EnhancedSimpleAgent(Agent):
             tool_config = ToolNodeConfig(
                 name="tool_node",
                 engine_name=self.engine.name,
-                advanced_routing=self.advanced_routing,
-            )
+                advanced_routing=self.advanced_routing)
             graph.add_node("tool_node", tool_config)
 
         # Add parser node if needed
@@ -471,8 +469,7 @@ class EnhancedSimpleAgent(Agent):
                 name="parse_output",
                 engine_name=self.engine.name,
                 structured_output_model=self.structured_output_model,
-                output_parser=self.output_parser,
-            )
+                output_parser=self.output_parser)
             graph.add_node("parse_output", parser_config)
 
         # Setup routing logic

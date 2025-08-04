@@ -298,8 +298,7 @@ class SimpleAgent(Agent):
                 name="validation",
                 engine_name=self.engine.name,
                 tool_node="tool_node" if needs_tools else None,
-                parser_node="parse_output" if needs_parsing else None,
-            )
+                parser_node="parse_output" if needs_parsing else None)
             graph.add_node("validation", validation_config)
 
             # Route from agent to validation

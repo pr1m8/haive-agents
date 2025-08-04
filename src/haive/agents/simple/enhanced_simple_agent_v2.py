@@ -67,8 +67,7 @@ class SimpleAgentV2(EnhancedAgent[AugLLMConfig]):
                 temperature=values.get("temperature", 0.7),
                 max_tokens=values.get("max_tokens"),
                 system_message=values.get("system_message"),
-                tools=values.get("tools", []),
-            )
+                tools=values.get("tools", []))
             values["engine"] = config
 
         return values

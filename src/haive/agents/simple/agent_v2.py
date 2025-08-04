@@ -113,8 +113,7 @@ class SimpleAgentV2(Agent):
     )
     parser_safety_net_mode: str = Field(
         default="create",
-        description="Parser safety net mode: 'create', 'warn', 'ignore'",
-    )
+        description="Parser safety net mode: 'create', 'warn', 'ignore'")
 
     # ========================================================================
     # NON-SYNCED FIELDS (same as V1)
@@ -332,8 +331,7 @@ class SimpleAgentV2(Agent):
             tool_config = ToolNodeConfig(
                 name="tool_node",
                 engine_name=self.engine.name,
-                allowed_routes=["langchain_tool", "function", "tool_node"],
-            )
+                allowed_routes=["langchain_tool", "function", "tool_node"])
             graph.add_node("tool_node", tool_config)
             graph.add_edge("tool_node", END)
             available_nodes.append("tool_node")
@@ -346,8 +344,7 @@ class SimpleAgentV2(Agent):
                     name="parse_output",
                     engine_name=self.engine.name,
                     add_tool_message_safety_net=True,
-                    safety_net_mode=self.parser_safety_net_mode,
-                )
+                    safety_net_mode=self.parser_safety_net_mode)
                 logger.info(
                     f"Using V2 parser with safety net mode: {
                         self.parser_safety_net_mode}"
@@ -356,8 +353,7 @@ class SimpleAgentV2(Agent):
                 # Use V1 parser (original behavior)
                 parser_config = ParserNodeConfig(
                     name="parse_output",
-                    engine_name=self.engine.name,
-                )
+                    engine_name=self.engine.name)
                 logger.info("Using V1 parser (no safety net)")
 
             graph.add_node("parse_output", parser_config)
@@ -500,8 +496,7 @@ class SimpleAgentV2(Agent):
         self,
         model: type[BaseModel],
         version: str = "v2",
-        include_instructions: bool = True,
-    ) -> None:
+        include_instructions: bool = True) -> None:
         """Set structured output model.
 
         Args:

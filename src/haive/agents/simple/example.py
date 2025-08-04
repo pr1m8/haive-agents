@@ -41,8 +41,7 @@ console = Console()
 logging.basicConfig(
     level=logging.DEBUG,  # Set to DEBUG for more verbose output
     format="%(message)s",
-    handlers=[RichHandler(rich_tracebacks=True, show_path=False)],
-)
+    handlers=[RichHandler(rich_tracebacks=True, show_path=False)])
 
 # Get logger
 logger = logging.getLogger("SimpleAgentDebug")
@@ -89,8 +88,7 @@ def example_with_custom_state_schema() -> Any:
         prompt_template=prompt,
         output_parser=StrOutputParser(),
         output_field_name="answer",  # Put output directly in answer field
-        system_prompt="You are a helpful assistant.",
-    )
+        system_prompt="You are a helpful assistant.")
 
     # Debug info
     debug_print(
@@ -99,8 +97,7 @@ def example_with_custom_state_schema() -> Any:
             "name": aug_llm.name,
             "output_field_name": "answer",
             "prompt_variables": prompt.input_variables,
-        },
-    )
+        })
 
     # Create the agent
     console.print("[bold green]Creating SimpleAgent with custom schema")
@@ -131,8 +128,7 @@ def example_with_custom_state_schema() -> Any:
         # Explicitly set additional fields for output mapping
         output_mapping={"answer": "answer"},
         # Set the process function directly in the config
-        process_func=custom_process,
-    )
+        process_func=custom_process)
 
     # Create the agent with our config
     agent = SimpleAgent(config=agent_config)

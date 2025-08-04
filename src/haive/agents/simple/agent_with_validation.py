@@ -1,4 +1,3 @@
-"""SimpleAgent with integrated StateUpdatingValidationNode implementation."""
 
 import logging
 from typing import Any
@@ -10,8 +9,7 @@ from haive.core.graph.node.parser_node_config import ParserNodeConfig
 from haive.core.graph.node.state_updating_validation_node import (
     Dict,
     StateUpdatingValidationNode,
-    ValidationMode,
-)
+    ValidationMode)
 from haive.core.graph.node.tool_node_config import ToolNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import LLMConfig
@@ -86,8 +84,7 @@ class SimpleAgentWithValidation(Agent):
     # NEW: Validation configuration
     validation_mode: ValidationMode = Field(
         default=ValidationMode.PARTIAL,
-        description="Validation mode: STRICT, PARTIAL, or PERMISSIVE",
-    )
+        description="Validation mode: STRICT, PARTIAL, or PERMISSIVE")
     update_validation_messages: bool = Field(
         default=True, description="Whether to add validation error messages to state"
     )
@@ -274,8 +271,7 @@ class SimpleAgentWithValidation(Agent):
             agent_node="agent_node",
             tool_node="tool_node",
             parser_node="parse_output",
-            route_to_node_mapping=route_mapping,
-        )
+            route_to_node_mapping=route_mapping)
 
     def build_graph(self) -> BaseGraph:
         """Build the agent graph with StateUpdatingValidationNode integration."""
@@ -321,8 +317,7 @@ class SimpleAgentWithValidation(Agent):
             tool_config = ToolNodeConfig(
                 name="tool_node",
                 engine_name=self.engine.name,
-                allowed_routes=["langchain_tool", "function", "tool_node"],
-            )
+                allowed_routes=["langchain_tool", "function", "tool_node"])
             graph.add_node("tool_node", tool_config)
             graph.add_edge("tool_node", END)
             available_nodes.append("tool_node")
@@ -331,8 +326,7 @@ class SimpleAgentWithValidation(Agent):
         if needs_parser_node:
             parser_config = ParserNodeConfig(
                 name="parse_output",
-                engine_name=self.engine.name,
-            )
+                engine_name=self.engine.name)
             graph.add_node("parse_output", parser_config)
             graph.add_edge("parse_output", END)
             available_nodes.append("parse_output")
@@ -406,8 +400,7 @@ class SimpleAgentWithValidation(Agent):
             name=name or "Strict Validation Agent",
             engine=engine,
             validation_mode=ValidationMode.STRICT,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def create_permissive_validation(
@@ -418,8 +411,7 @@ class SimpleAgentWithValidation(Agent):
             name=name or "Permissive Validation Agent",
             engine=engine,
             validation_mode=ValidationMode.PERMISSIVE,
-            **kwargs,
-        )
+            **kwargs)
 
     def __repr__(self) -> str:
         engine_info = f"model={getattr(self.engine, 'model', 'unknown')}"
@@ -432,8 +424,7 @@ class SimpleAgentWithValidation(Agent):
 
 # For backward compatibility, provide a function to upgrade SimpleAgent
 def upgrade_simple_agent_with_validation(
-    simple_agent: "SimpleAgent",
-) -> SimpleAgentWithValidation:
+    simple_agent: "SimpleAgent") -> SimpleAgentWithValidation:
     """Upgrade a SimpleAgent to use StateUpdatingValidationNode."""
     # Extract all fields from SimpleAgent
     agent_data = simple_agent.model_dump()

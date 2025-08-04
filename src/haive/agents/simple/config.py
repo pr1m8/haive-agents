@@ -35,8 +35,7 @@ class SimpleAgentConfig(AgentConfig):
     # Required engine (must be AugLLMConfig)
     engine: AugLLMConfig = Field(
         default_factory=AugLLMConfig,
-        description="The AugLLM engine to use for reasoning",
-    )
+        description="The AugLLM engine to use for reasoning")
 
     # Schema definitions
     input_schema: type[BaseModel] | type[StateSchema] | None = Field(
@@ -54,13 +53,11 @@ class SimpleAgentConfig(AgentConfig):
     # Mapping configuration
     input_mapping: dict[str, str] | None = Field(
         default=None,
-        description="Maps state fields to engine input fields (None for auto-derive)",
-    )
+        description="Maps state fields to engine input fields (None for auto-derive)")
 
     output_mapping: dict[str, str] | None = Field(
         default=None,
-        description="Maps engine output fields to state fields (None for auto-derive)",
-    )
+        description="Maps engine output fields to state fields (None for auto-derive)")
 
     # Node configuration
     node_name: str = Field(
@@ -108,8 +105,7 @@ class SimpleAgentConfig(AgentConfig):
         input_schema: type[BaseModel] | None = None,
         output_schema: type[BaseModel] | None = None,
         state_schema: type[StateSchema] | None = None,
-        **kwargs,
-    ) -> "SimpleAgentConfig":
+        **kwargs) -> "SimpleAgentConfig":
         """Create a SimpleAgentConfig from an existing AugLLMConfig.
 
         Args:
@@ -136,8 +132,7 @@ class SimpleAgentConfig(AgentConfig):
             id=id,
             name=name,
             engine=aug_llm,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def from_scratch(
@@ -151,8 +146,7 @@ class SimpleAgentConfig(AgentConfig):
         input_schema: type[BaseModel] | None = None,
         output_schema: type[BaseModel] | None = None,
         state_schema: type[StateSchema] | None = None,
-        **kwargs,
-    ) -> "SimpleAgentConfig":
+        **kwargs) -> "SimpleAgentConfig":
         """Create a SimpleAgentConfig from scratch with a new AugLLMConfig.
 
         Args:
@@ -188,8 +182,7 @@ class SimpleAgentConfig(AgentConfig):
             llm_config=llm_config,
             prompt_template=prompt_template,
             system_prompt=system_prompt,
-            structured_output_model=structured_output_model,
-        )
+            structured_output_model=structured_output_model)
 
         # If structured output model is provided but no output schema, use the
         # model
@@ -204,8 +197,7 @@ class SimpleAgentConfig(AgentConfig):
             input_schema=input_schema,
             output_schema=output_schema,
             state_schema=state_schema,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def with_structured_output(
@@ -215,8 +207,7 @@ class SimpleAgentConfig(AgentConfig):
         model: str = "gpt-4o",
         temperature: float = 0.2,
         name: str | None = None,
-        **kwargs,
-    ) -> "SimpleAgentConfig":
+        **kwargs) -> "SimpleAgentConfig":
         """Create a SimpleAgentConfig with structured output capabilities.
 
         Args:
@@ -246,5 +237,4 @@ class SimpleAgentConfig(AgentConfig):
             structured_output_model=output_model,
             output_schema=output_model,  # Use model as output schema directly
             name=name or f"structured_{output_model.__name__.lower()}_agent",
-            **kwargs,
-        )
+            **kwargs)
