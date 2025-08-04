@@ -11,14 +11,12 @@ from .agent import (
     memory_generation_node,
     memory_modification_node,
     memory_search_node,
-    setup_workflow,
-)
+    setup_workflow)
 from self_healing_code.branches import (
     error_router,
     memory_filter_router,
     memory_generation_router,
-    memory_update_router,
-)
+    memory_update_router)
 from self_healing_code.state import SelfHealingCodeState
 
 __all__ = [

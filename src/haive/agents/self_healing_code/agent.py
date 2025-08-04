@@ -20,8 +20,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
         message = HumanMessage(
             content=prompt.format(
                 function_string=self.function_string,
-                error_description=self.error_description,
-            )
+                error_description=self.error_description)
         )
         bug_report = llm.invoke([message]).content.strip()
 
@@ -42,8 +41,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
 
         message = HumanMessage(
             content=prompt.format(
-                bug_report=self.bug_report,
-            )
+                bug_report=self.bug_report)
         )
 
         response = llm.invoke([message]).content.strip()
@@ -90,8 +88,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
 
         message = HumanMessage(
             content=prompt.format(
-                bug_report=self.bug_report,
-            )
+                bug_report=self.bug_report)
         )
 
         response = llm.invoke([message]).content.strip()
@@ -99,8 +96,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
         id = str(uuid.uuid4())
         collection.add(
             ids=[id],
-            documents=[response],
-        )
+            documents=[response])
         return self
 
     # Use the prior memory as well as the current bug report to generate an
@@ -121,16 +117,14 @@ class SelfHealingCodeAgent(AgentArchitecture):
         message = HumanMessage(
             content=prompt.format(
                 bug_report=self.bug_report,
-                memory_to_update=memory_to_update,
-            )
+                memory_to_update=memory_to_update)
         )
 
         response = llm.invoke([message]).content.strip()
 
         collection.update(
             ids=[memory_to_update_id],
-            documents=[response],
-        )
+            documents=[response])
 
         return self
 
@@ -183,8 +177,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
         message = HumanMessage(
             content=prompt.format(
                 function_string=self.function_string,
-                error_description=self.error_description,
-            )
+                error_description=self.error_description)
         )
         new_function_string = llm.invoke([message]).content.strip()
 
