@@ -195,8 +195,7 @@ class RetrieverAgent(BaseRAGAgent):
             return [
                 Document(
                     page_content=retrieval_result,
-                    metadata={"source": "retrieval_result", "generated": True},
-                )
+                    metadata={"source": "retrieval_result", "generated": True})
             ]
 
         return []

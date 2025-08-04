@@ -41,8 +41,7 @@ class StrategyDecision(BaseModel):
 def create_agentic_rag_router_chain(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
-    name: str = "Agentic RAG Router",
-) -> ChainAgent:
+    name: str = "Agentic RAG Router") -> ChainAgent:
     """Create an agentic RAG router using ChainAgent.
 
     Super simple compared to the old implementation!
@@ -51,8 +50,7 @@ def create_agentic_rag_router_chain(
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
 
     # Strategy selector
     strategy_selector = AugLLMConfig(
@@ -66,14 +64,12 @@ def create_agentic_rag_router_chain(
             - multi_query: Complex queries needing multiple perspectives
             - hyde: Abstract queries needing expansion
             - fusion: High-quality results through fusion
-            - flare: Iterative refinement needed""",
-                ),
+            - flare: Iterative refinement needed"""),
                 ("human", "Query: {query}\nSelect optimal strategy."),
             ]
         ),
         structured_output_model=StrategyDecision,
-        output_key="strategy_decision",
-    )
+        output_key="strategy_decision")
 
     # RAG strategy agents
     simple_rag = SimpleRAGAgent.from_documents(documents, llm_config)
@@ -94,12 +90,10 @@ def create_agentic_rag_router_chain(
             Selected strategy: {strategy}
             RAG response: {response}
 
-            Create a comprehensive final response.""",
-                ),
+            Create a comprehensive final response."""),
             ]
         ),
-        output_key="final_response",
-    )
+        output_key="final_response")
 
     # Build the chain - that's it!
     chain = flow_with_edges(
@@ -116,15 +110,13 @@ def create_agentic_rag_router_chain(
         (
             0,
             {"simple": 1, "multi_query": 2, "hyde": 3, "fusion": 4, "flare": 5},
-            lambda s: s.get("strategy_decision", {}).get("strategy", "simple"),
-        ),
+            lambda s: s.get("strategy_decision", {}).get("strategy", "simple")),
         # All strategies flow to synthesizer
         "1->6",
         "2->6",
         "3->6",
         "4->6",
-        "5->6",
-    )
+        "5->6")
 
     chain.name = name
     return chain
@@ -139,8 +131,7 @@ def create_simple_rag_router_chain(
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
 
     # Simple classifier
     classifier = AugLLMConfig(
@@ -151,8 +142,7 @@ def create_simple_rag_router_chain(
                 ("human", "{query}"),
             ]
         ),
-        output_key="complexity",
-    )
+        output_key="complexity")
 
     # Two RAG strategies
     simple_rag = SimpleRAGAgent.from_documents(documents, llm_config)
@@ -161,8 +151,7 @@ def create_simple_rag_router_chain(
     # Just 3 nodes and routing - done!
     return flow_with_edges(
         [classifier, simple_rag, complex_rag],
-        (0, {"simple": 1, "complex": 2}, lambda s: s.get("complexity", "simple")),
-    )
+        (0, {"simple": 1, "complex": 2}, lambda s: s.get("complexity", "simple")))
 
 
 # Integration with multi-agent

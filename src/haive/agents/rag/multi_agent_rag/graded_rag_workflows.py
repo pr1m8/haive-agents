@@ -18,8 +18,7 @@ from haive.agents.rag.multi_agent_rag.grading_components import (
     create_document_grader,
     create_hallucination_grader,
     create_priority_ranker,
-    create_query_analyzer,
-)
+    create_query_analyzer)
 from haive.agents.simple import SimpleAgent
 
 
@@ -69,8 +68,7 @@ class FullyGradedRAGAgent(MultiAgent):
                 "documents": "List[str]",
                 "retrieval_strategy": "str",
                 "num_retrieved": "int",
-            },
-        )
+            })
 
         # Document grader
         document_grader = create_document_grader("document_relevance_grader")
@@ -93,8 +91,7 @@ class FullyGradedRAGAgent(MultiAgent):
                 "num_filtered": "int",
                 "filter_reason": "Dict[str, str]",
                 "avg_relevance": "float",
-            },
-        )
+            })
 
         # Answer generator
         answer_generator = SimpleAgent(
@@ -111,8 +108,7 @@ class FullyGradedRAGAgent(MultiAgent):
                 "sources_used": "List[str]",
                 "confidence": "float",
                 "limitations": "List[str]",
-            },
-        )
+            })
 
         # Answer quality grader
         answer_grader = create_answer_grader("answer_quality_grader")
@@ -136,8 +132,7 @@ class FullyGradedRAGAgent(MultiAgent):
                 "key_strengths": "List[str]",
                 "improvement_areas": "List[str]",
                 "actionable_suggestions": "List[str]",
-            },
-        )
+            })
 
         agents = [
             query_analyzer,
@@ -155,8 +150,7 @@ class FullyGradedRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=GradedRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for graded RAG workflow."""
@@ -184,8 +178,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
                 "suggested_relevance_threshold": "float",
                 "suggested_doc_limit": "int",
                 "grading_strategy": "str",
-            },
-        )
+            })
 
         # Adaptive retriever
         adaptive_retriever = SimpleAgent(
@@ -200,8 +193,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
                 "documents": "List[str]",
                 "retrieval_methods_used": "List[str]",
                 "adaptive_parameters": "Dict[str, Any]",
-            },
-        )
+            })
 
         # Dynamic grader
         dynamic_grader = SimpleAgent(
@@ -220,8 +212,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
                 "applied_threshold": "float",
                 "threshold_adjustments": "List[str]",
                 "grade_distribution": "Dict[str, int]",
-            },
-        )
+            })
 
         # Iterative refiner
         iterative_refiner = SimpleAgent(
@@ -238,8 +229,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
                 "refinement_iterations": "int",
                 "refinement_actions": "List[str]",
                 "final_quality_score": "float",
-            },
-        )
+            })
 
         agents = [
             complexity_analyzer,
@@ -252,8 +242,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=GradedRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for adaptive graded RAG."""
@@ -295,8 +284,7 @@ class MultiCriteriaGradedRAGAgent(MultiAgent):
                 "composite_score": "float",
                 "primary_strength": "str",
                 "primary_weakness": "str",
-            },
-        )
+            })
 
         # Perspective aggregator
         perspective_aggregator = SimpleAgent(
@@ -314,8 +302,7 @@ class MultiCriteriaGradedRAGAgent(MultiAgent):
                 "recommended_documents": "List[str]",
                 "excluded_documents": "List[str]",
                 "aggregation_reasoning": "str",
-            },
-        )
+            })
 
         # Balanced answer generator
         balanced_generator = SimpleAgent(
@@ -335,8 +322,7 @@ class MultiCriteriaGradedRAGAgent(MultiAgent):
                 "criteria_balance": "Dict[str, str]",
                 "compromises_made": "List[str]",
                 "optimization_focus": "str",
-            },
-        )
+            })
 
         agents = [multi_criteria_grader, perspective_aggregator, balanced_generator]
 
@@ -346,8 +332,7 @@ class MultiCriteriaGradedRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=GradedRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for multi-criteria graded RAG."""
@@ -375,8 +360,7 @@ class ReflexiveGradedRAGAgent(MultiAgent):
                 "identified_patterns": "List[str]",
                 "strategy_effectiveness": "Dict[str, float]",
                 "suggested_adjustments": "List[str]",
-            },
-        )
+            })
 
         # Strategy adapter
         strategy_adapter = SimpleAgent(
@@ -395,8 +379,7 @@ class ReflexiveGradedRAGAgent(MultiAgent):
                 "parameter_changes": "Dict[str, Any]",
                 "expected_improvements": "List[str]",
                 "adaptation_reasoning": "str",
-            },
-        )
+            })
 
         # Reflexive executor
         reflexive_executor = SimpleAgent(
@@ -413,8 +396,7 @@ class ReflexiveGradedRAGAgent(MultiAgent):
                 "improvement_metrics": "Dict[str, float]",
                 "adaptation_success": "bool",
                 "lessons_learned": "List[str]",
-            },
-        )
+            })
 
         agents = [self_assessor, strategy_adapter, reflexive_executor]
 
@@ -422,8 +404,7 @@ class ReflexiveGradedRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=GradedRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for reflexive graded RAG."""

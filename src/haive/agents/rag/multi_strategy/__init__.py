@@ -5,8 +5,7 @@ from multi_strategy.agent import (
     analyze_query,
     retrieve_with_strategy,
     rewrite_query,
-    setup_workflow,
-)
+    setup_workflow)
 from multi_strategy.config import MultiStrategyRAGConfig
 from multi_strategy.query_types import QueryType
 from multi_strategy.state import MultiStrategyRAGState

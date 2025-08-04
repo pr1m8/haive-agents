@@ -53,8 +53,7 @@ STRATEGY_SELECTION_PROMPT = ChatPromptTemplate.from_messages(
     - multi_query: Complex queries benefiting from multiple perspectives
     - hyde: Abstract queries needing hypothetical expansion
     - fusion: High-quality results through rank fusion
-    - flare: Iterative refinement needed""",
-        ),
+    - flare: Iterative refinement needed"""),
         ("human", "Query: {query}\n\nSelect the optimal strategy."),
     ]
 )
@@ -77,10 +76,8 @@ class AgenticRAGRouterV2(Agent):
                 llm_config=self.llm_config,
                 prompt_template=STRATEGY_SELECTION_PROMPT,
                 structured_output_model=StrategyDecision,
-                output_key="strategy_decision",
-            ),
-            name="StrategySelector",
-        )
+                output_key="strategy_decision"),
+            name="StrategySelector")
 
         # Create strategy agents
         simple_rag = SimpleRAGAgent.from_documents(
@@ -140,8 +137,7 @@ class AgenticRAGRouterV2(Agent):
                 "hyde_rag": "hyde_rag",
                 "fusion_rag": "fusion_rag",
                 "flare_rag": "flare_rag",
-            },
-        )
+            })
 
         # All strategies go to END
         graph.add_edge("simple_rag", END)

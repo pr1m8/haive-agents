@@ -21,17 +21,14 @@ class FilteredRAGState(BaseRAGState):
     # Document filtering results
     filtered_documents: list[Document] | list[str] | None = Field(
         default=[],
-        description="The filtered documents that passed the relevance threshold.",
-    )
+        description="The filtered documents that passed the relevance threshold.")
 
     # Relevance scoring
     relevance_scores: dict[str, float] = Field(
         default={},
-        description="Mapping of document IDs to relevance scores (0.0 to 1.0).",
-    )
+        description="Mapping of document IDs to relevance scores (0.0 to 1.0).")
 
     # Error handling
     error: str | None = Field(
         default=None,
-        description="Error message if something went wrong during filtering.",
-    )
+        description="Error message if something went wrong during filtering.")

@@ -57,8 +57,7 @@ def test_base_rag_agent():
     base_rag_config = BaseRAGConfig(
         name="test_agent",
         retriever_engine=retriever,
-        engine=AugLLMConfig(),
-    )
+        engine=AugLLMConfig())
 
     # Initialize the agent with the configuration
     agent = BaseRAGAgent(config=base_rag_config)

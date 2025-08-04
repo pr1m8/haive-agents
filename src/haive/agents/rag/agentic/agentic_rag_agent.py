@@ -172,8 +172,7 @@ class AgenticRAGAgent(SimpleAgent):
                 "3. Be accurate and cite sources when possible\n"
                 "4. If information is incomplete, acknowledge limitations\n"
                 "5. Provide a clear, well-structured response"
-            ),
-        )
+            ))
 
         generator_agent = SimpleAgent(name=f"{name}_generator", engine=generator_engine)
 
@@ -190,8 +189,7 @@ class AgenticRAGAgent(SimpleAgent):
         if engine is None:
             engine = AugLLMConfig(
                 temperature=temperature,
-                system_message="You are an advanced RAG system coordinator.",
-            )
+                system_message="You are an advanced RAG system coordinator.")
 
         return cls(
             name=name,
@@ -202,8 +200,7 @@ class AgenticRAGAgent(SimpleAgent):
             generator_agent=generator_agent,
             web_search_agent=web_search_agent,
             use_web_search=use_web_search,
-            **kwargs,
-        )
+            **kwargs)
 
     @staticmethod
     def _create_web_search_tool():
@@ -256,8 +253,7 @@ class AgenticRAGAgent(SimpleAgent):
                 "generate": "generate_answer",
                 "rewrite": "rewrite_query",
                 "web_search": "web_search",
-            },
-        )
+            })
 
         # After rewriting, retrieve again
         graph.add_edge("rewrite_query", "retrieve")
@@ -317,8 +313,7 @@ class AgenticRAGAgent(SimpleAgent):
                     "content": doc.get("content", doc.get("page_content", "")),
                 }
                 for i, doc in enumerate(state.retrieved_documents)
-            ],
-        )
+            ])
 
         # Process grading results
         relevant_docs = []
@@ -371,8 +366,7 @@ class AgenticRAGAgent(SimpleAgent):
         query = state.refined_query or state.original_query
         rewrite_result = await self.rewriter_agent.rewrite_query(
             query=query,
-            context="Previous retrieval returned insufficient relevant documents.",
-        )
+            context="Previous retrieval returned insufficient relevant documents.")
 
         return {
             "refined_query": rewrite_result.best_refined_query,

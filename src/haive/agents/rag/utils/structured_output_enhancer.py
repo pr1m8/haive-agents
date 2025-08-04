@@ -12,8 +12,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from haive.core.utils.pydantic_utils.base_model_to_prompt import (
     PromptGenerator,
-    PromptStyle,
-)
+    PromptStyle)
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
@@ -21,8 +20,7 @@ from haive.agents.rag.models import (
     FusionResult,
     HyDEResult,
     MemoryAnalysis,
-    SpeculativeResult,
-)
+    SpeculativeResult)
 from haive.agents.simple.agent import SimpleAgent
 
 
@@ -51,8 +49,7 @@ class StructuredOutputEnhancer:
         self,
         output_model: type[BaseModel],
         prompt_style: PromptStyle = PromptStyle.DESCRIPTIVE,
-        structured_output_version: str = "v1",
-    ):
+        structured_output_version: str = "v1"):
         """Initialize the enhancer with a Pydantic output model.
 
         Args:
@@ -105,8 +102,7 @@ Retrieved Documents: {retrieved_documents}
 
 {additional_context}
 
-Please provide your structured analysis.""",
-                )
+Please provide your structured analysis.""")
             )
         else:
             messages.append(("human", "{query}"))
@@ -119,8 +115,7 @@ Please provide your structured analysis.""",
         context_prompt: str,
         agent_name: str | None = None,
         include_state_context: bool = True,
-        **engine_kwargs,
-    ) -> SimpleAgent:
+        **engine_kwargs) -> SimpleAgent:
         """Create a SimpleAgent for structured output enhancement.
 
         Args:
@@ -146,18 +141,15 @@ Please provide your structured analysis.""",
                 structured_output_model=self.output_model,
                 structured_output_version=self.structured_output_version,
                 output_key=output_key,
-                **engine_kwargs,
-            ),
-            name=agent_name or f"{self.output_model.__name__} Enhancer",
-        )
+                **engine_kwargs),
+            name=agent_name or f"{self.output_model.__name__} Enhancer")
 
     def enhance_agent_sequence(
         self,
         agents: list[Any],
         llm_config: LLMConfig,
         context_prompt: str | None = None,
-        **kwargs,
-    ) -> list[Any]:
+        **kwargs) -> list[Any]:
         """Enhance a sequence of agents by appending structured output processing.
 
         Args:
@@ -218,23 +210,20 @@ def demonstrate_enhancement_patterns() -> dict[str, Any]:
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}",
-    )
+        api_key="${AZURE_OPENAI_API_KEY}")
 
     # Pattern 1: Enhance any existing agent with HyDE analysis
     hyde_enhancer = create_hyde_enhancer()
     hyde_analysis_agent = hyde_enhancer.create_enhancement_agent(
         llm_config=llm_config,
-        context_prompt="Generate a hypothetical document that would contain the ideal answer to this query",
-    )
+        context_prompt="Generate a hypothetical document that would contain the ideal answer to this query")
 
     # Pattern 2: Add fusion analysis to a pipeline
     fusion_enhancer = create_fusion_enhancer()
     enhanced_agents = fusion_enhancer.enhance_agent_sequence(
         agents=[],  # Your existing agents here
         llm_config=llm_config,
-        context_prompt="Analyze the multi-query retrieval results and provide fusion ranking analysis",
-    )
+        context_prompt="Analyze the multi-query retrieval results and provide fusion ranking analysis")
 
     # Pattern 3: Create custom enhancement for any model
     class CustomAnalysis(BaseModel):
@@ -250,8 +239,7 @@ def demonstrate_enhancement_patterns() -> dict[str, Any]:
 
     custom_agent = custom_enhancer.create_enhancement_agent(
         llm_config=llm_config,
-        context_prompt="Provide custom insights and recommendations based on the analysis",
-    )
+        context_prompt="Provide custom insights and recommendations based on the analysis")
 
     return {
         "hyde_analysis": hyde_analysis_agent,
@@ -304,5 +292,4 @@ class RAGEnhancementFactory:
         return enhancer.enhance_agent_sequence(
             agents=base_agents,
             llm_config=llm_config,
-            context_prompt=context_prompts[enhancement_type],
-        )
+            context_prompt=context_prompts[enhancement_type])

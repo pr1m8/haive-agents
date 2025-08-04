@@ -140,8 +140,7 @@ class SimpleRAGState(StateSchema):
         search_time: float | None = None,
         total_documents: int | None = None,
         similarity_scores: list[float] | None = None,
-        **kwargs,
-    ) -> None:
+        **kwargs) -> None:
         """Add retrieval debug information."""
         if self.retrieval_debug is None:
             self.retrieval_debug = RetrievalDebugInfo()
@@ -166,8 +165,7 @@ class SimpleRAGState(StateSchema):
         prompt_tokens: int | None = None,
         completion_tokens: int | None = None,
         generation_time: float | None = None,
-        **kwargs,
-    ) -> None:
+        **kwargs) -> None:
         """Add generation debug information."""
         if self.generation_debug is None:
             self.generation_debug = GenerationDebugInfo()

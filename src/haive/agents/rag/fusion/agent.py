@@ -72,8 +72,7 @@ Create multiple query variations that will retrieve complementary information:
 3. **Context Variations**: Questions that provide different contextual angles
 
 The goal is to maximize retrieval coverage while maintaining relevance.
-Each variation should potentially retrieve different but relevant documents.""",
-        ),
+Each variation should potentially retrieve different but relevant documents."""),
         (
             "human",
             """Generate diverse query variations for RAG Fusion:
@@ -86,8 +85,7 @@ Create variations that will:
 - Approach the question from different angles
 - Maximize retrieval diversity
 
-Provide structured variations and fusion strategy.""",
-        ),
+Provide structured variations and fusion strategy."""),
     ]
 )
 
@@ -106,8 +104,7 @@ Key principles:
 - Higher-ranked documents should be weighted more heavily
 - Look for consensus across different query results
 - Identify and resolve any contradictions
-- Provide comprehensive coverage of the topic""",
-        ),
+- Provide comprehensive coverage of the topic"""),
         (
             "human",
             """Answer the query using the fusion-ranked documents:
@@ -123,8 +120,7 @@ Fusion Metadata:
 - Diversity Score: {diversity_score}
 - Confidence: {fusion_confidence}
 
-Provide a comprehensive answer that leverages the multi-perspective retrieval.""",
-        ),
+Provide a comprehensive answer that leverages the multi-perspective retrieval."""),
     ]
 )
 
@@ -183,8 +179,7 @@ class ReciprocalRankFusionAgent(Agent):
                 fusion_scores=dict(fusion_scores),
                 confidence=self._calculate_confidence(retrieval_results),
                 diversity_score=self._calculate_diversity(retrieval_results),
-                consensus_level=self._calculate_consensus(retrieval_results),
-            )
+                consensus_level=self._calculate_consensus(retrieval_results))
 
             # Extract fused documents in order
             doc_lookup = self._build_doc_lookup(retrieval_results)
@@ -307,8 +302,7 @@ class RAGFusionAgent(SequentialAgent):
         embedding_model: str | None = None,
         num_variations: int = 3,
         k_parameter: float = 60.0,
-        **kwargs,
-    ):
+        **kwargs):
         """Create RAG Fusion agent from documents.
 
         Args:
@@ -326,8 +320,7 @@ class RAGFusionAgent(SequentialAgent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         # Step 1: Query expansion
         query_expander = SimpleAgent(
@@ -335,17 +328,14 @@ class RAGFusionAgent(SequentialAgent):
                 llm_config=llm_config,
                 prompt_template=QUERY_EXPANSION_FUSION_PROMPT,
                 structured_output_model=QueryVariationsFusion,
-                output_key="query_variations_fusion",
-            ),
-            name="Fusion Query Expander",
-        )
+                output_key="query_variations_fusion"),
+            name="Fusion Query Expander")
 
         # Step 2: Multi-query retrieval
         multi_retriever = MultiQueryRetrievalAgent(
             documents=documents,
             embedding_model=embedding_model,
-            name="Multi-Query Retriever",
-        )
+            name="Multi-Query Retriever")
 
         # Step 3: RRF fusion
         rrf_agent = ReciprocalRankFusionAgent(
@@ -358,24 +348,20 @@ class RAGFusionAgent(SequentialAgent):
                 llm_config=llm_config,
                 prompt_template=FUSION_ANSWER_PROMPT,
                 structured_output_model=FusionResult,
-                output_key="fusion_answer_result",
-            ),
+                output_key="fusion_answer_result"),
             structured_output_model=FusionResult,
-            name="Fusion Answer Generator",
-        )
+            name="Fusion Answer Generator")
 
         return cls(
             agents=[query_expander, multi_retriever, rrf_agent, fusion_answerer],
             name=kwargs.get("name", "RAG Fusion Agent"),
-            **kwargs,
-        )
+            **kwargs)
 
 
 def create_multi_query_retrieval_callable(
     documents: list[Document],
     embedding_model: str | None = None,
-    max_docs_per_query: int = 10,
-):
+    max_docs_per_query: int = 10):
     """Create a callable function for multi-query retrieval that can be used as a graph node."""
 
     def multi_query_retrieve(state: dict[str, Any]) -> dict[str, Any]:
@@ -404,8 +390,7 @@ def create_multi_query_retrieval_callable(
         base_retriever = BaseRAGAgent.from_documents(
             documents=documents,
             embedding_model=embedding_model,
-            name="On-Demand Base Retriever",
-        )
+            name="On-Demand Base Retriever")
 
         # Retrieve for each query
         retrieval_results = {}
@@ -469,8 +454,7 @@ class MultiQueryRetrievalAgent(Agent):
         multi_query_retrieve = create_multi_query_retrieval_callable(
             documents=self.documents,
             embedding_model=self.embedding_model,
-            max_docs_per_query=self.max_docs_per_query,
-        )
+            max_docs_per_query=self.max_docs_per_query)
 
         # Add callable node to graph
         graph.add_node("multi_retrieve", multi_query_retrieve)
@@ -485,8 +469,7 @@ def create_rag_fusion_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     fusion_type: str = "standard",
-    **kwargs,
-) -> RAGFusionAgent:
+    **kwargs) -> RAGFusionAgent:
     """Create a RAG Fusion agent.
 
     Args:

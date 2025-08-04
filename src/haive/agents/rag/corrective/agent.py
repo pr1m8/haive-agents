@@ -22,8 +22,7 @@ DOCUMENT_GRADER_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are a grader assessing relevance of retrieved documents to a user question.",
-        ),
+            "You are a grader assessing relevance of retrieved documents to a user question."),
         (
             "human",
             """Grade the relevance of this document to the question.
@@ -31,8 +30,7 @@ DOCUMENT_GRADER_PROMPT = ChatPromptTemplate.from_messages(
 Question: {query}
 Document: {document}
 
-Give a binary score 'yes' or 'no' to indicate whether the document is relevant to the question.""",
-        ),
+Give a binary score 'yes' or 'no' to indicate whether the document is relevant to the question."""),
     ]
 )
 
@@ -41,15 +39,13 @@ ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are an expert assistant. Answer based only on the provided context.",
-        ),
+            "You are an expert assistant. Answer based only on the provided context."),
         (
             "human",
             """Answer the question based on the context.
 
 Question: {query}
-Context: {retrieved_documents}""",
-        ),
+Context: {retrieved_documents}"""),
     ]
 )
 
@@ -63,8 +59,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         relevance_threshold: float = 0.7,
-        **kwargs,
-    ):
+        **kwargs):
         """Create Corrective RAG from documents.
 
         Args:
@@ -80,8 +75,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         # Create agents
         retrieval_agent = BaseRAGAgent.from_documents(
@@ -92,15 +86,12 @@ class CorrectiveRAGAgent(ConditionalAgent):
             engine=AugLLMConfig(
                 llm_config=llm_config,
                 prompt_template=DOCUMENT_GRADER_PROMPT,
-                structured_output_model=DocumentGrade,
-            ),
-            name="Document Grader",
-        )
+                structured_output_model=DocumentGrade),
+            name="Document Grader")
 
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(llm_config=llm_config, prompt_template=ANSWER_PROMPT),
-            name="Answer Generator",
-        )
+            name="Answer Generator")
 
         # Define conditional routing based on grading
         def grade_documents(state: dict[str, Any]):
@@ -128,5 +119,4 @@ class CorrectiveRAGAgent(ConditionalAgent):
             agents=[retrieval_agent, grader_agent, answer_agent],
             branches=branches,
             name=kwargs.get("name", "Corrective RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)

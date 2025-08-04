@@ -55,8 +55,7 @@ class LLMRAGAgent(BaseRAGAgent):
             components=components,
             state_schema=self.config.state_schema,
             input_schema=self.config.input_schema,
-            output_schema=self.config.output_schema,
-        )
+            output_schema=self.config.output_schema)
 
         # Use the base RAG agent as a subgraph
         # This leverages the parent's create_runnable method to create the
@@ -121,8 +120,7 @@ class LLMRAGAgent(BaseRAGAgent):
                 logger.exception(f"Error in relevance checker: {e}")
                 return Command(
                     update={"is_relevant": False, "error": str(e)},
-                    goto="generate_answer",
-                )
+                    goto="generate_answer")
 
         # Define a function to generate an answer
         def generate_answer(state: dict[str, Any]):
@@ -138,8 +136,7 @@ class LLMRAGAgent(BaseRAGAgent):
                         update={
                             "answer": "The retrieved documents are not relevant to the question."
                         },
-                        goto=END,
-                    )
+                        goto=END)
 
                 # Format documents for the LLM
                 context = format_documents(state.retrieved_documents)
@@ -162,8 +159,7 @@ class LLMRAGAgent(BaseRAGAgent):
                         "answer": f"Error generating answer: {e!s}",
                         "error": str(e),
                     },
-                    goto=END,
-                )
+                    goto=END)
 
         # Add nodes to the graph
         graph_builder.add_node("retrieve_documents", retrieve_documents)
@@ -175,8 +171,7 @@ class LLMRAGAgent(BaseRAGAgent):
             def default_relevance(state: dict[str, Any]):
                 return Command(
                     update={"is_relevant": bool(state.retrieved_documents)},
-                    goto="generate_answer",
-                )
+                    goto="generate_answer")
 
             graph_builder.add_node("check_relevance", default_relevance)
 

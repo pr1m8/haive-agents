@@ -40,8 +40,7 @@ from haive.agents.rag.db_rag.graph_db.agent import GraphDBRAGAgent
 from haive.agents.rag.db_rag.graph_db.config import (
     ExampleConfig,
     GraphDBConfig,
-    GraphDBRAGConfig,
-)
+    GraphDBRAGConfig)
 
 # Configure logging for better debugging
 logging.basicConfig(
@@ -134,8 +133,7 @@ def streaming_example():
         # Stream the execution
         for chunk in agent.stream(
             {"question": question},
-            config={"configurable": {"thread_id": "example-stream"}},
-        ):
+            config={"configurable": {"thread_id": "example-stream"}}):
             # Process each step
             for node_name, node_output in chunk.items():
                 # Handle different node outputs
@@ -228,8 +226,7 @@ def custom_domain_example():
             graph_db_config=GraphDBConfig(
                 # Assuming healthcare database
                 graph_db_database="healthcare"
-            ),
-        )
+            ))
 
         # Create agent
         agent = GraphDBRAGAgent(config)

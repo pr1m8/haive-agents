@@ -6,8 +6,7 @@ from hyde.agent_v2 import (
     HyDERetrieverAgent,
     build_graph,
     from_documents,
-    transform_to_query,
-)
+    transform_to_query)
 from hyde.enhanced_agent import (
     EnhancedHyDERAGAgent,
     EnhancedHyDERetriever,
@@ -15,8 +14,7 @@ from hyde.enhanced_agent import (
     build_graph,
     create_enhanced_hyde_agent,
     demonstrate_enhancement_vs_traditional,
-    from_documents,
-)
+    from_documents)
 from hyde.enhanced_agent_v2 import (
     AdaptiveHyDEGenerator,
     DomainAnalysisAgent,
@@ -38,8 +36,7 @@ from hyde.enhanced_agent_v2 import (
     multi_domain_retrieval,
     run,
     setup_hyde_agent,
-    smart_retrieval,
-)
+    smart_retrieval)
 
 __all__ = [
     "AdaptiveHyDEGenerator",

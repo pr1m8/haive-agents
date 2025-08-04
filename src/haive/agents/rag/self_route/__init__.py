@@ -16,8 +16,7 @@ from self_route.agent import (
     create_self_route_rag_agent,
     from_documents,
     get_self_route_rag_io_schema,
-    make_routing_decision,
-)
+    make_routing_decision)
 
 __all__ = [
     "IterativePlan",

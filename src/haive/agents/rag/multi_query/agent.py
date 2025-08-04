@@ -18,8 +18,7 @@ from haive.agents.base.agent import Agent
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import (
-    RAG_ANSWER_STANDARD,
-)
+    RAG_ANSWER_STANDARD)
 from haive.agents.simple.agent import SimpleAgent
 
 
@@ -36,8 +35,7 @@ QUERY_EXPANSION_PROMPT = ChatPromptTemplate.from_messages(
         (
             "system",
             """You are an expert at query expansion for improved information retrieval.
-Generate diverse query variations that capture different aspects and phrasings.""",
-        ),
+Generate diverse query variations that capture different aspects and phrasings."""),
         (
             "human",
             """Generate 3 different versions of this query to improve search coverage:
@@ -49,8 +47,7 @@ Create:
 2. A broader version that captures related concepts
 3. An alternative phrasing that might match different documents
 
-Return the three query variations.""",
-        ),
+Return the three query variations."""),
     ]
 )
 
@@ -109,8 +106,7 @@ class MultiRetrievalAgent(Agent):
             ranked_docs = sorted(
                 doc_scores.values(),
                 key=lambda x: x["score"] + sum(x["positions"]),
-                reverse=True,
-            )
+                reverse=True)
 
             # Extract unique documents
             unique_docs = [item["doc"] for item in ranked_docs]
@@ -144,8 +140,7 @@ class MultiQueryRAGAgent(SequentialAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         embedding_model: str | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Create Multi-Query RAG from documents.
 
         Args:
@@ -163,10 +158,8 @@ class MultiQueryRAGAgent(SequentialAgent):
                 llm_config=llm_config,
                 prompt_template=QUERY_EXPANSION_PROMPT,
                 structured_output_model=QueryVariations,
-                output_key="query_variations",
-            ),
-            name="Query Expander",
-        )
+                output_key="query_variations"),
+            name="Query Expander")
 
         # Step 2: Create base retriever
         base_retriever = BaseRAGAgent.from_documents(
@@ -183,11 +176,9 @@ class MultiQueryRAGAgent(SequentialAgent):
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
             ),
-            name="Answer Generator",
-        )
+            name="Answer Generator")
 
         return cls(
             agents=[query_expander, multi_retriever, answer_agent],
             name=kwargs.get("name", "Multi-Query RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)

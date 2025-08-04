@@ -149,8 +149,7 @@ Your goal is to decompose complex questions into a series of simpler questions t
 - **Causal**: Cause-and-effect relationships
 - **Hypothetical**: What-if scenarios
 
-Break down the query systematically and logically.""",
-        ),
+Break down the query systematically and logically."""),
         (
             "human",
             """Decompose this complex query into manageable sub-queries:
@@ -166,8 +165,7 @@ Break down the query systematically and logically.""",
 3. Determine execution order and dependencies
 4. Suggest how to synthesize the results
 
-Provide a structured decomposition.""",
-        ),
+Provide a structured decomposition."""),
     ]
 )
 
@@ -184,8 +182,7 @@ Create a hierarchical breakdown where:
 - **Level 3**: Detail questions (specific facts and details)
 
 Each level can be processed in parallel, but levels must be processed sequentially.
-Higher levels provide context for lower levels.""",
-        ),
+Higher levels provide context for lower levels."""),
         (
             "human",
             """Create a hierarchical decomposition:
@@ -193,8 +190,7 @@ Higher levels provide context for lower levels.""",
 **Query:** {query}
 **Context:** {retrieved_documents}
 
-Break this into a clear hierarchy of questions that build upon each other.""",
-        ),
+Break this into a clear hierarchy of questions that build upon each other."""),
     ]
 )
 
@@ -211,8 +207,7 @@ Analyze the available context and create a decomposition strategy that:
 3. Prioritizes queries based on context availability
 4. Adapts strategy based on context quality
 
-Consider both what can be answered with current context and what requires additional retrieval.""",
-        ),
+Consider both what can be answered with current context and what requires additional retrieval."""),
         (
             "human",
             """Create a context-aware decomposition:
@@ -226,8 +221,7 @@ Consider both what can be answered with current context and what requires additi
 - Messages: {messages}
 - Previous results: {previous_results}
 
-Analyze context sufficiency and create an appropriate decomposition strategy.""",
-        ),
+Analyze context sufficiency and create an appropriate decomposition strategy."""),
     ]
 )
 
@@ -244,8 +238,7 @@ Your decomposition strategy should adapt based on:
 - Previous decomposition results
 - Time and resource constraints
 
-Provide multiple decomposition approaches and select the best one based on the situation.""",
-        ),
+Provide multiple decomposition approaches and select the best one based on the situation."""),
         (
             "human",
             """Create an adaptive decomposition strategy:
@@ -255,8 +248,7 @@ Provide multiple decomposition approaches and select the best one based on the s
 **Constraints:** {constraints}
 **Previous attempts:** {previous_decompositions}
 
-Provide the optimal decomposition approach for this situation.""",
-        ),
+Provide the optimal decomposition approach for this situation."""),
     ]
 )
 
@@ -279,8 +271,7 @@ class QueryDecomposerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.max_sub_queries = max_sub_queries
         super().__init__(**kwargs)
 
@@ -293,8 +284,7 @@ class QueryDecomposerAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=BASIC_DECOMPOSITION_PROMPT,
             structured_output_model=QueryDecomposition,
-            output_key="query_decomposition",
-        )
+            output_key="query_decomposition")
 
         def decompose_query(state: dict[str, Any]) -> dict[str, Any]:
             """Decompose complex query into sub-queries."""
@@ -365,8 +355,7 @@ class HierarchicalQueryDecomposerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.max_levels = max_levels
         super().__init__(**kwargs)
 
@@ -379,8 +368,7 @@ class HierarchicalQueryDecomposerAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=HIERARCHICAL_DECOMPOSITION_PROMPT,
             structured_output_model=HierarchicalDecomposition,
-            output_key="hierarchical_decomposition",
-        )
+            output_key="hierarchical_decomposition")
 
         def hierarchical_decompose(state: dict[str, Any]) -> dict[str, Any]:
             """Create hierarchical decomposition."""
@@ -438,8 +426,7 @@ class ContextualQueryDecomposerAgent(Agent):
         self,
         llm_config: LLMConfig | None = None,
         context_threshold: float = 0.7,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize contextual query decomposer.
 
         Args:
@@ -450,8 +437,7 @@ class ContextualQueryDecomposerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.context_threshold = context_threshold
         super().__init__(**kwargs)
 
@@ -464,8 +450,7 @@ class ContextualQueryDecomposerAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=CONTEXTUAL_DECOMPOSITION_PROMPT,
             structured_output_model=ContextualDecomposition,
-            output_key="contextual_decomposition",
-        )
+            output_key="contextual_decomposition")
 
         def contextual_decompose(state: dict[str, Any]) -> dict[str, Any]:
             """Create context-aware decomposition."""
@@ -532,8 +517,7 @@ class AdaptiveQueryDecomposerAgent(Agent):
         self,
         llm_config: LLMConfig | None = None,
         enable_fallback: bool = True,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize adaptive query decomposer.
 
         Args:
@@ -544,8 +528,7 @@ class AdaptiveQueryDecomposerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.enable_fallback = enable_fallback
         super().__init__(**kwargs)
 
@@ -642,8 +625,7 @@ def create_query_decomposer(
         "basic", "hierarchical", "contextual", "adaptive"
     ] = "basic",
     llm_config: LLMConfig | None = None,
-    **kwargs,
-) -> Agent:
+    **kwargs) -> Agent:
     """Create a query decomposer agent.
 
     Args:

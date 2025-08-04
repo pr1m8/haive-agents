@@ -153,8 +153,7 @@ documents for RAG systems.
 - Assess completeness relative to the query scope
 - Flag any obviously false or misleading statements
 
-Provide thorough, evidence-based assessments that help RAG systems make informed decisions about document usage.""",
-        ),
+Provide thorough, evidence-based assessments that help RAG systems make informed decisions about document usage."""),
         (
             "human",
             """Evaluate these documents for the given query using the comprehensive framework.
@@ -171,8 +170,7 @@ Provide thorough, evidence-based assessments that help RAG systems make informed
 4. Make specific recommendations for document usage
 5. Identify any concerning patterns across the document set
 
-Return a structured assessment following the ComprehensiveGradingResponse format.""",
-        ),
+Return a structured assessment following the ComprehensiveGradingResponse format."""),
     ]
 )
 
@@ -204,8 +202,7 @@ lead to hallucinations in AI responses.
 5. Evaluate the plausibility of claims
 6. Consider the source and context reliability
 
-Be particularly vigilant about subtle misinformation that mixes truth with falsehood.""",
-        ),
+Be particularly vigilant about subtle misinformation that mixes truth with falsehood."""),
         (
             "human",
             """Analyze this document for potential hallucination risks related to the query.
@@ -220,8 +217,7 @@ Be particularly vigilant about subtle misinformation that mixes truth with false
 4. Evaluate the risk level for RAG system usage
 5. Provide specific recommendations for handling this content
 
-Return detailed analysis with specific examples and risk assessment.""",
-        ),
+Return detailed analysis with specific examples and risk assessment."""),
     ]
 )
 
@@ -265,8 +261,7 @@ reliability, comprehensiveness, and utility for knowledge systems.
 - Minimal obvious bias
 - Distinction between fact and opinion
 
-Provide detailed quality assessments that help determine document utility for knowledge systems.""",
-        ),
+Provide detailed quality assessments that help determine document utility for knowledge systems."""),
         (
             "human",
             """Assess the quality of this document for use in answering the given query.
@@ -283,7 +278,6 @@ Provide detailed quality assessments that help determine document utility for kn
 6. Provide overall quality rating with justification
 7. Suggest specific improvements or usage guidelines
 
-Return comprehensive quality assessment with specific examples and recommendations.""",
-        ),
+Return comprehensive quality assessment with specific examples and recommendations."""),
     ]
 )

@@ -12,8 +12,7 @@ from pydantic import Field
 from haive.agents.rag.multi_agent_rag.grading_components import (
     AnswerGrade,
     DocumentGrade,
-    HallucinationGrade,
-)
+    HallucinationGrade)
 
 
 class ConfigurableRAGState(RAGState):
@@ -65,8 +64,7 @@ class GradedRAGState(ConfigurableRAGState):
     # Grading configuration
     grading_criteria: list[str] = Field(
         default_factory=lambda: ["relevance", "accuracy", "completeness"],
-        description="Criteria to use for grading",
-    )
+        description="Criteria to use for grading")
     grading_weights: dict[str, float] = Field(
         default_factory=dict, description="Weights for different grading criteria"
     )
@@ -161,8 +159,7 @@ def create_configured_state(
     state_class: type[ConfigurableRAGState],
     agent_name: str,
     workflow_type: str,
-    **config_kwargs,
-) -> ConfigurableRAGState:
+    **config_kwargs) -> ConfigurableRAGState:
     """Create a state instance with configuration."""
     # Extract fields that belong to the state class
     state_fields = {}

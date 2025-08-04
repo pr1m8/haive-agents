@@ -9,8 +9,7 @@ from haive.core.graph.node.callable_node import (
     CallableNodeConfig,
     create_document_grader,
     requery_decision,
-    simple_document_grader,
-)
+    simple_document_grader)
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
 from langchain_core.documents import Document
@@ -86,8 +85,7 @@ class SimpleCorrectiveRAGAgent(SequentialAgent):
             name="Simple Corrective RAG Agent",
             agents=[retrieval_agent, grading_agent, answer_agent],
             state_schema=MultiAgentRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
 
 class SimpleHYDERAGAgent(SequentialAgent):
@@ -100,16 +98,14 @@ class SimpleHYDERAGAgent(SequentialAgent):
             [
                 (
                     "system",
-                    "You are an expert that generates detailed, accurate responses to questions. Write a comprehensive paragraph that would perfectly answer the given question.",
-                ),
+                    "You are an expert that generates detailed, accurate responses to questions. Write a comprehensive paragraph that would perfectly answer the given question."),
                 ("human", "Question: {query}\n\nDetailed Answer:"),
             ]
         )
 
         hypothesis_agent = SimpleAgent(
             name="HYDE Hypothesis Generator",
-            engine=AugLLMConfig(prompt_template=hyde_prompt),
-        )
+            engine=AugLLMConfig(prompt_template=hyde_prompt))
 
         # Create retrieval agent
 
@@ -124,8 +120,7 @@ class SimpleHYDERAGAgent(SequentialAgent):
             name="Simple HYDE RAG Agent",
             agents=[hypothesis_agent, retrieval_agent, answer_agent],
             state_schema=MultiAgentRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
 
 def create_simple_rag_workflow(

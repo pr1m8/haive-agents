@@ -23,8 +23,7 @@ RAG_ANSWER_STANDARD = ChatPromptTemplate.from_messages(
 - **Synthesis**: Connect information across documents to provide deeper insights
 - **Limitations**: Acknowledge what cannot be answered from the available information
 
-Generate responses that would be valuable to someone seeking comprehensive information on the topic.""",
-        ),
+Generate responses that would be valuable to someone seeking comprehensive information on the topic."""),
         (
             "human",
             """Based on the following retrieved documents, provide a comprehensive answer to the query.
@@ -40,8 +39,7 @@ Generate responses that would be valuable to someone seeking comprehensive infor
 3. Organize information logically and coherently
 4. Include relevant details that add value
 5. Acknowledge any limitations or gaps in the available information
-6. If the documents don't contain sufficient information to answer the query, clearly state this""",
-        ),
+6. If the documents don't contain sufficient information to answer the query, clearly state this"""),
     ]
 )
 
@@ -60,8 +58,7 @@ Follow the same core principles as standard answer generation, but with enhanced
 - Group related information logically
 - Provide a source summary at the end
 
-Generate well-cited, comprehensive responses.""",
-        ),
+Generate well-cited, comprehensive responses."""),
         (
             "human",
             """Generate a detailed answer with proper citations and source attribution.
@@ -75,7 +72,6 @@ Generate well-cited, comprehensive responses.""",
 2. **Detailed Answer** (with inline citations)
 3. **Key Findings** (bulleted list with citations)
 4. **Source Summary** (brief description of each document used)
-5. **Limitations** (what couldn't be answered from available sources)""",
-        ),
+5. **Limitations** (what couldn't be answered from available sources)"""),
     ]
 )

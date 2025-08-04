@@ -188,8 +188,7 @@ Analyze the query across multiple dimensions to determine the optimal routing st
 4. Determine preprocessing needs
 5. Recommend optimal routing strategy
 
-Provide detailed, structured analysis for routing optimization.""",
-        ),
+Provide detailed, structured analysis for routing optimization."""),
         (
             "human",
             """Analyze this query for optimal RAG routing:
@@ -207,8 +206,7 @@ Provide comprehensive analysis including:
 4. Primary routing strategy with confidence
 5. Fallback strategies and risk assessment
 
-Focus on actionable routing decisions with clear justification.""",
-        ),
+Focus on actionable routing decisions with clear justification."""),
     ]
 )
 
@@ -238,8 +236,7 @@ Design multi-iteration plans that progressively refine results:
 - Maximum iterations reached
 - Satisfactory coverage obtained
 
-Design efficient iterative plans that balance thoroughness with performance.""",
-        ),
+Design efficient iterative plans that balance thoroughness with performance."""),
         (
             "human",
             """Create an iterative plan for this query processing:
@@ -258,8 +255,7 @@ Design a plan with:
 4. Convergence criteria and quality thresholds
 5. State management across iterations
 
-Focus on efficient convergence with high-quality results.""",
-        ),
+Focus on efficient convergence with high-quality results."""),
     ]
 )
 
@@ -285,8 +281,7 @@ Make final routing decisions based on query analysis and iterative planning:
 - Ensure robustness and reliability
 - Provide clear execution guidance
 
-Make data-driven routing decisions with clear justification.""",
-        ),
+Make data-driven routing decisions with clear justification."""),
         (
             "human",
             """Make routing decision for this query:
@@ -305,8 +300,7 @@ Provide final routing decision with:
 4. Performance estimates and optimization
 5. Fallback strategy and trigger conditions
 
-Focus on actionable, optimized routing decisions.""",
-        ),
+Focus on actionable, optimized routing decisions."""),
     ]
 )
 
@@ -320,8 +314,7 @@ class QueryAnalyzerAgent(Agent):
         self,
         llm_config: LLMConfig | None = None,
         analysis_depth: str = "comprehensive",
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize query analyzer.
 
         Args:
@@ -332,8 +325,7 @@ class QueryAnalyzerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.analysis_depth = analysis_depth
         super().__init__(**kwargs)
 
@@ -346,8 +338,7 @@ class QueryAnalyzerAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=QUERY_ANALYSIS_PROMPT,
             structured_output_model=QueryAnalysis,
-            output_key="query_analysis",
-        )
+            output_key="query_analysis")
 
         def analyze_query(state: dict[str, Any]) -> dict[str, Any]:
             """Perform comprehensive query analysis."""
@@ -452,8 +443,7 @@ class IterativePlannerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.max_iterations = max_iterations
         super().__init__(**kwargs)
 
@@ -466,8 +456,7 @@ class IterativePlannerAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=ITERATIVE_PLANNING_PROMPT,
             structured_output_model=IterativePlan,
-            output_key="iterative_plan",
-        )
+            output_key="iterative_plan")
 
         def create_iterative_plan(state: dict[str, Any]) -> dict[str, Any]:
             """Create structured iterative plan."""
@@ -547,8 +536,7 @@ class RoutingDecisionAgent(Agent):
         self,
         llm_config: LLMConfig | None = None,
         enable_fallback: bool = True,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize routing decision agent.
 
         Args:
@@ -559,8 +547,7 @@ class RoutingDecisionAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.enable_fallback = enable_fallback
         super().__init__(**kwargs)
 
@@ -573,8 +560,7 @@ class RoutingDecisionAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=ROUTING_DECISION_PROMPT,
             structured_output_model=RoutingDecision,
-            output_key="routing_decision",
-        )
+            output_key="routing_decision")
 
         def make_routing_decision(state: dict[str, Any]) -> dict[str, Any]:
             """Make final routing decision."""
@@ -640,8 +626,7 @@ class SelfRouteRAGAgent(SequentialAgent):
         analysis_depth: str = "comprehensive",
         max_iterations: int = 3,
         enable_fallback: bool = True,
-        **kwargs,
-    ):
+        **kwargs):
         """Create Self-Route RAG agent from documents.
 
         Args:
@@ -659,8 +644,7 @@ class SelfRouteRAGAgent(SequentialAgent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         # Step 1: Query analysis with structured output
         query_analyzer = QueryAnalyzerAgent(
@@ -671,15 +655,13 @@ class SelfRouteRAGAgent(SequentialAgent):
         iterative_planner = IterativePlannerAgent(
             llm_config=llm_config,
             max_iterations=max_iterations,
-            name="Iterative Planner",
-        )
+            name="Iterative Planner")
 
         # Step 3: Final routing decision
         routing_decision = RoutingDecisionAgent(
             llm_config=llm_config,
             enable_fallback=enable_fallback,
-            name="Routing Decision Engine",
-        )
+            name="Routing Decision Engine")
 
         # Step 4: Strategy executor (would execute the chosen strategy)
         strategy_executor = SimpleAgent(
@@ -689,17 +671,13 @@ class SelfRouteRAGAgent(SequentialAgent):
                     [
                         (
                             "system",
-                            "You are a strategy execution coordinator. Execute the routing decision.",
-                        ),
+                            "You are a strategy execution coordinator. Execute the routing decision."),
                         (
                             "human",
-                            "Execute routing strategy: {selected_strategy}\nExecution plan: {execution_plan}\nQuery: {query}",
-                        ),
+                            "Execute routing strategy: {selected_strategy}\nExecution plan: {execution_plan}\nQuery: {query}"),
                     ]
-                ),
-            ),
-            name="Strategy Executor",
-        )
+                )),
+            name="Strategy Executor")
 
         return cls(
             agents=[
@@ -709,8 +687,7 @@ class SelfRouteRAGAgent(SequentialAgent):
                 strategy_executor,
             ],
             name=kwargs.get("name", "Self-Route RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)
 
 
 # Factory function
@@ -718,8 +695,7 @@ def create_self_route_rag_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     routing_mode: str = "adaptive",
-    **kwargs,
-) -> SelfRouteRAGAgent:
+    **kwargs) -> SelfRouteRAGAgent:
     """Create a Self-Route RAG agent.
 
     Args:

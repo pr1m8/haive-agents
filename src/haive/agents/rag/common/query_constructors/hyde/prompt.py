@@ -31,8 +31,7 @@ RAG_HYDE_GENERATION = ChatPromptTemplate.from_messages(
 - Include specific facts, figures, and examples where appropriate
 
 **Multiple Perspectives:**
-Generate documents from different angles or viewpoints to capture various aspects of the query.""",
-        ),
+Generate documents from different angles or viewpoints to capture various aspects of the query."""),
         (
             "human",
             """Generate hypothetical documents that would ideally answer the following query. These documents will be used to improve retrieval through semantic similarity matching.
@@ -47,7 +46,6 @@ Generate documents from different angles or viewpoints to capture various aspect
 5. Structure them naturally
 6. Explain why each document type would be valuable
 
-Focus on creating documents that would contain the exact information needed to answer the query comprehensively.""",
-        ),
+Focus on creating documents that would contain the exact information needed to answer the query comprehensively."""),
     ]
 )

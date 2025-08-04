@@ -44,8 +44,7 @@ from haive.agents.rag.db_rag.sql_rag.models import (
     GuardrailsOutput,
     SQLAnalysisOutput,
     SQLQueryOutput,
-    SQLValidationOutput,
-)
+    SQLValidationOutput)
 from haive.agents.rag.db_rag.sql_rag.prompts import (
     ANALYZE_QUERY_PROMPT,
     ANSWER_GRADING_PROMPT,
@@ -53,15 +52,13 @@ from haive.agents.rag.db_rag.sql_rag.prompts import (
     GENERATE_SQL_PROMPT,
     GUARDRAILS_PROMPT,
     HALLUCINATION_CHECK_PROMPT,
-    VALIDATE_SQL_PROMPT,
-)
+    VALIDATE_SQL_PROMPT)
 
 # Engine for analyzing queries
 analyze_query_aug_llm_config = AugLLMConfig(
     name="analyze_query_config",
     prompt_template=ANALYZE_QUERY_PROMPT,
-    structured_output_model=SQLAnalysisOutput,
-)
+    structured_output_model=SQLAnalysisOutput)
 """Engine for analyzing natural language queries.
 
 This engine breaks down user questions to identify:
@@ -89,8 +86,7 @@ Example:
 generate_sql_aug_llm_config = AugLLMConfig(
     name="generate_sql_config",
     prompt_template=GENERATE_SQL_PROMPT,
-    structured_output_model=SQLQueryOutput,
-)
+    structured_output_model=SQLQueryOutput)
 """Engine for generating SQL queries from natural language.
 
 This engine converts analyzed queries into syntactically correct SQL,
@@ -115,8 +111,7 @@ Example:
 validate_sql_aug_llm_config = AugLLMConfig(
     name="validate_sql_config",
     prompt_template=VALIDATE_SQL_PROMPT,
-    structured_output_model=SQLValidationOutput,
-)
+    structured_output_model=SQLValidationOutput)
 """Engine for validating generated SQL queries.
 
 This engine checks SQL queries for:
@@ -144,8 +139,7 @@ Example:
 guardrails_aug_llm_config = AugLLMConfig(
     name="guardrails_config",
     prompt_template=GUARDRAILS_PROMPT,
-    structured_output_model=GuardrailsOutput,
-)
+    structured_output_model=GuardrailsOutput)
 """Engine for domain relevance checking (guardrails).
 
 This engine determines if a user's question is about querying
@@ -171,8 +165,7 @@ Example:
 generate_final_answer_aug_llm_config = AugLLMConfig(
     name="generate_final_answer_config",
     prompt_template=GENERATE_FINAL_ANSWER_PROMPT,
-    output_parser=StrOutputParser(),
-)
+    output_parser=StrOutputParser())
 """Engine for generating natural language answers.
 
 This engine converts SQL query results into clear, comprehensive
@@ -196,8 +189,7 @@ Example:
 hallucination_check_aug_llm_config = AugLLMConfig(
     name="hallucination_check_config",
     prompt_template=HALLUCINATION_CHECK_PROMPT,
-    structured_output_model=GradeHallucinations,
-)
+    structured_output_model=GradeHallucinations)
 """Engine for detecting hallucinations in answers.
 
 This engine verifies that generated answers only contain
@@ -221,8 +213,7 @@ Example:
 answer_grading_aug_llm_config = AugLLMConfig(
     name="answer_grading_config",
     prompt_template=ANSWER_GRADING_PROMPT,
-    structured_output_model=GradeAnswer,
-)
+    structured_output_model=GradeAnswer)
 """Engine for grading answer relevance.
 
 This engine evaluates whether the generated answer actually

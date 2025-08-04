@@ -10,8 +10,7 @@ from haive.core.graph.node.callable_node import (
     CallableNodeConfig,
     create_document_grader,
     requery_decision,
-    simple_document_grader,
-)
+    simple_document_grader)
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
 from langchain_core.documents import Document
@@ -84,8 +83,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
         requery_agent: RequeryDecisionAgent | None = None,
         answer_agent: SimpleAgent | None = None,
         documents: list[Document] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         # Create default agents if not provided
         if not retrieval_agent:
 
@@ -109,8 +107,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
             name="Corrective RAG Agent",
             agents=agents,
             state_schema=MultiAgentRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
         self.retrieval_agent = retrieval_agent
         self.grading_agent = grading_agent
@@ -157,8 +154,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
                 source_agent=agent,
                 condition=crag_router,
                 destinations={self._get_agent_node_name(a): a for a in self.agents},
-                default=END,
-            )
+                default=END)
 
 
 class HYDERAGAgent(SequentialAgent):
@@ -170,8 +166,7 @@ class HYDERAGAgent(SequentialAgent):
         retrieval_agent: SimpleRAGAgent | None = None,
         answer_agent: SimpleAgent | None = None,
         documents: list[Document] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         # Create hypothesis generator
         if not hypothesis_agent:
 
@@ -179,16 +174,14 @@ class HYDERAGAgent(SequentialAgent):
                 [
                     (
                         "system",
-                        "You are an expert that generates detailed, accurate responses to questions. Write a comprehensive paragraph that would perfectly answer the given question.",
-                    ),
+                        "You are an expert that generates detailed, accurate responses to questions. Write a comprehensive paragraph that would perfectly answer the given question."),
                     ("human", "Question: {query}\n\nDetailed Answer:"),
                 ]
             )
 
             hypothesis_agent = SimpleAgent(
                 name="HYDE Hypothesis Generator",
-                engine=AugLLMConfig(prompt_template=hyde_prompt),
-            )
+                engine=AugLLMConfig(prompt_template=hyde_prompt))
 
         # Create retrieval agent that will use hypothesis for similarity search
         if not retrieval_agent:
@@ -204,8 +197,7 @@ class HYDERAGAgent(SequentialAgent):
             name="HYDE RAG Agent",
             agents=[hypothesis_agent, retrieval_agent, answer_agent],
             state_schema=MultiAgentRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
 
 class SelfRAGAgent(ConditionalAgent):
@@ -218,8 +210,7 @@ class SelfRAGAgent(ConditionalAgent):
         relevance_agent: SimpleAgent | None = None,
         generation_agent: SimpleAgent | None = None,
         documents: list[Document] | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         # Create retrieval decision agent
         if not retrieval_decision_agent:
 
@@ -230,16 +221,14 @@ class SelfRAGAgent(ConditionalAgent):
                         """You decide if external knowledge retrieval is needed.
                 Respond with exactly one of:
                 - [Retrieval] if the question requires external knowledge
-                - [No Retrieval] if you can answer with your internal knowledge""",
-                    ),
+                - [No Retrieval] if you can answer with your internal knowledge"""),
                     ("human", "Question: {query}"),
                 ]
             )
 
             retrieval_decision_agent = SimpleAgent(
                 name="Self-RAG Retrieval Decision",
-                engine=AugLLMConfig(prompt_template=retrieval_prompt),
-            )
+                engine=AugLLMConfig(prompt_template=retrieval_prompt))
 
         # Create other agents with default configurations
         if not retrieval_agent:
@@ -269,8 +258,7 @@ class SelfRAGAgent(ConditionalAgent):
             name="Self-RAG Agent",
             agents=agents,
             state_schema=MultiAgentRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
         self.retrieval_decision_agent = retrieval_decision_agent
         self.retrieval_agent = retrieval_agent
@@ -309,8 +297,7 @@ class SelfRAGAgent(ConditionalAgent):
                 source_agent=agent,
                 condition=self_rag_router,
                 destinations={self._get_agent_node_name(a): a for a in self.agents},
-                default=END,
-            )
+                default=END)
 
 
 def create_enhanced_rag_workflow(

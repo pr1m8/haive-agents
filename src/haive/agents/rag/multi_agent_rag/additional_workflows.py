@@ -57,8 +57,7 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
 
             Provide a concise memory context summary.
             """,
-            output_schema={"memory_context": "str", "relevant_history": "List[str]"},
-        )
+            output_schema={"memory_context": "str", "relevant_history": "List[str]"})
 
         # Standard retrieval agent
         retrieval_agent = SimpleAgent(
@@ -68,8 +67,7 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
             and the memory context provided. Use the memory context to enhance your
             retrieval strategy and find more relevant documents.
             """,
-            output_schema={"documents": "List[str]", "retrieval_strategy": "str"},
-        )
+            output_schema={"documents": "List[str]", "retrieval_strategy": "str"})
 
         # Answer generation with memory
         answer_agent = SimpleAgent(
@@ -83,8 +81,7 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
                 "answer": "str",
                 "used_memory": "bool",
                 "confidence": "float",
-            },
-        )
+            })
 
         agents = [memory_agent, retrieval_agent, answer_agent]
 
@@ -92,8 +89,7 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=MemoryRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -123,8 +119,7 @@ class SelfRAGAgent(MultiAgent):
                 "reflection_token": "str",
                 "confidence": "float",
                 "reasoning": "str",
-            },
-        )
+            })
 
         # Conditional retrieval agent
         retrieval_agent = SimpleAgent(
@@ -133,8 +128,7 @@ class SelfRAGAgent(MultiAgent):
             Only retrieve documents if needs_retrieval is True.
             Use the reflection reasoning to guide retrieval strategy.
             """,
-            output_schema={"documents": "List[str]", "retrieval_quality": "str"},
-        )
+            output_schema={"documents": "List[str]", "retrieval_quality": "str"})
 
         # Self-reflective answer generator
         answer_agent = SimpleAgent(
@@ -153,8 +147,7 @@ class SelfRAGAgent(MultiAgent):
                 "reflection_tokens": "List[str]",
                 "answer_confidence": "float",
                 "needs_revision": "bool",
-            },
-        )
+            })
 
         agents = [retrieval_checker, retrieval_agent, answer_agent]
 
@@ -162,8 +155,7 @@ class SelfRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.CONDITIONAL,
             state_schema=SelfRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -190,8 +182,7 @@ class MultiQueryRAGAgent(MultiAgent):
             output_schema={
                 "generated_queries": "List[str]",
                 "expansion_strategy": "str",
-            },
-        )
+            })
 
         # Multi-retrieval agent
         multi_retrieval_agent = SimpleAgent(
@@ -204,8 +195,7 @@ class MultiQueryRAGAgent(MultiAgent):
                 "query_results": "Dict[str, List[str]]",
                 "unique_documents": "List[str]",
                 "overlap_analysis": "str",
-            },
-        )
+            })
 
         # Synthesis agent
         synthesis_agent = SimpleAgent(
@@ -219,8 +209,7 @@ class MultiQueryRAGAgent(MultiAgent):
                 "answer": "str",
                 "source_queries": "List[str]",
                 "synthesis_confidence": "float",
-            },
-        )
+            })
 
         agents = [query_expander, multi_retrieval_agent, synthesis_agent]
 
@@ -228,8 +217,7 @@ class MultiQueryRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=MultiQueryRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -260,8 +248,7 @@ class RAGFusionAgent(MultiAgent):
                 "question_results": "List[str]",
                 "context_results": "List[str]",
                 "strategy_scores": "Dict[str, float]",
-            },
-        )
+            })
 
         # Fusion ranking agent
         fusion_ranker = SimpleAgent(
@@ -276,8 +263,7 @@ class RAGFusionAgent(MultiAgent):
                 "fused_documents": "List[str]",
                 "fusion_scores": "Dict[str, float]",
                 "ranking_explanation": "str",
-            },
-        )
+            })
 
         # Fusion answer agent
         fusion_answer_agent = SimpleAgent(
@@ -291,8 +277,7 @@ class RAGFusionAgent(MultiAgent):
                 "answer": "str",
                 "strategy_contributions": "Dict[str, str]",
                 "fusion_confidence": "float",
-            },
-        )
+            })
 
         agents = [fusion_retrieval_agent, fusion_ranker, fusion_answer_agent]
 
@@ -300,8 +285,7 @@ class RAGFusionAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=MultiQueryRAGState,  # Reuse for similar structure
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -331,8 +315,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
                 "step_back_question": "str",
                 "conceptual_focus": "str",
                 "reasoning": "str",
-            },
-        )
+            })
 
         # Dual retrieval agent
         dual_retrieval_agent = SimpleAgent(
@@ -348,8 +331,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
                 "original_documents": "List[str]",
                 "stepback_documents": "List[str]",
                 "context_coverage": "str",
-            },
-        )
+            })
 
         # Contextual answer agent
         contextual_answer_agent = SimpleAgent(
@@ -364,8 +346,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
                 "conceptual_foundation": "str",
                 "specific_details": "str",
                 "integration_quality": "float",
-            },
-        )
+            })
 
         agents = [step_back_agent, dual_retrieval_agent, contextual_answer_agent]
 
@@ -373,8 +354,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=RAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -402,8 +382,7 @@ class QueryDecompositionRAGAgent(MultiAgent):
                 "sub_questions": "List[str]",
                 "decomposition_strategy": "str",
                 "question_dependencies": "List[str]",
-            },
-        )
+            })
 
         # Sub-question retrieval agent
         subq_retrieval_agent = SimpleAgent(
@@ -416,8 +395,7 @@ class QueryDecompositionRAGAgent(MultiAgent):
                 "subquestion_results": "Dict[str, List[str]]",
                 "retrieval_coverage": "Dict[str, float]",
                 "cross_references": "List[str]",
-            },
-        )
+            })
 
         # Answer composition agent
         composition_agent = SimpleAgent(
@@ -432,8 +410,7 @@ class QueryDecompositionRAGAgent(MultiAgent):
                 "composed_answer": "str",
                 "integration_notes": "str",
                 "completeness_score": "float",
-            },
-        )
+            })
 
         agents = [decomposition_agent, subq_retrieval_agent, composition_agent]
 
@@ -441,8 +418,7 @@ class QueryDecompositionRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=MultiQueryRAGState,  # Reuse for similar structure
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""

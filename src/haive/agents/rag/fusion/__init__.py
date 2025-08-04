@@ -12,8 +12,7 @@ from fusion.agent import (
     from_documents,
     get_rag_fusion_io_schema,
     multi_query_retrieve,
-    perform_rrf_fusion,
-)
+    perform_rrf_fusion)
 
 __all__ = [
     "FusionResult",

@@ -6,8 +6,7 @@ from document_grading.agent import (
     SingleDocumentGrade,
     build_graph,
     from_documents,
-    grade_single_document,
-)
+    grade_single_document)
 
 __all__ = [
     "DocumentGradingAgent",

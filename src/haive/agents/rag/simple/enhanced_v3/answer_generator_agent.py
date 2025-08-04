@@ -24,8 +24,7 @@ RAG_ANSWER_GENERATION = ChatPromptTemplate.from_messages(
             "system",
             """You are a helpful AI assistant that answers questions based on retrieved documents.
 Your responses should be accurate, well-sourced, and acknowledge any limitations
-in the available information. Always cite specific sources when possible.""",
-        ),
+in the available information. Always cite specific sources when possible."""),
         (
             "human",
             """Based on the following retrieved documents, please answer the question.
@@ -41,8 +40,7 @@ Instructions:
 - Include source references where appropriate
 - Be concise but comprehensive
 
-Answer:""",
-        ),
+Answer:"""),
     ]
 )
 
@@ -93,8 +91,7 @@ class SimpleAnswerAgent(SimpleAgent):
         default=4000,
         ge=500,
         le=32000,
-        description="Maximum context length in characters",
-    )
+        description="Maximum context length in characters")
 
     # Use ChatPromptTemplate instead of string template
     use_chat_prompt_template: bool = Field(
@@ -107,8 +104,7 @@ class SimpleAnswerAgent(SimpleAgent):
             "Your responses should be accurate, well-sourced, and acknowledge any limitations "
             "in the available information. Always cite specific sources when possible."
         ),
-        description="System prompt for answer generation",
-    )
+        description="System prompt for answer generation")
 
     # Source handling
     include_citations: bool = Field(
@@ -117,8 +113,7 @@ class SimpleAnswerAgent(SimpleAgent):
 
     citation_style: str = Field(
         default="inline",
-        description="Citation style: 'inline', 'footnote', or 'numbered'",
-    )
+        description="Citation style: 'inline', 'footnote', or 'numbered'")
 
     # Quality configuration
     require_source_support: bool = Field(
@@ -129,8 +124,7 @@ class SimpleAnswerAgent(SimpleAgent):
         default=0.0,
         ge=0.0,
         le=1.0,
-        description="Minimum confidence threshold for answers",
-    )
+        description="Minimum confidence threshold for answers")
 
     # Enhanced features
     performance_mode: bool = Field(
@@ -196,8 +190,7 @@ class SimpleAnswerAgent(SimpleAgent):
                 documents,
                 generation_time,
                 retrieval_metadata,
-                debug or self.debug_mode,
-            )
+                debug or self.debug_mode)
 
             if debug or self.debug_mode:
                 logger.info(f"✅ Generated answer in {generation_time:.3f}s")
@@ -345,8 +338,7 @@ class SimpleAnswerAgent(SimpleAgent):
         documents: list[Document],
         generation_time: float,
         retrieval_metadata: dict[str, Any],
-        debug: bool = False,
-    ) -> dict[str, Any] | str:
+        debug: bool = False) -> dict[str, Any] | str:
         """Enhance generation result with metadata and citations."""
         # Extract the answer text
         if isinstance(generation_result, str):

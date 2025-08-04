@@ -149,8 +149,7 @@ class DynamicRAGAgent(BaseRAGAgent):
                             {
                                 "retrieve_time": retrieve_time,
                                 "document_count": len(docs),
-                            },
-                        )
+                            })
                     return source_name, [], {"error": "Retriever not found"}
                 except Exception as e:
                     return source_name, [], {"error": str(e)}
@@ -223,8 +222,7 @@ class DynamicRAGAgent(BaseRAGAgent):
             sorted_docs = sorted(
                 unique_docs.values(),
                 key=lambda d: d.metadata.get("relevance", 0),
-                reverse=True,
-            )
+                reverse=True)
 
             # Limit to a reasonable number
             return {"retrieved_documents": sorted_docs[:10]}

@@ -71,8 +71,7 @@ class FLAREAgent(MultiAgent):
                 "confidence_score": "float",
                 "retrieval_needed": "bool",
                 "retrieval_query": "Optional[str]",
-            },
-        )
+            })
 
         # Active retrieval agent
         active_retrieval = SimpleAgent(
@@ -91,8 +90,7 @@ class FLAREAgent(MultiAgent):
                 "retrieved_documents": "List[str]",
                 "relevance_scores": "List[float]",
                 "retrieval_type": "str",  # "uncertainty", "predictive", "factual"
-            },
-        )
+            })
 
         # Informed generation agent
         informed_generator = SimpleAgent(
@@ -110,8 +108,7 @@ class FLAREAgent(MultiAgent):
                 "information_used": "List[str]",
                 "generation_complete": "bool",
                 "next_prediction": "Optional[str]",
-            },
-        )
+            })
 
         # Synthesis agent
         synthesis_agent = SimpleAgent(
@@ -128,8 +125,7 @@ class FLAREAgent(MultiAgent):
                 "retrieval_impact": "str",
                 "overall_confidence": "float",
                 "key_facts_verified": "List[str]",
-            },
-        )
+            })
 
         agents = [
             generation_monitor,
@@ -142,8 +138,7 @@ class FLAREAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.CONDITIONAL,
             state_schema=FLAREState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for FLARE workflow."""
@@ -175,8 +170,7 @@ class DynamicRAGAgent(MultiAgent):
                 "retrievers_to_add": "List[Dict[str, Any]]",
                 "retrievers_to_remove": "List[str]",
                 "configuration_updates": "Dict[str, Any]",
-            },
-        )
+            })
 
         # Multi-retriever coordinator
         retriever_coordinator = SimpleAgent(
@@ -193,8 +187,7 @@ class DynamicRAGAgent(MultiAgent):
                 "performance_metrics": "Dict[str, float]",
                 "source_distribution": "Dict[str, int]",
                 "deduplication_stats": "Dict[str, int]",
-            },
-        )
+            })
 
         # Performance analyzer
         performance_analyzer = SimpleAgent(
@@ -211,8 +204,7 @@ class DynamicRAGAgent(MultiAgent):
                 "optimization_suggestions": "List[str]",
                 "retriever_rankings": "Dict[str, float]",
                 "adaptation_needed": "bool",
-            },
-        )
+            })
 
         # Answer synthesis agent
         dynamic_synthesis = SimpleAgent(
@@ -229,8 +221,7 @@ class DynamicRAGAgent(MultiAgent):
                 "sources_used": "Dict[str, List[str]]",
                 "confidence_by_source": "Dict[str, float]",
                 "synthesis_strategy": "str",
-            },
-        )
+            })
 
         agents = [
             retriever_manager,
@@ -243,8 +234,7 @@ class DynamicRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.SEQUENCE,
             state_schema=DynamicRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for Dynamic RAG workflow."""
@@ -281,8 +271,7 @@ class DebateRAGAgent(MultiAgent):
                     "evidence": "List[str]",
                     "counterpoints": "Dict[str, str]",
                     "confidence": "float",
-                },
-            )
+                })
             position_agents.append(agent)
 
         # Moderator agent
@@ -302,8 +291,7 @@ class DebateRAGAgent(MultiAgent):
                 "key_conflicts": "List[str]",
                 "information_gaps": "List[str]",
                 "next_focus": "str",
-            },
-        )
+            })
 
         # Evidence arbiter
         evidence_arbiter = SimpleAgent(
@@ -322,8 +310,7 @@ class DebateRAGAgent(MultiAgent):
                 "conflicting_evidence": "List[Dict[str, str]]",
                 "evidence_gaps": "List[str]",
                 "credibility_scores": "Dict[str, float]",
-            },
-        )
+            })
 
         # Synthesis judge
         synthesis_judge = SimpleAgent(
@@ -342,8 +329,7 @@ class DebateRAGAgent(MultiAgent):
                 "position_contributions": "Dict[str, str]",
                 "confidence_level": "float",
                 "remaining_uncertainty": "List[str]",
-            },
-        )
+            })
 
         agents = [*position_agents, moderator, evidence_arbiter, synthesis_judge]
 
@@ -354,8 +340,7 @@ class DebateRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.CONDITIONAL,
             state_schema=DebateRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for Debate RAG workflow."""
@@ -387,8 +372,7 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
                 "specificity": "float",
                 "initial_threshold": "float",
                 "retrieval_strategy": "str",
-            },
-        )
+            })
 
         # Adaptive retriever
         adaptive_retriever = SimpleAgent(
@@ -406,8 +390,7 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
                 "threshold_used": "float",
                 "threshold_adjustments": "List[float]",
                 "retrieval_rounds": "int",
-            },
-        )
+            })
 
         # Confidence assessor
         confidence_assessor = SimpleAgent(
@@ -425,8 +408,7 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
                 "gaps_identified": "List[str]",
                 "recommend_adjustment": "bool",
                 "suggested_threshold": "Optional[float]",
-            },
-        )
+            })
 
         # Final answer generator
         threshold_aware_generator = SimpleAgent(
@@ -444,8 +426,7 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
                 "confidence": "float",
                 "limitations": "List[str]",
                 "further_investigation": "Optional[List[str]]",
-            },
-        )
+            })
 
         agents = [
             query_analyzer,
@@ -458,8 +439,7 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.CONDITIONAL,
             state_schema=DynamicRAGState,
-            **kwargs,
-        )
+            **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for Adaptive Threshold RAG workflow."""

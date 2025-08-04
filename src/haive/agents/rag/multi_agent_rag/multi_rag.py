@@ -19,8 +19,7 @@ from haive.agents.rag.multi_agent_rag.agents import (
     DocumentGradingAgent,
     IterativeDocumentGradingAgent,
     SimpleRAGAgent,
-    SimpleRAGAnswerAgent,
-)
+    SimpleRAGAnswerAgent)
 from haive.agents.rag.multi_agent_rag.state import MultiAgentRAGState
 
 # ============================================================================
@@ -110,8 +109,7 @@ class BaseRAGMultiAgent(SequentialAgent):
         retrieval_agent: SimpleRAGAgent | None = None,
         grading_agent: DocumentGradingAgent | None = None,
         answer_agent: SimpleRAGAnswerAgent | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         # Use default agents if none provided
         agents = [
             retrieval_agent or SIMPLE_RAG_AGENT,
@@ -143,8 +141,7 @@ class ConditionalRAGMultiAgent(ConditionalAgent):
         grading_agent: DocumentGradingAgent | None = None,
         answer_agent: SimpleRAGAnswerAgent | None = None,
         query_refiner: Any | None = None,  # Could be another agent
-        **kwargs,
-    ):
+        **kwargs):
         # Create agents
         self.retrieval_agent = retrieval_agent or SIMPLE_RAG_AGENT
         self.grading_agent = grading_agent or DocumentGradingAgent()
@@ -182,8 +179,7 @@ class ConditionalRAGMultiAgent(ConditionalAgent):
                     self.query_refiner if self.query_refiner else self.retrieval_agent
                 ),
             },
-            default=self.grading_agent,
-        )
+            default=self.grading_agent)
 
         # After grading, check if we need to refine query or can generate
         self.add_conditional_edge(
@@ -194,8 +190,7 @@ class ConditionalRAGMultiAgent(ConditionalAgent):
                 "generate": self.answer_agent,
                 "END": "END",
             },
-            default=self.answer_agent,
-        )
+            default=self.answer_agent)
 
 
 class IterativeRAGMultiAgent(SequentialAgent):
@@ -211,8 +206,7 @@ class IterativeRAGMultiAgent(SequentialAgent):
         iterative_grader: IterativeDocumentGradingAgent | None = None,
         answer_agent: SimpleRAGAnswerAgent | None = None,
         custom_grader_callable: Callable | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         # Create iterative grading agent with custom callable if provided
         if not iterative_grader:
             iterative_grader = IterativeDocumentGradingAgent(
@@ -279,8 +273,7 @@ class AdaptiveRAGMultiAgent(ConditionalAgent):
         simple_rag: BaseRAGMultiAgent | None = None,
         complex_rag: IterativeRAGMultiAgent | None = None,
         consensus_rag: ParallelRAGMultiAgent | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         self.simple_rag = simple_rag or BaseRAGMultiAgent(name="Simple RAG")
         self.complex_rag = complex_rag or IterativeRAGMultiAgent(name="Complex RAG")
         self.consensus_rag = consensus_rag or ParallelRAGMultiAgent(
@@ -334,8 +327,7 @@ class AdaptiveRAGMultiAgent(ConditionalAgent):
                 "complex": self.complex_rag,
                 "consensus": self.consensus_rag,
             },
-            default=self.simple_rag,
-        )
+            default=self.simple_rag)
 
         # Fallback routing for each strategy
         for agent in [self.simple_rag, self.complex_rag]:
@@ -347,8 +339,7 @@ class AdaptiveRAGMultiAgent(ConditionalAgent):
                     "consensus": self.consensus_rag,
                     "END": "END",
                 },
-                default="END",
-            )
+                default="END")
 
 
 # ============================================================================
@@ -422,8 +413,7 @@ def validate_multi_agent_compatibility(agents: list[Any]) -> dict[str, Any]:
 base_rag_agent = SequentialAgent(
     agents=[SIMPLE_RAG_AGENT, SIMPLE_RAG_ANSWER_AGENT],
     state_schema=MultiAgentRAGState,
-    name="Base RAG Sequential Agent",
-)
+    name="Base RAG Sequential Agent")
 
 # List of agents for testing compatibility
 agent_list = [SIMPLE_RAG_AGENT, SIMPLE_RAG_ANSWER_AGENT]
@@ -437,8 +427,7 @@ agent_list = [SIMPLE_RAG_AGENT, SIMPLE_RAG_ANSWER_AGENT]
 def create_sequential_rag_system(
     documents: list[Document] | None = None,
     use_grading: bool = True,
-    use_citations: bool = False,
-) -> SequentialAgent:
+    use_citations: bool = False) -> SequentialAgent:
     """Create a sequential RAG system with configurable components."""
     # Create agents
     retrieval_agent = SimpleRAGAgent.from_documents(documents or conversation_documents)
@@ -465,8 +454,7 @@ def create_conditional_rag_system(
 
     return ConditionalRAGMultiAgent(
         retrieval_agent=retrieval_agent,
-        grading_agent=IterativeDocumentGradingAgent(custom_grader=custom_grader),
-    )
+        grading_agent=IterativeDocumentGradingAgent(custom_grader=custom_grader))
 
 
 def create_iterative_rag_system(

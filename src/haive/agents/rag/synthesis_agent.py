@@ -17,8 +17,7 @@ class SynthesisAgent(SimpleAgentV3):
             system_message=(
                 "You are an expert at synthesizing information from multiple knowledge sources. "
                 "Provide comprehensive, coherent answers that integrate insights from all sources."
-            ),
-        )
+            ))
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -26,8 +25,7 @@ class SynthesisAgent(SimpleAgentV3):
             [
                 (
                     "system",
-                    "You are an expert at synthesizing information from multiple knowledge sources. Provide comprehensive, coherent answers that integrate insights from all sources.",
-                ),
+                    "You are an expert at synthesizing information from multiple knowledge sources. Provide comprehensive, coherent answers that integrate insights from all sources."),
                 (
                     "human",
                     """Results from Multiple RAG Sources:
@@ -47,8 +45,7 @@ Instructions:
 5. Structure your response clearly with appropriate sections if needed
 6. Be explicit about the confidence level based on source agreement
 
-Comprehensive Synthesized Answer:""",
-                ),
+Comprehensive Synthesized Answer:"""),
             ]
         )
     )

@@ -30,8 +30,7 @@ class DocumentRelevanceScore(BaseModel):
     )
     key_information: list[str] = Field(
         default_factory=list,
-        description="Key pieces of information that support the query",
-    )
+        description="Key pieces of information that support the query")
     limitations: list[str] = Field(
         default_factory=list, description="Missing information or gaps in the document"
     )

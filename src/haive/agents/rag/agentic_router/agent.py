@@ -198,8 +198,7 @@ REACT_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
 - Expected result quality requirements
 - Risk tolerance for errors
 
-Use systematic reasoning to select optimal RAG strategies.""",
-        ),
+Use systematic reasoning to select optimal RAG strategies."""),
         (
             """human""",
             """Plan RAG strategy using ReAct reasoning:
@@ -221,8 +220,7 @@ Use systematic reasoning to select optimal RAG strategies.""",
 4. Plan step-by-step execution approach
 5. Identify success criteria and failure handling
 
-Use ReAct methodology - provide clear reasoning for each decision point.""",
-        ),
+Use ReAct methodology - provide clear reasoning for each decision point."""),
     ]
 )
 
@@ -254,8 +252,7 @@ STRATEGY_EXECUTION_PROMPT = ChatPromptTemplate.from_messages(
 - Assess confidence levels throughout process
 - Implement quality gates and checkpoints
 
-Execute the planned strategy with precision and continuous quality monitoring.""",
-        ),
+Execute the planned strategy with precision and continuous quality monitoring."""),
         (
             """human""",
             """Execute RAG strategy based on agentic routing plan:
@@ -279,8 +276,7 @@ Execute the planned strategy with precision and continuous quality monitoring.""
 4. Generate comprehensive final response
 5. Evaluate execution success against criteria
 
-Focus on high-quality execution with continuous monitoring and validation.""",
-        ),
+Focus on high-quality execution with continuous monitoring and validation."""),
     ]
 )
 
@@ -312,8 +308,7 @@ AGENTIC_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
 - Provide confidence assessments and quality metrics
 - Include actionable insights for process improvement
 
-Create comprehensive, high-quality final results with full process transparency.""",
-        ),
+Create comprehensive, high-quality final results with full process transparency."""),
         (
             """human""",
             """Synthesize agentic RAG routing results:
@@ -337,8 +332,7 @@ Create comprehensive, high-quality final results with full process transparency.
 4. Provide transparency about decision-making process
 5. Generate comprehensive result with metadata
 
-Focus on creating the highest quality integrated result with full process insight.""",
-        ),
+Focus on creating the highest quality integrated result with full process insight."""),
     ]
 )
 
@@ -373,16 +367,14 @@ class AgenticRAGRouterAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=REACT_PLANNING_PROMPT,
             structured_output_model=ReActPlan,
-            output_key="react_plan",
-        )
+            output_key="react_plan")
 
         # Create synthesis engine
         self.synthesis_engine = AugLLMConfig(
             llm_config=self.llm_config,
             prompt_template=AGENTIC_SYNTHESIS_PROMPT,
             structured_output_model=AgenticRouterResult,
-            output_key="agentic_result",
-        )
+            output_key="agentic_result")
 
         # Create strategy agents
         self.strategy_agents = {
@@ -587,8 +579,7 @@ class AgenticRAGRouterAgent(Agent):
                 "execute_hyde": "execute_hyde",
                 "execute_fusion": "execute_fusion",
                 "execute_flare": "execute_flare",
-            },
-        )
+            })
 
         # All execution nodes lead to synthesis
         graph.add_edge("execute_simple", "synthesize")
@@ -608,8 +599,7 @@ class AgenticRAGRouterAgent(Agent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         autonomy_level: str = "high",
-        **kwargs,
-    ):
+        **kwargs):
         """Create Agentic RAG Router from documents.
 
         Args:
@@ -625,15 +615,13 @@ class AgenticRAGRouterAgent(Agent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         return cls(
             documents=documents,
             llm_config=llm_config,
             autonomy_level=autonomy_level,
-            **kwargs,
-        )
+            **kwargs)
 
 
 # Factory function
@@ -641,8 +629,7 @@ def create_agentic_rag_router_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     routing_mode: str = "autonomous",
-    **kwargs,
-) -> AgenticRAGRouterAgent:
+    **kwargs) -> AgenticRAGRouterAgent:
     """Create an Agentic RAG Router agent.
 
     Args:
@@ -665,8 +652,7 @@ def create_agentic_rag_router_agent(
         documents=documents,
         llm_config=llm_config,
         autonomy_level=autonomy_level,
-        **kwargs,
-    )
+        **kwargs)
 
 
 # I/O schema for compatibility

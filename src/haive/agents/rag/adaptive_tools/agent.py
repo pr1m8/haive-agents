@@ -168,8 +168,7 @@ TOOL_SELECTION_PROMPT = ChatPromptTemplate.from_messages(
 - **Parallel**: Multiple tools simultaneously for speed and redundancy
 - **Iterative**: Tool usage based on previous results, adaptive approach
 
-Select tools strategically based on query characteristics and information needs.""",
-        ),
+Select tools strategically based on query characteristics and information needs."""),
         (
             """human""",
             """Analyze this query and select optimal tools:
@@ -187,8 +186,7 @@ Analyze the query and provide:
 4. Search optimization strategies
 5. ReAct approach for tool coordination
 
-Focus on maximizing information quality while minimizing tool usage overhead.""",
-        ),
+Focus on maximizing information quality while minimizing tool usage overhead."""),
     ]
 )
 
@@ -212,8 +210,7 @@ GOOGLE_SEARCH_PROMPT = ChatPromptTemplate.from_messages(
 - Use quote marks for exact phrase matching
 - Combine broad and specific terms
 
-Process search results to create structured, relevant information for the RAG system.""",
-        ),
+Process search results to create structured, relevant information for the RAG system."""),
         (
             """human""",
             """Optimize search and process results for this query:
@@ -229,8 +226,7 @@ Process search results to create structured, relevant information for the RAG sy
 4. Evaluate information freshness and authority
 5. Provide relevance scores and source metadata
 
-Focus on extracting factual, current, and authoritative information.""",
-        ),
+Focus on extracting factual, current, and authoritative information."""),
     ]
 )
 
@@ -254,8 +250,7 @@ ADAPTIVE_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
 - Cross-reference information across multiple sources
 - Maintain appropriate uncertainty when information conflicts
 
-Create responses that optimally blend all available information sources.""",
-        ),
+Create responses that optimally blend all available information sources."""),
         (
             """human""",
             """Synthesize information from multiple sources to answer the query:
@@ -278,8 +273,7 @@ Create responses that optimally blend all available information sources.""",
 4. Provide a comprehensive, well-sourced response
 5. Include appropriate confidence levels and source attribution
 
-Focus on creating the most accurate and complete response possible.""",
-        ),
+Focus on creating the most accurate and complete response possible."""),
     ]
 )
 
@@ -290,8 +284,7 @@ def create_tool_selector_callable(llm_config: LLMConfig):
         llm_config=llm_config,
         prompt_template=TOOL_SELECTION_PROMPT,
         structured_output_model=ToolSelection,
-        output_key="tool_selection",
-    )
+        output_key="tool_selection")
 
     def select_tools(state: dict[str, Any]) -> dict[str, Any]:
         """Select optimal tools for the query."""
@@ -343,8 +336,7 @@ def create_google_search_callable(llm_config: LLMConfig):
         llm_config=llm_config,
         prompt_template=GOOGLE_SEARCH_PROMPT,
         structured_output_model=SearchResult,
-        output_key="search_result",
-    )
+        output_key="search_result")
 
     def perform_google_search(state: dict[str, Any]) -> dict[str, Any]:
         """Perform Google search and process results."""
@@ -397,8 +389,7 @@ def create_adaptive_synthesis_callable(llm_config: LLMConfig):
         llm_config=llm_config,
         prompt_template=ADAPTIVE_SYNTHESIS_PROMPT,
         structured_output_model=AdaptiveToolsResult,
-        output_key="adaptive_result",
-    )
+        output_key="adaptive_result")
 
     def synthesize_adaptive_response(state: dict[str, Any]) -> dict[str, Any]:
         """Synthesize final response from all sources."""
@@ -520,8 +511,7 @@ class AdaptiveToolsRAGAgent(SequentialAgent):
         llm_config: LLMConfig | None = None,
         enable_google_search: bool = True,
         enable_local_retrieval: bool = True,
-        **kwargs,
-    ):
+        **kwargs):
         """Create Adaptive Tools RAG agent from documents.
 
         Args:
@@ -538,8 +528,7 @@ class AdaptiveToolsRAGAgent(SequentialAgent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         agents = []
 
@@ -567,10 +556,8 @@ class AdaptiveToolsRAGAgent(SequentialAgent):
                 llm_config=llm_config,
                 prompt_template=ADAPTIVE_SYNTHESIS_PROMPT,
                 structured_output_model=AdaptiveToolsResult,
-                output_key="adaptive_result",
-            ),
-            name="Adaptive Synthesizer",
-        )
+                output_key="adaptive_result"),
+            name="Adaptive Synthesizer")
         agents.append(adaptive_synthesizer)
 
         # Remove name from kwargs to avoid conflict
@@ -584,8 +571,7 @@ def create_adaptive_tools_rag_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     tools_mode: str = "full",
-    **kwargs,
-) -> AdaptiveToolsRAGAgent:
+    **kwargs) -> AdaptiveToolsRAGAgent:
     """Create an Adaptive Tools RAG agent.
 
     Args:

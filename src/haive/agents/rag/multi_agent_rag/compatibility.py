@@ -12,16 +12,14 @@ from typing import Any
 
 from haive.core.schema.compatibility import (
     ConverterRegistry,
-    TypeAnalyzer,
-)
+    TypeAnalyzer)
 from haive.core.schema.compatibility.reports import generate_report
 
 from haive.agents.base.agent import Agent
 from haive.agents.rag.multi_agent_rag.agents import (
     SIMPLE_RAG_AGENT,
     SIMPLE_RAG_ANSWER_AGENT,
-    DocumentGradingAgent,
-)
+    DocumentGradingAgent)
 from haive.agents.rag.multi_agent_rag.state import MultiAgentRAGState
 
 logger = logging.getLogger(__name__)
@@ -156,8 +154,7 @@ class SafeCompatibilityTester:
                     "conversion_paths": self._find_conversion_paths(
                         source_schema, target_schema
                     ),
-                },
-            )
+                })
 
             # Cache the result
             self._test_cache[cache_key] = report
@@ -196,8 +193,7 @@ class SafeCompatibilityTester:
                     "Single agent workflow - no compatibility issues"
                 ],
                 required_adapters=[],
-                risk_assessment="Low - single agent workflow",
-            )
+                risk_assessment="Low - single agent workflow")
 
         compatibility_matrix = {}
         compatible_pairs = 0
@@ -239,8 +235,7 @@ class SafeCompatibilityTester:
             compatibility_matrix=compatibility_matrix,
             workflow_recommendations=recommendations,
             required_adapters=required_adapters,
-            risk_assessment=risk_assessment,
-        )
+            risk_assessment=risk_assessment)
 
     def test_rag_agents_safely(self) -> dict[str, Any]:
         """Safely test compatibility of common RAG agent combinations.
@@ -259,8 +254,7 @@ class SafeCompatibilityTester:
             grading_agent = DocumentGradingAgent()
             with_grading_report = self.test_workflow_compatibility(
                 [SIMPLE_RAG_AGENT, grading_agent, SIMPLE_RAG_ANSWER_AGENT],
-                "RAG with Document Grading",
-            )
+                "RAG with Document Grading")
 
             # Test state compatibility
             state_compatibility = self._test_state_compatibility()
@@ -553,8 +547,7 @@ class SafeCompatibilityTester:
             recommended_adapters=[],
             safe_to_chain=False,
             quality_assessment="Error - Could not complete compatibility test",
-            detailed_analysis={"error": error_msg},
-        )
+            detailed_analysis={"error": error_msg})
 
     def _basic_schema_compatibility_check(self, source_schema, target_schema):
         """Basic schema compatibility check without CompatibilityChecker."""

@@ -11,8 +11,7 @@ from step_back.agent import (
     dual_retrieve,
     from_documents,
     generate_step_back_query,
-    get_step_back_rag_io_schema,
-)
+    get_step_back_rag_io_schema)
 
 __all__ = [
     "DualRetrievalAgent",

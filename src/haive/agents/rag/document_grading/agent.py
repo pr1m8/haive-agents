@@ -7,8 +7,7 @@ Uses CallableNodeConfig to iterate over retrieved documents.
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.callable_node import (
-    create_document_grader,
-)
+    create_document_grader)
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_core.documents import Document
@@ -40,8 +39,7 @@ SINGLE_DOC_GRADING_PROMPT = ChatPromptTemplate.from_messages(
 Provide:
 1. A relevance score (0.0-1.0)
 2. Whether it's relevant (true/false)
-3. Clear reasoning for your assessment""",
-        ),
+3. Clear reasoning for your assessment"""),
         (
             "human",
             """Grade this document for relevance.
@@ -51,8 +49,7 @@ Query: {query}
 Document:
 {document}
 
-Provide your assessment.""",
-        ),
+Provide your assessment."""),
     ]
 )
 
@@ -69,8 +66,7 @@ class DocumentGradingAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         super().__init__(**kwargs)
 
     def build_graph(self) -> BaseGraph:
@@ -81,8 +77,7 @@ class DocumentGradingAgent(Agent):
         grading_engine = AugLLMConfig(
             llm_config=self.llm_config,
             prompt_template=SINGLE_DOC_GRADING_PROMPT,
-            structured_output_model=SingleDocumentGrade,
-        )
+            structured_output_model=SingleDocumentGrade)
 
         # Function to grade a single document
         def grade_single_document(input_data: dict) -> dict:
@@ -127,15 +122,13 @@ class DocumentGradingRAGAgent(SequentialAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         relevance_threshold: float = 0.7,
-        **kwargs,
-    ):
+        **kwargs):
         """Create Document Grading RAG from documents."""
         if not llm_config:
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         # Retrieval
         retrieval_agent = BaseRAGAgent.from_documents(
@@ -155,23 +148,18 @@ class DocumentGradingRAGAgent(SequentialAgent):
                     [
                         (
                             "system",
-                            "Answer based only on relevant documents that passed grading.",
-                        ),
+                            "Answer based only on relevant documents that passed grading."),
                         (
                             "human",
                             """Answer the query using these relevant documents.
 
 Query: {query}
-Relevant Documents: {graded_documents}""",
-                        ),
+Relevant Documents: {graded_documents}"""),
                     ]
-                ),
-            ),
-            name="Graded Answer Generator",
-        )
+                )),
+            name="Graded Answer Generator")
 
         return cls(
             agents=[retrieval_agent, grading_agent, answer_agent],
             name=kwargs.get("name", "Document Grading RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)

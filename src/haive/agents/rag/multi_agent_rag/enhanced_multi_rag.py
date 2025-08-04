@@ -16,16 +16,14 @@ from haive.agents.multi.compatibility_enhanced_base import (
     CompatibilityEnhancedParallelAgent,
     CompatibilityEnhancedSequentialAgent,
     CompatibilityMode,
-    create_compatible_multi_agent,
-)
+    create_compatible_multi_agent)
 from haive.agents.rag.multi_agent_rag.agents import (
     SIMPLE_RAG_AGENT,
     SIMPLE_RAG_ANSWER_AGENT,
     DocumentGradingAgent,
     IterativeDocumentGradingAgent,
     SimpleRAGAgent,
-    SimpleRAGAnswerAgent,
-)
+    SimpleRAGAnswerAgent)
 from haive.agents.rag.multi_agent_rag.state import MultiAgentRAGState
 
 # ============================================================================
@@ -46,8 +44,7 @@ class EnhancedRAGSequentialAgent(CompatibilityEnhancedSequentialAgent):
         grading_agent: DocumentGradingAgent | None = None,
         answer_agent: SimpleRAGAnswerAgent | None = None,
         compatibility_mode: CompatibilityMode = CompatibilityMode.ADAPTIVE,
-        **kwargs,
-    ):
+        **kwargs):
         # Set RAG-specific defaults
         if "state_schema" not in kwargs:
             kwargs["state_schema"] = MultiAgentRAGState
@@ -88,8 +85,7 @@ class EnhancedRAGConditionalAgent(CompatibilityEnhancedConditionalAgent):
         grading_agent: DocumentGradingAgent | None = None,
         answer_agent: SimpleRAGAnswerAgent | None = None,
         compatibility_mode: CompatibilityMode = CompatibilityMode.AUTO_FIX,
-        **kwargs,
-    ):
+        **kwargs):
         # Set RAG-specific defaults
         if "state_schema" not in kwargs:
             kwargs["state_schema"] = MultiAgentRAGState
@@ -137,8 +133,7 @@ class EnhancedRAGConditionalAgent(CompatibilityEnhancedConditionalAgent):
                 self._get_agent_node_name(self.grading_agent): self.grading_agent,
                 self._get_agent_node_name(self.answer_agent): self.answer_agent,
             },
-            default=self.grading_agent,
-        )
+            default=self.grading_agent)
 
 
 class EnhancedRAGParallelAgent(CompatibilityEnhancedParallelAgent):
@@ -152,8 +147,7 @@ class EnhancedRAGParallelAgent(CompatibilityEnhancedParallelAgent):
         self,
         rag_variants: list[EnhancedRAGSequentialAgent] | None = None,
         compatibility_mode: CompatibilityMode = CompatibilityMode.ADAPTIVE,
-        **kwargs,
-    ):
+        **kwargs):
         # Set RAG-specific defaults
         if "state_schema" not in kwargs:
             kwargs["state_schema"] = MultiAgentRAGState
@@ -200,8 +194,7 @@ class SmartRAGFactory:
         agents: list[Any],
         documents: list[Document] | None = None,
         preferred_mode: str | None = None,
-        compatibility_mode: CompatibilityMode = CompatibilityMode.ADAPTIVE,
-    ) -> CompatibilityEnhancedMultiAgent:
+        compatibility_mode: CompatibilityMode = CompatibilityMode.ADAPTIVE) -> CompatibilityEnhancedMultiAgent:
         """Create an optimal RAG system based on provided agents.
 
         Args:
@@ -230,8 +223,7 @@ class SmartRAGFactory:
                     for ret_agent in retrieval_agents[:3]
                 ],
                 compatibility_mode=compatibility_mode,
-                name="Smart Parallel RAG System",
-            )
+                name="Smart Parallel RAG System")
 
         elif preferred_mode == "conditional" or len(grading_agents) > 1:
             # Multiple grading options suggest conditional routing
@@ -240,8 +232,7 @@ class SmartRAGFactory:
                 grading_agent=grading_agents[0] if grading_agents else None,
                 answer_agent=answer_agents[0] if answer_agents else None,
                 compatibility_mode=compatibility_mode,
-                name="Smart Conditional RAG System",
-            )
+                name="Smart Conditional RAG System")
 
         else:
             # Default to sequential
@@ -250,8 +241,7 @@ class SmartRAGFactory:
                 grading_agent=grading_agents[0] if grading_agents else None,
                 answer_agent=answer_agents[0] if answer_agents else None,
                 compatibility_mode=compatibility_mode,
-                name="Smart Sequential RAG System",
-            )
+                name="Smart Sequential RAG System")
 
         # Add any remaining agents
         remaining_agents = [
@@ -276,8 +266,7 @@ class SmartRAGFactory:
         documents: list[Document] | None = None,
         include_grading: bool = True,
         use_iterative_grading: bool = False,
-        compatibility_mode: CompatibilityMode = CompatibilityMode.STRICT,
-    ) -> EnhancedRAGSequentialAgent:
+        compatibility_mode: CompatibilityMode = CompatibilityMode.STRICT) -> EnhancedRAGSequentialAgent:
         """Create a safe RAG system with strict compatibility checking.
 
         This method creates a RAG system that is guaranteed to be compatible
@@ -307,8 +296,7 @@ class SmartRAGFactory:
                 grading_agent=grading_agent,
                 answer_agent=answer_agent,
                 compatibility_mode=compatibility_mode,
-                name="Safe RAG System",
-            )
+                name="Safe RAG System")
 
             # Validate before returning
             report = system.get_compatibility_report()
@@ -366,8 +354,7 @@ def demonstrate_enhanced_rag_compatibility() -> None:
         SmartRAGFactory.create_safe_rag_system(
             include_grading=True,
             use_iterative_grading=True,
-            compatibility_mode=CompatibilityMode.STRICT,
-        )
+            compatibility_mode=CompatibilityMode.STRICT)
 
 
 # ============================================================================
@@ -387,8 +374,7 @@ enhanced_simple_rag_answer_agent = SimpleRAGAnswerAgent(
 enhanced_base_rag_agent = create_compatible_multi_agent(
     agents=[enhanced_simple_rag_agent, enhanced_simple_rag_answer_agent],
     execution_mode=CompatibilityMode.ADAPTIVE,
-    name="Enhanced Base RAG Agent",
-)
+    name="Enhanced Base RAG Agent")
 
 # Enhanced agent list for compatibility testing
 enhanced_agent_list = [enhanced_simple_rag_agent, enhanced_simple_rag_answer_agent]

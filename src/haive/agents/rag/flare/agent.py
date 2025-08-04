@@ -153,8 +153,7 @@ FLARE generates responses iteratively, actively retrieving information when enco
 - Technical details missing
 - Verification needed
 
-Create detailed plans for active retrieval and iterative generation.""",
-        ),
+Create detailed plans for active retrieval and iterative generation."""),
         (
             "human",
             """Create FLARE plan for this query and current generation:
@@ -174,8 +173,7 @@ Analyze the current state and create a forward-looking plan:
 4. Plan specific retrieval queries if needed
 5. Plan next generation steps and completion criteria
 
-Focus on proactive information gathering and uncertainty reduction.""",
-        ),
+Focus on proactive information gathering and uncertainty reduction."""),
     ]
 )
 
@@ -205,8 +203,7 @@ Generate the next portion of the response based on:
 - Request specific information when needed
 - Maintain appropriate confidence levels
 
-Generate natural, evidence-grounded text that builds toward a complete response.""",
-        ),
+Generate natural, evidence-grounded text that builds toward a complete response."""),
         (
             "human",
             """Generate next portion of response:
@@ -228,8 +225,7 @@ Continue the response following the FLARE plan:
 4. Flag any areas where more information is needed
 5. Maintain appropriate confidence levels
 
-Focus on natural, evidence-based progression toward complete answer.""",
-        ),
+Focus on natural, evidence-based progression toward complete answer."""),
     ]
 )
 
@@ -240,8 +236,7 @@ def create_flare_planner_callable(llm_config: LLMConfig):
         llm_config=llm_config,
         prompt_template=FLARE_PLANNING_PROMPT,
         structured_output_model=FLAREPlan,
-        output_key="flare_plan",
-    )
+        output_key="flare_plan")
 
     def plan_flare_iteration(state: dict[str, Any]) -> dict[str, Any]:
         """Plan the next FLARE iteration."""
@@ -323,8 +318,7 @@ def create_active_retrieval_callable(
         retriever = BaseRAGAgent.from_documents(
             documents=documents,
             embedding_model=embedding_model,
-            name="FLARE Active Retriever",
-        )
+            name="FLARE Active Retriever")
 
         # Retrieve for each query
         all_new_docs = []
@@ -423,8 +417,7 @@ class FLARERAGAgent(SequentialAgent):
         llm_config: LLMConfig | None = None,
         max_iterations: int = 5,
         confidence_threshold: float = 0.7,
-        **kwargs,
-    ):
+        **kwargs):
         """Create FLARE RAG agent from documents.
 
         Args:
@@ -441,8 +434,7 @@ class FLARERAGAgent(SequentialAgent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         # Step 1: FLARE planning with structured output
         flare_planner = FLAREPlannerAgent(llm_config=llm_config, name="FLARE Planner")
@@ -451,16 +443,14 @@ class FLARERAGAgent(SequentialAgent):
         active_retriever = ActiveRetrievalAgent(
             documents=documents,
             embedding_model=kwargs.get("embedding_model"),
-            name="Active Retrieval",
-        )
+            name="Active Retrieval")
 
         # Step 3: Iterative generation
         iterative_generator = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=FLARE_GENERATION_PROMPT
             ),
-            name="FLARE Generator",
-        )
+            name="FLARE Generator")
 
         # Step 4: Result synthesis
         result_synthesizer = SimpleAgent(
@@ -470,20 +460,16 @@ class FLARERAGAgent(SequentialAgent):
                     [
                         (
                             "system",
-                            "You are an expert at synthesizing FLARE results into final responses.",
-                        ),
+                            "You are an expert at synthesizing FLARE results into final responses."),
                         (
                             "human",
-                            "Synthesize final response from FLARE iterations: {flare_history}",
-                        ),
+                            "Synthesize final response from FLARE iterations: {flare_history}"),
                     ]
                 ),
                 structured_output_model=FLAREResult,
-                output_key="flare_result",
-            ),
+                output_key="flare_result"),
             structured_output_model=FLAREResult,
-            name="FLARE Synthesizer",
-        )
+            name="FLARE Synthesizer")
 
         return cls(
             agents=[
@@ -493,8 +479,7 @@ class FLARERAGAgent(SequentialAgent):
                 result_synthesizer,
             ],
             name=kwargs.get("name", "FLARE RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)
 
 
 # Factory function
@@ -502,8 +487,7 @@ def create_flare_rag_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     flare_mode: str = "adaptive",
-    **kwargs,
-) -> FLARERAGAgent:
+    **kwargs) -> FLARERAGAgent:
     """Create a FLARE RAG agent.
 
     Args:

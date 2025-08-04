@@ -18,8 +18,7 @@ class AnswerAgent(SimpleAgentV3):
                 "You are a helpful assistant that answers questions based on retrieved documents. "
                 "Always ground your answers in the provided documents. "
                 "Provide detailed, comprehensive answers with proper citations."
-            ),
-        )
+            ))
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -27,8 +26,7 @@ class AnswerAgent(SimpleAgentV3):
             [
                 (
                     "system",
-                    "You are a helpful assistant that answers questions based on retrieved documents. Always ground your answers in the provided documents. Provide detailed, comprehensive answers with proper citations.",
-                ),
+                    "You are a helpful assistant that answers questions based on retrieved documents. Always ground your answers in the provided documents. Provide detailed, comprehensive answers with proper citations."),
                 (
                     "human",
                     """Retrieved Documents:
@@ -46,8 +44,7 @@ Instructions:
 5. If the documents don't contain enough information, say so clearly
 6. Always cite which document(s) you're using for each part of your answer
 
-Detailed Answer:""",
-                ),
+Detailed Answer:"""),
             ]
         )
     )

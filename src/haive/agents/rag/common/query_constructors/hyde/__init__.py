@@ -8,8 +8,7 @@ from hyde.enhanced_prompts import (
     get_ensemble_prompt,
     get_generation_prompt,
     get_perspective_prompt,
-    select_prompt_automatically,
-)
+    select_prompt_automatically)
 from hyde.models import HyDEResponse, HypotheticalDocument, to_query
 
 __all__ = [

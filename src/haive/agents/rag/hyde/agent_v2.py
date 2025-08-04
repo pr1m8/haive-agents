@@ -19,8 +19,7 @@ from haive.agents.base.agent import Agent
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import (
-    RAG_ANSWER_STANDARD,
-)
+    RAG_ANSWER_STANDARD)
 from haive.agents.rag.models import HyDEResult
 from haive.agents.simple.agent import SimpleAgent
 
@@ -39,14 +38,12 @@ Guidelines:
 - Do not mention that this is hypothetical - write as if stating facts
 
 Please provide your response in the following format:
-{format_instructions}""",
-        ),
+{format_instructions}"""),
         (
             "human",
             """Write a detailed document that would contain the answer to this question:
 
-Question: {query}""",
-        ),
+Question: {query}"""),
     ]
 )
 
@@ -55,8 +52,7 @@ HYDE_RETRIEVAL_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "Transform the hypothetical document into an effective search query.",
-        ),
+            "Transform the hypothetical document into an effective search query."),
         (
             "human",
             """Based on this hypothetical answer document, create a search query to find similar real documents:
@@ -66,8 +62,7 @@ Hypothetical Document:
 
 Original Question: {query}
 
-Search Query:""",
-        ),
+Search Query:"""),
     ]
 )
 
@@ -92,8 +87,7 @@ class HyDERetrieverAgent(Agent):
             if isinstance(hyde_result, dict):
                 hyp_doc = hyde_result.get(
                     "hypothetical_doc",
-                    hyde_result.get("refined_query", state.get("query", "")),
-                )
+                    hyde_result.get("refined_query", state.get("query", "")))
             else:
                 # If it's a HyDEResult object
                 hyp_doc = getattr(
@@ -136,8 +130,7 @@ class HyDERAGAgentV2(SequentialAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         embedding_model: str | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Create HyDE RAG from documents.
 
         Args:
@@ -157,10 +150,8 @@ class HyDERAGAgentV2(SequentialAgent):
                 prompt_template=HYDE_GENERATION_PROMPT,
                 structured_output_model=HyDEResult,
                 structured_output_version="v1",  # Use parser-based approach
-                output_key="hyde_result",
-            ),
-            name="HyDE Generator",
-        )
+                output_key="hyde_result"),
+            name="HyDE Generator")
 
         # Step 2: Create base retriever
         base_retriever = BaseRAGAgent.from_documents(
@@ -177,11 +168,9 @@ class HyDERAGAgentV2(SequentialAgent):
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
             ),
-            name="Answer Generator",
-        )
+            name="Answer Generator")
 
         return cls(
             agents=[hyde_generator, hyde_retriever, answer_agent],
             name=kwargs.get("name", "HyDE RAG Agent V2"),
-            **kwargs,
-        )
+            **kwargs)

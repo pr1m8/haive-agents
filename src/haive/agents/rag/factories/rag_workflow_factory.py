@@ -58,8 +58,7 @@ class ConditionalCallableAgent(Agent):
         router_callable: Callable,
         action_callables: dict[str, Callable],
         name: str = "Conditional Callable Agent",
-        **kwargs,
-    ):
+        **kwargs):
         super().__init__(name=name, **kwargs)
         self.router_callable = router_callable
         self.action_callables = action_callables
@@ -209,14 +208,12 @@ def create_self_rag_agent(
     self_rag_agent = ConditionalCallableAgent(
         router_callable=self_rag_router,
         action_callables=action_callables,
-        name="Self-RAG Logic",
-    )
+        name="Self-RAG Logic")
 
     return SequentialAgent(
         name=name,
         agents=[retrieval_agent, self_rag_agent],
-        state_schema=MultiAgentRAGState,
-    )
+        state_schema=MultiAgentRAGState)
 
 
 def create_adaptive_rag_agent(
@@ -258,8 +255,7 @@ def create_adaptive_rag_agent(
             super().__init__(
                 name=name,
                 agents=[analyzer_agent, simple_rag, multi_query_agent, complex_rag],
-                state_schema=MultiAgentRAGState,
-            )
+                state_schema=MultiAgentRAGState)
 
             # Set up routing
             self.add_conditional_edge(
@@ -270,8 +266,7 @@ def create_adaptive_rag_agent(
                     "multi_query_rag": multi_query_agent,
                     "complex_rag": complex_rag,
                 },
-                default=simple_rag,
-            )
+                default=simple_rag)
 
     return AdaptiveRAGAgent()
 
@@ -297,8 +292,7 @@ def create_hyde_rag_agent(
             retrieval_agent,
             hyde_agent,
         ],  # Generate hypothesis, retrieve, answer
-        state_schema=MultiAgentRAGState,
-    )
+        state_schema=MultiAgentRAGState)
 
 
 def create_step_back_rag_agent(
@@ -329,8 +323,7 @@ def create_step_back_rag_agent(
             step_back_retrieval,
             step_back_agent,
         ],
-        state_schema=MultiAgentRAGState,
-    )
+        state_schema=MultiAgentRAGState)
 
 
 def create_multi_query_rag_agent(
@@ -351,8 +344,7 @@ def create_multi_query_rag_agent(
     return SequentialAgent(
         name=name,
         agents=[multi_query_agent, retrieval_agent, multi_query_agent],
-        state_schema=MultiAgentRAGState,
-    )
+        state_schema=MultiAgentRAGState)
 
 
 # ============================================================================
@@ -364,8 +356,7 @@ def create_rag_workflow(
     workflow_type: str,
     documents: list[Document] | None = None,
     custom_callables: dict[str, Callable] | None = None,
-    **kwargs,
-) -> Agent:
+    **kwargs) -> Agent:
     """Main factory function for creating RAG workflows.
 
     Args:
@@ -407,8 +398,7 @@ def create_rag_workflow(
         return SequentialAgent(
             name="Simple RAG Agent",
             agents=[retrieval_agent, validator_agent],
-            state_schema=MultiAgentRAGState,
-        )
+            state_schema=MultiAgentRAGState)
 
     if workflow_type not in factory_map:
         available = [*list(factory_map.keys()), "simple"]

@@ -14,17 +14,14 @@ from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.rag.common.answer_generators.prompts import (
     RAG_ANSWER_STANDARD,
-    RAG_ANSWER_WITH_CITATIONS,
-)
+    RAG_ANSWER_WITH_CITATIONS)
 from haive.agents.rag.common.document_graders.binary_grader.prompt import (
-    RAG_DOCUMENT_GRADE_BINARY,
-)
+    RAG_DOCUMENT_GRADE_BINARY)
 from haive.agents.rag.common.document_graders.models import DocumentBinaryResponse
 from haive.agents.rag.multi_agent_rag.state import (
     DocumentGradingResult,
     MultiAgentRAGState,
-    RAGOperationType,
-)
+    RAGOperationType)
 from haive.agents.simple.agent import SimpleAgent
 
 # ============================================================================
@@ -38,15 +35,13 @@ RAG_ANSWER_BASE_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
             """
 You are part of a RAG workflow where your job is to answer whether the documents
 retrieved answers the original query.
-""",
-        ),
+"""),
         (
             "human",
             """
 Query: {query}
 Retrieved Documents: {retrieved_documents}
-""",
-        ),
+"""),
     ]
 )
 
@@ -64,8 +59,7 @@ For each document, provide:
 2. Binary decision (relevant/not relevant)
 3. Detailed justification
 4. Key information that supports the query
-""",
-        ),
+"""),
         (
             "human",
             """
@@ -73,8 +67,7 @@ Query: {query}
 Document to evaluate: {document}
 
 Provide your assessment of this document's relevance to the query.
-""",
-        ),
+"""),
     ]
 )
 
@@ -87,8 +80,7 @@ You are a document retrieval specialist. Your job is to identify and select the 
 relevant documents from a collection that can help answer the given query.
 
 Return a list of document indices (0-based) that are most relevant to the query.
-""",
-        ),
+"""),
         (
             "human",
             """
@@ -96,8 +88,7 @@ Query: {query}
 Available Documents: {available_documents}
 
 Select the most relevant documents by returning their indices.
-""",
-        ),
+"""),
     ]
 )
 
@@ -121,8 +112,7 @@ class SimpleRAGAgent(SimpleAgent):
         if "engine" not in kwargs:
             kwargs["engine"] = AugLLMConfig(
                 prompt_template=RAG_ANSWER_BASE_PROMPT_TEMPLATE,
-                name="simple_rag_engine",
-            )
+                name="simple_rag_engine")
 
         # Set default name
         if "name" not in kwargs:
@@ -160,13 +150,11 @@ class SimpleRAGAgent(SimpleAgent):
         cls,
         documents: list[Document],
         prompt_template: ChatPromptTemplate | None = None,
-        **kwargs,
-    ) -> "SimpleRAGAgent":
+        **kwargs) -> "SimpleRAGAgent":
         """Create SimpleRAGAgent from a document collection."""
         engine_config = AugLLMConfig(
             prompt_template=prompt_template or RAG_ANSWER_BASE_PROMPT_TEMPLATE,
-            name="simple_rag_engine",
-        )
+            name="simple_rag_engine")
 
         return cls(engine=engine_config, documents=documents, **kwargs)
 
@@ -283,8 +271,7 @@ class DocumentGradingAgent(SimpleAgent):
         self,
         grading_mode: str = "binary",
         min_relevance_threshold: float = 0.5,
-        **kwargs,
-    ):
+        **kwargs):
         # Set up structured output for grading results
         if grading_mode == "binary":
             kwargs["structured_output_model"] = DocumentBinaryResponse
@@ -298,8 +285,7 @@ class DocumentGradingAgent(SimpleAgent):
             kwargs["engine"] = AugLLMConfig(
                 prompt_template=prompt_template,
                 structured_output_model=kwargs.get("structured_output_model"),
-                name="document_grading_engine",
-            )
+                name="document_grading_engine")
 
         # Set default name
         if "name" not in kwargs:
@@ -366,8 +352,7 @@ class DocumentGradingAgent(SimpleAgent):
             relevance_score=score,
             is_relevant=is_relevant,
             grading_reason=reason,
-            grader_type=self.grading_mode,
-        )
+            grader_type=self.grading_mode)
 
     def grade_documents(
         self, query: str, documents: list[Document]
@@ -444,8 +429,7 @@ class IterativeDocumentGradingAgent(DocumentGradingAgent):
                         grading_reason=custom_result.get(
                             "reason", "Custom grader result"
                         ),
-                        grader_type="custom",
-                    )
+                        grader_type="custom")
                 except Exception as e:
                     # Fallback to standard grading
                     result = self.grade_document(state.query, doc)
@@ -464,8 +448,7 @@ class IterativeDocumentGradingAgent(DocumentGradingAgent):
                 output_data={
                     "relevance_score": result.relevance_score,
                     "is_relevant": result.is_relevant,
-                },
-            )
+                })
 
         # Filter relevant documents
         relevant_docs = [

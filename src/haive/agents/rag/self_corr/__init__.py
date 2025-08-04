@@ -10,8 +10,7 @@ from self_corr.agent import (
     generate_answer,
     retrieve_documents,
     retriever,
-    setup_workflow,
-)
+    setup_workflow)
 from self_corr.config import SelfCorrectiveRAGConfig
 from self_corr.state import SelfCorrectiveRAGState
 

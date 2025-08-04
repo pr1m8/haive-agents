@@ -184,8 +184,7 @@ QUERY_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
 - Estimate resource requirements
 - Design synthesis approach upfront
 
-Create comprehensive, executable query plans.""",
-        ),
+Create comprehensive, executable query plans."""),
         (
             """human""",
             """Create a query execution plan:
@@ -206,8 +205,7 @@ Create comprehensive, executable query plans.""",
 5. Design synthesis approach for combining results
 6. Estimate resource requirements and timing
 
-Provide a complete, actionable query plan.""",
-        ),
+Provide a complete, actionable query plan."""),
     ]
 )
 
@@ -239,8 +237,7 @@ SUB_QUERY_EXECUTION_PROMPT = ChatPromptTemplate.from_messages(
 - Assess confidence based on evidence quality
 - Track execution metrics
 
-Execute sub-queries with precision and efficiency.""",
-        ),
+Execute sub-queries with precision and efficiency."""),
         (
             """human""",
             """Execute this sub-query:
@@ -264,8 +261,7 @@ Execute sub-queries with precision and efficiency.""",
 4. Assess confidence and completeness
 5. Track execution metrics
 
-Focus on this sub-query only, not the broader context.""",
-        ),
+Focus on this sub-query only, not the broader context."""),
     ]
 )
 
@@ -297,8 +293,7 @@ QUERY_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
 - Identify any gaps or weaknesses
 - Suggest improvements for future
 
-Create comprehensive, high-quality synthesized answers.""",
-        ),
+Create comprehensive, high-quality synthesized answers."""),
         (
             """human""",
             """Synthesize sub-query results into final answer:
@@ -320,8 +315,7 @@ Create comprehensive, high-quality synthesized answers.""",
 4. Create clear, comprehensive final answer
 5. Assess overall quality and completeness
 
-Generate the best possible answer from all available sub-results.""",
-        ),
+Generate the best possible answer from all available sub-results."""),
     ]
 )
 
@@ -357,24 +351,21 @@ class QueryPlanningRAGAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=QUERY_PLANNING_PROMPT,
             structured_output_model=QueryPlan,
-            output_key="query_plan",
-        )
+            output_key="query_plan")
 
         # Create execution engine
         self.execution_engine = AugLLMConfig(
             llm_config=self.llm_config,
             prompt_template=SUB_QUERY_EXECUTION_PROMPT,
             structured_output_model=SubQueryResult,
-            output_key="sub_query_result",
-        )
+            output_key="sub_query_result")
 
         # Create synthesis engine
         self.synthesis_engine = AugLLMConfig(
             llm_config=self.llm_config,
             prompt_template=QUERY_SYNTHESIS_PROMPT,
             structured_output_model=QueryPlanningResult,
-            output_key="planning_result",
-        )
+            output_key="planning_result")
 
         # Add engines to registry
         self.engines["planning"] = self.planning_engine
@@ -387,8 +378,7 @@ class QueryPlanningRAGAgent(Agent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         planning_depth: int = 3,
-        **kwargs,
-    ):
+        **kwargs):
         """Create Query Planning RAG agent from documents.
 
         Args:
@@ -404,15 +394,13 @@ class QueryPlanningRAGAgent(Agent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         return cls(
             documents=documents,
             llm_config=llm_config,
             planning_depth=planning_depth,
-            **kwargs,
-        )
+            **kwargs)
 
     def create_query_plan(self, state: dict[str, Any]) -> dict[str, Any]:
         """Create a query execution plan."""
@@ -497,8 +485,7 @@ class QueryPlanningRAGAgent(Agent):
                 supporting_documents=[],
                 relevance_score=0.0,
                 completeness_score=0.0,
-                metadata={"error": str(e)},
-            )
+                metadata={"error": str(e)})
             sub_results.append(failed_result)
             results_by_id[query_id] = failed_result
 
@@ -589,8 +576,7 @@ class QueryPlanningRAGAgent(Agent):
             {
                 "execute_sub_query": "execute_sub_query",  # Loop back
                 "synthesize_results": "synthesize_results",  # Move to synthesis
-            },
-        )
+            })
 
         graph.add_edge("synthesize_results", END)
 
@@ -602,8 +588,7 @@ def create_query_planning_rag_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     planning_mode: str = "comprehensive",
-    **kwargs,
-) -> QueryPlanningRAGAgent:
+    **kwargs) -> QueryPlanningRAGAgent:
     """Create a Query Planning RAG agent.
 
     Args:

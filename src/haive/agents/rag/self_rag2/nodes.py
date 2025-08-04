@@ -85,7 +85,6 @@ def transform_query(_state: dict[str, Any]):
 
 
 def transform_query(
-    question: str = Field(description="The question to be transformed"),
-):
+    question: str = Field(description="The question to be transformed")):
     """Transform the query to produce a better question."""
     question_rewi

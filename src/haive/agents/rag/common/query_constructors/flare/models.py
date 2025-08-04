@@ -16,8 +16,7 @@ class FLAREStep(BaseModel):
     )
     search_queries: list[str] = Field(
         default_factory=list,
-        description="Specific search queries for missing information",
-    )
+        description="Specific search queries for missing information")
     uncertainties: list[str] = Field(
         default_factory=list, description="Areas of uncertainty that need clarification"
     )

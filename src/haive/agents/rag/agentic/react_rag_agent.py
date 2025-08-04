@@ -65,8 +65,7 @@ class ReactRAGAgent(ReactAgent):
 
     routing_strategy: str = Field(
         default="auto",
-        description="Routing strategy: 'auto', 'retriever_first', 'tools_first', 'parallel'",
-    )
+        description="Routing strategy: 'auto', 'retriever_first', 'tools_first', 'parallel'")
 
     @classmethod
     def create_default(cls, **kwargs) -> "ReactRAGAgent":
@@ -110,8 +109,7 @@ class ReactRAGAgent(ReactAgent):
                     "3. For current information, use the web search tool\n"
                     "4. For complex queries, combine multiple tools as needed\n\n"
                     "Always think step-by-step about which tool(s) to use and why."
-                ),
-            )
+                ))
 
         return cls(
             name=name,
@@ -119,13 +117,11 @@ class ReactRAGAgent(ReactAgent):
             tools=all_tools,
             retriever_config=retriever_config,
             routing_strategy=routing_strategy,
-            **kwargs,
-        )
+            **kwargs)
 
     @staticmethod
     def _create_retriever_tool(
-        retriever_config: BaseRetrieverConfig | VectorStoreConfig,
-    ) -> Tool:
+        retriever_config: BaseRetrieverConfig | VectorStoreConfig) -> Tool:
         """Create a retriever tool that triggers the retrieval node.
 
         This tool doesn't actually perform retrieval - it just signals
@@ -154,8 +150,7 @@ class ReactRAGAgent(ReactAgent):
                 "or when you need to look up specific knowledge. "
                 "This tool triggers a dedicated retrieval process."
             ),
-            func=trigger_retrieval,
-        )
+            func=trigger_retrieval)
 
     @classmethod
     def from_vectorstore(
@@ -210,8 +205,7 @@ class ReactRAGAgent(ReactAgent):
                         "retrieval": "retrieval_node",
                         "tools": "tool_node" if self._needs_tool_node() else END,
                         "end": END,
-                    },
-                )
+                    })
 
             # Route from retrieval_node back to agent_node (React loop)
             graph.add_edge("retrieval_node", "agent_node")

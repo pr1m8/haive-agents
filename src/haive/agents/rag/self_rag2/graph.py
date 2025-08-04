@@ -6,8 +6,7 @@ from haive.haive.self_rag.nodes import (
     grade_documents,
     grade_generation_v_documents_and_question,
     retrieve,
-    transform_query,
-)
+    transform_query)
 from haive.haive.self_rag.state import GraphState
 
 workflow = StateGraph(GraphState)
@@ -27,8 +26,7 @@ workflow.add_conditional_edges(
     {
         "transform_query": "transform_query",
         "generate": "generate",
-    },
-)
+    })
 workflow.add_edge("transform_query", "retrieve")
 workflow.add_conditional_edges(
     "generate",
@@ -37,8 +35,7 @@ workflow.add_conditional_edges(
         "not supported": "generate",
         "useful": END,
         "not useful": "transform_query",
-    },
-)
+    })
 
 # Compile
 app = workflow.compile()

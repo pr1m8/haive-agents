@@ -40,15 +40,13 @@ def create_modular_rag(
     documents: list[Document],
     config: ModularConfig,
     llm_config: LLMConfig | None = None,
-    name: str = "Modular RAG",
-) -> ChainAgent:
+    name: str = "Modular RAG") -> ChainAgent:
     """Create a modular RAG system with configurable components."""
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
 
     # Build nodes based on configuration
     nodes = []
@@ -63,8 +61,7 @@ def create_modular_rag(
                     ("human", "{query}"),
                 ]
             ),
-            output_key="expanded_query",
-        )
+            output_key="expanded_query")
         nodes.append(query_expander)
 
     # Document Filtering Module
@@ -102,12 +99,10 @@ def create_modular_rag(
                         """Query: {query}
                 Documents: {filtered_documents}
 
-                Rank by relevance and provide top 3.""",
-                    ),
+                Rank by relevance and provide top 3."""),
                 ]
             ),
-            output_key="ranked_context",
-        )
+            output_key="ranked_context")
         nodes.append(context_ranker)
 
     # Answer Generation Module
@@ -122,12 +117,10 @@ def create_modular_rag(
                         """Query: {query}
                 Context: {ranked_context}
 
-                Provide comprehensive answer.""",
-                    ),
+                Provide comprehensive answer."""),
                 ]
             ),
-            output_key="generated_answer",
-        )
+            output_key="generated_answer")
         nodes.append(answer_generator)
 
     # Answer Verification Module
@@ -166,12 +159,10 @@ def create_modular_rag(
                 Generated Answer: {generated_answer}
                 Verification: {verification_result}
 
-                Create final response.""",
-                    ),
+                Create final response."""),
                 ]
             ),
-            output_key="response",
-        )
+            output_key="response")
         nodes.append(synthesizer)
 
     # Default minimal pipeline if no modules specified
@@ -181,8 +172,7 @@ def create_modular_rag(
             prompt_template=ChatPromptTemplate.from_messages(
                 [("system", "Answer the query"), ("human", "{query}")]
             ),
-            output_key="response",
-        )
+            output_key="response")
         nodes.append(default_rag)
 
     # Build chain based on routing strategy
@@ -222,16 +212,14 @@ def create_comprehensive_modular_rag(
             RAGModule.ANSWER_VERIFICATION,
             RAGModule.RESPONSE_SYNTHESIS,
         ],
-        quality_gates=True,
-    )
+        quality_gates=True)
     return create_modular_rag(documents, config, llm_config)
 
 
 def create_custom_modular_rag(
     documents: list[Document],
     modules: list[str],
-    llm_config: LLMConfig | None = None,
-) -> ChainAgent:
+    llm_config: LLMConfig | None = None) -> ChainAgent:
     """Create a custom modular RAG with specified modules."""
     config = ModularConfig(modules=[RAGModule(module) for module in modules])
     return create_modular_rag(documents, config, llm_config)

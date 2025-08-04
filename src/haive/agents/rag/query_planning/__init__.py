@@ -16,8 +16,7 @@ from query_planning.agent import (
     get_query_planning_rag_io_schema,
     setup_agent,
     should_continue_execution,
-    synthesize_results,
-)
+    synthesize_results)
 from query_planning.agent_chain import (
     QueryPlan,
     SubQueryResult,
@@ -26,8 +25,7 @@ from query_planning.agent_chain import (
     create_query_planning_chain,
     create_simple_decomposition_chain,
     execute_sub_queries,
-    get_query_planning_chain_io_schema,
-)
+    get_query_planning_chain_io_schema)
 
 __all__ = [
     "QueryComplexity",

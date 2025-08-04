@@ -31,28 +31,23 @@ SAMPLE_DOCUMENTS = [
     Document(
         page_content="Python is a high-level programming language known for its readability and versatility. "
         "It supports multiple programming paradigms, including procedural, object-oriented, and functional programming.",
-        metadata={"source": "programming_docs", "topic": "python"},
-    ),
+        metadata={"source": "programming_docs", "topic": "python"}),
     Document(
         page_content="JavaScript is a scripting language that enables dynamic content on web pages. "
         "It is an essential part of web applications and runs in the browser.",
-        metadata={"source": "programming_docs", "topic": "javascript"},
-    ),
+        metadata={"source": "programming_docs", "topic": "javascript"}),
     Document(
         page_content="Machine learning is a subset of artificial intelligence that provides systems the ability to "
         "learn and improve from experience without being explicitly programmed.",
-        metadata={"source": "ai_docs", "topic": "machine_learning"},
-    ),
+        metadata={"source": "ai_docs", "topic": "machine_learning"}),
     Document(
         page_content="Deep learning is part of a broader family of machine learning methods based on artificial neural networks. "
         "It uses multiple layers to progressively extract higher-level features from raw input.",
-        metadata={"source": "ai_docs", "topic": "deep_learning"},
-    ),
+        metadata={"source": "ai_docs", "topic": "deep_learning"}),
     Document(
         page_content="The Large Language Model (LLM) is a type of AI model designed to understand and generate human language. "
         "Examples include GPT-4, Claude, and LLaMA.",
-        metadata={"source": "ai_docs", "topic": "llm"},
-    ),
+        metadata={"source": "ai_docs", "topic": "llm"}),
 ]
 
 
@@ -75,8 +70,7 @@ def create_llm_rag_agent(use_relevance_checker=True, return_documents=3) -> Any:
         name=f"example_vectorstore_{session_id}",
         documents=SAMPLE_DOCUMENTS,
         vector_store_provider=VectorStoreProvider.FAISS,
-        vector_store_path=vs_path,
-    )
+        vector_store_path=vs_path)
 
     # Step 2: Create a retriever configuration
     retriever = VectorStoreRetrieverConfig(
@@ -101,8 +95,7 @@ Answer:"""
 
     llm_config = AugLLMConfig(
         name=f"answer_llm_{session_id}",
-        prompt_template=ChatPromptTemplate.from_template(answer_prompt),
-    )
+        prompt_template=ChatPromptTemplate.from_template(answer_prompt))
 
     # Relevance checker LLM (optional)
     relevance_prompt = """Determine if the following documents are relevant to the question.
@@ -117,8 +110,7 @@ Only answer 'Yes' if the documents contain information that directly helps answe
     if use_relevance_checker:
         relevance_checker = AugLLMConfig(
             name=f"relevance_checker_{session_id}",
-            prompt_template=ChatPromptTemplate.from_template(relevance_prompt),
-        )
+            prompt_template=ChatPromptTemplate.from_template(relevance_prompt))
 
     # Step 4: Create the agent configuration
     agent_config = LLMRAGConfig(
@@ -126,8 +118,7 @@ Only answer 'Yes' if the documents contain information that directly helps answe
         description="Example LLM RAG agent",
         retriever_config=retriever,
         llm_config=llm_config,
-        relevance_checker_config=relevance_checker,
-    )
+        relevance_checker_config=relevance_checker)
 
     # Step 5: Create and return the agent
     agent = LLMRAGAgent(agent_config)

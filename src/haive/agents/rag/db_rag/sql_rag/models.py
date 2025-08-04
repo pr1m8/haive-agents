@@ -17,8 +17,7 @@ class SQLQueryOutput(BaseModel):
     query: str = Field(..., description="The generated SQL query.")
     parameters: dict[str, Any] | None = Field(
         default=None,
-        description="Query parameters if placeholders are used (e.g., ?1, ?2).",
-    )
+        description="Query parameters if placeholders are used (e.g., ?1, ?2).")
 
     @field_validator("query")
     @classmethod
@@ -35,8 +34,7 @@ class SQLValidationOutput(BaseModel):
 
     errors: list[str] = Field(
         default_factory=list,
-        description="List of syntax or semantic errors in the SQL statement.",
-    )
+        description="List of syntax or semantic errors in the SQL statement.")
     is_valid: bool = Field(default=False, description="Whether the SQL query is valid.")
     suggestions: str | None = Field(
         default=None, description="Suggestions for improving the SQL query."
@@ -51,20 +49,16 @@ class SQLAnalysisOutput(BaseModel):
     )
     needed_columns: list[str] = Field(
         default_factory=list,
-        description="The columns that are needed to answer the query.",
-    )
+        description="The columns that are needed to answer the query.")
     constraints: list[str] = Field(
         default_factory=list,
-        description="Any constraints that should be applied in the WHERE clause.",
-    )
+        description="Any constraints that should be applied in the WHERE clause.")
     aggregations: list[str] = Field(
         default_factory=list,
-        description="Any aggregations that should be performed (COUNT, SUM, AVG, etc.).",
-    )
+        description="Any aggregations that should be performed (COUNT, SUM, AVG, etc.).")
     joins_needed: list[dict[str, str]] = Field(
         default_factory=list,
-        description="Any joins that need to be performed, with the tables to join.",
-    )
+        description="Any joins that need to be performed, with the tables to join.")
     complexity: Literal["simple", "medium", "complex"] = Field(
         default="simple", description="The complexity of the query."
     )

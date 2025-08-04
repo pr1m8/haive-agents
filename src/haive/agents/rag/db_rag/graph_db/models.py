@@ -123,8 +123,7 @@ class CypherQueryOutput(BaseModel):
     query: str = Field(..., description="The generated Cypher query")
     parameters: dict[str, Any] | None = Field(
         default=None,
-        description="Query parameters if placeholders are used (e.g., $name)",
-    )
+        description="Query parameters if placeholders are used (e.g., $name)")
 
     @field_validator("query")
     @classmethod
@@ -200,12 +199,10 @@ class ValidateCypherOutput(BaseModel):
     )
     errors: list[str] | None = Field(
         default=[],
-        description="List of syntax or semantic errors in the Cypher statement",
-    )
+        description="List of syntax or semantic errors in the Cypher statement")
     filters: list[PropertyFilter] | None = Field(
         default=[],
-        description="Property-based filters detected in the Cypher statement",
-    )
+        description="Property-based filters detected in the Cypher statement")
 
 
 class GuardrailsOutput(BaseModel):
@@ -243,8 +240,7 @@ class GuardrailsOutput(BaseModel):
     )
     allowed_categories: list[str] = Field(
         default=["movie", "sports", "music"],
-        description="List of allowed categories for this domain",
-    )
+        description="List of allowed categories for this domain")
 
     def validate_decision(self) -> None:
         """Validate that the decision is within allowed values.

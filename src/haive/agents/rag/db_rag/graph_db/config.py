@@ -41,8 +41,7 @@ from haive.agents.rag.db_rag.graph_db.engines import (
     generate_final_aug_llm_config,
     guardrails_aug_llm_config,
     text2cypher_aug_llm_config,
-    validate_cypher_aug_llm_config,
-)
+    validate_cypher_aug_llm_config)
 from haive.agents.rag.db_rag.graph_db.state import InputState, OutputState, OverallState
 
 # Try to load environment variables from .env file if it exists
@@ -84,20 +83,16 @@ class GraphDBConfig(BaseModel):
 
     graph_db_uri: str = Field(
         default=os.getenv("NEO4J_URI", ""),
-        description="The URI of the Neo4j database (e.g., bolt://localhost:7687)",
-    )
+        description="The URI of the Neo4j database (e.g., bolt://localhost:7687)")
     graph_db_user: str = Field(
         default=os.getenv("NEO4J_USER", ""),
-        description="The username for Neo4j authentication",
-    )
+        description="The username for Neo4j authentication")
     graph_db_password: str = Field(
         default=os.getenv("NEO4J_PASSWORD", ""),
-        description="The password for Neo4j authentication",
-    )
+        description="The password for Neo4j authentication")
     graph_db_database: str = Field(
         default=os.getenv("NEO4J_DATABASE", "neo4j"),
-        description="The database name in Neo4j (defaults to 'neo4j')",
-    )
+        description="The database name in Neo4j (defaults to 'neo4j')")
     enhanced_schema: bool = Field(
         default=True, description="Enable enhanced schema scanning for better detection"
     )
@@ -129,8 +124,7 @@ class GraphDBConfig(BaseModel):
                 timeout=10,
                 sanitize=True,
                 refresh_schema=True,
-                enhanced_schema=self.enhanced_schema,
-            )
+                enhanced_schema=self.enhanced_schema)
             return graph_db
         except Exception:
             return None
@@ -206,8 +200,7 @@ class ExampleConfig(BaseModel):
     )
     examples: list[dict[str, str]] | None = Field(
         default=None,
-        description="Direct list of examples with 'question' and 'query' keys",
-    )
+        description="Direct list of examples with 'question' and 'query' keys")
     k: int = Field(
         default=2, description="Number of examples to retrieve for few-shot prompting"
     )
@@ -269,18 +262,15 @@ class GraphDBRAGConfig(AgentConfig):
             "text2cypher": text2cypher_aug_llm_config,
             "guardrails": guardrails_aug_llm_config,
             "generate_final_answer": generate_final_aug_llm_config,
-        },
-    )
+        })
 
     domain_name: str = Field(
         default="general",
-        description="Domain specialization (e.g., 'movies', 'healthcare', 'finance')",
-    )
+        description="Domain specialization (e.g., 'movies', 'healthcare', 'finance')")
 
     domain_categories: list[str] = Field(
         default_factory=list,
-        description="Valid categories for routing within the domain",
-    )
+        description="Valid categories for routing within the domain")
 
     example_config: ExampleConfig | None = Field(
         default=None, description="Configuration for Cypher query examples"
@@ -292,8 +282,7 @@ class GraphDBRAGConfig(AgentConfig):
 
     graph_db_config: GraphDBConfig = Field(
         default_factory=GraphDBConfig,
-        description="Neo4j database connection configuration",
-    )
+        description="Neo4j database connection configuration")
 
     input_schema: Any = Field(
         default=InputState, description="Schema for validating agent inputs"
@@ -305,8 +294,7 @@ class GraphDBRAGConfig(AgentConfig):
 
     domain_examples: dict[str, list[dict[str, str]]] = Field(
         default_factory=dict,
-        description="Domain-specific example queries for few-shot learning",
-    )
+        description="Domain-specific example queries for few-shot learning")
 
     @field_validator("engines")
     @classmethod

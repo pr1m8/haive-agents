@@ -83,8 +83,7 @@ abstract question that explores the underlying principles, concepts, or broader 
 - Specific: "How do I fix this Python import error?"
   Step-back: "How does Python's import system work and what are common import issues?"
 
-The step-back query should provide conceptual foundation for better understanding the specific question.""",
-        ),
+The step-back query should provide conceptual foundation for better understanding the specific question."""),
         (
             "human",
             """Generate a step-back query for enhanced reasoning:
@@ -99,8 +98,7 @@ Create a step-back query that:
 3. Enables better foundational understanding
 4. Enhances the ability to answer the specific query
 
-Provide the step-back query with detailed reasoning.""",
-        ),
+Provide the step-back query with detailed reasoning."""),
     ]
 )
 
@@ -122,8 +120,7 @@ knowledge to give a comprehensive answer to the original specific query.
 1. Start with foundational concepts from step-back context
 2. Build understanding of underlying principles
 3. Apply this foundation to the specific question
-4. Provide a comprehensive, well-grounded answer""",
-        ),
+4. Provide a comprehensive, well-grounded answer"""),
         (
             "human",
             """Answer the specific query using step-back enhanced context:
@@ -143,8 +140,7 @@ knowledge to give a comprehensive answer to the original specific query.
 - Integration Strategy: {integration_strategy}
 
 Provide a comprehensive answer that leverages both the foundational step-back context
-and the specific context to thoroughly address the original query.""",
-        ),
+and the specific context to thoroughly address the original query."""),
     ]
 )
 
@@ -158,8 +154,7 @@ class StepBackQueryGeneratorAgent(Agent):
         self,
         llm_config: LLMConfig | None = None,
         abstraction_level: str = "moderate",
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize step-back query generator.
 
         Args:
@@ -170,8 +165,7 @@ class StepBackQueryGeneratorAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.abstraction_level = abstraction_level
         super().__init__(**kwargs)
 
@@ -184,8 +178,7 @@ class StepBackQueryGeneratorAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=STEP_BACK_GENERATOR_PROMPT,
             structured_output_model=StepBackQuery,
-            output_key="step_back_query_result",
-        )
+            output_key="step_back_query_result")
 
         def generate_step_back_query(state: dict[str, Any]) -> dict[str, Any]:
             """Generate step-back query for broader context."""
@@ -245,8 +238,7 @@ class DualRetrievalAgent(Agent):
         documents: list[Document],
         embedding_model: str | None = None,
         max_docs_each: int = 5,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize dual retrieval agent.
 
         Args:
@@ -334,8 +326,7 @@ class DualRetrievalAgent(Agent):
                 ),
                 synthesis_approach=(
                     "step_back_enhanced" if step_back_docs else "standard"
-                ),
-            )
+                ))
 
             return {
                 "original_documents": original_docs,
@@ -365,8 +356,7 @@ class StepBackRAGAgent(SequentialAgent):
         embedding_model: str | None = None,
         abstraction_level: str = "moderate",
         max_docs_each: int = 5,
-        **kwargs,
-    ):
+        **kwargs):
         """Create Step-Back RAG agent from documents.
 
         Args:
@@ -384,37 +374,32 @@ class StepBackRAGAgent(SequentialAgent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         # Step 1: Generate step-back query
         step_back_generator = StepBackQueryGeneratorAgent(
             llm_config=llm_config,
             abstraction_level=abstraction_level,
-            name="Step-Back Generator",
-        )
+            name="Step-Back Generator")
 
         # Step 2: Dual retrieval (original + step-back)
         dual_retriever = DualRetrievalAgent(
             documents=documents,
             embedding_model=embedding_model,
             max_docs_each=max_docs_each,
-            name="Dual Retriever",
-        )
+            name="Dual Retriever")
 
         # Step 3: Step-back synthesis
         synthesis_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=STEP_BACK_SYNTHESIS_PROMPT
             ),
-            name="Step-Back Synthesizer",
-        )
+            name="Step-Back Synthesizer")
 
         return cls(
             agents=[step_back_generator, dual_retriever, synthesis_agent],
             name=kwargs.get("name", "Step-Back RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)
 
 
 # Factory function
@@ -422,8 +407,7 @@ def create_step_back_rag_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     reasoning_depth: str = "moderate",
-    **kwargs,
-) -> StepBackRAGAgent:
+    **kwargs) -> StepBackRAGAgent:
     """Create a Step-Back RAG agent.
 
     Args:

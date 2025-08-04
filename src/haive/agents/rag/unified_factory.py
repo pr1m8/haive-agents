@@ -16,8 +16,7 @@ from haive.agents.chain import ChainAgent, flow
 from haive.agents.chain.multi_integration import ChainMultiAgent
 from haive.agents.rag.adaptive_tools.agent import AdaptiveToolsRAGAgent
 from haive.agents.rag.agentic_router.agent_chain import (
-    create_agentic_rag_router_chain,
-)
+    create_agentic_rag_router_chain)
 from haive.agents.rag.corrective.agent import CorrectiveRAGAgent
 from haive.agents.rag.flare.agent import FLARERAGAgent
 from haive.agents.rag.fusion.agent import RAGFusionAgent
@@ -25,8 +24,7 @@ from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
 from haive.agents.rag.memory_aware.agent import MemoryAwareRAGAgent
 from haive.agents.rag.multi_query.agent import MultiQueryRAGAgent
 from haive.agents.rag.query_planning.agent_chain import (
-    create_query_planning_chain,
-)
+    create_query_planning_chain)
 from haive.agents.rag.self_route.agent import SelfRouteRAGAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.rag.speculative.agent import SpeculativeRAGAgent
@@ -72,8 +70,7 @@ class RAGFactory:
         llm_config: LLMConfig | None = None,
         style: RAGStyle = RAGStyle.CHAIN,
         name: str | None = None,
-        **kwargs,
-    ) -> Agent | ChainAgent:
+        **kwargs) -> Agent | ChainAgent:
         """Create any RAG agent.
 
         Args:
@@ -91,8 +88,7 @@ class RAGFactory:
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         agent_name = name or f"{rag_type.title()} RAG"
 
@@ -116,9 +112,7 @@ class RAGFactory:
         documents: list[Document],
         llm_config: LLMConfig,
         name: str,
-        **kwargs,
-    ) -> ChainAgent:
-        """Create ChainAgent implementation."""
+        **kwargs) -> ChainAgent:
         if rag_type == RAGType.AGENTIC_ROUTER:
 
             return create_agentic_rag_router_chain(documents, llm_config, name)
@@ -151,10 +145,7 @@ class RAGFactory:
         documents: list[Document],
         llm_config: LLMConfig,
         name: str,
-        **kwargs,
-    ) -> "ChainMultiAgent":
-        """Create MultiAgent implementation."""
-
+        **kwargs) -> "ChainMultiAgent":
         # Create chain version first
         chain = RAGFactory._create_chain(
             rag_type, documents, llm_config, name, **kwargs
@@ -169,8 +160,7 @@ class RAGFactory:
         documents: list[Document],
         llm_config: LLMConfig,
         name: str,
-        **kwargs,
-    ) -> Agent:
+        **kwargs) -> Agent:
         # Remove name from kwargs to avoid conflicts
         filtered_kwargs = {k: v for k, v in kwargs.items() if k != "name"}
 
@@ -248,8 +238,7 @@ def create_rag(
     rag_type: str | RAGType,
     documents: list[Document],
     style: str | RAGStyle = "chain",
-    **kwargs,
-) -> Agent | ChainAgent:
+    **kwargs) -> Agent | ChainAgent:
     """Simple function to create any RAG agent."""
     if isinstance(rag_type, str):
         rag_type = RAGType(rag_type)
@@ -275,8 +264,7 @@ def create_rag_pipeline(
     rag_types: list[str | RAGType],
     documents: list[Document],
     style: RAGStyle = RAGStyle.CHAIN,
-    **kwargs,
-) -> ChainAgent:
+    **kwargs) -> ChainAgent:
     """Create a pipeline of RAG agents."""
     agents = []
     for rag_type in rag_types:

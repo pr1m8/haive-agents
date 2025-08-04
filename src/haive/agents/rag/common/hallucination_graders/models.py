@@ -37,8 +37,7 @@ class HallucinationClaim(BaseModel):
         default=0.0,
         ge=0.0,
         le=1.0,
-        description="Severity of hallucination (0.0 = no hallucination)",
-    )
+        description="Severity of hallucination (0.0 = no hallucination)")
 
 
 class HallucinationDetectionResponse(BaseModel):
@@ -49,8 +48,7 @@ class HallucinationDetectionResponse(BaseModel):
     overall_hallucination_score: float = Field(
         ge=0.0,
         le=1.0,
-        description="Overall hallucination score (0.0 = no hallucinations)",
-    )
+        description="Overall hallucination score (0.0 = no hallucinations)")
     claim_analysis: list[HallucinationClaim] = Field(
         description="Analysis of individual claims"
     )

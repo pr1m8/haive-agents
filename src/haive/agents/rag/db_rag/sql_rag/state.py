@@ -146,12 +146,10 @@ class OverallState(InputState, OutputState):
     )
     analysis: dict[str, Any] = Field(
         default_factory=dict,
-        description="Analysis of the query structure and requirements",
-    )
+        description="Analysis of the query structure and requirements")
     sql_errors: list[str] = Field(
         default_factory=list,
-        description="Errors found in the SQL statement during validation",
-    )
+        description="Errors found in the SQL statement during validation")
     sql_query: str = Field(default="", description="The SQL query to execute")
     query_result: str = Field(
         default=None, description="Raw text results from the database query"

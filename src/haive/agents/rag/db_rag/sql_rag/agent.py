@@ -53,8 +53,7 @@ from haive.agents.rag.db_rag.sql_rag.utils import (
     create_sql_toolkit,
     create_tool_node_with_fallback,
     explore_database_schema,
-    get_all_toolkit_tools,
-)
+    get_all_toolkit_tools)
 
 logger = logging.getLogger(__name__)
 
@@ -997,8 +996,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
         domain_branch = Branch(
             key="next_action",
             destinations={"end": END, "retrieve_schema": "retrieve_schema"},
-            default="retrieve_schema",
-        )
+            default="retrieve_schema")
 
         self.graph.add_conditional_edges(
             "check_domain_relevance",
@@ -1019,8 +1017,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                 "execute_query": "execute_query",
                 "end": END,
             },
-            default="execute_query",
-        )
+            default="execute_query")
 
         self.graph.add_conditional_edges(
             "validate_query", validation_branch, validation_branch.destinations

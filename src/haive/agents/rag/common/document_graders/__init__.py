@@ -5,14 +5,12 @@ from document_graders.comprehensive_grader import (
     ComprehensiveGradingResponse,
     DocumentQualityLevel,
     DocumentRelevanceLevel,
-    HallucinationRisk,
-)
+    HallucinationRisk)
 from document_graders.models import (
     DocumentBinaryGrading,
     DocumentBinaryResponse,
     DocumentGradingResponse,
-    DocumentRelevanceScore,
-)
+    DocumentRelevanceScore)
 
 __all__ = [
     "ComprehensiveDocumentGrade",

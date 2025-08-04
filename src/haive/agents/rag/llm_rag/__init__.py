@@ -9,15 +9,13 @@ from llm_rag.agent import (
     generate_answer,
     parse_relevance_result,
     retrieve_documents,
-    setup_workflow,
-)
+    setup_workflow)
 from llm_rag.config import LLMRAGConfig, setup_engines
 from llm_rag.example import (
     compare_agent_configurations,
     create_llm_rag_agent,
     main,
-    run_example_queries,
-)
+    run_example_queries)
 from llm_rag.state import LLMRAGInputState, LLMRAGOutputState, LLMRAGState
 
 __all__ = [

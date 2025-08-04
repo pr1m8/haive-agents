@@ -15,8 +15,7 @@ from flare.agent import (
     create_flare_rag_agent,
     from_documents,
     get_flare_rag_io_schema,
-    plan_flare_iteration,
-)
+    plan_flare_iteration)
 
 __all__ = [
     "ActiveRetrievalAgent",

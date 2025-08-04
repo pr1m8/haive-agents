@@ -58,8 +58,7 @@ HYDE_GENERATION_PROMPTS: dict[HyDEPromptType, ChatPromptTemplate] = {
             - Use clear, professional language
             - Write approximately {target_length} characters
             - Focus on density of relevant information
-            - Do not mention this is hypothetical - write as if it's real content""",
-            ),
+            - Do not mention this is hypothetical - write as if it's real content"""),
             ("human", "Write a comprehensive document that answers: {query}"),
         ]
     ),
@@ -77,8 +76,7 @@ HYDE_GENERATION_PROMPTS: dict[HyDEPromptType, ChatPromptTemplate] = {
             - Provide step-by-step explanations
             - Include best practices and common pitfalls
             - Write approximately {target_length} characters
-            - Structure as technical reference material""",
-            ),
+            - Structure as technical reference material"""),
             ("human", "Write technical documentation that covers: {query}"),
         ]
     ),
@@ -96,8 +94,7 @@ HYDE_GENERATION_PROMPTS: dict[HyDEPromptType, ChatPromptTemplate] = {
             - Reference key concepts and principles
             - Provide detailed analysis and conclusions
             - Write approximately {target_length} characters
-            - Structure as academic literature""",
-            ),
+            - Structure as academic literature"""),
             ("human", "Write an academic passage addressing: {query}"),
         ]
     ),
@@ -115,8 +112,7 @@ HYDE_GENERATION_PROMPTS: dict[HyDEPromptType, ChatPromptTemplate] = {
             - Provide context and background information
             - Use clear, accessible language
             - Write approximately {target_length} characters
-            - Structure as news reporting""",
-            ),
+            - Structure as news reporting"""),
             ("human", "Write a news article covering: {query}"),
         ]
     ),
@@ -134,8 +130,7 @@ HYDE_GENERATION_PROMPTS: dict[HyDEPromptType, ChatPromptTemplate] = {
             - Provide examples and exercises
             - Anticipate common questions and mistakes
             - Write approximately {target_length} characters
-            - Structure as educational content""",
-            ),
+            - Structure as educational content"""),
             ("human", "Write a tutorial explaining: {query}"),
         ]
     ),
@@ -153,8 +148,7 @@ HYDE_GENERATION_PROMPTS: dict[HyDEPromptType, ChatPromptTemplate] = {
             - Provide historical context and significance
             - Use objective, authoritative tone
             - Write approximately {target_length} characters
-            - Structure as reference material""",
-            ),
+            - Structure as reference material"""),
             ("human", "Write a reference entry for: {query}"),
         ]
     ),
@@ -172,8 +166,7 @@ HYDE_GENERATION_PROMPTS: dict[HyDEPromptType, ChatPromptTemplate] = {
             - Provide data-driven insights and recommendations
             - Use professional, results-oriented language
             - Write approximately {target_length} characters
-            - Structure as business documentation""",
-            ),
+            - Structure as business documentation"""),
             ("human", "Write business content addressing: {query}"),
         ]
     ),
@@ -199,8 +192,7 @@ HYDE_PERSPECTIVE_PROMPT = ChatPromptTemplate.from_messages(
 
         Write a document that a {perspective} would create to address the topic.
         Use language, examples, and focus appropriate for this perspective.
-        Write approximately {target_length} characters.""",
-        ),
+        Write approximately {target_length} characters."""),
         ("human", "From the perspective of a {perspective}, write about: {query}"),
     ]
 )
@@ -223,8 +215,7 @@ HYDE_ANALYSIS_PROMPT = ChatPromptTemplate.from_messages(
         - Retrieval strategy recommendations
         - Quality assessment
 
-        Provide structured analysis that will help with document retrieval and ranking.""",
-        ),
+        Provide structured analysis that will help with document retrieval and ranking."""),
         (
             "human",
             """Analyze this hypothetical document:
@@ -234,8 +225,7 @@ Document:
 
 Original Query: {query}
 
-Provide structured analysis including document type, key concepts, target audience, and retrieval strategy.""",
-        ),
+Provide structured analysis including document type, key concepts, target audience, and retrieval strategy."""),
     ]
 )
 
@@ -251,16 +241,14 @@ HYDE_EXTRACTION_PROMPT = ChatPromptTemplate.from_messages(
         - Important keywords and terminology
         - Factual claims and data points
         - Relationships between concepts
-        - Document structure and organization""",
-        ),
+        - Document structure and organization"""),
         (
             "human",
             """Extract key information from this document:
 
 {document}
 
-Provide a structured extraction suitable for semantic search and retrieval.""",
-        ),
+Provide a structured extraction suitable for semantic search and retrieval."""),
     ]
 )
 
@@ -282,8 +270,7 @@ HYDE_LENGTH_CONTROLLED_PROMPT = ChatPromptTemplate.from_messages(
         Length targets:
         - Short (500 chars): Key facts and direct answer
         - Medium (1000 chars): Detailed explanation with examples
-        - Long (2000 chars): Comprehensive coverage with context""",
-        ),
+        - Long (2000 chars): Comprehensive coverage with context"""),
         ("human", "Question: {query}"),
     ]
 )
@@ -305,8 +292,7 @@ HYDE_ENSEMBLE_PROMPT = ChatPromptTemplate.from_messages(
         - Focuses (theoretical, practical, historical)
 
         Each document should be approximately {target_length} characters.
-        Vary the approach while maintaining quality and relevance.""",
-        ),
+        Vary the approach while maintaining quality and relevance."""),
         ("human", "Generate {num_documents} different documents answering: {query}"),
     ]
 )

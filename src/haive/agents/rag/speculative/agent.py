@@ -193,8 +193,7 @@ Generate multiple plausible hypotheses that could answer the query:
 - Hypotheses requiring different types of evidence
 - Hypotheses with varying complexity levels
 
-Generate 3-7 diverse, high-quality hypotheses for comprehensive coverage.""",
-        ),
+Generate 3-7 diverse, high-quality hypotheses for comprehensive coverage."""),
         (
             "human",
             """Generate hypotheses for this query:
@@ -218,8 +217,7 @@ For each hypothesis, provide:
 - Verification criteria and required evidence
 - Key assumptions and supporting rationale
 
-Focus on generating testable, diverse hypotheses for comprehensive analysis.""",
-        ),
+Focus on generating testable, diverse hypotheses for comprehensive analysis."""),
     ]
 )
 
@@ -251,8 +249,7 @@ Verify hypotheses using available evidence and reasoning:
 - Inconclusive: Insufficient or conflicting evidence
 - Needs More Data: Requires additional information
 
-Provide detailed, objective verification assessments.""",
-        ),
+Provide detailed, objective verification assessments."""),
         (
             "human",
             """Verify this hypothesis using available evidence:
@@ -277,8 +274,7 @@ Perform thorough verification:
 4. Identify any contradictions or gaps
 5. Determine verification status and confidence
 
-Provide objective, evidence-based verification with detailed reasoning.""",
-        ),
+Provide objective, evidence-based verification with detailed reasoning."""),
     ]
 )
 
@@ -304,8 +300,7 @@ Combine verified hypotheses into comprehensive answers:
 - Acknowledge remaining uncertainties
 - Provide balanced, comprehensive conclusions
 
-Generate nuanced, evidence-based answers that reflect the full speculative analysis.""",
-        ),
+Generate nuanced, evidence-based answers that reflect the full speculative analysis."""),
         (
             "human",
             """Synthesize results from speculative hypothesis analysis:
@@ -332,8 +327,7 @@ Create comprehensive synthesis:
 4. Highlight key insights and discoveries
 5. Provide balanced, evidence-based conclusions
 
-Focus on nuanced, well-supported answers that reflect the speculative analysis.""",
-        ),
+Focus on nuanced, well-supported answers that reflect the speculative analysis."""),
     ]
 )
 
@@ -348,8 +342,7 @@ class HypothesisGeneratorAgent(Agent):
         llm_config: LLMConfig | None = None,
         num_hypotheses: int = 5,
         hypothesis_diversity: str = "high",
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize hypothesis generator.
 
         Args:
@@ -361,8 +354,7 @@ class HypothesisGeneratorAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.num_hypotheses = num_hypotheses
         self.hypothesis_diversity = hypothesis_diversity
         super().__init__(**kwargs)
@@ -376,8 +368,7 @@ class HypothesisGeneratorAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=HYPOTHESIS_GENERATION_PROMPT,
             structured_output_model=list[Hypothesis],
-            output_key="hypotheses",
-        )
+            output_key="hypotheses")
 
         def generate_hypotheses(state: dict[str, Any]) -> dict[str, Any]:
             """Generate multiple hypotheses for the query."""
@@ -470,8 +461,7 @@ class ParallelVerificationAgent(Agent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         verification_depth: str = "thorough",
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize parallel verifier.
 
         Args:
@@ -484,8 +474,7 @@ class ParallelVerificationAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.verification_depth = verification_depth
         super().__init__(**kwargs)
 
@@ -503,8 +492,7 @@ class ParallelVerificationAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=HYPOTHESIS_VERIFICATION_PROMPT,
             structured_output_model=Hypothesis,  # Returns updated hypothesis
-            output_key="verified_hypothesis",
-        )
+            output_key="verified_hypothesis")
 
         def verify_hypotheses_parallel(state: dict[str, Any]) -> dict[str, Any]:
             """Verify hypotheses in parallel batches."""
@@ -641,8 +629,7 @@ class ParallelVerificationAgent(Agent):
                 llm_config=self.llm_config,
                 prompt_template=HYPOTHESIS_VERIFICATION_PROMPT,
                 structured_output_model=Hypothesis,
-                output_key="verified_hypothesis",
-            )
+                output_key="verified_hypothesis")
 
             verified_hypothesis = verification_engine.invoke(
                 {
@@ -681,8 +668,7 @@ class SpeculativeRAGAgent(SequentialAgent):
         llm_config: LLMConfig | None = None,
         num_hypotheses: int = 5,
         verification_depth: str = "thorough",
-        **kwargs,
-    ):
+        **kwargs):
         """Create Speculative RAG agent from documents.
 
         Args:
@@ -699,23 +685,20 @@ class SpeculativeRAGAgent(SequentialAgent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         # Step 1: Hypothesis generation
         hypothesis_generator = HypothesisGeneratorAgent(
             llm_config=llm_config,
             num_hypotheses=num_hypotheses,
-            name="Hypothesis Generator",
-        )
+            name="Hypothesis Generator")
 
         # Step 2: Parallel verification
         parallel_verifier = ParallelVerificationAgent(
             documents=documents,
             llm_config=llm_config,
             verification_depth=verification_depth,
-            name="Parallel Verifier",
-        )
+            name="Parallel Verifier")
 
         # Step 3: Result synthesis
         synthesis_agent = SimpleAgent(
@@ -723,16 +706,13 @@ class SpeculativeRAGAgent(SequentialAgent):
                 llm_config=llm_config,
                 prompt_template=SPECULATIVE_SYNTHESIS_PROMPT,
                 structured_output_model=SpeculativeResult,
-                output_key="speculative_result",
-            ),
-            name="Speculative Synthesizer",
-        )
+                output_key="speculative_result"),
+            name="Speculative Synthesizer")
 
         return cls(
             agents=[hypothesis_generator, parallel_verifier, synthesis_agent],
             name=kwargs.get("name", "Speculative RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)
 
 
 # Factory function
@@ -740,8 +720,7 @@ def create_speculative_rag_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     speculation_mode: str = "balanced",
-    **kwargs,
-) -> SpeculativeRAGAgent:
+    **kwargs) -> SpeculativeRAGAgent:
     """Create a Speculative RAG agent.
 
     Args:

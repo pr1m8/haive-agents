@@ -16,8 +16,7 @@ from query_decomposition.agent import (
     create_query_decomposer,
     decompose_query,
     get_query_decomposer_io_schema,
-    hierarchical_decompose,
-)
+    hierarchical_decompose)
 
 __all__ = [
     "AdaptiveQueryDecomposerAgent",

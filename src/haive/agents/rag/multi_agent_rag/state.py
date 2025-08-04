@@ -78,8 +78,7 @@ class MultiAgentRAGState(StateSchema):
     query: str = Field(description="The original user query")
     queries: Annotated[list[str], operator.add] = Field(
         default_factory=list,
-        description="All queries processed (original + refined/decomposed)",
-    )
+        description="All queries processed (original + refined/decomposed)")
 
     # Document Management
     documents: Annotated[list[Document], operator.add] = Field(
@@ -90,8 +89,7 @@ class MultiAgentRAGState(StateSchema):
     )
     graded_documents: Annotated[list[DocumentGradingResult], operator.add] = Field(
         default_factory=list,
-        description="Documents that have been graded for relevance",
-    )
+        description="Documents that have been graded for relevance")
     filtered_documents: Annotated[list[Document], operator.add] = Field(
         default_factory=list, description="Documents that passed relevance filtering"
     )
@@ -102,8 +100,7 @@ class MultiAgentRAGState(StateSchema):
     )
     intermediate_answers: Annotated[list[str], operator.add] = Field(
         default_factory=list,
-        description="Intermediate answers during multi-step generation",
-    )
+        description="Intermediate answers during multi-step generation")
 
     # Workflow Control
     query_status: QueryStatus = Field(
@@ -126,20 +123,17 @@ class MultiAgentRAGState(StateSchema):
         default=0.0,
         ge=0.0,
         le=1.0,
-        description="Confidence in document retrieval quality",
-    )
+        description="Confidence in document retrieval quality")
     generation_confidence: float = Field(
         default=0.0,
         ge=0.0,
         le=1.0,
-        description="Confidence in answer generation quality",
-    )
+        description="Confidence in answer generation quality")
     overall_quality_score: float = Field(
         default=0.0,
         ge=0.0,
         le=1.0,
-        description="Overall quality assessment of the RAG process",
-    )
+        description="Overall quality assessment of the RAG process")
 
     # Agent Coordination
     active_agent: str | None = Field(
@@ -212,8 +206,7 @@ class MultiAgentRAGState(StateSchema):
         operation_type: RAGOperationType,
         agent_name: str,
         input_data: dict[str, Any] | None = None,
-        output_data: dict[str, Any] | None = None,
-    ) -> str:
+        output_data: dict[str, Any] | None = None) -> str:
         """Add a new workflow step."""
         step_id = str(uuid.uuid4())[:8]
         step = RAGStep(
@@ -222,8 +215,7 @@ class MultiAgentRAGState(StateSchema):
             agent_name=agent_name,
             input_data=input_data or {},
             output_data=output_data or {},
-            timestamp=datetime.now().isoformat(),
-        )
+            timestamp=datetime.now().isoformat())
         self.workflow_steps.append(step)
         return step_id
 

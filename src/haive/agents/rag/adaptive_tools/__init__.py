@@ -18,8 +18,7 @@ from adaptive_tools.agent import (
     get_adaptive_tools_rag_io_schema,
     perform_google_search,
     select_tools,
-    synthesize_adaptive_response,
-)
+    synthesize_adaptive_response)
 
 __all__ = [
     "AdaptiveToolsRAGAgent",

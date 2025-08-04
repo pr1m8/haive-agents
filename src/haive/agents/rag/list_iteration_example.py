@@ -9,8 +9,7 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.list_iteration_node import (
     create_engine_callable,
-    create_list_iteration_node,
-)
+    create_list_iteration_node)
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
@@ -30,9 +29,7 @@ def create_multi_query_processor(documents: list[Document]):
         llm_config=AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        ),
-    )
+            api_key="${AZURE_OPENAI_API_KEY}"))
 
     # Create callable that uses the RAG agent
     def process_query(query: str, context: dict[str, Any]) -> dict[str, Any]:
@@ -49,8 +46,7 @@ def create_multi_query_processor(documents: list[Document]):
         name="MultiQueryProcessor",
         list_key="queries",  # Expects state.queries to be a list
         callable_func=process_query,
-        output_key="query_results",
-    )
+        output_key="query_results")
 
 
 # Example 2: Process documents through summarization
@@ -68,11 +64,9 @@ def create_document_summarizer() -> Any:
         llm_config=AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        ),
+            api_key="${AZURE_OPENAI_API_KEY}"),
         prompt_template=summarize_prompt,
-        output_key="summary",
-    )
+        output_key="summary")
 
     # Create engine callable
     def summarize_document(doc: Document, context: dict[str, Any]) -> dict[str, Any]:
@@ -90,8 +84,7 @@ def create_document_summarizer() -> Any:
         name="DocumentSummarizer",
         list_key="documents",  # Expects state.documents to be a list
         callable_func=summarize_document,
-        output_key="summaries",
-    )
+        output_key="summaries")
 
 
 # Example 3: Batch entity extraction
@@ -116,12 +109,10 @@ def create_entity_extractor() -> Any:
         llm_config=AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        ),
+            api_key="${AZURE_OPENAI_API_KEY}"),
         prompt_template=extract_prompt,
         structured_output_model=ExtractedEntities,
-        output_key="entities",
-    )
+        output_key="entities")
 
     # Use the create_engine_callable helper
     engine_callable = create_engine_callable(extract_engine)
@@ -130,8 +121,7 @@ def create_entity_extractor() -> Any:
         name="EntityExtractor",
         list_key="texts",  # Expects state.texts to be a list
         callable_func=engine_callable,
-        output_key="extracted_entities",
-    )
+        output_key="extracted_entities")
 
 
 # Example 4: Parallel document grading with Send pattern
@@ -155,8 +145,7 @@ def create_parallel_document_grader() -> Any:
         output_key="grading_results",
         use_send=True,  # Enable parallel processing
         send_node_name="grade_single_document",
-        parallel=True,
-    )
+        parallel=True)
 
 
 # Example usage in a graph

@@ -14,8 +14,7 @@ from speculative.agent import (
     from_documents,
     generate_hypotheses,
     get_speculative_rag_io_schema,
-    verify_hypotheses_parallel,
-)
+    verify_hypotheses_parallel)
 
 __all__ = [
     "Hypothesis",

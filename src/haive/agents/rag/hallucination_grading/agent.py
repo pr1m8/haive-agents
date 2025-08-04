@@ -125,8 +125,7 @@ A hallucination occurs when the response contains information that is:
 - Contradicts the source material
 - Makes unsupported claims or assumptions
 
-Assess the response carefully and identify any hallucinations.""",
-        ),
+Assess the response carefully and identify any hallucinations."""),
         (
             "human",
             """Evaluate this response for hallucinations:
@@ -136,8 +135,7 @@ Context Documents: {retrieved_documents}
 AI Response: {generated_response}
 
 Check if the response contains any information not supported by the context or any fabricated facts.
-Provide a detailed assessment.""",
-        ),
+Provide a detailed assessment."""),
     ]
 )
 
@@ -170,8 +168,7 @@ Your role is to provide comprehensive analysis of response quality and accuracy.
 - **High**: Significant misinformation that could mislead
 - **Critical**: Dangerous misinformation that could cause harm
 
-Be thorough and provide specific examples for any hallucinations found.""",
-        ),
+Be thorough and provide specific examples for any hallucinations found."""),
         (
             "human",
             """Conduct a comprehensive hallucination analysis:
@@ -189,8 +186,7 @@ Be thorough and provide specific examples for any hallucinations found.""",
 - Previous messages: {messages}
 - Grading results: {grading_results}
 
-Provide a detailed analysis with specific examples of any hallucinations found.""",
-        ),
+Provide a detailed analysis with specific examples of any hallucinations found."""),
     ]
 )
 
@@ -207,8 +203,7 @@ Quickly assess if the response is safe to use. Focus on:
 - Dangerous misinformation
 - Completely unsupported claims
 
-Provide a quick safety assessment.""",
-        ),
+Provide a quick safety assessment."""),
         (
             "human",
             """Quick hallucination check:
@@ -217,8 +212,7 @@ Query: {query}
 Context: {retrieved_documents}
 Response: {generated_response}
 
-Is this response safe to use? Flag any obvious hallucinations.""",
-        ),
+Is this response safe to use? Flag any obvious hallucinations."""),
     ]
 )
 
@@ -241,8 +235,7 @@ class HallucinationGraderAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.threshold = threshold
         super().__init__(**kwargs)
 
@@ -255,8 +248,7 @@ class HallucinationGraderAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=BASIC_HALLUCINATION_PROMPT,
             structured_output_model=HallucinationGrade,
-            output_key="hallucination_grade",
-        )
+            output_key="hallucination_grade")
 
         # Grading function
         def grade_hallucination(state: dict[str, Any]) -> dict[str, Any]:
@@ -305,8 +297,7 @@ class HallucinationGraderAgent(Agent):
             name="hallucination_grader",
             agent=SimpleAgent(
                 engine=grading_engine, name="Hallucination Grader Engine"
-            ),
-        )
+            ))
 
         graph.add_node("grade_hallucination", grade_hallucination)
         graph.add_edge(START, "grade_hallucination")
@@ -324,8 +315,7 @@ class AdvancedHallucinationGraderAgent(Agent):
         self,
         llm_config: LLMConfig | None = None,
         enable_context_expansion: bool = True,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize advanced hallucination grader.
 
         Args:
@@ -336,8 +326,7 @@ class AdvancedHallucinationGraderAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.enable_context_expansion = enable_context_expansion
         super().__init__(**kwargs)
 
@@ -350,8 +339,7 @@ class AdvancedHallucinationGraderAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=ADVANCED_HALLUCINATION_PROMPT,
             structured_output_model=AdvancedHallucinationGrade,
-            output_key="advanced_hallucination_grade",
-        )
+            output_key="advanced_hallucination_grade")
 
         def advanced_hallucination_analysis(state: dict[str, Any]) -> dict[str, Any]:
             """Comprehensive hallucination analysis."""
@@ -396,8 +384,7 @@ class AdvancedHallucinationGraderAgent(Agent):
             risk_score = 1.0 - min(
                 grade.factual_accuracy,
                 grade.contextual_consistency,
-                grade.logical_coherence,
-            )
+                grade.logical_coherence)
 
             # Determine actions needed
             action_urgency = {
@@ -435,8 +422,7 @@ class RealtimeHallucinationGraderAgent(Agent):
         self,
         llm_config: LLMConfig | None = None,
         safety_threshold: float = 0.8,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize realtime hallucination grader.
 
         Args:
@@ -447,8 +433,7 @@ class RealtimeHallucinationGraderAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.safety_threshold = safety_threshold
         super().__init__(**kwargs)
 
@@ -461,8 +446,7 @@ class RealtimeHallucinationGraderAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=REALTIME_HALLUCINATION_PROMPT,
             structured_output_model=RealtimeHallucinationCheck,
-            output_key="realtime_hallucination_check",
-        )
+            output_key="realtime_hallucination_check")
 
         def quick_hallucination_check(state: dict[str, Any]) -> dict[str, Any]:
             """Quick safety check for hallucinations."""
@@ -520,8 +504,7 @@ class RealtimeHallucinationGraderAgent(Agent):
 def create_hallucination_grader(
     grader_type: Literal["basic", "advanced", "realtime"] = "basic",
     llm_config: LLMConfig | None = None,
-    **kwargs,
-) -> Agent:
+    **kwargs) -> Agent:
     """Create a hallucination grader agent.
 
     Args:

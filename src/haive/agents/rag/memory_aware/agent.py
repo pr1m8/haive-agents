@@ -71,8 +71,7 @@ class MemoryRetrievalAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
         self.max_memories = max_memories
         self.memory_store: dict[str, MemoryItem] = {}
         super().__init__(**kwargs)
@@ -137,15 +136,13 @@ class MemoryAwareRAGAgent(SequentialAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         max_memories: int = 100,
-        **kwargs,
-    ):
+        **kwargs):
         """Create Memory-Aware RAG agent from documents."""
         if not llm_config:
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         # Step 1: Memory retrieval
         memory_retrieval = MemoryRetrievalAgent(
@@ -165,31 +162,25 @@ class MemoryAwareRAGAgent(SequentialAgent):
                     [
                         (
                             "system",
-                            "You are an expert at integrating memory context with retrieved documents.",
-                        ),
+                            "You are an expert at integrating memory context with retrieved documents."),
                         (
                             "human",
-                            "Query: {query}\nMemory Context: {memory_context}\nDocuments: {retrieved_documents}\nProvide integrated response.",
-                        ),
+                            "Query: {query}\nMemory Context: {memory_context}\nDocuments: {retrieved_documents}\nProvide integrated response."),
                     ]
-                ),
-            ),
-            name="Memory Integration",
-        )
+                )),
+            name="Memory Integration")
 
         return cls(
             agents=[memory_retrieval, doc_retrieval, memory_integration],
             name=kwargs.get("name", "Memory-Aware RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)
 
 
 def create_memory_aware_rag_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     memory_mode: str = "adaptive",
-    **kwargs,
-) -> MemoryAwareRAGAgent:
+    **kwargs) -> MemoryAwareRAGAgent:
     """Create a Memory-Aware RAG agent."""
     if memory_mode == "basic":
         kwargs.setdefault("max_memories", 50)

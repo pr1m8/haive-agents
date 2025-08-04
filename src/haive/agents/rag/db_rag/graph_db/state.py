@@ -73,12 +73,10 @@ class OutputState(BaseModel):
     )
     steps: list[str] = Field(
         default_factory=list,
-        description="The workflow steps taken to reach the current state",
-    )
+        description="The workflow steps taken to reach the current state")
     cypher_statement: str = Field(
         default="",
-        description="The generated Cypher statement used to query the database",
-    )
+        description="The generated Cypher statement used to query the database")
 
 
 class OverallState(InputState, OutputState):

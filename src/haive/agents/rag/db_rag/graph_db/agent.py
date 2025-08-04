@@ -259,16 +259,14 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                         if hasattr(config, "example_config")
                         else 2
                     ),
-                    input_keys=["question"],
-                )
+                    input_keys=["question"])
             except Exception as e:
                 logger.warning(f"Failed to initialize semantic example selector: {e}")
                 # Simple fallback - just use all examples
                 self.example_selector = type(
                     "SimpleSelector",
                     (),
-                    {"select_examples": lambda self, query: domain_examples},
-                )()
+                    {"select_examples": lambda self, query: domain_examples})()
 
         except Exception as e:
             logger.exception(f"Error initializing example selector: {e}")
@@ -804,8 +802,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         domain_branch = Branch(
             key="next_action",
             destinations={"end": END, "generate_query": "generate_query"},
-            default="generate_query",
-        )
+            default="generate_query")
 
         self.graph.add_conditional_edges(
             "check_domain_relevance",
@@ -823,8 +820,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 "execute_query": "execute_query",
                 "end": END,
             },
-            default="execute_query",
-        )
+            default="execute_query")
 
         self.graph.add_conditional_edges(
             "validate_query", validation_branch, validation_branch.destinations

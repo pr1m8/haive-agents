@@ -45,8 +45,7 @@ from haive.agents.rag.models import (
     FusionResult,
     HyDEResult,
     SpeculativeResult,
-    StepBackResult,
-)
+    StepBackResult)
 
 logger = logging.getLogger(__name__)
 
@@ -108,8 +107,7 @@ class RAGChainCollection:
                     ("human", "Context: {context}\n\nQuery: {query}"),
                 ]
             ),
-            output_key="response",
-        )
+            output_key="response")
 
         return ChainAgent(retrieve, generator, name="Simple RAG")
 
@@ -123,14 +121,12 @@ class RAGChainCollection:
                 [
                     (
                         "system",
-                        "Generate a hypothetical document that would answer this query",
-                    ),
+                        "Generate a hypothetical document that would answer this query"),
                     ("human", "{query}"),
                 ]
             ),
             structured_output_model=HyDEResult,
-            output_key="hyde_result",
-        )
+            output_key="hyde_result")
 
         # Enhanced retrieval using hypothesis
         def enhanced_retrieve(state: dict[str, Any]) -> dict[str, Any]:
@@ -151,20 +147,17 @@ class RAGChainCollection:
                 [
                     (
                         "system",
-                        "Answer using context and the hypothetical document insight",
-                    ),
+                        "Answer using context and the hypothetical document insight"),
                     (
                         "human",
                         """Original Query: {query}
                 Hypothetical Document: {hyde_result}
                 Retrieved Context: {context}
 
-                Provide a comprehensive answer.""",
-                    ),
+                Provide a comprehensive answer."""),
                 ]
             ),
-            output_key="response",
-        )
+            output_key="response")
 
         return ChainAgent(hyde_generator, enhanced_retrieve, answerer, name="HyDE RAG")
 
@@ -180,13 +173,11 @@ class RAGChainCollection:
                 [
                     (
                         "system",
-                        "Generate 3 different queries to comprehensively answer the question",
-                    ),
+                        "Generate 3 different queries to comprehensively answer the question"),
                     ("human", "{query}"),
                 ]
             ),
-            output_key="multi_queries",
-        )
+            output_key="multi_queries")
 
         # Fusion ranker
         def fusion_rank(state: dict[str, Any]) -> dict[str, Any]:
@@ -200,8 +191,7 @@ class RAGChainCollection:
             fusion_result = FusionResult(
                 fused_documents=[doc.page_content for doc in all_docs],
                 fusion_scores=fusion_scores,
-                ranking_method="reciprocal_rank_fusion",
-            )
+                ranking_method="reciprocal_rank_fusion")
 
             return {"fusion_result": fusion_result}
 
@@ -216,12 +206,10 @@ class RAGChainCollection:
                         """Query: {query}
                 Fusion Results: {fusion_result}
 
-                Create comprehensive answer.""",
-                    ),
+                Create comprehensive answer."""),
                 ]
             ),
-            output_key="response",
-        )
+            output_key="response")
 
         return ChainAgent(multi_query_gen, fusion_rank, synthesizer, name="Fusion RAG")
 
@@ -237,14 +225,12 @@ class RAGChainCollection:
                 [
                     (
                         "system",
-                        "Think step-back: what higher-level concept does this query relate to?",
-                    ),
+                        "Think step-back: what higher-level concept does this query relate to?"),
                     ("human", "{query}"),
                 ]
             ),
             structured_output_model=StepBackResult,
-            output_key="step_back_result",
-        )
+            output_key="step_back_result")
 
         # Enhanced context retrieval
         def context_retrieve(state: dict[str, Any]) -> dict[str, Any]:
@@ -263,20 +249,17 @@ class RAGChainCollection:
                 [
                     (
                         "system",
-                        "Answer using both abstract reasoning and specific context",
-                    ),
+                        "Answer using both abstract reasoning and specific context"),
                     (
                         "human",
                         """Original Query: {query}
                 Abstract Reasoning: {step_back_result}
                 Specific Context: {context}
 
-                Provide a well-reasoned answer.""",
-                    ),
+                Provide a well-reasoned answer."""),
                 ]
             ),
-            output_key="response",
-        )
+            output_key="response")
 
         return ChainAgent(step_back, context_retrieve, answerer, name="Step-Back RAG")
 
@@ -295,8 +278,7 @@ class RAGChainCollection:
                 ]
             ),
             structured_output_model=SpeculativeResult,
-            output_key="speculative_result",
-        )
+            output_key="speculative_result")
 
         # Hypothesis verifier
         def verify_hypotheses(state: dict[str, Any]) -> dict[str, Any]:
@@ -327,12 +309,10 @@ class RAGChainCollection:
                         """Query: {query}
                 Verified Hypotheses: {verified_hypotheses}
 
-                Synthesize final answer.""",
-                    ),
+                Synthesize final answer."""),
                 ]
             ),
-            output_key="response",
-        )
+            output_key="response")
 
         return ChainAgent(
             hypothesis_gen, verify_hypotheses, synthesizer, name="Speculative RAG"
@@ -380,8 +360,7 @@ class RAGChainCollection:
                 [
                     (
                         "system",
-                        "Answer considering conversation history and temporal context",
-                    ),
+                        "Answer considering conversation history and temporal context"),
                     (
                         "human",
                         """Current Query: {query}
@@ -389,12 +368,10 @@ class RAGChainCollection:
                 Relevant Memories: {relevant_memories}
                 Retrieved Context: {context}
 
-                Provide contextually aware answer.""",
-                    ),
+                Provide contextually aware answer."""),
                 ]
             ),
-            output_key="response",
-        )
+            output_key="response")
 
         return ChainAgent(
             analyze_memory, memory_retrieve, answerer, name="Memory-Aware RAG"
@@ -412,13 +389,11 @@ class RAGChainCollection:
                 [
                     (
                         "system",
-                        "Provide initial answer, noting what additional info you need",
-                    ),
+                        "Provide initial answer, noting what additional info you need"),
                     ("human", "{query}"),
                 ]
             ),
-            output_key="initial_answer",
-        )
+            output_key="initial_answer")
 
         # Active retrieval based on gaps
         def active_retrieve(state: dict[str, Any]) -> dict[str, Any]:
@@ -455,12 +430,10 @@ class RAGChainCollection:
                         Initial Answer: {initial_answer}
                         Additional Context: {additional_context}
 
-                        Provide refined answer.""",
-                            ),
+                        Provide refined answer."""),
                         ]
                     ),
-                    output_key="response",
-                )
+                    output_key="response")
                 return refined_engine.invoke(state)
             return {"response": state.get("initial_answer", "")}
 
@@ -472,15 +445,13 @@ def create_rag_chain(
     rag_type: str,
     documents: list[Document],
     llm_config: LLMConfig | None = None,
-    **kwargs,
-) -> ChainAgent:
+    **kwargs) -> ChainAgent:
     """Create any RAG chain by type."""
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
 
     collection = RAGChainCollection()
 
@@ -506,8 +477,7 @@ def create_rag_pipeline(
     rag_types: list[str],
     documents: list[Document],
     combination_strategy: str = "sequential",
-    llm_config: LLMConfig | None = None,
-) -> ChainAgent:
+    llm_config: LLMConfig | None = None) -> ChainAgent:
     """Create a pipeline of multiple RAG approaches."""
     chains = [
         create_rag_chain(rag_type, documents, llm_config) for rag_type in rag_types

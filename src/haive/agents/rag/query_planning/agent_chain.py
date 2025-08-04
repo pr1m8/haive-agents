@@ -33,15 +33,13 @@ class SubQueryResult(BaseModel):
 def create_query_planning_chain(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
-    name: str = "Query Planning RAG",
-) -> ChainAgent:
+    name: str = "Query Planning RAG") -> ChainAgent:
     """Create query planning RAG using ChainAgent."""
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
 
     # Query planner
     planner = AugLLMConfig(
@@ -51,14 +49,12 @@ def create_query_planning_chain(
                 (
                     "system",
                     """Break down complex queries into 2-3 simple sub-queries.
-            Focus on atomic, answerable questions.""",
-                ),
+            Focus on atomic, answerable questions."""),
                 ("human", "Query: {query}\nCreate execution plan."),
             ]
         ),
         structured_output_model=QueryPlan,
-        output_key="plan",
-    )
+        output_key="plan")
 
     # Sub-query executor
     def execute_sub_queries(state: dict[str, Any]) -> dict[str, Any]:
@@ -86,20 +82,17 @@ def create_query_planning_chain(
                     """Original query: {query}
             Sub-query results: {sub_results}
 
-            Create a complete, coherent response.""",
-                ),
+            Create a complete, coherent response."""),
             ]
         ),
-        output_key="final_response",
-    )
+        output_key="final_response")
 
     # Simple 3-step chain
     return ChainAgent(
         planner,  # Plan the query
         execute_sub_queries,  # Execute sub-queries
         synthesizer,  # Synthesize results
-        name=name,
-    )
+        name=name)
 
 
 def create_simple_decomposition_chain(
@@ -110,8 +103,7 @@ def create_simple_decomposition_chain(
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
 
     # Step 1: Decompose query
     decomposer = AugLLMConfig(
@@ -119,8 +111,7 @@ def create_simple_decomposition_chain(
         prompt_template=ChatPromptTemplate.from_messages(
             [("system", "Break query into 2-3 simple questions"), ("human", "{query}")]
         ),
-        output_key="sub_queries",
-    )
+        output_key="sub_queries")
 
     # Step 2: Answer each (simplified)
     def answer_all(state: dict[str, Any]) -> dict[str, Any]:
@@ -137,8 +128,7 @@ def create_simple_decomposition_chain(
                 ("human", "Original: {query}\nAnswers: {answers}"),
             ]
         ),
-        output_key="response",
-    )
+        output_key="response")
 
     return ChainAgent(decomposer, answer_all, combiner)
 
@@ -152,8 +142,7 @@ def create_adaptive_planning_chain(
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
+            api_key="${AZURE_OPENAI_API_KEY}")
 
     # Complexity analyzer
     analyzer = AugLLMConfig(
@@ -164,8 +153,7 @@ def create_adaptive_planning_chain(
                 ("human", "{query}"),
             ]
         ),
-        output_key="complexity",
-    )
+        output_key="complexity")
 
     # Simple answering
     simple_answer = AugLLMConfig(
@@ -173,8 +161,7 @@ def create_adaptive_planning_chain(
         prompt_template=ChatPromptTemplate.from_messages(
             [("system", "Answer this simple query directly"), ("human", "{query}")]
         ),
-        output_key="response",
-    )
+        output_key="response")
 
     # Complex planning chain
     complex_planning = create_query_planning_chain(
@@ -184,8 +171,7 @@ def create_adaptive_planning_chain(
     # Route based on complexity
     return flow_with_edges(
         [analyzer, simple_answer, complex_planning],
-        (0, {"simple": 1, "complex": 2}, lambda s: s.get("complexity", "simple")),
-    )
+        (0, {"simple": 1, "complex": 2}, lambda s: s.get("complexity", "simple")))
 
 
 # I/O schema

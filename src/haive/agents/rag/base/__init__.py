@@ -6,8 +6,7 @@ from haive.agents.rag.base.models import GradeAnswer, GradeHallucinations, Query
 from haive.agents.rag.base.state import (
     BaseRAGInputState,
     BaseRAGOutputState,
-    BaseRAGState,
-)
+    BaseRAGState)
 
 # Removed duplicate import and non-existent functions
 

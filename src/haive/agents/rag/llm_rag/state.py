@@ -3,8 +3,7 @@ from pydantic import Field
 from haive.agents.rag.base.state import (
     BaseRAGInputState,
     BaseRAGOutputState,
-    BaseRAGState,
-)
+    BaseRAGState)
 
 
 class LLMRAGInputState(BaseRAGInputState):
@@ -19,8 +18,7 @@ class LLMRAGOutputState(BaseRAGOutputState):
     )
     is_relevant: bool = Field(
         default=False,
-        description="Whether the retrieved documents are relevant to the query",
-    )
+        description="Whether the retrieved documents are relevant to the query")
 
 
 class LLMRAGState(BaseRAGState, LLMRAGOutputState):

@@ -20,8 +20,7 @@ from haive.agents.base.agent import Agent
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import (
-    RAG_ANSWER_STANDARD,
-)
+    RAG_ANSWER_STANDARD)
 from haive.agents.rag.models import HyDEResult
 from haive.agents.rag.utils.structured_output_enhancer import create_hyde_enhancer
 from haive.agents.simple.agent import SimpleAgent
@@ -50,16 +49,14 @@ The document should be the type that would appear in:
 - News articles for current events questions
 - How-to guides for procedural questions
 
-{format_instructions}""",
-        ),
+{format_instructions}"""),
         (
             "human",
             """Generate a comprehensive hypothetical document that would contain the ideal answer to this question:
 
 Question: {query}
 
-Consider what type of document would best answer this question and write accordingly.""",
-        ),
+Consider what type of document would best answer this question and write accordingly."""),
     ]
 )
 
@@ -86,8 +83,7 @@ class EnhancedHyDERAGAgent(SequentialAgent):
         llm_config: LLMConfig | None = None,
         embedding_model: str | None = None,
         use_enhancement_pattern: bool = True,
-        **kwargs,
-    ):
+        **kwargs):
         """Create Enhanced HyDE RAG from documents.
 
         Args:
@@ -104,8 +100,7 @@ class EnhancedHyDERAGAgent(SequentialAgent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+                api_key="${AZURE_OPENAI_API_KEY}")
 
         if use_enhancement_pattern:
             return cls._create_with_enhancement_pattern(
@@ -121,8 +116,7 @@ class EnhancedHyDERAGAgent(SequentialAgent):
         documents: list[Document],
         llm_config: LLMConfig,
         embedding_model: str | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Create using the new structured output enhancement pattern."""
         # Step 1: Base HyDE generation (focused on content, not structure)
         base_hyde_generator = SimpleAgent(
@@ -131,8 +125,7 @@ class EnhancedHyDERAGAgent(SequentialAgent):
                 prompt_template=ENHANCED_HYDE_PROMPT,
                 output_key="hypothetical_content",  # Raw content output
             ),
-            name="Base HyDE Generator",
-        )
+            name="Base HyDE Generator")
 
         # Step 2: Create structured output enhancement
         hyde_enhancer = create_hyde_enhancer()
@@ -143,23 +136,20 @@ class EnhancedHyDERAGAgent(SequentialAgent):
 Extract the hypothetical document, create a refined query for retrieval, and assess confidence.
 Consider how well the hypothetical document would serve for semantic retrieval.""",
             agent_name="HyDE Structure Enhancer",
-            include_state_context=True,
-        )
+            include_state_context=True)
 
         # Step 3: Enhanced retrieval using structured output
         enhanced_retriever = EnhancedHyDERetriever(
             documents=documents,
             embedding_model=embedding_model,
-            name="Enhanced HyDE Retriever",
-        )
+            name="Enhanced HyDE Retriever")
 
         # Step 4: Final answer generation
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
             ),
-            name="Answer Generator",
-        )
+            name="Answer Generator")
 
         return cls(
             agents=[
@@ -169,8 +159,7 @@ Consider how well the hypothetical document would serve for semantic retrieval."
                 answer_agent,
             ],
             name=kwargs.get("name", "Enhanced HyDE RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def _create_traditional_pattern(
@@ -178,8 +167,7 @@ Consider how well the hypothetical document would serve for semantic retrieval."
         documents: list[Document],
         llm_config: LLMConfig,
         embedding_model: str | None = None,
-        **kwargs,
-    ):
+        **kwargs):
         """Create using traditional pattern for comparison."""
         # Traditional: structured output embedded in initial generation
         hyde_generator = SimpleAgent(
@@ -188,10 +176,8 @@ Consider how well the hypothetical document would serve for semantic retrieval."
                 prompt_template=ENHANCED_HYDE_PROMPT,
                 structured_output_model=HyDEResult,
                 structured_output_version="v1",
-                output_key="hyde_result",
-            ),
-            name="Traditional HyDE Generator",
-        )
+                output_key="hyde_result"),
+            name="Traditional HyDE Generator")
 
         retriever = EnhancedHyDERetriever(
             documents=documents, embedding_model=embedding_model, name="HyDE Retriever"
@@ -201,14 +187,12 @@ Consider how well the hypothetical document would serve for semantic retrieval."
             engine=AugLLMConfig(
                 llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
             ),
-            name="Answer Generator",
-        )
+            name="Answer Generator")
 
         return cls(
             agents=[hyde_generator, retriever, answer_agent],
             name=kwargs.get("name", "Traditional HyDE RAG Agent"),
-            **kwargs,
-        )
+            **kwargs)
 
 
 class EnhancedHyDERetriever(Agent):
@@ -258,8 +242,7 @@ class EnhancedHyDERetriever(Agent):
             base_retriever = BaseRAGAgent.from_documents(
                 documents=self.documents,
                 embedding_model=self.embedding_model,
-                name="On-Demand Base Retriever",
-            )
+                name="On-Demand Base Retriever")
 
             # Perform retrieval
             try:
@@ -308,8 +291,7 @@ def create_enhanced_hyde_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     use_enhancement_pattern: bool = True,
-    **kwargs,
-) -> EnhancedHyDERAGAgent:
+    **kwargs) -> EnhancedHyDERAGAgent:
     """Create an Enhanced HyDE RAG agent.
 
     Args:
@@ -325,8 +307,7 @@ def create_enhanced_hyde_agent(
         documents=documents,
         llm_config=llm_config,
         use_enhancement_pattern=use_enhancement_pattern,
-        **kwargs,
-    )
+        **kwargs)
 
 
 # Demonstration of the pattern
