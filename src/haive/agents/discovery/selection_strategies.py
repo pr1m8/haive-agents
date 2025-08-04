@@ -12,12 +12,10 @@ from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
     from haive.agents.discovery.dynamic_tool_selector import (
         ContextAwareState,
-        ToolSelectionResult,
-    )
+        ToolSelectionResult)
 
 from haive.agents.discovery.semantic_discovery import (
-    ComponentMetadata,
-)
+    ComponentMetadata)
 
 # Lazy import to avoid circular dependency
 ToolSelectionResult = None
@@ -42,8 +40,7 @@ class BaseSelectionStrategy(ABC):
         query: str,
         available_tools: list[ComponentMetadata],
         context: "ContextAwareState",
-        max_tools: int = 5,
-    ) -> "ToolSelectionResult":
+        max_tools: int = 5) -> "ToolSelectionResult":
         """Select tools based on strategy."""
 
 
@@ -58,8 +55,7 @@ class SemanticSelectionStrategy(BaseSelectionStrategy):
         query: str,
         available_tools: list[ComponentMetadata],
         context: "ContextAwareState",
-        max_tools: int = 5,
-    ) -> "ToolSelectionResult":
+        max_tools: int = 5) -> "ToolSelectionResult":
         """Select tools based on semantic similarity to query."""
         # Simple keyword-based similarity for now
         # In a real implementation, this would use vector embeddings
@@ -90,8 +86,7 @@ class SemanticSelectionStrategy(BaseSelectionStrategy):
                 "similarity_threshold": self.similarity_threshold,
                 "total_candidates": len(available_tools),
             },
-            selection_confidence=0.8 if selected else 0.0,
-        )
+            selection_confidence=0.8 if selected else 0.0)
 
 
 class CapabilityBasedStrategy(BaseSelectionStrategy):
@@ -105,8 +100,7 @@ class CapabilityBasedStrategy(BaseSelectionStrategy):
         query: str,
         available_tools: list[ComponentMetadata],
         context: "ContextAwareState",
-        max_tools: int = 5,
-    ) -> "ToolSelectionResult":
+        max_tools: int = 5) -> "ToolSelectionResult":
         """Select tools based on capability matching."""
         # Extract capabilities from query (simple keyword matching)
         required_capabilities = self._extract_capabilities_from_query(query)
@@ -133,8 +127,7 @@ class CapabilityBasedStrategy(BaseSelectionStrategy):
                 "required_capabilities": required_capabilities,
                 "total_candidates": len(available_tools),
             },
-            selection_confidence=0.7 if selected else 0.0,
-        )
+            selection_confidence=0.7 if selected else 0.0)
 
     def _extract_capabilities_from_query(self, query: str) -> list[str]:
         """Extract required capabilities from query."""
@@ -181,8 +174,7 @@ class AdaptiveSelectionStrategy(BaseSelectionStrategy):
         query: str,
         available_tools: list[ComponentMetadata],
         context: "ContextAwareState",
-        max_tools: int = 5,
-    ) -> "ToolSelectionResult":
+        max_tools: int = 5) -> "ToolSelectionResult":
         """Select tools using adaptive learning."""
         # Combine semantic similarity with learned performance
         scored_tools = []
@@ -212,8 +204,7 @@ class AdaptiveSelectionStrategy(BaseSelectionStrategy):
                 "learning_rate": self.learning_rate,
                 "performance_data": len(self.tool_performance),
             },
-            selection_confidence=0.9 if selected else 0.0,
-        )
+            selection_confidence=0.9 if selected else 0.0)
 
     def _calculate_semantic_score(self, query: str, tool: ComponentMetadata) -> float:
         """Calculate basic semantic similarity score."""
@@ -247,8 +238,7 @@ class ContextualSelectionStrategy(BaseSelectionStrategy):
         query: str,
         available_tools: list[ComponentMetadata],
         context: "ContextAwareState",
-        max_tools: int = 5,
-    ) -> "ToolSelectionResult":
+        max_tools: int = 5) -> "ToolSelectionResult":
         """Select tools considering full context."""
         scored_tools = []
         for tool in available_tools:
@@ -282,8 +272,7 @@ class ContextualSelectionStrategy(BaseSelectionStrategy):
                 "context_keys": list(context.current_context.keys()),
                 "history_length": len(context.conversation_history),
             },
-            selection_confidence=0.85 if selected else 0.0,
-        )
+            selection_confidence=0.85 if selected else 0.0)
 
     def _calculate_semantic_score(self, query: str, tool: ComponentMetadata) -> float:
         """Calculate semantic similarity."""
@@ -374,8 +363,7 @@ class EnsembleSelectionStrategy(BaseSelectionStrategy):
         query: str,
         available_tools: list[ComponentMetadata],
         context: "ContextAwareState",
-        max_tools: int = 5,
-    ) -> "ToolSelectionResult":
+        max_tools: int = 5) -> "ToolSelectionResult":
         """Select tools using ensemble of strategies."""
         # Get results from all strategies
         strategy_results = []
@@ -431,8 +419,7 @@ class EnsembleSelectionStrategy(BaseSelectionStrategy):
             },
             selection_confidence=(
                 total_confidence / len(self.strategies) if self.strategies else 0.0
-            ),
-        )
+            ))
 
 
 class LearningSelectionStrategy(BaseSelectionStrategy):
@@ -448,8 +435,7 @@ class LearningSelectionStrategy(BaseSelectionStrategy):
         query: str,
         available_tools: list[ComponentMetadata],
         context: "ContextAwareState",
-        max_tools: int = 5,
-    ) -> "ToolSelectionResult":
+        max_tools: int = 5) -> "ToolSelectionResult":
         """Select tools using learned patterns and feedback."""
         scored_tools = []
         for tool in available_tools:
@@ -485,8 +471,7 @@ class LearningSelectionStrategy(BaseSelectionStrategy):
                     len(feedback) for feedback in self.user_feedback.values()
                 ),
             },
-            selection_confidence=0.9 if selected else 0.0,
-        )
+            selection_confidence=0.9 if selected else 0.0)
 
     def add_feedback(
         self, tool_name: str, rating: float, context: str, feedback_data: dict[str, Any]
