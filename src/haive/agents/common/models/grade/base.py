@@ -67,8 +67,7 @@ class Grade(BaseModel, ABC):
         extra="forbid",
         validate_assignment=True,
         use_enum_values=True,
-        str_strip_whitespace=True,
-    )
+        str_strip_whitespace=True)
 
     grade_type: GradeType = Field(..., description="Type of grade model being used")
 
@@ -81,16 +80,14 @@ class Grade(BaseModel, ABC):
             "Response directly answers the question with accurate information",
             "Code compiles and runs correctly with good style",
             "Essay demonstrates clear understanding but lacks supporting evidence",
-        ],
-    )
+        ])
 
     confidence: float = Field(
         default=1.0,
         description="Confidence level in the grade assigned (0.0 to 1.0)",
         ge=0.0,
         le=1.0,
-        examples=[0.85, 0.95, 1.0],
-    )
+        examples=[0.85, 0.95, 1.0])
 
     metadata: dict[str, Any] = Field(
         default_factory=dict,
@@ -101,14 +98,12 @@ class Grade(BaseModel, ABC):
                 "model_used": "gpt-4",
                 "criteria_weights": {"accuracy": 0.4, "clarity": 0.6},
             },
-        ],
-    )
+        ])
 
     grader_id: str | None = Field(
         default=None,
         description="Identifier of the entity that assigned the grade",
-        examples=["human_grader_001", "agent_evaluator_v2", "peer_review_bot"],
-    )
+        examples=["human_grader_001", "agent_evaluator_v2", "peer_review_bot"])
 
     timestamp: datetime = Field(
         default_factory=datetime.now, description="When the grade was assigned"

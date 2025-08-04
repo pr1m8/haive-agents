@@ -53,8 +53,7 @@ class BinaryGrade(Grade):
     value: bool = Field(
         ...,
         description="Binary grade value (True=pass/yes/correct, False=fail/no/incorrect)",
-        examples=[True, False],
-    )
+        examples=[True, False])
 
     @field_validator("value", mode="before")
     @classmethod
@@ -188,8 +187,7 @@ class BinaryGrade(Grade):
             justification=f"Flipped grade: {self.justification}",
             confidence=self.confidence,
             metadata={**self.metadata, "original_value": self.value},
-            grader_id=self.grader_id,
-        )
+            grader_id=self.grader_id)
 
     def to_display_string(self) -> str:
         """Convert grade to a human-readable display string.

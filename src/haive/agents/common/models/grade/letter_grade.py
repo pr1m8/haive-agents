@@ -90,19 +90,16 @@ class LetterGrade(Grade):
     value: LetterValue = Field(
         ...,
         description="Letter grade value (A+ through F)",
-        examples=["A", "B+", "C-", "F"],
-    )
+        examples=["A", "B+", "C-", "F"])
 
     gpa_scale: float = Field(
         default=4.0,
         description="GPA scale to use for calculations (typically 4.0 or 5.0)",
-        examples=[4.0, 5.0],
-    )
+        examples=[4.0, 5.0])
 
     passing_grade: LetterValue = Field(
         default=LetterValue.C_MINUS,
-        description="Minimum letter grade considered passing",
-    )
+        description="Minimum letter grade considered passing")
 
     @field_validator("value", mode="before")
     @classmethod

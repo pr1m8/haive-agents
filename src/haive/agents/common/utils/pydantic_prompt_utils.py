@@ -40,8 +40,7 @@ class PydanticPromptConfig(BaseModel):
     )
     include_constraints: bool = Field(
         default=True,
-        description="Whether to include field constraints (min/max length, etc.)",
-    )
+        description="Whether to include field constraints (min/max length, etc.)")
     include_examples: bool = Field(
         default=False, description="Whether to include example values"
     )
@@ -251,8 +250,7 @@ def generate_field_description(
 def create_pydantic_prompt(
     model_class: type[BaseModel],
     config: PydanticPromptConfig,
-    base_instruction: str = "Generate content with the following structure:",
-) -> ChatPromptTemplate:
+    base_instruction: str = "Generate content with the following structure:") -> ChatPromptTemplate:
     """Create a prompt template from a Pydantic model.
 
     Args:
@@ -412,8 +410,7 @@ Focus on accuracy and completeness of the extracted information."""
 def create_generation_and_parsing_prompts(
     model_class: type[BaseModel],
     generation_instruction: str = "Generate comprehensive content about the topic:",
-    config: PydanticPromptConfig | None = None,
-) -> tuple[ChatPromptTemplate, ChatPromptTemplate]:
+    config: PydanticPromptConfig | None = None) -> tuple[ChatPromptTemplate, ChatPromptTemplate]:
     """Create both generation and parsing prompts for structured output pattern.
 
     This follows the best practice of separating content generation from
@@ -445,8 +442,7 @@ def create_generation_and_parsing_prompts(
 def quick_pydantic_prompt(
     model_class: type[BaseModel],
     style: PromptStyle = PromptStyle.DESCRIPTIVE,
-    use_json: bool = False,
-) -> ChatPromptTemplate:
+    use_json: bool = False) -> ChatPromptTemplate:
     """Quick way to create a basic prompt from a Pydantic model.
 
     Args:
@@ -465,5 +461,4 @@ def quick_pydantic_prompt(
         model_class=model_class,
         config=config,
         base_instruction=f"Generate content that can be structured as {
-            model_class.__name__}:",
-    )
+            model_class.__name__}:")
