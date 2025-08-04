@@ -1,7 +1,6 @@
 from haive.agents.long_term_memory.tools import (
     save_recall_memory,
-    search_recall_memories,
-)
+    search_recall_memories)
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -49,8 +48,7 @@ long_term_memory_prompt_template = ChatPromptTemplate.from_messages(
             " information you want to retain in the next conversation. If you"
             " do call tools, all text preceding the tool call is an internal"
             " message. Respond AFTER calling the tool, once you have"
-            " confirmation that the tool completed successfully.\n\n",
-        ),
+            " confirmation that the tool completed successfully.\n\n"),
         ("placeholder", "{messages}"),
     ]
 ).partial(recall_memories="")
@@ -59,10 +57,8 @@ lt_structured_memory_aug_llm_config = AugLLMConfig(
     name="lt_structured_memory_aug_llm_config",
     # llm_config=AzureLLMConf ig(),
     prompt_template=long_term_memory_prompt_template,
-    tools=[save_recall_memory, search_recall_memories],
-)
+    tools=[save_recall_memory, search_recall_memories])
 lt_memory_aug_llm_config = AugLLMConfig(
     name="lt_memory_aug_llm_config",
     prompt_template=long_term_memory_prompt_template,
-    tools=[save_recall_memory, search_recall_memories],
-)
+    tools=[save_recall_memory, search_recall_memories])
