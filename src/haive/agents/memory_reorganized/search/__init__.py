@@ -1,6 +1,6 @@
 """Module exports."""
 
-from search.base import (
+from haive.agents.memory_reorganized.search.base import (
     BaseSearchAgent,
     SearchResponse,
     extract_memory_items,

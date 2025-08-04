@@ -13,7 +13,7 @@ from uuid import uuid4
 from pydantic import BaseModel, Field
 
 # Import original proven memory models
-from .memory_models_standalone import (
+from haive.agents.memory_reorganized.base.memory_models_standalone import (
     EnhancedMemoryItem,
     ImportanceLevel,
     KnowledgeTriple,

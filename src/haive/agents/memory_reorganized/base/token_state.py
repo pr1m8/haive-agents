@@ -13,7 +13,7 @@ from typing import Optional
 from langchain_core.messages import AnyMessage
 from pydantic import ConfigDict, Field, computed_field
 
-from .memory_state_original import (
+from haive.agents.memory_reorganized.base.memory_state_original import (
     MemoryStats,
     UnifiedMemoryEntry)
 

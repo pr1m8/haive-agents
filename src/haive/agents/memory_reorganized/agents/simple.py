@@ -18,20 +18,20 @@ from pydantic import BaseModel, Field
 
 from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
 
-from ..base.memory_state_original import (  # Import original models for compatibility
+from haive.agents.memory_reorganized.base.memory_state_original import (  # Import original models for compatibility
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryState,
     MemoryType)
-from ..base.token_state import MemoryStateWithTokens
-from ..core.memory_tools import (
+from haive.agents.memory_reorganized.base.token_state import MemoryStateWithTokens
+from haive.agents.memory_reorganized.core.memory_tools import (
     MemoryConfig,
     classify_memory,
     get_memory_stats,
     retrieve_memory,
     search_memory,
     store_memory)
-from ..core.token_tracker import TokenThresholds, TokenTracker
+from haive.agents.memory_reorganized.core.token_tracker import TokenThresholds, TokenTracker
 
 # Graph transformer imports - optional
 try:

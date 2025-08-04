@@ -18,7 +18,7 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
 
-from haive.agents.memory.models.meta import MemoryValidationMeta
+from haive.agents.memory.models_dir.meta import MemoryValidationMeta
 
 
 class BaseMemoryModel(BaseModel, metaclass=MemoryValidationMeta):

@@ -15,20 +15,20 @@ from haive.core.persistence.store.types import StoreType
 from haive.core.tools.store_manager import StoreManager
 from pydantic import BaseModel, ConfigDict, Field
 
-from ..coordination.agentic_rag_coordinator import (
+from haive.agents.memory_reorganized.coordination.agentic_rag_coordinator import (
     AgenticRAGCoordinator,
     AgenticRAGCoordinatorConfig)
-from ..coordination.multi_agent_coordinator import (
+from haive.agents.memory_reorganized.coordination.multi_agent_coordinator import (
     MultiAgentCoordinatorConfig,
     MultiAgentMemoryCoordinator)
-from ..core.classifier import MemoryClassifier, MemoryClassifierConfig
-from ..core.stores import MemoryStoreConfig, MemoryStoreManager
-from ..core.types import MemoryType
-from ..knowledge.kg_generator_agent import (
+from haive.agents.memory_reorganized.core.classifier import MemoryClassifier, MemoryClassifierConfig
+from haive.agents.memory_reorganized.core.stores import MemoryStoreConfig, MemoryStoreManager
+from haive.agents.memory_reorganized.core.types import MemoryType
+from haive.agents.memory_reorganized.knowledge.kg_generator_agent import (
     KGGeneratorAgent,
     KGGeneratorAgentConfig)
-from ..retrieval.enhanced_retriever import EnhancedRetrieverConfig
-from ..retrieval.graph_rag_retriever import (
+from haive.agents.memory_reorganized.retrieval.enhanced_retriever import EnhancedRetrieverConfig
+from haive.agents.memory_reorganized.retrieval.graph_rag_retriever import (
     GraphRAGRetriever,
     GraphRAGRetrieverConfig)
 
