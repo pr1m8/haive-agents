@@ -57,8 +57,7 @@ class LTMState(BaseModel):
     # Processing control
     processing_stage: str = Field(
         default="extract",
-        description="Current processing stage: extract -> kg -> categorize -> consolidate -> store -> tools",
-    )
+        description="Current processing stage: extract -> kg -> categorize -> consolidate -> store -> tools")
     processing_complete: bool = Field(
         default=False, description="Whether all processing is complete"
     )
@@ -217,8 +216,7 @@ class LTMAgent(Agent):
         enable_categorization: bool = True,
         enable_consolidation: bool = True,
         enable_reflection: bool = True,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize LTM agent.
 
         Args:
@@ -266,8 +264,7 @@ class LTMAgent(Agent):
         self.engines["memory_extractor"] = AugLLMConfig(
             name="memory_extractor",
             llm_config=self.ltm_llm_config,
-            system_message="You extract structured memories from conversations.",
-        )
+            system_message="You extract structured memories from conversations.")
 
         logger.info("LTM agent setup complete")
 
@@ -308,8 +305,7 @@ class LTMAgent(Agent):
             {
                 True: "complete_processing",  # For now, just complete after extraction
                 False: "handle_errors",
-            },
-        )
+            })
 
         # Complete processing goes to end
         graph.add_edge("complete_processing", END)
@@ -346,8 +342,7 @@ class LTMAgent(Agent):
                 schemas=DEFAULT_MEMORY_SCHEMAS,
                 instructions="Extract key memories, preferences, and important information from this conversation. Focus on facts, preferences, context, and actionable information.",
                 enable_inserts=True,
-                enable_updates=True,
-            )
+                enable_updates=True)
 
             # Prepare input state for LangMem
             input_state = {

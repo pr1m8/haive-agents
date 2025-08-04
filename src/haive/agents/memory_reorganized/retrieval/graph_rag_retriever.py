@@ -21,11 +21,7 @@ from haive.agents.memory.kg_generator_agent import (
     KGGeneratorAgent,
     KnowledgeGraphNode,
     KnowledgeGraphRelationship,
-    Optional,
-    from,
-    import,
-    typing,
-)
+    Optional)
 
 logger = logging.getLogger(__name__)
 
@@ -135,8 +131,7 @@ class GraphRAGResult(BaseModel):
         default=0, description="Number of graph nodes explored during traversal")
     graph_paths: list[list[KnowledgeGraphRelationship]] = Field(
         default_factory=list,
-        description="Alias for relationship_paths for backward compatibility",
-    )
+        description="Alias for relationship_paths for backward compatibility")
 
     # Scoring information
     similarity_scores: list[float] = Field(
@@ -569,7 +564,7 @@ FORMAT: Return a JSON object with structure:
 }}
 
 Analyze the query now:""", input_variables=[
-                "query", "known_entities"], )
+                "query", "known_entities"])
 
         self.relationship_path_analysis_prompt = PromptTemplate(
             template="""You are an expert at analyzing relationship paths in knowledge graphs to provide context.
@@ -600,8 +595,7 @@ Analyze the relationship path now:""",
             input_variables=[
                 "query",
                 "relationship_path",
-                "path_memories"],
-        )
+                "path_memories"])
 
     async def retrieve_memories(
         self,
@@ -610,8 +604,7 @@ Analyze the relationship path now:""",
         memory_types: list[MemoryType] | None = None,
         namespace: tuple[str, ...] | None = None,
         enable_graph_traversal: bool = True,
-        max_graph_depth: Optional[int] = None,
-    ) -> GraphRAGResult:
+        max_graph_depth: Optional[int] = None) -> GraphRAGResult:
         """Retrieve memories using Graph RAG approach.
 
         Args:
@@ -652,12 +645,10 @@ Analyze the relationship path now:""",
                 (
                     result.start_entities,
                     result.traversed_entities,
-                    result.relationship_paths,
-                ) = await self._perform_graph_traversal(
+                    result.relationship_paths) = await self._perform_graph_traversal(
                     entities_info.get("direct_entities", []),
                     entities_info.get("related_entities", []),
-                    traversal_depth,
-                )
+                    traversal_depth)
                 # Populate test-expected fields
                 result.graph_nodes_explored = len(result.traversed_entities)
                 result.graph_paths = (
@@ -702,13 +693,11 @@ Analyze the relationship path now:""",
                 result.memories,
                 result.similarity_scores,
                 result.graph_scores,
-                result.final_scores,
-            ) = await self._score_memories(
+                result.final_scores) = await self._score_memories(
                 combined_memories,
                 query,
                 result.traversed_entities,
-                result.relationship_paths,
-            )
+                result.relationship_paths)
 
             # Step 8: Limit results
             if len(result.memories) > limit:
@@ -719,8 +708,7 @@ Analyze the relationship path now:""",
                         result.similarity_scores,
                         result.graph_scores,
                         result.final_scores,
-                        strict=False,
-                    )
+                        strict=False)
                 )
                 scored_memories.sort(key=lambda x: x[3], reverse=True)
 
@@ -926,8 +914,7 @@ Analyze the relationship path now:""",
     def _combine_memories(
         self,
         vector_memories: list[dict[str, Any]],
-        graph_memories: list[dict[str, Any]],
-    ) -> list[dict[str, Any]]:
+        graph_memories: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Combine and deduplicate memories from vector and graph sources.
         """
         # Use memory ID for deduplication
@@ -964,8 +951,7 @@ Analyze the relationship path now:""",
         memories: list[dict[str, Any]],
         query: str,
         graph_entities: list[KnowledgeGraphNode],
-        relationship_paths: list[list[KnowledgeGraphRelationship]],
-    ) -> tuple[list[dict[str, Any]], list[float], list[float], list[float]]:
+        relationship_paths: list[list[KnowledgeGraphRelationship]]) -> tuple[list[dict[str, Any]], list[float], list[float], list[float]]:
         """Score memories using combined vector similarity and graph centrality.
         """
         similarity_scores = []
@@ -1021,8 +1007,7 @@ Analyze the relationship path now:""",
         self,
         memory: dict[str, Any],
         entity_lookup: dict[str, KnowledgeGraphNode],
-        relationship_paths: list[list[KnowledgeGraphRelationship]],
-    ) -> float:
+        relationship_paths: list[list[KnowledgeGraphRelationship]]) -> float:
         """Calculate graph centrality score for a memory.
         """
         # Get entities associated with this memory

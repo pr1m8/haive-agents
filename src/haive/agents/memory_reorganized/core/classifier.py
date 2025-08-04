@@ -17,12 +17,7 @@ from haive.agents.memory.core.types import (
     MemoryImportance,
     MemoryQueryIntent,
     MemoryType,
-    Optional,
-    Union,
-    from,
-    import,
-    typing,
-)
+    Union)
 
 logger = logging.getLogger(__name__)
 
@@ -174,8 +169,7 @@ Determine:
         self,
         content: str,
         user_context: dict[str, Any] | None = None,
-        conversation_context: dict[str, Any] | None = None,
-    ) -> MemoryClassificationResult:
+        conversation_context: dict[str, Any] | None = None) -> MemoryClassificationResult:
         """Classify a single memory content into types and extract metadata.
 
         Args:
@@ -204,8 +198,7 @@ Determine:
             prompt = self.classification_prompt.format(
                 content=content,
                 user_context=user_context_str,
-                conversation_context=conversation_context_str,
-            )
+                conversation_context=conversation_context_str)
 
             # Get LLM classification
             result = self.llm.invoke(
@@ -277,8 +270,7 @@ Determine:
                 result = self.classify_memory(
                     content,
                     context.get("user_context"),
-                    context.get("conversation_context"),
-                )
+                    context.get("conversation_context"))
                 batch_results.append(result)
 
             results.extend(batch_results)
@@ -290,8 +282,7 @@ Determine:
         content: str,
         user_context: dict[str, Any] | None = None,
         conversation_context: dict[str, Any] | None = None,
-        namespace: Optional[str] = None,
-    ) -> MemoryEntry:
+        namespace: Optional[str] = None) -> MemoryEntry:
         """Create a complete memory entry with automatic classification.
 
         Args:
@@ -320,8 +311,7 @@ Determine:
             confidence=classification.confidence,
             user_context=user_context or {},
             session_context=conversation_context or {},
-            namespace=namespace,
-        )
+            namespace=namespace)
 
         # Calculate initial weight
         entry.calculate_current_weight()
@@ -380,8 +370,7 @@ Determine:
                 entities=entities,
                 topics=topics,
                 confidence=0.7,  # Medium confidence for parsed result
-                reasoning="Parsed from LLM response",
-            )
+                reasoning="Parsed from LLM response")
 
         except Exception as e:
             logger.exception(f"Error parsing classification result: {e}")
@@ -420,8 +409,7 @@ Determine:
             entities=self._extract_entities_simple(content),
             topics=self._extract_topics_simple(content),
             confidence=0.3,  # Low confidence for fallback
-            reasoning="Fallback rule-based classification",
-        )
+            reasoning="Fallback rule-based classification")
 
     def _parse_query_intent(
         self, llm_response: str, original_query: str
@@ -458,8 +446,7 @@ Determine:
             entities=self._extract_entities_simple(original_query),
             topics=self._extract_topics_simple(original_query),
             preferred_retrieval_strategy=(
-                "semantic" if MemoryType.SEMANTIC in memory_types else "episodic"),
-        )
+                "semantic" if MemoryType.SEMANTIC in memory_types else "episodic"))
 
     def _fallback_query_intent(self, query: str) -> MemoryQueryIntent:
         """Provide fallback query intent when LLM fails.
@@ -471,8 +458,7 @@ Determine:
             requires_reasoning=False,
             entities=self._extract_entities_simple(query),
             topics=self._extract_topics_simple(query),
-            preferred_retrieval_strategy="semantic",
-        )
+            preferred_retrieval_strategy="semantic")
 
     def _extract_entities_simple(self, text: str) -> list[str]:
         """Simple entity extraction using regex patterns.

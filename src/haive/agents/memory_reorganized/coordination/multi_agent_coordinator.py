@@ -19,18 +19,13 @@ from pydantic import BaseModel, ConfigDict, Field
 from haive.agents.memory.agentic_rag_coordinator import (
     AgenticRAGCoordinator,
     AgenticRAGCoordinatorConfig,
-    Optional,
-    from,
-    import,
-    typing,
-)
+    Optional)
 from haive.agents.memory.core.classifier import MemoryClassifier
 from haive.agents.memory.core.stores import MemoryStoreManager
 from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.kg_generator_agent import (
     KGGeneratorAgent,
-    KGGeneratorAgentConfig,
-)
+    KGGeneratorAgentConfig)
 from haive.agents.simple import SimpleAgent
 
 logger = logging.getLogger(__name__)
@@ -592,8 +587,7 @@ class MultiAgentMemoryCoordinator:
         kg_meta_state = MetaStateSchema.from_agent(
             agent=kg_agent,
             initial_state={"ready": True, "kg_ready": False},
-            graph_context={"agent_type": "kg_generator"},
-        )
+            graph_context={"agent_type": "kg_generator"})
         self.meta_agents["kg_generator"] = kg_meta_state
 
         self.agent_capabilities["kg_generator"] = MemoryAgentCapabilities(
@@ -611,8 +605,7 @@ class MultiAgentMemoryCoordinator:
                 "entity_extraction",
                 "relationship_discovery",
                 "graph_construction",
-            ],
-        )
+            ])
 
         # 2. Agentic RAG Coordinator
         rag_coordinator = AgenticRAGCoordinator(self.config.agentic_rag_config)
@@ -624,8 +617,7 @@ class MultiAgentMemoryCoordinator:
         rag_meta_state = MetaStateSchema.from_agent(
             agent=rag_coordinator,
             initial_state={"ready": True, "strategies_loaded": True},
-            graph_context={"agent_type": "agentic_rag"},
-        )
+            graph_context={"agent_type": "agentic_rag"})
         self.meta_agents["agentic_rag"] = rag_meta_state
 
         self.agent_capabilities["agentic_rag"] = MemoryAgentCapabilities(
@@ -640,15 +632,13 @@ class MultiAgentMemoryCoordinator:
                 "strategy_selection",
                 "result_fusion",
                 "intelligent_retrieval",
-            ],
-        )
+            ])
 
         # 3. Memory Store Manager (wrapped as agent)
         store_meta_state = MetaStateSchema.from_agent(
             agent=self._create_store_agent(),
             initial_state={"ready": True, "store_connected": True},
-            graph_context={"agent_type": "memory_store"},
-        )
+            graph_context={"agent_type": "memory_store"})
         self.meta_agents["memory_store"] = store_meta_state
 
         self.agent_capabilities["memory_store"] = MemoryAgentCapabilities(
@@ -662,15 +652,13 @@ class MultiAgentMemoryCoordinator:
             specialization=[
                 "memory_storage",
                 "basic_retrieval",
-                "memory_management"],
-        )
+                "memory_management"])
 
         # 4. Memory Classifier (wrapped as agent)
         classifier_meta_state = MetaStateSchema.from_agent(
             agent=self._create_classifier_agent(),
             initial_state={"ready": True, "models_loaded": True},
-            graph_context={"agent_type": "memory_classifier"},
-        )
+            graph_context={"agent_type": "memory_classifier"})
         self.meta_agents["memory_classifier"] = classifier_meta_state
 
         self.agent_capabilities["memory_classifier"] = MemoryAgentCapabilities(
@@ -684,8 +672,7 @@ class MultiAgentMemoryCoordinator:
                 "memory_classification",
                 "intent_analysis",
                 "metadata_extraction",
-            ],
-        )
+            ])
 
     def _create_store_agent(self) -> SimpleAgent:
         """Create a simple agent wrapper for memory store operations.
@@ -705,8 +692,7 @@ Available operations:
 
 Always provide clear, helpful responses about memory operations.""",
             # Pass persistence settings from config if available
-            persistence=getattr(self.config, "persistence", None),
-        )
+            persistence=getattr(self.config, "persistence", None))
 
         return store_agent
 
@@ -727,8 +713,7 @@ Available operations:
 
 Always provide detailed analysis and classification results.""",
             # Pass persistence settings from config if available
-            persistence=getattr(self.config, "persistence", None),
-        )
+            persistence=getattr(self.config, "persistence", None))
 
         return classifier_agent
 
@@ -775,8 +760,7 @@ Route the task now:""",
                 "task_type",
                 "task_parameters",
                 "agent_capabilities",
-            ],
-        )
+            ])
 
         self.task_decomposition_prompt = PromptTemplate(
             template="""You are an expert at decomposing complex memory tasks into smaller, manageable subtasks.
@@ -812,7 +796,7 @@ FORMAT: Return a JSON object with:
 }}
 
 Decompose the task now:""", input_variables=[
-                "task_description", "task_complexity", "available_agents"], )
+                "task_description", "task_complexity", "available_agents"])
 
     async def execute_task(self, task: MemoryTask) -> MemoryTask:
         """Execute a memory task using appropriate agents with intelligent routing.
@@ -986,8 +970,7 @@ Decompose the task now:""", input_variables=[
                 task_description=task.query,
                 task_type=task.type,
                 task_parameters=str(task.parameters),
-                agent_capabilities="\n".join(capabilities_desc),
-            )
+                agent_capabilities="\n".join(capabilities_desc))
 
             # Get routing decision from LLM
             response = await self.coordinator_llm.ainvoke(
@@ -1083,8 +1066,7 @@ Decompose the task now:""", input_variables=[
         # Execute agent with task query
         result = await meta_state.execute_agent(
             input_data={"messages": [{"role": "user", "content": task.query}]},
-            update_state=True,
-        )
+            update_state=True)
 
         return result
 
@@ -1107,8 +1089,7 @@ Decompose the task now:""", input_variables=[
                 meta_state = self.meta_agents[agent_name]
                 task_coro = meta_state.execute_agent(
                     input_data={"messages": [{"role": "user", "content": task.query}]},
-                    update_state=True,
-                )
+                    update_state=True)
                 tasks.append(task_coro)
 
         # Wait for all to complete
@@ -1146,8 +1127,7 @@ Decompose the task now:""", input_variables=[
                     input_data={
                         "messages": [{"role": "user", "content": current_input}]
                     },
-                    update_state=True,
-                )
+                    update_state=True)
                 results.append(result)
 
                 # Use result as input for next agent
@@ -1172,8 +1152,7 @@ Decompose the task now:""", input_variables=[
                 "primary_agent": "agentic_rag",
                 "secondary_agents": [],
                 "execution_strategy": "single",
-            },
-        )
+            })
 
     def _parse_json_response(self, response: str) -> dict[str, Any] | None:
         """Parse JSON response from LLM.
@@ -1275,8 +1254,7 @@ Decompose the task now:""", input_variables=[
             query=f"Store this memory: {content}",
             parameters={"content": content},
             namespace=namespace,
-            priority=5,
-        )
+            priority=5)
 
         result_task = await self.execute_task(task)
 
@@ -1289,8 +1267,7 @@ Decompose the task now:""", input_variables=[
         query: str,
         limit: int = 10,
         memory_types: list[MemoryType] | None = None,
-        namespace: tuple[str, ...] | None = None,
-    ) -> list[dict[str, Any]]:
+        namespace: tuple[str, ...] | None = None) -> list[dict[str, Any]]:
         """Retrieve memories using the multi-agent system with intelligent routing.
 
         This method creates a memory retrieval task and routes it to the most appropriate
@@ -1354,8 +1331,7 @@ Decompose the task now:""", input_variables=[
             parameters={"limit": limit},
             namespace=namespace,
             memory_types=memory_types,
-            priority=3,
-        )
+            priority=3)
 
         result_task = await self.execute_task(task)
 
@@ -1435,8 +1411,7 @@ Decompose the task now:""", input_variables=[
             type="analyze_memory",
             query=f"Analyze this memory: {content}",
             parameters={"content": content},
-            priority=4,
-        )
+            priority=4)
 
         result_task = await self.execute_task(task)
 
@@ -1521,8 +1496,7 @@ Decompose the task now:""", input_variables=[
             query="Extract and build knowledge graph from memories",
             parameters={},
             namespace=namespace,
-            priority=6,
-        )
+            priority=6)
 
         result_task = await self.execute_task(task)
 
@@ -1689,8 +1663,7 @@ Decompose the task now:""", input_variables=[
                             {"role": "user", "content": "System diagnostic test"}
                         ]
                     },
-                    update_state=False,
-                )
+                    update_state=False)
                 diagnostic_results[agent_name] = {
                     "status": "healthy",
                     "test_result": (

@@ -19,11 +19,7 @@ from haive.agents.memory_v2.graph_memory_agent import (
     GraphMemoryAgent,
     GraphMemoryConfig,
     GraphMemoryMode,
-    Optional,
-    from,
-    import,
-    typing,
-)
+    Optional)
 from haive.agents.memory_v2.long_term_memory_agent import LongTermMemoryAgent
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
 from haive.agents.multi.simple.agent import SimpleMultiAgent
@@ -53,8 +49,7 @@ class IntegratedMemorySystem:
         user_id: str = "default_user",
         neo4j_config: dict[str, Any] | None = None,
         vector_store_path: Optional[str] = None,
-        engine: Optional[AugLLMConfig] = None,
-    ):
+        engine: Optional[AugLLMConfig] = None):
         self.user_id = user_id
         self.engine = engine or AugLLMConfig(temperature=0.7)
 
@@ -83,8 +78,7 @@ class IntegratedMemorySystem:
                     "neo4j_username": "neo4j",
                     "neo4j_password": "password",
                 }
-            ),
-        )
+            ))
         self.graph_memory = GraphMemoryAgent(config)
 
     def _init_react_memory(self, vector_store_path: Optional[str]):
@@ -96,8 +90,7 @@ class IntegratedMemorySystem:
             user_id=self.user_id,
             memory_store_path=vector_store_path,
             k=5,
-            use_time_weighting=True,
-        )
+            use_time_weighting=True)
 
     def _init_longterm_memory(self):
         """Initialize long-term memory for persistence.
@@ -238,8 +231,7 @@ the best memory system(s) to use:
 - structured: For entities, relationships, and structured knowledge (Neo4j graph)
 - conversational: For dialogue, opinions, and temporal information (React memory)
 - persistent: For important facts and long-term knowledge (Long-term memory)
-- hybrid: When multiple systems should be used together""",
-        )
+- hybrid: When multiple systems should be used together""")
 
         return router
 
@@ -257,8 +249,7 @@ the best memory system(s) to use:
             name="memory_coordinator",
             engine=self.engine,
             agents=agents,
-            mode="sequential",
-        )
+            mode="sequential")
 
         return coordinator
 
@@ -266,8 +257,7 @@ the best memory system(s) to use:
         self,
         content: str,
         mode: MemorySystemMode = MemorySystemMode.INTELLIGENT,
-        metadata: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
+        metadata: dict[str, Any] | None = None) -> dict[str, Any]:
         """Store memory using the appropriate system(s).
 
         Args:
@@ -328,8 +318,7 @@ the best memory system(s) to use:
         self,
         query: str,
         mode: MemorySystemMode = MemorySystemMode.INTELLIGENT,
-        combine_results: bool = True,
-    ) -> dict[str, Any]:
+        combine_results: bool = True) -> dict[str, Any]:
         """Query memory using appropriate system(s).
 
         Args:
@@ -441,8 +430,7 @@ Synthesize these results into a comprehensive answer.
                 RETURN node_labels[0] as type, count
                 ORDER BY count DESC
             """,
-                {"user_id": self.user_id},
-            )
+                {"user_id": self.user_id})
 
             analytics["systems"]["graph"] = {
                 "node_distribution": graph_stats,
@@ -507,8 +495,7 @@ async def demo_integrated_memory():
             "neo4j_uri": "bolt://localhost:7687",
             "neo4j_username": "neo4j",
             "neo4j_password": "password",
-        },
-    )
+        })
 
     print("=== Integrated Memory System Demo ===\n")
 
@@ -572,8 +559,7 @@ async def create_research_assistant():
             "neo4j_uri": "bolt://localhost:7687",
             "neo4j_username": "neo4j",
             "neo4j_password": "password",
-        },
-    )
+        })
 
     # Create custom tools using the memory system
     @tool
@@ -626,8 +612,7 @@ async def create_research_assistant():
         tools=[remember_paper, find_related_papers, get_research_graph],
         system_message="""You are a research assistant with advanced memory capabilities.
 You can remember papers, find related research, and explore knowledge graphs.
-Always store important information in memory for future reference.""",
-    )
+Always store important information in memory for future reference.""")
 
     return research_assistant, memory_system
 

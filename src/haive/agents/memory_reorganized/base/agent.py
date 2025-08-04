@@ -15,16 +15,11 @@ from datetime import datetime
 from typing import Any
 
 from agents.memory_agent.memory_utils import (
-    Optional,
     create_memory_vectorstore,
-    from,
     get_user_id_from_state,
-    import,
     retrieve_memories,
     save_structured_memories,
-    save_unstructured_memories,
-    typing,
-)
+    save_unstructured_memories)
 from agents.react.memory.config import MemoryAgentConfig
 from agents.react.react.agent import ReactAgent
 from haive.core.engine.agent.agent import register_agent
@@ -105,8 +100,7 @@ class MemoryAgent(ReactAgent):
                     query,
                     self.config.vector_store,
                     user_id,
-                    limit=self.config.max_memories_per_retrieval,
-                )
+                    limit=self.config.max_memories_per_retrieval)
                 return memories
             except Exception as e:
                 logger.exception(f"Error recalling memories: {e}")
@@ -117,22 +111,19 @@ class MemoryAgent(ReactAgent):
             func=save_memory,
             name="save_memory",
             description="Save an important fact or detail about the user for future reference",
-            return_direct=False,
-        )
+            return_direct=False)
 
         structured_memory_save_tool = StructuredTool.from_function(
             func=save_structured_memory,
             name="save_structured_memory",
             description="Save a structured fact as a knowledge triple (subject, predicate, object)",
-            return_direct=False,
-        )
+            return_direct=False)
 
         memory_recall_tool = StructuredTool.from_function(
             func=recall_memory,
             name="recall_memories",
             description="Search for relevant memories about the current user",
-            return_direct=False,
-        )
+            return_direct=False)
 
         # Add memory tools to existing tools
         memory_tools = [memory_save_tool, memory_recall_tool]
@@ -185,8 +176,7 @@ class MemoryAgent(ReactAgent):
         gb.add_node(
             name=self.config.memory_load_node_name,
             config=self._load_memories,
-            command_goto="extract_query",
-        )
+            command_goto="extract_query")
         gb.set_entry_point(self.config.memory_load_node_name)
 
         # Add query extraction node
@@ -197,8 +187,7 @@ class MemoryAgent(ReactAgent):
         gb.add_node(
             name=self.config.memory_extract_node_name,
             config=self._extract_memories,
-            command_goto="add_system",
-        )
+            command_goto="add_system")
 
         # Add system message if provided
         if self.config.system_prompt or self.config.memory_system_prompt:
@@ -217,8 +206,7 @@ class MemoryAgent(ReactAgent):
         gb.add_node(
             name=self.config.memory_save_node_name,
             config=self._save_memories,
-            command_goto=END,
-        )
+            command_goto=END)
 
         # Modify the standard flow to include memory saving
         # We want the LLM to return to memory extraction after tool execution
@@ -239,8 +227,7 @@ class MemoryAgent(ReactAgent):
             {
                 self.config.tool_node_name: self.config.tool_node_name,
                 self.config.memory_save_node_name: self.config.memory_save_node_name,
-            },
-        )
+            })
 
         # Add structured output node if schema provided
         if self.config.structured_output_schema:
@@ -301,8 +288,7 @@ class MemoryAgent(ReactAgent):
                     query,
                     self.config.vector_store,
                     user_id,
-                    limit=self.config.max_memories_per_retrieval,
-                )
+                    limit=self.config.max_memories_per_retrieval)
 
                 # Add to result
                 result["recall_memories"] = memories

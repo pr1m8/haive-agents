@@ -26,11 +26,7 @@ from haive.agents.memory.core.stores import MemoryStoreConfig, MemoryStoreManage
 from haive.agents.memory.core.types import (
     MemoryQueryIntent,
     MemoryType,
-    Optional,
-    from,
-    import,
-    typing,
-)
+    Optional)
 
 logger = logging.getLogger(__name__)
 
@@ -75,8 +71,7 @@ class EnhancedRetrieverConfig(BaseModel):
             MemoryType.FEEDBACK.value: 1.2,  # Boost feedback for improvement
             MemoryType.SYSTEM.value: 0.6,
         },
-        description="Weight multipliers for different memory types",
-    )
+        description="Weight multipliers for different memory types")
 
     # Time-based scoring
     enable_temporal_scoring: bool = Field(
@@ -191,8 +186,7 @@ class EnhancedMemoryRetriever:
         time_range: tuple[datetime, datetime] | None = None,
         limit: Optional[int] = None,
         include_metadata: bool = True,
-        namespace: tuple[str, ...] | None = None,
-    ) -> EnhancedQueryResult:
+        namespace: tuple[str, ...] | None = None) -> EnhancedQueryResult:
         """Retrieve memories using enhanced self-query with memory context.
 
         Args:
@@ -235,8 +229,7 @@ class EnhancedMemoryRetriever:
                 memory_types=memory_types,
                 limit=limit or self.config.max_limit,  # Retrieve more for re-ranking
                 time_range=time_range,
-                importance_threshold=importance_threshold,
-            )
+                importance_threshold=importance_threshold)
 
             retrieval_time = (
                 datetime.utcnow() - retrieval_start
@@ -247,8 +240,7 @@ class EnhancedMemoryRetriever:
                 memories=raw_memories,
                 query=query,
                 query_intent=query_intent,
-                memory_types=memory_types,
-            )
+                memory_types=memory_types)
 
             # Phase 5: Final Limiting and Metadata Assembly
             final_limit = limit or self.config.default_limit
@@ -283,8 +275,7 @@ class EnhancedMemoryRetriever:
                 final_scores=final_scores,
                 retrieval_time_ms=retrieval_time,
                 classification_time_ms=classification_time,
-                total_time_ms=total_time,
-            )
+                total_time_ms=total_time)
 
             logger.info(
                 f"Enhanced retrieval completed: {
@@ -348,8 +339,7 @@ class EnhancedMemoryRetriever:
         memories: list[dict[str, Any]],
         query: str,
         query_intent: MemoryQueryIntent,
-        memory_types: list[MemoryType],
-    ) -> list[dict[str, Any]]:
+        memory_types: list[MemoryType]) -> list[dict[str, Any]]:
         """Apply enhanced multi-factor scoring to memories.
         """
         try:
@@ -533,8 +523,7 @@ async def create_enhanced_memory_retriever(
     store_manager: StoreManager,
     namespace: tuple[str, ...] = ("memory", "enhanced"),
     classifier_config: Optional[MemoryClassifierConfig] = None,
-    **retriever_kwargs,
-) -> EnhancedMemoryRetriever:
+    **retriever_kwargs) -> EnhancedMemoryRetriever:
     """Factory function to create an enhanced memory retriever.
 
     Args:
@@ -555,8 +544,7 @@ async def create_enhanced_memory_retriever(
             k: v
             for k, v in retriever_kwargs.items()
             if k in MemoryStoreConfig.__fields__
-        },
-    )
+        })
 
     memory_store_manager = MemoryStoreManager(memory_store_config)
 
@@ -572,7 +560,6 @@ async def create_enhanced_memory_retriever(
             k: v
             for k, v in retriever_kwargs.items()
             if k in EnhancedRetrieverConfig.__fields__
-        },
-    )
+        })
 
     return EnhancedMemoryRetriever(retriever_config)

@@ -17,14 +17,9 @@ from pydantic import Field, field_validator, model_validator
 
 from haive.agents.memory.models.base import BaseMemoryModel
 from haive.agents.memory.models.episodic.mixins import (
-    Optional,
     PerformanceMetrics,
     TaskExecution,
-    TemporalMixin,
-    from,
-    import,
-    typing,
-)
+    TemporalMixin)
 
 
 class EpisodicMemory(BaseMemoryModel, TemporalMixin):

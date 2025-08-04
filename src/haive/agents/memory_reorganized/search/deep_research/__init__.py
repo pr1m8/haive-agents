@@ -8,16 +8,14 @@ from deep_research.agent import (
     get_response_model,
     get_search_instructions,
     get_system_prompt,
-    organize_findings_by_theme,
-)
+    organize_findings_by_theme)
 from deep_research.models import (
     Config,
     DeepResearchRequest,
     DeepResearchResponse,
     ResearchQuery,
     ResearchSection,
-    ResearchSource,
-)
+    ResearchSource)
 
 __all__ = [
     "Config",

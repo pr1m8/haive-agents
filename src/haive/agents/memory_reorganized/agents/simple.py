@@ -22,8 +22,7 @@ from ..base.memory_state_original import (  # Import original models for compati
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryState,
-    MemoryType,
-)
+    MemoryType)
 from ..base.token_state import MemoryStateWithTokens
 from ..core.memory_tools import (
     MemoryConfig,
@@ -31,8 +30,7 @@ from ..core.memory_tools import (
     get_memory_stats,
     retrieve_memory,
     search_memory,
-    store_memory,
-)
+    store_memory)
 from ..core.token_tracker import TokenThresholds, TokenTracker
 
 # Graph transformer imports - optional
@@ -41,8 +39,7 @@ try:
     from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         EntityNode,
         EntityRelationship,
-        KnowledgeGraph,
-    )
+        KnowledgeGraph)
 
     HAS_GRAPH_MODELS = True
 except ImportError:
@@ -154,21 +151,18 @@ class TokenAwareMemoryConfig(MemoryConfig):
     summarization_strategy: str = Field(
         default="progressive",
         pattern="^(progressive|aggressive|selective)$",
-        description="How to summarize: progressive, aggressive, or selective",
-    )
+        description="How to summarize: progressive, aggressive, or selective")
 
     target_compression_ratio: float = Field(
         default=0.3,
         ge=0.1,
         le=0.8,
-        description="Target size after summarization (30% of original)",
-    )
+        description="Target size after summarization (30% of original)")
 
     preserve_recent_memories: int = Field(
         default=10,
         ge=0,
-        description="Number of recent memories to preserve unsummarized",
-    )
+        description="Number of recent memories to preserve unsummarized")
 
     # Running summary
     enable_running_summary: bool = Field(
@@ -243,13 +237,11 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     # Memory-specific configuration
     memory_config: TokenAwareMemoryConfig = Field(
         default_factory=TokenAwareMemoryConfig,
-        description="Token-aware memory configuration",
-    )
+        description="Token-aware memory configuration")
 
     token_tracker: TokenTracker = Field(
         default_factory=lambda: TokenTracker(max_context_tokens=8000),
-        description="Token usage tracker",
-    )
+        description="Token usage tracker")
 
     # State tracking
     running_summary: Optional[str] = Field(
@@ -263,8 +255,7 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     # Graph transformation components
     graph_transformer: Optional[GraphTransformer] = Field(
         default=None,
-        description="Graph transformer for converting content to knowledge graphs",
-    )
+        description="Graph transformer for converting content to knowledge graphs")
 
     graph_enabled: bool = Field(
         default=True,
@@ -342,8 +333,7 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
         self.token_tracker.max_context_tokens = self.memory_config.max_context_tokens
         self.token_tracker.thresholds = TokenThresholds(
             warning=self.memory_config.warning_threshold,
-            critical=self.memory_config.critical_threshold,
-        )
+            critical=self.memory_config.critical_threshold)
 
         # Add memory tools to engine
         if self.engine:
@@ -468,8 +458,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
         graph = BaseGraph(
             name=f"{
                 self.name}_graph",
-            state_schema=self.state_schema,
-        )
+            state_schema=self.state_schema)
 
         # PRE-HOOK NODE: Token checking and route decision
         graph.add_node("pre_hook", self.pre_hook_node)
@@ -862,8 +851,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                 state.apply_summarization_result(
                     summary=summary_text,
                     summarized_message_ids=message_ids,
-                    summarized_memory_ids=memory_ids,
-                )
+                    summarized_memory_ids=memory_ids)
 
                 logger.info(
                     f"Critical summarization complete: {
@@ -938,8 +926,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                 state.apply_summarization_result(
                     summary=summary_text,
                     summarized_message_ids=[],  # No messages summarized
-                    summarized_memory_ids=memory_ids,
-                )
+                    summarized_memory_ids=memory_ids)
 
                 logger.info(
                     f"Warning summarization complete: {
@@ -1027,8 +1014,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                     importance=ImportanceLevel.MEDIUM,
                     tags=["consolidated"],
                     confidence=0.8,
-                    metadata={"consolidation_type": mem_type},
-                )
+                    metadata={"consolidation_type": mem_type})
                 consolidated.append(consolidated_memory)
             else:
                 consolidated.extend(memories)
@@ -1182,8 +1168,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                         type=rel.type,
                         properties=rel.properties or {},
                         confidence_score=0.8,  # Default confidence
-                        supporting_evidence=f"Extracted from: {combined_content[:100]}...",
-                    )
+                        supporting_evidence=f"Extracted from: {combined_content[:100]}...")
                     all_relationships.append(entity_rel)
 
             # Create knowledge graph
@@ -1322,8 +1307,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                         "content_summary": combined_content[:200] + "...",
                         "timestamp": datetime.now().isoformat(),
                         "content_count": len(content_parts),
-                    },
-                )
+                    })
                 state.knowledge_graph.add_node(summary_node)
                 new_nodes.append(summary_node)
 
@@ -1457,8 +1441,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                     importance=ImportanceLevel.HIGH,
                     tags=["summary"],
                     confidence=0.9,
-                    metadata={"summarization_type": "critical_threshold"},
-                )
+                    metadata={"summarization_type": "critical_threshold"})
 
                 # Update state with new memory list
                 new_memories = [summarized_memory, *to_preserve]
@@ -1513,8 +1496,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                         memory_content=memory.content,
                         compression_ratio=int(
                             self.memory_config.target_compression_ratio * 100
-                        ),
-                    )
+                        ))
 
                     response = self.engine.invoke(rewrite_input)
                     rewritten_content = (
@@ -1534,8 +1516,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                         confidence=memory.confidence,
                         metadata={
                             **memory.metadata,
-                            "original_source": memory.source},
-                    )
+                            "original_source": memory.source})
                     rewritten_memories.append(rewritten_memory)
                 else:
                     rewritten_memories.append(memory)
@@ -1581,8 +1562,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                 update_input = prompt.format_messages(
                     current_summary=self.running_summary,
                     new_memories=new_memories_text,
-                    target_tokens=self.memory_config.running_summary_max_tokens,
-                )
+                    target_tokens=self.memory_config.running_summary_max_tokens)
 
                 response = self.engine.invoke(update_input)
                 self.running_summary = (

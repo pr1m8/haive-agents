@@ -57,8 +57,7 @@ class FactualMemory(BaseModel):
     source: str | None = Field(default=None, description="Source of the information")
     verification_level: str = Field(
         default="stated",
-        description="Level of verification: stated, confirmed, verified",
-    )
+        description="Level of verification: stated, confirmed, verified")
 
 
 class PersonalContext(BaseModel):

@@ -17,13 +17,8 @@ from haive.agents.memory.search.labs.models import (
     AssetType,
     InteractiveApp,
     LabsResponse,
-    Optional,
     ProjectAsset,
-    WorkflowStep,
-    from,
-    import,
-    typing,
-)
+    WorkflowStep)
 
 logger = logging.getLogger(__name__)
 
@@ -78,8 +73,7 @@ class LabsAgent(BaseSearchAgent):
         engine: Optional[AugLLMConfig] = None,
         search_tools: list[Tool] | None = None,
         enable_code_execution: bool = True,
-        **kwargs,
-    ):
+        **kwargs):
         """Initialize the Labs Agent.
 
         Args:
@@ -94,8 +88,7 @@ class LabsAgent(BaseSearchAgent):
             engine = AugLLMConfig(
                 temperature=0.3,  # Balanced for creativity and precision
                 max_tokens=2000,  # Longer responses for project work
-                system_message=self.get_system_prompt(),
-            )
+                system_message=self.get_system_prompt())
 
         super().__init__(name=name, engine=engine, search_tools=search_tools, **kwargs)
 
@@ -521,16 +514,14 @@ Execute each project with professional standards and comprehensive automation.""
                 result = await self.tools[1].arun(
                     data_description="Project data",
                     chart_type="bar",
-                    title=step_plan["name"],
-                )
+                    title=step_plan["name"])
 
             elif tool_name == "create_interactive_app":
                 # Create interactive app
                 result = await self.tools[2].arun(
                     app_type="dashboard",
                     features=["charts", "filters", "export"],
-                    data_sources=["data.csv"],
-                )
+                    data_sources=["data.csv"])
 
             elif tool_name == "process_data_file":
                 # Process data file
@@ -563,8 +554,7 @@ Execute each project with professional standards and comprehensive automation.""
                 error_message=(
                     result.get("error") if not result.get(
                         "success",
-                        True) else None),
-            )
+                        True) else None))
 
         except Exception as e:
             duration = time.time() - start_time
@@ -581,8 +571,7 @@ Execute each project with professional standards and comprehensive automation.""
                 output_data={},
                 duration_seconds=duration,
                 success=False,
-                error_message=str(e),
-            )
+                error_message=str(e))
 
     def create_project_assets(
         self, workflow_steps: list[WorkflowStep]
@@ -616,8 +605,7 @@ Execute each project with professional standards and comprehensive automation.""
                         metadata={
                             "chart_type": output_data.get("chart_type"),
                             "step_id": step.step_id,
-                        },
-                    )
+                        })
                 )
 
             # Create app assets
@@ -633,8 +621,7 @@ Execute each project with professional standards and comprehensive automation.""
                         metadata={
                             "app_type": output_data.get("app_type"),
                             "features": output_data.get("features", []),
-                        },
-                    )
+                        })
                 )
 
             # Create data processing assets
@@ -661,8 +648,7 @@ Execute each project with professional standards and comprehensive automation.""
                                 "operations_performed",
                                 []),
                             "step_id": step.step_id,
-                        },
-                    ))
+                        }))
 
         return assets
 
@@ -709,8 +695,7 @@ Execute each project with professional standards and comprehensive automation.""
                         interactive_elements=output_data.get(
                             "features",
                             []),
-                        deployment_url=output_data.get("deployment_url"),
-                    ))
+                        deployment_url=output_data.get("deployment_url")))
 
         return apps
 
@@ -722,8 +707,7 @@ Execute each project with professional standards and comprehensive automation.""
         required_tools: list[str] | None = None,
         create_interactive_app: bool = True,
         max_work_time: int = 600,
-        save_to_memory: bool = True,
-    ) -> LabsResponse:
+        save_to_memory: bool = True) -> LabsResponse:
         """Process a Labs project with comprehensive automation.
 
         Args:
@@ -835,8 +819,7 @@ Execute each project with professional standards and comprehensive automation.""
             next_steps=next_steps,
             metadata={
                 "project_type": project_type,
-                "max_work_time": max_work_time},
-        )
+                "max_work_time": max_work_time})
 
         # Save to memory if requested
         if save_to_memory:
@@ -852,8 +835,7 @@ Execute each project with professional standards and comprehensive automation.""
         self,
         query: str,
         context: dict[str, Any] | None = None,
-        save_to_memory: bool = True,
-    ) -> LabsResponse:
+        save_to_memory: bool = True) -> LabsResponse:
         """Process a search query with default Labs settings.
 
         Args:
@@ -874,5 +856,4 @@ Execute each project with professional standards and comprehensive automation.""
             query=query,
             project_type=project_type,
             data_sources=data_sources,
-            save_to_memory=save_to_memory,
-        )
+            save_to_memory=save_to_memory)

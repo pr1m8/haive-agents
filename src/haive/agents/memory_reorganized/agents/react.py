@@ -37,8 +37,7 @@ class ReactMemoryAgent:
         memory_store_path: str | None = None,
         k: int = 5,
         decay_rate: float = 0.01,
-        use_time_weighting: bool = True,
-    ):
+        use_time_weighting: bool = True):
         self.name = name
         self.engine = engine or AugLLMConfig(temperature=0.7)
         self.user_id = user_id or "default_user"
@@ -55,29 +54,24 @@ class ReactMemoryAgent:
                 self.vector_store = FAISS.load_local(
                     memory_store_path,
                     self.embeddings,
-                    allow_dangerous_deserialization=True,
-                )
+                    allow_dangerous_deserialization=True)
             except:
                 # Create new if doesn't exist
                 self.vector_store = FAISS.from_documents(
                     [
                         Document(
                             page_content="Initial memory",
-                            metadata={"timestamp": datetime.now().isoformat()},
-                        )
+                            metadata={"timestamp": datetime.now().isoformat()})
                     ],
-                    self.embeddings,
-                )
+                    self.embeddings)
         else:
             self.vector_store = FAISS.from_documents(
                 [
                     Document(
                         page_content="Initial memory",
-                        metadata={"timestamp": datetime.now().isoformat()},
-                    )
+                        metadata={"timestamp": datetime.now().isoformat()})
                 ],
-                self.embeddings,
-            )
+                self.embeddings)
 
         # Initialize retrievers
         if self.use_time_weighting:
@@ -95,8 +89,7 @@ class ReactMemoryAgent:
             name=self.name,
             engine=self.engine,
             tools=self.memory_tools,
-            system_message=self._get_system_message(),
-        )
+            system_message=self._get_system_message())
 
     def _get_system_message(self) -> str:
         """Get system message that instructs agent on memory usage."""
@@ -223,8 +216,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
             content: str,
             memory_type: str = "conversation",
             importance: str = "normal",
-            tags: str | None = None,
-        ) -> str:
+            tags: str | None = None) -> str:
             """Store a new memory.
 
             Args:
@@ -310,8 +302,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                 doc = Document(
                     page_content=f"[DELETED] Memory identified by: {memory_id}",
-                    metadata=metadata,
-                )
+                    metadata=metadata)
 
                 self.vector_store.add_documents([doc])
 
@@ -337,8 +328,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
                 sorted_docs = sorted(
                     all_docs,
                     key=lambda d: d.metadata.get("timestamp", ""),
-                    reverse=True,
-                )[:k]
+                    reverse=True)[:k]
 
                 if not sorted_docs:
                     return "No memories found."
@@ -417,8 +407,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
         name: str = "custom_memory_agent",
         engine: AugLLMConfig | None = None,
         custom_tools: list[Any] | None = None,
-        **kwargs,
-    ) -> "ReactMemoryAgent":
+        **kwargs) -> "ReactMemoryAgent":
         """Create ReactMemoryAgent with additional custom tools.
 
         Args:
@@ -440,8 +429,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
                 name=name,
                 engine=agent.engine,
                 tools=all_tools,
-                system_message=agent._get_system_message(),
-            )
+                system_message=agent._get_system_message())
 
         return agent
 
@@ -457,8 +445,7 @@ async def example_basic_usage():
     # First conversation
     response1 = await agent.arun(
         "Hi, I'm Alice. I work as a data scientist at TechCorp and I love hiking.",
-        auto_save=True,
-    )
+        auto_save=True)
     print("Response 1:", response1)
 
     # Later conversation - agent should remember
@@ -495,8 +482,7 @@ async def example_with_custom_tools():
     agent = ReactMemoryAgent.create_with_custom_tools(
         name="enhanced_assistant",
         custom_tools=[calculate_days_since],
-        user_id="bob_jones",
-    )
+        user_id="bob_jones")
 
     # Use both memory and custom tools
     response = await agent.arun(

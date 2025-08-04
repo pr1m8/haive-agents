@@ -25,8 +25,7 @@ class MemoryAgentState(ReactAgentState):
     # Memories extracted from the current conversation
     extracted_memories: list[MemoryItem | KnowledgeTriple] = Field(
         default_factory=list,
-        description="Memories extracted from the current conversation",
-    )
+        description="Memories extracted from the current conversation")
 
     # User information
     user_id: str | None = Field(default=None, description="ID of the current user")
@@ -40,5 +39,4 @@ class MemoryAgentState(ReactAgentState):
     )
 
     model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
+        arbitrary_types_allowed=True)
