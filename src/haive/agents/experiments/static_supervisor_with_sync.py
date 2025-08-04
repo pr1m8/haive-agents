@@ -10,7 +10,7 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool, tool
-from langgraph_supervisor import create_forward_message_tool, create_handoff_tool
+# from langgraph_supervisor import create_forward_message_tool, create_handoff_tool  # Module doesn't exist
 from pydantic import BaseModel, Field, model_validator
 from haive.agents.base.agent import Agent
 from haive.agents.react.agent import ReactAgent
