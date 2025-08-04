@@ -7,27 +7,23 @@ from haive.agents.reasoning_and_critique.reflection.agent import (
     initial_response_function,
     reflection_function,
     search_function,
-    setup_workflow,
-)
+    setup_workflow)
 from haive.agents.reasoning_and_critique.reflection.config import (
     ReflectionAgentConfig,
     ReflectionConfig,
     from_aug_llm,
-    from_scratch,
-)
+    from_scratch)
 from haive.agents.reasoning_and_critique.reflection.models import (
     ReflectionOutput,
     ReflectionResult,
     SearchQuery,
     as_message,
-    normalized_score,
-)
+    normalized_score)
 from haive.agents.reasoning_and_critique.reflection.state import (
     ReflectionAgentState,
     add_reflection,
     last_ai_message,
-    last_human_message,
-)
+    last_human_message)
 
 __all__ = [
     "ReflectionAgent",

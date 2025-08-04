@@ -39,19 +39,15 @@ except ImportError:
     ToTAgent = None
     setup_workflow = None
 from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
-    CandidateGeneration as NewCandidateGeneration,
-)
+    CandidateGeneration as NewCandidateGeneration)
 from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
-    CandidateGenerator,
-)
+    CandidateGenerator)
 from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
     ScoredSolution,
     SolutionScorer,
-    SolutionScoring,
-)
+    SolutionScoring)
 from haive.agents.reasoning_and_critique.tot.config import (
-    TOTAgentConfig,
-)
+    TOTAgentConfig)
 from haive.agents.reasoning_and_critique.tot.models import (
     Candidate,
     CandidateEvaluation,
@@ -60,26 +56,22 @@ from haive.agents.reasoning_and_critique.tot.models import (
     EquationGeneration,
     Score,
     ScoredCandidate,
-    update_candidates,
-)
+    update_candidates)
 from haive.agents.reasoning_and_critique.tot.orchestrator import (
     TOTResult,
     TreeOfThoughtsOrchestrator,
-    create_tot_solver,
-)
+    create_tot_solver)
 from haive.agents.reasoning_and_critique.tot.state import (
     TOTInput,
     TOTOutput,
-    TOTState,
-)
+    TOTState)
 
 try:
     from haive.agents.reasoning_and_critique.tot.tree_of_thoughts_agent import (
         TOTCommand,
         TOTIteration,
         TreeOfThoughtsAgent,
-        create_tree_of_thoughts_agent,
-    )
+        create_tree_of_thoughts_agent)
 except ImportError:
     # Handle missing setup_workflow
 

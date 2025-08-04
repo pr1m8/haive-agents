@@ -62,8 +62,7 @@ class ReflectionAgent(SimpleAgent):
         gb.add_node(
             name=self.config.initial_node_name,
             config=self._create_initial_response_function(),
-            command_goto=self.config.reflection_node_name,
-        )
+            command_goto=self.config.reflection_node_name)
 
         # Add reflection node
         gb.add_node(
@@ -76,8 +75,7 @@ class ReflectionAgent(SimpleAgent):
         gb.add_node(
             name=self.config.improvement_node_name,
             config=self._create_improvement_function(),
-            command_goto=self.config.evaluation_node_name,
-        )
+            command_goto=self.config.evaluation_node_name)
 
         # Add evaluation node
         gb.add_node(
@@ -91,8 +89,7 @@ class ReflectionAgent(SimpleAgent):
             gb.add_node(
                 name=self.config.search_node_name,
                 config=self._create_search_function(),
-                command_goto=self.config.improvement_node_name,
-            )
+                command_goto=self.config.improvement_node_name)
 
         # Add START edge
         gb.add_edge(START, self.config.initial_node_name)
@@ -104,22 +101,19 @@ class ReflectionAgent(SimpleAgent):
             gb.add_conditional_edges(
                 from_node=self.config.reflection_node_name,
                 condition_or_branch=self._should_continue_reflection,
-                routes={"continue": self.config.search_node_name, "end": END},
-            )
+                routes={"continue": self.config.search_node_name, "end": END})
         else:
             # Route directly to improvement if search is disabled
             gb.add_conditional_edges(
                 from_node=self.config.reflection_node_name,
                 condition_or_branch=self._should_continue_reflection,
-                routes={"continue": self.config.improvement_node_name, "end": END},
-            )
+                routes={"continue": self.config.improvement_node_name, "end": END})
 
         # Add conditional edge from evaluate to either reflect again or end
         gb.add_conditional_edges(
             from_node=self.config.evaluation_node_name,
             condition_or_branch=self._should_continue_improvement,
-            routes={"continue": self.config.reflection_node_name, "end": END},
-        )
+            routes={"continue": self.config.reflection_node_name, "end": END})
 
         # Get the built graph (not compiled yet)
         self.graph = gb.build()

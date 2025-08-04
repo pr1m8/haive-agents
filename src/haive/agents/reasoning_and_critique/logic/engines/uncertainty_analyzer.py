@@ -168,8 +168,7 @@ Provide comprehensive uncertainty analysis:
 5. **Recommendations**
    - Which uncertainties to reduce first
    - How to make reasoning more robust
-   - What additional info would help most""",
-        ),
+   - What additional info would help most"""),
         ("human", "Analyze uncertainty in this reasoning:\n{reasoning_chain}"),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
@@ -182,5 +181,4 @@ def create_uncertainty_analyzer() -> Any:
         name="uncertainty_analyzer",
         prompt_template=UNCERTAINTY_ANALYSIS_PROMPT,
         structured_output_model=UncertaintyAnalysis,
-        temperature=0.3,
-    )
+        temperature=0.3)

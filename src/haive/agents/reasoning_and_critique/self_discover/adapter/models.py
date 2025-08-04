@@ -15,8 +15,7 @@ class AdaptedModule(BaseModel):
     concrete_steps: list[str] = Field(
         ...,
         description="Concrete steps or questions for applying this module",
-        min_length=2,
-    )
+        min_length=2)
     expected_insights: str = Field(
         ..., description="What insights this adapted module should provide"
     )

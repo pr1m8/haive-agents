@@ -98,8 +98,7 @@ class SelfDiscoverSelector(SimpleAgentV3):
             temperature=0.3,
             max_tokens=1000,
             structured_output_model=ModuleSelectionOutput,
-            system_message="You are an expert at selecting appropriate reasoning strategies for tasks.",
-        )
+            system_message="You are an expert at selecting appropriate reasoning strategies for tasks.")
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -107,8 +106,7 @@ class SelfDiscoverSelector(SimpleAgentV3):
             [
                 (
                     "system",
-                    "You are an expert at selecting appropriate reasoning strategies for tasks.",
-                ),
+                    "You are an expert at selecting appropriate reasoning strategies for tasks."),
                 ("placeholder", "{messages}"),
             ]
         )
@@ -125,8 +123,7 @@ class SelfDiscoverAdapter(SimpleAgentV3):
             temperature=0.5,
             max_tokens=1000,
             structured_output_model=AdaptedModulesOutput,
-            system_message="You adapt reasoning modules to be specific for the given task.",
-        )
+            system_message="You adapt reasoning modules to be specific for the given task.")
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -134,8 +131,7 @@ class SelfDiscoverAdapter(SimpleAgentV3):
             [
                 (
                     "system",
-                    "You adapt reasoning modules to be specific for the given task.",
-                ),
+                    "You adapt reasoning modules to be specific for the given task."),
                 ("human", "{messages}"),
             ]
         )
@@ -152,8 +148,7 @@ class SelfDiscoverStructurer(SimpleAgentV3):
             temperature=0.3,
             max_tokens=1500,
             structured_output_model=ReasoningStructureOutput,
-            system_message="You create detailed step-by-step reasoning plans.",
-        )
+            system_message="You create detailed step-by-step reasoning plans.")
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -176,8 +171,7 @@ class SelfDiscoverExecutor(SimpleAgentV3):
             temperature=0.7,
             max_tokens=2000,
             structured_output_model=FinalAnswerOutput,
-            system_message="You execute reasoning plans to solve tasks step by step.",
-        )
+            system_message="You execute reasoning plans to solve tasks step by step.")
     )
 
     prompt_template: ChatPromptTemplate = Field(

@@ -16,8 +16,7 @@ Guidelines:
 1. Each candidate should explore a different approach or angle
 2. Build on successful patterns from parent candidates
 3. Avoid repeating failed approaches
-4. Consider both incremental improvements and creative leaps""",
-        ),
+4. Consider both incremental improvements and creative leaps"""),
         (
             "human",
             """Problem: {problem}
@@ -29,8 +28,7 @@ Parent candidates to expand from:
 {candidates_for_expansion}
 
 Generate {expansion_factor} new candidate solutions.
-Each should be substantively different while building on what works.""",
-        ),
+Each should be substantively different while building on what works."""),
     ]
 )
 
@@ -52,8 +50,7 @@ Scoring scale:
 - 0.7-0.9: Good solution with minor issues
 - 0.5-0.7: Decent approach but significant concerns
 - 0.3-0.5: Flawed but has some merit
-- 0.0-0.3: Poor solution, unlikely to succeed""",
-        ),
+- 0.0-0.3: Poor solution, unlikely to succeed"""),
         (
             "human",
             """Problem: {problem}
@@ -65,8 +62,7 @@ Current best score: {best_score}
 Best candidates so far:
 {best_candidates_summary}
 
-Evaluate this candidate thoroughly and provide a score with detailed reasoning.""",
-        ),
+Evaluate this candidate thoroughly and provide a score with detailed reasoning."""),
     ]
 )
 
@@ -85,8 +81,7 @@ Consider:
 - Search efficiency (depth vs breadth)
 - Convergence indicators
 - Diversity vs exploitation tradeoff
-- Computational budget (current depth: {depth}/{max_depth})""",
-        ),
+- Computational budget (current depth: {depth}/{max_depth})"""),
         (
             "human",
             """Problem: {problem}
@@ -103,7 +98,6 @@ Parameters:
 - Current best score: {best_score}
 
 Decide which candidates to keep and whether to continue searching.
-If continuing, suggest the strategy for the next iteration.""",
-        ),
+If continuing, suggest the strategy for the next iteration."""),
     ]
 )

@@ -15,8 +15,7 @@ class AnswerQuestion(BaseModel):
     reflection: Reflection = Field(description="Your reflection on the initial answer.")
     search_queries: list[str] = Field(
         default_factory=list,  # ✅ Ensures search_queries is always present
-        description="1-3 search queries for researching improvements to address the critique of your current answer.",
-    )
+        description="1-3 search queries for researching improvements to address the critique of your current answer.")
 
 
 class ReviseAnswer(AnswerQuestion):

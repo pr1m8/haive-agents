@@ -61,8 +61,7 @@ def create_self_discover_agents():
         engine=AugLLMConfig(
             temperature=0.3,
             structured_output_model=ModuleSelection,
-            system_message="You select the most relevant reasoning modules for solving tasks.",
-        ),
+            system_message="You select the most relevant reasoning modules for solving tasks."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -73,11 +72,9 @@ def create_self_discover_agents():
 
 Task to solve: {task}
 
-Select 3-5 most relevant modules for this task and explain your choices.""",
-                ),
+Select 3-5 most relevant modules for this task and explain your choices."""),
             ]
-        ),
-    )
+        ))
 
     # 2. Module Adapter Agent
     adapter = SimpleAgent(
@@ -85,8 +82,7 @@ Select 3-5 most relevant modules for this task and explain your choices.""",
         engine=AugLLMConfig(
             temperature=0.5,
             structured_output_model=AdaptedModules,
-            system_message="You adapt reasoning modules to be specific for the given task.",
-        ),
+            system_message="You adapt reasoning modules to be specific for the given task."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -97,11 +93,9 @@ Select 3-5 most relevant modules for this task and explain your choices.""",
 Selected modules:
 {modules}
 
-Adapt each module with specific strategies for solving this particular task.""",
-                ),
+Adapt each module with specific strategies for solving this particular task."""),
             ]
-        ),
-    )
+        ))
 
     # 3. Plan Structurer Agent
     structurer = SimpleAgent(
@@ -109,8 +103,7 @@ Adapt each module with specific strategies for solving this particular task.""",
         engine=AugLLMConfig(
             temperature=0.3,
             structured_output_model=ReasoningPlan,
-            system_message="You create structured step-by-step plans for problem solving.",
-        ),
+            system_message="You create structured step-by-step plans for problem solving."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -121,11 +114,9 @@ Adapt each module with specific strategies for solving this particular task.""",
 Adapted modules:
 {adapted}
 
-Create a clear, numbered step-by-step plan using these modules to solve the task.""",
-                ),
+Create a clear, numbered step-by-step plan using these modules to solve the task."""),
             ]
-        ),
-    )
+        ))
 
     # 4. Plan Executor Agent
     executor = SimpleAgent(
@@ -133,8 +124,7 @@ Create a clear, numbered step-by-step plan using these modules to solve the task
         engine=AugLLMConfig(
             temperature=0.7,
             structured_output_model=FinalAnswer,
-            system_message="You execute reasoning plans to solve tasks.",
-        ),
+            system_message="You execute reasoning plans to solve tasks."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -145,11 +135,9 @@ Create a clear, numbered step-by-step plan using these modules to solve the task
 Reasoning plan:
 {plan}
 
-Follow the plan step by step to solve the task. Provide a clear answer.""",
-                ),
+Follow the plan step by step to solve the task. Provide a clear answer."""),
             ]
-        ),
-    )
+        ))
 
     return {
         "module_selector": selector,

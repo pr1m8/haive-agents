@@ -27,8 +27,7 @@ def create_tot_agent(
     score_prompt: str | ChatPromptTemplate | None = None,
     score_function: Callable | None = None,
     visualize: bool = True,
-    **kwargs,
-) -> ToTAgent:
+    **kwargs) -> ToTAgent:
     """Create a Tree of Thoughts agent with customizable parameters.
 
     Args:
@@ -77,8 +76,7 @@ def create_tot_agent(
                 ("system", system_prompt),
                 (
                     "system",
-                    f"Generate {candidates_per_expansion} different approaches to solve this problem. Be creative and diverse in your thinking.",
-                ),
+                    f"Generate {candidates_per_expansion} different approaches to solve this problem. Be creative and diverse in your thinking."),
                 ("user", "Problem: {problem}"),
                 ("user", "Previous attempt: {seed}" if "{seed}" in kwargs else ""),
             ]
@@ -98,8 +96,7 @@ def create_tot_agent(
         score_function=score_function,
         name=name,
         visualize=visualize,
-        **kwargs,
-    )
+        **kwargs)
 
     # Build and return the agent
     return config.build_agent()
@@ -183,8 +180,7 @@ def create_math_tot_agent(
         threshold=0.85,
         beam_size=2,  # Keep fewer candidates for math problems
         candidates_per_expansion=3,
-        **kwargs,
-    )
+        **kwargs)
 
 
 def create_game24_tot_agent(
@@ -242,8 +238,7 @@ def create_game24_tot_agent(
             (
                 "system",
                 """Generate {k} different equations that might solve the Game of 24 for the given numbers.
-                     For each attempt, show your formula and step-by-step reasoning.""",
-            ),
+                     For each attempt, show your formula and step-by-step reasoning."""),
             ("user", "Numbers: {problem}"),
             ("user", "Previous attempt: {seed}" if "{seed}" in kwargs else ""),
         ]
@@ -255,8 +250,7 @@ def create_game24_tot_agent(
             (
                 "system",
                 """Evaluate how close this equation comes to the target value of 24.
-                     Score from 0.0 to 1.0, where 1.0 means it equals exactly 24.""",
-            ),
+                     Score from 0.0 to 1.0, where 1.0 means it equals exactly 24."""),
             ("user", "Numbers: {problem}"),
             ("user", "Equation: {candidate}"),
         ]
@@ -327,8 +321,7 @@ def create_game24_tot_agent(
                 return 1.0, "Perfect! The expression equals exactly 24"
             return (
                 proximity,
-                f"Expression evaluates to {result}, which is {abs(24 - result)} away from 24",
-            )
+                f"Expression evaluates to {result}, which is {abs(24 - result)} away from 24")
         except Exception as e:
             return 0.05, f"Error evaluating the formula: {e!s}"
 
@@ -337,8 +330,7 @@ def create_game24_tot_agent(
         name="game24_expand",
         llm_config=AzureLLMConfig(model=model, parameters={"temperature": temperature}),
         prompt_template=expand_prompt,
-        structured_output_model=EquationList,
-    )
+        structured_output_model=EquationList)
 
     # Create score LLM with structured output
 
@@ -354,8 +346,7 @@ def create_game24_tot_agent(
         name="game24_score",
         llm_config=AzureLLMConfig(model=model, parameters={"temperature": 0.2}),
         prompt_template=score_prompt,
-        structured_output_model=ScoreResult,
-    )
+        structured_output_model=ScoreResult)
 
     return create_tot_agent(
         model=model,
@@ -369,5 +360,4 @@ def create_game24_tot_agent(
         threshold=0.99,  # High threshold for Game of 24 (need exact answer)
         beam_size=3,
         candidates_per_expansion=4,
-        **kwargs,
-    )
+        **kwargs)

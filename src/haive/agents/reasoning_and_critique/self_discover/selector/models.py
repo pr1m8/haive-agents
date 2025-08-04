@@ -28,8 +28,7 @@ class ModuleSelection(BaseModel):
         ...,
         description="List of selected reasoning modules (3-5 modules)",
         min_length=3,
-        max_length=5,
-    )
+        max_length=5)
     selection_rationale: str = Field(
         ..., description="Overall rationale for the module selection"
     )

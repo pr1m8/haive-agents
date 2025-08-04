@@ -36,8 +36,7 @@ class ReasoningStructure(BaseModel):
     success_criteria: list[str] = Field(
         ...,
         description="Criteria for determining if the reasoning was successful",
-        min_length=2,
-    )
+        min_length=2)
     execution_notes: str = Field(
         ..., description="Important notes for executing this reasoning structure"
     )

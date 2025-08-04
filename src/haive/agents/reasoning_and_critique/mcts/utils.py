@@ -23,8 +23,7 @@ def create_mcts_agent(
     candidates_per_rollout: int = 5,
     exploration_weight: float = 1.0,
     name: str | None = None,
-    **kwargs,
-) -> MCTSAgent:
+    **kwargs) -> MCTSAgent:
     """Create a Monte Carlo Tree Search agent.
 
     Args:
@@ -74,8 +73,7 @@ def create_mcts_agent(
             [
                 (
                     "system",
-                    "Reflect and grade the assistant response to the user question below.",
-                ),
+                    "Reflect and grade the assistant response to the user question below."),
                 ("user", "{input}"),
                 MessagesPlaceholder(variable_name="candidate"),
             ]
@@ -91,8 +89,7 @@ def create_mcts_agent(
         max_rollouts=max_rollouts,
         candidates_per_rollout=candidates_per_rollout,
         exploration_weight=exploration_weight,
-        **kwargs,
-    )
+        **kwargs)
 
     # Build and return the agent
     return config.build_agent()

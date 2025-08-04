@@ -19,8 +19,7 @@ class ReflectionConfig(BaseModel):
 
     reflection_llm: AugLLMConfig | None = Field(
         default=None,
-        description="LLM to use for reflection. If None, uses the same LLM as the main agent.",
-    )
+        description="LLM to use for reflection. If None, uses the same LLM as the main agent.")
 
     max_reflection_rounds: int = Field(
         default=3, description="Maximum number of reflection rounds"
@@ -42,8 +41,7 @@ class ReflectionConfig(BaseModel):
             "Score (0-10): [your rating of the response quality]\n"
             "Found Solution (true/false): [whether this response fully solves the request]"
         ),
-        description="Template for reflection prompt",
-    )
+        description="Template for reflection prompt")
 
     improvement_prompt_template: str = Field(
         default=(
@@ -54,13 +52,11 @@ class ReflectionConfig(BaseModel):
             "Based on this feedback, provide an improved version of your response that addresses the critique."
             "Be sure to include all relevant information while removing anything unnecessary."
         ),
-        description="Template for improvement prompt",
-    )
+        description="Template for improvement prompt")
 
     use_search: bool = Field(
         default=False,
-        description="Whether to use search to gather additional information",
-    )
+        description="Whether to use search to gather additional information")
 
     search_query_prompt_template: str = Field(
         default=(
@@ -71,13 +67,11 @@ class ReflectionConfig(BaseModel):
             "Feedback: {feedback}\n\n"
             "Generate 1-3 specific search queries (one per line):"
         ),
-        description="Template for generating search queries",
-    )
+        description="Template for generating search queries")
 
     auto_accept_threshold: float | None = Field(
         default=0.8,
-        description="If set, automatically accept responses with reflection score above this threshold",
-    )
+        description="If set, automatically accept responses with reflection score above this threshold")
 
 
 class ReflectionAgentConfig(SimpleAgentConfig):
@@ -86,8 +80,7 @@ class ReflectionAgentConfig(SimpleAgentConfig):
     # Base configuration - inherit from SimpleAgentConfig
     state_schema: type[BaseModel] = Field(
         default=ReflectionAgentState,
-        description="State schema for the reflection agent",
-    )
+        description="State schema for the reflection agent")
 
     # Reflection-specific configuration
     reflection: ReflectionConfig = Field(
@@ -130,8 +123,7 @@ class ReflectionAgentConfig(SimpleAgentConfig):
         aug_llm: AugLLMConfig,
         name: str | None = None,
         system_prompt: str | None = None,
-        **kwargs,
-    ) -> "ReflectionAgentConfig":
+        **kwargs) -> "ReflectionAgentConfig":
         """Create a ReflectionAgentConfig from an existing AugLLMConfig."""
         # First create a SimpleAgentConfig
         simple_config = SimpleAgentConfig.from_aug_llm(
@@ -143,8 +135,7 @@ class ReflectionAgentConfig(SimpleAgentConfig):
             name=simple_config.name,
             engine=simple_config.engine,
             system_prompt=simple_config.system_prompt,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def from_scratch(
@@ -153,8 +144,7 @@ class ReflectionAgentConfig(SimpleAgentConfig):
         model: str = "gpt-4o",
         temperature: float = 0.7,
         name: str | None = None,
-        **kwargs,
-    ) -> "ReflectionAgentConfig":
+        **kwargs) -> "ReflectionAgentConfig":
         """Create a ReflectionAgentConfig from scratch."""
         # First create a SimpleAgentConfig
         simple_config = SimpleAgentConfig.from_scratch(
@@ -166,5 +156,4 @@ class ReflectionAgentConfig(SimpleAgentConfig):
             name=simple_config.name,
             engine=simple_config.engine,
             system_prompt=simple_config.system_prompt,
-            **kwargs,
-        )
+            **kwargs)

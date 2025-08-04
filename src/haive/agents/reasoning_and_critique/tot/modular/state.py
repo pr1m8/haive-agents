@@ -9,8 +9,7 @@ from pydantic import BaseModel, Field
 
 def update_candidates(
     existing: list[Candidate] | None = None,
-    updates: list[Candidate] | str | list[dict[str, Any]] | None = None,
-) -> list[Candidate]:
+    updates: list[Candidate] | str | list[dict[str, Any]] | None = None) -> list[Candidate]:
     """Update candidate list, handling special cases like clearing.
 
     Args:

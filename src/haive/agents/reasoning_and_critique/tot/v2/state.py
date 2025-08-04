@@ -10,8 +10,7 @@ from haive.agents.reasoning_and_critique.tot.v2.models import Candidate, ScoredC
 
 def update_candidates(
     existing: list | None = None,
-    updates: list | Literal["clear"] | None = None,
-) -> list:
+    updates: list | Literal["clear"] | None = None) -> list:
     """Custom reducer for candidates."""
     if existing is None:
         existing = []

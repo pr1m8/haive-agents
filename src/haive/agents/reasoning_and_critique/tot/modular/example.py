@@ -8,8 +8,7 @@ from typing import Any
 from haive.agents.tot.modular.factory import (
     create_game24_tot_agent,
     create_math_tot_agent,
-    create_tot_agent,
-)
+    create_tot_agent)
 
 # Add the project root to the path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -43,8 +42,7 @@ def run_tot_example():
         max_depth=3,
         beam_size=2,
         candidates_per_expansion=2,
-        system_prompt="You are an expert at solving complex reasoning problems step by step.",
-    )
+        system_prompt="You are an expert at solving complex reasoning problems step by step.")
 
     # Simple problem for demonstration
     problem = "How can I calculate the probability of drawing exactly 2 aces from a standard deck of 52 cards if I draw 5 cards without replacement?"
@@ -88,8 +86,7 @@ if __name__ == "__main__":
         "--example",
         choices=["basic", "game24", "math"],
         default="basic",
-        help="Which example to run",
-    )
+        help="Which example to run")
 
     args = parser.parse_args()
 

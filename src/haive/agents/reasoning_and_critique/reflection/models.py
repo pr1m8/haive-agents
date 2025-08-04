@@ -55,5 +55,4 @@ class ReflectionOutput(BaseModel):
     )
     search_queries: list[str] = Field(
         default_factory=list,
-        description="Potential search queries for improving the answer",
-    )
+        description="Potential search queries for improving the answer")

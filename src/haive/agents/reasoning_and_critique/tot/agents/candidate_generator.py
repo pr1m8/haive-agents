@@ -33,8 +33,7 @@ class CandidateGenerator:
         name: str = "candidate_generator",
         expansion_count: int = 5,
         temperature: float = 0.7,
-        engine: AugLLMConfig | None = None,
-    ):
+        engine: AugLLMConfig | None = None):
         """Initialize the candidate generator.
 
         Args:
@@ -62,8 +61,7 @@ Guidelines:
 
 For math problems: Try different operation orders, groupings, approaches
 For logic problems: Try different reasoning paths, assumptions
-For planning problems: Try different sequences, priorities""",
-            )
+For planning problems: Try different sequences, priorities""")
 
         # Use composition - create the underlying agent
         self.agent = SimpleAgentV3(name=name, engine=engine)
@@ -73,8 +71,7 @@ For planning problems: Try different sequences, priorities""",
         cls,
         name: str = "candidate_generator",
         expansion_count: int = 5,
-        temperature: float = 0.7,
-    ) -> "CandidateGenerator":
+        temperature: float = 0.7) -> "CandidateGenerator":
         """Create a CandidateGenerator with proper configuration."""
         return cls(name=name, expansion_count=expansion_count, temperature=temperature)
 

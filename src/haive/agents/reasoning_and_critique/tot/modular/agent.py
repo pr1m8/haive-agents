@@ -137,8 +137,7 @@ class ToTAgent(Agent[ToTAgentConfig]):
                         Candidate(
                             content=content,
                             score=random.random(),
-                            feedback="No scoring method.",
-                        )
+                            feedback="No scoring method.")
                     )
 
             return Command(update={"candidates": "clear", "scored_candidates": scored})
@@ -150,8 +149,7 @@ class ToTAgent(Agent[ToTAgentConfig]):
                 Candidate(
                     content=c.get("content") if isinstance(c, dict) else c.content,
                     score=0.1,
-                    feedback="Error scoring",
-                )
+                    feedback="Error scoring")
                 for c in candidates
             ]
             return Command(
@@ -172,8 +170,7 @@ class ToTAgent(Agent[ToTAgentConfig]):
             key=lambda c: (
                 c.get("score", 0.0) if isinstance(c, dict) else getattr(c, "score", 0.0)
             ),
-            reverse=True,
-        )
+            reverse=True)
 
         beam_size = self.config.beam_size
         pruned = sorted_candidates[:beam_size]
@@ -195,8 +192,7 @@ class ToTAgent(Agent[ToTAgentConfig]):
                 problem=input_data,
                 messages=[msg],
                 depth=0,
-                max_depth=self.config.max_depth,
-            ).model_dump()
+                max_depth=self.config.max_depth).model_dump()
         else:
             state = input_data.copy()
             if "problem" not in state:

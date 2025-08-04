@@ -33,5 +33,4 @@ Your structure should:
 - Be practical and actionable
 
 Think of this as creating a "reasoning recipe" that systematically applies the adapted modules to solve the problem effectively.
-""",
-)
+""")

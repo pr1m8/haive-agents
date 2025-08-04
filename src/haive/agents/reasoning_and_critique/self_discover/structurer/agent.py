@@ -45,7 +45,6 @@ class StructurerAgent(SimpleAgent):
                 max_tokens=2000,
                 system_message=STRUCTURER_SYSTEM_MESSAGE,
                 prompt_template=STRUCTURER_PROMPT,
-                structured_output_model=ReasoningStructure,
-            )
+                structured_output_model=ReasoningStructure)
 
         super().__init__(name=name, engine=engine, **kwargs)

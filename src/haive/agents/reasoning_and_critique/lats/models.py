@@ -14,8 +14,7 @@ class Reflection(BaseModel):
     score: int = Field(
         description="Score from 0-10 on the quality of the candidate response.",
         gte=0,
-        lte=10,
-    )
+        lte=10)
     found_solution: bool = Field(
         description="Whether the response has fully solved the question or task."
     )
@@ -35,8 +34,7 @@ class Node:
         self,
         messages: list[BaseMessage],
         reflection: Reflection,
-        parent: Optional["Node"] = None,
-    ):
+        parent: Optional["Node"] = None):
         self.messages = messages
         self.parent = parent
         self.children = []
@@ -133,8 +131,7 @@ class Node:
         best_node = max(
             all_nodes,
             # We filter out all non-terminal, non-solution trajectories
-            key=lambda node: int(node.is_terminal and node.is_solved) * node.value,
-        )
+            key=lambda node: int(node.is_terminal and node.is_solved) * node.value)
         return best_node
 
     def _mark_tree_as_solved(self):

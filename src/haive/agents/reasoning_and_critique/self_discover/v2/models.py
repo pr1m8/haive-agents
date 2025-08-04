@@ -54,8 +54,7 @@ class FinalAnswer(BaseModel):
     answer: str = Field(description="The final answer to the task")
     reasoning_steps: dict[str, str] = Field(
         default_factory=dict,
-        description="Filled out reasoning structure with specific values",
-    )
+        description="Filled out reasoning structure with specific values")
     confidence: float | None = Field(
         default=None, ge=0.0, le=1.0, description="Confidence level in the answer (0-1)"
     )

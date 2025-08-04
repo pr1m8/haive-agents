@@ -34,8 +34,7 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.event_loop_branch = Branch(
             function=lambda state: _get_num_iterations(state)
             > self.config.max_iterations,
-            destinations={True: "end", False: "execute_tools"},
-        )
+            destinations={True: "end", False: "execute_tools"})
         super().__init__(config)
 
     def create_tool_node(self, tools: list[BaseTool | Callable]) -> ToolNode:
@@ -80,5 +79,4 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.graph.add_conditional_edges(
             "revision",
             self.event_loop_branch.evaluate,
-            {"execute_tools": "tools", "end": "final_answer"},
-        )
+            {"execute_tools": "tools", "end": "final_answer"})

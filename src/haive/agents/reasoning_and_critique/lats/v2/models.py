@@ -51,8 +51,7 @@ class Reflection(BaseModel):
     score: float = Field(
         ge=0,
         le=10,
-        description="Score from 0-10 on the quality of the candidate response",
-    )
+        description="Score from 0-10 on the quality of the candidate response")
     found_solution: bool = Field(
         description="Whether the response has fully solved the question or task"
     )

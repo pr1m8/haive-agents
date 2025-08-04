@@ -10,8 +10,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from haive.agents.reasoning_and_critique.tot.models import (
     CandidateEvaluation,
-    CandidateGeneration,
-)
+    CandidateGeneration)
 
 # =============================
 # Default Prompts
@@ -36,8 +35,7 @@ generator_prompt = ChatPromptTemplate.from_messages(
 
 {seed_info}
 
-Generate {expansion_count} different candidate solutions.""",
-        ),
+Generate {expansion_count} different candidate solutions."""),
     ]
 )
 
@@ -66,8 +64,7 @@ Evaluate this solution and provide a numerical score between 0 and 1, where:
 - 0 means completely incorrect or irrelevant
 - 1 means perfect solution
 
-Your evaluation:""",
-        ),
+Your evaluation:"""),
     ]
 )
 
@@ -80,13 +77,11 @@ generator_aug_llm_config = AugLLMConfig(
     name="tot_generator",
     description="Generates candidate solutions for tree of thoughts",
     prompt_template=generator_prompt,
-    structured_output_model=CandidateGeneration,
-)
+    structured_output_model=CandidateGeneration)
 
 # Evaluator engine with default parameters
 evaluator_aug_llm_config = AugLLMConfig(
     name="tot_evaluator",
     description="Evaluates candidate solutions for tree of thoughts",
     prompt_template=evaluator_prompt,
-    structured_output_model=CandidateEvaluation,
-)
+    structured_output_model=CandidateEvaluation)

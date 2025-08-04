@@ -72,11 +72,9 @@ def create_agents():
 
 Task: {task}
 
-Select the most relevant modules and format them clearly.""",
-                ),
+Select the most relevant modules and format them clearly."""),
             ]
-        ),
-    )
+        ))
 
     # 2. Adapter - makes modules task-specific
     adapter = SimpleAgentV3(
@@ -92,11 +90,9 @@ Select the most relevant modules and format them clearly.""",
 Selected modules:
 {modules}
 
-Adapt each module with specific strategies for this task.""",
-                ),
+Adapt each module with specific strategies for this task."""),
             ]
-        ),
-    )
+        ))
 
     # 3. Structurer - creates step-by-step plan
     structurer = SimpleAgentV3(
@@ -106,8 +102,7 @@ Adapt each module with specific strategies for this task.""",
             [
                 (
                     "system",
-                    "Create a clear step-by-step plan using the adapted modules.",
-                ),
+                    "Create a clear step-by-step plan using the adapted modules."),
                 (
                     "human",
                     """Task: {task}
@@ -115,11 +110,9 @@ Adapt each module with specific strategies for this task.""",
 Adapted modules:
 {adapted}
 
-Create a numbered step-by-step plan to solve this task.""",
-                ),
+Create a numbered step-by-step plan to solve this task."""),
             ]
-        ),
-    )
+        ))
 
     # 4. Executor - follows plan to solve
     executor = SimpleAgentV3(
@@ -135,11 +128,9 @@ Create a numbered step-by-step plan to solve this task.""",
 Plan:
 {plan}
 
-Execute each step and provide the final answer.""",
-                ),
+Execute each step and provide the final answer."""),
             ]
-        ),
-    )
+        ))
 
     return [selector, adapter, structurer, executor]
 

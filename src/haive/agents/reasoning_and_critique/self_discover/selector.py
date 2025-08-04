@@ -28,8 +28,7 @@ class SelfDiscoverSelector(SimpleAgentV3):
             temperature=0.3,
             max_tokens=1000,
             structured_output_model=ModuleSelectionOutput,
-            system_message="You are an expert at selecting appropriate reasoning strategies for tasks.",
-        )
+            system_message="You are an expert at selecting appropriate reasoning strategies for tasks.")
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -37,8 +36,7 @@ class SelfDiscoverSelector(SimpleAgentV3):
             [
                 (
                     "system",
-                    "You are an expert at selecting appropriate reasoning strategies for tasks.",
-                ),
+                    "You are an expert at selecting appropriate reasoning strategies for tasks."),
                 ("human", "{messages}"),
             ]
         )

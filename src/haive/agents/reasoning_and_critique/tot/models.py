@@ -28,8 +28,7 @@ class Candidate(BaseModel, Generic[T]):
     model_config = ConfigDict(
         validate_assignment=True,
         extra="allow",
-        arbitrary_types_allowed=True,
-    )
+        arbitrary_types_allowed=True)
 
     def __str__(self) -> str:
         """String representation of the candidate."""
@@ -52,8 +51,7 @@ class Score(BaseModel):
     )
 
     model_config = ConfigDict(
-        validate_assignment=True,
-    )
+        validate_assignment=True)
 
     def __str__(self) -> str:
         """String representation of the score."""
@@ -76,8 +74,7 @@ class ScoredCandidate(BaseModel, Generic[T]):
 
     model_config = ConfigDict(
         validate_assignment=True,
-        arbitrary_types_allowed=True,
-    )
+        arbitrary_types_allowed=True)
 
     def __str__(self) -> str:
         """String representation of the scored candidate."""
@@ -159,8 +156,7 @@ class CandidateGeneration(BaseModel, Generic[T]):
                     ],
                 }
             ]
-        },
-    )
+        })
 
     def to_candidates(self) -> list[Candidate[T]]:
         """Convert candidate contents to Candidate objects."""
@@ -282,8 +278,7 @@ class EquationGeneration(BaseModel):
                     ],
                 }
             ]
-        },
-    )
+        })
 
     def to_candidates(self) -> list[Candidate[Equation]]:
         """Convert equations to Candidate objects."""

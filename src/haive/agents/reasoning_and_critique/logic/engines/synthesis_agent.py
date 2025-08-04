@@ -208,12 +208,10 @@ Provide comprehensive synthesis including:
    - What to monitor
    - When to revisit
 
-Remember: Great synthesis doesn't just summarize - it creates new understanding by connecting disparate pieces into a coherent whole.""",
-        ),
+Remember: Great synthesis doesn't just summarize - it creates new understanding by connecting disparate pieces into a coherent whole."""),
         (
             "human",
-            "Synthesize these reasoning analyses into a final report:\n{analyses}",
-        ),
+            "Synthesize these reasoning analyses into a final report:\n{analyses}"),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )
@@ -225,5 +223,4 @@ def create_synthesis_agent() -> Any:
         name="reasoning_synthesizer",
         prompt_template=REASONING_SYNTHESIS_PROMPT,
         structured_output_model=ReasoningReport,
-        temperature=0.5,
-    )
+        temperature=0.5)

@@ -140,8 +140,7 @@ def create_selector() -> SimpleAgentV3:
         engine=AugLLMConfig(
             temperature=0.3,
             structured_output_model=ModuleSelection,
-            system_message="Select 3-5 reasoning modules most relevant for the task.",
-        ),
+            system_message="Select 3-5 reasoning modules most relevant for the task."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -152,11 +151,9 @@ def create_selector() -> SimpleAgentV3:
 
 Task: {task}
 
-Select the most relevant modules and explain why.""",
-                ),
+Select the most relevant modules and explain why."""),
             ]
-        ),
-    )
+        ))
 
 
 def create_adapter() -> SimpleAgentV3:
@@ -166,8 +163,7 @@ def create_adapter() -> SimpleAgentV3:
         engine=AugLLMConfig(
             temperature=0.5,
             structured_output_model=AdaptationResult,
-            system_message="Adapt selected modules to be task-specific.",
-        ),
+            system_message="Adapt selected modules to be task-specific."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -177,11 +173,9 @@ def create_adapter() -> SimpleAgentV3:
 
 {selected}
 
-Adapt each module with a specific approach for this task.""",
-                ),
+Adapt each module with a specific approach for this task."""),
             ]
-        ),
-    )
+        ))
 
 
 def create_structurer() -> SimpleAgentV3:
@@ -191,8 +185,7 @@ def create_structurer() -> SimpleAgentV3:
         engine=AugLLMConfig(
             temperature=0.3,
             structured_output_model=ReasoningPlan,
-            system_message="Create a step-by-step reasoning plan.",
-        ),
+            system_message="Create a step-by-step reasoning plan."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -202,11 +195,9 @@ def create_structurer() -> SimpleAgentV3:
 
 {adapted}
 
-Create a step-by-step plan using these modules.""",
-                ),
+Create a step-by-step plan using these modules."""),
             ]
-        ),
-    )
+        ))
 
 
 def create_executor() -> SimpleAgentV3:
@@ -216,8 +207,7 @@ def create_executor() -> SimpleAgentV3:
         engine=AugLLMConfig(
             temperature=0.7,
             structured_output_model=FinalAnswer,
-            system_message="Execute the reasoning plan to solve the task.",
-        ),
+            system_message="Execute the reasoning plan to solve the task."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -227,11 +217,9 @@ def create_executor() -> SimpleAgentV3:
 
 {plan}
 
-Execute this plan step-by-step and provide the answer.""",
-                ),
+Execute this plan step-by-step and provide the answer."""),
             ]
-        ),
-    )
+        ))
 
 
 # ==========================
@@ -309,8 +297,7 @@ class SelfDiscoverV4(EnhancedMultiAgentV4):
             return FinalAnswer(
                 reasoning_process=result.get("reasoning_process", ""),
                 answer=result["answer"],
-                confidence=result.get("confidence", "MEDIUM"),
-            )
+                confidence=result.get("confidence", "MEDIUM"))
 
         # Try to parse the result
         return result

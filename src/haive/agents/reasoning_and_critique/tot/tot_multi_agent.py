@@ -80,8 +80,7 @@ class TreeOfThoughtsMultiAgent:
         beam_width: int = 3,
         threshold: float = 0.8,
         expansion_count: int = 5,
-        temperature_config: dict[str, float] | None = None,
-    ):
+        temperature_config: dict[str, float] | None = None):
         """Initialize the TOT multi-agent system.
 
         Args:
@@ -115,9 +114,7 @@ class TreeOfThoughtsMultiAgent:
                 - What type of problem it is
                 - Key constraints and requirements
                 - Success criteria
-                - Potential solution approaches""",
-            ),
-        )
+                - Potential solution approaches"""))
 
         self.candidate_generator = SimpleAgentV3(
             name="candidate_generator",
@@ -126,9 +123,7 @@ class TreeOfThoughtsMultiAgent:
                 structured_output_model=CandidateGeneration,
                 system_message=f"""You are a creative solution generator. Generate {self.expansion_count} diverse candidate solutions.
                 Be creative but ensure each candidate is distinct and could potentially solve the problem.
-                Think step by step and explore different approaches.""",
-            ),
-        )
+                Think step by step and explore different approaches."""))
 
         self.solution_evaluator = SimpleAgentV3(
             name="solution_evaluator",
@@ -139,9 +134,7 @@ class TreeOfThoughtsMultiAgent:
                 - Checking if they meet the problem requirements
                 - Identifying strengths and weaknesses
                 - Providing a score between 0 (terrible) and 1 (perfect)
-                Be critical but fair in your evaluation.""",
-            ),
-        )
+                Be critical but fair in your evaluation."""))
 
         self.beam_selector = SimpleAgentV3(
             name="beam_selector",
@@ -152,9 +145,7 @@ class TreeOfThoughtsMultiAgent:
                 Decide whether to continue searching based on:
                 - Current best score vs threshold ({self.threshold})
                 - Search depth vs maximum ({self.max_depth})
-                - Diversity of candidates""",
-            ),
-        )
+                - Diversity of candidates"""))
 
         self.solution_synthesizer = SimpleAgentV3(
             name="solution_synthesizer",
@@ -165,9 +156,7 @@ class TreeOfThoughtsMultiAgent:
                 - Selecting the best candidate
                 - Providing clear explanation
                 - Summarizing the search process
-                - Assessing confidence in the solution""",
-            ),
-        )
+                - Assessing confidence in the solution"""))
 
         # Track search state
         self.search_history = []

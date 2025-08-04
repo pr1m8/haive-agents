@@ -41,8 +41,7 @@ def main():
         tools=tools,
         max_depth=3,  # Limit depth for faster execution in this example
         n_candidates=3,  # Generate 3 candidates at each step for faster execution
-        name="lats_example_agent",
-    )
+        name="lats_example_agent")
 
     # Example questions to demonstrate the agent
     questions = [

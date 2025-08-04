@@ -17,8 +17,7 @@ from haive.agents.reasoning_and_critique.tot.config import TOTAgentConfig
 from haive.agents.reasoning_and_critique.tot.models import (
     Candidate,
     Score,
-    ScoredCandidate,
-)
+    ScoredCandidate)
 from haive.agents.reasoning_and_critique.tot.state import TOTState
 
 logger = logging.getLogger(__name__)
@@ -77,14 +76,12 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             self.generator_engine = create_generator_engine(
                 generator_engine,
                 use_structured_output=True,
-                output_model=self.generator_output_model,
-            )
+                output_model=self.generator_output_model)
 
             self.evaluator_engine = create_evaluator_engine(
                 evaluator_engine,
                 use_structured_output=True,
-                output_model=self.evaluator_output_model,
-            )
+                output_model=self.evaluator_output_model)
         else:
             self.generator_engine = generator_engine
             self.evaluator_engine = evaluator_engine
@@ -114,8 +111,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         # Create the graph with state schema
         self.dynamic_graph = DynamicGraph(
             state_schema=self.config.state_schema,
-            components=[generator_engine, evaluator_engine],
-        )
+            components=[generator_engine, evaluator_engine])
 
         # Add nodes to the graph
         self.dynamic_graph.add_node(
@@ -160,8 +156,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             self.dynamic_graph.add_conditional_edges(
                 self.config.generator_node,
                 self._should_continue_search,
-                [self.config.evaluator_node, END],
-            )
+                [self.config.evaluator_node, END])
 
             # From evaluation to selection
             self.dynamic_graph.add_edge(
@@ -179,8 +174,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             self.dynamic_graph.add_conditional_edges(
                 self.config.selector_node,
                 self._should_expand_or_finish,
-                [self.config.generator_node, END],
-            )
+                [self.config.generator_node, END])
 
         # Build the graph
         self.graph = self.dynamic_graph.build()
@@ -315,8 +309,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                 candidate=Candidate(
                     content=content, metadata=candidate.get("metadata", {})
                 ),
-                score=score,
-            )
+                score=score)
 
             return Command(update={"scored_candidate": scored_candidate})
 
@@ -327,10 +320,8 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             scored_candidate = ScoredCandidate(
                 candidate=Candidate(
                     content=candidate.get("content", str(candidate)),
-                    metadata=candidate.get("metadata", {}),
-                ),
-                score=fallback_score,
-            )
+                    metadata=candidate.get("metadata", {})),
+                score=fallback_score)
             return Command(update={"scored_candidate": scored_candidate})
 
     def _collect_evaluations(self, state: TOTState) -> Command:
@@ -383,8 +374,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                 # Invoke the evaluator
                 response = await evaluator.ainvoke(
                     [HumanMessage(content=prompt)],
-                    {"configurable": {"temperature": 0.1}},
-                )
+                    {"configurable": {"temperature": 0.1}})
 
                 # Extract score from the response
                 if hasattr(response, "to_score"):
@@ -436,8 +426,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                 scored_candidates.append(
                     ScoredCandidate(
                         candidate=Candidate(content=content, metadata=metadata),
-                        score=fallback_score,
-                    )
+                        score=fallback_score)
                 )
 
         # Update the state with scored candidates and clear original candidates
@@ -469,8 +458,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                 if hasattr(c, "score") and hasattr(c.score, "value")
                 else 0.0
             ),
-            reverse=True,
-        )
+            reverse=True)
 
         # Select the best candidate
         best_candidate = sorted_candidates[0]
@@ -590,8 +578,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         best_score = getattr(
             best_candidate,
             "value",
-            getattr(best_candidate.get("score", {}), "value", 0.0),
-        )
+            getattr(best_candidate.get("score", {}), "value", 0.0))
 
         # If we've found a solution that exceeds threshold or reached max
         # depth, end

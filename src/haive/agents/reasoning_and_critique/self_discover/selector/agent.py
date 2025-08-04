@@ -45,7 +45,6 @@ class SelectorAgent(SimpleAgent):
                 max_tokens=1000,
                 system_message=SELECTOR_SYSTEM_MESSAGE,
                 prompt_template=SELECTOR_PROMPT,
-                structured_output_model=ModuleSelection,
-            )
+                structured_output_model=ModuleSelection)
 
         super().__init__(name=name, engine=engine, **kwargs)

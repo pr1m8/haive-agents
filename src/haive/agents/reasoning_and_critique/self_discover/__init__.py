@@ -2,22 +2,18 @@
 
 from haive.agents.reasoning_and_critique.self_discover.agent import (
     create_self_discover_agent,
-    get_default_modules,
-)
+    get_default_modules)
 from haive.agents.reasoning_and_critique.self_discover.agent2 import (  # adapt_modules,; create_structure,; execute_reasoning,; select_modules,; setup_workflow,
     SelfDiscoverAgent,
-    create_self_discover_agent,
-)
+    create_self_discover_agent)
 from haive.agents.reasoning_and_critique.self_discover.config import (  # from_defaults,
-    SelfDiscoverAgentConfig,
-)
+    SelfDiscoverAgentConfig)
 from haive.agents.reasoning_and_critique.self_discover.engines import (
     create_adapt_engine,
     create_reasoning_engine,
     create_select_engine,
     create_selfdiscover_engines,
-    create_structure_engine,
-)
+    create_structure_engine)
 from haive.agents.reasoning_and_critique.self_discover.models import (  # format_complete_reasoning,; format_for_next_stage,; validate_modules,; validate_steps,
     AdaptedModule,
     ModuleAdaptationResult,
@@ -26,8 +22,7 @@ from haive.agents.reasoning_and_critique.self_discover.models import (  # format
     ReasoningOutputStep,
     ReasoningStep,
     ReasoningStructure,
-    SelectedModule,
-)
+    SelectedModule)
 from haive.agents.reasoning_and_critique.self_discover.state import SelfDiscoverState
 
 """
@@ -40,8 +35,7 @@ from haive.agents.reasoning_and_critique.sself_discover.self_discover_multiagent
     create_self_discover_multiagent,
     create_self_discover_with_conditional_routing,
     create_structurer_agent,
-    get_default_reasoning_modules,
-)
+    get_default_reasoning_modules)
 """
 __all__ = [
     "AdaptedModule",

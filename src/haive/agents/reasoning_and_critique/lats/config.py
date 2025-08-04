@@ -39,8 +39,7 @@ class LATSAgentConfig(AgentConfig):
 
     action_engine: AugLLMConfig = Field(
         tools=[tavily_search_tool],
-        description="Engine for generating candidate actions",
-    )
+        description="Engine for generating candidate actions")
 
     # Specific tools for this agent
     tools: list[BaseTool | StructuredTool] = Field(
@@ -66,8 +65,7 @@ class LATSAgentConfig(AgentConfig):
         reflection_llm: AugLLMConfig,
         action_llm: AugLLMConfig,
         tools: list[BaseTool | StructuredTool] | None = None,
-        **kwargs,
-    ) -> "LATSAgentConfig":
+        **kwargs) -> "LATSAgentConfig":
         """Create a LATS agent configuration from LLM configs.
 
         Args:
@@ -83,5 +81,4 @@ class LATSAgentConfig(AgentConfig):
             reflection_engine=reflection_llm,
             action_engine=action_llm,
             tools=tools or [],
-            **kwargs,
-        )
+            **kwargs)

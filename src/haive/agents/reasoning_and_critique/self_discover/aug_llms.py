@@ -5,8 +5,7 @@ from langchain_core.prompts import PromptTemplate
 
 from haive.agents.reasoning_and_critique.self_discover.models import (
     AdaptedModules,
-    Plan,
-)
+    Plan)
 
 reasoning_prompt = """
 Step {step_id}: {step_description}
@@ -22,8 +21,7 @@ step_reasoning_prompt_template = PromptTemplate(template=reasoning_prompt)
 step_reasoning_chain = AugLLMConfig(
     name="step_reasoning_executor",
     prompt_template=step_reasoning_prompt_template,
-    output_parser=StrOutputParser(),
-)
+    output_parser=StrOutputParser())
 reasoning_modules_instance = ReasoningModules()  # ✅ Create an instance
 
 
@@ -47,8 +45,7 @@ select_prompt_template = select_prompt_template.partial(
 select_chain = AugLLMConfig(
     name="select",
     prompt_template=select_prompt_template,
-    structured_output_model=ReasoningModules,
-)
+    structured_output_model=ReasoningModules)
 
 
 adapt_template = """
@@ -65,8 +62,7 @@ adapt_prompt_template = PromptTemplate(template=adapt_template)
 adapt_chain = AugLLMConfig(
     name="adapt",
     prompt_template=adapt_prompt_template,
-    structured_output_model=AdaptedModules,
-)
+    structured_output_model=AdaptedModules)
 
 
 structured_template_prompt = """
@@ -125,5 +121,4 @@ structured_template = PromptTemplate(template=structured_template_prompt)
 structured_chain = AugLLMConfig(
     name="structured_reasoning_planner",
     prompt_template=structured_template,
-    structured_output_model=Plan,
-)
+    structured_output_model=Plan)

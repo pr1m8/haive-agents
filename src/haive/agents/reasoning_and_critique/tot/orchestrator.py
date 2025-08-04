@@ -13,11 +13,9 @@ from pydantic import BaseModel, Field
 
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
-    CandidateGenerator,
-)
+    CandidateGenerator)
 from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
-    SolutionScorer,
-)
+    SolutionScorer)
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +42,7 @@ class TreeOfThoughtsOrchestrator:
         beam_width: int = 5,
         max_iterations: int = 3,
         temperature_generate: float = 0.7,
-        temperature_score: float = 0.3,
-    ):
+        temperature_score: float = 0.3):
         """Initialize the Tree of Thoughts orchestrator.
 
         Args:
@@ -84,15 +81,13 @@ Your role is to:
 3. Keep the best solutions (beam search)
 4. Iterate until a satisfactory solution is found
 
-The flow is: Generate candidates → Score them → Select best → Repeat or finish""",
-        )
+The flow is: Generate candidates → Score them → Select best → Repeat or finish""")
 
     async def solve(
         self,
         problem: str,
         initial_seed: str | None = None,
-        context: str = "",
-    ) -> TOTResult:
+        context: str = "") -> TOTResult:
         """Solve a problem using Tree of Thoughts.
 
         Args:
@@ -207,8 +202,7 @@ Evaluate each one carefully."""
             score=best_score,
             reasoning=best_reasoning or "No valid solutions generated",
             iterations=iteration + 1,
-            all_solutions=all_solutions,
-        )
+            all_solutions=all_solutions)
 
     def _extract_candidates(self, generation_result: Any) -> list[str]:
         """Extract candidate solutions from generator output."""

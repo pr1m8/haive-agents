@@ -9,8 +9,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.reasoning_and_critique.self_discover.engines import (
-    create_selfdiscover_engines,
-)
+    create_selfdiscover_engines)
 from haive.agents.reasoning_and_critique.self_discover.state import SelfDiscoverState
 
 
@@ -32,34 +31,26 @@ class SelfDiscoverAgentConfig(AgentConfig):
     select_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_select_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
-        ),
-        description="Engine for the module selection stage",
-    )
+            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0})),
+        description="Engine for the module selection stage")
 
     adapt_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_adapt_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
-        ),
-        description="Engine for the module adaptation stage",
-    )
+            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0})),
+        description="Engine for the module adaptation stage")
 
     structure_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_structure_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
-        ),
-        description="Engine for the reasoning structure stage",
-    )
+            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0})),
+        description="Engine for the reasoning structure stage")
 
     reasoning_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_reasoning_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
-        ),
-        description="Engine for the reasoning execution stage",
-    )
+            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0})),
+        description="Engine for the reasoning execution stage")
 
     # Reasoning modules library
     reasoning_modules: list[str] = Field(
@@ -77,8 +68,7 @@ class SelfDiscoverAgentConfig(AgentConfig):
         adapt_prompt: str | ChatPromptTemplate | None = None,
         structure_prompt: str | ChatPromptTemplate | None = None,
         reasoning_prompt: str | ChatPromptTemplate | None = None,
-        **kwargs,
-    ) -> "SelfDiscoverAgentConfig":
+        **kwargs) -> "SelfDiscoverAgentConfig":
         """Create a SelfDiscoverAgentConfig with default settings.
 
         Args:
@@ -106,8 +96,7 @@ class SelfDiscoverAgentConfig(AgentConfig):
             select_prompt=select_prompt,
             adapt_prompt=adapt_prompt,
             structure_prompt=structure_prompt,
-            reasoning_prompt=reasoning_prompt,
-        )
+            reasoning_prompt=reasoning_prompt)
 
         # Create the config
         return cls(
@@ -119,8 +108,7 @@ class SelfDiscoverAgentConfig(AgentConfig):
             structure_engine=engines["structure"],
             reasoning_engine=engines["reasoning"],
             reasoning_modules=reasoning_modules,
-            **kwargs,
-        )
+            **kwargs)
 
     @staticmethod
     def _get_default_reasoning_modules() -> list[str]:

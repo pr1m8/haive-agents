@@ -13,18 +13,15 @@ class StepResult(BaseModel):
     )
     evidence: list[str] = Field(
         default_factory=list,
-        description="Supporting evidence or reasoning for the findings",
-    )
+        description="Supporting evidence or reasoning for the findings")
     confidence: float = Field(
         ...,
         description="Confidence level in this step's results (0.0-1.0)",
         ge=0.0,
-        le=1.0,
-    )
+        le=1.0)
     next_step_recommendations: str | None = Field(
         default=None,
-        description="Recommendations for subsequent steps based on these findings",
-    )
+        description="Recommendations for subsequent steps based on these findings")
 
 
 class ExecutionResult(BaseModel):
@@ -43,15 +40,13 @@ class ExecutionResult(BaseModel):
         ...,
         description="Overall confidence in the final solution (0.0-1.0)",
         ge=0.0,
-        le=1.0,
-    )
+        le=1.0)
     supporting_analysis: str = Field(
         ..., description="Analysis explaining how the steps led to the solution"
     )
     alternative_perspectives: list[str] = Field(
         default_factory=list,
-        description="Alternative viewpoints or solutions considered",
-    )
+        description="Alternative viewpoints or solutions considered")
     implementation_recommendations: str = Field(
         ..., description="Practical recommendations for implementing the solution"
     )

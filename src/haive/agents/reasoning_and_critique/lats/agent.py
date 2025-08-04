@@ -10,8 +10,7 @@ from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.output_parsers.openai_tools import (
     JsonOutputToolsParser,
-    PydanticToolsParser,
-)
+    PydanticToolsParser)
 from langchain_core.prompt_values import ChatPromptValue
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig
@@ -56,13 +55,11 @@ class LATSAgentConfig(AgentConfig):
     # Prompts
     system_prompt: str = Field(
         default="You are an AI assistant that provides accurate, helpful responses.",
-        description="System prompt for generation",
-    )
+        description="System prompt for generation")
 
     reflection_prompt: str = Field(
         default="Reflect and grade the assistant response to the user question below.",
-        description="Prompt for the reflection step",
-    )
+        description="Prompt for the reflection step")
 
     # State schema
     state_schema: type[BaseModel] = Field(
@@ -79,8 +76,7 @@ class LATSAgentConfig(AgentConfig):
         candidates_per_expansion: int = 5,
         max_tree_height: int = 5,
         name: str | None = None,
-        **kwargs,
-    ) -> "LATSAgentConfig":
+        **kwargs) -> "LATSAgentConfig":
         """Create a LATSAgentConfig from scratch.
 
         Args:
@@ -115,8 +111,7 @@ class LATSAgentConfig(AgentConfig):
             temperature=temperature,
             candidates_per_expansion=candidates_per_expansion,
             max_tree_height=max_tree_height,
-            **kwargs,
-        )
+            **kwargs)
 
 
 # =============================================
@@ -204,8 +199,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
                 n=n,
                 callbacks=config["callbacks"],
                 run_name="GenerateCandidates",
-                **bound_kwargs,
-            )
+                **bound_kwargs)
             return [gen.message for gen in chat_result.generations[0]]
 
         # Create expansion chain
@@ -238,8 +232,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
                                             "args": r["args"],
                                             "id": r["id"],
                                         }
-                                    ],
-                                )
+                                    ])
                             ]
                         }
                     )
@@ -260,8 +253,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
             root = Node(
                 output_messages,
                 reflection=reflection,
-                exploration_weight=self.config.exploration_weight,
-            )
+                exploration_weight=self.config.exploration_weight)
 
             # Update state
             return {
@@ -285,8 +277,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
             # Generate new candidates
             new_candidates = self.expansion_chain.invoke(
                 {"input": user_input, "messages": messages},
-                config={"configurable": {"N": self.config.candidates_per_expansion}},
-            )
+                config={"configurable": {"N": self.config.candidates_per_expansion}})
 
             # Process tool calls if any
             parsed = self.parser.batch(new_candidates)
@@ -316,8 +307,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
                                                 "args": tool_call["args"],
                                                 "id": tool_call["id"],
                                             }
-                                        ],
-                                    )
+                                        ])
                                 ]
                             }
                         )
@@ -332,8 +322,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
                                     "messages": [
                                         AIMessage(content=f"Error executing tool: {e}")
                                     ]
-                                },
-                            )
+                                })
                         )
 
                 # Collect tool responses by candidate index
@@ -360,8 +349,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
                     cand,
                     parent=best_candidate,
                     reflection=reflection,
-                    exploration_weight=self.config.exploration_weight,
-                )
+                    exploration_weight=self.config.exploration_weight)
                 for cand, reflection in zip(output_messages, reflections, strict=False)
             ]
             best_candidate.children.extend(child_nodes)
@@ -547,8 +535,7 @@ def create_lats_agent(
     candidates_per_expansion: int = 5,
     max_tree_height: int = 5,
     name: str | None = None,
-    **kwargs,
-) -> LATSAgent:
+    **kwargs) -> LATSAgent:
     """Create a LATS agent with the specified configuration.
 
     Args:
@@ -573,8 +560,7 @@ def create_lats_agent(
         candidates_per_expansion=candidates_per_expansion,
         max_tree_height=max_tree_height,
         name=name or f"lats_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-        **kwargs,
-    )
+        **kwargs)
 
     # Build and return the agent
     return config.build_agent()

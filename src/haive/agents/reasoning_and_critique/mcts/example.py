@@ -11,8 +11,7 @@ from langchain_core.tools import BaseTool
 from haive.agents.reasoning_and_critique.mcts.utils import (
     create_mcts_agent,
     extract_best_solution,
-    print_tree_stats,
-)
+    print_tree_stats)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -55,8 +54,7 @@ def run_mcts_agent_example(
         system_prompt="You are a helpful AI assistant.",
         max_rollouts=5,
         candidates_per_rollout=5,
-        name="research_mcts_agent",
-    )
+        name="research_mcts_agent")
     for step in agent.stream(question, debug=True):
         pass
 

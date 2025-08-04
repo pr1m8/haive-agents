@@ -3,11 +3,9 @@
 
 from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
     DEFAULT_REASONING_MODULES,
-    self_discovery,
-)
+    self_discovery)
 from haive.agents.reasoning_and_critique.self_discover.v2.state import (
-    SelfDiscoveryState,
-)
+    SelfDiscoveryState)
 
 
 def run_self_discovery_example() -> None:

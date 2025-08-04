@@ -9,8 +9,7 @@ from haive.agents.reasoning_and_critique.lats.v2.agents import (
     process_initial_response,
     process_reflection,
     should_continue_search,
-    should_execute_tools,
-)
+    should_execute_tools)
 from haive.agents.reasoning_and_critique.lats.v2.models import (
     CandidateActions,
     Config,
@@ -18,8 +17,7 @@ from haive.agents.reasoning_and_critique.lats.v2.models import (
     SelectionDecision,
     TreeNode,
     normalized_score,
-    uct_score,
-)
+    uct_score)
 from haive.agents.reasoning_and_critique.lats.v2.state import (
     LATSState,
     current_trajectory,
@@ -28,8 +26,7 @@ from haive.agents.reasoning_and_critique.lats.v2.state import (
     input_query,
     should_continue_search,
     tree_statistics,
-    update_nodes,
-)
+    update_nodes)
 
 __all__ = [
     "CandidateActions",

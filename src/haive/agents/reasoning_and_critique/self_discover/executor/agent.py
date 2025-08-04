@@ -45,7 +45,6 @@ class ExecutorAgent(SimpleAgent):
                 max_tokens=3000,
                 system_message=EXECUTOR_SYSTEM_MESSAGE,
                 prompt_template=EXECUTOR_PROMPT,
-                structured_output_model=ExecutionResult,
-            )
+                structured_output_model=ExecutionResult)
 
         super().__init__(name=name, engine=engine, **kwargs)

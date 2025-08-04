@@ -80,8 +80,7 @@ class TreeNode(BaseModel):
         all_nodes = [self, *self._get_all_children()]
         best = max(
             all_nodes,
-            key=lambda node: int(node.is_terminal and node.is_solved) * node.value,
-        )
+            key=lambda node: int(node.is_terminal and node.is_solved) * node.value)
         return best
 
     def upper_confidence_bound(self, exploration_weight=1.0) -> float:

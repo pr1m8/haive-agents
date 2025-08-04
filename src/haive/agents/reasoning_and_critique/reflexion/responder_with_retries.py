@@ -14,8 +14,7 @@ class ResponderWithRetries:
         self,
         aug_llm_config: AugLLMConfig,
         num_retries: int = 3,
-        name: str | None = None,
-    ):
+        name: str | None = None):
         """Args:
         aug_llm_config: The config for the LLM to use.
         num_retries: The number of times to retry the runnable.
@@ -52,8 +51,7 @@ class ResponderWithRetries:
                             e!r}\n\nPay close attention to the function schema.\n\n"
                         + json.dumps(self.validator.schema(), indent=2)
                         + "\nRespond by fixing all validation errors.",
-                        tool_call_id=response.tool_calls[0]["id"],
-                    ),
+                        tool_call_id=response.tool_calls[0]["id"]),
                 ]
         if self.name == "revisor":
             return Command(

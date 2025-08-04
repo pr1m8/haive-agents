@@ -18,8 +18,7 @@ class MCTSAgentConfig(AgentConfig):
     # LLM configuration
     llm_config: LLMConfig | None = Field(
         default=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7}),
-        description="Configuration for the LLM",
-    )
+        description="Configuration for the LLM")
 
     # Tools
     tools: list[BaseTool] = Field(
@@ -57,8 +56,7 @@ class MCTSAgentConfig(AgentConfig):
         llm_config: LLMConfig | None = None,
         tools: list[BaseTool] | None = None,
         system_prompt: str | None = None,
-        **kwargs,
-    ) -> "MCTSAgentConfig":
+        **kwargs) -> "MCTSAgentConfig":
         """Create an MCTS Agent config from LLM config and tools."""
         # Use defaults if not provided
         llm_config = llm_config or AzureLLMConfig(
@@ -94,8 +92,7 @@ class MCTSAgentConfig(AgentConfig):
                 [
                     (
                         "system",
-                        "Reflect and grade the assistant response to the user question below.",
-                    ),
+                        "Reflect and grade the assistant response to the user question below."),
                     ("user", "{input}"),
                     MessagesPlaceholder(variable_name="candidate"),
                 ]

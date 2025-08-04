@@ -57,17 +57,14 @@ async def run_math_example():
                 description="Generates mathematical solutions",
                 llm_config=AzureLLMConfig(
                     model="gpt-4o", parameters={"temperature": 0.7}
-                ),
-            ),
+                )),
             "evaluator": AugLLMConfig(
                 name="math_evaluator",
                 description="Evaluates mathematical solutions",
                 llm_config=AzureLLMConfig(
                     model="gpt-4o", parameters={"temperature": 0.1}
-                ),
-            ),
-        },
-    )
+                )),
+        })
 
     agent = ToTAgent(config)
 
@@ -104,17 +101,14 @@ async def run_complex_reasoning_example():
                 description="Generates solutions for complex reasoning problems",
                 llm_config=AzureLLMConfig(
                     model="gpt-4o", parameters={"temperature": 0.8, "max_tokens": 2000}
-                ),
-            ),
+                )),
             "evaluator": AugLLMConfig(
                 name="reasoning_evaluator",
                 description="Evaluates solutions for complex reasoning problems",
                 llm_config=AzureLLMConfig(
                     model="gpt-4o", parameters={"temperature": 0.1, "max_tokens": 1000}
-                ),
-            ),
-        },
-    )
+                )),
+        })
 
     agent = ToTAgent(config)
 

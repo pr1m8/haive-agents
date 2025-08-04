@@ -10,8 +10,7 @@ from haive.agents.reasoning_and_critique.tot.v2.agent import (
     route_after_scoring_prep,
     scoring_workflow,
     should_continue_search,
-    solve_with_tot,
-)
+    solve_with_tot)
 from haive.agents.reasoning_and_critique.tot.v2.models import (
     Candidate,
     CandidateEvaluation,
@@ -21,8 +20,7 @@ from haive.agents.reasoning_and_critique.tot.v2.models import (
     from_candidate,
     get_content_str,
     validate_content,
-    validate_score,
-)
+    validate_score)
 from haive.agents.reasoning_and_critique.tot.v2.state import (
     ExpansionState,
     ToTState,
@@ -35,8 +33,7 @@ from haive.agents.reasoning_and_critique.tot.v2.state import (
     problem,
     scored_candidates_summary,
     search_progress,
-    update_candidates,
-)
+    update_candidates)
 
 __all__ = [
     "Candidate",

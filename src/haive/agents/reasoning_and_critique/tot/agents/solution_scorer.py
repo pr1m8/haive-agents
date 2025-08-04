@@ -73,15 +73,13 @@ For each solution:
             name=name,
             engine=engine,
             system_message=system_message,
-            structured_output_model=SolutionScoring,
-        )
+            structured_output_model=SolutionScoring)
 
     async def score_solutions(
         self,
         problem: str,
         candidates: list[str],
-        context: str = "",
-    ) -> SolutionScoring:
+        context: str = "") -> SolutionScoring:
         """Score a list of candidate solutions.
 
         Args:
@@ -132,23 +130,20 @@ Evaluate each candidate carefully and provide scores with clear reasoning."""
                     score=0.5,  # Default middle score
                     reasoning="Unable to parse structured scoring",
                     is_complete=False,
-                    has_errors=False,
-                )
+                    has_errors=False)
             )
 
         return SolutionScoring(
             problem_understanding="Fallback scoring due to parsing error",
             scored_solutions=scored_solutions,
-            ranking_rationale="Default scoring applied",
-        )
+            ranking_rationale="Default scoring applied")
 
     async def get_best_solutions(
         self,
         problem: str,
         candidates: list[str],
         top_k: int = 3,
-        context: str = "",
-    ) -> list[tuple[str, float]]:
+        context: str = "") -> list[tuple[str, float]]:
         """Get the top-k best solutions with their scores.
 
         Args:

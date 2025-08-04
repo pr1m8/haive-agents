@@ -53,19 +53,16 @@ class ToTAgentConfig(AgentConfig):
     # LLM configurations
     expand_llm_config: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(),
-        description="LLM configuration for candidate expansion",
-    )
+        description="LLM configuration for candidate expansion")
 
     score_llm_config: AugLLMConfig | None = Field(
         default=None,
-        description="LLM configuration for candidate scoring (if not provided, a function must be used)",
-    )
+        description="LLM configuration for candidate scoring (if not provided, a function must be used)")
 
     # Alternative function-based scoring
     score_function: Callable | None = Field(
         default=None,
-        description="Function to score candidates. Takes (problem, candidate) and returns a score.",
-    )
+        description="Function to score candidates. Takes (problem, candidate) and returns a score.")
 
     # Customization
     visualize: bool = Field(
@@ -81,8 +78,7 @@ class ToTAgentConfig(AgentConfig):
         expand_prompt: ChatPromptTemplate | None = None,
         score_prompt: ChatPromptTemplate | None = None,
         name: str | None = None,
-        **kwargs,
-    ) -> "ToTAgentConfig":
+        **kwargs) -> "ToTAgentConfig":
         """Create a ToTAgentConfig from scratch.
 
         Args:
@@ -104,8 +100,7 @@ class ToTAgentConfig(AgentConfig):
                     ("system", system_prompt),
                     (
                         "system",
-                        "Generate {candidates_per_expansion} different approaches to solve this problem. Be creative and diverse in your thinking.",
-                    ),
+                        "Generate {candidates_per_expansion} different approaches to solve this problem. Be creative and diverse in your thinking."),
                     ("user", "Problem: {problem}"),
                     ("user", "Previous attempt: {seed}" if "seed" in kwargs else ""),
                 ]
@@ -117,8 +112,7 @@ class ToTAgentConfig(AgentConfig):
                 [
                     (
                         "system",
-                        "Rate the following solution attempt on a scale of 0.0 to 1.0.",
-                    ),
+                        "Rate the following solution attempt on a scale of 0.0 to 1.0."),
                     ("system", "Provide feedback on the reasoning and accuracy."),
                     ("user", "Problem: {problem}"),
                     ("user", "Solution attempt: {candidate}"),
@@ -141,8 +135,7 @@ class ToTAgentConfig(AgentConfig):
             score_llm = AugLLMConfig(
                 name="tot_score_llm",
                 llm_config=llm_config,
-                prompt_template=score_prompt,
-            )
+                prompt_template=score_prompt)
 
         # Create and return the config
         return cls(
@@ -151,5 +144,4 @@ class ToTAgentConfig(AgentConfig):
                 datetime.now().strftime('%Y%m%d_%H%M%S')}",
             expand_llm_config=expand_llm,
             score_llm_config=score_llm,
-            **kwargs,
-        )
+            **kwargs)

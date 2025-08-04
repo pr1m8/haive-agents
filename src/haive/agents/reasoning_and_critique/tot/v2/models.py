@@ -96,8 +96,7 @@ class ScoredCandidate(Candidate[T], Generic[T]):
             created_at=candidate.created_at,
             score=score,
             feedback=feedback,
-            scoring_metadata=kwargs,
-        )
+            scoring_metadata=kwargs)
 
     def __str__(self) -> str:
         """Enhanced string representation with score."""

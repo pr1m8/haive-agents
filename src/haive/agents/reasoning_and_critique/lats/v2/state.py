@@ -10,8 +10,7 @@ from haive.agents.reasoning_and_critique.lats.v2.models import TreeNode
 
 def update_nodes(
     existing: dict[str, TreeNode] | None = None,
-    updates: dict[str, TreeNode] | None = None,
-) -> dict[str, TreeNode]:
+    updates: dict[str, TreeNode] | None = None) -> dict[str, TreeNode]:
     """Custom reducer for tree nodes."""
     if existing is None:
         existing = {}

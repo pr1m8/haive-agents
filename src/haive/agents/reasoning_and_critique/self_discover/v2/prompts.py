@@ -12,8 +12,7 @@ select_prompt = ChatPromptTemplate.from_messages(
 
 Your job is to analyze the given task and select the most crucial reasoning modules that would help solve it effectively.
 
-Consider the nature of the task, its complexity, and what types of thinking would be most beneficial.""",
-        ),
+Consider the nature of the task, its complexity, and what types of thinking would be most beneficial."""),
         (
             "human",
             """Select several reasoning modules that are crucial to utilize in order to solve the given task:
@@ -23,8 +22,7 @@ All reasoning module descriptions:
 
 Task: {task_description}
 
-Select several modules that are crucial for solving the task above. Explain your selection briefly.""",
-        ),
+Select several modules that are crucial for solving the task above. Explain your selection briefly."""),
     ]
 )
 
@@ -38,8 +36,7 @@ adapt_prompt = ChatPromptTemplate.from_messages(
 
 Your job is to take the selected reasoning modules and rephrase/specify each one so that it directly addresses the given task.
 
-Make each adaptation concrete and actionable for the specific problem at hand.""",
-        ),
+Make each adaptation concrete and actionable for the specific problem at hand."""),
         (
             "human",
             """Rephrase and specify each reasoning module so that it better helps solving the task:
@@ -49,8 +46,7 @@ SELECTED module descriptions:
 
 Task: {task_description}
 
-Adapt each reasoning module description to better solve the task. Make them specific and actionable.""",
-        ),
+Adapt each reasoning module description to better solve the task. Make them specific and actionable."""),
     ]
 )
 
@@ -64,8 +60,7 @@ structured_prompt = ChatPromptTemplate.from_messages(
 
 Your job is to operationalize the adapted reasoning modules into a clear, step-by-step plan that can be followed to solve the task.
 
-Create a JSON structure that defines the reasoning steps without actually solving the problem.""",
-        ),
+Create a JSON structure that defines the reasoning steps without actually solving the problem."""),
         (
             "human",
             """Operationalize the reasoning modules into a step-by-step reasoning plan in JSON format:
@@ -90,8 +85,7 @@ Task: {task_description}
 
 Implement a reasoning structure for solvers to follow step-by-step and arrive at correct answer.
 
-Note: do NOT actually arrive at a conclusion in this pass. Your job is to generate a PLAN so that in the future you can fill it out and arrive at the correct conclusion for tasks like this.""",
-        ),
+Note: do NOT actually arrive at a conclusion in this pass. Your job is to generate a PLAN so that in the future you can fill it out and arrive at the correct conclusion for tasks like this."""),
     ]
 )
 
@@ -105,8 +99,7 @@ reasoning_prompt = ChatPromptTemplate.from_messages(
 
 Your job is to use the provided reasoning structure to solve the given task step by step.
 
-Fill in each step with specific reasoning and arrive at the correct answer.""",
-        ),
+Fill in each step with specific reasoning and arrive at the correct answer."""),
         (
             "human",
             """Follow the step-by-step reasoning plan in JSON to correctly solve the task. Fill in the values following the keys by reasoning specifically about the task given. Do not simply rephrase the keys.
@@ -116,7 +109,6 @@ Reasoning Structure:
 
 Task: {task_description}
 
-Work through each step carefully and provide the final answer.""",
-        ),
+Work through each step carefully and provide the final answer."""),
     ]
 )

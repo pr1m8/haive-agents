@@ -38,8 +38,7 @@ class CandidateList(BaseModel):
     )
     reasoning: str | None = Field(
         default=None,
-        description="Reasoning about different approaches to solving the problem",
-    )
+        description="Reasoning about different approaches to solving the problem")
 
 
 class CandidateScore(BaseModel):
