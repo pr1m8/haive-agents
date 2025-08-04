@@ -37,14 +37,12 @@ def calculate(expression: str) -> str:
 weather_tool = StructuredTool.from_function(
     func=get_weather,
     name="get_weather",
-    description="Get the current weather for a location",
-)
+    description="Get the current weather for a location")
 
 search_tool = StructuredTool.from_function(
     func=search_database,
     name="search_database",
-    description="Search the database for information",
-)
+    description="Search the database for information")
 
 calculator_tool = StructuredTool.from_function(
     func=calculate, name="calculate", description="Calculate a mathematical expression"
@@ -75,14 +73,12 @@ react_config = ReactAgentConfig(
     name="travel_planner",
     engine=AugLLMConfig(
         name="travel_llm",
-        llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7}),
-    ),
+        llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7})),
     tools=[weather_tool, search_tool, calculator_tool],
     system_prompt=system_prompt,
     structured_output_schema=TripPlan,
     max_iterations=5,
-    parallel_tools=True,
-)
+    parallel_tools=True)
 # 4. Build the agent
 travel_agent = react_config.build_agent()
 
@@ -109,8 +105,7 @@ def simulate_react_agent_with_human() -> Any:
             # Provide human input to continue the conversation
             state = travel_agent.run(
                 {"messages": [HumanMessage(content=human_response)]},
-                thread_id=thread_id,
-            )
+                thread_id=thread_id)
             break
 
     # Continue agent execution after human input

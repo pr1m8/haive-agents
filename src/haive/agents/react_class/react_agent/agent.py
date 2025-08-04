@@ -16,8 +16,7 @@ from langgraph.types import Command
 from pydantic import BaseModel, Field, field_validator
 
 from haive.agents.react_class.react_agent.aug_llms import (
-    default_react_llm_runnable_config,
-)
+    default_react_llm_runnable_config)
 from haive.agents.react_class.react_agent.state import ReactAgentState
 
 
@@ -39,35 +38,28 @@ default_react_should_continue_output_dict = {"continue": "tool_node", "end": END
 class ReactAgentConfig(AgentConfig):
     engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(llm_config=AzureLLMConfig(model="gpt-4o")),
-        description="LLM configuration for the ReactAgent.",
-    )
+        description="LLM configuration for the ReactAgent.")
     aug_llm_config: AugLLMConfig = Field(
         default=default_react_llm_runnable_config,
-        description="The AugLLM configuration for the agent.",
-    )
+        description="The AugLLM configuration for the agent.")
     tools: list[Tool | BaseTool | StructuredTool] = Field(
         default_factory=list,  # Ensure it's never `None`
-        description="The tools available to the agent.",
-    )
+        description="The tools available to the agent.")
     runnable_config: RunnableConfig = Field(
         default_factory=lambda: {"configurable": {"thread_id": str(uuid.uuid4())}},
-        description="Configuration for the agent's runnable execution.",
-    )
+        description="Configuration for the agent's runnable execution.")
     tool_node_tools: list[Tool | BaseTool | StructuredTool] = Field(
         default_factory=lambda: [tavily_search_tool],
-        description="Tools used in the ToolNode of the agent.",
-    )
+        description="Tools used in the ToolNode of the agent.")
     state_schema: type[BaseModel] | dict[str, Any] | Any = Field(
         default=ReactAgentState, description="State schema defining the agent's state."
     )
     core_routing_function: Callable = Field(
         default=should_continue,
-        description="Function that determines whether to continue execution.",
-    )
+        description="Function that determines whether to continue execution.")
     conditional_routing_function_output_dict: dict[str, Any] = Field(
         default=default_react_should_continue_output_dict,
-        description="Dictionary defining routing behavior.",
-    )
+        description="Dictionary defining routing behavior.")
     node_name: str = Field(
         default="agent_node", description="The name of the agent node."
     )
@@ -198,8 +190,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             self.graph.add_conditional_edges(
                 self.node_name,
                 self.core_routing_function,
-                self.conditional_routing_function_output_dict,
-            )
+                self.conditional_routing_function_output_dict)
             self.graph.add_edge("tool_node", self.node_name)
         else:
             self.graph.add_edge(self.node_name, END)

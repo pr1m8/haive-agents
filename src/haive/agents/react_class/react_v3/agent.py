@@ -58,29 +58,25 @@ class ReactAgent(Agent[ReactAgentConfig]):
             name=self.config.name,
             components=[self.config.engine, *self.config.tools],
             state_schema=self.config.state_schema,
-            visualize=self.config.visualize,
-        )
+            visualize=self.config.visualize)
 
         # Configure reasoning node
         gb.add_node(
             name=self.config.reasoning_node_name,
             config=self.config.engine,
-            retry=self.config.reasoning_retry,
-        )
+            retry=self.config.reasoning_retry)
 
         # Configure tool node
         gb.add_node(
             name=self.config.tool_node_name,
             function=self._create_tool_node(),
-            retry=self.config.tool_retry,
-        )
+            retry=self.config.tool_retry)
 
         # Add conditional branching
         gb.add_conditional_edges(
             self.config.reasoning_node_name,
             self._should_use_tool,
-            {True: self.config.tool_node_name, False: END},
-        )
+            {True: self.config.tool_node_name, False: END})
 
         # Add edge from tool node back to reasoning
         gb.add_edge(self.config.tool_node_name, self.config.reasoning_node_name)
@@ -262,8 +258,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         tools: list[Any],
         llm: AugLLMConfig | None = None,
         system_prompt: str | None = None,
-        **kwargs,
-    ) -> "ReactAgent":
+        **kwargs) -> "ReactAgent":
         """Create a ReactAgent from a list of tools.
 
         Args:
@@ -284,8 +279,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                 or (
                     "You are a helpful assistant with access to tools. "
                     "Use these tools to help the user with their request."
-                ),
-            )
+                ))
         elif system_prompt:
             # Update system prompt if provided
             llm.system_prompt = system_prompt
@@ -316,8 +310,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         config = ReactAgentConfig(
             name=kwargs.pop("name", "langgraph_react_agent"),
             engine=AugLLMConfig(),  # Placeholder
-            **kwargs,
-        )
+            **kwargs)
 
         # Create agent
         agent = cls(config)

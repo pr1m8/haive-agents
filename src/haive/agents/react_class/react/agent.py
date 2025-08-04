@@ -15,8 +15,7 @@ from haive.agents.react_class.react.tool_utils import (
     filter_tools_for_query,
     prepare_tools,
     tools_router,
-    tools_router_v2,
-)
+    tools_router_v2)
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +46,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         gb = DynamicGraph(
             name=f"{self.config.name}_react_agent",
             components=[self.config.engine],
-            state_schema=self.config.state_schema,
-        )
+            state_schema=self.config.state_schema)
 
         # Add system message if provided
         if self.config.system_prompt:
@@ -120,8 +118,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             name=self.config.llm_node_name,
             config=llm_engine,
             # Router function will handle routing decision
-            command_goto=None,
-        )
+            command_goto=None)
 
         # If no system message, set this as entry point
         if not self.config.system_prompt:
@@ -144,8 +141,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         gb.add_conditional_edges(
             self.config.llm_node_name,
             tools_router,
-            {self.config.tool_node_name: self.config.tool_node_name, END: END},
-        )
+            {self.config.tool_node_name: self.config.tool_node_name, END: END})
 
     def _setup_tools_v2(self, gb: DynamicGraph) -> None:
         """Set up tools for v2 architecture (each tool call in separate node)."""
@@ -173,8 +169,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         gb.add_structured_output_node(
             name=self.config.output_node_name,
             model=self.config.structured_output_schema,
-            command_goto=END,
-        )
+            command_goto=END)
 
         # Add edge from LLM to structured output if not already there
         try:

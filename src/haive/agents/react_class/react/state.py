@@ -28,5 +28,4 @@ class ReactAgentState(SimpleAgentState):
     final_answer: str | None = None
 
     model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
+        arbitrary_types_allowed=True)

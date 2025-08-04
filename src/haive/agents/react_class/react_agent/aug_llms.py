@@ -18,5 +18,4 @@ default_react_tools = [tavily_search_tool]
 default_react_llm_runnable_config = AugLLMConfig(
     name="react_agent",
     prompt_template=default_react_prompt_template_config,
-    tools=default_react_tools,
-)
+    tools=default_react_tools)

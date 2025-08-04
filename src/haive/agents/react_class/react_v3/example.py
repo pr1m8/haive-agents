@@ -28,8 +28,7 @@ from haive.agents.react_class.react_v3.agent import ReactAgent
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
-)
+    handlers=[logging.StreamHandler(sys.stdout)])
 
 logger = logging.getLogger("react_agent_test")
 
@@ -108,20 +107,17 @@ def test_basic_react_agent() -> Any:
     weather_tool = Tool.from_function(
         func=get_current_weather,
         name="get_weather",
-        description="Get the current weather in a given location",
-    )
+        description="Get the current weather in a given location")
 
     search_tool = Tool.from_function(
         func=search_api,
         name="search",
-        description="Search for information about a topic",
-    )
+        description="Search for information about a topic")
 
     # Create agent with tools
     agent = ReactAgent.from_tools(
         tools=[weather_tool, search_tool],
-        system_prompt="You are a helpful assistant with access to tools for weather and search.",
-    )
+        system_prompt="You are a helpful assistant with access to tools for weather and search.")
 
     # Print information about the agent
 
@@ -144,20 +140,17 @@ def test_structured_tool_agent() -> Any:
         func=calculate,
         name="calculator",
         description="Perform mathematical calculations",
-        args_schema=Calculator,
-    )
+        args_schema=Calculator)
 
     weather_tool = Tool.from_function(
         func=get_current_weather,
         name="get_weather",
-        description="Get the current weather in a given location",
-    )
+        description="Get the current weather in a given location")
 
     # Create agent with structured tool
     agent = ReactAgent.from_tools(
         tools=[calculator_tool, weather_tool],
-        system_prompt="You are a helpful assistant that can perform calculations and check the weather.",
-    )
+        system_prompt="You are a helpful assistant that can perform calculations and check the weather.")
 
     # Show schema information
     schema_composer = SchemaComposer.from_components(
@@ -186,8 +179,7 @@ def test_retry_policy() -> Any:
     search_tool = Tool.from_function(
         func=search_api,
         name="search",
-        description="Search for information about a topic",
-    )
+        description="Search for information about a topic")
 
     # Create custom retry policy for the search tool
     retry_policy = RetryPolicy(
@@ -203,8 +195,7 @@ def test_retry_policy() -> Any:
     agent = ReactAgent.from_tools(
         tools=[search_tool],
         tool_retry=retry_policy,
-        system_prompt="You are a helpful assistant that can search for information.",
-    )
+        system_prompt="You are a helpful assistant that can search for information.")
 
     # Print retry policy details
 
@@ -233,21 +224,18 @@ def test_multi_turn_conversation() -> Any:
     weather_tool = Tool.from_function(
         func=get_current_weather,
         name="get_weather",
-        description="Get the current weather in a given location",
-    )
+        description="Get the current weather in a given location")
 
     calculator_tool = StructuredTool.from_function(
         func=calculate,
         name="calculator",
         description="Perform mathematical calculations",
-        args_schema=Calculator,
-    )
+        args_schema=Calculator)
 
     # Create agent
     agent = ReactAgent.from_tools(
         tools=[weather_tool, calculator_tool],
-        system_prompt="You are a helpful assistant that can perform calculations and check the weather.",
-    )
+        system_prompt="You are a helpful assistant that can perform calculations and check the weather.")
 
     # Start a conversation
     messages = []

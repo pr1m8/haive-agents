@@ -8,8 +8,7 @@ from langchain_core.tools import BaseTool
 
 from haive.agents.react_class.react_v2.tool_handling import (
     GeneralizedToolNode,
-    human_input_node,
-)
+    human_input_node)
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +43,7 @@ class ReactGraphBuilder(DynamicGraph):
         support_human_input: bool = True,
         parallel_tools: bool = True,
         human_node_name: str | None = "human_input",
-        command_goto: str | None = None,
-    ):
+        command_goto: str | None = None):
         """Add an enhanced tool node with optional human interaction support.
 
         Args:
@@ -84,7 +82,6 @@ class ReactGraphBuilder(DynamicGraph):
                 routes={
                     human_node_name: human_node_name,
                     command_goto or name: command_goto or name,
-                },
-            )
+                })
 
         return self

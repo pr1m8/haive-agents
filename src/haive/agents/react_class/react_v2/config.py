@@ -36,8 +36,7 @@ class ReactAgentConfig(SimpleAgentConfig):
 
     tools: ToolsInput = Field(
         default_factory=list,
-        description="Tools available to the agent. Can be a list or a dict mapping node names to tools.",
-    )
+        description="Tools available to the agent. Can be a list or a dict mapping node names to tools.")
 
     tool_choice: str | None = Field(
         default=None, description="Force the agent to use a specific tool."
@@ -62,8 +61,7 @@ class ReactAgentConfig(SimpleAgentConfig):
     # Add missing fields for structured output
     use_structured_output_node: bool = Field(
         default=False,
-        description="Whether to use a structured output node for final responses.",
-    )
+        description="Whether to use a structured output node for final responses.")
 
     structured_output_model: type[BaseModel] | None = Field(
         default=None, description="Pydantic model class for structured output."
@@ -93,8 +91,7 @@ class ReactAgentConfig(SimpleAgentConfig):
         parallel_tool_execution: bool = False,
         max_iterations: int = 10,
         max_retries: int = 3,
-        **kwargs,
-    ) -> "ReactAgentConfig":
+        **kwargs) -> "ReactAgentConfig":
         """Create a ReactAgentConfig with tools from scratch.
 
         Args:
@@ -167,8 +164,7 @@ class ReactAgentConfig(SimpleAgentConfig):
             name=name
             or f"react_agent_{
                 datetime.now().strftime('%Y%m%d_%H%M%S')}",
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def with_structured_output(
@@ -178,8 +174,7 @@ class ReactAgentConfig(SimpleAgentConfig):
         system_prompt: str | None = None,
         name: str | None = None,
         parallel_tool_execution: bool = False,
-        **kwargs,
-    ) -> "ReactAgentConfig":
+        **kwargs) -> "ReactAgentConfig":
         """Create a ReactAgentConfig with structured output and tools.
 
         Args:
@@ -218,8 +213,7 @@ class ReactAgentConfig(SimpleAgentConfig):
             name=name
             or f"structured_react_{
                 datetime.now().strftime('%Y%m%d_%H%M%S')}",
-            **kwargs,
-        )
+            **kwargs)
 
         return config
 

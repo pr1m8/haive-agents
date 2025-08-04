@@ -160,8 +160,7 @@ def human_input_node(state: dict[str, Any]) -> Command:
     return Command(
         update={"requires_human_input": True, "human_request": human_request},
         # This doesn't route anywhere specific - the graph will be interrupted
-        goto="",
-    )
+        goto="")
 
 
 # Function to create a request_human_assistance tool

@@ -38,8 +38,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                 backoff_factor=2.0,
                 initial_interval=(
                     config.retry_delay if hasattr(config, "retry_delay") else 0.5
-                ),
-            )
+                ))
         except TypeError:
             # Fallback to the old parameter names if needed
             try:
@@ -48,8 +47,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     retry_on_error=True,
                     retry_delay=(
                         config.retry_delay if hasattr(config, "retry_delay") else 0.5
-                    ),
-                )
+                    ))
             except Exception as e2:
                 # Last resort - use a minimal RetryPolicy with only required
                 # params
@@ -179,8 +177,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             gb.add_structured_output_node(
                 name="structured_output",
                 model=structured_output_model,
-                command_goto=END,
-            )
+                command_goto=END)
 
             # Set up advanced routing with structured output
             gb.add_conditional_edges(
@@ -190,15 +187,13 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     "end": END,
                     "structured_output": "structured_output",
                     **{name: name for name in self.tool_nodes},
-                },
-            )
+                })
         elif self.tool_nodes:
             # Set up routing without structured output
             gb.add_conditional_edges(
                 from_node="agent",
                 condition_or_branch=self._route_agent_output,
-                routes={"end": END, **{name: name for name in self.tool_nodes}},
-            )
+                routes={"end": END, **{name: name for name in self.tool_nodes}})
         else:
             # No tools, just add edge to END
             gb.add_edge("agent", END)

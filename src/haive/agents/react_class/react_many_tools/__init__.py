@@ -6,8 +6,7 @@ from react_many_tools.agent import (
     llm_with_filtered_tools,
     retriever,
     run,
-    setup_workflow,
-)
+    setup_workflow)
 from react_many_tools.config import ReactManyToolsConfig, ensure_valid_configuration
 from react_many_tools.state import ReactManyToolsState
 

@@ -145,8 +145,7 @@ class ReactManyToolsAgent(ReactAgent):
                 {
                     "retrieve_documents": "retrieve_documents",
                     "add_system": "add_system",
-                },
-            )
+                })
 
             # Add answer generation if available
             if hasattr(self, "has_answer_generation") and self.has_answer_generation:
@@ -280,15 +279,13 @@ class ReactManyToolsAgent(ReactAgent):
                         "document_count": len(processed_docs),
                     },
                 },
-                goto=next_node,
-            )
+                goto=next_node)
 
         except Exception as e:
             logger.exception(f"Error retrieving documents: {e!s}")
             return Command(
                 update={"error": f"Error retrieving documents: {e!s}"},
-                goto="add_system",
-            )
+                goto="add_system")
 
     def _generate_answer(self, state: dict[str, Any]) -> Command:
         """Generate an answer based on retrieved documents.
@@ -317,8 +314,7 @@ class ReactManyToolsAgent(ReactAgent):
                         rag_documents.append(
                             Document(
                                 page_content=doc["page_content"],
-                                metadata=doc.get("metadata", {}),
-                            )
+                                metadata=doc.get("metadata", {}))
                         )
                     elif isinstance(doc, Document):
                         rag_documents.append(doc)
@@ -753,8 +749,7 @@ class ReactManyToolsAgent(ReactAgent):
             name=self.config.llm_node_name,
             config=llm_with_filtered_tools,
             # Router function will handle routing decision
-            command_goto=None,
-        )
+            command_goto=None)
 
     def run(self, input_data: str | dict[str, Any], **kwargs) -> dict[str, Any]:
         """Run the agent with dynamic tool filtering and RAG capabilities.
