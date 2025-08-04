@@ -183,8 +183,7 @@ Create a unified response that leverages all agent contributions."""
 
             agent_node = EngineNodeConfig(
                 name=node_name,
-                engine=agent.engine if hasattr(agent, "engine") else agent,
-            )
+                engine=agent.engine if hasattr(agent, "engine") else agent)
             graph.add_node(node_name, agent_node)
             graph.add_edge("split", node_name)
             agent_nodes.append(node_name)
@@ -377,8 +376,7 @@ if __name__ == "__main__":
             MockExpert("Dave", "Operations"),
         ],
         aggregation_strategy="all",
-        timeout_per_agent=2.0,
-    )
+        timeout_per_agent=2.0)
 
     # Different aggregation strategies
     strategies = {

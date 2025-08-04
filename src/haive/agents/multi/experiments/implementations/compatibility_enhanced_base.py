@@ -15,8 +15,7 @@ from haive.core.schema.compatibility import (
     CompatibilityChecker,
     FieldMapper,
     TypeAnalyzer,
-    check_compatibility,
-)
+    check_compatibility)
 from rich.console import Console
 from rich.table import Table
 from rich.tree import Tree
@@ -169,8 +168,7 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
             issues=issues,
             warnings=warnings,
             suggested_adapters=suggested_adapters,
-            auto_fixes_applied=auto_fixes_applied,
-        )
+            auto_fixes_applied=auto_fixes_applied)
 
     def _check_agent_pair_compatibility(
         self, source_agent: Agent, target_agent: Agent
@@ -590,8 +588,7 @@ def create_compatible_multi_agent(
     agents: list[Agent],
     execution_mode: ExecutionMode = ExecutionMode.SEQUENCE,
     compatibility_mode: CompatibilityMode = CompatibilityMode.ADAPTIVE,
-    **kwargs,
-) -> CompatibilityEnhancedMultiAgent:
+    **kwargs) -> CompatibilityEnhancedMultiAgent:
     """Create a multi-agent system with automatic compatibility checking.
 
     This function creates a multi-agent system and automatically checks and fixes

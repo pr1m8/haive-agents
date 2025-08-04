@@ -100,8 +100,7 @@ class MultiAgent(Agent):
 
     execution_mode: str = Field(
         default="sequence",
-        description="Execution mode: sequence, parallel, or conditional",
-    )
+        description="Execution mode: sequence, parallel, or conditional")
 
     # Coordinator LLM for routing decisions (optional)
     coordinator_config: AugLLMConfig | None = Field(

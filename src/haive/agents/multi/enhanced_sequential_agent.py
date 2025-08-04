@@ -193,8 +193,7 @@ Always preserve key information while improving clarity and structure."""
             # Create node for agent
             agent_node = EngineNodeConfig(
                 name=node_name,
-                engine=agent.engine if hasattr(agent, "engine") else agent,
-            )
+                engine=agent.engine if hasattr(agent, "engine") else agent)
             graph.add_node(node_name, agent_node)
 
             # Connect nodes
@@ -301,8 +300,7 @@ if __name__ == "__main__":
             MockAgent("summarizer", "SUMMARIZE"),
         ],
         process_between_steps=False,
-        return_all_outputs=True,
-    )
+        return_all_outputs=True)
 
     # Add another step
     pipeline.add_agent(MockAgent("formatter", "FORMAT"))
@@ -314,5 +312,4 @@ if __name__ == "__main__":
         name="enhanced_pipeline",
         agents=[MockAgent("researcher", "RESEARCH"), MockAgent("writer", "WRITE")],
         process_between_steps=True,
-        system_message="Enhance outputs between steps",
-    )
+        system_message="Enhance outputs between steps")

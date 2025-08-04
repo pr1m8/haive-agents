@@ -14,8 +14,7 @@ from pydantic import BaseModel, Field
 
 from haive.agents.multi.experiments.proper_list_multi_agent import (
     MetaListMultiAgent,
-    ProperListMultiAgent,
-)
+    ProperListMultiAgent)
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -56,8 +55,7 @@ class TestProperMultiAgentUsage:
         # Create MultiAgentState
         state = MultiAgentState(
             agents=[planner, executor],  # List gets converted to dict
-            messages=[HumanMessage(content="Plan a project")],
-        )
+            messages=[HumanMessage(content="Plan a project")])
 
         # Verify structure
         assert isinstance(state.agents, dict)
@@ -92,8 +90,7 @@ class TestProperMultiAgentUsage:
             agent=simple_agent,
             messages=[HumanMessage(content="Process this")],
             agent_input={"task": "analyze"},
-            meta_context={"purpose": "testing"},
-        )
+            meta_context={"purpose": "testing"})
 
         # Verify agent embedding
         assert meta_state.agent is not None
@@ -116,8 +113,7 @@ class TestProperMultiAgentUsage:
         # Create MultiAgentState
         MultiAgentState(
             agents={"planner": planner, "executor": executor},
-            messages=[HumanMessage(content="Plan and execute")],
-        )
+            messages=[HumanMessage(content="Plan and execute")])
 
         # Create AgentNodeV3 config
         node_config = create_agent_node_v3(
@@ -126,8 +122,7 @@ class TestProperMultiAgentUsage:
             name="planner_node",
             extract_from_container=True,
             project_state=True,
-            update_container_state=True,
-        )
+            update_container_state=True)
 
         # Verify configuration
         assert node_config.agent_name == "planner"
@@ -142,8 +137,7 @@ class TestProperMultiAgentUsage:
             name="planner",
             engine=AugLLMConfig(
                 structured_output_model=PlanModel, structured_output_version="v2"
-            ),
-        )
+            ))
 
         executor = ReactAgent(name="executor", engine=AugLLMConfig(tools=[calculator]))
 
@@ -210,8 +204,7 @@ class TestProperMultiAgentUsage:
         # Add routing rule
         multi.when(
             condition=lambda state: state.get("category", "tech"),
-            routes={"tech": tech_expert, "business": biz_expert},
-        )
+            routes={"tech": tech_expert, "business": biz_expert})
 
         # Verify routing rule added
         assert "classifier" in multi.routing_rules
@@ -239,8 +232,7 @@ class TestProperMultiAgentUsage:
                 condition=lambda state: (
                     "approved" if state.get("quality", 0) > 0.8 else "revision"
                 ),
-                routes={"approved": "END", "revision": reviewer},
-            )
+                routes={"approved": "END", "revision": reviewer})
             .then(reviewer)
         )
 
@@ -338,8 +330,7 @@ def demonstration_usage() -> None:
             "technical": SimpleAgent(name="tech_expert"),
             "business": SimpleAgent(name="biz_expert"),
             "general": SimpleAgent(name="generalist"),
-        },
-    )
+        })
 
     # 3. Meta multi-agent
     meta = MetaListMultiAgent("demo_meta")
@@ -353,8 +344,7 @@ def demonstration_usage() -> None:
         .then(SimpleAgent(name="step2"))
         .when(
             condition=lambda s: "continue" if s.get("success") else "retry",
-            routes={"continue": "END", "retry": SimpleAgent(name="retry_agent")},
-        )
+            routes={"continue": "END", "retry": SimpleAgent(name="retry_agent")})
     )
 
 

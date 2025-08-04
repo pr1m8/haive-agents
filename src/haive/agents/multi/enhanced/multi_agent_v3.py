@@ -71,8 +71,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
-    EnhancedMultiAgentState,
-)
+    EnhancedMultiAgentState)
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from pydantic import Field, field_validator, model_validator
 from rich.console import Console
@@ -221,35 +220,29 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
     # Generic agents field - follows enhanced base Agent pattern
     agents: AgentsT = Field(
         default_factory=dict,  # Default to dict for backward compatibility
-        description="Generic collection of agents this multi-agent coordinates",
-    )
+        description="Generic collection of agents this multi-agent coordinates")
 
     agent: Agent | None = Field(
         default=None,
-        description="Main/default agent for this multi-agent (legacy support)",
-    )
+        description="Main/default agent for this multi-agent (legacy support)")
 
     # Execution configuration
     execution_mode: str = Field(
         default="infer",
-        description="How to execute agents: infer, sequential, parallel, conditional, branch",
-    )
+        description="How to execute agents: infer, sequential, parallel, conditional, branch")
 
     infer_sequence: bool = Field(
         default=True,
-        description="Whether to automatically infer execution sequence from agent dependencies",
-    )
+        description="Whether to automatically infer execution sequence from agent dependencies")
 
     # Branch configuration for custom routing
     branches: dict[str, dict[str, Any]] = Field(
         default_factory=dict,
-        description="Branch configurations for conditional and custom routing",
-    )
+        description="Branch configurations for conditional and custom routing")
 
     entry_point: str | None = Field(
         default=None,
-        description="Starting agent for execution (if not specified, uses first agent or infers)",
-    )
+        description="Starting agent for execution (if not specified, uses first agent or infers)")
 
     # ========================================================================
     # ENHANCED V3 FEATURES (following SimpleAgent V3 pattern)
@@ -289,15 +282,13 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         default=0.1,
         ge=0.0,
         le=1.0,
-        description="Rate of performance adaptation (0.0 = no adaptation, 1.0 = immediate)",
-    )
+        description="Rate of performance adaptation (0.0 = no adaptation, 1.0 = immediate)")
 
     max_iterations: int = Field(
         default=10,
         ge=1,
         le=50,
-        description="Maximum iterations for conditional/branch modes",
-    )
+        description="Maximum iterations for conditional/branch modes")
 
     # ========================================================================
     # VALIDATION AND SETUP
@@ -503,8 +494,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         if not self.engine:
             self.engine = AugLLMConfig(
                 temperature=0.3,  # Lower temperature for coordination decisions
-                system_message="You are a coordination agent managing multiple specialized agents.",
-            )
+                system_message="You are a coordination agent managing multiple specialized agents.")
             self.engines["coordinator"] = self.engine
         logger.debug("Multi-engine mode configured")
 
@@ -557,8 +547,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         graph = BaseGraph(
             name=f"{
                 self.name}_graph",
-            state_schema=self.state_schema,
-        )
+            state_schema=self.state_schema)
 
         # Store agents in graph metadata for AgentNodeV3Config to access
         graph.metadata["agents"] = self.agents
@@ -627,9 +616,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
                 routes = branch_config["routes"]
 
                 def make_condition_fn(fn, route_map) -> Any:
-                    """Make Condition Fn implementation."""
                     def condition_wrapper(state: dict[str, Any]):
-                        """Condition Wrapper implementation."""
                         route_key = fn(state)
                         return route_map.get(route_key, next(iter(route_map.values())))
 
@@ -724,8 +711,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         self,
         source_agent: str,
         condition_fn: Callable[[dict[str, Any]], str],
-        routes: dict[str, str],
-    ) -> None:
+        routes: dict[str, str]) -> None:
         """Add conditional routing with a function that returns route keys.
 
         This method enables dynamic routing based on state conditions. The condition
@@ -744,7 +730,6 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
             Basic conditional routing::
 
                 def route_by_priority(state):
-                    """Route By Priority implementation."""
                     return "high" if state.get("priority", 0) > 5 else "normal"
 
                 multi_agent.add_conditional_routing(
@@ -889,8 +874,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         agent_names = ", ".join(self.get_agent_names())
         table.add_row(
             "Agent Names",
-            agent_names[:50] + "..." if len(agent_names) > 50 else agent_names,
-        )
+            agent_names[:50] + "..." if len(agent_names) > 50 else agent_names)
 
         # Routing info
         table.add_row("Custom Branches", str(len(self.branches)))
@@ -983,8 +967,7 @@ class EnhancedMultiAgent(Agent, Generic[AgentsT]):
         agents: list[Agent] | dict[str, Agent],
         name: str = "multi_agent",
         execution_mode: str = "infer",
-        **kwargs,
-    ) -> "EnhancedMultiAgent":
+        **kwargs) -> "EnhancedMultiAgent":
         """Create an enhanced multi-agent from a collection of agents.
 
         This factory method provides a convenient way to create an EnhancedMultiAgent

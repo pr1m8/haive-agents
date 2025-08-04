@@ -151,8 +151,7 @@ class MultiAgent(Agent):
     # Core agent management - follows same pattern as engines
     agents: dict[str, Agent] = Field(
         default_factory=dict,
-        description="Dictionary of agents this multi-agent coordinates",
-    )
+        description="Dictionary of agents this multi-agent coordinates")
 
     agent: Agent | None = Field(
         default=None, description="Main/default agent for this multi-agent"
@@ -161,26 +160,22 @@ class MultiAgent(Agent):
     # Execution mode
     execution_mode: str = Field(
         default="infer",
-        description="How to execute agents: infer, sequential, parallel, conditional, branch",
-    )
+        description="How to execute agents: infer, sequential, parallel, conditional, branch")
 
     # Sequence inference configuration
     infer_sequence: bool = Field(
         default=True,
-        description="Whether to automatically infer execution sequence from agent dependencies",
-    )
+        description="Whether to automatically infer execution sequence from agent dependencies")
 
     # Branch configuration
     branches: dict[str, dict[str, Any]] = Field(
         default_factory=dict,
-        description="Branch configurations for conditional routing",
-    )
+        description="Branch configurations for conditional routing")
 
     # Entry point for execution
     entry_point: str | None = Field(
         default=None,
-        description="Starting agent for execution (if not specified, uses first agent or infers)",
-    )
+        description="Starting agent for execution (if not specified, uses first agent or infers)")
 
     @model_validator(mode="before")
     @classmethod
@@ -247,8 +242,7 @@ class MultiAgent(Agent):
         graph = BaseGraph(
             name=f"{
                 self.name}_graph",
-            state_schema=self.state_schema,
-        )
+            state_schema=self.state_schema)
 
         # Check if we have custom routing patterns
         has_custom_routing = any(
@@ -387,8 +381,7 @@ class MultiAgent(Agent):
         agents: list[Agent],
         name: str = "multi_agent",
         execution_mode: str = "infer",
-        **kwargs,
-    ) -> MultiAgent:
+        **kwargs) -> MultiAgent:
         """Create a multi-agent from a list of agents.
 
         This factory method provides a convenient way to create a MultiAgent
@@ -434,8 +427,7 @@ class MultiAgent(Agent):
         self,
         source_agent: str,
         condition_fn: Callable[[dict[str, Any]], str],
-        routes: dict[str, str],
-    ) -> None:
+        routes: dict[str, str]) -> None:
         """Add conditional routing with a function that returns route keys.
 
         This method enables dynamic routing based on state conditions. The condition
@@ -600,16 +592,18 @@ class MultiAgent(Agent):
             path: Function that takes state and returns target agent name.
 
         Examples:
-            def route_by_category(state):
-                category = state.get("category", "default")
-                if category == "billing":
-                    return "billing_agent"
-                elif category == "technical":
-                    return "technical_agent"
-                else:
-                    return "general_agent"
+            Basic routing function::
 
-            multi_agent.add_conditional_edges("classifier", route_by_category)
+                def route_by_category(state):
+                    category = state.get("category", "default")
+                    if category == "billing":
+                        return "billing_agent"
+                    elif category == "technical":
+                        return "technical_agent"
+                    else:
+                        return "general_agent"
+
+                multi_agent.add_conditional_edges("classifier", route_by_category)
         """
         # Build a dynamic route map based on the function
         # This is a simplified approach - in production, you might want

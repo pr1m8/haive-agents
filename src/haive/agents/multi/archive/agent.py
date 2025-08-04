@@ -54,8 +54,7 @@ class MultiAgent(Agent):
     # Multi-agent specific fields
     agents: dict[str, Agent] = Field(
         default_factory=dict,
-        description="Dictionary of sub-agents in this multi-agent system",
-    )
+        description="Dictionary of sub-agents in this multi-agent system")
 
     coordination_mode: Literal[
         "sequential", "parallel", "supervisor", "swarm", "custom"
@@ -67,8 +66,7 @@ class MultiAgent(Agent):
 
     enable_meta: bool = Field(
         default=False,
-        description="Enable meta-agent capabilities (graph self-modification)",
-    )
+        description="Enable meta-agent capabilities (graph self-modification)")
 
     # Agent execution configuration
     max_iterations: int = Field(
@@ -86,8 +84,7 @@ class MultiAgent(Agent):
     # Node configuration
     use_agent_nodes: bool = Field(
         default=True,
-        description="Use AgentNode instead of EngineNode for better agent handling",
-    )
+        description="Use AgentNode instead of EngineNode for better agent handling")
 
     # Schema configuration
     use_engine_io_mappings: bool = Field(
@@ -192,8 +189,7 @@ class MultiAgent(Agent):
             agents=agent_list,
             name=f"{self.__class__.__name__}State",
             separation=self.separation_strategy,
-            include_meta=self.enable_meta,
-        )
+            include_meta=self.enable_meta)
 
         # Log engine IO mappings
         if hasattr(self.state_schema, "__engine_io_mappings__"):
@@ -312,8 +308,7 @@ class MultiAgent(Agent):
                 graph.add_conditional_edge(
                     coordinator_node,
                     f"{agent_name}_node",
-                    self._should_route_to(agent_name),
-                )
+                    self._should_route_to(agent_name))
 
                 # Agent back to coordinator
                 graph.add_edge(f"{agent_name}_node", coordinator_node)
@@ -342,8 +337,7 @@ class MultiAgent(Agent):
                     graph.add_conditional_edge(
                         f"{from_agent}_node",
                         f"{to_agent}_node",
-                        self._should_route_from_to(from_agent, to_agent),
-                    )
+                        self._should_route_from_to(from_agent, to_agent))
 
             # Every agent can potentially end
             graph.add_conditional_edge(f"{from_agent}_node", END, self.is_complete)
@@ -368,8 +362,7 @@ class MultiAgent(Agent):
             fn=self._create_agent_executor(agent_name, agent),
             is_entry_point=(
                 (agent_name == self._agent_order[0]) if self._agent_order else False
-            ),
-        )
+            ))
 
         return node
 
@@ -668,8 +661,7 @@ class MultiAgent(Agent):
         agents: list[Agent] | dict[str, Agent],
         name: str | None = None,
         coordination_mode: str = "sequential",
-        **kwargs,
-    ) -> "MultiAgent":
+        **kwargs) -> "MultiAgent":
         """Create a multi-agent system from a list or dict of agents."""
         # Convert list to dict if needed
         if isinstance(agents, list):
@@ -691,8 +683,7 @@ class MultiAgent(Agent):
             name=name or f"{cls.__name__}",
             agents=agent_dict,
             coordination_mode=coordination_mode,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def sequential(
@@ -703,8 +694,7 @@ class MultiAgent(Agent):
             agents=agents,
             name=name or "SequentialMultiAgent",
             coordination_mode="sequential",
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def parallel(
@@ -715,8 +705,7 @@ class MultiAgent(Agent):
             agents=agents,
             name=name or "ParallelMultiAgent",
             coordination_mode="parallel",
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def supervised(
@@ -724,8 +713,7 @@ class MultiAgent(Agent):
         agents: list[Agent],
         coordinator: Agent | None = None,
         name: str | None = None,
-        **kwargs,
-    ) -> "MultiAgent":
+        **kwargs) -> "MultiAgent":
         """Create a supervised multi-agent system with a coordinator."""
         agent_list = list(agents)
 
@@ -737,8 +725,7 @@ class MultiAgent(Agent):
             agents=agent_list,
             name=name or "SupervisedMultiAgent",
             coordination_mode="supervisor",
-            **kwargs,
-        )
+            **kwargs)
 
     def create_runnable(
         self, runnable_config: dict[str, Any] | None = None

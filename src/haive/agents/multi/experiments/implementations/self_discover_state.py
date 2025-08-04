@@ -10,8 +10,7 @@ from haive.agents.reasoning_and_critique.self_discover.v2.models import (
     AdaptedModules,
     FinalAnswer,
     ReasoningStructure,
-    SelectedModules,
-)
+    SelectedModules)
 
 
 class SelfDiscoverState(MultiAgentState):

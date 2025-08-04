@@ -141,9 +141,7 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             # This keeps it simple - agents already have their tools in their
             # engine/state
             def make_agent_node(agent_instance: Any):
-                """Make Agent Node implementation."""
                 def agent_node(state: dict[str, Any]) -> dict[str, Any]:
-                    """Agent Node implementation."""
                     # Extract messages
                     messages = state.get("messages", [])
 

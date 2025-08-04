@@ -120,8 +120,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
             values["engine"] = AugLLMConfig(
                 temperature=values.get("temperature", 0.3),
                 max_tokens=values.get("max_tokens"),
-                system_message=values.get("supervisor_prompt"),
-            )
+                system_message=values.get("supervisor_prompt"))
 
         return values
 
@@ -219,8 +218,7 @@ For each request, think about:
                     worker_agent.engine
                     if hasattr(worker_agent, "engine")
                     else worker_agent
-                ),
-            )
+                ))
             graph.add_node(f"worker_{worker_name}", worker_node)
 
         # Routing function
@@ -308,8 +306,7 @@ if __name__ == "__main__":
             "analyst": MockWorker("Alice", "Data Analysis"),
             "developer": MockWorker("Bob", "Software Development"),
             "designer": MockWorker("Carol", "UI/UX Design"),
-        },
-    )
+        })
 
     # Add another worker dynamically
     supervisor.add_worker("tester", MockWorker("Dave", "Quality Assurance"))

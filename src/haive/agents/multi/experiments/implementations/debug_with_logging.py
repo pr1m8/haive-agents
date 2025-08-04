@@ -17,8 +17,7 @@ from haive.agents.simple.agent import SimpleAgent
 logging.basicConfig(
     level=logging.DEBUG,
     format="[%(name)s:%(lineno)d] %(levelname)s: %(message)s",
-    stream=sys.stdout,
-)
+    stream=sys.stdout)
 
 # Enable specific loggers we care about
 logging.getLogger("haive.agents.base.mixins.execution_mixin").setLevel(logging.DEBUG)

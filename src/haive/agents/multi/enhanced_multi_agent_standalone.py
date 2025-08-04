@@ -508,8 +508,7 @@ async def demo_enhanced_multi_agent():
     parallel: MultiAgent[list[SimpleAgent]] = MultiAgent(
         name="expert_panel",
         agents=[tech_expert, biz_expert, user_expert],
-        mode="parallel",
-    )
+        mode="parallel")
 
     await parallel.arun("Evaluate the new AI feature proposal", debug=True)
 
@@ -531,8 +530,7 @@ async def demo_enhanced_multi_agent():
             "technical": tech_agent,
             "business": biz_agent,
             "general": general_agent,
-        },
-    )
+        })
 
     # Test different routing scenarios
     test_queries = [
@@ -563,8 +561,7 @@ async def demo_enhanced_multi_agent():
             "accurate": accurate_agent,
             "balanced": balanced_agent,
         },
-        adaptation_rate=0.2,
-    )
+        adaptation_rate=0.2)
 
     # Simulate multiple requests to see adaptation
     tasks = [
@@ -596,8 +593,7 @@ async def demo_enhanced_multi_agent():
             "processor": processor,
             "error_handler": error_handler,
         },
-        mode="conditional",
-    )
+        mode="conditional")
 
     # Test success and error paths
     test_cases = ["Valid data to process", "Invalid data input"]

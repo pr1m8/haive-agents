@@ -65,8 +65,7 @@ class RoutingMultiAgent(ListMultiAgent):
         source: str | Agent,
         condition: Callable[[Any], str | bool],
         routes: dict[str | bool, str | Agent],
-        default: str | None = None,
-    ) -> "RoutingMultiAgent":
+        default: str | None = None) -> "RoutingMultiAgent":
         """Add routing rule for an agent.
 
         Args:
@@ -102,8 +101,7 @@ class RoutingMultiAgent(ListMultiAgent):
         source: str | Agent,
         condition: Callable[[Any], bool],
         true_dest: str | Agent,
-        false_dest: str | Agent = END,
-    ) -> "RoutingMultiAgent":
+        false_dest: str | Agent = END) -> "RoutingMultiAgent":
         """Add simple boolean routing.
 
         Args:
@@ -115,15 +113,13 @@ class RoutingMultiAgent(ListMultiAgent):
         return self.add_route(
             source=source,
             condition=condition,
-            routes={True: true_dest, False: false_dest},
-        )
+            routes={True: true_dest, False: false_dest})
 
     def add_multi_route(
         self,
         source: str | Agent,
         condition: Callable[[Any], str],
-        **routes: str | Agent,
-    ) -> "RoutingMultiAgent":
+        **routes: str | Agent) -> "RoutingMultiAgent":
         """Add multi-way routing with keyword arguments.
 
         Example:
@@ -157,7 +153,6 @@ class RoutingMultiAgent(ListMultiAgent):
 
             # Create agent node
             def make_agent_node(agent_instance: Any):
-                """Make Agent Node implementation."""
                 def node(state: dict[str, Any]) -> dict[str, Any]:
                     messages = state.get("messages", [])
                     result = agent_instance.invoke({"messages": messages})
@@ -207,8 +202,7 @@ class RoutingMultiAgent(ListMultiAgent):
                     source_node=node_name,
                     condition=condition,
                     destinations=node_routes,
-                    default=default,
-                )
+                    default=default)
 
                 # No automatic progression after routing
                 prev_node = None
@@ -268,8 +262,7 @@ class BranchingMultiAgent(RoutingMultiAgent):
         source: str | Agent,
         condition: Callable[[Any], str],
         branches: dict[str, list[Agent]],
-        merge_to: Agent | None = None,
-    ) -> "BranchingMultiAgent":
+        merge_to: Agent | None = None) -> "BranchingMultiAgent":
         """Create branching paths that merge back.
 
         Args:

@@ -324,8 +324,7 @@ if __name__ == "__main__":
         worker_templates={
             "analyst": MockWorkerTemplate,
             "processor": MockWorkerTemplate,
-        },
-    )
+        })
 
     # Simulate task assignment
 

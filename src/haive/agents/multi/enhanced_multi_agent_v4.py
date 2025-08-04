@@ -124,14 +124,12 @@ class EnhancedMultiAgentV4(Agent):
     state_schema: type = Field(
         default=MultiAgentState,
         description="State schema for multi-agent coordination. Defaults to MultiAgentState which "
-        "provides agent isolation and shared state management.",
-    )
+        "provides agent isolation and shared state management.")
 
     agents: list[Agent] = Field(
         default_factory=list,
         description="List of Agent instances to coordinate. Agents are automatically converted to "
-        "a dictionary keyed by name for efficient lookup during execution.",
-    )
+        "a dictionary keyed by name for efficient lookup during execution.")
 
     execution_mode: Literal["sequential", "parallel", "conditional", "manual"] = Field(
         default="sequential",
@@ -139,35 +137,30 @@ class EnhancedMultiAgentV4(Agent):
         "'sequential' - agents run one after another, "
         "'parallel' - all agents run simultaneously, "
         "'conditional' - agents run based on routing logic, "
-        "'manual' - user adds edges explicitly",
-    )
+        "'manual' - user adds edges explicitly")
 
     build_mode: Literal["auto", "manual", "lazy"] = Field(
         default="auto",
         description="When to build the execution graph: "
         "'auto' - build immediately on initialization, "
         "'manual' - user must call build() explicitly, "
-        "'lazy' - build on first execution",
-    )
+        "'lazy' - build on first execution")
 
     entry_point: str | None = Field(
         default=None,
         description="Name of the agent to start execution. If None, uses the first agent "
-        "in the list. Only relevant for sequential and conditional modes.",
-    )
+        "in the list. Only relevant for sequential and conditional modes.")
 
     agent_dict: dict[str, Agent] = Field(
         default_factory=dict,
         description="Internal dictionary mapping agent names to instances. Automatically "
-        "populated from the agents list during initialization. Do not set directly.",
-    )
+        "populated from the agents list during initialization. Do not set directly.")
 
     conditional_edges: list[dict[str, Any]] = Field(
         default_factory=list,
         description="Configuration for conditional edges. Each dict should contain: "
         "'from_agent' (source), 'condition' (callable), 'destinations' (routing map), "
-        "and optional 'default' (fallback destination).",
-    )
+        "and optional 'default' (fallback destination).")
 
     # ========================================================================
     # ENHANCED BASE AGENT SETUP
@@ -280,8 +273,7 @@ class EnhancedMultiAgentV4(Agent):
         graph = BaseGraph(
             name=f"{
                 self.name}_graph",
-            state_schema=self.state_schema or MultiAgentState,
-        )
+            state_schema=self.state_schema or MultiAgentState)
 
         # Add all agents as nodes using AgentNodeV3
         self._add_agent_nodes(graph)
@@ -391,8 +383,7 @@ class EnhancedMultiAgentV4(Agent):
                 source_node=from_agent,
                 condition=condition,
                 destinations=destinations,
-                default=default,
-            )
+                default=default)
 
             logger.debug(f"Added conditional edge from {from_agent}")
 
@@ -471,8 +462,7 @@ class EnhancedMultiAgentV4(Agent):
         from_agent: str,
         condition: Callable[[Any], bool],
         true_agent: str,
-        false_agent: str = END,
-    ) -> None:
+        false_agent: str = END) -> None:
         """Add a conditional edge that routes based on a boolean condition.
 
         This method creates a branching point in the workflow where execution
@@ -520,8 +510,7 @@ class EnhancedMultiAgentV4(Agent):
                 source_node=from_agent,
                 condition=condition,
                 destinations={True: true_agent, False: false_agent},
-                default=false_agent,
-            )
+                default=false_agent)
             logger.info(f"Added conditional edge from {from_agent}")
 
         logger.info(
@@ -533,8 +522,7 @@ class EnhancedMultiAgentV4(Agent):
         from_agent: str,
         condition: Callable[[Any], str],
         routes: dict[str, str],
-        default: str = END,
-    ) -> None:
+        default: str = END) -> None:
         """Add multi-way conditional edge with multiple destinations.
 
         This method creates a branching point where the condition function
@@ -582,8 +570,7 @@ class EnhancedMultiAgentV4(Agent):
                 source_node=from_agent,
                 condition=condition,
                 destinations=routes,
-                default=default,
-            )
+                default=default)
 
         logger.info(
             f"Configured multi-conditional edge from {from_agent} with {len(routes)} routes"

@@ -233,8 +233,7 @@ class MultiAgentBase(Agent):
                 name=f"{self.__class__.__name__}State",
                 include_meta=self.include_meta,
                 separation=self.schema_separation,
-                build_mode=self.schema_build_mode,
-            )
+                build_mode=self.schema_build_mode)
 
         # Set input/output schemas
         if self.state_schema:
@@ -268,8 +267,7 @@ class MultiAgentBase(Agent):
         source_agent: str | Agent,
         condition: Callable[[Any], Any],
         destinations: str | list[str] | dict[Any, str | Agent],
-        default: str | Agent | None = END,
-    ) -> None:
+        default: str | Agent | None = END) -> None:
         """Add conditional edges between agents with simple API.
 
         This method provides a simple interface for adding conditional routing between
@@ -559,8 +557,7 @@ class MultiAgentBase(Agent):
                     condition=edge_config["condition"],
                     destinations=normalized_destinations,
                     default=default_dest,
-                    create_missing_nodes=self.create_missing_nodes,
-                )
+                    create_missing_nodes=self.create_missing_nodes)
 
         # Create sequential flow for agents without explicit branches
         if len(self.agents) > 1:
@@ -596,8 +593,7 @@ def create_sequential_multi_agent(
     agents: list[Agent],
     name: str = "Sequential Multi-Agent",
     state_schema: type[StateSchema] | None = None,
-    **kwargs,
-) -> MultiAgentBase:
+    **kwargs) -> MultiAgentBase:
     """Create a simple sequential multi-agent system.
 
     This convenience function creates a MultiAgentBase configured for sequential
@@ -627,8 +623,7 @@ def create_sequential_multi_agent(
         name=name,
         state_schema_override=state_schema,
         schema_build_mode=BuildMode.SEQUENCE,
-        **kwargs,
-    )
+        **kwargs)
 
 
 def create_branching_multi_agent(
@@ -636,8 +631,7 @@ def create_branching_multi_agent(
     branches: list[tuple],
     name: str = "Branching Multi-Agent",
     state_schema: type[StateSchema] | None = None,
-    **kwargs,
-) -> MultiAgentBase:
+    **kwargs) -> MultiAgentBase:
     """Create a multi-agent system with conditional branching.
 
     This convenience function creates a MultiAgentBase configured for conditional
@@ -679,8 +673,7 @@ def create_branching_multi_agent(
         name=name,
         state_schema_override=state_schema,
         schema_build_mode=BuildMode.SEQUENCE,
-        **kwargs,
-    )
+        **kwargs)
 
 
 def create_plan_execute_multi_agent(
@@ -690,8 +683,7 @@ def create_plan_execute_multi_agent(
     name: str = "Plan and Execute System",
     state_schema: type[StateSchema] | None = None,
     schema_build_mode: BuildMode = BuildMode.PARALLEL,
-    **kwargs,
-) -> MultiAgentBase:
+    **kwargs) -> MultiAgentBase:
     """Create a Plan and Execute multi-agent system with proper routing."""
     # Import PlanExecuteState here to avoid circular imports
 
@@ -720,8 +712,7 @@ def create_plan_execute_multi_agent(
         (
             executor_agent,
             route_after_execution,
-            {"executor": executor_agent, "replanner": replanner_agent},
-        ),
+            {"executor": executor_agent, "replanner": replanner_agent}),
         (replanner_agent, route_after_replan, {"executor": executor_agent, END: END}),
     ]
 
@@ -732,5 +723,4 @@ def create_plan_execute_multi_agent(
         name=name,
         state_schema_override=state_schema,
         schema_build_mode=schema_build_mode,
-        **kwargs,
-    )
+        **kwargs)
