@@ -47,8 +47,7 @@ from haive.core.engine.document.config import (
     DocumentInput,
     DocumentOutput,
     DocumentSourceType,
-    ProcessingStrategy,
-)
+    ProcessingStrategy)
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
@@ -80,12 +79,10 @@ class DocumentProcessingResult(BaseModel):
     )
     embedded_chunks: list[dict[str, Any]] = Field(
         default_factory=list,
-        description="Chunks with embeddings (if embedding enabled)",
-    )
+        description="Chunks with embeddings (if embedding enabled)")
     stored_documents: list[str] = Field(
         default_factory=list,
-        description="Document IDs stored in vector store (if storage enabled)",
-    )
+        description="Document IDs stored in vector store (if storage enabled)")
 
     # Pipeline Statistics
     total_sources: int = Field(default=0, description="Total sources processed")
@@ -283,10 +280,8 @@ class DocumentAgent(Agent):
             max_workers=4,
             extract_metadata=True,
             normalize_content=True,
-            skip_invalid=True,
-        ),
-        description="Document engine configuration for the processing pipeline",
-    )
+            skip_invalid=True),
+        description="Document engine configuration for the processing pipeline")
 
     # ========================================================================
     # SOURCE CONFIGURATION
@@ -300,8 +295,7 @@ class DocumentAgent(Agent):
             DocumentSourceType.DATABASE,
             DocumentSourceType.CLOUD,
         ],
-        description="Allowed source types for processing",
-    )
+        description="Allowed source types for processing")
 
     auto_detect_sources: bool = Field(
         default=True, description="Whether to auto-detect source types"
@@ -317,8 +311,7 @@ class DocumentAgent(Agent):
 
     processing_strategy: ProcessingStrategy = Field(
         default=ProcessingStrategy.ENHANCED,
-        description="Strategy for document processing",
-    )
+        description="Strategy for document processing")
 
     parallel_processing: bool = Field(
         default=True, description="Whether to enable parallel processing"
@@ -328,8 +321,7 @@ class DocumentAgent(Agent):
         default=4,
         description="Maximum worker threads for parallel processing",
         ge=1,
-        le=32,
-    )
+        le=32)
 
     # ========================================================================
     # CHUNKING CONFIGURATION
@@ -397,8 +389,7 @@ class DocumentAgent(Agent):
 
     structured_output_model: type[BaseModel] = Field(
         default=DocumentProcessingResult,
-        description="Structured output model for processing results",
-    )
+        description="Structured output model for processing results")
 
     # ========================================================================
     # VALIDATION AND SETUP
@@ -599,8 +590,7 @@ class DocumentAgent(Agent):
         recursive: bool = True,
         include_patterns: list[str] | None = None,
         exclude_patterns: list[str] | None = None,
-        **kwargs,
-    ) -> DocumentProcessingResult:
+        **kwargs) -> DocumentProcessingResult:
         """Process all documents in a directory.
 
         Args:
@@ -617,8 +607,7 @@ class DocumentAgent(Agent):
             source=directory_path,
             include_patterns=include_patterns or [],
             exclude_patterns=exclude_patterns or [],
-            **kwargs,
-        )
+            **kwargs)
 
         # Update engine configuration for directory processing
         original_recursive = self.engine.recursive
@@ -711,8 +700,7 @@ class DocumentAgent(Agent):
         self,
         engine_results: list[DocumentOutput],
         sources: list[str],
-        total_time: float,
-    ) -> DocumentProcessingResult:
+        total_time: float) -> DocumentProcessingResult:
         """Aggregate multiple engine results into a comprehensive result."""
         # Initialize counters
         total_documents = 0
@@ -804,8 +792,7 @@ class DocumentAgent(Agent):
             # Content Analysis
             total_characters=total_characters,
             total_words=total_words,
-            average_chunk_size=average_chunk_size,
-        )
+            average_chunk_size=average_chunk_size)
 
     def _convert_engine_result_to_agent_result(
         self, engine_result: DocumentOutput, sources: list[str]
@@ -832,8 +819,7 @@ class DocumentAgent(Agent):
             parallel_processing=True,
             extract_metadata=True,
             normalize_content=True,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def create_for_web_scraping(
@@ -848,8 +834,7 @@ class DocumentAgent(Agent):
             processing_strategy=ProcessingStrategy.ENHANCED,
             normalize_content=True,
             detect_language=True,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def create_for_databases(
@@ -864,8 +849,7 @@ class DocumentAgent(Agent):
             processing_strategy=ProcessingStrategy.PARALLEL,
             parallel_processing=True,
             max_workers=8,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def create_for_enterprise(
@@ -886,8 +870,7 @@ class DocumentAgent(Agent):
             enable_embedding=True,
             enable_storage=True,
             skip_invalid=True,
-            **kwargs,
-        )
+            **kwargs)
 
     @classmethod
     def create_for_research(
@@ -909,8 +892,7 @@ class DocumentAgent(Agent):
             normalize_content=True,
             detect_language=True,
             enable_embedding=True,
-            **kwargs,
-        )
+            **kwargs)
 
     def __repr__(self) -> str:
         pipeline_stages = "->".join(self._get_pipeline_stages())
