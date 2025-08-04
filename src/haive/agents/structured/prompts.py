@@ -23,8 +23,7 @@ Guidelines:
 - Maintain the original meaning and context
 - Add appropriate metadata when relevant
 
-Focus on accuracy and completeness.""",
-        ),
+Focus on accuracy and completeness."""),
         ("human", "{input}"),
     ]
 )
@@ -47,8 +46,7 @@ Focus on:
 - Confidence levels
 - Limitations or caveats
 
-Be objective and evidence-based.""",
-        ),
+Be objective and evidence-based."""),
         ("human", "{input}"),
     ]
 )
@@ -72,8 +70,7 @@ Focus on:
 - Complexity assessment
 - Dependencies between steps
 
-Make the output actionable and clear.""",
-        ),
+Make the output actionable and clear."""),
         ("human", "{input}"),
     ]
 )
@@ -97,8 +94,7 @@ Focus on:
 - Confidence level
 - Next steps
 
-Present a balanced view of the decision.""",
-        ),
+Present a balanced view of the decision."""),
         ("human", "{input}"),
     ]
 )
@@ -125,8 +121,7 @@ into the required structured format.
 
 {additional_context}
 
-Maintain accuracy and completeness in your extraction.""",
-            ),
+Maintain accuracy and completeness in your extraction."""),
             ("human", "{input}"),
         ]
     )

@@ -22,13 +22,11 @@ class GenericStructuredOutput(BaseModel):
 
     key_points: list[str] = Field(
         default_factory=list,
-        description="Key points, findings, or important items extracted",
-    )
+        description="Key points, findings, or important items extracted")
 
     action_items: list[str] = Field(
         default_factory=list,
-        description="Action items, tasks, or things to do (if any)",
-    )
+        description="Action items, tasks, or things to do (if any)")
 
     categories: dict[str, str] = Field(
         default_factory=dict, description="Categorized information by topic or theme"
@@ -42,8 +40,7 @@ class GenericStructuredOutput(BaseModel):
         default=1.0,
         ge=0.0,
         le=1.0,
-        description="Confidence level in the extraction (0-1)",
-    )
+        description="Confidence level in the extraction (0-1)")
 
 
 class AnalysisOutput(BaseModel):
