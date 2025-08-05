@@ -17,7 +17,8 @@ from haive.agents.chain.declarative_chain import (
     ChainSpec,
     DeclarativeChainAgent,
     NodeSpec,
-    SequenceSpec)
+    SequenceSpec,
+)
 from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
 from haive.agents.rag.multi_query.agent import MultiQueryRAGAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
@@ -27,6 +28,7 @@ from haive.agents.simple.agent import SimpleAgent
 # Strategy decision model for RAG routing
 class StrategyDecision(BaseModel):
     """Strategy decision for RAG routing."""
+
     strategy: str = Field(description="Selected strategy")
     confidence: float = Field(description="Confidence")
 
@@ -66,9 +68,7 @@ def execute_sub_query(state: dict[str, Any]) -> dict[str, Any]:
 def synthesize_results(state: dict[str, Any]) -> dict[str, Any]:
     """Synthesize all sub-query results."""
     sub_results = state.get("sub_results", [])
-    return {
-        "final_response": f"Synthesized answer from {len(sub_results)} sub-queries"
-    }
+    return {"final_response": f"Synthesized answer from {len(sub_results)} sub-queries"}
 
 
 # Utility functions for self-reflective RAG
@@ -106,7 +106,8 @@ def create_agentic_router_declarative(documents: list[Document]):
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}")
+        api_key="${AZURE_OPENAI_API_KEY}",
+    )
 
     # Strategy selection node
     strategy_selector = SimpleAgent(
@@ -119,8 +120,10 @@ def create_agentic_router_declarative(documents: list[Document]):
                 ]
             ),
             structured_output_model=StrategyDecision,
-            output_key="strategy_decision"),
-        name="StrategySelector")
+            output_key="strategy_decision",
+        ),
+        name="StrategySelector",
+    )
 
     # RAG strategy agents
     simple_rag = SimpleRAGAgent.from_documents(documents, llm_config)
@@ -134,8 +137,10 @@ def create_agentic_router_declarative(documents: list[Document]):
             prompt_template=ChatPromptTemplate.from_messages(
                 [("system", "Synthesize the results"), ("human", "{response}")]
             ),
-            output_key="final_response"),
-        name="Synthesizer")
+            output_key="final_response",
+        ),
+        name="Synthesizer",
+    )
 
     # Build declaratively
     chain = (
@@ -151,15 +156,14 @@ def create_agentic_router_declarative(documents: list[Document]):
         # Branch based on selected strategy
         .add_branch(
             from_node="select_strategy",
-            condition=lambda state: state.get("strategy_decision", {}).get(
-                "strategy", "simple"
-            ),
+            condition=lambda state: state.get("strategy_decision", {}).get("strategy", "simple"),
             branches={
                 "simple": "simple_rag",
                 "multi_query": "multi_query_rag",
                 "hyde": "hyde_rag",
             },
-            default="simple_rag")
+            default="simple_rag",
+        )
         # All strategies flow to synthesis
         .add_sequence("simple_rag", "synthesize")
         .add_sequence("multi_query_rag", "synthesize")
@@ -176,7 +180,8 @@ def create_query_planning_declarative(documents: list[Document]):
     AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}")
+        api_key="${AZURE_OPENAI_API_KEY}",
+    )
 
     # Build declaratively with a loop
     chain = (
@@ -192,7 +197,8 @@ def create_query_planning_declarative(documents: list[Document]):
             start_node="execute_sub_query",
             end_node="execute_sub_query",
             condition="continue_loop",  # Check state.continue_loop
-            max_iterations=10)
+            max_iterations=10,
+        )
         # After loop completes, synthesize
         .add_sequence("execute_sub_query", "synthesize")
         .build()
@@ -207,7 +213,8 @@ def create_self_reflective_declarative(documents: list[Document]):
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}")
+        api_key="${AZURE_OPENAI_API_KEY}",
+    )
 
     # Initial answer generator
     initial_generator = SimpleAgent(
@@ -216,8 +223,10 @@ def create_self_reflective_declarative(documents: list[Document]):
             prompt_template=ChatPromptTemplate.from_messages(
                 [("system", "Generate initial answer"), ("human", "{query}")]
             ),
-            output_key="current_answer"),
-        name="InitialGenerator")
+            output_key="current_answer",
+        ),
+        name="InitialGenerator",
+    )
 
     # Build with reflection loop
     chain = (
@@ -233,7 +242,8 @@ def create_self_reflective_declarative(documents: list[Document]):
         .add_branch(
             from_node="reflect",
             condition="needs_improvement",
-            branches={True: "improve", False: "finalize"})
+            branches={True: "improve", False: "finalize"},
+        )
         # Loop back from improve to reflect
         .add_sequence("improve", "reflect")
         .build()
@@ -247,23 +257,11 @@ def create_complex_flow_from_spec() -> Any:
     """Create a complex flow using raw ChainSpec."""
     # Define nodes
     nodes = [
-        NodeSpec(
-            name="input_processor",
-            node=lambda s: {"processed": True},
-            node_type="callable"),
-        NodeSpec(
-            name="analyzer",
-            node=lambda s: {"analysis": "complete"},
-            node_type="callable"),
-        NodeSpec(
-            name="branch_decider", node=lambda s: {"path": "A"}, node_type="callable"
-        ),
-        NodeSpec(
-            name="path_a", node=lambda s: {"result": "A done"}, node_type="callable"
-        ),
-        NodeSpec(
-            name="path_b", node=lambda s: {"result": "B done"}, node_type="callable"
-        ),
+        NodeSpec(name="input_processor", node=lambda s: {"processed": True}, node_type="callable"),
+        NodeSpec(name="analyzer", node=lambda s: {"analysis": "complete"}, node_type="callable"),
+        NodeSpec(name="branch_decider", node=lambda s: {"path": "A"}, node_type="callable"),
+        NodeSpec(name="path_a", node=lambda s: {"result": "A done"}, node_type="callable"),
+        NodeSpec(name="path_b", node=lambda s: {"result": "B done"}, node_type="callable"),
         NodeSpec(name="merger", node=lambda s: {"merged": True}, node_type="callable"),
     ]
 
@@ -280,7 +278,8 @@ def create_complex_flow_from_spec() -> Any:
             from_node="branch_decider",
             condition=lambda state: state.get("path", "A"),
             branches={"A": "path_a", "B": "path_b"},
-            default="path_a")
+            default="path_a",
+        )
     ]
 
     # Create spec
@@ -289,7 +288,8 @@ def create_complex_flow_from_spec() -> Any:
         sequences=sequences,
         branches=branches,
         entry_point="START",
-        exit_points=["END"])
+        exit_points=["END"],
+    )
 
     # Create agent
     return DeclarativeChainAgent(name="Complex Flow", chain_spec=spec)
@@ -308,8 +308,6 @@ def create_rag_with_fallback() -> Any:
         # Flow
         .add_sequence("primary_rag", "check_success")
         # Branch on success
-        .add_branch(
-            "check_success", "success", {True: "use_primary", False: "fallback_rag"}
-        )
+        .add_branch("check_success", "success", {True: "use_primary", False: "fallback_rag"})
         .build()
     )

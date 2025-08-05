@@ -105,9 +105,7 @@ class ChainAgent(Agent):
 
         return graph
 
-    def _add_edge_to_graph(
-        self, graph: BaseGraph, edge: EdgeLike, node_names: dict[int, str]
-    ):
+    def _add_edge_to_graph(self, graph: BaseGraph, edge: EdgeLike, node_names: dict[int, str]):
         """Add an edge to the graph."""
         if isinstance(edge, str):
             # Parse "0->1" format
@@ -136,7 +134,8 @@ class ChainAgent(Agent):
                     # condition function
                     node_names[from_idx],
                     edge[2],
-                    branches)
+                    branches,
+                )
 
     # Convenience methods
     def add(self, node: NodeLike) -> "ChainAgent":

@@ -27,14 +27,10 @@ class ChainMultiAgent(MultiAgent):
     """
 
     execution_mode: ExecutionMode = Field(default=ExecutionMode.SEQUENTIAL)
-    chain_config: dict[str, Any] | None = Field(
-        default=None, description="Chain configuration"
-    )
+    chain_config: dict[str, Any] | None = Field(default=None, description="Chain configuration")
 
     @classmethod
-    def from_chain(
-        cls, chain: ChainAgent, name: str | None = None, **kwargs
-    ) -> "ChainMultiAgent":
+    def from_chain(cls, chain: ChainAgent, name: str | None = None, **kwargs) -> "ChainMultiAgent":
         """Create a MultiAgent from a ChainAgent."""
         # Extract agents from the chain's nodes
         agents = []
@@ -51,7 +47,8 @@ class ChainMultiAgent(MultiAgent):
             name=name or chain.name,
             agents=agents,
             chain_config={"edges": chain.edges, "original_nodes": chain.nodes},
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
     def from_nodes(
@@ -59,7 +56,8 @@ class ChainMultiAgent(MultiAgent):
         nodes: list[NodeLike],
         edges: list | None = None,
         name: str = "Chain Multi Agent",
-        **kwargs) -> "ChainMultiAgent":
+        **kwargs,
+    ) -> "ChainMultiAgent":
         """Create directly from nodes and edges."""
         # Create a ChainAgent first
         chain = ChainAgent(*nodes, edges=edges or [], name=name)
@@ -102,23 +100,20 @@ def multi_to_chain(multi: MultiAgent) -> ChainAgent:
     if multi.execution_mode == ExecutionMode.SEQUENCE:
         # Simple sequential conversion
         return ChainAgent(*multi.agents, name=multi.name)
-    raise ValueError(
-        f"Cannot convert {
-            multi.execution_mode} MultiAgent to ChainAgent"
-    )
+    raise ValueError(f"Cannot convert {multi.execution_mode} MultiAgent to ChainAgent")
 
 
 # Extended execution modes - cannot extend enum in Python
 class ExtendedExecutionMode(str, Enum):
     """Extended execution modes including chain-based."""
-    
+
     # Include original ExecutionMode values
     SEQUENTIAL = "sequential"
     PARALLEL = "parallel"
     CONDITIONAL = "conditional"
     BRANCH = "branch"
     INFER = "infer"
-    
+
     # Add new value
     CHAIN = "chain"  # Use ChainAgent-style execution
 
@@ -131,15 +126,12 @@ def chain_multi(*nodes: NodeLike, name: str = "Chain Multi") -> ChainMultiAgent:
 
 def sequential_multi(*agents: Agent, name: str = "Sequential Multi") -> ChainMultiAgent:
     """Create a sequential multi-agent system."""
-    return ChainMultiAgent(
-        name=name, agents=list(agents), execution_mode=ExecutionMode.SEQUENCE
-    )
+    return ChainMultiAgent(name=name, agents=list(agents), execution_mode=ExecutionMode.SEQUENCE)
 
 
 def conditional_multi(
-    agents: list[Agent],
-    conditions: dict[str, Callable],
-    name: str = "Conditional Multi") -> ChainMultiAgent:
+    agents: list[Agent], conditions: dict[str, Callable], name: str = "Conditional Multi"
+) -> ChainMultiAgent:
     """Create a conditional multi-agent system."""
     # Convert conditions to ChainAgent edges format
     edges = []
@@ -154,17 +146,21 @@ def build_graph(*args, **kwargs):
     """Stub function for build_graph - temporarily disabled."""
     pass
 
+
 def from_chain(*args, **kwargs):
     """Stub function for from_chain - temporarily disabled."""
     pass
+
 
 def from_nodes(*args, **kwargs):
     """Stub function for from_nodes - temporarily disabled."""
     pass
 
+
 def multi_to_chain(*args, **kwargs):
     """Stub function for multi_to_chain - temporarily disabled."""
     pass
+
 
 def chain_to_multi(*args, **kwargs):
     """Stub function for chain_to_multi - temporarily disabled."""

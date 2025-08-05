@@ -13,6 +13,7 @@ from dataclasses import dataclass
 @dataclass
 class NodeSpec:
     """Specification for a single node in a chain."""
+
     name: str
     node: Any  # Can be an agent or callable
     node_type: str = "agent"  # "agent" or "callable"
@@ -21,12 +22,14 @@ class NodeSpec:
 @dataclass
 class SequenceSpec:
     """Specification for a sequence of nodes."""
+
     nodes: List[str]
 
 
 @dataclass
 class BranchSpec:
     """Specification for conditional branching."""
+
     from_node: str
     condition: Union[str, Callable[[Dict[str, Any]], Any]]
     branches: Dict[Any, str]
@@ -36,6 +39,7 @@ class BranchSpec:
 @dataclass
 class LoopSpec:
     """Specification for loops in the chain."""
+
     start_node: str
     end_node: str
     condition: Union[str, Callable[[Dict[str, Any]], bool]]
@@ -45,6 +49,7 @@ class LoopSpec:
 @dataclass
 class ChainSpec:
     """Complete specification for a declarative chain."""
+
     nodes: List[NodeSpec]
     sequences: List[SequenceSpec] = Field(default_factory=list)
     branches: List[BranchSpec] = Field(default_factory=list)
@@ -55,7 +60,7 @@ class ChainSpec:
 
 class ChainBuilder:
     """Builder for creating declarative chains."""
-    
+
     def __init__(self, name: str):
         self.name = name
         self.nodes: List[NodeSpec] = []
@@ -64,50 +69,49 @@ class ChainBuilder:
         self.loops: List[LoopSpec] = []
         self.entry_point = "START"
         self.exit_points = ["END"]
-    
+
     def add_node(self, name: str, node: Any, node_type: str = "agent") -> "ChainBuilder":
         """Add a node to the chain."""
         self.nodes.append(NodeSpec(name=name, node=node, node_type=node_type))
         return self
-    
+
     def add_sequence(self, *nodes: str) -> "ChainBuilder":
         """Add a sequence of nodes."""
         if len(nodes) > 1:
             self.sequences.append(SequenceSpec(nodes=list(nodes)))
         return self
-    
+
     def add_branch(
         self,
         from_node: str,
         condition: Union[str, Callable],
         branches: Dict[Any, str],
-        default: Optional[str] = None
+        default: Optional[str] = None,
     ) -> "ChainBuilder":
         """Add conditional branching."""
-        self.branches.append(BranchSpec(
-            from_node=from_node,
-            condition=condition,
-            branches=branches,
-            default=default
-        ))
+        self.branches.append(
+            BranchSpec(from_node=from_node, condition=condition, branches=branches, default=default)
+        )
         return self
-    
+
     def add_loop(
         self,
         start_node: str,
         end_node: str,
         condition: Union[str, Callable],
-        max_iterations: int = 10
+        max_iterations: int = 10,
     ) -> "ChainBuilder":
         """Add a loop."""
-        self.loops.append(LoopSpec(
-            start_node=start_node,
-            end_node=end_node,
-            condition=condition,
-            max_iterations=max_iterations
-        ))
+        self.loops.append(
+            LoopSpec(
+                start_node=start_node,
+                end_node=end_node,
+                condition=condition,
+                max_iterations=max_iterations,
+            )
+        )
         return self
-    
+
     def build(self) -> "DeclarativeChainAgent":
         """Build the final chain agent."""
         spec = ChainSpec(
@@ -116,25 +120,25 @@ class ChainBuilder:
             branches=self.branches,
             loops=self.loops,
             entry_point=self.entry_point,
-            exit_points=self.exit_points
+            exit_points=self.exit_points,
         )
         return DeclarativeChainAgent(name=self.name, chain_spec=spec)
 
 
 class DeclarativeChainAgent:
     """Agent that executes a declaratively defined chain."""
-    
+
     def __init__(self, name: str, chain_spec: ChainSpec):
         self.name = name
         self.chain_spec = chain_spec
         self._compiled_graph = None
-    
+
     def _compile_graph(self):
         """Compile the chain specification into an executable graph."""
         # This would build a LangGraph or similar executable graph
         # For now, this is a placeholder
         pass
-    
+
     def run(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the chain."""
         if self._compiled_graph is None:
@@ -142,7 +146,7 @@ class DeclarativeChainAgent:
         # Execute the compiled graph
         # For now, return placeholder
         return {"status": "placeholder", "input": input_data}
-    
+
     async def arun(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the chain asynchronously."""
         return self.run(input_data)

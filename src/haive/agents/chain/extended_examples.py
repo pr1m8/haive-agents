@@ -11,7 +11,8 @@ from haive.agents.chain.extended_chain import (
     Dict,
     ExtendedChainAgent,
     chain,
-    chain_with_edges)
+    chain_with_edges,
+)
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -22,7 +23,8 @@ def example_simple_sequential() -> Any:
     my_chain = chain(
         lambda s: {"step": 1},
         lambda s: {"step": s.get("step", 0) + 1},
-        lambda s: {"result": f"Final step: {s.get('step', 0)}"})
+        lambda s: {"result": f"Final step: {s.get('step', 0)}"},
+    )
 
     return my_chain
 
@@ -32,7 +34,8 @@ def example_with_agents_and_engines() -> Any:
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}")
+        api_key="${AZURE_OPENAI_API_KEY}",
+    )
 
     # Create different node types
     analyzer_engine = AugLLMConfig(
@@ -40,7 +43,8 @@ def example_with_agents_and_engines() -> Any:
         prompt_template=ChatPromptTemplate.from_messages(
             [("system", "Analyze the query"), ("human", "{query}")]
         ),
-        output_key="analysis")
+        output_key="analysis",
+    )
 
     docs = [Document(page_content="Test document")]
     rag_agent = SimpleRAGAgent.from_documents(docs, llm_config)
@@ -50,7 +54,9 @@ def example_with_agents_and_engines() -> Any:
 
     # Just chain them together!
     my_chain = chain(
-        analyzer_engine, rag_agent, post_processor  # Engine  # Agent  # Callable
+        analyzer_engine,
+        rag_agent,
+        post_processor,  # Engine  # Agent  # Callable
     )
 
     return my_chain
@@ -96,9 +102,8 @@ def example_with_branching() -> Any:
     my_chain = (
         ExtendedChainAgent.from_list([classifier])
         .branch(
-            lambda s: s.get("type", "simple"),
-            simple=simple_processor,
-            complex=complex_processor)
+            lambda s: s.get("type", "simple"), simple=simple_processor, complex=complex_processor
+        )
         .add_edge("node_1->node_3")  # simple to finalizer
         .add_edge("node_2->node_3")  # complex to finalizer
         .node_list.append(finalizer)
@@ -110,7 +115,8 @@ def example_with_branching() -> Any:
         "0->1",  # Default path
         ("0", {"simple": "1", "complex": "2"}, lambda s: s.get("type")),
         "1->3",
-        "2->3")
+        "2->3",
+    )
 
     return my_chain
 
@@ -134,7 +140,8 @@ def example_rag_router_super_simple() -> Any:
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}")
+        api_key="${AZURE_OPENAI_API_KEY}",
+    )
 
     docs = [Document(page_content="Test document")]
 
@@ -147,7 +154,8 @@ def example_rag_router_super_simple() -> Any:
                 ("human", "{query}"),
             ]
         ),
-        output_key="complexity")
+        output_key="complexity",
+    )
 
     simple_rag = SimpleRAGAgent.from_documents(docs, llm_config)
 
@@ -157,7 +165,8 @@ def example_rag_router_super_simple() -> Any:
     # Build the router
     router = chain_with_edges(
         [analyzer, simple_rag, complex_rag],
-        ("0", {"simple": "1", "complex": "2"}, lambda s: s.get("complexity", "simple")))
+        ("0", {"simple": "1", "complex": "2"}, lambda s: s.get("complexity", "simple")),
+    )
 
     return router
 
@@ -205,14 +214,16 @@ def example_mixed_indices_and_names() -> Any:
     llm_config = AzureLLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
-        api_key="${AZURE_OPENAI_API_KEY}")
+        api_key="${AZURE_OPENAI_API_KEY}",
+    )
 
     # Some nodes have names
     analyzer = SimpleAgent(
         engine=AugLLMConfig(
             llm_config=llm_config,
             prompt_template=ChatPromptTemplate.from_messages([("human", "{input}")]),
-            output_key="analysis"),
+            output_key="analysis",
+        ),
         name="analyzer",  # Named node
     )
 
@@ -220,7 +231,9 @@ def example_mixed_indices_and_names() -> Any:
         return {"processed": True}  # Unnamed - will be node_1
 
     my_chain = chain_with_edges(
-        [analyzer, processor], "analyzer->1", "1->end"  # Mix name and index
+        [analyzer, processor],
+        "analyzer->1",
+        "1->end",  # Mix name and index
     )
 
     return my_chain
