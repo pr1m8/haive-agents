@@ -52,3 +52,18 @@ class ReflectionState(MultiAgentState):
         """Finalize the reflection process."""
         self.final_content = self.current_content
         return self.final_content
+
+
+def add_improvement(state: ReflectionState, improvement: Improvement) -> None:
+    """Add improvement to reflection state (module-level function)."""
+    state.add_improvement(improvement)
+
+
+def should_continue(state: ReflectionState) -> bool:
+    """Check if reflection should continue (module-level function)."""
+    return state.should_continue()
+
+
+def finalize(state: ReflectionState) -> str:
+    """Finalize the reflection process (module-level function)."""
+    return state.finalize()

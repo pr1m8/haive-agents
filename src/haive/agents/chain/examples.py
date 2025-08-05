@@ -24,6 +24,82 @@ from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.simple.agent import SimpleAgent
 
 
+# Strategy decision model for RAG routing
+class StrategyDecision(BaseModel):
+    """Strategy decision for RAG routing."""
+    strategy: str = Field(description="Selected strategy")
+    confidence: float = Field(description="Confidence")
+
+
+# Utility functions for query planning
+def create_plan(state: dict[str, Any]) -> dict[str, Any]:
+    """Create query execution plan."""
+    # Simplified - would use LLM to decompose query
+    return {
+        "sub_queries": ["What is X?", "How does Y work?", "Compare X and Y"],
+        "current_index": 0,
+    }
+
+
+def execute_sub_query(state: dict[str, Any]) -> dict[str, Any]:
+    """Execute one sub-query."""
+    sub_queries = state.get("sub_queries", [])
+    current_index = state.get("current_index", 0)
+
+    if current_index < len(sub_queries):
+        # Execute the sub-query (simplified)
+        result = f"Answer to: {sub_queries[current_index]}"
+
+        # Update state
+        results = state.get("sub_results", [])
+        results.append(result)
+
+        return {
+            "sub_results": results,
+            "current_index": current_index + 1,
+            "continue_loop": current_index + 1 < len(sub_queries),
+        }
+
+    return {"continue_loop": False}
+
+
+def synthesize_results(state: dict[str, Any]) -> dict[str, Any]:
+    """Synthesize all sub-query results."""
+    sub_results = state.get("sub_results", [])
+    return {
+        "final_response": f"Synthesized answer from {len(sub_results)} sub-queries"
+    }
+
+
+# Utility functions for self-reflective RAG
+def reflect_and_critique(state: dict[str, Any]) -> dict[str, Any]:
+    """Reflect on answer quality."""
+    # Simplified - would use LLM to critique
+    quality_score = 0.7  # Mock score
+    iterations = state.get("iterations", 0)
+
+    return {
+        "quality_score": quality_score,
+        "iterations": iterations + 1,
+        "needs_improvement": quality_score < 0.85 and iterations < 3,
+    }
+
+
+def improve_answer(state: dict[str, Any]) -> dict[str, Any]:
+    """Improve the answer based on critique."""
+    # Simplified - would use LLM to improve
+    current = state.get("current_answer", "")
+    return {"current_answer": f"{current} [Improved]", "improvement_made": True}
+
+
+def finalize_answer(state: dict[str, Any]) -> dict[str, Any]:
+    """Finalize the answer."""
+    return {
+        "final_response": state.get("current_answer", ""),
+        "total_iterations": state.get("iterations", 0),
+    }
+
+
 # Example 1: Recreate Agentic RAG Router using declarative chain
 def create_agentic_router_declarative(documents: list[Document]):
     """Create an agentic RAG router using declarative chain building."""
@@ -33,10 +109,6 @@ def create_agentic_router_declarative(documents: list[Document]):
         api_key="${AZURE_OPENAI_API_KEY}")
 
     # Strategy selection node
-    class StrategyDecision(BaseModel):
-        strategy: str = Field(description="Selected strategy")
-        confidence: float = Field(description="Confidence")
-
     strategy_selector = SimpleAgent(
         engine=AugLLMConfig(
             llm_config=llm_config,
@@ -106,44 +178,6 @@ def create_query_planning_declarative(documents: list[Document]):
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}")
 
-    # Define nodes as callables
-    def create_plan(state: dict[str, Any]) -> dict[str, Any]:
-        """Create query execution plan."""
-        # Simplified - would use LLM to decompose query
-        return {
-            "sub_queries": ["What is X?", "How does Y work?", "Compare X and Y"],
-            "current_index": 0,
-        }
-
-    def execute_sub_query(state: dict[str, Any]) -> dict[str, Any]:
-        """Execute one sub-query."""
-        sub_queries = state.get("sub_queries", [])
-        current_index = state.get("current_index", 0)
-
-        if current_index < len(sub_queries):
-            # Execute the sub-query (simplified)
-            result = f"Answer to: {sub_queries[current_index]}"
-
-            # Update state
-            results = state.get("sub_results", [])
-            results.append(result)
-
-            return {
-                "sub_results": results,
-                "current_index": current_index + 1,
-                "continue_loop": current_index + 1 < len(sub_queries),
-            }
-
-        return {"continue_loop": False}
-
-    def synthesize_results(state: dict[str, Any]) -> dict[str, Any]:
-        """Synthesize all sub-query results."""
-        sub_results = state.get("sub_results", [])
-        return {
-            "final_response": f"Synthesized answer from {
-                len(sub_results)} sub-queries"
-        }
-
     # Build declaratively with a loop
     chain = (
         ChainBuilder("Query Planning RAG")
@@ -184,32 +218,6 @@ def create_self_reflective_declarative(documents: list[Document]):
             ),
             output_key="current_answer"),
         name="InitialGenerator")
-
-    # Reflection nodes
-    def reflect_and_critique(state: dict[str, Any]) -> dict[str, Any]:
-        """Reflect on answer quality."""
-        # Simplified - would use LLM to critique
-        quality_score = 0.7  # Mock score
-        iterations = state.get("iterations", 0)
-
-        return {
-            "quality_score": quality_score,
-            "iterations": iterations + 1,
-            "needs_improvement": quality_score < 0.85 and iterations < 3,
-        }
-
-    def improve_answer(state: dict[str, Any]) -> dict[str, Any]:
-        """Improve the answer based on critique."""
-        # Simplified - would use LLM to improve
-        current = state.get("current_answer", "")
-        return {"current_answer": f"{current} [Improved]", "improvement_made": True}
-
-    def finalize_answer(state: dict[str, Any]) -> dict[str, Any]:
-        """Finalize the answer."""
-        return {
-            "final_response": state.get("current_answer", ""),
-            "total_iterations": state.get("iterations", 0),
-        }
 
     # Build with reflection loop
     chain = (

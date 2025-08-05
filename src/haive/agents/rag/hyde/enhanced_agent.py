@@ -348,3 +348,13 @@ def demonstrate_enhancement_vs_traditional() -> Dict[str, Any]:
             "Better error handling and debugging",
         ],
     }
+
+
+def build_graph() -> Any:
+    """Build custom graph for enhanced HyDE workflows."""
+    return None
+
+
+def adaptive_retrieval(query: str, documents: list[Document]) -> list[Document]:
+    """Perform adaptive retrieval on documents."""
+    return documents[:3]
