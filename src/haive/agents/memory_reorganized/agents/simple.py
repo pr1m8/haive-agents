@@ -1044,7 +1044,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                     id=f"consolidated_{mem_type}_{datetime.now().timestamp()}",
                     content=combined_content,
                     source="consolidation",
-                    memory_type=MemoryType.META,
+                    memory_type=MemoryType.SEMANTIC,  # Use semantic as fallback for META
                     importance=ImportanceLevel.MEDIUM,
                     tags=["consolidated"],
                     metadata={"consolidation_type": mem_type, "confidence": 0.8})
@@ -1444,7 +1444,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
 
             # Create text from memories to summarize
             memories_text = "\n\n".join(
-                [f"[{m.metadata.memory_type}] {m.content}" for m in to_summarize]
+                [f"[{m.memory_type}] {m.content}" for m in to_summarize]
             )
 
             # Calculate target tokens
@@ -1475,7 +1475,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                     id=f"summary_{datetime.now().timestamp()}",
                     content=summary_text,
                     source="summarization",
-                    memory_type=MemoryType.SUMMARY,
+                    memory_type=MemoryType.SEMANTIC,  # Use semantic as fallback for SUMMARY
                     importance=ImportanceLevel.HIGH,
                     tags=["summary"],
                     metadata={"summarization_type": "critical_threshold", "confidence": 0.9})
@@ -1520,7 +1520,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
             rewritten_memories = []
 
             for memory in state.current_memories:
-                if memory.metadata.memory_type == "meta":
+                if memory.memory_type.value == "meta":
                     # Skip already summarized memories
                     rewritten_memories.append(memory)
                     continue
