@@ -311,16 +311,13 @@ class DynamicReactAgent(ReactAgent):
                 "recompilation_enabled": True,
                 "tool_discovery": True,
                 "agent_type": "dynamic_react",
-            })
+            },
+        )
 
     @classmethod
     def create_with_discovery(
-        cls,
-        name: str,
-        document_path: str,
-        engine: AugLLMConfig,
-        use_mcp: bool = False,
-        **kwargs) -> "DynamicReactAgent":
+        cls, name: str, document_path: str, engine: AugLLMConfig, use_mcp: bool = False, **kwargs
+    ) -> "DynamicReactAgent":
         """Factory method to create agent with discovery capabilities.
 
         Args:
@@ -367,7 +364,8 @@ class DynamicReactAgent(ReactAgent):
         rag_documents: list[str],
         tool_documents: list[str] | None = None,
         use_mcp: bool = False,
-        **kwargs) -> "DynamicReactAgent":
+        **kwargs,
+    ) -> "DynamicReactAgent":
         """Factory method to create agent with RAG-based tool discovery.
 
         This creates a DynamicReactAgent that can request tools from a RAG agent
@@ -484,9 +482,7 @@ class DynamicReactAgent(ReactAgent):
             # Import tool loading functionality
 
             # Setup tool loader if discovery agent is available
-            if self.discovery_agent and hasattr(
-                self.discovery_agent, "_haive_discovery"
-            ):
+            if self.discovery_agent and hasattr(self.discovery_agent, "_haive_discovery"):
                 self._tool_loader = self.discovery_agent._haive_discovery
             else:
                 # Fallback: create basic tool loader
@@ -531,7 +527,6 @@ class DynamicReactAgent(ReactAgent):
         to find and suggest appropriate tools for tasks.
         """
         try:
-
             # Get configuration
             rag_config = self._rag_config
             tool_documents = rag_config.get("tool_documents", [])
@@ -546,7 +541,8 @@ class DynamicReactAgent(ReactAgent):
                             metadata={
                                 "source": "tool_docs",
                                 "type": "tool_documentation",
-                            })
+                            },
+                        )
                     )
                 else:
                     documents.append(doc)
@@ -599,12 +595,9 @@ class DynamicReactAgent(ReactAgent):
 
                     if tools:
                         tool_names = [
-                            tool.name if hasattr(tool, "name") else str(tool)
-                            for tool in tools
+                            tool.name if hasattr(tool, "name") else str(tool) for tool in tools
                         ]
-                        return f"Discovered and loaded {
-                            len(tools)} tools: {
-                            ', '.join(tool_names)}"
+                        return f"Discovered and loaded {len(tools)} tools: {', '.join(tool_names)}"
                     return "No suitable tools found for this task"
 
                 # Use RAG tool agent if available
@@ -659,9 +652,7 @@ class DynamicReactAgent(ReactAgent):
             try:
                 # Discover tools using RAG
                 discovery_query = f"tools needed for: {task}"
-                tool_docs = await self.discovery_agent.discover_components(
-                    discovery_query
-                )
+                tool_docs = await self.discovery_agent.discover_components(discovery_query)
 
                 # Track discovery query
                 self.state.discovery_queries.append(discovery_query)
@@ -673,7 +664,6 @@ class DynamicReactAgent(ReactAgent):
                         loaded_tools.append(tool)
 
             except Exception as e:
-
                 logger = logging.getLogger(__name__)
                 logger.exception(f"Discovery agent failed for task '{task}': {e}")
 
@@ -696,7 +686,6 @@ class DynamicReactAgent(ReactAgent):
                         loaded_tools.append(tool)
 
             except Exception as e:
-
                 logger = logging.getLogger(__name__)
                 logger.exception(f"RAG tool agent failed for task '{task}': {e}")
 
@@ -709,7 +698,8 @@ class DynamicReactAgent(ReactAgent):
                     name=getattr(tool, "name", "Unknown Tool"),
                     description=getattr(tool, "description", ""),
                     component=tool,
-                    metadata={"source": "dynamic_discovery", "task": task})
+                    metadata={"source": "dynamic_discovery", "task": task},
+                )
 
                 # Add to registry (this will be available when state is
                 # accessible)
@@ -735,7 +725,6 @@ class DynamicReactAgent(ReactAgent):
                     self.state.categorize_tool(item.name, category)
 
             except Exception as e:
-
                 logger = logging.getLogger(__name__)
                 logger.exception(f"Failed to register tool {tool}: {e}")
 
@@ -750,9 +739,7 @@ class DynamicReactAgent(ReactAgent):
 
         return loaded_tools
 
-    def _parse_rag_tool_suggestions(
-        self, rag_result: str, task: str
-    ) -> list[dict[str, Any]]:
+    def _parse_rag_tool_suggestions(self, rag_result: str, task: str) -> list[dict[str, Any]]:
         """Parse RAG result to extract tool suggestions.
 
         Args:
@@ -771,10 +758,7 @@ class DynamicReactAgent(ReactAgent):
 
         for line in lines:
             line = line.strip()
-            if any(
-                keyword in line.lower()
-                for keyword in ["tool", "function", "method", "api"]
-            ):
+            if any(keyword in line.lower() for keyword in ["tool", "function", "method", "api"]):
                 # Extract potential tool information
                 suggestion = {
                     "name": self._extract_tool_name(line),
@@ -806,16 +790,12 @@ class DynamicReactAgent(ReactAgent):
         # Look for words that might be tool names
         words = line.split()
         for word in words:
-            if (word.islower() and "_" in word) or (
-                word[0].isupper() and len(word) > 3
-            ):
+            if (word.islower() and "_" in word) or (word[0].isupper() and len(word) > 3):
                 return word
 
         return ""
 
-    async def _load_tool_from_suggestion(
-        self, suggestion: dict[str, Any]
-    ) -> BaseTool | None:
+    async def _load_tool_from_suggestion(self, suggestion: dict[str, Any]) -> BaseTool | None:
         """Load a tool from a RAG suggestion.
 
         Args:
@@ -847,7 +827,6 @@ class DynamicReactAgent(ReactAgent):
             return suggested_tool
 
         except Exception as e:
-
             logger = logging.getLogger(__name__)
             logger.exception(f"Failed to load tool from suggestion {suggestion}: {e}")
             return None
@@ -877,7 +856,8 @@ class DynamicReactAgent(ReactAgent):
                         name=doc.get("name", "Unknown Tool"),
                         description=doc.get("description", ""),
                         component=tool,
-                        metadata=doc.get("metadata", {}))
+                        metadata=doc.get("metadata", {}),
+                    )
                     self.state.registry.register(item)
 
                     # Activate tool
@@ -904,17 +884,12 @@ class DynamicReactAgent(ReactAgent):
                 await self._recompile_with_new_tools(loaded_tools)
 
         except Exception as e:
-
             logger = logging.getLogger(__name__)
-            logger.exception(
-                f"Failed to discover and load tools for task '{task}': {e}"
-            )
+            logger.exception(f"Failed to discover and load tools for task '{task}': {e}")
 
         return loaded_tools
 
-    async def _load_tool_from_document(
-        self, tool_doc: dict[str, Any]
-    ) -> BaseTool | None:
+    async def _load_tool_from_document(self, tool_doc: dict[str, Any]) -> BaseTool | None:
         """Load actual tool instance from tool document.
 
         Args:
@@ -939,7 +914,6 @@ class DynamicReactAgent(ReactAgent):
             return tool_doc.get("component")
 
         except Exception as e:
-
             logger = logging.getLogger(__name__)
             logger.exception(f"Failed to load tool from document: {e}")
             return None
@@ -1006,7 +980,6 @@ class DynamicReactAgent(ReactAgent):
                 await self.recompile()
 
         except Exception as e:
-
             logger = logging.getLogger(__name__)
             logger.exception(f"Failed to recompile with new tools: {e}")
 
@@ -1095,9 +1068,7 @@ class DynamicReactAgent(ReactAgent):
                 meta_state = self.state.activate_component(item_id)
                 if meta_state:
                     # Update engine tools if needed
-                    if hasattr(self.engine, "tools") and isinstance(
-                        item.component, BaseTool
-                    ):
+                    if hasattr(self.engine, "tools") and isinstance(item.component, BaseTool):
                         current_tools = getattr(self.engine, "tools", [])
                         if item.component not in current_tools:
                             self.engine.tools = [*current_tools, item.component]
@@ -1129,14 +1100,10 @@ class DynamicReactAgent(ReactAgent):
                 success = self.state.deactivate_component(item_id)
                 if success:
                     # Remove from engine tools if needed
-                    if hasattr(self.engine, "tools") and isinstance(
-                        item.component, BaseTool
-                    ):
+                    if hasattr(self.engine, "tools") and isinstance(item.component, BaseTool):
                         current_tools = getattr(self.engine, "tools", [])
                         if item.component in current_tools:
-                            self.engine.tools = [
-                                t for t in current_tools if t != item.component
-                            ]
+                            self.engine.tools = [t for t in current_tools if t != item.component]
 
                     return True
 

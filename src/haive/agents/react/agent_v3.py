@@ -290,27 +290,26 @@ class ReactAgentV3(SimpleAgentV3):
 
     # ReactAgent-specific configuration fields
     max_iterations: int = Field(
-        default=10,
-        ge=1,
-        le=50,
-        description="Maximum reasoning iterations before stopping (1-50)")
+        default=10, ge=1, le=50, description="Maximum reasoning iterations before stopping (1-50)"
+    )
 
     iteration_count: int = Field(
-        default=0,
-        ge=0,
-        description="Current iteration number (read-only, managed internally)")
+        default=0, ge=0, description="Current iteration number (read-only, managed internally)"
+    )
 
     reasoning_trace: list[str] = Field(
         default_factory=list,
-        description="Step-by-step reasoning history (read-only, managed internally)")
+        description="Step-by-step reasoning history (read-only, managed internally)",
+    )
 
     stop_on_first_tool_result: bool = Field(
         default=False,
-        description="Stop after first successful tool execution (vs. continuing reasoning)")
+        description="Stop after first successful tool execution (vs. continuing reasoning)",
+    )
 
     require_final_answer: bool = Field(
-        default=True,
-        description="Require a final non-tool response summarizing the solution")
+        default=True, description="Require a final non-tool response summarizing the solution"
+    )
 
     # Internal state tracking (Pydantic fields cannot start with underscore)
     current_reasoning_step: str | None = Field(
@@ -358,15 +357,9 @@ class ReactAgentV3(SimpleAgentV3):
         super().setup_agent()
 
         if self.debug:
-            logger.debug(
-                f"Setting up ReactAgent v3 features for '{
-                    self.name}'"
-            )
+            logger.debug(f"Setting up ReactAgent v3 features for '{self.name}'")
             logger.debug(f"Max iterations: {self.max_iterations}")
-            logger.debug(
-                f"Stop on first tool result: {
-                    self.stop_on_first_tool_result}"
-            )
+            logger.debug(f"Stop on first tool result: {self.stop_on_first_tool_result}")
             logger.debug(f"Require final answer: {self.require_final_answer}")
 
         # Initialize reasoning state
@@ -473,9 +466,7 @@ class ReactAgentV3(SimpleAgentV3):
         """
         if self.debug:
             logger.debug(
-                f"Building ReAct graph for '{
-                    self.name}' with max_iterations={
-                    self.max_iterations}"
+                f"Building ReAct graph for '{self.name}' with max_iterations={self.max_iterations}"
             )
 
         # Start with SimpleAgentV3's enhanced graph
@@ -494,11 +485,7 @@ class ReactAgentV3(SimpleAgentV3):
         self._modify_graph_for_react_loops(graph)
 
         if self.debug:
-            logger.debug(
-                f"ReAct graph build complete with nodes: {
-                    list(
-                        graph.nodes.keys())}"
-            )
+            logger.debug(f"ReAct graph build complete with nodes: {list(graph.nodes.keys())}")
 
         return graph
 
@@ -719,12 +706,8 @@ class ReactAgentV3(SimpleAgentV3):
                 logger.info(
                     f"[{self.name}] ReAct execution completed in {self.iteration_count} iterations"
                 )
-                logger.info(
-                    f"[{self.name}] Reasoning steps: {len(self.reasoning_trace)}"
-                )
-                logger.info(
-                    f"[{self.name}] Tools used: {len(self.tool_results_history)}"
-                )
+                logger.info(f"[{self.name}] Reasoning steps: {len(self.reasoning_trace)}")
+                logger.info(f"[{self.name}] Tools used: {len(self.tool_results_history)}")
 
             return result
 
@@ -776,9 +759,7 @@ class ReactAgentV3(SimpleAgentV3):
         self.max_iterations = max_iterations
 
         if self.debug:
-            logger.debug(
-                f"[{self.name}] Max iterations changed: {old_value} → {max_iterations}"
-            )
+            logger.debug(f"[{self.name}] Max iterations changed: {old_value} → {max_iterations}")
 
 
 # ============================================================================
@@ -799,7 +780,8 @@ def create_react_agent(
     temperature: float = 0.7,
     max_tokens: int = 1200,
     debug: bool = False,
-    **engine_kwargs) -> ReactAgentV3:
+    **engine_kwargs,
+) -> ReactAgentV3:
     """Create a ReactAgentV3 with standard configuration for ReAct pattern execution.
 
     This factory function simplifies ReactAgent creation with sensible defaults
@@ -877,7 +859,8 @@ def create_react_agent(
         structured_output_model=structured_output_model,
         temperature=temperature,
         max_tokens=max_tokens,
-        **engine_kwargs)
+        **engine_kwargs,
+    )
 
     # Create ReactAgent
     agent = ReactAgentV3(
@@ -886,10 +869,10 @@ def create_react_agent(
 
     if debug:
         logger.info(
-            f"Created ReactAgentV3 '{name}' with {
-                len(tools)} tools, "
+            f"Created ReactAgentV3 '{name}' with {len(tools)} tools, "
             f"max_iterations={max_iterations}, structured_output={
-                structured_output_model is not None}"
+                structured_output_model is not None
+            }"
         )
 
     return agent
@@ -900,7 +883,8 @@ def create_research_agent(
     research_tools: list[BaseTool],
     analysis_model: type[BaseModel] | None = None,
     max_research_steps: int = 8,
-    debug: bool = False) -> ReactAgentV3:
+    debug: bool = False,
+) -> ReactAgentV3:
     """Create a ReactAgentV3 optimized for research and analysis tasks.
 
     Pre-configured for research workflows with appropriate iteration limits,
@@ -924,7 +908,8 @@ def create_research_agent(
         temperature=0.3,  # Focused for research accuracy
         max_tokens=1500,  # Allow comprehensive research documentation
         debug=debug,
-        system_message="You are a thorough research assistant. Take systematic steps to gather information, analyze findings, and provide comprehensive conclusions.")
+        system_message="You are a thorough research assistant. Take systematic steps to gather information, analyze findings, and provide comprehensive conclusions.",
+    )
 
 
 if __name__ == "__main__":
@@ -940,10 +925,8 @@ if __name__ == "__main__":
 
     # Create example ReactAgent
     agent = create_react_agent(
-        name="example_react_agent",
-        tools=[example_calculator],
-        max_iterations=5,
-        debug=True)
+        name="example_react_agent", tools=[example_calculator], max_iterations=5, debug=True
+    )
 
 
 # Rebuild Pydantic model to resolve forward references

@@ -2,6 +2,7 @@
 
 ReactAgent = Agent[AugLLMConfig] + reasoning loop with tools.
 """
+
 import logging
 from typing import Any, Literal
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -12,7 +13,9 @@ from langchain_core.tools import BaseTool
 from langgraph.graph import END
 from pydantic import Field, model_validator
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
+
 logger = logging.getLogger(__name__)
+
 
 class ReactAgent(Agent):
     """Enhanced ReactAgent with reasoning and action loop.
@@ -58,19 +61,28 @@ class ReactAgent(Agent):
                 react_prompt="You are a research assistant..."
             )
     """
-    tools: list[BaseTool] = Field(default_factory=list, description='List of tools available to the agent')
-    max_iterations: int = Field(default=10, description='Maximum number of reasoning iterations', ge=1, le=50)
-    react_prompt: str | None = Field(default=None, description='Custom prompt for ReAct pattern')
-    execution_mode: Literal['react', 'tool-calling', 'hybrid'] = Field(default='react', description='How to execute the reasoning loop')
-    reasoning_history: list[dict[str, Any]] = Field(default_factory=list, description='History of reasoning steps')
 
-    @model_validator(mode='after')
-    def validate_react_config(self) -> 'ReactAgent':
+    tools: list[BaseTool] = Field(
+        default_factory=list, description="List of tools available to the agent"
+    )
+    max_iterations: int = Field(
+        default=10, description="Maximum number of reasoning iterations", ge=1, le=50
+    )
+    react_prompt: str | None = Field(default=None, description="Custom prompt for ReAct pattern")
+    execution_mode: Literal["react", "tool-calling", "hybrid"] = Field(
+        default="react", description="How to execute the reasoning loop"
+    )
+    reasoning_history: list[dict[str, Any]] = Field(
+        default_factory=list, description="History of reasoning steps"
+    )
+
+    @model_validator(mode="after")
+    def validate_react_config(self) -> "ReactAgent":
         """Validate ReactAgent configuration."""
-        if not hasattr(self, 'engine') or self.engine is None:
-            raise ValueError('ReactAgent requires an engine (AugLLMConfig)')
+        if not hasattr(self, "engine") or self.engine is None:
+            raise ValueError("ReactAgent requires an engine (AugLLMConfig)")
         if not self.tools:
-            logger.warning('ReactAgent created without tools - limited functionality')
+            logger.warning("ReactAgent created without tools - limited functionality")
         return self
 
     def build_graph(self) -> BaseGraph:
@@ -82,56 +94,63 @@ class ReactAgent(Agent):
         3. Observation node - processes tool results
         4. Decision routing - continue or finish
         """
-        graph = BaseGraph(name=f'{self.name}_react_graph', state_schema=self.state_schema)
-        reasoning_config = EngineNodeConfig(engines={'reasoner': self.engine}, system_message=self._get_react_prompt())
-        graph.add_node('reason', reasoning_config)
+        graph = BaseGraph(name=f"{self.name}_react_graph", state_schema=self.state_schema)
+        reasoning_config = EngineNodeConfig(
+            engines={"reasoner": self.engine}, system_message=self._get_react_prompt()
+        )
+        graph.add_node("reason", reasoning_config)
         if self.tools:
             tool_config = ToolNodeConfig(tools=self.tools)
-            graph.add_node('act', tool_config)
-        observation_config = EngineNodeConfig(engines={'observer': self.engine}, system_message='Process the tool output and decide next steps.')
-        graph.add_node('observe', observation_config)
-        graph.set_entry_point('reason')
+            graph.add_node("act", tool_config)
+        observation_config = EngineNodeConfig(
+            engines={"observer": self.engine},
+            system_message="Process the tool output and decide next steps.",
+        )
+        graph.add_node("observe", observation_config)
+        graph.set_entry_point("reason")
 
         def should_act(state: dict[str, Any]) -> str:
             """Decide whether to use a tool or finish."""
-            messages = state.get('messages', [])
+            messages = state.get("messages", [])
             if not messages:
-                return 'act' if self.tools else END
+                return "act" if self.tools else END
             last_message = messages[-1]
             if isinstance(last_message, AIMessage):
                 content = last_message.content.lower()
-                if any((word in content for word in ['final answer', 'complete', 'finished'])):
+                if any((word in content for word in ["final answer", "complete", "finished"])):
                     return END
-                if self.tools and any((word in content for word in ['use', 'call', 'need'])):
-                    return 'act'
+                if self.tools and any((word in content for word in ["use", "call", "need"])):
+                    return "act"
                 if len(self.reasoning_history) >= self.max_iterations:
                     return END
-            return 'act' if self.tools else END
-        graph.add_conditional_edges('reason', should_act)
+            return "act" if self.tools else END
+
+        graph.add_conditional_edges("reason", should_act)
         if self.tools:
-            graph.add_edge('act', 'observe')
+            graph.add_edge("act", "observe")
 
         def should_continue(state: dict[str, Any]) -> str:
             """Decide whether to continue reasoning."""
             if len(self.reasoning_history) >= self.max_iterations:
                 return END
-            messages = state.get('messages', [])
+            messages = state.get("messages", [])
             if messages and isinstance(messages[-1], AIMessage):
-                if 'final answer' in messages[-1].content.lower():
+                if "final answer" in messages[-1].content.lower():
                     return END
-            return 'reason'
-        graph.add_conditional_edges('observe', should_continue)
+            return "reason"
+
+        graph.add_conditional_edges("observe", should_continue)
         return graph
 
     def _get_react_prompt(self) -> str:
         """Get the ReAct system prompt."""
         if self.react_prompt:
             return self.react_prompt
-        tool_descriptions = ''
+        tool_descriptions = ""
         if self.tools:
-            tool_descriptions = '\n\nAvailable tools:\n'
+            tool_descriptions = "\n\nAvailable tools:\n"
             for tool in self.tools:
-                tool_descriptions += f'- {tool.name}: {tool.description}\n'
+                tool_descriptions += f"- {tool.name}: {tool.description}\n"
         return f'You are a ReAct (Reasoning and Acting) agent.\n\nFollow this pattern:\n1. Thought: Analyze what you need to do\n2. Action: Decide which tool to use (if any)\n3. Observation: Process the tool output\n4. ... (repeat as needed)\n5. Final Answer: Provide the complete response\n\n{tool_descriptions}\n\nAlways think step-by-step and explain your reasoning.\nWhen you have enough information, provide a clear "Final Answer:".\n\nExecution mode: {self.execution_mode}\nMaximum iterations: {self.max_iterations}\n'
 
     def add_tool(self, tool: BaseTool) -> None:
@@ -163,7 +182,9 @@ class ReactAgent(Agent):
         """Get list of available tool names."""
         return [tool.name for tool in self.tools]
 
-    def record_reasoning_step(self, thought: str, action: str | None=None, observation: str | None=None) -> None:
+    def record_reasoning_step(
+        self, thought: str, action: str | None = None, observation: str | None = None
+    ) -> None:
         """Record a reasoning step.
 
         Args:
@@ -171,24 +192,29 @@ class ReactAgent(Agent):
             action: The action taken (if any)
             observation: The observation made (if any)
         """
-        step = {'step': len(self.reasoning_history) + 1, 'thought': thought, 'action': action, 'observation': observation}
+        step = {
+            "step": len(self.reasoning_history) + 1,
+            "thought": thought,
+            "action": action,
+            "observation": observation,
+        }
         self.reasoning_history.append(step)
 
     def get_reasoning_summary(self) -> str:
         """Get a summary of the reasoning process."""
         if not self.reasoning_history:
-            return 'No reasoning steps recorded yet.'
-        summary = f'Reasoning Summary ({len(self.reasoning_history)} steps):\n'
+            return "No reasoning steps recorded yet."
+        summary = f"Reasoning Summary ({len(self.reasoning_history)} steps):\n"
         for step in self.reasoning_history:
-            summary += f'\nStep {step['step']}:\n'
-            summary += f'  Thought: {step['thought'][:100]}...\n'
-            if step['action']:
-                summary += f'  Action: {step['action']}\n'
-            if step['observation']:
-                summary += f'  Observation: {step['observation'][:100]}...\n'
+            summary += f"\nStep {step['step']}:\n"
+            summary += f"  Thought: {step['thought'][:100]}...\n"
+            if step["action"]:
+                summary += f"  Action: {step['action']}\n"
+            if step["observation"]:
+                summary += f"  Observation: {step['observation'][:100]}...\n"
         return summary
 
     def reset_reasoning(self) -> None:
         """Reset the reasoning history."""
         self.reasoning_history.clear()
-        logger.info(f'Reset reasoning history for {self.name}')
+        logger.info(f"Reset reasoning history for {self.name}")
