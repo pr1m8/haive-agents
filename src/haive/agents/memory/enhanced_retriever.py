@@ -23,9 +23,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.memory.core.classifier import MemoryClassifier, MemoryClassifierConfig
 from haive.agents.memory.core.stores import MemoryStoreConfig, MemoryStoreManager
-from haive.agents.memory.core.types import (
-    MemoryQueryIntent,
-    MemoryType)
+from haive.agents.memory.core.types import MemoryQueryIntent, MemoryType
 
 logger = logging.getLogger(__name__)
 
@@ -36,23 +34,15 @@ class EnhancedRetrieverConfig(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # Core components
-    memory_store_manager: MemoryStoreManager = Field(
-        ..., description="Memory store manager"
-    )
+    memory_store_manager: MemoryStoreManager = Field(..., description="Memory store manager")
     memory_classifier: MemoryClassifier = Field(
         ..., description="Memory classifier for query analysis"
     )
 
     # Retrieval configuration
-    default_limit: int = Field(
-        default=10, description="Default number of memories to retrieve"
-    )
-    max_limit: int = Field(
-        default=50, description="Maximum number of memories to retrieve"
-    )
-    similarity_threshold: float = Field(
-        default=0.7, description="Minimum similarity threshold"
-    )
+    default_limit: int = Field(default=10, description="Default number of memories to retrieve")
+    max_limit: int = Field(default=50, description="Maximum number of memories to retrieve")
+    similarity_threshold: float = Field(default=0.7, description="Minimum similarity threshold")
 
     # Memory type weighting
     memory_type_weights: dict[str, float] = Field(
@@ -69,7 +59,8 @@ class EnhancedRetrieverConfig(BaseModel):
             MemoryType.FEEDBACK.value: 1.2,  # Boost feedback for improvement
             MemoryType.SYSTEM.value: 0.6,
         },
-        description="Weight multipliers for different memory types")
+        description="Weight multipliers for different memory types",
+    )
 
     # Time-based scoring
     enable_temporal_scoring: bool = Field(
@@ -78,17 +69,13 @@ class EnhancedRetrieverConfig(BaseModel):
     recency_decay_hours: float = Field(
         default=168, description="Hours for recency decay (default: 1 week)"
     )
-    recency_weight: float = Field(
-        default=0.2, description="Weight for recency in final scoring"
-    )
+    recency_weight: float = Field(default=0.2, description="Weight for recency in final scoring")
 
     # Query expansion
     enable_query_expansion: bool = Field(
         default=True, description="Enable automatic query expansion"
     )
-    expansion_terms_limit: int = Field(
-        default=5, description="Maximum expansion terms to add"
-    )
+    expansion_terms_limit: int = Field(default=5, description="Maximum expansion terms to add")
 
     # Self-query filtering
     enable_metadata_filtering: bool = Field(
@@ -103,20 +90,14 @@ class EnhancedQueryResult(BaseModel):
     """Result of enhanced memory retrieval with detailed metadata."""
 
     # Core results
-    memories: list[dict[str, Any]] = Field(
-        default_factory=list, description="Retrieved memories"
-    )
-    total_found: int = Field(
-        default=0, description="Total memories found before limiting"
-    )
+    memories: list[dict[str, Any]] = Field(default_factory=list, description="Retrieved memories")
+    total_found: int = Field(default=0, description="Total memories found before limiting")
 
     # Query analysis
     query_intent: MemoryQueryIntent | None = Field(
         default=None, description="Analyzed query intent"
     )
-    expanded_query: str | None = Field(
-        default=None, description="Query after expansion"
-    )
+    expanded_query: str | None = Field(default=None, description="Query after expansion")
     memory_types_targeted: list[MemoryType] = Field(
         default_factory=list, description="Memory types targeted"
     )
@@ -131,17 +112,11 @@ class EnhancedQueryResult(BaseModel):
     recency_scores: list[float] = Field(
         default_factory=list, description="Recency scores for each result"
     )
-    final_scores: list[float] = Field(
-        default_factory=list, description="Combined final scores"
-    )
+    final_scores: list[float] = Field(default_factory=list, description="Combined final scores")
 
     # Performance metrics
-    retrieval_time_ms: float = Field(
-        default=0.0, description="Retrieval time in milliseconds"
-    )
-    classification_time_ms: float = Field(
-        default=0.0, description="Query classification time"
-    )
+    retrieval_time_ms: float = Field(default=0.0, description="Retrieval time in milliseconds")
+    classification_time_ms: float = Field(default=0.0, description="Query classification time")
     total_time_ms: float = Field(default=0.0, description="Total processing time")
 
 
@@ -181,7 +156,8 @@ class EnhancedMemoryRetriever:
         time_range: tuple[datetime, datetime] | None = None,
         limit: int | None = None,
         include_metadata: bool = True,
-        namespace: tuple[str, ...] | None = None) -> EnhancedQueryResult:
+        namespace: tuple[str, ...] | None = None,
+    ) -> EnhancedQueryResult:
         """Retrieve memories using enhanced self-query with memory context.
 
         Args:
@@ -202,9 +178,7 @@ class EnhancedMemoryRetriever:
             # Phase 1: Query Analysis and Intent Classification
             classification_start = datetime.utcnow()
             query_intent = self.classifier.classify_query_intent(query)
-            classification_time = (
-                datetime.utcnow() - classification_start
-            ).total_seconds() * 1000
+            classification_time = (datetime.utcnow() - classification_start).total_seconds() * 1000
 
             # Use detected memory types if not explicitly provided
             if memory_types is None:
@@ -224,18 +198,18 @@ class EnhancedMemoryRetriever:
                 memory_types=memory_types,
                 limit=limit or self.config.max_limit,  # Retrieve more for re-ranking
                 time_range=time_range,
-                importance_threshold=importance_threshold)
+                importance_threshold=importance_threshold,
+            )
 
-            retrieval_time = (
-                datetime.utcnow() - retrieval_start
-            ).total_seconds() * 1000
+            retrieval_time = (datetime.utcnow() - retrieval_start).total_seconds() * 1000
 
             # Phase 4: Enhanced Scoring and Re-ranking
             scored_memories = await self._apply_enhanced_scoring(
                 memories=raw_memories,
                 query=query,
                 query_intent=query_intent,
-                memory_types=memory_types)
+                memory_types=memory_types,
+            )
 
             # Phase 5: Final Limiting and Metadata Assembly
             final_limit = limit or self.config.default_limit
@@ -244,8 +218,7 @@ class EnhancedMemoryRetriever:
             # Extract metadata for result
             similarity_scores = [m.get("similarity_score", 0.0) for m in final_memories]
             importance_scores = [
-                m.get("metadata", {}).get("importance_score", 0.0)
-                for m in final_memories
+                m.get("metadata", {}).get("importance_score", 0.0) for m in final_memories
             ]
             recency_scores = [m.get("recency_score", 0.0) for m in final_memories]
             final_scores = [m.get("final_score", 0.0) for m in final_memories]
@@ -267,12 +240,13 @@ class EnhancedMemoryRetriever:
                 final_scores=final_scores,
                 retrieval_time_ms=retrieval_time,
                 classification_time_ms=classification_time,
-                total_time_ms=total_time)
+                total_time_ms=total_time,
+            )
 
             logger.info(
-                f"Enhanced retrieval completed: {
-                    len(final_memories)} memories in {
-                    total_time:.1f}ms"
+                f"Enhanced retrieval completed: {len(final_memories)} memories in {
+                    total_time:.1f
+                }ms"
             )
             return result
 
@@ -324,7 +298,8 @@ class EnhancedMemoryRetriever:
         memories: list[dict[str, Any]],
         query: str,
         query_intent: MemoryQueryIntent,
-        memory_types: list[MemoryType]) -> list[dict[str, Any]]:
+        memory_types: list[MemoryType],
+    ) -> list[dict[str, Any]]:
         """Apply enhanced multi-factor scoring to memories."""
         try:
             scored_memories = []
@@ -339,12 +314,8 @@ class EnhancedMemoryRetriever:
                 importance_score = metadata.get("importance_score", 0.5)
 
                 # Memory type scoring
-                memory_memory_types = [
-                    MemoryType(mt) for mt in metadata.get("memory_types", [])
-                ]
-                type_score = self._calculate_type_score(
-                    memory_memory_types, memory_types
-                )
+                memory_memory_types = [MemoryType(mt) for mt in metadata.get("memory_types", [])]
+                type_score = self._calculate_type_score(memory_memory_types, memory_types)
 
                 # Recency scoring
                 recency_score = 0.0
@@ -415,9 +386,7 @@ class EnhancedMemoryRetriever:
             hours_since = (now - most_recent).total_seconds() / 3600
 
             # Exponential decay over configured period
-            decay_factor = max(
-                0.0, 1.0 - (hours_since / self.config.recency_decay_hours)
-            )
+            decay_factor = max(0.0, 1.0 - (hours_since / self.config.recency_decay_hours))
 
             return decay_factor
 
@@ -435,19 +404,15 @@ class EnhancedMemoryRetriever:
             # Update running averages
             total_queries = self._retrieval_stats["total_queries"]
             self._retrieval_stats["avg_retrieval_time"] = (
-                self._retrieval_stats["avg_retrieval_time"] * (total_queries - 1)
-                + retrieval_time
+                self._retrieval_stats["avg_retrieval_time"] * (total_queries - 1) + retrieval_time
             ) / total_queries
             self._retrieval_stats["avg_results_returned"] = (
-                self._retrieval_stats["avg_results_returned"] * (total_queries - 1)
-                + results_count
+                self._retrieval_stats["avg_results_returned"] * (total_queries - 1) + results_count
             ) / total_queries
 
             # Update memory type distribution
             for memory_type in memory_types:
-                self._retrieval_stats["memory_type_distribution"][
-                    memory_type.value
-                ] += 1
+                self._retrieval_stats["memory_type_distribution"][memory_type.value] += 1
 
         except Exception as e:
             logger.exception(f"Error updating stats: {e}")
@@ -464,23 +429,17 @@ class EnhancedMemoryRetriever:
 
         # Performance recommendations
         if stats["avg_retrieval_time"] > 1000:  # >1 second
-            recommendations.append(
-                "Consider increasing similarity threshold to reduce candidates"
-            )
+            recommendations.append("Consider increasing similarity threshold to reduce candidates")
 
         if stats["avg_results_returned"] < 3:
-            recommendations.append(
-                "Consider lowering similarity threshold to return more results"
-            )
+            recommendations.append("Consider lowering similarity threshold to return more results")
 
         # Memory type usage analysis
         type_distribution = stats["memory_type_distribution"]
         most_used_type = max(type_distribution.items(), key=lambda x: x[1])
 
         if most_used_type[1] > stats["total_queries"] * 0.6:
-            recommendations.append(
-                f"Consider optimizing for {most_used_type[0]} memory type"
-            )
+            recommendations.append(f"Consider optimizing for {most_used_type[0]} memory type")
 
         return {
             "performance_stats": stats,
@@ -498,7 +457,8 @@ async def create_enhanced_memory_retriever(
     store_manager: StoreManager,
     namespace: tuple[str, ...] = ("memory", "enhanced"),
     classifier_config: MemoryClassifierConfig | None = None,
-    **retriever_kwargs) -> EnhancedMemoryRetriever:
+    **retriever_kwargs,
+) -> EnhancedMemoryRetriever:
     """Factory function to create an enhanced memory retriever.
 
     Args:
@@ -515,11 +475,8 @@ async def create_enhanced_memory_retriever(
         store_manager=store_manager,
         default_namespace=namespace,
         classifier_config=classifier_config or MemoryClassifierConfig(),
-        **{
-            k: v
-            for k, v in retriever_kwargs.items()
-            if k in MemoryStoreConfig.__fields__
-        })
+        **{k: v for k, v in retriever_kwargs.items() if k in MemoryStoreConfig.__fields__},
+    )
 
     memory_store_manager = MemoryStoreManager(memory_store_config)
 
@@ -530,10 +487,7 @@ async def create_enhanced_memory_retriever(
     retriever_config = EnhancedRetrieverConfig(
         memory_store_manager=memory_store_manager,
         memory_classifier=classifier,
-        **{
-            k: v
-            for k, v in retriever_kwargs.items()
-            if k in EnhancedRetrieverConfig.__fields__
-        })
+        **{k: v for k, v in retriever_kwargs.items() if k in EnhancedRetrieverConfig.__fields__},
+    )
 
     return EnhancedMemoryRetriever(retriever_config)

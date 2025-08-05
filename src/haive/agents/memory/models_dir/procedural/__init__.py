@@ -10,7 +10,8 @@ from haive.agents.memory.models_dir.procedural.models import (
     validate_instruction_clarity,
     validate_instruction_set,
     validate_procedural_integrity,
-    validate_reflection_logic)
+    validate_reflection_logic,
+)
 
 __all__ = [
     "InstructionComponent",

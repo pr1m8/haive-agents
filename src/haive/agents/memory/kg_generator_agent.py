@@ -65,18 +65,14 @@ class KnowledgeGraphNode(BaseModel):
     id: str = Field(..., description="Unique node identifier")
     type: str = Field(..., description="Entity type (person, place, concept, etc.)")
     name: str = Field(..., description="Display name of the entity")
-    properties: dict[str, Any] = Field(
-        default_factory=dict, description="Node properties"
-    )
+    properties: dict[str, Any] = Field(default_factory=dict, description="Node properties")
     memory_references: list[str] = Field(
         default_factory=list, description="Memory IDs that reference this entity"
     )
     confidence: float = Field(
         default=1.0, ge=0.0, le=1.0, description="Confidence in entity existence"
     )
-    created_at: datetime = Field(
-        default_factory=datetime.utcnow, description="Creation timestamp"
-    )
+    created_at: datetime = Field(default_factory=datetime.utcnow, description="Creation timestamp")
     last_updated: datetime = Field(
         default_factory=datetime.utcnow, description="Last update timestamp"
     )
@@ -128,18 +124,12 @@ class KnowledgeGraphRelationship(BaseModel):
     source_id: str = Field(..., description="Source entity ID")
     target_id: str = Field(..., description="Target entity ID")
     relationship_type: str = Field(..., description="Type of relationship")
-    properties: dict[str, Any] = Field(
-        default_factory=dict, description="Relationship properties"
-    )
+    properties: dict[str, Any] = Field(default_factory=dict, description="Relationship properties")
     memory_references: list[str] = Field(
         default_factory=list, description="Memory IDs that reference this relationship"
     )
-    confidence: float = Field(
-        default=1.0, ge=0.0, le=1.0, description="Confidence in relationship"
-    )
-    created_at: datetime = Field(
-        default_factory=datetime.utcnow, description="Creation timestamp"
-    )
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="Confidence in relationship")
+    created_at: datetime = Field(default_factory=datetime.utcnow, description="Creation timestamp")
     last_updated: datetime = Field(
         default_factory=datetime.utcnow, description="Last update timestamp"
     )
@@ -240,9 +230,7 @@ class MemoryKnowledgeGraph(BaseModel):
             existing = self.nodes[node.id]
             existing.properties.update(node.properties)
             existing.memory_references.extend(node.memory_references)
-            existing.memory_references = list(
-                set(existing.memory_references)
-            )  # Remove duplicates
+            existing.memory_references = list(set(existing.memory_references))  # Remove duplicates
             existing.last_updated = datetime.utcnow()
         else:
             # Add new node
@@ -297,9 +285,7 @@ class MemoryKnowledgeGraph(BaseModel):
             existing = self.relationships[relationship.id]
             existing.properties.update(relationship.properties)
             existing.memory_references.extend(relationship.memory_references)
-            existing.memory_references = list(
-                set(existing.memory_references)
-            )  # Remove duplicates
+            existing.memory_references = list(set(existing.memory_references))  # Remove duplicates
             existing.last_updated = datetime.utcnow()
         else:
             # Add new relationship
@@ -335,9 +321,7 @@ class MemoryKnowledgeGraph(BaseModel):
                 connected.append(self.nodes[rel.source_id])
         return connected
 
-    def get_relationships_for_node(
-        self, node_id: str
-    ) -> list[KnowledgeGraphRelationship]:
+    def get_relationships_for_node(self, node_id: str) -> list[KnowledgeGraphRelationship]:
         """Get all relationships involving a given node.
 
         Finds all relationships where the specified node is either the source
@@ -361,9 +345,7 @@ class MemoryKnowledgeGraph(BaseModel):
                           f"({rel.source_id} -> {rel.target_id})")
         """
         return [
-            rel
-            for rel in self.relationships.values()
-            if node_id in (rel.source_id, rel.target_id)
+            rel for rel in self.relationships.values() if node_id in (rel.source_id, rel.target_id)
         ]
 
 
@@ -424,9 +406,7 @@ class KGGeneratorAgentConfig(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     name: str = Field(default="kg_generator", description="Agent name")
-    memory_store_manager: MemoryStoreManager = Field(
-        ..., description="Memory store manager"
-    )
+    memory_store_manager: MemoryStoreManager = Field(..., description="Memory store manager")
     memory_classifier: MemoryClassifier = Field(..., description="Memory classifier")
     engine: AugLLMConfig = Field(
         default_factory=AugLLMConfig, description="LLM engine for extraction"
@@ -459,7 +439,8 @@ class KGGeneratorAgentConfig(BaseModel):
             "document",
             "project",
         ],
-        description="Types of entities to extract")
+        description="Types of entities to extract",
+    )
 
     # Relationship types
     relationship_types: list[str] = Field(
@@ -482,7 +463,8 @@ class KGGeneratorAgentConfig(BaseModel):
             "prevents",
             "enables",
         ],
-        description="Types of relationships to extract")
+        description="Types of relationships to extract",
+    )
 
 
 class KGGeneratorAgent(SimpleAgent):
@@ -604,7 +586,8 @@ class KGGeneratorAgent(SimpleAgent):
             "document",
             "project",
         ],
-        description="Types of entities to extract")
+        description="Types of entities to extract",
+    )
     relationship_types: list[str] = Field(
         default_factory=lambda: [
             "knows",
@@ -625,7 +608,8 @@ class KGGeneratorAgent(SimpleAgent):
             "prevents",
             "enables",
         ],
-        description="Types of relationships to extract")
+        description="Types of relationships to extract",
+    )
 
     # Prompt fields
     entity_extraction_prompt: PromptTemplate = Field(
@@ -689,7 +673,8 @@ Extract entities now:""",
                 "topics",
                 "existing_entities",
                 "entity_types",
-            ])
+            ],
+        )
 
         self.relationship_extraction_prompt = PromptTemplate(
             template="""You are an expert knowledge graph relationship extractor. Extract relationships between entities from the given memory content.
@@ -732,13 +717,15 @@ Extract relationships now:""",
                 "known_entities",
                 "existing_relationships",
                 "relationship_types",
-            ])
+            ],
+        )
 
     async def extract_knowledge_graph_from_memories(
         self,
         memory_ids: list[str] | None = None,
         namespace: tuple[str, ...] | None = None,
-        memory_types: list[MemoryType] | None = None) -> MemoryKnowledgeGraph:
+        memory_types: list[MemoryType] | None = None,
+    ) -> MemoryKnowledgeGraph:
         """Extract knowledge graph from specified memories.
 
         Processes memories to extract entities and relationships, building a comprehensive
@@ -811,10 +798,7 @@ Extract relationships now:""",
                     limit=1000,  # Large limit to get all
                 )
 
-            logger.info(
-                f"Processing {
-                    len(memories)} memories for KG extraction"
-            )
+            logger.info(f"Processing {len(memories)} memories for KG extraction")
 
             # Process memories in batches
             for i in range(0, len(memories), self.extract_batch_size):
@@ -832,11 +816,9 @@ Extract relationships now:""",
             )
 
             logger.info(
-                f"KG extraction complete: {
-                    len(
-                        self.knowledge_graph.nodes)} nodes, {
-                    len(
-                        self.knowledge_graph.relationships)} relationships"
+                f"KG extraction complete: {len(self.knowledge_graph.nodes)} nodes, {
+                    len(self.knowledge_graph.relationships)
+                } relationships"
             )
 
             return self.knowledge_graph
@@ -853,11 +835,7 @@ Extract relationships now:""",
                 await self._extract_relationships_from_memory(memory)
 
             except Exception as e:
-                logger.exception(
-                    f"Error processing memory {
-                        memory.get(
-                            'id', 'unknown')}: {e}"
-                )
+                logger.exception(f"Error processing memory {memory.get('id', 'unknown')}: {e}")
                 continue
 
     async def _extract_entities_from_memory(self, memory: dict[str, Any]) -> None:
@@ -879,12 +857,8 @@ Extract relationships now:""",
         try:
             response = await self.llm.ainvoke(
                 [
-                    SystemMessage(
-                        content="You are an expert knowledge graph entity extractor."
-                    ),
-                    HumanMessage(
-                        content=self.entity_extraction_prompt.format(**prompt_input)
-                    ),
+                    SystemMessage(content="You are an expert knowledge graph entity extractor."),
+                    HumanMessage(content=self.entity_extraction_prompt.format(**prompt_input)),
                 ]
             )
 
@@ -894,9 +868,7 @@ Extract relationships now:""",
             if entities_data and "entities" in entities_data:
                 for entity_data in entities_data["entities"]:
                     # Create entity node
-                    entity_id = self._generate_entity_id(
-                        entity_data["name"], entity_data["type"]
-                    )
+                    entity_id = self._generate_entity_id(entity_data["name"], entity_data["type"])
 
                     entity_node = KnowledgeGraphNode(
                         id=entity_id,
@@ -904,7 +876,8 @@ Extract relationships now:""",
                         name=entity_data["name"],
                         properties=entity_data.get("properties", {}),
                         memory_references=[memory_id],
-                        confidence=entity_data.get("confidence", 0.8))
+                        confidence=entity_data.get("confidence", 0.8),
+                    )
 
                     # Add to graph
                     self.knowledge_graph.add_node(entity_node)
@@ -939,9 +912,7 @@ Extract relationships now:""",
                         content="You are an expert knowledge graph relationship extractor."
                     ),
                     HumanMessage(
-                        content=self.relationship_extraction_prompt.format(
-                            **prompt_input
-                        )
+                        content=self.relationship_extraction_prompt.format(**prompt_input)
                     ),
                 ]
             )
@@ -968,23 +939,20 @@ Extract relationships now:""",
                             relationship_type=rel_data["relationship_type"],
                             properties=rel_data.get("properties", {}),
                             memory_references=[memory_id],
-                            confidence=rel_data.get("confidence", 0.8))
+                            confidence=rel_data.get("confidence", 0.8),
+                        )
 
                         # Add to graph
                         self.knowledge_graph.add_relationship(relationship)
 
         except Exception as e:
-            logger.exception(
-                f"Error extracting relationships from memory {memory_id}: {e}"
-            )
+            logger.exception(f"Error extracting relationships from memory {memory_id}: {e}")
 
     def _generate_entity_id(self, name: str, entity_type: str) -> str:
         """Generate unique entity ID."""
         return f"{entity_type}_{name}".lower().replace(" ", "_")
 
-    def _generate_relationship_id(
-        self, source_id: str, target_id: str, rel_type: str
-    ) -> str:
+    def _generate_relationship_id(self, source_id: str, target_id: str, rel_type: str) -> str:
         """Generate unique relationship ID."""
         return f"{source_id}_{rel_type}_{target_id}".lower().replace(" ", "_")
 
@@ -999,7 +967,6 @@ Extract relationships now:""",
     def _parse_json_response(self, response: str) -> dict[str, Any] | None:
         """Parse JSON response from LLM."""
         try:
-
             # Try to find JSON in response
             start_idx = response.find("{")
             end_idx = response.rfind("}") + 1
@@ -1024,9 +991,7 @@ Extract relationships now:""",
         """
         try:
             # Extract full knowledge graph first
-            await self.extract_knowledge_graph_from_memories(
-                namespace=namespace, memory_types=None
-            )
+            await self.extract_knowledge_graph_from_memories(namespace=namespace, memory_types=None)
 
             # Return entities as list
             entities = list(self.knowledge_graph.nodes.values())
@@ -1055,9 +1020,7 @@ Extract relationships now:""",
         """
         try:
             # Extract full knowledge graph first
-            await self.extract_knowledge_graph_from_memories(
-                namespace=namespace, memory_types=None
-            )
+            await self.extract_knowledge_graph_from_memories(namespace=namespace, memory_types=None)
 
             # Return relationships as list
             relationships = list(self.knowledge_graph.relationships.values())
@@ -1106,9 +1069,7 @@ Extract relationships now:""",
             logger.exception(f"Error getting entity context: {e}")
             return {"error": str(e)}
 
-    async def get_entity_neighborhood(
-        self, entity_id: str, depth: int = 1
-    ) -> dict[str, Any]:
+    async def get_entity_neighborhood(self, entity_id: str, depth: int = 1) -> dict[str, Any]:
         """Get the neighborhood of an entity up to specified depth.
 
         Args:
@@ -1153,9 +1114,7 @@ Extract relationships now:""",
 
                 # Add to next level
                 for rel in relationships:
-                    next_node_id = (
-                        rel.target_id if rel.source_id == node_id else rel.source_id
-                    )
+                    next_node_id = rel.target_id if rel.source_id == node_id else rel.source_id
                     if next_node_id not in visited:
                         next_level.add(next_node_id)
 
@@ -1178,10 +1137,8 @@ Extract relationships now:""",
             await self.extract_knowledge_graph_from_memories()
 
             return f"Knowledge graph extracted successfully. Found {
-                len(
-                    self.knowledge_graph.nodes)} entities and {
-                len(
-                    self.knowledge_graph.relationships)} relationships."
+                len(self.knowledge_graph.nodes)
+            } entities and {len(self.knowledge_graph.relationships)} relationships."
 
         if "explore" in user_input.lower() or "neighborhood" in user_input.lower():
             # Find entity to explore
@@ -1189,9 +1146,7 @@ Extract relationships now:""",
             entity_name = None
 
             for word in words:
-                if word in [
-                    node.name.lower() for node in self.knowledge_graph.nodes.values()
-                ]:
+                if word in [node.name.lower() for node in self.knowledge_graph.nodes.values()]:
                     entity_name = word
                     break
 
@@ -1200,20 +1155,17 @@ Extract relationships now:""",
                 if entity_id:
                     neighborhood = await self.get_entity_neighborhood(entity_id)
                     return f"Entity '{entity_name}' neighborhood: {
-                        neighborhood['total_nodes']} connected nodes, {
-                        neighborhood['total_relationships']} relationships"
+                        neighborhood['total_nodes']
+                    } connected nodes, {neighborhood['total_relationships']} relationships"
 
             return "Please specify an entity to explore."
 
         if "stats" in user_input.lower() or "statistics" in user_input.lower():
             # Return graph statistics
             return f"Knowledge Graph Statistics:\n- Nodes: {
-                len(
-                    self.knowledge_graph.nodes)}\n- Relationships: {
-                len(
-                    self.knowledge_graph.relationships)}\n- Last Updated: {
-                self.knowledge_graph.metadata.get(
-                    'last_updated',
-                    'Never')}"
+                len(self.knowledge_graph.nodes)
+            }\n- Relationships: {len(self.knowledge_graph.relationships)}\n- Last Updated: {
+                self.knowledge_graph.metadata.get('last_updated', 'Never')
+            }"
 
         return "I can help you extract knowledge graphs from memories, explore entity neighborhoods, or provide graph statistics. What would you like to do?"

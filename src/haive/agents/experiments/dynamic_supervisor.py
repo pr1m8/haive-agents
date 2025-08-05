@@ -33,17 +33,15 @@ class SupervisorState(MessagesState):
 
     # Agent registry information
     agent_registry: dict[str, dict[str, Any]] = Field(
-        default_factory=dict,
-        description="Registry of available agents with their metadata")
+        default_factory=dict, description="Registry of available agents with their metadata"
+    )
 
     # Current execution state
     current_agent_name: str | None = Field(
         default=None, description="Name of the currently selected agent"
     )
 
-    current_task: str | None = Field(
-        default=None, description="Current task being executed"
-    )
+    current_task: str | None = Field(default=None, description="Current task being executed")
 
     # Execution tracking
     execution_history: list[dict[str, Any]] = Field(
@@ -55,13 +53,9 @@ class SupervisorState(MessagesState):
     )
 
     # Task status
-    task_complete: bool = Field(
-        default=False, description="Whether the overall task is complete"
-    )
+    task_complete: bool = Field(default=False, description="Whether the overall task is complete")
 
-    max_iterations: int = Field(
-        default=10, description="Maximum number of agent iterations"
-    )
+    max_iterations: int = Field(default=10, description="Maximum number of agent iterations")
 
     current_iteration: int = Field(default=0, description="Current iteration count")
 
@@ -112,14 +106,16 @@ class AgentRegistry:
         description: str,
         agent_class: type[Agent],
         config: dict[str, Any] | None = None,
-        capabilities: list[str] | None = None) -> None:
+        capabilities: list[str] | None = None,
+    ) -> None:
         """Register an agent with the registry."""
         entry = AgentRegistryEntry(
             name=name,
             description=description,
             agent_class=agent_class,
             config=config or {},
-            capabilities=capabilities or [])
+            capabilities=capabilities or [],
+        )
         self._registry[name] = entry
         logger.info(f"Registered agent: {name}")
 
@@ -202,9 +198,7 @@ def create_dynamic_handoff_tool(supervisor_instance, agent_name: str):
                 state["current_task"] = task
 
             # Create input for the agent
-            agent_input = {
-                "messages": [*state.get("messages", []), HumanMessage(content=task)]
-            }
+            agent_input = {"messages": [*state.get("messages", []), HumanMessage(content=task)]}
 
             # Execute the agent
             result = agent.invoke(agent_input)
@@ -322,9 +316,7 @@ def create_list_agents_tool(supervisor_instance) -> Any:
             for name, info in agents.items():
                 result += f"\n• {name}: {info['description']}"
                 if info.get("capabilities"):
-                    result += f"\n  Capabilities: {
-                        ', '.join(
-                            info['capabilities'])}"
+                    result += f"\n  Capabilities: {', '.join(info['capabilities'])}"
 
             return result
 
@@ -442,7 +434,8 @@ Available tools:
         name: str,
         description: str,
         agent_class: type[Agent],
-        config: dict[str, Any] | None = None):
+        config: dict[str, Any] | None = None,
+    ):
         """Dynamically add an agent to the registry and update tools."""
         self.agent_registry.register(name, description, agent_class, config)
 
@@ -499,13 +492,15 @@ def create_test_registry() -> AgentRegistry:
         name="research_agent",
         description="Searches for information and conducts research",
         agent_class=SimpleAgent,
-        capabilities=["web_search", "analysis", "summarization"])
+        capabilities=["web_search", "analysis", "summarization"],
+    )
 
     registry.register(
         name="math_agent",
         description="Performs mathematical calculations and analysis",
         agent_class=SimpleAgent,
-        capabilities=["arithmetic", "algebra", "statistics"])
+        capabilities=["arithmetic", "algebra", "statistics"],
+    )
 
     return registry
 
@@ -524,9 +519,7 @@ def test_dynamic_tools() -> Any:
     """Test dynamic tool creation and handoff functionality."""
     # Create supervisor
     registry = create_test_registry()
-    supervisor = DynamicSupervisorAgent(
-        name="Dynamic Test Supervisor", agent_registry=registry
-    )
+    supervisor = DynamicSupervisorAgent(name="Dynamic Test Supervisor", agent_registry=registry)
 
     # Check tools were created
     for _tool in supervisor.tools:
@@ -542,7 +535,8 @@ def test_dynamic_tools() -> Any:
         name="calculator_agent",
         description="Performs complex mathematical calculations",
         agent_class=SimpleAgent,
-        config={"name": "Calculator Agent"})
+        config={"name": "Calculator Agent"},
+    )
 
     # Verify handoff tool was created
     [t for t in supervisor.tools if t.name.startswith("handoff_to_")]
@@ -567,9 +561,7 @@ def test_supervisor_workflow() -> Any:
     }
 
     # Test handoff functionality
-    research_handoff = next(
-        t for t in supervisor.tools if t.name == "handoff_to_research_agent"
-    )
+    research_handoff = next(t for t in supervisor.tools if t.name == "handoff_to_research_agent")
 
     try:
         # This would normally be called by the graph, but we'll test directly

@@ -18,16 +18,16 @@ from haive.agents.react.agent import ReactAgent
 
 def extract_memory_items(memory_data: Any) -> list[str]:
     """Extract memory items from memory data structure.
-    
+
     Args:
         memory_data: Raw memory data from various sources
-        
+
     Returns:
         List of formatted memory items as strings
     """
     if not memory_data:
         return []
-    
+
     # Handle different memory data formats
     if isinstance(memory_data, list):
         return [str(item) for item in memory_data]
@@ -47,19 +47,11 @@ class SearchResponse(BaseModel):
 
     query: str = Field(..., description="The original search query")
     response: str = Field(..., description="The search response content")
-    sources: list[str] = Field(
-        default_factory=list, description="Source URLs or references"
-    )
-    confidence: float = Field(
-        default=0.0, ge=0.0, le=1.0, description="Confidence score"
-    )
+    sources: list[str] = Field(default_factory=list, description="Source URLs or references")
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Confidence score")
     search_type: str = Field(..., description="Type of search performed")
-    processing_time: float = Field(
-        default=0.0, description="Time taken to process in seconds"
-    )
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    processing_time: float = Field(default=0.0, description="Time taken to process in seconds")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
 
 class BaseSearchAgent(ReactAgent, ABC):
@@ -70,11 +62,8 @@ class BaseSearchAgent(ReactAgent, ABC):
     """
 
     def __init__(
-        self,
-        name: str,
-        engine: AugLLMConfig,
-        search_tools: list[Tool] | None = None,
-        **kwargs):
+        self, name: str, engine: AugLLMConfig, search_tools: list[Tool] | None = None, **kwargs
+    ):
         """Initialize the search agent.
 
         Args:
@@ -180,10 +169,8 @@ class BaseSearchAgent(ReactAgent, ABC):
         return memory_items
 
     async def process_search(
-        self,
-        query: str,
-        context: dict[str, Any] | None = None,
-        save_to_memory: bool = True) -> SearchResponse:
+        self, query: str, context: dict[str, Any] | None = None, save_to_memory: bool = True
+    ) -> SearchResponse:
         """Process a search query with memory integration.
 
         Args:
@@ -227,7 +214,8 @@ class BaseSearchAgent(ReactAgent, ABC):
             confidence=0.8,  # Default confidence
             search_type=self.__class__.__name__,
             processing_time=processing_time,
-            metadata=context)
+            metadata=context,
+        )
 
         # Save to memory if requested
         if save_to_memory:

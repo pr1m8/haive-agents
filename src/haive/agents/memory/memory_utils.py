@@ -78,7 +78,8 @@ def save_unstructured_memories(
                 content=memory,
                 source="conversation",
                 timestamp=timestamp,
-                metadata={"user_id": user_id})
+                metadata={"user_id": user_id},
+            )
             content = memory
         elif isinstance(memory, MemoryItem):
             memory_item = memory
@@ -100,7 +101,8 @@ def save_unstructured_memories(
                 "timestamp": memory_item.timestamp,
                 "source": memory_item.source,
                 **memory_item.metadata,
-            })
+            },
+        )
         documents.append(document)
         saved_memories.append(content)
 
@@ -113,9 +115,8 @@ def save_unstructured_memories(
 
 
 def save_structured_memories(
-    memories: list[dict[str, Any] | KnowledgeTriple],
-    vector_store: VectorStore,
-    user_id: str) -> list[dict[str, Any]]:
+    memories: list[dict[str, Any] | KnowledgeTriple], vector_store: VectorStore, user_id: str
+) -> list[dict[str, Any]]:
     """Save structured memories (knowledge triples) to vector store.
 
     Args:
@@ -144,7 +145,8 @@ def save_structured_memories(
                 confidence=triple_dict.get("confidence", 1.0),
                 source=triple_dict.get("source", "conversation"),
                 timestamp=triple_dict.get("timestamp", timestamp),
-                metadata=triple_dict.get("metadata", {"user_id": user_id}))
+                metadata=triple_dict.get("metadata", {"user_id": user_id}),
+            )
         elif isinstance(memory, KnowledgeTriple):
             triple = memory
             if not triple.timestamp:
@@ -171,17 +173,15 @@ def save_structured_memories(
                 "object": triple.object_,  # Use object instead of object_ for compatibility
                 "confidence": triple.confidence,
                 **triple.metadata,
-            })
+            },
+        )
         documents.append(document)
         saved_triples.append(triple.dict())
 
     # Add documents to vector store
     if documents:
         vector_store.add_documents(documents)
-        logger.info(
-            f"Saved {
-                len(documents)} structured memories for user {user_id}"
-        )
+        logger.info(f"Saved {len(documents)} structured memories for user {user_id}")
 
     return saved_triples
 
@@ -191,7 +191,8 @@ def retrieve_memories(
     vector_store: VectorStore,
     user_id: str,
     limit: int = 5,
-    filter_fn: Callable[[Document], bool] | None = None) -> list[str]:
+    filter_fn: Callable[[Document], bool] | None = None,
+) -> list[str]:
     """Retrieve relevant memories from vector store.
 
     Args:
@@ -217,10 +218,7 @@ def retrieve_memories(
         # Extract memory strings
         memory_strings = [doc.page_content for doc in documents]
 
-        logger.info(
-            f"Retrieved {
-                len(memory_strings)} memories for user {user_id}"
-        )
+        logger.info(f"Retrieved {len(memory_strings)} memories for user {user_id}")
         return memory_strings
 
     except Exception as e:
@@ -245,9 +243,7 @@ def create_memory_tools(vector_store: VectorStore):
         return f"Memory saved: {memory}"
 
     @tool
-    def save_structured_memory(
-        subject: str, predicate: str, object_: str, user_id: str
-    ) -> str:
+    def save_structured_memory(subject: str, predicate: str, object_: str, user_id: str) -> str:
         """Save a structured memory as a knowledge triple."""
         triple = {
             "subject": subject,

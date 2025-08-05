@@ -36,23 +36,23 @@ Example Usage:
         result = supervisor.invoke("Create a coding agent and write Python code")
 """
 
-from haive.agents.experiments.supervisor.base_supervisor import (
-    BaseSupervisor,
-    DynamicSupervisor)
+from haive.agents.experiments.supervisor.base_supervisor import BaseSupervisor, DynamicSupervisor
 from haive.agents.experiments.supervisor.state_models import (
     AgentMetadata,
     DynamicSupervisorState,
     ExecutionContext,
     SerializedAgent,
     SupervisorState,
-    ToolMapping)
+    ToolMapping,
+)
 from haive.agents.experiments.supervisor.tools import (
     build_supervisor_tools,
     create_agent_creation_tool,
     create_execution_status_tool,
     create_list_agents_tool,
     create_supervisor_handoff_tool,
-    sync_tools_with_state)
+    sync_tools_with_state,
+)
 
 __all__ = [
     "AgentMetadata",

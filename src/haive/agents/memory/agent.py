@@ -9,7 +9,8 @@ from haive.agents.memory.memory_utils import (
     get_user_id_from_state,
     retrieve_memories,
     save_structured_memories,
-    save_unstructured_memories)
+    save_unstructured_memories,
+)
 from haive.agents.memory.config import MemoryAgentConfig
 from haive.agents.react.agent import ReactAgent
 from haive.core.engine.agent.agent import register_agent
@@ -80,7 +81,8 @@ class MemoryAgent(ReactAgent):
                     query,
                     self.config.vector_store,
                     user_id,
-                    limit=self.config.max_memories_per_retrieval)
+                    limit=self.config.max_memories_per_retrieval,
+                )
                 return memories
             except Exception as e:
                 logger.exception(f"Error recalling memories: {e}")
@@ -91,19 +93,22 @@ class MemoryAgent(ReactAgent):
             func=save_memory,
             name="save_memory",
             description="Save an important fact or detail about the user for future reference",
-            return_direct=False)
+            return_direct=False,
+        )
 
         structured_memory_save_tool = StructuredTool.from_function(
             func=save_structured_memory,
             name="save_structured_memory",
             description="Save a structured fact as a knowledge triple (subject, predicate, object)",
-            return_direct=False)
+            return_direct=False,
+        )
 
         memory_recall_tool = StructuredTool.from_function(
             func=recall_memory,
             name="recall_memories",
             description="Search for relevant memories about the current user",
-            return_direct=False)
+            return_direct=False,
+        )
 
         # Add memory tools to existing tools
         memory_tools = [memory_save_tool, memory_recall_tool]
@@ -145,27 +150,25 @@ class MemoryAgent(ReactAgent):
         logger.debug(f"Setting up workflow for MemoryAgent {self.config.name}")
 
         # Create dynamic graph builder
-        gb = DynamicGraph(
-            components=[self.config.engine], state_schema=self.config.state_schema
-        )
+        gb = DynamicGraph(components=[self.config.engine], state_schema=self.config.state_schema)
 
         # Add memory loading node
         gb.add_node(
             name=self.config.memory_load_node_name,
             config=self._load_memories,
-            command_goto="extract_query")
+            command_goto="extract_query",
+        )
         gb.set_entry_point(self.config.memory_load_node_name)
 
         # Add query extraction node
-        gb.add_node(
-            "extract_query", self._extract_query, self.config.memory_extract_node_name
-        )
+        gb.add_node("extract_query", self._extract_query, self.config.memory_extract_node_name)
 
         # Add memory extraction node
         gb.add_node(
             name=self.config.memory_extract_node_name,
             config=self._extract_memories,
-            command_goto="add_system")
+            command_goto="add_system",
+        )
 
         # Add system message if provided
         if self.config.system_prompt or self.config.memory_system_prompt:
@@ -182,17 +185,14 @@ class MemoryAgent(ReactAgent):
 
         # Add memory saving node
         gb.add_node(
-            name=self.config.memory_save_node_name,
-            config=self._save_memories,
-            command_goto=END)
+            name=self.config.memory_save_node_name, config=self._save_memories, command_goto=END
+        )
 
         # Modify the standard flow to include memory saving
         # We want the LLM to return to memory extraction after tool execution
         try:
             gb.remove_edge(self.config.tool_node_name, self.config.llm_node_name)
-            gb.add_edge(
-                self.config.tool_node_name, self.config.memory_extract_node_name
-            )
+            gb.add_edge(self.config.tool_node_name, self.config.memory_extract_node_name)
         except Exception as e:
             logger.warning(f"Error modifying tool flow: {e}")
 
@@ -203,7 +203,8 @@ class MemoryAgent(ReactAgent):
             {
                 self.config.tool_node_name: self.config.tool_node_name,
                 self.config.memory_save_node_name: self.config.memory_save_node_name,
-            })
+            },
+        )
 
         # Add structured output node if schema provided
         if self.config.structured_output_schema:
@@ -212,9 +213,7 @@ class MemoryAgent(ReactAgent):
             # Ensure structured output node is after memory saving
             try:
                 gb.remove_edge(self.config.llm_node_name, self.config.output_node_name)
-                gb.add_edge(
-                    self.config.memory_save_node_name, self.config.output_node_name
-                )
+                gb.add_edge(self.config.memory_save_node_name, self.config.output_node_name)
             except Exception as e:
                 logger.warning(f"Error modifying structured output flow: {e}")
 
@@ -266,14 +265,12 @@ class MemoryAgent(ReactAgent):
                     query,
                     self.config.vector_store,
                     user_id,
-                    limit=self.config.max_memories_per_retrieval)
+                    limit=self.config.max_memories_per_retrieval,
+                )
 
                 # Add to result
                 result["recall_memories"] = memories
-                logger.info(
-                    f"Loaded {
-                        len(memories)} memories for user {user_id}"
-                )
+                logger.info(f"Loaded {len(memories)} memories for user {user_id}")
             else:
                 # No query, set empty memories
                 result["recall_memories"] = []
@@ -300,9 +297,7 @@ class MemoryAgent(ReactAgent):
         if messages:
             # Look for the last human message
             for msg in reversed(messages):
-                if isinstance(msg, HumanMessage) or (
-                    isinstance(msg, tuple) and msg[0] == "human"
-                ):
+                if isinstance(msg, HumanMessage) or (isinstance(msg, tuple) and msg[0] == "human"):
                     if hasattr(msg, "content") and not isinstance(msg, tuple):
                         content = getattr(msg, "content", "")
                     elif isinstance(msg, tuple) and len(msg) > 1:
@@ -370,9 +365,9 @@ class MemoryAgent(ReactAgent):
             # Create a complete prompt with conversation history
             conversation_str = "\n".join(
                 [
-                    f"{msg.type if hasattr(msg,
-                                                                 'type') else msg[0]}: {msg.content if hasattr(msg,
-                                                                                                               'content') else msg[1]}"
+                    f"{msg.type if hasattr(msg, 'type') else msg[0]}: {
+                        msg.content if hasattr(msg, 'content') else msg[1]
+                    }"
                     for msg in messages
                 ]
             )
@@ -476,23 +471,15 @@ class MemoryAgent(ReactAgent):
                         # Try to parse string as JSON
                         try:
                             memory_dict = json.loads(memory)
-                            if all(
-                                k in memory_dict
-                                for k in ["subject", "predicate", "object_"]
-                            ):
+                            if all(k in memory_dict for k in ["subject", "predicate", "object_"]):
                                 structured_memories.append(memory_dict)
                         except BaseException:
                             # Skip invalid memories
                             pass
 
                 if structured_memories:
-                    save_structured_memories(
-                        structured_memories, self.config.vector_store, user_id
-                    )
-                    logger.info(
-                        f"Saved {
-                            len(structured_memories)} structured memories"
-                    )
+                    save_structured_memories(structured_memories, self.config.vector_store, user_id)
+                    logger.info(f"Saved {len(structured_memories)} structured memories")
 
             else:  # unstructured
                 # Save as unstructured memories
@@ -508,10 +495,7 @@ class MemoryAgent(ReactAgent):
                     save_unstructured_memories(
                         unstructured_memories, self.config.vector_store, user_id
                     )
-                    logger.info(
-                        f"Saved {
-                            len(unstructured_memories)} unstructured memories"
-                    )
+                    logger.info(f"Saved {len(unstructured_memories)} unstructured memories")
 
         except Exception as e:
             logger.exception(f"Error saving memories: {e}")
@@ -528,9 +512,7 @@ class MemoryAgent(ReactAgent):
 
             # Check if we already have a system message
             has_system = any(
-                isinstance(m, SystemMessage)
-                for m in messages
-                if isinstance(m, BaseMessage)
+                isinstance(m, SystemMessage) for m in messages if isinstance(m, BaseMessage)
             )
 
             if not has_system:
@@ -543,18 +525,12 @@ class MemoryAgent(ReactAgent):
                 )
 
                 # Create system message with memories
-                system_prompt = (
-                    self.config.memory_system_prompt or self.config.system_prompt
-                )
+                system_prompt = self.config.memory_system_prompt or self.config.system_prompt
                 if not system_prompt:
-                    system_prompt = (
-                        "You are a helpful assistant with memory capabilities."
-                    )
+                    system_prompt = "You are a helpful assistant with memory capabilities."
 
                 # Replace memory placeholder
-                system_content = system_prompt.replace(
-                    "{recall_memories}", memories_str
-                )
+                system_content = system_prompt.replace("{recall_memories}", memories_str)
 
                 # Create system message
                 system_msg = SystemMessage(content=system_content)
@@ -582,9 +558,7 @@ class MemoryAgent(ReactAgent):
             return self.config.memory_save_node_name
 
         last_message = messages[-1]
-        if isinstance(last_message, AIMessage) and getattr(
-            last_message, "tool_calls", None
-        ):
+        if isinstance(last_message, AIMessage) and getattr(last_message, "tool_calls", None):
             return self.config.tool_node_name
 
         # No tool calls, go to memory saving

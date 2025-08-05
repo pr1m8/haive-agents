@@ -5,41 +5,52 @@ from haive.agents.memory.models_dir.base import BaseMemoryModel
 from haive.agents.memory.models_dir.episodic.mixins import PerformanceMetrics, TaskExecution
 from haive.agents.memory.models_dir.semantic.mixins import TemporalMixin
 
+
 class EpisodicMemory(BaseMemoryModel, TemporalMixin):
     """Sophisticated episodic memory for learning from experiences."""
-    __memory_type__ = 'episodic'
-    __validation_level__ = 'enterprise'
-    user_id: str = Field(..., description='Associated user ID')
-    session_id: str = Field(..., description='Session identifier')
-    task_execution: TaskExecution = Field(..., description='Execution details')
-    performance_metrics: PerformanceMetrics = Field(default_factory=PerformanceMetrics)
-    user_input: str = Field(..., min_length=1, max_length=5000, description='Original user input')
-    agent_response: str = Field(..., min_length=1, max_length=10000, description='Agent response')
-    outcome_classification: Literal['success', 'partial_success', 'failure', 'error'] = Field(default='success', description='Outcome classification')
-    environmental_context: dict[str, Any] = Field(default_factory=dict, description='Execution environment')
-    feedback_received: str | None = Field(None, description='User feedback')
-    lessons_learned: list[str] = Field(default_factory=list, description='Extracted lessons')
-    similarity_cluster: str | None = Field(None, description='Similarity cluster ID')
-    temporal_weight: float = Field(default=1.0, description='Temporal relevance weight')
 
-    @field_validator('user_input', 'agent_response')
+    __memory_type__ = "episodic"
+    __validation_level__ = "enterprise"
+    user_id: str = Field(..., description="Associated user ID")
+    session_id: str = Field(..., description="Session identifier")
+    task_execution: TaskExecution = Field(..., description="Execution details")
+    performance_metrics: PerformanceMetrics = Field(default_factory=PerformanceMetrics)
+    user_input: str = Field(..., min_length=1, max_length=5000, description="Original user input")
+    agent_response: str = Field(..., min_length=1, max_length=10000, description="Agent response")
+    outcome_classification: Literal["success", "partial_success", "failure", "error"] = Field(
+        default="success", description="Outcome classification"
+    )
+    environmental_context: dict[str, Any] = Field(
+        default_factory=dict, description="Execution environment"
+    )
+    feedback_received: str | None = Field(None, description="User feedback")
+    lessons_learned: list[str] = Field(default_factory=list, description="Extracted lessons")
+    similarity_cluster: str | None = Field(None, description="Similarity cluster ID")
+    temporal_weight: float = Field(default=1.0, description="Temporal relevance weight")
+
+    @field_validator("user_input", "agent_response")
     @classmethod
     def validate_content_safety(cls, v: str) -> str:
         """Basic content safety validation."""
         if not v.strip():
-            raise ValueError('Content cannot be empty')
-        pii_patterns = ['\\b\\d{3}-\\d{2}-\\d{4}\\b', '\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b']
+            raise ValueError("Content cannot be empty")
+        pii_patterns = [
+            "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+            "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b",
+        ]
         for pattern in pii_patterns:
             if re.search(pattern, v):
                 pass
         return v.strip()
 
-    @model_validator(mode='after')
-    def validate_episodic_consistency(self) -> 'EpisodicMemory':
+    @model_validator(mode="after")
+    def validate_episodic_consistency(self) -> "EpisodicMemory":
         """Validate episodic memory consistency."""
-        if self.outcome_classification == 'success' and self.performance_metrics.success_rate < 0.5:
+        if self.outcome_classification == "success" and self.performance_metrics.success_rate < 0.5:
             self.performance_metrics.success_rate = 0.8
-        elif self.outcome_classification == 'failure' and self.performance_metrics.success_rate > 0.5:
+        elif (
+            self.outcome_classification == "failure" and self.performance_metrics.success_rate > 0.5
+        ):
             self.performance_metrics.success_rate = 0.2
         if self.feedback_received and (not self.lessons_learned):
             self.lessons_learned = self._extract_lessons_from_feedback()
@@ -51,12 +62,12 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
             return []
         lessons = []
         feedback_lower = self.feedback_received.lower()
-        if 'too long' in feedback_lower or 'verbose' in feedback_lower:
-            lessons.append('Keep responses more concise')
-        if 'not clear' in feedback_lower or 'confusing' in feedback_lower:
-            lessons.append('Improve response clarity')
-        if 'helpful' in feedback_lower or 'good' in feedback_lower:
-            lessons.append('Continue current approach')
+        if "too long" in feedback_lower or "verbose" in feedback_lower:
+            lessons.append("Keep responses more concise")
+        if "not clear" in feedback_lower or "confusing" in feedback_lower:
+            lessons.append("Improve response clarity")
+        if "helpful" in feedback_lower or "good" in feedback_lower:
+            lessons.append("Continue current approach")
         return lessons
 
     def calculate_learning_value(self) -> float:
@@ -73,15 +84,17 @@ def calculate_learning_value(memory: EpisodicMemory) -> float:
     """Calculate learning value of an episodic memory."""
     return memory.calculate_learning_value()
 
+
 def validate_content_safety(content: str) -> str:
     """Validate content safety for episodic memory."""
     # Basic safety validation - can be extended
     if not content or not content.strip():
-        raise ValueError('Memory content cannot be empty')
+        raise ValueError("Memory content cannot be empty")
     return content.strip()
+
 
 def validate_episodic_consistency(memory: EpisodicMemory) -> EpisodicMemory:
     """Validate episodic memory consistency."""
     if not memory.experience_context:
-        raise ValueError('Experience context is required')
+        raise ValueError("Experience context is required")
     return memory

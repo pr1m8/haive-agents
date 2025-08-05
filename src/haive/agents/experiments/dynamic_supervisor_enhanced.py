@@ -22,7 +22,8 @@ def create_agent_management_tools(supervisor_instance) -> Any:
         description: str,
         agent_type: str = "simple",
         system_message: str = "",
-        capabilities: str | None = None) -> str:
+        capabilities: str | None = None,
+    ) -> str:
         """Create and register a new agent in the supervisor's registry.
 
         Args:
@@ -53,17 +54,13 @@ def create_agent_management_tools(supervisor_instance) -> Any:
             # Prepare config
             config = {
                 "name": name.replace("_", " ").title(),
-                "system_message": system_message
-                or f"You are a {
-                    description.lower()}.",
+                "system_message": system_message or f"You are a {description.lower()}.",
             }
 
             # Add agent to registry
             supervisor_instance.add_agent_to_registry(
-                name=name,
-                description=description,
-                agent_class=agent_class,
-                config=config)
+                name=name, description=description, agent_class=agent_class, config=config
+            )
 
             # Store capabilities if provided
             if capabilities and hasattr(supervisor_instance.agent_registry, "_agents"):
@@ -99,9 +96,8 @@ def create_agent_management_tools(supervisor_instance) -> Any:
 
     @tool
     def modify_agent(
-        name: str,
-        description: str | None = None,
-        system_message: str | None = None) -> str:
+        name: str, description: str | None = None, system_message: str | None = None
+    ) -> str:
         """Modify an existing agent's configuration.
 
         Args:
@@ -120,16 +116,11 @@ def create_agent_management_tools(supervisor_instance) -> Any:
             # Update agent info
             if hasattr(supervisor_instance.agent_registry, "_agents"):
                 if description:
-                    supervisor_instance.agent_registry._agents[name][
-                        "description"
-                    ] = description
-                if (
-                    system_message
-                    and "config" in supervisor_instance.agent_registry._agents[name]
-                ):
-                    supervisor_instance.agent_registry._agents[name]["config"][
-                        "system_message"
-                    ] = system_message
+                    supervisor_instance.agent_registry._agents[name]["description"] = description
+                if system_message and "config" in supervisor_instance.agent_registry._agents[name]:
+                    supervisor_instance.agent_registry._agents[name]["config"]["system_message"] = (
+                        system_message
+                    )
 
             return f"Successfully modified agent '{name}'"
 
@@ -151,10 +142,7 @@ def create_agent_management_tools(supervisor_instance) -> Any:
         suggestions = []
 
         # Analyze task keywords
-        if any(
-            word in task_lower
-            for word in ["code", "program", "debug", "script", "function"]
-        ):
+        if any(word in task_lower for word in ["code", "program", "debug", "script", "function"]):
             suggestions.append(
                 {
                     "name": "coding_agent",
@@ -164,10 +152,7 @@ def create_agent_management_tools(supervisor_instance) -> Any:
                 }
             )
 
-        if any(
-            word in task_lower
-            for word in ["write", "draft", "compose", "edit", "content"]
-        ):
+        if any(word in task_lower for word in ["write", "draft", "compose", "edit", "content"]):
             suggestions.append(
                 {
                     "name": "writing_agent",
@@ -177,9 +162,7 @@ def create_agent_management_tools(supervisor_instance) -> Any:
                 }
             )
 
-        if any(
-            word in task_lower for word in ["data", "analyze", "statistics", "visualiz"]
-        ):
+        if any(word in task_lower for word in ["data", "analyze", "statistics", "visualiz"]):
             suggestions.append(
                 {
                     "name": "data_agent",
@@ -277,7 +260,8 @@ if __name__ == "__main__":
             {
                 "name": "General Assistant",
                 "system_message": "You are a helpful assistant.",
-            })
+            },
+        )
 
         # Simulate a task that requires a specialized agent
 
