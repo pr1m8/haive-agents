@@ -22,6 +22,31 @@ from pydantic import BaseModel, Field
 logger = logging.getLogger(__name__)
 
 
+# TODO: Implement these helper functions properly
+def is_reasoning_agent(agent_type: AgentType) -> bool:
+    """Check if agent type has reasoning capabilities."""
+    return agent_type in [AgentType.REASONING, AgentType.REFLECTION]
+
+
+def is_processing_agent(agent_type: AgentType) -> bool:
+    """Check if agent type is for deterministic processing."""
+    return agent_type in [AgentType.PROCESSING, AgentType.TRANSFORMATION]
+
+
+def is_orchestration_agent(agent_type: AgentType) -> bool:
+    """Check if agent type orchestrates other agents."""
+    return agent_type in [AgentType.ORCHESTRATION, AgentType.COORDINATOR]
+
+
+def get_agent_capabilities(agent_type: AgentType) -> dict[str, bool]:
+    """Get capabilities for agent type."""
+    return {
+        "reasoning": is_reasoning_agent(agent_type),
+        "processing": is_processing_agent(agent_type),
+        "orchestration": is_orchestration_agent(agent_type),
+    }
+
+
 class Agent(BaseModel, ABC):
     """Universal base class for all agent types in the Haive framework.
 

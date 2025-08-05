@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Basic State Management Example for Base Conversation Agents.
 
-from typing import Any
 This example demonstrates the core state management capabilities of the base
 conversation system, including automatic tracking, computed properties, and
 reducer-based state updates.
@@ -17,6 +16,32 @@ from pydantic import Field
 from haive.agents.conversation.base import ConversationState
 # Functions not available: create_conversation_state, get_conversation_progress, validate_conversation_participants
 from haive.agents.simple import SimpleAgent
+
+
+# TODO: Implement these helper functions properly
+def create_conversation_state(participants, topic, max_rounds=10):
+    """Create a conversation state with participants."""
+    return ConversationState(
+        participants=[p.name if hasattr(p, 'name') else str(p) for p in participants],
+        topic=topic,
+        max_rounds=max_rounds
+    )
+
+
+def get_conversation_progress(state):
+    """Get conversation progress information."""
+    return {
+        "current_round": getattr(state, 'current_round', 0),
+        "max_rounds": getattr(state, 'max_rounds', 10),
+        "completion": getattr(state, 'current_round', 0) / getattr(state, 'max_rounds', 10)
+    }
+
+
+def validate_conversation_participants(participants):
+    """Validate conversation participants."""
+    if not participants or len(participants) < 2:
+        raise ValueError("At least 2 participants required for conversation")
+    return True
 
 
 def demonstrate_basic_state_creation() -> Any:
