@@ -1,7 +1,6 @@
 """Module exports."""
 
 import decorator
-import vectorstore
 
 from haive.agents.research.open_perplexity.agent import ResearchAgent
 from haive.agents.research.open_perplexity.cli import (
@@ -123,7 +122,6 @@ __all__ = [
     "validate_confidence_score",
     "validate_priority",
     "validate_relevance_score",
-    "vectorstore",
     "visualize_state",
     "write_section",
 ]

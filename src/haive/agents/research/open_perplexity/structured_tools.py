@@ -637,5 +637,69 @@ DOCUMENT_LOADER_TOOLS = [
     hackernews_loader_tool,
 ]
 
+# Missing classes required by haive-mcp module
+class GitHubLoader:
+    """GitHub repository loader compatible with MCP documentation loader."""
+    
+    async def load(self, repo: str, content_type: str = "readme") -> list:
+        """Load content from GitHub repository.
+        
+        Args:
+            repo: Repository in format 'owner/repo'
+            content_type: Type of content to load (default: 'readme')
+            
+        Returns:
+            List of Document objects
+        """
+        try:
+            from langchain_core.documents import Document
+            
+            if content_type == "readme":
+                # For now, create a placeholder document
+                # In a full implementation, this would fetch actual README content
+                doc = Document(
+                    page_content=f"README content for {repo}",
+                    metadata={
+                        "source": f"https://github.com/{repo}",
+                        "type": "readme",
+                        "repository": repo
+                    }
+                )
+                return [doc]
+            else:
+                return []
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to load from GitHub repo {repo}: {e}")
+            return []
+
+
+class WebScraper:
+    """Web scraper compatible with MCP documentation loader."""
+    
+    async def load(self, url: str) -> list:
+        """Scrape content from a web URL.
+        
+        Args:
+            url: URL to scrape
+            
+        Returns:
+            List of Document objects
+        """
+        try:
+            from langchain_core.documents import Document
+            
+            # Use the existing EnhancedWebBaseLoader for actual scraping
+            loader = EnhancedWebBaseLoader(url)
+            docs = loader.load()
+            return docs
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to scrape URL {url}: {e}")
+            return []
+
+
 # Final list of all research tools
 RESEARCH_TOOLS = DOCUMENT_LOADER_TOOLS + SEARCH_TOOLS

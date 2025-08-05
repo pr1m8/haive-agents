@@ -341,3 +341,14 @@ def create_tool_based_reflection_agent(
     return ToolBasedReflectionAgent(
         name=name, engine=AugLLMConfig(temperature=0.3), tools=tools or [], **kwargs
     )
+
+
+# Aliases for backward compatibility
+def create(*args, **kwargs):
+    """Create a basic reflection agent (alias for create_reflection_agent)."""
+    return create_reflection_agent(*args, **kwargs)
+
+
+def model_post_init(*args, **kwargs):
+    """Model post-init function (placeholder for compatibility)."""
+    pass

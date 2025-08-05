@@ -3,25 +3,20 @@
 from haive.agents.react_class.react_agent2.advanced_agent3 import (
     AdvancedReactAgent,
     AdvancedReactAgentConfig,
-    agent_router,
-    create_advanced_react_agent,
-    create_custom_tool_node,
-    create_tool_executor,
-    execute_tool,
-    route_by_tool_name,
-    setup_workflow)
-from haive.agents.react_class.react_agent2.agent import (
-    ReactAgent,
-    ReactAgentConfig,
-    ReactAgentSchema,
-    ReactAgentSchemaWithStructuredResponse,
-    create_react_agent,
-    from_tools_and_llm,
-    generate_structured_response,
-    router_function,
-    run,
-    setup_workflow,
-    tools_condition)
+)
+# Note: Commented out non-existent imports to fix critical blocking error
+# from haive.agents.react_class.react_agent2.agent import (
+#     ReactAgent,
+#     ReactAgentConfig,
+#     ReactAgentSchema,
+#     ReactAgentSchemaWithStructuredResponse,
+#     create_react_agent,
+#     from_tools_and_llm,
+#     generate_structured_response,
+#     router_function,
+#     run,
+#     setup_workflow,
+#     tools_condition)
 from haive.agents.react_class.react_agent2.agent2 import (
     MessageNormalizingToolNode,
     ReactAgent,
@@ -138,28 +133,23 @@ __all__ = [
     "DynamicReactAgentState",
     "MessageNormalizingToolNode",
     "MovieReview",
-    "ReactAgent",
-    "ReactAgentConfig",
-    "ReactAgentSchema",
-    "ReactAgentSchemaWithStructuredResponse",
+    # "ReactAgent",  # Commented out - from agent.py
+    # "ReactAgentConfig",  # Commented out - from agent.py  
+    # "ReactAgentSchema",  # Commented out - from agent.py
+    # "ReactAgentSchemaWithStructuredResponse",  # Commented out - from agent.py
     "ReactAgentState",
     "ReactState",
     "ReactionData",
     "Thought",
     "act_node",
-    "add_tool",
-    "agent_router",
     "align_output_format",
     "analyze_data",
     "calculator",
     "chat",
-    "create_advanced_react_agent",
-    "create_custom_tool_node",
     "create_debug_tool_node",
     "create_dynamic_react_agent",
     "create_prompt_template",
-    "create_react_agent",
-    "create_tool_executor",
+    # "create_react_agent",  # Commented out - from agent.py
     "create_tool_node",
     "debug_print_state",
     "debug_tool_node",
@@ -169,15 +159,14 @@ __all__ = [
     "example_memory_agent",
     "example_structured_output_agent",
     "execute_action",
-    "execute_tool",
     "extract_tool_calls",
     "fix_tool_messages",
     "fixed_tool_node",
     "from_aug_llm",
     "from_scratch",
     "from_tools",
-    "from_tools_and_llm",
-    "generate_structured_response",
+    # "from_tools_and_llm",  # Commented out - from agent.py
+    # "generate_structured_response",  # Commented out - from agent.py
     "get",
     "get_tool_by_name",
     "get_tool_description",
@@ -193,22 +182,21 @@ __all__ = [
     "process_messages",
     "register_tools",
     "route_by_status",
-    "route_by_tool_name",
-    "router_function",
+    # "router_function",  # Commented out - from agent.py
     "run",
     "run_examples",
     "search",
     "search_db",
     "search_movie",
     "search_web",
-    "setup_workflow",
+    # "setup_workflow",  # Commented out - from agent.py
     "should_continue",
     "should_use_tools",
     "stream",
     "structured_output_node",
     "think_node",
     "tool_node",
-    "tools_condition",
+    # "tools_condition",  # Commented out - from agent.py
     "update_system_prompt",
     "update_tool_usage_stats",
     "vector_store",

@@ -24,7 +24,8 @@ from langgraph.store.base import BaseStore
 from langgraph.types import Checkpointer, Command
 from pydantic import BaseModel, Field
 
-from haive.agents.simple.agent import SimpleAgent, SimpleAgentConfig, SimpleAgentState
+from haive.agents.simple.agent import SimpleAgent
+from haive.core.schema.prebuilt.messages_state import MessagesState
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -34,7 +35,7 @@ logger = logging.getLogger(__name__)
 # =============================================
 
 
-class ReactAgentSchema(SimpleAgentState):
+class ReactAgentSchema(MessagesState):
     """Schema for React Agent State, extending SimpleAgentSchema."""
 
     # Inherit messages field from SimpleAgentSchema
@@ -69,7 +70,7 @@ class ReactAgentSchemaWithStructuredResponse(ReactAgentSchema):
 # =============================================
 
 
-class ReactAgentConfig(SimpleAgentConfig):
+class ReactAgentConfig(BaseModel):
     """Configuration for a React agent, extending SimpleAgentConfig.
 
     This agent implements the ReAct pattern with Tool usage:

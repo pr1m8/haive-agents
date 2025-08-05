@@ -2,7 +2,7 @@
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class QualityScore(BaseModel):
@@ -71,17 +71,12 @@ class GradingResult(BaseModel):
         default=None, description="Suggested improved version of the response"
     )
 
-    @classmethod
     @field_validator("letter_grade")
     @classmethod
-    def validate_grade_matches_score(cls, v, values) -> Any:
+    def validate_grade_matches_score(cls, v) -> Any:
         """Ensure letter grade matches overall score."""
-        if "overall_score" in values:
-            score = values["overall_score"].score
-            expected_grade = self._score_to_grade(score)
-            if v != expected_grade:
-                # Allow override but log warning
-                pass
+        # Note: Pydantic v2 field validators don't have access to other field values
+        # This validation would need to be moved to a model validator if needed
         return v
 
     @staticmethod
