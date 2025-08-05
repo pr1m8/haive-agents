@@ -45,7 +45,7 @@ from haive.agents.reflection.structured_output import (
     create_reflection_loop,
     extract_structured_output)
 
-from .models import (  # Add new models
+from haive.agents.reflection.models import (  # Add new models
     Critique,
     ExpertiseConfig,
     GradingResult,

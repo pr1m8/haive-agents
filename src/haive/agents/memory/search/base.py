@@ -236,3 +236,55 @@ class BaseSearchAgent(ReactAgent, ABC):
             pass
 
         return structured_response
+
+
+def format_search_context(query: str, context: dict[str, Any]) -> str:
+    """Format search context for agents (module-level utility function).
+
+    Args:
+        query: The user's search query
+        context: Additional context including memory, preferences, etc.
+
+    Returns:
+        Formatted context string for the agent
+    """
+    context_parts = [f"Query: {query}"]
+
+    # Add memory context if available
+    if "memory_context" in context:
+        memory_items = context["memory_context"]
+        if memory_items:
+            context_parts.append("Relevant Memory:")
+            for item in memory_items[:3]:  # Limit to top 3
+                context_parts.append(f"- {item}")
+
+    # Add user preferences if available
+    if "preferences" in context:
+        prefs = context["preferences"]
+        if prefs:
+            context_parts.append(f"User Preferences: {prefs}")
+
+    # Add search history if available
+    if "search_history" in context:
+        history = context["search_history"]
+        if history:
+            context_parts.append("Recent Searches:")
+            for search in history[-2:]:  # Last 2 searches
+                context_parts.append(f"- {search}")
+
+    return "\n".join(context_parts)
+
+
+def get_response_model() -> type[SearchResponse]:
+    """Get the response model for search agents."""
+    return SearchResponse
+
+
+def get_search_instructions() -> str:
+    """Get generic search instructions."""
+    return "Search for relevant information based on the query and context provided."
+
+
+def get_system_prompt() -> str:
+    """Get generic system prompt for search agents."""
+    return "You are a helpful search assistant. Provide accurate and relevant information based on the user's query."
