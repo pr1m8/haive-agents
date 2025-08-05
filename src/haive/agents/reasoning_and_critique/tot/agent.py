@@ -11,6 +11,7 @@ from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import HumanMessage
 from langgraph.graph import END, START
+from typing import Union, Literal
 from langgraph.types import Command, Send
 
 from haive.agents.reasoning_and_critique.tot.config import TOTAgentConfig
@@ -502,7 +503,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         # Otherwise continue the search with the beam candidates
         return Command(update=updates)
 
-    def _should_continue_search(self, state: TOTState) -> str | END:
+    def _should_continue_search(self, state: TOTState) -> Union[str, Literal["__end__"]]:
         """Decide whether to continue the search.
 
         Args:
@@ -518,7 +519,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         # Continue to evaluation
         return self.config.evaluator_node
 
-    def _map_beam_expansion(self, state: TOTState) -> END | list[Send]:
+    def _map_beam_expansion(self, state: TOTState) -> Union[Literal["__end__"], list[Send]]:
         """Map beam candidates to parallel expansion nodes.
 
         Args:
@@ -561,7 +562,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
 
         return sends if sends else END
 
-    def _should_expand_or_finish(self, state: TOTState) -> str | END:
+    def _should_expand_or_finish(self, state: TOTState) -> Union[str, Literal["__end__"]]:
         """Decide whether to expand candidates or finish.
 
         Args:

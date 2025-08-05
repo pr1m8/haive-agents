@@ -4,7 +4,7 @@ This module defines the configuration schema for the ToT agent,
 including engine configurations, algorithm parameters, and state schema.
 """
 
-from typing import TypeVar
+from typing import TypeVar, Optional
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
