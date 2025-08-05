@@ -5,7 +5,8 @@ from haive.agents.sequential.agent import (
     build_graph,
     set_state_schema,
     validate_agents,
-    validate_non_empty_agents)
+    validate_non_empty_agents,
+)
 from haive.agents.sequential.config import (
     SequentialAgentConfig,
     StepConfig,
@@ -15,7 +16,8 @@ from haive.agents.sequential.config import (
     from_steps,
     get_step_by_name,
     setup_components,
-    validate_steps)
+    validate_steps,
+)
 
 # from haive.agents.sequential.example import run_example  # Temporarily disabled due to dependencies
 
