@@ -82,10 +82,7 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
             if isinstance(msg, AIMessage):
                 if hasattr(msg, "tool_calls") and msg.tool_calls:
                     tool_calls = msg.tool_calls
-                elif (
-                    hasattr(msg, "additional_kwargs")
-                    and "tool_calls" in msg.additional_kwargs
-                ):
+                elif hasattr(msg, "additional_kwargs") and "tool_calls" in msg.additional_kwargs:
                     tool_calls = msg.additional_kwargs.get("tool_calls", [])
             elif isinstance(msg, dict):
                 tool_calls = msg.get("additional_kwargs", {}).get("tool_calls", [])
@@ -116,9 +113,7 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
                 tool_name = msg.name
             elif isinstance(msg, dict):
                 tool_name = msg.get("name")
-            logger.debug(
-                "----------------     tool info--------------------------------"
-            )
+            logger.debug("----------------     tool info--------------------------------")
             logger.debug(f"tool_msg: {msg}")
             logger.debug(f"tool_name: {tool_name}")
             # Get existing tool_call_id
@@ -131,17 +126,15 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
             # If missing tool_call_id but we have a mapping for this tool
             if not tool_call_id and tool_name in tool_calls_map:
                 logger.debug(
-                    f"Fixing message for tool '{tool_name}' with ID {
-                        tool_calls_map[tool_name]}"
+                    f"Fixing message for tool '{tool_name}' with ID {tool_calls_map[tool_name]}"
                 )
 
                 # Create a new message with the fixed ID
                 if isinstance(msg, ToolMessage):
                     content = msg.content
                     fixed_msg = ToolMessage(
-                        content=content,
-                        name=tool_name,
-                        tool_call_id=tool_calls_map[tool_name])
+                        content=content, name=tool_name, tool_call_id=tool_calls_map[tool_name]
+                    )
                     fixed_messages.append(fixed_msg)
                 elif isinstance(msg, dict):
                     fixed_msg = msg.copy()
@@ -207,9 +200,7 @@ def create_debug_tool_node(tools: list[Any]):
                 tool_calls = last_ai_message.additional_kwargs.get("tool_calls", [])
                 logger.debug(f"Found tool_calls in additional_kwargs: {tool_calls}")
         elif isinstance(last_ai_message, dict) and last_ai_message.get("type") == "ai":
-            tool_calls = last_ai_message.get("additional_kwargs", {}).get(
-                "tool_calls", []
-            )
+            tool_calls = last_ai_message.get("additional_kwargs", {}).get("tool_calls", [])
             logger.debug(f"Found tool_calls in dict: {tool_calls}")
 
         if not tool_calls:
@@ -284,11 +275,7 @@ def create_debug_tool_node(tools: list[Any]):
             # Execute the tool
             try:
                 logger.debug(f"Executing {tool_name} with args: {tool_args}")
-                result = (
-                    tool(**tool_args)
-                    if isinstance(tool_args, dict)
-                    else tool(tool_args)
-                )
+                result = tool(**tool_args) if isinstance(tool_args, dict) else tool(tool_args)
 
                 logger.debug(f"Tool result: {result}")
 
@@ -299,15 +286,14 @@ def create_debug_tool_node(tools: list[Any]):
                 new_messages.append(tool_message)
                 logger.debug(
                     f"Created tool message: {
-                        tool_message.model_dump() if hasattr(
-                            tool_message,
-                            'model_dump') else tool_message}"
+                        tool_message.model_dump()
+                        if hasattr(tool_message, 'model_dump')
+                        else tool_message
+                    }"
                 )
 
                 # Record tool result
-                tool_results.append(
-                    {"name": tool_name, "id": tool_id, "result": result}
-                )
+                tool_results.append({"name": tool_name, "id": tool_id, "result": result})
 
             except Exception as e:
                 error_msg = f"Error executing tool '{tool_name}': {e!s}"
@@ -326,9 +312,7 @@ def create_debug_tool_node(tools: list[Any]):
         # Ensure we're not losing original messages when updating
         if "messages" in state_copy:
             state_copy["messages"] = messages + new_messages
-            logger.debug(
-                f"Updated messages, now have {len(state_copy['messages'])} total"
-            )
+            logger.debug(f"Updated messages, now have {len(state_copy['messages'])} total")
         else:
             state_copy["messages"] = new_messages
             logger.debug(f"Set messages to {len(new_messages)} new messages")

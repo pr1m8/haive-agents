@@ -21,7 +21,8 @@ def create_react_agent(
     parallel_tool_execution: bool = False,
     max_retries: int = 3,
     retry_delay: float = 0.5,
-    **kwargs) -> ReactAgent:
+    **kwargs,
+) -> ReactAgent:
     """Create a ReactAgent with the specified tools and configuration.
 
     Args:
@@ -50,7 +51,8 @@ def create_react_agent(
         parallel_tool_execution=parallel_tool_execution,
         max_retries=max_retries,
         retry_delay=retry_delay,
-        **kwargs)
+        **kwargs,
+    )
 
     # Create and return agent
     return ReactAgent(config)
@@ -67,7 +69,8 @@ def create_structured_react_agent(
     parallel_tool_execution: bool = False,
     max_retries: int = 3,
     retry_delay: float = 0.5,
-    **kwargs) -> ReactAgent:
+    **kwargs,
+) -> ReactAgent:
     """Create a ReactAgent that produces structured output according to the specified model.
 
     Args:
@@ -101,7 +104,8 @@ def create_structured_react_agent(
         parallel_tool_execution=parallel_tool_execution,
         max_retries=max_retries,
         retry_delay=retry_delay,
-        **kwargs)
+        **kwargs,
+    )
 
     # Create and return agent
     return ReactAgent(config)
@@ -109,7 +113,8 @@ def create_structured_react_agent(
 
 def organize_tools_by_category(
     tools: list[BaseTool | StructuredTool | Tool | Callable],
-    categories: dict[str, list[str]] | None = None) -> dict[str, list[BaseTool | StructuredTool | Tool | Callable]]:
+    categories: dict[str, list[str]] | None = None,
+) -> dict[str, list[BaseTool | StructuredTool | Tool | Callable]]:
     """Organize tools into categories for parallel processing.
 
     Args:
@@ -165,7 +170,8 @@ def create_agent_with_custom_engine(
     parallel_tool_execution: bool = False,
     max_retries: int = 3,
     retry_delay: float = 0.5,
-    **kwargs) -> ReactAgent:
+    **kwargs,
+) -> ReactAgent:
     """Create a ReactAgent with a custom engine configuration.
 
     Args:
@@ -204,7 +210,8 @@ def create_agent_with_custom_engine(
         parallel_tool_execution=parallel_tool_execution,
         max_retries=max_retries,
         retry_delay=retry_delay,
-        **kwargs)
+        **kwargs,
+    )
 
     # Create and return agent
     return ReactAgent(config)

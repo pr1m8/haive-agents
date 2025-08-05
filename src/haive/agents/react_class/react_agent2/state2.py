@@ -29,9 +29,7 @@ class ReactAgentState(BaseModel):
 
     max_iterations: int = Field(default=10, description="Maximum number of iterations")
 
-    is_last_step: bool = Field(
-        default=False, description="Whether this is the last step"
-    )
+    is_last_step: bool = Field(default=False, description="Whether this is the last step")
 
     # Tool tracking
     tool_results: list[dict[str, Any]] = Field(
@@ -111,7 +109,7 @@ class ReactAgentState(BaseModel):
             A new state class with the specified structured output type
         """
         return create_model(
-            f"ReactAgentState[{
-                output_model_type.__name__}]",
+            f"ReactAgentState[{output_model_type.__name__}]",
             structured_output=(Optional[output_model_type], Field(default=None)),
-            __base__=cls)
+            __base__=cls,
+        )

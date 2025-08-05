@@ -8,6 +8,6 @@ from haive.agents.react_class.react_agent.state import ReactAgentState
 
 __all__ = [
     "ReactAgent",
-    "ReactAgentConfig", 
+    "ReactAgentConfig",
     "ReactAgentState",
 ]

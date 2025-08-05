@@ -36,10 +36,7 @@ def create_custom_tool_node(tools: list[BaseTool]) -> Callable:
                 return message.tool_calls
 
             # Check additional_kwargs
-            if (
-                hasattr(message, "additional_kwargs")
-                and "tool_calls" in message.additional_kwargs
-            ):
+            if hasattr(message, "additional_kwargs") and "tool_calls" in message.additional_kwargs:
                 return message.additional_kwargs["tool_calls"]
 
         elif isinstance(message, dict) and message.get("type") == "ai":
@@ -155,15 +152,11 @@ def create_custom_tool_node(tools: list[BaseTool]) -> Callable:
                 result = tool(**tool_args)
 
                 # Create tool message
-                tool_msg = ToolMessage(
-                    content=str(result), name=tool_name, tool_call_id=tool_id
-                )
+                tool_msg = ToolMessage(content=str(result), name=tool_name, tool_call_id=tool_id)
                 new_messages.append(tool_msg)
 
                 # Record result
-                tool_results.append(
-                    {"name": tool_name, "id": tool_id, "result": result}
-                )
+                tool_results.append({"name": tool_name, "id": tool_id, "result": result})
 
             except Exception as e:
                 error_msg = f"Error executing tool '{tool_name}': {e!s}"
@@ -183,9 +176,7 @@ def create_custom_tool_node(tools: list[BaseTool]) -> Callable:
 
         # Add tool results
         if "tool_results" in updated_state:
-            updated_state["tool_results"] = (
-                updated_state.get("tool_results", []) + tool_results
-            )
+            updated_state["tool_results"] = updated_state.get("tool_results", []) + tool_results
         else:
             updated_state["tool_results"] = tool_results
 
@@ -212,18 +203,13 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
 
     # First pass: collect IDs from AI messages
     for msg in messages:
-        if isinstance(msg, AIMessage) or (
-            isinstance(msg, dict) and msg.get("type") == "ai"
-        ):
+        if isinstance(msg, AIMessage) or (isinstance(msg, dict) and msg.get("type") == "ai"):
             tool_calls = []
             # Handle AIMessage
             if isinstance(msg, AIMessage):
                 if hasattr(msg, "tool_calls") and msg.tool_calls:
                     tool_calls = msg.tool_calls
-                elif (
-                    hasattr(msg, "additional_kwargs")
-                    and "tool_calls" in msg.additional_kwargs
-                ):
+                elif hasattr(msg, "additional_kwargs") and "tool_calls" in msg.additional_kwargs:
                     tool_calls = msg.additional_kwargs["tool_calls"]
 
             # Handle dict format
@@ -242,9 +228,7 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
 
     # Second pass: fix tool messages
     for msg in messages:
-        if isinstance(msg, ToolMessage) or (
-            isinstance(msg, dict) and msg.get("type") == "tool"
-        ):
+        if isinstance(msg, ToolMessage) or (isinstance(msg, dict) and msg.get("type") == "tool"):
             # Get tool name
             if isinstance(msg, ToolMessage):
                 tool_name = msg.name
@@ -258,9 +242,8 @@ def fix_tool_messages(messages: list[Any]) -> list[Any]:
                 if isinstance(msg, ToolMessage):
                     # Create a new message with the ID
                     fixed_msg = ToolMessage(
-                        content=msg.content,
-                        name=tool_name,
-                        tool_call_id=tool_call_ids[tool_name])
+                        content=msg.content, name=tool_name, tool_call_id=tool_call_ids[tool_name]
+                    )
                     fixed_messages.append(fixed_msg)
                 else:
                     # Fix dict message

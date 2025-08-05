@@ -14,5 +14,5 @@ tool_query_prompt_template = ChatPromptTemplate.from_messages(
     [tool_query_system_messagege, MessagesPlaceholder(variable_name="messages")]
 )
 tool_query_builder_aug_llm_config = AugLLMConfig(
-    prompt_template=tool_query_prompt_template,
-    structured_output_model=QueryForTools)
+    prompt_template=tool_query_prompt_template, structured_output_model=QueryForTools
+)

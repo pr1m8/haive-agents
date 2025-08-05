@@ -21,7 +21,7 @@ from haive.agents.react_class.react_agent2.agent2 import (
     setup_workflow,
     should_use_tools,
     stream,
-    structured_output_node
+    structured_output_node,
 )
 
 from haive.agents.react_class.react_agent2.agent3 import (
@@ -34,7 +34,7 @@ from haive.agents.react_class.react_agent2.agent3 import (
 
 from haive.agents.react_class.react_agent2.config import (
     ReactAgentConfig as ReactAgentConfigV1,
-    from_scratch
+    from_scratch,
 )
 
 # Complex import chains commented out to resolve critical blocking error:
@@ -43,7 +43,7 @@ from haive.agents.react_class.react_agent2.config import (
 
 __all__ = [
     "AdvancedReactAgent",
-    "AdvancedReactAgentConfig", 
+    "AdvancedReactAgentConfig",
     "add_tool",
     "MessageNormalizingToolNode",
     "ReactAgent",

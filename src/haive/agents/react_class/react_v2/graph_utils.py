@@ -6,9 +6,7 @@ from collections.abc import Callable
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.tools import BaseTool
 
-from haive.agents.react_class.react_v2.tool_handling import (
-    GeneralizedToolNode,
-    human_input_node)
+from haive.agents.react_class.react_v2.tool_handling import GeneralizedToolNode, human_input_node
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +41,8 @@ class ReactGraphBuilder(DynamicGraph):
         support_human_input: bool = True,
         parallel_tools: bool = True,
         human_node_name: str | None = "human_input",
-        command_goto: str | None = None):
+        command_goto: str | None = None,
+    ):
         """Add an enhanced tool node with optional human interaction support.
 
         Args:
@@ -75,13 +74,12 @@ class ReactGraphBuilder(DynamicGraph):
             self.add_conditional_edges(
                 from_node=name,
                 condition_or_branch=lambda state: (
-                    human_node_name
-                    if state.get("requires_human_input")
-                    else command_goto or name
+                    human_node_name if state.get("requires_human_input") else command_goto or name
                 ),
                 routes={
                     human_node_name: human_node_name,
                     command_goto or name: command_goto or name,
-                })
+                },
+            )
 
         return self

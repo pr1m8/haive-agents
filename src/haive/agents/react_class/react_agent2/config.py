@@ -50,17 +50,19 @@ Thought: <your final reasoning>
 Action: final_answer
 Action Input: <your final answer>
 """,
-        description="System prompt for the React agent.")
+        description="System prompt for the React agent.",
+    )
 
     # Tools configuration
     tools: dict[str, Any] | list[Any] = Field(
         default_factory=dict,
-        description="Tools available to the agent, either as a dictionary or list.")
+        description="Tools available to the agent, either as a dictionary or list.",
+    )
 
     # Max iterations
     max_iterations: int = Field(
-        default=10,
-        description="Maximum number of iterations before forcing termination.")
+        default=10, description="Maximum number of iterations before forcing termination."
+    )
 
     # Max retries per tool
     max_retry_attempts: int = Field(
@@ -70,9 +72,7 @@ Action Input: <your final answer>
     # Model settings
     model: str = Field(default="gpt-4o", description="Model to use for thinking.")
 
-    temperature: float = Field(
-        default=0.7, description="Temperature for the thinking LLM."
-    )
+    temperature: float = Field(default=0.7, description="Temperature for the thinking LLM.")
 
     # AugLLM for thinking (will be created in from_scratch)
     think_llm: AugLLMConfig | None = None
@@ -87,7 +87,8 @@ Action Input: <your final answer>
         max_iterations: int = 10,
         max_retry_attempts: int = 3,
         name: str | None = None,
-        **kwargs) -> "ReactAgentConfig":
+        **kwargs,
+    ) -> "ReactAgentConfig":
         """Create a ReactAgentConfig from scratch.
 
         Args:
@@ -111,9 +112,7 @@ Action Input: <your final answer>
             for name, tool in tools.items():
                 tool_names.append(name)
                 description = (
-                    tool.__doc__
-                    if hasattr(tool, "__doc__") and tool.__doc__
-                    else f"Tool: {name}"
+                    tool.__doc__ if hasattr(tool, "__doc__") and tool.__doc__ else f"Tool: {name}"
                 )
                 tool_descriptions.append(f"- {name}: {description}")
         elif isinstance(tools, list):
@@ -147,7 +146,8 @@ Action Input: <your final answer>
             max_retry_attempts=max_retry_attempts,
             model=model,
             temperature=temperature,
-            **kwargs)
+            **kwargs,
+        )
 
         # Override system prompt if provided
         if system_prompt:
@@ -159,26 +159,25 @@ Action Input: <your final answer>
                     "system",
                     config.system_prompt.format(
                         tool_descriptions="\n".join(tool_descriptions),
-                        tool_names=", ".join(tool_names))),
+                        tool_names=", ".join(tool_names),
+                    ),
+                ),
                 ("human", "{input}"),
                 ("placeholder", "{messages}"),
-                (
-                    "placeholder",
-                    "{steps}"),  # ✅ Corrected: Use "user" instead of "steps"
+                ("placeholder", "{steps}"),  # ✅ Corrected: Use "user" instead of "steps"
             ]
         )
 
         # Create LLM config
-        llm_config = AzureLLMConfig(
-            model=model, parameters={"temperature": temperature}
-        )
+        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
 
         # Create AugLLM for thinking
         think_llm = AugLLMConfig(
             name="think_llm",
             llm_config=llm_config,
             prompt_template=think_prompt,
-            output_parser=PydanticOutputParser(pydantic_object=Thought))
+            output_parser=PydanticOutputParser(pydantic_object=Thought),
+        )
         # Add to config
         config.think_llm = think_llm
         config.engine = think_llm  # For compatibility with AgentConfig
@@ -188,4 +187,3 @@ Action Input: <your final answer>
 def from_scratch(**kwargs):
     """Module-level from_scratch function."""
     pass
-

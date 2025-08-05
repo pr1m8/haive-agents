@@ -36,25 +36,20 @@ class ReactAgent(Agent[ReactAgentConfig]):
             self.retry_policy = RetryPolicy(
                 max_attempts=config.max_retries,  # Use max_attempts instead of max_retries
                 backoff_factor=2.0,
-                initial_interval=(
-                    config.retry_delay if hasattr(config, "retry_delay") else 0.5
-                ))
+                initial_interval=(config.retry_delay if hasattr(config, "retry_delay") else 0.5),
+            )
         except TypeError:
             # Fallback to the old parameter names if needed
             try:
                 self.retry_policy = RetryPolicy(
                     max_retries=config.max_retries,
                     retry_on_error=True,
-                    retry_delay=(
-                        config.retry_delay if hasattr(config, "retry_delay") else 0.5
-                    ))
+                    retry_delay=(config.retry_delay if hasattr(config, "retry_delay") else 0.5),
+                )
             except Exception as e2:
                 # Last resort - use a minimal RetryPolicy with only required
                 # params
-                logger.warning(
-                    f"Error creating RetryPolicy: {
-                        e2!s} - using minimal configuration"
-                )
+                logger.warning(f"Error creating RetryPolicy: {e2!s} - using minimal configuration")
                 self.retry_policy = RetryPolicy(max_attempts=3)
         super().__init__(config)
 
@@ -81,20 +76,15 @@ class ReactAgent(Agent[ReactAgentConfig]):
             else:
                 # Multiple tools - one node per tool
                 for i, tool in enumerate(tools_list):
-                    node_name = (
-                        f"tool_{i}_{tool.name}"
-                        if hasattr(tool, "name")
-                        else f"tool_{i}"
-                    )
+                    node_name = f"tool_{i}_{tool.name}" if hasattr(tool, "name") else f"tool_{i}"
                     tools_map[node_name] = [tool]
         else:
             logger.error(f"Unsupported tools format: {type(tools_input)}")
 
         logger.info(
-            f"Prepared {
-                sum(
-                    len(tools) for tools in tools_map.values())} tools across {
-                len(tools_map)} nodes"
+            f"Prepared {sum(len(tools) for tools in tools_map.values())} tools across {
+                len(tools_map)
+            } nodes"
         )
         return tools_map
 
@@ -111,9 +101,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                 if hasattr(t, "__name__"):
                     tool_name = t.__name__
                     tool_desc = t.__doc__ or f"Tool {tool_name}"
-                    converted_tools.append(
-                        tool(name=tool_name, description=tool_desc)(t)
-                    )
+                    converted_tools.append(tool(name=tool_name, description=tool_desc)(t))
                 else:
                     logger.warning(f"Skipping unnamed callable: {t}")
             elif isinstance(t, type) and issubclass(t, BaseModel):
@@ -150,9 +138,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             self.config.engine.tools = all_tools
 
         # Create DynamicGraph with proper component registration
-        gb = DynamicGraph(
-            components=[self.config.engine], state_schema=self.state_schema
-        )
+        gb = DynamicGraph(components=[self.config.engine], state_schema=self.state_schema)
 
         # Add the LLM node
         gb.add_node(name="agent", config=self.config.engine)
@@ -168,16 +154,13 @@ class ReactAgent(Agent[ReactAgentConfig]):
             gb.add_edge(node_name, "agent")
 
         # Add structured output node if configured
-        use_structured_output = getattr(
-            self.config, "use_structured_output_node", False
-        )
+        use_structured_output = getattr(self.config, "use_structured_output_node", False)
         structured_output_model = getattr(self.config, "structured_output_model", None)
 
         if use_structured_output and structured_output_model:
             gb.add_structured_output_node(
-                name="structured_output",
-                model=structured_output_model,
-                command_goto=END)
+                name="structured_output", model=structured_output_model, command_goto=END
+            )
 
             # Set up advanced routing with structured output
             gb.add_conditional_edges(
@@ -187,13 +170,15 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     "end": END,
                     "structured_output": "structured_output",
                     **{name: name for name in self.tool_nodes},
-                })
+                },
+            )
         elif self.tool_nodes:
             # Set up routing without structured output
             gb.add_conditional_edges(
                 from_node="agent",
                 condition_or_branch=self._route_agent_output,
-                routes={"end": END, **{name: name for name in self.tool_nodes}})
+                routes={"end": END, **{name: name for name in self.tool_nodes}},
+            )
         else:
             # No tools, just add edge to END
             gb.add_edge("agent", END)
@@ -205,10 +190,9 @@ class ReactAgent(Agent[ReactAgentConfig]):
         self.graph = gb.build()
 
         logger.info(
-            f"Set up ReactAgent workflow for {
-                self.config.name} with {
-                len(
-                    self.tool_nodes)} tool nodes"
+            f"Set up ReactAgent workflow for {self.config.name} with {
+                len(self.tool_nodes)
+            } tool nodes"
         )
 
     def _route_agent_output(self, state: Any) -> str | list[Send]:
@@ -240,9 +224,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                         "completed the task",
                     ]
                 ):
-                    logger.info(
-                        "Task completion detected in message content, ending workflow"
-                    )
+                    logger.info("Task completion detected in message content, ending workflow")
                     return (
                         "structured_output"
                         if getattr(self.config, "use_structured_output_node", False)
@@ -270,13 +252,9 @@ class ReactAgent(Agent[ReactAgentConfig]):
         last_message = messages[-1]
 
         # If not an AIMessage or no tool calls, return end or structured output
-        if not isinstance(last_message, AIMessage) or not getattr(
-            last_message, "tool_calls", None
-        ):
+        if not isinstance(last_message, AIMessage) or not getattr(last_message, "tool_calls", None):
             # Check if this appears to be a final answer
-            if isinstance(last_message, AIMessage) and getattr(
-                last_message, "content", None
-            ):
+            if isinstance(last_message, AIMessage) and getattr(last_message, "content", None):
                 # If we have structured output node, use it
                 if getattr(self.config, "use_structured_output_node", False):
                     return "structured_output"
@@ -336,9 +314,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Add remaining_steps to input if not present but in our schema
         if hasattr(self.state_schema, "remaining_steps"):
             if isinstance(input_data, dict) and "remaining_steps" not in input_data:
-                input_data["remaining_steps"] = getattr(
-                    self.config, "max_iterations", 10
-                )
+                input_data["remaining_steps"] = getattr(self.config, "max_iterations", 10)
 
         # Call parent run method
         return super().run(input_data, thread_id, **kwargs)

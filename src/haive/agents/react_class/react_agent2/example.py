@@ -137,19 +137,21 @@ def run_custom_tool_routing_example():
         ToolConfig(
             tool=search_db,
             name="search_db",
-            description="Search the internal database for information."),
+            description="Search the internal database for information.",
+        ),
         ToolConfig(
-            tool=search_web,
-            name="search_web",
-            description="Search the web for public information."),
+            tool=search_web, name="search_web", description="Search the web for public information."
+        ),
         ToolConfig(
             tool=analyze_data,
             name="analyze_data",
-            description="Analyze specified data with analysis type."),
+            description="Analyze specified data with analysis type.",
+        ),
         ToolConfig(
             tool=execute_action,
             name="execute_action",
-            description="Execute a business action on the specified target."),
+            description="Execute a business action on the specified target.",
+        ),
     ]
 
     # Define custom tool routing
@@ -183,7 +185,8 @@ Always explain your reasoning before using a tool.
         max_iterations=5,
         visualize=True,  # Generate visualization
         tool_routing=tool_routing,  # Custom tool routing
-        debug=True)
+        debug=True,
+    )
 
     # Add custom processors to the agent after creation
     if hasattr(agent, "app") and agent.app:

@@ -56,8 +56,10 @@ class ReactAgentConfig(AgentConfig):
                     ("system", DEFAULT_REACT_SYSTEM_PROMPT),
                     MessagesPlaceholder(variable_name="messages"),
                 ]
-            )),
-        description="LLM configuration for the ReactAgent.")
+            ),
+        ),
+        description="LLM configuration for the ReactAgent.",
+    )
 
     # Tools configuration
     tools: list[BaseTool | StructuredTool | Tool] = Field(
@@ -75,13 +77,14 @@ class ReactAgentConfig(AgentConfig):
 
     # Execution configuration
     max_iterations: int = Field(
-        default=10,
-        description="Maximum number of iterations before forced termination.")
+        default=10, description="Maximum number of iterations before forced termination."
+    )
 
     # Runtime configuration
     runnable_config: RunnableConfig = Field(
         default_factory=lambda: {"configurable": {"thread_id": str(uuid.uuid4())}},
-        description="Configuration for the agent's runnable execution.")
+        description="Configuration for the agent's runnable execution.",
+    )
 
     # Input/output mapping
     input_mapping: dict[str, str] | None = Field(
@@ -99,7 +102,8 @@ class ReactAgentConfig(AgentConfig):
 
     response_format: type[BaseModel] | dict[str, Any] | None = Field(
         default=None,
-        description="Format for structured responses (alias for structured_output_model)")
+        description="Format for structured responses (alias for structured_output_model)",
+    )
 
     # Optional routing function
     routing_function: Callable | None = Field(
@@ -166,7 +170,8 @@ class ReactAgentConfig(AgentConfig):
         tools: list[BaseTool] | None = None,
         name: str | None = None,
         max_iterations: int = 10,
-        **kwargs) -> "ReactAgentConfig":
+        **kwargs,
+    ) -> "ReactAgentConfig":
         """Create a ReactAgentConfig from scratch.
 
         Args:
@@ -184,9 +189,7 @@ class ReactAgentConfig(AgentConfig):
         # Import required classes
 
         # Create LLM config
-        llm_config = AzureLLMConfig(
-            model=model, parameters={"temperature": temperature}
-        )
+        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
 
         # Create prompt template with system prompt
         system_prompt = system_prompt or DEFAULT_REACT_SYSTEM_PROMPT
@@ -198,20 +201,18 @@ class ReactAgentConfig(AgentConfig):
 
         # Create AugLLM config with prompt template
         aug_llm = AugLLMConfig(
-            name=f"{name or 'react'}_llm",
-            llm_config=llm_config,
-            prompt_template=prompt_template)
+            name=f"{name or 'react'}_llm", llm_config=llm_config, prompt_template=prompt_template
+        )
 
         # Create and return the config
         return cls(
-            name=name
-            or f"react_agent_{
-                datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name or f"react_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             engine=aug_llm,
             tools=tools or [],
             max_iterations=max_iterations,
             system_prompt=system_prompt,
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
     def from_aug_llm(
@@ -220,7 +221,8 @@ class ReactAgentConfig(AgentConfig):
         tools: list[BaseTool] | None = None,
         name: str | None = None,
         max_iterations: int = 10,
-        **kwargs) -> "ReactAgentConfig":
+        **kwargs,
+    ) -> "ReactAgentConfig":
         """Create a ReactAgentConfig from an existing AugLLMConfig.
 
         Args:
@@ -234,19 +236,17 @@ class ReactAgentConfig(AgentConfig):
             ReactAgentConfig instance
         """
         return cls(
-            name=name
-            or f"react_agent_{
-                datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name or f"react_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             engine=aug_llm,
             tools=tools or [],
             max_iterations=max_iterations,
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
     def create_prompt_template(
-        cls,
-        system_prompt: str | None = None,
-        additional_input_vars: list[str] | None = None) -> ChatPromptTemplate:
+        cls, system_prompt: str | None = None, additional_input_vars: list[str] | None = None
+    ) -> ChatPromptTemplate:
         """Create a flexible prompt template that supports system prompt
         and additional input variables.
 
@@ -284,7 +284,8 @@ class ReactAgentConfig(AgentConfig):
         temperature: float = 0.7,
         name: str | None = None,
         max_iterations: int = 10,
-        **kwargs) -> "ReactAgentConfig":
+        **kwargs,
+    ) -> "ReactAgentConfig":
         """Create a ReactAgentConfig from a list of tools.
 
         Args:
@@ -306,4 +307,5 @@ class ReactAgentConfig(AgentConfig):
             tools=tools,
             name=name,
             max_iterations=max_iterations,
-            **kwargs)
+            **kwargs,
+        )

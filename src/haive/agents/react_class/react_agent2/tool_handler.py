@@ -45,7 +45,6 @@ def process_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             tool_calls = msg["additional_kwargs"]["tool_calls"]
             for tool_call in tool_calls:
                 if "id" not in tool_call:
-
                     tool_call["id"] = f"call_{uuid.uuid4().hex[:12]}"
         processed.append(msg)
 
@@ -55,9 +54,7 @@ def process_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             # Find the previous AI message with a matching tool call
             for j in range(i - 1, -1, -1):
                 prev = processed[j]
-                if prev.get("type") == "ai" and "tool_calls" in prev.get(
-                    "additional_kwargs", {}
-                ):
+                if prev.get("type") == "ai" and "tool_calls" in prev.get("additional_kwargs", {}):
                     tool_calls = prev["additional_kwargs"]["tool_calls"]
                     for tool_call in tool_calls:
                         if tool_call.get("name") == msg.get("name"):
@@ -69,7 +66,6 @@ def process_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
             # If still no tool_call_id, create one
             if "tool_call_id" not in msg:
-
                 msg["tool_call_id"] = f"call_{uuid.uuid4().hex[:12]}"
 
     return processed

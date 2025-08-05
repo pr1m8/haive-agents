@@ -28,7 +28,8 @@ from haive.agents.react_class.react_v3.agent import ReactAgent
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)])
+    handlers=[logging.StreamHandler(sys.stdout)],
+)
 
 logger = logging.getLogger("react_agent_test")
 
@@ -52,18 +53,14 @@ def get_current_weather(location: str) -> str:
     temp = temps.get(location, 70)
     weather = weathers[hash(location + str(time.time())) % len(weathers)]
 
-    return (
-        f"The current weather in {location} is {weather} with a temperature of {temp}°F"
-    )
+    return f"The current weather in {location} is {weather} with a temperature of {temp}°F"
 
 
 # Define a structured tool
 class Calculator(BaseModel):
     """Tool for performing simple calculations."""
 
-    operation: str = Field(
-        description="Math operation: 'add', 'subtract', 'multiply', 'divide'"
-    )
+    operation: str = Field(description="Math operation: 'add', 'subtract', 'multiply', 'divide'")
     a: float = Field(description="First number")
     b: float = Field(description="Second number")
 
@@ -107,17 +104,18 @@ def test_basic_react_agent() -> Any:
     weather_tool = Tool.from_function(
         func=get_current_weather,
         name="get_weather",
-        description="Get the current weather in a given location")
+        description="Get the current weather in a given location",
+    )
 
     search_tool = Tool.from_function(
-        func=search_api,
-        name="search",
-        description="Search for information about a topic")
+        func=search_api, name="search", description="Search for information about a topic"
+    )
 
     # Create agent with tools
     agent = ReactAgent.from_tools(
         tools=[weather_tool, search_tool],
-        system_prompt="You are a helpful assistant with access to tools for weather and search.")
+        system_prompt="You are a helpful assistant with access to tools for weather and search.",
+    )
 
     # Print information about the agent
 
@@ -140,22 +138,23 @@ def test_structured_tool_agent() -> Any:
         func=calculate,
         name="calculator",
         description="Perform mathematical calculations",
-        args_schema=Calculator)
+        args_schema=Calculator,
+    )
 
     weather_tool = Tool.from_function(
         func=get_current_weather,
         name="get_weather",
-        description="Get the current weather in a given location")
+        description="Get the current weather in a given location",
+    )
 
     # Create agent with structured tool
     agent = ReactAgent.from_tools(
         tools=[calculator_tool, weather_tool],
-        system_prompt="You are a helpful assistant that can perform calculations and check the weather.")
+        system_prompt="You are a helpful assistant that can perform calculations and check the weather.",
+    )
 
     # Show schema information
-    schema_composer = SchemaComposer.from_components(
-        [agent.config.engine, *agent.config.tools]
-    )
+    schema_composer = SchemaComposer.from_components([agent.config.engine, *agent.config.tools])
     schema_composer.build()
 
     # Display calculator tool schema
@@ -177,9 +176,8 @@ def test_retry_policy() -> Any:
 
     # Create a flaky tool
     search_tool = Tool.from_function(
-        func=search_api,
-        name="search",
-        description="Search for information about a topic")
+        func=search_api, name="search", description="Search for information about a topic"
+    )
 
     # Create custom retry policy for the search tool
     retry_policy = RetryPolicy(
@@ -195,16 +193,15 @@ def test_retry_policy() -> Any:
     agent = ReactAgent.from_tools(
         tools=[search_tool],
         tool_retry=retry_policy,
-        system_prompt="You are a helpful assistant that can search for information.")
+        system_prompt="You are a helpful assistant that can search for information.",
+    )
 
     # Print retry policy details
 
     # Print interval progression
     interval = retry_policy.initial_interval
     for _i in range(1, retry_policy.max_attempts):
-        interval = min(
-            interval * retry_policy.backoff_factor, retry_policy.max_interval
-        )
+        interval = min(interval * retry_policy.backoff_factor, retry_policy.max_interval)
 
     # Run the agent
     query = "Can you search for information about quantum computing?"
@@ -224,18 +221,21 @@ def test_multi_turn_conversation() -> Any:
     weather_tool = Tool.from_function(
         func=get_current_weather,
         name="get_weather",
-        description="Get the current weather in a given location")
+        description="Get the current weather in a given location",
+    )
 
     calculator_tool = StructuredTool.from_function(
         func=calculate,
         name="calculator",
         description="Perform mathematical calculations",
-        args_schema=Calculator)
+        args_schema=Calculator,
+    )
 
     # Create agent
     agent = ReactAgent.from_tools(
         tools=[weather_tool, calculator_tool],
-        system_prompt="You are a helpful assistant that can perform calculations and check the weather.")
+        system_prompt="You are a helpful assistant that can perform calculations and check the weather.",
+    )
 
     # Start a conversation
     messages = []

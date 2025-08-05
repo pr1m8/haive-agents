@@ -9,7 +9,8 @@ from langgraph.types import Command
 def select_tools_with_repeat(
     state: State,
     vs_config: VectorStoreConfig,
-    aug_llm_config: AugLLMConfig = query_builder_aug_llm_config):
+    aug_llm_config: AugLLMConfig = query_builder_aug_llm_config,
+):
     """Selects tools based on the last message in the conversation state.
 
     If the last message is from a human, directly uses the content of the message
@@ -49,6 +50,4 @@ def select_tools(state: State, vs_config: VectorStoreConfig):
     query = last_user_message.content
     vector_store = vs_config.create_vector_store()
     tool_documents = vector_store.similarity_search(query)
-    return Command(
-        update={"selected_tools": [document.id for document in tool_documents]}
-    )
+    return Command(update={"selected_tools": [document.id for document in tool_documents]})

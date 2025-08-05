@@ -33,9 +33,7 @@ class ReactAgentState(BaseModel):
     messages: Annotated[Sequence[BaseMessage], add_messages] = Field(
         default_factory=list, description="Messages in the conversation"
     )
-    remaining_iterations: int = Field(
-        default=5, description="Number of remaining iterations"
-    )
+    remaining_iterations: int = Field(default=5, description="Number of remaining iterations")
     iteration_count: int = Field(default=0, description="Current iteration count")
     tools_used: list[str] = Field(
         default_factory=list, description="List of tools used in this session"
@@ -49,16 +47,11 @@ class ReactAgentConfig(AgentConfig):
 
     system_prompt: str = Field(
         default="You are a helpful assistant that can use tools to answer user questions.",
-        description="System prompt for the agent")
-    max_iterations: int = Field(
-        default=5, description="Maximum number of interaction iterations"
+        description="System prompt for the agent",
     )
-    tool_names: list[str] = Field(
-        default_factory=list, description="Names of available tools"
-    )
-    temperature: float = Field(
-        default=0.7, description="Temperature for LLM generation"
-    )
+    max_iterations: int = Field(default=5, description="Maximum number of interaction iterations")
+    tool_names: list[str] = Field(default_factory=list, description="Names of available tools")
+    temperature: float = Field(default=0.7, description="Temperature for LLM generation")
     model: str = Field(default="gpt-4o", description="LLM model to use")
     parallel_tool_execution: bool = Field(
         default=True, description="Whether to execute tools in parallel (v2 style)"
@@ -81,22 +74,22 @@ class ReactAgentConfig(AgentConfig):
         parallel_tool_execution: bool = True,
         tool_routing: dict[str, str] | None = None,
         structured_output_model: type[BaseModel] | None = None,
-        **kwargs) -> "ReactAgentConfig":
+        **kwargs,
+    ) -> "ReactAgentConfig":
         """Create a ReactAgentConfig from a list of tools."""
         tool_names = [tool.name for tool in tools]
 
         llm_config = AugLLMConfig(
             name="react_agent_llm",
-            llm_config=AzureLLMConfig(
-                model=model, parameters={"temperature": temperature}
-            ),
+            llm_config=AzureLLMConfig(model=model, parameters={"temperature": temperature}),
             prompt_template=ChatPromptTemplate.from_messages(
                 [
                     ("system", system_prompt),
                     MessagesPlaceholder(variable_name="messages"),
                 ]
             ),
-            tools=tools)
+            tools=tools,
+        )
 
         # Set structured output if provided
         if structured_output_model is not None:
@@ -113,7 +106,8 @@ class ReactAgentConfig(AgentConfig):
             tool_routing=tool_routing or {},
             structured_output_model=structured_output_model,
             state_schema=ReactAgentState,
-            **kwargs)
+            **kwargs,
+        )
 
 
 # Implement our ReAct agent
@@ -128,16 +122,14 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Get tools from config
         tools = self.config.engine.tools or []
         if not tools:
-            logger.warning(
-                f"No tools provided for ReactAgent {
-                    self.config.name}"
-            )
+            logger.warning(f"No tools provided for ReactAgent {self.config.name}")
 
         # Create DynamicGraph with proper component registration
         gb = DynamicGraph(
             name=f"{self.config.name}_graph",
             components=[self.config.engine],
-            state_schema=self.config.state_schema)
+            state_schema=self.config.state_schema,
+        )
 
         # Track tool groupings if using custom routing
         tool_groups = {}
@@ -146,13 +138,11 @@ class ReactAgent(Agent[ReactAgentConfig]):
         agent_node_config = NodeConfig(
             name="agent",
             engine=self.config.engine,
-            config_overrides={"temperature": self.config.temperature})
+            config_overrides={"temperature": self.config.temperature},
+        )
 
         # Add the agent node
-        gb.add_node(
-            name="agent",
-            config=agent_node_config,
-            input_mapping={"messages": "messages"})
+        gb.add_node(name="agent", config=agent_node_config, input_mapping={"messages": "messages"})
 
         # Set up tools based on configuration
         if self.config.tool_routing:
@@ -186,9 +176,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
         if self.config.structured_output_model is not None:
             structured_output_node = self._create_structured_output_node_config()
             gb.add_node(
-                name="generate_structured_output",
-                config=structured_output_node,
-                command_goto=END)
+                name="generate_structured_output", config=structured_output_node, command_goto=END
+            )
 
         # Set entry point
         gb.set_entry_point("agent")
@@ -219,9 +208,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             else:
                 destinations[END] = END
 
-            router_branch = Branch.from_function(
-                self._should_continue, destinations=destinations
-            )
+            router_branch = Branch.from_function(self._should_continue, destinations=destinations)
 
             gb.add_conditional_edges("agent", router_branch.evaluator)
 
@@ -234,10 +221,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Build the graph
         self.graph = gb.build()
 
-        logger.info(
-            f"Workflow setup complete for ReactAgent {
-                self.config.name}"
-        )
+        logger.info(f"Workflow setup complete for ReactAgent {self.config.name}")
 
     def _create_structured_output_node_config(self) -> NodeConfig:
         """Create the configuration for the structured output node."""
@@ -278,13 +262,10 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
         # Create a NodeConfig for the structured output node
         return NodeConfig(
-            name="generate_structured_output",
-            engine=structured_output_node,
-            command_goto=END)
+            name="generate_structured_output", engine=structured_output_node, command_goto=END
+        )
 
-    def _should_continue(
-        self, state: ReactAgentState
-    ) -> str | list[Send] | Literal["END"]:
+    def _should_continue(self, state: ReactAgentState) -> str | list[Send] | Literal["END"]:
         """Determine if we should continue to tools or end."""
         # Check if we're out of iterations
         if state.remaining_iterations <= 0:
@@ -323,9 +304,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # No tool calls, so we're done
         return END
 
-    def _route_to_specific_tools(
-        self, state: ReactAgentState
-    ) -> str | list[Send] | Literal["END"]:
+    def _route_to_specific_tools(self, state: ReactAgentState) -> str | list[Send] | Literal["END"]:
         """Route to specific tool nodes based on tool calls."""
         # Check if we're out of iterations
         if state.remaining_iterations <= 0:
@@ -392,7 +371,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
                 remaining_iterations=self.config.max_iterations,
                 iteration_count=0,
                 tools_used=[],
-                status="initialized")
+                status="initialized",
+            )
         elif isinstance(input_text, dict):
             # Convert dict to state
             if "messages" in input_text and isinstance(input_text["messages"], list):
@@ -453,7 +433,8 @@ def create_react_agent(
     parallel_tool_execution: bool = True,
     tool_routing: dict[str, str] | None = None,
     structured_output_model: type[BaseModel] | None = None,
-    name: str | None = None) -> ReactAgent:
+    name: str | None = None,
+) -> ReactAgent:
     """Create a ReAct agent with the specified configuration."""
     config = ReactAgentConfig.from_tools(
         tools=tools,
@@ -464,7 +445,8 @@ def create_react_agent(
         parallel_tool_execution=parallel_tool_execution,
         tool_routing=tool_routing,
         structured_output_model=structured_output_model,
-        name=name or f"react_agent_{uuid.uuid4().hex[:8]}")
+        name=name or f"react_agent_{uuid.uuid4().hex[:8]}",
+    )
 
     return config.build_agent()
 
@@ -485,7 +467,8 @@ if __name__ == "__main__":
     agent = create_react_agent(
         tools=[search],
         system_prompt="You are a helpful assistant that can search for information.",
-        max_iterations=3)
+        max_iterations=3,
+    )
 
     # Run the agent
     result = agent.run("What is the capital of France?")

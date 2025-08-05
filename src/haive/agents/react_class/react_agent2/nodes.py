@@ -27,11 +27,7 @@ def get_tool_by_name(tools: list[str], name: str):
             ):
                 return tool
             # Class with name class variable
-            if (
-                hasattr(tool, "name")
-                and isinstance(tool.name, str)
-                and tool.name == name
-            ):
+            if hasattr(tool, "name") and isinstance(tool.name, str) and tool.name == name:
                 return tool
 
     return None
@@ -124,7 +120,8 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                 ],
                 "status": "done",
             },
-            goto="observe")
+            goto="observe",
+        )
 
     # Prepare input for thinking
     messages = state_dict.get("messages", [])
@@ -163,12 +160,7 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
         elif isinstance(step, dict):
             step_context.append(f"Step {i + 1}:")
             step_context.append(f"Action: {step.get('action', 'unknown')}")
-            step_context.append(
-                f"Observation: {
-                    step.get(
-                        'observation',
-                        'unknown')}"
-            )
+            step_context.append(f"Observation: {step.get('observation', 'unknown')}")
 
     if step_context:
         prompt_input["steps"] = "\n".join(step_context)
@@ -182,7 +174,8 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                 "final_answer": "Error: Thinking LLM not configured properly.",
                 "status": "done",
             },
-            goto="observe")
+            goto="observe",
+        )
 
     # Call thinking LLM
     try:
@@ -219,11 +212,13 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                             {
                                 "action_type": "final_answer",
                                 "action_input": "I couldn't determine what to do.",
-                            }),
+                            },
+                        ),
                         "iteration_count": iteration_count,
                         "status": "acting",
                     },
-                    goto="act")
+                    goto="act",
+                )
             else:
                 content = str(thought_result)
 
@@ -247,16 +242,14 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                         break
 
             # Look for "Action Input:" pattern
-            action_input_match = re.search(
-                r"Action Input:(.+?)(?:\n|$)", content, re.DOTALL
-            )
+            action_input_match = re.search(r"Action Input:(.+?)(?:\n|$)", content, re.DOTALL)
             if action_input_match:
                 action_input = action_input_match.group(1).strip()
 
             # Create a Thought object
             thought = Thought(
-                thought=content,
-                action=Action(action_type=action_type, action_input=action_input))
+                thought=content, action=Action(action_type=action_type, action_input=action_input)
+            )
 
         # Update state with new thought
         thoughts = state_dict.get("thoughts", [])
@@ -274,14 +267,14 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
         )
 
     except Exception as e:
-
         # Create a fallback response
         return Command(
             update={
                 "final_answer": f"Error in thinking process: {e!s}",
                 "status": "done",
             },
-            goto="observe")
+            goto="observe",
+        )
 
 
 def act_node(state: dict[str, Any]) -> Command:
@@ -305,7 +298,8 @@ def act_node(state: dict[str, Any]) -> Command:
                 ],
                 "status": "done",
             },
-            goto="observe")
+            goto="observe",
+        )
 
     # Get tools
     tools = state_dict.get("tools", {})
@@ -325,12 +319,9 @@ def act_node(state: dict[str, Any]) -> Command:
         if tool:
             observation = execute_tool(tool, current_action.action_input)
         else:
-            observation = f"Error: Tool '{
-                current_action.action_type}' not found."
+            observation = f"Error: Tool '{current_action.action_type}' not found."
     except Exception as e:
-        observation = f"Error executing tool '{
-            current_action.action_type}': {
-            e!s}"
+        observation = f"Error executing tool '{current_action.action_type}': {e!s}"
 
         # Increment retry count
         current_attempts += 1
@@ -378,7 +369,8 @@ def act_node(state: dict[str, Any]) -> Command:
             "retry_attempts": retry_attempts,
             "status": "observing",
         },
-        goto="observe")
+        goto="observe",
+    )
 
 
 def observe_node(state: dict[str, Any]) -> Command:
@@ -476,6 +468,7 @@ def create_tool_node(tool_name: str) -> Callable:
                 "intermediate_steps": intermediate_steps,
                 "status": "observing",
             },
-            goto="observe")
+            goto="observe",
+        )
 
     return tool_node

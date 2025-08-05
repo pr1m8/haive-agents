@@ -9,9 +9,7 @@ class ReactionData(BaseModel):
     """Data for agent reasoning and action."""
 
     thought: str | None = Field(default=None, description="Agent's reasoning")
-    action: str | None = Field(
-        default=None, description="Tool to use or 'final_answer'"
-    )
+    action: str | None = Field(default=None, description="Tool to use or 'final_answer'")
     action_input: str | dict[str, Any] | None = Field(
         default=None, description="Input for the tool or final answer text"
     )
@@ -45,23 +43,18 @@ class Thought(BaseModel):
     action: Action
 
     def __str__(self):
-        return f"Thought: {
-            self.thought}\nAction: ActionType.{
-            self.action.action_type}, ActionInput: {
-            self.action.action_input}"
+        return f"Thought: {self.thought}\nAction: ActionType.{
+            self.action.action_type
+        }, ActionInput: {self.action.action_input}"
 
 
 class ReactState(BaseModel):
     """State schema for React agent."""
 
-    messages: list[AnyMessage] = Field(
-        default_factory=list
-    )  # Removed the operator.add annotation
+    messages: list[AnyMessage] = Field(default_factory=list)  # Removed the operator.add annotation
     thoughts: list[Thought] = Field(default_factory=list)
     observations: list[str] = Field(default_factory=list)
-    intermediate_steps: list[dict[str, Any] | tuple[Action, str]] = Field(
-        default_factory=list
-    )
+    intermediate_steps: list[dict[str, Any] | tuple[Action, str]] = Field(default_factory=list)
     final_answer: str | None = None
     current_thought: Thought | None = None
     iteration_count: int = 0

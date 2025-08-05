@@ -8,11 +8,7 @@ from typing import Any
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from haive.core.utils.message_utils import normalize_message, normalize_messages
-from langchain_core.messages import (
-    AIMessage,
-    HumanMessage,
-    SystemMessage,
-    ToolMessage)
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import BaseTool, StructuredTool, Tool
 from langgraph.graph import END
@@ -91,13 +87,10 @@ class MessageNormalizingToolNode:
 
         # Normalize messages to proper BaseMessage objects
         if "messages" in state_dict:
-
             normalized_messages = []
             for msg in state_dict["messages"]:
                 # Already a proper message object
-                if isinstance(
-                    msg, AIMessage | HumanMessage | SystemMessage | ToolMessage
-                ):
+                if isinstance(msg, AIMessage | HumanMessage | SystemMessage | ToolMessage):
                     normalized_messages.append(msg)
                 # Dict representation of a message
                 elif isinstance(msg, dict):
@@ -107,9 +100,7 @@ class MessageNormalizingToolNode:
                     if msg_type == "ai":
                         additional_kwargs = msg.get("additional_kwargs", {})
                         normalized_messages.append(
-                            AIMessage(
-                                content=content, additional_kwargs=additional_kwargs
-                            )
+                            AIMessage(content=content, additional_kwargs=additional_kwargs)
                         )
                     elif msg_type == "human":
                         normalized_messages.append(HumanMessage(content=content))
@@ -119,9 +110,7 @@ class MessageNormalizingToolNode:
                         tool_call_id = msg.get("tool_call_id")
                         name = msg.get("name", "")
                         normalized_messages.append(
-                            ToolMessage(
-                                content=content, tool_call_id=tool_call_id, name=name
-                            )
+                            ToolMessage(content=content, tool_call_id=tool_call_id, name=name)
                         )
                 # Unknown type, default to HumanMessage
                 else:
@@ -206,14 +195,11 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
         # Create DynamicGraph with our state schema
         graph_builder = DynamicGraph(
-            name=self.config.name,
-            components=[self.config.engine],
-            state_schema=self.state_schema)
+            name=self.config.name, components=[self.config.engine], state_schema=self.state_schema
+        )
 
         # 1. Add agent node (LLM reasoning)
-        graph_builder.add_node(
-            name=self.config.agent_node_name, config=self.config.engine
-        )
+        graph_builder.add_node(name=self.config.agent_node_name, config=self.config.engine)
 
         # 2. Add the tool node
         graph_builder.add_node(name=self.config.tool_node_name, config=self.tool_node)
@@ -230,9 +216,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         def should_use_tools(state: dict[str, Any]):
             """Determine if we should route to tools based on the last message."""
             # Normalize state if needed
-            state_dict = (
-                state.model_dump() if hasattr(state, "model_dump") else dict(state)
-            )
+            state_dict = state.model_dump() if hasattr(state, "model_dump") else dict(state)
 
             # Check if the last message has tool calls
             return has_tool_calls(state_dict)
@@ -243,13 +227,15 @@ class ReactAgent(Agent[ReactAgentConfig]):
             graph_builder.add_conditional_edges(
                 self.config.agent_node_name,
                 should_use_tools,
-                {True: self.config.tool_node_name, False: "structured_output_node"})
+                {True: self.config.tool_node_name, False: "structured_output_node"},
+            )
         else:
             # Without structured output: Agent → (Tools or END)
             graph_builder.add_conditional_edges(
                 self.config.agent_node_name,
                 should_use_tools,
-                {True: self.config.tool_node_name, False: END})
+                {True: self.config.tool_node_name, False: END},
+            )
 
         # 6. Always route tools back to agent for the next reasoning step
         graph_builder.add_edge(self.config.tool_node_name, self.config.agent_node_name)
@@ -273,9 +259,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             """Generate structured output from conversation history."""
             try:
                 # Convert state to dict if needed
-                state_dict = (
-                    state.model_dump() if hasattr(state, "model_dump") else dict(state)
-                )
+                state_dict = state.model_dump() if hasattr(state, "model_dump") else dict(state)
 
                 # Get the LLM from engine
                 llm = self.config.engine.llm_config.instantiate()
@@ -376,18 +360,13 @@ class ReactAgent(Agent[ReactAgentConfig]):
         config = {**self.config.runnable_config, **kwargs}
 
         if self.config.debug:
-            logger.debug(
-                f"Running agent {
-                    self.config.name} with input: {processed_input}"
-            )
+            logger.debug(f"Running agent {self.config.name} with input: {processed_input}")
         else:
             logger.info(f"Running agent {self.config.name}")
 
         try:
             # Run the agent
-            result = self.app.invoke(
-                processed_input, config=config, debug=self.config.debug
-            )
+            result = self.app.invoke(processed_input, config=config, debug=self.config.debug)
 
             # Save state history if requested
             if self.config.save_history:
@@ -461,9 +440,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     if isinstance(normalized_msg, AIMessage):
                         pass
 
-    def stream(
-        self, input_data: str | list[str] | dict[str, Any] | BaseModel, **kwargs
-    ):
+    def stream(self, input_data: str | list[str] | dict[str, Any] | BaseModel, **kwargs):
         """Stream the agent execution with given input.
 
         Args:
@@ -490,10 +467,8 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
         try:
             yield from self.app.stream(
-                processed_input,
-                config=config,
-                stream_mode="values",
-                debug=self.config.debug)
+                processed_input, config=config, stream_mode="values", debug=self.config.debug
+            )
 
             # Save state history if requested
             if self.config.save_history:
@@ -533,7 +508,8 @@ def create_react_agent(
     debug: bool = False,
     structured_output_model: type[BaseModel] | dict[str, Any] | None = None,
     additional_input_vars: list[str] | None = None,
-    **kwargs) -> ReactAgent:
+    **kwargs,
+) -> ReactAgent:
     """Create a React agent with the specified configuration.
 
     Args:
@@ -568,7 +544,8 @@ def create_react_agent(
         debug=debug,
         structured_output_model=structured_output_model,
         additional_input_vars=additional_input_vars,
-        **kwargs)
+        **kwargs,
+    )
 
     # Build and return agent
     return config.build_agent()
