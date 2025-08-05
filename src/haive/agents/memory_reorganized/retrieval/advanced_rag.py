@@ -14,7 +14,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain.retrievers import EnsembleRetriever

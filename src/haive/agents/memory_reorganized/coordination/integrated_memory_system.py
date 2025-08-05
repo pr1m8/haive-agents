@@ -10,7 +10,7 @@ import asyncio
 import json
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool

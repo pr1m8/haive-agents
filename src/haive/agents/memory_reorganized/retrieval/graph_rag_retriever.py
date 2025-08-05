@@ -7,7 +7,7 @@ relationship context and semantic understanding.
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage, SystemMessage

@@ -6,10 +6,9 @@ with pre-hooks for summarization and token management.
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.schema.prebuilt.messages.messages_with_token_usage import MessagesStateWithTokenUsage
-from typing import Optional
 from langchain_core.messages import AnyMessage
 from pydantic import ConfigDict, Field, computed_field
 

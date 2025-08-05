@@ -26,7 +26,7 @@ class PerformanceMetrics(BaseModel):
         default=0.0, ge=0.0, description="Average completion time in seconds"
     )
     user_satisfaction: float | None = Field(
-        None, ge=1.0, le=5.0, description="User satisfaction score (1-5)"
+        default=None, ge=1.0, le=5.0, description="User satisfaction score (1-5)"
     )
     complexity_score: int = Field(
         default=1, ge=1, le=10, description="Task complexity (1-10)"
@@ -36,8 +36,7 @@ class PerformanceMetrics(BaseModel):
     )
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_performance_logic(cls) -> "PerformanceMetrics":
+    def validate_performance_logic(self) -> "PerformanceMetrics":
         """Validate performance metric consistency."""
         if self.success_rate > 0.9 and self.error_frequency > 0.1:
             raise ValueError("High success rate inconsistent with high error frequency")

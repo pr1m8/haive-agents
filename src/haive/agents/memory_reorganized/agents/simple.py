@@ -6,7 +6,7 @@ token limits, similar to LangMem's approach.
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional, TYPE_CHECKING
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema import StateSchema
@@ -22,7 +22,8 @@ from haive.agents.memory_reorganized.base.memory_state_original import (  # Impo
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryState,
-    MemoryType)
+    MemoryType as StateMemoryType)
+from haive.agents.memory_reorganized.base.memory_models_standalone import MemoryType
 from haive.agents.memory_reorganized.base.token_state import MemoryStateWithTokens
 from haive.agents.memory_reorganized.core.memory_tools import (
     MemoryConfig,
@@ -34,29 +35,55 @@ from haive.agents.memory_reorganized.core.memory_tools import (
 from haive.agents.memory_reorganized.core.token_tracker import TokenThresholds, TokenTracker
 
 # Graph transformer imports - optional
-try:
-    from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
+if TYPE_CHECKING:
+    from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer  # type: ignore
+    from haive.agents.document_modifiers.kg.kg_map_merge.models import (  # type: ignore
         EntityNode,
         EntityRelationship,
         KnowledgeGraph)
+
+try:
+    from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer as _GraphTransformer
+    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
+        EntityNode as _EntityNode,
+        EntityRelationship as _EntityRelationship,
+        KnowledgeGraph as _KnowledgeGraph)
+
+    # Use imported models  
+    EntityNode = _EntityNode  # type: ignore
+    EntityRelationship = _EntityRelationship  # type: ignore
+    KnowledgeGraph = _KnowledgeGraph  # type: ignore
+    GraphTransformer = _GraphTransformer  # type: ignore
 
     HAS_GRAPH_MODELS = True
 except ImportError:
     # Create basic fallback models
     class EntityNode(BaseModel):
         name: str = Field(...)
+        id: Optional[str] = Field(default=None)
+        type: str = Field(default="entity")
         properties: dict[str, Any] = Field(default_factory=dict)
 
     class EntityRelationship(BaseModel):
         source: str = Field(...)
         target: str = Field(...)
         relationship: str = Field(...)
+        type: str = Field(default="relationship")
+        confidence_score: Optional[float] = Field(default=None)
+        supporting_evidence: list[str] = Field(default_factory=list)
         properties: dict[str, Any] = Field(default_factory=dict)
 
     class KnowledgeGraph(BaseModel):
         nodes: list[EntityNode] = Field(default_factory=list)
         relationships: list[EntityRelationship] = Field(default_factory=list)
+        
+        def add_node(self, node: EntityNode) -> None:
+            """Add node to graph."""
+            self.nodes.append(node)
+            
+        def add_relationship(self, relationship: EntityRelationship) -> None:
+            """Add relationship to graph."""
+            self.relationships.append(relationship)
 
     GraphTransformer = None
     HAS_GRAPH_MODELS = False
@@ -253,7 +280,7 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     )
 
     # Graph transformation components
-    graph_transformer: Optional[GraphTransformer] = Field(
+    graph_transformer: Optional["GraphTransformer"] = Field(
         default=None,
         description="Graph transformer for converting content to knowledge graphs")
 
@@ -386,11 +413,12 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
                     self,
                     "graph_transformer") or self.graph_transformer is None:
                 # Initialize the graph transformer
-                self.graph_transformer = GraphTransformer()
+                if GraphTransformer is not None:
+                    self.graph_transformer = GraphTransformer()
                 logger.info("Graph transformer initialized successfully")
 
             # Add graph-related prompts to engine if available
-            if self.engine:
+            if self.engine and hasattr(self, '_setup_graph_prompts'):
                 self._setup_graph_prompts()
 
         except Exception as e:
@@ -512,7 +540,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
             )
 
         graph.add_conditional_edges(
-            "pre_hook", self.route_from_pre_hook, routing_map)
+            "pre_hook", self.route_from_pre_hook, routing_map)  # type: ignore
 
         # ALL ROUTES END (or continue to optional summary update)
         if self.memory_config.enable_running_summary:
@@ -641,7 +669,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                         [
                             m
                             for m in state.current_memories
-                            if m.metadata.memory_type != "meta"
+                            if m.memory_type != "meta"
                         ]
                     ),
                     "recent_memories": len(state.current_memories[-10:]),
@@ -717,9 +745,15 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                 if hasattr(last_message, "content")
                 else str(last_message)
             )
+            
+            # Ensure content is a string
+            if isinstance(content, (list, tuple)):
+                content = str(content)
+            elif not isinstance(content, str):
+                content = str(content)
 
             # Determine operation type and execute
-            operation_result = {
+            operation_result: dict[str, Any] = {
                 "operation_timestamp": datetime.now().isoformat()}
 
             if any(word in content.lower()
@@ -960,9 +994,9 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
         # Keep only high-importance memories and summaries
         for memory in state.current_memories:
             if (
-                memory.metadata.importance == "high"
-                or memory.metadata.memory_type == "meta"
-                or "summary" in memory.metadata.tags
+                memory.importance.value == "high"
+                or memory.memory_type.value == "meta"
+                or "summary" in (memory.metadata.get("tags", []) if hasattr(memory, "metadata") else [])
             ):
                 essential_memories.append(memory)
 
@@ -993,7 +1027,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
         # Group memories by type and similarity
         grouped_memories = {}
         for memory in state.current_memories:
-            key = memory.metadata.memory_type
+            key = memory.memory_type.value
             if key not in grouped_memories:
                 grouped_memories[key] = []
             grouped_memories[key].append(memory)
@@ -1013,8 +1047,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                     memory_type=MemoryType.META,
                     importance=ImportanceLevel.MEDIUM,
                     tags=["consolidated"],
-                    confidence=0.8,
-                    metadata={"consolidation_type": mem_type})
+                    metadata={"consolidation_type": mem_type, "confidence": 0.8})
                 consolidated.append(consolidated_memory)
             else:
                 consolidated.extend(memories)
@@ -1157,7 +1190,10 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                 # Convert graph nodes to EntityNodes
                 for node in graph_doc.nodes:
                     entity_node = EntityNode(
-                        id=node.id, type=node.type, properties=node.properties or {})
+                        name=node.id,  # Use id as name
+                        id=node.id, 
+                        type=node.type, 
+                        properties=node.properties or {})
                     all_nodes.append(entity_node)
 
                 # Convert graph relationships to EntityRelationships
@@ -1165,10 +1201,11 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                     entity_rel = EntityRelationship(
                         source=rel.source.id,
                         target=rel.target.id,
+                        relationship=rel.type,  # Use type as relationship
                         type=rel.type,
                         properties=rel.properties or {},
                         confidence_score=0.8,  # Default confidence
-                        supporting_evidence=f"Extracted from: {combined_content[:100]}...")
+                        supporting_evidence=[f"Extracted from: {combined_content[:100]}..."])
                     all_relationships.append(entity_rel)
 
             # Create knowledge graph
@@ -1301,6 +1338,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
             if state.knowledge_graph:
                 # Add a summary node for the new content
                 summary_node = EntityNode(
+                    name=f"update_{datetime.now().timestamp()}",
                     id=f"update_{datetime.now().timestamp()}",
                     type="ContentUpdate",
                     properties={
@@ -1440,8 +1478,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                     memory_type=MemoryType.SUMMARY,
                     importance=ImportanceLevel.HIGH,
                     tags=["summary"],
-                    confidence=0.9,
-                    metadata={"summarization_type": "critical_threshold"})
+                    metadata={"summarization_type": "critical_threshold", "confidence": 0.9})
 
                 # Update state with new memory list
                 new_memories = [summarized_memory, *to_preserve]
@@ -1510,13 +1547,13 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                         id=memory.id,
                         content=rewritten_content,
                         source="rewrite",
-                        memory_type=memory.memory_type,
+                        memory_type=MemoryType(memory.memory_type.value) if hasattr(memory.memory_type, 'value') else MemoryType(memory.memory_type),
                         importance=memory.importance,
                         tags=memory.tags,
-                        confidence=memory.confidence,
                         metadata={
                             **memory.metadata,
-                            "original_source": memory.source})
+                            "original_source": memory.source,
+                            "confidence": memory.confidence})
                     rewritten_memories.append(rewritten_memory)
                 else:
                     rewritten_memories.append(memory)
@@ -1552,7 +1589,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                 return {}
 
             new_memories_text = "\n".join(
-                [f"[{m.metadata.memory_type}] {m.content}" for m in recent_memories]
+                [f"[{m.memory_type}] {m.content}" for m in recent_memories]
             )
 
             # Update or create running summary

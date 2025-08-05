@@ -11,18 +11,17 @@ Functions:
 """
 
 import re
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from pydantic import Field, field_validator, model_validator
 
-from haive.agents.memory.models.base import BaseMemoryModel
-from haive.agents.memory.models.episodic.mixins import (
+from haive.agents.memory_reorganized.models.base import BaseMemoryModel
+from haive.agents.memory_reorganized.models.episodic.mixins import (
     PerformanceMetrics,
-    TaskExecution,
-    TemporalMixin)
+    TaskExecution)
 
 
-class EpisodicMemory(BaseMemoryModel, TemporalMixin):
+class EpisodicMemory(BaseMemoryModel):
     """Sophisticated episodic memory for learning from experiences.
     """
 
@@ -33,9 +32,12 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
     session_id: str = Field(..., description="Session identifier")
 
     # Task context
-    task_execution: TaskExecution = Field(..., description="Execution details")
+    task_execution: TaskExecution = Field(
+        default_factory=lambda: TaskExecution(task_type="unknown"), 
+        description="Execution details"
+    )
     performance_metrics: PerformanceMetrics = Field(
-        default_factory=PerformanceMetrics)
+        default_factory=lambda: PerformanceMetrics())
 
     # Learning data
     user_input: str = Field(
@@ -86,8 +88,7 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
         return v.strip()
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_episodic_consistency(cls) -> "EpisodicMemory":
+    def validate_episodic_consistency(self) -> "EpisodicMemory":
         """Validate episodic memory consistency.
         """
         # Performance metrics should align with outcome
@@ -146,3 +147,12 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
 
         return (min(base_value + complexity_boost +
                     feedback_boost, 1.0) * temporal_factor)
+
+    def calculate_temporal_relevance(self) -> float:
+        """Calculate temporal relevance based on age and importance.
+        
+        Returns:
+            Temporal relevance factor (0.0 to 1.0)
+        """
+        # Simple temporal decay - could be enhanced with more sophisticated logic
+        return self.temporal_weight

@@ -16,7 +16,7 @@ bridging toward full Graph RAG implementation.
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.tools.store_tools import StoreManager
 from pydantic import BaseModel, ConfigDict, Field

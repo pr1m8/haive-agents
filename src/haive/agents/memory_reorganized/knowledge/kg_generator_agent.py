@@ -1020,7 +1020,7 @@ Extract relationships now:""",
                 return node.id
         return None
 
-    def _parse_json_response(self, response: str) -> dict[str, Any] | None:
+    def _parse_json_response(self, response: str) -> Optional[dict[str, Any]]:
         """Parse JSON response from LLM.
         """
         try:
@@ -1037,7 +1037,7 @@ Extract relationships now:""",
         return None
 
     async def extract_entities_from_memories(
-        self, limit: Optional[int]=None, namespace: tuple[str, ...] | None=None
+        self, limit: Optional[int]=None, namespace: Optional[tuple[str, ...]] = None
     ) -> list[KnowledgeGraphNode]:
         """Extract entities from memories and return them as a list.
 

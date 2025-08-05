@@ -8,6 +8,7 @@ integration, and advanced memory management.
 import logging
 from datetime import datetime
 from enum import Enum
+from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
@@ -107,6 +108,10 @@ class UnifiedMemoryEntry(BaseModel):
     memory_type: MemoryType = Field(default=MemoryType.CONVERSATIONAL)
     importance: ImportanceLevel = Field(default=ImportanceLevel.MEDIUM)
     created_at: datetime = Field(default_factory=datetime.now)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    confidence: float = Field(default=1.0)
+    tags: list[str] = Field(default_factory=list)
+    source: str = Field(default="unknown")
 
     @property
     def content(self) -> str:
@@ -182,6 +187,11 @@ class MemoryState(BaseModel):
     # Configuration
     max_memories: int = Field(default=1000)
     auto_cleanup: bool = Field(default=True)
+    
+    # Additional attributes used by simple.py
+    current_memories: list[UnifiedMemoryEntry] = Field(default_factory=list)
+    memory_metadata: dict[str, Any] = Field(default_factory=dict)
+    token_usage: dict[str, int] = Field(default_factory=dict)
 
     def add_memory_item(self, memory_item: EnhancedMemoryItem) -> None:
         """Add a memory item to the state."""
