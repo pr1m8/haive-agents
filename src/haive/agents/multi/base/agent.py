@@ -6,5 +6,46 @@ implementations can inherit from or use directly.
 
 # Re-export the clean MultiAgent implementation as the base
 from haive.agents.multi.clean import MultiAgent
+from haive.core.engine.agent import Agent, AgentConfig
+from typing import List, Any
+from pydantic import Field
 
-__all__ = ["MultiAgent"]
+
+class SequentialAgentConfig(AgentConfig):
+    """Configuration for sequential multi-agent execution."""
+    
+    agents: List[Any] = Field(default_factory=list, description="List of agents to run sequentially")
+    pass_results: bool = Field(default=True, description="Pass results between agents")
+
+
+class SequentialAgent(Agent):
+    """Agent that executes multiple agents in sequence.
+    
+    This agent runs a list of agents one after another, optionally
+    passing the output of one agent as input to the next.
+    """
+    
+    def __init__(self, config: SequentialAgentConfig):
+        self.agents = config.agents
+        self.pass_results = config.pass_results
+        super().__init__(config)
+    
+    def run(self, input_data: Any, **kwargs) -> Any:
+        """Run all agents in sequence."""
+        current_input = input_data
+        results = []
+        
+        for agent in self.agents:
+            if hasattr(agent, 'run'):
+                result = agent.run(current_input, **kwargs)
+                results.append(result)
+                
+                if self.pass_results:
+                    current_input = result
+            else:
+                results.append(f"Agent {agent} does not have run method")
+        
+        return results if len(results) > 1 else results[0] if results else None
+
+
+__all__ = ["MultiAgent", "SequentialAgent", "SequentialAgentConfig"]
