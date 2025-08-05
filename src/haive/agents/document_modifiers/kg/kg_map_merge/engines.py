@@ -210,6 +210,47 @@ def create_graph_merger_config(
     )
 
 
+def kg_extraction_engine(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
+    """Create a comprehensive knowledge graph extraction engine.
+    
+    This is the main function for creating a complete KG extraction configuration.
+    
+    Args:
+        model: LLM model to use
+        temperature: Sampling temperature for generation
+        
+    Returns:
+        Configured AugLLMConfig for comprehensive KG extraction
+    """
+    return create_graph_extraction_config(model=model, temperature=temperature)
+
+
+def merge_analysis_engine(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
+    """Create a merge analysis engine for knowledge graph merging.
+    
+    Args:
+        model: LLM model to use
+        temperature: Sampling temperature for generation
+        
+    Returns:
+        Configured AugLLMConfig for merge analysis
+    """
+    return create_graph_merger_config(model=model, temperature=temperature)
+
+
+def schema_extraction_engine(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
+    """Create a schema extraction engine for knowledge graph schema analysis.
+    
+    Args:
+        model: LLM model to use
+        temperature: Sampling temperature for generation
+        
+    Returns:
+        Configured AugLLMConfig for schema extraction
+    """
+    return create_node_extraction_config(model=model, temperature=temperature)
+
+
 def create_parallel_kg_transformer_configs() -> dict:
     """Create a comprehensive set of configurations for the Parallel KG Transformer.
 
