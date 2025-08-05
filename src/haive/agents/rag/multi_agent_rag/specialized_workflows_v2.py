@@ -6,7 +6,7 @@ state schemas with built-in configuration support.
 
 from typing import Any
 
-from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import MultiAgent
 from haive.agents.rag.multi_agent_rag.enhanced_state_schemas import (
     AdaptiveThresholdRAGState,
     DebateRAGState,
@@ -78,7 +78,7 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.CONDITIONAL,
+            execution_mode="conditional",
             state_schema=FLAREState,
             **kwargs)
 
@@ -164,7 +164,7 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=DynamicRAGState,
             **kwargs)
 
@@ -261,7 +261,7 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.CONDITIONAL,
+            execution_mode="conditional",
             state_schema=DebateRAGState,
             **kwargs)
 
@@ -355,7 +355,7 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.CONDITIONAL,
+            execution_mode="conditional",
             state_schema=AdaptiveThresholdRAGState,
             **kwargs)
 
@@ -378,3 +378,13 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this workflow."""
         return  # Use default graph structure
+
+
+
+def build_custom_graph() -> Any:
+    """Build custom graph for specialized workflows v2.
+    
+    Returns:
+        Graph configuration or None for default behavior
+    """
+    return None

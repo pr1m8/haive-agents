@@ -13,7 +13,7 @@ from pydantic import Field
 
 from haive.agents.base.agent import Agent
 from haive.agents.chain.chain_agent_simple import ChainAgent, NodeLike
-from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import MultiAgent
 
 logger = logging.getLogger(__name__)
 

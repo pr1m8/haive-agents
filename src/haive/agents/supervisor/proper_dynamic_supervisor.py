@@ -29,15 +29,15 @@ class ProperDynamicSupervisor(ReactAgent):
     """
 
     # Agent registry - stores actual agent instances
-    _agent_registry: dict[str, Any] = Field(default_factory=dict, exclude=True)
+    agent_registry: dict[str, Any] = Field(default_factory=dict, exclude=True)
 
     # Capability descriptions for routing decisions
-    _agent_capabilities: dict[str, str] = Field(default_factory=dict, exclude=True)
+    agent_capabilities: dict[str, str] = Field(default_factory=dict, exclude=True)
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self._agent_registry = {}
-        self._agent_capabilities = {}
+        self.agent_registry = {}
+        self.agent_capabilities = {}
 
     def register_agent(
         self, agent: Any, capability: str | None = None, agent_name: str | None = None
@@ -57,13 +57,13 @@ class ProperDynamicSupervisor(ReactAgent):
         logger.info(f"Registering agent: {name}")
 
         # Store agent instance
-        self._agent_registry[name] = agent
+        self.agent_registry[name] = agent
 
         # Store capability description
-        self._agent_capabilities[name] = capability or f"Agent {name}"
+        self.agent_capabilities[name] = capability or f"Agent {name}"
 
         logger.info(f"✅ Registered agent '{name}' with capability: '{capability}'")
-        logger.info(f"   Total registered agents: {len(self._agent_registry)}")
+        logger.info(f"   Total registered agents: {len(self.agent_registry)}")
 
         return True
 
@@ -76,9 +76,9 @@ class ProperDynamicSupervisor(ReactAgent):
         Returns:
             bool: Success status
         """
-        if agent_name in self._agent_registry:
-            del self._agent_registry[agent_name]
-            del self._agent_capabilities[agent_name]
+        if agent_name in self.agent_registry:
+            del self.agent_registry[agent_name]
+            del self.agent_capabilities[agent_name]
             logger.info(f"✅ Unregistered agent: {agent_name}")
             return True
         return False
@@ -102,7 +102,7 @@ class ProperDynamicSupervisor(ReactAgent):
         graph.add_node("supervisor", supervisor_node)
 
         # Create dynamic executor node
-        executor_node = create_dynamic_executor_node(self._agent_registry)
+        executor_node = create_dynamic_executor_node(self.agent_registry)
         graph.add_node("executor", executor_node)
 
         # Fixed edges
@@ -130,7 +130,7 @@ class ProperDynamicSupervisor(ReactAgent):
             logger.info("=" * 60)
 
             # Get available agents
-            available_agents = list(self._agent_registry.keys())
+            available_agents = list(self.agent_registry.keys())
             logger.info(f"Available agents: {available_agents}")
 
             if not available_agents:
@@ -221,7 +221,7 @@ class ProperDynamicSupervisor(ReactAgent):
                         return agent_name
 
             # Check capability description
-            capability = self._agent_capabilities.get(agent_name, "").lower()
+            capability = self.agent_capabilities.get(agent_name, "").lower()
             if any(word in content_lower for word in capability.split()):
                 return agent_name
 
@@ -246,11 +246,11 @@ class ProperDynamicSupervisor(ReactAgent):
 
     def get_registered_agents(self) -> list[str]:
         """Get list of registered agent names."""
-        return list(self._agent_registry.keys())
+        return list(self.agent_registry.keys())
 
-    def get_agent_capabilities(self) -> dict[str, str]:
+    def getagent_capabilities(self) -> dict[str, str]:
         """Get agent capabilities descriptions."""
-        return self._agent_capabilities.copy()
+        return self.agent_capabilities.copy()
 
 
 # Example usage

@@ -13,7 +13,7 @@ from haive.core.schema.agent_schema_composer import AgentSchemaComposer
 from haive.core.schema.state_schema import StateSchema
 from langgraph.graph import START
 
-from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import MultiAgent
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ class EnhancedMultiAgent(MultiAgent):
         state_schema: type[StateSchema] | None = None,
         branches: dict[str, dict[str, Any]] | None = None,
         schema_composition_method: str = "smart",
-        execution_mode: ExecutionMode = ExecutionMode.CONDITIONAL,
+        execution_mode: str = "conditional",
         **kwargs):
         """Initialize enhanced multi-agent with direct configuration.
 
@@ -132,7 +132,7 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
             agents=agents,
             state_schema=state_schema,
             branches=branches,
-            execution_mode=ExecutionMode.CONDITIONAL,
+            execution_mode="conditional",
             **kwargs)
 
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:

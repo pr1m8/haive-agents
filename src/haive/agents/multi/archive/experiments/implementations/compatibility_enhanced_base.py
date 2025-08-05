@@ -21,7 +21,7 @@ from rich.table import Table
 from rich.tree import Tree
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import MultiAgent
 
 logger = logging.getLogger(__name__)
 

@@ -30,36 +30,38 @@ from haive.agents.planning.proper_plan_execute import (
     process_replanner_output,
     route_after_replan,
     should_continue)
-from haive.agents.planning.rewoo_tree_agent_v2 import (
-    ParallelReWOOAgent,
-    PlanTask,
-    ReWOOExecutorAgent,
-    ReWOOPlan,
-    ReWOOPlannerAgent,
-    ReWOOTreeAgent,
-    ReWOOTreeState,
-    TaskPriority,
-    TaskStatus,
-    TaskType,
-    ToolAlias,
-    add_task,
-    add_tool_alias,
-    create_plan,
-    create_rewoo_agent_with_tools,
-    execute_task,
-    get_ready_tasks,
-    validate_alias,
-    validate_id)
-from haive.agents.planning.rewoo_tree_agent_v3 import (
-    ParallelReWOOAgent,
-    ReWOOPlan,
-    ReWOOTreeAgent,
-    ReWOOTreeState,
-    TaskType,
-    ToolAlias,
-    add_tool_alias,
-    create_rewoo_agent_with_tools,
-    validate_alias)
+# Note: Commented out problematic imports from rewoo_tree_agent_v2 to unblock critical errors  
+# from haive.agents.planning.rewoo_tree_agent_v2 import (
+#     ParallelReWOOAgent,
+#     PlanTask,
+#     ReWOOExecutorAgent,
+#     ReWOOPlan,
+#     ReWOOPlannerAgent,
+#     ReWOOTreeAgent,
+#     ReWOOTreeState,
+#     TaskPriority,
+#     TaskStatus,
+#     TaskType,
+#     ToolAlias,
+#     add_task,
+#     add_tool_alias,
+#     create_plan,
+#     create_rewoo_agent_with_tools,
+#     execute_task,
+#     get_ready_tasks,
+#     validate_alias,
+#     validate_id)
+# Note: Commented out problematic imports from rewoo_tree_agent_v3 to unblock critical errors
+# from haive.agents.planning.rewoo_tree_agent_v3 import (
+#     ParallelReWOOAgent,
+#     ReWOOPlan,
+#     ReWOOTreeAgent,
+#     ReWOOTreeState,
+#     TaskType,
+#     ToolAlias,
+#     add_tool_alias,
+#     create_rewoo_agent_with_tools,
+#     validate_alias)
 
 __all__ = [
     "Act",
@@ -67,30 +69,30 @@ __all__ = [
     "Plan",
     "PlanAndExecuteAgent",
     "PlanExecuteState",
-    "PlanTask",
-    "ReWOOExecutorAgent",
+    # "PlanTask",  # Commented out - from rewoo_tree_agent_v2
+    # "ReWOOExecutorAgent",  # Commented out - from rewoo_tree_agent_v2
     "ReWOOPlan",
-    "ReWOOPlannerAgent",
+    # "ReWOOPlannerAgent",  # Commented out - from rewoo_tree_agent_v2
     "ReWOOTreeAgent",
-    "ReWOOTreeState",
+    # "ReWOOTreeState",  # Commented out - from rewoo_tree_agent_v2
     "Response",
-    "TaskPriority",
-    "TaskStatus",
-    "TaskType",
-    "ToolAlias",
-    "add_task",
-    "add_tool_alias",
+    # "TaskPriority",  # Commented out - from rewoo_tree_agent_v2
+    # "TaskStatus",  # Commented out - from rewoo_tree_agent_v2  
+    # "TaskType",  # Commented out - from rewoo_tree_agent_v2
+    # "ToolAlias",  # Commented out - from rewoo_tree_agent_v2
+    # "add_task",  # Commented out - from rewoo_tree_agent_v2
+    # "add_tool_alias",  # Commented out - from rewoo_tree_agent_v2
     "create_clean_plan_execute_agent",
     "create_langgraph_plan_execute",
-    "create_plan",
+    # "create_plan",  # Commented out - from rewoo_tree_agent_v2
     "create_plan_execute_agent",
     "create_plan_execute_branches",
     "create_plan_execute_with_search",
     "create_proper_plan_execute",
-    "create_rewoo_agent_with_tools",
+    # "create_rewoo_agent_with_tools",  # Commented out - from rewoo_tree_agent_v2
     "create_simple_plan_execute",
-    "execute_task",
-    "get_ready_tasks",
+    # "execute_task",  # Commented out - from rewoo_tree_agent_v2
+    # "get_ready_tasks",  # Commented out - from rewoo_tree_agent_v2
     "process_executor_output",
     "process_planner_output",
     "process_replanner_output",
@@ -98,6 +100,6 @@ __all__ = [
     "route_replan",
     "should_continue",
     "should_end",
-    "validate_alias",
-    "validate_id",
+    # "validate_alias",  # Commented out - from rewoo_tree_agent_v2
+    # "validate_id",  # Commented out - from rewoo_tree_agent_v2
 ]

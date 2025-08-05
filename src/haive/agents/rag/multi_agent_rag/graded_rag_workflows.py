@@ -9,7 +9,7 @@ from typing import Any
 
 from haive.core.schema.prebuilt.rag_state import RAGState
 
-from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import MultiAgent
 from haive.agents.rag.multi_agent_rag.grading_components import (
     AnswerGrade,
     DocumentGrade,
@@ -148,7 +148,7 @@ class FullyGradedRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=GradedRAGState,
             **kwargs)
 
@@ -240,7 +240,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=GradedRAGState,
             **kwargs)
 
@@ -330,7 +330,7 @@ class MultiCriteriaGradedRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=GradedRAGState,
             **kwargs)
 
@@ -402,10 +402,23 @@ class ReflexiveGradedRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=GradedRAGState,
             **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for reflexive graded RAG."""
         return
+
+
+
+def build_custom_graph() -> Any:
+    """Build custom graph for graded RAG workflows.
+    
+    This is a utility function for creating custom graphs for
+    graded RAG workflows in this module.
+    
+    Returns:
+        Graph configuration or None for default behavior
+    """
+    return None  # Use default graph structure

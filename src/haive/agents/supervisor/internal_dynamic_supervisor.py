@@ -13,7 +13,7 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langchain_core.messages import HumanMessage
 from pydantic import Field, PrivateAttr
 
-from haive.agents.multi.base_multi_agent import BaseMultiAgent as MultiAgent
+from haive.agents.multi.base.agent import MultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 

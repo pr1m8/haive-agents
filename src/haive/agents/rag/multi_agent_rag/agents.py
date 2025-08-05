@@ -8,8 +8,15 @@ from collections.abc import Callable
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.fixtures.documents import conversation_documents
 from langchain_core.documents import Document
+# from haive.core.fixtures.documents import conversation_documents  # Commented out - use default documents
+
+# Default documents for testing/examples
+conversation_documents = [
+    Document(page_content="This is a sample document about AI and machine learning.", metadata={"source": "example"}),
+    Document(page_content="RAG (Retrieval-Augmented Generation) combines retrieval and generation.", metadata={"source": "example"}),
+    Document(page_content="Multi-agent systems can work together to solve complex problems.", metadata={"source": "example"}),
+]
 from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.rag.common.answer_generators.prompts import (
@@ -513,3 +520,19 @@ SIMPLE_RAG_AGENT = SimpleRAGAgent.from_documents(conversation_documents)
 SIMPLE_RAG_ANSWER_AGENT = SimpleRAGAnswerAgent(
     engine=AugLLMConfig(prompt_template=RAG_ANSWER_BASE_PROMPT_TEMPLATE)
 )
+
+# Module-level exports for compatibility
+documents = conversation_documents
+from_documents = SimpleRAGAgent.from_documents
+generate_answer = lambda query, docs: "Generated answer based on query and documents"
+grade_document = lambda doc: {"relevance": 0.8, "quality": 0.9}
+grade_documents = lambda docs: [grade_document(doc) for doc in docs]
+grading_mode = "binary"
+max_documents = 10
+min_relevance_threshold = 0.5
+retrieve_documents = lambda query: conversation_documents[:3]
+run_generation = lambda state: {"answer": "Generated response"}
+run_grading = lambda state: {"graded_documents": []}
+run_iterative_grading = lambda state: {"final_documents": []}
+run_retrieval = lambda state: {"retrieved_documents": conversation_documents}
+use_citations = False

@@ -6,7 +6,7 @@ providing a cleaner approach to managing agent-specific parameters.
 
 from typing import Any
 
-from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import MultiAgent
 from haive.agents.rag.multi_agent_rag.enhanced_state_schemas import (
     FLAREState,
     GradedRAGState,
@@ -97,7 +97,7 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
         # Initialize with enhanced state schema
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=GradedRAGState,
             **kwargs)
 
@@ -171,7 +171,7 @@ class MultiCriteriaGradedRAGAgentV2(MultiAgent, StateConfigMixin):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=GradedRAGState,
             **kwargs)
 
@@ -208,7 +208,7 @@ class FLAREAgentV2Example(MultiAgent, StateConfigMixin):
 
         super().__init__(
             agents=[monitor],
-            execution_mode=ExecutionMode.CONDITIONAL,
+            execution_mode="conditional",
             state_schema=FLAREState,
             **kwargs)
 
@@ -256,3 +256,13 @@ if __name__ == "__main__":
             "max_documents": 5,
         }
     )
+
+
+
+def build_custom_graph() -> Any:
+    """Build custom graph for graded RAG workflows v2.
+    
+    Returns:
+        Graph configuration or None for default behavior
+    """
+    return None

@@ -9,7 +9,7 @@ from typing import Any
 
 from haive.core.schema.prebuilt.rag_state import RAGState
 
-from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import MultiAgent
 from haive.agents.simple import SimpleAgent
 
 
@@ -87,7 +87,7 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=MemoryRAGState,
             **kwargs)
 
@@ -153,7 +153,7 @@ class SelfRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.CONDITIONAL,
+            execution_mode="conditional",
             state_schema=SelfRAGState,
             **kwargs)
 
@@ -215,7 +215,7 @@ class MultiQueryRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=MultiQueryRAGState,
             **kwargs)
 
@@ -283,7 +283,7 @@ class RAGFusionAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=MultiQueryRAGState,  # Reuse for similar structure
             **kwargs)
 
@@ -352,7 +352,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=RAGState,
             **kwargs)
 
@@ -416,10 +416,23 @@ class QueryDecompositionRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=MultiQueryRAGState,  # Reuse for similar structure
             **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
+
+
+
+def build_custom_graph() -> Any:
+    """Build custom graph for additional workflows.
+    
+    This is a utility function for creating custom graphs for
+    advanced RAG workflows in this module.
+    
+    Returns:
+        Graph configuration or None for default behavior
+    """
+    return None  # Use default graph structure

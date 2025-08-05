@@ -11,7 +11,7 @@ from haive.core.schema.agent_schema_composer import AgentSchemaComposer
 from haive.core.schema.schema_composer import SchemaComposer
 from pydantic import Field, model_validator
 from haive.agents.base.agent import Agent
-from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import MultiAgent
 from haive.agents.supervisor.integrated_supervisor import IntegratedDynamicSupervisor
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
     @model_validator(mode='after')
     def setup_dynamic_supervisor(self) -> 'DynamicMultiAgentSupervisor':
         """Set up the dynamic supervisor if needed."""
-        if self.execution_mode == ExecutionMode.HIERARCHICAL and self.enable_dynamic_management:
+        if self.execution_mode == "hierarchical" and self.enable_dynamic_management:
             self._dynamic_supervisor = IntegratedDynamicSupervisor(name=f'{self.name}_supervisor', engine=self.supervisor_engine, enable_agent_management_tools=True, coordination_mode='supervisor', auto_rebuild_graph=True)
             for agent in self.agents:
                 if hasattr(agent, 'name'):
@@ -49,7 +49,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
 
     def _setup_schemas(self) -> None:
         """Enhanced schema setup that integrates dynamic supervisor state."""
-        if self.enable_dynamic_management and self.execution_mode == ExecutionMode.HIERARCHICAL:
+        if self.enable_dynamic_management and self.execution_mode == "hierarchical":
             self._setup_hybrid_schema()
         else:
             super()._setup_schemas()
@@ -69,7 +69,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
 
     def build_graph(self) -> BaseGraph:
         """Build graph with dynamic supervisor integration."""
-        if self.enable_dynamic_management and self.execution_mode == ExecutionMode.HIERARCHICAL:
+        if self.enable_dynamic_management and self.execution_mode == "hierarchical":
             return self._build_dynamic_supervisor_graph()
         return super().build_graph()
 
@@ -182,7 +182,7 @@ class ReactMultiAgentSupervisor(DynamicMultiAgentSupervisor):
     Combines ReactAgent looping behavior with multi-agent coordination
     and dynamic supervisor capabilities.
     """
-    execution_mode: ExecutionMode = Field(default=ExecutionMode.HIERARCHICAL)
+    execution_mode: str = Field(default="hierarchical")
 
     def build_graph(self) -> BaseGraph:
         """Build graph with React-style looping and multi-agent coordination."""
@@ -206,8 +206,8 @@ def create_compatible_supervisor(agents: Sequence[Agent], name: str='Compatible 
         Either DynamicMultiAgentSupervisor or standard MultiAgent
     """
     if enable_dynamic and supervisor_engine:
-        return DynamicMultiAgentSupervisor(name=name, agents=agents, execution_mode=ExecutionMode.HIERARCHICAL, enable_dynamic_management=True, supervisor_engine=supervisor_engine, use_choice_model=True)
-    return MultiAgent(name=name, agents=agents, execution_mode=ExecutionMode.SEQUENCE)
+        return DynamicMultiAgentSupervisor(name=name, agents=agents, execution_mode="hierarchical", enable_dynamic_management=True, supervisor_engine=supervisor_engine, use_choice_model=True)
+    return MultiAgent(name=name, agents=agents, execution_mode="sequence")
 
 def migrate_from_multi_agent(multi_agent: MultiAgent) -> DynamicMultiAgentSupervisor:
     """Migrate existing MultiAgent to dynamic supervisor version.

@@ -76,15 +76,15 @@ See Also:
 from enum import Enum
 from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.embeddings import OpenAIEmbeddings
-from haive.core.models.vectorstore import InMemoryVectorStore
-from haive.core.tools import create_retriever_tool
-from haive.core.types import Name
-from haive.tools.utility.document_loaders import DirectoryLoader
+from haive.core.models.embeddings import OpenAIEmbeddingConfig, create_embeddings
+from langchain_core.vectorstores import InMemoryVectorStore
+from langchain.tools.retriever import create_retriever_tool
+# str type replaced with str for simplicity
+from langchain_community.document_loaders import DirectoryLoader
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import Tool, tool
 from pydantic import ConfigDict, Field, field_validator, model_validator
-from haive.agents.base.base_agent import BaseAgent
+from haive.agents.base.agent import Agent as BaseAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.react.dynamic_activation_supervisor import ComponentDiscoveryAgent
 from haive.agents.simple.agent import SimpleAgent
@@ -332,7 +332,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
 
         Returns:
             SupervisorDecision containing:
-                - next_agent: Name of agent to route to (or self for discovery)
+                - next_agent: str of agent to route to (or self for discovery)
                 - reasoning: Explanation of the routing decision
                 - confidence: Confidence score (0.0-1.0)
                 - suggested_prompt: Optional prompt modification
@@ -404,7 +404,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
         return SupervisorDecision(next_agent=agent, reasoning=reasoning or 'Routing based on task analysis', confidence=confidence, suggested_prompt=prompt)
 
     @classmethod
-    def create_with_discovery(cls, name: str, agents: dict[Name, BaseAgent], engine: AugLLMConfig, discovery_mode: ToolDiscoveryMode=ToolDiscoveryMode.HYBRID, component_discovery_config: dict[str, Any] | None=None, rag_documents_path: str | None=None, mcp_config: dict[str, Any] | None=None, **kwargs) -> 'DynamicToolDiscoverySupervisor':
+    def create_with_discovery(cls, name: str, agents: dict[str, BaseAgent], engine: AugLLMConfig, discovery_mode: ToolDiscoveryMode=ToolDiscoveryMode.HYBRID, component_discovery_config: dict[str, Any] | None=None, rag_documents_path: str | None=None, mcp_config: dict[str, Any] | None=None, **kwargs) -> 'DynamicToolDiscoverySupervisor':
         """Create supervisor with configured discovery sources.
 
         This factory method creates a supervisor with specific discovery sources
@@ -479,7 +479,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
         if discovery_mode in [ToolDiscoveryMode.RAG_DISCOVERY, ToolDiscoveryMode.HYBRID] and rag_documents_path:
             loader = DirectoryLoader(rag_documents_path)
             documents = loader.load()
-            embeddings = OpenAIEmbeddings()
+            embeddings = create_embeddings(OpenAIEmbeddingConfig())
             vectorstore = InMemoryVectorStore(embedding=embeddings)
             vectorstore.add_documents(documents)
             retriever_tool = create_retriever_tool(retriever=vectorstore.as_retriever(), name='search_tool_docs', description='Search for tool documentation and definitions')

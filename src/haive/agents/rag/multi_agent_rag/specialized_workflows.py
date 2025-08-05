@@ -8,7 +8,7 @@ from typing import Any
 
 from haive.core.schema.prebuilt.rag_state import RAGState
 
-from haive.agents.multi.base import ExecutionMode, MultiAgent
+from haive.agents.multi.base import MultiAgent
 from haive.agents.simple import SimpleAgent
 
 
@@ -136,7 +136,7 @@ class FLAREAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.CONDITIONAL,
+            execution_mode="conditional",
             state_schema=FLAREState,
             **kwargs)
 
@@ -232,7 +232,7 @@ class DynamicRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.SEQUENCE,
+            execution_mode="sequential",
             state_schema=DynamicRAGState,
             **kwargs)
 
@@ -338,7 +338,7 @@ class DebateRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.CONDITIONAL,
+            execution_mode="conditional",
             state_schema=DebateRAGState,
             **kwargs)
 
@@ -437,10 +437,20 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
 
         super().__init__(
             agents=agents,
-            execution_mode=ExecutionMode.CONDITIONAL,
+            execution_mode="conditional",
             state_schema=DynamicRAGState,
             **kwargs)
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for Adaptive Threshold RAG workflow."""
         return  # Use default graph structure
+
+
+
+def build_custom_graph() -> Any:
+    """Build custom graph for specialized workflows.
+    
+    Returns:
+        Graph configuration or None for default behavior
+    """
+    return None

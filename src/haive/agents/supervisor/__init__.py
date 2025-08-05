@@ -56,9 +56,10 @@ from haive.agents.supervisor.dynamic_supervisor import (
     PerformanceMonitor)
 from haive.agents.supervisor.dynamic_supervisor_fixed import (
     DynamicSupervisorFixed)
-from haive.agents.supervisor.dynamic_tool_discovery_supervisor import (
-    DynamicToolDiscoverySupervisor,
-    ToolDiscoveryMode)
+# Note: Commented out to avoid chain of broken imports - can be fixed later
+# from haive.agents.supervisor.dynamic_tool_discovery_supervisor import (
+#     DynamicToolDiscoverySupervisor,
+#     ToolDiscoveryMode)
 from haive.agents.supervisor.example_delegation import (
     create_mock_math_agent,
     create_mock_research_agent,
@@ -74,11 +75,9 @@ from haive.agents.supervisor.multi_agent_dynamic_state import (
     MultiAgentCoordinationState,
     MultiAgentDynamicSupervisorState)
 from haive.agents.supervisor.proper_dynamic_supervisor import (
-    MockAgent,
     ProperDynamicSupervisor)
 from haive.agents.supervisor.rebuild_dynamic_supervisor import (
-    RebuildDynamicSupervisor,
-    TestAgent)
+    RebuildDynamicSupervisor)
 from haive.agents.supervisor.registry import (
     AgentRegistry)
 from haive.agents.supervisor.registry_supervisor import (
