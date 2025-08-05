@@ -31,3 +31,7 @@ class MemoryAgentConfig(AgentConfig):
     # System prompts
     system_prompt: str = Field(default="You are a helpful assistant with memory capabilities.", description="System prompt")
     memory_system_prompt: str = Field(default="Use your memory to provide better responses.", description="Memory-specific system prompt")
+    
+    # Output schema and node
+    structured_output_schema: Any = Field(default=None, description="Structured output schema")
+    output_node_name: str = Field(default="output", description="Name of output node")

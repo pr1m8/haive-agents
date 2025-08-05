@@ -251,7 +251,12 @@ class MemoryAgent(ReactAgent):
                     if isinstance(msg, HumanMessage) or (
                         isinstance(msg, tuple) and msg[0] == "human"
                     ):
-                        content = msg.content if hasattr(msg, "content") else msg[1]
+                        if hasattr(msg, "content"):
+                            content = msg.content
+                        elif isinstance(msg, tuple) and len(msg) > 1:
+                            content = msg[1]
+                        else:
+                            content = str(msg)
                         query = str(content)
                         break
 
