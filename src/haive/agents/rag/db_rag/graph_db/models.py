@@ -18,7 +18,7 @@ Example:
         MATCH (m:Movie) WHERE m.year = $year RETURN m.title
 """
 
-from typing import Any, Literal, TypeVar
+from typing import Any, List, Literal, TypeVar
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -271,3 +271,65 @@ class GuardrailsOutput(BaseModel):
                 "allowed_categories": ["movie", "sports", "music"],
             }
         }
+
+
+class Config(BaseModel):
+    """Top-level configuration class for Graph DB RAG models."""
+    
+    domain_name: str = Field(default="general", description="Domain name for the configuration")
+    allowed_categories: List[str] = Field(default_factory=list, description="Allowed categories")
+    validation_enabled: bool = Field(default=True, description="Whether validation is enabled")
+
+
+def validate_cypher_syntax(query: str) -> bool:
+    """Validate Cypher query syntax.
+    
+    Args:
+        query: Cypher query string to validate
+        
+    Returns:
+        True if syntax is valid, False otherwise
+    """
+    # Basic syntax validation - placeholder implementation
+    return query.strip().upper().startswith(("MATCH", "CREATE", "MERGE", "RETURN"))
+
+
+def validate_decision(decision: str, allowed_values: List[str]) -> bool:
+    """Validate decision against allowed values.
+    
+    Args:
+        decision: Decision value to validate
+        allowed_values: List of allowed decision values
+        
+    Returns:
+        True if decision is valid, False otherwise
+    """
+    return decision in allowed_values
+
+
+def validate_filter_type(filter_type: str) -> bool:
+    """Validate filter type for property filtering.
+    
+    Args:
+        filter_type: Filter type to validate
+        
+    Returns:
+        True if filter type is valid, False otherwise
+    """
+    valid_types = ["equals", "contains", "starts_with", "ends_with", "greater_than", "less_than"]
+    return filter_type in valid_types
+
+
+# Export all models for module use
+__all__ = [
+    "CypherQueryOutput",
+    "QueryValidationOutput", 
+    "DomainRelevanceOutput",
+    "PropertyFilter",
+    "ValidateCypherOutput",
+    "GuardrailsOutput",
+    "Config",
+    "validate_cypher_syntax",
+    "validate_decision",
+    "validate_filter_type"
+]

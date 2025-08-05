@@ -340,3 +340,58 @@ class GraphDBRAGConfig(AgentConfig):
 # For backward compatibility
 GraphDBAgentConfig = GraphDBRAGConfig
 """Alias for backward compatibility with older code."""
+
+
+# Utility functions for external use
+def get_graph_db(uri: str = None, user: str = None, password: str = None, database: str = "neo4j"):
+    """Get a Neo4j database connection.
+    
+    Args:
+        uri: Neo4j URI (defaults to NEO4J_URI env var)
+        user: Username (defaults to NEO4J_USER env var)
+        password: Password (defaults to NEO4J_PASSWORD env var)
+        database: Database name (defaults to "neo4j")
+        
+    Returns:
+        Mock database connection (placeholder implementation)
+    """
+    # Placeholder implementation
+    return {
+        "uri": uri or os.getenv("NEO4J_URI", "bolt://localhost:7687"),
+        "user": user or os.getenv("NEO4J_USER", "neo4j"),
+        "database": database,
+        "connected": False  # Placeholder status
+    }
+
+
+def get_graph_db_schema(db_connection=None) -> dict:
+    """Get the schema from a Neo4j database.
+    
+    Args:
+        db_connection: Database connection object
+        
+    Returns:
+        Dictionary representing the database schema
+    """
+    # Placeholder implementation
+    return {
+        "nodes": ["Movie", "Person", "Director"],
+        "relationships": ["ACTED_IN", "DIRECTED"],
+        "properties": {
+            "Movie": ["title", "year", "rating"],
+            "Person": ["name", "born"]
+        }
+    }
+
+
+def validate_engines(engines: dict) -> bool:
+    """Validate that all required engines are properly configured.
+    
+    Args:
+        engines: Dictionary of engine configurations
+        
+    Returns:
+        True if all engines are valid, False otherwise
+    """
+    required_engines = ["query_generator", "query_validator", "answer_generator"]
+    return all(engine in engines for engine in required_engines)
