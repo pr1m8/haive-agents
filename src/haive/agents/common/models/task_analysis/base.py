@@ -137,7 +137,7 @@ ComplexityType = ComplexityLevel
 
 class SolvabilityStatus(str, Enum):
     """Current solvability status of a task.
-    
+
     Attributes:
         TRIVIAL: Task is trivially solvable with basic knowledge/tools
         READY: Task is immediately solvable with available resources
@@ -148,7 +148,7 @@ class SolvabilityStatus(str, Enum):
         IMPOSSIBLE: Task is currently impossible given constraints
         UNDEFINED: Solvability cannot be determined
     """
-    
+
     TRIVIAL = "trivial"
     READY = "ready"
     FEASIBLE = "feasible"
@@ -243,10 +243,7 @@ class TaskStep(BaseModel):
 
     """
 
-    model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True,
-        use_enum_values=True)
+    model_config = ConfigDict(extra="forbid", validate_assignment=True, use_enum_values=True)
 
     name: str = Field(
         ...,
@@ -257,7 +254,8 @@ class TaskStep(BaseModel):
             "Look up Wimbledon winner",
             "Calculate age in days",
             "Find square root",
-        ])
+        ],
+    )
 
     description: str = Field(
         ...,
@@ -268,28 +266,25 @@ class TaskStep(BaseModel):
             "Search for the most recent Wimbledon men's singles champion",
             "Calculate the number of days between birth date and today",
             "Compute the square root of the calculated number of days",
-        ])
-
-    task_type: TaskType = Field(
-        ..., description="The type of task this step represents"
+        ],
     )
+
+    task_type: TaskType = Field(..., description="The type of task this step represents")
 
     estimated_duration_minutes: float = Field(
         default=5.0,
         description="Estimated time to complete this step in minutes",
         gt=0,
-        examples=[1.0, 5.0, 30.0, 120.0])
+        examples=[1.0, 5.0, 30.0, 120.0],
+    )
 
     required_resources: list[ResourceType] = Field(
-        default_factory=list,
-        description="Resources needed to complete this step",
-        max_length=10)
+        default_factory=list, description="Resources needed to complete this step", max_length=10
+    )
 
     difficulty_level: int = Field(
-        default=1,
-        description="Subjective difficulty level (1=easy, 5=very hard)",
-        ge=1,
-        le=5)
+        default=1, description="Subjective difficulty level (1=easy, 5=very hard)", ge=1, le=5
+    )
 
     can_be_automated: bool = Field(
         default=True, description="Whether this step can be fully automated"
@@ -310,7 +305,8 @@ class TaskStep(BaseModel):
             ["winner_name", "tournament_year"],
             ["age_in_days"],
             ["square_root_result"],
-        ])
+        ],
+    )
 
     metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata about this step"
@@ -389,16 +385,16 @@ class DependencyNode(BaseModel):
     source_id: str = Field(
         ...,
         description="ID of the source task/step",
-        examples=["lookup_winner", "calculate_age", "step_1"])
+        examples=["lookup_winner", "calculate_age", "step_1"],
+    )
 
     target_id: str = Field(
         ...,
         description="ID of the target task/step",
-        examples=["lookup_birthday", "find_square_root", "step_2"])
-
-    dependency_type: DependencyType = Field(
-        ..., description="Type of dependency relationship"
+        examples=["lookup_birthday", "find_square_root", "step_2"],
     )
+
+    dependency_type: DependencyType = Field(..., description="Type of dependency relationship")
 
     condition: str | None = Field(
         default=None,
@@ -407,18 +403,19 @@ class DependencyNode(BaseModel):
             "if winner_found",
             "if calculation_successful",
             "if approval_granted",
-        ])
+        ],
+    )
 
     weight: float = Field(
         default=1.0,
         description="Strength/importance of the dependency (0.0 to 1.0)",
         ge=0.0,
-        le=1.0)
+        le=1.0,
+    )
 
     description: str = Field(
-        default="",
-        description="Human-readable description of the dependency",
-        max_length=500)
+        default="", description="Human-readable description of the dependency", max_length=500
+    )
 
     metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata about this dependency"
@@ -500,10 +497,7 @@ class Task(BaseModel):
 
     """
 
-    model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True,
-        use_enum_values=True)
+    model_config = ConfigDict(extra="forbid", validate_assignment=True, use_enum_values=True)
 
     name: str = Field(
         ...,
@@ -514,13 +508,12 @@ class Task(BaseModel):
             "Analyze Wimbledon Champion Age",
             "Database Migration Project",
             "Research Market Trends",
-        ])
+        ],
+    )
 
     description: str = Field(
-        ...,
-        description="Detailed description of the task",
-        min_length=1,
-        max_length=5000)
+        ..., description="Detailed description of the task", min_length=1, max_length=5000
+    )
 
     task_type: TaskType = Field(..., description="Primary type of this task")
 
@@ -529,17 +522,18 @@ class Task(BaseModel):
     subtasks: list[Union["Task", TaskStep]] = Field(
         default_factory=list,
         description="List of subtasks and steps that make up this task",
-        max_length=50)
+        max_length=50,
+    )
 
     dependencies: list[DependencyNode] = Field(
         default_factory=list,
         description="Dependency relationships between subtasks",
-        max_length=100)
+        max_length=100,
+    )
 
     estimated_duration_minutes: float | None = Field(
-        default=None,
-        description="Total estimated duration in minutes (calculated if None)",
-        gt=0)
+        default=None, description="Total estimated duration in minutes (calculated if None)", gt=0
+    )
 
     complexity_level: ComplexityLevel | None = Field(
         default=None, description="Overall complexity assessment (calculated if None)"
@@ -563,11 +557,10 @@ class Task(BaseModel):
                 "No data loss",
                 "Performance maintained",
             ],
-        ])
-
-    priority: int = Field(
-        default=3, description="Task priority (1=low, 5=critical)", ge=1, le=5
+        ],
     )
+
+    priority: int = Field(default=3, description="Task priority (1=low, 5=critical)", ge=1, le=5)
 
     can_be_parallelized: bool = Field(
         default=True, description="Whether subtasks can potentially run in parallel"
@@ -666,9 +659,7 @@ class Task(BaseModel):
         # Simple heuristic: if we have multiple subtasks and not all are
         # sequential
         sequential_deps = [
-            d
-            for d in self.dependencies
-            if d.dependency_type == DependencyType.SEQUENTIAL
+            d for d in self.dependencies if d.dependency_type == DependencyType.SEQUENTIAL
         ]
         return len(sequential_deps) < len(self.subtasks) - 1
 

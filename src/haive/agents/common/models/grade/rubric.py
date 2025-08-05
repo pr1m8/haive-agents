@@ -3,9 +3,11 @@
 This module implements a rubric-based grading system that evaluates
 multiple criteria with individual scores and weights.
 """
+
 from typing import Any
 from pydantic import BaseModel, Field, field_validator, model_validator
 from haive.agents.common.models.grade.base import Grade, GradeType
+
 
 class RubricCriterion(BaseModel):
     """Individual criterion within a rubric.
@@ -32,13 +34,39 @@ class RubricCriterion(BaseModel):
             )
 
     """
-    name: str = Field(..., description='Name or description of the evaluation criterion', min_length=1, max_length=200, examples=['Content Quality', 'Organization', 'Grammar & Style', 'Originality'])
-    score: int | float = Field(..., description='Score achieved for this criterion', examples=[8.5, 7, 4.2, 9])
-    max_score: int | float = Field(..., description='Maximum possible score for this criterion', gt=0, examples=[10, 5, 100, 4])
-    weight: float = Field(default=1.0, description='Relative weight/importance of this criterion', gt=0, examples=[1.0, 0.5, 2.0, 0.25])
-    justification: str = Field(..., description='Explanation for the score given to this criterion', min_length=3, max_length=1000, examples=['Strong logical flow with clear transitions', 'Minor grammatical errors throughout', 'Highly original approach to the problem'])
 
-    @field_validator('score')
+    name: str = Field(
+        ...,
+        description="Name or description of the evaluation criterion",
+        min_length=1,
+        max_length=200,
+        examples=["Content Quality", "Organization", "Grammar & Style", "Originality"],
+    )
+    score: int | float = Field(
+        ..., description="Score achieved for this criterion", examples=[8.5, 7, 4.2, 9]
+    )
+    max_score: int | float = Field(
+        ..., description="Maximum possible score for this criterion", gt=0, examples=[10, 5, 100, 4]
+    )
+    weight: float = Field(
+        default=1.0,
+        description="Relative weight/importance of this criterion",
+        gt=0,
+        examples=[1.0, 0.5, 2.0, 0.25],
+    )
+    justification: str = Field(
+        ...,
+        description="Explanation for the score given to this criterion",
+        min_length=3,
+        max_length=1000,
+        examples=[
+            "Strong logical flow with clear transitions",
+            "Minor grammatical errors throughout",
+            "Highly original approach to the problem",
+        ],
+    )
+
+    @field_validator("score")
     @classmethod
     def validate_score_range(cls, v: int | float, info) -> int | float:
         """Validate that score is within valid range.
@@ -54,11 +82,11 @@ class RubricCriterion(BaseModel):
             ValueError: If score is outside valid range
         """
         if v < 0:
-            raise ValueError('Score cannot be negative')
+            raise ValueError("Score cannot be negative")
         return v
 
-    @model_validator(mode='after')
-    def validate_score_within_max(self) -> 'RubricCriterion':
+    @model_validator(mode="after")
+    def validate_score_within_max(self) -> "RubricCriterion":
         """Validate that score does not exceed max_score.
 
         Returns:
@@ -68,7 +96,9 @@ class RubricCriterion(BaseModel):
             ValueError: If score exceeds max_score
         """
         if self.score > self.max_score:
-            raise ValueError(f"Score {self.score} exceeds max_score {self.max_score} for criterion '{self.name}'")
+            raise ValueError(
+                f"Score {self.score} exceeds max_score {self.max_score} for criterion '{self.name}'"
+            )
         return self
 
     def get_normalized_score(self) -> float:
@@ -104,6 +134,7 @@ class RubricCriterion(BaseModel):
             Max score multiplied by weight
         """
         return self.max_score * self.weight
+
 
 class RubricGrade(Grade):
     """Rubric grading model for multi-criteria evaluations.
@@ -150,10 +181,15 @@ class RubricGrade(Grade):
             )
 
     """
-    grade_type: GradeType = Field(default=GradeType.RUBRIC, description='Type of grade model (always rubric)')
-    criteria: list[RubricCriterion] = Field(..., description='List of individual rubric criteria', min_length=1, max_length=20)
 
-    @field_validator('criteria')
+    grade_type: GradeType = Field(
+        default=GradeType.RUBRIC, description="Type of grade model (always rubric)"
+    )
+    criteria: list[RubricCriterion] = Field(
+        ..., description="List of individual rubric criteria", min_length=1, max_length=20
+    )
+
+    @field_validator("criteria")
     @classmethod
     def validate_criteria_names_unique(cls, v: list[RubricCriterion]) -> list[RubricCriterion]:
         """Validate that all criterion names are unique.
@@ -169,7 +205,7 @@ class RubricGrade(Grade):
         """
         names = [criterion.name.lower().strip() for criterion in v]
         if len(names) != len(set(names)):
-            raise ValueError('All criterion names must be unique')
+            raise ValueError("All criterion names must be unique")
         return v
 
     def get_normalized_score(self) -> float:
@@ -182,7 +218,9 @@ class RubricGrade(Grade):
         """
         if not self.criteria:
             return 0.0
-        total_weighted_score = sum((criterion.get_normalized_score() * criterion.weight for criterion in self.criteria))
+        total_weighted_score = sum(
+            (criterion.get_normalized_score() * criterion.weight for criterion in self.criteria)
+        )
         total_weight = sum((criterion.weight for criterion in self.criteria))
         if total_weight == 0:
             return 0.0
@@ -204,7 +242,7 @@ class RubricGrade(Grade):
         """
         return sum((criterion.get_weighted_max_score() for criterion in self.criteria))
 
-    def is_passing(self, threshold: float | None=None) -> bool:
+    def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the rubric grade represents a passing score.
 
         Args:
@@ -239,9 +277,20 @@ class RubricGrade(Grade):
         Returns:
             Dictionary mapping criterion names to their summary info
         """
-        return {criterion.name: {'score': criterion.score, 'max_score': criterion.max_score, 'percentage': criterion.get_percentage_score(), 'normalized': criterion.get_normalized_score(), 'weight': criterion.weight, 'weighted_score': criterion.get_weighted_score(), 'justification': criterion.justification} for criterion in self.criteria}
+        return {
+            criterion.name: {
+                "score": criterion.score,
+                "max_score": criterion.max_score,
+                "percentage": criterion.get_percentage_score(),
+                "normalized": criterion.get_normalized_score(),
+                "weight": criterion.weight,
+                "weighted_score": criterion.get_weighted_score(),
+                "justification": criterion.justification,
+            }
+            for criterion in self.criteria
+        }
 
-    def get_weakest_criteria(self, count: int=3) -> list[RubricCriterion]:
+    def get_weakest_criteria(self, count: int = 3) -> list[RubricCriterion]:
         """Get the criteria with the lowest normalized scores.
 
         Args:
@@ -253,7 +302,7 @@ class RubricGrade(Grade):
         sorted_criteria = sorted(self.criteria, key=lambda c: c.get_normalized_score())
         return sorted_criteria[:count]
 
-    def get_strongest_criteria(self, count: int=3) -> list[RubricCriterion]:
+    def get_strongest_criteria(self, count: int = 3) -> list[RubricCriterion]:
         """Get the criteria with the highest normalized scores.
 
         Args:
@@ -262,7 +311,9 @@ class RubricGrade(Grade):
         Returns:
             List of criteria sorted by normalized score (highest first)
         """
-        sorted_criteria = sorted(self.criteria, key=lambda c: c.get_normalized_score(), reverse=True)
+        sorted_criteria = sorted(
+            self.criteria, key=lambda c: c.get_normalized_score(), reverse=True
+        )
         return sorted_criteria[:count]
 
     def get_improvement_suggestions(self) -> list[str]:
@@ -275,7 +326,9 @@ class RubricGrade(Grade):
         suggestions = []
         for criterion in weakest:
             if criterion.get_normalized_score() < 0.7:
-                suggestions.append(f"Focus on improving '{criterion.name}' (currently {criterion.get_percentage_score():.1f}%): {criterion.justification}")
+                suggestions.append(
+                    f"Focus on improving '{criterion.name}' (currently {criterion.get_percentage_score():.1f}%): {criterion.justification}"
+                )
         return suggestions
 
     def to_display_string(self) -> str:
@@ -285,9 +338,9 @@ class RubricGrade(Grade):
             Formatted string representation of the rubric grade
         """
         overall_percentage = self.get_normalized_score() * 100
-        passing_status = '✅' if self.is_passing() else '❌'
+        passing_status = "✅" if self.is_passing() else "❌"
         criteria_count = len(self.criteria)
-        return f'{passing_status} Rubric: {overall_percentage:.1f}% ({criteria_count} criteria) | {self.justification[:30]}...'
+        return f"{passing_status} Rubric: {overall_percentage:.1f}% ({criteria_count} criteria) | {self.justification[:30]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a value represents valid rubric criteria.
@@ -315,7 +368,13 @@ class RubricGrade(Grade):
             return False
 
     @classmethod
-    def create_simple_rubric(cls, criteria_scores: dict[str, float | dict[str, Any]], justification: str, max_score: float=10.0, **kwargs) -> 'RubricGrade':
+    def create_simple_rubric(
+        cls,
+        criteria_scores: dict[str, float | dict[str, Any]],
+        justification: str,
+        max_score: float = 10.0,
+        **kwargs,
+    ) -> "RubricGrade":
         """Create a simple rubric with equal weights.
 
         Args:
@@ -344,9 +403,23 @@ class RubricGrade(Grade):
         criteria = []
         for name, score_data in criteria_scores.items():
             if isinstance(score_data, int | float):
-                criterion = RubricCriterion(name=name, score=score_data, max_score=max_score, weight=1.0, justification=f'Score: {score_data}/{max_score}')
+                criterion = RubricCriterion(
+                    name=name,
+                    score=score_data,
+                    max_score=max_score,
+                    weight=1.0,
+                    justification=f"Score: {score_data}/{max_score}",
+                )
             elif isinstance(score_data, dict):
-                criterion = RubricCriterion(name=name, score=score_data.get('score', 0), max_score=score_data.get('max_score', max_score), weight=score_data.get('weight', 1.0), justification=score_data.get('justification', f'Score: {score_data.get('score', 0)}'))
+                criterion = RubricCriterion(
+                    name=name,
+                    score=score_data.get("score", 0),
+                    max_score=score_data.get("max_score", max_score),
+                    weight=score_data.get("weight", 1.0),
+                    justification=score_data.get(
+                        "justification", f"Score: {score_data.get('score', 0)}"
+                    ),
+                )
             else:
                 raise ValueError(f"Invalid score data for criterion '{name}': {score_data}")
             criteria.append(criterion)

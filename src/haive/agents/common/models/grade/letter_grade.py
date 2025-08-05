@@ -88,18 +88,18 @@ class LetterGrade(Grade):
     )
 
     value: LetterValue = Field(
-        ...,
-        description="Letter grade value (A+ through F)",
-        examples=["A", "B+", "C-", "F"])
+        ..., description="Letter grade value (A+ through F)", examples=["A", "B+", "C-", "F"]
+    )
 
     gpa_scale: float = Field(
         default=4.0,
         description="GPA scale to use for calculations (typically 4.0 or 5.0)",
-        examples=[4.0, 5.0])
+        examples=[4.0, 5.0],
+    )
 
     passing_grade: LetterValue = Field(
-        default=LetterValue.C_MINUS,
-        description="Minimum letter grade considered passing")
+        default=LetterValue.C_MINUS, description="Minimum letter grade considered passing"
+    )
 
     @field_validator("value", mode="before")
     @classmethod
@@ -331,11 +331,9 @@ class LetterGrade(Grade):
         quality = self.get_letter_quality_description()
         passing_status = "✅" if self.is_passing() else "❌"
 
-        return f"{passing_status} {
-            self.value.value} ({
-            gpa:.1f} GPA | {quality}) | {
-            self.justification[
-                :30]}..."
+        return f"{passing_status} {self.value.value} ({gpa:.1f} GPA | {quality}) | {
+            self.justification[:30]
+        }..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a value can be converted to a letter grade.
@@ -401,6 +399,4 @@ class LetterGrade(Grade):
         else:
             letter = LetterValue.F
 
-        return cls(
-            value=letter, justification=justification, gpa_scale=gpa_scale, **kwargs
-        )
+        return cls(value=letter, justification=justification, gpa_scale=gpa_scale, **kwargs)

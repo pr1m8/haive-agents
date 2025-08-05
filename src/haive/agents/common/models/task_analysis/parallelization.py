@@ -10,10 +10,7 @@ from typing import Any
 from haive.core.common.structures.tree import AutoTree
 from pydantic import BaseModel, ConfigDict, Field
 
-from haive.agents.common.models.task_analysis.base import (
-    DependencyNode,
-    Task,
-    TaskStep)
+from haive.agents.common.models.task_analysis.base import DependencyNode, Task, TaskStep
 
 
 class ExecutionStrategy(str, Enum):
@@ -62,14 +59,13 @@ class JoinPoint(BaseModel):
 
     """
 
-    model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True)
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
     id: str = Field(
         ...,
         description="Unique identifier for this join point",
-        examples=["join_1", "analysis_join", "data_merge_point"])
+        examples=["join_1", "analysis_join", "data_merge_point"],
+    )
 
     name: str = Field(
         ...,
@@ -78,28 +74,31 @@ class JoinPoint(BaseModel):
             "Combine Analysis Results",
             "Merge Data Sources",
             "Synchronize Processing",
-        ])
+        ],
+    )
 
     input_task_ids: list[str] = Field(
         ...,
         description="IDs of tasks that must complete before this join",
         min_length=2,
-        examples=[["task_1", "task_2"], ["data_collection", "background_research"]])
+        examples=[["task_1", "task_2"], ["data_collection", "background_research"]],
+    )
 
     output_task_ids: list[str] = Field(
         default_factory=list,
         description="IDs of tasks that can start after this join",
-        examples=[["task_3"], ["final_report", "presentation"]])
+        examples=[["task_3"], ["final_report", "presentation"]],
+    )
 
     join_type: str = Field(
         default="synchronous",
         description="Type of join operation",
-        examples=["synchronous", "asynchronous", "conditional", "partial"])
+        examples=["synchronous", "asynchronous", "conditional", "partial"],
+    )
 
     estimated_wait_time_minutes: float = Field(
-        default=0.0,
-        description="Expected time to wait for all inputs to complete",
-        ge=0.0)
+        default=0.0, description="Expected time to wait for all inputs to complete", ge=0.0
+    )
 
     is_critical_path: bool = Field(
         default=False, description="Whether this join point is on the critical path"
@@ -109,7 +108,8 @@ class JoinPoint(BaseModel):
         default=0.0,
         description="Probability this join point will be a bottleneck (0.0 to 1.0)",
         ge=0.0,
-        le=1.0)
+        le=1.0,
+    )
 
     def get_input_count(self) -> int:
         """Get the number of input tasks for this join point.
@@ -171,20 +171,20 @@ class ParallelGroup(BaseModel):
 
     """
 
-    model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True)
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
     group_id: str = Field(
         ...,
         description="Unique identifier for this parallel group",
-        examples=["group_1", "research_phase", "data_collection"])
+        examples=["group_1", "research_phase", "data_collection"],
+    )
 
     task_ids: list[str] = Field(
         ...,
         description="IDs of tasks in this parallel group",
         min_length=1,
-        examples=[["task_1", "task_2"], ["web_research", "library_research"]])
+        examples=[["task_1", "task_2"], ["web_research", "library_research"]],
+    )
 
     estimated_duration_minutes: float = Field(
         ..., description="Time for the longest task in the group", gt=0.0
@@ -196,27 +196,25 @@ class ParallelGroup(BaseModel):
         examples=[
             {"cpu_cores": 4, "memory_gb": 8},
             {"researchers": 2, "internet": True, "database_access": True},
-        ])
+        ],
+    )
 
     can_be_interleaved: bool = Field(
-        default=True,
-        description="Whether tasks can be interleaved or must run fully parallel")
+        default=True, description="Whether tasks can be interleaved or must run fully parallel"
+    )
 
     priority: int = Field(
-        default=3,
-        description="Priority level for this group (1=low, 5=critical)",
-        ge=1,
-        le=5)
-
-    phase: int = Field(
-        default=1, description="Execution phase this group belongs to", ge=1
+        default=3, description="Priority level for this group (1=low, 5=critical)", ge=1, le=5
     )
+
+    phase: int = Field(default=1, description="Execution phase this group belongs to", ge=1)
 
     parallelization_efficiency: float = Field(
         default=1.0,
         description="Efficiency of parallel execution (1.0 = perfect, 0.0 = no benefit)",
         ge=0.0,
-        le=1.0)
+        le=1.0,
+    )
 
     def get_task_count(self) -> int:
         """Get the number of tasks in this parallel group.
@@ -235,9 +233,7 @@ class ParallelGroup(BaseModel):
         if self.get_task_count() <= 1:
             return 1.0
 
-        return min(
-            self.get_task_count(),
-            self.parallelization_efficiency * self.get_task_count())
+        return min(self.get_task_count(), self.parallelization_efficiency * self.get_task_count())
 
     def calculate_actual_duration(self, sequential_duration: float) -> float:
         """Calculate actual duration considering parallelization.
@@ -278,28 +274,27 @@ class ExecutionPhase(BaseModel):
 
     """
 
-    model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True)
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
     phase_number: int = Field(..., description="Sequential phase number", ge=1)
 
     name: str = Field(
         ...,
         description="Descriptive name for this phase",
-        examples=["Data Collection Phase", "Analysis Phase", "Reporting Phase"])
+        examples=["Data Collection Phase", "Analysis Phase", "Reporting Phase"],
+    )
 
     parallel_groups: list[ParallelGroup] = Field(
         default_factory=list,
-        description="Groups of tasks that can run in parallel within this phase")
+        description="Groups of tasks that can run in parallel within this phase",
+    )
 
     dependencies: list[str] = Field(
         default_factory=list,
-        description="Phase dependencies (other phases that must complete first)")
-
-    estimated_duration_minutes: float = Field(
-        ..., description="Total time for this phase", gt=0.0
+        description="Phase dependencies (other phases that must complete first)",
     )
+
+    estimated_duration_minutes: float = Field(..., description="Total time for this phase", gt=0.0)
 
     critical_path_tasks: list[str] = Field(
         default_factory=list, description="Tasks on the critical path within this phase"
@@ -308,11 +303,12 @@ class ExecutionPhase(BaseModel):
     resource_utilization: dict[str, float] = Field(
         default_factory=dict,
         description="Expected resource utilization during this phase",
-        examples=[{"cpu": 0.8, "memory": 0.6, "network": 0.4}])
+        examples=[{"cpu": 0.8, "memory": 0.6, "network": 0.4}],
+    )
 
     can_start_early: bool = Field(
-        default=False,
-        description="Whether this phase can start before all dependencies complete")
+        default=False, description="Whether this phase can start before all dependencies complete"
+    )
 
     def get_total_task_count(self) -> int:
         """Get total number of tasks across all parallel groups.
@@ -386,9 +382,7 @@ class ParallelizationAnalysis(BaseModel):
 
     """
 
-    model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True)
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
     execution_phases: list[ExecutionPhase] = Field(
         default_factory=list, description="Sequential phases of execution"
@@ -423,8 +417,8 @@ class ParallelizationAnalysis(BaseModel):
     )
 
     resource_requirements: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Peak resource requirements for parallel execution")
+        default_factory=dict, description="Peak resource requirements for parallel execution"
+    )
 
     bottlenecks: list[str] = Field(
         default_factory=list,
@@ -432,18 +426,19 @@ class ParallelizationAnalysis(BaseModel):
         examples=[
             ["Limited CPU cores", "Memory constraints", "Network bandwidth"],
             ["Single-threaded database", "File system locks", "API rate limits"],
-        ])
+        ],
+    )
 
     parallelization_efficiency: float = Field(
         default=1.0,
         description="Overall efficiency of parallelization (0.0 to 1.0)",
         ge=0.0,
-        le=1.0)
+        le=1.0,
+    )
 
     coordination_overhead_minutes: float = Field(
-        default=0.0,
-        description="Estimated overhead for coordinating parallel execution",
-        ge=0.0)
+        default=0.0, description="Estimated overhead for coordinating parallel execution", ge=0.0
+    )
 
     def get_total_phases(self) -> int:
         """Get total number of execution phases.
@@ -478,9 +473,7 @@ class ParallelizationAnalysis(BaseModel):
         Returns:
             Time savings in minutes
         """
-        return max(
-            0.0, self.sequential_duration_minutes - self.parallel_duration_minutes
-        )
+        return max(0.0, self.sequential_duration_minutes - self.parallel_duration_minutes)
 
     def get_efficiency_percentage(self) -> float:
         """Get parallelization efficiency as a percentage.
@@ -527,9 +520,7 @@ class ParallelizationAnalyzer(BaseModel):
 
     """
 
-    model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True)
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
     max_parallel_tasks: int = Field(
         default=10, description="Maximum number of tasks to run in parallel", gt=0
@@ -541,15 +532,16 @@ class ParallelizationAnalyzer(BaseModel):
         examples=[
             {"cpu_cores": 4, "memory_gb": 16, "network_bandwidth_mbps": 100},
             {"workers": 5, "database_connections": 10, "api_calls_per_minute": 1000},
-        ])
+        ],
+    )
 
     prefer_balanced_groups: bool = Field(
         default=True, description="Whether to prefer balanced parallel groups"
     )
 
     include_coordination_overhead: bool = Field(
-        default=True,
-        description="Whether to include coordination overhead in estimates")
+        default=True, description="Whether to include coordination overhead in estimates"
+    )
 
     coordination_overhead_per_task_minutes: float = Field(
         default=0.5, description="Coordination overhead per task in minutes", ge=0.0
@@ -606,9 +598,7 @@ class ParallelizationAnalyzer(BaseModel):
             estimated_speedup = sequential_duration / max(parallel_duration, 1.0)
 
         # Identify bottlenecks
-        bottlenecks = self._identify_bottlenecks(
-            parallel_groups, self.resource_constraints
-        )
+        bottlenecks = self._identify_bottlenecks(parallel_groups, self.resource_constraints)
 
         return ParallelizationAnalysis(
             execution_phases=execution_phases,
@@ -622,11 +612,10 @@ class ParallelizationAnalyzer(BaseModel):
             resource_requirements=self._calculate_peak_resources(parallel_groups),
             bottlenecks=bottlenecks,
             parallelization_efficiency=(
-                min(1.0, estimated_speedup / len(parallel_groups))
-                if parallel_groups
-                else 1.0
+                min(1.0, estimated_speedup / len(parallel_groups)) if parallel_groups else 1.0
             ),
-            coordination_overhead_minutes=coordination_overhead)
+            coordination_overhead_minutes=coordination_overhead,
+        )
 
     def _extract_all_items(self, tree: AutoTree) -> list[Task | TaskStep]:
         """Extract all tasks and steps from the tree."""
@@ -694,25 +683,17 @@ class ParallelizationAnalyzer(BaseModel):
 
             for other_id, other_info in dependency_graph.items():
                 if other_id != task_id and other_id not in visited:
-                    other_predecessors = {
-                        pred_id for pred_id, _ in other_info["predecessors"]
-                    }
+                    other_predecessors = {pred_id for pred_id, _ in other_info["predecessors"]}
 
                     # Can run in parallel if they have the same predecessors
                     # and no blocking dependencies between them
                     if predecessors == other_predecessors:
-                        if not self._has_blocking_dependency(
-                            task_id, other_id, dependency_graph
-                        ):
+                        if not self._has_blocking_dependency(task_id, other_id, dependency_graph):
                             parallel_tasks.append(other_id)
 
-            if (
-                len(parallel_tasks) > 1 or len(parallel_tasks) == 1
-            ):  # Include single tasks too
+            if len(parallel_tasks) > 1 or len(parallel_tasks) == 1:  # Include single tasks too
                 # Calculate group duration (max of all tasks in group)
-                group_duration = max(
-                    dependency_graph[tid]["duration"] for tid in parallel_tasks
-                )
+                group_duration = max(dependency_graph[tid]["duration"] for tid in parallel_tasks)
 
                 parallel_groups.append(
                     ParallelGroup(
@@ -743,9 +724,7 @@ class ParallelizationAnalyzer(BaseModel):
 
         return False
 
-    def _identify_join_points(
-        self, dependency_graph: dict[str, dict[str, Any]]
-    ) -> list[JoinPoint]:
+    def _identify_join_points(self, dependency_graph: dict[str, dict[str, Any]]) -> list[JoinPoint]:
         """Identify join points where multiple tasks synchronize."""
         join_points = []
         join_id = 1
@@ -764,23 +743,20 @@ class ParallelizationAnalyzer(BaseModel):
                         name=f"Join before {task_id}",
                         input_task_ids=input_tasks,
                         output_task_ids=[task_id, *output_tasks],
-                        bottleneck_probability=0.3 if len(input_tasks) > 2 else 0.1)
+                        bottleneck_probability=0.3 if len(input_tasks) > 2 else 0.1,
+                    )
                 )
                 join_id += 1
 
         return join_points
 
-    def _calculate_critical_path(
-        self, dependency_graph: dict[str, dict[str, Any]]
-    ) -> list[str]:
+    def _calculate_critical_path(self, dependency_graph: dict[str, dict[str, Any]]) -> list[str]:
         """Calculate the critical path through the dependency graph."""
         # Simplified critical path calculation
         # In a real implementation, this would use proper CPM algorithm
 
         # Find starting nodes (no predecessors)
-        start_nodes = [
-            tid for tid, info in dependency_graph.items() if not info["predecessors"]
-        ]
+        start_nodes = [tid for tid, info in dependency_graph.items() if not info["predecessors"]]
 
         if not start_nodes:
             return []
@@ -850,10 +826,7 @@ class ParallelizationAnalyzer(BaseModel):
                     if dep.target_id in group.task_ids:
                         # Check if source is in a later group
                         for other_group in remaining_groups:
-                            if (
-                                other_group != group
-                                and dep.source_id in other_group.task_ids
-                            ):
+                            if other_group != group and dep.source_id in other_group.task_ids:
                                 can_start = False
                                 break
                         if not can_start:
@@ -886,7 +859,8 @@ class ParallelizationAnalyzer(BaseModel):
                     phase_number=phase_number,
                     name=f"Phase {phase_number}",
                     parallel_groups=current_phase_groups,
-                    estimated_duration_minutes=phase_duration)
+                    estimated_duration_minutes=phase_duration,
+                )
             )
 
             phase_number += 1
@@ -921,18 +895,13 @@ class ParallelizationAnalyzer(BaseModel):
             available_workers = resource_constraints.get(
                 "workers", resource_constraints.get("cpu_cores", float("inf"))
             )
-            if (
-                isinstance(available_workers, int | float)
-                and max_parallelism > available_workers
-            ):
+            if isinstance(available_workers, int | float) and max_parallelism > available_workers:
                 return ExecutionStrategy.RESOURCE_CONSTRAINED
 
         # Default to balanced approach
         return ExecutionStrategy.BALANCED
 
-    def _calculate_peak_resources(
-        self, parallel_groups: list[ParallelGroup]
-    ) -> dict[str, Any]:
+    def _calculate_peak_resources(self, parallel_groups: list[ParallelGroup]) -> dict[str, Any]:
         """Calculate peak resource requirements."""
         peak_resources = {}
 
@@ -961,20 +930,17 @@ class ParallelizationAnalyzer(BaseModel):
                 and isinstance(required, int | float)
                 and isinstance(available, int | float)
             ) and required > available:
-                bottlenecks.append(
-                    f"Insufficient {resource}: need {required}, have {available}"
-                )
+                bottlenecks.append(f"Insufficient {resource}: need {required}, have {available}")
 
         # Check for large parallel groups
         max_parallelism = (
-            max(group.get_task_count() for group in parallel_groups)
-            if parallel_groups
-            else 0
+            max(group.get_task_count() for group in parallel_groups) if parallel_groups else 0
         )
         if max_parallelism > self.max_parallel_tasks:
             bottlenecks.append(
                 f"Parallelism limit: {max_parallelism} tasks exceed limit of {
-                    self.max_parallel_tasks}"
+                    self.max_parallel_tasks
+                }"
             )
 
         return bottlenecks

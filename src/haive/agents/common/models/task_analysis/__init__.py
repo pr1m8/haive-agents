@@ -3,7 +3,8 @@
 from haive.agents.common.models.task_analysis.analysis import (
     AnalysisMethod,
     ExecutionStrategy,
-    TaskAnalysis)
+    TaskAnalysis,
+)
 from haive.agents.common.models.task_analysis.base import (
     ComplexityType,  # Alias for ComplexityLevel
 )
@@ -17,21 +18,25 @@ from haive.agents.common.models.task_analysis.base import (
     Task,
     TaskStep,
     TaskType,
-    TimeComplexity)
+    TimeComplexity,
+)
 from haive.agents.common.models.task_analysis.branching import (
     BranchType,
     TaskBranch,
-    TaskDecomposition)
+    TaskDecomposition,
+)
 from haive.agents.common.models.task_analysis.parallelization import (
     ExecutionPhase,
     ExecutionStrategy,
     JoinPoint,
     ParallelGroup,
     ParallelizationAnalysis,
-    ParallelizationAnalyzer)
+    ParallelizationAnalyzer,
+)
 from haive.agents.common.models.task_analysis.solvability import (
     SolvabilityAssessment,
-    SolvabilityBarrier)
+    SolvabilityBarrier,
+)
 
 __all__ = [
     "AnalysisMethod",

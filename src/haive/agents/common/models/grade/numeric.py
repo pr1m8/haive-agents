@@ -3,9 +3,11 @@
 This module implements numeric grading systems including general numeric
 scores and percentage-based grading.
 """
+
 from typing import Any
 from pydantic import Field, field_validator, model_validator
 from haive.agents.common.models.grade.base import Grade, GradeType
+
 
 class NumericGrade(Grade):
     """Numeric grading model for score-based evaluations.
@@ -48,14 +50,27 @@ class NumericGrade(Grade):
             )
 
     """
-    grade_type: GradeType = Field(default=GradeType.NUMERIC, description='Type of grade model (always numeric)')
-    value: int | float = Field(..., description='The numeric score value', examples=[8.5, 7, 92.3, 4.2])
-    min_value: int | float = Field(default=0, description='Minimum possible score in the range', examples=[0, 1, -10, 200])
-    max_value: int | float = Field(default=10, description='Maximum possible score in the range', examples=[10, 5, 100, 800])
-    passing_threshold: int | float | None = Field(default=None, description='Minimum score considered passing. If None, defaults to 60% of range', examples=[6, 3, 70, 500])
 
-    @model_validator(mode='after')
-    def validate_score_range(self) -> 'NumericGrade':
+    grade_type: GradeType = Field(
+        default=GradeType.NUMERIC, description="Type of grade model (always numeric)"
+    )
+    value: int | float = Field(
+        ..., description="The numeric score value", examples=[8.5, 7, 92.3, 4.2]
+    )
+    min_value: int | float = Field(
+        default=0, description="Minimum possible score in the range", examples=[0, 1, -10, 200]
+    )
+    max_value: int | float = Field(
+        default=10, description="Maximum possible score in the range", examples=[10, 5, 100, 800]
+    )
+    passing_threshold: int | float | None = Field(
+        default=None,
+        description="Minimum score considered passing. If None, defaults to 60% of range",
+        examples=[6, 3, 70, 500],
+    )
+
+    @model_validator(mode="after")
+    def validate_score_range(self) -> "NumericGrade":
         """Validate that the score is within the specified range.
 
         Returns:
@@ -65,12 +80,18 @@ class NumericGrade(Grade):
             ValueError: If score is outside the valid range
         """
         if self.min_value >= self.max_value:
-            raise ValueError(f'min_value ({self.min_value}) must be less than max_value ({self.max_value})')
+            raise ValueError(
+                f"min_value ({self.min_value}) must be less than max_value ({self.max_value})"
+            )
         if not self.min_value <= self.value <= self.max_value:
-            raise ValueError(f'Score {self.value} is outside valid range [{self.min_value}, {self.max_value}]')
+            raise ValueError(
+                f"Score {self.value} is outside valid range [{self.min_value}, {self.max_value}]"
+            )
         if self.passing_threshold is not None:
             if not self.min_value <= self.passing_threshold <= self.max_value:
-                raise ValueError(f'Passing threshold {self.passing_threshold} is outside valid range [{self.min_value}, {self.max_value}]')
+                raise ValueError(
+                    f"Passing threshold {self.passing_threshold} is outside valid range [{self.min_value}, {self.max_value}]"
+                )
         return self
 
     def get_normalized_score(self) -> float:
@@ -92,7 +113,7 @@ class NumericGrade(Grade):
         """
         return self.get_normalized_score() * 100
 
-    def is_passing(self, threshold: float | None=None) -> bool:
+    def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the grade represents a passing score.
 
         Args:
@@ -120,16 +141,16 @@ class NumericGrade(Grade):
         """
         percentage = self.get_percentage_score()
         if percentage >= 90:
-            return 'A'
+            return "A"
         if percentage >= 80:
-            return 'B'
+            return "B"
         if percentage >= 70:
-            return 'C'
+            return "C"
         if percentage >= 60:
-            return 'D'
-        return 'F'
+            return "D"
+        return "F"
 
-    def distance_from_threshold(self, threshold: float | None=None) -> float:
+    def distance_from_threshold(self, threshold: float | None = None) -> float:
         """Calculate distance from passing threshold.
 
         Args:
@@ -153,8 +174,8 @@ class NumericGrade(Grade):
         """
         percentage = self.get_percentage_score()
         letter = self.get_letter_equivalent()
-        passing_status = '✅' if self.is_passing() else '❌'
-        return f'{passing_status} {self.value}/{self.max_value} ({percentage:.1f}% | {letter}) | {self.justification[:30]}...'
+        passing_status = "✅" if self.is_passing() else "❌"
+        return f"{passing_status} {self.value}/{self.max_value} ({percentage:.1f}% | {letter}) | {self.justification[:30]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a value is numeric and within range.
@@ -170,6 +191,7 @@ class NumericGrade(Grade):
             return self.min_value <= numeric_value <= self.max_value
         except (ValueError, TypeError):
             return False
+
 
 class PercentageGrade(NumericGrade):
     """Percentage-based grading model (0-100%).
@@ -199,13 +221,20 @@ class PercentageGrade(NumericGrade):
             )
 
     """
-    grade_type: GradeType = Field(default=GradeType.PERCENTAGE, description='Type of grade model (always percentage)')
-    min_value: int | float = Field(default=0, description='Minimum percentage (always 0)')
-    max_value: int | float = Field(default=100, description='Maximum percentage (always 100)')
-    passing_threshold: int | float = Field(default=60, description='Minimum percentage considered passing (default 60%)', ge=0, le=100)
-    value: int | float = Field(..., description='Percentage value (0-100)', ge=0, le=100, examples=[87.5, 92, 68.2, 45])
 
-    @field_validator('min_value')
+    grade_type: GradeType = Field(
+        default=GradeType.PERCENTAGE, description="Type of grade model (always percentage)"
+    )
+    min_value: int | float = Field(default=0, description="Minimum percentage (always 0)")
+    max_value: int | float = Field(default=100, description="Maximum percentage (always 100)")
+    passing_threshold: int | float = Field(
+        default=60, description="Minimum percentage considered passing (default 60%)", ge=0, le=100
+    )
+    value: int | float = Field(
+        ..., description="Percentage value (0-100)", ge=0, le=100, examples=[87.5, 92, 68.2, 45]
+    )
+
+    @field_validator("min_value")
     @classmethod
     def validate_min_value(cls, v: int | float) -> int | float:
         """Ensure min_value is always 0 for percentages.
@@ -217,10 +246,10 @@ class PercentageGrade(NumericGrade):
             Always returns 0
         """
         if v != 0:
-            raise ValueError('PercentageGrade min_value must be 0')
+            raise ValueError("PercentageGrade min_value must be 0")
         return 0
 
-    @field_validator('max_value')
+    @field_validator("max_value")
     @classmethod
     def validate_max_value(cls, v: int | float) -> int | float:
         """Ensure max_value is always 100 for percentages.
@@ -232,7 +261,7 @@ class PercentageGrade(NumericGrade):
             Always returns 100
         """
         if v != 100:
-            raise ValueError('PercentageGrade max_value must be 100')
+            raise ValueError("PercentageGrade max_value must be 100")
         return 100
 
     def get_normalized_score(self) -> float:
@@ -262,5 +291,5 @@ class PercentageGrade(NumericGrade):
             Formatted string representation of the percentage grade
         """
         letter = self.get_letter_equivalent()
-        passing_status = '✅' if self.is_passing() else '❌'
-        return f'{passing_status} {self.value}% ({letter}) | {self.justification[:40]}...'
+        passing_status = "✅" if self.is_passing() else "❌"
+        return f"{passing_status} {self.value}% ({letter}) | {self.justification[:40]}..."

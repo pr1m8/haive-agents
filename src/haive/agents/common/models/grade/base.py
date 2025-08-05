@@ -64,10 +64,8 @@ class Grade(BaseModel, ABC):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True,
-        use_enum_values=True,
-        str_strip_whitespace=True)
+        extra="forbid", validate_assignment=True, use_enum_values=True, str_strip_whitespace=True
+    )
 
     grade_type: GradeType = Field(..., description="Type of grade model being used")
 
@@ -80,14 +78,16 @@ class Grade(BaseModel, ABC):
             "Response directly answers the question with accurate information",
             "Code compiles and runs correctly with good style",
             "Essay demonstrates clear understanding but lacks supporting evidence",
-        ])
+        ],
+    )
 
     confidence: float = Field(
         default=1.0,
         description="Confidence level in the grade assigned (0.0 to 1.0)",
         ge=0.0,
         le=1.0,
-        examples=[0.85, 0.95, 1.0])
+        examples=[0.85, 0.95, 1.0],
+    )
 
     metadata: dict[str, Any] = Field(
         default_factory=dict,
@@ -98,12 +98,14 @@ class Grade(BaseModel, ABC):
                 "model_used": "gpt-4",
                 "criteria_weights": {"accuracy": 0.4, "clarity": 0.6},
             },
-        ])
+        ],
+    )
 
     grader_id: str | None = Field(
         default=None,
         description="Identifier of the entity that assigned the grade",
-        examples=["human_grader_001", "agent_evaluator_v2", "peer_review_bot"])
+        examples=["human_grader_001", "agent_evaluator_v2", "peer_review_bot"],
+    )
 
     timestamp: datetime = Field(
         default_factory=datetime.now, description="When the grade was assigned"
@@ -222,7 +224,9 @@ class Grade(BaseModel, ABC):
             "better_grade": (
                 "self"
                 if self_score > other_score
-                else "other" if other_score > self_score else "tie"
+                else "other"
+                if other_score > self_score
+                else "tie"
             ),
             "confidence_difference": self.confidence - other.confidence,
             "same_type": self.grade_type == other.grade_type,
@@ -254,11 +258,9 @@ class Grade(BaseModel, ABC):
         Returns:
             Formatted string representation of the grade
         """
-        return f"{
-            self.grade_type.value.title()} Grade | Score: {
-            self.get_normalized_score():.1%} | {
-            self.justification[
-                :50]}..."
+        return f"{self.grade_type.value.title()} Grade | Score: {
+            self.get_normalized_score():.1%
+        } | {self.justification[:50]}..."
 
     def validate_grade_value(self, value: Any) -> bool:
         """Validate that a grade value is appropriate for this grade type.

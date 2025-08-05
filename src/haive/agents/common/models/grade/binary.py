@@ -53,7 +53,8 @@ class BinaryGrade(Grade):
     value: bool = Field(
         ...,
         description="Binary grade value (True=pass/yes/correct, False=fail/no/incorrect)",
-        examples=[True, False])
+        examples=[True, False],
+    )
 
     @field_validator("value", mode="before")
     @classmethod
@@ -116,10 +117,7 @@ class BinaryGrade(Grade):
             # Convert numbers: 0 = False, non-zero = True
             return bool(v)
 
-        raise ValueError(
-            f"Cannot convert type {
-                type(v)} to binary grade value"
-        )
+        raise ValueError(f"Cannot convert type {type(v)} to binary grade value")
 
     def get_normalized_score(self) -> float:
         """Get the grade as a normalized score between 0.0 and 1.0.
@@ -187,7 +185,8 @@ class BinaryGrade(Grade):
             justification=f"Flipped grade: {self.justification}",
             confidence=self.confidence,
             metadata={**self.metadata, "original_value": self.value},
-            grader_id=self.grader_id)
+            grader_id=self.grader_id,
+        )
 
     def to_display_string(self) -> str:
         """Convert grade to a human-readable display string.
@@ -199,14 +198,12 @@ class BinaryGrade(Grade):
         display_value = self.get_display_value()
         confidence_pct = f"{self.confidence:.0%}"
 
-        return f"{emoji} {display_value} ({confidence_pct} confidence) | {
-            self.justification[
-                :50]}..."
+        return (
+            f"{emoji} {display_value} ({confidence_pct} confidence) | {self.justification[:50]}..."
+        )
 
     @classmethod
-    def create_pass(
-        cls, justification: str, confidence: float = 1.0, **kwargs
-    ) -> "BinaryGrade":
+    def create_pass(cls, justification: str, confidence: float = 1.0, **kwargs) -> "BinaryGrade":
         """Convenience method to create a passing grade.
 
         Args:
@@ -217,14 +214,10 @@ class BinaryGrade(Grade):
         Returns:
             BinaryGrade instance with value=True
         """
-        return cls(
-            value=True, justification=justification, confidence=confidence, **kwargs
-        )
+        return cls(value=True, justification=justification, confidence=confidence, **kwargs)
 
     @classmethod
-    def create_fail(
-        cls, justification: str, confidence: float = 1.0, **kwargs
-    ) -> "BinaryGrade":
+    def create_fail(cls, justification: str, confidence: float = 1.0, **kwargs) -> "BinaryGrade":
         """Convenience method to create a failing grade.
 
         Args:
@@ -235,6 +228,4 @@ class BinaryGrade(Grade):
         Returns:
             BinaryGrade instance with value=False
         """
-        return cls(
-            value=False, justification=justification, confidence=confidence, **kwargs
-        )
+        return cls(value=False, justification=justification, confidence=confidence, **kwargs)

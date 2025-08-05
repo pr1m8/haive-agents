@@ -39,11 +39,9 @@ class PydanticPromptConfig(BaseModel):
         default=True, description="Whether to include field type information"
     )
     include_constraints: bool = Field(
-        default=True,
-        description="Whether to include field constraints (min/max length, etc.)")
-    include_examples: bool = Field(
-        default=False, description="Whether to include example values"
+        default=True, description="Whether to include field constraints (min/max length, etc.)"
     )
+    include_examples: bool = Field(default=False, description="Whether to include example values")
     use_json_format: bool = Field(
         default=False, description="Whether to request JSON format output"
     )
@@ -151,9 +149,7 @@ def analyze_type_annotation(annotation: type) -> dict[str, Any]:
     return type_info
 
 
-def generate_field_description(
-    field_analysis: dict[str, Any], style: PromptStyle
-) -> str:
+def generate_field_description(field_analysis: dict[str, Any], style: PromptStyle) -> str:
     """Generate a description for a field based on analysis and style.
 
     Args:
@@ -197,15 +193,9 @@ def generate_field_description(
         if constraints:
             constraint_parts = []
             if "min_length" in constraints:
-                constraint_parts.append(
-                    f"min length {
-                        constraints['min_length']}"
-                )
+                constraint_parts.append(f"min length {constraints['min_length']}")
             if "max_length" in constraints:
-                constraint_parts.append(
-                    f"max length {
-                        constraints['max_length']}"
-                )
+                constraint_parts.append(f"max length {constraints['max_length']}")
             if "ge" in constraints:
                 constraint_parts.append(f"≥ {constraints['ge']}")
             if "le" in constraints:
@@ -216,11 +206,7 @@ def generate_field_description(
         return "\n".join(parts)
 
     if style == PromptStyle.NATURAL:
-        base = (
-            f"Provide {desc.lower()}"
-            if desc
-            else f"Provide the {name.replace('_', ' ')}"
-        )
+        base = f"Provide {desc.lower()}" if desc else f"Provide the {name.replace('_', ' ')}"
 
         if type_info["is_enum"] and type_info["enum_values"]:
             values = ", ".join(f"'{v}'" for v in type_info["enum_values"])
@@ -250,7 +236,8 @@ def generate_field_description(
 def create_pydantic_prompt(
     model_class: type[BaseModel],
     config: PydanticPromptConfig,
-    base_instruction: str = "Generate content with the following structure:") -> ChatPromptTemplate:
+    base_instruction: str = "Generate content with the following structure:",
+) -> ChatPromptTemplate:
     """Create a prompt template from a Pydantic model.
 
     Args:
@@ -283,9 +270,7 @@ def create_pydantic_prompt(
     if config.style == PromptStyle.SCHEMA_BASED:
         # Include JSON schema
         schema = model_class.model_json_schema()
-        prompt_parts.append(
-            f"\nJSON Schema:\n```json\n{json.dumps(schema, indent=2)}\n```"
-        )
+        prompt_parts.append(f"\nJSON Schema:\n```json\n{json.dumps(schema, indent=2)}\n```")
 
     # Add field descriptions
     if config.style == PromptStyle.NATURAL:
@@ -304,10 +289,7 @@ def create_pydantic_prompt(
 
     # Add custom instructions
     if config.custom_instructions:
-        prompt_parts.append(
-            f"\nAdditional instructions: {
-                config.custom_instructions}"
-        )
+        prompt_parts.append(f"\nAdditional instructions: {config.custom_instructions}")
 
     # Add examples if requested
     if config.include_examples:
@@ -317,9 +299,7 @@ def create_pydantic_prompt(
 
     system_prompt = "\n".join(prompt_parts)
 
-    return ChatPromptTemplate.from_messages(
-        [("system", system_prompt), ("human", "{query}")]
-    )
+    return ChatPromptTemplate.from_messages([("system", system_prompt), ("human", "{query}")])
 
 
 def create_example_from_model(model_class: type[BaseModel]) -> str:
@@ -341,11 +321,7 @@ def create_example_from_model(model_class: type[BaseModel]) -> str:
             if type_info["is_enum"] and type_info["enum_values"]:
                 example_data[field_name] = type_info["enum_values"][0]
             elif type_info["base_type"] == "str":
-                example_data[field_name] = (
-                    f"Example {
-                    field_name.replace(
-                        '_', ' ')}"
-                )
+                example_data[field_name] = f"Example {field_name.replace('_', ' ')}"
             elif type_info["base_type"] == "int":
                 example_data[field_name] = 42
             elif type_info["base_type"] == "float":
@@ -410,7 +386,8 @@ Focus on accuracy and completeness of the extracted information."""
 def create_generation_and_parsing_prompts(
     model_class: type[BaseModel],
     generation_instruction: str = "Generate comprehensive content about the topic:",
-    config: PydanticPromptConfig | None = None) -> tuple[ChatPromptTemplate, ChatPromptTemplate]:
+    config: PydanticPromptConfig | None = None,
+) -> tuple[ChatPromptTemplate, ChatPromptTemplate]:
     """Create both generation and parsing prompts for structured output pattern.
 
     This follows the best practice of separating content generation from
@@ -442,7 +419,8 @@ def create_generation_and_parsing_prompts(
 def quick_pydantic_prompt(
     model_class: type[BaseModel],
     style: PromptStyle = PromptStyle.DESCRIPTIVE,
-    use_json: bool = False) -> ChatPromptTemplate:
+    use_json: bool = False,
+) -> ChatPromptTemplate:
     """Quick way to create a basic prompt from a Pydantic model.
 
     Args:
@@ -453,12 +431,10 @@ def quick_pydantic_prompt(
     Returns:
         ChatPromptTemplate for the model
     """
-    config = PydanticPromptConfig(
-        style=style, use_json_format=use_json, include_examples=True
-    )
+    config = PydanticPromptConfig(style=style, use_json_format=use_json, include_examples=True)
 
     return create_pydantic_prompt(
         model_class=model_class,
         config=config,
-        base_instruction=f"Generate content that can be structured as {
-            model_class.__name__}:")
+        base_instruction=f"Generate content that can be structured as {model_class.__name__}:",
+    )
