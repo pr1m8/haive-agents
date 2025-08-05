@@ -144,22 +144,22 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
         # Build agent chain: annotate -> format_descriptions -> LLM -> parse
         # Build agent chain
+        def format_step(state_dict: dict[str, Any]) -> dict[str, Any]:
+            return {
+                **state_dict,
+                "bbox_descriptions": self.format_descriptions(state_dict),
+            }
+        
+        def prediction_step(enriched_state: dict[str, Any]) -> dict[str, Any]:
+            return {
+                **enriched_state,
+                "prediction": self.llm.invoke(enriched_state).model_dump(),
+            }
+        
         self.agent = (
             RunnableLambda(self.annotate_page)
-            | RunnableLambda(
-                lambda state_dict: {
-                    **state_dict,
-                    "bbox_descriptions": self.format_descriptions(state_dict),
-                }
-            )
-            | RunnableLambda(
-                lambda enriched_state: {
-                    **enriched_state,
-                    "prediction": self.llm.invoke(
-                        enriched_state
-                    ).model_dump(),  # Convert Prediction to dict
-                }
-            )
+            | RunnableLambda(format_step)
+            | RunnableLambda(prediction_step)
         )
 
         # Initialize parent agent
@@ -170,6 +170,9 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
     # -------------------------------------------------------------------------
     def setup_workflow(self) -> None:
         """Sets up the workflow graph for the agent."""
+        if self.graph is None:
+            raise ValueError("Graph is not initialized")
+            
         # Add agent node
         self.graph.add_node("agent", self.agent)
         self.graph.add_edge(START, "agent")
@@ -201,9 +204,9 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
     def select_tool(self, state: dict[str, Any]) -> str:
         """Routes the agent's prediction to the correct tool."""
-        prediction = state.prediction
+        prediction = state.get("prediction")
         if prediction:
-            action = prediction.action
+            action = prediction.get("action") if isinstance(prediction, dict) else prediction.action
             if action == "ANSWER":
                 return "ANSWER"
             if action in ["Click", "Type", "Scroll", "Wait", "GoBack", "Google"]:
