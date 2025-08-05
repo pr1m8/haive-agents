@@ -238,8 +238,8 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, P
             logger.debug(f'State schema already provided for {self.name}, no engines to integrate')
             self._auto_derive_io_schemas()
             return
-        if self.state_schema and self.use_prebuilt_base and hasattr(self.state_schema, '__name__') and (self.state_schema.__name__ not in ['MessagesState', 'SimpleAgentState', 'ToolState']):
-            logger.debug(f'State schema already set by setup_agent() to {self.state_schema.__name__}, skipping regeneration')
+        if self.state_schema and self.use_prebuilt_base and hasattr(self.state_schema, '__name__') and (getattr(self.state_schema, '__name__', None) not in ['MessagesState', 'SimpleAgentState', 'ToolState']):
+            logger.debug(f'State schema already set by setup_agent() to {getattr(self.state_schema, "__name__", "Unknown")}, skipping regeneration')
             self._auto_derive_io_schemas()
             return
         engine_list = []
@@ -256,7 +256,7 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, P
         logger.debug(f'Setting up schemas for {self.name} with {len(engine_list)} engines and {len(agent_list)} sub-agents')
         try:
             if self.state_schema and self.use_prebuilt_base and engine_list:
-                logger.debug(f'Extending prebuilt schema {self.state_schema.__name__} with engine fields')
+                logger.debug(f'Extending prebuilt schema {getattr(self.state_schema, "__name__", "Unknown")} with engine fields')
                 composer = SchemaComposer(name=f'{self.__class__.__name__}State')
                 composer.add_fields_from_model(self.state_schema)
                 for engine in engine_list:
@@ -305,7 +305,8 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, P
             logger.debug('No input schema provided, deriving from available sources')
             if self.state_schema and hasattr(self.state_schema, 'derive_input_schema'):
                 try:
-                    self.input_schema = self.state_schema.derive_input_schema(name=f'{self.name}Input')
+                    derive_method = getattr(self.state_schema, 'derive_input_schema')
+                    self.input_schema = derive_method(name=f'{self.name}Input')
                     logger.debug(f'Derived input schema from state schema: {self.input_schema.__name__}')
                 except Exception as e:
                     logger.debug(f'Could not derive input schema from state: {e}')

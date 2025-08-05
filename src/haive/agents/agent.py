@@ -259,7 +259,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             # attribute
             if isinstance(first_message, dict) and "content" in first_message:
                 content = first_message["content"]
-            elif hasattr(first_message, "content"):
+            elif hasattr(first_message, "content") and not isinstance(first_message, dict):
                 content = first_message.content
             else:
                 content = str(first_message)
@@ -274,7 +274,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             first_message = scratchpad[0]
             if isinstance(first_message, dict) and "content" in first_message:
                 text = first_message["content"]
-            elif hasattr(first_message, "content"):
+            elif hasattr(first_message, "content") and not isinstance(first_message, dict):
                 text = first_message.content
             else:
                 text = str(first_message)
@@ -372,7 +372,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
     async def annotate_page(self, state: dict[str, Any]) -> dict[str, Any]:
         """Annotates the page with bounding boxes."""
         # Convert state to dict if needed
-        if hasattr(state, "model_dump"):
+        if hasattr(state, "model_dump") and not isinstance(state, dict):
             state_dict = state.model_dump()
         elif isinstance(state, dict):
             state_dict = state
@@ -513,15 +513,15 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         if not self.page:
             return "No live page available."
 
-        prediction = state.prediction
-        args = prediction.args
+        prediction = state.get("prediction", {})
+        args = prediction.get("args", []) if isinstance(prediction, dict) else getattr(prediction, "args", [])
 
         if not args or len(args) < 1:
             return "Invalid click arguments. Need bbox index."
 
         try:
             bbox_id = int(args[0])
-            bboxes = state.bboxes
+            bboxes = state.get("bboxes", [])
 
             if bbox_id >= len(bboxes):
                 return f"Invalid bounding box ID: {bbox_id} (out of range)"
@@ -546,10 +546,10 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         try:
             # Get prediction
             prediction = None
-            if hasattr(state, "prediction"):
-                prediction = state.prediction
-            elif isinstance(state, dict):
+            if isinstance(state, dict):
                 prediction = state.get("prediction", {})
+            elif hasattr(state, "prediction"):
+                prediction = state.prediction
 
             # Get args
             args = []
@@ -564,10 +564,10 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
             # Get bboxes
             bboxes = []
-            if hasattr(state, "bboxes"):
-                bboxes = state.bboxes
-            elif isinstance(state, dict):
+            if isinstance(state, dict):
                 bboxes = state.get("bboxes", [])
+            elif hasattr(state, "bboxes"):
+                bboxes = state.bboxes
 
             try:
                 bbox_id = int(args[0])
@@ -621,8 +621,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         if not self.page:
             return "No live page available."
 
-        prediction = state.prediction
-        args = prediction.args
+        prediction = state.get("prediction", {})
+        args = prediction.get("args", []) if isinstance(prediction, dict) else getattr(prediction, "args", [])
 
         if not args or len(args) < 2:
             return "Invalid scroll arguments. Need target and direction."
@@ -638,7 +638,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 await self.page.evaluate(f"window.scrollBy(0, {scroll_direction})")
                 return f"Scrolled window {direction}"
             target_id = int(target)
-            bboxes = state.bboxes
+            bboxes = state.get("bboxes", [])
 
             if target_id >= len(bboxes):
                 return f"Invalid bounding box ID: {target_id} (out of range)"
@@ -688,8 +688,8 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
     async def tool_answer(self, state: dict[str, Any]) -> str:
         """Returns final answer to user query."""
-        prediction = state.prediction
-        args = prediction.args
+        prediction = state.get("prediction", {})
+        args = prediction.get("args", []) if isinstance(prediction, dict) else getattr(prediction, "args", [])
 
         if not args or len(args) < 1:
             return "No answer provided."
@@ -707,7 +707,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
         # Prepare input state
         input_state = {
-            "page_url": self.page.url,
+            "page_url": self.page.url if self.page else "",
             "input": question,
             "observation": "",
             "scratchpad": [],

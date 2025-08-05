@@ -25,7 +25,8 @@ from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.base import ConditionalAgent, ParallelAgent, SequentialAgent
+# from haive.agents.multi.base import ConditionalAgent, ParallelAgent, SequentialAgent  # TODO: Fix imports
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.rag.adaptive.agent import (
     QUERY_ANALYZER_PROMPT,
     AdaptiveRAGAgent,
@@ -33,11 +34,11 @@ from haive.agents.rag.adaptive.agent import (
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import (
     RAG_ANSWER_STANDARD)
-from haive.agents.rag.common.document_graders.comprehensive_grader import (
-    COMPREHENSIVE_DOCUMENT_GRADING_PROMPT,
-    HALLUCINATION_DETECTION_PROMPT,
-    QUALITY_ASSESSMENT_PROMPT,
-    ComprehensiveGradingResponse)
+# from haive.agents.rag.common.document_graders.comprehensive_grader import (
+#     COMPREHENSIVE_DOCUMENT_GRADING_PROMPT,
+#     HALLUCINATION_DETECTION_PROMPT,
+#     QUALITY_ASSESSMENT_PROMPT,
+#     ComprehensiveGradingResponse)  # TODO: Fix imports
 from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
 from haive.agents.rag.document_grading.agent import DocumentGradingAgent
 from haive.agents.rag.hallucination_grading.agent import (
