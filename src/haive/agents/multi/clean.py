@@ -150,32 +150,33 @@ class MultiAgent(Agent):
 
     # Core agent management - follows same pattern as engines
     agents: dict[str, Agent] = Field(
-        default_factory=dict,
-        description="Dictionary of agents this multi-agent coordinates")
-
-    agent: Agent | None = Field(
-        default=None, description="Main/default agent for this multi-agent"
+        default_factory=dict, description="Dictionary of agents this multi-agent coordinates"
     )
+
+    agent: Agent | None = Field(default=None, description="Main/default agent for this multi-agent")
 
     # Execution mode
     execution_mode: str = Field(
         default="infer",
-        description="How to execute agents: infer, sequential, parallel, conditional, branch")
+        description="How to execute agents: infer, sequential, parallel, conditional, branch",
+    )
 
     # Sequence inference configuration
     infer_sequence: bool = Field(
         default=True,
-        description="Whether to automatically infer execution sequence from agent dependencies")
+        description="Whether to automatically infer execution sequence from agent dependencies",
+    )
 
     # Branch configuration
     branches: dict[str, dict[str, Any]] = Field(
-        default_factory=dict,
-        description="Branch configurations for conditional routing")
+        default_factory=dict, description="Branch configurations for conditional routing"
+    )
 
     # Entry point for execution
     entry_point: str | None = Field(
         default=None,
-        description="Starting agent for execution (if not specified, uses first agent or infers)")
+        description="Starting agent for execution (if not specified, uses first agent or infers)",
+    )
 
     @model_validator(mode="before")
     @classmethod
@@ -239,10 +240,7 @@ class MultiAgent(Agent):
         Uses intelligent routing from BaseGraph for sequence inference and branching.
         """
         # Create BaseGraph with state schema
-        graph = BaseGraph(
-            name=f"{
-                self.name}_graph",
-            state_schema=self.state_schema)
+        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
 
         # Check if we have custom routing patterns
         has_custom_routing = any(
@@ -290,9 +288,7 @@ class MultiAgent(Agent):
 
                     return condition_wrapper
 
-                graph.add_conditional_edges(
-                    source, make_condition_fn(condition_fn, routes)
-                )
+                graph.add_conditional_edges(source, make_condition_fn(condition_fn, routes))
                 processed_sources.add(source)
                 has_entry_edges = True
 
@@ -377,11 +373,8 @@ class MultiAgent(Agent):
 
     @classmethod
     def create(
-        cls,
-        agents: list[Agent],
-        name: str = "multi_agent",
-        execution_mode: str = "infer",
-        **kwargs) -> MultiAgent:
+        cls, agents: list[Agent], name: str = "multi_agent", execution_mode: str = "infer", **kwargs
+    ) -> MultiAgent:
         """Create a multi-agent from a list of agents.
 
         This factory method provides a convenient way to create a MultiAgent
@@ -427,7 +420,8 @@ class MultiAgent(Agent):
         self,
         source_agent: str,
         condition_fn: Callable[[dict[str, Any]], str],
-        routes: dict[str, str]) -> None:
+        routes: dict[str, str],
+    ) -> None:
         """Add conditional routing with a function that returns route keys.
 
         This method enables dynamic routing based on state conditions. The condition
@@ -480,9 +474,7 @@ class MultiAgent(Agent):
             "type": "conditional",
         }
 
-    def add_parallel_group(
-        self, agent_names: list[str], next_agent: str | None = None
-    ) -> None:
+    def add_parallel_group(self, agent_names: list[str], next_agent: str | None = None) -> None:
         """Add a group of agents that run in parallel.
 
         This method configures a set of agents to execute in parallel, with
@@ -578,9 +570,7 @@ class MultiAgent(Agent):
 
         self.agents = ordered_agents
 
-    def add_conditional_edges(
-        self, source: str, path: Callable[[dict[str, Any]], str]
-    ) -> None:
+    def add_conditional_edges(self, source: str, path: Callable[[dict[str, Any]], str]) -> None:
         """Add conditional edges for backward compatibility with examples.
 
         This method provides compatibility with existing examples that use

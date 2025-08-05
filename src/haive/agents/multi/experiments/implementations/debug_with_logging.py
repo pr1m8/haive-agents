@@ -17,7 +17,8 @@ from haive.agents.simple.agent import SimpleAgent
 logging.basicConfig(
     level=logging.DEBUG,
     format="[%(name)s:%(lineno)d] %(levelname)s: %(message)s",
-    stream=sys.stdout)
+    stream=sys.stdout,
+)
 
 # Enable specific loggers we care about
 logging.getLogger("haive.agents.base.mixins.execution_mixin").setLevel(logging.DEBUG)
@@ -37,9 +38,7 @@ class Plan(BaseModel):
 
 try:
     add_aug = AugLLMConfig(tools=[add])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
     react_agent = ReactAgent(engine=add_aug)
     simple_agent = SimpleAgent(engine=plan_aug)
 
@@ -53,7 +52,6 @@ try:
 
 
 except Exception as e:
-
     traceback.print_exc()
 
     current_exc = e

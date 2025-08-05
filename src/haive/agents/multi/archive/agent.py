@@ -53,25 +53,23 @@ class MultiAgent(Agent):
 
     # Multi-agent specific fields
     agents: dict[str, Agent] = Field(
-        default_factory=dict,
-        description="Dictionary of sub-agents in this multi-agent system")
+        default_factory=dict, description="Dictionary of sub-agents in this multi-agent system"
+    )
 
-    coordination_mode: Literal[
-        "sequential", "parallel", "supervisor", "swarm", "custom"
-    ] = Field(default="sequential", description="Coordination mode for the agents")
+    coordination_mode: Literal["sequential", "parallel", "supervisor", "swarm", "custom"] = Field(
+        default="sequential", description="Coordination mode for the agents"
+    )
 
     separation_strategy: Literal["namespaced", "smart", "shared"] = Field(
         default="smart", description="Schema field separation strategy"
     )
 
     enable_meta: bool = Field(
-        default=False,
-        description="Enable meta-agent capabilities (graph self-modification)")
+        default=False, description="Enable meta-agent capabilities (graph self-modification)"
+    )
 
     # Agent execution configuration
-    max_iterations: int = Field(
-        default=10, description="Maximum iterations for iterative patterns"
-    )
+    max_iterations: int = Field(default=10, description="Maximum iterations for iterative patterns")
 
     allow_agent_communication: bool = Field(
         default=True, description="Allow agents to communicate directly"
@@ -83,8 +81,8 @@ class MultiAgent(Agent):
 
     # Node configuration
     use_agent_nodes: bool = Field(
-        default=True,
-        description="Use AgentNode instead of EngineNode for better agent handling")
+        default=True, description="Use AgentNode instead of EngineNode for better agent handling"
+    )
 
     # Schema configuration
     use_engine_io_mappings: bool = Field(
@@ -169,19 +167,16 @@ class MultiAgent(Agent):
         """Generate schemas using AgentSchemaComposer."""
         # Don't regenerate if we already have schemas
         if self.state_schema:
-            logger.debug(
-                f"Using existing schema: {
-                    self.state_schema.__name__}"
-            )
+            logger.debug(f"Using existing schema: {self.state_schema.__name__}")
             return
 
         # Get list of agents
         agent_list = list(self.agents.values())
 
         logger.info(
-            f"Creating schema from {
-                len(agent_list)} agents using {
-                self.separation_strategy} strategy"
+            f"Creating schema from {len(agent_list)} agents using {
+                self.separation_strategy
+            } strategy"
         )
 
         # Use AgentSchemaComposer
@@ -189,15 +184,13 @@ class MultiAgent(Agent):
             agents=agent_list,
             name=f"{self.__class__.__name__}State",
             separation=self.separation_strategy,
-            include_meta=self.enable_meta)
+            include_meta=self.enable_meta,
+        )
 
         # Log engine IO mappings
         if hasattr(self.state_schema, "__engine_io_mappings__"):
             mappings = getattr(self.state_schema, "__engine_io_mappings__", {})
-            logger.debug(
-                f"Schema created with {
-                    len(mappings)} engine I/O mappings"
-            )
+            logger.debug(f"Schema created with {len(mappings)} engine I/O mappings")
 
             # Log a few mappings as examples
             for i, (engine_name, mapping) in enumerate(mappings.items()):
@@ -281,21 +274,14 @@ class MultiAgent(Agent):
 
     def _build_supervisor_graph(self, graph: BaseGraph) -> None:
         """Build a supervisor-based execution graph."""
-        logger.info(
-            f"Building supervisor graph with coordinator: {
-                self._coordinator_agent}"
-        )
+        logger.info(f"Building supervisor graph with coordinator: {self._coordinator_agent}")
 
         if not self._coordinator_agent:
             logger.warning("No coordinator agent set, using first agent")
-            self._coordinator_agent = (
-                self._agent_order[0] if self._agent_order else None
-            )
+            self._coordinator_agent = self._agent_order[0] if self._agent_order else None
 
         if not self._coordinator_agent:
-            raise ValueError(
-                "Cannot build supervisor graph without a coordinator agent"
-            )
+            raise ValueError("Cannot build supervisor graph without a coordinator agent")
 
         # Coordinator is the entry point and decides routing
         coordinator_node = f"{self._coordinator_agent}_node"
@@ -306,9 +292,8 @@ class MultiAgent(Agent):
             if agent_name != self._coordinator_agent:
                 # Conditional edge from coordinator to agent
                 graph.add_conditional_edge(
-                    coordinator_node,
-                    f"{agent_name}_node",
-                    self._should_route_to(agent_name))
+                    coordinator_node, f"{agent_name}_node", self._should_route_to(agent_name)
+                )
 
                 # Agent back to coordinator
                 graph.add_edge(f"{agent_name}_node", coordinator_node)
@@ -337,7 +322,8 @@ class MultiAgent(Agent):
                     graph.add_conditional_edge(
                         f"{from_agent}_node",
                         f"{to_agent}_node",
-                        self._should_route_from_to(from_agent, to_agent))
+                        self._should_route_from_to(from_agent, to_agent),
+                    )
 
             # Every agent can potentially end
             graph.add_conditional_edge(f"{from_agent}_node", END, self.is_complete)
@@ -360,9 +346,8 @@ class MultiAgent(Agent):
         node = Node(
             name=node_name,
             fn=self._create_agent_executor(agent_name, agent),
-            is_entry_point=(
-                (agent_name == self._agent_order[0]) if self._agent_order else False
-            ))
+            is_entry_point=((agent_name == self._agent_order[0]) if self._agent_order else False),
+        )
 
         return node
 
@@ -391,22 +376,15 @@ class MultiAgent(Agent):
     def _extract_agent_input(self, agent_name: str, agent: Agent, state: Any) -> Any:
         """Extract input for an agent from the state."""
         # If using engine IO mappings and state schema has them
-        if self.use_engine_io_mappings and hasattr(
-            self.state_schema, "__engine_io_mappings__"
-        ):
+        if self.use_engine_io_mappings and hasattr(self.state_schema, "__engine_io_mappings__"):
             # Get engine name with prefix
-            prefixed_name = f"{
-                agent_name.lower().replace(
-                    ' ', '_')}_{
-                agent.name}"
+            prefixed_name = f"{agent_name.lower().replace(' ', '_')}_{agent.name}"
             mappings = getattr(self.state_schema, "__engine_io_mappings__", {})
 
             if prefixed_name in mappings:
                 # Get input fields for this engine
                 input_fields = mappings[prefixed_name].get("inputs", [])
-                logger.debug(
-                    f"Using engine IO mappings for {prefixed_name}: {input_fields}"
-                )
+                logger.debug(f"Using engine IO mappings for {prefixed_name}: {input_fields}")
 
                 # Extract the fields
                 input_data = {}
@@ -415,11 +393,7 @@ class MultiAgent(Agent):
                         input_data[field] = getattr(state, field)
 
                 # Ensure messages are included if they exist
-                if (
-                    "messages" not in input_data
-                    and hasattr(state, "messages")
-                    and state.messages
-                ):
+                if "messages" not in input_data and hasattr(state, "messages") and state.messages:
                     input_data["messages"] = state.messages
 
                 return input_data
@@ -470,14 +444,9 @@ class MultiAgent(Agent):
             update["agent_outputs"] = agent_outputs
 
         # If using engine IO mappings and state schema has them
-        if self.use_engine_io_mappings and hasattr(
-            self.state_schema, "__engine_io_mappings__"
-        ):
+        if self.use_engine_io_mappings and hasattr(self.state_schema, "__engine_io_mappings__"):
             # Get engine name with prefix
-            prefixed_name = f"{
-                agent_name.lower().replace(
-                    ' ', '_')}_{
-                agent.name}"
+            prefixed_name = f"{agent_name.lower().replace(' ', '_')}_{agent.name}"
             mappings = getattr(self.state_schema, "__engine_io_mappings__", {})
 
             if prefixed_name in mappings:
@@ -506,9 +475,7 @@ class MultiAgent(Agent):
 
         return update
 
-    def _determine_next_node(
-        self, agent_name: str, result: Any, state: Any
-    ) -> str | None:
+    def _determine_next_node(self, agent_name: str, result: Any, state: Any) -> str | None:
         """Determine the next node based on agent result and coordination mode."""
         # Check if result explicitly specifies next_agent
         if isinstance(result, dict) and "next_agent" in result:
@@ -650,10 +617,7 @@ class MultiAgent(Agent):
         # Select coordinator agent - by default, use first agent
         if self._agent_order:
             self._coordinator_agent = self._agent_order[0]
-            logger.info(
-                f"Using {
-                    self._coordinator_agent} as coordinator agent"
-            )
+            logger.info(f"Using {self._coordinator_agent} as coordinator agent")
 
     @classmethod
     def from_agents(
@@ -661,7 +625,8 @@ class MultiAgent(Agent):
         agents: list[Agent] | dict[str, Agent],
         name: str | None = None,
         coordination_mode: str = "sequential",
-        **kwargs) -> "MultiAgent":
+        **kwargs,
+    ) -> "MultiAgent":
         """Create a multi-agent system from a list or dict of agents."""
         # Convert list to dict if needed
         if isinstance(agents, list):
@@ -675,37 +640,31 @@ class MultiAgent(Agent):
         else:
             agent_dict = agents
 
-        logger.info(
-            f"Creating {coordination_mode} multi-agent with {len(agent_dict)} agents"
-        )
+        logger.info(f"Creating {coordination_mode} multi-agent with {len(agent_dict)} agents")
 
         return cls(
             name=name or f"{cls.__name__}",
             agents=agent_dict,
             coordination_mode=coordination_mode,
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
-    def sequential(
-        cls, agents: list[Agent], name: str | None = None, **kwargs
-    ) -> "MultiAgent":
+    def sequential(cls, agents: list[Agent], name: str | None = None, **kwargs) -> "MultiAgent":
         """Create a sequential multi-agent system."""
         return cls.from_agents(
             agents=agents,
             name=name or "SequentialMultiAgent",
             coordination_mode="sequential",
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
-    def parallel(
-        cls, agents: list[Agent], name: str | None = None, **kwargs
-    ) -> "MultiAgent":
+    def parallel(cls, agents: list[Agent], name: str | None = None, **kwargs) -> "MultiAgent":
         """Create a parallel multi-agent system."""
         return cls.from_agents(
-            agents=agents,
-            name=name or "ParallelMultiAgent",
-            coordination_mode="parallel",
-            **kwargs)
+            agents=agents, name=name or "ParallelMultiAgent", coordination_mode="parallel", **kwargs
+        )
 
     @classmethod
     def supervised(
@@ -713,7 +672,8 @@ class MultiAgent(Agent):
         agents: list[Agent],
         coordinator: Agent | None = None,
         name: str | None = None,
-        **kwargs) -> "MultiAgent":
+        **kwargs,
+    ) -> "MultiAgent":
         """Create a supervised multi-agent system with a coordinator."""
         agent_list = list(agents)
 
@@ -725,11 +685,10 @@ class MultiAgent(Agent):
             agents=agent_list,
             name=name or "SupervisedMultiAgent",
             coordination_mode="supervisor",
-            **kwargs)
+            **kwargs,
+        )
 
-    def create_runnable(
-        self, runnable_config: dict[str, Any] | None = None
-    ) -> CompiledGraph:
+    def create_runnable(self, runnable_config: dict[str, Any] | None = None) -> CompiledGraph:
         """Create and compile the runnable with proper schema kwargs.
 
         This overrides the base Agent implementation to handle our multi-agent
@@ -746,10 +705,7 @@ class MultiAgent(Agent):
 
         # Ensure we have schemas - regenerate if needed
         if not self.state_schema:
-            logger.warning(
-                f"No state schema found for {
-                    self.name}, regenerating..."
-            )
+            logger.warning(f"No state schema found for {self.name}, regenerating...")
             self._setup_schemas()
 
         # Build schema kwargs - only pass what StateGraph expects
@@ -771,23 +727,10 @@ class MultiAgent(Agent):
             schema_kwargs["config_schema"] = self.config_schema
 
         # Debug logging
-        logger.debug(
-            f"Schema kwargs for {
-                self.name}: {
-                list(
-                    schema_kwargs.keys())}"
-        )
+        logger.debug(f"Schema kwargs for {self.name}: {list(schema_kwargs.keys())}")
         logger.debug(f"State schema: {self.state_schema.__name__}")
-        logger.debug(
-            f"Input schema: {
-                getattr(
-                    self.input_schema,
-                    '__name__',
-                    'None')}"
-        )
-        logger.debug(
-            f"Output schema: {getattr(self.output_schema, '__name__', 'None')}"
-        )
+        logger.debug(f"Input schema: {getattr(self.input_schema, '__name__', 'None')}")
+        logger.debug(f"Output schema: {getattr(self.output_schema, '__name__', 'None')}")
 
         # Convert BaseGraph to LangGraph with schemas
         try:
@@ -798,11 +741,7 @@ class MultiAgent(Agent):
             langgraph = self.graph.to_langgraph(**schema_kwargs)
         except Exception as e:
             logger.exception(f"Failed to convert graph to langgraph: {e}")
-            logger.exception(
-                f"Schema kwargs were: {
-                    list(
-                        schema_kwargs.keys())}"
-            )
+            logger.exception(f"Schema kwargs were: {list(schema_kwargs.keys())}")
             logger.exception(f"State schema type: {type(self.state_schema)}")
             raise
 

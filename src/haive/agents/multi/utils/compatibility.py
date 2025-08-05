@@ -22,14 +22,15 @@ BaseMultiAgent = MultiAgent
 
 class ExecutionMode(str, Enum):
     """Legacy ExecutionMode enum for backward compatibility.
-    
+
     Modern implementations use string literals instead:
     - "sequential"
-    - "parallel" 
+    - "parallel"
     - "conditional"
     - "branch"
     - "infer"
     """
+
     SEQUENTIAL = "sequential"
     PARALLEL = "parallel"
     CONDITIONAL = "conditional"

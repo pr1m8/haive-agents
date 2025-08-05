@@ -1,7 +1,7 @@
 """Enhanced MultiAgent V4 - Advanced multi-agent orchestration with enhanced base agent pattern.
 
 This module provides the EnhancedMultiAgentV4 class, which represents the **recommended**
-multi-agent coordination implementation in the Haive framework. It leverages the enhanced 
+multi-agent coordination implementation in the Haive framework. It leverages the enhanced
 base agent pattern to provide sophisticated agent orchestration with clean, intuitive APIs.
 
 **Current Status**: This is the **most advanced and recommended** MultiAgent implementation
@@ -170,12 +170,14 @@ class EnhancedMultiAgentV4(Agent):
     state_schema: type = Field(
         default=MultiAgentState,
         description="State schema for multi-agent coordination. Defaults to MultiAgentState which "
-        "provides agent isolation and shared state management.")
+        "provides agent isolation and shared state management.",
+    )
 
     agents: list[Agent] = Field(
         default_factory=list,
         description="List of Agent instances to coordinate. Agents are automatically converted to "
-        "a dictionary keyed by name for efficient lookup during execution.")
+        "a dictionary keyed by name for efficient lookup during execution.",
+    )
 
     execution_mode: Literal["sequential", "parallel", "conditional", "manual"] = Field(
         default="sequential",
@@ -183,30 +185,35 @@ class EnhancedMultiAgentV4(Agent):
         "'sequential' - agents run one after another, "
         "'parallel' - all agents run simultaneously, "
         "'conditional' - agents run based on routing logic, "
-        "'manual' - user adds edges explicitly")
+        "'manual' - user adds edges explicitly",
+    )
 
     build_mode: Literal["auto", "manual", "lazy"] = Field(
         default="auto",
         description="When to build the execution graph: "
         "'auto' - build immediately on initialization, "
         "'manual' - user must call build() explicitly, "
-        "'lazy' - build on first execution")
+        "'lazy' - build on first execution",
+    )
 
     entry_point: str | None = Field(
         default=None,
         description="Name of the agent to start execution. If None, uses the first agent "
-        "in the list. Only relevant for sequential and conditional modes.")
+        "in the list. Only relevant for sequential and conditional modes.",
+    )
 
     agent_dict: dict[str, Agent] = Field(
         default_factory=dict,
         description="Internal dictionary mapping agent names to instances. Automatically "
-        "populated from the agents list during initialization. Do not set directly.")
+        "populated from the agents list during initialization. Do not set directly.",
+    )
 
     conditional_edges: list[dict[str, Any]] = Field(
         default_factory=list,
         description="Configuration for conditional edges. Each dict should contain: "
         "'from_agent' (source), 'condition' (callable), 'destinations' (routing map), "
-        "and optional 'default' (fallback destination).")
+        "and optional 'default' (fallback destination).",
+    )
 
     # ========================================================================
     # ENHANCED BASE AGENT SETUP
@@ -225,10 +232,7 @@ class EnhancedMultiAgentV4(Agent):
 
         # Ensure state schema is MultiAgentState (already set as default)
         if self.state_schema != MultiAgentState:
-            logger.warning(
-                f"State schema overridden from {
-                    self.state_schema} to MultiAgentState"
-            )
+            logger.warning(f"State schema overridden from {self.state_schema} to MultiAgentState")
             self.state_schema = MultiAgentState
 
     def _convert_agents_to_dict(self, agents: list[Agent]) -> dict[str, Agent]:
@@ -259,11 +263,7 @@ class EnhancedMultiAgentV4(Agent):
             if agent.name in agent_dict:
                 # Handle duplicates by adding index
                 agent_dict[f"{agent.name}_{i}"] = agent
-                logger.warning(
-                    f"Duplicate agent name '{
-                        agent.name}', using '{
-                        agent.name}_{i}'"
-                )
+                logger.warning(f"Duplicate agent name '{agent.name}', using '{agent.name}_{i}'")
             else:
                 agent_dict[agent.name] = agent
 
@@ -311,15 +311,12 @@ class EnhancedMultiAgentV4(Agent):
         if not self.agent_dict:
             raise ValueError("No agents to build graph with")
 
-        logger.info(
-            f"Building {self.execution_mode} graph with {len(self.agent_dict)} agents"
-        )
+        logger.info(f"Building {self.execution_mode} graph with {len(self.agent_dict)} agents")
 
         # Create BaseGraph with MultiAgentState
         graph = BaseGraph(
-            name=f"{
-                self.name}_graph",
-            state_schema=self.state_schema or MultiAgentState)
+            name=f"{self.name}_graph", state_schema=self.state_schema or MultiAgentState
+        )
 
         # Add all agents as nodes using AgentNodeV3
         self._add_agent_nodes(graph)
@@ -371,9 +368,7 @@ class EnhancedMultiAgentV4(Agent):
             return
 
         # Determine entry point
-        start_agent = (
-            self.entry_point if self.entry_point in agent_names else agent_names[0]
-        )
+        start_agent = self.entry_point if self.entry_point in agent_names else agent_names[0]
 
         # START -> first agent
         graph.add_edge(START, start_agent)
@@ -412,9 +407,7 @@ class EnhancedMultiAgentV4(Agent):
         """
         # Start with entry point or first agent
         agent_names = list(self.agent_dict.keys())
-        start_agent = (
-            self.entry_point if self.entry_point in agent_names else agent_names[0]
-        )
+        start_agent = self.entry_point if self.entry_point in agent_names else agent_names[0]
         graph.add_edge(START, start_agent)
 
         # Add configured conditional edges
@@ -429,16 +422,15 @@ class EnhancedMultiAgentV4(Agent):
                 source_node=from_agent,
                 condition=condition,
                 destinations=destinations,
-                default=default)
+                default=default,
+            )
 
             logger.debug(f"Added conditional edge from {from_agent}")
 
         # Ensure unconnected agents go to END
         for agent_name in agent_names:
             # Check if agent has outgoing edges configured
-            has_outgoing = any(
-                edge["from_agent"] == agent_name for edge in self.conditional_edges
-            )
+            has_outgoing = any(edge["from_agent"] == agent_name for edge in self.conditional_edges)
             if not has_outgoing and agent_name != start_agent:
                 graph.add_edge(agent_name, END)
 
@@ -452,14 +444,10 @@ class EnhancedMultiAgentV4(Agent):
         """
         # Just ensure START connects to entry point
         agent_names = list(self.agent_dict.keys())
-        start_agent = (
-            self.entry_point if self.entry_point in agent_names else agent_names[0]
-        )
+        start_agent = self.entry_point if self.entry_point in agent_names else agent_names[0]
         graph.add_edge(START, start_agent)
 
-        logger.info(
-            "Manual mode - user must add edges with add_edge() or add_conditional_edge()"
-        )
+        logger.info("Manual mode - user must add edges with add_edge() or add_conditional_edge()")
 
     # ========================================================================
     # USER-FRIENDLY EDGE METHODS
@@ -508,7 +496,8 @@ class EnhancedMultiAgentV4(Agent):
         from_agent: str,
         condition: Callable[[Any], bool],
         true_agent: str,
-        false_agent: str = END) -> None:
+        false_agent: str = END,
+    ) -> None:
         """Add a conditional edge that routes based on a boolean condition.
 
         This method creates a branching point in the workflow where execution
@@ -556,19 +545,19 @@ class EnhancedMultiAgentV4(Agent):
                 source_node=from_agent,
                 condition=condition,
                 destinations={True: true_agent, False: false_agent},
-                default=false_agent)
+                default=false_agent,
+            )
             logger.info(f"Added conditional edge from {from_agent}")
 
-        logger.info(
-            f"Configured conditional edge: {from_agent} -> {true_agent}/{false_agent}"
-        )
+        logger.info(f"Configured conditional edge: {from_agent} -> {true_agent}/{false_agent}")
 
     def add_multi_conditional_edge(
         self,
         from_agent: str,
         condition: Callable[[Any], str],
         routes: dict[str, str],
-        default: str = END) -> None:
+        default: str = END,
+    ) -> None:
         """Add multi-way conditional edge with multiple destinations.
 
         This method creates a branching point where the condition function
@@ -613,10 +602,8 @@ class EnhancedMultiAgentV4(Agent):
         # If graph is built, add edge directly
         if hasattr(self, "graph") and self.graph:
             self.graph.add_conditional_edges(
-                source_node=from_agent,
-                condition=condition,
-                destinations=routes,
-                default=default)
+                source_node=from_agent, condition=condition, destinations=routes, default=default
+            )
 
         logger.info(
             f"Configured multi-conditional edge from {from_agent} with {len(routes)} routes"

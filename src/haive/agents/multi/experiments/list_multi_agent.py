@@ -89,9 +89,7 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             self.agents.remove(agent)
 
         self._update_index()
-        self.mark_for_recompile(
-            f"Removed agent: {agent if isinstance(agent, str) else agent.name}"
-        )
+        self.mark_for_recompile(f"Removed agent: {agent if isinstance(agent, str) else agent.name}")
         return self
 
     def pop(self, index: int = -1) -> Agent:
@@ -210,10 +208,7 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
 
     def __repr__(self) -> str:
         """Detailed representation."""
-        return f"ListMultiAgent(name='{
-            self.name}', agents={
-            len(
-                self.agents)}, mode=sequential)"
+        return f"ListMultiAgent(name='{self.name}', agents={len(self.agents)}, mode=sequential)"
 
 
 # Convenience factory functions

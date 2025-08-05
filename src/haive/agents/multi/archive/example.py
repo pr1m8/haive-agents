@@ -89,9 +89,7 @@ class WritingAgent(SimpleAgent):
 
         if human_message:
             # Check if we have research results
-            research_results = shared_state.get(
-                "research_results", "No research available"
-            )
+            research_results = shared_state.get("research_results", "No research available")
 
             # Generate response based on research
             response = (
@@ -123,7 +121,8 @@ def create_research_writing_system() -> MultiAgent:
     system = MultiAgent.with_agents(
         agents=[research_agent, writing_agent],
         name="Research-Writing System",
-        coordination_strategy="sequential")
+        coordination_strategy="sequential",
+    )
 
     # Debug - check if agents were added to state
     if hasattr(system, "_state_instance") and hasattr(system._state_instance, "agents"):

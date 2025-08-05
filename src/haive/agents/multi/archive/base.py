@@ -5,6 +5,7 @@ This module provides an abstract base class for multi-agent systems that can:
 - Maintain private agent state schemas while sharing a global state
 - Support complex routing patterns including loops and conditional paths
 """
+
 import logging
 from abc import abstractmethod
 from collections.abc import Callable, Sequence
@@ -18,15 +19,19 @@ from pydantic import BaseModel, Field, PrivateAttr, model_validator
 from rich.console import Console
 from rich.tree import Tree
 from haive.agents.base.agent import Agent
+
 logger = logging.getLogger(__name__)
 console = Console()
 
+
 class ExecutionMode(str, Enum):
     """Execution modes for multi-agent systems."""
-    SEQUENCE = 'sequence'
-    PARALLEL = 'parallel'
-    CONDITIONAL = 'conditional'
-    HIERARCHICAL = 'hierarchical'
+
+    SEQUENCE = "sequence"
+    PARALLEL = "parallel"
+    CONDITIONAL = "conditional"
+    HIERARCHICAL = "hierarchical"
+
 
 class MultiAgent(Agent):
     """Abstract base class for multi-agent systems with branching support.
@@ -38,40 +43,62 @@ class MultiAgent(Agent):
     - Complex routing patterns via conditional edges
     - Meta state for agent coordination
     """
-    name: str = Field(default='Multi Agent', description='Name of the multi-agent system')
-    agents: Sequence[Agent] = Field(default_factory=list, description='List of agents in this multi-agent system')
-    execution_mode: ExecutionMode = Field(default=ExecutionMode.SEQUENCE, description='How agents should be executed')
-    include_meta: bool = Field(default=True, description='Whether to include MetaAgentState for coordination')
-    schema_separation: Literal['smart', 'shared', 'namespaced'] = Field(default='smart', description='How to handle field separation in composed schema')
-    branches: dict[str, dict[str, Any]] = Field(default_factory=dict, description='Branch configurations keyed by source node name')
+
+    name: str = Field(default="Multi Agent", description="Name of the multi-agent system")
+    agents: Sequence[Agent] = Field(
+        default_factory=list, description="List of agents in this multi-agent system"
+    )
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.SEQUENCE, description="How agents should be executed"
+    )
+    include_meta: bool = Field(
+        default=True, description="Whether to include MetaAgentState for coordination"
+    )
+    schema_separation: Literal["smart", "shared", "namespaced"] = Field(
+        default="smart", description="How to handle field separation in composed schema"
+    )
+    branches: dict[str, dict[str, Any]] = Field(
+        default_factory=dict, description="Branch configurations keyed by source node name"
+    )
     _agent_private_states: dict[str, type[BaseModel]] = PrivateAttr(default_factory=dict)
     _agent_node_mapping: dict[str, str] = PrivateAttr(default_factory=dict)
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     @classmethod
     def validate_agents(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Ensure agents list is not empty."""
         if isinstance(values, dict):
-            agents = values.get('agents', [])
+            agents = values.get("agents", [])
             if not agents:
-                raise ValueError('MultiAgent requires at least one agent')
+                raise ValueError("MultiAgent requires at least one agent")
         return values
 
-    @model_validator(mode='after')
-    def setup_multi_agent(self) -> 'MultiAgent':
+    @model_validator(mode="after")
+    def setup_multi_agent(self) -> "MultiAgent":
         """Set up the multi-agent system after initialization."""
         build_mode = self._get_build_mode()
-        self.state_schema = AgentSchemaComposer.from_agents(agents=list(self.agents), name=f'{self.__class__.__name__}State', include_meta=self.include_meta, separation=self.schema_separation, build_mode=build_mode)
+        self.state_schema = AgentSchemaComposer.from_agents(
+            agents=list(self.agents),
+            name=f"{self.__class__.__name__}State",
+            include_meta=self.include_meta,
+            separation=self.schema_separation,
+            build_mode=build_mode,
+        )
         for agent in self.agents:
-            agent_id = getattr(agent, 'id', agent.name)
-            if hasattr(agent, 'state_schema') and agent.state_schema:
+            agent_id = getattr(agent, "id", agent.name)
+            if hasattr(agent, "state_schema") and agent.state_schema:
                 self._agent_private_states[agent_id] = agent.state_schema
         self._setup_io_schemas()
         return self
 
     def _get_build_mode(self) -> BuildMode:
         """Map execution mode to build mode."""
-        mode_mapping = {ExecutionMode.SEQUENCE: BuildMode.SEQUENCE, ExecutionMode.PARALLEL: BuildMode.PARALLEL, ExecutionMode.CONDITIONAL: BuildMode.SEQUENCE, ExecutionMode.HIERARCHICAL: BuildMode.HIERARCHICAL}
+        mode_mapping = {
+            ExecutionMode.SEQUENCE: BuildMode.SEQUENCE,
+            ExecutionMode.PARALLEL: BuildMode.PARALLEL,
+            ExecutionMode.CONDITIONAL: BuildMode.SEQUENCE,
+            ExecutionMode.HIERARCHICAL: BuildMode.HIERARCHICAL,
+        }
         return mode_mapping.get(self.execution_mode, BuildMode.CUSTOM)
 
     def _setup_io_schemas(self) -> None:
@@ -80,11 +107,11 @@ class MultiAgent(Agent):
             if self.agents:
                 first_agent = self.agents[0]
                 last_agent = self.agents[-1]
-                if hasattr(first_agent, 'input_schema') and first_agent.input_schema:
+                if hasattr(first_agent, "input_schema") and first_agent.input_schema:
                     self.input_schema = first_agent.input_schema
                 else:
                     self.input_schema = self.state_schema.derive_input_schema()
-                if hasattr(last_agent, 'output_schema') and last_agent.output_schema:
+                if hasattr(last_agent, "output_schema") and last_agent.output_schema:
                     self.output_schema = last_agent.output_schema
                 else:
                     self.output_schema = self.state_schema.derive_output_schema()
@@ -92,7 +119,13 @@ class MultiAgent(Agent):
             self.input_schema = self.state_schema.derive_input_schema()
             self.output_schema = self.state_schema.derive_output_schema()
 
-    def add_conditional_edge(self, source_agent: str | Agent, condition: Callable[[Any], str | bool], destinations: dict[str | bool, str | Agent], default: str | Agent | None=None) -> None:
+    def add_conditional_edge(
+        self,
+        source_agent: str | Agent,
+        condition: Callable[[Any], str | bool],
+        destinations: dict[str | bool, str | Agent],
+        default: str | Agent | None = None,
+    ) -> None:
         """Add a conditional edge between agents.
 
         Args:
@@ -106,28 +139,32 @@ class MultiAgent(Agent):
         for key, dest in destinations.items():
             dest_name = self._get_node_name(dest) if dest != END else END
             normalized_dests[key] = dest_name
-        self.branches[source_name] = {'condition': condition, 'destinations': normalized_dests, 'default': self._get_node_name(default) if default and default != END else default}
+        self.branches[source_name] = {
+            "condition": condition,
+            "destinations": normalized_dests,
+            "default": self._get_node_name(default) if default and default != END else default,
+        }
 
     def _get_node_name(self, agent: str | Agent) -> str:
         """Get the node name for an agent."""
         if isinstance(agent, str):
             for a in self.agents:
-                if getattr(a, 'name', None) == agent or getattr(a, 'id', None) == agent:
+                if getattr(a, "name", None) == agent or getattr(a, "id", None) == agent:
                     return self._get_agent_node_name(a)
             return agent
         if isinstance(agent, Agent):
             return self._get_agent_node_name(agent)
-        raise ValueError(f'Invalid agent reference: {agent}')
+        raise ValueError(f"Invalid agent reference: {agent}")
 
     def _get_agent_node_name(self, agent: Agent) -> str:
         """Get the unique node name for an agent."""
-        base_name = getattr(agent, 'name', agent.__class__.__name__)
-        agent_id = getattr(agent, 'id', base_name)
+        base_name = getattr(agent, "name", agent.__class__.__name__)
+        agent_id = getattr(agent, "id", base_name)
         if agent_id not in self._agent_node_mapping:
             node_name = base_name
             counter = 1
             while any((node_name == existing for existing in self._agent_node_mapping.values())):
-                node_name = f'{base_name}_{counter}'
+                node_name = f"{base_name}_{counter}"
                 counter += 1
             self._agent_node_mapping[agent_id] = node_name
         return self._agent_node_mapping[agent_id]
@@ -153,14 +190,27 @@ class MultiAgent(Agent):
         for agent in self.agents:
             node_name = self._get_agent_node_name(agent)
             node_names.append(node_name)
-            agent_node = AgentNodeConfig(name=node_name, agent=agent, private_state_schema=self._agent_private_states.get(getattr(agent, 'id', agent.name)))
+            agent_node = AgentNodeConfig(
+                name=node_name,
+                agent=agent,
+                private_state_schema=self._agent_private_states.get(
+                    getattr(agent, "id", agent.name)
+                ),
+            )
             graph.add_node(node_name, agent_node)
         for i, node_name in enumerate(node_names):
             if i == 0:
                 graph.add_edge(START, node_name)
             if node_name in self.branches:
                 branch_config = self.branches[node_name]
-                graph.add_conditional_edges(node_name, branch_config['condition'], branch_config['destinations'], default=branch_config.get('default', END if i == len(node_names) - 1 else node_names[i + 1]))
+                graph.add_conditional_edges(
+                    node_name,
+                    branch_config["condition"],
+                    branch_config["destinations"],
+                    default=branch_config.get(
+                        "default", END if i == len(node_names) - 1 else node_names[i + 1]
+                    ),
+                )
             elif i == len(node_names) - 1:
                 graph.add_edge(node_name, END)
             else:
@@ -168,19 +218,29 @@ class MultiAgent(Agent):
 
     def _build_parallel_graph(self, graph: BaseGraph) -> None:
         """Build a parallel execution graph."""
-        coordinator_name = f'{self.name}_coordinator'
-        coordinator = CoordinatorNodeConfig(name=coordinator_name, agents=list(self.agents), mode='fanout')
+        coordinator_name = f"{self.name}_coordinator"
+        coordinator = CoordinatorNodeConfig(
+            name=coordinator_name, agents=list(self.agents), mode="fanout"
+        )
         graph.add_node(coordinator_name, coordinator)
         graph.add_edge(START, coordinator_name)
         agent_nodes = []
         for agent in self.agents:
             node_name = self._get_agent_node_name(agent)
             agent_nodes.append(node_name)
-            agent_node = AgentNodeConfig(name=node_name, agent=agent, private_state_schema=self._agent_private_states.get(getattr(agent, 'id', agent.name)))
+            agent_node = AgentNodeConfig(
+                name=node_name,
+                agent=agent,
+                private_state_schema=self._agent_private_states.get(
+                    getattr(agent, "id", agent.name)
+                ),
+            )
             graph.add_node(node_name, agent_node)
             graph.add_edge(coordinator_name, node_name)
-        aggregator_name = f'{self.name}_aggregator'
-        aggregator = CoordinatorNodeConfig(name=aggregator_name, agents=list(self.agents), mode='aggregate')
+        aggregator_name = f"{self.name}_aggregator"
+        aggregator = CoordinatorNodeConfig(
+            name=aggregator_name, agents=list(self.agents), mode="aggregate"
+        )
         graph.add_node(aggregator_name, aggregator)
         for node_name in agent_nodes:
             graph.add_edge(node_name, aggregator_name)
@@ -192,7 +252,7 @@ class MultiAgent(Agent):
 
     def _build_hierarchical_graph(self, graph: BaseGraph) -> None:
         """Build a hierarchical execution graph."""
-        logger.warning('Hierarchical mode not fully implemented, using sequence')
+        logger.warning("Hierarchical mode not fully implemented, using sequence")
         self._build_sequence_graph(graph)
 
     @abstractmethod
@@ -205,63 +265,75 @@ class MultiAgent(Agent):
         Returns:
             The modified graph
         """
-        raise NotImplementedError('Subclasses must implement build_custom_graph for CUSTOM mode')
+        raise NotImplementedError("Subclasses must implement build_custom_graph for CUSTOM mode")
 
     def get_agent_by_name(self, name: str) -> Agent | None:
         """Get an agent by name or id."""
         for agent in self.agents:
-            if getattr(agent, 'name', None) == name or getattr(agent, 'id', None) == name:
+            if getattr(agent, "name", None) == name or getattr(agent, "id", None) == name:
                 return agent
         return None
 
     def visualize_structure(self) -> None:
         """Visualize the multi-agent structure."""
-        tree = Tree(f'[bold blue]{self.name}[/bold blue] ({self.execution_mode.value})')
-        agents_branch = tree.add('[green]Agents[/green]')
+        tree = Tree(f"[bold blue]{self.name}[/bold blue] ({self.execution_mode.value})")
+        agents_branch = tree.add("[green]Agents[/green]")
         for agent in self.agents:
-            agent_name = getattr(agent, 'name', agent.__class__.__name__)
-            agent_info = f'{agent_name}'
-            if hasattr(agent, 'engine') and agent.engine:
-                engine_type = getattr(agent.engine, 'engine_type', 'unknown')
-                agent_info += f' (engine: {engine_type})'
+            agent_name = getattr(agent, "name", agent.__class__.__name__)
+            agent_info = f"{agent_name}"
+            if hasattr(agent, "engine") and agent.engine:
+                engine_type = getattr(agent.engine, "engine_type", "unknown")
+                agent_info += f" (engine: {engine_type})"
             agents_branch.add(agent_info)
         if self.branches:
-            branches_branch = tree.add('[yellow]Conditional Branches[/yellow]')
+            branches_branch = tree.add("[yellow]Conditional Branches[/yellow]")
             for source, config in self.branches.items():
-                branch_info = f'{source} → '
-                dests = config.get('destinations', {})
-                branch_info += ', '.join((f'{k}: {v}' for k, v in dests.items()))
-                if config.get('default'):
-                    branch_info += f' (default: {config['default']})'
+                branch_info = f"{source} → "
+                dests = config.get("destinations", {})
+                branch_info += ", ".join((f"{k}: {v}" for k, v in dests.items()))
+                if config.get("default"):
+                    branch_info += f" (default: {config['default']})"
                 branches_branch.add(branch_info)
-        schema_branch = tree.add('[cyan]Schema Info[/cyan]')
+        schema_branch = tree.add("[cyan]Schema Info[/cyan]")
         if self.state_schema:
-            schema_branch.add(f'State: {getattr(self.state_schema, '__name__', 'Unknown')}')
+            schema_branch.add(f"State: {getattr(self.state_schema, '__name__', 'Unknown')}")
         if self.input_schema:
-            schema_branch.add(f'Input: {getattr(self.input_schema, '__name__', 'Unknown')}')
+            schema_branch.add(f"Input: {getattr(self.input_schema, '__name__', 'Unknown')}")
         if self.output_schema:
-            schema_branch.add(f'Output: {getattr(self.output_schema, '__name__', 'Unknown')}')
+            schema_branch.add(f"Output: {getattr(self.output_schema, '__name__', 'Unknown')}")
         console.print(tree)
+
 
 class SequentialAgent(MultiAgent):
     """Pre-configured sequential multi-agent."""
-    execution_mode: ExecutionMode = Field(default=ExecutionMode.SEQUENCE, description='Sequential execution mode')
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.SEQUENCE, description="Sequential execution mode"
+    )
 
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:
         """Not needed for sequential mode."""
         return graph
 
+
 class ParallelAgent(MultiAgent):
     """Pre-configured parallel multi-agent."""
-    execution_mode: ExecutionMode = Field(default=ExecutionMode.PARALLEL, description='Parallel execution mode')
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.PARALLEL, description="Parallel execution mode"
+    )
 
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:
         """Not needed for parallel mode."""
         return graph
 
+
 class ConditionalAgent(MultiAgent):
     """Pre-configured conditional multi-agent with branching."""
-    execution_mode: ExecutionMode = Field(default=ExecutionMode.CONDITIONAL, description='Conditional execution mode')
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.CONDITIONAL, description="Conditional execution mode"
+    )
 
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:
         """Not needed for conditional mode."""

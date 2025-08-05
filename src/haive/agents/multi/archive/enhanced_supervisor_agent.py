@@ -83,9 +83,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default="best", description="Strategy for choosing workers"
     )
 
-    supervisor_prompt: str | None = Field(
-        default=None, description="Custom supervisor prompt"
-    )
+    supervisor_prompt: str | None = Field(default=None, description="Custom supervisor prompt")
 
     allow_direct_response: bool = Field(
         default=True, description="Whether supervisor can respond without delegating"
@@ -120,7 +118,8 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
             values["engine"] = AugLLMConfig(
                 temperature=values.get("temperature", 0.3),
                 max_tokens=values.get("max_tokens"),
-                system_message=values.get("supervisor_prompt"))
+                system_message=values.get("supervisor_prompt"),
+            )
 
         return values
 
@@ -173,10 +172,7 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     def _get_default_supervisor_prompt(self) -> str:
         """Get default supervisor prompt."""
         worker_descriptions = "\n".join(
-            [
-                f"- {name}: {type(agent).__name__}"
-                for name, agent in self.workers.items()
-            ]
+            [f"- {name}: {type(agent).__name__}" for name, agent in self.workers.items()]
         )
 
         return f"""You are a supervisor agent coordinating a team of workers.
@@ -214,11 +210,8 @@ For each request, think about:
             # Create node for each worker
             worker_node = EngineNodeConfig(
                 name=f"worker_{worker_name}",
-                engine=(
-                    worker_agent.engine
-                    if hasattr(worker_agent, "engine")
-                    else worker_agent
-                ))
+                engine=(worker_agent.engine if hasattr(worker_agent, "engine") else worker_agent),
+            )
             graph.add_node(f"worker_{worker_name}", worker_node)
 
         # Routing function
@@ -234,8 +227,7 @@ For each request, think about:
             delegations = sum(
                 1
                 for m in messages
-                if isinstance(m, AIMessage)
-                and "delegating to" in str(m.content).lower()
+                if isinstance(m, AIMessage) and "delegating to" in str(m.content).lower()
             )
             if delegations >= self.max_delegation_rounds:
                 return "end"
@@ -281,8 +273,7 @@ For each request, think about:
         """String representation with worker info."""
         engine_type = type(self.engine).__name__ if self.engine else "None"
         worker_names = list(self.workers.keys())
-        return f"SupervisorAgent[{engine_type}](name='{
-            self.name}', workers={worker_names})"
+        return f"SupervisorAgent[{engine_type}](name='{self.name}', workers={worker_names})"
 
 
 # Example usage
@@ -306,7 +297,8 @@ if __name__ == "__main__":
             "analyst": MockWorker("Alice", "Data Analysis"),
             "developer": MockWorker("Bob", "Software Development"),
             "designer": MockWorker("Carol", "UI/UX Design"),
-        })
+        },
+    )
 
     # Add another worker dynamically
     supervisor.add_worker("tester", MockWorker("Dave", "Quality Assurance"))

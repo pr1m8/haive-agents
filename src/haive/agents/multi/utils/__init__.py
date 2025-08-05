@@ -7,7 +7,8 @@ from haive.agents.multi.utils.compatibility import (
     ExecutionMode,
     MultiAgent,
     ParallelAgent,
-    SequentialAgent)
+    SequentialAgent,
+)
 
 __all__ = [
     "MultiAgent",

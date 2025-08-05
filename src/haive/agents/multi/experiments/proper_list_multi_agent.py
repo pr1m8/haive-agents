@@ -56,9 +56,7 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
 
     # Execution settings
     sequential: bool = Field(default=True, description="Execute agents sequentially")
-    stop_on_error: bool = Field(
-        default=False, description="Stop execution on agent error"
-    )
+    stop_on_error: bool = Field(default=False, description="Stop execution on agent error")
 
     # Routing rules for conditional execution
     routing_rules: dict[str, dict[str, Any]] = Field(
@@ -66,9 +64,7 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     )
 
     # State settings
-    use_prebuilt_base: bool = Field(
-        default=True, description="Use MultiAgentState as base"
-    )
+    use_prebuilt_base: bool = Field(default=True, description="Use MultiAgentState as base")
 
     # Private tracking
     _agent_index: dict[str, int] = PrivateAttr(default_factory=dict)
@@ -114,9 +110,7 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             self.agents.remove(agent)
 
         self._update_agent_index()
-        self.mark_for_recompile(
-            f"Removed agent: {agent if isinstance(agent, str) else agent.name}"
-        )
+        self.mark_for_recompile(f"Removed agent: {agent if isinstance(agent, str) else agent.name}")
         return self
 
     def pop(self, index: int = -1) -> Agent:
@@ -135,7 +129,8 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     def when(
         self,
         condition: Callable[[Any], str | bool],
-        routes: dict[str | bool, Union[str, Agent, "END"]]) -> "ProperListMultiAgent":
+        routes: dict[str | bool, Union[str, Agent, "END"]],
+    ) -> "ProperListMultiAgent":
         """Add conditional routing for the last agent."""
         if not self.agents:
             raise ValueError("No agents to route from")
@@ -172,14 +167,15 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         # Input schema - just messages by default
 
         self.input_schema = create_model(
-            f"{self.name}Input",
-            messages=(list[BaseMessage], Field(default_factory=list)))
+            f"{self.name}Input", messages=(list[BaseMessage], Field(default_factory=list))
+        )
 
         # Output schema - messages plus agent outputs
         self.output_schema = create_model(
             f"{self.name}Output",
             messages=(list[BaseMessage], Field(default_factory=list)),
-            agent_outputs=(dict[str, Any], Field(default_factory=dict)))
+            agent_outputs=(dict[str, Any], Field(default_factory=dict)),
+        )
 
     # ========== Agent Setup ==========
 
@@ -234,7 +230,8 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
                 extract_from_container=True,
                 project_state=True,
                 update_container_state=True,
-                track_recompilation=True)
+                track_recompilation=True,
+            )
 
             node_name = f"agent_{agent.name}_{i}"
             graph.add_node(node_name, node_config)
@@ -254,7 +251,8 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
                 extract_from_container=True,
                 project_state=True,
                 update_container_state=True,
-                track_recompilation=True)
+                track_recompilation=True,
+            )
 
             node_name = f"agent_{agent.name}_{i}"
             graph.add_node(node_name, node_config)
@@ -290,7 +288,8 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
                     source_node=node_name,
                     condition=condition,
                     destinations=node_routes,
-                    default=default)
+                    default=default,
+                )
 
                 prev_node = None  # No automatic progression
             else:
@@ -320,7 +319,8 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         multi_state = MultiAgentState(
             agents=agents_dict,
             messages=state.get("messages", []),
-            agent_execution_order=[agent.name for agent in self.agents])
+            agent_execution_order=[agent.name for agent in self.agents],
+        )
 
         # Return the state as dict for LangGraph
         return multi_state.model_dump()
@@ -424,13 +424,14 @@ class MetaListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         # Input and output schemas
 
         self.input_schema = create_model(
-            f"{self.name}Input",
-            messages=(list[BaseMessage], Field(default_factory=list)))
+            f"{self.name}Input", messages=(list[BaseMessage], Field(default_factory=list))
+        )
 
         self.output_schema = create_model(
             f"{self.name}Output",
             messages=(list[BaseMessage], Field(default_factory=list)),
-            agent_results=(list[dict[str, Any]], Field(default_factory=list)))
+            agent_results=(list[dict[str, Any]], Field(default_factory=list)),
+        )
 
     def setup_agent(self) -> None:
         """Setup the meta multi-agent."""
@@ -491,9 +492,7 @@ class MetaListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
 # ========== Convenience Functions ==========
 
 
-def sequential_multi(
-    *agents: Agent, name: str = "sequential_multi"
-) -> ProperListMultiAgent:
+def sequential_multi(*agents: Agent, name: str = "sequential_multi") -> ProperListMultiAgent:
     """Create a sequential multi-agent."""
     multi = ProperListMultiAgent(name=name)
     for agent in agents:

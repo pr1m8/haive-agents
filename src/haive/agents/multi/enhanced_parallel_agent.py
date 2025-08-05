@@ -79,9 +79,7 @@ class ParallelAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default=30.0, gt=0, description="Timeout for each agent in seconds"
     )
 
-    continue_on_timeout: bool = Field(
-        default=True, description="Continue if some agents timeout"
-    )
+    continue_on_timeout: bool = Field(default=True, description="Continue if some agents timeout")
 
     min_agents_for_consensus: int = Field(
         default=2, ge=1, description="Minimum agents needed for consensus strategies"
@@ -144,19 +142,15 @@ class ParallelAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
                 if self.aggregation_strategy == "merge":
                     self.engine.system_message = self._get_merge_prompt()
                 else:
-                    self.engine.system_message = (
-                        "You coordinate parallel agent execution."
-                    )
+                    self.engine.system_message = "You coordinate parallel agent execution."
 
     def _get_merge_prompt(self) -> str:
         """Get prompt for merging results."""
-        agent_names = [
-            getattr(agent, "name", f"Agent{i}") for i, agent in enumerate(self.agents)
-        ]
+        agent_names = [getattr(agent, "name", f"Agent{i}") for i, agent in enumerate(self.agents)]
 
         return f"""You are aggregating results from multiple parallel agents:
 
-Agents: {', '.join(agent_names)}
+Agents: {", ".join(agent_names)}
 
 Your task:
 1. Receive all agent outputs
@@ -182,8 +176,8 @@ Create a unified response that leverages all agent contributions."""
             node_name = f"agent_{i}_{getattr(agent, 'name', f'parallel_{i}')}"
 
             agent_node = EngineNodeConfig(
-                name=node_name,
-                engine=agent.engine if hasattr(agent, "engine") else agent)
+                name=node_name, engine=agent.engine if hasattr(agent, "engine") else agent
+            )
             graph.add_node(node_name, agent_node)
             graph.add_edge("split", node_name)
             agent_nodes.append(node_name)
@@ -284,9 +278,7 @@ Create a unified response that leverages all agent contributions."""
         if self.aggregation_strategy == "best":
             # Score and return best result
             if self.quality_scorer:
-                scored = [
-                    (i, result, self.quality_scorer(result)) for i, result in results
-                ]
+                scored = [(i, result, self.quality_scorer(result)) for i, result in results]
                 best = max(scored, key=lambda x: x[2])
                 return best[1]
             # Default to longest response
@@ -297,8 +289,7 @@ Create a unified response that leverages all agent contributions."""
             # Find consensus (simplified - real impl would be smarter)
             if len(results) < self.min_agents_for_consensus:
                 raise ValueError(
-                    f"Need at least {
-                        self.min_agents_for_consensus} agents for consensus"
+                    f"Need at least {self.min_agents_for_consensus} agents for consensus"
                 )
 
             # Group similar results (simplified)
@@ -361,10 +352,9 @@ if __name__ == "__main__":
             # Simulate different processing times
 
             await asyncio.sleep(random.uniform(0.1, 0.5))
-            return f"{
-                self.name} ({
-                self.specialty}): Analysis of '{input_data}' from {
-                self.specialty} perspective"
+            return f"{self.name} ({self.specialty}): Analysis of '{input_data}' from {
+                self.specialty
+            } perspective"
 
     # Create parallel agent ensemble
     ensemble = ParallelAgent(
@@ -376,7 +366,8 @@ if __name__ == "__main__":
             MockExpert("Dave", "Operations"),
         ],
         aggregation_strategy="all",
-        timeout_per_agent=2.0)
+        timeout_per_agent=2.0,
+    )
 
     # Different aggregation strategies
     strategies = {

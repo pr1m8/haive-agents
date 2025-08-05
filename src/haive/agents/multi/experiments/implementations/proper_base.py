@@ -40,22 +40,22 @@ class ProperMultiAgent(Agent):
 
     # Agent management - exact same pattern as engines
     agents: dict[str, Agent] = Field(
-        default_factory=dict,
-        description="Dictionary of agents this multi-agent coordinates")
-
-    agent: Agent | None = Field(
-        default=None, description="Main/default agent for this multi-agent"
+        default_factory=dict, description="Dictionary of agents this multi-agent coordinates"
     )
+
+    agent: Agent | None = Field(default=None, description="Main/default agent for this multi-agent")
 
     # Execution configuration
     execution_mode: str = Field(
         default="sequential",
-        description="How to execute agents: sequential, parallel, conditional, branch")
+        description="How to execute agents: sequential, parallel, conditional, branch",
+    )
 
     # Branching configuration
     branch_condition: str | None = Field(
         default=None,
-        description="Condition for branching execution (e.g., 'if result contains error')")
+        description="Condition for branching execution (e.g., 'if result contains error')",
+    )
 
     # Parallel execution settings
     parallel_wait_for_all: bool = Field(
@@ -168,7 +168,8 @@ class ProperMultiAgent(Agent):
                 project_state=True,
                 extract_from_container=True,
                 update_container_state=True,
-                shared_fields=shared_fields)
+                shared_fields=shared_fields,
+            )
             graph.add_node(f"agent_{agent_name}", node_config)
 
         # Build edges based on execution mode
@@ -274,9 +275,7 @@ class ProperMultiAgent(Agent):
             next_agent = agent_names[i + 1]
 
             # Add condition evaluator
-            def condition_evaluator(
-                state: dict[str, Any], current=current_agent, next=next_agent
-            ):
+            def condition_evaluator(state: dict[str, Any], current=current_agent, next=next_agent):
                 """Evaluate condition to determine next agent."""
                 # Simple condition evaluation
                 if self.branch_condition:

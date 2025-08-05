@@ -29,9 +29,7 @@ class Plan(BaseModel):
 # Just test the simplest possible case
 try:
     add_aug = AugLLMConfig(tools=[add])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
     react_agent = ReactAgent(engine=add_aug)
     simple_agent = SimpleAgent(engine=plan_aug)
 
@@ -44,13 +42,10 @@ try:
     # Try with a ToolMessage to see if that's the issue
     tool_msg = ToolMessage(content="8", name="add", tool_call_id="test_call_123")
 
-    result2 = structured_react.run(
-        {"messages": [HumanMessage(content="Hello"), tool_msg]}
-    )
+    result2 = structured_react.run({"messages": [HumanMessage(content="Hello"), tool_msg]})
 
 
 except Exception as e:
-
     # Get just the last few frames of the traceback
     tb = traceback.extract_tb(e.__traceback__)
     for _frame in tb[-3:]:  # Just show last 3 frames
