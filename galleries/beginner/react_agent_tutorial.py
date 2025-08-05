@@ -100,7 +100,6 @@ Think step by step and explain your reasoning.""",
     ]
 
     for _i, problem in enumerate(problems, 1):
-
         # Get agent response with tool usage
         await agent.arun(problem)
 

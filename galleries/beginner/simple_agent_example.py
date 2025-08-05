@@ -33,7 +33,6 @@ async def main():
     ]
 
     for _i, user_input in enumerate(conversations, 1):
-
         # Get agent response
         await agent.arun(user_input)
 

@@ -137,9 +137,7 @@ class ReasoningAnalysis(BaseModel):
 
     final_conclusion: str = Field(
         description="Complete final answer with supporting reasoning and evidence",
-        examples=[
-            "Based on 8 iterations of research and analysis, renewable energy shows..."
-        ],
+        examples=["Based on 8 iterations of research and analysis, renewable energy shows..."],
     )
 
     confidence_score: float = Field(
@@ -505,7 +503,7 @@ Key Findings:
 • Active research and development ongoing in this area
 
 Sources: Academic databases, industry reports, government publications, peer-reviewed journals
-Research Date: {datetime.now().strftime('%Y-%m-%d')}
+Research Date: {datetime.now().strftime("%Y-%m-%d")}
 Note: This is a simulated research result for documentation purposes."""
 
 
@@ -614,7 +612,7 @@ Recommendations:
 • Apply findings to decision-making processes
 • Validate results through independent analysis
 
-Analysis Date: {datetime.now().strftime('%Y-%m-%d')}
+Analysis Date: {datetime.now().strftime("%Y-%m-%d")}
 Note: This is a simulated analysis result for documentation purposes."""
 
 
@@ -698,7 +696,7 @@ Application Notes:
 • Consult with qualified engineers for critical applications
 • Maintain documentation for compliance and traceability
 
-Reference Date: {datetime.now().strftime('%Y-%m-%d')}
+Reference Date: {datetime.now().strftime("%Y-%m-%d")}
 Note: This is a simulated lookup result for documentation purposes."""
 
 
@@ -754,9 +752,7 @@ def demonstrate_basic_react_pattern() -> ReactAgentV3:
         debug=True,  # Show reasoning process
     )
 
-    logger.info(
-        f"Created ReactAgentV3 '{agent.name}' with {len(agent.engine.tools)} tools"
-    )
+    logger.info(f"Created ReactAgentV3 '{agent.name}' with {len(agent.engine.tools)} tools")
     logger.info(
         f"Configuration: max_iterations={agent.max_iterations}, temperature={agent.engine.temperature}"
     )
@@ -879,9 +875,7 @@ def demonstrate_technical_problem_solving() -> ReactAgentV3:
         debug=True,
     )
 
-    logger.info(
-        f"Technical agent configured with {len(agent.engine.tools)} specialized tools"
-    )
+    logger.info(f"Technical agent configured with {len(agent.engine.tools)} specialized tools")
     logger.info(f"Max iterations: {agent.max_iterations} for comprehensive analysis")
 
     return agent
@@ -1097,9 +1091,7 @@ def demonstrate_react_vs_simple_comparison():
     )
 
     # Create SimpleAgentV3 for comparison
-    simple_agent = SimpleAgentV3(
-        name="comparison_simple", engine=shared_config, debug=True
-    )
+    simple_agent = SimpleAgentV3(name="comparison_simple", engine=shared_config, debug=True)
 
     # Create ReactAgentV3 with same tools
     react_agent = ReactAgentV3(
@@ -1272,9 +1264,7 @@ def demonstrate_dynamic_tool_addition():
         debug=True,
     )
 
-    logger.info(
-        f"✅ Created adaptive agent with {len(adaptive_agent.engine.tools)} initial tools"
-    )
+    logger.info(f"✅ Created adaptive agent with {len(adaptive_agent.engine.tools)} initial tools")
 
     # Simulate dynamic tool addition scenario
     logger.info("Simulating dynamic tool addition scenario:")
@@ -1292,9 +1282,7 @@ def demonstrate_dynamic_tool_addition():
 
     # Show how tools would be added dynamically
     logger.info("📋 Tools available for dynamic addition:")
-    logger.info(
-        f"   1. {specialized_analyzer.name}: {specialized_analyzer.description}"
-    )
+    logger.info(f"   1. {specialized_analyzer.name}: {specialized_analyzer.description}")
     logger.info(f"   2. {database_connector.name}: {database_connector.description}")
     logger.info("   These tools can be added during execution based on agent needs")
 
@@ -1356,21 +1344,15 @@ def demonstrate_hooks_integration():
 
     def tool_usage_monitor(tool_name: str, tool_result: str, execution_time: float):
         """Monitor tool usage and performance."""
-        result_preview = (
-            tool_result[:100] + "..." if len(tool_result) > 100 else tool_result
-        )
-        logger.info(
-            f"🔧 Tool '{tool_name}' executed in {execution_time:.2f}s: {result_preview}"
-        )
+        result_preview = tool_result[:100] + "..." if len(tool_result) > 100 else tool_result
+        logger.info(f"🔧 Tool '{tool_name}' executed in {execution_time:.2f}s: {result_preview}")
 
     def reasoning_quality_monitor(reasoning_trace: list[str], confidence: float):
         """Assess reasoning quality and completeness."""
         if len(reasoning_trace) < 3:
             logger.warning("⚠️  Reasoning may be incomplete - consider more iterations")
         if confidence < 0.7:
-            logger.warning(
-                f"⚠️  Low confidence ({confidence:.2f}) - may need additional analysis"
-            )
+            logger.warning(f"⚠️  Low confidence ({confidence:.2f}) - may need additional analysis")
         logger.info(
             f"📊 Reasoning quality: {len(reasoning_trace)} steps, confidence: {confidence:.2f}"
         )
@@ -1438,9 +1420,7 @@ def run_comprehensive_react_documentation():
         technical_agent = demonstrate_technical_problem_solving()
 
         # 4. Factory Functions
-        research_agent, structured_agent, technical_agent = (
-            demonstrate_create_react_agent_factory()
-        )
+        research_agent, structured_agent, technical_agent = demonstrate_create_react_agent_factory()
 
         # 5. Research Factory
         demonstrate_create_research_agent_factory()
@@ -1449,9 +1429,7 @@ def run_comprehensive_react_documentation():
         simple_agent, react_agent = demonstrate_react_vs_simple_comparison()
 
         # 7. Performance Optimization
-        fast_agent, thorough_agent, production_agent = (
-            demonstrate_performance_considerations()
-        )
+        fast_agent, thorough_agent, production_agent = demonstrate_performance_considerations()
 
         # 8. Dynamic Tool Addition
         adaptive_agent, additional_tools = demonstrate_dynamic_tool_addition()

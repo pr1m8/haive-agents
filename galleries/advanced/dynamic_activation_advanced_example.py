@@ -50,9 +50,7 @@ def data_analyzer(data: str, analysis_type: str = "basic") -> dict[str, Any]:
         # Try parsing as JSON first
         try:
             parsed_data = json.loads(data)
-            data_points = (
-                parsed_data if isinstance(parsed_data, list) else [parsed_data]
-            )
+            data_points = parsed_data if isinstance(parsed_data, list) else [parsed_data]
         except json.JSONDecodeError:
             # Fall back to CSV parsing
             lines = data.strip().split("\n")
@@ -69,9 +67,7 @@ def data_analyzer(data: str, analysis_type: str = "basic") -> dict[str, Any]:
         if analysis_type == "statistical":
             # Basic statistical analysis
             if isinstance(data_points[0], int | float):
-                numbers = [
-                    float(x) for x in data_points if isinstance(x, int | float | str)
-                ]
+                numbers = [float(x) for x in data_points if isinstance(x, int | float | str)]
                 return {
                     "type": "statistical_analysis",
                     "count": len(numbers),
@@ -92,9 +88,7 @@ def data_analyzer(data: str, analysis_type: str = "basic") -> dict[str, Any]:
             "data_points": len(data_points),
             "structure": type(data_points[0]).__name__ if data_points else "empty",
             "complexity": (
-                "high"
-                if len(data_points) > 100
-                else "medium" if len(data_points) > 10 else "low"
+                "high" if len(data_points) > 100 else "medium" if len(data_points) > 10 else "low"
             ),
             "timestamp": str(datetime.now()),
         }
@@ -152,9 +146,7 @@ def report_generator(data: dict[str, Any], format_type: str = "json") -> str:
             return json.dumps(data, indent=2)
         if format_type == "markdown":
             report = "# Analysis Report\n\n"
-            report += (
-                f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-            )
+            report += f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
 
             for key, value in data.items():
                 report += f"## {key.title()}\n\n"
@@ -502,16 +494,12 @@ async def example_2_mcp_integration():
             "capabilities": ["tools", "discovery", "streaming"],
         }
 
-        connection_response = await mcp_server.handle_client_connect(
-            "advanced_client", client_info
-        )
+        connection_response = await mcp_server.handle_client_connect("advanced_client", client_info)
         logger.info(f"Client connection: {connection_response}")
 
         # Activate MCP tools
         for i in range(len(mcp_tools)):
-            tool = await mcp_server.tool_registry.activate_mcp_tool(
-                f"mcp_tool_{i:03d}", mcp_server
-            )
+            tool = await mcp_server.tool_registry.activate_mcp_tool(f"mcp_tool_{i:03d}", mcp_server)
             logger.info(f"Activated MCP tool: {tool.name if tool else 'None'}")
 
         # Execute MCP tool requests
@@ -694,17 +682,15 @@ async def example_3_complex_discovery_workflow():
             "data processing and visualization tools",
         ]
 
-        for i, (agent, query) in enumerate(
-            zip(discovery_agents, discovery_queries, strict=False)
-        ):
+        for i, (agent, query) in enumerate(zip(discovery_agents, discovery_queries, strict=False)):
             try:
                 components = await agent.discover_components(query)
                 all_discovered_components.extend(components)
                 logger.info(
-                    f"Discovery agent {i+1} found {len(components)} components for '{query}'"
+                    f"Discovery agent {i + 1} found {len(components)} components for '{query}'"
                 )
             except Exception as e:
-                logger.exception(f"Discovery agent {i+1} error: {e}")
+                logger.exception(f"Discovery agent {i + 1} error: {e}")
 
         logger.info(f"Total discovered components: {len(all_discovered_components)}")
 
@@ -727,9 +713,7 @@ async def example_3_complex_discovery_workflow():
             name="discovery_supervisor", components=supervisor_components, engine=config
         )
 
-        logger.info(
-            f"Created supervisor with {len(supervisor_components)} discovered components"
-        )
+        logger.info(f"Created supervisor with {len(supervisor_components)} discovered components")
 
         # Activate components by category
         categories = {}
@@ -766,7 +750,7 @@ async def example_3_complex_discovery_workflow():
         # Discovery statistics
         for i, agent in enumerate(discovery_agents):
             if hasattr(agent, "_discovery_agent") and agent._discovery_agent:
-                logger.info(f"Discovery agent {i+1}: Active and configured")
+                logger.info(f"Discovery agent {i + 1}: Active and configured")
 
         # Supervisor statistics
         supervisor_stats = supervisor.state.get_activation_stats()
@@ -777,9 +761,7 @@ async def example_3_complex_discovery_workflow():
             active_in_category = [
                 comp_id for comp_id in comp_ids if comp_id in activated_components
             ]
-            logger.info(
-                f"Category {category}: {len(active_in_category)}/{len(comp_ids)} active"
-            )
+            logger.info(f"Category {category}: {len(active_in_category)}/{len(comp_ids)} active")
 
         return supervisor
 
@@ -803,9 +785,7 @@ async def example_4_performance_optimization():
             "operation": operation,
             "duration": duration,
             "timestamp": str(datetime.now()),
-            "status": (
-                "slow" if duration > 1.0 else "normal" if duration > 0.1 else "fast"
-            ),
+            "status": ("slow" if duration > 1.0 else "normal" if duration > 0.1 else "fast"),
         }
 
     @tool
@@ -867,9 +847,7 @@ async def example_4_performance_optimization():
     async def run_operation(operation_id: int):
         """Run a single operation."""
         start = time.time()
-        result = await perf_agent.arun(
-            f"Monitor performance for operation {operation_id}"
-        )
+        result = await perf_agent.arun(f"Monitor performance for operation {operation_id}")
         duration = time.time() - start
         return {"operation_id": operation_id, "duration": duration, "result": result}
 
@@ -963,21 +941,15 @@ async def example_4_performance_optimization():
     logger.info(f"Memory usage - Initial: {initial_memory:.1f} MB")
     logger.info(f"Memory usage - After agents: {after_agents_memory:.1f} MB")
     logger.info(f"Memory usage - After cleanup: {after_cleanup_memory:.1f} MB")
-    logger.info(
-        f"Memory per agent: {(after_agents_memory - initial_memory) / 10:.1f} MB"
-    )
+    logger.info(f"Memory per agent: {(after_agents_memory - initial_memory) / 10:.1f} MB")
 
     # Performance summary
     logger.info("=== Performance Summary ===")
     logger.info(f"Tool activation: {activation_time:.3f}s")
-    logger.info(
-        f"Concurrent operations: {concurrent_time:.3f}s ({len(tasks)} operations)"
-    )
+    logger.info(f"Concurrent operations: {concurrent_time:.3f}s ({len(tasks)} operations)")
     logger.info(f"Large registry: {registration_time:.3f}s (500 components)")
     logger.info(f"Batch activation: {batch_activation_time:.3f}s (100 components)")
-    logger.info(
-        f"Memory efficiency: {(after_agents_memory - initial_memory) / 10:.1f} MB/agent"
-    )
+    logger.info(f"Memory efficiency: {(after_agents_memory - initial_memory) / 10:.1f} MB/agent")
 
     return {
         "activation_time": activation_time,

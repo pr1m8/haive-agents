@@ -91,7 +91,6 @@ async def main():
         pass
 
     for _i, task in enumerate(tasks, 1):
-
         # Get agent response with reasoning
         await agent.arun(task, debug=True)
 

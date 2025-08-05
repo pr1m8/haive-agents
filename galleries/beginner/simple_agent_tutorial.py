@@ -46,7 +46,6 @@ async def main():
     ]
 
     for _i, user_input in enumerate(user_inputs, 1):
-
         # Get agent response
         await agent.arun(user_input)
 

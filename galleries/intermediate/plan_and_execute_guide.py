@@ -143,7 +143,6 @@ available tools effectively to complete each step.""",
     ]
 
     for _i, task in enumerate(complex_tasks, 1):
-
         # The agent will first create a plan
         await agent.arun(task)
 

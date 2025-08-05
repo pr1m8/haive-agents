@@ -47,7 +47,6 @@ def test_simple_creatio():
 
 
 if __name_ == "__main__":
-
     # Test 1: Imports
     if not test_imports():
         sys.exit(1)

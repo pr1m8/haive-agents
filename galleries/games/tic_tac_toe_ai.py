@@ -58,9 +58,7 @@ class TicTacToeGame:
         return [i + 1 for i, spot in enumerate(self.board) if spot == " "]
 
 
-async def create_game_agent(
-    name: str, symbol: str, strategy: str = "smart"
-) -> SimpleAgent:
+async def create_game_agent(name: str, symbol: str, strategy: str = "smart") -> SimpleAgent:
     """Create a game-playing agent."""
     if strategy == "smart":
         system_message = f"""You are an expert Tic-Tac-Toe player using symbol '{symbol}'.
@@ -92,9 +90,9 @@ async def get_agent_move(agent: SimpleAgent, game: TicTacToeGame, symbol: str) -
     """Get move from agent."""
     board_state = f"""
 Current board:
-{' | '.join([str(i+1) if game.board[i] == ' ' else game.board[i] for i in range(3)])}
-{' | '.join([str(i+1) if game.board[i] == ' ' else game.board[i] for i in range(3, 6)])}
-{' | '.join([str(i+1) if game.board[i] == ' ' else game.board[i] for i in range(6, 9)])}
+{" | ".join([str(i + 1) if game.board[i] == " " else game.board[i] for i in range(3)])}
+{" | ".join([str(i + 1) if game.board[i] == " " else game.board[i] for i in range(3, 6)])}
+{" | ".join([str(i + 1) if game.board[i] == " " else game.board[i] for i in range(6, 9)])}
 
 Available positions: {game.get_available_moves()}
 Your symbol: {symbol}

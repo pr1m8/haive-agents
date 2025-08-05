@@ -27,9 +27,7 @@ class EmailSummary(BaseModel):
     key_points: list[str] = Field(description="Main points from the email")
     action_required: bool = Field(description="Whether action is needed")
     urgency: str = Field(description="High, Medium, or Low")
-    suggested_response: str | None = Field(
-        default=None, description="Suggested reply if needed"
-    )
+    suggested_response: str | None = Field(default=None, description="Suggested reply if needed")
 
 
 class TechnicalDocAnalysis(BaseModel):
@@ -110,9 +108,7 @@ async def demo_email_summary():
     # Create email summarizer
     email_agent = SimpleAgent(
         name="email_summarizer",
-        engine=AugLLMConfig(
-            name="mock_email_engine", model="gpt-3.5-turbo", temperature=0.2
-        ),
+        engine=AugLLMConfig(name="mock_email_engine", model="gpt-3.5-turbo", temperature=0.2),
         system_message="You are an email analysis assistant. Extract key information from emails.",
     )
 
