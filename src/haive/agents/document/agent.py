@@ -47,7 +47,8 @@ from haive.core.engine.document.config import (
     DocumentInput,
     DocumentOutput,
     DocumentSourceType,
-    ProcessingStrategy)
+    ProcessingStrategy,
+)
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
@@ -78,11 +79,11 @@ class DocumentProcessingResult(BaseModel):
         default_factory=list, description="Chunks with extracted metadata annotations"
     )
     embedded_chunks: list[dict[str, Any]] = Field(
-        default_factory=list,
-        description="Chunks with embeddings (if embedding enabled)")
+        default_factory=list, description="Chunks with embeddings (if embedding enabled)"
+    )
     stored_documents: list[str] = Field(
-        default_factory=list,
-        description="Document IDs stored in vector store (if storage enabled)")
+        default_factory=list, description="Document IDs stored in vector store (if storage enabled)"
+    )
 
     # Pipeline Statistics
     total_sources: int = Field(default=0, description="Total sources processed")
@@ -104,9 +105,7 @@ class DocumentProcessingResult(BaseModel):
     )
 
     # Quality Metrics
-    successful_sources: int = Field(
-        default=0, description="Successfully processed sources"
-    )
+    successful_sources: int = Field(default=0, description="Successfully processed sources")
     failed_sources: int = Field(default=0, description="Failed source processing")
     processing_errors: list[str] = Field(
         default_factory=list, description="Errors encountered during processing"
@@ -280,8 +279,10 @@ class DocumentAgent(Agent):
             max_workers=4,
             extract_metadata=True,
             normalize_content=True,
-            skip_invalid=True),
-        description="Document engine configuration for the processing pipeline")
+            skip_invalid=True,
+        ),
+        description="Document engine configuration for the processing pipeline",
+    )
 
     # ========================================================================
     # SOURCE CONFIGURATION
@@ -295,7 +296,8 @@ class DocumentAgent(Agent):
             DocumentSourceType.DATABASE,
             DocumentSourceType.CLOUD,
         ],
-        description="Allowed source types for processing")
+        description="Allowed source types for processing",
+    )
 
     auto_detect_sources: bool = Field(
         default=True, description="Whether to auto-detect source types"
@@ -310,18 +312,16 @@ class DocumentAgent(Agent):
     # ========================================================================
 
     processing_strategy: ProcessingStrategy = Field(
-        default=ProcessingStrategy.ENHANCED,
-        description="Strategy for document processing")
+        default=ProcessingStrategy.ENHANCED, description="Strategy for document processing"
+    )
 
     parallel_processing: bool = Field(
         default=True, description="Whether to enable parallel processing"
     )
 
     max_workers: int = Field(
-        default=4,
-        description="Maximum worker threads for parallel processing",
-        ge=1,
-        le=32)
+        default=4, description="Maximum worker threads for parallel processing", ge=1, le=32
+    )
 
     # ========================================================================
     # CHUNKING CONFIGURATION
@@ -335,9 +335,7 @@ class DocumentAgent(Agent):
         default=1000, description="Size of chunks in characters", ge=10, le=10000
     )
 
-    chunk_overlap: int = Field(
-        default=200, description="Overlap between consecutive chunks", ge=0
-    )
+    chunk_overlap: int = Field(default=200, description="Overlap between consecutive chunks", ge=0)
 
     # ========================================================================
     # CONTENT PROCESSING OPTIONS
@@ -347,13 +345,9 @@ class DocumentAgent(Agent):
         default=True, description="Whether to normalize content (whitespace, encoding)"
     )
 
-    extract_metadata: bool = Field(
-        default=True, description="Whether to extract document metadata"
-    )
+    extract_metadata: bool = Field(default=True, description="Whether to extract document metadata")
 
-    detect_language: bool = Field(
-        default=False, description="Whether to detect document language"
-    )
+    detect_language: bool = Field(default=False, description="Whether to detect document language")
 
     # ========================================================================
     # PIPELINE STAGES (OPTIONAL)
@@ -363,9 +357,7 @@ class DocumentAgent(Agent):
         default=False, description="Whether to generate vector embeddings"
     )
 
-    enable_storage: bool = Field(
-        default=False, description="Whether to store in vector database"
-    )
+    enable_storage: bool = Field(default=False, description="Whether to store in vector database")
 
     enable_retrieval: bool = Field(
         default=False, description="Whether to enable retrieval capabilities"
@@ -379,9 +371,7 @@ class DocumentAgent(Agent):
         default=False, description="Whether to raise exceptions on individual errors"
     )
 
-    skip_invalid: bool = Field(
-        default=True, description="Whether to skip invalid documents"
-    )
+    skip_invalid: bool = Field(default=True, description="Whether to skip invalid documents")
 
     # ========================================================================
     # STRUCTURED OUTPUT
@@ -389,7 +379,8 @@ class DocumentAgent(Agent):
 
     structured_output_model: type[BaseModel] = Field(
         default=DocumentProcessingResult,
-        description="Structured output model for processing results")
+        description="Structured output model for processing results",
+    )
 
     # ========================================================================
     # VALIDATION AND SETUP
@@ -439,15 +430,11 @@ class DocumentAgent(Agent):
             return
 
         try:
-
             registry = EngineRegistry.get_instance()
 
             if not registry.find(actual_engine.config.name):
                 registry.register(actual_engine)
-                logger.info(
-                    f"Registered engine '{
-                        actual_engine.config.name}' in EngineRegistry"
-                )
+                logger.info(f"Registered engine '{actual_engine.config.name}' in EngineRegistry")
             else:
                 logger.debug(f"Engine '{self.engine.name}' already registered")
 
@@ -532,9 +519,7 @@ class DocumentAgent(Agent):
     # DOCUMENT PROCESSING METHODS
     # ========================================================================
 
-    def process_sources(
-        self, sources: str | list[str], **kwargs
-    ) -> DocumentProcessingResult:
+    def process_sources(self, sources: str | list[str], **kwargs) -> DocumentProcessingResult:
         """Process multiple document sources through the full pipeline.
 
         Args:
@@ -590,7 +575,8 @@ class DocumentAgent(Agent):
         recursive: bool = True,
         include_patterns: list[str] | None = None,
         exclude_patterns: list[str] | None = None,
-        **kwargs) -> DocumentProcessingResult:
+        **kwargs,
+    ) -> DocumentProcessingResult:
         """Process all documents in a directory.
 
         Args:
@@ -607,7 +593,8 @@ class DocumentAgent(Agent):
             source=directory_path,
             include_patterns=include_patterns or [],
             exclude_patterns=exclude_patterns or [],
-            **kwargs)
+            **kwargs,
+        )
 
         # Update engine configuration for directory processing
         original_recursive = self.engine.recursive
@@ -632,9 +619,7 @@ class DocumentAgent(Agent):
         """
         return self.process_sources(urls, **kwargs)
 
-    def process_cloud_storage(
-        self, cloud_paths: list[str], **kwargs
-    ) -> DocumentProcessingResult:
+    def process_cloud_storage(self, cloud_paths: list[str], **kwargs) -> DocumentProcessingResult:
         """Process documents from cloud storage.
 
         Args:
@@ -667,9 +652,7 @@ class DocumentAgent(Agent):
             return {
                 "source": source,
                 "source_type": (
-                    result.source_type.value
-                    if hasattr(result, "source_type")
-                    else "unknown"
+                    result.source_type.value if hasattr(result, "source_type") else "unknown"
                 ),
                 "document_count": (
                     result.total_documents if hasattr(result, "total_documents") else 0
@@ -697,10 +680,8 @@ class DocumentAgent(Agent):
     # ========================================================================
 
     def _aggregate_results(
-        self,
-        engine_results: list[DocumentOutput],
-        sources: list[str],
-        total_time: float) -> DocumentProcessingResult:
+        self, engine_results: list[DocumentOutput], sources: list[str], total_time: float
+    ) -> DocumentProcessingResult:
         """Aggregate multiple engine results into a comprehensive result."""
         # Initialize counters
         total_documents = 0
@@ -737,9 +718,7 @@ class DocumentAgent(Agent):
 
             # Track document formats and collect documents/chunks
             for doc in result.documents:
-                all_documents.append(
-                    doc.model_dump() if hasattr(doc, "model_dump") else doc
-                )
+                all_documents.append(doc.model_dump() if hasattr(doc, "model_dump") else doc)
 
                 # Track format
                 doc_format = doc.format.value if hasattr(doc, "format") else "unknown"
@@ -748,11 +727,7 @@ class DocumentAgent(Agent):
                 # Collect chunks
                 if hasattr(doc, "chunks"):
                     for chunk in doc.chunks:
-                        chunk_data = (
-                            chunk.model_dump()
-                            if hasattr(chunk, "model_dump")
-                            else chunk
-                        )
+                        chunk_data = chunk.model_dump() if hasattr(chunk, "model_dump") else chunk
                         all_chunks.append(chunk_data)
 
         # Calculate average chunk size
@@ -769,9 +744,7 @@ class DocumentAgent(Agent):
             annotated_chunks=all_chunks,  # Same as chunks for now
             embedded_chunks=[] if not self.enable_embedding else all_chunks,
             stored_documents=(
-                []
-                if not self.enable_storage
-                else [f"doc_{i}" for i in range(total_documents)]
+                [] if not self.enable_storage else [f"doc_{i}" for i in range(total_documents)]
             ),
             # Pipeline Statistics
             total_sources=len(sources),
@@ -792,15 +765,14 @@ class DocumentAgent(Agent):
             # Content Analysis
             total_characters=total_characters,
             total_words=total_words,
-            average_chunk_size=average_chunk_size)
+            average_chunk_size=average_chunk_size,
+        )
 
     def _convert_engine_result_to_agent_result(
         self, engine_result: DocumentOutput, sources: list[str]
     ) -> DocumentProcessingResult:
         """Convert a single engine result to agent result format."""
-        return self._aggregate_results(
-            [engine_result], sources, engine_result.operation_time
-        )
+        return self._aggregate_results([engine_result], sources, engine_result.operation_time)
 
     # ========================================================================
     # CONVENIENCE CONSTRUCTORS
@@ -819,12 +791,11 @@ class DocumentAgent(Agent):
             parallel_processing=True,
             extract_metadata=True,
             normalize_content=True,
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
-    def create_for_web_scraping(
-        cls, name: str = "Web Scraping Agent", **kwargs
-    ) -> "DocumentAgent":
+    def create_for_web_scraping(cls, name: str = "Web Scraping Agent", **kwargs) -> "DocumentAgent":
         """Create DocumentAgent optimized for web content processing."""
         return cls(
             name=name,
@@ -834,7 +805,8 @@ class DocumentAgent(Agent):
             processing_strategy=ProcessingStrategy.ENHANCED,
             normalize_content=True,
             detect_language=True,
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
     def create_for_databases(
@@ -849,7 +821,8 @@ class DocumentAgent(Agent):
             processing_strategy=ProcessingStrategy.PARALLEL,
             parallel_processing=True,
             max_workers=8,
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
     def create_for_enterprise(
@@ -870,7 +843,8 @@ class DocumentAgent(Agent):
             enable_embedding=True,
             enable_storage=True,
             skip_invalid=True,
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
     def create_for_research(
@@ -892,7 +866,8 @@ class DocumentAgent(Agent):
             normalize_content=True,
             detect_language=True,
             enable_embedding=True,
-            **kwargs)
+            **kwargs,
+        )
 
     def __repr__(self) -> str:
         pipeline_stages = "->".join(self._get_pipeline_stages())
