@@ -35,3 +35,7 @@ class MemoryAgentConfig(AgentConfig):
     # Output schema and node
     structured_output_schema: Any = Field(default=None, description="Structured output schema")
     output_node_name: str = Field(default="output", description="Name of output node")
+    
+    # Memory extraction
+    memory_extraction_engine: Any = Field(default=None, description="Engine for memory extraction")
+    memory_extraction_prompt: str = Field(default="Extract key information from this conversation.", description="Prompt for memory extraction")

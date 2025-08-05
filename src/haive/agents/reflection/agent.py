@@ -1,6 +1,6 @@
 """Reflection agents using generic pre/post hook pattern."""
 
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.message_transformation_v2 import (
@@ -85,7 +85,7 @@ class PrePostMultiAgent(MultiAgent, Generic[TPreAgent, TMainAgent, TPostAgent]):
 
 
 class StructuredOutputMultiAgent(
-    PrePostMultiAgent[None, TMainAgent, StructuredOutputAgent]
+    PrePostMultiAgent[Agent, TMainAgent, StructuredOutputAgent]
 ):
     """Any agent followed by structured output extraction.
 
@@ -96,7 +96,8 @@ class StructuredOutputMultiAgent(
 
     # Always have post agent for structured output
     post_agent: StructuredOutputAgent = Field(
-        ..., description="Structured output extractor"
+        default_factory=lambda: StructuredOutputAgent(), 
+        description="Structured output extractor"
     )
 
     # No message transform needed for structured output
@@ -122,7 +123,7 @@ class StructuredOutputMultiAgent(
         return cls(name=name, main_agent=main_agent, post_agent=structurer, **kwargs)
 
 
-class ReflectionMultiAgent(PrePostMultiAgent[None, TMainAgent, SimpleAgent]):
+class ReflectionMultiAgent(PrePostMultiAgent[Agent, TMainAgent, SimpleAgent]):
     """Any agent with reflection post-processing.
 
     Pattern:
@@ -132,7 +133,10 @@ class ReflectionMultiAgent(PrePostMultiAgent[None, TMainAgent, SimpleAgent]):
     """
 
     # Reflection agent for post-processing
-    post_agent: SimpleAgent = Field(..., description="Reflection agent")
+    post_agent: SimpleAgent = Field(
+        default_factory=lambda: SimpleAgent(name="reflector"), 
+        description="Reflection agent"
+    )
 
     # Always use reflection transform
     use_post_transform: bool = Field(default=True)
@@ -177,10 +181,16 @@ class GradedReflectionMultiAgent(
     """
 
     # Pre-agent for grading
-    pre_agent: SimpleAgent = Field(..., description="Grading agent")
+    pre_agent: SimpleAgent = Field(
+        default_factory=lambda: SimpleAgent(name="grader"), 
+        description="Grading agent"
+    )
 
     # Post-agent for reflection
-    post_agent: SimpleAgent = Field(..., description="Reflection agent")
+    post_agent: SimpleAgent = Field(
+        default_factory=lambda: SimpleAgent(name="reflector"), 
+        description="Reflection agent"
+    )
 
     # Transform for reflection
     use_post_transform: bool = Field(default=True)
@@ -240,8 +250,8 @@ class ReflectionAgent(SimpleAgent):
         """Set up reflection prompt."""
         super().model_post_init(__context)
 
-        if not self.engine.system_message:
-            self.engine.system_message = REFLECTION_SYSTEM_PROMPT
+        if hasattr(self.engine, 'system_message') and not getattr(self.engine, 'system_message', None):
+            setattr(self.engine, 'system_message', REFLECTION_SYSTEM_PROMPT)
 
 
 class GradingAgent(SimpleAgent):
@@ -254,8 +264,8 @@ class GradingAgent(SimpleAgent):
         """Set up grading configuration."""
         super().model_post_init(__context)
 
-        if not self.engine.system_message:
-            self.engine.system_message = GRADING_SYSTEM_PROMPT
+        if hasattr(self.engine, 'system_message') and not getattr(self.engine, 'system_message', None):
+            setattr(self.engine, 'system_message', GRADING_SYSTEM_PROMPT)
 
 
 class ExpertAgent(SimpleAgent):
@@ -268,7 +278,8 @@ class ExpertAgent(SimpleAgent):
         super().model_post_init(__context)
 
         # Build system prompt from expertise config
-        self.engine.system_message = self.expertise_config.to_prompt()
+        if hasattr(self.engine, 'system_message'):
+            setattr(self.engine, 'system_message', self.expertise_config.to_prompt())
 
 
 class ToolBasedReflectionAgent(ReactAgent):
@@ -321,7 +332,7 @@ def create_graded_reflection_agent(
 
 
 def create_expert_agent(
-    name: str, domain: str, expertise_level: str = "expert", **kwargs
+    name: str, domain: str, expertise_level: Literal["beginner", "intermediate", "expert", "world-class"] = "expert", **kwargs
 ) -> ExpertAgent:
     """Create an expert agent."""
     expertise_config = ExpertiseConfig(

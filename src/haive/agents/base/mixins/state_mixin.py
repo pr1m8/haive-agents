@@ -6,21 +6,47 @@ import logging
 import os
 import uuid
 from datetime import datetime
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from haive.core.persistence.handlers import ensure_pool_open
 from haive.core.utils.pydantic_utils import ensure_json_serializable
 from langchain_core.runnables import RunnableConfig
 
+if TYPE_CHECKING:
+    # Type hints for attributes expected from mixed-in classes
+    from pydantic import BaseModel
+
 logger = logging.getLogger(__name__)
 
 
 class StateMixin:
-    """Mixin for agent state management functionality."""
+    """Mixin for agent state management functionality.
+    
+    This mixin expects to be used with classes that have:
+    - _app: Application/graph instance
+    - name: Agent name
+    - config: Agent configuration
+    - _prepare_runnable_config: Method to prepare runnable config
+    """
+    
+    # Expected attributes from mixed-in classes (for type checking)
+    if TYPE_CHECKING:
+        _app: Any
+        name: str  
+        config: Any
+        
+        def _prepare_runnable_config(self, config: RunnableConfig | None = None, thread_id: str | None = None) -> RunnableConfig:
+            ...
+        
+        def model_post_init(self, __context: Any) -> None:
+            ...
 
     def model_post_init(self, __context: Any) -> None:
         """Initialize the mixin with state tracking attributes after Pydantic validation."""
-        super().model_post_init(__context)
+        try:
+            super().model_post_init(__context)  # type: ignore
+        except AttributeError:
+            pass  # Mixed-in class doesn't have model_post_init
         # Use regular attributes instead of trying to add Pydantic fields
         self._state_filename = None
 
@@ -132,7 +158,7 @@ class StateMixin:
 
             # Extract thread ID from config
             thread_id = (
-                runtime_config["configurable"].get("thread_id", "unknown")
+                runtime_config.get("configurable", {}).get("thread_id", "unknown")
                 if runtime_config
                 else "unknown"
             )
@@ -197,7 +223,7 @@ class StateMixin:
 
         # Extract thread ID from config
         thread_id = (
-            runtime_config["configurable"].get("thread_id", None)
+            runtime_config.get("configurable", {}).get("thread_id", None)
             if runtime_config
             else thread_id
         )
@@ -288,7 +314,10 @@ class StateMixin:
                 if hasattr(self, "_prepare_runnable_config")
                 else {"configurable": {"thread_id": thread_id}}
             )
-            runtime_config["configurable"]["recursion_limit"] = 100
+            # Set recursion limit - use type ignore to avoid TypedDict constraints
+            configurable = runtime_config.get("configurable", {})
+            configurable["recursion_limit"] = 100  # type: ignore
+            runtime_config["configurable"] = configurable  # type: ignore
             # Process state based on its format
             values = state_data.get("values", state_data)
 
