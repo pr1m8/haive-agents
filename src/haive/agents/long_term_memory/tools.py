@@ -10,23 +10,18 @@ from pydantic import BaseModel
 
 
 @tool
-def save_recall_memory(
-    memory: str, config: RunnableConfig, vs_config: VectorStoreConfig
-) -> str:
+def save_recall_memory(memory: str, config: RunnableConfig, vs_config: VectorStoreConfig) -> str:
     """Save memory to vectorstore for later semantic retrieval."""
     user_id = get_user_id(config)
-    document = Document(
-        page_content=memory, id=str(uuid.uuid4()), metadata={"user_id": user_id}
-    )
+    document = Document(page_content=memory, id=str(uuid.uuid4()), metadata={"user_id": user_id})
     vs_config.add_documents([document])
     return memory
 
 
 @tool
 def save_structured_recall_memory(
-    config: RunnableConfig,
-    vs_config: VectorStoreConfig,
-    memories: list[BaseModel] | None = None) -> str:
+    config: RunnableConfig, vs_config: VectorStoreConfig, memories: list[BaseModel] | None = None
+) -> str:
     """Save memory to vectorstore for later semantic retrieval."""
     if memories is None:
         memories = [KnowledgeTriple]
@@ -47,7 +42,8 @@ def save_structured_recall_memory(
             metadata={
                 "user_id": user_id,
                 **memory,
-            })
+            },
+        )
         vs_config.add_documents([document])
     return memories
 

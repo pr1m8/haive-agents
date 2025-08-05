@@ -7,9 +7,7 @@ from langchain_core.runnables import RunnableConfig
 tokenizer = tiktoken.encoding_for_model("gpt-4o")
 
 
-def load_memories(
-    state: LongTermMemoryState, config: RunnableConfig
-) -> LongTermMemoryState:
+def load_memories(state: LongTermMemoryState, config: RunnableConfig) -> LongTermMemoryState:
     """Load memories for the current conversation.
 
     Args:
