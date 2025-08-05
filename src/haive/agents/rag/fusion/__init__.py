@@ -1,6 +1,6 @@
 """Module exports."""
 
-from fusion.agent import (
+from haive.agents.rag.fusion.agent import (
     FusionResult,
     MultiQueryRetrievalAgent,
     QueryVariationsFusion,

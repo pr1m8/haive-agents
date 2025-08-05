@@ -1,6 +1,6 @@
 """Module exports."""
 
-from sql_rag.agent import (
+from haive.agents.rag.db_rag.sql_rag.agent import (
     SQLRAGAgent,
     analyze_query,
     check_domain_relevance,
@@ -13,14 +13,14 @@ from sql_rag.agent import (
     setup_workflow,
     validate_query,
     validation_router)
-from sql_rag.config import (
+from haive.agents.rag.db_rag.sql_rag.config import (
     SQLDatabaseConfig,
     SQLRAGConfig,
     check_required_engines,
     get_connection_string,
     get_db_schema,
     get_sql_db)
-from sql_rag.example import (
+from haive.agents.rag.db_rag.sql_rag.example import (
     basic_example,
     batch_processing_example,
     custom_llm_example,
@@ -30,7 +30,7 @@ from sql_rag.example import (
     mysql_example,
     postgresql_example,
     sqlite_example)
-from sql_rag.models import (
+from haive.agents.rag.db_rag.sql_rag.models import (
     GradeAnswer,
     GradeHallucinations,
     GuardrailsOutput,
@@ -39,8 +39,8 @@ from sql_rag.models import (
     SQLQueryOutput,
     SQLValidationOutput,
     validate_sql_syntax)
-from sql_rag.state import InputState, OutputState, OverallState
-from sql_rag.utils import (
+from haive.agents.rag.db_rag.sql_rag.state import InputState, OutputState, OverallState
+from haive.agents.rag.db_rag.sql_rag.utils import (
     create_sql_toolkit,
     create_tool_node_with_fallback,
     explore_database_schema,

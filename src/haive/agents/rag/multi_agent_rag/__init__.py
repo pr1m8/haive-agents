@@ -47,7 +47,6 @@ from haive.agents.rag.multi_agent_rag.agents import (
     use_citations)
 from haive.agents.rag.multi_agent_rag.compatibility import (
     AgentCompatibilityReport,
-    BasicResult,
     CompatibilityLevel,
     MultiAgentCompatibilityReport,
     SafeCompatibilityTester,
@@ -192,7 +191,6 @@ __all__ = [
     "AgenticRAGState",
     "AnswerGrade",
     "BaseRAGMultiAgent",
-    "BasicResult",
     "CompatibilityLevel",
     "CompositeGradingAgent",
     "ConditionalRAGMultiAgent",

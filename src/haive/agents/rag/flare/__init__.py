@@ -1,6 +1,6 @@
 """Module exports."""
 
-from flare.agent import (
+from haive.agents.rag.flare.agent import (
     ActiveRetrievalAgent,
     ConfidenceLevel,
     FLAREPlan,
