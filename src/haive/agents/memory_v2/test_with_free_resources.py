@@ -17,7 +17,8 @@ from haive.agents.memory_v2.memory_state_original import (
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryState,
-    MemoryType)
+    MemoryType,
+)
 
 
 async def test_with_huggingface_embeddings():
@@ -28,7 +29,8 @@ async def test_with_huggingface_embeddings():
         embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": False})
+            encode_kwargs={"normalize_embeddings": False},
+        )
 
         # Test embedding some text
         test_texts = [
@@ -42,7 +44,6 @@ async def test_with_huggingface_embeddings():
         return embeddings
 
     except Exception:
-
         traceback.print_exc()
         return None
 
@@ -54,21 +55,24 @@ async def test_vector_store_with_free_embeddings():
         return None
 
     try:
-
         # Create some test documents
         documents = [
             Document(
                 page_content="Alice Johnson is a senior AI researcher at TechCorp working on neural networks.",
-                metadata={"type": "person", "company": "TechCorp"}),
+                metadata={"type": "person", "company": "TechCorp"},
+            ),
             Document(
                 page_content="Bob Smith is the CTO of DataCorp, specializing in distributed systems.",
-                metadata={"type": "person", "company": "DataCorp"}),
+                metadata={"type": "person", "company": "DataCorp"},
+            ),
             Document(
                 page_content="TechCorp is a leading AI research company founded in 2020.",
-                metadata={"type": "company", "industry": "AI"}),
+                metadata={"type": "company", "industry": "AI"},
+            ),
             Document(
                 page_content="DataCorp provides cloud infrastructure solutions for enterprises.",
-                metadata={"type": "company", "industry": "Cloud"}),
+                metadata={"type": "company", "industry": "Cloud"},
+            ),
         ]
 
         vector_store = FAISS.from_documents(documents, embeddings)
@@ -82,7 +86,6 @@ async def test_vector_store_with_free_embeddings():
         return results
 
     except Exception:
-
         traceback.print_exc()
         return None
 
@@ -117,13 +120,14 @@ async def test_memory_rag_with_free_resources():
 
         # Test loading
         retriever = FAISS.load_local(
-            str(save_path), embeddings, allow_dangerous_deserialization=True  # type: ignore
+            str(save_path),
+            embeddings,
+            allow_dangerous_deserialization=True,  # type: ignore
         ).as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
         return retriever
 
     except Exception:
-
         traceback.print_exc()
         return None
 
@@ -145,23 +149,24 @@ async def test_memory_state_with_embeddings():
             (
                 "Alice Johnson is a senior AI researcher at TechCorp.",
                 MemoryType.FACTUAL,
-                ImportanceLevel.HIGH),
+                ImportanceLevel.HIGH,
+            ),
             (
                 "Meeting with Alice scheduled for next Monday at 2 PM.",
                 MemoryType.CONVERSATIONAL,
-                ImportanceLevel.MEDIUM),
+                ImportanceLevel.MEDIUM,
+            ),
             (
                 "Alice's expertise includes transformer models and NLP.",
                 MemoryType.FACTUAL,
-                ImportanceLevel.HIGH),
-            (
-                "Bob Smith is the CTO of DataCorp.",
-                MemoryType.FACTUAL,
-                ImportanceLevel.HIGH),
+                ImportanceLevel.HIGH,
+            ),
+            ("Bob Smith is the CTO of DataCorp.", MemoryType.FACTUAL, ImportanceLevel.HIGH),
             (
                 "DataCorp is our main technology partner.",
                 MemoryType.FACTUAL,
-                ImportanceLevel.MEDIUM),
+                ImportanceLevel.MEDIUM,
+            ),
         ]
 
         for content, mem_type, importance in memories_data:
@@ -174,7 +179,8 @@ async def test_memory_state_with_embeddings():
                 memory_type=mem_type,  # type: ignore
                 importance=importance,
                 embedding=embedding_vector,
-                user_id="test_user")
+                user_id="test_user",
+            )
             state.add_memory_item(memory)
 
         # Test similarity search using embeddings
@@ -190,9 +196,7 @@ async def test_memory_state_with_embeddings():
         scored_memories = []
         for memory_entry in state.memories:
             if memory_entry.memory_item and memory_entry.memory_item.embedding:
-                score = cosine_similarity(
-                    query_embedding, memory_entry.memory_item.embedding
-                )
+                score = cosine_similarity(query_embedding, memory_entry.memory_item.embedding)
                 scored_memories.append((score, memory_entry))
 
         # Sort by score and get top results
@@ -205,7 +209,6 @@ async def test_memory_state_with_embeddings():
         return state
 
     except Exception:
-
         traceback.print_exc()
         return None
 
@@ -224,7 +227,6 @@ if __name__ == "__main__":
     try:
         import sentence_transformers
     except ImportError:
-
         subprocess.check_call(["poetry", "add", "sentence-transformers"])
 
     asyncio.run(main())

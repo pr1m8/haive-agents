@@ -31,14 +31,12 @@ from haive.agents.rag.db_rag.graph_db.config import GraphDBConfig, GraphDBRAGCon
 # Optional imports - GraphMemoryAgent will work with basic functionality
 # even if these fail
 try:
-
     HAS_GRAPH_TRANSFORMER = True
 except ImportError:
     GraphTransformer = None
     HAS_GRAPH_TRANSFORMER = False
 
 try:
-
     HAS_GRAPH_DB_RAG = True
 except ImportError:
     GraphDBRAGAgent = None
@@ -166,7 +164,8 @@ class GraphMemoryAgent:
                 url=self.config.neo4j_uri,
                 username=self.config.neo4j_username,
                 password=self.config.neo4j_password,
-                database=self.config.database_name)
+                database=self.config.database_name,
+            )
 
             # Create constraints for better performance
             self._create_graph_constraints()
@@ -182,15 +181,12 @@ class GraphMemoryAgent:
             # Create uniqueness constraints for common node types
             for node_type in ["Person", "Organization", "Location", "Event"]:
                 self.graph.query(
-                    f"CREATE CONSTRAINT IF NOT EXISTS FOR (n:{node_type}) "
-                    f"REQUIRE n.id IS UNIQUE"
+                    f"CREATE CONSTRAINT IF NOT EXISTS FOR (n:{node_type}) REQUIRE n.id IS UNIQUE"
                 )
 
             # Create indexes for better query performance
             self.graph.query("CREATE INDEX IF NOT EXISTS FOR (n:Person) ON (n.name)")
-            self.graph.query(
-                "CREATE INDEX IF NOT EXISTS FOR (n:Organization) ON (n.name)"
-            )
+            self.graph.query("CREATE INDEX IF NOT EXISTS FOR (n:Organization) ON (n.name)")
 
             # Create user index for multi-user support
             self.graph.query("CREATE INDEX IF NOT EXISTS FOR (n:Memory) ON (n.user_id)")
@@ -217,11 +213,10 @@ class GraphMemoryAgent:
                 self.config.node_properties if self.config.extract_properties else False
             ),
             relationship_properties=(
-                self.config.relationship_properties
-                if self.config.extract_properties
-                else False
+                self.config.relationship_properties if self.config.extract_properties else False
             ),
-            strict_mode=False)
+            strict_mode=False,
+        )
 
     def _init_rag_components(self):
         """Initialize Graph RAG components."""
@@ -231,21 +226,21 @@ class GraphMemoryAgent:
                 graph_db_uri=self.config.neo4j_uri,
                 graph_db_user=self.config.neo4j_username,
                 graph_db_password=self.config.neo4j_password,
-                graph_db_database=self.config.database_name)
+                graph_db_database=self.config.database_name,
+            )
 
             rag_config = GraphDBRAGConfig(
                 domain_name="memory",
                 domain_categories=["personal", "knowledge", "events"],
                 graph_db_config=graph_db_config,
-                llm_config=self.config.llm_config)
+                llm_config=self.config.llm_config,
+            )
 
             # Create Graph RAG agent
             self.graph_rag_agent = GraphDBRAGAgent(rag_config)
         else:
             self.graph_rag_agent = None
-            self.logger.warning(
-                "GraphDBRAGAgent not available - using basic Cypher chain only"
-            )
+            self.logger.warning("GraphDBRAGAgent not available - using basic Cypher chain only")
 
         # Create Cypher QA chain for direct queries
         llm = self.config.llm_config.instantiate()
@@ -254,7 +249,8 @@ class GraphMemoryAgent:
             graph=self.graph,
             verbose=True,
             validate_cypher=True,
-            return_intermediate_steps=True)
+            return_intermediate_steps=True,
+        )
 
     def _init_vector_index(self):
         """Initialize vector index for semantic search on graph."""
@@ -271,7 +267,8 @@ class GraphMemoryAgent:
                 index_name="person_embeddings",
                 node_label="Person",
                 text_node_properties=["name", "description"],
-                embedding_node_property="embedding")
+                embedding_node_property="embedding",
+            )
 
             # Create vector index on Concept nodes
             self.concept_vector_index = Neo4jVector.from_existing_graph(
@@ -283,7 +280,8 @@ class GraphMemoryAgent:
                 index_name="concept_embeddings",
                 node_label="Concept",
                 text_node_properties=["name", "description"],
-                embedding_node_property="embedding")
+                embedding_node_property="embedding",
+            )
 
             self.logger.info("Vector indexes created successfully")
         except Exception as e:
@@ -310,7 +308,8 @@ class GraphMemoryAgent:
                 "user_id": self.config.user_id,
                 "timestamp": datetime.now().isoformat(),
                 "source": "memory_extraction",
-            })
+            },
+        )
 
         # Use Haive's GraphTransformer if available, otherwise fall back to
         # LangChain
@@ -322,7 +321,8 @@ class GraphMemoryAgent:
                 allowed_relationships=self.config.allowed_relationships,
                 node_properties=self.config.node_properties,
                 relationship_properties=self.config.relationship_properties,
-                additional_instructions="Extract all entities and relationships that represent memories, facts, and connections.")
+                additional_instructions="Extract all entities and relationships that represent memories, facts, and connections.",
+            )
         else:
             # Fall back to LangChain LLMGraphTransformer
             graph_docs = self.llm_graph_transformer.convert_to_graph_documents([doc])
@@ -381,7 +381,8 @@ class GraphMemoryAgent:
                             "id": node_props["id"],
                             "name": node.id,
                             "properties": node_props,
-                        })
+                        },
+                    )
                     nodes_created += 1
 
                 # Store relationships
@@ -402,12 +403,8 @@ class GraphMemoryAgent:
                     RETURN r
                     """
 
-                    source_id = (
-                        f"{rel.source.type}_{rel.source.id}_{self.config.user_id}"
-                    )
-                    target_id = (
-                        f"{rel.target.type}_{rel.target.id}_{self.config.user_id}"
-                    )
+                    source_id = f"{rel.source.type}_{rel.source.id}_{self.config.user_id}"
+                    target_id = f"{rel.target.type}_{rel.target.id}_{self.config.user_id}"
 
                     self.graph.query(
                         query,
@@ -415,7 +412,8 @@ class GraphMemoryAgent:
                             "source_id": source_id,
                             "target_id": target_id,
                             "properties": rel_props,
-                        })
+                        },
+                    )
                     relationships_created += 1
 
             except Exception as e:
@@ -440,13 +438,12 @@ class GraphMemoryAgent:
             {
                 "id": f"memory_{datetime.now().timestamp()}_{self.config.user_id}",
                 "user_id": self.config.user_id,
-                "content": (
-                    graph_documents[0].source.page_content if graph_documents else ""
-                ),
+                "content": (graph_documents[0].source.page_content if graph_documents else ""),
                 "timestamp": datetime.now().isoformat(),
                 "nodes_created": nodes_created,
                 "relationships_created": relationships_created,
-            })
+            },
+        )
 
         return {
             "nodes_created": nodes_created,
@@ -554,9 +551,7 @@ class GraphMemoryAgent:
         # Search in appropriate indexes
         if node_type == "Person" or node_type is None:
             if hasattr(self, "person_vector_index"):
-                person_results = self.person_vector_index.similarity_search_with_score(
-                    query, k=k
-                )
+                person_results = self.person_vector_index.similarity_search_with_score(query, k=k)
                 results.extend(
                     [
                         {"type": "Person", "content": doc.page_content, "score": score}
@@ -566,9 +561,7 @@ class GraphMemoryAgent:
 
         if node_type == "Concept" or node_type is None:
             if hasattr(self, "concept_vector_index"):
-                concept_results = (
-                    self.concept_vector_index.similarity_search_with_score(query, k=k)
-                )
+                concept_results = self.concept_vector_index.similarity_search_with_score(query, k=k)
                 results.extend(
                     [
                         {"type": "Concept", "content": doc.page_content, "score": score}
@@ -582,10 +575,8 @@ class GraphMemoryAgent:
         return results[:k]
 
     async def get_memory_subgraph(
-        self,
-        entity_name: str,
-        max_depth: int = 2,
-        relationship_types: list[str] | None = None) -> dict[str, Any]:
+        self, entity_name: str, max_depth: int = 2, relationship_types: list[str] | None = None
+    ) -> dict[str, Any]:
         """Get a subgraph centered around an entity.
 
         Args:
@@ -607,9 +598,7 @@ class GraphMemoryAgent:
         LIMIT 100
         """
 
-        paths = self.graph.query(
-            query, {"name": entity_name, "user_id": self.config.user_id}
-        )
+        paths = self.graph.query(query, {"name": entity_name, "user_id": self.config.user_id})
 
         # Extract unique nodes and relationships
         nodes = set()
@@ -670,10 +659,8 @@ class GraphMemoryAgent:
         }
 
     async def run(
-        self,
-        input_text: str,
-        mode: GraphMemoryMode | None = None,
-        auto_store: bool = True) -> dict[str, Any]:
+        self, input_text: str, mode: GraphMemoryMode | None = None, auto_store: bool = True
+    ) -> dict[str, Any]:
         """Main entry point for the agent.
 
         Args:
@@ -701,9 +688,7 @@ class GraphMemoryAgent:
             results["extracted_graph"] = {
                 "documents": len(graph_docs),
                 "total_nodes": sum(len(doc.nodes) for doc in graph_docs),
-                "total_relationships": sum(
-                    len(doc.relationships) for doc in graph_docs
-                ),
+                "total_relationships": sum(len(doc.relationships) for doc in graph_docs),
             }
 
             if auto_store and mode != GraphMemoryMode.EXTRACT_ONLY:
@@ -751,7 +736,8 @@ async def example_graph_memory():
         neo4j_username="neo4j",
         neo4j_password="password",
         user_id="alice_smith",
-        mode=GraphMemoryMode.FULL)
+        mode=GraphMemoryMode.FULL,
+    )
 
     agent = GraphMemoryAgent(config)
 
@@ -766,14 +752,11 @@ async def example_graph_memory():
     await agent.query_graph("Who did I meet at conferences recently?")
 
     # Search similar memories
-    await agent.search_similar_memories(
-        "machine learning engineers", node_type="Person"
-    )
+    await agent.search_similar_memories("machine learning engineers", node_type="Person")
 
     # Get subgraph around John Doe
     await agent.get_memory_subgraph("John Doe", max_depth=2)
 
 
 if __name__ == "__main__":
-
     asyncio.run(example_graph_memory())

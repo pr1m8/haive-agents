@@ -16,7 +16,8 @@ try:
     from haive.agents.memory_v2.graph_memory_agent import (
         GraphMemoryAgent,
         GraphMemoryConfig,
-        GraphMemoryMode)
+        GraphMemoryMode,
+    )
 
     HAS_GRAPH_MEMORY = True
 except ImportError:
@@ -43,7 +44,8 @@ def graph_memory_config(neo4j_config):
         user_id="test_user",
         llm_config=AugLLMConfig(temperature=0.1),
         mode=GraphMemoryMode.FULL,
-        enable_vector_index=True)
+        enable_vector_index=True,
+    )
 
 
 @pytest.fixture
@@ -53,17 +55,13 @@ async def graph_memory_agent(graph_memory_config):
 
     # Clean up test data before tests
     with contextlib.suppress(Exception):
-        agent.graph.query(
-            "MATCH (n {user_id: $user_id}) DETACH DELETE n", {"user_id": "test_user"}
-        )
+        agent.graph.query("MATCH (n {user_id: $user_id}) DETACH DELETE n", {"user_id": "test_user"})
 
     yield agent
 
     # Clean up after tests
     with contextlib.suppress(Exception):
-        agent.graph.query(
-            "MATCH (n {user_id: $user_id}) DETACH DELETE n", {"user_id": "test_user"}
-        )
+        agent.graph.query("MATCH (n {user_id: $user_id}) DETACH DELETE n", {"user_id": "test_user"})
 
 
 class TestGraphMemoryAgent:
@@ -129,7 +127,8 @@ class TestGraphMemoryAgent:
         # Direct Cypher query to verify
         cypher_result = await graph_memory_agent.query_graph(
             "MATCH (p:Person {user_id: 'test_user'})-[:WORKS_FOR]->(o:Organization) RETURN p.name, o.name",
-            query_type="cypher")
+            query_type="cypher",
+        )
 
         assert "results" in cypher_result
 
@@ -158,9 +157,7 @@ class TestGraphMemoryAgent:
         assert sarah_connections is not None
 
         # Get subgraph around Sarah
-        subgraph = await graph_memory_agent.get_memory_subgraph(
-            "Sarah Chen", max_depth=2
-        )
+        subgraph = await graph_memory_agent.get_memory_subgraph("Sarah Chen", max_depth=2)
 
         assert "central_entity" in subgraph
         assert subgraph["central_entity"] == "Sarah Chen"
@@ -291,17 +288,13 @@ class TestGraphMemoryAgent:
         RETURN type(r) as relationship, r.since as since, r.until as until, r.strength as strength
         """
 
-        rel_result = await graph_memory_agent.query_graph(
-            rel_query, query_type="cypher"
-        )
+        rel_result = await graph_memory_agent.query_graph(rel_query, query_type="cypher")
 
         # Should have relationships with properties
         assert "results" in rel_result
         if len(rel_result["results"]) > 0:
             # Check if any relationships have time properties
-            has_time_props = any(
-                r.get("since") or r.get("until") for r in rel_result["results"]
-            )
+            has_time_props = any(r.get("since") or r.get("until") for r in rel_result["results"])
             assert has_time_props or len(rel_result["results"]) > 0
 
     @pytest.mark.asyncio
@@ -320,9 +313,7 @@ class TestGraphMemoryAgent:
             await graph_memory_agent.run(memory, auto_store=True)
 
         # Run consolidation
-        consolidation_result = await graph_memory_agent.consolidate_memories(
-            min_connections=2
-        )
+        consolidation_result = await graph_memory_agent.consolidate_memories(min_connections=2)
 
         assert "candidates_analyzed" in consolidation_result
         assert consolidation_result["candidates_analyzed"] >= 0
@@ -357,7 +348,8 @@ async def test_real_world_scenario():
         neo4j_username="neo4j",
         neo4j_password="password",
         user_id="integration_test_user",
-        mode=GraphMemoryMode.FULL)
+        mode=GraphMemoryMode.FULL,
+    )
 
     agent = GraphMemoryAgent(config)
 
@@ -377,17 +369,15 @@ async def test_real_world_scenario():
         await agent.run(memory, auto_store=True)
 
     # End of day summary query
-    await agent.query_graph(
-        "What were the main topics discussed today?", query_type="natural"
-    )
+    await agent.query_graph("What were the main topics discussed today?", query_type="natural")
 
     # Find action items
     await agent.query_graph("What do I need to do or research?", query_type="natural")
 
     # Clean up
     agent.graph.query(
-        "MATCH (n {user_id: $user_id}) DETACH DELETE n",
-        {"user_id": "integration_test_user"})
+        "MATCH (n {user_id: $user_id}) DETACH DELETE n", {"user_id": "integration_test_user"}
+    )
 
 
 if __name__ == "__main__":

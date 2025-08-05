@@ -10,7 +10,8 @@ from haive.agents.memory_v2.memory_state_original import (
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryState,
-    MemoryType)
+    MemoryType,
+)
 from haive.agents.simple import SimpleAgent
 
 # Set up DeepSeek API key
@@ -78,14 +79,8 @@ async def test_memory_with_deepseek():
 
     # Add some memories
     memories = [
-        (
-            "Alice is an AI researcher at TechCorp",
-            MemoryType.FACTUAL,
-            ImportanceLevel.HIGH),
-        (
-            "Meeting with Alice on Monday at 2 PM",
-            MemoryType.CONVERSATIONAL,
-            ImportanceLevel.HIGH),
+        ("Alice is an AI researcher at TechCorp", MemoryType.FACTUAL, ImportanceLevel.HIGH),
+        ("Meeting with Alice on Monday at 2 PM", MemoryType.CONVERSATIONAL, ImportanceLevel.HIGH),
         ("Bob is the CTO of DataCorp", MemoryType.FACTUAL, ImportanceLevel.MEDIUM),
     ]
 
@@ -94,7 +89,8 @@ async def test_memory_with_deepseek():
             content=content,
             memory_type=mem_type,  # type: ignore
             importance=importance,
-            user_id="test_user")
+            user_id="test_user",
+        )
         memory_state.add_memory_item(memory)
 
     print(f"✅ Added {len(memories)} memories")
@@ -103,7 +99,7 @@ async def test_memory_with_deepseek():
     results = memory_state.search_memories("Alice")
     print(f"✅ Search 'Alice': Found {len(results)} results")
     for i, result in enumerate(results):
-        print(f"   {i+1}. {result.content}")
+        print(f"   {i + 1}. {result.content}")
 
     return memory_state
 
@@ -128,7 +124,8 @@ async def test_custom_memory_agent():
                 memory = EnhancedMemoryItem(
                     content=content,
                     memory_type=MemoryType.FACTUAL,  # type: ignore
-                    importance=ImportanceLevel.MEDIUM)
+                    importance=ImportanceLevel.MEDIUM,
+                )
                 self.memory_state.add_memory_item(memory)
                 return f"I've stored that in my memory: {content}"
 
@@ -152,8 +149,8 @@ async def test_custom_memory_agent():
     deepseek_config = DeepSeekLLMConfig(model="deepseek-chat")
 
     aug_config = AugLLMConfig(
-        llm_config=deepseek_config,
-        system_message="You are a helpful assistant with memory.")
+        llm_config=deepseek_config, system_message="You are a helpful assistant with memory."
+    )
 
     # Create memory agent
     agent = MemoryAgent(name="memory_deepseek", engine=aug_config)

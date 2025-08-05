@@ -38,7 +38,8 @@ class ReactMemoryAgent:
         memory_store_path: str | None = None,
         k: int = 5,
         decay_rate: float = 0.01,
-        use_time_weighting: bool = True):
+        use_time_weighting: bool = True,
+    ):
         self.name = name
         self.engine = engine or AugLLMConfig(temperature=0.7)
         self.user_id = user_id or "default_user"
@@ -53,26 +54,29 @@ class ReactMemoryAgent:
         if memory_store_path:
             try:
                 self.vector_store = FAISS.load_local(
-                    memory_store_path,
-                    self.embeddings,
-                    allow_dangerous_deserialization=True)
+                    memory_store_path, self.embeddings, allow_dangerous_deserialization=True
+                )
             except BaseException:
                 # Create new if doesn't exist
                 self.vector_store = FAISS.from_documents(
                     [
                         Document(
                             page_content="Initial memory",
-                            metadata={"timestamp": datetime.now().isoformat()})
+                            metadata={"timestamp": datetime.now().isoformat()},
+                        )
                     ],
-                    self.embeddings)
+                    self.embeddings,
+                )
         else:
             self.vector_store = FAISS.from_documents(
                 [
                     Document(
                         page_content="Initial memory",
-                        metadata={"timestamp": datetime.now().isoformat()})
+                        metadata={"timestamp": datetime.now().isoformat()},
+                    )
                 ],
-                self.embeddings)
+                self.embeddings,
+            )
 
         # Initialize retrievers
         if self.use_time_weighting:
@@ -90,12 +94,12 @@ class ReactMemoryAgent:
             name=self.name,
             engine=self.engine,
             tools=self.memory_tools,
-            system_message=self._get_system_message())
+            system_message=self._get_system_message(),
+        )
 
     def _get_system_message(self) -> str:
         """Get system message that instructs agent on memory usage."""
-        return f"""You are an AI assistant with access to long-term memory for user {
-            self.user_id}.
+        return f"""You are an AI assistant with access to long-term memory for user {self.user_id}.
 
 IMPORTANT: For EVERY user query, you should:
 1. First use the 'search_memories' tool to find relevant past conversations and facts
@@ -149,8 +153,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                     memories.append(
                         f"Memory {i} [{memory_type}] (from {timestamp}, importance: {importance}):\n"
-                        f"{
-                            doc.page_content}"
+                        f"{doc.page_content}"
                     )
 
                 return "\n\n".join(memories)
@@ -173,7 +176,6 @@ Always strive to use memories to provide more helpful, personalized responses.""
             """
             k = k or self.k
             try:
-
                 start = datetime.fromisoformat(start_date)
                 end = datetime.fromisoformat(end_date) if end_date else datetime.now()
 
@@ -190,14 +192,11 @@ Always strive to use memories to provide more helpful, personalized responses.""
                             filtered_docs.append(doc)
 
                 # Sort by timestamp and limit
-                filtered_docs.sort(
-                    key=lambda d: d.metadata.get("timestamp", ""), reverse=True
-                )
+                filtered_docs.sort(key=lambda d: d.metadata.get("timestamp", ""), reverse=True)
                 filtered_docs = filtered_docs[:k]
 
                 if not filtered_docs:
-                    return f"No memories found between {start_date} and {
-                        end_date or 'now'}."
+                    return f"No memories found between {start_date} and {end_date or 'now'}."
 
                 # Format memories
                 memories = []
@@ -206,8 +205,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
                     memory_type = doc.metadata.get("type", "general")
 
                     memories.append(
-                        f"Memory {i} [{memory_type}] (from {timestamp}):\n"
-                        f"{doc.page_content}"
+                        f"Memory {i} [{memory_type}] (from {timestamp}):\n{doc.page_content}"
                     )
 
                 return "\n\n".join(memories)
@@ -219,7 +217,8 @@ Always strive to use memories to provide more helpful, personalized responses.""
             content: str,
             memory_type: str = "conversation",
             importance: str = "normal",
-            tags: str | None = None) -> str:
+            tags: str | None = None,
+        ) -> str:
             """Store a new memory.
 
             Args:
@@ -274,9 +273,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
                     "user_id": self.user_id,
                 }
 
-                doc = Document(
-                    page_content=f"[UPDATED MEMORY] {new_content}", metadata=metadata
-                )
+                doc = Document(page_content=f"[UPDATED MEMORY] {new_content}", metadata=metadata)
 
                 self.vector_store.add_documents([doc])
 
@@ -304,8 +301,8 @@ Always strive to use memories to provide more helpful, personalized responses.""
                 }
 
                 doc = Document(
-                    page_content=f"[DELETED] Memory identified by: {memory_id}",
-                    metadata=metadata)
+                    page_content=f"[DELETED] Memory identified by: {memory_id}", metadata=metadata
+                )
 
                 self.vector_store.add_documents([doc])
 
@@ -329,9 +326,8 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                 # Sort by timestamp
                 sorted_docs = sorted(
-                    all_docs,
-                    key=lambda d: d.metadata.get("timestamp", ""),
-                    reverse=True)[:k]
+                    all_docs, key=lambda d: d.metadata.get("timestamp", ""), reverse=True
+                )[:k]
 
                 if not sorted_docs:
                     return "No memories found."
@@ -410,7 +406,8 @@ Always strive to use memories to provide more helpful, personalized responses.""
         name: str = "custom_memory_agent",
         engine: AugLLMConfig | None = None,
         custom_tools: list[Any] | None = None,
-        **kwargs) -> "ReactMemoryAgent":
+        **kwargs,
+    ) -> "ReactMemoryAgent":
         """Create ReactMemoryAgent with additional custom tools.
 
         Args:
@@ -432,7 +429,8 @@ Always strive to use memories to provide more helpful, personalized responses.""
                 name=name,
                 engine=agent.engine,
                 tools=all_tools,
-                system_message=agent._get_system_message())
+                system_message=agent._get_system_message(),
+            )
 
         return agent
 
@@ -447,8 +445,8 @@ async def example_basic_usage():
 
     # First conversation
     await agent.arun(
-        "Hi, I'm Alice. I work as a data scientist at TechCorp and I love hiking.",
-        auto_save=True)
+        "Hi, I'm Alice. I work as a data scientist at TechCorp and I love hiking.", auto_save=True
+    )
 
     # Later conversation - agent should remember
     await agent.arun("What do you remember about my job?", auto_save=True)
@@ -476,9 +474,8 @@ async def example_with_custom_tools():
 
     # Create agent with custom tool
     agent = ReactMemoryAgent.create_with_custom_tools(
-        name="enhanced_assistant",
-        custom_tools=[calculate_days_since],
-        user_id="bob_jones")
+        name="enhanced_assistant", custom_tools=[calculate_days_since], user_id="bob_jones"
+    )
 
     # Use both memory and custom tools
     await agent.arun(
@@ -488,7 +485,6 @@ async def example_with_custom_tools():
 
 
 if __name__ == "__main__":
-
     # Run examples
     asyncio.run(example_basic_usage())
     # asyncio.run(example_with_custom_tools())

@@ -34,7 +34,8 @@ class TestReactMemoryAgent:
             engine=AugLLMConfig(temperature=0.1),
             user_id="test_user",
             k=3,
-            use_time_weighting=True)
+            use_time_weighting=True,
+        )
 
     @pytest.mark.asyncio
     async def test_memory_storage_and_retrieval(self, memory_agent):
@@ -42,19 +43,18 @@ class TestReactMemoryAgent:
         # Store a memory about user preferences
         response1 = await memory_agent.arun(
             "Please store a memory that I prefer Python over Java for data science work",
-            auto_save=False)
+            auto_save=False,
+        )
         assert "stored" in response1.lower()
 
         # Store another memory about work
         response2 = await memory_agent.arun(
-            "Store a memory that I work at DataCorp as a senior analyst",
-            auto_save=False)
+            "Store a memory that I work at DataCorp as a senior analyst", auto_save=False
+        )
         assert "stored" in response2.lower()
 
         # Retrieve memories about work
-        response3 = await memory_agent.arun(
-            "What do you remember about my work?", auto_save=False
-        )
+        response3 = await memory_agent.arun("What do you remember about my work?", auto_save=False)
         assert "datacorp" in response3.lower() or "analyst" in response3.lower()
 
         # Retrieve memories about preferences
@@ -68,8 +68,8 @@ class TestReactMemoryAgent:
         """Test automatic conversation saving."""
         # Have a conversation with auto_save enabled
         await memory_agent.arun(
-            "My favorite color is blue and I have two cats named Luna and Star",
-            auto_save=True)
+            "My favorite color is blue and I have two cats named Luna and Star", auto_save=True
+        )
 
         # Wait a moment for storage
         await asyncio.sleep(1)
@@ -91,9 +91,7 @@ class TestReactMemoryAgent:
         yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
         # Search memories from today
-        response2 = await memory_agent.arun(
-            f"Search memories from {today}", auto_save=False
-        )
+        response2 = await memory_agent.arun(f"Search memories from {today}", auto_save=False)
         assert "spanish" in response2.lower() or "learning" in response2.lower()
 
         # Search memories from yesterday (should be empty or few)
@@ -108,34 +106,30 @@ class TestReactMemoryAgent:
         """Test storing memories with different importance levels."""
         # Store critical memory
         response1 = await memory_agent.arun(
-            'Store a critical importance memory: "Medical allergy to penicillin"',
-            auto_save=False)
+            'Store a critical importance memory: "Medical allergy to penicillin"', auto_save=False
+        )
         assert "critical" in response1.lower()
 
         # Store normal memory
         response2 = await memory_agent.arun(
-            'Store a normal importance memory: "Likes coffee in the morning"',
-            auto_save=False)
+            'Store a normal importance memory: "Likes coffee in the morning"', auto_save=False
+        )
         assert "normal" in response2.lower()
 
         # List recent memories to see importance levels
-        response3 = await memory_agent.arun(
-            "List my 5 most recent memories", auto_save=False
-        )
+        response3 = await memory_agent.arun("List my 5 most recent memories", auto_save=False)
         assert "importance" in response3.lower()
 
     @pytest.mark.asyncio
     async def test_memory_updates(self, memory_agent):
         """Test updating existing memories."""
         # Store initial memory
-        await memory_agent.arun(
-            "Store a memory that I live in New York City", auto_save=False
-        )
+        await memory_agent.arun("Store a memory that I live in New York City", auto_save=False)
 
         # Update the memory
         response2 = await memory_agent.arun(
-            "Update the memory about where I live to say I moved to San Francisco",
-            auto_save=False)
+            "Update the memory about where I live to say I moved to San Francisco", auto_save=False
+        )
         assert "updated" in response2.lower()
 
         # Verify update
@@ -147,9 +141,7 @@ class TestReactMemoryAgent:
     async def test_memory_deletion(self, memory_agent):
         """Test marking memories as deleted."""
         # Store a memory
-        await memory_agent.arun(
-            "Store a memory that my phone number is 555-1234", auto_save=False
-        )
+        await memory_agent.arun("Store a memory that my phone number is 555-1234", auto_save=False)
 
         # Delete the memory
         response2 = await memory_agent.arun(
@@ -158,9 +150,7 @@ class TestReactMemoryAgent:
         assert "deleted" in response2.lower()
 
         # Verify deletion marker exists
-        response3 = await memory_agent.arun(
-            "Search for my phone number", auto_save=False
-        )
+        response3 = await memory_agent.arun("Search for my phone number", auto_save=False)
         # Should show deleted marker or indicate deletion
         assert "deleted" in response3.lower() or "no" in response3.lower()
 
@@ -185,12 +175,11 @@ class TestReactMemoryAgent:
             name="enhanced_agent",
             engine=AugLLMConfig(temperature=0.1),
             custom_tools=[word_counter, reverse_text],
-            user_id="enhanced_user")
+            user_id="enhanced_user",
+        )
 
         # Test memory tools still work
-        response1 = await agent.arun(
-            "Store a memory that I like pizza", auto_save=False
-        )
+        response1 = await agent.arun("Store a memory that I like pizza", auto_save=False)
         assert "stored" in response1.lower()
 
         # Test custom tools work
@@ -227,12 +216,8 @@ class TestReactMemoryAgent:
     async def test_vector_store_persistence(self, memory_agent, temp_dir):
         """Test saving and loading vector store."""
         # Store some memories
-        await memory_agent.arun(
-            "Store a memory that my birthday is January 15th", auto_save=False
-        )
-        await memory_agent.arun(
-            "Store a memory that I graduated from MIT", auto_save=False
-        )
+        await memory_agent.arun("Store a memory that my birthday is January 15th", auto_save=False)
+        await memory_agent.arun("Store a memory that I graduated from MIT", auto_save=False)
 
         # Save vector store
         save_path = Path(temp_dir) / "test_memories"
@@ -243,7 +228,8 @@ class TestReactMemoryAgent:
             name="loaded_agent",
             engine=AugLLMConfig(temperature=0.1),
             user_id="test_user",
-            memory_store_path=str(save_path))
+            memory_store_path=str(save_path),
+        )
 
         # Verify memories were loaded
         response = await new_agent.arun("When is my birthday?", auto_save=False)
@@ -259,23 +245,25 @@ class TestReactMemoryAgent:
         await memory_agent.arun(
             "Store these memories: I work as a software engineer, "
             "I specialize in machine learning, and I've been coding for 10 years",
-            auto_save=False)
+            auto_save=False,
+        )
 
         # Store project memories
         await memory_agent.arun(
             "Store a memory that I'm working on a recommendation system project using Python and TensorFlow",
-            auto_save=False)
+            auto_save=False,
+        )
 
         # Complex query combining search and reasoning
         response = await memory_agent.arun(
             "Based on my memories, what programming languages and tools am I experienced with? "
             "Also, how does my current project relate to my specialization?",
-            auto_save=False)
+            auto_save=False,
+        )
 
         # Should mention Python, TensorFlow, ML, and make connections
         assert any(
-            term in response.lower()
-            for term in ["python", "tensorflow", "machine learning", "ml"]
+            term in response.lower() for term in ["python", "tensorflow", "machine learning", "ml"]
         )
         assert "recommendation" in response.lower() or "project" in response.lower()
 
@@ -285,12 +273,14 @@ class TestReactMemoryAgent:
         # Store memories with tags
         response1 = await memory_agent.arun(
             'Store a memory with tags "health,exercise": I run 5 miles every morning',
-            auto_save=False)
+            auto_save=False,
+        )
         assert "stored" in response1.lower()
 
         response2 = await memory_agent.arun(
             'Store a memory with tags "work,skills": I am proficient in Docker and Kubernetes',
-            auto_save=False)
+            auto_save=False,
+        )
         assert "stored" in response2.lower()
 
         # Search for health-related memories

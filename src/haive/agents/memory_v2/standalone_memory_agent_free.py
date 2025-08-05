@@ -18,7 +18,8 @@ from haive.agents.memory_v2.memory_state_original import (
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryState,
-    MemoryType)
+    MemoryType,
+)
 
 
 class FreeMemoryAgent:
@@ -36,7 +37,8 @@ class FreeMemoryAgent:
         user_id: str,
         storage_path: str | None = None,
         embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
-        k_memories: int = 5):
+        k_memories: int = 5,
+    ):
         """Initialize the free memory agent.
 
         Args:
@@ -59,7 +61,8 @@ class FreeMemoryAgent:
         self.embeddings = HuggingFaceEmbeddings(
             model_name=embedding_model,
             model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": False})
+            encode_kwargs={"normalize_embeddings": False},
+        )
 
         # Initialize or load vector store
         self.vector_store_path = self.storage_path / "vector_store"
@@ -75,14 +78,16 @@ class FreeMemoryAgent:
                 return FAISS.load_local(
                     str(self.vector_store_path),
                     self.embeddings,
-                    allow_dangerous_deserialization=True)
+                    allow_dangerous_deserialization=True,
+                )
             except Exception:
                 pass
 
         # Create new vector store with initial document
         initial_doc = Document(
             page_content="Memory system initialized",
-            metadata={"type": "system", "timestamp": datetime.now().isoformat()})
+            metadata={"type": "system", "timestamp": datetime.now().isoformat()},
+        )
         return FAISS.from_documents([initial_doc], self.embeddings)
 
     def add_memory(
@@ -90,7 +95,8 @@ class FreeMemoryAgent:
         content: str,
         memory_type: MemoryType = MemoryType.CONVERSATIONAL,
         importance: ImportanceLevel = ImportanceLevel.MEDIUM,
-        metadata: dict[str, Any] | None = None) -> str:
+        metadata: dict[str, Any] | None = None,
+    ) -> str:
         """Add a new memory.
 
         Args:
@@ -108,7 +114,8 @@ class FreeMemoryAgent:
             memory_type=memory_type,
             importance=importance,
             user_id=self.user_id,
-            metadata=metadata or {})
+            metadata=metadata or {},
+        )
 
         # Add to memory state
         self.memory_state.add_memory_item(memory)
@@ -139,7 +146,8 @@ class FreeMemoryAgent:
         query: str,
         k: int | None = None,
         memory_type: MemoryType | None = None,
-        importance: ImportanceLevel | None = None) -> list[dict[str, Any]]:
+        importance: ImportanceLevel | None = None,
+    ) -> list[dict[str, Any]]:
         """Search memories using similarity search.
 
         Args:
@@ -161,9 +169,7 @@ class FreeMemoryAgent:
             filter_dict["importance"] = importance.value
 
         # Search with filter
-        results = self.vector_store.similarity_search_with_score(
-            query, k=k, filter=filter_dict
-        )
+        results = self.vector_store.similarity_search_with_score(query, k=k, filter=filter_dict)
 
         # Format results
         formatted_results = []
@@ -226,9 +232,7 @@ class FreeMemoryAgent:
         return {
             "total_memories": self.memory_state.stats.total_memories,
             "memories_by_type": dict(self.memory_state.stats.memories_by_type),
-            "memories_by_importance": dict(
-                self.memory_state.stats.memories_by_importance
-            ),
+            "memories_by_importance": dict(self.memory_state.stats.memories_by_importance),
             "storage_path": str(self.storage_path),
             "vector_store_size": len(self.vector_store.docstore._dict),
         }
@@ -276,24 +280,18 @@ class FreeMemoryAgent:
 
         # Simple classification
         if any(
-            word in user_input.lower()
-            for word in ["important", "critical", "urgent", "remember"]
+            word in user_input.lower() for word in ["important", "critical", "urgent", "remember"]
         ):
             importance = ImportanceLevel.HIGH
 
-        if any(
-            word in user_input.lower()
-            for word in ["fact", "is a", "are", "works", "located"]
-        ):
+        if any(word in user_input.lower() for word in ["fact", "is a", "are", "works", "located"]):
             memory_type = MemoryType.FACTUAL
 
-        memory_id = self.add_memory(
-            user_input, memory_type=memory_type, importance=importance
-        )
+        memory_id = self.add_memory(user_input, memory_type=memory_type, importance=importance)
 
         return f"I've stored that in my memory (ID: {memory_id}). Type: {
-            memory_type.value}, Importance: {
-            importance.value}"
+            memory_type.value
+        }, Importance: {importance.value}"
 
 
 async def test_free_memory_agent():

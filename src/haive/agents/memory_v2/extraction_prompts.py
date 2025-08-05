@@ -10,7 +10,8 @@ from typing import Any
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
-    SystemMessagePromptTemplate)
+    SystemMessagePromptTemplate,
+)
 
 # ============================================================================
 # CORE MEMORY EXTRACTION PROMPTS
@@ -655,17 +656,13 @@ class ExtractionOrchestrator:
                 if self.llm:
                     # Use configured LLM
                     chain = prompt | self.llm
-                    result = await chain.ainvoke(
-                        {"conversation_text": conversation_text}
-                    )
+                    result = await chain.ainvoke({"conversation_text": conversation_text})
                     results[extraction_type] = (
                         result.content if hasattr(result, "content") else str(result)
                     )
                 else:
                     # Return prompt for external processing
-                    formatted_prompt = prompt.format(
-                        conversation_text=conversation_text
-                    )
+                    formatted_prompt = prompt.format(conversation_text=conversation_text)
                     results[extraction_type] = {"prompt": formatted_prompt}
 
             except Exception as e:

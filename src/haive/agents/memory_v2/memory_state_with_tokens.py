@@ -9,24 +9,23 @@ from datetime import datetime
 from typing import Any
 
 from haive.core.schema.prebuilt.messages.messages_with_token_usage import (
-    MessagesStateWithTokenUsage)
+    MessagesStateWithTokenUsage,
+)
 from langchain_core.messages import AnyMessage
 from pydantic import ConfigDict, Field, computed_field
 
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
-    KnowledgeGraph)
+    KnowledgeGraph,
+)
 
-from .memory_state_original import (
-    MemoryStats,
-    UnifiedMemoryEntry)
+from .memory_state_original import MemoryStats, UnifiedMemoryEntry
 
 logger = logging.getLogger(__name__)
 
 # Graph transformer imports
 try:
-
     GRAPH_AVAILABLE = True
 except ImportError:
     logger.warning("Graph transformer components not available")
@@ -113,22 +112,19 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
     )
 
     # Thresholds for decision making
-    warning_threshold: float = Field(
-        default=0.7, description="Token warning threshold (0.0-1.0)"
-    )
+    warning_threshold: float = Field(default=0.7, description="Token warning threshold (0.0-1.0)")
 
     critical_threshold: float = Field(
         default=0.85, description="Token critical threshold (0.0-1.0)"
     )
 
-    max_context_tokens: int = Field(
-        default=8000, description="Maximum context window tokens"
-    )
+    max_context_tokens: int = Field(default=8000, description="Maximum context window tokens")
 
     # Graph transformation state
     knowledge_graph: KnowledgeGraph | None = Field(
         default=None,
-        description="Current knowledge graph extracted from memories and conversations")
+        description="Current knowledge graph extracted from memories and conversations",
+    )
 
     graph_nodes: list[EntityNode] = Field(
         default_factory=list, description="Extracted entity nodes from content"
@@ -236,28 +232,24 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
                 {
                     "action_needed": True,
                     "recommended_route": "summarize_critical",
-                    "reason": f"Projected ratio {
-                        projected_ratio:.2%} >= critical threshold {
-                        self.critical_threshold:.2%}",
+                    "reason": f"Projected ratio {projected_ratio:.2%} >= critical threshold {
+                        self.critical_threshold:.2%
+                    }",
                 }
             )
-            logger.info(
-                "Pre-hook: Critical threshold reached, recommending summarization"
-            )
+            logger.info("Pre-hook: Critical threshold reached, recommending summarization")
 
         elif projected_ratio >= self.warning_threshold:
             hook_result.update(
                 {
                     "action_needed": True,
                     "recommended_route": "summarize_warning",
-                    "reason": f"Projected ratio {
-                        projected_ratio:.2%} >= warning threshold {
-                        self.warning_threshold:.2%}",
+                    "reason": f"Projected ratio {projected_ratio:.2%} >= warning threshold {
+                        self.warning_threshold:.2%
+                    }",
                 }
             )
-            logger.info(
-                "Pre-hook: Warning threshold reached, recommending memory consolidation"
-            )
+            logger.info("Pre-hook: Warning threshold reached, recommending memory consolidation")
 
         return hook_result
 
@@ -287,18 +279,12 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         # Split into summarizable and preserve
         preserve_count = min(5, len(unsummarized_messages))  # Keep last 5
         to_summarize = (
-            unsummarized_messages[:-preserve_count]
-            if preserve_count > 0
-            else unsummarized_messages
+            unsummarized_messages[:-preserve_count] if preserve_count > 0 else unsummarized_messages
         )
-        to_preserve = (
-            unsummarized_messages[-preserve_count:] if preserve_count > 0 else []
-        )
+        to_preserve = unsummarized_messages[-preserve_count:] if preserve_count > 0 else []
 
         # Prepare memories for summarization
-        old_memories = (
-            self.current_memories[:-10] if len(self.current_memories) > 10 else []
-        )
+        old_memories = self.current_memories[:-10] if len(self.current_memories) > 10 else []
         recent_memories = (
             self.current_memories[-10:]
             if len(self.current_memories) > 10
@@ -327,9 +313,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         }
 
         logger.info(
-            f"Summarization prep: {
-                len(to_summarize)} messages, {
-                len(old_memories)} memories, "
+            f"Summarization prep: {len(to_summarize)} messages, {len(old_memories)} memories, "
             f"{total_to_summarize} → {target_tokens} tokens"
         )
 
@@ -369,9 +353,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
             and len(self.messages) > 3
             and (
                 not self.last_graph_update
-                or len(self.current_memories)
-                - self.last_graph_update.get("memory_count", 0)
-                > 5
+                or len(self.current_memories) - self.last_graph_update.get("memory_count", 0) > 5
             )
         ):
             return "update_graph"
@@ -403,9 +385,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         self.add_message(message)
 
         # Update memory token tracking
-        self.memory_token_usage[f"message_{len(self.messages)}"] = hook_result[
-            "incoming_tokens"
-        ]
+        self.memory_token_usage[f"message_{len(self.messages)}"] = hook_result["incoming_tokens"]
 
         # Update stats
         self.memory_stats.total_operations += 1
@@ -413,10 +393,8 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         return hook_result
 
     def apply_summarization_result(
-        self,
-        summary: str,
-        summarized_message_ids: list[str],
-        summarized_memory_ids: list[str]) -> None:
+        self, summary: str, summarized_message_ids: list[str], summarized_memory_ids: list[str]
+    ) -> None:
         """Apply results of summarization operation.
 
         Args:
@@ -427,9 +405,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         # Update running summary
         if self.running_summary:
             # Combine with existing summary
-            self.running_summary = (
-                f"{self.running_summary}\n\n--- Recent Summary ---\n{summary}"
-            )
+            self.running_summary = f"{self.running_summary}\n\n--- Recent Summary ---\n{summary}"
         else:
             self.running_summary = summary
 
@@ -451,7 +427,9 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
                     importance="high",
                     source="summarization",
                     tags=["summary", "compressed"],
-                    confidence=0.9))
+                    confidence=0.9,
+                ),
+            )
             self.current_memories.insert(0, summary_memory)
 
         # Record summarization details
@@ -466,11 +444,8 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         }
 
         logger.info(
-            f"Applied summarization: {
-                len(summarized_message_ids)} messages, "
-            f"{
-                len(summarized_memory_ids)} memories → {
-                len(summary)} char summary"
+            f"Applied summarization: {len(summarized_message_ids)} messages, "
+            f"{len(summarized_memory_ids)} memories → {len(summary)} char summary"
         )
 
     # ========================================================================
@@ -495,9 +470,7 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
             "token_status": self.token_status,
             # Summarization info
             "has_running_summary": self.running_summary is not None,
-            "running_summary_length": (
-                len(self.running_summary) if self.running_summary else 0
-            ),
+            "running_summary_length": (len(self.running_summary) if self.running_summary else 0),
             "summarized_messages": len(self.summarized_message_ids),
             "last_summarization": self.last_summarization,
             # Routing
@@ -530,6 +503,5 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
         # (running_summary and summarized_message_ids remain)
 
         logger.info(
-            f"Reset for new session: kept {
-                len(core_memories)} core memories and running summary"
+            f"Reset for new session: kept {len(core_memories)} core memories and running summary"
         )

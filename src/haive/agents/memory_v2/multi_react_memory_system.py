@@ -41,7 +41,8 @@ class MultiReactMemorySystem:
         self,
         user_id: str = "default_user",
         engine: AugLLMConfig | None = None,
-        memory_base_path: str | None = None):
+        memory_base_path: str | None = None,
+    ):
         self.user_id = user_id
         self.engine = engine or AugLLMConfig(temperature=0.7)
         self.memory_base_path = memory_base_path or f"./memories/{user_id}"
@@ -272,7 +273,8 @@ Memory types:
 - episodic: Personal experiences, events, conversations
 - semantic: Facts, definitions, general knowledge
 - procedural: Skills, procedures, how-to knowledge
-- working: Current context, active tasks, temporary information""")
+- working: Current context, active tasks, temporary information""",
+        )
 
         return router_agent
 
@@ -333,9 +335,7 @@ Memory types:
             "user_id": self.user_id,
         }
 
-    async def store_memory(
-        self, content: str, memory_type: MemoryType | None = None
-    ) -> str:
+    async def store_memory(self, content: str, memory_type: MemoryType | None = None) -> str:
         """Store a memory in the appropriate system.
 
         Args:
@@ -454,9 +454,7 @@ async def example_multi_memory_system():
     )
 
     # Query that touches multiple systems
-    await system.process_query(
-        "What am I currently working on and when did I last meet with Bob?"
-    )
+    await system.process_query("What am I currently working on and when did I last meet with Bob?")
 
     # Specific procedural query
     await system.process_query("How do I make coffee?")
@@ -492,7 +490,6 @@ async def example_advanced_memory_operations():
 
 
 if __name__ == "__main__":
-
     # Run examples
     asyncio.run(example_multi_memory_system())
     # asyncio.run(example_advanced_memory_operations())

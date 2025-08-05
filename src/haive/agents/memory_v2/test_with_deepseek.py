@@ -12,7 +12,8 @@ from haive.agents.memory_v2.memory_state_original import (
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryState,
-    MemoryType)
+    MemoryType,
+)
 from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent
 
 # Set DeepSeek API key if available
@@ -28,13 +29,12 @@ async def test_deepseek_config():
 
         # Create AugLLMConfig with DeepSeek
         aug_config = AugLLMConfig(
-            llm_config=deepseek_config,
-            system_message="You are a helpful memory assistant.")
+            llm_config=deepseek_config, system_message="You are a helpful memory assistant."
+        )
 
         return aug_config
 
     except Exception:
-
         traceback.print_exc()
         return None
 
@@ -46,10 +46,7 @@ async def test_simple_memory_with_deepseek():
         return
 
     try:
-
-        agent = SimpleMemoryAgent(
-            name="test_deepseek", engine=aug_config, user_id="test_user"
-        )
+        agent = SimpleMemoryAgent(name="test_deepseek", engine=aug_config, user_id="test_user")
 
         # Test storing memory
         await agent.arun("Remember: Alice works at TechCorp as an AI researcher")
@@ -58,7 +55,6 @@ async def test_simple_memory_with_deepseek():
         await agent.arun("Who is Alice and what does she do?")
 
     except Exception:
-
         traceback.print_exc()
 
 
@@ -74,7 +70,8 @@ async def test_react_memory_with_deepseek():
         HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": False})
+            encode_kwargs={"normalize_embeddings": False},
+        )
 
         # Now create ReactMemoryAgent with custom embeddings
 
@@ -82,7 +79,6 @@ async def test_react_memory_with_deepseek():
         # For now, let's see if we can at least import it
 
     except Exception:
-
         traceback.print_exc()
 
 
@@ -97,19 +93,19 @@ async def test_models_only():
         (
             "Meeting with Bob scheduled for Tuesday",
             MemoryType.CONVERSATIONAL,
-            ImportanceLevel.MEDIUM),
+            ImportanceLevel.MEDIUM,
+        ),
         (
             "DataCorp specializes in cloud infrastructure",
             MemoryType.FACTUAL,
-            ImportanceLevel.MEDIUM),
+            ImportanceLevel.MEDIUM,
+        ),
     ]
 
     for content, mem_type, importance in memories:
         memory = EnhancedMemoryItem(
-            content=content,
-            memory_type=mem_type,
-            importance=importance,
-            user_id="test_user")
+            content=content, memory_type=mem_type, importance=importance, user_id="test_user"
+        )
         state.add_memory_item(memory)
 
     # Search memories

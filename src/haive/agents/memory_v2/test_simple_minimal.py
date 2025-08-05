@@ -6,9 +6,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 from langchain_core.messages import HumanMessage
 
-from haive.agents.memory_v2.simple_memory_agent import (
-    SimpleMemoryAgent,
-    TokenAwareMemoryConfig)
+from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent, TokenAwareMemoryConfig
 
 
 def test_minimal():
@@ -17,9 +15,7 @@ def test_minimal():
     agent = SimpleMemoryAgent(
         name="test_minimal",
         engine=AugLLMConfig(llm_config=DeepSeekLLMConfig(model="deepseek-chat")),
-        memory_config=TokenAwareMemoryConfig(
-            max_context_tokens=2000, storage_backend="in_memory"
-        ),
+        memory_config=TokenAwareMemoryConfig(max_context_tokens=2000, storage_backend="in_memory"),
         graph_enabled=False,  # Disable graph to simplify
     )
 
@@ -36,7 +32,6 @@ def test_minimal():
         agent._app.invoke(test_input)
 
     except Exception:
-
         # Try with string input
         with contextlib.suppress(Exception):
             agent.run("Hello")

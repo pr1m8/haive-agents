@@ -10,7 +10,8 @@ from haive.agents.memory_v2.memory_state_original import (
     MemoryItem,
     MemoryState,
     MemoryType,
-    UnifiedMemoryEntry)
+    UnifiedMemoryEntry,
+)
 from haive.agents.memory_v2.memory_state_with_tokens import MemoryStateWithTokens
 
 
@@ -26,12 +27,11 @@ def test_memory_models():
         tags=["executive", "technology"],
         user_id="test_user",
         confidence=0.9,
-        importance=ImportanceLevel.HIGH)
+        importance=ImportanceLevel.HIGH,
+    )
 
     # Test KnowledgeTriple
-    KnowledgeTriple(
-        subject="TechCorp", predicate="employs", object="Alice", confidence=0.95
-    )
+    KnowledgeTriple(subject="TechCorp", predicate="employs", object="Alice", confidence=0.95)
 
     # Test EnhancedKnowledgeTriple
     enhanced_triple = EnhancedKnowledgeTriple(
@@ -39,7 +39,8 @@ def test_memory_models():
         predicate="has_cto",
         object="Bob",
         importance=ImportanceLevel.HIGH,
-        supporting_evidence="From company website")
+        supporting_evidence="From company website",
+    )
 
     # Test UnifiedMemoryEntry
     entry1 = UnifiedMemoryEntry.from_memory_item(enhanced_memory)
@@ -57,9 +58,7 @@ def test_memory_models():
     state.search_memories("Bob")
 
     # Test MemoryStateWithTokens
-    token_state = MemoryStateWithTokens(
-        messages=[], total_tokens=0, current_memories=[]
-    )
+    token_state = MemoryStateWithTokens(messages=[], total_tokens=0, current_memories=[])
 
     # Add a memory entry
     token_state.current_memories.append(entry1)
@@ -93,9 +92,7 @@ def test_memory_stats():
     ]
 
     for content, mem_type, importance in memories:
-        memory = EnhancedMemoryItem(
-            content=content, memory_type=mem_type, importance=importance
-        )
+        memory = EnhancedMemoryItem(content=content, memory_type=mem_type, importance=importance)
         state.add_memory_item(memory)
 
     # Add some triples
@@ -145,9 +142,7 @@ def test_memory_search():
 
     for query, expected_count in searches:
         results = state.search_memories(query)
-        assert (
-            len(results) >= expected_count
-        ), f"Expected at least {expected_count} results"
+        assert len(results) >= expected_count, f"Expected at least {expected_count} results"
 
     return True
 
@@ -161,7 +156,6 @@ def main():
         test_memory_search()
 
     except Exception:
-
         traceback.print_exc()
 
 

@@ -27,15 +27,11 @@ class TimeWeightConfig(BaseModel):
     """Configuration for time-weighted retrieval."""
 
     # Time weighting parameters
-    decay_rate: float = Field(
-        default=0.01, description="How quickly relevance decays per hour"
-    )
+    decay_rate: float = Field(default=0.01, description="How quickly relevance decays per hour")
     recency_weight: float = Field(
         default=0.3, description="Weight of recency vs similarity (0.0-1.0)"
     )
-    max_age_hours: float = Field(
-        default=24 * 30, description="Maximum age in hours to consider"
-    )
+    max_age_hours: float = Field(default=24 * 30, description="Maximum age in hours to consider")
 
     # Retrieval parameters
     k: int = Field(default=5, description="Number of documents to retrieve")
@@ -44,7 +40,8 @@ class TimeWeightConfig(BaseModel):
     # Importance boosting
     importance_boost: dict[str, float] = Field(
         default={"critical": 1.5, "high": 1.2, "medium": 1.0, "low": 0.8},
-        description="Score multipliers by importance level")
+        description="Score multipliers by importance level",
+    )
 
     # Document type preferences
     type_preferences: dict[str, float] = Field(
@@ -55,7 +52,8 @@ class TimeWeightConfig(BaseModel):
             "ai": 0.9,
             "extracted_memory": 1.2,
         },
-        description="Preference weights by document type")
+        description="Preference weights by document type",
+    )
 
 
 class TimeWeightedRetriever(BaseRetriever):
@@ -72,9 +70,7 @@ class TimeWeightedRetriever(BaseRetriever):
 
         arbitrary_types_allowed = True
 
-    def __init__(
-        self, vectorstore: VectorStore, config: TimeWeightConfig = None, **kwargs
-    ):
+    def __init__(self, vectorstore: VectorStore, config: TimeWeightConfig = None, **kwargs):
         """Initialize time-weighted retriever."""
         if config is None:
             config = TimeWeightConfig()
@@ -83,8 +79,8 @@ class TimeWeightedRetriever(BaseRetriever):
 
         logger.info(
             f"Initialized TimeWeightedRetriever with decay_rate={
-                config.decay_rate}, recency_weight={
-                config.recency_weight}"
+                config.decay_rate
+            }, recency_weight={config.recency_weight}"
         )
 
     def _get_relevant_documents(
@@ -96,14 +92,11 @@ class TimeWeightedRetriever(BaseRetriever):
         candidate_k = min(self.config.k * 3, 50)
 
         try:
-            candidates = self.vectorstore.similarity_search_with_score(
-                query, k=candidate_k
-            )
+            candidates = self.vectorstore.similarity_search_with_score(query, k=candidate_k)
         except Exception as e:
             logger.warning(f"Vector search failed: {e}, falling back to basic search")
             candidates = [
-                (doc, 1.0)
-                for doc in self.vectorstore.similarity_search(query, k=candidate_k)
+                (doc, 1.0) for doc in self.vectorstore.similarity_search(query, k=candidate_k)
             ]
 
         # Calculate time-weighted scores
@@ -125,7 +118,8 @@ class TimeWeightedRetriever(BaseRetriever):
                 similarity_score=similarity_score,
                 time_score=time_score,
                 importance_score=importance_score,
-                type_score=type_score)
+                type_score=type_score,
+            )
 
             # Apply threshold filter
             if final_score >= self.config.score_threshold:
@@ -135,11 +129,7 @@ class TimeWeightedRetriever(BaseRetriever):
         scored_docs.sort(key=lambda x: x[1], reverse=True)
         top_docs = [doc for doc, score in scored_docs[: self.config.k]]
 
-        logger.debug(
-            f"Retrieved {
-                len(top_docs)} documents from {
-                len(candidates)} candidates"
-        )
+        logger.debug(f"Retrieved {len(top_docs)} documents from {len(candidates)} candidates")
 
         return top_docs
 
@@ -198,11 +188,8 @@ class TimeWeightedRetriever(BaseRetriever):
         return self.config.type_preferences.get(type_str, 1.0)
 
     def _combine_scores(
-        self,
-        similarity_score: float,
-        time_score: float,
-        importance_score: float,
-        type_score: float) -> float:
+        self, similarity_score: float, time_score: float, importance_score: float, type_score: float
+    ) -> float:
         """Combine all scoring components into final score."""
         # Normalize similarity score (vector stores return different ranges)
         normalized_similarity = max(0.0, min(1.0, similarity_score))
@@ -218,9 +205,7 @@ class TimeWeightedRetriever(BaseRetriever):
 
         return final_score
 
-    def get_relevant_documents_with_scores(
-        self, query: str
-    ) -> list[tuple[Document, float]]:
+    def get_relevant_documents_with_scores(self, query: str) -> list[tuple[Document, float]]:
         """Get documents with their calculated scores for debugging."""
         current_time = datetime.now(UTC)
 
@@ -228,13 +213,10 @@ class TimeWeightedRetriever(BaseRetriever):
         candidate_k = min(self.config.k * 3, 50)
 
         try:
-            candidates = self.vectorstore.similarity_search_with_score(
-                query, k=candidate_k
-            )
+            candidates = self.vectorstore.similarity_search_with_score(query, k=candidate_k)
         except Exception:
             candidates = [
-                (doc, 1.0)
-                for doc in self.vectorstore.similarity_search(query, k=candidate_k)
+                (doc, 1.0) for doc in self.vectorstore.similarity_search(query, k=candidate_k)
             ]
 
         # Score all candidates
@@ -272,7 +254,8 @@ class MemoryRetrievalSession:
         self,
         retriever: TimeWeightedRetriever,
         session_id: str | None = None,
-        user_id: str | None = None):
+        user_id: str | None = None,
+    ):
         """Initialize retrieval session."""
         self.retriever = retriever
         self.session_id = session_id or f"session_{uuid4()}"
@@ -341,9 +324,7 @@ class MemoryRetrievalSession:
             keyword_overlap = len(query_keywords.intersection(content_words))
 
             if keyword_overlap > 0:
-                context_boost = 1.0 + (
-                    keyword_overlap * 0.1
-                )  # 10% boost per overlapping keyword
+                context_boost = 1.0 + (keyword_overlap * 0.1)  # 10% boost per overlapping keyword
                 score *= context_boost
 
             boosted_docs.append((doc, score))
@@ -361,8 +342,7 @@ class MemoryRetrievalSession:
             "unique_documents_retrieved": len(self.retrieved_doc_ids),
             "recent_queries": self.query_history[-5:],  # Last 5 queries
             "avg_results_per_query": (
-                sum(q["results_count"] for q in self.query_history)
-                / len(self.query_history)
+                sum(q["results_count"] for q in self.query_history) / len(self.query_history)
                 if self.query_history
                 else 0
             ),
@@ -375,10 +355,8 @@ class MemoryRetrievalSession:
 
 
 def create_time_weighted_retriever(
-    vectorstore: VectorStore,
-    decay_rate: float = 0.01,
-    recency_weight: float = 0.3,
-    k: int = 5) -> TimeWeightedRetriever:
+    vectorstore: VectorStore, decay_rate: float = 0.01, recency_weight: float = 0.3, k: int = 5
+) -> TimeWeightedRetriever:
     """Factory function to create configured time-weighted retriever.
 
     Args:
@@ -420,7 +398,8 @@ def create_memory_focused_retriever(vectorstore: VectorStore) -> TimeWeightedRet
             "conversation_summary": 1.2,
             "human": 1.0,
             "ai": 0.8,
-        })
+        },
+    )
 
     return TimeWeightedRetriever(vectorstore=vectorstore, config=config)
 
@@ -430,8 +409,7 @@ def create_memory_focused_retriever(vectorstore: VectorStore) -> TimeWeightedRet
 # ============================================================================
 
 
-def prepare_documents_for_time_retrieval(
-    documents: list[TimestampedDocument]) -> list[Document]:
+def prepare_documents_for_time_retrieval(documents: list[TimestampedDocument]) -> list[Document]:
     """Prepare timestamped documents for time-weighted retrieval.
 
     Args:

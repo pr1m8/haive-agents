@@ -24,9 +24,7 @@ from langchain_core.tools import tool
 from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.memory_v2.conversation_memory_agent import ConversationMemoryAgent
-from haive.agents.memory_v2.long_term_memory_agent import (
-    LongTermMemoryAgent,
-    MemoryEntry)
+from haive.agents.memory_v2.long_term_memory_agent import LongTermMemoryAgent, MemoryEntry
 from haive.agents.react.agent import ReactAgent
 
 # Import our memory agents
@@ -99,7 +97,8 @@ class ReactMemoryCoordinator:
         self,
         user_id: str,
         config: MemoryCoordinatorConfig | None = None,
-        name: str = "react_memory_coordinator"):
+        name: str = "react_memory_coordinator",
+    ):
         """Initialize ReactMemoryCoordinator."""
         self.user_id = user_id
         self.name = name
@@ -126,7 +125,8 @@ class ReactMemoryCoordinator:
                 user_id=self.user_id,
                 llm_config=self.config.llm_config,
                 storage_path=self.config.long_term_memory_path,
-                name=f"{self.name}_ltm")
+                name=f"{self.name}_ltm",
+            )
             await self.long_term_memory.initialize()
             logger.info("✅ Long-term memory agent initialized")
 
@@ -146,22 +146,19 @@ class ReactMemoryCoordinator:
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}")
+                api_key="${AZURE_OPENAI_API_KEY}",
+            )
 
         aug_llm_config = AugLLMConfig(
             llm_config=llm_config,
             temperature=self.config.temperature,
-            system_message=self._get_system_message())
-
-        self.react_agent = ReactAgent(
-            name=self.name, engine=aug_llm_config, tools=memory_tools
+            system_message=self._get_system_message(),
         )
+
+        self.react_agent = ReactAgent(name=self.name, engine=aug_llm_config, tools=memory_tools)
 
         self._initialized = True
-        logger.info(
-            f"✅ ReactMemoryCoordinator initialized with {
-    len(memory_tools)} memory tools"
-        )
+        logger.info(f"✅ ReactMemoryCoordinator initialized with {len(memory_tools)} memory tools")
 
     def _create_memory_tools(self) -> list:
         """Create memory tools for ReactAgent."""
@@ -174,14 +171,11 @@ class ReactMemoryCoordinator:
             async def search_long_term_memory(query: str) -> str:
                 """Search long-term memory for relevant information."""
                 try:
-                    result = await self.long_term_memory.run(
-                        query, extract_memories=False
-                    )
+                    result = await self.long_term_memory.run(query, extract_memories=False)
                     memory_context = result.get("memory_context", [])
                     if memory_context:
-                        return (
-                            f"Found {len(memory_context)} relevant memories:\n"
-                            + "\n".join(f"- {mem}" for mem in memory_context[:3])
+                        return f"Found {len(memory_context)} relevant memories:\n" + "\n".join(
+                            f"- {mem}" for mem in memory_context[:3]
                         )
                     return "No relevant long-term memories found."
                 except Exception as e:
@@ -203,10 +197,8 @@ class ReactMemoryCoordinator:
                             msg_type = doc.metadata.get("message_type", "unknown")
                             content = doc.page_content[:100]
                             results.append(f"[{msg_type}] {content}")
-                        return (
-                            f"Found {
-    len(docs)} relevant conversation messages:\n"
-                            + "\n".join(results)
+                        return f"Found {len(docs)} relevant conversation messages:\n" + "\n".join(
+                            results
                         )
                     return "No relevant conversation history found."
                 except Exception as e:
@@ -227,11 +219,10 @@ class ReactMemoryCoordinator:
                         memory_type=memory_type,
                         importance=min(max(importance, 0.0), 1.0),  # Clamp to [0,1]
                         user_id=self.user_id,
-                        tags=[memory_type])
-                    self.long_term_memory.memory_store.add_memory(memory)
-                    return (
-                        f"✅ Stored {memory_type} memory with importance {importance}"
+                        tags=[memory_type],
                     )
+                    self.long_term_memory.memory_store.add_memory(memory)
+                    return f"✅ Stored {memory_type} memory with importance {importance}"
                 return "❌ Long-term memory not enabled"
             except Exception as e:
                 return f"❌ Error storing memory: {e!s}"
@@ -248,19 +239,17 @@ class ReactMemoryCoordinator:
                 if self.long_term_memory:
                     ltm_summary = self.long_term_memory.get_memory_summary()
                     insights.append(
-                        f"Long-term: {
-    ltm_summary['total_memories']} memories, types: {
-        ltm_summary['memory_types']}"
+                        f"Long-term: {ltm_summary['total_memories']} memories, types: {
+                            ltm_summary['memory_types']
+                        }"
                     )
 
                 if self.conversation_memory:
-                    conv_summary = (
-                        await self.conversation_memory.get_conversation_summary()
-                    )
+                    conv_summary = await self.conversation_memory.get_conversation_summary()
                     insights.append(
-                        f"Conversation: {
-    conv_summary['total_messages']} messages across {
-        conv_summary['conversations']} conversations"
+                        f"Conversation: {conv_summary['total_messages']} messages across {
+                            conv_summary['conversations']
+                        } conversations"
                     )
 
                 return (
@@ -321,9 +310,7 @@ Be helpful, insightful, and proactive about memory management."""
 
         # Step 3: Extract and store memories if enabled
         if self.config.auto_extract_memories and self.long_term_memory:
-            await self.long_term_memory._extract_and_store_memories(
-                query, str(react_result)
-            )
+            await self.long_term_memory._extract_and_store_memories(query, str(react_result))
 
         return {
             "response": react_result,
@@ -336,9 +323,7 @@ Be helpful, insightful, and proactive about memory management."""
             "coordinator_name": self.name,
         }
 
-    async def add_conversation_batch(
-        self, messages: list[BaseMessage]
-    ) -> dict[str, Any]:
+    async def add_conversation_batch(self, messages: list[BaseMessage]) -> dict[str, Any]:
         """Add a batch of conversation messages to memory."""
         results = {"conversation_stored": False, "memories_extracted": 0}
 
@@ -364,9 +349,7 @@ Be helpful, insightful, and proactive about memory management."""
         }
 
         if self.long_term_memory:
-            summary["memory_systems"][
-                "long_term"
-            ] = self.long_term_memory.get_memory_summary()
+            summary["memory_systems"]["long_term"] = self.long_term_memory.get_memory_summary()
 
         if self.conversation_memory:
             summary["memory_systems"][
@@ -382,12 +365,14 @@ Be helpful, insightful, and proactive about memory management."""
         user_id: str,
         llm_config: LLMConfig | None = None,
         enable_all_memory: bool = True,
-        name: str = "react_memory_coordinator") -> "ReactMemoryCoordinator":
+        name: str = "react_memory_coordinator",
+    ) -> "ReactMemoryCoordinator":
         """Factory method to create ReactMemoryCoordinator."""
         config = MemoryCoordinatorConfig(
             llm_config=llm_config,
             enable_conversation_memory=enable_all_memory,
-            enable_long_term_memory=enable_all_memory)
+            enable_long_term_memory=enable_all_memory,
+        )
 
         return cls(user_id=user_id, config=config, name=name)
 
@@ -396,7 +381,8 @@ Be helpful, insightful, and proactive about memory management."""
         cls,
         user_id: str,
         llm_config: LLMConfig | None = None,
-        name: str = "focused_memory_coordinator") -> "ReactMemoryCoordinator":
+        name: str = "focused_memory_coordinator",
+    ) -> "ReactMemoryCoordinator":
         """Create coordinator optimized for focused reasoning."""
         config = MemoryCoordinatorConfig(
             llm_config=llm_config,
@@ -411,9 +397,7 @@ Be helpful, insightful, and proactive about memory management."""
 async def demo_react_memory_coordinator():
     """Demo ReactAgent memory coordinator functionality."""
     # Create coordinator
-    coordinator = ReactMemoryCoordinator.create(
-        user_id="demo_user", name="demo_coordinator"
-    )
+    coordinator = ReactMemoryCoordinator.create(user_id="demo_user", name="demo_coordinator")
 
     # Initialize
     await coordinator.initialize()
@@ -421,12 +405,8 @@ async def demo_react_memory_coordinator():
     # Add some initial conversation context
     initial_messages = [
         HumanMessage("Hi, I'm Alex and I work as a data scientist at Netflix"),
-        HumanMessage(
-            "I prefer working in the morning and I love collaborative projects"
-        ),
-        HumanMessage(
-            "I'm currently working on a recommendation system for documentaries"
-        ),
+        HumanMessage("I prefer working in the morning and I love collaborative projects"),
+        HumanMessage("I'm currently working on a recommendation system for documentaries"),
     ]
 
     await coordinator.add_conversation_batch(initial_messages)

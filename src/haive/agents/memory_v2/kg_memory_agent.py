@@ -27,10 +27,10 @@ from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
-    KnowledgeGraph)
+    KnowledgeGraph,
+)
 
-from .memory_state_original import (
-    EnhancedMemoryItem)
+from .memory_state_original import EnhancedMemoryItem
 from .message_document_converter import MessageDocumentConverter
 
 # Import existing KG components
@@ -135,16 +135,12 @@ class GraphDatabaseConnector:
         elif self.backend == GraphStorageBackend.FILE:
             await self._connect_file_storage()
         else:
-            logger.warning(
-                f"Backend {
-                    self.backend} not implemented, using memory"
-            )
+            logger.warning(f"Backend {self.backend} not implemented, using memory")
             self._connection = {"type": "memory", "graphs": {}}
 
     async def _connect_neo4j(self) -> None:
         """Connect to Neo4j database."""
         try:
-
             if not all(
                 [
                     self.config.neo4j_uri,
@@ -155,8 +151,8 @@ class GraphDatabaseConnector:
                 raise ValueError("Neo4j connection details missing")
 
             driver = AsyncGraphDatabase.driver(
-                self.config.neo4j_uri,
-                auth=(self.config.neo4j_username, self.config.neo4j_password))
+                self.config.neo4j_uri, auth=(self.config.neo4j_username, self.config.neo4j_password)
+            )
 
             # Test connection
             async with driver.session(database=self.config.neo4j_database) as session:
@@ -170,9 +166,7 @@ class GraphDatabaseConnector:
             logger.info(f"Connected to Neo4j at {self.config.neo4j_uri}")
 
         except ImportError:
-            logger.exception(
-                "Neo4j driver not available. Install with: pip install neo4j"
-            )
+            logger.exception("Neo4j driver not available. Install with: pip install neo4j")
             raise
         except Exception as e:
             logger.exception(f"Failed to connect to Neo4j: {e}")
@@ -187,10 +181,8 @@ class GraphDatabaseConnector:
         logger.info(f"Initialized file storage at {storage_path}")
 
     async def store_knowledge_graph(
-        self,
-        graph: KnowledgeGraph,
-        graph_id: str,
-        metadata: dict[str, Any] | None = None) -> bool:
+        self, graph: KnowledgeGraph, graph_id: str, metadata: dict[str, Any] | None = None
+    ) -> bool:
         """Store knowledge graph in configured backend."""
         if not self._connection:
             await self.connect()
@@ -202,10 +194,7 @@ class GraphDatabaseConnector:
                 return await self._store_memory(graph, graph_id, metadata)
             if self._connection["type"] == "file":
                 return await self._store_file(graph, graph_id, metadata)
-            logger.error(
-                f"Unknown connection type: {
-                    self._connection['type']}"
-            )
+            logger.error(f"Unknown connection type: {self._connection['type']}")
             return False
 
         except Exception as e:
@@ -237,7 +226,8 @@ class GraphDatabaseConnector:
                         "type": node.type,
                         "graph_id": graph_id,
                         "properties": node.properties,
-                    })
+                    },
+                )
 
             # Create relationships
             for rel in graph.relationships:
@@ -259,7 +249,8 @@ class GraphDatabaseConnector:
                         "graph_id": graph_id,
                         "confidence": rel.confidence_score,
                         "properties": rel.properties,
-                    })
+                    },
+                )
 
             # Store graph metadata
             if metadata:
@@ -323,9 +314,7 @@ class GraphDatabaseConnector:
         logger.info(f"Stored graph {graph_id} to file {file_path}")
         return True
 
-    async def retrieve_graph(
-        self, graph_id: str
-    ) -> tuple[KnowledgeGraph, dict[str, Any]] | None:
+    async def retrieve_graph(self, graph_id: str) -> tuple[KnowledgeGraph, dict[str, Any]] | None:
         """Retrieve knowledge graph by ID."""
         if not self._connection:
             await self.connect()
@@ -337,7 +326,6 @@ class GraphDatabaseConnector:
                     return graph_data["graph"], graph_data["metadata"]
 
             elif self._connection["type"] == "file":
-
                 file_path = os.path.join(self._connection["path"], f"{graph_id}.json")
                 if os.path.exists(file_path):
                     with open(file_path) as f:
@@ -350,7 +338,8 @@ class GraphDatabaseConnector:
                         node = EntityNode(
                             id=node_data["id"],
                             type=node_data["type"],
-                            properties=node_data["properties"])
+                            properties=node_data["properties"],
+                        )
                         graph.add_node(node)
 
                     for rel_data in graph_data["relationships"]:
@@ -360,7 +349,8 @@ class GraphDatabaseConnector:
                             type=rel_data["type"],
                             confidence_score=rel_data["confidence"],
                             properties=rel_data["properties"],
-                            supporting_evidence=rel_data.get("supporting_evidence"))
+                            supporting_evidence=rel_data.get("supporting_evidence"),
+                        )
                         graph.add_relationship(rel)
 
                     return graph, graph_data["metadata"]
@@ -390,10 +380,7 @@ class KGMemoryAgent:
         self.db_connector = GraphDatabaseConnector(config)
         self.message_converter = MessageDocumentConverter()
 
-        logger.info(
-            f"Initialized KGMemoryAgent with backend: {
-                config.storage_backend}"
-        )
+        logger.info(f"Initialized KGMemoryAgent with backend: {config.storage_backend}")
 
     async def setup(self) -> None:
         """Setup agent and connections."""
@@ -427,7 +414,8 @@ class KGMemoryAgent:
                     "tags": memory.tags,
                     "created_at": memory.created_at.isoformat(),
                     "source": memory.source,
-                })
+                },
+            )
             documents.append(doc)
 
         # Transform to knowledge graph
@@ -438,7 +426,8 @@ class KGMemoryAgent:
                 allowed_relationships=self.config.memory_relationships,
                 strict_mode=self.config.strict_mode,
                 node_properties=self.config.extract_properties,
-                relationship_properties=self.config.extract_properties)
+                relationship_properties=self.config.extract_properties,
+            )
 
             # Build unified knowledge graph
             unified_graph = KnowledgeGraph()
@@ -471,8 +460,7 @@ class KGMemoryAgent:
 
             if success:
                 logger.info(
-                    f"Successfully processed {
-                        len(memories)} memories into graph {graph_id}"
+                    f"Successfully processed {len(memories)} memories into graph {graph_id}"
                 )
             else:
                 logger.error(f"Failed to store graph {graph_id}")
@@ -513,7 +501,8 @@ class KGMemoryAgent:
                 documents=documents,
                 allowed_nodes=self.config.memory_node_types,
                 allowed_relationships=self.config.memory_relationships,
-                strict_mode=self.config.strict_mode)
+                strict_mode=self.config.strict_mode,
+            )
 
             # Build unified graph
             unified_graph = KnowledgeGraph()
@@ -536,14 +525,9 @@ class KGMemoryAgent:
                 "created_at": datetime.now().isoformat(),
             }
 
-            await self.db_connector.store_knowledge_graph(
-                unified_graph, graph_id, metadata
-            )
+            await self.db_connector.store_knowledge_graph(unified_graph, graph_id, metadata)
 
-            logger.info(
-                f"Processed conversation ({
-                    len(messages)} messages) into graph {graph_id}"
-            )
+            logger.info(f"Processed conversation ({len(messages)} messages) into graph {graph_id}")
 
             return graph_id, unified_graph
 
@@ -578,15 +562,9 @@ class KGMemoryAgent:
         Returns:
             List of related entities and relationships
         """
-        if (
-            self.db_connector._connection
-            and self.db_connector._connection["type"] == "neo4j"
-        ):
+        if self.db_connector._connection and self.db_connector._connection["type"] == "neo4j":
             return await self._query_neo4j_entity(entity_name)
-        if (
-            self.db_connector._connection
-            and self.db_connector._connection["type"] == "memory"
-        ):
+        if self.db_connector._connection and self.db_connector._connection["type"] == "memory":
             return await self._query_memory_entity(entity_name)
         logger.warning("Graph querying not implemented for current backend")
         return []
@@ -618,9 +596,7 @@ class KGMemoryAgent:
                     results.append(
                         {
                             "entity": dict(entity),
-                            "relationship": (
-                                dict(relationship) if relationship else None
-                            ),
+                            "relationship": (dict(relationship) if relationship else None),
                             "connected": dict(connected) if connected else None,
                         }
                     )
@@ -639,9 +615,7 @@ class KGMemoryAgent:
                 if entity_name.lower() in node.id.lower():
                     # Find relationships for this node
                     related_rels = [
-                        rel
-                        for rel in graph.relationships
-                        if node.id in (rel.source, rel.target)
+                        rel for rel in graph.relationships if node.id in (rel.source, rel.target)
                     ]
 
                     results.append(
@@ -695,17 +669,15 @@ def create_memory_kg_agent(
     config = KGMemoryConfig(
         llm_config=llm_config,
         storage_backend=GraphStorageBackend(storage_backend),
-        **storage_kwargs)
+        **storage_kwargs,
+    )
 
     return KGMemoryAgent(config)
 
 
 def create_neo4j_memory_agent(
-    uri: str,
-    username: str,
-    password: str,
-    database: str = "neo4j",
-    llm_config: AugLLMConfig = None) -> KGMemoryAgent:
+    uri: str, username: str, password: str, database: str = "neo4j", llm_config: AugLLMConfig = None
+) -> KGMemoryAgent:
     """Create KG Memory Agent with Neo4j backend.
 
     Args:
@@ -724,6 +696,7 @@ def create_neo4j_memory_agent(
         neo4j_uri=uri,
         neo4j_username=username,
         neo4j_password=password,
-        neo4j_database=database)
+        neo4j_database=database,
+    )
 
     return KGMemoryAgent(config)

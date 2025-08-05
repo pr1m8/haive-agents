@@ -6,9 +6,7 @@ import traceback
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 
-from haive.agents.memory_v2.simple_memory_agent import (
-    SimpleMemoryAgent,
-    TokenAwareMemoryConfig)
+from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent, TokenAwareMemoryConfig
 
 
 def test_simple_memory_agent_with_deepseek():
@@ -26,7 +24,8 @@ def test_simple_memory_agent_with_deepseek():
         max_context_tokens=2000,
         warning_threshold=0.7,
         critical_threshold=0.85,
-        storage_backend="in_memory")
+        storage_backend="in_memory",
+    )
 
     try:
         # Create SimpleMemoryAgent
@@ -43,7 +42,6 @@ def test_simple_memory_agent_with_deepseek():
         return True
 
     except Exception:
-
         traceback.print_exc()
         return False
 
@@ -57,25 +55,19 @@ async def test_async_memory_agent():
         llm_config=deepseek_config, system_message="You are a helpful memory assistant."
     )
 
-    memory_config = TokenAwareMemoryConfig(
-        max_context_tokens=2000, storage_backend="in_memory"
-    )
+    memory_config = TokenAwareMemoryConfig(max_context_tokens=2000, storage_backend="in_memory")
 
-    agent = SimpleMemoryAgent(
-        name="test_async", engine=aug_config, memory_config=memory_config
-    )
+    agent = SimpleMemoryAgent(name="test_async", engine=aug_config, memory_config=memory_config)
 
     # Test async operation
     await agent.arun("Remember that async works!")
 
 
 if __name__ == "__main__":
-
     # Test sync version
     success = test_simple_memory_agent_with_deepseek()
 
     if success:
-
         # Test async version
         asyncio.run(test_async_memory_agent())
     else:

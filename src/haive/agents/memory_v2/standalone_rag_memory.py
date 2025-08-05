@@ -111,9 +111,7 @@ class MemoryRAGConfig(BaseModel):
     llm_config: AugLLMConfig = Field(default_factory=AugLLMConfig)
 
     # Vector store configuration
-    vector_store_provider: VectorStoreProvider = Field(
-        default=VectorStoreProvider.FAISS
-    )
+    vector_store_provider: VectorStoreProvider = Field(default=VectorStoreProvider.FAISS)
     embedding_model: HuggingFaceEmbeddingConfig = Field(
         default_factory=lambda: HuggingFaceEmbeddingConfig(
             model="sentence-transformers/all-mpnet-base-v2"
@@ -175,7 +173,8 @@ class MessageDocumentConverter:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "content_length": len(content),
                 "source": "conversation",
-            })
+            },
+        )
 
     def convert_messages(self, messages: list[BaseMessage]) -> list[Document]:
         """Convert multiple messages to documents."""
@@ -214,7 +213,8 @@ class ConversationMemoryAgent:
                     "type": "system",
                     "timestamp": datetime.now(UTC).isoformat(),
                     "importance": "low",
-                })
+                },
+            )
             self._documents.append(placeholder_doc)
 
         # Create BaseRAGAgent from documents
@@ -222,7 +222,8 @@ class ConversationMemoryAgent:
             documents=self._documents,
             embedding_model=self.config.embedding_model,
             vector_store_provider=self.config.vector_store_provider,
-            name=self.name)
+            name=self.name,
+        )
 
         self._initialized = True
         logger.info(f"Initialized RAG agent for {self.name}")
@@ -260,10 +261,7 @@ class ConversationMemoryAgent:
             elif isinstance(doc, str):
                 documents.append(Document(page_content=doc))
 
-        logger.info(
-            f"Retrieved {
-                len(documents)} conversation documents for query: {query}"
-        )
+        logger.info(f"Retrieved {len(documents)} conversation documents for query: {query}")
         return documents
 
     async def _update_vector_store(self) -> None:
@@ -274,10 +272,9 @@ class ConversationMemoryAgent:
                 documents=self._documents,
                 embedding_model=self.config.embedding_model,
                 vector_store_provider=self.config.vector_store_provider,
-                name=self.name)
-            logger.info(
-                f"Updated vector store with {len(self._documents)} total documents"
+                name=self.name,
             )
+            logger.info(f"Updated vector store with {len(self._documents)} total documents")
         except Exception as e:
             logger.exception(f"Failed to update vector store: {e}")
 
@@ -308,7 +305,8 @@ class FactualMemoryAgent:
                 memory_type=MemoryType.FACTUAL,
                 importance=ImportanceLevel.LOW,
                 tags=["system", "initialization"],
-                confidence=1.0)
+                confidence=1.0,
+            )
             self._memories.append(placeholder_memory)
 
         # Convert memories to documents
@@ -319,12 +317,11 @@ class FactualMemoryAgent:
             documents=documents,
             embedding_model=self.config.embedding_model,
             vector_store_provider=self.config.vector_store_provider,
-            name=self.name)
+            name=self.name,
+        )
 
         self._initialized = True
-        logger.info(
-            f"Initialized factual memory RAG agent with {len(self._memories)} memories"
-        )
+        logger.info(f"Initialized factual memory RAG agent with {len(self._memories)} memories")
 
     async def add_memory(self, memory: StandaloneMemoryItem) -> None:
         """Add a factual memory."""
@@ -344,9 +341,7 @@ class FactualMemoryAgent:
 
         logger.info(f"Added {len(memories)} factual memories")
 
-    async def retrieve_facts(
-        self, query: str, k: int | None = None
-    ) -> list[dict[str, Any]]:
+    async def retrieve_facts(self, query: str, k: int | None = None) -> list[dict[str, Any]]:
         """Retrieve relevant factual memories."""
         await self.initialize()
 
@@ -386,11 +381,10 @@ class FactualMemoryAgent:
                 "source": memory.source,
                 "timestamp": memory.created_at.isoformat(),
                 "access_count": memory.access_count,
-            })
+            },
+        )
 
-    def _memories_to_documents(
-        self, memories: list[StandaloneMemoryItem]
-    ) -> list[Document]:
+    def _memories_to_documents(self, memories: list[StandaloneMemoryItem]) -> list[Document]:
         """Convert multiple memories to documents."""
         return [self._memory_to_document(mem) for mem in memories]
 
@@ -403,7 +397,8 @@ class FactualMemoryAgent:
                 documents=all_documents,
                 embedding_model=self.config.embedding_model,
                 vector_store_provider=self.config.vector_store_provider,
-                name=self.name)
+                name=self.name,
+            )
             logger.info("Updated factual memory store")
         except Exception as e:
             logger.exception(f"Failed to update factual memory store: {e}")
@@ -416,9 +411,7 @@ class PreferencesMemoryAgent:
         """Initialize preferences memory agent."""
         self.config = config
         self.name = name
-        self._rag_agent: SimpleRAGAgent | None = (
-            None  # Use SimpleRAGAgent for generation
-        )
+        self._rag_agent: SimpleRAGAgent | None = None  # Use SimpleRAGAgent for generation
         self._preferences: list[StandaloneMemoryItem] = []
         self._initialized = False
 
@@ -437,7 +430,8 @@ class PreferencesMemoryAgent:
                 memory_type=MemoryType.PREFERENCE,
                 importance=ImportanceLevel.LOW,
                 tags=["system"],
-                confidence=1.0)
+                confidence=1.0,
+            )
             self._preferences.append(placeholder)
 
         # Convert to documents
@@ -449,12 +443,11 @@ class PreferencesMemoryAgent:
             llm_config=self.config.llm_config,
             embedding_model=self.config.embedding_model,
             vector_store_provider=self.config.vector_store_provider,
-            name=self.name)
+            name=self.name,
+        )
 
         self._initialized = True
-        logger.info(
-            f"Initialized preferences RAG agent with {len(self._preferences)} preferences"
-        )
+        logger.info(f"Initialized preferences RAG agent with {len(self._preferences)} preferences")
 
     async def add_preference(self, preference: StandaloneMemoryItem) -> None:
         """Add a user preference."""
@@ -482,9 +475,7 @@ class PreferencesMemoryAgent:
         logger.info(f"Generated preference summary for '{context}'")
         return answer
 
-    def _preferences_to_documents(
-        self, preferences: list[StandaloneMemoryItem]
-    ) -> list[Document]:
+    def _preferences_to_documents(self, preferences: list[StandaloneMemoryItem]) -> list[Document]:
         """Convert preferences to documents."""
         documents = []
         for pref in preferences:
@@ -497,7 +488,8 @@ class PreferencesMemoryAgent:
                     "confidence": pref.confidence,
                     "tags": pref.tags,
                     "timestamp": pref.created_at.isoformat(),
-                })
+                },
+            )
             documents.append(doc)
         return documents
 
@@ -510,7 +502,8 @@ class PreferencesMemoryAgent:
                 llm_config=self.config.llm_config,
                 embedding_model=self.config.embedding_model,
                 vector_store_provider=self.config.vector_store_provider,
-                name=self.name)
+                name=self.name,
+            )
             logger.info("Updated preferences RAG agent")
         except Exception as e:
             logger.exception(f"Failed to update preferences agent: {e}")
@@ -525,28 +518,22 @@ class UnifiedMemoryRAGAgent:
         self.user_id = user_id or f"user_{uuid4()}"
 
         # Initialize specialized memory agents
-        self.conversation_memory = ConversationMemoryAgent(
-            config, f"conversation_{self.user_id}"
-        )
+        self.conversation_memory = ConversationMemoryAgent(config, f"conversation_{self.user_id}")
         self.factual_memory = FactualMemoryAgent(config, f"factual_{self.user_id}")
-        self.preferences_memory = PreferencesMemoryAgent(
-            config, f"preferences_{self.user_id}"
-        )
+        self.preferences_memory = PreferencesMemoryAgent(config, f"preferences_{self.user_id}")
 
         # Message converter for conversation processing
         self.message_converter = MessageDocumentConverter(user_id=self.user_id)
 
-        logger.info(
-            f"Initialized UnifiedMemoryRAGAgent for user: {
-                self.user_id}"
-        )
+        logger.info(f"Initialized UnifiedMemoryRAGAgent for user: {self.user_id}")
 
     async def initialize(self) -> None:
         """Initialize all memory agents."""
         await asyncio.gather(
             self.conversation_memory.initialize(),
             self.factual_memory.initialize(),
-            self.preferences_memory.initialize())
+            self.preferences_memory.initialize(),
+        )
         logger.info("Initialized all memory agents")
 
     async def process_conversation(self, messages: list[BaseMessage]) -> dict[str, Any]:
@@ -559,15 +546,10 @@ class UnifiedMemoryRAGAgent:
         extracted_preferences = []
 
         for message in messages:
-            content = (
-                str(message.content) if hasattr(message, "content") else str(message)
-            )
+            content = str(message.content) if hasattr(message, "content") else str(message)
 
             # Simple heuristics for demo - in production, use LLM extraction
-            if any(
-                word in content.lower()
-                for word in ["i am", "i work", "my name", "my job"]
-            ):
+            if any(word in content.lower() for word in ["i am", "i work", "my name", "my job"]):
                 # Factual information
                 memory = StandaloneMemoryItem(
                     content=content,
@@ -575,12 +557,12 @@ class UnifiedMemoryRAGAgent:
                     memory_type=MemoryType.FACTUAL,
                     importance=ImportanceLevel.HIGH,
                     tags=["personal", "factual"],
-                    confidence=0.8)
+                    confidence=0.8,
+                )
                 extracted_memories.append(memory)
 
             elif any(
-                word in content.lower()
-                for word in ["i prefer", "i like", "i dislike", "i hate"]
+                word in content.lower() for word in ["i prefer", "i like", "i dislike", "i hate"]
             ):
                 # Preference information
                 preference = StandaloneMemoryItem(
@@ -589,7 +571,8 @@ class UnifiedMemoryRAGAgent:
                     memory_type=MemoryType.PREFERENCE,
                     importance=ImportanceLevel.MEDIUM,
                     tags=["preference"],
-                    confidence=0.7)
+                    confidence=0.7,
+                )
                 extracted_preferences.append(preference)
 
         # Add extracted memories
@@ -620,16 +603,12 @@ class UnifiedMemoryRAGAgent:
         tasks = []
         if "conversation" in memory_types:
             tasks.append(
-                (
-                    "conversation",
-                    self.conversation_memory.retrieve_conversation_context(query))
+                ("conversation", self.conversation_memory.retrieve_conversation_context(query))
             )
         if "factual" in memory_types:
             tasks.append(("factual", self.factual_memory.retrieve_facts(query)))
         if "preferences" in memory_types:
-            tasks.append(
-                ("preferences", self.preferences_memory.get_preferences_for(query))
-            )
+            tasks.append(("preferences", self.preferences_memory.get_preferences_for(query)))
 
         # Execute in parallel
         for memory_type, task in tasks:
@@ -655,14 +634,14 @@ class UnifiedMemoryRAGAgent:
 
     # Agent-as-tool pattern support
     @classmethod
-    def as_tool(
-        cls, name: str | None = None, description: str | None = None, **config_kwargs
-    ):
+    def as_tool(cls, name: str | None = None, description: str | None = None, **config_kwargs):
         """Convert this agent to a tool for use in other agents."""
         if name is None:
             name = "unified_memory"
         if description is None:
-            description = "Search and retrieve user memory including conversations, facts, and preferences"
+            description = (
+                "Search and retrieve user memory including conversations, facts, and preferences"
+            )
 
         config = MemoryRAGConfig(**config_kwargs)
         agent = cls(config)
@@ -680,29 +659,21 @@ class UnifiedMemoryRAGAgent:
                 conversations = context["conversation"]
                 if conversations:
                     formatted_context.append(
-                        f"Recent conversations: {
-                            len(conversations)} relevant messages"
+                        f"Recent conversations: {len(conversations)} relevant messages"
                     )
 
             if "factual" in context:
                 facts = context["factual"]
                 if facts:
                     fact_contents = [f["content"] for f in facts[:3]]
-                    formatted_context.append(
-                        f"Known facts: {
-                            '; '.join(fact_contents)}"
-                    )
+                    formatted_context.append(f"Known facts: {'; '.join(fact_contents)}")
 
             if "preferences" in context:
                 prefs = context["preferences"]
                 if isinstance(prefs, str) and prefs.strip():
                     formatted_context.append(f"User preferences: {prefs}")
 
-            return (
-                "\n".join(formatted_context)
-                if formatted_context
-                else "No relevant memory found"
-            )
+            return "\n".join(formatted_context) if formatted_context else "No relevant memory found"
 
         return memory_tool
 
@@ -716,12 +687,14 @@ def create_conversation_memory_agent(
     vector_store_provider: VectorStoreProvider = VectorStoreProvider.FAISS,
     embedding_model: str = "sentence-transformers/all-mpnet-base-v2",
     enable_time_weighting: bool = True,
-    name: str = "conversation_memory") -> ConversationMemoryAgent:
+    name: str = "conversation_memory",
+) -> ConversationMemoryAgent:
     """Factory function to create conversation memory agent."""
     config = MemoryRAGConfig(
         vector_store_provider=vector_store_provider,
         embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
-        enable_time_weighting=enable_time_weighting)
+        enable_time_weighting=enable_time_weighting,
+    )
 
     return ConversationMemoryAgent(config, name)
 
@@ -730,7 +703,8 @@ def create_unified_memory_agent(
     user_id: str | None = None,
     llm_config: AugLLMConfig = None,
     vector_store_provider: VectorStoreProvider = VectorStoreProvider.FAISS,
-    embedding_model: str = "sentence-transformers/all-mpnet-base-v2") -> UnifiedMemoryRAGAgent:
+    embedding_model: str = "sentence-transformers/all-mpnet-base-v2",
+) -> UnifiedMemoryRAGAgent:
     """Factory function to create unified memory agent."""
     if llm_config is None:
         llm_config = AugLLMConfig()
@@ -738,7 +712,8 @@ def create_unified_memory_agent(
     config = MemoryRAGConfig(
         llm_config=llm_config,
         vector_store_provider=vector_store_provider,
-        embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model))
+        embedding_model=HuggingFaceEmbeddingConfig(model=embedding_model),
+    )
 
     return UnifiedMemoryRAGAgent(config, user_id)
 
@@ -752,12 +727,8 @@ if __name__ == "__main__":
 
         # Add some conversation
         messages = [
-            HumanMessage(
-                content="Hi, I'm Alice and I work as a software engineer at Google"
-            ),
-            AIMessage(
-                content="Nice to meet you Alice! How long have you been at Google?"
-            ),
+            HumanMessage(content="Hi, I'm Alice and I work as a software engineer at Google"),
+            AIMessage(content="Nice to meet you Alice! How long have you been at Google?"),
             HumanMessage(
                 content="About 3 years now. I prefer morning meetings and I really dislike long emails."
             ),

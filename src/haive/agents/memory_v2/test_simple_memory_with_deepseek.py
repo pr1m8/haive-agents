@@ -25,25 +25,21 @@ async def test_simple_memory_agent_with_deepseek():
     # Step 2: Create AugLLMConfig with DeepSeek
     try:
         aug_config = AugLLMConfig(
-            llm_config=deepseek_config,
-            system_message="You are a helpful memory assistant.")
+            llm_config=deepseek_config, system_message="You are a helpful memory assistant."
+        )
     except Exception:
         return
 
     # Step 3: Try to import SimpleMemoryAgent
     try:
-
         pass
     except Exception:
-
         traceback.print_exc()
 
         # Try to import the problematic module directly
         try:
-
             pass
         except Exception:
-
             # Check if we can fix the import
 
             pass
@@ -55,7 +51,6 @@ async def test_simple_memory_agent_with_deepseek():
             name="test_deepseek_memory", engine=aug_config, user_id="test_user"
         )
     except Exception:
-
         traceback.print_exc()
         return
 
@@ -68,7 +63,6 @@ async def test_simple_memory_agent_with_deepseek():
         await agent.arun("Who is Alice?")
 
     except Exception:
-
         traceback.print_exc()
         return
 

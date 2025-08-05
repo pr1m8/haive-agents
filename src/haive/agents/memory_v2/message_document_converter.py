@@ -99,17 +99,15 @@ class MessageDocumentConverter:
         self,
         conversation_id: str | None = None,
         user_id: str | None = None,
-        session_id: str | None = None):
+        session_id: str | None = None,
+    ):
         """Initialize converter with context."""
         self.conversation_id = conversation_id or f"conv_{uuid4()}"
         self.user_id = user_id
         self.session_id = session_id or f"session_{uuid4()}"
         self.turn_counter = 0
 
-        logger.info(
-            f"Initialized MessageDocumentConverter for conversation {
-                self.conversation_id}"
-        )
+        logger.info(f"Initialized MessageDocumentConverter for conversation {self.conversation_id}")
 
     def convert_message(self, message: BaseMessage) -> TimestampedDocument:
         """Convert single message to timestamped document.
@@ -141,32 +139,29 @@ class MessageDocumentConverter:
             content_length=len(content),
             estimated_tokens=len(content.split()) * 1.3,
             # Rough token estimate
-            **content_analysis)
+            **content_analysis,
+        )
 
         # Create document metadata
         doc_metadata = {
             **message_metadata.model_dump(),
             "timestamp": message_metadata.timestamp.isoformat(),
             "source": "conversation_message",
-            "conversation_context": f"{
-                self.conversation_id}:turn_{
-                self.turn_counter}",
+            "conversation_context": f"{self.conversation_id}:turn_{self.turn_counter}",
         }
 
         # Create timestamped document
         doc = TimestampedDocument(page_content=content, metadata=doc_metadata)
 
         logger.debug(
-            f"Converted {message_type} message to document: {
-                len(content)} chars, turn {
-                self.turn_counter}"
+            f"Converted {message_type} message to document: {len(content)} chars, turn {
+                self.turn_counter
+            }"
         )
 
         return doc
 
-    def convert_messages(
-        self, messages: list[BaseMessage]
-    ) -> list[TimestampedDocument]:
+    def convert_messages(self, messages: list[BaseMessage]) -> list[TimestampedDocument]:
         """Convert multiple messages to timestamped documents.
 
         Args:
@@ -181,11 +176,7 @@ class MessageDocumentConverter:
             doc = self.convert_message(message)
             documents.append(doc)
 
-        logger.info(
-            f"Converted {
-                len(messages)} messages to {
-                len(documents)} timestamped documents"
-        )
+        logger.info(f"Converted {len(messages)} messages to {len(documents)} timestamped documents")
 
         return documents
 
@@ -222,9 +213,7 @@ class MessageDocumentConverter:
 
         return TimestampedDocument(page_content=summary, metadata=metadata)
 
-    def create_memory_document(
-        self, memory_item: EnhancedMemoryItem
-    ) -> TimestampedDocument:
+    def create_memory_document(self, memory_item: EnhancedMemoryItem) -> TimestampedDocument:
         """Convert memory item to timestamped document.
 
         Args:
@@ -417,10 +406,8 @@ class ConversationDocumentBatch:
         self.converter = MessageDocumentConverter(conversation_id, user_id)
 
     def process_conversation(
-        self,
-        messages: list[BaseMessage],
-        include_summary: bool = True,
-        chunk_size: int = 5) -> list[TimestampedDocument]:
+        self, messages: list[BaseMessage], include_summary: bool = True, chunk_size: int = 5
+    ) -> list[TimestampedDocument]:
         """Process entire conversation into documents.
 
         Args:
@@ -439,10 +426,7 @@ class ConversationDocumentBatch:
 
         # Create chunk summaries if requested
         if include_summary and len(messages) > chunk_size:
-            chunks = [
-                messages[i : i + chunk_size]
-                for i in range(0, len(messages), chunk_size)
-            ]
+            chunks = [messages[i : i + chunk_size] for i in range(0, len(messages), chunk_size)]
 
             for i, chunk in enumerate(chunks):
                 chunk_summary = self._create_chunk_summary(chunk, i + 1, len(chunks))
@@ -452,9 +436,7 @@ class ConversationDocumentBatch:
                 all_documents.append(summary_doc)
 
         logger.info(
-            f"Processed conversation: {
-                len(messages)} messages → {
-                len(all_documents)} documents"
+            f"Processed conversation: {len(messages)} messages → {len(all_documents)} documents"
         )
 
         return all_documents
@@ -469,9 +451,7 @@ class ConversationDocumentBatch:
         for msg in messages:
             content = str(msg.content) if hasattr(msg, "content") else str(msg)
             if len(content) > 50:  # Skip very short messages
-                key_messages.append(
-                    content[:100] + ("..." if len(content) > 100 else "")
-                )
+                key_messages.append(content[:100] + ("..." if len(content) > 100 else ""))
 
         summary = f"Conversation chunk {chunk_num}/{total_chunks}:\n"
         summary += "\n".join(f"- {msg}" for msg in key_messages[:3])
@@ -502,9 +482,8 @@ def extract_documents_by_timeframe(
 
 
 def sort_documents_by_relevance_and_time(
-    documents: list[TimestampedDocument],
-    time_weight: float = 0.3,
-    recency_decay: float = 0.1) -> list[TimestampedDocument]:
+    documents: list[TimestampedDocument], time_weight: float = 0.3, recency_decay: float = 0.1
+) -> list[TimestampedDocument]:
     """Sort documents by relevance and recency.
 
     Args:
@@ -520,9 +499,7 @@ def sort_documents_by_relevance_and_time(
         # Base relevance from importance
         importance_scores = {"critical": 1.0, "high": 0.8, "medium": 0.6, "low": 0.4}
 
-        base_score = importance_scores.get(
-            doc.metadata.get("importance", "medium"), 0.6
-        )
+        base_score = importance_scores.get(doc.metadata.get("importance", "medium"), 0.6)
 
         # Time decay factor
         age_hours = doc.age_hours
@@ -564,9 +541,7 @@ def create_document_index(documents: list[TimestampedDocument]) -> dict[str, Any
 
         # By importance
         importance = doc.metadata.get("importance", "medium")
-        index["by_importance"][importance] = (
-            index["by_importance"].get(importance, 0) + 1
-        )
+        index["by_importance"][importance] = index["by_importance"].get(importance, 0) + 1
 
         # By user
         user_id = doc.metadata.get("user_id", "unknown")
