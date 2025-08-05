@@ -11,7 +11,8 @@ from .agent import (
     setup_agent,
     update_wrapped_agent,
     wrap,
-    wrapped_agent)
+    wrapped_agent,
+)
 
 __all__ = [
     "MetaAgent",

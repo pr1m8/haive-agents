@@ -20,8 +20,8 @@ class MetaAgentState(StateSchema):
 
     # Meta state for embedded agent
     meta_state: MetaStateSchema = Field(
-        default_factory=MetaStateSchema,
-        description="Meta state managing embedded agent")
+        default_factory=MetaStateSchema, description="Meta state managing embedded agent"
+    )
 
     # Tracking
     execution_count: int = Field(default=0)
@@ -69,7 +69,8 @@ class MetaAgent(Agent, Generic[TAgent]):
         wrapped_agent: TAgent,
         name: str | None = None,
         engine: AugLLMConfig | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize meta agent with wrapped agent.
 
         Args:
@@ -113,7 +114,8 @@ class MetaAgent(Agent, Generic[TAgent]):
                 graph_context={
                     "wrapper_type": "MetaAgent",
                     "wrapped_type": type(wrapped).__name__,
-                })
+                },
+            )
 
     def build_graph(self) -> Any:
         """Build graph for meta agent execution.
@@ -134,9 +136,7 @@ class MetaAgent(Agent, Generic[TAgent]):
         # Add a single node that executes through meta state
         def meta_execute(state: dict[str, Any]):
             # Execute wrapped agent through meta state
-            result = self.state.meta_state.execute_agent(
-                input_data=state, update_state=True
-            )
+            result = self.state.meta_state.execute_agent(input_data=state, update_state=True)
             return result
 
         graph.add_node("execute", meta_execute)
@@ -255,12 +255,10 @@ class MetaAgent(Agent, Generic[TAgent]):
     def __repr__(self) -> str:
         """String representation."""
         wrapped = self.wrapped_agent
-        wrapped_info = (
-            f"{type(wrapped).__name__}({wrapped.name})" if wrapped else "None"
+        wrapped_info = f"{type(wrapped).__name__}({wrapped.name})" if wrapped else "None"
+        return (
+            f"MetaAgent[{wrapped_info}](name={self.name}, executions={self.state.execution_count})"
         )
-        return f"MetaAgent[{wrapped_info}](name={
-            self.name}, executions={
-            self.state.execution_count})"
 
 
 # Module-level convenience functions
