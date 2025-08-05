@@ -1,6 +1,6 @@
 """Module exports."""
 
-from agentic.agent import (
+from .agent import (
     AgenticRAGAgent,
     AgenticRAGState,
     DocumentGrade,
@@ -14,15 +14,15 @@ from agentic.agent import (
     rewrite_query,
     setup_agentic_rag,
     state_schema)
-from agentic.agentic_rag_agent import (
+from .agentic_rag_agent import (
     AgenticRAGAgent,
     AgenticRAGState,
     build_graph,
     create_default,
     web_search)
-from agentic.document_grader import create_document_grader_agent
-from agentic.query_rewriter import create_query_rewriter_agent
-from agentic.react_rag_agent import (
+from .document_grader import create_document_grader_agent
+from .query_rewriter import create_query_rewriter_agent
+from .react_rag_agent import (
     ReactRAGAgent,
     add_retriever_tool,
     build_graph,

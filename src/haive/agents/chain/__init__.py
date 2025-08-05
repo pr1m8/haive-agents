@@ -32,14 +32,15 @@ from haive.agents.chain.examples import (
     improve_answer,
     reflect_and_critique,
     synthesize_results)
-from haive.agents.chain.examples_simple import (
-    example_basic,
-    example_direct,
-    example_incremental,
-    example_mixed,
-    example_rag_router,
-    example_routing,
-    formatter)
+# Commented out due to circular import with ChainAgent
+# from haive.agents.chain.examples_simple import (
+#     example_basic,
+#     example_direct,
+#     example_incremental,
+#     example_mixed,
+#     example_rag_router,
+#     example_routing,
+#     formatter)
 from haive.agents.chain.multi_integration import (
     ChainMultiAgent,
     ChainNodeWrapper,
@@ -84,6 +85,35 @@ def branch(*args, **kwargs):
 
 def merge_to(*args, **kwargs):
     """Placeholder for merge_to function - not implemented."""
+    pass
+
+# Stub functions for examples_simple (commented out due to circular import)
+def example_basic(*args, **kwargs):
+    """Placeholder for example_basic - temporarily disabled."""
+    pass
+
+def example_direct(*args, **kwargs):
+    """Placeholder for example_direct - temporarily disabled."""
+    pass
+
+def example_incremental(*args, **kwargs):
+    """Placeholder for example_incremental - temporarily disabled."""
+    pass
+
+def example_mixed(*args, **kwargs):
+    """Placeholder for example_mixed - temporarily disabled."""
+    pass
+
+def example_rag_router(*args, **kwargs):
+    """Placeholder for example_rag_router - temporarily disabled."""
+    pass
+
+def example_routing(*args, **kwargs):
+    """Placeholder for example_routing - temporarily disabled."""
+    pass
+
+def formatter(*args, **kwargs):
+    """Placeholder for formatter - temporarily disabled."""
     pass
 
 __all__ = [

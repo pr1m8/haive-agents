@@ -6,7 +6,7 @@ output by appending a SimpleAgent. This approach is more modular and follows the
 principle of separation of concerns.
 """
 
-from typing import Any
+from typing import Any, Dict
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -22,8 +22,12 @@ from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import (
     RAG_ANSWER_STANDARD)
 from haive.agents.rag.models import HyDEResult
-from haive.agents.rag.utils.structured_output_enhancer import create_hyde_enhancer
 from haive.agents.simple.agent import SimpleAgent
+# from haive.agents.rag.utils.structured_output_enhancer import create_hyde_enhancer  # Commented out due to missing dependency
+
+def create_hyde_enhancer():
+    """Stub function for create_hyde_enhancer."""
+    return None
 
 # Improved HyDE generation prompt based on LangChain best practices
 ENHANCED_HYDE_PROMPT = ChatPromptTemplate.from_messages(

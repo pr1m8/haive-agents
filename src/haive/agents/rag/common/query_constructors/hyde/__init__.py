@@ -1,6 +1,6 @@
 """Module exports."""
 
-from hyde.enhanced_prompts import (
+from haive.agents.rag.common.query_constructors.hyde.enhanced_prompts import (
     HyDEPerspective,
     HyDEPromptConfig,
     HyDEPromptType,
@@ -9,7 +9,7 @@ from hyde.enhanced_prompts import (
     get_generation_prompt,
     get_perspective_prompt,
     select_prompt_automatically)
-from hyde.models import HyDEResponse, HypotheticalDocument, to_query
+from haive.agents.rag.common.query_constructors.hyde.models import HyDEResponse, HypotheticalDocument
 
 __all__ = [
     "HyDEPerspective",
@@ -22,5 +22,4 @@ __all__ = [
     "get_generation_prompt",
     "get_perspective_prompt",
     "select_prompt_automatically",
-    "to_query",
 ]

@@ -19,7 +19,7 @@ from langgraph.graph import END, START
 from pydantic import BaseModel, Field, model_validator
 from haive.agents.base.agent import Agent
 from haive.agents.common.utils.pydantic_prompt_utils import PromptStyle, PydanticPromptConfig, create_generation_and_parsing_prompts
-from haive.agents.multi.base import SequentialAgent
+from haive.agents.multi.enhanced_sequential_agent import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import RAG_ANSWER_STANDARD
 from haive.agents.rag.common.query_constructors.hyde.enhanced_prompts import HYDE_ANALYSIS_PROMPT, HyDEPerspective, HyDEPromptType, get_ensemble_prompt, get_generation_prompt, get_perspective_prompt, select_prompt_automatically
