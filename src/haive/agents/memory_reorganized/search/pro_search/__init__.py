@@ -1,6 +1,6 @@
 """Module exports."""
 
-from pro_search.agent import (
+from haive.agents.memory_reorganized.search.pro_search.agent import (
     ProSearchAgent,
     extract_contextual_insights,
     generate_follow_up_questions,
@@ -9,7 +9,7 @@ from pro_search.agent import (
     get_search_instructions,
     get_system_prompt,
     refine_query)
-from pro_search.models import (
+from haive.agents.memory_reorganized.search.pro_search.models import (
     Config,
     ContextualInsight,
     ProSearchRequest,

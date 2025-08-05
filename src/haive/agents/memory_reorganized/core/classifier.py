@@ -6,7 +6,7 @@ scoring, and metadata extraction using language models.
 
 import logging
 import re
-from typing import Any
+from typing import Any, Dict, List, Optional, Union
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
