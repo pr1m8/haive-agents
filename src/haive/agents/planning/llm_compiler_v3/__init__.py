@@ -12,7 +12,8 @@ from haive.agents.planning.llm_compiler_v3.models import (
     CompilerPlan,
     CompilerTask,
     ParallelExecutionResult,
-    TaskDependency)
+    TaskDependency,
+)
 from haive.agents.planning.llm_compiler_v3.state import LLMCompilerStateSchema
 
 __all__ = [

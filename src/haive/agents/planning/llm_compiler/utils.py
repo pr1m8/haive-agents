@@ -8,9 +8,7 @@ from .models import SchedulerInput, Task
 from langchain_core.messages import BaseMessage, FunctionMessage
 
 
-def schedule_pending_task(
-    task: Task, observations: dict[int, Any], retry_after: float = 0.2
-):
+def schedule_pending_task(task: Task, observations: dict[int, Any], retry_after: float = 0.2):
     while True:
         deps = task["dependencies"]
         if deps and (any(dep not in observations for dep in deps)):
@@ -51,13 +49,10 @@ def schedule_tasks(scheduler_input: SchedulerInput) -> list[FunctionMessage]:
             args_for_tasks[task["idx"]] = task["args"]
             if (
                 # Depends on other tasks
-                deps
-                and (any(dep not in observations for dep in deps))
+                deps and (any(dep not in observations for dep in deps))
             ):
                 futures.append(
-                    executor.submit(
-                        schedule_pending_task, task, observations, retry_after
-                    )
+                    executor.submit(schedule_pending_task, task, observations, retry_after)
                 )
             else:
                 # No deps or all deps satisfied
@@ -77,7 +72,8 @@ def schedule_tasks(scheduler_input: SchedulerInput) -> list[FunctionMessage]:
             name=name,
             content=str(obs),
             additional_kwargs={"idx": k, "args": task_args},
-            tool_call_id=k)
+            tool_call_id=k,
+        )
         for k, (name, task_args, obs) in new_observations.items()
     ]
     return tool_messages
@@ -101,9 +97,7 @@ def _execute_task(task, observations, config):
         if isinstance(args, str):
             resolved_args = _resolve_arg(args, observations)
         elif isinstance(args, dict):
-            resolved_args = {
-                key: _resolve_arg(val, observations) for key, val in args.items()
-            }
+            resolved_args = {key: _resolve_arg(val, observations) for key, val in args.items()}
         else:
             # This will likely fail
             resolved_args = args
@@ -149,14 +143,11 @@ def schedule_task(task_inputs, config: dict[str, Any]):
     try:
         observation = _execute_task(task, observations, config)
     except Exception:
-
         observation = traceback.format_exception()  # repr(e) +
     observations[task["idx"]] = observation
 
 
-def schedule_pending_task(
-    task: Task, observations: dict[int, Any], retry_after: float = 0.2
-):
+def schedule_pending_task(task: Task, observations: dict[int, Any], retry_after: float = 0.2):
     while True:
         deps = task["dependencies"]
         if deps and (any(dep not in observations for dep in deps)):

@@ -18,7 +18,8 @@ from .prompts import (
     format_monitor_prompt,
     format_planner_prompt,
     format_replanner_prompt,
-    format_validator_prompt)
+    format_validator_prompt,
+)
 
 
 class PlannerEngine:
@@ -136,11 +137,7 @@ class ValidatorEngine:
         """Format plan for validation prompt."""
         lines = [f"Goal: {plan.goal}", "Steps:"]
         for step in plan.steps:
-            deps = (
-                f" (depends on: {', '.join(step.dependencies)})"
-                if step.dependencies
-                else ""
-            )
+            deps = f" (depends on: {', '.join(step.dependencies)})" if step.dependencies else ""
             lines.append(f"- {step.id}: {step.description}{deps}")
         return "\n".join(lines)
 
@@ -259,14 +256,11 @@ class MonitorEngine:
     def _format_execution_state(self, plan: Plan) -> str:
         """Format execution state for monitoring."""
         lines = [
-            f"Plan: {
-                plan.id}",
-            f"Goal: {
-                plan.goal}",
-            f"Progress: {
-                plan.completed_steps}/{
-                    plan.total_steps} steps ({
-                        plan.progress_percentage:.1f}%)",
+            f"Plan: {plan.id}",
+            f"Goal: {plan.goal}",
+            f"Progress: {plan.completed_steps}/{plan.total_steps} steps ({
+                plan.progress_percentage:.1f
+            }%)",
             "\nStep Status:",
         ]
 
@@ -339,11 +333,7 @@ class ReplannerEngine:
             status = f"[{step.status.upper()}]"
             result = f" -> {step.result}" if step.result else ""
             error = f" (ERROR: {step.error})" if step.error else ""
-            lines.append(
-                f"{status} {
-                    step.id}: {
-                    step.description}{result}{error}"
-            )
+            lines.append(f"{status} {step.id}: {step.description}{result}{error}")
         return "\n".join(lines)
 
     def _parse_plan_response(self, response: str, goal: str) -> Plan:
@@ -366,7 +356,8 @@ class ReplannerEngine:
                     id=f"step_{step_count}",
                     type=StepType.TOOL if "tool:" in line.lower() else StepType.THINK,
                     description=line.strip(),
-                    dependencies=[])
+                    dependencies=[],
+                )
                 plan.steps.append(step)
 
         return plan

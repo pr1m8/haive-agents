@@ -18,12 +18,8 @@ class CompilerState(BaseModel):
 
     query: str = Field(default="", description="User's original query")
     plan: CompilerPlan | None = None
-    results: dict[int, Any] = Field(
-        default_factory=dict, description="Results from executed steps"
-    )
-    messages: list[BaseMessage] = Field(
-        default_factory=list, description="Conversation history"
-    )
+    results: dict[int, Any] = Field(default_factory=dict, description="Results from executed steps")
+    messages: list[BaseMessage] = Field(default_factory=list, description="Conversation history")
     replan_count: int = Field(
         default=0, description="Number of times replanning has been attempted"
     )

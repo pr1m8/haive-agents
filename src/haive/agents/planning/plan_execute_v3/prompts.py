@@ -49,7 +49,8 @@ planner_prompt = ChatPromptTemplate.from_messages(
             "human",
             """Objective: {objective}
 
-Please create a detailed execution plan for this objective. Structure your plan with clear steps, dependencies, and expected outputs."""),
+Please create a detailed execution plan for this objective. Structure your plan with clear steps, dependencies, and expected outputs.""",
+        ),
     ]
 )
 
@@ -103,7 +104,8 @@ Current Step to Execute:
 Previous Steps Results:
 {previous_results}
 
-Execute the current step using any necessary tools and provide a detailed result with observations."""),
+Execute the current step using any necessary tools and provide a detailed result with observations.""",
+        ),
     ]
 )
 
@@ -169,7 +171,8 @@ Key Findings:
 Plan Status:
 {plan_status}
 
-Based on the current state, evaluate progress and decide whether to continue, replan, or finalize with a comprehensive answer."""),
+Based on the current state, evaluate progress and decide whether to continue, replan, or finalize with a comprehensive answer.""",
+        ),
     ]
 )
 
@@ -231,7 +234,8 @@ Key Findings from Previous Attempt:
 Revision Notes:
 {revision_notes}
 
-Create a revised plan that addresses the issues encountered and builds on what was learned. Retain valuable results from completed steps."""),
+Create a revised plan that addresses the issues encountered and builds on what was learned. Retain valuable results from completed steps.""",
+        ),
     ]
 )
 

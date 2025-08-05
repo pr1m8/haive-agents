@@ -43,9 +43,7 @@ class CompilerTask(BaseModel):
     """
 
     tool_name: str = Field(description="Name of the tool to execute (or 'join')")
-    arguments: dict[str, Any] = Field(
-        default_factory=dict, description="Arguments for the tool"
-    )
+    arguments: dict[str, Any] = Field(default_factory=dict, description="Arguments for the tool")
     dependencies: list[TaskDependency] = Field(
         default_factory=list, description="Dependencies on other tasks"
     )
@@ -106,7 +104,6 @@ class CompilerStep(Step):
         # Also check for string references in arguments
         for arg_value in self.task.arguments.values():
             if isinstance(arg_value, str) and arg_value.startswith("$"):
-
                 match = re.match(r"\$\{?(\d+)\}?", arg_value)
                 if match:
                     dep_ids.append(int(match.group(1)))
@@ -149,7 +146,6 @@ class CompilerStep(Step):
         try:
             return tool.invoke(resolved_args)
         except Exception as e:
-
             return f"ERROR: {e!s}\n{traceback.format_exc()}"
 
 
@@ -159,9 +155,7 @@ class CompilerPlan(Plan):
     Handles DAG execution and dependency tracking.
     """
 
-    steps: list[CompilerStep] = Field(
-        default_factory=list, description="Steps in the plan"
-    )
+    steps: list[CompilerStep] = Field(default_factory=list, description="Steps in the plan")
 
     def get_executable_steps(self, results: dict[int, Any]) -> list[CompilerStep]:
         """Get steps that can be executed (all dependencies satisfied).
@@ -172,11 +166,7 @@ class CompilerPlan(Plan):
         Returns:
             List of executable steps
         """
-        return [
-            step
-            for step in self.steps
-            if not step.is_complete() and step.can_execute(results)
-        ]
+        return [step for step in self.steps if not step.is_complete() and step.can_execute(results)]
 
     def get_join_step(self) -> CompilerStep | None:
         """Get the join step (final step) if present."""
@@ -198,7 +188,8 @@ class CompilerPlan(Plan):
         description: str,
         tool_name: str,
         arguments: dict[str, Any],
-        dependencies: list[int | TaskDependency] | None = None) -> CompilerStep:
+        dependencies: list[int | TaskDependency] | None = None,
+    ) -> CompilerStep:
         """Add a new compiler step to the plan.
 
         Args:
@@ -226,9 +217,7 @@ class CompilerPlan(Plan):
         )
 
         # Create the step
-        step = CompilerStep(
-            id=step_id, description=description, task=task, status="not_started"
-        )
+        step = CompilerStep(id=step_id, description=description, task=task, status="not_started")
 
         # Add to plan
         self.steps.append(step)
@@ -255,9 +244,7 @@ class Replan(BaseModel):
 class JoinerOutput(BaseModel):
     """The joiner's decision: either provide a final response or request replanning."""
 
-    thought: str = Field(
-        description="The chain of thought reasoning for the selected action"
-    )
+    thought: str = Field(description="The chain of thought reasoning for the selected action")
     action: FinalResponse | Replan = Field(
         description="The action to take: either provide a final response or replan"
     )

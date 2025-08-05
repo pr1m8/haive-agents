@@ -11,9 +11,7 @@ from typing import Any
 from haive.core.schema.prebuilt.messages.messages_state import MessagesState
 from pydantic import Field, computed_field
 
-from haive.agents.planning.p_and_e.models import (
-    ExecutionResult,
-    Plan)
+from haive.agents.planning.p_and_e.models import ExecutionResult, Plan
 
 
 class PlanExecuteState(MessagesState):
@@ -68,9 +66,7 @@ class PlanExecuteState(MessagesState):
     )
 
     # Replanning tracking
-    replan_count: int = Field(
-        default=0, description="Number of times the plan has been revised"
-    )
+    replan_count: int = Field(default=0, description="Number of times the plan has been revised")
 
     replan_history: list[dict[str, Any]] = Field(
         default_factory=list, description="History of replanning decisions and reasons"
@@ -91,9 +87,7 @@ class PlanExecuteState(MessagesState):
         default_factory=datetime.now, description="When the execution started"
     )
 
-    completed_at: datetime | None = Field(
-        default=None, description="When the execution completed"
-    )
+    completed_at: datetime | None = Field(default=None, description="When the execution completed")
 
     @computed_field
     @property

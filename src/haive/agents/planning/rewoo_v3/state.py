@@ -32,8 +32,8 @@ class ReWOOV3State(MessagesState):
     # Agent results (stored as dicts for state persistence, typed through
     # models)
     reasoning_plan: dict[str, Any] | None = Field(
-        default=None,
-        description="Planner agent structured output with evidence placeholders")
+        default=None, description="Planner agent structured output with evidence placeholders"
+    )
     evidence_collection: dict[str, Any] | None = Field(
         default=None, description="Worker agent evidence collection results"
     )
@@ -48,9 +48,7 @@ class ReWOOV3State(MessagesState):
     solving_completed_at: datetime | None = Field(default=None)
 
     # Metadata
-    tools_available: list[str] = Field(
-        default_factory=list, description="Available tool names"
-    )
+    tools_available: list[str] = Field(default_factory=list, description="Available tool names")
     execution_metadata: dict[str, Any] = Field(default_factory=dict)
 
     # CRITICAL: Computed fields for ChatPromptTemplate placeholders
@@ -105,16 +103,14 @@ class ReWOOV3State(MessagesState):
             collection = EvidenceCollection(**self.evidence_collection)
             summary = f"Evidence Collection ID: {collection.collection_id}\n"
             summary += f"Collection Summary: {collection.summary}\n\n"
-            summary += f"Success Rate: {
-                collection.success_count}/{
-                collection.success_count + collection.failure_count}\n"
+            summary += f"Success Rate: {collection.success_count}/{
+                collection.success_count + collection.failure_count
+            }\n"
             summary += f"Tools Used: {', '.join(collection.tools_used)}\n\n"
 
             summary += "Collected Evidence:\n"
             for evidence in collection.evidence_items:
-                summary += f"\n{
-                    evidence.evidence_id} (Step: {
-                    evidence.step_id}):\n"
+                summary += f"\n{evidence.evidence_id} (Step: {evidence.step_id}):\n"
                 summary += f"Status: {evidence.status.value}\n"
                 summary += f"Source: {evidence.source}\n"
                 summary += f"Content: {evidence.content}\n"
@@ -159,9 +155,7 @@ class ReWOOV3State(MessagesState):
 
         # Add timing information
         if self.planning_completed_at:
-            planning_time = (
-                self.planning_completed_at - self.started_at
-            ).total_seconds()
+            planning_time = (self.planning_completed_at - self.started_at).total_seconds()
             context += f"Planning Time: {planning_time:.2f}s\n"
 
         if self.execution_completed_at and self.planning_completed_at:

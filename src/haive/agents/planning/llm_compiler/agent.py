@@ -15,7 +15,8 @@ from .models import (  # CompilerState,
     CompilerPlan,
     CompilerStep,
     FinalResponse,
-    JoinerOutput)
+    JoinerOutput,
+)
 from .output_parser import LLMCompilerPlanParser
 from .state import CompilerState
 from haive.core.engine.agent.agent import AgentArchitecture
@@ -111,7 +112,6 @@ class LLMCompilerAgent(AgentArchitecture):
             return {"plan": plan}
 
         except Exception:
-
             # Create a fallback plan
             plan = self._create_fallback_plan(state.query)
             return {"plan": plan}
@@ -128,9 +128,7 @@ class LLMCompilerAgent(AgentArchitecture):
 
             # Add parameter info if available
             if hasattr(tool, "args_schema") and tool.args_schema:
-                schema_props = getattr(tool.args_schema, "schema", {}).get(
-                    "properties", {}
-                )
+                schema_props = getattr(tool.args_schema, "schema", {}).get("properties", {})
                 if schema_props:
                     desc += "\nParameters:"
                     for param_name, param_info in schema_props.items():
@@ -184,9 +182,7 @@ class LLMCompilerAgent(AgentArchitecture):
             A simple fallback plan
         """
         # Create a basic plan with a search and join step
-        plan = CompilerPlan(
-            description=f"Fallback plan for: {query}", status="not_started"
-        )
+        plan = CompilerPlan(description=f"Fallback plan for: {query}", status="not_started")
 
         # Find a search tool
         search_tool = next(
@@ -199,7 +195,8 @@ class LLMCompilerAgent(AgentArchitecture):
                 step_id=1,
                 description=f"Search for information about: {query}",
                 tool_name=search_tool,
-                arguments={"query": query})
+                arguments={"query": query},
+            )
 
             # Add join step
             plan.add_compiler_step(
@@ -207,14 +204,13 @@ class LLMCompilerAgent(AgentArchitecture):
                 description="Combine results and generate final answer",
                 tool_name="join",
                 arguments={},
-                dependencies=[1])
+                dependencies=[1],
+            )
         else:
             # Just add a join step
             plan.add_compiler_step(
-                step_id=1,
-                description="Generate final answer",
-                tool_name="join",
-                arguments={})
+                step_id=1, description="Generate final answer", tool_name="join", arguments={}
+            )
 
         return plan
 
@@ -243,9 +239,7 @@ class LLMCompilerAgent(AgentArchitecture):
 
             # Submit tasks
             for step in executable_steps:
-                future = executor.submit(
-                    self._execute_step, step, state.results, self.tool_map
-                )
+                future = executor.submit(self._execute_step, step, state.results, self.tool_map)
                 futures[step.id] = future
 
             # Wait for all to complete
@@ -267,9 +261,7 @@ class LLMCompilerAgent(AgentArchitecture):
         results = {**state.results, **new_results}
 
         # Check if we're done
-        is_done = (
-            state.plan.get_join_step() and state.plan.get_join_step().id in new_results
-        )
+        is_done = state.plan.get_join_step() and state.plan.get_join_step().id in new_results
 
         return {"results": results, "is_done": is_done}
 
@@ -290,7 +282,6 @@ class LLMCompilerAgent(AgentArchitecture):
         try:
             return step.execute(tool_map, results)
         except Exception as e:
-
             return f"ERROR: {e!s}\n{traceback.format_exc()}"
 
     def join(self, state: CompilerState) -> dict[str, Any]:
@@ -339,7 +330,6 @@ class LLMCompilerAgent(AgentArchitecture):
             return {"replan": True, "replan_count": state.replan_count + 1}
 
         except Exception:
-
             # Default to providing a simple response
             response = self._generate_fallback_response(state)
             message = AIMessage(content=response)
@@ -405,11 +395,10 @@ class LLMCompilerAgent(AgentArchitecture):
         self.graph.add_conditional_edges(
             "execute_tasks",
             self.should_execute_more,
-            {"planner": "planner", "execute_tasks": "execute_tasks", "join": "join"})
+            {"planner": "planner", "execute_tasks": "execute_tasks", "join": "join"},
+        )
 
-        def should_replan(
-            state: CompilerState, config: dict[str, Any] | None = None
-        ) -> bool:
+        def should_replan(state: CompilerState, config: dict[str, Any] | None = None) -> bool:
             """Determines whether the agent should replan based on execution results.
 
             Args:
@@ -435,7 +424,8 @@ class LLMCompilerAgent(AgentArchitecture):
             {
                 True: "planner",  # If replanning needed, go back to planning
                 False: END,  # Otherwise, terminate execution
-            })
+            },
+        )
 
         # Add start edge
         self.graph.add_edge(START, "planner")
@@ -521,9 +511,7 @@ class LLMCompilerAgent(AgentArchitecture):
         initial_state = CompilerState(query=query)
 
         # Stream execution
-        yield from self.app.stream(
-            initial_state, config=self.config.runnable_config, debug=True
-        )
+        yield from self.app.stream(initial_state, config=self.config.runnable_config, debug=True)
 
 
 def main() -> None:

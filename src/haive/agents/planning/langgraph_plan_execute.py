@@ -21,9 +21,7 @@ from haive.agents.simple.agent import SimpleAgent
 class Plan(BaseModel):
     """A plan to follow for solving a task."""
 
-    steps: list[str] = Field(
-        description="Different steps to follow, should be in sorted order"
-    )
+    steps: list[str] = Field(description="Different steps to follow, should be in sorted order")
 
 
 class Response(BaseModel):
@@ -50,9 +48,7 @@ class PlanExecuteState(MessagesState):
     """State for the plan-and-execute agent."""
 
     plan: list[str] = Field(default_factory=list, description="The plan to follow")
-    past_steps: list[str] = Field(
-        default_factory=list, description="Steps that have been executed"
-    )
+    past_steps: list[str] = Field(default_factory=list, description="Steps that have been executed")
     response: str = Field(default="", description="Final response")
 
 
@@ -127,22 +123,16 @@ def create_langgraph_plan_execute(
 
     # Create planner agent (generates initial plan)
     planner = SimpleAgent(
-        name="planner",
-        model=model,
-        system_message=PLANNER_PROMPT,
-        structured_output_model=Plan)
+        name="planner", model=model, system_message=PLANNER_PROMPT, structured_output_model=Plan
+    )
 
     # Create executor agent (executes individual steps)
-    executor = ReactAgent(
-        name="agent", model=model, system_message=EXECUTOR_PROMPT, tools=tools
-    )
+    executor = ReactAgent(name="agent", model=model, system_message=EXECUTOR_PROMPT, tools=tools)
 
     # Create replanner agent (updates plan or provides final answer)
     replanner = SimpleAgent(
-        name="replan",
-        model=model,
-        system_message=REPLANNER_PROMPT,
-        structured_output_model=Act)
+        name="replan", model=model, system_message=REPLANNER_PROMPT, structured_output_model=Act
+    )
 
     # Define conditional branches following LangGraph pattern
     branches = [
@@ -159,7 +149,8 @@ def create_langgraph_plan_execute(
         entry_points=[planner],  # Start with planning
         name=name,
         state_schema_override=PlanExecuteState,
-        schema_build_mode=BuildMode.PARALLEL)
+        schema_build_mode=BuildMode.PARALLEL,
+    )
 
 
 # ============================================================================

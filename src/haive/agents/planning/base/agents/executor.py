@@ -14,25 +14,25 @@ from typing import List, Optional, Any
 
 class BaseExecutorAgent(ReactAgent):
     """Base executor agent with comprehensive execution capabilities.
-    
+
     This agent specializes in executing specific steps from plans, using tools
     effectively to accomplish tasks with precision and thoroughness.
-    
+
     Features:
     - Comprehensive search capabilities via Tavily
     - Detailed execution reporting
     - Tool usage optimization
     - Quality assurance and validation
     - Progress tracking and recommendations
-    
+
     Examples:
         Basic execution:
-        
+
             executor = BaseExecutorAgent()
             result = await executor.arun("Search for current AI trends")
-            
+
         Custom configuration:
-        
+
             executor = BaseExecutorAgent(
                 name="research_executor",
                 engine=AugLLMConfig(
@@ -44,9 +44,9 @@ class BaseExecutorAgent(ReactAgent):
             )
             result = await executor.arun("Execute research step 3")
     """
-    
+
     name: str = Field(default="base_executor")
-    
+
     engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             model="gpt-4o-mini",
@@ -203,22 +203,21 @@ For important execution steps:
 - Document decision-making process thoroughly
 - Provide comprehensive progress reporting
 
-Remember: Your role is to be the reliable execution partner who transforms planned steps into accomplished results. Every task you execute should be completed thoroughly, accurately, and with clear documentation of what was achieved and how."""
+Remember: Your role is to be the reliable execution partner who transforms planned steps into accomplished results. Every task you execute should be completed thoroughly, accurately, and with clear documentation of what was achieved and how.""",
         )
     )
-    
+
     tools: List = Field(
-        default_factory=lambda: [
-            tavily_search_tool,
-            tavily_qna, 
-            tavily_search_context
-        ]
+        default_factory=lambda: [tavily_search_tool, tavily_qna, tavily_search_context]
     )
-    
+
     prompt_template: ChatPromptTemplate = Field(
-        default_factory=lambda: ChatPromptTemplate.from_messages([
-            ("system", "System message configured in AugLLMConfig"),
-            ("human", """Execute this specific step from our plan:
+        default_factory=lambda: ChatPromptTemplate.from_messages(
+            [
+                ("system", "System message configured in AugLLMConfig"),
+                (
+                    "human",
+                    """Execute this specific step from our plan:
 
 **Step to Execute:** {step_description}
 
@@ -236,35 +235,37 @@ Remember: Your role is to be the reliable execution partner who transforms plann
 4. Document any issues encountered and recommendations for improvement
 5. Validate the quality and completeness of your work
 
-Execute this step thoroughly and report your results comprehensively.""")
-        ])
+Execute this step thoroughly and report your results comprehensively.""",
+                ),
+            ]
+        )
     )
 
 
 def create_base_executor(
     name: str = "base_executor",
-    model: str = "gpt-4o-mini", 
+    model: str = "gpt-4o-mini",
     temperature: float = 0.1,
-    additional_tools: Optional[List] = None
+    additional_tools: Optional[List] = None,
 ) -> BaseExecutorAgent:
     """Create a base executor agent with default configuration.
-    
+
     Args:
         name: Name for the executor agent
         model: LLM model to use for execution
         temperature: Sampling temperature (lower = more focused execution)
         additional_tools: Extra tools to add beyond default search tools
-        
+
     Returns:
         BaseExecutorAgent: Configured executor ready for task execution
-        
+
     Examples:
         Basic executor:
-        
+
             executor = create_base_executor()
-            
+
         Custom executor with additional tools:
-        
+
             from haive.tools.tools import calculator_tool
             executor = create_base_executor(
                 name="research_executor",
@@ -274,44 +275,35 @@ def create_base_executor(
             )
     """
     # Start with default search tools
-    default_tools = [
-        tavily_search_tool,
-        tavily_qna,
-        tavily_search_context
-    ]
-    
+    default_tools = [tavily_search_tool, tavily_qna, tavily_search_context]
+
     # Add any additional tools
     if additional_tools:
         default_tools.extend(additional_tools)
-    
+
     config = AugLLMConfig(
         model=model,
         temperature=temperature,
-        system_message=BaseExecutorAgent.__fields__['engine'].default.system_message
-    )
-    
-    return BaseExecutorAgent(
-        name=name,
-        engine=config,
-        tools=default_tools
+        system_message=BaseExecutorAgent.__fields__["engine"].default.system_message,
     )
 
+    return BaseExecutorAgent(name=name, engine=config, tools=default_tools)
 
-def create_research_executor(
-    name: str = "research_executor"
-) -> BaseExecutorAgent:
+
+def create_research_executor(name: str = "research_executor") -> BaseExecutorAgent:
     """Create a specialized executor optimized for research tasks.
-    
+
     This creates an executor specifically tuned for research and information
     gathering tasks with enhanced search capabilities.
-    
+
     Returns:
         BaseExecutorAgent: Executor optimized for research execution
     """
     research_config = AugLLMConfig(
         model="gpt-4o-mini",
         temperature=0.05,  # Very focused for research accuracy
-        system_message=BaseExecutorAgent.__fields__['engine'].default.system_message + """
+        system_message=BaseExecutorAgent.__fields__["engine"].default.system_message
+        + """
 
 ## Specialized Focus: Research and Information Gathering Excellence
 
@@ -333,11 +325,11 @@ You are particularly expert at executing research and information gathering task
 - Extract key insights and patterns from multiple sources
 - Organize complex information into clear, actionable summaries
 - Identify knowledge gaps and recommend additional research
-- Present findings in formats optimized for decision-making"""
+- Present findings in formats optimized for decision-making""",
     )
-    
+
     return BaseExecutorAgent(
         name=name,
         engine=research_config,
-        tools=[tavily_search_tool, tavily_qna, tavily_search_context]
+        tools=[tavily_search_tool, tavily_qna, tavily_search_context],
     )

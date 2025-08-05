@@ -214,9 +214,12 @@ Remember: Your role is to be the strategic thinking partner who transforms compl
 # PROMPT TEMPLATES - Human Message Templates
 # ============================================================================
 
-BASE_PLANNING_TEMPLATE = ChatPromptTemplate.from_messages([
-    ("system", BASE_PLANNING_SYSTEM_MESSAGE),
-    ("human", """Please create a comprehensive, strategic plan for this objective:
+BASE_PLANNING_TEMPLATE = ChatPromptTemplate.from_messages(
+    [
+        ("system", BASE_PLANNING_SYSTEM_MESSAGE),
+        (
+            "human",
+            """Please create a comprehensive, strategic plan for this objective:
 
 **Objective:** {objective}
 
@@ -234,11 +237,17 @@ BASE_PLANNING_TEMPLATE = ChatPromptTemplate.from_messages([
 4. Define success criteria and measurement approach
 5. Provide comprehensive reasoning for your planning decisions
 
-Focus on creating a plan that is both strategically sound and practically executable. Consider all constraints and available resources in your planning approach.""")
-])
+Focus on creating a plan that is both strategically sound and practically executable. Consider all constraints and available resources in your planning approach.""",
+        ),
+    ]
+)
 
-CONVERSATION_SUMMARY_TEMPLATE = ChatPromptTemplate.from_messages([
-    ("system", BASE_PLANNING_SYSTEM_MESSAGE + """
+CONVERSATION_SUMMARY_TEMPLATE = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            BASE_PLANNING_SYSTEM_MESSAGE
+            + """
 
 ## Specialized Focus: Conversation Analysis and Summary Planning
 
@@ -260,8 +269,11 @@ You are particularly expert at creating plans for conversation analysis tasks:
 - Plan for identifying explicit vs implicit information
 - Design approaches for capturing emotional tone and context
 - Plan for highlighting key decisions, agreements, and next steps
-- Consider how to present complex conversational data clearly"""),
-    ("human", """Create a comprehensive plan for analyzing and summarizing this conversation or communication:
+- Consider how to present complex conversational data clearly""",
+        ),
+        (
+            "human",
+            """Create a comprehensive plan for analyzing and summarizing this conversation or communication:
 
 **Analysis Objective:** {objective}
 
@@ -278,34 +290,42 @@ You are particularly expert at creating plans for conversation analysis tasks:
 4. Include validation and quality assurance steps
 5. Plan for actionable insights and recommendations
 
-Create a plan that ensures thorough, accurate, and valuable conversation analysis.""")
-])
+Create a plan that ensures thorough, accurate, and valuable conversation analysis.""",
+        ),
+    ]
+)
 
-SIMPLE_PLANNING_TEMPLATE = ChatPromptTemplate.from_messages([
-    ("system", BASE_PLANNING_SYSTEM_MESSAGE),
-    ("human", """Create a strategic plan for: {objective}
+SIMPLE_PLANNING_TEMPLATE = ChatPromptTemplate.from_messages(
+    [
+        ("system", BASE_PLANNING_SYSTEM_MESSAGE),
+        (
+            "human",
+            """Create a strategic plan for: {objective}
 
 Available tools: {available_tools}
 Time constraints: {time_constraints}
 Complexity level: {complexity_level}
 
-Provide a comprehensive plan with clear steps, reasoning, and success criteria.""")
-])
+Provide a comprehensive plan with clear steps, reasoning, and success criteria.""",
+        ),
+    ]
+)
 
 # ============================================================================
 # PROMPT UTILITIES
 # ============================================================================
 
+
 def create_planning_context(
     objective: str,
     available_tools: str = "",
-    time_constraints: str = "", 
+    time_constraints: str = "",
     complexity_level: str = "moderate",
     domain_focus: str = "",
-    additional_context: str = ""
+    additional_context: str = "",
 ) -> dict:
     """Create context dictionary for planning prompts.
-    
+
     Args:
         objective: The main planning objective
         available_tools: Tools and resources available
@@ -313,7 +333,7 @@ def create_planning_context(
         complexity_level: Desired complexity (simple, moderate, detailed, comprehensive)
         domain_focus: Specific domain or area of focus
         additional_context: Any additional context information
-        
+
     Returns:
         dict: Complete context for planning prompts
     """
@@ -323,25 +343,26 @@ def create_planning_context(
         "time_constraints": time_constraints or "No specific time constraints",
         "complexity_level": complexity_level,
         "domain_focus": domain_focus or "General planning",
-        "additional_context": additional_context or "No additional context provided"
+        "additional_context": additional_context or "No additional context provided",
     }
+
 
 def create_conversation_context(
     objective: str,
     participants: str = "",
     topic: str = "",
     scope: str = "",
-    analysis_goals: str = ""
+    analysis_goals: str = "",
 ) -> dict:
     """Create context dictionary for conversation analysis prompts.
-    
+
     Args:
         objective: The analysis objective
         participants: Who was involved in the conversation
         topic: Main topic or purpose of conversation
         scope: Length, format, or scope of conversation
         analysis_goals: What insights are needed from analysis
-        
+
     Returns:
         dict: Complete context for conversation analysis prompts
     """
@@ -350,5 +371,5 @@ def create_conversation_context(
         "participants": participants or "Not specified",
         "topic": topic or "General conversation",
         "scope": scope or "Standard conversation",
-        "analysis_goals": analysis_goals or "Comprehensive analysis and summary"
+        "analysis_goals": analysis_goals or "Comprehensive analysis and summary",
     }

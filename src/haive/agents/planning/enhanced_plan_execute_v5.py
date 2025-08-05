@@ -77,7 +77,7 @@ result = await agent.arun("Complex multi-step research task")
 The implementation uses custom Pydantic models designed specifically for planning:
 
 - **TaskPlan**: Structured plan with steps, priorities, and dependencies
-- **ExecutionStatus**: Rich execution tracking with success/failure states  
+- **ExecutionStatus**: Rich execution tracking with success/failure states
 - **PlanningDecision**: Intelligent routing decisions with reasoning
 - **PlanExecuteState**: Enhanced state management for multi-agent coordination
 
@@ -148,9 +148,7 @@ class TaskPlan(BaseModel):
     objective: str = Field(..., description="The main objective we're trying to achieve")
     steps: list[TaskStep] = Field(..., description="List of steps to execute in order")
     reasoning: str = Field(..., description="Explanation of the planning approach")
-    success_criteria: str = Field(
-        ..., description="How we'll know the objective has been achieved"
-    )
+    success_criteria: str = Field(..., description="How we'll know the objective has been achieved")
     estimated_total_time: Optional[str] = Field(
         default=None, description="Estimated total time for all steps"
     )
@@ -162,9 +160,7 @@ class ExecutionResult(BaseModel):
     step_id: str = Field(..., description="The step that was executed")
     success: bool = Field(..., description="Whether the step completed successfully")
     output: str = Field(..., description="The actual output/result from execution")
-    tools_used: list[str] = Field(
-        default_factory=list, description="Tools that were actually used"
-    )
+    tools_used: list[str] = Field(default_factory=list, description="Tools that were actually used")
     execution_time: Optional[str] = Field(
         default=None, description="How long the step took to execute"
     )
@@ -183,9 +179,7 @@ class PlanningDecision(BaseModel):
         ..., description="What action to take next"
     )
     reasoning: str = Field(..., description="Why this action was chosen")
-    confidence: float = Field(
-        ..., ge=0.0, le=1.0, description="Confidence in this decision (0-1)"
-    )
+    confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence in this decision (0-1)")
     final_answer: Optional[str] = Field(
         default=None, description="Final answer if the task is complete"
     )
@@ -202,9 +196,7 @@ class EnhancedPlanExecuteState(MultiAgentState):
 
     # Core planning fields
     original_objective: str = Field(default="", description="The original user request")
-    current_plan: Optional[TaskPlan] = Field(
-        default=None, description="The current execution plan"
-    )
+    current_plan: Optional[TaskPlan] = Field(default=None, description="The current execution plan")
     execution_results: list[ExecutionResult] = Field(
         default_factory=list, description="Results from completed steps"
     )
@@ -216,9 +208,7 @@ class EnhancedPlanExecuteState(MultiAgentState):
     completed_steps: list[str] = Field(
         default_factory=list, description="IDs of successfully completed steps"
     )
-    failed_steps: list[str] = Field(
-        default_factory=list, description="IDs of steps that failed"
-    )
+    failed_steps: list[str] = Field(default_factory=list, description="IDs of steps that failed")
     iteration_count: int = Field(default=0, description="Number of planning iterations")
     replan_count: int = Field(default=0, description="Number of times we've replanned")
 
@@ -231,9 +221,7 @@ class EnhancedPlanExecuteState(MultiAgentState):
     )
 
     # Metadata
-    planning_start_time: Optional[str] = Field(
-        default=None, description="When planning started"
-    )
+    planning_start_time: Optional[str] = Field(default=None, description="When planning started")
     total_execution_time: Optional[str] = Field(
         default=None, description="Total time for entire workflow"
     )
@@ -266,14 +254,19 @@ Focus on creating plans that are:
 - MEASURABLE: Success can be determined objectively
 """
 
-PLANNER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages([
-    ("system", PLANNER_SYSTEM_MESSAGE),
-    ("human", """Please create a detailed plan for this objective:
+PLANNER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
+    [
+        ("system", PLANNER_SYSTEM_MESSAGE),
+        (
+            "human",
+            """Please create a detailed plan for this objective:
 
 Objective: {objective}
 
-Consider what tools and resources might be needed, the logical sequence of steps, and provide clear success criteria. Be thorough but practical.""")
-])
+Consider what tools and resources might be needed, the logical sequence of steps, and provide clear success criteria. Be thorough but practical.""",
+        ),
+    ]
+)
 
 EXECUTOR_SYSTEM_MESSAGE = """You are a skilled task executor who specializes in carrying out specific steps in a larger plan with precision and attention to detail.
 
@@ -298,9 +291,12 @@ When using tools:
 - Report on the quality and usefulness of tool outputs
 """
 
-EXECUTOR_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages([
-    ("system", EXECUTOR_SYSTEM_MESSAGE),
-    ("human", """Execute this specific step from our plan:
+EXECUTOR_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
+    [
+        ("system", EXECUTOR_SYSTEM_MESSAGE),
+        (
+            "human",
+            """Execute this specific step from our plan:
 
 Step: {step_description}
 Expected Outcome: {expected_outcome}
@@ -309,8 +305,10 @@ Tools Available: {available_tools}
 Previous Steps Completed:
 {previous_results}
 
-Focus on this step only. Use tools as needed and provide detailed results.""")
-])
+Focus on this step only. Use tools as needed and provide detailed results.""",
+        ),
+    ]
+)
 
 REPLANNER_SYSTEM_MESSAGE = """You are an expert planning analyst who specializes in evaluating progress and making intelligent decisions about next steps.
 
@@ -334,9 +332,12 @@ Decision Guidelines:
 - REPLAN: The current approach needs adjustment or improvement
 """
 
-REPLANNER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages([
-    ("system", REPLANNER_SYSTEM_MESSAGE),
-    ("human", """Analyze the current progress and make a decision about next steps:
+REPLANNER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
+    [
+        ("system", REPLANNER_SYSTEM_MESSAGE),
+        (
+            "human",
+            """Analyze the current progress and make a decision about next steps:
 
 Original Objective: {objective}
 Current Plan: {current_plan}
@@ -346,20 +347,23 @@ Recent Execution Results: {recent_results}
 
 Current Status: {current_status}
 
-Based on this progress, what should we do next? Have we achieved the objective, should we continue with the current plan, or do we need to revise our approach?""")
-])
+Based on this progress, what should we do next? Have we achieved the objective, should we continue with the current plan, or do we need to revise our approach?""",
+        ),
+    ]
+)
 
 
 # ============================================================================
 # ROUTING LOGIC - Intelligent Decision Making
 # ============================================================================
 
+
 def should_continue_enhanced(state: EnhancedPlanExecuteState) -> str:
     """Enhanced routing logic based on current state and decisions."""
     # If we have a final answer, we're done
     if state.final_answer:
         return END
-    
+
     # If we have a decision from the replanner, follow it
     if state.last_decision:
         if state.last_decision.action == "complete":
@@ -368,15 +372,15 @@ def should_continue_enhanced(state: EnhancedPlanExecuteState) -> str:
             return "executor"
         elif state.last_decision.action == "replan":
             return "replanner"
-    
+
     # If we have a current plan and next step, continue execution
     if state.current_plan and state.current_step_id:
         return "executor"
-    
+
     # If we have results but no decision, go to replanner
     if state.execution_results:
         return "replanner"
-    
+
     # Default fallback
     return "replanner"
 
@@ -385,19 +389,20 @@ def get_next_step_id(plan: TaskPlan, completed_steps: list[str]) -> Optional[str
     """Get the next step ID to execute based on plan and completed steps."""
     if not plan or not plan.steps:
         return None
-    
+
     for step in plan.steps:
         if step.step_id not in completed_steps:
             # Check if all dependencies are completed
             if all(dep_id in completed_steps for dep_id in step.dependencies):
                 return step.step_id
-    
+
     return None
 
 
 # ============================================================================
 # ENHANCED MULTI-AGENT PLAN & EXECUTE SYSTEM
 # ============================================================================
+
 
 def create_enhanced_plan_execute_v5(
     name: str = "EnhancedPlanExecuteV5",
@@ -406,29 +411,30 @@ def create_enhanced_plan_execute_v5(
     replanner_config: Optional[AugLLMConfig] = None,
     tools: Optional[list] = None,
     max_iterations: int = 20,
-    enable_hooks: bool = True) -> EnhancedMultiAgentV4:
+    enable_hooks: bool = True,
+) -> EnhancedMultiAgentV4:
     """Create enhanced Plan & Execute agent using modern Haive patterns.
-    
+
     Args:
         name: Name for the multi-agent system
         planner_config: Configuration for the planning agent
-        executor_config: Configuration for the execution agent  
+        executor_config: Configuration for the execution agent
         replanner_config: Configuration for the replanning agent
         tools: Tools available to the executor
         max_iterations: Maximum planning iterations
         enable_hooks: Whether to enable the hooks system
-    
+
     Returns:
         EnhancedMultiAgentV4: Complete planning workflow system
-    
+
     Examples:
         Basic usage::
-        
+
             agent = create_enhanced_plan_execute_v5()
             result = await agent.arun("Calculate compound interest")
-        
+
         With custom configuration::
-        
+
             agent = create_enhanced_plan_execute_v5(
                 name="research_planner",
                 planner_config=AugLLMConfig(model="gpt-4", temperature=0.2),
@@ -440,28 +446,22 @@ def create_enhanced_plan_execute_v5(
     # Set default configurations
     if planner_config is None:
         planner_config = AugLLMConfig(
-            model="gpt-4o-mini",
-            temperature=0.3,
-            system_message=PLANNER_SYSTEM_MESSAGE
+            model="gpt-4o-mini", temperature=0.3, system_message=PLANNER_SYSTEM_MESSAGE
         )
-    
+
     if executor_config is None:
         executor_config = AugLLMConfig(
-            model="gpt-4o-mini", 
-            temperature=0.1,
-            system_message=EXECUTOR_SYSTEM_MESSAGE
+            model="gpt-4o-mini", temperature=0.1, system_message=EXECUTOR_SYSTEM_MESSAGE
         )
-    
+
     if replanner_config is None:
         replanner_config = AugLLMConfig(
-            model="gpt-4o-mini",
-            temperature=0.2,
-            system_message=REPLANNER_SYSTEM_MESSAGE
+            model="gpt-4o-mini", temperature=0.2, system_message=REPLANNER_SYSTEM_MESSAGE
         )
-    
+
     if tools is None:
         tools = []
-    
+
     # Create enhanced planning agent
     planner = SimpleAgentV3(
         name="planner",
@@ -469,20 +469,20 @@ def create_enhanced_plan_execute_v5(
         prompt_template=PLANNER_PROMPT_TEMPLATE,
         structured_output_model=TaskPlan,
         debug=True,
-        hooks_enabled=enable_hooks
+        hooks_enabled=enable_hooks,
     )
-    
+
     # Create enhanced execution agent
     executor = ReactAgent(
-        name="executor", 
+        name="executor",
         engine=executor_config,
         prompt_template=EXECUTOR_PROMPT_TEMPLATE,
         tools=tools,
         structured_output_model=ExecutionResult,
         debug=True,
-        hooks_enabled=enable_hooks
+        hooks_enabled=enable_hooks,
     )
-    
+
     # Create enhanced replanning agent
     replanner = SimpleAgentV3(
         name="replanner",
@@ -490,73 +490,62 @@ def create_enhanced_plan_execute_v5(
         prompt_template=REPLANNER_PROMPT_TEMPLATE,
         structured_output_model=PlanningDecision,
         debug=True,
-        hooks_enabled=enable_hooks
+        hooks_enabled=enable_hooks,
     )
-    
+
     # Create the multi-agent workflow
     workflow = EnhancedMultiAgentV4(
         name=name,
         agents=[planner, executor, replanner],
         execution_mode="conditional",
         build_mode="auto",
-        state_schema=EnhancedPlanExecuteState
+        state_schema=EnhancedPlanExecuteState,
     )
-    
+
     # Configure the workflow routing
     workflow.add_edge(START, "planner")
-    
+
     # Add intelligent conditional routing
     workflow.add_multi_conditional_edge(
         from_agent="planner",
         condition=lambda state: "executor" if state.current_plan else "replanner",
-        routes={
-            "executor": "executor",
-            "replanner": "replanner"
-        },
-        default="replanner"
+        routes={"executor": "executor", "replanner": "replanner"},
+        default="replanner",
     )
-    
+
     workflow.add_multi_conditional_edge(
-        from_agent="executor", 
+        from_agent="executor",
         condition=should_continue_enhanced,
-        routes={
-            "executor": "executor",
-            "replanner": "replanner",
-            END: END
-        },
-        default="replanner"
+        routes={"executor": "executor", "replanner": "replanner", END: END},
+        default="replanner",
     )
-    
+
     workflow.add_multi_conditional_edge(
         from_agent="replanner",
         condition=should_continue_enhanced,
-        routes={
-            "executor": "executor", 
-            "replanner": "replanner",
-            END: END
-        },
-        default=END
+        routes={"executor": "executor", "replanner": "replanner", END: END},
+        default=END,
     )
-    
+
     # Add monitoring hooks if enabled
     if enable_hooks:
         _add_monitoring_hooks(workflow)
-    
+
     logger.info(f"Created enhanced Plan & Execute V5: {name}")
     return workflow
 
 
 def _add_monitoring_hooks(workflow: EnhancedMultiAgentV4) -> None:
     """Add comprehensive monitoring hooks to the workflow."""
-    
+
     @workflow.before_run
     def log_workflow_start(context):
         logger.info(f"🚀 Starting enhanced planning workflow: {context.agent_name}")
-    
-    @workflow.after_run  
+
+    @workflow.after_run
     def log_workflow_complete(context):
         logger.info(f"✅ Planning workflow completed: {context.agent_name}")
-    
+
     @workflow.on_error
     def log_workflow_error(context):
         logger.error(f"❌ Planning workflow error: {context.error}")
@@ -566,30 +555,29 @@ def _add_monitoring_hooks(workflow: EnhancedMultiAgentV4) -> None:
 # CONVENIENCE FUNCTIONS
 # ============================================================================
 
+
 def create_simple_enhanced_plan_execute(tools: Optional[list] = None) -> EnhancedMultiAgentV4:
     """Create a simple enhanced plan and execute agent with default settings."""
-    return create_enhanced_plan_execute_v5(
-        name="SimpleEnhancedPlanExecute",
-        tools=tools or []
-    )
+    return create_enhanced_plan_execute_v5(name="SimpleEnhancedPlanExecute", tools=tools or [])
 
 
 def create_research_plan_execute(tools: Optional[list] = None) -> EnhancedMultiAgentV4:
     """Create a plan and execute agent optimized for research tasks."""
     from haive.tools import duckduckgo_search_tool
-    
+
     research_tools = [duckduckgo_search_tool]
     if tools:
         research_tools.extend(tools)
-    
+
     return create_enhanced_plan_execute_v5(
         name="ResearchPlanExecute",
         planner_config=AugLLMConfig(
             model="gpt-4o-mini",
             temperature=0.2,
-            system_message=PLANNER_SYSTEM_MESSAGE + "\n\nYou specialize in research planning. Focus on information gathering, analysis, and synthesis steps."
+            system_message=PLANNER_SYSTEM_MESSAGE
+            + "\n\nYou specialize in research planning. Focus on information gathering, analysis, and synthesis steps.",
         ),
-        tools=research_tools
+        tools=research_tools,
     )
 
 
@@ -599,15 +587,15 @@ def create_research_plan_execute(tools: Optional[list] = None) -> EnhancedMultiA
 
 if __name__ == "__main__":
     import asyncio
-    
+
     async def test_enhanced_plan_execute():
         """Test the enhanced plan and execute system."""
         # Create the agent
         agent = create_simple_enhanced_plan_execute()
-        
+
         # Test with a simple task
         result = await agent.arun("What is the capital of France and what is its population?")
         print(f"Result: {result}")
-    
+
     # Run the test
     asyncio.run(test_enhanced_plan_execute())

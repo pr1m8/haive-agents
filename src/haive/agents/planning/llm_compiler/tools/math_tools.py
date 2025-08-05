@@ -105,16 +105,13 @@ def get_math_tool(llm: ChatOpenAI):
     extractor = prompt | llm.with_structured_output(ExecuteCode)
 
     def calculate_expression(
-        problem: str,
-        context: list[str] | None = None,
-        config: RunnableConfig | None = None):
+        problem: str, context: list[str] | None = None, config: RunnableConfig | None = None
+    ):
         chain_input = {"problem": problem}
         if context:
             context_str = "\n".join(context)
             if context_str.strip():
-                context_str = _ADDITIONAL_CONTEXT_PROMPT.format(
-                    context=context_str.strip()
-                )
+                context_str = _ADDITIONAL_CONTEXT_PROMPT.format(context=context_str.strip())
                 chain_input["context"] = [SystemMessage(content=context_str)]
         code_model = extractor.invoke(chain_input, config)
         try:
@@ -123,6 +120,5 @@ def get_math_tool(llm: ChatOpenAI):
             return repr(e)
 
     return StructuredTool.from_function(
-        name="math",
-        func=calculate_expression,
-        description=_MATH_DESCRIPTION)
+        name="math", func=calculate_expression, description=_MATH_DESCRIPTION
+    )

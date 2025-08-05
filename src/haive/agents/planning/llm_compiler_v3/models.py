@@ -22,19 +22,19 @@ class ExecutionMode(str, Enum):
 class TaskDependency(BaseModel):
     """Represents a dependency between tasks."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     task_id: str = Field(
         ...,
         description="ID of the task this depends on",
-        examples=["task_1", "search_task", "analysis_step"])
+        examples=["task_1", "search_task", "analysis_step"],
+    )
 
     output_key: str | None = Field(
         default=None,
         description="Specific output key to reference (optional)",
-        examples=["result", "data", "summary"])
+        examples=["result", "data", "summary"],
+    )
 
     def resolve_reference(self) -> str:
         """Generate reference string for task dependency."""
@@ -46,29 +46,31 @@ class TaskDependency(BaseModel):
 class CompilerTask(BaseModel):
     """Individual task in the LLM Compiler execution DAG."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     task_id: str = Field(
         ...,
         description="Unique identifier for this task",
-        examples=["search_web", "analyze_data", "summarize_results"])
+        examples=["search_web", "analyze_data", "summarize_results"],
+    )
 
     tool_name: str = Field(
         ...,
         description="Name of the tool to execute",
-        examples=["web_search", "calculator", "code_executor", "join"])
+        examples=["web_search", "calculator", "code_executor", "join"],
+    )
 
     description: str = Field(
         ...,
         description="Human-readable description of the task",
-        examples=["Search for recent AI developments", "Calculate the sum"])
+        examples=["Search for recent AI developments", "Calculate the sum"],
+    )
 
     arguments: dict[str, Any] = Field(
         default_factory=dict,
         description="Arguments to pass to the tool",
-        examples=[{"query": "latest AI news"}, {"expression": "15 + 27"}])
+        examples=[{"query": "latest AI news"}, {"expression": "15 + 27"}],
+    )
 
     dependencies: list[TaskDependency] = Field(
         default_factory=list, description="Tasks this task depends on"
@@ -104,22 +106,19 @@ class CompilerTask(BaseModel):
 class CompilerPlan(BaseModel):
     """Execution plan containing tasks and their dependencies."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     plan_id: str = Field(
         ...,
         description="Unique identifier for this plan",
-        examples=["plan_20250121_001", "research_plan"])
+        examples=["plan_20250121_001", "research_plan"],
+    )
 
     description: str = Field(
         ..., description="High-level description of what this plan accomplishes"
     )
 
-    tasks: list[CompilerTask] = Field(
-        default_factory=list, description="Tasks in execution order"
-    )
+    tasks: list[CompilerTask] = Field(default_factory=list, description="Tasks in execution order")
 
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.HYBRID, description="How to execute tasks"
@@ -174,9 +173,7 @@ class CompilerPlan(BaseModel):
 class ParallelExecutionResult(BaseModel):
     """Result from executing a task."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     task_id: str = Field(..., description="ID of the executed task")
 
@@ -184,13 +181,9 @@ class ParallelExecutionResult(BaseModel):
 
     result: Any = Field(..., description="Task execution result")
 
-    error_message: str | None = Field(
-        default=None, description="Error message if execution failed"
-    )
+    error_message: str | None = Field(default=None, description="Error message if execution failed")
 
-    execution_time: float = Field(
-        ..., ge=0.0, description="Time taken to execute in seconds"
-    )
+    execution_time: float = Field(..., ge=0.0, description="Time taken to execute in seconds")
 
     tool_name: str = Field(..., description="Name of tool that was executed")
 
@@ -202,15 +195,14 @@ class ParallelExecutionResult(BaseModel):
 class CompilerInput(BaseModel):
     """Input to the LLM Compiler V3 Agent."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     query: str = Field(
         ...,
         min_length=1,
         description="The user's query or task to accomplish",
-        examples=["Find recent AI papers and summarize key findings"])
+        examples=["Find recent AI papers and summarize key findings"],
+    )
 
     context: dict[str, Any] | None = Field(
         default=None, description="Additional context for the task"
@@ -219,7 +211,8 @@ class CompilerInput(BaseModel):
     execution_preferences: dict[str, Any] | None = Field(
         default=None,
         description="Preferences for how to execute the plan",
-        examples=[{"max_parallel": 5, "timeout": 300}])
+        examples=[{"max_parallel": 5, "timeout": 300}],
+    )
 
     available_tools: list[str] | None = Field(
         default=None, description="Specific tools to use (if None, uses all available)"
@@ -229,9 +222,7 @@ class CompilerInput(BaseModel):
 class CompilerOutput(BaseModel):
     """Final output from the LLM Compiler V3 Agent."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     final_answer: str = Field(..., description="The final answer to the user's query")
 
@@ -241,19 +232,13 @@ class CompilerOutput(BaseModel):
         default_factory=list, description="Results from all executed tasks"
     )
 
-    total_execution_time: float = Field(
-        ..., ge=0.0, description="Total time for entire execution"
-    )
+    total_execution_time: float = Field(..., ge=0.0, description="Total time for entire execution")
 
-    tasks_executed: int = Field(
-        ..., ge=0, description="Number of tasks that were executed"
-    )
+    tasks_executed: int = Field(..., ge=0, description="Number of tasks that were executed")
 
     parallel_efficiency: float | None = Field(
-        default=None,
-        ge=0.0,
-        le=1.0,
-        description="Efficiency score for parallel execution (0-1)")
+        default=None, ge=0.0, le=1.0, description="Efficiency score for parallel execution (0-1)"
+    )
 
     reasoning_trace: list[str] = Field(
         default_factory=list, description="Step-by-step reasoning trace"
@@ -283,15 +268,11 @@ class CompilerOutput(BaseModel):
 class ReplanRequest(BaseModel):
     """Request for replanning when initial plan fails."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     feedback: str = Field(..., description="Analysis of why replanning is needed")
 
-    failed_tasks: list[str] = Field(
-        default_factory=list, description="IDs of tasks that failed"
-    )
+    failed_tasks: list[str] = Field(default_factory=list, description="IDs of tasks that failed")
 
     partial_results: dict[str, Any] = Field(
         default_factory=dict, description="Results from tasks that succeeded"

@@ -24,12 +24,7 @@ from haive.agents.multi.enhanced_multi_agent_v3 import EnhancedMultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
-from .models import (
-    EvidenceCollection,
-    ReWOOPlan,
-    ReWOOSolution,
-    ReWOOV3Input,
-    ReWOOV3Output)
+from .models import EvidenceCollection, ReWOOPlan, ReWOOSolution, ReWOOV3Input, ReWOOV3Output
 from .prompts import planner_prompt, solver_prompt, worker_prompt
 from .state import ReWOOV3State
 
@@ -53,7 +48,8 @@ class ReWOOV3Agent:
         config: AugLLMConfig,
         tools: list | None = None,
         max_steps: int = 10,
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize ReWOO V3 Agent.
 
         Args:
@@ -81,7 +77,8 @@ class ReWOOV3Agent:
             },
             execution_mode="sequential",  # planner → worker → solver
             state_schema=ReWOOV3State,
-            **kwargs)
+            **kwargs,
+        )
 
         # Track execution statistics
         self.execution_stats = {
@@ -102,9 +99,8 @@ class ReWOOV3Agent:
         planner_config.prompt_template = planner_prompt  # NOT system_message!
 
         self.planner = SimpleAgent(
-            name=f"{self.name}_planner",
-            engine=planner_config,
-            structured_output_model=ReWOOPlan)
+            name=f"{self.name}_planner", engine=planner_config, structured_output_model=ReWOOPlan
+        )
 
         # Worker Agent: ReactAgent with all available tools
         worker_config = AugLLMConfig.model_copy(self.config)
@@ -114,16 +110,16 @@ class ReWOOV3Agent:
             name=f"{self.name}_worker",
             engine=worker_config,
             tools=self.tools,
-            structured_output_model=EvidenceCollection)
+            structured_output_model=EvidenceCollection,
+        )
 
         # Solver Agent: SimpleAgent for evidence synthesis
         solver_config = AugLLMConfig.model_copy(self.config)
         solver_config.prompt_template = solver_prompt
 
         self.solver = SimpleAgent(
-            name=f"{self.name}_solver",
-            engine=solver_config,
-            structured_output_model=ReWOOSolution)
+            name=f"{self.name}_solver", engine=solver_config, structured_output_model=ReWOOSolution
+        )
 
     async def arun(
         self,
@@ -131,7 +127,8 @@ class ReWOOV3Agent:
         context: str | None = None,
         max_steps: int | None = None,
         tools_preference: list[str] | None = None,
-        **kwargs) -> ReWOOV3Output:
+        **kwargs,
+    ) -> ReWOOV3Output:
         """Execute ReWOO V3 workflow asynchronously.
 
         Args:
@@ -151,7 +148,8 @@ class ReWOOV3Agent:
             query=query,
             context=context,
             max_steps=max_steps or self.max_steps,
-            tools_preference=tools_preference)
+            tools_preference=tools_preference,
+        )
 
         # Create initial state with tool availability
         initial_state = ReWOOV3State(
@@ -159,7 +157,8 @@ class ReWOOV3Agent:
             messages=[{"role": "user", "content": query}],
             tools_available=[
                 tool.name if hasattr(tool, "name") else str(tool) for tool in self.tools
-            ])
+            ],
+        )
 
         # Add context if provided
         if context:
@@ -181,18 +180,10 @@ class ReWOOV3Agent:
             execution_time = 0.0
             solving_time = 0.0
 
-            if (
-                hasattr(result, "planning_completed_at")
-                and result.planning_completed_at
-            ):
-                planning_time = (
-                    result.planning_completed_at - result.started_at
-                ).total_seconds()
+            if hasattr(result, "planning_completed_at") and result.planning_completed_at:
+                planning_time = (result.planning_completed_at - result.started_at).total_seconds()
 
-            if (
-                hasattr(result, "execution_completed_at")
-                and result.execution_completed_at
-            ):
+            if hasattr(result, "execution_completed_at") and result.execution_completed_at:
                 execution_time = (
                     result.execution_completed_at - result.planning_completed_at
                 ).total_seconds()
@@ -224,7 +215,8 @@ class ReWOOV3Agent:
                 evidence_summary="No evidence collected due to error",
                 limitations=[f"Execution error: {e!s}"],
                 plan_id="error",
-                solution_id="error")
+                solution_id="error",
+            )
 
     def run(
         self,
@@ -232,7 +224,8 @@ class ReWOOV3Agent:
         context: str | None = None,
         max_steps: int | None = None,
         tools_preference: list[str] | None = None,
-        **kwargs) -> ReWOOV3Output:
+        **kwargs,
+    ) -> ReWOOV3Output:
         """Synchronous wrapper for ReWOO V3 execution.
 
         Args:
@@ -245,9 +238,7 @@ class ReWOOV3Agent:
         Returns:
             Structured output with ReWOO results
         """
-        return asyncio.run(
-            self.arun(query, context, max_steps, tools_preference, **kwargs)
-        )
+        return asyncio.run(self.arun(query, context, max_steps, tools_preference, **kwargs))
 
     def _format_output(
         self,
@@ -256,7 +247,8 @@ class ReWOOV3Agent:
         total_time: float,
         planning_time: float,
         execution_time: float,
-        solving_time: float) -> ReWOOV3Output:
+        solving_time: float,
+    ) -> ReWOOV3Output:
         """Format Enhanced MultiAgent V3 result into structured output.
 
         Args:
@@ -353,4 +345,5 @@ class ReWOOV3Agent:
             evidence_summary=evidence_summary,
             limitations=limitations,
             plan_id=plan_id,
-            solution_id=solution_id)
+            solution_id=solution_id,
+        )

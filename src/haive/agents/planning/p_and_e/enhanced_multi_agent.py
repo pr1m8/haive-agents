@@ -29,7 +29,8 @@ class EnhancedMultiAgent(MultiAgent):
         branches: dict[str, dict[str, Any]] | None = None,
         schema_composition_method: str = "smart",
         execution_mode: str = "conditional",
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize enhanced multi-agent with direct configuration.
 
         Args:
@@ -58,10 +59,7 @@ class EnhancedMultiAgent(MultiAgent):
         if self._state_schema_override:
             # Use provided state schema instead of composing
             self.state_schema = self._state_schema_override
-            logger.info(
-                f"Using provided state schema: {
-                    self.state_schema.__name__}"
-            )
+            logger.info(f"Using provided state schema: {self.state_schema.__name__}")
         else:
             # Use parent's schema composition
             build_mode = self._get_build_mode()
@@ -71,7 +69,8 @@ class EnhancedMultiAgent(MultiAgent):
                 name=f"{self.__class__.__name__}State",
                 include_meta=self.include_meta,
                 separation=self.schema_separation,
-                build_mode=build_mode)
+                build_mode=build_mode,
+            )
             logger.info(f"Composed state schema: {self.state_schema.__name__}")
 
         # Store private schemas for each agent
@@ -89,11 +88,7 @@ class EnhancedMultiAgent(MultiAgent):
 class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
     """Plan and Execute multi-agent using enhanced base."""
 
-    def __init__(
-        self,
-        agents: list[Any],
-        state_schema: type[StateSchema] | None = None,
-        **kwargs):
+    def __init__(self, agents: list[Any], state_schema: type[StateSchema] | None = None, **kwargs):
         """Initialize Plan and Execute multi-agent.
 
         Args:
@@ -103,7 +98,6 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
         """
         # Default state schema
         if state_schema is None:
-
             state_schema = PlanExecuteState
 
         # Define Plan & Execute branches
@@ -133,7 +127,8 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
             state_schema=state_schema,
             branches=branches,
             execution_mode="conditional",
-            **kwargs)
+            **kwargs,
+        )
 
     def build_custom_graph(self, graph: BaseGraph) -> BaseGraph:
         """Build the Plan and Execute workflow graph."""
@@ -170,9 +165,8 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
         # Conditional routing after execution
         branch_config = self.branches["process_execution"]
         graph.add_conditional_edges(
-            "process_execution",
-            branch_config["condition"],
-            branch_config["destinations"])
+            "process_execution", branch_config["condition"], branch_config["destinations"]
+        )
 
         # Replan workflow
         graph.add_edge("prepare_replan", replanner_node)

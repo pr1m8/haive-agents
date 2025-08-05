@@ -42,7 +42,8 @@ Thought: Now I need to find population data
 ```
 
 Your plan should accomplish the user's goal efficiently in as few steps as possible.
-"""),
+""",
+        ),
         ("user", "{query}"),
     ]
 )
@@ -87,7 +88,8 @@ Thought: The previous plan found GDP and population data but failed to calculate
 ```
 
 Your plan should efficiently solve the remaining parts of the user's query.
-"""),
+""",
+        ),
         ("user", "{query}"),
         ("system", "{feedback}"),
     ]
@@ -119,7 +121,8 @@ When providing a final answer:
 - Address all parts of the user's original query
 
 Be decisive - either provide a complete answer or explicitly request additional specific information.
-"""),
+""",
+        ),
         (
             "user",
             """
@@ -132,16 +135,15 @@ Results:
 {results}
 
 Based on these results, can I provide a complete answer or do I need more information?
-"""),
+""",
+        ),
     ]
 )
 
 # Default planner LLM configuration
 default_planner_config = AugLLMConfig(
     name="llm_compiler_planner",
-    llm_config=AzureLLMConfig(
-        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
-    ),
+    llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}),
     prompt_template=planner_prompt,
     tools=None,  # Tools are registered separately
 )
@@ -149,9 +151,7 @@ default_planner_config = AugLLMConfig(
 # Default replanner LLM configuration
 default_replanner_config = AugLLMConfig(
     name="llm_compiler_replanner",
-    llm_config=AzureLLMConfig(
-        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
-    ),
+    llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}),
     prompt_template=replanner_prompt,
     tools=None,  # Tools are registered separately
 )
@@ -159,9 +159,8 @@ default_replanner_config = AugLLMConfig(
 # Default joiner LLM configuration
 default_joiner_config = AugLLMConfig(
     name="llm_compiler_joiner",
-    llm_config=AzureLLMConfig(
-        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 2048}
-    ),
+    llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 2048}),
     prompt_template=joiner_prompt,
     structured_output_model=None,  # Will be set in agent
-    structured_output_params={"method": "function_calling"})
+    structured_output_params={"method": "function_calling"},
+)

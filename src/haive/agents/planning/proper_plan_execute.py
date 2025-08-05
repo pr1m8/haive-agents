@@ -103,7 +103,8 @@ from haive.agents.planning.p_and_e.models import Act, ExecutionResult, Plan, Ste
 from haive.agents.planning.p_and_e.prompts import (
     EXECUTOR_SYSTEM_MESSAGE,
     PLANNER_SYSTEM_MESSAGE,
-    REPLAN_SYSTEM_MESSAGE)
+    REPLAN_SYSTEM_MESSAGE,
+)
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
@@ -241,7 +242,8 @@ def create_proper_plan_execute(
     planner_model: str = "gpt-4o-mini",
     executor_model: str = "gpt-4o-mini",
     replanner_model: str = "gpt-4o-mini",
-    tools: list | None = None) -> MultiAgentBase:
+    tools: list | None = None,
+) -> MultiAgentBase:
     """Create proper Plan & Execute agent using existing p_and_e components.
 
     Args:
@@ -263,7 +265,8 @@ def create_proper_plan_execute(
         model=planner_model,
         system_message=PLANNER_SYSTEM_MESSAGE,
         structured_output_model=Plan,
-        post_process_func=process_planner_output)
+        post_process_func=process_planner_output,
+    )
 
     # Create executor agent using existing prompts
     executor = ReactAgent(
@@ -271,7 +274,8 @@ def create_proper_plan_execute(
         model=executor_model,
         system_message=EXECUTOR_SYSTEM_MESSAGE,
         tools=tools,
-        post_process_func=process_executor_output)
+        post_process_func=process_executor_output,
+    )
 
     # Create replanner agent using existing prompts and models
     replanner = SimpleAgent(
@@ -279,15 +283,13 @@ def create_proper_plan_execute(
         model=replanner_model,
         system_message=REPLAN_SYSTEM_MESSAGE,
         structured_output_model=Act,
-        post_process_func=process_replanner_output)
+        post_process_func=process_replanner_output,
+    )
 
     # Define branches following LangGraph pattern
     branches = [
         # After execution: continue, replan, or end
-        (
-            executor,
-            should_continue,
-            {"agent": executor, "replan": replanner, "__end__": "__end__"}),
+        (executor, should_continue, {"agent": executor, "replan": replanner, "__end__": "__end__"}),
         # After replanning: continue or end
         (replanner, route_after_replan, {"agent": executor, "__end__": "__end__"}),
     ]
@@ -299,7 +301,8 @@ def create_proper_plan_execute(
         entry_points=[planner],  # Start with planning
         name=name,
         state_schema_override=PlanExecuteState,
-        schema_build_mode=BuildMode.PARALLEL)
+        schema_build_mode=BuildMode.PARALLEL,
+    )
 
 
 # ============================================================================
@@ -310,7 +313,6 @@ def create_proper_plan_execute(
 def create_plan_execute_with_search(tools: list | None = None) -> MultiAgentBase:
     """Create Plan & Execute agent with search tools."""
     if tools is None:
-
         tools = [duckduckgo_search_tool]
 
     return create_proper_plan_execute(name="PlanExecuteWithSearch", tools=tools)

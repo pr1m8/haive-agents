@@ -18,12 +18,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, TypeVar, Union
 
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-    computed_field,
-    field_validator)
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
 
 # ============================================================================
 # ENUMS
@@ -179,16 +174,12 @@ class BaseStep(BaseModel):
     # ========================================================================
 
     id: str = Field(
-        default_factory=lambda: f"step_{uuid.uuid4().hex[:8]}",
-        description="Unique identifier")
-
-    name: str = Field(
-        ..., description="Human-readable name", min_length=1, max_length=200
+        default_factory=lambda: f"step_{uuid.uuid4().hex[:8]}", description="Unique identifier"
     )
 
-    description: str = Field(
-        default="", description="Detailed description", max_length=1000
-    )
+    name: str = Field(..., description="Human-readable name", min_length=1, max_length=200)
+
+    description: str = Field(default="", description="Detailed description", max_length=1000)
 
     step_type: StepType = Field(default=StepType.ACTION, description="Type of step")
 
@@ -206,13 +197,9 @@ class BaseStep(BaseModel):
     # DATA
     # ========================================================================
 
-    input_data: dict[str, Any] | None = Field(
-        default=None, description="Input data/parameters"
-    )
+    input_data: dict[str, Any] | None = Field(default=None, description="Input data/parameters")
 
-    output_data: dict[str, Any] | None = Field(
-        default=None, description="Output/results"
-    )
+    output_data: dict[str, Any] | None = Field(default=None, description="Output/results")
 
     # ========================================================================
     # DEPENDENCIES
@@ -226,13 +213,9 @@ class BaseStep(BaseModel):
     # METADATA
     # ========================================================================
 
-    metadata: StepMetadata = Field(
-        default_factory=StepMetadata, description="Execution metadata"
-    )
+    metadata: StepMetadata = Field(default_factory=StepMetadata, description="Execution metadata")
 
-    priority: int = Field(
-        default=5, description="Execution priority (1-10)", ge=1, le=10
-    )
+    priority: int = Field(default=5, description="Execution priority (1-10)", ge=1, le=10)
 
     # ========================================================================
     # VALIDATION
@@ -258,13 +241,15 @@ class BaseStep(BaseModel):
         step_id: str,
         dependency_type: DependencyType = DependencyType.HARD,
         condition: str | None = None,
-        required_output: str | None = None) -> None:
+        required_output: str | None = None,
+    ) -> None:
         """Add a dependency to this step."""
         dep = Dependency(
             step_id=step_id,
             dependency_type=dependency_type,
             condition=condition,
-            required_output=required_output)
+            required_output=required_output,
+        )
         self.dependencies.append(dep)
 
     def is_ready(self, completed_steps: dict[str, Any]) -> bool:
@@ -344,9 +329,7 @@ class ActionStep(BaseStep):
 
     tool_name: str | None = Field(default=None, description="Name of tool to execute")
 
-    tool_args: dict[str, Any] | None = Field(
-        default=None, description="Arguments for tool"
-    )
+    tool_args: dict[str, Any] | None = Field(default=None, description="Arguments for tool")
 
     expected_output_schema: dict[str, Any] | None = Field(
         default=None, description="Expected structure of output"
@@ -372,13 +355,9 @@ class RecursiveStep(BaseStep):
 
     sub_objective: str = Field(..., description="Objective for sub-plan")
 
-    max_depth: int = Field(
-        default=3, description="Maximum recursion depth", ge=1, le=10
-    )
+    max_depth: int = Field(default=3, description="Maximum recursion depth", ge=1, le=10)
 
-    sub_plan_id: str | None = Field(
-        default=None, description="ID of generated sub-plan"
-    )
+    sub_plan_id: str | None = Field(default=None, description="ID of generated sub-plan")
 
 
 class ConditionalStep(BaseStep):
@@ -388,13 +367,9 @@ class ConditionalStep(BaseStep):
 
     condition: str = Field(..., description="Condition to evaluate")
 
-    then_steps: list[str] = Field(
-        default_factory=list, description="Steps to execute if true"
-    )
+    then_steps: list[str] = Field(default_factory=list, description="Steps to execute if true")
 
-    else_steps: list[str] = Field(
-        default_factory=list, description="Steps to execute if false"
-    )
+    else_steps: list[str] = Field(default_factory=list, description="Steps to execute if false")
 
 
 class ParallelStep(BaseStep):
@@ -412,9 +387,7 @@ class ParallelStep(BaseStep):
 
 
 # Type alias for any step type
-AnyStep = Union[
-    BaseStep, ActionStep, ResearchStep, RecursiveStep, ConditionalStep, ParallelStep
-]
+AnyStep = Union[BaseStep, ActionStep, ResearchStep, RecursiveStep, ConditionalStep, ParallelStep]
 
 
 # ============================================================================
@@ -436,8 +409,8 @@ class BasePlan(BaseModel):
     # ========================================================================
 
     id: str = Field(
-        default_factory=lambda: f"plan_{uuid.uuid4().hex[:8]}",
-        description="Unique plan identifier")
+        default_factory=lambda: f"plan_{uuid.uuid4().hex[:8]}", description="Unique plan identifier"
+    )
 
     name: str = Field(..., description="Plan name")
 
@@ -457,9 +430,7 @@ class BasePlan(BaseModel):
 
     updated_at: datetime = Field(default_factory=datetime.now)
 
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional plan metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional plan metadata")
 
     # ========================================================================
     # COMPUTED PROPERTIES
@@ -507,9 +478,7 @@ class BasePlan(BaseModel):
     @property
     def is_complete(self) -> bool:
         """Check if plan is complete."""
-        return all(
-            s.status in [StepStatus.COMPLETED, StepStatus.SKIPPED] for s in self.steps
-        )
+        return all(s.status in [StepStatus.COMPLETED, StepStatus.SKIPPED] for s in self.steps)
 
     @computed_field
     @property
@@ -630,9 +599,7 @@ class BasePlan(BaseModel):
 class SequentialPlan(BasePlan):
     """Traditional sequential execution plan."""
 
-    def add_sequential_step(
-        self, step: AnyStep, depends_on_previous: bool = True
-    ) -> None:
+    def add_sequential_step(self, step: AnyStep, depends_on_previous: bool = True) -> None:
         """Add step with automatic dependency on previous step."""
         if depends_on_previous and self.steps:
             previous_step = self.steps[-1]
@@ -666,9 +633,7 @@ class DAGPlan(BasePlan):
             rec_stack.remove(step_id)
             return False
 
-        return all(
-            not (step.id not in visited and has_cycle(step.id)) for step in self.steps
-        )
+        return all(not (step.id not in visited and has_cycle(step.id)) for step in self.steps)
 
 
 class AdaptivePlan(BasePlan):

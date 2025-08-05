@@ -17,7 +17,8 @@ from haive.agents.multi.archive.configurable_base import (
     ConfigurableMultiAgent,
     WorkflowStep,
     create_branching_multi_agent,
-    create_sequential_multi_agent)
+    create_sequential_multi_agent,
+)
 from haive.agents.planning.p_and_e.models import Act, ExecutionResult, Plan, Response
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 
@@ -32,7 +33,8 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
         agents: list[Any],  # [planner, executor, replanner]
         branches: list[AgentBranch] | None = None,
         state_schema=None,
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize Plan and Execute multi-agent.
 
         Args:
@@ -59,7 +61,8 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
                     "prepare_execution",
                     self._prepare_execution_step,
                     inputs=[planner],
-                    outputs=[executor]),
+                    outputs=[executor],
+                ),
                 WorkflowStep(
                     "process_execution",
                     self._process_execution_result,
@@ -67,10 +70,8 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
                     outputs=[],  # Connects via branches
                 ),
                 WorkflowStep(
-                    "prepare_replan",
-                    self._prepare_replan_step,
-                    inputs=[],
-                    outputs=[replanner]),
+                    "prepare_replan", self._prepare_replan_step, inputs=[], outputs=[replanner]
+                ),
                 WorkflowStep(
                     "process_replan",
                     self._process_replan_decision,
@@ -89,7 +90,8 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
                         "continue": "prepare_execution",
                         "replan": "prepare_replan",
                         "complete": END,
-                    }),
+                    },
+                ),
                 # Branch after replan processing
                 AgentBranch(
                     from_agent="process_replan",
@@ -98,7 +100,8 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
                         "continue": "prepare_execution",
                         "new_plan": planner,
                         "complete": END,
-                    }),
+                    },
+                ),
             ]
         else:
             workflow_steps = []
@@ -110,15 +113,14 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
             workflow_steps=workflow_steps,
             state_schema_override=state_schema,
             start_agent=planner,
-            **kwargs)
+            **kwargs,
+        )
 
     # Workflow logic methods
     def _prepare_execution_step(self, state: PlanExecuteState) -> Command:
         """Prepare the next execution step."""
         if not state.plan:
-            return Command(
-                update={"errors": [*state.errors, "No plan available for execution"]}
-            )
+            return Command(update={"errors": [*state.errors, "No plan available for execution"]})
 
         next_step = state.plan.next_step
         if not next_step:
@@ -126,9 +128,7 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
 
         state.plan.update_step_status(next_step.step_id, "in_progress")
 
-        return Command(
-            update={"current_step_id": next_step.step_id, "plan": state.plan}
-        )
+        return Command(update={"current_step_id": next_step.step_id, "plan": state.plan})
 
     def _process_execution_result(self, state: PlanExecuteState) -> Command:
         """Process the execution result and update the plan."""
@@ -136,22 +136,16 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
             return Command(update={})
 
         if not state.messages:
-            return Command(
-                update={"errors": [*state.errors, "No execution result received"]}
-            )
+            return Command(update={"errors": [*state.errors, "No execution result received"]})
 
         last_message = state.messages[-1]
         result_content = getattr(last_message, "content", "")
 
         execution_result = ExecutionResult(
-            step_id=state.current_step_id,
-            success=True,
-            output=result_content,
-            execution_time=1.0)
-
-        state.plan.update_step_status(
-            state.current_step_id, "completed", result=result_content
+            step_id=state.current_step_id, success=True, output=result_content, execution_time=1.0
         )
+
+        state.plan.update_step_status(state.current_step_id, "completed", result=result_content)
 
         return Command(
             update={
@@ -224,10 +218,7 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
 
         if state.plan and state.replan_count > 0:
             replan_history = state.replan_history or []
-            if (
-                replan_history
-                and replan_history[-1].get("reason") == "New plan from replanner"
-            ):
+            if replan_history and replan_history[-1].get("reason") == "New plan from replanner":
                 return "new_plan"
 
         return "continue"
@@ -236,13 +227,11 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
 # Example usage patterns:
 
 
-def create_plan_execute_system(
-    planner_agent: Any, executor_agent: Any, replanner_agent: Any
-):
+def create_plan_execute_system(planner_agent: Any, executor_agent: Any, replanner_agent: Any):
     """Create Plan and Execute system with default workflow."""
     return PlanAndExecuteAgent(
-        agents=[planner_agent, executor_agent, replanner_agent],
-        name="Plan and Execute System")
+        agents=[planner_agent, executor_agent, replanner_agent], name="Plan and Execute System"
+    )
 
 
 def create_custom_plan_execute_system(
@@ -252,7 +241,8 @@ def create_custom_plan_execute_system(
     return PlanAndExecuteAgent(
         agents=[planner_agent, executor_agent, replanner_agent],
         branches=custom_branches,
-        name="Custom Plan and Execute System")
+        name="Custom Plan and Execute System",
+    )
 
 
 def create_simple_sequential_system(agents: Any):

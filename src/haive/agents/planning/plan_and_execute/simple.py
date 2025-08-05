@@ -11,7 +11,8 @@ from haive.agents.planning.plan_and_execute.v2.prompts import (
     PLANNER_PROMPT,
     REPLANNER_PROMPT,
     Any,
-    Dict)
+    Dict,
+)
 from haive.agents.planning.plan_and_execute.v2.state import PlanAndExecuteState
 from haive.agents.simple.agent import SimpleAgent
 
@@ -33,7 +34,9 @@ class PlanAndExecuteAgent(MultiAgent):
                 prompt_template=PLANNER_PROMPT,
                 structured_output_model=Plan,
                 structured_output_version="v2",
-                temperature=0.7))
+                temperature=0.7,
+            ),
+        )
 
         # Create executor
         executor = SimpleAgent(
@@ -42,8 +45,10 @@ class PlanAndExecuteAgent(MultiAgent):
                 prompt_template=EXECUTOR_PROMPT,
                 structured_output_model=ExecutionResult,
                 structured_output_version="v2",
-                temperature=0.3),
-            tools=tools or [])
+                temperature=0.3,
+            ),
+            tools=tools or [],
+        )
 
         # Create replanner
         replanner = SimpleAgent(
@@ -52,21 +57,21 @@ class PlanAndExecuteAgent(MultiAgent):
                 prompt_template=REPLANNER_PROMPT,
                 structured_output_model=Act,
                 structured_output_version="v2",
-                temperature=0.5))
+                temperature=0.5,
+            ),
+        )
 
         return cls(
             name=name,
             agents=[planner, executor, replanner],
             state_schema=PlanAndExecuteState,
-            **kwargs)
+            **kwargs,
+        )
 
     def build_graph(self) -> Any:
         """Build the plan-execute-replan graph using BaseGraph."""
         # Create BaseGraph with state schema
-        graph = BaseGraph(
-            name=f"{
-                self.name}_graph",
-            state_schema=self.state_schema)
+        graph = BaseGraph(name=f"{self.name}_graph", state_schema=self.state_schema)
 
         # Add nodes for each agent
         for agent_name, agent in self.agents.items():

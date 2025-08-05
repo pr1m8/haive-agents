@@ -14,7 +14,8 @@ from haive.agents.planning.p_and_e.prompts import (
     executor_prompt,
     planner_prompt,
     planner_prompt_simple,
-    replan_prompt)
+    replan_prompt,
+)
 
 # ============================================================================
 # PLANNER AGENT CONFIGURATION
@@ -36,8 +37,7 @@ def create_planner_aug_llm_config(
     """
     return AugLLMConfig(
         name="planner_llm",
-        llm_config=AzureLLMConfig(
-            model=model_name),
+        llm_config=AzureLLMConfig(model=model_name),
         prompt_template=planner_prompt if use_context else planner_prompt_simple,
         structured_output_model=Plan,
         structured_output_version="v2",
@@ -48,7 +48,8 @@ def create_planner_aug_llm_config(
             {"context": "No additional context provided."}  # Default
             if use_context
             else {}
-        ))
+        ),
+    )
 
 
 # ============================================================================
@@ -57,9 +58,8 @@ def create_planner_aug_llm_config(
 
 
 def create_executor_aug_llm_config(
-    model_name: str = "gpt-4o",
-    tools: list[BaseTool] | None = None,
-    force_tool_use: bool = False) -> AugLLMConfig:
+    model_name: str = "gpt-4o", tools: list[BaseTool] | None = None, force_tool_use: bool = False
+) -> AugLLMConfig:
     """Create AugLLM configuration for the execution agent.
 
     Args:
@@ -73,8 +73,7 @@ def create_executor_aug_llm_config(
     """
     return AugLLMConfig(
         name="executor_llm",
-        llm_config=AzureLLMConfig(
-            model=model_name),
+        llm_config=AzureLLMConfig(model=model_name),
         prompt_template=executor_prompt,
         tools=tools or [],
         force_tool_use=force_tool_use,
@@ -84,7 +83,8 @@ def create_executor_aug_llm_config(
             "plan_status": "",
             "current_step": "",
             "previous_results": "",
-        })
+        },
+    )
 
 
 # ============================================================================
@@ -107,8 +107,7 @@ def create_replan_aug_llm_config(
     """
     return AugLLMConfig(
         name="replan_llm",
-        llm_config=AzureLLMConfig(
-            model=model_name),
+        llm_config=AzureLLMConfig(model=model_name),
         prompt_template=replan_prompt,
         structured_output_model=Act,  # Uses Response | Plan union
         structured_output_version="v2",
@@ -120,7 +119,8 @@ def create_replan_aug_llm_config(
             "execution_results": "",
         },
         # Store max attempts in runtime_options for agent to use
-        runtime_options={"max_replan_attempts": max_replan_attempts})
+        runtime_options={"max_replan_attempts": max_replan_attempts},
+    )
 
 
 # ============================================================================

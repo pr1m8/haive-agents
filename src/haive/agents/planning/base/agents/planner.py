@@ -14,10 +14,10 @@ from ..models import BasePlan, PlanContent
 
 class BasePlannerAgent(SimpleAgentV3):
     """Base planner agent with comprehensive planning capabilities.
-    
+
     This agent specializes in creating detailed, strategic plans by breaking down
     complex objectives into clear, actionable steps with thorough analysis.
-    
+
     Features:
     - Comprehensive objective analysis
     - Detailed step-by-step planning
@@ -25,15 +25,15 @@ class BasePlannerAgent(SimpleAgentV3):
     - Resource and tool identification
     - Timeline and dependency management
     - Success criteria definition
-    
+
     Examples:
         Basic planning:
-        
+
             planner = BasePlannerAgent()
             plan = await planner.arun("Create a comprehensive business plan")
-            
+
         Custom configuration:
-        
+
             planner = BasePlannerAgent(
                 name="strategic_planner",
                 engine=AugLLMConfig(
@@ -44,9 +44,9 @@ class BasePlannerAgent(SimpleAgentV3):
             )
             plan = await planner.arun("Launch new product line")
     """
-    
+
     name: str = Field(default="base_planner")
-    
+
     engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             model="gpt-4o-mini",
@@ -249,14 +249,17 @@ When resources are limited:
 - Consider partnerships or shared resources to extend capabilities
 - Build strong prioritization and trade-off decision frameworks
 
-Remember: Your role is to be the strategic thinking partner who transforms complex, ambiguous objectives into clear, executable, successful plans. Every plan you create should be comprehensive enough to guide successful execution while being practical enough to actually implement. Think like a senior consultant who is personally accountable for the success of every plan you design."""
+Remember: Your role is to be the strategic thinking partner who transforms complex, ambiguous objectives into clear, executable, successful plans. Every plan you create should be comprehensive enough to guide successful execution while being practical enough to actually implement. Think like a senior consultant who is personally accountable for the success of every plan you design.""",
         )
     )
-    
+
     prompt_template: ChatPromptTemplate = Field(
-        default_factory=lambda: ChatPromptTemplate.from_messages([
-            ("system", "System message configured in AugLLMConfig"),
-            ("human", """Please create a comprehensive, strategic plan for this objective:
+        default_factory=lambda: ChatPromptTemplate.from_messages(
+            [
+                ("system", "System message configured in AugLLMConfig"),
+                (
+                    "human",
+                    """Please create a comprehensive, strategic plan for this objective:
 
 **Objective:** {objective}
 
@@ -274,10 +277,12 @@ Remember: Your role is to be the strategic thinking partner who transforms compl
 4. Define success criteria and measurement approach
 5. Provide comprehensive reasoning for your planning decisions
 
-Focus on creating a plan that is both strategically sound and practically executable. Consider all constraints and available resources in your planning approach.""")
-        ])
+Focus on creating a plan that is both strategically sound and practically executable. Consider all constraints and available resources in your planning approach.""",
+                ),
+            ]
+        )
     )
-    
+
     structured_output_model = Field(default=BasePlan[PlanContent])
 
 
@@ -285,26 +290,26 @@ def create_base_planner(
     name: str = "base_planner",
     model: str = "gpt-4o-mini",
     temperature: float = 0.3,
-    structured_output_model = None
+    structured_output_model=None,
 ) -> BasePlannerAgent:
     """Create a base planner agent with default configuration.
-    
+
     Args:
         name: Name for the planner agent
         model: LLM model to use for planning
         temperature: Sampling temperature for planning (lower = more focused)
         structured_output_model: Custom output model (defaults to BasePlan)
-        
+
     Returns:
         BasePlannerAgent: Configured planner ready for use
-        
+
     Examples:
         Basic planner:
-        
+
             planner = create_base_planner()
-            
+
         Custom planner:
-        
+
             planner = create_base_planner(
                 name="strategic_planner",
                 model="gpt-4",
@@ -314,31 +319,30 @@ def create_base_planner(
     config = AugLLMConfig(
         model=model,
         temperature=temperature,
-        system_message=BasePlannerAgent.__fields__['engine'].default.system_message
+        system_message=BasePlannerAgent.__fields__["engine"].default.system_message,
     )
-    
+
     return BasePlannerAgent(
         name=name,
         engine=config,
-        structured_output_model=structured_output_model or BasePlan[PlanContent]
+        structured_output_model=structured_output_model or BasePlan[PlanContent],
     )
 
 
-def create_conversation_summary_planner(
-    name: str = "conversation_planner"
-) -> BasePlannerAgent:
+def create_conversation_summary_planner(name: str = "conversation_planner") -> BasePlannerAgent:
     """Create a specialized planner for conversation summary tasks.
-    
+
     This creates a planner specifically tuned for analyzing conversations
     and creating detailed summaries with strategic planning approach.
-    
+
     Returns:
         BasePlannerAgent: Planner optimized for conversation analysis
     """
     specialized_config = AugLLMConfig(
         model="gpt-4o-mini",
         temperature=0.2,
-        system_message=BasePlannerAgent.__fields__['engine'].default.system_message + """
+        system_message=BasePlannerAgent.__fields__["engine"].default.system_message
+        + """
 
 ## Specialized Focus: Conversation Analysis and Summary Planning
 
@@ -360,12 +364,15 @@ You are particularly expert at creating plans for conversation analysis tasks:
 - Plan for identifying explicit vs implicit information
 - Design approaches for capturing emotional tone and context
 - Plan for highlighting key decisions, agreements, and next steps
-- Consider how to present complex conversational data clearly"""
+- Consider how to present complex conversational data clearly""",
     )
-    
-    conversation_prompt = ChatPromptTemplate.from_messages([
-        ("system", "System message configured in AugLLMConfig"),
-        ("human", """Create a comprehensive plan for analyzing and summarizing this conversation or communication:
+
+    conversation_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "System message configured in AugLLMConfig"),
+            (
+                "human",
+                """Create a comprehensive plan for analyzing and summarizing this conversation or communication:
 
 **Analysis Objective:** {objective}
 
@@ -382,12 +389,14 @@ You are particularly expert at creating plans for conversation analysis tasks:
 4. Include validation and quality assurance steps
 5. Plan for actionable insights and recommendations
 
-Create a plan that ensures thorough, accurate, and valuable conversation analysis.""")
-    ])
-    
+Create a plan that ensures thorough, accurate, and valuable conversation analysis.""",
+            ),
+        ]
+    )
+
     return BasePlannerAgent(
         name=name,
         engine=specialized_config,
         prompt_template=conversation_prompt,
-        structured_output_model=BasePlan[PlanContent]
+        structured_output_model=BasePlan[PlanContent],
     )

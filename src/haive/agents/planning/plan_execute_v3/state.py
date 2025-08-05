@@ -23,9 +23,7 @@ class PlanExecuteV3State(MessagesState):
     # Messages field is inherited from MessagesState
 
     # Current plan
-    plan: ExecutionPlan | None = Field(
-        default=None, description="The current execution plan"
-    )
+    plan: ExecutionPlan | None = Field(default=None, description="The current execution plan")
 
     # Execution tracking
     current_step_id: int | None = Field(
@@ -42,9 +40,7 @@ class PlanExecuteV3State(MessagesState):
     )
 
     # Plan revision tracking
-    revision_count: int = Field(
-        default=0, description="Number of times the plan has been revised"
-    )
+    revision_count: int = Field(default=0, description="Number of times the plan has been revised")
 
     plan_history: list[ExecutionPlan] = Field(
         default_factory=list, description="History of all plans (original + revisions)"
@@ -56,13 +52,9 @@ class PlanExecuteV3State(MessagesState):
     )
 
     # Timing
-    started_at: datetime = Field(
-        default_factory=datetime.now, description="When execution started"
-    )
+    started_at: datetime = Field(default_factory=datetime.now, description="When execution started")
 
-    completed_at: datetime | None = Field(
-        default=None, description="When execution completed"
-    )
+    completed_at: datetime | None = Field(default=None, description="When execution completed")
 
     # Additional context
     context: dict[str, Any] = Field(
@@ -113,16 +105,10 @@ class PlanExecuteV3State(MessagesState):
         ]
 
         if current_step.tools_required:
-            lines.append(
-                f"Tools Available: {
-                    ', '.join(
-                        current_step.tools_required)}"
-            )
+            lines.append(f"Tools Available: {', '.join(current_step.tools_required)}")
 
         if current_step.dependencies:
-            lines.append(
-                f"Dependencies: Steps {', '.join(map(str, current_step.dependencies))}"
-            )
+            lines.append(f"Dependencies: Steps {', '.join(map(str, current_step.dependencies))}")
 
         return "\n".join(lines)
 
@@ -157,9 +143,7 @@ class PlanExecuteV3State(MessagesState):
 
         next_step = self.plan.get_next_step()
         if next_step:
-            lines.append(
-                f"\nNext Step: Step {next_step.step_id} - {next_step.description}"
-            )
+            lines.append(f"\nNext Step: Step {next_step.step_id} - {next_step.description}")
 
         return "\n".join(lines)
 
@@ -175,21 +159,11 @@ class PlanExecuteV3State(MessagesState):
         # Show last 5 executions
         for execution in self.step_executions[-5:]:
             status = "✓" if execution.success else "✗"
-            lines.append(
-                f"\n{status} Step {
-                    execution.step_id}: {
-                    execution.step_description}"
-            )
-            lines.append(
-                f"   Result: {execution.result[:200]}..."
-            )  # Truncate long results
+            lines.append(f"\n{status} Step {execution.step_id}: {execution.step_description}")
+            lines.append(f"   Result: {execution.result[:200]}...")  # Truncate long results
 
             if execution.tools_used:
-                lines.append(
-                    f"   Tools Used: {
-                        ', '.join(
-                            execution.tools_used)}"
-                )
+                lines.append(f"   Tools Used: {', '.join(execution.tools_used)}")
 
             if execution.error:
                 lines.append(f"   Error: {execution.error}")
@@ -206,19 +180,12 @@ class PlanExecuteV3State(MessagesState):
             return "No execution started"
 
         lines = [
-            f"Plan: {
-                self.plan.objective}",
-            f"Progress: {
-                self.plan.get_progress_percentage():.1f}% ({
-                len(
-                    [
-                        s for s in self.plan.steps if s.status.value == 'completed'])}/{
-                            self.plan.total_steps} steps)",
-            f"Revisions: {
-                                self.revision_count}",
-            f"Total Executions: {
-                                    len(
-                                        self.step_executions)}",
+            f"Plan: {self.plan.objective}",
+            f"Progress: {self.plan.get_progress_percentage():.1f}% ({
+                len([s for s in self.plan.steps if s.status.value == 'completed'])
+            }/{self.plan.total_steps} steps)",
+            f"Revisions: {self.revision_count}",
+            f"Total Executions: {len(self.step_executions)}",
         ]
 
         if self.errors:
@@ -238,9 +205,7 @@ class PlanExecuteV3State(MessagesState):
             return False
 
         # Evaluate after every 3 steps
-        completed_count = len(
-            [s for s in self.plan.steps if s.status.value == "completed"]
-        )
+        completed_count = len([s for s in self.plan.steps if s.status.value == "completed"])
         if completed_count > 0 and completed_count % 3 == 0:
             return True
 
@@ -259,19 +224,12 @@ class PlanExecuteV3State(MessagesState):
 
         for execution in self.step_executions:
             if execution.observations:
-                findings.append(
-                    f"Step {
-                        execution.step_id}: {
-                        execution.observations}"
-                )
+                findings.append(f"Step {execution.step_id}: {execution.observations}")
 
         # Also extract from evaluations
         for evaluation in self.evaluations:
             if evaluation.current_progress:
-                findings.append(
-                    f"Progress Update: {
-                        evaluation.current_progress}"
-                )
+                findings.append(f"Progress Update: {evaluation.current_progress}")
 
         return findings[-10:]  # Return last 10 findings
 

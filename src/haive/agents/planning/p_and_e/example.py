@@ -9,10 +9,7 @@ from langchain_core.tools import tool
 
 from haive.agents.planning.p_and_e.agent import PlanAndExecuteAgent
 from haive.agents.planning.p_and_e.models import Act, Plan
-from haive.agents.planning.p_and_e.prompts import (
-    executor_prompt,
-    planner_prompt,
-    replan_prompt)
+from haive.agents.planning.p_and_e.prompts import executor_prompt, planner_prompt, replan_prompt
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 from haive.agents.simple.agent import SimpleAgent
 
@@ -41,18 +38,21 @@ agent_with_tools = PlanAndExecuteAgent(
             structured_output_model=Plan,
             structured_output_version="v2",
             prompt_template=planner_prompt,
-            temperature=0.1),
+            temperature=0.1,
+        ),
         "executor": AugLLMConfig(
             name="executor",
             tools=[search, calculate],
             prompt_template=executor_prompt,
-            temperature=0.3),
+            temperature=0.3,
+        ),
         "replanner": AugLLMConfig(
             name="replanner",
             structured_output_model=Act,
             structured_output_version="v2",
             prompt_template=replan_prompt,
-            temperature=0.2),
+            temperature=0.2,
+        ),
     }
 )
 

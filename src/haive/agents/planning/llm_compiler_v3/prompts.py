@@ -145,9 +145,7 @@ EXECUTION MODE: Error Recovery & Replanning
 # Dynamic prompt generation functions
 
 
-def get_planner_prompt(
-    query: str, available_tools: list, scenario: str = "default"
-) -> str:
+def get_planner_prompt(query: str, available_tools: list, scenario: str = "default") -> str:
     """Generate contextual planner prompt based on scenario."""
     base_prompt = LLM_COMPILER_V3_PROMPTS["planner"]
 
@@ -156,24 +154,22 @@ def get_planner_prompt(
 
     tools_text = "\\n".join([f"- {tool}" for tool in available_tools])
 
-    return (
-        base_prompt.format(query=query, available_tools=tools_text)
-        + "\\n"
-        + scenario_context
-    )
+    return base_prompt.format(query=query, available_tools=tools_text) + "\\n" + scenario_context
 
 
 def get_task_fetcher_prompt(
     completed_tasks: list,
     available_tasks: list,
     max_parallel: int,
-    failed_tasks: list | None = None) -> str:
+    failed_tasks: list | None = None,
+) -> str:
     """Generate contextual task fetcher prompt."""
     return LLM_COMPILER_V3_PROMPTS["task_fetcher"].format(
         completed_tasks=completed_tasks,
         available_tasks=available_tasks,
         max_parallel=max_parallel,
-        failed_tasks=failed_tasks or [])
+        failed_tasks=failed_tasks or [],
+    )
 
 
 def get_executor_prompt(
@@ -184,17 +180,17 @@ def get_executor_prompt(
         current_task=current_task,
         tool_name=tool_name,
         resolved_arguments=resolved_arguments,
-        available_tools=available_tools)
+        available_tools=available_tools,
+    )
 
 
 def get_joiner_prompt(
-    original_query: str,
-    execution_results: list,
-    successful_tasks: list,
-    failed_tasks: list) -> str:
+    original_query: str, execution_results: list, successful_tasks: list, failed_tasks: list
+) -> str:
     """Generate contextual joiner prompt."""
     return LLM_COMPILER_V3_PROMPTS["joiner"].format(
         original_query=original_query,
         execution_results=execution_results,
         successful_tasks=successful_tasks,
-        failed_tasks=failed_tasks)
+        failed_tasks=failed_tasks,
+    )

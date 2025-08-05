@@ -46,7 +46,8 @@ planner_prompt = ChatPromptTemplate.from_messages(
         MessagesPlaceholder(variable_name="messages", optional=True),
         (
             "human",
-            "Please create a detailed execution plan for the objective stated in the conversation above."),
+            "Please create a detailed execution plan for the objective stated in the conversation above.",
+        ),
     ]
 )
 
@@ -98,7 +99,8 @@ Current Step to Execute:
 Previous Steps Results:
 {previous_results}
 
-Execute the current step using any necessary tools and provide a detailed result."""),
+Execute the current step using any necessary tools and provide a detailed result.""",
+        ),
     ]
 )
 
@@ -111,7 +113,8 @@ executor_prompt_enhanced = ChatPromptTemplate.from_messages(
             "human",
             """Execute the current step using any necessary tools and provide a detailed result.
 
-Note: The executor agent should access plan_status, current_step, and previous_results as computed fields from the state schema."""),
+Note: The executor agent should access plan_status, current_step, and previous_results as computed fields from the state schema.""",
+        ),
     ]
 )
 
@@ -163,7 +166,8 @@ Plan Progress:
 Execution Results:
 {execution_results}
 
-Based on the current state, decide whether to provide a final response or create a new/updated plan."""),
+Based on the current state, decide whether to provide a final response or create a new/updated plan.""",
+        ),
     ]
 )
 
