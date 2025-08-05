@@ -6,6 +6,14 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 
+class Config(BaseModel):
+    """Configuration model for Self-Discovery reasoning system."""
+    
+    modules: list[str] = Field(default_factory=list, description="Available reasoning modules")
+    max_iterations: int = Field(default=3, description="Maximum reasoning iterations")
+    confidence_threshold: float = Field(default=0.8, description="Confidence threshold for answers")
+
+
 class SelectedModules(BaseModel):
     """Selected reasoning modules for the task."""
 
