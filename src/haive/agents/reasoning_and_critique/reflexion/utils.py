@@ -4,7 +4,8 @@ from pydantic import BaseModel
 def _get_num_iterations(state: BaseModel) -> int:
     """Counts consecutive 'tool' or 'ai' message types from the end of the list."""
     i = 0
-    for m in reversed(state.messages):  # Reverse iteration for efficiency
+    messages = getattr(state, 'messages', [])
+    for m in reversed(messages):  # Reverse iteration for efficiency
         if isinstance(m, dict):  # Ensure compatibility with dict-based messages
             msg_type = m.get("type", "")
         else:

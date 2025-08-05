@@ -122,8 +122,11 @@ def update_candidates(
         return existing
     if updates == "clear":
         return []
-    # Concatenate the lists
-    return existing + updates
+    # Concatenate the lists (ensure updates is a list)
+    if isinstance(updates, list):
+        return existing + updates
+    else:
+        return existing
 
 
 # ======================================================
@@ -229,11 +232,13 @@ class Equation(BaseModel):
         }
         stack = []
         for token in self.tokens:
-            if isinstance(token, float):
-                stack.append(token)
-            else:
+            if isinstance(token, (float, int)):
+                stack.append(float(token))
+            elif isinstance(token, str) and token in op_funcs:
                 b, a = stack.pop(), stack.pop()
                 stack.append(op_funcs[token](a, b))
+            else:
+                raise ValueError(f"Invalid token: {token}")
 
         return stack[0]
 

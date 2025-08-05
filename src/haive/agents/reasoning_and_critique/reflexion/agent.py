@@ -63,11 +63,24 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         )
         self.answer_writer.prompt_template = prompt
         aug_llm = self.answer_writer.create_runnable()
-        response = aug_llm.invoke(input={"conversation": state.model_dump()})
+        # Handle both dict and model cases
+        if hasattr(state, 'model_dump') and callable(getattr(state, 'model_dump')):
+            conversation_data = state.model_dump()  # type: ignore
+        elif isinstance(state, dict):
+            conversation_data = state
+        else:
+            conversation_data = dict(state) if hasattr(state, '__dict__') else {}
+        response = aug_llm.invoke(input={"conversation": conversation_data})
 
         return Command(update={"answer": response})
 
     def setup_workflow(self) -> None:
+        """Setup the reflexion workflow graph."""
+        if not hasattr(self, 'graph') or self.graph is None:
+            # Initialize graph if not already done
+            from langgraph.graph import StateGraph
+            self.graph = StateGraph(dict)  # Use dict for now
+        
         self.graph.add_node("draft", self.responder.respond)
         self.graph.add_edge(START, "draft")
         self.graph.add_node("tools", self.tool_node)
@@ -76,7 +89,12 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.graph.add_node("final_answer", self.final_answer)
         self.graph.add_edge("tools", "revision")
         self.graph.add_edge("final_answer", END)
+        # Create a simple condition function for LangGraph
+        def should_continue(state):
+            iterations = _get_num_iterations(state)
+            return "end" if iterations > self.config.max_iterations else "execute_tools"
+        
         self.graph.add_conditional_edges(
             "revision",
-            self.event_loop_branch.evaluate,
+            should_continue,
             {"execute_tools": "tools", "end": "final_answer"})

@@ -61,10 +61,10 @@ class LATSAgentConfig(AgentConfig):
         default="Reflect and grade the assistant response to the user question below.",
         description="Prompt for the reflection step")
 
-    # State schema
-    state_schema: type[BaseModel] = Field(
-        default=TreeState, description="Schema for the agent state"
-    )
+    # State schema (TreeState is TypedDict, not BaseModel - commented out)
+    # state_schema: type[BaseModel] = Field(
+    #     default=TreeState, description="Schema for the agent state"
+    # )
 
     @classmethod
     def from_scratch(
@@ -151,7 +151,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         # Initialize LLM
         llm_config = AzureLLMConfig(
-            model=self.config.model, parameters={"temperature": self.config.temperature}
+            model=self.config.model
         )
         self.llm = llm_config.instantiate()
 
@@ -192,18 +192,22 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         # Define the candidate generation function
         def generate_candidates(messages: ChatPromptValue, config: RunnableConfig):
-            n = config["configurable"].get("N", self.config.candidates_per_expansion)
+            n = config.get("configurable", {}).get("N", self.config.candidates_per_expansion)
             bound_kwargs = self.llm.bind_tools(tools=self.config.tools).kwargs
             chat_result = self.llm.generate(
                 [messages.to_messages()],
                 n=n,
-                callbacks=config["callbacks"],
+                callbacks=config.get("callbacks", []),
                 run_name="GenerateCandidates",
                 **bound_kwargs)
             return [gen.message for gen in chat_result.generations[0]]
 
-        # Create expansion chain
-        self.expansion_chain = prompt_template | generate_candidates
+        # Create expansion chain (using manual composition instead of pipe operator)
+        def expansion_chain(input_data):
+            messages = prompt_template.invoke(input_data)
+            return generate_candidates(messages, input_data.get("config", {}))
+        
+        self.expansion_chain = expansion_chain
 
         # Define the node functions for the graph
         def generate_initial_response(state: TreeState) -> dict[str, Any]:
@@ -251,9 +255,8 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
             # Create the root node
             root = Node(
-                output_messages,
-                reflection=reflection,
-                exploration_weight=self.config.exploration_weight)
+                messages=output_messages,
+                reflection=reflection)
 
             # Update state
             return {
@@ -264,9 +267,9 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         def expand(state: TreeState, config: RunnableConfig) -> dict[str, Any]:
             """Expand the tree by generating candidates from the best node."""
-            root = state["root"]
-            iterations = state["iterations"]
-            user_input = state["input"]
+            root = state.get("root")
+            iterations = state.get("iterations", 0)
+            user_input = state.get("input", "")
 
             # Select the best leaf node to expand
             best_candidate: Node = self._select(root)
@@ -346,10 +349,9 @@ class LATSAgent(Agent[LATSAgentConfig]):
             # Create and add child nodes
             child_nodes = [
                 Node(
-                    cand,
+                    messages=cand,
                     parent=best_candidate,
-                    reflection=reflection,
-                    exploration_weight=self.config.exploration_weight)
+                    reflection=reflection)
                 for cand, reflection in zip(output_messages, reflections, strict=False)
             ]
             best_candidate.children.extend(child_nodes)
@@ -362,8 +364,8 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         def should_continue(state: TreeState) -> str:
             """Determine whether to continue searching or finish."""
-            root = state["root"]
-            iterations = state["iterations"]
+            root = state.get("root")
+            iterations = state.get("iterations", 0)
 
             # Check if solution found
             if self._is_solved(root):

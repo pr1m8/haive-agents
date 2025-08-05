@@ -13,8 +13,8 @@ class Reflection(BaseModel):
     )
     score: int = Field(
         description="Score from 0-10 on the quality of the candidate response.",
-        gte=0,
-        lte=10)
+        ge=0,
+        le=10)
     found_solution: bool = Field(
         description="Whether the response has fully solved the question or task."
     )

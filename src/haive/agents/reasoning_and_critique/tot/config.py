@@ -35,14 +35,14 @@ class TOTAgentConfig(AgentConfig):
                 name="candidate_generator",
                 description="Generates candidate solutions for the problem",
                 llm_config=AzureLLMConfig(
-                    model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 1500}
+                    model="gpt-4o"
                 )),
             # Evaluator engine for scoring solutions
             "evaluator": AugLLMConfig(
                 name="solution_evaluator",
                 description="Evaluates candidate solutions",
                 llm_config=AzureLLMConfig(
-                    model="gpt-4o", parameters={"temperature": 0.1, "max_tokens": 500}
+                    model="gpt-4o"
                 )),
         },
         description="Engine configurations for the ToT agent")

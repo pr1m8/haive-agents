@@ -19,9 +19,7 @@ from haive.agents.reasoning_and_critique.logic.models import (
     ReasoningQuality,
     ReasoningReport,
     ReasoningType,
-    UncertaintyAnalysis,
-    max_inference_chain,
-    num_steps)
+    UncertaintyAnalysis)
 
 __all__ = [
     "ArgumentStrength",
@@ -43,6 +41,4 @@ __all__ = [
     "ReasoningReport",
     "ReasoningType",
     "UncertaintyAnalysis",
-    "max_inference_chain",
-    "num_steps",
 ]

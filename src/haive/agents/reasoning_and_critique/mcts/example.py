@@ -20,7 +20,10 @@ logger = logging.getLogger(__name__)
 
 def setup_tavily_tool() -> BaseTool:
     """Set up Tavily search tool."""
-    search = TavilySearchAPIWrapper()
+    import os
+    from pydantic import SecretStr
+    api_key = os.environ.get("TAVILY_API_KEY", "dummy_key")
+    search = TavilySearchAPIWrapper(tavily_api_key=SecretStr(api_key))
     return TavilySearchResults(api_wrapper=search, max_results=5)
 
 
@@ -45,7 +48,7 @@ def run_mcts_agent_example(
             tools = []
 
     # Set up LLM config
-    llm_config = AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7})
+    llm_config = AzureLLMConfig(model="gpt-4o")
 
     # Create the MCTS agent
     agent = create_mcts_agent(

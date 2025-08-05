@@ -49,7 +49,7 @@ def create_reflection_chain() -> Any:
 
     # Create parser for Reflection
     parser = PydanticOutputParser(pydantic_object=Reflection)
-    model = AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0}).instantiate()
+    model = AzureLLMConfig(model="gpt-4o").instantiate()
     # Build and return the reflection chain
     return reflection_prompt | model | parser
 
@@ -85,7 +85,7 @@ def create_lats_agent(
     n_candidates: int = 3,
     exploration_weight: float = 1.0,
     name: str = "lats_agent",
-    model: str = "gpt-4o") -> "LATSAgent":
+    model: str = "gpt-4o") -> "Any":  # LATSAgent not yet defined
     """Create a LATS agent with the specified configuration.
 
     Args:
@@ -112,7 +112,7 @@ def create_lats_agent(
         tools = [tavily_search_tool]
     if tools is None:
         tools = [tavily_search_tool]
-    llm_config = AzureLLMConfig(model=model, parameters={"temperature": 0.7})
+    llm_config = AzureLLMConfig(model=model)
 
     # Create reflection engine
     reflection_prompt = ChatPromptTemplate.from_messages(

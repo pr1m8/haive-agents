@@ -28,7 +28,8 @@ def main():
     # Set up tools - using Tavily search in this example
     tools = []
     if os.environ.get("TAVILY_API_KEY"):
-        search = TavilySearchAPIWrapper()
+        from pydantic import SecretStr
+        search = TavilySearchAPIWrapper(tavily_api_key=SecretStr(os.environ["TAVILY_API_KEY"]))
         tavily_tool = TavilySearchResults(api_wrapper=search, max_results=5)
         tools.append(tavily_tool)
         logger.info("Tavily search tool added")

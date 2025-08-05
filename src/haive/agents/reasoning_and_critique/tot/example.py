@@ -23,7 +23,9 @@ async def run_basic_example():
     logger.info("=== Running Basic Example ===")
 
     # Create a standard ToT agent with default configuration
-    agent = ToTAgent()
+    from haive.agents.reasoning_and_critique.tot.config import TOTAgentConfig
+    config = TOTAgentConfig()
+    agent = ToTAgent(config)
 
     # Define a problem to solve
     problem = "What is the most effective way to reduce carbon emissions?"
@@ -56,13 +58,13 @@ async def run_math_example():
                 name="math_generator",
                 description="Generates mathematical solutions",
                 llm_config=AzureLLMConfig(
-                    model="gpt-4o", parameters={"temperature": 0.7}
+                    model="gpt-4o"
                 )),
             "evaluator": AugLLMConfig(
                 name="math_evaluator",
                 description="Evaluates mathematical solutions",
                 llm_config=AzureLLMConfig(
-                    model="gpt-4o", parameters={"temperature": 0.1}
+                    model="gpt-4o"
                 )),
         })
 
@@ -100,13 +102,13 @@ async def run_complex_reasoning_example():
                 name="reasoning_generator",
                 description="Generates solutions for complex reasoning problems",
                 llm_config=AzureLLMConfig(
-                    model="gpt-4o", parameters={"temperature": 0.8, "max_tokens": 2000}
+                    model="gpt-4o"
                 )),
             "evaluator": AugLLMConfig(
                 name="reasoning_evaluator",
                 description="Evaluates solutions for complex reasoning problems",
                 llm_config=AzureLLMConfig(
-                    model="gpt-4o", parameters={"temperature": 0.1, "max_tokens": 1000}
+                    model="gpt-4o"
                 )),
         })
 

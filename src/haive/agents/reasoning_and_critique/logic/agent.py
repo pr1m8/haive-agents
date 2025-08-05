@@ -10,13 +10,29 @@ from langgraph.graph import END, START
 from pydantic import Field
 
 from haive.agents.base.agent import Agent
-from haive.agents.reasoning_and_critique.logic.engines import (
-    Dict,
-    create_bias_detector,
-    create_logical_reasoner,
-    create_premise_extractor,
-    create_synthesis_agent,
-    create_uncertainty_analyzer)
+from typing import Dict
+from haive.core.engine.aug_llm import AugLLMConfig
+
+# TODO: Implement these engine functions properly
+def create_premise_extractor() -> AugLLMConfig:
+    """Create premise extractor configuration."""
+    return AugLLMConfig()
+    
+def create_logical_reasoner() -> AugLLMConfig:
+    """Create logical reasoner configuration."""
+    return AugLLMConfig()
+    
+def create_bias_detector() -> AugLLMConfig:
+    """Create bias detector configuration."""
+    return AugLLMConfig()
+    
+def create_uncertainty_analyzer() -> AugLLMConfig:
+    """Create uncertainty analyzer configuration."""
+    return AugLLMConfig()
+    
+def create_synthesis_agent() -> AugLLMConfig:
+    """Create synthesis agent configuration."""
+    return AugLLMConfig()
 from haive.agents.reasoning_and_critique.logic.models import (
     Evidence,
     ReasoningAnalysis,
@@ -96,7 +112,7 @@ class ReasoningSystem(Agent):
 
         # Conditional edge
         def should_explore_alternatives(state: Dict[str, Any]):
-            return state.explore_alternatives
+            return state.get("explore_alternatives", False)
 
         graph.add_conditional_edges(
             "primary_reasoning",

@@ -27,7 +27,11 @@ Return your response as a structured output with reasoning and multiple candidat
 
 generator_prompt = ChatPromptTemplate.from_messages(
     [
-        ("system", generator_system_message.content),
+        ("system", """You are an expert problem solver working on a Tree of Thoughts approach.
+Your task is to generate diverse and creative candidate solutions for the problem.
+Explore different approaches and reasoning pathways.
+
+Return your response as a structured output with reasoning and multiple candidate solutions."""),
         MessagesPlaceholder(variable_name="history"),
         (
             "user",
@@ -51,7 +55,12 @@ and detailed feedback explaining the score."""
 
 evaluator_prompt = ChatPromptTemplate.from_messages(
     [
-        ("system", evaluator_system_message.content),
+        ("system", """You are an expert evaluator working on a Tree of Thoughts approach.
+Your task is to evaluate a candidate solution and provide a score between 0 and 1.
+Be critical and analytical in your assessment.
+
+Return your response as a structured output with a numerical score between 0 and 1
+and detailed feedback explaining the score."""),
         MessagesPlaceholder(variable_name="history"),
         (
             "user",

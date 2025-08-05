@@ -38,7 +38,7 @@ class LATSAgentConfig(AgentConfig):
     )
 
     action_engine: AugLLMConfig = Field(
-        tools=[tavily_search_tool],
+        default_factory=lambda: AugLLMConfig(tools=[tavily_search_tool]),
         description="Engine for generating candidate actions")
 
     # Specific tools for this agent
@@ -46,10 +46,10 @@ class LATSAgentConfig(AgentConfig):
         default_factory=list, description="Tools available to this agent"
     )
 
-    # Custom state schema for LATS
-    state_schema: type[BaseModel] = Field(
-        default=TreeState, description="Schema for the LATS state"
-    )
+    # Custom state schema for LATS (TreeState is TypedDict, not BaseModel)
+    # state_schema: type[BaseModel] = Field(
+    #     default=TreeState, description="Schema for the LATS state"
+    # )
 
     input_schema_name: str | None = Field(
         default=None, description="Optional name of the input schema"

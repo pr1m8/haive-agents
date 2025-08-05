@@ -2,10 +2,16 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.utils.parser_utils import parse_reasoning_modules_to_string
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
+from pydantic import BaseModel, Field
 
 from haive.agents.reasoning_and_critique.self_discover.models import (
     AdaptedModules,
     Plan)
+
+# TODO: Define ReasoningModules model or import from correct location
+class ReasoningModules(BaseModel):
+    """Placeholder for ReasoningModules - needs proper implementation."""
+    modules: list[str] = Field(default_factory=list, description="List of reasoning modules")
 
 reasoning_prompt = """
 Step {step_id}: {step_description}
@@ -17,7 +23,10 @@ Relevant Reasoning Modules:
 
 Perform step {step_id} based on the provided reasoning structure. Ensure clarity and logical deduction.
 """
-step_reasoning_prompt_template = PromptTemplate(template=reasoning_prompt)
+step_reasoning_prompt_template = PromptTemplate(
+    template=reasoning_prompt,
+    input_variables=["step_id", "step_description", "task_description", "reasoning_modules"]
+)
 step_reasoning_chain = AugLLMConfig(
     name="step_reasoning_executor",
     prompt_template=step_reasoning_prompt_template,
@@ -35,7 +44,8 @@ All reasoning module descriptions:
 Task: {task_description}
 
 Select several modules that are crucial for solving the task above:
-"""
+""",
+    input_variables=["reasoning_modules", "task_description"]
 )
 select_prompt_template = select_prompt_template.partial(
     reasoning_modules=parse_reasoning_modules_to_string(
@@ -58,7 +68,10 @@ Task: {task_description}
 
 Adapt each reasoning module description to better solve the task:
 """
-adapt_prompt_template = PromptTemplate(template=adapt_template)
+adapt_prompt_template = PromptTemplate(
+    template=adapt_template,
+    input_variables=["selected_modules", "task_description"]
+)
 adapt_chain = AugLLMConfig(
     name="adapt",
     prompt_template=adapt_prompt_template,
@@ -117,7 +130,10 @@ Implement a reasoning structure for solvers to follow step-by-step and arrive at
 
 Note: do NOT actually arrive at a conclusion in this pass. Your job is to generate a PLAN so that in the future you can fill it out and arrive at the correct conclusion for tasks like this.
 """
-structured_template = PromptTemplate(template=structured_template_prompt)
+structured_template = PromptTemplate(
+    template=structured_template_prompt,
+    input_variables=["adapted_modules", "task_description"]
+)
 structured_chain = AugLLMConfig(
     name="structured_reasoning_planner",
     prompt_template=structured_template,

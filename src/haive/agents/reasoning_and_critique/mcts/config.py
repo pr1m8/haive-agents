@@ -17,7 +17,7 @@ class MCTSAgentConfig(AgentConfig):
 
     # LLM configuration
     llm_config: LLMConfig | None = Field(
-        default=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7}),
+        default=AzureLLMConfig(model="gpt-4o"),
         description="Configuration for the LLM")
 
     # Tools
@@ -60,7 +60,7 @@ class MCTSAgentConfig(AgentConfig):
         """Create an MCTS Agent config from LLM config and tools."""
         # Use defaults if not provided
         llm_config = llm_config or AzureLLMConfig(
-            model="gpt-4o", parameters={"temperature": 0.7}
+            model="gpt-4o"
         )
         tools = tools or []
         system_prompt = system_prompt or "You are an AI assistant."
