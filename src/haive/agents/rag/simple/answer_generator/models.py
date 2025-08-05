@@ -19,11 +19,12 @@ class RAGAnswer(BaseModel):
         default=0.5,
         ge=0.0,
         le=1.0,
-        description="Confidence score for the answer quality (0.0=low, 1.0=high)")
+        description="Confidence score for the answer quality (0.0=low, 1.0=high)",
+    )
 
     reasoning: str = Field(
-        default="",
-        description="Brief explanation of how the answer was derived from the context")
+        default="", description="Brief explanation of how the answer was derived from the context"
+    )
 
 
 __all__ = ["RAGAnswer"]

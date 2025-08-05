@@ -21,7 +21,8 @@ Format your response as structured output with:
 - answer: The main answer to the question
 - sources: List of source identifiers or filenames mentioned
 - confidence: Your confidence score (0.0 to 1.0)
-- reasoning: Brief explanation of how you derived the answer"""),
+- reasoning: Brief explanation of how you derived the answer""",
+        ),
         (
             "human",
             """Context:
@@ -29,7 +30,8 @@ Format your response as structured output with:
 
 Question: {query}
 
-Please provide a structured answer based on the context above."""),
+Please provide a structured answer based on the context above.""",
+        ),
     ]
 )
 

@@ -26,15 +26,9 @@ class QueryAnalysis(BaseModel):
         description="Query complexity level"
     )
     topics: list[str] = Field(description="Main topics in the query")
-    requires_multi_hop: bool = Field(
-        description="Whether query requires multiple reasoning steps"
-    )
-    temporal_sensitivity: bool = Field(
-        description="Whether query is about current/recent events"
-    )
-    domain_specific: bool = Field(
-        description="Whether query requires specialized knowledge"
-    )
+    requires_multi_hop: bool = Field(description="Whether query requires multiple reasoning steps")
+    temporal_sensitivity: bool = Field(description="Whether query is about current/recent events")
+    domain_specific: bool = Field(description="Whether query requires specialized knowledge")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in the analysis")
 
 
@@ -55,23 +49,23 @@ Consider:
 - Number of concepts involved
 - Need for reasoning vs. direct lookup
 - Temporal aspects (current events vs. historical)
-- Domain specificity"""),
+- Domain specificity""",
+        ),
         (
             "human",
             """Analyze this query and determine its characteristics:
 
 Query: {query}
 
-Provide a structured analysis."""),
+Provide a structured analysis.""",
+        ),
     ]
 )
 
 
 DIRECT_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "You are a knowledgeable assistant. Answer common questions directly."),
+        ("system", "You are a knowledgeable assistant. Answer common questions directly."),
         ("human", "Answer this question based on general knowledge: {query}"),
     ]
 )
@@ -86,7 +80,8 @@ class AdaptiveRAGAgent(ConditionalAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         embedding_model: str | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         """Create Adaptive RAG from documents.
 
         Args:
@@ -104,20 +99,19 @@ class AdaptiveRAGAgent(ConditionalAgent):
                 llm_config=llm_config,
                 prompt_template=QUERY_ANALYZER_PROMPT,
                 structured_output_model=QueryAnalysis,
-                output_key="query_analysis"),
-            name="Query Analyzer")
+                output_key="query_analysis",
+            ),
+            name="Query Analyzer",
+        )
 
         # Direct answer agent (for known/simple queries)
         direct_agent = SimpleAgent(
-            engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=DIRECT_ANSWER_PROMPT
-            ),
-            name="Direct Answer")
+            engine=AugLLMConfig(llm_config=llm_config, prompt_template=DIRECT_ANSWER_PROMPT),
+            name="Direct Answer",
+        )
 
         # Simple RAG for basic queries
-        simple_rag = SimpleRAGAgent.from_documents(
-            documents=documents, llm_config=llm_config
-        )
+        simple_rag = SimpleRAGAgent.from_documents(documents=documents, llm_config=llm_config)
         simple_rag.name = "Simple RAG"
 
         # Multi-Query RAG for medium complexity
@@ -176,4 +170,5 @@ class AdaptiveRAGAgent(ConditionalAgent):
             agents=[query_analyzer, direct_agent, simple_rag, multi_rag, hyde_rag],
             branches=branches,
             name=kwargs.get("name", "Adaptive RAG Agent"),
-            **kwargs)
+            **kwargs,
+        )

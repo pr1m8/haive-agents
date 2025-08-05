@@ -1,5 +1,6 @@
 from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
-    HuggingFaceEmbeddingConfig)
+    HuggingFaceEmbeddingConfig,
+)
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.retriever.mixins import RetrieverMixin
 from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
@@ -43,8 +44,10 @@ class BaseRAGAgent(RetrieverMixin, Agent):
             provider="InMemory",
             embedding_config=HuggingFaceEmbeddingConfig(
                 model="sentence-transformers/all-MiniLM-L6-v2"
-            )),
-        description="Retriever Engine (accepts BaseRetrieverConfig or VectorStoreConfig)")
+            ),
+        ),
+        description="Retriever Engine (accepts BaseRetrieverConfig or VectorStoreConfig)",
+    )
 
     def build_graph(self) -> BaseGraph:
         """Build the RAG agent graph."""

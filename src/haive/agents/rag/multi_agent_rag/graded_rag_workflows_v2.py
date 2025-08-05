@@ -10,13 +10,15 @@ from haive.agents.multi.base import MultiAgent
 from haive.agents.rag.multi_agent_rag.enhanced_state_schemas import (
     FLAREState,
     GradedRAGState,
-    StateConfigMixin)
+    StateConfigMixin,
+)
 from haive.agents.rag.multi_agent_rag.grading_components import (
     create_answer_grader,
     create_document_grader,
     create_hallucination_grader,
     create_priority_ranker,
-    create_query_analyzer)
+    create_query_analyzer,
+)
 from haive.agents.simple import SimpleAgent
 
 
@@ -37,7 +39,8 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
                 "documents": "List[str]",
                 "retrieval_strategy": "str",
                 "num_retrieved": "int",
-            })
+            },
+        )
 
         document_grader = create_document_grader("document_relevance_grader")
         priority_ranker = create_priority_ranker("document_priority_ranker")
@@ -53,7 +56,8 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
                 "filtered_documents": "List[str]",
                 "num_filtered": "int",
                 "filter_stats": "Dict[str, Any]",
-            })
+            },
+        )
 
         answer_generator = SimpleAgent(
             name="graded_answer_generator",
@@ -65,7 +69,8 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
                 "answer": "str",
                 "sources_used": "List[str]",
                 "confidence": "float",
-            })
+            },
+        )
 
         answer_grader = create_answer_grader("answer_quality_grader")
         hallucination_grader = create_hallucination_grader("hallucination_detector")
@@ -80,7 +85,8 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
                 "overall_score": "float",
                 "meets_threshold": "bool",
                 "summary": "str",
-            })
+            },
+        )
 
         agents = [
             query_analyzer,
@@ -96,10 +102,8 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
 
         # Initialize with enhanced state schema
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=GradedRAGState,
-            **kwargs)
+            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
+        )
 
         # Store initial configuration as private attribute
         self._initial_config = {
@@ -147,7 +151,8 @@ class MultiCriteriaGradedRAGAgentV2(MultiAgent, StateConfigMixin):
                 "document_id": "str",
                 "criteria_scores": "Dict[str, float]",
                 "composite_score": "float",
-            })
+            },
+        )
 
         perspective_aggregator = SimpleAgent(
             name="perspective_aggregator",
@@ -158,22 +163,22 @@ class MultiCriteriaGradedRAGAgentV2(MultiAgent, StateConfigMixin):
             output_schema={
                 "aggregated_scores": "Dict[str, float]",
                 "recommendations": "List[str]",
-            })
+            },
+        )
 
         balanced_generator = SimpleAgent(
             name="balanced_answer_generator",
             instructions="""
             Generate answer balancing all criteria from state.grading_criteria.
             """,
-            output_schema={"answer": "str", "criteria_addressed": "Dict[str, bool]"})
+            output_schema={"answer": "str", "criteria_addressed": "Dict[str, bool]"},
+        )
 
         agents = [multi_criteria_grader, perspective_aggregator, balanced_generator]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=GradedRAGState,
-            **kwargs)
+            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
+        )
 
         self._initial_config = {
             "grading_criteria": grading_criteria,
@@ -194,23 +199,17 @@ class MultiCriteriaGradedRAGAgentV2(MultiAgent, StateConfigMixin):
 class FLAREAgentV2Example(MultiAgent, StateConfigMixin):
     """FLARE Agent V2 example using enhanced state schema."""
 
-    def __init__(
-        self,
-        uncertainty_threshold: float = 0.3,
-        max_retrieval_rounds: int = 3,
-        **kwargs):
-
+    def __init__(self, uncertainty_threshold: float = 0.3, max_retrieval_rounds: int = 3, **kwargs):
         # Create a simple agent for example
         monitor = SimpleAgent(
             name="monitor",
             instructions="Monitor for uncertainty",
-            output_schema={"uncertainty": "bool"})
+            output_schema={"uncertainty": "bool"},
+        )
 
         super().__init__(
-            agents=[monitor],
-            execution_mode="conditional",
-            state_schema=FLAREState,
-            **kwargs)
+            agents=[monitor], execution_mode="conditional", state_schema=FLAREState, **kwargs
+        )
 
         self._initial_config = {
             "uncertainty_threshold": uncertainty_threshold,
@@ -228,14 +227,13 @@ def create_graded_rag_agent(
     workflow_type: str = "fully_graded",
     relevance_threshold: float = 0.5,
     grading_criteria: list[str] | None = None,
-    **kwargs) -> MultiAgent:
+    **kwargs,
+) -> MultiAgent:
     """Factory function to create graded RAG agents with proper configuration."""
     if workflow_type == "fully_graded":
         return FullyGradedRAGAgentV2(relevance_threshold=relevance_threshold, **kwargs)
     if workflow_type == "multi_criteria":
-        return MultiCriteriaGradedRAGAgentV2(
-            grading_criteria=grading_criteria, **kwargs
-        )
+        return MultiCriteriaGradedRAGAgentV2(grading_criteria=grading_criteria, **kwargs)
     raise TypeError(f"Unknown workflow type: {workflow_type}")
 
 
@@ -258,10 +256,9 @@ if __name__ == "__main__":
     )
 
 
-
 def build_custom_graph() -> Any:
     """Build custom graph for graded RAG workflows v2.
-    
+
     Returns:
         Graph configuration or None for default behavior
     """

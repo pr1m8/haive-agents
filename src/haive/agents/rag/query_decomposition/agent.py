@@ -38,9 +38,7 @@ class SubQuery(BaseModel):
 
     query_text: str = Field(description="The sub-query text")
     query_type: QueryType = Field(description="Type of this sub-query")
-    priority: int = Field(
-        ge=1, le=5, description="Priority level (1=highest, 5=lowest)"
-    )
+    priority: int = Field(ge=1, le=5, description="Priority level (1=highest, 5=lowest)")
     dependencies: list[int] = Field(
         default_factory=list, description="Indices of sub-queries this depends on"
     )
@@ -53,14 +51,10 @@ class QueryDecomposition(BaseModel):
 
     original_query: str = Field(description="Original complex query")
     query_type: QueryType = Field(description="Type of the original query")
-    complexity_score: float = Field(
-        ge=0.0, le=1.0, description="Query complexity (0-1)"
-    )
+    complexity_score: float = Field(ge=0.0, le=1.0, description="Query complexity (0-1)")
 
     sub_queries: list[SubQuery] = Field(description="List of decomposed sub-queries")
-    execution_order: list[int] = Field(
-        description="Suggested execution order (indices)"
-    )
+    execution_order: list[int] = Field(description="Suggested execution order (indices)")
 
     synthesis_strategy: str = Field(description="How to combine results")
     estimated_difficulty: Literal["easy", "moderate", "hard", "very_hard"] = Field(
@@ -87,15 +81,11 @@ class HierarchicalDecomposition(BaseModel):
     execution_levels: list[list[int]] = Field(
         description="Execution levels (parallel within level, sequential between levels)"
     )
-    dependency_map: dict[str, list[str]] = Field(
-        description="Dependencies between questions"
-    )
+    dependency_map: dict[str, list[str]] = Field(description="Dependencies between questions")
 
     # Integration strategy
     synthesis_plan: str = Field(description="How to synthesize answers")
-    confidence_level: float = Field(
-        ge=0.0, le=1.0, description="Confidence in decomposition"
-    )
+    confidence_level: float = Field(ge=0.0, le=1.0, description="Confidence in decomposition")
 
 
 class ContextualDecomposition(BaseModel):
@@ -105,9 +95,7 @@ class ContextualDecomposition(BaseModel):
     context_analysis: str = Field(description="Analysis of available context")
 
     # Context-driven sub-queries
-    context_dependent_queries: list[str] = Field(
-        description="Queries that require context"
-    )
+    context_dependent_queries: list[str] = Field(description="Queries that require context")
     context_independent_queries: list[str] = Field(
         description="Queries that can be answered independently"
     )
@@ -149,7 +137,8 @@ Your goal is to decompose complex questions into a series of simpler questions t
 - **Causal**: Cause-and-effect relationships
 - **Hypothetical**: What-if scenarios
 
-Break down the query systematically and logically."""),
+Break down the query systematically and logically.""",
+        ),
         (
             "human",
             """Decompose this complex query into manageable sub-queries:
@@ -165,7 +154,8 @@ Break down the query systematically and logically."""),
 3. Determine execution order and dependencies
 4. Suggest how to synthesize the results
 
-Provide a structured decomposition."""),
+Provide a structured decomposition.""",
+        ),
     ]
 )
 
@@ -182,7 +172,8 @@ Create a hierarchical breakdown where:
 - **Level 3**: Detail questions (specific facts and details)
 
 Each level can be processed in parallel, but levels must be processed sequentially.
-Higher levels provide context for lower levels."""),
+Higher levels provide context for lower levels.""",
+        ),
         (
             "human",
             """Create a hierarchical decomposition:
@@ -190,7 +181,8 @@ Higher levels provide context for lower levels."""),
 **Query:** {query}
 **Context:** {retrieved_documents}
 
-Break this into a clear hierarchy of questions that build upon each other."""),
+Break this into a clear hierarchy of questions that build upon each other.""",
+        ),
     ]
 )
 
@@ -207,7 +199,8 @@ Analyze the available context and create a decomposition strategy that:
 3. Prioritizes queries based on context availability
 4. Adapts strategy based on context quality
 
-Consider both what can be answered with current context and what requires additional retrieval."""),
+Consider both what can be answered with current context and what requires additional retrieval.""",
+        ),
         (
             "human",
             """Create a context-aware decomposition:
@@ -221,7 +214,8 @@ Consider both what can be answered with current context and what requires additi
 - Messages: {messages}
 - Previous results: {previous_results}
 
-Analyze context sufficiency and create an appropriate decomposition strategy."""),
+Analyze context sufficiency and create an appropriate decomposition strategy.""",
+        ),
     ]
 )
 
@@ -238,7 +232,8 @@ Your decomposition strategy should adapt based on:
 - Previous decomposition results
 - Time and resource constraints
 
-Provide multiple decomposition approaches and select the best one based on the situation."""),
+Provide multiple decomposition approaches and select the best one based on the situation.""",
+        ),
         (
             "human",
             """Create an adaptive decomposition strategy:
@@ -248,7 +243,8 @@ Provide multiple decomposition approaches and select the best one based on the s
 **Constraints:** {constraints}
 **Previous attempts:** {previous_decompositions}
 
-Provide the optimal decomposition approach for this situation."""),
+Provide the optimal decomposition approach for this situation.""",
+        ),
     ]
 )
 
@@ -258,9 +254,7 @@ class QueryDecomposerAgent(Agent):
 
     name: str = "Query Decomposer"
 
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_sub_queries: int = 5, **kwargs
-    ):
+    def __init__(self, llm_config: LLMConfig | None = None, max_sub_queries: int = 5, **kwargs):
         """Initialize query decomposer.
 
         Args:
@@ -271,7 +265,8 @@ class QueryDecomposerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
         self.max_sub_queries = max_sub_queries
         super().__init__(**kwargs)
 
@@ -284,7 +279,8 @@ class QueryDecomposerAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=BASIC_DECOMPOSITION_PROMPT,
             structured_output_model=QueryDecomposition,
-            output_key="query_decomposition")
+            output_key="query_decomposition",
+        )
 
         def decompose_query(state: dict[str, Any]) -> dict[str, Any]:
             """Decompose complex query into sub-queries."""
@@ -294,8 +290,7 @@ class QueryDecomposerAgent(Agent):
             # Format context info
             context_info = ""
             if retrieved_documents:
-                context_info = f"Available documents: {
-                        len(retrieved_documents)} documents"
+                context_info = f"Available documents: {len(retrieved_documents)} documents"
                 context_info += (
                     f"\nSample content: {retrieved_documents[0].page_content[:200]}..."
                     if retrieved_documents
@@ -311,9 +306,7 @@ class QueryDecomposerAgent(Agent):
 
             # Limit number of sub-queries
             if len(decomposition.sub_queries) > self.max_sub_queries:
-                decomposition.sub_queries = decomposition.sub_queries[
-                    : self.max_sub_queries
-                ]
+                decomposition.sub_queries = decomposition.sub_queries[: self.max_sub_queries]
                 decomposition.execution_order = decomposition.execution_order[
                     : self.max_sub_queries
                 ]
@@ -342,9 +335,7 @@ class HierarchicalQueryDecomposerAgent(Agent):
 
     name: str = "Hierarchical Query Decomposer"
 
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_levels: int = 3, **kwargs
-    ):
+    def __init__(self, llm_config: LLMConfig | None = None, max_levels: int = 3, **kwargs):
         """Initialize hierarchical query decomposer.
 
         Args:
@@ -355,7 +346,8 @@ class HierarchicalQueryDecomposerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
         self.max_levels = max_levels
         super().__init__(**kwargs)
 
@@ -368,7 +360,8 @@ class HierarchicalQueryDecomposerAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=HIERARCHICAL_DECOMPOSITION_PROMPT,
             structured_output_model=HierarchicalDecomposition,
-            output_key="hierarchical_decomposition")
+            output_key="hierarchical_decomposition",
+        )
 
         def hierarchical_decompose(state: dict[str, Any]) -> dict[str, Any]:
             """Create hierarchical decomposition."""
@@ -423,10 +416,8 @@ class ContextualQueryDecomposerAgent(Agent):
     name: str = "Contextual Query Decomposer"
 
     def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        context_threshold: float = 0.7,
-        **kwargs):
+        self, llm_config: LLMConfig | None = None, context_threshold: float = 0.7, **kwargs
+    ):
         """Initialize contextual query decomposer.
 
         Args:
@@ -437,7 +428,8 @@ class ContextualQueryDecomposerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
         self.context_threshold = context_threshold
         super().__init__(**kwargs)
 
@@ -450,7 +442,8 @@ class ContextualQueryDecomposerAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=CONTEXTUAL_DECOMPOSITION_PROMPT,
             structured_output_model=ContextualDecomposition,
-            output_key="contextual_decomposition")
+            output_key="contextual_decomposition",
+        )
 
         def contextual_decompose(state: dict[str, Any]) -> dict[str, Any]:
             """Create context-aware decomposition."""
@@ -484,9 +477,7 @@ class ContextualQueryDecomposerAgent(Agent):
             )
 
             # Determine strategy based on context sufficiency
-            needs_more_context = (
-                decomposition.context_sufficiency < self.context_threshold
-            )
+            needs_more_context = decomposition.context_sufficiency < self.context_threshold
 
             return {
                 "contextual_decomposition": decomposition,
@@ -513,11 +504,7 @@ class AdaptiveQueryDecomposerAgent(Agent):
 
     name: str = "Adaptive Query Decomposer"
 
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        enable_fallback: bool = True,
-        **kwargs):
+    def __init__(self, llm_config: LLMConfig | None = None, enable_fallback: bool = True, **kwargs):
         """Initialize adaptive query decomposer.
 
         Args:
@@ -528,7 +515,8 @@ class AdaptiveQueryDecomposerAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
         self.enable_fallback = enable_fallback
         super().__init__(**kwargs)
 
@@ -557,16 +545,10 @@ class AdaptiveQueryDecomposerAgent(Agent):
                 # Rich context - contextual decomposition
                 strategy = "contextual"
                 decomposer = ContextualQueryDecomposerAgent(llm_config=self.llm_config)
-            elif (
-                "step" in query.lower()
-                or "first" in query.lower()
-                or "then" in query.lower()
-            ):
+            elif "step" in query.lower() or "first" in query.lower() or "then" in query.lower():
                 # Sequential indicators - hierarchical decomposition
                 strategy = "hierarchical"
-                decomposer = HierarchicalQueryDecomposerAgent(
-                    llm_config=self.llm_config
-                )
+                decomposer = HierarchicalQueryDecomposerAgent(llm_config=self.llm_config)
             else:
                 # Default to basic decomposition
                 strategy = "basic"
@@ -598,9 +580,7 @@ class AdaptiveQueryDecomposerAgent(Agent):
                     basic_decomposer = QueryDecomposerAgent(llm_config=self.llm_config)
                     result = basic_decomposer.run(state)
 
-                    result_dict = (
-                        result if isinstance(result, dict) else {"result": result}
-                    )
+                    result_dict = result if isinstance(result, dict) else {"result": result}
                     result_dict.update(
                         {
                             "decomposition_strategy_used": "basic_fallback",
@@ -621,11 +601,10 @@ class AdaptiveQueryDecomposerAgent(Agent):
 
 # Factory functions for easy creation
 def create_query_decomposer(
-    decomposer_type: Literal[
-        "basic", "hierarchical", "contextual", "adaptive"
-    ] = "basic",
+    decomposer_type: Literal["basic", "hierarchical", "contextual", "adaptive"] = "basic",
     llm_config: LLMConfig | None = None,
-    **kwargs) -> Agent:
+    **kwargs,
+) -> Agent:
     """Create a query decomposer agent.
 
     Args:

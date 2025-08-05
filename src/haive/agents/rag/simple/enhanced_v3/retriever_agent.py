@@ -52,9 +52,7 @@ class RetrieverAgent(BaseRAGAgent):
     """
 
     # Retrieval configuration
-    top_k: int = Field(
-        default=5, ge=1, le=50, description="Number of documents to retrieve"
-    )
+    top_k: int = Field(default=5, ge=1, le=50, description="Number of documents to retrieve")
 
     score_threshold: float = Field(
         default=0.0, ge=0.0, le=1.0, description="Minimum similarity score threshold"
@@ -65,13 +63,9 @@ class RetrieverAgent(BaseRAGAgent):
         default=False, description="Enable performance tracking and metrics"
     )
 
-    debug_mode: bool = Field(
-        default=False, description="Enable debug information collection"
-    )
+    debug_mode: bool = Field(default=False, description="Enable debug information collection")
 
-    include_metadata: bool = Field(
-        default=True, description="Include document metadata in results"
-    )
+    include_metadata: bool = Field(default=True, description="Include document metadata in results")
 
     quality_scoring: bool = Field(
         default=False, description="Calculate quality scores for retrieved documents"
@@ -103,10 +97,7 @@ class RetrieverAgent(BaseRAGAgent):
             raise ValueError("Input must be string or dict with 'query' field")
 
         if debug or self.debug_mode:
-            logger.info(
-                f"🔍 RetrieverAgent '{
-                    self.name}' processing query: {query}"
-            )
+            logger.info(f"🔍 RetrieverAgent '{self.name}' processing query: {query}")
 
         # Start timing
         start_time = time.time()
@@ -146,16 +137,12 @@ class RetrieverAgent(BaseRAGAgent):
                     filtered_documents, retrieval_time, query
                 )
                 logger.info(
-                    f"✅ Retrieved {
-                        len(filtered_documents)} documents in {
-                        retrieval_time:.3f}s"
+                    f"✅ Retrieved {len(filtered_documents)} documents in {retrieval_time:.3f}s"
                 )
 
             # Add metadata if enabled
             if self.include_metadata:
-                result["metadata"] = self._build_metadata(
-                    filtered_documents, query, retrieval_time
-                )
+                result["metadata"] = self._build_metadata(filtered_documents, query, retrieval_time)
 
             return result
 
@@ -195,7 +182,8 @@ class RetrieverAgent(BaseRAGAgent):
             return [
                 Document(
                     page_content=retrieval_result,
-                    metadata={"source": "retrieval_result", "generated": True})
+                    metadata={"source": "retrieval_result", "generated": True},
+                )
             ]
 
         return []
@@ -287,9 +275,7 @@ class RetrieverAgent(BaseRAGAgent):
         }
 
         if self.quality_scoring and documents:
-            quality_scores = [
-                doc.metadata.get("quality_score", 0.0) for doc in documents
-            ]
+            quality_scores = [doc.metadata.get("quality_score", 0.0) for doc in documents]
             metrics.update(
                 {
                     "avg_quality_score": sum(quality_scores) / len(quality_scores),
@@ -303,8 +289,7 @@ class RetrieverAgent(BaseRAGAgent):
         if any(score > 0 for score in similarity_scores):
             metrics.update(
                 {
-                    "avg_similarity_score": sum(similarity_scores)
-                    / len(similarity_scores),
+                    "avg_similarity_score": sum(similarity_scores) / len(similarity_scores),
                     "min_similarity_score": min(similarity_scores),
                     "max_similarity_score": max(similarity_scores),
                 }
@@ -360,9 +345,7 @@ class RetrieverAgent(BaseRAGAgent):
             "query": query,
             "retrieval_time": retrieval_time,
             "document_count": len(documents),
-            "sources": list(
-                {doc.metadata.get("source", "unknown") for doc in documents}
-            ),
+            "sources": list({doc.metadata.get("source", "unknown") for doc in documents}),
             "retrieval_config": {
                 "top_k": self.top_k,
                 "score_threshold": self.score_threshold,

@@ -66,25 +66,19 @@ class DocumentRetrieval(BaseModel):
     retrieved_count: int = Field(
         default=0, description="Number of documents successfully retrieved"
     )
-    query_processed: str = Field(
-        default="", description="Processed version of the input query"
-    )
+    query_processed: str = Field(default="", description="Processed version of the input query")
 
 
 class AnswerGeneration(BaseModel):
     """Output from the answer generation agent."""
 
-    answer: str = Field(
-        default="", description="Generated answer based on retrieved documents"
-    )
+    answer: str = Field(default="", description="Generated answer based on retrieved documents")
     sources: list[str] = Field(
         default_factory=list, description="Source references used in the answer"
     )
     confidence: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Confidence score for the generated answer")
+        default=0.0, ge=0.0, le=1.0, description="Confidence score for the generated answer"
+    )
 
 
 # ================================
@@ -114,9 +108,7 @@ class SimpleRAGState(MultiAgentState):
 
     query: str = Field(default="", description="User query for RAG processing")
 
-    top_k: int = Field(
-        default=5, ge=1, le=50, description="Number of documents to retrieve"
-    )
+    top_k: int = Field(default=5, ge=1, le=50, description="Number of documents to retrieve")
 
     # =============================
     # Retriever Agent Outputs
@@ -130,27 +122,21 @@ class SimpleRAGState(MultiAgentState):
         default=0, description="Number of documents successfully retrieved"
     )
 
-    query_processed: str = Field(
-        default="", description="Processed version of the input query"
-    )
+    query_processed: str = Field(default="", description="Processed version of the input query")
 
     # =============================
     # Generator Agent Outputs
     # =============================
 
-    answer: str = Field(
-        default="", description="Generated answer based on retrieved documents"
-    )
+    answer: str = Field(default="", description="Generated answer based on retrieved documents")
 
     sources: list[str] = Field(
         default_factory=list, description="Source references used in the answer"
     )
 
     confidence: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Confidence score for the generated answer")
+        default=0.0, ge=0.0, le=1.0, description="Confidence score for the generated answer"
+    )
 
     # =============================
     # Metadata
@@ -169,7 +155,8 @@ class SimpleRAGState(MultiAgentState):
 def create_rag_agents(
     vector_store_config: VectorStoreConfig,
     llm_config: AugLLMConfig,
-    structured_output_model: type[BaseModel] | None = None) -> tuple[BaseRAGAgent, SimpleAgent]:
+    structured_output_model: type[BaseModel] | None = None,
+) -> tuple[BaseRAGAgent, SimpleAgent]:
     """Create the retriever and generator agents for SimpleRAG.
 
     Args:
@@ -196,7 +183,8 @@ def create_rag_agents(
     generator = SimpleAgent(
         name="generator",
         engine=generator_config,
-        structured_output_model=structured_output_model or AnswerGeneration)
+        structured_output_model=structured_output_model or AnswerGeneration,
+    )
 
     return retriever, generator
 
@@ -207,7 +195,8 @@ def create_simple_rag_workflow(
     llm_config: AugLLMConfig | None = None,
     top_k: int = 5,
     structured_output_model: type[BaseModel] | None = None,
-    workflow_id: str = "") -> SimpleRAGState:
+    workflow_id: str = "",
+) -> SimpleRAGState:
     """Create a complete SimpleRAG workflow state.
 
     Args:
@@ -229,14 +218,16 @@ def create_simple_rag_workflow(
     retriever, generator = create_rag_agents(
         vector_store_config=vector_store_config,
         llm_config=llm_config,
-        structured_output_model=structured_output_model)
+        structured_output_model=structured_output_model,
+    )
 
     # Create and return state
     return SimpleRAGState(
         agents=[retriever, generator],
         query=query,
         top_k=top_k,
-        rag_workflow_id=workflow_id or f"rag_{hash(query) % 10000}")
+        rag_workflow_id=workflow_id or f"rag_{hash(query) % 10000}",
+    )
 
 
 # ================================
@@ -244,9 +235,7 @@ def create_simple_rag_workflow(
 # ================================
 
 
-async def execute_simple_rag(
-    state: SimpleRAGState, debug: bool = False
-) -> SimpleRAGState:
+async def execute_simple_rag(state: SimpleRAGState, debug: bool = False) -> SimpleRAGState:
     """Execute the complete SimpleRAG workflow.
 
     This follows the working pattern from the guides:
@@ -304,7 +293,8 @@ def run_simple_rag(
     vector_store_config: VectorStoreConfig,
     llm_config: AugLLMConfig | None = None,
     top_k: int = 5,
-    debug: bool = False) -> SimpleRAGState:
+    debug: bool = False,
+) -> SimpleRAGState:
     """Synchronous wrapper for SimpleRAG execution.
 
     Args:
@@ -319,10 +309,8 @@ def run_simple_rag(
     """
     # Create workflow
     state = create_simple_rag_workflow(
-        query=query,
-        vector_store_config=vector_store_config,
-        llm_config=llm_config,
-        top_k=top_k)
+        query=query, vector_store_config=vector_store_config, llm_config=llm_config, top_k=top_k
+    )
 
     # Execute
     return asyncio.run(execute_simple_rag(state, debug=debug))

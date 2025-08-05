@@ -15,9 +15,7 @@ def grade_generation_v_documents_and_question(state: dict[str, Any]):
     documents = state["documents"]
     generation = state["generation"]
 
-    score = hallucination_grader.invoke(
-        {"documents": documents, "generation": generation}
-    )
+    score = hallucination_grader.invoke({"documents": documents, "generation": generation})
     grade = score.binary_score
 
     # Check hallucination

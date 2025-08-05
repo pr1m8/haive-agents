@@ -66,7 +66,8 @@ DOCUMENT_RELEVANCE_PROMPT = ChatPromptTemplate.from_messages(
 - Direct relevance to query intent
 - Quality and specificity of information
 - Completeness of coverage
-- Usefulness for answering the query"""),
+- Usefulness for answering the query""",
+        ),
         (
             "human",
             """Query: {query}
@@ -78,7 +79,8 @@ Provide a detailed relevance assessment with:
 1. Relevance score (0.0-1.0)
 2. Is relevant (true/false - use 0.5 as threshold)
 3. Reasoning for your assessment
-4. Key information extracted (if relevant)"""),
+4. Key information extracted (if relevant)""",
+        ),
     ]
 )
 
@@ -108,7 +110,8 @@ ANSWER_QUALITY_PROMPT = ChatPromptTemplate.from_messages(
 4. **Overall Quality (0.0-1.0)**:
    - Holistic assessment of the answer
    - Balance of all factors
-   - Usefulness to the user"""),
+   - Usefulness to the user""",
+        ),
         (
             "human",
             """Query: {query}
@@ -124,7 +127,8 @@ Provide a comprehensive quality assessment including:
 2. Overall quality score
 3. Specific strengths
 4. Identified weaknesses
-5. Concrete suggestions for improvement"""),
+5. Concrete suggestions for improvement""",
+        ),
     ]
 )
 
@@ -149,7 +153,8 @@ HALLUCINATION_DETECTION_PROMPT = ChatPromptTemplate.from_messages(
 - 0.7-0.9: Major hallucinations
 - 1.0: Severe fabrication
 
-Be thorough and evidence-based."""),
+Be thorough and evidence-based.""",
+        ),
         (
             "human",
             """Query: {query}
@@ -165,7 +170,8 @@ Analyze for hallucinations:
 2. Hallucination score (0.0-1.0)
 3. Types of hallucinations found
 4. Specific problematic claims
-5. List of supported vs unsupported claims"""),
+5. List of supported vs unsupported claims""",
+        ),
     ]
 )
 
@@ -186,7 +192,8 @@ def create_document_grader(name: str = "document_grader") -> SimpleAgent:
             "is_relevant": "bool",
             "reasoning": "str",
             "key_information": "List[str]",
-        })
+        },
+    )
 
 
 def create_answer_grader(name: str = "answer_grader") -> SimpleAgent:
@@ -204,7 +211,8 @@ def create_answer_grader(name: str = "answer_grader") -> SimpleAgent:
             "strengths": "List[str]",
             "weaknesses": "List[str]",
             "suggestions": "List[str]",
-        })
+        },
+    )
 
 
 def create_hallucination_grader(name: str = "hallucination_grader") -> SimpleAgent:
@@ -221,7 +229,8 @@ def create_hallucination_grader(name: str = "hallucination_grader") -> SimpleAge
             "specific_issues": "List[str]",
             "supported_claims": "List[str]",
             "unsupported_claims": "List[str]",
-        })
+        },
+    )
 
 
 # ===== PRIORITY GRADING =====
@@ -240,7 +249,8 @@ PRIORITY_RANKING_PROMPT = ChatPromptTemplate.from_messages(
 5. **Authority**: Source credibility and expertise
 6. **Uniqueness**: Novel information not in other documents
 
-Rank documents from most to least important for answering the query."""),
+Rank documents from most to least important for answering the query.""",
+        ),
         (
             "human",
             """Query: {query}
@@ -252,7 +262,8 @@ Provide:
 1. Ranked list of document IDs (most to least important)
 2. Priority score for each (0.0-1.0)
 3. Reasoning for top 3 documents
-4. Documents to potentially exclude (if any)"""),
+4. Documents to potentially exclude (if any)""",
+        ),
     ]
 )
 
@@ -270,7 +281,8 @@ def create_priority_ranker(name: str = "priority_ranker") -> SimpleAgent:
             "top_3_reasoning": "Dict[str, str]",
             "exclude_document_ids": "List[str]",
             "exclusion_reasons": "Dict[str, str]",
-        })
+        },
+    )
 
 
 # ===== QUERY UNDERSTANDING =====
@@ -287,7 +299,8 @@ QUERY_ANALYSIS_PROMPT = ChatPromptTemplate.from_messages(
 3. **Intent**: What the user really wants to know
 4. **Complexity**: Simple, moderate, or complex
 5. **Required Information**: What types of information are needed
-6. **Potential Ambiguities**: Unclear or multiple interpretations"""),
+6. **Potential Ambiguities**: Unclear or multiple interpretations""",
+        ),
         (
             "human",
             """Analyze this query in detail:
@@ -300,7 +313,8 @@ Provide comprehensive analysis including:
 3. User intent interpretation
 4. Complexity assessment
 5. Information requirements
-6. Potential ambiguities or clarifications needed"""),
+6. Potential ambiguities or clarifications needed""",
+        ),
     ]
 )
 
@@ -320,7 +334,8 @@ def create_query_analyzer(name: str = "query_analyzer") -> SimpleAgent:
             "information_requirements": "List[str]",
             "ambiguities": "List[str]",
             "suggested_clarifications": "List[str]",
-        })
+        },
+    )
 
 
 # ===== COMPOSITE GRADING WORKFLOW =====
@@ -383,8 +398,7 @@ class CompositeGradingAgent:
         """Calculate overall pipeline score."""
         # Average document relevance
         doc_score = (
-            sum(g.get("relevance_score", 0) for g in document_grades)
-            / len(document_grades)
+            sum(g.get("relevance_score", 0) for g in document_grades) / len(document_grades)
             if document_grades
             else 0
         )
@@ -396,8 +410,6 @@ class CompositeGradingAgent:
         hallucination_penalty = hallucination_grade.get("hallucination_score", 0)
 
         # Weighted combination
-        overall = (0.3 * doc_score + 0.5 * answer_score) * (
-            1 - 0.5 * hallucination_penalty
-        )
+        overall = (0.3 * doc_score + 0.5 * answer_score) * (1 - 0.5 * hallucination_penalty)
 
         return min(max(overall, 0.0), 1.0)

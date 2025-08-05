@@ -4,7 +4,8 @@ from hallucination_graders.models import (
     HallucinationBinaryResponse,
     HallucinationClaim,
     HallucinationDetectionResponse,
-    HallucinationType)
+    HallucinationType,
+)
 
 __all__ = [
     "HallucinationBinaryResponse",

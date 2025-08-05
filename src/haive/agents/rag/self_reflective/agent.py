@@ -45,21 +45,13 @@ class ReflectionCritique(BaseModel):
     strengths: list[str] = Field(description="Strong points in the answer")
 
     # Improvement suggestions
-    improvement_suggestions: list[str] = Field(
-        description="Specific improvements needed"
-    )
-    requires_more_retrieval: bool = Field(
-        description="Whether more retrieval is needed"
-    )
+    improvement_suggestions: list[str] = Field(description="Specific improvements needed")
+    requires_more_retrieval: bool = Field(description="Whether more retrieval is needed")
     requires_rephrasing: bool = Field(description="Whether rephrasing is needed")
 
     # Priority
-    improvement_priority: float = Field(
-        ge=0.0, le=1.0, description="Priority of improvements"
-    )
-    estimated_improvement: float = Field(
-        ge=0.0, le=1.0, description="Potential improvement"
-    )
+    improvement_priority: float = Field(ge=0.0, le=1.0, description="Priority of improvements")
+    estimated_improvement: float = Field(ge=0.0, le=1.0, description="Potential improvement")
 
 
 class ReflectionPlan(BaseModel):
@@ -82,9 +74,7 @@ class ReflectionPlan(BaseModel):
     improvement_strategy: str = Field(description="Strategy for improvement")
     termination_reason: str = Field(description="Reason if stopping iterations")
 
-    confidence_in_plan: float = Field(
-        ge=0.0, le=1.0, description="Confidence in improvement plan"
-    )
+    confidence_in_plan: float = Field(ge=0.0, le=1.0, description="Confidence in improvement plan")
 
 
 class ImprovedAnswer(BaseModel):
@@ -125,15 +115,11 @@ class SelfReflectiveResult(BaseModel):
 
     # Retrieval statistics
     initial_retrievals: int = Field(description="Initial retrieval count")
-    additional_retrievals: int = Field(
-        description="Additional retrievals during reflection"
-    )
+    additional_retrievals: int = Field(description="Additional retrievals during reflection")
     unique_sources_used: int = Field(description="Unique sources referenced")
 
     # Process insights
-    most_effective_improvements: list[str] = Field(
-        description="Most effective improvements"
-    )
+    most_effective_improvements: list[str] = Field(description="Most effective improvements")
     persistent_challenges: list[str] = Field(description="Challenges that remained")
     termination_reason: str = Field(description="Why reflection loop ended")
 
@@ -148,7 +134,8 @@ INITIAL_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
             """You are an expert at providing comprehensive answers using retrieved information.
 
 Generate an initial answer that will later be refined through self-reflection.
-Focus on accuracy and use of evidence, knowing that the answer will be critiqued and improved."""),
+Focus on accuracy and use of evidence, knowing that the answer will be critiqued and improved.""",
+        ),
         (
             """human""",
             """Answer this query using the retrieved documents:
@@ -157,7 +144,8 @@ Focus on accuracy and use of evidence, knowing that the answer will be critiqued
 
 **Retrieved Documents:** {documents}
 
-Provide a comprehensive initial answer with clear evidence references."""),
+Provide a comprehensive initial answer with clear evidence references.""",
+        ),
     ]
 )
 
@@ -184,7 +172,8 @@ REFLECTION_CRITIQUE_PROMPT = ChatPromptTemplate.from_messages(
 - Determine if more retrieval is needed
 - Prioritize improvements by impact
 
-Provide constructive, actionable critique for improvement."""),
+Provide constructive, actionable critique for improvement.""",
+        ),
         (
             """human""",
             """Critique this answer for the given query:
@@ -197,7 +186,8 @@ Provide constructive, actionable critique for improvement."""),
 
 **Previous Critiques:** {previous_critiques}
 
-Analyze the answer across all dimensions and provide specific improvement guidance."""),
+Analyze the answer across all dimensions and provide specific improvement guidance.""",
+        ),
     ]
 )
 
@@ -229,7 +219,8 @@ IMPROVEMENT_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
 - Maximum iterations reached
 - All critical issues addressed
 
-Create effective improvement plans."""),
+Create effective improvement plans.""",
+        ),
         (
             """human""",
             """Plan improvements based on reflection critiques:
@@ -244,7 +235,8 @@ Create effective improvement plans."""),
 
 **Max Iterations:** {max_iterations}
 
-Create an improvement plan or decide to terminate with reasoning."""),
+Create an improvement plan or decide to terminate with reasoning.""",
+        ),
     ]
 )
 
@@ -270,7 +262,8 @@ ANSWER_IMPROVEMENT_PROMPT = ChatPromptTemplate.from_messages(
 - Strengthen evidence usage
 - Remove irrelevant content
 
-Create improved answers that address all feedback."""),
+Create improved answers that address all feedback.""",
+        ),
         (
             """human""",
             """Improve this answer based on the improvement plan:
@@ -285,7 +278,8 @@ Create improved answers that address all feedback."""),
 
 **Focus Areas:** {focus_areas}
 
-Generate an improved answer addressing all identified issues."""),
+Generate an improved answer addressing all identified issues.""",
+        ),
     ]
 )
 
@@ -327,28 +321,32 @@ class SelfReflectiveRAGAgent(Agent):
         self.initial_answer_engine = AugLLMConfig(
             llm_config=self.llm_config,
             prompt_template=INITIAL_ANSWER_PROMPT,
-            output_key="initial_answer")
+            output_key="initial_answer",
+        )
 
         # Create critique engine
         self.critique_engine = AugLLMConfig(
             llm_config=self.llm_config,
             prompt_template=REFLECTION_CRITIQUE_PROMPT,
             structured_output_model=ReflectionCritique,
-            output_key="critique")
+            output_key="critique",
+        )
 
         # Create planning engine
         self.planning_engine = AugLLMConfig(
             llm_config=self.llm_config,
             prompt_template=IMPROVEMENT_PLANNING_PROMPT,
             structured_output_model=ReflectionPlan,
-            output_key="reflection_plan")
+            output_key="reflection_plan",
+        )
 
         # Create improvement engine
         self.improvement_engine = AugLLMConfig(
             llm_config=self.llm_config,
             prompt_template=ANSWER_IMPROVEMENT_PROMPT,
             structured_output_model=ImprovedAnswer,
-            output_key="improved_answer")
+            output_key="improved_answer",
+        )
 
         # Create synthesis engine
         self.synthesis_engine = AugLLMConfig(
@@ -360,7 +358,8 @@ class SelfReflectiveRAGAgent(Agent):
                 ]
             ),
             structured_output_model=SelfReflectiveResult,
-            output_key="reflective_result")
+            output_key="reflective_result",
+        )
 
         # Add engines to registry
         self.engines["initial_answer"] = self.initial_answer_engine
@@ -376,7 +375,8 @@ class SelfReflectiveRAGAgent(Agent):
         llm_config: LLMConfig | None = None,
         max_iterations: int = 3,
         quality_threshold: float = 0.85,
-        **kwargs):
+        **kwargs,
+    ):
         """Create Self-Reflective RAG agent from documents.
 
         Args:
@@ -393,14 +393,16 @@ class SelfReflectiveRAGAgent(Agent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}")
+                api_key="${AZURE_OPENAI_API_KEY}",
+            )
 
         return cls(
             documents=documents,
             llm_config=llm_config,
             max_iterations=max_iterations,
             quality_threshold=quality_threshold,
-            **kwargs)
+            **kwargs,
+        )
 
     def generate_initial_answer(self, state: dict[str, Any]) -> dict[str, Any]:
         """Generate initial answer."""
@@ -451,9 +453,7 @@ class SelfReflectiveRAGAgent(Agent):
                     "answer": current_answer,
                     "iteration": iteration + 1,
                     "previous_critiques": str(
-                        reflection_history[-1].critiques
-                        if reflection_history
-                        else "None"
+                        reflection_history[-1].critiques if reflection_history else "None"
                     ),
                 }
             )
@@ -576,7 +576,8 @@ class SelfReflectiveRAGAgent(Agent):
             {
                 "improve_answer": "improve_answer",
                 "synthesize_result": "synthesize_result",
-            })
+            },
+        )
 
         # Loop back from improvement to reflection
         graph.add_edge("improve_answer", "reflect_critique")
@@ -592,7 +593,8 @@ def create_self_reflective_rag_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     reflection_mode: str = "thorough",
-    **kwargs) -> SelfReflectiveRAGAgent:
+    **kwargs,
+) -> SelfReflectiveRAGAgent:
     """Create a Self-Reflective RAG agent.
 
     Args:

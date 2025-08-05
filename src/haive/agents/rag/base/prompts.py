@@ -28,6 +28,7 @@ re_write_prompt = ChatPromptTemplate.from_messages(
         ("system", system),
         (
             "human",
-            "Here is the initial question: \n\n {question} \n Formulate an improved question."),
+            "Here is the initial question: \n\n {question} \n Formulate an improved question.",
+        ),
     ]
 )

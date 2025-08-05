@@ -33,8 +33,8 @@ from haive.agents.rag.db_rag.sql_rag.config import SQLDatabaseConfig
 
 
 def create_sql_toolkit(
-    db_config: SQLDatabaseConfig,
-    llm_config: AugLLMConfig | LLMConfig | None = None) -> SQLDatabaseToolkit:
+    db_config: SQLDatabaseConfig, llm_config: AugLLMConfig | LLMConfig | None = None
+) -> SQLDatabaseToolkit:
     """Create a SQL Database Toolkit using the provided configuration.
 
     This function creates a LangChain SQLDatabaseToolkit that provides
@@ -107,8 +107,7 @@ def get_all_toolkit_tools(toolkit: SQLDatabaseToolkit) -> list[BaseTool]:
     return toolkit.get_tools()
 
 
-def create_tool_node_with_fallback(
-    tools: BaseTool | list[BaseTool]) -> RunnableWithFallbacks:
+def create_tool_node_with_fallback(tools: BaseTool | list[BaseTool]) -> RunnableWithFallbacks:
     """Create a ToolNode with a fallback to handle errors gracefully.
 
     This function wraps tools in a ToolNode with error handling that
@@ -172,12 +171,11 @@ def handle_tool_error(state: dict[str, Any]) -> dict[str, Any]:
 
     # If we have tool calls, create tool messages for each
     if tool_calls:
-
         return {
             "messages": [
                 ToolMessage(
-                    content=f"Error: {error!r}\nPlease fix your mistakes.",
-                    tool_call_id=tc["id"])
+                    content=f"Error: {error!r}\nPlease fix your mistakes.", tool_call_id=tc["id"]
+                )
                 for tc in tool_calls
             ]
         }
@@ -243,10 +241,7 @@ def explore_database_schema(db: SQLDatabase) -> dict[str, Any]:
             samples = db.run(f"SELECT * FROM {table} LIMIT 3")
             schema_info["table_samples"][table] = samples
         except Exception as e:
-            schema_info["table_samples"][
-                table
-            ] = f"Error fetching samples: {
-                e!s}"
+            schema_info["table_samples"][table] = f"Error fetching samples: {e!s}"
 
     # Try to detect relationships between tables
     try:

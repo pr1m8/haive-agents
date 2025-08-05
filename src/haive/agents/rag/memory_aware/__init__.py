@@ -10,7 +10,8 @@ from memory_aware.agent import (
     create_memory_aware_rag_agent,
     from_documents,
     get_memory_aware_rag_io_schema,
-    retrieve_memories)
+    retrieve_memories,
+)
 
 __all__ = [
     "MemoryAwareRAGAgent",

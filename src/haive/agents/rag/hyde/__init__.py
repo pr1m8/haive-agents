@@ -5,14 +5,16 @@ from haive.agents.rag.hyde.agent_v2 import (
     HyDERAGAgentV2,
     HyDERetrieverAgent,
     build_graph,
-    transform_to_query)
+    transform_to_query,
+)
 from haive.agents.rag.hyde.enhanced_agent import (
     EnhancedHyDERAGAgent,
     EnhancedHyDERetriever,
     adaptive_retrieval,
     build_graph,
     create_enhanced_hyde_agent,
-    demonstrate_enhancement_vs_traditional)
+    demonstrate_enhancement_vs_traditional,
+)
 # Commented out due to Pydantic schema issues with SequentialAgent inheritance
 # from haive.agents.rag.hyde.enhanced_agent_v2 import (
 #     AdaptiveHyDEGenerator,

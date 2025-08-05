@@ -26,9 +26,7 @@ class SimpleRAGAgentV4(EnhancedMultiAgentV4):
     def model_post_init(self, __context):
         """Set up the agents with the configs."""
         self.agents = [
-            BaseRAGAgent(
-                name=f"{self.name}_retriever", engine=self.vector_store_config
-            ),
+            BaseRAGAgent(name=f"{self.name}_retriever", engine=self.vector_store_config),
             AnswerAgent(name=f"{self.name}_answerer", engine=self.llm_config),
         ]
         super().model_post_init(__context)

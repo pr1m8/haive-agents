@@ -12,18 +12,15 @@ from haive.agents.rag.multi_agent_rag.enhanced_state_schemas import (
     DebateRAGState,
     DynamicRAGState,
     FLAREState,
-    StateConfigMixin)
+    StateConfigMixin,
+)
 from haive.agents.simple import SimpleAgent
 
 
 class FLAREAgentV2(MultiAgent, StateConfigMixin):
     """FLARE V2 - Configuration stored in FLAREState."""
 
-    def __init__(
-        self,
-        uncertainty_threshold: float = 0.3,
-        max_retrieval_rounds: int = 3,
-        **kwargs):
+    def __init__(self, uncertainty_threshold: float = 0.3, max_retrieval_rounds: int = 3, **kwargs):
         generation_monitor = SimpleAgent(
             name="generation_monitor",
             instructions="""
@@ -36,7 +33,8 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
                 "uncertainty_detected": "bool",
                 "uncertainty_score": "float",
                 "retrieval_needed": "bool",
-            })
+            },
+        )
 
         active_retrieval = SimpleAgent(
             name="active_retrieval",
@@ -47,7 +45,8 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
             output_schema={
                 "retrieved_documents": "List[str]",
                 "retrieval_query": "str",
-            })
+            },
+        )
 
         informed_generator = SimpleAgent(
             name="informed_generator",
@@ -59,7 +58,8 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
                 "generated_segment": "str",
                 "confidence_score": "float",
                 "generation_complete": "bool",
-            })
+            },
+        )
 
         synthesis_agent = SimpleAgent(
             name="synthesis_agent",
@@ -67,7 +67,8 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
             Synthesize all segments into final response.
             Use state.generation_segments and confidence_scores.
             """,
-            output_schema={"final_response": "str", "overall_confidence": "float"})
+            output_schema={"final_response": "str", "overall_confidence": "float"},
+        )
 
         agents = [
             generation_monitor,
@@ -77,10 +78,8 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
         ]
 
         super().__init__(
-            agents=agents,
-            execution_mode="conditional",
-            state_schema=FLAREState,
-            **kwargs)
+            agents=agents, execution_mode="conditional", state_schema=FLAREState, **kwargs
+        )
 
         self._initial_config = {
             "uncertainty_threshold": uncertainty_threshold,
@@ -108,7 +107,8 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
         min_retrievers: int = 1,
         max_retrievers: int = 5,
         performance_threshold: float = 0.6,
-        **kwargs):
+        **kwargs,
+    ):
         retriever_manager = SimpleAgent(
             name="retriever_manager",
             instructions="""
@@ -120,7 +120,8 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
                 "retrievers_to_add": "List[Dict[str, Any]]",
                 "retrievers_to_remove": "List[str]",
                 "active_retriever_count": "int",
-            })
+            },
+        )
 
         retriever_coordinator = SimpleAgent(
             name="retriever_coordinator",
@@ -131,7 +132,8 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
             output_schema={
                 "retrieval_results": "Dict[str, List[str]]",
                 "performance_updates": "Dict[str, float]",
-            })
+            },
+        )
 
         performance_analyzer = SimpleAgent(
             name="performance_analyzer",
@@ -142,7 +144,8 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
             output_schema={
                 "performance_report": "Dict[str, float]",
                 "recommendations": "List[str]",
-            })
+            },
+        )
 
         dynamic_synthesis = SimpleAgent(
             name="dynamic_synthesis",
@@ -153,7 +156,8 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
             output_schema={
                 "answer": "str",
                 "retriever_contributions": "Dict[str, float]",
-            })
+            },
+        )
 
         agents = [
             retriever_manager,
@@ -163,10 +167,8 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
         ]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=DynamicRAGState,
-            **kwargs)
+            agents=agents, execution_mode="sequential", state_schema=DynamicRAGState, **kwargs
+        )
 
         self._initial_config = {
             "min_retrievers": min_retrievers,
@@ -196,7 +198,8 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
         max_debate_rounds: int = 3,
         require_consensus: bool = False,
         enable_judge: bool = True,
-        **kwargs):
+        **kwargs,
+    ):
         if position_names is None:
             position_names = ["Affirmative", "Negative", "Neutral"]
 
@@ -214,7 +217,8 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
                     "argument": "str",
                     "evidence": "List[str]",
                     "confidence": "float",
-                })
+                },
+            )
             position_agents.append(agent)
 
         # Moderator
@@ -229,7 +233,8 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
                 "summary": "str",
                 "consensus_check": "bool",
                 "continue_debate": "bool",
-            })
+            },
+        )
 
         # Optional judge
         if enable_judge:
@@ -243,7 +248,8 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
                     "judgment": "str",
                     "winner": "Optional[str]",
                     "scores": "Dict[str, float]",
-                })
+                },
+            )
             agents = [*position_agents, moderator, judge]
         else:
             agents = [*position_agents, moderator]
@@ -255,15 +261,14 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
             Synthesize all positions into final answer.
             Consider state.consensus_reached and debate_winner.
             """,
-            output_schema={"final_answer": "str", "synthesis_method": "str"})
+            output_schema={"final_answer": "str", "synthesis_method": "str"},
+        )
 
         agents.append(synthesis_judge)
 
         super().__init__(
-            agents=agents,
-            execution_mode="conditional",
-            state_schema=DebateRAGState,
-            **kwargs)
+            agents=agents, execution_mode="conditional", state_schema=DebateRAGState, **kwargs
+        )
 
         self._initial_config = {
             "position_names": position_names,
@@ -302,7 +307,8 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
         threshold_step: float = 0.1,
         min_threshold: float = 0.3,
         max_threshold: float = 0.95,
-        **kwargs):
+        **kwargs,
+    ):
         query_analyzer = SimpleAgent(
             name="query_analyzer",
             instructions="""
@@ -310,7 +316,8 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
             Use state.initial_threshold as starting point.
             Store complexity in state.query_complexity_score.
             """,
-            output_schema={"complexity_score": "float", "suggested_threshold": "float"})
+            output_schema={"complexity_score": "float", "suggested_threshold": "float"},
+        )
 
         adaptive_retriever = SimpleAgent(
             name="adaptive_retriever",
@@ -323,7 +330,8 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
                 "documents": "List[str]",
                 "threshold_used": "float",
                 "adjustment_made": "float",
-            })
+            },
+        )
 
         confidence_assessor = SimpleAgent(
             name="confidence_assessor",
@@ -336,7 +344,8 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
                 "confidence": "float",
                 "suggest_adjustment": "bool",
                 "adjustment_direction": "str",
-            })
+            },
+        )
 
         threshold_aware_generator = SimpleAgent(
             name="threshold_aware_generator",
@@ -344,7 +353,8 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
             Generate answer aware of threshold adjustments.
             Note if threshold affected answer quality.
             """,
-            output_schema={"answer": "str", "threshold_impact": "str"})
+            output_schema={"answer": "str", "threshold_impact": "str"},
+        )
 
         agents = [
             query_analyzer,
@@ -357,7 +367,8 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
             agents=agents,
             execution_mode="conditional",
             state_schema=AdaptiveThresholdRAGState,
-            **kwargs)
+            **kwargs,
+        )
 
         self._initial_config = {
             "initial_threshold": initial_threshold,
@@ -380,10 +391,9 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
         return  # Use default graph structure
 
 
-
 def build_custom_graph() -> Any:
     """Build custom graph for specialized workflows v2.
-    
+
     Returns:
         Graph configuration or None for default behavior
     """

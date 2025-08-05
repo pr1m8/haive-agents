@@ -15,14 +15,16 @@ from haive.agents.rag.corrective.agent_v2 import CorrectiveRAGAgentV2
 from haive.agents.rag.hallucination_grading.agent import (
     AdvancedHallucinationGraderAgent,
     HallucinationGraderAgent,
-    RealtimeHallucinationGraderAgent)
+    RealtimeHallucinationGraderAgent,
+)
 from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
 from haive.agents.rag.multi_query.agent import MultiQueryRAGAgent
 from haive.agents.rag.query_decomposition.agent import (
     AdaptiveQueryDecomposerAgent,
     ContextualQueryDecomposerAgent,
     HierarchicalQueryDecomposerAgent,
-    QueryDecomposerAgent)
+    QueryDecomposerAgent,
+)
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -78,13 +80,15 @@ class CompatibleRAGFactory:
         self,
         documents: list[Document],
         llm_config: LLMConfig | None = None,
-        name: str = "Compatible RAG Workflow"):
+        name: str = "Compatible RAG Workflow",
+    ):
         """Initialize factory with documents and configuration."""
         self.documents = documents
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
         self.name = name
 
     @classmethod
@@ -92,9 +96,7 @@ class CompatibleRAGFactory:
         cls, documents: list[Document], llm_config: LLMConfig | None = None, **kwargs
     ) -> SequentialAgent:
         """Create simple RAG workflow."""
-        return SimpleRAGAgent.from_documents(
-            documents=documents, llm_config=llm_config, **kwargs
-        )
+        return SimpleRAGAgent.from_documents(documents=documents, llm_config=llm_config, **kwargs)
 
     @classmethod
     def create_graded_hyde_workflow(
@@ -102,13 +104,15 @@ class CompatibleRAGFactory:
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         enable_search_tools: bool = False,
-        **kwargs) -> SequentialAgent:
+        **kwargs,
+    ) -> SequentialAgent:
         """Create workflow with HyDE and document grading."""
         if not llm_config:
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}")
+                api_key="${AZURE_OPENAI_API_KEY}",
+            )
 
         # Create components
         hyde_agent = HyDERAGAgentV2.from_documents(
@@ -126,20 +130,23 @@ class CompatibleRAGFactory:
         return SequentialAgent(
             agents=[hyde_agent, grading_agent, corrective_agent],
             name="Graded HyDE Workflow",
-            **kwargs)
+            **kwargs,
+        )
 
 
 def create_plug_and_play_component(
     component_type: RAGComponent,
     documents: list[Document],
     llm_config: LLMConfig | None = None,
-    **kwargs) -> SimpleAgent | BaseRAGAgent:
+    **kwargs,
+) -> SimpleAgent | BaseRAGAgent:
     """Create any RAG component as a standalone agent."""
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
 
     # Query decomposition components
     if component_type == RAGComponent.QUERY_DECOMPOSITION:
@@ -169,13 +176,9 @@ def create_plug_and_play_component(
 
     # Retrieval components
     if component_type == RAGComponent.SIMPLE_RETRIEVAL:
-        return BaseRAGAgent.from_documents(
-            documents=documents, llm_config=llm_config, **kwargs
-        )
+        return BaseRAGAgent.from_documents(documents=documents, llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.HYDE_RETRIEVAL:
-        return HyDERAGAgentV2.from_documents(
-            documents=documents, llm_config=llm_config, **kwargs
-        )
+        return HyDERAGAgentV2.from_documents(documents=documents, llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.MULTI_QUERY_RETRIEVAL:
         return MultiQueryRAGAgent.from_documents(
             documents=documents, llm_config=llm_config, **kwargs
@@ -184,8 +187,7 @@ def create_plug_and_play_component(
     raise TypeError(f"Unknown component type: {component_type}")
 
 
-def get_component_compatibility_info(
-    component_type: RAGComponent) -> dict[str, list[str]]:
+def get_component_compatibility_info(component_type: RAGComponent) -> dict[str, list[str]]:
     """Get I/O schema information for a component type."""
     # Simplified I/O schemas for compatibility checking
     schemas = {

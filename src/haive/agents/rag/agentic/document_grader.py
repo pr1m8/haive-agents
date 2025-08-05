@@ -7,8 +7,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
-from haive.agents.rag.common.document_graders.models import (
-    DocumentBinaryResponse)
+from haive.agents.rag.common.document_graders.models import DocumentBinaryResponse
 from haive.agents.simple import SimpleAgent
 
 
@@ -68,8 +67,10 @@ def create_document_grader_agent(
             temperature=temperature,
             prompt_template=prompt_template,
             structured_output_model=DocumentBinaryResponse,
-            structured_output_version="v2"),
-        **kwargs)
+            structured_output_version="v2",
+        ),
+        **kwargs,
+    )
 
 
 async def grade_documents(

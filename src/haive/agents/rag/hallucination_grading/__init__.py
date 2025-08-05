@@ -12,7 +12,8 @@ from hallucination_grading.agent import (
     create_hallucination_grader,
     get_hallucination_grader_io_schema,
     grade_hallucination,
-    quick_hallucination_check)
+    quick_hallucination_check,
+)
 
 __all__ = [
     "AdvancedHallucinationGrade",

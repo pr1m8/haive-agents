@@ -37,7 +37,8 @@ RAG_HALLUCINATION_DETECTION_COMPREHENSIVE = ChatPromptTemplate.from_messages(
 - **Major Hallucination (0.7-0.9)**: Significant unsupported claims or contradictions
 - **Severe Hallucination (1.0)**: Answer contains substantial fabricated or contradictory information
 
-Be thorough, precise, and evidence-based in your analysis."""),
+Be thorough, precise, and evidence-based in your analysis.""",
+        ),
         (
             "human",
             """Analyze the following AI-generated answer for hallucinations by comparing it against the source documents.
@@ -57,7 +58,8 @@ Be thorough, precise, and evidence-based in your analysis."""),
 4. **Specific Issues Identified**
 5. **Recommendations** for improving accuracy
 
-Provide detailed analysis with specific examples and evidence."""),
+Provide detailed analysis with specific examples and evidence.""",
+        ),
     ]
 )
 
@@ -79,7 +81,8 @@ RAG_HALLUCINATION_DETECTION_BINARY = ChatPromptTemplate.from_messages(
 - Inferences are logical and conservative
 - Answer acknowledges limitations appropriately
 
-Provide clear HALLUCINATION DETECTED / NO HALLUCINATION decisions."""),
+Provide clear HALLUCINATION DETECTED / NO HALLUCINATION decisions.""",
+        ),
         (
             "human",
             """Determine if the AI-generated answer contains significant hallucinations.
@@ -88,6 +91,7 @@ Provide clear HALLUCINATION DETECTED / NO HALLUCINATION decisions."""),
 **Source Documents:** {retrieved_documents}
 **Generated Answer:** {generated_answer}
 
-Provide a clear decision with detailed justification and specific issues if found."""),
+Provide a clear decision with detailed justification and specific issues if found.""",
+        ),
     ]
 )

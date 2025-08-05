@@ -6,7 +6,8 @@ from filtered.agent import (
     generate_answer,
     retrieve_documents,
     retriever,
-    setup_workflow)
+    setup_workflow,
+)
 from filtered.config import FilteredRAGConfig
 from filtered.state import FilteredRAGState
 

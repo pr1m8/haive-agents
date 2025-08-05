@@ -5,7 +5,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from haive.agents.rag.db_rag.graph_db.models import (
     CypherQueryOutput,
     GuardrailsOutput,
-    ValidateCypherOutput)
+    ValidateCypherOutput,
+)
 
 r"""LLM engine configurations for the Graph Database RAG Agent.
 
@@ -66,8 +67,8 @@ CORRECT_CYPHER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 )
 
 correct_cypher_aug_llm_config = AugLLMConfig(
-    prompt_template=CORRECT_CYPHER_PROMPT_TEMPLATE,
-    structured_output_model=CypherQueryOutput)
+    prompt_template=CORRECT_CYPHER_PROMPT_TEMPLATE, structured_output_model=CypherQueryOutput
+)
 """Engine for correcting Cypher queries based on validation errors.
 
 This engine takes a Cypher statement with identified errors and produces

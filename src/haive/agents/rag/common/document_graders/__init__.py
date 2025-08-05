@@ -10,7 +10,8 @@ from .models import (
     DocumentBinaryGrading,
     DocumentBinaryResponse,
     DocumentGradingResponse,
-    DocumentRelevanceScore)
+    DocumentRelevanceScore,
+)
 
 __all__ = [
     # "ComprehensiveDocumentGrade",

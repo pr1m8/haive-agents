@@ -217,10 +217,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             domain_examples = []
 
             # Try to get examples for the configured domain
-            if (
-                hasattr(config, "domain_examples")
-                and config.domain_name in config.domain_examples
-            ):
+            if hasattr(config, "domain_examples") and config.domain_name in config.domain_examples:
                 domain_examples = config.domain_examples[config.domain_name]
 
             # Try to load examples from a file if specified
@@ -239,9 +236,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
 
             # Create documents for embedding
             documents = [
-                Document(
-                    page_content=ex["query"], metadata={"question": ex["question"]}
-                )
+                Document(page_content=ex["query"], metadata={"question": ex["question"]})
                 for ex in domain_examples
             ]
 
@@ -259,14 +254,14 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                         if hasattr(config, "example_config")
                         else 2
                     ),
-                    input_keys=["question"])
+                    input_keys=["question"],
+                )
             except Exception as e:
                 logger.warning(f"Failed to initialize semantic example selector: {e}")
                 # Simple fallback - just use all examples
                 self.example_selector = type(
-                    "SimpleSelector",
-                    (),
-                    {"select_examples": lambda self, query: domain_examples})()
+                    "SimpleSelector", (), {"select_examples": lambda self, query: domain_examples}
+                )()
 
         except Exception as e:
             logger.exception(f"Error initializing example selector: {e}")
@@ -405,7 +400,6 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             elif hasattr(guardrails_output, "content"):
                 # It's an AIMessage - try to parse the content
                 try:
-
                     content = guardrails_output.content
                     if isinstance(content, str):
                         parsed = json.loads(content)
@@ -467,9 +461,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 raise ValueError("Missing 'text2cypher' engine in configuration")
 
             # Get examples for few-shot learning
-            examples = self.example_selector.select_examples(
-                {"question": state.question}
-            )
+            examples = self.example_selector.select_examples({"question": state.question})
 
             fewshot_examples = "\n".join(
                 [
@@ -693,13 +685,10 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         """
         try:
             if "generate_final_answer" not in self.engines:
-                raise ValueError(
-                    "Missing 'generate_final_answer' engine in configuration"
-                )
+                raise ValueError("Missing 'generate_final_answer' engine in configuration")
 
             if state.database_records == self.no_results:
-                answer = f"I couldn't find any information about your question: {
-                    state.question}"
+                answer = f"I couldn't find any information about your question: {state.question}"
             else:
                 answer = self.engines["generate_final_answer"].invoke(
                     {"question": state.question, "results": state.database_records}
@@ -716,10 +705,8 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             logger.exception(f"Error in generate_answer: {e}")
             return Command(
                 update={
-                    "error": f"Error generating answer: {
-                        e!s}",
-                    "answer": f"An error occurred while generating the answer: {
-                        e!s}",
+                    "error": f"Error generating answer: {e!s}",
+                    "answer": f"An error occurred while generating the answer: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -802,7 +789,8 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         domain_branch = Branch(
             key="next_action",
             destinations={"end": END, "generate_query": "generate_query"},
-            default="generate_query")
+            default="generate_query",
+        )
 
         self.graph.add_conditional_edges(
             "check_domain_relevance",
@@ -820,7 +808,8 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 "execute_query": "execute_query",
                 "end": END,
             },
-            default="execute_query")
+            default="execute_query",
+        )
 
         self.graph.add_conditional_edges(
             "validate_query", validation_branch, validation_branch.destinations
@@ -836,17 +825,17 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
 # Export function for external use
 def check_domain_relevance(query: str, domain_categories: list = None) -> bool:
     """Check if a query is relevant to the specified domain.
-    
+
     Args:
         query: The query to check
         domain_categories: List of domain categories to check against
-        
+
     Returns:
         True if the query is domain-relevant, False otherwise
     """
     if not domain_categories:
         return True
-    
+
     query_lower = query.lower()
     return any(category.lower() in query_lower for category in domain_categories)
 
@@ -854,11 +843,11 @@ def check_domain_relevance(query: str, domain_categories: list = None) -> bool:
 # Additional export functions for module completeness
 def correct_query(query: str, errors: list = None) -> str:
     """Correct a Cypher query based on provided errors.
-    
+
     Args:
         query: The original query
         errors: List of error messages
-        
+
     Returns:
         Corrected query string
     """
@@ -903,14 +892,14 @@ def validation_router(validation_result: dict) -> str:
 # Export all functions for module use
 __all__ = [
     "GraphDBRAGAgent",
-    "GraphDBRAGConfig", 
+    "GraphDBRAGConfig",
     "check_domain_relevance",
     "correct_query",
     "domain_router",
     "execute_query",
-    "generate_answer", 
+    "generate_answer",
     "generate_query",
     "setup_workflow",
     "validate_query",
-    "validation_router"
+    "validation_router",
 ]

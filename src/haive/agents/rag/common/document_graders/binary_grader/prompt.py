@@ -18,7 +18,8 @@ RAG_DOCUMENT_GRADE_BINARY = ChatPromptTemplate.from_messages(
 - Content would not contribute to answering the query in any meaningful way
 - Document discusses different entities, concepts, or topics entirely
 
-Provide clear PASS/FAIL decisions with thorough justifications."""),
+Provide clear PASS/FAIL decisions with thorough justifications.""",
+        ),
         (
             "human",
             """Query: {query}
@@ -26,6 +27,7 @@ Provide clear PASS/FAIL decisions with thorough justifications."""),
 Documents to evaluate:
 {retrieved_documents}
 
-For each document, provide a clear PASS/FAIL decision with justification."""),
+For each document, provide a clear PASS/FAIL decision with justification.""",
+        ),
     ]
 )

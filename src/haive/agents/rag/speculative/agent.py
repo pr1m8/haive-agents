@@ -52,9 +52,7 @@ class Hypothesis(BaseModel):
 
     # Confidence and quality
     confidence: HypothesisConfidence = Field(description="Initial confidence level")
-    confidence_score: float = Field(
-        ge=0.0, le=1.0, description="Numerical confidence (0-1)"
-    )
+    confidence_score: float = Field(ge=0.0, le=1.0, description="Numerical confidence (0-1)")
     plausibility: float = Field(ge=0.0, le=1.0, description="Plausibility assessment")
 
     # Supporting information
@@ -63,13 +61,9 @@ class Hypothesis(BaseModel):
     supporting_evidence: list[str] = Field(description="Initial supporting evidence")
 
     # Verification planning
-    verification_criteria: list[str] = Field(
-        description="How to verify this hypothesis"
-    )
+    verification_criteria: list[str] = Field(description="How to verify this hypothesis")
     required_evidence: list[str] = Field(description="Evidence needed for verification")
-    verification_complexity: str = Field(
-        description="Complexity of verification process"
-    )
+    verification_complexity: str = Field(description="Complexity of verification process")
 
     # Processing metadata
     generation_method: str = Field(description="How this hypothesis was generated")
@@ -95,28 +89,20 @@ class SpeculativeExecutionPlan(BaseModel):
     convergence_criteria: str = Field(description="When to stop processing")
 
     # Resource allocation
-    time_budget_per_hypothesis: str = Field(
-        description="Time allocation per hypothesis"
-    )
+    time_budget_per_hypothesis: str = Field(description="Time allocation per hypothesis")
     verification_thoroughness: str = Field(description="Thoroughness level")
 
     # Quality control
     minimum_verification_score: float = Field(
         ge=0.0, le=1.0, description="Minimum score for acceptance"
     )
-    required_consensus_level: float = Field(
-        ge=0.0, le=1.0, description="Required agreement level"
-    )
+    required_consensus_level: float = Field(ge=0.0, le=1.0, description="Required agreement level")
 
     # Iteration control
-    max_verification_rounds: int = Field(
-        ge=1, le=5, description="Maximum verification iterations"
-    )
+    max_verification_rounds: int = Field(ge=1, le=5, description="Maximum verification iterations")
     refinement_enabled: bool = Field(description="Whether to refine hypotheses")
 
-    execution_metadata: dict[str, Any] = Field(
-        description="Additional execution parameters"
-    )
+    execution_metadata: dict[str, Any] = Field(description="Additional execution parameters")
 
 
 class SpeculativeResult(BaseModel):
@@ -126,18 +112,12 @@ class SpeculativeResult(BaseModel):
     total_hypotheses_generated: int = Field(description="Total hypotheses created")
 
     # Hypothesis outcomes
-    verified_hypotheses: list[Hypothesis] = Field(
-        description="Successfully verified hypotheses"
-    )
+    verified_hypotheses: list[Hypothesis] = Field(description="Successfully verified hypotheses")
     refuted_hypotheses: list[Hypothesis] = Field(description="Refuted hypotheses")
-    inconclusive_hypotheses: list[Hypothesis] = Field(
-        description="Inconclusive hypotheses"
-    )
+    inconclusive_hypotheses: list[Hypothesis] = Field(description="Inconclusive hypotheses")
 
     # Quality metrics
-    overall_confidence: float = Field(
-        ge=0.0, le=1.0, description="Overall confidence in results"
-    )
+    overall_confidence: float = Field(ge=0.0, le=1.0, description="Overall confidence in results")
     verification_success_rate: float = Field(
         ge=0.0, le=1.0, description="Percentage successfully verified"
     )
@@ -146,22 +126,16 @@ class SpeculativeResult(BaseModel):
     )
 
     # Consensus analysis
-    consensus_level: float = Field(
-        ge=0.0, le=1.0, description="Agreement between hypotheses"
-    )
+    consensus_level: float = Field(ge=0.0, le=1.0, description="Agreement between hypotheses")
     conflicting_evidence: list[str] = Field(description="Identified conflicts")
-    confidence_distribution: dict[str, int] = Field(
-        description="Distribution of confidence levels"
-    )
+    confidence_distribution: dict[str, int] = Field(description="Distribution of confidence levels")
 
     # Final synthesis
     synthesized_answer: str = Field(description="Final synthesized answer")
     key_insights: list[str] = Field(description="Key insights discovered")
     limitations: list[str] = Field(description="Identified limitations")
 
-    processing_metadata: dict[str, Any] = Field(
-        description="Processing statistics and metadata"
-    )
+    processing_metadata: dict[str, Any] = Field(description="Processing statistics and metadata")
 
 
 # Enhanced prompts for speculative processing
@@ -193,7 +167,8 @@ Generate multiple plausible hypotheses that could answer the query:
 - Hypotheses requiring different types of evidence
 - Hypotheses with varying complexity levels
 
-Generate 3-7 diverse, high-quality hypotheses for comprehensive coverage."""),
+Generate 3-7 diverse, high-quality hypotheses for comprehensive coverage.""",
+        ),
         (
             "human",
             """Generate hypotheses for this query:
@@ -217,7 +192,8 @@ For each hypothesis, provide:
 - Verification criteria and required evidence
 - Key assumptions and supporting rationale
 
-Focus on generating testable, diverse hypotheses for comprehensive analysis."""),
+Focus on generating testable, diverse hypotheses for comprehensive analysis.""",
+        ),
     ]
 )
 
@@ -249,7 +225,8 @@ Verify hypotheses using available evidence and reasoning:
 - Inconclusive: Insufficient or conflicting evidence
 - Needs More Data: Requires additional information
 
-Provide detailed, objective verification assessments."""),
+Provide detailed, objective verification assessments.""",
+        ),
         (
             "human",
             """Verify this hypothesis using available evidence:
@@ -274,7 +251,8 @@ Perform thorough verification:
 4. Identify any contradictions or gaps
 5. Determine verification status and confidence
 
-Provide objective, evidence-based verification with detailed reasoning."""),
+Provide objective, evidence-based verification with detailed reasoning.""",
+        ),
     ]
 )
 
@@ -300,7 +278,8 @@ Combine verified hypotheses into comprehensive answers:
 - Acknowledge remaining uncertainties
 - Provide balanced, comprehensive conclusions
 
-Generate nuanced, evidence-based answers that reflect the full speculative analysis."""),
+Generate nuanced, evidence-based answers that reflect the full speculative analysis.""",
+        ),
         (
             "human",
             """Synthesize results from speculative hypothesis analysis:
@@ -327,7 +306,8 @@ Create comprehensive synthesis:
 4. Highlight key insights and discoveries
 5. Provide balanced, evidence-based conclusions
 
-Focus on nuanced, well-supported answers that reflect the speculative analysis."""),
+Focus on nuanced, well-supported answers that reflect the speculative analysis.""",
+        ),
     ]
 )
 
@@ -342,7 +322,8 @@ class HypothesisGeneratorAgent(Agent):
         llm_config: LLMConfig | None = None,
         num_hypotheses: int = 5,
         hypothesis_diversity: str = "high",
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize hypothesis generator.
 
         Args:
@@ -354,7 +335,8 @@ class HypothesisGeneratorAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
         self.num_hypotheses = num_hypotheses
         self.hypothesis_diversity = hypothesis_diversity
         super().__init__(**kwargs)
@@ -368,14 +350,13 @@ class HypothesisGeneratorAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=HYPOTHESIS_GENERATION_PROMPT,
             structured_output_model=list[Hypothesis],
-            output_key="hypotheses")
+            output_key="hypotheses",
+        )
 
         def generate_hypotheses(state: dict[str, Any]) -> dict[str, Any]:
             """Generate multiple hypotheses for the query."""
             query = getattr(state, "query", "")
-            context = getattr(state, "context", "") or getattr(
-                state, "retrieved_documents", ""
-            )
+            context = getattr(state, "context", "") or getattr(state, "retrieved_documents", "")
 
             # Format context
             if isinstance(context, list):
@@ -391,9 +372,7 @@ class HypothesisGeneratorAgent(Agent):
                 )
             else:
                 context_str = (
-                    str(context)[:800] + "..."
-                    if len(str(context)) > 800
-                    else str(context)
+                    str(context)[:800] + "..." if len(str(context)) > 800 else str(context)
                 )
 
             # Domain information extraction
@@ -410,9 +389,7 @@ class HypothesisGeneratorAgent(Agent):
 
             for i, hypothesis in enumerate(hypotheses):
                 hypothesis.id = f"hyp_{i + 1}"
-                hypothesis.generation_method = (
-                    f"speculative_generation_{self.hypothesis_diversity}"
-                )
+                hypothesis.generation_method = f"speculative_generation_{self.hypothesis_diversity}"
 
             return {
                 "hypotheses": hypotheses,
@@ -444,11 +421,7 @@ class HypothesisGeneratorAgent(Agent):
             if any(indicator in query_lower for indicator in indicators):
                 detected_types.append(domain_type)
 
-        return (
-            f"Query types: {', '.join(detected_types)}"
-            if detected_types
-            else "General query"
-        )
+        return f"Query types: {', '.join(detected_types)}" if detected_types else "General query"
 
 
 class ParallelVerificationAgent(Agent):
@@ -461,7 +434,8 @@ class ParallelVerificationAgent(Agent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         verification_depth: str = "thorough",
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize parallel verifier.
 
         Args:
@@ -474,7 +448,8 @@ class ParallelVerificationAgent(Agent):
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
         self.verification_depth = verification_depth
         super().__init__(**kwargs)
 
@@ -492,7 +467,8 @@ class ParallelVerificationAgent(Agent):
             llm_config=self.llm_config,
             prompt_template=HYPOTHESIS_VERIFICATION_PROMPT,
             structured_output_model=Hypothesis,  # Returns updated hypothesis
-            output_key="verified_hypothesis")
+            output_key="verified_hypothesis",
+        )
 
         def verify_hypotheses_parallel(state: dict[str, Any]) -> dict[str, Any]:
             """Verify hypotheses in parallel batches."""
@@ -565,27 +541,19 @@ class ParallelVerificationAgent(Agent):
                 evidence = self._gather_evidence_for_hypothesis(hypothesis, query)
 
                 # Verify using evidence
-                verification_result = self._verify_single_hypothesis(
-                    hypothesis, evidence, query
-                )
+                verification_result = self._verify_single_hypothesis(hypothesis, evidence, query)
                 results[hypothesis.id] = verification_result
 
             except Exception as e:
-                logger.warning(
-                    f"Verification failed for hypothesis {hypothesis.id}: {e}"
-                )
+                logger.warning(f"Verification failed for hypothesis {hypothesis.id}: {e}")
                 # Mark as inconclusive on error
                 hypothesis.verification_status = VerificationStatus.INCONCLUSIVE
-                hypothesis.verification_reasoning = (
-                    f"Verification failed due to error: {e!s}"
-                )
+                hypothesis.verification_reasoning = f"Verification failed due to error: {e!s}"
                 results[hypothesis.id] = hypothesis
 
         return results
 
-    def _gather_evidence_for_hypothesis(
-        self, hypothesis: Hypothesis, query: str
-    ) -> str:
+    def _gather_evidence_for_hypothesis(self, hypothesis: Hypothesis, query: str) -> str:
         """Gather evidence for hypothesis verification."""
         try:
             # Create search query based on hypothesis
@@ -604,10 +572,7 @@ class ParallelVerificationAgent(Agent):
             # Format evidence
             evidence = (
                 "\n".join(
-                    [
-                        f"Evidence {i + 1}: {doc.page_content[:300]}..."
-                        for i, doc in enumerate(docs)
-                    ]
+                    [f"Evidence {i + 1}: {doc.page_content[:300]}..." for i, doc in enumerate(docs)]
                 )
                 if docs
                 else "No specific evidence found in documents"
@@ -629,16 +594,15 @@ class ParallelVerificationAgent(Agent):
                 llm_config=self.llm_config,
                 prompt_template=HYPOTHESIS_VERIFICATION_PROMPT,
                 structured_output_model=Hypothesis,
-                output_key="verified_hypothesis")
+                output_key="verified_hypothesis",
+            )
 
             verified_hypothesis = verification_engine.invoke(
                 {
                     "hypothesis_text": hypothesis.text,
                     "hypothesis_confidence": hypothesis.confidence,
                     "hypothesis_reasoning": hypothesis.reasoning,
-                    "verification_criteria": ", ".join(
-                        hypothesis.verification_criteria
-                    ),
+                    "verification_criteria": ", ".join(hypothesis.verification_criteria),
                     "evidence": evidence,
                     "context": f"Original query: {query}",
                 }
@@ -668,7 +632,8 @@ class SpeculativeRAGAgent(SequentialAgent):
         llm_config: LLMConfig | None = None,
         num_hypotheses: int = 5,
         verification_depth: str = "thorough",
-        **kwargs):
+        **kwargs,
+    ):
         """Create Speculative RAG agent from documents.
 
         Args:
@@ -685,20 +650,21 @@ class SpeculativeRAGAgent(SequentialAgent):
             llm_config = AzureLLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}")
+                api_key="${AZURE_OPENAI_API_KEY}",
+            )
 
         # Step 1: Hypothesis generation
         hypothesis_generator = HypothesisGeneratorAgent(
-            llm_config=llm_config,
-            num_hypotheses=num_hypotheses,
-            name="Hypothesis Generator")
+            llm_config=llm_config, num_hypotheses=num_hypotheses, name="Hypothesis Generator"
+        )
 
         # Step 2: Parallel verification
         parallel_verifier = ParallelVerificationAgent(
             documents=documents,
             llm_config=llm_config,
             verification_depth=verification_depth,
-            name="Parallel Verifier")
+            name="Parallel Verifier",
+        )
 
         # Step 3: Result synthesis
         synthesis_agent = SimpleAgent(
@@ -706,13 +672,16 @@ class SpeculativeRAGAgent(SequentialAgent):
                 llm_config=llm_config,
                 prompt_template=SPECULATIVE_SYNTHESIS_PROMPT,
                 structured_output_model=SpeculativeResult,
-                output_key="speculative_result"),
-            name="Speculative Synthesizer")
+                output_key="speculative_result",
+            ),
+            name="Speculative Synthesizer",
+        )
 
         return cls(
             agents=[hypothesis_generator, parallel_verifier, synthesis_agent],
             name=kwargs.get("name", "Speculative RAG Agent"),
-            **kwargs)
+            **kwargs,
+        )
 
 
 # Factory function
@@ -720,7 +689,8 @@ def create_speculative_rag_agent(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
     speculation_mode: str = "balanced",
-    **kwargs) -> SpeculativeRAGAgent:
+    **kwargs,
+) -> SpeculativeRAGAgent:
     """Create a Speculative RAG agent.
 
     Args:
@@ -743,9 +713,7 @@ def create_speculative_rag_agent(
         kwargs.setdefault("num_hypotheses", 5)
         kwargs.setdefault("verification_depth", "thorough")
 
-    return SpeculativeRAGAgent.from_documents(
-        documents=documents, llm_config=llm_config, **kwargs
-    )
+    return SpeculativeRAGAgent.from_documents(documents=documents, llm_config=llm_config, **kwargs)
 
 
 # I/O schema for compatibility

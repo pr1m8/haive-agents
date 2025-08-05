@@ -189,7 +189,8 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
                 return Command(
                     update={
                         "answer": f"Found {
-                            len(documents)} relevant documents, but no answer generator is configured.",
+                            len(documents)
+                        } relevant documents, but no answer generator is configured.",
                         "correction_iterations": 0,
                     }
                 )
@@ -219,8 +220,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             logger.exception(f"Error generating answer: {e!s}")
             return Command(
                 update={
-                    "error": f"Error generating answer: {
-                        e!s}",
+                    "error": f"Error generating answer: {e!s}",
                     "answer": "I encountered an error while trying to generate an answer.",
                     "correction_iterations": 0,
                 }
@@ -239,10 +239,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
         answer = state.answer
         documents = state.filtered_documents
 
-        logger.info(
-            f"Evaluating answer quality (iteration {
-                state.correction_iterations})"
-        )
+        logger.info(f"Evaluating answer quality (iteration {state.correction_iterations})")
 
         try:
             # If no evaluator is configured, assume the answer is good
@@ -389,9 +386,7 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
             final_answer = answer
 
             if score is not None:
-                confidence_level = (
-                    "high" if score > 0.8 else "medium" if score > 0.5 else "low"
-                )
+                confidence_level = "high" if score > 0.8 else "medium" if score > 0.5 else "low"
                 logger.info(f"Answer confidence level: {confidence_level} ({score})")
 
                 # Optionally add confidence information to the answer

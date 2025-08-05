@@ -53,7 +53,8 @@ from haive.agents.rag.db_rag.sql_rag.utils import (
     create_sql_toolkit,
     create_tool_node_with_fallback,
     explore_database_schema,
-    get_all_toolkit_tools)
+    get_all_toolkit_tools,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -156,9 +157,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             # Initialize database connection
             self.sql_db = config.db_config.get_sql_db()
             if not self.sql_db:
-                raise ValueError(
-                    f"Failed to connect to {config.db_config.db_type} database"
-                )
+                raise ValueError(f"Failed to connect to {config.db_config.db_type} database")
 
             # Explore the database schema thoroughly
             self.db_schema = explore_database_schema(self.sql_db)
@@ -189,9 +188,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                 # Use default engines
                 self.engines = default_sql_engines
 
-            logger.info(
-                f"SQL RAG Agent initialized with {len(self.db_schema['tables'])} tables"
-            )
+            logger.info(f"SQL RAG Agent initialized with {len(self.db_schema['tables'])} tables")
 
         except Exception as e:
             logger.exception(f"Error initializing SQLRAGAgent: {e}")
@@ -330,9 +327,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                     :10
                 ]:  # Limit to first 10 tables if there are many
                     try:
-                        schema_info[table] = get_schema_tool.invoke(
-                            {"table_names": table}
-                        )
+                        schema_info[table] = get_schema_tool.invoke({"table_names": table})
                     except Exception as e:
                         schema_info[table] = f"Error retrieving schema: {e!s}"
             else:
@@ -850,9 +845,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
         """
         try:
             if "generate_final_answer" not in self.engines:
-                raise ValueError(
-                    "Missing 'generate_final_answer' engine in configuration"
-                )
+                raise ValueError("Missing 'generate_final_answer' engine in configuration")
 
             # Extract sql query string if it's an object
             sql_str = state.sql_query
@@ -860,12 +853,8 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                 sql_str = state.sql_query.query
 
             # For special case of listing tables
-            if isinstance(sql_str, str) and sql_str.startswith(
-                "-- Database contains tables:"
-            ):
-                tables_list = sql_str.replace(
-                    "-- Database contains tables:", ""
-                ).strip()
+            if isinstance(sql_str, str) and sql_str.startswith("-- Database contains tables:"):
+                tables_list = sql_str.replace("-- Database contains tables:", "").strip()
                 return Command(
                     update={
                         "answer": f"The database contains the following tables: {tables_list}",
@@ -892,10 +881,7 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             }
 
             # Run hallucination check if required
-            if (
-                self.config.hallucination_check
-                and "hallucination_check" in self.engines
-            ):
+            if self.config.hallucination_check and "hallucination_check" in self.engines:
                 try:
                     hallucination_result = self.engines["hallucination_check"].invoke(
                         {
@@ -913,7 +899,8 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                         and hallucination_result.hallucination_detected
                     ):
                         warning = f"\n\nWarning: The answer may contain information not supported by the data. Areas of concern: {
-                            hallucination_result.problem_areas}"
+                            hallucination_result.problem_areas
+                        }"
                         result["answer"] = answer + warning
 
                 except Exception as e:
@@ -926,10 +913,8 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
             logger.exception(f"Error in generate_answer: {e}")
             return Command(
                 update={
-                    "error": f"Error generating answer: {
-                        e!s}",
-                    "answer": f"An error occurred while generating the answer: {
-                        e!s}",
+                    "error": f"Error generating answer: {e!s}",
+                    "answer": f"An error occurred while generating the answer: {e!s}",
                     "next_action": "end",
                 }
             )
@@ -996,7 +981,8 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
         domain_branch = Branch(
             key="next_action",
             destinations={"end": END, "retrieve_schema": "retrieve_schema"},
-            default="retrieve_schema")
+            default="retrieve_schema",
+        )
 
         self.graph.add_conditional_edges(
             "check_domain_relevance",
@@ -1017,7 +1003,8 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
                 "execute_query": "execute_query",
                 "end": END,
             },
-            default="execute_query")
+            default="execute_query",
+        )
 
         self.graph.add_conditional_edges(
             "validate_query", validation_branch, validation_branch.destinations

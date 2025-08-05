@@ -24,7 +24,8 @@ RAG_ANSWER_GENERATION = ChatPromptTemplate.from_messages(
             "system",
             """You are a helpful AI assistant that answers questions based on retrieved documents.
 Your responses should be accurate, well-sourced, and acknowledge any limitations
-in the available information. Always cite specific sources when possible."""),
+in the available information. Always cite specific sources when possible.""",
+        ),
         (
             "human",
             """Based on the following retrieved documents, please answer the question.
@@ -40,7 +41,8 @@ Instructions:
 - Include source references where appropriate
 - Be concise but comprehensive
 
-Answer:"""),
+Answer:""",
+        ),
     ]
 )
 
@@ -88,10 +90,8 @@ class SimpleAnswerAgent(SimpleAgent):
 
     # Context processing configuration
     max_context_length: int = Field(
-        default=4000,
-        ge=500,
-        le=32000,
-        description="Maximum context length in characters")
+        default=4000, ge=500, le=32000, description="Maximum context length in characters"
+    )
 
     # Use ChatPromptTemplate instead of string template
     use_chat_prompt_template: bool = Field(
@@ -104,16 +104,15 @@ class SimpleAnswerAgent(SimpleAgent):
             "Your responses should be accurate, well-sourced, and acknowledge any limitations "
             "in the available information. Always cite specific sources when possible."
         ),
-        description="System prompt for answer generation")
-
-    # Source handling
-    include_citations: bool = Field(
-        default=True, description="Include source citations in answers"
+        description="System prompt for answer generation",
     )
 
+    # Source handling
+    include_citations: bool = Field(default=True, description="Include source citations in answers")
+
     citation_style: str = Field(
-        default="inline",
-        description="Citation style: 'inline', 'footnote', or 'numbered'")
+        default="inline", description="Citation style: 'inline', 'footnote', or 'numbered'"
+    )
 
     # Quality configuration
     require_source_support: bool = Field(
@@ -121,19 +120,13 @@ class SimpleAnswerAgent(SimpleAgent):
     )
 
     min_confidence_threshold: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Minimum confidence threshold for answers")
+        default=0.0, ge=0.0, le=1.0, description="Minimum confidence threshold for answers"
+    )
 
     # Enhanced features
-    performance_mode: bool = Field(
-        default=False, description="Enable performance tracking"
-    )
+    performance_mode: bool = Field(default=False, description="Enable performance tracking")
 
-    debug_mode: bool = Field(
-        default=False, description="Enable debug information collection"
-    )
+    debug_mode: bool = Field(default=False, description="Enable debug information collection")
 
     async def arun(
         self, input_data: str | dict[str, Any], debug: bool = False, **kwargs
@@ -158,10 +151,7 @@ class SimpleAnswerAgent(SimpleAgent):
 
         if debug or self.debug_mode:
             logger.info(f"🎯 SimpleAnswerAgent '{self.name}' generating answer")
-            logger.info(
-                f"📄 Processing {
-                    len(documents)} documents for query: {query}"
-            )
+            logger.info(f"📄 Processing {len(documents)} documents for query: {query}")
 
         try:
             # Process documents and build context
@@ -175,9 +165,7 @@ class SimpleAnswerAgent(SimpleAgent):
             )
 
             # Generate answer using parent SimpleAgent
-            generation_result = await super().arun(
-                formatted_prompt, debug=debug, **kwargs
-            )
+            generation_result = await super().arun(formatted_prompt, debug=debug, **kwargs)
 
             # Calculate timing
             generation_time = time.time() - start_time
@@ -190,7 +178,8 @@ class SimpleAnswerAgent(SimpleAgent):
                 documents,
                 generation_time,
                 retrieval_metadata,
-                debug or self.debug_mode)
+                debug or self.debug_mode,
+            )
 
             if debug or self.debug_mode:
                 logger.info(f"✅ Generated answer in {generation_time:.3f}s")
@@ -201,7 +190,8 @@ class SimpleAnswerAgent(SimpleAgent):
             logger.exception(f"❌ SimpleAnswerAgent error: {e}")
             error_result = {
                 "answer": f"I apologize, but I encountered an error while generating the answer: {
-                    e!s}",
+                    e!s
+                }",
                 "error": str(e),
                 "query": query,
                 "generation_time": time.time() - start_time,
@@ -228,9 +218,7 @@ class SimpleAnswerAgent(SimpleAgent):
         if isinstance(input_data, dict):
             # Input from RetrieverAgent or BaseRAGAgent
             # Check for 'retrieved_documents' first (BaseRAG format)
-            documents = input_data.get(
-                "retrieved_documents", input_data.get("documents", [])
-            )
+            documents = input_data.get("retrieved_documents", input_data.get("documents", []))
 
             return {
                 "query": input_data.get("query", ""),
@@ -291,9 +279,7 @@ class SimpleAnswerAgent(SimpleAgent):
             # Check length constraints
             if total_length + len(doc_text) > self.max_context_length:
                 if debug:
-                    logger.info(
-                        f"📏 Context length limit reached, truncating at document {i}"
-                    )
+                    logger.info(f"📏 Context length limit reached, truncating at document {i}")
                 break
 
             context_parts.append(doc_text)
@@ -303,10 +289,7 @@ class SimpleAnswerAgent(SimpleAgent):
         formatted_context = "\n\n".join(context_parts)
 
         if debug:
-            logger.info(
-                f"📝 Built context: {
-                    len(context_parts)} docs, {total_length} chars"
-            )
+            logger.info(f"📝 Built context: {len(context_parts)} docs, {total_length} chars")
 
         return {
             "formatted_context": formatted_context,
@@ -338,7 +321,8 @@ class SimpleAnswerAgent(SimpleAgent):
         documents: list[Document],
         generation_time: float,
         retrieval_metadata: dict[str, Any],
-        debug: bool = False) -> dict[str, Any] | str:
+        debug: bool = False,
+    ) -> dict[str, Any] | str:
         """Enhance generation result with metadata and citations."""
         # Extract the answer text
         if isinstance(generation_result, str):
@@ -367,10 +351,8 @@ class SimpleAnswerAgent(SimpleAgent):
                 "generation_time": generation_time,
                 "answer_length": len(answer_text),
                 "context_length": context_info["total_length"],
-                "words_per_second": len(answer_text.split())
-                / max(generation_time, 0.001),
-                "compression_ratio": len(answer_text)
-                / max(context_info["total_length"], 1),
+                "words_per_second": len(answer_text.split()) / max(generation_time, 0.001),
+                "compression_ratio": len(answer_text) / max(context_info["total_length"], 1),
             }
 
         # Add debug information if enabled
@@ -391,8 +373,7 @@ class SimpleAnswerAgent(SimpleAgent):
             if self.citation_style == "footnote":
                 # Add footnote references
                 footnotes = [
-                    f"[{i + 1}] {source}"
-                    for i, source in enumerate(context_info["sources"])
+                    f"[{i + 1}] {source}" for i, source in enumerate(context_info["sources"])
                 ]
                 enhanced_result["citations"] = footnotes
                 enhanced_result["answer"] += "\n\nSources:\n" + "\n".join(footnotes)
@@ -417,9 +398,7 @@ class SimpleAnswerAgent(SimpleAgent):
             "debug_mode": self.debug_mode,
             "has_structured_output": self.structured_output_model is not None,
             "structured_output_model": (
-                self.structured_output_model.__name__
-                if self.structured_output_model
-                else None
+                self.structured_output_model.__name__ if self.structured_output_model else None
             ),
             "engine_config": {
                 "temperature": getattr(self.engine, "temperature", None),

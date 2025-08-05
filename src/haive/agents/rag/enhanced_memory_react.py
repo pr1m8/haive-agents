@@ -41,9 +41,7 @@ class MemoryEntry(BaseModel):
     content: str = Field(description="Memory content")
     memory_type: MemoryType = Field(description="Type of memory")
     timestamp: str = Field(description="When this memory was created")
-    relevance_score: float = Field(
-        ge=0.0, le=1.0, description="Relevance to current query"
-    )
+    relevance_score: float = Field(ge=0.0, le=1.0, description="Relevance to current query")
     context_tags: list[str] = Field(default_factory=list, description="Context tags")
 
 
@@ -78,13 +76,15 @@ class EnhancedResponse(BaseModel):
 def create_enhanced_memory_react_rag(
     documents: list[Document],
     llm_config: LLMConfig | None = None,
-    name: str = "Enhanced Memory ReAct RAG") -> ChainAgent:
+    name: str = "Enhanced Memory ReAct RAG",
+) -> ChainAgent:
     """Create an enhanced memory-aware RAG with ReAct pattern."""
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
 
     # Step 1: Memory retrieval and analysis
     def analyze_memory(state: dict[str, Any]) -> dict[str, Any]:
@@ -100,32 +100,29 @@ def create_enhanced_memory_react_rag(
                     memory_type=MemoryType.EPISODIC,
                     timestamp="2024-01-01T10:00:00",
                     relevance_score=0.8,
-                    context_tags=["machine_learning", "algorithms"]),
+                    context_tags=["machine_learning", "algorithms"],
+                ),
                 MemoryEntry(
                     content="User preference for detailed technical explanations",
                     memory_type=MemoryType.SEMANTIC,
                     timestamp="2024-01-01T09:00:00",
                     relevance_score=0.6,
-                    context_tags=["user_preference", "technical"]),
+                    context_tags=["user_preference", "technical"],
+                ),
             ]
             if len(messages) > 1
             else []
         )
 
         # Identify gaps in knowledge
-        memory_gaps = (
-            ["missing recent updates", "lacks specific examples"]
-            if mock_memories
-            else []
-        )
+        memory_gaps = ["missing recent updates", "lacks specific examples"] if mock_memories else []
 
         analysis = MemoryAnalysis(
             relevant_memories=mock_memories,
             memory_gaps=memory_gaps,
-            temporal_context=(
-                "Continuing conversation" if mock_memories else "New conversation"
-            ),
-            confidence=0.8 if mock_memories else 0.4)
+            temporal_context=("Continuing conversation" if mock_memories else "New conversation"),
+            confidence=0.8 if mock_memories else 0.4,
+        )
 
         return {"memory_analysis": analysis}
 
@@ -138,17 +135,20 @@ def create_enhanced_memory_react_rag(
                     "system",
                     """You are using the ReAct pattern (Reasoning + Acting).
             Start with THOUGHT: analyze the query and plan your approach.
-            Consider: what information do you need? What steps should you take?"""),
+            Consider: what information do you need? What steps should you take?""",
+                ),
                 (
                     "human",
                     """Query: {query}
             Memory Analysis: {memory_analysis}
 
-            THOUGHT: What should I think about and plan for this query?"""),
+            THOUGHT: What should I think about and plan for this query?""",
+                ),
             ]
         ),
         structured_output_model=ReActStepResult,
-        output_key="thought_result")
+        output_key="thought_result",
+    )
 
     # Step 3: ReAct Action - determine actions needed
     action_planner = AugLLMConfig(
@@ -158,18 +158,21 @@ def create_enhanced_memory_react_rag(
                 (
                     "system",
                     """Based on your thought, decide what ACTION to take.
-            Actions can include: retrieve_documents, search_memory, analyze_context, generate_answer"""),
+            Actions can include: retrieve_documents, search_memory, analyze_context, generate_answer""",
+                ),
                 (
                     "human",
                     """Query: {query}
             Previous Thought: {thought_result}
             Available Documents: {document_context}
 
-            ACTION: What action should I take next?"""),
+            ACTION: What action should I take next?""",
+                ),
             ]
         ),
         structured_output_model=ReActStepResult,
-        output_key="action_result")
+        output_key="action_result",
+    )
 
     # Step 4: Action executor
     def execute_action(state: dict[str, Any]) -> dict[str, Any]:
@@ -214,7 +217,8 @@ def create_enhanced_memory_react_rag(
                 (
                     "system",
                     """Analyze the OBSERVATION from your action.
-            What did you learn? Is this sufficient to answer the query?"""),
+            What did you learn? Is this sufficient to answer the query?""",
+                ),
                 (
                     "human",
                     """Query: {query}
@@ -222,11 +226,13 @@ def create_enhanced_memory_react_rag(
             Observation: {observation}
             Retrieved Context: {retrieved_context}
 
-            OBSERVATION: What did I learn from this action?"""),
+            OBSERVATION: What did I learn from this action?""",
+                ),
             ]
         ),
         structured_output_model=ReActStepResult,
-        output_key="observation_result")
+        output_key="observation_result",
+    )
 
     # Step 6: ReAct Reflection - determine if more steps needed
     reflection_engine = AugLLMConfig(
@@ -237,7 +243,8 @@ def create_enhanced_memory_react_rag(
                     "system",
                     """REFLECTION: Based on your thought, action, and observation,
             determine if you have enough information to provide a good answer.
-            If not, specify what additional steps are needed."""),
+            If not, specify what additional steps are needed.""",
+                ),
                 (
                     "human",
                     """Query: {query}
@@ -245,11 +252,13 @@ def create_enhanced_memory_react_rag(
             Action: {action_result}
             Observation: {observation_result}
 
-            REFLECTION: Do I have enough information to answer well?"""),
+            REFLECTION: Do I have enough information to answer well?""",
+                ),
             ]
         ),
         structured_output_model=ReActStepResult,
-        output_key="reflection_result")
+        output_key="reflection_result",
+    )
 
     # Step 7: Answer generator with memory integration
     answer_generator = AugLLMConfig(
@@ -259,7 +268,8 @@ def create_enhanced_memory_react_rag(
                 (
                     "system",
                     """Generate a comprehensive answer using all available information.
-            Integrate memory context and reasoning chain into your response."""),
+            Integrate memory context and reasoning chain into your response.""",
+                ),
                 (
                     "human",
                     """Query: {query}
@@ -273,10 +283,12 @@ def create_enhanced_memory_react_rag(
 
             Retrieved Context: {retrieved_context}
 
-            Generate a thoughtful, well-reasoned answer."""),
+            Generate a thoughtful, well-reasoned answer.""",
+                ),
             ]
         ),
-        output_key="generated_answer")
+        output_key="generated_answer",
+    )
 
     # Step 8: Memory updater
     def update_memory(state: dict[str, Any]) -> dict[str, Any]:
@@ -291,7 +303,8 @@ def create_enhanced_memory_react_rag(
                 memory_type=MemoryType.EPISODIC,
                 timestamp="2024-01-01T12:00:00",
                 relevance_score=0.9,
-                context_tags=["recent_interaction"])
+                context_tags=["recent_interaction"],
+            )
         ]
 
         return {"new_memories": new_memories, "memory_updated": True}
@@ -303,7 +316,8 @@ def create_enhanced_memory_react_rag(
             [
                 (
                     "system",
-                    "Create the final user-facing response with transparency about reasoning"),
+                    "Create the final user-facing response with transparency about reasoning",
+                ),
                 (
                     "human",
                     """Query: {query}
@@ -311,11 +325,13 @@ def create_enhanced_memory_react_rag(
             Reasoning Chain Available: {thought_result}, {action_result}, {observation_result}
             Memory Integration: {memory_analysis}
 
-            Provide a clear, comprehensive response that shows your reasoning process."""),
+            Provide a clear, comprehensive response that shows your reasoning process.""",
+                ),
             ]
         ),
         structured_output_model=EnhancedResponse,
-        output_key="enhanced_response")
+        output_key="enhanced_response",
+    )
 
     # Step 10: Context preparation
     def prepare_document_context(state: dict[str, Any]) -> dict[str, Any]:
@@ -358,7 +374,8 @@ def create_simple_memory_react_rag(
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
 
     # Simplified memory check
     def check_memory(state: dict[str, Any]) -> dict[str, Any]:
@@ -378,36 +395,39 @@ def create_simple_memory_react_rag(
             ACTION: What should I do?
             OBSERVATION: What did I learn?
 
-            Then provide your answer."""),
+            Then provide your answer.""",
+                ),
                 (
                     "human",
                     """Query: {query}
             Memory Context Available: {has_memory_context}
             Context: {context}
 
-            Use ReAct reasoning to answer."""),
+            Use ReAct reasoning to answer.""",
+                ),
             ]
         ),
-        output_key="react_response")
+        output_key="react_response",
+    )
 
     # Memory-aware answerer
     memory_answerer = AugLLMConfig(
         llm_config=llm_config,
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                (
-                    "system",
-                    "Provide final answer considering memory context and reasoning"),
+                ("system", "Provide final answer considering memory context and reasoning"),
                 (
                     "human",
                     """Query: {query}
             ReAct Reasoning: {react_response}
             Previous Messages: {messages}
 
-            Final answer:"""),
+            Final answer:""",
+                ),
             ]
         ),
-        output_key="response")
+        output_key="response",
+    )
 
     # Context preparation
     def add_context(state: dict[str, Any]) -> dict[str, Any]:
@@ -415,11 +435,8 @@ def create_simple_memory_react_rag(
         return {"context": context}
 
     return ChainAgent(
-        check_memory,
-        add_context,
-        react_reasoner,
-        memory_answerer,
-        name="Simple Memory ReAct RAG")
+        check_memory, add_context, react_reasoner, memory_answerer, name="Simple Memory ReAct RAG"
+    )
 
 
 def create_memory_react_with_tools(
@@ -430,7 +447,8 @@ def create_memory_react_with_tools(
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
 
     # Tool availability checker
     def check_tools(state: dict[str, Any]) -> dict[str, Any]:
@@ -451,17 +469,20 @@ def create_memory_react_with_tools(
             THOUGHT: Analyze the query
             ACTION: Choose tool or information source
             OBSERVATION: What did you find?
-            REFLECTION: Is this sufficient?"""),
+            REFLECTION: Is this sufficient?""",
+                ),
                 (
                     "human",
                     """Query: {query}
             Memory Context: {messages}
             Document Context: {context}
 
-            Use ReAct reasoning with tools to answer."""),
+            Use ReAct reasoning with tools to answer.""",
+                ),
             ]
         ),
-        output_key="response")
+        output_key="response",
+    )
 
     # Context prep
     def add_context(state: dict[str, Any]) -> dict[str, Any]:

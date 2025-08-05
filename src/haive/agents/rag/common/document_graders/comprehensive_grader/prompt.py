@@ -36,7 +36,8 @@ RAG_DOCUMENT_GRADE_COMPREHENSIVE = ChatPromptTemplate.from_messages(
 - Consider document completeness and information density
 - Account for different types of queries (factual, analytical, procedural, etc.)
 
-Provide comprehensive evaluation with structured output."""),
+Provide comprehensive evaluation with structured output.""",
+        ),
         (
             "human",
             """Evaluate the relevance of the following documents to the given query.
@@ -46,6 +47,7 @@ Provide comprehensive evaluation with structured output."""),
 **Documents to Evaluate:**
 {retrieved_documents}
 
-Provide comprehensive evaluation with scores, justifications, key information identified, and limitations for each document."""),
+Provide comprehensive evaluation with scores, justifications, key information identified, and limitations for each document.""",
+        ),
     ]
 )

@@ -63,8 +63,10 @@ def create_query_rewriter_agent(
             temperature=temperature,
             prompt_template=prompt_template,
             structured_output_model=QueryRefinementResponse,
-            structured_output_version="v2"),
-        **kwargs)
+            structured_output_version="v2",
+        ),
+        **kwargs,
+    )
 
 
 async def rewrite_query(

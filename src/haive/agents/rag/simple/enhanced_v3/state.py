@@ -112,13 +112,9 @@ class SimpleRAGState(StateSchema):
     )
 
     # Execution tracking
-    current_stage: str = Field(
-        default="ready", description="Current stage of RAG pipeline"
-    )
+    current_stage: str = Field(default="ready", description="Current stage of RAG pipeline")
 
-    stage_history: list[str] = Field(
-        default_factory=list, description="History of pipeline stages"
-    )
+    stage_history: list[str] = Field(default_factory=list, description="History of pipeline stages")
 
     # Source tracking
     document_sources: list[str] = Field(
@@ -140,7 +136,8 @@ class SimpleRAGState(StateSchema):
         search_time: float | None = None,
         total_documents: int | None = None,
         similarity_scores: list[float] | None = None,
-        **kwargs) -> None:
+        **kwargs,
+    ) -> None:
         """Add retrieval debug information."""
         if self.retrieval_debug is None:
             self.retrieval_debug = RetrievalDebugInfo()
@@ -165,7 +162,8 @@ class SimpleRAGState(StateSchema):
         prompt_tokens: int | None = None,
         completion_tokens: int | None = None,
         generation_time: float | None = None,
-        **kwargs) -> None:
+        **kwargs,
+    ) -> None:
         """Add generation debug information."""
         if self.generation_debug is None:
             self.generation_debug = GenerationDebugInfo()

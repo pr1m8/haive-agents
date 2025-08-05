@@ -19,20 +19,23 @@ from agentic_router.agent import (
     plan_react_strategy,
     setup_agent,
     strategy_router,
-    synthesize_agentic_result)
+    synthesize_agentic_result,
+)
 from agentic_router.agent_chain import (
     RAGStrategy,
     StrategyDecision,
     create_agentic_rag_router_chain,
     create_agentic_router_multi_agent,
     create_simple_rag_router_chain,
-    get_agentic_router_chain_io_schema)
+    get_agentic_router_chain_io_schema,
+)
 from agentic_router.agent_v2 import (
     AgenticRAGRouterV2,
     RAGStrategy,
     StrategyDecision,
     build_graph,
-    route_to_strategy)
+    route_to_strategy,
+)
 
 __all__ = [
     "AgenticRAGRouterAgent",

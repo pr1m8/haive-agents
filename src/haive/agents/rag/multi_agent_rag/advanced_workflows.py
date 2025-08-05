@@ -52,7 +52,8 @@ class GraphRAGAgent(MultiAgent):
                 "concepts": "List[str]",
                 "relationships": "List[Dict[str, str]]",
                 "domain": "str",
-            })
+            },
+        )
 
         # Graph construction agent
         graph_builder = SimpleAgent(
@@ -67,7 +68,8 @@ class GraphRAGAgent(MultiAgent):
                 "entity_definitions": "Dict[str, str]",
                 "relationship_types": "List[str]",
                 "graph_statistics": "Dict[str, int]",
-            })
+            },
+        )
 
         # Graph traversal agent
         graph_traverser = SimpleAgent(
@@ -82,7 +84,8 @@ class GraphRAGAgent(MultiAgent):
                 "path_scores": "List[float]",
                 "reasoning_chains": "List[str]",
                 "context_synthesis": "str",
-            })
+            },
+        )
 
         # Graph-aware answer agent
         graph_answer_agent = SimpleAgent(
@@ -97,15 +100,14 @@ class GraphRAGAgent(MultiAgent):
                 "reasoning_path": "List[str]",
                 "graph_evidence": "List[str]",
                 "confidence": "float",
-            })
+            },
+        )
 
         agents = [entity_extractor, graph_builder, graph_traverser, graph_answer_agent]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=GraphRAGState,
-            **kwargs)
+            agents=agents, execution_mode="sequential", state_schema=GraphRAGState, **kwargs
+        )
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -133,7 +135,8 @@ class AgenticGraphRAGAgent(MultiAgent):
                 "reasoning_type": "str",
                 "agent_strategy": "str",
                 "execution_plan": "List[str]",
-            })
+            },
+        )
 
         # Dynamic routing agent
         routing_agent = SimpleAgent(
@@ -151,7 +154,8 @@ class AgenticGraphRAGAgent(MultiAgent):
                 "specialist_assignments": "Dict[str, str]",
                 "execution_order": "List[str]",
                 "coordination_strategy": "str",
-            })
+            },
+        )
 
         # Multi-step reasoning coordinator
         reasoning_coordinator = SimpleAgent(
@@ -169,15 +173,14 @@ class AgenticGraphRAGAgent(MultiAgent):
                 "intermediate_results": "List[str]",
                 "reasoning_quality": "float",
                 "final_synthesis": "str",
-            })
+            },
+        )
 
         agents = [complexity_analyzer, routing_agent, reasoning_coordinator]
 
         super().__init__(
-            agents=agents,
-            execution_mode="conditional",
-            state_schema=AgenticRAGState,
-            **kwargs)
+            agents=agents, execution_mode="conditional", state_schema=AgenticRAGState, **kwargs
+        )
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -208,7 +211,8 @@ class AgenticRAGRouterAgent(MultiAgent):
                 "domain": "str",
                 "recommended_strategy": "str",
                 "confidence": "float",
-            })
+            },
+        )
 
         # Strategy selector
         strategy_selector = SimpleAgent(
@@ -226,7 +230,8 @@ class AgenticRAGRouterAgent(MultiAgent):
                 "strategy_config": "Dict[str, Any]",
                 "fallback_strategies": "List[str]",
                 "execution_parameters": "Dict[str, Any]",
-            })
+            },
+        )
 
         # Meta-evaluation agent
         meta_evaluator = SimpleAgent(
@@ -240,15 +245,14 @@ class AgenticRAGRouterAgent(MultiAgent):
                 "switch_recommendation": "bool",
                 "hybrid_opportunity": "bool",
                 "performance_metrics": "Dict[str, float]",
-            })
+            },
+        )
 
         agents = [query_classifier, strategy_selector, meta_evaluator]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=AgenticRAGState,
-            **kwargs)
+            agents=agents, execution_mode="sequential", state_schema=AgenticRAGState, **kwargs
+        )
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -278,7 +282,8 @@ class QueryPlanningAgenticRAGAgent(MultiAgent):
                 "reasoning_workflow": "List[str]",
                 "validation_points": "List[str]",
                 "estimated_complexity": "float",
-            })
+            },
+        )
 
         # Plan executor
         plan_executor = SimpleAgent(
@@ -297,15 +302,14 @@ class QueryPlanningAgenticRAGAgent(MultiAgent):
                 "validation_results": "List[bool]",
                 "plan_adaptations": "List[str]",
                 "final_synthesis": "str",
-            })
+            },
+        )
 
         agents = [query_planner, plan_executor]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=AgenticRAGState,
-            **kwargs)
+            agents=agents, execution_mode="sequential", state_schema=AgenticRAGState, **kwargs
+        )
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -334,7 +338,8 @@ class SelfReflectiveAgenticRAGAgent(MultiAgent):
                 "potential_issues": "List[str]",
                 "confidence_trajectory": "List[float]",
                 "intervention_triggers": "List[str]",
-            })
+            },
+        )
 
         # Self-correction agent
         self_corrector = SimpleAgent(
@@ -353,7 +358,8 @@ class SelfReflectiveAgenticRAGAgent(MultiAgent):
                 "additional_evidence": "List[str]",
                 "improved_answer": "str",
                 "correction_confidence": "float",
-            })
+            },
+        )
 
         # Meta-learning agent
         meta_learner = SimpleAgent(
@@ -371,15 +377,14 @@ class SelfReflectiveAgenticRAGAgent(MultiAgent):
                 "strategy_updates": "List[str]",
                 "threshold_adjustments": "Dict[str, float]",
                 "performance_insights": "List[str]",
-            })
+            },
+        )
 
         agents = [self_monitor, self_corrector, meta_learner]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=AgenticRAGState,
-            **kwargs)
+            agents=agents, execution_mode="sequential", state_schema=AgenticRAGState, **kwargs
+        )
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -407,7 +412,8 @@ class SpeculativeRAGAgent(MultiAgent):
                 "reasoning_approaches": "List[str]",
                 "confidence_estimates": "List[float]",
                 "hypothesis_types": "List[str]",
-            })
+            },
+        )
 
         # Parallel evidence collector
         evidence_collector = SimpleAgent(
@@ -424,7 +430,8 @@ class SpeculativeRAGAgent(MultiAgent):
                 "supporting_strength": "Dict[str, float]",
                 "contradicting_evidence": "Dict[str, List[str]]",
                 "evidence_quality": "Dict[str, float]",
-            })
+            },
+        )
 
         # Hypothesis validator
         hypothesis_validator = SimpleAgent(
@@ -442,7 +449,8 @@ class SpeculativeRAGAgent(MultiAgent):
                 "combined_answer": "str",
                 "uncertainty_estimate": "float",
                 "validation_reasoning": "str",
-            })
+            },
+        )
 
         agents = [hypothesis_generator, evidence_collector, hypothesis_validator]
 
@@ -450,7 +458,8 @@ class SpeculativeRAGAgent(MultiAgent):
             agents=agents,
             execution_mode=ExecutionMode.PARALLEL,
             state_schema=AgenticRAGState,
-            **kwargs)
+            **kwargs,
+        )
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
@@ -475,7 +484,8 @@ class SelfRouteRAGAgent(MultiAgent):
                 "confidence_threshold": "float",
                 "fallback_strategies": "List[str]",
                 "routing_criteria": "Dict[str, Any]",
-            })
+            },
+        )
 
         # Dynamic router
         dynamic_router = SimpleAgent(
@@ -493,7 +503,8 @@ class SelfRouteRAGAgent(MultiAgent):
                 "strategy_switches": "List[str]",
                 "quality_assessments": "List[float]",
                 "final_strategy": "str",
-            })
+            },
+        )
 
         # Result synthesizer
         result_synthesizer = SimpleAgent(
@@ -507,28 +518,26 @@ class SelfRouteRAGAgent(MultiAgent):
                 "strategy_contributions": "Dict[str, str]",
                 "routing_explanation": "str",
                 "final_confidence": "float",
-            })
+            },
+        )
 
         agents = [initial_assessor, dynamic_router, result_synthesizer]
 
         super().__init__(
-            agents=agents,
-            execution_mode="conditional",
-            state_schema=AgenticRAGState,
-            **kwargs)
+            agents=agents, execution_mode="conditional", state_schema=AgenticRAGState, **kwargs
+        )
 
     def build_custom_graph(self) -> Any:
         """Build the custom graph for this multi-agent workflow."""
         return  # Use default graph structure
 
 
-
 def build_custom_graph() -> Any:
     """Build custom graph for advanced workflows.
-    
+
     This is a utility function for creating custom graphs for
     advanced RAG workflows in this module.
-    
+
     Returns:
         Graph configuration or None for default behavior
     """

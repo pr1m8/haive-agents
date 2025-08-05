@@ -53,9 +53,7 @@ def grade_documents(_state: dict[str, Any]):
     # Score each doc
     filtered_docs = []
     for d in documents:
-        score = retrieval_grader.invoke(
-            {"question": question, "document": d.page_content}
-        )
+        score = retrieval_grader.invoke({"question": question, "document": d.page_content})
         grade = score.binary_score
         if grade == "yes":
             filtered_docs.append(d)
@@ -84,7 +82,6 @@ def transform_query(_state: dict[str, Any]):
 # Edges
 
 
-def transform_query(
-    question: str = Field(description="The question to be transformed")):
+def transform_query(question: str = Field(description="The question to be transformed")):
     """Transform the query to produce a better question."""
     question_rewi

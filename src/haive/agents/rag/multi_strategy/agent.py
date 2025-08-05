@@ -91,9 +91,7 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
         else:
             # Try to parse variations from text
             try:
-                variations = [
-                    q.strip() for q in rewrite_result.split("\n") if q.strip()
-                ]
+                variations = [q.strip() for q in rewrite_result.split("\n") if q.strip()]
             except BaseException:
                 variations = []
 
@@ -148,7 +146,8 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
         # Add conditional branch for correction
         correction_branch = Branch(
             function=self.decide_correction,
-            destinations={"correct": "correct_answer", "finalize": "finalize_answer"})
+            destinations={"correct": "correct_answer", "finalize": "finalize_answer"},
+        )
         gb.add_conditional_edges("evaluate_answer", correction_branch)
 
         # Connect correction back to evaluation

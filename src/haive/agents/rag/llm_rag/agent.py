@@ -55,7 +55,8 @@ class LLMRAGAgent(BaseRAGAgent):
             components=components,
             state_schema=self.config.state_schema,
             input_schema=self.config.input_schema,
-            output_schema=self.config.output_schema)
+            output_schema=self.config.output_schema,
+        )
 
         # Use the base RAG agent as a subgraph
         # This leverages the parent's create_runnable method to create the
@@ -64,16 +65,11 @@ class LLMRAGAgent(BaseRAGAgent):
 
         # Define function to invoke the base RAG subgraph
         def retrieve_documents(state: dict[str, Any]):
-            logger.info(
-                f"Invoking base RAG for document retrieval with query: '{
-                    state.query}'"
-            )
+            logger.info(f"Invoking base RAG for document retrieval with query: '{state.query}'")
             try:
                 # Invoke the base RAG agent as a subgraph
                 result = base_rag_subgraph.invoke(state)
-                logger.info(
-                    f"Retrieved {len(result.get('retrieved_documents', []))} documents"
-                )
+                logger.info(f"Retrieved {len(result.get('retrieved_documents', []))} documents")
 
                 # Pass the result to the relevance checker
                 return Command(
@@ -90,9 +86,7 @@ class LLMRAGAgent(BaseRAGAgent):
 
         # Define a function to check document relevance
         def check_relevance(state: dict[str, Any]):
-            logger.info(
-                f"Checking relevance of {len(state.retrieved_documents)} documents"
-            )
+            logger.info(f"Checking relevance of {len(state.retrieved_documents)} documents")
 
             # If no documents retrieved, mark as not relevant
             if not state.retrieved_documents:
@@ -113,21 +107,16 @@ class LLMRAGAgent(BaseRAGAgent):
                 is_relevant = parse_relevance_result(result)
                 logger.info(f"Relevance check result: {is_relevant}")
 
-                return Command(
-                    update={"is_relevant": is_relevant}, goto="generate_answer"
-                )
+                return Command(update={"is_relevant": is_relevant}, goto="generate_answer")
             except Exception as e:
                 logger.exception(f"Error in relevance checker: {e}")
                 return Command(
-                    update={"is_relevant": False, "error": str(e)},
-                    goto="generate_answer")
+                    update={"is_relevant": False, "error": str(e)}, goto="generate_answer"
+                )
 
         # Define a function to generate an answer
         def generate_answer(state: dict[str, Any]):
-            logger.info(
-                f"Generating answer with relevance: {
-                    state.is_relevant}"
-            )
+            logger.info(f"Generating answer with relevance: {state.is_relevant}")
 
             try:
                 # If documents aren't relevant, provide a standard response
@@ -136,7 +125,8 @@ class LLMRAGAgent(BaseRAGAgent):
                         update={
                             "answer": "The retrieved documents are not relevant to the question."
                         },
-                        goto=END)
+                        goto=END,
+                    )
 
                 # Format documents for the LLM
                 context = format_documents(state.retrieved_documents)
@@ -159,7 +149,8 @@ class LLMRAGAgent(BaseRAGAgent):
                         "answer": f"Error generating answer: {e!s}",
                         "error": str(e),
                     },
-                    goto=END)
+                    goto=END,
+                )
 
         # Add nodes to the graph
         graph_builder.add_node("retrieve_documents", retrieve_documents)
@@ -170,8 +161,8 @@ class LLMRAGAgent(BaseRAGAgent):
             # If no relevance checker, add a passthrough node
             def default_relevance(state: dict[str, Any]):
                 return Command(
-                    update={"is_relevant": bool(state.retrieved_documents)},
-                    goto="generate_answer")
+                    update={"is_relevant": bool(state.retrieved_documents)}, goto="generate_answer"
+                )
 
             graph_builder.add_node("check_relevance", default_relevance)
 

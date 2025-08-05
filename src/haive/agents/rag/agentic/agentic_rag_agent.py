@@ -102,9 +102,7 @@ class AgenticRAGAgent(SimpleAgent):
         default=None, description="Agent for grading document relevance"
     )
 
-    rewriter_agent: Any | None = Field(
-        default=None, description="Agent for query refinement"
-    )
+    rewriter_agent: Any | None = Field(default=None, description="Agent for query refinement")
 
     generator_agent: SimpleAgent | None = Field(
         default=None, description="Agent for final answer generation"
@@ -119,9 +117,7 @@ class AgenticRAGAgent(SimpleAgent):
         default=1, description="Maximum number of query rewrite attempts"
     )
 
-    use_web_search: bool = Field(
-        default=True, description="Whether to use web search as fallback"
-    )
+    use_web_search: bool = Field(default=True, description="Whether to use web search as fallback")
 
     relevance_threshold: float = Field(
         default=0.7, description="Minimum relevance score for documents"
@@ -154,11 +150,13 @@ class AgenticRAGAgent(SimpleAgent):
 
         # Create component agents
         grader_agent = create_document_grader_agent(
-            name=f"{name}_grader", temperature=0.0  # Consistent grading
+            name=f"{name}_grader",
+            temperature=0.0,  # Consistent grading
         )
 
         rewriter_agent = create_query_rewriter_agent(
-            name=f"{name}_rewriter", temperature=0.7  # Creative rewriting
+            name=f"{name}_rewriter",
+            temperature=0.7,  # Creative rewriting
         )
 
         # Create generator agent
@@ -172,7 +170,8 @@ class AgenticRAGAgent(SimpleAgent):
                 "3. Be accurate and cite sources when possible\n"
                 "4. If information is incomplete, acknowledge limitations\n"
                 "5. Provide a clear, well-structured response"
-            ))
+            ),
+        )
 
         generator_agent = SimpleAgent(name=f"{name}_generator", engine=generator_engine)
 
@@ -189,7 +188,8 @@ class AgenticRAGAgent(SimpleAgent):
         if engine is None:
             engine = AugLLMConfig(
                 temperature=temperature,
-                system_message="You are an advanced RAG system coordinator.")
+                system_message="You are an advanced RAG system coordinator.",
+            )
 
         return cls(
             name=name,
@@ -200,7 +200,8 @@ class AgenticRAGAgent(SimpleAgent):
             generator_agent=generator_agent,
             web_search_agent=web_search_agent,
             use_web_search=use_web_search,
-            **kwargs)
+            **kwargs,
+        )
 
     @staticmethod
     def _create_web_search_tool():
@@ -253,7 +254,8 @@ class AgenticRAGAgent(SimpleAgent):
                 "generate": "generate_answer",
                 "rewrite": "rewrite_query",
                 "web_search": "web_search",
-            })
+            },
+        )
 
         # After rewriting, retrieve again
         graph.add_edge("rewrite_query", "retrieve")
@@ -286,10 +288,7 @@ class AgenticRAGAgent(SimpleAgent):
             "retrieved_documents": documents,
             "messages": [
                 *state.messages,
-                AIMessage(
-                    content=f"Retrieved {
-                        len(documents)} documents for query: {query}"
-                ),
+                AIMessage(content=f"Retrieved {len(documents)} documents for query: {query}"),
             ],
         }
 
@@ -313,7 +312,8 @@ class AgenticRAGAgent(SimpleAgent):
                     "content": doc.get("content", doc.get("page_content", "")),
                 }
                 for i, doc in enumerate(state.retrieved_documents)
-            ])
+            ],
+        )
 
         # Process grading results
         relevant_docs = []
@@ -332,10 +332,9 @@ class AgenticRAGAgent(SimpleAgent):
             "messages": [
                 *state.messages,
                 AIMessage(
-                    content=f"Graded {
-                        len(
-                            state.retrieved_documents)} documents. {
-                        len(relevant_docs)} are relevant."
+                    content=f"Graded {len(state.retrieved_documents)} documents. {
+                        len(relevant_docs)
+                    } are relevant."
                 ),
             ],
         }
@@ -365,8 +364,8 @@ class AgenticRAGAgent(SimpleAgent):
         # Rewrite query
         query = state.refined_query or state.original_query
         rewrite_result = await self.rewriter_agent.rewrite_query(
-            query=query,
-            context="Previous retrieval returned insufficient relevant documents.")
+            query=query, context="Previous retrieval returned insufficient relevant documents."
+        )
 
         return {
             "refined_query": rewrite_result.best_refined_query,
@@ -374,8 +373,7 @@ class AgenticRAGAgent(SimpleAgent):
             "messages": [
                 *state.messages,
                 AIMessage(
-                    content=f"Rewrote query from '{query}' to '{
-                        rewrite_result.best_refined_query}'"
+                    content=f"Rewrote query from '{query}' to '{rewrite_result.best_refined_query}'"
                 ),
             ],
         }

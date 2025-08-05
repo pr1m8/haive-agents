@@ -10,7 +10,8 @@ from haive.core.graph.node.callable_node import (
     CallableNodeConfig,
     create_document_grader,
     requery_decision,
-    simple_document_grader)
+    simple_document_grader,
+)
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
 from langchain_core.documents import Document
@@ -83,10 +84,10 @@ class CorrectiveRAGAgent(ConditionalAgent):
         requery_agent: RequeryDecisionAgent | None = None,
         answer_agent: SimpleAgent | None = None,
         documents: list[Document] | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         # Create default agents if not provided
         if not retrieval_agent:
-
             retrieval_agent = SimpleRAGAgent.from_documents(
                 documents or conversation_documents, name="CRAG Retrieval Agent"
             )
@@ -104,10 +105,8 @@ class CorrectiveRAGAgent(ConditionalAgent):
         agents = [retrieval_agent, grading_agent, requery_agent, answer_agent]
 
         super().__init__(
-            name="Corrective RAG Agent",
-            agents=agents,
-            state_schema=MultiAgentRAGState,
-            **kwargs)
+            name="Corrective RAG Agent", agents=agents, state_schema=MultiAgentRAGState, **kwargs
+        )
 
         self.retrieval_agent = retrieval_agent
         self.grading_agent = grading_agent
@@ -154,7 +153,8 @@ class CorrectiveRAGAgent(ConditionalAgent):
                 source_agent=agent,
                 condition=crag_router,
                 destinations={self._get_agent_node_name(a): a for a in self.agents},
-                default=END)
+                default=END,
+            )
 
 
 class HYDERAGAgent(SequentialAgent):
@@ -166,26 +166,26 @@ class HYDERAGAgent(SequentialAgent):
         retrieval_agent: SimpleRAGAgent | None = None,
         answer_agent: SimpleAgent | None = None,
         documents: list[Document] | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         # Create hypothesis generator
         if not hypothesis_agent:
-
             hyde_prompt = ChatPromptTemplate.from_messages(
                 [
                     (
                         "system",
-                        "You are an expert that generates detailed, accurate responses to questions. Write a comprehensive paragraph that would perfectly answer the given question."),
+                        "You are an expert that generates detailed, accurate responses to questions. Write a comprehensive paragraph that would perfectly answer the given question.",
+                    ),
                     ("human", "Question: {query}\n\nDetailed Answer:"),
                 ]
             )
 
             hypothesis_agent = SimpleAgent(
-                name="HYDE Hypothesis Generator",
-                engine=AugLLMConfig(prompt_template=hyde_prompt))
+                name="HYDE Hypothesis Generator", engine=AugLLMConfig(prompt_template=hyde_prompt)
+            )
 
         # Create retrieval agent that will use hypothesis for similarity search
         if not retrieval_agent:
-
             retrieval_agent = SimpleRAGAgent.from_documents(
                 documents or conversation_documents, name="HYDE Retrieval Agent"
             )
@@ -197,7 +197,8 @@ class HYDERAGAgent(SequentialAgent):
             name="HYDE RAG Agent",
             agents=[hypothesis_agent, retrieval_agent, answer_agent],
             state_schema=MultiAgentRAGState,
-            **kwargs)
+            **kwargs,
+        )
 
 
 class SelfRAGAgent(ConditionalAgent):
@@ -210,10 +211,10 @@ class SelfRAGAgent(ConditionalAgent):
         relevance_agent: SimpleAgent | None = None,
         generation_agent: SimpleAgent | None = None,
         documents: list[Document] | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         # Create retrieval decision agent
         if not retrieval_decision_agent:
-
             retrieval_prompt = ChatPromptTemplate.from_messages(
                 [
                     (
@@ -221,31 +222,28 @@ class SelfRAGAgent(ConditionalAgent):
                         """You decide if external knowledge retrieval is needed.
                 Respond with exactly one of:
                 - [Retrieval] if the question requires external knowledge
-                - [No Retrieval] if you can answer with your internal knowledge"""),
+                - [No Retrieval] if you can answer with your internal knowledge""",
+                    ),
                     ("human", "Question: {query}"),
                 ]
             )
 
             retrieval_decision_agent = SimpleAgent(
                 name="Self-RAG Retrieval Decision",
-                engine=AugLLMConfig(prompt_template=retrieval_prompt))
+                engine=AugLLMConfig(prompt_template=retrieval_prompt),
+            )
 
         # Create other agents with default configurations
         if not retrieval_agent:
-
             retrieval_agent = SimpleRAGAgent.from_documents(
                 documents or conversation_documents, name="Self-RAG Retrieval Agent"
             )
 
         if not relevance_agent:
-            relevance_agent = SimpleAgent(
-                name="Self-RAG Relevance Checker", engine=AugLLMConfig()
-            )
+            relevance_agent = SimpleAgent(name="Self-RAG Relevance Checker", engine=AugLLMConfig())
 
         if not generation_agent:
-            generation_agent = SimpleAgent(
-                name="Self-RAG Generator", engine=AugLLMConfig()
-            )
+            generation_agent = SimpleAgent(name="Self-RAG Generator", engine=AugLLMConfig())
 
         agents = [
             retrieval_decision_agent,
@@ -255,10 +253,8 @@ class SelfRAGAgent(ConditionalAgent):
         ]
 
         super().__init__(
-            name="Self-RAG Agent",
-            agents=agents,
-            state_schema=MultiAgentRAGState,
-            **kwargs)
+            name="Self-RAG Agent", agents=agents, state_schema=MultiAgentRAGState, **kwargs
+        )
 
         self.retrieval_decision_agent = retrieval_decision_agent
         self.retrieval_agent = retrieval_agent
@@ -273,10 +269,7 @@ class SelfRAGAgent(ConditionalAgent):
         def self_rag_router(state: MultiAgentRAGState) -> str:
             """Route based on Self-RAG reflection logic."""
             # Check if we need retrieval decision
-            if (
-                not hasattr(state, "needs_retrieval_decision")
-                or not state.needs_retrieval_decision
-            ):
+            if not hasattr(state, "needs_retrieval_decision") or not state.needs_retrieval_decision:
                 return self._get_agent_node_name(self.retrieval_decision_agent)
 
             # If retrieval is needed and not done
@@ -297,7 +290,8 @@ class SelfRAGAgent(ConditionalAgent):
                 source_agent=agent,
                 condition=self_rag_router,
                 destinations={self._get_agent_node_name(a): a for a in self.agents},
-                default=END)
+                default=END,
+            )
 
 
 def create_enhanced_rag_workflow(

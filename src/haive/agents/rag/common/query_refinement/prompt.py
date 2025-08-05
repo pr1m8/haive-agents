@@ -32,7 +32,8 @@ RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
 - Temporal (time-based information)
 - Causal (cause-and-effect relationships)
 
-Provide multiple refinement suggestions with clear rationales."""),
+Provide multiple refinement suggestions with clear rationales.""",
+        ),
         (
             "human",
             """Analyze and refine the following user query to improve retrieval and answer quality.
@@ -48,6 +49,7 @@ Provide multiple refinement suggestions with clear rationales."""),
 4. Recommend the best refined query
 5. Suggest optimal search strategies
 
-Focus on improvements that will lead to better document retrieval and more comprehensive answers."""),
+Focus on improvements that will lead to better document retrieval and more comprehensive answers.""",
+        ),
     ]
 ).partial(context="")

@@ -110,7 +110,8 @@ def postgresql_example() -> dict[str, Any]:
         db_user="postgres",
         db_password="postgres",
         include_tables=["customers", "orders", "order_details", "products"],
-        sample_rows_in_table_info=5)
+        sample_rows_in_table_info=5,
+    )
 
     # Configure agent for e-commerce domain
     agent_config = SQLRAGConfig(
@@ -118,7 +119,8 @@ def postgresql_example() -> dict[str, Any]:
         domain_categories=["sales", "customers", "products"],
         db_config=db_config,
         hallucination_check=True,
-        max_iterations=3)
+        max_iterations=3,
+    )
 
     # Create agent
     agent = SQLRAGAgent(agent_config)
@@ -147,7 +149,8 @@ def sqlite_example() -> dict[str, Any]:
     """
     # Configure SQLite connection
     db_config = SQLDatabaseConfig(
-        db_type="sqlite", db_name="./data/sample.db"  # Path to SQLite file
+        db_type="sqlite",
+        db_name="./data/sample.db",  # Path to SQLite file
     )
 
     # Simple configuration
@@ -185,7 +188,8 @@ def mysql_example() -> dict[str, Any]:
         db_port="3306",
         db_name="analytics",
         db_user="analyst",
-        db_password="secure_password")
+        db_password="secure_password",
+    )
 
     # Configure with examples
     config = SQLRAGConfig(
@@ -202,15 +206,14 @@ def mysql_example() -> dict[str, Any]:
                     "query": "SELECT COUNT(DISTINCT customer_id) as returning_customers FROM orders WHERE customer_id IN (SELECT customer_id FROM orders WHERE order_date < DATE_SUB(NOW(), INTERVAL 1 YEAR))",
                 },
             ]
-        })
+        },
+    )
 
     # Create agent
     agent = SQLRAGAgent(config)
 
     # Run trend analysis
-    result = agent.run(
-        {"question": "What's the product sales trend for the last 6 months?"}
-    )
+    result = agent.run({"question": "What's the product sales trend for the last 6 months?"})
 
     return result
 
@@ -264,9 +267,8 @@ def custom_llm_example() -> dict[str, Any]:
         model="gpt-4",
         temperature=0.1,  # Very low temperature for consistent SQL
         prompt_template=default_sql_engines["generate_sql"].prompt_template,
-        structured_output_model=default_sql_engines[
-            "generate_sql"
-        ].structured_output_model)
+        structured_output_model=default_sql_engines["generate_sql"].structured_output_model,
+    )
 
     # Custom engines configuration
     custom_engines = {
@@ -376,7 +378,6 @@ def interactive_mode() -> None:
             if question.lower() == "help":
                 continue
             if question.lower() == "clear":
-
                 os.system("clear" if os.name == "posix" else "cls")
                 continue
             if not question:
@@ -439,7 +440,8 @@ def main() -> int | float:
             "interactive",
         ],
         default="basic",
-        help="Which example to run")
+        help="Which example to run",
+    )
     parser.add_argument("--query", type=str, help="Custom query to run")
     parser.add_argument("--config", type=str, help="Path to JSON configuration file")
 
@@ -448,7 +450,6 @@ def main() -> int | float:
     try:
         # If custom query is provided
         if args.query:
-
             # Load config from file if provided
             if args.config:
                 with open(args.config) as f:

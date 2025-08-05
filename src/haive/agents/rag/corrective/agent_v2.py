@@ -16,17 +16,14 @@ from langchain_core.prompts import ChatPromptTemplate
 from haive.agents.multi.base import ConditionalAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import RAG_ANSWER_STANDARD
-from haive.agents.rag.common.document_graders.binary_grader.prompt import (
-    RAG_DOCUMENT_GRADE_BINARY)
+from haive.agents.rag.common.document_graders.binary_grader.prompt import RAG_DOCUMENT_GRADE_BINARY
 from haive.agents.rag.common.document_graders.models import DocumentBinaryResponse
 from haive.agents.simple.agent import SimpleAgent
 
 # Web search prompt for when documents aren't relevant
 WEB_SEARCH_PROMPT = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "You are a web search query generator. Create effective search queries."),
+        ("system", "You are a web search query generator. Create effective search queries."),
         (
             "human",
             """The user's question could not be answered with the available documents.
@@ -34,7 +31,8 @@ WEB_SEARCH_PROMPT = ChatPromptTemplate.from_messages(
 Original question: {query}
 Failed documents: {retrieved_documents}
 
-Generate 2-3 web search queries that would help find relevant information."""),
+Generate 2-3 web search queries that would help find relevant information.""",
+        ),
     ]
 )
 
@@ -44,7 +42,8 @@ REFINE_DOCS_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are a document refinement specialist. Extract and organize the most relevant information."),
+            "You are a document refinement specialist. Extract and organize the most relevant information.",
+        ),
         (
             "human",
             """Refine these partially relevant documents to focus on answering the query.
@@ -53,7 +52,8 @@ Query: {query}
 Documents: {retrieved_documents}
 Grading results: {document_decisions}
 
-Extract and organize only the relevant portions that help answer the query."""),
+Extract and organize only the relevant portions that help answer the query.""",
+        ),
     ]
 )
 
@@ -67,7 +67,8 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
         documents: list[Document],
         llm_config: LLMConfig | None = None,
         relevance_threshold: float = 0.7,
-        **kwargs):
+        **kwargs,
+    ):
         """Create Corrective RAG from documents.
 
         Args:
@@ -80,36 +81,33 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
             CorrectiveRAGAgentV2 instance
         """
         # Create agents
-        retrieval_agent = BaseRAGAgent.from_documents(
-            documents=documents, name="CRAG Retriever"
-        )
+        retrieval_agent = BaseRAGAgent.from_documents(documents=documents, name="CRAG Retriever")
 
         grader_agent = SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=llm_config,
                 prompt_template=RAG_DOCUMENT_GRADE_BINARY,
-                structured_output_model=DocumentBinaryResponse),
-            name="Document Grader")
+                structured_output_model=DocumentBinaryResponse,
+            ),
+            name="Document Grader",
+        )
 
         # Web search agent (placeholder for now)
         web_search_agent = SimpleAgent(
-            engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=WEB_SEARCH_PROMPT
-            ),
-            name="Web Search Query Generator")
+            engine=AugLLMConfig(llm_config=llm_config, prompt_template=WEB_SEARCH_PROMPT),
+            name="Web Search Query Generator",
+        )
 
         # Document refiner agent
         refiner_agent = SimpleAgent(
-            engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=REFINE_DOCS_PROMPT
-            ),
-            name="Document Refiner")
+            engine=AugLLMConfig(llm_config=llm_config, prompt_template=REFINE_DOCS_PROMPT),
+            name="Document Refiner",
+        )
 
         answer_agent = SimpleAgent(
-            engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
-            ),
-            name="Answer Generator")
+            engine=AugLLMConfig(llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD),
+            name="Answer Generator",
+        )
 
         # Define conditional routing based on grading
         def grade_documents(state: dict[str, Any]) -> str:
@@ -119,9 +117,7 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
                 decisions = state["document_decisions"]
 
                 # Count passing documents
-                passing_docs = sum(
-                    1 for decision in decisions if decision.decision == "pass"
-                )
+                passing_docs = sum(1 for decision in decisions if decision.decision == "pass")
                 total_docs = len(decisions)
 
                 if total_docs == 0:
@@ -178,4 +174,5 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
             ],
             branches=branches,
             name=kwargs.get("name", "Corrective RAG Agent V2"),
-            **kwargs)
+            **kwargs,
+        )

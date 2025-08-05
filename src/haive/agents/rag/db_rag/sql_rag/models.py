@@ -6,9 +6,7 @@ from pydantic import BaseModel, Field, field_validator
 class Query(BaseModel):
     """Model for a query to the SQL database."""
 
-    question: str = Field(
-        ..., description="The question to search the SQL database with."
-    )
+    question: str = Field(..., description="The question to search the SQL database with.")
 
 
 class SQLQueryOutput(BaseModel):
@@ -16,8 +14,8 @@ class SQLQueryOutput(BaseModel):
 
     query: str = Field(..., description="The generated SQL query.")
     parameters: dict[str, Any] | None = Field(
-        default=None,
-        description="Query parameters if placeholders are used (e.g., ?1, ?2).")
+        default=None, description="Query parameters if placeholders are used (e.g., ?1, ?2)."
+    )
 
     @field_validator("query")
     @classmethod
@@ -33,8 +31,8 @@ class SQLValidationOutput(BaseModel):
     """Represents the validation result of a SQL query's output."""
 
     errors: list[str] = Field(
-        default_factory=list,
-        description="List of syntax or semantic errors in the SQL statement.")
+        default_factory=list, description="List of syntax or semantic errors in the SQL statement."
+    )
     is_valid: bool = Field(default=False, description="Whether the SQL query is valid.")
     suggestions: str | None = Field(
         default=None, description="Suggestions for improving the SQL query."
@@ -44,21 +42,22 @@ class SQLValidationOutput(BaseModel):
 class SQLAnalysisOutput(BaseModel):
     """Represents the analysis of a natural language query."""
 
-    relevant_tables: list[str] = Field(
-        description="The tables that are relevant to the query."
-    )
+    relevant_tables: list[str] = Field(description="The tables that are relevant to the query.")
     needed_columns: list[str] = Field(
-        default_factory=list,
-        description="The columns that are needed to answer the query.")
+        default_factory=list, description="The columns that are needed to answer the query."
+    )
     constraints: list[str] = Field(
         default_factory=list,
-        description="Any constraints that should be applied in the WHERE clause.")
+        description="Any constraints that should be applied in the WHERE clause.",
+    )
     aggregations: list[str] = Field(
         default_factory=list,
-        description="Any aggregations that should be performed (COUNT, SUM, AVG, etc.).")
+        description="Any aggregations that should be performed (COUNT, SUM, AVG, etc.).",
+    )
     joins_needed: list[dict[str, str]] = Field(
         default_factory=list,
-        description="Any joins that need to be performed, with the tables to join.")
+        description="Any joins that need to be performed, with the tables to join.",
+    )
     complexity: Literal["simple", "medium", "complex"] = Field(
         default="simple", description="The complexity of the query."
     )
@@ -76,14 +75,10 @@ class GuardrailsOutput(BaseModel):
 class GradeHallucinations(BaseModel):
     """Binary score for hallucination present in generated answer."""
 
-    binary_score: str = Field(
-        description="Answer is grounded in the facts, 'yes' or 'no'"
-    )
+    binary_score: str = Field(description="Answer is grounded in the facts, 'yes' or 'no'")
 
 
 class GradeAnswer(BaseModel):
     """Binary score to assess answer addresses question."""
 
-    binary_score: str = Field(
-        description="Answer addresses the question, 'yes' or 'no'"
-    )
+    binary_score: str = Field(description="Answer addresses the question, 'yes' or 'no'")

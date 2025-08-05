@@ -16,7 +16,8 @@ from haive.core.fixtures.documents import conversation_documents
 from haive.core.graph.node.callable_node import (
     CallableNodeConfig,
     create_document_grader,
-    simple_document_grader)
+    simple_document_grader,
+)
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
 from langchain_core.documents import Document
@@ -80,8 +81,7 @@ def crag_relevance_check(input_data: dict) -> dict:
     return {
         "quality": quality,
         "confidence": avg_score,
-        "reasoning": f"Average relevance score: {
-            avg_score:.2f}",
+        "reasoning": f"Average relevance score: {avg_score:.2f}",
         "needs_web_search": quality in [RAGQuality.INCORRECT, RAGQuality.AMBIGUOUS],
     }
 
@@ -112,15 +112,11 @@ def hallucination_detection(input_data: dict) -> dict:
         "i think",
     ]
 
-    has_indicators = any(
-        indicator in response_lower for indicator in hallucination_indicators
-    )
+    has_indicators = any(indicator in response_lower for indicator in hallucination_indicators)
 
     # Check if response mentions facts not in documents (basic check)
     key_terms = response_lower.split()
-    doc_coverage = sum(
-        1 for term in key_terms if any(term in doc for doc in doc_contents)
-    )
+    doc_coverage = sum(1 for term in key_terms if any(term in doc for doc in doc_contents))
     coverage_ratio = doc_coverage / len(key_terms) if key_terms else 0
 
     has_hallucination = has_indicators or coverage_ratio < 0.3
@@ -129,8 +125,7 @@ def hallucination_detection(input_data: dict) -> dict:
     return {
         "has_hallucination": has_hallucination,
         "confidence": confidence,
-        "reasoning": f"Coverage ratio: {
-            coverage_ratio:.2f}, indicators: {has_indicators}",
+        "reasoning": f"Coverage ratio: {coverage_ratio:.2f}, indicators: {has_indicators}",
         "needs_regeneration": has_hallucination,
     }
 
@@ -160,11 +155,7 @@ def self_rag_retrieval_decision(input_data: dict) -> dict:
 
     needs_retrieval = any(term in query.lower() for term in knowledge_requiring_terms)
 
-    token = (
-        ReflectionToken.RETRIEVAL_YES
-        if needs_retrieval
-        else ReflectionToken.NO_RETRIEVAL
-    )
+    token = ReflectionToken.RETRIEVAL_YES if needs_retrieval else ReflectionToken.NO_RETRIEVAL
 
     return {
         "retrieval_token": token,
@@ -182,10 +173,12 @@ def web_search_fallback(input_data: dict) -> dict:
     web_results = [
         Document(
             page_content=f"Web search result for: {query}. This would contain current information from the internet.",
-            metadata={"source": "web_search", "query": query, "relevance": 0.9}),
+            metadata={"source": "web_search", "query": query, "relevance": 0.9},
+        ),
         Document(
             page_content=f"Additional web context about {query} from recent sources.",
-            metadata={"source": "web_search", "query": query, "relevance": 0.8}),
+            metadata={"source": "web_search", "query": query, "relevance": 0.8},
+        ),
     ]
 
     return {
@@ -308,7 +301,8 @@ class CorrectiveRAGAgent(ConditionalAgent):
             name="Corrective RAG Agent",
             agents=[retrieval_agent, relevance_agent, web_search_agent, answer_agent],
             state_schema=MultiAgentRAGState,
-            **kwargs)
+            **kwargs,
+        )
 
         self.retrieval_agent = retrieval_agent
         self.relevance_agent = relevance_agent
@@ -378,7 +372,8 @@ class CorrectiveRAGAgent(ConditionalAgent):
                 source_agent=agent,
                 condition=crag_router,
                 destinations={self._get_agent_node_name(a): a for a in self.agents},
-                default=END)
+                default=END,
+            )
 
 
 class SelfRAGAgent(ConditionalAgent):
@@ -401,9 +396,7 @@ class SelfRAGAgent(ConditionalAgent):
         relevance_agent.build_graph = lambda: self._build_relevance_graph()
 
         # Create generation agent
-        generation_agent = SimpleAgent(
-            name="Self-RAG Generation Agent", engine=AugLLMConfig()
-        )
+        generation_agent = SimpleAgent(name="Self-RAG Generation Agent", engine=AugLLMConfig())
 
         # Create hallucination detection agent
         hallucination_agent = Agent()
@@ -420,7 +413,8 @@ class SelfRAGAgent(ConditionalAgent):
                 hallucination_agent,
             ],
             state_schema=MultiAgentRAGState,
-            **kwargs)
+            **kwargs,
+        )
 
         self.decision_agent = decision_agent
         self.retrieval_agent = retrieval_agent
@@ -434,9 +428,8 @@ class SelfRAGAgent(ConditionalAgent):
         graph = BaseGraph(name="SelfRAGDecision")
 
         decision_node = CallableNodeConfig(
-            name="retrieval_decision",
-            callable_func=self_rag_retrieval_decision,
-            pass_state=True)
+            name="retrieval_decision", callable_func=self_rag_retrieval_decision, pass_state=True
+        )
         graph.add_node("retrieval_decision", decision_node)
 
         graph.add_edge(START, "retrieval_decision")
@@ -447,9 +440,7 @@ class SelfRAGAgent(ConditionalAgent):
     def _build_relevance_graph(self) -> BaseGraph:
         graph = BaseGraph(name="SelfRAGRelevance")
 
-        relevance_node = create_document_grader(
-            simple_document_grader, "check_relevance"
-        )
+        relevance_node = create_document_grader(simple_document_grader, "check_relevance")
         graph.add_node("check_relevance", relevance_node)
 
         graph.add_edge(START, "check_relevance")
@@ -461,9 +452,8 @@ class SelfRAGAgent(ConditionalAgent):
         graph = BaseGraph(name="HallucinationDetection")
 
         hallucination_node = CallableNodeConfig(
-            name="detect_hallucination",
-            callable_func=hallucination_detection,
-            pass_state=True)
+            name="detect_hallucination", callable_func=hallucination_detection, pass_state=True
+        )
         graph.add_node("detect_hallucination", hallucination_node)
 
         graph.add_edge(START, "detect_hallucination")
@@ -510,7 +500,8 @@ class SelfRAGAgent(ConditionalAgent):
                 source_agent=agent,
                 condition=self_rag_router,
                 destinations={self._get_agent_node_name(a): a for a in self.agents},
-                default=END)
+                default=END,
+            )
 
 
 class AdaptiveRAGAgent(ConditionalAgent):
@@ -543,7 +534,8 @@ class AdaptiveRAGAgent(ConditionalAgent):
                 direct_agent,
             ],
             state_schema=MultiAgentRAGState,
-            **kwargs)
+            **kwargs,
+        )
 
         self.analyzer_agent = analyzer_agent
         self.simple_rag_agent = simple_rag_agent
@@ -557,9 +549,8 @@ class AdaptiveRAGAgent(ConditionalAgent):
         graph = BaseGraph(name="QueryComplexityAnalyzer")
 
         analyzer_node = CallableNodeConfig(
-            name="analyze_complexity",
-            callable_func=query_complexity_analysis,
-            pass_state=True)
+            name="analyze_complexity", callable_func=query_complexity_analysis, pass_state=True
+        )
         graph.add_node("analyze_complexity", analyzer_node)
 
         graph.add_edge(START, "analyze_complexity")
@@ -577,9 +568,8 @@ class AdaptiveRAGAgent(ConditionalAgent):
 
             # Generate multiple queries
             query_gen_node = CallableNodeConfig(
-                name="generate_queries",
-                callable_func=generate_multi_queries,
-                pass_state=True)
+                name="generate_queries", callable_func=generate_multi_queries, pass_state=True
+            )
             graph.add_node("generate_queries", query_gen_node)
 
             # Use simple RAG retrieval for each query
@@ -593,7 +583,8 @@ class AdaptiveRAGAgent(ConditionalAgent):
                 callable_func=lambda x: {
                     "generated_response": f"Multi-query answer for: {x['state'].query}"
                 },
-                pass_state=True)
+                pass_state=True,
+            )
             graph.add_node("answer_generation", answer_node)
 
             graph.add_edge(START, "generate_queries")
@@ -630,7 +621,8 @@ class AdaptiveRAGAgent(ConditionalAgent):
                 source_agent=agent,
                 condition=adaptive_router,
                 destinations={self._get_agent_node_name(a): a for a in self.agents},
-                default=END)
+                default=END,
+            )
 
 
 class HYDERAGAgent(SequentialAgent):
@@ -654,15 +646,15 @@ class HYDERAGAgent(SequentialAgent):
             name="HYDE RAG Agent",
             agents=[hypothesis_agent, retrieval_agent, answer_agent],
             state_schema=MultiAgentRAGState,
-            **kwargs)
+            **kwargs,
+        )
 
     def _build_hypothesis_graph(self) -> BaseGraph:
         graph = BaseGraph(name="HYDEHypothesis")
 
         hypothesis_node = CallableNodeConfig(
-            name="generate_hypothesis",
-            callable_func=hyde_hypothesis_generation,
-            pass_state=True)
+            name="generate_hypothesis", callable_func=hyde_hypothesis_generation, pass_state=True
+        )
         graph.add_node("generate_hypothesis", hypothesis_node)
 
         graph.add_edge(START, "generate_hypothesis")
@@ -697,9 +689,7 @@ def create_complete_rag_workflow(
 
     if workflow_type not in workflow_map:
         raise ValueError(
-            f"Unknown workflow type: {workflow_type}. Available: {
-                list(
-                    workflow_map.keys())}"
+            f"Unknown workflow type: {workflow_type}. Available: {list(workflow_map.keys())}"
         )
 
     return workflow_map[workflow_type](documents=documents, **kwargs)

@@ -16,7 +16,8 @@ from self_reflective.agent import (
     reflect_and_critique,
     setup_agent,
     should_continue_improving,
-    synthesize_result)
+    synthesize_result,
+)
 
 __all__ = [
     "ImprovedAnswer",

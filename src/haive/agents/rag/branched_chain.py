@@ -32,9 +32,7 @@ class QueryClassification(BaseModel):
     secondary_type: QueryType | None = Field(
         default=None, description="Secondary type if applicable"
     )
-    complexity: Literal["simple", "medium", "complex"] = Field(
-        description="Query complexity"
-    )
+    complexity: Literal["simple", "medium", "complex"] = Field(description="Query complexity")
     confidence: float = Field(ge=0.0, le=1.0, description="Classification confidence")
 
 
@@ -51,23 +49,21 @@ class MergedResult(BaseModel):
     """Final merged result."""
 
     primary_answer: str = Field(description="Primary answer")
-    supporting_evidence: list[str] = Field(
-        description="Supporting evidence from branches"
-    )
+    supporting_evidence: list[str] = Field(description="Supporting evidence from branches")
     confidence_score: float = Field(ge=0.0, le=1.0, description="Overall confidence")
     sources_used: list[str] = Field(description="Sources used")
 
 
 def create_branched_rag_chain(
-    documents: list[Document],
-    llm_config: LLMConfig | None = None,
-    name: str = "Branched RAG") -> ChainAgent:
+    documents: list[Document], llm_config: LLMConfig | None = None, name: str = "Branched RAG"
+) -> ChainAgent:
     """Create a branched RAG system using ChainAgent."""
     if not llm_config:
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
 
     # Step 1: Query classifier
     classifier = AugLLMConfig(
@@ -82,12 +78,14 @@ def create_branched_rag_chain(
             - creative: Seeking ideas, brainstorming, or creative solutions
             - procedural: Looking for step-by-step instructions or processes
 
-            Complexity: simple (direct lookup), medium (some analysis), complex (multi-step reasoning)"""),
+            Complexity: simple (direct lookup), medium (some analysis), complex (multi-step reasoning)""",
+                ),
                 ("human", "Query: {query}"),
             ]
         ),
         structured_output_model=QueryClassification,
-        output_key="classification")
+        output_key="classification",
+    )
 
     # Step 2: Factual retrieval branch
     def factual_branch(state: dict[str, Any]) -> dict[str, Any]:
@@ -99,9 +97,7 @@ def create_branched_rag_chain(
         relevant_docs = [
             doc
             for doc in documents
-            if any(
-                word.lower() in doc.page_content.lower() for word in query.split()[:5]
-            )
+            if any(word.lower() in doc.page_content.lower() for word in query.split()[:5])
         ][:3]
 
         # Extract precise facts
@@ -113,7 +109,8 @@ def create_branched_rag_chain(
                 branch_type="factual",
                 retrieved_docs=facts,
                 branch_answer=answer,
-                relevance_score=0.9 if relevant_docs else 0.3)
+                relevance_score=0.9 if relevant_docs else 0.3,
+            )
         }
 
     # Step 3: Analytical retrieval branch
@@ -127,10 +124,12 @@ def create_branched_rag_chain(
                     """Query: {query}
             Available context: {documents_context}
 
-            Provide analytical insights and reasoning."""),
+            Provide analytical insights and reasoning.""",
+                ),
             ]
         ),
-        output_key="analytical_answer")
+        output_key="analytical_answer",
+    )
 
     def analytical_processor(state: dict[str, Any]) -> dict[str, Any]:
         """Process analytical branch results."""
@@ -141,7 +140,8 @@ def create_branched_rag_chain(
                 branch_type="analytical",
                 retrieved_docs=[doc.page_content for doc in documents[:2]],
                 branch_answer=analytical_answer,
-                relevance_score=0.8)
+                relevance_score=0.8,
+            )
         }
 
     # Step 4: Creative retrieval branch
@@ -155,10 +155,12 @@ def create_branched_rag_chain(
                     """Query: {query}
             Context for inspiration: {documents_context}
 
-            Provide creative and innovative responses."""),
+            Provide creative and innovative responses.""",
+                ),
             ]
         ),
-        output_key="creative_answer")
+        output_key="creative_answer",
+    )
 
     def creative_processor(state: dict[str, Any]) -> dict[str, Any]:
         """Process creative branch results."""
@@ -169,7 +171,8 @@ def create_branched_rag_chain(
                 branch_type="creative",
                 retrieved_docs=[doc.page_content for doc in documents[:2]],
                 branch_answer=creative_answer,
-                relevance_score=0.7)
+                relevance_score=0.7,
+            )
         }
 
     # Step 5: Procedural retrieval branch
@@ -183,10 +186,12 @@ def create_branched_rag_chain(
                     """Query: {query}
             Available procedures: {documents_context}
 
-            Provide clear, step-by-step instructions."""),
+            Provide clear, step-by-step instructions.""",
+                ),
             ]
         ),
-        output_key="procedural_answer")
+        output_key="procedural_answer",
+    )
 
     def procedural_processor(state: dict[str, Any]) -> dict[str, Any]:
         """Process procedural branch results."""
@@ -197,7 +202,8 @@ def create_branched_rag_chain(
                 branch_type="procedural",
                 retrieved_docs=[doc.page_content for doc in documents[:2]],
                 branch_answer=procedural_answer,
-                relevance_score=0.85)
+                relevance_score=0.85,
+            )
         }
 
     # Step 6: Context preparation for branches
@@ -214,7 +220,8 @@ def create_branched_rag_chain(
                 (
                     "system",
                     """Merge results from multiple retrieval branches into a comprehensive answer.
-            Prioritize based on query type and relevance scores."""),
+            Prioritize based on query type and relevance scores.""",
+                ),
                 (
                     "human",
                     """Original Query: {query}
@@ -226,11 +233,13 @@ def create_branched_rag_chain(
             - Creative: {creative_result}
             - Procedural: {procedural_result}
 
-            Create a comprehensive, well-structured response."""),
+            Create a comprehensive, well-structured response.""",
+                ),
             ]
         ),
         structured_output_model=MergedResult,
-        output_key="merged_result")
+        output_key="merged_result",
+    )
 
     # Step 8: Final response generator
     final_generator = AugLLMConfig(
@@ -243,10 +252,12 @@ def create_branched_rag_chain(
                     """Query: {query}
             Merged Analysis: {merged_result}
 
-            Provide a clear, comprehensive response."""),
+            Provide a clear, comprehensive response.""",
+                ),
             ]
         ),
-        output_key="response")
+        output_key="response",
+    )
 
     # Build the branched chain
     return flow_with_edges(
@@ -280,7 +291,8 @@ def create_branched_rag_chain(
         "6->9",
         "8->9",
         # Merger flows to final generator
-        "9->10")
+        "9->10",
+    )
 
 
 def create_adaptive_branched_rag(
@@ -291,20 +303,20 @@ def create_adaptive_branched_rag(
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
 
     # Classifier
     classifier = AugLLMConfig(
         llm_config=llm_config,
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                (
-                    "system",
-                    "Classify query type: factual, analytical, creative, or procedural"),
+                ("system", "Classify query type: factual, analytical, creative, or procedural"),
                 ("human", "{query}"),
             ]
         ),
-        output_key="query_type")
+        output_key="query_type",
+    )
 
     # Branch-specific processors
     factual_processor = AugLLMConfig(
@@ -315,7 +327,8 @@ def create_adaptive_branched_rag(
                 ("human", "Query: {query}\nContext: {context}"),
             ]
         ),
-        output_key="response")
+        output_key="response",
+    )
 
     analytical_processor = AugLLMConfig(
         llm_config=llm_config,
@@ -325,7 +338,8 @@ def create_adaptive_branched_rag(
                 ("human", "Query: {query}\nContext: {context}"),
             ]
         ),
-        output_key="response")
+        output_key="response",
+    )
 
     creative_processor = AugLLMConfig(
         llm_config=llm_config,
@@ -335,7 +349,8 @@ def create_adaptive_branched_rag(
                 ("human", "Query: {query}\nContext: {context}"),
             ]
         ),
-        output_key="response")
+        output_key="response",
+    )
 
     procedural_processor = AugLLMConfig(
         llm_config=llm_config,
@@ -345,7 +360,8 @@ def create_adaptive_branched_rag(
                 ("human", "Query: {query}\nContext: {context}"),
             ]
         ),
-        output_key="response")
+        output_key="response",
+    )
 
     # Context preparation
     def add_context(state: dict[str, Any]) -> dict[str, Any]:
@@ -371,7 +387,9 @@ def create_adaptive_branched_rag(
                 "creative": 4,
                 "procedural": 5,
             },
-            lambda s: s.get("query_type", "factual").lower()))
+            lambda s: s.get("query_type", "factual").lower(),
+        ),
+    )
 
 
 def create_parallel_branched_rag(
@@ -382,7 +400,8 @@ def create_parallel_branched_rag(
         llm_config = AzureLLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}")
+            api_key="${AZURE_OPENAI_API_KEY}",
+        )
 
     # Context preparation
     def prepare_context(state: dict[str, Any]) -> dict[str, Any]:
@@ -398,7 +417,8 @@ def create_parallel_branched_rag(
                 ("human", "Query: {query}\nContext: {context}"),
             ]
         ),
-        output_key="factual_response")
+        output_key="factual_response",
+    )
 
     analytical_branch = AugLLMConfig(
         llm_config=llm_config,
@@ -408,7 +428,8 @@ def create_parallel_branched_rag(
                 ("human", "Query: {query}\nContext: {context}"),
             ]
         ),
-        output_key="analytical_response")
+        output_key="analytical_response",
+    )
 
     creative_branch = AugLLMConfig(
         llm_config=llm_config,
@@ -418,16 +439,15 @@ def create_parallel_branched_rag(
                 ("human", "Query: {query}\nContext: {context}"),
             ]
         ),
-        output_key="creative_response")
+        output_key="creative_response",
+    )
 
     # Final synthesizer
     synthesizer = AugLLMConfig(
         llm_config=llm_config,
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                (
-                    "system",
-                    "Synthesize all branch responses into a comprehensive answer"),
+                ("system", "Synthesize all branch responses into a comprehensive answer"),
                 (
                     "human",
                     """Query: {query}
@@ -435,10 +455,12 @@ def create_parallel_branched_rag(
             Analytical: {analytical_response}
             Creative: {creative_response}
 
-            Create final response."""),
+            Create final response.""",
+                ),
             ]
         ),
-        output_key="response")
+        output_key="response",
+    )
 
     # Parallel execution
     return flow_with_edges(
@@ -456,7 +478,8 @@ def create_parallel_branched_rag(
         # All flow to synthesizer
         "1->4",
         "2->4",
-        "3->4")
+        "3->4",
+    )
 
 
 # I/O schema
