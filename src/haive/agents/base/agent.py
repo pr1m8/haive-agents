@@ -258,7 +258,9 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, P
             if self.state_schema and self.use_prebuilt_base and engine_list:
                 logger.debug(f'Extending prebuilt schema {getattr(self.state_schema, "__name__", "Unknown")} with engine fields')
                 composer = SchemaComposer(name=f'{self.__class__.__name__}State')
-                composer.add_fields_from_model(self.state_schema)
+                # Only add fields if state_schema is a BaseModel type, not a dict
+                if isinstance(self.state_schema, type) and issubclass(self.state_schema, BaseModel):
+                    composer.add_fields_from_model(self.state_schema)
                 for engine in engine_list:
                     composer.add_engine(engine)
                     composer.add_fields_from_engine(engine)
@@ -307,7 +309,7 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, P
                 try:
                     derive_method = getattr(self.state_schema, 'derive_input_schema')
                     self.input_schema = derive_method(name=f'{self.name}Input')
-                    logger.debug(f'Derived input schema from state schema: {self.input_schema.__name__}')
+                    logger.debug(f'Derived input schema from state schema: {getattr(self.input_schema, "__name__", "Unknown")}')
                 except Exception as e:
                     logger.debug(f'Could not derive input schema from state: {e}')
             if not self.input_schema and self.engines:
