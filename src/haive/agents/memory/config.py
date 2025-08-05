@@ -20,3 +20,14 @@ class MemoryAgentConfig(AgentConfig):
     memory_type: str = Field(default="general", description="Type of memory")
     runnable_config: Any = Field(default=None, description="Runnable configuration")
     state_schema: Any = Field(default=None, description="State schema")
+    
+    # Node names for memory operations
+    memory_load_node_name: str = Field(default="memory_load", description="Name of memory loading node")
+    memory_extract_node_name: str = Field(default="memory_extract", description="Name of memory extraction node")
+    memory_save_node_name: str = Field(default="memory_save", description="Name of memory saving node")
+    tool_node_name: str = Field(default="tools", description="Name of tool node")
+    llm_node_name: str = Field(default="agent", description="Name of LLM node")
+    
+    # System prompts
+    system_prompt: str = Field(default="You are a helpful assistant with memory capabilities.", description="System prompt")
+    memory_system_prompt: str = Field(default="Use your memory to provide better responses.", description="Memory-specific system prompt")

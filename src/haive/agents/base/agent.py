@@ -317,7 +317,7 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, P
                 if first_engine and hasattr(first_engine, 'get_input_fields'):
                     try:
                         fields = first_engine.get_input_fields()
-                        if fields:
+                        if fields and isinstance(fields, dict):
                             self.input_schema = create_model(f'{self.name}Input', **fields)
                             logger.debug('Derived input schema from first engine')
                     except Exception as e:
@@ -348,11 +348,14 @@ class Agent(InvokableEngine[BaseModel, BaseModel], ExecutionMixin, StateMixin, P
                     if output_version in {'v2', 2}:
                         field_info = get_field_info_from_model(structured_output)
                         field_name = field_info['field_name']
-                        self.output_schema = create_model(f'{self.name}Output', **{field_name: (structured_output, Field(description=f'Parsed {structured_output.__name__}'))})
-                        logger.debug(f"Created output schema with structured field '{field_name}': {self.output_schema.__name__}")
+                        self.output_schema = create_model(
+                            f'{self.name}Output', 
+                            **{field_name: (structured_output, Field(description=f'Parsed {getattr(structured_output, "__name__", "Unknown")}'))}
+                        )
+                        logger.debug(f"Created output schema with structured field '{field_name}': {getattr(self.output_schema, '__name__', 'Unknown')}")
                     else:
                         self.output_schema = structured_output
-                        logger.debug(f'Using structured output model as output schema: {structured_output.__name__}')
+                        logger.debug(f'Using structured output model as output schema: {getattr(structured_output, "__name__", "Unknown")}')
                     return
                 output_field_name = getattr(main_engine, 'output_field_name', None)
                 if output_field_name and hasattr(main_engine, 'get_output_fields'):
