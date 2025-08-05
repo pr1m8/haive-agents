@@ -13,25 +13,28 @@ from haive.agents.multi.archive.enhanced_base import MultiAgentBase
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 
+def should_continue(state: dict[str, Any]) -> str:
+    """Determine if execution should continue or replan."""
+    if not hasattr(state, "plan") or not state.plan:
+        return "replanner"
+    if state.plan.is_complete:
+        return "replanner"
+    if hasattr(state, "should_replan") and state.should_replan:
+        return "replanner"
+    return "executor"
+
+
+def should_end(state: dict[str, Any]) -> str:
+    """Determine if execution should end."""
+    if hasattr(state, "final_answer") and state.final_answer:
+        return "END"
+    if hasattr(state, "plan") and state.plan and state.plan.next_step:
+        return "executor"
+    return "END"
+
+
 def create_plan_execute_branches(planner: Agent, executor: Agent, replanner: Agent):
     """Create default Plan & Execute branches."""
-
-    def should_continue(state: dict[str, Any]) -> str:
-        if not hasattr(state, "plan") or not state.plan:
-            return "replanner"
-        if state.plan.is_complete:
-            return "replanner"
-        if hasattr(state, "should_replan") and state.should_replan:
-            return "replanner"
-        return "executor"
-
-    def should_end(state: dict[str, Any]) -> str:
-        if hasattr(state, "final_answer") and state.final_answer:
-            return "END"
-        if hasattr(state, "plan") and state.plan and state.plan.next_step:
-            return "executor"
-        return "END"
-
     return [
         # planner → executor is implicit from agent order
         (executor, should_continue, {"executor": executor, "replanner": replanner}),
