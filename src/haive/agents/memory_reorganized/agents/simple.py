@@ -38,9 +38,15 @@ from haive.agents.memory_reorganized.core.token_tracker import TokenThresholds, 
 if TYPE_CHECKING:
     from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer  # type: ignore
     from haive.agents.document_modifiers.kg.kg_map_merge.models import (  # type: ignore
-        EntityNode,
-        EntityRelationship,
-        KnowledgeGraph)
+        EntityNode,  # pyright: ignore[reportAssignmentType]
+        EntityRelationship,  # pyright: ignore[reportAssignmentType]
+        KnowledgeGraph)  # pyright: ignore[reportAssignmentType]
+else:
+    # Provide dummy types for runtime
+    GraphTransformer = type('GraphTransformer', (), {})
+    EntityNode = type('EntityNode', (), {})
+    EntityRelationship = type('EntityRelationship', (), {})
+    KnowledgeGraph = type('KnowledgeGraph', (), {})
 
 try:
     from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer as _GraphTransformer
@@ -49,11 +55,11 @@ try:
         EntityRelationship as _EntityRelationship,
         KnowledgeGraph as _KnowledgeGraph)
 
-    # Use imported models  
-    EntityNode = _EntityNode  # type: ignore
-    EntityRelationship = _EntityRelationship  # type: ignore
-    KnowledgeGraph = _KnowledgeGraph  # type: ignore
-    GraphTransformer = _GraphTransformer  # type: ignore
+    # Use imported models with type aliasing
+    EntityNode = _EntityNode  # pyright: ignore[reportAssignmentType]
+    EntityRelationship = _EntityRelationship  # pyright: ignore[reportAssignmentType]
+    KnowledgeGraph = _KnowledgeGraph  # pyright: ignore[reportAssignmentType]
+    GraphTransformer = _GraphTransformer  # pyright: ignore[reportAssignmentType]
 
     HAS_GRAPH_MODELS = True
 except ImportError:
@@ -280,7 +286,7 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     )
 
     # Graph transformation components
-    graph_transformer: Optional["GraphTransformer"] = Field(
+    graph_transformer: Optional[Any] = Field(  # type: ignore
         default=None,
         description="Graph transformer for converting content to knowledge graphs")
 
@@ -1109,10 +1115,10 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
         recent_activity = f"\nUpdated {
             datetime.now().isoformat()}: Recent activity processed."
 
-        if hasattr(state, "last_operation"):
+        if hasattr(state, "last_operation") and state.last_operation:
             recent_activity += f" Last operation: {
                 state.last_operation.get(
-                    'type', 'unknown')}"
+                    'type', 'unknown') if isinstance(state.last_operation, dict) else 'unknown'}"
 
         updated_summary = state.running_summary + recent_activity
 
@@ -1349,9 +1355,9 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                         "content_count": len(content_parts),
                     })
                 if hasattr(state.knowledge_graph, 'add_node'):
-                    state.knowledge_graph.add_node(summary_node)
+                    state.knowledge_graph.add_node(summary_node)  # type: ignore
                 elif hasattr(state.knowledge_graph, 'nodes'):
-                    state.knowledge_graph.nodes.append(summary_node)
+                    state.knowledge_graph.nodes.append(summary_node)  # type: ignore
                 new_nodes.append(summary_node)
 
             # Update tracking
