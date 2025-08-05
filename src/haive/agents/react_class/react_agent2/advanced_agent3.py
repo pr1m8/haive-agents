@@ -382,3 +382,8 @@ def create_advanced_react_agent(
 
     # Build and return the agent
     return AdvancedReactAgent(config=config)
+
+
+def add_tool(agent, tool):
+    """Module-level add_tool function."""
+    return agent.add_tool(tool)
