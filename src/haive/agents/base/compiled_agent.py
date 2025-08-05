@@ -52,7 +52,8 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
     set_schema: bool = Field(default=True, description='Whether to auto-generate schemas from engines')
 
     @model_validator(mode='after')
-    def validate_agent_requirements(self) -> CompiledAgent:
+    @classmethod
+    def validate_agent_requirements(cls) -> 'CompiledAgent':
         """Validate that agent has required LLM capabilities.
 
         Agents must have an LLM engine for reasoning. This validator ensures
@@ -179,6 +180,18 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
         by subclasses for custom setup logic. Maintained for backward
         compatibility with existing Agent interface.
         """
+
+    def compile(self) -> Any:
+        """Compile the agent into an executable graph.
+        
+        Returns:
+            Any: Compiled graph ready for execution
+        """
+        # This is a placeholder implementation
+        # Subclasses should override this method to provide actual compilation
+        if hasattr(self, 'graph'):
+            return self.graph
+        raise NotImplementedError("compile() method must be implemented by subclasses")
 
     def invoke(self, input_data: Any, config: dict[str, Any] | None=None) -> Any:
         """Invoke the agent with input data.
