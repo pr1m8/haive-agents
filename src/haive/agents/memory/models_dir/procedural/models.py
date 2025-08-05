@@ -1,6 +1,9 @@
 from datetime import datetime
 from typing import Any
-from pydantic import BaseModel, Field
+from uuid import UUID, uuid4
+from pydantic import BaseModel, Field, field_validator, model_validator
+from haive.agents.memory.models_dir.base import BaseMemoryModel
+from haive.agents.memory.models_dir.semantic.mixins import TemporalMixin
 
 class InstructionComponent(BaseModel):
     """Individual instruction component with metadata."""
@@ -127,3 +130,78 @@ class ProceduralMemory(BaseMemoryModel, TemporalMixin):
         self.change_log.append({'version': self.version, 'timestamp': datetime.now().isoformat(), 'reflection_id': str(reflection.cycle_id), 'changes': reflection.proposed_changes})
         self.last_reflection = datetime.now()
         self.reflection_cycles.append(reflection)
+
+
+# Standalone functions for export
+def validate_instruction_clarity(instruction_text: str) -> str:
+    """Validate instruction clarity and format."""
+    text = instruction_text.strip()
+    if not text.endswith('.') and (not text.endswith('!')) and (not text.endswith('?')):
+        text += '.'
+    return text
+
+def validate_instruction_set(instructions: list[InstructionComponent]) -> list[InstructionComponent]:
+    """Validate instruction set consistency."""
+    if len(instructions) == 0:
+        raise ValueError('At least one core instruction required')
+    if len(instructions) > 50:
+        raise ValueError('Too many core instructions (max 50)')
+    return instructions
+
+def validate_procedural_integrity(memory: ProceduralMemory) -> ProceduralMemory:
+    """Validate overall procedural memory integrity."""
+    if memory.core_instructions:
+        total_effectiveness = sum((instr.effectiveness_score for instr in memory.core_instructions))
+        memory.overall_effectiveness = total_effectiveness / len(memory.core_instructions)
+    return memory
+
+def validate_reflection_logic(reflection: ReflectionCycle) -> ReflectionCycle:
+    """Validate reflection cycle logic."""
+    if len(reflection.proposed_changes) > 10:
+        raise ValueError('Too many proposed changes in one cycle (max 10)')
+    if reflection.confidence_score > 0.8 and len(reflection.identified_issues) == 0:
+        raise ValueError('High confidence requires identified issues')
+    return reflection
+
+def should_trigger_reflection(memory: ProceduralMemory) -> bool:
+    """Determine if reflection cycle should be triggered."""
+    if memory.overall_effectiveness < memory.adaptation_threshold:
+        return True
+    if memory.last_reflection is None:
+        return True
+    days_since_reflection = (datetime.now() - memory.last_reflection).days
+    return days_since_reflection > 30
+
+def generate_instruction_text(memory: ProceduralMemory) -> str:
+    """Generate formatted instruction text for agent use."""
+    sections = []
+    sorted_instructions = sorted(memory.core_instructions, key=lambda x: (-x.priority, -x.effectiveness_score))
+    sections.append('=== CORE INSTRUCTIONS ===')
+    for instr in sorted_instructions:
+        sections.append(f'• {instr.instruction_text}')
+    if memory.contextual_modifiers:
+        sections.append('\n=== CONTEXTUAL GUIDELINES ===')
+        for context, modifiers in memory.contextual_modifiers.items():
+            sections.append(f'When {context}:')
+            for modifier in modifiers:
+                sections.append(f'  - {modifier}')
+    return '\n'.join(sections)
+
+def adapt_from_reflection(memory: ProceduralMemory, reflection: ReflectionCycle) -> None:
+    """Adapt instructions based on reflection cycle."""
+    if reflection.confidence_score < 0.6:
+        return
+    for change in reflection.proposed_changes:
+        if 'add instruction' in change.lower():
+            new_text = change.split(':')[-1].strip() if ':' in change else change
+            new_instruction = InstructionComponent(instruction_text=new_text)
+            memory.core_instructions.append(new_instruction)
+    memory.version += 1
+    memory.change_log.append({
+        'version': memory.version,
+        'timestamp': datetime.now().isoformat(),
+        'reflection_id': str(reflection.cycle_id),
+        'changes': reflection.proposed_changes
+    })
+    memory.last_reflection = datetime.now()
+    memory.reflection_cycles.append(reflection)

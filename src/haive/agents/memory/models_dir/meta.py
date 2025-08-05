@@ -1,9 +1,9 @@
 import threading
-from abc import ABCMeta
 from collections import defaultdict
+from pydantic._internal._model_construction import ModelMetaclass
 
 
-class MemoryValidationMeta(ABCMeta):
+class MemoryValidationMeta(ModelMetaclass):
     """Advanced metaclass for memory models with automatic validation registration
     and cross-model consistency checking.
     """

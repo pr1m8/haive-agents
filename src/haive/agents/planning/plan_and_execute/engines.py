@@ -1,4 +1,4 @@
-from haive.agents.plan_and_execute.models import Act, Plan
+from haive.agents.planning.plan_and_execute.models import Act, Plan
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 

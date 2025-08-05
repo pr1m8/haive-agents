@@ -72,3 +72,37 @@ class UserPreferences(BaseModel):
         if overlap:
             raise ValueError(f'Topics cannot be both interesting and avoided: {overlap}')
         return self
+
+
+# Standalone functions for export
+def calculate_temporal_relevance(memory_item) -> float:
+    """Calculate temporal relevance of memory item."""
+    # Mock implementation - would use actual temporal calculation
+    return 0.8
+
+def validate_expertise(areas: list[str]) -> list[str]:
+    """Validate expertise areas."""
+    if len(areas) > 20:
+        raise ValueError('Too many expertise areas (max 20)')
+    return [area.strip() for area in areas if area.strip()]
+
+def validate_personality_consistency(traits: list[str]) -> list[str]:
+    """Validate personality trait consistency."""
+    if len(traits) > 10:
+        raise ValueError('Too many personality traits (max 10)')
+    return traits
+
+def validate_temporal_weight(weight: float) -> float:
+    """Validate temporal weight value."""
+    if not 0.0 <= weight <= 1.0:
+        raise ValueError('Temporal weight must be between 0.0 and 1.0')
+    return weight
+
+def validate_topic_consistency(interests: list[str], avoided: list[str]) -> tuple[list[str], list[str]]:
+    """Validate topic consistency between interests and avoided topics."""
+    interest_set = set(interests)
+    avoided_set = set(avoided)
+    overlap = interest_set & avoided_set
+    if overlap:
+        raise ValueError(f'Topics cannot be both interesting and avoided: {overlap}')
+    return interests, avoided

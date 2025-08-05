@@ -1,6 +1,6 @@
 """Module exports."""
 
-from semantic.mixins import (
+from haive.agents.memory.models_dir.semantic.mixins import (
     PersonalityTraits,
     TemporalMixin,
     UserContextMixin,
@@ -12,10 +12,8 @@ from semantic.mixins import (
     validate_personality_consistency,
     validate_temporal_weight,
     validate_topic_consistency)
-from semantic.models import (
+from haive.agents.memory.models_dir.semantic.models import (
     SemanticMemory,
-    get_context_summary,
-    update_context,
     validate_concept_graph,
     validate_semantic_consistency,
     validate_user_id)

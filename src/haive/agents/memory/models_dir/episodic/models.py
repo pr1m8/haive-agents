@@ -1,8 +1,9 @@
 import re
 from typing import Any, Literal
 from pydantic import Field, field_validator, model_validator
-from haive.agents.memory.models.base import BaseMemoryModel
-from haive.agents.memory.models.episodic.mixins import PerformanceMetrics, TaskExecution, TemporalMixin
+from haive.agents.memory.models_dir.base import BaseMemoryModel
+from haive.agents.memory.models_dir.episodic.mixins import PerformanceMetrics, TaskExecution
+from haive.agents.memory.models_dir.semantic.mixins import TemporalMixin
 
 class EpisodicMemory(BaseMemoryModel, TemporalMixin):
     """Sophisticated episodic memory for learning from experiences."""
@@ -65,3 +66,22 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
         temporal_factor = self.calculate_temporal_relevance()
         feedback_boost = 0.2 if self.feedback_received else 0.0
         return min(base_value + complexity_boost + feedback_boost, 1.0) * temporal_factor
+
+
+# Standalone functions for export
+def calculate_learning_value(memory: EpisodicMemory) -> float:
+    """Calculate learning value of an episodic memory."""
+    return memory.calculate_learning_value()
+
+def validate_content_safety(content: str) -> str:
+    """Validate content safety for episodic memory."""
+    # Basic safety validation - can be extended
+    if not content or not content.strip():
+        raise ValueError('Memory content cannot be empty')
+    return content.strip()
+
+def validate_episodic_consistency(memory: EpisodicMemory) -> EpisodicMemory:
+    """Validate episodic memory consistency."""
+    if not memory.experience_context:
+        raise ValueError('Experience context is required')
+    return memory

@@ -31,3 +31,17 @@ class TaskExecution(BaseModel):
         if len(v) > 100:
             raise ValueError('Too many execution steps (max 100)')
         return [step.strip() for step in v if step.strip()]
+
+
+# Standalone functions for export
+def validate_execution_steps(steps: list[str]) -> list[str]:
+    """Validate execution step format."""
+    if len(steps) > 100:
+        raise ValueError('Too many execution steps (max 100)')
+    return [step.strip() for step in steps if step.strip()]
+
+def validate_performance_logic(metrics: PerformanceMetrics) -> PerformanceMetrics:
+    """Validate performance metrics logic."""
+    if metrics.success_rate == 0.0 and metrics.error_frequency == 0.0:
+        raise ValueError('Success rate and error frequency cannot both be zero')
+    return metrics

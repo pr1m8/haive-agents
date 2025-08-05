@@ -6,8 +6,8 @@ from .state import CompilerState
 from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from haive.core.tools.dev_tools import python_repl_tool
-from haive.core.tools.search_tools import tavily_search_tool
+from haive.tools.tools.dev_tools import python_repl_tool
+from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import BaseTool, StructuredTool

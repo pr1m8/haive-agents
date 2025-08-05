@@ -5,7 +5,7 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel, Field, field_validator, model_validator
 from haive.agents.memory.models_dir.meta import MemoryValidationMeta
 
-class BaseMemoryModel(BaseModel, metaclass=MemoryValidationMeta):
+class BaseMemoryModel(BaseModel):
     """Enhanced base memory model with sophisticated validation patterns
     and automatic metadata management.
     """

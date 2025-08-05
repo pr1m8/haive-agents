@@ -1,8 +1,8 @@
 import re
 from typing import Any
 from pydantic import Field, field_validator, model_validator
-from haive.agents.memory.models.base import BaseMemoryModel
-from haive.agents.memory.models.semantic.mixins import TemporalMixin, UserContextMixin
+from haive.agents.memory.models_dir.base import BaseMemoryModel
+from haive.agents.memory.models_dir.semantic.mixins import TemporalMixin, UserContextMixin
 
 class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
     """Advanced semantic memory with comprehensive user modeling."""
@@ -73,3 +73,34 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
             else:
                 self.factual_knowledge[key] = value
         self.semantic_keywords = self._extract_keywords(self.factual_knowledge)
+
+# Standalone functions for export
+def get_context_summary(memory: SemanticMemory) -> str:
+    """Generate comprehensive context summary."""
+    return memory.get_context_summary()
+
+def update_context(memory: SemanticMemory, new_data: dict[str, Any]) -> None:
+    """Intelligently update contextual information."""
+    memory.update_context(new_data)
+
+def validate_concept_graph(graph: dict[str, list[str]]) -> dict[str, list[str]]:
+    """Validate conceptual relationship graph."""
+    if len(graph) > 100:
+        raise ValueError('Concept graph too large (max 100 nodes)')
+    for concept, relations in graph.items():
+        if len(relations) > 20:
+            raise ValueError(f'Too many relations for concept {concept} (max 20)')
+    return graph
+
+def validate_semantic_consistency(memory: SemanticMemory) -> SemanticMemory:
+    """Validate semantic memory consistency."""
+    # Basic validation - can be extended
+    if not memory.user_id:
+        raise ValueError('User ID is required')
+    return memory
+
+def validate_user_id(user_id: str) -> str:
+    """Validate user ID format."""
+    if not user_id or not user_id.strip():
+        raise ValueError('User ID cannot be empty')
+    return user_id.strip()

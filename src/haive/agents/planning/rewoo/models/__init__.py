@@ -1,6 +1,6 @@
 """Module exports."""
 
-from models.join_step import (
+from haive.agents.planning.rewoo.models.join_step import (
     JoinStep,
     JoinStrategy,
     analyze_dag_structure,
@@ -16,7 +16,7 @@ from models.join_step import (
     is_join_point,
     join_complexity,
     parallel_branch_count)
-from models.plans import (
+from haive.agents.planning.rewoo.models.plans import (
     ExecutionPlan,
     add_step,
     execution_levels,
@@ -29,7 +29,7 @@ from models.plans import (
     step_ids,
     validate_no_circular_dependencies,
     validate_steps)
-from models.steps import (
+from haive.agents.planning.rewoo.models.steps import (
     AbstractStep,
     BasicStep,
     can_execute,
@@ -38,7 +38,7 @@ from models.steps import (
     has_dependencies,
     validate_dependencies,
     validate_id)
-from models.tool_step import (
+from haive.agents.planning.rewoo.models.tool_step import (
     ToolStep,
     can_execute,
     clear_tool_args,

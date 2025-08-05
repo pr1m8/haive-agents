@@ -1,6 +1,6 @@
 """Module exports."""
 
-from procedural.models import (
+from haive.agents.memory.models_dir.procedural.models import (
     InstructionComponent,
     ProceduralMemory,
     ReflectionCycle,
