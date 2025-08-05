@@ -6,7 +6,7 @@ and metadata schemas used throughout the Haive memory system.
 
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Optional, Dict, List, Union
 
 from pydantic import BaseModel, Field
 

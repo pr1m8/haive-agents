@@ -1,6 +1,6 @@
 """Module exports."""
 
-from deep_research.agent import (
+from haive.agents.memory.search.deep_research.agent import (
     DeepResearchAgent,
     decompose_research_query,
     evaluate_source_credibility,
@@ -9,7 +9,7 @@ from deep_research.agent import (
     get_search_instructions,
     get_system_prompt,
     organize_findings_by_theme)
-from deep_research.models import (
+from haive.agents.memory.search.deep_research.models import (
     Config,
     DeepResearchRequest,
     DeepResearchResponse,

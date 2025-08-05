@@ -8,6 +8,15 @@ from pydantic import BaseModel, Field
 from haive.agents.memory.search.base import SearchResponse
 
 
+class Config(BaseModel):
+    """Configuration for Deep Research Agent."""
+    
+    research_depth: int = Field(default=3, ge=1, le=5, description="Research depth level")
+    max_sources: int = Field(default=50, description="Maximum sources to examine")
+    include_fact_checking: bool = Field(default=True, description="Include fact checking")
+    generate_report: bool = Field(default=True, description="Generate structured report")
+
+
 class ResearchSource(BaseModel):
     """Model for research source with detailed metadata."""
 

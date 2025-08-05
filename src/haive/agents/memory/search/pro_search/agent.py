@@ -449,3 +449,59 @@ Process each query with thoroughness and attention to user context."""
             generate_follow_ups=True,
             include_reasoning=True,
             save_to_memory=save_to_memory)
+
+
+# Standalone function exports for backward compatibility
+def extract_contextual_insights(content: str, context: dict[str, Any]) -> list[ContextualInsight]:
+    """Extract contextual insights from search content."""
+    agent = ProSearchAgent()
+    return agent.extract_contextual_insights(content, context)
+
+
+def generate_follow_up_questions(query: str, insights: list[ContextualInsight]) -> list[str]:
+    """Generate follow-up questions based on insights."""
+    agent = ProSearchAgent()
+    return agent.generate_follow_up_questions(query, insights)
+
+
+def generate_reasoning_steps(query: str, refinement: SearchRefinement) -> list[str]:
+    """Generate reasoning steps for complex queries."""
+    agent = ProSearchAgent()
+    return agent.generate_reasoning_steps(query, refinement)
+
+
+def get_response_model() -> type[SearchResponse]:
+    """Get the response model for pro search operations."""
+    agent = ProSearchAgent()
+    return agent.get_response_model()
+
+
+def get_search_instructions() -> str:
+    """Get specific search instructions for pro search operations."""
+    agent = ProSearchAgent()
+    return agent.get_search_instructions()
+
+
+def get_system_prompt() -> str:
+    """Get the system prompt for pro search operations."""
+    agent = ProSearchAgent()
+    return agent.get_system_prompt()
+
+
+def refine_query(query: str, context: dict[str, Any]) -> SearchRefinement:
+    """Refine a query based on context and preferences."""
+    agent = ProSearchAgent()
+    return agent.refine_query(query, context)
+
+
+# Export list
+__all__ = [
+    "ProSearchAgent",
+    "extract_contextual_insights",
+    "generate_follow_up_questions",
+    "generate_reasoning_steps",
+    "get_response_model",
+    "get_search_instructions",
+    "get_system_prompt",
+    "refine_query"
+]

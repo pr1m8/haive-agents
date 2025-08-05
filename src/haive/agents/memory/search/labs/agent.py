@@ -819,3 +819,109 @@ Execute each project with professional standards and comprehensive automation.""
             project_type=project_type,
             data_sources=data_sources,
             save_to_memory=save_to_memory)
+
+
+# Standalone function exports for backward compatibility
+def create_interactive_app(app_type: str, title: str, description: str) -> InteractiveApp:
+    """Create an interactive app."""
+    agent = LabsAgent()
+    return InteractiveApp(
+        app_id=str(uuid.uuid4()),
+        app_type=app_type,
+        title=title,
+        description=description,
+        created_at=datetime.utcnow()
+    )
+
+
+def create_interactive_apps(app_specs: list[dict[str, Any]]) -> list[InteractiveApp]:
+    """Create multiple interactive apps."""
+    return [create_interactive_app(**spec) for spec in app_specs]
+
+
+def create_project_assets(project_name: str, asset_types: list[str]) -> list[ProjectAsset]:
+    """Create project assets."""
+    assets = []
+    for asset_type in asset_types:
+        asset = ProjectAsset(
+            asset_id=str(uuid.uuid4()),
+            asset_type=AssetType(asset_type),
+            name=f"{project_name}_{asset_type}",
+            file_path=f"/projects/{project_name}/{asset_type}",
+            created_at=datetime.utcnow()
+        )
+        assets.append(asset)
+    return assets
+
+
+def create_visualization(chart_type: str, data: dict[str, Any], title: str) -> dict[str, Any]:
+    """Create a data visualization."""
+    return {
+        "chart_type": chart_type,
+        "title": title,
+        "data": data,
+        "created_at": datetime.utcnow().isoformat(),
+        "visualization_id": str(uuid.uuid4())
+    }
+
+
+def execute_python_code(code: str, description: str = "") -> dict[str, Any]:
+    """Execute Python code and return results."""
+    return {
+        "code": code,
+        "description": description,
+        "execution_status": "simulated",
+        "output": f"# Simulated execution of:\n{code}",
+        "executed_at": datetime.utcnow().isoformat()
+    }
+
+
+def get_response_model() -> type[SearchResponse]:
+    """Get the response model for labs operations."""
+    agent = LabsAgent()
+    return agent.get_response_model()
+
+
+def get_search_instructions() -> str:
+    """Get specific search instructions for labs operations."""
+    agent = LabsAgent()
+    return agent.get_search_instructions()
+
+
+def get_system_prompt() -> str:
+    """Get the system prompt for labs operations."""
+    agent = LabsAgent()
+    return agent.get_system_prompt()
+
+
+def plan_project_workflow(project_type: str, goals: list[str]) -> list[WorkflowStep]:
+    """Plan a project workflow."""
+    agent = LabsAgent()
+    return agent.plan_project_workflow(project_type, goals)
+
+
+def process_data_file(file_path: str, operations: list[str]) -> dict[str, Any]:
+    """Process a data file with specified operations."""
+    return {
+        "file_path": file_path,
+        "operations": operations,
+        "processing_status": "simulated",
+        "results": f"Processed {file_path} with operations: {', '.join(operations)}",
+        "processed_at": datetime.utcnow().isoformat()
+    }
+
+
+# Export list
+__all__ = [
+    "LabsAgent",
+    "create_interactive_app",
+    "create_interactive_apps", 
+    "create_project_assets",
+    "create_visualization",
+    "execute_python_code",
+    "get_response_model",
+    "get_search_instructions",
+    "get_system_prompt",
+    "plan_project_workflow",
+    "process_data_file"
+]

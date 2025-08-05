@@ -9,6 +9,15 @@ from pydantic import BaseModel, Field
 from haive.agents.memory.search.base import SearchResponse
 
 
+class Config(BaseModel):
+    """Configuration for Labs Agent."""
+    
+    project_type: str = Field(default="analysis", description="Type of project")
+    max_work_time: float = Field(default=300.0, description="Maximum work time in seconds")
+    enable_code_execution: bool = Field(default=True, description="Enable code execution")
+    enable_visualization: bool = Field(default=True, description="Enable visualization creation")
+
+
 class AssetType(str, Enum):
     """Types of assets that can be created."""
 

@@ -7,6 +7,15 @@ from pydantic import BaseModel, Field
 from haive.agents.memory.search.base import SearchResponse
 
 
+class Config(BaseModel):
+    """Configuration for Pro Search Agent."""
+    
+    depth_level: int = Field(default=3, ge=1, le=5, description="Search depth level")
+    use_preferences: bool = Field(default=True, description="Use user preferences")
+    generate_follow_ups: bool = Field(default=True, description="Generate follow-up questions")
+    include_reasoning: bool = Field(default=True, description="Include reasoning steps")
+
+
 class SearchRefinement(BaseModel):
     """Model for search query refinements."""
 

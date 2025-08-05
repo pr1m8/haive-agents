@@ -277,3 +277,45 @@ Process the query efficiently and provide a clear, concise response."""
         logger.info("Batch processing completed")
 
         return responses
+
+
+# Standalone function exports for backward compatibility
+def determine_answer_type(query: str) -> str:
+    """Determine the type of answer needed for a query."""
+    agent = QuickSearchAgent()
+    return agent.determine_answer_type(query)
+
+
+def extract_keywords(query: str) -> list[str]:
+    """Extract keywords from a query."""
+    agent = QuickSearchAgent()
+    return agent.extract_keywords(query)
+
+
+def get_response_model() -> type[SearchResponse]:
+    """Get the response model for quick search operations."""
+    agent = QuickSearchAgent()
+    return agent.get_response_model()
+
+
+def get_search_instructions() -> str:
+    """Get specific search instructions for quick search operations."""
+    agent = QuickSearchAgent()
+    return agent.get_search_instructions()
+
+
+def get_system_prompt() -> str:
+    """Get the system prompt for quick search operations."""
+    agent = QuickSearchAgent()
+    return agent.get_system_prompt()
+
+
+# Export list
+__all__ = [
+    "QuickSearchAgent",
+    "determine_answer_type",
+    "extract_keywords",
+    "get_response_model",
+    "get_search_instructions",
+    "get_system_prompt"
+]

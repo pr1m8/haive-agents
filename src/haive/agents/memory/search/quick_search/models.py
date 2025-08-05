@@ -5,6 +5,14 @@ from pydantic import BaseModel, Field
 from haive.agents.memory.search.base import SearchResponse
 
 
+class Config(BaseModel):
+    """Configuration for Quick Search Agent."""
+    
+    max_results: int = Field(default=5, description="Maximum search results")
+    include_snippets: bool = Field(default=True, description="Include content snippets")
+    fast_mode: bool = Field(default=True, description="Enable fast search mode")
+
+
 class QuickSearchResponse(SearchResponse):
     """Response model for quick search operations.
 

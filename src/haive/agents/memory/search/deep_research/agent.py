@@ -564,3 +564,59 @@ Process each research query with systematic thoroughness and analytical rigor.""
             research_depth=research_depth,
             focus_areas=focus_areas,
             save_to_memory=save_to_memory)
+
+
+# Standalone function exports for backward compatibility
+def decompose_research_query(query: str, focus_areas: list[str] | None = None) -> list[str]:
+    """Decompose a complex research query into specific sub-queries."""
+    agent = DeepResearchAgent()
+    return agent.decompose_research_query(query, focus_areas)
+
+
+def evaluate_source_credibility(source: dict[str, Any]) -> float:
+    """Evaluate the credibility of a source."""
+    agent = DeepResearchAgent()
+    return agent.evaluate_source_credibility(source)
+
+
+def generate_executive_summary(sections: list[ResearchSection]) -> str:
+    """Generate an executive summary from research sections."""
+    agent = DeepResearchAgent()
+    return agent.generate_executive_summary(sections)
+
+
+def get_response_model() -> type[SearchResponse]:
+    """Get the response model for deep research."""
+    agent = DeepResearchAgent()
+    return agent.get_response_model()
+
+
+def get_search_instructions() -> str:
+    """Get specific search instructions for deep research."""
+    agent = DeepResearchAgent()
+    return agent.get_search_instructions()
+
+
+def get_system_prompt() -> str:
+    """Get the system prompt for deep research operations."""
+    agent = DeepResearchAgent()
+    return agent.get_system_prompt()
+
+
+def organize_findings_by_theme(findings: list[dict[str, Any]]) -> list[ResearchSection]:
+    """Organize research findings into thematic sections."""
+    agent = DeepResearchAgent()
+    return agent.organize_findings_by_theme(findings)
+
+
+# Export list
+__all__ = [
+    "DeepResearchAgent",
+    "decompose_research_query",
+    "evaluate_source_credibility", 
+    "generate_executive_summary",
+    "get_response_model",
+    "get_search_instructions",
+    "get_system_prompt", 
+    "organize_findings_by_theme"
+]
