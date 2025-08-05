@@ -40,9 +40,7 @@ class QueryRefinementSuggestion(BaseModel):
     refined_query: str = Field(description="The refined/improved query")
     improvement_type: str = Field(description="Type of improvement made")
     rationale: str = Field(description="Why this refinement improves the query")
-    expected_benefit: str = Field(
-        description="Expected improvement in retrieval or answering"
-    )
+    expected_benefit: str = Field(description="Expected improvement in retrieval or answering")
 
 
 class QueryRefinementResponse(BaseModel):
@@ -61,14 +59,11 @@ class QueryRefinementResponse(BaseModel):
     )
 
 
-
-
 config = AugLLMConfig(
     prompt_template=RAG_QUERY_REFINEMENT,
     structured_output_model=QueryRefinementResponse,
     structured_output_version="v2",
 )
-
 
 
 # Patch the schema composer to add debug logging
@@ -78,7 +73,6 @@ original_add_engine = schema_composer_module.SchemaComposer.add_engine
 
 
 def debug_add_engine(self, engine):
-
     if hasattr(engine, "prompt_template"):
         pass
 
@@ -99,7 +93,6 @@ original_register = EngineRegistry.register
 
 
 def debug_register(self, engine):
-
     if hasattr(engine, "prompt_template"):
         prompt = engine.prompt_template
 
@@ -121,4 +114,3 @@ for field_name, field_info in state_schema.model_fields.items():
         extra = field_info.json_schema_extra
         if isinstance(extra, dict) and any("input" in str(v) for v in extra.values()):
             pass
-

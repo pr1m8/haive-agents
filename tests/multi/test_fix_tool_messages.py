@@ -6,9 +6,7 @@ import sys
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 from typing import Any
 
@@ -40,10 +38,7 @@ def fixed_state_model_dump(original_model_dump):
                     # For ToolMessage, explicitly ensure tool_call_id is included
                     if isinstance(msg, ToolMessage):
                         # Double-check that tool_call_id is preserved
-                        if (
-                            hasattr(msg, "tool_call_id")
-                            and "tool_call_id" not in msg_dict
-                        ):
+                        if hasattr(msg, "tool_call_id") and "tool_call_id" not in msg_dict:
                             msg_dict["tool_call_id"] = msg.tool_call_id
                         if hasattr(msg, "name") and "name" not in msg_dict:
                             msg_dict["name"] = msg.name
@@ -84,7 +79,6 @@ def apply_state_serialization_fix():
 
 # Test the fix
 if __name__ == "__main__":
-
     # Apply the fix
     apply_state_serialization_fix()
 
@@ -106,9 +100,7 @@ if __name__ == "__main__":
 
     # Create agents
     add_aug = AugLLMConfig(tools=[add])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
 
     react_agent = ReactAgent(engine=add_aug)
     simple_agent = SimpleAgent(engine=plan_aug)
@@ -136,9 +128,7 @@ if __name__ == "__main__":
             msg.get("type") == "tool" for msg in messages if isinstance(msg, dict)
         )
         has_plan = any(
-            "steps" in str(msg.get("content", ""))
-            for msg in messages
-            if isinstance(msg, dict)
+            "steps" in str(msg.get("content", "")) for msg in messages if isinstance(msg, dict)
         )
 
         if has_tool_message and has_plan:

@@ -23,9 +23,7 @@ async def test_agent_execution_node_async():
     agents = create_real_agents()
 
     # Add agents
-    state.add_agent(
-        "search_agent", agents["search_agent"], "Web search specialist", True
-    )
+    state.add_agent("search_agent", agents["search_agent"], "Web search specialist", True)
     state.add_agent("math_agent", agents["math_agent"], "Math specialist", True)
     state.add_agent(
         "planning_agent", agents["planning_agent"], "Planning specialist", False
@@ -107,7 +105,6 @@ def test_state_updates():
 
 
 if __name__ == "__main__":
-
     try:
         # Test sync first
         test_sync_agent_execution_node()

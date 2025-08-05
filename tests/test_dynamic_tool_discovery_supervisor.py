@@ -64,9 +64,7 @@ class TestDynamicToolDiscoverySupervisor:
         assert supervisor.discovery_mode == ToolDiscoveryMode.HYBRID
         assert "discover_and_load_tools" in supervisor.discovered_tools
 
-    def test_supervisor_with_initial_tools(
-        self, base_config, sample_agents, sample_tools
-    ):
+    def test_supervisor_with_initial_tools(self, base_config, sample_agents, sample_tools):
         """Test supervisor with initial tools."""
         # Prepare tools for registration
         tools_data = []
@@ -135,9 +133,7 @@ class TestDynamicToolDiscoverySupervisor:
         calc_tool = tool(lambda x: f"Calculated: {x}")("calculator")
 
         agents = {
-            "math_agent": ReactAgent(
-                name="math_agent", engine=base_config, tools=[calc_tool]
-            ),
+            "math_agent": ReactAgent(name="math_agent", engine=base_config, tools=[calc_tool]),
             "text_agent": SimpleAgent(name="text_agent", engine=base_config),
         }
 
@@ -172,9 +168,7 @@ class TestDynamicToolDiscoverySupervisor:
         assert discovery_tool is not None
 
         # Execute discovery
-        result = discovery_tool.func(
-            "I need to calculate some numbers and analyze text"
-        )
+        result = discovery_tool.func("I need to calculate some numbers and analyze text")
         assert isinstance(result, str)
         assert "discovered" in result.lower() or "no new tools" in result.lower()
 
@@ -221,9 +215,7 @@ Description: Analyzes text for various metrics
         )
 
         # Run supervisor with a task
-        result = await supervisor.arun(
-            "I need to calculate 50 * 30 and count words in a paragraph"
-        )
+        result = await supervisor.arun("I need to calculate 50 * 30 and count words in a paragraph")
 
         assert isinstance(result, str)
         assert len(result) > 0

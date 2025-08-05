@@ -144,9 +144,7 @@ async def test_react_to_research_report():
     )
 
     # Run the pipeline
-    result = await sequential.arun(
-        "Research the AI market opportunity for small businesses"
-    )
+    result = await sequential.arun("Research the AI market opportunity for small businesses")
 
     print("\n📊 Research Report Generated:")
     print(f"Topic: {result.topic}")
@@ -289,9 +287,7 @@ async def test_custom_sequential():
 
     # Run the pipeline
     result = await sequential.arun(
-        {
-            "query": "How to implement a real-time data pipeline for processing 1M events per second?"
-        }
+        {"query": "How to implement a real-time data pipeline for processing 1M events per second?"}
     )
 
     print("\n🔧 Technical Summary Generated:")

@@ -43,9 +43,7 @@ async def test_and_verify():
         result = agent.run(
             {
                 "messages": [
-                    HumanMessage(
-                        content="Hello Supabase! Please acknowledge this message."
-                    )
+                    HumanMessage(content="Hello Supabase! Please acknowledge this message.")
                 ]
             },
             config={"configurable": {"thread_id": thread_id}},
@@ -65,7 +63,6 @@ async def test_and_verify():
     if not conn_string:
         return False
 
-
     try:
         async with await psycopg.AsyncConnection.connect(conn_string) as conn:
             async with conn.cursor() as cur:
@@ -81,7 +78,6 @@ async def test_and_verify():
 
                 write_count, min_idx, max_idx = await cur.fetchone()
                 if write_count > 0:
-
                     # Show some details
                     await cur.execute(
                         """

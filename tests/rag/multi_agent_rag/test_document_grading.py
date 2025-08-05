@@ -95,9 +95,7 @@ class TestDocumentGradingAgent:
                 page_content="Restaurant serves Italian food",
                 metadata={"type": "restaurant"},
             ),
-            Document(
-                page_content="Weather is sunny today", metadata={"type": "weather"}
-            ),
+            Document(page_content="Weather is sunny today", metadata={"type": "weather"}),
             Document(
                 page_content="Pizza place with great reviews",
                 metadata={"type": "restaurant"},
@@ -164,9 +162,7 @@ class TestDocumentGradingAgent:
 
         # Mock the grading to return specific scores
         class MockGradingAgent(DocumentGradingAgent):
-            def grade_document(
-                self, query: str, document: Document
-            ) -> DocumentGradingResult:
+            def grade_document(self, query: str, document: Document) -> DocumentGradingResult:
                 # Return predictable scores for testing
                 score = 0.95 if "relevant" in document.page_content else 0.1
                 return DocumentGradingResult(
@@ -224,9 +220,7 @@ class TestIterativeDocumentGradingAgent:
                 "reason": f"Keyword matching: {matches}/{len(query_words)} words matched",
             }
 
-        agent = IterativeDocumentGradingAgent(
-            custom_grader=custom_grader, name="Custom Iterative"
-        )
+        agent = IterativeDocumentGradingAgent(custom_grader=custom_grader, name="Custom Iterative")
 
         assert agent.custom_grader is not None
 
@@ -281,9 +275,7 @@ class TestIterativeDocumentGradingAgent:
         def failing_grader(query: str, doc: Document) -> dict[str, Any]:
             raise ValueError("Custom grader intentionally failed")
 
-        agent = IterativeDocumentGradingAgent(
-            custom_grader=failing_grader, name="Failing Grader"
-        )
+        agent = IterativeDocumentGradingAgent(custom_grader=failing_grader, name="Failing Grader")
 
         docs = [Document(page_content="Test content", metadata={})]
 
@@ -319,19 +311,15 @@ class TestDocumentGradingWithRealDocuments:
         assert len(relevant_results) > 0
 
         # Check that restaurant-related documents scored higher
-        restaurant_results = [
-            r for r in results if "restaurant" in r.document.page_content.lower()
-        ]
+        restaurant_results = [r for r in results if "restaurant" in r.document.page_content.lower()]
 
         if restaurant_results:  # If any restaurant documents exist
-            avg_restaurant_score = sum(
-                r.relevance_score for r in restaurant_results
-            ) / len(restaurant_results)
+            avg_restaurant_score = sum(r.relevance_score for r in restaurant_results) / len(
+                restaurant_results
+            )
 
             non_restaurant_results = [
-                r
-                for r in results
-                if "restaurant" not in r.document.page_content.lower()
+                r for r in results if "restaurant" not in r.document.page_content.lower()
             ]
 
             if non_restaurant_results:
@@ -347,9 +335,7 @@ class TestDocumentGradingWithRealDocuments:
         agent = DocumentGradingAgent(name="Technical Grader")
 
         # Grade technical documents for programming query
-        results = agent.grade_documents(
-            "programming and software development", technical_documents
-        )
+        results = agent.grade_documents("programming and software development", technical_documents)
 
         assert len(results) == len(technical_documents)
 
@@ -368,22 +354,18 @@ class TestDocumentGradingWithRealDocuments:
         ]
 
         if programming_results:
-            avg_programming_score = sum(
-                r.relevance_score for r in programming_results
-            ) / len(programming_results)
+            avg_programming_score = sum(r.relevance_score for r in programming_results) / len(
+                programming_results
+            )
             # Programming documents should score reasonably well
             assert avg_programming_score >= 0.3
 
     def test_cross_domain_grading(self):
         """Test grading documents from different domains."""
-        agent = DocumentGradingAgent(
-            min_relevance_threshold=0.3, name="Cross Domain Grader"
-        )
+        agent = DocumentGradingAgent(min_relevance_threshold=0.3, name="Cross Domain Grader")
 
         # Mix different document types
-        mixed_docs = (
-            conversation_documents[:2] + technical_documents[:2] + news_documents[:2]
-        )
+        mixed_docs = conversation_documents[:2] + technical_documents[:2] + news_documents[:2]
 
         # Query for technical content
         results = agent.grade_documents(

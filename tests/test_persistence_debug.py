@@ -50,9 +50,7 @@ def test_react_agent_persistence():
             pass
 
         # Run the agent
-        result = search_agent.run(
-            {"messages": ["What is the weather in France"]}, debug=True
-        )
+        result = search_agent.run({"messages": ["What is the weather in France"]}, debug=True)
 
         if hasattr(result, "content"):
             pass
@@ -60,7 +58,6 @@ def test_react_agent_persistence():
             pass
 
     except Exception as e:
-
         # Print full traceback
         import traceback
 

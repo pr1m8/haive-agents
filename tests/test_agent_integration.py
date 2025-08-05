@@ -167,8 +167,7 @@ def test_multi_agent_with_model_post_init():
             # Set up some derived state
             self._agent_count = len(self.agents)
             self._has_tools = any(
-                hasattr(agent, "engine") and hasattr(agent.engine, "tools")
-                for agent in self.agents
+                hasattr(agent, "engine") and hasattr(agent.engine, "tools") for agent in self.agents
             )
 
     # Test with mock agents
@@ -203,12 +202,8 @@ def test_conditional_edges_concept():
 
     # Add nodes
     graph.add_node("router", {"type": "CALLABLE", "callable": route_function})
-    graph.add_node(
-        "fast_path", {"type": "CALLABLE", "callable": lambda x: {"result": "fast"}}
-    )
-    graph.add_node(
-        "normal_path", {"type": "CALLABLE", "callable": lambda x: {"result": "normal"}}
-    )
+    graph.add_node("fast_path", {"type": "CALLABLE", "callable": lambda x: {"result": "fast"}})
+    graph.add_node("normal_path", {"type": "CALLABLE", "callable": lambda x: {"result": "normal"}})
 
     # Add conditional edges
     graph.add_edge(START, "router")

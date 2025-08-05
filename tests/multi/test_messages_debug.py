@@ -6,9 +6,7 @@ import sys
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 
 import contextlib
@@ -41,7 +39,6 @@ result_dict = result.model_dump() if hasattr(result, "model_dump") else result
 messages = result_dict.get("messages", []) if isinstance(result_dict, dict) else []
 
 for i, msg in enumerate(messages):
-
     # For AIMessage, check tool calls
     if isinstance(msg, AIMessage) and hasattr(msg, "tool_calls") and msg.tool_calls:
         for _tc in msg.tool_calls:
@@ -49,7 +46,6 @@ for i, msg in enumerate(messages):
 
     # For ToolMessage, check fields
     if isinstance(msg, ToolMessage):
-
         # Check all attributes
 
         # Try to dump as dict

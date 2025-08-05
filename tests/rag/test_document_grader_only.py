@@ -58,10 +58,7 @@ async def test_document_grader_simple():
         direct_result = await grader.arun(input_data)
 
         # Try to access structured output
-        if (
-            hasattr(direct_result, "get")
-            and "document_binary_response" in direct_result
-        ):
+        if hasattr(direct_result, "get") and "document_binary_response" in direct_result:
             structured = direct_result["document_binary_response"]
             if hasattr(structured, "document_decisions"):
                 pass

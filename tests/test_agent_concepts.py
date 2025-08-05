@@ -40,11 +40,7 @@ def test_simple_agent_schema_modification():
                 (BaseModel,),
                 {
                     "__annotations__": {k: v[0] for k, v in fields.items()},
-                    **{
-                        k: v[1].default
-                        for k, v in fields.items()
-                        if hasattr(v[1], "default")
-                    },
+                    **{k: v[1].default for k, v in fields.items() if hasattr(v[1], "default")},
                 },
             )
 
@@ -64,9 +60,7 @@ def test_simple_agent_schema_modification():
     )
 
     # Verify enhancement
-    instance = enhanced_schema(
-        response="test", analysis={"summary": "good", "score": 0.9}
-    )
+    instance = enhanced_schema(response="test", analysis={"summary": "good", "score": 0.9})
     assert hasattr(instance, "response")
     assert hasattr(instance, "analysis")
 
@@ -98,9 +92,7 @@ def test_multi_agent_validation():
             """Post-init validation and setup."""
             # Set computed fields
             self.agent_count = len(self.agents)
-            self.has_routing = (
-                self.enable_routing and self.execution_mode == "conditional"
-            )
+            self.has_routing = self.enable_routing and self.execution_mode == "conditional"
 
             # Validate agent names are unique
             if len(set(self.agents)) != len(self.agents):
@@ -200,9 +192,7 @@ def test_schema_compatibility():
 
             # Required target fields
             required_target = {
-                name
-                for name, field in target.model_fields.items()
-                if field.is_required()
+                name for name, field in target.model_fields.items() if field.is_required()
             }
 
             return {
@@ -289,7 +279,6 @@ def test_field_synchronization():
 
 
 if __name__ == "__main__":
-
     test_simple_agent_schema_modification()
     test_multi_agent_validation()
     test_conditional_routing_pattern()

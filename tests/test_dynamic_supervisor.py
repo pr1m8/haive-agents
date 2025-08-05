@@ -131,9 +131,7 @@ class TestDynamicSupervisorAgent:
         state = DynamicSupervisorState()
 
         # Add execution result
-        result = AgentExecutionResult(
-            agent_name="test_agent", success=True, duration=1.5
-        )
+        result = AgentExecutionResult(agent_name="test_agent", success=True, duration=1.5)
         state.add_execution_result(result)
 
         assert len(state.agent_execution_history) == 1
@@ -142,9 +140,7 @@ class TestDynamicSupervisorAgent:
         assert state.success_rate == 1.0
 
         # Add failed execution
-        failed_result = AgentExecutionResult(
-            agent_name="test_agent", success=False, duration=0.5
-        )
+        failed_result = AgentExecutionResult(agent_name="test_agent", success=False, duration=0.5)
         state.add_execution_result(failed_result)
 
         assert len(state.agent_execution_history) == 2
@@ -160,9 +156,7 @@ class TestDynamicSupervisorAgent:
         state = DynamicSupervisorState()
 
         # Add agent config
-        config = AgentExecutionConfig(
-            agent_name="test_agent", capability_description="Test agent"
-        )
+        config = AgentExecutionConfig(agent_name="test_agent", capability_description="Test agent")
         state.add_agent_config("test_agent", config)
 
         # Add multiple execution results
@@ -259,16 +253,12 @@ class TestDynamicSupervisorAgent:
 
         # Add many execution results
         for i in range(150):
-            result = AgentExecutionResult(
-                agent_name=f"agent_{i % 3}", success=i % 2 == 0
-            )
+            result = AgentExecutionResult(agent_name=f"agent_{i % 3}", success=i % 2 == 0)
             state.add_execution_result(result)
 
         # Add many decisions
         for i in range(150):
-            decision = SupervisorDecision(
-                target_agent=f"agent_{i % 3}", reasoning=f"Decision {i}"
-            )
+            decision = SupervisorDecision(target_agent=f"agent_{i % 3}", reasoning=f"Decision {i}")
             state.add_routing_decision(decision)
 
         assert len(state.agent_execution_history) == 150

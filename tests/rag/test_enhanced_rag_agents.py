@@ -68,9 +68,7 @@ class TestBaseRAGAgent:
         """Test creating BaseRAGAgent."""
         retriever = TestRetriever(TEST_DOCUMENTS)
 
-        agent = BaseRAGAgent(
-            name="test_rag", retriever=retriever, k=3, include_sources=True
-        )
+        agent = BaseRAGAgent(name="test_rag", retriever=retriever, k=3, include_sources=True)
 
         assert agent.name == "test_rag"
         assert agent.k == 3
@@ -96,9 +94,7 @@ class TestBaseRAGAgent:
     def test_context_formatting(self):
         """Test formatting retrieved documents."""
         retriever = TestRetriever(TEST_DOCUMENTS)
-        agent = BaseRAGAgent(
-            name="format_test", retriever=retriever, include_sources=True
-        )
+        agent = BaseRAGAgent(name="format_test", retriever=retriever, include_sources=True)
 
         # Format with sources
         context = agent.format_context(TEST_DOCUMENTS[:2])
@@ -139,9 +135,7 @@ class TestBaseRAGAgent:
                 return TestRetriever(TEST_DOCUMENTS)
 
         vectorstore = MockVectorStore()
-        agent = create_rag_agent(
-            name="factory_rag", vectorstore=vectorstore, k=3, temperature=0.1
-        )
+        agent = create_rag_agent(name="factory_rag", vectorstore=vectorstore, k=3, temperature=0.1)
 
         assert isinstance(agent, BaseRAGAgent)
         assert agent.name == "factory_rag"
@@ -187,9 +181,7 @@ class TestSimpleRAGAgent:
     def test_simple_context_formatting(self):
         """Test simplified context formatting."""
         retriever = TestRetriever(TEST_DOCUMENTS)
-        agent = SimpleRAGAgent(
-            name="format_test", retriever=retriever, include_sources=False
-        )
+        agent = SimpleRAGAgent(name="format_test", retriever=retriever, include_sources=False)
 
         # Without sources - just concatenated content
         context = agent.format_context(TEST_DOCUMENTS[:2])
@@ -220,9 +212,7 @@ class TestRAGAgentIntegration:
         """Test string representations."""
         retriever = TestRetriever(TEST_DOCUMENTS)
 
-        base_rag = BaseRAGAgent(
-            name="base", retriever=retriever, k=5, include_sources=True
-        )
+        base_rag = BaseRAGAgent(name="base", retriever=retriever, k=5, include_sources=True)
 
         simple_rag = SimpleRAGAgent(name="simple", retriever=retriever)
 
@@ -246,9 +236,7 @@ class TestRAGAgentIntegration:
 
         # Concurrent retrieval
         queries = ["Paris", "Python", "machine learning"]
-        tasks = [
-            agent.retrieve(query) for agent, query in zip(agents, queries, strict=False)
-        ]
+        tasks = [agent.retrieve(query) for agent, query in zip(agents, queries, strict=False)]
 
         results = await asyncio.gather(*tasks)
 

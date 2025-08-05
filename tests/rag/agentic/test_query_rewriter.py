@@ -13,9 +13,7 @@ class TestQueryRewriterAgent:
     @pytest.mark.asyncio
     async def test_query_rewriter_creation(self):
         """Test creating a query rewriter agent."""
-        rewriter = QueryRewriterAgent.create_default(
-            name="test_rewriter", temperature=0.7
-        )
+        rewriter = QueryRewriterAgent.create_default(name="test_rewriter", temperature=0.7)
 
         assert rewriter.name == "test_rewriter"
         assert rewriter.structured_output_model == QueryRefinementResponse
@@ -88,8 +86,7 @@ class TestQueryRewriterAgent:
 
         # Analysis should recognize it's already good
         assert (
-            "clear" in result.query_analysis.lower()
-            or "specific" in result.query_analysis.lower()
+            "clear" in result.query_analysis.lower() or "specific" in result.query_analysis.lower()
         )
 
         # Complexity should be moderate or complex
@@ -131,8 +128,7 @@ class TestQueryRewriterAgent:
 
         # Should incorporate fintech context
         assert any(
-            "fintech" in s.refined_query.lower()
-            or "financial" in s.refined_query.lower()
+            "fintech" in s.refined_query.lower() or "financial" in s.refined_query.lower()
             for s in result.refinement_suggestions
         )
 
@@ -145,9 +141,7 @@ class TestQueryRewriterAgent:
             system_message="You are an expert at query optimization for technical searches.",
         )
 
-        rewriter = QueryRewriterAgent.create_default(
-            name="custom_rewriter", engine=custom_engine
-        )
+        rewriter = QueryRewriterAgent.create_default(name="custom_rewriter", engine=custom_engine)
 
         assert rewriter.engine == custom_engine
         assert rewriter.engine.temperature == 0.3
@@ -185,6 +179,4 @@ class TestQueryRewriterAgent:
             result = await rewriter.rewrite_query(query)
 
             # Query type should match expected categories
-            assert any(
-                exp_type in result.query_type.lower() for exp_type in expected_types
-            )
+            assert any(exp_type in result.query_type.lower() for exp_type in expected_types)

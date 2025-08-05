@@ -13,9 +13,7 @@ def test_key_insight():
         summary: str
         completed: bool
 
-    MinimalState = create_model(
-        "MinimalState", messages=(list, Field(default_factory=list))
-    )
+    MinimalState = create_model("MinimalState", messages=(list, Field(default_factory=list)))
 
     # Create an instance
     state = MinimalState(messages=["test message"])

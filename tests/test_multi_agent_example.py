@@ -32,9 +32,7 @@ def test_user_example():
     multi_agent = MultiAgent(name="Test User Example")
 
     # Create the plan_aug config
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
 
     # Create the add_aug config
     add_aug = AugLLMConfig(tools=[add])

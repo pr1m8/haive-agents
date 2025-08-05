@@ -167,7 +167,6 @@ def test_debug_simple_agent_v2_validation():
     try:
         input_fields = config._compute_input_fields()
         for field_name, _field_tuple in input_fields.items():
-
             if field_name in ["context", "engine"]:
                 pass
     except Exception:
@@ -179,10 +178,8 @@ def test_debug_simple_agent_v2_validation():
 
     # Let's manually trace what happens during agent creation
     try:
-
         # Check if we can access the schema composer
         try:
-
             # Let's trace what base schemas are available
 
             # Check MessagesState and other base schemas
@@ -239,7 +236,6 @@ def test_debug_simple_agent_v2_validation():
 
         # Trace the schema that was actually created
         if hasattr(agent, "state_schema"):
-
             # Check if we can access the schema composer instance
             if hasattr(agent, "_schema_composer"):
                 composer = agent._schema_composer
@@ -251,9 +247,7 @@ def test_debug_simple_agent_v2_validation():
 
                 # Check the composer's base schema
                 if hasattr(composer, "base_state_schema"):
-                    inspect_pydantic_model(
-                        composer.base_state_schema, "Composer Base Schema"
-                    )
+                    inspect_pydantic_model(composer.base_state_schema, "Composer Base Schema")
 
                 # Check the composer's engines
                 if hasattr(composer, "engines"):
@@ -261,17 +255,13 @@ def test_debug_simple_agent_v2_validation():
                         if hasattr(engine, "derive_input_schema"):
                             try:
                                 eng_input = engine.derive_input_schema()
-                                inspect_pydantic_model(
-                                    eng_input, f"Engine {i} Input Schema"
-                                )
+                                inspect_pydantic_model(eng_input, f"Engine {i} Input Schema")
                             except Exception:
                                 pass
 
                 # Check the composed schema fields
                 if hasattr(composer, "composed_schema"):
-                    inspect_pydantic_model(
-                        composer.composed_schema, "Final Composed Schema"
-                    )
+                    inspect_pydantic_model(composer.composed_schema, "Final Composed Schema")
             else:
                 pass
         else:
@@ -335,19 +325,12 @@ def test_debug_simple_agent_v2_validation():
             # Trace where this input_model comes from
 
             # THIS IS LIKELY WHERE THE BUG IS
-            state_fields = (
-                agent.state_schema.model_fields
-                if hasattr(agent, "state_schema")
-                else {}
-            )
+            state_fields = agent.state_schema.model_fields if hasattr(agent, "state_schema") else {}
             input_fields = (
-                app.input_model.model_fields
-                if hasattr(app.input_model, "model_fields")
-                else {}
+                app.input_model.model_fields if hasattr(app.input_model, "model_fields") else {}
             )
 
             for critical_field in ["context", "engine"]:
-
                 if critical_field in state_fields:
                     state_field = state_fields[critical_field]
                     state_required = (
@@ -393,7 +376,6 @@ def test_debug_simple_agent_v2_validation():
         registry = EngineRegistry.get_instance()
 
         if hasattr(registry, "engines"):
-
             # Check our specific engine
             engine_name = getattr(config, "name", None)
             if engine_name and engine_name in registry.engines:
@@ -432,7 +414,6 @@ def test_debug_simple_agent_v2_validation():
     try:
         agent.run(test_input, debug=True)
     except Exception as e:
-
         # Get the full traceback
         traceback.print_exc()
 

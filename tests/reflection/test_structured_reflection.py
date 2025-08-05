@@ -104,7 +104,8 @@ class TestStructuredReflectionAgents:
         """Test that reflection loop stops when quality threshold is reached."""
         # Create loop with high threshold
         loop = create_reflection_loop(
-            max_iterations=5, quality_threshold=0.95  # Very high threshold
+            max_iterations=5,
+            quality_threshold=0.95,  # Very high threshold
         )
 
         # Good starting response
@@ -222,7 +223,9 @@ class TestReflectionEdgeCases:
         reflector = create_reflection_agent()
 
         query = "What is coding?"
-        special_response = "Coding involves symbols like: {}, [], (), <>, @, #, $, %, &, *, +, =, |, \\, /, ?, ~"
+        special_response = (
+            "Coding involves symbols like: {}, [], (), <>, @, #, $, %, &, *, +, =, |, \\, /, ?, ~"
+        )
 
         reflection = await reflector.reflect(query, special_response)
 
@@ -294,9 +297,7 @@ class TestReflectionIntegration:
 
         # Get multiple perspectives
         technical_reflection = await technical_reflector.reflect(query, response)
-        communication_reflection = await communication_reflector.reflect(
-            query, response
-        )
+        communication_reflection = await communication_reflector.reflect(query, response)
 
         # Both should work
         assert technical_reflection is not None

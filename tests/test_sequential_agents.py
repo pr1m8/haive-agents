@@ -107,9 +107,7 @@ def test_sequential_agent():
 def main():
     """Run the sequential agent test."""
     # Set some environment variables to potentially avoid issues
-    os.environ["HAIVE_DISABLE_PERSISTENCE"] = (
-        "0"  # Enable persistence to replicate the issue
-    )
+    os.environ["HAIVE_DISABLE_PERSISTENCE"] = "0"  # Enable persistence to replicate the issue
 
     if test_sequential_agent():
         return 0

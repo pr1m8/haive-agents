@@ -27,9 +27,7 @@ class TestSimpleRAGAgent:
         # Check that first agent is BaseRAGAgent
         first_agent = rag.agents[0]
         assert isinstance(first_agent, BaseRAGAgent)
-        assert (
-            "retriever" in first_agent.name.lower() or "rag" in first_agent.name.lower()
-        )
+        assert "retriever" in first_agent.name.lower() or "rag" in first_agent.name.lower()
 
         # Check that second agent is SimpleAgent
         second_agent = rag.agents[1]
@@ -47,9 +45,7 @@ class TestSimpleRAGAgent:
         if not conversation_documents:
             pytest.skip("No conversation_documents available")
 
-        rag = SimpleRAGAgent.from_documents(
-            conversation_documents[:3]
-        )  # Use subset for speed
+        rag = SimpleRAGAgent.from_documents(conversation_documents[:3])  # Use subset for speed
 
         # Test the run_rag convenience method
         query = "Tell me about restaurants"
@@ -78,9 +74,7 @@ class TestSimpleRAGAgent:
         # Test with standard input format
         input_data = {
             "query": "What restaurants are mentioned?",
-            "messages": [
-                {"role": "user", "content": "What restaurants are mentioned?"}
-            ],
+            "messages": [{"role": "user", "content": "What restaurants are mentioned?"}],
         }
 
         try:

@@ -14,9 +14,7 @@ from haive.haive.core.models.llm.base import AzureLLMConfig
 
 
 # Configure detailed logging
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -35,9 +33,7 @@ def debug_print_schema(schema):
     # Fallback for Pydantic v1 or other models
     elif hasattr(schema, "__fields__"):
         for field_name, field_info in schema.__fields__.items():
-            logger.debug(
-                f"- {field_name}: Type={field_info.type_}, Default={field_info.default}"
-            )
+            logger.debug(f"- {field_name}: Type={field_info.type_}, Default={field_info.default}")
 
 
 def inspect_module_members(module):
@@ -56,9 +52,7 @@ def test_simple_agent_schema_validation():
     class PersonInfo(BaseModel):
         name: str = Field(description="Person's name")
         age: int | None = Field(default=None, description="Person's age")
-        interests: list[str] = Field(
-            default_factory=list, description="List of interests"
-        )
+        interests: list[str] = Field(default_factory=list, description="List of interests")
 
         model_config = ConfigDict(extra="allow")  # Allow extra fields
 
@@ -122,15 +116,13 @@ def test_simple_agent_schema_validation():
 
     expected_fields = ["messages", "runnable_config", "person_description"]
     for field in expected_fields:
-        assert (
-            field in state_schema.model_fields
-        ), f"{field} field should exist in state schema"
+        assert field in state_schema.model_fields, f"{field} field should exist in state schema"
 
     # Verify structured output field exists (using lowercase name convention)
     model_name = person_aug_llm.structured_output_model.__name__.lower()
-    assert (
-        model_name in state_schema.model_fields
-    ), f"Structured output field '{model_name}' should exist in schema"
+    assert model_name in state_schema.model_fields, (
+        f"Structured output field '{model_name}' should exist in schema"
+    )
 
     # Test creating a state instance
     try:
@@ -139,9 +131,7 @@ def test_simple_agent_schema_validation():
             person_description="A creative artist in their 30s",
             personinfo=PersonInfo(name="Test", age=30, interests=["Testing"]),
         )
-        assert (
-            state_instance.personinfo.name == "Test"
-        ), "Failed to access structured output field"
+        assert state_instance.personinfo.name == "Test", "Failed to access structured output field"
         logger.debug("Successfully created and validated state instance")
     except Exception as e:
         logger.exception(f"Error creating state instance: {e}")
@@ -191,15 +181,15 @@ def test_agent_with_output_parsing():
     debug_print_schema(summary_agent.state_schema)
 
     # Verify required fields from prompt template are present
-    assert (
-        "text" in summary_agent.state_schema.model_fields
-    ), "Input variable 'text' should be in schema"
-    assert (
-        "messages" in summary_agent.state_schema.model_fields
-    ), "Messages field should be in schema"
-    assert (
-        "runnable_config" in summary_agent.state_schema.model_fields
-    ), "runnable_config field should be in schema"
+    assert "text" in summary_agent.state_schema.model_fields, (
+        "Input variable 'text' should be in schema"
+    )
+    assert "messages" in summary_agent.state_schema.model_fields, (
+        "Messages field should be in schema"
+    )
+    assert "runnable_config" in summary_agent.state_schema.model_fields, (
+        "runnable_config field should be in schema"
+    )
     # assert 'output' in summary_agent.state_schema.model_fields, "output field should be in schema"
 
     # Test agent functionality with simple input

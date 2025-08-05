@@ -88,18 +88,12 @@ class ReactAgentConfig(AgentConfig):
     )
 
     # Execution configuration
-    max_iterations: int = Field(
-        default=10, description="Maximum number of reasoning steps"
-    )
+    max_iterations: int = Field(default=10, description="Maximum number of reasoning steps")
 
     # Node names configuration
-    agent_node_name: str = Field(
-        default="agent", description="Name for the agent reasoning node"
-    )
+    agent_node_name: str = Field(default="agent", description="Name for the agent reasoning node")
 
-    tools_node_name: str = Field(
-        default="tools", description="Name for the tools execution node"
-    )
+    tools_node_name: str = Field(default="tools", description="Name for the tools execution node")
 
     # System prompt for the agent
     system_prompt_template: str = Field(
@@ -181,9 +175,7 @@ Remember: Your goal is to provide maximum value by giving accurate, well-reasone
     )
 
     # Checkpointing and persistence
-    use_memory: bool = Field(
-        default=True, description="Whether to use memory for checkpointing"
-    )
+    use_memory: bool = Field(default=True, description="Whether to use memory for checkpointing")
 
     # Visualization settings
     visualize: bool = Field(default=True, description="Whether to visualize the graph")
@@ -242,9 +234,7 @@ Remember: Your goal is to provide maximum value by giving accurate, well-reasone
             ReactAgentConfig instance
         """
         # Create LLM config
-        llm_config = AzureLLMConfig(
-            model=model, parameters={"temperature": temperature}
-        )
+        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
 
         # Generate default name if not provided
         if not name:
@@ -372,9 +362,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                 parameters = []
                 for field_name, field in schema.__annotations__.items():
                     # Get field type and whether it's required
-                    field_type = (
-                        field.__name__ if hasattr(field, "__name__") else str(field)
-                    )
+                    field_type = field.__name__ if hasattr(field, "__name__") else str(field)
                     field_type = field_type.replace("typing.", "")
 
                     # Check if field is required
@@ -421,9 +409,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # Run the agent
         return super().run(input_data, **runtime_config)
 
-    def stream(
-        self, input_data: str | list[str] | dict[str, Any] | BaseModel, **kwargs
-    ):
+    def stream(self, input_data: str | list[str] | dict[str, Any] | BaseModel, **kwargs):
         """Stream the agent execution with the given input.
 
         Args:
@@ -443,9 +429,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         """Generate and save visualization of the agent's graph."""
         if self.app:
             try:
-                render_and_display_graph(
-                    self.app, output_name=f"{self.config.name}_graph.png"
-                )
+                render_and_display_graph(self.app, output_name=f"{self.config.name}_graph.png")
                 logger.info(f"Graph visualization saved for {self.config.name}")
             except Exception as e:
                 logger.exception(f"Failed to visualize graph: {e!s}")
@@ -457,7 +441,6 @@ class ReactAgent(Agent[ReactAgentConfig]):
             interactive: Whether to run in interactive mode (default: True)
         """
         if interactive:
-
             # Create a thread ID for this conversation
             thread_id = str(uuid.uuid4())
             runtime_config = {"configurable": {"thread_id": thread_id}}
@@ -507,9 +490,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                                         and msg.tool_calls
                                     ):
                                         # Check if we've already seen these tool calls
-                                        current_calls = {
-                                            call["id"] for call in msg.tool_calls
-                                        }
+                                        current_calls = {call["id"] for call in msg.tool_calls}
                                         if not current_calls.issubset(tool_calls_seen):
                                             # New tool calls, print them differently
                                             for call in msg.tool_calls:
@@ -518,9 +499,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                                         continue
 
                                     # Found a message to display
-                                    if msg != last_message and isinstance(
-                                        msg, AIMessage
-                                    ):
+                                    if msg != last_message and isinstance(msg, AIMessage):
                                         # New AI message to display
                                         if last_message is None:
                                             # First message

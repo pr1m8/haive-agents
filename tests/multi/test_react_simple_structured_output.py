@@ -32,9 +32,7 @@ class AnalysisReport(BaseModel):
     key_findings: list[str] = Field(description="Key findings from analysis")
     calculations: list[str] = Field(description="Calculations performed")
     recommendations: list[str] = Field(description="Recommendations based on analysis")
-    confidence_score: float = Field(
-        ge=0.0, le=1.0, description="Confidence in analysis"
-    )
+    confidence_score: float = Field(ge=0.0, le=1.0, description="Confidence in analysis")
     summary: str = Field(description="Executive summary")
 
 

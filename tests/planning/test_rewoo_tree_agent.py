@@ -115,14 +115,10 @@ class TestStructuredOutputModels:
     def test_plan_tree_validation(self):
         """Test PlanTree model validation."""
         # Valid tree
-        tree = PlanTree(
-            id="test_tree_1", name="Test Plan", description="Test plan description"
-        )
+        tree = PlanTree(id="test_tree_1", name="Test Plan", description="Test plan description")
 
         # Add nodes
-        root_node = PlanNode(
-            id="root", name="Root Task", description="Root task description"
-        )
+        root_node = PlanNode(id="root", name="Root Task", description="Root task description")
         tree.add_node(root_node)
 
         assert tree.root_id == "root"
@@ -144,9 +140,7 @@ class TestStructuredOutputModels:
     def test_rewoo_planner_output_validation(self):
         """Test ReWOOTreePlannerOutput validation."""
         # Create valid plan tree
-        tree = PlanTree(
-            id="plan_123", name="Test Plan", description="Test plan description"
-        )
+        tree = PlanTree(id="plan_123", name="Test Plan", description="Test plan description")
 
         # Valid output
         output = ReWOOTreePlannerOutput(
@@ -209,9 +203,7 @@ class TestReWOOTreeAgent:
     def test_tool_alias_management(self, rewoo_agent):
         """Test tool alias management."""
         # Add new alias
-        rewoo_agent.add_tool_alias(
-            "search", "web_search", force_choice=True, max_results=10
-        )
+        rewoo_agent.add_tool_alias("search", "web_search", force_choice=True, max_results=10)
 
         assert "search" in rewoo_agent.tool_aliases
         alias = rewoo_agent.tool_aliases["search"]
@@ -282,9 +274,7 @@ class TestReWOOTreeAgent:
     async def test_tool_aliasing_execution(self, rewoo_agent):
         """Test execution with tool aliasing."""
         # Task that should use aliased tools
-        result = await rewoo_agent.arun(
-            "Use calc to compute 25 * 4, then analyze the result"
-        )
+        result = await rewoo_agent.arun("Use calc to compute 25 * 4, then analyze the result")
 
         assert isinstance(result, str)
         assert len(result) > 0
@@ -469,9 +459,7 @@ class TestParallelizationAndTreeStructure:
 
         # Add nodes
         for i in range(3):
-            node = PlanNode(
-                id=f"node{i}", name=f"Node {i}", description=f"Node {i} description"
-            )
+            node = PlanNode(id=f"node{i}", name=f"Node {i}", description=f"Node {i} description")
             tree.add_node(node)
 
         # Initially 0% complete
@@ -495,9 +483,7 @@ class TestParallelizationAndTreeStructure:
 
     def test_failure_handling(self):
         """Test failure handling in tree execution."""
-        tree = PlanTree(
-            id="failure_test", name="Failure Test", description="Test failure handling"
-        )
+        tree = PlanTree(id="failure_test", name="Failure Test", description="Test failure handling")
 
         # Add nodes
         node1 = PlanNode(id="node1", name="Node 1", description="Node 1")

@@ -27,9 +27,7 @@ class TestMessageTransformerReflection:
     async def test_message_transformer_reflection_agent_basic(self):
         """Test basic message transformer reflection functionality."""
         # Create reflection agent
-        mt_reflector = create_message_transformer_reflection_agent(
-            name="test_mt_reflector"
-        )
+        mt_reflector = create_message_transformer_reflection_agent(name="test_mt_reflector")
 
         # Create sample conversation
         conversation = [
@@ -66,14 +64,13 @@ class TestMessageTransformerReflection:
         # Create base agent
         base_agent = SimpleAgent(
             name="test_base",
-            engine=AugLLMConfig(
-                system_message="You are a helpful assistant.", temperature=0.5
-            ),
+            engine=AugLLMConfig(system_message="You are a helpful assistant.", temperature=0.5),
         )
 
         # Create conversational reflection agent
         conv_reflector = create_conversational_reflection_agent(
-            base_agent=base_agent, reflection_frequency=2  # Reflect every 2 messages
+            base_agent=base_agent,
+            reflection_frequency=2,  # Reflect every 2 messages
         )
 
         # Test first message (no reflection)
@@ -177,10 +174,7 @@ class TestMessageTransformerReflection:
         # Find the added reflection context
         reflection_added = False
         for msg in transformed:
-            if (
-                isinstance(msg, HumanMessage)
-                and "Previous response reflection" in msg.content
-            ):
+            if isinstance(msg, HumanMessage) and "Previous response reflection" in msg.content:
                 reflection_added = True
                 assert "Quality assessment: 0.7" in msg.content
                 assert "too brief" in msg.content
@@ -291,9 +285,7 @@ class TestMessageTransformerIntegration:
         # Test messages with AI message
         messages = [
             HumanMessage(content="Question"),
-            AIMessage(
-                content="AI answer with metadata", additional_kwargs={"test": "value"}
-            ),
+            AIMessage(content="AI answer with metadata", additional_kwargs={"test": "value"}),
         ]
 
         # Apply transformation

@@ -236,12 +236,8 @@ def get_thread_details(thread_id: str) -> dict[str, Any]:
 
 def test_conversation_agent_with_new_id():
     """Test conversation agent with a fresh thread ID to verify prepared statement fix."""
-    sys.path.insert(
-        0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src"
-    )
-    sys.path.insert(
-        0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src"
-    )
+    sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
+    sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 
     try:
         from haive.agents.conversation.collaberative.agent import (
@@ -310,7 +306,6 @@ def main():
         errors = view_recent_errors(limit=5)
         if errors:
             for _i, error in enumerate(errors, 1):
-
                 for _err in error["errors_found"][:3]:  # Show first 3 errors
                     pass
         else:

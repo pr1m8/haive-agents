@@ -68,9 +68,7 @@ def test_graph_with_conditional_edges():
         {"type": "CALLABLE", "callable": lambda s: {"result": "searched"}},
     )
 
-    graph.add_node(
-        "direct_path", {"type": "CALLABLE", "callable": lambda s: {"result": "direct"}}
-    )
+    graph.add_node("direct_path", {"type": "CALLABLE", "callable": lambda s: {"result": "direct"}})
 
     # Connect with conditional edges
     graph.add_edge(START, "router")
@@ -104,9 +102,7 @@ def test_schema_composition():
     Schema = composer.build()
 
     # Test instantiation
-    instance = Schema(
-        messages=[HumanMessage(content="Hello")], query="test query", confidence=0.9
-    )
+    instance = Schema(messages=[HumanMessage(content="Hello")], query="test query", confidence=0.9)
 
     # Verify fields
     assert hasattr(instance, "messages")  # From MessagesState
@@ -172,9 +168,7 @@ def test_multi_agent_concept():
         def model_post_init(self, __context):
             """Validate after initialization."""
             if len(self.agents) < self.min_agents:
-                raise ValueError(
-                    f"Need at least {self.min_agents} agents, got {len(self.agents)}"
-                )
+                raise ValueError(f"Need at least {self.min_agents} agents, got {len(self.agents)}")
 
             # Set derived fields
             self.agent_count = len(self.agents)
@@ -280,10 +274,7 @@ if __name__ == "__main__":
     # Run all tests
     results = []
 
-
-    results.append(
-        ("Graph with conditional edges", test_graph_with_conditional_edges())
-    )
+    results.append(("Graph with conditional edges", test_graph_with_conditional_edges()))
     results.append(("Schema composition", test_schema_composition()))
     results.append(("SimpleAgent mock", test_simple_agent_mock()))
     results.append(("Multi-agent concept", test_multi_agent_concept()))

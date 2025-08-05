@@ -108,9 +108,7 @@ async def test_sequential_structured_output():
     )
 
     # Step 2: Create SimpleAgent for structured output
-    console.print(
-        "[yellow]Step 2: Creating SimpleAgent for structured output...[/yellow]"
-    )
+    console.print("[yellow]Step 2: Creating SimpleAgent for structured output...[/yellow]")
 
     simple_agent = SimpleAgent(
         name="formatter",
@@ -183,9 +181,7 @@ async def test_sequential_structured_output():
             console.print(Panel(str(final), title="[green]Final Result[/green]"))
 
             # Verify structured output
-            if hasattr(final, "analysis") and isinstance(
-                final.analysis, AnalysisResult
-            ):
+            if hasattr(final, "analysis") and isinstance(final.analysis, AnalysisResult):
                 console.print("[bold green]✓ Structured output validated![/bold green]")
                 console.print(f"  - Topic: {final.analysis.topic}")
                 console.print(f"  - Key Points: {len(final.analysis.key_points)} items")
@@ -195,9 +191,7 @@ async def test_sequential_structured_output():
 
         # Show completed agents
         if "completed_agents" in result:
-            console.print(
-                f"\n[cyan]Completed agents:[/cyan] {result['completed_agents']}"
-            )
+            console.print(f"\n[cyan]Completed agents:[/cyan] {result['completed_agents']}")
 
         # Show any errors
         if result.get("error"):

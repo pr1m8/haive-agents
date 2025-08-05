@@ -37,9 +37,7 @@ class TestTreeOfThoughtsOrchestrator:
         assert isinstance(result.all_solutions, list)
 
         # Should find at least one solution
-        assert (
-            result.score > 0.5
-        ), f"Should find valid solution, got: {result.best_solution}"
+        assert result.score > 0.5, f"Should find valid solution, got: {result.best_solution}"
 
     @pytest.mark.asyncio
     async def test_game_of_24(self):
@@ -60,9 +58,9 @@ class TestTreeOfThoughtsOrchestrator:
 
         # Print top solutions
         if result.all_solutions:
-            sorted_solutions = sorted(
-                result.all_solutions, key=lambda x: x["score"], reverse=True
-            )[:5]
+            sorted_solutions = sorted(result.all_solutions, key=lambda x: x["score"], reverse=True)[
+                :5
+            ]
             for _sol in sorted_solutions:
                 pass
 
@@ -105,9 +103,7 @@ class TestTreeOfThoughtsOrchestrator:
     @pytest.mark.asyncio
     async def test_with_initial_seed(self):
         """Test TOT with an initial seed solution."""
-        orchestrator = TreeOfThoughtsOrchestrator(
-            name="seeded_tot", beam_width=3, max_iterations=2
-        )
+        orchestrator = TreeOfThoughtsOrchestrator(name="seeded_tot", beam_width=3, max_iterations=2)
 
         problem = "Write a haiku about programming"
         initial_seed = "Code flows like water / ??? / ???"

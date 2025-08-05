@@ -45,9 +45,7 @@ class TestIsolatedAgentAnalysis:
         # Create basic SimpleAgent without structured output
         agent = SimpleAgent(
             name="basic_simple",
-            engine=AugLLMConfig(
-                llm_config=AzureLLMConfig(model="gpt-4o", temperature=0.7)
-            ),
+            engine=AugLLMConfig(llm_config=AzureLLMConfig(model="gpt-4o", temperature=0.7)),
             debug=True,
         )
 
@@ -66,9 +64,7 @@ class TestIsolatedAgentAnalysis:
         # Create SimpleAgent WITH structured output
         agent = SimpleAgent(
             name="structured_simple",
-            engine=AugLLMConfig(
-                llm_config=AzureLLMConfig(model="gpt-4o", temperature=0.3)
-            ),
+            engine=AugLLMConfig(llm_config=AzureLLMConfig(model="gpt-4o", temperature=0.3)),
             structured_output_model=TestAnalysis,
             structured_output_version="v2",
             debug=True,
@@ -146,9 +142,7 @@ class TestIsolatedAgentAnalysis:
         # Create SimpleAgent with structured output
         agent = SimpleAgent(
             name="isolated_simple",
-            engine=AugLLMConfig(
-                llm_config=AzureLLMConfig(model="gpt-4o", temperature=0.3)
-            ),
+            engine=AugLLMConfig(llm_config=AzureLLMConfig(model="gpt-4o", temperature=0.3)),
             structured_output_model=TestAnalysis,
             structured_output_version="v2",
             debug=True,
@@ -159,9 +153,7 @@ class TestIsolatedAgentAnalysis:
 
         # Test input
         test_input = {
-            "messages": [
-                HumanMessage(content="Analyze this: Python is a programming language")
-            ]
+            "messages": [HumanMessage(content="Analyze this: Python is a programming language")]
         }
         config = {"configurable": {"thread_id": None}}
 

@@ -69,17 +69,13 @@ def test_enhanced_multi_agent_v3_creation():
             "reviewer": EnhancedSimpleAgent(name="reviewer", temperature=0.3),
         }
 
-        typed_multi: EnhancedMultiAgent[Dict[str, EnhancedSimpleAgent]] = (
-            EnhancedMultiAgent(
-                name="typed_workflow", agents=agent_dict, performance_mode=True
-            )
+        typed_multi: EnhancedMultiAgent[Dict[str, EnhancedSimpleAgent]] = EnhancedMultiAgent(
+            name="typed_workflow", agents=agent_dict, performance_mode=True
         )
 
         print(f"✅ Typed MultiAgent created: {typed_multi.name}")
         print("✅ Type validation passed for Dict[str, EnhancedSimpleAgent]")
-        print(
-            f"✅ Performance tracking initialized: {len(typed_multi.agent_performance)} agents"
-        )
+        print(f"✅ Performance tracking initialized: {len(typed_multi.agent_performance)} agents")
 
         print("\n🎯 Enhanced MultiAgent V3 Creation Tests: SUCCESS")
         return True
@@ -104,15 +100,9 @@ def test_enhanced_multi_agent_v3_capabilities():
 
         # Create agents with different roles
         agents = {
-            "fast_responder": EnhancedSimpleAgent(
-                name="fast_responder", temperature=0.1
-            ),
-            "accurate_analyzer": EnhancedSimpleAgent(
-                name="accurate_analyzer", temperature=0.9
-            ),
-            "balanced_processor": EnhancedSimpleAgent(
-                name="balanced_processor", temperature=0.5
-            ),
+            "fast_responder": EnhancedSimpleAgent(name="fast_responder", temperature=0.1),
+            "accurate_analyzer": EnhancedSimpleAgent(name="accurate_analyzer", temperature=0.9),
+            "balanced_processor": EnhancedSimpleAgent(name="balanced_processor", temperature=0.5),
         }
 
         multi_agent = EnhancedMultiAgent(
@@ -137,9 +127,7 @@ def test_enhanced_multi_agent_v3_capabilities():
         print(f"✅ Agent type: {summary['agent_type']}")
         print(f"✅ Agent count: {summary['agent_count']}")
         print(f"✅ Features: {list(summary['features'].keys())}")
-        print(
-            f"✅ Performance tracking: {summary['features']['has_performance_tracking']}"
-        )
+        print(f"✅ Performance tracking: {summary['features']['has_performance_tracking']}")
 
         # Test 3: Performance analysis
         print("\n📋 Test 3: Performance analysis")
@@ -227,9 +215,7 @@ def test_enhanced_multi_agent_v3_routing():
             performance_mode=True,
         )
 
-        parallel_multi.add_parallel_group(
-            ["processor1", "processor2"], next_agent="aggregator"
-        )
+        parallel_multi.add_parallel_group(["processor1", "processor2"], next_agent="aggregator")
 
         print("✅ Parallel group added")
         print(f"✅ Parallel branches: {len(parallel_multi.branches)}")
@@ -296,11 +282,7 @@ def test_enhanced_multi_agent_v3_execution():
 
         try:
             result = compiled.invoke(
-                {
-                    "messages": [
-                        {"role": "user", "content": "Test multi-agent execution"}
-                    ]
-                },
+                {"messages": [{"role": "user", "content": "Test multi-agent execution"}]},
                 config={"configurable": {"thread_id": "test_multi_thread"}},
             )
 
@@ -332,12 +314,8 @@ def test_enhanced_multi_agent_v3_execution():
         # Check performance analysis
         analysis = perf_multi.analyze_agent_performance()
         print("✅ Performance tracking working")
-        print(
-            f"✅ Fast agent success rate: {analysis['agents']['fast']['success_rate']}"
-        )
-        print(
-            f"✅ Accurate agent success rate: {analysis['agents']['accurate']['success_rate']}"
-        )
+        print(f"✅ Fast agent success rate: {analysis['agents']['fast']['success_rate']}")
+        print(f"✅ Accurate agent success rate: {analysis['agents']['accurate']['success_rate']}")
 
         best_agent = perf_multi.get_best_agent_for_task()
         print(f"✅ Best performing agent: {best_agent}")
@@ -467,7 +445,7 @@ def run_all_enhanced_multi_agent_tests():
 
     for i, (name, result) in enumerate(zip(test_names, results)):
         status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{i+1}. {name}: {status}")
+        print(f"{i + 1}. {name}: {status}")
 
     print(f"\n🎯 OVERALL RESULT: {passed}/{total} tests passed")
 

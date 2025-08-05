@@ -5,9 +5,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage, ToolMessage
@@ -32,7 +30,6 @@ react_agent.compile()
 # Test with a simple addition
 try:
     result = react_agent.run({"messages": [HumanMessage(content="Calculate 5 + 3")]})
-
 
     # Check the messages in the result
     if hasattr(result, "messages"):

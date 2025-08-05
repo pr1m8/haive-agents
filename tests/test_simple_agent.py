@@ -73,9 +73,7 @@ def test_base_agent_respects_explicit_persistence():
 
     memory_config = MemoryCheckpointerConfig()
 
-    agent = SimpleTestAgent(
-        name="simple_agent", persistence=memory_config, checkpoint_mode="async"
-    )
+    agent = SimpleTestAgent(name="simple_agent", persistence=memory_config, checkpoint_mode="async")
 
     # Should use the provided persistence
     assert agent.persistence == memory_config

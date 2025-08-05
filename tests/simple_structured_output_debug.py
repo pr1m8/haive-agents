@@ -35,9 +35,7 @@ def test_simple_structured_output():
         if any(expected in field_name.lower() for expected in expected_field_names):
             structured_fields.append(field_name)
 
-    test_input = {
-        "messages": [HumanMessage(content="What is 2+2? Answer with confidence.")]
-    }
+    test_input = {"messages": [HumanMessage(content="What is 2+2? Answer with confidence.")]}
     # Use the agent's default thread_id instead of None (required for PostgreSQL persistence)
     config = agent.get_effective_runnable_config()
 
@@ -53,9 +51,10 @@ def test_simple_structured_output():
         # Check for structured output fields
         structured_output_found = False
         for key, value in result.items():
-            if key != "messages" and (isinstance(value, SimpleResponse) or (
-                hasattr(value, "answer") and hasattr(value, "confidence")
-            )):
+            if key != "messages" and (
+                isinstance(value, SimpleResponse)
+                or (hasattr(value, "answer") and hasattr(value, "confidence"))
+            ):
                 structured_output_found = True
 
         if not structured_output_found:
@@ -90,7 +89,6 @@ def test_engine_directly():
 
 
 if __name__ == "__main__":
-
     # Test 1: Full agent
     try:
         agent_result = test_simple_structured_output()

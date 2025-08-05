@@ -33,7 +33,6 @@ async def test_debug_schema_validation():
         name="planner", engine=AugLLMConfig(temperature=0.7), state_schema=PlannerState
     )
 
-
     # Check schema fields
     for field_name, field_info in planner.state_schema.model_fields.items():
         pass
@@ -45,7 +44,6 @@ async def test_debug_schema_validation():
             "plan": "test plan",
             "steps": ["step1", "step2"],
         }
-
 
         # Try to instantiate the schema directly
         schema_instance = planner.state_schema(**test_data)
@@ -65,10 +63,7 @@ async def test_debug_schema_validation():
 
     # Test MultiAgentState
     try:
-        state = MultiAgentState(
-            agents=[planner], messages=[HumanMessage(content="test message")]
-        )
-
+        state = MultiAgentState(agents=[planner], messages=[HumanMessage(content="test message")])
 
         # Try to get agent state
         agent_state = state.get_agent_state("planner")

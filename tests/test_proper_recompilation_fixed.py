@@ -49,9 +49,7 @@ class RecompilationMixin:
         # Notify observers
         self._notify_change("compiled", reason=reason, timestamp=self._last_recompiled)
 
-    def register_change_callback(
-        self, callback: Callable[[str, dict[str, Any]], None]
-    ) -> str:
+    def register_change_callback(self, callback: Callable[[str, dict[str, Any]], None]) -> str:
         """Register callback for change notifications."""
         callback_id = f"callback_{len(self._change_callbacks)}"
         self._change_callbacks.append((callback_id, callback))
@@ -119,9 +117,7 @@ class RecompilableSimpleAgentState(SimpleAgentState):
     """Agent state with recompilation tracking."""
 
     recompilation_count: int = Field(default=0, description="Number of recompilations")
-    last_recompilation_reason: str = Field(
-        default="", description="Last recompilation reason"
-    )
+    last_recompilation_reason: str = Field(default="", description="Last recompilation reason")
 
 
 class RecompilableSimpleAgent(SimpleAgent):
@@ -199,15 +195,11 @@ class MetaAgentWithRecompilation:
 
         # Register for recompilation notifications
         callback_id = component.register_change_callback(
-            lambda change_type, details: self._handle_component_change(
-                name, change_type, details
-            )
+            lambda change_type, details: self._handle_component_change(name, change_type, details)
         )
         self.recompilation_callbacks[name] = callback_id
 
-    def _handle_component_change(
-        self, component_name: str, change_type: str, details: dict
-    ):
+    def _handle_component_change(self, component_name: str, change_type: str, details: dict):
         """Handle changes from managed components."""
         # Could trigger meta-agent recompilation logic here
         if self._should_recompile_meta_agent(change_type):
@@ -237,15 +229,12 @@ class MetaAgentWithRecompilation:
 
         for name, component in self.managed_components.items():
             if component.needs_recompilation():
-
                 # Perform recompilation
                 if hasattr(component, "recompile_if_needed"):
                     recompile_result = component.recompile_if_needed()
                     result["recompilation_details"][name] = recompile_result
                 else:
-                    component.mark_compiled(
-                        f"Component {name} recompiled by meta-agent"
-                    )
+                    component.mark_compiled(f"Component {name} recompiled by meta-agent")
 
                 result["components_recompiled"].append(name)
 
@@ -255,9 +244,7 @@ class MetaAgentWithRecompilation:
 def test_validation_node_recompilation():
     """Test ValidationNodeConfigV2 with recompilation tracking."""
     # Create recompilable validation node
-    node = RecompilableValidationNodeConfigV2(
-        name="dynamic_validation", engine_name="main_engine"
-    )
+    node = RecompilableValidationNodeConfigV2(name="dynamic_validation", engine_name="main_engine")
 
     # Initial state
     assert not node.needs_recompilation()

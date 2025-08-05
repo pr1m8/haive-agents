@@ -153,9 +153,7 @@ class TestComponentDiscoveryAgent:
             "include_metadata": True,
         }
 
-        agent = ComponentDiscoveryAgent(
-            document_path=temp_document_file, discovery_config=config
-        )
+        agent = ComponentDiscoveryAgent(document_path=temp_document_file, discovery_config=config)
 
         assert agent.discovery_config["max_results"] == 5
         assert agent.discovery_config["similarity_threshold"] == 0.8
@@ -195,9 +193,7 @@ class TestDynamicActivationSupervisor:
         doc_file.write_text(doc_content)
         return str(doc_file)
 
-    def test_supervisor_creation_with_discovery(
-        self, temp_document_file, aug_llm_config
-    ):
+    def test_supervisor_creation_with_discovery(self, temp_document_file, aug_llm_config):
         """Test creating supervisor with discovery capabilities."""
         supervisor = DynamicActivationSupervisor.create_with_discovery(
             name="test_supervisor",
@@ -243,9 +239,7 @@ class TestDynamicActivationSupervisor:
         assert "comp_002" in supervisor.state.registry.items
 
     @pytest.mark.asyncio
-    async def test_supervisor_component_activation(
-        self, temp_document_file, aug_llm_config
-    ):
+    async def test_supervisor_component_activation(self, temp_document_file, aug_llm_config):
         """Test supervisor component activation functionality."""
         supervisor = DynamicActivationSupervisor.create_with_discovery(
             name="test_supervisor",
@@ -349,9 +343,7 @@ class TestDynamicReactAgent:
         tools_file.write_text(tools_content)
         return str(tools_file)
 
-    def test_dynamic_react_agent_creation_with_discovery(
-        self, temp_tools_file, aug_llm_config
-    ):
+    def test_dynamic_react_agent_creation_with_discovery(self, temp_tools_file, aug_llm_config):
         """Test creating DynamicReactAgent with discovery capabilities."""
         agent = DynamicReactAgent.create_with_discovery(
             name="test_dynamic_react",
@@ -441,9 +433,7 @@ class TestDynamicReactAgent:
         assert stats["web_search"] == 1
 
     @pytest.mark.asyncio
-    async def test_dynamic_react_agent_tool_discovery(
-        self, temp_tools_file, aug_llm_config
-    ):
+    async def test_dynamic_react_agent_tool_discovery(self, temp_tools_file, aug_llm_config):
         """Test dynamic tool discovery functionality."""
         agent = DynamicReactAgent.create_with_discovery(
             name="test_discovery_react",
@@ -543,9 +533,7 @@ class TestDynamicReactAgent:
         assert stats["activation_rate"] == 0.5
 
     @pytest.mark.asyncio
-    async def test_dynamic_react_agent_real_execution(
-        self, temp_tools_file, aug_llm_config
-    ):
+    async def test_dynamic_react_agent_real_execution(self, temp_tools_file, aug_llm_config):
         """Test DynamicReactAgent execution with real LLM."""
         agent = DynamicReactAgent.create_with_discovery(
             name="test_execution_react",
@@ -662,9 +650,7 @@ class TestDynamicActivationIntegration:
     ):
         """Test complete workflow from discovery to activation."""
         # Create discovery agent
-        discovery_agent = ComponentDiscoveryAgent(
-            document_path=comprehensive_tools_file
-        )
+        discovery_agent = ComponentDiscoveryAgent(document_path=comprehensive_tools_file)
 
         # Create supervisor with discovery
         supervisor = DynamicActivationSupervisor.create_with_discovery(
@@ -687,9 +673,7 @@ class TestDynamicActivationIntegration:
         assert len(discovered_tools) >= 0
 
         # Test supervisor workflow
-        supervisor_result = await supervisor.arun(
-            "I need help with mathematical calculations"
-        )
+        supervisor_result = await supervisor.arun("I need help with mathematical calculations")
         assert supervisor_result is not None
 
         # Test React agent workflow
@@ -702,9 +686,7 @@ class TestDynamicActivationIntegration:
         assert react_agent._meta_self is not None
 
     @pytest.mark.asyncio
-    async def test_multi_agent_component_sharing(
-        self, comprehensive_tools_file, aug_llm_config
-    ):
+    async def test_multi_agent_component_sharing(self, comprehensive_tools_file, aug_llm_config):
         """Test sharing components between multiple agents."""
         # Create multiple agents with same discovery source
         agents = []
@@ -787,9 +769,7 @@ class TestDynamicActivationIntegration:
         assert stats["total_components"] == 20
         assert stats["active_components"] == 0
 
-    def test_error_handling_and_recovery(
-        self, comprehensive_tools_file, aug_llm_config
-    ):
+    def test_error_handling_and_recovery(self, comprehensive_tools_file, aug_llm_config):
         """Test error handling and recovery mechanisms."""
         # Test with invalid discovery source
         agent = DynamicReactAgent.create_with_discovery(

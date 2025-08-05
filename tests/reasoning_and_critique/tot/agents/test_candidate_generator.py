@@ -18,9 +18,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 class CandidateGeneration(BaseModel):
     """Structured output for candidate generation."""
 
-    reasoning: str = Field(
-        description="Reasoning about different approaches to solve the problem"
-    )
+    reasoning: str = Field(description="Reasoning about different approaches to solve the problem")
 
     candidates: list[str] = Field(
         description="List of candidate solutions", min_items=1, max_items=10
@@ -31,9 +29,7 @@ class CandidateGeneration(BaseModel):
     )
 
 
-def create_candidate_generator(
-    expansion_count: int = 5, temperature: float = 0.7
-) -> SimpleAgentV3:
+def create_candidate_generator(expansion_count: int = 5, temperature: float = 0.7) -> SimpleAgentV3:
     """Create a candidate generator agent."""
     engine = AugLLMConfig(
         temperature=temperature,
@@ -56,9 +52,7 @@ For planning problems: Try different sequences, priorities""",
     return SimpleAgentV3(name="candidate_generator", engine=engine)
 
 
-def create_prompt(
-    problem: str, seed_solution: str | None = None, expansion_count: int = 5
-) -> str:
+def create_prompt(problem: str, seed_solution: str | None = None, expansion_count: int = 5) -> str:
     """Create a prompt for candidate generation."""
     prompt_parts = [f"Problem to solve:\n{problem}"]
 

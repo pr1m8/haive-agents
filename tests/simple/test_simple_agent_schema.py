@@ -33,9 +33,7 @@ def test_simple_agent_schema():
     try:
         # Test the agent's schema
         state_schema = agent.state_schema
-        assert (
-            state_schema == SimpleAgentState
-        ), f"Expected SimpleAgentState, got {state_schema}"
+        assert state_schema == SimpleAgentState, f"Expected SimpleAgentState, got {state_schema}"
     except Exception:
         raise
 

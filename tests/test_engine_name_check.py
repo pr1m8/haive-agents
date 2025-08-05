@@ -37,10 +37,8 @@ def check_engine_name_in_messages():
     messages = result.get("messages", [])
 
     for _i, msg in enumerate(messages):
-
         # Check additional_kwargs
         if hasattr(msg, "additional_kwargs"):
-
             # Look for engine_name specifically
             if "engine_name" in msg.additional_kwargs:
                 pass

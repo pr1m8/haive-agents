@@ -118,9 +118,7 @@ class TestSchemaComposer:
 
     def test_schema_composer_with_base(self):
         """Test schema composition with base class."""
-        composer = SchemaComposer(
-            name="ExtendedMessagesState", base_class=MessagesState
-        )
+        composer = SchemaComposer(name="ExtendedMessagesState", base_class=MessagesState)
 
         # Add custom fields
         composer.add_field("task", str, description="Current task")
@@ -156,9 +154,7 @@ class TestSchemaComposer:
 class TestAgentSchemaComposer:
     """Test agent-specific schema composition."""
 
-    def test_agent_schema_composer_smart_mode(
-        self, mock_query_engine, mock_analysis_engine
-    ):
+    def test_agent_schema_composer_smart_mode(self, mock_query_engine, mock_analysis_engine):
         """Test AgentSchemaComposer in smart mode."""
         agents = [
             Mock(engines={"main": mock_query_engine}, name="query_agent"),
@@ -175,9 +171,7 @@ class TestAgentSchemaComposer:
         assert hasattr(schema, "summary")  # From analysis engine
         assert hasattr(schema, "recommendations")  # From analysis engine
 
-    def test_agent_schema_composer_namespaced_mode(
-        self, mock_query_engine, mock_analysis_engine
-    ):
+    def test_agent_schema_composer_namespaced_mode(self, mock_query_engine, mock_analysis_engine):
         """Test AgentSchemaComposer in namespaced mode."""
         agents = [
             Mock(engines={"main": mock_query_engine}, name="query_agent"),
@@ -238,9 +232,7 @@ class TestEnhancedSchemaComposer:
 
         engine2 = Mock()
         engine2.get_input_fields.return_value = {"data": (int, Field())}  # Conflict!
-        engine2.get_output_fields.return_value = {
-            "result": (list[str], Field())
-        }  # Conflict!
+        engine2.get_output_fields.return_value = {"result": (list[str], Field())}  # Conflict!
 
         agent1 = Mock(engines={"e1": engine1})
         agent2 = Mock(engines={"e2": engine2})
@@ -321,9 +313,7 @@ class TestSchemaCompatibility:
 class TestMultiAgentSchemaIntegration:
     """Test schema integration for multi-agent systems."""
 
-    def test_sequential_agent_schema_compatibility(
-        self, mock_query_engine, mock_analysis_engine
-    ):
+    def test_sequential_agent_schema_compatibility(self, mock_query_engine, mock_analysis_engine):
         """Test that sequential agents have compatible schemas."""
         with patch("haive.agents.simple.agent.SimpleAgent.setup_workflow"):
             # Create agents with specific schemas

@@ -47,9 +47,7 @@ class TestPlanStep:
     def test_step_validation(self):
         """Test step validation."""
         # Valid step
-        step = PlanStep(
-            step_id=1, description="Valid step", expected_output="Expected result"
-        )
+        step = PlanStep(step_id=1, description="Valid step", expected_output="Expected result")
         assert step.step_id == 1
         assert step.expected_output == "Expected result"
 
@@ -90,12 +88,8 @@ class TestPlan:
     def test_plan_get_step(self):
         """Test getting step by ID."""
         steps = [
-            PlanStep(
-                step_id=1, description="Step 1", expected_output="Expected output"
-            ),
-            PlanStep(
-                step_id=2, description="Step 2", expected_output="Expected output"
-            ),
+            PlanStep(step_id=1, description="Step 1", expected_output="Expected output"),
+            PlanStep(step_id=2, description="Step 2", expected_output="Expected output"),
         ]
         plan = Plan(objective="Test", steps=steps, total_steps=2)
 
@@ -116,9 +110,7 @@ class TestPlan:
                     description="Get population",
                     expected_output="Population data",
                 ),
-                PlanStep(
-                    step_id=2, description="Get area", expected_output="Area data"
-                ),
+                PlanStep(step_id=2, description="Get area", expected_output="Area data"),
                 PlanStep(
                     step_id=3,
                     description="Calculate density",
@@ -214,11 +206,7 @@ class TestAct:
         """Test Act with Plan action."""
         plan = Plan(
             objective="New objective",
-            steps=[
-                PlanStep(
-                    step_id=1, description="New step", expected_output="New result"
-                )
-            ],
+            steps=[PlanStep(step_id=1, description="New step", expected_output="New result")],
             total_steps=1,
         )
         act = Act(action=plan)
@@ -237,11 +225,7 @@ class TestAct:
         # Test with Plan
         plan = Plan(
             objective="New objective",
-            steps=[
-                PlanStep(
-                    step_id=1, description="New step", expected_output="New result"
-                )
-            ],
+            steps=[PlanStep(step_id=1, description="New step", expected_output="New result")],
             total_steps=1,
         )
         act = Act(action=plan)

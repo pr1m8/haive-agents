@@ -66,9 +66,7 @@ try:
     # Create test AI message with tool calls (like ValidationNodeV2 produces)
     ai_msg = AIMessage(
         content="I need to use a tool",
-        tool_calls=[
-            {"name": "calculator", "args": {"expression": "2+2"}, "id": "call_123"}
-        ],
+        tool_calls=[{"name": "calculator", "args": {"expression": "2+2"}, "id": "call_123"}],
         additional_kwargs={"engine_name": "test_engine"},
         response_metadata={"model": "gpt-4"},
     )
@@ -84,9 +82,10 @@ try:
             if not hasattr(result_msg, "tool_calls") or not result_msg.tool_calls:
                 pass
 
-        if hasattr(ai_msg, "response_metadata") and ai_msg.response_metadata and (
-            not hasattr(result_msg, "response_metadata")
-            or not result_msg.response_metadata
+        if (
+            hasattr(ai_msg, "response_metadata")
+            and ai_msg.response_metadata
+            and (not hasattr(result_msg, "response_metadata") or not result_msg.response_metadata)
         ):
             pass
 

@@ -14,9 +14,7 @@ class TestAgenticRAGAgent:
     @pytest.fixture
     def mock_vector_store_config(self):
         """Create a mock vector store configuration."""
-        embedding_config = EmbeddingConfig(
-            provider="openai", model="text-embedding-3-small"
-        )
+        embedding_config = EmbeddingConfig(provider="openai", model="text-embedding-3-small")
 
         return VectorStoreConfig(
             provider="chroma",
@@ -90,16 +88,11 @@ class TestAgenticRAGAgent:
             assert node in graph.nodes
 
         # Verify key edges
-        assert any(
-            edge[0] == "__start__" and edge[1] == "retrieve" for edge in graph.edges
-        )
+        assert any(edge[0] == "__start__" and edge[1] == "retrieve" for edge in graph.edges)
         assert ("retrieve", "grade_documents") in graph.edges
         assert ("rewrite_query", "retrieve") in graph.edges
         assert ("web_search", "generate_answer") in graph.edges
-        assert any(
-            edge[0] == "generate_answer" and edge[1] == "__end__"
-            for edge in graph.edges
-        )
+        assert any(edge[0] == "generate_answer" and edge[1] == "__end__" for edge in graph.edges)
 
     @pytest.mark.asyncio
     async def test_routing_logic(self, mock_vector_store_config):
@@ -273,9 +266,7 @@ class TestAgenticRAGAgent:
         # Create custom grader
         from haive.agents.rag.agentic import DocumentGraderAgent
 
-        custom_grader = DocumentGraderAgent.create_default(
-            name="custom_grader", temperature=0.0
-        )
+        custom_grader = DocumentGraderAgent.create_default(name="custom_grader", temperature=0.0)
 
         # Create agent with custom components
         agent = AgenticRAGAgent(
@@ -329,7 +320,8 @@ class TestAgenticRAGAgent:
 
         # Test routing with multiple rewrites
         state = AgenticRAGState(
-            relevant_documents=[], query_rewrite_count=2  # Less than max
+            relevant_documents=[],
+            query_rewrite_count=2,  # Less than max
         )
 
         route = agent._route_after_grading(state)

@@ -158,9 +158,7 @@ class CompatibilityTester:
 
         # Test dynamic agent addition
         new_agent = MockAgent("translation_agent", "SimpleAgent")
-        await dynamic_supervisor.register_agent_dynamically(
-            new_agent, "Language translation"
-        )
+        await dynamic_supervisor.register_agent_dynamically(new_agent, "Language translation")
 
         # Test dynamic agent removal
         await dynamic_supervisor.unregister_agent_dynamically("writing_agent")
@@ -217,9 +215,7 @@ class CompatibilityTester:
         common_fields = traditional_fields.intersection(dynamic_fields)
 
         console.print(f"\n✅ Common fields: {list(common_fields)}")
-        console.print(
-            f"⚠️  Traditional-only: {list(traditional_fields - dynamic_fields)}"
-        )
+        console.print(f"⚠️  Traditional-only: {list(traditional_fields - dynamic_fields)}")
         console.print(f"⚠️  Dynamic-only: {list(dynamic_fields - traditional_fields)}")
 
     async def test_execution_mode_compatibility(self):
@@ -302,9 +298,7 @@ class CompatibilityTester:
 
         # Step 1: Traditional multi-agent
         traditional = await self.test_traditional_multi_agent()
-        console.print(
-            f"Step 1: Traditional system with {len(traditional.agents)} agents"
-        )
+        console.print(f"Step 1: Traditional system with {len(traditional.agents)} agents")
 
         # Step 2: Create compatibility bridge
         console.print("Step 2: Creating compatibility bridge...")
@@ -322,9 +316,7 @@ class CompatibilityTester:
                     agents=self.original.agents,
                     enable_dynamic=True,
                 )
-                console.print(
-                    f"   ✅ Migrated {self.original.name} to dynamic supervisor"
-                )
+                console.print(f"   ✅ Migrated {self.original.name} to dynamic supervisor")
                 return self.enhanced
 
             def verify_compatibility(self):
@@ -333,9 +325,7 @@ class CompatibilityTester:
                 enhanced_agents = self.enhanced.agent_registry["registered"]
 
                 match = set(original_agents) == set(enhanced_agents)
-                console.print(
-                    f"   Agent compatibility: {'✅ Match' if match else '❌ Mismatch'}"
-                )
+                console.print(f"   Agent compatibility: {'✅ Match' if match else '❌ Mismatch'}")
                 return match
 
         # Step 3: Perform migration
@@ -350,9 +340,7 @@ class CompatibilityTester:
             await dynamic.register_agent_dynamically(new_agent, "Post-migration agent")
 
             final_status = dynamic.get_dynamic_status()
-            console.print(
-                f"   ✅ Post-migration agents: {final_status['registered_agents']}"
-            )
+            console.print(f"   ✅ Post-migration agents: {final_status['registered_agents']}")
 
         console.print(f"Migration {'✅ Successful' if compatible else '❌ Failed'}")
 
@@ -373,9 +361,7 @@ async def run_compatibility_tests():
         await tester.test_react_agent_integration()
         await tester.test_migration_path()
 
-        console.print(
-            "\n[bold green]🎉 All Compatibility Tests Completed![/bold green]"
-        )
+        console.print("\n[bold green]🎉 All Compatibility Tests Completed![/bold green]")
 
         # Summary
         console.print("\n[bold cyan]Compatibility Summary:[/bold cyan]")

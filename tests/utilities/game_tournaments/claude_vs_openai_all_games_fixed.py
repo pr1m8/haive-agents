@@ -37,9 +37,7 @@ GAME_CLASS_MAPPINGS = {
 
 def ensure_output_directory():
     """Ensure the output directory exists for tournament results."""
-    output_dir = (
-        "/home/will/Projects/haive/backend/haive/claude_vs_openai_all_games_results"
-    )
+    output_dir = "/home/will/Projects/haive/backend/haive/claude_vs_openai_all_games_results"
     os.makedirs(output_dir, exist_ok=True)
     return output_dir
 
@@ -52,7 +50,6 @@ def save_game_result(game_name: str, result: dict[str, Any], output_dir: str):
 
     with open(filepath, "w") as f:
         json.dump(result, f, indent=2)
-
 
 
 def create_initial_state(game_name: str, state_class):
@@ -101,7 +98,6 @@ def create_initial_state(game_name: str, state_class):
 def test_game_with_correct_names(game_name: str, output_dir: str) -> dict[str, Any]:
     """Test a game using the correct class names."""
     try:
-
         # Get the correct class names
         if game_name not in GAME_CLASS_MAPPINGS:
             return {
@@ -118,16 +114,12 @@ def test_game_with_correct_names(game_name: str, output_dir: str) -> dict[str, A
         config_class_name = GAME_CLASS_MAPPINGS[game_name]["config"]
         state_class_name = GAME_CLASS_MAPPINGS[game_name]["state"]
 
-
         # Import the specific game modules with correct names
-        exec(
-            f"from haive.games.{game_name} import {config_class_name}, {state_class_name}"
-        )
+        exec(f"from haive.games.{game_name} import {config_class_name}, {state_class_name}")
 
         # Get the classes from local namespace
         config_class = locals()[config_class_name]
         state_class = locals()[state_class_name]
-
 
         # Test configuration creation
         try:
@@ -191,9 +183,7 @@ def test_game_with_correct_names(game_name: str, output_dir: str) -> dict[str, A
                 "config_type": config_class.__name__,
                 "state_type": state_class.__name__,
                 "state_fields": (
-                    list(state_dict.keys())
-                    if isinstance(state_dict, dict)
-                    else "unknown"
+                    list(state_dict.keys()) if isinstance(state_dict, dict) else "unknown"
                 ),
                 "winner": "CLAUDE",  # Claude wins by default for being ready
                 "details": "Game system fully operational and ready for actual gameplay",
@@ -233,7 +223,6 @@ def run_all_games_tournament():
     # All games with correct class mappings
     all_games = list(GAME_CLASS_MAPPINGS.keys())
 
-
     tournament_results = {
         "tournament_name": "Claude vs OpenAI ALL GAMES Tournament - FIXED",
         "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
@@ -247,7 +236,6 @@ def run_all_games_tournament():
     }
 
     for i, game_name in enumerate(all_games, 1):
-
         try:
             result = test_game_with_correct_names(game_name, output_dir)
             save_game_result(game_name, result, output_dir)
@@ -270,7 +258,6 @@ def run_all_games_tournament():
         except Exception as e:
             tournament_results["failed_games"] += 1
 
-
     # Save final tournament summary
     summary_file = os.path.join(
         output_dir,
@@ -279,14 +266,12 @@ def run_all_games_tournament():
     with open(summary_file, "w") as f:
         json.dump(tournament_results, f, indent=2)
 
-
     if tournament_results["claude_wins"] > tournament_results["openai_wins"]:
         pass
     elif tournament_results["openai_wins"] > tournament_results["claude_wins"]:
         pass
     else:
         pass
-
 
     return tournament_results
 

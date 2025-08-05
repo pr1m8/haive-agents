@@ -62,7 +62,6 @@ async def create_prebuilt_agents():
         description="Expert language translator for multiple languages and cultural contexts",
     )
 
-
     return search_agent, math_agent, translation_agent
 
 
@@ -108,14 +107,13 @@ Please complete all three steps."""
     for name, info in initial_state.agents.items():
         pass
 
-
     # Step 1: Run the multi-task - should identify missing translation capability
 
     try:
         result1 = await supervisor.arun(
-            initial_state, debug=True  # Pass state object directly, not serialized
+            initial_state,
+            debug=True,  # Pass state object directly, not serialized
         )
-
 
         # Check if supervisor recognized the need for translation
         messages = result1.get("messages", [])
@@ -168,9 +166,9 @@ Execute step by step using the appropriate specialist agents."""
 
     try:
         result2 = await supervisor.arun(
-            initial_state, debug=True  # Pass state object directly
+            initial_state,
+            debug=True,  # Pass state object directly
         )
-
 
         if result2.get("agent_response"):
             pass
@@ -190,11 +188,9 @@ Execute step by step using the appropriate specialist agents."""
 
     # Step 4: Show final capabilities
 
-
     # Show available handoff tools
     tool_names = [tool.name for tool in initial_state.generated_tools]
     handoff_tools = [name for name in tool_names if name.startswith("handoff_to_")]
-
 
 
 if __name__ == "__main__":

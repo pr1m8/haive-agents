@@ -55,11 +55,8 @@ def run_safe_compatibility_tests() -> dict[str, Any]:
         answer_agent = SimpleRAGAnswerAgent(name="Test Answer Agent")
 
         workflow_agents = [retrieval_agent, grading_agent, answer_agent]
-        workflow_report = test_custom_agent_workflow(
-            workflow_agents, "Test RAG Workflow"
-        )
+        workflow_report = test_custom_agent_workflow(workflow_agents, "Test RAG Workflow")
         results["workflow_test"] = workflow_report
-
 
         if workflow_report.workflow_recommendations:
             for rec in workflow_report.workflow_recommendations[:3]:  # Show first 3
@@ -85,11 +82,8 @@ def run_safe_compatibility_tests() -> dict[str, Any]:
 
         # Test iterative grading agent
         iterative_agent = IterativeDocumentGradingAgent(name="Test Iterative Agent")
-        iterative_report = tester.test_agent_pair_compatibility(
-            grading_agent, iterative_agent
-        )
+        iterative_report = tester.test_agent_pair_compatibility(grading_agent, iterative_agent)
         results["iterative_test"] = iterative_report
-
 
         # Test with multi-agent systems
         if hasattr(base_rag_agent, "agents") and base_rag_agent.agents:
@@ -98,7 +92,6 @@ def run_safe_compatibility_tests() -> dict[str, Any]:
             )
             results["multi_agent_test"] = multi_agent_test
 
-
         # Test 5: State schema compatibility
 
         state_test = tester._test_state_compatibility()
@@ -106,7 +99,6 @@ def run_safe_compatibility_tests() -> dict[str, Any]:
 
         if "total_fields" in state_test:
             pass
-
 
         return results
 
@@ -163,7 +155,6 @@ def test_agent_list_compatibility():
         tester = SafeCompatibilityTester()
         report = tester.test_workflow_compatibility(agent_list, "Agent List Workflow")
 
-
         return report
     return None
 
@@ -177,4 +168,3 @@ if __name__ == "__main__":
 
     # Test agent list
     agent_list_test = test_agent_list_compatibility()
-

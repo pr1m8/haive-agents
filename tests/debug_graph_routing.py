@@ -29,7 +29,6 @@ def debug_graph_routing():
     agent.compile()
 
     if hasattr(agent, "graph") and agent.graph:
-
         # Check the compiled LangGraph structure
         if hasattr(agent, "_app") and agent._app:
             compiled_graph = agent._app

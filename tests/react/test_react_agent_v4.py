@@ -69,12 +69,8 @@ class TestReactAgentV4:
 
         # Check tool_node goes to agent_node (not END)
         tool_edges = [e for e in edges if e[0] == "tool_node"]
-        assert any(
-            e[1] == "agent_node" for e in tool_edges
-        ), "tool_node should loop to agent_node"
-        assert not any(
-            e[1] == END for e in tool_edges
-        ), "tool_node should NOT go to END"
+        assert any(e[1] == "agent_node" for e in tool_edges), "tool_node should loop to agent_node"
+        assert not any(e[1] == END for e in tool_edges), "tool_node should NOT go to END"
 
         logger.info(f"Graph edges: {edges}")
 
@@ -112,9 +108,7 @@ class TestReactAgentV4:
 
     def test_debug_logging(self):
         """Test that debug logging works in ReactAgent."""
-        agent = ReactAgentV4(
-            name="test_debug", engine=AugLLMConfig(tools=[calculator]), debug=True
-        )
+        agent = ReactAgentV4(name="test_debug", engine=AugLLMConfig(tools=[calculator]), debug=True)
 
         # Build graph and check debug was used
         agent.build_graph()

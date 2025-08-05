@@ -46,9 +46,7 @@ config = AugLLMConfig(
 
 
 # Check what methods exist for schema derivation
-methods = [
-    attr for attr in dir(config) if "schema" in attr.lower() or "input" in attr.lower()
-]
+methods = [attr for attr in dir(config) if "schema" in attr.lower() or "input" in attr.lower()]
 for method in sorted(methods):
     if not method.startswith("_"):
         pass

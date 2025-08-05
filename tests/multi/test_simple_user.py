@@ -8,9 +8,7 @@ import sys
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 
 from langchain_core.messages import HumanMessage

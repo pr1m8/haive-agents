@@ -77,15 +77,11 @@ def test_enhanced_multi_agent_v3_sequential_execution():
             if isinstance(result, dict) and "messages" in result:
                 print(f"✅ Message count: {len(result['messages'])}")
                 # Check for sequential processing evidence
-                for i, msg in enumerate(
-                    result["messages"][-3:]
-                ):  # Check last few messages
+                for i, msg in enumerate(result["messages"][-3:]):  # Check last few messages
                     print(f"  Message {i}: {str(msg.content)[:80]}...")
 
         except Exception as exec_error:
-            print(
-                f"⚠️ Execution had issues (may be expected due to LLM availability): {exec_error}"
-            )
+            print(f"⚠️ Execution had issues (may be expected due to LLM availability): {exec_error}")
 
         print("\n🎯 Sequential Execution Test: SUCCESS")
         return True
@@ -227,14 +223,9 @@ def test_enhanced_multi_agent_v3_conditional_execution():
             # Simple routing based on keywords in the last message
             if "messages" in state and state["messages"]:
                 content = str(state["messages"][-1].content).lower()
-                if any(
-                    word in content for word in ["technical", "bug", "error", "crash"]
-                ):
+                if any(word in content for word in ["technical", "bug", "error", "crash"]):
                     return "technical_agent"
-                elif any(
-                    word in content
-                    for word in ["billing", "payment", "invoice", "charge"]
-                ):
+                elif any(word in content for word in ["billing", "payment", "invoice", "charge"]):
                     return "billing_agent"
                 else:
                     return "general_agent"
@@ -268,19 +259,17 @@ def test_enhanced_multi_agent_v3_conditional_execution():
 
         for i, (test_input, expected_route) in enumerate(test_cases):
             try:
-                print(f"\n📋 Test case {i+1}: {expected_route} routing")
+                print(f"\n📋 Test case {i + 1}: {expected_route} routing")
                 compiled.invoke(
                     {"messages": [{"role": "user", "content": test_input}]},
-                    config={
-                        "configurable": {"thread_id": f"test_conditional_thread_{i}"}
-                    },
+                    config={"configurable": {"thread_id": f"test_conditional_thread_{i}"}},
                 )
 
-                print(f"✅ Conditional execution {i+1} successful")
+                print(f"✅ Conditional execution {i + 1} successful")
                 print(f"✅ Input: {test_input[:50]}...")
 
             except Exception as exec_error:
-                print(f"⚠️ Execution {i+1} had issues: {exec_error}")
+                print(f"⚠️ Execution {i + 1} had issues: {exec_error}")
 
         print("\n🎯 Conditional Execution Test: SUCCESS")
         return True
@@ -338,9 +327,7 @@ def test_enhanced_multi_agent_v3_branch_execution():
 
         # Configure complex branching
         branch_multi.add_edge("validator", "processor1")
-        branch_multi.add_parallel_group(
-            ["processor1", "processor2"], next_agent="aggregator"
-        )
+        branch_multi.add_parallel_group(["processor1", "processor2"], next_agent="aggregator")
 
         print(f"✅ Branch MultiAgent created: {branch_multi.name}")
         print("✅ Workflow: validator -> (processor1, processor2) -> aggregator")
@@ -453,9 +440,7 @@ def test_enhanced_multi_agent_v3_performance_tracking():
 
         overall = analysis.get("overall", {})
         if overall:
-            print(
-                f"✅ Overall success rate: {overall.get('average_success_rate', 0):.3f}"
-            )
+            print(f"✅ Overall success rate: {overall.get('average_success_rate', 0):.3f}")
             print(f"✅ Overall avg duration: {overall.get('average_duration', 0):.3f}s")
             print(f"✅ Total tasks: {overall.get('total_tasks', 0)}")
 
@@ -525,9 +510,7 @@ def test_enhanced_multi_agent_v3_state_management():
             perf_summary = test_state.get_performance_summary()
             exec_summary = test_state.get_execution_summary()
 
-            print(
-                f"✅ Performance summary: {perf_summary.get('total_executions', 0)} executions"
-            )
+            print(f"✅ Performance summary: {perf_summary.get('total_executions', 0)} executions")
             print(f"✅ Execution summary: {exec_summary.get('overall_success', False)}")
 
         print("\n🎯 State Management Test: SUCCESS")
@@ -586,7 +569,7 @@ def run_all_enhanced_multi_agent_comprehensive_tests():
 
     for i, (name, result) in enumerate(zip(test_names, results)):
         status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{i+1}. {name}: {status}")
+        print(f"{i + 1}. {name}: {status}")
 
     print(f"\n🎯 OVERALL RESULT: {passed}/{total} tests passed")
 

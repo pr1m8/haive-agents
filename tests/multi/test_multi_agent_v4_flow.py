@@ -46,9 +46,7 @@ class TaskPlan(BaseModel):
     task_description: str = Field(description="Description of the task")
     steps: list[str] = Field(description="Steps to complete the task")
     tools_needed: list[str] = Field(description="Tools required")
-    estimated_difficulty: float = Field(
-        ge=0.0, le=1.0, description="Difficulty estimate"
-    )
+    estimated_difficulty: float = Field(ge=0.0, le=1.0, description="Difficulty estimate")
 
 
 class TaskResult(BaseModel):
@@ -111,9 +109,7 @@ def test_parallel_execution():
         debug=True,
     )
 
-    analyzer3 = SimpleAgentV3(
-        name="analyzer3", engine=AugLLMConfig(temperature=0.1), debug=True
-    )
+    analyzer3 = SimpleAgentV3(name="analyzer3", engine=AugLLMConfig(temperature=0.1), debug=True)
 
     # Create parallel workflow
     workflow = EnhancedMultiAgentV4(
@@ -183,9 +179,7 @@ def test_react_to_simple_flow():
     )
 
     # Create SimpleAgentV3 for formatting
-    formatter = SimpleAgentV3(
-        name="formatter", engine=AugLLMConfig(temperature=0.1), debug=True
-    )
+    formatter = SimpleAgentV3(name="formatter", engine=AugLLMConfig(temperature=0.1), debug=True)
 
     # Create workflow
     workflow = EnhancedMultiAgentV4(
@@ -197,8 +191,7 @@ def test_react_to_simple_flow():
 
     # Test execution
     result = workflow.run(
-        "Calculate 12 * 12 and analyze the result, "
-        "then format it as a professional report"
+        "Calculate 12 * 12 and analyze the result, then format it as a professional report"
     )
 
     assert result is not None
@@ -208,9 +201,7 @@ def test_react_to_simple_flow():
 def test_conditional_routing():
     """Test conditional routing between agents."""
     # Create classifier agent
-    classifier = SimpleAgentV3(
-        name="classifier", engine=AugLLMConfig(temperature=0.1), debug=True
-    )
+    classifier = SimpleAgentV3(name="classifier", engine=AugLLMConfig(temperature=0.1), debug=True)
 
     # Create specialized processors
     math_processor = ReactAgentV3(

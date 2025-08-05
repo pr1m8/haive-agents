@@ -82,12 +82,8 @@ def structured_output_model():
 
     class QAResponse(BaseModel):
         answer: str = Field(..., description="The generated answer")
-        sources: list[str] = Field(
-            default_factory=list, description="Source references"
-        )
-        confidence: float = Field(
-            default=0.0, ge=0.0, le=1.0, description="Confidence score"
-        )
+        sources: list[str] = Field(default_factory=list, description="Source references")
+        confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Confidence score")
 
     return QAResponse
 
@@ -95,9 +91,7 @@ def structured_output_model():
 class TestSimpleRAGV3Basic:
     """Test basic SimpleRAG V3 functionality."""
 
-    def test_simple_rag_v3_creation_basic(
-        self, mock_vector_store_config, test_llm_config
-    ):
+    def test_simple_rag_v3_creation_basic(self, mock_vector_store_config, test_llm_config):
         """Test basic SimpleRAG V3 creation."""
         rag = SimpleRAGV3(
             name="test_rag",
@@ -116,9 +110,7 @@ class TestSimpleRAGV3Basic:
         assert isinstance(rag.get_retriever_agent(), RetrieverAgent)
         assert isinstance(rag.get_answer_agent(), SimpleAnswerAgent)
 
-    def test_simple_rag_v3_with_enhanced_features(
-        self, mock_vector_store_config, test_llm_config
-    ):
+    def test_simple_rag_v3_with_enhanced_features(self, mock_vector_store_config, test_llm_config):
         """Test SimpleRAG V3 with enhanced features enabled."""
         rag = SimpleRAGV3(
             name="enhanced_rag",
@@ -213,9 +205,7 @@ class TestSimpleRAGV3FactoryMethods:
         assert isinstance(rag.llm_config, AugLLMConfig)  # Default created
         assert len(rag.agents) == 2
 
-    def test_from_vectorstore_with_options(
-        self, mock_vector_store_config, test_llm_config
-    ):
+    def test_from_vectorstore_with_options(self, mock_vector_store_config, test_llm_config):
         """Test from_vectorstore with additional options."""
         rag = SimpleRAGV3.from_vectorstore(
             vector_store_config=mock_vector_store_config,
@@ -246,9 +236,7 @@ class TestSimpleRAGV3AgentInteraction:
     """Test interaction between RetrieverAgent and SimpleAnswerAgent."""
 
     @pytest.mark.asyncio
-    async def test_retriever_agent_standalone(
-        self, mock_vector_store_config, sample_documents
-    ):
+    async def test_retriever_agent_standalone(self, mock_vector_store_config, sample_documents):
         """Test RetrieverAgent functionality standalone."""
         # Mock the retriever agent's underlying functionality
         retriever = RetrieverAgent(
@@ -328,9 +316,7 @@ class TestSimpleRAGV3StateManagement:
 
     def test_simple_rag_state_creation(self):
         """Test SimpleRAGState creation and basic functionality."""
-        state = SimpleRAGState(
-            query="What is AI?", retrieved_documents=[], generated_answer=""
-        )
+        state = SimpleRAGState(query="What is AI?", retrieved_documents=[], generated_answer="")
 
         # Verify basic fields
         assert state.query == "What is AI?"
@@ -354,18 +340,14 @@ class TestSimpleRAGV3StateManagement:
 
     def test_simple_rag_state_debug_info(self, sample_documents):
         """Test debug information collection."""
-        state = SimpleRAGState(
-            query="Test query", retrieved_documents=sample_documents[:2]
-        )
+        state = SimpleRAGState(query="Test query", retrieved_documents=sample_documents[:2])
 
         # Add debug information
         state.add_retrieval_debug(
             search_time=0.5, total_documents=100, similarity_scores=[0.9, 0.85]
         )
 
-        state.add_generation_debug(
-            context_length=500, generation_time=1.2, prompt_tokens=200
-        )
+        state.add_generation_debug(context_length=500, generation_time=1.2, prompt_tokens=200)
 
         # Verify debug info
         assert state.retrieval_debug is not None
@@ -426,14 +408,10 @@ class TestSimpleRAGV3ErrorHandling:
         )
 
         # Test invalid input types
-        with pytest.raises(
-            ValueError, match="Input must be a string or dict with 'query' field"
-        ):
+        with pytest.raises(ValueError, match="Input must be a string or dict with 'query' field"):
             asyncio.run(rag.arun(123))  # Invalid type
 
-        with pytest.raises(
-            ValueError, match="Input must be a string or dict with 'query' field"
-        ):
+        with pytest.raises(ValueError, match="Input must be a string or dict with 'query' field"):
             asyncio.run(rag.arun({"not_query": "test"}))  # Missing query field
 
     def test_agent_access_methods(self, mock_vector_store_config, test_llm_config):
@@ -459,17 +437,13 @@ class TestSimpleRAGV3Integration:
     """Integration tests for full SimpleRAG V3 pipeline."""
 
     @pytest.mark.asyncio
-    @pytest.mark.skip(
-        reason="Requires real LLM and vector store - placeholder for integration"
-    )
+    @pytest.mark.skip(reason="Requires real LLM and vector store - placeholder for integration")
     async def test_full_rag_pipeline_integration(self, sample_documents):
         """Test full RAG pipeline with real components."""
         # This would be a full integration test with real LLM and vector store
         # Placeholder for future implementation when we have proper test infrastructure
 
-    def test_repr_and_string_representation(
-        self, mock_vector_store_config, test_llm_config
-    ):
+    def test_repr_and_string_representation(self, mock_vector_store_config, test_llm_config):
         """Test string representation of SimpleRAG V3."""
         rag = SimpleRAGV3(
             name="repr_test",

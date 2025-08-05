@@ -77,9 +77,7 @@ class TestStructuredOutputAgent:
             objective: str = Field(description="Main objective")
             steps: list[str] = Field(description="Steps to achieve objective")
             timeline: str = Field(description="Estimated timeline")
-            risks: list[str] = Field(
-                default_factory=list, description="Potential risks"
-            )
+            risks: list[str] = Field(default_factory=list, description="Potential risks")
 
         # Create multi-agent state
         class PlanningState(MultiAgentState):
@@ -152,9 +150,7 @@ class TestStructuredOutputAgent:
         # Create agents
         researcher = SimpleAgent(
             name="researcher",
-            engine=AugLLMConfig(
-                system_message="Research topics and provide detailed information."
-            ),
+            engine=AugLLMConfig(system_message="Research topics and provide detailed information."),
             # No structured_output_model - outputs unstructured text
         )
 
@@ -164,9 +160,7 @@ class TestStructuredOutputAgent:
             custom_context="Convert research into actionable tasks",
         )
 
-        state = ResearchState(
-            agents=[researcher, task_converter], topic="Implementing AI chatbots"
-        )
+        state = ResearchState(agents=[researcher, task_converter], topic="Implementing AI chatbots")
 
         config = {"configurable": {"thread_id": "test_research"}}
 
@@ -212,9 +206,7 @@ class TestStructuredOutputAgent:
         """Test extracting from message list."""
         from langchain_core.messages import AIMessage, HumanMessage
 
-        agent = create_structured_agent(
-            output_model=DecisionOutput, name="decision_extractor"
-        )
+        agent = create_structured_agent(output_model=DecisionOutput, name="decision_extractor")
 
         messages = [
             HumanMessage(content="Should we proceed with the merger?"),
@@ -242,9 +234,7 @@ class TestStructuredOutputIntegration:
 
     def test_real_llm_extraction(self):
         """Test with real LLM (requires API keys)."""
-        agent = create_structured_agent(
-            output_model=AnalysisOutput, name="real_analysis"
-        )
+        agent = create_structured_agent(output_model=AnalysisOutput, name="real_analysis")
 
         complex_text = """
         Our comprehensive study of user behavior reveals several critical insights.

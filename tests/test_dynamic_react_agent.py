@@ -175,15 +175,11 @@ class TestDynamicReactAgent:
                 discovery_tool = tool
                 break
 
-        assert (
-            discovery_tool is not None
-        ), "Dynamic tool discovery tool should be added to engine"
+        assert discovery_tool is not None, "Dynamic tool discovery tool should be added to engine"
 
         # Test the discovery tool functionality
         # Since we don't have a real discovery agent, it should return an appropriate message
-        result = discovery_tool.invoke(
-            {"task_description": "mathematical calculations"}
-        )
+        result = discovery_tool.invoke({"task_description": "mathematical calculations"})
         assert isinstance(result, str)
         assert (
             "discovery" in result.lower()

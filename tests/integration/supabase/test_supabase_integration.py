@@ -38,18 +38,17 @@ class TestSupabaseIntegration:
         agent = SimpleAgent(engine=engine, name="Test Agent")
 
         # Check default recursion limit
-        recursion_limit = agent.runnable_config.get("configurable", {}).get(
-            "recursion_limit"
-        )
+        recursion_limit = agent.runnable_config.get("configurable", {}).get("recursion_limit")
         assert recursion_limit == 100
 
     @pytest.mark.asyncio
     async def test_database_connectivity(self, supabase_connection_string):
         """Test direct database connectivity."""
         try:
-            async with await psycopg.AsyncConnection.connect(
-                supabase_connection_string
-            ) as conn, conn.cursor() as cur:
+            async with (
+                await psycopg.AsyncConnection.connect(supabase_connection_string) as conn,
+                conn.cursor() as cur,
+            ):
                 # Simple connectivity test
                 await cur.execute("SELECT 1")
                 result = await cur.fetchone()
@@ -63,9 +62,7 @@ class TestSupabaseIntegration:
         required_tables = ["checkpoints", "checkpoint_writes", "checkpoint_blobs"]
 
         try:
-            async with await psycopg.AsyncConnection.connect(
-                supabase_connection_string
-            ) as conn:
+            async with await psycopg.AsyncConnection.connect(supabase_connection_string) as conn:
                 async with conn.cursor() as cur:
                     await cur.execute(
                         """
@@ -145,11 +142,7 @@ class TestSupabaseIntegration:
 
         try:
             result2 = agent2.run(
-                {
-                    "messages": [
-                        HumanMessage(content="What did I tell you to remember?")
-                    ]
-                },
+                {"messages": [HumanMessage(content="What did I tell you to remember?")]},
                 config=agent_config,
             )
 
@@ -182,9 +175,9 @@ class TestSupabaseIntegration:
                     checkpoint_count = (await cur.fetchone())[0]
 
                     # At least one table should have data
-                    assert (
-                        write_count > 0 or checkpoint_count > 0
-                    ), f"No data found for thread_id: {thread_id}"
+                    assert write_count > 0 or checkpoint_count > 0, (
+                        f"No data found for thread_id: {thread_id}"
+                    )
 
         except Exception as e:
             pytest.fail(f"Data verification failed: {e}")
@@ -205,9 +198,7 @@ class TestSupabaseErrorHandling:
         assert hasattr(agent, "persistence")
 
     @pytest.mark.asyncio
-    async def test_prepared_statement_errors_ignored(
-        self, test_thread_id, agent_config
-    ):
+    async def test_prepared_statement_errors_ignored(self, test_thread_id, agent_config):
         """Test that prepared statement errors don't prevent functionality."""
         engine = AugLLMConfig()
         agent = SimpleAgent(engine=engine, name="Error Test Agent")

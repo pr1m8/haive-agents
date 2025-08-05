@@ -30,7 +30,6 @@ async def test_after_cleanup():
     # Clean up first
     await cleanup_prepared_statements()
 
-
     thread_id = f"cleaned_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Clear cached pools

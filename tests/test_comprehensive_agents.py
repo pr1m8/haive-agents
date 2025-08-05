@@ -154,12 +154,8 @@ def mock_retriever_engine():
     def mock_invoke(input_data, config=None):
         query = input_data.get("query", "")
         docs = [
-            Document(
-                page_content=f"Document 1 about {query}", metadata={"source": "test1"}
-            ),
-            Document(
-                page_content=f"Document 2 about {query}", metadata={"source": "test2"}
-            ),
+            Document(page_content=f"Document 1 about {query}", metadata={"source": "test1"}),
+            Document(page_content=f"Document 2 about {query}", metadata={"source": "test2"}),
         ]
         return {"documents": docs, "context": [doc.page_content for doc in docs]}
 
@@ -227,9 +223,7 @@ class TestSimpleAgent:
     def test_simple_agent_execution(self, mock_llm_engine):
         """Test SimpleAgent execution with tools."""
         with patch("haive.agents.simple.agent.SimpleAgent.setup_workflow"):
-            agent = SimpleAgent(
-                engine=mock_llm_engine, structured_output_model=AnalysisResult
-            )
+            agent = SimpleAgent(engine=mock_llm_engine, structured_output_model=AnalysisResult)
 
             # Mock the graph execution
             mock_graph = Mock()
@@ -278,13 +272,11 @@ class TestReactAgent:
 
             # Should have edge from tool_node to agent_node (not END)
             tool_to_agent_edges = [
-                (src, tgt)
-                for src, tgt in edges
-                if src == "tool_node" and tgt == "agent_node"
+                (src, tgt) for src, tgt in edges if src == "tool_node" and tgt == "agent_node"
             ]
-            assert (
-                len(tool_to_agent_edges) > 0
-            ), "ReactAgent should create loop from tool_node to agent_node"
+            assert len(tool_to_agent_edges) > 0, (
+                "ReactAgent should create loop from tool_node to agent_node"
+            )
 
     def test_react_multi_turn(self, mock_llm_engine):
         """Test ReactAgent handling multiple turns."""
@@ -339,22 +331,16 @@ class TestReactAgent:
 class TestMultiAgentWithRAG:
     """Test Multi-Agent with RAG capabilities."""
 
-    def test_sequential_rag_agent(
-        self, mock_retriever_engine, mock_llm_engine, conversation_docs
-    ):
+    def test_sequential_rag_agent(self, mock_retriever_engine, mock_llm_engine, conversation_docs):
         """Test sequential execution of RAG agent followed by analysis agent."""
         # Create RAG agent
         with patch("haive.agents.rag.agent.SimpleRAGAgent.setup_workflow"):
-            rag_agent = SimpleRAGAgent(
-                engine=mock_retriever_engine, name="doc_retriever"
-            )
+            rag_agent = SimpleRAGAgent(engine=mock_retriever_engine, name="doc_retriever")
 
             # Mock RAG execution
             rag_agent.invoke = Mock(
                 return_value={
-                    "messages": [
-                        HumanMessage(content="Find customer service conversations")
-                    ],
+                    "messages": [HumanMessage(content="Find customer service conversations")],
                     "context": [doc.page_content for doc in conversation_docs],
                     "documents": conversation_docs,
                 }
@@ -372,9 +358,7 @@ class TestMultiAgentWithRAG:
             analysis_agent.invoke = Mock(
                 return_value={
                     "messages": [
-                        HumanMessage(
-                            content="Analyze the customer service conversations"
-                        ),
+                        HumanMessage(content="Analyze the customer service conversations"),
                         AIMessage(content="I've analyzed the conversations."),
                     ],
                     "structured_result": AnalysisResult(
@@ -391,9 +375,7 @@ class TestMultiAgentWithRAG:
 
         # Create multi-agent
         with patch("haive.agents.multi.base.SequentialAgent.setup_workflow"):
-            multi_agent = SequentialAgent(
-                agents=[rag_agent, analysis_agent], name="rag_analyzer"
-            )
+            multi_agent = SequentialAgent(agents=[rag_agent, analysis_agent], name="rag_analyzer")
 
             # Mock the multi-agent graph
             mock_graph = Mock()
@@ -421,13 +403,7 @@ class TestMultiAgentWithRAG:
 
             # Execute multi-agent
             result = multi_agent.invoke(
-                {
-                    "messages": [
-                        HumanMessage(
-                            content="Find and analyze customer service patterns"
-                        )
-                    ]
-                }
+                {"messages": [HumanMessage(content="Find and analyze customer service patterns")]}
             )
 
             # Verify results
@@ -500,9 +476,7 @@ class TestPromptTemplatesAndMessages:
                 "messages": [
                     *input_messages,
                     AIMessage(content="I'll search for Python tutorials."),
-                    ToolMessage(
-                        content="Found 10 Python tutorials", tool_call_id="call_456"
-                    ),
+                    ToolMessage(content="Found 10 Python tutorials", tool_call_id="call_456"),
                     AIMessage(content="I found 10 Python tutorials for you."),
                 ]
             }
@@ -513,16 +487,15 @@ class TestPromptTemplatesAndMessages:
             # Verify all messages preserved
             assert len(result["messages"]) == 6
             assert result["messages"][0].content == "Hello"
-            assert (
-                result["messages"][-1].content == "I found 10 Python tutorials for you."
-            )
+            assert result["messages"][-1].content == "I found 10 Python tutorials for you."
 
 
 def test_integration_with_tools(mock_llm_engine):
     """Integration test with actual tool execution."""
     with patch("haive.agents.simple.agent.SimpleAgent.setup_workflow"):
         agent = SimpleAgent(
-            engine=mock_llm_engine, force_tool_use=True  # Force tool usage
+            engine=mock_llm_engine,
+            force_tool_use=True,  # Force tool usage
         )
 
         # Verify agent is configured for tools

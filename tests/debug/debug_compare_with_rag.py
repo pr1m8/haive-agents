@@ -29,7 +29,6 @@ class QueryRefinementResponse(BaseModel):
     best_refined_query: str = Field(description="The recommended best refined query")
 
 
-
 try:
     # Create vector store config (BaseRAGAgent needs this)
     vectorstore_config = VectorStoreConfig(
@@ -40,11 +39,8 @@ try:
     # Create BaseRAGAgent
     rag_agent = BaseRAGAgent(name="rag_test", engine=vectorstore_config)
 
-
     # Test with same input
-    rag_result = rag_agent.run(
-        {"query": "what is the tallest building in france"}, debug=True
-    )
+    rag_result = rag_agent.run({"query": "what is the tallest building in france"}, debug=True)
 
 except Exception as e:
     pass
@@ -62,7 +58,6 @@ except Exception as e:
                     pass
     except Exception as e2:
         pass
-
 
 
 try:

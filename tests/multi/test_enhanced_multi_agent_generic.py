@@ -114,9 +114,7 @@ class TestMultiAgentGenericPatterns:
                 self.agents = agents
                 self.mode = "sequential"
 
-            async def execute_sequential(
-                self, input_data: str, debug: bool = False
-            ) -> str:
+            async def execute_sequential(self, input_data: str, debug: bool = False) -> str:
                 """Execute agents in sequence."""
                 if debug:
                     pass
@@ -144,9 +142,7 @@ class TestMultiAgentGenericPatterns:
 
         # Test sequential execution
         async def run_test():
-            multi = SequentialMultiAgent(
-                "project_pipeline", [planner, executor, reviewer]
-            )
+            multi = SequentialMultiAgent("project_pipeline", [planner, executor, reviewer])
 
             result = await multi.execute_sequential(
                 "Create a new feature for user authentication", debug=True
@@ -179,9 +175,7 @@ class TestMultiAgentGenericPatterns:
                 self.agents = agents
                 self.mode = "parallel"
 
-            async def execute_parallel(
-                self, input_data: str, debug: bool = False
-            ) -> list[str]:
+            async def execute_parallel(self, input_data: str, debug: bool = False) -> list[str]:
                 """Execute all agents in parallel."""
                 if debug:
                     pass
@@ -256,21 +250,15 @@ class TestMultiAgentGenericPatterns:
                 content = input_data.lower()
 
                 # Simple keyword-based routing
-                if any(
-                    keyword in content
-                    for keyword in ["technical", "code", "system", "api"]
-                ):
+                if any(keyword in content for keyword in ["technical", "code", "system", "api"]):
                     return "technical"
                 if any(
-                    keyword in content
-                    for keyword in ["business", "profit", "market", "revenue"]
+                    keyword in content for keyword in ["business", "profit", "market", "revenue"]
                 ):
                     return "business"
                 return "general"
 
-            async def execute_with_routing(
-                self, input_data: str, debug: bool = False
-            ) -> str:
+            async def execute_with_routing(self, input_data: str, debug: bool = False) -> str:
                 """Execute with intelligent routing."""
                 if debug:
                     pass
@@ -377,9 +365,7 @@ class TestMultiAgentGenericPatterns:
 
                 return best_agent or "balanced"
 
-            def update_performance(
-                self, agent_name: str, success: bool, duration: float
-            ):
+            def update_performance(self, agent_name: str, success: bool, duration: float):
                 """Update agent performance metrics."""
                 if agent_name not in self.agent_performance:
                     return
@@ -400,9 +386,7 @@ class TestMultiAgentGenericPatterns:
                     metrics["avg_duration"] * (metrics["task_count"] - 1) + duration
                 ) / metrics["task_count"]
 
-            async def execute_with_adaptation(
-                self, input_data: str, debug: bool = False
-            ) -> str:
+            async def execute_with_adaptation(self, input_data: str, debug: bool = False) -> str:
                 """Execute with adaptive agent selection."""
                 import time
 
@@ -460,9 +444,7 @@ class TestMultiAgentGenericPatterns:
                     pass
 
             # Verify adaptation occurred
-            total_tasks = sum(
-                metrics["task_count"] for metrics in multi.agent_performance.values()
-            )
+            total_tasks = sum(metrics["task_count"] for metrics in multi.agent_performance.values())
             assert total_tasks == len(tasks)
 
             # Verify performance tracking worked
@@ -510,14 +492,10 @@ class TestMultiAgentGenericPatterns:
                 """Evaluate condition against agent output."""
                 if condition == "success":
                     return (
-                        "error" not in agent_output.lower()
-                        and "failed" not in agent_output.lower()
+                        "error" not in agent_output.lower() and "failed" not in agent_output.lower()
                     )
                 if condition == "error":
-                    return (
-                        "error" in agent_output.lower()
-                        or "failed" in agent_output.lower()
-                    )
+                    return "error" in agent_output.lower() or "failed" in agent_output.lower()
                 return False
 
             def get_next_agent(self, current_agent: str, output: str) -> str:
@@ -532,9 +510,7 @@ class TestMultiAgentGenericPatterns:
 
                 return "end"
 
-            async def execute_conditional(
-                self, input_data: str, debug: bool = False
-            ) -> str:
+            async def execute_conditional(self, input_data: str, debug: bool = False) -> str:
                 """Execute with conditional flow."""
                 if debug:
                     pass
@@ -556,15 +532,9 @@ class TestMultiAgentGenericPatterns:
                     agent = self.agents[current_agent]
 
                     # Simulate different outcomes based on input
-                    if (
-                        "invalid" in current_input.lower()
-                        and current_agent == "validator"
-                    ):
+                    if "invalid" in current_input.lower() and current_agent == "validator":
                         result = "VALIDATOR: Error - invalid input detected"
-                    elif (
-                        "error" in current_input.lower()
-                        and current_agent == "processor"
-                    ):
+                    elif "error" in current_input.lower() and current_agent == "processor":
                         result = "PROCESSOR: Processing failed due to data issues"
                     else:
                         result = await agent.arun(current_input, debug=False)
@@ -601,25 +571,19 @@ class TestMultiAgentGenericPatterns:
             initial_error_handler_count = error_handler.execution_count
 
             # Test success path
-            success_result = await multi.execute_conditional(
-                "Valid data to process", debug=True
-            )
+            success_result = await multi.execute_conditional("Valid data to process", debug=True)
 
             # Check validator was called once
             validator.execution_count - initial_validator_count
             processor.execution_count - initial_processor_count
 
             # Test error path
-            error_result = await multi.execute_conditional(
-                "Invalid data input", debug=True
-            )
+            error_result = await multi.execute_conditional("Invalid data input", debug=True)
 
             # Check total calls
             total_validator_calls = validator.execution_count - initial_validator_count
             total_processor_calls = processor.execution_count - initial_processor_count
-            total_error_handler_calls = (
-                error_handler.execution_count - initial_error_handler_count
-            )
+            total_error_handler_calls = error_handler.execution_count - initial_error_handler_count
 
             # Verify different paths were taken
             assert "validator" in success_result
@@ -632,17 +596,17 @@ class TestMultiAgentGenericPatterns:
             # Verify agents were executed appropriately
             # NOTE: Due to test setup, validator might be called less than expected
             # The important thing is that different execution paths work
-            assert (
-                total_validator_calls >= 1
-            ), f"Expected validator count >=1, got {total_validator_calls}"
+            assert total_validator_calls >= 1, (
+                f"Expected validator count >=1, got {total_validator_calls}"
+            )
 
             # Verify appropriate agents called for each path
-            assert (
-                total_processor_calls == 1
-            ), f"Expected processor count 1, got {total_processor_calls}"
-            assert (
-                total_error_handler_calls == 1
-            ), f"Expected error_handler count 1, got {total_error_handler_calls}"
+            assert total_processor_calls == 1, (
+                f"Expected processor count 1, got {total_processor_calls}"
+            )
+            assert total_error_handler_calls == 1, (
+                f"Expected error_handler count 1, got {total_error_handler_calls}"
+            )
 
             # Most importantly - verify conditional routing worked
             assert "processor" in success_result
@@ -658,9 +622,7 @@ class TestMultiAgentGenericPatterns:
     def test_real_llm_integration(self, minimal_agent, minimal_engine):
         """Test integration with real LLM configuration (optional)."""
         if not TEST_WITH_REAL_LLMS:
-            pytest.skip(
-                "Real LLM testing disabled - set TEST_WITH_REAL_LLMS=True to enable"
-            )
+            pytest.skip("Real LLM testing disabled - set TEST_WITH_REAL_LLMS=True to enable")
 
         # This would use real AugLLMConfig when enabled
         try:
@@ -684,7 +646,6 @@ class TestMultiAgentGenericPatterns:
 
 # Standalone execution for manual testing
 if __name__ == "__main__":
-
     # Create test instance
     test_instance = TestMultiAgentGenericPatterns()
 

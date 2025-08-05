@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 def test_basic_imports():
     """Test if basic imports work without hanging."""
     try:
-
         # Try importing the models
 
         return True

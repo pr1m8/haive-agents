@@ -7,7 +7,6 @@ from haive.core.models.llm.base import DeepSeekLLMConfig
 
 
 def main():
-
     # Test 1: Default AugLLMConfig uses Azure
     config = AugLLMConfig()
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Test to see the exact BaseOutputParser error in LangGraph context."""
 
-
 from langchain_core.output_parsers.base import BaseOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field

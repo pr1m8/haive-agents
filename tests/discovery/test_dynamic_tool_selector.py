@@ -29,9 +29,7 @@ from haive.agents.discovery.semantic_discovery import ComponentMetadata
 class MockTool(BaseTool):
     """Mock tool for testing."""
 
-    def __init__(
-        self, name: str, description: str = "", capabilities: list[str] | None = None
-    ):
+    def __init__(self, name: str, description: str = "", capabilities: list[str] | None = None):
         super().__init__()
         self.name = name
         self.description = description
@@ -188,9 +186,7 @@ class TestDynamicToolSelector:
         self.mock_strategy = AsyncMock()
         self.mock_strategy.select_tools.return_value = ToolSelectionResult(
             selected_tools=[
-                ComponentMetadata(
-                    name="mock_tool", description="", capabilities=[], tags=[]
-                )
+                ComponentMetadata(name="mock_tool", description="", capabilities=[], tags=[])
             ],
             selection_confidence=0.8,
         )
@@ -478,9 +474,7 @@ class TestContextAwareSelector:
 
     def setup_method(self):
         """Setup test fixtures."""
-        self.selector = ContextAwareSelector(
-            max_tools_per_query=3, min_confidence_threshold=0.6
-        )
+        self.selector = ContextAwareSelector(max_tools_per_query=3, min_confidence_threshold=0.6)
 
         # Mock components
         self.selector.semantic_discovery = MagicMock()
@@ -577,9 +571,7 @@ class TestIntegrationScenarios:
     @pytest.mark.asyncio
     async def test_multi_step_workflow_selection(self):
         """Test tool selection for complex multi-step workflows."""
-        selector = DynamicToolSelector(
-            selection_mode=SelectionMode.ADAPTIVE, max_tools_per_query=5
-        )
+        selector = DynamicToolSelector(selection_mode=SelectionMode.ADAPTIVE, max_tools_per_query=5)
 
         # Mock comprehensive workflow
         workflow_query = """
@@ -633,9 +625,7 @@ class TestIntegrationScenarios:
         # Mock strategy that returns relevant tools
         mock_strategy = AsyncMock()
         mock_strategy.select_tools.return_value = ToolSelectionResult(
-            selected_tools=mock_discovery._component_cache["all"][
-                :4
-            ],  # Return first 4 tools
+            selected_tools=mock_discovery._component_cache["all"][:4],  # Return first 4 tools
             selection_confidence=0.9,
             selection_metadata={"strategy": "workflow_aware"},
         )
@@ -776,7 +766,8 @@ class TestIntegrationScenarios:
         # Mock efficient strategy
         mock_strategy = AsyncMock()
         mock_strategy.select_tools.return_value = ToolSelectionResult(
-            selected_tools=large_tool_set[:5], selection_confidence=0.8  # Return top 5
+            selected_tools=large_tool_set[:5],
+            selection_confidence=0.8,  # Return top 5
         )
         selector.selection_strategies = {"adaptive": mock_strategy}
 
@@ -815,9 +806,7 @@ class TestFactoryFunctions:
 
     def test_create_dynamic_tool_selector(self):
         """Test factory function for dynamic tool selector."""
-        selector = create_dynamic_tool_selector(
-            selection_mode=SelectionMode.ADAPTIVE, max_tools=7
-        )
+        selector = create_dynamic_tool_selector(selection_mode=SelectionMode.ADAPTIVE, max_tools=7)
 
         assert isinstance(selector, DynamicToolSelector)
         assert selector.selection_mode == SelectionMode.ADAPTIVE

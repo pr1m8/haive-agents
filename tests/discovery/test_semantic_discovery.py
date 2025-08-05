@@ -85,9 +85,9 @@ class TestQueryAnalyzer:
 
         for query, expected_domains in test_cases:
             analysis = self.analyzer.analyze_query(query)
-            assert any(
-                domain in analysis.domain_tags for domain in expected_domains
-            ), f"Expected domains {expected_domains} not found in {analysis.domain_tags} for query: {query}"
+            assert any(domain in analysis.domain_tags for domain in expected_domains), (
+                f"Expected domains {expected_domains} not found in {analysis.domain_tags} for query: {query}"
+            )
 
     def test_edge_cases(self):
         """Test edge cases and unusual queries."""
@@ -137,9 +137,7 @@ class TestCapabilityMatcher:
         available = ["email", "calendar"]
 
         score = self.matcher.calculate_capability_match(required, available)
-        assert (
-            score < 0.3
-        )  # Should be low, but keyword similarity might give some score
+        assert score < 0.3  # Should be low, but keyword similarity might give some score
 
     def test_tag_based_matching(self):
         """Test capability matching with tags."""
@@ -282,9 +280,7 @@ class TestVectorBasedToolSelector:
         self.selector.index_components(self.test_components)
 
         query = "search for information online"
-        selected = self.selector.select_tools(
-            query, strategy=ToolSelectionStrategy.TOP_K, k=2
-        )
+        selected = self.selector.select_tools(query, strategy=ToolSelectionStrategy.TOP_K, k=2)
 
         assert len(selected) <= 2
         # Web search tool should be highly ranked for this query
@@ -296,9 +292,7 @@ class TestVectorBasedToolSelector:
         self.selector.index_components(self.test_components)
 
         query = "analyze data statistics"
-        selected = self.selector.select_tools(
-            query, strategy=ToolSelectionStrategy.THRESHOLD, k=5
-        )
+        selected = self.selector.select_tools(query, strategy=ToolSelectionStrategy.THRESHOLD, k=5)
 
         # All selected tools should meet similarity threshold
         for tool in selected:
@@ -326,9 +320,7 @@ class TestVectorBasedToolSelector:
         self.selector.index_components(similar_components)
 
         query = "search and analyze web data"
-        selected = self.selector.select_tools(
-            query, strategy=ToolSelectionStrategy.DIVERSE, k=3
-        )
+        selected = self.selector.select_tools(query, strategy=ToolSelectionStrategy.DIVERSE, k=3)
 
         # Should select diverse tools, not just similar search tools
         capabilities = []
@@ -350,8 +342,7 @@ class TestVectorBasedToolSelector:
         # Should only return tools with specified capabilities
         for tool in selected:
             assert any(
-                cap in tool.capabilities
-                for cap in ["file_processing", "data_transformation"]
+                cap in tool.capabilities for cap in ["file_processing", "data_transformation"]
             )
 
     def test_empty_query_handling(self):
@@ -433,9 +424,7 @@ class TestSemanticDiscoveryEngine:
             mock_haive.discover_all.return_value = self.mock_discovery_results
 
             query = "search for web information"
-            tools, analysis = await self.engine.semantic_tool_selection(
-                query, max_tools=3
-            )
+            tools, analysis = await self.engine.semantic_tool_selection(query, max_tools=3)
 
             assert isinstance(tools, list)
             assert isinstance(analysis, QueryAnalysis)
@@ -610,9 +599,7 @@ class TestIntegrationScenarios:
             4. Generate a bibliography with proper citations
             """
 
-            tools, analysis = await engine.semantic_tool_selection(
-                research_query, max_tools=4
-            )
+            tools, analysis = await engine.semantic_tool_selection(research_query, max_tools=4)
 
             # Should identify this as complex academic workflow
             assert analysis.complexity_score > 0.7
@@ -698,9 +685,7 @@ class TestIntegrationScenarios:
             - Generate forecasts for next quarter
             """
 
-            tools, analysis = await engine.semantic_tool_selection(
-                business_query, max_tools=5
-            )
+            tools, analysis = await engine.semantic_tool_selection(business_query, max_tools=5)
 
             # Should identify business domain
             assert "business" in analysis.domain_tags

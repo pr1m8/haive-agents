@@ -41,18 +41,14 @@ class TestSummarizerAgent:
         assert summarizer_agent.reduce_chain is not None
         assert summarizer_agent.text_splitter is not None
 
-    def test_token_limit_error_detection(
-        self, summarizer_agent: SummarizerAgent
-    ) -> None:
+    def test_token_limit_error_detection(self, summarizer_agent: SummarizerAgent) -> None:
         """Test token limit error detection."""
         assert summarizer_agent._is_token_limit_error("string too long")
         assert summarizer_agent._is_token_limit_error("Token limit exceeded")
         assert summarizer_agent._is_token_limit_error("maximum context length")
         assert not summarizer_agent._is_token_limit_error("general error")
 
-    def test_map_summaries_creates_send_commands(
-        self, summarizer_agent: SummarizerAgent
-    ) -> None:
+    def test_map_summaries_creates_send_commands(self, summarizer_agent: SummarizerAgent) -> None:
         """Test map_summaries creates appropriate Send commands."""
         state = {"contents": ["doc1", "doc2", "doc3"]}
         sends = summarizer_agent.map_summaries(state)
@@ -60,11 +56,9 @@ class TestSummarizerAgent:
         assert len(sends) == 3
         for i, send in enumerate(sends):
             assert send.node == "generate_summary"
-            assert send.arg["content"] == f"doc{i+1}"
+            assert send.arg["content"] == f"doc{i + 1}"
 
-    def test_collect_summaries_creates_documents(
-        self, summarizer_agent: SummarizerAgent
-    ) -> None:
+    def test_collect_summaries_creates_documents(self, summarizer_agent: SummarizerAgent) -> None:
         """Test collect_summaries converts to Document objects."""
         state = SummaryState(summaries=["summary1", "summary2"])
         command = summarizer_agent.collect_summaries(state)
@@ -86,9 +80,7 @@ class TestSummarizerAgent:
         with patch.object(summarizer_agent, "length_function", return_value=1500):
             assert summarizer_agent.should_collapse(state) == "collapse_summaries"
 
-    def test_length_function_calculation(
-        self, summarizer_agent: SummarizerAgent
-    ) -> None:
+    def test_length_function_calculation(self, summarizer_agent: SummarizerAgent) -> None:
         """Test token counting for documents."""
         # Mock the LLM's get_num_tokens method
         mock_llm = Mock()
@@ -107,15 +99,11 @@ class TestSummarizerAgent:
             total = summarizer_agent.length_function(docs)
             assert total == 60
 
-    def test_length_function_empty_list(
-        self, summarizer_agent: SummarizerAgent
-    ) -> None:
+    def test_length_function_empty_list(self, summarizer_agent: SummarizerAgent) -> None:
         """Test length function with empty document list."""
         assert summarizer_agent.length_function([]) == 0
 
-    @patch(
-        "haive.agents.document_modifiers.summarizer.map_branch.agent.compose_runnable"
-    )
+    @patch("haive.agents.document_modifiers.summarizer.map_branch.agent.compose_runnable")
     async def test_generate_summary_success(
         self, mock_compose: Mock, summarizer_agent: SummarizerAgent
     ) -> None:
@@ -133,9 +121,7 @@ class TestSummarizerAgent:
         assert result["summaries"] == ["Generated summary"]
         mock_chain.ainvoke.assert_called_once_with("Test document content")
 
-    @patch(
-        "haive.agents.document_modifiers.summarizer.map_branch.agent.compose_runnable"
-    )
+    @patch("haive.agents.document_modifiers.summarizer.map_branch.agent.compose_runnable")
     async def test_generate_summary_handles_oversized_document(
         self, mock_compose: Mock, summarizer_agent: SummarizerAgent
     ) -> None:
@@ -180,33 +166,29 @@ class TestSummarizerAgent:
 
         assert "Error generating summary" in result["summaries"][0]
 
-    async def test_collapse_summaries_operation(
-        self, summarizer_agent: SummarizerAgent
-    ) -> None:
+    async def test_collapse_summaries_operation(self, summarizer_agent: SummarizerAgent) -> None:
         """Test collapse summaries functionality."""
         # Setup state
         docs = [Document(page_content="Summary 1"), Document(page_content="Summary 2")]
         state = {"collapsed_summaries": docs}
 
         # Mock the collapse operation
-        with patch(
-            "haive.agents.document_modifiers.summarizer.map_branch.agent.split_list_of_docs",
-            return_value=[docs],
-        ), patch(
-            "haive.agents.document_modifiers.summarizer.map_branch.agent.acollapse_docs",
-            return_value=Document(page_content="Collapsed summary"),
+        with (
+            patch(
+                "haive.agents.document_modifiers.summarizer.map_branch.agent.split_list_of_docs",
+                return_value=[docs],
+            ),
+            patch(
+                "haive.agents.document_modifiers.summarizer.map_branch.agent.acollapse_docs",
+                return_value=Document(page_content="Collapsed summary"),
+            ),
         ):
             result = await summarizer_agent.collapse_summaries(state)
 
             assert len(result.update["collapsed_summaries"]) == 1
-            assert (
-                result.update["collapsed_summaries"][0].page_content
-                == "Collapsed summary"
-            )
+            assert result.update["collapsed_summaries"][0].page_content == "Collapsed summary"
 
-    async def test_generate_final_summary_success(
-        self, summarizer_agent: SummarizerAgent
-    ) -> None:
+    async def test_generate_final_summary_success(self, summarizer_agent: SummarizerAgent) -> None:
         """Test final summary generation."""
         # Setup
         mock_chain = AsyncMock()
@@ -234,9 +216,7 @@ class TestSummarizerAgent:
         state = {"collapsed_summaries": [Document(page_content="Summary")]}
         result = await summarizer_agent.generate_final_summary(state)
 
-        assert (
-            "Error: Failed to generate final summary" in result.update["final_summary"]
-        )
+        assert "Error: Failed to generate final summary" in result.update["final_summary"]
 
     async def test_handle_oversized_document_single_chunk(
         self, summarizer_agent: SummarizerAgent
@@ -258,9 +238,7 @@ class TestSummarizerAgent:
     ) -> None:
         """Test handling oversized document with no valid chunks."""
         # Mock text splitter to return empty list
-        with patch.object(
-            summarizer_agent.text_splitter, "split_text", return_value=[]
-        ):
+        with patch.object(summarizer_agent.text_splitter, "split_text", return_value=[]):
             result = await summarizer_agent._handle_oversized_document("content")
             assert result["summaries"] == ["Document could not be processed"]
 
@@ -279,9 +257,7 @@ class TestSummarizerAgent:
 
     @pytest.mark.integration
     @pytest.mark.skip(reason="Requires real LLM")
-    async def test_real_summarization(
-        self, agent_config: SummarizerAgentConfig
-    ) -> None:
+    async def test_real_summarization(self, agent_config: SummarizerAgentConfig) -> None:
         """Integration test with real LLM."""
         agent = SummarizerAgent(agent_config)
 

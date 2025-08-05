@@ -26,9 +26,7 @@ def test_multi_agent_sequential():
     """Test the sequential execution of multiple agents."""
     # Configure the engines
     add_aug = AugLLMConfig(tools=[add])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
 
     # Create individual agents
     simple_agent = SimpleAgent(engine=plan_aug)
@@ -128,11 +126,7 @@ def test_multi_agent_conditional():
     def select_next_agent(state: MultiAgentState) -> str:
         """Custom function to select the next agent based on output."""
         # Safety check for agents dictionary
-        if (
-            not hasattr(state, "agents")
-            or not isinstance(state.agents, dict)
-            or not state.agents
-        ):
+        if not hasattr(state, "agents") or not isinstance(state.agents, dict) or not state.agents:
             return ""
 
         agent_ids = list(state.agents.keys())
@@ -214,9 +208,7 @@ def test_direct_agent_construction():
     """Test creating a multi-agent system directly with a list of agents."""
     # Configure the engines
     add_aug = AugLLMConfig(tools=[add])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
 
     # Create individual agents
     simple_agent = SimpleAgent(engine=plan_aug, name="Planner")
@@ -237,13 +229,12 @@ def test_direct_agent_construction():
 
     # Get agent IDs and verify names
     agent_ids = list(multi_agent._state_instance.agents.keys())
-    assert any(
-        "Planner" in multi_agent._state_instance.agents[aid].name for aid in agent_ids
-    ), "Planner agent not found"
-    assert any(
-        "Calculator" in multi_agent._state_instance.agents[aid].name
-        for aid in agent_ids
-    ), "Calculator agent not found"
+    assert any("Planner" in multi_agent._state_instance.agents[aid].name for aid in agent_ids), (
+        "Planner agent not found"
+    )
+    assert any("Calculator" in multi_agent._state_instance.agents[aid].name for aid in agent_ids), (
+        "Calculator agent not found"
+    )
 
     # Test invocation
     input_data = {
@@ -278,9 +269,7 @@ def test_dynamic_agent_addition():
     """Test dynamically adding agents to an existing MultiAgent state."""
     # Configure the engines
     add_aug = AugLLMConfig(tools=[add])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
 
     # Create an empty multi-agent system first
     multi_agent = MultiAgent(name="Dynamic Agent System")
@@ -303,9 +292,7 @@ def test_dynamic_agent_addition():
     # Prepare input data
     input_data = {
         "messages": [
-            HumanMessage(
-                content="First plan a day trip, then calculate how many hours we need"
-            )
+            HumanMessage(content="First plan a day trip, then calculate how many hours we need")
         ]
     }
 

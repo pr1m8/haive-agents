@@ -14,9 +14,7 @@ def demo_debug_execution():
     print("=" * 80)
 
     # Create real config
-    config = AugLLMConfig(
-        temperature=0.7, max_tokens=100, llm_config=DeepSeekLLMConfig()
-    )
+    config = AugLLMConfig(temperature=0.7, max_tokens=100, llm_config=DeepSeekLLMConfig())
 
     # Create agent with debug enabled
     agent = SimpleAgentV3(name="demo_agent", engine=config, debug=True, verbose=True)
@@ -48,7 +46,7 @@ def demo_debug_execution():
 
         for i, msg in enumerate(messages):
             msg_type = msg.__class__.__name__
-            print(f"  {i+1}. {msg_type}: {msg.content[:80]}...")
+            print(f"  {i + 1}. {msg_type}: {msg.content[:80]}...")
 
         # Get the AI response
         for msg in reversed(messages):

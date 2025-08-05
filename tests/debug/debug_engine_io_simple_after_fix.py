@@ -32,7 +32,6 @@ class QueryRefinementResponse(BaseModel):
     best_refined_query: str = Field(description="The recommended best refined query")
 
 
-
 config = AugLLMConfig(
     prompt_template=RAG_QUERY_REFINEMENT,
     structured_output_model=QueryRefinementResponse,

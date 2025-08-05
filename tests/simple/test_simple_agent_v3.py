@@ -13,9 +13,7 @@ from haive.core.models.llm.base import DeepSeekLLMConfig
 def test_agent_creation():
     """Test that we can create the agent successfully."""
     # Create AugLLMConfig with DeepSeek
-    config = AugLLMConfig(
-        temperature=0.1, max_tokens=100, llm_config=DeepSeekLLMConfig()
-    )
+    config = AugLLMConfig(temperature=0.1, max_tokens=100, llm_config=DeepSeekLLMConfig())
 
     # Create SimpleAgent v3
     agent = SimpleAgentV3(name="test_agent_v3", engine=config, debug=True, verbose=True)
@@ -34,11 +32,11 @@ def test_agent_creation():
 async def test_agent_execution():
     """Test agent execution - currently expected to fail due to hook issues."""
     # Create agent
-    config = AugLLMConfig(
-        temperature=0.1, max_tokens=50, llm_config=DeepSeekLLMConfig()
-    )
+    config = AugLLMConfig(temperature=0.1, max_tokens=50, llm_config=DeepSeekLLMConfig())
     agent = SimpleAgentV3(
-        name="executor", engine=config, debug=False  # Less verbose for execution test
+        name="executor",
+        engine=config,
+        debug=False,  # Less verbose for execution test
     )
 
     # Try to execute - expecting failure due to remaining hook issues
@@ -55,9 +53,7 @@ def test_augllmconfig_fix():
     assert config1.llm_config is not None
 
     # Test 2: AugLLMConfig with DeepSeek
-    config2 = AugLLMConfig(
-        temperature=0.7, max_tokens=200, llm_config=DeepSeekLLMConfig()
-    )
+    config2 = AugLLMConfig(temperature=0.7, max_tokens=200, llm_config=DeepSeekLLMConfig())
     assert config2.temperature == 0.7
     assert config2.max_tokens == 200
     assert isinstance(config2.llm_config, DeepSeekLLMConfig)

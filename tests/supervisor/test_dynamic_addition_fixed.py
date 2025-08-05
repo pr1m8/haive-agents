@@ -60,7 +60,6 @@ async def test_dynamic_addition_with_fixed_supervisor():
     analysis_agent = TestAgent("analysis_agent", "🔍 Analyst")
     supervisor.register_agent(analysis_agent, "Data analysis and insights")
 
-
     # First invocation - this triggers compilation
 
     try:
@@ -83,9 +82,7 @@ async def test_dynamic_addition_with_fixed_supervisor():
         )
 
         last_message = (
-            result2.get("messages", [])[-1].content
-            if result2.get("messages")
-            else "No messages"
+            result2.get("messages", [])[-1].content if result2.get("messages") else "No messages"
         )
 
         # Verify it went to math agent
@@ -114,18 +111,13 @@ async def test_dynamic_addition_with_fixed_supervisor():
         )
 
         last_message = (
-            result3.get("messages", [])[-1].content
-            if result3.get("messages")
-            else "No messages"
+            result3.get("messages", [])[-1].content if result3.get("messages") else "No messages"
         )
 
     except Exception as e:
         return False
 
     # Summary
-
-
-
 
     return True
 
@@ -153,7 +145,6 @@ async def test_edge_cases():
     supervisor.register_agent(agent1)
     supervisor.register_agent(agent2)  # Should overwrite
 
-
     # Test 3: Remove non-existent agent
     success = supervisor.unregister_agent("non_existent")
 
@@ -162,10 +153,8 @@ async def test_edge_cases():
 
 
 if __name__ == "__main__":
-
     # Run main test
     asyncio.run(test_dynamic_addition_with_fixed_supervisor())
 
     # Run edge cases
     asyncio.run(test_edge_cases())
-

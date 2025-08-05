@@ -62,9 +62,7 @@ class TestAllRAGWorkflows:
 
     def test_base_rag_agent(self, test_documents, llm_config):
         """Test BaseRAGAgent functionality."""
-        agent = BaseRAGAgent.from_documents(
-            documents=test_documents, name="Test Base RAG"
-        )
+        agent = BaseRAGAgent.from_documents(documents=test_documents, name="Test Base RAG")
 
         result = agent.run({"query": "What is Python?"})
 
@@ -73,9 +71,7 @@ class TestAllRAGWorkflows:
 
     def test_simple_rag_agent(self, test_documents, llm_config):
         """Test SimpleRAGAgent workflow."""
-        agent = SimpleRAGAgent.from_documents(
-            documents=test_documents, llm_config=llm_config
-        )
+        agent = SimpleRAGAgent.from_documents(documents=test_documents, llm_config=llm_config)
 
         result = agent.run({"query": "Tell me about machine learning"})
 
@@ -97,12 +93,9 @@ class TestAllRAGWorkflows:
         result2 = agent.run({"query": "What is quantum computing?"})
         assert result2 is not None
 
-
     def test_hyde_rag_agent(self, test_documents, llm_config):
         """Test HyDERAGAgentV2 with hypothetical document generation."""
-        agent = HyDERAGAgentV2.from_documents(
-            documents=test_documents, llm_config=llm_config
-        )
+        agent = HyDERAGAgentV2.from_documents(documents=test_documents, llm_config=llm_config)
 
         result = agent.run({"query": "How does retrieval help language models?"})
 
@@ -112,9 +105,7 @@ class TestAllRAGWorkflows:
 
     def test_multi_query_rag_agent(self, test_documents, llm_config):
         """Test MultiQueryRAGAgent with query expansion."""
-        agent = MultiQueryRAGAgent.from_documents(
-            documents=test_documents, llm_config=llm_config
-        )
+        agent = MultiQueryRAGAgent.from_documents(documents=test_documents, llm_config=llm_config)
 
         result = agent.run({"query": "programming languages"})
 
@@ -125,9 +116,7 @@ class TestAllRAGWorkflows:
 
     def test_adaptive_rag_agent(self, test_documents, llm_config):
         """Test AdaptiveRAGAgent with complexity routing."""
-        agent = AdaptiveRAGAgent.from_documents(
-            documents=test_documents, llm_config=llm_config
-        )
+        agent = AdaptiveRAGAgent.from_documents(documents=test_documents, llm_config=llm_config)
 
         # Test simple query
         result1 = agent.run({"query": "What is Python?"})
@@ -139,12 +128,9 @@ class TestAllRAGWorkflows:
         )
         assert result2 is not None
 
-
     def test_memory_aware_rag_agent(self, test_documents, llm_config):
         """Test MemoryAwareRAGAgent with conversation history."""
-        agent = MemoryAwareRAGAgent.from_documents(
-            documents=test_documents, llm_config=llm_config
-        )
+        agent = MemoryAwareRAGAgent.from_documents(documents=test_documents, llm_config=llm_config)
 
         # Test with conversation history
         messages = [
@@ -164,9 +150,7 @@ class TestAllRAGWorkflows:
         # Create all agents
         agents = {
             "Simple": SimpleRAGAgent.from_documents(test_documents, llm_config),
-            "Corrective": CorrectiveRAGAgentV2.from_documents(
-                test_documents, llm_config
-            ),
+            "Corrective": CorrectiveRAGAgentV2.from_documents(test_documents, llm_config),
             "HyDE": HyDERAGAgentV2.from_documents(test_documents, llm_config),
             "MultiQuery": MultiQueryRAGAgent.from_documents(test_documents, llm_config),
         }

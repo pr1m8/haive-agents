@@ -165,9 +165,7 @@ class TestModularRAG:
             create_modular_rag,
         )
 
-        config = ModularConfig(
-            modules=[RAGModule.QUERY_EXPANSION, RAGModule.ANSWER_GENERATION]
-        )
+        config = ModularConfig(modules=[RAGModule.QUERY_EXPANSION, RAGModule.ANSWER_GENERATION])
         agent = create_modular_rag(TEST_DOCUMENTS, config, TEST_LLM_CONFIG)
 
         assert agent.name == "Modular RAG"
@@ -316,9 +314,7 @@ class TestRAGIntegration:
         """Test ChainAgent integration with multi-agent system."""
         from haive.agents.rag.unified_factory import create_rag_multi
 
-        multi_agent = create_rag_multi(
-            "simple", TEST_DOCUMENTS, llm_config=TEST_LLM_CONFIG
-        )
+        multi_agent = create_rag_multi("simple", TEST_DOCUMENTS, llm_config=TEST_LLM_CONFIG)
         assert multi_agent is not None
 
     def test_all_rag_types_availability(self):
@@ -439,9 +435,7 @@ def run_comprehensive_rag_tests():
 
     for test_class in test_classes:
         test_instance = test_class()
-        test_methods = [
-            method for method in dir(test_instance) if method.startswith("test_")
-        ]
+        test_methods = [method for method in dir(test_instance) if method.startswith("test_")]
 
         for test_method in test_methods:
             total_tests += 1

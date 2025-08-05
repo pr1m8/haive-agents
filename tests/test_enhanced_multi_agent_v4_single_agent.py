@@ -28,9 +28,7 @@ def test_calculator(expression: str) -> str:
 def test_single_simple_agent_creation():
     """Test EnhancedMultiAgentV4 with single SimpleAgent."""
     # Create single SimpleAgent
-    simple_agent = SimpleAgentV3(
-        name="solo_simple", engine=AugLLMConfig(temperature=0.7)
-    )
+    simple_agent = SimpleAgentV3(name="solo_simple", engine=AugLLMConfig(temperature=0.7))
 
     # Create EnhancedMultiAgentV4 with single agent
     try:
@@ -78,9 +76,7 @@ def test_single_react_agent_creation():
 def test_single_agent_graph_building():
     """Test graph building with single agent."""
     # Create simple agent and multi-agent
-    simple_agent = SimpleAgentV3(
-        name="graph_test", engine=AugLLMConfig(temperature=0.7)
-    )
+    simple_agent = SimpleAgentV3(name="graph_test", engine=AugLLMConfig(temperature=0.7))
 
     multi_agent = EnhancedMultiAgentV4(
         name="graph_build_test", agents=[simple_agent], execution_mode="sequential"
@@ -110,9 +106,7 @@ def test_single_agent_graph_building():
 def test_single_agent_compilation():
     """Test compilation of single agent multi-agent workflow."""
     # Create and build
-    simple_agent = SimpleAgentV3(
-        name="compile_test", engine=AugLLMConfig(temperature=0.7)
-    )
+    simple_agent = SimpleAgentV3(name="compile_test", engine=AugLLMConfig(temperature=0.7))
 
     multi_agent = EnhancedMultiAgentV4(
         name="compile_test_workflow", agents=[simple_agent], execution_mode="sequential"
@@ -217,9 +211,7 @@ def test_state_schema_compatibility():
     from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 
     # Create agent and state
-    simple_agent = SimpleAgentV3(
-        name="state_test", engine=AugLLMConfig(temperature=0.7)
-    )
+    simple_agent = SimpleAgentV3(name="state_test", engine=AugLLMConfig(temperature=0.7))
 
     try:
         # Test MultiAgentState creation with single agent

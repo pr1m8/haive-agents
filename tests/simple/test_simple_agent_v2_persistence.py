@@ -35,9 +35,7 @@ class TestSimpleAgentV2Persistence:
             except AttributeError:
                 pass
 
-        assert (
-            len(undefined_fields) == 0
-        ), f"Found PydanticUndefined fields: {undefined_fields}"
+        assert len(undefined_fields) == 0, f"Found PydanticUndefined fields: {undefined_fields}"
 
     @pytest.mark.asyncio
     async def test_run_without_persistence(self):
@@ -114,9 +112,7 @@ class TestSimpleAgentV2Persistence:
 
             # Check for any None values that might be PydanticUndefined
             for key, value in state_dict.items():
-                assert (
-                    value is not PydanticUndefined
-                ), f"Field {key} has PydanticUndefined"
+                assert value is not PydanticUndefined, f"Field {key} has PydanticUndefined"
 
         except Exception as e:
             pytest.fail(f"Failed to serialize state: {e}")

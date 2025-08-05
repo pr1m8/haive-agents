@@ -38,9 +38,7 @@ class HyDEResult(BaseModel):
     hypothetical_doc: str = Field(
         description="Generated hypothetical document that would answer the query"
     )
-    refined_query: str = Field(
-        description="Query refined based on the hypothetical document"
-    )
+    refined_query: str = Field(description="Query refined based on the hypothetical document")
     confidence: float = Field(
         description="Confidence score in the hypothesis (0.0 to 1.0)", ge=0.0, le=1.0
     )
@@ -54,9 +52,7 @@ class EnhancedAnswer(BaseModel):
 
     question: str = Field(description="Original question")
     answer: str = Field(description="Comprehensive answer")
-    hypothetical_context: str = Field(
-        description="Summary of hypothetical document used"
-    )
+    hypothetical_context: str = Field(description="Summary of hypothetical document used")
     retrieved_sources: list[str] = Field(description="Sources from retrieved documents")
     confidence_score: float = Field(description="Overall confidence (0-1)")
     improvements_from_hyde: list[str] = Field(
@@ -190,9 +186,7 @@ class TestHyDERAGSequential:
             structured_output_version="v2",
         )
 
-    def test_hyde_components_creation(
-        self, hyde_generator, rag_retriever, answer_generator
-    ):
+    def test_hyde_components_creation(self, hyde_generator, rag_retriever, answer_generator):
         """Test all HyDE components are created correctly."""
         assert hyde_generator.name == "hyde_generator"
         assert hyde_generator.structured_output_model == HyDEResult
@@ -212,15 +206,12 @@ class TestHyDERAGSequential:
 
         # Check for HyDEResult
         if hasattr(result, "hypothetical_doc"):
-
             assert len(result.hypothetical_doc) > 100
             assert 0.0 <= result.confidence <= 1.0
         else:
             pass
 
-    def test_manual_hyde_rag_flow(
-        self, hyde_generator, rag_retriever, answer_generator
-    ):
+    def test_manual_hyde_rag_flow(self, hyde_generator, rag_retriever, answer_generator):
         """Test manual HyDE → Retrieval → Answer flow."""
         query = "What are the trade-offs in the CAP theorem for distributed databases?"
 
@@ -237,10 +228,7 @@ class TestHyDERAGSequential:
         retrieval_result = rag_retriever.run({"query": hypothetical_doc})
 
         retrieved_docs = []
-        if (
-            isinstance(retrieval_result, dict)
-            and "retrieved_documents" in retrieval_result
-        ):
+        if isinstance(retrieval_result, dict) and "retrieved_documents" in retrieval_result:
             retrieved_docs = retrieval_result["retrieved_documents"]
 
             for _i, _doc in enumerate(retrieved_docs[:3]):
@@ -254,8 +242,14 @@ Hypothetical Document Used for Retrieval:
 {hypothetical_doc}
 
 Retrieved Real Documents:
-{chr(10).join([f"{i+1}. From {doc.metadata.get('source')}: {doc.page_content}"
-                for i, doc in enumerate(retrieved_docs)])}
+{
+            chr(10).join(
+                [
+                    f"{i + 1}. From {doc.metadata.get('source')}: {doc.page_content}"
+                    for i, doc in enumerate(retrieved_docs)
+                ]
+            )
+        }
 
 Generate a comprehensive answer explaining how HyDE improved the retrieval."""
 
@@ -306,9 +300,7 @@ Generate a comprehensive answer explaining how HyDE improved the retrieval."""
         {doc.metadata.get("source") for doc in standard_docs}
         {doc.metadata.get("source") for doc in hyde_docs}
 
-    def test_complex_technical_query(
-        self, hyde_generator, rag_retriever, answer_generator
-    ):
+    def test_complex_technical_query(self, hyde_generator, rag_retriever, answer_generator):
         """Test HyDE with complex technical query."""
         complex_query = """Compare and contrast different consensus algorithms in distributed systems,
         specifically focusing on their fault tolerance, performance characteristics, and use cases."""
@@ -327,11 +319,7 @@ Generate a comprehensive answer explaining how HyDE improved the retrieval."""
         )
         retrieval = rag_retriever.run({"query": hypothetical})
 
-        docs = (
-            retrieval.get("retrieved_documents", [])
-            if isinstance(retrieval, dict)
-            else []
-        )
+        docs = retrieval.get("retrieved_documents", []) if isinstance(retrieval, dict) else []
 
         # Generate comprehensive answer
         context = f"""Question: {complex_query}
@@ -363,9 +351,7 @@ Retrieved Documents:
 
         answerer = SimpleAgent(
             name="answerer",
-            engine=AugLLMConfig(
-                system_message="Generate answers from retrieved documents"
-            ),
+            engine=AugLLMConfig(system_message="Generate answers from retrieved documents"),
         )
 
         # Create sequential HyDE system
@@ -380,9 +366,7 @@ Retrieved Documents:
         assert hyde_system.agents[2].name == "answerer"
 
     @pytest.mark.asyncio
-    async def test_async_hyde_flow(
-        self, hyde_generator, rag_retriever, answer_generator
-    ):
+    async def test_async_hyde_flow(self, hyde_generator, rag_retriever, answer_generator):
         """Test async HyDE flow."""
         query = "What are microservices design patterns?"
 
@@ -397,11 +381,7 @@ Retrieved Documents:
         )
         retrieval = await rag_retriever.arun({"query": hypothetical})
 
-        docs = (
-            retrieval.get("retrieved_documents", [])
-            if isinstance(retrieval, dict)
-            else []
-        )
+        docs = retrieval.get("retrieved_documents", []) if isinstance(retrieval, dict) else []
 
         # Async answer generation
         context = f"Query: {query}\nHyDE: {hypothetical[:200]}...\nDocs: {len(docs)}"
@@ -425,11 +405,7 @@ Retrieved Documents:
 
         if hasattr(hyde_result3, "hypothetical_doc"):
             retrieval = rag_retriever.run({"query": hyde_result3.hypothetical_doc})
-            (
-                retrieval.get("retrieved_documents", [])
-                if isinstance(retrieval, dict)
-                else []
-            )
+            (retrieval.get("retrieved_documents", []) if isinstance(retrieval, dict) else [])
 
 
 if __name__ == "__main__":

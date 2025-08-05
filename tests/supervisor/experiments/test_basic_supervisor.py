@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Step 3: Test basic supervisor using proper Pydantic patterns."""
 
-
 from langchain_core.messages import HumanMessage
 from pydantic import Field, model_validator
 from test_registry_setup import AgentRegistry, create_test_agents
@@ -56,12 +55,8 @@ def test_supervisor_creation():
     # Create registry with agents
     registry = AgentRegistry()
     agents = create_test_agents()
-    registry.register(
-        "math_agent", agents["math_agent"], "Performs mathematical calculations"
-    )
-    registry.register(
-        "planning_agent", agents["planning_agent"], "Creates structured plans"
-    )
+    registry.register("math_agent", agents["math_agent"], "Performs mathematical calculations")
+    registry.register("planning_agent", agents["planning_agent"], "Creates structured plans")
 
     # Create supervisor with registry
     supervisor = BasicSupervisor(name="test_supervisor", agent_registry=registry)
@@ -71,12 +66,10 @@ def test_supervisor_creation():
         tool_names = [t.name for t in supervisor.engine.tools]
 
         assert "list_agents" in tool_names, f"Missing list_agents in {tool_names}"
-        assert (
-            "route_to_math_agent" in tool_names
-        ), f"Missing route_to_math_agent in {tool_names}"
-        assert (
-            "route_to_planning_agent" in tool_names
-        ), f"Missing route_to_planning_agent in {tool_names}"
+        assert "route_to_math_agent" in tool_names, f"Missing route_to_math_agent in {tool_names}"
+        assert "route_to_planning_agent" in tool_names, (
+            f"Missing route_to_planning_agent in {tool_names}"
+        )
 
     return supervisor
 
@@ -95,9 +88,7 @@ def test_supervisor_list_agents():
 
         # Should mention the available agents
         assert "math_agent" in result_str, f"Missing math_agent in result: {result_str}"
-        assert (
-            "planning_agent" in result_str
-        ), f"Missing planning_agent in result: {result_str}"
+        assert "planning_agent" in result_str, f"Missing planning_agent in result: {result_str}"
 
         return supervisor
 
@@ -116,9 +107,9 @@ def test_supervisor_routing():
         result_str = str(result)
 
         # Should contain the calculation result
-        assert (
-            "20" in result_str or "math_agent" in result_str
-        ), f"Expected math result, got: {result_str}"
+        assert "20" in result_str or "math_agent" in result_str, (
+            f"Expected math result, got: {result_str}"
+        )
 
     except Exception:
         pass
@@ -131,9 +122,9 @@ def test_supervisor_routing():
         result_str = str(result)
 
         # Should contain planning content
-        assert (
-            "plan" in result_str.lower() or "planning_agent" in result_str
-        ), f"Expected planning result, got: {result_str}"
+        assert "plan" in result_str.lower() or "planning_agent" in result_str, (
+            f"Expected planning result, got: {result_str}"
+        )
 
     except Exception:
         pass
@@ -172,7 +163,6 @@ def test_supervisor_decision_making():
 
 
 if __name__ == "__main__":
-
     try:
         test_supervisor_creation()
         test_supervisor_list_agents()

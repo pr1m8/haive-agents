@@ -54,7 +54,8 @@ def test_basic_setup():
     """Test basic supervisor setup without execution."""
     # Create supervisor
     supervisor = DynamicSupervisorV2(
-        name="test_supervisor", state_schema=None  # Will use default SupervisorState
+        name="test_supervisor",
+        state_schema=None,  # Will use default SupervisorState
     )
 
     if supervisor.agent_registry.list_available():
@@ -85,9 +86,7 @@ def test_agent_addition():
     # Create test agents
     agents = create_test_agents()
 
-    supervisor.add_agent(
-        "math_agent", agents["math_agent"], "Performs mathematical calculations"
-    )
+    supervisor.add_agent("math_agent", agents["math_agent"], "Performs mathematical calculations")
 
     # Check registry
     supervisor.agent_registry.list_available()
@@ -140,9 +139,7 @@ def test_choice_model_validation():
     agents = create_test_agents()
 
     supervisor.add_agent("math_agent", agents["math_agent"], "Math specialist")
-    supervisor.add_agent(
-        "planning_agent", agents["planning_agent"], "Planning specialist"
-    )
+    supervisor.add_agent("planning_agent", agents["planning_agent"], "Planning specialist")
 
     # Test choice model directly
     if supervisor.agent_choice_model:

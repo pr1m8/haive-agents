@@ -57,10 +57,7 @@ class HallucinationGradingAgent(SimpleRAGAnswerAgent):
         """
         # Format source documents for evaluation
         source_text = "\n\n".join(
-            [
-                f"Document {i+1}: {doc.page_content}"
-                for i, doc in enumerate(source_documents)
-            ]
+            [f"Document {i + 1}: {doc.page_content}" for i, doc in enumerate(source_documents)]
         )
 
         # Use the engine to evaluate for hallucinations
@@ -84,9 +81,7 @@ class HallucinationGradingAgent(SimpleRAGAnswerAgent):
             "has_hallucination": has_hallucination,
             "confidence_score": confidence,
             "evaluation_text": result_text,
-            "source_alignment": self._check_source_alignment(
-                generated_answer, source_documents
-            ),
+            "source_alignment": self._check_source_alignment(generated_answer, source_documents),
             "unsupported_claims": self._identify_unsupported_claims(
                 generated_answer, source_documents
             ),
@@ -138,9 +133,7 @@ class HallucinationGradingAgent(SimpleRAGAnswerAgent):
             return 0.3
         return 0.5  # Default
 
-    def _check_source_alignment(
-        self, answer: str, sources: list[Document]
-    ) -> dict[str, Any]:
+    def _check_source_alignment(self, answer: str, sources: list[Document]) -> dict[str, Any]:
         """Check how well the answer aligns with source documents."""
         source_text = " ".join([doc.page_content for doc in sources])
 
@@ -156,15 +149,11 @@ class HallucinationGradingAgent(SimpleRAGAnswerAgent):
             "shared_terms": len(overlap),
             "answer_terms": len(answer_words),
             "alignment_quality": (
-                "high"
-                if overlap_ratio > 0.7
-                else "medium" if overlap_ratio > 0.4 else "low"
+                "high" if overlap_ratio > 0.7 else "medium" if overlap_ratio > 0.4 else "low"
             ),
         }
 
-    def _identify_unsupported_claims(
-        self, answer: str, sources: list[Document]
-    ) -> list[str]:
+    def _identify_unsupported_claims(self, answer: str, sources: list[Document]) -> list[str]:
         """Identify potentially unsupported claims in the answer."""
         # This is a simplified implementation
         # In practice, would use more sophisticated NLP techniques
@@ -290,35 +279,31 @@ class TestHallucinationGradingAgent:
 
         for text, expected_score in test_cases:
             result = agent._extract_confidence_score(text)
-            assert (
-                abs(result - expected_score) < 0.1
-            ), f"Score extraction failed for: {text}"
+            assert abs(result - expected_score) < 0.1, f"Score extraction failed for: {text}"
 
     def test_source_alignment_check(self):
         """Test source alignment checking."""
         agent = HallucinationGradingAgent(name="Test Agent")
 
         source_docs = [
-            Document(
-                page_content="The restaurant serves Italian cuisine with pasta and pizza."
-            ),
+            Document(page_content="The restaurant serves Italian cuisine with pasta and pizza."),
             Document(page_content="Located in downtown area with outdoor seating."),
         ]
 
         # High alignment case
-        high_alignment_answer = "The restaurant serves Italian cuisine including pasta and pizza, located downtown."
-        alignment_result = agent._check_source_alignment(
-            high_alignment_answer, source_docs
+        high_alignment_answer = (
+            "The restaurant serves Italian cuisine including pasta and pizza, located downtown."
         )
+        alignment_result = agent._check_source_alignment(high_alignment_answer, source_docs)
 
         assert alignment_result["overlap_ratio"] > 0.5
         assert alignment_result["alignment_quality"] in ["medium", "high"]
 
         # Low alignment case
-        low_alignment_answer = "The establishment offers French molecular gastronomy in a suburban location."
-        alignment_result = agent._check_source_alignment(
-            low_alignment_answer, source_docs
+        low_alignment_answer = (
+            "The establishment offers French molecular gastronomy in a suburban location."
         )
+        alignment_result = agent._check_source_alignment(low_alignment_answer, source_docs)
 
         assert alignment_result["overlap_ratio"] < 0.5
 
@@ -332,9 +317,7 @@ class TestHallucinationGradingAgent:
         ]
 
         # Answer with unsupported numerical claim
-        answer_with_unsupported = (
-            "Joe's Pizza was founded in 1952 and has 47 locations nationwide."
-        )
+        answer_with_unsupported = "Joe's Pizza was founded in 1952 and has 47 locations nationwide."
 
         unsupported_claims = agent._identify_unsupported_claims(
             answer_with_unsupported, source_docs
@@ -344,13 +327,9 @@ class TestHallucinationGradingAgent:
         assert len(unsupported_claims) > 0
 
         # Answer that's well supported
-        supported_answer = (
-            "Joe's Pizza is a restaurant that serves pizza and Italian food."
-        )
+        supported_answer = "Joe's Pizza is a restaurant that serves pizza and Italian food."
 
-        supported_claims = agent._identify_unsupported_claims(
-            supported_answer, source_docs
-        )
+        supported_claims = agent._identify_unsupported_claims(supported_answer, source_docs)
 
         # Should have fewer or no unsupported claims
         assert len(supported_claims) <= len(unsupported_claims)
@@ -388,9 +367,7 @@ class TestHallucinationDetectionWorkflow:
 
     def test_hallucinated_answer_detection(self):
         """Test detection on answer with hallucinated information."""
-        agent = HallucinationGradingAgent(
-            detection_threshold=0.6, name="Hallucination Test Agent"
-        )
+        agent = HallucinationGradingAgent(detection_threshold=0.6, name="Hallucination Test Agent")
 
         source_docs = [
             Document(
@@ -445,9 +422,7 @@ class TestHallucinationDetectionWorkflow:
             query="What can you tell me about the restaurant?",
             retrieved_documents=[
                 Document(page_content="Sunset Bistro offers fresh seafood and steaks."),
-                Document(
-                    page_content="The restaurant has outdoor seating with ocean views."
-                ),
+                Document(page_content="The restaurant has outdoor seating with ocean views."),
             ],
             generated_answer="Sunset Bistro is a seafood restaurant with outdoor seating and ocean views, serving fresh seafood and steaks.",
         )
@@ -503,27 +478,21 @@ class TestAdvancedHallucinationDetection:
         agent = HallucinationGradingAgent(name="Numerical Test Agent")
 
         source_docs = [
-            Document(
-                page_content="The company was founded recently and has grown rapidly."
-            ),
+            Document(page_content="The company was founded recently and has grown rapidly."),
             Document(page_content="They have multiple locations in the city."),
         ]
 
         # Answer with specific numbers not in sources
         numerical_answer = "The company was founded in 2019 and now has 127 employees across 8 locations, generating $2.3 million in annual revenue."
 
-        unsupported_claims = agent._identify_unsupported_claims(
-            numerical_answer, source_docs
-        )
+        unsupported_claims = agent._identify_unsupported_claims(numerical_answer, source_docs)
 
         # Should identify numerical claims as potentially unsupported
         assert len(unsupported_claims) > 0
 
         # Check that numerical patterns are caught
         numerical_claims = [
-            claim
-            for claim in unsupported_claims
-            if any(char.isdigit() for char in claim)
+            claim for claim in unsupported_claims if any(char.isdigit() for char in claim)
         ]
         assert len(numerical_claims) > 0
 
@@ -541,9 +510,7 @@ class TestAdvancedHallucinationDetection:
         # Answer that contradicts source information
         contradictory_answer = "The restaurant is open every day including Mondays, serves breakfast, lunch and dinner, and offers both vegetarian and meat dishes."
 
-        alignment_result = agent._check_source_alignment(
-            contradictory_answer, source_docs
-        )
+        alignment_result = agent._check_source_alignment(contradictory_answer, source_docs)
 
         # Should have low alignment due to contradictions
         assert alignment_result["overlap_ratio"] < 0.7
@@ -554,9 +521,7 @@ class TestAdvancedHallucinationDetection:
 
         # Sources about a specific restaurant
         source_docs = [
-            Document(
-                page_content="Bella's Cafe serves coffee and light meals in downtown."
-            ),
+            Document(page_content="Bella's Cafe serves coffee and light meals in downtown."),
             Document(page_content="The cafe has free wifi and comfortable seating."),
         ]
 
@@ -582,9 +547,7 @@ class TestAdvancedHallucinationDetection:
         # Answer with specific temporal claims not in sources
         temporal_answer = "The building was constructed in 1887 and has housed the restaurant since 1923, making it a 100-year-old local landmark that survived the Great Depression."
 
-        unsupported_claims = agent._identify_unsupported_claims(
-            temporal_answer, source_docs
-        )
+        unsupported_claims = agent._identify_unsupported_claims(temporal_answer, source_docs)
 
         # Should identify specific dates and historical claims as unsupported
         assert len(unsupported_claims) > 0

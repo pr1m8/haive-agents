@@ -16,7 +16,6 @@ from component_4_multiagent_supervisor import (
 
 
 if __name__ == "__main__":
-
     # Run routing test first
     asyncio.run(test_routing_logic())
 

@@ -12,9 +12,7 @@ class TestSimpleAgentV2:
     def test_simple_agent_v2_creation(self):
         """Test that SimpleAgentV2 can be created successfully."""
         # Create basic agent
-        agent = SimpleAgentV2(
-            name="test_agent_v2", engine=AugLLMConfig(temperature=0.7)
-        )
+        agent = SimpleAgentV2(name="test_agent_v2", engine=AugLLMConfig(temperature=0.7))
 
         assert agent.name == "test_agent_v2"
         assert agent.engine is not None
@@ -80,9 +78,7 @@ class TestSimpleAgentV2:
             except AttributeError:
                 pass
 
-        assert (
-            len(undefined_fields) == 0
-        ), f"Found PydanticUndefined fields: {undefined_fields}"
+        assert len(undefined_fields) == 0, f"Found PydanticUndefined fields: {undefined_fields}"
 
     @pytest.mark.asyncio
     async def test_simple_agent_v2_basic_run(self):
@@ -152,9 +148,7 @@ class TestSimpleAgentV2:
 
     def test_simple_agent_v2_engine_registration(self):
         """Test that engine is properly registered."""
-        agent = SimpleAgentV2(
-            name="registry_test_agent", engine=AugLLMConfig(name="test_engine")
-        )
+        agent = SimpleAgentV2(name="registry_test_agent", engine=AugLLMConfig(name="test_engine"))
 
         # Verify engine is registered
         from haive.core.engine.base.registry import EngineRegistry

@@ -10,7 +10,8 @@ from haive.agents.simple.agent import SimpleAgent
 # Create agents with tools already configured
 react_agent = ReactAgent(name="React Agent")
 simple_agent = SimpleAgent(
-    name="Simple Agent", structured_output_model=None  # No Plan schema for now
+    name="Simple Agent",
+    structured_output_model=None,  # No Plan schema for now
 )
 
 
@@ -26,7 +27,6 @@ try:
         state_dict = initial_state.model_dump()
     else:
         state_dict = initial_state
-
 
     if "engines" in state_dict:
         engines = state_dict["engines"]

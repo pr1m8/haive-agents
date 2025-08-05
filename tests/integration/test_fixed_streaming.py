@@ -13,12 +13,8 @@ def test_fixed_streaming():
     try:
         config = {"configurable": {"recursion_limit": 5}}
 
-        for i, chunk in enumerate(
-            agent.stream({}, stream_mode="values", config=config)
-        ):
-
+        for i, chunk in enumerate(agent.stream({}, stream_mode="values", config=config)):
             if isinstance(chunk, dict):
-
                 # Show actual state values
                 for key in [
                     "current_speaker",
@@ -56,10 +52,7 @@ def test_fixed_streaming():
         traceback.print_exc()
 
     try:
-        for i, chunk in enumerate(
-            agent.stream({}, stream_mode="updates", config=config)
-        ):
-
+        for i, chunk in enumerate(agent.stream({}, stream_mode="updates", config=config)):
             if i >= 2:
                 break
     except Exception:

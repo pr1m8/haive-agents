@@ -46,9 +46,7 @@ def create_test_conversation():
     )
 
     # Run conversation
-    conversation.invoke(
-        {"messages": []}, config={"configurable": {"thread_id": thread_id}}
-    )
+    conversation.invoke({"messages": []}, config={"configurable": {"thread_id": thread_id}})
 
     return thread_id
 
@@ -91,7 +89,6 @@ def query_database(thread_id):
 
             checkpoint_info = cursor.fetchone()
             if checkpoint_info and checkpoint_info[0] > 0:
-
                 # Get latest checkpoint data
                 cursor.execute(
                     """
@@ -107,20 +104,16 @@ def query_database(thread_id):
 
                 latest = cursor.fetchone()
                 if latest:
-
                     # Parse checkpoint data
                     checkpoint_data = latest[2]
                     if checkpoint_data:
-
                         # Extract conversation state
                         if "channel_values" in checkpoint_data:
                             values = checkpoint_data["channel_values"]
 
                             # Show document sections if available
                             if "document_sections" in values:
-                                for _section, content in values[
-                                    "document_sections"
-                                ].items():
+                                for _section, content in values["document_sections"].items():
                                     if content:
                                         pass
             else:

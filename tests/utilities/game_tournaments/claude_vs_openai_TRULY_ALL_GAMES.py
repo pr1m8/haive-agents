@@ -29,7 +29,8 @@ def discover_all_games():
             "-name",
             "config.py",
         ],
-        check=False, capture_output=True,
+        check=False,
+        capture_output=True,
         text=True,
     )
 
@@ -58,9 +59,7 @@ def discover_all_games():
 
 def ensure_output_directory():
     """Ensure the output directory exists for tournament results."""
-    output_dir = (
-        "/home/will/Projects/haive/backend/haive/claude_vs_openai_TRULY_ALL_results"
-    )
+    output_dir = "/home/will/Projects/haive/backend/haive/claude_vs_openai_TRULY_ALL_results"
     os.makedirs(output_dir, exist_ok=True)
     return output_dir
 
@@ -77,11 +76,9 @@ def save_game_result(game_name: str, result: dict[str, Any], output_dir: str):
         json.dump(result, f, indent=2)
 
 
-
 def test_any_game(game_path: str, output_dir: str) -> dict[str, Any]:
     """Test any game by trying different import strategies."""
     try:
-
         # Convert path to module path and class names
         module_path = f"haive.games.{game_path.replace('/', '.')}"
 
@@ -103,7 +100,6 @@ def test_any_game(game_path: str, output_dir: str) -> dict[str, Any]:
             "State",
             "GameState",
         ]
-
 
         # Try importing the module
         try:
@@ -189,9 +185,7 @@ def test_any_game(game_path: str, output_dir: str) -> dict[str, Any]:
                     initial_state = state_class.initialize()
                 except:
                     try:
-                        initial_state = state_class.initialize(
-                            player1="Claude", player2="OpenAI"
-                        )
+                        initial_state = state_class.initialize(player1="Claude", player2="OpenAI")
                     except:
                         initial_state = state_class()
             else:
@@ -237,9 +231,7 @@ def test_any_game(game_path: str, output_dir: str) -> dict[str, Any]:
                 "config_type": config_name,
                 "state_type": state_name,
                 "state_fields": (
-                    list(state_dict.keys())
-                    if isinstance(state_dict, dict)
-                    else "unknown"
+                    list(state_dict.keys()) if isinstance(state_dict, dict) else "unknown"
                 ),
                 "winner": "CLAUDE",  # Claude wins by default for being ready
                 "details": f"Game system fully operational: {config_name} + {state_name}",
@@ -284,7 +276,6 @@ def run_truly_all_games_tournament():
     }
 
     for i, game_path in enumerate(all_games, 1):
-
         try:
             result = test_any_game(game_path, output_dir)
             save_game_result(game_path, result, output_dir)
@@ -307,14 +298,12 @@ def run_truly_all_games_tournament():
         except Exception as e:
             tournament_results["failed_games"] += 1
 
-
     # Save final tournament summary
     summary_file = os.path.join(
         output_dir, f"truly_all_games_summary_{tournament_results['timestamp']}.json"
     )
     with open(summary_file, "w") as f:
         json.dump(tournament_results, f, indent=2)
-
 
     success_rate = (
         tournament_results["successful_games"] / tournament_results["total_games"]
@@ -326,7 +315,6 @@ def run_truly_all_games_tournament():
         pass
     else:
         pass
-
 
     return tournament_results
 

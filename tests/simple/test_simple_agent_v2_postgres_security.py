@@ -105,9 +105,7 @@ class TestPostgreSQLSecurity:
 
             # Should raise error in production without key
             with pytest.raises(ValueError, match="Encryption key is required"):
-                create_encrypted_serializer_for_postgres(
-                    connection_string=connection_string
-                )
+                create_encrypted_serializer_for_postgres(connection_string=connection_string)
 
     @pytest.mark.asyncio
     async def test_simple_agent_v2_with_secure_serializer(self):
@@ -169,9 +167,7 @@ class TestPostgreSQLSecurity:
 
         # Check nested SecretStr values are masked
         assert processed["config"]["api_settings"]["openai_key"] == "**SECRET_MASKED**"
-        assert (
-            processed["config"]["api_settings"]["anthropic_key"] == "**SECRET_MASKED**"
-        )
+        assert processed["config"]["api_settings"]["anthropic_key"] == "**SECRET_MASKED**"
         assert processed["config"]["database"]["password"] == "**SECRET_MASKED**"
         assert processed["tools"][0]["api_key"] == "**SECRET_MASKED**"
 

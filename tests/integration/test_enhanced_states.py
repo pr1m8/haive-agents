@@ -70,9 +70,7 @@ def test_v2_workflows():
 
     # Test FLARE V2
     try:
-        FLAREAgentV2(
-            name="flare_v2", uncertainty_threshold=0.25, max_retrieval_rounds=4
-        )
+        FLAREAgentV2(name="flare_v2", uncertainty_threshold=0.25, max_retrieval_rounds=4)
         results.append(("✅", "FLAREAgentV2"))
     except Exception as e:
         results.append(("❌", "FLAREAgentV2", str(e)))
@@ -103,9 +101,7 @@ def test_v2_workflows():
 
     # Test Adaptive Threshold V2
     try:
-        AdaptiveThresholdRAGAgentV2(
-            name="adaptive_v2", initial_threshold=0.6, threshold_step=0.05
-        )
+        AdaptiveThresholdRAGAgentV2(name="adaptive_v2", initial_threshold=0.6, threshold_step=0.05)
         results.append(("✅", "AdaptiveThresholdRAGAgentV2"))
     except Exception as e:
         results.append(("❌", "AdaptiveThresholdRAGAgentV2", str(e)))
@@ -126,7 +122,6 @@ def test_state_configuration_flow():
 
 
 def main():
-
     # Test state schemas
     test_enhanced_states()
 

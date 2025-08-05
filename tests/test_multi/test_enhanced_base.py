@@ -108,9 +108,7 @@ class TestMultiAgentBaseBasic:
 class TestMultiAgentBaseBranches:
     """Test MultiAgentBase with conditional branches."""
 
-    def test_creation_with_branches(
-        self, simple_agent_1, simple_agent_2, simple_agent_3
-    ):
+    def test_creation_with_branches(self, simple_agent_1, simple_agent_2, simple_agent_3):
         """Test creating MultiAgentBase with conditional branches."""
 
         def route_condition(state) -> str:
@@ -172,9 +170,7 @@ class TestMultiAgentBaseBranches:
 class TestMultiAgentBaseAdvanced:
     """Test advanced MultiAgentBase features."""
 
-    def test_custom_entry_exit_points(
-        self, simple_agent_1, simple_agent_2, simple_agent_3
-    ):
+    def test_custom_entry_exit_points(self, simple_agent_1, simple_agent_2, simple_agent_3):
         """Test custom entry and finish points."""
         system = MultiAgentBase(
             agents=[simple_agent_1, simple_agent_2, simple_agent_3],
@@ -217,7 +213,8 @@ class TestMultiAgentBaseAdvanced:
         assert system.create_missing_nodes
 
         system2 = MultiAgentBase(
-            agents=[simple_agent_1], create_missing_nodes=False  # Default
+            agents=[simple_agent_1],
+            create_missing_nodes=False,  # Default
         )
 
         assert not system2.create_missing_nodes
@@ -235,9 +232,7 @@ class TestMultiAgentBaseAdvanced:
 class TestConvenienceFunctions:
     """Test convenience functions for creating common patterns."""
 
-    def test_create_sequential_multi_agent(
-        self, simple_agent_1, simple_agent_2, simple_agent_3
-    ):
+    def test_create_sequential_multi_agent(self, simple_agent_1, simple_agent_2, simple_agent_3):
         """Test creating sequential multi-agent system."""
         system = create_sequential_multi_agent(
             agents=[simple_agent_1, simple_agent_2, simple_agent_3],
@@ -266,9 +261,7 @@ class TestConvenienceFunctions:
         assert system.name == "Branching Test"
         assert len(system.conditional_edges) == 1
 
-    def test_create_plan_execute_multi_agent(
-        self, simple_agent_1, simple_agent_2, simple_agent_3
-    ):
+    def test_create_plan_execute_multi_agent(self, simple_agent_1, simple_agent_2, simple_agent_3):
         """Test creating Plan and Execute multi-agent system."""
         system = create_plan_execute_multi_agent(
             planner_agent=simple_agent_1,
@@ -283,9 +276,7 @@ class TestConvenienceFunctions:
 
         # Check that routing functions are properly set
         assert system.conditional_edges[0]["source_agent"] == simple_agent_2  # executor
-        assert (
-            system.conditional_edges[1]["source_agent"] == simple_agent_3
-        )  # replanner
+        assert system.conditional_edges[1]["source_agent"] == simple_agent_3  # replanner
 
 
 class TestMultiAgentBaseExecution:
@@ -325,9 +316,7 @@ class TestErrorHandling:
 
     def test_empty_agents_list(self):
         """Test that empty agents list raises error."""
-        with pytest.raises(
-            ValueError, match="MultiAgentBase requires at least one agent"
-        ):
+        with pytest.raises(ValueError, match="MultiAgentBase requires at least one agent"):
             MultiAgentBase(agents=[])
 
     def test_invalid_branch_format(self, simple_agent_1):

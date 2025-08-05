@@ -295,9 +295,7 @@ class TestSchemaAdaptation:
         # Manual adaptation (what our system should do automatically)
         def adapt_retriever_to_llm(retriever_out: RetrievalOutput) -> dict:
             return {
-                "messages": [
-                    HumanMessage(content=f"Context: {' '.join(retriever_out.context)}")
-                ],
+                "messages": [HumanMessage(content=f"Context: {' '.join(retriever_out.context)}")],
                 "context": "\n".join(retriever_out.context),
             }
 
@@ -336,12 +334,10 @@ class TestAgentTypeDetection:
         # Helper to detect agent type
         def detect_agent_type(engines: dict) -> str:
             has_llm = any(
-                isinstance(e, AugLLMConfig) or hasattr(e, "invoke")
-                for e in engines.values()
+                isinstance(e, AugLLMConfig) or hasattr(e, "invoke") for e in engines.values()
             )
             has_retriever = any(
-                isinstance(e, EngineRetriever) or hasattr(e, "search")
-                for e in engines.values()
+                isinstance(e, EngineRetriever) or hasattr(e, "search") for e in engines.values()
             )
 
             if has_llm and has_retriever:

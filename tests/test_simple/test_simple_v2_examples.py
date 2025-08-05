@@ -93,14 +93,14 @@ async def example_react_agent_with_add():
 
     # Create agents - your exact pattern
     react_agent = ReactAgent(
-        name="math_agent", engine=add_aug, enable_persistence=False  # For testing
+        name="math_agent",
+        engine=add_aug,
+        enable_persistence=False,  # For testing
     )
 
     # Test with a simple math request
     try:
-        result = await react_agent.ainvoke(
-            {"messages": [HumanMessage(content="What is 5 + 3?")]}
-        )
+        result = await react_agent.ainvoke({"messages": [HumanMessage(content="What is 5 + 3?")]})
 
         # Show the conversation
         for _i, _msg in enumerate(result.get("messages", [])):
@@ -164,9 +164,7 @@ async def example_direct_usage_pattern():
 
     # Create engine configurations
     add_aug = AugLLMConfig(tools=[add])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
 
     # Create agents
     SimpleAgentV2(engine=plan_aug)

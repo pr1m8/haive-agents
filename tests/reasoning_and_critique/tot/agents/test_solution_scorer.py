@@ -17,7 +17,8 @@ class TestSolutionScorer:
     async def test_score_math_solutions(self):
         """Test scoring math problem solutions."""
         scorer = SolutionScorer(
-            name="math_scorer", temperature=0.3  # Consistent scoring
+            name="math_scorer",
+            temperature=0.3,  # Consistent scoring
         )
 
         problem = "Find three numbers that sum to 24"
@@ -38,19 +39,19 @@ class TestSolutionScorer:
         # Check that correct solutions get higher scores
         for scored in scoring.scored_solutions:
             if "incorrect" in scored.solution or "= 6" in scored.solution:
-                assert (
-                    scored.score < 0.5
-                ), f"Incorrect solution should have low score: {scored.solution}"
+                assert scored.score < 0.5, (
+                    f"Incorrect solution should have low score: {scored.solution}"
+                )
             elif "6 + 6 + 6 + 6" in scored.solution:
                 # This uses 4 numbers instead of 3
-                assert (
-                    scored.score < 0.8
-                ), f"Solution with wrong number count should not be perfect: {scored.solution}"
+                assert scored.score < 0.8, (
+                    f"Solution with wrong number count should not be perfect: {scored.solution}"
+                )
             else:
                 # Correct solutions
-                assert (
-                    scored.score > 0.7
-                ), f"Correct solution should have high score: {scored.solution}"
+                assert scored.score > 0.7, (
+                    f"Correct solution should have high score: {scored.solution}"
+                )
 
     @pytest.mark.asyncio
     async def test_score_game_of_24_solutions(self):

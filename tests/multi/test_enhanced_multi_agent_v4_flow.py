@@ -68,9 +68,7 @@ class TestEnhancedMultiAgentV4Flow:
         workflow.compile()
 
         # Create simple initial state without MultiAgentState to avoid circular import issues
-        initial_state = {
-            "messages": [HumanMessage(content="Analyze the benefits of remote work.")]
-        }
+        initial_state = {"messages": [HumanMessage(content="Analyze the benefits of remote work.")]}
 
         # Execute the workflow with proper state
         try:
@@ -128,9 +126,7 @@ class TestEnhancedMultiAgentV4Flow:
         # Create simple initial state without MultiAgentState to avoid circular import issues
         initial_state = {
             "messages": [
-                HumanMessage(
-                    content="Calculate 15 * 23 and count the words in this message."
-                )
+                HumanMessage(content="Calculate 15 * 23 and count the words in this message.")
             ]
         }
 

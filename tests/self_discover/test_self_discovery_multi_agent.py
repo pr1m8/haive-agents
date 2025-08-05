@@ -18,10 +18,7 @@ def test_self_discovery_schema_structure():
         )
 
         # Create multi-agent with self-discovery
-        multi_agent = ProperMultiAgent(
-            name="self_discovery_multi", agents=[self_discovery]
-        )
-
+        multi_agent = ProperMultiAgent(name="self_discovery_multi", agents=[self_discovery])
 
         # Check schema fields
         schema_fields = set(multi_agent.state_schema.model_fields.keys())
@@ -73,9 +70,7 @@ async def test_self_discovery_execution():
         )
 
         # Create multi-agent
-        multi_agent = ProperMultiAgent(
-            name="discovery_executor", agents=[self_discovery]
-        )
+        multi_agent = ProperMultiAgent(name="discovery_executor", agents=[self_discovery])
 
         # Create initial state with the married schema
         initial_state = multi_agent.state_schema(
@@ -92,7 +87,6 @@ async def test_self_discovery_execution():
             agent_states={},
             agent_outputs={},
         )
-
 
         # For now, just test the state structure - actual execution would require graph compilation
         return initial_state
@@ -119,9 +113,7 @@ def test_hierarchical_state_management():
         # Create state instance
         state = multi_agent.state_schema(
             agents={"discovery": self_discovery},
-            agent_states={
-                "discovery": {"current_phase": "module_selection", "progress": 0.25}
-            },
+            agent_states={"discovery": {"current_phase": "module_selection", "progress": 0.25}},
             agent_outputs={
                 "discovery": {
                     "last_output": "Selected reasoning modules",
@@ -132,11 +124,9 @@ def test_hierarchical_state_management():
             reasoning_modules="Test modules",
         )
 
-
         # Test state updates
         state.agent_states["discovery"]["progress"] = 0.75
         state.agent_outputs["discovery"]["last_output"] = "Updated output"
-
 
         return state
 

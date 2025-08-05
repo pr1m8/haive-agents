@@ -35,9 +35,7 @@ def test_base_rag_agent():
         config = {"configurable": {"thread_id": thread_id}}
 
         # Test basic interaction
-        agent.invoke(
-            {"messages": [HumanMessage(content="What is RAG?")]}, config
-        )
+        agent.invoke({"messages": [HumanMessage(content="What is RAG?")]}, config)
 
         return True
 
@@ -74,9 +72,7 @@ def test_simple_rag_agent():
         thread_id = f"rag_simple_test_{timestamp}"
         config = {"configurable": {"thread_id": thread_id}}
 
-        agent.invoke(
-            {"messages": [HumanMessage(content="Explain vector databases")]}, config
-        )
+        agent.invoke({"messages": [HumanMessage(content="Explain vector databases")]}, config)
 
         return True
 
@@ -118,11 +114,7 @@ def verify_message_quality():
             config,
         )
 
-        response1 = (
-            result1.messages[-1].content
-            if hasattr(result1, "messages")
-            else str(result1)
-        )
+        response1 = result1.messages[-1].content if hasattr(result1, "messages") else str(result1)
 
         # Check greeting quality
         if any(word in response1.lower() for word in ["hello", "hi", "nice to meet"]):
@@ -133,15 +125,9 @@ def verify_message_quality():
             pass
 
         # Message 2
-        result2 = agent.invoke(
-            {"messages": [HumanMessage(content="What's my name?")]}, config
-        )
+        result2 = agent.invoke({"messages": [HumanMessage(content="What's my name?")]}, config)
 
-        response2 = (
-            result2.messages[-1].content
-            if hasattr(result2, "messages")
-            else str(result2)
-        )
+        response2 = result2.messages[-1].content if hasattr(result2, "messages") else str(result2)
 
         if "sarah" in response2.lower():
             pass
@@ -150,19 +136,11 @@ def verify_message_quality():
 
         # Message 3
         result3 = agent.invoke(
-            {
-                "messages": [
-                    HumanMessage(content="Can you recommend some hiking trails?")
-                ]
-            },
+            {"messages": [HumanMessage(content="Can you recommend some hiking trails?")]},
             config,
         )
 
-        response3 = (
-            result3.messages[-1].content
-            if hasattr(result3, "messages")
-            else str(result3)
-        )
+        response3 = result3.messages[-1].content if hasattr(result3, "messages") else str(result3)
 
         if "trail" in response3.lower() or "hik" in response3.lower():
             pass
@@ -183,7 +161,6 @@ def main():
         "simple_rag": test_simple_rag_agent(),
         "message_quality": verify_message_quality(),
     }
-
 
     for test, passed in results.items():
         status = "✅ PASSED" if passed else "❌ FAILED"

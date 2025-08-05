@@ -79,9 +79,7 @@ def try_json_serialization(obj: Any, name: str) -> bool:
         if hasattr(obj, "to_dict"):
             dict_data = obj.to_dict()
             json_data = json.dumps(dict_data)
-            logger.info(
-                f"✓ Successfully serialized {name} using to_dict ({len(json_data)} bytes)"
-            )
+            logger.info(f"✓ Successfully serialized {name} using to_dict ({len(json_data)} bytes)")
             return True
         if hasattr(obj, "dict"):
             dict_data = obj.dict()
@@ -93,14 +91,10 @@ def try_json_serialization(obj: Any, name: str) -> bool:
 
         # Try direct JSON serialization (likely to fail for complex objects)
         json_data = json.dumps(obj)
-        logger.info(
-            f"✓ Successfully serialized {name} directly to JSON ({len(json_data)} bytes)"
-        )
+        logger.info(f"✓ Successfully serialized {name} directly to JSON ({len(json_data)} bytes)")
         return True
     except Exception as e:
-        logger.exception(
-            f"✗ Failed to serialize {name} to JSON: {type(e).__name__}: {e}"
-        )
+        logger.exception(f"✗ Failed to serialize {name} to JSON: {type(e).__name__}: {e}")
         return False
 
 
@@ -194,17 +188,13 @@ def test_multi_agent_serialization():
     logger.info("===== Testing MultiAgent Serialization =====")
 
     # Create a MultiAgent
-    simple_engine = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    simple_engine = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
     react_engine = AugLLMConfig(tools=[add])
 
     simple_agent = SimpleAgent(engine=simple_engine, name="Test Simple Agent")
     react_agent = ReactAgent(engine=react_engine, name="Test React Agent")
 
-    multi_agent = MultiAgent(
-        agents=[simple_agent, react_agent], name="Test Multi Agent"
-    )
+    multi_agent = MultiAgent(agents=[simple_agent, react_agent], name="Test Multi Agent")
 
     # Test serialization methods
     pickle_success = try_pickle_serialization(multi_agent, "MultiAgent")
@@ -279,9 +269,7 @@ def test_specific_problematic_fields():
             pickle.dumps(simple_agent._state_instance)
             logger.info("✓ _state_instance is picklable")
         except Exception as e:
-            logger.exception(
-                f"✗ _state_instance is not picklable: {type(e).__name__}: {e}"
-            )
+            logger.exception(f"✗ _state_instance is not picklable: {type(e).__name__}: {e}")
 
     # Test structured_output_model field
     if hasattr(simple_agent, "structured_output_model"):
@@ -290,9 +278,7 @@ def test_specific_problematic_fields():
             pickle.dumps(simple_agent.structured_output_model)
             logger.info("✓ structured_output_model is picklable")
         except Exception as e:
-            logger.exception(
-                f"✗ structured_output_model is not picklable: {type(e).__name__}: {e}"
-            )
+            logger.exception(f"✗ structured_output_model is not picklable: {type(e).__name__}: {e}")
 
 
 def test_langgraph_serialization():
@@ -306,9 +292,7 @@ def test_langgraph_serialization():
 
         # Try to inspect how LangGraph handles serialization
         if hasattr(BaseCheckpointSaver, "serialize"):
-            logger.info(
-                "LangGraph uses BaseCheckpointSaver.serialize for serialization"
-            )
+            logger.info("LangGraph uses BaseCheckpointSaver.serialize for serialization")
 
         # Look for msgpack usage
         import inspect

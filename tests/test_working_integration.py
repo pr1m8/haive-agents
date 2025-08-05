@@ -50,9 +50,7 @@ def test_graph_with_conditional_edges():
         {"type": "CALLABLE", "callable": lambda s: {"result": "searched"}},
     )
 
-    graph.add_node(
-        "direct_path", {"type": "CALLABLE", "callable": lambda s: {"result": "direct"}}
-    )
+    graph.add_node("direct_path", {"type": "CALLABLE", "callable": lambda s: {"result": "direct"}})
 
     # Connect with conditional edges
     graph.add_edge(START, "router")
@@ -87,9 +85,7 @@ def test_schema_composition_concepts():
     Schema = composer.build()
 
     # Test instantiation
-    instance = Schema(
-        messages=[HumanMessage(content="Hello")], query="test query", confidence=0.9
-    )
+    instance = Schema(messages=[HumanMessage(content="Hello")], query="test query", confidence=0.9)
 
     # Verify fields
     assert hasattr(instance, "messages")  # From MessagesState

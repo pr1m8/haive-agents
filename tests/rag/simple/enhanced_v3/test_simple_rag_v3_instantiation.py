@@ -77,9 +77,7 @@ def test_factory_methods():
 
         # Create test documents
         docs = [
-            Document(
-                page_content="Machine learning is great.", metadata={"source": "doc1"}
-            ),
+            Document(page_content="Machine learning is great.", metadata={"source": "doc1"}),
             Document(page_content="AI is the future.", metadata={"source": "doc2"}),
         ]
 

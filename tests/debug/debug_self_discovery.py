@@ -88,7 +88,6 @@ def debug_with_breakpoints():
                 break  # If successful, stop testing
 
             except Exception:
-
                 # Breakpoint on error to examine
                 pdb.set_trace()  # Breakpoint 3: On error
 
@@ -109,7 +108,6 @@ def debug_graph_structure():
 
     # Check if the agent has been built
     if hasattr(self_discovery, "_app") and self_discovery._app:
-
         # Try to examine the graph structure
         try:
             graph = self_discovery._app
@@ -123,7 +121,6 @@ def debug_graph_structure():
         except Exception:
             pass
     else:
-
         # Try to manually build the graph
         try:
             if hasattr(self_discovery, "build_graph"):
@@ -135,7 +132,6 @@ def debug_graph_structure():
 
 
 if __name__ == "__main__":
-
     # First check the graph structure
     debug_graph_structure()
 

@@ -20,9 +20,7 @@ class TaskBreakdown(BaseModel):
 
     main_goal: str = Field(..., description="Main goal to achieve")
     subtasks: list[str] = Field(..., description="List of subtasks")
-    priority_order: list[int] = Field(
-        ..., description="Priority order of subtasks (indices)"
-    )
+    priority_order: list[int] = Field(..., description="Priority order of subtasks (indices)")
 
 
 class TaskResult(BaseModel):
@@ -77,7 +75,8 @@ class TestEnhancedMultiAgentV4RealExecution:
     def llm_config(self):
         """Provide real LLM configuration for tests."""
         return AugLLMConfig(
-            temperature=0.1, max_tokens=500  # Low temperature for consistent tests
+            temperature=0.1,
+            max_tokens=500,  # Low temperature for consistent tests
         )
 
     @pytest.mark.asyncio
@@ -452,7 +451,8 @@ class TestEnhancedMultiAgentV4Performance:
     def fast_llm_config(self):
         """Fast LLM config for performance tests."""
         return AugLLMConfig(
-            temperature=0.0, max_tokens=100  # Deterministic  # Small responses
+            temperature=0.0,
+            max_tokens=100,  # Deterministic  # Small responses
         )
 
     @pytest.mark.asyncio
@@ -475,11 +475,7 @@ class TestEnhancedMultiAgentV4Performance:
 
         # Execute
         result = await workflow.arun(
-            {
-                "messages": [
-                    {"role": "user", "content": "Process this through all workers."}
-                ]
-            }
+            {"messages": [{"role": "user", "content": "Process this through all workers."}]}
         )
 
         assert result is not None

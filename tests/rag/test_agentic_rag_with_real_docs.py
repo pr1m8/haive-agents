@@ -63,9 +63,7 @@ async def test_document_grader_with_real_docs():
         # Convert to format expected by grader
         documents_for_grading = [
             {"id": f"doc_{i}", "content": doc.page_content, "metadata": doc.metadata}
-            for i, doc in enumerate(
-                SAMPLE_DOCUMENTS[:3]
-            )  # Use fewer docs to avoid complexity
+            for i, doc in enumerate(SAMPLE_DOCUMENTS[:3])  # Use fewer docs to avoid complexity
         ]
 
         # Call the agent directly with proper input format
@@ -75,7 +73,6 @@ async def test_document_grader_with_real_docs():
 
         # Handle different result formats
         if hasattr(result, "get"):
-
             # Check for structured output
             if "document_binary_response" in result:
                 grading_result = result["document_binary_response"]
@@ -106,15 +103,12 @@ async def test_query_rewriter_with_context():
 
         # Test with one simple case
         test_query = "AI stuff"
-        test_context = (
-            "User is researching the relationship between different AI subfields"
-        )
+        test_context = "User is researching the relationship between different AI subfields"
 
         result = await rewriter.rewrite_query(test_query, test_context)
 
         # Handle different result formats
         if hasattr(result, "get"):
-
             # Check for structured output
             if "query_refinement_response" in result:
                 refinement = result["query_refinement_response"]
@@ -141,9 +135,7 @@ async def test_query_rewriter_with_context():
 async def test_complete_agentic_rag_workflow():
     """Test the complete Agentic RAG workflow with real documents."""
     # Create a mock vector store config (in real use, this would connect to actual vector DB)
-    embedding_config = EmbeddingConfig(
-        provider="openai", model="text-embedding-3-small"
-    )
+    embedding_config = EmbeddingConfig(provider="openai", model="text-embedding-3-small")
 
     vector_store_config = VectorStoreConfig(
         provider="chroma",
@@ -195,7 +187,8 @@ async def test_complete_agentic_rag_workflow():
 
     # Test web search fallback
     state_web = AgenticRAGState(
-        relevant_documents=[], query_rewrite_count=1  # Already tried rewriting
+        relevant_documents=[],
+        query_rewrite_count=1,  # Already tried rewriting
     )
     route = agent._route_after_grading(state_web)
     assert route == "web_search"
@@ -222,9 +215,7 @@ async def test_react_rag_with_tools():
         return f"Word count: {words}"
 
     # Create vector store config
-    embedding_config = EmbeddingConfig(
-        provider="openai", model="text-embedding-3-small"
-    )
+    embedding_config = EmbeddingConfig(provider="openai", model="text-embedding-3-small")
 
     vector_store_config = VectorStoreConfig(
         provider="chroma", embedding=embedding_config, collection_name="test_react_rag"

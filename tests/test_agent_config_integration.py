@@ -68,9 +68,7 @@ def test_agent_uses_provided_agent_config():
         checkpoint_mode="async",
         debug=True,
         save_history=False,
-        runnable_config={
-            "configurable": {"thread_id": "custom-thread", "recursion_limit": 50}
-        },
+        runnable_config={"configurable": {"thread_id": "custom-thread", "recursion_limit": 50}},
     )
 
     agent = TestAgentConfigIntegration(name="test_agent", config=custom_config)

@@ -42,9 +42,7 @@ async def supervisor_node(state: SupervisorGraphState) -> dict[str, Any]:
     if any(word in task_lower for word in ["search", "find", "look up", "research"]):
         chosen_agent = "search_agent"
         reasoning = "This task requires web search capabilities."
-    elif any(
-        word in task_lower for word in ["calculate", "math", "add", "multiply", "sum"]
-    ):
+    elif any(word in task_lower for word in ["calculate", "math", "add", "multiply", "sum"]):
         chosen_agent = "math_agent"
         reasoning = "This task requires mathematical calculations."
     elif any(word in task_lower for word in ["plan", "organize", "steps", "strategy"]):
@@ -106,9 +104,7 @@ async def agent_execution_node(state: SupervisorGraphState) -> dict[str, Any]:
         return {
             "agent_response": str(result),
             "messages": [
-                AIMessage(
-                    content=f"Agent {agent_name} completed: {str(result)[:100]}..."
-                )
+                AIMessage(content=f"Agent {agent_name} completed: {str(result)[:100]}...")
             ],
             "next_agent": "",
             "agent_task": "",
@@ -177,11 +173,7 @@ async def test_langgraph_supervisor():
 
     # Test 2: Search task
     search_state = {
-        "messages": [
-            HumanMessage(
-                content="Search for information about Python async programming"
-            )
-        ],
+        "messages": [HumanMessage(content="Search for information about Python async programming")],
         "agents": agents_dict,
         "active_agents": {"search_agent", "math_agent"},
         "next_agent": "",

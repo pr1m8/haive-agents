@@ -21,9 +21,7 @@ agent1 = SimpleAgent(
 )
 
 # Create multi-agent
-multi = ProperMultiAgent(
-    name="multi_test", agents={"test1": agent1}, execution_mode="sequential"
-)
+multi = ProperMultiAgent(name="multi_test", agents={"test1": agent1}, execution_mode="sequential")
 
 
 # Check multi-agent setup

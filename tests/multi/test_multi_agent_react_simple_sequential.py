@@ -75,7 +75,9 @@ def web_search(query: str) -> str:
 @tool
 def data_analyzer(data: str) -> str:
     """Analyze data and provide insights."""
-    return f"Data analysis of '{data}': Patterns identified, key metrics extracted, trends analyzed."
+    return (
+        f"Data analysis of '{data}': Patterns identified, key metrics extracted, trends analyzed."
+    )
 
 
 class TestMultiAgentSequentialPattern:
@@ -88,7 +90,8 @@ class TestMultiAgentSequentialPattern:
             name="reasoning_agent",
             engine=AugLLMConfig(
                 llm_config=AzureLLMConfig(
-                    model="gpt-4o", temperature=0.7  # Use default Azure model
+                    model="gpt-4o",
+                    temperature=0.7,  # Use default Azure model
                 ),
                 system_message="You are a reasoning agent. Think step by step, use tools when needed, and explain your reasoning.",
                 tools=[calculator, web_search, data_analyzer],
@@ -120,7 +123,8 @@ class TestMultiAgentSequentialPattern:
             name="task_formatter",
             engine=AugLLMConfig(
                 llm_config=AzureLLMConfig(
-                    model="gpt-4o", temperature=0.3  # Use default Azure model
+                    model="gpt-4o",
+                    temperature=0.3,  # Use default Azure model
                 ),
                 system_message="You are a task breakdown specialist. Convert problems into structured task breakdowns.",
             ),
@@ -134,9 +138,7 @@ class TestMultiAgentSequentialPattern:
         # ReactAgent validation
         assert react_agent.name == "reasoning_agent"
         assert react_agent.engine is not None
-        assert (
-            len(react_agent.engine.tools) == 3
-        )  # calculator, web_search, data_analyzer
+        assert len(react_agent.engine.tools) == 3  # calculator, web_search, data_analyzer
 
         # SimpleAgent validation
         assert simple_agent_analysis.name == "analysis_formatter"
@@ -178,11 +180,7 @@ class TestMultiAgentSequentialPattern:
 
             # Check for evidence of calculation and search
             content_lower = content.lower()
-            assert (
-                "circle" in content_lower
-                or "area" in content_lower
-                or "78.5" in content_lower
-            )
+            assert "circle" in content_lower or "area" in content_lower or "78.5" in content_lower
 
         except Exception as e:
             # Still assert success if we got a TypeError about msgpack (means execution worked)
@@ -232,7 +230,9 @@ class TestMultiAgentSequentialPattern:
 
     def test_manual_sequential_execution(self, react_agent, simple_agent_analysis):
         """Test manual sequential execution: ReactAgent → SimpleAgent."""
-        problem = "I need to calculate 15 * 23 and then analyze what makes this calculation interesting."
+        problem = (
+            "I need to calculate 15 * 23 and then analyze what makes this calculation interesting."
+        )
 
         # Step 1: ReactAgent reasoning
 
@@ -261,23 +261,21 @@ class TestMultiAgentSequentialPattern:
 
         except Exception as e:
             if "msgpack serializable" in str(e):
-                reasoning_content = "Mathematical calculation result: 15 * 23 = 345. This is interesting because..."
+                reasoning_content = (
+                    "Mathematical calculation result: 15 * 23 = 345. This is interesting because..."
+                )
             else:
                 raise
 
         # Step 2: SimpleAgent structured output from reasoning
-        format_prompt = (
-            f"Convert this reasoning into a structured analysis:\n\n{reasoning_content}"
-        )
+        format_prompt = f"Convert this reasoning into a structured analysis:\n\n{reasoning_content}"
 
         # Compile and execute SimpleAgent
         simple_agent_analysis.compile()
         input_data_2 = {"messages": [HumanMessage(content=format_prompt)]}
 
         try:
-            structured_result = simple_agent_analysis._app.invoke(
-                input_data_2, config=config
-            )
+            structured_result = simple_agent_analysis._app.invoke(input_data_2, config=config)
 
             # Check for analysis field (expected from AnalysisResult model)
             if "analysis" in structured_result:
@@ -307,9 +305,7 @@ class TestMultiAgentSequentialPattern:
         analysis = react_agent.run(complex_problem)
 
         # Step 2: SimpleAgent task breakdown
-        breakdown_prompt = (
-            f"Break down this analysis into a structured task plan:\n\n{analysis}"
-        )
+        breakdown_prompt = f"Break down this analysis into a structured task plan:\n\n{analysis}"
         task_breakdown = simple_agent_tasks.run(breakdown_prompt)
 
         # Validate data transfer
@@ -322,7 +318,9 @@ class TestMultiAgentSequentialPattern:
     @pytest.mark.asyncio
     async def test_async_sequential_execution(self, react_agent, simple_agent_analysis):
         """Test async sequential execution of agents."""
-        problem = "Analyze the benefits and drawbacks of remote work, calculate productivity metrics."
+        problem = (
+            "Analyze the benefits and drawbacks of remote work, calculate productivity metrics."
+        )
 
         # Step 1: Async ReactAgent execution
         reasoning_result = await react_agent.arun(problem)
@@ -344,7 +342,9 @@ class TestMultiAgentSequentialPattern:
         reasoning = react_agent.run(problem)
 
         # SimpleAgent should preserve the numerical context
-        analysis_prompt = f"Create structured analysis preserving all numerical details:\n\n{reasoning}"
+        analysis_prompt = (
+            f"Create structured analysis preserving all numerical details:\n\n{reasoning}"
+        )
         analysis = simple_agent_analysis.run(analysis_prompt)
 
         # Verify state preservation
@@ -354,9 +354,7 @@ class TestMultiAgentSequentialPattern:
         # Check that key information was preserved across agents
         # Both should reference the original problem context
 
-    def test_error_handling_in_sequential_flow(
-        self, react_agent, simple_agent_analysis
-    ):
+    def test_error_handling_in_sequential_flow(self, react_agent, simple_agent_analysis):
         """Test error handling when agents encounter issues."""
         # Use a problematic input that might cause issues
         problematic_input = "This is an empty problem with no clear instructions."

@@ -41,14 +41,10 @@ def add_comprehensive_debugging():
             )
             try:
                 result = original_derive(self, *args, **kwargs)
-                console.print(
-                    f"[green]✅ derive_input_schema success: {result.__name__}[/green]"
-                )
+                console.print(f"[green]✅ derive_input_schema success: {result.__name__}[/green]")
                 return result
             except Exception as e:
-                console.print(
-                    f"[bold red]💥 derive_input_schema FAILED: {e}[/bold red]"
-                )
+                console.print(f"[bold red]💥 derive_input_schema FAILED: {e}[/bold red]")
                 if "AugLLMConfig" in str(e):
                     console.print(
                         "[bold red]🎯 FOUND AugLLMConfig ERROR in derive_input_schema![/bold red]"
@@ -74,9 +70,7 @@ def add_comprehensive_debugging():
                 console.print("[green]✅ SchemaComposer.build success[/green]")
                 return result
             except Exception as e:
-                console.print(
-                    f"[bold red]💥 SchemaComposer.build FAILED: {e}[/bold red]"
-                )
+                console.print(f"[bold red]💥 SchemaComposer.build FAILED: {e}[/bold red]")
                 if "AugLLMConfig" in str(e):
                     console.print(
                         "[bold red]🎯 FOUND AugLLMConfig ERROR in SchemaComposer![/bold red]"
@@ -96,9 +90,7 @@ def add_comprehensive_debugging():
         original_compile = agent_mod.Agent.compile
 
         def debug_compile(self, *args, **kwargs):
-            console.print(
-                f"[yellow]🔍 Agent.compile called on {type(self).__name__}[/yellow]"
-            )
+            console.print(f"[yellow]🔍 Agent.compile called on {type(self).__name__}[/yellow]")
             try:
                 result = original_compile(self, *args, **kwargs)
                 console.print("[green]✅ Agent.compile success[/green]")
@@ -130,16 +122,12 @@ def add_comprehensive_debugging():
                 console.print("[green]✅ BaseGraph.to_langgraph success[/green]")
                 return result
             except Exception as e:
-                console.print(
-                    f"[bold red]💥 BaseGraph.to_langgraph FAILED: {e}[/bold red]"
-                )
+                console.print(f"[bold red]💥 BaseGraph.to_langgraph FAILED: {e}[/bold red]")
                 if "AugLLMConfig" in str(e):
                     console.print(
                         "[bold red]🎯 FOUND AugLLMConfig ERROR in BaseGraph.to_langgraph![/bold red]"
                     )
-                    console.print(
-                        "[bold red]THIS IS LIKELY THE MAIN ERROR LOCATION![/bold red]"
-                    )
+                    console.print("[bold red]THIS IS LIKELY THE MAIN ERROR LOCATION![/bold red]")
                 raise
 
         graph_mod.BaseGraph.to_langgraph = debug_to_langgraph
@@ -151,9 +139,7 @@ def add_comprehensive_debugging():
 
 def test_notebook_exact_reproduction():
     """Test the exact notebook code step by step."""
-    console.print(
-        "[bold green]🧪 TESTING NOTEBOOK CODE EXACT REPRODUCTION[/bold green]"
-    )
+    console.print("[bold green]🧪 TESTING NOTEBOOK CODE EXACT REPRODUCTION[/bold green]")
 
     try:
         # Cell 1: Import types
@@ -188,9 +174,7 @@ Focus on improvements that will lead to better document retrieval.""",
             refined_query: str = Field(description="The refined/improved query")
             improvement_type: str = Field(description="Type of improvement made")
             rationale: str = Field(description="Why this refinement improves the query")
-            expected_benefit: str = Field(
-                description="Expected improvement in retrieval"
-            )
+            expected_benefit: str = Field(description="Expected improvement in retrieval")
 
         class QueryRefinementResponse(BaseModel):
             original_query: str = Field(description="The original user query")
@@ -200,9 +184,7 @@ Focus on improvements that will lead to better document retrieval.""",
             refinement_suggestions: list[QueryRefinementSuggestion] = Field(
                 description="List of suggestions"
             )
-            best_refined_query: str = Field(
-                description="The recommended best refined query"
-            )
+            best_refined_query: str = Field(description="The recommended best refined query")
             search_strategy_recommendations: list[str] = Field(
                 description="Search strategy recommendations"
             )
@@ -230,9 +212,7 @@ Focus on improvements that will lead to better document retrieval.""",
         console.print("✅ Cell 5: agent_tester function defined")
 
         # Cell 6: Create the agent (this is where error likely happens)
-        console.print(
-            "[bold yellow]🔥 EXECUTING CRITICAL CELL 6: Creating agent...[/bold yellow]"
-        )
+        console.print("[bold yellow]🔥 EXECUTING CRITICAL CELL 6: Creating agent...[/bold yellow]")
         result = agent_tester(
             RAG_QUERY_REFINEMENT,
             QueryRefinementResponse,
@@ -241,13 +221,9 @@ Focus on improvements that will lead to better document retrieval.""",
         console.print("✅ Cell 6: Agent created successfully!")
 
         # Cell 7: Test input schema (this worked in notebook)
-        console.print(
-            "[bold yellow]🔥 EXECUTING CELL 7: Testing input schema...[/bold yellow]"
-        )
+        console.print("[bold yellow]🔥 EXECUTING CELL 7: Testing input schema...[/bold yellow]")
         input_schema_fields = result.input_schema(query="hello").model_fields
-        console.print(
-            f"✅ Cell 7: Input schema fields: {list(input_schema_fields.keys())}"
-        )
+        console.print(f"✅ Cell 7: Input schema fields: {list(input_schema_fields.keys())}")
 
         # Cell 8: The actual run call (this is where the error REALLY happens)
         def agent_tester_with_run(prompt, model, test_prompt):
@@ -270,9 +246,7 @@ Focus on improvements that will lead to better document retrieval.""",
         )
         console.print("✅ Cell 8: Agent run successful!")
 
-        console.print(
-            "[bold green]🎉 ALL NOTEBOOK CELLS EXECUTED SUCCESSFULLY![/bold green]"
-        )
+        console.print("[bold green]🎉 ALL NOTEBOOK CELLS EXECUTED SUCCESSFULLY![/bold green]")
 
     except Exception as e:
         console.print(f"[bold red]💥 NOTEBOOK EXECUTION FAILED: {e}[/bold red]")
@@ -280,13 +254,9 @@ Focus on improvements that will lead to better document retrieval.""",
 
         # Check if this is the AugLLMConfig error
         if "AugLLMConfig" in str(e) and "not defined" in str(e):
-            console.print(
-                "[bold red]🎯 FOUND THE EXACT ERROR FROM NOTEBOOK![/bold red]"
-            )
+            console.print("[bold red]🎯 FOUND THE EXACT ERROR FROM NOTEBOOK![/bold red]")
         elif "abstract class Engine" in str(e):
-            console.print(
-                "[bold red]🎯 FOUND ABSTRACT ENGINE ERROR (RELATED ISSUE)![/bold red]"
-            )
+            console.print("[bold red]🎯 FOUND ABSTRACT ENGINE ERROR (RELATED ISSUE)![/bold red]")
 
         # Print full traceback with rich formatting
         console.print("\n[bold yellow]FULL TRACEBACK:[/bold yellow]")

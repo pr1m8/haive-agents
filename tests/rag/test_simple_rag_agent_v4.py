@@ -82,9 +82,7 @@ Query: {query}
 
 Please provide a detailed technical answer."""
 
-        agent = AnswerAgent(
-            name="custom_answer", prompt_template=custom_prompt, temperature=0.2
-        )
+        agent = AnswerAgent(name="custom_answer", prompt_template=custom_prompt, temperature=0.2)
 
         assert agent.prompt_template == custom_prompt
         assert agent.temperature == 0.2

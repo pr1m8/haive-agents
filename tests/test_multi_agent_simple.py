@@ -38,9 +38,7 @@ class TestProperMultiAgent:
         agent1 = SimpleAgent(name="agent1", engine=AugLLMConfig())
         agent2 = SimpleAgent(name="agent2", engine=AugLLMConfig())
 
-        multi = ProperMultiAgent(
-            name="test_multi", agents={"first": agent1, "second": agent2}
-        )
+        multi = ProperMultiAgent(name="test_multi", agents={"first": agent1, "second": agent2})
 
         assert isinstance(multi.agents, dict)
         assert len(multi.agents) == 2
@@ -101,12 +99,8 @@ class TestProperMultiAgent:
     @pytest.mark.asyncio
     async def test_basic_execution(self):
         """Test basic execution without errors."""
-        agent1 = SimpleAgent(
-            name="agent1", engine=AugLLMConfig(system_message="You are agent 1.")
-        )
-        agent2 = SimpleAgent(
-            name="agent2", engine=AugLLMConfig(system_message="You are agent 2.")
-        )
+        agent1 = SimpleAgent(name="agent1", engine=AugLLMConfig(system_message="You are agent 1."))
+        agent2 = SimpleAgent(name="agent2", engine=AugLLMConfig(system_message="You are agent 2."))
 
         multi = ProperMultiAgent(name="test_multi", agents=[agent1, agent2])
 
@@ -131,9 +125,7 @@ class TestProperMultiAgent:
         """Test error handling for invalid execution mode."""
         agent1 = SimpleAgent(name="agent1", engine=AugLLMConfig())
 
-        multi = ProperMultiAgent(
-            name="test_multi", agents=[agent1], execution_mode="invalid"
-        )
+        multi = ProperMultiAgent(name="test_multi", agents=[agent1], execution_mode="invalid")
 
         with pytest.raises(NotImplementedError):
             multi.build_graph()

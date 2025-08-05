@@ -115,9 +115,7 @@ def check_database_persistence():
                     ]
                 )
                 print(f"   ✅ Found {len(recent_threads)} conversation threads")
-                print(
-                    f"   ✅ Total checkpoints across all threads: {total_checkpoints}"
-                )
+                print(f"   ✅ Total checkpoints across all threads: {total_checkpoints}")
                 print("   🎉 PERSISTENCE IS WORKING!")
                 print("      - Agents automatically generate consistent thread_ids")
                 print("      - State is being saved to Supabase database")

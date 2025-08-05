@@ -18,7 +18,6 @@ from haive.core.engine.aug_llm import AugLLMConfig
 # Monkey patch AgentNodeV3 to add debugging
 def debug_agent_node_call(original_call):
     def wrapper(self, state):
-
         if hasattr(state, "agents"):
             if hasattr(state.agents, "__len__"):
                 pass
@@ -56,7 +55,6 @@ AgentNodeV3Config.__call__ = debug_agent_node_call(original_call)
 # Also patch the set_active_agent method to see what's happening
 def debug_set_active_agent(original_method):
     def wrapper(self, agent_name):
-
         if hasattr(self, "agents"):
             if isinstance(self.agents, dict):
                 pass
@@ -81,7 +79,6 @@ MultiAgentState.set_active_agent = debug_set_active_agent(original_set_active)
 # Also patch the schema input preparation
 def debug_prepare_schema_input(original_method):
     def wrapper(self, input_data, input_schema):
-
         if hasattr(self, "agents") and isinstance(self.agents, dict):
             pass
 
@@ -123,7 +120,8 @@ async def trace_execution():
 
     # Step 4: Create test state manually
     multi.state_schema(
-        messages=[HumanMessage(content="Test")], agents=multi.agents  # Explicitly set
+        messages=[HumanMessage(content="Test")],
+        agents=multi.agents,  # Explicitly set
     )
 
     # Step 5: Test input preparation

@@ -151,9 +151,7 @@ def test_basic_react_execution():
                     print("✅ SUCCESS: Found expected calculation result")
                     return True
                 else:
-                    print(
-                        "❌ PARTIAL: Response generated but calculation not clearly found"
-                    )
+                    print("❌ PARTIAL: Response generated but calculation not clearly found")
                     return False
                 break
 
@@ -204,13 +202,9 @@ def test_structured_output_react():
                         print(
                             f"   Original problem: {args.get('original_problem', 'N/A')[:100]}..."
                         )
-                        print(
-                            f"   Reasoning steps: {len(args.get('reasoning_steps', []))}"
-                        )
+                        print(f"   Reasoning steps: {len(args.get('reasoning_steps', []))}")
                         print(f"   Calculations: {len(args.get('calculations', []))}")
-                        print(
-                            f"   Final answer: {args.get('final_answer', 'N/A')[:50]}..."
-                        )
+                        print(f"   Final answer: {args.get('final_answer', 'N/A')[:50]}...")
                         print(f"   Confidence: {args.get('confidence', 'N/A')}")
                         return True
                 break

@@ -24,7 +24,6 @@ def debug_schema_composition():
     # Compose the state schema
     state_schema = composer.build()
 
-
     # Check __input_fields__
     if hasattr(state_schema, "__input_fields__"):
         for engine_name, fields in state_schema.__input_fields__.items():
@@ -40,9 +39,7 @@ def debug_schema_composition():
 
     # Check if engine can be called to get input fields some other way
     engine_attrs = [
-        attr
-        for attr in dir(engine)
-        if "input" in attr.lower() and not attr.startswith("_")
+        attr for attr in dir(engine) if "input" in attr.lower() and not attr.startswith("_")
     ]
 
     # Test calling get_input_fields directly
@@ -64,7 +61,6 @@ def debug_schema_composition():
 
     # DEBUG: Check what derive_input_schema() actually uses for input_fields
     if hasattr(state_schema, "__input_fields__"):
-
         # Simulate what derive_input_schema does
         input_fields = []
         for engine_inputs in state_schema.__input_fields__.values():

@@ -159,9 +159,7 @@ class TestDynamicAgentDiscoverySupervisor:
         from haive.agents.supervisor.types import SupervisorState
 
         state = SupervisorState(
-            messages=[
-                HumanMessage(content="Analyze the sales data and create a report")
-            ],
+            messages=[HumanMessage(content="Analyze the sales data and create a report")],
             next_agent="",
             agent_outputs={},
         )
@@ -184,9 +182,7 @@ class TestDynamicAgentDiscoverySupervisor:
 
         state = SupervisorState(
             messages=[
-                HumanMessage(
-                    content="I need a financial expert to analyze investment options"
-                )
+                HumanMessage(content="I need a financial expert to analyze investment options")
             ],
             next_agent="",
             agent_outputs={},
@@ -197,8 +193,7 @@ class TestDynamicAgentDiscoverySupervisor:
         # Should route to self for discovery since no specialists exist
         assert decision.next_agent == supervisor.name
         assert (
-            "specialist" in decision.reasoning.lower()
-            or "discover" in decision.reasoning.lower()
+            "specialist" in decision.reasoning.lower() or "discover" in decision.reasoning.lower()
         )
 
     def test_factory_with_discovery_sources(self, base_config, initial_agents):
@@ -247,9 +242,7 @@ class TestDynamicAgentDiscoverySupervisor:
     @pytest.mark.asyncio
     async def test_supervisor_run_with_discovery(self, base_config):
         """Test full supervisor run with agent discovery."""
-        initial_agents = {
-            "assistant": SimpleAgent(name="assistant", engine=base_config)
-        }
+        initial_agents = {"assistant": SimpleAgent(name="assistant", engine=base_config)}
 
         supervisor = DynamicAgentDiscoverySupervisor(
             name="main_supervisor", agents=initial_agents, engine=base_config

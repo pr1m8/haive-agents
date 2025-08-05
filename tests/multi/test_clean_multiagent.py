@@ -95,9 +95,7 @@ class TestMultiAgentRoutingMethods:
         self.agent3 = SimpleAgent(name="processor_b", engine=AugLLMConfig())
         self.agent4 = SimpleAgent(name="aggregator", engine=AugLLMConfig())
 
-        self.multi_agent = MultiAgent(
-            agents=[self.agent1, self.agent2, self.agent3, self.agent4]
-        )
+        self.multi_agent = MultiAgent(agents=[self.agent1, self.agent2, self.agent3, self.agent4])
 
     def test_add_conditional_routing(self):
         """Test adding conditional routing configuration."""
@@ -130,9 +128,7 @@ class TestMultiAgentRoutingMethods:
 
     def test_add_parallel_group(self):
         """Test adding parallel group configuration."""
-        self.multi_agent.add_parallel_group(
-            ["processor_a", "processor_b"], next_agent="aggregator"
-        )
+        self.multi_agent.add_parallel_group(["processor_a", "processor_b"], next_agent="aggregator")
 
         group_key = "parallel_processor_a_processor_b"
         assert group_key in self.multi_agent.branches
@@ -152,9 +148,7 @@ class TestMultiAgentRoutingMethods:
 
     def test_legacy_add_branch(self):
         """Test legacy add_branch method still works."""
-        self.multi_agent.add_branch(
-            "classifier", "if category == 'urgent'", ["processor_a"]
-        )
+        self.multi_agent.add_branch("classifier", "if category == 'urgent'", ["processor_a"])
 
         assert "classifier" in self.multi_agent.branches
         branch_config = self.multi_agent.branches["classifier"]
@@ -323,9 +317,7 @@ class TestMultiAgentIntegration:
         )
 
         # Add parallel validation
-        multi_agent.add_parallel_group(
-            ["processor_a", "processor_b"], next_agent="aggregator"
-        )
+        multi_agent.add_parallel_group(["processor_a", "processor_b"], next_agent="aggregator")
 
         # Add direct edge from validator
         multi_agent.add_edge("validator", "aggregator")
@@ -383,15 +375,9 @@ class TestMultiAgentIntegration:
     async def test_conditional_routing_real_execution(self):
         """Test conditional routing with real execution."""
         # Create agents with real configurations
-        classifier = SimpleAgent(
-            name="classifier", engine=AugLLMConfig(temperature=0.1)
-        )
-        processor_a = SimpleAgent(
-            name="processor_a", engine=AugLLMConfig(temperature=0.1)
-        )
-        processor_b = SimpleAgent(
-            name="processor_b", engine=AugLLMConfig(temperature=0.1)
-        )
+        classifier = SimpleAgent(name="classifier", engine=AugLLMConfig(temperature=0.1))
+        processor_a = SimpleAgent(name="processor_a", engine=AugLLMConfig(temperature=0.1))
+        processor_b = SimpleAgent(name="processor_b", engine=AugLLMConfig(temperature=0.1))
 
         multi_agent = MultiAgent(
             agents=[classifier, processor_a, processor_b], entry_point="classifier"

@@ -23,28 +23,21 @@ def test_initial_version():
     agent = LTMAgent(name="Initial LTM Agent")
     agent.setup_agent()
 
-
     # Create test conversation
     state = LTMState(
         messages=[
-            HumanMessage(
-                content="Hi! I'm John and I love playing guitar and composing music."
-            ),
+            HumanMessage(content="Hi! I'm John and I love playing guitar and composing music."),
             AIMessage(
                 content="Hello John! I'll remember your passion for guitar and music composition."
             ),
             HumanMessage(
                 content="I'm also a vegetarian and I prefer spicy food, especially Thai cuisine."
             ),
-            AIMessage(
-                content="Got it! You're vegetarian with a preference for spicy Thai food."
-            ),
+            AIMessage(content="Got it! You're vegetarian with a preference for spicy Thai food."),
             HumanMessage(
                 content="I work as a data scientist and I enjoy running marathons in my free time."
             ),
-            AIMessage(
-                content="Excellent! So you're a data scientist who runs marathons."
-            ),
+            AIMessage(content="Excellent! So you're a data scientist who runs marathons."),
         ]
     )
 
@@ -65,7 +58,6 @@ def test_initial_version():
     if not real_langmem:
         sources = [m["source"] for m in memories]
         return False
-
 
     # Print memory details
     for i, memory in enumerate(memories):
@@ -90,9 +82,7 @@ def test_agent_graph_execution():
     test_state = LTMState(
         messages=[
             HumanMessage(content="I love rock climbing and photography."),
-            AIMessage(
-                content="I'll remember your interests in rock climbing and photography."
-            ),
+            AIMessage(content="I'll remember your interests in rock climbing and photography."),
         ]
     )
 
@@ -113,7 +103,6 @@ def test_agent_graph_execution():
         if len(langmem_sources) != len(memories):
             return False
 
-
         return True
 
     except Exception as e:
@@ -121,10 +110,8 @@ def test_agent_graph_execution():
 
 
 if __name__ == "__main__":
-
     success1 = test_initial_version()
     success2 = test_agent_graph_execution()
-
 
     if success1 and success2:
         pass

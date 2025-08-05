@@ -55,13 +55,11 @@ async def test_agent_node_v3_sequential():
         debug=True,
     )
 
-
     # Step 2: Create MultiAgentState with agents
     state = MultiAgentState(
         agents=[planner, executor],
         messages=[HumanMessage(content="Plan and execute a simple task")],
     )
-
 
     # Step 3: Create AgentNodeV3 configurations
 
@@ -70,9 +68,10 @@ async def test_agent_node_v3_sequential():
     )
 
     executor_node = create_agent_node_v3(
-        agent_name="executor", name="execute_step", command_goto=None  # End of sequence
+        agent_name="executor",
+        name="execute_step",
+        command_goto=None,  # End of sequence
     )
-
 
     # Step 4: Execute planner node
 
@@ -89,7 +88,6 @@ async def test_agent_node_v3_sequential():
             for key, value in planner_result.update.items():
                 if hasattr(state, key):
                     setattr(state, key, value)
-
 
     except Exception as e:
         return False
@@ -110,7 +108,6 @@ async def test_agent_node_v3_sequential():
                 if hasattr(state, key):
                     setattr(state, key, value)
 
-
     except Exception as e:
         return False
 
@@ -126,11 +123,9 @@ async def test_agent_node_v3_sequential():
     planner_output = state.get_agent_output("planner")
     executor_output = state.get_agent_output("executor")
 
-
     # Check agent states
     planner_state = state.get_agent_state("planner")
     executor_state = state.get_agent_state("executor")
-
 
     # Check messages updated
 

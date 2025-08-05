@@ -52,9 +52,7 @@ async def test_simple_natural_flow():
     # Create state with only search and math agents
     state = SupervisorStateWithTools()
     state.messages = [
-        HumanMessage(
-            content="Find France population, calculate 15% of it, translate to Spanish"
-        )
+        HumanMessage(content="Find France population, calculate 15% of it, translate to Spanish")
     ]
 
     # Add only 2 agents initially
@@ -117,7 +115,8 @@ async def test_simple_natural_flow():
     try:
         # Use the supervisor's arun with the complete state
         await supervisor.arun(
-            state, debug=True  # Pass state object directly, not model_dump()
+            state,
+            debug=True,  # Pass state object directly, not model_dump()
         )
 
     except Exception:

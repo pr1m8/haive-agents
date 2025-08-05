@@ -78,11 +78,7 @@ async def test_structured_output_extraction():
     # Method 2: Check the last AI message for tool calls
     if hasattr(result, "get_last_ai_message"):
         last_ai_msg = result.get_last_ai_message()
-        if (
-            last_ai_msg
-            and hasattr(last_ai_msg, "tool_calls")
-            and last_ai_msg.tool_calls
-        ):
+        if last_ai_msg and hasattr(last_ai_msg, "tool_calls") and last_ai_msg.tool_calls:
             print(f"\n3. Tool calls found: {len(last_ai_msg.tool_calls)}")
             for tool_call in last_ai_msg.tool_calls:
                 if isinstance(tool_call, dict):
@@ -145,9 +141,7 @@ async def test_with_helper():
     # Create agent
     agent = SimpleAgent(
         name="planner",
-        engine=AugLLMConfig(
-            structured_output_model=TodoList, structured_output_version="v2"
-        ),
+        engine=AugLLMConfig(structured_output_model=TodoList, structured_output_version="v2"),
     )
 
     # Run and extract with debug=True

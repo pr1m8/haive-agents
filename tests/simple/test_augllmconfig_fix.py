@@ -9,7 +9,6 @@ from haive.core.models.llm.base import DeepSeekLLMConfig
 
 
 def main():
-
     # Test 1: The Core Fix - AzureLLMConfig is no longer None
 
     from haive.core.engine.aug_llm.config import AzureLLMConfig as ImportedAzure
@@ -23,9 +22,7 @@ def main():
 
     # Test 3: AugLLMConfig with DeepSeek
 
-    config = AugLLMConfig(
-        temperature=0.1, max_tokens=100, llm_config=DeepSeekLLMConfig()
-    )
+    config = AugLLMConfig(temperature=0.1, max_tokens=100, llm_config=DeepSeekLLMConfig())
 
     # Test 4: SimpleAgent v3 Creation
 

@@ -138,9 +138,7 @@ async def test_real_registry_supervisor():
 
     coding_input = {
         "messages": [
-            HumanMessage(
-                content="Implement a thread-safe LRU cache in Python with async support"
-            )
+            HumanMessage(content="Implement a thread-safe LRU cache in Python with async support")
         ]
     }
 
@@ -198,9 +196,7 @@ async def test_real_registry_supervisor():
     # Test with new agent
     analysis_input = {
         "messages": [
-            HumanMessage(
-                content="Analyze user engagement patterns and predict churn probability"
-            )
+            HumanMessage(content="Analyze user engagement patterns and predict churn probability")
         ]
     }
 

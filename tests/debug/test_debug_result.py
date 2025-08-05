@@ -64,19 +64,14 @@ async def debug_result():
             if messages:
                 last_msg = messages[-1]
                 print(f"6. Last message type: {type(last_msg)}")
-                print(
-                    f"7. Last message has tool_calls: {hasattr(last_msg, 'tool_calls')}"
-                )
+                print(f"7. Last message has tool_calls: {hasattr(last_msg, 'tool_calls')}")
 
                 if hasattr(last_msg, "tool_calls") and last_msg.tool_calls:
                     print(f"8. Tool calls: {last_msg.tool_calls}")
 
                     # Extract structured output
                     for tool_call in last_msg.tool_calls:
-                        if (
-                            isinstance(tool_call, dict)
-                            and tool_call.get("name") == "TodoList"
-                        ):
+                        if isinstance(tool_call, dict) and tool_call.get("name") == "TodoList":
                             import json
 
                             args = tool_call.get("args", {})

@@ -23,7 +23,6 @@ async def test_minimal_flow():
 
     search_agent = ReactAgent(name="search_agent", engine=search_engine)
 
-
     # Test ReactAgent directly
     try:
         # Call ReactAgent with simple message input
@@ -31,7 +30,6 @@ async def test_minimal_flow():
 
         # Check the final messages
         if hasattr(result, "messages") and result.messages:
-
             # Look for the final human message (agent's response)
             last_msg = result.messages[-1]
 
@@ -52,7 +50,6 @@ async def test_minimal_flow():
         import traceback
 
         traceback.print_exc()
-
 
 
 if __name__ == "__main__":

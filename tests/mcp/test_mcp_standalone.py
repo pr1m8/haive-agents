@@ -20,14 +20,11 @@ def create_mcp_documents():
     """Create documents from MCP server data."""
 
     # Direct path to the MCP servers data
-    all_servers_path = Path(
-        "packages/haive-mcp/data/mcp_servers/ALL_MCP_SERVERS_COMPLETE.json"
-    )
+    all_servers_path = Path("packages/haive-mcp/data/mcp_servers/ALL_MCP_SERVERS_COMPLETE.json")
 
     with open(all_servers_path) as f:
         data = json.load(f)
         servers = data.get("all_servers", [])
-
 
     documents = []
     for server in servers[:100]:  # Just test with first 100
@@ -43,7 +40,7 @@ MCP Server: {name}
 Description: {description}
 Category: {category}
 Language: {language}
-Keywords: {category} {language} MCP server {name.lower().replace('-', ' ')} database python
+Keywords: {category} {language} MCP server {name.lower().replace("-", " ")} database python
 """
 
         doc = Document(
@@ -72,7 +69,6 @@ async def test_mcp_rag():
         encode_kwargs={"normalize_embeddings": True},
     )
 
-
     # Create agent using from_documents
     agent = BaseRAGAgent.from_documents(
         documents=documents,
@@ -82,14 +78,11 @@ async def test_mcp_rag():
         retriever_kwargs={"k": 5},
     )
 
-
     # Test queries
     queries = ["python database", "SQLAlchemy", "PostgreSQL", "database connections"]
 
     for query in queries:
-
         result = await agent.arun(query)
-
 
         if hasattr(result, "retrieved_documents"):
             docs = result.retrieved_documents

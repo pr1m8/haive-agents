@@ -23,9 +23,7 @@ def text_analyzer(text: str) -> str:
     words = text.split()
     chars = len(text)
     sentences = text.count(".") + text.count("!") + text.count("?")
-    return (
-        f"Text analysis: {len(words)} words, {chars} characters, {sentences} sentences"
-    )
+    return f"Text analysis: {len(words)} words, {chars} characters, {sentences} sentences"
 
 
 @tool
@@ -49,18 +47,14 @@ def test_simple_agent_v3_with_tools():
     # Create agent with tools
     agent = SimpleAgentV3(
         name="tool_agent",
-        engine=AugLLMConfig(
-            temperature=0.1, tools=[calculator, text_analyzer, weather_info]
-        ),
+        engine=AugLLMConfig(temperature=0.1, tools=[calculator, text_analyzer, weather_info]),
     )
 
     # Test 1: Calculator tool
     agent.run("What is 25 * 34 + 100?", debug=True)
 
     # Test 2: Text analyzer tool
-    agent.run(
-        "Analyze this text: 'Hello world! This is a test. How are you?'", debug=True
-    )
+    agent.run("Analyze this text: 'Hello world! This is a test. How are you?'", debug=True)
 
     # Test 3: Weather tool
     agent.run("What's the weather like in Paris?", debug=True)

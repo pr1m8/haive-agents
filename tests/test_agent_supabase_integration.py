@@ -205,9 +205,7 @@ class TestAgentSupabaseIntegration:
 
         # Verify custom configuration
         assert agent.runnable_config["configurable"]["recursion_limit"] == 50
-        assert (
-            agent.runnable_config["configurable"]["checkpoint_ns"] == "custom_namespace"
-        )
+        assert agent.runnable_config["configurable"]["checkpoint_ns"] == "custom_namespace"
 
     def test_multiple_agents_same_database(self):
         """Test multiple agents using the same Supabase database."""
@@ -241,9 +239,7 @@ class TestAgentSupabaseIntegration:
 
     def test_agent_state_persistence(self):
         """Test that agent state is properly persisted."""
-        supabase_config = SupabaseCheckpointerConfig(
-            user_id="state-test-user", setup_needed=False
-        )
+        supabase_config = SupabaseCheckpointerConfig(user_id="state-test-user", setup_needed=False)
 
         checkpointer = supabase_config.create_checkpointer()
 
@@ -274,22 +270,16 @@ class TestAgentSupabasePatterns:
     def test_agent_factory_pattern(self):
         """Test factory pattern for creating agents with Supabase."""
 
-        def create_supabase_agent(
-            name: str, user_id: str, thread_id: str
-        ) -> TestSupabaseAgent:
+        def create_supabase_agent(name: str, user_id: str, thread_id: str) -> TestSupabaseAgent:
             """Factory function to create agent with Supabase persistence."""
-            supabase_config = SupabaseCheckpointerConfig(
-                user_id=user_id, setup_needed=False
-            )
+            supabase_config = SupabaseCheckpointerConfig(user_id=user_id, setup_needed=False)
 
             checkpointer = supabase_config.create_checkpointer()
 
             return TestSupabaseAgent(
                 name=name,
                 persistence=checkpointer,
-                runnable_config={
-                    "configurable": {"thread_id": thread_id, "recursion_limit": 100}
-                },
+                runnable_config={"configurable": {"thread_id": thread_id, "recursion_limit": 100}},
             )
 
         # Use factory to create agent
@@ -307,18 +297,14 @@ class TestAgentSupabasePatterns:
 
             def __init__(self, user_id: str, **kwargs):
                 # Set up Supabase persistence automatically
-                supabase_config = SupabaseCheckpointerConfig(
-                    user_id=user_id, setup_needed=False
-                )
+                supabase_config = SupabaseCheckpointerConfig(user_id=user_id, setup_needed=False)
 
                 checkpointer = supabase_config.create_checkpointer()
 
                 # Set persistence in kwargs
                 kwargs["persistence"] = checkpointer
                 kwargs.setdefault("runnable_config", {}).setdefault("configurable", {})
-                kwargs["runnable_config"]["configurable"].setdefault(
-                    "recursion_limit", 100
-                )
+                kwargs["runnable_config"]["configurable"].setdefault("recursion_limit", 100)
 
                 super().__init__(**kwargs)
 
@@ -343,9 +329,7 @@ class TestAgentSupabasePatterns:
                 return graph
 
         # Create agent using inheritance pattern
-        agent = SupabaseEnabledAgent(
-            name="inheritance_agent", user_id="inheritance_user"
-        )
+        agent = SupabaseEnabledAgent(name="inheritance_agent", user_id="inheritance_user")
 
         assert agent.persistence is not None
         assert "PostgresSaver" in type(agent.persistence).__name__

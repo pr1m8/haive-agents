@@ -24,7 +24,6 @@ def test_plan_execute_state_serialization():
         # Create state
         state = PlanExecuteState(messages=[HumanMessage("Test")])
 
-
         # Test serialization
         serialized = state.model_dump()
 
@@ -107,7 +106,6 @@ def debug_langgraph_input_model():
 
 
 if __name__ == "__main__":
-
     # Test components individually
     simple_works = test_simple_agent_alone()
     state_works = test_plan_execute_state_serialization()
@@ -120,4 +118,3 @@ if __name__ == "__main__":
 
     if multiagent:
         debug_langgraph_input_model()
-

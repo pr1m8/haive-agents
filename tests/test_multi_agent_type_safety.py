@@ -16,9 +16,7 @@ class ReactPlannerState(StateSchema):
 
     messages: list[BaseMessage] = Field(default_factory=list)
     plan: str = Field(default="", description="Generated plan")
-    reasoning_steps: list[str] = Field(
-        default_factory=list, description="Reasoning trace"
-    )
+    reasoning_steps: list[str] = Field(default_factory=list, description="Reasoning trace")
 
 
 class SimpleFormatterState(StateSchema):
@@ -34,9 +32,7 @@ async def test_multi_agent_type_safety():
     # Create agents with specific typed state schemas
     react_planner = ReactAgent(
         name="planner",
-        engine=AugLLMConfig(
-            system_message="You are a planning agent. Create step-by-step plans."
-        ),
+        engine=AugLLMConfig(system_message="You are a planning agent. Create step-by-step plans."),
         state_schema=ReactPlannerState,  # Custom typed state
     )
 

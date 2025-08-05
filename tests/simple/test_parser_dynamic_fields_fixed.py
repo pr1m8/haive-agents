@@ -27,7 +27,9 @@ def test_pydantic_field_addition():
     try:
         # Try to create instance with extra field
         instance_with_extra = BasicModel(
-            messages=["test"], counter=5, new_field="extra_value"  # This should fail
+            messages=["test"],
+            counter=5,
+            new_field="extra_value",  # This should fail
         )
 
     except Exception as e:
@@ -71,7 +73,6 @@ def test_state_schema_requirements():
         taskresult=(Optional[TaskResult], Field(default=None)),  # Pre-defined
     )
 
-
     # Test parser-like update scenarios
     structured_result = TaskResult(summary="Analysis done", completed=True)
 
@@ -91,9 +92,7 @@ def test_state_schema_requirements():
 
     try:
         update_dict = {"taskresult": structured_result}
-        updated_enhanced = EnhancedState(
-            **{**enhanced_state.model_dump(), **update_dict}
-        )
+        updated_enhanced = EnhancedState(**{**enhanced_state.model_dump(), **update_dict})
 
     except Exception as e:
         pass
@@ -110,10 +109,7 @@ def test_command_update_behavior():
             value: str = "test"
 
         # Create a command with structured result
-        cmd = Command(
-            update={"new_field": TestResult(), "counter": 5}, goto="next_node"
-        )
-
+        cmd = Command(update={"new_field": TestResult(), "counter": 5}, goto="next_node")
 
         # The key question: Can Command.update contain fields not in state schema?
 
@@ -135,9 +131,7 @@ def test_simple_simulation():
             self.structured_output_model = TaskResult
 
         def derive_output_schema(self):
-            return create_model(
-                "V2Output", messages=(list, Field(default_factory=list))
-            )
+            return create_model("V2Output", messages=(list, Field(default_factory=list)))
 
     # Scenario A: Current SimpleAgent approach (with engine modification)
 
@@ -165,10 +159,8 @@ def test_simple_simulation():
     AgentStateSchema = create_model("AgentStateSchema", **agent_state_fields)
 
 
-
 if __name__ == "__main__":
     test_pydantic_field_addition()
     test_state_schema_requirements()
     test_command_update_behavior()
     test_simple_simulation()
-

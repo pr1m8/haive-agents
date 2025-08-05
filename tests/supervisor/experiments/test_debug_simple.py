@@ -52,9 +52,7 @@ async def test_debug_simple():
         system_message="You are a task router. Use handoff tools to delegate work to specialist agents.",
     )
 
-    supervisor = DynamicSupervisorAgent(
-        name="debug_supervisor", engine=supervisor_engine
-    )
+    supervisor = DynamicSupervisorAgent(name="debug_supervisor", engine=supervisor_engine)
 
     # Test the full workflow
     try:

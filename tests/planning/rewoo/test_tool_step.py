@@ -226,9 +226,7 @@ class TestToolStep:
 
     def test_empty_tools_list(self) -> None:
         """Test validation fails for empty tools list."""
-        with pytest.raises(
-            ValidationError, match="Available tools list cannot be empty"
-        ):
+        with pytest.raises(ValidationError, match="Available tools list cannot be empty"):
             ToolStep(
                 description="No tools available",
                 tool_name="calculator",

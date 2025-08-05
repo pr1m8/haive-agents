@@ -109,9 +109,7 @@ class ReflectionMonitor:
                         self.improvement_scores.append(context.result["confidence"])
 
             elif context.event == HookEvent.AFTER_MESSAGE_TRANSFORM:
-                event_data["transform_type"] = getattr(
-                    context, "transform_type", "unknown"
-                )
+                event_data["transform_type"] = getattr(context, "transform_type", "unknown")
                 event_data["message_count"] = len(getattr(context, "messages", []))
 
             self.events.append(event_data)
@@ -211,9 +209,7 @@ Please reflect on this feedback and create an improved version.""",
         ]
     )
 
-    return SimpleAgentV3(
-        name="reflection_improver", engine=config, prompt_template=prompt
-    )
+    return SimpleAgentV3(name="reflection_improver", engine=config, prompt_template=prompt)
 
 
 def create_grading_agent() -> SimpleAgentV3:
@@ -252,7 +248,6 @@ Passing threshold: 70/100""",
 
 
 class TestComprehensiveReflectionPatterns:
-
     async def test_simple_reflection_pattern(self):
         """Test basic reflection pattern with message transformation."""
         # Create base writer
@@ -473,7 +468,6 @@ class TestComprehensiveReflectionPatterns:
         quality_threshold = 75.0
 
         for i in range(max_iterations):
-
             # Grade current content
             grade_result = await grader.arun(
                 {
@@ -511,11 +505,7 @@ class TestComprehensiveReflectionPatterns:
                 current_content = improvement["revised_content"]
             else:
                 # Extract from messages if needed
-                msgs = (
-                    improvement.get("messages", [])
-                    if isinstance(improvement, dict)
-                    else []
-                )
+                msgs = improvement.get("messages", []) if isinstance(improvement, dict) else []
                 if msgs:
                     current_content = msgs[-1].content
 

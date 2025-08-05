@@ -54,9 +54,7 @@ def analyze_error(error_str: str, tb_str: str) -> dict[str, str]:
     import re
 
     analysis = {
-        "error_type": (
-            type(error_str).__name__ if hasattr(error_str, "__class__") else "Unknown"
-        ),
+        "error_type": (type(error_str).__name__ if hasattr(error_str, "__class__") else "Unknown"),
         "error_message": str(error_str),
         "suggested_fix": "Unknown error pattern",
         "specific_action": "",
@@ -73,9 +71,7 @@ def analyze_error(error_str: str, tb_str: str) -> dict[str, str]:
                 match = re.search(r"cannot import name '(\w+)'", str(error_str))
                 if match:
                     missing_import = match.group(1)
-                    analysis["specific_action"] = (
-                        f"Remove or fix import of '{missing_import}'"
-                    )
+                    analysis["specific_action"] = f"Remove or fix import of '{missing_import}'"
 
                     # Find the file causing the issue
                     import_match = re.search(r"from ([\w\.]+) import", tb_str)
@@ -98,9 +94,9 @@ def analyze_error(error_str: str, tb_str: str) -> dict[str, str]:
                         "Any",
                         "Tuple",
                     ]:
-                        analysis[
-                            "specific_action"
-                        ] += f" - Add to typing imports: from typing import {missing_name}"
+                        analysis["specific_action"] += (
+                            f" - Add to typing imports: from typing import {missing_name}"
+                        )
 
             break
 
@@ -199,9 +195,7 @@ def check_game_exports(game_name: str, module: Any) -> dict[str, Any]:
     # Look for common game components
     common_components = ["Agent", "Config", "State", "Game"]
     exports["game_components"] = [
-        name
-        for name in exports["classes"]
-        if any(comp in name for comp in common_components)
+        name for name in exports["classes"] if any(comp in name for comp in common_components)
     ]
 
     return exports
@@ -215,13 +209,11 @@ def main():
     for game in games:
         pass
 
-
     results = {}
     successful_games = []
     failed_games = []
 
     for game in games:
-
         success, result, tb, analysis = test_game_import(game)
 
         if success:
@@ -235,7 +227,6 @@ def main():
             results[game] = {"status": "success", "module": result, "exports": exports}
         else:
             failed_games.append(game)
-
 
             if "error_file" in analysis:
                 pass
@@ -261,22 +252,17 @@ def main():
                 "traceback": tb,
             }
 
-
     for game in successful_games:
         pass
 
     for game in failed_games:
         pass
 
-
-
     # Add successful game exports
     for game in successful_games:
         if game in results and results[game]["exports"]["game_components"]:
             for component in results[game]["exports"]["game_components"]:
                 pass
-
-
 
     fix_priority = {}
     for game, result in results.items():
@@ -314,7 +300,6 @@ def main():
 
     with open(output_file, "w") as f:
         json.dump(json_results, f, indent=2)
-
 
 
 if __name__ == "__main__":

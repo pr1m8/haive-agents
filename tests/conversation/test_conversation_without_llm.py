@@ -11,18 +11,13 @@ from pathlib import Path
 
 def setup_paths():
     """Add required paths for testing."""
-    sys.path.insert(
-        0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src"
-    )
-    sys.path.insert(
-        0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src"
-    )
+    sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
+    sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 
 
 async def test_async_postgresql_setup():
     """Test async PostgreSQL configuration and setup."""
     try:
-
         from haive.core.persistence.postgres_config import PostgresCheckpointerConfig
         from haive.core.persistence.types import CheckpointerMode, CheckpointStorageMode
 
@@ -45,7 +40,6 @@ async def test_async_postgresql_setup():
             },
         )
 
-
         # Test async checkpointer creation
         async_checkpointer = await async_config.create_async_checkpointer()
 
@@ -53,9 +47,7 @@ async def test_async_postgresql_setup():
         from langgraph.checkpoint.base import empty_checkpoint
 
         test_checkpoint = empty_checkpoint()
-        test_checkpoint["channel_values"] = {
-            "async_test": f"working_{datetime.now().isoformat()}"
-        }
+        test_checkpoint["channel_values"] = {"async_test": f"working_{datetime.now().isoformat()}"}
 
         test_config = {
             "configurable": {
@@ -68,9 +60,7 @@ async def test_async_postgresql_setup():
         result = await async_checkpointer.aput(test_config, test_checkpoint, {}, {})
 
         # Close the connection pool properly
-        if hasattr(async_checkpointer, "conn") and hasattr(
-            async_checkpointer.conn, "close"
-        ):
+        if hasattr(async_checkpointer, "conn") and hasattr(async_checkpointer.conn, "close"):
             await async_checkpointer.conn.close()
 
         return True
@@ -85,7 +75,6 @@ async def test_async_postgresql_setup():
 def test_thread_continuation():
     """Test continuing conversations on existing thread IDs."""
     try:
-
         from haive.core.engine.aug_llm import AugLLMConfig
         from langchain_core.messages import HumanMessage
 
@@ -105,9 +94,7 @@ def test_thread_continuation():
         config = {"configurable": {"thread_id": thread_id}}
 
         # First interaction
-        first_input = {
-            "messages": [HumanMessage(content="Hello, remember my name is TestUser")]
-        }
+        first_input = {"messages": [HumanMessage(content="Hello, remember my name is TestUser")]}
         first_result = agent.invoke(first_input, config)
 
         # Second interaction on same thread - should have memory
@@ -136,7 +123,6 @@ def test_thread_continuation():
 def test_react_agent_persistence():
     """Test React agent with persistence and tool usage."""
     try:
-
         from haive.core.engine.aug_llm import AugLLMConfig
         from langchain_core.messages import HumanMessage
 
@@ -155,11 +141,8 @@ def test_react_agent_persistence():
         thread_id = f"react_test_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         config = {"configurable": {"thread_id": thread_id}}
 
-        test_input = {
-            "messages": [HumanMessage(content="What tools do you have available?")]
-        }
+        test_input = {"messages": [HumanMessage(content="What tools do you have available?")]}
         result = react_agent.invoke(test_input, config)
-
 
         if "messages" in result:
             message_count = len(result["messages"])
@@ -186,7 +169,6 @@ def test_react_agent_persistence():
 def check_database_health():
     """Check database connection and recent activity."""
     try:
-
         import psycopg2
         from psycopg2.extras import RealDictCursor
 
@@ -250,7 +232,9 @@ def check_database_health():
 def create_test_report(results):
     """Create a comprehensive test report."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    report_file = f"/home/will/Projects/haive/backend/haive/persistence_test_report_{timestamp}.json"
+    report_file = (
+        f"/home/will/Projects/haive/backend/haive/persistence_test_report_{timestamp}.json"
+    )
 
     report = {
         "timestamp": datetime.now().isoformat(),
@@ -309,9 +293,7 @@ async def main():
     for test_name, passed in results.items():
         status = "✅ PASSED" if passed else "❌ FAILED"
 
-    overall_status = (
-        "✅ ALL TESTS PASSED" if all(results.values()) else "⚠️  SOME TESTS FAILED"
-    )
+    overall_status = "✅ ALL TESTS PASSED" if all(results.values()) else "⚠️  SOME TESTS FAILED"
 
     if not all(results.values()):
         pass

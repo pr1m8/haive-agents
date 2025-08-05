@@ -216,9 +216,7 @@ async def test_mixed_tools_and_structured_output():
     )
 
     # Execute complex request
-    result = await agent.arun(
-        "Use the calculator to compute 25 * 4, then format as MathResult"
-    )
+    result = await agent.arun("Use the calculator to compute 25 * 4, then format as MathResult")
 
     # Verify execution
     logger.info(f"Mixed result: {result}")

@@ -33,9 +33,7 @@ def analyze_test_structure():
         total_tests = 0
 
         for test_class in test_classes:
-            test_methods = [
-                method for method in dir(test_class) if method.startswith("test_")
-            ]
+            test_methods = [method for method in dir(test_class) if method.startswith("test_")]
             total_tests += len(test_methods)
 
             for method in test_methods:

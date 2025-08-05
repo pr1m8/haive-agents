@@ -40,9 +40,7 @@ class DynamicToolSupervisor:
             """List all registered agents."""
             if not self.agents:
                 return ["No agents registered"]
-            return [
-                f"{name} ({agent.capability})" for name, agent in self.agents.items()
-            ]
+            return [f"{name} ({agent.capability})" for name, agent in self.agents.items()]
 
         @tool
         def agent_count() -> int:
@@ -220,9 +218,7 @@ class ValidatedDynamicSupervisor(DynamicToolSupervisor):
             "errors": self.validation_errors,
             "agent_count": len(self.agents),
             "tool_count": len(self.tools),
-            "execute_tool_count": sum(
-                1 for t in self.tools if t.startswith("execute_")
-            ),
+            "execute_tool_count": sum(1 for t in self.tools if t.startswith("execute_")),
         }
 
 

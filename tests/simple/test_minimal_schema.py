@@ -34,7 +34,6 @@ def test_minimal_schema():
 
     # Test 4: SchemaComposer with base MessagesState
     try:
-
         # First check if MessagesState works
 
         # Now try composer

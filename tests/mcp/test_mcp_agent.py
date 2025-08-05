@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Test script for MCP RAG Agent."""
+
 import asyncio
 from pathlib import Path
 import sys
@@ -26,7 +27,6 @@ async def test_mcp_agent():
         ]
 
         for query in queries:
-
             try:
                 result = await agent.arun(query)
 

@@ -294,7 +294,6 @@ def run_all_tests():
         except Exception as e:
             failed += 1
 
-
     if failed == 0:
         pass
     else:

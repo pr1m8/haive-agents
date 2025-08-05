@@ -45,15 +45,11 @@ def test_explicit_postgres_config():
         mode=CheckpointerMode.SYNC,
         storage_mode=CheckpointStorageMode.FULL,
         prepare_threshold=None,  # Disable prepared statements
-        connection_string=os.getenv(
-            "POSTGRES_CONNECTION_STRING"
-        ),  # Use env var if available
+        connection_string=os.getenv("POSTGRES_CONNECTION_STRING"),  # Use env var if available
     )
 
     # Create agent with explicit PostgreSQL persistence
-    agent = SimpleAgent(
-        name="postgres_explicit_agent", engine=config, persistence=postgres_config
-    )
+    agent = SimpleAgent(name="postgres_explicit_agent", engine=config, persistence=postgres_config)
 
     # Verify PostgreSQL persistence is set up
     assert agent.persistence is not None
@@ -77,9 +73,7 @@ async def test_postgres_persistence_functionality():
     config = AugLLMConfig(name="test_llm_functional", temperature=0.1)
 
     # Create agent with PostgreSQL persistence
-    agent = SimpleAgent(
-        name="postgres_functional_agent", engine=config, persistence=True
-    )
+    agent = SimpleAgent(name="postgres_functional_agent", engine=config, persistence=True)
 
     # Use a specific thread ID for testing
     thread_id = "test_postgres_thread_123"
@@ -89,9 +83,7 @@ async def test_postgres_persistence_functionality():
     await agent.arun("Remember my name is Alice", config=config_with_thread)
 
     # Create a new agent instance with same name
-    agent2 = SimpleAgent(
-        name="postgres_functional_agent", engine=config, persistence=True
-    )
+    agent2 = SimpleAgent(name="postgres_functional_agent", engine=config, persistence=True)
 
     # Run with same thread ID - should remember previous conversation
     result2 = await agent2.arun("What's my name?", config=config_with_thread)
@@ -120,7 +112,6 @@ def test_postgres_available_check():
 
 
 if __name__ == "__main__":
-
     test_postgres_persistence_with_true()
 
     test_explicit_postgres_config()

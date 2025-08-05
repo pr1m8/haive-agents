@@ -5,9 +5,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -49,7 +47,6 @@ react_dict = react_result.model_dump() if hasattr(react_result, "model_dump") el
 # Check messages in detail
 messages = react_dict.get("messages", [])
 for i, msg in enumerate(messages):
-
     if isinstance(msg, dict):
         if msg.get("type") == "tool":
             pass
@@ -81,9 +78,7 @@ seq_agent = SequentialAgent(agents=[react_agent, simple_agent])
 # Add some debug logging to see state transfer
 import logging
 
-logging.basicConfig(
-    level=logging.DEBUG, format="%(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.DEBUG, format="%(name)s - %(levelname)s - %(message)s")
 
 seq_agent.compile()
 

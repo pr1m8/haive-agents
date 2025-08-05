@@ -6,9 +6,7 @@ import sys
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 
 from langchain_core.messages import HumanMessage
@@ -47,9 +45,7 @@ try:
     result = seq_agent.run(
         {
             "messages": [
-                HumanMessage(
-                    content="Calculate 5 + 3, then plan steps for a calculator app"
-                )
+                HumanMessage(content="Calculate 5 + 3, then plan steps for a calculator app")
             ]
         }
     )
@@ -83,9 +79,7 @@ except Exception:
     # Try to see what we can get from partial execution
     try:
         # Run just the ReactAgent
-        react_result = react_agent.run(
-            {"messages": [HumanMessage(content="Calculate 5 + 3")]}
-        )
+        react_result = react_agent.run({"messages": [HumanMessage(content="Calculate 5 + 3")]})
 
         if hasattr(react_result, "model_dump"):
             react_dict = react_result.model_dump()

@@ -74,19 +74,15 @@ def debug_node_actual_output():
 
             # Check the nodes
             if hasattr(graph, "nodes"):
-
                 # Get the first node
                 if hasattr(graph.nodes, "items"):
                     for _node_name, node_func in list(graph.nodes.items())[:1]:
-
                         # Try calling it
                         try:
                             node_output = node_func(test_state)
 
                             # Check if it returns Command or dict
-                            if hasattr(node_output, "update") or isinstance(
-                                node_output, dict
-                            ):
+                            if hasattr(node_output, "update") or isinstance(node_output, dict):
                                 pass
                             else:
                                 pass

@@ -15,9 +15,7 @@ async def test_clean_multi_agent():
     # Create simple agents
     writer = SimpleAgent(
         name="writer",
-        engine=AugLLMConfig(
-            prompt_template="Write a brief story about: {input}", temperature=0.7
-        ),
+        engine=AugLLMConfig(prompt_template="Write a brief story about: {input}", temperature=0.7),
     )
 
     editor = SimpleAgent(
@@ -71,9 +69,7 @@ async def test_enhanced_agent():
     )
 
     # Enhance with reflection
-    enhanced = ReflectionAgent.enhance_agent(
-        base_agent=base_agent, name="enhanced_writer"
-    )
+    enhanced = ReflectionAgent.enhance_agent(base_agent=base_agent, name="enhanced_writer")
 
     # Test execution
     result = await enhanced.arun("quantum computing")

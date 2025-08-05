@@ -68,9 +68,7 @@ try:
     # Check what derive_input_schema returns
     derived_input = state_schema.derive_input_schema()
     logger.info(f"\nDerived input schema: {derived_input}")
-    logger.info(
-        f"Derived input schema fields: {list(derived_input.model_fields.keys())}"
-    )
+    logger.info(f"Derived input schema fields: {list(derived_input.model_fields.keys())}")
 
     # Check if engine field is in derived input
     if "engine" in derived_input.model_fields:
@@ -83,9 +81,7 @@ try:
     logger.info("\n=== Agent's Input Schema ===")
     agent_input_schema = agent.input_schema
     logger.info(f"Agent input schema: {agent_input_schema}")
-    logger.info(
-        f"Agent input schema fields: {list(agent_input_schema.model_fields.keys())}"
-    )
+    logger.info(f"Agent input schema fields: {list(agent_input_schema.model_fields.keys())}")
 
     # Check base classes
     logger.info(f"\nAgent input schema base classes: {agent_input_schema.__bases__}")
@@ -95,9 +91,7 @@ try:
     if hasattr(SimpleAgentV2, "input_schema"):
         logger.info(f"SimpleAgentV2.input_schema: {SimpleAgentV2.input_schema}")
     if hasattr(SimpleAgentV2, "model_fields"):
-        logger.info(
-            f"SimpleAgentV2 model fields: {list(SimpleAgentV2.model_fields.keys())}"
-        )
+        logger.info(f"SimpleAgentV2 model fields: {list(SimpleAgentV2.model_fields.keys())}")
         if "engine" in SimpleAgentV2.model_fields:
             logger.info("SimpleAgentV2 has engine field!")
 

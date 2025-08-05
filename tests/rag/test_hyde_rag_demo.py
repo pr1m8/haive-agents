@@ -82,9 +82,7 @@ def demonstrate_hyde_rag():
         name="hyde_demo_store",
         documents=documents,
         vector_store_provider=VectorStoreProvider.FAISS,
-        embedding_model=HuggingFaceEmbeddingConfig(
-            model="sentence-transformers/all-MiniLM-L6-v2"
-        ),
+        embedding_model=HuggingFaceEmbeddingConfig(model="sentence-transformers/all-MiniLM-L6-v2"),
     )
 
     # 3. Create agents
@@ -106,9 +104,7 @@ def demonstrate_hyde_rag():
     # Answer Generator
     answer_generator = SimpleAgent(
         name="answerer",
-        engine=AugLLMConfig(
-            system_message="Generate clear answers from retrieved documents"
-        ),
+        engine=AugLLMConfig(system_message="Generate clear answers from retrieved documents"),
     )
 
     # 4. Test query
@@ -182,9 +178,7 @@ def compare_retrieval_methods():
         name="comparison_store",
         documents=documents,
         vector_store_provider=VectorStoreProvider.FAISS,
-        embedding_model=HuggingFaceEmbeddingConfig(
-            model="sentence-transformers/all-MiniLM-L6-v2"
-        ),
+        embedding_model=HuggingFaceEmbeddingConfig(model="sentence-transformers/all-MiniLM-L6-v2"),
     )
 
     retriever = BaseRAGAgent(name="retriever", engine=vector_config)
@@ -196,15 +190,10 @@ def compare_retrieval_methods():
     )
 
     for query in queries:
-
         # Standard
         try:
             std_result = retriever.run({"query": query})
-            (
-                std_result.get("retrieved_documents", [])
-                if isinstance(std_result, dict)
-                else []
-            )
+            (std_result.get("retrieved_documents", []) if isinstance(std_result, dict) else [])
         except:
             pass
 
@@ -217,11 +206,7 @@ def compare_retrieval_methods():
                 else str(hyde_result)
             )
             hyde_ret = retriever.run({"query": hypothetical})
-            (
-                hyde_ret.get("retrieved_documents", [])
-                if isinstance(hyde_ret, dict)
-                else []
-            )
+            (hyde_ret.get("retrieved_documents", []) if isinstance(hyde_ret, dict) else [])
         except:
             pass
 

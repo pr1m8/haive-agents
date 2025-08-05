@@ -127,7 +127,7 @@ class RebuildMultiAgent(MultiAgentV2):
 
             # Connect agents in sequence
             for i in range(len(agent_names) - 1):
-                graph.add_edge(f"agent_{agent_names[i]}", f"agent_{agent_names[i+1]}")
+                graph.add_edge(f"agent_{agent_names[i]}", f"agent_{agent_names[i + 1]}")
 
             # Connect last agent to END
             graph.add_edge(f"agent_{agent_names[-1]}", END)
@@ -248,9 +248,7 @@ async def test_state_projection():
     )
 
     # Test
-    result = await multi.ainvoke(
-        {"messages": [HumanMessage(content="Start the conversation")]}
-    )
+    result = await multi.ainvoke({"messages": [HumanMessage(content="Start the conversation")]})
 
     console.print("[green]State projection test passed![/green]")
     assert "messages" in result

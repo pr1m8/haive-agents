@@ -92,9 +92,7 @@ class TestRealRAGExecution:
             assert len(agent.nodes) > 0, f"{rag_name} agent has no nodes"
 
             # Verify agent can be invoked (structure test, not execution)
-            assert hasattr(agent, "invoke") or callable(
-                agent
-            ), f"{rag_name} agent not callable"
+            assert hasattr(agent, "invoke") or callable(agent), f"{rag_name} agent not callable"
 
     def test_unified_factory_creation(self, sample_documents, test_llm_config):
         """Test unified factory creates RAG types correctly.
@@ -121,9 +119,7 @@ class TestRealRAGExecution:
             assert len(agent.nodes) > 0, f"{rag_type} chain has no nodes"
 
         # Test string-based creation
-        string_agent = create_rag(
-            "simple", sample_documents, llm_config=test_llm_config
-        )
+        string_agent = create_rag("simple", sample_documents, llm_config=test_llm_config)
         assert string_agent is not None, "String-based creation failed"
 
     def test_modular_rag_creation(self, sample_documents, test_llm_config):
@@ -147,9 +143,7 @@ class TestRealRAGExecution:
         assert len(simple_modular.nodes) >= 2
 
         # Test comprehensive modular RAG
-        comprehensive_modular = create_comprehensive_modular_rag(
-            sample_documents, test_llm_config
-        )
+        comprehensive_modular = create_comprehensive_modular_rag(sample_documents, test_llm_config)
         assert comprehensive_modular is not None
         assert len(comprehensive_modular.nodes) >= 4  # Should have more modules
 
@@ -163,9 +157,7 @@ class TestRealRAGExecution:
             routing_strategy="sequential",
         )
 
-        custom_modular = create_modular_rag(
-            sample_documents, custom_config, test_llm_config
-        )
+        custom_modular = create_modular_rag(sample_documents, custom_config, test_llm_config)
         assert custom_modular is not None
         assert len(custom_modular.nodes) >= 3  # Should have specified modules
 
@@ -211,16 +203,12 @@ class TestRealRAGExecution:
         )
 
         # Test full enhanced memory ReAct
-        enhanced_memory = create_enhanced_memory_react_rag(
-            sample_documents, test_llm_config
-        )
+        enhanced_memory = create_enhanced_memory_react_rag(sample_documents, test_llm_config)
         assert enhanced_memory is not None
         assert len(enhanced_memory.nodes) >= 8  # Full ReAct chain
 
         # Test simple memory ReAct
-        simple_memory = create_simple_memory_react_rag(
-            sample_documents, test_llm_config
-        )
+        simple_memory = create_simple_memory_react_rag(sample_documents, test_llm_config)
         assert simple_memory is not None
         assert len(simple_memory.nodes) >= 3  # Simplified chain
 
@@ -286,9 +274,7 @@ class TestRealRAGExecution:
 
             # Verify common inputs/outputs
             assert "query" in schema["inputs"]
-            assert (
-                "response" in schema["outputs"] or "final_response" in schema["outputs"]
-            )
+            assert "response" in schema["outputs"] or "final_response" in schema["outputs"]
 
     def test_document_processing(self, sample_documents):
         """Test document processing capabilities.
@@ -306,9 +292,7 @@ class TestRealRAGExecution:
 
         # Test document filtering and processing
         filtered_docs = [doc for doc in sample_documents if len(doc.page_content) > 50]
-        assert len(filtered_docs) == len(
-            sample_documents
-        )  # All docs should be substantial
+        assert len(filtered_docs) == len(sample_documents)  # All docs should be substantial
 
         # Test metadata consistency
         all_sources = [doc.metadata.get("source") for doc in sample_documents]
@@ -329,9 +313,7 @@ class TestRealRAGExecution:
         rag_agents = {
             "simple": collection.create_simple_rag(sample_documents, test_llm_config),
             "fusion": collection.create_fusion_rag(sample_documents, test_llm_config),
-            "speculative": collection.create_speculative_rag(
-                sample_documents, test_llm_config
-            ),
+            "speculative": collection.create_speculative_rag(sample_documents, test_llm_config),
         }
 
         # Verify complexity ordering (more nodes = more complex)
@@ -340,12 +322,10 @@ class TestRealRAGExecution:
         speculative_nodes = len(rag_agents["speculative"].nodes)
 
         # Simple should have fewer nodes than complex strategies
-        assert (
-            simple_nodes <= fusion_nodes
-        ), "Simple RAG should be less complex than Fusion"
-        assert (
-            simple_nodes <= speculative_nodes
-        ), "Simple RAG should be less complex than Speculative"
+        assert simple_nodes <= fusion_nodes, "Simple RAG should be less complex than Fusion"
+        assert simple_nodes <= speculative_nodes, (
+            "Simple RAG should be less complex than Speculative"
+        )
 
     def test_error_handling(self, test_llm_config):
         """Test error handling with invalid inputs.
@@ -362,9 +342,7 @@ class TestRealRAGExecution:
         # Test with empty documents
         empty_docs = []
         agent = collection.create_simple_rag(empty_docs, test_llm_config)
-        assert (
-            agent is not None
-        )  # Should still create agent, handle empty docs gracefully
+        assert agent is not None  # Should still create agent, handle empty docs gracefully
 
         # Test with malformed documents
         malformed_docs = [Document(page_content="")]  # Empty content

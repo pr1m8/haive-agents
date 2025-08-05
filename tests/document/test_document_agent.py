@@ -57,11 +57,10 @@ class TestDocumentAgent:
 
     def test_validation_chunk_overlap(self):
         """Test validation that chunk_overlap < chunk_size."""
-        with pytest.raises(
-            ValueError, match="chunk_overlap must be less than chunk_size"
-        ):
+        with pytest.raises(ValueError, match="chunk_overlap must be less than chunk_size"):
             DocumentAgent(
-                chunk_size=100, chunk_overlap=100  # Equal to chunk_size should fail
+                chunk_size=100,
+                chunk_overlap=100,  # Equal to chunk_size should fail
             )
 
     def test_agent_setup(self):
@@ -94,9 +93,7 @@ class TestDocumentAgent:
         assert stages == expected_basic
 
         # Test extended pipeline
-        agent = DocumentAgent(
-            enable_embedding=True, enable_storage=True, enable_retrieval=True
-        )
+        agent = DocumentAgent(enable_embedding=True, enable_storage=True, enable_retrieval=True)
         stages = agent._get_pipeline_stages()
         expected_extended = [
             "fetch",
@@ -135,9 +132,7 @@ class TestDocumentAgentProcessing:
 
     def test_process_multiple_sources(self):
         """Test processing multiple sources."""
-        agent = DocumentAgent(
-            chunking_strategy=ChunkingStrategy.PARAGRAPH, chunk_size=100
-        )
+        agent = DocumentAgent(chunking_strategy=ChunkingStrategy.PARAGRAPH, chunk_size=100)
 
         test_sources = [
             "First document content. " * 20,
@@ -194,9 +189,7 @@ This is paragraph three."""
         ]
 
         for strategy in strategies_to_test:
-            agent = DocumentAgent(
-                chunking_strategy=strategy, chunk_size=50, chunk_overlap=10
-            )
+            agent = DocumentAgent(chunking_strategy=strategy, chunk_size=50, chunk_overlap=10)
 
             result = agent.process_sources(test_content)
 
@@ -399,9 +392,7 @@ class TestDocumentAgentResultProcessing:
 
     def test_result_statistics(self):
         """Test result statistics calculation."""
-        agent = DocumentAgent(
-            chunking_strategy=ChunkingStrategy.FIXED_SIZE, chunk_size=50
-        )
+        agent = DocumentAgent(chunking_strategy=ChunkingStrategy.FIXED_SIZE, chunk_size=50)
 
         test_content = "Statistical test content. " * 20
         result = agent.process_sources(test_content)
@@ -502,9 +493,7 @@ Content for section 2 with additional information and more detailed explanations
         assert "Test Agent" in repr_str
         assert "enhanced" in repr_str.lower()
         assert "recursive" in repr_str.lower()
-        assert (
-            "fetch->load->transform->split->annotate->embed->store" in repr_str.lower()
-        )
+        assert "fetch->load->transform->split->annotate->embed->store" in repr_str.lower()
 
 
 class TestDocumentAgentPerformance:
@@ -529,9 +518,7 @@ class TestDocumentAgentPerformance:
 
     def test_multiple_sources_performance(self):
         """Test performance with multiple sources."""
-        agent = DocumentAgent(
-            processing_strategy=ProcessingStrategy.PARALLEL, max_workers=8
-        )
+        agent = DocumentAgent(processing_strategy=ProcessingStrategy.PARALLEL, max_workers=8)
 
         # Create multiple medium-sized documents
         sources = [f"Document {i}: " + "Content. " * 200 for i in range(10)]

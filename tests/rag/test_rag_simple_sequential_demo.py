@@ -62,9 +62,7 @@ def main():
         name="demo_rag_store",
         documents=documents,
         vector_store_provider=VectorStoreProvider.FAISS,
-        embedding_model=HuggingFaceEmbeddingConfig(
-            model="sentence-transformers/all-MiniLM-L6-v2"
-        ),
+        embedding_model=HuggingFaceEmbeddingConfig(model="sentence-transformers/all-MiniLM-L6-v2"),
     )
 
     # Create RAG agent
@@ -92,10 +90,7 @@ def main():
 
         # Extract retrieved documents
         retrieved_docs = []
-        if (
-            isinstance(retrieval_result, dict)
-            and "retrieved_documents" in retrieval_result
-        ):
+        if isinstance(retrieval_result, dict) and "retrieved_documents" in retrieval_result:
             retrieved_docs = retrieval_result["retrieved_documents"]
 
         for i, doc in enumerate(retrieved_docs[:3]):
@@ -110,7 +105,7 @@ def main():
     context = f"Question: {query}\n\nRetrieved Documents:\n"
     for i, doc in enumerate(retrieved_docs):
         source = doc.metadata.get("source", "Unknown")
-        context += f'\n{i+1}. From {source}:\n"{doc.page_content}"\n'
+        context += f'\n{i + 1}. From {source}:\n"{doc.page_content}"\n'
 
     try:
         # Generate answer

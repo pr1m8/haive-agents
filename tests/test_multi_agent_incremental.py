@@ -70,9 +70,7 @@ async def test_individual_agents():
 
     # Test ReactAgent
     console.print("\n[yellow]Testing ReactAgent...[/yellow]")
-    result = await react_agent.ainvoke(
-        {"messages": [HumanMessage(content="Calculate 15 * 7")]}
-    )
+    result = await react_agent.ainvoke({"messages": [HumanMessage(content="Calculate 15 * 7")]})
     console.print(f"ReactAgent result: {result}")
 
     return simple_agent, react_agent

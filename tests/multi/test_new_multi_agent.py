@@ -12,9 +12,7 @@ import sys
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 from typing import Any
 
@@ -73,9 +71,7 @@ def test_sequential_rag():
     )
 
     # Create sequential multi-agent
-    seq_agent = SequentialAgent(
-        name="RAG Answer Pipeline", agents=[rag_agent, answer_agent]
-    )
+    seq_agent = SequentialAgent(name="RAG Answer Pipeline", agents=[rag_agent, answer_agent])
 
     # Visualize structure
     seq_agent.visualize_structure()
@@ -88,9 +84,7 @@ def test_sequential_rag():
         seq_agent.run(
             {
                 "messages": [
-                    HumanMessage(
-                        content="What restaurants were discussed in the conversation?"
-                    )
+                    HumanMessage(content="What restaurants were discussed in the conversation?")
                 ],
                 "query": "What restaurants were discussed in the conversation?",
             }
@@ -196,14 +190,10 @@ def test_parallel_agents():
 
     planner_agent = SimpleAgent(
         name="Planner",
-        engine=AugLLMConfig(
-            structured_output_model=Plan, structured_output_version="v2"
-        ),
+        engine=AugLLMConfig(structured_output_model=Plan, structured_output_version="v2"),
     )
 
-    calculator_agent = ReactAgent(
-        name="Calculator", engine=AugLLMConfig(tools=[add, multiply])
-    )
+    calculator_agent = ReactAgent(name="Calculator", engine=AugLLMConfig(tools=[add, multiply]))
 
     summarizer_agent = SimpleAgent(
         name="Summarizer",
@@ -224,13 +214,7 @@ def test_parallel_agents():
         parallel_agent.compile()
 
         parallel_agent.run(
-            {
-                "messages": [
-                    HumanMessage(
-                        content="Plan how to calculate (5 + 3) * 2 and then do it"
-                    )
-                ]
-            }
+            {"messages": [HumanMessage(content="Plan how to calculate (5 + 3) * 2 and then do it")]}
         )
     except Exception:
         import traceback

@@ -19,7 +19,6 @@ load_dotenv()
 def test_agent_import():
     """Test that we can import the agent classes."""
     try:
-
         return True
 
     except Exception as e:
@@ -208,22 +207,16 @@ def test_agent_factory_pattern():
             def build_graph(self) -> BaseGraph:
                 return BaseGraph()
 
-        def create_supabase_agent(
-            name: str, user_id: str, thread_id: str
-        ) -> FactoryAgent:
+        def create_supabase_agent(name: str, user_id: str, thread_id: str) -> FactoryAgent:
             """Factory function to create agent with Supabase persistence."""
-            supabase_config = SupabaseCheckpointerConfig(
-                user_id=user_id, setup_needed=False
-            )
+            supabase_config = SupabaseCheckpointerConfig(user_id=user_id, setup_needed=False)
 
             checkpointer = supabase_config.create_checkpointer()
 
             return FactoryAgent(
                 name=name,
                 persistence=checkpointer,
-                runnable_config={
-                    "configurable": {"thread_id": thread_id, "recursion_limit": 100}
-                },
+                runnable_config={"configurable": {"thread_id": thread_id, "recursion_limit": 100}},
             )
 
         # Use factory to create agent
@@ -251,7 +244,6 @@ def main():
 
     passed = sum(results)
     total = len(results)
-
 
     if passed == total:
         pass

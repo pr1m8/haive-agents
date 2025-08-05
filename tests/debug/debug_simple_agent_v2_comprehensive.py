@@ -31,9 +31,9 @@ logger = logging.getLogger(__name__)
 def trace_step(step_name, func):
     """Trace a step with comprehensive error handling."""
     try:
-        console.print(f"\n[bold blue]{'='*60}[/bold blue]")
+        console.print(f"\n[bold blue]{'=' * 60}[/bold blue]")
         console.print(f"[bold green]STEP: {step_name}[/bold green]")
-        console.print(f"[bold blue]{'='*60}[/bold blue]")
+        console.print(f"[bold blue]{'=' * 60}[/bold blue]")
 
         result = func()
 
@@ -156,18 +156,14 @@ def test_agent_execution(agent):
 
 def main():
     """Main test function."""
-    console.print(
-        "[bold magenta]STARTING COMPREHENSIVE SIMPLE AGENT V2 DEBUG[/bold magenta]"
-    )
+    console.print("[bold magenta]STARTING COMPREHENSIVE SIMPLE AGENT V2 DEBUG[/bold magenta]")
 
     try:
         # Step 1: Test imports
         AugLLMConfig, SimpleAgentV2 = trace_step("Import modules", test_imports)
 
         # Step 2: Test agent creation
-        agent = trace_step(
-            "Create agent", lambda: test_agent_creation(AugLLMConfig, SimpleAgentV2)
-        )
+        agent = trace_step("Create agent", lambda: test_agent_creation(AugLLMConfig, SimpleAgentV2))
 
         # Step 3: Test state creation
         trace_step("Create state", lambda: test_state_creation(agent))

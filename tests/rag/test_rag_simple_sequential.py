@@ -41,9 +41,7 @@ class RAGAnswer(BaseModel):
     confidence: float = Field(description="Confidence in the answer (0-1)")
     citations: list[Citation] = Field(description="Supporting citations from documents")
     key_points: list[str] = Field(description="Key points extracted from the answer")
-    additional_context: str | None = Field(
-        default=None, description="Additional helpful context"
-    )
+    additional_context: str | None = Field(default=None, description="Additional helpful context")
 
 
 class TestRAGSimpleSequential:
@@ -150,9 +148,7 @@ class TestRAGSimpleSequential:
                 pass
 
             assert len(retrieved_docs) > 0
-            assert any(
-                "components" in doc.page_content.lower() for doc in retrieved_docs
-            )
+            assert any("components" in doc.page_content.lower() for doc in retrieved_docs)
 
     def test_answer_generation(self, answer_generator_agent):
         """Test SimpleAgent structured answer generation."""
@@ -179,17 +175,14 @@ class TestRAGSimpleSequential:
 
         # Extract retrieved documents
         retrieved_docs = []
-        if (
-            isinstance(retrieval_result, dict)
-            and "retrieved_documents" in retrieval_result
-        ):
+        if isinstance(retrieval_result, dict) and "retrieved_documents" in retrieval_result:
             retrieved_docs = retrieval_result["retrieved_documents"]
 
         # Format retrieved docs for answer generation
         context_parts = [f"Question: {query}\n\nRetrieved Documents:"]
         for i, doc in enumerate(retrieved_docs):
             source = doc.metadata.get("source", "Unknown")
-            context_parts.append(f'\n{i+1}. From {source}: "{doc.page_content}"')
+            context_parts.append(f'\n{i + 1}. From {source}: "{doc.page_content}"')
 
         formatted_context = "\n".join(context_parts)
 
@@ -222,9 +215,7 @@ Please provide a detailed answer with citations."""
         )
 
         # Create sequential multi-agent
-        rag_system = SequentialAgent(
-            name="rag_answer_system", agents=[rag_agent, answer_agent]
-        )
+        rag_system = SequentialAgent(name="rag_answer_system", agents=[rag_agent, answer_agent])
 
         # Test query
 
@@ -248,10 +239,7 @@ Please provide a detailed answer with citations."""
         retrieval_result = await rag_agent.arun({"query": query})
 
         retrieved_docs = []
-        if (
-            isinstance(retrieval_result, dict)
-            and "retrieved_documents" in retrieval_result
-        ):
+        if isinstance(retrieval_result, dict) and "retrieved_documents" in retrieval_result:
             retrieved_docs = retrieval_result["retrieved_documents"]
 
         # Step 2: Async answer generation

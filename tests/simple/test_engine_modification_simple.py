@@ -52,9 +52,7 @@ def test_basic_engine_modification_flow():
             from pydantic import create_model
 
             # V2 should only have messages
-            return create_model(
-                "NaturalV2Schema", messages=(list, Field(default_factory=list))
-            )
+            return create_model("NaturalV2Schema", messages=(list, Field(default_factory=list)))
 
     # Test v1 engine naturally has structured fields
     v1_engine = MockV1Engine()
@@ -71,20 +69,14 @@ def test_basic_engine_modification_flow():
     v2_fields = v2_schema.model_fields.keys()
 
     assert "messages" in v2_fields, "V2 should have messages"
-    assert (
-        "completed" not in v2_fields
-    ), "V2 should NOT have structured fields naturally"
+    assert "completed" not in v2_fields, "V2 should NOT have structured fields naturally"
     assert "result" not in v2_fields, "V2 should NOT have structured fields naturally"
 
     # Test parser can find structured model directly
-    assert hasattr(
-        v1_engine, "structured_output_model"
-    ), "Parser can find model in v1 engine"
+    assert hasattr(v1_engine, "structured_output_model"), "Parser can find model in v1 engine"
     assert v1_engine.structured_output_model == TaskResult
 
-    assert hasattr(
-        v2_engine, "structured_output_model"
-    ), "Parser can find model in v2 engine"
+    assert hasattr(v2_engine, "structured_output_model"), "Parser can find model in v2 engine"
     assert v2_engine.structured_output_model == TaskResult
 
     # Test v2 has model in tools
@@ -107,9 +99,7 @@ def test_mock_simple_agent_without_modification():
         def _setup_without_modification(self):
             """Setup agent without modifying engine schema."""
             # Sync the structured output model to engine (this is necessary)
-            if self.structured_output_model and hasattr(
-                self.engine, "structured_output_model"
-            ):
+            if self.structured_output_model and hasattr(self.engine, "structured_output_model"):
                 self.engine.structured_output_model = self.structured_output_model
 
             # DON'T modify engine.output_schema
@@ -123,9 +113,7 @@ def test_mock_simple_agent_without_modification():
             """Simulate parser node finding the model."""
             # Parser looks for model via direct lookup
             if hasattr(self.engine, "structured_output_model"):
-                return (
-                    self.engine.structured_output_model == self.structured_output_model
-                )
+                return self.engine.structured_output_model == self.structured_output_model
             if hasattr(self.engine, "pydantic_tools"):
                 return self.structured_output_model in self.engine.pydantic_tools
             return False
@@ -151,9 +139,7 @@ def test_mock_simple_agent_without_modification():
     agent_v1 = MockSimpleAgent(v1_engine, TaskResult)
 
     # Verify agent setup worked
-    assert (
-        agent_v1.engine.structured_output_model == TaskResult
-    ), "Model should be synced to engine"
+    assert agent_v1.engine.structured_output_model == TaskResult, "Model should be synced to engine"
     assert agent_v1._needs_parser_node(), "Should need parser node"
     assert agent_v1._can_parser_find_model(), "Parser should find model"
 
@@ -174,18 +160,14 @@ def test_mock_simple_agent_without_modification():
             from pydantic import create_model
 
             # V2 only has messages
-            return create_model(
-                "V2Schema", messages=(list, Field(default_factory=list))
-            )
+            return create_model("V2Schema", messages=(list, Field(default_factory=list)))
 
     v2_engine = MockV2Engine()
     v2_engine.pydantic_tools = [TaskResult]  # V2 has model as tool
     agent_v2 = MockSimpleAgent(v2_engine, TaskResult)
 
     # Verify v2 setup
-    assert (
-        agent_v2.engine.structured_output_model == TaskResult
-    ), "Model should be synced"
+    assert agent_v2.engine.structured_output_model == TaskResult, "Model should be synced"
     assert agent_v2._can_parser_find_model(), "Parser should find model via tools"
 
     # Verify v2 engine schema unchanged (still messages only)

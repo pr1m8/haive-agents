@@ -84,10 +84,7 @@ async def test_rag_with_agents_sequential():
     # Step 2: Create embedding model configuration
 
     # Create HuggingFace embedding configuration
-    embedding_config = HuggingFaceEmbeddingConfig(
-        model="sentence-transformers/all-MiniLM-L6-v2"
-    )
-
+    embedding_config = HuggingFaceEmbeddingConfig(model="sentence-transformers/all-MiniLM-L6-v2")
 
     # Step 3: Create vector store config with documents
     vector_store_config = VectorStoreConfig(
@@ -132,7 +129,6 @@ async def test_rag_with_agents_sequential():
     # Set the query in RAG agent's state
     state.update_agent_state("retriever", {"query": query})
 
-
     # Step 6: Create AgentNodeV3 configurations
 
     retriever_node = create_agent_node_v3(
@@ -149,7 +145,6 @@ async def test_rag_with_agents_sequential():
         shared_fields=["messages", "context"],  # Share context with answerer
     )
 
-
     # Step 7: Execute retriever node
     state.display_debug_info("Before Retrieval")
 
@@ -157,7 +152,6 @@ async def test_rag_with_agents_sequential():
         # Execute with debug config
         debug_config = {"debug": True}
         retriever_result = retriever_node(state, config=debug_config)
-
 
         # Apply retriever updates to state
         if hasattr(retriever_result, "update") and retriever_result.update:
@@ -195,13 +189,11 @@ async def test_rag_with_agents_sequential():
         # Execute with debug config
         answerer_result = answerer_node(state, config=debug_config)
 
-
         # Apply answerer updates to state
         if hasattr(answerer_result, "update") and answerer_result.update:
             for key, value in answerer_result.update.items():
                 if hasattr(state, key):
                     setattr(state, key, value)
-
 
     except Exception as e:
         import traceback
@@ -225,7 +217,6 @@ async def test_rag_with_agents_sequential():
         for msg in answerer_state["messages"]:
             if hasattr(msg, "type") and msg.type == "ai":
                 break
-
 
     # Display agent table
     state.display_agent_table()

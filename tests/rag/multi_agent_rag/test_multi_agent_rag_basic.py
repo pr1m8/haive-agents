@@ -111,13 +111,9 @@ class TestSimpleRAGAgent:
 
     def test_agent_with_custom_documents(self):
         """Test agent with custom documents."""
-        custom_docs = [
-            Document(page_content="Custom content", metadata={"source": "test"})
-        ]
+        custom_docs = [Document(page_content="Custom content", metadata={"source": "test"})]
 
-        agent = SimpleRAGAgent.from_documents(
-            documents=custom_docs, name="Custom RAG Agent"
-        )
+        agent = SimpleRAGAgent.from_documents(documents=custom_docs, name="Custom RAG Agent")
 
         assert agent.name == "Custom RAG Agent"
         assert len(agent.documents) == 1
@@ -264,9 +260,7 @@ class TestIterativeDocumentGradingAgent:
         def custom_grader(query: str, document: Document) -> dict:
             return {"score": 0.9, "relevant": True, "reason": "Custom grading result"}
 
-        agent = IterativeDocumentGradingAgent(
-            custom_grader=custom_grader, name="Custom Grader"
-        )
+        agent = IterativeDocumentGradingAgent(custom_grader=custom_grader, name="Custom Grader")
         assert agent.custom_grader is not None
 
     def test_run_iterative_grading(self):

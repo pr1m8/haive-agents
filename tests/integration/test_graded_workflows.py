@@ -38,9 +38,7 @@ def test_grading_components():
     # Test hallucination grader
     try:
         hallucination_grader = create_hallucination_grader()
-        results.append(
-            ("✅", "Hallucination Grader", f"Agent: {hallucination_grader.name}")
-        )
+        results.append(("✅", "Hallucination Grader", f"Agent: {hallucination_grader.name}"))
     except Exception as e:
         results.append(("❌", "Hallucination Grader", str(e)))
 
@@ -71,9 +69,7 @@ def test_graded_workflows():
 
     # Test Fully Graded RAG
     try:
-        fully_graded = FullyGradedRAGAgent(
-            name="fully_graded_test", relevance_threshold=0.6
-        )
+        fully_graded = FullyGradedRAGAgent(name="fully_graded_test", relevance_threshold=0.6)
         agents = [a.name for a in fully_graded.agents]
         results.append(("✅", "Fully Graded RAG", f"{len(agents)} agents"))
     except Exception as e:
@@ -113,7 +109,6 @@ def test_graded_workflows():
 
 
 def main():
-
     # Test components
     component_results = test_grading_components()
 
@@ -124,7 +119,6 @@ def main():
     all_results = component_results + workflow_results
     successful = sum(1 for s, _, _ in all_results if s == "✅")
     total = len(all_results)
-
 
     if successful == total:
         pass

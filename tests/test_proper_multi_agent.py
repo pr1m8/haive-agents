@@ -17,9 +17,7 @@ console = Console()
 @pytest.mark.asyncio
 async def test_proper_multi_agent_engines_pattern():
     """Test that agents follow engines dict pattern."""
-    console.print(
-        "\n[bold blue]Testing Proper Multi-Agent Engines Pattern[/bold blue]\n"
-    )
+    console.print("\n[bold blue]Testing Proper Multi-Agent Engines Pattern[/bold blue]\n")
 
     # Create agents
     agent1 = SimpleAgent(
@@ -47,9 +45,7 @@ async def test_proper_multi_agent_engines_pattern():
     assert "agent2" in multi.agents
 
     # Test execution
-    result = await multi.ainvoke(
-        {"messages": [HumanMessage(content="Start conversation")]}
-    )
+    result = await multi.ainvoke({"messages": [HumanMessage(content="Start conversation")]})
 
     console.print(f"Result keys: {list(result.keys())}")
     console.print("[green]Test passed![/green]")

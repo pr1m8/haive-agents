@@ -44,9 +44,7 @@ def test_composed_multi_agent():
 
     # Test state creation WITH providing agents (should work too)
     try:
-        multi.state_schema(
-            messages=[HumanMessage(content="Hello")], agents={"custom": agent1}
-        )
+        multi.state_schema(messages=[HumanMessage(content="Hello")], agents={"custom": agent1})
 
     except Exception:
         import traceback

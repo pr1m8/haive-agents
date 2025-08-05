@@ -33,7 +33,6 @@ try:
     agent = SimpleAgentV3(name="test_agent", engine=engine)
 
 except Exception:
-
     traceback.print_exc()
 
     # Get the exception details

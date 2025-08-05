@@ -87,9 +87,7 @@ class RecompileMetaState(MetaStateSchema, RecompileMixin):
                                 changed_fields.add(key)
 
                         if changed_fields:
-                            self.mark_for_recompile(
-                                "Agent state changed", changed_fields
-                            )
+                            self.mark_for_recompile("Agent state changed", changed_fields)
 
                     # Update our cached state
                     self.agent_state = current_dump

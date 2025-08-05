@@ -97,9 +97,7 @@ class TestMultiAgentCoordinator:
     @pytest.fixture
     def mock_memory_store(self, mock_store_manager):
         """Create mock memory store manager."""
-        store_config = MemoryStoreConfig(
-            store_manager=mock_store_manager, auto_classify=False
-        )
+        store_config = MemoryStoreConfig(store_manager=mock_store_manager, auto_classify=False)
         memory_store = MagicMock(spec=MemoryStoreManager)
         memory_store.config = store_config
         memory_store.store_memory = AsyncMock(return_value="test_memory_id")
@@ -174,9 +172,7 @@ class TestMultiAgentCoordinator:
         coordinator = MultiAgentMemoryCoordinator(coordinator_config)
 
         # Test store task routing
-        store_task = MemoryTask(
-            id="store_test", type="store_memory", query="Store this memory"
-        )
+        store_task = MemoryTask(id="store_test", type="store_memory", query="Store this memory")
 
         routing = coordinator._fallback_task_routing(store_task)
         assert routing["routing_decision"] == "single_agent"
@@ -218,9 +214,7 @@ class TestMultiAgentCoordinator:
 
         # Mock the meta agent execution
         mock_meta_state = coordinator.meta_agents["memory_store"]
-        mock_meta_state.execute_agent = AsyncMock(
-            return_value="Memory stored successfully"
-        )
+        mock_meta_state.execute_agent = AsyncMock(return_value="Memory stored successfully")
 
         # Store a memory
         result = await coordinator.store_memory("Test memory content")
@@ -350,9 +344,7 @@ class TestMultiAgentCoordinator:
         mock_meta_state.execute_agent = AsyncMock(side_effect=Exception("Test error"))
 
         # Create a task that will fail
-        task = MemoryTask(
-            id="failing_task", type="store_memory", query="This will fail"
-        )
+        task = MemoryTask(id="failing_task", type="store_memory", query="This will fail")
 
         # Execute the task
         result_task = await coordinator.execute_task(task)
@@ -406,14 +398,10 @@ async def test_multi_agent_integration():
         from haive.core.tools.store_tools import StoreManager
 
         # Create real store manager (in-memory for testing)
-        store_manager = StoreManager(
-            store_type="memory", collection_name="test_multi_agent"
-        )
+        store_manager = StoreManager(store_type="memory", collection_name="test_multi_agent")
 
         # Create memory store manager
-        memory_store_config = MemoryStoreConfig(
-            store_manager=store_manager, auto_classify=False
-        )
+        memory_store_config = MemoryStoreConfig(store_manager=store_manager, auto_classify=False)
         memory_store = MemoryStoreManager(memory_store_config)
 
         # Create classifier

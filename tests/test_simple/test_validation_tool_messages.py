@@ -124,9 +124,7 @@ async def test_regular_tool_message_creation():
             HumanMessage(content="Add 5 and 3"),
             AIMessage(
                 content="I'll add those numbers for you.",
-                tool_calls=[
-                    {"id": "call_456", "name": "add_numbers", "args": {"a": 5, "b": 3}}
-                ],
+                tool_calls=[{"id": "call_456", "name": "add_numbers", "args": {"a": 5, "b": 3}}],
             ),
         ]
     }

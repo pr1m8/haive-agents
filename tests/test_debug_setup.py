@@ -18,9 +18,7 @@ async def debug_setup():
 
     # Step 1: Create agents
     console.print("[yellow]Step 1: Create agents[/yellow]")
-    agent1 = SimpleAgent(
-        name="agent1", engine=AugLLMConfig(system_message="You are agent 1.")
-    )
+    agent1 = SimpleAgent(name="agent1", engine=AugLLMConfig(system_message="You are agent 1."))
     console.print(f"Agent1 created: {agent1.name}")
 
     # Step 2: Create multi-agent

@@ -60,10 +60,7 @@ async def test_simple_agent_v1_with_plan():
     )
 
     # Create V1 SimpleAgent
-    simple_agent = SimpleAgent(
-        name="simple_v1_plan", engine=plan_aug, enable_persistence=False
-    )
-
+    simple_agent = SimpleAgent(name="simple_v1_plan", engine=plan_aug, enable_persistence=False)
 
     # Create test state with Plan tool call
     initial_state = {
@@ -102,9 +99,7 @@ async def test_simple_agent_v1_with_plan():
                 pass
 
         # Check for ToolMessages
-        tool_messages = [
-            msg for msg in result["messages"] if isinstance(msg, ToolMessage)
-        ]
+        tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
         if len(tool_messages) == 0:
             return False
         print(f"✅ V1 UNEXPECTED: Created {len(tool_messages)} ToolMessage(s)")
@@ -127,10 +122,7 @@ async def test_simple_agent_v2_with_plan():
     )
 
     # Create V2 SimpleAgent
-    simple_agent = SimpleAgentV2(
-        name="simple_v2_plan", engine=plan_aug, enable_persistence=False
-    )
-
+    simple_agent = SimpleAgentV2(name="simple_v2_plan", engine=plan_aug, enable_persistence=False)
 
     # Create test state with Plan tool call
     initial_state = {
@@ -168,11 +160,8 @@ async def test_simple_agent_v2_with_plan():
                 pass
 
         # Check for ToolMessages
-        tool_messages = [
-            msg for msg in result["messages"] if isinstance(msg, ToolMessage)
-        ]
+        tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
         if len(tool_messages) > 0:
-
             # Verify ToolMessage content
             tool_msg = tool_messages[0]
             if tool_msg.name == "Plan" and tool_msg.tool_call_id == "call_plan_456":
@@ -198,10 +187,7 @@ async def test_simple_agent_v1_with_add_tool():
     )
 
     # Create V1 SimpleAgent
-    simple_agent = SimpleAgent(
-        name="simple_v1_add", engine=add_aug, enable_persistence=False
-    )
-
+    simple_agent = SimpleAgent(name="simple_v1_add", engine=add_aug, enable_persistence=False)
 
     # Create test state with add tool call
     initial_state = {
@@ -209,9 +195,7 @@ async def test_simple_agent_v1_with_add_tool():
             HumanMessage(content="Add 5 and 3"),
             AIMessage(
                 content="I'll add those numbers for you.",
-                tool_calls=[
-                    {"id": "call_add_789", "name": "add", "args": {"a": 5, "b": 3}}
-                ],
+                tool_calls=[{"id": "call_add_789", "name": "add", "args": {"a": 5, "b": 3}}],
             ),
         ]
     }
@@ -226,11 +210,8 @@ async def test_simple_agent_v1_with_add_tool():
                 pass
 
         # Check for ToolMessages
-        tool_messages = [
-            msg for msg in result["messages"] if isinstance(msg, ToolMessage)
-        ]
+        tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
         if len(tool_messages) > 0:
-
             # Verify result
             tool_msg = tool_messages[0]
             if str(tool_msg.content) == "8" or tool_msg.content == 8:
@@ -256,10 +237,7 @@ async def test_simple_agent_v2_with_add_tool():
     )
 
     # Create V2 SimpleAgent
-    simple_agent = SimpleAgentV2(
-        name="simple_v2_add", engine=add_aug, enable_persistence=False
-    )
-
+    simple_agent = SimpleAgentV2(name="simple_v2_add", engine=add_aug, enable_persistence=False)
 
     # Create test state with add tool call
     initial_state = {
@@ -267,9 +245,7 @@ async def test_simple_agent_v2_with_add_tool():
             HumanMessage(content="Add 5 and 3"),
             AIMessage(
                 content="I'll add those numbers for you.",
-                tool_calls=[
-                    {"id": "call_add_101112", "name": "add", "args": {"a": 5, "b": 3}}
-                ],
+                tool_calls=[{"id": "call_add_101112", "name": "add", "args": {"a": 5, "b": 3}}],
             ),
         ]
     }
@@ -284,11 +260,8 @@ async def test_simple_agent_v2_with_add_tool():
                 pass
 
         # Check for ToolMessages
-        tool_messages = [
-            msg for msg in result["messages"] if isinstance(msg, ToolMessage)
-        ]
+        tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
         if len(tool_messages) > 0:
-
             # Verify result
             tool_msg = tool_messages[0]
             if str(tool_msg.content) == "8" or tool_msg.content == 8:
@@ -307,7 +280,6 @@ async def test_react_agent_with_add_tool():
     if not REACT_AGENT_AVAILABLE:
         return True
 
-
     # Create engine with add tool as specified
     add_aug = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -318,7 +290,6 @@ async def test_react_agent_with_add_tool():
 
     # Create ReactAgent
     react_agent = ReactAgent(name="react_add", engine=add_aug, enable_persistence=False)
-
 
     # Create test state with add tool call
     initial_state = {
@@ -347,11 +318,8 @@ async def test_react_agent_with_add_tool():
                 pass
 
         # Check for ToolMessages
-        tool_messages = [
-            msg for msg in result["messages"] if isinstance(msg, ToolMessage)
-        ]
+        tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
         if len(tool_messages) > 0:
-
             # Verify result
             tool_msg = tool_messages[0]
             if str(tool_msg.content) == "8" or tool_msg.content == 8:
@@ -404,7 +372,6 @@ async def main():
         results.append(("ReactAgent + add", result5))
     except Exception as e:
         results.append(("ReactAgent + add", False))
-
 
     all_passed = True
     for test_name, passed in results:

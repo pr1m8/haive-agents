@@ -89,9 +89,7 @@ def test_agent_state_mismatch():
 
     # Issue 2: Executor agent expects different fields
 
-    SimpleAgent(
-        name="executor", engine=llm, instructions="Execute the current step of the plan"
-    )
+    SimpleAgent(name="executor", engine=llm, instructions="Execute the current step of the plan")
 
     # Executor needs: current_step, previous_results
     # But gets entire PlanExecuteState
@@ -161,9 +159,7 @@ def demonstrate_proposed_solution():
                     self.execution_results.append(result["result"])
 
     # Test the enhanced state
-    state = AgentAwarePlanExecuteState(
-        messages=[HumanMessage(content="Build a web app")]
-    )
+    state = AgentAwarePlanExecuteState(messages=[HumanMessage(content="Build a web app")])
 
     # Each agent gets only what it needs
     state.get_planner_view()
@@ -180,7 +176,6 @@ def show_improved_multi_agent_pattern():
 
 
 if __name__ == "__main__":
-
     # Test current approach
     current_state = test_current_plan_execute_state()
 

@@ -64,7 +64,6 @@ async def test_real_rag_example():
     ]
 
     for _i, query in enumerate(test_queries, 1):
-
         try:
             # Execute the RAG pipeline
             result = await rag.arun(query)
@@ -88,9 +87,7 @@ async def test_real_rag_example():
 
     # Test retrieval directly
     retriever = rag.get_retriever_agent()
-    retrieval_result = await retriever.arun(
-        {"query": "What is machine learning?", "k": 2}
-    )
+    retrieval_result = await retriever.arun({"query": "What is machine learning?", "k": 2})
 
     # Test answer generation with retrieved docs
     answer_agent = rag.get_answer_agent()
@@ -103,7 +100,6 @@ async def test_real_rag_example():
 
     # 6. Check performance metrics
     if rag.performance_mode:
-
         perf_analysis = rag.analyze_agent_performance()
         if "agents" in perf_analysis:
             for _agent_name, _metrics in perf_analysis["agents"].items():

@@ -56,9 +56,7 @@ async def create_real_agents():
             model="gpt-3.5-turbo",
         )
 
-        writing_agent = ReactAgent(
-            name="writing_agent", engine=writing_engine, tools=[]
-        )
+        writing_agent = ReactAgent(name="writing_agent", engine=writing_engine, tools=[])
 
         return [research_agent, coding_agent, writing_agent]
 
@@ -84,9 +82,7 @@ async def test_registry_supervisor_real():
         return
 
     # Create supervisor
-    supervisor = RegistrySupervisor(
-        name="real_registry_supervisor", max_active_agents=5
-    )
+    supervisor = RegistrySupervisor(name="real_registry_supervisor", max_active_agents=5)
 
     # Populate registry with capabilities
     supervisor.populate_registry(
@@ -100,12 +96,12 @@ async def test_registry_supervisor_real():
 
     # Test 1: Research request (should activate research agent)
 
-    research_request = "Research the latest developments in artificial intelligence and machine learning"
+    research_request = (
+        "Research the latest developments in artificial intelligence and machine learning"
+    )
 
     try:
-        result1 = await supervisor.ainvoke(
-            {"messages": [HumanMessage(content=research_request)]}
-        )
+        result1 = await supervisor.ainvoke({"messages": [HumanMessage(content=research_request)]})
 
         # Show response preview
         messages = result1.get("messages", [])
@@ -121,14 +117,10 @@ async def test_registry_supervisor_real():
 
     # Test 2: Coding request (should activate coding agent)
 
-    coding_request = (
-        "Write Python code to implement a binary search algorithm with comments"
-    )
+    coding_request = "Write Python code to implement a binary search algorithm with comments"
 
     try:
-        result2 = await supervisor.ainvoke(
-            {"messages": [HumanMessage(content=coding_request)]}
-        )
+        result2 = await supervisor.ainvoke({"messages": [HumanMessage(content=coding_request)]})
 
         # Show response preview
         messages = result2.get("messages", [])
@@ -144,12 +136,12 @@ async def test_registry_supervisor_real():
 
     # Test 3: Writing request (should activate writing agent)
 
-    writing_request = "Write a compelling introduction for a blog post about the future of remote work"
+    writing_request = (
+        "Write a compelling introduction for a blog post about the future of remote work"
+    )
 
     try:
-        result3 = await supervisor.ainvoke(
-            {"messages": [HumanMessage(content=writing_request)]}
-        )
+        result3 = await supervisor.ainvoke({"messages": [HumanMessage(content=writing_request)]})
 
         # Show response preview
         messages = result3.get("messages", [])
@@ -168,9 +160,7 @@ async def test_registry_supervisor_real():
     reuse_request = "Do more research on quantum computing applications"
 
     try:
-        result4 = await supervisor.ainvoke(
-            {"messages": [HumanMessage(content=reuse_request)]}
-        )
+        result4 = await supervisor.ainvoke({"messages": [HumanMessage(content=reuse_request)]})
 
         # Show response preview
         messages = result4.get("messages", [])
@@ -209,11 +199,7 @@ async def test_detailed_outputs():
 
     try:
         result = await supervisor.ainvoke(
-            {
-                "messages": [
-                    HumanMessage(content="Write Python code for fibonacci sequence")
-                ]
-            }
+            {"messages": [HumanMessage(content="Write Python code for fibonacci sequence")]}
         )
 
         # Show actual response
@@ -226,7 +212,6 @@ async def test_detailed_outputs():
 
 
 if __name__ == "__main__":
-
     # Run the main test
     asyncio.run(test_registry_supervisor_real())
 

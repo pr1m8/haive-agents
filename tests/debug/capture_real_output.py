@@ -31,7 +31,6 @@ def patch_agent_node_v3():
             # Capture and show the result
 
             if hasattr(result, "update"):
-
                 # Store the captured output
                 captured_outputs.append(
                     {
@@ -43,7 +42,6 @@ def patch_agent_node_v3():
                 )
 
             elif isinstance(result, dict):
-
                 # Store the captured output
                 captured_outputs.append(
                     {"agent_name": self.agent_name, "type": "dict", "content": result}
@@ -93,13 +91,11 @@ def test_with_real_agent():
 def show_captured_outputs():
     """Show all captured outputs."""
     for _i, output in enumerate(captured_outputs):
-
         if "update" in output or "content" in output:
             pass
 
 
 if __name__ == "__main__":
-
     # Step 1: Patch AgentNodeV3
     patch_agent_node_v3()
 

@@ -41,7 +41,6 @@ def test_self_discovery_agent():
         return True
 
     except Exception as e:
-
         # Check if it's the original LangGraph error
         if "Expected dict, got" in str(e):
             pass
@@ -55,7 +54,6 @@ def test_self_discovery_agent():
 
 
 if __name__ == "__main__":
-
     success = test_self_discovery_agent()
 
     if success:

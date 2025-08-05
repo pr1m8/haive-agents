@@ -40,7 +40,6 @@ async def test_schema_composer_fix():
 
     # Check the schema fields
     if hasattr(agent.state_schema, "model_fields"):
-
         # Check if we have engine field from LLMState but not duplicated
         if "engine" in agent.state_schema.model_fields:
             pass  # engine is in state schema
@@ -55,7 +54,6 @@ async def test_schema_composer_fix():
 
     # Check input schema separately
     if hasattr(agent.input_schema, "model_fields"):
-
         # Engine should NOT be in input schema
         if "engine" in agent.input_schema.model_fields:
             pass  # engine is not in input schema
@@ -89,7 +87,6 @@ async def test_schema_composer_fix():
         await agent.arun("what is the tallest building in france")
         return True
     except Exception:
-
         # Try with dict input
         try:
             await agent.arun({"query": "what is the tallest building in france"})

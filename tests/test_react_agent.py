@@ -122,7 +122,6 @@ def run_test_cases():
 
     # Run test cases
     for _i, test_case in enumerate(TEST_CASES, 1):
-
         # Run agent
         result = agent.run(test_case)
 

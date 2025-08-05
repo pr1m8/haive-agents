@@ -16,16 +16,12 @@ class TestProperMultiAgent:
         """Create simple agents for testing."""
         agent1 = SimpleAgent(
             name="agent1",
-            engine=AugLLMConfig(
-                system_message="You are agent 1. Say hello from agent 1."
-            ),
+            engine=AugLLMConfig(system_message="You are agent 1. Say hello from agent 1."),
         )
 
         agent2 = SimpleAgent(
             name="agent2",
-            engine=AugLLMConfig(
-                system_message="You are agent 2. Respond to the previous message."
-            ),
+            engine=AugLLMConfig(system_message="You are agent 2. Respond to the previous message."),
         )
 
         return agent1, agent2
@@ -64,9 +60,7 @@ class TestProperMultiAgent:
         """Test creating multi-agent with single agent."""
         agent1, _ = simple_agents
 
-        multi = ProperMultiAgent(
-            name="test_multi", agent=agent1, execution_mode="sequential"
-        )
+        multi = ProperMultiAgent(name="test_multi", agent=agent1, execution_mode="sequential")
 
         assert isinstance(multi.agents, dict)
         assert "agent1" in multi.agents
@@ -171,9 +165,7 @@ class TestProperMultiAgent:
 
         multi = ProperMultiAgent(name="test_multi", agents=[agent1, agent2])
 
-        test_input = {
-            "messages": [HumanMessage(content="Say hello and pass to next agent")]
-        }
+        test_input = {"messages": [HumanMessage(content="Say hello and pass to next agent")]}
 
         result = await multi.ainvoke(test_input)
 
@@ -202,9 +194,7 @@ class TestProperMultiAgent:
 
     def test_empty_agents_handling(self):
         """Test handling of empty agents."""
-        multi = ProperMultiAgent(
-            name="test_multi", agents=[], execution_mode="sequential"
-        )
+        multi = ProperMultiAgent(name="test_multi", agents=[], execution_mode="sequential")
 
         assert isinstance(multi.agents, dict)
         assert len(multi.agents) == 0

@@ -68,9 +68,7 @@ class DynamicGraphManager:
             # Simple routing logic
             if "math" in str(last_message).lower() and "math_agent" in self.agents:
                 state["next"] = "math_agent"
-            elif (
-                "write" in str(last_message).lower() and "writing_agent" in self.agents
-            ):
+            elif "write" in str(last_message).lower() and "writing_agent" in self.agents:
                 state["next"] = "writing_agent"
             elif self.agents:
                 # Default to first available agent
@@ -139,9 +137,7 @@ class DynamicGraphManager:
             self.compiled_graph = self.graph.compile()
             self.is_compiled = True
 
-            logger.info(
-                f"   ✅ Graph rebuilt successfully with {len(self.agents)} agents"
-            )
+            logger.info(f"   ✅ Graph rebuilt successfully with {len(self.agents)} agents")
             return True
 
         except Exception as e:
@@ -197,5 +193,4 @@ async def test_dynamic_addition():
 
 
 if __name__ == "__main__":
-
     asyncio.run(test_dynamic_addition())

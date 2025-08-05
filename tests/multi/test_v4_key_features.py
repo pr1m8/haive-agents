@@ -10,6 +10,7 @@ Focuses on V4's strengths:
 
 import sys
 import os
+
 sys.path.insert(0, os.path.abspath("packages/haive-agents/src"))
 sys.path.insert(0, os.path.abspath("packages/haive-core/src"))
 
@@ -24,6 +25,7 @@ from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 # Structured output models
 class Classification(BaseModel):
     """Classification result."""
+
     category: str = Field(description="Category: technical, billing, or general")
     confidence: float = Field(ge=0.0, le=1.0)
     reason: str = Field(description="Reason for classification")
@@ -31,6 +33,7 @@ class Classification(BaseModel):
 
 class Solution(BaseModel):
     """Solution to a problem."""
+
     solution: str = Field(description="Proposed solution")
     steps: list[str] = Field(description="Implementation steps")
     priority: str = Field(description="Priority level: high, medium, low")
@@ -41,40 +44,40 @@ def test_v4_features():
     print("\n" + "=" * 80)
     print("🎆 TESTING V4 KEY FEATURES")
     print("=" * 80)
-    
+
     # Create test agents
     config = AugLLMConfig(temperature=0.3, max_tokens=300)
-    
+
     # 1. Classifier agent with structured output
     classifier = SimpleAgentV3(
         name="classifier",
         engine=config,
         structured_output_model=Classification,
-        system_message="Classify customer requests into technical, billing, or general categories."
+        system_message="Classify customer requests into technical, billing, or general categories.",
     )
-    
+
     # 2. Technical support agent
     tech_agent = SimpleAgentV3(
         name="tech_support",
         engine=config,
         structured_output_model=Solution,
-        system_message="Provide technical solutions with clear steps."
+        system_message="Provide technical solutions with clear steps.",
     )
-    
-    # 3. Billing agent  
+
+    # 3. Billing agent
     billing_agent = SimpleAgentV3(
         name="billing_support",
         engine=config,
-        system_message="Handle billing and payment inquiries professionally."
+        system_message="Handle billing and payment inquiries professionally.",
     )
-    
+
     # 4. General support agent
     general_agent = SimpleAgentV3(
         name="general_support",
         engine=config,
-        system_message="Handle general customer service requests helpfully."
+        system_message="Handle general customer service requests helpfully.",
     )
-    
+
     print("\n🎆 FEATURE 1: Clean List-Based API")
     print("-" * 60)
     print("""
@@ -84,17 +87,17 @@ def test_v4_features():
     # V3 would require:
     agents={"classifier": classifier, "tech": tech_support, ...}
     """)
-    
+
     # Create V4 multi-agent
     multi = EnhancedMultiAgentV4(
         name="customer_support",
         agents=[classifier, tech_agent, billing_agent, general_agent],
         execution_mode="conditional",
-        entry_point="classifier"
+        entry_point="classifier",
     )
-    
+
     print(f"\n✅ Created with {len(multi.agents)} agents: {multi.get_agent_names()}")
-    
+
     print("\n🎆 FEATURE 2: Simple Conditional Routing")
     print("-" * 60)
     print("""
@@ -111,7 +114,7 @@ def test_v4_features():
     
     # V3 would require more complex setup
     """)
-    
+
     # Add multi-way routing based on classification
     def route_by_category(state):
         """Route based on classifier's output category."""
@@ -125,20 +128,20 @@ def test_v4_features():
             elif "billing" in content or "payment" in content:
                 return "billing_support"
         return "general_support"
-    
+
     multi.add_multi_conditional_edge(
         "classifier",
         route_by_category,
         routes={
             "tech_support": "tech_support",
-            "billing_support": "billing_support", 
-            "general_support": "general_support"
+            "billing_support": "billing_support",
+            "general_support": "general_support",
         },
-        default="general_support"
+        default="general_support",
     )
-    
+
     print("✅ Routing configured with clean API")
-    
+
     print("\n🎆 FEATURE 3: Build Modes for Flexibility")
     print("-" * 60)
     print("""
@@ -149,7 +152,7 @@ def test_v4_features():
     
     # V3 has no equivalent
     """)
-    
+
     print("\n🎆 FEATURE 4: Proper Base Agent Integration")
     print("-" * 60)
     print("""
@@ -161,26 +164,24 @@ def test_v4_features():
     
     # V3 has partial integration
     """)
-    
+
     # Compile and test
     print("\n🚀 Testing Execution...")
     compiled = multi.compile()
-    
+
     # Test different routing paths
     test_cases = [
         "I'm getting an error when trying to login",
-        "Question about my billing statement", 
-        "What are your business hours?"
+        "Question about my billing statement",
+        "What are your business hours?",
     ]
-    
+
     for i, test_input in enumerate(test_cases, 1):
         print(f"\n🧪 Test {i}: {test_input}")
         try:
-            result = compiled.invoke({
-                "messages": [HumanMessage(content=test_input)]
-            })
+            result = compiled.invoke({"messages": [HumanMessage(content=test_input)]})
             print(f"✅ Routed successfully")
-            
+
             # Check which agent handled it
             if "messages" in result and len(result["messages"]) > 1:
                 # Look for agent response
@@ -190,7 +191,7 @@ def test_v4_features():
                         break
         except Exception as e:
             print(f"❌ Error: {e}")
-    
+
     print("\n🎆 FEATURE 5: AgentNodeV3 State Projection")
     print("-" * 60)
     print("""
@@ -202,7 +203,7 @@ def test_v4_features():
     
     # V3 may have state management complexity
     """)
-    
+
     print("\n" + "=" * 80)
     print("🎯 V4 ADVANTAGES SUMMARY")
     print("=" * 80)

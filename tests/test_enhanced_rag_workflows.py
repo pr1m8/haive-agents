@@ -126,9 +126,7 @@ class TestCorrectiveRAGAgent:
 
         # Create input with a query
         input_data = {
-            "messages": [
-                HumanMessage(content="What are the best restaurants near Times Square?")
-            ],
+            "messages": [HumanMessage(content="What are the best restaurants near Times Square?")],
             "query": "What are the best restaurants near Times Square?",
         }
 
@@ -154,9 +152,7 @@ class TestHYDERAGAgent:
         agent = HYDERAGAgent(documents=conversation_documents)
 
         input_data = {
-            "messages": [
-                HumanMessage(content="What are popular restaurant types in NYC?")
-            ],
+            "messages": [HumanMessage(content="What are popular restaurant types in NYC?")],
             "query": "What are popular restaurant types in NYC?",
         }
 
@@ -180,9 +176,7 @@ class TestSelfRAGAgent:
         agent = SelfRAGAgent(documents=conversation_documents)
 
         input_data = {
-            "messages": [
-                HumanMessage(content="How do I make a restaurant reservation?")
-            ],
+            "messages": [HumanMessage(content="How do I make a restaurant reservation?")],
             "query": "How do I make a restaurant reservation?",
         }
 
@@ -207,9 +201,7 @@ class TestWorkflowFactory:
 
     def test_create_self_rag_workflow(self):
         """Test creating Self-RAG workflow via factory."""
-        agent = create_enhanced_rag_workflow(
-            "self_rag", documents=conversation_documents
-        )
+        agent = create_enhanced_rag_workflow("self_rag", documents=conversation_documents)
         assert isinstance(agent, SelfRAGAgent)
 
     def test_invalid_workflow_type(self):
@@ -251,12 +243,8 @@ class TestIntegration:
     def test_compatibility_between_workflows(self):
         """Test that different workflow types can work with the same state."""
         # Create different workflow types
-        crag_agent = create_enhanced_rag_workflow(
-            "crag", documents=conversation_documents[:5]
-        )
-        hyde_agent = create_enhanced_rag_workflow(
-            "hyde", documents=conversation_documents[:5]
-        )
+        crag_agent = create_enhanced_rag_workflow("crag", documents=conversation_documents[:5])
+        hyde_agent = create_enhanced_rag_workflow("hyde", documents=conversation_documents[:5])
 
         # Test that they can both use MultiAgentRAGState
         assert crag_agent.state_schema == MultiAgentRAGState

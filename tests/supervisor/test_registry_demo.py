@@ -146,8 +146,7 @@ class MockRegistrySupervisor:
                 "research" in agent_name
                 and any(word in task_lower for word in ["research", "find"])
             ) or (
-                "writing" in agent_name
-                and any(word in task_lower for word in ["write", "create"])
+                "writing" in agent_name and any(word in task_lower for word in ["write", "create"])
             ):
                 return agent_name
 
@@ -173,7 +172,6 @@ class MockRegistrySupervisor:
             registry_agent = self._select_agent_from_registry(task)
 
             if registry_agent:
-
                 # Add to active
                 agent_info = self.registry_agents[registry_agent]
                 self.active_agents[registry_agent] = agent_info["agent"]
@@ -290,5 +288,4 @@ async def demo_registry_supervisor():
 
 
 if __name__ == "__main__":
-
     asyncio.run(demo_registry_supervisor())

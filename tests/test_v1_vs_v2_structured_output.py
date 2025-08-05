@@ -101,7 +101,6 @@ def compare_engines():
 
 
 if __name__ == "__main__":
-
     # Compare engine setup first
     compare_engines()
 

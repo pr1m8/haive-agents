@@ -14,12 +14,8 @@ def test_proper_plan_execute_creation():
 
         # List the agents
         for _i, sub_agent in enumerate(agent.agents):
-
             # Check structured output models
-            if (
-                hasattr(sub_agent, "structured_output_model")
-                and sub_agent.structured_output_model
-            ):
+            if hasattr(sub_agent, "structured_output_model") and sub_agent.structured_output_model:
                 pass
 
         # Check state schema fields

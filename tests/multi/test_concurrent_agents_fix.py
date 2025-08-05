@@ -47,15 +47,15 @@ def test_unique_thread_generation():
 
     # Verify all thread IDs are unique
     unique_thread_ids = set(thread_ids)
-    assert len(unique_thread_ids) == len(
-        thread_ids
-    ), f"Expected {len(thread_ids)} unique thread IDs, got {len(unique_thread_ids)}"
+    assert len(unique_thread_ids) == len(thread_ids), (
+        f"Expected {len(thread_ids)} unique thread IDs, got {len(unique_thread_ids)}"
+    )
 
     # Verify they all start with agent name
     for thread_id in thread_ids:
-        assert thread_id.startswith(
-            "test_agent_"
-        ), f"Thread ID {thread_id} should start with 'test_agent_'"
+        assert thread_id.startswith("test_agent_"), (
+            f"Thread ID {thread_id} should start with 'test_agent_'"
+        )
 
     logger.info("✅ Unique thread ID generation test passed!")
 
@@ -63,9 +63,7 @@ def test_unique_thread_generation():
 def run_agent_instance(agent_name: str, instance_id: int) -> dict:
     """Run a single agent instance and return its thread information."""
     try:
-        agent = SimpleAgent(
-            name=agent_name, engine=AugLLMConfig(temperature=0.1), persistence=True
-        )
+        agent = SimpleAgent(name=agent_name, engine=AugLLMConfig(temperature=0.1), persistence=True)
 
         # Get the thread ID that would be generated
         thread_id = agent._generate_default_thread_id()
@@ -99,10 +97,7 @@ def test_concurrent_agent_creation():
 
     # Create agents concurrently
     with ThreadPoolExecutor(max_workers=5) as executor:
-        futures = [
-            executor.submit(run_agent_instance, agent_name, i)
-            for i in range(num_instances)
-        ]
+        futures = [executor.submit(run_agent_instance, agent_name, i) for i in range(num_instances)]
 
         results = [future.result() for future in futures]
 
@@ -126,9 +121,9 @@ def test_concurrent_agent_creation():
 
     logger.info(f"Generated thread IDs: {thread_ids}")
 
-    assert len(unique_thread_ids) == len(
-        thread_ids
-    ), f"Expected {len(thread_ids)} unique thread IDs, got {len(unique_thread_ids)}"
+    assert len(unique_thread_ids) == len(thread_ids), (
+        f"Expected {len(thread_ids)} unique thread IDs, got {len(unique_thread_ids)}"
+    )
 
     logger.info("✅ Concurrent agent creation test passed!")
 
@@ -139,9 +134,7 @@ async def test_async_agent_execution():
 
     async def run_async_agent(name: str, instance_id: int):
         try:
-            agent = SimpleAgent(
-                name=name, engine=AugLLMConfig(temperature=0.1), persistence=True
-            )
+            agent = SimpleAgent(name=name, engine=AugLLMConfig(temperature=0.1), persistence=True)
 
             thread_id = agent._generate_default_thread_id()
 
@@ -181,9 +174,9 @@ async def test_async_agent_execution():
     thread_ids = [r["thread_id"] for r in successful_results]
     unique_thread_ids = set(thread_ids)
 
-    assert len(unique_thread_ids) == len(
-        thread_ids
-    ), f"Expected {len(thread_ids)} unique thread IDs, got {len(unique_thread_ids)}"
+    assert len(unique_thread_ids) == len(thread_ids), (
+        f"Expected {len(thread_ids)} unique thread IDs, got {len(unique_thread_ids)}"
+    )
 
     logger.info("✅ Async agent execution test passed!")
 
@@ -208,29 +201,23 @@ def test_thread_id_format():
     uuid_part = thread_id[len("test_agent_") :]
 
     # UUID should be 36 characters (with hyphens)
-    assert (
-        len(uuid_part) == 36
-    ), f"UUID part should be 36 characters, got {len(uuid_part)}"
+    assert len(uuid_part) == 36, f"UUID part should be 36 characters, got {len(uuid_part)}"
     assert uuid_part.count("-") == 4, "UUID should have 4 hyphens"
 
     # Test with agent name that has underscores
-    agent2 = SimpleAgent(
-        name="complex_agent_name", engine=AugLLMConfig(), persistence=True
-    )
+    agent2 = SimpleAgent(name="complex_agent_name", engine=AugLLMConfig(), persistence=True)
 
     thread_id2 = agent2._generate_default_thread_id()
     logger.info(f"Generated thread_id with underscores: {thread_id2}")
 
     # Should start with the full agent name
-    assert thread_id2.startswith(
-        "complex_agent_name_"
-    ), "Thread ID should start with full agent name"
+    assert thread_id2.startswith("complex_agent_name_"), (
+        "Thread ID should start with full agent name"
+    )
 
     # Extract UUID part
     uuid_part2 = thread_id2[len("complex_agent_name_") :]
-    assert (
-        len(uuid_part2) == 36
-    ), f"UUID part should be 36 characters, got {len(uuid_part2)}"
+    assert len(uuid_part2) == 36, f"UUID part should be 36 characters, got {len(uuid_part2)}"
 
     logger.info("✅ Thread ID format test passed!")
 

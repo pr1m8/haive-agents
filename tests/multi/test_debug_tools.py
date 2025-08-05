@@ -6,9 +6,7 @@ import sys
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 import logging
 
@@ -50,7 +48,6 @@ try:
 
     # Check messages
     for _i, msg in enumerate(result.get("messages", [])):
-
         # Check for tool calls
         if isinstance(msg, AIMessage) and hasattr(msg, "tool_calls"):
             pass
@@ -80,9 +77,7 @@ try:
     result = seq_agent.run(
         {
             "messages": [
-                HumanMessage(
-                    content="Calculate 10 + 20, then plan steps to build a calculator app"
-                )
+                HumanMessage(content="Calculate 10 + 20, then plan steps to build a calculator app")
             ]
         }
     )

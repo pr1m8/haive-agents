@@ -68,9 +68,7 @@ class TestSecretStrSerialization:
             os.environ.update(old_env)
 
     @pytest.mark.asyncio
-    async def test_postgres_config_with_secure_serializer(
-        self, supabase_connection_string
-    ):
+    async def test_postgres_config_with_secure_serializer(self, supabase_connection_string):
         """Test PostgreSQL configuration uses secure serializers."""
         # Parse connection string to get individual components
         from urllib.parse import urlparse
@@ -94,9 +92,7 @@ class TestSecretStrSerialization:
         assert kwargs["prepare_threshold"] is None
 
     @pytest.mark.asyncio
-    async def test_secretstr_with_real_database_connection(
-        self, supabase_connection_string
-    ):
+    async def test_secretstr_with_real_database_connection(self, supabase_connection_string):
         """Test SecretStr handling with actual database operations."""
         # Test serializer with database-like operations
         serializer = SecureSecretStrSerializer()
@@ -166,9 +162,7 @@ class TestSecretStrSerialization:
         )
 
         # Create agent configuration for this test
-        agent_config = {
-            "configurable": {"thread_id": test_thread_id, "recursion_limit": 100}
-        }
+        agent_config = {"configurable": {"thread_id": test_thread_id, "recursion_limit": 100}}
 
         # Test message
         test_message = f"Test SecretStr serialization with Supabase - {test_thread_id}"
@@ -202,13 +196,9 @@ class TestSecretStrSerialization:
         await asyncio.sleep(2)
 
         # Verify data was written to database
-        await self._verify_checkpoint_data_written(
-            supabase_connection_string, test_thread_id
-        )
+        await self._verify_checkpoint_data_written(supabase_connection_string, test_thread_id)
 
-    async def _verify_checkpoint_data_written(
-        self, connection_string: str, thread_id: str
-    ):
+    async def _verify_checkpoint_data_written(self, connection_string: str, thread_id: str):
         """Verify that checkpoint data was written to the database."""
         try:
             async with await psycopg.AsyncConnection.connect(connection_string) as conn:
@@ -242,9 +232,9 @@ class TestSecretStrSerialization:
                                 if row:
                                     row_str = str(row)
                                     # Ensure no actual secret values are in the database
-                                    assert (
-                                        "sk-secret" not in row_str
-                                    ), "Secret values should be masked!"
+                                    assert "sk-secret" not in row_str, (
+                                        "Secret values should be masked!"
+                                    )
                                     if "**SECRET_MASKED**" in row_str:
                                         pass
 
@@ -292,13 +282,8 @@ class TestSecretStrSerialization:
         serialized = serializer._handle_secret_types(original_data)
 
         # Verify secrets are masked
-        assert (
-            serialized["agent_state"]["config"]["openai_api_key"] == "**SECRET_MASKED**"
-        )
-        assert (
-            serialized["agent_state"]["config"]["anthropic_api_key"]
-            == "**SECRET_MASKED**"
-        )
+        assert serialized["agent_state"]["config"]["openai_api_key"] == "**SECRET_MASKED**"
+        assert serialized["agent_state"]["config"]["anthropic_api_key"] == "**SECRET_MASKED**"
         assert serialized["agent_state"]["tools"][0]["api_key"] == "**SECRET_MASKED**"
 
         # Verify regular values preserved
@@ -321,10 +306,7 @@ class TestSecretStrSerialization:
         # from environment variables or secure storage
 
         # Verify the data is still intact
-        assert (
-            deserialized["agent_state"]["config"]["openai_api_key"]
-            == "**SECRET_MASKED**"
-        )
+        assert deserialized["agent_state"]["config"]["openai_api_key"] == "**SECRET_MASKED**"
         assert deserialized["agent_state"]["config"]["temperature"] == 0.7
         assert deserialized["metadata"]["user_id"] == "user123"
         assert deserialized["undefined_field"] is None
@@ -381,9 +363,7 @@ class TestSecretStrErrorHandling:
         # Create large test data
         large_data = {
             "messages": [f"Message {i}" for i in range(1000)],
-            "secrets": {
-                f"secret_{i}": SecretStr(f"secret_value_{i}") for i in range(100)
-            },
+            "secrets": {f"secret_{i}": SecretStr(f"secret_value_{i}") for i in range(100)},
             "metadata": {f"key_{i}": f"value_{i}" for i in range(500)},
             "undefined_fields": [PydanticUndefined] * 50,
         }
@@ -399,9 +379,7 @@ class TestSecretStrErrorHandling:
         assert all(u is None for u in processed["undefined_fields"])
 
         # Performance should be reasonable (< 1 second for this size)
-        assert (
-            processing_time < 1.0
-        ), f"Processing took too long: {processing_time:.3f}s"
+        assert processing_time < 1.0, f"Processing took too long: {processing_time:.3f}s"
 
 
 if __name__ == "__main__":

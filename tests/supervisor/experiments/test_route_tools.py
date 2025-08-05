@@ -71,12 +71,8 @@ def test_route_tools_creation():
     # Setup registry with real agents
     registry = AgentRegistry()
     agents = create_test_agents()
-    registry.register(
-        "math_agent", agents["math_agent"], "Performs mathematical calculations"
-    )
-    registry.register(
-        "planning_agent", agents["planning_agent"], "Creates structured plans"
-    )
+    registry.register("math_agent", agents["math_agent"], "Performs mathematical calculations")
+    registry.register("planning_agent", agents["planning_agent"], "Creates structured plans")
 
     # Create route tools
     route_tools = create_route_tools(registry)
@@ -84,12 +80,10 @@ def test_route_tools_creation():
     # Check we have the right tools
     tool_names = [t.name for t in route_tools]
 
-    assert (
-        "route_to_math_agent" in tool_names
-    ), f"Missing route_to_math_agent in {tool_names}"
-    assert (
-        "route_to_planning_agent" in tool_names
-    ), f"Missing route_to_planning_agent in {tool_names}"
+    assert "route_to_math_agent" in tool_names, f"Missing route_to_math_agent in {tool_names}"
+    assert "route_to_planning_agent" in tool_names, (
+        f"Missing route_to_planning_agent in {tool_names}"
+    )
     assert len(route_tools) == 2, f"Expected 2 tools, got {len(route_tools)}"
 
     return registry, route_tools
@@ -105,9 +99,7 @@ def test_route_tool_execution():
     result = math_route.invoke({"task": "What is 10 + 5?"})
 
     # Should contain the answer or indicate completion
-    assert (
-        "15" in result or "Agent math_agent completed" in result
-    ), f"Unexpected result: {result}"
+    assert "15" in result or "Agent math_agent completed" in result, f"Unexpected result: {result}"
 
     # Test planning route tool
     plan_route = next(t for t in route_tools if t.name == "route_to_planning_agent")
@@ -115,9 +107,9 @@ def test_route_tool_execution():
     result = plan_route.invoke({"task": "Plan a birthday party"})
 
     # Should contain planning content
-    assert (
-        "Agent planning_agent completed" in result or "plan" in result.lower()
-    ), f"Unexpected result: {result}"
+    assert "Agent planning_agent completed" in result or "plan" in result.lower(), (
+        f"Unexpected result: {result}"
+    )
 
     return registry, route_tools
 
@@ -126,12 +118,8 @@ def test_list_agents_tool():
     """Test 3: List agents tool works."""
     registry = AgentRegistry()
     agents = create_test_agents()
-    registry.register(
-        "math_agent", agents["math_agent"], "Performs mathematical calculations"
-    )
-    registry.register(
-        "planning_agent", agents["planning_agent"], "Creates structured plans"
-    )
+    registry.register("math_agent", agents["math_agent"], "Performs mathematical calculations")
+    registry.register("planning_agent", agents["planning_agent"], "Creates structured plans")
 
     # Create list tool
     list_tool = create_list_agents_tool(registry)
@@ -167,7 +155,6 @@ def test_tools_together():
 
 
 if __name__ == "__main__":
-
     try:
         test_route_tools_creation()
         test_route_tool_execution()

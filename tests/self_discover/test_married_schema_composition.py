@@ -30,7 +30,6 @@ def test_married_schema_composition():
             separation="smart",
         )
 
-
         # Check that married schema has BOTH sets of fields
         married_fields = set(married_schema.model_fields.keys())
 
@@ -76,7 +75,6 @@ def test_proper_multi_agent():
 
         # Create multi-agent with self-discovery agent
         multi_agent = ProperMultiAgent(name="test_multi", agents=[self_discovery])
-
 
         # Check that it has BOTH MultiAgentState AND SelfDiscovery fields
         schema_fields = set(multi_agent.state_schema.model_fields.keys())

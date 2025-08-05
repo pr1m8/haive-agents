@@ -45,9 +45,7 @@ class TestPlanAndExecuteIntegration:
         """Test agent executing a simple task."""
         PlanAndExecuteAgent(name="test_agent", tools=[get_weather])
 
-        PlanExecuteState(
-            messages=[HumanMessage(content="What's the weather in Tokyo?")]
-        )
+        PlanExecuteState(messages=[HumanMessage(content="What's the weather in Tokyo?")])
 
         # This would run the full agent
         # assert result.final_answer is not None
@@ -56,9 +54,7 @@ class TestPlanAndExecuteIntegration:
         """Test the flow of state initialization and updates."""
         # Create initial state
         initial_state = PlanExecuteState(
-            messages=[
-                HumanMessage(content="Calculate the area of Tokyo if it's 2194 km²")
-            ]
+            messages=[HumanMessage(content="Calculate the area of Tokyo if it's 2194 km²")]
         )
 
         assert initial_state.objective == "Calculate the area of Tokyo if it's 2194 km²"
@@ -97,12 +93,8 @@ class TestPlanAndExecuteIntegration:
         plan = Plan(
             objective="Complete task",
             steps=[
-                PlanStep(
-                    step_id=1, description="Step 1", expected_output="Expected output"
-                ),
-                PlanStep(
-                    step_id=2, description="Step 2", expected_output="Expected output"
-                ),
+                PlanStep(step_id=1, description="Step 1", expected_output="Expected output"),
+                PlanStep(step_id=2, description="Step 2", expected_output="Expected output"),
             ],
         )
 

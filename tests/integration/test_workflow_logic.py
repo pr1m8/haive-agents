@@ -37,7 +37,9 @@ def test_flare_logic():
         "Quantum computing is a revolutionary technology",
         "It uses quantum mechanical phenomena like superposition",
     ]
-    state.answer = "Quantum computing is a revolutionary technology that uses quantum mechanical phenomena..."
+    state.answer = (
+        "Quantum computing is a revolutionary technology that uses quantum mechanical phenomena..."
+    )
 
 
 def test_dynamic_rag_logic():
@@ -161,7 +163,6 @@ def test_adaptive_threshold_logic():
 
 
 if __name__ == "__main__":
-
     test_flare_logic()
     test_dynamic_rag_logic()
     test_debate_logic()

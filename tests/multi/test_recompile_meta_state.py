@@ -11,12 +11,8 @@ class RecompileMetaState(MetaStateSchema):
     """Meta state with recompilation support (extending existing MetaStateSchema)."""
 
     # Add recompilation tracking fields
-    needs_recompile: bool = Field(
-        default=False, description="Whether agent needs recompilation"
-    )
-    recompile_reason: str | None = Field(
-        default=None, description="Reason for recompilation"
-    )
+    needs_recompile: bool = Field(default=False, description="Whether agent needs recompilation")
+    recompile_reason: str | None = Field(default=None, description="Reason for recompilation")
     recompile_count: int = Field(default=0, description="Number of recompilations")
 
     # Don't override model_validator - let parent handle it

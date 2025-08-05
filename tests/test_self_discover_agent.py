@@ -28,7 +28,6 @@ async def test_self_discover_agent():
     The goal is to minimize overtime costs while ensuring all shifts are covered.
     """
 
-
     test_input = {
         "messages": [HumanMessage(content=test_problem)],
         "reasoning_modules": DEFAULT_REASONING_MODULES[:10],  # Use first 10 modules
@@ -38,11 +37,9 @@ async def test_self_discover_agent():
         # Execute the self-discovery process
         result = await self_discovery.ainvoke(test_input)
 
-
         # Check for expected outputs
         if isinstance(result, dict):
             if "messages" in result:
-
                 # Show progression through the agents
                 for i, message in enumerate(result["messages"]):
                     if hasattr(message, "content"):
@@ -53,7 +50,6 @@ async def test_self_discover_agent():
                         )
 
             if "agent_outputs" in result:
-
                 # Show final reasoning result
                 if "final_reasoning" in result["agent_outputs"]:
                     final_output = result["agent_outputs"]["final_reasoning"]
@@ -74,7 +70,6 @@ async def test_agent_structure():
 
     # Check that all agents have proper names and configurations
     for agent_name, agent in self_discovery.agents.items():
-
         if (
             hasattr(agent.engine, "structured_output_model")
             and agent.engine.structured_output_model

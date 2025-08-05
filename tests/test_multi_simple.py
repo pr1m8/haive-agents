@@ -28,26 +28,20 @@ async def test_execution():
 
     agent2 = SimpleAgent(
         name="agent2",
-        engine=AugLLMConfig(
-            system_message="You are agent 2. Respond to the previous message."
-        ),
+        engine=AugLLMConfig(system_message="You are agent 2. Respond to the previous message."),
     )
-
 
     # Create multi-agent
     multi = ProperMultiAgent(
         name="test_multi", agents=[agent1, agent2], execution_mode="sequential"
     )
 
-
     try:
-
         # Test input
         test_input = {"messages": [HumanMessage(content="Hello!")]}
 
         # Execute
         result = await multi.ainvoke(test_input)
-
 
         # Check messages
         if isinstance(result, dict) and "messages" in result:

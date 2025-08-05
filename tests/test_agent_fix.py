@@ -28,9 +28,7 @@ def test_multi_agent_serialization():
     """Test that MultiAgent can handle serialization issues with agent instances."""
     # Configure the engines
     add_aug = AugLLMConfig(tools=[add])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
 
     # Create individual agents
     simple_agent = SimpleAgent(engine=plan_aug, name="Planner")
@@ -73,9 +71,9 @@ def test_multi_agent_serialization():
 
     # Check for the graceful error handling message
     ai_messages = [msg for msg in result.messages if msg.type == "ai"]
-    assert any(
-        "serialization" in msg.content.lower() for msg in ai_messages
-    ), "No serialization error message found"
+    assert any("serialization" in msg.content.lower() for msg in ai_messages), (
+        "No serialization error message found"
+    )
 
 
 if __name__ == "__main__":

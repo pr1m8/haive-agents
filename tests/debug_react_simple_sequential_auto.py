@@ -47,9 +47,7 @@ async def debug_execution():
     print(f"✅ ReactAgent created: {react_agent.name}")
     print(f"   - Tools: {[t.name for t in react_agent.tools]}")
     print(f"   - State schema: {react_agent.state_schema.__name__}")
-    print(
-        f"   - State schema fields: {list(react_agent.state_schema.model_fields.keys())[:10]}..."
-    )
+    print(f"   - State schema fields: {list(react_agent.state_schema.model_fields.keys())[:10]}...")
 
     # Create SimpleAgent for structured output
     print("\n📌 STEP 2: Creating SimpleAgent for structured output")
@@ -177,12 +175,10 @@ async def debug_execution():
             # Show each message
             print("\n📜 Message Details:s:")
             for i, msg in enumerate(result["messages"]):
-                print(f"\n   Message {i+1} ({type(msg).__name__}):")
+                print(f"\n   Message {i + 1} ({type(msg).__name__}):")
                 if hasattr(msg, "content"):
                     content_preview = (
-                        msg.content[:200] + "..."
-                        if len(msg.content) > 200
-                        else msg.content
+                        msg.content[:200] + "..." if len(msg.content) > 200 else msg.content
                     )
                     print(f"   Content: {content_preview}")
                 if hasattr(msg, "name"):
@@ -190,9 +186,7 @@ async def debug_execution():
                 if hasattr(msg, "tool_calls") and msg.tool_calls:
                     print(f"   Tool calls: {len(msg.tool_calls)}")
                     for tc in msg.tool_calls:
-                        print(
-                            f"     - {tc.get('name', 'unknown')}: {tc.get('args', {})}"
-                        )
+                        print(f"     - {tc.get('name', 'unknown')}: {tc.get('args', {})}")
 
         # Check agent outputs if available
         if isinstance(result, dict) and "agent_outputs" in result:
@@ -220,9 +214,7 @@ async def debug_execution():
         if hasattr(multi_agent, "state") and multi_agent.state:
             state = multi_agent.state
             print(f"   - State type: {type(state).__name__}")
-            print(
-                f"   - Has display_debug_info: {hasattr(state, 'display_debug_info')}"
-            )
+            print(f"   - Has display_debug_info: {hasattr(state, 'display_debug_info')}")
 
             # Try to display debug info
             if hasattr(state, "display_debug_info"):
@@ -242,9 +234,7 @@ async def debug_execution():
         if hasattr(multi_agent, "state") and multi_agent.state:
             state = multi_agent.state
             print(f"   - State type: {type(state).__name__}")
-            print(
-                f"   - Last active agent: {getattr(state, 'active_agent', 'Unknown')}"
-            )
+            print(f"   - Last active agent: {getattr(state, 'active_agent', 'Unknown')}")
             if hasattr(state, "agent_outputs"):
                 print(f"   - Completed agents: {list(state.agent_outputs.keys())}")
             if hasattr(state, "agent_states"):

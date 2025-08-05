@@ -32,9 +32,7 @@ class TestReflectionAgents:
         """
 
         # Run reflection
-        improved = reflector.run(
-            f"Please reflect on and improve this response:\n\n{original}"
-        )
+        improved = reflector.run(f"Please reflect on and improve this response:\n\n{original}")
 
         # Verify improvement
         assert isinstance(improved, str)
@@ -55,9 +53,7 @@ class TestReflectionAgents:
         """
 
         # Grade the response
-        result = grader.run(
-            f"Original query: {query}\n\nResponse to grade:\n{response}"
-        )
+        result = grader.run(f"Original query: {query}\n\nResponse to grade:\n{response}")
 
         # Verify structured output
         assert isinstance(result, GradingResult)
@@ -85,8 +81,7 @@ class TestReflectionAgents:
         assert len(response) > 100  # Should be detailed
         # Should mention quantum concepts
         assert any(
-            term in response.lower()
-            for term in ["quantum", "entangle", "particle", "state"]
+            term in response.lower() for term in ["quantum", "entangle", "particle", "state"]
         )
 
     def test_tool_based_reflection_agent(self):
@@ -103,9 +98,7 @@ class TestReflectionAgents:
                 return "Invalid expression"
 
         # Create tool-based reflector
-        reflector = create_tool_based_reflection_agent(
-            name="tool_reflector", tools=[calculator]
-        )
+        reflector = create_tool_based_reflection_agent(name="tool_reflector", tools=[calculator])
 
         # Original response with calculation error
         original = """
@@ -217,9 +210,7 @@ class TestPrePostHookPatterns:
 
         # Step 2: Grade the explanation
         grader = graded_system.pre_agent
-        grade = grader.run(
-            f"Original query: {query}\n\nResponse to grade:\n{explanation}"
-        )
+        grade = grader.run(f"Original query: {query}\n\nResponse to grade:\n{explanation}")
 
         assert isinstance(grade, GradingResult)
 
@@ -230,8 +221,8 @@ class TestPrePostHookPatterns:
         grade_context = f"""
         The response received a grade of {grade.letter_grade} ({grade.overall_score.score}/100).
 
-        Strengths: {', '.join(grade.strengths)}
-        Weaknesses: {', '.join(grade.weaknesses)}
+        Strengths: {", ".join(grade.strengths)}
+        Weaknesses: {", ".join(grade.weaknesses)}
 
         Suggested improvements:
         {chr(10).join(f"- {imp.suggestion}" for imp in grade.improvements[:3])}

@@ -45,9 +45,7 @@ class TestPlanAndExecuteAgent:
 
     def test_agent_without_replanner(self, base_config):
         """Test creating agent without replanner."""
-        agent = PlanAndExecuteAgent(
-            planner_config=base_config, executor_config=base_config
-        )
+        agent = PlanAndExecuteAgent(planner_config=base_config, executor_config=base_config)
 
         assert agent.planner is not None
         assert agent.executor is not None
@@ -71,11 +69,7 @@ class TestPlanAndExecuteAgent:
         state = PlanExecuteState(
             plan=Plan(
                 task="Test task",
-                steps=[
-                    PlanStep(
-                        step_number=1, description="Step 1", expected_output="Output 1"
-                    )
-                ],
+                steps=[PlanStep(step_number=1, description="Step 1", expected_output="Output 1")],
                 total_steps=1,
             )
         )
@@ -101,9 +95,7 @@ class TestPlanAndExecuteAgent:
                         expected_output="Output 1",
                         status="completed",
                     ),
-                    PlanStep(
-                        step_number=2, description="Step 2", expected_output="Output 2"
-                    ),
+                    PlanStep(step_number=2, description="Step 2", expected_output="Output 2"),
                 ],
                 total_steps=2,
             )
@@ -144,9 +136,7 @@ class TestPlanAndExecuteAgent:
             "total_steps": 1
         }"""
 
-        state = PlanExecuteState(
-            messages=[BaseMessage(role="assistant", content=new_plan_content)]
-        )
+        state = PlanExecuteState(messages=[BaseMessage(role="assistant", content=new_plan_content)])
 
         route = plan_execute_agent._route_from_replanner(state)
         assert route == "executor"

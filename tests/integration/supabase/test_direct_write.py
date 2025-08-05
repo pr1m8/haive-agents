@@ -15,7 +15,6 @@ async def direct_write_test():
     if not conn_string:
         return False
 
-
     thread_id = f"direct_test_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     try:

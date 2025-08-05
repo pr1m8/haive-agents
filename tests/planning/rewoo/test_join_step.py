@@ -47,9 +47,7 @@ class TestJoinStep:
         assert sequential.join_complexity == "sequential"
 
         # Test simple parallel
-        simple_parallel = JoinStep(
-            description="Simple parallel", depends_on=["step_1", "step_2"]
-        )
+        simple_parallel = JoinStep(description="Simple parallel", depends_on=["step_1", "step_2"])
         assert simple_parallel.is_join_point
         assert simple_parallel.parallel_branch_count == 2
         assert simple_parallel.join_complexity == "simple_parallel"
@@ -155,15 +153,11 @@ class TestJoinStep:
         assert two_deps.join_function == "merge_two"
 
         # Multiple dependencies should suggest merge_multiple
-        multi_deps = JoinStep(
-            description="Multi deps", depends_on=["step_1", "step_2", "step_3"]
-        )
+        multi_deps = JoinStep(description="Multi deps", depends_on=["step_1", "step_2", "step_3"])
         assert multi_deps.join_function == "merge_multiple"
 
         # Many dependencies should suggest reduce_complex
-        many_deps = JoinStep(
-            description="Many deps", depends_on=[f"step_{i}" for i in range(1, 8)]
-        )
+        many_deps = JoinStep(description="Many deps", depends_on=[f"step_{i}" for i in range(1, 8)])
         assert many_deps.join_function == "reduce_complex"
 
     def test_execution_with_different_strategies(self) -> None:
@@ -265,9 +259,7 @@ class TestJoinStepDAGAnalysis:
         step4 = BasicStep(description="Process 2", depends_on=[step2.id])
 
         # This step joins two parallel branches
-        join_step = JoinStep(
-            description="Join parallel branches", depends_on=[step3.id, step4.id]
-        )
+        join_step = JoinStep(description="Join parallel branches", depends_on=[step3.id, step4.id])
 
         # This step has multiple dependencies but isn't a JoinStep
         final_step = BasicStep(
@@ -341,9 +333,7 @@ class TestJoinStepIntegration:
         )
 
         # Final step after join
-        final_step = BasicStep(
-            description="Final processing", depends_on=[join_step.id]
-        )
+        final_step = BasicStep(description="Final processing", depends_on=[join_step.id])
 
         plan = ExecutionPlan(
             name="Join Step Plan",

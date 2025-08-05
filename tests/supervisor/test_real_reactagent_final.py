@@ -103,7 +103,6 @@ async def test_real_haive_reactagents():
             tools=[WritingTool()],
         )
 
-
         # Save initial agent states
         for agent in [research_agent, coding_agent, writing_agent]:
             initial_state = {
@@ -111,8 +110,7 @@ async def test_real_haive_reactagents():
                 "agent_type": str(type(agent)),
                 "description": agent.description,
                 "tools": [
-                    {"name": tool.name, "description": tool.description}
-                    for tool in agent.tools
+                    {"name": tool.name, "description": tool.description} for tool in agent.tools
                 ],
                 "created_at": datetime.now().isoformat(),
             }
@@ -124,7 +122,6 @@ async def test_real_haive_reactagents():
             "code_expert": coding_agent,
             "content_creator": writing_agent,
         }
-
 
         # Test 1: Research task
 
@@ -244,7 +241,6 @@ async def test_real_haive_reactagents():
             "timestamp": datetime.now().isoformat(),
         }
         save_state_history("final_test", final_state, "completion")
-
 
     except Exception as e:
         final_error_state = {

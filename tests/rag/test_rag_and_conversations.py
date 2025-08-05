@@ -10,18 +10,13 @@ from typing import Any, Dict
 
 def setup_paths():
     """Add required paths for testing."""
-    sys.path.insert(
-        0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src"
-    )
-    sys.path.insert(
-        0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src"
-    )
+    sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
+    sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 
 
 def test_rag_base_agent() -> dict[str, Any]:
     """Test RAG Base agent with persistence."""
     try:
-
         from langchain_core.messages import HumanMessage
 
         from haive.agents.rag.base.agent import BaseRAGAgent
@@ -40,13 +35,7 @@ def test_rag_base_agent() -> dict[str, Any]:
 
         # Test with simple query
         agent.invoke(
-            {
-                "messages": [
-                    HumanMessage(
-                        content="Hello, I need help with information retrieval."
-                    )
-                ]
-            },
+            {"messages": [HumanMessage(content="Hello, I need help with information retrieval.")]},
             config,
         )
 
@@ -69,7 +58,6 @@ def test_rag_base_agent() -> dict[str, Any]:
 def test_rag_simple_agent() -> dict[str, Any]:
     """Test Simple RAG agent with persistence."""
     try:
-
         from langchain_core.messages import HumanMessage
 
         from haive.agents.rag.simple.agent import SimpleRAGAgent
@@ -88,11 +76,7 @@ def test_rag_simple_agent() -> dict[str, Any]:
 
         # Test with simple query
         agent.invoke(
-            {
-                "messages": [
-                    HumanMessage(content="What is retrieval augmented generation?")
-                ]
-            },
+            {"messages": [HumanMessage(content="What is retrieval augmented generation?")]},
             config,
         )
 
@@ -115,7 +99,6 @@ def test_rag_simple_agent() -> dict[str, Any]:
 def test_collaborative_conversation() -> dict[str, Any]:
     """Test Collaborative conversation agent."""
     try:
-
         from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.conversation.collaberative.agent import (
@@ -165,9 +148,7 @@ def test_collaborative_conversation() -> dict[str, Any]:
             has_ps_errors = "prepared statement" in doc.lower()
 
         return {
-            "status": (
-                "✅ PASSED" if not has_ps_errors else "⚠️ HAS PREPARED STATEMENT ERRORS"
-            ),
+            "status": ("✅ PASSED" if not has_ps_errors else "⚠️ HAS PREPARED STATEMENT ERRORS"),
             "agent_name": agent.name,
             "thread_id": thread_id,
             "persistence_type": type(agent.persistence).__name__,
@@ -187,7 +168,6 @@ def test_collaborative_conversation() -> dict[str, Any]:
 def test_debate_conversation() -> dict[str, Any]:
     """Test Debate conversation agent."""
     try:
-
         from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.conversation.debate.agent import DebateConversation
@@ -222,9 +202,7 @@ def test_debate_conversation() -> dict[str, Any]:
         thread_id = f"debate_test_{timestamp}"
         config = {"configurable": {"thread_id": thread_id}}
 
-        agent.invoke(
-            {"messages": [], "topic": "AI should be regulated"}, config
-        )
+        agent.invoke({"messages": [], "topic": "AI should be regulated"}, config)
 
         return {
             "status": "✅ PASSED",
@@ -246,7 +224,6 @@ def test_debate_conversation() -> dict[str, Any]:
 def test_directed_conversation() -> dict[str, Any]:
     """Test Directed conversation agent."""
     try:
-
         from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.conversation.directed.agent import DirectedConversation
@@ -277,9 +254,7 @@ def test_directed_conversation() -> dict[str, Any]:
         thread_id = f"directed_test_{timestamp}"
         config = {"configurable": {"thread_id": thread_id}}
 
-        agent.invoke(
-            {"messages": [], "topic": "Planning a project sprint"}, config
-        )
+        agent.invoke({"messages": [], "topic": "Planning a project sprint"}, config)
 
         return {
             "status": "✅ PASSED",
@@ -301,7 +276,6 @@ def test_directed_conversation() -> dict[str, Any]:
 def test_round_robin_conversation() -> dict[str, Any]:
     """Test Round Robin conversation agent."""
     try:
-
         from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.conversation.round_robin.agent import RoundRobinConversation
@@ -332,9 +306,7 @@ def test_round_robin_conversation() -> dict[str, Any]:
         thread_id = f"roundrobin_test_{timestamp}"
         config = {"configurable": {"thread_id": thread_id}}
 
-        agent.invoke(
-            {"messages": [], "topic": "Round robin discussion test"}, config
-        )
+        agent.invoke({"messages": [], "topic": "Round robin discussion test"}, config)
 
         return {
             "status": "✅ PASSED",
@@ -356,7 +328,6 @@ def test_round_robin_conversation() -> dict[str, Any]:
 def test_social_media_conversation() -> dict[str, Any]:
     """Test Social Media conversation agent."""
     try:
-
         from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.conversation.social_media.agent import SocialMediaConversation
@@ -387,9 +358,7 @@ def test_social_media_conversation() -> dict[str, Any]:
         thread_id = f"socialmedia_test_{timestamp}"
         config = {"configurable": {"thread_id": thread_id}}
 
-        agent.invoke(
-            {"messages": [], "topic": "Social media conversation test"}, config
-        )
+        agent.invoke({"messages": [], "topic": "Social media conversation test"}, config)
 
         return {
             "status": "✅ PASSED",
@@ -454,9 +423,7 @@ def main():
             if "✅ PASSED" in status:
                 passed_count += 1
                 if "has_prepared_statement_errors" in result:
-                    ps_status = (
-                        "❌ YES" if result["has_prepared_statement_errors"] else "✅ NO"
-                    )
+                    ps_status = "❌ YES" if result["has_prepared_statement_errors"] else "✅ NO"
             else:
                 failed_count += 1
 
@@ -469,11 +436,12 @@ def main():
 
     # Save detailed results
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    results_file = f"/home/will/Projects/haive/backend/haive/rag_conversation_test_results_{timestamp}.json"
+    results_file = (
+        f"/home/will/Projects/haive/backend/haive/rag_conversation_test_results_{timestamp}.json"
+    )
 
     with open(results_file, "w") as f:
         json.dump(test_results, f, indent=2)
-
 
 
 if __name__ == "__main__":

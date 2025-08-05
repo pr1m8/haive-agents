@@ -42,9 +42,7 @@ def word_analyzer(text: str) -> str:
     words = text.split()
     chars = len(text)
     word_count = len(words)
-    avg_word_length = (
-        sum(len(word) for word in words) / word_count if word_count > 0 else 0
-    )
+    avg_word_length = sum(len(word) for word in words) / word_count if word_count > 0 else 0
 
     return (
         f"Text Analysis:\n"

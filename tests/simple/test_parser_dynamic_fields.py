@@ -38,7 +38,6 @@ def test_parser_node_dynamic_field_addition():
         # NOTE: No 'testresult' field pre-defined!
     )
 
-
     # Create state instance
     state = minimal_state_schema()
     state.engines = {"test_engine": mock_engine}
@@ -74,14 +73,11 @@ def test_parser_node_dynamic_field_addition():
     # Create parser node
     parser_config = ParserNodeConfig(name="test_parser", engine_name="test_engine")
 
-
     # Try to execute parser
     try:
         result_command = parser_config(state)
 
-
         if hasattr(result_command, "update") and result_command.update:
-
             # Check if parser added the structured field
             if "testresult" in result_command.update:
                 structured_result = result_command.update["testresult"]
@@ -93,14 +89,12 @@ def test_parser_node_dynamic_field_addition():
     except Exception as e:
         pass
 
-
     # Test Case 2: State schema WITH the structured output field pre-defined
     enhanced_state_schema = create_model(
         "EnhancedState",
         messages=(list, Field(default_factory=list)),
         testresult=(TestResult, Field(default=None)),  # Pre-defined field
     )
-
 
     # Create enhanced state
     enhanced_state = enhanced_state_schema()
@@ -111,9 +105,7 @@ def test_parser_node_dynamic_field_addition():
     try:
         result_command = parser_config(enhanced_state)
 
-
         if hasattr(result_command, "update") and result_command.update:
-
             if "testresult" in result_command.update:
                 pass
             else:
@@ -123,7 +115,6 @@ def test_parser_node_dynamic_field_addition():
 
     except Exception as e:
         pass
-
 
 
 def test_state_update_mechanics():
@@ -158,7 +149,6 @@ def test_state_update_mechanics():
 
     except Exception as e:
         pass
-
 
 
 if __name__ == "__main__":

@@ -57,15 +57,9 @@ def test_tool_generation():
     agents = create_real_agents()
 
     # Add all agents
-    state.add_agent(
-        "search_agent", agents["search_agent"], "Web search specialist", True
-    )
-    state.add_agent(
-        "math_agent", agents["math_agent"], "Math calculations specialist", True
-    )
-    state.add_agent(
-        "planning_agent", agents["planning_agent"], "Planning specialist", False
-    )
+    state.add_agent("search_agent", agents["search_agent"], "Web search specialist", True)
+    state.add_agent("math_agent", agents["math_agent"], "Math calculations specialist", True)
+    state.add_agent("planning_agent", agents["planning_agent"], "Planning specialist", False)
 
     # Check generated tool names
 
@@ -85,9 +79,7 @@ def test_handoff_tool_execution():
     state = SupervisorStateWithTools()
     agents = create_real_agents()
 
-    state.add_agent(
-        "search_agent", agents["search_agent"], "Web search specialist", True
-    )
+    state.add_agent("search_agent", agents["search_agent"], "Web search specialist", True)
     state.add_agent("math_agent", agents["math_agent"], "Math specialist", True)
 
     # Get tools
@@ -101,7 +93,6 @@ def test_handoff_tool_execution():
             break
 
     if search_handoff_tool:
-
         # Test tool execution
         search_handoff_tool.invoke({"task_description": "Search for Python tutorials"})
 
@@ -116,9 +107,7 @@ def test_choice_tool_execution():
     state = SupervisorStateWithTools()
     agents = create_real_agents()
 
-    state.add_agent(
-        "search_agent", agents["search_agent"], "Web search specialist", True
-    )
+    state.add_agent("search_agent", agents["search_agent"], "Web search specialist", True)
     state.add_agent("math_agent", agents["math_agent"], "Math specialist", True)
 
     # Get tools
@@ -132,7 +121,6 @@ def test_choice_tool_execution():
             break
 
     if choice_tool:
-
         # Test different task types
         test_tasks = [
             "Search for information about Python",
@@ -142,9 +130,7 @@ def test_choice_tool_execution():
         ]
 
         for task in test_tasks:
-            choice_tool.invoke(
-                {"task_description": task, "reasoning": "Testing choice logic"}
-            )
+            choice_tool.invoke({"task_description": task, "reasoning": "Testing choice logic"})
     else:
         pass
 
@@ -155,9 +141,7 @@ def test_field_validation():
     state = SupervisorStateWithTools()
     agents = create_real_agents()
 
-    state.add_agent(
-        "search_agent", agents["search_agent"], "Web search specialist", True
-    )
+    state.add_agent("search_agent", agents["search_agent"], "Web search specialist", True)
 
     # Test valid agent assignment
     with contextlib.suppress(Exception):
@@ -173,7 +157,6 @@ def test_field_validation():
 
 
 if __name__ == "__main__":
-
     try:
         test_choice_model_integration()
         test_tool_generation()

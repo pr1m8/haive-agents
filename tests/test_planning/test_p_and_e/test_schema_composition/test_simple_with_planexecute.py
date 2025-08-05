@@ -58,7 +58,6 @@ try:
         debug=True,
     )
 
-
     # Check result
 
     # Check if plan was generated
@@ -72,4 +71,3 @@ except Exception as e:
     import traceback
 
     traceback.print_exc()
-

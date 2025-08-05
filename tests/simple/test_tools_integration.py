@@ -98,9 +98,7 @@ def test_agent_with_single_tool():
     expected_result = "345"  # 15 * 23 = 345
 
     if ai_response and expected_result in ai_response:
-        print(
-            f"✅ SUCCESS: Tool used correctly, found expected result {expected_result}"
-        )
+        print(f"✅ SUCCESS: Tool used correctly, found expected result {expected_result}")
         return True
     else:
         print(f"❌ FAILURE: Expected result {expected_result} not found in response")
@@ -176,9 +174,7 @@ def test_agent_with_multiple_tools():
         print()
 
     overall_success = all(results)
-    print(
-        f"📊 Overall Result: {len([r for r in results if r])}/{len(results)} tests passed"
-    )
+    print(f"📊 Overall Result: {len([r for r in results if r])}/{len(results)} tests passed")
 
     return overall_success
 
@@ -221,9 +217,7 @@ def test_tool_error_handling():
                 break
 
     # Verify error was handled gracefully
-    if ai_response and (
-        "error" in ai_response.lower() or "invalid" in ai_response.lower()
-    ):
+    if ai_response and ("error" in ai_response.lower() or "invalid" in ai_response.lower()):
         print("✅ SUCCESS: Error handled gracefully by agent")
         return True
     else:

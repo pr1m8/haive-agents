@@ -46,14 +46,10 @@ class TestHaiveSpecificQueries:
         ]
 
         # Create RAG agent with Haive documents
-        rag_agent = SimpleRAGAgent.from_documents(
-            documents=haive_docs, name="Haive RAG Agent"
-        )
+        rag_agent = SimpleRAGAgent.from_documents(documents=haive_docs, name="Haive RAG Agent")
 
         # Test retrieval for Haive-specific query
-        retrieved = rag_agent.retrieve_documents(
-            "How does Haive handle agent composition?"
-        )
+        retrieved = rag_agent.retrieve_documents("How does Haive handle agent composition?")
 
         assert len(retrieved) > 0
 
@@ -61,8 +57,7 @@ class TestHaiveSpecificQueries:
         composition_docs = [
             doc
             for doc in retrieved
-            if "composition" in doc.page_content.lower()
-            or "SequentialAgent" in doc.page_content
+            if "composition" in doc.page_content.lower() or "SequentialAgent" in doc.page_content
         ]
         assert len(composition_docs) > 0
 
@@ -89,17 +84,13 @@ class TestHaiveSpecificQueries:
 
         # Create complete RAG system
         system = BaseRAGMultiAgent(
-            retrieval_agent=SimpleRAGAgent.from_documents(
-                state_docs, name="State Docs Agent"
-            ),
+            retrieval_agent=SimpleRAGAgent.from_documents(state_docs, name="State Docs Agent"),
             grading_agent=DocumentGradingAgent(name="State Grader"),
             answer_agent=SimpleRAGAnswerAgent(name="State Answer Agent"),
         )
 
         # Test with state management query
-        initial_state = MultiAgentRAGState(
-            query="How do shared fields work in Haive StateSchema?"
-        )
+        initial_state = MultiAgentRAGState(query="How do shared fields work in Haive StateSchema?")
 
         # Run retrieval
         retrieval_result = system.agents[0].run_retrieval(initial_state)
@@ -107,9 +98,7 @@ class TestHaiveSpecificQueries:
 
         # Should retrieve documents about shared fields
         shared_field_docs = [
-            doc
-            for doc in initial_state.retrieved_documents
-            if "shared" in doc.page_content.lower()
+            doc for doc in initial_state.retrieved_documents if "shared" in doc.page_content.lower()
         ]
         assert len(shared_field_docs) > 0
 
@@ -144,9 +133,7 @@ class TestHaiveSpecificQueries:
 
         # Test conditional RAG system
         conditional_system = ConditionalRAGMultiAgent(
-            retrieval_agent=SimpleRAGAgent.from_documents(
-                workflow_docs, name="Workflow Agent"
-            ),
+            retrieval_agent=SimpleRAGAgent.from_documents(workflow_docs, name="Workflow Agent"),
             name="Workflow RAG System",
         )
 
@@ -188,9 +175,7 @@ class TestHaiveSpecificQueries:
 
         # Should find documents about both AugLLMConfig and engine nodes
         aug_llm_docs = [doc for doc in retrieved if "AugLLMConfig" in doc.page_content]
-        engine_node_docs = [
-            doc for doc in retrieved if "engine node" in doc.page_content.lower()
-        ]
+        engine_node_docs = [doc for doc in retrieved if "engine node" in doc.page_content.lower()]
 
         # Should find relevant documents for the query
         assert len(aug_llm_docs) > 0 or len(engine_node_docs) > 0
@@ -234,12 +219,8 @@ class TestComplexHaiveQueries:
             retrieval_agent=SimpleRAGAgent.from_documents(
                 haive_comprehensive_docs, name="Comprehensive Haive Agent"
             ),
-            grading_agent=DocumentGradingAgent(
-                min_relevance_threshold=0.3, name="Haive Grader"
-            ),
-            answer_agent=SimpleRAGAnswerAgent(
-                use_citations=True, name="Haive Answer Agent"
-            ),
+            grading_agent=DocumentGradingAgent(min_relevance_threshold=0.3, name="Haive Grader"),
+            answer_agent=SimpleRAGAnswerAgent(use_citations=True, name="Haive Answer Agent"),
         )
 
         # Complex query about Haive architecture
@@ -268,9 +249,7 @@ class TestComplexHaiveQueries:
         answer_result = system.agents[2].run_generation(state)
 
         assert "generated_answer" in answer_result
-        assert (
-            len(answer_result["generated_answer"]) > 50
-        )  # Should be substantial answer
+        assert len(answer_result["generated_answer"]) > 50  # Should be substantial answer
 
     def test_haive_troubleshooting_query(self):
         """Test troubleshooting-style queries about Haive."""
@@ -302,7 +281,9 @@ class TestComplexHaiveQueries:
         )
 
         # Test troubleshooting query
-        error_query = "My Haive agents are failing with schema validation errors, how do I fix this?"
+        error_query = (
+            "My Haive agents are failing with schema validation errors, how do I fix this?"
+        )
 
         retrieved = troubleshooting_agent.retrieve_documents(error_query)
 
@@ -310,8 +291,7 @@ class TestComplexHaiveQueries:
         schema_docs = [
             doc
             for doc in retrieved
-            if "schema" in doc.page_content.lower()
-            and "error" in doc.page_content.lower()
+            if "schema" in doc.page_content.lower() and "error" in doc.page_content.lower()
         ]
         assert len(schema_docs) > 0
 
@@ -337,9 +317,7 @@ class TestComplexHaiveQueries:
         ]
 
         # Test with grading for relevance
-        grading_agent = DocumentGradingAgent(
-            min_relevance_threshold=0.4, name="Performance Grader"
-        )
+        grading_agent = DocumentGradingAgent(min_relevance_threshold=0.4, name="Performance Grader")
 
         state = MultiAgentRAGState(
             query="How can I optimize the performance of my Haive multi-agent system?",
@@ -349,9 +327,7 @@ class TestComplexHaiveQueries:
         grading_result = grading_agent.run_grading(state)
 
         # All documents should be relevant to performance optimization
-        relevant_docs = [
-            doc for doc in grading_result["graded_documents"] if doc.is_relevant
-        ]
+        relevant_docs = [doc for doc in grading_result["graded_documents"] if doc.is_relevant]
         assert len(relevant_docs) >= 2  # Most should be relevant
 
 
@@ -379,15 +355,11 @@ class TestHaiveQueryIntegration:
             retrieval_agent=SimpleRAGAgent.from_documents(
                 mixed_haive_docs, name="Mixed Content Agent"
             ),
-            grading_agent=DocumentGradingAgent(
-                min_relevance_threshold=0.3, name="Mixed Grader"
-            ),
+            grading_agent=DocumentGradingAgent(min_relevance_threshold=0.3, name="Mixed Grader"),
         )
 
         # Query specifically about Haive
-        haive_query = (
-            "What are the differences between SimpleAgent and ReactAgent in Haive?"
-        )
+        haive_query = "What are the differences between SimpleAgent and ReactAgent in Haive?"
 
         state = MultiAgentRAGState(query=haive_query)
 
@@ -473,16 +445,12 @@ class TestHaiveQueryIntegration:
             comparative_docs, name="Comparative Analysis Agent"
         )
 
-        comparison_query = (
-            "How does Haive compare to LangGraph for building multi-agent systems?"
-        )
+        comparison_query = "How does Haive compare to LangGraph for building multi-agent systems?"
 
         retrieved = comparative_agent.retrieve_documents(comparison_query)
 
         # Should find LangGraph comparison docs
-        langgraph_docs = [
-            doc for doc in retrieved if "langgraph" in doc.page_content.lower()
-        ]
+        langgraph_docs = [doc for doc in retrieved if "langgraph" in doc.page_content.lower()]
 
         assert len(langgraph_docs) > 0
 
@@ -501,9 +469,7 @@ class TestQueryComplexity:
                 page_content="StateSchema defines the structure of agent state.",
                 metadata={},
             ),
-            Document(
-                page_content="Engines power the execution of agent logic.", metadata={}
-            ),
+            Document(page_content="Engines power the execution of agent logic.", metadata={}),
         ]
 
         agent = SimpleRAGAgent.from_documents(simple_docs, name="Simple Query Agent")
@@ -535,15 +501,11 @@ class TestQueryComplexity:
             ),
             Document(
                 page_content="Conditional routing in Haive allows dynamic workflow adaptation based on agent outputs and state conditions.",
-                metadata={
-                    "concepts": ["conditional", "routing", "dynamic", "workflow"]
-                },
+                metadata={"concepts": ["conditional", "routing", "dynamic", "workflow"]},
             ),
         ]
 
-        complex_agent = SimpleRAGAgent.from_documents(
-            complex_docs, name="Complex Query Agent"
-        )
+        complex_agent = SimpleRAGAgent.from_documents(complex_docs, name="Complex Query Agent")
 
         # Multi-concept query
         complex_query = "How do StateSchema shared fields work with SequentialAgent execution patterns in multi-agent systems?"

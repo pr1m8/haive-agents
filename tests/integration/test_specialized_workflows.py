@@ -64,9 +64,7 @@ async def test_adaptive_threshold():
 
     # Test with a query that might need threshold adjustment
     result = await agent.ainvoke(
-        {
-            "query": "Explain the technical details of transformer architecture in neural networks"
-        }
+        {"query": "Explain the technical details of transformer architecture in neural networks"}
     )
 
     return result

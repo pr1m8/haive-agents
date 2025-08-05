@@ -85,7 +85,6 @@ def test_real_simple_agent_without_modification():
 
     # Test SimpleAgent creation with modification disabled
     try:
-
         with patch.object(SimpleAgent, "_modify_engine_schema") as mock_modify:
             # Create SimpleAgent with v1 engine
             agent_v1 = SimpleAgent(
@@ -125,8 +124,7 @@ def test_real_simple_agent_without_modification():
             # Check engine still has structured model available
             engine_has_model = hasattr(agent_v2.engine, "structured_output_model")
             model_matches = (
-                engine_has_model
-                and agent_v2.engine.structured_output_model == TestOutput
+                engine_has_model and agent_v2.engine.structured_output_model == TestOutput
             )
 
             if model_matches:

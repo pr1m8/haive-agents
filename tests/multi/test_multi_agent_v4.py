@@ -41,9 +41,7 @@ class TestMultiAgentV4:
             SimpleAgent(name="reviewer", engine=AugLLMConfig()),
         ]
 
-        multi_agent = MultiAgentV4(
-            name="conversion_test", agents=agents, build_mode="manual"
-        )
+        multi_agent = MultiAgentV4(name="conversion_test", agents=agents, build_mode="manual")
 
         # Check conversion
         assert len(multi_agent.agent_dict) == 3
@@ -83,9 +81,7 @@ class TestMultiAgentV4:
         """Test manual build mode - graph not built automatically."""
         agents = [SimpleAgent(name="agent1", engine=AugLLMConfig())]
 
-        multi_agent = MultiAgentV4(
-            name="manual_test", agents=agents, build_mode="manual"
-        )
+        multi_agent = MultiAgentV4(name="manual_test", agents=agents, build_mode="manual")
 
         # Graph should not be built
         assert multi_agent._execution_graph is None
@@ -132,9 +128,7 @@ class TestMultiAgentV4:
             SimpleAgent(name="executor", engine=AugLLMConfig()),
         ]
 
-        multi_agent = MultiAgentV4(
-            name="utility_test", agents=agents, build_mode="manual"
-        )
+        multi_agent = MultiAgentV4(name="utility_test", agents=agents, build_mode="manual")
 
         # Test get_agent_names
         names = multi_agent.get_agent_names()
@@ -151,9 +145,7 @@ class TestMultiAgentV4:
         """Test MultiAgentState creation from input."""
         agents = [SimpleAgent(name="agent1", engine=AugLLMConfig())]
 
-        multi_agent = MultiAgentV4(
-            name="state_test", agents=agents, build_mode="manual"
-        )
+        multi_agent = MultiAgentV4(name="state_test", agents=agents, build_mode="manual")
 
         # Test with dict input
         input_data = {"task": "test task", "priority": "high"}
@@ -212,11 +204,7 @@ class TestMultiAgentV4Integration:
         # Test execution (this will use real LLMs)
         try:
             result = await workflow.arun(
-                {
-                    "messages": [
-                        {"role": "user", "content": "Hello, please introduce yourself"}
-                    ]
-                }
+                {"messages": [{"role": "user", "content": "Hello, please introduce yourself"}]}
             )
 
             # Verify we got some result

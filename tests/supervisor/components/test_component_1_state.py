@@ -28,9 +28,7 @@ def multiply(a: int, b: int) -> int:
 @tool
 def create_plan(goal: str, steps: int = 3) -> str:
     """Create a simple plan for achieving a goal."""
-    return f"Plan for '{goal}':\n" + "\n".join(
-        [f"{i+1}. Step {i+1}" for i in range(steps)]
-    )
+    return f"Plan for '{goal}':\n" + "\n".join([f"{i + 1}. Step {i + 1}" for i in range(steps)])
 
 
 def create_real_agents():
@@ -165,7 +163,6 @@ def test_state_operations():
 
 
 if __name__ == "__main__":
-
     try:
         test_agent_info()
         test_supervisor_state()

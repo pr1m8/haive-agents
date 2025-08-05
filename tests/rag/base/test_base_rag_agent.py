@@ -45,9 +45,7 @@ factory_logger.setLevel(logging.DEBUG)
 @pytest.fixture(scope="module")
 def sample_documents():
     """Create sample documents for testing."""
-    console.print(
-        Panel.fit("Creating sample documents", title="Setup", border_style="blue")
-    )
+    console.print(Panel.fit("Creating sample documents", title="Setup", border_style="blue"))
 
     documents = [
         Document(
@@ -79,9 +77,7 @@ def sample_documents():
 @pytest.fixture(scope="module")
 def vectorstore_config(sample_documents):
     """Create a vector store config with sample documents."""
-    console.print(
-        Panel.fit("Creating vector store config", title="Setup", border_style="blue")
-    )
+    console.print(Panel.fit("Creating vector store config", title="Setup", border_style="blue"))
 
     # Enable debug in NodeFactory
     NodeFactory.set_debug(True)
@@ -90,9 +86,7 @@ def vectorstore_config(sample_documents):
         name="test_vector_store",
         documents=sample_documents,
         vector_store_provider=VectorStoreProvider.FAISS,
-        embedding_model=HuggingFaceEmbeddingConfig(
-            model="sentence-transformers/all-MiniLM-L6-v2"
-        ),
+        embedding_model=HuggingFaceEmbeddingConfig(model="sentence-transformers/all-MiniLM-L6-v2"),
     )
 
     console.print("Vector store config created")
@@ -102,9 +96,7 @@ def vectorstore_config(sample_documents):
 @pytest.fixture(scope="module")
 def retriever_config(vectorstore_config):
     """Create a retriever config using the vector store."""
-    console.print(
-        Panel.fit("Creating retriever config", title="Setup", border_style="blue")
-    )
+    console.print(Panel.fit("Creating retriever config", title="Setup", border_style="blue"))
 
     retriever_config = VectorStoreRetrieverConfig(
         name="test_retriever", vector_store_config=vectorstore_config, k=2
@@ -118,15 +110,11 @@ def retriever_config(vectorstore_config):
 def direct_vs_rag_agent(vectorstore_config):
     """Create a RAG agent that uses vectorstore directly."""
     console.print(
-        Panel.fit(
-            "Creating direct vectorstore RAG agent", title="Setup", border_style="blue"
-        )
+        Panel.fit("Creating direct vectorstore RAG agent", title="Setup", border_style="blue")
     )
 
     agent = BaseRAGAgent(
-        BaseRAGConfig(
-            name="direct_vectorstore_rag", retriever_config=vectorstore_config
-        )
+        BaseRAGConfig(name="direct_vectorstore_rag", retriever_config=vectorstore_config)
     )
 
     console.print("Direct vectorstore RAG agent created")
@@ -137,9 +125,7 @@ def direct_vs_rag_agent(vectorstore_config):
 def explicit_retriever_rag_agent(retriever_config):
     """Create a RAG agent with an explicit retriever."""
     console.print(
-        Panel.fit(
-            "Creating explicit retriever RAG agent", title="Setup", border_style="blue"
-        )
+        Panel.fit("Creating explicit retriever RAG agent", title="Setup", border_style="blue")
     )
 
     agent = BaseRAGAgent(
@@ -153,9 +139,7 @@ def explicit_retriever_rag_agent(retriever_config):
 def test_retriever_direct_invocation(retriever_config):
     """Test direct invocation of retriever engine."""
     console.print(
-        Panel.fit(
-            "Testing direct retriever invocation", title="Test", border_style="green"
-        )
+        Panel.fit("Testing direct retriever invocation", title="Test", border_style="green")
     )
 
     # Test invocation with string
@@ -178,9 +162,7 @@ def test_retriever_direct_invocation(retriever_config):
 
 def test_node_function_creation(retriever_config):
     """Test creation of node function from retriever config."""
-    console.print(
-        Panel.fit("Testing node function creation", title="Test", border_style="green")
-    )
+    console.print(Panel.fit("Testing node function creation", title="Test", border_style="green"))
 
     # Create node config
     node_config = NodeConfig(
@@ -217,18 +199,14 @@ def test_node_function_creation(retriever_config):
                 console.print(f"[bold cyan]{docs[0].page_content}[/bold cyan]")
 
     assert hasattr(result, "update"), "Result should have update field"
-    assert (
-        "retrieved_documents" in result.update
-    ), "Update should contain retrieved_documents"
+    assert "retrieved_documents" in result.update, "Update should contain retrieved_documents"
     assert len(result.update["retrieved_documents"]) > 0, "Should retrieve documents"
 
 
 def test_direct_vs_rag_agent(direct_vs_rag_agent):
     """Test the RAG agent that uses vectorstore directly."""
     console.print(
-        Panel.fit(
-            "Testing direct vectorstore RAG agent", title="Test", border_style="green"
-        )
+        Panel.fit("Testing direct vectorstore RAG agent", title="Test", border_style="green")
     )
 
     query = {"query": "What is LangChain?"}
@@ -244,17 +222,13 @@ def test_direct_vs_rag_agent(direct_vs_rag_agent):
     console.print(f"Retrieved {len(result['retrieved_documents'])} documents")
     if result["retrieved_documents"]:
         console.print("First document:")
-        console.print(
-            f"[bold cyan]{result['retrieved_documents'][0].page_content}[/bold cyan]"
-        )
+        console.print(f"[bold cyan]{result['retrieved_documents'][0].page_content}[/bold cyan]")
 
 
 def test_explicit_retriever_rag_agent(explicit_retriever_rag_agent):
     """Test the RAG agent with explicit retriever."""
     console.print(
-        Panel.fit(
-            "Testing explicit retriever RAG agent", title="Test", border_style="green"
-        )
+        Panel.fit("Testing explicit retriever RAG agent", title="Test", border_style="green")
     )
 
     query = {"query": "What is LangGraph?"}
@@ -270,16 +244,12 @@ def test_explicit_retriever_rag_agent(explicit_retriever_rag_agent):
     console.print(f"Retrieved {len(result['retrieved_documents'])} documents")
     if result["retrieved_documents"]:
         console.print("First document:")
-        console.print(
-            f"[bold cyan]{result['retrieved_documents'][0].page_content}[/bold cyan]"
-        )
+        console.print(f"[bold cyan]{result['retrieved_documents'][0].page_content}[/bold cyan]")
 
 
 def test_different_input_formats(explicit_retriever_rag_agent):
     """Test the RAG agent with different input formats."""
-    console.print(
-        Panel.fit("Testing different input formats", title="Test", border_style="green")
-    )
+    console.print(Panel.fit("Testing different input formats", title="Test", border_style="green"))
 
     # Test with dict containing query
     input1 = {"query": "What is retrieval?"}
@@ -294,28 +264,20 @@ def test_different_input_formats(explicit_retriever_rag_agent):
     assert "retrieved_documents" in result2, "Result should contain retrieved_documents"
 
     # Compare results
-    console.print(
-        f"Dict input retrieved {len(result1['retrieved_documents'])} documents"
-    )
-    console.print(
-        f"String input retrieved {len(result2['retrieved_documents'])} documents"
-    )
+    console.print(f"Dict input retrieved {len(result1['retrieved_documents'])} documents")
+    console.print(f"String input retrieved {len(result2['retrieved_documents'])} documents")
 
 
 def test_alternative_mapping(retriever_config):
     """Test retriever with alternative input/output mapping."""
-    console.print(
-        Panel.fit("Testing alternative mapping", title="Test", border_style="green")
-    )
+    console.print(Panel.fit("Testing alternative mapping", title="Test", border_style="green"))
 
     # Create node config with different mapping
     node_config = NodeConfig(
         name="alt_mapping_node",
         engine=retriever_config,
         input_mapping={"question": "query"},  # Map state.question to query
-        output_mapping={
-            "documents": "search_results"
-        },  # Map documents to search_results
+        output_mapping={"documents": "search_results"},  # Map documents to search_results
     )
 
     console.print("Creating node function with alternative mapping")
@@ -338,9 +300,7 @@ def test_alternative_mapping(retriever_config):
 
 def test_error_handling(retriever_config):
     """Test error handling in retriever nodes."""
-    console.print(
-        Panel.fit("Testing error handling", title="Test", border_style="green")
-    )
+    console.print(Panel.fit("Testing error handling", title="Test", border_style="green"))
 
     # Create test with empty state
     node_config = NodeConfig(

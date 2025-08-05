@@ -82,9 +82,7 @@ def add_debug_to_modules():
             try:
                 # Check for AugLLMConfig references
                 console.print(f"Composer engines: {getattr(self, 'engines', 'None')}")
-                console.print(
-                    f"Composer input_fields: {getattr(self, 'input_fields', 'None')}"
-                )
+                console.print(f"Composer input_fields: {getattr(self, 'input_fields', 'None')}")
 
                 result = original_build(self, *args, **kwargs)
                 console.print("[green]SchemaComposer.build succeeded[/green]")
@@ -116,9 +114,7 @@ def add_debug_to_modules():
         original_model_post_init = agent_mod.Agent.model_post_init
 
         def debug_model_post_init(self, __context):
-            console.print(
-                f"[yellow]Agent.model_post_init called on {type(self).__name__}[/yellow]"
-            )
+            console.print(f"[yellow]Agent.model_post_init called on {type(self).__name__}[/yellow]")
             try:
                 result = original_model_post_init(self, __context)
                 console.print("[green]Agent.model_post_init succeeded[/green]")

@@ -36,9 +36,7 @@ class DocumentLoaderAgentTest(unittest.TestCase):
         # Create test markdown file
         cls.md_file = cls.test_dir / "test.md"
         with open(cls.md_file, "w") as f:
-            f.write(
-                "# Test Markdown\n\nThis is a *markdown* document with **formatting**."
-            )
+            f.write("# Test Markdown\n\nThis is a *markdown* document with **formatting**.")
 
     @classmethod
     def tearDownClass(cls):

@@ -148,9 +148,7 @@ async def test_post_compile_agent_addition():
     assert result1 == "writing_agent", f"Expected writing_agent, got {result1}"
 
     result2 = await supervisor.route_request("Calculate 2+2")  # No math agent yet
-    assert (
-        result2 == "writing_agent"
-    ), f"Expected writing_agent (default), got {result2}"
+    assert result2 == "writing_agent", f"Expected writing_agent (default), got {result2}"
 
     # Step 4: Add new agent AFTER compilation
 
@@ -171,8 +169,6 @@ async def test_post_compile_agent_addition():
     write_result = await supervisor.route_request("Write something")
     math_result = await supervisor.route_request("Do some math")
     generic_result = await supervisor.route_request("Generic request")
-
-
 
     return True
 
@@ -228,15 +224,10 @@ async def test_graph_rebuilding():
 
     # Verify
     assert supervisor.graph_rebuild_count == 2, "Expected 2 rebuilds"
-    assert (
-        len(supervisor.routing_destinations) == 4
-    ), "Expected 4 destinations (3 agents + END)"
-
+    assert len(supervisor.routing_destinations) == 4, "Expected 4 destinations (3 agents + END)"
 
 
 if __name__ == "__main__":
-
     # Run tests
     asyncio.run(test_post_compile_agent_addition())
     asyncio.run(test_graph_rebuilding())
-

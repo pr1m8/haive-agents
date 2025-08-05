@@ -63,11 +63,11 @@ with open("_temp_test.py", "w") as f:
 try:
     result = subprocess.run(
         [sys.executable, "_temp_test.py"],
-        check=False, capture_output=True,
+        check=False,
+        capture_output=True,
         text=True,
         env={**os.environ},
     )
-
 
     if result.stderr and "prepared statement" not in result.stderr:
         pass

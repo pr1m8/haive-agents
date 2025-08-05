@@ -14,9 +14,7 @@ async def test_clean_multi_agent():
     # Create agents
     writer = SimpleAgent(
         name="writer",
-        engine=AugLLMConfig(
-            prompt_template="Write a brief story about: {input}", temperature=0.7
-        ),
+        engine=AugLLMConfig(prompt_template="Write a brief story about: {input}", temperature=0.7),
     )
 
     editor = SimpleAgent(

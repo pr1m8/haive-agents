@@ -30,7 +30,6 @@ def test_persistence_fix():
 
     result = session.run({}, config=config)
 
-
     # Test 2: Try to retrieve state from the same thread_id to verify persistence
 
     # Create another session with the same persistence config
@@ -91,7 +90,6 @@ def test_persistence_fix():
 
     except Exception as e:
         pass
-
 
 
 if __name__ == "__main__":

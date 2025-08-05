@@ -237,9 +237,7 @@ async def test_deep_research_agent():
 
                 # Show research sections
                 if response.research_sections:
-                    print(
-                        f"📑 Section titles: {[s.title for s in response.research_sections]}"
-                    )
+                    print(f"📑 Section titles: {[s.title for s in response.research_sections]}")
 
                 # Show limitations
                 if response.limitations:
@@ -409,9 +407,7 @@ async def test_multi_agent_coordination():
             data_sources=["ml_healthcare_data.csv"],
             max_work_time=180,
         )
-        print(
-            f"✅ Labs project completed: {len(labs_response.assets_created)} assets created"
-        )
+        print(f"✅ Labs project completed: {len(labs_response.assets_created)} assets created")
 
         # Summary
         print("\n📊 Multi-Agent Coordination Summary:y:")
@@ -456,7 +452,7 @@ def print_performance_summary(test_results: Dict[str, bool], start_time: datetim
 
     print(f"⏱️ Total execution time: {total_time:.2f}s")
     print(f"✅ Tests passed: {passed_tests}/{total_tests}")
-    print(f"📊 Success rate: {(passed_tests/total_tests)*100:.1f}%")
+    print(f"📊 Success rate: {(passed_tests / total_tests) * 100:.1f}%")
 
     print("\n📋 Test Results:s:")
     for test_name, result in test_results.items():
@@ -464,9 +460,7 @@ def print_performance_summary(test_results: Dict[str, bool], start_time: datetim
         print(f"  {test_name}: {status}")
 
     if passed_tests == total_tests:
-        print(
-            "\n🎉 ALL TESTS PASSED! Perplexity-style agents are ready for production!"
-        )
+        print("\n🎉 ALL TESTS PASSED! Perplexity-style agents are ready for production!")
     else:
         print("\n⚠️ Some tests failed. Review the output above for details.ls.")
 

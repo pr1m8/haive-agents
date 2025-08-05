@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Test SimpleAgent v3 with debug flag enabled."""
 
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 
@@ -15,9 +14,7 @@ def test_with_debug():
     print("=" * 70)
 
     # Create config
-    config = AugLLMConfig(
-        temperature=0.1, max_tokens=50, llm_config=DeepSeekLLMConfig()
-    )
+    config = AugLLMConfig(temperature=0.1, max_tokens=50, llm_config=DeepSeekLLMConfig())
 
     # Create agent with debug=True
     agent = SimpleAgentV3(
@@ -30,9 +27,7 @@ def test_with_debug():
     # Enable more detailed logging
     import logging
 
-    logging.getLogger("haive.core.graph.node.engine_node_generic").setLevel(
-        logging.DEBUG
-    )
+    logging.getLogger("haive.core.graph.node.engine_node_generic").setLevel(logging.DEBUG)
     logging.getLogger("haive.agents.simple.agent_v3").setLevel(logging.DEBUG)
 
     print("\n✅ Agent created with debug=True")

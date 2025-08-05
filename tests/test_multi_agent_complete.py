@@ -57,9 +57,7 @@ class ConditionalMultiAgent(MultiAgent):
 
             # Check schema compatibility
             # In real implementation, would use AutoCompatibilitySystem
-            logger.info(
-                f"Validating compatibility: {current.name} -> {next_agent.name}"
-            )
+            logger.info(f"Validating compatibility: {current.name} -> {next_agent.name}")
 
     def _setup_routing_config(self):
         """Set up configuration for conditional routing."""
@@ -220,9 +218,7 @@ class EnhancedRAGAgent(Agent):
     """RAG agent with retriever engine and proper schema handling."""
 
     retriever_engine: EngineRetriever = Field(description="Retriever engine")
-    llm_engine: AugLLMConfig | None = Field(
-        default=None, description="Optional LLM for processing"
-    )
+    llm_engine: AugLLMConfig | None = Field(default=None, description="Optional LLM for processing")
     min_relevance_score: float = Field(default=0.7, ge=0, le=1)
 
     @model_validator(mode="after")
@@ -341,13 +337,9 @@ class TestCompleteMultiAgent:
             _generate_state_schema=Mock(return_value=MessagesState),
         ):
             # Create agents
-            query_agent = SimpleAgent(
-                engine=mock_engines["query"], name="query_processor"
-            )
+            query_agent = SimpleAgent(engine=mock_engines["query"], name="query_processor")
 
-            analyzer_agent = SimpleAgent(
-                engine=mock_engines["analyzer"], name="analyzer"
-            )
+            analyzer_agent = SimpleAgent(engine=mock_engines["analyzer"], name="analyzer")
 
             # Create conditional multi-agent
             multi_agent = ConditionalMultiAgent(
@@ -364,9 +356,7 @@ class TestCompleteMultiAgent:
             assert any(edge[0] == "router" for edge in graph.edges)
 
             # Test routing function
-            test_state = {
-                "messages": [HumanMessage(content="Please analyze this data")]
-            }
+            test_state = {"messages": [HumanMessage(content="Please analyze this data")]}
             route = multi_agent._route_based_on_state(test_state)
             assert route == "analyzer"
 
@@ -430,15 +420,11 @@ class TestCompleteMultiAgent:
             agents = []
 
             # Query agent outputs processed_query and intent
-            query_agent = SimpleAgent(
-                engine=mock_engines["query"], name="query_processor"
-            )
+            query_agent = SimpleAgent(engine=mock_engines["query"], name="query_processor")
             agents.append(query_agent)
 
             # Analyzer expects processed_query and intent (compatible!)
-            analyzer_agent = SimpleAgent(
-                engine=mock_engines["analyzer"], name="analyzer"
-            )
+            analyzer_agent = SimpleAgent(engine=mock_engines["analyzer"], name="analyzer")
             agents.append(analyzer_agent)
 
             # Create sequential multi-agent

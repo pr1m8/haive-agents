@@ -18,9 +18,7 @@ def test_self_discovery_agent():
     # Test state creation
     try:
         state = self_discovery.state_schema(
-            messages=[
-                HumanMessage(content="How can I improve my problem-solving skills?")
-            ],
+            messages=[HumanMessage(content="How can I improve my problem-solving skills?")],
             task_description="Improve problem-solving skills",
         )
 
@@ -58,9 +56,7 @@ def test_self_discovery_agent():
     # Test self-discovery execution
     try:
         input_data = {
-            "messages": [
-                HumanMessage(content="How can I improve my problem-solving skills?")
-            ],
+            "messages": [HumanMessage(content="How can I improve my problem-solving skills?")],
             "task_description": "Improve problem-solving skills",
         }
         result = self_discovery.invoke(input_data)

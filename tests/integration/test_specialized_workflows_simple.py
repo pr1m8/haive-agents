@@ -96,7 +96,6 @@ def test_agent_schemas():
 
 
 if __name__ == "__main__":
-
     test_workflow_instantiation()
     test_state_schemas()
     test_agent_schemas()

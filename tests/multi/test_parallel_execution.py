@@ -18,21 +18,15 @@ def test_parallel_execution():
     # Create agents with different tasks
     agent1 = SimpleAgent(
         name="researcher",
-        engine=AugLLMConfig(
-            system_message="You are a researcher. Research the given topic."
-        ),
+        engine=AugLLMConfig(system_message="You are a researcher. Research the given topic."),
     )
     agent2 = SimpleAgent(
         name="analyzer",
-        engine=AugLLMConfig(
-            system_message="You are an analyzer. Analyze the given topic."
-        ),
+        engine=AugLLMConfig(system_message="You are an analyzer. Analyze the given topic."),
     )
     agent3 = SimpleAgent(
         name="summarizer",
-        engine=AugLLMConfig(
-            system_message="You are a summarizer. Summarize the given topic."
-        ),
+        engine=AugLLMConfig(system_message="You are a summarizer. Summarize the given topic."),
     )
 
     # Create ProperMultiAgent with parallel execution
@@ -70,9 +64,7 @@ def test_parallel_execution():
     # Test parallel execution (this would run all agents simultaneously)
     try:
         input_data = {
-            "messages": [
-                HumanMessage(content="What are the benefits of renewable energy?")
-            ]
+            "messages": [HumanMessage(content="What are the benefits of renewable energy?")]
         }
         result = multi.invoke(input_data)
         if hasattr(result, "messages"):
@@ -89,9 +81,7 @@ def test_branch_execution():
     # Create agents for branching
     decision_agent = SimpleAgent(
         name="decision_maker",
-        engine=AugLLMConfig(
-            system_message="You are a decision maker. Decide which path to take."
-        ),
+        engine=AugLLMConfig(system_message="You are a decision maker. Decide which path to take."),
     )
     path_a_agent = SimpleAgent(
         name="path_a",

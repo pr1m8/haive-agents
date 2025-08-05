@@ -31,9 +31,7 @@ def test_basic_multi_agent_state():
     agents_dict = {"agent1": agent1, "agent2": agent2}
 
     # Test 1: Create state with agents dict
-    state = MultiAgentState(
-        messages=[HumanMessage(content="Hello")], agents=agents_dict
-    )
+    state = MultiAgentState(messages=[HumanMessage(content="Hello")], agents=agents_dict)
 
     # Test 2: Create state with agents list
     MultiAgentState(messages=[HumanMessage(content="Hello")], agents=[agent1, agent2])

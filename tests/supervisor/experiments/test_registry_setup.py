@@ -38,9 +38,7 @@ def create_test_agents():
     math_agent = ReactAgent(name="math_agent", engine=math_aug)
 
     # Planning agent with structured output
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
     planning_agent = SimpleAgent(name="planning_agent", engine=plan_aug)
 
     return {"math_agent": math_agent, "planning_agent": planning_agent}
@@ -92,12 +90,8 @@ def test_registry_with_real_agents():
     agents = create_test_agents()
 
     # Register real agents
-    registry.register(
-        "math_agent", agents["math_agent"], "Performs mathematical calculations"
-    )
-    registry.register(
-        "planning_agent", agents["planning_agent"], "Creates structured plans"
-    )
+    registry.register("math_agent", agents["math_agent"], "Performs mathematical calculations")
+    registry.register("planning_agent", agents["planning_agent"], "Creates structured plans")
 
     # Test registry contents
     assert registry.has_agent("math_agent"), "Math agent not found"
@@ -114,9 +108,7 @@ def test_individual_agents():
 
     # Test math agent
     try:
-        math_result = agents["math_agent"].invoke(
-            {"messages": [HumanMessage("What is 5 + 3?")]}
-        )
+        math_result = agents["math_agent"].invoke({"messages": [HumanMessage("What is 5 + 3?")]})
         # Look for 8 in the result
         result_str = str(math_result)
         assert "8" in result_str, f"Expected '8' in result, got: {result_str}"
@@ -130,15 +122,14 @@ def test_individual_agents():
         )
         result_str = str(plan_result)
         # Look for steps or planning content
-        assert (
-            "steps" in result_str.lower() or "plan" in result_str.lower()
-        ), f"Expected planning content, got: {result_str}"
+        assert "steps" in result_str.lower() or "plan" in result_str.lower(), (
+            f"Expected planning content, got: {result_str}"
+        )
     except Exception:
         raise
 
 
 if __name__ == "__main__":
-
     # Run tests in order
     try:
         test_registry_basic()

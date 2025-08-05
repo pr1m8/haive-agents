@@ -160,9 +160,7 @@ async def test_dynamic_supervisor_with_registry():
 
     # Create test registry
     test_registry = TestAgentRegistry()
-    console.print(
-        f"✅ Created test registry with {len(test_registry.get_all_agents())} agents"
-    )
+    console.print(f"✅ Created test registry with {len(test_registry.get_all_agents())} agents")
 
     # Create supervisor
     supervisor = IntegratedDynamicSupervisor(
@@ -178,9 +176,7 @@ async def test_dynamic_supervisor_with_registry():
     # Phase 1: Load agents into supervisor registry
     console.print("\n[bold cyan]Phase 1: Loading Agents into Registry[/bold cyan]")
 
-    for agent_name in track(
-        test_registry.get_all_agents().keys(), description="Loading agents..."
-    ):
+    for agent_name in track(test_registry.get_all_agents().keys(), description="Loading agents..."):
         agent = test_registry.get_agent(agent_name)
         config = test_registry.get_config(agent_name)
 
@@ -205,9 +201,7 @@ async def test_dynamic_supervisor_with_registry():
     supervisor.print_integrated_dashboard()
 
     # Phase 2: Test DynamicChoiceModel integration
-    console.print(
-        "\n[bold cyan]Phase 2: Testing DynamicChoiceModel Integration[/bold cyan]"
-    )
+    console.print("\n[bold cyan]Phase 2: Testing DynamicChoiceModel Integration[/bold cyan]")
 
     if supervisor.registry_manager:
         choice_model = supervisor.registry_manager.get_agent_choice_model()
@@ -221,9 +215,7 @@ async def test_dynamic_supervisor_with_registry():
 
         # Test invalid choice
         is_valid = choice_model.validate_choice("nonexistent_agent")
-        console.print(
-            f"  nonexistent_agent: {'✅ Valid' if is_valid else '❌ Invalid (expected)'}"
-        )
+        console.print(f"  nonexistent_agent: {'✅ Valid' if is_valid else '❌ Invalid (expected)'}")
 
     # Phase 3: Test procedural routing
     console.print("\n[bold cyan]Phase 3: Testing Procedural Routing[/bold cyan]")
@@ -275,9 +267,7 @@ async def test_dynamic_supervisor_with_registry():
                 supervisor, scenario["request"], test_registry
             )
 
-            console.print(
-                f"[green]Simulated routing decision: {decision['target']}[/green]"
-            )
+            console.print(f"[green]Simulated routing decision: {decision['target']}[/green]")
             console.print(f"[dim]Reasoning: {decision['reasoning']}[/dim]")
 
             # Verify expected vs actual
@@ -433,9 +423,7 @@ async def test_tool_integration():
     )
 
     test_registry = TestAgentRegistry()
-    supervisor = IntegratedDynamicSupervisor(
-        name="tool_test_supervisor", engine=AugLLMConfig()
-    )
+    supervisor = IntegratedDynamicSupervisor(name="tool_test_supervisor", engine=AugLLMConfig())
 
     # Load agents
     for agent_name, agent in test_registry.get_all_agents().items():

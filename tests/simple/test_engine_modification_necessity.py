@@ -28,9 +28,7 @@ class AnalysisOutput(BaseModel):
 
     summary: str = Field(description="Summary of the analysis")
     key_points: list[str] = Field(description="Key points identified")
-    confidence_score: float = Field(
-        ge=0.0, le=1.0, description="Confidence in analysis"
-    )
+    confidence_score: float = Field(ge=0.0, le=1.0, description="Confidence in analysis")
 
 
 @pytest.fixture
@@ -76,13 +74,9 @@ class TestEngineModificationNecessity:
         natural_fields = natural_schema.model_fields.keys()
 
         # V1 should naturally include the structured output fields
-        assert (
-            "completed" in natural_fields
-        ), "V1 should include 'completed' field naturally"
+        assert "completed" in natural_fields, "V1 should include 'completed' field naturally"
         assert "result" in natural_fields, "V1 should include 'result' field naturally"
-        assert (
-            "confidence" in natural_fields
-        ), "V1 should include 'confidence' field naturally"
+        assert "confidence" in natural_fields, "V1 should include 'confidence' field naturally"
         assert "messages" in natural_fields, "V1 should include 'messages' field"
 
     def test_v2_without_modification_has_messages_only(self, v2_engine_config):
@@ -93,44 +87,38 @@ class TestEngineModificationNecessity:
 
         # V2 should only have messages field
         assert "messages" in natural_fields, "V2 should include 'messages' field"
-        assert (
-            "completed" not in natural_fields
-        ), "V2 should NOT include structured fields naturally"
-        assert (
-            "result" not in natural_fields
-        ), "V2 should NOT include structured fields naturally"
-        assert (
-            "confidence" not in natural_fields
-        ), "V2 should NOT include structured fields naturally"
+        assert "completed" not in natural_fields, (
+            "V2 should NOT include structured fields naturally"
+        )
+        assert "result" not in natural_fields, "V2 should NOT include structured fields naturally"
+        assert "confidence" not in natural_fields, (
+            "V2 should NOT include structured fields naturally"
+        )
 
-    def test_parser_finds_structured_model_directly(
-        self, v1_engine_config, v2_engine_config
-    ):
+    def test_parser_finds_structured_model_directly(self, v1_engine_config, v2_engine_config):
         """Test that parser can find structured output model via direct lookup."""
         # Both v1 and v2 should have the structured output model accessible
-        assert hasattr(
-            v1_engine_config, "structured_output_model"
-        ), "V1 engine should have structured_output_model"
-        assert (
-            v1_engine_config.structured_output_model == TaskResult
-        ), "V1 should have correct model"
+        assert hasattr(v1_engine_config, "structured_output_model"), (
+            "V1 engine should have structured_output_model"
+        )
+        assert v1_engine_config.structured_output_model == TaskResult, (
+            "V1 should have correct model"
+        )
 
-        assert hasattr(
-            v2_engine_config, "structured_output_model"
-        ), "V2 engine should have structured_output_model"
-        assert (
-            v2_engine_config.structured_output_model == TaskResult
-        ), "V2 should have correct model"
+        assert hasattr(v2_engine_config, "structured_output_model"), (
+            "V2 engine should have structured_output_model"
+        )
+        assert v2_engine_config.structured_output_model == TaskResult, (
+            "V2 should have correct model"
+        )
 
     def test_v2_has_model_in_pydantic_tools(self, v2_engine_config):
         """Test that v2 engine has structured output model in pydantic_tools."""
         # V2 should include the model as a tool
-        assert hasattr(
-            v2_engine_config, "pydantic_tools"
-        ), "V2 engine should have pydantic_tools"
-        assert (
-            TaskResult in v2_engine_config.pydantic_tools
-        ), "TaskResult should be in pydantic_tools"
+        assert hasattr(v2_engine_config, "pydantic_tools"), "V2 engine should have pydantic_tools"
+        assert TaskResult in v2_engine_config.pydantic_tools, (
+            "TaskResult should be in pydantic_tools"
+        )
 
     def test_simple_agent_with_modification_disabled(self, v1_engine_config):
         """Test SimpleAgent creation with engine modification disabled."""
@@ -180,17 +168,13 @@ class TestEngineModificationNecessity:
             )
 
             # Create parser node config
-            parser_config = ParserNodeConfig(
-                name="test_parser", engine_name=agent.engine.name
-            )
+            parser_config = ParserNodeConfig(name="test_parser", engine_name=agent.engine.name)
 
             # Parser should be able to find the structured output model
             assert parser_config.engine_name == agent.engine.name
 
             # The engine should have the structured output model accessible
-            mock_state = type(
-                "MockState", (), {"engines": {agent.engine.name: agent.engine}}
-            )()
+            mock_state = type("MockState", (), {"engines": {agent.engine.name: agent.engine}})()
 
             engine = parser_config._get_engine_from_state(mock_state)
             assert engine == agent.engine
@@ -199,9 +183,7 @@ class TestEngineModificationNecessity:
             tool_class = parser_config._find_tool_in_engine(engine, "TaskResult")
             assert tool_class == TaskResult
 
-    def test_engine_schema_comparison_with_and_without_modification(
-        self, v1_engine_config
-    ):
+    def test_engine_schema_comparison_with_and_without_modification(self, v1_engine_config):
         """Compare engine schemas with and without modification to see the difference."""
         # Get original schema before any modification
         original_schema = v1_engine_config.derive_output_schema()
@@ -226,13 +208,11 @@ class TestEngineModificationNecessity:
 
         # Should add a field with the model name (lowercased, cleaned)
         expected_field_name = "taskresult"  # Based on SimpleAgent's field naming logic
-        assert any(
-            expected_field_name in field.lower() for field in added_fields
-        ), f"Should add field for TaskResult, got: {added_fields}"
+        assert any(expected_field_name in field.lower() for field in added_fields), (
+            f"Should add field for TaskResult, got: {added_fields}"
+        )
 
-    def test_state_schema_composition_without_engine_modification(
-        self, v1_engine_config
-    ):
+    def test_state_schema_composition_without_engine_modification(self, v1_engine_config):
         """Test that agent state schema can be composed without engine modification."""
         from haive.core.schema.schema_composer import SchemaComposer
 
@@ -245,19 +225,13 @@ class TestEngineModificationNecessity:
         state_fields = state_schema.model_fields.keys()
 
         # Should include the natural fields from v1 engine
-        assert (
-            "completed" in state_fields
-        ), "State should include structured fields from v1 engine"
+        assert "completed" in state_fields, "State should include structured fields from v1 engine"
         assert "result" in state_fields
         assert "confidence" in state_fields
         assert "messages" in state_fields
 
-    @pytest.mark.parametrize(
-        "engine_config_fixture", ["v1_engine_config", "v2_engine_config"]
-    )
-    def test_both_versions_work_without_modification(
-        self, request, engine_config_fixture
-    ):
+    @pytest.mark.parametrize("engine_config_fixture", ["v1_engine_config", "v2_engine_config"])
+    def test_both_versions_work_without_modification(self, request, engine_config_fixture):
         """Test that both v1 and v2 work without engine modification."""
         engine_config = request.getfixturevalue(engine_config_fixture)
 
@@ -282,9 +256,7 @@ class TestEngineModificationNecessity:
 
             # Parser node should be created if needed
             if agent._needs_parser_node():
-                assert "parse_output" in graph.nodes or any(
-                    "parse" in name for name in graph.nodes
-                )
+                assert "parse_output" in graph.nodes or any("parse" in name for name in graph.nodes)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """Test individual agent serialization issue."""
 
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool

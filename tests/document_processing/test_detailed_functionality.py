@@ -78,15 +78,9 @@ def test_query_state_functionality():
     assert "AI definition and overview" in all_queries
 
     # Test document management
-    doc1 = Document(
-        page_content="AI is a branch of computer science", metadata={"source": "test"}
-    )
-    doc2 = Document(
-        page_content="Machine learning is a subset of AI", metadata={"source": "test2"}
-    )
-    doc3 = Document(
-        page_content="Deep learning is a subset of ML", metadata={"source": "test3"}
-    )
+    doc1 = Document(page_content="AI is a branch of computer science", metadata={"source": "test"})
+    doc2 = Document(page_content="Machine learning is a subset of AI", metadata={"source": "test2"})
+    doc3 = Document(page_content="Deep learning is a subset of ML", metadata={"source": "test3"})
 
     # Add documents to different collections
     query_state.add_context_document(doc1)

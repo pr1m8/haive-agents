@@ -19,9 +19,7 @@ def test_current_streaming():
         config = {"configurable": {"recursion_limit": 3}}
 
         for i, chunk in enumerate(agent._app.stream({}, config)):
-
             if isinstance(chunk, dict):
-
                 # Check if this has the expected LangGraph structure
                 if len(chunk.keys()) == 1:
                     node_name = next(iter(chunk.keys()))
@@ -47,7 +45,6 @@ def test_current_streaming():
         for i, chunk in enumerate(
             agent.stream({}, config={"configurable": {"recursion_limit": 3}})
         ):
-
             if i >= 2:
                 break
     except Exception:

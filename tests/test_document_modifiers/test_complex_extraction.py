@@ -42,27 +42,21 @@ class TestComplexExtractionAgent:
         """Create a test ComplexExtractionAgent instance."""
         return ComplexExtractionAgent(agent_config)
 
-    def test_agent_initialization(
-        self, extraction_agent: ComplexExtractionAgent
-    ) -> None:
+    def test_agent_initialization(self, extraction_agent: ComplexExtractionAgent) -> None:
         """Test that agent initializes correctly."""
         assert extraction_agent is not None
         assert extraction_agent.extraction_model == PersonInfo
         assert extraction_agent.max_retries == 3
         assert extraction_agent.extraction_tool is not None
 
-    def test_extraction_tool_setup(
-        self, extraction_agent: ComplexExtractionAgent
-    ) -> None:
+    def test_extraction_tool_setup(self, extraction_agent: ComplexExtractionAgent) -> None:
         """Test extraction tool is set up correctly."""
         assert extraction_agent.extraction_tool.name == "extract_PersonInfo"
         assert extraction_agent.extraction_tool.args_schema == PersonInfo
 
     def test_agent_without_extraction_model(self) -> None:
         """Test agent can be created without extraction model."""
-        config = ComplexExtractionAgentConfig(
-            name="test_no_model", extraction_model=None
-        )
+        config = ComplexExtractionAgentConfig(name="test_no_model", extraction_model=None)
         agent = ComplexExtractionAgent(config)
         assert agent.extraction_tool is None
 
@@ -77,9 +71,7 @@ class TestComplexExtractionAgent:
         assert "Extract PersonInfo" in messages[0].content
         assert text in messages[0].content
 
-    def test_message_preparation_from_list(
-        self, extraction_agent: ComplexExtractionAgent
-    ) -> None:
+    def test_message_preparation_from_list(self, extraction_agent: ComplexExtractionAgent) -> None:
         """Test message preparation from list of strings."""
         texts = ["John Smith is 35.", "He is an engineer."]
         messages = extraction_agent._prepare_extraction_messages(texts)
@@ -124,9 +116,7 @@ class TestComplexExtractionAgent:
             agent = ComplexExtractionAgent(config)
             assert not agent.use_jsonpatch  # Should fall back gracefully
 
-    def test_extract_node_error_handling(
-        self, extraction_agent: ComplexExtractionAgent
-    ) -> None:
+    def test_extract_node_error_handling(self, extraction_agent: ComplexExtractionAgent) -> None:
         """Test extract_node handles errors gracefully."""
         # Test with missing messages
         result = extraction_agent.extract_node({})
@@ -137,25 +127,19 @@ class TestComplexExtractionAgent:
         result = extraction_agent.extract_node(state)
         assert result == state  # Should pass through
 
-    def test_bind_validator_creates_graph(
-        self, extraction_agent: ComplexExtractionAgent
-    ) -> None:
+    def test_bind_validator_creates_graph(self, extraction_agent: ComplexExtractionAgent) -> None:
         """Test validator binding creates proper graph."""
         mock_llm = Mock()
         tools = [extraction_agent.extraction_tool]
 
-        graph = extraction_agent.bind_validator_with_retries(
-            mock_llm, tools=tools, max_attempts=3
-        )
+        graph = extraction_agent.bind_validator_with_retries(mock_llm, tools=tools, max_attempts=3)
 
         assert graph is not None
         assert hasattr(graph, "nodes")
 
     @pytest.mark.integration
     @pytest.mark.skip(reason="Requires real LLM")
-    async def test_real_extraction(
-        self, agent_config: ComplexExtractionAgentConfig
-    ) -> None:
+    async def test_real_extraction(self, agent_config: ComplexExtractionAgentConfig) -> None:
         """Integration test with real LLM."""
         agent = ComplexExtractionAgent(agent_config)
 

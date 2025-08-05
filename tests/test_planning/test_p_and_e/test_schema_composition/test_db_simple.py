@@ -78,7 +78,6 @@ def query_database(thread_id):
 
             checkpoint = cursor.fetchone()
             if checkpoint:
-
                 # Extract state
                 data = checkpoint[1]
                 if "channel_values" in data:

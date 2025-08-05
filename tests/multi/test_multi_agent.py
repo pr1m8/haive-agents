@@ -75,9 +75,7 @@ def test_sequential():
     print_schema_info(multi)
 
     # Run the multi-agent
-    input_data = {
-        "messages": [HumanMessage(content="Calculate 5+7 and then make a plan")]
-    }
+    input_data = {"messages": [HumanMessage(content="Calculate 5+7 and then make a plan")]}
     result = multi.run(input_data)
 
     # Show result
@@ -112,9 +110,7 @@ def test_supervisor():
     print_schema_info(multi)
 
     # Run the multi-agent
-    input_data = {
-        "messages": [HumanMessage(content="Calculate 5+7 and then make a plan")]
-    }
+    input_data = {"messages": [HumanMessage(content="Calculate 5+7 and then make a plan")]}
     result = multi.run(input_data)
 
     # Show result

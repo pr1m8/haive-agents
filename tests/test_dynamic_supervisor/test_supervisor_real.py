@@ -65,9 +65,7 @@ class TestDynamicSupervisorWithRealAgents:
             system_message="You are a task supervisor. Route tasks to appropriate agents.",
         )
 
-        supervisor = DynamicSupervisorAgent(
-            name="test_supervisor", engine=supervisor_engine
-        )
+        supervisor = DynamicSupervisorAgent(name="test_supervisor", engine=supervisor_engine)
 
         assert supervisor.name == "test_supervisor"
         assert supervisor.engine is not None
@@ -164,9 +162,7 @@ class TestDynamicSupervisorWithRealAgents:
             force_tool_use=True,
         )
 
-        supervisor = DynamicSupervisorAgent(
-            name="coordinator", engine=supervisor_engine
-        )
+        supervisor = DynamicSupervisorAgent(name="coordinator", engine=supervisor_engine)
 
         # Create initial state with agents
         state = supervisor.create_initial_state()
@@ -190,9 +186,7 @@ class TestDynamicSupervisorWithRealAgents:
             name="supervisor_engine", llm_config=AzureLLMConfig(model="gpt-4o")
         )
 
-        supervisor = DynamicSupervisorAgent(
-            name="test_supervisor", engine=supervisor_engine
-        )
+        supervisor = DynamicSupervisorAgent(name="test_supervisor", engine=supervisor_engine)
 
         # Graph should be built during initialization
         assert supervisor.graph is not None

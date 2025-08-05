@@ -184,9 +184,7 @@ class TestEnhancedHyDEAgent:
         )
 
         assert enhanced_agent is not None
-        assert (
-            len(enhanced_agent.agents) == 4
-        )  # Base + Enhancement + Retriever + Answer
+        assert len(enhanced_agent.agents) == 4  # Base + Enhancement + Retriever + Answer
 
         # Test traditional pattern
         traditional_agent = create_enhanced_hyde_agent(
@@ -217,15 +215,11 @@ class TestEnhancedHyDEAgent:
         assert "Enhanced HyDE Retriever" in agent_names
         assert "Answer Generator" in agent_names
 
-    def test_enhanced_retriever_adaptive_behavior(
-        self, sample_documents, test_llm_config
-    ):
+    def test_enhanced_retriever_adaptive_behavior(self, sample_documents, test_llm_config):
         """Test that the enhanced retriever adapts to different input patterns."""
         from haive.agents.rag.hyde.enhanced_agent import EnhancedHyDERetriever
 
-        retriever = EnhancedHyDERetriever(
-            documents=sample_documents, name="Test Retriever"
-        )
+        retriever = EnhancedHyDERetriever(documents=sample_documents, name="Test Retriever")
 
         # Build graph to access the retrieval function
         graph = retriever.build_graph()
@@ -301,15 +295,11 @@ def run_structured_output_enhancement_tests():
         ),
         (
             "test_enhanced_hyde_agent_creation",
-            lambda: hyde_test.test_enhanced_hyde_agent_creation(
-                sample_docs, test_llm_config
-            ),
+            lambda: hyde_test.test_enhanced_hyde_agent_creation(sample_docs, test_llm_config),
         ),
         (
             "test_enhanced_hyde_agent_structure",
-            lambda: hyde_test.test_enhanced_hyde_agent_structure(
-                sample_docs, test_llm_config
-            ),
+            lambda: hyde_test.test_enhanced_hyde_agent_structure(sample_docs, test_llm_config),
         ),
         (
             "test_enhanced_retriever_adaptive_behavior",

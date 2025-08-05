@@ -60,9 +60,7 @@ Always analyze the task and choose the most appropriate agent.
 If no suitable agent exists, explain what capability is missing.""",
     )
 
-    supervisor = DynamicSupervisorAgent(
-        name="dynamic_supervisor", engine=supervisor_engine
-    )
+    supervisor = DynamicSupervisorAgent(name="dynamic_supervisor", engine=supervisor_engine)
 
     # Create initial state with just search agent
     state = SupervisorStateWithTools()
@@ -111,9 +109,7 @@ If no suitable agent exists, explain what capability is missing.""",
     weather_agent = SimpleAgent(name="weather_agent", engine=weather_engine)
 
     # Add weather agent
-    state.add_agent(
-        "weather_agent", weather_agent, "Weather information specialist", active=True
-    )
+    state.add_agent("weather_agent", weather_agent, "Weather information specialist", active=True)
 
     # Deactivate search agent
     state.deactivate_agent("search_agent")

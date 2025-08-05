@@ -34,17 +34,13 @@ def create_test_agents():
     # Simple adapter agent
     adapter = SimpleAgent(
         name="adapter",
-        engine=AugLLMConfig(
-            temperature=0.1, system_message="Adapt modules to the specific task."
-        ),
+        engine=AugLLMConfig(temperature=0.1, system_message="Adapt modules to the specific task."),
     )
 
     # Simple planner agent
     planner = SimpleAgent(
         name="planner",
-        engine=AugLLMConfig(
-            temperature=0.1, system_message="Create a step-by-step plan."
-        ),
+        engine=AugLLMConfig(temperature=0.1, system_message="Create a step-by-step plan."),
     )
 
     # Simple reasoner agent
@@ -88,9 +84,7 @@ def test_multiagent_with_edges():
     agents = create_test_agents()
 
     # Create multi-agent with entry point
-    multi_agent = MultiAgent(
-        name="self_discover_edges", agents=agents, entry_point="selector"
-    )
+    multi_agent = MultiAgent(name="self_discover_edges", agents=agents, entry_point="selector")
 
     # Add explicit edges
     multi_agent.add_edge("selector", "adapter")
@@ -146,9 +140,7 @@ def test_multiagent_graph_building():
     """Test that the graph builds without errors."""
     agents = create_test_agents()
 
-    multi_agent = MultiAgent(
-        name="test_graph", agents=agents, execution_mode="sequential"
-    )
+    multi_agent = MultiAgent(name="test_graph", agents=agents, execution_mode="sequential")
 
     # Build graph
     graph = multi_agent.build_graph()
@@ -171,9 +163,7 @@ def test_multiagent_with_parallel_group():
     multi_agent = MultiAgent(agents=[analyzer1, analyzer2, analyzer3, aggregator])
 
     # Configure parallel execution
-    multi_agent.add_parallel_group(
-        ["analyzer1", "analyzer2", "analyzer3"], next_agent="aggregator"
-    )
+    multi_agent.add_parallel_group(["analyzer1", "analyzer2", "analyzer3"], next_agent="aggregator")
 
     # Verify
     assert len(multi_agent.branches) == 1

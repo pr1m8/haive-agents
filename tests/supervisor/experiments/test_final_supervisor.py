@@ -49,10 +49,7 @@ async def supervisor_reasoning_node(state: DynamicSupervisorState) -> dict[str, 
     if any(word in task_lower for word in ["search", "find", "look", "research"]):
         agent_choice = "search_agent"
         reasoning = "This task requires web search capabilities."
-    elif any(
-        word in task_lower
-        for word in ["calculate", "math", "add", "multiply", "divide"]
-    ):
+    elif any(word in task_lower for word in ["calculate", "math", "add", "multiply", "divide"]):
         agent_choice = "math_agent"
         reasoning = "This task requires mathematical calculations."
     elif any(word in task_lower for word in ["plan", "organize", "strategy", "steps"]):
@@ -112,9 +109,7 @@ async def agent_execution_node(state: DynamicSupervisorState) -> dict[str, Any]:
         # Clear routing and return result
         return {
             "agent_response": str(result),
-            "messages": [
-                AIMessage(content=f"{agent_name} completed: {str(result)[:200]}...")
-            ],
+            "messages": [AIMessage(content=f"{agent_name} completed: {str(result)[:200]}...")],
             "next_agent": "",
             "agent_task": "",
         }
@@ -178,9 +173,7 @@ async def test_dynamic_supervisor():
 
     # Test 2: Search task
     state2 = {
-        "messages": [
-            HumanMessage(content="Search for information about Python decorators")
-        ],
+        "messages": [HumanMessage(content="Search for information about Python decorators")],
         "agents": agents_dict,
         "active_agents": {"search_agent", "math_agent"},
         "next_agent": "",
@@ -198,9 +191,7 @@ async def test_dynamic_supervisor():
     agents_dict["planning_agent"].activate()
 
     state3 = {
-        "messages": [
-            HumanMessage(content="Create a plan for learning machine learning")
-        ],
+        "messages": [HumanMessage(content="Create a plan for learning machine learning")],
         "agents": agents_dict,
         "active_agents": {
             "search_agent",

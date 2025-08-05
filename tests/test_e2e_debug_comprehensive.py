@@ -40,9 +40,7 @@ def log_object_details(obj: Any, name: str, step: str):
         logger.info(f"prompt_template: {prompt_template!r}")
 
         # Check if it's a LangChain Serializable
-        if hasattr(prompt_template, "__class__") and hasattr(
-            prompt_template.__class__, "__mro__"
-        ):
+        if hasattr(prompt_template, "__class__") and hasattr(prompt_template.__class__, "__mro__"):
             for cls in prompt_template.__class__.__mro__:
                 if "Serializable" in cls.__name__:
                     logger.info(f"✅ Found Serializable in MRO: {cls}")
@@ -57,9 +55,7 @@ def log_object_details(obj: Any, name: str, step: str):
             dumped = obj.model_dump()
             logger.info("model_dump() successful")
             if "prompt_template" in dumped:
-                logger.info(
-                    f"model_dump prompt_template type: {type(dumped['prompt_template'])}"
-                )
+                logger.info(f"model_dump prompt_template type: {type(dumped['prompt_template'])}")
                 logger.info(f"model_dump prompt_template: {dumped['prompt_template']}")
         except Exception as e:
             logger.exception(f"model_dump() failed: {e}")
@@ -86,9 +82,7 @@ def test_schema_composer():
             [("system", "You are a helpful assistant."), ("human", "{input}")]
         )
 
-        log_object_details(
-            chat_prompt, "ChatPromptTemplate", "STEP 1: Create ChatPromptTemplate"
-        )
+        log_object_details(chat_prompt, "ChatPromptTemplate", "STEP 1: Create ChatPromptTemplate")
 
         # Create AugLLMConfig
         config = AugLLMConfig(prompt_template=chat_prompt, tools=[calc_add])
@@ -103,9 +97,7 @@ def test_schema_composer():
         # Create schema instance
         logger.info("\n🔍 STEP 4: Create schema instance")
         schema_instance = schema_class()
-        log_object_details(
-            schema_instance, "Schema Instance", "STEP 4: Schema Instance Created"
-        )
+        log_object_details(schema_instance, "Schema Instance", "STEP 4: Schema Instance Created")
 
         return config, schema_class, schema_instance
 
@@ -174,9 +166,7 @@ def test_agent_creation():
         # Create engine config
         logger.info("\n🔍 STEP 9: Create AugLLMConfig for agent")
         engine_config = AugLLMConfig(tools=[calc_add])
-        log_object_details(
-            engine_config, "Agent Engine Config", "STEP 9: Agent Engine Created"
-        )
+        log_object_details(engine_config, "Agent Engine Config", "STEP 9: Agent Engine Created")
 
         # Create ReactAgent
         logger.info("\n🔍 STEP 10: Create ReactAgent")
@@ -187,16 +177,12 @@ def test_agent_creation():
         logger.info("\n🔍 STEP 11: Check agent state schema")
         if hasattr(agent, "state_schema"):
             logger.info(f"Agent state schema: {agent.state_schema}")
-            logger.info(
-                f"State schema fields: {agent.state_schema.model_fields.keys()}"
-            )
+            logger.info(f"State schema fields: {agent.state_schema.model_fields.keys()}")
 
         # Try to create initial state
         logger.info("\n🔍 STEP 12: Create initial state")
         initial_state = agent.state_schema()
-        log_object_details(
-            initial_state, "Initial State", "STEP 12: Initial State Created"
-        )
+        log_object_details(initial_state, "Initial State", "STEP 12: Initial State Created")
 
         return agent, initial_state
 
@@ -251,9 +237,7 @@ def test_state_reconstruction():
         # Simulate what happens in serialization
         logger.info("\n🔍 STEP 14: model_dump() to create dict")
         config_dict = config.model_dump()
-        logger.info(
-            f"Config dict prompt_template type: {type(config_dict['prompt_template'])}"
-        )
+        logger.info(f"Config dict prompt_template type: {type(config_dict['prompt_template'])}")
         logger.info(f"Config dict prompt_template: {config_dict['prompt_template']}")
 
         # Try to reconstruct AugLLMConfig from dict
@@ -284,9 +268,7 @@ def main():
         return
 
     # Test 2: Serialization
-    config_deserialized, schema_deserialized = test_serialization(
-        config, schema_instance
-    )
+    config_deserialized, schema_deserialized = test_serialization(config, schema_instance)
 
     # Test 3: Agent Creation
     agent, initial_state = test_agent_creation()

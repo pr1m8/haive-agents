@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Test the fixed MCP RAG agent with proper VectorStoreConfig pattern"""
+
 import asyncio
 import sys
 from pathlib import Path
@@ -13,14 +14,11 @@ async def test_mcp_rag_agent():
 
     try:
         # Import after path setup
-        sys.path.insert(
-            0, str(Path(__file__).parent / "packages" / "haive-mcp" / "src")
-        )
+        sys.path.insert(0, str(Path(__file__).parent / "packages" / "haive-mcp" / "src"))
         from haive.mcp.mcp_simple_rag_agent import create_mcp_rag_agent
 
         # Create the agent
         agent = create_mcp_rag_agent()
-
 
         # Test with a simple query
         test_queries = [
@@ -31,11 +29,9 @@ async def test_mcp_rag_agent():
         ]
 
         for query in test_queries:
-
             try:
                 # Test with proper input format
                 result = await agent.arun(query)
-
 
                 # Check if we got retrieved documents
                 if hasattr(result, "retrieved_documents"):
@@ -44,7 +40,6 @@ async def test_mcp_rag_agent():
                     if docs:
                         pass
                     else:
-
                         # Try direct vector store test
                         if hasattr(agent.engine, "vector_store_config"):
                             vs_config = agent.engine.vector_store_config

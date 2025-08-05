@@ -13,12 +13,8 @@ from haive.core.schema.prebuilt.llm_state import LLMState
 class QueryRefinementResponse(BaseModel):
     """Response model for query refinement with metadata tracking."""
 
-    refined_query: str = Field(
-        description="The refined search query optimized for retrieval"
-    )
-    original_intent: str = Field(
-        description="The original user intent extracted from the query"
-    )
+    refined_query: str = Field(description="The refined search query optimized for retrieval")
+    original_intent: str = Field(description="The original user intent extracted from the query")
     key_concepts: list[str] = Field(
         description="Key concepts and entities identified in the query",
         default_factory=list,
@@ -94,13 +90,13 @@ class TestPydanticUndefinedFixes:
         assert hasattr(schema, "__fields__"), "Schema should have fields"
 
         for field_name, field_info in schema.__fields__.items():
-            assert (
-                field_info.default is not ...
-            ), f"Field {field_name} has PydanticUndefined default"
+            assert field_info.default is not ..., (
+                f"Field {field_name} has PydanticUndefined default"
+            )
             if hasattr(field_info, "annotation"):
-                assert (
-                    field_info.annotation is not ...
-                ), f"Field {field_name} has PydanticUndefined annotation"
+                assert field_info.annotation is not ..., (
+                    f"Field {field_name} has PydanticUndefined annotation"
+                )
 
         # Verify base class hierarchy - should prioritize LLMState
         mro = schema.__mro__
@@ -108,9 +104,9 @@ class TestPydanticUndefinedFixes:
 
         assert "LLMState" in base_classes, "Schema should inherit from LLMState"
         assert "ToolState" in base_classes, "Schema should inherit from ToolState"
-        assert (
-            "MessagesStateWithTokenUsage" in base_classes
-        ), "Schema should inherit from MessagesStateWithTokenUsage"
+        assert "MessagesStateWithTokenUsage" in base_classes, (
+            "Schema should inherit from MessagesStateWithTokenUsage"
+        )
 
     def test_with_tools_schema_composition(self):
         """Test AugLLMConfig with tools - should still use LLMState base."""
@@ -125,16 +121,14 @@ class TestPydanticUndefinedFixes:
 
         # Verify no PydanticUndefined values
         for field_name, field_info in schema.__fields__.items():
-            assert (
-                field_info.default is not ...
-            ), f"Field {field_name} has PydanticUndefined default"
+            assert field_info.default is not ..., (
+                f"Field {field_name} has PydanticUndefined default"
+            )
 
         # Should still prioritize LLMState even with tools
         mro = schema.__mro__
         base_classes = [cls.__name__ for cls in mro]
-        assert (
-            "LLMState" in base_classes
-        ), "Schema with tools should still inherit from LLMState"
+        assert "LLMState" in base_classes, "Schema with tools should still inherit from LLMState"
 
     def test_without_structured_output(self):
         """Test AugLLMConfig without structured output."""
@@ -144,9 +138,9 @@ class TestPydanticUndefinedFixes:
 
         # Verify no PydanticUndefined values
         for field_name, field_info in schema.__fields__.items():
-            assert (
-                field_info.default is not ...
-            ), f"Field {field_name} has PydanticUndefined default"
+            assert field_info.default is not ..., (
+                f"Field {field_name} has PydanticUndefined default"
+            )
 
         # Should use LLMState as base
         mro = schema.__mro__
@@ -174,16 +168,14 @@ class TestPydanticUndefinedFixes:
 
         # Verify no PydanticUndefined values
         for field_name, field_info in schema.__fields__.items():
-            assert (
-                field_info.default is not ...
-            ), f"Field {field_name} has PydanticUndefined default"
+            assert field_info.default is not ..., (
+                f"Field {field_name} has PydanticUndefined default"
+            )
 
         # Should handle multiple input variables properly
         mro = schema.__mro__
         base_classes = [cls.__name__ for cls in mro]
-        assert (
-            "LLMState" in base_classes
-        ), "Complex prompt schema should inherit from LLMState"
+        assert "LLMState" in base_classes, "Complex prompt schema should inherit from LLMState"
 
     def test_engine_type_detection(self):
         """Test that engine type is correctly detected as 'llm'."""
@@ -195,9 +187,9 @@ class TestPydanticUndefinedFixes:
 
         # Check engine type detection
         assert hasattr(config, "engine_type"), "Config should have engine_type"
-        assert (
-            config.engine_type == "llm"
-        ), f"Expected engine_type 'llm', got '{config.engine_type}'"
+        assert config.engine_type == "llm", (
+            f"Expected engine_type 'llm', got '{config.engine_type}'"
+        )
 
     def test_schema_composer_base_class_priority(self):
         """Test that SchemaComposer correctly prioritizes LLMState for LLM engines."""
@@ -229,9 +221,7 @@ class TestPydanticUndefinedFixes:
         # Check that no field values are PydanticUndefined
         for field_name in schema.__fields__:
             value = getattr(instance, field_name)
-            assert (
-                value is not ...
-            ), f"Field {field_name} has PydanticUndefined value: {value}"
+            assert value is not ..., f"Field {field_name} has PydanticUndefined value: {value}"
 
 
 if __name__ == "__main__":

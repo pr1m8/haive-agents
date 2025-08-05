@@ -34,9 +34,7 @@ class ResearchFindings(BaseModel):
     topics: list[str] = Field(description="Main topics discovered")
     key_facts: list[str] = Field(description="Key facts found")
     sources: list[str] = Field(description="Information sources referenced")
-    confidence_score: float = Field(
-        ge=0.0, le=1.0, description="Confidence in findings"
-    )
+    confidence_score: float = Field(ge=0.0, le=1.0, description="Confidence in findings")
 
 
 class ArticleOutline(BaseModel):
@@ -249,7 +247,6 @@ Provide specific, actionable feedback.""",
 
 
 class TestAdvancedMultiAgentPatterns:
-
     async def test_sequential_with_structured_output(self):
         """Test ReactAgent → SimpleAgent flow with structured outputs."""
         # Create agents
@@ -258,9 +255,7 @@ class TestAdvancedMultiAgentPatterns:
         writer = create_writer_agent()
 
         # Create sequential workflow
-        workflow = EnhancedMultiAgentV4(
-            agents=[researcher, outliner, writer], mode="sequential"
-        )
+        workflow = EnhancedMultiAgentV4(agents=[researcher, outliner, writer], mode="sequential")
 
         # Create initial state with messages
 
@@ -351,9 +346,7 @@ Please provide structured findings."""
         critic = create_reflection_critic()
 
         # Create workflow: Research → Write → Critique
-        workflow = EnhancedMultiAgentV4(
-            agents=[researcher, writer, critic], mode="sequential"
-        )
+        workflow = EnhancedMultiAgentV4(agents=[researcher, writer, critic], mode="sequential")
 
         # Configure message passing
         initial_state = {

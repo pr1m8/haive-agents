@@ -98,9 +98,7 @@ async def test_structured_output():
             # Debug: Show last AI message
             for msg in reversed(result.messages):
                 if hasattr(msg, "tool_calls"):
-                    print(
-                        f"\nDebug - Found AI message with tool_calls: {msg.tool_calls}"
-                    )
+                    print(f"\nDebug - Found AI message with tool_calls: {msg.tool_calls}")
                     break
 
 
@@ -113,9 +111,7 @@ async def test_multiple_examples():
         """A project plan."""
 
         name: str = Field(description="Project name")
-        phases: List[str] = Field(
-            description="Project phases", min_items=2, max_items=5
-        )
+        phases: List[str] = Field(description="Project phases", min_items=2, max_items=5)
         duration_weeks: int = Field(description="Total duration in weeks", ge=1, le=52)
         budget: float = Field(description="Budget in thousands", ge=0)
 
@@ -158,9 +154,7 @@ async def test_multiple_examples():
 
         # Extract output
         if hasattr(result, "messages"):
-            output = extract_structured_output_from_messages(
-                result.messages, test_case["model"]
-            )
+            output = extract_structured_output_from_messages(result.messages, test_case["model"])
 
             if output:
                 print(f"✅ Extracted {test_case['model'].__name__}:")

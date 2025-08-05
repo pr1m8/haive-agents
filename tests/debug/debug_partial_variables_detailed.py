@@ -30,8 +30,6 @@ class QueryRefinementResponse(BaseModel):
     best_refined_query: str = Field(description="The recommended best refined query")
 
 
-
-
 for i, msg in enumerate(RAG_QUERY_REFINEMENT.messages):
     if hasattr(msg, "prompt"):
         pass
@@ -66,4 +64,3 @@ if isinstance(config.prompt_template, ChatPromptTemplate):
             # Only add variables that are NOT in partial_variables
             msg_vars = set(msg.prompt.input_variables) - set(partial_vars.keys())
             all_vars.update(msg_vars)
-

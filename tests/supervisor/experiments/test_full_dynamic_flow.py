@@ -17,9 +17,7 @@ from haive.core.models.llm.base import AzureLLMConfig
 from haive.core.registry import EngineRegistry
 
 
-async def create_new_agent_from_registry(
-    agent_type: str, description: str
-) -> SimpleAgent:
+async def create_new_agent_from_registry(agent_type: str, description: str) -> SimpleAgent:
     """Create a new agent using the engine registry."""
     # Create engine configuration
     engine_name = f"{agent_type}_engine"
@@ -34,9 +32,7 @@ async def create_new_agent_from_registry(
     registry.register_engine(engine_name, engine)
 
     # Create agent
-    agent = SimpleAgent(
-        name=f"{agent_type}_agent", engine=engine, description=description
-    )
+    agent = SimpleAgent(name=f"{agent_type}_agent", engine=engine, description=description)
 
     return agent
 
@@ -45,9 +41,7 @@ async def add_agent_to_state(
     state: SupervisorStateWithTools, agent: SimpleAgent, description: str
 ) -> SupervisorStateWithTools:
     """Add a new agent to the supervisor state."""
-    agent_info = AgentInfo(
-        agent=agent, name=agent.name, description=description, active=True
-    )
+    agent_info = AgentInfo(agent=agent, name=agent.name, description=description, active=True)
 
     # Add to agents dict
     state.agents[agent.name] = agent_info
@@ -67,9 +61,7 @@ async def test_full_dynamic_flow():
     # Start with empty state
     initial_state = SupervisorStateWithTools(
         messages=[
-            HumanMessage(
-                content="I need to analyze some code and also translate text to French"
-            )
+            HumanMessage(content="I need to analyze some code and also translate text to French")
         ],
         agents={},  # Start empty!
         active_agents=set(),
@@ -80,7 +72,8 @@ async def test_full_dynamic_flow():
     try:
         # This should show that no agents are available
         result1 = await supervisor.arun(
-            initial_state.model_dump(), debug=True  # Show full execution trace
+            initial_state.model_dump(),
+            debug=True,  # Show full execution trace
         )
 
         for _i, _msg in enumerate(result1.get("messages", [])):
@@ -149,9 +142,7 @@ async def test_full_dynamic_flow():
 
     # Task that could go to either agent
     updated_state.messages = [
-        HumanMessage(
-            content="I have some Python code comments in French that need to be analyzed"
-        )
+        HumanMessage(content="I have some Python code comments in French that need to be analyzed")
     ]
 
     try:

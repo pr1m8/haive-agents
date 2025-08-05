@@ -103,9 +103,7 @@ async def test_pro_search_basic():
             pass
 
         # Test follow-up questions
-        follow_ups = agent.generate_follow_up_questions(
-            test_query, "Sample response", test_context
-        )
+        follow_ups = agent.generate_follow_up_questions(test_query, "Sample response", test_context)
         for _i, _question in enumerate(follow_ups, 1):
             pass
 
@@ -174,9 +172,7 @@ async def test_labs_basic():
         project_type = "dashboard"
         data_sources = ["sales_data.csv", "customer_info.json"]
 
-        workflow_plan = agent.plan_project_workflow(
-            test_query, project_type, data_sources
-        )
+        workflow_plan = agent.plan_project_workflow(test_query, project_type, data_sources)
         for _i, _step in enumerate(workflow_plan, 1):
             pass
 

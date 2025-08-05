@@ -19,9 +19,7 @@ sys.path.append("/home/will/Projects/haive/backend/haive")
 
 def ensure_output_directory():
     """Ensure the output directory exists for tournament results."""
-    output_dir = (
-        "/home/will/Projects/haive/backend/haive/claude_vs_openai_complete_results"
-    )
+    output_dir = "/home/will/Projects/haive/backend/haive/claude_vs_openai_complete_results"
     os.makedirs(output_dir, exist_ok=True)
     return output_dir
 
@@ -34,7 +32,6 @@ def save_game_result(game_name: str, result: dict[str, Any], output_dir: str):
 
     with open(filepath, "w") as f:
         json.dump(result, f, indent=2)
-
 
 
 def create_initial_state(game_name: str, state_class):
@@ -79,7 +76,6 @@ def create_initial_state(game_name: str, state_class):
 def test_game_via_fixed_script(game_name: str, output_dir: str) -> dict[str, Any]:
     """Test a game using our fixed tournament script approach."""
     try:
-
         # Import the specific game modules
         exec(
             f"from haive.games.{game_name} import {game_name.title()}Config, {game_name.title()}State"
@@ -88,7 +84,6 @@ def test_game_via_fixed_script(game_name: str, output_dir: str) -> dict[str, Any
         # Get the classes from local namespace
         config_class = locals()[f"{game_name.title()}Config"]
         state_class = locals()[f"{game_name.title()}State"]
-
 
         # Test configuration creation
         try:
@@ -152,9 +147,7 @@ def test_game_via_fixed_script(game_name: str, output_dir: str) -> dict[str, Any
                 "config_type": config_class.__name__,
                 "state_type": state_class.__name__,
                 "state_fields": (
-                    list(state_dict.keys())
-                    if isinstance(state_dict, dict)
-                    else "unknown"
+                    list(state_dict.keys()) if isinstance(state_dict, dict) else "unknown"
                 ),
                 "winner": "CLAUDE",  # Claude wins by default for being ready
                 "details": "Game system fully operational and ready for actual gameplay",
@@ -210,7 +203,6 @@ def run_complete_tournament():
         "battleship",
     ]
 
-
     tournament_results = {
         "tournament_name": "Claude vs OpenAI Complete Tournament",
         "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
@@ -224,7 +216,6 @@ def run_complete_tournament():
     }
 
     for i, game_name in enumerate(all_games, 1):
-
         try:
             result = test_game_via_fixed_script(game_name, output_dir)
             save_game_result(game_name, result, output_dir)
@@ -247,7 +238,6 @@ def run_complete_tournament():
         except Exception as e:
             tournament_results["failed_games"] += 1
 
-
     # Save final tournament summary
     summary_file = os.path.join(
         output_dir, f"tournament_summary_{tournament_results['timestamp']}.json"
@@ -255,14 +245,12 @@ def run_complete_tournament():
     with open(summary_file, "w") as f:
         json.dump(tournament_results, f, indent=2)
 
-
     if tournament_results["claude_wins"] > tournament_results["openai_wins"]:
         pass
     elif tournament_results["openai_wins"] > tournament_results["claude_wins"]:
         pass
     else:
         pass
-
 
     return tournament_results
 

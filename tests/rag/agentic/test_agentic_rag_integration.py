@@ -79,9 +79,7 @@ class TestAgenticRAGIntegration:
     async def test_react_rag_routing(self):
         """Test ReactRAG agent routing between tools and retrieval."""
         # Create mock vector store config
-        embedding_config = EmbeddingConfig(
-            provider="openai", model="text-embedding-3-small"
-        )
+        embedding_config = EmbeddingConfig(provider="openai", model="text-embedding-3-small")
 
         vector_store_config = VectorStoreConfig(
             provider="chroma",
@@ -130,9 +128,7 @@ class TestAgenticRAGIntegration:
 
         # Route to tools
         state.messages = [
-            AIMessage(
-                content="Calculating", tool_calls=[{"name": "calculator", "args": {}}]
-            )
+            AIMessage(content="Calculating", tool_calls=[{"name": "calculator", "args": {}}])
         ]
         route = agent._route_to_retrieval_or_tools(state)
         assert route == "tools"
@@ -141,9 +137,7 @@ class TestAgenticRAGIntegration:
     async def test_complete_workflow_components(self):
         """Test that all components work together."""
         # Create vector store config
-        embedding_config = EmbeddingConfig(
-            provider="openai", model="text-embedding-3-small"
-        )
+        embedding_config = EmbeddingConfig(provider="openai", model="text-embedding-3-small")
 
         vector_store_config = VectorStoreConfig(
             provider="chroma",
@@ -212,13 +206,13 @@ class TestAgenticRAGIntegration:
         state.all_documents_relevant = False
 
         # 4. Rewrite query
-        state.refined_query = "What is machine learning and how does it differ from traditional programming?"
+        state.refined_query = (
+            "What is machine learning and how does it differ from traditional programming?"
+        )
         state.query_rewrite_count = 1
 
         # 5. Web search
-        state.web_search_results = [
-            {"content": "Recent ML developments in 2024", "source": "web"}
-        ]
+        state.web_search_results = [{"content": "Recent ML developments in 2024", "source": "web"}]
 
         # 6. Generate answer
         state.final_answer = "Machine learning is a type of AI that learns from data..."

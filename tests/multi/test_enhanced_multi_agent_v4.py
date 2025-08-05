@@ -36,9 +36,7 @@ class TestEnhancedMultiAgentV4:
         """Test that it properly extends enhanced base agent."""
         agents = [SimpleAgent(name="test_agent", engine=AugLLMConfig())]
 
-        workflow = EnhancedMultiAgentV4(
-            name="integration_test", agents=agents, build_mode="manual"
-        )
+        workflow = EnhancedMultiAgentV4(name="integration_test", agents=agents, build_mode="manual")
 
         # Should inherit from Agent
         from haive.agents.base.agent import Agent
@@ -199,9 +197,7 @@ class TestEnhancedMultiAgentV4:
         agents = [SimpleAgent(name="agent1", engine=AugLLMConfig())]
 
         # Manual mode - no auto build
-        manual = EnhancedMultiAgentV4(
-            name="manual_test", agents=agents, build_mode="manual"
-        )
+        manual = EnhancedMultiAgentV4(name="manual_test", agents=agents, build_mode="manual")
         # Graph should not be built automatically
         assert not hasattr(manual, "graph") or manual.graph is None
 
@@ -217,9 +213,7 @@ class TestEnhancedMultiAgentV4:
             SimpleAgent(name="agent2", engine=AugLLMConfig()),
         ]
 
-        workflow = EnhancedMultiAgentV4(
-            name="utility_test", agents=agents, build_mode="manual"
-        )
+        workflow = EnhancedMultiAgentV4(name="utility_test", agents=agents, build_mode="manual")
 
         # Test get_agent_names
         names = workflow.get_agent_names()

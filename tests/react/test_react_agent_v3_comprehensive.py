@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Comprehensive tests for ReactAgentV3 with tool loops and structured output."""
 
-
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -149,7 +148,6 @@ def test_react_agent_v3_structured_output():
         structured_output = result.get_latest_structured_output()
 
         if structured_output and hasattr(structured_output, "model_dump"):
-
             # Verify structured output contains expected data
             assert "circle" in structured_output.original_question.lower()
             assert len(structured_output.tools_used) > 0
@@ -182,9 +180,7 @@ def test_react_agent_v3_iteration_limits():
     )
 
     # Verify iteration limit was respected
-    assert (
-        agent.iteration_count <= agent.max_iterations
-    ), "Should not exceed max iterations"
+    assert agent.iteration_count <= agent.max_iterations, "Should not exceed max iterations"
 
     # Don't return in pytest tests
 

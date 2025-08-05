@@ -82,13 +82,12 @@ def test_supabase_rest_api_from_env():
     supabase_key = os.getenv("SUPABASE_SERVICE_KEY") or os.getenv("SUPABASE_ANON_KEY")
 
     if not supabase_url or not supabase_key:
-        pytest.skip(
-            "SUPABASE_URL and SUPABASE_SERVICE_KEY/ANON_KEY not set in environment"
-        )
+        pytest.skip("SUPABASE_URL and SUPABASE_SERVICE_KEY/ANON_KEY not set in environment")
 
     # Create Supabase config - it will use env vars automatically
     supabase_config = SupabaseCheckpointerConfig(
-        user_id="test-user", setup_needed=False  # Skip schema setup for test
+        user_id="test-user",
+        setup_needed=False,  # Skip schema setup for test
     )
 
     # Create agent with Supabase persistence
@@ -118,7 +117,9 @@ def test_supabase_rest_api_from_env():
 def test_parse_supabase_connection_string():
     """Test parsing Supabase PostgreSQL connection string."""
     # Example Supabase connection string
-    example_string = "postgresql://postgres:[YOUR-PASSWORD]@db.zkssazqhwcetsnbiuqik.supabase.co:5432/postgres"
+    example_string = (
+        "postgresql://postgres:[YOUR-PASSWORD]@db.zkssazqhwcetsnbiuqik.supabase.co:5432/postgres"
+    )
 
     # Parse the connection string
     import re

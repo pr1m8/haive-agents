@@ -6,7 +6,6 @@ This test demonstrates that SimpleAgent is now essentially Agent[AugLLMConfig]
 with proper type safety and clean design.
 """
 
-
 from langchain_core.tools import tool
 import pytest
 
@@ -173,9 +172,7 @@ class TestEnhancedSimpleAgent:
             count = len(text.split())
             return f"The text contains {count} words"
 
-        agent = EnhancedSimpleAgent(
-            name="tool_test", temperature=0.1, tools=[word_counter]
-        )
+        agent = EnhancedSimpleAgent(name="tool_test", temperature=0.1, tools=[word_counter])
 
         # Execute with tool usage
         result = await agent.arun("Count the words in: The quick brown fox")

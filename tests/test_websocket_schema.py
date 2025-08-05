@@ -67,9 +67,9 @@ class TestSimpleAgentSchema:
         state_fields = set(agent.state_schema.model_fields.keys())
 
         # With tools, it should have ToolState fields
-        assert tool_fields.issubset(
-            state_fields
-        ), f"Missing tool fields: {tool_fields - state_fields}"
+        assert tool_fields.issubset(state_fields), (
+            f"Missing tool fields: {tool_fields - state_fields}"
+        )
         assert len(state_fields) > 1  # More than just messages
 
     def test_minimal_input_works_with_tools(self):

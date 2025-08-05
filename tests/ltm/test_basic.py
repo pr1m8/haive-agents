@@ -141,8 +141,7 @@ def test_quality_calculation():
 
     # Scenario 1: Good ratio
     memories_good = [
-        {"memory_id": f"mem_{i}", "schema": "Memory", "confidence": 0.9}
-        for i in range(2)
+        {"memory_id": f"mem_{i}", "schema": "Memory", "confidence": 0.9} for i in range(2)
     ]
     quality_good = agent._calculate_extraction_quality(memories_good, messages)
 
@@ -160,6 +159,4 @@ def test_quality_calculation():
 
     # Verify quality logic
     assert quality_diverse >= quality_good, "Diverse schemas should have higher quality"
-    assert (
-        quality_good >= quality_poor
-    ), "Good ratio should have higher quality than poor ratio"
+    assert quality_good >= quality_poor, "Good ratio should have higher quality than poor ratio"

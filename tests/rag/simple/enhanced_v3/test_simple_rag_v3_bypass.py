@@ -27,9 +27,9 @@ def test_simple_rag_v3_architecture():
 
     sys.modules["haive.agents.rag.base.agent"].BaseRAGAgent = MockBaseRAGAgent
     sys.modules["haive.agents.simple.agent"].SimpleAgent = MockSimpleAgent
-    sys.modules["haive.agents.multi.enhanced_multi_agent_v3"].EnhancedMultiAgent = (
-        MockEnhancedMultiAgent
-    )
+    sys.modules[
+        "haive.agents.multi.enhanced_multi_agent_v3"
+    ].EnhancedMultiAgent = MockEnhancedMultiAgent
 
     # Now import our components
     from haive.agents.rag.simple.enhanced_v3.answer_generator_agent import (
@@ -42,9 +42,7 @@ def test_simple_rag_v3_architecture():
     assert SimpleAnswerAgent.__bases__[0] == MockSimpleAgent
 
     # Test state functionality (this should work without mocks)
-    state = SimpleRAGState(
-        query="Test query", retrieved_documents=[], generated_answer=""
-    )
+    state = SimpleRAGState(query="Test query", retrieved_documents=[], generated_answer="")
 
     assert state.query == "Test query"
     assert state.current_stage == "ready"

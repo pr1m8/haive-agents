@@ -23,7 +23,6 @@ trace.call_tracker.enable()
 
 
 try:
-
     # Trace the import process
     @trace.calls
     def import_haive_components():

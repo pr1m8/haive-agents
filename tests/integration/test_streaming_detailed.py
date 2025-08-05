@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Test detailed streaming metadata from conversation agents."""
 
-
 from src.haive.agents.conversation.collaberative.agent import CollaborativeConversation
 
 
@@ -58,7 +57,6 @@ def test_detailed_streaming():
         config = {"configurable": {"recursion_limit": 10}, "stream_mode": "messages"}
 
         for i, chunk in enumerate(agent.stream({}, config=config)):
-
             # Check for metadata in LangGraph messages
             if hasattr(chunk, "__dict__"):
                 attrs = [attr for attr in dir(chunk) if not attr.startswith("_")]
@@ -86,16 +84,12 @@ def test_detailed_streaming():
         }
 
         for i, chunk in enumerate(agent.stream({}, config=config)):
-
             if isinstance(chunk, dict):
                 # Look for debug/metadata keys
                 debug_keys = [
                     k
                     for k in chunk
-                    if any(
-                        word in k.lower()
-                        for word in ["debug", "metadata", "trace", "step"]
-                    )
+                    if any(word in k.lower() for word in ["debug", "metadata", "trace", "step"])
                 ]
                 if debug_keys:
                     for key in debug_keys:

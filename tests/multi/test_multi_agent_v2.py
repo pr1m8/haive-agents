@@ -30,13 +30,9 @@ class ExecutorState(StateSchema):
 async def test_multi_agent_v2():
     """Test MultiAgentV2 functionality."""
     # Create agents with specific state schemas
-    planner = SimpleAgent(
-        name="planner", engine=AugLLMConfig(), state_schema=PlannerState
-    )
+    planner = SimpleAgent(name="planner", engine=AugLLMConfig(), state_schema=PlannerState)
 
-    executor = SimpleAgent(
-        name="executor", engine=AugLLMConfig(), state_schema=ExecutorState
-    )
+    executor = SimpleAgent(name="executor", engine=AugLLMConfig(), state_schema=ExecutorState)
 
     # Test 1: Create from list of agents
     multi_agent = MultiAgentV2.from_agents(

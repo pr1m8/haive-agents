@@ -46,9 +46,7 @@ def improved_validation_node(state: dict[str, Any]) -> Command:
     last_message = messages[-1]
 
     # Check if last message is AIMessage with tool calls
-    if not isinstance(last_message, AIMessage) or not hasattr(
-        last_message, "tool_calls"
-    ):
+    if not isinstance(last_message, AIMessage) or not hasattr(last_message, "tool_calls"):
         return Command(goto=END)
 
     tool_calls = getattr(last_message, "tool_calls", [])
@@ -336,9 +334,7 @@ async def test_improved_regular_tool_validation():
             {
                 "role": "assistant",
                 "content": "I'll add those numbers for you.",
-                "tool_calls": [
-                    {"id": "call_456", "name": "add_numbers", "args": {"a": 5, "b": 3}}
-                ],
+                "tool_calls": [{"id": "call_456", "name": "add_numbers", "args": {"a": 5, "b": 3}}],
             },
         ],
         "engine_name": engine.name,
@@ -367,7 +363,6 @@ if __name__ == "__main__":
     import asyncio
 
     async def main():
-
         results = []
 
         try:

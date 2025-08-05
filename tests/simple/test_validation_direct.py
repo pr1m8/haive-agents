@@ -23,7 +23,6 @@ def test_direct_validation_node_import():
             "state_updating_validation_node_v2.py",
         )
 
-
         # Try direct import without using haive.core.__init__.py
         import importlib.util
 
@@ -51,9 +50,7 @@ def test_direct_validation_node_import():
         mock_langchain_messages.ToolMessage = MockToolMessage
 
         mock_langgraph_types = unittest.mock.MagicMock()
-        mock_langgraph_types.Send = type(
-            "Send", (), {"__init__": lambda self, node, arg: None}
-        )
+        mock_langgraph_types.Send = type("Send", (), {"__init__": lambda self, node, arg: None})
         mock_langgraph_types.END = "__END__"
 
         # Create proper Pydantic mocks
@@ -79,12 +76,10 @@ def test_direct_validation_node_import():
         # Execute the module
         spec.loader.exec_module(validation_module)
 
-
         # Test basic functionality
         ValidationMode = validation_module.ValidationMode
         StateUpdatingValidationNodeV2 = validation_module.StateUpdatingValidationNodeV2
         ValidationResult = validation_module.ValidationResult
-
 
         # Test enum values
         assert hasattr(ValidationMode, "STRICT")
@@ -92,9 +87,7 @@ def test_direct_validation_node_import():
         assert hasattr(ValidationMode, "PERMISSIVE")
 
         # Test ValidationResult creation
-        ValidationResult(
-            tool_call_id="test", tool_name="test_tool", status="valid"
-        )
+        ValidationResult(tool_call_id="test", tool_name="test_tool", status="valid")
 
         # Test StateUpdatingValidationNodeV2 creation
         node = StateUpdatingValidationNodeV2(
@@ -212,7 +205,6 @@ def run_direct_tests():
 
     results = []
     for test_name, test_func in tests:
-
         try:
             result = test_func()
             results.append((test_name, "PASS" if result else "FAIL"))
@@ -226,7 +218,6 @@ def run_direct_tests():
 
     passed = sum(1 for _, status in results if status == "PASS")
     total = len(results)
-
 
     if passed == total:
         pass

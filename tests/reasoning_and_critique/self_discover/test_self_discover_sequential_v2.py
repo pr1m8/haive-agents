@@ -132,9 +132,7 @@ class TestSelfDiscoverAgents:
                     found_answer = True
                     break
 
-            assert (
-                found_answer
-            ), f"No final answer found in result keys: {list(result.keys())}"
+            assert found_answer, f"No final answer found in result keys: {list(result.keys())}"
 
 
 class TestPydanticModels:

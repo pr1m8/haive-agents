@@ -247,9 +247,7 @@ class TestPlanAndExecuteMultiAgent:
             executor_agent: Executor agent fixture.
         """
         # Test missing agents
-        with pytest.raises(
-            ValueError, match="requires planner, executor, and replanner"
-        ):
+        with pytest.raises(ValueError, match="requires planner, executor, and replanner"):
             PlanAndExecuteAgent(
                 planner=planner_agent,
                 executor=executor_agent,
@@ -257,9 +255,7 @@ class TestPlanAndExecuteMultiAgent:
                 name="incomplete_agent",
             )
 
-        with pytest.raises(
-            ValueError, match="requires planner, executor, and replanner"
-        ):
+        with pytest.raises(ValueError, match="requires planner, executor, and replanner"):
             PlanAndExecuteAgent(
                 planner=planner_agent,
                 # Missing executor and replanner

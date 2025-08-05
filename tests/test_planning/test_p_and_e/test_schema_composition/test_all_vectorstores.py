@@ -49,7 +49,6 @@ def test_all_vector_stores():
 
     # Test each category
     for _category, expected_stores in categories.items():
-
         for store_name in expected_stores:
             if store_name in registered_stores:
                 try:
@@ -63,10 +62,7 @@ def test_all_vector_stores():
                         config_class(name=f"test_{store_name.lower()}")
                     except Exception as e:
                         # This is expected for stores with required fields
-                        if (
-                            "field required" in str(e).lower()
-                            or "missing" in str(e).lower()
-                        ):
+                        if "field required" in str(e).lower() or "missing" in str(e).lower():
                             pass
                         else:
                             pass  # f"✓ (Config validated: {type(e).__name__})"

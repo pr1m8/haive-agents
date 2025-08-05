@@ -26,9 +26,7 @@ def test_simple_rag_structure():
     ]
 
     # Create Simple RAG agent using clean MultiAgent
-    simple_rag_agent = SimpleRAGAgent.from_documents(
-        documents=documents, name="test_simple_rag"
-    )
+    simple_rag_agent = SimpleRAGAgent.from_documents(documents=documents, name="test_simple_rag")
 
     # Verify agent creation
     assert simple_rag_agent.name == "test_simple_rag"

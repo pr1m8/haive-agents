@@ -26,9 +26,7 @@ DerivedSchema = create_model(
 logger.info("=== Test 1: Simple Inheritance ===")
 logger.info(f"BaseSchema fields: {list(BaseSchema.model_fields.keys())}")
 logger.info(f"DerivedSchema fields: {list(DerivedSchema.model_fields.keys())}")
-logger.info(
-    f"Is DerivedSchema subclass of BaseSchema: {issubclass(DerivedSchema, BaseSchema)}"
-)
+logger.info(f"Is DerivedSchema subclass of BaseSchema: {issubclass(DerivedSchema, BaseSchema)}")
 
 # Try to create instance
 try:
@@ -66,9 +64,7 @@ try:
     # Check if engine field exists in TestState
     if "engine" in TestState.model_fields:
         engine_field = TestState.model_fields["engine"]
-        logger.info(
-            f"TestState has engine field, required: {engine_field.is_required()}"
-        )
+        logger.info(f"TestState has engine field, required: {engine_field.is_required()}")
     else:
         logger.error("TestState is missing engine field!")
 

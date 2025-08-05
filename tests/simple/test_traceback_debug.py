@@ -14,13 +14,13 @@ async def test_with_traceback():
     """Test with full traceback."""
     try:
         # Create config
-        config = AugLLMConfig(
-            temperature=0.1, max_tokens=50, llm_config=DeepSeekLLMConfig()
-        )
+        config = AugLLMConfig(temperature=0.1, max_tokens=50, llm_config=DeepSeekLLMConfig())
 
         # Create agent
         agent = SimpleAgentV3(
-            name="traceback_agent", engine=config, debug=True  # Enable debug
+            name="traceback_agent",
+            engine=config,
+            debug=True,  # Enable debug
         )
 
         # Check if we can create state instance directly

@@ -11,9 +11,7 @@ import uuid
 
 
 # Set up logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -168,9 +166,7 @@ def test_memory_persistence():
 
         # Second message to test memory
         # Use LangGraph format directly
-        response2 = agent.run(
-            {"messages": [("human", "What's my name?")]}, thread_id=thread_id
-        )
+        response2 = agent.run({"messages": [("human", "What's my name?")]}, thread_id=thread_id)
 
         # Extract messages from second response
         messages2 = extract_messages_from_state(response2)
@@ -193,9 +189,9 @@ def test_memory_persistence():
                 memory_success = True
 
             # Assertion
-            assert (
-                memory_success
-            ), "Memory not working: response doesn't show evidence of persistence"
+            assert memory_success, (
+                "Memory not working: response doesn't show evidence of persistence"
+            )
         else:
             raise AssertionError("No messages in second response")
 
@@ -306,9 +302,9 @@ def test_postgres_persistence():
                 memory_success = True
 
             # Assertion
-            assert (
-                memory_success
-            ), "Memory not working: response doesn't show evidence of persistence"
+            assert memory_success, (
+                "Memory not working: response doesn't show evidence of persistence"
+            )
         else:
             raise AssertionError("No messages in second response")
 
@@ -397,9 +393,9 @@ def test_memory_persistence():
                 memory_success = True
 
             # Assertion
-            assert (
-                memory_success
-            ), "Memory not working: response doesn't show evidence of persistence"
+            assert memory_success, (
+                "Memory not working: response doesn't show evidence of persistence"
+            )
         else:
             raise AssertionError("No messages in second response")
 

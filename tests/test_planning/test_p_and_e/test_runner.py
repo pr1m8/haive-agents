@@ -15,7 +15,6 @@ def run_tests():
     ]
 
     for test_file in test_files:
-
         result = subprocess.run(
             ["poetry", "run", "pytest", test_file, "-v"],
             check=False,

@@ -114,9 +114,7 @@ async def test_registry_supervisor_real_agents():
     supervisor.populate_registry(agents=[research_agent, coding_agent, writing_agent])
 
     # Test 1: Research task
-    await supervisor.ainvoke(
-        {"messages": [HumanMessage(content="Research AI trends in 2024")]}
-    )
+    await supervisor.ainvoke({"messages": [HumanMessage(content="Research AI trends in 2024")]})
 
     # Test 2: Coding task
     await supervisor.ainvoke(
@@ -149,9 +147,7 @@ async def test_registry_supervisor_real_agents():
     supervisor.tools.extend(analysis_agent.tools)
 
     # Test with new agent (should fallback to supervisor default)
-    await supervisor.ainvoke(
-        {"messages": [HumanMessage(content="Analyze sales data trends")]}
-    )
+    await supervisor.ainvoke({"messages": [HumanMessage(content="Analyze sales data trends")]})
 
     # Verify supervisor has aggregated tools
     for _tool in supervisor.tools:

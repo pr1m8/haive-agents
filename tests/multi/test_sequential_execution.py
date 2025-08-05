@@ -36,9 +36,7 @@ def test_sequential_execution():
     )
 
     # Test state creation
-    state = multi.state_schema(
-        messages=[HumanMessage(content="What is the capital of France?")]
-    )
+    state = multi.state_schema(messages=[HumanMessage(content="What is the capital of France?")])
 
     # Test agent node creation and execution
     try:

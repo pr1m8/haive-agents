@@ -149,7 +149,6 @@ class SimpleStateUpdatingValidationNode:
         """Create the state-updating validation node function."""
 
         def validation_node(state, config=None):
-
             # Get tool calls
             tool_calls = self._extract_tool_calls(state)
             if not tool_calls:
@@ -163,9 +162,7 @@ class SimpleStateUpdatingValidationNode:
 
             # Validate each tool
             for tool_call in tool_calls:
-                result = self._validate_tool_call(
-                    tool_call, available_tools, tool_routes
-                )
+                result = self._validate_tool_call(tool_call, available_tools, tool_routes)
                 routing_state.add_validation_result(result)
 
             # Apply to state
@@ -181,7 +178,6 @@ class SimpleStateUpdatingValidationNode:
         """Create the dynamic router function."""
 
         def validation_router(state):
-
             # Get validation state
             validation_state = getattr(state, "validation_state", None)
             if not validation_state:
@@ -192,10 +188,7 @@ class SimpleStateUpdatingValidationNode:
 
             # Check validation mode
             if self.validation_mode == ValidationMode.STRICT:
-                if (
-                    routing_decision["error_count"] > 0
-                    or routing_decision["invalid_count"] > 0
-                ):
+                if routing_decision["error_count"] > 0 or routing_decision["invalid_count"] > 0:
                     return self.agent_node
 
             elif self.validation_mode == ValidationMode.PERMISSIVE:
@@ -458,9 +451,7 @@ def test_validation_node():
         return state
 
     # STRICT mode
-    strict_node = SimpleStateUpdatingValidationNode(
-        validation_mode=ValidationMode.STRICT
-    )
+    strict_node = SimpleStateUpdatingValidationNode(validation_mode=ValidationMode.STRICT)
     strict_func = strict_node.create_node_function()
     strict_router = strict_node.create_router_function()
 
@@ -469,9 +460,7 @@ def test_validation_node():
     result = strict_router(state)
 
     # PERMISSIVE mode
-    permissive_node = SimpleStateUpdatingValidationNode(
-        validation_mode=ValidationMode.PERMISSIVE
-    )
+    permissive_node = SimpleStateUpdatingValidationNode(validation_mode=ValidationMode.PERMISSIVE)
     permissive_func = permissive_node.create_node_function()
     permissive_router = permissive_node.create_router_function()
 

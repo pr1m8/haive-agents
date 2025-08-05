@@ -71,7 +71,6 @@ try:
     state_class = agent.state_schema()
     test_state = state_class(query="test", messages=[])
 except Exception:
-
     # Try with context
     with contextlib.suppress(Exception):
         test_state = state_class(query="test", context="", messages=[])

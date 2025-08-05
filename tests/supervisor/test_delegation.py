@@ -172,9 +172,7 @@ async def test_basic_delegation():
 
         try:
             # Create initial state
-            initial_state = SupervisorState(
-                messages=[HumanMessage(content=test_case["message"])]
-            )
+            initial_state = SupervisorState(messages=[HumanMessage(content=test_case["message"])])
 
             # Execute
             result = await compiled_graph.ainvoke(initial_state)
@@ -183,9 +181,7 @@ async def test_basic_delegation():
             next_agent = getattr(result, "next", "Unknown")
 
             # Determine status
-            status = (
-                "✅ PASS" if next_agent == test_case["expected_worker"] else "❌ FAIL"
-            )
+            status = "✅ PASS" if next_agent == test_case["expected_worker"] else "❌ FAIL"
 
             results_table.add_row(
                 test_case["name"], test_case["expected_worker"], next_agent, status
@@ -252,9 +248,7 @@ async def test_multi_turn_conversation():
             if hasattr(result, "messages") and result.messages:
                 last_msg = result.messages[-1]
                 if isinstance(last_msg, AIMessage):
-                    console.print(
-                        f"[green]Response:[/green] {last_msg.content[:150]}..."
-                    )
+                    console.print(f"[green]Response:[/green] {last_msg.content[:150]}...")
 
         except Exception as e:
             console.print(f"[red]❌ Turn failed: {e!s}[/red]")

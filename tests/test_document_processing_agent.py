@@ -65,16 +65,15 @@ class TestDocumentProcessingAgent:
     def llm_config(self) -> AugLLMConfig:
         """Create LLM configuration for testing."""
         return AugLLMConfig(
-            temperature=0.1, max_tokens=2000  # Low temperature for consistent tests
+            temperature=0.1,
+            max_tokens=2000,  # Low temperature for consistent tests
         )
 
     def test_agent_creation_basic(
         self, basic_config: DocumentProcessingConfig, llm_config: AugLLMConfig
     ):
         """Test basic agent creation with real components."""
-        agent = DocumentProcessingAgent(
-            config=basic_config, engine=llm_config, name="test_agent"
-        )
+        agent = DocumentProcessingAgent(config=basic_config, engine=llm_config, name="test_agent")
 
         assert agent.name == "test_agent"
         assert agent.config.rag_strategy == "basic"
@@ -121,9 +120,7 @@ class TestDocumentProcessingAgent:
         self, basic_config: DocumentProcessingConfig, llm_config: AugLLMConfig
     ):
         """Test simple query processing with real LLM."""
-        agent = DocumentProcessingAgent(
-            config=basic_config, engine=llm_config, name="simple_test"
-        )
+        agent = DocumentProcessingAgent(config=basic_config, engine=llm_config, name="simple_test")
 
         # Simple query that should work without external documents
         query = "What is artificial intelligence?"
@@ -167,9 +164,7 @@ class TestDocumentProcessingAgent:
         """Test processing with search enabled."""
         basic_config.search_enabled = True
 
-        agent = DocumentProcessingAgent(
-            config=basic_config, engine=llm_config, name="search_test"
-        )
+        agent = DocumentProcessingAgent(config=basic_config, engine=llm_config, name="search_test")
 
         # Query that should trigger search
         query = "Find information about Python programming best practices"
@@ -243,9 +238,7 @@ class TestDocumentProcessingAgent:
         basic_config.enable_bulk_processing = True
         basic_config.max_concurrent_loads = 3
 
-        agent = DocumentProcessingAgent(
-            config=basic_config, engine=llm_config, name="bulk_test"
-        )
+        agent = DocumentProcessingAgent(config=basic_config, engine=llm_config, name="bulk_test")
 
         # Multiple test sources
         test_sources = [
@@ -281,9 +274,7 @@ class TestDocumentProcessingAgent:
             "Q3 2024 analysis: Market expansion led to 20% growth in user base.",
         ]
 
-        query = (
-            "financial performance"  # Vague query that should benefit from refinement
-        )
+        query = "financial performance"  # Vague query that should benefit from refinement
 
         result = await agent.process_query(query, sources=test_sources)
 
@@ -296,9 +287,7 @@ class TestDocumentProcessingAgent:
         self, basic_config: DocumentProcessingConfig, llm_config: AugLLMConfig
     ):
         """Test the process_sources method specifically."""
-        agent = DocumentProcessingAgent(
-            config=basic_config, engine=llm_config, name="sources_test"
-        )
+        agent = DocumentProcessingAgent(config=basic_config, engine=llm_config, name="sources_test")
 
         test_sources = [
             "Research paper on climate change impacts on agriculture.",
@@ -319,9 +308,7 @@ class TestDocumentProcessingAgent:
         self, basic_config: DocumentProcessingConfig, llm_config: AugLLMConfig
     ):
         """Test error handling with invalid sources."""
-        agent = DocumentProcessingAgent(
-            config=basic_config, engine=llm_config, name="error_test"
-        )
+        agent = DocumentProcessingAgent(config=basic_config, engine=llm_config, name="error_test")
 
         # Mix of valid and invalid sources
         test_sources = [
@@ -345,9 +332,7 @@ class TestDocumentProcessingAgent:
         self, basic_config: DocumentProcessingConfig, llm_config: AugLLMConfig
     ):
         """Test timing and statistics collection."""
-        agent = DocumentProcessingAgent(
-            config=basic_config, engine=llm_config, name="timing_test"
-        )
+        agent = DocumentProcessingAgent(config=basic_config, engine=llm_config, name="timing_test")
 
         test_sources = [
             "Document about software engineering best practices.",
@@ -484,10 +469,7 @@ class TestDocumentProcessingAgent:
 
         assert isinstance(result, DocumentProcessingResult)
         assert result.response is not None
-        assert (
-            "financial" in result.response.lower()
-            or "business" in result.response.lower()
-        )
+        assert "financial" in result.response.lower() or "business" in result.response.lower()
         assert result.statistics["sources_used"] == len(source_strings)
 
 
@@ -508,9 +490,7 @@ async def test_integration_run():
     llm_config = AugLLMConfig(temperature=0.1, max_tokens=2000)
 
     # Create agent
-    agent = DocumentProcessingAgent(
-        config=config, engine=llm_config, name="integration_test"
-    )
+    agent = DocumentProcessingAgent(config=config, engine=llm_config, name="integration_test")
 
     # Test capabilities
     agent.get_capabilities()

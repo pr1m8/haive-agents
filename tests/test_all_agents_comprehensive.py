@@ -10,18 +10,13 @@ from typing import Any, Dict
 
 def setup_paths():
     """Add required paths for testing."""
-    sys.path.insert(
-        0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src"
-    )
-    sys.path.insert(
-        0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src"
-    )
+    sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
+    sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 
 
 def test_simple_agent() -> dict[str, Any]:
     """Test Simple agent with persistence."""
     try:
-
         from langchain_core.messages import HumanMessage
 
         from haive.agents.simple.agent import SimpleAgent
@@ -41,11 +36,7 @@ def test_simple_agent() -> dict[str, Any]:
 
         # First interaction
         result1 = agent.invoke(
-            {
-                "messages": [
-                    HumanMessage(content="My favorite color is blue. Remember this.")
-                ]
-            },
+            {"messages": [HumanMessage(content="My favorite color is blue. Remember this.")]},
             config,
         )
 
@@ -59,12 +50,8 @@ def test_simple_agent() -> dict[str, Any]:
             "agent_name": agent.name,
             "thread_id": thread_id,
             "persistence_type": type(agent.persistence).__name__,
-            "first_messages": (
-                len(result1.messages) if hasattr(result1, "messages") else 0
-            ),
-            "second_messages": (
-                len(result2.messages) if hasattr(result2, "messages") else 0
-            ),
+            "first_messages": (len(result1.messages) if hasattr(result1, "messages") else 0),
+            "second_messages": (len(result2.messages) if hasattr(result2, "messages") else 0),
             "memory_working": (
                 len(result2.messages) > len(result1.messages)
                 if hasattr(result2, "messages") and hasattr(result1, "messages")
@@ -84,7 +71,6 @@ def test_simple_agent() -> dict[str, Any]:
 def test_react_agent() -> dict[str, Any]:
     """Test React agent with persistence."""
     try:
-
         from langchain_core.messages import HumanMessage
 
         from haive.agents.react.agent import ReactAgent
@@ -104,30 +90,20 @@ def test_react_agent() -> dict[str, Any]:
 
         # First interaction - simple question
         result1 = agent.invoke(
-            {
-                "messages": [
-                    HumanMessage(content="Hello, I'm testing React agent persistence.")
-                ]
-            },
+            {"messages": [HumanMessage(content="Hello, I'm testing React agent persistence.")]},
             config,
         )
 
         # Second interaction - test memory
-        result2 = agent.invoke(
-            {"messages": [HumanMessage(content="What was I testing?")]}, config
-        )
+        result2 = agent.invoke({"messages": [HumanMessage(content="What was I testing?")]}, config)
 
         return {
             "status": "✅ PASSED",
             "agent_name": agent.name,
             "thread_id": thread_id,
             "persistence_type": type(agent.persistence).__name__,
-            "first_messages": (
-                len(result1.messages) if hasattr(result1, "messages") else 0
-            ),
-            "second_messages": (
-                len(result2.messages) if hasattr(result2, "messages") else 0
-            ),
+            "first_messages": (len(result1.messages) if hasattr(result1, "messages") else 0),
+            "second_messages": (len(result2.messages) if hasattr(result2, "messages") else 0),
             "memory_working": (
                 len(result2.messages) > len(result1.messages)
                 if hasattr(result2, "messages") and hasattr(result1, "messages")
@@ -147,7 +123,6 @@ def test_react_agent() -> dict[str, Any]:
 def test_rag_agent() -> dict[str, Any]:
     """Test RAG agent with persistence."""
     try:
-
         from langchain_core.messages import HumanMessage
 
         from haive.agents.rag.base.agent import BaseRAGAgent
@@ -179,11 +154,7 @@ def test_rag_agent() -> dict[str, Any]:
 
         # Second interaction - test memory
         result2 = agent.invoke(
-            {
-                "messages": [
-                    HumanMessage(content="What am I interested in learning about?")
-                ]
-            },
+            {"messages": [HumanMessage(content="What am I interested in learning about?")]},
             config,
         )
 
@@ -192,12 +163,8 @@ def test_rag_agent() -> dict[str, Any]:
             "agent_name": agent.name,
             "thread_id": thread_id,
             "persistence_type": type(agent.persistence).__name__,
-            "first_messages": (
-                len(result1.messages) if hasattr(result1, "messages") else 0
-            ),
-            "second_messages": (
-                len(result2.messages) if hasattr(result2, "messages") else 0
-            ),
+            "first_messages": (len(result1.messages) if hasattr(result1, "messages") else 0),
+            "second_messages": (len(result2.messages) if hasattr(result2, "messages") else 0),
             "memory_working": (
                 len(result2.messages) > len(result1.messages)
                 if hasattr(result2, "messages") and hasattr(result1, "messages")
@@ -217,7 +184,6 @@ def test_rag_agent() -> dict[str, Any]:
 def test_collaborative_conversation() -> dict[str, Any]:
     """Test Collaborative conversation agent with persistence."""
     try:
-
         from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.conversation.collaberative.agent import (
@@ -270,9 +236,7 @@ def test_collaborative_conversation() -> dict[str, Any]:
             has_ps_errors = "prepared statement" in doc.lower()
 
         return {
-            "status": (
-                "✅ PASSED" if not has_ps_errors else "⚠️ HAS PREPARED STATEMENT ERRORS"
-            ),
+            "status": ("✅ PASSED" if not has_ps_errors else "⚠️ HAS PREPARED STATEMENT ERRORS"),
             "agent_name": agent.name,
             "thread_id": thread_id,
             "persistence_type": type(agent.persistence).__name__,
@@ -284,9 +248,7 @@ def test_collaborative_conversation() -> dict[str, Any]:
                 else "N/A"
             ),
             "shared_document_length": (
-                len(str(result.shared_document))
-                if hasattr(result, "shared_document")
-                else 0
+                len(str(result.shared_document)) if hasattr(result, "shared_document") else 0
             ),
         }
 
@@ -297,7 +259,6 @@ def test_collaborative_conversation() -> dict[str, Any]:
 def test_debate_conversation() -> dict[str, Any]:
     """Test Debate conversation agent with persistence."""
     try:
-
         from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.conversation.debate.agent import DebateAgent
@@ -331,9 +292,7 @@ def test_debate_conversation() -> dict[str, Any]:
         config = {"configurable": {"thread_id": thread_id}}
 
         # Run debate
-        agent.invoke(
-            {"messages": [], "topic": "Should AI be used in education"}, config
-        )
+        agent.invoke({"messages": [], "topic": "Should AI be used in education"}, config)
 
         return {
             "status": "✅ PASSED",
@@ -394,9 +353,7 @@ def main():
             if "app_name" in result and result["app_name"] != "N/A":
                 pass
             if "memory_working" in result:
-                memory_status = (
-                    "✅ Working" if result["memory_working"] else "❌ Not Working"
-                )
+                memory_status = "✅ Working" if result["memory_working"] else "❌ Not Working"
         elif "❌ FAILED" in status:
             failed_count += 1
         elif "⚠️" in status:
@@ -411,13 +368,10 @@ def main():
 
     # Save detailed results
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    results_file = (
-        f"/home/will/Projects/haive/backend/haive/agent_test_results_{timestamp}.json"
-    )
+    results_file = f"/home/will/Projects/haive/backend/haive/agent_test_results_{timestamp}.json"
 
     with open(results_file, "w") as f:
         json.dump(test_results, f, indent=2)
-
 
 
 if __name__ == "__main__":

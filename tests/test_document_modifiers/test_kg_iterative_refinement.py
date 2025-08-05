@@ -52,9 +52,7 @@ class TestIterativeGraphTransformer:
             source=Document(page_content="Test content"),
         )
 
-    def test_agent_initialization(
-        self, graph_transformer_agent: IterativeGraphTransformer
-    ) -> None:
+    def test_agent_initialization(self, graph_transformer_agent: IterativeGraphTransformer) -> None:
         """Test that agent initializes correctly."""
         assert graph_transformer_agent is not None
         assert graph_transformer_agent.llm_graph_transformer is not None
@@ -85,9 +83,7 @@ class TestIterativeGraphTransformer:
 
     def test_should_refine_logic(self) -> None:
         """Test the should_refine decision logic."""
-        state = IterativeGraphTransformerState(
-            contents=["Doc 1", "Doc 2", "Doc 3"], index=1
-        )
+        state = IterativeGraphTransformerState(contents=["Doc 1", "Doc 2", "Doc 3"], index=1)
 
         # Should continue refining
         assert state.should_refine() == "refine_summary"
@@ -96,9 +92,7 @@ class TestIterativeGraphTransformer:
         state.index = 3
         assert state.should_refine() == "__end__"
 
-    @patch(
-        "haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents"
-    )
+    @patch("haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents")
     def test_generate_initial_summary_success(
         self,
         mock_transform: Mock,
@@ -110,9 +104,7 @@ class TestIterativeGraphTransformer:
         mock_transform.return_value = [mock_graph_document]
 
         # Create state
-        state = IterativeGraphTransformerState(
-            contents=["Marie Curie was a physicist."]
-        )
+        state = IterativeGraphTransformerState(contents=["Marie Curie was a physicist."])
         config = MagicMock()
 
         # Execute
@@ -133,9 +125,7 @@ class TestIterativeGraphTransformer:
         with pytest.raises(ValueError, match="At least one document is required"):
             graph_transformer_agent.generate_initial_summary(state, config)
 
-    @patch(
-        "haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents"
-    )
+    @patch("haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents")
     def test_generate_initial_summary_no_graph(
         self, mock_transform: Mock, graph_transformer_agent: IterativeGraphTransformer
     ) -> None:
@@ -151,9 +141,7 @@ class TestIterativeGraphTransformer:
         assert command.update["graph_doc"] is None
         assert command.update["index"] == 1
 
-    @patch(
-        "haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents"
-    )
+    @patch("haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents")
     def test_refine_summary_success(
         self,
         mock_transform: Mock,
@@ -191,16 +179,16 @@ class TestIterativeGraphTransformer:
     ) -> None:
         """Test refinement with out of bounds index."""
         state = IterativeGraphTransformerState(
-            contents=["Doc 1"], index=5, graph_doc=None  # Out of bounds
+            contents=["Doc 1"],
+            index=5,
+            graph_doc=None,  # Out of bounds
         )
         config = MagicMock()
 
         with pytest.raises(IndexError, match="Index 5 out of bounds"):
             graph_transformer_agent.refine_summary(state, config)
 
-    @patch(
-        "haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents"
-    )
+    @patch("haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents")
     def test_refine_summary_error_handling(
         self,
         mock_transform: Mock,
@@ -223,9 +211,7 @@ class TestIterativeGraphTransformer:
         assert command.update["index"] == 2
         assert "graph_doc" not in command.update  # Keeps existing graph
 
-    @patch(
-        "haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents"
-    )
+    @patch("haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer.transform_documents")
     def test_refine_summary_no_graph_generated(
         self,
         mock_transform: Mock,
@@ -246,9 +232,7 @@ class TestIterativeGraphTransformer:
         assert command.update["index"] == 2
         assert "graph_doc" not in command.update
 
-    def test_setup_workflow(
-        self, graph_transformer_agent: IterativeGraphTransformer
-    ) -> None:
+    def test_setup_workflow(self, graph_transformer_agent: IterativeGraphTransformer) -> None:
         """Test workflow setup."""
         # Mock the graph object
         mock_graph = Mock()

@@ -42,12 +42,8 @@ class TestPlanExecuteState:
         plan = Plan(
             objective="Test objective",
             steps=[
-                PlanStep(
-                    step_id=1, description="Step 1", expected_output="Expected output"
-                ),
-                PlanStep(
-                    step_id=2, description="Step 2", expected_output="Expected output"
-                ),
+                PlanStep(step_id=1, description="Step 1", expected_output="Expected output"),
+                PlanStep(step_id=2, description="Step 2", expected_output="Expected output"),
             ],
             total_steps=2,
         )
@@ -98,15 +94,9 @@ class TestPlanExecuteState:
         plan = Plan(
             objective="Test plan",
             steps=[
-                PlanStep(
-                    step_id=1, description="Step 1", expected_output="Expected output"
-                ),
-                PlanStep(
-                    step_id=2, description="Step 2", expected_output="Expected output"
-                ),
-                PlanStep(
-                    step_id=3, description="Step 3", expected_output="Expected output"
-                ),
+                PlanStep(step_id=1, description="Step 1", expected_output="Expected output"),
+                PlanStep(step_id=2, description="Step 2", expected_output="Expected output"),
+                PlanStep(step_id=3, description="Step 3", expected_output="Expected output"),
             ],
             total_steps=3,
         )
@@ -126,12 +116,8 @@ class TestPlanExecuteState:
 
         # With execution results
         results = [
-            ExecutionResult(
-                step_id=1, success=True, output="Found info", execution_time=0.5
-            ),
-            ExecutionResult(
-                step_id=2, success=True, output="Result: 42", execution_time=1.0
-            ),
+            ExecutionResult(step_id=1, success=True, output="Found info", execution_time=0.5),
+            ExecutionResult(step_id=2, success=True, output="Result: 42", execution_time=1.0),
         ]
         state = PlanExecuteState(execution_results=results)
 

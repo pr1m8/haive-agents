@@ -51,7 +51,6 @@ async def test_agent_storage():
     state.add_agent("search_agent", search_agent, "Search specialist", active=True)
     state.add_agent("simple_agent", simple_agent, "Simple assistant", active=False)
 
-
     # Build a simple graph
     graph = StateGraph(SupervisorState)
     graph.add_node("test", test_node)
@@ -64,9 +63,7 @@ async def test_agent_storage():
     memory_app = graph.compile(checkpointer=MemorySaver())
 
     try:
-        result = await memory_app.ainvoke(
-            state, {"configurable": {"thread_id": "test1"}}
-        )
+        result = await memory_app.ainvoke(state, {"configurable": {"thread_id": "test1"}})
     except Exception as e:
         pass
 
@@ -78,9 +75,7 @@ async def test_agent_storage():
         checkpointer = PostgresSaver(conn)
         postgres_app = graph.compile(checkpointer=checkpointer)
 
-        await postgres_app.ainvoke(
-            state, {"configurable": {"thread_id": "test2"}}
-        )
+        await postgres_app.ainvoke(state, {"configurable": {"thread_id": "test2"}})
 
         conn.close()
     except Exception as e:

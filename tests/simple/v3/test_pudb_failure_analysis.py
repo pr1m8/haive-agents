@@ -32,7 +32,6 @@ try:
     agent = SimpleAgentV3(name="test_agent", engine=engine)
 
 except Exception:
-
     exc_type, exc_value, exc_traceback = sys.exc_info()
 
     # Get the exact frame where it fails

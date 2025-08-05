@@ -96,9 +96,7 @@ try:
         if hasattr(self, "state_schema"):
             logger.info(f"\nState schema type: {type(self.state_schema)}")
             logger.info(f"State schema: {self.state_schema}")
-            logger.info(
-                f"State schema fields: {list(self.state_schema.model_fields.keys())}"
-            )
+            logger.info(f"State schema fields: {list(self.state_schema.model_fields.keys())}")
 
             # Check if engine is required in state schema
             if "engine" in self.state_schema.model_fields:
@@ -111,9 +109,7 @@ try:
         if hasattr(self, "input_schema"):
             logger.info(f"\nInput schema type: {type(self.input_schema)}")
             logger.info(f"Input schema: {self.input_schema}")
-            logger.info(
-                f"Input schema fields: {list(self.input_schema.model_fields.keys())}"
-            )
+            logger.info(f"Input schema fields: {list(self.input_schema.model_fields.keys())}")
 
             # Check if engine is in input schema
             if "engine" in self.input_schema.model_fields:

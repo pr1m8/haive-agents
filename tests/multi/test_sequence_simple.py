@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Simple test for sequence inference and branching."""
 
-
 from haive.agents.multi.clean import MultiAgent
 from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -46,9 +45,7 @@ def test_sequence_inference():
 def test_branch_configuration():
     """Test branch configuration."""
     # Create agents for branching
-    analyzer = SimpleAgent(
-        name="analyzer", engine=AugLLMConfig(prompt_template="Analyze: {input}")
-    )
+    analyzer = SimpleAgent(name="analyzer", engine=AugLLMConfig(prompt_template="Analyze: {input}"))
 
     success_handler = SimpleAgent(
         name="success_handler",

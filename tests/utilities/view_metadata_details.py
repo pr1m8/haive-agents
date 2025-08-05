@@ -49,9 +49,7 @@ def view_metadata_details():
                     if metadata:
                         try:
                             meta_dict = (
-                                json.loads(metadata)
-                                if isinstance(metadata, str)
-                                else metadata
+                                json.loads(metadata) if isinstance(metadata, str) else metadata
                             )
 
                             # Check for step number
@@ -86,14 +84,10 @@ def view_metadata_details():
                                             # Check for errors in contributions
                                             error_count = 0
                                             for contrib in contribs:
-                                                if (
-                                                    isinstance(contrib, list)
-                                                    and len(contrib) >= 3
-                                                ):
+                                                if isinstance(contrib, list) and len(contrib) >= 3:
                                                     content = str(contrib[2])
                                                     if (
-                                                        "prepared statement"
-                                                        in content.lower()
+                                                        "prepared statement" in content.lower()
                                                     ) or "error" in content.lower():
                                                         error_count += 1
 

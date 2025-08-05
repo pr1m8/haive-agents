@@ -22,7 +22,6 @@ from test_hyde_rag_demo import demonstrate_hyde_rag
 
 
 if __name__ == "__main__":
-
     try:
         demonstrate_hyde_rag()
     except Exception:

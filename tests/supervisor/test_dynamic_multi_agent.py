@@ -166,9 +166,7 @@ async def test_dynamic_agent_management():
     from dynamic_multi_agent import DynamicMultiAgent
 
     # Start with minimal agents
-    multi_agent = DynamicMultiAgent(
-        name="dynamic_test", agents=[ResearchAgent(), WritingAgent()]
-    )
+    multi_agent = DynamicMultiAgent(name="dynamic_test", agents=[ResearchAgent(), WritingAgent()])
 
     # Test with initial agents
     await multi_agent.ainvoke(
@@ -179,17 +177,11 @@ async def test_dynamic_agent_management():
 
     # Add coding agent dynamically
     coding = CodingAgent()
-    multi_agent.register_agent_dynamically(
-        coding, capability="coding and software development"
-    )
+    multi_agent.register_agent_dynamically(coding, capability="coding and software development")
 
     # Test with coding request
     await multi_agent.ainvoke(
-        {
-            "messages": [
-                HumanMessage(content="Write code to implement a sorting algorithm")
-            ]
-        }
+        {"messages": [HumanMessage(content="Write code to implement a sorting algorithm")]}
     )
 
     # Add analysis agent
@@ -280,9 +272,7 @@ async def test_capability_routing():
 
     correct_routes = 0
     for request, expected_agent in test_cases:
-        result = await multi_agent.ainvoke(
-            {"messages": [HumanMessage(content=request)]}
-        )
+        result = await multi_agent.ainvoke({"messages": [HumanMessage(content=request)]})
 
         actual_agent = result.get("last_agent")
         is_correct = actual_agent == expected_agent
@@ -319,9 +309,7 @@ async def test_complex_conversation():
     messages = result2.get("messages", messages)
 
     # Turn 3: Coding
-    messages.append(
-        HumanMessage(content="Write code to implement one of these AI agent patterns")
-    )
+    messages.append(HumanMessage(content="Write code to implement one of these AI agent patterns"))
     result3 = await multi_agent.ainvoke({"messages": messages})
     messages = result3.get("messages", messages)
 

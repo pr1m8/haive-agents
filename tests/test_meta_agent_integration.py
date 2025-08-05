@@ -176,9 +176,7 @@ def test_meta_state_with_simple_agent():
     # Check initial state
 
     # Execute agent through meta state
-    meta_state.execute_agent(
-        input_data={"messages": [{"role": "user", "content": "Hello!"}]}
-    )
+    meta_state.execute_agent(input_data={"messages": [{"role": "user", "content": "Hello!"}]})
 
     # Check recompilation
     if meta_state.check_agent_recompilation():
@@ -192,18 +190,14 @@ def test_simple_meta_agent():
     # Create nested agent
     nested_agent = SimpleAgent(
         name="analyzer",
-        engine=AugLLMConfig(
-            system_message="You are an analysis expert.", temperature=0.3
-        ),
+        engine=AugLLMConfig(system_message="You are an analysis expert.", temperature=0.3),
     )
 
     # Create meta-capable simple agent
     meta_agent = SimpleMetaAgent.create_with_nested_agent(
         name="coordinator",
         nested_agent=nested_agent,
-        engine=AugLLMConfig(
-            system_message="You are a coordination agent.", temperature=0.5
-        ),
+        engine=AugLLMConfig(system_message="You are a coordination agent.", temperature=0.5),
     )
 
     # Run async test
@@ -281,9 +275,7 @@ def test_react_agent_with_meta_state():
 
     # Test execution
     async def test_execution():
-        result = await react_meta.think_then_analyze(
-            "What are the key factors in climate change?"
-        )
+        result = await react_meta.think_then_analyze("What are the key factors in climate change?")
 
         if "deep_analysis" in result:
             pass
@@ -322,9 +314,7 @@ def test_agent_class_method_meta_creation():
     Agent.create_as_meta = classmethod(create_as_meta)
 
     # Create embedded agent
-    embedded = SimpleAgent(
-        name="embedded_processor", engine=AugLLMConfig(temperature=0.1)
-    )
+    embedded = SimpleAgent(name="embedded_processor", engine=AugLLMConfig(temperature=0.1))
 
     # Create meta-capable agents using class method
     meta_simple = SimpleAgent.create_as_meta(
@@ -350,7 +340,6 @@ def test_agent_class_method_meta_creation():
 
 
 if __name__ == "__main__":
-
     # Test 1: Basic MetaStateSchema with SimpleAgent
     meta_state = test_meta_state_with_simple_agent()
 

@@ -13,9 +13,7 @@ async def test_clean_multi_agent():
     # Create simple agents
     agent1 = SimpleAgent(
         name="writer",
-        engine=AugLLMConfig(
-            prompt_template="Write a short story about: {input}", temperature=0.7
-        ),
+        engine=AugLLMConfig(prompt_template="Write a short story about: {input}", temperature=0.7),
     )
 
     agent2 = SimpleAgent(
@@ -42,7 +40,8 @@ async def test_plan_and_execute():
 
     # Create plan and execute agent
     agent = PlanAndExecuteAgent.create(
-        tools=[], name="simple_planner"  # No tools for now
+        tools=[],
+        name="simple_planner",  # No tools for now
     )
 
     # Test execution

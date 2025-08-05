@@ -58,9 +58,7 @@ async def test_minimal_multiagent():
 
     # Test 1: Build graph manually first
     try:
-        graph = BaseGraph(
-            name="supervisor_graph", state_schema=SupervisorStateWithTools
-        )
+        graph = BaseGraph(name="supervisor_graph", state_schema=SupervisorStateWithTools)
         graph.add_node("supervisor", supervisor_workflow)
         graph.add_node("execute", agent_execution_node)
         graph.add_conditional_edges(
@@ -92,9 +90,7 @@ async def test_minimal_multiagent():
                 "supervisor": supervisor_workflow,
                 "execute": agent_execution_node,
             },
-            branches=[
-                ("supervisor", route_based_on_state, {"execute": "execute", "END": END})
-            ],
+            branches=[("supervisor", route_based_on_state, {"execute": "execute", "END": END})],
             entry_points=[
                 "supervisor"
             ],  # Start with supervisor workflow node, not coordinator agent!

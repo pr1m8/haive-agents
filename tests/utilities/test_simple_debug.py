@@ -38,7 +38,6 @@ def test_simple_debug():
         ),
     )
 
-
     # Check state schema
     if hasattr(agent, "state_schema") and agent.state_schema:
         pass

@@ -72,7 +72,6 @@ def test_basic_structured_output():
     if hasattr(result, "messages"):
         for msg in reversed(result.messages):
             if msg.__class__.__name__ == "AIMessage":
-
                 # Check if response contains structured fields
                 response = msg.content
                 has_structured_fields = any(
@@ -200,9 +199,7 @@ def test_structured_output_validation():
 
                 # Check for all required fields
                 required_fields = ["summary", "key_points", "recommendation"]
-                fields_present = [
-                    field for field in required_fields if field in response
-                ]
+                fields_present = [field for field in required_fields if field in response]
 
                 if len(fields_present) >= 2:  # Allow some flexibility
                     return True

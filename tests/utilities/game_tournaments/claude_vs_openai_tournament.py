@@ -34,10 +34,7 @@ def save_tournament_result(game_name: str, winner: str, details: dict, matchup: 
         json.dump(result, f, indent=2, default=str)
 
 
-
-def create_claude_openai_config(
-    game_config_class, claude_player: str, openai_player: str
-):
+def create_claude_openai_config(game_config_class, claude_player: str, openai_player: str):
     """Create game config with Claude vs OpenAI setup."""
     config = game_config_class()
 
@@ -97,7 +94,6 @@ def run_tournament_game(
     matchup = "claude_vs_openai"
 
     try:
-
         # Create config with consistent LLM setup
         config = create_claude_openai_config(config_class, claude_player, openai_player)
 
@@ -107,7 +103,6 @@ def run_tournament_game(
         # Get initial state
         state_class = config.state_schema
         initial_state = state_class()
-
 
         try:
             # Run game with limited recursion
@@ -121,17 +116,9 @@ def run_tournament_game(
             # Determine winner based on game result
             if hasattr(result, "winner") and result.winner:
                 raw_winner = str(result.winner)
-                if (
-                    "X" in raw_winner
-                    or "player1" in raw_winner
-                    or "white" in raw_winner.lower()
-                ):
+                if "X" in raw_winner or "player1" in raw_winner or "white" in raw_winner.lower():
                     winner = "Claude"
-                elif (
-                    "O" in raw_winner
-                    or "player2" in raw_winner
-                    or "black" in raw_winner.lower()
-                ):
+                elif "O" in raw_winner or "player2" in raw_winner or "black" in raw_winner.lower():
                     winner = "OpenAI"
                 else:
                     winner = f"Player: {raw_winner}"
@@ -300,14 +287,12 @@ def main():
         elif winner and winner != "Failed":
             other_results += 1
 
-
     if claude_wins > openai_wins:
         pass
     elif openai_wins > claude_wins:
         pass
     else:
         pass
-
 
 
 if __name__ == "__main__":

@@ -46,9 +46,7 @@ class TestMultiQueryRAGAgent:
 
     def test_multi_query_rag_creation(self, llm_config, sample_documents):
         """Test creating Multi-Query RAG with documents."""
-        rag = MultiQueryRAGAgent.from_documents(
-            documents=sample_documents, llm_config=llm_config
-        )
+        rag = MultiQueryRAGAgent.from_documents(documents=sample_documents, llm_config=llm_config)
 
         assert rag.name == "Multi-Query RAG Agent"
         assert len(rag.agents) == 3  # expander, retriever, answer
@@ -61,9 +59,7 @@ class TestMultiQueryRAGAgent:
 
     def test_multi_query_expansion(self, llm_config, sample_documents):
         """Test that queries are properly expanded."""
-        rag = MultiQueryRAGAgent.from_documents(
-            documents=sample_documents, llm_config=llm_config
-        )
+        rag = MultiQueryRAGAgent.from_documents(documents=sample_documents, llm_config=llm_config)
 
         # Test with a query that could benefit from expansion
         query = "How to build software?"
@@ -95,13 +91,9 @@ class TestMultiQueryRAGAgent:
         # Create both agents
         docs = conversation_documents[:5]
 
-        multi_rag = MultiQueryRAGAgent.from_documents(
-            documents=docs, llm_config=llm_config
-        )
+        multi_rag = MultiQueryRAGAgent.from_documents(documents=docs, llm_config=llm_config)
 
-        simple_rag = SimpleRAGAgent.from_documents(
-            documents=docs, llm_config=llm_config
-        )
+        simple_rag = SimpleRAGAgent.from_documents(documents=docs, llm_config=llm_config)
 
         # Test with ambiguous query
         query = "Tell me about discussions"
@@ -130,9 +122,7 @@ class TestMultiQueryRAGAgent:
             Document(page_content="Water is wet."),
         ]
 
-        rag = MultiQueryRAGAgent.from_documents(
-            documents=minimal_docs, llm_config=llm_config
-        )
+        rag = MultiQueryRAGAgent.from_documents(documents=minimal_docs, llm_config=llm_config)
 
         # Test with very specific query
         query = "What color is the sky?"

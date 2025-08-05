@@ -29,10 +29,7 @@ class MockLLM:
         self.inputs = []
 
     def invoke(
-        self,
-        input_data: str | dict[str, Any],
-        config: RunnableConfig | None = None,
-        **kwargs
+        self, input_data: str | dict[str, Any], config: RunnableConfig | None = None, **kwargs
     ) -> dict[str, Any]:
         """Mock invoke method."""
         self.invoke_count += 1
@@ -48,19 +45,13 @@ class MockLLM:
         return {"messages": [{"role": "assistant", "content": response_text}]}
 
     async def ainvoke(
-        self,
-        input_data: str | dict[str, Any],
-        config: RunnableConfig | None = None,
-        **kwargs
+        self, input_data: str | dict[str, Any], config: RunnableConfig | None = None, **kwargs
     ) -> dict[str, Any]:
         """Async version of invoke."""
         return self.invoke(input_data, config, **kwargs)
 
     def stream(
-        self,
-        input_data: str | dict[str, Any],
-        config: RunnableConfig | None = None,
-        **kwargs
+        self, input_data: str | dict[str, Any], config: RunnableConfig | None = None, **kwargs
     ):
         """Stream responses."""
         self.invoke_count += 1
@@ -80,10 +71,7 @@ class MockLLM:
             yield {"messages": [{"role": "assistant", "content": chunk}]}
 
     async def astream(
-        self,
-        input_data: str | dict[str, Any],
-        config: RunnableConfig | None = None,
-        **kwargs
+        self, input_data: str | dict[str, Any], config: RunnableConfig | None = None, **kwargs
     ):
         """Async version of stream."""
         for chunk in self.stream(input_data, config, **kwargs):
@@ -194,6 +182,4 @@ class MockEngineBuilder:
         from unittest import mock
 
         # Create a patch that replaces create_runnable with a function returning our mock
-        return mock.patch.object(
-            config.__class__, "create_runnable", return_value=mock_llm
-        )
+        return mock.patch.object(config.__class__, "create_runnable", return_value=mock_llm)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Test workflow outputs by examining agent structure."""
 
-
 from haive.agents.rag.multi_agent_rag.specialized_workflows import (
     AdaptiveThresholdRAGAgent,
     DebateRAGAgent,
@@ -74,7 +73,6 @@ def test_adaptive_threshold():
 
 
 def main():
-
     test_flare()
     test_dynamic_rag()
     test_debate_rag()

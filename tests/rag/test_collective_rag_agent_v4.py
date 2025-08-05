@@ -209,9 +209,7 @@ class TestCollectiveRAGAgentV4:
 
     def test_document_deduplication(self, rag_agents):
         """Test document deduplication logic."""
-        collective = CollectiveRAGAgentV4(
-            name="dedup_logic_test", rag_agents=rag_agents
-        )
+        collective = CollectiveRAGAgentV4(name="dedup_logic_test", rag_agents=rag_agents)
 
         # Test deduplication with similar documents
         docs = [

@@ -5,9 +5,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -41,9 +39,7 @@ def test_user_example():
 
     # Create agents as per user example
     add_aug = AugLLMConfig(tools=[add, get_earth_age])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
 
     react_agent = ReactAgent(engine=add_aug)
     simple_agent = SimpleAgent(engine=plan_aug)
@@ -67,7 +63,6 @@ def test_user_example():
                 ]
             }
         )
-
 
         if isinstance(result, dict):
             # Print messages
@@ -116,17 +111,13 @@ def test_with_different_tools():
 
     # Create agents with calculation tools
     calc_aug = AugLLMConfig(tools=[add, multiply, divide])
-    website_aug = AugLLMConfig(
-        structured_output_model=WebsitePlan, structured_output_version="v2"
-    )
+    website_aug = AugLLMConfig(structured_output_model=WebsitePlan, structured_output_version="v2")
 
     calc_agent = ReactAgent(name="Calculator", engine=calc_aug)
     planner_agent = SimpleAgent(name="Website Planner", engine=website_aug)
 
     # Create sequential agent
-    seq_agent = SequentialAgent(
-        name="Calc then Plan", agents=[calc_agent, planner_agent]
-    )
+    seq_agent = SequentialAgent(name="Calc then Plan", agents=[calc_agent, planner_agent])
 
     try:
         seq_agent.compile()
@@ -143,7 +134,6 @@ def test_with_different_tools():
                 ]
             }
         )
-
 
         if isinstance(result, dict) and "messages" in result:
             # Show last few messages
@@ -162,4 +152,3 @@ if __name__ == "__main__":
 
     # Run additional test
     test_with_different_tools()
-

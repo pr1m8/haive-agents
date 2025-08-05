@@ -113,10 +113,7 @@ class TestHooksMixin:
 
         # Clear specific event
         agent.clear_hooks(HookEvent.BEFORE_RUN)
-        assert (
-            HookEvent.BEFORE_RUN not in agent._hooks
-            or not agent._hooks[HookEvent.BEFORE_RUN]
-        )
+        assert HookEvent.BEFORE_RUN not in agent._hooks or not agent._hooks[HookEvent.BEFORE_RUN]
         assert agent._hooks.get(HookEvent.AFTER_RUN)
 
         # Clear all
@@ -263,9 +260,7 @@ class TestCommonHooks:
 
         # Test with missing required field
         with caplog.at_level(logging.WARNING):
-            agent._execute_hooks(
-                HookEvent.BEFORE_STATE_UPDATE, state={"other_field": "value"}
-            )
+            agent._execute_hooks(HookEvent.BEFORE_STATE_UPDATE, state={"other_field": "value"})
 
         assert "Missing required field in state: messages" in caplog.text
 

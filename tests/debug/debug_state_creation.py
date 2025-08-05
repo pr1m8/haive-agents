@@ -84,9 +84,7 @@ try:
         engines_field = state_schema.model_fields["engines"]
         logger.info(f"Engines field default_factory: {engines_field.default_factory}")
         if engines_field.default_factory:
-            logger.info(
-                f"Calling engines default_factory: {engines_field.default_factory()}"
-            )
+            logger.info(f"Calling engines default_factory: {engines_field.default_factory()}")
 
     # Now check the input schema
     logger.info("\n=== Input Schema ===")

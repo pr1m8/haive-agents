@@ -58,9 +58,7 @@ async def test_real_haive_agents():
             temperature=0.7,
         )
 
-        engine_config = AugLLMConfig(
-            llm=llm_config, system_prompt="You are a helpful assistant."
-        )
+        engine_config = AugLLMConfig(llm=llm_config, system_prompt="You are a helpful assistant.")
 
         research_agent = ReactAgent(
             name="research_agent",
@@ -79,9 +77,7 @@ async def test_real_haive_agents():
                 for tool in research_agent.tools
             ],
             "engine_type": (
-                str(type(research_agent.engine))
-                if hasattr(research_agent, "engine")
-                else None
+                str(type(research_agent.engine)) if hasattr(research_agent, "engine") else None
             ),
             "created_at": datetime.now().isoformat(),
         }
@@ -90,9 +86,7 @@ async def test_real_haive_agents():
 
         # Test 1: Simple invocation
 
-        test_input = {
-            "messages": [HumanMessage(content="Research AI safety regulations")]
-        }
+        test_input = {"messages": [HumanMessage(content="Research AI safety regulations")]}
 
         # Try to invoke the agent
         try:
@@ -144,16 +138,13 @@ async def test_real_haive_agents():
                     }
                     for name, agent in agent_registry.items()
                 },
-                "total_tools": sum(
-                    len(agent.tools) for agent in agent_registry.values()
-                ),
+                "total_tools": sum(len(agent.tools) for agent in agent_registry.values()),
                 "timestamp": datetime.now().isoformat(),
             }
 
             save_state_history("registry", registry_state, "creation")
 
         except Exception as e:
-
             error_state = {
                 "test_name": "multiple_agents",
                 "error": str(e),
@@ -163,7 +154,6 @@ async def test_real_haive_agents():
             save_state_history("registry", error_state, "error")
 
     except Exception as e:
-
         final_error_state = {
             "test_suite": "real_agents_final",
             "error": str(e),

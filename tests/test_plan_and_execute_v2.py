@@ -9,9 +9,7 @@ from haive.tools.math.calculator import Calculator
 def test_plan_and_execute_agent_creation():
     """Test creating P&E agent with default configuration."""
     # Create agent with minimal tools
-    agent = PlanAndExecuteAgent.create_default(
-        tools=[Calculator()], name="test_pe_agent"
-    )
+    agent = PlanAndExecuteAgent.create_default(tools=[Calculator()], name="test_pe_agent")
 
     # Verify agent structure
     assert agent.name == "test_pe_agent"
@@ -27,9 +25,7 @@ def test_plan_and_execute_agent_creation():
 
 def test_plan_and_execute_agent_state_schema():
     """Test P&E agent state schema composition."""
-    agent = PlanAndExecuteAgent.create_default(
-        tools=[Calculator()], name="test_pe_schema"
-    )
+    agent = PlanAndExecuteAgent.create_default(tools=[Calculator()], name="test_pe_schema")
 
     # Test state schema
     assert agent.state_schema is not None
@@ -51,9 +47,7 @@ def test_plan_and_execute_agent_state_schema():
 async def test_plan_and_execute_agent_real_execution():
     """Test P&E agent with real LLM execution."""
     # Create agent with calculator tool
-    agent = PlanAndExecuteAgent.create_default(
-        tools=[Calculator()], name="test_pe_execution"
-    )
+    agent = PlanAndExecuteAgent.create_default(tools=[Calculator()], name="test_pe_execution")
 
     # Test simple calculation task
     result = await agent.arun("Calculate 15 * 23")
@@ -69,9 +63,7 @@ async def test_plan_and_execute_agent_real_execution():
 
 def test_plan_and_execute_agent_methods():
     """Test P&E agent helper methods."""
-    agent = PlanAndExecuteAgent.create_default(
-        tools=[Calculator()], name="test_pe_methods"
-    )
+    agent = PlanAndExecuteAgent.create_default(tools=[Calculator()], name="test_pe_methods")
 
     # Create test state
     from haive.agents.planning.plan_and_execute.v2.models import Plan, Step

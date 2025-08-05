@@ -95,9 +95,7 @@ class RecompilationMixin:
     # CHANGE NOTIFICATION
     # ========================================================================
 
-    def register_change_callback(
-        self, callback: Callable[[str, dict[str, Any]], None]
-    ) -> str:
+    def register_change_callback(self, callback: Callable[[str, dict[str, Any]], None]) -> str:
         """Register callback for change notifications.
 
         Args:
@@ -212,9 +210,7 @@ class RecompilableValidationNodeConfigV2(RecompilationMixin, ValidationNodeConfi
             new_routes=self._tool_routes,
             added_routes={k: v for k, v in new_routes.items() if k not in old_routes},
             changed_routes={
-                k: v
-                for k, v in new_routes.items()
-                if k in old_routes and old_routes[k] != v
+                k: v for k, v in new_routes.items() if k in old_routes and old_routes[k] != v
             },
         )
 
@@ -230,9 +226,7 @@ class RecompilableValidationNodeConfigV2(RecompilationMixin, ValidationNodeConfi
             new_rules=self._validation_rules,
         )
 
-    def add_custom_validator(
-        self, validator_name: str, validator_func: Callable
-    ) -> None:
+    def add_custom_validator(self, validator_name: str, validator_func: Callable) -> None:
         """Add custom validator and notify of changes."""
         old_validators = self._custom_validators.copy()
         self._custom_validators[validator_name] = validator_func
@@ -318,11 +312,7 @@ class RecompilableSimpleAgent(RecompilationMixin, SimpleAgent):
             # Graph structure (if available)
             str(list(self._graph.nodes.keys()) if self._graph else []),
             # Validation node state
-            str(
-                self._validation_node._compute_state_hash()
-                if self._validation_node
-                else "None"
-            ),
+            str(self._validation_node._compute_state_hash() if self._validation_node else "None"),
         ]
 
         state_str = "|".join(components)
@@ -334,14 +324,10 @@ class RecompilableSimpleAgent(RecompilationMixin, SimpleAgent):
 
         # Register callback to track when this component needs recompilation
         component.register_change_callback(
-            lambda change_type, details: self._handle_component_change(
-                name, change_type, details
-            )
+            lambda change_type, details: self._handle_component_change(name, change_type, details)
         )
 
-    def _handle_component_change(
-        self, component_name: str, change_type: str, details: dict
-    ):
+    def _handle_component_change(self, component_name: str, change_type: str, details: dict):
         """Handle changes from managed components."""
         # Propagate the change up to agent level
         self._notify_change(
@@ -385,11 +371,9 @@ class RecompilableSimpleAgent(RecompilationMixin, SimpleAgent):
 
         # Check if agent needs recompilation
         if self.needs_recompilation():
-
             # Check each managed component
             for name, component in self._managed_components.items():
                 if component.needs_recompilation():
-
                     # Perform component-specific recompilation
                     if name == "validation_node":
                         self._recompile_validation_node(component)
@@ -408,9 +392,7 @@ class RecompilableSimpleAgent(RecompilationMixin, SimpleAgent):
         result["recompilation_report"] = self.get_recompilation_info()
         return result
 
-    def _recompile_validation_node(
-        self, node: RecompilableValidationNodeConfigV2
-    ) -> None:
+    def _recompile_validation_node(self, node: RecompilableValidationNodeConfigV2) -> None:
         """Recompile validation node."""
         # Apply any validation rules or tool routes
         if hasattr(node, "_validation_rules"):
@@ -442,15 +424,11 @@ class MetaAgentWithRecompilation:
 
         # Register callback to track when this component needs recompilation
         callback_id = component.register_change_callback(
-            lambda change_type, details: self._handle_component_change(
-                name, change_type, details
-            )
+            lambda change_type, details: self._handle_component_change(name, change_type, details)
         )
         self.recompilation_callbacks[name] = callback_id
 
-    def _handle_component_change(
-        self, component_name: str, change_type: str, details: dict
-    ):
+    def _handle_component_change(self, component_name: str, change_type: str, details: dict):
         """Handle changes from managed components."""
         # Could trigger meta-agent recompilation logic here
         if self._should_recompile_meta_agent(change_type):
@@ -480,15 +458,12 @@ class MetaAgentWithRecompilation:
 
         for name, component in self.managed_components.items():
             if component.needs_recompilation():
-
                 # Perform recompilation
                 if hasattr(component, "recompile_if_needed"):
                     recompile_result = component.recompile_if_needed()
                     result["recompilation_details"][name] = recompile_result
                 else:
-                    component.mark_compiled(
-                        f"Component {name} recompiled by meta-agent"
-                    )
+                    component.mark_compiled(f"Component {name} recompiled by meta-agent")
                     result["recompilation_details"][name] = {"recompiled": True}
 
                 result["components_recompiled"].append(name)
@@ -590,7 +565,6 @@ def test_meta_agent_system():
 
 
 if __name__ == "__main__":
-
     try:
         # Test 1: ValidationNodeConfigV2 recompilation
         validation_node = test_validation_node_recompilation()

@@ -66,7 +66,6 @@ def test_general_api():
 def run_api_game(game_name: str, api):
     """Run a game via the API system."""
     try:
-
         # Try to get the game info
         if game_name not in api.discovered_games:
             return "Not Found"
@@ -113,9 +112,7 @@ def run_api_game(game_name: str, api):
                 "game_status": getattr(result, "game_status", "Unknown"),
                 "moves": len(getattr(result, "move_history", [])),
                 "board": (
-                    str(getattr(result, "board", None))[:100]
-                    if hasattr(result, "board")
-                    else None
+                    str(getattr(result, "board", None))[:100] if hasattr(result, "board") else None
                 ),
             }
 

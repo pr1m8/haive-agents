@@ -156,9 +156,7 @@ class TestDocumentGraderAgent:
             system_message="You are a strict document relevance evaluator.",
         )
 
-        grader = DocumentGraderAgent.create_default(
-            name="custom_grader", engine=custom_engine
-        )
+        grader = DocumentGraderAgent.create_default(name="custom_grader", engine=custom_engine)
 
         assert grader.engine == custom_engine
         assert grader.engine.temperature == 0.5

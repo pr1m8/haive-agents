@@ -28,13 +28,9 @@ def test_fallback_extraction():
     state = LTMState(
         messages=[
             HumanMessage(content="Hi! I'm Sarah and I love science fiction books."),
-            AIMessage(
-                content="Nice to meet you, Sarah! I'll remember your interest in sci-fi."
-            ),
+            AIMessage(content="Nice to meet you, Sarah! I'll remember your interest in sci-fi."),
             HumanMessage(content="I'm also a vegetarian and prefer Italian food."),
-            AIMessage(
-                content="Got it! Vegetarian with a preference for Italian cuisine."
-            ),
+            AIMessage(content="Got it! Vegetarian with a preference for Italian cuisine."),
         ]
     )
 
@@ -77,21 +73,15 @@ def test_quality_calculation_standalone():
     ]
 
     # Low quality: poor ratio
-    low_quality_memories = [
-        {"memory_id": "mem_1", "schema": "Memory", "confidence": 0.5}
-    ]
+    low_quality_memories = [{"memory_id": "mem_1", "schema": "Memory", "confidence": 0.5}]
 
     high_score = agent._calculate_extraction_quality(high_quality_memories, messages)
-    medium_score = agent._calculate_extraction_quality(
-        medium_quality_memories, messages
-    )
+    medium_score = agent._calculate_extraction_quality(medium_quality_memories, messages)
     low_score = agent._calculate_extraction_quality(low_quality_memories, messages)
 
     # Verify quality ordering
     assert high_score >= medium_score >= low_score, "Quality scores should be ordered"
-    assert (
-        0.0 <= low_score <= medium_score <= high_score <= 1.0
-    ), "Scores should be in [0,1] range"
+    assert 0.0 <= low_score <= medium_score <= high_score <= 1.0, "Scores should be in [0,1] range"
 
 
 def test_memory_schemas():
@@ -106,9 +96,7 @@ def test_memory_schemas():
 
         # Test creating instances
         Memory(content="Test memory content")
-        UserPreference(
-            category="food", preference="pizza", context="user mentioned loving pizza"
-        )
+        UserPreference(category="food", preference="pizza", context="user mentioned loving pizza")
         FactualMemory(fact="Paris is the capital of France", domain="geography")
 
         assert len(DEFAULT_MEMORY_SCHEMAS) > 0, "Should have default schemas"
@@ -118,7 +106,6 @@ def test_memory_schemas():
 
 
 if __name__ == "__main__":
-
     try:
         test_memory_schemas()
         test_quality_calculation_standalone()

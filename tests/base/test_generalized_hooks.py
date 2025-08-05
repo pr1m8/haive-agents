@@ -174,9 +174,7 @@ class TestGeneralizedHooks:
             event=HookEvent.AFTER_REFLECTION,
             agent_name="reflection_agent",
             agent_type="ReflectionAgent",
-            reflection_data={
-                "improvements": ["Add more examples", "Clarify conclusion"]
-            },
+            reflection_data={"improvements": ["Add more examples", "Clarify conclusion"]},
         )
 
         reflection_hook(after_context)
@@ -206,9 +204,7 @@ class TestGeneralizedHooks:
         """Test that hooks are executed during agent runs."""
         agent = SimpleAgent(
             name="hook_test_agent",
-            engine=AugLLMConfig(
-                system_message="You are a test agent.", temperature=0.1
-            ),
+            engine=AugLLMConfig(system_message="You are a test agent.", temperature=0.1),
         )
 
         # Track hook executions
@@ -224,9 +220,7 @@ class TestGeneralizedHooks:
 
         # Mock the underlying arun to avoid actual LLM calls
         original_arun = agent.arun
-        agent.arun = AsyncMock(
-            return_value={"messages": [{"content": "test response"}]}
-        )
+        agent.arun = AsyncMock(return_value={"messages": [{"content": "test response"}]})
 
         try:
             # Run the agent
@@ -280,9 +274,7 @@ class TestGeneralizedHooks:
 
     def test_hook_error_handling(self):
         """Test that hook errors don't break agent execution."""
-        agent = SimpleAgent(
-            name="error_test_agent", engine=AugLLMConfig(temperature=0.1)
-        )
+        agent = SimpleAgent(name="error_test_agent", engine=AugLLMConfig(temperature=0.1))
 
         # Add a hook that raises an exception
         @agent.before_run

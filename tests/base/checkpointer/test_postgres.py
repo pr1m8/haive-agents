@@ -12,9 +12,7 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "real_db: mark a test as requiring a real database connection"
     )
-    config.addinivalue_line(
-        "markers", "integration: mark a test as an integration test"
-    )
+    config.addinivalue_line("markers", "integration: mark a test as an integration test")
     config.addinivalue_line("markers", "asyncio: mark a test as an asyncio test")
 
 
@@ -43,9 +41,7 @@ def configure_logging():
     console_handler.setLevel(logging.INFO)
 
     # Create a formatter
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Test streaming metadata from conversation agents."""
 
-
 from src.haive.agents.conversation.collaberative.agent import CollaborativeConversation
 
 
@@ -36,14 +35,11 @@ def test_streaming_metadata():
             chunk_count += 1
 
             if isinstance(chunk, dict):
-
                 # Look for metadata
                 for key, value in chunk.items():
                     if "metadata" in key.lower() or key in ["__metadata__", "metadata"]:
                         metadata_chunks.append(value)
-                    elif isinstance(value, dict) and any(
-                        "metadata" in k.lower() for k in value
-                    ):
+                    elif isinstance(value, dict) and any("metadata" in k.lower() for k in value):
                         pass
                     else:
                         # Show preview of value
@@ -51,9 +47,7 @@ def test_streaming_metadata():
                             preview = value[:50] + "..." if len(value) > 50 else value
                         else:
                             preview = (
-                                str(value)[:50] + "..."
-                                if len(str(value)) > 50
-                                else str(value)
+                                str(value)[:50] + "..." if len(str(value)) > 50 else str(value)
                             )
             else:
                 pass

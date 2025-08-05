@@ -25,9 +25,7 @@ def test_meta_agent_with_simple():
     # Create a real SimpleAgent
     simple_agent = SimpleAgent(
         name="analyzer",
-        engine=AugLLMConfig(
-            temperature=0.3, system_message="You are a helpful analyzer."
-        ),
+        engine=AugLLMConfig(temperature=0.3, system_message="You are a helpful analyzer."),
     )
 
     # Wrap with MetaAgent
@@ -75,9 +73,7 @@ def test_meta_agent_with_react():
 def test_dynamic_agent_update():
     """Test dynamic agent replacement in MetaAgent."""
     # Start with SimpleAgent
-    agent1 = SimpleAgent(
-        name="v1", engine=AugLLMConfig(system_message="Version 1 agent")
-    )
+    agent1 = SimpleAgent(name="v1", engine=AugLLMConfig(system_message="Version 1 agent"))
 
     meta = MetaAgent.wrap(agent1, name="dynamic_meta")
 
@@ -141,9 +137,7 @@ def test_recompilation_tracking():
 def test_nested_meta_agents():
     """Test nesting MetaAgents (meta of meta)."""
     # Create base agent
-    base = SimpleAgent(
-        name="base", engine=AugLLMConfig(system_message="I am the base agent")
-    )
+    base = SimpleAgent(name="base", engine=AugLLMConfig(system_message="I am the base agent"))
 
     # First level meta
     meta1 = MetaAgent.wrap(base, name="meta_level_1")
@@ -167,7 +161,6 @@ def test_nested_meta_agents():
 
 
 if __name__ == "__main__":
-
     # Test 1: MetaAgent with SimpleAgent
     meta_simple = test_meta_agent_with_simple()
 

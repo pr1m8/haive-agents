@@ -43,9 +43,7 @@ async def test_graph_rebuilding():
         return
 
     # Create supervisor
-    supervisor = RebuildDynamicSupervisor(
-        name="test_rebuild_supervisor", auto_rebuild=True
-    )
+    supervisor = RebuildDynamicSupervisor(name="test_rebuild_supervisor", auto_rebuild=True)
 
     # Verify initial state
 
@@ -70,9 +68,7 @@ async def test_graph_rebuilding():
 
     # Second invocation - should rebuild graph first
 
-    await supervisor.ainvoke(
-        {"messages": [HumanMessage(content="Calculate the sum of 15 and 27")]}
-    )
+    await supervisor.ainvoke({"messages": [HumanMessage(content="Calculate the sum of 15 and 27")]})
 
     # Verify new agent was called
 
@@ -90,7 +86,6 @@ async def test_graph_rebuilding():
 
     # Verify graph structure
     if supervisor.graph:
-
         # Check if math_agent node exists
         if "math_agent" in supervisor.graph.nodes:
             pass
@@ -124,13 +119,10 @@ async def test_rebuild_edge_cases():
         supervisor.unregister_agent(name)
 
     # Should handle gracefully
-    await supervisor.ainvoke(
-        {"messages": [HumanMessage(content="Do something with no agents")]}
-    )
+    await supervisor.ainvoke({"messages": [HumanMessage(content="Do something with no agents")]})
 
 
 if __name__ == "__main__":
-
     # Run main test
     asyncio.run(test_graph_rebuilding())
 

@@ -40,8 +40,7 @@ def test_basic_case():
 
         for _field_name, field_info in engine.model_fields.items():
             if (
-                hasattr(field_info, "default")
-                and field_info.default is PydanticUndefined
+                hasattr(field_info, "default") and field_info.default is PydanticUndefined
             ) or hasattr(field_info, "default"):
                 pass
 
@@ -55,8 +54,7 @@ def test_basic_case():
         if state_schema and hasattr(state_schema, "model_fields"):
             for _field_name, field_info in state_schema.model_fields.items():
                 if (
-                    hasattr(field_info, "default")
-                    and field_info.default is PydanticUndefined
+                    hasattr(field_info, "default") and field_info.default is PydanticUndefined
                 ) or hasattr(field_info, "default"):
                     pass
 
@@ -92,7 +90,6 @@ def test_run_attempt():
 
 
 if __name__ == "__main__":
-
     basic_ok = test_basic_case()
     if basic_ok:
         test_run_attempt()

@@ -35,22 +35,17 @@ async def test_self_discover_clean():
     try:
         result = await self_discovery.ainvoke(test_input)
 
-
         if isinstance(result, dict):
-
             # Check messages
             if "messages" in result:
                 for i, msg in enumerate(result["messages"]):
                     if hasattr(msg, "content"):
                         content = (
-                            msg.content[:100] + "..."
-                            if len(msg.content) > 100
-                            else msg.content
+                            msg.content[:100] + "..." if len(msg.content) > 100 else msg.content
                         )
 
             # Check agent outputs
             if "agent_outputs" in result:
-
                 # Show each agent's output
                 for agent_name, output in result["agent_outputs"].items():
                     if isinstance(output, dict):

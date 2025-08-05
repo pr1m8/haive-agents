@@ -22,13 +22,10 @@ def test_langmem_with_anthropic():
 
     try:
         # Create agent with Anthropic provider
-        anthropic_config = LLMConfig(
-            provider="anthropic", model="claude-3-haiku-20240307"
-        )
+        anthropic_config = LLMConfig(provider="anthropic", model="claude-3-haiku-20240307")
 
         agent = LTMAgent(name="Anthropic LTM Agent", llm_config=anthropic_config)
         agent.setup_agent()
-
 
         # Create test conversation
         state = LTMState(
@@ -61,13 +58,11 @@ def test_langmem_with_anthropic():
         assert "extracted_memories" in result
         memories = result["extracted_memories"]
 
-
         # Verify we got real LangMem extraction (not fallback)
         real_langmem = any(m["source"] == "langmem_extraction" for m in memories)
         fallback_used = any(m["source"] == "fallback_extraction" for m in memories)
 
         if real_langmem:
-
             # Print detailed memory analysis
             for i, memory in enumerate(memories):
                 if isinstance(memory["content"], dict):
@@ -82,7 +77,6 @@ def test_langmem_with_anthropic():
             return memories
 
         if fallback_used:
-
             # Print error details if available
             if "processing_errors" in result:
                 pass
@@ -107,7 +101,6 @@ def test_langmem_with_groq():
         agent = LTMAgent(name="Groq LTM Agent", llm_config=groq_config)
         agent.setup_agent()
 
-
         # Create different test conversation
         state = LTMState(
             messages=[
@@ -120,9 +113,7 @@ def test_langmem_with_groq():
                 HumanMessage(
                     content="I prefer working late at night and I drink a lot of coffee to stay focused."
                 ),
-                AIMessage(
-                    content="I'll note your night owl work preferences and coffee habit."
-                ),
+                AIMessage(content="I'll note your night owl work preferences and coffee habit."),
             ]
         )
 
@@ -153,16 +144,11 @@ def test_langmem_with_deepseek():
         agent = LTMAgent(name="DeepSeek LTM Agent", llm_config=deepseek_config)
         agent.setup_agent()
 
-
         # Simple test
         state = LTMState(
             messages=[
-                HumanMessage(
-                    content="I love playing chess and reading philosophy books."
-                ),
-                AIMessage(
-                    content="I'll remember your interests in chess and philosophy."
-                ),
+                HumanMessage(content="I love playing chess and reading philosophy books."),
+                AIMessage(content="I'll remember your interests in chess and philosophy."),
             ]
         )
 
@@ -190,7 +176,6 @@ def test_langchain_direct():
 
     for provider, model in providers_to_test:
         try:
-
             if provider == "anthropic":
                 from langchain_anthropic import ChatAnthropic
 
@@ -215,7 +200,6 @@ def test_langchain_direct():
 
 
 if __name__ == "__main__":
-
     # Test direct LangChain models first
     test_langchain_direct()
 
@@ -223,7 +207,6 @@ if __name__ == "__main__":
     anthropic_result = test_langmem_with_anthropic()
     groq_result = test_langmem_with_groq()
     deepseek_result = test_langmem_with_deepseek()
-
 
     if anthropic_result:
         pass

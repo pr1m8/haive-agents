@@ -165,9 +165,7 @@ class TestKGGeneratorAgent:
 
     def test_relationship_id_generation(self, kg_agent):
         """Test relationship ID generation."""
-        rel_id = kg_agent._generate_relationship_id(
-            "person_alice", "org_company", "works_at"
-        )
+        rel_id = kg_agent._generate_relationship_id("person_alice", "org_company", "works_at")
         assert rel_id == "person_alice_works_at_org_company"
 
     def test_entity_finding(self, kg_agent):
@@ -196,9 +194,7 @@ class TestKGGeneratorAgent:
     def test_json_response_parsing(self, kg_agent):
         """Test JSON response parsing."""
         # Test valid JSON
-        response = (
-            'Here is the result: {"entities": [{"name": "Alice", "type": "person"}]}'
-        )
+        response = 'Here is the result: {"entities": [{"name": "Alice", "type": "person"}]}'
         parsed = kg_agent._parse_json_response(response)
         assert parsed is not None
         assert "entities" in parsed
@@ -369,9 +365,7 @@ async def test_kg_generator_integration():
         from haive.core.tools.store_tools import StoreManager
 
         # Create store manager (in-memory for testing)
-        store_manager = StoreManager(
-            store_type="memory", collection_name="test_kg_memories"
-        )
+        store_manager = StoreManager(store_type="memory", collection_name="test_kg_memories")
 
         # Create memory store manager
         memory_store_config = MemoryStoreConfig(
@@ -431,9 +425,7 @@ async def test_kg_generator_integration():
         )
 
         # Extract knowledge graph
-        result_kg = await kg_agent.extract_knowledge_graph_from_memories(
-            namespace=("test", "work")
-        )
+        result_kg = await kg_agent.extract_knowledge_graph_from_memories(namespace=("test", "work"))
 
         # Verify the knowledge graph was built
         assert len(result_kg.nodes) >= 2  # At least Alice and TechCorp

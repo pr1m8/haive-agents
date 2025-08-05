@@ -39,14 +39,8 @@ class GraphRecompilableSimpleAgent(RecompileMixin, SimpleAgent):
             # Core agent identity
             str(self.name),
             # Graph structure
-            str(
-                list(self.graph.nodes.keys())
-                if hasattr(self, "graph") and self.graph
-                else []
-            ),
-            str(
-                list(self.graph.edges) if hasattr(self, "graph") and self.graph else []
-            ),
+            str(list(self.graph.nodes.keys()) if hasattr(self, "graph") and self.graph else []),
+            str(list(self.graph.edges) if hasattr(self, "graph") and self.graph else []),
             # Custom nodes and parsers
             str(sorted(self._custom_nodes.keys())),
             str(sorted(self._custom_output_parsers.keys())),
@@ -90,7 +84,6 @@ class GraphRecompilableSimpleAgent(RecompileMixin, SimpleAgent):
 
         # Add custom nodes if any
         for node_name, node_info in self._custom_nodes.items():
-
             if node_info["position"] == "before_end":
                 # Add before the END node
                 graph.add_node(node_name, node_info["func"])
@@ -143,25 +136,18 @@ class GraphRecompilableSimpleAgent(RecompileMixin, SimpleAgent):
         }
 
         if self.needs_recompile:
-
             # Get current state
             result["graph_nodes_before"] = (
-                list(self.graph.nodes.keys())
-                if hasattr(self, "graph") and self.graph
-                else []
+                list(self.graph.nodes.keys()) if hasattr(self, "graph") and self.graph else []
             )
-            result["recompilation_reason"] = (
-                "Graph structure or parsing configuration changed"
-            )
+            result["recompilation_reason"] = "Graph structure or parsing configuration changed"
 
             # Rebuild graph with custom nodes and parsers
             self.graph = self.build_graph()
 
             # Update state
             result["graph_nodes_after"] = (
-                list(self.graph.nodes.keys())
-                if hasattr(self, "graph") and self.graph
-                else []
+                list(self.graph.nodes.keys()) if hasattr(self, "graph") and self.graph else []
             )
             result["after_hash"] = self._compute_state_hash()
             result["was_recompiled"] = True
@@ -179,9 +165,7 @@ class GraphFocusedMetaState(MetaStateSchema):
     """MetaStateSchema focused on graph composition recompilation."""
 
     # Graph recompilation tracking
-    graph_modification_count: int = Field(
-        default=0, description="Number of graph modifications"
-    )
+    graph_modification_count: int = Field(default=0, description="Number of graph modifications")
     custom_nodes_added: list[str] = Field(
         default_factory=list, description="Custom nodes added to graph"
     )
@@ -203,11 +187,7 @@ class GraphFocusedMetaState(MetaStateSchema):
             # Agent graph state
             str(type(self.agent).__name__ if self.agent else "None"),
             str(getattr(self.agent, "_custom_nodes", {}).keys() if self.agent else []),
-            str(
-                getattr(self.agent, "_custom_output_parsers", {}).keys()
-                if self.agent
-                else []
-            ),
+            str(getattr(self.agent, "_custom_output_parsers", {}).keys() if self.agent else []),
         ]
 
         state_str = "|".join(components)
@@ -230,9 +210,7 @@ class GraphFocusedMetaState(MetaStateSchema):
         # Mark meta state for recompilation
         self.mark_for_recompile(f"Node '{node_name}' added to embedded agent")
 
-    def add_output_parser_to_agent(
-        self, parser_name: str, parser_func: callable
-    ) -> None:
+    def add_output_parser_to_agent(self, parser_name: str, parser_func: callable) -> None:
         """Add output parser to the embedded agent and track at meta level."""
         if not self.agent:
             raise ValueError("No agent embedded in meta state")
@@ -245,9 +223,7 @@ class GraphFocusedMetaState(MetaStateSchema):
         self.graph_modification_count += 1
 
         # Mark meta state for recompilation
-        self.mark_for_recompile(
-            f"Output parser '{parser_name}' added to embedded agent"
-        )
+        self.mark_for_recompile(f"Output parser '{parser_name}' added to embedded agent")
 
     def recompile_agent_if_needed(self) -> dict[str, Any]:
         """Check and recompile embedded agent if needed."""
@@ -256,7 +232,6 @@ class GraphFocusedMetaState(MetaStateSchema):
 
         # Check if agent needs recompilation
         if hasattr(self.agent, "needs_recompile") and self.agent.needs_recompile:
-
             # Recompile agent
             result = self.agent.recompile_graph()
 

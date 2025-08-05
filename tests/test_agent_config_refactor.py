@@ -59,9 +59,7 @@ def test_agent_with_default_config():
 def test_agent_with_custom_config():
     """Test that agent uses provided AgentConfig."""
     custom_config = AgentConfig(
-        runnable_config={
-            "configurable": {"thread_id": "custom-thread", "recursion_limit": 50}
-        },
+        runnable_config={"configurable": {"thread_id": "custom-thread", "recursion_limit": 50}},
         checkpoint_mode="async",
     )
 
@@ -85,7 +83,8 @@ def test_agent_with_supabase_config():
     """Test that agent can use Supabase persistence through config."""
     supabase_config = AgentConfig(
         persistence=SupabaseCheckpointerConfig(
-            user_id="test-user", setup_needed=False  # Skip schema setup for test
+            user_id="test-user",
+            setup_needed=False,  # Skip schema setup for test
         ),
         runnable_config={"configurable": {"recursion_limit": 75}},
     )

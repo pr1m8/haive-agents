@@ -63,7 +63,6 @@ class TestRetriever(BaseRetriever):
 async def test_simple_agent():
     """Test SimpleAgent with debug=True."""
     try:
-
         from haive.agents.simple.enhanced_simple_real import SimpleAgent
 
         # Create agent
@@ -85,7 +84,6 @@ async def test_simple_agent():
 async def test_react_agent():
     """Test ReactAgent with tools and debug=True."""
     try:
-
         from haive.agents.react.enhanced_react_agent import ReactAgent
 
         # Create agent with tools
@@ -170,9 +168,7 @@ async def test_rag_agent():
         from haive.agents.rag.enhanced_simple_rag_agent import SimpleRAGAgent
 
         # Create RAG agent with test retriever
-        rag = SimpleRAGAgent(
-            name="test_rag", retriever=TestRetriever(), k=2, include_sources=True
-        )
+        rag = SimpleRAGAgent(name="test_rag", retriever=TestRetriever(), k=2, include_sources=True)
 
         # Test retrieval
         docs = await rag.retrieve("Python programming")
@@ -207,9 +203,7 @@ async def test_parallel_agent():
         )
 
         # Test with debug
-        results = await ensemble.execute_parallel(
-            "What are the key features of Python?"
-        )
+        results = await ensemble.execute_parallel("What are the key features of Python?")
         for _i, _result in enumerate(results):
             pass
 

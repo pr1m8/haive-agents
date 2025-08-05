@@ -64,9 +64,7 @@ async def test_baserag_to_simple_flow():
     ]
 
     # 2. Create BaseRAGAgent
-    embedding_config = HuggingFaceEmbeddingConfig(
-        model="sentence-transformers/all-MiniLM-L6-v2"
-    )
+    embedding_config = HuggingFaceEmbeddingConfig(model="sentence-transformers/all-MiniLM-L6-v2")
 
     base_rag = BaseRAGAgent.from_documents(
         documents=documents,

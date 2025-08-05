@@ -45,9 +45,7 @@ except Exception:
     pass
 
 try:
-    input_data = {
-        "messages": [HumanMessage(content="Create a simple web scraper in Python")]
-    }
+    input_data = {"messages": [HumanMessage(content="Create a simple web scraper in Python")]}
 
     # Run the agent (this will fail for now due to graph building issues, but shows the schema works)
     result = agent.run(input_data=input_data, debug=True)

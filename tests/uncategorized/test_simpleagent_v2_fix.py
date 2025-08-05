@@ -17,7 +17,6 @@ async def test_simpleagent_v2():
     # Create SimpleAgent v2
     agent = SimpleAgentV2(name="TestAgent_v2", engine=config)
 
-
     # Test simple query
     try:
         result = await agent.arun("Hello! What's 2+2?")

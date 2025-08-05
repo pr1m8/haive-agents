@@ -148,9 +148,7 @@ class TestStructuredOutputWithReact:
     def test_sequential_execution_pattern(self):
         """Test the sequential execution pattern of enhanced agent."""
         # Create base ReactAgent
-        base_agent = ReactAgent(
-            name="base_react", engine=AugLLMConfig(), tools=[search_tool]
-        )
+        base_agent = ReactAgent(name="base_react", engine=AugLLMConfig(), tools=[search_tool])
 
         # Enhance with structured output
         enhanced = StructuredOutputAgent.enhance_agent(
@@ -171,16 +169,12 @@ class TestStructuredOutputWithReact:
 
         # Verify each agent type
         assert isinstance(enhanced.agents["base_react"], ReactAgent)
-        assert isinstance(
-            enhanced.agents["base_react_structured_output"], StructuredOutputAgent
-        )
+        assert isinstance(enhanced.agents["base_react_structured_output"], StructuredOutputAgent)
 
     def test_state_schema_integration(self):
         """Test that state schema properly integrates structured output parsing."""
         # Create enhanced agent
-        react_agent = ReactAgent(
-            name="test_react", engine=AugLLMConfig(), tools=[calculator]
-        )
+        react_agent = ReactAgent(name="test_react", engine=AugLLMConfig(), tools=[calculator])
 
         enhanced = StructuredOutputAgent.enhance_agent(
             base_agent=react_agent, output_models=[CalculationResult, Analysis]
@@ -250,9 +244,7 @@ class TestStructuredOutputWithReact:
     async def test_async_execution_compatibility(self):
         """Test that enhanced agent works with async execution."""
         # Create async-compatible agent
-        async_react = ReactAgent(
-            name="async_react", engine=AugLLMConfig(), tools=[search_tool]
-        )
+        async_react = ReactAgent(name="async_react", engine=AugLLMConfig(), tools=[search_tool])
 
         # Enhance
         enhanced = StructuredOutputAgent.enhance_agent(

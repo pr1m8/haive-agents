@@ -86,9 +86,9 @@ async def test_baserag_with_documents():
     ]
 
     for i, query in enumerate(test_queries, 1):
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Query {i}: {query}")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         try:
             # Run with debug mode
@@ -108,9 +108,7 @@ async def test_baserag_with_documents():
                     print(f"      - Count: {len(docs)}")
                     if docs:
                         print(f"      - First doc type: {type(docs[0])}")
-                        print(
-                            f"      - First doc preview: {docs[0].page_content[:100]}..."
-                        )
+                        print(f"      - First doc preview: {docs[0].page_content[:100]}...")
                         print(f"      - First doc metadata: {docs[0].metadata}")
 
                 if "retrieved_documents" in result:
@@ -119,9 +117,7 @@ async def test_baserag_with_documents():
                     print(f"      - Count: {len(docs)}")
                     if docs:
                         print(f"      - First doc type: {type(docs[0])}")
-                        print(
-                            f"      - First doc preview: {docs[0].page_content[:100]}..."
-                        )
+                        print(f"      - First doc preview: {docs[0].page_content[:100]}...")
 
                 if "output" in result:
                     print("\n   'output' field:")
@@ -143,15 +139,11 @@ async def test_baserag_with_documents():
                             "metadata": obj.metadata,
                         }
                     elif isinstance(obj, list) and obj and isinstance(obj[0], Document):
-                        return [
-                            serialize_result(doc) for doc in obj[:2]
-                        ]  # First 2 docs
+                        return [serialize_result(doc) for doc in obj[:2]]  # First 2 docs
                     elif isinstance(obj, dict):
                         return {k: serialize_result(v) for k, v in obj.items()}
                     else:
-                        return (
-                            str(obj)[:200] + "..." if len(str(obj)) > 200 else str(obj)
-                        )
+                        return str(obj)[:200] + "..." if len(str(obj)) > 200 else str(obj)
 
                 print(json.dumps(serialize_result(result), indent=2))
 
@@ -184,9 +176,7 @@ async def test_baserag_with_documents():
     # Check retriever-specific attributes
     if hasattr(base_rag, "engine"):
         print("\n   Engine attributes:")
-        engine_attrs = [
-            attr for attr in dir(base_rag.engine) if not attr.startswith("_")
-        ]
+        engine_attrs = [attr for attr in dir(base_rag.engine) if not attr.startswith("_")]
         for attr in ["k", "top_k", "similarity_threshold", "score_threshold"]:
             if attr in engine_attrs:
                 print(f"      - {attr}: {getattr(base_rag.engine, attr, 'N/A')}")

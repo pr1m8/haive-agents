@@ -14,9 +14,7 @@ def test_agent_schema_composer():
     # Check the agents dict
     agents_dict = self_discovery.agents
     for _name, agent in agents_dict.items():
-        if hasattr(agent, "state_schema") and hasattr(
-            agent.state_schema, "model_fields"
-        ):
+        if hasattr(agent, "state_schema") and hasattr(agent.state_schema, "model_fields"):
             pass
         if hasattr(agent, "engine"):
             pass
@@ -26,9 +24,7 @@ def test_agent_schema_composer():
     # Expected composed fields
     expected_fields = set()
     for _name, agent in agents_dict.items():
-        if hasattr(agent, "state_schema") and hasattr(
-            agent.state_schema, "model_fields"
-        ):
+        if hasattr(agent, "state_schema") and hasattr(agent.state_schema, "model_fields"):
             agent_fields = agent.state_schema.model_fields.keys()
             expected_fields.update(agent_fields)
 

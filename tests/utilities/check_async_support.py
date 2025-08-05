@@ -33,7 +33,6 @@ async def test_async_persistence():
             pool_config={"min_size": 1, "max_size": 2},
         )
 
-
         # Test async checkpointer
 
         config = PostgresCheckpointerConfig(
@@ -52,7 +51,6 @@ async def test_async_persistence():
         has_aget = hasattr(checkpointer, "aget")
         has_alist = hasattr(checkpointer, "alist")
 
-
         # Check ConnectionManager async support
 
         # Read the connection.py file to verify
@@ -63,7 +61,6 @@ async def test_async_persistence():
 
         sync_count = content.count('"prepare_threshold": 0')
         none_count = content.count('"prepare_threshold": None')
-
 
         if none_count > 0:
             pass
@@ -87,7 +84,6 @@ def check_langgraph_modifications():
 
     for file_path in langgraph_files:
         if os.path.exists(file_path):
-
             # Check for prepare_threshold
             try:
                 with open(file_path) as f:
@@ -97,7 +93,6 @@ def check_langgraph_modifications():
                     # Find the line
                     for i, line in enumerate(content.split("\n")):
                         if "prepare_threshold" in line:
-
                             if "prepare_threshold=0" in line:
                                 pass
                             elif "prepare_threshold=None" in line:
@@ -119,7 +114,6 @@ def main():
 
     # Check LangGraph modifications
     check_langgraph_modifications()
-
 
 
 if __name__ == "__main__":

@@ -24,9 +24,7 @@ class ComplexModel(BaseModel):
 class TestState(BaseModel):
     messages: list[BaseMessage] = Field(default_factory=list)
     simple_field: str = "test"
-    nested_model: NestedModel = Field(
-        default_factory=lambda: NestedModel(value="default", count=0)
-    )
+    nested_model: NestedModel = Field(default_factory=lambda: NestedModel(value="default", count=0))
     complex_model: ComplexModel | None = None
 
     # This is what's causing issues - storing a TYPE not an instance
@@ -44,9 +42,7 @@ def test_node(state: TestState):
     return {
         "messages": new_messages,
         "nested_model": new_nested,
-        "complex_model": ComplexModel(
-            name="test", nested=new_nested, items=["a", "b", "c"]
-        ),
+        "complex_model": ComplexModel(name="test", nested=new_nested, items=["a", "b", "c"]),
     }
 
 

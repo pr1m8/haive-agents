@@ -21,7 +21,8 @@ planner_aug = AugLLMConfig(
 planner_simple_agent = SimpleAgent(engine=planner_aug)
 
 planner_with_plan_state = SimpleAgent(
-    engine=planner_aug, state_schema=PlanExecuteState  # Specify the state schema
+    engine=planner_aug,
+    state_schema=PlanExecuteState,  # Specify the state schema
 )
 for field in ["context", "final_answer", "execution_results", "started_at"]:
     has_field = field in planner_with_plan_state.state_schema.model_fields

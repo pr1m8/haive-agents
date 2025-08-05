@@ -43,9 +43,7 @@ class TestBasicSequentialRAG:
 
         # Check agent types
         agent_names = list(rag.agents.keys())
-        assert any(
-            "retriever" in name.lower() or "rag" in name.lower() for name in agent_names
-        )
+        assert any("retriever" in name.lower() or "rag" in name.lower() for name in agent_names)
         assert any("answer" in name.lower() for name in agent_names)
 
     def test_rag_creation_empty_documents(self):
@@ -59,9 +57,7 @@ class TestBasicSequentialRAG:
         if not conversation_documents:
             pytest.skip("No conversation_documents available")
 
-        rag = BasicSequentialRAG.from_documents(
-            conversation_documents[:3]
-        )  # Use subset for speed
+        rag = BasicSequentialRAG.from_documents(conversation_documents[:3])  # Use subset for speed
 
         # Test the run_rag convenience method
         query = "Tell me about restaurants"
@@ -90,9 +86,7 @@ class TestBasicSequentialRAG:
         # Test with standard input format
         input_data = {
             "query": "What restaurants are mentioned?",
-            "messages": [
-                {"role": "user", "content": "What restaurants are mentioned?"}
-            ],
+            "messages": [{"role": "user", "content": "What restaurants are mentioned?"}],
         }
 
         try:

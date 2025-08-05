@@ -16,12 +16,8 @@ class TaskItem(BaseModel):
 
     task: str = Field(description="The task description")
     priority: str = Field(description="Priority level", pattern="^(high|medium|low)$")
-    estimated_hours: float = Field(
-        description="Estimated hours to complete", ge=0.5, le=40.0
-    )
-    assigned_to: Optional[str] = Field(
-        default=None, description="Person assigned to the task"
-    )
+    estimated_hours: float = Field(description="Estimated hours to complete", ge=0.5, le=40.0)
+    assigned_to: Optional[str] = Field(default=None, description="Person assigned to the task")
 
 
 class ProjectPlan(BaseModel):
@@ -29,9 +25,7 @@ class ProjectPlan(BaseModel):
 
     project_name: str = Field(description="Name of the project")
     objective: str = Field(description="Main project objective")
-    tasks: List[TaskItem] = Field(
-        description="List of tasks", min_items=3, max_items=10
-    )
+    tasks: List[TaskItem] = Field(description="List of tasks", min_items=3, max_items=10)
     timeline: str = Field(description="Overall timeline estimate")
     total_hours: float = Field(description="Total estimated hours")
     risks: List[str] = Field(description="Identified risks", min_items=1, max_items=5)
@@ -43,9 +37,7 @@ class FindingItem(BaseModel):
     """A single finding from analysis."""
 
     finding: str = Field(description="The finding description")
-    impact: str = Field(
-        description="Impact level", pattern="^(critical|high|medium|low)$"
-    )
+    impact: str = Field(description="Impact level", pattern="^(critical|high|medium|low)$")
     evidence: str = Field(description="Supporting evidence")
     recommendation: str = Field(description="Recommended action")
 
@@ -55,16 +47,10 @@ class AnalysisReport(BaseModel):
 
     subject: str = Field(description="What was analyzed")
     summary: str = Field(description="Executive summary")
-    findings: List[FindingItem] = Field(
-        description="Key findings", min_items=2, max_items=8
-    )
+    findings: List[FindingItem] = Field(description="Key findings", min_items=2, max_items=8)
     conclusion: str = Field(description="Overall conclusion")
-    next_steps: List[str] = Field(
-        description="Recommended next steps", min_items=2, max_items=5
-    )
-    confidence_score: float = Field(
-        description="Confidence in analysis", ge=0.0, le=1.0
-    )
+    next_steps: List[str] = Field(description="Recommended next steps", min_items=2, max_items=5)
+    confidence_score: float = Field(description="Confidence in analysis", ge=0.0, le=1.0)
 
 
 async def test_project_planning():
@@ -203,9 +189,7 @@ async def test_simple_list_output():
         """A list of ideas."""
 
         topic: str = Field(description="Topic for the ideas")
-        ideas: List[str] = Field(
-            description="List of creative ideas", min_items=5, max_items=10
-        )
+        ideas: List[str] = Field(description="List of creative ideas", min_items=5, max_items=10)
         best_idea: str = Field(description="The best idea from the list")
 
     # Simple prompt
@@ -227,9 +211,7 @@ async def test_simple_list_output():
     )
 
     # Generate ideas
-    result = await idea_agent.arun(
-        {"topic": "team building activities for remote workers"}
-    )
+    result = await idea_agent.arun({"topic": "team building activities for remote workers"})
 
     print(f"💡 Ideas for: {result.topic}")
     print(f"\nGenerated {len(result.ideas)} ideas:")

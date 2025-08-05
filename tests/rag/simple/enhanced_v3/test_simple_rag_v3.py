@@ -81,21 +81,15 @@ def test_simple_rag_v3_from_documents():
 
     # Create test documents
     documents = [
-        Document(
-            page_content="Machine learning is a subset of artificial intelligence."
-        ),
-        Document(
-            page_content="Deep learning uses neural networks with multiple layers."
-        ),
+        Document(page_content="Machine learning is a subset of artificial intelligence."),
+        Document(page_content="Deep learning uses neural networks with multiple layers."),
         Document(
             page_content="Natural language processing enables computers to understand human language."
         ),
     ]
 
     # Create proper embedding config
-    embedding_config = HuggingFaceEmbeddingConfig(
-        model="sentence-transformers/all-MiniLM-L6-v2"
-    )
+    embedding_config = HuggingFaceEmbeddingConfig(model="sentence-transformers/all-MiniLM-L6-v2")
 
     # Create from documents
     rag = SimpleRAGV3.from_documents(
@@ -111,9 +105,7 @@ def test_simple_rag_v3_from_documents():
 def test_simple_rag_v3_from_vectorstore(vector_store_config):
     """Test creating SimpleRAG V3 from existing vector store."""
     # Create from vector store
-    rag = SimpleRAGV3.from_vectorstore(
-        vector_store_config=vector_store_config, name="vs_rag"
-    )
+    rag = SimpleRAGV3.from_vectorstore(vector_store_config=vector_store_config, name="vs_rag")
 
     # Verify creation
     assert rag.name == "vs_rag"
@@ -144,9 +136,7 @@ def test_simple_rag_v3_performance_mode(vector_store_config):
 def test_simple_rag_v3_debug_mode(vector_store_config):
     """Test SimpleRAG V3 with debug mode enabled."""
     # Create with debug mode
-    rag = SimpleRAGV3(
-        name="debug_rag", vector_store_config=vector_store_config, debug_mode=True
-    )
+    rag = SimpleRAGV3(name="debug_rag", vector_store_config=vector_store_config, debug_mode=True)
 
     # Verify debug settings
     assert rag.debug_mode

@@ -10,12 +10,12 @@ from haive.core.models.llm.base import AzureLLMConfig, DeepSeekLLMConfig
 
 async def test_with_deepseek():
     """Test execution with DeepSeek LLM."""
-    config = AugLLMConfig(
-        temperature=0.1, max_tokens=50, llm_config=DeepSeekLLMConfig()
-    )
+    config = AugLLMConfig(temperature=0.1, max_tokens=50, llm_config=DeepSeekLLMConfig())
 
     agent = SimpleAgentV3(
-        name="deepseek_agent", engine=config, debug=False  # Less verbose
+        name="deepseek_agent",
+        engine=config,
+        debug=False,  # Less verbose
     )
 
     try:

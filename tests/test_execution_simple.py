@@ -30,9 +30,7 @@ async def test_simple_execution():
 
     agent2 = SimpleAgent(
         name="agent2",
-        engine=AugLLMConfig(
-            system_message="You are agent 2. Respond to the previous message."
-        ),
+        engine=AugLLMConfig(system_message="You are agent 2. Respond to the previous message."),
     )
 
     # Create multi-agent
@@ -67,9 +65,7 @@ async def test_simple_execution():
         return True
 
     except Exception as e:
-        console.print(
-            f"\n[bold red]Execution failed: {type(e).__name__}: {e!s}[/bold red]"
-        )
+        console.print(f"\n[bold red]Execution failed: {type(e).__name__}: {e!s}[/bold red]")
         import traceback
 
         console.print(traceback.format_exc())

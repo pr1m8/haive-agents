@@ -98,9 +98,7 @@ class TestPlanAndExecuteAgent:
 
     def test_agent_with_tools(self):
         """Test agent can be created with tools."""
-        agent = PlanAndExecuteAgent(
-            name="test_agent_with_tools", tools=[search, calculate]
-        )
+        agent = PlanAndExecuteAgent(name="test_agent_with_tools", tools=[search, calculate])
 
         # Check tools are accessible (would be used by executors)
         assert hasattr(agent, "tools")

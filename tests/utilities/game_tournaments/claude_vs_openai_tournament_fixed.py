@@ -35,7 +35,6 @@ def save_tournament_result(game_name: str, winner: str, details: dict, matchup: 
         json.dump(result, f, indent=2, default=str)
 
 
-
 def create_initial_state(game_name: str, state_class):
     """Create proper initial state for each game type."""
     if game_name == "mastermind":
@@ -55,9 +54,7 @@ def create_initial_state(game_name: str, state_class):
         return state_class()
 
 
-def create_claude_openai_config(
-    game_config_class, claude_player: str, openai_player: str
-):
+def create_claude_openai_config(game_config_class, claude_player: str, openai_player: str):
     """Create game config with Claude vs OpenAI setup."""
     config = game_config_class()
 
@@ -127,7 +124,6 @@ def run_tournament_game(
     matchup = "claude_vs_openai"
 
     try:
-
         # Create config with consistent LLM setup
         config = create_claude_openai_config(config_class, claude_player, openai_player)
 
@@ -137,7 +133,6 @@ def run_tournament_game(
         # Get initial state using proper method
         state_class = config.state_schema
         initial_state = create_initial_state(game_name, state_class)
-
 
         try:
             # Run game with limited recursion
@@ -340,14 +335,12 @@ def main():
         elif winner and winner != "Failed":
             other_results += 1
 
-
     if claude_wins > openai_wins:
         pass
     elif openai_wins > claude_wins:
         pass
     else:
         pass
-
 
 
 if __name__ == "__main__":

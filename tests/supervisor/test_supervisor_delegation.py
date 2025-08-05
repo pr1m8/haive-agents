@@ -50,8 +50,8 @@ def text_analyzer(text: str) -> str:
 - Character count: {chars}
 - Word count: {len(words)}
 - Sentence count: {len(sentences)}
-- Average words per sentence: {len(words)/max(len(sentences), 1):.1f}
-- Most common words: {', '.join(sorted(set(words), key=words.count, reverse=True)[:3])}
+- Average words per sentence: {len(words) / max(len(sentences), 1):.1f}
+- Most common words: {", ".join(sorted(set(words), key=words.count, reverse=True)[:3])}
 """
     return analysis
 
@@ -186,9 +186,7 @@ async def test_real_delegation():
 
         # Run test cases
         for i, test_case in enumerate(test_cases, 1):
-            console.print(
-                f"\n[bold green]🧪 Test {i}: {test_case['name']}[/bold green]"
-            )
+            console.print(f"\n[bold green]🧪 Test {i}: {test_case['name']}[/bold green]")
             console.print(f"[dim]Request: {test_case['message']}[/dim]")
 
             try:
@@ -206,9 +204,7 @@ async def test_real_delegation():
                 available_agents = getattr(result, "available_agents", [])
 
                 console.print(f"[cyan]📍 Routing Decision:[/cyan] {next_agent}")
-                console.print(
-                    f"[cyan]🎯 Available Agents:[/cyan] {', '.join(available_agents)}"
-                )
+                console.print(f"[cyan]🎯 Available Agents:[/cyan] {', '.join(available_agents)}")
 
                 # Show final messages
                 final_messages = getattr(result, "messages", [])
@@ -305,12 +301,8 @@ async def test_supervisor_tool_usage():
         graph = supervisor.build_graph()
         compiled_graph = graph.compile()
 
-        creation_request = (
-            "Create a weather agent that can check current weather conditions"
-        )
-        initial_state = SupervisorState(
-            messages=[HumanMessage(content=creation_request)]
-        )
+        creation_request = "Create a weather agent that can check current weather conditions"
+        initial_state = SupervisorState(messages=[HumanMessage(content=creation_request)])
 
         result = await compiled_graph.ainvoke(initial_state)
 

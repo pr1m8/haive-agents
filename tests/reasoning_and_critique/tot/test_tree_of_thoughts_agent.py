@@ -118,9 +118,7 @@ async def test_tree_of_thoughts_beam_search():
     agent = create_tree_of_thoughts_agent(beam_size=3)
 
     # Test with a problem that should generate diverse candidates
-    problem = (
-        "Design a simple two-player game that can be played with just pencil and paper"
-    )
+    problem = "Design a simple two-player game that can be played with just pencil and paper"
 
     result = await agent.solve_problem(problem)
 
@@ -133,7 +131,6 @@ async def test_tree_of_thoughts_beam_search():
 if __name__ == "__main__":
     # Run tests directly
     async def run_tests():
-
         await test_tree_of_thoughts_agent_creation()
 
         await test_tree_of_thoughts_solve_simple_math()

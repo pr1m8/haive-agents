@@ -241,7 +241,6 @@ def create_working_plan_execute_with_search(
 # ============================================================================
 
 if __name__ == "__main__":
-
     # Create working plan execute agent
     agent = create_working_plan_execute()
 

@@ -89,16 +89,12 @@ class TestMetaStateWithAgents:
     @pytest.fixture
     def react_agent_with_tools(self) -> ReactAgent:
         """Create a ReactAgent with tools for testing."""
-        config = AugLLMConfig(
-            name="react_llm", temperature=0.1, tools=[calculator, get_weather]
-        )
+        config = AugLLMConfig(name="react_llm", temperature=0.1, tools=[calculator, get_weather])
 
         # Use memory persistence for testing
         memory_persistence = MemoryCheckpointerConfig()
 
-        agent = ReactAgent(
-            name="react_test_agent", engine=config, persistence=memory_persistence
-        )
+        agent = ReactAgent(name="react_test_agent", engine=config, persistence=memory_persistence)
 
         return agent
 
@@ -110,9 +106,7 @@ class TestMetaStateWithAgents:
         # Verify fields exist
         assert hasattr(meta_state, "agent")
         assert hasattr(meta_state, "agent_state")
-        assert hasattr(
-            meta_state, "meta_context"
-        )  # Fixed: field is meta_context, not meta
+        assert hasattr(meta_state, "meta_context")  # Fixed: field is meta_context, not meta
         assert hasattr(meta_state, "execute_agent")
 
         # Verify initial values
@@ -163,9 +157,7 @@ class TestMetaStateWithAgents:
         meta_state.meta_context["execution_count"] += 1
         assert meta_state.meta_context["execution_count"] == 1
 
-    def test_meta_state_with_multiple_agent_types(
-        self, simple_agent, react_agent_with_tools
-    ):
+    def test_meta_state_with_multiple_agent_types(self, simple_agent, react_agent_with_tools):
         """Test that MetaStateSchema can hold different agent types."""
         # Test with SimpleAgent
         meta_state1 = MetaStateSchema(agent=simple_agent)
@@ -212,9 +204,7 @@ class TestMetaStateWithAgents:
         assert meta_state2.agent_state["user"] == "Bob"
 
     @pytest.mark.asyncio
-    async def test_nested_agent_execution_pattern(
-        self, simple_agent, react_agent_with_tools
-    ):
+    async def test_nested_agent_execution_pattern(self, simple_agent, react_agent_with_tools):
         """Test a pattern where one agent coordinates another through meta state."""
         # Create a coordinator pattern
         coordinator_state = MetaStateSchema(
@@ -301,9 +291,7 @@ class TestMetaStatePostgresPersistence:
         return agent
 
     @pytest.mark.asyncio
-    async def test_meta_state_with_postgres_persistence(
-        self, simple_agent_v2_with_postgres
-    ):
+    async def test_meta_state_with_postgres_persistence(self, simple_agent_v2_with_postgres):
         """Test that MetaStateSchema works with PostgreSQL persistence via our SecretStr serializer."""
         # Create meta state with PostgreSQL-backed agent
         meta_state = MetaStateSchema(
@@ -322,9 +310,7 @@ class TestMetaStatePostgresPersistence:
             # This should work now with our SecretStr serializer
             serialized = meta_state.model_dump()
             assert isinstance(serialized, dict)
-            logger.info(
-                "✅ MetaStateSchema with PostgreSQL agent serialized successfully"
-            )
+            logger.info("✅ MetaStateSchema with PostgreSQL agent serialized successfully")
 
             # Verify the agent field is handled properly
             assert "agent" in serialized
@@ -338,9 +324,7 @@ class TestMetaStatePostgresPersistence:
                 pytest.fail(f"Unexpected serialization error: {e}")
 
     @pytest.mark.asyncio
-    async def test_meta_state_execution_with_postgres_agent(
-        self, simple_agent_v2_with_postgres
-    ):
+    async def test_meta_state_execution_with_postgres_agent(self, simple_agent_v2_with_postgres):
         """Test executing an agent with PostgreSQL persistence through MetaStateSchema."""
         # Create meta state
         meta_state = MetaStateSchema(
@@ -484,14 +468,10 @@ class TestDynamicToolRouting:
             def __init__(self, *args, **kwargs):
                 super().__init__(*args, **kwargs)
                 # Register callback for tool changes
-                self.register_route_change_callback(
-                    self._on_tool_route_change, "main_callback"
-                )
+                self.register_route_change_callback(self._on_tool_route_change, "main_callback")
                 self.tool_change_log = []
 
-            def _on_tool_route_change(
-                self, tool_name: str, action: str, old_route: str | None
-            ):
+            def _on_tool_route_change(self, tool_name: str, action: str, old_route: str | None):
                 """Handle tool route changes."""
                 self.tool_change_log.append(
                     {"tool": tool_name, "action": action, "old_route": old_route}
@@ -559,13 +539,9 @@ class TestCompleteIntegration:
 
             def __init__(self, *args, **kwargs):
                 super().__init__(*args, **kwargs)
-                self.register_route_change_callback(
-                    self._on_tool_change, "recompile_trigger"
-                )
+                self.register_route_change_callback(self._on_tool_change, "recompile_trigger")
 
-            def _on_tool_change(
-                self, tool_name: str, action: str, old_route: str | None
-            ):
+            def _on_tool_change(self, tool_name: str, action: str, old_route: str | None):
                 """Mark for recompilation on tool changes."""
                 self.mark_for_recompile(f"Tool {action}: {tool_name}")
 
@@ -624,9 +600,7 @@ if __name__ == "__main__":
     # Create fixtures
     config = AugLLMConfig(name="test_llm", temperature=0.1)
     memory_persistence = MemoryCheckpointerConfig()
-    simple_agent = SimpleAgent(
-        name="test_agent", engine=config, persistence=memory_persistence
-    )
+    simple_agent = SimpleAgent(name="test_agent", engine=config, persistence=memory_persistence)
 
     # Run embedding test
     test_instance.test_embed_agent_in_meta_state(simple_agent)

@@ -76,9 +76,7 @@ class TestSupervisorStateModels:
 
     def test_serialized_agent_creation(self, research_agent):
         """Test agent serialization and deserialization."""
-        metadata = AgentMetadata(
-            name="research_agent", description="Research specialist"
-        )
+        metadata = AgentMetadata(name="research_agent", description="Research specialist")
 
         # Create serialized agent
         serialized = SerializedAgent.from_agent(research_agent, metadata)
@@ -108,9 +106,7 @@ class TestSupervisorStateModels:
     def test_state_agent_registration(self, research_agent):
         """Test agent registration in state."""
         state = SupervisorState()
-        metadata = AgentMetadata(
-            name="research_agent", description="Research specialist"
-        )
+        metadata = AgentMetadata(name="research_agent", description="Research specialist")
 
         # Register agent
         state.register_agent(research_agent, metadata)
@@ -241,9 +237,7 @@ class TestBaseSupervisor:
         assert metadata.description == "Research specialist"
         assert metadata.capabilities == ["research", "web_search"]
 
-    def test_multiple_agent_registration(
-        self, supervisor_engine, research_agent, coding_agent
-    ):
+    def test_multiple_agent_registration(self, supervisor_engine, research_agent, coding_agent):
         """Test registering multiple agents."""
         supervisor = BaseSupervisor(name="test_supervisor", engine=supervisor_engine)
 
@@ -327,9 +321,7 @@ class TestDynamicSupervisor:
 
     def test_dynamic_supervisor_initialization(self, supervisor_engine):
         """Test DynamicSupervisor initialization."""
-        supervisor = DynamicSupervisor(
-            name="dynamic_supervisor", engine=supervisor_engine
-        )
+        supervisor = DynamicSupervisor(name="dynamic_supervisor", engine=supervisor_engine)
 
         assert isinstance(supervisor.get_state(), DynamicSupervisorState)
         state = supervisor.get_state()
@@ -338,9 +330,7 @@ class TestDynamicSupervisor:
 
     def test_agent_template_management(self, supervisor_engine):
         """Test agent template functionality."""
-        supervisor = DynamicSupervisor(
-            name="dynamic_supervisor", engine=supervisor_engine
-        )
+        supervisor = DynamicSupervisor(name="dynamic_supervisor", engine=supervisor_engine)
 
         # Add template
         template = {
@@ -357,9 +347,7 @@ class TestDynamicSupervisor:
 
     def test_agent_limit_management(self, supervisor_engine):
         """Test agent limit functionality."""
-        supervisor = DynamicSupervisor(
-            name="dynamic_supervisor", engine=supervisor_engine
-        )
+        supervisor = DynamicSupervisor(name="dynamic_supervisor", engine=supervisor_engine)
 
         # Change limit
         supervisor.set_agent_limit(5)
@@ -368,9 +356,7 @@ class TestDynamicSupervisor:
 
     def test_creation_enable_disable(self, supervisor_engine):
         """Test enabling/disabling agent creation."""
-        supervisor = DynamicSupervisor(
-            name="dynamic_supervisor", engine=supervisor_engine
-        )
+        supervisor = DynamicSupervisor(name="dynamic_supervisor", engine=supervisor_engine)
 
         # Disable creation
         supervisor.enable_agent_creation(False)
@@ -436,14 +422,10 @@ class TestStateValidators:
 class TestIntegrationScenarios:
     """End-to-end integration tests."""
 
-    def test_complete_supervisor_workflow(
-        self, supervisor_engine, research_agent, coding_agent
-    ):
+    def test_complete_supervisor_workflow(self, supervisor_engine, research_agent, coding_agent):
         """Test complete supervisor workflow from registration to status."""
         # Create supervisor
-        supervisor = BaseSupervisor(
-            name="integration_supervisor", engine=supervisor_engine
-        )
+        supervisor = BaseSupervisor(name="integration_supervisor", engine=supervisor_engine)
 
         # Register multiple agents
         supervisor.register_agent(
@@ -488,9 +470,7 @@ class TestIntegrationScenarios:
 
     def test_dynamic_supervisor_full_workflow(self, supervisor_engine):
         """Test dynamic supervisor with templates and limits."""
-        supervisor = DynamicSupervisor(
-            name="dynamic_integration", engine=supervisor_engine
-        )
+        supervisor = DynamicSupervisor(name="dynamic_integration", engine=supervisor_engine)
 
         # Configure supervisor
         supervisor.set_agent_limit(3)

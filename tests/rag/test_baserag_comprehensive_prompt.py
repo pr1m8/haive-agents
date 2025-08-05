@@ -85,9 +85,7 @@ class DocumentReference(BaseModel):
     """Reference to a specific document used in the answer."""
 
     source_name: str = Field(description="Name or identifier of the source document")
-    relevance_score: float = Field(
-        description="How relevant this document was to the answer (0-1)"
-    )
+    relevance_score: float = Field(description="How relevant this document was to the answer (0-1)")
     key_points: List[str] = Field(description="Key points extracted from this document")
 
 
@@ -96,18 +94,14 @@ class AnswerSection(BaseModel):
 
     heading: str = Field(description="Section heading")
     content: str = Field(description="Section content")
-    supporting_sources: List[str] = Field(
-        description="Sources that support this section"
-    )
+    supporting_sources: List[str] = Field(description="Sources that support this section")
 
 
 class ComprehensiveRAGAnswer(BaseModel):
     """Comprehensive structured answer from RAG system."""
 
     # Core answer components
-    direct_answer: str = Field(
-        description="Brief, direct answer to the question (1-2 sentences)"
-    )
+    direct_answer: str = Field(description="Brief, direct answer to the question (1-2 sentences)")
 
     detailed_explanation: str = Field(
         description="Comprehensive explanation with evidence from documents"
@@ -123,9 +117,7 @@ class ComprehensiveRAGAnswer(BaseModel):
         description="Primary documents used for the answer"
     )
 
-    all_sources_used: List[str] = Field(
-        description="List of all source documents referenced"
-    )
+    all_sources_used: List[str] = Field(description="List of all source documents referenced")
 
     # Quality indicators
     confidence_score: float = Field(
@@ -138,9 +130,7 @@ class ComprehensiveRAGAnswer(BaseModel):
     )
 
     # Additional insights
-    key_findings: List[str] = Field(
-        description="Key findings or insights from the analysis"
-    )
+    key_findings: List[str] = Field(description="Key findings or insights from the analysis")
 
     information_gaps: Optional[List[str]] = Field(
         default=None,
@@ -218,9 +208,7 @@ async def test_comprehensive_rag_flow():
 
     # 2. Create BaseRAGAgent
     print("1. Creating BaseRAGAgent...")
-    embedding_config = HuggingFaceEmbeddingConfig(
-        model="sentence-transformers/all-MiniLM-L6-v2"
-    )
+    embedding_config = HuggingFaceEmbeddingConfig(model="sentence-transformers/all-MiniLM-L6-v2")
 
     base_rag = BaseRAGAgent.from_documents(
         documents=documents,
@@ -259,10 +247,10 @@ async def test_comprehensive_rag_flow():
     ]
 
     for i, question_data in enumerate(test_questions, 1):
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print(f"Question {i}: {question_data['query']}")
         print(f"Context: {question_data['context']}")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
 
         # Step 1: Retrieve documents
         print("Retrieving relevant documents...")
@@ -270,9 +258,7 @@ async def test_comprehensive_rag_flow():
 
         print(f"Retrieved {len(retrieval_result.retrieved_documents)} documents:")
         for doc in retrieval_result.retrieved_documents:
-            print(
-                f"  - {doc.metadata.get('source', 'Unknown')}: {doc.page_content[:100]}..."
-            )
+            print(f"  - {doc.metadata.get('source', 'Unknown')}: {doc.page_content[:100]}...")
 
         # Format retrieved documents
         retrieved_docs_text = "\n\n".join(

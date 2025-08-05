@@ -27,23 +27,17 @@ async def test_sequence_inference():
     # Create agents with clear naming patterns
     planner = SimpleAgent(
         name="planner",
-        engine=AugLLMConfig(
-            prompt_template="Create a plan for: {input}", temperature=0.7
-        ),
+        engine=AugLLMConfig(prompt_template="Create a plan for: {input}", temperature=0.7),
     )
 
     executor = SimpleAgent(
         name="executor",
-        engine=AugLLMConfig(
-            prompt_template="Execute this plan: {input}", temperature=0.3
-        ),
+        engine=AugLLMConfig(prompt_template="Execute this plan: {input}", temperature=0.3),
     )
 
     reviewer = SimpleAgent(
         name="reviewer",
-        engine=AugLLMConfig(
-            prompt_template="Review the execution: {input}", temperature=0.1
-        ),
+        engine=AugLLMConfig(prompt_template="Review the execution: {input}", temperature=0.1),
     )
 
     # Create multi-agent with inference (default mode)
@@ -137,19 +131,14 @@ async def test_branch_configuration():
 async def test_manual_sequence_override():
     """Test manual sequence setting."""
     # Create agents
-    step1 = SimpleAgent(
-        name="step1", engine=AugLLMConfig(prompt_template="Step 1: {input}")
-    )
-    step2 = SimpleAgent(
-        name="step2", engine=AugLLMConfig(prompt_template="Step 2: {input}")
-    )
-    step3 = SimpleAgent(
-        name="step3", engine=AugLLMConfig(prompt_template="Step 3: {input}")
-    )
+    step1 = SimpleAgent(name="step1", engine=AugLLMConfig(prompt_template="Step 1: {input}"))
+    step2 = SimpleAgent(name="step2", engine=AugLLMConfig(prompt_template="Step 2: {input}"))
+    step3 = SimpleAgent(name="step3", engine=AugLLMConfig(prompt_template="Step 3: {input}"))
 
     # Create multi-agent
     multi_agent = MultiAgent.create(
-        agents=[step3, step1, step2], name="manual_sequence_test"  # Out of order
+        agents=[step3, step1, step2],
+        name="manual_sequence_test",  # Out of order
     )
 
     # Set manual sequence

@@ -41,10 +41,7 @@ def test_supervisor_factory():
     }
 
     # Create supervisor with initial agents
-    supervisor = create_dynamic_supervisor(
-        name="factory_supervisor", initial_agents=initial_agents
-    )
-
+    supervisor = create_dynamic_supervisor(name="factory_supervisor", initial_agents=initial_agents)
 
     # Test agent tools
     tools = supervisor.get_agent_tools()
@@ -65,12 +62,8 @@ def test_dynamic_agent_management():
     # Add agents dynamically
     supervisor.add_agent("math_agent", agents["math_agent"], "Math specialist", True)
 
-
     # Add another agent
-    supervisor.add_agent(
-        "search_agent", agents["search_agent"], "Search specialist", False
-    )
-
+    supervisor.add_agent("search_agent", agents["search_agent"], "Search specialist", False)
 
     # Remove an agent
     removed = supervisor.remove_agent("search_agent")
@@ -95,7 +88,6 @@ async def test_supervisor_reasoning():
         name="reasoning_supervisor", initial_agents=initial_agents
     )
 
-
     # Test with a simple math task
     try:
         # Create initial state
@@ -107,7 +99,6 @@ async def test_supervisor_reasoning():
 
         # Test routing decision
         routing = supervisor._route_supervisor_decision(state)
-
 
     except Exception as e:
         raise
@@ -122,7 +113,6 @@ def test_graph_structure():
 
     # Check if graph is built
     if hasattr(supervisor, "_app") and supervisor._app:
-
         # Get graph info if available
         try:
             # Try to get node information
@@ -165,7 +155,6 @@ def test_state_integration():
 
 
 if __name__ == "__main__":
-
     try:
         # Test basic functionality
         supervisor1 = test_supervisor_creation()
@@ -183,8 +172,6 @@ if __name__ == "__main__":
             reasoning_supervisor = asyncio.run(test_supervisor_reasoning())
         except Exception as e:
             pass
-
-
 
     except Exception as e:
         import traceback

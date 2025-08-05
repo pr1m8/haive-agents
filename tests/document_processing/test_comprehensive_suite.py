@@ -53,9 +53,7 @@ class DocumentProcessingTestSuite:
         if details:
             pass
 
-        self.test_results.append(
-            {"test": test_name, "passed": passed, "details": details}
-        )
+        self.test_results.append({"test": test_name, "passed": passed, "details": details})
 
         if passed:
             self.passed_tests += 1
@@ -126,9 +124,7 @@ class DocumentProcessingTestSuite:
 
             # Test query management
             query_state.add_refined_query("ML applications in medical diagnosis")
-            query_state.add_refined_query(
-                "Healthcare automation using machine learning"
-            )
+            query_state.add_refined_query("Healthcare automation using machine learning")
             query_state.add_expanded_query("Deep learning in medical imaging")
             query_state.add_expanded_query("AI-powered drug discovery")
             query_state.add_query_variation("How is AI transforming healthcare?")
@@ -517,12 +513,8 @@ class DocumentProcessingTestSuite:
                 response="Detailed analysis of the query results",
                 confidence=0.87,
                 source_documents=[
-                    Document(
-                        page_content="Source content 1", metadata={"source": "doc1"}
-                    ),
-                    Document(
-                        page_content="Source content 2", metadata={"source": "doc2"}
-                    ),
+                    Document(page_content="Source content 1", metadata={"source": "doc1"}),
+                    Document(page_content="Source content 2", metadata={"source": "doc2"}),
                 ],
                 citations=[
                     {"source": "doc1", "page": 1, "relevance": 0.9},
@@ -646,19 +638,12 @@ class DocumentProcessingTestSuite:
 
             # Test agent capabilities match query requirements
             capabilities = agent.get_capabilities()
+            assert capabilities["processing_pipeline"]["annotation"] == config.annotation_enabled
             assert (
-                capabilities["processing_pipeline"]["annotation"]
-                == config.annotation_enabled
-            )
-            assert (
-                capabilities["processing_pipeline"]["summarization"]
-                == config.summarization_enabled
+                capabilities["processing_pipeline"]["summarization"] == config.summarization_enabled
             )
             assert capabilities["rag_capabilities"]["strategy"] == config.rag_strategy
-            assert (
-                capabilities["output_features"]["structured_output"]
-                == config.structured_output
-            )
+            assert capabilities["output_features"]["structured_output"] == config.structured_output
 
             # Test state management integration
             processing_state = DocumentProcessingState(
@@ -671,15 +656,11 @@ class DocumentProcessingTestSuite:
             )
 
             assert processing_state.original_query == query_state.original_query
-            assert len(processing_state.refined_queries) == len(
-                query_state.refined_queries
-            )
+            assert len(processing_state.refined_queries) == len(query_state.refined_queries)
             assert len(processing_state.processed_documents) == 3
             assert len(processing_state.context_documents) == 3
 
-            self.log_test(
-                "Integration Workflows", True, "All components integrate seamlessly"
-            )
+            self.log_test("Integration Workflows", True, "All components integrate seamlessly")
 
         except Exception as e:
             self.log_test("Integration Workflows", False, f"Error: {e}")

@@ -19,19 +19,11 @@ from haive.agents.react.agent import ReactAgent
 class CodeIssue(BaseModel):
     """A code issue found during analysis."""
 
-    severity: str = Field(
-        description="Severity level", pattern="^(critical|high|medium|low)$"
-    )
-    category: str = Field(
-        description="Issue category (bug, performance, security, style)"
-    )
+    severity: str = Field(description="Severity level", pattern="^(critical|high|medium|low)$")
+    category: str = Field(description="Issue category (bug, performance, security, style)")
     description: str = Field(description="Description of the issue")
-    file_path: Optional[str] = Field(
-        default=None, description="File where issue was found"
-    )
-    line_number: Optional[int] = Field(
-        default=None, description="Line number if applicable"
-    )
+    file_path: Optional[str] = Field(default=None, description="File where issue was found")
+    line_number: Optional[int] = Field(default=None, description="Line number if applicable")
     suggestion: str = Field(description="Suggested fix or improvement")
 
 
@@ -40,12 +32,8 @@ class DependencyInfo(BaseModel):
 
     name: str = Field(description="Dependency name")
     version: str = Field(description="Current version")
-    latest_version: Optional[str] = Field(
-        default=None, description="Latest available version"
-    )
-    security_issues: bool = Field(
-        default=False, description="Has known security issues"
-    )
+    latest_version: Optional[str] = Field(default=None, description="Latest available version")
+    security_issues: bool = Field(default=False, description="Has known security issues")
     update_recommendation: Optional[str] = Field(default=None)
 
 
@@ -55,9 +43,7 @@ class CodeAnalysisReport(BaseModel):
     # Overview
     project_name: str = Field(description="Name of the analyzed project")
     analysis_summary: str = Field(description="Brief summary of the analysis")
-    overall_health_score: float = Field(
-        description="Overall project health score", ge=0.0, le=10.0
-    )
+    overall_health_score: float = Field(description="Overall project health score", ge=0.0, le=10.0)
 
     # Issues found
     issues: List[CodeIssue] = Field(description="List of issues found during analysis")
@@ -80,9 +66,7 @@ class CodeAnalysisReport(BaseModel):
     )
 
     # Dependencies
-    dependencies_analyzed: List[DependencyInfo] = Field(
-        description="Dependencies analyzed"
-    )
+    dependencies_analyzed: List[DependencyInfo] = Field(description="Dependencies analyzed")
 
     outdated_dependencies: int = Field(description="Number of outdated dependencies")
 
@@ -103,9 +87,7 @@ class CodeAnalysisReport(BaseModel):
     # Next steps
     immediate_actions: List[str] = Field(description="Actions to take immediately")
 
-    long_term_improvements: List[str] = Field(
-        description="Long-term improvement suggestions"
-    )
+    long_term_improvements: List[str] = Field(description="Long-term improvement suggestions")
 
 
 # Mock tools for code analysis
@@ -273,7 +255,7 @@ Ensure all findings are accurately represented and properly categorized.""",
 
     # Display results
     print("\n📊 Code Analysis Report")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"Project: {result.project_name}")
     print(f"Health Score: {result.overall_health_score:.1f}/10.0")
     print(f"\nSummary: {result.analysis_summary}")

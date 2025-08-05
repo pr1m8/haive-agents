@@ -65,7 +65,6 @@ async def test_basic_postgres_save_and_load():
 
 
 if __name__ == "__main__":
-
     test_postgres_setup_works()
 
     import asyncio

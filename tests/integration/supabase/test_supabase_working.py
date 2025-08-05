@@ -17,7 +17,6 @@ warnings.filterwarnings("ignore", message=".*prepared statement.*")
 
 
 async def main():
-
     # Create unique thread
     thread_id = f"demo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
@@ -37,13 +36,7 @@ async def main():
     success = False
     try:
         result = agent.run(
-            {
-                "messages": [
-                    HumanMessage(
-                        content="Hello! This message will be saved to Supabase."
-                    )
-                ]
-            },
+            {"messages": [HumanMessage(content="Hello! This message will be saved to Supabase.")]},
             config={"configurable": {"thread_id": thread_id}},
         )
         success = True
@@ -71,9 +64,7 @@ async def main():
         write_count = (await cur.fetchone())[0]
 
         # Count checkpoints
-        await cur.execute(
-            "SELECT COUNT(*) FROM checkpoints WHERE thread_id = %s", (thread_id,)
-        )
+        await cur.execute("SELECT COUNT(*) FROM checkpoints WHERE thread_id = %s", (thread_id,))
         checkpoint_count = (await cur.fetchone())[0]
 
         print(f"\n📊 Results:")
@@ -83,12 +74,8 @@ async def main():
         if write_count > 0 or checkpoint_count > 0:
             print("\n✅ SUCCESS! Data is being saved to Supabase!")
             print(f"\n🔗 View your data in Supabase:")
-            print(
-                f"   https://supabase.com/dashboard/project/zkssazqhwcetsnbiuqik/editor/45942"
-            )
-            print(
-                f"   SQL Query: SELECT * FROM checkpoint_writes WHERE thread_id = '{thread_id}';"
-            )
+            print(f"   https://supabase.com/dashboard/project/zkssazqhwcetsnbiuqik/editor/45942")
+            print(f"   SQL Query: SELECT * FROM checkpoint_writes WHERE thread_id = '{thread_id}';")
             return True
         else:
             print("\n❌ No data found")
@@ -97,7 +84,6 @@ async def main():
 
 if __name__ == "__main__":
     success = asyncio.run(main())
-
 
     if not success:
         exit(1)

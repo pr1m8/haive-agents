@@ -32,11 +32,8 @@ def view_ps_errors():
             results = cur.fetchall()
 
             for _thread_id, _checkpoint_id, metadata in results:
-
                 try:
-                    meta_dict = (
-                        json.loads(metadata) if isinstance(metadata, str) else metadata
-                    )
+                    meta_dict = json.loads(metadata) if isinstance(metadata, str) else metadata
 
                     # Show step
                     if "step" in meta_dict:
@@ -50,20 +47,12 @@ def view_ps_errors():
                                 if "process_response" in node_data:
                                     pr = node_data["process_response"]
                                     if isinstance(pr, dict) and "contributions" in pr:
-                                        for _i, contrib in enumerate(
-                                            pr["contributions"]
-                                        ):
-                                            if (
-                                                isinstance(contrib, list)
-                                                and len(contrib) >= 3
-                                            ):
+                                        for _i, contrib in enumerate(pr["contributions"]):
+                                            if isinstance(contrib, list) and len(contrib) >= 3:
                                                 contrib[0]
                                                 contrib[1]
                                                 content = str(contrib[2])
-                                                if (
-                                                    "prepared statement"
-                                                    in content.lower()
-                                                ):
+                                                if "prepared statement" in content.lower():
                                                     pass
 
                                 # Check error field
@@ -75,12 +64,8 @@ def view_ps_errors():
                                     messages = node_data["messages"]
                                     if isinstance(messages, list):
                                         for msg in messages:
-                                            if (
-                                                isinstance(msg, dict)
-                                                and "content" in msg
-                                            ) and (
-                                                "prepared statement"
-                                                in str(msg["content"]).lower()
+                                            if (isinstance(msg, dict) and "content" in msg) and (
+                                                "prepared statement" in str(msg["content"]).lower()
                                             ):
                                                 pass
 

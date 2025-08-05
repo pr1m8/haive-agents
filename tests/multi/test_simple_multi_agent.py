@@ -38,14 +38,10 @@ def test_simple_multi_agent():
     agents_dict = {"agent1": agent1, "agent2": agent2}
 
     # Create initial state with agents
-    state = MultiAgentState(
-        messages=[HumanMessage(content="What is 2+2?")], agents=agents_dict
-    )
+    state = MultiAgentState(messages=[HumanMessage(content="What is 2+2?")], agents=agents_dict)
 
     # Create agent node for agent1
-    agent1_node = create_agent_node_v3(
-        agent_name="agent1", agent=agent1, name="test_agent1_node"
-    )
+    agent1_node = create_agent_node_v3(agent_name="agent1", agent=agent1, name="test_agent1_node")
 
     # Test node execution
     try:

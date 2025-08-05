@@ -10,7 +10,6 @@ This test suite validates:
 - Change detection and auto-recompilation
 """
 
-
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
@@ -254,8 +253,7 @@ class TestSimpleAgentV3StructuredOutput:
 
         # Execute with structured output
         result = await agent.arun(
-            "Analyze the task of writing a summary. "
-            "Provide the task, result, and confidence score."
+            "Analyze the task of writing a summary. Provide the task, result, and confidence score."
         )
 
         # Verify structured output was generated
@@ -282,9 +280,7 @@ class TestSimpleAgentV3MetaIntegration:
     async def test_meta_capable_agent_creation(self, real_llm_config):
         """Test converting agent to meta-capable with MetaStateSchema."""
         # Create regular agent
-        agent = SimpleAgentV3(
-            name="meta_test_agent", engine=real_llm_config, temperature=0.2
-        )
+        agent = SimpleAgentV3(name="meta_test_agent", engine=real_llm_config, temperature=0.2)
 
         # Convert to meta-capable
         meta_agent = agent.as_meta_capable(
@@ -320,9 +316,7 @@ class TestSimpleAgentV3MetaIntegration:
         assert summary["current_status"] == "completed"
 
     @pytest.mark.asyncio
-    async def test_meta_agent_recompilation_integration(
-        self, real_llm_config, calculator_tool
-    ):
+    async def test_meta_agent_recompilation_integration(self, real_llm_config, calculator_tool):
         """Test recompilation works through MetaStateSchema."""
         # Create agent with tool
         agent = SimpleAgentV3(
@@ -405,9 +399,7 @@ class TestSimpleAgentV3AsToolPattern:
         )
 
         # Create coordinator agent with specialized tools
-        coordinator_config = AugLLMConfig(
-            temperature=0.3, tools=[math_tool, analysis_tool]
-        )
+        coordinator_config = AugLLMConfig(temperature=0.3, tools=[math_tool, analysis_tool])
 
         coordinator = SimpleAgentV3(
             name="coordinator",
@@ -424,9 +416,7 @@ class TestSimpleAgentV3AsToolPattern:
         assert result is not None
         # Should contain both math result and analysis
         result_str = str(result)
-        assert "425" in result_str or any(
-            "425" in str(msg) for msg in result.get("messages", [])
-        )
+        assert "425" in result_str or any("425" in str(msg) for msg in result.get("messages", []))
 
 
 # ========================================================================
@@ -551,13 +541,7 @@ class TestSimpleAgentV3Integration:
         agent.structured_output_model = TaskResult
 
         result3 = await meta_agent.execute_agent(
-            {
-                "messages": [
-                    HumanMessage(
-                        content="Analyze the calculation task we just completed"
-                    )
-                ]
-            }
+            {"messages": [HumanMessage(content="Analyze the calculation task we just completed")]}
         )
 
         assert result3["status"] == "success"

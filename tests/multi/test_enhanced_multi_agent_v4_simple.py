@@ -76,7 +76,6 @@ class TestEnhancedMultiAgentV4Simple:
 
         # Check if it's a callable
         if callable(node_config):
-
             # Try calling with a simple state
             test_state = {
                 "messages": [HumanMessage(content="Test message")],

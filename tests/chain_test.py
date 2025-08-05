@@ -303,12 +303,8 @@ class BranchingDocumentAnalyzer:
 
         # Create an extended schema that includes branch information
         class BranchingChainSchema(ChainAgentSchema):
-            branch_path: str = Field(
-                default="", description="The branch path chosen for analysis"
-            )
-            document_type: str = Field(
-                default="", description="Classified document type"
-            )
+            branch_path: str = Field(default="", description="The branch path chosen for analysis")
+            document_type: str = Field(default="", description="Classified document type")
             primary_topic: str = Field(default="", description="Primary document topic")
             specialized_analysis: str = Field(
                 default="", description="Results from specialized analysis"
@@ -318,9 +314,7 @@ class BranchingDocumentAnalyzer:
             )
 
         # Create a dynamic graph
-        dg = DynamicGraph(
-            components=list(self.engines.values()), state_schema=BranchingChainSchema
-        )
+        dg = DynamicGraph(components=list(self.engines.values()), state_schema=BranchingChainSchema)
 
         # Add initialization node
         def init_node(state):
@@ -329,10 +323,7 @@ class BranchingDocumentAnalyzer:
             messages_text = ""
             if hasattr(state, "messages") and state.messages:
                 messages_text = "\n".join(
-                    [
-                        m.content if hasattr(m, "content") else str(m)
-                        for m in state.messages
-                    ]
+                    [m.content if hasattr(m, "content") else str(m) for m in state.messages]
                 )
 
             # Initialize chain_data with input text
@@ -354,15 +345,10 @@ class BranchingDocumentAnalyzer:
                     input_text = state.chain_data["input_text"]
                 elif hasattr(state, "messages") and state.messages:
                     input_text = "\n".join(
-                        [
-                            m.content if hasattr(m, "content") else str(m)
-                            for m in state.messages
-                        ]
+                        [m.content if hasattr(m, "content") else str(m) for m in state.messages]
                     )
 
-                logger.debug(
-                    f"Classifying document - input length: {len(input_text)} chars"
-                )
+                logger.debug(f"Classifying document - input length: {len(input_text)} chars")
 
                 # Create classifier runnable
                 classifier = compose_runnable(self.engines["document_classifier"])
@@ -389,12 +375,8 @@ class BranchingDocumentAnalyzer:
                 chain_data["input_text"] = input_text  # Ensure input text is preserved
 
                 # Store specific fields for later use
-                document_type = (
-                    result.document_type if hasattr(result, "document_type") else ""
-                )
-                primary_topic = (
-                    result.primary_topic if hasattr(result, "primary_topic") else ""
-                )
+                document_type = result.document_type if hasattr(result, "document_type") else ""
+                primary_topic = result.primary_topic if hasattr(result, "primary_topic") else ""
 
                 # Update state
                 return {
@@ -408,9 +390,7 @@ class BranchingDocumentAnalyzer:
                 logger.exception(f"Error in document classifier: {e!s}")
                 return {"error": f"Error in document classifier: {e!s}"}
 
-        dg.add_node(
-            "document_classifier", classifier_node, command_goto="document_router"
-        )
+        dg.add_node("document_classifier", classifier_node, command_goto="document_router")
 
         # Add document router node
         def router_node(state):
@@ -425,9 +405,7 @@ class BranchingDocumentAnalyzer:
                 ):
                     classification = state.chain_data["document_classifier"]
 
-                logger.debug(
-                    f"Routing document with classification: {classification[:100]}..."
-                )
+                logger.debug(f"Routing document with classification: {classification[:100]}...")
 
                 # Create router runnable
                 router = compose_runnable(self.engines["document_router"])
@@ -502,15 +480,10 @@ class BranchingDocumentAnalyzer:
                         input_text = state.chain_data["input_text"]
                     elif hasattr(state, "messages") and state.messages:
                         input_text = "\n".join(
-                            [
-                                m.content if hasattr(m, "content") else str(m)
-                                for m in state.messages
-                            ]
+                            [m.content if hasattr(m, "content") else str(m) for m in state.messages]
                         )
 
-                    logger.debug(
-                        f"Running {analyzer_name} - input length: {len(input_text)} chars"
-                    )
+                    logger.debug(f"Running {analyzer_name} - input length: {len(input_text)} chars")
 
                     # Create analyzer runnable
                     analyzer = compose_runnable(self.engines[analyzer_name])
@@ -531,9 +504,7 @@ class BranchingDocumentAnalyzer:
 
                     # Update chain data
                     chain_data = {}
-                    if hasattr(state, "chain_data") and isinstance(
-                        state.chain_data, dict
-                    ):
+                    if hasattr(state, "chain_data") and isinstance(state.chain_data, dict):
                         chain_data = dict(state.chain_data)
                     chain_data[analyzer_name] = result_str
 
@@ -575,38 +546,26 @@ class BranchingDocumentAnalyzer:
             try:
                 # Get required fields
                 document_type = (
-                    state.document_type
-                    if hasattr(state, "document_type")
-                    else "Unknown"
+                    state.document_type if hasattr(state, "document_type") else "Unknown"
                 )
                 primary_topic = (
-                    state.primary_topic
-                    if hasattr(state, "primary_topic")
-                    else "Unknown"
+                    state.primary_topic if hasattr(state, "primary_topic") else "Unknown"
                 )
                 specialized_analysis = (
-                    state.specialized_analysis
-                    if hasattr(state, "specialized_analysis")
-                    else "{}"
+                    state.specialized_analysis if hasattr(state, "specialized_analysis") else "{}"
                 )
 
-                logger.debug(
-                    f"Generating executive summary for {document_type} document"
-                )
+                logger.debug(f"Generating executive summary for {document_type} document")
 
                 # Create summary runnable
                 summary_gen = compose_runnable(self.engines["executive_summary"])
 
                 # Fix any JSON string issues in specialized_analysis
-                if isinstance(
-                    specialized_analysis, str
-                ) and specialized_analysis.startswith("{"):
+                if isinstance(specialized_analysis, str) and specialized_analysis.startswith("{"):
                     try:
                         # Parse and re-stringify to ensure proper escaping
                         specialized_analysis_obj = json.loads(specialized_analysis)
-                        specialized_analysis = json.dumps(
-                            specialized_analysis_obj, indent=2
-                        )
+                        specialized_analysis = json.dumps(specialized_analysis_obj, indent=2)
                     except:
                         # If not valid JSON, leave as is
                         pass

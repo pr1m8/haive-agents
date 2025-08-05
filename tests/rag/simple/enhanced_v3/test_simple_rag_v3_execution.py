@@ -69,7 +69,6 @@ async def test_minimal_components():
 
     # Test 1: Can we import state?
     try:
-
         results["state"] = "✅ State imports and works"
     except Exception as e:
         results["state"] = f"❌ State failed: {e}"
@@ -101,13 +100,11 @@ async def test_minimal_components():
         results["retriever"] = f"❌ RetrieverAgent failed: {str(e)[:50]}..."
 
     try:
-
         results["answer_agent"] = "✅ SimpleAnswerAgent imports"
     except Exception as e:
         results["answer_agent"] = f"❌ SimpleAnswerAgent failed: {str(e)[:50]}..."
 
     try:
-
         results["simple_rag_v3"] = "✅ SimpleRAGV3 imports"
     except Exception as e:
         results["simple_rag_v3"] = f"❌ SimpleRAGV3 failed: {str(e)[:50]}..."
@@ -129,11 +126,9 @@ def analyze_blockers():
 
     # Check if it's a case issue
     try:
-
         pass
     except:
         with contextlib.suppress(Exception):
-
             pass
 
 

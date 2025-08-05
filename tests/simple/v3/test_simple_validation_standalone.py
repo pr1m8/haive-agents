@@ -56,9 +56,7 @@ def calculator(expression: str) -> str:
 
 async def test_basic_creation():
     """Test SimpleAgentV3 basic creation."""
-    agent = SimpleAgentV3(
-        name="basic_agent", engine=AugLLMConfig(name="basic", temperature=0.1)
-    )
+    agent = SimpleAgentV3(name="basic_agent", engine=AugLLMConfig(name="basic", temperature=0.1))
 
     return agent
 

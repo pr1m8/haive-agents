@@ -48,7 +48,6 @@ def test_message_flow():
     all_messages = []
 
     for i, (user_msg, test_type) in enumerate(conversations):
-
         result = agent.invoke({"messages": [HumanMessage(content=user_msg)]}, config)
 
         # Extract response
@@ -90,7 +89,6 @@ def test_message_flow():
             indent=2,
         )
 
-
     return thread_id
 
 
@@ -99,7 +97,6 @@ def check_ssl_connection_issue():
 
     conn_string = os.environ.get("POSTGRES_CONNECTION_STRING")
     if conn_string:
-
         # Check if SSL mode is specified
         if "sslmode=" in conn_string:
             import re
@@ -116,8 +113,6 @@ def check_ssl_connection_issue():
     # Check connection pool settings
 
     try:
-
-
         # Check for keepalive settings in configs
         from haive.agents.conversation.base.agent import BaseConversationAgent
 
@@ -144,7 +139,6 @@ def main():
 
     # Check SSL configuration
     check_ssl_connection_issue()
-
 
 
 if __name__ == "__main__":

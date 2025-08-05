@@ -158,7 +158,6 @@ def test_simple_agent_v3_tools_and_structured_output():
 
     # Verify the result if it's the expected type
     if isinstance(result, ProductInfo):
-
         # Check calculations
         result.price * result.quantity
 
@@ -179,10 +178,7 @@ def test_simple_agent_v3_error_handling():
     agent.run("Look up the price of 'quantum computer' in inventory")
 
     # Test 3: Recovery from error
-    agent.run(
-        "Try to calculate 'abc + 123' (this will fail), "
-        "then calculate 100 + 200 instead"
-    )
+    agent.run("Try to calculate 'abc + 123' (this will fail), then calculate 100 + 200 instead")
 
 
 if __name__ == "__main__":

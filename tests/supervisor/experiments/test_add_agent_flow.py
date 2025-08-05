@@ -58,16 +58,12 @@ When you identify a missing capability:
 3. Describe what the missing agent should be able to do""",
     )
 
-    supervisor = DynamicSupervisorAgent(
-        name="capability_supervisor", engine=supervisor_engine
-    )
+    supervisor = DynamicSupervisorAgent(name="capability_supervisor", engine=supervisor_engine)
 
     # Initial state with just search agent
     state = SupervisorStateWithTools()
     state.messages = [
-        HumanMessage(
-            content="Find information about Paris and then translate it to French"
-        )
+        HumanMessage(content="Find information about Paris and then translate it to French")
     ]
     state.agents = {
         "search_agent": AgentInfo(
@@ -80,17 +76,13 @@ When you identify a missing capability:
     state.active_agents = ["search_agent"]
     state.sync_agents()
 
-
     # First run - supervisor should recognize it can search but not translate
     result = await supervisor.arun(state, debug=False)
 
     # Check if supervisor identified the need
     last_message = result.messages[-1]
 
-    if (
-        "translat" in last_message.content.lower()
-        or "french" in last_message.content.lower()
-    ):
+    if "translat" in last_message.content.lower() or "french" in last_message.content.lower():
         pass
     else:
         pass
@@ -116,7 +108,6 @@ Always indicate the source and target languages in your response.""",
     )
     state.sync_agents()
 
-
     # Add a message acknowledging the addition
     state.messages.append(
         HumanMessage(
@@ -139,9 +130,7 @@ Show your work and explain the calculations step by step.""",
     math_agent = SimpleAgent(name="math_agent", engine=math_engine)
 
     # Add math agent
-    state.add_agent(
-        "math_agent", math_agent, "Mathematics and calculation specialist", active=True
-    )
+    state.add_agent("math_agent", math_agent, "Mathematics and calculation specialist", active=True)
     state.sync_agents()
 
     # Complex task
@@ -155,9 +144,7 @@ Show your work and explain the calculations step by step.""",
         )
     )
 
-
     result = await supervisor.arun(state, debug=False)
-
 
 
 if __name__ == "__main__":

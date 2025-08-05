@@ -15,9 +15,7 @@ class TestReactRAGAgent:
     def mock_vector_store_config(self):
         """Create a mock vector store configuration."""
         # In real tests, this would be a proper vector store
-        embedding_config = EmbeddingConfig(
-            provider="openai", model="text-embedding-3-small"
-        )
+        embedding_config = EmbeddingConfig(provider="openai", model="text-embedding-3-small")
 
         return VectorStoreConfig(
             provider="chroma",
@@ -49,9 +47,7 @@ class TestReactRAGAgent:
         return calculator
 
     @pytest.mark.asyncio
-    async def test_react_rag_agent_creation(
-        self, mock_vector_store_config, calculator_tool
-    ):
+    async def test_react_rag_agent_creation(self, mock_vector_store_config, calculator_tool):
         """Test creating a ReactRAG agent with retriever and tools."""
         agent = ReactRAGAgent.create_default(
             name="test_react_rag",
@@ -158,9 +154,7 @@ class TestReactRAGAgent:
         assert agent.tools[0].name == "calculator"
 
         # Add retriever
-        embedding_config = EmbeddingConfig(
-            provider="openai", model="text-embedding-3-small"
-        )
+        embedding_config = EmbeddingConfig(provider="openai", model="text-embedding-3-small")
 
         vector_store_config = VectorStoreConfig(
             provider="chroma",

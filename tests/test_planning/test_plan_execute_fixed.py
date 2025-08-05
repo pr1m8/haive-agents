@@ -50,9 +50,7 @@ def test_messagelist_serialization():
     messages = MessageList(
         [
             HumanMessage("Calculate 5 + 3"),
-            AIMessage(
-                "I'll use the add tool", additional_kwargs={"engine_name": "planner"}
-            ),
+            AIMessage("I'll use the add tool", additional_kwargs={"engine_name": "planner"}),
             ToolMessage(
                 "8",
                 tool_call_id="call_123",

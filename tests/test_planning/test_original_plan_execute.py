@@ -80,11 +80,7 @@ def test_act_model():
     )
 
     # Test Response action
-    Act(
-        action=Response(
-            response="Based on my research, here are the key AI developments..."
-        )
-    )
+    Act(action=Response(response="Based on my research, here are the key AI developments..."))
 
     # Test Plan action
     new_plan = Plan(

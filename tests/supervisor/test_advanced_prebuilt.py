@@ -73,9 +73,7 @@ class PrebuiltAgent:
         start_time = datetime.now()
 
         if self.status != AgentStatus.ACTIVE:
-            raise RuntimeError(
-                f"Agent {self.name} is not active (status: {self.status})"
-            )
+            raise RuntimeError(f"Agent {self.name} is not active (status: {self.status})")
 
         if self.current_tasks >= self.max_concurrent:
             raise RuntimeError(f"Agent {self.name} at max capacity")
@@ -102,9 +100,7 @@ class PrebuiltAgent:
                 additional_kwargs={
                     "agent": self.name,
                     "specialization": self.specialization,
-                    "capabilities_used": self._determine_used_capabilities(
-                        last_message
-                    ),
+                    "capabilities_used": self._determine_used_capabilities(last_message),
                 },
             )
 
@@ -163,18 +159,14 @@ class PrebuiltAgent:
 
         if success and elapsed_time > 0:
             # Update average response time
-            total_time = self.metrics.average_response_time * (
-                self.metrics.successful_calls - 1
-            )
+            total_time = self.metrics.average_response_time * (self.metrics.successful_calls - 1)
             self.metrics.average_response_time = (
                 total_time + elapsed_time
             ) / self.metrics.successful_calls
 
         # Update error rate
         if self.metrics.total_calls > 0:
-            self.metrics.error_rate = (
-                self.metrics.failed_calls / self.metrics.total_calls
-            )
+            self.metrics.error_rate = self.metrics.failed_calls / self.metrics.total_calls
 
     def can_handle(self, request_type: str) -> float:
         """Return confidence score (0-1) for handling request type."""
@@ -182,10 +174,7 @@ class PrebuiltAgent:
 
         # Check direct capability match
         for capability in self.capabilities:
-            if (
-                capability.lower() in request_lower
-                or request_lower in capability.lower()
-            ):
+            if capability.lower() in request_lower or request_lower in capability.lower():
                 return 0.9
 
         # Check specialization match
@@ -193,9 +182,7 @@ class PrebuiltAgent:
             return 0.8
 
         # Partial matches
-        capability_keywords = [
-            word for cap in self.capabilities for word in cap.lower().split()
-        ]
+        capability_keywords = [word for cap in self.capabilities for word in cap.lower().split()]
         matches = sum(1 for keyword in capability_keywords if keyword in request_lower)
 
         return min(0.7, matches * 0.2)
@@ -249,11 +236,7 @@ class AgentPool:
 
     def get_active_agents(self) -> list[PrebuiltAgent]:
         """Get all active agents."""
-        return [
-            agent
-            for agent in self.agents.values()
-            if agent.status == AgentStatus.ACTIVE
-        ]
+        return [agent for agent in self.agents.values() if agent.status == AgentStatus.ACTIVE]
 
     def get_best_agent_for_task(self, task_description: str) -> PrebuiltAgent | None:
         """Find best active agent for a task."""
@@ -429,20 +412,14 @@ async def test_advanced_dynamic_supervisor():
     # Create agent pool
     pool = await create_prebuilt_agent_pool()
 
-
     active_names = [agent.name for agent in pool.get_active_agents()]
 
     # Create supervisor
-    supervisor = DynamicSupervisorFixed(
-        name="advanced_supervisor", auto_rebuild_graph=True
-    )
+    supervisor = DynamicSupervisorFixed(name="advanced_supervisor", auto_rebuild_graph=True)
 
     # Register only active agents initially
     for agent in pool.get_active_agents():
-        supervisor.register_agent(
-            agent, f"{agent.specialization}: {', '.join(agent.capabilities)}"
-        )
-
+        supervisor.register_agent(agent, f"{agent.specialization}: {', '.join(agent.capabilities)}")
 
     # Test 1: Basic routing to specialized agents
 
@@ -455,19 +432,14 @@ async def test_advanced_dynamic_supervisor():
     ]
 
     for request in test_requests:
-
         # Find best agent
         best_agent = pool.get_best_agent_for_task(request)
         if best_agent:
             pass
 
         try:
-            result = await supervisor.ainvoke(
-                {"messages": [HumanMessage(content=request)]}
-            )
-            response = (
-                result.get("messages", [])[-1] if result.get("messages") else None
-            )
+            result = await supervisor.ainvoke({"messages": [HumanMessage(content=request)]})
+            response = result.get("messages", [])[-1] if result.get("messages") else None
 
             if response:
                 if hasattr(response, "additional_kwargs"):
@@ -486,19 +458,13 @@ async def test_advanced_dynamic_supervisor():
 
     # Now test the request
     result = await supervisor.ainvoke(
-        {
-            "messages": [
-                HumanMessage(content="Write technical documentation for our API")
-            ]
-        }
+        {"messages": [HumanMessage(content="Write technical documentation for our API")]}
     )
 
     # Test 3: Resource management and agent swapping
 
-
     # Try to activate a high-cost agent (should fail due to resources)
     if not pool.activate_agent("planner_strategic"):
-
         # Deactivate a lower-priority agent
         pool.deactivate_agent("summarizer_expert")
         supervisor.unregister_agent("summarizer_expert")
@@ -510,13 +476,7 @@ async def test_advanced_dynamic_supervisor():
 
     # Test planning request
     result = await supervisor.ainvoke(
-        {
-            "messages": [
-                HumanMessage(
-                    content="Create a project plan for launching a new product"
-                )
-            ]
-        }
+        {"messages": [HumanMessage(content="Create a project plan for launching a new product")]}
     )
 
     # Test 4: Performance-based agent selection
@@ -560,11 +520,8 @@ async def test_advanced_dynamic_supervisor():
     4. Develop test cases
     """
 
-
     # This would ideally trigger multiple agents in sequence
-    result = await supervisor.ainvoke(
-        {"messages": [HumanMessage(content=complex_request)]}
-    )
+    result = await supervisor.ainvoke({"messages": [HumanMessage(content=complex_request)]})
 
     # Show final agent pool status
 
@@ -592,9 +549,7 @@ async def test_edge_cases_advanced():
     supervisor.register_agent(busy_agent)
 
     try:
-        await supervisor.ainvoke(
-            {"messages": [HumanMessage(content="Write some code")]}
-        )
+        await supervisor.ainvoke({"messages": [HumanMessage(content="Write some code")]})
     except Exception as e:
         pass
 
@@ -610,19 +565,14 @@ async def test_edge_cases_advanced():
             pool.agents[agent_name].status = AgentStatus.MAINTENANCE
 
     try:
-        await supervisor.ainvoke(
-            {"messages": [HumanMessage(content="Do something")]}
-        )
+        await supervisor.ainvoke({"messages": [HumanMessage(content="Do something")]})
     except Exception as e:
         pass
 
 
-
 if __name__ == "__main__":
-
     # Run main advanced test
     asyncio.run(test_advanced_dynamic_supervisor())
 
     # Run edge cases
     asyncio.run(test_edge_cases_advanced())
-

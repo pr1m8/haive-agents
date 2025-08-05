@@ -177,9 +177,7 @@ class TestPlanExecuteState:
         assert state.should_replan is True
 
         # Test replan when no plan
-        state_no_plan = PlanExecuteState(
-            messages=[{"type": "human", "content": "Test objective"}]
-        )
+        state_no_plan = PlanExecuteState(messages=[{"type": "human", "content": "Test objective"}])
         assert state_no_plan.should_replan is True
 
     def test_execution_time_calculation(self):
@@ -254,9 +252,7 @@ class TestPlanExecuteMultiAgent:
         assert plan_execute_system.name == "Custom Plan Execute System"
         assert plan_execute_system.schema_build_mode == BuildMode.PARALLEL
 
-    def test_plan_execute_routing_logic(
-        self, planner_agent, executor_agent, replanner_agent
-    ):
+    def test_plan_execute_routing_logic(self, planner_agent, executor_agent, replanner_agent):
         """Test the routing logic between agents."""
         # Create the system
         plan_execute_system = create_plan_execute_multi_agent(
@@ -349,9 +345,7 @@ class TestPlanExecuteMultiAgent:
         route = replanner_branch(final_state)
         assert route == END
 
-    def test_plan_execute_workflow_nodes(
-        self, planner_agent, executor_agent, replanner_agent
-    ):
+    def test_plan_execute_workflow_nodes(self, planner_agent, executor_agent, replanner_agent):
         """Test workflow node functions."""
         plan_execute_system = create_plan_execute_multi_agent(
             planner_agent=planner_agent,
@@ -377,9 +371,7 @@ class TestPlanExecuteMultiAgent:
         assert test_state.previous_results == "No previous results"
         assert test_state.should_replan is True
 
-    def test_plan_execute_error_handling(
-        self, planner_agent, executor_agent, replanner_agent
-    ):
+    def test_plan_execute_error_handling(self, planner_agent, executor_agent, replanner_agent):
         """Test error handling in Plan and Execute workflow."""
         plan_execute_system = create_plan_execute_multi_agent(
             planner_agent=planner_agent,
@@ -443,9 +435,7 @@ class TestPlanExecuteMultiAgent:
         assert plan_execute_system.branches == custom_branches
         assert len(plan_execute_system.branches) == 1
 
-    def test_plan_execute_schema_composition(
-        self, planner_agent, executor_agent, replanner_agent
-    ):
+    def test_plan_execute_schema_composition(self, planner_agent, executor_agent, replanner_agent):
         """Test schema composition in Plan and Execute system."""
         plan_execute_system = create_plan_execute_multi_agent(
             planner_agent=planner_agent,
@@ -457,9 +447,7 @@ class TestPlanExecuteMultiAgent:
         assert plan_execute_system.state_schema_override == PlanExecuteState
 
         # Test that computed fields are accessible
-        test_state = PlanExecuteState(
-            messages=[{"type": "human", "content": "Test objective"}]
-        )
+        test_state = PlanExecuteState(messages=[{"type": "human", "content": "Test objective"}])
 
         # These should not raise errors
         assert test_state.objective == "Test objective"
@@ -544,16 +532,12 @@ def create_sequential_plan_execute_multi_agent(
         agents=[planner, executor, replanner],
         state_schema_override=PlanExecuteState,
         schema_build_mode=BuildMode.SEQUENCE,
-        **kwargs
+        **kwargs,
     )
 
 
 def create_custom_plan_execute_multi_agent(
-    planner: Agent,
-    executor: Agent,
-    replanner: Agent,
-    custom_branches: list[tuple],
-    **kwargs
+    planner: Agent, executor: Agent, replanner: Agent, custom_branches: list[tuple], **kwargs
 ) -> MultiAgentBase:
     """Create a Plan and Execute system with custom branches.
 
@@ -572,5 +556,5 @@ def create_custom_plan_execute_multi_agent(
         branches=custom_branches,
         state_schema_override=PlanExecuteState,
         schema_build_mode=BuildMode.SEQUENCE,
-        **kwargs
+        **kwargs,
     )

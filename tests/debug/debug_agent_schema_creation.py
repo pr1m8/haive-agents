@@ -30,7 +30,6 @@ class QueryRefinementResponse(BaseModel):
     best_refined_query: str = Field(description="The recommended best refined query")
 
 
-
 config = AugLLMConfig(
     prompt_template=RAG_QUERY_REFINEMENT,
     structured_output_model=QueryRefinementResponse,
@@ -41,7 +40,6 @@ config = AugLLMConfig(
 try:
     # Try to import and see class definition
     from haive.agents.simple.agent_v2 import SimpleAgentV2
-
 
     for name, field_info in SimpleAgentV2.model_fields.items():
         if name in ["engine", "structured_output_model", "prompt_template"]:

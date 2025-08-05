@@ -78,14 +78,10 @@ class TestHyDERAGAgentV2:
             Document(
                 page_content="Machine learning models can be trained using frameworks like TensorFlow."
             ),
-            Document(
-                page_content="APIs allow different software applications to communicate."
-            ),
+            Document(page_content="APIs allow different software applications to communicate."),
         ]
 
-        rag = HyDERAGAgentV2.from_documents(
-            documents=technical_docs, llm_config=llm_config
-        )
+        rag = HyDERAGAgentV2.from_documents(documents=technical_docs, llm_config=llm_config)
 
         query = "How do neural networks work?"
 
@@ -109,9 +105,7 @@ class TestHyDERAGAgentV2:
 
         hyde_rag = HyDERAGAgentV2.from_documents(documents=docs, llm_config=llm_config)
 
-        simple_rag = SimpleRAGAgent.from_documents(
-            documents=docs, llm_config=llm_config
-        )
+        simple_rag = SimpleRAGAgent.from_documents(documents=docs, llm_config=llm_config)
 
         # Test with abstract query
         query = "What are the main topics discussed?"

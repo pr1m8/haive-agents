@@ -27,9 +27,9 @@ def test_reflection_agent_with_real_persistence():
         thread_id = agent._generate_default_thread_id()
 
         # Test that it starts with agent name + UUID format
-        assert thread_id.startswith(
-            "reflection_analyzer_"
-        ), "Thread ID should start with agent name"
+        assert thread_id.startswith("reflection_analyzer_"), (
+            "Thread ID should start with agent name"
+        )
 
         # Check that it's a UUID format
         uuid_part = thread_id[len("reflection_analyzer_") :]
@@ -46,9 +46,7 @@ def test_reflection_agent_with_real_persistence():
         thread_id2 = agent2._generate_default_thread_id()
 
         # Ensure they're different
-        assert (
-            thread_id != thread_id2
-        ), "Thread IDs should be unique even with same agent name"
+        assert thread_id != thread_id2, "Thread IDs should be unique even with same agent name"
 
     except Exception:
         import traceback

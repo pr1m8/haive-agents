@@ -135,12 +135,10 @@ async def debug_execution():
         if isinstance(result, dict) and "messages" in result:
             print(f"\n📨 Total messages: {len(result['messages'])}")
             for i, msg in enumerate(result["messages"]):
-                print(f"\n   Message {i+1} ({type(msg).__name__}):")
+                print(f"\n   Message {i + 1} ({type(msg).__name__}):")
                 if hasattr(msg, "content"):
                     content_preview = (
-                        msg.content[:200] + "..."
-                        if len(msg.content) > 200
-                        else msg.content
+                        msg.content[:200] + "..." if len(msg.content) > 200 else msg.content
                     )
                     print(f"   Content: {content_preview}")
                 if hasattr(msg, "name"):
@@ -172,9 +170,7 @@ async def debug_execution():
             # Manual inspection as backup
             print("\n🔍 Manual State Inspection:")
             print(f"   - Active agent: {getattr(state, 'active_agent', 'N/A')}")
-            print(
-                f"   - Execution order: {getattr(state, 'agent_execution_order', [])}"
-            )
+            print(f"   - Execution order: {getattr(state, 'agent_execution_order', [])}")
 
             if hasattr(state, "agent_outputs"):
                 print("\n   - Agent outputs:")
@@ -193,9 +189,7 @@ async def debug_execution():
         print("\n🔍 Attempting to inspect partial state...")
         if hasattr(multi_agent, "state") and multi_agent.state:
             state = multi_agent.state
-            print(
-                f"   - Last active agent: {getattr(state, 'active_agent', 'Unknown')}"
-            )
+            print(f"   - Last active agent: {getattr(state, 'active_agent', 'Unknown')}")
             if hasattr(state, "agent_outputs"):
                 print(f"   - Completed agents: {list(state.agent_outputs.keys())}")
 

@@ -10,9 +10,7 @@ def main():
     # Create a simple agent
     simple = SimpleAgent(
         name="worker",
-        engine=AugLLMConfig(
-            temperature=0.3, system_message="You are a helpful assistant."
-        ),
+        engine=AugLLMConfig(temperature=0.3, system_message="You are a helpful assistant."),
     )
 
     # Wrap with MetaAgent

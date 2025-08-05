@@ -143,9 +143,7 @@ def test_conditional_edges_concept():
         def add_edge(self, from_node: str, to_node: str):
             self.edges.append((from_node, to_node))
 
-        def add_conditional_edge(
-            self, from_node: str, condition, routes: dict[str, str]
-        ):
+        def add_conditional_edge(self, from_node: str, condition, routes: dict[str, str]):
             self.conditional_edges[from_node] = (condition, routes)
 
     # Create graph with conditional routing
@@ -168,7 +166,6 @@ def test_conditional_edges_concept():
 
 
 if __name__ == "__main__":
-
     test_conditional_routing_concept()
     test_model_post_init_pattern()
     test_schema_composition_concept()
