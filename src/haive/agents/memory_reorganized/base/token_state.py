@@ -87,6 +87,10 @@ class MemoryStateWithTokens(MessagesStateWithTokenUsage):
     memory_metadata: dict[str, Any] = Field(
         default_factory=dict, description="Memory operation metadata"
     )
+    
+    last_operation: Optional[dict[str, Any]] = Field(
+        default=None, description="Last memory operation details"
+    )
 
     memory_stats: MemoryStats = Field(
         default_factory=MemoryStats, description="Memory usage statistics"

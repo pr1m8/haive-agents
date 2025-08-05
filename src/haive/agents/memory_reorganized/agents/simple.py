@@ -1160,7 +1160,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
             # Add current memories
             for memory in state.current_memories:
                 content_parts.append(
-                    f"[Memory:{memory.metadata.memory_type}] {memory.content}"
+                    f"[Memory:{memory.memory_type}] {memory.content}"
                 )
 
             if not content_parts:
@@ -1287,7 +1287,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
 
             for memory in new_memories:
                 content_parts.append(
-                    f"[Memory:{memory.metadata.memory_type}] {memory.content}"
+                    f"[Memory:{memory.memory_type}] {memory.content}"
                 )
 
             if not content_parts:
@@ -1320,15 +1320,17 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                 # Extract relationships
                 try:
                     existing_entities = [
-                        f"{node.id} ({node.type})" for node in state.graph_nodes[-10:]
+                        f"{getattr(node, 'id', getattr(node, 'name', 'unknown'))} ({getattr(node, 'type', 'entity')})" 
+                        for node in state.graph_nodes[-10:]
                     ]  # Last 10 entities
                     entities_text = "\n".join(existing_entities)
 
-                    rel_response = self.engine.invoke(
-                        self.relationship_extraction_prompt.format_messages(
-                            content=combined_content, entities=entities_text
+                    if self.relationship_extraction_prompt:
+                        rel_response = self.engine.invoke(
+                            self.relationship_extraction_prompt.format_messages(
+                                content=combined_content, entities=entities_text
+                            )
                         )
-                    )
                     logger.debug(
                         f"Relationship extraction response: {rel_response}")
                 except Exception as e:
@@ -1346,7 +1348,10 @@ Focus on relationships that are explicitly mentioned or strongly implied."""), H
                         "timestamp": datetime.now().isoformat(),
                         "content_count": len(content_parts),
                     })
-                state.knowledge_graph.add_node(summary_node)
+                if hasattr(state.knowledge_graph, 'add_node'):
+                    state.knowledge_graph.add_node(summary_node)
+                elif hasattr(state.knowledge_graph, 'nodes'):
+                    state.knowledge_graph.nodes.append(summary_node)
                 new_nodes.append(summary_node)
 
             # Update tracking
