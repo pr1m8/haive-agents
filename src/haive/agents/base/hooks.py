@@ -126,29 +126,17 @@ class HookContext(BaseModel):
     error: Exception | None = Field(default=None, description="Error if any")
     node_name: str | None = Field(default=None, description="Current node name")
     state: dict[str, Any] | None = Field(default=None, description="Current state")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
     # Additional fields for enhanced hook patterns
-    messages: list[Any] | None = Field(
-        default=None, description="Messages being processed"
-    )
-    transformed_messages: list[Any] | None = Field(
-        default=None, description="Transformed messages"
-    )
+    messages: list[Any] | None = Field(default=None, description="Messages being processed")
+    transformed_messages: list[Any] | None = Field(default=None, description="Transformed messages")
     original_messages: list[Any] | None = Field(
         default=None, description="Original messages before transformation"
     )
-    structured_data: Any | None = Field(
-        default=None, description="Structured data from processing"
-    )
-    grade_data: dict[str, Any] | None = Field(
-        default=None, description="Grading results"
-    )
-    reflection_data: dict[str, Any] | None = Field(
-        default=None, description="Reflection results"
-    )
+    structured_data: Any | None = Field(default=None, description="Structured data from processing")
+    grade_data: dict[str, Any] | None = Field(default=None, description="Grading results")
+    reflection_data: dict[str, Any] | None = Field(default=None, description="Reflection results")
     transformation_type: str | None = Field(
         default=None, description="Type of message transformation applied"
     )
@@ -184,13 +172,7 @@ class HooksMixin:
         if event not in self._hooks:
             self._hooks[event] = []
         self._hooks[event].append(hook)
-        logger.debug(
-            f"Added hook for {event} on {
-                getattr(
-                    self,
-                    'name',
-                    'agent')}"
-        )
+        logger.debug(f"Added hook for {event} on {getattr(self, 'name', 'agent')}")
 
     def remove_hook(self, event: HookEvent, hook: HookFunction) -> None:
         """Remove a hook function.
@@ -201,9 +183,7 @@ class HooksMixin:
         """
         if event in self._hooks and hook in self._hooks[event]:
             self._hooks[event].remove(hook)
-            logger.debug(
-                f"Removed hook for {event} on {getattr(self, 'name', 'agent')}"
-            )
+            logger.debug(f"Removed hook for {event} on {getattr(self, 'name', 'agent')}")
 
     def clear_hooks(self, event: HookEvent | None = None) -> None:
         """Clear hooks for an event or all events.
@@ -213,22 +193,10 @@ class HooksMixin:
         """
         if event:
             self._hooks[event] = []
-            logger.debug(
-                f"Cleared hooks for {event} on {
-                    getattr(
-                        self,
-                        'name',
-                        'agent')}"
-            )
+            logger.debug(f"Cleared hooks for {event} on {getattr(self, 'name', 'agent')}")
         else:
             self._hooks.clear()
-            logger.debug(
-                f"Cleared all hooks on {
-                    getattr(
-                        self,
-                        'name',
-                        'agent')}"
-            )
+            logger.debug(f"Cleared all hooks on {getattr(self, 'name', 'agent')}")
 
     def _execute_hooks(self, event: HookEvent, **context_kwargs) -> list[Any]:
         """Execute all hooks for an event.
@@ -248,7 +216,8 @@ class HooksMixin:
             event=event,
             agent_name=getattr(self, "name", "unknown"),
             agent_type=self.__class__.__name__,
-            **context_kwargs)
+            **context_kwargs,
+        )
 
         results = []
         for hook in self._hooks[event]:
@@ -449,9 +418,7 @@ def message_transformation_hook(context: HookContext) -> None:
     elif context.event == HookEvent.AFTER_MESSAGE_TRANSFORM:
         logger.info(f"Message transformation completed for {context.agent_name}")
         if context.transformed_messages:
-            logger.debug(
-                f"Output messages: {len(context.transformed_messages)} messages"
-            )
+            logger.debug(f"Output messages: {len(context.transformed_messages)} messages")
         if context.original_messages and context.transformed_messages:
             logger.debug(
                 f"Messages transformed: {len(context.original_messages)} -> "
@@ -616,17 +583,13 @@ def create_multi_stage_hook(stages: list[str]) -> HookFunction:
                 "start_time": __import__("time").time(),
                 "stage_results": {},
             }
-            logger.info(
-                f"🔄 Multi-stage workflow started for {agent_key}: {' → '.join(stages)}"
-            )
+            logger.info(f"🔄 Multi-stage workflow started for {agent_key}: {' → '.join(stages)}")
 
         elif context.event == HookEvent.POST_PROCESS:
             if agent_key in stage_data:
                 workflow_data = stage_data[agent_key]
                 elapsed = __import__("time").time() - workflow_data["start_time"]
-                logger.info(
-                    f"✅ Multi-stage workflow completed for {agent_key} in {elapsed:.2f}s"
-                )
+                logger.info(f"✅ Multi-stage workflow completed for {agent_key} in {elapsed:.2f}s")
 
                 # Log stage results
                 for stage, result in workflow_data["stage_results"].items():
@@ -639,7 +602,8 @@ def create_multi_stage_hook(stages: list[str]) -> HookFunction:
         elif context.event in (
             HookEvent.AFTER_GRADING,
             HookEvent.AFTER_REFLECTION,
-            HookEvent.AFTER_STRUCTURED_OUTPUT):
+            HookEvent.AFTER_STRUCTURED_OUTPUT,
+        ):
             if agent_key in stage_data:
                 stage_name = context.event.value.replace("after_", "")
                 if stage_name in stages:

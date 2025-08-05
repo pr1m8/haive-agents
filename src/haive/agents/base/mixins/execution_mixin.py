@@ -13,7 +13,8 @@ from haive.core.persistence.handlers import (
     ensure_async_pool_open,
     ensure_pool_open,
     prepare_merged_input,
-    register_async_thread_if_needed)
+    register_async_thread_if_needed,
+)
 from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel
@@ -46,12 +47,9 @@ class ExecutionMixin:
             for i, msg in enumerate(input_data.messages):
                 if hasattr(msg, "tool_call_id"):
                     logger.debug(
-                        f"Input message {i}: {
-                            type(msg).__name__} with tool_call_id={
-                            getattr(
-                                msg,
-                                'tool_call_id',
-                                'None')}"
+                        f"Input message {i}: {type(msg).__name__} with tool_call_id={
+                            getattr(msg, 'tool_call_id', 'None')
+                        }"
                     )
 
         # Get input schema from agent
@@ -99,10 +97,7 @@ class ExecutionMixin:
                 # Create instance or return dict
                 try:
                     result = input_schema(**prepared_input)
-                    logger.debug(
-                        f"Created input schema instance with {
-                            len(prepared_input)} fields"
-                    )
+                    logger.debug(f"Created input schema instance with {len(prepared_input)} fields")
                     return result
                 except Exception as e:
                     logger.warning(f"Error creating input schema instance: {e}")
@@ -111,9 +106,7 @@ class ExecutionMixin:
                 return {"messages": [HumanMessage(content=input_data)]}
 
         # Handle list of strings
-        elif isinstance(input_data, list) and all(
-            isinstance(item, str) for item in input_data
-        ):
+        elif isinstance(input_data, list) and all(isinstance(item, str) for item in input_data):
             if input_schema:
                 schema_fields = {}
                 if hasattr(input_schema, "model_fields"):
@@ -124,9 +117,7 @@ class ExecutionMixin:
                 prepared_input = {}
 
                 if "messages" in schema_fields:
-                    prepared_input["messages"] = [
-                        HumanMessage(content=text) for text in input_data
-                    ]
+                    prepared_input["messages"] = [HumanMessage(content=text) for text in input_data]
 
                 joined_text = "\n".join(input_data)
                 for field_name in ["input", "query", "question", "text", "content"]:
@@ -135,14 +126,9 @@ class ExecutionMixin:
 
                 for field_name, field_info in schema_fields.items():
                     field_type = str(
-                        getattr(
-                            field_info, "annotation", getattr(field_info, "type_", "")
-                        )
+                        getattr(field_info, "annotation", getattr(field_info, "type_", ""))
                     )
-                    if (
-                        "list" in field_type.lower()
-                        and field_name not in prepared_input
-                    ):
+                    if "list" in field_type.lower() and field_name not in prepared_input:
                         prepared_input[field_name] = input_data
 
                 if not prepared_input:
@@ -154,10 +140,7 @@ class ExecutionMixin:
 
                 try:
                     result = input_schema(**prepared_input)
-                    logger.debug(
-                        f"Created input schema instance with {
-                            len(prepared_input)} fields"
-                    )
+                    logger.debug(f"Created input schema instance with {len(prepared_input)} fields")
                     return result
                 except Exception as e:
                     logger.warning(f"Error creating input schema instance: {e}")
@@ -168,9 +151,7 @@ class ExecutionMixin:
         # Handle dictionary input
         elif isinstance(input_data, dict):
             if input_schema:
-                if "messages" in input_data and isinstance(
-                    input_data["messages"], list
-                ):
+                if "messages" in input_data and isinstance(input_data["messages"], list):
                     messages = input_data["messages"]
                     # Convert string messages to HumanMessage, but preserve
                     # BaseMessage objects
@@ -185,20 +166,18 @@ class ExecutionMixin:
                     if input_data.get("messages"):
                         # Check if messages are already BaseMessage objects
                         all_base_messages = all(
-                            isinstance(msg, BaseMessage)
-                            for msg in input_data["messages"]
+                            isinstance(msg, BaseMessage) for msg in input_data["messages"]
                         )
                         logger.debug(
                             f"Messages validation: count={
-                                len(
-                                    input_data['messages'])}, all_base_messages={all_base_messages}"
+                                len(input_data['messages'])
+                            }, all_base_messages={all_base_messages}"
                         )
                         for i, msg in enumerate(input_data["messages"]):
                             logger.debug(
-                                f"  Message {i}: {
-                                    type(msg)} (is BaseMessage: {
-                                    isinstance(
-                                        msg, BaseMessage)})"
+                                f"  Message {i}: {type(msg)} (is BaseMessage: {
+                                    isinstance(msg, BaseMessage)
+                                })"
                             )
 
                         if all_base_messages:
@@ -209,8 +188,8 @@ class ExecutionMixin:
                             }
                             logger.debug(
                                 f"Creating schema instance without messages, remaining fields: {
-                                    list(
-                                        validation_data.keys())}"
+                                    list(validation_data.keys())
+                                }"
                             )
                             # Create the schema instance
                             result = input_schema(**validation_data)
@@ -225,14 +204,11 @@ class ExecutionMixin:
                     # Fallback to normal validation
                     result = input_schema(**input_data)
                     logger.debug(
-                        f"Created input schema instance from dict with {
-                            len(input_data)} fields"
+                        f"Created input schema instance from dict with {len(input_data)} fields"
                     )
                     return result
                 except Exception as e:
-                    logger.warning(
-                        f"Error creating input schema instance from dict: {e}"
-                    )
+                    logger.warning(f"Error creating input schema instance from dict: {e}")
                     return input_data
             else:
                 return input_data
@@ -241,9 +217,7 @@ class ExecutionMixin:
         elif isinstance(input_data, BaseModel):
             if input_schema and not isinstance(input_data, input_schema):
                 if hasattr(input_data, "model_dump"):
-                    data_dict = input_data.model_dump(
-                        exclude_none=False, exclude_unset=False
-                    )
+                    data_dict = input_data.model_dump(exclude_none=False, exclude_unset=False)
                 else:
                     data_dict = input_data.dict(exclude_none=False, exclude_unset=False)
 
@@ -273,22 +247,21 @@ class ExecutionMixin:
                             ):
                                 logger.debug(
                                     f"PRESERVING {
-                                        len(actual_messages)} BaseMessage objects during input schema conversion"
+                                        len(actual_messages)
+                                    } BaseMessage objects during input schema conversion"
                                 )
                                 # Log any ToolMessages
                                 for i, msg in enumerate(actual_messages):
                                     if hasattr(msg, "tool_call_id"):
                                         logger.debug(
                                             f"  Preserving ToolMessage {i} with tool_call_id={
-                                                getattr(
-                                                    msg, 'tool_call_id', 'None')}"
+                                                getattr(msg, 'tool_call_id', 'None')
+                                            }"
                                         )
 
                                 # Create schema instance without messages first
                                 validation_data = {
-                                    k: v
-                                    for k, v in data_dict.items()
-                                    if k != "messages"
+                                    k: v for k, v in data_dict.items() if k != "messages"
                                 }
                                 result = input_schema(**validation_data)
                                 # Directly set the actual BaseMessage objects
@@ -311,8 +284,7 @@ class ExecutionMixin:
         # Other types - convert to string and handle
         else:
             logger.warning(
-                f"Unsupported input type {
-                    type(input_data).__name__}, converting to string"
+                f"Unsupported input type {type(input_data).__name__}, converting to string"
             )
             return self._prepare_input(str(input_data))
 
@@ -320,7 +292,8 @@ class ExecutionMixin:
         self: "AgentProtocol",
         thread_id: str | None = None,
         config: RunnableConfig | None = None,
-        **kwargs) -> RunnableConfig:
+        **kwargs,
+    ) -> RunnableConfig:
         """Prepare a runnable config with thread ID and other parameters.
 
         Args:
@@ -351,12 +324,9 @@ class ExecutionMixin:
 
         debugger.log_recursion_limit_flow(
             "Initial base_config",
-            (
-                base_config.get("configurable", {}).get("recursion_limit")
-                if base_config
-                else None
-            ),
-            "agent.runnable_config or agent.config.runnable_config")
+            (base_config.get("configurable", {}).get("recursion_limit") if base_config else None),
+            "agent.runnable_config or agent.config.runnable_config",
+        )
 
         # Create new config with thread_id if provided
         if thread_id:
@@ -365,10 +335,8 @@ class ExecutionMixin:
             )
 
             if base_config:
-                runtime_config = RunnableConfigManager.merge(
-                    base_config, runtime_config
-                )
-            
+                runtime_config = RunnableConfigManager.merge(base_config, runtime_config)
+
             if config:
                 runtime_config = RunnableConfigManager.merge(runtime_config, config)
         elif config:
@@ -415,10 +383,7 @@ class ExecutionMixin:
                 if "engine_configs" not in runtime_config["configurable"]:
                     runtime_config["configurable"]["engine_configs"] = {}
                 for engine_id, engine_params in value.items():
-                    if (
-                        engine_id
-                        not in runtime_config["configurable"]["engine_configs"]
-                    ):
+                    if engine_id not in runtime_config["configurable"]["engine_configs"]:
                         runtime_config["configurable"]["engine_configs"][engine_id] = {}
                     runtime_config["configurable"]["engine_configs"][engine_id].update(
                         engine_params
@@ -486,7 +451,8 @@ class ExecutionMixin:
         thread_id: str | None = None,
         debug: bool | None = None,
         config: RunnableConfig | None = None,
-        **kwargs) -> Any:
+        **kwargs,
+    ) -> Any:
         """Synchronously run the agent with input data."""
         # Ensure we have compiled app
         if not hasattr(self, "_app") or self._app is None:
@@ -541,9 +507,7 @@ class ExecutionMixin:
                 if hasattr(active_checkpointer, "setup") and not getattr(
                     active_checkpointer, "_setup_called", False
                 ):
-                    logger.debug(
-                        "Calling checkpointer.setup() as per LangGraph best practices"
-                    )
+                    logger.debug("Calling checkpointer.setup() as per LangGraph best practices")
                     active_checkpointer.setup()
                     active_checkpointer._setup_called = True
             except Exception as e:
@@ -570,7 +534,8 @@ class ExecutionMixin:
                     previous_state,
                     cast(dict, runtime_config),
                     input_schema,
-                    state_schema)
+                    state_schema,
+                )
                 logger.debug("Merged input with previous state")
                 processed_input = full_input
             except Exception as e:
@@ -581,7 +546,6 @@ class ExecutionMixin:
         try:
             # Ensure PostgreSQL connection pool is properly opened if needed
             if active_checkpointer and hasattr(active_checkpointer, "conn"):
-
                 pool_to_cleanup = ensure_pool_open(active_checkpointer)
 
             # Keep processed_input as Pydantic model - don't convert to dict
@@ -592,9 +556,7 @@ class ExecutionMixin:
             # models intact
             logger.debug("=== PRE-INVOKE STATE CHECK ===")
             # breakpoint()
-            result = self._app.invoke(
-                processed_input, config=runtime_config, debug=debug
-            )
+            result = self._app.invoke(processed_input, config=runtime_config, debug=debug)
             logger.debug("Agent execution completed successfully")
 
             # Process the result
@@ -613,7 +575,6 @@ class ExecutionMixin:
             # Clean up connection pool if we opened it
             if pool_to_cleanup:
                 try:
-
                     close_pool_if_needed(active_checkpointer, pool_to_cleanup)
                 except Exception as cleanup_error:
                     logger.warning(f"Error during connection cleanup: {cleanup_error}")
@@ -624,7 +585,8 @@ class ExecutionMixin:
         thread_id: str | None = None,
         config: RunnableConfig | None = None,
         debug: bool | None = None,
-        **kwargs) -> Any:
+        **kwargs,
+    ) -> Any:
         """Asynchronously run the agent with input data.
 
         Args:
@@ -666,9 +628,7 @@ class ExecutionMixin:
             if async_checkpointer and thread_id:
                 agent_name = getattr(self, "name", "Unknown Agent")
                 metadata = {"thread_name": agent_name}
-                await register_async_thread_if_needed(
-                    async_checkpointer, thread_id, metadata
-                )
+                await register_async_thread_if_needed(async_checkpointer, thread_id, metadata)
 
             # Get previous state if available using async checkpointer
             previous_state = None
@@ -677,9 +637,9 @@ class ExecutionMixin:
                     # Create async app with async checkpointer for state
                     # retrieval
                     assert self.graph is not None, "Graph not built"
-                    async_app = self.graph.to_langgraph(
-                        state_schema=self.state_schema
-                    ).compile(checkpointer=async_checkpointer, store=self.store)
+                    async_app = self.graph.to_langgraph(state_schema=self.state_schema).compile(
+                        checkpointer=async_checkpointer, store=self.store
+                    )
                     previous_state = await async_app.aget_state(runtime_config)
                     if previous_state and debug:
                         logger.debug(f"Retrieved previous state for thread {thread_id}")
@@ -696,7 +656,8 @@ class ExecutionMixin:
                         previous_state,
                         cast(dict, runtime_config),
                         input_schema,
-                        state_schema)
+                        state_schema,
+                    )
                     logger.debug("Merged input with previous state")
                     processed_input = full_input
                 except Exception as e:
@@ -708,20 +669,17 @@ class ExecutionMixin:
                 # Ensure async PostgreSQL connection pool is properly opened if
                 # needed
                 if async_checkpointer and hasattr(async_checkpointer, "conn"):
-
                     pool_to_cleanup = await ensure_async_pool_open(async_checkpointer)
 
                 # Keep processed_input as Pydantic model - don't convert to dict
                 # LangGraph can handle Pydantic models directly
-                logger.debug(
-                    "Keeping processed_input as Pydantic model for async LangGraph"
-                )
+                logger.debug("Keeping processed_input as Pydantic model for async LangGraph")
 
                 # Create async app with async checkpointer
                 assert self.graph is not None, "Graph not built"
-                async_app = self.graph.to_langgraph(
-                    state_schema=self.state_schema
-                ).compile(checkpointer=async_checkpointer, store=self.store)
+                async_app = self.graph.to_langgraph(state_schema=self.state_schema).compile(
+                    checkpointer=async_checkpointer, store=self.store
+                )
 
                 result = await async_app.ainvoke(processed_input, config=runtime_config)
                 logger.debug("Async agent execution completed successfully")
@@ -742,24 +700,18 @@ class ExecutionMixin:
                 # Clean up async connection pool if we opened it
                 if pool_to_cleanup:
                     try:
-                        await close_async_pool_if_needed(
-                            async_checkpointer, pool_to_cleanup
-                        )
+                        await close_async_pool_if_needed(async_checkpointer, pool_to_cleanup)
                     except Exception as cleanup_error:
-                        logger.warning(
-                            f"Error during async connection cleanup: {cleanup_error}"
-                        )
+                        logger.warning(f"Error during async connection cleanup: {cleanup_error}")
         else:
             # Fall back to sync execution in executor
             loop = asyncio.get_event_loop()
             return await loop.run_in_executor(
                 None,
                 lambda: self.run(
-                    input_data,
-                    thread_id=thread_id,
-                    config=config,
-                    debug=debug,
-                    **kwargs))
+                    input_data, thread_id=thread_id, config=config, debug=debug, **kwargs
+                ),
+            )
 
     def stream(
         self: "AgentProtocol",
@@ -768,7 +720,8 @@ class ExecutionMixin:
         stream_mode: str = "values",
         config: RunnableConfig | None = None,
         debug: bool | None = None,
-        **kwargs) -> Generator[dict[str, Any], None, None]:
+        **kwargs,
+    ) -> Generator[dict[str, Any], None, None]:
         """Stream agent execution with input data.
 
         Args:
@@ -838,9 +791,7 @@ class ExecutionMixin:
                 if hasattr(active_checkpointer, "setup") and not getattr(
                     active_checkpointer, "_setup_called", False
                 ):
-                    logger.debug(
-                        "Calling checkpointer.setup() as per LangGraph best practices"
-                    )
+                    logger.debug("Calling checkpointer.setup() as per LangGraph best practices")
                     active_checkpointer.setup()
                     active_checkpointer._setup_called = True
             except Exception as e:
@@ -867,7 +818,8 @@ class ExecutionMixin:
                     previous_state,
                     cast(dict, runtime_config),
                     input_schema,
-                    state_schema)
+                    state_schema,
+                )
                 logger.debug("Merged input with previous state")
                 processed_input = full_input
             except Exception as e:
@@ -954,7 +906,8 @@ class ExecutionMixin:
         stream_mode: str = "values",
         config: RunnableConfig | None = None,
         debug: bool | None = None,
-        **kwargs) -> AsyncGenerator[dict[str, Any], None]:
+        **kwargs,
+    ) -> AsyncGenerator[dict[str, Any], None]:
         """Asynchronously stream agent execution with input data.
 
         This implementation wraps the synchronous generator in an async one
@@ -968,7 +921,8 @@ class ExecutionMixin:
             stream_mode=stream_mode,
             config=config,
             debug=debug,
-            **kwargs)
+            **kwargs,
+        )
 
         it = iter(sync_gen)
         while True:

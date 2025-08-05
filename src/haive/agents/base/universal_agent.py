@@ -12,6 +12,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from haive.core.engine.base.agent_types import AgentType
+
 # Functions not available in agent_types: get_agent_capabilities, is_orchestration_agent, is_processing_agent, is_reasoning_agent
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
@@ -95,9 +96,7 @@ class Agent(BaseModel, ABC):
     )
 
     # Debug and visualization
-    verbose: bool = Field(
-        default=False, description="Enable verbose logging during execution"
-    )
+    verbose: bool = Field(default=False, description="Enable verbose logging during execution")
 
     @abstractmethod
     def build_graph(self) -> BaseGraph:
@@ -135,9 +134,7 @@ class Agent(BaseModel, ABC):
         compiled_graph = self.compile()
         return compiled_graph.invoke(input_data, config=config)
 
-    async def ainvoke(
-        self, input_data: Any, config: dict[str, Any] | None = None
-    ) -> Any:
+    async def ainvoke(self, input_data: Any, config: dict[str, Any] | None = None) -> Any:
         """Asynchronous invoke method.
 
         Args:
@@ -217,9 +214,7 @@ class Agent(BaseModel, ABC):
 
     def __str__(self) -> str:
         """String representation of the agent."""
-        return (
-            f"{self.__class__.__name__}(name='{self.name}', type='{self.agent_type}')"
-        )
+        return f"{self.__class__.__name__}(name='{self.name}', type='{self.agent_type}')"
 
     def __repr__(self) -> str:
         """Detailed string representation of the agent."""

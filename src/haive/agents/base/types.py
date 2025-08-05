@@ -6,12 +6,7 @@ Defines type variables, constraints, and base protocols for type-safe agent desi
 """
 
 from enum import Enum
-from typing import (
-    Any,
-    Generic,
-    Protocol,
-    TypeVar,
-    runtime_checkable)
+from typing import Any, Generic, Protocol, TypeVar, runtime_checkable
 
 from haive.core.engine.base import Engine, InvokableEngine
 from haive.core.schema.state_schema import StateSchema
@@ -66,15 +61,11 @@ class StateProvider(Protocol[TState]):
 class Invokable(Protocol[TInput, TOutput]):
     """Protocol for objects that can be invoked."""
 
-    def invoke(
-        self, input_data: TInput, config: dict[str, Any] | None = None
-    ) -> TOutput:
+    def invoke(self, input_data: TInput, config: dict[str, Any] | None = None) -> TOutput:
         """Invoke with input data."""
         ...
 
-    async def ainvoke(
-        self, input_data: TInput, config: dict[str, Any] | None = None
-    ) -> TOutput:
+    async def ainvoke(self, input_data: TInput, config: dict[str, Any] | None = None) -> TOutput:
         """Async invoke with input data."""
         ...
 
@@ -104,7 +95,8 @@ class Agent(
     StateProvider[TState],
     Invokable[TInput, TOutput],
     EngineProvider[TEngine],
-    Protocol[TEngine, TInput, TOutput, TState]):
+    Protocol[TEngine, TInput, TOutput, TState],
+):
     """Complete agent protocol combining all capabilities."""
 
 

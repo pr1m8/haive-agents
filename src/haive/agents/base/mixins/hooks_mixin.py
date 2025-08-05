@@ -58,7 +58,8 @@ class HooksMixin(Generic[TState]):
                         hook=attr,
                         priority=metadata.get("priority", 0),
                         name=metadata.get("name", attr_name),
-                        graph_aware=metadata.get("graph_aware", False))
+                        graph_aware=metadata.get("graph_aware", False),
+                    )
             except Exception as e:
                 logger.debug(f"Error checking {attr_name} for hooks: {e}")
 
@@ -69,7 +70,8 @@ class HooksMixin(Generic[TState]):
         priority: int = 0,
         name: str | None = None,
         graph_aware: bool = False,
-        condition: Callable[["HooksMixin", HookContext[TState]], bool] | None = None) -> None:
+        condition: Callable[["HooksMixin", HookContext[TState]], bool] | None = None,
+    ) -> None:
         """Register a hook with enhanced capabilities.
 
         Args:
@@ -105,11 +107,8 @@ class HooksMixin(Generic[TState]):
         )
 
     def run_hooks(
-        self,
-        point: HookPoint,
-        *args,
-        context: HookContext[TState] | None = None,
-        **kwargs) -> Any:
+        self, point: HookPoint, *args, context: HookContext[TState] | None = None, **kwargs
+    ) -> Any:
         """Run hooks for a specific point with enhanced context.
 
         Returns:
@@ -124,7 +123,8 @@ class HooksMixin(Generic[TState]):
                 hook_point=point,
                 agent_id=getattr(self, "id", "unknown"),
                 agent_type=self.__class__.__name__,
-                state_type=getattr(self, "state_schema", None))
+                state_type=getattr(self, "state_schema", None),
+            )
 
         hooks = self._hooks.get(point, [])
         result = None
@@ -160,9 +160,7 @@ class HooksMixin(Generic[TState]):
                     self._hook_results[f"{point.value}:{hook_name}"] = hook_result
 
             except Exception as e:
-                logger.exception(
-                    f"Hook '{hook_entry['name']}' error at {point.value}: {e}"
-                )
+                logger.exception(f"Hook '{hook_entry['name']}' error at {point.value}: {e}")
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.exception("Full hook error:")
 
@@ -177,9 +175,7 @@ class HooksMixin(Generic[TState]):
         """Clear all stored hook results."""
         self._hook_results.clear()
 
-    def unregister_hook(
-        self, point: HookPoint, hook: Callable | str | None = None
-    ) -> None:
+    def unregister_hook(self, point: HookPoint, hook: Callable | str | None = None) -> None:
         """Unregister one or all hooks at a point."""
         if point not in self._hooks:
             return
@@ -224,7 +220,8 @@ def hook(
     priority: int = 0,
     name: str | None = None,
     graph_aware: bool = False,
-    condition: Callable | None = None):
+    condition: Callable | None = None,
+):
     """Decorator for marking methods as hooks.
 
     Usage:

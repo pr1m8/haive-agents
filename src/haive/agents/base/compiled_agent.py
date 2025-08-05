@@ -4,6 +4,7 @@ This module provides the new CompiledAgent class that inherits from CompiledStat
 while maintaining compatibility with the existing Agent interface. This class represents
 the future direction for agent architecture in the Haive framework.
 """
+
 from __future__ import annotations
 import logging
 from abc import abstractmethod
@@ -18,9 +19,13 @@ from haive.agents.base.mixins.execution_mixin import ExecutionMixin
 from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
+
 logger = logging.getLogger(__name__)
 
-class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceMixin, SerializationMixin):
+
+class CompiledAgent(
+    CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceMixin, SerializationMixin
+):
     """Agent class based on CompiledStateGraph architecture.
 
     This class represents LLM-based reasoning agents that can:
@@ -43,17 +48,32 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
         conversation_memory: Whether to maintain conversation history
         max_iterations: Maximum reasoning iterations before stopping
     """
-    agent_type: Literal[EngineType.AGENT] = Field(default=EngineType.AGENT, description='Agent type, always AGENT for reasoning agents')
-    engine: Engine | None = Field(default=None, description='Primary LLM engine for reasoning (required for agents)')
-    engines: dict[str, Engine] = Field(default_factory=dict, description='Dictionary of additional engines used by this agent')
-    tools: list[BaseTool] = Field(default_factory=list, description='List of tools available to this agent')
-    conversation_memory: bool = Field(default=True, description='Whether to maintain conversation history')
-    max_iterations: int = Field(default=10, description='Maximum reasoning iterations before stopping')
-    set_schema: bool = Field(default=True, description='Whether to auto-generate schemas from engines')
 
-    @model_validator(mode='after')
+    agent_type: Literal[EngineType.AGENT] = Field(
+        default=EngineType.AGENT, description="Agent type, always AGENT for reasoning agents"
+    )
+    engine: Engine | None = Field(
+        default=None, description="Primary LLM engine for reasoning (required for agents)"
+    )
+    engines: dict[str, Engine] = Field(
+        default_factory=dict, description="Dictionary of additional engines used by this agent"
+    )
+    tools: list[BaseTool] = Field(
+        default_factory=list, description="List of tools available to this agent"
+    )
+    conversation_memory: bool = Field(
+        default=True, description="Whether to maintain conversation history"
+    )
+    max_iterations: int = Field(
+        default=10, description="Maximum reasoning iterations before stopping"
+    )
+    set_schema: bool = Field(
+        default=True, description="Whether to auto-generate schemas from engines"
+    )
+
+    @model_validator(mode="after")
     @classmethod
-    def validate_agent_requirements(cls) -> 'CompiledAgent':
+    def validate_agent_requirements(cls) -> "CompiledAgent":
         """Validate that agent has required LLM capabilities.
 
         Agents must have an LLM engine for reasoning. This validator ensures
@@ -61,12 +81,20 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
         """
         if not cls.engine:
             if not cls.engines:
-                raise ValueError("Agents must have at least one engine. Provide either 'engine' or 'engines' parameter.")
-            llm_engines = [eng for eng in cls.engines.values() if hasattr(eng, 'engine_type') and eng.engine_type == EngineType.LLM]
+                raise ValueError(
+                    "Agents must have at least one engine. Provide either 'engine' or 'engines' parameter."
+                )
+            llm_engines = [
+                eng
+                for eng in cls.engines.values()
+                if hasattr(eng, "engine_type") and eng.engine_type == EngineType.LLM
+            ]
             if llm_engines:
                 cls.engine = llm_engines[0]
             else:
-                logger.warning(f'Agent {cls.name} has no LLM engine. Agents should have reasoning capabilities.')
+                logger.warning(
+                    f"Agent {cls.name} has no LLM engine. Agents should have reasoning capabilities."
+                )
         if cls.set_schema:
             cls._setup_schemas()
         return cls
@@ -84,14 +112,16 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
                 engine_list.append(self.engine)
             engine_list.extend(self.engines.values())
             if engine_list:
-                logger.debug(f'Creating schema from {len(engine_list)} engines')
-                self.state_schema = SchemaComposer.from_components(components=engine_list, name=f'{self.__class__.__name__}State')
+                logger.debug(f"Creating schema from {len(engine_list)} engines")
+                self.state_schema = SchemaComposer.from_components(
+                    components=engine_list, name=f"{self.__class__.__name__}State"
+                )
             else:
-                logger.debug('No engines found, using basic state schema')
+                logger.debug("No engines found, using basic state schema")
                 self.state_schema = MessagesState
 
     @abstractmethod
-    def reason(self, problem: Any, context: dict[str, Any] | None=None) -> Any:
+    def reason(self, problem: Any, context: dict[str, Any] | None = None) -> Any:
         """Reason about a problem and provide a solution.
 
         This method must be implemented by all agent subclasses to define
@@ -112,7 +142,7 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
             NotImplementedError: If not implemented by subclass
         """
 
-    async def areason(self, problem: Any, context: dict[str, Any] | None=None) -> Any:
+    async def areason(self, problem: Any, context: dict[str, Any] | None = None) -> Any:
         """Asynchronous version of reason method.
 
         Default implementation calls the synchronous reason method.
@@ -163,7 +193,7 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
 
     def get_component_type(self) -> str:
         """Get the component type identifier."""
-        return 'agent'
+        return "agent"
 
     def get_agent_capabilities(self) -> dict[str, Any]:
         """Get information about agent capabilities.
@@ -171,7 +201,14 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
         Returns:
             dict: Information about agent's capabilities
         """
-        return {'has_reasoning': self.can_reason(), 'tool_count': len(self.tools), 'available_tools': self.get_available_tools(), 'conversation_memory': self.conversation_memory, 'max_iterations': self.max_iterations, 'engine_count': len(self.engines) + (1 if self.engine else 0)}
+        return {
+            "has_reasoning": self.can_reason(),
+            "tool_count": len(self.tools),
+            "available_tools": self.get_available_tools(),
+            "conversation_memory": self.conversation_memory,
+            "max_iterations": self.max_iterations,
+            "engine_count": len(self.engines) + (1 if self.engine else 0),
+        }
 
     def setup_agent(self) -> None:
         """Hook for subclass-specific setup logic.
@@ -183,17 +220,17 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
 
     def compile(self) -> Any:
         """Compile the agent into an executable graph.
-        
+
         Returns:
             Any: Compiled graph ready for execution
         """
         # This is a placeholder implementation
         # Subclasses should override this method to provide actual compilation
-        if hasattr(self, 'graph'):
+        if hasattr(self, "graph"):
             return self.graph
         raise NotImplementedError("compile() method must be implemented by subclasses")
 
-    def invoke(self, input_data: Any, config: dict[str, Any] | None=None) -> Any:
+    def invoke(self, input_data: Any, config: dict[str, Any] | None = None) -> Any:
         """Invoke the agent with input data.
 
         This method provides the standard invocation interface for agents.
@@ -209,7 +246,7 @@ class CompiledAgent(CompiledStateGraph, ExecutionMixin, StateMixin, PersistenceM
         compiled_graph = self.compile()
         return compiled_graph.invoke(input_data, config=config)
 
-    async def ainvoke(self, input_data: Any, config: dict[str, Any] | None=None) -> Any:
+    async def ainvoke(self, input_data: Any, config: dict[str, Any] | None = None) -> Any:
         """Asynchronous invoke method.
 
         Args:

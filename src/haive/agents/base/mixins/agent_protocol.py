@@ -1,10 +1,5 @@
 from collections.abc import AsyncGenerator, Generator
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Literal,
-    Optional,
-    Protocol)
+from typing import TYPE_CHECKING, Any, Literal, Optional, Protocol
 
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel
@@ -47,10 +42,8 @@ class AgentProtocol(Protocol):
     def _prepare_input(self, input_data: Any) -> Any: ...
 
     def _prepare_runnable_config(
-        self,
-        thread_id: str | None = None,
-        config: RunnableConfig | None = None,
-        **kwargs) -> RunnableConfig: ...
+        self, thread_id: str | None = None, config: RunnableConfig | None = None, **kwargs
+    ) -> RunnableConfig: ...
 
     def _process_output(self, output_data: Any) -> Any: ...
 
@@ -60,7 +53,8 @@ class AgentProtocol(Protocol):
         thread_id: str | None = None,
         debug: bool | None = None,
         config: RunnableConfig | None = None,
-        **kwargs) -> Any: ...
+        **kwargs,
+    ) -> Any: ...
 
     async def arun(
         self,
@@ -68,7 +62,8 @@ class AgentProtocol(Protocol):
         thread_id: str | None = None,
         config: RunnableConfig | None = None,
         debug: bool | None = None,
-        **kwargs) -> Any: ...
+        **kwargs,
+    ) -> Any: ...
 
     def stream(
         self,
@@ -77,7 +72,8 @@ class AgentProtocol(Protocol):
         stream_mode: str = "values",
         config: RunnableConfig | None = None,
         debug: bool | None = None,
-        **kwargs) -> Generator[dict[str, Any], None, None]: ...
+        **kwargs,
+    ) -> Generator[dict[str, Any], None, None]: ...
 
     async def astream(
         self,
@@ -86,6 +82,7 @@ class AgentProtocol(Protocol):
         stream_mode: str = "values",
         config: RunnableConfig | None = None,
         debug: bool | None = None,
-        **kwargs) -> AsyncGenerator[dict[str, Any], None]: ...
+        **kwargs,
+    ) -> AsyncGenerator[dict[str, Any], None]: ...
 
     def _process_stream_chunk(self, chunk: Any, stream_mode: str) -> dict[str, Any]: ...

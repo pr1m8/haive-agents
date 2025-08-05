@@ -46,9 +46,7 @@ class AgentDebugger:
             return
 
         # Create a tree view of the config
-        tree = Tree(
-            f"[bold blue]🔧 Runnable Config{' - ' + context if context else ''}"
-        )
+        tree = Tree(f"[bold blue]🔧 Runnable Config{' - ' + context if context else ''}")
 
         # Top level items
         for key, value in config.items():
@@ -57,9 +55,7 @@ class AgentDebugger:
                 for config_key, config_value in value.items():
                     if config_key == "recursion_limit":
                         color = "green" if config_value and config_value > 0 else "red"
-                        configurable_tree.add(
-                            f"[{color}]recursion_limit: {config_value}[/{color}]"
-                        )
+                        configurable_tree.add(f"[{color}]recursion_limit: {config_value}[/{color}]")
                     elif config_key == "thread_id":
                         configurable_tree.add(
                             f"[cyan]thread_id: {config_value[:8]}...[/cyan]"
@@ -67,51 +63,37 @@ class AgentDebugger:
                             else "[red]thread_id: None[/red]"
                         )
                     elif config_key == "engine_configs":
-                        engine_tree = configurable_tree.add(
-                            "[magenta]engine_configs[/magenta]"
-                        )
+                        engine_tree = configurable_tree.add("[magenta]engine_configs[/magenta]")
                         if isinstance(config_value, dict):
                             for engine_id, engine_config in config_value.items():
                                 engine_tree.add(
-                                    f"[white]{engine_id}: {
-                                        len(engine_config)} params[/white]"
+                                    f"[white]{engine_id}: {len(engine_config)} params[/white]"
                                 )
                         else:
                             engine_tree.add(
-                                f"[red]Invalid engine_configs: {
-                                    type(config_value)}[/red]"
+                                f"[red]Invalid engine_configs: {type(config_value)}[/red]"
                             )
                     else:
                         configurable_tree.add(
-                            f"[white]{config_key}: {
-                                str(config_value)[
-                                    :50]}{
-                                '...' if len(
-                                    str(config_value)) > 50 else ''}[/white]"
+                            f"[white]{config_key}: {str(config_value)[:50]}{
+                                '...' if len(str(config_value)) > 50 else ''
+                            }[/white]"
                         )
             elif key == "recursion_limit":
                 color = "green" if value and value > 0 else "red"
                 tree.add(f"[{color}]TOP-LEVEL recursion_limit: {value}[/{color}]")
             else:
                 tree.add(
-                    f"[white]{key}: {
-                        str(value)[
-                            :50]}{
-                        '...' if len(
-                            str(value)) > 50 else ''}[/white]"
+                    f"[white]{key}: {str(value)[:50]}{
+                        '...' if len(str(value)) > 50 else ''
+                    }[/white]"
                 )
 
         self.console.print(
-            Panel(
-                tree,
-                title=f"[bold]{
-                    self.agent_name}[/bold]",
-                border_style="blue")
+            Panel(tree, title=f"[bold]{self.agent_name}[/bold]", border_style="blue")
         )
 
-    def log_recursion_limit_flow(
-        self, step: str, recursion_limit: Any, source: str = ""
-    ):
+    def log_recursion_limit_flow(self, step: str, recursion_limit: Any, source: str = ""):
         """Track recursion limit through the execution flow."""
         if not self.enabled:
             return
@@ -129,7 +111,8 @@ class AgentDebugger:
             Panel(
                 text,
                 title=f"[bold]{self.agent_name} - Recursion Limit Flow[/bold]",
-                border_style="yellow")
+                border_style="yellow",
+            )
         )
 
     def log_config_preparation(
@@ -137,7 +120,8 @@ class AgentDebugger:
         base_config: RunnableConfig | None,
         runtime_config: RunnableConfig,
         thread_id: str | None,
-        kwargs: dict[str, Any]):
+        kwargs: dict[str, Any],
+    ):
         """Log the config preparation process."""
         if not self.enabled:
             return
@@ -145,7 +129,8 @@ class AgentDebugger:
         table = Table(
             title=f"{self.agent_name} - Config Preparation",
             show_header=True,
-            header_style="bold magenta")
+            header_style="bold magenta",
+        )
         table.add_column("Source", style="cyan")
         table.add_column("recursion_limit", justify="center")
         table.add_column("thread_id", style="dim")
@@ -157,9 +142,7 @@ class AgentDebugger:
         base_keys = "None"
         if base_config:
             base_recursion = str(base_config.get("recursion_limit", "None"))
-            base_thread = str(
-                base_config.get("configurable", {}).get("thread_id", "None")
-            )
+            base_thread = str(base_config.get("configurable", {}).get("thread_id", "None"))
             base_keys = ", ".join(
                 [k for k in base_config if k not in ["recursion_limit", "configurable"]]
             )
@@ -168,13 +151,12 @@ class AgentDebugger:
             "base_config",
             base_recursion,
             base_thread[:8] + "..." if len(base_thread) > 8 else base_thread,
-            base_keys)
+            base_keys,
+        )
 
         # Runtime config
         runtime_recursion = str(runtime_config.get("recursion_limit", "None"))
-        runtime_thread = str(
-            runtime_config.get("configurable", {}).get("thread_id", "None")
-        )
+        runtime_thread = str(runtime_config.get("configurable", {}).get("thread_id", "None"))
         runtime_keys = ", ".join(
             [k for k in runtime_config if k not in ["recursion_limit", "configurable"]]
         )
@@ -182,7 +164,8 @@ class AgentDebugger:
             "runtime_config",
             runtime_recursion,
             runtime_thread[:8] + "..." if len(runtime_thread) > 8 else runtime_thread,
-            runtime_keys)
+            runtime_keys,
+        )
 
         # Configurable recursion limit
         configurable_recursion = str(
@@ -194,11 +177,7 @@ class AgentDebugger:
         kwargs_recursion = str(kwargs.get("recursion_limit", "None"))
         kwargs_thread = str(kwargs.get("thread_id", "None"))
         kwargs_keys = ", ".join(
-            [
-                k
-                for k in kwargs
-                if k not in ["recursion_limit", "thread_id", "debug", "config"]
-            ]
+            [k for k in kwargs if k not in ["recursion_limit", "thread_id", "debug", "config"]]
         )
         table.add_row("kwargs", kwargs_recursion, kwargs_thread, kwargs_keys)
 
@@ -215,11 +194,7 @@ class AgentDebugger:
         if hasattr(input_data, "messages"):
             panel_content.append(f"📨 Messages: {len(input_data.messages)}")
         elif isinstance(input_data, dict):
-            panel_content.append(
-                f"📦 Dict with keys: {
-                    list(
-                        input_data.keys())}"
-            )
+            panel_content.append(f"📦 Dict with keys: {list(input_data.keys())}")
         else:
             panel_content.append(f"📄 Input type: {type(input_data).__name__}")
 
@@ -238,9 +213,9 @@ class AgentDebugger:
         self.console.print(
             Panel(
                 content,
-                title=f"[bold green]🚀 Starting {
-                    self.agent_name} Execution[/bold green]",
-                border_style="green")
+                title=f"[bold green]🚀 Starting {self.agent_name} Execution[/bold green]",
+                border_style="green",
+            )
         )
 
 
@@ -274,9 +249,7 @@ def disable_agent_debugging() -> None:
     debug_logger.info("🔇 Agent debugging disabled")
 
 
-def debug_runnable_config(
-    config: RunnableConfig, context: str = "", agent_name: str = "Agent"
-):
+def debug_runnable_config(config: RunnableConfig, context: str = "", agent_name: str = "Agent"):
     """Quick function to debug a runnable config."""
     debugger = get_agent_debugger(agent_name)
     if debug_logger.level <= logging.DEBUG:

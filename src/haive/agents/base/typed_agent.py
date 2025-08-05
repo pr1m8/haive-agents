@@ -7,11 +7,7 @@ hierarchy, with better separation between different types of agents.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Generic,
-    TypeVar)
+from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
 from haive.core.schema.base_state_schemas import (
     AgentState,
@@ -19,7 +15,8 @@ from haive.core.schema.base_state_schemas import (
     EngineState,
     MetaAgentState,
     ToolExecutorState,
-    WorkflowState)
+    WorkflowState,
+)
 
 if TYPE_CHECKING:
     from haive.core.engine.base import Engine
@@ -58,9 +55,7 @@ class BaseExecutor(ABC, Generic[TState]):
     def validate_state(self, state: TState) -> bool:
         """Validate that state has required components."""
         # Check required engines
-        return all(
-            state.get_engine(engine_name) for engine_name in self.get_required_engines()
-        )
+        return all(state.get_engine(engine_name) for engine_name in self.get_required_engines())
 
 
 class ToolExecutor(BaseExecutor[ToolExecutorState]):
@@ -167,7 +162,8 @@ class BaseAgent(BaseExecutor[AgentState]):
         name: str,
         primary_engine: Engine | None = None,
         state_schema: type[AgentState] = AgentState,
-        **kwargs):
+        **kwargs,
+    ):
         super().__init__(name, state_schema, **kwargs)
         self.primary_engine = primary_engine
 
@@ -180,10 +176,7 @@ class BaseAgent(BaseExecutor[AgentState]):
         # Get the engine
         engine = state.primary_engine
         if not engine:
-            raise ValueError(
-                f"No primary engine available for agent {
-                    self.name}"
-            )
+            raise ValueError(f"No primary engine available for agent {self.name}")
 
         # Execute main agent logic
         result = await self.run_engine(engine, state)
@@ -243,7 +236,8 @@ class WorkflowAgent(BaseAgent):
         name: str,
         primary_engine: Engine | None = None,
         initial_graph: dict[str, Any] | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         super().__init__(name, primary_engine, WorkflowState, **kwargs)
         self.initial_graph = initial_graph
 
@@ -268,9 +262,7 @@ class WorkflowAgent(BaseAgent):
         # Override in subclasses
         return False
 
-    async def determine_graph_modifications(
-        self, state: WorkflowState
-    ) -> dict[str, Any]:
+    async def determine_graph_modifications(self, state: WorkflowState) -> dict[str, Any]:
         """Determine what graph modifications to make."""
         # Override in subclasses
         return {}
@@ -288,7 +280,8 @@ class MetaAgent(WorkflowAgent):
         name: str,
         primary_engine: Engine | None = None,
         agent_factory: dict[str, type[BaseAgent]] | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         super().__init__(name, primary_engine, **kwargs)
         self.agent_factory = agent_factory or {}
         self.state_schema = MetaAgentState
@@ -408,11 +401,8 @@ class AdaptiveAgent(WorkflowAgent):
     """
 
     def __init__(
-        self,
-        name: str,
-        performance_metrics: list[str],
-        adaptation_threshold: float = 0.7,
-        **kwargs):
+        self, name: str, performance_metrics: list[str], adaptation_threshold: float = 0.7, **kwargs
+    ):
         super().__init__(name, **kwargs)
         self.performance_metrics = performance_metrics
         self.adaptation_threshold = adaptation_threshold
@@ -472,9 +462,7 @@ def create_executor(executor_type: str, name: str, **kwargs) -> BaseExecutor:
     raise TypeError(f"Unknown executor type: {executor_type}")
 
 
-def create_agent(
-    agent_type: str, name: str, engine: Engine | None = None, **kwargs
-) -> BaseAgent:
+def create_agent(agent_type: str, name: str, engine: Engine | None = None, **kwargs) -> BaseAgent:
     """Factory to create appropriate agent.
 
     Args:
