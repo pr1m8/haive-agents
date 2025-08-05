@@ -13,7 +13,9 @@ from typing import Any
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field, field_validator
 
-from haive.agents.memory_reorganized.core.memory_state_original import EnhancedMemoryItem as MemoryEntry
+from haive.agents.memory_reorganized.core.memory_state_original import (
+    EnhancedMemoryItem as MemoryEntry,
+)
 
 
 # Create MemoryMetadata as a simple class
@@ -46,7 +48,8 @@ class MemoryConfig(BaseModel):
     storage_backend: str = Field(
         default="json_file",
         description="Backend for memory storage",
-        pattern="^(json_file|sqlite|neo4j|vector_db|in_memory)$")
+        pattern="^(json_file|sqlite|neo4j|vector_db|in_memory)$",
+    )
 
     storage_path: str | None = Field(
         default=None, description="Path for file-based storage backends"
@@ -57,8 +60,8 @@ class MemoryConfig(BaseModel):
     )
 
     memory_ttl: int = Field(
-        default=-1,
-        description="Time-to-live for memories in seconds (-1 for permanent)")
+        default=-1, description="Time-to-live for memories in seconds (-1 for permanent)"
+    )
 
     enable_embedding: bool = Field(
         default=True, description="Whether to generate embeddings for similarity search"
@@ -69,23 +72,20 @@ class MemoryConfig(BaseModel):
     )
 
     similarity_threshold: float = Field(
-        default=0.7,
-        ge=0.0,
-        le=1.0,
-        description="Minimum similarity score for retrieval")
+        default=0.7, ge=0.0, le=1.0, description="Minimum similarity score for retrieval"
+    )
 
     classification_enabled: bool = Field(
         default=True, description="Whether to automatically classify memories"
     )
 
     auto_cleanup: bool = Field(
-        default=False,
-        description="Whether to automatically clean up old/low-importance memories")
+        default=False, description="Whether to automatically clean up old/low-importance memories"
+    )
 
     cache_size: int = Field(
-        default=1000,
-        ge=0,
-        description="Size of in-memory cache for frequently accessed memories")
+        default=1000, ge=0, description="Size of in-memory cache for frequently accessed memories"
+    )
 
     @field_validator("storage_path")
     @classmethod
@@ -106,9 +106,7 @@ def _get_storage_key(namespace: str = "default") -> str:
     return f"memories_{namespace}"
 
 
-def _load_memories_from_file(
-    storage_path: str, namespace: str = "default"
-) -> list[MemoryEntry]:
+def _load_memories_from_file(storage_path: str, namespace: str = "default") -> list[MemoryEntry]:
     """Load memories from JSON file."""
     try:
         path = Path(storage_path)
@@ -157,7 +155,8 @@ def store_memory(
     tags: list[str] | None = None,
     context_id: str | None = None,
     namespace: str = "default",
-    config: dict[str, Any] | None = None) -> str:
+    config: dict[str, Any] | None = None,
+) -> str:
     """Store a memory with classification and metadata.
 
     Stores a memory entry with automatic classification, metadata extraction,
@@ -208,7 +207,8 @@ def store_memory(
             timestamp=timestamp,
             source="user_input",
             tags=tags or [],
-            context_id=context_id)
+            context_id=context_id,
+        )
 
         memory = MemoryEntry(id=memory_id, content=content, metadata=metadata)
 
@@ -218,9 +218,7 @@ def store_memory(
         # Handle different storage backends
         if _MEMORY_CONFIG.storage_backend == "json_file":
             # Load existing memories
-            existing_memories = _load_memories_from_file(
-                _MEMORY_CONFIG.storage_path, namespace
-            )
+            existing_memories = _load_memories_from_file(_MEMORY_CONFIG.storage_path, namespace)
             existing_memories.append(memory)
 
             # Apply memory limit if set
@@ -232,9 +230,7 @@ def store_memory(
                 existing_memories = existing_memories[-_MEMORY_CONFIG.max_memories :]
 
             # Save to file
-            _save_memories_to_file(
-                existing_memories, _MEMORY_CONFIG.storage_path, namespace
-            )
+            _save_memories_to_file(existing_memories, _MEMORY_CONFIG.storage_path, namespace)
 
         else:  # in_memory storage
             if storage_key not in _MEMORY_STORAGE:
@@ -264,7 +260,8 @@ def retrieve_memory(
     importance_filter: list[str] | None = None,
     limit: int = 5,
     namespace: str = "default",
-    config: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    config: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
     """Retrieve memories based on query and filters.
 
     Searches for relevant memories using content similarity and metadata filters.
@@ -326,9 +323,7 @@ def retrieve_memory(
 
         if importance_filter:
             filtered_memories = [
-                m
-                for m in filtered_memories
-                if m.metadata.importance in importance_filter
+                m for m in filtered_memories if m.metadata.importance in importance_filter
             ]
 
         # Simple text-based similarity (in production, would use embeddings)
@@ -372,7 +367,8 @@ def search_memory(
     sort_order: str = "desc",
     limit: int = 10,
     namespace: str = "default",
-    config: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    config: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
     """Search memories with flexible filtering and sorting options.
 
     Provides advanced search capabilities with multiple filter options
@@ -445,18 +441,12 @@ def search_memory(
         if filters:
             for filter_key, filter_value in filters.items():
                 if filter_key == "memory_type":
-                    results = [
-                        m for m in results if m.metadata.memory_type == filter_value
-                    ]
+                    results = [m for m in results if m.metadata.memory_type == filter_value]
                 elif filter_key == "importance":
                     if isinstance(filter_value, list):
-                        results = [
-                            m for m in results if m.metadata.importance in filter_value
-                        ]
+                        results = [m for m in results if m.metadata.importance in filter_value]
                     else:
-                        results = [
-                            m for m in results if m.metadata.importance == filter_value
-                        ]
+                        results = [m for m in results if m.metadata.importance == filter_value]
                 elif filter_key == "tags":
                     if isinstance(filter_value, list):
                         results = [
@@ -465,13 +455,9 @@ def search_memory(
                             if any(tag in m.metadata.tags for tag in filter_value)
                         ]
                     else:
-                        results = [
-                            m for m in results if filter_value in m.metadata.tags
-                        ]
+                        results = [m for m in results if filter_value in m.metadata.tags]
                 elif filter_key == "context_id":
-                    results = [
-                        m for m in results if m.metadata.context_id == filter_value
-                    ]
+                    results = [m for m in results if m.metadata.context_id == filter_value]
                 elif filter_key == "source":
                     results = [m for m in results if m.metadata.source == filter_value]
 
@@ -479,9 +465,7 @@ def search_memory(
         reverse_order = sort_order.lower() == "desc"
 
         if sort_by == "timestamp":
-            results.sort(
-                key=lambda x: x.metadata.timestamp or "", reverse=reverse_order
-            )
+            results.sort(key=lambda x: x.metadata.timestamp or "", reverse=reverse_order)
         elif sort_by == "importance":
             importance_order = {
                 "critical": 5,
@@ -491,12 +475,10 @@ def search_memory(
                 "transient": 1,
             }
             results.sort(
-                key=lambda x: importance_order.get(x.metadata.importance, 0),
-                reverse=reverse_order)
-        elif sort_by == "retrieval_count":
-            results.sort(
-                key=lambda x: x.metadata.retrieval_count, reverse=reverse_order
+                key=lambda x: importance_order.get(x.metadata.importance, 0), reverse=reverse_order
             )
+        elif sort_by == "retrieval_count":
+            results.sort(key=lambda x: x.metadata.retrieval_count, reverse=reverse_order)
         elif sort_by == "confidence":
             results.sort(key=lambda x: x.metadata.confidence, reverse=reverse_order)
 
@@ -679,11 +661,7 @@ def classify_memory(
         tags = []
         for word in words:
             clean_word = word.lower().strip(".,!?();:\"'")
-            if (
-                len(clean_word) > 3
-                and clean_word not in common_words
-                and clean_word.isalpha()
-            ):
+            if len(clean_word) > 3 and clean_word not in common_words and clean_word.isalpha():
                 tags.append(clean_word)
 
         # Remove duplicates and limit tags

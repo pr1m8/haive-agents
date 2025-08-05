@@ -39,9 +39,7 @@ RESEARCH_TOPICS = [
 ]
 
 
-def conduct_research(
-    agent: ResearchAgent, topic: dict[str, str], output_dir: str
-) -> dict:
+def conduct_research(agent: ResearchAgent, topic: dict[str, str], output_dir: str) -> dict:
     """Conduct research on a specific topic and save the report.
 
     Args:
@@ -103,7 +101,8 @@ def main() -> None:
     config = ResearchAgentConfig.from_scratch(
         research_depth=2,  # Lower depth for faster execution
         concurrent_searches=3,
-        max_sources_per_query=4)
+        max_sources_per_query=4,
+    )
 
     # Create research agent
     logger.info("Creating research agent...")
@@ -116,10 +115,7 @@ def main() -> None:
             metadata = conduct_research(agent, topic, output_dir)
             results.append(metadata)
         except Exception as e:
-            logger.exception(
-                f"Error processing research topic '{
-                    topic['title']}': {e}"
-            )
+            logger.exception(f"Error processing research topic '{topic['title']}': {e}")
 
     # Generate summary report
     logger.info("Generating batch research summary...")
@@ -138,9 +134,7 @@ def main() -> None:
             f.write(f"**Sources**: {result['num_sources']}\n\n")
             f.write(f"**Sections**: {result['num_sections']}\n\n")
             f.write(f"**Processing Time**: {result['elapsed_time']:.2f} seconds\n\n")
-            f.write(
-                f"**Report**: [View Report]({os.path.basename(result['report_path'])})\n\n"
-            )
+            f.write(f"**Report**: [View Report]({os.path.basename(result['report_path'])})\n\n")
             f.write("---\n\n")
 
     logger.info(f"Batch summary saved to {summary_path}")

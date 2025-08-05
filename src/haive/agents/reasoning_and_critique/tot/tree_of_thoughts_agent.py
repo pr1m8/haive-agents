@@ -11,10 +11,8 @@ from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.constants import Send
 from pydantic import BaseModel, Field
 
-from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
-    CandidateGenerator)
-from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
-    SolutionScorer)
+from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import CandidateGenerator
+from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import SolutionScorer
 
 
 class TOTCommand(BaseModel):
@@ -25,7 +23,8 @@ class TOTCommand(BaseModel):
     )
     target_node: str | None = Field(
         default=None,
-        description="Target node to route to (generate_candidates, score_solutions, etc.)")
+        description="Target node to route to (generate_candidates, score_solutions, etc.)",
+    )
     data: dict[str, Any] = Field(
         default_factory=dict, description="Data to pass to the target node"
     )
@@ -56,7 +55,8 @@ class TreeOfThoughtsAgent:
         max_iterations: int = 3,
         generation_temperature: float = 0.7,
         scoring_temperature: float = 0.3,
-        engine: AugLLMConfig | None = None):
+        engine: AugLLMConfig | None = None,
+    ):
         """Initialize Tree of Thoughts agent.
 
         Args:
@@ -76,9 +76,7 @@ class TreeOfThoughtsAgent:
             name="tot_generator", expansion_count=5, temperature=generation_temperature
         )
 
-        self.solution_scorer = SolutionScorer(
-            name="tot_scorer", temperature=scoring_temperature
-        )
+        self.solution_scorer = SolutionScorer(name="tot_scorer", temperature=scoring_temperature)
 
         # Store engine for any coordination needs
         self.engine = engine or AugLLMConfig(temperature=0.5)
@@ -237,9 +235,7 @@ class TreeOfThoughtsAgent:
             "score": best_score,
             "is_complete": best_details.is_complete if best_details else False,
             "has_errors": best_details.has_errors if best_details else True,
-            "reasoning": (
-                best_details.reasoning if best_details else "No reasoning available"
-            ),
+            "reasoning": (best_details.reasoning if best_details else "No reasoning available"),
             "all_candidates_explored": len(state.get("candidates", [])),
             "final_beam_size": len(best_candidates),
         }
@@ -319,9 +315,7 @@ class TreeOfThoughtsAgent:
         )
 
         # Select top candidates for beam search
-        scored_solutions = [
-            (s.solution, s.score) for s in initial_scores.scored_solutions
-        ]
+        scored_solutions = [(s.solution, s.score) for s in initial_scores.scored_solutions]
         scored_solutions.sort(key=lambda x: x[1], reverse=True)
 
         best_candidates = [sol for sol, _ in scored_solutions[: self.beam_size]]
@@ -329,7 +323,6 @@ class TreeOfThoughtsAgent:
 
         # Phase 3: Iterative expansion (if multiple iterations)
         for iteration in range(1, self.max_iterations):
-
             # Check if we have a perfect solution
             if best_scores and max(best_scores) >= 0.95:
                 break
@@ -351,9 +344,7 @@ class TreeOfThoughtsAgent:
             )
 
             # Update beam search
-            scored_solutions = [
-                (s.solution, s.score) for s in all_scores.scored_solutions
-            ]
+            scored_solutions = [(s.solution, s.score) for s in all_scores.scored_solutions]
             scored_solutions.sort(key=lambda x: x[1], reverse=True)
 
             best_candidates = [sol for sol, _ in scored_solutions[: self.beam_size]]
@@ -378,15 +369,11 @@ class TreeOfThoughtsAgent:
             "score": best_score,
             "is_complete": best_details.is_complete if best_details else False,
             "has_errors": best_details.has_errors if best_details else True,
-            "reasoning": (
-                best_details.reasoning if best_details else "No reasoning available"
-            ),
+            "reasoning": (best_details.reasoning if best_details else "No reasoning available"),
             "all_candidates_explored": len(candidates),
             "final_beam_size": len(best_candidates),
             "iterations_completed": (
-                min(iteration + 1, self.max_iterations)
-                if "iteration" in locals()
-                else 1
+                min(iteration + 1, self.max_iterations) if "iteration" in locals() else 1
             ),
         }
 
@@ -398,7 +385,8 @@ def create_tree_of_thoughts_agent(
     beam_size: int = 3,
     max_iterations: int = 3,
     generation_temperature: float = 0.7,
-    scoring_temperature: float = 0.3) -> TreeOfThoughtsAgent:
+    scoring_temperature: float = 0.3,
+) -> TreeOfThoughtsAgent:
     """Create a Tree of Thoughts agent with default settings.
 
     Args:
@@ -414,4 +402,5 @@ def create_tree_of_thoughts_agent(
         beam_size=beam_size,
         max_iterations=max_iterations,
         generation_temperature=generation_temperature,
-        scoring_temperature=scoring_temperature)
+        scoring_temperature=scoring_temperature,
+    )

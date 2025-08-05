@@ -45,6 +45,7 @@ class AdapterAgent(SimpleAgent):
                 max_tokens=1500,
                 system_message=ADAPTER_SYSTEM_MESSAGE,
                 prompt_template=ADAPTER_PROMPT,
-                structured_output_model=AdaptedModules)
+                structured_output_model=AdaptedModules,
+            )
 
         super().__init__(name=name, engine=engine, **kwargs)

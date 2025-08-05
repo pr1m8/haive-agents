@@ -28,9 +28,7 @@ class RebuildDynamicSupervisor(ReactAgent):
     """
 
     # Configuration
-    auto_rebuild: bool = Field(
-        default=True, description="Auto rebuild on agent changes"
-    )
+    auto_rebuild: bool = Field(default=True, description="Auto rebuild on agent changes")
 
     # Private attributes
     _agent_registry: dict[str, Any] = PrivateAttr(default_factory=dict)
@@ -87,9 +85,7 @@ class RebuildDynamicSupervisor(ReactAgent):
             if self.auto_rebuild:
                 self._trigger_rebuild()
 
-        logger.info(
-            f"✅ Unregistered {agent_name} ({len(self._agent_registry)} remaining)"
-        )
+        logger.info(f"✅ Unregistered {agent_name} ({len(self._agent_registry)} remaining)")
         return True
 
     def _trigger_rebuild(self):
@@ -121,9 +117,7 @@ class RebuildDynamicSupervisor(ReactAgent):
         - Conditional routing from supervisor to agents
         - Agents route back to supervisor
         """
-        logger.info(
-            f"Building supervisor graph with {len(self._agent_registry)} agents"
-        )
+        logger.info(f"Building supervisor graph with {len(self._agent_registry)} agents")
 
         graph = BaseGraph(name=f"{self.name}Graph")
 
@@ -148,13 +142,9 @@ class RebuildDynamicSupervisor(ReactAgent):
         destinations["END"] = "__end__"
 
         # Supervisor routes conditionally
-        graph.add_conditional_edges(
-            "supervisor", self._route_from_supervisor, destinations
-        )
+        graph.add_conditional_edges("supervisor", self._route_from_supervisor, destinations)
 
-        logger.info(
-            f"✅ Graph built with nodes: supervisor + {list(self._agent_registry.keys())}"
-        )
+        logger.info(f"✅ Graph built with nodes: supervisor + {list(self._agent_registry.keys())}")
         return graph
 
     def _create_supervisor_node(self):
@@ -263,10 +253,7 @@ class RebuildDynamicSupervisor(ReactAgent):
         """Prepare input for agent based on its state schema."""
         # If agent has state_schema, extract only needed fields
         if hasattr(agent, "state_schema") and agent.state_schema:
-            logger.info(
-                f"Using agent state schema: {
-                    agent.state_schema.__name__}"
-            )
+            logger.info(f"Using agent state schema: {agent.state_schema.__name__}")
 
             agent_input = {}
             for field_name in agent.state_schema.model_fields:
@@ -311,7 +298,6 @@ class RebuildDynamicSupervisor(ReactAgent):
             current_messages = state.get("messages", [])
             update["messages"] = [*current_messages, result]
         elif isinstance(result, str):
-
             current_messages = state.get("messages", [])
             update["messages"] = [*current_messages, AIMessage(content=result)]
 
@@ -379,10 +365,7 @@ if __name__ == "__main__":
 
         async def ainvoke(self, state: dict[str, Any]) -> dict[str, Any]:
             messages = state.get("messages", [])
-            response = AIMessage(
-                content=f"{
-                    self.name}: Processed your request"
-            )
+            response = AIMessage(content=f"{self.name}: Processed your request")
             return {"messages": [*messages, response]}
 
     async def test_rebuild_supervisor():
@@ -394,16 +377,12 @@ if __name__ == "__main__":
         supervisor.register_agent(TestAgent("writing_agent"), "writing")
 
         # First invocation - builds graph
-        await supervisor.ainvoke(
-            {"messages": [HumanMessage(content="Research something")]}
-        )
+        await supervisor.ainvoke({"messages": [HumanMessage(content="Research something")]})
 
         # Add new agent - triggers rebuild on next invoke
         supervisor.register_agent(TestAgent("math_agent"), "calculations")
 
         # Second invocation - rebuilds graph automatically
-        await supervisor.ainvoke(
-            {"messages": [HumanMessage(content="Calculate something")]}
-        )
+        await supervisor.ainvoke({"messages": [HumanMessage(content="Calculate something")]})
 
     asyncio.run(test_rebuild_supervisor())

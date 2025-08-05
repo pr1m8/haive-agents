@@ -42,9 +42,7 @@ class ChainAgentSchema(SimpleAgentState):
     chain_data: dict[str, Any] = Field(
         default_factory=dict, description="Data passed between chain steps"
     )
-    error: str | None = Field(
-        default=None, description="Error message if any step fails"
-    )
+    error: str | None = Field(default=None, description="Error message if any step fails")
 
 
 # =============================================
@@ -59,13 +57,13 @@ class ChainAgentConfig(SimpleAgentConfig):
 
     # Chain configuration
     engines: list[AugLLMConfig] = Field(
-        default_factory=list,
-        description="List of AugLLMConfig engines to chain together")
+        default_factory=list, description="List of AugLLMConfig engines to chain together"
+    )
 
     # Step configuration
     step_names: list[str] | None = Field(
-        default=None,
-        description="Optional names for each step (defaults to engine names)")
+        default=None, description="Optional names for each step (defaults to engine names)"
+    )
 
     # Override state schema with chain-specific schema
     state_schema: type[BaseModel] = Field(
@@ -78,19 +76,19 @@ class ChainAgentConfig(SimpleAgentConfig):
         engines: list[AugLLMConfig],
         name: str | None = None,
         system_prompt: str | None = None,
-        **kwargs) -> "ChainAgentConfig":
+        **kwargs,
+    ) -> "ChainAgentConfig":
         """Create a ChainAgentConfig from a list of AugLLMConfig engines."""
         # Set first engine as the primary engine
         primary_engine = engines[0] if engines else AugLLMConfig()
 
         return cls(
-            name=name
-            or f"chain_agent_{
-                datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            name=name or f"chain_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             engine=primary_engine,  # Use first engine as primary
             engines=engines,  # Store all engines
             system_prompt=system_prompt or "You are a helpful assistant.",
-            **kwargs)
+            **kwargs,
+        )
 
 
 # =============================================
@@ -117,27 +115,22 @@ class ChainAgent(SimpleAgent):
 
         # Get or generate step names
         step_names = self.config.step_names or [
-            f"step_{i}_{
-                engine.name}"
-            for i, engine in enumerate(self.config.engines)
+            f"step_{i}_{engine.name}" for i, engine in enumerate(self.config.engines)
         ]
 
         # Ensure we have the right number of step names
         if len(step_names) != len(self.config.engines):
             logger.warning(
-                f"Number of step names ({
-                    len(step_names)}) does not match number of engines ({
-                    len(
-                        self.config.engines)})"
+                f"Number of step names ({len(step_names)}) does not match number of engines ({
+                    len(self.config.engines)
+                })"
             )
             # Generate missing step names
             if len(step_names) < len(self.config.engines):
                 step_names.extend(
                     [
                         f"step_{i + len(step_names)}_{engine.name}"
-                        for i, engine in enumerate(
-                            self.config.engines[len(step_names) :]
-                        )
+                        for i, engine in enumerate(self.config.engines[len(step_names) :])
                     ]
                 )
             else:
@@ -147,22 +140,16 @@ class ChainAgent(SimpleAgent):
         self.step_names = step_names
 
         # Create DynamicGraph with our state schema
-        gb = DynamicGraph(
-            components=self.config.engines, state_schema=self.state_schema
-        )
+        gb = DynamicGraph(components=self.config.engines, state_schema=self.state_schema)
 
         # Add nodes for each engine in the chain
-        for i, (step_name, engine) in enumerate(
-            zip(step_names, self.config.engines, strict=False)
-        ):
+        for i, (step_name, engine) in enumerate(zip(step_names, self.config.engines, strict=False)):
             # Create a processor for this step
             processor = self._create_step_processor(i, step_name, engine)
 
             # Determine next step for routing
             next_step_idx = i + 1
-            next_step = (
-                step_names[next_step_idx] if next_step_idx < len(step_names) else END
-            )
+            next_step = step_names[next_step_idx] if next_step_idx < len(step_names) else END
 
             # Add the step processor as a node
             gb.add_node(name=step_name, config=processor, command_goto=next_step)
@@ -173,10 +160,7 @@ class ChainAgent(SimpleAgent):
             # Extract text from messages
             if hasattr(state, "messages") and state.messages:
                 messages_text = "\n".join(
-                    [
-                        m.content if hasattr(m, "content") else str(m)
-                        for m in state.messages
-                    ]
+                    [m.content if hasattr(m, "content") else str(m) for m in state.messages]
                 )
 
                 # Initialize chain_data with input text
@@ -329,10 +313,7 @@ class ChainAgent(SimpleAgent):
                 return updated_state
 
             except Exception as e:
-                logger.exception(
-                    f"Error in step {step_idx} ({step_name}): {
-                        e!s}"
-                )
+                logger.exception(f"Error in step {step_idx} ({step_name}): {e!s}")
                 error_msg = f"Error in step {step_idx} ({step_name}): {e!s}"
 
                 # Add error as AI message if we have messages
@@ -350,9 +331,7 @@ class ChainAgent(SimpleAgent):
 
         return process_step
 
-    def _prepare_input(
-        self, input_data: str | list[str] | dict[str, Any] | BaseModel
-    ) -> Any:
+    def _prepare_input(self, input_data: str | list[str] | dict[str, Any] | BaseModel) -> Any:
         """Override the prepare_input method to handle chain-specific input preparation."""
         # Use the parent's method as base
         if isinstance(input_data, str):
@@ -360,17 +339,15 @@ class ChainAgent(SimpleAgent):
             return self.state_schema(
                 messages=[HumanMessage(content=input_data)],
                 current_step=0,
-                chain_data={"input_text": input_data})
-        if isinstance(input_data, list) and all(
-            isinstance(item, str) for item in input_data
-        ):
+                chain_data={"input_text": input_data},
+            )
+        if isinstance(input_data, list) and all(isinstance(item, str) for item in input_data):
             # List of strings to messages
             messages = [HumanMessage(content=item) for item in input_data]
             combined_text = "\n".join(input_data)
             return self.state_schema(
-                messages=messages,
-                current_step=0,
-                chain_data={"input_text": combined_text})
+                messages=messages, current_step=0, chain_data={"input_text": combined_text}
+            )
         if isinstance(input_data, dict):
             # Make sure current_step and chain_data are set
             input_data_copy = dict(input_data)
@@ -382,9 +359,7 @@ class ChainAgent(SimpleAgent):
         if isinstance(input_data, BaseModel):
             # Convert BaseModel to dict and set current_step
             data = (
-                input_data.model_dump()
-                if hasattr(input_data, "model_dump")
-                else input_data.dict()
+                input_data.model_dump() if hasattr(input_data, "model_dump") else input_data.dict()
             )
             if "current_step" not in data:
                 data["current_step"] = 0
@@ -405,7 +380,8 @@ def create_chain_agent(
     system_prompt: str | None = None,
     step_names: list[str] | None = None,
     visualize: bool = True,
-    **kwargs) -> ChainAgent:
+    **kwargs,
+) -> ChainAgent:
     """Create a chain agent from a list of engines.
 
     Args:
@@ -426,7 +402,8 @@ def create_chain_agent(
         system_prompt=system_prompt,
         step_names=step_names,
         visualize=visualize,
-        **kwargs)
+        **kwargs,
+    )
 
     # Build and return the agent
     return config.build_agent()
@@ -448,7 +425,8 @@ if __name__ == "__main__":
         name="translator",
         llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.3}),
         prompt_template=translator_prompt,
-        output_parser=StrOutputParser())
+        output_parser=StrOutputParser(),
+    )
 
     summarizer_prompt = ChatPromptTemplate.from_messages(
         [("human", "Summarize the following text in one sentence:\n\n{text}")]
@@ -458,13 +436,15 @@ if __name__ == "__main__":
         name="summarizer",
         llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.4}),
         prompt_template=summarizer_prompt,
-        output_parser=StrOutputParser())
+        output_parser=StrOutputParser(),
+    )
 
     # Create a chain agent that translates and then summarizes
     chain_agent = create_chain_agent(
         engines=[translator_engine, summarizer_engine],
         name="translate_then_summarize",
-        step_names=["translate", "summarize"])
+        step_names=["translate", "summarize"],
+    )
 
     # Run the agent
     result = chain_agent.run(

@@ -239,9 +239,7 @@ class AgentRegistry:
         action_color = "green" if action == "REGISTER" else "red"
         action_emoji = "➕" if action == "REGISTER" else "➖"
 
-        tree = Tree(
-            f"{action_emoji} [bold {action_color}]{action} Operation[/bold {action_color}]"
-        )
+        tree = Tree(f"{action_emoji} [bold {action_color}]{action} Operation[/bold {action_color}]")
 
         # Operation details
         op_branch = tree.add("📋 Operation Details")
@@ -260,10 +258,7 @@ class AgentRegistry:
             agents_branch = state_branch.add("Active Agents")
             for name in sorted(self.agents.keys()):
                 timestamp = self.registration_timestamps.get(name, 0)
-                agents_branch.add(
-                    f"🤖 {name} (registered: {
-                        time.ctime(timestamp)})"
-                )
+                agents_branch.add(f"🤖 {name} (registered: {time.ctime(timestamp)})")
 
         console.print(Panel(tree, title="Registry Update", expand=False))
 
@@ -310,13 +305,9 @@ class AgentRegistry:
             "rebuild_needed": self._rebuild_needed,
             "registered_agents": list(self.agents.keys()),
             "oldest_registration": (
-                min(self.registration_timestamps.values())
-                if self.registration_timestamps
-                else None
+                min(self.registration_timestamps.values()) if self.registration_timestamps else None
             ),
             "newest_registration": (
-                max(self.registration_timestamps.values())
-                if self.registration_timestamps
-                else None
+                max(self.registration_timestamps.values()) if self.registration_timestamps else None
             ),
         }

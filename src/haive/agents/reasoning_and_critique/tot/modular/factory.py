@@ -27,7 +27,8 @@ def create_tot_agent(
     score_prompt: str | ChatPromptTemplate | None = None,
     score_function: Callable | None = None,
     visualize: bool = True,
-    **kwargs) -> ToTAgent:
+    **kwargs,
+) -> ToTAgent:
     """Create a Tree of Thoughts agent with customizable parameters.
 
     Args:
@@ -76,7 +77,8 @@ def create_tot_agent(
                 ("system", system_prompt),
                 (
                     "system",
-                    f"Generate {candidates_per_expansion} different approaches to solve this problem. Be creative and diverse in your thinking."),
+                    f"Generate {candidates_per_expansion} different approaches to solve this problem. Be creative and diverse in your thinking.",
+                ),
                 ("user", "Problem: {problem}"),
                 ("user", "Previous attempt: {seed}" if "{seed}" in kwargs else ""),
             ]
@@ -96,7 +98,8 @@ def create_tot_agent(
         score_function=score_function,
         name=name,
         visualize=visualize,
-        **kwargs)
+        **kwargs,
+    )
 
     # Build and return the agent
     return config.build_agent()
@@ -135,7 +138,6 @@ def create_math_tot_agent(
 
     # Function to score math solutions
     def score_math_solution(problem: str, solution: str) -> tuple:
-
         # Calculate length-normalized score based on:
         # 1. Presence of equations/numbers/calculations
         # 2. Presence of a clear final answer
@@ -145,9 +147,7 @@ def create_math_tot_agent(
         numbers = len(re.findall(r"\b\d+(?:\.\d+)?\b", solution))
 
         # Check for a clear final answer
-        has_answer = bool(
-            re.search(r"answer|result|solution|=\s*\d+(?:\.\d+)?$", solution.lower())
-        )
+        has_answer = bool(re.search(r"answer|result|solution|=\s*\d+(?:\.\d+)?$", solution.lower()))
 
         # Calculate a base score
         base_score = min(1.0, (equations + numbers) / 20)  # Normalize math content
@@ -180,7 +180,8 @@ def create_math_tot_agent(
         threshold=0.85,
         beam_size=2,  # Keep fewer candidates for math problems
         candidates_per_expansion=3,
-        **kwargs)
+        **kwargs,
+    )
 
 
 def create_game24_tot_agent(
@@ -212,18 +213,14 @@ def create_game24_tot_agent(
         formula: str = Field(
             description="Mathematical formula using all four numbers and basic operations"
         )
-        reasoning: str = Field(
-            description="Step-by-step reasoning for how this formula works"
-        )
+        reasoning: str = Field(description="Step-by-step reasoning for how this formula works")
 
         @field_validator("formula")
         @classmethod
         def validate_formula(cls, v) -> Any:
             """Validate the formula has basic math operators."""
             if not any(op in v for op in ["+", "-", "*", "/"]):
-                raise ValueError(
-                    "Formula must contain at least one mathematical operator"
-                )
+                raise ValueError("Formula must contain at least one mathematical operator")
             return v
 
     class EquationList(BaseModel):
@@ -238,7 +235,8 @@ def create_game24_tot_agent(
             (
                 "system",
                 """Generate {k} different equations that might solve the Game of 24 for the given numbers.
-                     For each attempt, show your formula and step-by-step reasoning."""),
+                     For each attempt, show your formula and step-by-step reasoning.""",
+            ),
             ("user", "Numbers: {problem}"),
             ("user", "Previous attempt: {seed}" if "{seed}" in kwargs else ""),
         ]
@@ -250,7 +248,8 @@ def create_game24_tot_agent(
             (
                 "system",
                 """Evaluate how close this equation comes to the target value of 24.
-                     Score from 0.0 to 1.0, where 1.0 means it equals exactly 24."""),
+                     Score from 0.0 to 1.0, where 1.0 means it equals exactly 24.""",
+            ),
             ("user", "Numbers: {problem}"),
             ("user", "Equation: {candidate}"),
         ]
@@ -258,7 +257,6 @@ def create_game24_tot_agent(
 
     # Define a function to score Game of 24 solutions
     def score_equation(problem: str, solution: str) -> tuple:
-
         # Extract the numbers from the problem
         input_numbers = [int(n) for n in problem.split() if n.isdigit()]
         if not input_numbers:
@@ -305,7 +303,7 @@ def create_game24_tot_agent(
                 "floor": math.floor,
                 "ceil": math.ceil,
                 "pi": math.pi,
-                "e": math.e
+                "e": math.e,
             }
             # Add all numeric operators
             safe_dict.update({str(i): i for i in range(10)})
@@ -321,7 +319,8 @@ def create_game24_tot_agent(
                 return 1.0, "Perfect! The expression equals exactly 24"
             return (
                 proximity,
-                f"Expression evaluates to {result}, which is {abs(24 - result)} away from 24")
+                f"Expression evaluates to {result}, which is {abs(24 - result)} away from 24",
+            )
         except Exception as e:
             return 0.05, f"Error evaluating the formula: {e!s}"
 
@@ -330,23 +329,23 @@ def create_game24_tot_agent(
         name="game24_expand",
         llm_config=AzureLLMConfig(model=model, parameters={"temperature": temperature}),
         prompt_template=expand_prompt,
-        structured_output_model=EquationList)
+        structured_output_model=EquationList,
+    )
 
     # Create score LLM with structured output
 
     class ScoreResult(BaseModel):
         """Score for a Game of 24 solution."""
 
-        score: float = Field(
-            description="Score between 0.0 and 1.0, with 1.0 being exactly 24"
-        )
+        score: float = Field(description="Score between 0.0 and 1.0, with 1.0 being exactly 24")
         feedback: str = Field(description="Explanation of the score and correctness")
 
     score_llm_config = AugLLMConfig(
         name="game24_score",
         llm_config=AzureLLMConfig(model=model, parameters={"temperature": 0.2}),
         prompt_template=score_prompt,
-        structured_output_model=ScoreResult)
+        structured_output_model=ScoreResult,
+    )
 
     return create_tot_agent(
         model=model,
@@ -360,4 +359,5 @@ def create_game24_tot_agent(
         threshold=0.99,  # High threshold for Game of 24 (need exact answer)
         beam_size=3,
         candidates_per_expansion=4,
-        **kwargs)
+        **kwargs,
+    )

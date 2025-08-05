@@ -28,50 +28,36 @@ class AgentDescriptor(BaseModel):
     name: str = Field(description="Unique agent name")
     agent_type: str = Field(description="Type of agent (SimpleAgent, ReactAgent, etc.)")
     capability_description: str = Field(description="What this agent is capable of")
-    priority: int = Field(
-        default=1, description="Agent priority (higher = more preferred)"
-    )
-    tools: list[str] = Field(
-        default_factory=list, description="List of tool names this agent has"
-    )
-    config: dict[str, Any] = Field(
-        default_factory=dict, description="Agent configuration"
-    )
+    priority: int = Field(default=1, description="Agent priority (higher = more preferred)")
+    tools: list[str] = Field(default_factory=list, description="List of tool names this agent has")
+    config: dict[str, Any] = Field(default_factory=dict, description="Agent configuration")
 
 
 class AddAgentInput(BaseModel):
     """Input for adding a new agent to the supervisor."""
 
     agent_descriptor: AgentDescriptor = Field(description="Descriptor of agent to add")
-    rebuild_graph: bool = Field(
-        default=True, description="Whether to rebuild supervisor graph"
-    )
+    rebuild_graph: bool = Field(default=True, description="Whether to rebuild supervisor graph")
 
 
 class RemoveAgentInput(BaseModel):
     """Input for removing an agent from the supervisor."""
 
     agent_name: str = Field(description="Name of agent to remove")
-    rebuild_graph: bool = Field(
-        default=True, description="Whether to rebuild supervisor graph"
-    )
+    rebuild_graph: bool = Field(default=True, description="Whether to rebuild supervisor graph")
 
 
 class ChangeAgentInput(BaseModel):
     """Input for changing/updating an existing agent."""
 
     agent_name: str = Field(description="Name of agent to change")
-    updates: dict[str, Any] = Field(
-        description="Updates to apply to agent configuration"
-    )
+    updates: dict[str, Any] = Field(description="Updates to apply to agent configuration")
 
 
 class ListAgentsInput(BaseModel):
     """Input for listing available agents."""
 
-    include_performance: bool = Field(
-        default=True, description="Include performance metrics"
-    )
+    include_performance: bool = Field(default=True, description="Include performance metrics")
 
 
 class AgentRegistryManager:
@@ -96,21 +82,14 @@ class AgentRegistryManager:
         """Create an agent instance from descriptor."""
         constructor = self.agent_constructors.get(descriptor.agent_type)
         if not constructor:
-            logger.error(
-                f"No constructor registered for agent type: {
-                    descriptor.agent_type}"
-            )
+            logger.error(f"No constructor registered for agent type: {descriptor.agent_type}")
             return None
 
         try:
             # Create agent with descriptor config
             agent = constructor(name=descriptor.name, **descriptor.config)
 
-            logger.info(
-                f"Created agent: {
-                    descriptor.name} ({
-                    descriptor.agent_type})"
-            )
+            logger.info(f"Created agent: {descriptor.name} ({descriptor.agent_type})")
             return agent
 
         except Exception as e:
@@ -141,9 +120,7 @@ class AddAgentTool(BaseTool):
         super().__init__()
         self.registry_manager = registry_manager
 
-    async def _arun(
-        self, agent_descriptor: AgentDescriptor, rebuild_graph: bool = True
-    ) -> str:
+    async def _arun(self, agent_descriptor: AgentDescriptor, rebuild_graph: bool = True) -> str:
         """Add agent asynchronously."""
         try:
             # Create agent from descriptor
@@ -161,7 +138,8 @@ class AddAgentTool(BaseTool):
                 agent,
                 capability_description=agent_descriptor.capability_description,
                 execution_config=execution_config,
-                rebuild_graph=rebuild_graph)
+                rebuild_graph=rebuild_graph,
+            )
 
             if success:
                 # Update choice model
@@ -173,9 +151,7 @@ class AddAgentTool(BaseTool):
             logger.exception(f"Error adding agent: {e}")
             return f"Error adding agent: {e!s}"
 
-    def _run(
-        self, agent_descriptor: AgentDescriptor, rebuild_graph: bool = True
-    ) -> str:
+    def _run(self, agent_descriptor: AgentDescriptor, rebuild_graph: bool = True) -> str:
         """Synchronous version - not implemented for async supervisor."""
         return "This tool requires async execution"
 
@@ -272,26 +248,17 @@ class ListAgentsTool(BaseTool):
                 capability = supervisor.agent_registry.get_agent_capability(agent_name)
                 info = f"- {agent_name}: {capability}"
 
-                if (
-                    include_performance
-                    and hasattr(supervisor, "_state")
-                    and supervisor._state
-                ):
+                if include_performance and hasattr(supervisor, "_state") and supervisor._state:
                     performance = supervisor._state.get_agent_performance(agent_name)
                     if performance.get("executions", 0) > 0:
                         success_rate = performance.get("success_rate", 0.0) * 100
-                        info += f" (Success: {
-                            success_rate:.1f}%, Executions: {
-                            performance.get(
-                                'executions', 0)})"
+                        info += f" (Success: {success_rate:.1f}%, Executions: {
+                            performance.get('executions', 0)
+                        })"
 
                 agent_info.append(info)
 
-            return (
-                f"Available agents ({
-                len(available_agents)}):\n"
-                + "\n".join(agent_info)
-            )
+            return f"Available agents ({len(available_agents)}):\n" + "\n".join(agent_info)
 
         except Exception as e:
             logger.exception(f"Error listing agents: {e}")
@@ -326,9 +293,7 @@ class AgentSelectorTool(BaseTool):
         """Select agent asynchronously."""
         try:
             if (
-                not self.registry_manager.supervisor.agent_registry.is_agent_registered(
-                    choice
-                )
+                not self.registry_manager.supervisor.agent_registry.is_agent_registered(choice)
                 and choice != "END"
             ):
                 return f"Agent not found: {choice}"
@@ -352,7 +317,6 @@ def create_agent_management_tools(supervisor_agent: Any) -> list[BaseTool]:
 
     # Register some basic agent constructors for testing
     try:
-
         registry_manager.register_agent_constructor("SimpleAgent", SimpleAgent)
         registry_manager.register_agent_constructor("ReactAgent", ReactAgent)
 

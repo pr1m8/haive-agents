@@ -30,9 +30,7 @@ def deduplicate_and_format_sources(
             else:
                 sources_list.extend(response)
     else:
-        raise ValueError(
-            "Input must be either a dict with 'results' or a list of search results"
-        )
+        raise ValueError("Input must be either a dict with 'results' or a list of search results")
 
     # Deduplicate by URL
     unique_sources = {}
@@ -45,9 +43,7 @@ def deduplicate_and_format_sources(
     for _i, source in enumerate(unique_sources.values(), 1):
         formatted_text += f"Source {source['title']}:\n===\n"
         formatted_text += f"URL: {source['url']}\n===\n"
-        formatted_text += (
-            f"Most relevant content from source: {source['content']}\n===\n"
-        )
+        formatted_text += f"Most relevant content from source: {source['content']}\n===\n"
 
         if include_raw_content:
             # Using rough estimate of 4 characters per token
@@ -58,7 +54,9 @@ def deduplicate_and_format_sources(
                 raw_content = ""
             if len(raw_content) > char_limit:
                 raw_content = raw_content[:char_limit] + "... [truncated]"
-            formatted_text += f"Full source content limited to {max_tokens_per_source} tokens: {raw_content}\n\n"
+            formatted_text += (
+                f"Full source content limited to {max_tokens_per_source} tokens: {raw_content}\n\n"
+            )
 
     return formatted_text.strip()
 
@@ -75,9 +73,9 @@ def format_all_notes(completed_notes: list[str]) -> str:
     formatted_str = ""
     for idx, people_notes in enumerate(completed_notes, 1):
         formatted_str += f"""
-{'=' * 60}
+{"=" * 60}
 People {idx}:
-{'=' * 60}
+{"=" * 60}
 Notes from research:
 {people_notes}"""
 

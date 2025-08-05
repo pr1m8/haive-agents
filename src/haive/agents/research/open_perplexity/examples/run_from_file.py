@@ -30,7 +30,8 @@ def setup_logging(log_file="research_run.log") -> Any:
         handlers=[
             logging.StreamHandler(sys.stdout),
             logging.FileHandler(log_file, mode="w"),  # Overwrite the log file
-        ])
+        ],
+    )
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     return logger
@@ -45,9 +46,7 @@ def load_research_question(file_path) -> Any:
         raise ValueError(f"Error reading research question file: {e}")
 
 
-def run_research(
-    question_file, output_dir=None, research_depth=2, max_sources=5
-) -> bool:
+def run_research(question_file, output_dir=None, research_depth=2, max_sources=5) -> bool:
     """Run research based on a question from a file.
 
     Args:
@@ -83,9 +82,7 @@ def run_research(
         logger.info(f"\n{research_question}")
 
         # Create output file paths
-        state_history_path = str(
-            output_dir / f"{question_name}_state_history_{timestamp}.json"
-        )
+        state_history_path = str(output_dir / f"{question_name}_state_history_{timestamp}.json")
         report_path = str(output_dir / f"{question_name}_report_{timestamp}.md")
         vectorstore_path = str(output_dir / f"{question_name}_vectorstore")
 
@@ -99,7 +96,9 @@ def run_research(
             vectorstore_config=VectorStoreConfig(
                 name=f"{question_name}_vectorstore",
                 vector_store_type="FAISS",
-                persist_directory=vectorstore_path))
+                persist_directory=vectorstore_path,
+            ),
+        )
 
         # Create and run agent
         logger.info("Creating research agent...")
@@ -136,19 +135,13 @@ def run_research(
 
 def parse_arguments() -> Any:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description="Run research based on a question file"
-    )
+    parser = argparse.ArgumentParser(description="Run research based on a question file")
+
+    parser.add_argument("question_file", help="Path to file containing the research question")
 
     parser.add_argument(
-        "question_file", help="Path to file containing the research question"
+        "-o", "--output-dir", help="Directory for outputs (default: ./outputs)", default=None
     )
-
-    parser.add_argument(
-        "-o",
-        "--output-dir",
-        help="Directory for outputs (default: ./outputs)",
-        default=None)
 
     parser.add_argument(
         "-d",
@@ -156,14 +149,16 @@ def parse_arguments() -> Any:
         type=int,
         choices=[1, 2, 3],
         default=2,
-        help="Research depth: 1=superficial, 2=medium, 3=deep (default: 2)")
+        help="Research depth: 1=superficial, 2=medium, 3=deep (default: 2)",
+    )
 
     parser.add_argument(
         "-s",
         "--max-sources",
         type=int,
         default=5,
-        help="Maximum number of sources per query (default: 5)")
+        help="Maximum number of sources per query (default: 5)",
+    )
 
     return parser.parse_args()
 
@@ -175,6 +170,7 @@ if __name__ == "__main__":
         question_file=args.question_file,
         output_dir=args.output_dir,
         research_depth=args.depth,
-        max_sources=args.max_sources)
+        max_sources=args.max_sources,
+    )
 
     sys.exit(0 if success else 1)

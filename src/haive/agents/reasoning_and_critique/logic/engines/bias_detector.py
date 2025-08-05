@@ -3,9 +3,7 @@
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-from haive.agents.reasoning_and_critique.logic.models import (
-    Any,
-    ReasoningAnalysis)
+from haive.agents.reasoning_and_critique.logic.models import Any, ReasoningAnalysis
 
 BIAS_DETECTION_PROMPT = ChatPromptTemplate.from_messages(
     [
@@ -167,10 +165,9 @@ Overall assessment:
 - How biased is the reasoning overall?
 - Are biases systematic or isolated?
 - Do they all point one direction?
-- What's the cumulative impact?"""),
-        (
-            "human",
-            "Analyze this reasoning chain for biases and fallacies:\n{reasoning_chain}"),
+- What's the cumulative impact?""",
+        ),
+        ("human", "Analyze this reasoning chain for biases and fallacies:\n{reasoning_chain}"),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )
@@ -182,4 +179,5 @@ def create_bias_detector() -> Any:
         name="bias_detector",
         prompt_template=BIAS_DETECTION_PROMPT,
         structured_output_model=ReasoningAnalysis,
-        temperature=0.4)
+        temperature=0.4,
+    )

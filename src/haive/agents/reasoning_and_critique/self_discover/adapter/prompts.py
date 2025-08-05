@@ -31,4 +31,5 @@ Your adaptations should:
 - Work together as an integrated approach
 
 Transform each module from a general framework into a specific tool for solving this particular problem.
-""")
+""",
+)

@@ -39,9 +39,7 @@ class InternalDynamicSupervisor(MultiAgent):
         default=True, description="Allow supervisor to create agents internally"
     )
 
-    max_agents: int = Field(
-        default=10, description="Maximum number of agents to maintain"
-    )
+    max_agents: int = Field(default=10, description="Maximum number of agents to maintain")
 
     # Private attributes
     _agent_templates: dict[str, dict[str, Any]] = PrivateAttr(default_factory=dict)
@@ -156,7 +154,8 @@ class InternalDynamicSupervisor(MultiAgent):
                 "agent_creator": "agent_creator",
                 "executor": "executor",
                 "END": "__end__",
-            })
+            },
+        )
 
         # Creator routes back to supervisor
         graph.add_edge("agent_creator", "supervisor")
@@ -206,10 +205,7 @@ class InternalDynamicSupervisor(MultiAgent):
                 }
 
             # Step 2: Check if we should create a new agent
-            if (
-                self.enable_internal_agent_creation
-                and len(self.agents) < self.max_agents
-            ):
+            if self.enable_internal_agent_creation and len(self.agents) < self.max_agents:
                 needed_agent_type = self._determine_needed_agent_type(content)
 
                 if needed_agent_type:
@@ -257,9 +253,7 @@ class InternalDynamicSupervisor(MultiAgent):
             logger.info(f"Creating agent of type: {agent_type}")
 
             # Create the agent
-            success = await self._create_agent_from_template(
-                agent_type, original_request
-            )
+            success = await self._create_agent_from_template(agent_type, original_request)
 
             if success:
                 # Record creation
@@ -320,9 +314,7 @@ class InternalDynamicSupervisor(MultiAgent):
                     result = agent.invoke(agent_input)
 
                 # Process result
-                update = self._create_agent_output(
-                    target_agent, agent, result, state_dict
-                )
+                update = self._create_agent_output(target_agent, agent, result, state_dict)
                 update["last_agent"] = target_agent
                 update["execution_complete"] = True
 
@@ -350,9 +342,7 @@ class InternalDynamicSupervisor(MultiAgent):
             for template_type, template in self._agent_templates.items():
                 if f"{template_type}_agent" == agent_name:
                     # Check if any template keywords match the content
-                    if any(
-                        keyword in content_lower for keyword in template["keywords"]
-                    ):
+                    if any(keyword in content_lower for keyword in template["keywords"]):
                         return agent_name
 
         return None
@@ -406,14 +396,13 @@ class InternalDynamicSupervisor(MultiAgent):
             engine = AugLLMConfig(
                 name=f"{agent_name}_engine",
                 system_message=template["system_message"],
-                temperature=0.3 if template["type"] == "SimpleAgent" else 0.4)
+                temperature=0.3 if template["type"] == "SimpleAgent" else 0.4,
+            )
 
             # Create agent based on type
             if template["type"] == "SimpleAgent":
-
                 agent = SimpleAgent(name=agent_name, engine=engine)
             elif template["type"] == "ReactAgent":
-
                 agent = ReactAgent(
                     name=agent_name,
                     engine=engine,
@@ -487,7 +476,8 @@ if __name__ == "__main__":
             name="internal_dynamic",
             agents=[],  # Start empty!
             enable_internal_agent_creation=True,
-            max_agents=5)
+            max_agents=5,
+        )
 
         # Test 1: Research request (should create research agent)
         await supervisor.ainvoke(
@@ -496,25 +486,15 @@ if __name__ == "__main__":
 
         # Test 2: Coding request (should create coding agent)
         await supervisor.ainvoke(
-            {
-                "messages": [
-                    HumanMessage(content="Write code to implement a binary search")
-                ]
-            }
+            {"messages": [HumanMessage(content="Write code to implement a binary search")]}
         )
 
         # Test 3: Analysis request (should create analysis agent)
-        await supervisor.ainvoke(
-            {"messages": [HumanMessage(content="Analyze the data patterns")]}
-        )
+        await supervisor.ainvoke({"messages": [HumanMessage(content="Analyze the data patterns")]})
 
         # Test 4: Another research request (should use existing)
         await supervisor.ainvoke(
-            {
-                "messages": [
-                    HumanMessage(content="Find information about quantum computing")
-                ]
-            }
+            {"messages": [HumanMessage(content="Find information about quantum computing")]}
         )
 
     asyncio.run(test_internal_dynamic())

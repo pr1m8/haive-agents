@@ -1,7 +1,8 @@
 from haive.agents.wiki_writer.interview.aug_llms import (
     gen_answer_aug_llm_config,
     gen_qn_aug_llm_config,
-    gen_queries_aug_llm_config)
+    gen_queries_aug_llm_config,
+)
 from haive.agents.wiki_writer.interview.nodes import gen_answer, generate_question
 from haive.agents.wiki_writer.interview.state import InterviewState
 from haive.core.engine.agent.agent import AgentArchitecture, AgentArchitectureConfig
@@ -21,7 +22,8 @@ class InterviewAgentConfig(AgentArchitectureConfig):
             "gen_queries": gen_queries_aug_llm_config,
             "gen_answer": gen_answer_aug_llm_config,
         },
-        description="LLM config for Interview")
+        description="LLM config for Interview",
+    )
 
     state_schema: InterviewState = Field(
         default=InterviewState, description="State schema for the agent"
@@ -38,12 +40,8 @@ class InterviewAgent(AgentArchitecture):
 
     def setup_workflow(self) -> None:
         """Setup the workflow for the agent."""
-        self.graph.add_node(
-            "ask_question", generate_question, retry=RetryPolicy(max_attempts=5)
-        )
-        self.graph.add_node(
-            "answer_question", gen_answer, retry=RetryPolicy(max_attempts=5)
-        )
+        self.graph.add_node("ask_question", generate_question, retry=RetryPolicy(max_attempts=5))
+        self.graph.add_node("answer_question", gen_answer, retry=RetryPolicy(max_attempts=5))
         self.graph.add_conditional_edges("answer_question", route_messages)
         self.graph.add_edge("ask_question", "answer_question")
 

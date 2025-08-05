@@ -61,13 +61,7 @@ You are a highly intelligent AI assistant specializing in **retrieval-augmented 
 
 # Define the union type for contents
 ContentType = Annotated[
-    str
-    | list[str]
-    | Document
-    | list[Document]
-    | BaseMessage
-    | list[BaseMessage]
-    | dict[str, Any],
+    str | list[str] | Document | list[Document] | BaseMessage | list[BaseMessage] | dict[str, Any],
     Field(
         description="Content to extract QA pairs from. Can be text, documents, messages, or structured data."
     ),
@@ -98,7 +92,8 @@ class QAs(BaseModel):
 qa_aug_llm_config = AugLLMConfig(
     llm=AzureLLMConfig(model="gpt-4o"),
     structured_output_model=QAs,
-    prompt_template=qa_prompt_template)
+    prompt_template=qa_prompt_template,
+)
 
 qa_agent_config = SimpleAgentConfig.from_aug_llm(aug_llm=qa_aug_llm_config)
 qa_agent = qa_agent_config.build_agent()

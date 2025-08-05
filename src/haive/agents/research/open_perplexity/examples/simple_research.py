@@ -35,7 +35,8 @@ def main() -> None:
     config = ResearchAgentConfig.from_scratch(
         research_depth=2,  # Lower depth for faster execution
         concurrent_searches=2,
-        max_sources_per_query=3)
+        max_sources_per_query=3,
+    )
 
     # Create and run the agent
     logger.info("Creating research agent...")

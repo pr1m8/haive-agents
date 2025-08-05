@@ -72,15 +72,18 @@ from haive.agents.research.person.prompts import (
     EXTRACTION_PROMPT,
     INFO_PROMPT,
     QUERY_WRITER_PROMPT,
-    REFLECTION_PROMPT)
+    REFLECTION_PROMPT,
+)
 from haive.agents.research.person.state import (
     PersonResearchInputState,
     PersonResearchOutputState,
-    PersonResearchState)
+    PersonResearchState,
+)
 from haive.agents.research.person.utils import (
     deduplicate_and_format_sources,
     format_all_notes,
-    get_config_from_runnable_config)
+    get_config_from_runnable_config,
+)
 
 # Import agent base classes
 
@@ -91,7 +94,6 @@ logger = logging.getLogger(__name__)
 
 # Try to import Tavily client
 try:
-
     TAVILY_AVAILABLE = True
 except ImportError:
     TAVILY_AVAILABLE = False
@@ -158,25 +160,20 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         self.tavily_client = None
         if TAVILY_AVAILABLE:
             # Get API key from config or environment
-            tavily_api_key = config.agent_settings.get(
-                "tavily_api_key"
-            ) or os.environ.get("TAVILY_API_KEY")
+            tavily_api_key = config.agent_settings.get("tavily_api_key") or os.environ.get(
+                "TAVILY_API_KEY"
+            )
             if tavily_api_key:
                 self.tavily_client = AsyncTavilyClient(api_key=tavily_api_key)
             else:
-                logger.warning(
-                    "No Tavily API key found. Web search will not be available."
-                )
+                logger.warning("No Tavily API key found. Web search will not be available.")
 
         # Call parent initializer
         super().__init__(config)
 
     def setup_workflow(self) -> None:
         """Set up the workflow graph for this agent."""
-        logger.debug(
-            f"Setting up workflow for PersonResearchAgent {
-                self.config.name}"
-        )
+        logger.debug(f"Setting up workflow for PersonResearchAgent {self.config.name}")
 
         # Create state schema if not provided
         if not hasattr(self, "state_schema") or self.state_schema is None:
@@ -190,16 +187,12 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
             self.output_schema = PersonResearchOutputState
 
         # Create a graph builder with our schema
-        builder = StateGraph(
-            self.state_schema, input=self.input_schema, output=self.output_schema
-        )
+        builder = StateGraph(self.state_schema, input=self.input_schema, output=self.output_schema)
 
         # Add nodes
         builder.add_node("generate_queries", self.generate_queries)
         builder.add_node("research_person", self.research_person)
-        builder.add_node(
-            "gather_notes_extract_schema", self.gather_notes_extract_schema
-        )
+        builder.add_node("gather_notes_extract_schema", self.gather_notes_extract_schema)
         builder.add_node("reflection", self.reflection)
 
         # Add edges
@@ -229,8 +222,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         # Get configuration
         agent_config = get_config_from_runnable_config(config)
         max_search_queries = agent_config.get(
-            "max_search_queries",
-            self.config.agent_settings.get("max_search_queries", 3))
+            "max_search_queries", self.config.agent_settings.get("max_search_queries", 3)
+        )
 
         # Get query generator engine
         query_generator = self.engines.get("query_generator", self.engine)
@@ -251,7 +244,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
             person=person_str,
             info=json.dumps(state.extraction_schema, indent=2),
             user_notes=state.user_notes or "",
-            max_search_queries=max_search_queries)
+            max_search_queries=max_search_queries,
+        )
 
         # Create structured LLM for queries
         structured_llm = query_generator.with_structured_output(Queries)
@@ -267,7 +261,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
                         "content": "Please generate a list of search queries related to the schema that you want to populate.",
                     },
                 ]
-            ))
+            ),
+        )
 
         # Return queries
         query_list = list(results.queries)
@@ -288,8 +283,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         # Get configuration
         agent_config = get_config_from_runnable_config(config)
         max_search_results = agent_config.get(
-            "max_search_results",
-            self.config.agent_settings.get("max_search_results", 3))
+            "max_search_results", self.config.agent_settings.get("max_search_results", 3)
+        )
 
         # Check if Tavily client is available
         if not self.tavily_client:
@@ -313,7 +308,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
                     days=360,
                     max_results=max_search_results,
                     include_raw_content=True,
-                    topic="general")
+                    topic="general",
+                )
             )
 
         # Execute all searches concurrently
@@ -338,7 +334,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
             info=json.dumps(state.extraction_schema, indent=2),
             content=source_str,
             people=person_str,
-            user_notes=state.user_notes or "")
+            user_notes=state.user_notes or "",
+        )
 
         # Invoke the LLM
         result = await researcher.ainvoke(p)
@@ -431,9 +428,7 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
                 elif hasattr(result, "dict"):
                     result_dict = result.dict()
                 else:
-                    result_dict = {
-                        k: getattr(result, k) for k in result.__annotations__
-                    }
+                    result_dict = {k: getattr(result, k) for k in result.__annotations__}
 
                 return {"info": result_dict}
             except Exception as e:
@@ -487,8 +482,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         # Get configuration
         agent_config = get_config_from_runnable_config(config)
         max_reflection_steps = agent_config.get(
-            "max_reflection_steps",
-            self.config.agent_settings.get("max_reflection_steps", 0))
+            "max_reflection_steps", self.config.agent_settings.get("max_reflection_steps", 0)
+        )
 
         # If we have satisfactory results, end the process
         if state.is_satisfactory:
@@ -548,7 +543,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         # Format reflection prompt
         system_prompt = REFLECTION_PROMPT.format(
             schema=json.dumps(state.extraction_schema, indent=2),
-            info=json.dumps(state.info, indent=2))
+            info=json.dumps(state.info, indent=2),
+        )
 
         # Invoke the model
         result = cast(
@@ -561,7 +557,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
                         "content": "Produce a structured reflection output.",
                     },
                 ]
-            ))
+            ),
+        )
 
         # Return results
         if result.is_satisfactory:

@@ -10,9 +10,11 @@ Topic you are writing about: {topic}
 
 Old outline:
 
-{old_outline}"""),
+{old_outline}""",
+        ),
         (
             "user",
-            "Refine the outline based on your conversations with subject-matter experts:\n\nConversations:\n\n{conversations}\n\nWrite the refined Wikipedia outline:"),
+            "Refine the outline based on your conversations with subject-matter experts:\n\nConversations:\n\n{conversations}\n\nWrite the refined Wikipedia outline:",
+        ),
     ]
 )

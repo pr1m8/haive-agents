@@ -16,17 +16,15 @@ class GenericStructuredOutput(BaseModel):
     the essence of most text outputs in an organized way.
     """
 
-    main_content: str = Field(
-        ..., description="The main content, answer, or primary information"
-    )
+    main_content: str = Field(..., description="The main content, answer, or primary information")
 
     key_points: list[str] = Field(
-        default_factory=list,
-        description="Key points, findings, or important items extracted")
+        default_factory=list, description="Key points, findings, or important items extracted"
+    )
 
     action_items: list[str] = Field(
-        default_factory=list,
-        description="Action items, tasks, or things to do (if any)")
+        default_factory=list, description="Action items, tasks, or things to do (if any)"
+    )
 
     categories: dict[str, str] = Field(
         default_factory=dict, description="Categorized information by topic or theme"
@@ -37,10 +35,8 @@ class GenericStructuredOutput(BaseModel):
     )
 
     confidence: float = Field(
-        default=1.0,
-        ge=0.0,
-        le=1.0,
-        description="Confidence level in the extraction (0-1)")
+        default=1.0, ge=0.0, le=1.0, description="Confidence level in the extraction (0-1)"
+    )
 
 
 class AnalysisOutput(BaseModel):
@@ -78,17 +74,11 @@ class TaskOutput(BaseModel):
         default_factory=list, description="Requirements or prerequisites"
     )
 
-    estimated_time: str | None = Field(
-        default=None, description="Estimated time to complete"
-    )
+    estimated_time: str | None = Field(default=None, description="Estimated time to complete")
 
-    complexity: int = Field(
-        default=5, ge=1, le=10, description="Task complexity (1-10)"
-    )
+    complexity: int = Field(default=5, ge=1, le=10, description="Task complexity (1-10)")
 
-    dependencies: list[str] = Field(
-        default_factory=list, description="Task dependencies"
-    )
+    dependencies: list[str] = Field(default_factory=list, description="Task dependencies")
 
 
 class DecisionOutput(BaseModel):
@@ -102,16 +92,10 @@ class DecisionOutput(BaseModel):
         default_factory=list, description="Alternative options considered"
     )
 
-    pros: list[str] = Field(
-        default_factory=list, description="Advantages of the decision"
-    )
+    pros: list[str] = Field(default_factory=list, description="Advantages of the decision")
 
     cons: list[str] = Field(default_factory=list, description="Disadvantages or risks")
 
-    confidence: float = Field(
-        default=0.7, ge=0.0, le=1.0, description="Confidence in the decision"
-    )
+    confidence: float = Field(default=0.7, ge=0.0, le=1.0, description="Confidence in the decision")
 
-    next_steps: list[str] = Field(
-        default_factory=list, description="Recommended next steps"
-    )
+    next_steps: list[str] = Field(default_factory=list, description="Recommended next steps")

@@ -23,7 +23,8 @@ def create_mcts_agent(
     candidates_per_rollout: int = 5,
     exploration_weight: float = 1.0,
     name: str | None = None,
-    **kwargs) -> MCTSAgent:
+    **kwargs,
+) -> MCTSAgent:
     """Create a Monte Carlo Tree Search agent.
 
     Args:
@@ -40,9 +41,7 @@ def create_mcts_agent(
         MCTSAgent instance
     """
     # Set defaults
-    llm_config = llm_config or AzureLLMConfig(
-        model="gpt-4o", parameters={"temperature": 0.7}
-    )
+    llm_config = llm_config or AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7})
     tools = tools or []
     system_prompt = system_prompt or "You are an AI assistant."
     name = name or "mcts_agent"
@@ -71,9 +70,7 @@ def create_mcts_agent(
     if "reflection_prompt_template" not in kwargs:
         reflection_prompt = ChatPromptTemplate.from_messages(
             [
-                (
-                    "system",
-                    "Reflect and grade the assistant response to the user question below."),
+                ("system", "Reflect and grade the assistant response to the user question below."),
                 ("user", "{input}"),
                 MessagesPlaceholder(variable_name="candidate"),
             ]
@@ -89,7 +86,8 @@ def create_mcts_agent(
         max_rollouts=max_rollouts,
         candidates_per_rollout=candidates_per_rollout,
         exploration_weight=exploration_weight,
-        **kwargs)
+        **kwargs,
+    )
 
     # Build and return the agent
     return config.build_agent()

@@ -35,9 +35,7 @@ class RoutingContext(BaseModel):
 
     last_message: str = Field(..., description="Last message content")
     message_type: str = Field(..., description="Type of last message")
-    task_keywords: list[str] = Field(
-        default_factory=list, description="Extracted keywords"
-    )
+    task_keywords: list[str] = Field(default_factory=list, description="Extracted keywords")
     conversation_length: int = Field(..., description="Number of messages")
     previous_agent: str | None = Field(None, description="Previously active agent")
     task_complexity: str = Field(..., description="Simple/Medium/Complex")
@@ -124,16 +122,15 @@ class BaseRoutingStrategy(ABC):
         context: RoutingContext,
         available_agents: list[str],
         agent_capabilities: dict[str, str],
-        config: RunnableConfig | None = None) -> RoutingDecision:
+        config: RunnableConfig | None = None,
+    ) -> RoutingDecision:
         """Make routing decision based on context."""
 
 
 class LLMRoutingStrategy(BaseRoutingStrategy):
     """LLM-based routing strategy using structured output."""
 
-    def __init__(
-        self, routing_engine: InvokableEngine, routing_model: DynamicChoiceModel[str]
-    ):
+    def __init__(self, routing_engine: InvokableEngine, routing_model: DynamicChoiceModel[str]):
         self.routing_engine = routing_engine
         self.routing_model = routing_model
 
@@ -142,12 +139,11 @@ class LLMRoutingStrategy(BaseRoutingStrategy):
         context: RoutingContext,
         available_agents: list[str],
         agent_capabilities: dict[str, str],
-        config: RunnableConfig | None = None) -> RoutingDecision:
+        config: RunnableConfig | None = None,
+    ) -> RoutingDecision:
         """Make LLM-based routing decision."""
         # Build routing prompt
-        prompt = self._build_routing_prompt(
-            context, available_agents, agent_capabilities
-        )
+        prompt = self._build_routing_prompt(context, available_agents, agent_capabilities)
 
         # Get choice model for structured output
         choice_model = self.routing_model.current_model
@@ -155,18 +151,13 @@ class LLMRoutingStrategy(BaseRoutingStrategy):
         # Create messages
         messages = [
             SystemMessage(content=prompt),
-            HumanMessage(
-                content=f"Route this request: {
-                    context.last_message}"
-            ),
+            HumanMessage(content=f"Route this request: {context.last_message}"),
         ]
 
         try:
             # Get LLM decision with structured output
             if hasattr(self.routing_engine, "with_structured_output"):
-                structured_engine = self.routing_engine.with_structured_output(
-                    choice_model
-                )
+                structured_engine = self.routing_engine.with_structured_output(choice_model)
                 result = await structured_engine.ainvoke(messages, config)
                 return RoutingDecision(choice=result.choice)
             # Fallback to regular invocation
@@ -182,7 +173,8 @@ class LLMRoutingStrategy(BaseRoutingStrategy):
         self,
         context: RoutingContext,
         available_agents: list[str],
-        agent_capabilities: dict[str, str]) -> str:
+        agent_capabilities: dict[str, str],
+    ) -> str:
         """Build context-aware routing prompt."""
         # Format agent capabilities
         agent_info = []
@@ -245,15 +237,11 @@ Response Format: Provide only the agent name or END as your choice."""
         for task_type in task_types:
             for agent in available_agents:
                 if task_type in agent.lower():
-                    return RoutingDecision(
-                        choice=agent, reasoning="Fallback keyword matching"
-                    )
+                    return RoutingDecision(choice=agent, reasoning="Fallback keyword matching")
 
         # Ultimate fallback
         if available_agents and available_agents[0] != "END":
-            return RoutingDecision(
-                choice=available_agents[0], reasoning="Fallback to first agent"
-            )
+            return RoutingDecision(choice=available_agents[0], reasoning="Fallback to first agent")
 
         return RoutingDecision(choice="END", reasoning="Fallback to END")
 
@@ -274,16 +262,15 @@ class RuleBasedRoutingStrategy(BaseRoutingStrategy):
         context: RoutingContext,
         available_agents: list[str],
         agent_capabilities: dict[str, str],
-        config: RunnableConfig | None = None) -> RoutingDecision:
+        config: RunnableConfig | None = None,
+    ) -> RoutingDecision:
         """Make rule-based routing decision."""
         message_lower = context.last_message.lower()
 
         # Check rules
         for keyword, agent_name in self.routing_rules.items():
             if keyword.lower() in message_lower and agent_name in available_agents:
-                return RoutingDecision(
-                    choice=agent_name, reasoning=f"Rule match: {keyword}"
-                )
+                return RoutingDecision(choice=agent_name, reasoning=f"Rule match: {keyword}")
 
         # Default to first available agent
         if available_agents and available_agents[0] != "END":
@@ -304,7 +291,8 @@ class DynamicRoutingEngine:
         routing_model: DynamicChoiceModel[str],
         routing_engine: InvokableEngine | None = None,
         routing_strategy: BaseRoutingStrategy | None = None,
-        enable_context_analysis: bool = True):
+        enable_context_analysis: bool = True,
+    ):
         """Initialize routing engine.
 
         Args:
@@ -336,10 +324,8 @@ class DynamicRoutingEngine:
         logger.info("DynamicRoutingEngine initialized")
 
     async def route_request(
-        self,
-        state: Any,
-        agent_capabilities: dict[str, str],
-        config: RunnableConfig | None = None) -> Command:
+        self, state: Any, agent_capabilities: dict[str, str], config: RunnableConfig | None = None
+    ) -> Command:
         """Main routing method.
 
         Args:
@@ -359,9 +345,7 @@ class DynamicRoutingEngine:
 
             if not available_agents:
                 logger.warning("No agents available for routing")
-                return Command(
-                    goto="__end__", update={"routing_error": "No agents available"}
-                )
+                return Command(goto="__end__", update={"routing_error": "No agents available"})
 
             # Make routing decision
             decision = await self.routing_strategy.make_routing_decision(
@@ -371,16 +355,10 @@ class DynamicRoutingEngine:
             # Validate decision
             if not self.routing_model.validate_choice(decision.choice):
                 logger.error(f"Invalid routing choice: {decision.choice}")
-                decision = RoutingDecision(
-                    choice="END", reasoning="Invalid choice fallback"
-                )
+                decision = RoutingDecision(choice="END", reasoning="Invalid choice fallback")
 
             # Log decision
-            logger.info(
-                f"Routing decision: {
-                    decision.choice} (reasoning: {
-                    decision.reasoning})"
-            )
+            logger.info(f"Routing decision: {decision.choice} (reasoning: {decision.reasoning})")
 
             # Create routing command
             return self._create_routing_command(decision, state, context)
@@ -398,7 +376,8 @@ class DynamicRoutingEngine:
                 last_message="",
                 message_type="empty",
                 conversation_length=0,
-                task_complexity="Simple")
+                task_complexity="Simple",
+            )
 
         last_message = messages[-1]
         last_content = ""
@@ -425,7 +404,8 @@ class DynamicRoutingEngine:
             task_keywords=task_keywords,
             conversation_length=len(messages),
             previous_agent=previous_agent,
-            task_complexity=complexity)
+            task_complexity=complexity,
+        )
 
     def _create_routing_command(
         self, decision: RoutingDecision, state: Any, context: RoutingContext

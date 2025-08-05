@@ -3,12 +3,8 @@
 import decorator
 
 from haive.agents.research.open_perplexity.agent import ResearchAgent
-from haive.agents.research.open_perplexity.cli import (
-    main,
-    run_research,
-    visualize_state)
-from haive.agents.research.open_perplexity.config import (
-    ResearchAgentConfig)
+from haive.agents.research.open_perplexity.cli import main, run_research, visualize_state
+from haive.agents.research.open_perplexity.config import ResearchAgentConfig
 from haive.agents.research.open_perplexity.models import (
     ContentFreshness,
     ContentReliability,
@@ -17,18 +13,21 @@ from haive.agents.research.open_perplexity.models import (
     ResearchDepth,
     ResearchFinding,
     ResearchSource,
-    ResearchSummary)
+    ResearchSummary,
+)
 from haive.agents.research.open_perplexity.react_agent_config import (
     create_research_rag_agent_config,
     create_research_rag_engine,
-    create_research_react_agent_config)
+    create_research_react_agent_config,
+)
 from haive.agents.research.open_perplexity.state import (
     ReportSection,
     ResearchConfidenceLevel,
     ResearchInputState,
     ResearchOutputState,
     ResearchState,
-    WebSearchQuery)
+    WebSearchQuery,
+)
 from haive.agents.research.open_perplexity.structured_tools import (
     ArxivLoaderInput,
     DocumentLoaderDescriptionInput,
@@ -51,7 +50,8 @@ from haive.agents.research.open_perplexity.structured_tools import (
     load_web_page,
     recommend_document_loaders,
     register_document_loader,
-    tavily_search)
+    tavily_search,
+)
 
 __all__ = [
     "ArxivLoaderInput",

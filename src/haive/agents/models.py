@@ -18,4 +18,5 @@ class Prediction(BaseModel):
     args: list[str] = Field(
         ...,
         description="Arguments for the action",
-        json_schema_extra={"type": "array", "items": {"type": "string"}})
+        json_schema_extra={"type": "array", "items": {"type": "string"}},
+    )

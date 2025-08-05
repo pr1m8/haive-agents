@@ -5,7 +5,8 @@ from examples.run_from_file import (
     load_research_question,
     parse_arguments,
     run_research,
-    setup_logging)
+    setup_logging,
+)
 from examples.run_with_visualization import run_example
 from examples.simple_research import main
 

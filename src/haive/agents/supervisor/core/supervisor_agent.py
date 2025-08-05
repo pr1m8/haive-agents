@@ -40,7 +40,7 @@ Example:
         ...     engine=AugLLMConfig(),
         ...     system_message="You are an expert writer"
         ... )
-        >>> 
+        >>>
         >>> researcher = SimpleAgent(
         ...     name="researcher",
         ...     engine=AugLLMConfig(),
@@ -115,7 +115,8 @@ Instructions:
 2. Determine which agent is best suited
 3. Respond with ONLY the agent name or "END" if complete
 
-Decision:"""),
+Decision:""",
+        ),
         ("placeholder", "{messages}"),
     ]
 )
@@ -172,9 +173,7 @@ class SupervisorAgent(ReactAgent):
 
         # Update prompt template for routing
         if self.engine:
-            self.engine.prompt_template = (
-                self.supervisor_prompt or self._create_routing_prompt()
-            )
+            self.engine.prompt_template = self.supervisor_prompt or self._create_routing_prompt()
 
     def _create_routing_prompt(self) -> ChatPromptTemplate:
         """Create routing prompt with current agent descriptions."""
@@ -239,9 +238,7 @@ class SupervisorAgent(ReactAgent):
         graph = super().build_graph()
 
         if not self.registered_agents:
-            logger.warning(
-                "No agents registered, supervisor will only make routing decisions"
-            )
+            logger.warning("No agents registered, supervisor will only make routing decisions")
             return graph
 
         # Add routing logic node after agent_node
@@ -310,7 +307,8 @@ class SupervisorAgent(ReactAgent):
         agents: list[tuple[str, Agent, str]],
         name: str = "supervisor",
         engine: AugLLMConfig | None = None,
-        **kwargs) -> "SupervisorAgent":
+        **kwargs,
+    ) -> "SupervisorAgent":
         """Create supervisor with pre-registered agents.
 
         Args:

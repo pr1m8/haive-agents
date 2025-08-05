@@ -6,7 +6,8 @@ from haive.agents.reasoning_and_critique.logic.agent import ReasoningSystem
 from haive.agents.reasoning_and_critique.logic.models import (
     ArgumentStrength,
     Evidence,
-    EvidenceType)
+    EvidenceType,
+)
 
 
 def example_business_decision() -> Any:
@@ -39,14 +40,16 @@ def example_business_decision() -> Any:
                 source="Industry Report 2023",
                 strength=ArgumentStrength.STRONG,
                 reliability=0.9,
-                relevance=0.8),
+                relevance=0.8,
+            ),
             Evidence(
                 evidence_type=EvidenceType.EMPIRICAL,
                 description="Our last 2 acquisitions successfully integrated and added 30% revenue",
                 source="Internal data",
                 strength=ArgumentStrength.MODERATE,
                 reliability=1.0,
-                relevance=0.7),
+                relevance=0.7,
+            ),
         ],
         "constraints": [
             "Must maintain 6 months cash runway",

@@ -6,9 +6,7 @@ from typing import Any, Dict, List, Optional
 
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage
-from langchain_core.output_parsers.openai_tools import (
-    JsonOutputToolsParser,
-    PydanticToolsParser)
+from langchain_core.output_parsers.openai_tools import JsonOutputToolsParser, PydanticToolsParser
 from langchain_core.runnables import RunnableConfig
 from langchain_core.runnables import chain as as_runnable
 from langgraph.graph import END
@@ -35,7 +33,8 @@ class MCTSAgent(Agent):
 
         # Create a DynamicGraph with our state schema
         gb = DynamicGraph(
-            components=[self.config.state_schema], state_schema=self.state_schema  # type: ignore[arg-type]
+            components=[self.config.state_schema],
+            state_schema=self.state_schema,  # type: ignore[arg-type]
         )
 
         # Configure LLM with tools
@@ -49,21 +48,16 @@ class MCTSAgent(Agent):
         self._setup_chains()
 
         # Add nodes to the graph
-        gb.add_node(
-            name="generate_initial_response", config=self._generate_initial_response
-        )
+        gb.add_node(name="generate_initial_response", config=self._generate_initial_response)
 
         gb.add_node(name="expand", config=self._expand)
 
         # Add conditional edges
         gb.add_conditional_edges(
-            "generate_initial_response",
-            self._should_continue,
-            {"end": END, "expand": "expand"})
-
-        gb.add_conditional_edges(
-            "expand", self._should_continue, {"end": END, "expand": "expand"}
+            "generate_initial_response", self._should_continue, {"end": END, "expand": "expand"}
         )
+
+        gb.add_conditional_edges("expand", self._should_continue, {"end": END, "expand": "expand"})
 
         # Set the entry point
         gb.set_entry_point("generate_initial_response")
@@ -117,12 +111,11 @@ class MCTSAgent(Agent):
                 n=n,
                 callbacks=config.get("callbacks", []),
                 run_name="GenerateCandidates",
-                **bound_kwargs)
+                **bound_kwargs,
+            )
             return [gen.message for gen in chat_result.generations[0]]
 
-        self.expansion_chain = (
-            self.config.expansion_prompt_template | generate_candidates
-        )
+        self.expansion_chain = self.config.expansion_prompt_template | generate_candidates
 
     def _generate_initial_response(self, state: TreeState) -> dict[str, Any]:
         """Generate the initial candidate response."""
@@ -150,7 +143,8 @@ class MCTSAgent(Agent):
                                         "args": r["args"],
                                         "id": r["id"],
                                     }
-                                ])
+                                ],
+                            )
                         ]
                     }
                 )
@@ -165,22 +159,25 @@ class MCTSAgent(Agent):
             )
 
             # Create root node
-            nodes = getattr(state, 'nodes', None)
-            serialize_messages = getattr(nodes, 'serialize_messages', lambda x: x) if nodes else lambda x: x
+            nodes = getattr(state, "nodes", None)
+            serialize_messages = (
+                getattr(nodes, "serialize_messages", lambda x: x) if nodes else lambda x: x
+            )
             node_data = TreeNode(
                 messages=serialize_messages(output_messages),
                 reflection=reflection.model_dump(),
-                is_solved=reflection.found_solution)
+                is_solved=reflection.found_solution,
+            )
 
             # Update nodes store
-            updated_nodes = getattr(state, 'nodes', None)
-            if updated_nodes and hasattr(updated_nodes, 'add_node'):
+            updated_nodes = getattr(state, "nodes", None)
+            if updated_nodes and hasattr(updated_nodes, "add_node"):
                 updated_nodes.add_node(node_data)
 
             # Mark tree as solved if solution found
             if reflection.found_solution:
-                if updated_nodes and hasattr(updated_nodes, 'mark_tree_as_solved'):
-                    node_id = getattr(node_data, 'node_id', None)
+                if updated_nodes and hasattr(updated_nodes, "mark_tree_as_solved"):
+                    node_id = getattr(node_data, "node_id", None)
                     if node_id:
                         updated_nodes.mark_tree_as_solved(node_id)
 
@@ -206,24 +203,24 @@ class MCTSAgent(Agent):
         """Expand the search tree by generating new candidates from the best node."""
         try:
             # Get current nodes store
-            nodes_store = getattr(state, 'nodes', None)
+            nodes_store = getattr(state, "nodes", None)
 
             # Get new step count
-            current_step = getattr(state, 'current_step', 0)
+            current_step = getattr(state, "current_step", 0)
             new_step = current_step + 1
 
             # Select best node to expand
-            if not nodes_store or not hasattr(nodes_store, 'select_best_node'):
+            if not nodes_store or not hasattr(nodes_store, "select_best_node"):
                 return {"error": "No nodes store available", "status": "error"}
-                
+
             best_node_id = nodes_store.select_best_node()
             if not best_node_id:
                 # No node to expand
                 return {"error": "No node found to expand", "status": "error"}
 
-            if not hasattr(nodes_store, 'get_node_by_id'):
+            if not hasattr(nodes_store, "get_node_by_id"):
                 return {"error": "Cannot get node", "status": "error"}
-                
+
             best_node = nodes_store.get_node_by_id(best_node_id)
             if not best_node:
                 return {
@@ -270,7 +267,8 @@ class MCTSAgent(Agent):
                                         "args": tool_call["args"],
                                         "id": tool_call["id"],
                                     }
-                                ])
+                                ],
+                            )
                         ]
                     }
                 )
@@ -294,18 +292,17 @@ class MCTSAgent(Agent):
 
             # Create child nodes
             updated_nodes = nodes_store
-            found_solution = getattr(state, 'solved', False)
+            found_solution = getattr(state, "solved", False)
 
-            for candidate_msgs, reflection in zip(
-                output_messages, reflections, strict=False
-            ):
+            for candidate_msgs, reflection in zip(output_messages, reflections, strict=False):
                 # Create node
                 node_data = TreeNode(
                     messages=updated_nodes.serialize_messages(candidate_msgs),
                     reflection=reflection.model_dump(),
                     parent_id=best_node_id,
                     depth=best_node.depth + 1,
-                    is_solved=reflection.found_solution)
+                    is_solved=reflection.found_solution,
+                )
 
                 # Add to nodes store
                 updated_nodes.add_node(node_data)
@@ -335,9 +332,7 @@ class MCTSAgent(Agent):
             if best_solution and best_solution.is_solved:
                 # Update messages with best solution
                 solution_messages = updated_nodes.deserialize_messages(
-                    updated_nodes.get_trajectory(
-                        best_solution.node_id, include_reflections=False
-                    )
+                    updated_nodes.get_trajectory(best_solution.node_id, include_reflections=False)
                 )
                 updated_state["messages"] = solution_messages
 
@@ -350,34 +345,33 @@ class MCTSAgent(Agent):
         except Exception as e:
             logger.exception(f"Error in expand node: {e!s}")
             return {
-                "error": f"Error expanding search tree: {
-                    e!s}",
+                "error": f"Error expanding search tree: {e!s}",
                 "status": "error",
             }
 
     def _should_continue(self, state: TreeState) -> str:
         """Determine whether to continue the tree search or exit."""
         # Check for error
-        if getattr(state, 'error', None):
+        if getattr(state, "error", None):
             return "end"
 
         # Check if solution found
-        if getattr(state, 'solved', False):
+        if getattr(state, "solved", False):
             return "end"
 
         # Check max steps
-        max_steps = getattr(state, 'max_steps', 10)
-        current_step = getattr(state, 'current_step', 0)
+        max_steps = getattr(state, "max_steps", 10)
+        current_step = getattr(state, "current_step", 0)
         if current_step >= max_steps:
             return "end"
 
         # Check tree height - use root if nodes doesn't exist
-        nodes = getattr(state, 'nodes', None)
-        if nodes and hasattr(nodes, 'get_tree_height'):
+        nodes = getattr(state, "nodes", None)
+        if nodes and hasattr(nodes, "get_tree_height"):
             tree_height = nodes.get_tree_height()
         else:
             # Use root node depth as approximation
-            tree_height = getattr(state.root, 'depth', 1)
+            tree_height = getattr(state.root, "depth", 1)
         if tree_height > self.config.max_rollouts:
             return "end"
 

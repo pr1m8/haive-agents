@@ -12,12 +12,14 @@ from haive.agents.reasoning_and_critique.lats.v2.models import (
     CandidateActions,
     Reflection,
     SelectionDecision,
-    TreeNode)
+    TreeNode,
+)
 from haive.agents.reasoning_and_critique.lats.v2.prompts import (
     expansion_prompt,
     initial_prompt,
     reflection_prompt,
-    selection_prompt)
+    selection_prompt,
+)
 from haive.agents.reasoning_and_critique.lats.v2.state import LATSState
 from haive.agents.simple.agent import SimpleAgent
 
@@ -52,7 +54,8 @@ selection_engine = AugLLMConfig(
     prompt_template=selection_prompt,
     structured_output_model=SelectionDecision,
     structured_output_model_version="v2",
-    temperature=0.2)
+    temperature=0.2,
+)
 
 # Create agents
 initial_agent = SimpleAgent(name="initial", engine=initial_engine)
@@ -79,7 +82,8 @@ def process_initial_response(state: LATSState) -> dict[str, Any]:
                 if hasattr(last_msg, "tool_calls") and last_msg.tool_calls
                 else None
             ),
-            depth=1)
+            depth=1,
+        )
 
         return {
             "nodes": {root.id: root},
@@ -100,9 +104,7 @@ def execute_tool_calls(state: LATSState) -> dict[str, Any] | list[Send]:
         if node and node.action and not node.tool_response:
             # Send to tool node
             sends.append(
-                Send(
-                    "tool_node",
-                    {**state.dict(), "messages": [{"tool_calls": [node.action]}]})
+                Send("tool_node", {**state.dict(), "messages": [{"tool_calls": [node.action]}]})
             )
 
     # Check candidate nodes
@@ -115,7 +117,8 @@ def execute_tool_calls(state: LATSState) -> dict[str, Any] | list[Send]:
                         **state.dict(),
                         "current_node_id": candidate.id,
                         "messages": [{"tool_calls": [candidate.action]}],
-                    })
+                    },
+                )
             )
 
     return sends if sends else {}
@@ -148,7 +151,8 @@ def process_expansion(state: LATSState) -> dict[str, Any]:
                     if isinstance(candidate_data, dict) and "tool" in candidate_data
                     else None
                 ),
-                depth=parent_depth + 1)
+                depth=parent_depth + 1,
+            )
 
             new_nodes[node.id] = node
             candidate_nodes.append(node)
@@ -178,8 +182,7 @@ def evaluate_candidates(state: LATSState) -> list[Send]:
         )
 
         if candidate.tool_response:
-            response_to_evaluate += f"\nTool Response: {
-                candidate.tool_response}"
+            response_to_evaluate += f"\nTool Response: {candidate.tool_response}"
 
         evaluation_state = {
             **state.dict(),
@@ -210,9 +213,7 @@ def process_reflection(state: LATSState) -> dict[str, Any]:
             node.is_solved = reflection.found_solution
 
             # Backpropagate score
-            updated_nodes = backpropagate(
-                state.nodes, node.id, reflection.normalized_score
-            )
+            updated_nodes = backpropagate(state.nodes, node.id, reflection.normalized_score)
 
             # Check for best solution
             best_id = state.best_solution_id
@@ -230,9 +231,7 @@ def process_reflection(state: LATSState) -> dict[str, Any]:
     return {}
 
 
-def backpropagate(
-    nodes: dict[str, TreeNode], node_id: str, reward: float
-) -> dict[str, TreeNode]:
+def backpropagate(nodes: dict[str, TreeNode], node_id: str, reward: float) -> dict[str, TreeNode]:
     """Backpropagate reward up the tree."""
     updated = {}
     current_id = node_id
@@ -285,43 +284,39 @@ def should_continue_search(state: LATSState) -> str:
 
 # Create LATS system
 def create_lats(
-    tools: list[Any],
-    max_depth: int = 5,
-    max_rollouts: int = 10,
-    n_candidates: int = 5,
-    **kwargs) -> MultiAgentBase:
+    tools: list[Any], max_depth: int = 5, max_rollouts: int = 10, n_candidates: int = 5, **kwargs
+) -> MultiAgentBase:
     """Create a Language Agent Tree Search system."""
     # Create tool node with provided tools
     tool_node = ToolNode(tools=tools)
 
     branches = [
         # Initial response flow
-        (
-            initial_agent,
-            lambda s: "process_initial",
-            {"process_initial": "process_initial"}),
+        (initial_agent, lambda s: "process_initial", {"process_initial": "process_initial"}),
         ("process_initial", lambda s: "reflector", {"reflector": reflection_agent}),
         # After reflection of initial response
         (
             reflection_agent,
-            lambda s: (
-                "selector" if s.current_node_id == s.root_id else "process_reflection"
-            ),
-            {"selector": selection_agent, "process_reflection": "process_reflection"}),
+            lambda s: ("selector" if s.current_node_id == s.root_id else "process_reflection"),
+            {"selector": selection_agent, "process_reflection": "process_reflection"},
+        ),
         # Selection leads to expansion
         (
             selection_agent,
             lambda s: "expander" if not s.should_terminate else END,
-            {"expander": expansion_agent, END: END}),
+            {"expander": expansion_agent, END: END},
+        ),
         # Expansion leads to processing
         (
             expansion_agent,
             lambda s: "process_expansion",
-            {"process_expansion": "process_expansion"}),
+            {"process_expansion": "process_expansion"},
+        ),
         (
             "process_expansion",
             should_execute_tools,
-            {"execute_tools": "execute_tools", "evaluate": "evaluate"}),
+            {"execute_tools": "execute_tools", "evaluate": "evaluate"},
+        ),
         # Tool execution
         ("execute_tools", lambda s: "tool_node", {"tool_node": tool_node}),
         (tool_node, lambda s: "evaluate", {"evaluate": "evaluate"}),
@@ -329,12 +324,10 @@ def create_lats(
         (
             "evaluate",
             lambda s: sends if (sends := evaluate_candidates(s)) else "selector",
-            {"reflector": reflection_agent, "selector": selection_agent}),
+            {"reflector": reflection_agent, "selector": selection_agent},
+        ),
         # After processing reflections
-        (
-            "process_reflection",
-            should_continue_search,
-            {"selector": selection_agent, END: END}),
+        ("process_reflection", should_continue_search, {"selector": selection_agent, END: END}),
     ]
 
     workflow_nodes = {
@@ -352,7 +345,8 @@ def create_lats(
         state_schema_override=LATSState,
         schema_build_mode=BuildMode.SEQUENCE,
         workflow_nodes=workflow_nodes,
-        **kwargs)
+        **kwargs,
+    )
 
     # Set initial parameters
     system.initial_state = {

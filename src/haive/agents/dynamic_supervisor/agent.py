@@ -42,8 +42,7 @@ from langchain_core.messages import BaseMessage, HumanMessage
 from pydantic import Field
 
 from haive.agents.dynamic_supervisor.prompts import format_supervisor_prompt
-from haive.agents.dynamic_supervisor.state import (
-    SupervisorStateWithTools)
+from haive.agents.dynamic_supervisor.state import SupervisorStateWithTools
 from haive.agents.react.agent import ReactAgent
 
 # Tools handle agent execution directly - no separate node needed
@@ -96,7 +95,8 @@ class DynamicSupervisorAgent(ReactAgent):
 
     state_schema_override: type = Field(
         default=SupervisorStateWithTools,
-        description="Use supervisor state schema with dynamic agent management")
+        description="Use supervisor state schema with dynamic agent management",
+    )
 
     auto_sync_tools: bool = Field(
         default=True, description="Automatically sync tools when state changes"
@@ -133,10 +133,7 @@ class DynamicSupervisorAgent(ReactAgent):
         # Use base ReactAgent graph - provides the looping behavior
         graph = super().build_graph()
 
-        logger.info(
-            f"Built supervisor graph for '{
-                self.name}' with ReAct loop"
-        )
+        logger.info(f"Built supervisor graph for '{self.name}' with ReAct loop")
 
         return graph
 
@@ -168,7 +165,8 @@ class DynamicSupervisorAgent(ReactAgent):
         self,
         input_data: str | dict[str, Any] | list[BaseMessage],
         state: SupervisorStateWithTools | None = None,
-        **kwargs) -> Any:
+        **kwargs,
+    ) -> Any:
         """Run the supervisor asynchronously.
 
         Extends SimpleAgent.arun to handle supervisor state and
@@ -219,9 +217,7 @@ class DynamicSupervisorAgent(ReactAgent):
             # Add messages to state
             state.messages.extend(input_data)
             input_data = state
-        elif isinstance(input_data, dict) and not isinstance(
-            input_data, SupervisorStateWithTools
-        ):
+        elif isinstance(input_data, dict) and not isinstance(input_data, SupervisorStateWithTools):
             # Merge dict into state
             for key, value in input_data.items():
                 if hasattr(state, key):
@@ -235,7 +231,8 @@ class DynamicSupervisorAgent(ReactAgent):
         self,
         input_data: str | dict[str, Any] | list[BaseMessage],
         state: SupervisorStateWithTools | None = None,
-        **kwargs) -> Any:
+        **kwargs,
+    ) -> Any:
         """Run the supervisor synchronously.
 
         Synchronous version of arun.
@@ -280,7 +277,8 @@ def create_dynamic_supervisor(
     temperature: float = 0.0,
     force_tool_use: bool = True,
     enable_agent_builder: bool = False,
-    **kwargs) -> DynamicSupervisorAgent:
+    **kwargs,
+) -> DynamicSupervisorAgent:
     """Factory function to create a configured dynamic supervisor.
 
     Args:

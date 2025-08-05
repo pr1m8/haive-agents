@@ -12,8 +12,7 @@ from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from langchain_core.messages import BaseMessage
 from pydantic import BaseModel, Field, computed_field
 
-from haive.agents.supervisor.dynamic_state import (
-    DynamicSupervisorState)
+from haive.agents.supervisor.dynamic_state import DynamicSupervisorState
 
 
 class AgentRegistryState(BaseModel):
@@ -24,8 +23,8 @@ class AgentRegistryState(BaseModel):
         default_factory=dict, description="Map of agent names to their types"
     )
     agent_capabilities: dict[str, str] = Field(
-        default_factory=dict,
-        description="Map of agent names to capability descriptions")
+        default_factory=dict, description="Map of agent names to capability descriptions"
+    )
     agent_tools: dict[str, list[str]] = Field(
         default_factory=dict, description="Map of agent names to their tool lists"
     )
@@ -60,11 +59,8 @@ class AgentRegistryState(BaseModel):
     )
 
     def add_agent_to_registry(
-        self,
-        agent_name: str,
-        agent_type: str,
-        capability: str,
-        tools: list[str] | None = None) -> None:
+        self, agent_name: str, agent_type: str, capability: str, tools: list[str] | None = None
+    ) -> None:
         """Add agent to registry state."""
         self.available_agents[agent_name] = agent_type
         self.agent_capabilities[agent_name] = capability
@@ -128,7 +124,8 @@ class MultiAgentCoordinationState(BaseModel):
     # Coordination mode
     coordination_mode: str = Field(
         default="supervisor",
-        description="Current coordination mode: supervisor, sequential, parallel, swarm")
+        description="Current coordination mode: supervisor, sequential, parallel, swarm",
+    )
 
     # Agent execution queue and history
     execution_queue: list[dict[str, Any]] = Field(
@@ -150,8 +147,8 @@ class MultiAgentCoordinationState(BaseModel):
 
     # Coordination metadata
     coordination_session_id: str = Field(
-        default_factory=lambda: str(uuid4()),
-        description="Unique ID for this coordination session")
+        default_factory=lambda: str(uuid4()), description="Unique ID for this coordination session"
+    )
 
     coordination_start_time: float = Field(
         default_factory=time.time, description="When coordination session started"
@@ -199,18 +196,13 @@ class MultiAgentCoordinationState(BaseModel):
 
         # Update current active agent
         active_agents = [
-            name
-            for name, info in self.active_executions.items()
-            if info.get("status") == "active"
+            name for name, info in self.active_executions.items() if info.get("status") == "active"
         ]
         self.current_active_agent = active_agents[0] if active_agents else None
 
     def add_agent_handoff(
-        self,
-        from_agent: str,
-        to_agent: str,
-        reason: str,
-        context: dict[str, Any] | None = None) -> None:
+        self, from_agent: str, to_agent: str, reason: str, context: dict[str, Any] | None = None
+    ) -> None:
         """Record agent handoff."""
         handoff = {
             "from_agent": from_agent,
@@ -232,8 +224,8 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
 
     # Multi-agent coordination
     coordination: MultiAgentCoordinationState = Field(
-        default_factory=MultiAgentCoordinationState,
-        description="Multi-agent coordination state")
+        default_factory=MultiAgentCoordinationState, description="Multi-agent coordination state"
+    )
 
     # Dynamic choice model integration
     choice_model_cache: dict[str, Any] | None = Field(
@@ -292,7 +284,8 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
         agent_type: str,
         capability: str,
         tools: list[str] | None = None,
-        config: dict[str, Any] | None = None) -> str:
+        config: dict[str, Any] | None = None,
+    ) -> str:
         """Request addition of a new agent."""
         request_id = str(uuid4())
 
@@ -318,9 +311,8 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
 
         self.agent_registry.pending_agent_removals.append(agent_name)
         self.agent_registry.add_agent_change_request(
-            "remove",
-            agent_name,
-            {"request_id": request_id, "requested_at": time.time()})
+            "remove", agent_name, {"request_id": request_id, "requested_at": time.time()}
+        )
         self.registry_needs_sync = True
 
         return request_id
@@ -336,7 +328,8 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
                     request["agent_name"],
                     request["agent_type"],
                     request["capability"],
-                    request.get("tools", []))
+                    request.get("tools", []),
+                )
                 results["added"].append(request["agent_name"])
             except Exception as e:
                 results["failed"].append(f"Add {request['agent_name']}: {e!s}")
@@ -435,9 +428,7 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
         """Clean up old coordination data to prevent memory bloat."""
         # Limit agent handoffs
         if len(self.coordination.agent_handoffs) > max_history:
-            self.coordination.agent_handoffs = self.coordination.agent_handoffs[
-                -max_history:
-            ]
+            self.coordination.agent_handoffs = self.coordination.agent_handoffs[-max_history:]
 
         # Limit tool usage history
         if len(self.tool_usage_history) > max_history:
@@ -445,9 +436,9 @@ class MultiAgentDynamicSupervisorState(DynamicSupervisorState):
 
         # Limit agent change requests
         if len(self.agent_registry.agent_change_requests) > max_history:
-            self.agent_registry.agent_change_requests = (
-                self.agent_registry.agent_change_requests[-max_history:]
-            )
+            self.agent_registry.agent_change_requests = self.agent_registry.agent_change_requests[
+                -max_history:
+            ]
 
         # Call parent cleanup
         self.cleanup_old_history(max_history)

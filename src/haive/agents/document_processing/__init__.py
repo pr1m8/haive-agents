@@ -4,7 +4,8 @@ from haive.agents.document_processing.agent import (
     DocumentProcessingAgent,
     DocumentProcessingConfig,
     DocumentProcessingResult,
-    DocumentProcessingState)
+    DocumentProcessingState,
+)
 
 __all__ = [
     "DocumentProcessingAgent",

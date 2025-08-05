@@ -19,8 +19,8 @@ class SelfHealingCodeAgent(AgentArchitecture):
         )
         message = HumanMessage(
             content=prompt.format(
-                function_string=self.function_string,
-                error_description=self.error_description)
+                function_string=self.function_string, error_description=self.error_description
+            )
         )
         bug_report = llm.invoke([message]).content.strip()
 
@@ -39,10 +39,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
             "Format: # function_name ## error_description ### error_analysis"
         )
 
-        message = HumanMessage(
-            content=prompt.format(
-                bug_report=self.bug_report)
-        )
+        message = HumanMessage(content=prompt.format(bug_report=self.bug_report))
 
         response = llm.invoke([message]).content.strip()
 
@@ -86,17 +83,12 @@ class SelfHealingCodeAgent(AgentArchitecture):
             "Format: # function_name ## error_description ### error_analysis"
         )
 
-        message = HumanMessage(
-            content=prompt.format(
-                bug_report=self.bug_report)
-        )
+        message = HumanMessage(content=prompt.format(bug_report=self.bug_report))
 
         response = llm.invoke([message]).content.strip()
 
         id = str(uuid.uuid4())
-        collection.add(
-            ids=[id],
-            documents=[response])
+        collection.add(ids=[id], documents=[response])
         return self
 
     # Use the prior memory as well as the current bug report to generate an
@@ -115,16 +107,12 @@ class SelfHealingCodeAgent(AgentArchitecture):
         results = collection.get(ids=[memory_to_update_id])
         memory_to_update = results["documents"][0]
         message = HumanMessage(
-            content=prompt.format(
-                bug_report=self.bug_report,
-                memory_to_update=memory_to_update)
+            content=prompt.format(bug_report=self.bug_report, memory_to_update=memory_to_update)
         )
 
         response = llm.invoke([message]).content.strip()
 
-        collection.update(
-            ids=[memory_to_update_id],
-            documents=[response])
+        collection.update(ids=[memory_to_update_id], documents=[response])
 
         return self
 
@@ -145,9 +133,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
         self.graph.add_conditional_edges("memory_search_node", memory_filter_router)
         self.graph.add_conditional_edges("memory_filter_node", memory_generation_router)
         self.graph.add_edge("memory_generation_node", "code_update_node")
-        self.graph.add_conditional_edges(
-            "memory_modification_node", memory_update_router
-        )
+        self.graph.add_conditional_edges("memory_modification_node", memory_update_router)
 
         self.graph.add_edge("code_update_node", "code_patching_node")
         self.graph.add_edge("code_patching_node", "code_execution_node")
@@ -176,8 +162,8 @@ class SelfHealingCodeAgent(AgentArchitecture):
         )
         message = HumanMessage(
             content=prompt.format(
-                function_string=self.function_string,
-                error_description=self.error_description)
+                function_string=self.function_string, error_description=self.error_description
+            )
         )
         new_function_string = llm.invoke([message]).content.strip()
 

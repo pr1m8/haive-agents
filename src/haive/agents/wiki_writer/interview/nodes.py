@@ -1,8 +1,6 @@
 import json
 
-from haive.agents.wiki_writer.interview.aug_llms import (
-    gen_qn_aug_llm_config,
-    gen_queries_chain)
+from haive.agents.wiki_writer.interview.aug_llms import gen_qn_aug_llm_config, gen_queries_chain
 from haive.agents.wiki_writer.interview.state import InterviewState
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.tools.search_tools import tavily_search_tool
@@ -15,8 +13,8 @@ from langgraph.types import Command
 
 @chain
 async def generate_question(
-    state: InterviewState,
-    aug_llm_config: AugLLMConfig = gen_qn_aug_llm_config):
+    state: InterviewState, aug_llm_config: AugLLMConfig = gen_qn_aug_llm_config
+):
     editor = state["editor"]
     gn_chain = (
         RunnableLambda(swap_roles).bind(name=editor.name)
@@ -32,7 +30,8 @@ async def gen_answer(
     config: RunnableConfig | None = None,
     name: str = "Subject_Matter_Expert",
     max_str_len: int = 15000,
-    search_engine: BaseTool | StructuredTool = tavily_search_tool):
+    search_engine: BaseTool | StructuredTool = tavily_search_tool,
+):
     swapped_state = swap_roles(state, name)  # Convert all other AI messages
     queries = await gen_queries_chain.ainvoke(swapped_state)
 
@@ -40,9 +39,7 @@ async def gen_answer(
         queries["parsed"].queries, config, return_exceptions=True
     )
 
-    successful_results = [
-        res for res in query_results if not isinstance(res, Exception)
-    ]
+    successful_results = [res for res in query_results if not isinstance(res, Exception)]
     all_query_results = {
         res["url"]: res["content"] for results in successful_results for res in results
     }

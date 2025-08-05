@@ -117,9 +117,7 @@ class ResearchSource(BaseModel):
     source_type: DataSourceType = Field(
         default=DataSourceType.WEB, description="Type of data source"
     )
-    content_snippet: str | None = Field(
-        default=None, description="Snippet of relevant content"
-    )
+    content_snippet: str | None = Field(default=None, description="Snippet of relevant content")
     reliability: ContentReliability = Field(
         default=ContentReliability.UNKNOWN, description="Assessed reliability"
     )
@@ -129,12 +127,8 @@ class ResearchSource(BaseModel):
     relevance_score: float = Field(
         default=0.0, ge=0.0, le=1.0, description="Relevance score (0.0 - 1.0)"
     )
-    citation: str | None = Field(
-        default=None, description="Formatted citation for the source"
-    )
-    access_timestamp: str | None = Field(
-        default=None, description="When the source was accessed"
-    )
+    citation: str | None = Field(default=None, description="Formatted citation for the source")
+    access_timestamp: str | None = Field(default=None, description="When the source was accessed")
 
     @field_validator("relevance_score")
     @classmethod
@@ -166,19 +160,15 @@ class ResearchFinding(BaseModel):
 
     finding: str = Field(description="The actual finding or insight")
     confidence: float = Field(
-        default=0.5,
-        ge=0.0,
-        le=1.0,
-        description="Confidence in this finding (0.0 - 1.0)")
+        default=0.5, ge=0.0, le=1.0, description="Confidence in this finding (0.0 - 1.0)"
+    )
     sources: list[ResearchSource] = Field(
         default_factory=list, description="Sources supporting this finding"
     )
     explanation: str | None = Field(
         default=None, description="Explanation of the finding's significance"
     )
-    related_findings: list[str] = Field(
-        default_factory=list, description="Related findings"
-    )
+    related_findings: list[str] = Field(default_factory=list, description="Related findings")
 
     @field_validator("confidence")
     @classmethod
@@ -218,9 +208,7 @@ class ResearchSummary(BaseModel):
     key_findings: list[ResearchFinding] = Field(
         default_factory=list, description="Key findings from research"
     )
-    sources_count: int = Field(
-        default=0, description="Total number of sources consulted"
-    )
+    sources_count: int = Field(default=0, description="Total number of sources consulted")
     high_reliability_sources: int = Field(
         default=0, description="Number of high reliability sources"
     )
@@ -234,9 +222,7 @@ class ResearchSummary(BaseModel):
     confidence_score: float = Field(
         default=0.5, ge=0.0, le=1.0, description="Overall confidence score"
     )
-    limitations: list[str] = Field(
-        default_factory=list, description="Research limitations"
-    )
+    limitations: list[str] = Field(default_factory=list, description="Research limitations")
 
     @field_validator("confidence_score")
     @classmethod
@@ -291,12 +277,8 @@ class DataSourceConfig(BaseModel):
     priority: int = Field(
         default=5, ge=1, le=10, description="Priority (1-10, higher = more important)"
     )
-    api_key: str | None = Field(
-        default=None, description="API key for the data source if required"
-    )
-    max_results: int = Field(
-        default=10, description="Maximum number of results to return"
-    )
+    api_key: str | None = Field(default=None, description="API key for the data source if required")
+    max_results: int = Field(default=10, description="Maximum number of results to return")
     search_params: dict[str, Any] = Field(
         default_factory=dict, description="Custom search parameters"
     )

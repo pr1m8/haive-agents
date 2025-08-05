@@ -24,6 +24,7 @@ async def run_basic_example():
 
     # Create a standard ToT agent with default configuration
     from haive.agents.reasoning_and_critique.tot.config import TOTAgentConfig
+
     config = TOTAgentConfig()
     agent = ToTAgent(config)
 
@@ -57,21 +58,22 @@ async def run_math_example():
             "generator": AugLLMConfig(
                 name="math_generator",
                 description="Generates mathematical solutions",
-                llm_config=AzureLLMConfig(
-                    model="gpt-4o"
-                )),
+                llm_config=AzureLLMConfig(model="gpt-4o"),
+            ),
             "evaluator": AugLLMConfig(
                 name="math_evaluator",
                 description="Evaluates mathematical solutions",
-                llm_config=AzureLLMConfig(
-                    model="gpt-4o"
-                )),
-        })
+                llm_config=AzureLLMConfig(model="gpt-4o"),
+            ),
+        },
+    )
 
     agent = ToTAgent(config)
 
     # Define a Game of 24 problem
-    problem = "Use the numbers 4, 7, 8, and 9 exactly once with basic operations (+, -, *, /) to get 24."
+    problem = (
+        "Use the numbers 4, 7, 8, and 9 exactly once with basic operations (+, -, *, /) to get 24."
+    )
 
     # Run the agent
     result = await agent.run(problem)
@@ -101,16 +103,15 @@ async def run_complex_reasoning_example():
             "generator": AugLLMConfig(
                 name="reasoning_generator",
                 description="Generates solutions for complex reasoning problems",
-                llm_config=AzureLLMConfig(
-                    model="gpt-4o"
-                )),
+                llm_config=AzureLLMConfig(model="gpt-4o"),
+            ),
             "evaluator": AugLLMConfig(
                 name="reasoning_evaluator",
                 description="Evaluates solutions for complex reasoning problems",
-                llm_config=AzureLLMConfig(
-                    model="gpt-4o"
-                )),
-        })
+                llm_config=AzureLLMConfig(model="gpt-4o"),
+            ),
+        },
+    )
 
     agent = ToTAgent(config)
 

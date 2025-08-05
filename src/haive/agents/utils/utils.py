@@ -54,7 +54,5 @@ def parse(text: str) -> dict:
         action, action_input = split_output
     action = action.strip()
     if action_input is not None:
-        action_input = [
-            inp.strip().strip("[]") for inp in action_input.strip().split(";")
-        ]
+        action_input = [inp.strip().strip("[]") for inp in action_input.strip().split(";")]
     return {"action": action, "args": action_input}

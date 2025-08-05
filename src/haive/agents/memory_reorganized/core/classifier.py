@@ -17,26 +17,21 @@ from haive.agents.memory.core.types import (
     MemoryImportance,
     MemoryQueryIntent,
     MemoryType,
-    Union)
+    Union,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class MemoryClassifierConfig(BaseModel):
-    """Configuration for memory classification system.
-    """
+    """Configuration for memory classification system."""
 
     llm_config: AugLLMConfig = Field(
         default_factory=AugLLMConfig, description="LLM for classification"
     )
-    enable_entity_extraction: bool = Field(
-        default=True, description="Extract named entities"
-    )
-    enable_sentiment_analysis: bool = Field(
-        default=True, description="Analyze sentiment"
-    )
-    enable_topic_modeling: bool = Field(
-        default=True, description="Extract topics")
+    enable_entity_extraction: bool = Field(default=True, description="Extract named entities")
+    enable_sentiment_analysis: bool = Field(default=True, description="Analyze sentiment")
+    enable_topic_modeling: bool = Field(default=True, description="Extract topics")
 
     # Classification thresholds
     importance_threshold_high: float = Field(
@@ -50,12 +45,8 @@ class MemoryClassifierConfig(BaseModel):
     )
 
     # Processing limits
-    max_content_length: int = Field(
-        default=2000, description="Maximum content length for analysis"
-    )
-    batch_size: int = Field(
-        default=10, description="Batch size for bulk classification"
-    )
+    max_content_length: int = Field(default=2000, description="Maximum content length for analysis")
+    batch_size: int = Field(default=10, description="Batch size for bulk classification")
 
 
 class MemoryClassifier:
@@ -70,22 +61,16 @@ class MemoryClassifier:
     """
 
     def __init__(self, config: MemoryClassifierConfig = None):
-        """Initialize memory classifier with configuration.
-        """
+        """Initialize memory classifier with configuration."""
         self.config = config or MemoryClassifierConfig()
         self._setup_llm()
         self._setup_classification_prompts()
 
     def _setup_llm(self) -> None:
-        """Setup LLM for classification tasks.
-        """
+        """Setup LLM for classification tasks."""
         # Configure LLM for classification
-        self.config.llm_config.temperature = (
-            0.1  # Low temperature for consistent classification
-        )
-        self.config.llm_config.max_tokens = (
-            1000  # Sufficient for classification response
-        )
+        self.config.llm_config.temperature = 0.1  # Low temperature for consistent classification
+        self.config.llm_config.max_tokens = 1000  # Sufficient for classification response
 
         # Setup structured output for classification results
         self.config.llm_config.structured_output_model = MemoryClassificationResult
@@ -94,8 +79,7 @@ class MemoryClassifier:
         self.llm = self.config.llm_config.create_runnable()
 
     def _setup_classification_prompts(self) -> None:
-        """Setup prompts for different classification tasks.
-        """
+        """Setup prompts for different classification tasks."""
         self.classification_prompt = """You are an expert memory analyst. Analyze the given content and classify it according to cognitive memory types.
 
 MEMORY TYPES:
@@ -169,7 +153,8 @@ Determine:
         self,
         content: str,
         user_context: dict[str, Any] | None = None,
-        conversation_context: dict[str, Any] | None = None) -> MemoryClassificationResult:
+        conversation_context: dict[str, Any] | None = None,
+    ) -> MemoryClassificationResult:
         """Classify a single memory content into types and extract metadata.
 
         Args:
@@ -184,32 +169,28 @@ Determine:
             # Truncate content if too long
             if len(content) > self.config.max_content_length:
                 content = content[: self.config.max_content_length] + "..."
-                logger.warning(
-                    f"Content truncated to {
-                        self.config.max_content_length} characters")
+                logger.warning(f"Content truncated to {self.config.max_content_length} characters")
 
             # Prepare context strings
-            user_context_str = str(
-                user_context) if user_context else "None provided"
+            user_context_str = str(user_context) if user_context else "None provided"
             conversation_context_str = (
-                str(conversation_context) if conversation_context else "None provided")
+                str(conversation_context) if conversation_context else "None provided"
+            )
 
             # Format prompt
             prompt = self.classification_prompt.format(
                 content=content,
                 user_context=user_context_str,
-                conversation_context=conversation_context_str)
+                conversation_context=conversation_context_str,
+            )
 
             # Get LLM classification
-            result = self.llm.invoke(
-                {"messages": [{"role": "user", "content": prompt}]}
-            )
+            result = self.llm.invoke({"messages": [{"role": "user", "content": prompt}]})
 
             # Extract structured result
             if hasattr(result, "content"):
                 # Parse structured output if available
-                return self._parse_classification_result(
-                    result.content, content)
+                return self._parse_classification_result(result.content, content)
             # Fallback to manual parsing
             return self._fallback_classification(content)
 
@@ -231,14 +212,12 @@ Determine:
 
             # Use basic LLM for intent analysis (no structured output needed)
             basic_llm = AugLLMConfig(temperature=0.2).create_runnable()
-            result = basic_llm.invoke(
-                {"messages": [{"role": "user", "content": prompt}]}
-            )
+            result = basic_llm.invoke({"messages": [{"role": "user", "content": prompt}]})
 
             # Parse intent from response
             return self._parse_query_intent(
-                result.content if hasattr(
-                    result, "content") else str(result), query)
+                result.content if hasattr(result, "content") else str(result), query
+            )
 
         except Exception as e:
             logger.exception(f"Error analyzing query intent: {e}")
@@ -261,16 +240,14 @@ Determine:
 
         # Process in batches
         for i in range(0, len(contents), self.config.batch_size):
-            batch_contents = contents[i: i + self.config.batch_size]
-            batch_contexts = contexts[i: i + self.config.batch_size]
+            batch_contents = contents[i : i + self.config.batch_size]
+            batch_contexts = contexts[i : i + self.config.batch_size]
 
             batch_results = []
-            for content, context in zip(
-                    batch_contents, batch_contexts, strict=False):
+            for content, context in zip(batch_contents, batch_contexts, strict=False):
                 result = self.classify_memory(
-                    content,
-                    context.get("user_context"),
-                    context.get("conversation_context"))
+                    content, context.get("user_context"), context.get("conversation_context")
+                )
                 batch_results.append(result)
 
             results.extend(batch_results)
@@ -282,7 +259,8 @@ Determine:
         content: str,
         user_context: dict[str, Any] | None = None,
         conversation_context: dict[str, Any] | None = None,
-        namespace: Optional[str] = None) -> MemoryEntry:
+        namespace: Optional[str] = None,
+    ) -> MemoryEntry:
         """Create a complete memory entry with automatic classification.
 
         Args:
@@ -295,9 +273,7 @@ Determine:
             MemoryEntry with full classification and metadata
         """
         # Classify the memory
-        classification = self.classify_memory(
-            content, user_context, conversation_context
-        )
+        classification = self.classify_memory(content, user_context, conversation_context)
 
         # Create memory entry
         entry = MemoryEntry(
@@ -311,7 +287,8 @@ Determine:
             confidence=classification.confidence,
             user_context=user_context or {},
             session_context=conversation_context or {},
-            namespace=namespace)
+            namespace=namespace,
+        )
 
         # Calculate initial weight
         entry.calculate_current_weight()
@@ -321,8 +298,7 @@ Determine:
     def _parse_classification_result(
         self, llm_response: str, original_content: str
     ) -> MemoryClassificationResult:
-        """Parse LLM response into structured classification result.
-        """
+        """Parse LLM response into structured classification result."""
         try:
             # If structured output worked, this should already be parsed
             # This is a fallback parser for non-structured responses
@@ -336,13 +312,10 @@ Determine:
             # Extract importance score
             importance_score = 0.5  # Default
             score_match = re.search(
-                r"(?: Union[importance, score])[:\s]+([0-9]*\.?[0-9]+)",
-                llm_response.lower())
+                r"(?: Union[importance, score])[:\s]+([0-9]*\.?[0-9]+)", llm_response.lower()
+            )
             if score_match:
-                importance_score = min(
-                    1.0, max(
-                        0.0, float(
-                            score_match.group(1))))
+                importance_score = min(1.0, max(0.0, float(score_match.group(1))))
 
             # Determine importance level
             if importance_score >= self.config.importance_threshold_critical:
@@ -363,23 +336,21 @@ Determine:
             topics = self._extract_topics_simple(original_content)
 
             return MemoryClassificationResult(
-                memory_types=memory_types or [
-                    MemoryType.SEMANTIC],  # Default fallback
+                memory_types=memory_types or [MemoryType.SEMANTIC],  # Default fallback
                 importance=importance,
                 importance_score=importance_score,
                 entities=entities,
                 topics=topics,
                 confidence=0.7,  # Medium confidence for parsed result
-                reasoning="Parsed from LLM response")
+                reasoning="Parsed from LLM response",
+            )
 
         except Exception as e:
             logger.exception(f"Error parsing classification result: {e}")
             return self._fallback_classification(original_content)
 
-    def _fallback_classification(
-            self, content: str) -> MemoryClassificationResult:
-        """Provide fallback classification when LLM fails.
-        """
+    def _fallback_classification(self, content: str) -> MemoryClassificationResult:
+        """Provide fallback classification when LLM fails."""
         # Simple rule-based classification
         memory_types = [MemoryType.SEMANTIC]  # Default to semantic
 
@@ -390,16 +361,10 @@ Determine:
         ):
             memory_types.append(MemoryType.EPISODIC)
 
-        if any(
-            word in content.lower()
-            for word in ["how to", "steps", "process", "procedure"]
-        ):
+        if any(word in content.lower() for word in ["how to", "steps", "process", "procedure"]):
             memory_types.append(MemoryType.PROCEDURAL)
 
-        if any(
-            word in content.lower()
-            for word in ["prefer", "like", "dislike", "favorite"]
-        ):
+        if any(word in content.lower() for word in ["prefer", "like", "dislike", "favorite"]):
             memory_types.append(MemoryType.PREFERENCE)
 
         return MemoryClassificationResult(
@@ -409,13 +374,11 @@ Determine:
             entities=self._extract_entities_simple(content),
             topics=self._extract_topics_simple(content),
             confidence=0.3,  # Low confidence for fallback
-            reasoning="Fallback rule-based classification")
+            reasoning="Fallback rule-based classification",
+        )
 
-    def _parse_query_intent(
-        self, llm_response: str, original_query: str
-    ) -> MemoryQueryIntent:
-        """Parse LLM response for query intent analysis.
-        """
+    def _parse_query_intent(self, llm_response: str, original_query: str) -> MemoryQueryIntent:
+        """Parse LLM response for query intent analysis."""
         # Simple parsing for now - could be enhanced with structured output
         memory_types = []
         for memory_type in MemoryType:
@@ -430,27 +393,24 @@ Determine:
         ):
             complexity = "complex"
         elif any(
-            word in original_query.lower()
-            for word in ["explain", "describe", "tell me about"]
+            word in original_query.lower() for word in ["explain", "describe", "tell me about"]
         ):
             complexity = "moderate"
 
         return MemoryQueryIntent(
-            memory_types=memory_types or [
-                MemoryType.SEMANTIC],
+            memory_types=memory_types or [MemoryType.SEMANTIC],
             complexity=complexity,
             temporal_scope="recent" if "recent" in original_query.lower() else "all",
-            requires_reasoning=complexity in [
-                "moderate",
-                "complex"],
+            requires_reasoning=complexity in ["moderate", "complex"],
             entities=self._extract_entities_simple(original_query),
             topics=self._extract_topics_simple(original_query),
             preferred_retrieval_strategy=(
-                "semantic" if MemoryType.SEMANTIC in memory_types else "episodic"))
+                "semantic" if MemoryType.SEMANTIC in memory_types else "episodic"
+            ),
+        )
 
     def _fallback_query_intent(self, query: str) -> MemoryQueryIntent:
-        """Provide fallback query intent when LLM fails.
-        """
+        """Provide fallback query intent when LLM fails."""
         return MemoryQueryIntent(
             memory_types=[MemoryType.SEMANTIC],
             complexity="simple",
@@ -458,11 +418,11 @@ Determine:
             requires_reasoning=False,
             entities=self._extract_entities_simple(query),
             topics=self._extract_topics_simple(query),
-            preferred_retrieval_strategy="semantic")
+            preferred_retrieval_strategy="semantic",
+        )
 
     def _extract_entities_simple(self, text: str) -> list[str]:
-        """Simple entity extraction using regex patterns.
-        """
+        """Simple entity extraction using regex patterns."""
         entities = []
 
         # Extract capitalized words (potential proper nouns)
@@ -470,8 +430,7 @@ Determine:
         entities.extend(capitalized)
 
         # Extract common entity patterns
-        email_pattern = f"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{
-            2, }\b"
+        email_pattern = f"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{(2,)}\b"
         emails = re.findall(email_pattern, text)
         entities.extend(emails)
 
@@ -486,8 +445,7 @@ Determine:
         return unique_entities[:10]  # Limit to top 10
 
     def _extract_topics_simple(self, text: str) -> list[str]:
-        """Simple topic extraction using key analysis.
-        """
+        """Simple topic extraction using key analysis."""
         # Common topic keywords
         topic_keywords = {
             "technology": ["computer", "software", "app", "website", "digital", "tech"],

@@ -22,7 +22,8 @@ from haive.agents.multi.clean import MultiAgent
 from haive.agents.reasoning_and_critique.self_discover.models import (
     AdaptedModule,
     ReasoningStructure,
-    SelectedModule)
+    SelectedModule,
+)
 from haive.agents.simple import SimpleAgent
 
 
@@ -51,9 +52,7 @@ class SelfDiscoverMultiAgentState(StateSchema):
     reasoning_results: dict[str, str] = Field(
         default_factory=dict, description="Results from executing each reasoning step"
     )
-    final_answer: str | None = Field(
-        default=None, description="Final answer to the task"
-    )
+    final_answer: str | None = Field(default=None, description="Final answer to the task")
 
 
 def get_default_reasoning_modules() -> list[str]:
@@ -104,7 +103,8 @@ Return your selection in a clear, structured format.
     config = AugLLMConfig(
         temperature=0.1,
         system_message="You are an expert at analyzing problems and selecting appropriate reasoning strategies.",
-        prompt_template=select_prompt)
+        prompt_template=select_prompt,
+    )
 
     return SimpleAgent(name="selector", engine=config)
 
@@ -131,7 +131,8 @@ Return the adapted modules in a clear, structured format.
     config = AugLLMConfig(
         temperature=0.3,
         system_message="You are an expert at customizing reasoning strategies for specific problems.",
-        prompt_template=adapt_prompt)
+        prompt_template=adapt_prompt,
+    )
 
     return SimpleAgent(name="adapter", engine=config)
 
@@ -164,7 +165,8 @@ Note: Create the PLAN only, do not solve the problem yet.
     config = AugLLMConfig(
         temperature=0.2,
         system_message="You are an expert at creating structured problem-solving plans.",
-        prompt_template=structure_prompt)
+        prompt_template=structure_prompt,
+    )
 
     return SimpleAgent(name="structurer", engine=config)
 
@@ -194,7 +196,8 @@ Provide detailed reasoning for each step and conclude with the final answer.
     config = AugLLMConfig(
         temperature=0.1,
         system_message="You are an expert problem solver who follows structured reasoning plans.",
-        prompt_template=reasoning_prompt)
+        prompt_template=reasoning_prompt,
+    )
 
     return SimpleAgent(name="reasoner", engine=config)
 
@@ -271,16 +274,16 @@ def create_self_discover_with_conditional_routing() -> MultiAgent:
     reasoner = create_reasoner_agent()
     error_handler = SimpleAgent(
         name="error_handler",
-        engine=AugLLMConfig(
-            system_message="You handle errors and provide helpful feedback."
-        ))
+        engine=AugLLMConfig(system_message="You handle errors and provide helpful feedback."),
+    )
 
     # Create multi-agent with entry point
     multi_agent = MultiAgent(
         name="self_discover_conditional",
         agents=[selector, adapter, structurer, reasoner, error_handler],
         state_schema=SelfDiscoverMultiAgentState,
-        entry_point="selector")
+        entry_point="selector",
+    )
 
     # Add direct edges for main flow
     multi_agent.add_edge("selector", "adapter")

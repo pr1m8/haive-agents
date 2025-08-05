@@ -30,8 +30,8 @@ class DynamicSupervisorFixed(ReactAgent):
 
     # Configuration
     auto_rebuild_graph: bool = Field(
-        default=True,
-        description="Whether to automatically rebuild graph on agent changes")
+        default=True, description="Whether to automatically rebuild graph on agent changes"
+    )
 
     # Private state
     _agent_registry: dict[str, Any] = {}
@@ -45,10 +45,8 @@ class DynamicSupervisorFixed(ReactAgent):
         self._initial_build_complete = False
 
     def register_agent(
-        self,
-        agent: Any,
-        capability: str | None = None,
-        rebuild_immediately: bool = False) -> bool:
+        self, agent: Any, capability: str | None = None, rebuild_immediately: bool = False
+    ) -> bool:
         """Register an agent for dynamic routing.
 
         Args:
@@ -76,9 +74,7 @@ class DynamicSupervisorFixed(ReactAgent):
 
         return True
 
-    def unregister_agent(
-        self, agent_name: str, rebuild_immediately: bool = False
-    ) -> bool:
+    def unregister_agent(self, agent_name: str, rebuild_immediately: bool = False) -> bool:
         """Unregister an agent.
 
         Args:
@@ -131,7 +127,8 @@ class DynamicSupervisorFixed(ReactAgent):
                 "executor": "executor",
                 "END": "__end__",
                 **{name: name for name in self._agent_registry},
-            })
+            },
+        )
 
         # Executor routes to specific agents
         graph.add_conditional_edges(
@@ -140,7 +137,8 @@ class DynamicSupervisorFixed(ReactAgent):
             {
                 **{name: name for name in self._agent_registry},
                 "supervisor": "supervisor",
-            })
+            },
+        )
 
         # Set entry point
         graph.set_entry_point("supervisor")
@@ -295,9 +293,7 @@ if __name__ == "__main__":
     async def test_dynamic_supervisor():
         """Test the fixed dynamic supervisor."""
         # Create supervisor
-        supervisor = DynamicSupervisorFixed(
-            name="fixed_supervisor", auto_rebuild_graph=True
-        )
+        supervisor = DynamicSupervisorFixed(name="fixed_supervisor", auto_rebuild_graph=True)
 
         # Create mock agents
         class MockAgent:

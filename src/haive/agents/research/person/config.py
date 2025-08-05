@@ -19,7 +19,9 @@ class PersonResearchAgentConfig(AgentConfig):
             name="research_engine",
             llm_config=AnthropicLLMConfig(
                 model="claude-3-5-sonnet-latest",
-                parameters={"temperature": 0.0, "max_tokens": 4000}))
+                parameters={"temperature": 0.0, "max_tokens": 4000},
+            ),
+        )
     )
 
     # Add additional engines for specific tasks
@@ -29,22 +31,26 @@ class PersonResearchAgentConfig(AgentConfig):
                 name="query_generator",
                 llm_config=AnthropicLLMConfig(
                     model="claude-3-5-sonnet-latest", parameters={"temperature": 0.0}
-                )),
+                ),
+            ),
             "researcher": AugLLMConfig(
                 name="researcher",
                 llm_config=AnthropicLLMConfig(
                     model="claude-3-5-sonnet-latest", parameters={"temperature": 0.0}
-                )),
+                ),
+            ),
             "extractor": AugLLMConfig(
                 name="extractor",
                 llm_config=AnthropicLLMConfig(
                     model="claude-3-5-sonnet-latest", parameters={"temperature": 0.0}
-                )),
+                ),
+            ),
             "reflection": AugLLMConfig(
                 name="reflection",
                 llm_config=AnthropicLLMConfig(
                     model="claude-3-5-sonnet-latest", parameters={"temperature": 0.0}
-                )),
+                ),
+            ),
         }
     )
 

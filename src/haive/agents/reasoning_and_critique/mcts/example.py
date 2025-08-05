@@ -11,7 +11,8 @@ from langchain_core.tools import BaseTool
 from haive.agents.reasoning_and_critique.mcts.utils import (
     create_mcts_agent,
     extract_best_solution,
-    print_tree_stats)
+    print_tree_stats,
+)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -22,14 +23,13 @@ def setup_tavily_tool() -> BaseTool:
     """Set up Tavily search tool."""
     import os
     from pydantic import SecretStr
+
     api_key = os.environ.get("TAVILY_API_KEY", "dummy_key")
     search = TavilySearchAPIWrapper(tavily_api_key=SecretStr(api_key))
     return TavilySearchResults(api_wrapper=search, max_results=5)
 
 
-def run_mcts_agent_example(
-    question: str, tools: list[BaseTool] | None = None
-) -> dict[str, Any]:
+def run_mcts_agent_example(question: str, tools: list[BaseTool] | None = None) -> dict[str, Any]:
     """Run an example MCTS agent workflow with the given question.
 
     Args:
@@ -57,7 +57,8 @@ def run_mcts_agent_example(
         system_prompt="You are a helpful AI assistant.",
         max_rollouts=5,
         candidates_per_rollout=5,
-        name="research_mcts_agent")
+        name="research_mcts_agent",
+    )
     for step in agent.stream(question, debug=True):
         pass
 

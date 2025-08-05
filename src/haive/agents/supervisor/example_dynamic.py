@@ -30,7 +30,8 @@ async def demonstrate_dynamic_supervisor():
         engine=AugLLMConfig(),
         auto_rebuild_graph=True,
         enable_parallel_execution=False,
-        max_execution_history=50)
+        max_execution_history=50,
+    )
 
     console.print("✅ Created dynamic supervisor")
 
@@ -42,23 +43,18 @@ async def demonstrate_dynamic_supervisor():
     console.print("\n[bold cyan]Phase 2: Adding Agents Dynamically[/bold cyan]")
 
     # Create specialized agents
-    research_agent = ReactAgent(
-        name="research_agent",
-        engine=AugLLMConfig())
+    research_agent = ReactAgent(name="research_agent", engine=AugLLMConfig())
 
-    writing_agent = SimpleAgent(
-        name="writing_agent",
-        engine=AugLLMConfig())
+    writing_agent = SimpleAgent(name="writing_agent", engine=AugLLMConfig())
 
-    math_agent = SimpleAgent(
-        name="math_agent",
-        engine=AugLLMConfig())
+    math_agent = SimpleAgent(name="math_agent", engine=AugLLMConfig())
 
     # Register agents with capabilities and configs
     await supervisor.register_agent(
         research_agent,
         capability_description="Handles research tasks, web searches, and fact-finding",
-        execution_config={"priority": 3, "execution_timeout": 180.0, "max_retries": 2})
+        execution_config={"priority": 3, "execution_timeout": 180.0, "max_retries": 2},
+    )
 
     await supervisor.register_agent(
         writing_agent,
@@ -67,7 +63,8 @@ async def demonstrate_dynamic_supervisor():
             "priority": 2,
             "execution_timeout": 120.0,
             "output_mode": "last_message",
-        })
+        },
+    )
 
     await supervisor.register_agent(
         math_agent,
@@ -76,7 +73,8 @@ async def demonstrate_dynamic_supervisor():
             "priority": 2,
             "execution_timeout": 60.0,
             "custom_params": {"precision": "high"},
-        })
+        },
+    )
 
     console.print("✅ Registered 3 agents")
     supervisor.print_supervisor_dashboard()
@@ -125,13 +123,12 @@ async def demonstrate_dynamic_supervisor():
             "priority": 4,  # Increase priority
             "execution_timeout": 30.0,  # Reduce timeout
             "custom_params": {"precision": "ultra_high", "show_steps": True},
-        })
+        },
+    )
 
     # Add another agent
     console.print("Adding code_agent...")
-    code_agent = SimpleAgent(
-        name="code_agent",
-        engine=AugLLMConfig())
+    code_agent = SimpleAgent(name="code_agent", engine=AugLLMConfig())
 
     await supervisor.register_agent(
         code_agent,
@@ -140,7 +137,8 @@ async def demonstrate_dynamic_supervisor():
             "priority": 3,
             "execution_timeout": 240.0,
             "output_mode": "full_history",
-        })
+        },
+    )
 
     # Remove writing agent
     console.print("Removing writing_agent...")
@@ -178,24 +176,9 @@ async def demonstrate_dynamic_supervisor():
     performance_summary = supervisor.get_performance_summary()
 
     console.print("\n[bold yellow]Performance Summary:[/bold yellow]")
-    console.print(
-        f"Total Executions: {
-            performance_summary.get(
-                'total_executions',
-                0)}"
-    )
-    console.print(
-        f"Overall Success Rate: {
-            performance_summary.get(
-                'success_rate',
-                0.0):.1%}"
-    )
-    console.print(
-        f"Most Used Agent: {
-            performance_summary.get(
-                'most_used_agent',
-                'None')}"
-    )
+    console.print(f"Total Executions: {performance_summary.get('total_executions', 0)}")
+    console.print(f"Overall Success Rate: {performance_summary.get('success_rate', 0.0):.1%}")
+    console.print(f"Most Used Agent: {performance_summary.get('most_used_agent', 'None')}")
 
     # Show final dashboard
     supervisor.print_supervisor_dashboard()
@@ -212,7 +195,8 @@ async def demonstrate_parallel_execution():
         name="parallel_supervisor",
         engine=AugLLMConfig(),
         enable_parallel_execution=True,
-        auto_rebuild_graph=True)
+        auto_rebuild_graph=True,
+    )
 
     # Add multiple agents
     agents_to_add = [
@@ -259,9 +243,7 @@ async def demonstrate_adaptation_rules():
     )
 
     # Create agent with adaptation rules
-    adaptive_agent = SimpleAgent(
-        name="adaptive_agent",
-        engine=AugLLMConfig())
+    adaptive_agent = SimpleAgent(name="adaptive_agent", engine=AugLLMConfig())
 
     # Register with custom adaptation configuration
     await adaptive_supervisor.register_agent(
@@ -274,14 +256,13 @@ async def demonstrate_adaptation_rules():
                 "length_limiter": {"max_length": 200},
             },
             "custom_params": {"adaptation_level": "high", "filter_sensitive": True},
-        })
+        },
+    )
 
     console.print("✅ Created adaptive supervisor with adaptation rules")
 
     # Test adaptation
-    adaptation_query = (
-        "Provide a detailed explanation with examples and markdown formatting"
-    )
+    adaptation_query = "Provide a detailed explanation with examples and markdown formatting"
 
     console.print(f"\n[yellow]Adaptation Query:[/yellow] {adaptation_query}")
 

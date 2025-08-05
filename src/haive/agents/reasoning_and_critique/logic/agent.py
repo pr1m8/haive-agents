@@ -13,31 +13,39 @@ from haive.agents.base.agent import Agent
 from typing import Dict
 from haive.core.engine.aug_llm import AugLLMConfig
 
+
 # TODO: Implement these engine functions properly
 def create_premise_extractor() -> AugLLMConfig:
     """Create premise extractor configuration."""
     return AugLLMConfig()
-    
+
+
 def create_logical_reasoner() -> AugLLMConfig:
     """Create logical reasoner configuration."""
     return AugLLMConfig()
-    
+
+
 def create_bias_detector() -> AugLLMConfig:
     """Create bias detector configuration."""
     return AugLLMConfig()
-    
+
+
 def create_uncertainty_analyzer() -> AugLLMConfig:
     """Create uncertainty analyzer configuration."""
     return AugLLMConfig()
-    
+
+
 def create_synthesis_agent() -> AugLLMConfig:
     """Create synthesis agent configuration."""
     return AugLLMConfig()
+
+
 from haive.agents.reasoning_and_critique.logic.models import (
     Evidence,
     ReasoningAnalysis,
     ReasoningChain,
-    ReasoningReport)
+    ReasoningReport,
+)
 
 
 # Define the actual state we want
@@ -74,9 +82,7 @@ class ReasoningSystem(Agent):
     premise_extractor: AugLLMConfig = Field(default_factory=create_premise_extractor)
     logical_reasoner: AugLLMConfig = Field(default_factory=create_logical_reasoner)
     bias_detector: AugLLMConfig = Field(default_factory=create_bias_detector)
-    uncertainty_analyzer: AugLLMConfig = Field(
-        default_factory=create_uncertainty_analyzer
-    )
+    uncertainty_analyzer: AugLLMConfig = Field(default_factory=create_uncertainty_analyzer)
     synthesizer: AugLLMConfig = Field(default_factory=create_synthesis_agent)
 
     def setup_agent(self) -> None:
@@ -117,7 +123,8 @@ class ReasoningSystem(Agent):
         graph.add_conditional_edges(
             "primary_reasoning",
             should_explore_alternatives,
-            {True: "alternative_reasoning", False: "analyze_biases"})
+            {True: "alternative_reasoning", False: "analyze_biases"},
+        )
 
         graph.add_edge("alternative_reasoning", "analyze_biases")
         graph.add_edge("analyze_biases", "analyze_uncertainty")

@@ -12,11 +12,13 @@ from haive.agents.reasoning_and_critique.tot.v2.models import (
     CandidateEvaluation,
     CandidateGeneration,
     ScoredCandidate,
-    SearchControl)
+    SearchControl,
+)
 from haive.agents.reasoning_and_critique.tot.v2.prompts import (
     control_prompt,
     expansion_prompt,
-    scoring_prompt)
+    scoring_prompt,
+)
 from haive.agents.reasoning_and_critique.tot.v2.state import ExpansionState, ToTState
 from haive.agents.simple.agent import SimpleAgent
 
@@ -29,21 +31,24 @@ expansion_engine = AugLLMConfig(
     structured_output_model=CandidateGeneration,
     structured_output_model_version="v2",
     temperature=0.9,
-    model_kwargs={"top_p": 0.95})
+    model_kwargs={"top_p": 0.95},
+)
 
 scoring_engine = AugLLMConfig(
     name="tot_scoring_engine",
     prompt_template=scoring_prompt,
     structured_output_model=CandidateEvaluation,
     structured_output_model_version="v2",
-    temperature=0.3)
+    temperature=0.3,
+)
 
 control_engine = AugLLMConfig(
     name="tot_control_engine",
     prompt_template=control_prompt,
     structured_output_model=SearchControl,
     structured_output_model_version="v2",
-    temperature=0.2)
+    temperature=0.2,
+)
 
 # Create the agents
 expander = SimpleAgent(name="expander", engine=expansion_engine)
@@ -64,10 +69,9 @@ def expansion_workflow(state: ToTState) -> dict[str, Any]:
                 candidate = Candidate(
                     content=candidate_data,
                     depth=state.depth,
-                    parent_id=(
-                        state.seed.id if hasattr(state, "seed") and state.seed else None
-                    ),
-                    expansion_index=i)
+                    parent_id=(state.seed.id if hasattr(state, "seed") and state.seed else None),
+                    expansion_index=i,
+                )
                 new_candidates.append(candidate)
 
             return {
@@ -100,7 +104,8 @@ def scoring_workflow(state: ToTState) -> dict[str, Any]:
                     feedback=eval_result.get("feedback", ""),
                     strengths=eval_result.get("strengths", []),
                     weaknesses=eval_result.get("weaknesses", []),
-                    confidence=eval_result.get("confidence", 0.8))
+                    confidence=eval_result.get("confidence", 0.8),
+                )
                 scored.append(scored_candidate)
 
     return {
@@ -138,9 +143,7 @@ def control_workflow(state: ToTState) -> dict[str, Any]:
                     "depth": 1,  # Increment depth
                 }
 
-                if best and (
-                    not state.best_solution or best.score > state.best_solution.score
-                ):
+                if best and (not state.best_solution or best.score > state.best_solution.score):
                     updates["best_solution"] = best
 
                 return updates
@@ -199,7 +202,8 @@ def create_tree_of_thoughts(
     beam_size: int = 3,
     expansion_factor: int = 5,
     threshold: float = 0.9,
-    **kwargs) -> MultiAgentBase:
+    **kwargs,
+) -> MultiAgentBase:
     """Create a Tree of Thoughts multi-agent system."""
     # Define branches for routing
     branches = [
@@ -225,7 +229,8 @@ def create_tree_of_thoughts(
         state_schema_override=ToTState,
         schema_build_mode=BuildMode.SEQUENCE,
         workflow_nodes=workflow_nodes,
-        **kwargs)
+        **kwargs,
+    )
 
     # Set initial state values
     system.initial_state = {
@@ -240,11 +245,8 @@ def create_tree_of_thoughts(
 
 # Convenience function for common use case
 def solve_with_tot(
-    problem: str,
-    problem_type: str | None = None,
-    max_depth: int = 5,
-    beam_size: int = 3,
-    **kwargs) -> dict[str, Any]:
+    problem: str, problem_type: str | None = None, max_depth: int = 5, beam_size: int = 3, **kwargs
+) -> dict[str, Any]:
     """Solve a problem using Tree of Thoughts."""
     system = create_tree_of_thoughts(max_depth=max_depth, beam_size=beam_size, **kwargs)
 

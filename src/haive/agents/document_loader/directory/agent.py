@@ -7,7 +7,8 @@ documents from local directories.
 from pathlib import Path
 
 from haive.core.engine.document import (
-    create_directory_document_engine as create_directory_loader_engine)
+    create_directory_document_engine as create_directory_loader_engine,
+)
 from pydantic import Field
 
 from haive.agents.document_loader.base.agent import DocumentLoaderAgent
@@ -35,13 +36,9 @@ class DirectoryLoaderAgent(DocumentLoaderAgent):
         default=None, description="Path to the directory to load"
     )
 
-    recursive: bool = Field(
-        default=True, description="Whether to recursively load files"
-    )
+    recursive: bool = Field(default=True, description="Whether to recursively load files")
 
-    glob_pattern: str | None = Field(
-        default=None, description="Glob pattern for filtering files"
-    )
+    glob_pattern: str | None = Field(default=None, description="Glob pattern for filtering files")
 
     include_extensions: list[str] | None = Field(
         default=None, description="List of file extensions to include"
@@ -59,7 +56,8 @@ class DirectoryLoaderAgent(DocumentLoaderAgent):
             recursive=self.recursive,
             glob_pattern=self.glob_pattern,
             include_extensions=self.include_extensions,
-            exclude_extensions=self.exclude_extensions)
+            exclude_extensions=self.exclude_extensions,
+        )
 
         # Apply agent configuration
         if self.max_documents is not None:

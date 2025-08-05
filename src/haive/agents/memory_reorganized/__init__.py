@@ -35,10 +35,13 @@ Examples:
 
 # Core memory agents
 try:
-    from .agents.ltm import LongTermMemoryAgent
-    from .agents.multi import MultiMemoryAgent, MultiMemoryConfig
-    from .agents.react import ReactMemoryAgent
-    from .agents.simple import SimpleMemoryAgent, TokenAwareMemoryConfig
+    from haive.agents.memory_reorganized.agents.ltm import LongTermMemoryAgent
+    from haive.agents.memory_reorganized.agents.multi import MultiMemoryAgent, MultiMemoryConfig
+    from haive.agents.memory_reorganized.agents.react import ReactMemoryAgent
+    from haive.agents.memory_reorganized.agents.simple import (
+        SimpleMemoryAgent,
+        TokenAwareMemoryConfig,
+    )
 except ImportError:
     # Graceful fallback if agents have import issues
     SimpleMemoryAgent = None
@@ -48,15 +51,15 @@ except ImportError:
 
 # Unified API
 try:
-    from .api.unified_memory_api import UnifiedMemoryAPI
+    from haive.agents.memory_reorganized.api.unified_memory_api import UnifiedMemoryAPI
 except ImportError:
     UnifiedMemoryAPI = None
 
 # Base classes and states
 try:
-    from .base.state import MemoryState
-    from .base.token_state import MemoryStateWithTokens
-    from .core.types import MemoryType
+    from haive.agents.memory_reorganized.base.state import MemoryState
+    from haive.agents.memory_reorganized.base.token_state import MemoryStateWithTokens
+    from haive.agents.memory_reorganized.core.types import MemoryType
 except ImportError:
     MemoryState = None
     MemoryStateWithTokens = None
@@ -64,23 +67,27 @@ except ImportError:
 
 # Search functionality
 try:
-    from .search.pro_search.agent import ProSearchAgent
-    from .search.quick_search.agent import QuickSearchAgent
+    from haive.agents.memory_reorganized.search.pro_search.agent import ProSearchAgent
+    from haive.agents.memory_reorganized.search.quick_search.agent import QuickSearchAgent
 except ImportError:
     QuickSearchAgent = None
     ProSearchAgent = None
 
 # Coordination
 try:
-    from .coordination.agentic_rag_coordinator import AgenticRAGCoordinator
-    from .coordination.multi_agent_coordinator import MultiAgentCoordinator
+    from haive.agents.memory_reorganized.coordination.agentic_rag_coordinator import (
+        AgenticRAGCoordinator,
+    )
+    from haive.agents.memory_reorganized.coordination.multi_agent_coordinator import (
+        MultiAgentCoordinator,
+    )
 except ImportError:
     MultiAgentCoordinator = None
     AgenticRAGCoordinator = None
 
 # Integration support
 try:
-    from .integrations.langmem_agent import LTMAgent as LangMemAgent
+    from haive.agents.memory_reorganized.integrations.langmem_agent import LTMAgent as LangMemAgent
 except ImportError:
     LangMemAgent = None
 

@@ -40,17 +40,13 @@ class SelfDiscoverState(TypedDict):
 class ModuleSelectionOutput(BaseModel):
     """Output from module selector - string format."""
 
-    selected_modules: str = Field(
-        description="Selected reasoning modules as formatted text"
-    )
+    selected_modules: str = Field(description="Selected reasoning modules as formatted text")
 
 
 class AdaptedModulesOutput(BaseModel):
     """Output from module adapter - string format."""
 
-    adapted_modules: str = Field(
-        description="Adapted reasoning modules as formatted text"
-    )
+    adapted_modules: str = Field(description="Adapted reasoning modules as formatted text")
 
 
 class ReasoningStructureOutput(BaseModel):
@@ -98,7 +94,8 @@ class SelfDiscoverSelector(SimpleAgentV3):
             temperature=0.3,
             max_tokens=1000,
             structured_output_model=ModuleSelectionOutput,
-            system_message="You are an expert at selecting appropriate reasoning strategies for tasks.")
+            system_message="You are an expert at selecting appropriate reasoning strategies for tasks.",
+        )
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -106,7 +103,8 @@ class SelfDiscoverSelector(SimpleAgentV3):
             [
                 (
                     "system",
-                    "You are an expert at selecting appropriate reasoning strategies for tasks."),
+                    "You are an expert at selecting appropriate reasoning strategies for tasks.",
+                ),
                 ("placeholder", "{messages}"),
             ]
         )
@@ -123,15 +121,14 @@ class SelfDiscoverAdapter(SimpleAgentV3):
             temperature=0.5,
             max_tokens=1000,
             structured_output_model=AdaptedModulesOutput,
-            system_message="You adapt reasoning modules to be specific for the given task.")
+            system_message="You adapt reasoning modules to be specific for the given task.",
+        )
     )
 
     prompt_template: ChatPromptTemplate = Field(
         default_factory=lambda: ChatPromptTemplate.from_messages(
             [
-                (
-                    "system",
-                    "You adapt reasoning modules to be specific for the given task."),
+                ("system", "You adapt reasoning modules to be specific for the given task."),
                 ("human", "{messages}"),
             ]
         )
@@ -148,7 +145,8 @@ class SelfDiscoverStructurer(SimpleAgentV3):
             temperature=0.3,
             max_tokens=1500,
             structured_output_model=ReasoningStructureOutput,
-            system_message="You create detailed step-by-step reasoning plans.")
+            system_message="You create detailed step-by-step reasoning plans.",
+        )
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -171,7 +169,8 @@ class SelfDiscoverExecutor(SimpleAgentV3):
             temperature=0.7,
             max_tokens=2000,
             structured_output_model=FinalAnswerOutput,
-            system_message="You execute reasoning plans to solve tasks step by step.")
+            system_message="You execute reasoning plans to solve tasks step by step.",
+        )
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -189,9 +188,7 @@ class SelfDiscoverExecutor(SimpleAgentV3):
 # ==========================
 
 
-async def run_self_discover_workflow(
-    task: str, modules: str | None = None
-) -> dict[str, Any]:
+async def run_self_discover_workflow(task: str, modules: str | None = None) -> dict[str, Any]:
     """Run the Self-Discover workflow sequentially.
 
     Args:
@@ -218,9 +215,7 @@ async def run_self_discover_workflow(
     # Extract and format selected modules
     selected_modules_text = ""
     if isinstance(selector_result, dict) and "selected_modules" in selector_result:
-        output = ModuleSelectionOutput(
-            selected_modules=selector_result["selected_modules"]
-        )
+        output = ModuleSelectionOutput(selected_modules=selector_result["selected_modules"])
         selected_modules_text = output.format_as_text()
     elif hasattr(selector_result, "selected_modules"):
         selected_modules_text = selector_result.format_as_text()

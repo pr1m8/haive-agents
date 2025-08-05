@@ -5,9 +5,7 @@ from typing import Any
 
 from haive.core.common.structures.tree import AutoTree
 
-from haive.agents.task_analysis.base.models import (
-    ActionStep,
-    TaskNode)
+from haive.agents.task_analysis.base.models import ActionStep, TaskNode
 
 
 class TaskTree(AutoTree[TaskNode]):
@@ -39,8 +37,7 @@ class TaskTree(AutoTree[TaskNode]):
                 if len(incoming) > 1:
                     self._join_points.append(
                         {
-                            "join_id": f"join_{
-                                node.content.task_id}",
+                            "join_id": f"join_{node.content.task_id}",
                             "task_id": node.content.task_id,
                             "incoming_tasks": incoming,
                             "join_strategy": node.content.join_strategy or "merge",
@@ -119,9 +116,7 @@ class TaskTree(AutoTree[TaskNode]):
                 ids.append(node.content.step_id)
         return ids
 
-    def _has_path_between(
-        self, id1: str, id2: str, dep_map: dict[str, list[str]]
-    ) -> bool:
+    def _has_path_between(self, id1: str, id2: str, dep_map: dict[str, list[str]]) -> bool:
         """Check if there's a dependency path between two tasks."""
         # BFS to find path
         visited = set()
@@ -220,9 +215,8 @@ class TaskTree(AutoTree[TaskNode]):
         return phases
 
     def expand_node(
-        self,
-        node_id: str,
-        expansion_fn: Callable[[TaskNode], list[TaskNode | ActionStep]]) -> bool:
+        self, node_id: str, expansion_fn: Callable[[TaskNode], list[TaskNode | ActionStep]]
+    ) -> bool:
         """Expand a specific node using the provided expansion function.
         Returns True if expansion was successful.
         """

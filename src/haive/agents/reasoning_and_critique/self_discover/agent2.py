@@ -9,13 +9,13 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END
 from langgraph.types import Command
 
-from haive.agents.reasoning_and_critique.self_discover.config import (
-    SelfDiscoverAgentConfig)
+from haive.agents.reasoning_and_critique.self_discover.config import SelfDiscoverAgentConfig
 from haive.agents.reasoning_and_critique.self_discover.models import (
     ModuleAdaptationResult,
     ModuleSelectionResult,
     ReasoningOutput,
-    ReasoningStructure)
+    ReasoningStructure,
+)
 from haive.agents.reasoning_and_critique.self_discover.state import SelfDiscoverState
 
 # Set up logging
@@ -70,30 +70,22 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
                             "selected_modules": formatted_result,
                             "metadata": metadata,
                         },
-                        goto="adapt")
+                        goto="adapt",
+                    )
                 # Fall back to string representation
                 selected_modules = self._extract_string_result(result)
-                return Command(
-                    update={"selected_modules": selected_modules}, goto="adapt"
-                )
+                return Command(update={"selected_modules": selected_modules}, goto="adapt")
 
             except Exception as e:
                 logger.exception(f"Error in select_modules: {e!s}")
-                return Command(
-                    update={
-                        "error": f"Error in module selection: {
-                            e!s}"
-                    },
-                    goto=END)
+                return Command(update={"error": f"Error in module selection: {e!s}"}, goto=END)
 
         def adapt_modules(state: SelfDiscoverState) -> Command:
             """Adapt the selected modules for the specific task."""
             try:
                 # Check if we have selected modules
                 if not state.selected_modules:
-                    return Command(
-                        update={"error": "No modules selected for adaptation"}, goto=END
-                    )
+                    return Command(update={"error": "No modules selected for adaptation"}, goto=END)
 
                 # Prepare inputs
                 inputs = {
@@ -120,21 +112,15 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
                             "adapted_modules": formatted_result,
                             "metadata": metadata,
                         },
-                        goto="structure")
+                        goto="structure",
+                    )
                 # Fall back to string representation
                 adapted_modules = self._extract_string_result(result)
-                return Command(
-                    update={"adapted_modules": adapted_modules}, goto="structure"
-                )
+                return Command(update={"adapted_modules": adapted_modules}, goto="structure")
 
             except Exception as e:
                 logger.exception(f"Error in adapt_modules: {e!s}")
-                return Command(
-                    update={
-                        "error": f"Error in module adaptation: {
-                            e!s}"
-                    },
-                    goto=END)
+                return Command(update={"error": f"Error in module adaptation: {e!s}"}, goto=END)
 
         def create_structure(state: SelfDiscoverState) -> Command:
             """Create a structured reasoning plan."""
@@ -142,8 +128,8 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
                 # Check if we have adapted modules
                 if not state.adapted_modules:
                     return Command(
-                        update={"error": "No adapted modules for structure creation"},
-                        goto=END)
+                        update={"error": "No adapted modules for structure creation"}, goto=END
+                    )
 
                 # Prepare inputs
                 inputs = {
@@ -170,21 +156,15 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
                             "reasoning_structure": formatted_result,
                             "metadata": metadata,
                         },
-                        goto="reason")
+                        goto="reason",
+                    )
                 # Fall back to string representation
                 reasoning_structure = self._extract_string_result(result)
-                return Command(
-                    update={"reasoning_structure": reasoning_structure}, goto="reason"
-                )
+                return Command(update={"reasoning_structure": reasoning_structure}, goto="reason")
 
             except Exception as e:
                 logger.exception(f"Error in create_structure: {e!s}")
-                return Command(
-                    update={
-                        "error": f"Error in structure creation: {
-                            e!s}"
-                    },
-                    goto=END)
+                return Command(update={"error": f"Error in structure creation: {e!s}"}, goto=END)
 
         def execute_reasoning(state: SelfDiscoverState) -> Command:
             """Execute the reasoning plan to solve the task."""
@@ -192,8 +172,8 @@ class SelfDiscoverAgent(Agent[SelfDiscoverAgentConfig]):
                 # Check if we have a reasoning structure
                 if not state.reasoning_structure:
                     return Command(
-                        update={"error": "No reasoning structure for execution"},
-                        goto=END)
+                        update={"error": "No reasoning structure for execution"}, goto=END
+                    )
 
                 # Prepare inputs
                 inputs = {
@@ -282,7 +262,8 @@ def create_self_discover_agent(
     structure_prompt: str | ChatPromptTemplate | None = None,
     reasoning_prompt: str | ChatPromptTemplate | None = None,
     visualize: bool = True,
-    **kwargs) -> SelfDiscoverAgent:
+    **kwargs,
+) -> SelfDiscoverAgent:
     """Create a SelfDiscover agent with customizable parameters.
 
     Args:
@@ -311,7 +292,8 @@ def create_self_discover_agent(
         structure_prompt=structure_prompt,
         reasoning_prompt=reasoning_prompt,
         visualize=visualize,
-        **kwargs)
+        **kwargs,
+    )
 
     # Build and return the agent
     return config.build_agent()

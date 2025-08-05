@@ -72,8 +72,8 @@ class StructuredOutputAgent(SimpleAgent):
 
     # Additional fields
     output_model: type[BaseModel] = Field(
-        default=GenericStructuredOutput,
-        description="Alias for structured_output_model for clarity")
+        default=GenericStructuredOutput, description="Alias for structured_output_model for clarity"
+    )
 
     custom_context: str | None = Field(
         default=None, description="Additional context for extraction"
@@ -134,11 +134,7 @@ Be thorough and accurate in your extraction."""
 
         # Get the last message content
         last_message = messages[-1]
-        content = (
-            last_message.content
-            if hasattr(last_message, "content")
-            else str(last_message)
-        )
+        content = last_message.content if hasattr(last_message, "content") else str(last_message)
 
         return self.run(content)
 
@@ -164,7 +160,8 @@ def create_structured_agent(
     name: str = "structured_output",
     temperature: float = 0.1,
     custom_context: str | None = None,
-    **kwargs) -> StructuredOutputAgent:
+    **kwargs,
+) -> StructuredOutputAgent:
     """Factory function to create a structured output agent.
 
     This is a convenience function for creating structured agents
@@ -204,4 +201,5 @@ def create_structured_agent(
         output_model=output_model,
         structured_output_model=output_model,
         custom_context=custom_context,
-        **kwargs)
+        **kwargs,
+    )

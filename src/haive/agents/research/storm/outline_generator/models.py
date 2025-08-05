@@ -14,8 +14,8 @@ class Section(BaseModel):
     section_title: str = Field(..., title="Title of the section")
     description: str = Field(..., title="Content of the section")
     subsections: list[Subsection] | None = Field(
-        default=None,
-        title="Titles and descriptions for each subsection of the Wikipedia page.")
+        default=None, title="Titles and descriptions for each subsection of the Wikipedia page."
+    )
 
     @property
     def as_str(self) -> str:
@@ -23,16 +23,15 @@ class Section(BaseModel):
             f"### {subsection.subsection_title}\n\n{subsection.description}"
             for subsection in self.subsections or []
         )
-        return f"## {
-            self.section_title}\n\n{
-            self.description}\n\n{subsections}".strip()
+        return f"## {self.section_title}\n\n{self.description}\n\n{subsections}".strip()
 
 
 class Outline(BaseModel):
     page_title: str = Field(..., title="Title of the Wikipedia page")
     sections: list[Section] = Field(
         default_factory=list,
-        title="Titles and descriptions for each section of the Wikipedia page.")
+        title="Titles and descriptions for each section of the Wikipedia page.",
+    )
 
     @property
     def as_str(self) -> str:

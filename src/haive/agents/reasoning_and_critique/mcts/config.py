@@ -17,22 +17,18 @@ class MCTSAgentConfig(AgentConfig):
 
     # LLM configuration
     llm_config: LLMConfig | None = Field(
-        default=AzureLLMConfig(model="gpt-4o"),
-        description="Configuration for the LLM")
+        default=AzureLLMConfig(model="gpt-4o"), description="Configuration for the LLM"
+    )
 
     # Tools
-    tools: list[BaseTool] = Field(
-        default_factory=list, description="Tools available to the agent"
-    )
+    tools: list[BaseTool] = Field(default_factory=list, description="Tools available to the agent")
 
     # MCTS parameters
     max_rollouts: int = Field(default=5, description="Maximum depth of rollouts")
     candidates_per_rollout: int = Field(
         default=5, description="Number of candidates to generate per rollout"
     )
-    exploration_weight: float = Field(
-        default=1.0, description="Exploration weight for UCB"
-    )
+    exploration_weight: float = Field(default=1.0, description="Exploration weight for UCB")
 
     # Prompts
     initial_prompt_template: ChatPromptTemplate | None = Field(
@@ -56,12 +52,11 @@ class MCTSAgentConfig(AgentConfig):
         llm_config: LLMConfig | None = None,
         tools: list[BaseTool] | None = None,
         system_prompt: str | None = None,
-        **kwargs) -> "MCTSAgentConfig":
+        **kwargs,
+    ) -> "MCTSAgentConfig":
         """Create an MCTS Agent config from LLM config and tools."""
         # Use defaults if not provided
-        llm_config = llm_config or AzureLLMConfig(
-            model="gpt-4o"
-        )
+        llm_config = llm_config or AzureLLMConfig(model="gpt-4o")
         tools = tools or []
         system_prompt = system_prompt or "You are an AI assistant."
 
@@ -92,13 +87,12 @@ class MCTSAgentConfig(AgentConfig):
                 [
                     (
                         "system",
-                        "Reflect and grade the assistant response to the user question below."),
+                        "Reflect and grade the assistant response to the user question below.",
+                    ),
                     ("user", "{input}"),
                     MessagesPlaceholder(variable_name="candidate"),
                 ]
             )
             kwargs["reflection_prompt_template"] = reflection_prompt
 
-        return cls(
-            llm_config=llm_config, tools=tools, system_prompt=system_prompt, **kwargs
-        )
+        return cls(llm_config=llm_config, tools=tools, system_prompt=system_prompt, **kwargs)

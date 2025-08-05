@@ -15,7 +15,8 @@ class WikiWriterAgentConfig(AgentArchitectureConfig):
     )
     runnable_config: RunnableConfig = Field(
         default={"configurable": {"thread_id": str(uuid.uuid4())}},
-        description="Agent runnable config")
+        description="Agent runnable config",
+    )
 
 
 class WikiWriterAgent(AgentArchitecture):

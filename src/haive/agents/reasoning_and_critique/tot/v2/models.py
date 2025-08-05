@@ -96,7 +96,8 @@ class ScoredCandidate(Candidate[T], Generic[T]):
             created_at=candidate.created_at,
             score=score,
             feedback=feedback,
-            scoring_metadata=kwargs)
+            scoring_metadata=kwargs,
+        )
 
     def __str__(self) -> str:
         """Enhanced string representation with score."""
@@ -108,9 +109,7 @@ class ScoredCandidate(Candidate[T], Generic[T]):
 class CandidateGeneration(BaseModel):
     """Output from expansion agent."""
 
-    candidates: list[dict[str, Any]] = Field(
-        description="List of generated candidate solutions"
-    )
+    candidates: list[dict[str, Any]] = Field(description="List of generated candidate solutions")
     reasoning: str = Field(description="Overall reasoning for this expansion")
     strategy: Literal["explore", "exploit", "refine"] = Field(
         default="explore", description="Strategy used for generation"
@@ -133,6 +132,4 @@ class SearchControl(BaseModel):
     selected_indices: list[int] = Field(description="Indices of candidates to keep")
     should_terminate: bool
     termination_reason: str | None = None
-    next_strategy: Literal["explore", "exploit", "refine", "terminate"] = Field(
-        default="explore"
-    )
+    next_strategy: Literal["explore", "exploit", "refine", "terminate"] = Field(default="explore")

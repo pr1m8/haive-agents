@@ -28,29 +28,24 @@ from haive.core.schema.prebuilt.query_state import (
     QueryProcessingConfig,
     QueryState,
     QueryType,
-    RetrievalStrategy)
+    RetrievalStrategy,
+)
 
-from haive.agents.document_processing import (
-    DocumentProcessingAgent,
-    DocumentProcessingConfig)
+from haive.agents.document_processing import DocumentProcessingAgent, DocumentProcessingConfig
 
 
 async def basic_query_example():
     """Basic example using DocumentProcessingAgent with QueryState."""
     # Create basic configuration
     doc_config = DocumentProcessingConfig(
-        search_enabled=True,
-        annotation_enabled=True,
-        bulk_processing=True,
-        rag_strategy="basic")
+        search_enabled=True, annotation_enabled=True, bulk_processing=True, rag_strategy="basic"
+    )
 
     # Create LLM configuration
     llm_config = AugLLMConfig(temperature=0.1, max_tokens=1000)
 
     # Create agent
-    agent = DocumentProcessingAgent(
-        config=doc_config, engine=llm_config, name="basic_query_agent"
-    )
+    agent = DocumentProcessingAgent(config=doc_config, engine=llm_config, name="basic_query_agent")
 
     # Create query state
     query_state = QueryState(
@@ -58,7 +53,8 @@ async def basic_query_example():
         query_type=QueryType.SIMPLE,
         retrieval_strategy=RetrievalStrategy.BASIC,
         query_complexity=QueryComplexity.LOW,
-        query_intent=QueryIntent.INFORMATION_SEEKING)
+        query_intent=QueryIntent.INFORMATION_SEEKING,
+    )
 
     # Process query
     result = await agent.process_query(query_state.original_query)
@@ -78,7 +74,8 @@ async def advanced_query_example():
         bulk_processing=True,
         rag_strategy="adaptive",
         query_refinement=True,
-        multi_query_enabled=True)
+        multi_query_enabled=True,
+    )
 
     # Create LLM configuration
     llm_config = AugLLMConfig(temperature=0.2, max_tokens=2000)
@@ -122,7 +119,9 @@ async def advanced_query_example():
             enable_citation_tracking=True,
             enable_confidence_scoring=True,
             max_context_documents=15,
-            similarity_threshold=0.75))
+            similarity_threshold=0.75,
+        ),
+    )
 
     # Process with multiple queries
     main_result = await agent.process_query(query_state.original_query)
@@ -149,15 +148,14 @@ async def multi_source_example():
         annotation_enabled=True,
         bulk_processing=True,
         rag_strategy="adaptive",
-        structured_output=True)
+        structured_output=True,
+    )
 
     # Create LLM configuration
     llm_config = AugLLMConfig(temperature=0.1, max_tokens=1500)
 
     # Create agent
-    agent = DocumentProcessingAgent(
-        config=doc_config, engine=llm_config, name="multi_source_agent"
-    )
+    agent = DocumentProcessingAgent(config=doc_config, engine=llm_config, name="multi_source_agent")
 
     # Create query state
     query_state = QueryState(
@@ -178,7 +176,9 @@ async def multi_source_example():
             enable_query_expansion=True,
             enable_result_reranking=True,
             max_context_documents=20,
-            similarity_threshold=0.8))
+            similarity_threshold=0.8,
+        ),
+    )
 
     # Sample document sources
     document_sources = [
@@ -207,7 +207,8 @@ async def structured_query_example():
         bulk_processing=True,
         rag_strategy="adaptive",
         structured_output=True,
-        query_refinement=True)
+        query_refinement=True,
+    )
 
     # Create LLM configuration
     llm_config = AugLLMConfig(
@@ -248,7 +249,9 @@ async def structured_query_example():
             enable_context_compression=True,
             enable_citation_tracking=True,
             max_context_documents=10,
-            similarity_threshold=0.85))
+            similarity_threshold=0.85,
+        ),
+    )
 
     # Sample financial document sources
     financial_sources = [
@@ -280,7 +283,8 @@ async def comprehensive_workflow_example():
         query_refinement=True,
         multi_query_enabled=True,
         structured_output=True,
-        max_concurrent_loads=5)
+        max_concurrent_loads=5,
+    )
 
     # Create LLM configuration
     llm_config = AugLLMConfig(temperature=0.3, max_tokens=3000)
@@ -344,7 +348,9 @@ async def comprehensive_workflow_example():
             max_context_documents=25,
             similarity_threshold=0.7,
             time_weight_decay=0.1,
-            enable_caching=True))
+            enable_caching=True,
+        ),
+    )
 
     # Process main query
     datetime.now()
@@ -370,7 +376,6 @@ async def main():
         await comprehensive_workflow_example()
 
     except Exception:
-
         traceback.print_exc()
 
 

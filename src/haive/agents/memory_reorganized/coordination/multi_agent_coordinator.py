@@ -19,13 +19,12 @@ from pydantic import BaseModel, ConfigDict, Field
 from haive.agents.memory.agentic_rag_coordinator import (
     AgenticRAGCoordinator,
     AgenticRAGCoordinatorConfig,
-    Optional)
+    Optional,
+)
 from haive.agents.memory.core.classifier import MemoryClassifier
 from haive.agents.memory.core.stores import MemoryStoreManager
 from haive.agents.memory.core.types import MemoryType
-from haive.agents.memory.kg_generator_agent import (
-    KGGeneratorAgent,
-    KGGeneratorAgentConfig)
+from haive.agents.memory.kg_generator_agent import KGGeneratorAgent, KGGeneratorAgentConfig
 from haive.agents.simple import SimpleAgent
 
 logger = logging.getLogger(__name__)
@@ -100,46 +99,29 @@ class MemoryTask(BaseModel):
     """
 
     id: str = Field(..., description="Unique task identifier")
-    type: str = Field(...,
-                      description="Task type (store, retrieve, analyze, etc.)")
+    type: str = Field(..., description="Task type (store, retrieve, analyze, etc.)")
     query: str = Field(..., description="Task query or description")
 
     # Task parameters
-    parameters: dict[str, Any] = Field(
-        default_factory=dict, description="Task-specific parameters"
-    )
+    parameters: dict[str, Any] = Field(default_factory=dict, description="Task-specific parameters")
     priority: int = Field(
-        default=5,
-        ge=1,
-        le=10,
-        description="Task priority (1=highest, 10=lowest)")
+        default=5, ge=1, le=10, description="Task priority (1=highest, 10=lowest)"
+    )
 
     # Execution context
-    namespace: tuple[str, ...] | None = Field(
-        default=None, description="Memory namespace"
-    )
-    memory_types: list[MemoryType] | None = Field(
-        default=None, description="Target memory types"
-    )
+    namespace: tuple[str, ...] | None = Field(default=None, description="Memory namespace")
+    memory_types: list[MemoryType] | None = Field(default=None, description="Target memory types")
 
     # Task state
     status: str = Field(default="pending", description="Task status")
-    assigned_agent: Optional[str] = Field(
-        default=None, description="Assigned agent name")
+    assigned_agent: Optional[str] = Field(default=None, description="Assigned agent name")
     result: Optional[Any] = Field(default=None, description="Task result")
-    error: Optional[str] = Field(
-        default=None,
-        description="Error message if failed")
+    error: Optional[str] = Field(default=None, description="Error message if failed")
 
     # Timing
-    created_at: datetime = Field(
-        default_factory=datetime.utcnow, description="Task creation time"
-    )
-    started_at: Optional[datetime] = Field(
-        default=None, description="Task start time")
-    completed_at: Optional[datetime] = Field(
-        default=None, description="Task completion time"
-    )
+    created_at: datetime = Field(default_factory=datetime.utcnow, description="Task creation time")
+    started_at: Optional[datetime] = Field(default=None, description="Task start time")
+    completed_at: Optional[datetime] = Field(default=None, description="Task completion time")
 
 
 class MemoryAgentCapabilities(BaseModel):
@@ -223,14 +205,9 @@ class MemoryAgentCapabilities(BaseModel):
     agent_type: str = Field(..., description="Agent type/class")
 
     # Capabilities
-    can_store_memories: bool = Field(
-        default=False, description="Can store memories")
-    can_retrieve_memories: bool = Field(
-        default=False, description="Can retrieve memories"
-    )
-    can_analyze_memories: bool = Field(
-        default=False, description="Can analyze memories"
-    )
+    can_store_memories: bool = Field(default=False, description="Can store memories")
+    can_retrieve_memories: bool = Field(default=False, description="Can retrieve memories")
+    can_analyze_memories: bool = Field(default=False, description="Can analyze memories")
     can_generate_knowledge_graph: bool = Field(
         default=False, description="Can generate knowledge graphs"
     )
@@ -244,16 +221,11 @@ class MemoryAgentCapabilities(BaseModel):
     )
 
     # Performance characteristics
-    typical_latency_ms: float = Field(
-        default=1000, description="Typical response latency"
-    )
-    max_concurrent_tasks: int = Field(
-        default=1, description="Maximum concurrent tasks")
+    typical_latency_ms: float = Field(default=1000, description="Typical response latency")
+    max_concurrent_tasks: int = Field(default=1, description="Maximum concurrent tasks")
 
     # Specialization
-    specialization: list[str] = Field(
-        default_factory=list, description="Agent specializations"
-    )
+    specialization: list[str] = Field(default_factory=list, description="Agent specializations")
 
 
 class MultiAgentCoordinatorConfig(BaseModel):
@@ -359,14 +331,9 @@ class MultiAgentCoordinatorConfig(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # Core configuration
-    name: str = Field(
-        default="multi_agent_coordinator",
-        description="Coordinator name")
-    memory_store_manager: MemoryStoreManager = Field(
-        ..., description="Memory store manager"
-    )
-    memory_classifier: MemoryClassifier = Field(
-        ..., description="Memory classifier")
+    name: str = Field(default="multi_agent_coordinator", description="Coordinator name")
+    memory_store_manager: MemoryStoreManager = Field(..., description="Memory store manager")
+    memory_classifier: MemoryClassifier = Field(..., description="Memory classifier")
 
     # Agent configurations
     kg_generator_config: KGGeneratorAgentConfig = Field(
@@ -377,11 +344,8 @@ class MultiAgentCoordinatorConfig(BaseModel):
     )
 
     # Coordination configuration
-    max_concurrent_tasks: int = Field(
-        default=5, description="Maximum concurrent tasks")
-    task_timeout_seconds: int = Field(
-        default=300, description="Task timeout in seconds"
-    )
+    max_concurrent_tasks: int = Field(default=5, description="Maximum concurrent tasks")
+    task_timeout_seconds: int = Field(default=300, description="Task timeout in seconds")
     enable_agent_communication: bool = Field(
         default=True, description="Enable inter-agent communication"
     )
@@ -392,24 +356,17 @@ class MultiAgentCoordinatorConfig(BaseModel):
     )
 
     # Task routing configuration
-    routing_strategy: str = Field(
-        default="capability_based", description="Task routing strategy"
-    )
+    routing_strategy: str = Field(default="capability_based", description="Task routing strategy")
     enable_task_decomposition: bool = Field(
         default=True, description="Enable complex task decomposition"
     )
 
     # Performance configuration
-    enable_caching: bool = Field(
-        default=True,
-        description="Enable result caching")
-    cache_ttl_seconds: int = Field(
-        default=3600, description="Cache TTL in seconds")
+    enable_caching: bool = Field(default=True, description="Enable result caching")
+    cache_ttl_seconds: int = Field(default=3600, description="Cache TTL in seconds")
 
     # Persistence configuration
-    persistence: Any = Field(
-        default=None, description="Persistence configuration for agents"
-    )
+    persistence: Any = Field(default=None, description="Persistence configuration for agents")
 
 
 class MultiAgentMemoryCoordinator:
@@ -575,19 +532,17 @@ class MultiAgentMemoryCoordinator:
         self._setup_prompts()
 
     def _setup_agents(self) -> None:
-        """Setup and wrap agents with MetaStateSchema.
-        """
+        """Setup and wrap agents with MetaStateSchema."""
         # 1. KG Generator Agent
         kg_agent = KGGeneratorAgent(self.config.kg_generator_config)
         # Set persistence if configured
-        if hasattr(
-                self.config,
-                "persistence") and self.config.persistence is not None:
+        if hasattr(self.config, "persistence") and self.config.persistence is not None:
             kg_agent.persistence = self.config.persistence
         kg_meta_state = MetaStateSchema.from_agent(
             agent=kg_agent,
             initial_state={"ready": True, "kg_ready": False},
-            graph_context={"agent_type": "kg_generator"})
+            graph_context={"agent_type": "kg_generator"},
+        )
         self.meta_agents["kg_generator"] = kg_meta_state
 
         self.agent_capabilities["kg_generator"] = MemoryAgentCapabilities(
@@ -605,19 +560,19 @@ class MultiAgentMemoryCoordinator:
                 "entity_extraction",
                 "relationship_discovery",
                 "graph_construction",
-            ])
+            ],
+        )
 
         # 2. Agentic RAG Coordinator
         rag_coordinator = AgenticRAGCoordinator(self.config.agentic_rag_config)
         # Set persistence if configured
-        if hasattr(
-                self.config,
-                "persistence") and self.config.persistence is not None:
+        if hasattr(self.config, "persistence") and self.config.persistence is not None:
             rag_coordinator.persistence = self.config.persistence
         rag_meta_state = MetaStateSchema.from_agent(
             agent=rag_coordinator,
             initial_state={"ready": True, "strategies_loaded": True},
-            graph_context={"agent_type": "agentic_rag"})
+            graph_context={"agent_type": "agentic_rag"},
+        )
         self.meta_agents["agentic_rag"] = rag_meta_state
 
         self.agent_capabilities["agentic_rag"] = MemoryAgentCapabilities(
@@ -632,13 +587,15 @@ class MultiAgentMemoryCoordinator:
                 "strategy_selection",
                 "result_fusion",
                 "intelligent_retrieval",
-            ])
+            ],
+        )
 
         # 3. Memory Store Manager (wrapped as agent)
         store_meta_state = MetaStateSchema.from_agent(
             agent=self._create_store_agent(),
             initial_state={"ready": True, "store_connected": True},
-            graph_context={"agent_type": "memory_store"})
+            graph_context={"agent_type": "memory_store"},
+        )
         self.meta_agents["memory_store"] = store_meta_state
 
         self.agent_capabilities["memory_store"] = MemoryAgentCapabilities(
@@ -649,16 +606,15 @@ class MultiAgentMemoryCoordinator:
             supported_memory_types=list(MemoryType),
             typical_latency_ms=500,
             max_concurrent_tasks=5,
-            specialization=[
-                "memory_storage",
-                "basic_retrieval",
-                "memory_management"])
+            specialization=["memory_storage", "basic_retrieval", "memory_management"],
+        )
 
         # 4. Memory Classifier (wrapped as agent)
         classifier_meta_state = MetaStateSchema.from_agent(
             agent=self._create_classifier_agent(),
             initial_state={"ready": True, "models_loaded": True},
-            graph_context={"agent_type": "memory_classifier"})
+            graph_context={"agent_type": "memory_classifier"},
+        )
         self.meta_agents["memory_classifier"] = classifier_meta_state
 
         self.agent_capabilities["memory_classifier"] = MemoryAgentCapabilities(
@@ -672,11 +628,11 @@ class MultiAgentMemoryCoordinator:
                 "memory_classification",
                 "intent_analysis",
                 "metadata_extraction",
-            ])
+            ],
+        )
 
     def _create_store_agent(self) -> SimpleAgent:
-        """Create a simple agent wrapper for memory store operations.
-        """
+        """Create a simple agent wrapper for memory store operations."""
         # Create a simple agent that wraps store operations
         store_agent = SimpleAgent(
             name="memory_store_agent",
@@ -692,13 +648,13 @@ Available operations:
 
 Always provide clear, helpful responses about memory operations.""",
             # Pass persistence settings from config if available
-            persistence=getattr(self.config, "persistence", None))
+            persistence=getattr(self.config, "persistence", None),
+        )
 
         return store_agent
 
     def _create_classifier_agent(self) -> SimpleAgent:
-        """Create a simple agent wrapper for memory classification.
-        """
+        """Create a simple agent wrapper for memory classification."""
         classifier_agent = SimpleAgent(
             name="memory_classifier_agent",
             engine=AugLLMConfig(temperature=0.1),
@@ -713,13 +669,13 @@ Available operations:
 
 Always provide detailed analysis and classification results.""",
             # Pass persistence settings from config if available
-            persistence=getattr(self.config, "persistence", None))
+            persistence=getattr(self.config, "persistence", None),
+        )
 
         return classifier_agent
 
     def _setup_prompts(self) -> None:
-        """Setup prompts for task routing and coordination.
-        """
+        """Setup prompts for task routing and coordination."""
         self.task_routing_prompt = PromptTemplate(
             template="""You are an expert task router for a multi-agent memory system. Analyze the task and route it to the most appropriate agent.
 
@@ -760,7 +716,8 @@ Route the task now:""",
                 "task_type",
                 "task_parameters",
                 "agent_capabilities",
-            ])
+            ],
+        )
 
         self.task_decomposition_prompt = PromptTemplate(
             template="""You are an expert at decomposing complex memory tasks into smaller, manageable subtasks.
@@ -795,8 +752,9 @@ FORMAT: Return a JSON object with:
     "reasoning": "Why this decomposition was chosen"
 }}
 
-Decompose the task now:""", input_variables=[
-                "task_description", "task_complexity", "available_agents"])
+Decompose the task now:""",
+            input_variables=["task_description", "task_complexity", "available_agents"],
+        )
 
     async def execute_task(self, task: MemoryTask) -> MemoryTask:
         """Execute a memory task using appropriate agents with intelligent routing.
@@ -886,8 +844,8 @@ Decompose the task now:""", input_variables=[
                 result = await self._execute_decomposed_task(task, routing_decision)
             else:
                 raise ValueError(
-                    f"Unknown routing decision: {
-                        routing_decision['routing_decision']}")
+                    f"Unknown routing decision: {routing_decision['routing_decision']}"
+                )
 
             # Step 3: Update task with result
             task.result = result
@@ -959,10 +917,9 @@ Decompose the task now:""", input_variables=[
             # Prepare agent capabilities description
             capabilities_desc = []
             for agent_name, capabilities in self.agent_capabilities.items():
-                desc = f"- {agent_name}: {
-                    capabilities.agent_type} - {
-                    ', '.join(
-                        capabilities.specialization)}"
+                desc = f"- {agent_name}: {capabilities.agent_type} - {
+                    ', '.join(capabilities.specialization)
+                }"
                 capabilities_desc.append(desc)
 
             # Create routing prompt
@@ -970,14 +927,13 @@ Decompose the task now:""", input_variables=[
                 task_description=task.query,
                 task_type=task.type,
                 task_parameters=str(task.parameters),
-                agent_capabilities="\n".join(capabilities_desc))
+                agent_capabilities="\n".join(capabilities_desc),
+            )
 
             # Get routing decision from LLM
             response = await self.coordinator_llm.ainvoke(
                 [
-                    SystemMessage(
-                        content="You are an expert task router for multi-agent systems."
-                    ),
+                    SystemMessage(content="You are an expert task router for multi-agent systems."),
                     HumanMessage(content=prompt),
                 ]
             )
@@ -995,8 +951,7 @@ Decompose the task now:""", input_variables=[
             return self._fallback_task_routing(task)
 
     def _fallback_task_routing(self, task: MemoryTask) -> dict[str, Any]:
-        """Fallback rule-based task routing.
-        """
+        """Fallback rule-based task routing."""
         task_type = task.type.lower()
 
         if "store" in task_type or "save" in task_type:
@@ -1053,8 +1008,7 @@ Decompose the task now:""", input_variables=[
     async def _execute_single_agent_task(
         self, task: MemoryTask, routing_decision: dict[str, Any]
     ) -> Any:
-        """Execute task with a single agent.
-        """
+        """Execute task with a single agent."""
         agent_name = routing_decision["primary_agent"]
         if agent_name not in self.meta_agents:
             raise ValueError(f"Agent {agent_name} not found")
@@ -1065,16 +1019,15 @@ Decompose the task now:""", input_variables=[
 
         # Execute agent with task query
         result = await meta_state.execute_agent(
-            input_data={"messages": [{"role": "user", "content": task.query}]},
-            update_state=True)
+            input_data={"messages": [{"role": "user", "content": task.query}]}, update_state=True
+        )
 
         return result
 
     async def _execute_multi_agent_task(
         self, task: MemoryTask, routing_decision: dict[str, Any]
     ) -> Any:
-        """Execute task with multiple agents in parallel.
-        """
+        """Execute task with multiple agents in parallel."""
         primary_agent = routing_decision["primary_agent"]
         secondary_agents = routing_decision.get("secondary_agents", [])
         all_agents = [primary_agent, *secondary_agents]
@@ -1089,7 +1042,8 @@ Decompose the task now:""", input_variables=[
                 meta_state = self.meta_agents[agent_name]
                 task_coro = meta_state.execute_agent(
                     input_data={"messages": [{"role": "user", "content": task.query}]},
-                    update_state=True)
+                    update_state=True,
+                )
                 tasks.append(task_coro)
 
         # Wait for all to complete
@@ -1107,8 +1061,7 @@ Decompose the task now:""", input_variables=[
     async def _execute_sequential_task(
         self, task: MemoryTask, routing_decision: dict[str, Any]
     ) -> Any:
-        """Execute task with agents in sequence.
-        """
+        """Execute task with agents in sequence."""
         primary_agent = routing_decision["primary_agent"]
         secondary_agents = routing_decision.get("secondary_agents", [])
         all_agents = [primary_agent, *secondary_agents]
@@ -1124,10 +1077,9 @@ Decompose the task now:""", input_variables=[
             if agent_name in self.meta_agents:
                 meta_state = self.meta_agents[agent_name]
                 result = await meta_state.execute_agent(
-                    input_data={
-                        "messages": [{"role": "user", "content": current_input}]
-                    },
-                    update_state=True)
+                    input_data={"messages": [{"role": "user", "content": current_input}]},
+                    update_state=True,
+                )
                 results.append(result)
 
                 # Use result as input for next agent
@@ -1142,8 +1094,7 @@ Decompose the task now:""", input_variables=[
     async def _execute_decomposed_task(
         self, task: MemoryTask, routing_decision: dict[str, Any]
     ) -> Any:
-        """Execute task that has been decomposed into subtasks.
-        """
+        """Execute task that has been decomposed into subtasks."""
         # This would involve decomposing the task and executing subtasks
         # For now, fall back to single agent execution
         return await self._execute_single_agent_task(
@@ -1152,11 +1103,11 @@ Decompose the task now:""", input_variables=[
                 "primary_agent": "agentic_rag",
                 "secondary_agents": [],
                 "execution_strategy": "single",
-            })
+            },
+        )
 
     def _parse_json_response(self, response: str) -> dict[str, Any] | None:
-        """Parse JSON response from LLM.
-        """
+        """Parse JSON response from LLM."""
         try:
             import json
 
@@ -1170,12 +1121,8 @@ Decompose the task now:""", input_variables=[
             logger.warning(f"Failed to parse JSON response: {e}")
         return None
 
-    def _update_performance_metrics(
-            self,
-            task: MemoryTask,
-            success: bool) -> None:
-        """Update performance metrics.
-        """
+    def _update_performance_metrics(self, task: MemoryTask, success: bool) -> None:
+        """Update performance metrics."""
         self.performance_metrics["total_tasks"] += 1
 
         if success:
@@ -1185,8 +1132,7 @@ Decompose the task now:""", input_variables=[
 
         # Update latency
         if task.started_at and task.completed_at:
-            latency = (task.completed_at -
-                       task.started_at).total_seconds() * 1000
+            latency = (task.completed_at - task.started_at).total_seconds() * 1000
             current_avg = self.performance_metrics["avg_latency_ms"]
             total_tasks = self.performance_metrics["total_tasks"]
 
@@ -1202,9 +1148,7 @@ Decompose the task now:""", input_variables=[
                 self.performance_metrics["agent_utilization"][agent_key] = 0
             self.performance_metrics["agent_utilization"][agent_key] += 1
 
-    async def store_memory(
-        self, content: str, namespace: tuple[str, ...] | None = None
-    ) -> str:
+    async def store_memory(self, content: str, namespace: tuple[str, ...] | None = None) -> str:
         """Store a memory using the multi-agent system with intelligent routing.
 
         This method creates a memory storage task and routes it to the appropriate
@@ -1254,7 +1198,8 @@ Decompose the task now:""", input_variables=[
             query=f"Store this memory: {content}",
             parameters={"content": content},
             namespace=namespace,
-            priority=5)
+            priority=5,
+        )
 
         result_task = await self.execute_task(task)
 
@@ -1267,7 +1212,8 @@ Decompose the task now:""", input_variables=[
         query: str,
         limit: int = 10,
         memory_types: list[MemoryType] | None = None,
-        namespace: tuple[str, ...] | None = None) -> list[dict[str, Any]]:
+        namespace: tuple[str, ...] | None = None,
+    ) -> list[dict[str, Any]]:
         """Retrieve memories using the multi-agent system with intelligent routing.
 
         This method creates a memory retrieval task and routes it to the most appropriate
@@ -1331,7 +1277,8 @@ Decompose the task now:""", input_variables=[
             parameters={"limit": limit},
             namespace=namespace,
             memory_types=memory_types,
-            priority=3)
+            priority=3,
+        )
 
         result_task = await self.execute_task(task)
 
@@ -1411,7 +1358,8 @@ Decompose the task now:""", input_variables=[
             type="analyze_memory",
             query=f"Analyze this memory: {content}",
             parameters={"content": content},
-            priority=4)
+            priority=4,
+        )
 
         result_task = await self.execute_task(task)
 
@@ -1496,7 +1444,8 @@ Decompose the task now:""", input_variables=[
             query="Extract and build knowledge graph from memories",
             parameters={},
             namespace=namespace,
-            priority=6)
+            priority=6,
+        )
 
         result_task = await self.execute_task(task)
 
@@ -1567,9 +1516,7 @@ Decompose the task now:""", input_variables=[
                 "agent_name": meta_state.agent_name,
                 "agent_type": meta_state.agent_type,
                 "execution_status": meta_state.execution_status,
-                "execution_count": meta_state.graph_context.get(
-                    "execution_count",
-                    0),
+                "execution_count": meta_state.graph_context.get("execution_count", 0),
                 "needs_recompile": meta_state.needs_recompile,
             }
 
@@ -1583,9 +1530,7 @@ Decompose the task now:""", input_variables=[
             "agent_capabilities": {
                 name: {
                     "specialization": caps.specialization,
-                    "supported_memory_types": [
-                        mt.value for mt in caps.supported_memory_types
-                    ],
+                    "supported_memory_types": [mt.value for mt in caps.supported_memory_types],
                 }
                 for name, caps in self.agent_capabilities.items()
             },
@@ -1659,11 +1604,10 @@ Decompose the task now:""", input_variables=[
             try:
                 test_result = await meta_state.execute_agent(
                     input_data={
-                        "messages": [
-                            {"role": "user", "content": "System diagnostic test"}
-                        ]
+                        "messages": [{"role": "user", "content": "System diagnostic test"}]
                     },
-                    update_state=False)
+                    update_state=False,
+                )
                 diagnostic_results[agent_name] = {
                     "status": "healthy",
                     "test_result": (
@@ -1673,8 +1617,7 @@ Decompose the task now:""", input_variables=[
                     ),
                 }
             except Exception as e:
-                diagnostic_results[agent_name] = {
-                    "status": "error", "error": str(e)}
+                diagnostic_results[agent_name] = {"status": "error", "error": str(e)}
 
         return {
             "system_status": (

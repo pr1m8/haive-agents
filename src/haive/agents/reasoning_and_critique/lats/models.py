@@ -12,17 +12,14 @@ class Reflection(BaseModel):
         " and general quality of the response"
     )
     score: int = Field(
-        description="Score from 0-10 on the quality of the candidate response.",
-        ge=0,
-        le=10)
+        description="Score from 0-10 on the quality of the candidate response.", ge=0, le=10
+    )
     found_solution: bool = Field(
         description="Whether the response has fully solved the question or task."
     )
 
     def as_message(self) -> Any:
-        return HumanMessage(
-            content=f"Reasoning: {self.reflections}\nScore: {self.score}"
-        )
+        return HumanMessage(content=f"Reasoning: {self.reflections}\nScore: {self.score}")
 
     @property
     def normalized_score(self) -> float:
@@ -31,10 +28,8 @@ class Reflection(BaseModel):
 
 class Node:
     def __init__(
-        self,
-        messages: list[BaseMessage],
-        reflection: Reflection,
-        parent: Optional["Node"] = None):
+        self, messages: list[BaseMessage], reflection: Reflection, parent: Optional["Node"] = None
+    ):
         self.messages = messages
         self.parent = parent
         self.children = []
@@ -106,9 +101,7 @@ class Node:
         messages = []
         node = self
         while node:
-            messages.extend(
-                node.get_messages(include_reflections=include_reflections)[::-1]
-            )
+            messages.extend(node.get_messages(include_reflections=include_reflections)[::-1])
             node = node.parent
         # Reverse the final back-tracked trajectory to return in the correct
         # order
@@ -131,7 +124,8 @@ class Node:
         best_node = max(
             all_nodes,
             # We filter out all non-terminal, non-solution trajectories
-            key=lambda node: int(node.is_terminal and node.is_solved) * node.value)
+            key=lambda node: int(node.is_terminal and node.is_solved) * node.value,
+        )
         return best_node
 
     def _mark_tree_as_solved(self):

@@ -12,10 +12,8 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
-from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
-    CandidateGenerator)
-from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
-    SolutionScorer)
+from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import CandidateGenerator
+from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import SolutionScorer
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +40,8 @@ class TreeOfThoughtsOrchestrator:
         beam_width: int = 5,
         max_iterations: int = 3,
         temperature_generate: float = 0.7,
-        temperature_score: float = 0.3):
+        temperature_score: float = 0.3,
+    ):
         """Initialize the Tree of Thoughts orchestrator.
 
         Args:
@@ -61,9 +60,7 @@ class TreeOfThoughtsOrchestrator:
             engine = AugLLMConfig()
 
         # Create the agents
-        self.generator = CandidateGenerator(
-            name="tot_generator", temperature=temperature_generate
-        )
+        self.generator = CandidateGenerator(name="tot_generator", temperature=temperature_generate)
 
         self.scorer = SolutionScorer(name="tot_scorer", temperature=temperature_score)
 
@@ -81,13 +78,12 @@ Your role is to:
 3. Keep the best solutions (beam search)
 4. Iterate until a satisfactory solution is found
 
-The flow is: Generate candidates → Score them → Select best → Repeat or finish""")
+The flow is: Generate candidates → Score them → Select best → Repeat or finish""",
+        )
 
     async def solve(
-        self,
-        problem: str,
-        initial_seed: str | None = None,
-        context: str = "") -> TOTResult:
+        self, problem: str, initial_seed: str | None = None, context: str = ""
+    ) -> TOTResult:
         """Solve a problem using Tree of Thoughts.
 
         Args:
@@ -131,7 +127,7 @@ Based on these approaches, generate new candidate solutions that:
                 # Initial generation
                 generation_prompt = f"""
 Problem: {problem}
-{f'Context: {context}' if context else ''}
+{f"Context: {context}" if context else ""}
 
 Generate diverse candidate solutions to solve this problem."""
 
@@ -152,7 +148,7 @@ Generate diverse candidate solutions to solve this problem."""
 Problem: {problem}
 
 Score these candidate solutions:
-{chr(10).join(f'- {c}' for c in all_candidates)}
+{chr(10).join(f"- {c}" for c in all_candidates)}
 
 Evaluate each one carefully."""
 
@@ -185,9 +181,7 @@ Evaluate each one carefully."""
 
                 # Beam search: keep top solutions
                 scored_solutions.sort(key=lambda x: x[1], reverse=True)
-                current_candidates = [
-                    sol for sol, _, _ in scored_solutions[: self.beam_width]
-                ]
+                current_candidates = [sol for sol, _, _ in scored_solutions[: self.beam_width]]
 
                 # Check for early termination
                 if best_score >= 0.95:  # Near-perfect solution
@@ -202,7 +196,8 @@ Evaluate each one carefully."""
             score=best_score,
             reasoning=best_reasoning or "No valid solutions generated",
             iterations=iteration + 1,
-            all_solutions=all_solutions)
+            all_solutions=all_solutions,
+        )
 
     def _extract_candidates(self, generation_result: Any) -> list[str]:
         """Extract candidate solutions from generator output."""
@@ -223,8 +218,7 @@ Evaluate each one carefully."""
             line = line.strip()
             # Check for numbered items (1., 2., etc) or bullets (-, *, •)
             if any(
-                line.startswith(prefix)
-                for prefix in ["1.", "2.", "3.", "4.", "5.", "-", "*", "•"]
+                line.startswith(prefix) for prefix in ["1.", "2.", "3.", "4.", "5.", "-", "*", "•"]
             ):
                 # Extract the content after the marker
                 for prefix in ["1.", "2.", "3.", "4.", "5.", "-", "*", "•"]:
@@ -247,9 +241,7 @@ Evaluate each one carefully."""
             output = scoring_result.output
             if hasattr(output, "scored_solutions"):
                 for scored_sol in output.scored_solutions:
-                    scored.append(
-                        (scored_sol.solution, scored_sol.score, scored_sol.reasoning)
-                    )
+                    scored.append((scored_sol.solution, scored_sol.score, scored_sol.reasoning))
                 return scored
 
         # Fallback: assign default scores

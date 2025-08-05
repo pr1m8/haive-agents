@@ -8,14 +8,15 @@ from haive.agents.reasoning_and_critique.self_discover.v2.models import (
     AdaptedModules,
     FinalAnswer,
     ReasoningStructure,
-    SelectedModules)
+    SelectedModules,
+)
 from haive.agents.reasoning_and_critique.self_discover.v2.prompts import (
     adapt_prompt,
     reasoning_prompt,
     select_prompt,
-    structured_prompt)
-from haive.agents.reasoning_and_critique.self_discover.v2.state import (
-    SelfDiscoveryState)
+    structured_prompt,
+)
+from haive.agents.reasoning_and_critique.self_discover.v2.state import SelfDiscoveryState
 from haive.agents.simple.agent import SimpleAgent
 
 # Default reasoning modules
@@ -68,28 +69,32 @@ select_engine = AugLLMConfig(
             [f"{i + 1}. {module}" for i, module in enumerate(default_reasoning_modules)]
         )
     ),
-    temperature=0.7)
+    temperature=0.7,
+)
 
 adapt_engine = AugLLMConfig(
     name="adapt_modules",
     structured_output_model=AdaptedModules,
     structured_output_version="v2",
     prompt_template=adapt_prompt,
-    temperature=0.7)
+    temperature=0.7,
+)
 
 structure_engine = AugLLMConfig(
     name="create_structure",
     structured_output_model=ReasoningStructure,
     structured_output_version="v2",
     prompt_template=structured_prompt,
-    temperature=0.3)
+    temperature=0.3,
+)
 
 reason_engine = AugLLMConfig(
     name="final_reasoning",
     structured_output_model=FinalAnswer,
     structured_output_version="v2",
     prompt_template=reasoning_prompt,
-    temperature=0.1)
+    temperature=0.1,
+)
 
 
 # Create SimpleAgent for each step

@@ -19,8 +19,6 @@ def update_editor(editor, new_editor) -> Any:
 
 def format_doc(doc, max_length=1000) -> Any:
     related = "- ".join(doc.metadata["categories"])
-    return f"### {
-        doc.metadata['title']}\n\nSummary: {
-        doc.page_content}\n\nRelated\n{related}"[
+    return f"### {doc.metadata['title']}\n\nSummary: {doc.page_content}\n\nRelated\n{related}"[
         :max_length
     ]

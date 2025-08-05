@@ -9,7 +9,8 @@ from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.reasoning_and_critique.self_discover.agent2 import (
     SelfDiscoverAgent,
-    create_self_discover_agent)
+    create_self_discover_agent,
+)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -20,9 +21,7 @@ def example_math_problem():
     """Example using SelfDiscover on a math problem."""
     problem = "Lisa has 10 apples. She gives 3 apples to her friend and then buys 5 more apples from the store. How many apples does Lisa have now?"
 
-    agent = create_self_discover_agent(
-        name="math_problem_solver", model="gpt-4o", temperature=0.0
-    )
+    agent = create_self_discover_agent(name="math_problem_solver", model="gpt-4o", temperature=0.0)
 
     agent.run(problem)
     # Print full reasoning process
@@ -52,7 +51,8 @@ def example_svg_interpretation():
         name="svg_interpreter",
         model="gpt-4o",
         temperature=0.0,
-        reasoning_modules=visual_reasoning_modules)
+        reasoning_modules=visual_reasoning_modules,
+    )
 
     agent.run(problem)
 
@@ -90,7 +90,8 @@ Given the following clues, determine each person\'s favorite color and fruit:
         name="logical_problem_solver",
         model="gpt-4o",
         temperature=0.0,
-        reasoning_modules=logical_reasoning_modules)
+        reasoning_modules=logical_reasoning_modules,
+    )
 
     agent.run(problem)
 
@@ -160,10 +161,8 @@ def create_custom_domain_agent(
 
     # Create and return the agent
     return create_self_discover_agent(
-        name=f"{domain}_specialist",
-        model=model,
-        temperature=0.0,
-        reasoning_modules=modules)
+        name=f"{domain}_specialist", model=model, temperature=0.0, reasoning_modules=modules
+    )
 
 
 def run_batch_problems(
@@ -230,7 +229,8 @@ def example_advanced_configuration():
         {task_description}
 
         Selected reasoning techniques (list only the numbers of your chosen techniques):
-        """),
+        """,
+            ),
         ]
     )
 
@@ -248,7 +248,8 @@ def example_advanced_configuration():
         {task_description}
 
         For each technique, provide a customized version that addresses the specific challenges of this problem:
-        """),
+        """,
+            ),
         ]
     )
 
@@ -268,7 +269,8 @@ def example_advanced_configuration():
         {task_description}
 
         JSON reasoning plan structure:
-        """),
+        """,
+            ),
         ]
     )
 
@@ -288,7 +290,8 @@ def example_advanced_configuration():
         {task_description}
 
         Complete solution with all reasoning steps:
-        """),
+        """,
+            ),
         ]
     )
 
@@ -318,7 +321,8 @@ def example_advanced_configuration():
         select_prompt=select_prompt,
         adapt_prompt=adapt_prompt,
         structure_prompt=structure_prompt,
-        reasoning_prompt=reasoning_prompt)
+        reasoning_prompt=reasoning_prompt,
+    )
 
     # Run the agent
     agent.run(problem)
@@ -326,9 +330,7 @@ def example_advanced_configuration():
     # Print results
 
 
-def analyze_reasoning_process(
-    agent_results: list[dict], output_file: str | None = None
-):
+def analyze_reasoning_process(agent_results: list[dict], output_file: str | None = None):
     """Analyze the reasoning process across multiple problems to identify patterns.
 
     Args:
@@ -354,9 +356,7 @@ def analyze_reasoning_process(
         if result.get("error"):
             analysis["failed_problems"] += 1
             error = result.get("error")
-            analysis["common_errors"][error] = (
-                analysis["common_errors"].get(error, 0) + 1
-            )
+            analysis["common_errors"][error] = analysis["common_errors"].get(error, 0) + 1
         else:
             analysis["successful_problems"] += 1
 

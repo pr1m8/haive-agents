@@ -9,8 +9,8 @@ from haive.agents.reasoning_and_critique.tot.v2.models import Candidate, ScoredC
 
 
 def update_candidates(
-    existing: list | None = None,
-    updates: list | Literal["clear"] | None = None) -> list:
+    existing: list | None = None, updates: list | Literal["clear"] | None = None
+) -> list:
     """Custom reducer for candidates."""
     if existing is None:
         existing = []
@@ -26,9 +26,7 @@ class ToTState(MessagesState):
     """Base Tree of Thoughts state."""
 
     # Problem is derived from messages
-    problem_type: str | None = Field(
-        default=None, description="Type/category of problem"
-    )
+    problem_type: str | None = Field(default=None, description="Type/category of problem")
     problem_context: dict[str, Any] = Field(
         default_factory=dict, description="Additional problem context"
     )
@@ -43,30 +41,22 @@ class ToTState(MessagesState):
     selected_candidates: list[ScoredCandidate] = Field(
         default_factory=list, description="Best candidates selected for next iteration"
     )
-    all_candidates_history: Annotated[
-        list[Candidate | ScoredCandidate], operator.add
-    ] = Field(default_factory=list, description="All candidates ever generated")
+    all_candidates_history: Annotated[list[Candidate | ScoredCandidate], operator.add] = Field(
+        default_factory=list, description="All candidates ever generated"
+    )
 
     # Search parameters
     depth: Annotated[int, operator.add] = Field(default=0, description="Current depth")
     max_depth: int = Field(default=10, description="Maximum search depth")
-    beam_size: int = Field(
-        default=3, description="Number of candidates to keep after pruning"
-    )
+    beam_size: int = Field(default=3, description="Number of candidates to keep after pruning")
     expansion_factor: int = Field(
         default=5, description="Number of candidates to generate per expansion"
     )
-    threshold: float = Field(
-        default=0.9, description="Score threshold for early termination"
-    )
+    threshold: float = Field(default=0.9, description="Score threshold for early termination")
 
     # Control flow
-    should_terminate: bool = Field(
-        default=False, description="Whether to terminate search"
-    )
-    termination_reason: str | None = Field(
-        default=None, description="Why search was terminated"
-    )
+    should_terminate: bool = Field(default=False, description="Whether to terminate search")
+    termination_reason: str | None = Field(default=None, description="Why search was terminated")
     best_solution: ScoredCandidate | None = Field(
         default=None, description="Best solution found so far"
     )
@@ -100,9 +90,7 @@ class ToTState(MessagesState):
         if "candidates" in data and isinstance(data["candidates"], list):
             converted = []
             for item in data["candidates"]:
-                if isinstance(item, dict) and not isinstance(
-                    item, Candidate | ScoredCandidate
-                ):
+                if isinstance(item, dict) and not isinstance(item, Candidate | ScoredCandidate):
                     # Check if it has score to determine type
                     if "score" in item and item["score"] is not None:
                         converted.append(ScoredCandidate(**item))
@@ -124,9 +112,7 @@ class ToTState(MessagesState):
             if field in data and isinstance(data[field], list):
                 converted = []
                 for item in data[field]:
-                    if isinstance(item, dict) and not isinstance(
-                        item, Candidate | ScoredCandidate
-                    ):
+                    if isinstance(item, dict) and not isinstance(item, Candidate | ScoredCandidate):
                         if "score" in item and item["score"] is not None:
                             converted.append(ScoredCandidate(**item))
                         else:
@@ -154,26 +140,17 @@ class ToTState(MessagesState):
         ]
 
         for i, candidate in enumerate(self.selected_candidates):
-            expansion_context.append(
-                f"Parent {
-                    i +
-                    1} (Score: {
-                    candidate.score:.3f}):"
-            )
+            expansion_context.append(f"Parent {i + 1} (Score: {candidate.score:.3f}):")
             expansion_context.append(f"Content: {candidate.get_content_str()}")
             expansion_context.append(f"Feedback: {candidate.feedback}")
             if candidate.scoring_metadata:
                 if "strengths" in candidate.scoring_metadata:
                     expansion_context.append(
-                        f"Strengths: {
-                            ', '.join(
-                                candidate.scoring_metadata['strengths'])}"
+                        f"Strengths: {', '.join(candidate.scoring_metadata['strengths'])}"
                     )
                 if "weaknesses" in candidate.scoring_metadata:
                     expansion_context.append(
-                        f"Weaknesses: {
-                            ', '.join(
-                                candidate.scoring_metadata['weaknesses'])}"
+                        f"Weaknesses: {', '.join(candidate.scoring_metadata['weaknesses'])}"
                     )
             expansion_context.append("")
 
@@ -201,9 +178,7 @@ class ToTState(MessagesState):
             parent = self.get_candidate_by_id(candidate.parent_id)
             if parent:
                 scoring_context.append(
-                    f"\nDerived from parent: {
-                        parent.get_content_str()[
-                            :100]}..."
+                    f"\nDerived from parent: {parent.get_content_str()[:100]}..."
                 )
 
         return "\n".join(scoring_context)
@@ -215,18 +190,13 @@ class ToTState(MessagesState):
         if not self.scored_candidates:
             return "No candidates have been scored yet."
 
-        sorted_scored = sorted(
-            self.scored_candidates, key=lambda c: c.score, reverse=True
-        )
+        sorted_scored = sorted(self.scored_candidates, key=lambda c: c.score, reverse=True)
 
         summary = [f"Scored candidates ({len(sorted_scored)} total):", ""]
 
         for i, candidate in enumerate(sorted_scored):
             summary.append(
-                f"{i}. [Score: {
-                    candidate.score:.3f}] {
-                    candidate.get_content_str()[
-                        :100]}..."
+                f"{i}. [Score: {candidate.score:.3f}] {candidate.get_content_str()[:100]}..."
             )
             summary.append(f"   Feedback: {candidate.feedback}")
             if i < len(sorted_scored) - 1:
@@ -265,9 +235,7 @@ class ToTState(MessagesState):
         ]
 
         if self.best_solution:
-            progress_parts.append(
-                f"  - Best solution score: {self.best_solution.score:.3f}"
-            )
+            progress_parts.append(f"  - Best solution score: {self.best_solution.score:.3f}")
 
         return "\n".join(progress_parts)
 
@@ -280,9 +248,7 @@ class ToTState(MessagesState):
         return 0.0
 
     # Helper methods
-    def get_candidate_by_id(
-        self, candidate_id: str
-    ) -> Candidate | ScoredCandidate | None:
+    def get_candidate_by_id(self, candidate_id: str) -> Candidate | ScoredCandidate | None:
         """Find a candidate by ID in any list."""
         # Check all lists
         for c in self.candidates:

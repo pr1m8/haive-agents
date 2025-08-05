@@ -18,9 +18,7 @@ class LATSAgentConfig(AgentConfig):
     """
 
     # Core LATS parameters
-    max_iterations: int = Field(
-        default=5, description="Maximum number of search iterations"
-    )
+    max_iterations: int = Field(default=5, description="Maximum number of search iterations")
 
     max_depth: int = Field(default=5, description="Maximum depth of the search tree")
 
@@ -39,7 +37,8 @@ class LATSAgentConfig(AgentConfig):
 
     action_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(tools=[tavily_search_tool]),
-        description="Engine for generating candidate actions")
+        description="Engine for generating candidate actions",
+    )
 
     # Specific tools for this agent
     tools: list[BaseTool | StructuredTool] = Field(
@@ -65,7 +64,8 @@ class LATSAgentConfig(AgentConfig):
         reflection_llm: AugLLMConfig,
         action_llm: AugLLMConfig,
         tools: list[BaseTool | StructuredTool] | None = None,
-        **kwargs) -> "LATSAgentConfig":
+        **kwargs,
+    ) -> "LATSAgentConfig":
         """Create a LATS agent configuration from LLM configs.
 
         Args:
@@ -78,7 +78,5 @@ class LATSAgentConfig(AgentConfig):
             LATSAgentConfig instance
         """
         return cls(
-            reflection_engine=reflection_llm,
-            action_engine=action_llm,
-            tools=tools or [],
-            **kwargs)
+            reflection_engine=reflection_llm, action_engine=action_llm, tools=tools or [], **kwargs
+        )

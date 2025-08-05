@@ -19,21 +19,15 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 class PerformanceMetrics(BaseModel):
     """Detailed performance tracking for episodic memories."""
 
-    success_rate: float = Field(
-        default=0.0, ge=0.0, le=1.0, description="Task success rate"
-    )
+    success_rate: float = Field(default=0.0, ge=0.0, le=1.0, description="Task success rate")
     completion_time: float = Field(
         default=0.0, ge=0.0, description="Average completion time in seconds"
     )
     user_satisfaction: float | None = Field(
         default=None, ge=1.0, le=5.0, description="User satisfaction score (1-5)"
     )
-    complexity_score: int = Field(
-        default=1, ge=1, le=10, description="Task complexity (1-10)"
-    )
-    error_frequency: float = Field(
-        default=0.0, ge=0.0, le=1.0, description="Error rate"
-    )
+    complexity_score: int = Field(default=1, ge=1, le=10, description="Task complexity (1-10)")
+    error_frequency: float = Field(default=0.0, ge=0.0, le=1.0, description="Error rate")
 
     @model_validator(mode="after")
     def validate_performance_logic(self) -> "PerformanceMetrics":

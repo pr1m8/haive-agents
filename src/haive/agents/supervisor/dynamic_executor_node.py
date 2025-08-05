@@ -26,9 +26,8 @@ class DynamicExecutorNode:
         self.agent_registry = agent_registry
 
     async def __call__(
-        self,
-        state: dict[str, Any] | BaseModel,
-        config: dict[str, Any] | None = None) -> dict[str, Any]:
+        self, state: dict[str, Any] | BaseModel, config: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """Execute the targeted agent with proper state extraction.
 
         This follows the pattern from AgentNode:
@@ -119,10 +118,7 @@ class DynamicExecutorNode:
 
         # If agent has state_schema, use it
         if hasattr(agent, "state_schema") and agent.state_schema:
-            logger.info(
-                f"Using agent's state schema: {
-                    agent.state_schema.__name__}"
-            )
+            logger.info(f"Using agent's state schema: {agent.state_schema.__name__}")
 
             agent_input = {}
 
@@ -133,10 +129,7 @@ class DynamicExecutorNode:
                     logger.debug(f"  Extracted field: {field_name}")
 
             # Ensure engines if needed
-            if (
-                "engines" in agent.state_schema.model_fields
-                and "engines" not in agent_input
-            ):
+            if "engines" in agent.state_schema.model_fields and "engines" not in agent_input:
                 if "engines" in state:
                     agent_input["engines"] = state["engines"]
                 elif hasattr(agent, "engines"):

@@ -9,9 +9,7 @@ class QualityScore(BaseModel):
     """Simple quality score for respo, field_validatorses."""
 
     score: float = Field(ge=0.0, le=100.0, description="Overall quality score (0-100)")
-    confidence: float = Field(
-        default=0.8, ge=0.0, le=1.0, description="Confidence in the score"
-    )
+    confidence: float = Field(default=0.8, ge=0.0, le=1.0, description="Confidence in the score")
     reasoning: str = Field(description="Brief explanation of the score")
 
 
@@ -25,9 +23,7 @@ class ImprovementSuggestion(BaseModel):
     priority: Literal["high", "medium", "low"] = Field(
         default="medium", description="Priority of this improvement"
     )
-    example: str | None = Field(
-        default=None, description="Example of the improved version"
-    )
+    example: str | None = Field(default=None, description="Example of the improved version")
 
 
 class GradingResult(BaseModel):
@@ -37,26 +33,14 @@ class GradingResult(BaseModel):
     overall_score: QualityScore = Field(description="Overall quality assessment")
 
     # Detailed scores
-    accuracy_score: float = Field(
-        ge=0.0, le=100.0, description="Accuracy/correctness score"
-    )
-    completeness_score: float = Field(
-        ge=0.0, le=100.0, description="Completeness score"
-    )
-    clarity_score: float = Field(
-        ge=0.0, le=100.0, description="Clarity and coherence score"
-    )
-    relevance_score: float = Field(
-        ge=0.0, le=100.0, description="Relevance to the query score"
-    )
+    accuracy_score: float = Field(ge=0.0, le=100.0, description="Accuracy/correctness score")
+    completeness_score: float = Field(ge=0.0, le=100.0, description="Completeness score")
+    clarity_score: float = Field(ge=0.0, le=100.0, description="Clarity and coherence score")
+    relevance_score: float = Field(ge=0.0, le=100.0, description="Relevance to the query score")
 
     # Feedback
-    strengths: list[str] = Field(
-        default_factory=list, description="Identified strengths"
-    )
-    weaknesses: list[str] = Field(
-        default_factory=list, description="Identified weaknesses"
-    )
+    strengths: list[str] = Field(default_factory=list, description="Identified strengths")
+    weaknesses: list[str] = Field(default_factory=list, description="Identified weaknesses")
     improvements: list[ImprovementSuggestion] = Field(
         default_factory=list, description="Specific improvement suggestions"
     )
@@ -114,17 +98,11 @@ class ReflectionOutput(BaseModel):
 
     reflected_response: str = Field(description="The reflected/improved response")
 
-    reflection_notes: str | None = Field(
-        default=None, description="Notes about what was improved"
-    )
+    reflection_notes: str | None = Field(default=None, description="Notes about what was improved")
 
-    iterations: int = Field(
-        default=1, ge=1, description="Number of reflection iterations"
-    )
+    iterations: int = Field(default=1, ge=1, description="Number of reflection iterations")
 
-    changes_made: list[str] = Field(
-        default_factory=list, description="List of changes made"
-    )
+    changes_made: list[str] = Field(default_factory=list, description="List of changes made")
 
 
 class ExpertiseConfig(BaseModel):
@@ -132,13 +110,13 @@ class ExpertiseConfig(BaseModel):
 
     domain: str = Field(description="Domain of expertise")
 
-    expertise_level: Literal["beginner", "intermediate", "expert", "world-class"] = (
-        Field(default="expert", description="Level of expertise to simulate")
+    expertise_level: Literal["beginner", "intermediate", "expert", "world-class"] = Field(
+        default="expert", description="Level of expertise to simulate"
     )
 
     style: str | None = Field(
-        default=None,
-        description="Communication style (formal, casual, technical, etc.)")
+        default=None, description="Communication style (formal, casual, technical, etc.)"
+    )
 
     additional_context: str | None = Field(
         default=None, description="Additional context about the expert role"
@@ -160,27 +138,21 @@ class ExpertiseConfig(BaseModel):
 class ReflectionConfig(BaseModel):
     """Configuration for reflection process."""
 
-    max_iterations: int = Field(
-        default=3, ge=1, le=10, description="Maximum reflection iterations"
-    )
+    max_iterations: int = Field(default=3, ge=1, le=10, description="Maximum reflection iterations")
 
     min_score_threshold: float = Field(
         default=80.0, ge=0.0, le=100.0, description="Minimum score to stop reflecting"
     )
 
     confidence_threshold: float = Field(
-        default=0.9,
-        ge=0.0,
-        le=1.0,
-        description="Confidence threshold to stop reflecting")
+        default=0.9, ge=0.0, le=1.0, description="Confidence threshold to stop reflecting"
+    )
 
     reflection_mode: Literal["improve", "critique", "both"] = Field(
         default="both", description="Mode of reflection"
     )
 
-    include_reasoning: bool = Field(
-        default=True, description="Include reasoning in output"
-    )
+    include_reasoning: bool = Field(default=True, description="Include reasoning in output")
 
     force_iterations: int | None = Field(
         default=None, description="Force exact number of iterations"
@@ -196,19 +168,17 @@ class Critique(BaseModel):
     strengths: list[str] = Field(description="Identified strengths")
     weaknesses: list[str] = Field(description="Identified weaknesses")
     suggestions: list[str] = Field(description="Specific improvement suggestions")
-    overall_quality: float = Field(
-        ge=0.0, le=1.0, description="Quality score 0.0 to 1.0"
-    )
+    overall_quality: float = Field(ge=0.0, le=1.0, description="Quality score 0.0 to 1.0")
     needs_revision: bool = Field(description="Whether revision is needed")
 
 
 class Improvement(BaseModel):
     """An improvement to a response based on reflection."""
-    
+
     category: str = Field(description="Category of improvement")
     suggestion: str = Field(description="Specific suggestion")
     improved_text: str | None = Field(default=None, description="Improved version")
-    
+
 
 class ReflectionResult(BaseModel):
     """Complete reflection analysis (for structured output pattern)."""
@@ -222,7 +192,7 @@ class ReflectionResult(BaseModel):
 # Utility functions for compatibility
 def to_prompt(obj) -> str:
     """Convert object to prompt string."""
-    if hasattr(obj, 'model_dump_json'):
+    if hasattr(obj, "model_dump_json"):
         return obj.model_dump_json()
     return str(obj)
 

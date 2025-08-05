@@ -29,6 +29,7 @@ def main():
     tools = []
     if os.environ.get("TAVILY_API_KEY"):
         from pydantic import SecretStr
+
         search = TavilySearchAPIWrapper(tavily_api_key=SecretStr(os.environ["TAVILY_API_KEY"]))
         tavily_tool = TavilySearchResults(api_wrapper=search, max_results=5)
         tools.append(tavily_tool)
@@ -42,7 +43,8 @@ def main():
         tools=tools,
         max_depth=3,  # Limit depth for faster execution in this example
         n_candidates=3,  # Generate 3 candidates at each step for faster execution
-        name="lats_example_agent")
+        name="lats_example_agent",
+    )
 
     # Example questions to demonstrate the agent
     questions = [
@@ -93,7 +95,6 @@ def main():
             # Try to reconstruct messages for more details
             messages = []
             if "messages" in final_state:
-
                 for msg_data in final_state["messages"]:
                     try:
                         if isinstance(msg_data, dict):

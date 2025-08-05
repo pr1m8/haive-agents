@@ -4,8 +4,7 @@ This module provides a specialized document loader agent for loading
 documents from web URLs.
 """
 
-from haive.core.engine.document import (
-    create_web_document_engine as create_web_loader_engine)
+from haive.core.engine.document import create_web_document_engine as create_web_loader_engine
 from pydantic import Field
 
 from haive.agents.document_loader.base.agent import DocumentLoaderAgent
@@ -32,16 +31,12 @@ class WebLoaderAgent(DocumentLoaderAgent):
     url: str | None = Field(default=None, description="URL to load")
 
     dynamic_loading: bool = Field(
-        default=False,
-        description="Whether to use a dynamic loading strategy (e.g., Playwright)")
-
-    recursive: bool = Field(
-        default=False, description="Whether to recursively crawl links"
+        default=False, description="Whether to use a dynamic loading strategy (e.g., Playwright)"
     )
 
-    max_depth: int = Field(
-        default=1, description="Maximum depth for recursive crawling"
-    )
+    recursive: bool = Field(default=False, description="Whether to recursively crawl links")
+
+    max_depth: int = Field(default=1, description="Maximum depth for recursive crawling")
 
     headers: dict[str, str] | None = Field(
         default=None, description="Custom headers to use for requests"
@@ -55,7 +50,8 @@ class WebLoaderAgent(DocumentLoaderAgent):
             dynamic_loading=self.dynamic_loading,
             recursive=self.recursive,
             max_depth=self.max_depth,
-            headers=self.headers)
+            headers=self.headers,
+        )
 
         # Apply agent configuration
         if self.max_documents is not None:

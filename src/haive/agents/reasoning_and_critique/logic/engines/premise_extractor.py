@@ -110,7 +110,8 @@ For each premise, specify:
 - Whether it's contested
 - Source/origin
 
-Remember: Good reasoning requires making ALL premises explicit, especially the hidden ones people take for granted."""),
+Remember: Good reasoning requires making ALL premises explicit, especially the hidden ones people take for granted.""",
+        ),
         ("human", "{question}\n\nContext: {context}"),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
@@ -123,4 +124,5 @@ def create_premise_extractor() -> Any:
         name="premise_extractor",
         prompt_template=PREMISE_EXTRACTION_PROMPT,
         structured_output_model=ReasoningChain,  # Returns initial chain with premises
-        temperature=0.3)
+        temperature=0.3,
+    )

@@ -13,7 +13,8 @@ Your role is to:
 - Identify cross-cutting concerns
 - Generate actionable recommendations
 - Prioritize improvements
-- Assess overall feasibility"""),
+- Assess overall feasibility""",
+        ),
         (
             "human",
             """Integrate these analyses:
@@ -61,7 +62,8 @@ Provide:
    - Milestone markers
    - Decision points
 
-Return comprehensive analysis summary."""),
+Return comprehensive analysis summary.""",
+        ),
     ]
 )
 
@@ -69,7 +71,8 @@ FEASIBILITY_ASSESSMENT_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are assessing overall task feasibility based on comprehensive analysis."""),
+            """You are assessing overall task feasibility based on comprehensive analysis.""",
+        ),
         (
             "human",
             """Assess feasibility for:
@@ -87,7 +90,8 @@ Evaluate:
 4. Risk acceptability
 5. Success probability
 
-Return feasibility assessment with go/no-go recommendation."""),
+Return feasibility assessment with go/no-go recommendation.""",
+        ),
     ]
 )
 
@@ -95,7 +99,8 @@ OPTIMIZATION_RECOMMENDATIONS_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are generating optimization recommendations based on comprehensive task analysis."""),
+            """You are generating optimization recommendations based on comprehensive task analysis.""",
+        ),
         (
             "human",
             """Generate optimizations for:
@@ -112,6 +117,7 @@ Provide:
 4. Complexity reduction strategies
 5. Risk mitigation approaches
 
-Prioritize by impact and feasibility."""),
+Prioritize by impact and feasibility.""",
+        ),
     ]
 )

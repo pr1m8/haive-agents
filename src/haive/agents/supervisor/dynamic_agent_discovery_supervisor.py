@@ -56,6 +56,7 @@ See Also:
     - :class:`haive.agents.supervisor.dynamic_activation_supervisor.DynamicActivationSupervisor`
     - :class:`haive.agents.react.dynamic_react_agent.DynamicReactAgent`
 """
+
 import logging
 from enum import Enum
 from typing import Any
@@ -69,7 +70,9 @@ from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 from haive.agents.supervisor.agent import SupervisorState
 from haive.agents.supervisor.dynamic_state import SupervisorDecision
+
 logger = logging.getLogger(__name__)
+
 
 class AgentDiscoveryMode(str, Enum):
     """Enumeration of available agent discovery modes.
@@ -80,19 +83,25 @@ class AgentDiscoveryMode(str, Enum):
         MCP_DISCOVERY: Use MCP framework for external agent discovery
         HYBRID: Combine all discovery methods
     """
-    COMPONENT_DISCOVERY = 'component_discovery'
-    RAG_DISCOVERY = 'rag_discovery'
-    MCP_DISCOVERY = 'mcp_discovery'
-    HYBRID = 'hybrid'
+
+    COMPONENT_DISCOVERY = "component_discovery"
+    RAG_DISCOVERY = "rag_discovery"
+    MCP_DISCOVERY = "mcp_discovery"
+    HYBRID = "hybrid"
+
 
 class AgentCapability(BaseModel):
     """Description of an agent's capabilities."""
-    name: str = Field(..., description='Agent name')
-    agent_type: str = Field(..., description='Type of agent (SimpleAgent, ReactAgent, etc.)')
-    description: str = Field(..., description='What this agent can do')
-    specialties: list[str] = Field(default_factory=list, description='Areas of expertise')
-    tools: list[str] = Field(default_factory=list, description='Tools this agent has')
-    requirements: dict[str, Any] = Field(default_factory=dict, description='Requirements for creation')
+
+    name: str = Field(..., description="Agent name")
+    agent_type: str = Field(..., description="Type of agent (SimpleAgent, ReactAgent, etc.)")
+    description: str = Field(..., description="What this agent can do")
+    specialties: list[str] = Field(default_factory=list, description="Areas of expertise")
+    tools: list[str] = Field(default_factory=list, description="Tools this agent has")
+    requirements: dict[str, Any] = Field(
+        default_factory=dict, description="Requirements for creation"
+    )
+
 
 class DynamicAgentDiscoverySupervisor(ReactAgent):
     """Supervisor with dynamic agent discovery and registration capabilities.
@@ -139,22 +148,29 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
         - Discovered agents are cached to avoid redundant discovery
         - The supervisor includes a built-in 'discover_and_add_agents' tool
     """
-    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra='forbid')
-    discovery_mode: AgentDiscoveryMode = Field(default=AgentDiscoveryMode.HYBRID, description='Mode for agent discovery')
+
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
+    discovery_mode: AgentDiscoveryMode = Field(
+        default=AgentDiscoveryMode.HYBRID, description="Mode for agent discovery"
+    )
     discovery_agent: ComponentDiscoveryAgent | None = Field(default=None, exclude=True)
     rag_discovery_agent: Any | None = Field(default=None, exclude=True)
     mcp_framework: dict[str, Any] | None = Field(default=None, exclude=True)
-    agents: dict[str, Agent] = Field(default_factory=dict, description='Registry of available agents')
-    discovered_agents: set[str] = Field(default_factory=set, description='Set of discovered agent names')
+    agents: dict[str, Agent] = Field(
+        default_factory=dict, description="Registry of available agents"
+    )
+    discovered_agents: set[str] = Field(
+        default_factory=set, description="Set of discovered agent names"
+    )
     agent_capabilities: dict[str, AgentCapability] = Field(default_factory=dict, exclude=True)
     max_discovery_attempts: int = Field(default=3, ge=1, le=10)
     agent_factory: dict[str, type[Agent]] = Field(default_factory=dict, exclude=True)
     agents_to_register: list[dict[str, Any]] | None = Field(default=None, exclude=True)
 
-    @model_validator(mode='after')
-    def setup_supervisor(self) -> 'DynamicAgentDiscoverySupervisor':
+    @model_validator(mode="after")
+    def setup_supervisor(self) -> "DynamicAgentDiscoverySupervisor":
         """Set up supervisor after initialization."""
-        self.agent_factory = {'SimpleAgent': SimpleAgent, 'ReactAgent': ReactAgent}
+        self.agent_factory = {"SimpleAgent": SimpleAgent, "ReactAgent": ReactAgent}
         if self.agents_to_register:
             for agent_data in self.agents_to_register:
                 self._register_discovered_agent(agent_data)
@@ -175,26 +191,32 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
         Returns:
             True if agent was successfully registered
         """
-        agent_name = agent_data.get('name', '')
-        agent_type = agent_data.get('agent_type', 'SimpleAgent')
+        agent_name = agent_data.get("name", "")
+        agent_type = agent_data.get("agent_type", "SimpleAgent")
         if agent_name and agent_name not in self.agents:
             agent_class = self.agent_factory.get(agent_type)
             if not agent_class:
-                logger.warning(f'Unknown agent type: {agent_type}')
+                logger.warning(f"Unknown agent type: {agent_type}")
                 return False
             try:
-                config = agent_data.get('config', {})
-                if 'engine' not in config:
-                    config['engine'] = self.engine
+                config = agent_data.get("config", {})
+                if "engine" not in config:
+                    config["engine"] = self.engine
                 agent = agent_class(name=agent_name, **config)
                 self.agents[agent_name] = agent
                 self.discovered_agents.add(agent_name)
-                capability = AgentCapability(name=agent_name, agent_type=agent_type, description=agent_data.get('description', ''), specialties=agent_data.get('specialties', []), tools=agent_data.get('tools', []))
+                capability = AgentCapability(
+                    name=agent_name,
+                    agent_type=agent_type,
+                    description=agent_data.get("description", ""),
+                    specialties=agent_data.get("specialties", []),
+                    tools=agent_data.get("tools", []),
+                )
                 self.agent_capabilities[agent_name] = capability
-                logger.info(f'Successfully registered agent: {agent_name} ({agent_type})')
+                logger.info(f"Successfully registered agent: {agent_name} ({agent_type})")
                 return True
             except Exception as e:
-                logger.exception(f'Failed to create agent {agent_name}: {e}')
+                logger.exception(f"Failed to create agent {agent_name}: {e}")
                 return False
         return False
 
@@ -215,34 +237,48 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
                 Description of discovered and added agents
             """
             discovered = []
-            if self.discovery_mode in [AgentDiscoveryMode.COMPONENT_DISCOVERY, AgentDiscoveryMode.HYBRID] and self.discovery_agent:
+            if (
+                self.discovery_mode
+                in [AgentDiscoveryMode.COMPONENT_DISCOVERY, AgentDiscoveryMode.HYBRID]
+                and self.discovery_agent
+            ):
                 try:
-                    components = self.discovery_agent.discover_components(query=f'agents for: {task_description}', component_type='agent')
+                    components = self.discovery_agent.discover_components(
+                        query=f"agents for: {task_description}", component_type="agent"
+                    )
                     for comp in components:
                         if self._register_discovered_agent(comp):
-                            discovered.append(f'Component: {comp['name']}')
+                            discovered.append(f"Component: {comp['name']}")
                 except Exception as e:
-                    discovered.append(f'Component discovery error: {e!s}')
+                    discovered.append(f"Component discovery error: {e!s}")
             if self.discovery_mode in [AgentDiscoveryMode.RAG_DISCOVERY, AgentDiscoveryMode.HYBRID]:
                 if self.rag_discovery_agent:
                     try:
-                        rag_response = self.rag_discovery_agent.run(f'Find agent specifications or experts that can help with: {task_description}')
-                        if 'agent:' in rag_response.lower():
-                            discovered.append('RAG: Found agent specifications in documents')
+                        rag_response = self.rag_discovery_agent.run(
+                            f"Find agent specifications or experts that can help with: {task_description}"
+                        )
+                        if "agent:" in rag_response.lower():
+                            discovered.append("RAG: Found agent specifications in documents")
                     except Exception as e:
-                        discovered.append(f'RAG discovery error: {e!s}')
-            if self.discovery_mode in [AgentDiscoveryMode.MCP_DISCOVERY, AgentDiscoveryMode.HYBRID] and self.mcp_framework:
+                        discovered.append(f"RAG discovery error: {e!s}")
+            if (
+                self.discovery_mode in [AgentDiscoveryMode.MCP_DISCOVERY, AgentDiscoveryMode.HYBRID]
+                and self.mcp_framework
+            ):
                 try:
-                    mcp_agents = self.mcp_framework.get('discover_agents', lambda x: [])(task_description)
+                    mcp_agents = self.mcp_framework.get("discover_agents", lambda x: [])(
+                        task_description
+                    )
                     for agent_def in mcp_agents:
                         if self._register_discovered_agent(agent_def):
-                            discovered.append(f'MCP: {agent_def['name']}')
+                            discovered.append(f"MCP: {agent_def['name']}")
                 except Exception as e:
-                    discovered.append(f'MCP discovery error: {e!s}')
+                    discovered.append(f"MCP discovery error: {e!s}")
             if discovered:
-                return f'Discovered and added agents: {', '.join(discovered)}'
-            return 'No new agents discovered for this task'
-        if hasattr(self, 'engine') and hasattr(self.engine, 'tools'):
+                return f"Discovered and added agents: {', '.join(discovered)}"
+            return "No new agents discovered for this task"
+
+        if hasattr(self, "engine") and hasattr(self.engine, "tools"):
             self.engine.tools.append(discover_and_add_agents)
 
     async def _make_decision(self, state: SupervisorState) -> SupervisorDecision:
@@ -262,11 +298,30 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
             last_message = messages[-1]
             if isinstance(last_message, HumanMessage):
                 task_content = str(last_message.content).lower()
-                specialist_keywords = ['expert', 'specialist', 'analyze', 'research', 'financial', 'medical', 'legal', 'technical', 'advanced', 'complex', 'professional']
+                specialist_keywords = [
+                    "expert",
+                    "specialist",
+                    "analyze",
+                    "research",
+                    "financial",
+                    "medical",
+                    "legal",
+                    "technical",
+                    "advanced",
+                    "complex",
+                    "professional",
+                ]
                 if any((keyword in task_content for keyword in specialist_keywords)):
-                    has_specialist = any((cap.specialties for cap in self.agent_capabilities.values()))
+                    has_specialist = any(
+                        (cap.specialties for cap in self.agent_capabilities.values())
+                    )
                     if not has_specialist and len(self.discovered_agents) < 10:
-                        return SupervisorDecision(next_agent=self.name, reasoning='Task appears to require specialized agents. Discovering suitable agents first.', confidence=0.9, suggested_prompt=f'discover_and_add_agents for: {last_message.content}')
+                        return SupervisorDecision(
+                            next_agent=self.name,
+                            reasoning="Task appears to require specialized agents. Discovering suitable agents first.",
+                            confidence=0.9,
+                            suggested_prompt=f"discover_and_add_agents for: {last_message.content}",
+                        )
         decision_prompt = self._create_decision_prompt(state)
         response = await self.engine.ainvoke(decision_prompt)
         return self._parse_decision_response(response.content, state)
@@ -278,41 +333,60 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
         for name, agent in self.agents.items():
             capability = self.agent_capabilities.get(name)
             if capability:
-                specialties = f'Specialties: {', '.join(capability.specialties)}' if capability.specialties else ''
-                tools = f'Tools: {', '.join(capability.tools)}' if capability.tools else ''
-                info = f'- {name} ({capability.agent_type}): {capability.description}. {specialties} {tools}'
+                specialties = (
+                    f"Specialties: {', '.join(capability.specialties)}"
+                    if capability.specialties
+                    else ""
+                )
+                tools = f"Tools: {', '.join(capability.tools)}" if capability.tools else ""
+                info = f"- {name} ({capability.agent_type}): {capability.description}. {specialties} {tools}"
             else:
-                info = f'- {name}: {agent.__class__.__name__}'
+                info = f"- {name}: {agent.__class__.__name__}"
             agent_info.append(info)
-        prompt = f'As a supervisor, analyze the conversation and decide which agent should handle the next step.\n\nConversation history:\n{context}\n\nAvailable agents ({len(self.agents)}):\n{chr(10).join(agent_info)}\n\nDiscovered agents: {', '.join(self.discovered_agents) or 'none yet'}\n\nConsider:\n1. Which agent is best suited for the current task?\n2. Do we have the right specialist agents or should we discover more?\n3. What expertise does the task require?\n\nRespond with:\n- AGENT: [agent_name] - The agent to route to\n- REASONING: [explanation] - Why this agent was chosen\n- CONFIDENCE: [0.0-1.0] - How confident you are\n- PROMPT: [optional] - Suggested prompt for the agent'
+        prompt = f"As a supervisor, analyze the conversation and decide which agent should handle the next step.\n\nConversation history:\n{context}\n\nAvailable agents ({len(self.agents)}):\n{chr(10).join(agent_info)}\n\nDiscovered agents: {', '.join(self.discovered_agents) or 'none yet'}\n\nConsider:\n1. Which agent is best suited for the current task?\n2. Do we have the right specialist agents or should we discover more?\n3. What expertise does the task require?\n\nRespond with:\n- AGENT: [agent_name] - The agent to route to\n- REASONING: [explanation] - Why this agent was chosen\n- CONFIDENCE: [0.0-1.0] - How confident you are\n- PROMPT: [optional] - Suggested prompt for the agent"
         return prompt
 
     def _parse_decision_response(self, response: str, state: SupervisorState) -> SupervisorDecision:
         """Parse LLM response into routing decision."""
-        lines = response.strip().split('\n')
+        lines = response.strip().split("\n")
         agent = None
-        reasoning = ''
+        reasoning = ""
         confidence = 0.8
         prompt = None
         for line in lines:
             line = line.strip()
-            if line.startswith('AGENT:'):
-                agent = line.replace('AGENT:', '').strip()
-            elif line.startswith('REASONING:'):
-                reasoning = line.replace('REASONING:', '').strip()
-            elif line.startswith('CONFIDENCE:'):
+            if line.startswith("AGENT:"):
+                agent = line.replace("AGENT:", "").strip()
+            elif line.startswith("REASONING:"):
+                reasoning = line.replace("REASONING:", "").strip()
+            elif line.startswith("CONFIDENCE:"):
                 try:
-                    confidence = float(line.replace('CONFIDENCE:', '').strip())
+                    confidence = float(line.replace("CONFIDENCE:", "").strip())
                 except BaseException:
                     confidence = 0.8
-            elif line.startswith('PROMPT:'):
-                prompt = line.replace('PROMPT:', '').strip()
+            elif line.startswith("PROMPT:"):
+                prompt = line.replace("PROMPT:", "").strip()
         if not agent or agent not in self.agents:
             agent = next(iter(self.agents.keys())) if self.agents else self.name
-        return SupervisorDecision(next_agent=agent, reasoning=reasoning or 'Routing based on task analysis', confidence=confidence, suggested_prompt=prompt)
+        return SupervisorDecision(
+            next_agent=agent,
+            reasoning=reasoning or "Routing based on task analysis",
+            confidence=confidence,
+            suggested_prompt=prompt,
+        )
 
     @classmethod
-    def create_with_discovery(cls, name: str, agents: dict[str, Agent], engine: AugLLMConfig, discovery_mode: AgentDiscoveryMode=AgentDiscoveryMode.HYBRID, component_discovery_config: dict[str, Any] | None=None, rag_documents_path: str | None=None, mcp_config: dict[str, Any] | None=None, **kwargs) -> 'DynamicAgentDiscoverySupervisor':
+    def create_with_discovery(
+        cls,
+        name: str,
+        agents: dict[str, Agent],
+        engine: AugLLMConfig,
+        discovery_mode: AgentDiscoveryMode = AgentDiscoveryMode.HYBRID,
+        component_discovery_config: dict[str, Any] | None = None,
+        rag_documents_path: str | None = None,
+        mcp_config: dict[str, Any] | None = None,
+        **kwargs,
+    ) -> "DynamicAgentDiscoverySupervisor":
         """Create supervisor with configured discovery sources.
 
         Args:
@@ -342,16 +416,38 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
                 )
         """
         discovery_agent = None
-        if discovery_mode in [AgentDiscoveryMode.COMPONENT_DISCOVERY, AgentDiscoveryMode.HYBRID] and component_discovery_config:
+        if (
+            discovery_mode in [AgentDiscoveryMode.COMPONENT_DISCOVERY, AgentDiscoveryMode.HYBRID]
+            and component_discovery_config
+        ):
             discovery_agent = ComponentDiscoveryAgent(**component_discovery_config)
         rag_discovery_agent = None
-        if discovery_mode in [AgentDiscoveryMode.RAG_DISCOVERY, AgentDiscoveryMode.HYBRID] and rag_documents_path:
-            logger.warning('RAG discovery disabled due to import issues')
+        if (
+            discovery_mode in [AgentDiscoveryMode.RAG_DISCOVERY, AgentDiscoveryMode.HYBRID]
+            and rag_documents_path
+        ):
+            logger.warning("RAG discovery disabled due to import issues")
             rag_discovery_agent = None
-        return cls(name=name, agents=agents, engine=engine, discovery_mode=discovery_mode, discovery_agent=discovery_agent, rag_discovery_agent=rag_discovery_agent, mcp_framework=mcp_config, **kwargs)
+        return cls(
+            name=name,
+            agents=agents,
+            engine=engine,
+            discovery_mode=discovery_mode,
+            discovery_agent=discovery_agent,
+            rag_discovery_agent=rag_discovery_agent,
+            mcp_framework=mcp_config,
+            **kwargs,
+        )
 
     @classmethod
-    def create_with_agent_specs(cls, name: str, initial_agent_specs: list[dict[str, Any]], engine: AugLLMConfig, discovery_mode: AgentDiscoveryMode=AgentDiscoveryMode.HYBRID, **kwargs) -> 'DynamicAgentDiscoverySupervisor':
+    def create_with_agent_specs(
+        cls,
+        name: str,
+        initial_agent_specs: list[dict[str, Any]],
+        engine: AugLLMConfig,
+        discovery_mode: AgentDiscoveryMode = AgentDiscoveryMode.HYBRID,
+        **kwargs,
+    ) -> "DynamicAgentDiscoverySupervisor":
         """Create supervisor with initial agent specifications.
 
         Args:
@@ -391,18 +487,25 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
         """
         agents = {}
         for spec in initial_agent_specs:
-            agent_name = spec.get('name')
-            agent_type = spec.get('agent_type', 'SimpleAgent')
-            if agent_type == 'SimpleAgent':
+            agent_name = spec.get("name")
+            agent_type = spec.get("agent_type", "SimpleAgent")
+            if agent_type == "SimpleAgent":
                 agent_class = SimpleAgent
-            elif agent_type == 'ReactAgent':
+            elif agent_type == "ReactAgent":
                 agent_class = ReactAgent
             else:
-                logger.warning(f'Unknown agent type: {agent_type}, using SimpleAgent')
+                logger.warning(f"Unknown agent type: {agent_type}, using SimpleAgent")
                 agent_class = SimpleAgent
-            config_dict = spec.get('config', {})
-            if 'engine' not in config_dict:
-                config_dict['engine'] = engine
+            config_dict = spec.get("config", {})
+            if "engine" not in config_dict:
+                config_dict["engine"] = engine
             agent = agent_class(name=agent_name, **config_dict)
             agents[agent_name] = agent
-        return cls(name=name, agents=agents, engine=engine, discovery_mode=discovery_mode, agents_to_register=initial_agent_specs, **kwargs)
+        return cls(
+            name=name,
+            agents=agents,
+            engine=engine,
+            discovery_mode=discovery_mode,
+            agents_to_register=initial_agent_specs,
+            **kwargs,
+        )

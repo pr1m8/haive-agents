@@ -25,9 +25,7 @@ class RoutingAgentSchema(SimpleAgentSchema):
     """Schema for routing agents."""
 
     current_node: str = Field(default="start", description="Current node in workflow")
-    route_history: list[str] = Field(
-        default_factory=list, description="History of routing"
-    )
+    route_history: list[str] = Field(default_factory=list, description="History of routing")
 
 
 # Configuration for routing agent
@@ -62,7 +60,8 @@ class RoutingAgent(SimpleAgent):
         # Use DynamicGraph to build the workflow
         gb = DynamicGraph(
             components=[self.config.engine, *list(self.config.handlers.values())],
-            state_schema=self.state_schema)
+            state_schema=self.state_schema,
+        )
 
         # Add the main node (from SimpleAgent)
         gb.add_node(name=self.config.node_name, config=self.config.engine)
@@ -73,9 +72,8 @@ class RoutingAgent(SimpleAgent):
         # Add handlers
         for name, handler in self.config.handlers.items():
             gb.add_node(
-                name=name,
-                config=handler,
-                command_goto=self.config.default_routes.get(name, END))
+                name=name, config=handler, command_goto=self.config.default_routes.get(name, END)
+            )
 
         # Add routing conditions
         for source, conditions in self.config.conditions.items():
@@ -98,9 +96,7 @@ class RoutingAgent(SimpleAgent):
                         # more robust mapping
                         condition_name = condition.__name__
                         if condition_name.startswith("route_to_"):
-                            dest = condition_name[
-                                9:
-                            ]  # Extract destination from "route_to_X"
+                            dest = condition_name[9:]  # Extract destination from "route_to_X"
                             return dest
 
                 # No conditions matched, use default
@@ -132,7 +128,8 @@ def create_routing_agent(
     conditions: dict[str, list[Callable]],
     default_routes: dict[str, str],
     system_prompt: str = "You are a helpful assistant.",
-    name: str | None = None) -> RoutingAgent:
+    name: str | None = None,
+) -> RoutingAgent:
     """Create a routing agent with the specified components.
 
     Args:
@@ -153,7 +150,8 @@ def create_routing_agent(
         conditions=conditions,
         default_routes=default_routes,
         system_prompt=system_prompt,
-        name=name or "routing_agent")
+        name=name or "routing_agent",
+    )
 
     # Build and return agent
     return config.build_agent()
@@ -161,11 +159,8 @@ def create_routing_agent(
 
 # Example usage
 if __name__ == "__main__":
-
     # Main engine
-    main_engine = AugLLMConfig(
-        name="main_processor", llm_config=AzureLLMConfig(model="gpt-4o")
-    )
+    main_engine = AugLLMConfig(name="main_processor", llm_config=AzureLLMConfig(model="gpt-4o"))
 
     # Handler nodes
     handlers = {
@@ -177,7 +172,8 @@ if __name__ == "__main__":
                     ("system", "You answer questions concisely with facts only."),
                     ("human", "{input}"),
                 ]
-            )),
+            ),
+        ),
         "task_handler": AugLLMConfig(
             name="task_handler",
             llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7}),
@@ -186,7 +182,8 @@ if __name__ == "__main__":
                     ("system", "You help complete tasks step by step."),
                     ("human", "{input}"),
                 ]
-            )),
+            ),
+        ),
     }
 
     # Routing conditions
@@ -206,9 +203,7 @@ if __name__ == "__main__":
         return any(phrase in message.lower() for phrase in task_phrases)
 
     # Add routing condition for main node
-    conditions = {
-        "simple_agent_node": [route_to_question_handler, route_to_task_handler]
-    }
+    conditions = {"simple_agent_node": [route_to_question_handler, route_to_task_handler]}
 
     # Default routes
     default_routes = {
@@ -222,7 +217,8 @@ if __name__ == "__main__":
         main_engine=main_engine,
         handlers=handlers,
         conditions=conditions,
-        default_routes=default_routes)
+        default_routes=default_routes,
+    )
 
     # Run with a question
     result = agent.run("What is the capital of France?")

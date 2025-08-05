@@ -12,20 +12,20 @@ Current time: {time}
 
 1. {first_instruction}
 2. Reflect and critique your answer. Be severe to maximize improvement.
-3. Recommend search queries to research information and improve your answer."""),
+3. Recommend search queries to research information and improve your answer.""",
+        ),
         MessagesPlaceholder(variable_name="messages"),
         (
             "user",
             "\n\n<system>Reflect on the user's original question and the"
-            " actions taken thus far. Respond using the {function_name} function.</reminder>"),
+            " actions taken thus far. Respond using the {function_name} function.</reminder>",
+        ),
     ]
-).partial(
-    role="expert researcher",
-    time=lambda: datetime.datetime.now().isoformat())
+).partial(role="expert researcher", time=lambda: datetime.datetime.now().isoformat())
 
 initial_answer_chain = actor_prompt_template.partial(
-    first_instruction="Provide a detailed ~250 word answer.",
-    function_name=AnswerQuestion.__name__)  # | llm.bind_tools(tools=[AnswerQuestion])
+    first_instruction="Provide a detailed ~250 word answer.", function_name=AnswerQuestion.__name__
+)  # | llm.bind_tools(tools=[AnswerQuestion])
 
 
 revise_instructions = """Revise your previous answer using the new information.
@@ -39,5 +39,5 @@ revise_instructions = """Revise your previous answer using the new information.
 
 
 revision_chain = actor_prompt_template.partial(
-    first_instruction=revise_instructions,
-    function_name=ReviseAnswer.__name__)  # | llm.bind_tools(tools=[ReviseAnswer])
+    first_instruction=revise_instructions, function_name=ReviseAnswer.__name__
+)  # | llm.bind_tools(tools=[ReviseAnswer])

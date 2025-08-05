@@ -12,7 +12,8 @@ from haive.agents.document_loader import (
     DirectoryLoaderAgent,
     DocumentLoaderAgent,
     FileLoaderAgent,
-    WebLoaderAgent)
+    WebLoaderAgent,
+)
 
 
 def example_basic_document_loader() -> Any:
@@ -43,7 +44,8 @@ def example_file_loader() -> Any:
         name="PDF File Loader",
         file_path="./examples/document.pdf",
         loader_name="pdf_loader",
-        include_metadata=True)
+        include_metadata=True,
+    )
 
     # Compile the agent
     compiled_agent = agent.compile()
@@ -68,7 +70,8 @@ def example_web_loader() -> Any:
         name="Dynamic Web Loader",
         url="https://en.wikipedia.org/wiki/Artificial_intelligence",
         dynamic_loading=True,
-        max_documents=5)
+        max_documents=5,
+    )
 
     # Compile the agent
     compiled_agent = agent.compile()
@@ -95,7 +98,8 @@ def example_directory_loader() -> Any:
         directory_path="./docs",
         recursive=True,
         include_extensions=[".md", ".txt"],
-        exclude_extensions=[".tmp"])
+        exclude_extensions=[".tmp"],
+    )
 
     # Compile the agent
     compiled_agent = agent.compile()

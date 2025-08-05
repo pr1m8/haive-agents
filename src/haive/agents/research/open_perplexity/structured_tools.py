@@ -10,7 +10,8 @@ from langchain_community.document_loaders import (
     GitHubIssuesLoader,
     HNLoader,
     RecursiveUrlLoader,
-    WebBaseLoader)
+    WebBaseLoader,
+)
 from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
 
@@ -104,7 +105,8 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
             extractor=extractor,
             prevent_outside=prevent_outside,
             check_response_status=True,
-            continue_on_failure=True)
+            continue_on_failure=True,
+        )
         self.root_url = url
 
     @staticmethod
@@ -250,12 +252,8 @@ class DocumentLoaderDescriptionInput(BaseModel):
 class DocumentLoaderRecommendationInput(BaseModel):
     """Input for document loader recommendation."""
 
-    research_topic: str = Field(
-        description="Research topic to find appropriate loaders for"
-    )
-    research_question: str | None = Field(
-        None, description="Specific research question"
-    )
+    research_topic: str = Field(description="Research topic to find appropriate loaders for")
+    research_question: str | None = Field(None, description="Specific research question")
     data_types: list[str] | None = Field(
         None, description="Types of data needed (web, academic, news, etc.)"
     )
@@ -272,9 +270,7 @@ class RecursiveWebLoaderInput(BaseModel):
 
     url: str = Field(description="Root URL to crawl")
     max_depth: int = Field(2, description="Maximum crawl depth (1-3 recommended)")
-    prevent_outside: bool = Field(
-        True, description="Only crawl URLs on the same domain"
-    )
+    prevent_outside: bool = Field(True, description="Only crawl URLs on the same domain")
 
 
 class ArxivLoaderInput(BaseModel):
@@ -291,9 +287,7 @@ class GitHubIssuesLoaderInput(BaseModel):
     """Input for GitHub issues loader."""
 
     repo: str = Field(description="GitHub repository in format 'owner/repo'")
-    access_token: str | None = Field(
-        None, description="GitHub access token for private repos"
-    )
+    access_token: str | None = Field(None, description="GitHub access token for private repos")
     state: str = Field("open", description="Issue state: 'open', 'closed', or 'all'")
 
 
@@ -323,9 +317,8 @@ def describe_document_loader(loader_type: str) -> dict[str, Any]:
 
 
 def recommend_document_loaders(
-    research_topic: str,
-    research_question: str | None = None,
-    data_types: list[str] | None = None) -> list[dict[str, Any]]:
+    research_topic: str, research_question: str | None = None, data_types: list[str] | None = None
+) -> list[dict[str, Any]]:
     """Recommend document loaders based on research topic and question."""
     # Get all available loaders
     loaders = get_available_loaders()
@@ -411,9 +404,7 @@ def load_recursive_web(
             "documents": results,
             "root_url": url,
             "document_count": len(results),
-            "max_depth_reached": (
-                max(doc.metadata.get("depth", 0) for doc in docs) if docs else 0
-            ),
+            "max_depth_reached": (max(doc.metadata.get("depth", 0) for doc in docs) if docs else 0),
         }
     except Exception as e:
         return {"error": str(e)}
@@ -425,9 +416,8 @@ def load_arxiv_papers(
     """Load papers from ArXiv."""
     try:
         loader = EnhancedArxivLoader(
-            query=query,
-            load_all_available_meta=load_all_available_meta,
-            max_results=max_results)
+            query=query, load_all_available_meta=load_all_available_meta, max_results=max_results
+        )
         docs = loader.load()
 
         # Convert to serializable format
@@ -450,9 +440,7 @@ def load_arxiv_papers(
                 else doc.page_content
             )
 
-            results.append(
-                {"paper_info": paper_info, "content_preview": content_preview}
-            )
+            results.append({"paper_info": paper_info, "content_preview": content_preview})
 
         return {"papers": results, "query": query, "paper_count": len(results)}
     except Exception as e:
@@ -551,43 +539,50 @@ document_loader_description_tool = StructuredTool.from_function(
     func=describe_document_loader,
     name="document_loader_description",
     description="Get detailed information about a specific document loader",
-    args_schema=DocumentLoaderDescriptionInput)
+    args_schema=DocumentLoaderDescriptionInput,
+)
 
 recommend_document_loaders_tool = StructuredTool.from_function(
     func=recommend_document_loaders,
     name="recommend_document_loaders",
     description="Recommend document loaders based on research topic and question",
-    args_schema=DocumentLoaderRecommendationInput)
+    args_schema=DocumentLoaderRecommendationInput,
+)
 
 web_loader_tool = StructuredTool.from_function(
     func=load_web_page,
     name="web_loader",
     description="Load and extract content from a web page",
-    args_schema=WebLoaderInput)
+    args_schema=WebLoaderInput,
+)
 
 recursive_web_loader_tool = StructuredTool.from_function(
     func=load_recursive_web,
     name="recursive_web_loader",
     description="Recursively crawl a website to extract content from multiple pages",
-    args_schema=RecursiveWebLoaderInput)
+    args_schema=RecursiveWebLoaderInput,
+)
 
 arxiv_loader_tool = StructuredTool.from_function(
     func=load_arxiv_papers,
     name="arxiv_loader",
     description="Search and load academic papers from ArXiv repository",
-    args_schema=ArxivLoaderInput)
+    args_schema=ArxivLoaderInput,
+)
 
 github_issues_loader_tool = StructuredTool.from_function(
     func=load_github_issues,
     name="github_issues_loader",
     description="Load issues from a GitHub repository",
-    args_schema=GitHubIssuesLoaderInput)
+    args_schema=GitHubIssuesLoaderInput,
+)
 
 hackernews_loader_tool = StructuredTool.from_function(
     func=load_hackernews_thread,
     name="hackernews_loader",
     description="Load a discussion thread from Hacker News",
-    args_schema=HackerNewsLoaderInput)
+    args_schema=HackerNewsLoaderInput,
+)
 
 # Tavily search tools (if available)
 try:
@@ -596,9 +591,7 @@ try:
         """Input for Tavily search."""
 
         query: str = Field(description="Search query")
-        max_results: int | None = Field(
-            5, description="Maximum number of results to return"
-        )
+        max_results: int | None = Field(5, description="Maximum number of results to return")
         search_depth: str | None = Field(
             "basic", description="Search depth (basic or comprehensive)"
         )
@@ -620,7 +613,8 @@ try:
         func=tavily_search,
         name="tavily_search",
         description="Search the web for information on research topics",
-        args_schema=TavilySearchInput)
+        args_schema=TavilySearchInput,
+    )
 
     SEARCH_TOOLS = [tavily_search_tool]
 except (ImportError, NameError):
@@ -637,23 +631,24 @@ DOCUMENT_LOADER_TOOLS = [
     hackernews_loader_tool,
 ]
 
+
 # Missing classes required by haive-mcp module
 class GitHubLoader:
     """GitHub repository loader compatible with MCP documentation loader."""
-    
+
     async def load(self, repo: str, content_type: str = "readme") -> list:
         """Load content from GitHub repository.
-        
+
         Args:
             repo: Repository in format 'owner/repo'
             content_type: Type of content to load (default: 'readme')
-            
+
         Returns:
             List of Document objects
         """
         try:
             from langchain_core.documents import Document
-            
+
             if content_type == "readme":
                 # For now, create a placeholder document
                 # In a full implementation, this would fetch actual README content
@@ -662,14 +657,15 @@ class GitHubLoader:
                     metadata={
                         "source": f"https://github.com/{repo}",
                         "type": "readme",
-                        "repository": repo
-                    }
+                        "repository": repo,
+                    },
                 )
                 return [doc]
             else:
                 return []
         except Exception as e:
             import logging
+
             logger = logging.getLogger(__name__)
             logger.error(f"Failed to load from GitHub repo {repo}: {e}")
             return []
@@ -677,25 +673,26 @@ class GitHubLoader:
 
 class WebScraper:
     """Web scraper compatible with MCP documentation loader."""
-    
+
     async def load(self, url: str) -> list:
         """Scrape content from a web URL.
-        
+
         Args:
             url: URL to scrape
-            
+
         Returns:
             List of Document objects
         """
         try:
             from langchain_core.documents import Document
-            
+
             # Use the existing EnhancedWebBaseLoader for actual scraping
             loader = EnhancedWebBaseLoader(url)
             docs = loader.load()
             return docs
         except Exception as e:
             import logging
+
             logger = logging.getLogger(__name__)
             logger.error(f"Failed to scrape URL {url}: {e}")
             return []

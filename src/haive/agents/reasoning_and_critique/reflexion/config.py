@@ -27,5 +27,4 @@ class ReflexionConfig(AgentConfig):
 
     @classmethod
     def create_agent(cls) -> Any:
-
         return ReflexionAgent(config=cls())

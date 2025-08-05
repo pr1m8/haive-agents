@@ -31,4 +31,5 @@ Focus on:
 - Coverage of different aspects of the problem
 - Practical applicability to the task
 
-Your selection should form a comprehensive toolkit for addressing all aspects of the task.""")
+Your selection should form a comprehensive toolkit for addressing all aspects of the task.""",
+)

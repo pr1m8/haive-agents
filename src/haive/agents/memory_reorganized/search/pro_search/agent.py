@@ -14,7 +14,8 @@ from haive.agents.memory.search.base import BaseSearchAgent, SearchResponse
 from haive.agents.memory.search.pro_search.models import (
     ContextualInsight,
     ProSearchResponse,
-    SearchRefinement)
+    SearchRefinement,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,8 @@ class ProSearchAgent(BaseSearchAgent):
         name: str = "pro_search_agent",
         engine: Optional[AugLLMConfig] = None,
         search_tools: list[Tool] | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize the Pro Search Agent.
 
         Args:
@@ -75,20 +77,19 @@ class ProSearchAgent(BaseSearchAgent):
             engine = AugLLMConfig(
                 temperature=0.3,  # Balanced creativity and consistency
                 max_tokens=800,  # Longer responses for depth
-                system_message=self.get_system_prompt())
+                system_message=self.get_system_prompt(),
+            )
 
         super().__init__(name=name, engine=engine, search_tools=search_tools, **kwargs)
 
         logger.info(f"Initialized ProSearchAgent: {name}")
 
     def get_response_model(self) -> type[SearchResponse]:
-        """Get the response model for pro search.
-        """
+        """Get the response model for pro search."""
         return ProSearchResponse
 
     def get_system_prompt(self) -> str:
-        """Get the system prompt for pro search operations.
-        """
+        """Get the system prompt for pro search operations."""
         return """You are a Pro Search Assistant designed to provide deep, contextual, and personalized search responses.
 
 Your role is to:
@@ -127,8 +128,7 @@ Pro Search Process:
 Remember: Depth, context, and personalization are key to pro search excellence."""
 
     def get_search_instructions(self) -> str:
-        """Get specific search instructions for pro search.
-        """
+        """Get specific search instructions for pro search."""
         return """PRO SEARCH INSTRUCTIONS:
 
 1. QUERY ANALYSIS & REFINEMENT:
@@ -169,10 +169,7 @@ Remember: Depth, context, and personalization are key to pro search excellence."
 
 Process each query with thoroughness and attention to user context."""
 
-    def refine_query(self,
-                     query: str,
-                     context: dict[str,
-                                   Any]) -> SearchRefinement:
+    def refine_query(self, query: str, context: dict[str, Any]) -> SearchRefinement:
         """Refine the search query based on context and preferences.
 
         Args:
@@ -209,9 +206,8 @@ Process each query with thoroughness and attention to user context."""
                 refinement_reason += ", emphasized academic sources"
 
         return SearchRefinement(
-            original_query=query,
-            refined_query=refined_query,
-            refinement_reason=refinement_reason)
+            original_query=query, refined_query=refined_query, refinement_reason=refinement_reason
+        )
 
     def extract_contextual_insights(
         self, query: str, context: dict[str, Any]
@@ -233,10 +229,11 @@ Process each query with thoroughness and attention to user context."""
             if memory_items:
                 insights.append(
                     ContextualInsight(
-                        insight=f"Found {
-                            len(memory_items)} related items in search history",
+                        insight=f"Found {len(memory_items)} related items in search history",
                         relevance_score=0.8,
-                        source_type="memory"))
+                        source_type="memory",
+                    )
+                )
 
         # Preference insights
         if "preferences" in context:
@@ -244,11 +241,11 @@ Process each query with thoroughness and attention to user context."""
             if prefs:
                 insights.append(
                     ContextualInsight(
-                        insight=f"Applied user preferences: {
-                            ', '.join(
-                                prefs.keys())}",
+                        insight=f"Applied user preferences: {', '.join(prefs.keys())}",
                         relevance_score=0.9,
-                        source_type="preferences"))
+                        source_type="preferences",
+                    )
+                )
 
         # Domain insights
         if "domain" in context:
@@ -257,14 +254,13 @@ Process each query with thoroughness and attention to user context."""
                 ContextualInsight(
                     insight=f"Search contextualized for {domain} domain",
                     relevance_score=0.7,
-                    source_type="context")
+                    source_type="context",
+                )
             )
 
         return insights
 
-    def generate_reasoning_steps(
-        self, query: str, context: dict[str, Any]
-    ) -> list[str]:
+    def generate_reasoning_steps(self, query: str, context: dict[str, Any]) -> list[str]:
         """Generate reasoning steps for the search process.
 
         Args:
@@ -279,20 +275,15 @@ Process each query with thoroughness and attention to user context."""
         steps.append(f"Analyzed query: '{query}' for intent and scope")
 
         if context.get("memory_context"):
-            steps.append(
-                "Retrieved relevant context from user's search history")
+            steps.append("Retrieved relevant context from user's search history")
 
         if context.get("preferences"):
-            steps.append(
-                "Applied user preferences to customize search approach")
+            steps.append("Applied user preferences to customize search approach")
 
         if context.get("domain"):
-            steps.append(
-                f"Contextualized search for {
-                    context['domain']} domain")
+            steps.append(f"Contextualized search for {context['domain']} domain")
 
-        steps.append(
-            "Structured comprehensive response with evidence and examples")
+        steps.append("Structured comprehensive response with evidence and examples")
 
         return steps
 
@@ -313,38 +304,27 @@ Process each query with thoroughness and attention to user context."""
 
         # Query type-based follow-ups
         if "how to" in query.lower():
-            follow_ups.append(
-                "What challenges might you face when implementing this?")
-            follow_ups.append(
-                "Would you like specific tools or resources to help?")
+            follow_ups.append("What challenges might you face when implementing this?")
+            follow_ups.append("Would you like specific tools or resources to help?")
 
         if "best practices" in query.lower():
-            follow_ups.append(
-                "Are there particular constraints or requirements in your situation?"
-            )
+            follow_ups.append("Are there particular constraints or requirements in your situation?")
             follow_ups.append(
                 "Would you like examples of how others have implemented these practices?"
             )
 
         if "comparison" in query.lower() or "vs" in query.lower():
-            follow_ups.append(
-                "Which specific criteria are most important for your decision?"
-            )
-            follow_ups.append(
-                "Would you like detailed pros and cons for each option?")
+            follow_ups.append("Which specific criteria are most important for your decision?")
+            follow_ups.append("Would you like detailed pros and cons for each option?")
 
         # Context-based follow-ups
         if context.get("domain"):
             domain = context["domain"]
-            follow_ups.append(
-                f"Are there {domain}-specific considerations I should address?"
-            )
+            follow_ups.append(f"Are there {domain}-specific considerations I should address?")
 
         # Generic useful follow-ups
-        follow_ups.append(
-            "What would you like to explore next about this topic?")
-        follow_ups.append(
-            "Are there any aspects that need more clarification?")
+        follow_ups.append("What would you like to explore next about this topic?")
+        follow_ups.append("Are there any aspects that need more clarification?")
 
         return follow_ups[:4]  # Limit to 4 follow-ups
 
@@ -356,7 +336,8 @@ Process each query with thoroughness and attention to user context."""
         use_preferences: bool = True,
         generate_follow_ups: bool = True,
         include_reasoning: bool = True,
-        save_to_memory: bool = True) -> ProSearchResponse:
+        save_to_memory: bool = True,
+    ) -> ProSearchResponse:
         """Process a pro search query with advanced features.
 
         Args:
@@ -411,9 +392,7 @@ Process each query with thoroughness and attention to user context."""
         # Generate follow-up questions
         follow_ups = []
         if generate_follow_ups:
-            follow_ups = self.generate_follow_up_questions(
-                query, base_response.response, context
-            )
+            follow_ups = self.generate_follow_up_questions(query, base_response.response, context)
 
         # Calculate processing time
         processing_time = time.time() - start_time
@@ -432,17 +411,16 @@ Process each query with thoroughness and attention to user context."""
             reasoning_steps=reasoning_steps,
             follow_up_questions=follow_ups,
             depth_level=depth_level,
-            metadata=base_response.metadata)
+            metadata=base_response.metadata,
+        )
 
         logger.info(f"Pro search completed in {processing_time:.2f}s")
 
         return response
 
     async def process_search(
-        self,
-        query: str,
-        context: dict[str, Any] | None = None,
-        save_to_memory: bool = True) -> ProSearchResponse:
+        self, query: str, context: dict[str, Any] | None = None, save_to_memory: bool = True
+    ) -> ProSearchResponse:
         """Process a search query with default pro search settings.
 
         Args:
@@ -460,4 +438,5 @@ Process each query with thoroughness and attention to user context."""
             use_preferences=True,
             generate_follow_ups=True,
             include_reasoning=True,
-            save_to_memory=save_to_memory)
+            save_to_memory=save_to_memory,
+        )

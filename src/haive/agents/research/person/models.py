@@ -4,8 +4,7 @@ from pydantic import BaseModel, Field
 class Queries(BaseModel):
     """Structure for search queries."""
 
-    queries: list[str] = Field(
-        description="List of search queries.")
+    queries: list[str] = Field(description="List of search queries.")
 
 
 class ReflectionOutput(BaseModel):

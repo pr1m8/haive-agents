@@ -7,7 +7,8 @@ from tree.models import (
     get_critical_path,
     get_execution_phases,
     get_join_points,
-    get_parallel_groups)
+    get_parallel_groups,
+)
 
 __all__ = [
     "TaskTree",

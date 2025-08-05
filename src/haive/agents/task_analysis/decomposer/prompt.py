@@ -22,7 +22,8 @@ Key principles:
 5. Consider context requirements at each level
 6. Provide accurate time estimates based on task complexity
 
-Output: Return a properly structured TaskNode object with all required fields."""),
+Output: Return a properly structured TaskNode object with all required fields.""",
+        ),
         (
             "human",
             """Analyze and decompose this task into a hierarchical structure:
@@ -45,6 +46,7 @@ Remember:
 - ActionStep: For atomic actions that cannot be decomposed
 - Use meaningful IDs and names
 - Set can_expand=True for nodes that could be further decomposed
-- Consider resource requirements and constraints"""),
+- Consider resource requirements and constraints""",
+        ),
     ]
 )

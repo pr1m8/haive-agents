@@ -22,16 +22,10 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class SelectedModule(BaseModel):
     """A reasoning module selected for a specific problem."""
 
-    module_number: int = Field(
-        description="The module number from the available list (1-20)"
-    )
+    module_number: int = Field(description="The module number from the available list (1-20)")
     module_name: str = Field(description="Name or brief description of the module")
-    relevance_explanation: str = Field(
-        description="Why this module is relevant for the task"
-    )
-    contribution: str = Field(
-        description="How this module will contribute to solving the task"
-    )
+    relevance_explanation: str = Field(description="Why this module is relevant for the task")
+    contribution: str = Field(description="How this module will contribute to solving the task")
 
 
 class ModuleSelectionResult(BaseModel):
@@ -41,9 +35,7 @@ class ModuleSelectionResult(BaseModel):
     selected_modules: list[SelectedModule] = Field(
         description="List of selected reasoning modules (3-5 modules)"
     )
-    selection_rationale: str = Field(
-        description="Overall rationale for the module selection"
-    )
+    selection_rationale: str = Field(description="Overall rationale for the module selection")
 
     @field_validator("selected_modules")
     @classmethod
@@ -71,9 +63,7 @@ class AdaptedModule(BaseModel):
 
     module_number: int = Field(description="Original module number")
     module_name: str = Field(description="Original module name")
-    adapted_description: str = Field(
-        description="Task-specific adaptation of this module"
-    )
+    adapted_description: str = Field(description="Task-specific adaptation of this module")
     application_strategy: str = Field(
         description="Specific strategy for applying this module to the task"
     )
@@ -82,9 +72,7 @@ class AdaptedModule(BaseModel):
 class ModuleAdaptationResult(BaseModel):
     """Result of the module adaptation stage."""
 
-    adapted_modules: list[AdaptedModule] = Field(
-        description="List of adapted reasoning modules"
-    )
+    adapted_modules: list[AdaptedModule] = Field(description="List of adapted reasoning modules")
 
     def format_for_structurer(self) -> str:
         """Format adapted modules for the structurer stage."""
@@ -110,9 +98,7 @@ class ReasoningStep(BaseModel):
 class ReasoningStructure(BaseModel):
     """A structured reasoning plan."""
 
-    steps: list[ReasoningStep] = Field(
-        description="Sequential steps in the reasoning plan"
-    )
+    steps: list[ReasoningStep] = Field(description="Sequential steps in the reasoning plan")
 
     @field_validator("steps")
     @classmethod
@@ -146,9 +132,7 @@ class ExecutionStep(BaseModel):
 class ReasoningExecution(BaseModel):
     """Complete reasoning execution with all steps and final answer."""
 
-    completed_steps: list[ExecutionStep] = Field(
-        description="List of completed reasoning steps"
-    )
+    completed_steps: list[ExecutionStep] = Field(description="List of completed reasoning steps")
     final_answer: str = Field(description="Final answer to the problem")
     confidence_level: str = Field(description="Confidence level: HIGH, MEDIUM, or LOW")
     explanation: str = Field(description="Brief explanation of the final answer")
@@ -186,7 +170,8 @@ def create_selector_agent() -> SimpleAgentV3:
             temperature=0.3,
             max_tokens=1500,
             structured_output_model=ModuleSelectionResult,
-            system_message="You are an expert at analyzing tasks and selecting appropriate reasoning strategies."),
+            system_message="You are an expert at analyzing tasks and selecting appropriate reasoning strategies.",
+        ),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -200,9 +185,11 @@ Available Reasoning Modules:
 Task to Analyze:
 {task_description}
 
-Select the most relevant modules and explain your choices."""),
+Select the most relevant modules and explain your choices.""",
+                ),
             ]
-        ))
+        ),
+    )
 
 
 def create_adapter_agent() -> SimpleAgentV3:
@@ -213,7 +200,8 @@ def create_adapter_agent() -> SimpleAgentV3:
             temperature=0.5,
             max_tokens=1500,
             structured_output_model=ModuleAdaptationResult,
-            system_message="You are an expert at customizing reasoning strategies for specific tasks."),
+            system_message="You are an expert at customizing reasoning strategies for specific tasks.",
+        ),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -223,9 +211,11 @@ def create_adapter_agent() -> SimpleAgentV3:
 
 {selected_modules_formatted}
 
-Create task-specific versions of each module with concrete application strategies."""),
+Create task-specific versions of each module with concrete application strategies.""",
+                ),
             ]
-        ))
+        ),
+    )
 
 
 def create_structurer_agent() -> SimpleAgentV3:
@@ -236,7 +226,8 @@ def create_structurer_agent() -> SimpleAgentV3:
             temperature=0.3,
             max_tokens=2000,
             structured_output_model=ReasoningStructure,
-            system_message="You are an expert at creating step-by-step reasoning plans."),
+            system_message="You are an expert at creating step-by-step reasoning plans.",
+        ),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -249,9 +240,11 @@ def create_structurer_agent() -> SimpleAgentV3:
 Original Task:
 {task_description}
 
-Design a comprehensive reasoning plan with clear steps that will lead to solving this task."""),
+Design a comprehensive reasoning plan with clear steps that will lead to solving this task.""",
+                ),
             ]
-        ))
+        ),
+    )
 
 
 def create_executor_agent() -> SimpleAgentV3:
@@ -262,7 +255,8 @@ def create_executor_agent() -> SimpleAgentV3:
             temperature=0.7,
             max_tokens=3000,
             structured_output_model=ReasoningExecution,
-            system_message="You are an expert problem solver who follows structured reasoning plans."),
+            system_message="You are an expert problem solver who follows structured reasoning plans.",
+        ),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -275,9 +269,11 @@ def create_executor_agent() -> SimpleAgentV3:
 Original Task:
 {task_description}
 
-Work through each step carefully and provide your final answer."""),
+Work through each step carefully and provide your final answer.""",
+                ),
             ]
-        ))
+        ),
+    )
 
 
 def create_self_discover_sequential() -> EnhancedMultiAgentV4:
@@ -302,7 +298,8 @@ def create_self_discover_sequential() -> EnhancedMultiAgentV4:
     return EnhancedMultiAgentV4(
         agents=[selector, adapter, structurer, executor],
         execution_mode="sequential",
-        name="self_discover_sequential_v2")
+        name="self_discover_sequential_v2",
+    )
 
 
 # Example usage

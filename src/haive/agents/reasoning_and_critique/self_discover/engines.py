@@ -8,14 +8,16 @@ from haive.agents.reasoning_and_critique.self_discover.models import (
     ModuleAdaptationResult,
     ModuleSelectionResult,
     ReasoningOutput,
-    ReasoningStructure)
+    ReasoningStructure,
+)
 
 
 def create_select_engine(
     model: str = "gpt-4o",
     temperature: float = 0.0,
     custom_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs) -> AugLLMConfig:
+    **kwargs,
+) -> AugLLMConfig:
     """Create the engine for selecting reasoning modules with structured output.
 
     Args:
@@ -39,7 +41,8 @@ def create_select_engine(
         For each selected module, provide:
         1. The module ID (number)
         2. A brief description of the module
-        3. A clear explanation of why this module is particularly relevant for the given task"""),
+        3. A clear explanation of why this module is particularly relevant for the given task""",
+            ),
             (
                 "human",
                 """
@@ -52,7 +55,8 @@ def create_select_engine(
         {task_description}
 
         Return your answer as a structured selection of modules, explaining why each one is suitable for this task.
-        """),
+        """,
+            ),
         ]
     )
 
@@ -70,14 +74,16 @@ def create_select_engine(
             prompt if isinstance(prompt, ChatPromptTemplate | PromptTemplate) else None
         ),
         structured_output_model=ModuleSelectionResult,
-        **kwargs)
+        **kwargs,
+    )
 
 
 def create_adapt_engine(
     model: str = "gpt-4o",
     temperature: float = 0.0,
     custom_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs) -> AugLLMConfig:
+    **kwargs,
+) -> AugLLMConfig:
     """Create the engine for adapting selected reasoning modules with structured output.
 
     Args:
@@ -101,7 +107,8 @@ def create_adapt_engine(
         For each module, provide:
         1. A reference to the original module ID
         2. A customized description focused on this specific task
-        3. A concrete strategy for applying this module to the task"""),
+        3. A concrete strategy for applying this module to the task""",
+            ),
             (
                 "human",
                 """
@@ -114,7 +121,8 @@ def create_adapt_engine(
         {task_description}
 
         Return your answer as a structured list of adapted modules with specific application strategies.
-        """),
+        """,
+            ),
         ]
     )
 
@@ -132,14 +140,16 @@ def create_adapt_engine(
             prompt if isinstance(prompt, ChatPromptTemplate | PromptTemplate) else None
         ),
         structured_output_model=ModuleAdaptationResult,
-        **kwargs)
+        **kwargs,
+    )
 
 
 def create_structure_engine(
     model: str = "gpt-4o",
     temperature: float = 0.0,
     custom_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs) -> AugLLMConfig:
+    **kwargs,
+) -> AugLLMConfig:
     """Create the engine for creating structured reasoning plans with structured output.
 
     Args:
@@ -163,7 +173,8 @@ def create_structure_engine(
         For each step in your plan, provide:
         1. A step ID (e.g., "step1", "step2")
         2. A clear description of what needs to be determined in this step
-        3. References to which modules this step relates to (optional)"""),
+        3. References to which modules this step relates to (optional)""",
+            ),
             (
                 "human",
                 """
@@ -179,7 +190,8 @@ def create_structure_engine(
         Each step should have a unique ID and a clear description of what needs to be determined.
 
         Do NOT solve the problem yet - only create the plan framework.
-        """),
+        """,
+            ),
         ]
     )
 
@@ -197,14 +209,16 @@ def create_structure_engine(
             prompt if isinstance(prompt, ChatPromptTemplate | PromptTemplate) else None
         ),
         structured_output_model=ReasoningStructure,
-        **kwargs)
+        **kwargs,
+    )
 
 
 def create_reasoning_engine(
     model: str = "gpt-4o",
     temperature: float = 0.0,
     custom_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs) -> AugLLMConfig:
+    **kwargs,
+) -> AugLLMConfig:
     """Create the engine for executing reasoning plans with structured output.
 
     Args:
@@ -230,7 +244,8 @@ def create_reasoning_engine(
         2. Include any relevant calculations or logical deductions
         3. Note any interim results
 
-        After completing all steps, provide a clear final answer to the task."""),
+        After completing all steps, provide a clear final answer to the task.""",
+            ),
             (
                 "human",
                 """
@@ -245,7 +260,8 @@ def create_reasoning_engine(
 
         For each step in the structure, provide your detailed reasoning.
         After working through all steps, provide your final answer with high confidence.
-        """),
+        """,
+            ),
         ]
     )
 
@@ -263,7 +279,8 @@ def create_reasoning_engine(
             prompt if isinstance(prompt, ChatPromptTemplate | PromptTemplate) else None
         ),
         structured_output_model=ReasoningOutput,
-        **kwargs)
+        **kwargs,
+    )
 
 
 def create_selfdiscover_engines(
@@ -273,7 +290,8 @@ def create_selfdiscover_engines(
     adapt_prompt: str | ChatPromptTemplate | None = None,
     structure_prompt: str | ChatPromptTemplate | None = None,
     reasoning_prompt: str | ChatPromptTemplate | None = None,
-    **kwargs) -> dict[str, AugLLMConfig]:
+    **kwargs,
+) -> dict[str, AugLLMConfig]:
     """Create all engines for the SelfDiscover agent with structured output models.
 
     Args:
@@ -291,10 +309,6 @@ def create_selfdiscover_engines(
     return {
         "select": create_select_engine(model, temperature, select_prompt, **kwargs),
         "adapt": create_adapt_engine(model, temperature, adapt_prompt, **kwargs),
-        "structure": create_structure_engine(
-            model, temperature, structure_prompt, **kwargs
-        ),
-        "reasoning": create_reasoning_engine(
-            model, temperature, reasoning_prompt, **kwargs
-        ),
+        "structure": create_structure_engine(model, temperature, structure_prompt, **kwargs),
+        "reasoning": create_reasoning_engine(model, temperature, reasoning_prompt, **kwargs),
     }

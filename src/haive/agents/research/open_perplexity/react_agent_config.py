@@ -30,8 +30,7 @@ def create_research_react_agent_config(
     """
     # Create a name if not provided
     if not name:
-        name = f"open_perplexity_research_{
-            datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        name = f"open_perplexity_research_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Create LLM configuration
     llm_config = AzureLLMConfig(
@@ -48,7 +47,8 @@ def create_research_react_agent_config(
         system_prompt=system_message,
         tools=RESEARCH_TOOLS,
         max_iterations=15,  # Increased for thorough research
-        verbose=True)
+        verbose=True,
+    )
 
     return react_config
 
@@ -68,8 +68,7 @@ def create_research_rag_engine(
     """
     # Create a name if not provided
     if not name:
-        name = f"open_perplexity_retrieval_engine_{
-            datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        name = f"open_perplexity_retrieval_engine_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Create LLM configuration
     llm_config = AzureLLMConfig(
@@ -97,7 +96,8 @@ def create_research_rag_engine(
                 SystemMessage(content=system_message),
                 MessagesPlaceholder(variable_name="messages"),
             ]
-        ))
+        ),
+    )
 
     return rag_engine
 
@@ -106,7 +106,8 @@ def create_research_rag_agent_config(
     vectorstore_config: VectorStoreConfig,
     name: str | None = None,
     llm_model: str = "gpt-4o",
-    temperature: float = 0.2) -> BaseRAGConfig:
+    temperature: float = 0.2,
+) -> BaseRAGConfig:
     """Create a BaseRAGConfig for research document retrieval tasks.
     This function requires a vectorstore_config with loaded documents.
 
@@ -121,8 +122,7 @@ def create_research_rag_agent_config(
     """
     # Create a name if not provided
     if not name:
-        name = f"open_perplexity_retrieval_{
-            datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        name = f"open_perplexity_retrieval_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Create the RAG engine
     rag_engine = create_research_rag_engine(
@@ -138,11 +138,10 @@ def create_research_rag_agent_config(
         search_kwargs={
             "k": 8,  # Retrieve more documents for comprehensive research
             "score_threshold": 0.7,  # Only include highly relevant documents
-        })
+        },
+    )
 
     # Create BaseRAGConfig with proper retriever configuration
-    rag_config = BaseRAGConfig(
-        name=name, engine=rag_engine, retriever_config=retriever_config
-    )
+    rag_config = BaseRAGConfig(name=name, engine=rag_engine, retriever_config=retriever_config)
 
     return rag_config

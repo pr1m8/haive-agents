@@ -51,8 +51,7 @@ class AgentSelectionTool(BaseTool):
 
             # Simple matching based on agent name
             if "research" in agent_name.lower() and any(
-                word in task_lower
-                for word in ["research", "find", "search", "investigate"]
+                word in task_lower for word in ["research", "find", "search", "investigate"]
             ):
                 return agent_name
 
@@ -122,12 +121,11 @@ class AgentCreationTool(BaseTool):
             engine = AugLLMConfig(
                 name=f"{agent_name}_engine",
                 system_message=template["system_message"],
-                temperature=0.4)
+                temperature=0.4,
+            )
 
             # Create ReactAgent
-            new_agent = ReactAgent(
-                name=agent_name, engine=engine, tools=template["tools"]
-            )
+            new_agent = ReactAgent(name=agent_name, engine=engine, tools=template["tools"])
 
             # Add to supervisor
             self.supervisor.agents[agent_name] = new_agent
@@ -228,9 +226,8 @@ class ChoiceModelSupervisor(ReactAgent):
 
         # Routing
         graph.add_conditional_edges(
-            "supervisor",
-            self._route_from_supervisor,
-            {"executor": "executor", "END": "__end__"})
+            "supervisor", self._route_from_supervisor, {"executor": "executor", "END": "__end__"}
+        )
 
         # Executor loops back to supervisor
         graph.add_edge("executor", "supervisor")
@@ -428,9 +425,7 @@ class ChoiceModelSupervisor(ReactAgent):
     def get_choice_model_status(self) -> dict[str, Any]:
         """Get status of choice model."""
         return {
-            "available_options": (
-                self._choice_model.option_names if self._choice_model else []
-            ),
+            "available_options": (self._choice_model.option_names if self._choice_model else []),
             "total_agents": len(self._agents),
             "max_agents": self.max_agents,
         }
@@ -448,29 +443,19 @@ if __name__ == "__main__":
         await supervisor.ainvoke(
             {
                 "messages": [
-                    HumanMessage(
-                        content="Research the latest developments in machine learning"
-                    )
+                    HumanMessage(content="Research the latest developments in machine learning")
                 ]
             }
         )
 
         # Test 2: Coding request
         await supervisor.ainvoke(
-            {
-                "messages": [
-                    HumanMessage(content="Write Python code to implement quicksort")
-                ]
-            }
+            {"messages": [HumanMessage(content="Write Python code to implement quicksort")]}
         )
 
         # Test 3: Use existing agent
         await supervisor.ainvoke(
-            {
-                "messages": [
-                    HumanMessage(content="Find information about quantum computing")
-                ]
-            }
+            {"messages": [HumanMessage(content="Find information about quantum computing")]}
         )
 
     asyncio.run(test_choice_model_supervisor())

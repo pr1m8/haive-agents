@@ -34,19 +34,14 @@ class ReflectionAgent(SimpleAgent):
 
         # Initialize reflection engine
         if self.config.reflection.reflection_llm:
-            self.reflection_engine = (
-                self.config.reflection.reflection_llm.create_runnable()
-            )
+            self.reflection_engine = self.config.reflection.reflection_llm.create_runnable()
         else:
             # Use the same engine as the main agent
             self.reflection_engine = self.engine
 
     def setup_workflow(self) -> None:
         """Set up a workflow graph with reflection capabilities."""
-        logger.debug(
-            f"Setting up workflow for ReflectionAgent {
-                self.config.name}"
-        )
+        logger.debug(f"Setting up workflow for ReflectionAgent {self.config.name}")
 
         # Create DynamicGraph with proper component registration
         components = [self.config.engine]
@@ -62,7 +57,8 @@ class ReflectionAgent(SimpleAgent):
         gb.add_node(
             name=self.config.initial_node_name,
             config=self._create_initial_response_function(),
-            command_goto=self.config.reflection_node_name)
+            command_goto=self.config.reflection_node_name,
+        )
 
         # Add reflection node
         gb.add_node(
@@ -75,7 +71,8 @@ class ReflectionAgent(SimpleAgent):
         gb.add_node(
             name=self.config.improvement_node_name,
             config=self._create_improvement_function(),
-            command_goto=self.config.evaluation_node_name)
+            command_goto=self.config.evaluation_node_name,
+        )
 
         # Add evaluation node
         gb.add_node(
@@ -89,7 +86,8 @@ class ReflectionAgent(SimpleAgent):
             gb.add_node(
                 name=self.config.search_node_name,
                 config=self._create_search_function(),
-                command_goto=self.config.improvement_node_name)
+                command_goto=self.config.improvement_node_name,
+            )
 
         # Add START edge
         gb.add_edge(START, self.config.initial_node_name)
@@ -101,19 +99,22 @@ class ReflectionAgent(SimpleAgent):
             gb.add_conditional_edges(
                 from_node=self.config.reflection_node_name,
                 condition_or_branch=self._should_continue_reflection,
-                routes={"continue": self.config.search_node_name, "end": END})
+                routes={"continue": self.config.search_node_name, "end": END},
+            )
         else:
             # Route directly to improvement if search is disabled
             gb.add_conditional_edges(
                 from_node=self.config.reflection_node_name,
                 condition_or_branch=self._should_continue_reflection,
-                routes={"continue": self.config.improvement_node_name, "end": END})
+                routes={"continue": self.config.improvement_node_name, "end": END},
+            )
 
         # Add conditional edge from evaluate to either reflect again or end
         gb.add_conditional_edges(
             from_node=self.config.evaluation_node_name,
             condition_or_branch=self._should_continue_improvement,
-            routes={"continue": self.config.reflection_node_name, "end": END})
+            routes={"continue": self.config.reflection_node_name, "end": END},
+        )
 
         # Get the built graph (not compiled yet)
         self.graph = gb.build()
@@ -128,9 +129,7 @@ class ReflectionAgent(SimpleAgent):
                 # Use the engine to generate an initial response
                 result = self.engine.invoke({"messages": state.messages})
 
-                response_content = (
-                    result.content if hasattr(result, "content") else str(result)
-                )
+                response_content = result.content if hasattr(result, "content") else str(result)
 
                 # Extract the original request (last human message)
                 original_request = state.last_human_message
@@ -153,9 +152,7 @@ class ReflectionAgent(SimpleAgent):
     def _create_reflection_function(self):
         """Create a function for the reflection node."""
         # Create structured output parser for reflection
-        reflection_parser = PydanticToolsParser(
-            tools=[self.config.reflection_output_model]
-        )
+        reflection_parser = PydanticToolsParser(tools=[self.config.reflection_output_model])
 
         # Create prompt template for reflection
         reflection_prompt = ChatPromptTemplate.from_template(
@@ -165,9 +162,7 @@ class ReflectionAgent(SimpleAgent):
         # Create chain with structured output
         reflection_chain = (
             reflection_prompt
-            | self.reflection_engine.bind_tools(
-                tools=[self.config.reflection_output_model]
-            )
+            | self.reflection_engine.bind_tools(tools=[self.config.reflection_output_model])
             | reflection_parser
         )
 
@@ -214,11 +209,9 @@ class ReflectionAgent(SimpleAgent):
                 # Update state
                 state_update = {
                     **state.model_dump(),
-                    "feedback": f"Reflection: {
-                        reflection.reflection}\nMissing: {
-                        reflection.missing}\nSuperfluous: {
-                        reflection.superfluous}\nScore: {
-                        reflection.score}",
+                    "feedback": f"Reflection: {reflection.reflection}\nMissing: {
+                        reflection.missing
+                    }\nSuperfluous: {reflection.superfluous}\nScore: {reflection.score}",
                     "reflection_round": reflection_round,
                     "reflection_score": reflection.normalized_score,
                     "reflection_history": reflection_history,
@@ -265,9 +258,7 @@ class ReflectionAgent(SimpleAgent):
                 }
 
                 # Generate search queries
-                search_result = self.engine.invoke(
-                    search_query_prompt.format(**search_input)
-                )
+                search_result = self.engine.invoke(search_query_prompt.format(**search_input))
 
                 if hasattr(search_result, "content"):
                     queries_text = search_result.content
@@ -328,9 +319,7 @@ class ReflectionAgent(SimpleAgent):
                     )
 
                 # Generate improved response
-                improved_result = self.engine.invoke(
-                    improvement_prompt.format(**improvement_input)
-                )
+                improved_result = self.engine.invoke(improvement_prompt.format(**improvement_input))
 
                 if hasattr(improved_result, "content"):
                     improved_content = improved_result.content

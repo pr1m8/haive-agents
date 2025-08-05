@@ -15,7 +15,8 @@ from haive.agents.structured_output.models import (
     SearchResult,
     Summary,
     TaskResult,
-    ValidationResult)
+    ValidationResult,
+)
 
 __all__ = [
     "Analysis",

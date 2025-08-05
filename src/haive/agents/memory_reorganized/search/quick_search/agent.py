@@ -56,7 +56,8 @@ class QuickSearchAgent(BaseSearchAgent):
         name: str = "quick_search_agent",
         engine: AugLLMConfig | None = None,
         search_tools: list[Tool] | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize the Quick Search Agent.
 
         Args:
@@ -70,7 +71,8 @@ class QuickSearchAgent(BaseSearchAgent):
             engine = AugLLMConfig(
                 temperature=0.1,  # Low temperature for factual consistency
                 max_tokens=200,  # Keep responses concise
-                system_message=self.get_system_prompt())
+                system_message=self.get_system_prompt(),
+            )
 
         super().__init__(name=name, engine=engine, search_tools=search_tools, **kwargs)
 
@@ -213,10 +215,8 @@ Process the query efficiently and provide a clear, concise response."""
         return "factual"
 
     async def process_search(
-        self,
-        query: str,
-        context: dict[str, Any] | None = None,
-        save_to_memory: bool = True) -> QuickSearchResponse:
+        self, query: str, context: dict[str, Any] | None = None, save_to_memory: bool = True
+    ) -> QuickSearchResponse:
         """Process a quick search query.
 
         Args:
@@ -253,7 +253,8 @@ Process the query efficiently and provide a clear, concise response."""
             processing_time=processing_time,
             answer_type=answer_type,
             keywords=keywords,
-            metadata=base_response.metadata)
+            metadata=base_response.metadata,
+        )
 
         logger.info(f"Quick search completed in {processing_time:.2f}s")
 

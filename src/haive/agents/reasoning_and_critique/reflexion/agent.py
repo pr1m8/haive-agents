@@ -32,9 +32,9 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.answer_writer = AugLLMConfig(model="gpt-4o", name="answer_writer")
         self.tool_node = self.create_tool_node(config.tools)
         self.event_loop_branch = Branch(
-            function=lambda state: _get_num_iterations(state)
-            > self.config.max_iterations,
-            destinations={True: "end", False: "execute_tools"})
+            function=lambda state: _get_num_iterations(state) > self.config.max_iterations,
+            destinations={True: "end", False: "execute_tools"},
+        )
         super().__init__(config)
 
     def create_tool_node(self, tools: list[BaseTool | Callable]) -> ToolNode:
@@ -48,9 +48,7 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         tool_node_tools = []
         for tool in self.config.tools:
             for model in self.config.models:
-                tool_node_tools.append(
-                    StructuredTool.from_function(tool, name=model.__name__)
-                )
+                tool_node_tools.append(StructuredTool.from_function(tool, name=model.__name__))
         return ToolNode(tools=tool_node_tools)
 
     def final_answer(self, state: dict):
@@ -64,23 +62,24 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.answer_writer.prompt_template = prompt
         aug_llm = self.answer_writer.create_runnable()
         # Handle both dict and model cases
-        if hasattr(state, 'model_dump') and callable(getattr(state, 'model_dump')):
+        if hasattr(state, "model_dump") and callable(getattr(state, "model_dump")):
             conversation_data = state.model_dump()  # type: ignore
         elif isinstance(state, dict):
             conversation_data = state
         else:
-            conversation_data = dict(state) if hasattr(state, '__dict__') else {}
+            conversation_data = dict(state) if hasattr(state, "__dict__") else {}
         response = aug_llm.invoke(input={"conversation": conversation_data})
 
         return Command(update={"answer": response})
 
     def setup_workflow(self) -> None:
         """Setup the reflexion workflow graph."""
-        if not hasattr(self, 'graph') or self.graph is None:
+        if not hasattr(self, "graph") or self.graph is None:
             # Initialize graph if not already done
             from langgraph.graph import StateGraph
+
             self.graph = StateGraph(dict)  # Use dict for now
-        
+
         self.graph.add_node("draft", self.responder.respond)
         self.graph.add_edge(START, "draft")
         self.graph.add_node("tools", self.tool_node)
@@ -89,12 +88,12 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.graph.add_node("final_answer", self.final_answer)
         self.graph.add_edge("tools", "revision")
         self.graph.add_edge("final_answer", END)
+
         # Create a simple condition function for LangGraph
         def should_continue(state):
             iterations = _get_num_iterations(state)
             return "end" if iterations > self.config.max_iterations else "execute_tools"
-        
+
         self.graph.add_conditional_edges(
-            "revision",
-            should_continue,
-            {"execute_tools": "tools", "end": "final_answer"})
+            "revision", should_continue, {"execute_tools": "tools", "end": "final_answer"}
+        )

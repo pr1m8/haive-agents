@@ -9,15 +9,15 @@ from haive.agents.reasoning_and_critique.lats.v2.agents import (
     process_initial_response,
     process_reflection,
     should_continue_search,
-    should_execute_tools)
+    should_execute_tools,
+)
 from haive.agents.reasoning_and_critique.lats.v2.models import (
     CandidateActions,
     Reflection,
     SelectionDecision,
-    TreeNode)
-from haive.agents.reasoning_and_critique.lats.v2.state import (
-    LATSState,
-    update_nodes)
+    TreeNode,
+)
+from haive.agents.reasoning_and_critique.lats.v2.state import LATSState, update_nodes
 
 __all__ = [
     "CandidateActions",

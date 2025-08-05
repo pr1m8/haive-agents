@@ -38,7 +38,8 @@ Action Types (for atomic steps):
 - **aggregate**: Combining multiple inputs
 - **store**: Persisting results
 
-IMPORTANT: Return a properly structured TaskNode object with all required fields populated."""),
+IMPORTANT: Return a properly structured TaskNode object with all required fields populated.""",
+        ),
         (
             "human",
             """Decompose the following task into a hierarchical structure:
@@ -91,7 +92,8 @@ Example patterns to consider:
 - Fork-Join: A→[B,C,D]→E
 - Conditional: A→(B if X else C)→D
 
-Return a complete TaskNode object."""),
+Return a complete TaskNode object.""",
+        ),
     ]
 )
 
@@ -110,7 +112,8 @@ Key principles for recursive decomposition:
 2. Maintain parent task constraints and context
 3. Avoid over-decomposition (too granular becomes counterproductive)
 4. Ensure child tasks fully implement parent task
-5. Preserve dependency relationships across levels"""),
+5. Preserve dependency relationships across levels""",
+        ),
         (
             "human",
             """Continue decomposing this subtask:
@@ -128,7 +131,8 @@ Decompose this subtask while:
 3. Preserving resource constraints
 4. Adding meaningful granularity
 
-Return a TaskNode with appropriate subtasks."""),
+Return a TaskNode with appropriate subtasks.""",
+        ),
     ]
 )
 
@@ -141,7 +145,8 @@ TASK_VALIDATION_PROMPT = ChatPromptTemplate.from_messages(
 - Correct (dependencies are valid)
 - Consistent (estimates align)
 - Feasible (can be executed)
-- Optimal (good parallelization)"""),
+- Optimal (good parallelization)""",
+        ),
         (
             "human",
             """Validate this task decomposition:
@@ -155,6 +160,7 @@ Check for:
 4. Parallelization opportunities
 5. Resource conflicts
 
-Provide validation feedback and improvement suggestions."""),
+Provide validation feedback and improvement suggestions.""",
+        ),
     ]
 )

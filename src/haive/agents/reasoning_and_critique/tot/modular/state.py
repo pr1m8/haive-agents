@@ -9,7 +9,8 @@ from pydantic import BaseModel, Field
 
 def update_candidates(
     existing: list[Candidate] | None = None,
-    updates: list[Candidate] | str | list[dict[str, Any]] | None = None) -> list[Candidate]:
+    updates: list[Candidate] | str | list[dict[str, Any]] | None = None,
+) -> list[Candidate]:
     """Update candidate list, handling special cases like clearing.
 
     Args:
@@ -75,6 +76,4 @@ class ToTState(BaseModel):
     answer: str | None = Field(default=None, description="Final answer to the problem")
 
     # Extra metadata
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")

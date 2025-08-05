@@ -103,20 +103,22 @@ class STORMAgentConfig(SequenceAgentConfig):
     # LLM configurations for different components
     fast_llm_config: AzureLLMConfig = Field(
         default=AzureLLMConfig(model="gpt-4o-mini"),
-        description="Configuration for the faster LLM used for research and interviews")
+        description="Configuration for the faster LLM used for research and interviews",
+    )
 
     long_context_llm_config: AzureLLMConfig = Field(
         default=AzureLLMConfig(model="gpt-4o"),
-        description="Configuration for the long-context LLM used for writing")
+        description="Configuration for the long-context LLM used for writing",
+    )
 
     # Knowledge storage configuration
     vector_store_config: VectorStoreConfig = Field(
-        default=None,
-        description="Configuration for the vector store used to index references")
+        default=None, description="Configuration for the vector store used to index references"
+    )
 
     retriever_config: BaseRetrieverConfig = Field(
-        default=None,
-        description="Configuration for the retriever used to access references")
+        default=None, description="Configuration for the retriever used to access references"
+    )
 
     # Sub-agent configurations
     research_agent_config: ResearchAgentConfig = Field(
@@ -137,8 +139,8 @@ class STORMAgentConfig(SequenceAgentConfig):
     )
 
     max_interview_turns: int = Field(
-        default=5,
-        description="Maximum number of conversation turns per interview (M parameter)")
+        default=5, description="Maximum number of conversation turns per interview (M parameter)"
+    )
 
     def __init__(self, **data) -> None:
         # Initialize with parent class
@@ -173,7 +175,8 @@ class STORMAgentConfig(SequenceAgentConfig):
         self.vector_store_config = VectorStoreConfig(
             name="storm_references",
             vector_store_provider="InMemory",
-            embedding_model=OpenAIEmbeddingConfig(model="text-embedding-3-small"))
+            embedding_model=OpenAIEmbeddingConfig(model="text-embedding-3-small"),
+        )
 
     def _create_default_retriever_config(self):
         """Create the default retriever configuration."""
@@ -181,7 +184,8 @@ class STORMAgentConfig(SequenceAgentConfig):
             name="storm_retriever",
             vector_store_config=self.vector_store_config,
             k=4,
-            search_type="similarity")
+            search_type="similarity",
+        )
 
     def _create_research_agent_config(self):
         """Create the research agent configuration."""
@@ -195,14 +199,16 @@ class STORMAgentConfig(SequenceAgentConfig):
             name="storm_interview",
             llm_config=self.fast_llm_config,
             max_turns=self.max_interview_turns,
-            num_perspectives=self.num_perspectives)
+            num_perspectives=self.num_perspectives,
+        )
 
     def _create_writing_agent_config(self):
         """Create the writing agent configuration."""
         self.writing_agent_config = WritingAgentConfig(
             name="storm_writing",
             llm_config=self.long_context_llm_config,
-            retriever_config=self.retriever_config)
+            retriever_config=self.retriever_config,
+        )
 
     def _create_storm_agent_sequence(self):
         """Create the sequence of agents for the STORM workflow."""

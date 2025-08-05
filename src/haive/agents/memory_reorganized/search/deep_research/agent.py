@@ -17,7 +17,8 @@ from haive.agents.memory.search.base import BaseSearchAgent, SearchResponse
 from haive.agents.memory.search.deep_research.models import (
     DeepResearchResponse,
     ResearchQuery,
-    ResearchSection)
+    ResearchSection,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +79,8 @@ class DeepResearchAgent(BaseSearchAgent):
         search_tools: list[Tool] | None = None,
         enable_kg: bool = False,
         kg_transformer: Any | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize the Deep Research Agent.
 
         Args:
@@ -94,7 +96,8 @@ class DeepResearchAgent(BaseSearchAgent):
             engine = AugLLMConfig(
                 temperature=0.2,  # Lower temperature for factual accuracy
                 max_tokens=1500,  # Longer responses for comprehensive analysis
-                system_message=self.get_system_prompt())
+                system_message=self.get_system_prompt(),
+            )
 
         super().__init__(name=name, engine=engine, search_tools=search_tools, **kwargs)
 
@@ -251,7 +254,8 @@ Process each research query with systematic thoroughness and analytical rigor.""
                 query_type=query_type,
                 results_found=len(result.sources),
                 processing_time=processing_time,
-                success=True)
+                success=True,
+            )
 
         except Exception as e:
             processing_time = time.time() - start_time
@@ -262,7 +266,8 @@ Process each research query with systematic thoroughness and analytical rigor.""
                 query_type=query_type,
                 results_found=0,
                 processing_time=processing_time,
-                success=False)
+                success=False,
+            )
 
     def evaluate_source_credibility(self, source: dict[str, Any]) -> float:
         """Evaluate the credibility of a source.
@@ -296,9 +301,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
         if pub_date:
             try:
                 pub_datetime = (
-                    datetime.fromisoformat(pub_date)
-                    if isinstance(pub_date, str)
-                    else pub_date
+                    datetime.fromisoformat(pub_date) if isinstance(pub_date, str) else pub_date
                 )
                 days_old = (datetime.now() - pub_datetime).days
                 if days_old < 365:  # Less than a year old
@@ -308,9 +311,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
 
         return min(1.0, credibility_score)
 
-    def organize_findings_by_theme(
-        self, findings: list[dict[str, Any]]
-    ) -> list[ResearchSection]:
+    def organize_findings_by_theme(self, findings: list[dict[str, Any]]) -> list[ResearchSection]:
         """Organize research findings into thematic sections.
 
         Args:
@@ -354,9 +355,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
 
                 for finding in theme_findings:
                     content += f"- {finding.get('content', '')}\n"
-                    key_points.append(
-                        finding.get("summary", finding.get("content", "")[:100])
-                    )
+                    key_points.append(finding.get("summary", finding.get("content", "")[:100]))
                     if finding.get("sources"):
                         sources.extend(finding["sources"])
 
@@ -398,7 +397,8 @@ Process each research query with systematic thoroughness and analytical rigor.""
         focus_areas: list[str] | None = None,
         max_sources: int = 50,
         include_fact_checking: bool = True,
-        save_to_memory: bool = True) -> DeepResearchResponse:
+        save_to_memory: bool = True,
+    ) -> DeepResearchResponse:
         """Process a deep research query with comprehensive analysis.
 
         Args:
@@ -426,9 +426,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
         all_findings = []
 
         # Stage 1: Background research
-        background_queries = [
-            q for q in sub_queries if "background" in q or "overview" in q
-        ]
+        background_queries = [q for q in sub_queries if "background" in q or "overview" in q]
         for bg_query in background_queries[:3]:  # Limit background queries
             research_result = await self.execute_research_query(bg_query, "background")
             research_queries.append(research_result)
@@ -445,9 +443,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
                 )
 
         # Stage 2: Specific deep-dive queries
-        specific_queries = [
-            q for q in sub_queries if "research studies" in q or "evidence" in q
-        ]
+        specific_queries = [q for q in sub_queries if "research studies" in q or "evidence" in q]
         for spec_query in specific_queries[:5]:  # Limit specific queries
             research_result = await self.execute_research_query(spec_query, "specific")
             research_queries.append(research_result)
@@ -466,9 +462,7 @@ Process each research query with systematic thoroughness and analytical rigor.""
         if include_fact_checking:
             validation_queries = [f"fact check {query}", f"verify {query}"]
             for val_query in validation_queries:
-                research_result = await self.execute_research_query(
-                    val_query, "validation"
-                )
+                research_result = await self.execute_research_query(val_query, "validation")
                 research_queries.append(research_result)
 
                 if research_result.success:
@@ -528,7 +522,8 @@ Process each research query with systematic thoroughness and analytical rigor.""
             limitations=limitations,
             related_topics=related_topics,
             fact_checks=[],  # Would be populated from fact checking
-            metadata={"focus_areas": focus_areas or []})
+            metadata={"focus_areas": focus_areas or []},
+        )
 
         # Save to memory if requested
         if save_to_memory:
@@ -540,10 +535,8 @@ Process each research query with systematic thoroughness and analytical rigor.""
         return response
 
     async def process_search(
-        self,
-        query: str,
-        context: dict[str, Any] | None = None,
-        save_to_memory: bool = True) -> DeepResearchResponse:
+        self, query: str, context: dict[str, Any] | None = None, save_to_memory: bool = True
+    ) -> DeepResearchResponse:
         """Process a search query with default deep research settings.
 
         Args:
@@ -562,4 +555,5 @@ Process each research query with systematic thoroughness and analytical rigor.""
             query=query,
             research_depth=research_depth,
             focus_areas=focus_areas,
-            save_to_memory=save_to_memory)
+            save_to_memory=save_to_memory,
+        )

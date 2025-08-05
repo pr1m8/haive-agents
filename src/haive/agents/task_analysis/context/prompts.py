@@ -32,7 +32,8 @@ Domain Expertise Levels:
 - **basic**: General knowledge
 - **intermediate**: Some domain familiarity
 - **advanced**: Deep domain knowledge
-- **expert**: Cutting-edge expertise"""),
+- **expert**: Cutting-edge expertise""",
+        ),
         (
             "human",
             """Analyze context requirements for:
@@ -86,7 +87,8 @@ Analyze:
    - Validation criteria
    - Source reliability
 
-Return a ContextRequirement object with all fields populated."""),
+Return a ContextRequirement object with all fields populated.""",
+        ),
     ]
 )
 
@@ -94,7 +96,8 @@ CONTEXT_FLOW_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are analyzing how context flows between tasks, identifying transformations and integration points."""),
+            """You are analyzing how context flows between tasks, identifying transformations and integration points.""",
+        ),
         (
             "human",
             """Map context flow for:
@@ -109,7 +112,8 @@ For each task connection:
 4. What's the data volume?
 5. Are there timing constraints?
 
-Return list of ContextFlow objects."""),
+Return list of ContextFlow objects.""",
+        ),
     ]
 )
 
@@ -117,7 +121,8 @@ CONTEXT_OPTIMIZATION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are optimizing context loading and caching strategies for efficient execution."""),
+            """You are optimizing context loading and caching strategies for efficient execution.""",
+        ),
         (
             "human",
             """Optimize context strategy for:
@@ -133,7 +138,8 @@ Design:
 4. Prefetching opportunities
 5. Context compression
 
-Return optimized context management plan."""),
+Return optimized context management plan.""",
+        ),
     ]
 )
 
@@ -141,7 +147,8 @@ DOMAIN_EXPERTISE_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are identifying and categorizing knowledge domain requirements for task execution."""),
+            """You are identifying and categorizing knowledge domain requirements for task execution.""",
+        ),
         (
             "human",
             """Analyze domain expertise for:
@@ -156,6 +163,7 @@ For each identified domain:
 4. Learning resources
 5. Expert availability
 
-Return list of ContextDomain objects."""),
+Return list of ContextDomain objects.""",
+        ),
     ]
 )

@@ -85,7 +85,8 @@ def create_lats_agent(
     n_candidates: int = 3,
     exploration_weight: float = 1.0,
     name: str = "lats_agent",
-    model: str = "gpt-4o") -> "Any":  # LATSAgent not yet defined
+    model: str = "gpt-4o",
+) -> "Any":  # LATSAgent not yet defined
     """Create a LATS agent with the specified configuration.
 
     Args:
@@ -117,19 +118,19 @@ def create_lats_agent(
     # Create reflection engine
     reflection_prompt = ChatPromptTemplate.from_messages(
         [
-            (
-                "system",
-                "You are an objective evaluator tasked with analyzing responses."),
+            ("system", "You are an objective evaluator tasked with analyzing responses."),
             (
                 "user",
-                "Analyze how well the following response addresses the query:\n\nQuery: {input}\n\nResponse: {candidate}"),
+                "Analyze how well the following response addresses the query:\n\nQuery: {input}\n\nResponse: {candidate}",
+            ),
         ]
     )
 
     reflection_engine = AugLLMConfig(
         name="reflection_engine",
         llm_config=llm_config.model_copy(update={"parameters": {"temperature": 0.1}}),
-        prompt_template=reflection_prompt)
+        prompt_template=reflection_prompt,
+    )
 
     # Create action engine
     action_prompt = ChatPromptTemplate.from_messages(
@@ -140,7 +141,8 @@ def create_lats_agent(
         name="action_engine",
         llm_config=llm_config,
         prompt_template=action_prompt,
-        tools=tools or [])
+        tools=tools or [],
+    )
 
     # Create main engine (same as action for simplicity)
     main_engine = AugLLMConfig(
@@ -157,7 +159,8 @@ def create_lats_agent(
         max_depth=max_depth,
         max_iterations=max_iterations,
         n_candidates=n_candidates,
-        exploration_weight=exploration_weight)
+        exploration_weight=exploration_weight,
+    )
 
     # Build and return the agent
     return config.build_agent()

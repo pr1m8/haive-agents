@@ -19,7 +19,8 @@ from haive.agents.reasoning_and_critique.logic.models import (
     ReasoningQuality,
     ReasoningReport,
     ReasoningType,
-    UncertaintyAnalysis)
+    UncertaintyAnalysis,
+)
 
 __all__ = [
     "ArgumentStrength",

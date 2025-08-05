@@ -18,8 +18,7 @@ from typing import Any
 
 from haive.core.engine.document import DocumentEngine as DocumentLoaderEngine
 from haive.core.engine.document import DocumentOutput as DocumentLoaderOutput
-from haive.core.engine.document import (
-    create_file_document_engine as create_document_loader_engine)
+from haive.core.engine.document import create_file_document_engine as create_document_loader_engine
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
@@ -55,8 +54,8 @@ class DocumentLoaderAgent(Agent):
 
     # The main engine - a document loader engine
     engine: DocumentLoaderEngine = Field(
-        default_factory=create_document_loader_engine,
-        description="Document loader engine")
+        default_factory=create_document_loader_engine, description="Document loader engine"
+    )
 
     # Configuration options
     include_content: bool = Field(
@@ -68,12 +67,10 @@ class DocumentLoaderAgent(Agent):
     )
 
     max_documents: int | None = Field(
-        default=None,
-        description="Maximum number of documents to load (None for unlimited)")
-
-    use_async: bool = Field(
-        default=False, description="Whether to use async loading if available"
+        default=None, description="Maximum number of documents to load (None for unlimited)"
     )
+
+    use_async: bool = Field(default=False, description="Whether to use async loading if available")
 
     def setup_agent(self) -> None:
         """Set up the agent by configuring the document loader engine.

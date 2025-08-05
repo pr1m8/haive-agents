@@ -26,9 +26,7 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
     __memory_type__ = "semantic"
     __validation_level__ = "enterprise"
 
-    user_id: str = Field(
-        ..., min_length=1, max_length=100, description="User identifier"
-    )
+    user_id: str = Field(..., min_length=1, max_length=100, description="User identifier")
 
     # Core semantic data
     personality_profile: PersonalityTraits = Field(default_factory=PersonalityTraits)
@@ -50,9 +48,7 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
 
     # Semantic search optimization
     embedding_vector: list[float] | None = Field(None, description="Semantic embedding")
-    semantic_keywords: list[str] = Field(
-        default_factory=list, description="Optimized keywords"
-    )
+    semantic_keywords: list[str] = Field(default_factory=list, description="Optimized keywords")
 
     @field_validator("user_id")
     @classmethod
@@ -85,9 +81,7 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
         # Validate belief system consistency
         for belief, strength in self.belief_system.items():
             if not 0.0 <= strength <= 1.0:
-                raise ValueError(
-                    f"Belief strength for '{belief}' must be between 0.0 and 1.0"
-                )
+                raise ValueError(f"Belief strength for '{belief}' must be between 0.0 and 1.0")
 
         # Auto-generate semantic keywords from factual knowledge
         if not self.semantic_keywords and self.factual_knowledge:
@@ -112,10 +106,10 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
         return f"""
         User: {self.user_id}
         Communication Style: {self.personality_profile.communication_style}
-        Expertise: {', '.join(self.personality_profile.expertise_areas[:3])}
+        Expertise: {", ".join(self.personality_profile.expertise_areas[:3])}
         Recent Activity: {self.access_count} interactions
         Temporal Relevance: {self.calculate_temporal_relevance():.2f}
-        Key Interests: {', '.join(self.preferences.topics_of_interest[:3])}
+        Key Interests: {", ".join(self.preferences.topics_of_interest[:3])}
         """
 
     def update_context(self, new_data: dict[str, Any]) -> None:

@@ -19,7 +19,8 @@ from haive.agents.memory_v2.graph_memory_agent import (
     GraphMemoryAgent,
     GraphMemoryConfig,
     GraphMemoryMode,
-    Optional)
+    Optional,
+)
 from haive.agents.memory_v2.long_term_memory_agent import LongTermMemoryAgent
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
 from haive.agents.multi.simple.agent import SimpleMultiAgent
@@ -27,8 +28,7 @@ from haive.agents.react.agent import ReactAgent
 
 
 class MemorySystemMode(str, Enum):
-    """Modes for the integrated memory system.
-    """
+    """Modes for the integrated memory system."""
 
     STRUCTURED = "structured"  # Use graph memory for structured data
     CONVERSATIONAL = "conversational"  # Use React memory for conversations
@@ -49,7 +49,8 @@ class IntegratedMemorySystem:
         user_id: str = "default_user",
         neo4j_config: dict[str, Any] | None = None,
         vector_store_path: Optional[str] = None,
-        engine: Optional[AugLLMConfig] = None):
+        engine: Optional[AugLLMConfig] = None,
+    ):
         self.user_id = user_id
         self.engine = engine or AugLLMConfig(temperature=0.7)
 
@@ -65,8 +66,7 @@ class IntegratedMemorySystem:
         self.coordinator = self._create_coordinator()
 
     def _init_graph_memory(self, neo4j_config: dict[str, Any] | None):
-        """Initialize graph memory for structured knowledge.
-        """
+        """Initialize graph memory for structured knowledge."""
         config = GraphMemoryConfig(
             user_id=self.user_id,
             mode=GraphMemoryMode.FULL,
@@ -78,30 +78,29 @@ class IntegratedMemorySystem:
                     "neo4j_username": "neo4j",
                     "neo4j_password": "password",
                 }
-            ))
+            ),
+        )
         self.graph_memory = GraphMemoryAgent(config)
 
     def _init_react_memory(self, vector_store_path: Optional[str]):
-        """Initialize React memory for flexible tool-based management.
-        """
+        """Initialize React memory for flexible tool-based management."""
         self.react_memory = ReactMemoryAgent(
             name="react_memory",
             engine=self.engine,
             user_id=self.user_id,
             memory_store_path=vector_store_path,
             k=5,
-            use_time_weighting=True)
+            use_time_weighting=True,
+        )
 
     def _init_longterm_memory(self):
-        """Initialize long-term memory for persistence.
-        """
+        """Initialize long-term memory for persistence."""
         self.longterm_memory = LongTermMemoryAgent(
             user_id=self.user_id, llm_config=self.engine, k_memories=10
         )
 
     def _create_memory_router(self) -> ReactAgent:
-        """Create router agent that determines which memory system to use.
-        """
+        """Create router agent that determines which memory system to use."""
 
         @tool
         def analyze_memory_type(content: str) -> str:
@@ -122,8 +121,7 @@ class IntegratedMemorySystem:
                 "connected to",
                 "related to",
             ]
-            has_structured = any(
-                ind in content_lower for ind in structured_indicators)
+            has_structured = any(ind in content_lower for ind in structured_indicators)
 
             # Check for conversational indicators
             conversational_indicators = [
@@ -136,9 +134,7 @@ class IntegratedMemorySystem:
                 "i think",
                 "my opinion",
             ]
-            has_conversational = any(
-                ind in content_lower for ind in conversational_indicators
-            )
+            has_conversational = any(ind in content_lower for ind in conversational_indicators)
 
             # Check for long-term importance indicators
             persistent_indicators = [
@@ -151,8 +147,7 @@ class IntegratedMemorySystem:
                 "essential",
                 "permanent",
             ]
-            has_persistent = any(
-                ind in content_lower for ind in persistent_indicators)
+            has_persistent = any(ind in content_lower for ind in persistent_indicators)
 
             # Determine best system
             if has_structured and not has_conversational:
@@ -231,13 +226,13 @@ the best memory system(s) to use:
 - structured: For entities, relationships, and structured knowledge (Neo4j graph)
 - conversational: For dialogue, opinions, and temporal information (React memory)
 - persistent: For important facts and long-term knowledge (Long-term memory)
-- hybrid: When multiple systems should be used together""")
+- hybrid: When multiple systems should be used together""",
+        )
 
         return router
 
     def _create_coordinator(self) -> SimpleMultiAgent:
-        """Create coordinator that manages all memory systems.
-        """
+        """Create coordinator that manages all memory systems."""
         agents = {
             "router": self.router,
             "graph": self.graph_memory.as_tool(self.graph_memory.config),
@@ -246,10 +241,8 @@ the best memory system(s) to use:
         }
 
         coordinator = SimpleMultiAgent(
-            name="memory_coordinator",
-            engine=self.engine,
-            agents=agents,
-            mode="sequential")
+            name="memory_coordinator", engine=self.engine, agents=agents, mode="sequential"
+        )
 
         return coordinator
 
@@ -257,7 +250,8 @@ the best memory system(s) to use:
         self,
         content: str,
         mode: MemorySystemMode = MemorySystemMode.INTELLIGENT,
-        metadata: dict[str, Any] | None = None) -> dict[str, Any]:
+        metadata: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         """Store memory using the appropriate system(s).
 
         Args:
@@ -277,9 +271,7 @@ the best memory system(s) to use:
 
         if mode == MemorySystemMode.INTELLIGENT:
             # Let router decide
-            routing = await self.router.arun(
-                f"Analyze this content for memory storage: {content}"
-            )
+            routing = await self.router.arun(f"Analyze this content for memory storage: {content}")
 
             if "structured" in routing.lower():
                 mode = MemorySystemMode.STRUCTURED
@@ -306,9 +298,7 @@ the best memory system(s) to use:
             results["systems_used"].append("react")
 
         if mode in [MemorySystemMode.PERSISTENT, MemorySystemMode.HYBRID]:
-            longterm_result = await self.longterm_memory.run(
-                content, extract_memories=True
-            )
+            longterm_result = await self.longterm_memory.run(content, extract_memories=True)
             results["longterm_storage"] = longterm_result
             results["systems_used"].append("longterm")
 
@@ -318,7 +308,8 @@ the best memory system(s) to use:
         self,
         query: str,
         mode: MemorySystemMode = MemorySystemMode.INTELLIGENT,
-        combine_results: bool = True) -> dict[str, Any]:
+        combine_results: bool = True,
+    ) -> dict[str, Any]:
         """Query memory using appropriate system(s).
 
         Args:
@@ -354,9 +345,7 @@ the best memory system(s) to use:
         all_results = {}
 
         if "graph" in systems_to_query or "all" in systems_to_query:
-            graph_result = await self.graph_memory.query_graph(
-                query, query_type="natural"
-            )
+            graph_result = await self.graph_memory.query_graph(query, query_type="natural")
             all_results["graph"] = graph_result
             results["systems_queried"].append("graph")
 
@@ -368,9 +357,7 @@ the best memory system(s) to use:
             results["systems_queried"].append("react")
 
         if "longterm" in systems_to_query or "all" in systems_to_query:
-            longterm_result = await self.longterm_memory.run(
-                query, extract_memories=False
-            )
+            longterm_result = await self.longterm_memory.run(query, extract_memories=False)
             all_results["longterm"] = longterm_result
             results["systems_queried"].append("longterm")
 
@@ -383,10 +370,8 @@ the best memory system(s) to use:
 
         return results
 
-    async def _combine_query_results(
-            self, query: str, results: dict[str, Any]) -> str:
-        """Combine results from multiple memory systems.
-        """
+    async def _combine_query_results(self, query: str, results: dict[str, Any]) -> str:
+        """Combine results from multiple memory systems."""
         # Use a simple agent to synthesize results
         synthesis_prompt = f"""
 Query: {query}
@@ -394,27 +379,24 @@ Query: {query}
 Results from different memory systems:
 
 Graph Memory (structured knowledge):
-{json.dumps(results.get('graph', {}), indent=2)}
+{json.dumps(results.get("graph", {}), indent=2)}
 
 Conversational Memory (recent interactions):
-{results.get('react', 'No results')}
+{results.get("react", "No results")}
 
 Long-term Memory (important facts):
-{json.dumps(results.get('longterm', {}), indent=2)}
+{json.dumps(results.get("longterm", {}), indent=2)}
 
 Synthesize these results into a comprehensive answer.
 """
 
-        synthesizer = SimpleAgent(
-            name="result_synthesizer",
-            engine=self.engine)
+        synthesizer = SimpleAgent(name="result_synthesizer", engine=self.engine)
 
         combined = await synthesizer.arun(synthesis_prompt)
         return combined
 
     async def get_memory_analytics(self) -> dict[str, Any]:
-        """Get analytics across all memory systems.
-        """
+        """Get analytics across all memory systems."""
         analytics = {
             "user_id": self.user_id,
             "timestamp": datetime.now().isoformat(),
@@ -430,7 +412,8 @@ Synthesize these results into a comprehensive answer.
                 RETURN node_labels[0] as type, count
                 ORDER BY count DESC
             """,
-                {"user_id": self.user_id})
+                {"user_id": self.user_id},
+            )
 
             analytics["systems"]["graph"] = {
                 "node_distribution": graph_stats,
@@ -443,21 +426,17 @@ Synthesize these results into a comprehensive answer.
         recent_memories = await self.react_memory.arun(
             "List my 10 most recent memories", auto_save=False
         )
-        analytics["systems"]["react"] = {
-            "recent_activity": recent_memories[:200] + "..."
-        }
+        analytics["systems"]["react"] = {"recent_activity": recent_memories[:200] + "..."}
 
         # Long-term memory stats
         analytics["systems"]["longterm"] = {
-            "retriever_active": hasattr(
-                self.longterm_memory,
-                "memory_retriever")}
+            "retriever_active": hasattr(self.longterm_memory, "memory_retriever")
+        }
 
         return analytics
 
     async def consolidate_all_memories(self) -> dict[str, Any]:
-        """Consolidate memories across all systems.
-        """
+        """Consolidate memories across all systems."""
         consolidation_results = {
             "timestamp": datetime.now().isoformat(),
             "systems_consolidated": [],
@@ -479,23 +458,22 @@ Synthesize these results into a comprehensive answer.
                 f"Archive of old memories: {old_memories}", extract_memories=True
             )
             consolidation_results["archived_memories"] = True
-            consolidation_results["systems_consolidated"].append(
-                "react_to_longterm")
+            consolidation_results["systems_consolidated"].append("react_to_longterm")
 
         return consolidation_results
 
 
 # Example usage
 async def demo_integrated_memory():
-    """Demonstrate the integrated memory system.
-    """
+    """Demonstrate the integrated memory system."""
     system = IntegratedMemorySystem(
         user_id="demo_user",
         neo4j_config={
             "neo4j_uri": "bolt://localhost:7687",
             "neo4j_username": "neo4j",
             "neo4j_password": "password",
-        })
+        },
+    )
 
     print("=== Integrated Memory System Demo ===\n")
 
@@ -550,8 +528,7 @@ async def demo_integrated_memory():
 
 # Advanced example with custom agent
 async def create_research_assistant():
-    """Create a research assistant with integrated memory.
-    """
+    """Create a research assistant with integrated memory."""
     # Initialize memory system
     memory_system = IntegratedMemorySystem(
         user_id="researcher",
@@ -559,15 +536,13 @@ async def create_research_assistant():
             "neo4j_uri": "bolt://localhost:7687",
             "neo4j_username": "neo4j",
             "neo4j_password": "password",
-        })
+        },
+    )
 
     # Create custom tools using the memory system
     @tool
-    async def remember_paper(
-        title: str, authors: str, key_findings: str, relevance: str
-    ) -> str:
-        """Remember details about a research paper.
-        """
+    async def remember_paper(title: str, authors: str, key_findings: str, relevance: str) -> str:
+        """Remember details about a research paper."""
         memory_content = f"""
         Research Paper: {title}
         Authors: {authors}
@@ -576,17 +551,15 @@ async def create_research_assistant():
         """
 
         result = await memory_system.store_memory(
-            memory_content, mode=MemorySystemMode.HYBRID  # Store in multiple systems
+            memory_content,
+            mode=MemorySystemMode.HYBRID,  # Store in multiple systems
         )
 
-        return (
-            f"Stored paper information in {len(result['systems_used'])} memory systems"
-        )
+        return f"Stored paper information in {len(result['systems_used'])} memory systems"
 
     @tool
     async def find_related_papers(topic: str) -> str:
-        """Find papers related to a topic from memory.
-        """
+        """Find papers related to a topic from memory."""
         result = await memory_system.query_memory(
             f"Find research papers related to {topic}", mode=MemorySystemMode.HYBRID
         )
@@ -597,8 +570,7 @@ async def create_research_assistant():
 
     @tool
     async def get_research_graph(entity: str) -> str:
-        """Get the knowledge graph around a research entity.
-        """
+        """Get the knowledge graph around a research entity."""
         graph_result = await memory_system.graph_memory.get_memory_subgraph(
             entity, max_depth=2, relationship_types=["AUTHORED", "CITES", "RELATED_TO"]
         )
@@ -612,7 +584,8 @@ async def create_research_assistant():
         tools=[remember_paper, find_related_papers, get_research_graph],
         system_message="""You are a research assistant with advanced memory capabilities.
 You can remember papers, find related research, and explore knowledge graphs.
-Always store important information in memory for future reference.""")
+Always store important information in memory for future reference.""",
+    )
 
     return research_assistant, memory_system
 

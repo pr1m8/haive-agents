@@ -19,8 +19,10 @@ Example:
             active=True
         )
 """
+
 from typing import Any
 from pydantic import BaseModel, Field, field_serializer, model_validator
+
 
 class AgentInfo(BaseModel):
     """Information about an agent including instance and metadata.
@@ -47,32 +49,48 @@ class AgentInfo(BaseModel):
                 capabilities=["math", "calculation", "statistics"]
             )
     """
-    agent: Any = Field(..., description='The actual agent instance', exclude=True)
-    name: str = Field(..., description='Agent name')
-    description: str = Field(..., description='What the agent is good at or used for')
-    active: bool = Field(default=True, description='Whether agent is currently active')
-    capabilities: list[str] = Field(default_factory=list, description="List of capability keywords (e.g., 'search', 'math', 'code')")
-    metadata: dict[str, Any] = Field(default_factory=dict, description='Additional metadata about the agent')
-    model_config = {'arbitrary_types_allowed': True}
 
-    @model_validator(mode='after')
-    def extract_agent_info(self) -> 'AgentInfo':
+    agent: Any = Field(..., description="The actual agent instance", exclude=True)
+    name: str = Field(..., description="Agent name")
+    description: str = Field(..., description="What the agent is good at or used for")
+    active: bool = Field(default=True, description="Whether agent is currently active")
+    capabilities: list[str] = Field(
+        default_factory=list,
+        description="List of capability keywords (e.g., 'search', 'math', 'code')",
+    )
+    metadata: dict[str, Any] = Field(
+        default_factory=dict, description="Additional metadata about the agent"
+    )
+    model_config = {"arbitrary_types_allowed": True}
+
+    @model_validator(mode="after")
+    def extract_agent_info(self) -> "AgentInfo":
         """Extract name and description from agent if not provided.
 
         Returns:
             Self with extracted information
         """
-        if not self.name and hasattr(self.agent, 'name'):
+        if not self.name and hasattr(self.agent, "name"):
             self.name = self.agent.name
         if not self.description:
-            if hasattr(self.agent, 'description'):
+            if hasattr(self.agent, "description"):
                 self.description = self.agent.description
-            elif hasattr(self.agent, 'engine') and hasattr(self.agent.engine, 'system_message'):
-                self.description = self.agent.engine.system_message or 'Agent specialist'
+            elif hasattr(self.agent, "engine") and hasattr(self.agent.engine, "system_message"):
+                self.description = self.agent.engine.system_message or "Agent specialist"
             else:
-                self.description = f'{self.name} specialist'
+                self.description = f"{self.name} specialist"
         if not self.capabilities and self.description:
-            keywords = ['search', 'math', 'code', 'translate', 'analyze', 'summarize', 'write', 'plan', 'research']
+            keywords = [
+                "search",
+                "math",
+                "code",
+                "translate",
+                "analyze",
+                "summarize",
+                "write",
+                "plan",
+                "research",
+            ]
             desc_lower = self.description.lower()
             self.capabilities = [kw for kw in keywords if kw in desc_lower]
         return self
@@ -111,7 +129,13 @@ class AgentInfo(BaseModel):
             True if agent has the capability
         """
         required_lower = required.lower()
-        return any((cap.lower() in required_lower or required_lower in cap.lower() for cap in self.capabilities))
+        return any(
+            (
+                cap.lower() in required_lower or required_lower in cap.lower()
+                for cap in self.capabilities
+            )
+        )
+
 
 class AgentInfoV2(BaseModel):
     """Experimental version with full agent serialization.
@@ -122,15 +146,16 @@ class AgentInfoV2(BaseModel):
     Warning:
         Experimental - may not work with all agent types.
     """
-    agent: Any = Field(..., description='The actual agent instance')
-    name: str = Field(..., description='Agent name')
-    description: str = Field(..., description='Agent description')
+
+    agent: Any = Field(..., description="The actual agent instance")
+    name: str = Field(..., description="Agent name")
+    description: str = Field(..., description="Agent description")
     active: bool = Field(default=True)
     capabilities: list[str] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
-    model_config = {'arbitrary_types_allowed': True}
+    model_config = {"arbitrary_types_allowed": True}
 
-    @field_serializer('agent')
+    @field_serializer("agent")
     def serialize_agent(self, agent: Any) -> dict[str, Any]:
         """Attempt to serialize agent to dict.
 
@@ -140,11 +165,17 @@ class AgentInfoV2(BaseModel):
         Returns:
             Serialized representation
         """
-        if hasattr(agent, 'model_dump'):
+        if hasattr(agent, "model_dump"):
             return agent.model_dump()
-        if hasattr(agent, 'dict'):
+        if hasattr(agent, "dict"):
             return agent.dict()
-        return {'type': type(agent).__name__, 'module': type(agent).__module__, 'name': getattr(agent, 'name', 'unknown'), 'config': getattr(agent, 'config', {})}
+        return {
+            "type": type(agent).__name__,
+            "module": type(agent).__module__,
+            "name": getattr(agent, "name", "unknown"),
+            "config": getattr(agent, "config", {}),
+        }
+
 
 class AgentRequest(BaseModel):
     """Model for requesting a new agent be added.
@@ -168,11 +199,15 @@ class AgentRequest(BaseModel):
                 requirements=["Support French", "Maintain formatting"]
             )
     """
+
     capability: str = Field(..., description="Required capability (e.g., 'translation', 'math')")
-    task_context: str = Field(..., description='Context about why this capability is needed')
-    suggested_name: str | None = Field(default=None, description='Suggested name for the new agent')
-    requirements: list[str] = Field(default_factory=list, description='Specific requirements or constraints')
-    priority: str = Field(default='medium', description='Priority level: low, medium, high')
+    task_context: str = Field(..., description="Context about why this capability is needed")
+    suggested_name: str | None = Field(default=None, description="Suggested name for the new agent")
+    requirements: list[str] = Field(
+        default_factory=list, description="Specific requirements or constraints"
+    )
+    priority: str = Field(default="medium", description="Priority level: low, medium, high")
+
 
 class RoutingDecision(BaseModel):
     """Model for supervisor routing decisions.
@@ -187,8 +222,11 @@ class RoutingDecision(BaseModel):
         confidence: Confidence level in the decision (0-1)
         alternatives: Other agents that could handle this
     """
+
     agent_name: str = Field(..., description="Agent to route to or 'END'")
-    task: str = Field(default='', description='Task for the agent')
-    reasoning: str = Field(default='', description='Explanation of routing decision')
-    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description='Confidence in decision')
-    alternatives: list[str] = Field(default_factory=list, description='Alternative agents that could handle this')
+    task: str = Field(default="", description="Task for the agent")
+    reasoning: str = Field(default="", description="Explanation of routing decision")
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="Confidence in decision")
+    alternatives: list[str] = Field(
+        default_factory=list, description="Alternative agents that could handle this"
+    )

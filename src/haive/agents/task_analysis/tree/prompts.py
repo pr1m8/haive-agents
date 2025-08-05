@@ -13,7 +13,8 @@ Your expertise includes:
 - Depth vs breadth trade-offs
 - Dependency path analysis
 - Structural pattern recognition
-- Tree optimization strategies"""),
+- Tree optimization strategies""",
+        ),
         (
             "human",
             """Analyze this task tree structure:
@@ -35,7 +36,8 @@ Analyze:
 4. Dependency bottlenecks
 5. Parallelization potential
 
-Provide structural recommendations."""),
+Provide structural recommendations.""",
+        ),
     ]
 )
 
@@ -43,7 +45,8 @@ CRITICAL_PATH_ANALYSIS_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are analyzing critical paths through task trees to identify optimization opportunities."""),
+            """You are analyzing critical paths through task trees to identify optimization opportunities.""",
+        ),
         (
             "human",
             """Analyze critical path for:
@@ -59,7 +62,8 @@ Identify:
 4. Optimization opportunities
 5. Risk points
 
-Return critical path analysis with recommendations."""),
+Return critical path analysis with recommendations.""",
+        ),
     ]
 )
 
@@ -67,7 +71,8 @@ TREE_PATTERN_RECOGNITION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are recognizing patterns in task tree structures to identify common workflows and optimization opportunities."""),
+            """You are recognizing patterns in task tree structures to identify common workflows and optimization opportunities.""",
+        ),
         (
             "human",
             """Identify patterns in:
@@ -82,6 +87,7 @@ Look for:
 5. Conditional branches
 6. Common subtree patterns
 
-Return identified patterns and their implications."""),
+Return identified patterns and their implications.""",
+        ),
     ]
 )

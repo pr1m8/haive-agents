@@ -12,9 +12,7 @@ class ReflectionState(MultiAgentState):
     input: str = Field(..., description="The original content to reflect on")
     current_content: str = Field(..., description="Current version of the content")
 
-    critique: Critique | None = Field(
-        default=None, description="Current critique of the content"
-    )
+    critique: Critique | None = Field(default=None, description="Current critique of the content")
 
     improvements: list[Improvement] = Field(
         default_factory=list, description="List of improvements made"
@@ -24,13 +22,9 @@ class ReflectionState(MultiAgentState):
 
     max_iterations: int = Field(default=3, description="Maximum number of iterations")
 
-    quality_threshold: float = Field(
-        default=0.8, description="Quality threshold to stop iterating"
-    )
+    quality_threshold: float = Field(default=0.8, description="Quality threshold to stop iterating")
 
-    final_content: str | None = Field(
-        default=None, description="Final improved content"
-    )
+    final_content: str | None = Field(default=None, description="Final improved content")
 
     def should_continue(self) -> bool:
         """Check if reflection should continue."""

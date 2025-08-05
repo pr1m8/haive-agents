@@ -19,31 +19,19 @@ class AgentExecutionConfig(BaseModel):
 
     agent_name: str = Field(description="Name of the agent")
     capability_description: str = Field(description="Agent's capability description")
-    execution_timeout: float | None = Field(
-        default=300.0, description="Timeout in seconds"
-    )
+    execution_timeout: float | None = Field(default=300.0, description="Timeout in seconds")
     retry_count: int = Field(default=0, description="Number of retries attempted")
     max_retries: int = Field(default=3, description="Maximum retries allowed")
     output_mode: str = Field(
         default="full_history", description="Output mode: full_history, last_message"
     )
-    handoff_back: bool = Field(
-        default=True, description="Whether to include handoff back messages"
-    )
-    priority: int = Field(
-        default=1, description="Agent priority (higher = more priority)"
-    )
+    handoff_back: bool = Field(default=True, description="Whether to include handoff back messages")
+    priority: int = Field(default=1, description="Agent priority (higher = more priority)")
 
     # Agent metadata
-    agent_type: str | None = Field(
-        default=None, description="Type of agent (react, simple, etc.)"
-    )
-    created_at: float = Field(
-        default_factory=time.time, description="When agent was registered"
-    )
-    last_used_at: float | None = Field(
-        default=None, description="Last execution timestamp"
-    )
+    agent_type: str | None = Field(default=None, description="Type of agent (react, simple, etc.)")
+    created_at: float = Field(default_factory=time.time, description="When agent was registered")
+    last_used_at: float | None = Field(default=None, description="Last execution timestamp")
     success_count: int = Field(default=0, description="Number of successful executions")
     error_count: int = Field(default=0, description="Number of failed executions")
 
@@ -64,13 +52,9 @@ class AgentExecutionResult(BaseModel):
     )
     agent_name: str = Field(description="Name of executed agent")
     success: bool = Field(description="Whether execution was successful")
-    start_time: float = Field(
-        default_factory=time.time, description="Execution start time"
-    )
+    start_time: float = Field(default_factory=time.time, description="Execution start time")
     end_time: float | None = Field(default=None, description="Execution end time")
-    duration: float | None = Field(
-        default=None, description="Execution duration in seconds"
-    )
+    duration: float | None = Field(default=None, description="Execution duration in seconds")
 
     # Results
     messages: list[BaseMessage] = Field(
@@ -80,31 +64,21 @@ class AgentExecutionResult(BaseModel):
     error: str | None = Field(default=None, description="Error message if failed")
 
     # Metadata
-    token_usage: dict[str, int] | None = Field(
-        default=None, description="Token usage statistics"
-    )
+    token_usage: dict[str, int] | None = Field(default=None, description="Token usage statistics")
     tool_calls: list[dict[str, Any]] = Field(
         default_factory=list, description="Tools called during execution"
     )
-    state_changes: dict[str, Any] = Field(
-        default_factory=dict, description="State changes made"
-    )
+    state_changes: dict[str, Any] = Field(default_factory=dict, description="State changes made")
 
 
 class SupervisorDecision(BaseModel):
     """Represents a supervisor routing decision with reasoning."""
 
-    decision_id: str = Field(
-        default_factory=lambda: str(uuid4()), description="Unique decision ID"
-    )
+    decision_id: str = Field(default_factory=lambda: str(uuid4()), description="Unique decision ID")
     target_agent: str | None = Field(description="Selected agent name or END")
     reasoning: str = Field(description="Explanation for the decision")
-    confidence: float = Field(
-        default=0.5, ge=0.0, le=1.0, description="Confidence in decision"
-    )
-    timestamp: float = Field(
-        default_factory=time.time, description="When decision was made"
-    )
+    confidence: float = Field(default=0.5, ge=0.0, le=1.0, description="Confidence in decision")
+    timestamp: float = Field(default_factory=time.time, description="When decision was made")
 
     # Decision context
     available_agents: list[str] = Field(
@@ -113,9 +87,7 @@ class SupervisorDecision(BaseModel):
     input_analysis: dict[str, Any] = Field(
         default_factory=dict, description="Analysis of user input"
     )
-    previous_context: str | None = Field(
-        default=None, description="Previous conversation context"
-    )
+    previous_context: str | None = Field(default=None, description="Previous conversation context")
 
     # Alternative options considered
     alternatives: list[dict[str, float]] = Field(
@@ -131,9 +103,7 @@ class DynamicSupervisorState(StateSchema):
     """
 
     # Core messaging (inherited from StateSchema)
-    messages: list[BaseMessage] = Field(
-        default_factory=list, description="Conversation messages"
-    )
+    messages: list[BaseMessage] = Field(default_factory=list, description="Conversation messages")
 
     # Agent management
     registered_agents: dict[str, AgentExecutionConfig] = Field(
@@ -176,7 +146,8 @@ class DynamicSupervisorState(StateSchema):
             "average_response_time": 0.0,
             "session_start": time.time(),
         },
-        description="Session-level performance statistics")
+        description="Session-level performance statistics",
+    )
 
     # Task and conversation management
     task_context: dict[str, Any] = Field(
@@ -234,9 +205,7 @@ class DynamicSupervisorState(StateSchema):
         for result in self.agent_execution_history:
             usage_counts[result.agent_name] = usage_counts.get(result.agent_name, 0) + 1
 
-        return (
-            max(usage_counts.items(), key=lambda x: x[1])[0] if usage_counts else None
-        )
+        return max(usage_counts.items(), key=lambda x: x[1])[0] if usage_counts else None
 
     def add_agent_config(self, agent_name: str, config: AgentExecutionConfig) -> None:
         """Add or update agent configuration."""
@@ -253,9 +222,7 @@ class DynamicSupervisorState(StateSchema):
         """Get agent configuration by name."""
         return self.registered_agents.get(agent_name)
 
-    def update_agent_stats(
-        self, agent_name: str, success: bool, duration: float
-    ) -> None:
+    def update_agent_stats(self, agent_name: str, success: bool, duration: float) -> None:
         """Update agent execution statistics."""
         if agent_name in self.registered_agents:
             config = self.registered_agents[agent_name]
@@ -283,9 +250,7 @@ class DynamicSupervisorState(StateSchema):
             self.session_stats["failed_executions"] += 1
 
         # Update average response time
-        total_duration = sum(
-            r.duration or 0 for r in self.agent_execution_history if r.duration
-        )
+        total_duration = sum(r.duration or 0 for r in self.agent_execution_history if r.duration)
         self.session_stats["average_response_time"] = total_duration / len(
             self.agent_execution_history
         )
@@ -304,9 +269,7 @@ class DynamicSupervisorState(StateSchema):
 
     def get_agent_performance(self, agent_name: str) -> dict[str, Any]:
         """Get performance metrics for specific agent."""
-        agent_results = [
-            r for r in self.agent_execution_history if r.agent_name == agent_name
-        ]
+        agent_results = [r for r in self.agent_execution_history if r.agent_name == agent_name]
 
         if not agent_results:
             return {"executions": 0, "success_rate": 0.0, "average_duration": 0.0}
@@ -350,12 +313,7 @@ class DynamicSupervisorState(StateSchema):
         agents_with_priority = [
             (name, config.priority) for name, config in self.registered_agents.items()
         ]
-        return [
-            name
-            for name, _ in sorted(
-                agents_with_priority, key=lambda x: x[1], reverse=True
-            )
-        ]
+        return [name for name, _ in sorted(agents_with_priority, key=lambda x: x[1], reverse=True)]
 
     def adapt_response_for_agent(self, agent_name: str, response: Any) -> Any:
         """Apply adaptation rules to agent response."""

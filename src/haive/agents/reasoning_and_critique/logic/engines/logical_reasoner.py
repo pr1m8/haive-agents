@@ -136,10 +136,9 @@ For each step specify:
 - What inference rule applies
 - The specific conclusion
 - Confidence level
-- Why this inference is valid"""),
-        (
-            "human",
-            "Build a logical argument for this reasoning chain:\n{reasoning_chain}"),
+- Why this inference is valid""",
+        ),
+        ("human", "Build a logical argument for this reasoning chain:\n{reasoning_chain}"),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )
@@ -151,4 +150,5 @@ def create_logical_reasoner() -> Any:
         name="logical_reasoner",
         prompt_template=LOGICAL_REASONING_PROMPT,
         structured_output_model=ReasoningChain,
-        temperature=0.2)
+        temperature=0.2,
+    )

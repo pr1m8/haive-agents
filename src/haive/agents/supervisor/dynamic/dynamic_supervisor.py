@@ -297,10 +297,7 @@ class DynamicSupervisor(ReactAgent):
             ]
             self.engine.tools = mgmt_tools + aggregated_tools
 
-            logger.info(
-                f"Aggregated {
-                    len(aggregated_tools)} tools from agents"
-            )
+            logger.info(f"Aggregated {len(aggregated_tools)} tools from agents")
 
     # ========================================================================
     # GRAPH BUILDING
@@ -382,10 +379,8 @@ class DynamicSupervisor(ReactAgent):
 
     @classmethod
     def create_with_agents(
-        cls,
-        agents: list[tuple[str, Agent, str]],
-        name: str = "dynamic_supervisor",
-        **kwargs) -> "DynamicSupervisor":
+        cls, agents: list[tuple[str, Agent, str]], name: str = "dynamic_supervisor", **kwargs
+    ) -> "DynamicSupervisor":
         """Create dynamic supervisor with initial agents.
 
         Args:

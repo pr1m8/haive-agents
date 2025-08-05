@@ -1,16 +1,12 @@
 from haive.agents.lats.models import Reflection
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.output_parsers import (
-    JsonOutputToolsParser,
-    PydanticToolsParser)
+from langchain_core.output_parsers import JsonOutputToolsParser, PydanticToolsParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 REFLECTION_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "Reflect and grade the assistant response to the user question below."),
+        ("system", "Reflect and grade the assistant response to the user question below."),
         ("user", "{input}"),
         MessagesPlaceholder(variable_name="candidate"),
     ]
@@ -21,14 +17,13 @@ reflection_llm_config = AugLLMConfig(
     name="reflection_chain",
     prompt_template=REFLECTION_PROMPT_TEMPLATE,
     # output_parser=reflection_output_parser)
-    structured_output_model=Reflection)
+    structured_output_model=Reflection,
+)
 
 
 prompt_template = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "You are an AI assistant."),
+        ("system", "You are an AI assistant."),
         ("user", "{input}"),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]

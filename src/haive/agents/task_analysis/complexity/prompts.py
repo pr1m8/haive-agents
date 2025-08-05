@@ -54,7 +54,8 @@ Assessment Factors:
 - Solution confidence
 - Risk factors
 
-IMPORTANT: Provide objective, consistent scoring with clear justification."""),
+IMPORTANT: Provide objective, consistent scoring with clear justification.""",
+        ),
         (
             "human",
             """Assess the complexity of this task:
@@ -114,7 +115,8 @@ Also provide:
 - Key risk factors
 - Complexity mitigation recommendations
 
-Return a ComplexityVector object with all dimensions scored and justified."""),
+Return a ComplexityVector object with all dimensions scored and justified.""",
+        ),
     ]
 )
 
@@ -122,7 +124,8 @@ COMPLEXITY_FACTORS_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are analyzing detailed factors contributing to task complexity. Focus on identifying specific, measurable factors that impact task difficulty and execution."""),
+            """You are analyzing detailed factors contributing to task complexity. Focus on identifying specific, measurable factors that impact task difficulty and execution.""",
+        ),
         (
             "human",
             """Analyze complexity factors for:
@@ -139,7 +142,8 @@ Identify and quantify:
 4. Integration factors (systems, transformations)
 5. Uncertainty factors (unknowns, research)
 
-Return ComplexityFactors object with specific metrics."""),
+Return ComplexityFactors object with specific metrics.""",
+        ),
     ]
 )
 
@@ -147,7 +151,8 @@ COMPLEXITY_COMPARISON_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are comparing task complexities to provide relative assessment and identify patterns across similar tasks."""),
+            """You are comparing task complexities to provide relative assessment and identify patterns across similar tasks.""",
+        ),
         (
             "human",
             """Compare this task's complexity with similar tasks:
@@ -164,6 +169,7 @@ Provide:
 3. Unusual complexity factors
 4. Optimization opportunities based on similar tasks
 
-Return comparative analysis."""),
+Return comparative analysis.""",
+        ),
     ]
 )

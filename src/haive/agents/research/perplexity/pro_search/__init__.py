@@ -10,7 +10,8 @@ from haive.agents.research.perplexity.pro_search.models import (
     SearchQueryConfig,
     SearchQueryResult,
     SearchResult,
-    SearchSynthesis)
+    SearchSynthesis,
+)
 
 __all__ = [
     "ContentAnalysis",

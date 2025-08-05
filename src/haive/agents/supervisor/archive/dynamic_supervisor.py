@@ -27,7 +27,8 @@ from haive.agents.supervisor.dynamic_state import (
     AgentExecutionConfig,
     AgentExecutionResult,
     DynamicSupervisorState,
-    SupervisorDecision)
+    SupervisorDecision,
+)
 from haive.agents.supervisor.registry import AgentRegistry
 
 logger = logging.getLogger(__name__)
@@ -59,7 +60,8 @@ class DynamicSupervisorAgent(ReactAgent):
         auto_rebuild_graph: bool = True,
         max_execution_history: int = 100,
         enable_parallel_execution: bool = False,
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize dynamic supervisor agent.
 
         Args:
@@ -110,9 +112,7 @@ class DynamicSupervisorAgent(ReactAgent):
             if hasattr(agent, "tools") and agent.tools:
                 agent_tools.extend(agent.tools)
             if (
-                hasattr(agent, "engine")
-                and agent.engine
-                and hasattr(agent.engine, "tools")
+                hasattr(agent, "engine") and agent.engine and hasattr(agent.engine, "tools")
             ) and agent.engine.tools:
                 agent_tools.extend(agent.engine.tools)
 
@@ -153,7 +153,8 @@ class DynamicSupervisorAgent(ReactAgent):
             self.main_engine.tools = aggregated_tools
             logger.info(
                 f"Updated supervisor tools: {
-                    len(aggregated_tools)} total tools from registered agents"
+                    len(aggregated_tools)
+                } total tools from registered agents"
             )
 
         # Update tool routes mapping
@@ -168,7 +169,8 @@ class DynamicSupervisorAgent(ReactAgent):
         agent: Agent,
         capability_description: str | None = None,
         execution_config: dict[str, Any] | None = None,
-        rebuild_graph: bool | None = None) -> bool:
+        rebuild_graph: bool | None = None,
+    ) -> bool:
         """Register an agent with enhanced configuration.
 
         Args:
@@ -183,10 +185,10 @@ class DynamicSupervisorAgent(ReactAgent):
         # Create execution config
         config = AgentExecutionConfig(
             agent_name=agent.name,
-            capability_description=capability_description
-            or f"Handles {agent.name} tasks",
+            capability_description=capability_description or f"Handles {agent.name} tasks",
             agent_type=agent.__class__.__name__,
-            **(execution_config or {}))
+            **(execution_config or {}),
+        )
 
         # Register with base registry
         success = self.agent_registry.register(agent, capability_description)
@@ -200,9 +202,7 @@ class DynamicSupervisorAgent(ReactAgent):
             self._update_supervisor_tools()
 
             # Rebuild graph if needed
-            should_rebuild = (
-                rebuild_graph if rebuild_graph is not None else self.auto_rebuild_graph
-            )
+            should_rebuild = rebuild_graph if rebuild_graph is not None else self.auto_rebuild_graph
             if should_rebuild and self._graph_built:
                 await self._rebuild_graph()
 
@@ -210,9 +210,7 @@ class DynamicSupervisorAgent(ReactAgent):
 
         return success
 
-    async def unregister_agent(
-        self, agent_name: str, rebuild_graph: bool | None = None
-    ) -> bool:
+    async def unregister_agent(self, agent_name: str, rebuild_graph: bool | None = None) -> bool:
         """Unregister an agent with graph rebuilding.
 
         Args:
@@ -233,9 +231,7 @@ class DynamicSupervisorAgent(ReactAgent):
             self._update_supervisor_tools()
 
             # Rebuild graph if needed
-            should_rebuild = (
-                rebuild_graph if rebuild_graph is not None else self.auto_rebuild_graph
-            )
+            should_rebuild = rebuild_graph if rebuild_graph is not None else self.auto_rebuild_graph
             if should_rebuild and self._graph_built:
                 await self._rebuild_graph()
 
@@ -243,9 +239,7 @@ class DynamicSupervisorAgent(ReactAgent):
 
         return success
 
-    async def update_agent_config(
-        self, agent_name: str, config_updates: dict[str, Any]
-    ) -> bool:
+    async def update_agent_config(self, agent_name: str, config_updates: dict[str, Any]) -> bool:
         """Update agent execution configuration at runtime.
 
         Args:
@@ -354,9 +348,7 @@ class DynamicSupervisorAgent(ReactAgent):
                 # Get LLM decision with reasoning
                 if self.main_engine:
                     response = await self.main_engine.ainvoke(prompt, config)
-                    decision_data = self._parse_decision_response(
-                        response, available_agents
-                    )
+                    decision_data = self._parse_decision_response(response, available_agents)
                 else:
                     decision_data = {
                         "target": "END",
@@ -370,7 +362,8 @@ class DynamicSupervisorAgent(ReactAgent):
                     confidence=decision_data.get("confidence", 0.5),
                     available_agents=list(available_agents.keys()),
                     input_analysis=input_analysis,
-                    alternatives=decision_data.get("alternatives", []))
+                    alternatives=decision_data.get("alternatives", []),
+                )
 
                 # Update state
                 updates = {
@@ -396,9 +389,8 @@ class DynamicSupervisorAgent(ReactAgent):
                 self._performance_monitor.end_decision("ERROR")
 
                 error_decision = SupervisorDecision(
-                    target_agent="END",
-                    reasoning=f"Error in decision making: {e!s}",
-                    confidence=0.0)
+                    target_agent="END", reasoning=f"Error in decision making: {e!s}", confidence=0.0
+                )
 
                 return {
                     "current_decision": error_decision,
@@ -429,7 +421,8 @@ class DynamicSupervisorAgent(ReactAgent):
                 execution_id=execution_id,
                 agent_name=target_agent,
                 success=False,
-                start_time=start_time)
+                start_time=start_time,
+            )
 
             return {
                 "current_execution": execution_result,
@@ -496,9 +489,7 @@ class DynamicSupervisorAgent(ReactAgent):
 
             return "__end__"
 
-        graph.add_conditional_edges(
-            "coordinator", routing_condition, routing_destinations
-        )
+        graph.add_conditional_edges("coordinator", routing_condition, routing_destinations)
 
     def _create_enhanced_agent_wrapper(self, agent_name: str) -> Callable:
         """Create enhanced agent wrapper with performance tracking."""
@@ -509,16 +500,13 @@ class DynamicSupervisorAgent(ReactAgent):
                 agent = self.agent_registry.get_agent(agent_name)
                 if not agent:
                     error_result = AgentExecutionResult(
-                        agent_name=agent_name,
-                        success=False,
-                        error=f"Agent {agent_name} not found")
+                        agent_name=agent_name, success=False, error=f"Agent {agent_name} not found"
+                    )
                     return {"current_execution": error_result}
 
                 # Get agent configuration
                 agent_config = state.get_agent_config(agent_name)
-                execution_timeout = (
-                    agent_config.execution_timeout if agent_config else 300.0
-                )
+                execution_timeout = agent_config.execution_timeout if agent_config else 300.0
 
                 try:
                     # Start execution tracking
@@ -548,7 +536,8 @@ class DynamicSupervisorAgent(ReactAgent):
                         end_time=end_time,
                         duration=duration,
                         messages=result_messages,
-                        output=result)
+                        output=result,
+                    )
 
                     # Track tool calls if available
                     if hasattr(result, "tool_calls"):
@@ -570,7 +559,8 @@ class DynamicSupervisorAgent(ReactAgent):
                         success=False,
                         start_time=start_time,
                         end_time=time.time(),
-                        error=f"Agent execution timed out after {execution_timeout}s")
+                        error=f"Agent execution timed out after {execution_timeout}s",
+                    )
 
                     state.add_execution_result(error_result)
                     state.increment_retry_count(agent_name)
@@ -583,7 +573,8 @@ class DynamicSupervisorAgent(ReactAgent):
                         success=False,
                         start_time=start_time,
                         end_time=time.time(),
-                        error=str(e))
+                        error=str(e),
+                    )
 
                     state.add_execution_result(error_result)
                     state.increment_retry_count(agent_name)
@@ -643,8 +634,7 @@ class DynamicSupervisorAgent(ReactAgent):
                 "performance": performance,
                 "priority": agent_config.priority if agent_config else 1,
                 "available": not (
-                    agent_config
-                    and agent_config.retry_count >= agent_config.max_retries
+                    agent_config and agent_config.retry_count >= agent_config.max_retries
                 ),
             }
 
@@ -655,7 +645,8 @@ class DynamicSupervisorAgent(ReactAgent):
         state: DynamicSupervisorState,
         input_analysis: dict[str, Any],
         available_agents: dict[str, dict[str, Any]],
-        tool_info: dict[str, Any] | None = None) -> ChatPromptTemplate:
+        tool_info: dict[str, Any] | None = None,
+    ) -> ChatPromptTemplate:
         """Create enhanced prompt with reasoning and context."""
         # Build agent descriptions with performance data and tool information
         agent_descriptions = []
@@ -677,33 +668,22 @@ class DynamicSupervisorAgent(ReactAgent):
                     if owner == agent_name
                 ]
 
-            tools_text = (
-                f"Tools: {
-                    ', '.join(agent_tools)}"
-                if agent_tools
-                else "No tools"
-            )
+            tools_text = f"Tools: {', '.join(agent_tools)}" if agent_tools else "No tools"
 
             description = f"""- {agent_name} (Priority: {priority}, {status})
   Capability: {capability}
   {tools_text}
-  Performance: {success_rate:.1f}% success rate, {performance.get('executions', 0)} executions"""
+  Performance: {success_rate:.1f}% success rate, {performance.get("executions", 0)} executions"""
 
             agent_descriptions.append(description)
 
-        agents_text = (
-            "\n".join(agent_descriptions)
-            if agent_descriptions
-            else "No agents available"
-        )
+        agents_text = "\n".join(agent_descriptions) if agent_descriptions else "No agents available"
 
         # Add overall tool summary
         tool_summary = ""
         if tool_info and tool_info.get("tools"):
             total_tools = len(tool_info["tools"])
-            tool_summary = (
-                f"\n\nAVAILABLE TOOLS ACROSS ALL AGENTS: {total_tools} tools total\n"
-            )
+            tool_summary = f"\n\nAVAILABLE TOOLS ACROSS ALL AGENTS: {total_tools} tools total\n"
             for tool_name, agent_name in tool_info.get("tool_to_agent", {}).items():
                 tool_summary += f"- {tool_name} (via {agent_name})\n"
 
@@ -713,17 +693,15 @@ class DynamicSupervisorAgent(ReactAgent):
         if recent_decisions:
             context_text = "\n\nRecent decisions:\n"
             for decision in recent_decisions:
-                context_text += f"- {
-                    decision.target_agent}: {
-                    decision.reasoning}\n"
+                context_text += f"- {decision.target_agent}: {decision.reasoning}\n"
 
         system_prompt = f"""You are an intelligent supervisor managing a dynamic team of AI agents.
 Your task is to analyze the user's request and select the most appropriate agent or end the conversation.
 
 INPUT ANALYSIS:
-- Type: {input_analysis.get('type', 'unknown')}
-- Complexity: {input_analysis.get('complexity', 'simple')}
-- Keywords: {', '.join(input_analysis.get('keywords', [])[:5])}
+- Type: {input_analysis.get("type", "unknown")}
+- Complexity: {input_analysis.get("complexity", "simple")}
+- Keywords: {", ".join(input_analysis.get("keywords", [])[:5])}
 
 AVAILABLE AGENTS:
 {agents_text}
@@ -759,7 +737,6 @@ Provide a JSON response with:
         content = getattr(response, "content", str(response))
 
         try:
-
             # Try to parse as JSON first
             if "{" in content and "}" in content:
                 json_start = content.find("{")
@@ -810,19 +787,13 @@ Provide a JSON response with:
                 # Add additional fields if they exist in target schema
                 schema_fields = agent.state_schema.model_fields
                 for field_name in schema_fields:
-                    if (
-                        hasattr(supervisor_state, field_name)
-                        and field_name != "messages"
-                    ):
+                    if hasattr(supervisor_state, field_name) and field_name != "messages":
                         state_data[field_name] = getattr(supervisor_state, field_name)
 
                 return agent.state_schema(**state_data)
 
             except Exception as e:
-                logger.warning(
-                    f"Could not create specific state for {
-                        agent.name}: {e}"
-                )
+                logger.warning(f"Could not create specific state for {agent.name}: {e}")
 
         # Fallback to basic state
         return type("State", (), {"messages": supervisor_state.messages})()
@@ -845,9 +816,7 @@ Provide a JSON response with:
 
         # Add per-agent performance
         for agent_name in state.get_available_agents():
-            summary["agent_performance"][agent_name] = state.get_agent_performance(
-                agent_name
-            )
+            summary["agent_performance"][agent_name] = state.get_agent_performance(agent_name)
 
         return summary
 
@@ -892,7 +861,8 @@ Provide a JSON response with:
                     str(performance["executions"]),
                     f"{performance['success_rate']:.1%}",
                     f"{performance['average_duration']:.2f}s",
-                    str(config.priority if config else 1))
+                    str(config.priority if config else 1),
+                )
 
             console.print(perf_table)
 
@@ -914,7 +884,8 @@ Provide a JSON response with:
                         else decision.reasoning
                     ),
                     f"{decision.confidence:.1%}",
-                    time.strftime("%H:%M:%S", time.localtime(decision.timestamp)))
+                    time.strftime("%H:%M:%S", time.localtime(decision.timestamp)),
+                )
 
             console.print(decisions_table)
 
@@ -938,8 +909,4 @@ class PerformanceMonitor:
             logger.debug(f"Decision to {target} took {duration:.3f}s")
 
     def get_average_decision_time(self) -> float:
-        return (
-            self.total_decision_time / self.decision_count
-            if self.decision_count > 0
-            else 0.0
-        )
+        return self.total_decision_time / self.decision_count if self.decision_count > 0 else 0.0

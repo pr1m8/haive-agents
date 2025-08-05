@@ -27,7 +27,8 @@ logging.basicConfig(
     handlers=[
         logging.StreamHandler(sys.stdout),
         logging.FileHandler(log_file, mode="w"),  # Overwrite the log file
-    ])
+    ],
+)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -68,7 +69,9 @@ def run_example() -> bool:
                 vectorstore_config=VectorStoreConfig(
                     name="research_vectorstore",
                     vector_store_type="FAISS",
-                    persist_directory=str(output_dir / "vectorstore")))
+                    persist_directory=str(output_dir / "vectorstore"),
+                ),
+            )
             agent = ResearchAgent(config=config)
             logger.debug("Research agent created successfully")
         except Exception as e:
@@ -93,9 +96,8 @@ def run_example() -> bool:
             logger.info("agent.run() completed successfully")
             logger.debug(
                 f"Final state keys: {
-                    final_state.keys() if isinstance(
-                        final_state,
-                        dict) else 'Not a dict'}"
+                    final_state.keys() if isinstance(final_state, dict) else 'Not a dict'
+                }"
             )
         except Exception as e:
             logger.exception(f"Error running research agent: {e}")
@@ -143,9 +145,7 @@ def run_example() -> bool:
 
         # Show how to use the CLI to visualize this state later
         logger.info("\nTo visualize this state later, run:")
-        logger.info(
-            f"python -m haive.agents.open_perplexity.cli visualize {state_history_path}"
-        )
+        logger.info(f"python -m haive.agents.open_perplexity.cli visualize {state_history_path}")
         logger.info("\nTo generate a markdown report from this state, run:")
         logger.info(
             f"python -m haive.agents.open_perplexity.cli visualize {state_history_path} -m output.md"

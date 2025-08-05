@@ -135,9 +135,7 @@ async def scroll(state: dict[str, Any]) -> dict[str, Any]:
                 bboxes = state.bboxes
 
             if target_id >= len(bboxes):
-                return {
-                    "message": f"Invalid bounding box ID: {target_id} (out of range)"
-                }
+                return {"message": f"Invalid bounding box ID: {target_id} (out of range)"}
 
             bbox = bboxes[target_id]
             x, y = bbox["x"], bbox["y"]
@@ -151,7 +149,8 @@ async def scroll(state: dict[str, Any]) -> dict[str, Any]:
     page_url = page.url
     return {
         "message": f"Scrolled {direction} in {
-            'window' if target.upper() == 'WINDOW' else 'element'}",
+            'window' if target.upper() == 'WINDOW' else 'element'
+        }",
         "page_url": page_url,
     }
 

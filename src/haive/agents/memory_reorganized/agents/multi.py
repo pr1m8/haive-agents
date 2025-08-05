@@ -24,8 +24,11 @@ from haive.agents.memory_reorganized.agents.simple import SimpleMemoryAgent, Tok
 
 # Optional imports with graceful fallback
 try:
-    from haive.agents.memory_reorganized.coordination.agentic_rag_coordinator import AgenticRAGCoordinator
+    from haive.agents.memory_reorganized.coordination.agentic_rag_coordinator import (
+        AgenticRAGCoordinator,
+    )
     from haive.agents.memory_reorganized.retrieval.advanced_rag import AdvancedRAGMemoryAgent
+
     HAS_RAG_MEMORY = True
 except ImportError:
     AdvancedRAGMemoryAgent = None
@@ -114,17 +117,16 @@ class MultiMemoryConfig(BaseModel):
         default_factory=lambda: [
             MemoryRoutingRule(QueryType.CONVERSATIONAL, MemoryStrategy.SIMPLE),
             MemoryRoutingRule(
-                QueryType.FACTUAL,
-                MemoryStrategy.RAG,
-                fallback_strategy=MemoryStrategy.SIMPLE),
+                QueryType.FACTUAL, MemoryStrategy.RAG, fallback_strategy=MemoryStrategy.SIMPLE
+            ),
             MemoryRoutingRule(
                 QueryType.RELATIONSHIP,
                 MemoryStrategy.GRAPH,
-                fallback_strategy=MemoryStrategy.SIMPLE),
+                fallback_strategy=MemoryStrategy.SIMPLE,
+            ),
             MemoryRoutingRule(
-                QueryType.TEMPORAL,
-                MemoryStrategy.RAG,
-                fallback_strategy=MemoryStrategy.SIMPLE),
+                QueryType.TEMPORAL, MemoryStrategy.RAG, fallback_strategy=MemoryStrategy.SIMPLE
+            ),
             MemoryRoutingRule(QueryType.PREFERENCE, MemoryStrategy.SIMPLE),
             MemoryRoutingRule(QueryType.MEMORY_RETRIEVAL, MemoryStrategy.HYBRID),
             MemoryRoutingRule(QueryType.MIXED, MemoryStrategy.ADAPTIVE),
@@ -182,7 +184,8 @@ class MultiMemoryAgent(SimpleAgent):
             name=config.name,
             engine=config.llm_config,
             state_schema=MultiMemoryState,
-            use_prebuilt_base=True)
+            use_prebuilt_base=True,
+        )
 
         # Initialize specialized memory agents
         self._init_memory_agents()
@@ -211,7 +214,8 @@ class MultiMemoryAgent(SimpleAgent):
                 self.memory_agents["simple"] = SimpleMemoryAgent(
                     name=f"{self.multi_config.name}_simple",
                     engine=self.multi_config.llm_config,
-                    memory_config=self.multi_config.simple_memory_config)
+                    memory_config=self.multi_config.simple_memory_config,
+                )
                 logger.info("Initialized SimpleMemoryAgent")
             except Exception as e:
                 logger.exception(f"Failed to initialize SimpleMemoryAgent: {e}")
@@ -220,8 +224,8 @@ class MultiMemoryAgent(SimpleAgent):
         if self.multi_config.enable_graph_memory and HAS_GRAPH_MEMORY:
             try:
                 graph_config = GraphMemoryConfig(
-                    llm_config=self.multi_config.llm_config,
-                    **self.multi_config.graph_memory_config)
+                    llm_config=self.multi_config.llm_config, **self.multi_config.graph_memory_config
+                )
                 self.memory_agents["graph"] = GraphMemoryAgent(graph_config)
                 logger.info("Initialized GraphMemoryAgent")
             except Exception as e:
@@ -232,18 +236,14 @@ class MultiMemoryAgent(SimpleAgent):
             try:
                 # RAG Memory initialization would go here
                 # For now, we'll skip since it has complex dependencies
-                logger.info(
-                    "RAG Memory Agent initialization skipped (complex dependencies)"
-                )
+                logger.info("RAG Memory Agent initialization skipped (complex dependencies)")
             except Exception as e:
                 logger.warning(f"Failed to initialize RAG Memory Agent: {e}")
 
         logger.info(
-            f"Initialized {
-                len(
-                    self.memory_agents)} memory agents: {
-                list(
-                    self.memory_agents.keys())}"
+            f"Initialized {len(self.memory_agents)} memory agents: {
+                list(self.memory_agents.keys())
+            }"
         )
 
     def _init_query_classifier(self):
@@ -259,18 +259,13 @@ class MultiMemoryAgent(SimpleAgent):
         return await self.query_classifier.classify(query)
 
     def route_query(
-        self,
-        query_type: QueryType,
-        confidence: float,
-        context: dict[str, Any] | None = None) -> dict[str, Any]:
+        self, query_type: QueryType, confidence: float, context: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """Route query to appropriate memory strategy based on classification."""
         # Find matching routing rule
         selected_rule = None
         for rule in self.multi_config.routing_rules:
-            if (
-                rule.query_type == query_type
-                and confidence >= rule.confidence_threshold
-            ):
+            if rule.query_type == query_type and confidence >= rule.confidence_threshold:
                 # Check additional conditions if any
                 if self._check_rule_conditions(rule, context):
                     selected_rule = rule
@@ -318,7 +313,8 @@ class MultiMemoryAgent(SimpleAgent):
             "rule_matched": rule_matched,
             "available_strategies": [s.value for s in available_strategies],
             "reasoning": f"Query type {query_type} routed to {final_strategy} (confidence: {
-                confidence:.2f})",
+                confidence:.2f
+            })",
         }
 
     def _check_rule_conditions(
@@ -377,10 +373,8 @@ class MultiMemoryAgent(SimpleAgent):
             }
 
     async def execute_strategy(
-        self,
-        strategy: MemoryStrategy,
-        query: str,
-        context: dict[str, Any] | None = None) -> dict[str, Any]:
+        self, strategy: MemoryStrategy, query: str, context: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """Execute the selected memory strategy."""
         if strategy == MemoryStrategy.SIMPLE:
             return await self.query_memory_agent("simple", query, context)
@@ -417,17 +411,13 @@ class MultiMemoryAgent(SimpleAgent):
                 "strategy": "hybrid",
                 "results": results,
                 "agents_queried": available_agents,
-                "success": any(
-                    r.get("success", False) for r in results if isinstance(r, dict)
-                ),
+                "success": any(r.get("success", False) for r in results if isinstance(r, dict)),
             }
 
         if strategy == MemoryStrategy.ADAPTIVE:
             # Use AI to decide the best approach
             adaptive_result = await self._adaptive_strategy_selection(query, context)
-            return await self.execute_strategy(
-                adaptive_result["selected_strategy"], query, context
-            )
+            return await self.execute_strategy(adaptive_result["selected_strategy"], query, context)
 
         return {"error": f"Unknown strategy: {strategy}", "success": False}
 
@@ -469,9 +459,7 @@ class MultiMemoryAgent(SimpleAgent):
                 "rag": MemoryStrategy.RAG,
             }
 
-            final_strategy = strategy_mapping.get(
-                selected_strategy, MemoryStrategy.SIMPLE
-            )
+            final_strategy = strategy_mapping.get(selected_strategy, MemoryStrategy.SIMPLE)
 
             return {
                 "selected_strategy": final_strategy,
@@ -527,7 +515,8 @@ class MultiMemoryAgent(SimpleAgent):
         routing_result = self.route_query(
             classification_result["query_type"],
             classification_result["confidence"],
-            classification_result.get("context"))
+            classification_result.get("context"),
+        )
 
         # Execute selected strategy
         execution_result = await self.execute_strategy(
@@ -548,9 +537,7 @@ class MultiMemoryAgent(SimpleAgent):
                 "routing_decision": routing_result,
                 "fallback_used": routing_result["fallback_used"],
                 "memory_responses": {"primary": execution_result},
-                "total_coordination_time": (
-                    datetime.now() - start_time
-                ).total_seconds(),
+                "total_coordination_time": (datetime.now() - start_time).total_seconds(),
             }
         )
 
@@ -666,9 +653,7 @@ class QueryClassifier:
                         "memory_retrieval": QueryType.MEMORY_RETRIEVAL,
                         "mixed": QueryType.MIXED,
                     }
-                    result["query_type"] = type_mapping.get(
-                        type_str, QueryType.CONVERSATIONAL
-                    )
+                    result["query_type"] = type_mapping.get(type_str, QueryType.CONVERSATIONAL)
 
                 elif line.startswith("Confidence:"):
                     try:
@@ -719,9 +704,7 @@ class ResponseSynthesizer:
         response_summaries = []
         for i, response in enumerate(successful_responses):
             agent_name = response.get("agent", f"agent_{i}")
-            result_content = str(response.get("result", ""))[
-                :500
-            ]  # Truncate for prompt
+            result_content = str(response.get("result", ""))[:500]  # Truncate for prompt
             response_summaries.append(f"{agent_name}: {result_content}")
 
         synthesis_prompt = f"""
@@ -764,12 +747,11 @@ def create_multi_memory_agent(
     name: str = "multi_memory_coordinator",
     enable_graph: bool = HAS_GRAPH_MEMORY,
     enable_rag: bool = HAS_RAG_MEMORY,
-    **kwargs) -> MultiMemoryAgent:
+    **kwargs,
+) -> MultiMemoryAgent:
     """Factory function to create a MultiMemoryAgent with sensible defaults."""
     config = MultiMemoryConfig(
-        name=name,
-        enable_graph_memory=enable_graph,
-        enable_rag_memory=enable_rag,
-        **kwargs)
+        name=name, enable_graph_memory=enable_graph, enable_rag_memory=enable_rag, **kwargs
+    )
 
     return MultiMemoryAgent(config)

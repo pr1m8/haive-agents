@@ -20,9 +20,7 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class ProblemAnalysis(BaseModel):
     """Analysis of the problem to solve."""
 
-    problem_type: str = Field(
-        description="Type of problem (math, logic, planning, etc.)"
-    )
+    problem_type: str = Field(description="Type of problem (math, logic, planning, etc.)")
     key_constraints: list[str] = Field(description="Important constraints to consider")
     success_criteria: str = Field(description="What constitutes a valid solution")
     approach_hints: list[str] = Field(description="Suggested approaches to try")
@@ -50,9 +48,7 @@ class CandidateEvaluation(BaseModel):
 class BeamSelection(BaseModel):
     """Selection of best candidates for next iteration."""
 
-    selected_candidates: list[dict[str, Any]] = Field(
-        description="Top candidates with scores"
-    )
+    selected_candidates: list[dict[str, Any]] = Field(description="Top candidates with scores")
     should_continue: bool = Field(description="Whether to continue searching")
     reasoning: str = Field(description="Reasoning for selection and continuation")
 
@@ -80,7 +76,8 @@ class TreeOfThoughtsMultiAgent:
         beam_width: int = 3,
         threshold: float = 0.8,
         expansion_count: int = 5,
-        temperature_config: dict[str, float] | None = None):
+        temperature_config: dict[str, float] | None = None,
+    ):
         """Initialize the TOT multi-agent system.
 
         Args:
@@ -114,7 +111,9 @@ class TreeOfThoughtsMultiAgent:
                 - What type of problem it is
                 - Key constraints and requirements
                 - Success criteria
-                - Potential solution approaches"""))
+                - Potential solution approaches""",
+            ),
+        )
 
         self.candidate_generator = SimpleAgentV3(
             name="candidate_generator",
@@ -123,7 +122,9 @@ class TreeOfThoughtsMultiAgent:
                 structured_output_model=CandidateGeneration,
                 system_message=f"""You are a creative solution generator. Generate {self.expansion_count} diverse candidate solutions.
                 Be creative but ensure each candidate is distinct and could potentially solve the problem.
-                Think step by step and explore different approaches."""))
+                Think step by step and explore different approaches.""",
+            ),
+        )
 
         self.solution_evaluator = SimpleAgentV3(
             name="solution_evaluator",
@@ -134,7 +135,9 @@ class TreeOfThoughtsMultiAgent:
                 - Checking if they meet the problem requirements
                 - Identifying strengths and weaknesses
                 - Providing a score between 0 (terrible) and 1 (perfect)
-                Be critical but fair in your evaluation."""))
+                Be critical but fair in your evaluation.""",
+            ),
+        )
 
         self.beam_selector = SimpleAgentV3(
             name="beam_selector",
@@ -145,7 +148,9 @@ class TreeOfThoughtsMultiAgent:
                 Decide whether to continue searching based on:
                 - Current best score vs threshold ({self.threshold})
                 - Search depth vs maximum ({self.max_depth})
-                - Diversity of candidates"""))
+                - Diversity of candidates""",
+            ),
+        )
 
         self.solution_synthesizer = SimpleAgentV3(
             name="solution_synthesizer",
@@ -156,7 +161,9 @@ class TreeOfThoughtsMultiAgent:
                 - Selecting the best candidate
                 - Providing clear explanation
                 - Summarizing the search process
-                - Assessing confidence in the solution"""))
+                - Assessing confidence in the solution""",
+            ),
+        )
 
         # Track search state
         self.search_history = []
@@ -182,13 +189,11 @@ class TreeOfThoughtsMultiAgent:
 
         # Search loop
         for depth in range(self.max_depth):
-
             # Store candidates for this depth
             depth_candidates = []
 
             # Step 2: Generate candidates from each beam candidate
             for i, seed in enumerate(current_candidates[: self.beam_width]):
-
                 # Create generation prompt with context
                 generation_prompt = f"""
                 Problem: {problem}
@@ -196,19 +201,17 @@ class TreeOfThoughtsMultiAgent:
                 Problem Analysis:
                 - Type: {self.problem_analysis.problem_type}
                 - Success Criteria: {self.problem_analysis.success_criteria}
-                - Constraints: {', '.join(self.problem_analysis.key_constraints)}
+                - Constraints: {", ".join(self.problem_analysis.key_constraints)}
 
-                Current Seed Solution (score: {seed['score']}):
-                {seed['content']}
+                Current Seed Solution (score: {seed["score"]}):
+                {seed["content"]}
 
-                Feedback: {seed.get('feedback', 'N/A')}
+                Feedback: {seed.get("feedback", "N/A")}
 
                 Generate {self.expansion_count} new candidate solutions that improve upon or explore different approaches from the seed.
                 """
 
-                generation_result = await self.candidate_generator.arun(
-                    generation_prompt
-                )
+                generation_result = await self.candidate_generator.arun(generation_prompt)
 
                 # Step 3: Evaluate each generated candidate
 
@@ -217,7 +220,7 @@ class TreeOfThoughtsMultiAgent:
                     Problem: {problem}
 
                     Success Criteria: {self.problem_analysis.success_criteria}
-                    Constraints: {', '.join(self.problem_analysis.key_constraints)}
+                    Constraints: {", ".join(self.problem_analysis.key_constraints)}
 
                     Candidate Solution:
                     {candidate}
@@ -278,7 +281,7 @@ class TreeOfThoughtsMultiAgent:
         Problem: {problem}
 
         Search Summary:
-        - Total candidates explored: {sum(len(d['candidates']) for d in self.search_history)}
+        - Total candidates explored: {sum(len(d["candidates"]) for d in self.search_history)}
         - Search depth reached: {len(self.search_history)}
         - Best candidates found:
         {self._format_best_candidates()}
@@ -309,11 +312,11 @@ class TreeOfThoughtsMultiAgent:
         for i, c in enumerate(candidates):
             formatted.append(
                 f"""
-Candidate {i+1}:
-- Score: {c['score']:.2f}
-- Content: {c['content'][:200]}...
-- Strengths: {', '.join(c['strengths'][:2])}
-- Weaknesses: {', '.join(c['weaknesses'][:2])}
+Candidate {i + 1}:
+- Score: {c["score"]:.2f}
+- Content: {c["content"][:200]}...
+- Strengths: {", ".join(c["strengths"][:2])}
+- Weaknesses: {", ".join(c["weaknesses"][:2])}
 """
             )
         return "\n".join(formatted)
@@ -325,17 +328,15 @@ Candidate {i+1}:
             all_candidates.extend(depth_data["candidates"])
 
         # Sort by score and get top 5
-        sorted_candidates = sorted(
-            all_candidates, key=lambda x: x["score"], reverse=True
-        )[:5]
+        sorted_candidates = sorted(all_candidates, key=lambda x: x["score"], reverse=True)[:5]
 
         formatted = []
         for i, c in enumerate(sorted_candidates):
             formatted.append(
                 f"""
-{i+1}. Score: {c['score']:.2f} (Depth: {c['depth']})
-   Content: {c['content'][:300]}...
-   Feedback: {c['feedback'][:200]}...
+{i + 1}. Score: {c["score"]:.2f} (Depth: {c["depth"]})
+   Content: {c["content"][:300]}...
+   Feedback: {c["feedback"][:200]}...
 """
             )
         return "\n".join(formatted)
@@ -350,7 +351,7 @@ Candidate {i+1}:
 
         for depth_data in self.search_history:
             depth = depth_data["depth"]
-            lines.append(f"\n{'  ' * (depth-1)}Level {depth}:")
+            lines.append(f"\n{'  ' * (depth - 1)}Level {depth}:")
 
             for c in depth_data["candidates"]:
                 score_bar = "█" * int(c["score"] * 10)
@@ -380,9 +381,7 @@ async def solve_with_tot_multi_agent(
     Returns:
         Solution dictionary
     """
-    tot = TreeOfThoughtsMultiAgent(
-        max_depth=max_depth, beam_width=beam_width, threshold=threshold
-    )
+    tot = TreeOfThoughtsMultiAgent(max_depth=max_depth, beam_width=beam_width, threshold=threshold)
     return await tot.solve(problem)
 
 

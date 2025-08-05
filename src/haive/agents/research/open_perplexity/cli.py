@@ -43,21 +43,21 @@ def run_research(text_path: str, **kwargs) -> None:
         text = f.read()
 
     # Create embedding configuration
-    embedding_config = HuggingFaceEmbeddingConfig(
-        model="sentence-transformers/all-mpnet-base-v2"
-    )
+    embedding_config = HuggingFaceEmbeddingConfig(model="sentence-transformers/all-mpnet-base-v2")
 
     # Create vector store configuration
     vectorstore_config = VectorStoreConfig(
         embedding_model=embedding_config,
-        vector_store_path=kwargs.get("vector_store_path", "research_vector_store"))
+        vector_store_path=kwargs.get("vector_store_path", "research_vector_store"),
+    )
 
     # Create the research agent configuration
     config = ResearchAgentConfig.from_scratch(
         vectorstore_config=vectorstore_config,
         research_depth=kwargs.get("depth", 3),
         concurrent_searches=kwargs.get("concurrent_searches", 3),
-        max_sources_per_query=kwargs.get("max_sources", 5))
+        max_sources_per_query=kwargs.get("max_sources", 5),
+    )
 
     # Create and run the agent
     agent = ResearchAgent(config=config)
@@ -82,9 +82,7 @@ def run_research(text_path: str, **kwargs) -> None:
         pass
 
 
-def visualize_state(
-    state_path: str, step: int | None = None, output_md: str | None = None
-) -> None:
+def visualize_state(state_path: str, step: int | None = None, output_md: str | None = None) -> None:
     """Visualize a specific state from a saved state history file.
 
     Loads a state from a saved state history file, displays a visualization
@@ -110,8 +108,7 @@ def visualize_state(
                 if step is not None:
                     if step < 0 or step >= len(state_data):
                         logging.error(
-                            f"Invalid step {step}, file contains {
-                                len(state_data)} states"
+                            f"Invalid step {step}, file contains {len(state_data)} states"
                         )
                         return
                     state = state_data[step]
@@ -151,32 +148,25 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
     # Research command
-    research_parser = subparsers.add_parser(
-        "research", help="Run research from a text file"
-    )
-    research_parser.add_argument(
-        "file", help="Path to text file with research question"
-    )
-    research_parser.add_argument(
-        "-o", "--output", help="Path to save the generated report"
-    )
+    research_parser = subparsers.add_parser("research", help="Run research from a text file")
+    research_parser.add_argument("file", help="Path to text file with research question")
+    research_parser.add_argument("-o", "--output", help="Path to save the generated report")
     research_parser.add_argument(
         "-s",
         "--save-state",
         dest="save_state_path",
-        help="Path to save the state history for later visualization")
+        help="Path to save the state history for later visualization",
+    )
     research_parser.add_argument(
         "-d",
         "--depth",
         type=int,
         default=3,
-        help="Research depth (1-5, higher means more thorough)")
+        help="Research depth (1-5, higher means more thorough)",
+    )
     research_parser.add_argument(
-        "-c",
-        "--concurrent-searches",
-        type=int,
-        default=3,
-        help="Number of concurrent searches")
+        "-c", "--concurrent-searches", type=int, default=3, help="Number of concurrent searches"
+    )
     research_parser.add_argument(
         "-m", "--max-sources", type=int, default=5, help="Maximum sources per query"
     )
@@ -184,25 +174,23 @@ def main() -> None:
         "-v",
         "--vector-store-path",
         default="research_vector_store",
-        help="Path for the vector store")
+        help="Path for the vector store",
+    )
 
     # Visualize state command
     visualize_parser = subparsers.add_parser(
         "visualize", help="Visualize a state from a state history file"
     )
+    visualize_parser.add_argument("state_file", help="Path to saved state history JSON file")
     visualize_parser.add_argument(
-        "state_file", help="Path to saved state history JSON file"
+        "-s", "--step", type=int, help="Index of state to visualize (default: last state)"
     )
-    visualize_parser.add_argument(
-        "-s",
-        "--step",
-        type=int,
-        help="Index of state to visualize (default: last state)")
     visualize_parser.add_argument(
         "-m",
         "--markdown",
         dest="output_md",
-        help="Generate and save markdown report to specified path")
+        help="Generate and save markdown report to specified path",
+    )
 
     # Parse arguments
     args = parser.parse_args()
@@ -216,7 +204,8 @@ def main() -> None:
             depth=args.depth,
             concurrent_searches=args.concurrent_searches,
             max_sources=args.max_sources,
-            vector_store_path=args.vector_store_path)
+            vector_store_path=args.vector_store_path,
+        )
     elif args.command == "visualize":
         visualize_state(args.state_file, args.step, args.output_md)
     else:

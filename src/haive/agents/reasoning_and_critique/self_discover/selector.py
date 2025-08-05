@@ -13,9 +13,7 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class ModuleSelectionOutput(BaseModel):
     """Output from module selector - string format."""
 
-    selected_modules: str = Field(
-        description="Selected reasoning modules as formatted text"
-    )
+    selected_modules: str = Field(description="Selected reasoning modules as formatted text")
 
 
 class SelfDiscoverSelector(SimpleAgentV3):
@@ -28,7 +26,8 @@ class SelfDiscoverSelector(SimpleAgentV3):
             temperature=0.3,
             max_tokens=1000,
             structured_output_model=ModuleSelectionOutput,
-            system_message="You are an expert at selecting appropriate reasoning strategies for tasks.")
+            system_message="You are an expert at selecting appropriate reasoning strategies for tasks.",
+        )
     )
 
     prompt_template: ChatPromptTemplate = Field(
@@ -36,7 +35,8 @@ class SelfDiscoverSelector(SimpleAgentV3):
             [
                 (
                     "system",
-                    "You are an expert at selecting appropriate reasoning strategies for tasks."),
+                    "You are an expert at selecting appropriate reasoning strategies for tasks.",
+                ),
                 ("human", "{messages}"),
             ]
         )
