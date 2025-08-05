@@ -6,9 +6,11 @@ from haive.agents.react.agent import ReactAgent
 from haive.agents.react.config import ReactAgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.vectorstore.base import VectorStoreConfig
-from langchain_core.messages import get_buffer_string, tokenizer
+from langchain_core.messages import get_buffer_string
+import tiktoken
 from langchain_core.runnables import RunnableConfig
 from pydantic import Field
+from typing import Dict, Any
 
 
 class LongTermMemoryAgentConfig(ReactAgentConfig):
@@ -28,18 +30,21 @@ class LongTermMemoryAgent(ReactAgent):
     def __init__(self, config: LongTermMemoryAgentConfig):
         super().__init__(config)
 
-    def load_memories(self, state: State, config: RunnableConfig) -> State:
+    def load_memories(self, state: Dict[str, Any], config: RunnableConfig) -> Dict[str, Any]:
         """Load memories for the current conversation.
 
         Args:
-            state (schemas.State): The current state of the conversation.
+            state (Dict[str, Any]): The current state of the conversation.
             config (RunnableConfig): The runtime configuration for the agent.
 
         Returns:
-            State: The updated state with loaded memories.
+            Dict[str, Any]: The updated state with loaded memories.
         """
         convo_str = get_buffer_string(state["messages"])
-        convo_str = tokenizer.decode(tokenizer.encode(convo_str)[:2048])
+        # Truncate to 2048 tokens using tiktoken
+        encoding = tiktoken.get_encoding("cl100k_base")  # Standard OpenAI encoding
+        tokens = encoding.encode(convo_str)[:2048]
+        convo_str = encoding.decode(tokens)
         recall_memories = search_recall_memories.invoke(convo_str, config)
         return {
             "recall_memories": recall_memories,

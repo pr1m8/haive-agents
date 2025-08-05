@@ -17,7 +17,7 @@ from langgraph.graph import END, START
 from pydantic import Field
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.base import SequentialAgent
+from haive.agents.multi.enhanced_sequential_agent import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import (
     RAG_ANSWER_STANDARD)

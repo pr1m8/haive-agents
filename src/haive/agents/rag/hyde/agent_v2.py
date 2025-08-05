@@ -16,7 +16,7 @@ from langgraph.graph import END, START
 from pydantic import Field
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.base import SequentialAgent
+from haive.agents.multi.enhanced_sequential_agent import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import (
     RAG_ANSWER_STANDARD)
@@ -174,3 +174,24 @@ class HyDERAGAgentV2(SequentialAgent):
             agents=[hyde_generator, hyde_retriever, answer_agent],
             name=kwargs.get("name", "HyDE RAG Agent V2"),
             **kwargs)
+
+
+def build_graph() -> Any:
+    """Build custom graph for HyDE workflows.
+    
+    Returns:
+        Graph configuration or None for default behavior
+    """
+    return None
+
+
+def transform_to_query(hypothesis: str) -> str:
+    """Transform hypothesis to query format.
+    
+    Args:
+        hypothesis: Generated hypothesis text
+        
+    Returns:
+        Formatted query string
+    """
+    return hypothesis.strip()
