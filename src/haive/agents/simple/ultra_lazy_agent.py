@@ -42,9 +42,7 @@ class UltraLazyAgent:
     def __getattr__(self, name: str):
         """Proxy everything to real agent."""
         if name.startswith("_"):
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            )
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
         return getattr(self._load_real_agent(), name)
 
     def __setattr__(self, name: str, value: Any):

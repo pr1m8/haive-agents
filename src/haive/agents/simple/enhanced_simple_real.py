@@ -88,7 +88,8 @@ class SimpleAgent(EnhancedAgentBase):
                 temperature=values.get("temperature", 0.7),
                 max_tokens=values.get("max_tokens"),
                 system_message=values.get("system_message"),
-                tools=values.get("tools", []))
+                tools=values.get("tools", []),
+            )
         elif not isinstance(values["engine"], AugLLMConfig):
             # Convert to AugLLMConfig if needed
             logger.warning("SimpleAgent requires AugLLMConfig engine, converting...")
@@ -134,9 +135,7 @@ class SimpleAgent(EnhancedAgentBase):
                         return "tools"
                 return "end"
 
-            graph.add_conditional_edges(
-                "agent", check_tools, {"tools": "tools", "end": END}
-            )
+            graph.add_conditional_edges("agent", check_tools, {"tools": "tools", "end": END})
             graph.add_edge("tools", END)
         else:
             graph.add_edge("agent", END)

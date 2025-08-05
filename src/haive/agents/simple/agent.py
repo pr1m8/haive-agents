@@ -28,23 +28,20 @@ logger = logging.getLogger(__name__)
 
 class SimpleAgentConfig(AgentConfig):
     """Configuration for SimpleAgent."""
-    
+
     prompt_template: ChatPromptTemplate = Field(
-        default_factory=lambda: ChatPromptTemplate.from_messages([
-            ("system", "You are a helpful AI assistant."),
-            ("human", "{input}")
-        ]),
-        description="Prompt template for the agent"
+        default_factory=lambda: ChatPromptTemplate.from_messages(
+            [("system", "You are a helpful AI assistant."), ("human", "{input}")]
+        ),
+        description="Prompt template for the agent",
     )
-    
+
     output_parser: BaseOutputParser = Field(
-        default=None, 
-        description="Optional output parser for structured responses"
+        default=None, description="Optional output parser for structured responses"
     )
-    
+
     enable_validation: bool = Field(
-        default=False,
-        description="Whether to enable output validation"
+        default=False, description="Whether to enable output validation"
     )
 
 
@@ -185,9 +182,7 @@ class SimpleAgent(Agent):
     structured_output_model: type[BaseModel] | None = Field(
         default=None, description="Structured output model (syncs to engine)"
     )
-    system_message: str | None = Field(
-        default=None, description="System message (syncs to engine)"
-    )
+    system_message: str | None = Field(default=None, description="System message (syncs to engine)")
     llm_config: LLMConfig | dict[str, Any] | None = Field(
         default=None, description="LLM config (syncs to engine)"
     )
@@ -310,9 +305,7 @@ class SimpleAgent(Agent):
 
         # Add parser node if needed
         if needs_parsing:
-            parser_config = ParserNodeConfigV2(
-                name="parse_output", engine_name=self.engine.name
-            )
+            parser_config = ParserNodeConfigV2(name="parse_output", engine_name=self.engine.name)
             graph.add_node("parse_output", parser_config)
 
         # Add validation/routing if we have tools or parsing
@@ -321,7 +314,8 @@ class SimpleAgent(Agent):
                 name="validation",
                 engine_name=self.engine.name,
                 tool_node="tool_node" if needs_tools else None,
-                parser_node="parse_output" if needs_parsing else None)
+                parser_node="parse_output" if needs_parsing else None,
+            )
             graph.add_node("validation", validation_config)
 
             # Route from agent to validation

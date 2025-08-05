@@ -83,13 +83,9 @@ class EnhancedSimpleAgent(Agent[AugLLMConfig]):
         default=None, ge=1, description="Maximum tokens for LLM responses"
     )
 
-    system_message: str | None = Field(
-        default=None, description="System message for the LLM"
-    )
+    system_message: str | None = Field(default=None, description="System message for the LLM")
 
-    tools: list[Any] = Field(
-        default_factory=list, description="Tools available to the agent"
-    )
+    tools: list[Any] = Field(default_factory=list, description="Tools available to the agent")
 
     # ========================================================================
     # ENGINE SETUP - ENHANCED PATTERN
@@ -261,7 +257,8 @@ def create_simple_agent(
     max_tokens: int | None = None,
     system_message: str | None = None,
     tools: list[Any] | None = None,
-    **kwargs) -> EnhancedSimpleAgent:
+    **kwargs,
+) -> EnhancedSimpleAgent:
     """Create an enhanced SimpleAgent with common defaults.
 
     This factory function provides a convenient way to create SimpleAgents
@@ -291,7 +288,8 @@ def create_simple_agent(
         max_tokens=max_tokens,
         system_message=system_message,
         tools=tools or [],
-        **kwargs)
+        **kwargs,
+    )
 
 
 # ========================================================================

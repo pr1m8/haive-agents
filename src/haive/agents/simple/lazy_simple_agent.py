@@ -67,9 +67,7 @@ class LazyAugLLMConfig:
             logger.debug("Lazy loading AugLLMConfig for first use")
 
             # Import heavy dependencies only now
-            AugLLMConfig = cached_import(
-                "haive.core.engine.aug_llm.config", "AugLLMConfig"
-            )
+            AugLLMConfig = cached_import("haive.core.engine.aug_llm.config", "AugLLMConfig")
 
             # Create real instance with stored kwargs
             self._real_instance = AugLLMConfig(**self._init_kwargs)
@@ -81,9 +79,7 @@ class LazyAugLLMConfig:
         """Proxy all attribute access to real instance."""
         if name.startswith("_"):
             # Don't proxy private attributes
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            )
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
 
         self._ensure_initialized()
         return getattr(self._real_instance, name)
@@ -145,9 +141,7 @@ class LazyAgent:
     def __getattr__(self, name: str):
         """Proxy all method calls to real instance."""
         if name.startswith("_"):
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            )
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
 
         self._ensure_initialized()
         return getattr(self._real_instance, name)
@@ -164,7 +158,8 @@ class LazySimpleAgent:
         max_tokens: int | None = None,
         model_name: str | None = None,
         debug: bool = True,
-        **kwargs):
+        **kwargs,
+    ):
         """Initialize with minimal overhead - no heavy imports."""
         # Store all initialization parameters
         self._init_time = datetime.now()
@@ -206,14 +201,11 @@ class LazySimpleAgent:
 
             if self._debug:
                 logger.info(
-                    f"Initializing real SimpleAgentV3 for '{
-                        self._name}' (lazy loading triggered)"
+                    f"Initializing real SimpleAgentV3 for '{self._name}' (lazy loading triggered)"
                 )
 
             # Now import the real SimpleAgentV3
-            SimpleAgentV3 = cached_import(
-                "haive.agents.simple.agent_v3", "SimpleAgentV3"
-            )
+            SimpleAgentV3 = cached_import("haive.agents.simple.agent_v3", "SimpleAgentV3")
 
             # Create real instance
             self._real_instance = SimpleAgentV3(**self._init_kwargs)
@@ -224,9 +216,7 @@ class LazySimpleAgent:
             if self._debug:
                 total_time = (datetime.now() - self._init_time).total_seconds()
                 logger.info(
-                    f"Real SimpleAgentV3 initialized in {
-                        init_time:.2f}s (total: {
-                        total_time:.2f}s)"
+                    f"Real SimpleAgentV3 initialized in {init_time:.2f}s (total: {total_time:.2f}s)"
                 )
 
     # Essential properties that can be handled without initialization
@@ -244,9 +234,7 @@ class LazySimpleAgent:
     def __getattr__(self, name: str):
         """Lazy proxy all attribute access to real instance."""
         if name.startswith("_"):
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            )
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
 
         self._ensure_initialized()
         return getattr(self._real_instance, name)
@@ -284,9 +272,7 @@ class LazySimpleAgent:
     def as_structured_tool(cls, *args, **kwargs):
         """Create structured tool - triggers full initialization."""
         if cls._debug if hasattr(cls, "_debug") else True:
-            logger.debug(
-                "as_structured_tool called - triggering full SimpleAgentV3 import"
-            )
+            logger.debug("as_structured_tool called - triggering full SimpleAgentV3 import")
 
         SimpleAgentV3 = cached_import("haive.agents.simple.agent_v3", "SimpleAgentV3")
         return SimpleAgentV3.as_structured_tool(*args, **kwargs)

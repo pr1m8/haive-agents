@@ -1,4 +1,3 @@
-
 import logging
 from typing import Any
 
@@ -9,7 +8,8 @@ from haive.core.graph.node.parser_node_config import ParserNodeConfig
 from haive.core.graph.node.state_updating_validation_node import (
     Dict,
     StateUpdatingValidationNode,
-    ValidationMode)
+    ValidationMode,
+)
 from haive.core.graph.node.tool_node_config import ToolNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.models.llm.base import LLMConfig
@@ -74,17 +74,14 @@ class SimpleAgentWithValidation(Agent):
     )
     system_message: str | None = Field(default=None, description="System message")
     llm_config: LLMConfig | None = Field(default=None, description="LLM config")
-    output_parser: BaseOutputParser | None = Field(
-        default=None, description="Output parser"
-    )
-    output_parser_field: str | None = Field(
-        default=None, description="Output parser field name"
-    )
+    output_parser: BaseOutputParser | None = Field(default=None, description="Output parser")
+    output_parser_field: str | None = Field(default=None, description="Output parser field name")
 
     # NEW: Validation configuration
     validation_mode: ValidationMode = Field(
         default=ValidationMode.PARTIAL,
-        description="Validation mode: STRICT, PARTIAL, or PERMISSIVE")
+        description="Validation mode: STRICT, PARTIAL, or PERMISSIVE",
+    )
     update_validation_messages: bool = Field(
         default=True, description="Whether to add validation error messages to state"
     )
@@ -125,26 +122,17 @@ class SimpleAgentWithValidation(Agent):
             return
 
         try:
-
             registry = EngineRegistry.get_instance()
 
             # Check if engine is already registered
             if not registry.find(self.engine.name):
                 registry.register(self.engine)
-                logger.info(
-                    f"Registered engine '{
-                        self.engine.name}' in EngineRegistry"
-                )
+                logger.info(f"Registered engine '{self.engine.name}' in EngineRegistry")
             else:
-                logger.debug(
-                    f"Engine '{
-                        self.engine.name}' already registered in EngineRegistry"
-                )
+                logger.debug(f"Engine '{self.engine.name}' already registered in EngineRegistry")
 
         except ImportError:
-            logger.warning(
-                "Could not import EngineRegistry - engine registration skipped"
-            )
+            logger.warning("Could not import EngineRegistry - engine registration skipped")
         except Exception as e:
             logger.warning(f"Failed to register engine in registry: {e}")
 
@@ -205,8 +193,7 @@ class SimpleAgentWithValidation(Agent):
 
         # Check for structured output
         has_structured_output = bool(
-            self.structured_output_model
-            or getattr(self.engine, "structured_output_model", None)
+            self.structured_output_model or getattr(self.engine, "structured_output_model", None)
         )
 
         # Check for output parser
@@ -214,9 +201,7 @@ class SimpleAgentWithValidation(Agent):
 
         # Check for pydantic tools
         tool_routes = self.get_tool_routes()
-        pydantic_tools = [
-            tool for tool, route in tool_routes.items() if route == "pydantic_model"
-        ]
+        pydantic_tools = [tool for tool, route in tool_routes.items() if route == "pydantic_model"]
 
         return has_structured_output or has_output_parser or len(pydantic_tools) > 0
 
@@ -271,7 +256,8 @@ class SimpleAgentWithValidation(Agent):
             agent_node="agent_node",
             tool_node="tool_node",
             parser_node="parse_output",
-            route_to_node_mapping=route_mapping)
+            route_to_node_mapping=route_mapping,
+        )
 
     def build_graph(self) -> BaseGraph:
         """Build the agent graph with StateUpdatingValidationNode integration."""
@@ -317,16 +303,15 @@ class SimpleAgentWithValidation(Agent):
             tool_config = ToolNodeConfig(
                 name="tool_node",
                 engine_name=self.engine.name,
-                allowed_routes=["langchain_tool", "function", "tool_node"])
+                allowed_routes=["langchain_tool", "function", "tool_node"],
+            )
             graph.add_node("tool_node", tool_config)
             graph.add_edge("tool_node", END)
             available_nodes.append("tool_node")
 
         # Add parser node if needed
         if needs_parser_node:
-            parser_config = ParserNodeConfig(
-                name="parse_output",
-                engine_name=self.engine.name)
+            parser_config = ParserNodeConfig(name="parse_output", engine_name=self.engine.name)
             graph.add_node("parse_output", parser_config)
             graph.add_edge("parse_output", END)
             available_nodes.append("parse_output")
@@ -374,9 +359,7 @@ class SimpleAgentWithValidation(Agent):
                 initial_values["tool_routes"] = self.engine.tool_routes
 
             if "available_nodes" in self.graph.metadata:
-                initial_values["available_nodes"] = self.graph.metadata[
-                    "available_nodes"
-                ]
+                initial_values["available_nodes"] = self.graph.metadata["available_nodes"]
 
         return compiled
 
@@ -392,39 +375,38 @@ class SimpleAgentWithValidation(Agent):
         return cls(name=name or "Tool Agent with Validation", tools=tools, **kwargs)
 
     @classmethod
-    def create_strict_validation(
-        cls, engine: AugLLMConfig, name: str | None = None, **kwargs
-    ):
+    def create_strict_validation(cls, engine: AugLLMConfig, name: str | None = None, **kwargs):
         """Create agent with strict validation mode."""
         return cls(
             name=name or "Strict Validation Agent",
             engine=engine,
             validation_mode=ValidationMode.STRICT,
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
-    def create_permissive_validation(
-        cls, engine: AugLLMConfig, name: str | None = None, **kwargs
-    ):
+    def create_permissive_validation(cls, engine: AugLLMConfig, name: str | None = None, **kwargs):
         """Create agent with permissive validation mode."""
         return cls(
             name=name or "Permissive Validation Agent",
             engine=engine,
             validation_mode=ValidationMode.PERMISSIVE,
-            **kwargs)
+            **kwargs,
+        )
 
     def __repr__(self) -> str:
         engine_info = f"model={getattr(self.engine, 'model', 'unknown')}"
         schema_info = f"structured_output={
-            self.structured_output_model.__name__ if self.structured_output_model else 'None'}"
+            self.structured_output_model.__name__ if self.structured_output_model else 'None'
+        }"
         validation_info = f"validation_mode={self.validation_mode.value}"
-        return f"SimpleAgentWithValidation(name='{
-            self.name}', {engine_info}, {schema_info}, {validation_info})"
+        return f"SimpleAgentWithValidation(name='{self.name}', {engine_info}, {schema_info}, {
+            validation_info
+        })"
 
 
 # For backward compatibility, provide a function to upgrade SimpleAgent
-def upgrade_simple_agent_with_validation(
-    simple_agent: "SimpleAgent") -> SimpleAgentWithValidation:
+def upgrade_simple_agent_with_validation(simple_agent: "SimpleAgent") -> SimpleAgentWithValidation:
     """Upgrade a SimpleAgent to use StateUpdatingValidationNode."""
     # Extract all fields from SimpleAgent
     agent_data = simple_agent.model_dump()

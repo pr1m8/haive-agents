@@ -34,7 +34,6 @@ class SimpleAgentV3Minimal:
     def __new__(cls, *args, **kwargs):
         """Dynamically import and create the real SimpleAgentV3 instance."""
         if cls._real_class is None:
-
             cls._real_class = SimpleAgentV3
 
         # Create instance of the real class
@@ -44,7 +43,6 @@ class SimpleAgentV3Minimal:
     def as_tool(cls, *args, **kwargs):
         """Lazy loading for as_tool class method."""
         if cls._real_class is None:
-
             cls._real_class = SimpleAgentV3
         return cls._real_class.as_tool(*args, **kwargs)
 
@@ -52,7 +50,6 @@ class SimpleAgentV3Minimal:
     def as_structured_tool(cls, *args, **kwargs):
         """Lazy loading for as_structured_tool class method."""
         if cls._real_class is None:
-
             cls._real_class = SimpleAgentV3
         return cls._real_class.as_structured_tool(*args, **kwargs)
 

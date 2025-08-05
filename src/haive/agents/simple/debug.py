@@ -27,7 +27,8 @@ aug_llm = AugLLMConfig(
     name="debug_llm",
     llm_config=AzureLLMConfig(model="gpt-4o"),
     prompt_template=prompt,
-    system_prompt="You are a helpful assistant.")
+    system_prompt="You are a helpful assistant.",
+)
 
 # Get variables from _get_input_variables
 input_vars = aug_llm._get_input_variables()

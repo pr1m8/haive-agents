@@ -28,7 +28,6 @@ except ImportError as e:
 
 # Install rich traceback for better error display (optional)
 try:
-
     install_rich_traceback(show_locals=True, width=120, suppress=[])
 except ImportError:
     # Rich not available, continue without it
@@ -41,7 +40,8 @@ console = Console()
 logging.basicConfig(
     level=logging.DEBUG,  # Set to DEBUG for more verbose output
     format="%(message)s",
-    handlers=[RichHandler(rich_tracebacks=True, show_path=False)])
+    handlers=[RichHandler(rich_tracebacks=True, show_path=False)],
+)
 
 # Get logger
 logger = logging.getLogger("SimpleAgentDebug")
@@ -50,10 +50,7 @@ logger = logging.getLogger("SimpleAgentDebug")
 def debug_print(title, obj, expand=False) -> None:
     """Print debugging information in a rich panel."""
     if isinstance(obj, dict):
-
-        console.print(
-            Panel(Pretty(obj, expand_all=expand), title=title, border_style="cyan")
-        )
+        console.print(Panel(Pretty(obj, expand_all=expand), title=title, border_style="cyan"))
     else:
         console.print(Panel(str(obj), title=title, border_style="cyan"))
 
@@ -88,7 +85,8 @@ def example_with_custom_state_schema() -> Any:
         prompt_template=prompt,
         output_parser=StrOutputParser(),
         output_field_name="answer",  # Put output directly in answer field
-        system_prompt="You are a helpful assistant.")
+        system_prompt="You are a helpful assistant.",
+    )
 
     # Debug info
     debug_print(
@@ -97,7 +95,8 @@ def example_with_custom_state_schema() -> Any:
             "name": aug_llm.name,
             "output_field_name": "answer",
             "prompt_variables": prompt.input_variables,
-        })
+        },
+    )
 
     # Create the agent
     console.print("[bold green]Creating SimpleAgent with custom schema")
@@ -113,9 +112,7 @@ def example_with_custom_state_schema() -> Any:
         state.answer = result
 
         # Debug what's in the state
-        console.print(
-            f"[bold green]State after process:[/bold green] answer={state.answer}"
-        )
+        console.print(f"[bold green]State after process:[/bold green] answer={state.answer}")
 
         return state
 
@@ -128,7 +125,8 @@ def example_with_custom_state_schema() -> Any:
         # Explicitly set additional fields for output mapping
         output_mapping={"answer": "answer"},
         # Set the process function directly in the config
-        process_func=custom_process)
+        process_func=custom_process,
+    )
 
     # Create the agent with our config
     agent = SimpleAgent(config=agent_config)

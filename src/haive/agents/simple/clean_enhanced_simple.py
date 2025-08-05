@@ -51,7 +51,8 @@ class SimpleAgent(Agent[AugLLMConfig]):
                 temperature=self.temperature,
                 max_tokens=self.max_tokens,
                 system_message=self.system_message,
-                tools=self.tools)
+                tools=self.tools,
+            )
         else:
             # Sync fields to existing engine
             self.engine.temperature = self.temperature
@@ -80,7 +81,8 @@ class SimpleAgent(Agent[AugLLMConfig]):
             graph.add_conditional_edges(
                 "agent",
                 lambda s: "tools" if self._has_tool_calls(s) else "end",
-                {"tools": "tools", "end": END})
+                {"tools": "tools", "end": END},
+            )
             graph.add_edge("tools", END)
         else:
             graph.add_edge("agent", END)

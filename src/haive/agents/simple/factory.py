@@ -26,7 +26,8 @@ def create_simple_agent(
     output_mapping: dict[str, str] | None = None,
     model: str = "gpt-4o",
     debug: bool = False,
-    preserve_model: bool = True) -> SimpleAgent:
+    preserve_model: bool = True,
+) -> SimpleAgent:
     """Create a SimpleAgent with the specified configuration.
 
     Args:
@@ -55,7 +56,8 @@ def create_simple_agent(
         output_mapping=output_mapping,
         model=model,
         debug=debug,
-        preserve_model=preserve_model)
+        preserve_model=preserve_model,
+    )
 
     # Create and return agent
     return SimpleAgent(config)

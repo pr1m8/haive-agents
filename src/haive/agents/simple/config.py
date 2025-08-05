@@ -34,8 +34,8 @@ class SimpleAgentConfig(AgentConfig):
 
     # Required engine (must be AugLLMConfig)
     engine: AugLLMConfig = Field(
-        default_factory=AugLLMConfig,
-        description="The AugLLM engine to use for reasoning")
+        default_factory=AugLLMConfig, description="The AugLLM engine to use for reasoning"
+    )
 
     # Schema definitions
     input_schema: type[BaseModel] | type[StateSchema] | None = Field(
@@ -52,17 +52,15 @@ class SimpleAgentConfig(AgentConfig):
 
     # Mapping configuration
     input_mapping: dict[str, str] | None = Field(
-        default=None,
-        description="Maps state fields to engine input fields (None for auto-derive)")
+        default=None, description="Maps state fields to engine input fields (None for auto-derive)"
+    )
 
     output_mapping: dict[str, str] | None = Field(
-        default=None,
-        description="Maps engine output fields to state fields (None for auto-derive)")
+        default=None, description="Maps engine output fields to state fields (None for auto-derive)"
+    )
 
     # Node configuration
-    node_name: str = Field(
-        default="process", description="Name for the single processing node"
-    )
+    node_name: str = Field(default="process", description="Name for the single processing node")
 
     # Visualization settings
     visualize: bool = Field(default=True, description="Whether to visualize the graph")
@@ -90,9 +88,7 @@ class SimpleAgentConfig(AgentConfig):
         # Validate all keys and values are strings
         for key, value in v.items():
             if not isinstance(key, str) or not isinstance(value, str):
-                raise TypeError(
-                    f"All keys and values in {info.field_name} must be strings"
-                )
+                raise TypeError(f"All keys and values in {info.field_name} must be strings")
 
         return v
 
@@ -105,7 +101,8 @@ class SimpleAgentConfig(AgentConfig):
         input_schema: type[BaseModel] | None = None,
         output_schema: type[BaseModel] | None = None,
         state_schema: type[StateSchema] | None = None,
-        **kwargs) -> "SimpleAgentConfig":
+        **kwargs,
+    ) -> "SimpleAgentConfig":
         """Create a SimpleAgentConfig from an existing AugLLMConfig.
 
         Args:
@@ -128,11 +125,7 @@ class SimpleAgentConfig(AgentConfig):
         if id is None:
             id = f"agent_{uuid.uuid4().hex[:8]}"
 
-        return cls(
-            id=id,
-            name=name,
-            engine=aug_llm,
-            **kwargs)
+        return cls(id=id, name=name, engine=aug_llm, **kwargs)
 
     @classmethod
     def from_scratch(
@@ -146,7 +139,8 @@ class SimpleAgentConfig(AgentConfig):
         input_schema: type[BaseModel] | None = None,
         output_schema: type[BaseModel] | None = None,
         state_schema: type[StateSchema] | None = None,
-        **kwargs) -> "SimpleAgentConfig":
+        **kwargs,
+    ) -> "SimpleAgentConfig":
         """Create a SimpleAgentConfig from scratch with a new AugLLMConfig.
 
         Args:
@@ -165,9 +159,7 @@ class SimpleAgentConfig(AgentConfig):
             SimpleAgentConfig instance
         """
         # Create base LLM config
-        llm_config = AzureLLMConfig(
-            model=model, parameters={"temperature": temperature}
-        )
+        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
 
         # Create messages for prompt template
         messages = [
@@ -182,7 +174,8 @@ class SimpleAgentConfig(AgentConfig):
             llm_config=llm_config,
             prompt_template=prompt_template,
             system_prompt=system_prompt,
-            structured_output_model=structured_output_model)
+            structured_output_model=structured_output_model,
+        )
 
         # If structured output model is provided but no output schema, use the
         # model
@@ -197,7 +190,8 @@ class SimpleAgentConfig(AgentConfig):
             input_schema=input_schema,
             output_schema=output_schema,
             state_schema=state_schema,
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
     def with_structured_output(
@@ -207,7 +201,8 @@ class SimpleAgentConfig(AgentConfig):
         model: str = "gpt-4o",
         temperature: float = 0.2,
         name: str | None = None,
-        **kwargs) -> "SimpleAgentConfig":
+        **kwargs,
+    ) -> "SimpleAgentConfig":
         """Create a SimpleAgentConfig with structured output capabilities.
 
         Args:
@@ -237,4 +232,5 @@ class SimpleAgentConfig(AgentConfig):
             structured_output_model=output_model,
             output_schema=output_model,  # Use model as output schema directly
             name=name or f"structured_{output_model.__name__.lower()}_agent",
-            **kwargs)
+            **kwargs,
+        )

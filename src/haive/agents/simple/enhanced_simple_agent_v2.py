@@ -23,9 +23,7 @@ from pydantic import Field, model_validator
 # Import enhanced Agent directly - bypassing base/__init__.py
 
 
-sys.path.insert(
-    0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Now import the enhanced Agent directly
 
@@ -67,7 +65,8 @@ class SimpleAgentV2(EnhancedAgent[AugLLMConfig]):
                 temperature=values.get("temperature", 0.7),
                 max_tokens=values.get("max_tokens"),
                 system_message=values.get("system_message"),
-                tools=values.get("tools", []))
+                tools=values.get("tools", []),
+            )
             values["engine"] = config
 
         return values
@@ -105,9 +104,7 @@ class SimpleAgentV2(EnhancedAgent[AugLLMConfig]):
                     return "tools"
                 return "end"
 
-            graph.add_conditional_edges(
-                "agent", check_tools, {"tools": "tools", "end": END}
-            )
+            graph.add_conditional_edges("agent", check_tools, {"tools": "tools", "end": END})
             graph.add_edge("tools", END)
         else:
             graph.add_edge("agent", END)
