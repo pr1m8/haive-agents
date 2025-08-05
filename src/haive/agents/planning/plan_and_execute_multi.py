@@ -76,3 +76,11 @@ def PlanAndExecuteAgent(
         schema_build_mode=BuildMode.PARALLEL,
         # Engine serialization is now handled by field validators
         **kwargs)
+
+
+# Export functions for use by other modules
+__all__ = [
+    "should_continue",
+    "should_end",
+    "create_plan_and_execute_agent"
+]

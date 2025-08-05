@@ -5,6 +5,7 @@ are separated into distinct phases with structured outputs.
 """
 from datetime import datetime
 from enum import Enum
+from typing import List, Optional
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 class StepStatus(str, Enum):
@@ -37,6 +38,24 @@ class PlanStep(BaseModel):
             if invalid:
                 raise ValueError(f'Dependencies {invalid} must be less than step_id {step_id}')
         return v
+
+
+class Plan(BaseModel):
+    """Simple plan model for basic planning operations."""
+    
+    objective: str = Field(description="The main objective this plan aims to achieve")
+    steps: List[str] = Field(description="List of step descriptions") 
+    reasoning: Optional[str] = Field(default=None, description="Reasoning behind the plan")
+    
+    @classmethod
+    def from_execution_plan(cls, execution_plan: 'ExecutionPlan') -> 'Plan':
+        """Create a simple Plan from an ExecutionPlan."""
+        return cls(
+            objective=execution_plan.objective,
+            steps=[step.description for step in execution_plan.steps],
+            reasoning=execution_plan.reasoning
+        )
+
 
 class ExecutionPlan(BaseModel):
     """Complete execution plan with metadata."""
