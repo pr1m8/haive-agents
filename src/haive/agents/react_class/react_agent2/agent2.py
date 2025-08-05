@@ -572,3 +572,33 @@ def create_react_agent(
 
     # Build and return agent
     return config.build_agent()
+
+
+def chat() -> None:
+    """Module-level chat function."""
+    pass
+
+
+def run(agent, input_data):
+    """Module-level run function."""
+    return agent.run(input_data)
+
+
+def setup_workflow():
+    """Module-level setup_workflow function."""
+    pass
+
+
+def should_use_tools(state):
+    """Module-level should_use_tools function."""
+    return bool(state.get("messages", []))
+
+
+def stream(agent, input_data):
+    """Module-level stream function."""
+    return agent.stream(input_data)
+
+
+def structured_output_node(state):
+    """Module-level structured_output_node function."""
+    return state

@@ -183,3 +183,9 @@ Action Input: <your final answer>
         config.think_llm = think_llm
         config.engine = think_llm  # For compatibility with AgentConfig
         return config
+
+
+def from_scratch(**kwargs):
+    """Module-level from_scratch function."""
+    pass
+

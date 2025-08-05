@@ -489,3 +489,28 @@ if __name__ == "__main__":
 
     # Run the agent
     result = agent.run("What is the capital of France?")
+
+
+def from_tools(tools, **kwargs):
+    """Module-level from_tools function."""
+    return create_react_agent(tools=tools, **kwargs)
+
+
+def run(agent, input_data):
+    """Module-level run function."""
+    return agent.run(input_data)
+
+
+def search(query):
+    """Module-level search function."""
+    return f"Search results for: {query}"
+
+
+def setup_workflow():
+    """Module-level setup_workflow function."""
+    pass
+
+
+def structured_output_node(state):
+    """Module-level structured_output_node function."""
+    return state
