@@ -98,3 +98,14 @@ class ReflectionAgent(MultiAgent):
             return improvement_result.improved_content
 
         return input_data
+
+
+# Standalone functions for compatibility
+def create(*args, **kwargs) -> ReflectionAgent:
+    """Create a simple reflection agent."""
+    return ReflectionAgent.create(*args, **kwargs)
+
+
+def enhance_agent(base_agent: Any, **kwargs) -> ReflectionAgent:
+    """Enhance any agent with reflection capability."""
+    return ReflectionAgent.enhance_agent(base_agent, **kwargs)

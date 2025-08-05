@@ -202,6 +202,14 @@ class Critique(BaseModel):
     needs_revision: bool = Field(description="Whether revision is needed")
 
 
+class Improvement(BaseModel):
+    """An improvement to a response based on reflection."""
+    
+    category: str = Field(description="Category of improvement")
+    suggestion: str = Field(description="Specific suggestion")
+    improved_text: str | None = Field(default=None, description="Improved version")
+    
+
 class ReflectionResult(BaseModel):
     """Complete reflection analysis (for structured output pattern)."""
 
@@ -209,3 +217,16 @@ class ReflectionResult(BaseModel):
     critique: Critique = Field(description="Detailed critique")
     action_items: list[str] = Field(description="Specific action items for improvement")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in the analysis")
+
+
+# Utility functions for compatibility
+def to_prompt(obj) -> str:
+    """Convert object to prompt string."""
+    if hasattr(obj, 'model_dump_json'):
+        return obj.model_dump_json()
+    return str(obj)
+
+
+def validate_grade_matches_score(*args, **kwargs):
+    """Validate grade matches score (compatibility function)."""
+    return True

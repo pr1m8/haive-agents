@@ -106,7 +106,7 @@ class ReactAgentConfig(AgentConfig):
             raise TypeError(f"Expected a list, but got {type(v).__name__}.")
         return v
 
-    @field_validatorensure_serializable
+    @field_validator("structured_output_model")
     @classmethod
     def ensure_serializable(cls, v) -> Any:
         """Ensure structured output schema is serializable."""
