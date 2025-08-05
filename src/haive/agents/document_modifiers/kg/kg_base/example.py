@@ -18,9 +18,7 @@ def basic_example() -> None:
     # Sample documents
     documents = [
         Document(page_content="John Smith works at Acme Corporation in New York."),
-        Document(
-            page_content="Acme Corporation is a technology company founded in 2010."
-        ),
+        Document(page_content="Acme Corporation is a technology company founded in 2010."),
         Document(page_content="Sarah Johnson is the CEO of Acme Corporation."),
     ]
 
@@ -97,9 +95,8 @@ def type_hints_example() -> None:
 
     # Type-annotated function using GraphTransformer
     def extract_knowledge_graph(
-        text_content: str,
-        entity_types: list[str],
-        relation_types: list[tuple[str, str, str]]) -> list[str]:
+        text_content: str, entity_types: list[str], relation_types: list[tuple[str, str, str]]
+    ) -> list[str]:
         """Extract knowledge graph and return entity names.
 
         Args:
@@ -123,7 +120,8 @@ def type_hints_example() -> None:
     extract_knowledge_graph(
         text_content="Sample text about companies and people",
         entity_types=["Person", "Company"],
-        relation_types=[("Person", "WORKS_FOR", "Company")])
+        relation_types=[("Person", "WORKS_FOR", "Company")],
+    )
 
 
 if __name__ == "__main__":

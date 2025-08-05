@@ -48,20 +48,18 @@ from typing import Literal
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.aug_llm import compose_runnable
-from langchain.chains.combine_documents.reduce import (
-    acollapse_docs,
-    split_list_of_docs)
+from langchain.chains.combine_documents.reduce import acollapse_docs, split_list_of_docs
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langgraph.constants import Send
 from langgraph.graph import END, START
 from langgraph.types import Command, Send
 
-from haive.agents.document_modifiers.summarizer.map_branch.config import (
-    SummarizerAgentConfig)
+from haive.agents.document_modifiers.summarizer.map_branch.config import SummarizerAgentConfig
 from haive.agents.document_modifiers.summarizer.map_branch.engines import (
     map_aug_llm_config,
-    reduce_augllm_config)
+    reduce_augllm_config,
+)
 from haive.agents.document_modifiers.summarizer.map_branch.state import SummaryState
 
 logger = logging.getLogger(__name__)
@@ -146,9 +144,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
                 Defaults to a new instance with default values.
         """
         self.token_max = config.token_max
-        self.map_chain = compose_runnable(
-            config.engines.get("map_chain", map_aug_llm_config)
-        )
+        self.map_chain = compose_runnable(config.engines.get("map_chain", map_aug_llm_config))
         self.reduce_chain = compose_runnable(
             config.engines.get("reduce_chain", reduce_augllm_config)
         )
@@ -160,7 +156,8 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
 
         logger.info(
             "Initialized SummarizerAgent",
-            extra={"agent_name": config.name, "token_max": self.token_max})
+            extra={"agent_name": config.name, "token_max": self.token_max},
+        )
 
         super().__init__(config)
 
@@ -180,9 +177,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
             This method is called automatically during agent initialization
             and does not need to be invoked manually.
         """
-        logger.info(
-            "Setting up summarizer workflow", extra={"agent_name": self.config.name}
-        )
+        logger.info("Setting up summarizer workflow", extra={"agent_name": self.config.name})
 
         # Add workflow nodes
         self.graph.add_node("generate_summary", self.generate_summary)
@@ -191,9 +186,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         self.graph.add_node("generate_final_summary", self.generate_final_summary)
 
         # Define workflow edges
-        self.graph.add_conditional_edges(
-            START, self.map_summaries, ["generate_summary"]
-        )
+        self.graph.add_conditional_edges(START, self.map_summaries, ["generate_summary"])
         self.graph.add_edge("generate_summary", "collect_summaries")
         self.graph.add_conditional_edges("collect_summaries", self.should_collapse)
         self.graph.add_conditional_edges("collapse_summaries", self.should_collapse)
@@ -224,25 +217,22 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         try:
             # Attempt normal summarization
             response = await self.map_chain.ainvoke(content)
-            logger.info(
-                "Generated summary successfully", extra={"content_length": len(content)}
-            )
+            logger.info("Generated summary successfully", extra={"content_length": len(content)})
             return {"summaries": [response]}
 
         except Exception as e:
             error_str = str(e)
             logger.warning(
                 "Error generating summary",
-                extra={"error": error_str, "content_length": len(content)})
+                extra={"error": error_str, "content_length": len(content)},
+            )
 
             # Handle token limit errors
             if self._is_token_limit_error(error_str):
                 return await self._handle_oversized_document(content)
 
             # For other errors, return error message
-            logger.error(
-                "Failed to generate summary", extra={"error": error_str}, exc_info=True
-            )
+            logger.error("Failed to generate summary", extra={"error": error_str}, exc_info=True)
             return {"summaries": [f"Error generating summary: {error_str}"]}
 
     def map_summaries(self, state: SummaryState) -> list[Send]:
@@ -282,9 +272,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
 
         return Command(
             update={
-                "collapsed_summaries": [
-                    Document(page_content=summary) for summary in summaries
-                ]
+                "collapsed_summaries": [Document(page_content=summary) for summary in summaries]
             }
         )
 
@@ -309,19 +297,18 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
             extra={
                 "document_count": len(collapsed_summaries),
                 "total_tokens": self.length_function(collapsed_summaries),
-            })
+            },
+        )
 
         # Split documents into groups that fit within token limit
-        doc_lists = split_list_of_docs(
-            collapsed_summaries, self.length_function, self.token_max
-        )
+        doc_lists = split_list_of_docs(collapsed_summaries, self.length_function, self.token_max)
 
         # Collapse each group
         results = []
         for i, doc_list in enumerate(doc_lists):
             logger.debug(
-                "Processing document group",
-                extra={"group_index": i, "group_size": len(doc_list)})
+                "Processing document group", extra={"group_index": i, "group_size": len(doc_list)}
+            )
             collapsed = await acollapse_docs(doc_list, self.reduce_chain.ainvoke)
             results.append(collapsed)
 
@@ -349,7 +336,8 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         if num_tokens > self.token_max:
             logger.info(
                 "Summaries exceed token limit, collapsing further",
-                extra={"current_tokens": num_tokens, "token_max": self.token_max})
+                extra={"current_tokens": num_tokens, "token_max": self.token_max},
+            )
             return "collapse_summaries"
 
         logger.info("Proceeding to final summary", extra={"total_tokens": num_tokens})
@@ -370,22 +358,15 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         """
         collapsed_summaries = state.get("collapsed_summaries", [])
 
-        logger.info(
-            "Generating final summary", extra={"input_count": len(collapsed_summaries)}
-        )
+        logger.info("Generating final summary", extra={"input_count": len(collapsed_summaries)})
 
         try:
             response = await self.reduce_chain.ainvoke(collapsed_summaries)
             logger.info("Final summary generated successfully")
             return Command(update={"final_summary": response})
         except Exception as e:
-            logger.error(
-                "Failed to generate final summary",
-                extra={"error": str(e)},
-                exc_info=True)
-            return Command(
-                update={"final_summary": "Error: Failed to generate final summary"}
-            )
+            logger.error("Failed to generate final summary", extra={"error": str(e)}, exc_info=True)
+            return Command(update={"final_summary": "Error: Failed to generate final summary"})
 
     def length_function(self, documents: list[Document]) -> int:
         """Calculate total token count for documents.
@@ -407,7 +388,8 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
 
         logger.debug(
             "Calculated token count",
-            extra={"document_count": len(documents), "total_tokens": total_tokens})
+            extra={"document_count": len(documents), "total_tokens": total_tokens},
+        )
 
         return total_tokens
 
@@ -420,9 +402,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         Returns:
             Number of tokens in the text.
         """
-        llm = self.config.engines.get(
-            "map_chain", map_aug_llm_config
-        ).llm_config.instantiate()
+        llm = self.config.engines.get("map_chain", map_aug_llm_config).llm_config.instantiate()
         return llm.get_num_tokens(text)
 
     def _is_token_limit_error(self, error_str: str) -> bool:
@@ -455,17 +435,13 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         Returns:
             Dictionary with 'summaries' key containing the combined summary.
         """
-        logger.info(
-            "Handling oversized document", extra={"content_length": len(content)}
-        )
+        logger.info("Handling oversized document", extra={"content_length": len(content)})
 
         # Split content into chunks
         if isinstance(content, str):
             chunks = self.text_splitter.split_text(content)
         else:
-            chunks = self.text_splitter.split_documents(
-                [Document(page_content=content)]
-            )
+            chunks = self.text_splitter.split_documents([Document(page_content=content)])
             chunks = [doc.page_content for doc in chunks]
 
         logger.info("Split document into chunks", extra={"chunk_count": len(chunks)})
@@ -474,9 +450,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
         chunk_summaries = []
         for i, chunk in enumerate(chunks):
             try:
-                logger.debug(
-                    "Processing chunk",
-                    extra={"chunk_index": i, "chunk_size": len(chunk)})
+                logger.debug("Processing chunk", extra={"chunk_index": i, "chunk_size": len(chunk)})
                 chunk_summary = await self.map_chain.ainvoke(chunk)
                 chunk_summaries.append(chunk_summary)
             except Exception as e:
@@ -494,9 +468,7 @@ class SummarizerAgent(Agent[SummarizerAgentConfig]):
             combined = await self.reduce_chain.ainvoke("\n\n".join(chunk_summaries))
             return {"summaries": [combined]}
         except Exception as e:
-            logger.exception(
-                "Failed to combine chunk summaries", extra={"error": str(e)}
-            )
+            logger.exception("Failed to combine chunk summaries", extra={"error": str(e)})
             return {"summaries": ["Error: Could not combine chunk summaries"]}
 
 

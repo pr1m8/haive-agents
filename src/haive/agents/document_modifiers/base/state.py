@@ -4,10 +4,12 @@ from typing import Any
 This module defines the DocumentModifierState class which serves as the
 foundation for all document processing agents in the haive framework.
 """
+
 from typing import Any
 from haive.core.schema import StateSchema
 from langchain_core.documents import Document
 from pydantic import Field, computed_field, field_validator, model_validator
+
 
 class DocumentModifierState(StateSchema):
     """Base state schema for document modification agents.
@@ -56,12 +58,15 @@ class DocumentModifierState(StateSchema):
         The state automatically validates that at least one document
         is present to prevent processing empty collections.
     """
-    name: str | None = Field(default=None, description='The name of the document modifier.')
-    description: str | None = Field(default=None, description='The description of the document modifier.')
-    documents: list[Document] = Field(default_factory=list, description='The documents to process.')
+
+    name: str | None = Field(default=None, description="The name of the document modifier.")
+    description: str | None = Field(
+        default=None, description="The description of the document modifier."
+    )
+    documents: list[Document] = Field(default_factory=list, description="The documents to process.")
 
     @classmethod
-    def from_documents(cls, documents: list[Document]) -> 'DocumentModifierState':
+    def from_documents(cls, documents: list[Document]) -> "DocumentModifierState":
         """Create a DocumentModifierState from a list of documents.
 
         This is a convenience factory method for creating state instances
@@ -101,7 +106,7 @@ class DocumentModifierState(StateSchema):
             >>> print(state.documents_text)
             'First\\nSecond'
         """
-        return '\n'.join([doc.page_content for doc in self.documents])
+        return "\n".join([doc.page_content for doc in self.documents])
 
     @computed_field
     @property
@@ -117,8 +122,8 @@ class DocumentModifierState(StateSchema):
         """
         return len(self.documents)
 
-    @model_validator(mode='after')
-    def validate_documents(self) -> 'DocumentModifierState':
+    @model_validator(mode="after")
+    def validate_documents(self) -> "DocumentModifierState":
         """Validate that at least one document is present.
 
         This validator runs after model initialization to ensure
@@ -131,10 +136,10 @@ class DocumentModifierState(StateSchema):
             ValueError: If documents list is empty.
         """
         if self.num_documents == 0:
-            raise ValueError('At least one document is required.')
+            raise ValueError("At least one document is required.")
         return self
 
-    @field_validator('documents')
+    @field_validator("documents")
     @classmethod
     def validate_documents_field(cls, v) -> Any:
         """Validate the documents field during assignment.
@@ -153,7 +158,7 @@ class DocumentModifierState(StateSchema):
         return v
 
     @classmethod
-    def add_document(cls, document: Document) -> 'DocumentModifierState':
+    def add_document(cls, document: Document) -> "DocumentModifierState":
         """Add a single document to the state.
 
         Note: This method has issues with the class method implementation.
@@ -168,7 +173,7 @@ class DocumentModifierState(StateSchema):
         return cls(documents=[*cls.documents, document])
 
     @classmethod
-    def add_documents(cls, documents: list[Document]) -> 'DocumentModifierState':
+    def add_documents(cls, documents: list[Document]) -> "DocumentModifierState":
         """Add multiple documents to the state.
 
         Note: This method has issues with the class method implementation.
@@ -183,7 +188,7 @@ class DocumentModifierState(StateSchema):
         return cls(documents=cls.documents + documents)
 
     @classmethod
-    def remove_document(cls, document: Document) -> 'DocumentModifierState':
+    def remove_document(cls, document: Document) -> "DocumentModifierState":
         """Remove a specific document from the state.
 
         Note: This method has issues with the class method implementation.
@@ -198,7 +203,7 @@ class DocumentModifierState(StateSchema):
         return cls(documents=cls.documents - [document])
 
     @classmethod
-    def remove_documents(cls, documents: list[Document]) -> 'DocumentModifierState':
+    def remove_documents(cls, documents: list[Document]) -> "DocumentModifierState":
         """Remove multiple documents from the state.
 
         Note: This method has issues with the class method implementation.

@@ -7,12 +7,11 @@ from langchain_core.prompts import ChatPromptTemplate
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityNode,
     EntityRelationship,
-    KnowledgeGraph)
+    KnowledgeGraph,
+)
 
 
-def create_node_extraction_config(
-    model: str = "gpt-4o", temperature: float = 0.7
-) -> AugLLMConfig:
+def create_node_extraction_config(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
     """Create an AugLLMConfig for entity node extraction.
 
     Args:
@@ -42,7 +41,8 @@ def create_node_extraction_config(
         Output Format:
         - Each entity should have a unique ID
         - Types should be descriptive but concise
-        - Include important contextual properties"""),
+        - Include important contextual properties""",
+            ),
             ("human", "Extract entities from this text:\n{context}"),
         ]
     )
@@ -90,12 +90,14 @@ def create_relationship_extraction_config(
         - Source and target entities must be well-defined
         - Relationship type should be specific and meaningful
         - Include a confidence score (0-1)
-        - Provide brief supporting evidence"""),
+        - Provide brief supporting evidence""",
+            ),
             (
                 "human",
                 """Extract relationships from this text.
         Consider the context and connections between entities:
-        {context}"""),
+        {context}""",
+            ),
         ]
     )
 
@@ -105,12 +107,11 @@ def create_relationship_extraction_config(
         llm_config=llm_config,
         prompt_template=relationship_extraction_prompt,
         # Structured output for relationships
-        structured_output_model=EntityRelationship)
+        structured_output_model=EntityRelationship,
+    )
 
 
-def create_graph_extraction_config(
-    model: str = "gpt-4o", temperature: float = 0.7
-) -> AugLLMConfig:
+def create_graph_extraction_config(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
     """Create an AugLLMConfig for comprehensive knowledge graph extraction.
 
     Args:
@@ -141,10 +142,9 @@ def create_graph_extraction_config(
         1. Identify unique entities with their types and properties
         2. Discover relationships between these entities
         3. Assess and score relationship confidence
-        4. Provide supporting evidence for relationships"""),
-            (
-                "human",
-                "Extract a comprehensive knowledge graph from this text:\n{context}"),
+        4. Provide supporting evidence for relationships""",
+            ),
+            ("human", "Extract a comprehensive knowledge graph from this text:\n{context}"),
         ]
     )
 
@@ -157,9 +157,7 @@ def create_graph_extraction_config(
     )
 
 
-def create_graph_merger_config(
-    model: str = "gpt-4o", temperature: float = 0.7
-) -> AugLLMConfig:
+def create_graph_merger_config(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
     """Create an AugLLMConfig for merging knowledge graphs.
 
     Args:
@@ -191,13 +189,15 @@ def create_graph_merger_config(
         1. Compare entities across graphs
         2. Reconcile conflicting entity properties
         3. Merge relationships with careful confidence scoring
-        4. Create a unified, comprehensive knowledge graph"""),
+        4. Create a unified, comprehensive knowledge graph""",
+            ),
             (
                 "human",
                 """Merge these knowledge graphs with precision:
         {graph_contexts}
 
-        Provide a unified, comprehensive knowledge graph."""),
+        Provide a unified, comprehensive knowledge graph.""",
+            ),
         ]
     )
 
@@ -212,13 +212,13 @@ def create_graph_merger_config(
 
 def kg_extraction_engine(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
     """Create a comprehensive knowledge graph extraction engine.
-    
+
     This is the main function for creating a complete KG extraction configuration.
-    
+
     Args:
         model: LLM model to use
         temperature: Sampling temperature for generation
-        
+
     Returns:
         Configured AugLLMConfig for comprehensive KG extraction
     """
@@ -227,11 +227,11 @@ def kg_extraction_engine(model: str = "gpt-4o", temperature: float = 0.7) -> Aug
 
 def merge_analysis_engine(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
     """Create a merge analysis engine for knowledge graph merging.
-    
+
     Args:
         model: LLM model to use
         temperature: Sampling temperature for generation
-        
+
     Returns:
         Configured AugLLMConfig for merge analysis
     """
@@ -240,11 +240,11 @@ def merge_analysis_engine(model: str = "gpt-4o", temperature: float = 0.7) -> Au
 
 def schema_extraction_engine(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
     """Create a schema extraction engine for knowledge graph schema analysis.
-    
+
     Args:
         model: LLM model to use
         temperature: Sampling temperature for generation
-        
+
     Returns:
         Configured AugLLMConfig for schema extraction
     """

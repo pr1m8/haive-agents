@@ -70,7 +70,8 @@ class GraphTransformer(BaseDocumentTransformer):
         node_properties: bool | list[str] = False,
         relationship_properties: bool | list[str] = False,
         ignore_tool_usage: bool = True,
-        additional_instructions: str = "") -> list[GraphDocument]:
+        additional_instructions: str = "",
+    ) -> list[GraphDocument]:
         """Transform documents into knowledge graphs using LLM-based extraction.
 
         Processes a list of documents and extracts entities, relationships, and
@@ -190,9 +191,7 @@ class GraphTransformer(BaseDocumentTransformer):
             llm, "supports_function_calling", False
         ):
             graph_transformer_kwargs["node_properties"] = node_properties
-            graph_transformer_kwargs["relationship_properties"] = (
-                relationship_properties
-            )
+            graph_transformer_kwargs["relationship_properties"] = relationship_properties
 
         # Create the graph transformer and process documents
         graph_transformer = LLMGraphTransformer(**graph_transformer_kwargs)

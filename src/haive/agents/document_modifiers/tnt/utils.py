@@ -95,7 +95,8 @@ def parse_taxonomy(output_text: str) -> dict:
     cluster_matches = re.findall(
         r"\s*<id>(.*?)</id>\s*<name>(.*?)</name>\s*<description>(.*?)</description>\s*",
         output_text,
-        re.DOTALL)
+        re.DOTALL,
+    )
     clusters = [
         {"id": id.strip(), "name": name.strip(), "description": description.strip()}
         for id, name, description in cluster_matches
@@ -129,10 +130,7 @@ def parse_labels(output_text: str) -> dict:
         >>> print(result)
         {'category': 'Technology'}
     """
-    category_matches = re.findall(
-        r"\s*<category>(.*?)</category>.*",
-        output_text,
-        re.DOTALL)
+    category_matches = re.findall(r"\s*<category>(.*?)</category>.*", output_text, re.DOTALL)
     categories = [{"category": category.strip()} for category in category_matches]
     if len(categories) > 1:
         logger.warning(f"Multiple selected categories: {categories}")
@@ -282,9 +280,9 @@ def format_taxonomy(clusters: list[dict]) -> str:
     xml = "<cluster_table>\n"
     for label in clusters:
         xml += "  <cluster>\n"
-        xml += f'    <id>{label["id"]}</id>\n'
-        xml += f'    <name>{label["name"]}</name>\n'
-        xml += f'    <description>{label["description"]}</description>\n'
+        xml += f"    <id>{label['id']}</id>\n"
+        xml += f"    <name>{label['name']}</name>\n"
+        xml += f"    <description>{label['description']}</description>\n"
         xml += "  </cluster>\n"
     xml += "</cluster_table>"
     return xml

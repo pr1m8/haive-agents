@@ -7,7 +7,8 @@ This module provides tools for summarizing documents using various strategies.
 
 try:
     from haive.agents.document_modifiers.summarizer.iterative_refinement.agent import (
-        IterativeSummarizer)
+        IterativeSummarizer,
+    )
 except ImportError:
     IterativeSummarizer = None
 

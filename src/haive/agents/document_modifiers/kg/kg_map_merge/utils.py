@@ -9,13 +9,10 @@ from langchain_core.documents import Document
 from langchain_neo4j.graphs.graph_document import GraphDocument
 
 from haive.agents.document_modifiers.kg.kg_map_merge.agent import ParallelKGTransformer
-from haive.agents.document_modifiers.kg.kg_map_merge.config import (
-    ParallelKGTransformerConfig)
+from haive.agents.document_modifiers.kg.kg_map_merge.config import ParallelKGTransformerConfig
 
 
-def visualize_graph(
-    graph_document: GraphDocument, output_file: str = "knowledge_graph.png"
-):
+def visualize_graph(graph_document: GraphDocument, output_file: str = "knowledge_graph.png"):
     """Visualize the graph document using NetworkX and matplotlib."""
     if not graph_document:
         return
@@ -47,9 +44,7 @@ def visualize_graph(
     color_map = dict(zip(node_types, colors, strict=False))
 
     for node_type, color in color_map.items():
-        nodelist = [
-            n for n, attr in G.nodes(data=True) if attr.get("type") == node_type
-        ]
+        nodelist = [n for n, attr in G.nodes(data=True) if attr.get("type") == node_type]
         nx.draw_networkx_nodes(
             G,
             pos,
@@ -57,7 +52,8 @@ def visualize_graph(
             node_color=[color],
             node_size=2000,
             alpha=0.8,
-            label=node_type)
+            label=node_type,
+        )
 
     # Draw edges by type with different colors and line styles
     edge_types = set(nx.get_edge_attributes(G, "type").values())
@@ -65,9 +61,7 @@ def visualize_graph(
     edge_color_map = dict(zip(edge_types, edge_colors, strict=False))
 
     for edge_type, color in edge_color_map.items():
-        edgelist = [
-            (u, v) for u, v, attr in G.edges(data=True) if attr.get("type") == edge_type
-        ]
+        edgelist = [(u, v) for u, v, attr in G.edges(data=True) if attr.get("type") == edge_type]
         nx.draw_networkx_edges(
             G,
             pos,
@@ -77,7 +71,8 @@ def visualize_graph(
             edge_color=[color],
             connectionstyle="arc3,rad=0.1",
             arrowsize=15,
-            label=edge_type)
+            label=edge_type,
+        )
 
     # Add node labels
     nx.draw_networkx_labels(G, pos, font_size=10, font_family="sans-serif")
@@ -85,12 +80,8 @@ def visualize_graph(
     # Add edge labels
     edge_labels = nx.get_edge_attributes(G, "label")
     nx.draw_networkx_edge_labels(
-        G,
-        pos,
-        edge_labels=edge_labels,
-        font_color="black",
-        font_size=8,
-        font_family="sans-serif")
+        G, pos, edge_labels=edge_labels, font_color="black", font_size=8, font_family="sans-serif"
+    )
 
     # Add legend
     plt.legend(loc="upper right", scatterpoints=1, title="Node Types")
@@ -111,7 +102,8 @@ async def create_knowledge_graph(
     node_properties: bool | list[str] = False,
     relationship_properties: bool | list[str] = False,
     additional_transformer_args: dict[str, Any] | None = None,
-    custom_system_prompt: str | None = None) -> GraphDocument:
+    custom_system_prompt: str | None = None,
+) -> GraphDocument:
     """Create a knowledge graph from multiple documents using parallel processing.
 
     Args:
@@ -141,7 +133,8 @@ async def create_knowledge_graph(
         node_properties=node_properties,
         relationship_properties=relationship_properties,
         graph_transformer_args=additional_transformer_args,
-        custom_system_prompt=custom_system_prompt)
+        custom_system_prompt=custom_system_prompt,
+    )
 
     # Create and initialize the agent
     agent = ParallelKGTransformer(config)

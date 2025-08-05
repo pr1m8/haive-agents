@@ -29,10 +29,7 @@ from typing import Any
 
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.runnables import (
-    RunnableConfig,
-    RunnableLambda,
-    RunnablePassthrough)
+from langchain_core.runnables import RunnableConfig, RunnableLambda, RunnablePassthrough
 from langgraph.graph import END, START
 from langgraph.types import Command
 from pydantic import Field
@@ -42,7 +39,8 @@ from haive.agents.document_modifiers.tnt.engines import (
     summary_aug_llm_config,
     taxonomy_generation_aug_llm_config,
     taxonomy_review_aug_llm_config,
-    taxonomy_update_aug_llm_config)
+    taxonomy_update_aug_llm_config,
+)
 from haive.agents.document_modifiers.tnt.state import TaxonomyGenerationState
 from haive.agents.document_modifiers.tnt.utils import format_docs, format_taxonomy
 
@@ -54,8 +52,8 @@ class TaxonomyAgentConfig(AgentConfig):
     """Agent configuration for generating a taxonomy from conversation history."""
 
     state_schema: TaxonomyGenerationState = Field(
-        default=TaxonomyGenerationState,
-        description="The state of the taxonomy generation.")
+        default=TaxonomyGenerationState, description="The state of the taxonomy generation."
+    )
     visualize: bool = Field(default=True, description="Whether to visualize the agent.")
     name: str = Field(default="TaxonomyAgent", description="The name of the agent.")
     # TODO: This should be a RunnableConfig
@@ -77,7 +75,8 @@ class TaxonomyAgentConfig(AgentConfig):
             },
             "max_concurrency": 2,
         },
-        description="The runtime configuration of the agent.")
+        description="The runtime configuration of the agent.",
+    )
 
 
 @register_agent(TaxonomyAgentConfig)
@@ -101,11 +100,12 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             """Ensure batch function receives a list."""
             return self.summary_chain.batch(input_dict["documents"])  # Fix: Passes list
 
-        self.map_step = RunnableLambda(
-            func=wrap_content
-        ) | RunnablePassthrough.assign(  # Wraps content in a dictionary  # Assigns summaries key in dict
-            # Fix: Uses wrapped function
-            summaries=RunnableLambda(func=batch_summaries)
+        self.map_step = (
+            RunnableLambda(func=wrap_content)
+            | RunnablePassthrough.assign(  # Wraps content in a dictionary  # Assigns summaries key in dict
+                # Fix: Uses wrapped function
+                summaries=RunnableLambda(func=batch_summaries)
+            )
         )
 
         self.map_reduce_chain = self.map_step | self.reduce_summaries
@@ -127,9 +127,7 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
                     {
                         # Handle missing key
                         "id": doc.get("id", "UNKNOWN_ID"),
-                        "content": doc.get(
-                            "content", "UNKNOWN_CONTENT"
-                        ),  # Handle missing key
+                        "content": doc.get("content", "UNKNOWN_CONTENT"),  # Handle missing key
                         "summary": summ_info.get("summary", "NO_SUMMARY"),
                         "explanation": summ_info.get("explanation", "NO_EXPLANATION"),
                     }
@@ -143,7 +141,8 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
         chain_config: AugLLMConfig,
         state: TaxonomyGenerationState,
         config: RunnableConfig,
-        mb_indices: list[int]) -> TaxonomyGenerationState:
+        mb_indices: list[int],
+    ) -> TaxonomyGenerationState:
         """Invokes the taxonomy LLM to generate or refine taxonomies.
 
         Args:
@@ -170,9 +169,7 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
                 "cluster_table_xml": cluster_table_xml,
                 "suggestion_length": configurable.get("suggestion_length", 30),
                 "cluster_name_length": configurable.get("cluster_name_length", 10),
-                "cluster_description_length": configurable.get(
-                    "cluster_description_length", 30
-                ),
+                "cluster_description_length": configurable.get("cluster_description_length", 30),
                 "explanation_length": configurable.get("explanation_length", 20),
                 "max_num_clusters": configurable.get("max_num_clusters", 25),
             }
@@ -202,10 +199,7 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             return Command(update={"minibatches": [indices]})
 
         num_full_batches = len(indices) // batch_size
-        batches = [
-            indices[i * batch_size : (i + 1) * batch_size]
-            for i in range(num_full_batches)
-        ]
+        batches = [indices[i * batch_size : (i + 1) * batch_size] for i in range(num_full_batches)]
 
         if leftovers := len(indices) % batch_size:
             last_batch = indices[num_full_batches * batch_size :]
@@ -291,6 +285,7 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             {
                 "update_taxonomy": "update_taxonomy",
                 "review_taxonomy": "review_taxonomy",
-            })
+            },
+        )
         self.graph.add_edge("review_taxonomy", END)
         self.graph.add_edge(START, "summarize")

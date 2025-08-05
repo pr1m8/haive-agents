@@ -25,7 +25,8 @@ from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
     PromptTemplate,
-    SystemMessagePromptTemplate)
+    SystemMessagePromptTemplate,
+)
 
 from haive.agents.document_modifiers.tnt.utils import parse_summary, parse_taxonomy
 
@@ -45,7 +46,8 @@ SUMMARY_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
         <data>
         {content}
         </data>
-        """)
+        """,
+    )
 )
 
 # Human Message: User provides specific task instructions
@@ -75,7 +77,8 @@ SUMMARY_HUMAN_MESSAGE = HumanMessagePromptTemplate(
         ```
 
         # Output
-        """).partial(summary_length=20, explanation_length=30)
+        """,
+    ).partial(summary_length=20, explanation_length=30)
 )
 
 # ChatPromptTemplate combining system and human messages
@@ -85,7 +88,8 @@ SUMMARY_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 summary_aug_llm_config = AugLLMConfig(
     prompt_template=SUMMARY_PROMPT_TEMPLATE,
     output_parser=StrOutputParser(),
-    postprocess=parse_summary)
+    postprocess=parse_summary,
+)
 
 # System Message: Provides instructions and context
 TAXONOMY_UPDATE_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
@@ -157,7 +161,8 @@ TAXONOMY_UPDATE_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
         <conversations>
         {data_xml}
         </conversations>
-        """)
+        """,
+    )
 )
 
 # Human Message: User provides specific task instructions
@@ -210,7 +215,8 @@ TAXONOMY_UPDATE_HUMAN_MESSAGE = HumanMessagePromptTemplate(
         ```
 
         # Output
-        """)
+        """,
+    )
 )
 
 # ChatPromptTemplate combining system and human messages
@@ -221,7 +227,8 @@ TAXONOMY_UPDATE_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 taxonomy_update_aug_llm_config = AugLLMConfig(
     prompt_template=TAXONOMY_UPDATE_PROMPT_TEMPLATE,
     output_parser=StrOutputParser(),
-    postprocess=parse_taxonomy)
+    postprocess=parse_taxonomy,
+)
 
 # System Message: Provides instructions and context
 TAXONOMY_GENERATION_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
@@ -278,7 +285,8 @@ TAXONOMY_GENERATION_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
         <conversations>
         {data_xml}
         </conversations>
-        """)
+        """,
+    )
 )
 
 # Human Message: User provides specific task instructions
@@ -305,7 +313,8 @@ TAXONOMY_GENERATION_HUMAN_MESSAGE = HumanMessagePromptTemplate(
         ```
 
         # Output
-        """)
+        """,
+    )
 )
 
 # ChatPromptTemplate combining system and human messages
@@ -315,7 +324,8 @@ TAXONOMY_GENERATION_PROMPT_TEMPLATE = ChatPromptTemplate(
 taxonomy_generation_aug_llm_config = AugLLMConfig(
     prompt_template=TAXONOMY_GENERATION_PROMPT_TEMPLATE,
     output_parser=StrOutputParser(),
-    postprocess=parse_taxonomy)
+    postprocess=parse_taxonomy,
+)
 
 
 # System Message: Provides instructions and context
@@ -378,7 +388,8 @@ TAXONOMY_REVIEW_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
         <reference_table>
         {cluster_table_xml}
         </reference_table>
-        """)
+        """,
+    )
 )
 
 # Human Message: User provides specific task instructions
@@ -432,7 +443,8 @@ TAXONOMY_REVIEW_HUMAN_MESSAGE = HumanMessagePromptTemplate(
         ```
 
         # Output
-        """)
+        """,
+    )
 )
 
 # ChatPromptTemplate combining system and human messages
@@ -443,7 +455,8 @@ TAXONOMY_REVIEW_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 taxonomy_review_aug_llm_config = AugLLMConfig(
     prompt_template=TAXONOMY_REVIEW_PROMPT_TEMPLATE,
     output_parser=StrOutputParser(),
-    postprocess=parse_taxonomy)
+    postprocess=parse_taxonomy,
+)
 
 
 TAXONOMY_CLASSIFICATION_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
@@ -471,7 +484,8 @@ TAXONOMY_CLASSIFICATION_SYSTEM_MESSAGE = SystemMessagePromptTemplate(
         - Choose the **single most relevant** category.
         - **Do not choose multiple categories.**
         - **Think carefully** and explain your reasoning before giving your final category choice.
-        """)
+        """,
+    )
 )
 
 # Human Message: User provides specific task instructions
@@ -493,7 +507,8 @@ TAXONOMY_CLASSIFICATION_HUMAN_MESSAGE = HumanMessagePromptTemplate(
         <reasoning>Your reasoning for selecting the category</reasoning>
         <category>The selected category</category>
         ```
-        """)
+        """,
+    )
 )
 
 # ChatPromptTemplate combining system and human messages
@@ -501,5 +516,5 @@ TAXONOMY_CLASSIFICATION_PROMPT = ChatPromptTemplate.from_messages(
     [TAXONOMY_CLASSIFICATION_SYSTEM_MESSAGE, TAXONOMY_CLASSIFICATION_HUMAN_MESSAGE]
 )
 taxonomy_classification_aug_llm_config = AugLLMConfig(
-    prompt_template=TAXONOMY_CLASSIFICATION_PROMPT,
-    output_parser=StrOutputParser())
+    prompt_template=TAXONOMY_CLASSIFICATION_PROMPT, output_parser=StrOutputParser()
+)

@@ -35,14 +35,16 @@ class JsonPatch(BaseModel):
     """
 
     op: Literal["add", "remove", "replace"] = Field(
-        ...,
-        description="The operation to be performed. Must be one of 'add', 'remove', 'replace'.")
+        ..., description="The operation to be performed. Must be one of 'add', 'remove', 'replace'."
+    )
     path: str = Field(
         ...,
-        description="A JSON Pointer path that references a location within the target document where the operation is performed.")
+        description="A JSON Pointer path that references a location within the target document where the operation is performed.",
+    )
     value: Any = Field(
         ...,
-        description="The value to be used within the operation. REQUIRED for 'add', 'replace', and 'test' operations.")
+        description="The value to be used within the operation. REQUIRED for 'add', 'replace', and 'test' operations.",
+    )
 
 
 class PatchFunctionParameters(BaseModel):
@@ -50,12 +52,15 @@ class PatchFunctionParameters(BaseModel):
 
     tool_call_id: str = Field(
         ...,
-        description="The ID of the original tool call that generated the error. Must NOT be an ID of a PatchFunctionParameters tool call.")
+        description="The ID of the original tool call that generated the error. Must NOT be an ID of a PatchFunctionParameters tool call.",
+    )
     reasoning: str = Field(
         ...,
         description="Think step-by-step, listing each validation error and the"
         " JSONPatch operation needed to correct it. "
-        "Cite the fields in the JSONSchema you referenced in developing this plan.")
+        "Cite the fields in the JSONSchema you referenced in developing this plan.",
+    )
     patches: list[JsonPatch] = Field(
         ...,
-        description="A list of JSONPatch operations to be applied to the previous tool call's response.")
+        description="A list of JSONPatch operations to be applied to the previous tool call's response.",
+    )

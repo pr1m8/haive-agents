@@ -11,16 +11,13 @@ from langgraph.graph import add_messages
 from langgraph.types import Command
 from pydantic import BaseModel
 
-from haive.agents.document_modifiers.complex_extraction.models import (
-    PatchFunctionParameters)
+from haive.agents.document_modifiers.complex_extraction.models import PatchFunctionParameters
 
 
 def encode(state: BaseModel) -> dict:
     """Ensure the input is the correct format."""
     if isinstance(state.messages, PromptValue):
-        return Command(
-            update={"messages": state.messages.to_messages(), "input_format": "list"}
-        )
+        return Command(update={"messages": state.messages.to_messages(), "input_format": "list"})
     if isinstance(state.messages, list):
         return Command(update={"messages": state.messages, "input_format": "list"})
     raise TypeError(f"Unexpected input type: {type(state.messages)}")
@@ -43,11 +40,7 @@ def decode(state: BaseModel) -> dict:
 
     if hasattr(state, "messages") and state.messages:
         for message in reversed(state.messages):
-            if (
-                message.type == "ai"
-                and hasattr(message, "tool_calls")
-                and message.tool_calls
-            ):
+            if message.type == "ai" and hasattr(message, "tool_calls") and message.tool_calls:
                 # Extract data from tool calls
                 for tool_call in message.tool_calls:
                     # If we have a tool call with args, use that as extracted
@@ -71,7 +64,6 @@ def decode(state: BaseModel) -> dict:
                 parsed_data = extraction_model(**extracted_data)
                 return {"extracted_data": parsed_data}
             except Exception as e:
-
                 logging.exception(f"Error parsing data into Pydantic model: {e}")
                 # Fall back to returning the raw data
 
@@ -87,8 +79,7 @@ def default_aggregator(messages: Sequence[AnyMessage]) -> AIMessage:
     raise ValueError("No AI message found in the sequence.")
 
 
-def aggregate_messages(
-    messages: Sequence[AnyMessage]) -> AIMessage:
+def aggregate_messages(messages: Sequence[AnyMessage]) -> AIMessage:
     # Get all the AI messages and apply json patches
     resolved_tool_calls: dict[str | None, ToolCall] = {}
     content: str | list[str | dict] = ""
@@ -107,15 +98,11 @@ def aggregate_messages(
                 orig_tool_call = resolved_tool_calls[tcid]
                 current_args = orig_tool_call["args"]
                 patches = tc["args"].get("patches") or []
-                orig_tool_call["args"] = jsonpatch.apply_patch(
-                    current_args,
-                    patches)
+                orig_tool_call["args"] = jsonpatch.apply_patch(current_args, patches)
                 orig_tool_call["id"] = tc["id"]
             else:
                 resolved_tool_calls[tc["id"]] = tc.copy()
-    return AIMessage(
-        content=content,
-        tool_calls=list(resolved_tool_calls.values()))
+    return AIMessage(content=content, tool_calls=list(resolved_tool_calls.values()))
 
 
 def add_or_overwrite_messages(left: list, right: list | dict) -> list:
@@ -151,6 +138,4 @@ class RetryStrategy(TypedDict, total=False):
         | None
     )
     """The function to use once validation fails."""
-    aggregate_messages: Callable[[Sequence[AnyMessage]], AIMessage] | None = (
-        default_aggregator
-    )
+    aggregate_messages: Callable[[Sequence[AnyMessage]], AIMessage] | None = default_aggregator

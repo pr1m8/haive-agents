@@ -54,11 +54,7 @@ from typing import Any
 import jsonpatch
 from haive.core.engine.agent.agent import Agent, register_agent
 from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import (
-    AIMessage,
-    AnyMessage,
-    BaseMessage,
-    HumanMessage)
+from langchain_core.messages import AIMessage, AnyMessage, BaseMessage, HumanMessage
 from langchain_core.runnables import Runnable, RunnableLambda
 from langchain_core.tools import Tool
 from langgraph.graph import END, START, StateGraph
@@ -66,15 +62,16 @@ from langgraph.prebuilt import ValidationNode
 from langgraph.types import Command
 from pydantic import BaseModel
 
-from haive.agents.document_modifiers.complex_extraction.config import (
-    ComplexExtractionAgentConfig)
+from haive.agents.document_modifiers.complex_extraction.config import ComplexExtractionAgentConfig
 from haive.agents.document_modifiers.complex_extraction.models import (
     PatchFunctionParameters,
-    RetryStrategy)
+    RetryStrategy,
+)
 from haive.agents.document_modifiers.complex_extraction.utils import (
     decode,
     default_aggregator,
-    encode)
+    encode,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -181,7 +178,6 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         # Try importing jsonpatch if needed
         if self.use_jsonpatch:
             try:
-
                 self.jsonpatch = jsonpatch
             except ImportError:
                 logger.warning(
@@ -233,9 +229,9 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         extract_data = Tool.from_function(
             func=extract_func,
             name=extract_name,
-            description=f"Extract {
-                self.extraction_model.__name__} data from text",
-            args_schema=self.extraction_model)
+            description=f"Extract {self.extraction_model.__name__} data from text",
+            args_schema=self.extraction_model,
+        )
 
         # Store the tool
         self.extraction_tool = extract_data
@@ -244,13 +240,13 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
     def _bind_validator_with_retries(
         self,
         llm: (
-            Runnable[Sequence[AnyMessage], AIMessage]
-            | Runnable[Sequence[BaseMessage], BaseMessage]
+            Runnable[Sequence[AnyMessage], AIMessage] | Runnable[Sequence[BaseMessage], BaseMessage]
         ),
         *,
         validator: ValidationNode,
         retry_strategy: RetryStrategy,
-        tool_choice: str | None = None) -> StateGraph:
+        tool_choice: str | None = None,
+    ) -> StateGraph:
         """Bind a tool validator with retry logic and return the graph builder.
 
         Creates a StateGraph that implements validation with retry logic for
@@ -317,11 +313,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         else:
             fb_runnable = RunnableLambda(fbrunnable)
 
-        fallback = (
-            dedict
-            | fb_runnable
-            | (lambda msg: {"messages": [msg], "attempt_number": 1})
-        )
+        fallback = dedict | fb_runnable | (lambda msg: {"messages": [msg], "attempt_number": 1})
 
         # Function to count initial messages
         def count_messages(state: Any) -> dict[str, Any]:
@@ -383,15 +375,14 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                     "messages": [
                         HumanMessage(
                             content=f"ValidationError: please respond with a valid tool call [tool_choice={tool_choice}].",
-                            additional_kwargs={"is_error": True})
+                            additional_kwargs={"is_error": True},
+                        )
                     ]
                 }
             return {"messages": x}
 
         # Create validator node
-        validator_runnable = (
-            select_generated_messages | validator | endict_validator_output
-        )
+        validator_runnable = select_generated_messages | validator | endict_validator_output
         builder.add_node("validator", validator_runnable)
 
         # Define finalizer class
@@ -419,9 +410,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                 )
 
         # Add finalizer node
-        builder.add_node(
-            "finalizer", Finalizer(retry_strategy.get("aggregate_messages"))
-        )
+        builder.add_node("finalizer", Finalizer(retry_strategy.get("aggregate_messages")))
         builder.add_node("encode", encode)
         builder.add_node("decode", decode)
         # Define graph connectivity
@@ -449,9 +438,9 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                 return END
 
             last_msg = messages[-1]
-            has_tool_calls = (
-                hasattr(last_msg, "tool_calls") and last_msg.tool_calls
-            ) or (isinstance(last_msg, dict) and last_msg.get("tool_calls"))
+            has_tool_calls = (hasattr(last_msg, "tool_calls") and last_msg.tool_calls) or (
+                isinstance(last_msg, dict) and last_msg.get("tool_calls")
+            )
 
             if has_tool_calls or tool_choice is not None:
                 return "validator"
@@ -474,32 +463,24 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             """
             max_attempts = retry_strategy.get("max_attempts", 3)
             attempt_num = (
-                state["attempt_number"]
-                if isinstance(state, dict)
-                else state.attempt_number
+                state["attempt_number"] if isinstance(state, dict) else state.attempt_number
             )
 
             if attempt_num > max_attempts:
-                raise ValueError(
-                    f"Could not extract a valid value in {max_attempts} attempts."
-                )
+                raise ValueError(f"Could not extract a valid value in {max_attempts} attempts.")
 
             messages = state["messages"] if isinstance(state, dict) else state.messages
             for m in messages[::-1]:
                 if m.type == "ai":
                     break
-                if hasattr(m, "additional_kwargs") and m.additional_kwargs.get(
-                    "is_error"
-                ):
+                if hasattr(m, "additional_kwargs") and m.additional_kwargs.get("is_error"):
                     return "fallback"
             return "finalizer"
 
         # Add conditional edges
         builder.add_conditional_edges("llm", route_validator, ["validator", END])
         builder.add_edge("fallback", "validator")
-        builder.add_conditional_edges(
-            "validator", route_validation, ["finalizer", "fallback"]
-        )
+        builder.add_conditional_edges("validator", route_validation, ["finalizer", "fallback"])
 
         # Return the builder (not compiled)
         return builder
@@ -510,7 +491,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         *,
         tools: list[Tool],
         tool_choice: str | None = None,
-        max_attempts: int = 3) -> StateGraph:
+        max_attempts: int = 3,
+    ) -> StateGraph:
         """Bind a validator with JSONPatch-based retries.
 
         Creates an advanced validation workflow that uses JSONPatch operations
@@ -542,9 +524,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         """
         # Ensure jsonpatch is available
         if not self.jsonpatch:
-            raise ImportError(
-                "The 'jsonpatch' library is required for JSONPatch-based retries."
-            )
+            raise ImportError("The 'jsonpatch' library is required for JSONPatch-based retries.")
 
         # Create bound LLMs
         bound_llm = llm.bind_tools(tools, tool_choice=tool_choice)
@@ -591,7 +571,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                                 extra={
                                     "tool_call_id": tcid,
                                     "valid_ids": list(resolved_tool_calls.keys()),
-                                })
+                                },
+                            )
                             # Fallback to first available tool call
                             tcid = next(iter(resolved_tool_calls.keys()), None)
                             if not tcid:
@@ -605,23 +586,20 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                         try:
                             # Apply JSON patches
                             orig_tool_call["args"] = self.jsonpatch.apply_patch(
-                                current_args,
-                                patches)
+                                current_args, patches
+                            )
                             # Update ID to latest
                             orig_tool_call["id"] = tc["id"]
                         except Exception as e:
                             logger.error(
-                                "Error applying JSONPatch",
-                                extra={"error": str(e)},
-                                exc_info=True)
+                                "Error applying JSONPatch", extra={"error": str(e)}, exc_info=True
+                            )
                     else:
                         # Regular tool call - add to resolved list
                         resolved_tool_calls[tc["id"]] = tc.copy()
 
             # Create final AI message with resolved tool calls
-            return AIMessage(
-                content=content,
-                tool_calls=list(resolved_tool_calls.values()))
+            return AIMessage(content=content, tool_calls=list(resolved_tool_calls.values()))
 
         # Create format error function
         def format_exception(
@@ -640,9 +618,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             Returns:
                 Formatted error message with correction instructions.
             """
-            schema_json = (
-                schema.schema_json() if hasattr(schema, "schema_json") else str(schema)
-            )
+            schema_json = schema.schema_json() if hasattr(schema, "schema_json") else str(schema)
             return (
                 f"Error:\n\n```\n{error!r}\n```\n"
                 "Expected Parameter Schema:\n\n" + f"```json\n{schema_json}\n```\n"
@@ -650,21 +626,16 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             )
 
         # Create validator and retry strategy
-        validator = ValidationNode(
-            [*tools, PatchFunctionParameters],
-            format_error=format_exception)
+        validator = ValidationNode([*tools, PatchFunctionParameters], format_error=format_exception)
 
         retry_strategy = RetryStrategy(
-            max_attempts=max_attempts,
-            fallback=fallback_llm,
-            aggregate_messages=aggregate_messages)
+            max_attempts=max_attempts, fallback=fallback_llm, aggregate_messages=aggregate_messages
+        )
 
         # Return the graph builder
         return self._bind_validator_with_retries(
-            bound_llm,
-            validator=validator,
-            retry_strategy=retry_strategy,
-            tool_choice=tool_choice)
+            bound_llm, validator=validator, retry_strategy=retry_strategy, tool_choice=tool_choice
+        )
 
     def bind_validator_with_retries(
         self,
@@ -672,7 +643,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         *,
         tools: list[Tool],
         tool_choice: str | None = None,
-        max_attempts: int = 3) -> StateGraph:
+        max_attempts: int = 3,
+    ) -> StateGraph:
         """Bind a validator with standard retries (no JSONPatch).
 
         Creates a basic validation workflow with simple retry logic. When
@@ -702,10 +674,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
 
         # Return the graph builder without compiling
         return self._bind_validator_with_retries(
-            bound_llm,
-            validator=validator,
-            tool_choice=tool_choice,
-            retry_strategy=retry_strategy)
+            bound_llm, validator=validator, tool_choice=tool_choice, retry_strategy=retry_strategy
+        )
 
     def setup_workflow(self) -> None:
         """Set up the agent workflow.
@@ -723,8 +693,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             compilation happens in the parent class.
         """
         logger.info(
-            "Setting up workflow for ComplexExtractionAgent",
-            extra={"agent_name": self.config.name})
+            "Setting up workflow for ComplexExtractionAgent", extra={"agent_name": self.config.name}
+        )
 
         # Create a state wrapper to pass configuration to the decoder
         def state_wrapper(state: Any) -> Any:
@@ -822,9 +792,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                 return updates
             except Exception as e:
                 # Log error and return error in state
-                logger.error(
-                    "Error in extraction node", extra={"error": str(e)}, exc_info=True
-                )
+                logger.error("Error in extraction node", extra={"error": str(e)}, exc_info=True)
                 return {"error": str(e)}
 
         # If we don't have the extraction runnable, just pass through
@@ -881,7 +849,6 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         if isinstance(input_data, str) or (
             isinstance(input_data, list) and all(isinstance(i, str) for i in input_data)
         ):
-
             # Create state with messages
             # "messages": messages
 
@@ -939,20 +906,20 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
         if isinstance(input_data, str):
             return [
                 HumanMessage(
-                    content=f"Extract {
-                        self.extraction_model.__name__} from the following text:\n\n{input_data}"
+                    content=f"Extract {self.extraction_model.__name__} from the following text:\n\n{
+                        input_data
+                    }"
                 )
             ]
 
         # Handle list of strings
-        if isinstance(input_data, list) and all(
-            isinstance(item, str) for item in input_data
-        ):
+        if isinstance(input_data, list) and all(isinstance(item, str) for item in input_data):
             combined = "\n".join(input_data)
             return [
                 HumanMessage(
-                    content=f"Extract {
-                        self.extraction_model.__name__} from the following text:\n\n{combined}"
+                    content=f"Extract {self.extraction_model.__name__} from the following text:\n\n{
+                        combined
+                    }"
                 )
             ]
 
@@ -980,7 +947,8 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                 return [
                     HumanMessage(
                         content=f"Extract {
-                            self.extraction_model.__name__} from the following text:\n\n{content}"
+                            self.extraction_model.__name__
+                        } from the following text:\n\n{content}"
                     )
                 ]
 
@@ -993,8 +961,7 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                 model_dict = input_data.dict()
             else:
                 model_dict = {
-                    attr: getattr(input_data, attr)
-                    for attr in input_data.__annotations__
+                    attr: getattr(input_data, attr) for attr in input_data.__annotations__
                 }
 
             # Check for text content
@@ -1003,15 +970,16 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
                 return [
                     HumanMessage(
                         content=f"Extract {
-                            self.extraction_model.__name__} from the following text:\n\n{content}"
+                            self.extraction_model.__name__
+                        } from the following text:\n\n{content}"
                     )
                 ]
 
         # Default case - convert to string
         return [
             HumanMessage(
-                content=f"Extract {
-                    self.extraction_model.__name__} from the following:\n\n{
-                    input_data!s}"
+                content=f"Extract {self.extraction_model.__name__} from the following:\n\n{
+                    input_data!s
+                }"
             )
         ]

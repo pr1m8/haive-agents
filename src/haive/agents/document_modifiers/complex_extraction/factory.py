@@ -3,10 +3,8 @@ from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from pydantic import BaseModel
 
-from haive.agents.document_modifiers.complex_extraction.agent import (
-    ComplexExtractionAgent)
-from haive.agents.document_modifiers.complex_extraction.config import (
-    ComplexExtractionAgentConfig)
+from haive.agents.document_modifiers.complex_extraction.agent import ComplexExtractionAgent
+from haive.agents.document_modifiers.complex_extraction.config import ComplexExtractionAgentConfig
 
 
 # Helper function to create an extraction agent
@@ -18,7 +16,8 @@ def create_complex_extraction_agent(
     force_tool_choice: bool = True,
     use_jsonpatch: bool = True,
     parse_pydantic: bool = False,
-    **kwargs) -> ComplexExtractionAgent:
+    **kwargs,
+) -> ComplexExtractionAgent:
     """Create a complex extraction agent.
 
     Args:
@@ -37,7 +36,8 @@ def create_complex_extraction_agent(
     # Set up default system prompt
     if system_prompt is None:
         system_prompt = f"You are a precise data extraction assistant specialized in extracting {
-            extraction_model.__name__} information from text. Extract all required fields accurately according to the schema."
+            extraction_model.__name__
+        } information from text. Extract all required fields accurately according to the schema."
 
     # Create prompt template with system prompt
     prompt_template = ChatPromptTemplate.from_messages(
@@ -48,13 +48,15 @@ def create_complex_extraction_agent(
     llm_config = AzureLLMConfig(
         # Lower temperature for extraction
         model=model,
-        parameters={"temperature": 0.1})
+        parameters={"temperature": 0.1},
+    )
 
     # Create engine
     engine = AugLLMConfig(
         name=f"extract_{extraction_model.__name__}_engine",
         llm_config=llm_config,
-        prompt_template=prompt_template)
+        prompt_template=prompt_template,
+    )
 
     # Create config
     config = ComplexExtractionAgentConfig(
@@ -66,7 +68,8 @@ def create_complex_extraction_agent(
         system_prompt=system_prompt,
         engine=engine,
         parse_pydantic=parse_pydantic,
-        **kwargs)
+        **kwargs,
+    )
 
     # Build and return the agent
     return config.build_agent()

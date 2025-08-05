@@ -4,17 +4,15 @@ from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.document_modifiers.complex_extraction.factory import (
-    create_complex_extraction_agent)
+    create_complex_extraction_agent,
+)
 
 if __name__ == "__main__":
-
     # Define an extraction model
     class PersonInfo(BaseModel):
         name: str = Field(description="The person's full name")
         age: int = Field(description="The person's age in years")
-        occupation: str | None = Field(
-            default=None, description="The person's job or profession"
-        )
+        occupation: str | None = Field(default=None, description="The person's job or profession")
 
     # Create the agent
     agent = create_complex_extraction_agent(
@@ -34,7 +32,8 @@ if __name__ == "__main__":
                 )
             ]
         },
-        debug=True)
+        debug=True,
+    )
 
     # Print the extracted data
     extracted_data = result.get("extracted_data", {})

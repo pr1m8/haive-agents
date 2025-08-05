@@ -6,19 +6,19 @@ from langchain_core.documents import Document
 
 def normalize_contents(contents: Any) -> List[str]:
     """Normalize inputs to strings.
-    
+
     Accepts:
     - List[str]
     - List[Document]
     - Mixed list of strings and documents
     - Single string or Document
-    
+
     Args:
         contents: The content to normalize
-        
+
     Returns:
         List of strings extracted from the input
-        
+
     Raises:
         TypeError: If unsupported content type is encountered
     """
@@ -27,7 +27,7 @@ def normalize_contents(contents: Any) -> List[str]:
         return [contents]
     elif isinstance(contents, Document):
         return [contents.page_content]
-    
+
     # Handle lists
     if not isinstance(contents, list):
         raise TypeError(f"Expected string, Document, or list, got {type(contents)}")
@@ -41,8 +41,7 @@ def normalize_contents(contents: Any) -> List[str]:
             normalized.append(item)
         else:
             raise TypeError(
-                f"Unsupported item type in contents: {type(item)}. "
-                f"Expected str or Document."
+                f"Unsupported item type in contents: {type(item)}. Expected str or Document."
             )
 
     return normalized

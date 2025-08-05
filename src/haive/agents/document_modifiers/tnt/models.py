@@ -57,12 +57,8 @@ class Doc(BaseModel):
     summary: str | None = Field("", description="The summary of the document.")
     explanation: str | None = Field("", description="The explanation of the document.")
     category: str | None = Field("", description="The category of the document.")
-    metadata: dict | None = Field(
-        {}, description="Any additional metadata for the document."
-    )
+    metadata: dict | None = Field({}, description="Any additional metadata for the document.")
 
     @classmethod
     def from_document(cls, document: Document) -> "Doc":
-        return cls(
-            id=document.id, content=document.page_content, metadata=document.metadata
-        )
+        return cls(id=document.id, content=document.page_content, metadata=document.metadata)
