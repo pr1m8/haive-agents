@@ -45,7 +45,6 @@ def test_tool_names():
 
 
 if __name__ == "__main__":
-
     try:
         test_validation_fix()
         test_tool_names()

@@ -95,7 +95,6 @@ async def test_async_execution():
 
 
 if __name__ == "__main__":
-
     try:
         # Test core functionality
         math_result = test_sync_agent_execution()

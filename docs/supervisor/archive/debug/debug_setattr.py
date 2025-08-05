@@ -21,9 +21,7 @@ def debug_setattr_bypass():
 
     # Approach 1: super() bypass (what we tried)
     with contextlib.suppress(Exception):
-        super(SupervisorStateWithTools, state).__setattr__(
-            "next_agent", "nonexistent_agent"
-        )
+        super(SupervisorStateWithTools, state).__setattr__("next_agent", "nonexistent_agent")
 
     # Approach 2: object.__setattr__
     with contextlib.suppress(Exception):
@@ -45,7 +43,6 @@ def debug_setattr_bypass():
 
     # Approach 5: Check what type of validation is happening
     try:
-
         # Try to understand the validation chain
         state.next_agent = "search_agent"  # Valid assignment
 

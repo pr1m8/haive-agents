@@ -41,9 +41,7 @@ def test_step_by_step():
 
     try:
         # Try with dict first
-        StateWithAgentInfo(
-            agents={"test": {"agent": agent, "name": "test", "description": "Test"}}
-        )
+        StateWithAgentInfo(agents={"test": {"agent": agent, "name": "test", "description": "Test"}})
     except Exception:
         pass
 
@@ -51,7 +49,6 @@ def test_step_by_step():
         # Try with AgentInfo instance
         StateWithAgentInfo(agents={"test": info})
     except Exception as e:
-
         # Get more details about the error
         if hasattr(e, "errors"):
             for _err in e.errors():

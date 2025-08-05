@@ -39,16 +39,12 @@ class CreateAgentArgs(LangchainBaseModel):
     """Arguments for creating a new agent."""
 
     name: str = LangchainField(..., description="Name for the new agent")
-    description: str = LangchainField(
-        ..., description="Description of agent capabilities"
-    )
+    description: str = LangchainField(..., description="Description of agent capabilities")
     agent_type: str = LangchainField(
         default="simple",
         description="Type of agent to create (simple, react, research, etc.)",
     )
-    system_message: str = LangchainField(
-        default="", description="System message for the agent"
-    )
+    system_message: str = LangchainField(default="", description="System message for the agent")
     capabilities: list[str] = LangchainField(
         default_factory=list, description="List of agent capabilities"
     )
@@ -164,9 +160,7 @@ def create_list_agents_tool(get_state_fn: Callable[[], SupervisorState]) -> Base
     """Create tool for listing available agents."""
 
     @tool(args_schema=AgentStatusArgs)
-    def list_agents(
-        agent_name: str | None = None, include_performance: bool = False
-    ) -> str:
+    def list_agents(agent_name: str | None = None, include_performance: bool = False) -> str:
         """List available agents and their capabilities.
 
         Can list all agents or get detailed info about a specific agent.
@@ -190,9 +184,7 @@ def create_list_agents_tool(get_state_fn: Callable[[], SupervisorState]) -> Base
             ]
 
             if metadata.last_used:
-                info.append(
-                    f"Last Used: {metadata.last_used.strftime('%Y-%m-%d %H:%M')}"
-                )
+                info.append(f"Last Used: {metadata.last_used.strftime('%Y-%m-%d %H:%M')}")
 
             if metadata.capabilities:
                 info.append(f"Capabilities: {', '.join(metadata.capabilities)}")
@@ -213,7 +205,9 @@ def create_list_agents_tool(get_state_fn: Callable[[], SupervisorState]) -> Base
             status = f"- {name}: {metadata.description}"
 
             if include_performance:
-                status += f" (score: {metadata.performance_score:.2f}, used: {metadata.usage_count}x)"
+                status += (
+                    f" (score: {metadata.performance_score:.2f}, used: {metadata.usage_count}x)"
+                )
 
             agent_list.append(status)
 
@@ -279,11 +273,7 @@ def create_agent_creation_tool(
                 from haive.agents.simple.agent import SimpleAgent
 
                 # Simple factory based on type
-                agent = (
-                    ReactAgent(name=name)
-                    if agent_type == "react"
-                    else SimpleAgent(name=name)
-                )
+                agent = ReactAgent(name=name) if agent_type == "react" else SimpleAgent(name=name)
 
             # Create metadata
             metadata = AgentMetadata(

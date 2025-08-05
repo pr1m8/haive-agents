@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Test supervisor coordinating three specialized agents for complex tasks."""
 
-
 import contextlib
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -131,7 +130,6 @@ def test_three_agent_coordination():
 
         # Extract and display results
         if hasattr(result, "messages") and result.messages:
-
             # Show last few messages to see the flow
             for _i, msg in enumerate(result.messages[-5:]):  # Last 5 messages
                 type(msg).__name__
@@ -156,11 +154,7 @@ def test_individual_agent_capabilities():
     # Test research agent
     with contextlib.suppress(Exception):
         agents["research_agent"].invoke(
-            {
-                "messages": [
-                    HumanMessage("Search for average cost of AI chatbot implementation")
-                ]
-            }
+            {"messages": [HumanMessage("Search for average cost of AI chatbot implementation")]}
         )
 
     # Test math agent
@@ -180,9 +174,7 @@ def test_individual_agent_capabilities():
         agents["essay_writer_agent"].invoke(
             {
                 "messages": [
-                    HumanMessage(
-                        "Write a brief essay about AI adoption in small businesses"
-                    )
+                    HumanMessage("Write a brief essay about AI adoption in small businesses")
                 ]
             }
         )

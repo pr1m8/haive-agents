@@ -87,17 +87,13 @@ class AgentExecutionNode:
                 # For sync execution, we need to provide proper input format
                 if hasattr(agent, "state_schema"):
                     # Create proper state for agent
-                    agent_input = agent.state_schema(
-                        messages=[{"role": "user", "content": task}]
-                    )
+                    agent_input = agent.state_schema(messages=[{"role": "user", "content": task}])
                     result = agent.invoke(agent_input)
                 else:
                     # Simple string input
                     result = agent.invoke({"input": task})
             else:
-                raise AttributeError(
-                    f"Agent {agent_name} has no 'arun' or 'invoke' method"
-                )
+                raise AttributeError(f"Agent {agent_name} has no 'arun' or 'invoke' method")
 
             logger.info(f"✅ Agent '{agent_name}' completed successfully")
             logger.info(f"  Result type: {type(result).__name__}")

@@ -23,9 +23,7 @@ def test_supervisor_state():
 
     # Test 2: With dict
     with contextlib.suppress(Exception):
-        SupervisorState(
-            agents={"test": {"agent": agent, "name": "test", "description": "Test"}}
-        )
+        SupervisorState(agents={"test": {"agent": agent, "name": "test", "description": "Test"}})
 
     # Test 3: With AgentInfo
     try:

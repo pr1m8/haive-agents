@@ -182,9 +182,9 @@ class TaskAnalysis(BaseModel):
         cleaned_steps = []
         for i, step in enumerate(v):
             if not step or not step.strip():
-                raise ValueError(f"Step {i+1} cannot be empty")
+                raise ValueError(f"Step {i + 1} cannot be empty")
             if len(step.strip()) > 200:
-                raise ValueError(f"Step {i+1} must be 200 characters or less")
+                raise ValueError(f"Step {i + 1} must be 200 characters or less")
             cleaned_steps.append(step.strip())
 
         return cleaned_steps
@@ -433,11 +433,11 @@ class ProgrammingAdvice(BaseModel):
         cleaned_practices = []
         for i, practice in enumerate(v):
             if not practice or not practice.strip():
-                raise ValueError(f"Best practice {i+1} cannot be empty")
+                raise ValueError(f"Best practice {i + 1} cannot be empty")
             if len(practice.strip()) < 10:
-                raise ValueError(f"Best practice {i+1} must be at least 10 characters")
+                raise ValueError(f"Best practice {i + 1} must be at least 10 characters")
             if len(practice.strip()) > 200:
-                raise ValueError(f"Best practice {i+1} must be 200 characters or less")
+                raise ValueError(f"Best practice {i + 1} must be 200 characters or less")
             cleaned_practices.append(practice.strip())
 
         return cleaned_practices
@@ -583,8 +583,7 @@ def create_structured_output_agent(
     """
     # Validate structured output model
     if not (
-        isinstance(structured_output_model, type)
-        and issubclass(structured_output_model, BaseModel)
+        isinstance(structured_output_model, type) and issubclass(structured_output_model, BaseModel)
     ):
         raise ValueError(
             f"structured_output_model must be a Pydantic BaseModel class, "
@@ -754,9 +753,7 @@ def extract_structured_output_from_messages(
             if hasattr(message, "content") and message.content:
                 content = message.content.strip()
                 if content.startswith("{") and content.endswith("}"):
-                    is_valid, error, model = validate_structured_output(
-                        content, expected_model
-                    )
+                    is_valid, error, model = validate_structured_output(content, expected_model)
                     if is_valid:
                         return True, model, None
 
@@ -819,16 +816,14 @@ def demonstrate_task_analysis():
     result = agent.run(task_query.strip())
 
     # Extract and validate structured output
-    found, analysis, error = extract_structured_output_from_messages(
-        result.messages, TaskAnalysis
-    )
+    found, analysis, error = extract_structured_output_from_messages(result.messages, TaskAnalysis)
 
     if found and analysis:
         print("\n✅ TaskAnalysis Results:")
         print(f"   Task Type: {analysis.task_type}")
         print(f"   Complexity: {analysis.complexity}/10")
         print(
-            f"   Estimated Time: {analysis.estimated_time} minutes ({analysis.estimated_time/60:.1f} hours)"
+            f"   Estimated Time: {analysis.estimated_time} minutes ({analysis.estimated_time / 60:.1f} hours)"
         )
         print(f"   Confidence: {analysis.confidence:.2f}")
         print(f"\n📋 Required Steps ({len(analysis.steps_required)}):")
@@ -861,7 +856,9 @@ def demonstrate_question_answer():
         max_tokens=300,
     )
 
-    question = "What are the key benefits of using Pydantic for data validation in Python applications?"
+    question = (
+        "What are the key benefits of using Pydantic for data validation in Python applications?"
+    )
 
     print(f"❓ Question: {question}")
     print("\n🤖 Generating structured answer...")
@@ -907,9 +904,7 @@ def demonstrate_programming_advice():
         max_tokens=500,
     )
 
-    coding_question = (
-        "Explain Python decorators with a practical example and best practices"
-    )
+    coding_question = "Explain Python decorators with a practical example and best practices"
 
     print(f"💡 Coding Question: {coding_question}")
     print("\n🤖 Generating structured programming advice...")

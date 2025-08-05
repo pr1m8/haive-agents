@@ -23,10 +23,7 @@ def test_validator_access():
     class DebugState(SupervisorStateWithTools):
         @field_validator("next_agent")
         @classmethod
-        def debug_validate_chosen_agent(
-            cls, v: str | None, info: ValidationInfo
-        ) -> str | None:
-
+        def debug_validate_chosen_agent(cls, v: str | None, info: ValidationInfo) -> str | None:
             if info.data:
                 if hasattr(info.data, "agents"):
                     pass
