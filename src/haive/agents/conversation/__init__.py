@@ -141,11 +141,11 @@ from typing import (
     Type,
     TypeAlias,
     Union,
-    runtime_checkable)
+    runtime_checkable,
+)
 
 from haive.core.schema import StateSchema
-from typing_extensions import (
-    TypedDict)
+from typing_extensions import TypedDict
 
 from haive.agents.base.agent import Agent
 from haive.agents.conversation.base.agent import BaseConversationAgent
@@ -174,12 +174,8 @@ type ConversationType = Literal[
     "round_robin", "directed", "debate", "collaborative", "social_media"
 ]
 type ParticipantRole = Literal["speaker", "moderator", "judge", "observer"]
-type ConversationStatus = Literal[
-    "pending", "active", "paused", "completed", "cancelled"
-]
-type MessageType = Literal[
-    "statement", "question", "response", "argument", "rebuttal", "judgment"
-]
+type ConversationStatus = Literal["pending", "active", "paused", "completed", "cancelled"]
+type MessageType = Literal["statement", "question", "response", "argument", "rebuttal", "judgment"]
 
 
 # Protocol definitions for type safety
@@ -290,7 +286,8 @@ def create_conversation(
     participants: list[ConversationParticipant],
     topic: str,
     config: ConversationConfig | None = None,
-    **kwargs: Any) -> BaseConversationAgent:
+    **kwargs: Any,
+) -> BaseConversationAgent:
     """Create a conversation agent of the specified type.
 
     Args:
@@ -326,23 +323,15 @@ def create_conversation(
     config = config or {}
 
     if conversation_type == "round_robin":
-        return RoundRobinConversation(
-            participants=participants, topic=topic, **config, **kwargs
-        )
+        return RoundRobinConversation(participants=participants, topic=topic, **config, **kwargs)
     if conversation_type == "directed":
-        return DirectedConversation(
-            participants=participants, topic=topic, **config, **kwargs
-        )
+        return DirectedConversation(participants=participants, topic=topic, **config, **kwargs)
     if conversation_type == "debate":
         return DebateConversation(topic=topic, **config, **kwargs)
     if conversation_type == "collaborative":
-        return CollaborativeConversation(
-            participants=participants, topic=topic, **config, **kwargs
-        )
+        return CollaborativeConversation(participants=participants, topic=topic, **config, **kwargs)
     if conversation_type == "social_media":
-        return SocialMediaConversation(
-            participants=participants, topic=topic, **config, **kwargs
-        )
+        return SocialMediaConversation(participants=participants, topic=topic, **config, **kwargs)
     raise TypeError(f"Unknown conversation type: {conversation_type}")
 
 
@@ -352,7 +341,8 @@ def create_debate(
     con_agents: list[ConversationParticipant],
     judge_agent: ConversationParticipant | None = None,
     rounds: int = 3,
-    config: DebateConfig | None = None) -> DebateConversation:
+    config: DebateConfig | None = None,
+) -> DebateConversation:
     """Create a structured debate conversation.
 
     Args:
@@ -394,14 +384,16 @@ def create_debate(
         con_agents=con_agents,
         judge_agent=judge_agent,
         rounds=rounds,
-        **config)
+        **config,
+    )
 
 
 def create_collaboration(
     task: str,
     participants: dict[str, ConversationParticipant],
     deliverables: list[str] | None = None,
-    config: CollaborativeConfig | None = None) -> CollaborativeConversation:
+    config: CollaborativeConfig | None = None,
+) -> CollaborativeConversation:
     """Create a collaborative conversation for team tasks.
 
     Args:
@@ -448,7 +440,8 @@ def create_collaboration(
 def validate_participants(
     participants: list[ConversationParticipant],
     min_participants: int = 2,
-    max_participants: int | None = None) -> bool:
+    max_participants: int | None = None,
+) -> bool:
     """Validate that participants meet conversation requirements.
 
     Args:
@@ -470,16 +463,13 @@ def validate_participants(
 
     if max_participants and len(participants) > max_participants:
         raise ValueError(
-            f"Conversation allows at most {max_participants} participants, "
-            f"got {len(participants)}"
+            f"Conversation allows at most {max_participants} participants, got {len(participants)}"
         )
 
     # Check that all participants implement the protocol
     for i, participant in enumerate(participants):
         if not isinstance(participant, ConversationParticipant):
-            raise ValueError(
-                f"Participant {i} does not implement ConversationParticipant protocol"
-            )
+            raise ValueError(f"Participant {i} does not implement ConversationParticipant protocol")
 
     # Check for unique names
     names = [p.name for p in participants]

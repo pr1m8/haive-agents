@@ -34,7 +34,8 @@ class CollaborativeConversation(BaseConversationAgent):
     document_title: str = Field(default="Collaborative Document")
     sections: list[str] = Field(
         default_factory=lambda: ["Introduction", "Main Content", "Conclusion"],
-        description="Sections to collaborate on")
+        description="Sections to collaborate on",
+    )
 
     # Collaboration settings
     require_approval: bool = Field(
@@ -43,14 +44,10 @@ class CollaborativeConversation(BaseConversationAgent):
     min_contributions_per_section: int = Field(
         default=1, description="Minimum contributions per section"
     )
-    allow_revisions: bool = Field(
-        default=True, description="Allow revision of completed sections"
-    )
+    allow_revisions: bool = Field(default=True, description="Allow revision of completed sections")
 
     # Output configuration
-    output_format: Literal["markdown", "code", "outline", "report"] = Field(
-        default="markdown"
-    )
+    output_format: Literal["markdown", "code", "outline", "report"] = Field(default="markdown")
     include_attribution: bool = Field(
         default=True, description="Include contributor names in output"
     )
@@ -67,8 +64,7 @@ class CollaborativeConversation(BaseConversationAgent):
         elif self.output_format == "code":
             initial_doc = f"# {self.document_title}\n# Collaborative Code\n\n"
         elif self.output_format == "outline":
-            initial_doc = f"{self.document_title}\n{'=' *
-                                                    len(self.document_title)}\n\n"
+            initial_doc = f"{self.document_title}\n{'=' * len(self.document_title)}\n\n"
         else:  # report
             initial_doc = f"{self.document_title.upper()}\n\n"
 
@@ -95,7 +91,7 @@ We'll work together on these sections:
 Format: {self.output_format}
 Min contributions per section: {self.min_contributions_per_section}
 
-Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
+Let's start with: {self.sections[0] if self.sections else "open discussion"}"""
         )
 
     def select_speaker(self, state: CollaborativeState) -> Command:
@@ -122,9 +118,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
         section_contributors = {}
         for contributor, section, _ in state.contributions:
             if section == current_section:
-                section_contributors[contributor] = (
-                    section_contributors.get(contributor, 0) + 1
-                )
+                section_contributors[contributor] = section_contributors.get(contributor, 0) + 1
 
         logger.debug(f"Section contributors: {section_contributors}")
 
@@ -141,10 +135,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
         # If everyone has contributed minimum, pick least active overall
         if min_count >= self.min_contributions_per_section:
-            logger.debug(
-                f"Everyone has contributed minimum ({
-                    self.min_contributions_per_section})"
-            )
+            logger.debug(f"Everyone has contributed minimum ({self.min_contributions_per_section})")
             return self._select_least_active_overall(state)
 
         logger.debug(f"Selected speaker: {min_contributor} (count: {min_count})")
@@ -181,17 +172,14 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
             if next_section:
                 transition_msg = SystemMessage(
-                    content=f"✅ Section '{current_section}' complete. "
-                    f"Moving to '{next_section}'."
+                    content=f"✅ Section '{current_section}' complete. Moving to '{next_section}'."
                 )
                 return Command(
                     update={
                         "completed_sections": completed,
                         "current_section": next_section,
                         "messages": [transition_msg],
-                        "current_speaker": (
-                            state.speakers[0] if state.speakers else None
-                        ),
+                        "current_speaker": (state.speakers[0] if state.speakers else None),
                     }
                 )
             # All sections complete
@@ -215,9 +203,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
 
         return Command(update={"current_speaker": min_speaker})
 
-    def _prepare_agent_input(
-        self, state: CollaborativeState, agent_name: str
-    ) -> dict[str, Any]:
+    def _prepare_agent_input(self, state: CollaborativeState, agent_name: str) -> dict[str, Any]:
         """Prepare input with collaboration context."""
         base_input = super()._prepare_agent_input(state, agent_name)
 
@@ -228,11 +214,8 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
         # Create context message
         context_parts = [
             f"Current Section: {current_section}",
-            f"Your total contributions: {
-                state.contribution_count.get(
-                    agent_name, 0)}",
-            f"Format: {
-                state.output_format}",
+            f"Your total contributions: {state.contribution_count.get(agent_name, 0)}",
+            f"Format: {state.output_format}",
         ]
 
         if section_content:
@@ -313,9 +296,7 @@ Let's start with: {self.sections[0] if self.sections else 'open discussion'}"""
             }
         )
 
-    def _compile_document(
-        self, state: CollaborativeState, sections: dict[str, str]
-    ) -> str:
+    def _compile_document(self, state: CollaborativeState, sections: dict[str, str]) -> str:
         """Compile sections into final document."""
         # Get title from current document or use default
         if state.shared_document:
@@ -373,11 +354,8 @@ The final document has been compiled."""
 
     @classmethod
     def create_brainstorming_session(
-        cls,
-        topic: str,
-        participants: list[str],
-        sections: list[str] | None = None,
-        **kwargs):
+        cls, topic: str, participants: list[str], sections: list[str] | None = None, **kwargs
+    ):
         """Create a brainstorming/ideation session.
 
         Args:
@@ -398,16 +376,15 @@ The final document has been compiled."""
                     "Be creative, build on others' ideas, and think outside the box. "
                     "Keep contributions focused and constructive."
                 ),
-                temperature=0.8)
+                temperature=0.8,
+            )
             agents[name] = SimpleAgent(name=f"{name}_agent", engine=engine)
 
         # Calculate appropriate max_rounds
         # Each participant needs to contribute min_contributions_per_section
         # times per section
         min_contributions = kwargs.get("min_contributions_per_section", 1)
-        total_contributions_needed = (
-            len(participants) * len(sections) * min_contributions
-        )
+        total_contributions_needed = len(participants) * len(sections) * min_contributions
 
         # Add some buffer for conversation flow
         suggested_max_rounds = total_contributions_needed + len(sections) + 5
@@ -422,14 +399,16 @@ The final document has been compiled."""
             document_title=f"Brainstorming: {topic}",
             sections=sections,
             output_format="outline",
-            **kwargs)
+            **kwargs,
+        )
 
     @classmethod
     def create_code_review(
         cls,
         code_description: str,
         reviewers: dict[str, str],  # name -> expertise
-        **kwargs):
+        **kwargs,
+    ):
         """Create a collaborative code review session.
 
         Args:
@@ -446,7 +425,8 @@ The final document has been compiled."""
                     "Provide constructive feedback on code quality, design, "
                     "performance, and best practices. Be specific and helpful."
                 ),
-                temperature=0.6)
+                temperature=0.6,
+            )
             agents[name] = SimpleAgent(name=f"{name}_agent", engine=engine)
 
         # Calculate appropriate max_rounds
@@ -464,4 +444,5 @@ The final document has been compiled."""
             document_title="Code Review",
             sections=sections,
             output_format="markdown",
-            **kwargs)
+            **kwargs,
+        )

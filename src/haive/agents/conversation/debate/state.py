@@ -18,8 +18,8 @@ class DebateState(ConversationState):
 
     # Debate positions and tracking
     debate_positions: dict[str, str] = Field(
-        default_factory=dict,
-        description="Mapping of participant names to their debate positions")
+        default_factory=dict, description="Mapping of participant names to their debate positions"
+    )
 
     # Use reducers for automatic counting
     arguments_made: dict[str, list[str]] = Field(
@@ -27,8 +27,8 @@ class DebateState(ConversationState):
     )
 
     rebuttals: dict[str, list[tuple[str, str]]] = Field(
-        default_factory=dict,
-        description="Rebuttals as (target_name, rebuttal_summary) tuples")
+        default_factory=dict, description="Rebuttals as (target_name, rebuttal_summary) tuples"
+    )
 
     # Debate flow control
     opening_statements_complete: bool = Field(
@@ -43,16 +43,13 @@ class DebateState(ConversationState):
 
     phase_transitions: list[tuple[str, int]] = Field(
         default_factory=list,
-        description="History of phase transitions as (phase_name, turn_number)")
+        description="History of phase transitions as (phase_name, turn_number)",
+    )
 
     # Counters with reducers
-    total_arguments: int = Field(
-        default=0, description="Total arguments made (auto-counted)"
-    )
+    total_arguments: int = Field(default=0, description="Total arguments made (auto-counted)")
 
-    total_rebuttals: int = Field(
-        default=0, description="Total rebuttals made (auto-counted)"
-    )
+    total_rebuttals: int = Field(default=0, description="Total rebuttals made (auto-counted)")
 
     # Optional scoring and judging
     argument_scores: dict[str, float] = Field(
@@ -66,9 +63,7 @@ class DebateState(ConversationState):
     debate_winner: str = Field(default="", description="Declared winner of the debate")
 
     # Configuration
-    arguments_per_side: int = Field(
-        default=3, description="Required arguments per participant"
-    )
+    arguments_per_side: int = Field(default=3, description="Required arguments per participant")
 
     # Extended reducers
     __reducer_fields__ = {
@@ -153,12 +148,8 @@ class DebateState(ConversationState):
             "phase": self.current_phase,
             "total_arguments": self.total_arguments,
             "total_rebuttals": self.total_rebuttals,
-            "arguments_by_participant": {
-                p: len(args) for p, args in self.arguments_made.items()
-            },
-            "rebuttals_by_participant": {
-                p: len(rebs) for p, rebs in self.rebuttals.items()
-            },
+            "arguments_by_participant": {p: len(args) for p, args in self.arguments_made.items()},
+            "rebuttals_by_participant": {p: len(rebs) for p, rebs in self.rebuttals.items()},
             "progress": self.debate_progress,
             "winner": self.debate_winner or "Undecided",
         }

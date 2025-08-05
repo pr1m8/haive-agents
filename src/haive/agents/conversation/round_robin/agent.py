@@ -29,9 +29,7 @@ class RoundRobinConversation(BaseConversationAgent):
     skip_unavailable: bool = Field(
         default=True, description="Skip speakers who are unavailable instead of ending"
     )
-    announce_speaker: bool = Field(
-        default=False, description="Announce who is speaking next"
-    )
+    announce_speaker: bool = Field(default=False, description="Announce who is speaking next")
 
     def select_speaker(self, state: ConversationState) -> dict[str, Any]:
         """Select the next speaker in round-robin order."""
@@ -58,9 +56,7 @@ class RoundRobinConversation(BaseConversationAgent):
                 new_round = round_number + (1 if next_idx == 0 else 0)
             except ValueError:
                 # Current speaker not in list, start over
-                logger.warning(
-                    f"Current speaker {current_speaker} not in speakers list"
-                )
+                logger.warning(f"Current speaker {current_speaker} not in speakers list")
                 next_speaker = speakers[0]
                 new_round = round_number
 
@@ -68,7 +64,6 @@ class RoundRobinConversation(BaseConversationAgent):
 
         # Add announcement if enabled
         if self.announce_speaker and next_speaker:
-
             announcement = SystemMessage(content=f"[Now speaking: {next_speaker}]")
             update["messages"] = [announcement]
 
@@ -81,20 +76,14 @@ class RoundRobinConversation(BaseConversationAgent):
             "announce_speaker": self.announce_speaker,
         }
 
-    def _prepare_agent_input(
-        self, state: ConversationState, agent_name: str
-    ) -> dict[str, Any]:
+    def _prepare_agent_input(self, state: ConversationState, agent_name: str) -> dict[str, Any]:
         """Prepare input with round context."""
         base_input = super()._prepare_agent_input(state, agent_name)
 
         # Add round information to the context
         if state.round_number > 0:
-
             round_msg = SystemMessage(
-                content=f"[Round {
-                    state.round_number +
-                    1} of {
-                    state.max_rounds}]"
+                content=f"[Round {state.round_number + 1} of {state.max_rounds}]"
             )
 
             # Insert at beginning of messages
@@ -110,7 +99,8 @@ class RoundRobinConversation(BaseConversationAgent):
         topic: str = "General discussion",
         max_rounds: int = 3,
         system_message_template: str | None = None,
-        **kwargs):
+        **kwargs,
+    ):
         """Create a simple round-robin conversation with auto-generated agents.
 
         Args:
@@ -135,12 +125,11 @@ class RoundRobinConversation(BaseConversationAgent):
             engine = AugLLMConfig(
                 name=f"{name.lower()}_engine",
                 system_message=system_message_template.format(name=name),
-                temperature=0.7)
+                temperature=0.7,
+            )
             agents[name] = SimpleAgent(name=f"{name}_agent", engine=engine)
 
-        return cls(
-            participant_agents=agents, topic=topic, max_rounds=max_rounds, **kwargs
-        )
+        return cls(participant_agents=agents, topic=topic, max_rounds=max_rounds, **kwargs)
 
     def __repr__(self) -> str:
         participant_names = list(self.participant_agents.keys())

@@ -14,6 +14,7 @@ from typing import Any
 from pydantic import Field
 
 from haive.agents.conversation.base import ConversationState
+
 # Functions not available: create_conversation_state, get_conversation_progress, validate_conversation_participants
 from haive.agents.simple import SimpleAgent
 
@@ -22,18 +23,18 @@ from haive.agents.simple import SimpleAgent
 def create_conversation_state(participants, topic, max_rounds=10):
     """Create a conversation state with participants."""
     return ConversationState(
-        participants=[p.name if hasattr(p, 'name') else str(p) for p in participants],
+        participants=[p.name if hasattr(p, "name") else str(p) for p in participants],
         topic=topic,
-        max_rounds=max_rounds
+        max_rounds=max_rounds,
     )
 
 
 def get_conversation_progress(state):
     """Get conversation progress information."""
     return {
-        "current_round": getattr(state, 'current_round', 0),
-        "max_rounds": getattr(state, 'max_rounds', 10),
-        "completion": getattr(state, 'current_round', 0) / getattr(state, 'max_rounds', 10)
+        "current_round": getattr(state, "current_round", 0),
+        "max_rounds": getattr(state, "max_rounds", 10),
+        "completion": getattr(state, "current_round", 0) / getattr(state, "max_rounds", 10),
     }
 
 
@@ -53,9 +54,8 @@ def demonstrate_basic_state_creation() -> Any:
 
     # Create conversation state
     state = create_conversation_state(
-        participants=[alice, bob, charlie],
-        topic="Future of Artificial Intelligence",
-        max_rounds=5)
+        participants=[alice, bob, charlie], topic="Future of Artificial Intelligence", max_rounds=5
+    )
 
     return state, [alice, bob, charlie]
 

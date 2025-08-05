@@ -9,9 +9,7 @@ from pydantic import Field
 from haive.agents.conversation.base.state import ConversationState
 
 
-def merge_document_sections(
-    current: dict[str, str], update: dict[str, str]
-) -> dict[str, str]:
+def merge_document_sections(current: dict[str, str], update: dict[str, str]) -> dict[str, str]:
     """Merge document sections, preserving existing content."""
     result = current.copy()
     for section, content in update.items():
@@ -26,9 +24,7 @@ def merge_document_sections(
     return result
 
 
-def merge_contribution_counts(
-    current: dict[str, int], update: dict[str, int]
-) -> dict[str, int]:
+def merge_contribution_counts(current: dict[str, int], update: dict[str, int]) -> dict[str, int]:
     """Merge contribution counts by summing values."""
     result = current.copy()
     for contributor, count in update.items():
@@ -45,8 +41,8 @@ class CollaborativeState(ConversationState):
 
     # Contribution tracking
     contributions: list[tuple[str, str, str]] = Field(
-        default_factory=list,
-        description="List of (contributor, section, content) tuples")
+        default_factory=list, description="List of (contributor, section, content) tuples"
+    )
     contribution_count: dict[str, int] = Field(default_factory=dict)
 
     # Collaboration flow
@@ -63,9 +59,7 @@ class CollaborativeState(ConversationState):
     )
 
     # Output format
-    output_format: Literal["markdown", "code", "outline", "report"] = Field(
-        default="markdown"
-    )
+    output_format: Literal["markdown", "code", "outline", "report"] = Field(default="markdown")
 
     # Add custom reducers for proper merging
     __reducer_fields__ = {

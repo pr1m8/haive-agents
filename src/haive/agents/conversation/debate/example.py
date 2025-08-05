@@ -21,19 +21,20 @@ def example_simple_debate() -> None:
         topic="Should AI development be regulated by governments?",
         position_a=(
             "ProRegulation",
-            "AI development needs strict government oversight and regulation"),
+            "AI development needs strict government oversight and regulation",
+        ),
         position_b=(
             "AntiRegulation",
-            "AI development should remain free from government interference"),
+            "AI development should remain free from government interference",
+        ),
         arguments_per_side=2,
         enable_opening_statements=True,
         enable_closing_statements=True,
-        max_rounds=3)
+        max_rounds=3,
+    )
 
     # Run debate
-    result = debate.run(
-        {}, config={"configurable": {"recursion_limit": 50}}, debug=True
-    )
+    result = debate.run({}, config={"configurable": {"recursion_limit": 50}}, debug=True)
 
     # Display debate highlights
 
@@ -65,8 +66,10 @@ def example_panel_debate() -> None:
                     "Your position: Social media has been overwhelmingly positive for society. "
                     "Make ONE concise argument. Keep it under 100 words."
                 ),
-                temperature=0.7),
-            state_schema=DebateState),
+                temperature=0.7,
+            ),
+            state_schema=DebateState,
+        ),
         "DigitalWellbeing": SimpleAgent(
             name="DigitalWellbeing_agent",
             engine=AugLLMConfig(
@@ -76,8 +79,10 @@ def example_panel_debate() -> None:
                     "Your position: Social media needs reform to protect mental health. "
                     "Make ONE concise argument. Keep it under 100 words."
                 ),
-                temperature=0.7),
-            state_schema=DebateState),
+                temperature=0.7,
+            ),
+            state_schema=DebateState,
+        ),
         "PrivacyAdvocate": SimpleAgent(
             name="PrivacyAdvocate_agent",
             engine=AugLLMConfig(
@@ -87,8 +92,10 @@ def example_panel_debate() -> None:
                     "Your position: Social media companies violate user privacy and need strict regulation. "
                     "Make ONE concise argument. Keep it under 100 words."
                 ),
-                temperature=0.7),
-            state_schema=DebateState),
+                temperature=0.7,
+            ),
+            state_schema=DebateState,
+        ),
     }
 
     debate = DebateConversation(
@@ -105,12 +112,11 @@ def example_panel_debate() -> None:
         enable_closing_statements=False,  # Skip closing statements
         enable_judge=False,  # No judge phase
         max_rounds=2,  # Only one round!
-        state_schema=DebateState)
+        state_schema=DebateState,
+    )
 
     # Run debate with MUCH lower recursion limit
-    result = debate.run(
-        {}, config={"configurable": {"recursion_limit": 50}}, debug=False
-    )
+    result = debate.run({}, config={"configurable": {"recursion_limit": 50}}, debug=False)
 
     # Show debate summary
 
@@ -137,8 +143,10 @@ def example_oxford_debate() -> None:
                     f"Motion: {motion}. "
                     "Make a strong opening case with clear arguments. Be formal and structured."
                 ),
-                temperature=0.6),
-            state_schema=DebateState),
+                temperature=0.6,
+            ),
+            state_schema=DebateState,
+        ),
         "FirstOpposition": SimpleAgent(
             name="FirstOpposition_agent",
             engine=AugLLMConfig(
@@ -148,8 +156,10 @@ def example_oxford_debate() -> None:
                     f"Motion: {motion}. "
                     "Refute the proposition and present counter-arguments. Be formal and structured."
                 ),
-                temperature=0.6),
-            state_schema=DebateState),
+                temperature=0.6,
+            ),
+            state_schema=DebateState,
+        ),
         "SecondProposition": SimpleAgent(
             name="SecondProposition_agent",
             engine=AugLLMConfig(
@@ -159,8 +169,10 @@ def example_oxford_debate() -> None:
                     f"Motion: {motion}. "
                     "Reinforce your side's arguments and address opposition points."
                 ),
-                temperature=0.6),
-            state_schema=DebateState),
+                temperature=0.6,
+            ),
+            state_schema=DebateState,
+        ),
         "SecondOpposition": SimpleAgent(
             name="SecondOpposition_agent",
             engine=AugLLMConfig(
@@ -170,8 +182,10 @@ def example_oxford_debate() -> None:
                     f"Motion: {motion}. "
                     "Strengthen opposition case and highlight flaws in proposition arguments."
                 ),
-                temperature=0.6),
-            state_schema=DebateState),
+                temperature=0.6,
+            ),
+            state_schema=DebateState,
+        ),
     }
 
     debate = DebateConversation(
@@ -190,12 +204,11 @@ def example_oxford_debate() -> None:
         enforce_position_consistency=True,
         debate_format="oxford",
         max_rounds=2,  # Enough for all phases
-        state_schema=DebateState)
+        state_schema=DebateState,
+    )
 
     # Run debate
-    result = debate.run(
-        {}, config={"configurable": {"recursion_limit": 100}}, debug=True
-    )
+    result = debate.run({}, config={"configurable": {"recursion_limit": 100}}, debug=True)
 
     # Display formal structure
 
@@ -218,8 +231,10 @@ def example_socratic_debate() -> None:
                     "Challenge assumptions through questions, don't lecture. "
                     "Keep your responses concise and focused on questioning."
                 ),
-                temperature=0.7),
-            state_schema=DebateState),
+                temperature=0.7,
+            ),
+            state_schema=DebateState,
+        ),
         "Student": SimpleAgent(
             name="Student_agent",
             engine=AugLLMConfig(
@@ -230,8 +245,10 @@ def example_socratic_debate() -> None:
                     "Your initial position: Knowledge comes from education and books. "
                     "Be humble and open to learning."
                 ),
-                temperature=0.7),
-            state_schema=DebateState),
+                temperature=0.7,
+            ),
+            state_schema=DebateState,
+        ),
     }
 
     debate = DebateConversation(
@@ -247,24 +264,23 @@ def example_socratic_debate() -> None:
         enable_closing_statements=False,
         require_evidence=False,  # Philosophical debate
         max_rounds=2,
-        state_schema=DebateState)
+        state_schema=DebateState,
+    )
 
     # Start with Socratic question
     initial_message = AIMessage(
-        content="Tell me, young friend, what do you believe knowledge to be?",
-        name="Socrates")
+        content="Tell me, young friend, what do you believe knowledge to be?", name="Socrates"
+    )
 
     # Run dialogue
     result = debate.run(
-        {"messages": [initial_message]},
-        config={"configurable": {"recursion_limit": 50}})
+        {"messages": [initial_message]}, config={"configurable": {"recursion_limit": 50}}
+    )
 
     # Display dialogue
     messages = result.get("messages", [])
     for msg in messages:
-        if (isinstance(msg, AIMessage) and hasattr(msg, "name")) or isinstance(
-            msg, SystemMessage
-        ):
+        if (isinstance(msg, AIMessage) and hasattr(msg, "name")) or isinstance(msg, SystemMessage):
             pass
 
 

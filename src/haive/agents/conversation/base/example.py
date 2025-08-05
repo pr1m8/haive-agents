@@ -10,17 +10,19 @@ import logging
 import operator
 from typing import Any
 
+
 # TODO: Fix when exceptions module is available
 # from haive.core.exceptions import ConversationError
 class ConversationError(Exception):
     """Placeholder for conversation errors."""
+
     pass
+
+
 from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import Field
 
-from haive.agents.conversation.base import (
-    BaseConversationAgent,
-    ConversationState)
+from haive.agents.conversation.base import BaseConversationAgent, ConversationState
 from haive.agents.simple import SimpleAgent
 
 logger = logging.getLogger(__name__)
@@ -83,9 +85,7 @@ class CustomConversationAgent(BaseConversationAgent):
                 # Sort by recent activity (those who spoke more recently)
                 recent_speakers = state.speaker_history[-len(state.speakers) :]
                 active_remaining = [
-                    s
-                    for s in state.remaining_speakers_this_round
-                    if s in recent_speakers
+                    s for s in state.remaining_speakers_this_round if s in recent_speakers
                 ]
                 if active_remaining:
                     return active_remaining[0]
@@ -254,17 +254,20 @@ async def main():
     alice = SimpleAgent(
         name="Alice",
         model="gpt-4o-mini",
-        instructions="You are Alice, a friendly AI assistant interested in technology.")
+        instructions="You are Alice, a friendly AI assistant interested in technology.",
+    )
 
     bob = SimpleAgent(
         name="Bob",
         model="gpt-4o-mini",
-        instructions="You are Bob, a curious learner who asks thoughtful questions.")
+        instructions="You are Bob, a curious learner who asks thoughtful questions.",
+    )
 
     charlie = SimpleAgent(
         name="Charlie",
         model="gpt-4o-mini",
-        instructions="You are Charlie, an expert who provides detailed explanations.")
+        instructions="You are Charlie, an expert who provides detailed explanations.",
+    )
 
     # Create initial state
     initial_state = CustomConversationState(
@@ -276,9 +279,8 @@ async def main():
 
     # Create custom conversation agent
     conversation = CustomConversationAgent(
-        name="education_discussion",
-        participants=[alice, bob, charlie],
-        initial_state=initial_state)
+        name="education_discussion", participants=[alice, bob, charlie], initial_state=initial_state
+    )
 
     # Run the conversation
     try:

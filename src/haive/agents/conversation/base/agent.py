@@ -28,11 +28,8 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.persistence.memory import MemoryCheckpointerConfig
-from haive.core.persistence.postgres_config import (
-    PostgresCheckpointerConfig)
-from haive.core.persistence.types import (
-    CheckpointerMode,
-    CheckpointStorageMode)
+from haive.core.persistence.postgres_config import PostgresCheckpointerConfig
+from haive.core.persistence.types import CheckpointerMode, CheckpointStorageMode
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.graph import END, START
 from langgraph.types import Command
@@ -89,14 +86,10 @@ class BaseConversationAgent(Agent):
     recursion_limit: int = Field(
         default=50, description="Maximum recursion depth for agent execution"
     )
-    handle_errors: bool = Field(
-        default=True, description="Whether to handle errors gracefully"
-    )
+    handle_errors: bool = Field(default=True, description="Whether to handle errors gracefully")
 
     # Safety limits
-    max_turns_safety: int = Field(
-        default=100, description="Absolute maximum turns as safety limit"
-    )
+    max_turns_safety: int = Field(default=100, description="Absolute maximum turns as safety limit")
 
     @model_validator(mode="before")
     @classmethod
@@ -107,12 +100,9 @@ class BaseConversationAgent(Agent):
 
         # Check if persistence is a boolean True
         if values.get("persistence") is True:
-            logger.info(
-                "Converting persistence=True to PostgreSQL persistence configuration"
-            )
+            logger.info("Converting persistence=True to PostgreSQL persistence configuration")
 
             try:
-
                 # Use environment connection string if available (Supabase)
                 connection_string = os.getenv("POSTGRES_CONNECTION_STRING")
 
@@ -120,9 +110,7 @@ class BaseConversationAgent(Agent):
                     # Use Supabase/environment connection string
                     # Create unique pool per conversation to avoid prepared
                     # statement conflicts
-                    conversation_id = getattr(
-                        values.get("agent"), "name", "conversation"
-                    )
+                    conversation_id = getattr(values.get("agent"), "name", "conversation")
                     app_name = f"haive_{conversation_id}_{id(values)}"
 
                     values["persistence"] = PostgresCheckpointerConfig(
@@ -140,15 +128,14 @@ class BaseConversationAgent(Agent):
                             "keepalives_idle": 600,  # Keep connection alive for 10 minutes
                             "keepalives_interval": 30,  # Send keepalive every 30 seconds
                             "keepalives_count": 3,  # 3 failed keepalives before disconnect
-                        })
+                        },
+                    )
                     logger.info(
                         f"Set up PostgreSQL persistence for {app_name} (prepared statements disabled)"
                     )
                 else:
                     # Use default local PostgreSQL
-                    conversation_id = getattr(
-                        values.get("agent"), "name", "conversation"
-                    )
+                    conversation_id = getattr(values.get("agent"), "name", "conversation")
                     app_name = f"haive_{conversation_id}_{id(values)}"
 
                     values["persistence"] = PostgresCheckpointerConfig(
@@ -165,14 +152,14 @@ class BaseConversationAgent(Agent):
                             "keepalives_idle": 600,  # Keep connection alive for 10 minutes
                             "keepalives_interval": 30,  # Send keepalive every 30 seconds
                             "keepalives_count": 3,  # 3 failed keepalives before disconnect
-                        })
+                        },
+                    )
                     logger.info("Set up default PostgreSQL persistence")
 
             except ImportError as e:
                 logger.warning(f"PostgreSQL dependencies not available: {e}")
                 # Fall back to memory persistence
                 try:
-
                     values["persistence"] = MemoryCheckpointerConfig()
                     logger.info("Using memory persistence fallback")
                 except ImportError:
@@ -225,9 +212,8 @@ class BaseConversationAgent(Agent):
         """Create the default orchestrator engine."""
         return AugLLMConfig(
             name="conversation_orchestrator",
-            system_message=f"You are orchestrating a {
-                self.mode} conversation about: {
-                self.topic}")
+            system_message=f"You are orchestrating a {self.mode} conversation about: {self.topic}",
+        )
 
     def _compile_participants(self):
         """Compile all participant agents."""
@@ -247,8 +233,8 @@ class BaseConversationAgent(Agent):
     def build_graph(self) -> BaseGraph:
         """Build the conversation graph."""
         graph = BaseGraph(
-            name=f"{self.name}_conversation",
-            state_schema=self.get_conversation_state_schema())
+            name=f"{self.name}_conversation", state_schema=self.get_conversation_state_schema()
+        )
 
         # Core nodes
         graph.add_node("initialize", self.initialize_conversation)
@@ -283,7 +269,8 @@ class BaseConversationAgent(Agent):
         graph.add_conditional_edges(
             "select_speaker",
             speaker_router,
-            {"execute_agent": "execute_agent", "conclude": "conclude"})
+            {"execute_agent": "execute_agent", "conclude": "conclude"},
+        )
 
         # Check end decides if we go back to select_speaker or conclude
         def end_router(state: Any) -> str:
@@ -299,9 +286,8 @@ class BaseConversationAgent(Agent):
             return "select_speaker"
 
         graph.add_conditional_edges(
-            "check_end",
-            end_router,
-            {"select_speaker": "select_speaker", "conclude": "conclude"})
+            "check_end", end_router, {"select_speaker": "select_speaker", "conclude": "conclude"}
+        )
 
         # Add custom nodes and edges
         self._add_custom_graph_elements(graph)
@@ -341,9 +327,9 @@ class BaseConversationAgent(Agent):
         update.update(custom_init)
 
         logger.info(
-            f"Initialized conversation with {
-                len(speaker_names)} participants, max_rounds={
-                self.max_rounds}"
+            f"Initialized conversation with {len(speaker_names)} participants, max_rounds={
+                self.max_rounds
+            }"
         )
 
         return Command(update=update)
@@ -404,9 +390,7 @@ class BaseConversationAgent(Agent):
             result = agent.invoke(agent_input, config)
 
             # Extract new messages
-            new_messages = self._extract_agent_messages(
-                result, agent_input.get("messages", [])
-            )
+            new_messages = self._extract_agent_messages(result, agent_input.get("messages", []))
 
             # Add speaker name to messages
             for msg in new_messages:
@@ -419,9 +403,7 @@ class BaseConversationAgent(Agent):
                 update={
                     "messages": new_messages,
                     "turn_count": 1,  # Increment by 1 (reducer will add)
-                    "speaker_history": [
-                        current_speaker
-                    ],  # Append speaker (reducer will add)
+                    "speaker_history": [current_speaker],  # Append speaker (reducer will add)
                 }
             )
 
@@ -471,9 +453,7 @@ class BaseConversationAgent(Agent):
 
         # Safety check on turn count
         if turn_count > self.max_turns_safety:
-            logger.warning(
-                f"Safety limit reached: {turn_count} > {self.max_turns_safety}"
-            )
+            logger.warning(f"Safety limit reached: {turn_count} > {self.max_turns_safety}")
             updates["conversation_ended"] = True
             return Command(update=updates)
 
@@ -533,11 +513,7 @@ class BaseConversationAgent(Agent):
 
     def _create_initial_message(self) -> BaseMessage:
         """Create the initial conversation message."""
-        return HumanMessage(
-            content=f"Topic: {
-                self.topic}\nLet's begin our {
-                self.mode} discussion."
-        )
+        return HumanMessage(content=f"Topic: {self.topic}\nLet's begin our {self.mode} discussion.")
 
     def _custom_initialization(self, state: Any) -> dict[str, Any]:
         """Hook for custom initialization. Override in subclasses."""
@@ -571,9 +547,7 @@ class BaseConversationAgent(Agent):
     def _handle_agent_error(self, error: Exception, agent_name: str) -> Command:
         """Handle errors from agent execution."""
         logger.error(f"Error executing agent {agent_name}: {error}")
-        error_msg = AIMessage(
-            content=f"[Error from {agent_name}]: {error!s}", name=agent_name
-        )
+        error_msg = AIMessage(content=f"[Error from {agent_name}]: {error!s}", name=agent_name)
         return Command(
             update={
                 "messages": [error_msg],
