@@ -1,6 +1,6 @@
 """Module exports."""
 
-from examples.usage_examples import (
+from haive.agents.document_loader.examples.usage_examples import (
     example_basic_document_loader,
     example_directory_loader,
     example_file_loader,
