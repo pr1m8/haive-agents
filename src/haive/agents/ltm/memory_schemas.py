@@ -45,8 +45,8 @@ class FactualMemory(BaseModel):
     domain: str = Field(description="Domain or category of the fact")
     source: str | None = Field(default=None, description="Source of the information")
     verification_level: str = Field(
-        default="stated",
-        description="Level of verification: stated, confirmed, verified")
+        default="stated", description="Level of verification: stated, confirmed, verified"
+    )
 
 
 class PersonalContext(BaseModel):
@@ -65,9 +65,7 @@ class ConversationalMemory(BaseModel):
 
     content: str = Field(description="The conversational memory content")
     topic: str = Field(description="Main topic or theme")
-    emotional_tone: str | None = Field(
-        default=None, description="Emotional tone if relevant"
-    )
+    emotional_tone: str | None = Field(default=None, description="Emotional tone if relevant")
     action_items: list[str] = Field(
         default_factory=list, description="Any action items or follow-ups mentioned"
     )
