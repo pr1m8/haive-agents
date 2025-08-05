@@ -3,7 +3,6 @@
 from haive.agents.react_class.react_agent2.advanced_agent3 import (
     AdvancedReactAgent,
     AdvancedReactAgentConfig,
-    add_tool,
     agent_router,
     create_advanced_react_agent,
     create_custom_tool_node,

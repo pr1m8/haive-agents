@@ -1,6 +1,6 @@
 """Module exports."""
 
-from react_agent.agent import (
+from haive.agents.react_class.react_agent.agent import (
     ReactAgent,
     ReactAgentConfig,
     build_agent,
@@ -20,7 +20,7 @@ from react_agent.agent import (
     structured_output_agent_node,
     validate_engine,
     visualize_graph)
-from react_agent.state import ReactAgentState
+from haive.agents.react_class.react_agent.state import ReactAgentState
 
 __all__ = [
     "ReactAgent",
