@@ -55,7 +55,6 @@ def get_nth_prime(n: int) -> int:
 
 
 async def main():
-
     # Create a simple planning agent
     planner = SimpleAgent(
         name="planner",

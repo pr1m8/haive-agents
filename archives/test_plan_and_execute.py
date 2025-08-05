@@ -43,7 +43,6 @@ async def main():
     ]
 
     for query in test_queries[:1]:  # Run first query for demo
-
         start_time = datetime.now()
 
         try:
@@ -82,9 +81,7 @@ async def test_with_custom_prompts():
         api_key=os.getenv("OPENAI_API_KEY"),
     )
 
-    aug_engine = AugLLMEngine(
-        llm_engine=base_engine, system_prompt="You are a research assistant."
-    )
+    aug_engine = AugLLMEngine(llm_engine=base_engine, system_prompt="You are a research assistant.")
 
     # Create agent with custom prompts
     agent = PlanAndExecuteAgent(

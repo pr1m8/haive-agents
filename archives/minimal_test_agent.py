@@ -25,9 +25,7 @@ def minimal_test():
     react_agent = ReactAgent(engine=react_engine, name="React Test Agent")
 
     # Create the multi-agent
-    multi_agent = MultiAgent(
-        agents=[simple_agent, react_agent], name="Serialization Test"
-    )
+    multi_agent = MultiAgent(agents=[simple_agent, react_agent], name="Serialization Test")
 
     # Print the initial state
     for _agent_id, _agent in multi_agent._state_instance.agents.items():

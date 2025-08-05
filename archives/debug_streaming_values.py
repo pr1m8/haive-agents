@@ -15,7 +15,6 @@ def debug_streaming_values():
         config = {"configurable": {"recursion_limit": 10}}
 
         for i, chunk in enumerate(agent.stream({}, config=config)):
-
             if hasattr(chunk, "__dict__"):
                 pass
 
@@ -46,7 +45,6 @@ def debug_streaming_values():
 
     try:
         if hasattr(agent, "app"):
-
             # Test streaming directly on app
             for i, chunk in enumerate(agent.app.stream({}, config=config)):
                 if isinstance(chunk, dict) and chunk:
@@ -98,9 +96,7 @@ def debug_streaming_values():
         # Check if agent is properly compiled
 
         # Try to get state schema
-        if hasattr(agent, "state_schema") and hasattr(
-            agent.state_schema, "model_fields"
-        ):
+        if hasattr(agent, "state_schema") and hasattr(agent.state_schema, "model_fields"):
             pass
 
         # Check if graph is built

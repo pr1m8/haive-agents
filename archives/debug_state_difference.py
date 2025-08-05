@@ -36,7 +36,6 @@ simple_agent = SimpleAgent(engine=plan_aug)
 # 1. Check standalone ReactAgent state
 react_agent.compile()
 if hasattr(react_agent, "state_schema"):
-
     # Check engines field
     if "engines" in react_agent.state_schema.model_fields:
         field_info = react_agent.state_schema.model_fields["engines"]
@@ -46,7 +45,6 @@ multi = SequentialAgent(agents=[react_agent, simple_agent])
 multi.compile()
 
 if hasattr(multi, "state_schema"):
-
     # Check engines field
     if "engines" in multi.state_schema.model_fields:
         field_info = multi.state_schema.model_fields["engines"]
@@ -68,7 +66,6 @@ try:
     # Try JSON serialization (similar to msgpack)
     json_str = json.dumps(state_dict)
 except Exception:
-
     # Find problematic field
     if isinstance(state_dict, dict):
         for key, value in state_dict.items():

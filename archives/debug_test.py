@@ -2,9 +2,7 @@
 import os
 import sys
 
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "packages", "haive-core", "src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "packages", "haive-core", "src"))
 from haive.core.graph.common.types import NodeType
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START

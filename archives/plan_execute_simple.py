@@ -54,7 +54,6 @@ def get_nth_prime(n: int) -> int:
 
 
 async def main():
-
     # Create Plan and Execute agent with tools
     agent = PlanAndExecuteAgent(
         name="plan_execute_simple",

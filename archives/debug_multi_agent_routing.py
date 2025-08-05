@@ -66,13 +66,9 @@ def test_fixed_implementation():
     graph = BaseGraph(name="fixed_multi_agent", state_schema=MultiAgentState)
 
     # Add agents as proper node configs, not raw agents
-    agent1_node = create_agent_node_v3(
-        agent_name="agent1", agent=agent1, name="agent1_node"
-    )
+    agent1_node = create_agent_node_v3(agent_name="agent1", agent=agent1, name="agent1_node")
 
-    agent2_node = create_agent_node_v3(
-        agent_name="agent2", agent=agent2, name="agent2_node"
-    )
+    agent2_node = create_agent_node_v3(agent_name="agent2", agent=agent2, name="agent2_node")
 
     # Add nodes to graph
     graph.add_node("agent1_node", agent1_node)

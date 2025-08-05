@@ -23,13 +23,13 @@ from haive.agents.simple.agent import SimpleAgent
 
 
 async def main():
-
     # Create engines using existing P&E configurations
     planner_engine = create_planner_aug_llm_config(model_name="gpt-4o-mini")
 
     # Executor gets the Tavily search tool
     executor_engine = create_executor_aug_llm_config(
-        model_name="gpt-4o-mini", tools=[tavily_qna]  # Real search capability
+        model_name="gpt-4o-mini",
+        tools=[tavily_qna],  # Real search capability
     )
 
     replanner_engine = create_replan_aug_llm_config(model_name="gpt-4o-mini")

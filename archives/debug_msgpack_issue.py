@@ -44,7 +44,6 @@ try:
     dumped = add_aug.model_dump()
     json.dumps(dumped)
 except Exception:
-
     # Find problematic fields
     for key, value in dumped.items():
         with contextlib.suppress(Exception):

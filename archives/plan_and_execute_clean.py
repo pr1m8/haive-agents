@@ -54,7 +54,6 @@ def get_nth_prime(n: int) -> int:
 
 
 async def main():
-
     # Create Plan and Execute agent with tools
     agent = PlanAndExecuteAgent(
         name="plan_execute_clean",
@@ -69,7 +68,6 @@ async def main():
     ]
 
     for query in queries[:1]:  # Just test the first one
-
         try:
             await agent.arun(query)
         except Exception:

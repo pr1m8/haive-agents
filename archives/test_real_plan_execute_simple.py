@@ -16,7 +16,6 @@ from haive.agents.simple.agent import SimpleAgent
 
 
 async def main():
-
     # Create simple LLM configurations
     config = AugLLMConfig(name="test_llm", temperature=0.7)
 

@@ -35,7 +35,6 @@ def is_prime(n: int) -> bool:
 
 
 async def main():
-
     # Create agents
     planner = SimpleAgent(
         name="planner",

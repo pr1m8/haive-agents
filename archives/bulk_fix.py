@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Bulk fix unterminated string literals."""
+
 import os
 
 # All the files with errors from black output

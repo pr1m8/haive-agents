@@ -57,7 +57,6 @@ except Exception as e:
 
     # Check if it's checkpointing related
     if "msgpack" in str(e):
-
         # Try to isolate what's causing the issue
         if hasattr(multi, "state_schema") and multi.state_schema:
             try:

@@ -7,7 +7,6 @@ This shows:
 3. How BuildMode affects schema composition, not execution flow
 """
 
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.agent_schema_composer import BuildMode
 from langgraph.graph import END
@@ -60,7 +59,6 @@ def visualize_graph_structure(system):
 
 
 def main():
-
     # Create configuration
     config = AugLLMConfig(
         name="demo_llm", system_message="You are a helpful assistant.", temperature=0.7

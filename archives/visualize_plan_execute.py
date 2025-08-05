@@ -22,7 +22,6 @@ logging.getLogger("haive").setLevel(logging.ERROR)
 
 
 def main():
-
     # Create agents
     config = AugLLMConfig()
     planner = SimpleAgent(name="planner", engine=config)

@@ -121,7 +121,6 @@ Be critical about whether the objective has been achieved.""",
     ]
 
     for query in queries:
-
         try:
             # Run the agent
             await plan_execute_agent.arun(query)
