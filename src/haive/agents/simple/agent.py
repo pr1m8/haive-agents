@@ -18,11 +18,34 @@ from langgraph.types import Command
 from pydantic import BaseModel, Field, field_validator
 
 from haive.agents.base import Agent
+from haive.core.engine.agent import AgentConfig
 
 # Import the base Agent from the correct location
 
 
 logger = logging.getLogger(__name__)
+
+
+class SimpleAgentConfig(AgentConfig):
+    """Configuration for SimpleAgent."""
+    
+    prompt_template: ChatPromptTemplate = Field(
+        default_factory=lambda: ChatPromptTemplate.from_messages([
+            ("system", "You are a helpful AI assistant."),
+            ("human", "{input}")
+        ]),
+        description="Prompt template for the agent"
+    )
+    
+    output_parser: BaseOutputParser = Field(
+        default=None, 
+        description="Optional output parser for structured responses"
+    )
+    
+    enable_validation: bool = Field(
+        default=False,
+        description="Whether to enable output validation"
+    )
 
 
 # ========================================================================
