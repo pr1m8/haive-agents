@@ -138,7 +138,6 @@ class ReflectionMultiAgentSystem:
     def analyze_workflow_result(self, result):
         """Analyze and display the results of the reflection workflow."""
         if hasattr(result, "messages"):
-
             # Track the progression through agents
             agent_messages = []
             for i, msg in enumerate(result.messages):
@@ -148,7 +147,7 @@ class ReflectionMultiAgentSystem:
                     else str(msg.content)
                 )
                 msg_type = type(msg).__name__
-                agent_messages.append(f"  {i+1}. {msg_type}: {msg_content}")
+                agent_messages.append(f"  {i + 1}. {msg_type}: {msg_content}")
 
             for msg in agent_messages:
                 pass
@@ -180,9 +179,7 @@ async def demo_basic_reflection():
     """Demo basic reflection workflow."""
     reflection_system = ReflectionMultiAgentSystem()
 
-    question = (
-        "What are the key challenges and opportunities for renewable energy adoption?"
-    )
+    question = "What are the key challenges and opportunities for renewable energy adoption?"
 
     result = await reflection_system.run_reflection_process(question)
     reflection_system.analyze_workflow_result(result)
@@ -222,9 +219,7 @@ async def demo_comparison_with_single_agent():
 
     # Single agent response
 
-    single_agent = SimpleAgentV3(
-        name="single_responder", engine=AugLLMConfig(temperature=0.7)
-    )
+    single_agent = SimpleAgentV3(name="single_responder", engine=AugLLMConfig(temperature=0.7))
 
     single_result = await single_agent.arun(question)
 

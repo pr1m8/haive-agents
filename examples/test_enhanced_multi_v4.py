@@ -12,13 +12,10 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 async def main():
-
     # Create SimpleAgentV3
     simple = SimpleAgentV3(
         name="simple",
-        engine=AugLLMConfig(
-            temperature=0.3, system_message="You are a helpful assistant."
-        ),
+        engine=AugLLMConfig(temperature=0.3, system_message="You are a helpful assistant."),
     )
 
     # Create ReactAgentV3

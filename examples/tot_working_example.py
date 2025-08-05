@@ -36,7 +36,6 @@ async def demonstrate_tot():
     best_score = 0.0
 
     for scored in score_result.scored_solutions:
-
         best_score = max(best_score, scored.score)
 
     # Example 2: Game of 24
@@ -84,17 +83,13 @@ async def demonstrate_tot():
 
     # Generate creative solutions
     creative_gen = CandidateGenerator(name="creative_gen", temperature=0.9)
-    creative_candidates = await creative_gen.generate_candidates(
-        problem3, num_candidates=4
-    )
+    creative_candidates = await creative_gen.generate_candidates(problem3, num_candidates=4)
 
     for _i, _idea in enumerate(creative_candidates.candidates, 1):
         pass
 
     # Score them
-    creative_scores = await scorer.score_solutions(
-        problem3, creative_candidates.candidates
-    )
+    creative_scores = await scorer.score_solutions(problem3, creative_candidates.candidates)
 
     max(creative_scores.scored_solutions, key=lambda x: x.score)
 

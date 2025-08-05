@@ -43,7 +43,6 @@ async def debug_multi_agent_state():
         await multi_agent.arun(test_state)
 
     except Exception:
-
         # Try with string input instead
         try:
             await multi_agent.arun("Hello world")

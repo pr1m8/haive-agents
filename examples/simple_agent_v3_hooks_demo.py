@@ -84,9 +84,7 @@ async def demo_factory_pattern():
     # Create base agent
     base_agent = SimpleAgentV3(
         name="essay_writer",
-        engine=AugLLMConfig(
-            system_message="You are an academic essay writer.", temperature=0.6
-        ),
+        engine=AugLLMConfig(system_message="You are an academic essay writer.", temperature=0.6),
     )
 
     # Use factory to add reflection
@@ -98,9 +96,7 @@ async def demo_factory_pattern():
         pass
 
     with contextlib.suppress(Exception):
-        await enhanced_agent.arun(
-            "Write an essay about the benefits of renewable energy"
-        )
+        await enhanced_agent.arun("Write an essay about the benefits of renewable energy")
 
 
 if __name__ == "__main__":

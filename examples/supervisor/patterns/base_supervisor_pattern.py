@@ -88,9 +88,7 @@ class BaseSupervisor(ReactAgent):
         # Update engine tools
         if hasattr(self.main_engine, "tools"):
             self.main_engine.tools = tools
-        elif hasattr(self.main_engine, "config") and hasattr(
-            self.main_engine.config, "tools"
-        ):
+        elif hasattr(self.main_engine, "config") and hasattr(self.main_engine.config, "tools"):
             self.main_engine.config.tools = tools
 
         logger.info(f"Synced {len(tools)} tools with engine")
@@ -218,9 +216,7 @@ class BaseSupervisor(ReactAgent):
                     "description": info.metadata.description,
                     "usage_count": info.metadata.usage_count,
                     "last_used": (
-                        info.metadata.last_used.isoformat()
-                        if info.metadata.last_used
-                        else None
+                        info.metadata.last_used.isoformat() if info.metadata.last_used else None
                     ),
                 }
                 for name, info in state.agents.items()
@@ -254,9 +250,7 @@ class DynamicSupervisor(BaseSupervisor):
 
     def __init__(self, agent_factory: Callable | None = None, **kwargs):
         """Initialize with DynamicSupervisorState."""
-        super().__init__(
-            state_schema=DynamicSupervisorState, agent_factory=agent_factory, **kwargs
-        )
+        super().__init__(state_schema=DynamicSupervisorState, agent_factory=agent_factory, **kwargs)
 
     def add_agent_template(self, name: str, template: dict[str, Any]) -> None:
         """Add a template for agent creation.

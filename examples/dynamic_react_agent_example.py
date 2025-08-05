@@ -10,7 +10,6 @@ This example demonstrates the DynamicReactAgent's ability to:
 Run with: poetry run python examples/dynamic_react_agent_example.py
 """
 
-
 import contextlib
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -125,7 +124,6 @@ def main():
     # Test the discovery tool functionality
     discovery_tool = discovery_tools[0] if discovery_tools else None
     if discovery_tool:
-
         # Test discovery for different tasks
         test_queries = [
             "mathematical calculations",

@@ -149,7 +149,6 @@ Please create an improved version addressing all feedback.""",
 
     @workflow.after_agent_execution
     def track_results(agent_name: str, result: Any):
-
         # Track quality improvements
         if agent_name == "reflection_agent" and isinstance(result, dict):
             quality = result.get("quality_assessment", {})
@@ -438,7 +437,6 @@ async def demo_hook_monitoring_system():
             )
 
         def print_summary(self):
-
             # Event type breakdown
             event_types = {}
             for event in self.events:
@@ -467,11 +465,7 @@ async def demo_hook_monitoring_system():
     def monitor_end(result):
         monitor.log_event(
             "workflow_end",
-            {
-                "result_keys": (
-                    list(result.keys()) if isinstance(result, dict) else "non-dict"
-                )
-            },
+            {"result_keys": (list(result.keys()) if isinstance(result, dict) else "non-dict")},
         )
 
     @workflow.before_agent_execution
@@ -490,9 +484,7 @@ async def demo_hook_monitoring_system():
         monitor.log_event("error", {"error": str(error), "context": context})
 
     # Execute
-    await workflow.arun(
-        {"messages": [{"role": "user", "content": "Analyze market trends in AI"}]}
-    )
+    await workflow.arun({"messages": [{"role": "user", "content": "Analyze market trends in AI"}]})
 
     # Print monitoring summary
     monitor.print_summary()

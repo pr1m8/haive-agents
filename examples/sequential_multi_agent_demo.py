@@ -40,9 +40,7 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class ProblemAnalysis(BaseModel):
     """Structured problem analysis from ReactAgent."""
 
-    problem_type: str = Field(
-        description="Type of problem: technical, business, or research"
-    )
+    problem_type: str = Field(description="Type of problem: technical, business, or research")
     complexity_level: str = Field(description="Complexity: simple, medium, or complex")
     key_challenges: list[str] = Field(description="Main challenges identified")
     recommended_approach: str = Field(description="Recommended solution approach")
@@ -55,9 +53,7 @@ class FormattedSolution(BaseModel):
     title: str = Field(description="Solution title")
     executive_summary: str = Field(description="Brief summary for executives")
     detailed_solution: str = Field(description="Comprehensive solution details")
-    implementation_timeline: list[str] = Field(
-        description="Implementation steps with timeline"
-    )
+    implementation_timeline: list[str] = Field(description="Implementation steps with timeline")
     success_metrics: list[str] = Field(description="How to measure success")
     risk_mitigation: list[str] = Field(description="Risk mitigation strategies")
 
@@ -177,9 +173,7 @@ async def demo_custom_sequential_with_hooks():
     # Create agents with specific prompt templates
     idea_generator = SimpleAgentV3(
         name="idea_generator",
-        engine=AugLLMConfig(
-            temperature=0.8, system_message="You are a creative idea generator."
-        ),
+        engine=AugLLMConfig(temperature=0.8, system_message="You are a creative idea generator."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -193,9 +187,7 @@ async def demo_custom_sequential_with_hooks():
 
     idea_evaluator = SimpleAgentV3(
         name="idea_evaluator",
-        engine=AugLLMConfig(
-            temperature=0.3, system_message="You are a critical idea evaluator."
-        ),
+        engine=AugLLMConfig(temperature=0.3, system_message="You are a critical idea evaluator."),
         prompt_template=ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
@@ -271,9 +263,7 @@ async def demo_custom_sequential_with_hooks():
 async def demo_react_structured_pattern():
     """Demo 4: Using the ReactToStructuredAgent pattern directly."""
     # Use the pattern we created
-    agent = create_react_structured_agent(
-        name="problem_solver", output_model=StructuredSolution
-    )
+    agent = create_react_structured_agent(name="problem_solver", output_model=StructuredSolution)
 
     # Add monitoring hooks
     @agent.on_reasoning_complete

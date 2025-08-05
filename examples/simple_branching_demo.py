@@ -94,7 +94,6 @@ async def main():
     ]
 
     for _i, task in enumerate(test_tasks, 1):
-
         # Test classifier
         classification_input = {
             "task": task,
@@ -104,10 +103,7 @@ async def main():
         try:
             classification_result = await classifier.arun(classification_input)
 
-            if (
-                isinstance(classification_result, dict)
-                and "category" in classification_result
-            ):
+            if isinstance(classification_result, dict) and "category" in classification_result:
                 category = classification_result["category"]
                 classification_result.get("confidence", 0.0)
 

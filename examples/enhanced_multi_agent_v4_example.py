@@ -98,7 +98,7 @@ async def main():
         if hasattr(result, "messages"):
             logger.info("\n=== Execution Flow ===")
             for i, msg in enumerate(result.messages):
-                logger.info(f"{i+1}. [{msg.type}]: {msg.content[:100]}...")
+                logger.info(f"{i + 1}. [{msg.type}]: {msg.content[:100]}...")
 
     except Exception as e:
         logger.exception(f"Error running workflow: {e}")

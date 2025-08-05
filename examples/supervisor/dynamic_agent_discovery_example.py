@@ -201,7 +201,6 @@ async def dynamic_team_building_example():
     ]
 
     for _i, task in enumerate(tasks):
-
         # Check team before task
 
         # Execute task
@@ -268,7 +267,6 @@ async def agent_capability_routing_example():
     ]
 
     for task in technical_tasks:
-
         # Simulate routing decision
         from haive.agents.supervisor.types import SupervisorState
 
@@ -336,6 +334,5 @@ async def main():
 
 
 if __name__ == "__main__":
-
     # Run examples
     asyncio.run(main())

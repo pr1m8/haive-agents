@@ -112,17 +112,13 @@ def example_2_structured_tool():
         output_model=ResearchResult,
         name="research_tool",
         description="Research any topic and return structured results",
-        engine=AugLLMConfig(
-            system_message="You are a research expert. Provide thorough research."
-        ),
+        engine=AugLLMConfig(system_message="You are a research expert. Provide thorough research."),
     )
 
     # Use the tool in another agent
     coordinator = SimpleAgent(
         name="research_coordinator",
-        engine=AugLLMConfig(
-            system_message="You coordinate research tasks using available tools."
-        ),
+        engine=AugLLMConfig(system_message="You coordinate research tasks using available tools."),
         tools=[research_tool],
     )
 
@@ -176,9 +172,7 @@ def example_4_handling_different_formats():
         # String output
         "Research shows that AI is advancing rapidly with key findings in NLP and computer vision.",
         # AIMessage with content
-        AIMessage(
-            content="The analysis reveals three key findings about quantum computing..."
-        ),
+        AIMessage(content="The analysis reveals three key findings about quantum computing..."),
         # AIMessage with tool calls
         AIMessage(
             content="",
@@ -214,11 +208,8 @@ def example_4_handling_different_formats():
     ]
 
     for _i, output in enumerate(test_outputs):
-
         # Use ensure_structured_output
-        structured = agent.ensure_structured_output(
-            output, ResearchResult, handle_errors=True
-        )
+        structured = agent.ensure_structured_output(output, ResearchResult, handle_errors=True)
 
         if structured:
             pass
@@ -273,7 +264,6 @@ def example_5_multi_agent_with_fallback():
 
 
 if __name__ == "__main__":
-
     # Run all examples
     example_1_class_method_usage()
     example_2_structured_tool()

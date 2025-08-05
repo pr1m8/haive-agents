@@ -91,9 +91,7 @@ class AgentExecutionNodePattern:
 
         return {"state": state}
 
-    def route_decision(
-        self, state: SupervisorState
-    ) -> Literal["execute_agent", "continue", "end"]:
+    def route_decision(self, state: SupervisorState) -> Literal["execute_agent", "continue", "end"]:
         """Routing logic."""
         if state.agent_route:
             return "execute_agent"

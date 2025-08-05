@@ -69,10 +69,10 @@ def market_research(market: str) -> str:
     )
 
     return f"""Market Research for {market}:
-- Market Size: {data['size']}
-- Growth Rate: {data['growth']}% annually
-- Key Players: {', '.join(data['players'])}
-- Trends: {data['trends']}"""
+- Market Size: {data["size"]}
+- Growth Rate: {data["growth"]}% annually
+- Key Players: {", ".join(data["players"])}
+- Trends: {data["trends"]}"""
 
 
 @tool

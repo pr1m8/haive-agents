@@ -27,9 +27,7 @@ class MarketAnalysis(BaseModel):
 
     market_name: str = Field(description="Name of the market analyzed")
     market_size: str = Field(description="Current market size estimate")
-    growth_rate: float = Field(
-        description="Annual growth rate percentage", ge=0, le=100
-    )
+    growth_rate: float = Field(description="Annual growth rate percentage", ge=0, le=100)
     key_players: list[str] = Field(description="Major companies in the market")
     opportunities: list[str] = Field(description="Market opportunities identified")
     challenges: list[str] = Field(description="Market challenges identified")

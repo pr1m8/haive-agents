@@ -40,9 +40,7 @@ async def example_basic_hooks():
     # Create a simple agent
     agent = SimpleAgent(
         name="basic_writer",
-        engine=AugLLMConfig(
-            system_message="You are a helpful writing assistant.", temperature=0.7
-        ),
+        engine=AugLLMConfig(system_message="You are a helpful writing assistant.", temperature=0.7),
     )
 
     # Add hooks using decorators
@@ -69,9 +67,7 @@ async def example_pre_post_processing():
     # Create main agent
     main_agent = SimpleAgent(
         name="story_writer",
-        engine=AugLLMConfig(
-            system_message="You are a creative story writer.", temperature=0.8
-        ),
+        engine=AugLLMConfig(system_message="You are a creative story writer.", temperature=0.8),
     )
 
     # Create reflection agent
@@ -105,9 +101,7 @@ async def example_pre_post_processing():
 
     # Execute with pre/post processing
     try:
-        result = await main_agent.arun(
-            "Write a short story about a robot learning to dream"
-        )
+        result = await main_agent.arun("Write a short story about a robot learning to dream")
 
         # Show the structured result
         if isinstance(result, dict) and "transformations_applied" in result:
@@ -160,9 +154,7 @@ async def example_reflection_factory_pattern():
     # Create base agent
     base_agent = SimpleAgent(
         name="essay_writer",
-        engine=AugLLMConfig(
-            system_message="You are an academic essay writer.", temperature=0.7
-        ),
+        engine=AugLLMConfig(system_message="You are an academic essay writer.", temperature=0.7),
     )
 
     # Use factory to add reflection capabilities
@@ -180,9 +172,7 @@ async def example_reflection_factory_pattern():
 
     # Execute with reflection
     try:
-        result = await reflection_agent.arun(
-            "Write an essay about the impact of AI on education"
-        )
+        result = await reflection_agent.arun("Write an essay about the impact of AI on education")
 
         if isinstance(result, dict) and "processing_stages" in result:
             pass
@@ -196,9 +186,7 @@ async def example_graded_reflection_pattern():
     # Create base agent
     base_agent = SimpleAgent(
         name="proposal_writer",
-        engine=AugLLMConfig(
-            system_message="You are a business proposal writer.", temperature=0.6
-        ),
+        engine=AugLLMConfig(system_message="You are a business proposal writer.", temperature=0.6),
     )
 
     # Create grading agent
@@ -279,9 +267,7 @@ async def example_custom_hook_development():
                 # Simulate content analysis
                 content = str(context.output_data)
                 content_metrics["word_count"] = len(content.split())
-                content_metrics["readability_score"] = min(
-                    100, max(0, 100 - len(content) // 50)
-                )
+                content_metrics["readability_score"] = min(100, max(0, 100 - len(content) // 50))
                 content_metrics["engagement_factors"] = [
                     "storytelling",
                     "examples",
@@ -311,9 +297,7 @@ async def example_custom_hook_development():
 
     # Execute with custom monitoring
     with contextlib.suppress(Exception):
-        await agent.arun(
-            "Write an engaging article about the future of sustainable technology"
-        )
+        await agent.arun("Write an engaging article about the future of sustainable technology")
 
 
 async def main():

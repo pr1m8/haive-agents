@@ -7,9 +7,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 # Add packages to path for example
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "..", "..", "haive-core", "src")
-)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "haive-core", "src"))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 
@@ -98,9 +96,7 @@ def demonstrate_validation_integration():
     calculator_tool = MockTool("calculator")
 
     # Create engine with tools
-    engine = MockAugLLMConfig(
-        model="gpt-4", temperature=0.7, tools=[search_tool, calculator_tool]
-    )
+    engine = MockAugLLMConfig(model="gpt-4", temperature=0.7, tools=[search_tool, calculator_tool])
 
     # Define structured output model
     class TaskResult(BaseModel):

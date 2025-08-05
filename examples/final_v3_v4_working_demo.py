@@ -110,9 +110,7 @@ Create a structured market analysis with:
 
     # Create proper state format for multi-agent
     workflow_state = {
-        "messages": [
-            HumanMessage(content="Analyze the enterprise AI automation market")
-        ],
+        "messages": [HumanMessage(content="Analyze the enterprise AI automation market")],
         "agent_states": {},
         "execution_order": [],
         "current_agent": None,

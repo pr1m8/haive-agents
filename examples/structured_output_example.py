@@ -19,9 +19,7 @@ from haive.agents.structured.models import AnalysisOutput
 def example_1_basic_usage():
     """Example 1: Basic usage with GenericStructuredOutput."""
     # Create structured output agent
-    agent = create_structured_agent(
-        output_model=GenericStructuredOutput, name="basic_structurer"
-    )
+    agent = create_structured_agent(output_model=GenericStructuredOutput, name="basic_structurer")
 
     # Some unstructured text (could be from any agent)
     unstructured_text = """
@@ -165,9 +163,7 @@ def example_4_custom_model():
     # Create code reviewer (any agent type)
     SimpleAgent(
         name="code_reviewer",
-        engine=AugLLMConfig(
-            system_message="Review code for quality, security, and performance."
-        ),
+        engine=AugLLMConfig(system_message="Review code for quality, security, and performance."),
     )
 
     # Create structurer with custom model

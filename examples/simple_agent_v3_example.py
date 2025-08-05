@@ -103,16 +103,10 @@ class TaskAnalysis(BaseModel):
             )
     """
 
-    task_type: str = Field(
-        description="Type of task (calculation, research, analysis, etc.)"
-    )
+    task_type: str = Field(description="Type of task (calculation, research, analysis, etc.)")
     complexity: int = Field(ge=1, le=10, description="Task complexity on scale of 1-10")
-    steps_required: List[str] = Field(
-        description="List of steps needed to complete the task"
-    )
-    estimated_time: int = Field(
-        ge=1, description="Estimated completion time in minutes"
-    )
+    steps_required: List[str] = Field(description="List of steps needed to complete the task")
+    estimated_time: int = Field(ge=1, description="Estimated completion time in minutes")
     confidence: float = Field(
         ge=0.0, le=1.0, description="AI confidence in this analysis (0.0-1.0)"
     )
@@ -262,9 +256,7 @@ def example_basic_agent() -> None:
     # Create simple agent with default settings
     agent = SimpleAgentV3(
         name="basic_assistant",
-        engine=AugLLMConfig(
-            temperature=0.7, max_tokens=150, llm_config=DeepSeekLLMConfig()
-        ),
+        engine=AugLLMConfig(temperature=0.7, max_tokens=150, llm_config=DeepSeekLLMConfig()),
         debug=True,
         verbose=True,
     )
@@ -545,9 +537,7 @@ def example_recompilation_system() -> None:
     logger.info(f"Updated tools: {', '.join(updated_tools)}")
 
     # Test new capabilities
-    print(
-        "\n📨 Post-recompilation test: 'Count words in: Hello world from recompiled agent'"
-    )
+    print("\n📨 Post-recompilation test: 'Count words in: Hello world from recompiled agent'")
     result2 = agent.run(
         "Count the words in this text: 'Hello world from recompiled agent'", debug=True
     )
@@ -563,9 +553,7 @@ def example_recompilation_system() -> None:
     if hasattr(agent, "needs_recompile"):
         print("\n📊 Recompilation Status:")
         print(f"   Needs recompile: {getattr(agent, 'needs_recompile', 'N/A')}")
-        print(
-            f"   Last recompile reason: {getattr(agent, 'last_recompile_reason', 'N/A')}"
-        )
+        print(f"   Last recompile reason: {getattr(agent, 'last_recompile_reason', 'N/A')}")
 
     print("\n✅ Recompilation system example complete!")
 

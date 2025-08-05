@@ -228,7 +228,6 @@ class SelfDiscoverWorkflow:
     def analyze_self_discover_result(self, result):
         """Analyze the results of the Self-Discover workflow."""
         if hasattr(result, "messages"):
-
             # Track progression through the four stages
             stage_indicators = {
                 "module_selection": ["select", "module", "relevant"],
@@ -256,8 +255,7 @@ class SelfDiscoverWorkflow:
             # Look for structured reasoning indicators
             reasoning_indicators = {
                 "structured_output": "structured" in content or "pydantic" in content,
-                "step_by_step": "step" in content
-                and ("1." in content or "first" in content),
+                "step_by_step": "step" in content and ("1." in content or "first" in content),
                 "module_usage": "module" in content
                 and ("reasoning" in content or "strategy" in content),
                 "final_answer": "answer" in content
