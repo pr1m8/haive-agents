@@ -10,12 +10,12 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from haive.agents.simple import SimpleAgent
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.agents.structured.models import GenericStructuredOutput
 from haive.agents.structured.prompts import get_prompt_for_model
 
 
-class StructuredOutputAgent(SimpleAgent):
+class StructuredOutputAgent(SimpleAgentV3):
     """Agent that converts any input into structured output.
 
     This agent specializes in taking unstructured text (typically from another
@@ -72,7 +72,8 @@ class StructuredOutputAgent(SimpleAgent):
 
     # Additional fields
     output_model: type[BaseModel] = Field(
-        default=GenericStructuredOutput, description="Alias for structured_output_model for clarity"
+        default=GenericStructuredOutput,
+        description="Alias for structured_output_model for clarity",
     )
 
     custom_context: str | None = Field(
@@ -85,12 +86,22 @@ class StructuredOutputAgent(SimpleAgent):
 
     def model_post_init(self, __context: Any) -> None:
         """Initialize the agent after Pydantic initialization."""
+        # Mark this as a structured output handler to prevent wrapping
+        self._is_structured_output_handler = True
+
         # Ensure structured_output_model is set from output_model if needed
         if not self.structured_output_model and self.output_model:
             self.structured_output_model = self.output_model
 
+        # Configure engine for structured output
+        if not self.engine:
+            self.engine = AugLLMConfig()
+
         # Ensure we always use v2 (tool-based)
-        self.structured_output_version = "v2"
+        self.engine.structured_output_version = "v2"
+        # Also ensure the engine has the structured output model
+        if not self.engine.structured_output_model:
+            self.engine.structured_output_model = self.structured_output_model
 
         # Set up the prompt
         if not self.custom_prompt:
@@ -98,10 +109,6 @@ class StructuredOutputAgent(SimpleAgent):
             self.prompt_template = get_prompt_for_model(model_name, self.custom_context)
         else:
             self.prompt_template = self.custom_prompt
-
-        # Configure engine for structured output
-        if not self.engine:
-            self.engine = AugLLMConfig()
 
         # Set low temperature for consistent extraction
         if self.engine.temperature is None:
@@ -134,7 +141,11 @@ Be thorough and accurate in your extraction."""
 
         # Get the last message content
         last_message = messages[-1]
-        content = last_message.content if hasattr(last_message, "content") else str(last_message)
+        content = (
+            last_message.content
+            if hasattr(last_message, "content")
+            else str(last_message)
+        )
 
         return self.run(content)
 
@@ -203,3 +214,10 @@ def create_structured_agent(
         custom_context=custom_context,
         **kwargs,
     )
+
+
+# Import Agent for model_rebuild
+from haive.agents.base.enhanced_agent import Agent
+
+# Rebuild model to resolve forward references
+StructuredOutputAgent.model_rebuild()

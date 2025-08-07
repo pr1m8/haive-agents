@@ -16,6 +16,7 @@ import logging
 import re
 from abc import ABC, abstractmethod
 from typing import Any, Generic, Literal, TypeVar
+
 from haive.core.engine.base import Engine, EngineType, InvokableEngine
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.messages_state import MessagesState
@@ -25,6 +26,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.graph.graph import CompiledGraph
 from pydantic import BaseModel, Field, PrivateAttr, create_model, model_validator
 from typing_extensions import TypeVar
+
 from haive.agents.base.agent_structured_output_mixin import StructuredOutputMixin
 from haive.agents.base.hooks import HookContext, HookEvent, HookFunction
 from haive.agents.base.mixins.execution_mixin import ExecutionMixin
@@ -130,9 +132,16 @@ class Agent(
     engines: dict[str, Engine] = Field(
         default_factory=dict, description="Dictionary of engines this agent uses"
     )
-    engine: EngineT | None = Field(default=None, description="Main engine (determines agent type)")
+    engine: EngineT | None = Field(
+        default=None, description="Main engine (determines agent type)"
+    )
+    structured_output_model: type[BaseModel] | None = Field(
+        default=None, description="Pydantic model for structured output formatting"
+    )
     graph: BaseGraph | None = Field(
-        default=None, exclude=True, description="The workflow graph (excluded from serialization)"
+        default=None,
+        exclude=True,
+        description="The workflow graph (excluded from serialization)",
     )
     state_schema: type[BaseModel] | dict[str, Any] | None = Field(
         default=None, exclude=True, description="Schema for agent state"
@@ -144,7 +153,8 @@ class Agent(
         default=None, exclude=True, description="Schema for agent output"
     )
     use_prebuilt_base: bool = Field(
-        default=False, description="Whether to use the state_schema as a base for composition"
+        default=False,
+        description="Whether to use the state_schema as a base for composition",
     )
     checkpointer: Any = Field(
         default=None,
@@ -152,7 +162,9 @@ class Agent(
         description="Persistence checkpointer (excluded from serialization)",
     )
     store: Any | None = Field(
-        default=None, exclude=True, description="Optional state store (excluded from serialization)"
+        default=None,
+        exclude=True,
+        description="Optional state store (excluded from serialization)",
     )
     persistence: Any | None = Field(
         default=True, description="Persistence configuration for state checkpointing"
@@ -161,7 +173,8 @@ class Agent(
         default="sync", description="Checkpoint mode for persistence"
     )
     add_store: bool = Field(
-        default=True, description="Whether to add a state store for cross-thread persistence"
+        default=True,
+        description="Whether to add a state store for cross-thread persistence",
     )
     runnable_config: RunnableConfig | None = Field(
         default=None, description="Default runtime configuration"
@@ -179,7 +192,9 @@ class Agent(
     _async_checkpointer: Any | None = PrivateAttr(default=None)
     _async_setup_pending: bool = PrivateAttr(default=False)
     _hooks: dict[HookEvent, list[HookFunction]] = PrivateAttr(default_factory=dict)
-    hooks_enabled: bool = Field(default=True, description="Whether hooks system is enabled")
+    hooks_enabled: bool = Field(
+        default=True, description="Whether hooks system is enabled"
+    )
     set_schema: Literal[True, False] = Field(
         default=False, description="Whether to auto-generate schemas from engines"
     )
@@ -190,7 +205,11 @@ class Agent(
         """STEP 1: Normalize engines dict and auto-generate name."""
         if not isinstance(values, dict):
             return values
-        if "name" not in values or not values["name"] or values["name"] in ["Agent", "Workflow"]:
+        if (
+            "name" not in values
+            or not values["name"]
+            or values["name"] in ["Agent", "Workflow"]
+        ):
             class_name = cls.__name__
             name = re.sub("([a-z0-9])([A-Z])", "\\1 \\2", class_name)
             values["name"] = name
@@ -228,6 +247,7 @@ class Agent(
             if hasattr(self, "setup_transformers"):
                 self.setup_transformers()
             self._setup_schemas()
+            self._check_and_wrap_structured_output()
             self._setup_persistence_from_config()
             self._build_initial_graph()
             self._setup_complete = True
@@ -279,7 +299,9 @@ class Agent(
                     try:
                         fields = first_engine.get_input_fields()
                         if fields:
-                            self.input_schema = create_model(f"{self.name}Input", **fields)
+                            self.input_schema = create_model(
+                                f"{self.name}Input", **fields
+                            )
                             logger.debug("Derived input schema from first engine")
                     except Exception as e:
                         logger.debug(f"Could not derive input schema from engine: {e}")
@@ -295,8 +317,12 @@ class Agent(
                     and main_engine.structured_output_model
                 ):
                     self.output_schema = main_engine.structured_output_model
-                    logger.debug("Using engine's structured output model as output schema")
-                elif hasattr(main_engine, "output_schema") and main_engine.output_schema:
+                    logger.debug(
+                        "Using engine's structured output model as output schema"
+                    )
+                elif (
+                    hasattr(main_engine, "output_schema") and main_engine.output_schema
+                ):
                     self.output_schema = main_engine.output_schema
                     logger.debug("Using engine's output schema")
             if not self.output_schema and self.state_schema:
@@ -313,7 +339,9 @@ class Agent(
         4. Automatically derives I/O schemas
         """
         if self.state_schema and (not self.use_prebuilt_base) and (not self.engines):
-            logger.debug(f"State schema already provided for {self.name}, no engines to integrate")
+            logger.debug(
+                f"State schema already provided for {self.name}, no engines to integrate"
+            )
             self._auto_derive_io_schemas()
             return
         if (
@@ -321,7 +349,8 @@ class Agent(
             and self.use_prebuilt_base
             and hasattr(self.state_schema, "__name__")
             and (
-                self.state_schema.__name__ not in ["MessagesState", "SimpleAgentState", "ToolState"]
+                self.state_schema.__name__
+                not in ["MessagesState", "SimpleAgentState", "ToolState"]
             )
         ):
             logger.debug(
@@ -337,9 +366,14 @@ class Agent(
                 continue
             if not hasattr(component, "__class__"):
                 continue
-            if hasattr(component, "engine_type") or "Engine" in component.__class__.__name__:
+            if (
+                hasattr(component, "engine_type")
+                or "Engine" in component.__class__.__name__
+            ):
                 engine_list.append(component)
-        logger.debug(f"Setting up schemas for {self.name} with {len(engine_list)} engines")
+        logger.debug(
+            f"Setting up schemas for {self.name} with {len(engine_list)} engines"
+        )
         try:
             if self.state_schema and self.use_prebuilt_base and engine_list:
                 logger.debug(
@@ -361,7 +395,9 @@ class Agent(
                     composer.add_engine(engine)
                     composer.add_fields_from_engine(engine)
                 self.state_schema = composer.build()
-                logger.debug(f"Built schema: {getattr(self.state_schema, '__name__', 'Unknown')}")
+                logger.debug(
+                    f"Built schema: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                )
             else:
                 logger.debug("No engines found, using default MessagesState")
                 self.state_schema = MessagesState
@@ -378,6 +414,36 @@ class Agent(
 
                 self.state_schema = BasicMessagesState
 
+    def _check_and_wrap_structured_output(self) -> None:
+        """Check if agent needs structured output wrapping and prepare for it.
+
+        This method detects if the agent has a structured_output_model but is not
+        already a structured output handler (to avoid infinite loops). If so, it
+        prepares the agent to be wrapped in a multi-agent workflow.
+        """
+        # Skip if no structured output model
+        if not self.structured_output_model:
+            return
+
+        # Check if this is already a structured output handler to avoid loops
+        is_structured_handler = (
+            self.__class__.__name__ == "StructuredOutputAgent"
+            or self.__class__.__name__ == "EnhancedMultiAgentV4"
+            or hasattr(self, "_is_structured_output_handler")
+        )
+
+        if not is_structured_handler:
+            # Mark that this agent needs structured output wrapping
+            self._needs_structured_output_wrapper = True
+
+            # Log for debugging
+            if self.verbose:
+                logger.info(
+                    f"Agent {self.name} has structured_output_model "
+                    f"{self.structured_output_model.__name__} "
+                    "and will be wrapped with StructuredOutputAgent"
+                )
+
     def _setup_persistence_from_config(self) -> None:
         """Setup persistence using the PersistenceMixin."""
         if hasattr(self, "_setup_persistence_from_fields"):
@@ -389,10 +455,67 @@ class Agent(
         """Build the initial graph."""
         if not self._graph_built:
             try:
-                self.graph = self.build_graph()
+                # Check if we need to wrap for structured output
+                if getattr(self, "_needs_structured_output_wrapper", False):
+                    self.graph = self._build_wrapped_graph()
+                else:
+                    self.graph = self.build_graph()
                 self._graph_built = True
             except Exception as e:
                 logger.exception(f"Failed to build graph for {self.name}: {e}")
+
+    def _build_wrapped_graph(self) -> BaseGraph:
+        """Build a multi-agent graph with structured output wrapper."""
+        # Lazy imports to avoid circular dependencies
+        from haive.core.engine.aug_llm import AugLLMConfig
+
+        from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+        from haive.agents.structured.agent import StructuredOutputAgent
+
+        # Create a copy of self without structured output
+        base_agent = self.model_copy()
+        base_agent.structured_output_model = None
+        base_agent._needs_structured_output_wrapper = False
+        base_agent._is_structured_output_handler = True
+
+        # Create the structured output agent using SimpleAgentV3
+        from langchain_core.prompts import ChatPromptTemplate
+
+        from haive.agents.simple.agent_v3 import SimpleAgentV3
+
+        # Create prompt template that references the previous agent's output
+        output_agent = SimpleAgentV3(
+            name=f"{self.name}_formatter",
+            engine=AugLLMConfig(
+                temperature=0.1,
+                system_message="You are a structured output formatter. Extract information and format it according to the schema.",
+                structured_output_model=self.structured_output_model,
+                structured_output_version="v2",  # Use v2 for tool-based approach
+            ),
+            prompt_template=ChatPromptTemplate.from_messages(
+                [
+                    ("system", "{system_message}"),
+                    (
+                        "human",
+                        """Based on the previous agent's analysis:
+
+{messages}
+
+Extract and format the information according to the required structured output schema.""",
+                    ),
+                ]
+            ),
+        )
+
+        # Create multi-agent workflow
+        multi_agent = EnhancedMultiAgentV4(
+            name=f"{self.name}_workflow",
+            agents=[base_agent, output_agent],
+            execution_mode="sequential",
+        )
+
+        # Build and return the multi-agent graph
+        return multi_agent.build_graph()
 
     @abstractmethod
     def build_graph(self) -> BaseGraph:
@@ -439,10 +562,17 @@ class Agent(
 
     def execute_hooks(self, event: HookEvent, **context_kwargs) -> list[Any]:
         """Execute all hooks for an event."""
-        if not self.hooks_enabled or event not in self._hooks or (not self._hooks[event]):
+        if (
+            not self.hooks_enabled
+            or event not in self._hooks
+            or (not self._hooks[event])
+        ):
             return []
         context = HookContext(
-            event=event, agent_name=self.name, agent_type=self.__class__.__name__, **context_kwargs
+            event=event,
+            agent_name=self.name,
+            agent_type=self.__class__.__name__,
+            **context_kwargs,
         )
         results = []
         for hook in self._hooks[event]:
@@ -566,7 +696,8 @@ class Agent(
             logger.info(f"Auto-recompile triggered for agent '{self.name}'")
         if self.hooks_enabled:
             self.execute_hooks(
-                HookEvent.BEFORE_BUILD_GRAPH, metadata={"compilation_type": "auto_recompile"}
+                HookEvent.BEFORE_BUILD_GRAPH,
+                metadata={"compilation_type": "auto_recompile"},
             )
         try:
             self.graph = self.build_graph()
@@ -577,18 +708,25 @@ class Agent(
             if self.hooks_enabled:
                 self.execute_hooks(
                     HookEvent.AFTER_BUILD_GRAPH,
-                    metadata={"compilation_type": "auto_recompile", "graph": self.graph},
+                    metadata={
+                        "compilation_type": "auto_recompile",
+                        "graph": self.graph,
+                    },
                 )
         except Exception as e:
             logger.exception(f"Auto-recompile failed for agent '{self.name}': {e}")
             self.resolve_recompile(success=False)
             if self.hooks_enabled:
                 self.execute_hooks(
-                    HookEvent.ON_ERROR, error=e, metadata={"compilation_type": "auto_recompile"}
+                    HookEvent.ON_ERROR,
+                    error=e,
+                    metadata={"compilation_type": "auto_recompile"},
                 )
 
     def __repr__(self) -> str:
-        engine_type = getattr(type(self.engine), "__name__", "None") if self.engine else "None"
+        engine_type = (
+            getattr(type(self.engine), "__name__", "None") if self.engine else "None"
+        )
         return f"{self.__class__.__name__}[{engine_type}](name='{self.name}')"
 
     def compile(self, **kwargs) -> Any:
