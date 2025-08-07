@@ -59,6 +59,7 @@ class ReactAgentV4(SimpleAgentV3):
 
 
 # Import Agent for model_rebuild
+from haive.agents.base.enhanced_agent import Agent
 
 # Rebuild model to resolve forward references
 ReactAgentV4.model_rebuild()
