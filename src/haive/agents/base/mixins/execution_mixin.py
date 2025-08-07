@@ -415,6 +415,29 @@ class ExecutionMixin:
         Returns:
             Processed output data
         """
+        # Check if agent has structured_output_model for automatic extraction
+        structured_output_model = getattr(self, "structured_output_model", None)
+        if structured_output_model:
+            # Import here to avoid circular dependency
+            from haive.agents.base.structured_output_handler import (
+                StructuredOutputHandler,
+            )
+
+            # Create handler and try to extract
+            handler = StructuredOutputHandler(structured_output_model)
+            extracted = handler.extract(output_data)
+            
+            if extracted:
+                logger.debug(f"Automatically extracted {structured_output_model.__name__} from output")
+                return extracted
+            else:
+                # Log debug instead of warning - this is expected when graph is still processing
+                logger.debug(
+                    f"Structured output not yet available in output. "
+                    f"Available keys: {list(output_data.keys()) if hasattr(output_data, 'keys') else 'N/A'}"
+                )
+        
+        # Original output schema validation logic
         output_schema = getattr(self, "output_schema", None)
 
         if output_schema and not isinstance(output_data, output_schema):
